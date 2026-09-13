@@ -28,3 +28,15 @@ El prototipo React y la fuente funcional del ZIP son referencias de producto. Su
 - Google/Apple se habilitan solo con sus proveedores configurados; nunca simular autenticación exitosa.
 - Administradores se asignan mediante una operación de servidor. No existe registro público de administradores.
 - Los textos legales de desarrollo son provisionales y no habilitan un lanzamiento público.
+
+## Hito 2 — adopción y comunicación
+
+- El usuario autorizó iniciar este hito después del cierre de identidad. Incluye publicaciones de adopción, revisión, catálogo, filtros, detalle, guardados, perfiles públicos, conversaciones y notificaciones dentro de la app.
+- Una cuenta activa y con correo confirmado puede preparar una publicación. Elegir la experiencia de rescatista no concede una verificación de identidad del hito 3.
+- Borrador → enviado a revisión → publicado, correcciones o rechazado. El autor conserva sus datos al corregir; editar contenido publicado lo retira del catálogo hasta una nueva aprobación. Se puede retirar una publicación o marcar una adopción realizada.
+- Las fotos permanecen en Storage privado; solo se permite leer contenido aprobado, propio o necesario para revisión administrativa. Los archivos publicados no se pueden sobrescribir desde el cliente.
+- El catálogo muestra ubicación por ciudad/estado, sin inventar distancias ni solicitar una dirección particular. Filtros por especie, sexo, tamaño, edad y ubicación.
+- Los perfiles públicos se forman con nombre público y presentación aprobados junto a una publicación; nunca exponen correo, teléfono ni el perfil privado completo.
+- Una persona puede contactar al responsable de una publicación disponible. Solo ambos participantes leen su conversación. Los mensajes de texto usan identificadores para evitar duplicados al reintentar; se puede cerrar la conversación.
+- Las notificaciones son internas y se generan desde el servidor por cambios de revisión y nuevos mensajes. La actualización en vivo no sustituye la lectura persistente al volver a entrar.
+- No se implementan cobros, verificación documental ni notificaciones push como parte de este hito.

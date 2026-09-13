@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../adoption/community_ui.dart';
 import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
 
@@ -101,6 +102,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final accepted = profile?.termsVersion == developmentTermsVersion;
     return PageFrame(
       back: false,
+      bottomNavigationBar: const CommunityNav(4),
       children: [
         const Heading(
           'Tu perfil,\ntu forma de ayudar.',

@@ -99,9 +99,28 @@ class IdentityController extends ChangeNotifier {
       return path == '/reset-password' ? null : '/reset-password';
     }
     if (identity?.verified == true) {
-      return path == '/profile' || path == '/terms' ? null : '/profile';
+      const accountRoutes = [
+        '/profile',
+        '/terms',
+        '/saved',
+        '/my-adoptions',
+        '/messages',
+        '/notifications',
+      ];
+      final allowed =
+          accountRoutes.any(
+            (route) => path == route || path.startsWith('$route/'),
+          ) ||
+          path == '/adoptions' ||
+          path.startsWith('/adoptions/') ||
+          path.startsWith('/people/');
+      return allowed ? null : '/adoptions';
     }
     if (path == '/profile' ||
+        path == '/saved' ||
+        path.startsWith('/my-adoptions') ||
+        path.startsWith('/messages') ||
+        path == '/notifications' ||
         path == '/reset-password' ||
         path == '/loading' ||
         path == '/auth-error') {

@@ -4,11 +4,31 @@
 
 - `src/`: prototipo React conservado como referencia, puerto 5173.
 - `apps/mobile/`: Flutter 3.47.4 / Dart 3.13.3, Riverpod, go_router y Supabase. Android e iOS; la salida web sirve para revisión local.
-- `apps/admin/`: React/TypeScript, consulta administrativa de usuarios, puerto 5174.
+- `apps/admin/`: React/TypeScript, consulta de usuarios y revisión de adopciones, puerto 5174.
 - `supabase/`: migraciones, permisos, plantillas de correo y pruebas pgTAP.
 - `tools/verification/`: pruebas de la migración con PostgreSQL mediante PGlite y CLI de Supabase fijada por el lockfile.
 
 No hay autenticación simulada en `apps/`. Sin configuración, las apps muestran un estado de conexión pendiente.
+
+## Adopción y comunicación (hito 2)
+
+La app permite explorar publicaciones aprobadas sin cuenta. Para guardar, publicar o conversar se requiere una cuenta activa, correo confirmado y aceptación del aviso de desarrollo en Cuenta. Las pestañas son Adoptar, Guardados, Publicar, Mensajes y Cuenta; la campana abre las notificaciones internas.
+
+En Publicar se guardan borradores, se adjuntan hasta cinco fotos y se envía a revisión. El panel permite aprobar, pedir correcciones, rechazar o retirar, con la versión revisada y el historial. Editar una publicación aprobada la devuelve a borrador y la oculta hasta otra revisión. Una adopción realizada deja de aceptar contactos nuevos; las conversaciones existentes se conservan y pueden cerrarse.
+
+Storage usa el bucket privado `dopmi-adoption-photos`, límite de 5 MiB y formatos JPG/PNG/WebP. La app prepara JPEG sin EXIF y con lado máximo de 1600 píxeles. Los enlaces firmados duran 60 segundos: retirar una publicación impide generar enlaces nuevos, pero un enlace ya emitido puede funcionar hasta su vencimiento. No hay direcciones particulares, teléfonos ni documentos en los perfiles públicos.
+
+Mensajes y notificaciones usan Realtime con RLS. Al reconectar o volver a primer plano se consulta la información persistente; un intervalo de respaldo también la actualiza. Las notificaciones de este hito son internas, sin push. Los mensajes incluyen un UUID de envío que se reutiliza ante una respuesta perdida.
+
+Pruebas completas de backend local:
+
+```powershell
+.\scripts\verify-backend.ps1
+```
+
+El script inicia Auth, PostgreSQL, Storage, Realtime y Mailpit, aplica migraciones locales y ejecuta pgTAP y los recorridos Flutter de identidad/adopción. Si el stack ya estaba iniciado excluyendo Storage/Realtime, ejecuta `supabase stop` antes para reiniciarlo con esos servicios. Las cuentas de aceptación solo se crean en loopback y se eliminan al terminar. La membresía administrativa de prueba se asigna mediante Docker/psql al UUID de la cuenta temporal, nunca desde el cliente.
+
+Las migraciones `202609130003`, `202609130004` y `202609130005` se aplicaron en el dashboard de desarrollo en una transacción. Inclúyelas en la reparación del historial de CLI descrita abajo antes de usar `db push` por primera vez.
 
 ## Iniciar en este Windows
 
@@ -31,6 +51,41 @@ En un emulador o teléfono conectado:
 ```
 
 El segundo comando genera `apps/mobile/build/app/outputs/flutter-apk/app-debug.apk`. Es un APK de desarrollo, no un paquete firmado para publicar. El callback móvil registrado es `io.dopmi.app://auth/callback` y las sesiones usan almacenamiento seguro nativo. Las claves PKCE también se guardan en almacenamiento seguro.
+
+### Emulador Android en este equipo
+
+El dispositivo local `Dopmi_API_35` usa Android 15 (API 35), arquitectura x86_64, pantalla de 720×1520, dos núcleos y 1536 MB de RAM. El SDK y la imagen están en `.tools/android-sdk`; los datos persistentes del dispositivo están en `%USERPROFILE%/.android/avd`, fuera del repositorio.
+
+Para abrirlo e instalar el APK ya compilado:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\emulate-android.ps1
+```
+
+Agrega `-Rebuild` después de cambiar el código o la configuración de conexión. Sin ese parámetro se reutiliza el APK existente. El script usa el puerto 5556, espera el arranque de Android y abre Dopmi. Se puede cerrar la ventana del emulador al terminar; la cuenta y la sesión se conservan en su disco. Los registros de arranque quedan en `.tools/android-emulator*.log`. La opción de ejecución de PowerShell aplica únicamente a ese proceso.
+
+Para desarrollo con recarga en caliente, una vez iniciado el dispositivo:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\dev.ps1 mobile
+```
+
+Selecciona `emulator-5556` si Flutter pregunta por el dispositivo. Esta máquina tiene 8 GB de RAM; cerrar aplicaciones pesadas que no estés usando ayuda al emulador.
+
+Para recrear el dispositivo en otra instalación con el SDK y JDK configurados, instala `emulator` y `system-images;android-35;default;x86_64` con el administrador del SDK. Luego ejecuta `avdmanager create avd --name Dopmi_API_35 --package "system-images;android-35;default;x86_64" --device pixel_4`. Comprueba `emulator -accel-check` antes de iniciar; el script muestra el resultado efectivo del hipervisor.
+
+### Simulador iOS
+
+El simulador oficial requiere macOS y Xcode; no se ejecuta localmente en Windows. En una Mac preparada según la [guía de Flutter](https://docs.flutter.dev/platform-integration/ios/setup), copia la configuración publicable de desarrollo a `apps/mobile/config.local.json`, abre el simulador desde Xcode y ejecuta:
+
+```sh
+cd apps/mobile
+flutter pub get
+flutter devices
+flutter run -d <id-del-simulador> --dart-define-from-file=config.local.json
+```
+
+La compilación para simulador en el CI de macOS está documentada en `progress.md`; ese resultado no equivale a una sesión interactiva de iOS comprobada en esta computadora.
 
 ## Configurar otra máquina
 

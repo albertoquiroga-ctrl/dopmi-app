@@ -90,12 +90,15 @@ class PageFrame extends StatelessWidget {
     required this.children,
     this.back = true,
     this.actions,
+    this.bottomNavigationBar,
   });
   final List<Widget> children;
   final bool back;
   final List<Widget>? actions;
+  final Widget? bottomNavigationBar;
   @override
   Widget build(BuildContext context) => Scaffold(
+    bottomNavigationBar: bottomNavigationBar,
     appBar: AppBar(
       title: const Brand(),
       automaticallyImplyLeading: false,

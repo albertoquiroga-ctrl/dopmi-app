@@ -6,6 +6,14 @@ export type AdminUser = {
   created_at: string; email_confirmed_at: string | null; last_sign_in_at: string | null;
 };
 export type UserPage = { total: number; users: AdminUser[] };
+export type Adoption = {
+  id: string; owner_id: string; pet_name: string; species: string; sex: string; age_months: number; size: string;
+  breed: string; city: string; region: string; story: string; special_care: string; publisher_name: string; publisher_bio: string;
+  vaccinated: boolean | null; sterilized: boolean | null; social_dogs: boolean | null; social_cats: boolean | null; social_children: boolean | null;
+  photos: string[]; status: string; version: number; review_feedback: string; submitted_at: string | null; updated_at: string;
+};
+export type Review = { id: string; decision: string; feedback: string; version: number; created_at: string };
+export const adoptionStatus: Record<string, string> = { submitted: 'En revisión', published: 'Publicadas', changes_requested: 'Con correcciones', rejected: 'No aprobadas', adopted: 'Adopciones realizadas', archived: 'Retiradas', draft: 'Borradores' };
 export type AdminApi = {
   session: () => Promise<boolean>;
   watch: (onChange: () => void) => () => void;
@@ -13,6 +21,10 @@ export type AdminApi = {
   logout: () => Promise<void>;
   isAdmin: () => Promise<boolean>;
   listUsers: (search: string, page: number) => Promise<UserPage>;
+  listAdoptions: (status: string, page: number) => Promise<{ total: number; items: Adoption[] }>;
+  reviews: (postId: string) => Promise<Review[]>;
+  reviewAdoption: (post: Adoption, decision: string, feedback: string) => Promise<Adoption>;
+  photoUrl: (path: string) => Promise<string>;
 };
 
 export function createAdminApi(client: SupabaseClient): AdminApi {
@@ -27,6 +39,22 @@ export function createAdminApi(client: SupabaseClient): AdminApi {
       if (error) throw error;
       if (!data || !Array.isArray(data.users) || typeof data.total !== 'number') throw new Error('invalid_response');
       return data as UserPage;
+    },
+    async listAdoptions(status, page) {
+      const { data, error } = await client.rpc('dopmi_admin_adoptions', { status_filter: status, page_number: page });
+      if (error) throw error; return data;
+    },
+    async reviews(postId) {
+      const { data, error } = await client.rpc('dopmi_adoption_reviews', { post_id: postId });
+      if (error) throw error; return data;
+    },
+    async reviewAdoption(post, decision, feedback) {
+      const { data, error } = await client.rpc('dopmi_review_adoption', { post_id: post.id, expected_version: post.version, decision, feedback });
+      if (error) throw error; return data;
+    },
+    async photoUrl(path) {
+      const { data, error } = await client.storage.from('dopmi-adoption-photos').createSignedUrl(path, 60);
+      if (error) throw error; return data.signedUrl;
     },
   };
 }
@@ -53,6 +81,8 @@ export function errorMessage(error: unknown): string {
   if (code === 'invalid_credentials') return 'Revisa tu correo y contraseña.';
   if (code === 'email_not_confirmed') return 'Confirma tu correo antes de iniciar sesión.';
   if (code === '42501') return 'Tu cuenta no tiene acceso administrativo. Vuelve a iniciar sesión o contacta al responsable.';
+  if (code === '40001') return 'La publicación cambió. Cierra el detalle y actualiza la lista antes de revisarla otra vez.';
+  if (code === '22023') return 'La decisión no está disponible. Revisa el estado y escribe un motivo de 5 a 2000 caracteres.';
   if (code === 'over_request_rate_limit' || code === 'over_email_send_rate_limit') return 'Espera un momento antes de intentarlo otra vez.';
   return 'No pudimos completar la solicitud. Comprueba tu conexión e inténtalo de nuevo.';
 }

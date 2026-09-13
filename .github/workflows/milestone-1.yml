@@ -1,4 +1,4 @@
-name: Dopmi identity
+name: Dopmi identity and adoption
 on:
   push:
   pull_request:
@@ -6,7 +6,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: identity-${{ github.ref }}
+  group: dopmi-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   web-and-database:
@@ -70,7 +70,7 @@ jobs:
       - name: iOS simulator compilation (device signing is separate)
         run: flutter build ios --simulator --no-codesign --dart-define-from-file=config.example.json
         working-directory: apps/mobile
-  identity-backend:
+  identity-and-adoption-backend:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -87,16 +87,16 @@ jobs:
           cache: true
       - run: npm ci
         working-directory: tools/verification
-      - name: Start local Auth, PostgreSQL, REST and test mail
-        run: tools/verification/node_modules/.bin/supabase start --exclude realtime,storage-api,imgproxy,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
+      - name: Start local Auth, PostgreSQL, Storage, Realtime and test mail
+        run: tools/verification/node_modules/.bin/supabase start --exclude imgproxy,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
       - name: Prepare temporary local test configuration
         run: tools/verification/node_modules/.bin/supabase status --output json > "$RUNNER_TEMP/supabase-status.json"
       - run: flutter pub get
         working-directory: apps/mobile
-      - name: Registration, confirmation, profile, persistence and password recovery
+      - name: Identity, adoption moderation, private photos and messaging
         env:
           DOPMI_LOCAL_CONFIG: ${{ runner.temp }}/supabase-status.json
-        run: flutter test test_backend/identity_backend_test.dart --reporter expanded
+        run: flutter test test_backend --reporter expanded --concurrency=1
         working-directory: apps/mobile
       - name: Stop disposable services
         if: always()

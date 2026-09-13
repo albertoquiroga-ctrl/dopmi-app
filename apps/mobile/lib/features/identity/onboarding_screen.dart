@@ -109,6 +109,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         onPressed: () => context.push('/login'),
         child: const Text('Ya tengo cuenta · Iniciar sesión'),
       ),
+      TextButton(
+        onPressed: () => context.go('/adoptions'),
+        child: const Text('Explorar adopciones sin cuenta'),
+      ),
       const Text(
         'Puedes cambiar de experiencia desde tu perfil.',
         textAlign: TextAlign.center,

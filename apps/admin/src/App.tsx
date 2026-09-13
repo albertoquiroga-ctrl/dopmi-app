@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import { errorMessage, type AdminApi, type AdminUser, type UserPage } from './api';
+import Adoptions from './Adoptions';
 
 function Brand() { return <a className="brand" href="/" aria-label="Dopmi, inicio"><img src="/dopmi-wordmark.png" alt="Dopmi" /><span>Administración</span></a>; }
 function Notice({ text }: { text: string }) { return <div className="notice" role="alert">{text}</div>; }
@@ -7,6 +8,7 @@ function Notice({ text }: { text: string }) { return <div className="notice" rol
 export default function App({ api }: { api: AdminApi | null }) {
   const [access, setAccess] = useState<'loading' | 'guest' | 'denied' | 'admin' | 'error'>('loading');
   const [error, setError] = useState('');
+  const [section, setSection] = useState<'users' | 'adoptions'>('users');
   const generation = useRef(0);
   const refresh = useCallback(async () => {
     if (!api) return;
@@ -40,7 +42,7 @@ export default function App({ api }: { api: AdminApi | null }) {
     {access === 'error' && <button onClick={() => void refresh()}>Volver a intentar</button>}
     {access !== 'loading' && <button className="secondary" onClick={() => void logout()}>Cerrar sesión</button>}
   </section></main>;
-  return <div className="admin-shell"><aside className="sidebar"><Brand /><p className="nav-label">OPERACIÓN</p><div className="nav-item" aria-current="page"><span aria-hidden="true">◎</span> Usuarios</div><div className="sidebar-bottom"><span className="status-dot" /> Conexión activa<button className="text-button" onClick={() => void logout()}>Cerrar sesión</button></div></aside><main className="workspace">{error && <Notice text={error} />}<Users api={api} /></main></div>;
+  return <div className="admin-shell"><aside className="sidebar"><Brand /><p className="nav-label">OPERACIÓN</p><nav className="admin-navigation"><button className="nav-item" aria-current={section === 'users' ? 'page' : undefined} onClick={() => setSection('users')}>Usuarios</button><button className="nav-item" aria-current={section === 'adoptions' ? 'page' : undefined} onClick={() => setSection('adoptions')}>Adopciones</button></nav><div className="sidebar-bottom"><span className="status-dot" /> Conexión activa<button className="text-button" onClick={() => void logout()}>Cerrar sesión</button></div></aside><main className="workspace">{error && <Notice text={error} />}{section === 'users' ? <Users api={api} /> : <Adoptions api={api} />}</main></div>;
 }
 
 function Login({ api, onLogin }: { api: AdminApi; onLogin: () => Promise<void> }) {

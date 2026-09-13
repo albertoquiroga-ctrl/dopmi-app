@@ -9,15 +9,86 @@ import 'features/identity/identity_controller.dart';
 import 'features/identity/identity_repository.dart';
 import 'features/identity/onboarding_screen.dart';
 import 'features/profile/profile_screen.dart';
+import 'features/adoption/catalog_screens.dart';
+import 'features/adoption/publication_screens.dart';
+import 'features/communication/message_screens.dart';
+
+final routerInitialLocationProvider = Provider<String>((ref) => '/welcome');
 
 final routerProvider = Provider<GoRouter>((ref) {
   final identity = ref.watch(identityControllerProvider);
+  String? restoringPath;
   final router = GoRouter(
-    initialLocation: '/welcome',
-    overridePlatformDefaultLocation: true,
+    initialLocation: ref.watch(routerInitialLocationProvider),
+    overridePlatformDefaultLocation: false,
     refreshListenable: identity,
-    redirect: (_, state) => identity.redirect(state.uri.path),
+    redirect: (_, state) {
+      if (identity.loading && state.uri.path != '/loading') {
+        restoringPath = state.uri.toString();
+      }
+      final desired = identity.loading
+          ? state.uri.path
+          : Uri.parse(restoringPath ?? state.uri.toString()).path;
+      final target = identity.redirect(desired);
+      if (!identity.loading && restoringPath != null) {
+        final restored = restoringPath;
+        restoringPath = null;
+        return target ?? (restored != state.uri.toString() ? restored : null);
+      }
+      return target;
+    },
     routes: [
+      GoRoute(
+        path: '/adoptions',
+        builder: (_, state) => CatalogScreen(
+          key: ValueKey('${identity.identity?.id}:${state.uri}'),
+          owner: state.uri.queryParameters['owner'],
+        ),
+      ),
+      GoRoute(
+        path: '/saved',
+        builder: (_, _) =>
+            CatalogScreen(key: ValueKey(identity.identity?.id), saved: true),
+      ),
+      GoRoute(
+        path: '/adoptions/:id',
+        builder: (_, state) => AdoptionDetailScreen(
+          state.pathParameters['id']!,
+          key: ValueKey('${identity.identity?.id}:${state.uri}'),
+        ),
+      ),
+      GoRoute(
+        path: '/people/:id',
+        builder: (_, state) => PublicProfileScreen(state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/my-adoptions',
+        builder: (_, _) =>
+            MyAdoptionsScreen(key: ValueKey(identity.identity?.id)),
+      ),
+      GoRoute(
+        path: '/my-adoptions/:id',
+        builder: (_, state) => PublicationScreen(
+          state.pathParameters['id']!,
+          key: ValueKey('${identity.identity?.id}:${state.uri}'),
+        ),
+      ),
+      GoRoute(
+        path: '/messages',
+        builder: (_, _) => ThreadsScreen(key: ValueKey(identity.identity?.id)),
+      ),
+      GoRoute(
+        path: '/messages/:id',
+        builder: (_, state) => ThreadScreen(
+          state.pathParameters['id']!,
+          key: ValueKey('${identity.identity?.id}:${state.uri}'),
+        ),
+      ),
+      GoRoute(
+        path: '/notifications',
+        builder: (_, _) =>
+            NotificationsScreen(key: ValueKey(identity.identity?.id)),
+      ),
       GoRoute(
         path: '/loading',
         builder: (_, _) => const PageFrame(

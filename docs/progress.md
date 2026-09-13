@@ -1,5 +1,16 @@
 # Dopmi — registro de avance
 
+## Hito 2 — en curso
+
+- Inicio autorizado: adopción, revisión administrativa, catálogo, guardados, perfiles públicos, mensajes y notificaciones internas.
+- Se conserva la base de identidad y el trabajo posterior de emulación. Una sola secuencia de implementación está activa.
+- Migraciones 003–005 aplicadas en PostgreSQL local: publicaciones moderadas, conversación privada y fotos en Storage privado. Las 58 comprobaciones nuevas de pgTAP y las once de identidad aprobaron.
+- Flutter incorpora catálogo con filtros/paginación, detalle, favoritos, perfil público, borradores, fotos sin EXIF, revisión/correcciones, retirada/adopción realizada, conversación, cierre y notificaciones. El panel incorpora revisión con versión y motivos, fotos privadas e historial.
+- Panel: nueve pruebas y build aprobados. Flutter: análisis sin incidencias; las cuatro pruebas nuevas de catálogo, conservación de borrador, reintento de mensajes y eliminación de EXIF aprobaron. La repetición completa y los builds de este hito siguen pendientes.
+- Integración local con cuatro cuentas desechables y servicios reales aprobada: creación, foto privada, correcciones/aprobación, filtros, guardados, perfiles públicos, conversaciones, notificación Realtime, idempotencia concurrente, cierre y retirada del catálogo. El primer inicio de Realtime tardó en preparar el tenant; se amplió la espera de aceptación y se repetirá el recorrido final sin instrumentación temporal.
+- Remoto: migraciones 003–005 aplicadas juntas desde SQL Editor en `ohqxranynackjignryep`. Recibo: `dopmi_adoptions`, `dopmi_messages`, bucket `public=false`, diez perfiles conservados. La prueba remota de aislamiento y la revisión visual están en curso.
+- Pendiente de cierre: comprobación remota completa, revisión visual, suite completa, CI Android/iOS y registro del commit entregado. No se declara el hito completado todavía.
+
 ## Hito 1
 
 Estado: **hito 1 completado**. Flujos de identidad comprobados, Android e iOS simulator compilados, acceso administrativo del titular habilitado y cuatro jobs del CI ampliado aprobados.
@@ -59,3 +70,12 @@ Estado: **hito 1 completado**. Flujos de identidad comprobados, Android e iOS si
 - El correo integrado de Supabase sigue activo. SMTP propio es necesario para ampliar destinatarios/volumen de la beta. Google/Apple permanecen deshabilitados hasta configurar y verificar sus proveedores.
 
 El siguiente alcance es H2: adopción y comunicación. No se inicia automáticamente como parte del cierre de identidad.
+
+## Emulación solicitada después del cierre del hito 1
+
+- Android Emulator 37.1.11 y la imagen oficial Android 15 / API 35 / x86_64 instalados en `.tools/android-sdk`, fuera de Git. Se creó `Dopmi_API_35`, con dos núcleos, 1536 MB de RAM y pantalla de 720×1520. El equipo tiene 8 GB de RAM y poca memoria libre; el primer arranque fue lento.
+- La consulta de componentes de Windows indicó `HypervisorPlatform` desactivado, pero la comprobación directa `emulator -accel-check` devolvió `WHPX(10.0.19045) is installed and usable`. El registro de arranque confirmó aceleración operacional. No fue necesario cambiar componentes de Windows ni reiniciar.
+- `emulator-5556` inició con `sys.boot_completed = 1`. Se instaló correctamente el APK de desarrollo existente, versión 0.1.0, que contiene x86_64. El primer `am start -W` agotó su espera; una comprobación posterior confirmó proceso activo, `MainActivity` reanudada y en primer plano, motor Flutter iniciado y búfer de errores de cierre vacío. Esto verifica instalación y ejecución nativas en el emulador; no añade una comprobación visual ni un recorrido autenticado de usuario en Android.
+- `flutter analyze`: sin incidencias. `flutter test`: diez pruebas aprobadas en esta sesión.
+- Se añadió `scripts/emulate-android.ps1` para abrir el dispositivo e instalar el APK; `-Rebuild` recompila cuando cambian código/configuración. El comando y las instrucciones para iOS están en `docs/development.md`. La sintaxis PowerShell se comprobó; el arranque/instalación se ejecutó con ese script y las comprobaciones posteriores usaron ADB.
+- iOS interactivo queda pendiente por plataforma: esta sesión dispone de Windows, sin una Mac/Xcode conectada. El simulador oficial requiere macOS. Se conserva la evidencia previa de compilación iOS en CI; no se declara una ejecución interactiva de iOS nueva.

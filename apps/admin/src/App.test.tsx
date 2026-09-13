@@ -4,7 +4,7 @@ import { describe, it, expect, vi } from 'vitest';
 import App from './App';
 import type { AdminApi, AdminUser } from './api';
 const person: AdminUser = { id: 'one', display_name: 'Ana López', email: 'ana@example.test', phone: '', city: 'Monterrey', active_mode: 'donor', account_status: 'active', created_at: '2026-09-13T12:00:00Z', email_confirmed_at: '2026-09-13T12:00:00Z', last_sign_in_at: null };
-function api(overrides: Partial<AdminApi> = {}): AdminApi { return { session: vi.fn(async () => true), watch: () => () => {}, login: vi.fn(async () => {}), logout: vi.fn(async () => {}), isAdmin: vi.fn(async () => true), listUsers: vi.fn(async () => ({ total: 1, users: [person] })), ...overrides }; }
+function api(overrides: Partial<AdminApi> = {}): AdminApi { return { session: vi.fn(async () => true), watch: () => () => {}, login: vi.fn(async () => {}), logout: vi.fn(async () => {}), isAdmin: vi.fn(async () => true), listUsers: vi.fn(async () => ({ total: 1, users: [person] })), listAdoptions: vi.fn(async () => ({ total: 0, items: [] })), reviews: vi.fn(async () => []), reviewAdoption: vi.fn(async (post) => post), photoUrl: vi.fn(async () => "https://example.test/photo"), ...overrides }; }
 describe('administración de usuarios', () => {
   it('does not query users before the server authorizes the account', async () => {
     const client = api({ isAdmin: vi.fn(async () => false) }); render(<App api={client} />);

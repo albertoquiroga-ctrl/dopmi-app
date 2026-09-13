@@ -215,7 +215,7 @@ void main() {
         );
         await restartClient();
         await eventually(() async => controller!.identity?.verified == true);
-        expect(controller!.redirect('/welcome'), '/profile');
+        expect(controller!.redirect('/welcome'), '/adoptions');
         final restored = await repository.loadProfile();
         expect(restored.name, 'Perfil actualizado');
         expect(restored.city, 'Ciudad de México');

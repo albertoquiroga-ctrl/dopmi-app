@@ -29,7 +29,7 @@ void main() {
     repository.emit(
       const IdentityEvent(Identity('one', 'ana@example.test', verified: true)),
     );
-    expect(controller.redirect('/login'), '/profile');
+    expect(controller.redirect('/login'), '/adoptions');
   });
   test(
     'recovery events and persisted recovery cannot fall through to profile',

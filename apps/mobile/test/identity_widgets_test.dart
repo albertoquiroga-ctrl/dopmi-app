@@ -17,7 +17,12 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     final container = ProviderContainer(
-      overrides: [identityRepositoryProvider.overrideWithValue(repo)],
+      overrides: [
+        identityRepositoryProvider.overrideWithValue(repo),
+        routerInitialLocationProvider.overrideWithValue(
+          repo.user?.verified == true ? '/profile' : '/welcome',
+        ),
+      ],
     );
     addTearDown(() async {
       container.dispose();
