@@ -2,7 +2,7 @@
 
 ## Hito 1
 
-Estado: flujos de identidad comprobados, Android e iOS simulator compilados y acceso administrativo del titular habilitado. Validación final en curso del CI ampliado con integración de Auth/SMTP.
+Estado: **hito 1 completado**. Flujos de identidad comprobados, Android e iOS simulator compilados, acceso administrativo del titular habilitado y cuatro jobs del CI ampliado aprobados.
 
 - Referencias revisadas: prototipo, fuente funcional y documentos del ZIP; acceso al Figma comprobado.
 - Proyecto de desarrollo: `ohqxranynackjignryep`. El usuario confirmó que las nueve identidades previas son de prueba. Se preservaron las tablas antiguas y sus datos.
@@ -33,22 +33,24 @@ Estado: flujos de identidad comprobados, Android e iOS simulator compilados y ac
 - Android: compilación debug correcta tras limitar Gradle a 2 GB y dos trabajadores. APK `apps/mobile/build/app/outputs/flutter-apk/app-debug.apk`, versión 0.1.0, paquete `io.dopmi.dopmi_mobile`, target SDK 36. Se comprobaron en el APK el nombre Dopmi, permiso de red, backups deshabilitados y callback `io.dopmi.app://auth/callback`.
 - Reversión de las pruebas remotas confirmada: cero identidades temporales y cero membresías administrativas dejadas por las pruebas; nueve perfiles previos conservados.
 - Activación administrativa posterior: el titular creó su cuenta y confirmó el correo. Supabase devolvió correo confirmado, perfil activo y membresía ausente. Se habilitó exclusivamente su membresía mediante una consulta de servidor condicionada a esos requisitos; el recibo devolvió `admin_active = true`. Al recargar su sesión del panel, apareció el directorio con diez cuentas y conexión activa. No se cambió su contraseña ni se omitió la confirmación de correo.
-- Entorno de contenedores: Docker Desktop 4.90.0 instalado para el usuario con backend WSL 2; el instalador terminó correctamente y agregó su CLI al PATH del usuario. `docker --version` confirmó el cliente 29.7.2. WSL 2.7.14.0 y kernel 6.18.33.2-2 instalados; los componentes WSL y VirtualMachinePlatform figuran habilitados, pero Windows confirmó un reinicio pendiente. `wsl --status` aún devuelve `WSL_E_WSL_OPTIONAL_COMPONENT_REQUIRED` y `docker version` no encuentra el motor. No se ha comprobado la ejecución de contenedores ni de pgTAP local.
-- Verificación durante la instalación: Supabase CLI 2.117.0 comprobada y las diez pruebas de `tools/verification` aprobadas nuevamente con `npm.cmd test`. El reinicio de Windows queda a cargo del usuario; después se debe abrir Docker Desktop y ejecutar la comprobación local indicada en `docs/development.md`.
+- Instalación inicial de contenedores: Docker Desktop 4.90.0, cliente 29.7.2, WSL 2.7.14.0 y kernel 6.18.33.2-2 instalados. En ese momento Windows tenía un reinicio pendiente y el motor no estaba disponible. Ese bloqueo se resolvió con el reinicio y las comprobaciones descritas abajo.
+- Durante la instalación se comprobaron Supabase CLI 2.117.0 y las diez pruebas de `tools/verification` con `npm.cmd test`.
 
 ## Cierre de validaciones del hito 1
 
 - Después del reinicio: Windows inició el 13 de septiembre de 2026 a las 16:36; no hay reinicio pendiente. `docker version` devuelve cliente y servidor 29.7.2 y WSL tiene la distribución `docker-desktop` en versión 2. Se inició Supabase local con las dos migraciones y los servicios reales Auth, REST y Mailpit.
 - PostgreSQL local: `supabase test db` aprobó las once comprobaciones pgTAP. Ya no existe el bloqueo de Docker.
 - CI existente verificado mediante la API de GitHub: [ejecución 34786807228](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/34786807228), commit `f0ade1a`, terminó con éxito en sus tres jobs. Incluye pruebas/build del prototipo y admin, permisos PostgreSQL, análisis/pruebas Flutter, APK Android e iOS simulator compilado en macOS. La compilación de iOS ya está comprobada.
-- Sesión del titular: después de reiniciar Windows y abrir de nuevo la vista Flutter, se restauró el perfil confirmado sin pedir credenciales. La experiencia se cambió a rescatista desde el formulario, se guardó en Supabase y persistió al recargar. Se restablece la experiencia original donante/adoptante al terminar la prueba.
+- Sesión del titular: después de reiniciar Windows y abrir de nuevo la vista Flutter, se restauró el perfil confirmado sin pedir credenciales. La experiencia se cambió a rescatista desde el formulario, se guardó en Supabase y persistió al recargar. Se restableció y guardó la experiencia original donante/adoptante. El panel también restauró la sesión administrativa y mostró las diez cuentas, incluida la experiencia original restaurada.
 - Integración Flutter/Supabase: dos recorridos aprobados con cuentas locales desechables. Ambos comprueban registro con confirmación obligatoria, perfil editable persistente, cierre/restauración de cliente, denegación administrativa, recuperación, contraseña anterior rechazada y nueva contraseña aceptada. Uno consume el código recibido en Mailpit; el otro consume el enlace PKCE después de reiniciar el cliente. También se restaura una sesión interrumpida durante la recuperación sin permitirle entrar al perfil antes del cambio.
 - Estas pruebas usan las clases de producción del repositorio, controlador y almacenamiento. Los servicios de Auth/PostgreSQL/SMTP son reales; las APIs nativas de preferencias y almacenamiento seguro están simuladas en el ejecutor de Flutter. No se declara una prueba de hardware móvil ni de Keychain/Keystore en dispositivo. La limpieza dejó cero identidades de aceptación y cero perfiles en la base local.
-- `scripts/verify-identity.ps1` prepara el entorno local y ejecuta los permisos y ambos recorridos. El nuevo job `identity-backend` incorpora la misma comprobación al workflow; su ejecución remota está pendiente de confirmar.
+- `scripts/verify-identity.ps1` prepara el entorno local y ejecuta los permisos y ambos recorridos. El comando completo se ejecutó correctamente: once comprobaciones SQL y dos recorridos de identidad aprobados. El análisis final de Flutter no encontró incidencias.
 
-## Verificación final pendiente
+## Resultado final
 
-- Confirmar el CI ampliado después de publicar la nueva prueba y su workflow.
+- [Ejecución 34788208103](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/34788208103), commit `788a236278122c977190e91278f20709b6c7ca01`: resultado global `success`. Los cuatro jobs aprobaron: `web-and-database`, `flutter`, `ios` e `identity-backend`. Esto incluye las diez pruebas Flutter de estado/interfaz, cinco del admin, cuatro del prototipo, diez de PGlite, once comprobaciones pgTAP, dos recorridos completos de identidad, compilaciones web/Android/iOS simulator y formato/análisis de Flutter.
+- Implementación y pruebas subidas a `codex/Dopmi` en `albertoquiroga-ctrl/dopmi-app`. El registro final es un cambio exclusivo de documentación; no modifica el código validado por esa ejecución.
+- No quedan tareas abiertas del hito 1. El alcance de esta aceptación es desarrollo: los puntos de beta/distribución siguientes mantienen su hito original.
 
 ## Condiciones para los hitos posteriores
 
