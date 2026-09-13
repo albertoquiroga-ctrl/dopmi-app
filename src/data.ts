@@ -177,7 +177,7 @@ export const adoptionPets = [
   {
     id: "rocky",
     name: "Rocky",
-    sex: "Macho" as const,
+    sex: "Macho" as PetCase["sex"],
     type: "Perro" as const,
     image: "/assets/rocky.png",
     story: "Rescatado de la calle el mes pasado. Muy amistoso y listo para encontrar hogar.",
@@ -202,7 +202,7 @@ export const adoptionPets = [
   {
     id: "toby",
     name: "Toby",
-    sex: "Macho" as const,
+    sex: "Macho" as PetCase["sex"],
     type: "Perro" as const,
     image: "/assets/toby.png",
     story: "Entregado por su familia. Sano, tranquilo y listo para adopción.",

@@ -1,5 +1,7 @@
 # DopMi Functional Prototype V2
 
+La implementación real del **hito 1** está en `apps/mobile`, `apps/admin` y `supabase`. Consulta [la guía de desarrollo](docs/development.md), [las decisiones vigentes](docs/product-decisions.md) y [el avance verificado](docs/progress.md). El contenido siguiente y `src/` describen el prototipo de referencia; sus simulaciones económicas no son reglas de la app real.
+
 Prototipo navegable para pruebas de UX basado en los frames vigentes de Figma y en `DopMi_Fuente_de_la_Verdad.md`.
 
 ## Reglas de producto (permanentes)

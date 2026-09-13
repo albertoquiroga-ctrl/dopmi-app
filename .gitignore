@@ -6,3 +6,11 @@ coverage/
 .figma-refs/
 playwright-report/
 test-results/
+.env
+.env.*
+!.env.example
+config.local.json
+*.local.json
+supabase/.temp/
+supabase/.branches/
+*.tsbuildinfo

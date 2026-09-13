@@ -1,0 +1,7 @@
+{
+  "SUPABASE_URL": "https://ohqxranynackjignryep.supabase.co",
+  "SUPABASE_PUBLISHABLE_KEY": "",
+  "AUTH_REDIRECT_URL": "io.dopmi.app://auth/callback",
+  "ENABLE_GOOGLE_AUTH": "false",
+  "ENABLE_APPLE_AUTH": "false"
+}

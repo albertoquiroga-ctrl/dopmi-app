@@ -1,0 +1,51 @@
+project_id = "dopmi"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 17
+
+[studio]
+enabled = true
+port = 54323
+
+[local_smtp]
+enabled = true
+port = 54324
+
+[auth]
+enabled = true
+site_url = "http://localhost:5175"
+additional_redirect_urls = ["io.dopmi.app://auth/callback", "http://localhost:5175/auth/callback", "http://127.0.0.1:5175/auth/callback"]
+jwt_expiry = 3600
+enable_signup = true
+minimum_password_length = 10
+password_requirements = "lower_upper_letters_digits"
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = true
+secure_password_change = true
+max_frequency = "1m"
+otp_expiry = 3600
+otp_length = 8
+
+[storage]
+enabled = true
+file_size_limit = "5MiB"
+
+[auth.email.template.confirmation]
+subject = "Confirma tu cuenta de Dopmi"
+content_path = "./supabase/templates/confirmation.html"
+
+[auth.email.template.recovery]
+subject = "Recupera tu acceso a Dopmi"
+content_path = "./supabase/templates/recovery.html"

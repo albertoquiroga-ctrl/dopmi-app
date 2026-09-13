@@ -1,0 +1,12 @@
+{
+  "name": "dopmi-database-verification",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test --test-isolation=none identity.test.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.3.14",
+    "supabase": "^2.117.0"
+  }
+}
