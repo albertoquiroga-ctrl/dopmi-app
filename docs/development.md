@@ -43,6 +43,18 @@ Instala Node 24 y Flutter 3.47.4. Ejecuta `npm ci` por separado en la raíz, `ap
 
 ## Base de datos y correos
 
+En este Windows están instalados y funcionando Docker Desktop 4.90.0 y WSL 2.7.14.0. El reinicio posterior a la instalación ya se realizó. Abre Docker Desktop y espera a que indique que el motor está en ejecución antes de iniciar las pruebas locales.
+
+Para comprobar solamente PostgreSQL y los permisos, ejecuta desde la raíz del repositorio:
+
+```powershell
+docker version
+.\tools\verification\node_modules\.bin\supabase.cmd db start
+.\tools\verification\node_modules\.bin\supabase.cmd test db
+```
+
+`docker version` debe mostrar tanto Client como Server. La primera ejecución de `db start` descarga la imagen de PostgreSQL y aplica las migraciones locales. Esta comprobación no modifica el proyecto remoto.
+
 Para una base local nueva con Docker:
 
 ```powershell
@@ -90,6 +102,16 @@ node tools/verification/remote-smoke.mjs
 
 La primera instrucción verifica SQL, admin y Flutter. La segunda hace cinco comprobaciones de solo lectura contra el remoto configurado: Auth, confirmación y denegación anónima de perfiles, usuarios heredados y RPC. Las pruebas pgTAP requieren PostgreSQL/Supabase local o el entorno de pruebas; las de PGlite no requieren Docker y ejecutan las migraciones reales con roles de PostgreSQL.
 
-`.github/workflows/milestone-1.yml` comprueba el prototipo, panel, permisos, Flutter y compila Android e iOS simulator. Una compilación iOS exige macOS/Xcode. Configurar el workflow no equivale a haberlo ejecutado. Para publicar en tiendas faltan firma de distribución, pruebas de dispositivos y preparación del hito de lanzamiento.
+Para ejecutar el recorrido completo de identidad con servicios reales y cuentas desechables locales:
+
+```powershell
+.\scripts\verify-identity.ps1
+```
+
+El comando inicia Auth, PostgreSQL, REST y Mailpit, ejecuta las once comprobaciones pgTAP y los dos recorridos de `apps/mobile/test_backend/identity_backend_test.dart`. Comprueba registro, rechazo antes de confirmar, código recibido por correo, edición del perfil, sesión restaurada, denegación administrativa, recuperación por código y enlace PKCE, restauración durante recuperación, cambio de contraseña y salida. Las cuentas creadas se eliminan al terminar; los correos quedan en el buzón local para inspección.
+
+La prueba usa el repositorio, controlador y almacenamiento de sesión/PKCE de la app. Auth, base de datos y SMTP son reales; las APIs de preferencias y almacenamiento seguro de la plataforma se sustituyen por sus implementaciones de prueba. No equivale a probar hardware de Keystore/Keychain ni a instalar en un teléfono. Solo acepta URLs de loopback. La clave de servidor usada para limpiar las identidades pertenece exclusivamente al entorno local y permanece en `.tools/supabase.local.json`, ignorado por Git; nunca se incorpora a la app.
+
+`.github/workflows/milestone-1.yml` comprueba el prototipo, panel, permisos, Flutter y el recorrido contra Supabase local; compila Android e iOS simulator. La compilación iOS se ejecuta en macOS/Xcode. El registro de avance enlaza las ejecuciones comprobadas. Para publicar en tiendas faltan firma de distribución, pruebas de dispositivos y preparación del hito de lanzamiento.
 
 El registro de resultados efectivos está en `docs/progress.md`. Sigue `docs/backlog.md` para el siguiente ciclo. Los avisos legales de esta versión son provisionales de desarrollo.

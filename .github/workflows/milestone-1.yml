@@ -45,7 +45,7 @@ jobs:
           cache: true
       - run: flutter pub get
         working-directory: apps/mobile
-      - run: dart format --output=none --set-exit-if-changed lib test
+      - run: dart format --output=none --set-exit-if-changed lib test test_backend
         working-directory: apps/mobile
       - run: flutter analyze && flutter test
         working-directory: apps/mobile
@@ -70,3 +70,34 @@ jobs:
       - name: iOS simulator compilation (device signing is separate)
         run: flutter build ios --simulator --no-codesign --dart-define-from-file=config.example.json
         working-directory: apps/mobile
+  identity-backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: tools/verification/package-lock.json
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.4'
+          channel: stable
+          cache: true
+      - run: npm ci
+        working-directory: tools/verification
+      - name: Start local Auth, PostgreSQL, REST and test mail
+        run: tools/verification/node_modules/.bin/supabase start --exclude realtime,storage-api,imgproxy,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
+      - name: Prepare temporary local test configuration
+        run: tools/verification/node_modules/.bin/supabase status --output json > "$RUNNER_TEMP/supabase-status.json"
+      - run: flutter pub get
+        working-directory: apps/mobile
+      - name: Registration, confirmation, profile, persistence and password recovery
+        env:
+          DOPMI_LOCAL_CONFIG: ${{ runner.temp }}/supabase-status.json
+        run: flutter test test_backend/identity_backend_test.dart --reporter expanded
+        working-directory: apps/mobile
+      - name: Stop disposable services
+        if: always()
+        run: tools/verification/node_modules/.bin/supabase stop --no-backup

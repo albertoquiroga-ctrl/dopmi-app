@@ -6,9 +6,9 @@ Cada tarea se completa con código, prueba de aceptación y evidencia en `progre
 
 - [x] H1.1 Preparar estructura y reglas. Aceptación: prototipo conservado, apps separadas, configuración fuera de Git.
 - [x] H1.2 Identidad en PostgreSQL. Depende de H1.1. Aceptación: perfil creado con cada usuario, datos propios editables, permisos administrativos fuera del cliente y cierre del acceso heredado inseguro.
-- [ ] H1.3 Flutter. Código, análisis, diez pruebas y APK listos. Depende de H1.2. El titular creó y confirmó su cuenta. Aceptación pendiente: persistencia móvil al reiniciar, edición de perfil y recuperación real contra Supabase.
+- [x] H1.3 Flutter. Diez pruebas de estado/interfaz y dos recorridos de integración contra Auth/PostgreSQL/SMTP reales. Registro y confirmación del titular comprobados; su sesión web se restauró tras reiniciar Windows. Edición y lectura del perfil comprobadas en remoto; recuperación por código/enlace y persistencia de sesión/PKCE comprobadas con cuentas desechables locales.
 - [x] H1.4 Admin. Código, cinco pruebas y build listos. Membresía del titular habilitada en servidor después de comprobar correo confirmado y perfil activo. Su sesión abrió el directorio de diez cuentas al recargar el panel.
-- [ ] H1.5 Verificación. Depende de H1.3–4. SQL local/remoto, Android y entrada real al panel comprobados. Faltan recuperación por correo, validaciones móviles restantes, iOS con Xcode y ejecución remota del workflow.
+- [ ] H1.5 Verificación. SQL local/remoto, recuperación con correo local, Android e iOS simulator en macOS comprobados. El CI anterior pasó sus tres jobs; falta confirmar el nuevo job reproducible de integración en el CI ampliado.
 
 ## Después del hito 1
 
