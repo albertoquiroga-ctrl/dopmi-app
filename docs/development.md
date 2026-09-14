@@ -18,7 +18,7 @@ En Publicar se guardan borradores, se adjuntan hasta cinco fotos y se envía a r
 
 Storage usa el bucket privado `dopmi-adoption-photos`, límite de 5 MiB y formatos JPG/PNG/WebP. La app prepara JPEG sin EXIF y con lado máximo de 1600 píxeles. Los enlaces firmados duran 60 segundos: retirar una publicación impide generar enlaces nuevos, pero un enlace ya emitido puede funcionar hasta su vencimiento. No hay direcciones particulares, teléfonos ni documentos en los perfiles públicos.
 
-Mensajes y notificaciones usan Realtime con RLS. Al reconectar o volver a primer plano se consulta la información persistente; un intervalo de respaldo también la actualiza. Las notificaciones de este hito son internas, sin push. Los mensajes incluyen un UUID de envío que se reutiliza ante una respuesta perdida.
+Mensajes y notificaciones usan Realtime con RLS. Al recibir la confirmación de PostgreSQL (`system`, `extension=postgres_changes`, `status=ok`) se vuelve a consultar la información persistente: el join del canal por sí solo no garantiza que ya reciba cambios. También se consulta al volver a primer plano y mediante un intervalo de respaldo. Las notificaciones de este hito son internas, sin push. Los mensajes incluyen un UUID de envío que se reutiliza ante una respuesta perdida.
 
 Pruebas completas de backend local:
 
@@ -146,7 +146,7 @@ psql "$DATABASE_URL" -v admin_email='correo-del-administrador' -f supabase/boots
 
 No pases la URL privada de la base al frontend ni la guardes en Git. También puedes adaptar esa consulta para ejecutarla desde el editor SQL del proyecto.
 
-Para revocar, un operador cambia `private.admin_memberships.active` a `false`. Cada consulta administrativa vuelve a comprobar el permiso y registra `users.list` en `private.admin_access_log`. El panel es de consulta, sin edición ni borrado de personas.
+Para revocar, un operador cambia `private.admin_memberships.active` a `false`. Cada consulta administrativa vuelve a comprobar el permiso; las consultas de personas registran `users.list` en `private.admin_access_log`. La sección de personas es de consulta, sin edición ni borrado; la sección de adopciones registra las decisiones de moderación y su versión.
 
 ## Pruebas y entrega
 
@@ -155,7 +155,7 @@ Para revocar, un operador cambia `private.admin_memberships.active` a `false`. C
 node tools/verification/remote-smoke.mjs
 ```
 
-La primera instrucción verifica SQL, admin y Flutter. La segunda hace cinco comprobaciones de solo lectura contra el remoto configurado: Auth, confirmación y denegación anónima de perfiles, usuarios heredados y RPC. Las pruebas pgTAP requieren PostgreSQL/Supabase local o el entorno de pruebas; las de PGlite no requieren Docker y ejecutan las migraciones reales con roles de PostgreSQL.
+La primera instrucción verifica SQL, admin y Flutter. La segunda comprueba de solo lectura el remoto configurado: Auth, confirmación, catálogo público y denegación anónima de tablas privadas/RPC administrativas. Las pruebas pgTAP requieren PostgreSQL/Supabase local o el entorno de pruebas; las de PGlite no requieren Docker y ejecutan las migraciones reales con roles de PostgreSQL.
 
 Para ejecutar el recorrido completo de identidad con servicios reales y cuentas desechables locales:
 
@@ -163,7 +163,7 @@ Para ejecutar el recorrido completo de identidad con servicios reales y cuentas 
 .\scripts\verify-identity.ps1
 ```
 
-El comando inicia Auth, PostgreSQL, REST y Mailpit, ejecuta las once comprobaciones pgTAP y los dos recorridos de `apps/mobile/test_backend/identity_backend_test.dart`. Comprueba registro, rechazo antes de confirmar, código recibido por correo, edición del perfil, sesión restaurada, denegación administrativa, recuperación por código y enlace PKCE, restauración durante recuperación, cambio de contraseña y salida. Las cuentas creadas se eliminan al terminar; los correos quedan en el buzón local para inspección.
+El comando de identidad inicia Auth, PostgreSQL, REST y Mailpit, ejecuta las comprobaciones pgTAP disponibles y los dos recorridos de `apps/mobile/test_backend/identity_backend_test.dart`. Comprueba registro, rechazo antes de confirmar, código recibido por correo, edición del perfil, sesión restaurada, denegación administrativa, recuperación por código y enlace PKCE, restauración durante recuperación, cambio de contraseña y salida. Las cuentas creadas se eliminan al terminar; los correos quedan en el buzón local para inspección. Para la aceptación completa del hito 2 usa `verify-backend.ps1`, que incluye Storage, Realtime y adopción.
 
 La prueba usa el repositorio, controlador y almacenamiento de sesión/PKCE de la app. Auth, base de datos y SMTP son reales; las APIs de preferencias y almacenamiento seguro de la plataforma se sustituyen por sus implementaciones de prueba. No equivale a probar hardware de Keystore/Keychain ni a instalar en un teléfono. Solo acepta URLs de loopback. La clave de servidor usada para limpiar las identidades pertenece exclusivamente al entorno local y permanece en `.tools/supabase.local.json`, ignorado por Git; nunca se incorpora a la app.
 

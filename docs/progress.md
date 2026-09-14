@@ -1,6 +1,6 @@
 # Dopmi — registro de avance
 
-## Hito 2 — en curso
+## Hito 2 — completado
 
 - Inicio autorizado: adopción, revisión administrativa, catálogo, guardados, perfiles públicos, mensajes y notificaciones internas.
 - Se conserva la base de identidad y el trabajo posterior de emulación. Una sola secuencia de implementación está activa.
@@ -10,8 +10,11 @@
 - `verify-backend.ps1` aprobó las 69 comprobaciones SQL y los tres recorridos contra servicios reales: dos de identidad y uno de adopción, Storage, moderación, filtros, favoritos, perfil público, conversación, idempotencia concurrente, privacidad y cierre. Cuentas desechables eliminadas al terminar.
 - Remoto: migraciones 003–005 aplicadas juntas desde SQL Editor en `ohqxranynackjignryep`. Las 58 comprobaciones nuevas de permisos aprobaron en una transacción revertida; diagnóstico vacío. Recibo final: cero usuarios/publicaciones temporales, diez perfiles conservados, cuatro tablas en Realtime y bucket privado. API anónima: catálogo público permitido y datos privados denegados.
 - Primer CI de H2 (`f0457d0`, ejecución 34791108970): web, Android e iOS simulator aprobaron. La integración detectó una carrera de arranque: el join de Realtime se confirma antes de que PostgreSQL pueda emitir cambios. Se reprodujo en una base desechable nueva; aumentar la espera no la resolvía. La app ahora vuelve a leer al recibir `system: postgres_changes/ok`, también al reconectar. El recorrido completo pasó desde otra base nueva, sin precalentar Realtime. Referencia: https://supabase.com/docs/guides/realtime/protocol.
-- Revisión visual local: cuenta responsable creó borrador, subió foto, envió a revisión y conservó los datos tras correcciones. El panel mostró foto, versión e historial; aprobó la versión corregida. Otra cuenta vio la publicación en el catálogo y la guardó. La conversación visual y el CI del ajuste final están en curso.
-- APK local 0.2.0+2 compilado; se reconstruirá con el ajuste de Realtime. Pendiente de cierre: conversación visual, CI final y registro del commit entregado. No se declara el hito completado todavía.
+- Revisión visual local: cuenta responsable creó borrador, subió foto, envió a revisión y conservó los datos tras correcciones. El panel mostró foto, versión e historial; aprobó la versión corregida. Otra cuenta vio la publicación en el catálogo, la guardó y abrió una conversación. El mensaje enviado apareció en pantalla; al volver a la cuenta responsable, su notificación abrió el mismo mensaje recibido. Recibo de limpieza: cero cuentas de aceptación visual, publicaciones, mensajes y fotos. Los servicios locales se cerraron conservando los volúmenes del proyecto principal.
+- Remoto: el panel restauró la sesión administrativa existente, mostró diez cuentas y abrió Adopciones con conexión activa y cola vacía. La vista Flutter ofrece el catálogo real conectado a Supabase; no se dejaron publicaciones de demostración en remoto.
+- APK local 0.2.0+2 reconstruido correctamente el 13 de septiembre a las 18:19 con la corrección final, en `apps/mobile/build/app/outputs/flutter-apk/app-debug.apk`. Es un build debug conectado al proyecto de desarrollo, no una distribución de tiendas.
+- [CI final 34792258918](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/34792258918), commit `7039f3517e9407eeb02ce57554c825217c6014a8`: los cuatro jobs terminaron con `success` (`web-and-database`, `flutter`, `ios`, `identity-and-adoption-backend`). Incluye Android, iOS simulator en macOS y los tres recorridos de backend reales. Código subido a `codex/Dopmi` en `albertoquiroga-ctrl/dopmi-app`; el cierre posterior modifica solo documentación.
+- Hito 2 cerrado dentro del alcance de desarrollo. La revisión visual se realizó en Flutter web y React; la compilación nativa Android/iOS está comprobada. Galería tras interrupción del proceso, permisos/enlaces y almacenamiento seguro en dispositivos físicos se validarán en la beta del hito 6. Las notificaciones son internas; push permanece fuera de este hito. El siguiente alcance propuesto es H3: verificación de rescatistas y gastos con evidencias y revisión, sin iniciar todavía pagos.
 
 ## Hito 1
 
