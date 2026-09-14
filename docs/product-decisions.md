@@ -40,3 +40,14 @@ El prototipo React y la fuente funcional del ZIP son referencias de producto. Su
 - Una persona puede contactar al responsable de una publicación disponible. Solo ambos participantes leen su conversación. Los mensajes de texto usan identificadores para evitar duplicados al reintentar; se puede cerrar la conversación.
 - Las notificaciones son internas y se generan desde el servidor por cambios de revisión y nuevos mensajes. La actualización en vivo no sustituye la lectura persistente al volver a entrar.
 - No se implementan cobros, verificación documental ni notificaciones push como parte de este hito.
+
+## Hito 3 — rescatistas y gastos
+
+- Inicio autorizado el 13 de septiembre de 2026. Una misma cuenta conserva adopciones y puede preparar su verificación y casos.
+- Verificación: nombre legal, teléfono, ubicación, experiencia, enlace social para revisión manual, identificación oficial y comprobante de domicilio privados. El nombre público y presentación se revisan por separado. No se simula vinculación OAuth con redes sociales; los datos bancarios corresponden a Connect en H4.
+- Casos: animal, historia, ubicación general, necesidad y fotos para publicación. Solo una identidad aprobada puede enviar casos y gastos a revisión; preparar borradores no requiere aprobación previa.
+- Cada solicitud documenta un gasto ya pagado: fecha, proveedor, referencia del comprobante, importe en centavos, descripción, comprobantes y evidencia. Una ronda de comida tiene su propia solicitud y comprobantes; no se reutiliza la aprobación anterior.
+- El administrador comprueba identidad, caso, comprobantes y contenido público; decide el monto reembolsable (nunca mayor al gasto) y la urgencia con motivo. El orden de aprobación se guarda en el servidor. No se aceptan aportaciones en H3.
+- Las correcciones conservan datos y archivos. En revisión se puede retirar a borrador; una aprobación bloquea la edición del autor. El administrador puede solicitar nuevas correcciones y retirar la aprobación, dejando historial. Cerrar un caso bloquea nuevos gastos; primero deben resolverse sus solicitudes en revisión.
+- El seguimiento público expone exclusivamente una copia aprobada de textos/fotos marcados para publicar. Identificación, domicilio, teléfono, comprobantes y observaciones internas nunca forman parte de esa copia. La suspensión de la cuenta o pérdida de verificación oculta sus casos.
+- Los documentos admiten JPG/PNG/WebP y PDF de hasta 5 MB. Las fotos públicas se normalizan y eliminan metadatos. Los archivos aprobados no pueden sobrescribirse. El panel registra consultas y decisiones; las notificaciones son internas.

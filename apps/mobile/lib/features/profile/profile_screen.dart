@@ -271,7 +271,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
                 const SizedBox(height: 12),
                 const Text(
-                  'Elegir rescatista no equivale a obtener una verificación. Ese proceso estará disponible en otra etapa.',
+                  'Elegir rescatista no equivale a obtener una verificación. Envía tus documentos al equipo desde tu espacio de rescates.',
+                ),
+                TextButton.icon(
+                  onPressed: suspended || !accepted
+                      ? null
+                      : () => context.push('/rescuer'),
+                  icon: const Icon(Icons.verified_user_outlined),
+                  label: const Text('Verificación, casos y gastos'),
                 ),
                 if (error != null) Notice(error!, isError: true),
                 if (message != null) Notice(message!),

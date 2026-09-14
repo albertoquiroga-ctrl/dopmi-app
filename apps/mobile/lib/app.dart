@@ -12,6 +12,7 @@ import 'features/profile/profile_screen.dart';
 import 'features/adoption/catalog_screens.dart';
 import 'features/adoption/publication_screens.dart';
 import 'features/communication/message_screens.dart';
+import 'features/rescue/rescue_screens.dart';
 
 final routerInitialLocationProvider = Provider<String>((ref) => '/welcome');
 
@@ -38,6 +39,52 @@ final routerProvider = Provider<GoRouter>((ref) {
       return target;
     },
     routes: [
+      GoRoute(
+        path: '/rescuer',
+        builder: (_, state) => RescueHomeScreen(
+          key: ValueKey('${identity.identity?.id}:${state.uri}'),
+        ),
+      ),
+      GoRoute(
+        path: '/rescue/:id',
+        builder: (_, state) => RescueEditorScreen(
+          state.pathParameters['id']!,
+          kind:
+              [
+                'verification',
+                'case',
+                'expense',
+              ].contains(state.uri.queryParameters['kind'])
+              ? state.uri.queryParameters['kind']!
+              : 'case',
+          parent: state.uri.queryParameters['case'],
+          key: ValueKey('${identity.identity?.id}:${state.uri}'),
+        ),
+      ),
+      GoRoute(
+        path: '/rescue-file',
+        builder: (_, state) => state.extra is String
+            ? RescueFileScreen(
+                state.extra! as String,
+                key: ValueKey('${identity.identity?.id}:${state.extra}'),
+              )
+            : const PageFrame(
+                children: [Notice('Abre el archivo desde su solicitud.')],
+              ),
+      ),
+      GoRoute(
+        path: '/rescue-cases',
+        builder: (_, state) => RescueCatalogScreen(
+          key: ValueKey('${identity.identity?.id}:${state.uri}'),
+        ),
+      ),
+      GoRoute(
+        path: '/rescue-cases/:id',
+        builder: (_, state) => RescueCatalogScreen(
+          caseId: state.pathParameters['id'],
+          key: ValueKey('${identity.identity?.id}:${state.uri}'),
+        ),
+      ),
       GoRoute(
         path: '/adoptions',
         builder: (_, state) => CatalogScreen(

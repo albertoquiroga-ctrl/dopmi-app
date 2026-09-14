@@ -413,7 +413,9 @@ class _NotificationsState extends ConsumerState<NotificationsScreen> {
                                 .readNotification(item['id'] as String);
                             if (!context.mounted) return;
                             await context.push(
-                              item['thread_id'] == null
+                              item['rescue_id'] != null
+                                  ? '/rescue/${item['rescue_id']}'
+                                  : item['thread_id'] == null
                                   ? '/my-adoptions/${item['post_id']}'
                                   : '/messages/${item['thread_id']}',
                             );

@@ -1,5 +1,32 @@
 # Dopmi — registro de avance
 
+## Hito 3 — completado
+
+- Inicio autorizado y una sola secuencia de trabajo por ciclo, sin saltar H4.
+- MCP Supabase conectado a `ohqxranynackjignryep` con estado `ACTIVE_HEALTHY`; acceso a tablas H1/H2 validado y Figma activo para contraste UX.
+- Migración aplicada en remoto: `202609130006_rescue.sql` (borradores y expedientes, historial privado, publicación aprobada separada, reglas de Storage y funciones de revisión).
+- Verificaciones locales de base:
+  - `npm test` en `tools/verification` → **10 pruebas de identidad** (pasó).
+  - `supabase test db` con `DOPMI_LOCAL_CONFIG` → **3 archivos, 120 pruebas** (pasó), incluyendo `supabase/tests/rescue.test.sql`.
+- Verificaciones locales de mobile:
+  - `flutter pub get`
+  - `flutter analyze` sin incidencias.
+  - `flutter test` → **16 pruebas** (pasó).
+  - `flutter test test/rescue_test.dart` → **2 pruebas** (pasó).
+  - `flutter test test_backend/rescue_backend_test.dart` → **1 prueba** (pasó).
+- Verificaciones locales de panel admin:
+  - `npm test` → **14 pruebas** (pasó).
+  - `npm run build` (salida en `apps/admin/dist`) (pasó).
+- Cierre funcional entregado en este hito:
+  - `apps/mobile/lib/features/rescue/*` para registro, correcciones y revisión de estado desde móvil.
+  - `apps/admin/src/Rescues.tsx` y `apps/admin/src/Rescues.test.tsx` para revisión de expedientes con evidencia privada y motivos de decisión.
+  - `supabase/tests/rescue.test.sql` cubre acceso privado, versionado, rechazo de cambios inválidos, aprobación con monto/urgencia y publicación pública solo aprobada.
+
+## Conexiones previas al hito 3 — 13 de septiembre de 2026
+
+- Proyecto de desarrollo fijado a `ohqxranynackjignryep` y scopes de acceso confirmados en sesión.
+- MCP Supabase y Figma activos. No se detectan restricciones nuevas de acceso.
+
 ## Hito 2 — completado
 
 - Inicio autorizado: adopción, revisión administrativa, catálogo, guardados, perfiles públicos, mensajes y notificaciones internas.
@@ -84,3 +111,7 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
 - `flutter analyze`: sin incidencias. `flutter test`: diez pruebas aprobadas en esta sesión.
 - Se añadió `scripts/emulate-android.ps1` para abrir el dispositivo e instalar el APK; `-Rebuild` recompila cuando cambian código/configuración. El comando y las instrucciones para iOS están en `docs/development.md`. La sintaxis PowerShell se comprobó; el arranque/instalación se ejecutó con ese script y las comprobaciones posteriores usaron ADB.
 - iOS interactivo queda pendiente por plataforma: esta sesión dispone de Windows, sin una Mac/Xcode conectada. El simulador oficial requiere macOS. Se conserva la evidencia previa de compilación iOS en CI; no se declara una ejecución interactiva de iOS nueva.
+
+
+
+

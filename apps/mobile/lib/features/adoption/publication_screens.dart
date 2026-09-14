@@ -37,6 +37,12 @@ class _MyAdoptionsState extends ConsumerState<MyAdoptionsScreen> {
         },
       ),
       const SizedBox(height: 24),
+      OutlinedButton.icon(
+        onPressed: () => context.push('/rescuer'),
+        icon: const Icon(Icons.volunteer_activism_outlined),
+        label: const Text('Mis rescates y gastos'),
+      ),
+      const SizedBox(height: 16),
       LiveSection<DataPage<Adoption>>(
         key: ValueKey('$page:$revision'),
         tables: const ['dopmi_adoptions'],
