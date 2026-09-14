@@ -73,8 +73,9 @@ abstract class CommunityRepository {
 }
 
 class SupabaseCommunityRepository implements CommunityRepository {
-  SupabaseCommunityRepository(this.client);
+  SupabaseCommunityRepository(this.client, {this.observeRealtime});
   final SupabaseClient client;
+  final void Function(RealtimeSubscribeStatus, Object?)? observeRealtime;
   @override
   String? get userId => client.auth.currentUser?.id;
   Future<dynamic> rpc(String name, [Json params = const {}]) =>
@@ -228,20 +229,37 @@ class SupabaseCommunityRepository implements CommunityRepository {
       await rpc('dopmi_read_notification', {'notification_id': id});
   @override
   VoidCallback watch(List<String> tables, VoidCallback refresh) {
-    if (userId == null || tables.isEmpty) return () {};
+    final actor = userId;
+    if (actor == null || tables.isEmpty) return () {};
+    var disposed = false;
+    void refreshCurrentAccount() {
+      if (!disposed && userId == actor) refresh();
+    }
+
     final channel = client.channel('dopmi-${const Uuid().v4()}');
     for (final table in tables) {
       channel.onPostgresChanges(
         event: PostgresChangeEvent.all,
         schema: 'public',
         table: table,
-        callback: (_) => refresh(),
+        callback: (_) => refreshCurrentAccount(),
       );
     }
+    // The Phoenix join precedes PostgreSQL replication readiness. Re-read
+    // after the database subscription is live, including each reconnect, to
+    // recover changes made during the gap without waiting for the poll timer.
+    channel.onSystemEvents((payload) {
+      if (payload is Map &&
+          payload['extension'] == 'postgres_changes' &&
+          payload['status'] == 'ok') {
+        refreshCurrentAccount();
+      }
+    });
     channel.subscribe((status, error) {
-      if (status == RealtimeSubscribeStatus.subscribed) refresh();
+      observeRealtime?.call(status, error);
     });
     return () {
+      disposed = true;
       unawaited(client.removeChannel(channel));
     };
   }

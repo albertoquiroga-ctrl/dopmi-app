@@ -16,6 +16,8 @@ void main() {
     throw StateError('Set DOPMI_LOCAL_CONFIG to local CLI status JSON.');
   }
   final config = jsonDecode(File(configPath).readAsStringSync()) as Map;
+  final databaseContainer =
+      Platform.environment['DOPMI_LOCAL_DB_CONTAINER'] ?? 'supabase_db_dopmi';
   final uri = Uri.parse(config['API_URL'] as String);
   if (uri.scheme != 'http' || !['127.0.0.1', 'localhost'].contains(uri.host)) {
     throw StateError('Only loopback backend tests are allowed.');
@@ -57,11 +59,16 @@ void main() {
     return value;
   }
 
-  Future<void> eventually(Future<bool> Function() ready) async {
+  Future<void> eventually(
+    Future<bool> Function() ready, {
+    String Function()? diagnostics,
+  }) async {
     final end = DateTime.now().add(const Duration(seconds: 60));
     while (!await ready()) {
       if (DateTime.now().isAfter(end)) {
-        fail('Expected persisted/realtime state did not arrive.');
+        fail(
+          'Expected persisted/realtime state did not arrive. ${diagnostics?.call() ?? ''}',
+        );
       }
       await Future<void>.delayed(const Duration(milliseconds: 150));
     }
@@ -89,7 +96,7 @@ void main() {
     expect(RegExp(r'^[0-9a-f-]{36}$').hasMatch(staffId), true);
     final grant = await Process.run('docker', [
       'exec',
-      'supabase_db_dopmi',
+      databaseContainer,
       'psql',
       '-U',
       'postgres',
@@ -105,7 +112,15 @@ void main() {
       0,
       reason: 'Local operator grants the disposable moderator membership.',
     );
-    final author = SupabaseCommunityRepository(owner),
+    final realtimeEvents = <String>[];
+    final author = SupabaseCommunityRepository(
+          owner,
+          observeRealtime: (status, error) {
+            realtimeEvents.add(
+              '$status: $error'.replaceAll(RegExp(r'eyJ\S+'), '[redacted]'),
+            );
+          },
+        ),
         reader = SupabaseCommunityRepository(adopter),
         stranger = SupabaseCommunityRepository(outsider),
         anonymous = SupabaseCommunityRepository(client());
@@ -260,7 +275,10 @@ void main() {
       updates++;
     });
     addTearDown(cancel);
-    await eventually(() async => updates > 0);
+    await eventually(
+      () async => updates > 0,
+      diagnostics: () => 'Subscription: $realtimeEvents',
+    );
     final initialUpdates = updates, messageId = const Uuid().v4();
     final attempts = await Future.wait([
       reader.sendMessage(
@@ -275,7 +293,10 @@ void main() {
       ),
     ]);
     expect(attempts[0]['id'], attempts[1]['id']);
-    await eventually(() async => updates > initialUpdates);
+    await eventually(
+      () async => updates > initialUpdates,
+      diagnostics: () => 'Notification after subscription: $realtimeEvents',
+    );
     expect((await author.messages(thread)).length, 1);
     expect(
       (await author.notifications(1)).items
