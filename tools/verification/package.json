@@ -3,10 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test --test-isolation=none identity.test.mjs"
+    "test": "node --test --test-concurrency=1 identity.test.mjs payments.test.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.3.14",
+    "deno": "2.9.6",
     "supabase": "^2.117.0"
   }
 }

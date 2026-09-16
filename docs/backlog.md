@@ -26,10 +26,17 @@ Cada tarea se completa con código, prueba de aceptación y evidencia en `progre
 - [x] H3.4 Seguimiento y cierre. El backend cierra casos solo cuando no hay gastos pendientes, bloquea nuevos gastos contra expedientes cerrados, publica solo snapshots aprobados y mantiene notificaciones por cambios de estado.
 - [x] H3.5 Verificación y entrega. Se ejecutaron análisis/tests locales de Flutter, pruebas admin y suites SQL de hito (`identity`, `adoption`, `rescue`) en base local; migración y pruebas listas para mover a CI de hito siguiente.
 
-## Después del hito 3
+## Hito 4 — aportaciones y Connect (en curso)
 
-4. Aportaciones y Stripe Connect, conciliación y transferencias.
-5. Guardián sin reserva, distribución por prioridad y facturación condicionada.
-6. Beta, dispositivos, contenidos definitivos y preparación de tiendas.
+- [x] H4.1 Contribuciones en base de datos: tablas, índices y política/registro de funciones para guardar aportaciones y asignaciones determinísticas.
+- [x] H4.2 Consola administrativa: vista de aportaciones, filtro por estado, recarga y manejo de errores.
+- [x] H4.3 Pruebas locales: test de unidad/admin y suite SQL inicial para idempotencia/allocación/publicación.
+- [ ] H4.4 Ejecución completa de `supabase test db` con stack local activo para validar la suite `supabase/tests/contributions.test.sql`.
+- [ ] H4.5 Integrar webhooks/Jobs de Stripe Connect y transferencias reales bajo idempotencia.
+- [ ] H4.6 Cerrar documentación de entrega del hito y propuesta de siguiente alcance (Guardián).
 
-No abrir el siguiente hito como efecto secundario de corregir el actual.
+## Después del hito 4
+
+- 4. Aportaciones y Stripe Connect, conciliación y transferencias.
+- 5. Guardián sin reserva, distribución por prioridad y facturación condicionada.
+- 6. Beta, dispositivos, contenidos definitivos y preparación de tiendas.

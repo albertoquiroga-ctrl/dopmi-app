@@ -13,6 +13,8 @@ import 'features/adoption/catalog_screens.dart';
 import 'features/adoption/publication_screens.dart';
 import 'features/communication/message_screens.dart';
 import 'features/rescue/rescue_screens.dart';
+import 'features/payments/payment_screens.dart';
+import 'features/adoption/community_repository.dart' show Json;
 
 final routerInitialLocationProvider = Provider<String>((ref) => '/welcome');
 
@@ -39,6 +41,23 @@ final routerProvider = Provider<GoRouter>((ref) {
       return target;
     },
     routes: [
+      GoRoute(
+        path: '/payments',
+        builder: (_, _) =>
+            PaymentHistoryScreen(key: ValueKey(identity.identity?.id)),
+      ),
+      GoRoute(
+        path: '/connect',
+        builder: (_, _) => ConnectScreen(key: ValueKey(identity.identity?.id)),
+      ),
+      GoRoute(
+        path: '/contribute/:id',
+        builder: (_, state) => ContributeScreen(
+          state.pathParameters['id']!,
+          attempt: state.extra is Json ? state.extra! as Json : null,
+          key: ValueKey('${identity.identity?.id}:${state.uri}'),
+        ),
+      ),
       GoRoute(
         path: '/rescuer',
         builder: (_, state) => RescueHomeScreen(

@@ -49,3 +49,13 @@ content_path = "./supabase/templates/confirmation.html"
 [auth.email.template.recovery]
 subject = "Recupera tu acceso a Dopmi"
 content_path = "./supabase/templates/recovery.html"
+
+# Each endpoint verifies its own Auth token, Stripe signature or worker secret.
+[functions.payments]
+verify_jwt = false
+[functions.stripe-webhook]
+verify_jwt = false
+[functions.payment-worker]
+verify_jwt = false
+[functions.payment-return]
+verify_jwt = false

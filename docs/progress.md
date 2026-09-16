@@ -1,5 +1,24 @@
 # Dopmi — registro de avance
 
+## Hito 4 — en curso
+
+- Inicio de hito autorizado: Aportaciones base, consultas administrativas y lógica de asignación por cola.
+- Implementación completada en este ciclo:
+  - `apps/admin/src/api.ts`: se añadió tipo `Contribution` y API `listContributions`.
+  - `apps/admin/src/App.tsx`: nueva sección “Aportes” en navegación administrativa.
+  - `apps/admin/src/Contributions.tsx`: lista de aportaciones con filtro, estado, paginación y resumen económico con formato en MXN.
+  - `apps/admin/src/Contributions.test.tsx`: pruebas de listado, recarga y error.
+  - `apps/admin/src/App.test.tsx`: navegación a “Aportes” y llamada al RPC con `status='all'`.
+  - `supabase/migrations/202609130007_donations.sql`: base de datos de aportaciones (`dopmi_donations`, `dopmi_donation_allocations`, funciones `dopmi_record_donation`, `dopmi_admin_donations`, `dopmi_apply_donation`, `dopmi_donation_status_summary`).
+  - `supabase/tests/contributions.test.sql`: suite pgTAP para idempotencia, reintentos, estados e integración de asignación.
+- Verificaciones del ciclo:
+  - `cd apps/admin; npm test` → **18 pruebas, 4 archivos, OK**.
+  - `cd apps/admin; npm run build` → build de producción **OK**.
+  - `supabase test db` con `contributions.test.sql`: **bloqueado por falta de conexión local a PostgreSQL** (`ECONNREFUSED 127.0.0.1:54322`).
+  - `docker version`: cliente OK, **daemon no disponible** (`dockerDesktopLinuxEngine` no encontrado).
+- Pendiente de cierre del hito:
+  - Ejecutar `supabase test db` al tener Docker/local stack activo.
+
 ## Hito 3 — completado
 
 - Inicio autorizado y una sola secuencia de trabajo por ciclo, sin saltar H4.

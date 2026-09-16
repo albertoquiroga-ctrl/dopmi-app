@@ -280,6 +280,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   icon: const Icon(Icons.verified_user_outlined),
                   label: const Text('Verificación, casos y gastos'),
                 ),
+                TextButton.icon(
+                  onPressed: suspended || !accepted
+                      ? null
+                      : () => context.push('/payments'),
+                  icon: const Icon(Icons.receipt_long_outlined),
+                  label: const Text('Mis aportaciones y cobros'),
+                ),
                 if (error != null) Notice(error!, isError: true),
                 if (message != null) Notice(message!),
                 const SizedBox(height: 24),

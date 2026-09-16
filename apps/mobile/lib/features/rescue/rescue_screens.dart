@@ -712,7 +712,7 @@ class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
         eyebrow: 'RESCATES',
       ),
       const Notice(
-        'Las aportaciones se habilitarán en una siguiente etapa. No se ha cobrado dinero desde estas solicitudes.',
+        'Las aportaciones de prueba se dirigen a gastos aprobados. El progreso del reembolso refleja el neto destinado al rescatista.',
       ),
       LiveSection<DataPage<RescueRecord>>(
         key: ValueKey('${widget.caseId}:$page'),
@@ -769,6 +769,11 @@ class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
                           onPressed: () =>
                               context.push('/rescue-cases/${r.id}'),
                           child: const Text('Ver seguimiento'),
+                        ),
+                      if (r.kind == 'expense' && r.status == 'approved')
+                        TextButton(
+                          onPressed: () => context.push('/contribute/${r.id}'),
+                          child: const Text('Aportar a este gasto'),
                         ),
                     ],
                   ),

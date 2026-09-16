@@ -110,6 +110,9 @@ class IdentityController extends ChangeNotifier {
         '/rescue',
         '/rescue-file',
         '/rescue-cases',
+        '/contribute',
+        '/payments',
+        '/connect',
       ];
       final allowed =
           accountRoutes.any(
@@ -121,6 +124,9 @@ class IdentityController extends ChangeNotifier {
       return allowed ? null : '/adoptions';
     }
     if (path == '/profile' ||
+        path == '/payments' ||
+        path == '/connect' ||
+        path.startsWith('/contribute/') ||
         path == '/rescuer' ||
         path == '/rescue-file' ||
         path.startsWith('/rescue/') ||
