@@ -41,23 +41,33 @@ void main() {
   Future<void> tap(WidgetTester tester, String label) async {
     FocusManager.instance.primaryFocus?.unfocus();
     await tester.pumpAndSettle();
-    final filled = find.widgetWithText(FilledButton, label);
-    final outlined = find.widgetWithText(OutlinedButton, label);
-    final textButton = find.widgetWithText(TextButton, label);
-    final target = filled.evaluate().isNotEmpty
-        ? filled
-        : outlined.evaluate().isNotEmpty
-        ? outlined
-        : textButton.evaluate().isNotEmpty
-        ? textButton
-        : find.text(label);
-    await tester.scrollUntilVisible(
-      target.last,
-      250,
-      scrollable: find.byType(Scrollable).first,
-    );
+
+    Finder target() {
+      final filled = find.widgetWithText(FilledButton, label);
+      final outlined = find.widgetWithText(OutlinedButton, label);
+      final textButton = find.widgetWithText(TextButton, label);
+      if (filled.evaluate().isNotEmpty) return filled;
+      if (outlined.evaluate().isNotEmpty) return outlined;
+      if (textButton.evaluate().isNotEmpty) return textButton;
+      return find.text(label);
+    }
+
+    for (
+      var attempt = 0;
+      attempt < 12 && target().evaluate().isEmpty;
+      attempt++
+    ) {
+      await tester.drag(
+        find.byType(Scrollable).first,
+        const Offset(0, -250),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    expect(target(), findsWidgets, reason: 'Could not find "$label"');
+    await tester.ensureVisible(target().last);
     await tester.pumpAndSettle();
-    await tester.tap(target.last);
+    await tester.tap(target().last);
     await tester.pumpAndSettle();
   }
 
