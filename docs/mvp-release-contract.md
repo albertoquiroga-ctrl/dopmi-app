@@ -99,7 +99,10 @@ La revisión de aceptación usará el recorrido y los estados, no solamente la e
 - [ ] Confirmar bundle ID de la app existente en App Store Connect.
 - [ ] Añadir `codemagic.yaml` sin secretos.
 - [ ] Configurar versionado reproducible y artefactos de prueba.
+- [x] Confirmar que Google Play App Signing protege la app de producción.
+- [ ] Recuperar el upload keystore de FlutterFlow o restablecerlo con una llave nueva.
 - [ ] Documentar recuperación de credenciales y responsables.
+- [ ] Publicar la política de privacidad en `dopmi.org` y registrar su URL en Play Console.
 - [ ] Crear checklist de Data Safety y privacidad.
 
 ### R1 — Paridad de identidad y navegación
@@ -157,7 +160,7 @@ Una casilla solo puede cerrarse cuando existe evidencia de:
 
 Nunca se enviarán secretos por chat ni se guardarán en Git.
 
-- **Android:** primero identificar la app y buscar el upload keystore. Si se perdió la upload key y Play App Signing está activo, se solicita reset de la upload key. La app signing key administrada por Google no debe descargarse ni sustituirse.
+- **Android:** Play App Signing está activo para `com.mycompany.dopmi`; Google conserva la app signing key. FlutterFlow generó y usó el upload keystore anterior. Primero se intentará descargarlo desde Settings & Integrations > App Settings > Mobile Deployment usando el botón naranja de llave. Si no está disponible, se generará una upload key nueva y se solicitará el reset en Play Console. La app signing key administrada por Google no debe descargarse ni sustituirse.
 - **Google Play API:** se puede crear una nueva cuenta de servicio y revocar la anterior.
 - **Apple:** se puede crear una nueva App Store Connect API key. Certificados y perfiles de distribución pueden regenerarse.
 - **Stripe:** se crean o rotan claves restringidas y secretos de webhook.
@@ -169,7 +172,7 @@ Nunca se enviarán secretos por chat ni se guardarán en Git.
 
 Android quedó identificado como `com.mycompany.dopmi` y el código se alineó para actualizar la ficha de producción existente. Antes de una entrega firmada todavía se debe confirmar:
 
-- estado de Play App Signing y certificado de carga;
+- recuperación o restablecimiento del upload keystore (Play App Signing ya está confirmado);
 - bundle ID de la app existente en App Store Connect.
 
 Hasta entonces el pipeline puede validar y compilar en modo no firmado, pero no debe publicar.
