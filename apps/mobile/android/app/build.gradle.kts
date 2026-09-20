@@ -19,19 +19,31 @@ android {
         applicationId = "com.mycompany.dopmi"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        // Uses the version code from pubspec.yaml. When using split APKs, 1000 * ABI_VERSION
-        // is added automatically by Flutter. (https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions)
-        // You can force using the value of versionCode by specifying the `-P force-version-code-ignoring-abi=true`
-        // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
+    val codemagicKeystorePath = System.getenv("CM_KEYSTORE_PATH")
+    if (!codemagicKeystorePath.isNullOrBlank()) {
+        signingConfigs {
+            create("release") {
+                storeFile = file(codemagicKeystorePath)
+                storePassword = System.getenv("CM_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("CM_KEY_ALIAS")
+                keyPassword = System.getenv("CM_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // Distribution signing is added after confirming the existing Play upload certificate.
-            // Debug signing remains temporary and must never be uploaded to Google Play.
-            signingConfig = signingConfigs.getByName("debug")
+            // Codemagic injects the upload keystore only inside its disposable build machine.
+            // Local release builds remain debug-signed and must never be uploaded to Google Play.
+            signingConfig = if (!codemagicKeystorePath.isNullOrBlank()) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 }
