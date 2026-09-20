@@ -97,11 +97,15 @@ La revisión de aceptación usará el recorrido y los estados, no solamente la e
 - [ ] Mantener CI verde en web, admin, base, Android e iOS simulator.
 - [x] Confirmar Android package name: `com.mycompany.dopmi`.
 - [ ] Confirmar bundle ID de la app existente en App Store Connect.
-- [ ] Añadir `codemagic.yaml` sin secretos.
-- [ ] Configurar versionado reproducible y artefactos de prueba.
+- [x] Añadir `codemagic.yaml` sin secretos.
+- [x] Configurar versionado reproducible de Android desde `2.3.0+227`.
 - [x] Confirmar que Google Play App Signing protege la app de producción.
-- [x] Recuperar el upload keystore generado por FlutterFlow.
-- [ ] Restablecer el certificado de carga en Play Console: el keystore recuperado es válido, pero su SHA-1 (`BF:EF:BD:7A:06:B7:99:F8:0A:36:81:64:45:94:3E:D3:38:D5:1E:E7`) no coincide con el certificado actualmente registrado.
+- [x] Recuperar el upload keystore generado por FlutterFlow y comprobar que corresponde a un certificado anterior.
+- [x] Generar un upload keystore nuevo y solicitar el reset en Play Console.
+- [ ] Activación del nuevo upload certificate: programada por Google Play para el 22 de septiembre de 2026 a las 22:39 UTC.
+- [ ] Cargar el nuevo keystore en Codemagic con referencia `dopmi_upload_2026`.
+- [ ] Configurar las credenciales de Google Play y Supabase como secretos de Codemagic.
+- [ ] Ejecutar y verificar el primer despliegue a Internal Testing.
 - [ ] Documentar recuperación de credenciales y responsables.
 - [ ] Publicar la política de privacidad en `dopmi.org` y registrar su URL en Play Console.
 - [ ] Crear checklist de Data Safety y privacidad.
@@ -161,19 +165,19 @@ Una casilla solo puede cerrarse cuando existe evidencia de:
 
 Nunca se enviarán secretos por chat ni se guardarán en Git.
 
-- **Android:** Play App Signing está activo para `com.mycompany.dopmi`; Google conserva la app signing key. FlutterFlow permitió descargar un upload keystore válido desde Settings & Integrations > App Settings > Mobile Deployment. Su certificado no coincide con el upload certificate vigente en Play Console, por lo que se exportó su certificado público y se solicitará el reset antes de usarlo en Codemagic. La app signing key administrada por Google no debe descargarse ni sustituirse.
+- **Android:** Play App Signing está activo para `com.mycompany.dopmi`; Google conserva la app signing key. El keystore recuperado de FlutterFlow correspondía a un upload certificate anterior. Se creó un keystore nuevo, Google aceptó la solicitud de reset el 20 de septiembre de 2026 y anunció su activación para el 22 de septiembre de 2026 a las 22:39 UTC. La app signing key administrada por Google no debe descargarse ni sustituirse.
 - **Google Play API:** se puede crear una nueva cuenta de servicio y revocar la anterior.
 - **Apple:** se puede crear una nueva App Store Connect API key. Certificados y perfiles de distribución pueden regenerarse.
 - **Stripe:** se crean o rotan claves restringidas y secretos de webhook.
 - **Supabase:** las claves publicables pueden obtenerse de nuevo; las claves secretas se rotan si existe duda de exposición.
-- **Codemagic:** se puede crear un equipo/configuración nuevos y cargar ahí las credenciales regeneradas.
+- **Codemagic:** la configuración reproducible vive en `codemagic.yaml`; los secretos y archivos de firma se cargan cifrados en el servicio.
 - **GoDaddy:** si se conserva acceso a la cuenta, solo harán falta cambios DNS guiados.
 
-## Primer dato externo requerido
+## Próximos datos externos requeridos
 
-Android quedó identificado como `com.mycompany.dopmi` y el código se alineó para actualizar la ficha de producción existente. Antes de una entrega firmada todavía se debe confirmar:
+Para activar publicación automática:
 
-- recuperación o restablecimiento del upload keystore (Play App Signing ya está confirmado);
-- bundle ID de la app existente en App Store Connect.
-
-Hasta entonces el pipeline puede validar y compilar en modo no firmado, pero no debe publicar.
+- cargar el nuevo upload keystore en Codemagic con referencia exacta `dopmi_upload_2026`;
+- crear o recuperar una cuenta de servicio de Google Play para Codemagic;
+- añadir las variables públicas de Supabase al grupo `dopmi_supabase`;
+- confirmar el bundle ID existente en App Store Connect antes de configurar TestFlight.
