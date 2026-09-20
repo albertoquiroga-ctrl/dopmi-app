@@ -100,7 +100,8 @@ La revisión de aceptación usará el recorrido y los estados, no solamente la e
 - [ ] Añadir `codemagic.yaml` sin secretos.
 - [ ] Configurar versionado reproducible y artefactos de prueba.
 - [x] Confirmar que Google Play App Signing protege la app de producción.
-- [ ] Recuperar el upload keystore de FlutterFlow o restablecerlo con una llave nueva.
+- [x] Recuperar el upload keystore generado por FlutterFlow.
+- [ ] Restablecer el certificado de carga en Play Console: el keystore recuperado es válido, pero su SHA-1 (`BF:EF:BD:7A:06:B7:99:F8:0A:36:81:64:45:94:3E:D3:38:D5:1E:E7`) no coincide con el certificado actualmente registrado.
 - [ ] Documentar recuperación de credenciales y responsables.
 - [ ] Publicar la política de privacidad en `dopmi.org` y registrar su URL en Play Console.
 - [ ] Crear checklist de Data Safety y privacidad.
@@ -160,7 +161,7 @@ Una casilla solo puede cerrarse cuando existe evidencia de:
 
 Nunca se enviarán secretos por chat ni se guardarán en Git.
 
-- **Android:** Play App Signing está activo para `com.mycompany.dopmi`; Google conserva la app signing key. FlutterFlow generó y usó el upload keystore anterior. Primero se intentará descargarlo desde Settings & Integrations > App Settings > Mobile Deployment usando el botón naranja de llave. Si no está disponible, se generará una upload key nueva y se solicitará el reset en Play Console. La app signing key administrada por Google no debe descargarse ni sustituirse.
+- **Android:** Play App Signing está activo para `com.mycompany.dopmi`; Google conserva la app signing key. FlutterFlow permitió descargar un upload keystore válido desde Settings & Integrations > App Settings > Mobile Deployment. Su certificado no coincide con el upload certificate vigente en Play Console, por lo que se exportó su certificado público y se solicitará el reset antes de usarlo en Codemagic. La app signing key administrada por Google no debe descargarse ni sustituirse.
 - **Google Play API:** se puede crear una nueva cuenta de servicio y revocar la anterior.
 - **Apple:** se puede crear una nueva App Store Connect API key. Certificados y perfiles de distribución pueden regenerarse.
 - **Stripe:** se crean o rotan claves restringidas y secretos de webhook.
