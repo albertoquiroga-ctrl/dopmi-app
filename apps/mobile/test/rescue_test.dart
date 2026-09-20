@@ -25,23 +25,26 @@ class FakeRescue extends RescueRepository {
   int saveCalls = 0;
   @override
   Future<Json> detail(String id) async => {
-      'record': {
-        'id': id,
-        'kind': 'verification',
-        'status': 'draft',
-        'version': 4,
-      'public_data': {
-        'public_name': 'Refugio Luna',
-        'bio': 'Rescatamos animales',
-        'city': 'Monterrey',
-        'state': 'Nuevo León',
-      },
-      'private_data': {'legal_name': 'Ana López', 'identity_type': 'ine'},
-      'files': <Json>[],
-      'feedback': 'Completa el teléfono',
-    },
-    'history': <Json>[],
-  };
+        'record': {
+          'id': id,
+          'kind': 'verification',
+          'status': 'draft',
+          'version': 4,
+          'public_data': {
+            'public_name': 'Refugio Luna',
+            'bio': 'Rescatamos animales',
+            'city': 'Monterrey',
+            'state': 'Nuevo León',
+          },
+          'private_data': {
+            'legal_name': 'Ana López',
+            'identity_type': 'ine',
+          },
+          'files': <Json>[],
+          'feedback': 'Completa el teléfono',
+        },
+        'history': <Json>[],
+      };
   @override
   Future<RescueRecord> save(
     String kind,
@@ -49,7 +52,7 @@ class FakeRescue extends RescueRepository {
     Json privateData,
     List<Json> files, {
     RescueRecord? record,
-  String? parent,
+    String? parent,
   }) async {
     saveCalls += 1;
     saved = privateData;
@@ -71,14 +74,17 @@ class FakeRescue extends RescueRepository {
 }
 
 void main() {
-  test('money parsing preserves cent precision and rejects rounding or scientific notation', () {
-    expect(parsePesos('250.50'), 25050);
-    expect(parsePesos('0.01'), 1);
-    expect(parsePesos('50'), 5000);
-    for (final v in ['0', '-50', '1e3', '1.005', 'NaN', '1000000.01']) {
-      expect(parsePesos(v), null);
-    }
-  });
+  test(
+    'money parsing preserves cent precision and rejects rounding or scientific notation',
+    () {
+      expect(parsePesos('250.50'), 25050);
+      expect(parsePesos('0.01'), 1);
+      expect(parsePesos('50'), 5000);
+      for (final v in ['0', '-50', '1e3', '1.005', 'NaN', '1000000.01']) {
+        expect(parsePesos(v), null);
+      }
+    },
+  );
   testWidgets(
     'rescuer draft keeps private fields after a save conflict',
     (tester) async {
