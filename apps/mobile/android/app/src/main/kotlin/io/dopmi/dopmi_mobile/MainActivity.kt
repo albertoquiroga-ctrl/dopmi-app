@@ -1,4 +1,4 @@
-package io.dopmi.dopmi_mobile
+package com.mycompany.dopmi
 
 import io.flutter.embedding.android.FlutterActivity
 
