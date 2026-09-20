@@ -3,7 +3,8 @@
 Estado: **alcance completo autorizado**  
 Referencia funcional fijada: `albertoquiroga-ctrl/dopmi-functional-mockup@961b557cfb4163aceaf6283fd077ab2e659037ba`  
 Base de producción: `albertoquiroga-ctrl/dopmi-app@5e49f497edaad4b770203b5072423e6a2ba91a8a`  
-Backend de desarrollo: Supabase `ohqxranynackjignryep`
+Backend de desarrollo: Supabase `ohqxranynackjignryep`  
+Android de producción confirmado: `com.mycompany.dopmi` (Google Play, 4.2 mil instalaciones visibles al 20 de septiembre de 2026)
 
 ## Regla de alcance
 
@@ -94,7 +95,8 @@ La revisión de aceptación usará el recorrido y los estados, no solamente la e
 
 - [ ] Congelar esta referencia y conciliar documentación.
 - [ ] Mantener CI verde en web, admin, base, Android e iOS simulator.
-- [ ] Confirmar package name y bundle ID de las apps existentes.
+- [x] Confirmar Android package name: `com.mycompany.dopmi`.
+- [ ] Confirmar bundle ID de la app existente en App Store Connect.
 - [ ] Añadir `codemagic.yaml` sin secretos.
 - [ ] Configurar versionado reproducible y artefactos de prueba.
 - [ ] Documentar recuperación de credenciales y responsables.
@@ -165,9 +167,9 @@ Nunca se enviarán secretos por chat ni se guardarán en Git.
 
 ## Primer dato externo requerido
 
-Antes de modificar identificadores o preparar una entrega firmada se debe confirmar:
+Android quedó identificado como `com.mycompany.dopmi` y el código se alineó para actualizar la ficha de producción existente. Antes de una entrega firmada todavía se debe confirmar:
 
-- package name de la app existente en Google Play;
+- estado de Play App Signing y certificado de carga;
 - bundle ID de la app existente en App Store Connect.
 
 Hasta entonces el pipeline puede validar y compilar en modo no firmado, pero no debe publicar.
