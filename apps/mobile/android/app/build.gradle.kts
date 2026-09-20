@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "io.dopmi.dopmi_mobile"
+    namespace = "com.mycompany.dopmi"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -15,10 +15,8 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "io.dopmi.dopmi_mobile"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        // This ID belongs to the existing DopMi production listing in Google Play.
+        applicationId = "com.mycompany.dopmi"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         // Uses the version code from pubspec.yaml. When using split APKs, 1000 * ABI_VERSION
@@ -31,8 +29,8 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // Distribution signing is added after confirming the existing Play upload certificate.
+            // Debug signing remains temporary and must never be uploaded to Google Play.
             signingConfig = signingConfigs.getByName("debug")
         }
     }
