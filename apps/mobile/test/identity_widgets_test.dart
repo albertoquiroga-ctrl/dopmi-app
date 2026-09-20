@@ -1,10 +1,13 @@
+import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/core/ui.dart';
+import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/features/identity/identity_controller.dart';
+import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:dopmi_mobile/app.dart';
-import 'package:dopmi_mobile/features/identity/identity_controller.dart';
-import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 
+import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
 
 void main() {
@@ -19,6 +22,7 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         identityRepositoryProvider.overrideWithValue(repo),
+        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         routerInitialLocationProvider.overrideWithValue(
           repo.user?.verified == true ? '/profile' : '/welcome',
         ),
@@ -36,9 +40,20 @@ void main() {
   }
 
   Future<void> tap(WidgetTester tester, String label) async {
-    final target = find.text(label);
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    final filled = find.widgetWithText(FilledButton, label);
+    final outlined = find.widgetWithText(OutlinedButton, label);
+    final textButton = find.widgetWithText(TextButton, label);
+    final target = filled.evaluate().isNotEmpty
+        ? filled
+        : outlined.evaluate().isNotEmpty
+        ? outlined
+        : textButton.evaluate().isNotEmpty
+        ? textButton
+        : find.text(label);
     await tester.scrollUntilVisible(
-      target,
+      target.last,
       250,
       scrollable: find.byType(Scrollable).first,
     );
