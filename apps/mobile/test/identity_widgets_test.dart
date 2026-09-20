@@ -1,5 +1,4 @@
 import 'package:dopmi_mobile/app.dart';
-import 'package:dopmi_mobile/core/ui.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
