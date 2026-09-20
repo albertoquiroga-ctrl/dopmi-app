@@ -42,6 +42,27 @@ class FakePayments extends PaymentRepository {
   Future<void> openStripe(String url) async {}
 }
 
+Future<void> pumpUntil(
+  WidgetTester tester,
+  Finder finder, {
+  int attempts = 100,
+}) async {
+  for (var i = 0; i < attempts; i++) {
+    await tester.pump(const Duration(milliseconds: 20));
+    if (finder.evaluate().isNotEmpty) return;
+  }
+  throw TestFailure('Timed out waiting for $finder');
+}
+
+Future<void> tapButton(WidgetTester tester, String label) async {
+  final button = find.widgetWithText(FilledButton, label);
+  await pumpUntil(tester, button);
+  await tester.ensureVisible(button);
+  await tester.pump();
+  await tester.tap(button);
+  await tester.pump();
+}
+
 void main() {
   test(
     'payment pages require a confirmed session and respect recovery',
@@ -71,10 +92,11 @@ void main() {
     final identity = FakeIdentityRepository()
       ..user = const Identity('one', 'ana@example.test', verified: true);
     final payments = FakePayments();
+    final community = FakeCommunity();
     final container = ProviderContainer(
       overrides: [
         identityRepositoryProvider.overrideWithValue(identity),
-        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+        communityRepositoryProvider.overrideWithValue(community),
         paymentRepositoryProvider.overrideWithValue(payments),
         routerInitialLocationProvider.overrideWithValue(
           '/contribute/expense-one',
@@ -84,28 +106,28 @@ void main() {
     addTearDown(() async {
       container.dispose();
       await identity.changes.close();
-      await payments.client.dispose();
     });
     await tester.pumpWidget(
       UncontrolledProviderScope(container: container, child: const DopmiApp()),
     );
-    await tester.pumpAndSettle();
+    await pumpUntil(tester, find.text('Medicamentos para Luna'));
     expect(find.text('Medicamentos para Luna'), findsOneWidget);
     await tester.enterText(
       find.widgetWithText(TextField, 'Tu aportación en MXN'),
       '100.25',
     );
-    await tester.tap(find.text('Continuar a Stripe'));
-    await tester.pumpAndSettle();
+    await tapButton(tester, 'Continuar a Stripe');
+    await pumpUntil(tester, find.text('Continuar mi aportación'));
     expect(payments.calls.length, 1);
     final prefs = await SharedPreferences.getInstance();
     expect(prefs.getInt('dopmi-payment:one:expense-one:cents'), 10025);
     payments.fail = false;
-    await tester.tap(find.text('Continuar mi aportación'));
-    await tester.pumpAndSettle();
+    await tapButton(tester, 'Continuar mi aportación');
+    await tester.pump(const Duration(milliseconds: 100));
     expect(payments.calls, [payments.calls.first, payments.calls.first]);
     expect(find.text('100.25'), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
+    await tester.pump();
   });
 }
