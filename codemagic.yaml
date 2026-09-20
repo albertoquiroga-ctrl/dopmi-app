@@ -1,4 +1,63 @@
 workflows:
+  android-verify:
+    name: Dopmi Android — Build and Verify
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    working_directory: apps/mobile
+
+    environment:
+      flutter: stable
+      java: 17
+      android_signing:
+        - dopmi_upload_2026
+      groups:
+        - dopmi_supabase
+      vars:
+        PACKAGE_NAME: com.mycompany.dopmi
+        RELEASE_NAME: 2.3.0
+
+    cache:
+      cache_paths:
+        - $FLUTTER_ROOT/.pub-cache
+        - $HOME/.gradle/caches
+        - $HOME/.gradle/wrapper
+
+    scripts:
+      - name: Create runtime configuration
+        script: |
+          cat > config.json <<EOF
+          {
+            "SUPABASE_URL": "$SUPABASE_URL",
+            "SUPABASE_PUBLISHABLE_KEY": "$SUPABASE_PUBLISHABLE_KEY",
+            "AUTH_REDIRECT_URL": "io.dopmi.app://auth/callback",
+            "ENABLE_GOOGLE_AUTH": "$ENABLE_GOOGLE_AUTH",
+            "ENABLE_APPLE_AUTH": "$ENABLE_APPLE_AUTH"
+          }
+          EOF
+
+      - name: Install dependencies
+        script: flutter pub get
+
+      - name: Static analysis
+        script: flutter analyze
+
+      - name: Unit and widget tests
+        script: flutter test
+
+      - name: Build signed Android App Bundle
+        script: |
+          BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 226))
+          flutter build appbundle \
+            --release \
+            --build-name="$RELEASE_NAME" \
+            --build-number="$BUILD_NUMBER" \
+            --dart-define-from-file=config.json
+
+    artifacts:
+      - build/app/outputs/bundle/release/app-release.aab
+      - build/app/outputs/mapping/release/mapping.txt
+      - flutter_drive.log
+
   android-internal:
     name: Dopmi Android — Internal Testing
     instance_type: mac_mini_m2
