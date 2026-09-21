@@ -57,10 +57,7 @@ void main() {
       attempt < 12 && target().evaluate().isEmpty;
       attempt++
     ) {
-      await tester.drag(
-        find.byType(Scrollable).first,
-        const Offset(0, -250),
-      );
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -250));
       await tester.pumpAndSettle();
     }
 
