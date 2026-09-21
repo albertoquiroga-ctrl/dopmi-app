@@ -17,7 +17,12 @@ export function runtime() {
     if (result.error) throw new PaymentError(result.error.code === '42501' ? 'access_denied' : 'payment_unavailable', result.error.code === '42501' ? 403 : 409);
     return result.data;
   };
-  const stripe = stripeApi(Deno.env.get('STRIPE_SECRET_KEY'));
+  // H4 uses an isolated test key without replacing the pre-existing Stripe
+  // configuration. Production enablement must remove this override explicitly.
+  const stripe = stripeApi(
+    Deno.env.get('STRIPE_SECRET_KEY_H4_TEST') ??
+      Deno.env.get('STRIPE_SECRET_KEY'),
+  );
   const returnUrl = `${url}/functions/v1/payment-return`;
   const service = paymentService({ rpc, stripe, returnUrl });
   async function actor(req: Request) {
