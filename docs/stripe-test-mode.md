@@ -15,7 +15,7 @@ No se deben copiar secretos en Git, en el cliente Flutter, en capturas ni en con
 
 Configura en Supabase:
 
-- `STRIPE_SECRET_KEY`: clave secreta o restringida de prueba (`sk_test_…` o `rk_test_…`).
+- `STRIPE_SECRET_KEY_H4_TEST`: clave restringida de prueba (`rk_test_…`) aislada para este hito. Las funciones la prefieren sobre `STRIPE_SECRET_KEY`, que se conserva intacta como respaldo temporal.
 - `STRIPE_WEBHOOK_SECRET`: secreto del endpoint de webhook (`whsec_…`).
 - `DOPMI_WORKER_SECRET`: valor aleatorio largo usado exclusivamente para invocar el trabajador.
 
