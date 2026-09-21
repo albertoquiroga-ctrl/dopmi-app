@@ -143,7 +143,7 @@ workflows:
         bundle_identifier: com.mycompany.dopmi
       vars:
         BUNDLE_ID: com.mycompany.dopmi
-        RELEASE_NAME: 2.3.0
+        RELEASE_NAME: 2.3.3
 
     cache:
       cache_paths:
@@ -177,7 +177,7 @@ workflows:
 
       - name: Build signed IPA
         script: |
-          BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 226))
+          BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 231))
           flutter build ipa \
             --release \
             --build-name="$RELEASE_NAME" \
@@ -185,8 +185,8 @@ workflows:
             --dart-define-from-file=config.json
 
     artifacts:
-      - build/ios/ipa/*.ipa
-      - build/ios/archive/Runner.xcarchive/dSYMs/**/*.dSYM
+      - apps/mobile/build/ios/ipa/*.ipa
+      - apps/mobile/build/ios/archive/Runner.xcarchive/dSYMs/**/*.dSYM
 
   ios-testflight:
     name: Dopmi iOS — TestFlight
@@ -207,7 +207,7 @@ workflows:
         bundle_identifier: com.mycompany.dopmi
       vars:
         BUNDLE_ID: com.mycompany.dopmi
-        RELEASE_NAME: 2.3.0
+        RELEASE_NAME: 2.3.3
 
     cache:
       cache_paths:
@@ -241,7 +241,7 @@ workflows:
 
       - name: Build signed IPA
         script: |
-          BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 226))
+          BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 231))
           flutter build ipa \
             --release \
             --build-name="$RELEASE_NAME" \
@@ -249,8 +249,8 @@ workflows:
             --dart-define-from-file=config.json
 
     artifacts:
-      - build/ios/ipa/*.ipa
-      - build/ios/archive/Runner.xcarchive/dSYMs/**/*.dSYM
+      - apps/mobile/build/ios/ipa/*.ipa
+      - apps/mobile/build/ios/archive/Runner.xcarchive/dSYMs/**/*.dSYM
 
     publishing:
       app_store_connect:
