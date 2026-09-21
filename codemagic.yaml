@@ -183,10 +183,17 @@ workflows:
             --build-name="$RELEASE_NAME" \
             --build-number="$BUILD_NUMBER" \
             --dart-define-from-file=config.json
+          IPA_PATH="$(find "$CM_BUILD_DIR/apps/mobile/build/ios/ipa" -maxdepth 1 -type f -name '*.ipa' -print -quit)"
+          if [ -z "$IPA_PATH" ]; then
+            echo "No IPA was generated. Files under build/ios:"
+            find "$CM_BUILD_DIR/apps/mobile/build/ios" -maxdepth 4 -type f -print
+            exit 1
+          fi
+          echo "IPA ready for publishing: $IPA_PATH"
 
     artifacts:
-      - apps/mobile/build/ios/ipa/*.ipa
-      - apps/mobile/build/ios/archive/Runner.xcarchive/dSYMs/**/*.dSYM
+      - $CM_BUILD_DIR/apps/mobile/build/ios/ipa/*.ipa
+      - $CM_BUILD_DIR/apps/mobile/build/ios/archive/Runner.xcarchive/dSYMs/**/*.dSYM
 
   ios-testflight:
     name: Dopmi iOS — TestFlight
@@ -247,10 +254,17 @@ workflows:
             --build-name="$RELEASE_NAME" \
             --build-number="$BUILD_NUMBER" \
             --dart-define-from-file=config.json
+          IPA_PATH="$(find "$CM_BUILD_DIR/apps/mobile/build/ios/ipa" -maxdepth 1 -type f -name '*.ipa' -print -quit)"
+          if [ -z "$IPA_PATH" ]; then
+            echo "No IPA was generated. Files under build/ios:"
+            find "$CM_BUILD_DIR/apps/mobile/build/ios" -maxdepth 4 -type f -print
+            exit 1
+          fi
+          echo "IPA ready for publishing: $IPA_PATH"
 
     artifacts:
-      - apps/mobile/build/ios/ipa/*.ipa
-      - apps/mobile/build/ios/archive/Runner.xcarchive/dSYMs/**/*.dSYM
+      - $CM_BUILD_DIR/apps/mobile/build/ios/ipa/*.ipa
+      - $CM_BUILD_DIR/apps/mobile/build/ios/archive/Runner.xcarchive/dSYMs/**/*.dSYM
 
     publishing:
       app_store_connect:
