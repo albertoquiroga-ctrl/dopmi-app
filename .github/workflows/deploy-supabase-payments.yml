@@ -1,0 +1,35 @@
+name: Deploy Dopmi payment functions
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_test_mode:
+        description: Type H4-TEST to deploy the test-only payment functions
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-dopmi-payment-functions
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: inputs.confirm_test_mode == 'H4-TEST'
+    runs-on: ubuntu-latest
+    environment: h4-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Deploy test-only payment functions
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          supabase functions deploy payments --project-ref ohqxranynackjignryep
+          supabase functions deploy stripe-webhook --project-ref ohqxranynackjignryep
+          supabase functions deploy payment-worker --project-ref ohqxranynackjignryep
+          supabase functions deploy payment-return --project-ref ohqxranynackjignryep
