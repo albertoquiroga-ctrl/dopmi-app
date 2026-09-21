@@ -12,6 +12,7 @@ on:
       - codex/mvp-release-foundation
     paths:
       - .github/workflows/deploy-supabase-payments.yml
+      - supabase/functions/**
 
 permissions:
   contents: read
