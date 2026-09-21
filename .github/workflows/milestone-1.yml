@@ -45,7 +45,10 @@ jobs:
           cache: true
       - run: flutter pub get
         working-directory: apps/mobile
-      - run: dart format --output=none --set-exit-if-changed lib test test_backend
+      - name: Check Dart formatting and show the exact diff
+        run: |
+          dart format lib test test_backend
+          git diff --exit-code -- lib test test_backend
         working-directory: apps/mobile
       - run: flutter analyze && flutter test
         working-directory: apps/mobile
