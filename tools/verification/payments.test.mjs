@@ -152,6 +152,31 @@ test('Stripe requests retain the same idempotency key and refuse live objects',a
   assert.equal(captured.request.body.get('source_transaction'),'ch_one');
   await assert.rejects(() => stripeApi('sk_test_fixture',async () => new Response('{"livemode":true}'))('events/evt_one'),/live_mode_rejected/);
 });
+test('Connect onboarding is resumable and payout status is read from the connected account',async () => {
+  await db.exec('delete from private.dopmi_connect_accounts');
+  const calls=[];
+  const stripe=async (path,body,idempotency,account) => {
+    calls.push({path,body,idempotency,account});
+    if (path === 'accounts') return {id:'acct_new',livemode:false};
+    if (path === 'accounts/acct_new') return {id:'acct_new',livemode:false,details_submitted:true,
+      payouts_enabled:true,capabilities:{transfers:'active'}};
+    if (path === 'account_links') return {url:'https://connect.stripe.com/setup/test'};
+    if (path === 'payouts?limit=10') return {data:[{id:'po_one',amount:8000,currency:'mxn',status:'paid',arrival_date:1800000000}]};
+    throw new Error(`unexpected Stripe path ${path}`);
+  };
+  const service=paymentService({rpc,stripe,returnUrl:'https://example.test/return'});
+  assert.equal((await service.connect(rescuer,'onboard')).url,'https://connect.stripe.com/setup/test');
+  const create=calls.find(call => call.path === 'accounts');
+  assert.equal(create.idempotency,`dopmi-account-${rescuer}`);
+  assert.equal(create.body.country,'MX');
+  assert.equal(create.body['capabilities[transfers][requested]'],true);
+  const status=await service.connect(rescuer,'status');
+  assert.equal(status.ready,true);
+  assert.equal(status.details_submitted,true);
+  assert.deepEqual(status.payouts,[{id:'po_one',amount:8000,currency:'mxn',status:'paid',arrival_date:1800000000}]);
+  assert.equal(calls.find(call => call.path === 'payouts?limit=10').account,'acct_new');
+  assert.equal(calls.filter(call => call.path === 'accounts').length,1);
+});
 test('worker retries a lost Stripe response without creating a second transfer',async () => {
   const d=await prepare(); await settle(d.id);
   const calls=[]; let fail=true;
