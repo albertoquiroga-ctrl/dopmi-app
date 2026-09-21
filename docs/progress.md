@@ -3,6 +3,11 @@
 ## Hito 4 — en curso
 
 - Inicio de hito autorizado: Aportaciones base, consultas administrativas y lógica de asignación por cola.
+- Verificación incremental del 21 de septiembre de 2026:
+  - `cd tools/verification; npm test` → **23 pruebas, OK**. La cobertura nueva comprueba que el alta de Stripe Connect es reanudable, no duplica cuentas, solicita transferencias para México y consulta depósitos usando el contexto de la cuenta conectada.
+  - `cd apps/admin; npm test` → **18 pruebas, OK**; `npm run build` → build de producción **OK**.
+  - El flujo permanece restringido deliberadamente a claves Stripe de prueba (`sk_test_`/`rk_test_`); no se habilitaron cobros reales.
+  - `supabase test db` no pudo ejecutarse en este entorno porque no incluye daemon de Docker. `flutter analyze` y `flutter test` tampoco pudieron ejecutarse porque Flutter no está instalado. Las mismas comprobaciones quedan delegadas al CI versionado antes de considerar cerrado el hito.
 - Implementación completada en este ciclo:
   - `apps/admin/src/api.ts`: se añadió tipo `Contribution` y API `listContributions`.
   - `apps/admin/src/App.tsx`: nueva sección “Aportes” en navegación administrativa.
@@ -130,7 +135,6 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
 - `flutter analyze`: sin incidencias. `flutter test`: diez pruebas aprobadas en esta sesión.
 - Se añadió `scripts/emulate-android.ps1` para abrir el dispositivo e instalar el APK; `-Rebuild` recompila cuando cambian código/configuración. El comando y las instrucciones para iOS están en `docs/development.md`. La sintaxis PowerShell se comprobó; el arranque/instalación se ejecutó con ese script y las comprobaciones posteriores usaron ADB.
 - iOS interactivo queda pendiente por plataforma: esta sesión dispone de Windows, sin una Mac/Xcode conectada. El simulador oficial requiere macOS. Se conserva la evidencia previa de compilación iOS en CI; no se declara una ejecución interactiva de iOS nueva.
-
 
 
 
