@@ -7,6 +7,11 @@ on:
         description: Type H4-TEST to deploy the test-only payment functions
         required: true
         type: string
+  push:
+    branches:
+      - codex/mvp-release-foundation
+    paths:
+      - .github/workflows/deploy-supabase-payments.yml
 
 permissions:
   contents: read
@@ -17,7 +22,7 @@ concurrency:
 
 jobs:
   deploy:
-    if: inputs.confirm_test_mode == 'H4-TEST'
+    if: github.event_name == 'push' || inputs.confirm_test_mode == 'H4-TEST'
     runs-on: ubuntu-latest
     environment: h4-test
     steps:
