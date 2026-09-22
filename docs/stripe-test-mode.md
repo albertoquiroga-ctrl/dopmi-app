@@ -16,7 +16,7 @@ No se deben copiar secretos en Git, en el cliente Flutter, en capturas ni en con
 Configura en Supabase:
 
 - `STRIPE_SECRET_KEY_H4_TEST`: clave restringida de prueba (`rk_test_…`) aislada para este hito. Las funciones la prefieren sobre `STRIPE_SECRET_KEY`, que se conserva intacta como respaldo temporal.
-- `STRIPE_WEBHOOK_SECRET`: secreto del endpoint de webhook (`whsec_…`).
+- `STRIPE_WEBHOOK_SECRET_H4_TEST`: secreto del endpoint de webhook de prueba (`whsec_…`). Las funciones lo prefieren sobre `STRIPE_WEBHOOK_SECRET`, que se conserva intacto como respaldo temporal.
 - `DOPMI_WORKER_SECRET`: valor aleatorio largo usado exclusivamente para invocar el trabajador.
 
 Las variables `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` son provistas por el entorno de Edge Functions.
