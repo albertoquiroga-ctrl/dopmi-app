@@ -6,6 +6,8 @@
 - Verificación incremental del 21 de septiembre de 2026:
   - `cd tools/verification; npm test` → **23 pruebas, OK**. La cobertura nueva comprueba que el alta de Stripe Connect es reanudable, no duplica cuentas, solicita transferencias para México y consulta depósitos usando el contexto de la cuenta conectada.
   - `cd apps/admin; npm test` → **18 pruebas, OK**; `npm run build` → build de producción **OK**.
+  - La migración `202609130007_donations.sql` se aplicó en el proyecto remoto. Un evento `payment_intent.succeeded` generado por Stripe CLI llegó al webhook remoto y respondió **HTTP 200** después de encolarse; el `404` previo de `dopmi_payment_server` quedó resuelto.
+  - Los secretos aislados `STRIPE_SECRET_KEY_H4_TEST` y `STRIPE_WEBHOOK_SECRET_H4_TEST` tienen prioridad; los nombres existentes se conservan solamente como respaldo para no reemplazar la configuración previa.
   - El flujo permanece restringido deliberadamente a claves Stripe de prueba (`sk_test_`/`rk_test_`); no se habilitaron cobros reales.
   - `supabase test db` no pudo ejecutarse en este entorno porque no incluye daemon de Docker. `flutter analyze` y `flutter test` tampoco pudieron ejecutarse porque Flutter no está instalado. Las mismas comprobaciones quedan delegadas al CI versionado antes de considerar cerrado el hito.
 - Implementación completada en este ciclo:
