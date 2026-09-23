@@ -8,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' show PostgrestException;
 import '../../core/ui.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
+import '../payments/payment_repository.dart';
 import 'rescue_fields.dart';
 import 'rescue_repository.dart';
 
@@ -517,8 +518,24 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
               ),
             ),
           if (record?.kind == 'expense' && record!.status == 'approved')
-            Notice(
-              'Monto reembolsable: ${pesos(record!.data['reimbursable_cents'] as int)}${record!.data['urgent'] == true ? ' · Urgencia aprobada' : ''}. Aún no se reciben aportaciones.',
+            LiveSection<Json>(
+              key: ValueKey('funding:${record!.id}'),
+              tables: const ['dopmi_donations'],
+              errorMessage: paymentError,
+              load: () => ref
+                  .read(paymentRepositoryProvider)
+                  .funding(record!.id),
+              builder: (funding, refresh) => Column(
+                children: [
+                  Notice(
+                    'Monto reembolsable: ${pesos(funding['reimbursable_cents'] as int)}${record!.data['urgent'] == true ? ' · Urgencia aprobada' : ''}. Neto asignado: ${pesos(funding['funded_cents'] as int)}. Transferido a Stripe: ${pesos(funding['transferred_cents'] as int? ?? 0)}. Disponible: ${pesos(funding['available_cents'] as int)}.',
+                  ),
+                  TextButton(
+                    onPressed: refresh,
+                    child: const Text('Actualizar aportaciones'),
+                  ),
+                ],
+              ),
             ),
           const SizedBox(height: 24),
           if (editable) ...[
@@ -764,6 +781,9 @@ class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
                         Text(
                           'Monto reembolsable: ${pesos(r.data['reimbursable_cents'] as int)}${r.data['urgent'] == true ? ' · Urgencia aprobada' : ''}',
                         ),
+                      Text(
+                        'Neto asignado: ${pesos(r.data['funded_cents'] as int? ?? 0)} · Transferido a Stripe: ${pesos(r.data['transferred_cents'] as int? ?? 0)}',
+                      ),
                       if (widget.caseId == null)
                         TextButton(
                           onPressed: () =>

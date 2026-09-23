@@ -1,8 +1,9 @@
-import { verifySignature } from '../_shared/payments.mjs';
+import { PaymentError, paymentLog, verifySignature } from '../_shared/payments.mjs';
 import { failure, json, runtime } from '../_shared/runtime.ts';
 
 Deno.serve(async (req) => {
   if (req.method !== 'POST') return json({ error: 'method_not_allowed' }, 405);
+  let eventId: string | undefined;
   try {
     if (Number(req.headers.get('Content-Length') ?? 0) > 262144) return json({ error: 'body_too_large' }, 413);
     const body = await req.text();
@@ -17,11 +18,15 @@ Deno.serve(async (req) => {
       req.headers.get('Stripe-Signature'),
       webhookSecret,
     );
-    const { rpc } = runtime();
-    await rpc('enqueue', { event_id: event.id });
-    // Durable queue first. Cron processes it even if this request ends immediately.
-    return json({ received: true });
+    eventId = event.id;
+    const { service } = runtime();
+    // The event is durably queued and claimed before processing. Required
+    // transfers/refunds finish before the event is marked done; failures return
+    // a retryable non-2xx response to Stripe.
+    return json(await service.handleWebhook(event.id));
   } catch (error) {
+    paymentLog(console, 'stripe_webhook_failed', { event_id: eventId, code: error instanceof PaymentError ? error.code : 'payment_unavailable', ...(error instanceof PaymentError ? error.context : {}) });
+    if (eventId) return json({ error: error instanceof PaymentError ? error.code : 'payment_unavailable', received: false }, 503);
     return failure(error);
   }
 });

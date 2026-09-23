@@ -36,9 +36,33 @@ before(async () => {
 after(async () => db?.close());
 beforeEach(async () => db.exec('begin'));
 afterEach(async () => db.exec('rollback'));
-const rpc = async (operation,data) => (await db.query('select public.dopmi_payment_server($1,$2::jsonb) as value',[operation,JSON.stringify(data)])).rows[0].value;
+const rpc = async (operation,data) => {
+  if (operation === 'finish_job') return (await db.query('select public.dopmi_payment_job_finish($1::jsonb) as value',[JSON.stringify(data)])).rows[0].value;
+  if (operation === 'claim') return (await db.query('select public.dopmi_payment_job_claim($1) as value',[data.job_key ?? null])).rows[0].value;
+  if (operation === 'replay_get') return (await db.query('select public.dopmi_payment_replay_get($1) as value',[data.donation_id])).rows[0].value;
+  if (operation === 'connect_status') return (await db.query('select public.dopmi_connect_status($1) as value',[data.actor])).rows[0].value;
+  return (await db.query('select public.dopmi_payment_server($1,$2::jsonb) as value',[operation,JSON.stringify(data)])).rows[0].value;
+};
 const prepare = (overrides={}) => rpc('prepare',{actor:donor,expense_id:expense,key,gross_cents:10000,...overrides});
 const settle = (id,overrides={}) => rpc('settle',{donation_id:id,currency:'mxn',gross_cents:10000,charge_id:'ch_one',payment_intent_id:'pi_one',stripe_fee_cents:600,...overrides});
+const transferResult = (d,id,amount=9200) => ({id,amount,destination:'acct_test',currency:'mxn',source_transaction:'ch_one',transfer_group:`dopmi_${d.id}`,reversed:false,amount_reversed:0});
+function stripeFixture(d, overrides={}) {
+  const calls=[];
+  return { calls, stripe:async (path,body,idempotency,account) => {
+    calls.push({path,body,idempotency,account});
+    if (Object.hasOwn(overrides,path)) return overrides[path](body,idempotency,account);
+    if (path === 'events/evt_intent') return {livemode:false,type:'payment_intent.succeeded',data:{object:{id:'pi_one'}}};
+    if (path === 'events/evt_session') return {livemode:false,type:'checkout.session.completed',data:{object:{id:'cs_one'}}};
+    if (path === 'checkout/sessions/cs_one') return {metadata:{dopmi_donation:d.id},payment_status:'paid',payment_intent:'pi_one'};
+    if (path.startsWith('payment_intents/pi_one')) return {id:'pi_one',status:'succeeded',metadata:{dopmi_donation:d.id},amount_received:10000,currency:'mxn',latest_charge:{id:'ch_one',paid:true,captured:true,disputed:false,amount:10000,currency:'mxn',amount_refunded:0,balance_transaction:{amount:10000,currency:'mxn',fee:600}}};
+    if (path === 'accounts/acct_test') return {id:'acct_test',payouts_enabled:true,details_submitted:true,capabilities:{transfers:'active'}};
+    if (path === 'charges/ch_one') return {disputed:false,amount_refunded:0};
+    if (path === 'transfers') return transferResult(d,'tr_fixture');
+    if (path === 'payouts?limit=10') return {data:[]};
+    throw new Error(`unexpected Stripe path ${path}`);
+  }};
+}
+const serviceFor = (stripe, overrideRpc=rpc) => paymentService({rpc:overrideRpc,stripe,returnUrl:'https://example.test/return',logger:{}});
 async function rejected(fn,pattern) {
   await db.exec('savepoint expected_failure');
   await assert.rejects(fn,pattern);
@@ -184,7 +208,7 @@ test('worker retries a lost Stripe response without creating a second transfer',
     if (path.startsWith('charges/')) return {disputed:false,amount_refunded:0};
     calls.push({path,body,idempotency});
     if (fail) { fail=false; throw new Error('lost response'); }
-    return {id:'tr_one',amount:9200,destination:'acct_test'};
+    return transferResult(d,'tr_one');
   };
   const service=paymentService({rpc,stripe,returnUrl:'https://example.test/return'});
   await service.work();
@@ -193,4 +217,272 @@ test('worker retries a lost Stripe response without creating a second transfer',
   assert.equal(calls.length,2); assert.equal(calls[0].idempotency,calls[1].idempotency);
   const result=await rpc('get',{donation_id:d.id});
   assert.equal(result.stripe_transfer_id,'tr_one'); assert.equal(result.transfer_status,'transferred');
+});
+test('webhook finishes its transfer before acknowledging and duplicate events stay idempotent',async () => {
+  const d=await prepare();
+  const calls=[];
+  const stripe=async (path,body,idempotency) => {
+    calls.push({path,body,idempotency});
+    if (path === 'events/evt_paid' || path === 'events/evt_checkout') return {livemode:false,type:path.endsWith('paid')?'payment_intent.succeeded':'checkout.session.completed',data:{object:path.endsWith('paid')?{id:'pi_one'}:{id:'cs_one'}}};
+    if (path === 'checkout/sessions/cs_one') return {metadata:{dopmi_donation:d.id},payment_status:'paid',payment_intent:'pi_one'};
+    if (path.startsWith('payment_intents/pi_one')) return {id:'pi_one',status:'succeeded',metadata:{dopmi_donation:d.id},amount_received:10000,currency:'mxn',latest_charge:{id:'ch_one',paid:true,captured:true,disputed:false,amount:10000,currency:'mxn',amount_refunded:0,balance_transaction:{amount:10000,currency:'mxn',fee:600}}};
+    if (path === 'accounts/acct_test') return {id:'acct_test',payouts_enabled:true,details_submitted:true,capabilities:{transfers:'active'}};
+    if (path === 'charges/ch_one') return {disputed:false,amount_refunded:0};
+    if (path === 'transfers') return transferResult(d,'tr_webhook');
+    throw new Error(`unexpected Stripe path ${path}`);
+  };
+  const service=paymentService({rpc,stripe,returnUrl:'https://example.test/return'});
+  assert.deepEqual(await service.handleWebhook('evt_paid'),{received:true});
+  assert.deepEqual(await service.handleWebhook('evt_paid'),{received:true,duplicate:true});
+  assert.deepEqual(await service.handleWebhook('evt_checkout'),{received:true});
+  const result=await rpc('get',{donation_id:d.id});
+  assert.equal(result.stripe_transfer_id,'tr_webhook');
+  assert.equal(result.transfer_status,'transferred');
+  assert.equal(calls.filter(call => call.path === 'transfers').length,1);
+  assert.equal((await db.query("select count(*)::int n from private.dopmi_payment_jobs where kind='event' and status='done'")).rows[0].n,2);
+});
+test('webhook returns a retryable failure and leaves its event unfinished when transfer fails',async () => {
+  const d=await prepare(); let fail=true;
+  const stripe=async (path) => {
+    if (path === 'events/evt_retry') return {livemode:false,type:'payment_intent.succeeded',data:{object:{id:'pi_one'}}};
+    if (path.startsWith('payment_intents/pi_one')) return {id:'pi_one',status:'succeeded',metadata:{dopmi_donation:d.id},amount_received:10000,currency:'mxn',latest_charge:{id:'ch_one',paid:true,captured:true,disputed:false,amount:10000,currency:'mxn',amount_refunded:0,balance_transaction:{amount:10000,currency:'mxn',fee:600}}};
+    if (path === 'accounts/acct_test') return {id:'acct_test',payouts_enabled:true,details_submitted:true,capabilities:{transfers:'active'}};
+    if (path === 'charges/ch_one') return {disputed:false,amount_refunded:0};
+    if (path === 'transfers') { if (fail) { fail=false; throw new Error('Stripe unavailable'); } return transferResult(d,'tr_retry'); }
+    throw new Error(`unexpected Stripe path ${path}`);
+  };
+  const logs=[];
+  const service=paymentService({rpc,stripe,returnUrl:'https://example.test/return',logger:{info:(message)=>logs.push(JSON.parse(message))}});
+  await assert.rejects(() => service.handleWebhook('evt_retry'),/processor_unavailable/);
+  assert.equal((await db.query("select status from private.dopmi_payment_jobs where job_key='evt_retry'")).rows[0].status,'ready');
+  assert.equal(logs.some(log => log.event === 'payment_job_failed' && !JSON.stringify(log).includes('sk_test')),true);
+  assert.equal((await rpc('get',{donation_id:d.id})).transfer_status,'pending');
+  await db.exec('update private.dopmi_payment_jobs set available_at=now()');
+  assert.deepEqual(await service.handleWebhook('evt_retry'),{received:true});
+  assert.equal((await rpc('get',{donation_id:d.id})).stripe_transfer_id,'tr_retry');
+});
+test('an existing confirmed donation can be replayed without creating a checkout or charge',async () => {
+  const d=await prepare(); await settle(d.id);
+  const calls=[];
+  const stripe=async (path,body,idempotency) => {
+    calls.push({path,body,idempotency});
+    if (path === 'charges/ch_one') return {disputed:false,amount_refunded:0};
+    if (path === 'transfers') return transferResult(d,'tr_replay');
+    throw new Error(`unexpected Stripe path ${path}`);
+  };
+  const service=paymentService({rpc,stripe,returnUrl:'https://example.test/return'});
+  const result=await service.reprocessDonation(d.id);
+  assert.equal(result.stripe_transfer_id,'tr_replay');
+  assert.equal(calls.filter(call => call.path === 'transfers').length,1);
+  assert.equal(calls.some(call => call.path === 'checkout/sessions'),false);
+  assert.equal((await service.reprocessDonation(d.id)).stripe_transfer_id,'tr_replay');
+  assert.equal(calls.filter(call => call.path === 'transfers').length,1);
+});
+
+test('overlapping Checkout and PaymentIntent handlers claim only one transfer and do not acknowledge unfinished events',async () => {
+  const d=await prepare();
+  let entered, release;
+  const started=new Promise(resolve => {entered=resolve;});
+  const blocked=new Promise(resolve => {release=resolve;});
+  const fixture=stripeFixture(d,{transfers:async () => {entered(); await blocked; return transferResult(d,'tr_concurrent');}});
+  const service=serviceFor(fixture.stripe);
+  const first=service.handleWebhook('evt_intent');
+  await started;
+  try {
+    await assert.rejects(() => service.handleWebhook('evt_session'),/processor_busy/);
+    await assert.rejects(() => service.handleWebhook('evt_intent'),/processor_busy/);
+    const unfinished=await db.query("select count(*)::int n from private.dopmi_payment_jobs where kind='event' and status='done'");
+    assert.equal(unfinished.rows[0].n,0);
+    assert.equal(fixture.calls.filter(call => call.path === 'transfers').length,1);
+  } finally { release(); await first; }
+  await db.exec('update private.dopmi_payment_jobs set available_at=now()');
+  assert.deepEqual(await service.handleWebhook('evt_session'),{received:true});
+  assert.equal(fixture.calls.filter(call => call.path === 'transfers').length,1);
+  const paid=await rpc('get',{donation_id:d.id});
+  assert.equal(paid.allocated_cents,9200);
+  assert.equal(paid.stripe_transfer_id,'tr_concurrent');
+});
+
+test('lost database acknowledgement cannot downgrade a completed transfer or cause another Stripe call',async () => {
+  const d=await prepare(); await settle(d.id);
+  const fixture=stripeFixture(d);
+  let fail=true;
+  const delayedRpc=async (op,data) => {
+    const result=await rpc(op,data);
+    if (op === 'finish_job' && data.result_id && fail) {fail=false; throw new Error('lost database response');}
+    return result;
+  };
+  const service=serviceFor(fixture.stripe,delayedRpc);
+  await assert.rejects(() => service.reprocessDonation(d.id),/processor_unavailable/);
+  assert.equal((await rpc('get',{donation_id:d.id})).transfer_status,'transferred');
+  assert.equal((await db.query('select status from private.dopmi_payment_jobs')).rows[0].status,'done');
+  assert.equal((await service.reprocessDonation(d.id)).stripe_transfer_id,'tr_fixture');
+  assert.equal(fixture.calls.filter(call => call.path === 'transfers').length,1);
+});
+
+test('unavailable actual fees keep the event retryable without allocating or transferring',async () => {
+  const d=await prepare();
+  const fixture=stripeFixture(d);
+  let pending=true;
+  const stripe=async (...args) => {
+    const result=await fixture.stripe(...args);
+    if (args[0].startsWith('payment_intents/') && pending) result.latest_charge.balance_transaction=null;
+    return result;
+  };
+  const service=serviceFor(stripe);
+  await assert.rejects(() => service.handleWebhook('evt_intent'),/fee_not_ready/);
+  assert.equal((await rpc('get',{donation_id:d.id})).processed_at,null);
+  assert.equal(fixture.calls.some(call => call.path === 'transfers'),false);
+  assert.equal((await db.query('select status from private.dopmi_payment_jobs')).rows[0].status,'ready');
+  pending=false;
+  await db.exec('update private.dopmi_payment_jobs set available_at=now()');
+  await service.handleWebhook('evt_intent');
+  assert.equal((await rpc('get',{donation_id:d.id})).transfer_status,'transferred');
+});
+
+test('safe replay settles an existing Checkout, and refuses a Checkout for another donation',async () => {
+  const d=await prepare();
+  await rpc('checkout_save',{donation_id:d.id,session_id:'cs_one',url:'https://checkout.stripe.com/test'});
+  const fixture=stripeFixture(d);
+  const result=await serviceFor(fixture.stripe).reprocessDonation(d.id);
+  assert.equal(result.stripe_transfer_id,'tr_fixture');
+  assert.equal(fixture.calls.some(call => call.path === 'checkout/sessions'),false);
+  const second=await prepare({actor:other,key:'72000000-0000-4000-8000-000000000002'});
+  await rpc('checkout_save',{donation_id:second.id,session_id:'cs_wrong',url:'https://checkout.stripe.com/test2'});
+  const mismatch=serviceFor(async () => ({metadata:{dopmi_donation:d.id},payment_status:'paid',payment_intent:'pi_one'}));
+  await assert.rejects(() => mismatch.reprocessDonation(second.id),/charge_mismatch/);
+  assert.equal((await rpc('get',{donation_id:second.id})).processed_at,null);
+});
+
+test('replay outside the idempotency window requires manual reconciliation and never calls Stripe',async () => {
+  const d=await prepare(); await settle(d.id);
+  await db.exec("update private.dopmi_payment_jobs set first_attempt_at=now()-interval '25 hours'");
+  let calls=0;
+  const service=serviceFor(async () => {calls++; throw new Error('must not call Stripe');});
+  await assert.rejects(() => service.reprocessDonation(d.id),/manual_reconciliation_required/);
+  await assert.rejects(() => service.reprocessDonation(d.id),/manual_reconciliation_required/);
+  assert.equal(calls,0);
+  assert.equal((await rpc('get',{donation_id:d.id})).transfer_status,'attention');
+});
+
+test('unexpected destination or transfer response never records a completed transfer',async () => {
+  const d=await prepare(); await settle(d.id);
+  const fixture=stripeFixture(d,{transfers:async () => ({...transferResult(d,'tr_wrong'),destination:'acct_other'})});
+  await assert.rejects(() => serviceFor(fixture.stripe).reprocessDonation(d.id),/transfer_mismatch/);
+  let paid=await rpc('get',{donation_id:d.id});
+  assert.equal(paid.transfer_status,'attention');
+  assert.equal(paid.stripe_transfer_id,null);
+  await db.exec("update private.dopmi_payment_jobs set status='ready',available_at=now()");
+  await db.query('update private.dopmi_connect_accounts set owner_id=$1 where owner_id=$2',[other,rescuer]);
+  await assert.rejects(() => serviceFor(fixture.stripe).reprocessDonation(d.id),/destination_mismatch/);
+  paid=await rpc('get',{donation_id:d.id});
+  assert.equal(paid.stripe_transfer_id,null);
+  assert.equal(fixture.calls.filter(call => call.path === 'transfers').length,1);
+});
+
+test('confirmed active users can inspect Connect status but only verified rescuers may onboard',async () => {
+  const fixture=stripeFixture({id:key});
+  const service=serviceFor(fixture.stripe);
+  assert.equal((await service.connect(other,'status')).ready,false);
+  assert.equal(fixture.calls.length,0);
+  await rejected(() => service.connect(other,'onboard'),/verificación de rescatista/);
+  await db.exec("update public.dopmi_rescue_records set status='changes_requested' where kind='verification'");
+  const status=await service.connect(rescuer,'status');
+  assert.equal(status.verified,false);
+  assert.equal(status.ready,false);
+  assert.deepEqual(status.payouts,[]);
+  await rejected(() => service.connect(rescuer,'onboard'),/verificación de rescatista/);
+  await db.query("update public.profiles set account_status='suspended' where id=$1",[rescuer]);
+  await rejected(() => service.connect(rescuer,'status'),/activa/);
+});
+
+test('rescuer history survives pending review without granting access to another account or suspended users',async () => {
+  const d=await prepare(); await settle(d.id);
+  await db.exec("update public.dopmi_rescue_records set status='changes_requested' where kind='verification'");
+  await role(rescuer);
+  assert.equal((await db.query('select id from public.dopmi_donations')).rows[0].id,d.id);
+  assert.equal((await db.query('select public.dopmi_expense_funding($1) v',[expense])).rows[0].v.funded_cents,9200);
+  await role(other);
+  assert.equal((await db.query('select id from public.dopmi_donations')).rows.length,0);
+  await rejected(() => db.query('select public.dopmi_expense_funding($1)',[expense]),/no disponible/);
+  await role('', 'anon');
+  await rejected(() => db.query('select public.dopmi_expense_funding($1)',[expense]),/no disponible/);
+  await db.exec('reset role');
+  await db.query("update public.profiles set account_status='suspended' where id=$1",[rescuer]);
+  await role(rescuer);
+  assert.equal((await db.query('select id from public.dopmi_donations')).rows.length,0);
+});
+
+test('status and replay/lease RPCs remain service-only even for administrators',async () => {
+  for (const id of [donor,staff]) {
+    await role(id);
+    for (const [op,data] of [['connect_status',{actor:rescuer}],['claim',{}],['finish_job',{}],['replay_get',{donation_id:key}]]) {
+      await rejected(() => rpc(op,data),/permission denied/);
+    }
+    await db.exec('reset role');
+  }
+});
+
+test('case totals distinguish assigned from transferred net and contain no private payment information',async () => {
+  const d=await prepare(); await settle(d.id);
+  const funding=async () => (await db.query('select public.dopmi_expense_funding($1) v',[expense])).rows[0].v;
+  const catalog=async () => (await db.query('select public.dopmi_rescue_public() v')).rows[0].v;
+  assert.equal((await funding()).transferred_cents,0);
+  assert.equal((await catalog()).items[0].funded_cents,9200);
+  assert.equal((await catalog()).items[0].transferred_cents,0);
+  await serviceFor(stripeFixture(d).stripe).reprocessDonation(d.id);
+  await role('', 'anon');
+  assert.equal((await funding()).transferred_cents,9200);
+  const data=await catalog();
+  assert.equal(data.items[0].transferred_cents,9200);
+  assert.equal(data.items[0].funded_cents,9200);
+  assert.equal(data.items[0].donor_id,undefined);
+  assert.equal(JSON.stringify(data).includes('tr_fixture'),false);
+  assert.equal(JSON.stringify(data).includes('ch_one'),false);
+});
+
+test('Stripe permission failures are processor configuration errors, not user-access 403s, and omit secrets',async () => {
+  const stripe=stripeApi('rk_test_fixture',async () => new Response(JSON.stringify({error:{code:'permission_denied',message:'secret processor body'}}),{status:403,headers:{'Request-Id':'req_fixture'}}));
+  await assert.rejects(() => stripe('payouts?limit=10',undefined,undefined,'acct_test'),error => {
+    assert.equal(error.code,'stripe_permission_denied');
+    assert.equal(error.status,503);
+    assert.deepEqual(error.context,{source:'stripe',operation:'payouts',stripe_status:403,stripe_request_id:'req_fixture'});
+    assert.equal(JSON.stringify(error).includes('secret processor body'),false);
+    assert.equal(JSON.stringify(error).includes('rk_test_fixture'),false);
+    return true;
+  });
+});
+
+test('MXN 50 test payment transfers the actual 4314-cent net using its original charge',async () => {
+  const d=await prepare({gross_cents:5000});
+  const fixture=stripeFixture(d,{
+    'payment_intents/pi_one?expand[]=latest_charge.balance_transaction':async () => ({id:'pi_one',status:'succeeded',metadata:{dopmi_donation:d.id},amount_received:5000,currency:'mxn',latest_charge:{id:'ch_one',paid:true,captured:true,disputed:false,amount:5000,currency:'mxn',amount_refunded:0,balance_transaction:{amount:5000,currency:'mxn',fee:586}}}),
+    transfers:async () => transferResult(d,'tr_net',4314),
+  });
+  await serviceFor(fixture.stripe).handleWebhook('evt_intent');
+  const paid=await rpc('get',{donation_id:d.id});
+  assert.equal(paid.gross_cents,5000);
+  assert.equal(paid.platform_fee_cents,100);
+  assert.equal(paid.stripe_fee_cents,586);
+  assert.equal(paid.allocated_cents,4314);
+  assert.equal(paid.stripe_transfer_id,'tr_net');
+  const call=fixture.calls.find(call => call.path === 'transfers');
+  assert.equal(call.body.amount,4314);
+  assert.equal(call.body.source_transaction,'ch_one');
+  assert.equal(call.body.destination,'acct_test');
+  assert.equal(call.idempotency,`dopmi-transfer-${d.id}`);
+});
+
+test('signed redelivery repairs legacy completed events with unfinished transfers without another charge',async () => {
+  const d=await prepare(); await settle(d.id);
+  await rpc('enqueue',{event_id:'evt_intent'});
+  const oldJob=await rpc('claim',{job_key:'evt_intent'});
+  await rpc('finish_job',{job_id:oldJob.id,lease:oldJob.lease});
+  const fixture=stripeFixture(d);
+  const service=serviceFor(fixture.stripe);
+  assert.deepEqual(await service.handleWebhook('evt_intent'),{received:true,duplicate:true});
+  assert.equal((await rpc('get',{donation_id:d.id})).stripe_transfer_id,'tr_fixture');
+  await service.handleWebhook('evt_intent');
+  assert.equal(fixture.calls.filter(call => call.path === 'transfers').length,1);
+  assert.equal(fixture.calls.some(call => call.path === 'checkout/sessions'),false);
 });

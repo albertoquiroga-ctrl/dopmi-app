@@ -65,6 +65,22 @@ Future<void> tapButton(WidgetTester tester, String label) async {
 
 void main() {
   test(
+    'payment errors distinguish account permissions from Stripe configuration',
+    () {
+      String message(String code) => paymentError(
+        FunctionException(status: 403, details: {'error': code}),
+      );
+      expect(message('rescuer_verification_required'), contains('verificación'));
+      expect(message('access_denied'), contains('no tiene acceso'));
+      expect(message('stripe_permission_denied'), contains('conexión de Dopmi'));
+      expect(
+        message('stripe_authentication_failed'),
+        contains('No vuelvas a pagar'),
+      );
+      expect(message('processor_busy'), contains('no vuelvas a pagar'));
+    },
+  );
+  test(
     'payment pages require a confirmed session and respect recovery',
     () async {
       final repo = FakeIdentityRepository();
@@ -112,6 +128,8 @@ void main() {
     );
     await pumpUntil(tester, find.text('Medicamentos para Luna'));
     expect(find.text('Medicamentos para Luna'), findsOneWidget);
+    expect(find.text('Neto asignado: \$0.00 MXN'), findsOneWidget);
+    expect(find.text('Transferido a Stripe: \$0.00 MXN'), findsOneWidget);
     await tester.enterText(
       find.widgetWithText(TextField, 'Tu aportación en MXN'),
       '100.25',

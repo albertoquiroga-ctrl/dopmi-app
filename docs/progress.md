@@ -2,6 +2,26 @@
 
 ## Hito 4 — en curso
 
+- Actualización posterior del 23 de septiembre de 2026:
+  - Supabase conectado y proyecto comprobado `ACTIVE_HEALTHY`. Migración `payment_delivery` aplicada con versión remota `20260923145807` (archivo fuente `202609230001_payment_delivery.sql`); el historial previo estaba vacío aunque las migraciones anteriores ya estaban aplicadas manualmente. No se reejecutaron esas migraciones ni se alteró su historial.
+  - Desplegadas y activas: `payments` v5, `stripe-webhook` v6, `payment-worker` v5. Se conserva su autenticación propia: Auth para clientes, firma de Stripe para eventos y secreto del trabajador. Petición anónima a `payments` devuelve `401 sign_in_required`.
+  - El pago remoto investigado está confirmado, con neto asignado y transferencia aún pendiente, sin referencia de transferencia y con cero intentos del trabajo correspondiente. No hay un job de `pg_cron` que invoque `payment-worker`; esto no descarta un programador externo.
+  - Ahora también se recuperan dependencias pendientes de eventos que la versión anterior ya marcó como completados. Un reenvío firmado del evento original consulta el mismo cargo y reclama su transferencia pendiente; los reenvíos posteriores conservan la misma transferencia.
+  - Pruebas de backend actualizadas: **39/39** (10 identidad, 29 pagos), incluida recuperación de eventos antiguos. No se ha confirmado todavía una transferencia real en Stripe: la invocación autenticada del trabajador o el reenvío firmado del evento original siguen pendientes. No se extrajeron secretos de Edge Functions para ejecutar la recuperación.
+  - El usuario autorizó expresamente el push a la rama propuesta. Git CLI carece de credenciales para el transporte HTTPS; se utiliza la integración conectada de GitHub para publicar los mismos archivos autorizados.
+
+- Corrección de entrega de Stripe Connect del 23 de septiembre de 2026, validada localmente; **pendiente de despliegue y aceptación remota**:
+  - El webhook anterior solo encolaba el evento y devolvía `200`; no garantizaba ejecutar sus transferencias. Ahora reclama el evento y completa sus trabajos dependientes antes de confirmar. Fallos necesarios devuelven `503` y quedan reintentables; no se presupone si el programador remoto estaba activo.
+  - Transferencias vinculadas al cargo original, cuenta destino validada contra el rescatista, clave de idempotencia estable y persistencia atómica de referencia/estado. Se comprobaron duplicados, handlers simultáneos, comisión aún no disponible, respuesta perdida de Stripe y respuesta perdida después del commit de base de datos.
+  - Migración nueva `202609230001_payment_delivery.sql`: reclamo dirigido con arrendamiento, finalización atómica, lectura administrativa para reprocesamiento y acumulados asignado/transferido por gasto y caso. Los RPC internos siguen siendo exclusivos de `service_role`.
+  - `payment-worker` incorpora `reprocess_donation`: usa el Checkout/cargo existente, no crea otro cobro, no transfiere dos veces y se detiene fuera de la ventana segura de idempotencia. No se ha invocado contra la aportación remota del usuario.
+  - Se separó la consulta de estado propio de Connect de la autorización de alta. El historial conserva RLS para donante/rescatista activos; una revisión pendiente no impide consultar aportaciones anteriores. Fallos de permisos de Stripe se distinguen de denegaciones del usuario. La causa exacta de los dos `403` remotos todavía requiere sus logs nuevos; no se declara confirmada.
+  - Flutter muestra neto asignado y transferido con importes consultados, recarga y mensajes de error específicos; se eliminó el aviso fijo de que no hay aportaciones.
+  - `npm test` en `tools/verification`: **38/38** (10 identidad, 28 pagos). Ejecuta todas las migraciones en PGlite/PostgreSQL; Stripe se simula. Incluye el escenario de 5,000 centavos brutos, 100 de plataforma, 586 de Stripe y 4,314 transferidos. No equivale a una prueba real de Stripe ni a concurrencia entre servidores PostgreSQL distintos.
+  - `npm test` en `apps/admin`: **18/18**; `npm run build`: **OK**. Se preservó fuera del commit de pagos el cambio previo del usuario en la revisión administrativa de rescates.
+  - `flutter analyze`, `flutter test` y formato Dart: pendientes, SDK no disponible en este entorno. `supabase test db`: pendiente, no hay stack local/Docker. `deno check`: no se pudo resolver el paquete fijado de Supabase por conexión rechazada al registro npm; no se declara aprobado.
+  - Supabase no está conectado en esta conversación; se solicitó la integración. Antes de desplegar las funciones hay que aplicar la migración. No se habilitó modo live ni se movió dinero en remoto durante esta corrección. Procedimiento y límites en `docs/stripe-test-mode.md`.
+  - El push de la rama `codex/stripe-transfer-delivery` fue bloqueado por el control de autorización del entorno: requiere aprobación explícita del destino y la rama para exportar código posiblemente privado. Los cambios siguen en commits locales; no se intentó eludir el bloqueo ni disparar un despliegue alternativo.
 - Inicio de hito autorizado: Aportaciones base, consultas administrativas y lógica de asignación por cola.
 - Verificación incremental del 21 de septiembre de 2026:
   - `cd tools/verification; npm test` → **23 pruebas, OK**. La cobertura nueva comprueba que el alta de Stripe Connect es reanudable, no duplica cuentas, solicita transferencias para México y consulta depósitos usando el contexto de la cuenta conectada.
@@ -137,6 +157,3 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
 - `flutter analyze`: sin incidencias. `flutter test`: diez pruebas aprobadas en esta sesión.
 - Se añadió `scripts/emulate-android.ps1` para abrir el dispositivo e instalar el APK; `-Rebuild` recompila cuando cambian código/configuración. El comando y las instrucciones para iOS están en `docs/development.md`. La sintaxis PowerShell se comprobó; el arranque/instalación se ejecutó con ese script y las comprobaciones posteriores usaron ADB.
 - iOS interactivo queda pendiente por plataforma: esta sesión dispone de Windows, sin una Mac/Xcode conectada. El simulador oficial requiere macOS. Se conserva la evidencia previa de compilación iOS en CI; no se declara una ejecución interactiva de iOS nueva.
-
-
-
