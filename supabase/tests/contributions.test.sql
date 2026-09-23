@@ -50,5 +50,20 @@ select is((select count(*) from dopmi_donations),1::bigint,'donor can read own p
 select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000003',true);
 select is((dopmi_admin_donations()->>'total')::int,1,'server-authorized admin can inspect history');
 reset role;
+set local role authenticated;
+select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000003',true);
+select throws_ok($$select dopmi_guardian_reserve('70000000-0000-4000-8000-000000000001','73000000-0000-4000-8000-000000000001',2000)$$,
+  '42501',null,'even staff cannot reserve Guardian funds');
+select throws_ok('select * from private.dopmi_guardian_allocations','42501',null,'Guardian allocations are private');
+reset role;
+select is((dopmi_guardian_reserve('70000000-0000-4000-8000-000000000001',
+  '73000000-0000-4000-8000-000000000001',2000)->>'reserved_cents')::bigint,1960::bigint,
+  'Guardian holds the upper net against the remaining approved expense');
+select is((dopmi_expense_funding('71000000-0000-4000-8000-000000000003')->>'available_cents')::bigint,840::bigint,
+  'funding availability subtracts a pending Guardian hold');
+select is(dopmi_guardian_release('70000000-0000-4000-8000-000000000001',
+  '73000000-0000-4000-8000-000000000001')->>'status','released','releasing a hold restores capacity');
+select is((dopmi_expense_funding('71000000-0000-4000-8000-000000000003')->>'available_cents')::bigint,2800::bigint,
+  'released hold is not counted as paid or reserved');
 select * from finish();
 rollback;

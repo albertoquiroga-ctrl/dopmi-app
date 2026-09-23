@@ -316,6 +316,77 @@ test('reservations prevent overbooking and settled payments never exceed the sel
   assert.equal(paid.gross_cents,paid.platform_fee_cents+paid.stripe_fee_cents+paid.allocated_cents+paid.refund_cents);
   assert.equal((await db.query('select sum(allocated_cents)::int as n from public.dopmi_donations')).rows[0].n,12000);
 });
+const guardianKey = '73000000-0000-4000-8000-000000000001';
+const guardian = async (gross=10000,key=guardianKey,actor=donor) =>
+  (await db.query('select public.dopmi_guardian_reserve($1,$2,$3) as value',[actor,key,gross])).rows[0].value;
+const releaseGuardian = async (key=guardianKey) =>
+  (await db.query('select public.dopmi_guardian_release($1,$2) as value',[donor,key])).rows[0].value;
+test('Guardian holds the entire upper net, shares single-payment capacity and releases it',async () => {
+  const held=await guardian();
+  assert.equal(held.status,'reserved');
+  assert.equal(held.reserved_cents,9800);
+  assert.deepEqual(held.allocations,[{expense_id:expense,amount_cents:9800}]);
+  assert.equal((await guardian()).id,held.id);
+  assert.equal((await db.query('select count(*)::int as n from private.dopmi_guardian_cycles')).rows[0].n,1);
+  await rejected(() => guardian(11000),/otro importe/);
+  assert.equal((await rpc('prepare',{actor:other,expense_id:expense,key,gross_cents:10000})).reserved_cents,2200);
+  const funded=(await db.query('select public.dopmi_expense_funding($1) as value',[expense])).rows[0].value;
+  assert.equal(funded.available_cents,0);
+  assert.equal(funded.funded_cents,0);
+  assert.equal((await releaseGuardian()).status,'released');
+  assert.equal((await releaseGuardian()).status,'released');
+  assert.equal((await db.query('select private.dopmi_guardian_reserved($1)::int as n',[expense])).rows[0].n,0);
+  assert.equal((await db.query('select public.dopmi_expense_funding($1) as value',[expense])).rows[0].value.available_cents,9800);
+});
+test('Guardian skips a cycle instead of holding a partial amount or charging anything',async () => {
+  const one=await guardian(15000);
+  assert.equal(one.status,'skipped');
+  assert.equal(one.reserved_cents,0);
+  assert.deepEqual(one.allocations,[]);
+  assert.equal((await guardian(15000)).id,one.id);
+  assert.equal((await db.query('select count(*)::int as n from private.dopmi_guardian_allocations')).rows[0].n,0);
+  assert.equal((await db.query('select count(*)::int as n from public.dopmi_donations')).rows[0].n,0);
+});
+test('Guardian cannot borrow capacity already reserved by an individual Checkout',async () => {
+  await prepare();
+  const cycle=await guardian(4000);
+  assert.equal(cycle.status,'skipped');
+  assert.deepEqual(cycle.allocations,[]);
+  assert.equal((await db.query('select private.dopmi_guardian_reserved($1)::int as n',[expense])).rows[0].n,0);
+});
+test('Guardian orders multiple eligible expenses and subtracts pending donations before planning',async () => {
+  await db.query(`insert into public.dopmi_rescue_records(id,owner_id,kind,status,approved_snapshot,parent_id,reimbursable_cents,urgent,approved_at)
+    values('71000000-0000-4000-8000-000000000004',$1,'expense','approved','{"title":"Prioridad"}',
+      '71000000-0000-4000-8000-000000000002',5000,true,now())`,[rescuer]);
+  await db.query('update public.dopmi_rescue_records set approved_at=now()-interval \'1 day\' where id=$1',[expense]);
+  const pending=await prepare({gross_cents:10000});
+  assert.equal(pending.reserved_cents,9800);
+  const held=await guardian(7000,'73000000-0000-4000-8000-000000000002',other);
+  assert.equal(held.status,'reserved');
+  assert.deepEqual(held.allocations,[
+    {expense_id:'71000000-0000-4000-8000-000000000004',amount_cents:5000},
+    {expense_id:expense,amount_cents:1860},
+  ]);
+  const settled=await settle(pending.id);
+  assert.equal(settled.allocated_cents,9200);
+  assert.equal(settled.refund_cents,0);
+});
+test('expired Guardian holds are not counted and same key cannot create a new cycle',async () => {
+  const held=await guardian();
+  await db.query('update private.dopmi_guardian_cycles set expires_at=now()-interval \'1 minute\' where id=$1',[held.id]);
+  assert.equal((await db.query('select private.dopmi_guardian_reserved($1)::int as n',[expense])).rows[0].n,0);
+  assert.equal((await guardian()).status,'expired');
+  assert.equal((await db.query('select count(*)::int as n from private.dopmi_guardian_cycles')).rows[0].n,1);
+});
+test('Guardian holds and private allocation records cannot be created by clients or administrators',async () => {
+  for(const actor of [donor,staff]){
+    await role(actor);
+    await rejected(() => guardian(),/permission denied/);
+    await rejected(() => releaseGuardian(),/permission denied/);
+    await rejected(() => db.query('select * from private.dopmi_guardian_allocations'),/permission denied/);
+    await db.exec('reset role');
+  }
+});
 test('approval revoked after checkout causes full refund with processor loss absorbed',async () => {
   const d=await prepare();
   await db.query("update public.dopmi_rescue_records set status='changes_requested' where id=$1",[expense]);
