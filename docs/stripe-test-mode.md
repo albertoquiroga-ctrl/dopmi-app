@@ -45,6 +45,8 @@ Eventos mínimos:
 
 Invoca periódicamente `payment-worker` con `POST` y el encabezado `Authorization: Bearer <DOPMI_WORKER_SECRET>`. El secreto debe vivir en el gestor de secretos del programador, nunca en SQL público ni en una app cliente. Un intervalo de un minuto es suficiente para la prueba interna.
 
+Para usar Supabase Cron, guarda **el mismo** valor de `DOPMI_WORKER_SECRET` en Supabase Vault con el nombre `dopmi_payment_worker_token` desde el panel privado del proyecto; no generes otro valor sin actualizar también la Edge Function. Después ejecuta [`docs/payment-worker-schedule.sql`](payment-worker-schedule.sql) en el SQL editor. El trabajo obtiene el token de Vault al ejecutarse; no queda en el texto de `cron.job`. Comprueba en Cron que el trabajo está activo y que los intentos periódicos devuelven HTTP 200. Un trabajo programado sin ejecuciones HTTP exitosas no cuenta como respaldo activo. Evita crear un segundo programador si ya existe uno externo.
+
 ## Aceptación interna
 
 1. Un rescatista aprobado completa Connect en modo prueba y Dopmi muestra `ready=true` solo después de que Stripe habilite transferencias y depósitos.
