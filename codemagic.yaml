@@ -25,12 +25,14 @@ workflows:
     scripts:
       - name: Create runtime configuration
         script: |
-          if [[ ! "${SUPABASE_URL:-}" =~ ^https://[^[:space:]]+\.supabase\.co/?$ ]]; then
-            echo "SUPABASE_URL is missing or invalid in the dopmi_supabase variable group."
+          SUPABASE_URL="$(printf '%s' "${SUPABASE_URL:-}" | tr -d '\\r\\n[:space:]')"
+          SUPABASE_PUBLISHABLE_KEY="$(printf '%s' "${SUPABASE_PUBLISHABLE_KEY:-}" | tr -d '\\r\\n[:space:]')"
+          if [[ ! "$SUPABASE_URL" =~ ^https://[^/]+\.supabase\.co/?$ ]]; then
+            echo "The Supabase endpoint is missing or invalid in the dopmi_supabase variable group."
             exit 1
           fi
-          if [[ "${SUPABASE_PUBLISHABLE_KEY:-}" != sb_publishable_* && ! "${SUPABASE_PUBLISHABLE_KEY:-}" =~ ^eyJ[^.]*\.[^.]+\.[^.]+$ ]]; then
-            echo "SUPABASE_PUBLISHABLE_KEY is missing or invalid in the dopmi_supabase variable group."
+          if [[ "$SUPABASE_PUBLISHABLE_KEY" != sb_publishable_* && ! "$SUPABASE_PUBLISHABLE_KEY" =~ ^eyJ[^.]*\.[^.]+\.[^.]+$ ]]; then
+            echo "The Supabase client key is missing or invalid in the dopmi_supabase variable group."
             exit 1
           fi
           cat > config.json <<EOF
@@ -93,12 +95,14 @@ workflows:
     scripts:
       - name: Create runtime configuration
         script: |
-          if [[ ! "${SUPABASE_URL:-}" =~ ^https://[^[:space:]]+\.supabase\.co/?$ ]]; then
-            echo "SUPABASE_URL is missing or invalid in the dopmi_supabase variable group."
+          SUPABASE_URL="$(printf '%s' "${SUPABASE_URL:-}" | tr -d '\\r\\n[:space:]')"
+          SUPABASE_PUBLISHABLE_KEY="$(printf '%s' "${SUPABASE_PUBLISHABLE_KEY:-}" | tr -d '\\r\\n[:space:]')"
+          if [[ ! "$SUPABASE_URL" =~ ^https://[^/]+\.supabase\.co/?$ ]]; then
+            echo "The Supabase endpoint is missing or invalid in the dopmi_supabase variable group."
             exit 1
           fi
-          if [[ "${SUPABASE_PUBLISHABLE_KEY:-}" != sb_publishable_* && ! "${SUPABASE_PUBLISHABLE_KEY:-}" =~ ^eyJ[^.]*\.[^.]+\.[^.]+$ ]]; then
-            echo "SUPABASE_PUBLISHABLE_KEY is missing or invalid in the dopmi_supabase variable group."
+          if [[ "$SUPABASE_PUBLISHABLE_KEY" != sb_publishable_* && ! "$SUPABASE_PUBLISHABLE_KEY" =~ ^eyJ[^.]*\.[^.]+\.[^.]+$ ]]; then
+            echo "The Supabase client key is missing or invalid in the dopmi_supabase variable group."
             exit 1
           fi
           cat > config.json <<EOF
