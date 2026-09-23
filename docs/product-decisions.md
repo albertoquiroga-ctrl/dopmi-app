@@ -15,6 +15,7 @@ El prototipo React y la fuente funcional del ZIP son referencias de producto. Su
 - Stripe Connect: pago confirmado, asignación, transferencia y depósito son estados diferentes.
 - Comisión Dopmi: 2% del bruto; costos aplicables de Stripe también se descuentan. El neto cuenta para el reembolso.
 - Guardián: $50/$200/$500 MXN o monto personalizado, mensual.
+- Guardián (decisión del titular, 23 de septiembre de 2026): cobro automático condicionado a que el importe neto pueda asignarse completo a gastos aprobados; el primer intento de cobro ocurre al activar el plan y los siguientes en cada aniversario mensual. Si al activar no hay capacidad, informar antes de abrir Checkout y no crear una suscripción que pueda cobrar. Si un mes no hay capacidad, omitir ese ciclo sin deuda ni cargo y volver a evaluar el siguiente. Cambiar el monto aplica al siguiente ciclo; cancelar detiene ciclos futuros y conserva el historial del actual. El cliente debe mostrar monto autorizado, frecuencia, fecha prevista y posibilidad de cancelar antes de confirmar.
 - Sin Guardadito ni reserva comunitaria. Distribuir por urgencia aprobada, después por fecha de aprobación más antigua.
 - Cubrir el faltante antes de pasar al siguiente. No exceder gastos aprobados.
 - Omitir la cuota mensual si no puede asignarse completa; sin deuda acumulada. Devolver importes cobrados que ya no puedan asignarse.
