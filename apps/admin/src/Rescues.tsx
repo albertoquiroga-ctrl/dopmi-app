@@ -43,7 +43,7 @@ function RescueReview({api,id,close,updated,openParent,denied}:{api:AdminApi;id:
   useEffect(()=>{let alive=true;setLoading(true);setError('');setDetail(null);setUrls({});setSeen([]);setLoaded([]);setPublished(false);
     api.rescueDetail(id).then(async value=>{const paths=await Promise.all(value.record.files.map(async f=>[f.path,await api.rescueFileUrl(f.path)]));
       if(alive){setDetail(value);setUrls(Object.fromEntries(paths));setPesos((Number(value.record.private_data.amount_cents||0)/100).toFixed(2));setUrgent(value.record.urgent);setUrgency(value.record.priority_reason);}
-    }).catch(e=>{if(alive){if(e?.code==='42501')denied();else setError(message(e));}}).finally(()=>{if(alive)setLoading(false);});return()=>{alive=false;};
+    }).catch(e=>{if(alive){if(e?.code==='42501'&&e?.message!=='Otra persona del equipo debe revisar tu solicitud')denied();else setError(message(e));}}).finally(()=>{if(alive)setLoading(false);});return()=>{alive=false;};
   // The dialog owns these callbacks; an unmounted request never restores private data.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[api,id,retry]);
@@ -57,7 +57,7 @@ function RescueReview({api,id,close,updated,openParent,denied}:{api:AdminApi;id:
     if(decision==='approved'&&urgent&&urgency.trim().length<5){setError('Escribe el motivo de la urgencia.');return;}
     setBusy(true);setError('');
     try{await api.reviewRescue(r,{decision,note:note.trim(),amount_cents:cents??0,is_urgent:urgent,urgency_note:urgency,publish_content:published});updated();close();}
-    catch(e){if((e as {code?:string})?.code==='42501')denied();else {setError(message(e));if((e as {code?:string})?.code==='40001'){setDetail(null);setUrls({});}}}
+    catch(e){if((e as {code?:string;message?:string})?.code==='42501'&&(e as {message?:string})?.message!=='Otra persona del equipo debe revisar tu solicitud')denied();else {setError(message(e));if((e as {code?:string})?.code==='40001'){setDetail(null);setUrls({});}}}
     finally{setBusy(false);}
   }
   return <dialog ref={dialog} className="rescue-dialog" onCancel={e=>{if(busy)e.preventDefault();else close();}} aria-labelledby="rescue-review-title"><div className="dialog-header"><p className="eyebrow">Revisión de expediente</p><button className="text-button" disabled={busy} onClick={close}>Cerrar</button></div>

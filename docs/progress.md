@@ -1,6 +1,8 @@
 # Dopmi — registro de avance
 
-## Hito 4 — en curso
+## Hito 4 — completado en modo prueba
+
+- Cierre del 23 de septiembre de 2026: alcance, evidencia y límites en `docs/hito4-delivery.md`. Los cuatro jobs de [CI 35926624549](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/35926624549) aprobaron el commit `ca7d23e`: `supabase test db` con PostgreSQL y migraciones reales, tests/builds web, formato/análisis/tests Flutter, APK Android de desarrollo, compilación iOS simulator y pruebas integradas de backend. No se infiere un depósito bancario ni se habilita modo live.
 
 - Trabajador periódico activado el 23 de septiembre de 2026:
   - Se confirmó solo la **existencia** del token en Vault, sin leer su valor. `pg_cron` invoca `payment-worker` cada minuto mediante `pg_net` y resuelve el token al ejecutarse. Trabajo remoto `dopmi-payment-worker-reconcile`, ID 4, activo.
