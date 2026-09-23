@@ -2,6 +2,11 @@
 
 ## Hito 4 — en curso
 
+- Trabajador periódico activado el 23 de septiembre de 2026:
+  - Se confirmó solo la **existencia** del token en Vault, sin leer su valor. `pg_cron` invoca `payment-worker` cada minuto mediante `pg_net` y resuelve el token al ejecutarse. Trabajo remoto `dopmi-payment-worker-reconcile`, ID 4, activo.
+  - La primera ejecución devolvió HTTP 503. Los logs de la función señalaron `reconcile_candidates` y SQLSTATE `42702`: el alias `d` de la consulta chocaba con la variable PL/pgSQL `d`. Se pausó temporalmente el trabajo, se añadió una prueba de regresión y la migración local `20260923215745_fix_payment_reconcile_candidates.sql`, aplicada remotamente como `20260923215929_fix_payment_reconcile_candidates`.
+  - La RPC remota ya responde sin error. Se reactivó el trabajo: ejecución de Cron `succeeded`, respuesta HTTP **200**, `processed=3`, `failed=0`. Los tres eventos previamente en espera pasaron a `done`; no se abrió otro Checkout ni se pidió otro cobro. Suite local backend **54/54**. El depósito bancario y `supabase test db` siguen pendientes; esto no habilita modo live.
+
 - Seguimiento del 23 de septiembre, tras la confirmación de Android: el historial del usuario muestra devolución completa, transferencia revertida y neto cero para la aportación de prueba. `tools/verification` volvió a pasar **53/53**; `apps/admin` pasó **18/18** y compiló. En el proyecto remoto están habilitados `pg_cron` y `pg_net`, pero sus tres trabajos existentes no llaman a `payment-worker`. La cola conserva tres eventos antiguos `ready` con cero intentos; un evento en cola no prueba por sí solo que haya un cobro pendiente. No se conoce la existencia de un programador externo ni se puede afirmar que el respaldo periódico esté activo. Se preparó `docs/payment-worker-schedule.sql` para un trabajo de un minuto con token leído de Vault; requiere guardar allí el secreto actual del trabajador y comprobar respuestas HTTP antes de ejecutarlo. H4.4–H4.6 permanecen abiertos.
 
 - Devolución completa posterior a transferencia — implementada y comprobada el 23 de septiembre de 2026:

@@ -64,6 +64,12 @@ function stripeFixture(d, overrides={}) {
   }};
 }
 const serviceFor = (stripe, overrideRpc=rpc) => paymentService({rpc:overrideRpc,stripe,returnUrl:'https://example.test/return',logger:{}});
+test('scheduled reconciliation finds pending checkouts without an ambiguous SQL alias',async () => {
+  const d=await prepare();
+  await rpc('checkout_save',{donation_id:d.id,session_id:'cs_pending',url:'https://example.test/checkout'});
+  const candidates=await rpc('reconcile_candidates',{});
+  assert.deepEqual(candidates,[{id:d.id,session_id:'cs_pending'}]);
+});
 test('unsuccessful payment does not confirm, allocate or transfer funds',async () => {
   const d=await prepare();
   const fixture=stripeFixture(d,{
