@@ -2,6 +2,8 @@
 
 ## Hito 5 — preparación de Guardián en modo de prueba
 
+- Vista previa de capacidad `dopmi_guardian_capacity_preview(gross)` para usuarios autenticados y activos: calcula el neto máximo por reservar, descuenta aportaciones y reservas pendientes y excluye gastos propios/no elegibles. Es sólo una lectura; la reserva transaccional sigue siendo obligatoria antes de Checkout. Los cuatro jobs de [CI 35934568573](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/35934568573) aprobaron: PostgreSQL/pgTAP, backend integrado, Flutter/Android e iOS simulator. La migración `20260923233000_guardian_capacity_preview.sql` se aplicó en Supabase como `20260923234106_guardian_capacity_preview`. Verificación remota: función presente, permiso `authenticated` sí, `anon` no, **cero ciclos creados**. Pruebas locales backend **65/65**. No se crea una suscripción ni se realiza un cobro.
+
 - Decisión de producto confirmada el 23 de septiembre de 2026: cobro al activar Guardián y después mensual, sólo si el neto completo cabe en gastos aprobados; si no cabe, el ciclo se omite sin cargo ni deuda. Cancelación impide futuros ciclos y el cambio de monto rige desde el siguiente. Contrato de estados, autorización visible y condiciones para conectar Stripe Billing en `docs/guardian-billing-design.md`. H5.2 queda validado; todavía no hay interfaz, suscripción, cargo ni webhook Guardián activo.
 - La ejecución de CI 35931321235 confirmó la prueba de concurrencia, el backend integrado y iOS; el job Flutter/Android se canceló automáticamente cuando el commit siguiente de documentación inició otra ejecución de la misma rama. La cancelación no es un fallo de prueba ni acredita Flutter/Android para ese commit.
 
