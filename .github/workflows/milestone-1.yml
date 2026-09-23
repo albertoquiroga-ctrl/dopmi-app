@@ -30,6 +30,8 @@ jobs:
         run: tools/verification/node_modules/.bin/supabase db start
       - name: Supabase permissions tests
         run: tools/verification/node_modules/.bin/supabase test db
+      - name: Guardian concurrent reservations against PostgreSQL
+        run: node tools/verification/guardian-concurrency.mjs
   flutter:
     runs-on: ubuntu-latest
     steps:
