@@ -158,15 +158,67 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console }) {
     } else if (event.type === 'charge.refunded' && object.metadata?.dopmi_donation) {
       const d = await rpc('get', { donation_id: object.metadata.dopmi_donation });
       const charge = await stripe(`charges/${object.id}`);
-      if (d && charge.amount_refunded > d.refund_cents) await rpc('hold', { payment_intent_id: charge.payment_intent });
+      if (d && charge.amount_refunded > d.refund_cents) {
+        if (charge.amount_refunded !== d.gross_cents) {
+          await rpc('hold', { payment_intent_id: charge.payment_intent });
+          throw new PaymentError('partial_refund_review', 503);
+        }
+        await syncFullRefund(d.id);
+      }
     }
     return [];
   }
   const attentionCodes = new Set(['charge_needs_review','charge_mismatch','external_refund_review','destination_mismatch','settlement_currency_mismatch','transfer_mismatch','unconfirmed_payment']);
+  async function syncFullRefund(donationId) {
+    const d = await rpc('refund_begin', { donation_id: donationId });
+    if (d.payment_status === 'refunded' && d.transfer_status === 'reversed') return d;
+    const job = await rpc('claim', { job_key: `reversal:${donationId}` });
+    if (!job || job.skipped) throw new PaymentError(job?.status === 'attention' ? 'manual_reconciliation_required' : 'processor_busy', 503);
+    await executeJob(job, true);
+    return rpc('get', { donation_id: donationId });
+  }
+  async function reverseRefundedTransfer(job) {
+    const d = await rpc('get', { donation_id: job.donation_id });
+    const charge = await stripe(`charges/${d.stripe_charge_id}`);
+    if (charge.id !== d.stripe_charge_id || charge.payment_intent !== d.stripe_payment_intent_id
+      || charge.currency !== d.currency || charge.amount !== d.gross_cents || charge.disputed) throw new PaymentError('charge_mismatch');
+    if (charge.amount_refunded !== d.gross_cents) throw new PaymentError('refund_not_complete', 503);
+    const refunds = await stripe(`refunds?charge=${d.stripe_charge_id}&limit=100`);
+    const succeeded = refunds.data.filter(r => r.status === 'succeeded');
+    if (refunds.has_more || succeeded.length === 0 || succeeded.some(r => r.charge !== d.stripe_charge_id || r.currency !== d.currency || !r.id?.startsWith('re_') || !Number.isSafeInteger(r.amount) || r.amount <= 0)
+      || succeeded.reduce((sum,r) => sum+r.amount,0) !== d.gross_cents) throw new PaymentError('refund_not_complete', 503);
+    const account = await rpc('lookup_account', { account_id: d.destination });
+    if (!account || account.owner_id !== d.rescuer_id) throw new PaymentError('destination_mismatch');
+    let transfer = await stripe(`transfers/${d.stripe_transfer_id}`);
+    const validate = t => {
+      if (t.id !== d.stripe_transfer_id || t.amount !== d.allocated_cents || t.currency !== d.currency
+        || t.destination !== d.destination || t.source_transaction !== d.stripe_charge_id
+        || t.transfer_group !== `dopmi_${d.id}`) throw new PaymentError('transfer_mismatch');
+    };
+    validate(transfer);
+    if (transfer.amount_reversed !== 0 && transfer.amount_reversed !== transfer.amount) throw new PaymentError('partial_reversal_review', 503);
+    if (transfer.amount_reversed === 0) {
+      await stripe(`transfers/${transfer.id}/reversals`, { amount: transfer.amount, 'metadata[dopmi_donation]': d.id }, `dopmi-full-reversal-${d.id}`);
+      transfer = await stripe(`transfers/${transfer.id}`);
+      validate(transfer);
+    }
+    if (!transfer.reversed || transfer.amount_reversed !== d.allocated_cents) throw new PaymentError('reversal_not_complete', 503);
+    const reversals = await stripe(`transfers/${transfer.id}/reversals?limit=100`);
+    // Partial/manual reversals require separate reconciliation; never guess an amount.
+    const reversal = reversals.data.find(r => r.transfer === transfer.id && r.amount === d.allocated_cents && r.currency === d.currency && r.id?.startsWith('trr_'));
+    if (reversals.has_more || reversals.data.length !== 1 || !reversal) throw new PaymentError('transfer_mismatch');
+    await rpc('refund_finish', { job_id: job.id, lease: job.lease, charge_id: charge.id, transfer_id: transfer.id,
+      refund_id: succeeded[0].id, refund_ids: succeeded.map(r => r.id), refund_cents: d.gross_cents,
+      reversal_id: reversal.id, reversed_cents: transfer.amount_reversed });
+    paymentLog(logger, 'payment_refund_reconciled', { donation_id: d.id, reversal_id: reversal.id, refund_id: succeeded[0].id });
+  }
   async function executeJob(job, propagate = false) {
     try {
       let result;
-      if (job.kind === 'event') {
+      if (job.kind === 'reversal') {
+        await reverseRefundedTransfer(job);
+        return true;
+      } else if (job.kind === 'event') {
         const donationIds = await processEvent(job.payload);
         for (const donationId of donationIds) await finishDonation(donationId);
       } else {
@@ -201,6 +253,8 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console }) {
     }
   }
   async function finishDonation(donationId) {
+    const current = await rpc('get', { donation_id: donationId });
+    if (current?.external_refund_pending) return syncFullRefund(donationId);
     for (const kind of ['transfer','refund']) {
       let d = await rpc('get', { donation_id: donationId });
       if (!d?.processed_at) throw new PaymentError('unconfirmed_payment');

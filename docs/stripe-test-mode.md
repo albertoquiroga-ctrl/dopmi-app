@@ -88,6 +88,16 @@ Alternativa sin compartir el secreto del trabajador: reenviar desde Stripe el ev
 
 ## Historial y diagnóstico de permisos
 
+### Devolución total después de una transferencia
+
+El evento firmado `charge.refunded` consulta el cargo y sus devoluciones. Cuando la devolución total ha finalizado y la transferencia original está registrada, reclama un trabajo `reversal:<donation_id>`. Comprueba cuenta destino, cargo, moneda e importe y revierte la transferencia con `dopmi-full-reversal-<donation_id>` como clave de idempotencia. Si Stripe ya la revirtió, consulta y conserva esa evidencia sin emitir otra reversión.
+
+Los importes anteriores se conservan en `private.dopmi_refund_adjustments`. Solo después de verificar devolución y reversión, una transacción marca pago devuelto, transferencia revertida, comisión Dopmi 0, asignación 0 y trabajo completado. La comisión de Stripe original queda como pérdida de plataforma. El historial conserva referencias originales; el acumulado del gasto y del caso deja de incluir esa aportación.
+
+Saldo insuficiente, respuesta perdida o devolución pendiente mantienen el trabajo reintentable y el gasto reservado. Una cuenta destino distinta requiere revisión. El alcance actual automatiza devoluciones totales sobre transferencias completadas: las devoluciones parciales, reversiones parciales o transferencias con resultado incierto requieren conciliación manual y no reciben confirmación silenciosa. No reiniciar trabajos ni claves para saltar el límite de reintentos.
+
+Aceptación de sandbox del 23 de septiembre: devolución de $50 MXN completada, una reversión automática de $43.14 MXN, referencias conciliadas y acumulado 0. No equivale a una prueba de depósito bancario ni habilita producción.
+
 - El historial móvil lee `dopmi_donations` directamente con RLS, limitado al donante o rescatista dueño activo. No usa la acción `connect_status` de `/payments` ni necesita aprobación de rescatista para leer aportaciones previas.
 - `connect_status` permite consultar el estado propio a una cuenta activa y confirmada aunque su verificación esté pendiente. El alta de Connect y los nuevos cobros mantienen la validación de rescatista aprobado.
 - Un `403` de Stripe (clave restringida sin permisos) se devuelve como `503 stripe_permission_denied`, separado de `403 access_denied` / `rescuer_verification_required` del usuario. Revisar permisos de lectura de Events, PaymentIntents, Charges, Balance Transactions, cuentas y Payouts, y escritura de Checkout, Accounts/Account Links, Transfers y Refunds según el recurso/ámbito utilizado. No ampliar permisos indiscriminadamente ni cambiar a una clave live.

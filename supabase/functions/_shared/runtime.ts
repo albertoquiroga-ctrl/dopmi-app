@@ -13,7 +13,9 @@ export function runtime() {
   const url = Deno.env.get('SUPABASE_URL')!;
   const db = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } });
   const rpc = async (operation: string, data: unknown) => {
-    const request = operation === 'finish_job'
+    const request = operation === 'refund_begin' || operation === 'refund_finish'
+      ? db.rpc('dopmi_refund_adjustment', { operation: operation === 'refund_begin' ? 'begin' : 'finish', data })
+      : operation === 'finish_job'
       ? db.rpc('dopmi_payment_job_finish', { data })
       : operation === 'claim'
       ? db.rpc('dopmi_payment_job_claim', { target_key: (data as { job_key?: string })?.job_key ?? null })

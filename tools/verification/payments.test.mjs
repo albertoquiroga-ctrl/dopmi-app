@@ -37,6 +37,7 @@ after(async () => db?.close());
 beforeEach(async () => db.exec('begin'));
 afterEach(async () => db.exec('rollback'));
 const rpc = async (operation,data) => {
+  if (operation === 'refund_begin' || operation === 'refund_finish') return (await db.query('select public.dopmi_refund_adjustment($1,$2::jsonb) as value',[operation === 'refund_begin' ? 'begin' : 'finish',JSON.stringify(data)])).rows[0].value;
   if (operation === 'finish_job') return (await db.query('select public.dopmi_payment_job_finish($1::jsonb) as value',[JSON.stringify(data)])).rows[0].value;
   if (operation === 'claim') return (await db.query('select public.dopmi_payment_job_claim($1) as value',[data.job_key ?? null])).rows[0].value;
   if (operation === 'replay_get') return (await db.query('select public.dopmi_payment_replay_get($1) as value',[data.donation_id])).rows[0].value;
@@ -63,6 +64,203 @@ function stripeFixture(d, overrides={}) {
   }};
 }
 const serviceFor = (stripe, overrideRpc=rpc) => paymentService({rpc:overrideRpc,stripe,returnUrl:'https://example.test/return',logger:{}});
+test('unsuccessful payment does not confirm, allocate or transfer funds',async () => {
+  const d=await prepare();
+  const fixture=stripeFixture(d,{
+    'payment_intents/pi_one?expand[]=latest_charge.balance_transaction':async ()=>({id:'pi_one',status:'requires_payment_method',metadata:{dopmi_donation:d.id}}),
+  });
+  assert.equal(await serviceFor(fixture.stripe).settleIntent('pi_one',d.id),null);
+  const result=await rpc('get',{donation_id:d.id});
+  assert.equal(result.payment_status,'pending');
+  assert.equal(result.allocated_cents,0);
+  assert.equal(fixture.calls.some(c=>c.path==='transfers'),false);
+});
+test('expired unpaid checkout releases reservation and never transfers',async () => {
+  const d=await prepare();
+  const fixture=stripeFixture(d,{
+    'events/evt_expired':async ()=>({livemode:false,type:'checkout.session.expired',data:{object:{id:'cs_one'}}}),
+    'checkout/sessions/cs_one':async ()=>({metadata:{dopmi_donation:d.id},status:'expired',payment_status:'unpaid'}),
+  });
+  await serviceFor(fixture.stripe).handleWebhook('evt_expired');
+  const result=await rpc('get',{donation_id:d.id});
+  assert.equal(result.payment_status,'canceled');
+  assert.equal(result.reserved_cents,0);
+  assert.equal(result.allocated_cents,0);
+  assert.equal(fixture.calls.some(c=>c.path==='transfers'),false);
+});
+test('unassignable payment refund completes once and replay does not create another refund',async () => {
+  const d=await prepare();
+  await db.query("update public.dopmi_rescue_records set status='changes_requested' where id=$1",[expense]);
+  await settle(d.id);
+  const fixture=stripeFixture(d,{refunds:async body => {
+    assert.equal(body.amount,10000);
+    assert.equal(body.charge,'ch_one');
+    return {id:'re_full',status:'succeeded'};
+  }});
+  const service=serviceFor(fixture.stripe);
+  const result=await service.reprocessDonation(d.id);
+  assert.equal(result.payment_status,'refunded');
+  assert.equal(result.refund_status,'refunded');
+  assert.equal(result.stripe_refund_id,'re_full');
+  await service.reprocessDonation(d.id);
+  assert.equal(fixture.calls.filter(c=>c.path==='refunds').length,1);
+  assert.equal(fixture.calls.filter(c=>c.path==='transfers').length,0);
+});
+test('refund lost response retries with the same idempotency key and amount',async () => {
+  const d=await prepare();
+  await db.query("update public.dopmi_rescue_records set status='changes_requested' where id=$1",[expense]);
+  await settle(d.id);
+  let attempts=0;
+  const fixture=stripeFixture(d,{refunds:async () => {
+    if (++attempts===1) throw new Error('response lost after Stripe accepted refund');
+    return {id:'re_recovered',status:'succeeded'};
+  }});
+  const service=serviceFor(fixture.stripe);
+  await assert.rejects(()=>service.reprocessDonation(d.id),/processor_unavailable/);
+  await db.exec('update private.dopmi_payment_jobs set available_at=now()');
+  assert.equal((await service.reprocessDonation(d.id)).stripe_refund_id,'re_recovered');
+  const calls=fixture.calls.filter(c=>c.path==='refunds');
+  assert.equal(calls.length,2);
+  assert.equal(calls[0].idempotency,calls[1].idempotency);
+  assert.deepEqual(calls[0].body,calls[1].body);
+});
+test('pending processor refund is not reported as refunded',async () => {
+  const d=await prepare();
+  await db.query("update public.dopmi_rescue_records set status='changes_requested' where id=$1",[expense]);
+  await settle(d.id);
+  const fixture=stripeFixture(d,{
+    refunds:async ()=>({id:'re_pending',status:'pending'}),
+    'refunds/re_pending':async ()=>({id:'re_pending',status:'pending'}),
+  });
+  await assert.rejects(()=>serviceFor(fixture.stripe).reprocessDonation(d.id),/refund_not_complete/);
+  const result=await rpc('get',{donation_id:d.id});
+  assert.equal(result.refund_status,'pending');
+  assert.equal(result.stripe_refund_id,null);
+});
+function refundFixture(d, overrides={}) {
+  let reversed=false;
+  const reversal={id:'trr_full',transfer:'tr_fixture',amount:9200,currency:'mxn'};
+  return stripeFixture(d,{
+    'events/evt_external_refund':async ()=>({livemode:false,type:'charge.refunded',data:{object:{id:'ch_one',metadata:{dopmi_donation:d.id}}}}),
+    'charges/ch_one':async ()=>({id:'ch_one',payment_intent:'pi_one',amount:10000,currency:'mxn',disputed:false,amount_refunded:10000}),
+    'refunds?charge=ch_one&limit=100':async ()=>({has_more:false,data:[{id:'re_external',charge:'ch_one',currency:'mxn',amount:10000,status:'succeeded'}]}),
+    'transfers/tr_fixture':async ()=>({...transferResult(d,'tr_fixture'),reversed,amount_reversed:reversed?9200:0}),
+    'transfers/tr_fixture/reversals':async body=>{assert.equal(body.amount,9200);reversed=true;return reversal;},
+    'transfers/tr_fixture/reversals?limit=100':async ()=>({has_more:false,data:reversed?[reversal]:[]}),
+    ...overrides,
+  });
+}
+async function transferredDonation() {
+  const d=await prepare(); await settle(d.id);
+  await serviceFor(stripeFixture(d).stripe).reprocessDonation(d.id);
+  return d;
+}
+test('full refund reverses once, preserves audit evidence and frees the expense assignment',async () => {
+  const d=await transferredDonation();
+  const fixture=refundFixture(d); const service=serviceFor(fixture.stripe);
+  await service.handleWebhook('evt_external_refund');
+  await service.handleWebhook('evt_external_refund');
+  await service.reprocessDonation(d.id);
+  const result=await rpc('get',{donation_id:d.id});
+  assert.equal(result.transfer_status,'reversed');
+  assert.equal(result.payment_status,'refunded');
+  assert.equal(result.refund_status,'refunded');
+  assert.equal(result.allocated_cents,0);
+  assert.equal(result.refund_cents,10000);
+  assert.equal(result.platform_fee_cents,0);
+  assert.equal(result.platform_loss_cents,600);
+  assert.equal(result.stripe_reversal_id,'trr_full');
+  assert.equal(result.stripe_transfer_id,'tr_fixture');
+  assert.equal(fixture.calls.filter(c=>c.path==='transfers/tr_fixture/reversals').length,1);
+  assert.equal(fixture.calls.filter(c=>c.path==='transfers' || c.path==='refunds').length,0);
+  const audit=(await db.query('select before_state,completed_at from private.dopmi_refund_adjustments where donation_id=$1',[d.id])).rows[0];
+  assert.equal(audit.before_state.allocated_cents,9200);
+  assert.ok(audit.completed_at);
+  const funding=(await db.query('select public.dopmi_expense_funding($1) as f',[expense])).rows[0].f;
+  assert.equal(funding.funded_cents,0); assert.equal(funding.transferred_cents,0);
+  assert.equal(funding.available_cents,12000);
+});
+test('lost reversal response recovers by reading Stripe without reversing twice',async () => {
+  const d=await transferredDonation(); const fixture=refundFixture(d); let lost=true;
+  const stripe=async (path,...args)=>{
+    const result=await fixture.stripe(path,...args);
+    if(path==='transfers/tr_fixture/reversals' && lost){lost=false;throw new Error('lost response');}
+    return result;
+  };
+  const service=serviceFor(stripe);
+  await assert.rejects(()=>service.handleWebhook('evt_external_refund'),/processor_unavailable/);
+  assert.equal((await rpc('get',{donation_id:d.id})).allocated_cents,9200);
+  await db.exec('update private.dopmi_payment_jobs set available_at=now()');
+  await service.handleWebhook('evt_external_refund');
+  assert.equal((await rpc('get',{donation_id:d.id})).transfer_status,'reversed');
+  assert.equal(fixture.calls.filter(c=>c.path==='transfers/tr_fixture/reversals').length,1);
+});
+test('insufficient reversal balance keeps the event retryable and allocation reserved',async () => {
+  const d=await transferredDonation(); const fixture=refundFixture(d,{
+    'transfers/tr_fixture/reversals':async ()=>{throw new Error('insufficient balance');},
+  });
+  await assert.rejects(()=>serviceFor(fixture.stripe).handleWebhook('evt_external_refund'),/processor_unavailable/);
+  const result=await rpc('get',{donation_id:d.id});
+  assert.equal(result.external_refund_pending,true);
+  assert.equal(result.allocated_cents,9200);
+  assert.equal(result.refund_status,'pending');
+  assert.equal(result.stripe_reversal_id,null);
+  assert.equal((await db.query("select status from private.dopmi_payment_jobs where job_key='evt_external_refund'")).rows[0].status,'ready');
+});
+test('refund reconciliation cannot race an in-flight transfer',async () => {
+  const d=await prepare(); await settle(d.id);
+  await rpc('claim',{job_key:`transfer:${d.id}`});
+  await rejected(()=>rpc('refund_begin',{donation_id:d.id}),/pendiente/);
+  assert.equal((await rpc('get',{donation_id:d.id})).external_refund_pending,false);
+});
+test('lost database acknowledgement after refund reconciliation preserves final state',async () => {
+  const d=await transferredDonation(); const fixture=refundFixture(d); let lost=true;
+  const unreliableRpc=async (op,data)=>{
+    const result=await rpc(op,data);
+    if(op==='refund_finish' && lost){lost=false;throw new Error('database response lost');}
+    return result;
+  };
+  await assert.rejects(()=>serviceFor(fixture.stripe,unreliableRpc).handleWebhook('evt_external_refund'),/processor_unavailable/);
+  await db.exec('update private.dopmi_payment_jobs set available_at=now()');
+  await serviceFor(fixture.stripe).handleWebhook('evt_external_refund');
+  const result=await rpc('get',{donation_id:d.id});
+  assert.equal(result.transfer_status,'reversed'); assert.equal(result.allocated_cents,0);
+  assert.equal(fixture.calls.filter(c=>c.path==='transfers/tr_fixture/reversals').length,1);
+});
+test('wrong Stripe destination cannot reverse funds or clear the assignment',async () => {
+  const d=await transferredDonation(); const fixture=refundFixture(d,{
+    'transfers/tr_fixture':async ()=>({...transferResult(d,'tr_fixture'),destination:'acct_wrong'}),
+  });
+  await assert.rejects(()=>serviceFor(fixture.stripe).handleWebhook('evt_external_refund'),/transfer_mismatch/);
+  const result=await rpc('get',{donation_id:d.id});
+  assert.equal(result.allocated_cents,9200); assert.equal(result.refund_status,'attention');
+  assert.equal(fixture.calls.some(c=>c.path==='transfers/tr_fixture/reversals'),false);
+});
+test('pending external refund never triggers reversal or releases the assignment',async () => {
+  const d=await transferredDonation(); const fixture=refundFixture(d,{
+    'refunds?charge=ch_one&limit=100':async ()=>({has_more:false,data:[{id:'re_pending',charge:'ch_one',currency:'mxn',amount:10000,status:'pending'}]}),
+  });
+  await assert.rejects(()=>serviceFor(fixture.stripe).handleWebhook('evt_external_refund'),/refund_not_complete/);
+  assert.equal((await rpc('get',{donation_id:d.id})).allocated_cents,9200);
+  assert.equal(fixture.calls.some(c=>c.path==='transfers/tr_fixture/reversals'),false);
+});
+test('reversal RPC and audit evidence are inaccessible to clients including administrators',async () => {
+  for(const actor of [donor,rescuer,staff]){
+    await role(actor);
+    await rejected(()=>rpc('refund_begin',{donation_id:key}),/permission denied/);
+    await rejected(()=>db.query('select * from private.dopmi_refund_adjustments'),/permission denied/);
+    await db.exec('reset role');
+  }
+});
+test('partial external refund requests review and never automatically reverses the whole transfer',async () => {
+  const d=await transferredDonation(); const fixture=refundFixture(d,{
+    'charges/ch_one':async ()=>({payment_intent:'pi_one',amount_refunded:1000}),
+  });
+  await assert.rejects(()=>serviceFor(fixture.stripe).handleWebhook('evt_external_refund'),/partial_refund_review/);
+  assert.equal(fixture.calls.some(c=>c.path.includes('/reversals')),false);
+  assert.equal((await rpc('get',{donation_id:d.id})).allocated_cents,9200);
+});
+
 async function rejected(fn,pattern) {
   await db.exec('savepoint expected_failure');
   await assert.rejects(fn,pattern);
