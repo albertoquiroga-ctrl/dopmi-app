@@ -522,9 +522,8 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
               key: ValueKey('funding:${record!.id}'),
               tables: const ['dopmi_donations'],
               errorMessage: paymentError,
-              load: () => ref
-                  .read(paymentRepositoryProvider)
-                  .funding(record!.id),
+              load: () =>
+                  ref.read(paymentRepositoryProvider).funding(record!.id),
               builder: (funding, refresh) => Column(
                 children: [
                   Notice(

@@ -70,9 +70,15 @@ void main() {
       String message(String code) => paymentError(
         FunctionException(status: 403, details: {'error': code}),
       );
-      expect(message('rescuer_verification_required'), contains('verificación'));
+      expect(
+        message('rescuer_verification_required'),
+        contains('verificación'),
+      );
       expect(message('access_denied'), contains('no tiene acceso'));
-      expect(message('stripe_permission_denied'), contains('conexión de Dopmi'));
+      expect(
+        message('stripe_permission_denied'),
+        contains('conexión de Dopmi'),
+      );
       expect(
         message('stripe_authentication_failed'),
         contains('No vuelvas a pagar'),
