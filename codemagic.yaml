@@ -25,8 +25,8 @@ workflows:
     scripts:
       - name: Create runtime configuration
         script: |
-          SUPABASE_URL="$(printf '%s' "${SUPABASE_URL:-}" | tr -d '\\r\\n[:space:]')"
-          SUPABASE_PUBLISHABLE_KEY="$(printf '%s' "${SUPABASE_PUBLISHABLE_KEY:-}" | tr -d '\\r\\n[:space:]')"
+          SUPABASE_URL="$(printf '%s' "${SUPABASE_URL:-}" | tr -d '[:space:]')"
+          SUPABASE_PUBLISHABLE_KEY="$(printf '%s' "${SUPABASE_PUBLISHABLE_KEY:-}" | tr -d '[:space:]')"
           if [[ ! "$SUPABASE_URL" =~ ^https://[^/]+\.supabase\.co/?$ ]]; then
             echo "The Supabase endpoint is missing or invalid in the dopmi_supabase variable group."
             exit 1
@@ -95,8 +95,8 @@ workflows:
     scripts:
       - name: Create runtime configuration
         script: |
-          SUPABASE_URL="$(printf '%s' "${SUPABASE_URL:-}" | tr -d '\\r\\n[:space:]')"
-          SUPABASE_PUBLISHABLE_KEY="$(printf '%s' "${SUPABASE_PUBLISHABLE_KEY:-}" | tr -d '\\r\\n[:space:]')"
+          SUPABASE_URL="$(printf '%s' "${SUPABASE_URL:-}" | tr -d '[:space:]')"
+          SUPABASE_PUBLISHABLE_KEY="$(printf '%s' "${SUPABASE_PUBLISHABLE_KEY:-}" | tr -d '[:space:]')"
           if [[ ! "$SUPABASE_URL" =~ ^https://[^/]+\.supabase\.co/?$ ]]; then
             echo "The Supabase endpoint is missing or invalid in the dopmi_supabase variable group."
             exit 1
