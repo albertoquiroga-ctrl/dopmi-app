@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Hito 5 — preparación de Guardián en modo de prueba
+
+- Se verificó [CI 35927758030](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/35927758030): cuatro jobs completados correctamente para el cierre del Hito 4, incluidas las pruebas SQL, backend integrado, Flutter, APK Android y compilación iOS simulator.
+- Planificador puro `supabase/functions/_shared/guardian-allocation.mjs`: recibe el neto **ya calculado** en centavos y gastos elegibles obtenidos por el servidor. Prioriza urgencia, aprobación más antigua e ID; llena cada saldo antes de pasar al siguiente. Cuando la capacidad no cubre el neto completo devuelve un plan vacío. Valida entradas y no modifica la base ni llama a Stripe. Suite backend **58/58**, incluyendo cuatro pruebas nuevas.
+- Falta validar UX de autorización mensual y establecer una reserva transaccional que evite carreras y duplicados; el resultado de este planificador no autoriza un cobro ni acredita disponibilidad futura. Guardián sigue sin activar y el modo live queda fuera.
+
 ## Hito 4 — completado en modo prueba
 
 - Cierre del 23 de septiembre de 2026: alcance, evidencia y límites en `docs/hito4-delivery.md`. Los cuatro jobs de [CI 35926624549](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/35926624549) aprobaron el commit `ca7d23e`: `supabase test db` con PostgreSQL y migraciones reales, tests/builds web, formato/análisis/tests Flutter, APK Android de desarrollo, compilación iOS simulator y pruebas integradas de backend. No se infiere un depósito bancario ni se habilita modo live.

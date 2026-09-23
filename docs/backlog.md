@@ -37,6 +37,10 @@ Cada tarea se completa con código, prueba de aceptación y evidencia en `progre
 
 ## Después del hito 4
 
-- 4. Aportaciones y Stripe Connect, conciliación y transferencias.
-- 5. Guardián sin reserva, distribución por prioridad y facturación condicionada.
+- [x] H5.1 Planificador puro del neto mensual: urgencia aprobada, aprobación más antigua e ID como desempate; no entrega asignaciones parciales cuando falta capacidad. Cuatro pruebas en `tools/verification/guardian.test.mjs`. Aún no inicia cobros ni reserva saldos.
+- [ ] H5.2 Validar con el titular la experiencia de alta, autorización, ciclo mensual, cancelación y manejo de importes $50/$200/$500 MXN o personalizados.
+- [ ] H5.3 Reservar con transacción y bloqueo los saldos elegibles en servidor; estimar comisiones antes del cobro, revalidar el neto real al confirmar y reembolsar excedentes de manera auditable.
+- [ ] H5.4 Integrar el cobro mensual solo en modo de prueba con claves estables, reintentos, historial privado y conciliación; probar concurrencia, omisión de ciclo, cancelación y devolución.
+- [ ] H5.5 Aceptación integral del flujo y evaluación independiente antes de habilitar dinero real.
+- 5. Guardián sin reserva comunitaria, distribución por prioridad y facturación condicionada.
 - 6. Beta, dispositivos, contenidos definitivos y preparación de tiendas.
