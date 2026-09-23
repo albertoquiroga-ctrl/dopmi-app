@@ -321,6 +321,21 @@ const guardian = async (gross=10000,key=guardianKey,actor=donor) =>
   (await db.query('select public.dopmi_guardian_reserve($1,$2,$3) as value',[actor,key,gross])).rows[0].value;
 const releaseGuardian = async (key=guardianKey) =>
   (await db.query('select public.dopmi_guardian_release($1,$2) as value',[donor,key])).rows[0].value;
+test('Guardian activation preview is authenticated, read only and respects pending holds',async () => {
+  await role(donor);
+  const preview=async amount=>(await db.query('select public.dopmi_guardian_capacity_preview($1) as value',[amount])).rows[0].value;
+  assert.deepEqual(await preview(5000),{gross_cents:5000,required_cents:4900,can_activate:true});
+  await rejected(()=>preview(999),/Importe de Guardián inválido/);
+  await db.exec('reset role');
+  assert.equal((await db.query('select count(*)::int as n from private.dopmi_guardian_cycles')).rows[0].n,0);
+  await guardian(10000);
+  await role(other);
+  assert.equal((await preview(4000)).can_activate,false);
+  await db.exec('reset role');
+  await role(donor,'anon');
+  await rejected(()=>preview(5000),/permission denied/);
+  await db.exec('reset role');
+});
 test('Guardian holds the entire upper net, shares single-payment capacity and releases it',async () => {
   const held=await guardian();
   assert.equal(held.status,'reserved');

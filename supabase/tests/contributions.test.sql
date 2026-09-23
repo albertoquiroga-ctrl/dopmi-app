@@ -16,11 +16,15 @@ insert into private.dopmi_connect_accounts(owner_id,account_id,transfers_enabled
 
 set local role anon;
 select throws_ok('select * from dopmi_donations','42501',null,'anonymous financial records denied');
+select throws_ok('select dopmi_guardian_capacity_preview(5000)','42501',null,'anonymous visitors cannot preview Guardian authorization');
 select throws_ok($$select dopmi_payment_server('settle','{}')$$,'42501',null,'anonymous settlement denied');
 select is((dopmi_expense_funding('71000000-0000-4000-8000-000000000003')->>'funded_cents')::int,0,'approved public progress starts at zero');
 reset role;
 set local role authenticated;
 select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000001',true);
+select is((dopmi_guardian_capacity_preview(5000)->>'can_activate')::boolean,true,'confirmed donor can preview enough eligible capacity');
+select is((dopmi_guardian_capacity_preview(5000)->>'required_cents')::bigint,4900::bigint,'preview shows the conservatively reserved net');
+select throws_ok('select dopmi_guardian_capacity_preview(999)','22023',null,'preview rejects unsupported monthly amount');
 select throws_ok($$select dopmi_payment_server('settle','{}')$$,'42501',null,'a donor cannot fabricate a confirmation');
 select throws_ok($$update dopmi_donations set payment_status='confirmed'$$,'42501',null,'direct financial writes denied');
 select throws_ok('select * from private.dopmi_payment_jobs','42501',null,'payment jobs remain private');
@@ -61,6 +65,11 @@ select is((dopmi_guardian_reserve('70000000-0000-4000-8000-000000000001',
   'Guardian holds the upper net against the remaining approved expense');
 select is((dopmi_expense_funding('71000000-0000-4000-8000-000000000003')->>'available_cents')::bigint,840::bigint,
   'funding availability subtracts a pending Guardian hold');
+set local role authenticated;
+select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000004',true);
+select is((dopmi_guardian_capacity_preview(4000)->>'can_activate')::boolean,false,
+  'a pending Guardian hold prevents offering an unavailable activation');
+reset role;
 select is(dopmi_guardian_release('70000000-0000-4000-8000-000000000001',
   '73000000-0000-4000-8000-000000000001')->>'status','released','releasing a hold restores capacity');
 select is((dopmi_expense_funding('71000000-0000-4000-8000-000000000003')->>'available_cents')::bigint,2800::bigint,
