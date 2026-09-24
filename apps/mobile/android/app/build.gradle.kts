@@ -17,6 +17,11 @@ android {
     defaultConfig {
         // This ID belongs to the existing DopMi production listing in Google Play.
         applicationId = "com.mycompany.dopmi"
+        // A test APK must coexist with the installed app despite its debug key.
+        val guardianAcceptance = System.getenv("DOPMI_GUARDIAN_ACCEPTANCE_BUILD") == "true"
+        if (guardianAcceptance) applicationIdSuffix = ".guardian_test"
+        manifestPlaceholders["dopmiAppLabel"] =
+            if (guardianAcceptance) "Dopmi Guardián (prueba)" else "Dopmi"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
