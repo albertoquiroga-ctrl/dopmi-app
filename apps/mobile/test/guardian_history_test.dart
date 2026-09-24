@@ -208,6 +208,27 @@ void main() {
     expect(tester.takeException(), isNull);
   });
   testWidgets(
+    'switching accounts removes already displayed financial details',
+    (tester) async {
+      final repo = HistoryRepo();
+      final identity = await start(tester, repo);
+      await tester.pumpAndSettle();
+      await tap(tester, 'Ver asignaciones');
+      expect(find.text('Medicamentos'), findsOneWidget);
+      repo.read = (_) async => {'items': <Json>[], 'next_cursor': null};
+      identity.emit(
+        IdentityEvent(Identity('two', 'two@example.test', verified: true)),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Medicamentos'), findsNothing);
+      expect(find.text('Pago confirmado · neto asignado'), findsNothing);
+      expect(
+        find.text('Todavía no tienes ciclos registrados.'),
+        findsOneWidget,
+      );
+    },
+  );
+  testWidgets(
     'refresh clears old cycles and shows the authoritative empty history',
     (tester) async {
       final repo = HistoryRepo();

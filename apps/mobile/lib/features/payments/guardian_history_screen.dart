@@ -26,26 +26,43 @@ const _statusLabels = {
   'refunded': 'Devolución confirmada',
 };
 
-class GuardianHistoryScreen extends ConsumerStatefulWidget {
+class GuardianHistoryScreen extends ConsumerWidget {
   const GuardianHistoryScreen({super.key});
   @override
-  ConsumerState<GuardianHistoryScreen> createState() => _HistoryState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final identity = ref.watch(identityControllerProvider);
+    return ListenableBuilder(
+      listenable: identity,
+      builder: (context, child) {
+        final owner = identity.identity?.id;
+        return owner == null
+            ? const SizedBox.shrink()
+            : _GuardianHistory(key: ValueKey(owner), owner: owner);
+      },
+    );
+  }
 }
 
-class _HistoryState extends ConsumerState<GuardianHistoryScreen> {
+class _GuardianHistory extends ConsumerStatefulWidget {
+  const _GuardianHistory({super.key, required this.owner});
+  final String owner;
+  @override
+  ConsumerState<_GuardianHistory> createState() => _HistoryState();
+}
+
+class _HistoryState extends ConsumerState<_GuardianHistory> {
   final items = <Json>[];
   Json? cursor;
   String? error;
   bool busy = false;
   int revision = 0;
-  late final String owner;
+  String get owner => widget.owner;
   bool get current =>
       mounted && ref.read(identityControllerProvider).identity?.id == owner;
 
   @override
   void initState() {
     super.initState();
-    owner = ref.read(identityControllerProvider).identity!.id;
     if (ref.read(guardianEnabledProvider)) load();
   }
 
