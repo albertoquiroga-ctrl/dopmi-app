@@ -22,3 +22,9 @@ Decisión confirmada por el titular el 23 de septiembre de 2026: cobrar al activ
 La reserva SQL existente **no realiza cobros**. Hasta cumplir esas condiciones, Guardián no se expone como opción activa en la app.
 
 El validador puro `supabase/functions/_shared/guardian-billing.mjs` implementa el rechazo preventivo de facturas inseguras y genera una clave de ciclo determinista. Aún no se conecta a un endpoint de cobro. Stripe documenta que la factura inicial de una suscripción de cobro automático se finaliza de inmediato y que una renovación puede finalizarse pese a fallas prolongadas del webhook; por eso el control no puede depender de pausar una suscripción después de crearla. Véase [facturación de suscripciones](https://docs.stripe.com/billing/invoices/subscription) y [pausar cobros](https://docs.stripe.com/billing/subscriptions/pause-payment).
+
+## Experimento aislado en Stripe de prueba (24 de septiembre de 2026)
+
+- En el entorno de prueba de DopMi creé el reloj `clock_1UJ06k2ZjyMOQ0uLcb0LUBio`, un cliente de prueba sin medio de pago y la suscripción `sub_1UJ08t2ZjyMOQ0uLcijjnhDr` con `collection_method=send_invoice` y un día de prueba. Antes de su primer ciclo de pago, Stripe confirmó `pause_collection={behavior:keep_as_draft,resumes_at:null}`.
+- Cancelé inmediatamente esa suscripción: Stripe confirmó `status=canceled`. No hubo intento de cobro a una persona ni se usó modo real.
+- La conexión API disponible no expone adelantar el reloj de prueba; por ello **no se verificó todavía** si Stripe permite finalizar y cobrar individualmente una factura mensual mientras mantiene pausada la suscripción. El experimento tampoco prueba el comportamiento de una factura futura si el servidor deja de responder. Esta prueba sigue siendo un requisito antes de habilitar el cobro.
