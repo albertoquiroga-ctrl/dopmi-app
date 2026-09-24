@@ -17,6 +17,22 @@ class GuardianRepository {
   final SupabaseClient client;
   Future<Json> state() async =>
       Json.from(await client.rpc('dopmi_guardian_state'));
+  Future<Json> history({Json? cursor}) async => Json.from(
+    await client.rpc(
+      'dopmi_guardian_history',
+      params: {
+        'before_created_at': cursor?['created_at'],
+        'before_id': cursor?['id'],
+      },
+    ),
+  );
+  Future<Json> allocations(String cycleId, {String? cursor}) async => Json.from(
+    await client.rpc(
+      'dopmi_guardian_history_allocations',
+      params: {'target_cycle': cycleId, 'after_expense': cursor},
+    ),
+  );
+
   Future<bool> capacity(int cents) async {
     final result = await client.rpc(
       'dopmi_guardian_capacity_preview',

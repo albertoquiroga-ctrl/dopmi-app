@@ -100,7 +100,10 @@ class IdentityController extends ChangeNotifier {
     }
     // Existing owners retain cancellation access if email confirmation lapses.
     // PostgreSQL still rejects activation/amount increases without confirmation.
-    if (identity != null && path == '/guardian') return null;
+    if (identity != null &&
+        (path == '/guardian' || path == '/guardian/history')) {
+      return null;
+    }
     if (identity?.verified == true) {
       const accountRoutes = [
         '/profile',
@@ -128,6 +131,7 @@ class IdentityController extends ChangeNotifier {
     }
     if (path == '/profile' ||
         path == '/guardian' ||
+        path == '/guardian/history' ||
         path == '/payments' ||
         path == '/connect' ||
         path.startsWith('/contribute/') ||

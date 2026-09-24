@@ -2399,3 +2399,106 @@ test('Guardian method change rejects an altered billing anniversary instead of c
   assert.equal((await methodRpc('get',{job_id:j.id})).status,'pending');
   assert.equal((await db.query('select payment_method_id from private.dopmi_guardian_subscriptions')).rows[0].payment_method_id,null);
 });
+
+const history=async(cursor=null,size=20)=>(await db.query('select public.dopmi_guardian_history($1,$2,$3) as value',[cursor?.created_at??null,cursor?.id??null,size])).rows[0].value;
+const historyAllocations=async(cycle,cursor=null,size=20)=>(await db.query('select public.dopmi_guardian_history_allocations($1,$2,$3) as value',[cycle,cursor,size])).rows[0].value;
+test('Guardian history authenticates the owner and never gives staff or other users access',async()=>{
+  const cycle=await boundGuardian();await guardianSettlement('settle',guardianEvidence);
+  await role('','anon');await rejected(()=>history(),/permission denied/);await rejected(()=>historyAllocations(cycle.id),/permission denied/);
+  for(const actor of [other,staff]){
+    await role(actor);assert.deepEqual(await history(),{items:[],next_cursor:null});
+    await rejected(()=>historyAllocations(cycle.id),/Ciclo no disponible/);
+  }
+  await role('');await rejected(()=>history(),/Sesión requerida/);
+  await db.exec('reset role');await db.query("update public.profiles set account_status='suspended' where id=$1",[donor]);
+  await db.query('update auth.users set email_confirmed_at=null where id=$1',[donor]);
+  await role(donor);assert.equal((await history()).items[0].paid_cents,5000);
+  await rejected(()=>db.query('select * from private.dopmi_guardian_settlements'),/permission denied/);
+});
+test('Guardian history distinguishes reservation, confirmed allocation and transferred net without processor secrets',async()=>{
+  const cycle=await boundGuardian();await role(donor);let item=(await history()).items[0];
+  assert.equal(item.status,'processing');assert.equal(item.paid_cents,null);assert.equal(item.assigned_cents,null);assert.equal(item.allocation_count,0);
+  assert.deepEqual((await historyAllocations(cycle.id)).items,[]);await db.exec('reset role');
+  await guardianSettlement('settle',guardianEvidence);await role(donor);item=(await history()).items[0];
+  assert.equal(item.status,'assigned');assert.equal(item.paid_cents,5000);assert.equal(item.platform_fee_cents,100);
+  assert.equal(item.stripe_fee_cents,586);assert.equal(item.assigned_cents,4314);assert.equal(item.transferred_cents,0);
+  assert.equal((await historyAllocations(cycle.id)).items[0].title,'Medicamentos');
+  assert.doesNotMatch(JSON.stringify(await history()),/cus_|sub_|price_|pm_|cs_|pi_|ch_|tr_|in_|acct_|lease|evidence|cycle_key|donor_id/);
+  await db.exec('reset role');const job=await guardianSettlement('claim');
+  await guardianSettlement('finish',{job_id:job.id,lease:job.lease,result_id:'tr_history'});
+  await role(donor);item=(await history()).items[0];assert.equal(item.status,'transferred');assert.equal(item.transferred_cents,4314);
+  const detail=(await historyAllocations(cycle.id)).items[0];assert.equal(detail.status,'transferred');assert.equal(detail.amount_cents,4314);
+  assert.doesNotMatch(JSON.stringify(detail),/acct_|tr_|owner_id|evidence|draft|destination/);
+});
+test('Guardian history distinguishes pending and completed full refunds including platform loss',async()=>{
+  const cycle=await boundGuardian();await db.query("update private.dopmi_guardian_cycles set expires_at=now()-interval '1 hour' where id=$1",[cycle.id]);
+  await guardianSettlement('settle',guardianEvidence);await role(donor);let item=(await history()).items[0];
+  assert.equal(item.status,'refund_pending');assert.equal(item.refund_cents,5000);assert.equal(item.refunded_cents,0);assert.equal(item.assigned_cents,0);
+  assert.deepEqual((await historyAllocations(cycle.id)).items,[]);await db.exec('reset role');
+  const job=await guardianSettlement('claim');await guardianSettlement('finish',{job_id:job.id,lease:job.lease,result_id:'re_history'});
+  await role(donor);item=(await history()).items[0];assert.equal(item.status,'refunded');assert.equal(item.refunded_cents,5000);
+});
+test('Guardian history masks withdrawn public content and never reveals drafts in allocations',async()=>{
+  const cycle=await boundGuardian();await guardianSettlement('settle',guardianEvidence);
+  await db.query(`update public.dopmi_rescue_records set approved_snapshot=approved_snapshot||'{"private_receipt":"SECRET_RECEIPT"}'::jsonb where id=$1`,[expense]);
+  await role(donor);assert.doesNotMatch(JSON.stringify(await historyAllocations(cycle.id)),/SECRET_RECEIPT|private_receipt/);await db.exec('reset role');
+  await db.query("update public.profiles set account_status='suspended' where id=$1",[rescuer]);
+  await role(donor);const item=(await historyAllocations(cycle.id)).items[0];assert.equal(item.title,'Gasto aprobado');assert.equal(item.amount_cents,4314);
+});
+test('Guardian history uses a stable bounded cursor even when timestamps tie and a newer cycle arrives',async()=>{
+  await db.query(`insert into private.dopmi_guardian_cycles(id,donor_id,cycle_key,gross_cents,reserved_cents,status,expires_at,created_at)
+    select ('78000000-0000-4000-8000-'||lpad(n::text,12,'0'))::uuid,$1,gen_random_uuid(),5000,0,'skipped',now(),'2026-09-01' from generate_series(1,5)n`,[donor]);
+  await role(donor);const first=await history(null,2);assert.equal(first.items.length,2);assert.ok(first.next_cursor);await db.exec('reset role');
+  await db.query(`insert into private.dopmi_guardian_cycles(donor_id,cycle_key,gross_cents,reserved_cents,status,expires_at) values($1,gen_random_uuid(),5000,0,'skipped',now())`,[donor]);
+  await role(donor);const second=await history(first.next_cursor,2),third=await history(second.next_cursor,2);
+  assert.equal(new Set([...first.items,...second.items,...third.items].map(x=>x.id)).size,5);assert.equal(third.next_cursor,null);
+  for(const size of [null,0,51])await rejected(()=>history(null,size),/Página inválida/);
+  await rejected(()=>history({created_at:'2026-09-01'}),/Página inválida/);
+  await rejected(()=>history({id:key}),/Página inválida/);
+  await rejected(()=>history({created_at:'infinity',id:key}),/Página inválida/);
+});
+test('Guardian allocation pagination includes each confirmed expense once and excludes reserved tails',async()=>{
+  await db.query('update public.dopmi_rescue_records set reimbursable_cents=2500,urgent=true where id=$1',[expense]);
+  await db.query(`insert into public.dopmi_rescue_records(id,owner_id,kind,status,approved_snapshot,parent_id,reimbursable_cents)
+    values('71000000-0000-4000-8000-000000000004',$1,'expense','approved','{"title":"Comida"}','71000000-0000-4000-8000-000000000002',5000)`,[rescuer]);
+  const cycle=await boundGuardian();await guardianSettlement('settle',guardianEvidence);
+  await role(donor);const first=await historyAllocations(cycle.id,null,1),second=await historyAllocations(cycle.id,first.next_cursor,1);
+  assert.equal(first.items.length,1);assert.equal(second.items.length,1);assert.notEqual(first.items[0].id,second.items[0].id);
+  assert.equal(first.items[0].amount_cents+second.items[0].amount_cents,4314);assert.equal(second.next_cursor,null);
+  await rejected(()=>historyAllocations(cycle.id,null,51),/Página inválida/);
+});
+test('Guardian history retains monthly period and amount snapshot after plan amount changes or cancellation',async()=>{
+  const f=await collectionFixture();const job=await f.prepare();await f.collector().run(job.invoice_id);
+  await db.query("update private.dopmi_guardian_subscriptions set gross_cents=20000,status='canceled',canceled_at=now() where donor_id=$1",[donor]);
+  await role(donor);const items=(await history()).items;assert.equal(items.length,2);
+  const initial=items.find(x=>x.kind==='initial'),monthly=items.find(x=>x.kind==='monthly');
+  assert.equal(initial.status,'transferred');assert.equal(monthly.authorized_cents,5000);assert.equal(monthly.paid_cents,5000);
+  assert.equal(Date.parse(monthly.period_start)/1000,f.invoice.lines.data[0].period.start);
+  assert.equal(Date.parse(monthly.period_end)/1000,f.invoice.lines.data[0].period.end);
+});
+test('Guardian history does not call a merely released or expired reservation an unpaid cycle',async()=>{
+  const f=await collectionFixture();const job=await f.prepare();
+  await db.query("update private.dopmi_guardian_cycles set status='expired' where id=$1",[job.cycle_id]);
+  await role(donor);let item=(await history()).items.find(x=>x.id===job.cycle_id);assert.equal(item.status,'processing');assert.equal(item.paid_cents,null);
+  await db.exec('reset role');await db.query("update private.dopmi_guardian_collection_jobs set status='attention' where cycle_id=$1",[job.cycle_id]);
+  await role(donor);item=(await history()).items.find(x=>x.id===job.cycle_id);assert.equal(item.status,'review');
+});
+test('Guardian history shows bank authentication omission only after recovery confirms no charge',async()=>{
+  const f=await recoveryFixture('requires_action');await f.collector().run(f.invoice.id);
+  await role(donor);const item=(await history()).items.find(x=>x.kind==='monthly');
+  assert.equal(item.status,'skipped');assert.equal(item.skip_reason,'authentication_required');assert.equal(item.paid_cents,null);
+});
+test('Guardian initial no-capacity and expired attempts appear without a subscription or invented charges',async()=>{
+  await db.query('update public.dopmi_rescue_records set reimbursable_cents=1000 where id=$1',[expense]);
+  const first=await activationPrepare();await role(donor);let item=(await history()).items[0];
+  assert.equal(item.kind,'initial');assert.equal(item.status,'skipped');assert.equal(item.skip_reason,'no_capacity');assert.equal(item.paid_cents,null);
+  await db.exec('reset role');await db.query("update private.dopmi_guardian_activations set status='expired' where cycle_id=$1",[first.cycle_id]);
+  await role(donor);item=(await history()).items[0];assert.equal(item.status,'not_paid');
+});
+test('Guardian history keeps confirmed amounts when a delivery job needs review',async()=>{
+  await boundGuardian();await guardianSettlement('settle',guardianEvidence);
+  await db.exec("update private.dopmi_guardian_jobs set status='attention',error_code='PRIVATE_PROCESSOR_ERROR' where kind='transfer'");
+  await role(donor);const item=(await history()).items[0];
+  assert.equal(item.status,'assigned');assert.equal(item.needs_review,true);assert.equal(item.paid_cents,5000);assert.equal(item.transferred_cents,0);
+  assert.doesNotMatch(JSON.stringify(item),/PRIVATE_PROCESSOR_ERROR|error_code/);
+});
