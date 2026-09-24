@@ -92,5 +92,7 @@ select ok(not has_function_privilege('anon','public.dopmi_guardian_change_server
 select ok(not has_function_privilege('authenticated','public.dopmi_guardian_change_server(text,jsonb)','execute'),'authenticated cannot process Guardian changes');
 select ok(has_function_privilege('service_role','public.dopmi_guardian_change_server(text,jsonb)','execute'),'service role can process Guardian changes');
 select ok((select relrowsecurity from pg_class where oid='private.dopmi_guardian_prices'::regclass),'Guardian price history has RLS');
+select ok(not has_function_privilege('anon','public.dopmi_guardian_state()','execute'),'anonymous cannot read Guardian mobile state');
+select ok(has_function_privilege('authenticated','public.dopmi_guardian_state()','execute'),'authenticated can read own Guardian mobile state');
 select * from finish();
 rollback;

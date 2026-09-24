@@ -8,8 +8,8 @@ import { guardianChangeService } from './guardian-changes.mjs';
 import { PaymentError, requireTestKey } from './payments.mjs';
 
 // Separate client/version from H4. Creating this runtime requires an explicit
-// test-only worker flag. The activation service is server-only; no user-facing
-// Checkout endpoint is enabled before monthly collection and lifecycle acceptance.
+// test-only worker flag. The client endpoint additionally requires every lifecycle
+// flag and its own checkout gate; all remain off until integrated acceptance.
 export function guardianRuntime() {
   if (Deno.env.get('DOPMI_GUARDIAN_WORKER_ENABLED') !== 'true')
     throw new PaymentError('guardian_worker_disabled', 503);

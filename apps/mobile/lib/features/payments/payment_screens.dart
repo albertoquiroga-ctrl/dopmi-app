@@ -10,6 +10,7 @@ import '../adoption/community_ui.dart';
 import '../identity/identity_controller.dart';
 import '../rescue/rescue_repository.dart';
 import 'payment_repository.dart';
+import 'guardian_repository.dart';
 
 class ContributeScreen extends ConsumerStatefulWidget {
   const ContributeScreen(this.expense, {super.key, this.attempt});
@@ -190,6 +191,11 @@ class _HistoryState extends ConsumerState<PaymentHistoryScreen> {
         'Consulta pagos y transferencias confirmados.',
         eyebrow: 'HISTORIAL DE PRUEBA',
       ),
+      if (ref.watch(guardianEnabledProvider))
+        TextButton(
+          onPressed: () => context.push('/guardian'),
+          child: const Text('Mi plan Guardián'),
+        ),
       const Notice(
         'Una transferencia llega a la cuenta Stripe del rescatista. El depósito bancario es un paso posterior y sus tiempos dependen de Stripe.',
       ),

@@ -2095,3 +2095,53 @@ test('Guardian a monitor that read the old price cannot flag a newly confirmed a
   await assert.rejects(()=>scheduler.handleWebhook('evt_staleMonitor'),/guardian_/);
   assert.equal((await scheduleRpc('get',{cycle_id:f.calendar.cycleId})).status,'ready');
 });
+
+const guardianState=async()=>(await db.query('select public.dopmi_guardian_state() as value')).rows[0].value;
+test('Guardian mobile state requires identity and hides other owners from staff',async()=>{
+  await role('','anon');await rejected(()=>guardianState(),/permission denied/);await db.exec('reset role');
+  const f=await changeFixture();await f.request();
+  for(const actor of [other,staff]){await role(actor);assert.deepEqual(await guardianState(),{plan:null,activation:null});await db.exec('reset role');}
+  await role(donor);const state=await guardianState();assert.equal(state.plan.gross_cents,5000);
+  assert.ok(state.activation.key);assert.equal(state.activation.consent_version,'guardian-2026-09-24');
+  assert.doesNotMatch(JSON.stringify(state),/cus_|sub_|price_|pm_|cs_test|lease|session_id|return_url/);
+});
+test('Guardian mobile state remains readable for an unconfirmed suspended owner to cancel',async()=>{
+  await changeFixture();await db.query("update public.profiles set account_status='suspended' where id=$1",[donor]);
+  await db.query('update auth.users set email_confirmed_at=null where id=$1',[donor]);
+  await role(donor);assert.equal((await guardianState()).plan.status,'active');
+});
+test('Guardian mobile state recovers an initial attempt before any subscription exists',async()=>{
+  const f=initialFixture();await f.initial.checkout(donor,{key,gross_cents:5000,consent:true,consent_version:'guardian-2026-09-24'});
+  await role(donor);const state=await guardianState();assert.equal(state.plan,null);assert.equal(state.activation.key,key);
+  assert.equal(state.activation.gross_cents,5000);assert.equal(state.activation.status,'pending');
+});
+const {guardianClientHandler,guardianClientEnabled,guardianClientFlags}=await import('../../supabase/functions/_shared/guardian-client.mjs');
+const clientBody={action:'checkout',key,gross_cents:5000,consent:true,consent_version:'guardian-2026-09-24'};
+const clientRequest=(body=clientBody,token='valid')=>new Request('https://example.test/guardian-client',{method:'POST',
+ headers:token?{Authorization:`Bearer ${token}`}:{},body:JSON.stringify(body)});
+test('Guardian client is disabled unless all five lifecycle gates are enabled',async()=>{
+  for(const missing of guardianClientFlags)assert.equal(guardianClientEnabled(name=>name===missing?'false':'true'),false);
+  assert.equal(guardianClientEnabled(()=>'true'),true);let called=false;
+  const handler=guardianClientHandler({enabled:()=>false,authenticate:async()=>{called=true;},checkout:async()=>{called=true;}});
+  assert.equal((await handler(clientRequest())).status,503);assert.equal(called,false);
+});
+test('Guardian client requires confirmed server identity and ignores forged owner and redirect',async()=>{
+  const calls=[];const handler=guardianClientHandler({enabled:()=>true,authenticate:async token=>token==='valid'?{id:donor,email_confirmed_at:'now'}:{id:other},
+    checkout:async(...args)=>{calls.push(args);return {status:'pending',checkout_url:null};}});
+  assert.equal((await handler(clientRequest(clientBody,''))).status,401);
+  assert.equal((await handler(clientRequest(clientBody,'unconfirmed'))).status,401);
+  assert.equal((await handler(clientRequest({...clientBody,donor_id:other,return_url:'https://evil.test',status:'paid'}))).status,200);
+  assert.deepEqual(calls,[[donor,{key,gross_cents:5000,consent:true,consent_version:'guardian-2026-09-24'}]]);
+});
+test('Guardian client rejects invalid consent amounts keys methods and malformed JSON',async()=>{
+  let called=false;const handler=guardianClientHandler({enabled:()=>true,authenticate:async()=>({id:donor,email_confirmed_at:'now'}),checkout:async()=>{called=true;}});
+  for(const patch of [{consent:false},{consent_version:'old'},{gross_cents:10},{gross_cents:1000.5},{key:'bad'},{action:'cancel'}])
+    assert.equal((await handler(clientRequest({...clientBody,...patch}))).status,400);
+  assert.equal((await handler(new Request('https://example.test',{method:'GET'}))).status,405);
+  assert.equal((await handler(new Request('https://example.test',{method:'POST',headers:{Authorization:'Bearer valid'},body:'{'}))).status,400);
+  assert.equal(called,false);
+});
+test('Guardian client never exposes raw processor errors or implies payment success',async()=>{
+  const handler=guardianClientHandler({enabled:()=>true,authenticate:async()=>({id:donor,email_confirmed_at:'now'}),checkout:async()=>{throw Error('secret');}});
+  const r=await handler(clientRequest());assert.equal(r.status,503);assert.deepEqual(await r.json(),{error:'guardian_unavailable'});
+});
