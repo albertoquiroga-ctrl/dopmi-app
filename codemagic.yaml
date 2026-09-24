@@ -24,26 +24,7 @@ workflows:
 
     scripts:
       - name: Create runtime configuration
-        script: |
-          SUPABASE_URL="$(printf '%s' "${SUPABASE_URL:-}" | tr -d '[:space:]')"
-          SUPABASE_PUBLISHABLE_KEY="$(printf '%s' "${SUPABASE_PUBLISHABLE_KEY:-}" | tr -d '[:space:]')"
-          if [[ ! "$SUPABASE_URL" =~ ^https://[^/]+\.supabase\.co/?$ ]]; then
-            echo "The Supabase endpoint is missing or invalid in the dopmi_supabase variable group."
-            exit 1
-          fi
-          if [[ "$SUPABASE_PUBLISHABLE_KEY" != sb_publishable_* && ! "$SUPABASE_PUBLISHABLE_KEY" =~ ^eyJ[^.]*\.[^.]+\.[^.]+$ ]]; then
-            echo "The Supabase client key is missing or invalid in the dopmi_supabase variable group."
-            exit 1
-          fi
-          cat > config.json <<EOF
-          {
-            "SUPABASE_URL": "$SUPABASE_URL",
-            "SUPABASE_PUBLISHABLE_KEY": "$SUPABASE_PUBLISHABLE_KEY",
-            "AUTH_REDIRECT_URL": "io.dopmi.app://auth/callback",
-            "ENABLE_GOOGLE_AUTH": "$ENABLE_GOOGLE_AUTH",
-            "ENABLE_APPLE_AUTH": "$ENABLE_APPLE_AUTH"
-          }
-          EOF
+        script: python3 ../../scripts/write-mobile-config.py
 
       - name: Install dependencies
         script: flutter pub get
@@ -94,26 +75,7 @@ workflows:
 
     scripts:
       - name: Create runtime configuration
-        script: |
-          SUPABASE_URL="$(printf '%s' "${SUPABASE_URL:-}" | tr -d '[:space:]')"
-          SUPABASE_PUBLISHABLE_KEY="$(printf '%s' "${SUPABASE_PUBLISHABLE_KEY:-}" | tr -d '[:space:]')"
-          if [[ ! "$SUPABASE_URL" =~ ^https://[^/]+\.supabase\.co/?$ ]]; then
-            echo "The Supabase endpoint is missing or invalid in the dopmi_supabase variable group."
-            exit 1
-          fi
-          if [[ "$SUPABASE_PUBLISHABLE_KEY" != sb_publishable_* && ! "$SUPABASE_PUBLISHABLE_KEY" =~ ^eyJ[^.]*\.[^.]+\.[^.]+$ ]]; then
-            echo "The Supabase client key is missing or invalid in the dopmi_supabase variable group."
-            exit 1
-          fi
-          cat > config.json <<EOF
-          {
-            "SUPABASE_URL": "$SUPABASE_URL",
-            "SUPABASE_PUBLISHABLE_KEY": "$SUPABASE_PUBLISHABLE_KEY",
-            "AUTH_REDIRECT_URL": "io.dopmi.app://auth/callback",
-            "ENABLE_GOOGLE_AUTH": "$ENABLE_GOOGLE_AUTH",
-            "ENABLE_APPLE_AUTH": "$ENABLE_APPLE_AUTH"
-          }
-          EOF
+        script: python3 ../../scripts/write-mobile-config.py
 
       - name: Install dependencies
         script: flutter pub get
@@ -172,16 +134,7 @@ workflows:
 
     scripts:
       - name: Create runtime configuration
-        script: |
-          cat > config.json <<EOF
-          {
-            "SUPABASE_URL": "$SUPABASE_URL",
-            "SUPABASE_PUBLISHABLE_KEY": "$SUPABASE_PUBLISHABLE_KEY",
-            "AUTH_REDIRECT_URL": "io.dopmi.app://auth/callback",
-            "ENABLE_GOOGLE_AUTH": "$ENABLE_GOOGLE_AUTH",
-            "ENABLE_APPLE_AUTH": "$ENABLE_APPLE_AUTH"
-          }
-          EOF
+        script: python3 ../../scripts/write-mobile-config.py
 
       - name: Install dependencies
         script: flutter pub get
@@ -226,7 +179,7 @@ workflows:
       app_store_connect: dopmi_app_store
 
     environment:
-      flutter: stable
+      flutter: '3.47.4'
       xcode: latest
       groups:
         - dopmi_supabase
@@ -244,16 +197,7 @@ workflows:
 
     scripts:
       - name: Create runtime configuration
-        script: |
-          cat > config.json <<EOF
-          {
-            "SUPABASE_URL": "$SUPABASE_URL",
-            "SUPABASE_PUBLISHABLE_KEY": "$SUPABASE_PUBLISHABLE_KEY",
-            "AUTH_REDIRECT_URL": "io.dopmi.app://auth/callback",
-            "ENABLE_GOOGLE_AUTH": "$ENABLE_GOOGLE_AUTH",
-            "ENABLE_APPLE_AUTH": "$ENABLE_APPLE_AUTH"
-          }
-          EOF
+        script: python3 ../../scripts/write-mobile-config.py --guardian-test
 
       - name: Install dependencies
         script: flutter pub get
@@ -265,10 +209,12 @@ workflows:
         script: flutter test
 
       - name: Set up iOS code signing
-        script: xcode-project use-profiles
+        script: |
+          xcode-project use-profiles --custom-export-options='{"testFlightInternalTestingOnly": true}'
 
       - name: Build signed IPA
         script: |
+          set -euo pipefail
           BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 231))
           flutter build ipa \
             --release \
@@ -283,12 +229,23 @@ workflows:
             exit 1
           fi
           echo "IPA ready for publishing: $IPA_PATH"
+          python3 - "$BUILD_NUMBER" <<'PYINFO'
+          import os, subprocess, sys
+          from pathlib import Path
+          sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+          Path('build/guardian-build-info.txt').write_text(
+              f"Commit: {sha}\nVersion: {os.environ['RELEASE_NAME']} ({sys.argv[1]})\n"
+              "Guardian test: true\nDistribution: TestFlight internal\n")
+          PYINFO
 
     artifacts:
+      - $CM_BUILD_DIR/apps/mobile/build/guardian-build-info.txt
       - $CM_BUILD_DIR/apps/mobile/build/ios/ipa/*.ipa
       - $CM_BUILD_DIR/apps/mobile/build/ios/archive/Runner.xcarchive/dSYMs/**/*.dSYM
 
     publishing:
       app_store_connect:
         auth: integration
+        # Upload for internal testers; do not request external beta review.
         submit_to_testflight: false
+        submit_to_app_store: false
