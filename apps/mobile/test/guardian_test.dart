@@ -436,7 +436,8 @@ void main() {
           'method_change_available': true,
         };
       await start(tester, repo);
-      await tapButton(tester, 'Actualizar medio de pago');
+      await tester.ensureVisible(find.text('Actualizar medio de pago'));
+      await tester.tap(find.text('Actualizar medio de pago'));
       await tester.pumpAndSettle();
       expect(repo.calls, isEmpty);
       expect(
@@ -474,7 +475,8 @@ void main() {
       await tester.pumpAndSettle();
       expect(repo.calls.single['key'], '77000000-0000-4000-8000-000000000001');
       repo.value['method_setup']['status'] = 'applied';
-      await tapButton(tester, 'Actualizar estado');
+      await tester.ensureVisible(find.text('Actualizar estado'));
+      await tester.tap(find.text('Actualizar estado'));
       await tester.pumpAndSettle();
       expect(find.textContaining('Medio de pago actualizado'), findsOneWidget);
       expect(find.text('Continuar actualización en Stripe'), findsNothing);
