@@ -38,7 +38,7 @@ El validador puro `supabase/functions/_shared/guardian-billing.mjs` implementa e
 
 `readGuardianPaidEvidence` recibe una instancia StripeClient configurada con API `2026-08-26.dahlia` y `lookupSubscription`, que debe consultar `dopmi_guardian_subscription_server` con operación `lookup` usando exclusivamente `service_role`. Solo el ID de factura entra a la lectura; propietario, precio e importe esperado proceden del registro privado. Obtiene la factura con `expand: [payments]` y el PaymentIntent con `expand: [latest_charge.balance_transaction]`. Listas incompletas o varios pagos exitosos requieren revisión; nunca se ignora una página para calcular el neto.
 
-La salida acredita identidad e importes del pago consultado, no autoriza asignaciones. La liquidación pendiente debe bloquear y verificar el enlace factura/ciclo y su reserva en PostgreSQL. Cancelar una suscripción no impide consultar evidencia de un pago pasado, pero sigue impidiendo preparar otro cobro. El módulo aún no se conecta al trabajador ni crea operaciones Stripe.
+La salida acredita identidad e importes del pago consultado, no autoriza asignaciones. La liquidación descrita abajo bloquea y verifica el enlace factura/ciclo y su reserva en PostgreSQL. Cancelar una suscripción no impide consultar evidencia de un pago pasado, pero sigue impidiendo preparar otro cobro. El lector se conecta al procesador mediante `guardianService`; por sí solo no crea operaciones Stripe.
 
 ## Liquidación y trabajos de pagos confirmados
 
