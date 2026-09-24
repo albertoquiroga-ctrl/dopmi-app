@@ -19,6 +19,19 @@ export async function guardianInvoiceCycleKey(subscriptionId, invoiceId) {
 }
 
 export function guardianRenewalCandidate(invoice, subscription, expected) {
+  return checkGuardianInvoice(invoice, subscription, expected, 'draft');
+}
+
+// Re-read both objects after finalization. The caller must compare the invoice
+// with the identity persisted at reservation time, not an ID supplied by a
+// browser or an untrusted webhook. This check does not authorize a Stripe pay.
+export function guardianFinalizedInvoiceForCollection(invoice, subscription, expected) {
+  if (!/^in_[A-Za-z0-9]+$/.test(expected?.invoice_id ?? '') || invoice?.id !== expected.invoice_id)
+    throw new GuardianBillingError('invoice_identity_mismatch');
+  return checkGuardianInvoice(invoice, subscription, expected, 'open');
+}
+
+function checkGuardianInvoice(invoice, subscription, expected, requiredStatus) {
   const subId = invoice?.parent?.subscription_details?.subscription ?? invoice?.subscription;
   const id = typeof subId === 'string' ? subId : subId?.id;
   if (!expected || !/^sub_[A-Za-z0-9]+$/.test(expected.subscription_id ?? '')
@@ -34,7 +47,8 @@ export function guardianRenewalCandidate(invoice, subscription, expected) {
     || subscription.pause_collection?.behavior !== 'keep_as_draft'
     || subscription.pause_collection?.resumes_at != null)
     throw new GuardianBillingError('billing_not_fail_closed');
-  if (invoice.status !== 'draft' || invoice.auto_advance !== false || invoice.collection_method !== 'send_invoice')
+  if (invoice.status !== requiredStatus || invoice.auto_advance !== false
+    || invoice.collection_method !== 'send_invoice')
     throw new GuardianBillingError('invoice_not_safe_to_collect');
   if (invoice.currency !== 'mxn' || invoice.total !== expected.gross_cents
     || invoice.amount_due !== expected.gross_cents || invoice.amount_paid !== 0

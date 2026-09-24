@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { planGuardianAllocation } from '../../supabase/functions/_shared/guardian-allocation.mjs';
-import { guardianInvoiceCycleKey, guardianRenewalCandidate } from '../../supabase/functions/_shared/guardian-billing.mjs';
+import { guardianInvoiceCycleKey, guardianRenewalCandidate, guardianFinalizedInvoiceForCollection } from '../../supabase/functions/_shared/guardian-billing.mjs';
 
 const expense = (id, available_cents, urgent, approved_at, payable = true) =>
   ({ id, available_cents, urgent, approved_at, payable });
@@ -46,7 +46,8 @@ test('rejects invalid amounts, duplicate expenses and missing approval dates', (
 
 const subscription = { id: 'sub_guardian1', customer: 'cus_guardian1', livemode: false,
   status: 'active', collection_method: 'send_invoice', pause_collection: { behavior: 'keep_as_draft', resumes_at: null } };
-const invoice = { id: 'in_cycle1', subscription: subscription.id, customer: subscription.customer,
+const invoice = { id: 'in_cycle1', parent: { subscription_details: { subscription: subscription.id } },
+  customer: subscription.customer,
   livemode: false, billing_reason: 'subscription_cycle', status: 'draft', auto_advance: false,
   collection_method: 'send_invoice', currency: 'mxn', total: 5000, amount_due: 5000,
   amount_paid: 0, attempted: false, starting_balance: 0 };
@@ -69,7 +70,8 @@ test('renewal requires a paused subscription and an exact unpaid draft invoice b
 test('renewal rejects another account, changed price, credited invoice, live mode or initial invoice', () => {
   for (const changed of [{ customer: 'cus_other' }, { amount_due: 4900 }, { total: 4900 },
     { starting_balance: -100 }, { attempted: true }, { livemode: true },
-    { billing_reason: 'subscription_create' }, { subscription: 'sub_other' }])
+    { billing_reason: 'subscription_create' },
+    { parent: { subscription_details: { subscription: 'sub_other' } } }])
     assert.throws(() => guardianRenewalCandidate({ ...invoice, ...changed }, subscription, expected));
   assert.throws(() => guardianRenewalCandidate(invoice, subscription, { ...expected, gross_cents: 20000 }),
     /invoice_amount_mismatch/);
@@ -82,4 +84,18 @@ test('Stripe invoice identity yields a stable cycle key without sharing one betw
   assert.notEqual(key, await guardianInvoiceCycleKey(subscription.id, 'in_cycle2'));
   assert.notEqual(key, await guardianInvoiceCycleKey('sub_guardian2', invoice.id));
   await assert.rejects(guardianInvoiceCycleKey(subscription.id, 'wrong'), /invalid_invoice_identity/);
+});
+
+test('finalized invoice keeps the same reserved identity and remains unattempted while collection stays paused', () => {
+  const finalized = { ...invoice, status: 'open' };
+  const reserved = { ...expected, invoice_id: invoice.id };
+  assert.deepEqual(guardianFinalizedInvoiceForCollection(finalized, subscription, reserved),
+    { invoice_id: invoice.id, subscription_id: subscription.id, gross_cents: 5000 });
+  for (const changed of [{ id: 'in_other' }, { amount_due: 4900 }, { attempted: true },
+    { amount_paid: 5000 }, { auto_advance: true }, { status: 'paid' }])
+    assert.throws(() => guardianFinalizedInvoiceForCollection({ ...finalized, ...changed }, subscription, reserved));
+  assert.throws(() => guardianFinalizedInvoiceForCollection(finalized,
+    { ...subscription, pause_collection: null }, reserved), /billing_not_fail_closed/);
+  assert.throws(() => guardianFinalizedInvoiceForCollection(finalized, subscription,
+    { ...reserved, invoice_id: 'in_other' }), /invoice_identity_mismatch/);
 });

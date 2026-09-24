@@ -21,7 +21,7 @@ Decisión confirmada por el titular el 23 de septiembre de 2026: cobrar al activ
 
 La reserva SQL existente **no realiza cobros**. Hasta cumplir esas condiciones, Guardián no se expone como opción activa en la app.
 
-El validador puro `supabase/functions/_shared/guardian-billing.mjs` implementa el rechazo preventivo de facturas inseguras y genera una clave de ciclo determinista. Aún no se conecta a un endpoint de cobro. Stripe documenta que la factura inicial de una suscripción de cobro automático se finaliza de inmediato y que una renovación puede finalizarse pese a fallas prolongadas del webhook; por eso el control no puede depender de pausar una suscripción después de crearla. Véase [facturación de suscripciones](https://docs.stripe.com/billing/invoices/subscription) y [pausar cobros](https://docs.stripe.com/billing/subscriptions/pause-payment).
+El validador puro `supabase/functions/_shared/guardian-billing.mjs` implementa el rechazo preventivo de facturas inseguras, verifica de nuevo la identidad y el importe después de finalizar una factura individual y genera una clave de ciclo determinista. Aún no se conecta a un endpoint de cobro. Stripe documenta que la factura inicial de una suscripción de cobro automático se finaliza de inmediato y que una renovación puede finalizarse pese a fallas prolongadas del webhook; por eso el control no puede depender de pausar una suscripción después de crearla. Véase [facturación de suscripciones](https://docs.stripe.com/billing/invoices/subscription) y [pausar cobros](https://docs.stripe.com/billing/subscriptions/pause-payment).
 
 ## Experimento aislado en Stripe de prueba (24 de septiembre de 2026)
 
