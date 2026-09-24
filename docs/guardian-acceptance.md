@@ -11,7 +11,7 @@ El hito 5 sigue abierto. Este documento organiza la prueba conjunta de app, Supa
 - `payment-return` v6 corrige un problema detectado en HTTP real: el dominio estándar de Supabase convierte HTML a texto plano y reemplaza su CSP. Ahora devuelve instrucciones legibles para volver a la app; no depende de botones HTML que el navegador no renderiza. [Restricción documentada por Supabase](https://supabase.com/docs/guides/functions/limits).
 - Webhook `we_1UI5JC2ZjyMOQ0uLhEBONUD1`, habilitado en test y con la misma URL, versión y secreto: se agregaron los 13 eventos faltantes, conservando los ocho anteriores. Su API de eventos permanece `2026-07-29.dahlia`; el servidor consulta la evidencia de Guardián con `2026-08-26.dahlia`.
 - Cron `dopmi-payment-worker-reconcile`: cada minuto, token obtenido desde Vault. Respuestas posteriores al despliegue comprobadas con HTTP 200 y `failed=0`.
-- Alta cerrada: POST `guardian-client` devuelve HTTP 503 `guardian_disabled`. El trabajador no ejecuta Guardián mientras su flag esté apagado. Cero ciclos, suscripciones y liquidaciones Guardián durante la preparación. No se emitieron cargos, transferencias ni devoluciones.
+- Alta cerrada: POST `guardian-client` devuelve HTTP 503 `guardian_disabled`. El procesamiento Guardián ya está habilitado para pruebas; las comprobaciones posteriores no registraron fallos ni operaciones pendientes. Cero ciclos, suscripciones y liquidaciones Guardián durante la preparación. No se emitieron cargos, transferencias ni devoluciones.
 
 ## Comprobación repetible antes de abrir la prueba
 
@@ -29,9 +29,9 @@ Revisar Cron por separado: una ejecución SQL que encola HTTP no demuestra una r
 
 ## Configuración pendiente antes del primer pago
 
-1. Acceder a la configuración privada de Edge Functions en el proyecto de prueba. La conexión MCP permite desplegar y consultar la base, pero no ofrece gestión de secretos. El navegador de esta sesión requiere iniciar sesión; la CLI local no tiene token configurado. No compartir credenciales por chat.
+1. Acceso a la configuración de prueba resuelto mediante la automatización existente. No hace falta iniciar una nueva sesión en el navegador para completar esta preparación.
 2. Comprobar `STRIPE_SECRET_KEY_H4_TEST` y sus permisos de prueba para los recursos utilizados: Events; Customers; Checkout; SetupIntents y PaymentMethods; Products/Prices; Subscriptions; Invoices e InvoicePayments; PaymentIntents, Charges y BalanceTransactions; cuentas Connect; Transfers y sus reversals; Refunds. Conceder escritura sólo donde el código la utiliza. El acceso de la conexión Stripe de ChatGPT no demuestra los permisos de esta clave de servidor. Conservar Stripe Tax apagado.
-3. Mantener `DOPMI_GUARDIAN_CHECKOUT_ENABLED=false` mientras se habilitan y comprueban los componentes del servidor:
+3. Preparación del servidor completada. Se mantiene `DOPMI_GUARDIAN_CHECKOUT_ENABLED=false`; los componentes de la tabla ya están habilitados:
 
    | Variable | Valor para el servidor de prueba |
    | --- | --- |
@@ -41,18 +41,14 @@ Revisar Cron por separado: una ejecución SQL que encola HTTP no demuestra una r
    | `DOPMI_GUARDIAN_CHANGES_ENABLED` | `true` |
    | `DOPMI_GUARDIAN_REFUNDS_ENABLED` | `true` |
 
-   Comprobar al menos una respuesta real de Cron con `guardian.failed=0`. Después habilitar `DOPMI_GUARDIAN_CHECKOUT_ENABLED=true` y ejecutar el smoke con `--expect-enabled`. El cliente exige los seis flags. Esto habilita el entorno compartido de prueba para usuarios autenticados elegibles; no es una lista de acceso limitada a un donante.
-4. Preparar la compilación móvil de prueba con `ENABLE_GUARDIAN_TEST=true` en **config.local.json**, manteniendo URL y clave publicable. No cambiar `config.example.json`. En el equipo Windows ya preparado:
+   Las respuestas reales de Cron ya se comprobaron sin fallos. Cuando estén listos el dispositivo y los permisos de Stripe, habilitar `DOPMI_GUARDIAN_CHECKOUT_ENABLED=true` y ejecutar el smoke con `--expect-enabled`. El cliente exige los seis flags. Esto habilita el entorno compartido de prueba para usuarios autenticados elegibles; no es una lista de acceso limitada a un donante.
+4. La compilación Android conectada ya está disponible y aprobó sus verificaciones automáticas. Se instala como **Dopmi Guardián (prueba)** junto a la app habitual. Descargar el paquete de pruebas y extraer el APK correspondiente al dispositivo: `app-arm64-v8a-debug.apk` para ARM64, `app-armeabi-v7a-debug.apk` para ARM de 32 bits o `app-x86_64-debug.apk` para emulador x86_64. Registrar la versión del paquete y el dispositivo al probarlo. La compilación genérica no sirve como evidencia de aceptación conectada.
 
-   ```powershell
-   .\scripts\dev.ps1 android
-   ```
-
-   Instalar `apps/mobile/build/app/outputs/flutter-apk/app-debug.apk` en el teléfono o usar `scripts/emulate-android.ps1`. Registrar commit, versión de APK y dispositivo. El APK genérico del CI usa configuración vacía y flag apagado: no sirve como evidencia de aceptación Guardián conectada.
+La instalación, el inicio de sesión y el recorrido en un dispositivo siguen pendientes. Las compilaciones y pruebas automáticas aprobadas no acreditan esos pasos. Checkout permanece cerrado.
 
 ## Primer recorrido en Android
 
-1. Entrar con la cuenta donante de prueba confirmada y activa. Abrir **Cuenta → Mi plan Guardián**.
+1. Abrir **Dopmi Guardián (prueba)** e iniciar sesión con la cuenta Dopmi donante de prueba confirmada y activa. La instalación separada tiene su propia sesión. Si Android pregunta con qué app abrir un enlace de autenticación, elegir la de prueba. Abrir **Cuenta → Mi plan Guardián**.
 2. Seleccionar $50 MXN. Comprobar condiciones, primera aportación, mensualidad, comisión, cancelación y consentimiento. Verificar antes la capacidad de gastos aprobados de prueba y la cuenta Connect lista.
 3. Sin capacidad, comprobar el aviso y la ausencia de Checkout, suscripción y cargo. Con capacidad, autorizar **una sola vez** y completar Checkout con datos de prueba de Stripe.
 4. En el retorno, volver manualmente a Dopmi y actualizar el plan. No iniciar otro pago si tarda. Confirmar por Stripe y base de datos el mismo intento, un cargo, la asignación completa del neto y las transferencias a sus destinos persistidos.
