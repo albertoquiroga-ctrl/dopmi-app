@@ -78,6 +78,21 @@ begin
       or plan.initial_charge_id<>initial_charge then
       raise exception 'Registro Guardián ya vinculado a otros datos' using errcode='22023';
     end if;
+  elsif operation='cancel' then
+    donor := (data->>'donor_id')::uuid;
+    subscription := data->>'stripe_subscription_id';
+    if donor is null or subscription is null or subscription !~ '^sub_[A-Za-z0-9]+$' then
+      raise exception 'Cancelación Guardián inválida' using errcode='22023';
+    end if;
+    select * into plan from private.dopmi_guardian_subscriptions p
+      where p.donor_id=donor and p.stripe_subscription_id=subscription for update;
+    if not found then raise exception 'Suscripción Guardián no disponible' using errcode='42501'; end if;
+    -- The caller must independently verify Stripe has canceled the same
+    -- subscription before invoking this service-only transition.
+    update private.dopmi_guardian_subscriptions p
+      set status='canceled', canceled_at=coalesce(p.canceled_at,now())
+      where p.donor_id=donor and p.status='active';
+    select * into plan from private.dopmi_guardian_subscriptions p where p.donor_id=donor;
   elsif operation='lookup' then
     subscription := data->>'stripe_subscription_id';
     if subscription !~ '^sub_[A-Za-z0-9]+$' then

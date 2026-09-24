@@ -376,6 +376,21 @@ test('Guardian subscription registry cannot be read or changed by a client or ad
     await db.exec('reset role');
   }
 });
+test('Guardian cancellation is idempotent and blocks future invoice bindings',async () => {
+  await guardianRegistry('register',guardianPlan);
+  const held=await guardian(5000);
+  await rejected(()=>guardianRegistry('cancel',{donor_id:other,
+    stripe_subscription_id:guardianPlan.stripe_subscription_id}),/no disponible/);
+  const cancel={donor_id:donor,stripe_subscription_id:guardianPlan.stripe_subscription_id};
+  const first=await guardianRegistry('cancel',cancel);
+  assert.equal(first.status,'canceled');
+  assert.deepEqual(await guardianRegistry('cancel',cancel),first);
+  await rejected(()=>guardianRegistry('register',guardianPlan),/ya vinculado/);
+  await rejected(()=>guardianRegistry('bind_invoice',{
+    stripe_subscription_id:guardianPlan.stripe_subscription_id,
+    stripe_invoice_id:'in_afterCancellation',cycle_id:held.id }),/no disponible/);
+  assert.equal((await db.query('select count(*)::int as n from private.dopmi_guardian_invoice_cycles')).rows[0].n,0);
+});
 test('Guardian activation preview is authenticated, read only and respects pending holds',async () => {
   await role(donor);
   const preview=async amount=>(await db.query('select public.dopmi_guardian_capacity_preview($1) as value',[amount])).rows[0].value;
