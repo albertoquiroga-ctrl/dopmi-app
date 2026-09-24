@@ -34,13 +34,14 @@ class GuardianRepository {
         ),
       );
     }
-    if (intent['kind'] == 'checkout') {
+    if (['checkout', 'method'].contains(intent['kind'])) {
       final result = await client.functions.invoke(
         'guardian-client',
         body: {
-          'action': 'checkout',
+          'action': intent['kind'],
           'key': intent['key'],
-          'gross_cents': intent['cents'],
+          if (intent['kind'] == 'checkout') 'gross_cents': intent['cents'],
+          if (intent['kind'] == 'method') 'revision': intent['revision'],
           'consent': true,
           'consent_version': intent['consent_version'],
         },
@@ -70,6 +71,9 @@ class GuardianRepository {
 }
 
 String guardianError(Object error) {
+  if (guardianMethodRejected(error)) {
+    return 'El plan cambió o tiene una operación en conciliación. Actualiza su estado antes de autorizar el cambio de medio de pago.';
+  }
   if (error is FunctionException &&
       error.details is Map &&
       (error.details as Map)['error'] == 'guardian_disabled') {
@@ -90,7 +94,29 @@ String guardianError(Object error) {
 }
 
 bool guardianRejected(Object error) =>
-    error is PostgrestException && ['40001', '22023'].contains(error.code);
+    (error is PostgrestException && ['40001', '22023'].contains(error.code)) ||
+    guardianMethodRejected(error);
+
+bool guardianMethodRejected(Object error) =>
+    error is FunctionException &&
+    error.details is Map &&
+    [
+      'guardian_plan_changed',
+      'guardian_method_invalid',
+      'guardian_method_busy',
+      'guardian_account_unavailable',
+    ].contains((error.details as Map)['error']);
+
+const guardianMethodLabels = {
+  'pending': 'Actualización pendiente: continúa en Stripe para guardar y autenticar tu medio de pago.',
+  'attention':
+      'El cambio de medio de pago está en revisión. Conservamos tu solicitud.',
+  'applied': 'Medio de pago actualizado para los próximos ciclos. No se realizó un cobro por este cambio.',
+  'expired':
+      'La actualización venció sin aplicarse. Puedes autorizar una nueva.',
+  'superseded':
+      'La actualización se detuvo porque cambió el estado de tu plan.',
+};
 
 const guardianActivationLabels = {
   'pending': 'Alta pendiente de confirmación',

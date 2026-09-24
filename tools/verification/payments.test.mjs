@@ -2100,7 +2100,7 @@ const guardianState=async()=>(await db.query('select public.dopmi_guardian_state
 test('Guardian mobile state requires identity and hides other owners from staff',async()=>{
   await role('','anon');await rejected(()=>guardianState(),/permission denied/);await db.exec('reset role');
   const f=await changeFixture();await f.request();
-  for(const actor of [other,staff]){await role(actor);assert.deepEqual(await guardianState(),{plan:null,activation:null});await db.exec('reset role');}
+  for(const actor of [other,staff]){await role(actor);assert.deepEqual(await guardianState(),{plan:null,activation:null,method_setup:null,payment_issue:null,method_change_available:false});await db.exec('reset role');}
   await role(donor);const state=await guardianState();assert.equal(state.plan.gross_cents,5000);
   assert.ok(state.activation.key);assert.equal(state.activation.consent_version,'guardian-2026-09-24');
   assert.doesNotMatch(JSON.stringify(state),/cus_|sub_|price_|pm_|cs_test|lease|session_id|return_url/);
@@ -2243,4 +2243,159 @@ test('Guardian activation cancellation delegates atomically when registration al
   await cancelActivation();
   assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_requests')).rows[0].n,1);
   assert.deepEqual(await collectionRpc('sources',{}),[]);
+});
+
+const {guardianMethodService}=await import('../../supabase/functions/_shared/guardian-method.mjs');
+const methodRpc=async(operation,data={})=>(await db.query('select public.dopmi_guardian_method_server($1,$2::jsonb) v',[operation,JSON.stringify(data)])).rows[0].v;
+const methodInput={key:'77000000-0000-4000-8000-000000000001',revision:0,consent:true,consent_version:guardianConsentVersion};
+async function methodFixture() {
+  const f=await scheduleFixture();await f.scheduler().run(f.cycleId);
+  const sub=[...f.subscriptions.values()][0];sub.billing_cycle_anchor=f.charge.created;
+  sub.items.data[0].current_period_start=f.charge.created;
+  const sessions=new Map(),calls=[];
+  const setup={id:'seti_method',livemode:false,customer:'cus_initial',usage:'off_session',status:'succeeded',payment_method:'pm_newMethod'};
+  f.stripe.setupIntents={retrieve:async()=>structuredClone(setup)};
+  const method=f.stripe.paymentMethods.retrieve;
+  f.stripe.paymentMethods.retrieve=async id=>id==='pm_newMethod'?{id,customer:'cus_initial',livemode:false}:method(id);
+  f.stripe.checkout.sessions={create:async(fields,options)=>{
+    calls.push({kind:'create',fields:structuredClone(fields),options});
+    if(!sessions.has(options.idempotencyKey))sessions.set(options.idempotencyKey,{...fields,id:'cs_test_method',livemode:false,status:'open',setup_intent:null,url:'https://checkout.stripe.com/setup'});
+    return structuredClone(sessions.get(options.idempotencyKey));},retrieve:async()=>structuredClone([...sessions.values()][0])};
+  const update=f.stripe.subscriptions.update;
+  f.stripe.subscriptions.update=async(...args)=>{calls.push({kind:'update',args});return update(...args);};
+  const service=(rpc=methodRpc)=>guardianMethodService({stripe:f.stripe,rpc,returnUrl:'https://example.test/return',logger:{}});
+  const complete=()=>Object.assign([...sessions.values()][0],{status:'complete',setup_intent:setup.id});
+  const prepare=(overrides={})=>methodRpc('prepare',{donor_id:donor,...methodInput,return_url:'https://example.test/return',...overrides});
+  return {...f,methodSessions:sessions,methodCalls:calls,setup,methodService:service,complete,prepare};
+}
+test('Guardian method setup requires consent, revision and no pending collection or amount request',async()=>{
+  const f=await methodFixture();
+  await rejected(()=>f.prepare({consent:false}),/Autorización/);
+  await rejected(()=>f.prepare({revision:8}),/Actualiza/);
+  await rejected(()=>f.prepare({donor_id:other}),/Plan no disponible/);
+  await role(donor);await db.query("select public.dopmi_guardian_request('amount',$1,0,20000,$2)",[crypto.randomUUID(),guardianConsentVersion]);await db.exec('reset role');
+  await rejected(()=>f.prepare({revision:1}),/conciliación/);
+});
+test('Guardian method setup uses only setup Checkout and blocks new collection and amount changes',async()=>{
+  const f=await methodFixture();assert.equal((await f.methodService().checkout(donor,methodInput)).status,'pending');
+  const create=f.methodCalls[0];assert.equal(create.fields.mode,'setup');assert.equal(create.fields.currency,'mxn');
+  assert.equal(create.fields.customer,'cus_initial');assert.equal(create.fields.payment_method_types,undefined);assert.equal(create.fields.line_items,undefined);
+  assert.match(create.fields.integration_identifier,/[a-z]{8}$/);
+  assert.deepEqual(await collectionRpc('sources',{}),[]);
+  await role(donor);await rejected(()=>db.query("select public.dopmi_guardian_request('amount',$1,1,20000,$2)",[crypto.randomUUID(),guardianConsentVersion]),/medio pendiente/);await db.exec('reset role');
+  assert.equal((await f.prepare()).revision,1);
+  await rejected(()=>f.prepare({key:crypto.randomUUID(),revision:1}),/conciliación/);
+});
+test('Guardian method setup recovers lost session response with identical fields and one session',async()=>{
+  const f=await methodFixture();const create=f.stripe.checkout.sessions.create;
+  f.stripe.checkout.sessions.create=async(...args)=>{await create(...args);throw Error('lost response');};
+  await assert.rejects(f.methodService().checkout(donor,methodInput),/lost response/);
+  f.stripe.checkout.sessions.create=create;
+  assert.match((await f.methodService().checkout(donor,methodInput)).checkout_url,/checkout.stripe.com/);
+  assert.equal(f.methodSessions.size,1);assert.deepEqual(f.methodCalls[0],f.methodCalls[1]);
+});
+test('Guardian confirmed setup changes only the future method and preserves initial payment evidence',async()=>{
+  const f=await methodFixture();await f.methodService().checkout(donor,methodInput);f.complete();
+  const job=await f.prepare();assert.equal((await f.methodService().run(job.id)).status,'applied');
+  assert.deepEqual(f.methodCalls.find(c=>c.kind==='update').args[1],{default_payment_method:'pm_newMethod',proration_behavior:'none'});
+  assert.equal((await activationRpc('get',{cycle_id:f.cycleId})).payment_method_id,'pm_initial');
+  assert.equal((await collectionRpc('source',{subscription_id:'sub_schedule1'})).payment_method_id,'pm_newMethod');
+  assert.equal((await scheduleRpc('get',{cycle_id:f.cycleId})).activation.payment_method_id,'pm_newMethod');
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_collection_jobs')).rows[0].n,0);
+  assert.equal((await f.methodService().run(job.id)).status,'applied');assert.equal(f.methodCalls.filter(c=>c.kind==='update').length,1);
+});
+test('Guardian lost method mutation reply recovers by read without a second update',async()=>{
+  const f=await methodFixture();await f.methodService().checkout(donor,methodInput);f.complete();const job=await f.prepare();
+  const update=f.stripe.subscriptions.update;f.stripe.subscriptions.update=async(...args)=>{await update(...args);throw Error('lost update');};
+  await assert.rejects(f.methodService().run(job.id),/lost update/);
+  assert.equal((await f.methodService().run(job.id)).status,'applied');
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update').length,1);
+});
+for(const changed of [{livemode:true},{customer:'cus_other'},{usage:'on_session'}])test(`Guardian setup rejects forged evidence ${JSON.stringify(changed)}`,async()=>{
+  const f=await methodFixture();await f.methodService().checkout(donor,methodInput);f.complete();Object.assign(f.setup,changed);
+  await assert.rejects(f.methodService().run((await f.prepare()).id),/setup_mismatch/);
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update').length,0);
+});
+test('Guardian setup awaiting authentication or processing cannot update the subscription',async()=>{
+  const f=await methodFixture();await f.methodService().checkout(donor,methodInput);f.complete();const job=await f.prepare();
+  for(const state of ['requires_action','processing','requires_payment_method']){
+    f.setup.status=state;assert.equal((await f.methodService().run(job.id)).status,'pending');
+  }
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update').length,0);
+});
+test('Guardian rejects a payment method attached to another customer',async()=>{
+  const f=await methodFixture();await f.methodService().checkout(donor,methodInput);f.complete();
+  f.stripe.paymentMethods.retrieve=async()=>({id:'pm_newMethod',customer:'cus_other',livemode:false});
+  await assert.rejects(f.methodService().run((await f.prepare()).id),/owner_mismatch/);
+});
+test('Guardian abandoned setup expires without applying and permits a newly authorized attempt',async()=>{
+  const f=await methodFixture();await f.methodService().checkout(donor,methodInput);[...f.methodSessions.values()][0].status='expired';
+  assert.equal((await f.methodService().run((await f.prepare()).id)).status,'expired');
+  const next=await f.prepare({key:crypto.randomUUID(),revision:1});assert.equal(next.revision,2);
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update').length,0);
+});
+test('Guardian setup recovery never creates again outside its original idempotency budget',async()=>{
+  const f=await methodFixture();const j=await f.prepare();
+  await db.query("update private.dopmi_guardian_method_jobs set checkout_attempts=1,checkout_first_at=now()-interval '24 hours' where id=$1",[j.id]);
+  assert.equal((await f.methodService().run(j.id)).status,'attention');assert.equal(f.methodCalls.length,0);
+});
+test('Guardian cancellation supersedes an open setup without applying a method',async()=>{
+  const f=await methodFixture();await f.methodService().checkout(donor,methodInput);f.complete();const job=await f.prepare();
+  await cancelActivation();assert.equal((await f.methodService().run(job.id)).status,'superseded');
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update').length,0);assert.deepEqual(await collectionRpc('sources',{}),[]);
+});
+test('Guardian cancellation during a method update prevents publishing its late confirmation',async()=>{
+  const f=await methodFixture();await f.methodService().checkout(donor,methodInput);f.complete();const job=await f.prepare();
+  const update=f.stripe.subscriptions.update;f.stripe.subscriptions.update=async(...args)=>{const s=await update(...args);await cancelActivation();return s;};
+  assert.equal((await f.methodService().run(job.id)).status,'superseded');
+  assert.equal((await methodRpc('get',{job_id:job.id})).status,'superseded');
+  assert.equal((await db.query('select payment_method_id from private.dopmi_guardian_subscriptions')).rows[0].payment_method_id,null);
+});
+test('Guardian method webhook resolves only a persisted session and rereads Stripe',async()=>{
+  const f=await methodFixture();await f.methodService().checkout(donor,methodInput);f.complete();
+  f.stripe.events={retrieve:async()=>({livemode:false,type:'checkout.session.completed',data:{object:{id:'cs_test_unknown'}}})};
+  assert.equal(await f.methodService().handleWebhook('evt_method'),null);
+  f.stripe.events.retrieve=async()=>({livemode:false,type:'checkout.session.completed',data:{object:{id:'cs_test_method',setup_intent:'seti_fake'}}});
+  assert.equal((await f.methodService().handleWebhook('evt_method')).guardian_method,true);
+  assert.equal((await f.prepare()).status,'applied');
+});
+test('Guardian method client ignores forged Stripe identities, return URLs and owner IDs',async()=>{
+  const calls=[];const handler=guardianClientHandler({enabled:()=>true,authenticate:async()=>({id:donor,email_confirmed_at:'now'}),method:async(...args)=>{calls.push(args);return {status:'pending'};}});
+  const body={action:'method',...methodInput,donor_id:other,customer_id:'cus_other',return_url:'https://evil.test'};
+  assert.equal((await handler(clientRequest(body))).status,200);assert.deepEqual(calls,[[donor,methodInput]]);
+  assert.equal((await handler(clientRequest({...body,revision:-1}))).status,400);
+});
+test('Guardian method projection is private and excludes payment details and processor secrets',async()=>{
+  const f=await methodFixture();await f.methodService().checkout(donor,methodInput);
+  await role(other);assert.equal((await guardianState()).method_setup,null);await db.exec('reset role');
+  await role(donor);const state=await guardianState();assert.equal(state.method_setup.key,methodInput.key);assert.equal(state.method_change_available,false);
+  assert.doesNotMatch(JSON.stringify(state),/cus_|sub_|price_|pm_|seti_|cs_test|lease|secret|return_url/);await db.exec('reset role');
+});
+test('Guardian prepared collection prevents changing its payment method',async()=>{
+  const f=await collectionFixture();const job=await f.prepare();
+  await rejected(()=>methodRpc('prepare',{donor_id:donor,...methodInput,return_url:'https://example.test/return'}),/conciliación/);
+  assert.equal((await collectionRpc('get',{invoice_id:job.invoice_id})).payment_method_id,'pm_initial');
+});
+test('Guardian successful method read can recover beyond the mutation retry budget',async()=>{
+  const f=await methodFixture();await f.methodService().checkout(donor,methodInput);f.complete();const j=await f.prepare();
+  const update=f.stripe.subscriptions.update;f.stripe.subscriptions.update=async(...args)=>{await update(...args);throw Error('lost');};
+  await assert.rejects(f.methodService().run(j.id),/lost/);
+  await db.query("update private.dopmi_guardian_method_jobs set update_attempts=8,update_first_at=now()-interval '24 hours' where id=$1",[j.id]);
+  assert.equal((await f.methodService().run(j.id)).status,'applied');
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update').length,1);
+});
+test('Guardian stale method monitor cannot flag a just-applied replacement',async()=>{
+  const f=await methodFixture();await f.methodService().checkout(donor,methodInput);f.complete();
+  const old=await scheduleRpc('get',{cycle_id:f.cycleId});await f.methodService().run((await f.prepare()).id);
+  await scheduleRpc('attention',{cycle_id:f.cycleId,subscription_id:'sub_schedule1',expected_price_id:old.price_id,expected_method_id:'pm_initial'});
+  assert.equal((await scheduleRpc('get',{cycle_id:f.cycleId})).status,'ready');
+});
+test('Guardian method change rejects an altered billing anniversary instead of confirming success',async()=>{
+  const f=await methodFixture();await f.methodService().checkout(donor,methodInput);f.complete();const j=await f.prepare();
+  const update=f.stripe.subscriptions.update;f.stripe.subscriptions.update=async(...args)=>{
+    const s=await update(...args);[...f.subscriptions.values()][0].billing_cycle_anchor++;return s;
+  };
+  await assert.rejects(f.methodService().run(j.id),/guardian_method_unconfirmed/);
+  assert.equal((await methodRpc('get',{job_id:j.id})).status,'pending');
+  assert.equal((await db.query('select payment_method_id from private.dopmi_guardian_subscriptions')).rows[0].payment_method_id,null);
 });

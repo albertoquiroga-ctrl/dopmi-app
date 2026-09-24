@@ -31,6 +31,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   Json? get plan => data?['plan'] is Map ? Json.from(data!['plan']) : null;
   Json? get activation =>
       data?['activation'] is Map ? Json.from(data!['activation']) : null;
+  Json? get methodSetup =>
+      data?['method_setup'] is Map ? Json.from(data!['method_setup']) : null;
 
   @override
   void initState() {
@@ -80,12 +82,15 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   'amount',
                   'cancel',
                   'cancel_activation',
+                  'method',
                 ].contains(value['kind']) ||
                 value['key'] is! String ||
-                (!['cancel', 'cancel_activation'].contains(value['kind']) &&
+                (['checkout', 'amount'].contains(value['kind']) &&
                     (value['cents'] is! int ||
                         value['consent_version'] != guardianConsent)) ||
-                (['amount', 'cancel'].contains(value['kind']) &&
+                (value['kind'] == 'method' &&
+                    value['consent_version'] != guardianConsent) ||
+                (['amount', 'cancel', 'method'].contains(value['kind']) &&
                     value['revision'] is! int)) {
               throw const FormatException('Intento incompleto');
             }
@@ -100,6 +105,30 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       final result = await ref.read(guardianRepositoryProvider).state();
       if (!current) return;
       data = result;
+      if (intent?['kind'] == 'method' &&
+          (['canceled', 'cancel_requested'].contains(plan?['status']) ||
+              (methodSetup?['key'] == intent?['key'] &&
+                  [
+                    'applied',
+                    'expired',
+                    'superseded',
+                  ].contains(methodSetup?['status'])))) {
+        await prefs.remove(storageKey);
+        intent = null;
+      }
+      if (intent == null &&
+          plan?['status'] == 'active' &&
+          ['pending', 'attention'].contains(methodSetup?['status'])) {
+        intent = {
+          'kind': 'method',
+          'key': methodSetup!['key'],
+          'revision': methodSetup!['revision'],
+          'consent_version': guardianConsent,
+        };
+        if (!await prefs.setString(storageKey, jsonEncode(intent))) {
+          throw const FormatException('No se pudo conservar el intento.');
+        }
+      }
       // Only authoritative terminal state releases an initial payment attempt.
       if (intent?['kind'] == 'checkout' &&
           (plan != null ||
@@ -142,25 +171,33 @@ class _GuardianState extends ConsumerState<GuardianScreen>
     }
   }
 
-  Future<void> submit({bool cancel = false}) async {
+  Future<void> submit({bool cancel = false, bool method = false}) async {
     if (busy || confirming || !fresh || !current) return;
-    if (cancel) {
+    if (cancel || method) {
       setState(() => confirming = true);
       final agreed = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('¿Cancelar tu plan Guardián?'),
-          content: const Text(
-            'Detendremos los ciclos futuros. Un pago ya iniciado puede terminar de procesarse. Los pagos anteriores conservan su historial y no se devuelven automáticamente.',
+          title: Text(
+            method
+                ? '¿Actualizar tu medio de pago?'
+                : '¿Cancelar tu plan Guardián?',
+          ),
+          content: Text(
+            method
+                ? 'Autorizo guardar y usar el nuevo medio en Stripe para los próximos ciclos de Guardián, con el monto y las condiciones vigentes. Stripe puede solicitar autenticación bancaria. Este cambio no cobra ni recupera ciclos omitidos.'
+                : 'Detendremos los ciclos futuros. Un pago ya iniciado puede terminar de procesarse. Los pagos anteriores conservan su historial y no se devuelven automáticamente.',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Conservar plan'),
+              child: Text(method ? 'Volver' : 'Conservar plan'),
             ),
             FilledButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('Confirmar cancelación'),
+              child: Text(
+                method ? 'Autorizar y continuar' : 'Confirmar cancelación',
+              ),
             ),
           ],
         ),
@@ -171,6 +208,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
     }
     final cents = parsePesos(amount.text);
     if (!cancel &&
+        !method &&
         intent == null &&
         (!consent || cents == null || cents < 1000 || cents > 1000000)) {
       setState(
@@ -205,7 +243,9 @@ class _GuardianState extends ConsumerState<GuardianScreen>
             }
           : intent ??
                 <String, dynamic>{
-                  'kind': plan == null ? 'checkout' : 'amount',
+                  'kind': method
+                      ? 'method'
+                      : (plan == null ? 'checkout' : 'amount'),
                   'key': const Uuid().v4(),
                   'cents': cents,
                   'revision': plan?['revision'],
@@ -219,7 +259,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       setState(() => intent = next);
       final result = await repo.submit(next);
       if (!current) return;
-      if (next['kind'] != 'checkout') {
+      if (!['checkout', 'method'].contains(next['kind'])) {
         await prefs.remove(storageKey);
         if (!current) return;
         intent = null;
@@ -228,9 +268,11 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       } else if (result['checkout_url'] is String) {
         await repo.openCheckout(result['checkout_url'] as String);
       } else {
-        message =
-            guardianActivationLabels[result['status']] ??
-            'El alta sigue en revisión. No vuelvas a pagar.';
+        message = next['kind'] == 'method'
+            ? guardianMethodLabels[result['status']] ??
+                  'Actualización en revisión.'
+            : guardianActivationLabels[result['status']] ??
+                  'El alta sigue en revisión. No vuelvas a pagar.';
       }
       if (current) await load();
     } catch (cause) {
@@ -271,7 +313,10 @@ class _GuardianState extends ConsumerState<GuardianScreen>
               'failed',
               'refunded',
             ].contains(activation?['status']));
-    final canChange = status == 'active' && pending == null;
+    final canChange =
+        status == 'active' &&
+        pending == null &&
+        !['pending', 'attention'].contains(methodSetup?['status']);
     final canCancel =
         status == 'active' ||
         (p == null &&
@@ -301,6 +346,37 @@ class _GuardianState extends ConsumerState<GuardianScreen>
             'Guardián todavía no está disponible. Te avisaremos cuando puedas activar tu plan.',
           ),
         if (enabled) ...[
+          if (methodSetup != null)
+            Notice(
+              guardianMethodLabels[methodSetup!['status']] ??
+                  'Medio de pago en revisión.',
+            ),
+          if (data?['payment_issue'] is Map &&
+              [
+                'authentication_required',
+                'payment_failed',
+              ].contains(data!['payment_issue']['reason']))
+            Notice(
+              data!['payment_issue']['status'] == 'skipped'
+                  ? 'El último ciclo se omitió por rechazo o autenticación bancaria pendiente. No se volverá a cobrar ese ciclo. Puedes actualizar y autenticar tu medio para los próximos.'
+                  : 'Un pago necesita revisión bancaria y sigue en conciliación. Espera su resultado antes de cambiar el medio de pago.',
+            ),
+          if (verified &&
+              status == 'active' &&
+              data?['method_change_available'] == true &&
+              intent == null)
+            TextButton(
+              onPressed: busy || confirming || !fresh
+                  ? null
+                  : () => submit(method: true),
+              child: const Text('Actualizar medio de pago'),
+            ),
+          if (intent?['kind'] == 'method')
+            ActionButton(
+              'Continuar actualización en Stripe',
+              busy: busy,
+              onPressed: canSubmit ? () => submit() : null,
+            ),
           if (activation?['cancellation_requested_at'] != null)
             Notice(switch (activation?['cancellation_status']) {
               'stopped' => 'Alta detenida. Consulta abajo el estado del primer pago; detener el alta no confirma una devolución.',
@@ -352,7 +428,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
               guardianActivationLabels[activation!['status']] ??
                   'Estado del alta en revisión. No vuelvas a pagar.',
             ),
-          if (canStart || canChange || intent != null) ...[
+          if (intent?['kind'] != 'method' &&
+              (canStart || canChange || intent != null)) ...[
             const SizedBox(height: 16),
             Wrap(
               spacing: 8,

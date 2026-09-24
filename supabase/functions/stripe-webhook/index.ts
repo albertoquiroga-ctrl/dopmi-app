@@ -35,6 +35,8 @@ Deno.serve(async (req) => {
         }
       }
       if (Deno.env.get('DOPMI_GUARDIAN_CHANGES_ENABLED') === 'true') {
+        const methodEvent = await guardian.method.handleWebhook(event.id);
+        if (methodEvent) return json(methodEvent);
         const changeEvent = await guardian.changes.handleWebhook(event.id);
         if (changeEvent) return json(changeEvent);
       }

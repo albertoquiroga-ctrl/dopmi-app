@@ -169,7 +169,8 @@ export function guardianScheduleService({ stripe, rpc, logger = console, now = (
       if (sub.status === 'canceled') await rpc('canceled', { cycle_id: job.cycle_id, subscription_id: sub.id });
       else if (job.status === 'ready') {
         try { checkSubscription(sub, job, false); if (!isPaused(sub)) fail('guardian_schedule_pause_unconfirmed'); }
-        catch (error) { await rpc('attention', { cycle_id: job.cycle_id, subscription_id: sub.id, expected_price_id: job.price_id }); throw error; }
+        catch (error) { await rpc('attention', { cycle_id: job.cycle_id, subscription_id: sub.id,
+          expected_price_id: job.price_id, expected_method_id: job.activation.payment_method_id }); throw error; }
       }
       return { received: true, guardian_schedule: true };
     } finally { await rpc('observed', { cycle_id: job.cycle_id }); }

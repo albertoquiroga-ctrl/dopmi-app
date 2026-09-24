@@ -97,5 +97,9 @@ select ok(has_function_privilege('authenticated','public.dopmi_guardian_state()'
 select ok(not has_function_privilege('anon','public.dopmi_guardian_cancel_activation(uuid)','execute'),'anonymous cannot cancel an activation');
 select ok(has_function_privilege('authenticated','public.dopmi_guardian_cancel_activation(uuid)','execute'),'authenticated owner can cancel activation');
 select ok(not has_function_privilege('service_role','public.dopmi_guardian_cancel_activation(uuid)','execute'),'activation cancellation needs the owner session');
+select ok(not has_function_privilege('anon','public.dopmi_guardian_method_server(text,jsonb)','execute'),'anonymous cannot mutate payment methods');
+select ok(not has_function_privilege('authenticated','public.dopmi_guardian_method_server(text,jsonb)','execute'),'clients cannot choose processor method IDs');
+select ok(has_function_privilege('service_role','public.dopmi_guardian_method_server(text,jsonb)','execute'),'server can reconcile payment methods');
+select ok((select relrowsecurity from pg_class where oid='private.dopmi_guardian_method_jobs'::regclass),'payment-method jobs have RLS');
 select * from finish();
 rollback;

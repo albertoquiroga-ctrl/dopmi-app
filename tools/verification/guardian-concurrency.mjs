@@ -326,3 +326,48 @@ assert.equal(setupRace[0].status,'fulfilled');assert.equal(setupRace[1].status,'
 assert.match(setupRace[1].reason.message,/Cancelación de alta pendiente/);
 assert.equal(query(`select count(*) from private.dopmi_guardian_subscriptions where donor_id='${setupOwner}';`),'0');
 console.log('Guardian activation cancellation wins before schedule registration: no collectible subscription');
+
+// Method setup serializes against collection preparation and uses the same
+// subscription lease as amount/cancel processing. Fixtures are synthetic.
+const methodOwner='74000000-0000-4000-8000-000000000007';
+query(`insert into auth.users(id,email,raw_user_meta_data,email_confirmed_at) values
+('${methodOwner}','guardian-method@example.test','{"display_name":"Guardian CI","terms_version":"development-2026-09-13","terms_accepted":true}',now());`);
+const methodActivationInput={...activationData,donor_id:methodOwner,key:crypto.randomUUID()};
+const methodActivation=JSON.parse(query(`select public.dopmi_guardian_activation_server('prepare','${JSON.stringify(methodActivationInput)}');`));
+const methodActivationClaim=JSON.parse(query(`select public.dopmi_guardian_activation_server('claim_checkout','{"cycle_id":"${methodActivation.cycle_id}"}');`));
+query(`select public.dopmi_guardian_activation_server('save_checkout','${JSON.stringify({cycle_id:methodActivation.cycle_id,lease:methodActivationClaim.lease,session_id:'cs_test_methodInitialCI'})}');
+select public.dopmi_guardian_settlement_server('settle_initial','${JSON.stringify({donor_id:methodOwner,checkout_session_id:'cs_test_methodInitialCI',customer_id:'cus_methodCI',payment_method_id:'pm_methodOldCI',payment_intent_id:'pi_methodCI',charge_id:'ch_methodCI',gross_cents:2000,platform_fee_cents:40,stripe_fee_cents:60,net_cents:1900})}');`);
+const methodTransfer=JSON.parse(query(`select public.dopmi_guardian_settlement_server('claim','{"cycle_id":"${methodActivation.cycle_id}"}');`));
+query(`select public.dopmi_guardian_settlement_server('finish','${JSON.stringify({job_id:methodTransfer.id,lease:methodTransfer.lease,result_id:'tr_methodCI'})}');
+select public.dopmi_guardian_schedule_server('prepare',jsonb_build_object('cycle_id','${methodActivation.cycle_id}','charge_created',extract(epoch from now())::bigint));`);
+const methodCalendarClaim=JSON.parse(query(`select public.dopmi_guardian_schedule_server('claim','{"cycle_id":"${methodActivation.cycle_id}"}');`));
+for(const [op,data] of [['price',{price_id:'price_methodCI'}],['subscription',{subscription_id:'sub_methodCI'}],['ready',{}]])
+ query(`select public.dopmi_guardian_schedule_server('${op}','${JSON.stringify({cycle_id:methodActivation.cycle_id,lease:methodCalendarClaim.lease,...data})}');`);
+const methodRequest={donor_id:methodOwner,key:crypto.randomUUID(),revision:0,consent:true,consent_version:'guardian-2026-09-24',return_url:'https://example.test/return'};
+let methodReady;const methodStarted=new Promise(resolve=>{methodReady=resolve;});
+const methodPreparation=concurrentQuery(`begin;
+select public.dopmi_guardian_method_server('prepare','${JSON.stringify(methodRequest)}');select pg_sleep(2);commit;`,output=>{
+ if(output.includes('checkout_attempts'))methodReady();
+});
+await Promise.race([methodStarted,methodPreparation.then(()=>{throw Error('Method preparation did not report');})]);
+const blockedMethodCollection=concurrentQuery(`select public.dopmi_guardian_collection_server('prepare','${JSON.stringify({...collectionData,invoice_id:'in_methodCI',subscription_id:'sub_methodCI',cycle_key:crypto.randomUUID()})}');`);
+const methodRace=await Promise.allSettled([methodPreparation,blockedMethodCollection]);
+assert.equal(methodRace[0].status,'fulfilled');assert.equal(methodRace[1].status,'rejected');assert.match(methodRace[1].reason.message,/Solicitud Guardián pendiente/);
+console.log('Guardian method setup vs collection: no invoice reservation while replacement is pending');
+const methodJob=JSON.parse(methodRace[0].value);
+let methodLeaseReady;const methodLeaseStarted=new Promise(resolve=>{methodLeaseReady=resolve;});
+const firstMethodLease=concurrentQuery(`begin;select public.dopmi_guardian_method_server('claim','{"job_id":"${methodJob.id}"}');select pg_sleep(2);commit;`,output=>{if(output.includes('lease_until'))methodLeaseReady();});
+await Promise.race([methodLeaseStarted,firstMethodLease.then(()=>{throw Error('Method lease did not report');})]);
+const secondMethodLease=concurrentQuery(`select public.dopmi_guardian_method_server('claim','{"job_id":"${methodJob.id}"}') is null;`);
+const methodLeases=await Promise.all([firstMethodLease,secondMethodLease]);assert.equal(methodLeases[1],'t');
+const methodClaim=JSON.parse(methodLeases[0]),methodData={job_id:methodJob.id,lease:methodClaim.lease};
+for(const [op,data] of [['write_checkout',{}],['session',{session_id:'cs_test_methodSetupCI'}],['verified',{session_id:'cs_test_methodSetupCI',setup_intent_id:'seti_methodCI',payment_method_id:'pm_methodNewCI'}],['snapshot',{billing_anchor:Math.floor(Date.now()/1000)}],['write_update',{}]])
+ query(`select public.dopmi_guardian_method_server('${op}','${JSON.stringify({...methodData,...data})}');`);
+let methodCancelReady;const methodCancelStarted=new Promise(resolve=>{methodCancelReady=resolve;});
+const methodCancel=concurrentQuery(`begin;set local role authenticated;select set_config('request.jwt.claim.sub','${methodOwner}',true);
+select public.dopmi_guardian_request('cancel','${crypto.randomUUID()}',1);select pg_sleep(2);commit;`,output=>{if(output.includes('cancel_requested'))methodCancelReady();});
+await Promise.race([methodCancelStarted,methodCancel.then(()=>{throw Error('Method cancel did not report');})]);
+const lateMethodApplied=concurrentQuery(`select public.dopmi_guardian_method_server('applied','${JSON.stringify({...methodData,payment_method_id:'pm_methodNewCI'})}');`);
+const stoppedMethod=await Promise.all([methodCancel,lateMethodApplied]);assert.equal(JSON.parse(stoppedMethod[1]).status,'superseded');
+assert.equal(query(`select payment_method_id is null from private.dopmi_guardian_subscriptions where donor_id='${methodOwner}';`),'t');
+console.log('Guardian method processing: one lease; cancellation prevents late method confirmation');

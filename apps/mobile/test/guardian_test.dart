@@ -50,6 +50,21 @@ class FakeGuardian extends GuardianRepository {
         code: '40001',
       );
     }
+    if (intent['kind'] == 'method') {
+      value = {
+        ...value,
+        'method_change_available': false,
+        'method_setup': {
+          'key': intent['key'],
+          'revision': intent['revision'],
+          'status': 'pending',
+        },
+      };
+      return {
+        'status': 'pending',
+        'checkout_url': 'https://checkout.stripe.com/setup',
+      };
+    }
     if (intent['kind'] == 'checkout') {
       value = {
         'plan': null,
@@ -410,4 +425,95 @@ void main() {
       expect(find.text('Cancelar mi plan'), findsNothing);
     });
   }
+  testWidgets(
+    'method change needs explicit consent and uncertain replies reuse one key',
+    (tester) async {
+      final repo = FakeGuardian()
+        ..fail = true
+        ..value = {
+          'plan': activePlan(),
+          'activation': null,
+          'method_change_available': true,
+        };
+      await start(tester, repo);
+      await tapButton(tester, 'Actualizar medio de pago');
+      await tester.pumpAndSettle();
+      expect(repo.calls, isEmpty);
+      expect(
+        find.textContaining('no cobra ni recupera ciclos omitidos'),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Autorizar y continuar'));
+      await tester.pumpAndSettle();
+      expect(repo.calls.single['kind'], 'method');
+      repo.fail = false;
+      await tapButton(tester, 'Continuar actualización en Stripe');
+      await tester.pumpAndSettle();
+      expect(repo.calls.length, 2);
+      expect(repo.calls.first, repo.calls.last);
+      expect(repo.opened, 1);
+      expect(find.textContaining('Actualización pendiente:'), findsOneWidget);
+      expect(find.textContaining('Medio de pago actualizado'), findsNothing);
+    },
+  );
+  testWidgets(
+    'method setup recovers from server and only a confirmed state releases the attempt',
+    (tester) async {
+      final repo = FakeGuardian()
+        ..value = {
+          'plan': activePlan(),
+          'activation': null,
+          'method_setup': {
+            'key': '77000000-0000-4000-8000-000000000001',
+            'revision': 1,
+            'status': 'pending',
+          },
+        };
+      await start(tester, repo);
+      await tapButton(tester, 'Continuar actualización en Stripe');
+      await tester.pumpAndSettle();
+      expect(repo.calls.single['key'], '77000000-0000-4000-8000-000000000001');
+      repo.value['method_setup']['status'] = 'applied';
+      await tapButton(tester, 'Actualizar estado');
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Medio de pago actualizado'), findsOneWidget);
+      expect(find.text('Continuar actualización en Stripe'), findsNothing);
+    },
+  );
+  testWidgets(
+    'authentication issue explains omitted cycle without offering another charge',
+    (tester) async {
+      final repo = FakeGuardian()
+        ..value = {
+          'plan': activePlan(),
+          'activation': null,
+          'method_change_available': true,
+          'payment_issue': {
+            'reason': 'authentication_required',
+            'status': 'skipped',
+          },
+        };
+      await start(tester, repo);
+      expect(
+        find.textContaining('No se volverá a cobrar ese ciclo'),
+        findsOneWidget,
+      );
+      expect(find.text('Actualizar medio de pago'), findsOneWidget);
+      expect(repo.calls, isEmpty);
+    },
+  );
+  testWidgets(
+    'unconfirmed account cannot begin a payment-method change but may cancel',
+    (tester) async {
+      final repo = FakeGuardian()
+        ..value = {
+          'plan': activePlan(),
+          'activation': null,
+          'method_change_available': true,
+        };
+      await start(tester, repo, verified: false);
+      expect(find.text('Actualizar medio de pago'), findsNothing);
+      expect(find.text('Cancelar mi plan'), findsOneWidget);
+    },
+  );
 }
