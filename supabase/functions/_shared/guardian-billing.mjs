@@ -31,6 +31,20 @@ export function guardianFinalizedInvoiceForCollection(invoice, subscription, exp
   return checkGuardianInvoice(invoice, subscription, expected, 'open');
 }
 
+// Recovery may close an attempted but unpaid invoice; it never authorizes a
+// payment. Retain all ownership/amount/line checks and allow a canceled plan.
+export function guardianUnpaidInvoiceForRecovery(invoice, subscription, expected) {
+  if (invoice?.id !== expected?.invoice_id) throw new GuardianBillingError('invoice_identity_mismatch');
+  checkGuardianInvoiceIdentity(invoice, subscription, expected, 'recovery');
+  if (invoice.status !== 'open' || invoice.auto_advance !== false || invoice.collection_method !== 'send_invoice'
+    || invoice.currency !== 'mxn' || invoice.total !== expected.gross_cents || invoice.amount_due !== expected.gross_cents
+    || invoice.amount_remaining !== expected.gross_cents || invoice.amount_paid !== 0 || invoice.starting_balance !== 0
+    || invoice.automatic_tax?.enabled !== false || !Number.isSafeInteger(invoice.attempt_count) || invoice.attempt_count < 0
+    || invoice.attempt_count > 1 || typeof invoice.attempted !== 'boolean')
+    throw new GuardianBillingError('guardian_recovery_invoice_unsafe');
+  checkInvoiceLine(invoice, expected);
+}
+
 // Only a fully paid, undisputed Stripe charge with an expanded balance
 // transaction supplies a trustworthy processor fee. This calculation never
 // creates an allocation, marks a cycle paid, or moves funds by itself.
@@ -115,7 +129,8 @@ function checkGuardianInvoiceIdentity(invoice, subscription, expected, reconcili
   // Cancellation stops future collection; it must not hide an already paid invoice.
   // This exception is only for evidence reconciliation, never permission to pay.
   const allowedStatus = subscription.status === 'active'
-    || (reconcilingPaid && subscription.status === 'canceled');
+    || (reconcilingPaid && subscription.status === 'canceled')
+    || (reconcilingPaid === 'recovery' && ['past_due', 'unpaid', 'paused'].includes(subscription.status));
   if (!allowedStatus || subscription.collection_method !== 'send_invoice'
     || subscription.pause_collection?.behavior !== 'keep_as_draft'
     || subscription.pause_collection?.resumes_at != null)

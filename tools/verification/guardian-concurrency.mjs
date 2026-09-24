@@ -170,3 +170,30 @@ const competingPayment=concurrentQuery(`select public.dopmi_guardian_collection_
 const paymentResults=await Promise.all([firstPayment,competingPayment]);assert.equal(paymentResults[1],'t');
 assert.equal(JSON.parse(paymentResults[0]).decision,'collect');
 console.log('Guardian concurrent monthly collection: one invoice reservation and one pay authorization');
+
+// A crashed collector's lease expires before recovery can take over. Two
+// recovery workers share that same lease; only one may authorize voiding.
+query(`update private.dopmi_guardian_collection_jobs set status='attention',lease_until=now()-interval '1 second',available_at=now()
+where invoice_id='in_collectionCI';`);
+let recoveryReady;
+const recoveryStarted=new Promise(resolve=>{recoveryReady=resolve;});
+const recovering=concurrentQuery(`begin;
+select public.dopmi_guardian_recovery_server('claim','{"invoice_id":"in_collectionCI"}');
+select pg_sleep(2);commit;`,output=>{if(output.includes('lease_until'))recoveryReady();});
+await Promise.race([recoveryStarted,recovering.then(()=>{throw Error('Recovery lease did not report');})]);
+const competingRecovery=concurrentQuery(`select public.dopmi_guardian_recovery_server('claim','{"invoice_id":"in_collectionCI"}') is null;`);
+const recoveryResults=await Promise.all([recovering,competingRecovery]);assert.equal(recoveryResults[1],'t');
+const recoveryClaim=JSON.parse(recoveryResults[0]);assert.notEqual(recoveryClaim.lease,collectionClaim.lease);
+const recoveryData={invoice_id:'in_collectionCI',lease:recoveryClaim.lease};
+query(`select public.dopmi_guardian_recovery_server('observe','${JSON.stringify({...recoveryData,state:'requires_payment_method',intent_id:'pi_recoveryCI',invoice_payment_id:'inpay_recoveryCI'})}');`);
+let voidReady;
+const voidStarted=new Promise(resolve=>{voidReady=resolve;});
+const firstVoid=concurrentQuery(`begin;
+select public.dopmi_guardian_recovery_server('authorize_void','${JSON.stringify(recoveryData)}');
+select pg_sleep(2);commit;`,output=>{if(output.includes('void_pending'))voidReady();});
+await Promise.race([voidStarted,firstVoid.then(()=>{throw Error('Void authorization did not report');})]);
+const competingVoid=concurrentQuery(`select public.dopmi_guardian_recovery_server('authorize_void','${JSON.stringify(recoveryData)}');`);
+const voidResults=await Promise.allSettled([firstVoid,competingVoid]);assert.equal(voidResults[0].status,'fulfilled');assert.equal(voidResults[1].status,'rejected');
+assert.match(voidResults[1].reason.message,/Pago no cancelable confirmado/);
+assert.equal(query("select recovery_attempts from private.dopmi_guardian_collection_jobs where invoice_id='in_collectionCI';"),'1');
+console.log('Guardian concurrent payment recovery: one recovery lease and one void authorization');

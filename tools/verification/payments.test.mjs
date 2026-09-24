@@ -1418,6 +1418,7 @@ test('Guardian failed source verification advances retry ordering without creati
 });
 
 const { guardianCollectionService } = await import('../../supabase/functions/_shared/guardian-collection.mjs');
+const recoveryRpc=async(operation,data={})=>(await db.query('select public.dopmi_guardian_recovery_server($1,$2::jsonb) as value',[operation,JSON.stringify(data)])).rows[0].value;
 const collectionRpc=async(operation,data={})=>(await db.query('select public.dopmi_guardian_collection_server($1,$2::jsonb) as value',[operation,JSON.stringify(data)])).rows[0].value;
 async function collectionFixture() {
   const calendar=await scheduleFixture();await calendar.scheduler().run(calendar.cycleId);
@@ -1426,13 +1427,18 @@ async function collectionFixture() {
     parent:{subscription_details:{subscription:'sub_schedule1'}}});
   Object.assign(invoice.lines.data[0],{pricing:{price_details:{price:'price_schedule1'}},parent:{subscription_item_details:{subscription:'sub_schedule1'}},
     period:{start:invoice.created,end:invoice.created+30*86400}});
-  const intent=f.stripe.paymentIntents.retrieve;f.stripe.paymentIntents.retrieve=async()=>({...await intent(),customer:'cus_initial'});
+  const intent=f.stripe.paymentIntents.retrieve;f.stripe.paymentIntents.retrieve=async()=>f.invoice.status==='paid'
+    ? {...await intent(),customer:'cus_initial'}
+    : {id:'pi_guardianRenewal1',livemode:false,customer:'cus_initial',currency:'mxn',amount:5000,amount_received:0,amount_capturable:0,
+      payment_method:'pm_initial',status:f.invoice.status==='void'?'canceled':'requires_confirmation',latest_charge:null};
+  const payment=f.invoice.payments.data[0];Object.assign(payment,{status:'open',amount_paid:null,livemode:false,currency:'mxn',is_default:true});
+  f.stripe.invoicePayments={list:async()=>structuredClone(f.invoice.payments)};
   f.stripe.subscriptions=calendar.stripe.subscriptions;f.stripe.customers=calendar.stripe.customers;f.stripe.paymentMethods=calendar.stripe.paymentMethods;
   f.stripe.invoices.list=async()=>({has_more:false,data:[structuredClone(invoice)]});
   f.stripe.invoices.finalizeInvoice=async(id,fields,options)=>{f.calls.push({kind:'finalize',id,fields,options});invoice.status='open';return structuredClone(invoice);};
-  f.stripe.invoices.voidInvoice=async(id,fields,options)=>{f.calls.push({kind:'void',id,fields,options});invoice.status='void';invoice.amount_remaining=0;return structuredClone(invoice);};
-  f.stripe.invoices.pay=async(id,fields,options)=>{f.calls.push({kind:'pay',id,fields,options});Object.assign(invoice,{status:'paid',amount_paid:5000,amount_remaining:0,attempt_count:1,attempted:true});return structuredClone(invoice);};
-  const collector=(rpc=collectionRpc)=>guardianCollectionService({stripe:f.stripe,rpc,reconcileInvoice:f.service().reconcileInvoice,logger:{}});
+  f.stripe.invoices.voidInvoice=async(id,fields,options)=>{f.calls.push({kind:'void',id,fields,options});invoice.status='void';payment.status='canceled';return structuredClone(invoice);};
+  f.stripe.invoices.pay=async(id,fields,options)=>{f.calls.push({kind:'pay',id,fields,options});Object.assign(invoice,{status:'paid',amount_paid:5000,amount_remaining:0,attempt_count:1,attempted:true});Object.assign(payment,{status:'paid',amount_paid:5000});return structuredClone(invoice);};
+  const collector=(rpc=collectionRpc,recovery=recoveryRpc)=>guardianCollectionService({stripe:f.stripe,rpc,recoveryRpc:recovery,reconcileInvoice:f.service().reconcileInvoice,logger:{}});
   const prepare=()=>collectionRpc('prepare',{invoice_id:invoice.id,subscription_id:subscription.id,cycle_key:guardianKey,
     period_start:invoice.lines.data[0].period.start,period_end:invoice.lines.data[0].period.end,fresh:true});
   return {...f,subscription,calendar,collector,prepare};
@@ -1453,7 +1459,7 @@ test('Guardian monthly collection reserves before one off-session pay and settle
 test('Guardian insufficient capacity voids one invoice without payment or debt',async()=>{
   const f=await collectionFixture();await prepare({gross_cents:7000});
   const j=await f.collector().run(f.invoice.id);assert.equal(j.status,'skipped');assert.equal(j.decision,'skip');
-  assert.equal(f.invoice.status,'void');assert.equal(f.invoice.amount_remaining,0);assert.equal(f.calls.some(c=>c.kind==='pay'),false);
+  assert.equal(f.invoice.status,'void');assert.equal(f.invoice.amount_remaining,5000);assert.equal(f.invoice.payments.data[0].status,'canceled');assert.equal(f.calls.some(c=>c.kind==='pay'),false);
   assert.equal(await guardianSettlement('get',{cycle_id:j.cycle_id}),null);
   await f.collector().run(f.invoice.id);assert.equal(f.calls.filter(c=>c.kind==='void').length,1);
 });
@@ -1541,7 +1547,7 @@ test('Guardian collection leases and one-pay marker remain server-only',async()=
 test('Guardian retry exhaustion is read-only and late payment refunds expired capacity',async()=>{
   const f=await collectionFixture();await f.prepare();await db.exec('update private.dopmi_guardian_collection_jobs set attempts=8');
   assert.equal((await f.collector().run(f.invoice.id)).status,'attention');assert.equal(f.calls.length,0);
-  Object.assign(f.invoice,{status:'paid',amount_paid:5000,amount_remaining:0,attempt_count:1,attempted:true});
+  Object.assign(f.invoice,{status:'paid',amount_paid:5000,amount_remaining:0,attempt_count:1,attempted:true});Object.assign(f.invoice.payments.data[0],{status:'paid',amount_paid:5000});
   await db.exec("update private.dopmi_guardian_cycles set expires_at=now()-interval '1 minute' where status='reserved'");
   const j=await f.collector().run(f.invoice.id);assert.equal(j.status,'paid');assert.equal((await guardianSettlement('get',{cycle_id:j.cycle_id})).refund_cents,5000);
 });
@@ -1592,4 +1598,151 @@ test('Guardian customer balance or automatic tax cannot be consumed by finalizat
   f.invoice.automatic_tax.enabled=false;await f.prepare();
   f.stripe.customers.retrieve=async()=>({id:'cus_initial',livemode:false,balance:-5000});
   await assert.rejects(f.collector().run(f.invoice.id),/customer_mismatch/);assert.equal(f.calls.length,0);
+});
+
+async function recoveryFixture(status='requires_payment_method') {
+  const f=await collectionFixture();const normalIntent=f.stripe.paymentIntents.retrieve;
+  const intent={id:'pi_guardianRenewal1',livemode:false,customer:'cus_initial',currency:'mxn',amount:5000,amount_received:0,amount_capturable:0,
+    payment_method:'pm_initial',status,latest_charge:null};
+  f.stripe.paymentIntents.retrieve=async()=>f.invoice.status==='paid'?normalIntent():structuredClone(intent);
+  const voidInvoice=f.stripe.invoices.voidInvoice;
+  f.stripe.invoices.voidInvoice=async(...args)=>{const value=await voidInvoice(...args);intent.status='canceled';return value;};
+  f.stripe.invoices.pay=async()=>{f.calls.push({kind:'pay'});f.invoice.attempt_count=1;f.invoice.attempted=true;throw Error('payment_unresolved');};
+  await assert.rejects(f.collector().run(f.invoice.id),/payment_unresolved/);await collectionDue();
+  const markPaid=()=>{Object.assign(f.invoice,{status:'paid',amount_paid:5000,amount_remaining:0});Object.assign(f.invoice.payments.data[0],{status:'paid',amount_paid:5000});};
+  return {...f,intent,markPaid};
+}
+
+test('Guardian declined invoice closes only after invoice, default payment and intent are canceled',async()=>{
+  const f=await recoveryFixture();const j=await f.collector().run(f.invoice.id);
+  assert.equal(j.status,'skipped');assert.equal(j.recovery_state,'voided');assert.equal(j.recovery_reason,'payment_failed');
+  assert.ok(j.pay_requested_at);assert.equal(j.cycle_status,'released');assert.equal(f.invoice.amount_remaining,5000);
+  assert.equal(f.invoice.payments.data[0].status,'canceled');assert.equal(f.intent.status,'canceled');
+  await f.collector().run(f.invoice.id);assert.equal(f.calls.filter(c=>c.kind==='pay').length,1);assert.equal(f.calls.filter(c=>c.kind==='void').length,1);
+});
+test('Guardian additional authentication closes without exposing a client secret or confirming payment',async()=>{
+  const f=await recoveryFixture('requires_action');f.intent.client_secret='secret_test_only';
+  const j=await f.collector().run(f.invoice.id);assert.equal(j.status,'skipped');assert.equal(j.recovery_reason,'authentication_required');
+  assert.equal(JSON.stringify(j).includes('secret_test_only'),false);assert.equal(f.calls.filter(c=>c.kind==='pay').length,1);
+});
+test('Guardian unconfirmed authorization is closed without a replacement payment',async()=>{
+  const f=await recoveryFixture('requires_confirmation');const j=await f.collector().run(f.invoice.id);
+  assert.equal(j.status,'skipped');assert.equal(j.recovery_reason,'not_attempted');assert.equal(f.calls.filter(c=>c.kind==='pay').length,1);
+});
+test('Guardian processing payment stays pending and later settles once within the original hold',async()=>{
+  const f=await recoveryFixture('processing');const j=await f.collector().run(f.invoice.id);
+  assert.equal(j.status,'attention');assert.equal(j.recovery_state,'processing');assert.equal(j.cycle_status,'reserved');
+  assert.equal(f.calls.some(c=>c.kind==='void'),false);f.markPaid();
+  const paid=await f.collector().run(f.invoice.id);assert.equal(paid.status,'paid');assert.equal(paid.recovery_state,'succeeded');
+  assert.equal((await guardianSettlement('get',{cycle_id:j.cycle_id})).allocated_cents,4314);assert.equal(f.calls.filter(c=>c.kind==='pay').length,1);
+});
+test('Guardian asynchronous success after expiration refunds instead of consuming another hold',async()=>{
+  const f=await recoveryFixture('processing');const j=await f.collector().run(f.invoice.id);
+  await db.exec("update private.dopmi_guardian_cycles set expires_at=now()-interval '1 minute' where status='reserved'");f.markPaid();
+  await f.collector().run(f.invoice.id);assert.equal((await guardianSettlement('get',{cycle_id:j.cycle_id})).refund_cents,5000);
+  assert.equal(f.calls.filter(c=>c.kind==='pay').length,1);assert.equal(f.calls.some(c=>c.kind==='void'),false);
+});
+test('Guardian succeeded intent with invoice still open waits for authoritative paid invoice',async()=>{
+  const f=await recoveryFixture('succeeded');f.intent.amount_received=5000;
+  const j=await f.collector().run(f.invoice.id);assert.equal(j.recovery_state,'succeeded');assert.equal(j.status,'attention');
+  assert.equal(f.calls.some(c=>c.kind==='void'),false);f.markPaid();assert.equal((await f.collector().run(f.invoice.id)).status,'paid');
+});
+test('Guardian processing may later fail and closes without renewed payment',async()=>{
+  const f=await recoveryFixture('processing');await f.collector().run(f.invoice.id);await collectionDue();f.intent.status='requires_payment_method';
+  assert.equal((await f.collector().run(f.invoice.id)).status,'skipped');assert.equal(f.calls.filter(c=>c.kind==='pay').length,1);
+});
+test('Guardian unexpected capture state remains unresolved with no mutation',async()=>{
+  const f=await recoveryFixture('requires_capture');f.intent.amount_capturable=5000;
+  const j=await f.collector().run(f.invoice.id);assert.equal(j.recovery_state,'unknown');assert.equal(j.status,'attention');
+  assert.equal(f.calls.some(c=>c.kind==='void'),false);
+});
+for(const [name,mutate] of [
+  ['foreign invoice',f=>{f.invoice.payments.data[0].invoice='in_foreign';}],
+  ['live payment',f=>{f.invoice.payments.data[0].livemode=true;}],
+  ['nondefault payment',f=>{f.invoice.payments.data[0].is_default=false;}],
+  ['multiple payments',f=>{f.invoice.payments.data.push({...f.invoice.payments.data[0],id:'inpay_second'});}],
+  ['partial payment',f=>{f.invoice.payments.data[0].amount_paid=100;}],
+  ['incomplete pagination',f=>{f.invoice.payments.has_more=true;}],
+  ['foreign customer',f=>{f.intent.customer='cus_foreign';}],
+  ['received money',f=>{f.intent.amount_received=100;}],
+  ['paid charge',f=>{f.intent.latest_charge={id:'ch_wrong',paid:true};}],
+]) test(`Guardian recovery rejects ${name} without voiding`,async()=>{
+  const f=await recoveryFixture();mutate(f);await assert.rejects(f.collector().run(f.invoice.id),/guardian_recovery/);
+  assert.equal(f.calls.some(c=>c.kind==='void'),false);assert.equal((await collectionRpc('get',{invoice_id:f.invoice.id})).status,'attention');
+});
+test('Guardian lost cancellation response recovers terminal Stripe state without another void',async()=>{
+  const f=await recoveryFixture(),cancel=f.stripe.invoices.voidInvoice;
+  f.stripe.invoices.voidInvoice=async(...args)=>{await cancel(...args);throw Error('void_response_lost');};
+  await assert.rejects(f.collector().run(f.invoice.id),/void_response_lost/);await collectionDue();
+  assert.equal((await f.collector().run(f.invoice.id)).status,'skipped');assert.equal(f.calls.filter(c=>c.kind==='void').length,1);
+});
+test('Guardian lost recovery completion response cannot reopen a skipped invoice',async()=>{
+  const f=await recoveryFixture();let lose=true;
+  const faulty=async(op,data)=>{const result=await recoveryRpc(op,data);if(op==='voided'&&lose){lose=false;throw Error('completion_lost');}return result;};
+  await assert.rejects(f.collector(collectionRpc,faulty).run(f.invoice.id),/completion_lost/);
+  assert.equal((await collectionRpc('get',{invoice_id:f.invoice.id})).status,'skipped');assert.equal((await f.collector().run(f.invoice.id)).status,'skipped');
+});
+test('Guardian processing race after cancel authorization prevents the void write',async()=>{
+  const f=await recoveryFixture();const read=f.stripe.paymentIntents.retrieve;let reads=0;
+  f.stripe.paymentIntents.retrieve=async(...args)=>{if(++reads===2)f.intent.status='processing';return read(...args);};
+  const j=await f.collector().run(f.invoice.id);assert.equal(j.recovery_state,'processing');assert.equal(f.calls.some(c=>c.kind==='void'),false);
+});
+test('Guardian payment winning the void race is reconciled without marking it skipped',async()=>{
+  const f=await recoveryFixture();f.stripe.invoices.voidInvoice=async()=>{f.markPaid();throw Error('invoice_already_paid');};
+  await assert.rejects(f.collector().run(f.invoice.id),/invoice_already_paid/);
+  assert.equal((await f.collector().run(f.invoice.id)).status,'paid');assert.equal(f.calls.filter(c=>c.kind==='pay').length,1);
+});
+test('Guardian void invoice with an uncanceled intent never releases a reservation',async()=>{
+  const f=await recoveryFixture();f.stripe.invoices.voidInvoice=async()=>{f.invoice.status='void';f.invoice.payments.data[0].status='canceled';return f.invoice;};
+  await assert.rejects(f.collector().run(f.invoice.id),/void_unconfirmed/);
+  const j=await collectionRpc('get',{invoice_id:f.invoice.id});assert.equal(j.status,'attention');assert.equal(j.cycle_status,'reserved');
+});
+test('Guardian recovery retry budget limits writes but permits later terminal reads',async()=>{
+  const f=await recoveryFixture();await db.exec('update private.dopmi_guardian_collection_jobs set recovery_attempts=8');
+  const j=await f.collector().run(f.invoice.id);assert.equal(j.error_code,'recovery_retry_limit');assert.equal(f.calls.some(c=>c.kind==='void'),false);
+  f.invoice.status='void';f.invoice.payments.data[0].status='canceled';f.intent.status='canceled';await collectionDue();
+  assert.equal((await f.collector().run(f.invoice.id)).status,'skipped');
+});
+test('Guardian only closes after immutable recovery linkage and complete cancellation evidence',async()=>{
+  const f=await recoveryFixture(),claim=await recoveryRpc('claim',{invoice_id:f.invoice.id});
+  assert.equal(await recoveryRpc('claim',{invoice_id:f.invoice.id}),null);
+  await rejected(()=>recoveryRpc('authorize_void',{invoice_id:f.invoice.id,lease:claim.lease}),/cancelable/);
+  await rejected(()=>recoveryRpc('observe',{invoice_id:f.invoice.id,lease:crypto.randomUUID(),state:'canceled',intent_id:f.intent.id,invoice_payment_id:'inpay_guardian1'}),/vencido/);
+  await recoveryRpc('observe',{invoice_id:f.invoice.id,lease:claim.lease,state:'processing',intent_id:f.intent.id,invoice_payment_id:'inpay_guardian1'});
+  await rejected(()=>recoveryRpc('authorize_void',{invoice_id:f.invoice.id,lease:claim.lease}),/cancelable/);
+  await rejected(()=>recoveryRpc('observe',{invoice_id:f.invoice.id,lease:claim.lease,state:'canceled',intent_id:'pi_different',invoice_payment_id:'inpay_guardian1'}),/no coincide/);
+  await rejected(()=>recoveryRpc('voided',{invoice_id:f.invoice.id,lease:claim.lease}),/no confirmada/);
+});
+test('Guardian recovery remains unavailable to clients and administrators',async()=>{
+  const f=await recoveryFixture();for(const actor of [donor,staff,'']){await role(actor,actor?'authenticated':'anon');
+    await rejected(()=>recoveryRpc('get',{invoice_id:f.invoice.id}),/permission denied/);}
+  await role('','service_role');assert.equal((await recoveryRpc('get',{invoice_id:f.invoice.id})).invoice_id,f.invoice.id);
+});
+test('Guardian cancellation recovery unblocks the next month without clearing payment history',async()=>{
+  const f=await recoveryFixture();const closed=await f.collector().run(f.invoice.id);
+  const next=await collectionRpc('prepare',{invoice_id:'in_nextMonthly',subscription_id:'sub_schedule1',cycle_key:crypto.randomUUID(),
+    period_start:f.invoice.lines.data[0].period.end,period_end:f.invoice.lines.data[0].period.end+30*86400,fresh:true});
+  assert.equal(next.status,'pending');assert.notEqual(next.cycle_id,closed.cycle_id);
+  assert.ok((await collectionRpc('get',{invoice_id:f.invoice.id})).pay_requested_at);
+});
+test('Guardian authentication webhook uses fresh invoice evidence before closing the cycle',async()=>{
+  const f=await recoveryFixture('requires_action');f.stripe.events={retrieve:async()=>({livemode:false,type:'invoice.payment_action_required',data:{object:{id:f.invoice.id}}})};
+  assert.equal((await f.collector().handleWebhook('evt_action')).guardian_collection,true);assert.equal((await collectionRpc('get',{invoice_id:f.invoice.id})).status,'skipped');
+});
+test('Guardian processing webhook is acknowledged without scheduling another charge',async()=>{
+  const f=await recoveryFixture('processing');f.stripe.events={retrieve:async()=>({livemode:false,type:'invoice.payment_failed',data:{object:{id:f.invoice.id}}})};
+  assert.equal((await f.collector().handleWebhook('evt_processing')).received,true);f.markPaid();
+  f.stripe.events.retrieve=async()=>({livemode:false,type:'invoice_payment.paid',data:{object:{id:'inpay_guardian1',invoice:f.invoice.id}}});
+  assert.equal((await f.collector().handleWebhook('evt_paid')).received,true);assert.equal((await collectionRpc('get',{invoice_id:f.invoice.id})).status,'paid');
+});
+
+test('Guardian a verified failed charge permits cancellation while preserving the original intent',async()=>{
+  const f=await recoveryFixture();f.intent.latest_charge={id:'ch_declined',livemode:false,payment_intent:f.intent.id,customer:'cus_initial',currency:'mxn',amount:5000,paid:false,status:'failed'};
+  assert.equal((await f.collector().run(f.invoice.id)).status,'skipped');assert.equal(f.calls.filter(c=>c.kind==='pay').length,1);
+});
+
+
+test('Guardian recovery can close an overdue subscription without granting payment authority',async()=>{
+  const f=await recoveryFixture();f.subscription.status='past_due';
+  assert.equal((await f.collector().run(f.invoice.id)).status,'skipped');assert.equal(f.calls.filter(c=>c.kind==='pay').length,1);
 });

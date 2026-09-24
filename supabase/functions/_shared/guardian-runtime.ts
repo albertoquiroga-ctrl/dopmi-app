@@ -35,6 +35,7 @@ export function guardianRuntime() {
     rpc: (operation: string, data: unknown) => call('dopmi_guardian_schedule_server', operation, data),
   });
   const collection = guardianCollectionService({ stripe, reconcileInvoice: service.reconcileInvoice,
+    recoveryRpc: (operation: string, data: unknown) => call('dopmi_guardian_recovery_server', operation, data),
     rpc: (operation: string, data: unknown) => call('dopmi_guardian_collection_server', operation, data),
   });
   return { ...service, initial, schedule, collection,

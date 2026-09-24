@@ -1,3 +1,4 @@
+import { guardianRecoveryService } from './guardian-recovery.mjs';
 import { GuardianBillingError, guardianInvoiceCycleKey, guardianRenewalCandidate,
   guardianFinalizedInvoiceForCollection } from './guardian-billing.mjs';
 import { paymentLog } from './payments.mjs';
@@ -9,9 +10,9 @@ const expected = job => ({ invoice_id: job.invoice_id, subscription_id: job.subs
 const canceled = sub => sub.status === 'canceled' || sub.cancel_at_period_end === true || sub.cancel_at != null;
 
 // One invoice, one persisted reservation and at most one pay invocation. A lost
-// pay response (including a crash before the request was sent) is read-only
-// reconciliation. This deliberately prefers attention to a duplicate charge.
-export function guardianCollectionService({ stripe, rpc, reconcileInvoice, logger = console, now = () => Date.now() }) {
+// pay response is recovered through fresh evidence and, for a confirmed unpaid
+// attempt, invoice voiding. Recovery never repeats payment authorization.
+export function guardianCollectionService({ stripe, rpc, recoveryRpc, reconcileInvoice, logger = console, now = () => Date.now() }) {
   function period(invoice) {
     const p = invoice.lines?.data?.[0]?.period;
     if (!Number.isSafeInteger(p?.start) || !Number.isSafeInteger(p?.end) || p.start < 1 || p.end <= p.start)
@@ -65,6 +66,7 @@ export function guardianCollectionService({ stripe, rpc, reconcileInvoice, logge
     await reconcileInvoice(job.invoice_id);
     return rpc('paid', { invoice_id: job.invoice_id });
   }
+  const recovery = guardianRecoveryService({ stripe, rpc: recoveryRpc, paid });
   async function run(invoiceId) {
     if (!/^in_[A-Za-z0-9]+$/.test(invoiceId ?? '')) fail('invalid_invoice_identity');
     let job = await rpc('get', { invoice_id: invoiceId });
@@ -76,6 +78,7 @@ export function guardianCollectionService({ stripe, rpc, reconcileInvoice, logge
     try {
       identity(invoice, job);
       if (invoice.status === 'paid') return await paid(job);
+      if (job.pay_requested_at) return await recovery.run(job);
       if (job.status === 'attention') return job;
       const claimed = await rpc('claim', { invoice_id: invoiceId });
       if (!claimed) return await rpc('get', { invoice_id: invoiceId });
@@ -93,8 +96,9 @@ export function guardianCollectionService({ stripe, rpc, reconcileInvoice, logge
         if (invoice.status === 'paid') return await paid(job);
         if (job.pay_requested_at) fail('guardian_payment_uncertain');
         if (invoice.status === 'void') {
-          if (invoice.amount_paid !== 0 || invoice.amount_remaining !== 0 || invoice.auto_advance !== false)
+          if (invoice.amount_paid !== 0 || ![0, job.gross_cents].includes(invoice.amount_remaining) || invoice.auto_advance !== false)
             fail('guardian_void_unconfirmed');
+          await recovery.verifyVoided(job);
           return await checkpoint('voided');
         }
         let sub = await stripe.subscriptions.retrieve(job.subscription_id);
@@ -132,8 +136,9 @@ export function guardianCollectionService({ stripe, rpc, reconcileInvoice, logge
         await stripe.invoices.voidInvoice(invoiceId, {}, { idempotencyKey: `guardian-void:${invoiceId}` });
         invoice = await stripe.invoices.retrieve(invoiceId);
         identity(invoice, job);
-        if (invoice.status !== 'void' || invoice.amount_paid !== 0 || invoice.amount_remaining !== 0 || invoice.auto_advance !== false)
+        if (invoice.status !== 'void' || invoice.amount_paid !== 0 || ![0, job.gross_cents].includes(invoice.amount_remaining) || invoice.auto_advance !== false)
           fail('guardian_void_unconfirmed');
+        await recovery.verifyVoided(job);
         return await checkpoint('voided');
       } catch (error) {
         await checkpoint('failed', { error_code: error instanceof GuardianBillingError ? error.code : 'guardian_processor_unavailable',
@@ -145,7 +150,7 @@ export function guardianCollectionService({ stripe, rpc, reconcileInvoice, logge
   async function reconcile() {
     let processed = 0, failed = 0;
     const visit = async invoiceId => {
-      try { const job = await run(invoiceId); if (job?.status === 'attention') failed++; else if (job) processed++; }
+      try { const job = await run(invoiceId); if (job?.status === 'attention' && !['processing', 'succeeded'].includes(job.recovery_state)) failed++; else if (job) processed++; }
       catch (error) {
         failed++;
         paymentLog(logger, 'guardian_collection_failed', { invoice_id: invoiceId,
@@ -178,10 +183,10 @@ export function guardianCollectionService({ stripe, rpc, reconcileInvoice, logge
     if (!/^evt_[A-Za-z0-9]+$/.test(eventId ?? '')) fail('guardian_event_invalid');
     const event = await stripe.events.retrieve(eventId);
     if (event.livemode !== false) fail('guardian_event_invalid');
-    if (!['invoice.created', 'invoice.finalized', 'invoice.paid', 'invoice.payment_failed', 'invoice.voided'].includes(event.type)) return null;
-    const invoiceId = event.data?.object?.id;
+    if (!['invoice.created', 'invoice.finalized', 'invoice.paid', 'invoice.payment_failed', 'invoice.payment_action_required', 'invoice.voided', 'invoice_payment.paid'].includes(event.type)) return null;
+    const invoiceId = event.type === 'invoice_payment.paid' ? id(event.data?.object?.invoice) : event.data?.object?.id;
     const result = await run(invoiceId);
-    if (result?.status === 'attention') fail('guardian_payment_attention');
+    if (result?.status === 'attention' && !['processing', 'succeeded'].includes(result.recovery_state)) fail('guardian_payment_attention');
     return result ? { received: true, guardian_collection: true } : null;
   }
   return { run, reconcile, handleWebhook };
