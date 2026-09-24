@@ -22,7 +22,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
     with WidgetsBindingObserver {
   final amount = TextEditingController(text: '50');
   Json? data, intent;
-  bool busy = true, consent = false, fresh = false;
+  bool busy = true, consent = false, fresh = false, confirming = false;
   String? error, message;
   late final String owner;
   String get storageKey => 'dopmi-guardian:$owner:intent';
@@ -48,6 +48,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed &&
         !busy &&
+        !confirming &&
         ref.read(guardianEnabledProvider)) {
       load();
     }
@@ -134,9 +135,9 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   }
 
   Future<void> submit({bool cancel = false}) async {
-    if (busy || !fresh || !current) return;
+    if (busy || confirming || !fresh || !current) return;
     if (cancel) {
-      setState(() => busy = true);
+      setState(() => confirming = true);
       final agreed = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
@@ -157,7 +158,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         ),
       );
       if (!current) return;
-      setState(() => busy = false);
+      setState(() => confirming = false);
       if (agreed != true) return;
     }
     final cents = parsePesos(amount.text);
@@ -267,6 +268,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         ref.watch(identityControllerProvider).identity?.verified == true;
     final canSubmit =
         !busy &&
+        !confirming &&
         fresh &&
         (intent != null || (verified && consent && (canStart || canChange)));
     return CommunityFrame(
@@ -392,13 +394,15 @@ class _GuardianState extends ConsumerState<GuardianScreen>
           ],
           if (canCancel)
             TextButton(
-              onPressed: busy || !fresh ? null : () => submit(cancel: true),
+              onPressed: busy || confirming || !fresh
+                  ? null
+                  : () => submit(cancel: true),
               child: const Text('Cancelar mi plan'),
             ),
           if (error != null) Notice(error!, isError: true),
           if (message != null) Notice(message!),
           TextButton(
-            onPressed: busy ? null : () => load(),
+            onPressed: busy || confirming ? null : () => load(),
             child: const Text('Actualizar estado'),
           ),
         ],

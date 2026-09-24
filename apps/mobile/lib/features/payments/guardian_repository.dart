@@ -68,6 +68,9 @@ String guardianError(Object error) {
     return 'Guardián todavía no está habilitado. Conservamos tu intento.';
   }
   if (error is PostgrestException) {
+    if (error.code == '22023') {
+      return 'La solicitud no fue aceptada. Actualiza el estado y revisa el importe antes de autorizar de nuevo.';
+    }
     if (error.code == '40001') {
       return 'El plan cambió en otro dispositivo. Actualiza el estado antes de continuar.';
     }
