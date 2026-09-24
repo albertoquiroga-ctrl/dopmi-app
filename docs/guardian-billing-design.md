@@ -46,7 +46,7 @@ La RPC exclusiva de servidor `dopmi_guardian_settlement_server` exige una factur
 
 `guardianService` obtiene evidencia de Stripe, liquida y procesa una cola privada de transferencias/devoluciones. Los intentos usan arrendamiento de cinco minutos, máximo ocho intentos y ventana inferior a 23 horas desde el primero. Un resultado incierto después de esa ventana requiere revisión. La devolución consulta primero las existentes y no marca éxito mientras esté pendiente. Una transferencia requiere identidad de cargo, ausencia de disputa/devolución, destino persistido y cuenta habilitada.
 
-El trabajador se integra al cron existente solo con `DOPMI_GUARDIAN_WORKER_ENABLED=true`, clave H4 de prueba y migración aplicada. La acción autenticada `reprocess_guardian_invoice` acepta un ID de factura previamente vinculada. No crea un Checkout, no paga facturas y no activa suscripciones. Faltan el flujo de creación/cobro, la reversión de transferencias ante devoluciones posteriores y la aceptación remota antes de habilitarlo.
+El trabajador se integra al cron existente solo con `DOPMI_GUARDIAN_WORKER_ENABLED=true`, clave H4 de prueba y migración aplicada. La acción autenticada `reprocess_guardian_invoice` acepta un ID de factura previamente vinculada. Ese procesador de facturas no paga facturas ni activa suscripciones. El primer Checkout tiene su propio recorrido, descrito abajo. Faltan el calendario y cobro mensual condicionado, la reversión de transferencias ante devoluciones posteriores y la aceptación remota antes de habilitarlo.
 
 
 ## Primer pago: alta privada y Checkout
