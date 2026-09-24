@@ -374,7 +374,7 @@ console.log('Guardian method processing: one lease; cancellation prevents late m
 
 // Owner withdrawal and mutation authorization share the plan lock. A new
 // invoice also revalidates its observed price under that lock after a change.
-const boundaryOwner='74000000-0000-4000-8000-000000000009';
+const boundaryOwner=crypto.randomUUID();
 query(`insert into auth.users(id,email,raw_user_meta_data,email_confirmed_at) values
 ('${boundaryOwner}','guardian-boundary@example.test','{"display_name":"Guardian CI","terms_version":"development-2026-09-13","terms_accepted":true}',now());`);
 const boundaryActivationInput={...activationData,donor_id:boundaryOwner,key:crypto.randomUUID()};
