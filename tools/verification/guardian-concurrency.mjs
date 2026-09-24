@@ -117,3 +117,24 @@ const otherLease=concurrentQuery(`select public.dopmi_guardian_activation_server
 const leaseResults=await Promise.all([firstLease,otherLease]);assert.equal(leaseResults[1],'t');
 assert.equal(query(`select attempts from private.dopmi_guardian_activations where cycle_id='${activationId}';`),'1');
 console.log('Guardian concurrent Checkout creation: one active lease and one attempt');
+
+// A delivered initial payment becomes eligible for one leased Billing job.
+const activationLease=query(`select lease from private.dopmi_guardian_activations where cycle_id='${activationId}';`);
+query(`select public.dopmi_guardian_activation_server('save_checkout',jsonb_build_object(
+'cycle_id','${activationId}','lease','${activationLease}','session_id','cs_test_scheduleCI'));
+select public.dopmi_guardian_settlement_server('settle_initial',jsonb_build_object(
+'donor_id','${donorB}','checkout_session_id','cs_test_scheduleCI','customer_id','cus_scheduleCI','payment_method_id','pm_scheduleCI',
+'payment_intent_id','pi_scheduleCI','charge_id','ch_scheduleCI','gross_cents',2000,'platform_fee_cents',40,'stripe_fee_cents',60,'net_cents',1900));`);
+const transferJob=JSON.parse(query(`select public.dopmi_guardian_settlement_server('claim','{"cycle_id":"${activationId}"}');`));
+query(`select public.dopmi_guardian_settlement_server('finish','${JSON.stringify({job_id:transferJob.id,lease:transferJob.lease,result_id:'tr_scheduleCI'})}');
+select public.dopmi_guardian_schedule_server('prepare',jsonb_build_object('cycle_id','${activationId}','charge_created',extract(epoch from now())::bigint));`);
+let scheduleReady;
+const scheduleStarted=new Promise(resolve=>{scheduleReady=resolve;});
+const scheduleClaim=concurrentQuery(`begin;
+select public.dopmi_guardian_schedule_server('claim','{"cycle_id":"${activationId}"}');
+select pg_sleep(2);commit;`,output=>{if(output.includes('lease_until'))scheduleReady();});
+await Promise.race([scheduleStarted,scheduleClaim.then(()=>{throw Error('Schedule lease did not report');})]);
+const competingSchedule=concurrentQuery(`select public.dopmi_guardian_schedule_server('claim','{"cycle_id":"${activationId}"}') is null;`);
+const scheduleResults=await Promise.all([scheduleClaim,competingSchedule]);assert.equal(scheduleResults[1],'t');
+assert.equal(query(`select attempts from private.dopmi_guardian_schedule_jobs where cycle_id='${activationId}';`),'1');
+console.log('Guardian concurrent Billing setup: one active lease and one attempt');

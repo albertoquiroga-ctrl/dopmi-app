@@ -2,11 +2,12 @@ import { createClient } from 'npm:@supabase/supabase-js@2.57.4';
 import Stripe from 'npm:stripe@22.6.0';
 import { guardianService } from './guardian-service.mjs';
 import { guardianActivationService } from './guardian-activation.mjs';
+import { guardianScheduleService } from './guardian-schedule.mjs';
 import { PaymentError, requireTestKey } from './payments.mjs';
 
 // Separate client/version from H4. Creating this runtime requires an explicit
 // test-only worker flag. The activation service is server-only; no user-facing
-// Checkout endpoint is enabled before the monthly schedule is implemented.
+// Checkout endpoint is enabled before monthly collection and lifecycle acceptance.
 export function guardianRuntime() {
   if (Deno.env.get('DOPMI_GUARDIAN_WORKER_ENABLED') !== 'true')
     throw new PaymentError('guardian_worker_disabled', 503);
@@ -29,11 +30,17 @@ export function guardianRuntime() {
     rpc: (operation: string, data: unknown) => call('dopmi_guardian_activation_server', operation, data),
     settle: settlement, returnUrl: `${Deno.env.get('SUPABASE_URL')!}/functions/v1/payment-return`,
   });
-  return { ...service, initial,
+  const schedule = guardianScheduleService({ stripe,
+    rpc: (operation: string, data: unknown) => call('dopmi_guardian_schedule_server', operation, data),
+  });
+  return { ...service, initial, schedule,
     async reconcile() {
       const activation = await initial.reconcile();
       const result = await service.reconcile();
-      return { ...result, initial_reconciled: activation.reconciled, failed: result.failed + activation.failed };
+      const calendar = Deno.env.get('DOPMI_GUARDIAN_SCHEDULE_ENABLED') === 'true'
+        ? await schedule.reconcile() : { ready: 0, failed: 0 };
+      return { ...result, initial_reconciled: activation.reconciled, schedules_ready: calendar.ready,
+        failed: result.failed + activation.failed + calendar.failed };
     },
   };
 }

@@ -1238,3 +1238,181 @@ test('Guardian changed Checkout amount, reference or hosted URL never reaches a 
   s.amount_total=5000;s.client_reference_id=crypto.randomUUID();
   await assert.rejects(f.initial.reconcileSession(s.id),/guardian_checkout_mismatch/);
 });
+
+const { guardianScheduleService, guardianMonthlyAnchor } = await import('../../supabase/functions/_shared/guardian-schedule.mjs');
+const scheduleRpc=async(operation,data={})=>(await db.query('select public.dopmi_guardian_schedule_server($1,$2::jsonb) as value',[operation,JSON.stringify(data)])).rows[0].value;
+async function scheduleFixture() {
+  const f=initialFixture();const opened=await f.initial.checkout(donor,initialInput);f.paid();
+  await f.initial.reconcileSession('cs_test_initial1');await f.service().work();
+  f.charge.created=Math.floor(Date.now()/1000)-60;
+  const prices=new Map(),subscriptions=new Map(),scheduleCalls=[];
+  f.stripe.customers={retrieve:async()=>({id:'cus_initial',livemode:false,balance:0})};
+  f.stripe.paymentMethods={retrieve:async()=>({id:'pm_initial',livemode:false,customer:'cus_initial'})};
+  f.stripe.prices={create:async(fields,options)=>{
+    scheduleCalls.push({kind:'price',fields:structuredClone(fields),options});
+    if(!prices.has(options.idempotencyKey)) prices.set(options.idempotencyKey,{id:'price_schedule1',livemode:false,active:true,
+      ...fields,recurring:{...fields.recurring,usage_type:'licensed'},billing_scheme:'per_unit'});
+    return structuredClone(prices.get(options.idempotencyKey));},retrieve:async()=>structuredClone([...prices.values()][0])};
+  f.stripe.subscriptions={create:async(fields,options)=>{
+    scheduleCalls.push({kind:'subscription',fields:structuredClone(fields),options});
+    if(!subscriptions.has(options.idempotencyKey)) subscriptions.set(options.idempotencyKey,{id:'sub_schedule1',livemode:false,status:'active',
+      ...fields,items:{has_more:false,data:[{quantity:1,price:{id:fields.items[0].price},current_period_end:guardianMonthlyAnchor(f.charge.created).next}]},
+      cancel_at:null,discounts:[],default_tax_rates:[],pause_collection:null,latest_invoice:null});
+    return structuredClone(subscriptions.get(options.idempotencyKey));},
+    retrieve:async()=>structuredClone([...subscriptions.values()][0]),
+    update:async(subId,fields,options)=>{scheduleCalls.push({kind:'pause',subId,fields:structuredClone(fields),options});
+      Object.assign([...subscriptions.values()][0],fields);return structuredClone([...subscriptions.values()][0]);}};
+  const service=(override=scheduleRpc)=>guardianScheduleService({stripe:f.stripe,rpc:override,logger:{}});
+  return {...f,cycleId:opened.cycle_id,prices,subscriptions,scheduleCalls,scheduler:service};
+}
+
+test('Guardian monthly anchor preserves end-of-month day and UTC time across leap years',()=>{
+  for(const [from,to] of [['2027-01-31T15:20:01Z','2027-02-28T15:20:01Z'],['2028-01-31T15:20:01Z','2028-02-29T15:20:01Z'],['2026-12-24T05:01:02Z','2027-01-24T05:01:02Z']]){
+    const result=guardianMonthlyAnchor(Date.parse(from)/1000);assert.equal(result.next,Date.parse(to)/1000);
+    assert.equal(result.config.day_of_month,new Date(from).getUTCDate());
+  }
+  assert.throws(()=>guardianMonthlyAnchor(NaN),/invalid/);
+});
+
+test('Guardian schedule requires delivered initial funds, not an unpaid or merely allocated Checkout',async()=>{
+  const f=initialFixture();const a=await f.initial.checkout(donor,initialInput);
+  await rejected(()=>scheduleRpc('prepare',{cycle_id:a.cycle_id,charge_created:Math.floor(Date.now()/1000)}),/no entregado/);
+  f.paid();await f.initial.reconcileSession('cs_test_initial1');assert.deepEqual(await scheduleRpc('candidates'),[]);
+  await f.service().work();assert.deepEqual(await scheduleRpc('candidates'),[{cycle_id:a.cycle_id}]);
+});
+
+test('Guardian creates guarded monthly Billing, verifies pause and registers exact initial charge once',async()=>{
+  const f=await scheduleFixture();const job=await f.scheduler().run(f.cycleId);
+  assert.equal(job.status,'ready');assert.equal(f.prices.size,1);assert.equal(f.subscriptions.size,1);
+  const creation=f.scheduleCalls.find(c=>c.kind==='subscription').fields;
+  assert.equal(creation.collection_method,'send_invoice');assert.equal(creation.cancel_at_period_end,true);
+  assert.equal(creation.proration_behavior,'none');assert.equal(creation.payment_settings,undefined);
+  const pause=f.scheduleCalls.find(c=>c.kind==='pause').fields;
+  assert.deepEqual(pause.pause_collection,{behavior:'keep_as_draft'});assert.equal(pause.cancel_at_period_end,false);
+  const registry=await guardianRegistry('lookup',{stripe_subscription_id:'sub_schedule1'});
+  assert.equal(registry.donor_id,donor);assert.equal(registry.gross_cents,5000);assert.equal(registry.status,'active');
+  const stored=(await db.query('select initial_charge_id,initial_payment_intent_id from private.dopmi_guardian_subscriptions')).rows[0];
+  assert.deepEqual(stored,{initial_charge_id:'ch_initial',initial_payment_intent_id:'pi_initial'});
+  await f.scheduler().run(f.cycleId);assert.equal(f.scheduleCalls.length,3);
+  assert.equal((await f.initial.checkout(donor,initialInput)).status,'active');
+});
+
+test('Guardian lost subscription response recovers one subscription using the same request',async()=>{
+  const f=await scheduleFixture();const create=f.stripe.subscriptions.create;let lost=true;
+  f.stripe.subscriptions.create=async(...args)=>{const result=await create(...args);if(lost){lost=false;throw Error('lost_sub');}return result;};
+  await assert.rejects(f.scheduler().run(f.cycleId),/lost_sub/);
+  assert.equal([...f.subscriptions.values()][0].cancel_at_period_end,true);
+  await db.exec('update private.dopmi_guardian_schedule_jobs set available_at=now()');
+  assert.equal((await f.scheduler().run(f.cycleId)).status,'ready');assert.equal(f.subscriptions.size,1);
+  const writes=f.scheduleCalls.filter(c=>c.kind==='subscription');assert.deepEqual(writes[0],writes[1]);
+});
+
+test('Guardian lost pause response is recovered by authoritative read without undoing the guard',async()=>{
+  const f=await scheduleFixture();const update=f.stripe.subscriptions.update;let lost=true;
+  f.stripe.subscriptions.update=async(...args)=>{const result=await update(...args);if(lost){lost=false;throw Error('lost_pause');}return result;};
+  await assert.rejects(f.scheduler().run(f.cycleId),/lost_pause/);
+  assert.equal(await guardianRegistry('lookup',{stripe_subscription_id:'sub_schedule1'}),null);
+  await db.exec('update private.dopmi_guardian_schedule_jobs set available_at=now()');
+  assert.equal((await f.scheduler().run(f.cycleId)).status,'ready');assert.equal(f.scheduleCalls.filter(c=>c.kind==='pause').length,1);
+});
+
+test('Guardian lost ready acknowledgment cannot downgrade or duplicate a registered schedule',async()=>{
+  const f=await scheduleFixture();let lost=true;
+  const scheduler=f.scheduler(async(op,data)=>{const result=await scheduleRpc(op,data);if(op==='ready'&&lost){lost=false;throw Error('db_lost');}return result;});
+  await assert.rejects(scheduler.run(f.cycleId),/db_lost/);
+  assert.equal((await scheduleRpc('get',{cycle_id:f.cycleId})).status,'ready');
+  assert.equal((await scheduler.run(f.cycleId)).status,'ready');assert.equal(f.scheduleCalls.length,3);
+});
+
+test('Guardian pause failure leaves cancellation guard, and old retry window makes no new writes',async()=>{
+  const f=await scheduleFixture();f.stripe.subscriptions.update=async()=>{throw Error('offline');};
+  await assert.rejects(f.scheduler().run(f.cycleId),/offline/);
+  assert.equal([...f.subscriptions.values()][0].cancel_at_period_end,true);
+  await db.exec("update private.dopmi_guardian_schedule_jobs set available_at=now(),first_attempt_at=now()-interval '24 hours'");
+  const before=f.scheduleCalls.length;assert.equal((await f.scheduler().run(f.cycleId)).status,'attention');
+  assert.equal(f.scheduleCalls.length,before);assert.equal(await guardianRegistry('lookup',{stripe_subscription_id:'sub_schedule1'}),null);
+});
+
+test('Guardian detached payment method, refunded charge and wrong subscription block registration',async()=>{
+  const f=await scheduleFixture();f.charge.amount_refunded=5000;
+  await assert.rejects(f.scheduler().run(f.cycleId),/charge_mismatch/);assert.equal(f.scheduleCalls.length,0);
+  f.charge.amount_refunded=0;f.stripe.paymentMethods.retrieve=async()=>({id:'pm_initial',customer:'cus_other',livemode:false});
+  await assert.rejects(f.scheduler().run(f.cycleId),/customer_mismatch/);assert.equal(f.scheduleCalls.length,0);
+  f.stripe.paymentMethods.retrieve=async()=>({id:'pm_initial',customer:'cus_initial',livemode:false});
+  const create=f.stripe.subscriptions.create;f.stripe.subscriptions.create=async(...args)=>({...await create(...args),collection_method:'charge_automatically'});
+  await assert.rejects(f.scheduler().run(f.cycleId),/subscription_mismatch/);
+  assert.equal(await guardianRegistry('lookup',{stripe_subscription_id:'sub_schedule1'}),null);
+});
+
+test('Guardian too-old initial payment is held for review without opening a late calendar',async()=>{
+  const f=await scheduleFixture();f.charge.created=Math.floor(Date.now()/1000)-40*86400;
+  assert.equal((await f.scheduler().run(f.cycleId)).status,'attention');assert.equal(f.scheduleCalls.length,0);
+});
+
+test('Guardian subscription cancellation and configuration drift synchronize from fresh Stripe reads',async()=>{
+  const f=await scheduleFixture();await f.scheduler().run(f.cycleId);
+  f.stripe.events.retrieve=async()=>({livemode:false,type:'customer.subscription.updated',data:{object:{id:'sub_schedule1'}}});
+  [...f.subscriptions.values()][0].pause_collection=null;
+  await assert.rejects(f.scheduler().handleWebhook('evt_changed'),/pause_unconfirmed/);
+  assert.equal((await scheduleRpc('get',{cycle_id:f.cycleId})).status,'attention');
+  [...f.subscriptions.values()][0].status='canceled';
+  await f.scheduler().handleWebhook('evt_canceled');
+  assert.equal((await guardianRegistry('lookup',{stripe_subscription_id:'sub_schedule1'})).status,'canceled');
+  assert.equal((await f.initial.checkout(donor,initialInput)).status,'canceled');
+});
+
+test('Guardian schedule mutation and internal state remain unavailable to clients and admins',async()=>{
+  for(const [user,asRole] of [[donor,'anon'],[donor,'authenticated'],[staff,'authenticated']]){
+    await role(user,asRole);await rejected(()=>scheduleRpc('candidates'),/permission denied/);
+    await rejected(()=>db.query('select * from private.dopmi_guardian_schedule_jobs'),/permission denied/);
+  }
+  await role('','service_role');assert.deepEqual(await scheduleRpc('candidates'),[]);
+});
+
+test('Guardian lost Price reply retries an identical key and payload without a second Price',async()=>{
+  const f=await scheduleFixture();const create=f.stripe.prices.create;let lost=true;
+  f.stripe.prices.create=async(...args)=>{const result=await create(...args);if(lost){lost=false;throw Error('price_lost');}return result;};
+  await assert.rejects(f.scheduler().run(f.cycleId),/price_lost/);
+  await db.exec('update private.dopmi_guardian_schedule_jobs set available_at=now()');
+  assert.equal((await f.scheduler().run(f.cycleId)).status,'ready');assert.equal(f.prices.size,1);
+  const calls=f.scheduleCalls.filter(c=>c.kind==='price');assert.deepEqual(calls[0],calls[1]);
+});
+
+test('Guardian subscription must retain cancellation guard until its pause is verified',async()=>{
+  const f=await scheduleFixture();const create=f.stripe.subscriptions.create;
+  f.stripe.subscriptions.create=async(...args)=>({...await create(...args),cancel_at_period_end:false});
+  await assert.rejects(f.scheduler().run(f.cycleId),/missing_guard/);
+  assert.equal(f.scheduleCalls.some(c=>c.kind==='pause'),false);
+  assert.equal(await guardianRegistry('lookup',{stripe_subscription_id:'sub_schedule1'}),null);
+});
+
+test('Guardian periodic monitoring repairs a missed cancellation webhook without new Stripe writes',async()=>{
+  const f=await scheduleFixture();await f.scheduler().run(f.cycleId);[...f.subscriptions.values()][0].status='canceled';
+  const before=f.scheduleCalls.length;assert.equal((await f.scheduler().reconcile()).failed,0);
+  assert.equal((await guardianRegistry('lookup',{stripe_subscription_id:'sub_schedule1'})).status,'canceled');
+  assert.equal(f.scheduleCalls.length,before);assert.deepEqual(await scheduleRpc('monitor'),[]);
+});
+
+test('Guardian schedule respects a sandbox clock and does not schedule while it advances',async()=>{
+  const f=await scheduleFixture();f.stripe.customers.retrieve=async()=>({id:'cus_initial',livemode:false,balance:0,test_clock:'clock_guardian'});
+  f.stripe.testHelpers={testClocks:{retrieve:async()=>({id:'clock_guardian',status:'advancing',frozen_time:f.charge.created})}};
+  await assert.rejects(f.scheduler().run(f.cycleId),/clock_unavailable/);assert.equal(f.scheduleCalls.length,0);
+  f.stripe.testHelpers.testClocks.retrieve=async()=>({id:'clock_guardian',status:'ready',frozen_time:f.charge.created+10});
+  assert.equal((await f.scheduler().run(f.cycleId)).status,'ready');
+});
+
+test('Guardian unexpected scheduled resume cannot remove the initial cancellation guard',async()=>{
+  const f=await scheduleFixture();const create=f.stripe.subscriptions.create;
+  f.stripe.subscriptions.create=async(...args)=>({...await create(...args),pause_collection:{behavior:'keep_as_draft',resumes_at:2000000000}});
+  await assert.rejects(f.scheduler().run(f.cycleId),/pause_changed/);
+  assert.equal(f.scheduleCalls.some(c=>c.kind==='pause'),false);
+  assert.equal(await guardianRegistry('lookup',{stripe_subscription_id:'sub_schedule1'}),null);
+});
+
+test('Guardian failed source verification advances retry ordering without creating Billing resources',async()=>{
+  const f=await scheduleFixture();f.charge.amount_refunded=5000;
+  await db.query("update private.dopmi_guardian_activations set checked_at=now()-interval '1 day' where cycle_id=$1",[f.cycleId]);
+  assert.equal((await f.scheduler().reconcile()).failed,1);assert.equal(f.scheduleCalls.length,0);
+  assert.equal((await db.query('select checked_at=now() as checked from private.dopmi_guardian_activations where cycle_id=$1',[f.cycleId])).rows[0].checked,true);
+  assert.equal(await scheduleRpc('get',{cycle_id:f.cycleId}),null);
+});

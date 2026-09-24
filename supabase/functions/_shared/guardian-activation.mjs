@@ -123,7 +123,9 @@ export function guardianActivationService({ stripe, rpc, settle, returnUrl, logg
         fail('guardian_checkout_url_invalid');
       url = parsed.href;
     }
-    return { cycle_id: a.cycle_id, status: a.status === 'settled' ? 'funded_pending_schedule' : a.status, checkout_url: url };
+    const scheduled = { ready: 'active', canceled: 'canceled', attention: 'attention' }[a.schedule_status];
+    return { cycle_id: a.cycle_id, status: a.status === 'settled' ? scheduled ?? 'funded_pending_schedule' : a.status,
+      next_billing_at: a.next_billing_at ?? null, checkout_url: url };
   }
   async function reconcile() {
     let reconciled = 0, failed = 0;
