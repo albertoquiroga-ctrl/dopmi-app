@@ -289,8 +289,9 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   'cents': cents,
                   'revision': plan?['revision'],
                 };
-      if (intent == null && !cancel && !withdraw)
+      if (intent == null && !cancel && !withdraw) {
         next['consent_version'] = guardianConsent;
+      }
       final prefs = await SharedPreferences.getInstance();
       if (!await prefs.setString(storageKey, jsonEncode(next))) {
         throw const FormatException('No se pudo conservar el intento.');
