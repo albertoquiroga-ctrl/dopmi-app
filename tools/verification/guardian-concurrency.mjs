@@ -282,7 +282,9 @@ console.log('Guardian concurrent change processing: one lease, one counted write
 const stoppingOwner='74000000-0000-4000-8000-000000000009';
 query(`insert into auth.users(id,email,raw_user_meta_data,email_confirmed_at) values
 ('${stoppingOwner}','guardian-stop@example.test','{"display_name":"Guardian CI","terms_version":"development-2026-09-13","terms_accepted":true}',now());
-update public.dopmi_rescue_records set reimbursable_cents=100000 where id='${expense}';`);
+insert into public.dopmi_rescue_records(id,owner_id,kind,status,approved_snapshot,parent_id,reimbursable_cents,urgent)
+values('74100000-0000-4000-8000-000000000009','${owner}','expense','approved','{"title":"Cancelación CI"}',
+'74100000-0000-4000-8000-000000000002',100000,true);`);
 const stoppingInput={...activationData,donor_id:stoppingOwner,key:crypto.randomUUID()};
 const stopping=JSON.parse(query(`select public.dopmi_guardian_activation_server('prepare','${JSON.stringify(stoppingInput)}');`));
 let stopReady;const stopStarted=new Promise(resolve=>{stopReady=resolve;});
