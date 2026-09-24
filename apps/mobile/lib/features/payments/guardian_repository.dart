@@ -68,10 +68,12 @@ String guardianError(Object error) {
     return 'Guardián todavía no está habilitado. Conservamos tu intento.';
   }
   if (error is PostgrestException) {
-    if (error.code == '40001')
+    if (error.code == '40001') {
       return 'El plan cambió en otro dispositivo. Actualiza el estado antes de continuar.';
-    if (error.code == '42501')
+    }
+    if (error.code == '42501') {
       return 'Tu cuenta no puede realizar esta operación. La cancelación de un plan sigue disponible con tu sesión.';
+    }
   }
   return 'No pudimos confirmar el resultado. Actualiza el estado o reintenta la misma solicitud; no inicies otro pago.';
 }

@@ -48,8 +48,9 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed &&
         !busy &&
-        ref.read(guardianEnabledProvider))
+        ref.read(guardianEnabledProvider)) {
       load();
+    }
   }
 
   @override
@@ -179,10 +180,11 @@ class _GuardianState extends ConsumerState<GuardianScreen>
           !cancel &&
           plan == null &&
           !await repo.capacity(cents!)) {
-        if (current)
+        if (current) {
           setState(
             () => message = 'Por ahora no hay gastos aprobados suficientes para asignar tu aportación completa. No se abrió un pago ni se activó un plan.',
           );
+        }
         return;
       }
       if (!current) return;

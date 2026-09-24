@@ -1,6 +1,7 @@
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
+import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,11 +44,12 @@ class FakeGuardian extends GuardianRepository {
   Future<Json> submit(Json intent) async {
     calls.add(Json.from(intent));
     if (fail) throw Exception('lost response');
-    if (conflict)
+    if (conflict) {
       throw const PostgrestException(
         message: 'revision changed',
         code: '40001',
       );
+    }
     if (intent['kind'] == 'checkout') {
       value = {
         'plan': null,
