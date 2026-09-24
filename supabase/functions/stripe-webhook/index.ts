@@ -19,6 +19,15 @@ Deno.serve(async (req) => {
       webhookSecret,
     );
     eventId = event.id;
+    if (Deno.env.get('DOPMI_GUARDIAN_WORKER_ENABLED') === 'true') {
+      const { guardianRuntime } = await import('../_shared/guardian-runtime.ts');
+      const guardian = guardianRuntime();
+      const handled = await guardian.initial.handleWebhook(event.id);
+      if (handled) {
+        const result = await guardian.work();
+        return json({ ...handled, ...result }, result.failed > 0 ? 503 : 200);
+      }
+    }
     const { service } = runtime();
     // The event is durably queued and claimed before processing. Required
     // transfers/refunds finish before the event is marked done; failures return

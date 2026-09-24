@@ -1057,3 +1057,184 @@ test('Guardian worker transfers the sum of multiple allocations and exposes only
   const page=(await db.query('select public.dopmi_rescue_public($1) as v',['71000000-0000-4000-8000-000000000002'])).rows[0].v;
   assert.equal(page.items.find(r=>r.kind==='case').transferred_cents,4314);
 });
+
+const { guardianActivationService, guardianInitialEvidence, guardianConsentVersion } = await import('../../supabase/functions/_shared/guardian-activation.mjs');
+const activationRpc = async (operation,data={}) =>
+  (await db.query('select public.dopmi_guardian_activation_server($1,$2::jsonb) as value',[operation,JSON.stringify(data)])).rows[0].value;
+const initialInput = {key,gross_cents:5000,consent:true,consent_version:guardianConsentVersion};
+const activationPrepare = overrides => activationRpc('prepare',{donor_id:donor,...initialInput,return_url:'https://example.test/return',...overrides});
+function initialFixture(rpcOverride=activationRpc) {
+  const f=guardianStripeFixture(), sessions=new Map(), creations=[];
+  f.charge.id='ch_initial'; f.charge.payment_intent='pi_initial'; f.charge.customer='cus_initial';
+  Object.assign(f.charge.balance_transaction,{source:f.charge.id,net:4414});
+  const intent={id:'pi_initial',livemode:false,status:'succeeded',customer:'cus_initial',payment_method:'pm_initial',
+    amount:5000,amount_received:5000,currency:'mxn',setup_future_usage:'off_session',latest_charge:f.charge};
+  f.stripe.paymentIntents.retrieve=async()=>structuredClone(intent);
+  f.stripe.checkout={sessions:{create:async(fields,options)=>{
+    creations.push({fields:structuredClone(fields),options});
+    if(!sessions.has(options.idempotencyKey)) sessions.set(options.idempotencyKey,{id:`cs_test_initial${sessions.size+1}`,
+      livemode:false,mode:fields.mode,client_reference_id:fields.client_reference_id,amount_total:5000,amount_subtotal:5000,
+      currency:'mxn',expires_at:fields.expires_at,customer_creation:fields.customer_creation,automatic_tax:fields.automatic_tax,
+      total_details:{amount_tax:0,amount_shipping:0,amount_discount:0},status:'open',payment_status:'unpaid',
+      customer:'cus_initial',payment_intent:'pi_initial',url:'https://checkout.stripe.com/c/pay/initial'});
+    return structuredClone(sessions.get(options.idempotencyKey));},
+    retrieve:async sessionId=>structuredClone([...sessions.values()].find(s=>s.id===sessionId))}};
+  f.stripe.events={retrieve:async()=>({id:'evt_initial',livemode:false,type:'checkout.session.completed',data:{object:{id:'cs_test_initial1'}}})};
+  const service=guardianActivationService({stripe:f.stripe,rpc:rpcOverride,settle:guardianSettlement,returnUrl:'https://example.test/return',logger:{}});
+  const paid=()=>Object.assign([...sessions.values()][0],{status:'complete',payment_status:'paid'});
+  return {...f,sessions,creations,intent,initial:service,paid};
+}
+
+test('Guardian initial consent and full capacity are required before any Stripe write',async()=>{
+  const f=initialFixture();
+  await assert.rejects(f.initial.checkout(donor,{...initialInput,consent:false}),/guardian_consent_required/);
+  await rejected(()=>activationPrepare({consent_version:'old'}),/Autorización/);
+  await db.query('update public.dopmi_rescue_records set reimbursable_cents=1000 where id=$1',[expense]);
+  const result=await f.initial.checkout(donor,initialInput);
+  assert.equal(result.status,'no_capacity');assert.equal(result.checkout_url,null);assert.equal(f.creations.length,0);
+  assert.equal((await db.query('select count(*)::integer n from private.dopmi_guardian_allocations')).rows[0].n,0);
+});
+
+test('Guardian initial Checkout persists consent and one stable request per donor',async()=>{
+  const f=initialFixture();const result=await f.initial.checkout(donor,initialInput);
+  assert.equal(result.status,'pending');assert.match(result.checkout_url,/^https:\/\/checkout.stripe.com\//);
+  assert.deepEqual(await f.initial.checkout(donor,initialInput),result);assert.equal(f.creations.length,1);
+  const a=await activationRpc('get',{cycle_id:result.cycle_id});
+  assert.equal(a.consent_version,guardianConsentVersion);assert.ok(a.consent_at);
+  assert.ok(Date.parse(a.hold_expires_at)>Date.parse(a.checkout_expires_at));
+  const {fields,options}=f.creations[0];
+  assert.equal(fields.mode,'payment');assert.equal(fields.payment_intent_data.setup_future_usage,'off_session');
+  assert.equal(fields.payment_method_types,undefined);assert.match(fields.integration_identifier,/_[a-z]{8}$/);
+  assert.equal(options.idempotencyKey,`guardian-checkout:${a.cycle_id}`);
+  await rejected(()=>activationPrepare({key:'72000000-0000-4000-8000-000000000002'}),/ya tiene/);
+  await rejected(()=>activationPrepare({gross_cents:2000}),/ya utilizado/);
+});
+
+test('Guardian lost Checkout response retries same request and creates one session',async()=>{
+  const f=initialFixture();const create=f.stripe.checkout.sessions.create;let lost=true;
+  f.stripe.checkout.sessions.create=async(...args)=>{const s=await create(...args);if(lost){lost=false;throw Error('lost_response');}return s;};
+  await assert.rejects(f.initial.checkout(donor,initialInput),/lost_response/);
+  assert.equal((await f.initial.reconcile()).failed,0);
+  assert.equal(f.sessions.size,1);assert.equal(f.creations.length,2);assert.deepEqual(f.creations[0],f.creations[1]);
+  assert.equal((await f.initial.checkout(donor,initialInput)).status,'pending');
+});
+
+test('Guardian lost database acknowledgment does not create a second Checkout',async()=>{
+  let lost=true;
+  const f=initialFixture(async(op,data)=>{const result=await activationRpc(op,data);if(op==='save_checkout'&&lost){lost=false;throw Error('db_lost');}return result;});
+  await assert.rejects(f.initial.checkout(donor,initialInput),/db_lost/);
+  assert.ok((await f.initial.checkout(donor,initialInput)).checkout_url);assert.equal(f.creations.length,1);
+});
+
+test('Guardian lease and retry window prevent duplicate or very late Checkout writes',async()=>{
+  const a=await activationPrepare();const f=initialFixture();
+  const claim=await activationRpc('claim_checkout',{cycle_id:a.cycle_id});assert.ok(claim.lease);
+  assert.equal((await f.initial.checkout(donor,initialInput)).checkout_url,null);assert.equal(f.creations.length,0);
+  await db.exec("update private.dopmi_guardian_activations set lease_until=now()-interval '1 second',first_attempt_at=now()-interval '24 hours'");
+  assert.equal((await f.initial.checkout(donor,initialInput)).status,'attention');assert.equal(f.creations.length,0);
+});
+
+test('Guardian stale unstarted activation expires without opening Checkout',async()=>{
+  await activationPrepare();const f=initialFixture();
+  await db.exec("update private.dopmi_guardian_activations set checkout_expires_at=now()+interval '20 minutes'");
+  assert.equal((await f.initial.checkout(donor,initialInput)).status,'expired');assert.equal(f.creations.length,0);
+  assert.equal((await db.query('select reserved_cents from private.dopmi_guardian_cycles')).rows[0].reserved_cents,0);
+});
+
+test('Guardian initial paid Checkout assigns actual net and recovers webhook duplicates',async()=>{
+  const f=initialFixture();const a=await f.initial.checkout(donor,initialInput);f.paid();
+  assert.deepEqual(await f.initial.handleWebhook('evt_initial'),{received:true,guardian:true});
+  const settled=await guardianSettlement('get',{cycle_id:a.cycle_id});
+  assert.equal(settled.allocated_cents,4314);assert.equal(settled.checkout_session_id,'cs_test_initial1');
+  assert.equal(settled.invoice_id,null);assert.equal(settled.invoice_payment_id,null);
+  assert.equal((await f.service().work()).processed,1);
+  await f.initial.handleWebhook('evt_initial');assert.equal((await f.service().work()).processed,0);assert.equal(f.transfers.size,1);
+  const state=await f.initial.checkout(donor,initialInput);assert.equal(state.status,'funded_pending_schedule');assert.equal(state.checkout_url,null);
+  assert.equal((await db.query('select count(*)::integer n from private.dopmi_guardian_subscriptions')).rows[0].n,0);
+});
+
+test('Guardian expired unpaid Checkout releases capacity, and any late payment gets a full refund',async()=>{
+  const f=initialFixture();const a=await f.initial.checkout(donor,initialInput);
+  [...f.sessions.values()][0].status='expired';await f.initial.reconcileSession('cs_test_initial1');
+  assert.equal((await activationRpc('get',{cycle_id:a.cycle_id})).status,'expired');
+  await activationPrepare({key:'72000000-0000-4000-8000-000000000002'});
+  f.paid();const settled=await f.initial.reconcileSession('cs_test_initial1');assert.equal(settled.refund_cents,5000);
+  assert.equal(settled.allocated_cents,0);assert.equal(settled.platform_fee_cents,0);assert.equal(settled.platform_loss_cents,586);
+  assert.equal((await f.service().work()).processed,1);assert.equal(f.refunds.length,1);assert.equal(f.transfers.size,0);
+  assert.equal((await activationRpc('get',{cycle_id:a.cycle_id})).status,'refunded');
+});
+
+test('Guardian paid initial payment with invalidated eligibility refunds instead of assigning partially',async()=>{
+  const f=initialFixture();await f.initial.checkout(donor,initialInput);f.paid();
+  await db.query("update public.dopmi_rescue_records set status='changes_requested' where id=$1",[expense]);
+  assert.equal((await f.initial.reconcileSession('cs_test_initial1')).refund_cents,5000);
+  assert.equal((await f.service().work()).processed,1);assert.equal(f.transfers.size,0);
+});
+
+test('Guardian initial evidence rejects another customer, live mode, unknown fee and reused charge',async()=>{
+  const f=initialFixture();const result=await f.initial.checkout(donor,initialInput);f.paid();
+  const a=await activationRpc('get',{cycle_id:result.cycle_id}),s=[...f.sessions.values()][0];
+  for(const intent of [{...f.intent,customer:'cus_other'},{...f.intent,livemode:true},
+    {...f.intent,latest_charge:{...f.charge,balance_transaction:null}}, {...f.intent,setup_future_usage:null}])
+    assert.throws(()=>guardianInitialEvidence(s,intent,a),/mismatch|processor_fee_not_ready/);
+  assert.throws(()=>guardianInitialEvidence({...s,id:'cs_test_other'},f.intent,a),/mismatch/);
+  const d=await prepare({gross_cents:2000});await settle(d.id,{gross_cents:2000,payment_intent_id:'pi_initial',charge_id:'ch_initial'});
+  await rejected(()=>guardianSettlement('settle_initial',guardianInitialEvidence(s,f.intent,a)),/ya utilizado/);
+});
+
+test('Guardian initial settlement rejects missing binding, invoice masquerading and foreign donor',async()=>{
+  const f=initialFixture();const result=await f.initial.checkout(donor,initialInput);f.paid();
+  const a=await activationRpc('get',{cycle_id:result.cycle_id});const evidence=guardianInitialEvidence([...f.sessions.values()][0],f.intent,a);
+  await rejected(()=>guardianSettlement('settle_initial',{...evidence,checkout_session_id:'cs_test_unknown'}),/sin vínculo/);
+  await rejected(()=>guardianSettlement('settle_initial',{...evidence,invoice_id:'in_fake'}),/sin vínculo/);
+  await rejected(()=>guardianSettlement('settle_initial',{...evidence,donor_id:other}),/no coincide/);
+  await guardianSettlement('settle_initial',evidence);
+  await rejected(()=>guardianSettlement('settle_initial',{...evidence,payment_method_id:'pm_different'}),/otra evidencia/);
+});
+
+test('Guardian ownership hints and asynchronous unpaid completion cannot allocate',async()=>{
+  const f=initialFixture();await f.initial.checkout(donor,initialInput);
+  const session=[...f.sessions.values()][0];session.status='complete';
+  assert.equal(await f.initial.reconcileSession(session.id),null);assert.equal((await f.service().work()).processed,0);
+  f.stripe.events.retrieve=async()=>({livemode:false,type:'checkout.session.async_payment_succeeded',data:{object:{id:'cs_test_foreign',metadata:{dopmi_guardian_cycle:session.client_reference_id}}}});
+  assert.equal(await f.initial.handleWebhook('evt_foreign'),null);
+  f.stripe.events.retrieve=async()=>({livemode:true,type:'checkout.session.completed',data:{object:{id:session.id}}});
+  await assert.rejects(f.initial.handleWebhook('evt_live'),/guardian_event_invalid/);
+});
+
+test('Guardian activation rows and mutation RPC are inaccessible to clients and administrators',async()=>{
+  for(const [user,asRole] of [[donor,'anon'],[donor,'authenticated'],[staff,'authenticated']]){
+    await role(user,asRole);await rejected(()=>activationPrepare(),/permission denied/);
+    await rejected(()=>db.query('select * from private.dopmi_guardian_activations'),/permission denied/);
+  }
+  await role('','service_role');assert.deepEqual(await activationRpc('candidates'),[]);
+});
+
+test('Guardian asynchronous failure frees the initial hold; delayed success cannot consume a new reservation',async()=>{
+  const f=initialFixture();const a=await f.initial.checkout(donor,initialInput);
+  [...f.sessions.values()][0].status='complete';f.intent.status='requires_payment_method';f.intent.amount_received=0;
+  await f.initial.reconcileSession('cs_test_initial1');
+  assert.equal((await activationRpc('get',{cycle_id:a.cycle_id})).status,'failed');
+  await activationPrepare({key:'72000000-0000-4000-8000-000000000002'});
+  f.intent.status='succeeded';f.intent.amount_received=5000;f.paid();
+  assert.equal((await f.initial.reconcileSession('cs_test_initial1')).refund_cents,5000);
+});
+
+test('Guardian expired lease cannot bind a different Checkout and failed reads leave payment pending',async()=>{
+  const f=initialFixture();const a=await activationPrepare();const claim=await activationRpc('claim_checkout',{cycle_id:a.cycle_id});
+  await rejected(()=>activationRpc('save_checkout',{cycle_id:a.cycle_id,lease:crypto.randomUUID(),session_id:'cs_test_wrong'}),/vencido/);
+  await activationRpc('checkout_failed',{cycle_id:a.cycle_id,lease:claim.lease});
+  await f.initial.checkout(donor,initialInput);f.paid();
+  f.stripe.paymentIntents.retrieve=async()=>{throw Error('Stripe temporarily unavailable');};
+  await assert.rejects(f.initial.reconcileSession('cs_test_initial1'),/temporarily unavailable/);
+  assert.equal((await activationRpc('get',{cycle_id:a.cycle_id})).settlement,null);
+});
+
+test('Guardian changed Checkout amount, reference or hosted URL never reaches a donor',async()=>{
+  const f=initialFixture();await f.initial.checkout(donor,initialInput);const s=[...f.sessions.values()][0];
+  s.url='https://example.test/phishing';await assert.rejects(f.initial.checkout(donor,initialInput),/guardian_checkout_url_invalid/);
+  s.url='https://checkout.stripe.com/c/pay/initial';s.amount_total=6000;
+  await assert.rejects(f.initial.checkout(donor,initialInput),/guardian_checkout_mismatch/);
+  s.amount_total=5000;s.client_reference_id=crypto.randomUUID();
+  await assert.rejects(f.initial.reconcileSession(s.id),/guardian_checkout_mismatch/);
+});

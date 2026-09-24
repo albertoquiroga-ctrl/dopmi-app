@@ -84,3 +84,36 @@ const balanced = query(`select private.dopmi_guardian_funded('${expense}'),
 (public.dopmi_expense_funding('${expense}')->>'available_cents')::bigint;`);
 assert.equal(balanced,'1900|60|0',`Settlement and Checkout overbooked expense: ${balanced}`);
 console.log('Guardian settlement vs individual Checkout: assigned 1900, reserved 60, capacity zero');
+
+// Two devices cannot open distinct initial Checkouts for one donor, even when
+// the expense has enough capacity for both requests.
+query(`insert into public.dopmi_rescue_records(id,owner_id,kind,status,approved_snapshot,parent_id,reimbursable_cents)
+values('74100000-0000-4000-8000-000000000004','${owner}','expense','approved','{"title":"Activation CI"}',
+'74100000-0000-4000-8000-000000000002',4000);`);
+const activationData = {donor_id:donorB,key:'74200000-0000-4000-8000-000000000004',gross_cents:2000,
+  consent:true,consent_version:'guardian-2026-09-24',return_url:'https://example.test/return'};
+let activationReady;
+const activationStarted = new Promise(resolve => { activationReady=resolve; });
+const activation = concurrentQuery(`begin;
+select public.dopmi_guardian_activation_server('prepare','${JSON.stringify(activationData)}'::jsonb);
+select pg_sleep(2);commit;`, output=>{if(output.includes('pending'))activationReady();});
+await Promise.race([activationStarted,activation.then(()=>{throw Error('Activation did not report');})]);
+const duplicateActivation = concurrentQuery(`select public.dopmi_guardian_activation_server('prepare',
+'${JSON.stringify({...activationData,key:'74200000-0000-4000-8000-000000000005'})}'::jsonb);`);
+const activationResults=await Promise.allSettled([activation,duplicateActivation]);
+assert.equal(activationResults[0].status,'fulfilled');assert.equal(activationResults[1].status,'rejected');
+assert.match(activationResults[1].reason.message,/ya tiene un alta/);
+assert.equal(query(`select count(*) from private.dopmi_guardian_activations where donor_id='${donorB}';`),'1');
+console.log('Guardian concurrent activation: one pending Checkout request per donor');
+
+const activationId=query(`select cycle_id from private.dopmi_guardian_activations where donor_id='${donorB}';`);
+let leaseReady;
+const leaseStarted=new Promise(resolve=>{leaseReady=resolve;});
+const firstLease=concurrentQuery(`begin;
+select public.dopmi_guardian_activation_server('claim_checkout','{"cycle_id":"${activationId}"}');
+select pg_sleep(2);commit;`,output=>{if(output.includes('lease_until'))leaseReady();});
+await Promise.race([leaseStarted,firstLease.then(()=>{throw Error('Lease did not report');})]);
+const otherLease=concurrentQuery(`select public.dopmi_guardian_activation_server('claim_checkout','{"cycle_id":"${activationId}"}') is null;`);
+const leaseResults=await Promise.all([firstLease,otherLease]);assert.equal(leaseResults[1],'t');
+assert.equal(query(`select attempts from private.dopmi_guardian_activations where cycle_id='${activationId}';`),'1');
+console.log('Guardian concurrent Checkout creation: one active lease and one attempt');
