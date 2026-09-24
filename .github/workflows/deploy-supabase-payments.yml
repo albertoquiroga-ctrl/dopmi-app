@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       confirm_test_mode:
-        description: Type H4-TEST to deploy the test-only payment functions
+        description: Type H4-TEST or H5-TEST to deploy the test-only payment functions (does not enable Guardian)
         required: true
         type: string
   push:
@@ -23,7 +23,7 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.event_name == 'push' || inputs.confirm_test_mode == 'H4-TEST'
+    if: github.event_name == 'push' || inputs.confirm_test_mode == 'H4-TEST' || inputs.confirm_test_mode == 'H5-TEST'
     runs-on: ubuntu-latest
     environment: h4-test
     steps:
@@ -39,3 +39,4 @@ jobs:
           supabase functions deploy stripe-webhook --project-ref ohqxranynackjignryep
           supabase functions deploy payment-worker --project-ref ohqxranynackjignryep
           supabase functions deploy payment-return --project-ref ohqxranynackjignryep
+          supabase functions deploy guardian-client --project-ref ohqxranynackjignryep
