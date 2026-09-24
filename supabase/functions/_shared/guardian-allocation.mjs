@@ -33,3 +33,36 @@ export function planGuardianAllocation(netCents, expenses) {
   return remaining === 0 ? { fully_allocated: true, allocations }
     : { fully_allocated: false, allocations: [] };
 }
+
+// Stripe's actual fee is only known after payment. A reservation holds the
+// maximum possible net; trim its tail to the confirmed net without silently
+// changing the approved expense order. The database must repeat eligibility
+// and balance checks under its rescuer locks before recording any transfer.
+export function trimGuardianReservation(netCents, reservedCents, allocations) {
+  if (!Number.isSafeInteger(netCents) || netCents <= 0
+    || !Number.isSafeInteger(reservedCents) || reservedCents < netCents
+    || !Array.isArray(allocations) || allocations.length === 0)
+    throw new TypeError('Invalid Guardian reservation');
+  const seen = new Set();
+  let total = 0;
+  for (const allocation of allocations) {
+    if (typeof allocation?.expense_id !== 'string' || !allocation.expense_id
+      || seen.has(allocation.expense_id) || !Number.isSafeInteger(allocation.amount_cents)
+      || allocation.amount_cents <= 0)
+      throw new TypeError('Invalid Guardian allocation');
+    seen.add(allocation.expense_id);
+    total += allocation.amount_cents;
+    if (!Number.isSafeInteger(total)) throw new TypeError('Invalid Guardian allocation');
+  }
+  if (total !== reservedCents) throw new TypeError('Invalid Guardian reservation');
+  let remaining = netCents;
+  const trimmed = [];
+  for (const allocation of allocations) {
+    if (!remaining) break;
+    const amount = Math.min(remaining, allocation.amount_cents);
+    trimmed.push({ expense_id: allocation.expense_id, amount_cents: amount });
+    remaining -= amount;
+  }
+  if (remaining) throw new TypeError('Invalid Guardian reservation');
+  return trimmed;
+}
