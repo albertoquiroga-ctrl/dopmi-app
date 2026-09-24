@@ -1007,7 +1007,7 @@ test('Guardian pending refund remains retryable and is never reported as complet
   await db.exec('update private.dopmi_guardian_jobs set available_at=now()');f.refunds[0].status='succeeded';
   assert.equal((await f.service().reconcile()).processed,1);assert.equal(f.calls.length,1);
 });
-test('Guardian wrong destination, live/refunded charge or mismatched transfer cannot complete a job',async () => {
+test('Guardian live-mode charge cannot complete a job',async () => {
   await boundGuardian();const f=guardianStripeFixture();await f.service().reconcileInvoice('in_guardian1');
   f.charge.livemode=true;
   assert.equal((await f.service().work()).failed,1);assert.equal(f.calls.length,0);
@@ -1024,4 +1024,36 @@ test('Guardian canceled subscription permits reconciliation of a bound earlier p
   await boundGuardian();await guardianRegistry('cancel',{donor_id:donor,stripe_subscription_id:'sub_guardian1'});
   const f=guardianStripeFixture();f.subscription.status='canceled';
   assert.equal((await f.service().reconcile()).processed,1);
+});
+
+test('Guardian destination changed after settlement prevents transfer to another account',async () => {
+  await boundGuardian();const f=guardianStripeFixture();await f.service().reconcileInvoice('in_guardian1');
+  await db.query("update private.dopmi_connect_accounts set account_id='acct_other' where owner_id=$1",[rescuer]);
+  assert.equal((await f.service().work()).failed,1);assert.equal(f.calls.length,0);
+  assert.equal((await db.query('select error_code from private.dopmi_guardian_jobs')).rows[0].error_code,'guardian_destination_mismatch');
+});
+test('Guardian processor transfer with wrong amount stays unconfirmed and requires attention',async () => {
+  const cycle=await boundGuardian();const f=guardianStripeFixture();const create=f.stripe.transfers.create;
+  f.stripe.transfers.create=async(...args)=>({...await create(...args),amount:1});
+  assert.equal((await f.service().reconcile()).failed,1);
+  assert.equal((await guardianSettlement('get',{cycle_id:cycle.id})).allocations[0].stripe_transfer_id,null);
+  assert.equal((await db.query('select status from private.dopmi_guardian_jobs')).rows[0].status,'attention');
+});
+test('Guardian existing partial refund is not followed by another full refund',async () => {
+  const cycle=await boundGuardian();await releaseGuardian();const f=guardianStripeFixture();
+  f.refunds.push({id:'re_partial',charge:'ch_guardianRenewal1',amount:1000,currency:'mxn',status:'succeeded'});
+  // Evidence was verified before the separate refund appeared.
+  await f.service().reconcileInvoice('in_guardian1');f.charge.amount_refunded=1000;
+  assert.equal((await f.service().work()).failed,1);assert.equal(f.calls.length,0);
+  assert.equal((await guardianSettlement('get',{cycle_id:cycle.id})).status,'refund_pending');
+});
+test('Guardian worker transfers the sum of multiple allocations and exposes only that confirmed net',async () => {
+  await db.query('update public.dopmi_rescue_records set reimbursable_cents=2500,urgent=true where id=$1',[expense]);
+  await db.query(`insert into public.dopmi_rescue_records(id,owner_id,kind,status,approved_snapshot,parent_id,reimbursable_cents)
+    values('71000000-0000-4000-8000-000000000004',$1,'expense','approved','{"title":"Comida"}','71000000-0000-4000-8000-000000000002',5000)`,[rescuer]);
+  const cycle=await boundGuardian();const f=guardianStripeFixture();assert.equal((await f.service().reconcile()).processed,2);
+  assert.equal(f.calls.reduce((n,c)=>n+c.fields.amount,0),4314);
+  const settled=await guardianSettlement('get',{cycle_id:cycle.id});assert.equal(settled.allocations.filter(a=>a.stripe_transfer_id).length,2);
+  const page=(await db.query('select public.dopmi_rescue_public($1) as v',['71000000-0000-4000-8000-000000000002'])).rows[0].v;
+  assert.equal(page.items.find(r=>r.kind==='case').transferred_cents,4314);
 });
