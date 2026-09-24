@@ -1746,3 +1746,124 @@ test('Guardian recovery can close an overdue subscription without granting payme
   const f=await recoveryFixture();f.subscription.status='past_due';
   assert.equal((await f.collector().run(f.invoice.id)).status,'skipped');assert.equal(f.calls.filter(c=>c.kind==='pay').length,1);
 });
+
+const ownerPlan=async()=>(await db.query('select public.dopmi_guardian_plan() as value')).rows[0].value;
+const requestKey='75000000-0000-4000-8000-000000000001';
+const nextRequestKey='75000000-0000-4000-8000-000000000002';
+const ownerRequest=async(kind='amount',revision=0,gross=20000,requestId=requestKey,consent='guardian-2026-09-24')=>
+  (await db.query('select public.dopmi_guardian_request($1,$2::uuid,$3::bigint,$4::bigint,$5) as value',
+    [kind,requestId,revision,gross,consent])).rows[0].value;
+const ownerCancel=(revision=0,requestId=requestKey)=>ownerRequest('cancel',revision,null,requestId,null);
+
+test('Guardian owner reads only their safe plan projection; staff do not inherit ownership',async()=>{
+  await collectionFixture();
+  for(const actor of [other,staff]){await role(actor);assert.equal(await ownerPlan(),null);
+    await rejected(()=>ownerCancel(),/No tienes un plan/);await db.exec('reset role');}
+  await role(donor);const p=await ownerPlan();assert.equal(p.gross_cents,5000);assert.equal(p.revision,0);
+  assert.deepEqual(p.requests,[]);assert.equal(p.pending_request,null);assert.equal(p.payment_in_flight,false);
+  assert.deepEqual(Object.keys(p).sort(),['cancellation_requested_at','currency','gross_cents','payment_in_flight','pending_request','requests','revision','status']);
+  assert.doesNotMatch(JSON.stringify(p),/cus_|sub_|price_|pi_|lease|secret/);
+});
+test('Guardian amount intent records consent without changing price or the current allocation',async()=>{
+  const f=await collectionFixture();const before=await guardianSettlement('get',{cycle_id:f.calendar.cycleId});
+  await role(donor);const result=await ownerRequest();assert.equal(result.request.kind,'amount');
+  assert.equal(result.request.status,'pending');assert.equal(result.request.new_gross_cents,20000);
+  assert.equal(result.plan.gross_cents,5000);assert.equal(result.plan.revision,1);await db.exec('reset role');
+  const p=await guardianRegistry('lookup',{stripe_subscription_id:'sub_schedule1'});assert.equal(p.gross_cents,5000);assert.equal(p.stripe_price_id,'price_schedule1');
+  assert.deepEqual(await guardianSettlement('get',{cycle_id:f.calendar.cycleId}),before);
+  assert.equal((await db.query('select consent_version from private.dopmi_guardian_requests')).rows[0].consent_version,'guardian-2026-09-24');
+  assert.equal(f.calls.some(c=>c.kind==='pay'),false);
+});
+test('Guardian identical owner request after a lost response returns one intent and one revision',async()=>{
+  await collectionFixture();await role(donor);const first=await ownerRequest();
+  assert.deepEqual(await ownerRequest(),first);assert.equal((await ownerPlan()).requests.length,1);
+  await rejected(()=>ownerRequest('amount',0,50000),/ya se usó con otros datos/);
+  await rejected(()=>ownerRequest('amount',1,20000),/ya se usó con otros datos/);
+  await rejected(()=>ownerCancel(),/ya se usó con otros datos/);
+});
+test('Guardian stale devices cannot overwrite a pending amount request',async()=>{
+  await collectionFixture();await role(donor);await ownerRequest();
+  await rejected(()=>ownerRequest('amount',0,50000,nextRequestKey),/Tu plan cambió/);
+  await rejected(()=>ownerRequest('amount',1,50000,nextRequestKey),/solicitud pendiente/);
+  assert.equal((await ownerPlan()).revision,1);
+});
+test('Guardian cancellation supersedes an unprocessed amount intent and preserves its audit',async()=>{
+  await collectionFixture();await role(donor);const amount=await ownerRequest();const cancel=await ownerCancel(1,nextRequestKey);
+  assert.equal(cancel.plan.status,'cancel_requested');assert.equal(cancel.plan.revision,2);assert.ok(cancel.plan.cancellation_requested_at);
+  assert.equal(cancel.request.status,'pending');assert.equal(cancel.request.kind,'cancel');
+  assert.deepEqual(cancel.plan.requests.map(r=>[r.kind,r.status]),[['cancel','pending'],['amount','superseded']]);
+  const replay=await ownerRequest();assert.equal(replay.request.id,amount.request.id);assert.equal(replay.request.status,'superseded');
+  assert.equal(replay.plan.revision,2);assert.equal((await ownerCancel(1,nextRequestKey)).request.id,cancel.request.id);
+  await rejected(()=>ownerRequest('amount',2,50000,'75000000-0000-4000-8000-000000000003'),/cancelación pendiente/);
+});
+for(const [label,kind,gross,consent] of [['missing consent','amount',20000,null],['old consent','amount',20000,'old'],
+  ['too small','amount',999,'guardian-2026-09-24'],['too large','amount',1000001,'guardian-2026-09-24'],
+  ['missing amount','amount',null,'guardian-2026-09-24'],['cancel with amount','cancel',5000,null],['unsupported action','apply',null,null]]){
+  test(`Guardian owner request rejects ${label}`,async()=>{
+    await collectionFixture();await role(donor);await rejected(()=>ownerRequest(kind,0,gross,requestKey,consent),/Solicitud Guardián inválida/);
+    assert.equal((await ownerPlan()).revision,0);assert.deepEqual((await ownerPlan()).requests,[]);
+  });
+}
+test('Guardian no-op amount and missing revision cannot create owner intents',async()=>{
+  await collectionFixture();await role(donor);await rejected(()=>ownerRequest('amount',0,5000),/debe ser diferente/);
+  await rejected(()=>ownerRequest('amount',null,20000),/Solicitud Guardián inválida/);
+  await rejected(()=>ownerRequest('amount',0,20000,null),/Solicitud Guardián inválida/);
+});
+for(const [label,sql] of [['suspended',`update public.profiles set account_status='suspended' where id='${donor}'`],
+  ['unconfirmed',`update auth.users set email_confirmed_at=null where id='${donor}'`]]){
+  test(`Guardian ${label} owner may cancel but cannot expand payment authorization`,async()=>{
+    await collectionFixture();await db.exec(sql);await role(donor);
+    await rejected(()=>ownerRequest(),/Cuenta activa y confirmada requerida/);
+    assert.equal((await ownerCancel()).plan.status,'cancel_requested');
+  });
+}
+test('Guardian owner endpoints require a session and private intent writes remain denied',async()=>{
+  await collectionFixture();
+  for(const name of ['anon','service_role']){await role('',name);await rejected(()=>ownerPlan(),/permission denied/);
+    await rejected(()=>ownerCancel(),/permission denied/);await db.exec('reset role');}
+  await role('');await rejected(()=>ownerPlan(),/Inicia sesión/);await rejected(()=>ownerCancel(),/Inicia sesión/);await db.exec('reset role');
+  for(const actor of [donor,staff]){await role(actor);
+    await rejected(()=>db.exec('select * from private.dopmi_guardian_requests'),/permission denied/);
+    await rejected(()=>db.exec("update private.dopmi_guardian_requests set status='applied',applied_at=now()"),/permission denied/);
+    await rejected(()=>db.query('select private.dopmi_guardian_plan_view($1)',[donor]),/permission denied/);await db.exec('reset role');}
+});
+test('Guardian a pending change blocks discovery and fresh reservations even from stale source reads',async()=>{
+  const f=await collectionFixture();assert.ok(await collectionRpc('source',{subscription_id:'sub_schedule1'}));
+  await role(donor);await ownerRequest();await db.exec('reset role');
+  assert.equal(await collectionRpc('source',{subscription_id:'sub_schedule1'}),null);assert.deepEqual(await collectionRpc('sources'),[]);
+  await rejected(()=>f.prepare(),/Solicitud Guardián pendiente/);
+  assert.equal((await db.query('select count(*)::int as n from private.dopmi_guardian_collection_jobs')).rows[0].n,0);
+});
+test('Guardian cancellation that wins before pay authorization releases the hold without a charge',async()=>{
+  const f=await collectionFixture();const j=await f.prepare();const claim=await collectionRpc('claim',{invoice_id:j.invoice_id});
+  await role(donor);assert.equal((await ownerCancel()).plan.payment_in_flight,false);await db.exec('reset role');
+  const stopped=await collectionRpc('authorize_pay',{invoice_id:j.invoice_id,lease:claim.lease});
+  assert.equal(stopped.pay_requested_at,null);assert.equal(stopped.decision,'skip');assert.equal(stopped.cycle_status,'released');
+  await db.exec("update private.dopmi_guardian_collection_jobs set lease_until=null,available_at=now()");
+  assert.equal((await f.collector().run(j.invoice_id)).status,'skipped');assert.equal(f.calls.some(c=>c.kind==='pay'),false);
+  assert.equal(f.invoice.status,'void');
+});
+test('Guardian a payment authorized before cancellation still reconciles once and preserves delivered funds',async()=>{
+  const f=await collectionFixture();const wrapped=async(op,data)=>{
+    const result=await collectionRpc(op,data);
+    if(op==='authorize_pay'){await role(donor);const canceled=await ownerCancel();
+      assert.equal(canceled.plan.payment_in_flight,true);await db.exec('reset role');}
+    return result;
+  };
+  const j=await f.collector(wrapped).run(f.invoice.id);assert.equal(j.status,'paid');assert.equal(f.calls.filter(c=>c.kind==='pay').length,1);
+  assert.equal((await guardianSettlement('get',{cycle_id:j.cycle_id})).allocated_cents,4314);
+  await role(donor);const p=await ownerPlan();assert.equal(p.status,'cancel_requested');assert.equal(p.payment_in_flight,false);
+  assert.equal(p.gross_cents,5000);
+});
+test('Guardian amount intent preserves a prepared current cycle while stopping new cycle preparation',async()=>{
+  const f=await collectionFixture();const j=await f.prepare();await role(donor);await ownerRequest();await db.exec('reset role');
+  assert.equal((await f.collector().run(j.invoice_id)).status,'paid');assert.equal(f.calls.filter(c=>c.kind==='pay').length,1);
+  f.invoice.id='in_afterRequest';f.invoice.lines.data[0].period.start++;
+  await rejected(()=>f.prepare(),/Solicitud Guardián pendiente/);
+  assert.equal((await collectionRpc('get',{invoice_id:j.invoice_id})).gross_cents,5000);
+});
+test('Guardian canceled registry remains readable but cannot accept a fresh owner request',async()=>{
+  await collectionFixture();await guardianRegistry('cancel',{donor_id:donor,stripe_subscription_id:'sub_schedule1'});
+  await role(donor);assert.equal((await ownerPlan()).status,'canceled');
+  await rejected(()=>ownerCancel(),/ya está cancelado/);await rejected(()=>ownerRequest(),/ya está cancelado/);
+});

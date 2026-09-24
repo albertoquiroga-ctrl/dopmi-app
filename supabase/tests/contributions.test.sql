@@ -74,5 +74,19 @@ select is(dopmi_guardian_release('70000000-0000-4000-8000-000000000001',
   '73000000-0000-4000-8000-000000000001')->>'status','released','releasing a hold restores capacity');
 select is((dopmi_expense_funding('71000000-0000-4000-8000-000000000003')->>'available_cents')::bigint,2800::bigint,
   'released hold is not counted as paid or reserved');
+set local role anon;
+select throws_ok('select dopmi_guardian_plan()','42501',null,'anonymous Guardian management read denied');
+select throws_ok($$select dopmi_guardian_request('cancel','75000000-0000-4000-8000-000000000001',0)$$,'42501',null,'anonymous Guardian cancellation denied');
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000004',true);
+select is(dopmi_guardian_plan(),null::jsonb,'an unrelated owner cannot read a Guardian plan');
+select throws_ok($$select dopmi_guardian_request('cancel','75000000-0000-4000-8000-000000000001',0)$$,'42501',null,'an unrelated owner cannot submit a cancellation');
+select throws_ok('select * from private.dopmi_guardian_requests','42501',null,'owner request audit remains private');
+select throws_ok($$update private.dopmi_guardian_requests set status='applied',applied_at=now()$$,'42501',null,'client cannot fabricate confirmation of a change');
+select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000003',true);
+select is(dopmi_guardian_plan(),null::jsonb,'staff membership grants no other owner plan access');
+select throws_ok($$select private.dopmi_guardian_plan_view('70000000-0000-4000-8000-000000000001')$$,'42501',null,'private projection cannot be called with another owner');
+reset role;
 select * from finish();
 rollback;

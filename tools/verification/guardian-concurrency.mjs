@@ -197,3 +197,39 @@ const voidResults=await Promise.allSettled([firstVoid,competingVoid]);assert.equ
 assert.match(voidResults[1].reason.message,/Pago no cancelable confirmado/);
 assert.equal(query("select recovery_attempts from private.dopmi_guardian_collection_jobs where invoice_id='in_collectionCI';"),'1');
 console.log('Guardian concurrent payment recovery: one recovery lease and one void authorization');
+
+// Complete the disposable failed payment before preparing the next cycle.
+query(`select public.dopmi_guardian_recovery_server('voided','${JSON.stringify({...recoveryData,intent_id:'pi_recoveryCI',invoice_payment_id:'inpay_recoveryCI',
+  invoice_status:'void',intent_status:'canceled',invoice_payment_status:'canceled',amount_received:0,amount_capturable:0,amount_paid:0,amount_remaining:2000})}');`);
+const nextCycle={...collectionData,invoice_id:'in_ownerCI',cycle_key:'74200000-0000-4000-8000-000000000007',period_start:collectionData.period_start+1};
+query(`select public.dopmi_guardian_collection_server('prepare','${JSON.stringify(nextCycle)}');`);
+const ownerClaim=JSON.parse(query(`select public.dopmi_guardian_collection_server('claim','{"invoice_id":"in_ownerCI"}');`));
+const amountRequest=`select public.dopmi_guardian_request('amount','75000000-0000-4000-8000-000000000001',0,5000,'guardian-2026-09-24');`;
+const asOwner=`set local role authenticated;select set_config('request.jwt.claim.sub','${donorB}',true);`;
+let requestReady;
+const requestStarted=new Promise(resolve=>{requestReady=resolve;});
+const firstRequest=concurrentQuery(`begin;${asOwner}${amountRequest}select pg_sleep(2);commit;`,output=>{if(output.includes('pending_request'))requestReady();});
+await Promise.race([requestStarted,firstRequest.then(()=>{throw Error('Owner request did not report');})]);
+const sameRequest=concurrentQuery(`begin;${asOwner}${amountRequest}commit;`);
+const nextPreparation=concurrentQuery(`select public.dopmi_guardian_collection_server('prepare','${JSON.stringify({...nextCycle,
+  invoice_id:'in_blockedOwnerCI',cycle_key:'74200000-0000-4000-8000-000000000008',period_start:nextCycle.period_start+1})}');`);
+const requestResults=await Promise.allSettled([firstRequest,sameRequest,nextPreparation]);
+assert.equal(requestResults[0].status,'fulfilled');assert.equal(requestResults[1].status,'fulfilled');
+assert.equal(requestResults[2].status,'rejected');assert.match(requestResults[2].reason.message,/Solicitud Guardián pendiente/);
+assert.equal(query(`select count(*),max(revision) from private.dopmi_guardian_requests where donor_id='${donorB}';`),'1|1');
+assert.equal(query("select count(*) from private.dopmi_guardian_collection_jobs where invoice_id='in_blockedOwnerCI';"),'0');
+console.log('Guardian concurrent owner requests: one intent, one revision, new cycle blocked');
+
+// Cancellation holds the same subscription row as authorize_pay. The waiting
+// worker must see the committed intent before persisting its one-shot marker.
+let cancelReady;
+const cancelStarted=new Promise(resolve=>{cancelReady=resolve;});
+const cancelRequest=concurrentQuery(`begin;${asOwner}
+select public.dopmi_guardian_request('cancel','75000000-0000-4000-8000-000000000002',1);
+select pg_sleep(2);commit;`,output=>{if(output.includes('cancel_requested'))cancelReady();});
+await Promise.race([cancelStarted,cancelRequest.then(()=>{throw Error('Cancellation did not report');})]);
+const waitingPayment=concurrentQuery(`select public.dopmi_guardian_collection_server('authorize_pay','${JSON.stringify({invoice_id:'in_ownerCI',lease:ownerClaim.lease})}');`);
+const cancelResults=await Promise.all([cancelRequest,waitingPayment]);const stopped=JSON.parse(cancelResults[1]);
+assert.equal(stopped.pay_requested_at,null);assert.equal(stopped.decision,'skip');assert.equal(stopped.cycle_status,'released');
+assert.equal(query(`select count(*) from private.dopmi_guardian_requests where donor_id='${donorB}' and status='pending' and kind='cancel';`),'1');
+console.log('Guardian cancellation vs pay: cancellation commits first, no payment authorization');
