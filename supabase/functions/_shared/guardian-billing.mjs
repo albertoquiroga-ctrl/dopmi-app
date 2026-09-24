@@ -99,6 +99,23 @@ export function guardianPaidInvoice(invoice, subscription, expected, invoicePaym
     stripe_fee_cents: balance.fee, net_cents: net };
 }
 
+// Price evidence after a billing boundary is not evidence of payment. Inspect
+// the exact renewal line without finalizing, paying, editing or voiding it.
+export function guardianInvoicePriceEvidence(invoice, subscription, expected, periodStart) {
+  checkGuardianInvoiceIdentity(invoice, subscription, expected);
+  checkInvoiceLine(invoice, expected);
+  const period = invoice.lines.data[0].period;
+  if (!['draft', 'open', 'paid', 'void'].includes(invoice.status) || invoice.auto_advance !== false
+    || invoice.collection_method !== 'send_invoice' || invoice.currency !== 'mxn'
+    || invoice.total !== expected.gross_cents || invoice.amount_due !== expected.gross_cents
+    || invoice.starting_balance !== 0 || invoice.automatic_tax?.enabled !== false
+    || period?.start !== periodStart || !Number.isSafeInteger(period.end)
+    || period.end <= periodStart || period.end > 4102444800)
+    throw new GuardianBillingError('guardian_change_boundary_invoice_mismatch');
+  return { boundary_invoice_id: invoice.id, boundary_period_start: periodStart,
+    boundary_price_id: expected.price_id, boundary_gross_cents: expected.gross_cents };
+}
+
 function checkInvoiceLine(invoice, expected) {
   const lines = invoice.lines;
   const line = lines?.data?.[0];

@@ -84,6 +84,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   'cancel',
                   'cancel_activation',
                   'method',
+                  'withdraw_amount',
                 ].contains(value['kind']) ||
                 value['key'] is! String ||
                 (['checkout', 'amount'].contains(value['kind']) &&
@@ -91,7 +92,12 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                         value['consent_version'] != guardianConsent)) ||
                 (value['kind'] == 'method' &&
                     value['consent_version'] != guardianConsent) ||
-                (['amount', 'cancel', 'method'].contains(value['kind']) &&
+                ([
+                      'amount',
+                      'cancel',
+                      'method',
+                      'withdraw_amount',
+                    ].contains(value['kind']) &&
                     value['revision'] is! int)) {
               throw const FormatException('Intento incompleto');
             }
@@ -129,6 +135,19 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         if (!await prefs.setString(storageKey, jsonEncode(intent))) {
           throw const FormatException('No se pudo conservar el intento.');
         }
+      }
+      if (intent?['kind'] == 'withdraw_amount' &&
+          (plan?['requests'] as List? ?? []).any(
+            (request) =>
+                request['id'] == intent?['key'] &&
+                [
+                  'withdrawn',
+                  'superseded',
+                  'applied',
+                ].contains(request['status']),
+          )) {
+        await prefs.remove(storageKey);
+        intent = null;
       }
       // Only authoritative terminal state releases an initial payment attempt.
       if (intent?['kind'] == 'checkout' &&
@@ -172,32 +191,44 @@ class _GuardianState extends ConsumerState<GuardianScreen>
     }
   }
 
-  Future<void> submit({bool cancel = false, bool method = false}) async {
+  Future<void> submit({
+    bool cancel = false,
+    bool method = false,
+    bool withdraw = false,
+  }) async {
     if (busy || confirming || !fresh || !current) return;
-    if (cancel || method) {
+    if (cancel || method || withdraw) {
       setState(() => confirming = true);
       final agreed = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
           title: Text(
-            method
+            withdraw
+                ? '¿Retirar el cambio de monto?'
+                : method
                 ? '¿Actualizar tu medio de pago?'
                 : '¿Cancelar tu plan Guardián?',
           ),
           content: Text(
-            method
+            withdraw
+                ? 'Mantendrás el importe anterior de tu plan: ${pesos(plan!['gross_cents'] as int)} al mes. Lo retiraremos si aún no comenzó a aplicarse; los próximos ciclos podrán continuar con el importe anterior. Esta acción no cancela tu plan.'
+                : method
                 ? 'Autorizo guardar y usar el nuevo medio en Stripe para los próximos ciclos de Guardián, con el monto y las condiciones vigentes. Stripe puede solicitar autenticación bancaria. Este cambio no cobra ni recupera ciclos omitidos.'
                 : 'Detendremos los ciclos futuros. Un pago ya iniciado puede terminar de procesarse. Los pagos anteriores conservan su historial y no se devuelven automáticamente.',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: Text(method ? 'Volver' : 'Conservar plan'),
+              child: Text(method || withdraw ? 'Volver' : 'Conservar plan'),
             ),
             FilledButton(
               onPressed: () => Navigator.pop(context, true),
               child: Text(
-                method ? 'Autorizar y continuar' : 'Confirmar cancelación',
+                withdraw
+                    ? 'Retirar y conservar monto'
+                    : method
+                    ? 'Autorizar y continuar'
+                    : 'Confirmar cancelación',
               ),
             ),
           ],
@@ -210,6 +241,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
     final cents = parsePesos(amount.text);
     if (!cancel &&
         !method &&
+        !withdraw &&
         intent == null &&
         (!consent || cents == null || cents < 1000 || cents > 1000000)) {
       setState(
@@ -236,7 +268,13 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         return;
       }
       if (!current) return;
-      final next = cancel
+      final next = withdraw
+          ? <String, dynamic>{
+              'kind': 'withdraw_amount',
+              'key': plan!['pending_request']['id'],
+              'revision': plan!['revision'],
+            }
+          : cancel
           ? <String, dynamic>{
               'kind': plan == null ? 'cancel_activation' : 'cancel',
               'key': plan == null ? activation!['key'] : const Uuid().v4(),
@@ -251,7 +289,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   'cents': cents,
                   'revision': plan?['revision'],
                 };
-      if (intent == null && !cancel) next['consent_version'] = guardianConsent;
+      if (intent == null && !cancel && !withdraw)
+        next['consent_version'] = guardianConsent;
       final prefs = await SharedPreferences.getInstance();
       if (!await prefs.setString(storageKey, jsonEncode(next))) {
         throw const FormatException('No se pudo conservar el intento.');
@@ -376,6 +415,26 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   : () => submit(method: true),
               child: const Text('Actualizar medio de pago'),
             ),
+          if (pending is Map && pending['review_reason'] != null)
+            Notice(
+              guardianReviewLabels[pending['review_reason']] ??
+                  'El cambio está en revisión.',
+            ),
+          if (pending is Map &&
+              pending['can_withdraw'] == true &&
+              intent == null)
+            TextButton(
+              onPressed: busy || confirming || !fresh
+                  ? null
+                  : () => submit(withdraw: true),
+              child: const Text('Retirar cambio de monto'),
+            ),
+          if (intent?['kind'] == 'withdraw_amount')
+            ActionButton(
+              'Reintentar retiro del cambio',
+              busy: busy,
+              onPressed: canSubmit ? () => submit() : null,
+            ),
           if (intent?['kind'] == 'method')
             ActionButton(
               'Continuar actualización en Stripe',
@@ -425,6 +484,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                         ? 'Confirmado. Aplica desde ${date(r['effective_at'])}.'
                         : 'Cancelación confirmada.',
                   'superseded' => 'Sustituido por cancelación.',
+                  'withdrawn' =>
+                    'Solicitud retirada; se conservó el monto anterior.',
                   _ => 'Pendiente de confirmación.',
                 }),
               ),
@@ -433,7 +494,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
               guardianActivationLabels[activation!['status']] ??
                   'Estado del alta en revisión. No vuelvas a pagar.',
             ),
-          if (intent?['kind'] != 'method' &&
+          if (!['method', 'withdraw_amount'].contains(intent?['kind']) &&
               (canStart || canChange || intent != null)) ...[
             const SizedBox(height: 16),
             Wrap(

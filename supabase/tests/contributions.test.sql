@@ -117,5 +117,12 @@ select throws_ok($$select dopmi_guardian_history_allocations(current_setting('te
 select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000003',true);
 select is(dopmi_guardian_history()->'items','[]'::jsonb,'staff has no donor history access');
 reset role;
+select ok(not has_function_privilege('anon','public.dopmi_guardian_withdraw_amount(uuid,bigint)','execute'),'anonymous cannot withdraw a change');
+select ok(not has_function_privilege('service_role','public.dopmi_guardian_withdraw_amount(uuid,bigint)','execute'),'change withdrawal needs owner session');
+select ok(has_function_privilege('authenticated','public.dopmi_guardian_withdraw_amount(uuid,bigint)','execute'),'owner withdrawal is callable');
+set local role authenticated;
+select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000004',true);
+select throws_ok($$select dopmi_guardian_withdraw_amount('75000000-0000-4000-8000-000000000099',1)$$,'42501',null,'unknown change withdrawal denies access');
+reset role;
 select * from finish();
 rollback;

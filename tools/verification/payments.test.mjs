@@ -1440,7 +1440,8 @@ async function collectionFixture() {
   f.stripe.invoices.pay=async(id,fields,options)=>{f.calls.push({kind:'pay',id,fields,options});Object.assign(invoice,{status:'paid',amount_paid:5000,amount_remaining:0,attempt_count:1,attempted:true});Object.assign(payment,{status:'paid',amount_paid:5000});return structuredClone(invoice);};
   const collector=(rpc=collectionRpc,recovery=recoveryRpc)=>guardianCollectionService({stripe:f.stripe,rpc,recoveryRpc:recovery,reconcileInvoice:f.service().reconcileInvoice,logger:{}});
   const prepare=()=>collectionRpc('prepare',{invoice_id:invoice.id,subscription_id:subscription.id,cycle_key:guardianKey,
-    period_start:invoice.lines.data[0].period.start,period_end:invoice.lines.data[0].period.end,fresh:true});
+    period_start:invoice.lines.data[0].period.start,period_end:invoice.lines.data[0].period.end,fresh:true,
+    verified_price_id:invoice.lines.data[0].pricing.price_details.price,verified_gross_cents:invoice.total});
   return {...f,subscription,calendar,collector,prepare};
 }
 const collectionDue=()=>db.exec('update private.dopmi_guardian_collection_jobs set available_at=now()');
@@ -1560,7 +1561,7 @@ test('Guardian periodic discovery recovers missing webhook and duplicate event c
 test('Guardian rejects a second invoice for the same monthly period atomically',async()=>{
   const f=await collectionFixture();await f.prepare();
   const count=(await db.query('select count(*)::int n from private.dopmi_guardian_cycles')).rows[0].n;
-  await rejected(()=>collectionRpc('prepare',{invoice_id:'in_duplicate',subscription_id:f.subscription.id,cycle_key:crypto.randomUUID(),
+  await rejected(()=>collectionRpc('prepare',{invoice_id:'in_duplicate',subscription_id:f.subscription.id,cycle_key:crypto.randomUUID(),verified_price_id:'price_schedule1',verified_gross_cents:5000,
     period_start:f.invoice.lines.data[0].period.start,period_end:f.invoice.lines.data[0].period.end,fresh:true}),/unique/);
   assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_cycles')).rows[0].n,count);
 });
@@ -1720,7 +1721,7 @@ test('Guardian recovery remains unavailable to clients and administrators',async
 });
 test('Guardian cancellation recovery unblocks the next month without clearing payment history',async()=>{
   const f=await recoveryFixture();const closed=await f.collector().run(f.invoice.id);
-  const next=await collectionRpc('prepare',{invoice_id:'in_nextMonthly',subscription_id:'sub_schedule1',cycle_key:crypto.randomUUID(),
+  const next=await collectionRpc('prepare',{invoice_id:'in_nextMonthly',subscription_id:'sub_schedule1',cycle_key:crypto.randomUUID(),verified_price_id:'price_schedule1',verified_gross_cents:5000,
     period_start:f.invoice.lines.data[0].period.end,period_end:f.invoice.lines.data[0].period.end+30*86400,fresh:true});
   assert.equal(next.status,'pending');assert.notEqual(next.cycle_id,closed.cycle_id);
   assert.ok((await collectionRpc('get',{invoice_id:f.invoice.id})).pay_requested_at);
@@ -1922,7 +1923,7 @@ test('Guardian current-period invoice discovered after a price change retains it
   const f=await changeFixture(),requestId=await f.request('amount',0,1000);await f.manager().run(requestId);
   const current=await f.collector().run(f.invoice.id);assert.equal(current.status,'paid');assert.equal(current.gross_cents,5000);assert.equal(current.price_id,'price_schedule1');
   assert.equal((await guardianSettlement('get',{cycle_id:current.cycle_id})).allocated_cents,4314);
-  const next=await collectionRpc('prepare',{invoice_id:'in_nextPrice',subscription_id:f.subscription.id,cycle_key:nextRequestKey,
+  const next=await collectionRpc('prepare',{invoice_id:'in_nextPrice',subscription_id:f.subscription.id,cycle_key:nextRequestKey,verified_price_id:'price_change1',verified_gross_cents:1000,
     period_start:f.item.current_period_end,period_end:f.item.current_period_end+30*86400,fresh:true});
   assert.equal(next.gross_cents,1000);assert.equal(next.price_id,'price_change1');
 });
@@ -1988,6 +1989,7 @@ test('Guardian applied price can be recovered after renewal and retry expiry usi
   f.stripe.subscriptions.update=async(...args)=>{await update(...args);throw Error('update_lost');};
   await assert.rejects(()=>f.manager().run(requestId),/update_lost/);const saved=await changeRpc('get',{request_id:requestId});
   f.item.current_period_start=f.item.current_period_end;f.item.current_period_end+=30*86400;f.subscription.latest_invoice='in_later';
+  changeBoundaryInvoice(f,saved);
   await db.exec("update private.dopmi_guardian_requests set attempts=8,first_attempt_at=now()-interval '2 days',available_at=now()");
   const recovered=await f.manager().run(requestId);assert.equal(recovered.status,'applied');assert.equal(recovered.effective_from,saved.effective_from);
   assert.equal(f.changeCalls.filter(c=>c.kind==='update').length,1);
@@ -2501,4 +2503,141 @@ test('Guardian history keeps confirmed amounts when a delivery job needs review'
   await role(donor);const item=(await history()).items[0];
   assert.equal(item.status,'assigned');assert.equal(item.needs_review,true);assert.equal(item.paid_cents,5000);assert.equal(item.transferred_cents,0);
   assert.doesNotMatch(JSON.stringify(item),/PRIVATE_PROCESSOR_ERROR|error_code/);
+});
+
+function changeBoundaryInvoice(f,job,{price=job.price_id,gross=job.new_gross_cents,start=job.effective_from}={}) {
+  const invoice=structuredClone(f.invoice);invoice.id='in_boundary';
+  Object.assign(invoice,{total:gross,amount_due:gross,amount_remaining:gross,status:'draft'});
+  Object.assign(invoice.lines.data[0],{amount:gross,pricing:{price_details:{price}},period:{start,end:start+30*86400}});
+  const retrieve=f.stripe.invoices.retrieve;
+  f.stripe.invoices.retrieve=async id=>id===invoice.id?structuredClone(invoice):retrieve(id);
+  f.stripe.invoices.list=async()=>({has_more:false,data:[structuredClone(invoice)]});
+  return invoice;
+}
+
+const withdrawAmount=async(requestId,revision)=>(await db.query('select public.dopmi_guardian_withdraw_amount($1,$2) as value',[requestId,revision])).rows[0].value;
+function changeClock(f,time) {
+  f.stripe.customers.retrieve=async()=>({id:'cus_initial',livemode:false,balance:0,test_clock:'clock_anniversary'});
+  f.stripe.testHelpers={testClocks:{retrieve:async()=>({id:'clock_anniversary',status:'ready',frozen_time:typeof time==='function'?time():time})}};
+}
+test('Guardian stale invoice source cannot reserve a newly changed amount after the plan lock is acquired',async()=>{
+  const f=await changeFixture(),target=f.item.current_period_end;let raced=false;
+  f.invoice.lines.data[0].period={start:target,end:target+30*86400};f.invoice.created=target;
+  const wrapped=async(op,data)=>{const result=await collectionRpc(op,data);if(op==='source'&&!raced){
+    raced=true;await f.manager().run(await f.request('amount',0,1000));changeClock(f,target+1);
+  }return result;};
+  await rejected(()=>f.collector(wrapped).run(f.invoice.id),/factura no coincide/);
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_collection_jobs')).rows[0].n,0);
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_cycles')).rows[0].n,1);
+  assert.equal(f.calls.some(x=>['pay','finalize'].includes(x.kind)),false);
+});
+test('Guardian collection requires the verified invoice price and amount before creating any hold',async()=>{
+  const f=await collectionFixture();
+  for(const patch of [{},{verified_price_id:'price_schedule1',verified_gross_cents:1000},{verified_price_id:'price_other',verified_gross_cents:5000}]){
+    await rejected(()=>collectionRpc('prepare',{invoice_id:f.invoice.id,subscription_id:f.subscription.id,cycle_key:guardianKey,
+      period_start:f.invoice.lines.data[0].period.start,period_end:f.invoice.lines.data[0].period.end,fresh:true,...patch}),/factura no coincide/);
+  }
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_collection_jobs')).rows[0].n,0);
+});
+test('Guardian renewal already prepared prevents backdating an amount change into that cycle',async()=>{
+  const f=await changeFixture(),target=f.item.current_period_end;
+  const cycle=await collectionRpc('prepare',{invoice_id:'in_boundaryPrepared',subscription_id:f.subscription.id,cycle_key:guardianKey,
+    period_start:target,period_end:target+30*86400,fresh:true,verified_price_id:'price_schedule1',verified_gross_cents:5000});
+  const request=await f.request();await rejected(()=>f.manager().run(request),/Período de cambio ya preparado/);
+  assert.equal(f.changeCalls.length,0);assert.equal((await collectionRpc('get',{invoice_id:cycle.invoice_id})).gross_cents,5000);
+  await role(donor);assert.equal((await ownerPlan()).pending_request.can_withdraw,true);
+});
+for(const seconds of [121,120,1,0])test(`Guardian amount write cutoff is exact at ${seconds} seconds before anniversary`,async()=>{
+  const f=await changeFixture(),request=await f.request();changeClock(f,f.item.current_period_end-seconds);
+  if(seconds>120)assert.equal((await f.manager().run(request)).status,'applied');
+  else {await assert.rejects(()=>f.manager().run(request),/too_late/);assert.equal(f.changeCalls.length,0);await role(donor);
+    assert.equal((await ownerPlan()).pending_request.review_reason,'near_anniversary');assert.equal((await ownerPlan()).pending_request.can_withdraw,true);}
+});
+for(const [from,to] of [['2027-01-31T15:20:01Z','2027-02-28T15:20:01Z'],['2028-01-31T15:20:01Z','2028-02-29T15:20:01Z'],['2028-02-29T15:20:01Z','2028-03-31T15:20:01Z']])
+ test(`Guardian amount confirmation keeps the exact Stripe anniversary ${to}`,async()=>{
+  const f=await changeFixture(),start=Date.parse(from)/1000,end=Date.parse(to)/1000;
+  f.item.current_period_start=start;f.item.current_period_end=end;f.subscription.billing_cycle_anchor=end;changeClock(f,end-121);
+  const result=await f.manager().run(await f.request());assert.equal(result.effective_from,end);
+  assert.equal(f.subscription.billing_cycle_anchor,end);assert.equal(f.item.current_period_start,start);
+});
+test('Guardian owner can withdraw a near-boundary change before mutation and explicitly keep the old amount',async()=>{
+  const f=await changeFixture(),request=await f.request();let clock=f.item.current_period_end-121;
+  changeClock(f,()=>clock);const create=f.stripe.prices.create;f.stripe.prices.create=async(...args)=>{const value=await create(...args);clock++;return value;};
+  await assert.rejects(()=>f.manager().run(request),/too_late/);assert.equal(f.changeCalls.some(x=>x.kind==='update'),false);
+  await role(donor);const first=await withdrawAmount(request,1),again=await withdrawAmount(request,1);
+  assert.equal(first.plan.revision,2);assert.deepEqual(again,first);assert.equal(first.plan.pending_request,null);assert.equal(first.plan.gross_cents,5000);
+  assert.equal(first.plan.requests[0].status,'withdrawn');assert.ok(first.plan.requests[0].withdrawn_at);
+  await db.exec('reset role');assert.equal((await f.manager().run(request)).status,'withdrawn');assert.equal((await collectionRpc('sources')).length,1);
+  assert.equal(f.changeCalls.some(x=>x.kind==='update'),false);
+});
+test('Guardian withdrawal derives ownership, rejects stale revisions, and does not require a confirmed active account',async()=>{
+  const f=await changeFixture(),request=await f.request();
+  await role('','anon');await rejected(()=>withdrawAmount(request,1),/permission denied/);
+  for(const actor of [other,staff]){await role(actor);await rejected(()=>withdrawAmount(request,1),/Solicitud no disponible/);}
+  await role(donor);await rejected(()=>withdrawAmount(request,0),/cambio ya avanzó/);await db.exec('reset role');
+  await db.query("update public.profiles set account_status='suspended' where id=$1",[donor]);
+  await db.query('update auth.users set email_confirmed_at=null where id=$1',[donor]);await role(donor);
+  assert.equal((await withdrawAmount(request,1)).plan.requests[0].status,'withdrawn');
+});
+test('Guardian withdrawal during price creation stops the worker before subscription mutation',async()=>{
+  const f=await changeFixture(),request=await f.request(),create=f.stripe.prices.create;
+  f.stripe.prices.create=async(...args)=>{const price=await create(...args);await role(donor);await withdrawAmount(request,1);await db.exec('reset role');return price;};
+  assert.equal((await f.manager().run(request)).status,'withdrawn');assert.equal(f.changeCalls.some(x=>x.kind==='update'),false);
+});
+test('Guardian mutation authorization prevents withdrawal even when the Stripe response is lost',async()=>{
+  const f=await changeFixture(),request=await f.request(),update=f.stripe.subscriptions.update;
+  f.stripe.subscriptions.update=async(...args)=>{await update(...args);throw Error('lost');};
+  await assert.rejects(()=>f.manager().run(request),/lost/);await role(donor);
+  assert.equal((await ownerPlan()).pending_request.can_withdraw,false);
+  await rejected(()=>withdrawAmount(request,1),/cambio ya avanzó/);await db.exec('reset role');await changeDue();
+  assert.equal((await f.manager().run(request)).status,'applied');assert.equal(f.changeCalls.filter(x=>x.kind==='update').length,1);
+});
+test('Guardian an update crossing renewal cannot claim the new price applied to an old-price invoice',async()=>{
+  const f=await changeFixture(),request=await f.request(),update=f.stripe.subscriptions.update;
+  f.stripe.subscriptions.update=async(...args)=>{
+    const job=await changeRpc('get',{request_id:request});f.item.current_period_start=job.effective_from;f.item.current_period_end+=30*86400;
+    changeBoundaryInvoice(f,job,{price:job.old_price_id,gross:job.previous_gross_cents});
+    return update(...args);
+  };
+  await assert.rejects(()=>f.manager().run(request),/boundary_invoice_mismatch/);
+  assert.equal((await guardianRegistry('lookup',{stripe_subscription_id:f.subscription.id})).gross_cents,5000);
+  await role(donor);const plan=await ownerPlan();assert.equal(plan.pending_request.review_reason,'period_review');assert.equal(plan.pending_request.can_withdraw,false);
+  await rejected(()=>withdrawAmount(request,1),/cambio ya avanzó/);await db.exec('reset role');await changeDue();
+  await assert.rejects(()=>f.manager().run(request),/boundary_invoice_mismatch/);assert.equal(f.changeCalls.filter(x=>x.kind==='update').length,1);
+  assert.deepEqual(await collectionRpc('sources'),[]);
+  assert.equal((await f.manager().run(await f.request('cancel',1,null,nextRequestKey))).status,'applied');
+});
+for(const variant of ['missing','duplicate','foreign','wrong_period','changed_on_read','loop'])test(`Guardian post-anniversary recovery rejects ${variant} boundary evidence without another mutation`,async()=>{
+  const f=await changeFixture(),request=await f.request(),update=f.stripe.subscriptions.update;
+  f.stripe.subscriptions.update=async(...args)=>{await update(...args);throw Error('lost');};
+  await assert.rejects(()=>f.manager().run(request),/lost/);const job=await changeRpc('get',{request_id:request});
+  f.item.current_period_start=job.effective_from;f.item.current_period_end+=30*86400;
+  const invoice=changeBoundaryInvoice(f,job);const valid=structuredClone(invoice);
+  if(variant==='missing')f.stripe.invoices.list=async()=>({has_more:false,data:[]});
+  if(variant==='duplicate')f.stripe.invoices.list=async()=>({has_more:false,data:[valid,{...valid,id:'in_duplicateBoundary'}]});
+  if(variant==='foreign')invoice.parent.subscription_details.subscription='sub_other';
+  if(variant==='wrong_period')invoice.lines.data[0].period.start++;
+  if(variant==='changed_on_read'){f.stripe.invoices.list=async()=>({has_more:false,data:[valid]});invoice.lines.data[0].pricing.price_details.price='price_other';}
+  if(variant==='loop')f.stripe.invoices.list=async()=>({has_more:true,data:[valid]});
+  await changeDue();await assert.rejects(()=>f.manager().run(request),/boundary_/);
+  assert.equal((await changeRpc('get',{request_id:request})).status,'pending');assert.equal(f.changeCalls.filter(x=>x.kind==='update').length,1);
+});
+test('Guardian confirmed boundary invoice records evidence and recovers beyond write budget',async()=>{
+  const f=await changeFixture(),request=await f.request(),update=f.stripe.subscriptions.update;
+  f.stripe.subscriptions.update=async(...args)=>{await update(...args);throw Error('lost');};
+  await assert.rejects(()=>f.manager().run(request),/lost/);const job=await changeRpc('get',{request_id:request});
+  f.item.current_period_start=job.effective_from;f.item.current_period_end+=30*86400;changeBoundaryInvoice(f,job);
+  await db.exec("update private.dopmi_guardian_requests set attempts=8,first_attempt_at=now()-interval '2 days',available_at=now()");
+  const done=await f.manager().run(request);assert.equal(done.status,'applied');assert.equal(done.boundary_invoice_id,'in_boundary');
+  assert.equal(done.verified_period_start,job.effective_from);assert.equal(done.effective_from,job.effective_from);
+  assert.equal(f.changeCalls.filter(x=>x.kind==='update').length,1);
+});
+test('Guardian cancellation during boundary evidence reading prevents a late amount confirmation',async()=>{
+  const f=await changeFixture(),request=await f.request(),update=f.stripe.subscriptions.update;
+  f.stripe.subscriptions.update=async(...args)=>{await update(...args);throw Error('lost');};
+  await assert.rejects(()=>f.manager().run(request),/lost/);const job=await changeRpc('get',{request_id:request});
+  f.item.current_period_start=job.effective_from;f.item.current_period_end+=30*86400;changeBoundaryInvoice(f,job);
+  const retrieve=f.stripe.invoices.retrieve;f.stripe.invoices.retrieve=async id=>{const invoice=await retrieve(id);await f.request('cancel',1,null,nextRequestKey);return invoice;};
+  await changeDue();assert.equal((await f.manager().run(request)).status,'superseded');
+  assert.equal((await guardianRegistry('lookup',{stripe_subscription_id:f.subscription.id})).gross_cents,5000);
 });

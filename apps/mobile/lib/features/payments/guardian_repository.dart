@@ -42,6 +42,17 @@ class GuardianRepository {
   }
 
   Future<Json> submit(Json intent) async {
+    if (intent['kind'] == 'withdraw_amount') {
+      return Json.from(
+        await client.rpc(
+          'dopmi_guardian_withdraw_amount',
+          params: {
+            'request_id': intent['key'],
+            'expected_revision': intent['revision'],
+          },
+        ),
+      );
+    }
     if (intent['kind'] == 'cancel_activation') {
       return Json.from(
         await client.rpc(
@@ -156,3 +167,10 @@ DateTime guardianNextBilling(DateTime today) {
     today.day > lastDay ? lastDay : today.day,
   );
 }
+
+const guardianReviewLabels = {
+  'near_anniversary': 'El cambio llegó cerca del aniversario y aún no se aplicó. No se preparan nuevos cobros mientras se revisa; un ciclo ya preparado conserva su importe.',
+  'period_review': 'Estamos comprobando qué importe corresponde al aniversario. No se preparan nuevos cobros hasta confirmar el resultado.',
+  'retry_limit': 'El cambio necesita revisión después de varios intentos. No se preparan nuevos cobros hasta resolverlo.',
+  'processor_review': 'El cambio sigue en conciliación con Stripe. No se preparan nuevos cobros hasta confirmar el resultado.',
+};

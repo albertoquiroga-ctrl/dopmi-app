@@ -60,6 +60,7 @@ export function guardianCollectionService({ stripe, rpc, recoveryRpc, reconcileI
       fail('guardian_invoice_date_invalid');
     return rpc('prepare', { invoice_id: invoice.id, subscription_id: subscriptionId,
       cycle_key: await guardianInvoiceCycleKey(subscriptionId, invoice.id), period_start: p.start, period_end: p.end,
+      verified_price_id: snapshot.price_id, verified_gross_cents: snapshot.gross_cents,
       fresh: !canceled(sub) && stripeNow - invoice.created < 48 * 3600 && stripeNow - p.start < 48 * 3600 && p.end > stripeNow });
   }
   async function paid(job) {

@@ -1,4 +1,4 @@
-import { GuardianBillingError } from './guardian-billing.mjs';
+import { GuardianBillingError, guardianInvoicePriceEvidence } from './guardian-billing.mjs';
 import { paymentLog } from './payments.mjs';
 
 const fail = code => { throw new GuardianBillingError(code); };
@@ -46,6 +46,36 @@ export function guardianChangeService({ stripe, rpc, logger = console, now = () 
       fail('guardian_change_clock_unavailable');
     return clock.frozen_time;
   }
+  async function boundaryEvidence(sub, job) {
+    // Search a bounded set of invoices and re-read the one for the ORIGINAL
+    // target period. Today's subscription price cannot prove last month's price.
+    const matches = new Set(), seen = new Set();
+    let cursor, complete = false;
+    for (let page = 0; page < 5; page++) {
+      const list = await stripe.invoices.list({ subscription: job.subscription_id, limit: 20,
+        ...(cursor ? { starting_after: cursor } : {}) });
+      if (!Array.isArray(list.data) || typeof list.has_more !== 'boolean' || list.data.length > 20
+        || (list.has_more && list.data.length === 0)) fail('guardian_change_boundary_list_invalid');
+      for (const invoice of list.data) {
+        if (!/^in_[A-Za-z0-9]+$/.test(invoice?.id ?? '') || invoice.livemode !== false
+          || id(invoice.parent?.subscription_details?.subscription) !== job.subscription_id
+          || seen.has(invoice.id)) fail('guardian_change_boundary_list_invalid');
+        seen.add(invoice.id);
+        if (invoice.billing_reason === 'subscription_cycle'
+          && invoice.lines?.data?.some(line => line.period?.start === job.effective_from)) matches.add(invoice.id);
+      }
+      if (!list.has_more) { complete = true; break; }
+      cursor = list.data.at(-1).id;
+    }
+    if (!complete || matches.size !== 1) fail('guardian_change_boundary_evidence_missing');
+    const invoiceId = [...matches][0];
+    const invoice = await stripe.invoices.retrieve(invoiceId);
+    if (invoice?.id !== invoiceId) fail('guardian_change_boundary_invoice_mismatch');
+    try {
+      return guardianInvoicePriceEvidence(invoice, sub, { subscription_id: job.subscription_id,
+        customer_id: job.customer_id, price_id: job.price_id, gross_cents: job.new_gross_cents }, job.effective_from);
+    } catch { fail('guardian_change_boundary_invoice_mismatch'); }
+  }
   async function run(requestId) {
     let job = await rpc('get', { request_id: requestId });
     if (!job || job.status !== 'pending') return job;
@@ -67,8 +97,14 @@ export function guardianChangeService({ stripe, rpc, logger = console, now = () 
         || (item.current_period_start === job.period_start && (item.current_period_end !== job.effective_from
           || (id(sub.latest_invoice) ?? null) !== job.latest_invoice_id))) fail('guardian_change_unconfirmed');
       priceMatches(await stripe.prices.retrieve(job.price_id), job.price_id, job.new_gross_cents);
+      const observedTime = await stripeTime(job);
+      const crossed = item.current_period_start !== job.period_start || observedTime >= job.effective_from;
+      if (crossed && item.current_period_start < job.effective_from) fail('guardian_change_boundary_pending');
+      const evidence = crossed ? await boundaryEvidence(sub, job) : {};
+      // Confirmation still takes the plan lock; a concurrent cancellation wins.
       return checkpoint('applied', { subscription_id: sub.id, customer_id: id(sub.customer), price_id: job.price_id,
-        item_id: item.id, effective_from: job.effective_from, gross_cents: job.new_gross_cents });
+        item_id: item.id, effective_from: job.effective_from, gross_cents: job.new_gross_cents,
+        verified_period_start: item.current_period_start, ...evidence });
     }
     function unchanged(sub) {
       const item = safeSubscription(sub, job);

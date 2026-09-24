@@ -147,7 +147,7 @@ for(const [operation,fields] of [['price',{price_id:'price_collectionCI'}],['sub
 query(`insert into public.dopmi_rescue_records(id,owner_id,kind,status,approved_snapshot,parent_id,reimbursable_cents)
 values('74100000-0000-4000-8000-000000000005','${owner}','expense','approved','{"title":"Collection CI"}',
 '74100000-0000-4000-8000-000000000002',4000);`);
-const collectionData={invoice_id:'in_collectionCI',subscription_id:'sub_collectionCI',cycle_key:'74200000-0000-4000-8000-000000000006',
+const collectionData={verified_price_id:'price_collectionCI',verified_gross_cents:2000,invoice_id:'in_collectionCI',subscription_id:'sub_collectionCI',cycle_key:'74200000-0000-4000-8000-000000000006',
   period_start:Math.floor(Date.now()/1000)-1,period_end:Math.floor(Date.now()/1000)+30*86400,fresh:true};
 let collectionReady;
 const collectionStarted=new Promise(resolve=>{collectionReady=resolve;});
@@ -371,3 +371,60 @@ const lateMethodApplied=concurrentQuery(`select public.dopmi_guardian_method_ser
 const stoppedMethod=await Promise.all([methodCancel,lateMethodApplied]);assert.equal(JSON.parse(stoppedMethod[1]).status,'superseded');
 assert.equal(query(`select payment_method_id is null from private.dopmi_guardian_subscriptions where donor_id='${methodOwner}';`),'t');
 console.log('Guardian method processing: one lease; cancellation prevents late method confirmation');
+
+// Owner withdrawal and mutation authorization share the plan lock. A new
+// invoice also revalidates its observed price under that lock after a change.
+const boundaryOwner='74000000-0000-4000-8000-000000000009';
+query(`insert into auth.users(id,email,raw_user_meta_data,email_confirmed_at) values
+('${boundaryOwner}','guardian-boundary@example.test','{"display_name":"Guardian CI","terms_version":"development-2026-09-13","terms_accepted":true}',now());`);
+const boundaryActivationInput={...activationData,donor_id:boundaryOwner,key:crypto.randomUUID()};
+const boundaryActivation=JSON.parse(query(`select public.dopmi_guardian_activation_server('prepare','${JSON.stringify(boundaryActivationInput)}');`));
+const boundaryActivationClaim=JSON.parse(query(`select public.dopmi_guardian_activation_server('claim_checkout','{"cycle_id":"${boundaryActivation.cycle_id}"}');`));
+query(`select public.dopmi_guardian_activation_server('save_checkout','${JSON.stringify({cycle_id:boundaryActivation.cycle_id,lease:boundaryActivationClaim.lease,session_id:'cs_test_boundaryCI'})}');
+select public.dopmi_guardian_settlement_server('settle_initial','${JSON.stringify({donor_id:boundaryOwner,checkout_session_id:'cs_test_boundaryCI',customer_id:'cus_boundaryCI',payment_method_id:'pm_boundaryCI',payment_intent_id:'pi_boundaryCI',charge_id:'ch_boundaryCI',gross_cents:2000,platform_fee_cents:40,stripe_fee_cents:60,net_cents:1900})}');`);
+const boundaryTransfer=JSON.parse(query(`select public.dopmi_guardian_settlement_server('claim','{"cycle_id":"${boundaryActivation.cycle_id}"}');`));
+query(`select public.dopmi_guardian_settlement_server('finish','${JSON.stringify({job_id:boundaryTransfer.id,lease:boundaryTransfer.lease,result_id:'tr_boundaryCI'})}');
+select public.dopmi_guardian_schedule_server('prepare',jsonb_build_object('cycle_id','${boundaryActivation.cycle_id}','charge_created',extract(epoch from now())::bigint));`);
+const boundaryCalendarClaim=JSON.parse(query(`select public.dopmi_guardian_schedule_server('claim','{"cycle_id":"${boundaryActivation.cycle_id}"}');`));
+for(const [op,data] of [['price',{price_id:'price_boundaryCI'}],['subscription',{subscription_id:'sub_boundaryCI'}],['ready',{}]])
+ query(`select public.dopmi_guardian_schedule_server('${op}','${JSON.stringify({cycle_id:boundaryActivation.cycle_id,lease:boundaryCalendarClaim.lease,...data})}');`);
+const boundaryAsOwner=`set local role authenticated;select set_config('request.jwt.claim.sub','${boundaryOwner}',true);`;
+const boundaryStart=Math.floor(Date.now()/1000)-1,boundaryEnd=boundaryStart+30*86400;
+function stagedBoundaryChange(revision,priceId) {
+ const requestKey=crypto.randomUUID();
+ query(`begin;${boundaryAsOwner}select public.dopmi_guardian_request('amount','${requestKey}',${revision},5000,'guardian-2026-09-24');commit;`);
+ const requestId=query(`select id from private.dopmi_guardian_requests where request_key='${requestKey}';`);
+ const claim=JSON.parse(query(`select public.dopmi_guardian_change_server('claim','{"request_id":"${requestId}"}');`));
+ const data={request_id:requestId,lease:claim.lease};
+ for(const [op,fields] of [['snapshot',{item_id:'si_boundaryCI',period_start:boundaryStart,effective_from:boundaryEnd,billing_anchor:boundaryEnd,latest_invoice_id:null}],['write',{}],['price',{price_id:priceId}]])
+  query(`select public.dopmi_guardian_change_server('${op}','${JSON.stringify({...data,...fields})}');`);
+ return data;
+}
+const withdrawingData=stagedBoundaryChange(0,'price_boundaryChange1CI');
+let withdrawReady;const withdrawStarted=new Promise(resolve=>{withdrawReady=resolve;});
+const withdrawFirst=concurrentQuery(`begin;${boundaryAsOwner}
+select public.dopmi_guardian_withdraw_amount('${withdrawingData.request_id}',1);select pg_sleep(2);commit;`,output=>{if(output.includes('withdrawn_at'))withdrawReady();});
+await Promise.race([withdrawStarted,withdrawFirst.then(()=>{throw Error('Withdrawal did not report');})]);
+const lateMutation=concurrentQuery(`select public.dopmi_guardian_change_server('mutation','${JSON.stringify(withdrawingData)}');`);
+const withdrawalResults=await Promise.all([withdrawFirst,lateMutation]);assert.equal(JSON.parse(withdrawalResults[1]).status,'withdrawn');
+assert.equal(query(`select mutation_requested_at is null from private.dopmi_guardian_requests where id='${withdrawingData.request_id}';`),'t');
+console.log('Guardian boundary withdrawal wins: no later subscription mutation authorization');
+
+const mutatingData=stagedBoundaryChange(2,'price_boundaryChange2CI');
+let mutationReady;const mutationStarted=new Promise(resolve=>{mutationReady=resolve;});
+const mutationFirst=concurrentQuery(`begin;select public.dopmi_guardian_change_server('mutation','${JSON.stringify(mutatingData)}');select pg_sleep(2);commit;`,output=>{if(output.includes('mutation_requested_at'))mutationReady();});
+await Promise.race([mutationStarted,mutationFirst.then(()=>{throw Error('Mutation authorization did not report');})]);
+const lateWithdrawal=concurrentQuery(`begin;${boundaryAsOwner}select public.dopmi_guardian_withdraw_amount('${mutatingData.request_id}',3);commit;`);
+const mutationResults=await Promise.allSettled([mutationFirst,lateWithdrawal]);assert.equal(mutationResults[0].status,'fulfilled');assert.equal(mutationResults[1].status,'rejected');
+assert.match(mutationResults[1].reason.message,/cambio ya avanzó/);
+console.log('Guardian boundary mutation wins: uncertain change cannot be withdrawn');
+
+let boundaryAppliedReady;const boundaryAppliedStarted=new Promise(resolve=>{boundaryAppliedReady=resolve;});
+const boundaryApply=concurrentQuery(`begin;select public.dopmi_guardian_change_server('applied','${JSON.stringify({...mutatingData,
+ subscription_id:'sub_boundaryCI',customer_id:'cus_boundaryCI',price_id:'price_boundaryChange2CI',item_id:'si_boundaryCI',
+ effective_from:boundaryEnd,gross_cents:5000,verified_period_start:boundaryStart})}');select pg_sleep(2);commit;`,output=>{if(output.includes('"status": "applied"'))boundaryAppliedReady();});
+await Promise.race([boundaryAppliedStarted,boundaryApply.then(()=>{throw Error('Boundary confirmation did not report');})]);
+const staleBoundaryReservation=concurrentQuery(`select public.dopmi_guardian_collection_server('prepare','${JSON.stringify({invoice_id:'in_staleBoundaryCI',subscription_id:'sub_boundaryCI',cycle_key:crypto.randomUUID(),period_start:boundaryEnd,period_end:boundaryEnd+30*86400,fresh:true,verified_price_id:'price_boundaryCI',verified_gross_cents:2000})}');`);
+const boundaryResults=await Promise.allSettled([boundaryApply,staleBoundaryReservation]);assert.equal(boundaryResults[0].status,'fulfilled');assert.equal(boundaryResults[1].status,'rejected');assert.match(boundaryResults[1].reason.message,/factura no coincide/);
+assert.equal(query("select count(*) from private.dopmi_guardian_collection_jobs where invoice_id='in_staleBoundaryCI';"),'0');
+console.log('Guardian boundary price confirmation wins: stale invoice cannot reserve a different amount');

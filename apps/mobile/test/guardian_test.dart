@@ -50,6 +50,16 @@ class FakeGuardian extends GuardianRepository {
         code: '40001',
       );
     }
+    if (intent['kind'] == 'withdraw_amount') {
+      final p = Json.from(value['plan']);
+      p['revision'] = (p['revision'] as int) + 1;
+      p['requests'] = [
+        {...Json.from(p['pending_request']), 'status': 'withdrawn'},
+      ];
+      p['pending_request'] = null;
+      value = {...value, 'plan': p};
+      return value;
+    }
     if (intent['kind'] == 'method') {
       value = {
         ...value,
@@ -516,6 +526,111 @@ void main() {
       await start(tester, repo, verified: false);
       expect(find.text('Actualizar medio de pago'), findsNothing);
       expect(find.text('Cancelar mi plan'), findsOneWidget);
+    },
+  );
+  Json waitingChange({bool canWithdraw = true}) => {
+    'plan': {
+      ...activePlan(),
+      'pending_request': {
+        'id': 'change-one',
+        'kind': 'amount',
+        'status': 'pending',
+        'new_gross_cents': 20000,
+        'review_reason': canWithdraw ? 'near_anniversary' : 'period_review',
+        'can_withdraw': canWithdraw,
+      },
+    },
+    'activation': null,
+  };
+  testWidgets(
+    'owner explicitly confirms withdrawal and keeps the old authorized amount',
+    (tester) async {
+      final repo = FakeGuardian()..value = waitingChange();
+      await start(tester, repo, verified: false);
+      expect(find.textContaining('cerca del aniversario'), findsOneWidget);
+      await tester.ensureVisible(find.text('Retirar cambio de monto'));
+      await tester.tap(find.text('Retirar cambio de monto'));
+      await tester.pumpAndSettle();
+      expect(repo.calls, isEmpty);
+      expect(
+        find.textContaining('Esta acción no cancela tu plan'),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Retirar y conservar monto'));
+      await tester.pumpAndSettle();
+      expect(repo.calls.single['kind'], 'withdraw_amount');
+      expect(repo.calls.single['key'], 'change-one');
+      expect(repo.calls.single['revision'], 2);
+      expect(repo.value['plan']['gross_cents'], 5000);
+      expect(
+        find.text('Solicitud retirada; se conservó el monto anterior.'),
+        findsOneWidget,
+      );
+    },
+  );
+  testWidgets(
+    'uncertain Stripe mutation cannot be withdrawn but plan cancellation stays available',
+    (tester) async {
+      final repo = FakeGuardian()..value = waitingChange(canWithdraw: false);
+      await start(tester, repo);
+      expect(find.text('Retirar cambio de monto'), findsNothing);
+      expect(
+        find.textContaining('qué importe corresponde al aniversario'),
+        findsOneWidget,
+      );
+      expect(find.text('Cancelar mi plan'), findsOneWidget);
+    },
+  );
+  testWidgets(
+    'lost withdrawal response resumes the same request after reopening',
+    (tester) async {
+      final repo = FakeGuardian()
+        ..value = waitingChange()
+        ..fail = true;
+      await start(tester, repo);
+      await tester.ensureVisible(find.text('Retirar cambio de monto'));
+      await tester.tap(find.text('Retirar cambio de monto'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Retirar y conservar monto'));
+      await tester.pumpAndSettle();
+      final original = Json.from(repo.calls.single);
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+      repo.fail = false;
+      await start(tester, repo);
+      await tapButton(tester, 'Reintentar retiro del cambio');
+      await tester.pumpAndSettle();
+      expect(repo.calls.last, original);
+      expect(
+        (await SharedPreferences.getInstance()).getString(
+          'dopmi-guardian:one:intent',
+        ),
+        isNull,
+      );
+    },
+  );
+  testWidgets(
+    'withdrawal conflict clears only the rejected intent and refreshes server state',
+    (tester) async {
+      final repo = FakeGuardian()
+        ..value = waitingChange()
+        ..conflict = true;
+      await start(tester, repo);
+      await tester.ensureVisible(find.text('Retirar cambio de monto'));
+      await tester.tap(find.text('Retirar cambio de monto'));
+      await tester.pumpAndSettle();
+      repo.value = waitingChange(canWithdraw: false);
+      await tester.tap(find.text('Retirar y conservar monto'));
+      await tester.pumpAndSettle();
+      expect(find.text('Retirar cambio de monto'), findsNothing);
+      expect(find.text('Reintentar retiro del cambio'), findsNothing);
+      expect(find.text('Cancelar mi plan'), findsOneWidget);
+      expect(
+        (await SharedPreferences.getInstance()).getString(
+          'dopmi-guardian:one:intent',
+        ),
+        isNull,
+      );
     },
   );
 }
