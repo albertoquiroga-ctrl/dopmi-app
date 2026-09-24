@@ -1,3 +1,4 @@
+import { readGuardianPaidEvidence } from '../../supabase/functions/_shared/guardian-reconciliation.mjs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { planGuardianAllocation, trimGuardianReservation } from '../../supabase/functions/_shared/guardian-allocation.mjs';
@@ -195,4 +196,95 @@ test('paid invoice rejects refunded, disputed, unmatched or fee-pending charges'
   assert.throws(() => guardianPaidInvoice(paid, subscription, saved,
     invoicePayments, withCharge({ balance_transaction: { currency: 'mxn', amount: 5000, fee: 4900 } })),
   /processor_fee_exceeds_payment/);
+});
+
+// Evidence retrieval uses fresh Stripe reads and the server registry only.
+const registeredPlan = { donor_id: '00000000-0000-4000-8000-000000000001',
+  stripe_subscription_id: subscription.id, stripe_customer_id: subscription.customer,
+  stripe_price_id: expected.price_id, gross_cents: 5000, status: 'active' };
+function evidenceReader({ inv = { ...paid, payments: invoicePayments },
+  sub = subscription, intent = paymentIntent, plan = registeredPlan } = {}) {
+  const calls = [];
+  const read = (name, result) => async (...args) => { calls.push([name, ...args]); return result; };
+  return { calls, deps: {
+    stripe: { invoices: { retrieve: read('invoice', inv) },
+      subscriptions: { retrieve: read('subscription', sub) },
+      paymentIntents: { retrieve: read('intent', intent) } },
+    lookupSubscription: read('registry', plan),
+  } };
+}
+
+test('server evidence reader resolves ownership and net from fresh authoritative reads', async () => {
+  const { calls, deps } = evidenceReader();
+  const result = await readGuardianPaidEvidence(deps, paid.id);
+  assert.equal(result.donor_id, registeredPlan.donor_id);
+  assert.equal(result.net_cents, 4314);
+  assert.equal(result.payment_intent_id, paymentIntent.id);
+  assert.deepEqual(calls, [ ['invoice', paid.id, { expand: ['payments'] }],
+    ['registry', subscription.id], ['subscription', subscription.id],
+    ['intent', paymentIntent.id, { expand: ['latest_charge.balance_transaction'] }] ]);
+  assert.deepEqual(await readGuardianPaidEvidence(deps, paid.id), result);
+});
+
+test('cancellation preserves paid evidence but still forbids new renewal collection', async () => {
+  const canceled = { ...subscription, status: 'canceled' };
+  const { deps } = evidenceReader({ sub: canceled, plan: { ...registeredPlan, status: 'canceled' } });
+  assert.equal((await readGuardianPaidEvidence(deps, paid.id)).net_cents, 4314);
+  assert.throws(() => guardianRenewalCandidate(invoice, canceled, expected), /billing_not_fail_closed/);
+  assert.throws(() => guardianFinalizedInvoiceForCollection({ ...invoice, status: 'open' }, canceled,
+    { ...expected, invoice_id: invoice.id }), /billing_not_fail_closed/);
+  for (const status of ['past_due', 'unpaid', 'incomplete']) {
+    const { deps } = evidenceReader({ sub: { ...subscription, status } });
+    await assert.rejects(readGuardianPaidEvidence(deps, paid.id), /billing_not_fail_closed/);
+  }
+});
+
+test('reader rejects unsafe invoice identifiers, live mode and unpaid invoices before ownership lookup', async () => {
+  const { deps, calls } = evidenceReader();
+  await assert.rejects(readGuardianPaidEvidence(deps, 'in_bad?expand=customer'), /invalid_invoice_identity/);
+  assert.equal(calls.length, 0);
+  for (const patch of [{ id: 'in_other' }, { livemode: true }, { status: 'open' }]) {
+    const reader = evidenceReader({ inv: { ...paid, payments: invoicePayments, ...patch } });
+    await assert.rejects(readGuardianPaidEvidence(reader.deps, paid.id), /invoice_not_confirmed/);
+    assert.equal(reader.calls.length, 1);
+  }
+});
+
+test('reader rejects missing registry, wrong customer and incomplete payment lists', async () => {
+  for (const plan of [null, { ...registeredPlan, stripe_subscription_id: 'sub_other' },
+    { ...registeredPlan, donor_id: null }]) {
+    const reader = evidenceReader({ plan });
+    await assert.rejects(readGuardianPaidEvidence(reader.deps, paid.id), /guardian_subscription_not_registered/);
+    assert.equal(reader.calls.length, 2);
+  }
+  const wrong = evidenceReader({ plan: { ...registeredPlan, stripe_customer_id: 'cus_other' } });
+  await assert.rejects(readGuardianPaidEvidence(wrong.deps, paid.id), /invoice_identity_mismatch/);
+  for (const payments of [{ ...invoicePayments, has_more: true }, { has_more: false, data: [] },
+    { has_more: false, data: [...invoicePayments.data, ...invoicePayments.data] }]) {
+    const reader = evidenceReader({ inv: { ...paid, payments } });
+    await assert.rejects(readGuardianPaidEvidence(reader.deps, paid.id), /invoice_payment_mismatch/);
+    assert.equal(reader.calls.length, 2);
+  }
+});
+
+test('fee unavailable or refunded payments produce no evidence; retry re-reads Stripe', async () => {
+  const reader = evidenceReader({ intent: { ...paymentIntent,
+    latest_charge: { ...paymentIntent.latest_charge, balance_transaction: null } } });
+  await assert.rejects(readGuardianPaidEvidence(reader.deps, paid.id), /processor_fee_not_ready/);
+  reader.deps.stripe.paymentIntents.retrieve = async () => structuredClone(paymentIntent);
+  assert.equal((await readGuardianPaidEvidence(reader.deps, paid.id)).net_cents, 4314);
+  const refunded = evidenceReader({ intent: { ...paymentIntent,
+    latest_charge: { ...paymentIntent.latest_charge, amount_refunded: 5000 } } });
+  await assert.rejects(readGuardianPaidEvidence(refunded.deps, paid.id), /charge_not_confirmed/);
+});
+
+test('Stripe and registry failures propagate without claiming successful reconciliation', async () => {
+  for (const target of ['invoice', 'registry', 'intent']) {
+    const reader = evidenceReader();
+    const failure = async () => { throw new Error('upstream_unavailable'); };
+    if (target === 'invoice') reader.deps.stripe.invoices.retrieve = failure;
+    else if (target === 'intent') reader.deps.stripe.paymentIntents.retrieve = failure;
+    else reader.deps.lookupSubscription = failure;
+    await assert.rejects(readGuardianPaidEvidence(reader.deps, paid.id), /upstream_unavailable/);
+  }
 });

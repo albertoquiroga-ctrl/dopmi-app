@@ -37,7 +37,7 @@ export function guardianFinalizedInvoiceForCollection(invoice, subscription, exp
 export function guardianPaidInvoice(invoice, subscription, expected, invoicePayments, paymentIntent) {
   if (!/^in_[A-Za-z0-9]+$/.test(expected?.invoice_id ?? '') || invoice?.id !== expected.invoice_id)
     throw new GuardianBillingError('invoice_identity_mismatch');
-  checkGuardianInvoiceIdentity(invoice, subscription, expected);
+  checkGuardianInvoiceIdentity(invoice, subscription, expected, true);
   if (invoice.status !== 'paid' || invoice.currency !== 'mxn' || invoice.auto_advance !== false
     || invoice.collection_method !== 'send_invoice' || invoice.amount_paid !== expected.gross_cents
     || invoice.amount_remaining !== 0 || invoice.total !== expected.gross_cents
@@ -99,7 +99,7 @@ function checkInvoiceLine(invoice, expected) {
     throw new GuardianBillingError('invoice_line_mismatch');
 }
 
-function checkGuardianInvoiceIdentity(invoice, subscription, expected) {
+function checkGuardianInvoiceIdentity(invoice, subscription, expected, reconcilingPaid = false) {
   const subId = invoice?.parent?.subscription_details?.subscription ?? invoice?.subscription;
   const id = typeof subId === 'string' ? subId : subId?.id;
   if (!expected || !/^sub_[A-Za-z0-9]+$/.test(expected.subscription_id ?? '')
@@ -112,7 +112,11 @@ function checkGuardianInvoiceIdentity(invoice, subscription, expected) {
     || subscription?.id !== expected.subscription_id || invoice?.customer !== expected.customer_id
     || subscription?.customer !== expected.customer_id || invoice?.billing_reason !== 'subscription_cycle')
     throw new GuardianBillingError('invoice_identity_mismatch');
-  if (subscription.status !== 'active' || subscription.collection_method !== 'send_invoice'
+  // Cancellation stops future collection; it must not hide an already paid invoice.
+  // This exception is only for evidence reconciliation, never permission to pay.
+  const allowedStatus = subscription.status === 'active'
+    || (reconcilingPaid && subscription.status === 'canceled');
+  if (!allowedStatus || subscription.collection_method !== 'send_invoice'
     || subscription.pause_collection?.behavior !== 'keep_as_draft'
     || subscription.pause_collection?.resumes_at != null)
     throw new GuardianBillingError('billing_not_fail_closed');
