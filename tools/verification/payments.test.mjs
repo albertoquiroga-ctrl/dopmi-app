@@ -846,3 +846,182 @@ test('signed redelivery repairs legacy completed events with unfinished transfer
   assert.equal(fixture.calls.filter(call => call.path === 'transfers').length,1);
   assert.equal(fixture.calls.some(call => call.path === 'checkout/sessions'),false);
 });
+
+const guardianSettlement = async (operation,data={}) =>
+  (await db.query('select public.dopmi_guardian_settlement_server($1,$2::jsonb) as value',[operation,JSON.stringify(data)])).rows[0].value;
+const guardianEvidence = { donor_id:donor, invoice_id:'in_guardian1', subscription_id:'sub_guardian1',
+  invoice_payment_id:'inpay_guardian1', payment_intent_id:'pi_guardianRenewal1', charge_id:'ch_guardianRenewal1',
+  gross_cents:5000, platform_fee_cents:100, stripe_fee_cents:586, net_cents:4314 };
+async function boundGuardian() {
+  await guardianRegistry('register',guardianPlan);
+  const cycle=await guardian(5000);
+  await guardianRegistry('bind_invoice',{stripe_subscription_id:'sub_guardian1',stripe_invoice_id:'in_guardian1',cycle_id:cycle.id});
+  return cycle;
+}
+test('Guardian settles full net atomically, frees only fee surplus and keeps capacity occupied after expiry',async () => {
+  const cycle=await boundGuardian();
+  const result=await guardianSettlement('settle',guardianEvidence);
+  assert.equal(result.status,'allocated'); assert.equal(result.allocated_cents,4314);
+  assert.equal(result.refund_cents,0); assert.equal(result.allocations[0].destination,'acct_test');
+  assert.deepEqual(await guardianSettlement('settle',guardianEvidence),result);
+  await db.query("update private.dopmi_guardian_cycles set expires_at=now()-interval '1 hour' where id=$1",[cycle.id]);
+  await releaseGuardian();
+  const funding=(await db.query('select public.dopmi_expense_funding($1) as v',[expense])).rows[0].v;
+  assert.equal(funding.funded_cents,4314); assert.equal(funding.available_cents,7686); assert.equal(funding.transferred_cents,0);
+  const next=await prepare(); assert.equal(next.reserved_cents,7686);
+  const second=await settle(next.id); assert.equal(second.allocated_cents,7686);
+  await rejected(()=>db.query("update public.dopmi_rescue_records set status='changes_requested' where id=$1",[expense]),/aportaciones asignadas/);
+  const publicCase=(await db.query('select public.dopmi_rescue_public($1) as v',['71000000-0000-4000-8000-000000000002'])).rows[0].v;
+  assert.equal(publicCase.items.find(r=>r.kind==='case').funded_cents,12000);
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_jobs')).rows[0].n,1);
+});
+test('Guardian trims several held expenses to exact net without partial settlement when a required expense is revoked',async () => {
+  await db.query('update public.dopmi_rescue_records set reimbursable_cents=2500,urgent=true where id=$1',[expense]);
+  await db.query(`insert into public.dopmi_rescue_records(id,owner_id,kind,status,approved_snapshot,parent_id,reimbursable_cents)
+    values('71000000-0000-4000-8000-000000000004',$1,'expense','approved','{"title":"Comida"}','71000000-0000-4000-8000-000000000002',5000)`,[rescuer]);
+  await boundGuardian();
+  const result=await guardianSettlement('settle',guardianEvidence);
+  assert.deepEqual(result.allocations.map(a=>a.amount_cents),[2500,1814]);
+  assert.equal((await db.query('select sum(allocated_cents)::int n from private.dopmi_guardian_allocations')).rows[0].n,4314);
+});
+test('expired or released Guardian reservations require a full refund and never allocate another expense',async () => {
+  const cycle=await boundGuardian(); await releaseGuardian();
+  const result=await guardianSettlement('settle',guardianEvidence);
+  assert.equal(result.status,'refund_pending'); assert.equal(result.refund_cents,5000);
+  assert.equal(result.platform_fee_cents,0); assert.equal(result.platform_loss_cents,586);
+  assert.equal(result.allocated_cents,0); assert.deepEqual(result.allocations,[]);
+  assert.equal(result.cycle_id,cycle.id);
+  const job=await guardianSettlement('claim'); assert.equal(job.kind,'refund');
+  await guardianSettlement('finish',{job_id:job.id,lease:job.lease,result_id:'re_guardian1'});
+  assert.equal((await guardianSettlement('get',{cycle_id:cycle.id})).status,'refunded');
+});
+test('one revoked destination refunds the whole Guardian charge and leaves all allocations zero',async () => {
+  await db.query('update public.dopmi_rescue_records set reimbursable_cents=2500,urgent=true where id=$1',[expense]);
+  await db.query(`insert into public.dopmi_rescue_records(id,owner_id,kind,status,approved_snapshot,parent_id,reimbursable_cents)
+    values('71000000-0000-4000-8000-000000000004',$1,'expense','approved','{"title":"Comida"}','71000000-0000-4000-8000-000000000002',5000)`,[rescuer]);
+  await boundGuardian();
+  await db.exec("update public.dopmi_rescue_records set status='changes_requested' where id='71000000-0000-4000-8000-000000000004'");
+  const result=await guardianSettlement('settle',guardianEvidence);
+  assert.equal(result.refund_cents,5000); assert.deepEqual(result.allocations,[]);
+  assert.equal((await db.query('select sum(allocated_cents)::int n from private.dopmi_guardian_allocations')).rows[0].n,0);
+});
+test('Guardian rejects missing binding, mismatched evidence and double use of payment identifiers',async () => {
+  await rejected(()=>guardianSettlement('settle',guardianEvidence),/sin reserva/);
+  await boundGuardian();
+  for(const patch of [{donor_id:other},{subscription_id:'sub_other'},{gross_cents:4000},{stripe_fee_cents:null},{net_cents:4315},
+    {payment_intent_id:'pi_guardianInitial1'},{charge_id:null}])
+    await rejected(()=>guardianSettlement('settle',{...guardianEvidence,...patch}));
+  await guardianSettlement('settle',guardianEvidence);
+  await rejected(()=>guardianSettlement('settle',{...guardianEvidence,payment_intent_id:'pi_other'}),/otra evidencia/);
+});
+test('Guardian finalization is lease-protected, atomic and cannot be downgraded after a lost acknowledgement',async () => {
+  const cycle=await boundGuardian(); await guardianSettlement('settle',guardianEvidence);
+  const job=await guardianSettlement('claim'); assert.equal(job.kind,'transfer');
+  assert.equal(await guardianSettlement('claim'),null);
+  await rejected(()=>guardianSettlement('finish',{job_id:job.id,lease:'00000000-0000-4000-8000-000000000001',result_id:'tr_test'}),/vencido/);
+  await guardianSettlement('finish',{job_id:job.id,lease:job.lease,result_id:'tr_guardian1'});
+  await guardianSettlement('finish',{job_id:job.id,lease:job.lease,error_code:'lost_response'});
+  const result=await guardianSettlement('get',{cycle_id:cycle.id}); assert.equal(result.allocations[0].stripe_transfer_id,'tr_guardian1');
+  assert.equal((await db.query("select status from private.dopmi_guardian_jobs")).rows[0].status,'done');
+  assert.equal((await db.query('select public.dopmi_expense_funding($1) as v',[expense])).rows[0].v.transferred_cents,4314);
+});
+test('Guardian settlement RPC, jobs and evidence are inaccessible to clients including admins',async () => {
+  for(const actor of [donor,staff,'']) {
+    await role(actor,actor?'authenticated':'anon');
+    await rejected(()=>guardianSettlement('candidates'),/permission denied/);
+    await rejected(()=>db.query('select * from private.dopmi_guardian_settlements'),/permission denied/);
+    await rejected(()=>db.query('select * from private.dopmi_guardian_jobs'),/permission denied/);
+  }
+  await role('','service_role'); assert.deepEqual(await guardianSettlement('candidates'),[]);
+});
+
+const { guardianService } = await import('../../supabase/functions/_shared/guardian-service.mjs');
+function guardianStripeFixture() {
+  const calls=[]; const transfers=new Map(); const refunds=[];
+  const charge={id:'ch_guardianRenewal1',livemode:false,payment_intent:'pi_guardianRenewal1',currency:'mxn',amount:5000,
+    amount_refunded:0,paid:true,captured:true,disputed:false,balance_transaction:{amount:5000,currency:'mxn',fee:586}};
+  const subscription={id:'sub_guardian1',customer:'cus_guardian1',livemode:false,status:'active',collection_method:'send_invoice',
+    pause_collection:{behavior:'keep_as_draft',resumes_at:null}};
+  const invoice={id:'in_guardian1',parent:{subscription_details:{subscription:subscription.id}},customer:'cus_guardian1',livemode:false,
+    billing_reason:'subscription_cycle',status:'paid',auto_advance:false,collection_method:'send_invoice',currency:'mxn',
+    amount_paid:5000,amount_remaining:0,amount_due:5000,total:5000,attempt_count:1,attempted:true,starting_balance:0,
+    total_taxes:[],total_discount_amounts:[],lines:{has_more:false,total_count:1,data:[{amount:5000,currency:'mxn',quantity:1,
+      pricing:{price_details:{price:'price_guardian1'}},parent:{subscription_item_details:{subscription:subscription.id}},taxes:[],discount_amounts:[]}]},
+    payments:{has_more:false,data:[{id:'inpay_guardian1',invoice:'in_guardian1',status:'paid',amount_paid:5000,amount_requested:5000,
+      payment:{type:'payment_intent',payment_intent:'pi_guardianRenewal1'}}]}};
+  const stripe={invoices:{retrieve:async()=>structuredClone(invoice)},subscriptions:{retrieve:async()=>structuredClone(subscription)},
+    paymentIntents:{retrieve:async()=>({id:'pi_guardianRenewal1',livemode:false,customer:'cus_guardian1',currency:'mxn',status:'succeeded',amount_received:5000,latest_charge:structuredClone(charge)})},
+    charges:{retrieve:async()=>structuredClone(charge)},accounts:{retrieve:async id=>({id,capabilities:{transfers:'active'},payouts_enabled:true})},
+    transfers:{create:async(fields,options)=>{calls.push({kind:'transfer',fields,options});
+      if(!transfers.has(options.idempotencyKey)) transfers.set(options.idempotencyKey,{id:`tr_guardian${transfers.size+1}`,livemode:false,...fields,reversed:false,amount_reversed:0});
+      return structuredClone(transfers.get(options.idempotencyKey));}},
+    refunds:{list:async()=>({has_more:false,data:structuredClone(refunds)}),create:async(fields,options)=>{
+      calls.push({kind:'refund',fields,options}); const refund={id:'re_guardian1',...fields,currency:'mxn',status:'succeeded'};
+      refunds.push(refund);charge.amount_refunded=fields.amount;return structuredClone(refund);}}};
+  const service=rpcOverride=>guardianService({stripe,rpc:rpcOverride??guardianSettlement,
+    lookupSubscription:stripe_subscription_id=>guardianRegistry('lookup',{stripe_subscription_id}),logger:{}});
+  return {stripe,calls,charge,invoice,subscription,transfers,refunds,service};
+}
+test('Guardian worker reconciles confirmed invoice, transfers exact net and repeated runs perform no new payment',async () => {
+  const cycle=await boundGuardian();const f=guardianStripeFixture();
+  assert.deepEqual(await f.service().reconcile(),{reconciled:1,processed:1,failed:0});
+  assert.deepEqual(await f.service().reconcile(),{reconciled:0,processed:0,failed:0});
+  const result=await f.service().reconcileInvoice('in_guardian1');
+  assert.equal(result.allocations[0].stripe_transfer_id,'tr_guardian1');
+  assert.equal(f.calls.length,1);assert.equal(f.calls[0].fields.amount,4314);
+  assert.equal(f.calls[0].fields.source_transaction,'ch_guardianRenewal1');
+  assert.equal(f.calls[0].fields.transfer_group,`dopmi_guardian_${cycle.id}`);
+});
+test('Guardian lost Stripe response retries the same transfer key and records one processor effect',async () => {
+  await boundGuardian();const f=guardianStripeFixture();const create=f.stripe.transfers.create;let lost=true;
+  f.stripe.transfers.create=async(...args)=>{const result=await create(...args);if(lost){lost=false;throw Error('lost response');}return result;};
+  assert.equal((await f.service().reconcile()).failed,1);
+  await db.exec('update private.dopmi_guardian_jobs set available_at=now()');
+  assert.equal((await f.service().reconcile()).processed,1);
+  assert.equal(f.transfers.size,1);assert.equal(f.calls.length,2);
+  assert.deepEqual(f.calls[0],f.calls[1]);
+});
+test('Guardian lost database acknowledgement never downgrades or repeats a completed transfer',async () => {
+  const cycle=await boundGuardian();const f=guardianStripeFixture();let lost=true;
+  const rpc=async(op,data)=>{const result=await guardianSettlement(op,data);
+    if(op==='finish' && data.result_id && lost){lost=false;throw Error('lost database response');}return result;};
+  await f.service(rpc).reconcile(); await f.service().reconcile();
+  assert.equal(f.calls.length,1);
+  assert.equal((await guardianSettlement('get',{cycle_id:cycle.id})).allocations[0].stripe_transfer_id,'tr_guardian1');
+});
+test('Guardian worker fully refunds expired reservation and recovers a lost refund response without a second refund',async () => {
+  const cycle=await boundGuardian();await db.query("update private.dopmi_guardian_cycles set expires_at=now()-interval '1 minute' where id=$1",[cycle.id]);
+  const f=guardianStripeFixture();const create=f.stripe.refunds.create;let lost=true;
+  f.stripe.refunds.create=async(...args)=>{const result=await create(...args);if(lost){lost=false;throw Error('lost refund response');}return result;};
+  assert.equal((await f.service().reconcile()).failed,1);
+  await db.exec('update private.dopmi_guardian_jobs set available_at=now()');
+  assert.equal((await f.service().reconcile()).processed,1);
+  const result=await guardianSettlement('get',{cycle_id:cycle.id});assert.equal(result.status,'refunded');assert.equal(result.refund_cents,5000);
+  assert.equal(f.calls.length,1);assert.equal(f.calls[0].kind,'refund');assert.equal(f.calls[0].fields.amount,5000);
+});
+test('Guardian pending refund remains retryable and is never reported as completed',async () => {
+  const cycle=await boundGuardian();await releaseGuardian();const f=guardianStripeFixture();const create=f.stripe.refunds.create;
+  f.stripe.refunds.create=async(...args)=>{const result=await create(...args);f.refunds[0].status='pending';return {...result,status:'pending'};};
+  assert.equal((await f.service().reconcile()).failed,1);
+  assert.equal((await guardianSettlement('get',{cycle_id:cycle.id})).status,'refund_pending');
+  await db.exec('update private.dopmi_guardian_jobs set available_at=now()');f.refunds[0].status='succeeded';
+  assert.equal((await f.service().reconcile()).processed,1);assert.equal(f.calls.length,1);
+});
+test('Guardian wrong destination, live/refunded charge or mismatched transfer cannot complete a job',async () => {
+  await boundGuardian();const f=guardianStripeFixture();await f.service().reconcileInvoice('in_guardian1');
+  f.charge.livemode=true;
+  assert.equal((await f.service().work()).failed,1);assert.equal(f.calls.length,0);
+  assert.equal((await db.query('select status from private.dopmi_guardian_jobs')).rows[0].status,'attention');
+});
+test('Guardian work does not duplicate a leased transfer and stops writes outside idempotency window',async () => {
+  await boundGuardian();const f=guardianStripeFixture();await f.service().reconcileInvoice('in_guardian1');
+  const job=await guardianSettlement('claim');assert.ok(job.lease);
+  assert.deepEqual(await f.service().work(),{processed:0,failed:0});assert.equal(f.calls.length,0);
+  await db.exec("update private.dopmi_guardian_jobs set lease_until=now()-interval '1 minute',first_attempt_at=now()-interval '24 hours'");
+  assert.equal((await f.service().work()).failed,1);assert.equal(f.calls.length,0);
+});
+test('Guardian canceled subscription permits reconciliation of a bound earlier paid invoice',async () => {
+  await boundGuardian();await guardianRegistry('cancel',{donor_id:donor,stripe_subscription_id:'sub_guardian1'});
+  const f=guardianStripeFixture();f.subscription.status='canceled';
+  assert.equal((await f.service().reconcile()).processed,1);
+});

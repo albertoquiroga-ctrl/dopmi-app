@@ -58,3 +58,29 @@ const result = query(`select (select count(*) from private.dopmi_guardian_cycles
   (public.dopmi_expense_funding('${expense}')->>'available_cents')::bigint;`);
 assert.equal(result, '1|1960|0', `Concurrent holds exceeded expense capacity: ${result}`);
 console.log('Guardian concurrent reservations: one reserved, one skipped, capacity zero');
+
+// Settlement and individual Checkout must serialize on the same owner lock.
+const cycleId = query(`select id from private.dopmi_guardian_cycles where donor_id='${donorA}' and cycle_key='${key}';`);
+query(`select public.dopmi_guardian_subscription_server('register',jsonb_build_object(
+'donor_id','${donorA}','stripe_customer_id','cus_guardianCI','stripe_subscription_id','sub_guardianCI',
+'stripe_price_id','price_guardianCI','gross_cents',2000,'initial_payment_intent_id','pi_guardianInitialCI','initial_charge_id','ch_guardianInitialCI'));
+select public.dopmi_guardian_subscription_server('bind_invoice',jsonb_build_object(
+'stripe_subscription_id','sub_guardianCI','stripe_invoice_id','in_guardianCI','cycle_id','${cycleId}'));`);
+const evidence = JSON.stringify({donor_id:donorA,subscription_id:'sub_guardianCI',invoice_id:'in_guardianCI',
+  payment_intent_id:'pi_guardianRenewalCI',charge_id:'ch_guardianRenewalCI',invoice_payment_id:'inpay_guardianCI',
+  gross_cents:2000,platform_fee_cents:40,stripe_fee_cents:60,net_cents:1900});
+let settlementReady;
+const settled = new Promise(resolve => { settlementReady = resolve; });
+const settlement = concurrentQuery(`begin;
+select public.dopmi_guardian_settlement_server('settle','${evidence}'::jsonb);
+select pg_sleep(2);
+commit;`, output => { if (output.includes('allocated_cents')) settlementReady(); });
+await Promise.race([settled, settlement.then(() => { throw new Error('Settlement did not report'); })]);
+const individual = concurrentQuery(`select public.dopmi_payment_server('prepare',jsonb_build_object(
+'actor','${donorB}','expense_id','${expense}','key','${key}','gross_cents',1000));`);
+await Promise.all([settlement, individual]);
+const balanced = query(`select private.dopmi_guardian_funded('${expense}'),
+(select sum(reserved_cents) from public.dopmi_donations where expense_id='${expense}'),
+(public.dopmi_expense_funding('${expense}')->>'available_cents')::bigint;`);
+assert.equal(balanced,'1900|60|0',`Settlement and Checkout overbooked expense: ${balanced}`);
+console.log('Guardian settlement vs individual Checkout: assigned 1900, reserved 60, capacity zero');
