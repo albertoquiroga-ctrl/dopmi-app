@@ -321,6 +321,61 @@ const guardian = async (gross=10000,key=guardianKey,actor=donor) =>
   (await db.query('select public.dopmi_guardian_reserve($1,$2,$3) as value',[actor,key,gross])).rows[0].value;
 const releaseGuardian = async (key=guardianKey) =>
   (await db.query('select public.dopmi_guardian_release($1,$2) as value',[donor,key])).rows[0].value;
+const guardianRegistry = async (operation,data) =>
+  (await db.query('select public.dopmi_guardian_subscription_server($1,$2::jsonb) as value',
+    [operation,JSON.stringify(data)])).rows[0].value;
+const guardianPlan = { donor_id: donor, stripe_customer_id: 'cus_guardian1',
+  stripe_subscription_id: 'sub_guardian1', stripe_price_id: 'price_guardian1', gross_cents: 5000,
+  initial_payment_intent_id: 'pi_guardianInitial1', initial_charge_id: 'ch_guardianInitial1' };
+
+test('Guardian stores a trusted subscription and binds each invoice to one full-cycle hold',async () => {
+  const first=await guardianRegistry('register',guardianPlan);
+  assert.equal(first.stripe_subscription_id,guardianPlan.stripe_subscription_id);
+  assert.deepEqual(await guardianRegistry('register',guardianPlan),first);
+  assert.equal((await guardianRegistry('lookup',{
+    stripe_subscription_id:guardianPlan.stripe_subscription_id })).donor_id,donor);
+  assert.equal(await guardianRegistry('lookup',{stripe_subscription_id:'sub_missing'}),null);
+  const reserved=await guardian(5000);
+  assert.equal(reserved.status,'reserved');
+  const binding={ stripe_subscription_id:guardianPlan.stripe_subscription_id,
+    stripe_invoice_id:'in_guardian1', cycle_id:reserved.id };
+  const linked=await guardianRegistry('bind_invoice',binding);
+  assert.equal(linked.cycle_id,reserved.id);
+  assert.equal(linked.stripe_invoice_id,binding.stripe_invoice_id);
+  assert.deepEqual(await guardianRegistry('bind_invoice',binding),linked);
+  await rejected(()=>guardianRegistry('bind_invoice',{...binding,stripe_invoice_id:'in_other'}),
+    /ya vinculado/);
+  assert.equal((await db.query('select count(*)::int as n from private.dopmi_guardian_invoice_cycles')).rows[0].n,1);
+});
+
+test('Guardian rejects mismatched donor, amount, initial charge and cross-account invoice',async () => {
+  await guardianRegistry('register',guardianPlan);
+  for (const changed of [{ gross_cents: 20000 }, { initial_charge_id: 'ch_other' },
+    { donor_id: other, initial_payment_intent_id: guardianPlan.initial_payment_intent_id }])
+    await rejected(()=>guardianRegistry('register',{...guardianPlan,...changed}));
+  const reserved=await guardian(5000);
+  const wrongDonor=await guardian(5000,'73000000-0000-4000-8000-000000000002',other);
+  assert.equal(wrongDonor.status,'reserved');
+  await rejected(()=>guardianRegistry('bind_invoice',{stripe_subscription_id:guardianPlan.stripe_subscription_id,
+    stripe_invoice_id:'in_foreign',cycle_id:wrongDonor.id}),/no coincide/);
+  await rejected(()=>guardianRegistry('bind_invoice',{stripe_subscription_id:'sub_unregistered',
+    stripe_invoice_id:'in_unknown',cycle_id:reserved.id}),/no disponible/);
+  await rejected(()=>guardianRegistry('bind_invoice',{stripe_subscription_id:guardianPlan.stripe_subscription_id,
+    stripe_invoice_id:'in_invalid',cycle_id:'bad'}));
+  assert.equal((await db.query('select count(*)::int as n from private.dopmi_guardian_invoice_cycles')).rows[0].n,0);
+});
+
+test('Guardian subscription registry cannot be read or changed by a client or administrator',async () => {
+  await guardianRegistry('register',guardianPlan);
+  for (const actor of [donor,staff]) {
+    await role(actor);
+    await rejected(()=>guardianRegistry('lookup',{stripe_subscription_id:guardianPlan.stripe_subscription_id}),
+      /permission denied/);
+    await rejected(()=>db.query('select * from private.dopmi_guardian_subscriptions'),/permission denied/);
+    await rejected(()=>db.query('select * from private.dopmi_guardian_invoice_cycles'),/permission denied/);
+    await db.exec('reset role');
+  }
+});
 test('Guardian activation preview is authenticated, read only and respects pending holds',async () => {
   await role(donor);
   const preview=async amount=>(await db.query('select public.dopmi_guardian_capacity_preview($1) as value',[amount])).rows[0].value;
