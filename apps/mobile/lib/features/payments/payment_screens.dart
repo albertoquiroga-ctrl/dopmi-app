@@ -10,6 +10,7 @@ import '../adoption/community_ui.dart';
 import '../identity/identity_controller.dart';
 import '../rescue/rescue_repository.dart';
 import 'payment_repository.dart';
+import 'guardian_repository.dart';
 
 class ContributeScreen extends ConsumerStatefulWidget {
   const ContributeScreen(this.expense, {super.key, this.attempt});
@@ -105,6 +106,7 @@ class _ContributeState extends ConsumerState<ContributeScreen> {
         eyebrow: 'APORTACIÓN DE PRUEBA',
       ),
       LiveSection<Json>(
+        errorMessage: paymentError,
         load: () => ref.read(paymentRepositoryProvider).funding(widget.expense),
         builder: (data, refresh) => Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -117,6 +119,9 @@ class _ContributeState extends ConsumerState<ContributeScreen> {
               'Reembolso aprobado: ${pesos(data['reimbursable_cents'] as int)}',
             ),
             Text('Neto asignado: ${pesos(data['funded_cents'] as int)}'),
+            Text(
+              'Transferido a Stripe: ${pesos(data['transferred_cents'] as int? ?? 0)}',
+            ),
             Text(
               'Disponible para aportaciones: ${pesos(data['available_cents'] as int)}',
             ),
@@ -186,6 +191,11 @@ class _HistoryState extends ConsumerState<PaymentHistoryScreen> {
         'Consulta pagos y transferencias confirmados.',
         eyebrow: 'HISTORIAL DE PRUEBA',
       ),
+      if (ref.watch(guardianEnabledProvider))
+        TextButton(
+          onPressed: () => context.push('/guardian'),
+          child: const Text('Mi plan Guardián'),
+        ),
       const Notice(
         'Una transferencia llega a la cuenta Stripe del rescatista. El depósito bancario es un paso posterior y sus tiempos dependen de Stripe.',
       ),
@@ -199,6 +209,8 @@ class _HistoryState extends ConsumerState<PaymentHistoryScreen> {
       ),
       LiveSection<DataPage<Json>>(
         key: ValueKey('$received:$page'),
+        errorMessage: paymentError,
+        tables: const ['dopmi_donations'],
         load: () => ref
             .read(paymentRepositoryProvider)
             .history(page, received: received),
@@ -316,11 +328,16 @@ class _ConnectState extends ConsumerState<ConnectScreen> {
         'Primero necesitas la verificación de rescatista aprobada por Dopmi. Completar el formulario de Stripe no garantiza que tu cuenta ya pueda recibir transferencias.',
       ),
       LiveSection<Json>(
+        errorMessage: paymentError,
         load: () =>
             ref.read(paymentRepositoryProvider).action('connect_status'),
         builder: (data, refresh) => Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (data['verified'] == false)
+              const Notice(
+                'Tu verificación de rescatista está pendiente. Puedes consultar tu historial, pero no iniciar nuevos cobros.',
+              ),
             Text(
               data['ready'] == true
                   ? 'Cuenta habilitada para recibir aportaciones de prueba'

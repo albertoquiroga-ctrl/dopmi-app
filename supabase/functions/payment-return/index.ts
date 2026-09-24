@@ -1,4 +1,17 @@
-// No query-string status, token or checkout redirect can mark a payment as paid.
-Deno.serve(() => new Response(`<!doctype html><html lang="es-MX"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Volver a Dopmi</title><style>body{font:18px system-ui;background:#fff8ee;color:#243b35;max-width:32rem;margin:12vh auto;padding:24px}a{display:inline-block;background:#254d43;color:white;padding:16px;border-radius:16px}</style><h1>Continúa en Dopmi</h1><p>Regresa a la app y actualiza tu historial o tu cuenta de cobro. Dopmi consultará el estado confirmado por Stripe.</p><a href="io.dopmi.app://payments">Abrir Dopmi</a><p>Si estabas usando la versión web, vuelve a su pestaña.</p></html>`, {
-  headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'" },
+// The project's default Supabase domain rewrites HTML to text/plain. Return
+// readable instructions there; never trust a status or redirect from the URL.
+Deno.serve(() => new Response(`Continúa en Dopmi
+
+Vuelve a la app que ya tienes abierta. Si usabas Dopmi en la web, regresa a su pestaña.
+
+Guardián: abre Cuenta > Mi plan Guardián y actualiza tu plan o historial.
+Aportación única: abre tu historial de aportaciones y actualízalo.
+Cuenta de cobro: vuelve a Tu cuenta de cobro y consulta su estado.
+
+Dopmi consultará el estado confirmado por Stripe. Esta pantalla no confirma un pago ni un cambio de medio de pago.
+
+Si el resultado sigue pendiente, consulta el mismo intento desde Dopmi. No inicies otro pago.
+`, {
+  headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store',
+    'Content-Security-Policy': "default-src 'none'; sandbox", 'X-Content-Type-Options': 'nosniff' },
 }));

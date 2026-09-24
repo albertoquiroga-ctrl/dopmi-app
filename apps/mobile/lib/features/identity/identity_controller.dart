@@ -98,6 +98,12 @@ class IdentityController extends ChangeNotifier {
     if (identity != null && recovering) {
       return path == '/reset-password' ? null : '/reset-password';
     }
+    // Existing owners retain cancellation access if email confirmation lapses.
+    // PostgreSQL still rejects activation/amount increases without confirmation.
+    if (identity != null &&
+        (path == '/guardian' || path == '/guardian/history')) {
+      return null;
+    }
     if (identity?.verified == true) {
       const accountRoutes = [
         '/profile',
@@ -124,6 +130,8 @@ class IdentityController extends ChangeNotifier {
       return allowed ? null : '/adoptions';
     }
     if (path == '/profile' ||
+        path == '/guardian' ||
+        path == '/guardian/history' ||
         path == '/payments' ||
         path == '/connect' ||
         path.startsWith('/contribute/') ||

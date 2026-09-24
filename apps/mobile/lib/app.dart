@@ -14,6 +14,8 @@ import 'features/adoption/publication_screens.dart';
 import 'features/communication/message_screens.dart';
 import 'features/rescue/rescue_screens.dart';
 import 'features/payments/payment_screens.dart';
+import 'features/payments/guardian_screen.dart';
+import 'features/payments/guardian_history_screen.dart';
 import 'features/adoption/community_repository.dart' show Json;
 
 final routerInitialLocationProvider = Provider<String>((ref) => '/welcome');
@@ -41,6 +43,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       return target;
     },
     routes: [
+      GoRoute(
+        path: '/guardian/history',
+        builder: (_, _) =>
+            GuardianHistoryScreen(key: ValueKey(identity.identity?.id)),
+      ),
+      GoRoute(
+        path: '/guardian',
+        builder: (_, _) => GuardianScreen(key: ValueKey(identity.identity?.id)),
+      ),
       GoRoute(
         path: '/payments',
         builder: (_, _) =>

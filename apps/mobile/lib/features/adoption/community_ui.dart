@@ -68,10 +68,12 @@ class LiveSection<T> extends ConsumerStatefulWidget {
     required this.load,
     required this.builder,
     this.tables = const [],
+    this.errorMessage,
   });
   final Future<T> Function() load;
   final Widget Function(T data, VoidCallback refresh) builder;
   final List<String> tables;
+  final String Function(Object)? errorMessage;
   @override
   ConsumerState<LiveSection<T>> createState() => _LiveSectionState<T>();
 }
@@ -144,7 +146,10 @@ class _LiveSectionState<T> extends ConsumerState<LiveSection<T>>
     if (error != null) {
       return Column(
         children: [
-          Notice(communityError(error!), isError: true),
+          Notice(
+            (widget.errorMessage ?? communityError)(error!),
+            isError: true,
+          ),
           TextButton(
             onPressed: refresh,
             child: const Text('Volver a intentar'),

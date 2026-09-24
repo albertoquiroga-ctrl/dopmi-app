@@ -8,6 +8,7 @@ $taskAdb = Join-Path $taskSdk 'platform-tools/adb.exe'
 $taskApk = Join-Path $taskRoot 'apps/mobile/build/app/outputs/flutter-apk/app-debug.apk'
 $taskAvd = 'Dopmi_API_35'
 $taskSerial = 'emulator-5556'
+$taskPackage = 'com.mycompany.dopmi'
 $env:ANDROID_HOME = $taskSdk
 
 if (-not (Test-Path -LiteralPath $taskEmulator)) {
@@ -59,13 +60,14 @@ if (-not $taskBooted) {
 
 & $taskAdb -s $taskSerial install -r $taskApk
 if ($LASTEXITCODE -ne 0) { throw 'No se pudo instalar el APK de Dopmi.' }
-$taskLaunch = & $taskAdb -s $taskSerial shell am start -W -n io.dopmi.dopmi_mobile/.MainActivity
+$taskLaunch = & $taskAdb -s $taskSerial shell am start -W -n "$taskPackage/.MainActivity"
 $taskLaunch | Write-Host
 if ($LASTEXITCODE -ne 0 -or $taskLaunch -match '^Error:') { throw 'No se pudo abrir Dopmi.' }
-$taskAppPid = & $taskAdb -s $taskSerial shell pidof io.dopmi.dopmi_mobile
+$taskAppPid = & $taskAdb -s $taskSerial shell pidof $taskPackage
 if ($LASTEXITCODE -ne 0 -or -not $taskAppPid) { throw 'Dopmi no tiene un proceso activo en Android.' }
 $taskActivities = & $taskAdb -s $taskSerial shell dumpsys activity activities
-if ($LASTEXITCODE -ne 0 -or -not ($taskActivities -match 'topResumedActivity=.*io\.dopmi\.dopmi_mobile/')) {
+$taskPackagePattern = [regex]::Escape($taskPackage)
+if ($LASTEXITCODE -ne 0 -or -not ($taskActivities -match "topResumedActivity=.*$taskPackagePattern/")) {
   throw 'Android no confirmó a Dopmi en primer plano. Revisa la ventana del emulador.'
 }
 Write-Host 'Dopmi se está ejecutando en primer plano. Usa -Rebuild para compilar cambios recientes.'

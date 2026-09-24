@@ -16,11 +16,15 @@ insert into private.dopmi_connect_accounts(owner_id,account_id,transfers_enabled
 
 set local role anon;
 select throws_ok('select * from dopmi_donations','42501',null,'anonymous financial records denied');
+select throws_ok('select dopmi_guardian_capacity_preview(5000)','42501',null,'anonymous visitors cannot preview Guardian authorization');
 select throws_ok($$select dopmi_payment_server('settle','{}')$$,'42501',null,'anonymous settlement denied');
 select is((dopmi_expense_funding('71000000-0000-4000-8000-000000000003')->>'funded_cents')::int,0,'approved public progress starts at zero');
 reset role;
 set local role authenticated;
 select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000001',true);
+select is((dopmi_guardian_capacity_preview(5000)->>'can_activate')::boolean,true,'confirmed donor can preview enough eligible capacity');
+select is((dopmi_guardian_capacity_preview(5000)->>'required_cents')::bigint,4900::bigint,'preview shows the conservatively reserved net');
+select throws_ok('select dopmi_guardian_capacity_preview(999)','22023',null,'preview rejects unsupported monthly amount');
 select throws_ok($$select dopmi_payment_server('settle','{}')$$,'42501',null,'a donor cannot fabricate a confirmation');
 select throws_ok($$update dopmi_donations set payment_status='confirmed'$$,'42501',null,'direct financial writes denied');
 select throws_ok('select * from private.dopmi_payment_jobs','42501',null,'payment jobs remain private');
@@ -50,5 +54,80 @@ select is((select count(*) from dopmi_donations),1::bigint,'donor can read own p
 select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000003',true);
 select is((dopmi_admin_donations()->>'total')::int,1,'server-authorized admin can inspect history');
 reset role;
+set local role authenticated;
+select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000003',true);
+select throws_ok($$select dopmi_guardian_reserve('70000000-0000-4000-8000-000000000001','73000000-0000-4000-8000-000000000001',2000)$$,
+  '42501',null,'even staff cannot reserve Guardian funds');
+select throws_ok('select * from private.dopmi_guardian_allocations','42501',null,'Guardian allocations are private');
+reset role;
+select is((dopmi_guardian_reserve('70000000-0000-4000-8000-000000000001',
+  '73000000-0000-4000-8000-000000000001',2000)->>'reserved_cents')::bigint,1960::bigint,
+  'Guardian holds the upper net against the remaining approved expense');
+select is((dopmi_expense_funding('71000000-0000-4000-8000-000000000003')->>'available_cents')::bigint,840::bigint,
+  'funding availability subtracts a pending Guardian hold');
+set local role authenticated;
+select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000004',true);
+select is((dopmi_guardian_capacity_preview(4000)->>'can_activate')::boolean,false,
+  'a pending Guardian hold prevents offering an unavailable activation');
+reset role;
+select is(dopmi_guardian_release('70000000-0000-4000-8000-000000000001',
+  '73000000-0000-4000-8000-000000000001')->>'status','released','releasing a hold restores capacity');
+select is((dopmi_expense_funding('71000000-0000-4000-8000-000000000003')->>'available_cents')::bigint,2800::bigint,
+  'released hold is not counted as paid or reserved');
+set local role anon;
+select throws_ok('select dopmi_guardian_plan()','42501',null,'anonymous Guardian management read denied');
+select throws_ok($$select dopmi_guardian_request('cancel','75000000-0000-4000-8000-000000000001',0)$$,'42501',null,'anonymous Guardian cancellation denied');
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000004',true);
+select is(dopmi_guardian_plan(),null::jsonb,'an unrelated owner cannot read a Guardian plan');
+select throws_ok($$select dopmi_guardian_request('cancel','75000000-0000-4000-8000-000000000001',0)$$,'42501',null,'an unrelated owner cannot submit a cancellation');
+select throws_ok('select * from private.dopmi_guardian_requests','42501',null,'owner request audit remains private');
+select throws_ok($$update private.dopmi_guardian_requests set status='applied',applied_at=now()$$,'42501',null,'client cannot fabricate confirmation of a change');
+select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000003',true);
+select is(dopmi_guardian_plan(),null::jsonb,'staff membership grants no other owner plan access');
+select throws_ok($$select private.dopmi_guardian_plan_view('70000000-0000-4000-8000-000000000001')$$,'42501',null,'private projection cannot be called with another owner');
+reset role;
+select ok(not has_function_privilege('anon','public.dopmi_guardian_change_server(text,jsonb)','execute'),'anonymous cannot process Guardian changes');
+select ok(not has_function_privilege('authenticated','public.dopmi_guardian_change_server(text,jsonb)','execute'),'authenticated cannot process Guardian changes');
+select ok(has_function_privilege('service_role','public.dopmi_guardian_change_server(text,jsonb)','execute'),'service role can process Guardian changes');
+select ok((select relrowsecurity from pg_class where oid='private.dopmi_guardian_prices'::regclass),'Guardian price history has RLS');
+select ok(not has_function_privilege('anon','public.dopmi_guardian_state()','execute'),'anonymous cannot read Guardian mobile state');
+select ok(has_function_privilege('authenticated','public.dopmi_guardian_state()','execute'),'authenticated can read own Guardian mobile state');
+select ok(not has_function_privilege('anon','public.dopmi_guardian_cancel_activation(uuid)','execute'),'anonymous cannot cancel an activation');
+select ok(has_function_privilege('authenticated','public.dopmi_guardian_cancel_activation(uuid)','execute'),'authenticated owner can cancel activation');
+select ok(not has_function_privilege('service_role','public.dopmi_guardian_cancel_activation(uuid)','execute'),'activation cancellation needs the owner session');
+select ok(not has_function_privilege('anon','public.dopmi_guardian_method_server(text,jsonb)','execute'),'anonymous cannot mutate payment methods');
+select ok(not has_function_privilege('authenticated','public.dopmi_guardian_method_server(text,jsonb)','execute'),'clients cannot choose processor method IDs');
+select ok(has_function_privilege('service_role','public.dopmi_guardian_method_server(text,jsonb)','execute'),'server can reconcile payment methods');
+select ok((select relrowsecurity from pg_class where oid='private.dopmi_guardian_method_jobs'::regclass),'payment-method jobs have RLS');
+select ok(not has_function_privilege('anon','public.dopmi_guardian_history(timestamptz,uuid,integer)','execute'),'anonymous history denied');
+select ok(not has_function_privilege('service_role','public.dopmi_guardian_history(timestamptz,uuid,integer)','execute'),'history requires owner session');
+select ok(has_function_privilege('authenticated','public.dopmi_guardian_history(timestamptz,uuid,integer)','execute'),'owner history granted');
+select ok(not has_function_privilege('anon','public.dopmi_guardian_history_allocations(uuid,uuid,integer)','execute'),'anonymous allocation history denied');
+select set_config('test.guardian_history_cycle',(select id::text from private.dopmi_guardian_cycles where donor_id='70000000-0000-4000-8000-000000000001' limit 1),true);
+set local role authenticated;
+select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000001',true);
+select ok(jsonb_array_length(dopmi_guardian_history()->'items')>0,'owner reads cycle history');
+select lives_ok($$select dopmi_guardian_history_allocations(current_setting('test.guardian_history_cycle')::uuid)$$,'owner reads allocation history');
+select throws_ok('select dopmi_guardian_history(null,null,51)','22023',null,'history has a bounded page size');
+select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000004',true);
+select is(dopmi_guardian_history()->'items','[]'::jsonb,'other owner sees no cycles');
+select throws_ok($$select dopmi_guardian_history_allocations(current_setting('test.guardian_history_cycle')::uuid)$$,'42501',null,'other owner cannot enumerate allocations');
+select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000003',true);
+select is(dopmi_guardian_history()->'items','[]'::jsonb,'staff has no donor history access');
+reset role;
+select ok(not has_function_privilege('anon','public.dopmi_guardian_withdraw_amount(uuid,bigint)','execute'),'anonymous cannot withdraw a change');
+select ok(not has_function_privilege('service_role','public.dopmi_guardian_withdraw_amount(uuid,bigint)','execute'),'change withdrawal needs owner session');
+select ok(has_function_privilege('authenticated','public.dopmi_guardian_withdraw_amount(uuid,bigint)','execute'),'owner withdrawal is callable');
+set local role authenticated;
+select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000004',true);
+select throws_ok($$select dopmi_guardian_withdraw_amount('75000000-0000-4000-8000-000000000099',1)$$,'42501',null,'unknown change withdrawal denies access');
+reset role;
+select ok(not has_function_privilege('anon','public.dopmi_guardian_refund_server(text,jsonb)','execute'),'anonymous cannot reconcile Guardian refunds');
+select ok(not has_function_privilege('authenticated','public.dopmi_guardian_refund_server(text,jsonb)','execute'),'clients cannot reconcile Guardian refunds');
+select ok(has_function_privilege('service_role','public.dopmi_guardian_refund_server(text,jsonb)','execute'),'server can reconcile Guardian refunds');
+select ok(not has_table_privilege('authenticated','private.dopmi_guardian_refund_adjustments','select'),'refund evidence is private');
+select ok(not has_table_privilege('authenticated','private.dopmi_guardian_reversals','select'),'reversal evidence is private');
 select * from finish();
 rollback;

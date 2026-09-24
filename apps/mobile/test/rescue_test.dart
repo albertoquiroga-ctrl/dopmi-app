@@ -13,23 +13,23 @@ import 'fake_identity_repository.dart';
 
 class FakeRescue extends RescueRepository {
   FakeRescue()
-      : super(
-          SupabaseClient(
-            'http://127.0.0.1:54321',
-            'test',
-            authOptions: const AuthClientOptions(autoRefreshToken: false),
-          ),
-        );
+    : super(
+        SupabaseClient(
+          'http://127.0.0.1:54321',
+          'test',
+          authOptions: const AuthClientOptions(autoRefreshToken: false),
+        ),
+      );
   Json? saved;
   bool conflict = true;
   int saveCalls = 0;
   @override
   Future<Json> detail(String id) async => {
-      'record': {
-        'id': id,
-        'kind': 'verification',
-        'status': 'draft',
-        'version': 4,
+    'record': {
+      'id': id,
+      'kind': 'verification',
+      'status': 'draft',
+      'version': 4,
       'public_data': {
         'public_name': 'Refugio Luna',
         'bio': 'Rescatamos animales',
@@ -49,7 +49,7 @@ class FakeRescue extends RescueRepository {
     Json privateData,
     List<Json> files, {
     RescueRecord? record,
-  String? parent,
+    String? parent,
   }) async {
     saveCalls += 1;
     saved = privateData;
@@ -79,78 +79,74 @@ void main() {
       expect(parsePesos(v), null);
     }
   });
-  testWidgets(
-    'rescuer draft keeps private fields after a save conflict',
-    (tester) async {
-      tester.view.physicalSize = const Size(390, 2000);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-      final identity = FakeIdentityRepository()
-        ..user = const Identity('one', 'ana@example.test', verified: true);
-      final repo = FakeRescue();
-      final container = ProviderContainer(
-        overrides: [
-          identityRepositoryProvider.overrideWithValue(identity),
-          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
-          rescueRepositoryProvider.overrideWithValue(repo),
-          routerInitialLocationProvider.overrideWithValue(
-            '/rescue/verification-id',
-          ),
-        ],
-      );
-      addTearDown(() async {
-        container.dispose();
-        await identity.changes.close();
-      });
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: const DopmiApp(),
+  testWidgets('rescuer draft keeps private fields after a save conflict', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(390, 2000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final identity = FakeIdentityRepository()
+      ..user = const Identity('one', 'ana@example.test', verified: true);
+    final repo = FakeRescue();
+    final container = ProviderContainer(
+      overrides: [
+        identityRepositoryProvider.overrideWithValue(identity),
+        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+        rescueRepositoryProvider.overrideWithValue(repo),
+        routerInitialLocationProvider.overrideWithValue(
+          '/rescue/verification-id',
         ),
-      );
-      for (var i = 0; i < 60; i++) {
-        await tester.pump(const Duration(milliseconds: 50));
-        if (find.text('Borrador · Versión 4').evaluate().isNotEmpty) {
-          break;
-        }
-      }
-      expect(find.text('Borrador · Versión 4'), findsOneWidget);
-      final phone = find.widgetWithText(TextField, 'Teléfono');
-      await tester.enterText(phone, '8188888888');
-      FocusManager.instance.primaryFocus?.unfocus();
+      ],
+    );
+    addTearDown(() async {
+      container.dispose();
+      await identity.changes.close();
+    });
+    await tester.pumpWidget(
+      UncontrolledProviderScope(container: container, child: const DopmiApp()),
+    );
+    for (var i = 0; i < 60; i++) {
       await tester.pump(const Duration(milliseconds: 50));
-      final save = find.text('Guardar borrador');
-      for (var i = 0; i < 12; i++) {
-        if (save.evaluate().isNotEmpty) {
-          break;
-        }
-        await tester.drag(find.byType(Scrollable).first, const Offset(0, -260));
-        await tester.pump(const Duration(milliseconds: 50));
+      if (find.text('Borrador · Versión 4').evaluate().isNotEmpty) {
+        break;
       }
-      expect(
-        save,
-        findsOneWidget,
-        reason: 'Debe mostrar el botón de guardar en edición',
-      );
+    }
+    expect(find.text('Borrador · Versión 4'), findsOneWidget);
+    final phone = find.widgetWithText(TextField, 'Teléfono');
+    await tester.enterText(phone, '8188888888');
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pump(const Duration(milliseconds: 50));
+    final save = find.text('Guardar borrador');
+    for (var i = 0; i < 12; i++) {
+      if (save.evaluate().isNotEmpty) {
+        break;
+      }
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -260));
       await tester.pump(const Duration(milliseconds: 50));
-      await tester.tap(save);
-      for (var i = 0; i < 40; i++) {
-        await tester.pump(const Duration(milliseconds: 50));
-        if (find
-            .text('La solicitud cambió. Recarga antes de continuar')
-            .evaluate()
-            .isNotEmpty) {
-          break;
-        }
+    }
+    expect(
+      save,
+      findsOneWidget,
+      reason: 'Debe mostrar el botón de guardar en edición',
+    );
+    await tester.pump(const Duration(milliseconds: 50));
+    await tester.tap(save);
+    for (var i = 0; i < 40; i++) {
+      await tester.pump(const Duration(milliseconds: 50));
+      if (find
+          .text('La solicitud cambió. Recarga antes de continuar')
+          .evaluate()
+          .isNotEmpty) {
+        break;
       }
-      expect(repo.saved?['phone'], '8188888888');
-      expect(repo.saveCalls, 1);
-      expect(
-        find.text('La solicitud cambió. Recarga antes de continuar'),
-        findsOneWidget,
-      );
-      expect(tester.takeException(), null);
-    },
-  );
+    }
+    expect(repo.saved?['phone'], '8188888888');
+    expect(repo.saveCalls, 1);
+    expect(
+      find.text('La solicitud cambió. Recarga antes de continuar'),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), null);
+  });
 }

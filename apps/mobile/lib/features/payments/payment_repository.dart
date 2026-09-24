@@ -66,8 +66,11 @@ String paymentError(Object cause) {
         'Los pagos de prueba todavía no están habilitados. Intenta más tarde.',
       'sign_in_required' =>
         'Inicia sesión con tu cuenta confirmada para continuar.',
-      'access_denied' =>
+      'rescuer_verification_required' =>
         'Completa tu verificación de rescatista para configurar los cobros.',
+      'access_denied' => 'Tu cuenta no tiene acceso a esta operación.',
+      'stripe_permission_denied' || 'stripe_authentication_failed' => 'La conexión de Dopmi con Stripe necesita revisión del equipo. No vuelvas a pagar.',
+      'processor_busy' => 'La aportación sigue en proceso. Actualiza el historial en un momento; no vuelvas a pagar.',
       'manual_reconciliation_required' => 'Este intento necesita revisión del equipo. Consulta tu historial antes de volver a aportar.',
       'payment_unavailable' => 'El gasto o el intento de pago cambió. Actualiza el historial antes de continuar.',
       _ => 'No pudimos consultar Stripe. Conservamos tu intento; puedes volver a intentar.',

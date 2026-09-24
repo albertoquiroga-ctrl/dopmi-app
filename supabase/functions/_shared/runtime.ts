@@ -1,5 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.57.4';
-import { paymentService, PaymentError, stripeApi } from './payments.mjs';
+import { paymentService, PaymentError, paymentLog, stripeApi } from './payments.mjs';
 
 export const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -13,11 +13,33 @@ export function runtime() {
   const url = Deno.env.get('SUPABASE_URL')!;
   const db = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } });
   const rpc = async (operation: string, data: unknown) => {
-    const result = await db.rpc('dopmi_payment_server', { operation, data });
-    if (result.error) throw new PaymentError(result.error.code === '42501' ? 'access_denied' : 'payment_unavailable', result.error.code === '42501' ? 403 : 409);
+    const request = operation === 'refund_begin' || operation === 'refund_finish'
+      ? db.rpc('dopmi_refund_adjustment', { operation: operation === 'refund_begin' ? 'begin' : 'finish', data })
+      : operation === 'finish_job'
+      ? db.rpc('dopmi_payment_job_finish', { data })
+      : operation === 'claim'
+      ? db.rpc('dopmi_payment_job_claim', { target_key: (data as { job_key?: string })?.job_key ?? null })
+      : operation === 'replay_get'
+        ? db.rpc('dopmi_payment_replay_get', { target_id: (data as { donation_id: string }).donation_id })
+        : operation === 'connect_status'
+          ? db.rpc('dopmi_connect_status', { target_actor: (data as { actor: string }).actor })
+          : db.rpc('dopmi_payment_server', { operation, data });
+    const result = await request;
+    if (result.error) {
+      const denied = result.error.code === '42501';
+      const code = denied ? (operation === 'connect_get' || operation === 'connect_begin' ? 'rescuer_verification_required' : 'access_denied') : 'payment_unavailable';
+      const context = { source: 'database', operation, sqlstate: result.error.code };
+      paymentLog(console, 'payment_rpc_failed', context);
+      throw new PaymentError(code, denied ? 403 : result.error.code === '22023' || result.error.code === '40001' ? 409 : 503, context);
+    }
     return result.data;
   };
-  const stripe = stripeApi(Deno.env.get('STRIPE_SECRET_KEY'));
+  // H4 uses an isolated test key without replacing the pre-existing Stripe
+  // configuration. Production enablement must remove this override explicitly.
+  const stripe = stripeApi(
+    Deno.env.get('STRIPE_SECRET_KEY_H4_TEST') ??
+      Deno.env.get('STRIPE_SECRET_KEY'),
+  );
   const returnUrl = `${url}/functions/v1/payment-return`;
   const service = paymentService({ rpc, stripe, returnUrl });
   async function actor(req: Request) {

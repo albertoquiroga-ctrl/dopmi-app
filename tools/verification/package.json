@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test --test-concurrency=1 identity.test.mjs payments.test.mjs"
+    "test": "node --test --test-concurrency=1 identity.test.mjs payments.test.mjs guardian.test.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.3.14",

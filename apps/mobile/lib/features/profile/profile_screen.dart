@@ -6,6 +6,7 @@ import '../../core/ui.dart';
 import '../adoption/community_ui.dart';
 import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
+import '../payments/guardian_repository.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -287,6 +288,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   icon: const Icon(Icons.receipt_long_outlined),
                   label: const Text('Mis aportaciones y cobros'),
                 ),
+                if (ref.watch(guardianEnabledProvider))
+                  TextButton.icon(
+                    onPressed: () => context.push('/guardian'),
+                    icon: const Icon(Icons.favorite_outline),
+                    label: const Text('Mi plan Guardián'),
+                  ),
                 if (error != null) Notice(error!, isError: true),
                 if (message != null) Notice(message!),
                 const SizedBox(height: 24),
