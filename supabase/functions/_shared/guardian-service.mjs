@@ -16,7 +16,7 @@ export function guardianService({ stripe, rpc, lookupSubscription, logger = cons
     if (!binding) fail('guardian_invoice_not_bound');
     if (binding.settlement) return binding.settlement;
     try {
-      const evidence = await readGuardianPaidEvidence({ stripe, lookupSubscription }, invoiceId);
+      const evidence = await readGuardianPaidEvidence({ stripe, lookupSubscription, invoiceSnapshot: binding }, invoiceId);
       return await rpc('settle', evidence);
     } finally { await rpc('checked', { invoice_id: invoiceId }); }
   }

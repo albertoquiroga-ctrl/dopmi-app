@@ -1867,3 +1867,231 @@ test('Guardian canceled registry remains readable but cannot accept a fresh owne
   await role(donor);assert.equal((await ownerPlan()).status,'canceled');
   await rejected(()=>ownerCancel(),/ya está cancelado/);await rejected(()=>ownerRequest(),/ya está cancelado/);
 });
+
+const { guardianChangeService }=await import('../../supabase/functions/_shared/guardian-changes.mjs');
+const changeRpc=async(operation,data={})=>(await db.query('select public.dopmi_guardian_change_server($1,$2::jsonb) as value',[operation,JSON.stringify(data)])).rows[0].value;
+const changeDue=()=>db.exec('update private.dopmi_guardian_requests set available_at=now()');
+async function changeFixture() {
+  const f=await collectionFixture(),sub=f.subscription,item=sub.items.data[0],calls=[];
+  Object.assign(item,{id:'si_change1',current_period_start:f.calendar.charge.created,tax_rates:[],discounts:[]});
+  sub.billing_cycle_anchor=item.current_period_end;
+  const prices=new Map([['price_schedule1',structuredClone([...f.calendar.prices.values()][0])]]),writes=new Map();
+  f.stripe.prices={retrieve:async priceId=>structuredClone(prices.get(priceId)),create:async(fields,options)=>{
+    calls.push({kind:'price',fields:structuredClone(fields),options});
+    if(!writes.has(options.idempotencyKey)){
+      const price={id:`price_change${prices.size}`,livemode:false,active:true,billing_scheme:'per_unit',...fields,
+        recurring:{...fields.recurring,usage_type:'licensed'}};
+      prices.set(price.id,price);writes.set(options.idempotencyKey,price);
+    }
+    return structuredClone(writes.get(options.idempotencyKey));
+  }};
+  f.stripe.subscriptions.update=async(subscriptionId,fields,options)=>{
+    calls.push({kind:'update',subscriptionId,fields:structuredClone(fields),options});
+    if(sub.status==='canceled')throw Error('subscription_canceled');
+    if(!writes.has(options.idempotencyKey)){
+      item.price={id:fields.items[0].price};writes.set(options.idempotencyKey,structuredClone(sub));
+    }
+    return structuredClone(writes.get(options.idempotencyKey));
+  };
+  f.stripe.subscriptions.cancel=async(subscriptionId,fields,options)=>{
+    calls.push({kind:'cancel',subscriptionId,fields:structuredClone(fields),options});
+    sub.status='canceled';sub.cancel_at_period_end=false;sub.cancel_at=null;return structuredClone(sub);
+  };
+  const request=async(kind='amount',revision=0,gross=20000,requestId=requestKey)=>{
+    await role(donor);const r=kind==='cancel'?await ownerCancel(revision,requestId):await ownerRequest(kind,revision,gross,requestId);
+    await db.exec('reset role');return r.request.id;
+  };
+  const manager=(override=changeRpc)=>guardianChangeService({stripe:f.stripe,rpc:override,logger:{}});
+  return {...f,item,changeCalls:calls,changePrices:prices,request,manager};
+}
+
+test('Guardian amount application keeps pause and calendar, disables proration and records the next-period price',async()=>{
+  const f=await changeFixture(),requestId=await f.request();const anchor=f.subscription.billing_cycle_anchor,end=f.item.current_period_end;
+  const done=await f.manager().run(requestId);assert.equal(done.status,'applied');assert.equal(done.effective_from,end);
+  assert.equal(f.changeCalls.filter(c=>c.kind==='price').length,1);assert.equal(f.changeCalls.filter(c=>c.kind==='update').length,1);
+  assert.deepEqual(f.changeCalls.find(c=>c.kind==='update').fields,{items:[{id:'si_change1',price:'price_change1',quantity:1}],billing_cycle_anchor:'unchanged',proration_behavior:'none'});
+  assert.equal(f.subscription.billing_cycle_anchor,anchor);assert.equal(f.subscription.latest_invoice,null);
+  assert.equal(f.subscription.pause_collection.behavior,'keep_as_draft');assert.equal(f.calls.some(c=>c.kind==='pay'),false);
+  assert.equal((await guardianRegistry('lookup',{stripe_subscription_id:f.subscription.id})).gross_cents,20000);
+  const prices=(await db.query('select revision,effective_from,gross_cents from private.dopmi_guardian_prices order by revision')).rows;
+  assert.deepEqual(prices.map(p=>[Number(p.revision),Number(p.effective_from),Number(p.gross_cents)]),[[0,1,5000],[1,end,20000]]);
+  await role(donor);const plan=await ownerPlan();assert.equal(plan.pending_request,null);assert.ok(plan.requests[0].effective_at);await db.exec('reset role');
+  await f.manager().run(requestId);assert.equal(f.changeCalls.length,2);
+});
+test('Guardian current-period invoice discovered after a price change retains its old authorized amount',async()=>{
+  const f=await changeFixture(),requestId=await f.request('amount',0,1000);await f.manager().run(requestId);
+  const current=await f.collector().run(f.invoice.id);assert.equal(current.status,'paid');assert.equal(current.gross_cents,5000);assert.equal(current.price_id,'price_schedule1');
+  assert.equal((await guardianSettlement('get',{cycle_id:current.cycle_id})).allocated_cents,4314);
+  const next=await collectionRpc('prepare',{invoice_id:'in_nextPrice',subscription_id:f.subscription.id,cycle_key:nextRequestKey,
+    period_start:f.item.current_period_end,period_end:f.item.current_period_end+30*86400,fresh:true});
+  assert.equal(next.gross_cents,1000);assert.equal(next.price_id,'price_change1');
+});
+test('Guardian an old bound invoice reconciles after its subscription changes price and is canceled',async()=>{
+  const f=await changeFixture();const old=await f.prepare();const requestId=await f.request('amount',0,1000);await f.manager().run(requestId);
+  const cancelId=await f.request('cancel',1,null,nextRequestKey);await f.manager().run(cancelId);
+  await f.stripe.invoices.pay(f.invoice.id,{},{});
+  const settled=await f.service().reconcileInvoice(f.invoice.id);assert.equal(settled.gross_cents,5000);assert.equal(settled.allocated_cents,4314);
+  assert.equal((await guardianSettlement('lookup_invoice',{invoice_id:old.invoice_id})).price_id,'price_schedule1');
+});
+test('Guardian paid invoice cannot substitute a different period for its stored snapshot',async()=>{
+  const f=await changeFixture();await f.prepare();await f.stripe.invoices.pay(f.invoice.id,{},{});f.invoice.lines.data[0].period.start++;
+  await assert.rejects(()=>f.service().reconcileInvoice(f.invoice.id),/snapshot_mismatch/);
+});
+test('Guardian successive amount changes before renewal retain history and choose the newest authorized price',async()=>{
+  const f=await changeFixture();await f.manager().run(await f.request('amount',0,1000));
+  await f.manager().run(await f.request('amount',1,2000,nextRequestKey));
+  const source=await collectionRpc('source',{subscription_id:f.subscription.id,period_start:f.item.current_period_end});
+  assert.equal(source.gross_cents,2000);assert.equal(source.stripe_price_id,'price_change2');
+  const old=await collectionRpc('source',{subscription_id:f.subscription.id,period_start:f.item.current_period_end-1});
+  assert.equal(old.gross_cents,5000);assert.equal((await db.query('select count(*)::int as n from private.dopmi_guardian_prices')).rows[0].n,3);
+});
+test('Guardian lost price creation response reuses one idempotency key and one price',async()=>{
+  const f=await changeFixture(),requestId=await f.request(),create=f.stripe.prices.create;let lost=true;
+  f.stripe.prices.create=async(...args)=>{const r=await create(...args);if(lost){lost=false;throw Error('price_lost');}return r;};
+  await assert.rejects(()=>f.manager().run(requestId),/price_lost/);await changeDue();
+  assert.equal((await f.manager().run(requestId)).status,'applied');assert.equal(f.changePrices.size,2);
+  const calls=f.changeCalls.filter(c=>c.kind==='price');assert.equal(calls.length,2);assert.deepEqual(calls[0].options,calls[1].options);
+});
+test('Guardian lost subscription update response is recovered by reading without a second update',async()=>{
+  const f=await changeFixture(),requestId=await f.request(),update=f.stripe.subscriptions.update;
+  f.stripe.subscriptions.update=async(...args)=>{await update(...args);throw Error('update_lost');};
+  await assert.rejects(()=>f.manager().run(requestId),/update_lost/);await changeDue();
+  const recovered=await f.manager().run(requestId);assert.equal(recovered.status,'applied');assert.equal(recovered.attempts,1);
+  assert.equal(f.changeCalls.filter(c=>c.kind==='update').length,1);
+});
+test('Guardian lost database completion cannot reopen an applied change',async()=>{
+  const f=await changeFixture(),requestId=await f.request();let lost=true;
+  const faulty=async(op,data)=>{const r=await changeRpc(op,data);if(op==='applied'&&lost){lost=false;throw Error('completion_lost');}return r;};
+  await assert.rejects(()=>f.manager(faulty).run(requestId),/completion_lost/);
+  assert.equal((await f.manager().run(requestId)).status,'applied');assert.equal(f.changeCalls.length,2);
+});
+test('Guardian lost mutation checkpoint recovers the fixed request without changing its calendar',async()=>{
+  const f=await changeFixture(),requestId=await f.request();let lost=true;
+  const faulty=async(op,data)=>{const r=await changeRpc(op,data);if(op==='mutation'&&lost){lost=false;throw Error('mutation_lost');}return r;};
+  await assert.rejects(()=>f.manager(faulty).run(requestId),/mutation_lost/);assert.equal(f.changeCalls.some(c=>c.kind==='update'),false);
+  const before=await changeRpc('get',{request_id:requestId});await changeDue();const after=await f.manager().run(requestId);
+  assert.equal(after.effective_from,before.effective_from);assert.equal(after.status,'applied');assert.equal(f.changeCalls.filter(c=>c.kind==='update').length,1);
+});
+test('Guardian amount write near renewal waits for review without mutating Stripe',async()=>{
+  const f=await changeFixture(),requestId=await f.request();f.stripe.customers.retrieve=async()=>({id:'cus_initial',livemode:false,balance:0,test_clock:'clock_change'});
+  f.stripe.testHelpers={testClocks:{retrieve:async()=>({id:'clock_change',status:'ready',frozen_time:f.item.current_period_end-60})}};
+  await assert.rejects(()=>f.manager().run(requestId),/change_too_late/);assert.equal(f.changeCalls.length,0);
+  assert.equal((await changeRpc('get',{request_id:requestId})).status,'pending');
+});
+test('Guardian calendar advancing after mutation authorization prevents a late price write',async()=>{
+  const f=await changeFixture(),requestId=await f.request();const original=f.item.current_period_end;
+  const wrapped=async(op,data)=>{const result=await changeRpc(op,data);if(op==='mutation'){f.item.current_period_start=original;f.item.current_period_end=original+30*86400;}return result;};
+  await assert.rejects(()=>f.manager(wrapped).run(requestId),/calendar_changed/);assert.equal(f.changeCalls.some(c=>c.kind==='update'),false);
+});
+test('Guardian applied price can be recovered after renewal and retry expiry using read-only evidence',async()=>{
+  const f=await changeFixture(),requestId=await f.request(),update=f.stripe.subscriptions.update;
+  f.stripe.subscriptions.update=async(...args)=>{await update(...args);throw Error('update_lost');};
+  await assert.rejects(()=>f.manager().run(requestId),/update_lost/);const saved=await changeRpc('get',{request_id:requestId});
+  f.item.current_period_start=f.item.current_period_end;f.item.current_period_end+=30*86400;f.subscription.latest_invoice='in_later';
+  await db.exec("update private.dopmi_guardian_requests set attempts=8,first_attempt_at=now()-interval '2 days',available_at=now()");
+  const recovered=await f.manager().run(requestId);assert.equal(recovered.status,'applied');assert.equal(recovered.effective_from,saved.effective_from);
+  assert.equal(f.changeCalls.filter(c=>c.kind==='update').length,1);
+});
+test('Guardian bounded change retries stop writes but leave the payment barrier in place',async()=>{
+  const f=await changeFixture(),requestId=await f.request();await db.exec('update private.dopmi_guardian_requests set attempts=8');
+  const j=await f.manager().run(requestId);assert.equal(j.error_code,'change_retry_limit');assert.equal(j.status,'pending');assert.equal(f.changeCalls.length,0);
+  assert.deepEqual(await collectionRpc('sources'),[]);
+});
+test('Guardian cancellation is independently confirmed without proration, invoice or refund',async()=>{
+  const f=await changeFixture(),requestId=await f.request('cancel');const before=await guardianSettlement('get',{cycle_id:f.calendar.cycleId});
+  const j=await f.manager().run(requestId);assert.equal(j.status,'applied');assert.deepEqual(f.changeCalls[0].fields,{invoice_now:false,prorate:false});
+  assert.equal(f.changeCalls.length,1);assert.equal(f.subscription.latest_invoice,null);assert.equal(j.plan_status,'canceled');
+  assert.deepEqual(await guardianSettlement('get',{cycle_id:f.calendar.cycleId}),before);
+  await role(donor);assert.equal((await ownerPlan()).status,'canceled');
+});
+test('Guardian cancellation can stop an externally changed configuration instead of demanding another charge',async()=>{
+  const f=await changeFixture(),requestId=await f.request('cancel');f.subscription.pause_collection=null;f.subscription.collection_method='charge_automatically';
+  assert.equal((await f.manager().run(requestId)).status,'applied');assert.equal(f.changeCalls[0].kind,'cancel');
+});
+test('Guardian lost cancellation response is reconciled without sending cancellation twice',async()=>{
+  const f=await changeFixture(),requestId=await f.request('cancel'),cancel=f.stripe.subscriptions.cancel;
+  f.stripe.subscriptions.cancel=async(...args)=>{await cancel(...args);throw Error('cancel_lost');};
+  await assert.rejects(()=>f.manager().run(requestId),/cancel_lost/);await changeDue();
+  assert.equal((await f.manager().run(requestId)).status,'applied');assert.equal(f.changeCalls.length,1);
+});
+test('Guardian an unconfirmed cancellation reply leaves the plan pending and never claims Stripe canceled',async()=>{
+  const f=await changeFixture(),requestId=await f.request('cancel');f.stripe.subscriptions.cancel=async()=>({...f.subscription,status:'canceled'});
+  await assert.rejects(()=>f.manager().run(requestId),/cancel_unconfirmed/);
+  assert.equal((await changeRpc('get',{request_id:requestId})).plan_status,'active');
+  await role(donor);assert.equal((await ownerPlan()).status,'cancel_requested');
+});
+test('Guardian cancellation during price creation supersedes the change before subscription mutation',async()=>{
+  const f=await changeFixture(),requestId=await f.request(),create=f.stripe.prices.create;let cancellation;
+  f.stripe.prices.create=async(...args)=>{const p=await create(...args);cancellation=await f.request('cancel',1,null,nextRequestKey);return p;};
+  assert.equal((await f.manager().run(requestId)).status,'superseded');assert.equal(f.changeCalls.some(c=>c.kind==='update'),false);
+  assert.equal((await f.manager().run(cancellation)).status,'applied');assert.equal(f.subscription.status,'canceled');
+});
+test('Guardian cancellation wins after an already authorized amount write without reviving the plan',async()=>{
+  const f=await changeFixture(),requestId=await f.request(),update=f.stripe.subscriptions.update;let cancellation;
+  f.stripe.subscriptions.update=async(...args)=>{cancellation=await f.request('cancel',1,null,nextRequestKey);return update(...args);};
+  assert.equal((await f.manager().run(requestId)).status,'superseded');assert.equal(f.item.price.id,'price_change1');
+  assert.equal((await f.manager().run(cancellation)).status,'applied');assert.equal(f.subscription.status,'canceled');
+  assert.equal((await guardianRegistry('lookup',{stripe_subscription_id:f.subscription.id})).gross_cents,5000);
+  assert.equal((await db.query('select count(*)::int as n from private.dopmi_guardian_prices')).rows[0].n,1);
+});
+test('Guardian an external cancellation supersedes an amount request using a fresh read',async()=>{
+  const f=await changeFixture(),requestId=await f.request();f.subscription.status='canceled';
+  const j=await f.manager().run(requestId);assert.equal(j.status,'superseded');assert.equal(j.plan_status,'canceled');assert.equal(f.changeCalls.length,0);
+});
+for(const [label,mutate] of [['foreign customer',s=>s.customer='cus_foreign'],['live subscription',s=>s.livemode=true],
+  ['automatic collection',s=>s.collection_method='charge_automatically'],['tax',s=>s.automatic_tax.enabled=true],
+  ['pause expiration',s=>s.pause_collection.resumes_at=1900000000],['extra item',s=>s.items.data.push(structuredClone(s.items.data[0]))],
+  ['item tax',s=>s.items.data[0].tax_rates=['txr_other']],['another method',s=>s.default_payment_method='pm_other'],
+  ['scheduled cancellation',s=>s.cancel_at_period_end=true]]){
+  test(`Guardian amount processing rejects ${label} before Stripe writes`,async()=>{
+    const f=await changeFixture(),requestId=await f.request();mutate(f.subscription);
+    await assert.rejects(()=>f.manager().run(requestId),/change_subscription/);assert.equal(f.changeCalls.length,0);
+  });
+}
+test('Guardian processing RPC and price history are inaccessible to clients including staff',async()=>{
+  const f=await changeFixture(),requestId=await f.request();
+  for(const actor of [donor,other,staff]){await role(actor);
+    await rejected(()=>changeRpc('claim',{request_id:requestId}),/permission denied/);
+    await rejected(()=>db.exec('select * from private.dopmi_guardian_prices'),/permission denied/);await db.exec('reset role');}
+  await role('','service_role');assert.equal((await changeRpc('get',{request_id:requestId})).id,requestId);
+});
+test('Guardian expired processing lease cannot write and a replacement lease remains exclusive',async()=>{
+  const f=await changeFixture(),requestId=await f.request();const a=await changeRpc('claim',{request_id:requestId});
+  assert.equal(await changeRpc('claim',{request_id:requestId}),null);
+  await db.exec("update private.dopmi_guardian_subscriptions set change_lease_until=now()-interval '1 second'");
+  const b=await changeRpc('claim',{request_id:requestId});assert.notEqual(a.lease,b.lease);
+  await rejected(()=>changeRpc('write',{request_id:requestId,lease:a.lease}),/Turno de cambio/);
+});
+test('Guardian schedule monitoring defers an owned pending change and accepts its verified replacement price',async()=>{
+  const f=await changeFixture(),requestId=await f.request();
+  f.stripe.events={retrieve:async()=>({livemode:false,type:'customer.subscription.updated',data:{object:{id:f.subscription.id}}})};
+  await f.calendar.scheduler().handleWebhook('evt_change');assert.equal((await scheduleRpc('get',{cycle_id:f.calendar.cycleId})).status,'ready');
+  assert.deepEqual(await f.manager().handleWebhook('evt_change'),{received:true,guardian_change:true});
+  assert.equal((await changeRpc('get',{request_id:requestId})).status,'applied');
+  await f.calendar.scheduler().handleWebhook('evt_change');assert.equal((await scheduleRpc('get',{cycle_id:f.calendar.cycleId})).status,'ready');
+});
+test('Guardian periodic change worker applies queued requests after a missing webhook',async()=>{
+  const f=await changeFixture();await f.request();assert.deepEqual(await f.manager().reconcile(),{applied:1,failed:0});
+  assert.deepEqual(await f.manager().reconcile(),{applied:0,failed:0});
+});
+
+test('Guardian duplicate write authorization counts once per processing lease',async()=>{
+  const f=await changeFixture(),requestId=await f.request('cancel',0,null);
+  const j=await changeRpc('claim',{request_id:requestId}),data={request_id:requestId,lease:j.lease};
+  assert.equal((await changeRpc('write',data)).attempts,1);
+  assert.equal((await changeRpc('write',data)).attempts,1);
+});
+test('Guardian a monitor that read the old price cannot flag a newly confirmed amount',async()=>{
+  const f=await changeFixture(),requestId=await f.request();
+  const monitorRpc=async(operation,data)=>{
+    const result=await scheduleRpc(operation,data);
+    if(operation==='lookup_subscription'){
+      result.lifecycle_pending=false;await f.manager().run(requestId);
+    }
+    return result;
+  };
+  f.stripe.events={retrieve:async()=>({livemode:false,type:'customer.subscription.updated',data:{object:{id:f.subscription.id}}})};
+  const scheduler=guardianScheduleService({stripe:f.stripe,rpc:monitorRpc,logger:{error(){}}});
+  await assert.rejects(()=>scheduler.handleWebhook('evt_staleMonitor'),/guardian_/);
+  assert.equal((await scheduleRpc('get',{cycle_id:f.calendar.cycleId})).status,'ready');
+});

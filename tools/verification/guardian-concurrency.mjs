@@ -220,6 +220,17 @@ assert.equal(query(`select count(*),max(revision) from private.dopmi_guardian_re
 assert.equal(query("select count(*) from private.dopmi_guardian_collection_jobs where invoice_id='in_blockedOwnerCI';"),'0');
 console.log('Guardian concurrent owner requests: one intent, one revision, new cycle blocked');
 
+// Stage an amount write whose Stripe response arrives after owner cancellation.
+// Synthetic processor evidence exercises SQL only; no Stripe request is made.
+const amountId=query(`select id from private.dopmi_guardian_requests where donor_id='${donorB}' and kind='amount';`);
+const amountClaim=JSON.parse(query(`select public.dopmi_guardian_change_server('claim','{"request_id":"${amountId}"}');`));
+const amountData={request_id:amountId,lease:amountClaim.lease};
+for(const [operation,fields] of [
+  ['snapshot',{item_id:'si_changeCI',period_start:collectionData.period_start,effective_from:collectionData.period_end,
+    billing_anchor:collectionData.period_end,latest_invoice_id:null}],
+  ['write',{}],['price',{price_id:'price_changeCI'}],['mutation',{}],
+]) query(`select public.dopmi_guardian_change_server('${operation}','${JSON.stringify({...amountData,...fields})}');`);
+
 // Cancellation holds the same subscription row as authorize_pay. The waiting
 // worker must see the committed intent before persisting its one-shot marker.
 let cancelReady;
@@ -229,7 +240,40 @@ select public.dopmi_guardian_request('cancel','75000000-0000-4000-8000-000000000
 select pg_sleep(2);commit;`,output=>{if(output.includes('cancel_requested'))cancelReady();});
 await Promise.race([cancelStarted,cancelRequest.then(()=>{throw Error('Cancellation did not report');})]);
 const waitingPayment=concurrentQuery(`select public.dopmi_guardian_collection_server('authorize_pay','${JSON.stringify({invoice_id:'in_ownerCI',lease:ownerClaim.lease})}');`);
-const cancelResults=await Promise.all([cancelRequest,waitingPayment]);const stopped=JSON.parse(cancelResults[1]);
+const lateAmount=concurrentQuery(`select public.dopmi_guardian_change_server('applied','${JSON.stringify({...amountData,
+  subscription_id:'sub_collectionCI',customer_id:'cus_scheduleCI',price_id:'price_changeCI',item_id:'si_changeCI',
+  effective_from:collectionData.period_end,gross_cents:5000})}');`);
+const cancelResults=await Promise.all([cancelRequest,waitingPayment,lateAmount]);const stopped=JSON.parse(cancelResults[1]);
 assert.equal(stopped.pay_requested_at,null);assert.equal(stopped.decision,'skip');assert.equal(stopped.cycle_status,'released');
 assert.equal(query(`select count(*) from private.dopmi_guardian_requests where donor_id='${donorB}' and status='pending' and kind='cancel';`),'1');
 console.log('Guardian cancellation vs pay: cancellation commits first, no payment authorization');
+assert.equal(JSON.parse(cancelResults[2]).status,'superseded');
+assert.equal(query("select count(*) from private.dopmi_guardian_prices where subscription_id='sub_collectionCI';"),'1');
+assert.equal(query("select stripe_price_id from private.dopmi_guardian_subscriptions where stripe_subscription_id='sub_collectionCI';"),'price_collectionCI');
+console.log('Guardian cancellation vs amount confirmation: superseded result cannot replace price history');
+
+const cancelId=query(`select id from private.dopmi_guardian_requests where donor_id='${donorB}' and kind='cancel';`);
+let changeReady;
+const changeStarted=new Promise(resolve=>{changeReady=resolve;});
+const firstChange=concurrentQuery(`begin;
+select public.dopmi_guardian_change_server('claim','{"request_id":"${cancelId}"}');
+select pg_sleep(2);commit;`,output=>{if(output.includes('lease_until'))changeReady();});
+await Promise.race([changeStarted,firstChange.then(()=>{throw Error('Change lease did not report');})]);
+const secondChange=concurrentQuery(`select public.dopmi_guardian_change_server('claim','{"request_id":"${cancelId}"}') is null;`);
+const changeResults=await Promise.all([firstChange,secondChange]);assert.equal(changeResults[1],'t');
+const cancelClaim=JSON.parse(changeResults[0]);const cancelData={request_id:cancelId,lease:cancelClaim.lease};
+let writeReady;
+const writeStarted=new Promise(resolve=>{writeReady=resolve;});
+const firstWrite=concurrentQuery(`begin;
+select public.dopmi_guardian_change_server('write','${JSON.stringify(cancelData)}');
+select pg_sleep(2);commit;`,output=>{if(output.includes('first_attempt_at'))writeReady();});
+await Promise.race([writeStarted,firstWrite.then(()=>{throw Error('Change write did not report');})]);
+const secondWrite=concurrentQuery(`select public.dopmi_guardian_change_server('write','${JSON.stringify(cancelData)}');`);
+const writes=await Promise.all([firstWrite,secondWrite]);
+assert.equal(JSON.parse(writes[0]).attempts,1);assert.equal(JSON.parse(writes[1]).attempts,1);
+query(`select public.dopmi_guardian_change_server('mutation','${JSON.stringify(cancelData)}');
+select public.dopmi_guardian_change_server('canceled','${JSON.stringify({...cancelData,
+  subscription_id:'sub_collectionCI',customer_id:'cus_scheduleCI',status:'canceled'})}');`);
+assert.equal(query(`select status from private.dopmi_guardian_requests where id='${cancelId}';`),'applied');
+assert.equal(query("select status from private.dopmi_guardian_subscriptions where stripe_subscription_id='sub_collectionCI';"),'canceled');
+console.log('Guardian concurrent change processing: one lease, one counted write attempt, cancellation confirmed');

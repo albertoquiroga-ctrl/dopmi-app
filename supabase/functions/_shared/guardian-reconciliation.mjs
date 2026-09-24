@@ -5,7 +5,7 @@ import { GuardianBillingError, guardianPaidInvoice } from './guardian-billing.mj
 // subscription amounts/ownership from a browser or webhook into this function.
 // This does not authorize allocation: settlement must separately lock and
 // validate the persisted invoice/cycle binding and reservation in PostgreSQL.
-export async function readGuardianPaidEvidence({ stripe, lookupSubscription }, invoiceId) {
+export async function readGuardianPaidEvidence({ stripe, lookupSubscription, invoiceSnapshot }, invoiceId) {
   if (!/^in_[A-Za-z0-9]+$/.test(invoiceId ?? ''))
     throw new GuardianBillingError('invalid_invoice_identity');
   const invoice = await stripe.invoices.retrieve(invoiceId, { expand: ['payments'] });
@@ -27,13 +27,17 @@ export async function readGuardianPaidEvidence({ stripe, lookupSubscription }, i
   if (successful.length !== 1 || !/^pi_[A-Za-z0-9]+$/.test(intentId ?? ''))
     throw new GuardianBillingError('invoice_payment_mismatch');
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+  if (invoiceSnapshot && (invoiceSnapshot.stripe_invoice_id !== invoiceId || invoiceSnapshot.stripe_subscription_id !== subscriptionId
+    || !/^price_[A-Za-z0-9]+$/.test(invoiceSnapshot.price_id ?? '') || !Number.isSafeInteger(invoiceSnapshot.gross_cents)
+    || (invoiceSnapshot.period_start != null && invoice.lines?.data?.[0]?.period?.start !== invoiceSnapshot.period_start)))
+    throw new GuardianBillingError('guardian_invoice_snapshot_mismatch');
   const intent = await stripe.paymentIntents.retrieve(intentId, {
     expand: ['latest_charge.balance_transaction'],
   });
   const evidence = guardianPaidInvoice(invoice, subscription, {
     invoice_id: invoiceId, subscription_id: plan.stripe_subscription_id,
-    customer_id: plan.stripe_customer_id, price_id: plan.stripe_price_id,
-    gross_cents: plan.gross_cents,
+    customer_id: plan.stripe_customer_id, price_id: invoiceSnapshot?.price_id ?? plan.stripe_price_id,
+    gross_cents: invoiceSnapshot?.gross_cents ?? plan.gross_cents,
   }, payments, intent);
   return { donor_id: plan.donor_id, ...evidence };
 }

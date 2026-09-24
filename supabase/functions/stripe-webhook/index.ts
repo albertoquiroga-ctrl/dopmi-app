@@ -34,6 +34,10 @@ Deno.serve(async (req) => {
           return json({ ...monthlyEvent, ...result }, result.failed > 0 ? 503 : 200);
         }
       }
+      if (Deno.env.get('DOPMI_GUARDIAN_CHANGES_ENABLED') === 'true') {
+        const changeEvent = await guardian.changes.handleWebhook(event.id);
+        if (changeEvent) return json(changeEvent);
+      }
       if (Deno.env.get('DOPMI_GUARDIAN_SCHEDULE_ENABLED') === 'true') {
         const calendarEvent = await guardian.schedule.handleWebhook(event.id);
         if (calendarEvent) return json(calendarEvent);

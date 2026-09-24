@@ -4,6 +4,7 @@ import { guardianService } from './guardian-service.mjs';
 import { guardianActivationService } from './guardian-activation.mjs';
 import { guardianCollectionService } from './guardian-collection.mjs';
 import { guardianScheduleService } from './guardian-schedule.mjs';
+import { guardianChangeService } from './guardian-changes.mjs';
 import { PaymentError, requireTestKey } from './payments.mjs';
 
 // Separate client/version from H4. Creating this runtime requires an explicit
@@ -38,16 +39,22 @@ export function guardianRuntime() {
     recoveryRpc: (operation: string, data: unknown) => call('dopmi_guardian_recovery_server', operation, data),
     rpc: (operation: string, data: unknown) => call('dopmi_guardian_collection_server', operation, data),
   });
-  return { ...service, initial, schedule, collection,
+  const changes = guardianChangeService({ stripe,
+    rpc: (operation: string, data: unknown) => call('dopmi_guardian_change_server', operation, data),
+  });
+  return { ...service, initial, schedule, collection, changes,
     async reconcile() {
       const activation = await initial.reconcile();
+      const management = Deno.env.get('DOPMI_GUARDIAN_CHANGES_ENABLED') === 'true'
+        ? await changes.reconcile() : { applied: 0, failed: 0 };
       const monthly = Deno.env.get('DOPMI_GUARDIAN_COLLECTION_ENABLED') === 'true'
         ? await collection.reconcile() : { processed: 0, failed: 0 };
       const result = await service.reconcile();
       const calendar = Deno.env.get('DOPMI_GUARDIAN_SCHEDULE_ENABLED') === 'true'
         ? await schedule.reconcile() : { ready: 0, failed: 0 };
       return { ...result, initial_reconciled: activation.reconciled, schedules_ready: calendar.ready, monthly_processed: monthly.processed,
-        failed: result.failed + activation.failed + calendar.failed + monthly.failed };
+        changes_applied: management.applied,
+        failed: result.failed + activation.failed + calendar.failed + monthly.failed + management.failed };
     },
   };
 }

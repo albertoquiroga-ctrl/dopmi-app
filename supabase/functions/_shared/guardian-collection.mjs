@@ -38,14 +38,14 @@ export function guardianCollectionService({ stripe, rpc, recoveryRpc, reconcileI
   async function prepare(invoice) {
     const subscriptionId = id(invoice.parent?.subscription_details?.subscription);
     if (!/^sub_[A-Za-z0-9]+$/.test(subscriptionId ?? '')) return null;
-    const plan = await rpc('source', { subscription_id: subscriptionId });
+    const p = period(invoice);
+    const plan = await rpc('source', { subscription_id: subscriptionId, period_start: p.start });
     if (!plan) return null;
     const sub = await stripe.subscriptions.retrieve(subscriptionId);
     const snapshot = { invoice_id: invoice.id, subscription_id: plan.stripe_subscription_id,
       customer_id: plan.stripe_customer_id, price_id: plan.stripe_price_id, gross_cents: plan.gross_cents };
     guardianRenewalCandidate(invoice, sub, expected(snapshot));
     if (invoice.automatic_tax?.enabled !== false || sub.automatic_tax?.enabled !== false) fail('guardian_collection_tax_changed');
-    const p = period(invoice);
     const customer = await stripe.customers.retrieve(plan.stripe_customer_id);
     if (customer.id !== plan.stripe_customer_id || customer.livemode !== false || customer.deleted === true || customer.balance !== 0)
       fail('guardian_collection_customer_mismatch');

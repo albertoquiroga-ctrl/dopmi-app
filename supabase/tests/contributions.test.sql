@@ -88,5 +88,9 @@ select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000003'
 select is(dopmi_guardian_plan(),null::jsonb,'staff membership grants no other owner plan access');
 select throws_ok($$select private.dopmi_guardian_plan_view('70000000-0000-4000-8000-000000000001')$$,'42501',null,'private projection cannot be called with another owner');
 reset role;
+select ok(not has_function_privilege('anon','public.dopmi_guardian_change_server(text,jsonb)','execute'),'anonymous cannot process Guardian changes');
+select ok(not has_function_privilege('authenticated','public.dopmi_guardian_change_server(text,jsonb)','execute'),'authenticated cannot process Guardian changes');
+select ok(has_function_privilege('service_role','public.dopmi_guardian_change_server(text,jsonb)','execute'),'service role can process Guardian changes');
+select ok((select relrowsecurity from pg_class where oid='private.dopmi_guardian_prices'::regclass),'Guardian price history has RLS');
 select * from finish();
 rollback;
