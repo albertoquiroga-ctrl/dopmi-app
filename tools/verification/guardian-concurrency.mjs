@@ -138,3 +138,35 @@ const competingSchedule=concurrentQuery(`select public.dopmi_guardian_schedule_s
 const scheduleResults=await Promise.all([scheduleClaim,competingSchedule]);assert.equal(scheduleResults[1],'t');
 assert.equal(query(`select attempts from private.dopmi_guardian_schedule_jobs where cycle_id='${activationId}';`),'1');
 console.log('Guardian concurrent Billing setup: one active lease and one attempt');
+
+// Finish the synthetic schedule and race two monthly workers. No Stripe is
+// called by this database test; the response must grant only one pay marker.
+const scheduleLease=query(`select lease from private.dopmi_guardian_schedule_jobs where cycle_id='${activationId}';`);
+for(const [operation,fields] of [['price',{price_id:'price_collectionCI'}],['subscription',{subscription_id:'sub_collectionCI'}],['ready',{}]])
+  query(`select public.dopmi_guardian_schedule_server('${operation}','${JSON.stringify({cycle_id:activationId,lease:scheduleLease,...fields})}');`);
+query(`insert into public.dopmi_rescue_records(id,owner_id,kind,status,approved_snapshot,parent_id,reimbursable_cents)
+values('74100000-0000-4000-8000-000000000005','${owner}','expense','approved','{"title":"Collection CI"}',
+'74100000-0000-4000-8000-000000000002',4000);`);
+const collectionData={invoice_id:'in_collectionCI',subscription_id:'sub_collectionCI',cycle_key:'74200000-0000-4000-8000-000000000006',
+  period_start:Math.floor(Date.now()/1000)-1,period_end:Math.floor(Date.now()/1000)+30*86400,fresh:true};
+let collectionReady;
+const collectionStarted=new Promise(resolve=>{collectionReady=resolve;});
+const collectionPrepare=concurrentQuery(`begin;
+select public.dopmi_guardian_collection_server('prepare','${JSON.stringify(collectionData)}');
+select pg_sleep(2);commit;`,output=>{if(output.includes('invoice_id'))collectionReady();});
+await Promise.race([collectionStarted,collectionPrepare.then(()=>{throw Error('Collection did not report');})]);
+const competingPrepare=concurrentQuery(`select public.dopmi_guardian_collection_server('prepare','${JSON.stringify(collectionData)}');`);
+await Promise.all([collectionPrepare,competingPrepare]);
+assert.equal(query("select count(*) from private.dopmi_guardian_collection_jobs where invoice_id='in_collectionCI';"),'1');
+const collectionClaim=JSON.parse(query(`select public.dopmi_guardian_collection_server('claim','{"invoice_id":"in_collectionCI"}');`));
+const paymentData=JSON.stringify({invoice_id:'in_collectionCI',lease:collectionClaim.lease});
+let paymentReady;
+const paymentStarted=new Promise(resolve=>{paymentReady=resolve;});
+const firstPayment=concurrentQuery(`begin;
+select public.dopmi_guardian_collection_server('authorize_pay','${paymentData}');
+select pg_sleep(2);commit;`,output=>{if(output.includes('pay_requested_at'))paymentReady();});
+await Promise.race([paymentStarted,firstPayment.then(()=>{throw Error('Pay authorization did not report');})]);
+const competingPayment=concurrentQuery(`select public.dopmi_guardian_collection_server('authorize_pay','${paymentData}') is null;`);
+const paymentResults=await Promise.all([firstPayment,competingPayment]);assert.equal(paymentResults[1],'t');
+assert.equal(JSON.parse(paymentResults[0]).decision,'collect');
+console.log('Guardian concurrent monthly collection: one invoice reservation and one pay authorization');

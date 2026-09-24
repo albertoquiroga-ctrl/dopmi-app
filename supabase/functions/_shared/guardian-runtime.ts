@@ -2,6 +2,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2.57.4';
 import Stripe from 'npm:stripe@22.6.0';
 import { guardianService } from './guardian-service.mjs';
 import { guardianActivationService } from './guardian-activation.mjs';
+import { guardianCollectionService } from './guardian-collection.mjs';
 import { guardianScheduleService } from './guardian-schedule.mjs';
 import { PaymentError, requireTestKey } from './payments.mjs';
 
@@ -33,14 +34,19 @@ export function guardianRuntime() {
   const schedule = guardianScheduleService({ stripe,
     rpc: (operation: string, data: unknown) => call('dopmi_guardian_schedule_server', operation, data),
   });
-  return { ...service, initial, schedule,
+  const collection = guardianCollectionService({ stripe, reconcileInvoice: service.reconcileInvoice,
+    rpc: (operation: string, data: unknown) => call('dopmi_guardian_collection_server', operation, data),
+  });
+  return { ...service, initial, schedule, collection,
     async reconcile() {
       const activation = await initial.reconcile();
+      const monthly = Deno.env.get('DOPMI_GUARDIAN_COLLECTION_ENABLED') === 'true'
+        ? await collection.reconcile() : { processed: 0, failed: 0 };
       const result = await service.reconcile();
       const calendar = Deno.env.get('DOPMI_GUARDIAN_SCHEDULE_ENABLED') === 'true'
         ? await schedule.reconcile() : { ready: 0, failed: 0 };
-      return { ...result, initial_reconciled: activation.reconciled, schedules_ready: calendar.ready,
-        failed: result.failed + activation.failed + calendar.failed };
+      return { ...result, initial_reconciled: activation.reconciled, schedules_ready: calendar.ready, monthly_processed: monthly.processed,
+        failed: result.failed + activation.failed + calendar.failed + monthly.failed };
     },
   };
 }

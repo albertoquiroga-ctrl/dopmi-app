@@ -27,6 +27,13 @@ Deno.serve(async (req) => {
         const result = await guardian.work();
         return json({ ...handled, ...result }, result.failed > 0 ? 503 : 200);
       }
+      if (Deno.env.get('DOPMI_GUARDIAN_COLLECTION_ENABLED') === 'true') {
+        const monthlyEvent = await guardian.collection.handleWebhook(event.id);
+        if (monthlyEvent) {
+          const result = await guardian.work();
+          return json({ ...monthlyEvent, ...result }, result.failed > 0 ? 503 : 200);
+        }
+      }
       if (Deno.env.get('DOPMI_GUARDIAN_SCHEDULE_ENABLED') === 'true') {
         const calendarEvent = await guardian.schedule.handleWebhook(event.id);
         if (calendarEvent) return json(calendarEvent);
