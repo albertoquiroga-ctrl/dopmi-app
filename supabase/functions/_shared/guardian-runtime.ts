@@ -6,6 +6,7 @@ import { guardianCollectionService } from './guardian-collection.mjs';
 import { guardianScheduleService } from './guardian-schedule.mjs';
 import { guardianChangeService } from './guardian-changes.mjs';
 import { guardianMethodService } from './guardian-method.mjs';
+import { guardianRefundService } from './guardian-refunds.mjs';
 import { PaymentError, requireTestKey } from './payments.mjs';
 
 // Separate client/version from H4. Creating this runtime requires an explicit
@@ -25,6 +26,9 @@ export function guardianRuntime() {
     return result.data;
   }
   const settlement = (operation: string, data: unknown) => call('dopmi_guardian_settlement_server', operation, data);
+  const refunds = guardianRefundService({ stripe,
+    rpc: (operation: string, data: unknown) => call('dopmi_guardian_refund_server', operation, data),
+  });
   const service = guardianService({ stripe,
     rpc: settlement,
     lookupSubscription: (stripe_subscription_id: string) => call('dopmi_guardian_subscription_server', 'lookup', { stripe_subscription_id }),
@@ -57,9 +61,11 @@ export function guardianRuntime() {
       return result.data;
     }, returnUrl: `${Deno.env.get('SUPABASE_URL')!}/functions/v1/payment-return`,
   });
-  return { ...service, initial, schedule, collection, changes, method,
+  return { ...service, initial, schedule, collection, changes, method, refunds,
     async reconcile() {
       const activation = await initial.reconcile();
+      const returns = Deno.env.get('DOPMI_GUARDIAN_REFUNDS_ENABLED') === 'true'
+        ? await refunds.reconcile() : { reconciled: 0, failed: 0 };
       const management = Deno.env.get('DOPMI_GUARDIAN_CHANGES_ENABLED') === 'true'
         ? await changes.reconcile() : { applied: 0, failed: 0 };
       const methods = Deno.env.get('DOPMI_GUARDIAN_CHANGES_ENABLED') === 'true'
@@ -71,7 +77,8 @@ export function guardianRuntime() {
         ? await schedule.reconcile() : { ready: 0, failed: 0 };
       return { ...result, initial_reconciled: activation.reconciled, schedules_ready: calendar.ready, monthly_processed: monthly.processed,
         changes_applied: management.applied, methods_applied: methods.applied,
-        failed: result.failed + activation.failed + calendar.failed + monthly.failed + management.failed + methods.failed };
+        refunds_reconciled: returns.reconciled,
+        failed: result.failed + activation.failed + calendar.failed + monthly.failed + management.failed + methods.failed + returns.failed };
     },
   };
 }

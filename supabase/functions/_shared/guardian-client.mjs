@@ -2,7 +2,7 @@ import { PaymentError } from './payments.mjs';
 import { GuardianBillingError } from './guardian-billing.mjs';
 
 export const guardianClientFlags = ['DOPMI_GUARDIAN_CHECKOUT_ENABLED', 'DOPMI_GUARDIAN_WORKER_ENABLED',
-  'DOPMI_GUARDIAN_SCHEDULE_ENABLED', 'DOPMI_GUARDIAN_COLLECTION_ENABLED', 'DOPMI_GUARDIAN_CHANGES_ENABLED'];
+  'DOPMI_GUARDIAN_SCHEDULE_ENABLED', 'DOPMI_GUARDIAN_COLLECTION_ENABLED', 'DOPMI_GUARDIAN_CHANGES_ENABLED', 'DOPMI_GUARDIAN_REFUNDS_ENABLED'];
 export const guardianClientEnabled = env => guardianClientFlags.every(flag => env(flag) === 'true');
 const headers = { 'Content-Type': 'application/json', 'Cache-Control': 'no-store',
   'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, apikey, content-type, x-client-info',

@@ -35,6 +35,7 @@ export function guardianService({ stripe, rpc, lookupSubscription, logger = cons
       validateCharge(charge, settled);
       let result;
       if (job.kind === 'transfer') {
+        if (settled.external_refund_pending) fail('guardian_charge_needs_review');
         if (charge.amount_refunded !== 0) fail('guardian_charge_needs_review');
         const allocation = settled.allocations.find(a => a.expense_id === job.expense_id);
         if (!allocation || allocation.amount_cents <= 0 || settled.refund_cents !== 0) fail('guardian_transfer_mismatch');

@@ -2641,3 +2641,165 @@ test('Guardian cancellation during boundary evidence reading prevents a late amo
   await changeDue();assert.equal((await f.manager().run(request)).status,'superseded');
   assert.equal((await guardianRegistry('lookup',{stripe_subscription_id:f.subscription.id})).gross_cents,5000);
 });
+
+const { guardianRefundService } = await import('../../supabase/functions/_shared/guardian-refunds.mjs');
+const refundRpc=async(operation,data={})=>(await db.query('select public.dopmi_guardian_refund_server($1,$2::jsonb) value',[operation,JSON.stringify(data)])).rows[0].value;
+const refundReady=()=>db.exec("update private.dopmi_guardian_refund_adjustments set available_at=now(),lease_until=null");
+async function guardianRefundFixture({split=false,initial=false,delivered=true}={}) {
+  if(split){
+    await db.query('update public.dopmi_rescue_records set reimbursable_cents=2000 where id=$1',[expense]);
+    await db.query(`insert into public.dopmi_rescue_records(id,owner_id,kind,status,approved_snapshot,parent_id,reimbursable_cents)
+      values('71000000-0000-4000-8000-000000000004',$1,'expense','approved','{"title":"Comida"}','71000000-0000-4000-8000-000000000002',5000)`,[rescuer]);
+  }
+  const f=initial?initialFixture():guardianStripeFixture();let cycle;
+  if(initial){const a=await f.initial.checkout(donor,initialInput);f.paid();await f.initial.reconcileSession('cs_test_initial1');cycle={id:a.cycle_id};}
+  else {cycle=await boundGuardian();await f.service().reconcileInvoice('in_guardian1');}
+  if(delivered)await f.service().work();
+  const reversals=new Map(),writes=[];
+  const transfer=id=>[...f.transfers.values()].find(t=>t.id===id);
+  f.stripe.transfers.retrieve=async id=>structuredClone(transfer(id));
+  f.stripe.transfers.listReversals=async id=>({has_more:false,data:structuredClone(reversals.get(id)??[])});
+  f.stripe.transfers.createReversal=async(id,fields,options)=>{
+    writes.push({id,fields,options});
+    if(!reversals.has(id)){const t=transfer(id);reversals.set(id,[{id:`trr_guardian${reversals.size+1}`,transfer:id,amount:fields.amount,currency:'mxn'}]);t.amount_reversed=fields.amount;t.reversed=true;}
+    return structuredClone(reversals.get(id)[0]);
+  };
+  const evidence=(amount=5000,status='succeeded')=>{
+    f.refunds.splice(0,f.refunds.length,{id:'re_external',charge:f.charge.id,payment_intent:f.charge.payment_intent,amount,currency:'mxn',status});
+    f.charge.amount_refunded=status==='succeeded'?amount:0;
+  };
+  evidence();
+  const returns=(rpc=refundRpc)=>guardianRefundService({stripe:f.stripe,rpc,logger:{}});
+  return {...f,cycle,reversals,writes,transfer,evidence,returns};
+}
+for(const initial of [false,true])test(`Guardian full post-transfer refund reconciles ${initial?'initial Checkout':'monthly invoice'} and preserves original history`,async()=>{
+  const f=await guardianRefundFixture({initial});const before=await guardianSettlement('get',{cycle_id:f.cycle.id});
+  const result=await f.returns().reconcileCycle(f.cycle.id);
+  assert.equal(result.adjustment.status,'completed');assert.equal(result.allocated_cents,0);assert.equal(result.refund_cents,5000);
+  assert.equal(result.platform_fee_cents,0);assert.equal(result.platform_loss_cents,586);assert.equal(f.writes.length,1);
+  assert.equal(f.writes[0].fields.amount,4314);assert.match(f.writes[0].options.idempotencyKey,/^guardian-reversal:/);
+  assert.deepEqual(result.allocations,before.allocations); // Original transfer audit remains available privately.
+  assert.equal((await db.query('select private.dopmi_guardian_reserved($1) n',[expense])).rows[0].n,0);
+  assert.equal((await refundRpc('candidates')).length,0);
+  await f.returns().reconcileCycle(f.cycle.id);assert.equal(f.writes.length,1);assert.equal(f.calls.filter(x=>x.kind==='refund').length,0);
+  await role(donor);const h=(await history()).items[0],a=(await historyAllocations(f.cycle.id)).items[0];
+  assert.equal(h.status,'refunded');assert.equal(h.refunded_cents,5000);assert.equal(h.reversed_cents,4314);assert.equal(h.transferred_cents,0);
+  assert.equal(h.allocation_count,1);assert.equal(a.status,'reversed');assert.equal(a.amount_cents,4314);
+  assert.doesNotMatch(JSON.stringify({h,a}),/trr_|tr_guardian|re_external|ch_|pi_|acct_/);
+});
+test('Guardian multiple reversals keep all capacity until the last destination confirms',async()=>{
+  const f=await guardianRefundFixture({split:true});const create=f.stripe.transfers.createReversal;let attempt=0;
+  f.stripe.transfers.createReversal=async(...args)=>{if(++attempt===2)throw Error('insufficient balance');return create(...args);};
+  await assert.rejects(f.returns().reconcileCycle(f.cycle.id),/insufficient balance/);
+  let s=await refundRpc('get',{cycle_id:f.cycle.id});assert.equal(s.allocated_cents,4314);assert.equal(s.adjustment.confirmed_refund_cents,5000);
+  assert.equal(s.reversals.filter(r=>r.reversal_id).length,1);
+  assert.equal((await db.query('select sum(reversed_cents)::integer n from private.dopmi_guardian_allocations')).rows[0].n,0);
+  await role(donor);const h=(await history()).items[0];assert.equal(h.status,'refund_review');assert.equal(h.refunded_cents,5000);assert.equal(h.reversed_cents,0);await db.exec('reset role');
+  await refundReady();f.stripe.transfers.createReversal=create;
+  s=await f.returns().reconcileCycle(f.cycle.id);assert.equal(s.adjustment.status,'completed');assert.equal(f.writes.length,2);
+  assert.equal(f.writes.reduce((n,w)=>n+w.fields.amount,0),4314);
+});
+for(const stage of ['stripe','confirmed','complete'])test(`Guardian lost ${stage} reversal acknowledgement recovers with no extra movement`,async()=>{
+  const f=await guardianRefundFixture();let lost=true;
+  if(stage==='stripe'){const create=f.stripe.transfers.createReversal;f.stripe.transfers.createReversal=async(...args)=>{const r=await create(...args);if(lost){lost=false;throw Error('lost');}return r;};}
+  const rpc=async(op,data)=>{const r=await refundRpc(op,data);if(op===stage&&lost){lost=false;throw Error('lost');}return r;};
+  await assert.rejects(f.returns(rpc).reconcileCycle(f.cycle.id),/lost/);
+  await refundReady();assert.equal((await f.returns().reconcileCycle(f.cycle.id)).adjustment.status,'completed');
+  assert.equal(f.writes.length,1);assert.equal(f.reversals.size,1);
+});
+for(const status of ['pending','requires_action','failed','canceled','partial','disputed'])test(`Guardian ${status} refund never authorizes a reversal or frees capacity`,async()=>{
+  const f=await guardianRefundFixture();
+  if(status==='partial')f.evidence(1000);else if(status==='disputed')f.charge.disputed=true;else f.evidence(5000,status);
+  const s=await f.returns().reconcileCycle(f.cycle.id);assert.equal(f.writes.length,0);
+  assert.equal((await guardianSettlement('get',{cycle_id:f.cycle.id})).allocated_cents,4314);
+  if(status==='partial')assert.equal(s.adjustment.confirmed_refund_cents,1000);
+});
+test('Guardian separate partial refunds summing to the full charge permit one full reversal',async()=>{
+  const f=await guardianRefundFixture();f.refunds[0].amount=1000;f.refunds.push({...f.refunds[0],id:'re_external2',amount:4000});
+  const s=await f.returns().reconcileCycle(f.cycle.id);assert.equal(s.adjustment.status,'completed');assert.equal(s.adjustment.refunds.length,2);assert.equal(f.writes.length,1);
+});
+for(const flaw of ['foreign','duplicate','amount','currency','loop','unknown_status'])test(`Guardian invalid ${flaw} refund evidence cannot start reversal`,async()=>{
+  const f=await guardianRefundFixture();
+  if(flaw==='foreign')f.refunds[0].charge='ch_foreign';
+  if(flaw==='duplicate')f.refunds.push({...f.refunds[0]});
+  if(flaw==='amount')f.refunds[0].amount=5001;
+  if(flaw==='currency')f.refunds[0].currency='usd';
+  if(flaw==='unknown_status')f.refunds[0].status='approved';
+  if(flaw==='loop')f.stripe.refunds.list=async()=>({has_more:true,data:structuredClone(f.refunds)});
+  await assert.rejects(f.returns().reconcileCycle(f.cycle.id),/guardian_refund_/);assert.equal(f.writes.length,0);
+});
+for(const flaw of ['destination','source','group','live','amount','partial','reversal_currency','reversal_owner'])test(`Guardian ${flaw} transfer evidence is held for review`,async()=>{
+  const f=await guardianRefundFixture();const t=[...f.transfers.values()][0];
+  if(flaw==='destination')t.destination='acct_foreign';if(flaw==='source')t.source_transaction='ch_foreign';
+  if(flaw==='group')t.transfer_group='foreign';if(flaw==='live')t.livemode=true;if(flaw==='amount')t.amount++;
+  if(flaw==='partial')t.amount_reversed=100;
+  if(flaw.startsWith('reversal_')){t.reversed=true;t.amount_reversed=4314;f.reversals.set(t.id,[{id:'trr_manual',transfer:flaw==='reversal_owner'?'tr_foreign':t.id,amount:4314,currency:flaw==='reversal_currency'?'usd':'mxn'}]);}
+  await assert.rejects(f.returns().reconcileCycle(f.cycle.id),/guardian_/);assert.equal(f.writes.length,0);
+  assert.equal((await refundRpc('get',{cycle_id:f.cycle.id})).allocated_cents,4314);
+});
+test('Guardian reversal creation response alone is not confirmation',async()=>{
+  const f=await guardianRefundFixture();f.stripe.transfers.createReversal=async()=>({id:'trr_unconfirmed'});
+  await assert.rejects(f.returns().reconcileCycle(f.cycle.id),/guardian_reversal_unconfirmed/);
+  assert.equal((await refundRpc('get',{cycle_id:f.cycle.id})).reversals[0].reversal_id,null);
+});
+test('Guardian exhausted reversal writes still permit independent read recovery',async()=>{
+  const f=await guardianRefundFixture();const create=f.stripe.transfers.createReversal;
+  f.stripe.transfers.createReversal=async()=>{throw Error('unavailable');};await assert.rejects(f.returns().reconcileCycle(f.cycle.id));
+  await db.exec("update private.dopmi_guardian_reversals set attempts=8,first_attempt_at=now()-interval '2 days'");await refundReady();
+  await assert.rejects(f.returns().reconcileCycle(f.cycle.id),/guardian_reversal_retry_limit/);assert.equal(f.writes.length,0);
+  await create([...f.transfers.values()][0].id,{amount:4314},{idempotencyKey:'external'});await refundReady();
+  assert.equal((await f.returns().reconcileCycle(f.cycle.id)).adjustment.status,'completed');assert.equal(f.writes.length,1);
+});
+test('Guardian full refund with an unconfirmed transfer blocks new delivery and retains capacity',async()=>{
+  const f=await guardianRefundFixture({delivered:false});const s=await f.returns().reconcileCycle(f.cycle.id);
+  assert.equal(s.adjustment.status,'review');assert.equal(s.adjustment.error_code,'guardian_transfer_unconfirmed');
+  assert.equal((await f.service().work()).failed,1);assert.equal(f.calls.length,0);assert.equal(f.writes.length,0);
+  assert.equal((await refundRpc('get',{cycle_id:f.cycle.id})).allocated_cents,4314);
+});
+test('Guardian refund service denies all client roles including administrators',async()=>{
+  for(const actor of [null,donor,other,staff]){
+    await role(actor,actor?'authenticated':'anon');
+    await rejected(()=>refundRpc('candidates'),/permission denied/);
+    await rejected(()=>db.query('select * from private.dopmi_guardian_refund_adjustments'),/permission denied/);
+    await rejected(()=>db.query('select * from private.dopmi_guardian_reversals'),/permission denied/);
+  }
+  await role('','service_role');assert.deepEqual(await refundRpc('candidates'),[]);
+});
+test('Guardian refund webhook uses persisted charge ownership and current evidence, not metadata',async()=>{
+  const f=await guardianRefundFixture();f.stripe.events={retrieve:async eventId=>({id:eventId,livemode:false,type:'charge.refunded',data:{object:{id:f.charge.id,amount_refunded:1,metadata:{dopmi_guardian_cycle:'foreign'}}}})};
+  assert.equal((await f.returns().handleWebhook('evt_return')).cycle_id,f.cycle.id);assert.equal(f.writes.length,1);
+  await f.returns().handleWebhook('evt_return');assert.equal(f.writes.length,1);
+  f.stripe.events.retrieve=async id=>({id,livemode:false,type:'charge.refunded',data:{object:{id:'ch_unregistered'}}});
+  assert.equal(await f.returns().handleWebhook('evt_unknown'),null);
+  f.stripe.events.retrieve=async id=>({id,livemode:true});await assert.rejects(f.returns().handleWebhook('evt_live'),/event_mismatch/);
+});
+test('Guardian periodic refund scan recovers a missing webhook and rotates checked timestamps',async()=>{
+  const f=await guardianRefundFixture();assert.deepEqual(await f.returns().reconcile(),{reconciled:1,failed:0});
+  assert.deepEqual(await f.returns().reconcile(),{reconciled:0,failed:0});assert.equal(f.writes.length,1);
+  assert.notEqual((await db.query('select refund_checked_at::text t from private.dopmi_guardian_settlements')).rows[0].t,'-infinity');
+});
+test('Guardian SQL rejects foreign refund identity and duplicate refund evidence',async()=>{
+  const f=await guardianRefundFixture();const data={cycle_id:f.cycle.id,charge_id:f.charge.id,payment_intent_id:f.charge.payment_intent,gross_cents:5000,confirmed_refund_cents:5000,refunds:[{id:'re_external',amount:5000}],has_pending:false,disputed:false};
+  await rejected(()=>refundRpc('observe',{...data,charge_id:'ch_other'}),/Evidencia/);
+  await rejected(()=>refundRpc('observe',{...data,refunds:[{id:'re_external',amount:2500},{id:'re_external',amount:2500}]}),/repetidas/);
+  await refundRpc('observe',data);const claim=await refundRpc('claim',{cycle_id:f.cycle.id});
+  assert.equal(await refundRpc('claim',{cycle_id:f.cycle.id}),null);
+  await rejected(()=>refundRpc('confirmed',{cycle_id:f.cycle.id,lease:claim.adjustment.lease,expense_id:expense,transfer_id:'tr_other',amount_cents:4314,reversal_id:'trr_other'}),/no coincide/);
+  const result=await refundRpc('complete',{cycle_id:f.cycle.id,lease:claim.adjustment.lease});assert.equal(result.adjustment.status,'pending');assert.equal(result.allocated_cents,4314);
+});
+
+test('Guardian manual reversal without a refund stays in review instead of inventing a customer refund',async()=>{
+  const f=await guardianRefundFixture();f.refunds.length=0;f.charge.amount_refunded=0;
+  const transfer=[...f.transfers.values()][0];transfer.reversed=true;transfer.amount_reversed=4314;
+  f.stripe.events={retrieve:async id=>({id,livemode:false,type:'transfer.reversed',data:{object:{id:transfer.id}}})};
+  await assert.rejects(f.returns().handleWebhook('evt_reversed'),/guardian_refund_review/);
+  const state=await refundRpc('get',{cycle_id:f.cycle.id});assert.equal(state.adjustment.confirmed_refund_cents,0);
+  assert.equal(state.adjustment.status,'review');assert.equal(state.allocated_cents,4314);assert.equal(f.writes.length,0);
+});
+test('Guardian reversal age limit alone stops new writes and a partial refund may later become complete',async()=>{
+  const f=await guardianRefundFixture();f.evidence(1000);assert.equal((await f.returns().reconcileCycle(f.cycle.id)).adjustment.status,'review');
+  f.evidence();const create=f.stripe.transfers.createReversal;f.stripe.transfers.createReversal=async()=>{throw Error('unavailable');};
+  await assert.rejects(f.returns().reconcileCycle(f.cycle.id));await refundReady();
+  await db.exec("update private.dopmi_guardian_reversals set first_attempt_at=now()-interval '24 hours'");
+  f.stripe.transfers.createReversal=create;await assert.rejects(f.returns().reconcileCycle(f.cycle.id),/retry_limit/);assert.equal(f.writes.length,0);
+});

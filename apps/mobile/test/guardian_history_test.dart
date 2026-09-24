@@ -37,6 +37,7 @@ class HistoryRepo extends FakeGuardian {
   final allocationCursors = <String?>[];
   Future<Json> Function(Json?)? read;
   bool failPage = false, failAllocation = false;
+  String allocationStatus = 'assigned';
   @override
   Future<Json> history({Json? cursor}) async {
     cursors.add(cursor);
@@ -65,7 +66,7 @@ class HistoryRepo extends FakeGuardian {
           'id': 'expense',
           'title': 'Medicamentos',
           'amount_cents': 4314,
-          'status': 'assigned',
+          'status': allocationStatus,
         },
       ],
       'next_cursor': null,
@@ -244,4 +245,74 @@ void main() {
       expect(find.text('Ver ciclos anteriores'), findsNothing);
     },
   );
+  testWidgets(
+    'confirmed refund does not claim its transfers were reversed yet',
+    (tester) async {
+      final repo = HistoryRepo()
+        ..read = (_) async => {
+          'items': [
+            {
+              ...cycle('returned', 'transferred'),
+              'status': 'refund_reconciling',
+              'refunded_cents': 5000,
+              'reversed_cents': 0,
+            },
+          ],
+          'next_cursor': null,
+        };
+      await start(tester, repo);
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Devuelto confirmado:'), findsOneWidget);
+      expect(find.textContaining('El pago ya fue devuelto.'), findsOneWidget);
+      expect(find.textContaining('Transferencias revertidas:'), findsNothing);
+      expect(find.textContaining('Por devolver:'), findsNothing);
+    },
+  );
+  testWidgets('partial refund under review shows only the confirmed amount', (
+    tester,
+  ) async {
+    final repo = HistoryRepo()
+      ..read = (_) async => {
+        'items': [
+          {
+            ...cycle('partial', 'transferred'),
+            'status': 'refund_review',
+            'refunded_cents': 1000,
+            'needs_review': true,
+          },
+        ],
+        'next_cursor': null,
+      };
+    await start(tester, repo);
+    await tester.pumpAndSettle();
+    expect(find.text('Devolución en revisión'), findsOneWidget);
+    expect(find.textContaining('Devuelto confirmado:'), findsOneWidget);
+    expect(find.textContaining('importe completo del pago'), findsNothing);
+    expect(find.textContaining('Por devolver:'), findsNothing);
+  });
+  testWidgets('completed reversal retains the original allocation in history', (
+    tester,
+  ) async {
+    final repo = HistoryRepo()
+      ..allocationStatus = 'reversed'
+      ..read = (_) async => {
+        'items': [
+          {
+            ...cycle('done', 'refunded'),
+            'reversed_cents': 4314,
+            'allocation_count': 1,
+          },
+        ],
+        'next_cursor': null,
+      };
+    await start(tester, repo);
+    await tester.pumpAndSettle();
+    await tap(tester, 'Ver asignaciones');
+    expect(find.textContaining('Transferencias revertidas:'), findsOneWidget);
+    expect(
+      find.textContaining('Importe original; reversión confirmada'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('transferencia pendiente'), findsNothing);
+  });
 }

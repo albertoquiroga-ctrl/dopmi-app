@@ -22,6 +22,10 @@ Deno.serve(async (req) => {
     if (Deno.env.get('DOPMI_GUARDIAN_WORKER_ENABLED') === 'true') {
       const { guardianRuntime } = await import('../_shared/guardian-runtime.ts');
       const guardian = guardianRuntime();
+      if (Deno.env.get('DOPMI_GUARDIAN_REFUNDS_ENABLED') === 'true') {
+        const refundEvent = await guardian.refunds.handleWebhook(event.id);
+        if (refundEvent) return json(refundEvent);
+      }
       const handled = await guardian.initial.handleWebhook(event.id);
       if (handled) {
         const result = await guardian.work();

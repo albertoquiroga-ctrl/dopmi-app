@@ -5,6 +5,13 @@ Deno.serve(async (req) => {
   if (!secret || req.headers.get('Authorization') !== `Bearer ${secret}`) return json({ error: 'access_denied' }, 401);
   try {
     const input = await req.json().catch(() => ({}));
+    if (input.action === 'reprocess_guardian_refund') {
+      if (Deno.env.get('DOPMI_GUARDIAN_REFUNDS_ENABLED') !== 'true') return json({ error: 'guardian_refunds_disabled' }, 503);
+      const { guardianRuntime } = await import('../_shared/guardian-runtime.ts');
+      const result = await guardianRuntime().refunds.reconcileCycle(input.cycle_id);
+      const status = result?.adjustment?.status ?? 'no_refund';
+      return json({ cycle_id: input.cycle_id, status }, ['pending', 'review'].includes(status) ? 503 : 200);
+    }
     if (input.action === 'reprocess_donation') {
       const d = await runtime().service.reprocessDonation(input.donation_id);
       return json({ donation_id: d.id, payment_status: d.payment_status, transfer_status: d.transfer_status,

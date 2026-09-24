@@ -23,6 +23,9 @@ const _statusLabels = {
   'assigned': 'Pago confirmado · neto asignado',
   'transferred': 'Neto transferido',
   'refund_pending': 'Devolución en proceso',
+  'refund_reconciling':
+      'Devolución confirmada · transferencias en conciliación',
+  'refund_review': 'Devolución en revisión',
   'refunded': 'Devolución confirmada',
 };
 
@@ -175,6 +178,22 @@ class _HistoryState extends ConsumerState<_GuardianHistory> {
                       Text(
                         '${item['status'] == 'refunded' ? 'Devuelto' : 'Por devolver'}: ${pesos(item['refund_cents'] as int)}',
                       ),
+                    if ([
+                          'refund_reconciling',
+                          'refund_review',
+                        ].contains(item['status']) &&
+                        (item['refunded_cents'] as int? ?? 0) > 0)
+                      Text(
+                        'Devuelto confirmado: ${pesos(item['refunded_cents'] as int)}',
+                      ),
+                    if (item['status'] == 'refund_reconciling')
+                      const Text(
+                        'El pago ya fue devuelto. Seguimos conciliando las transferencias anteriores.',
+                      ),
+                    if ((item['reversed_cents'] as int? ?? 0) > 0)
+                      Text(
+                        'Transferencias revertidas: ${pesos(item['reversed_cents'] as int)}',
+                      ),
                     if (item['status'] == 'refund_pending' ||
                         item['status'] == 'refunded')
                       const Text(
@@ -277,7 +296,11 @@ class _AllocationsState extends ConsumerState<_Allocations> {
         ListTile(
           title: Text(item['title'] as String),
           subtitle: Text(
-            '${pesos(item['amount_cents'] as int)} · ${item['status'] == 'transferred' ? 'Transferencia confirmada' : 'Asignado; transferencia pendiente'}',
+            '${pesos(item['amount_cents'] as int)} · ${switch (item['status']) {
+              'reversed' => 'Importe original; reversión confirmada',
+              'transferred' => 'Transferencia confirmada',
+              _ => 'Asignado; transferencia pendiente',
+            }}',
           ),
         ),
       if (busy) const LinearProgressIndicator(),

@@ -428,3 +428,27 @@ const staleBoundaryReservation=concurrentQuery(`select public.dopmi_guardian_col
 const boundaryResults=await Promise.allSettled([boundaryApply,staleBoundaryReservation]);assert.equal(boundaryResults[0].status,'fulfilled');assert.equal(boundaryResults[1].status,'rejected');assert.match(boundaryResults[1].reason.message,/factura no coincide/);
 assert.equal(query("select count(*) from private.dopmi_guardian_collection_jobs where invoice_id='in_staleBoundaryCI';"),'0');
 console.log('Guardian boundary price confirmation wins: stale invoice cannot reserve a different amount');
+
+// Reconcile a synthetic, fully transferred initial payment. Two workers get
+// one refund lease; capacity readers share the same rescuer lock as finalization.
+const refundCycle=boundaryActivation.cycle_id;
+const refundObservation={cycle_id:refundCycle,charge_id:'ch_boundaryCI',payment_intent_id:'pi_boundaryCI',gross_cents:2000,
+ confirmed_refund_cents:2000,refunds:[{id:'re_boundaryCI',amount:2000}],has_pending:false,disputed:false};
+query(`select public.dopmi_guardian_refund_server('observe','${JSON.stringify(refundObservation)}');`);
+let refundClaimReady;const refundClaimStarted=new Promise(resolve=>{refundClaimReady=resolve;});
+const refundClaimFirst=concurrentQuery(`begin;select public.dopmi_guardian_refund_server('claim','{"cycle_id":"${refundCycle}"}');select pg_sleep(2);commit;`,output=>{if(output.includes('"lease_until"'))refundClaimReady();});
+await Promise.race([refundClaimStarted,refundClaimFirst.then(()=>{throw Error('Refund claim did not report');})]);
+const refundClaimSecond=concurrentQuery(`select public.dopmi_guardian_refund_server('claim','{"cycle_id":"${refundCycle}"}') is null;`);
+const refundClaims=await Promise.all([refundClaimFirst,refundClaimSecond]);assert.equal(refundClaims[1],'t');
+const refundState=JSON.parse(refundClaims[0]),refundLease=refundState.adjustment.lease;
+assert.equal(refundState.reversals.length,1);const refundPart=refundState.reversals[0];
+console.log('Guardian refund concurrency: one lease, no competing reversal authorization');
+query(`select public.dopmi_guardian_refund_server('confirmed','${JSON.stringify({cycle_id:refundCycle,lease:refundLease,expense_id:refundPart.expense_id,transfer_id:refundPart.transfer_id,amount_cents:1900,reversal_id:'trr_boundaryCI'})}');`);
+const capacityBefore=Number(query(`select private.dopmi_guardian_reserved('${refundPart.expense_id}');`));
+let refundDoneReady;const refundDoneStarted=new Promise(resolve=>{refundDoneReady=resolve;});
+const refundDone=concurrentQuery(`begin;select public.dopmi_guardian_refund_server('complete','${JSON.stringify({cycle_id:refundCycle,lease:refundLease})}');select pg_sleep(2);commit;`,output=>{if(output.includes('"status": "completed"'))refundDoneReady();});
+await Promise.race([refundDoneStarted,refundDone.then(()=>{throw Error('Refund completion did not report');})]);
+const capacityAfter=concurrentQuery(`begin;select private.dopmi_rescue_lock('${owner}');select private.dopmi_guardian_reserved('${refundPart.expense_id}');commit;`);
+const refundFinish=await Promise.all([refundDone,capacityAfter]);assert.equal(Number(refundFinish[1]),capacityBefore-1900);
+assert.equal(query(`select allocated_cents=0 and refund_cents=gross_cents and platform_loss_cents=stripe_fee_cents from private.dopmi_guardian_settlements where cycle_id='${refundCycle}';`),'t');
+console.log('Guardian refund completion: capacity releases atomically under the shared rescuer lock');
