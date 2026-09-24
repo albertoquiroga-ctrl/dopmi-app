@@ -11,7 +11,9 @@ function checkSession(session, activation) {
     || session.livemode !== false || session.mode !== 'payment'
     || session.client_reference_id !== activation.cycle_id || session.currency !== 'mxn'
     || session.amount_total !== activation.gross_cents || session.amount_subtotal !== activation.gross_cents
-    || session.expires_at !== Math.floor(Date.parse(activation.checkout_expires_at) / 1000)
+    || !(session.expires_at === Math.floor(Date.parse(activation.checkout_expires_at) / 1000)
+      || (session.status === 'expired' && Number.isSafeInteger(session.expires_at) && session.expires_at > 0
+        && session.expires_at < Math.floor(Date.parse(activation.checkout_expires_at) / 1000)))
     || session.customer_creation !== 'always' || session.subscription != null || session.invoice != null
     || session.automatic_tax?.enabled !== false || session.total_details?.amount_tax !== 0
     || session.total_details?.amount_discount !== 0 || session.total_details?.amount_shipping !== 0)
@@ -85,8 +87,18 @@ export function guardianActivationService({ stripe, rpc, settle, returnUrl, logg
     if (!a) return null;
     if (a.settlement) return a.settlement;
     try {
-      const checkout = await stripe.checkout.sessions.retrieve(a.session_id);
+      let checkout = await stripe.checkout.sessions.retrieve(a.session_id);
       checkSession(checkout, a);
+      if (a.cancellation_requested_at && checkout.status === 'open' && checkout.payment_status === 'unpaid') {
+        // Expiration may race a completed payment or lose its response. Only
+        // the independent read below decides what actually happened.
+        try { await stripe.checkout.sessions.expire(a.session_id, {},
+          { idempotencyKey: `guardian-expire:${a.cycle_id}` }); }
+        catch { /* reconcile the persisted session before retrying */ }
+        checkout = await stripe.checkout.sessions.retrieve(a.session_id);
+        checkSession(checkout, a);
+        if (checkout.status === 'open') fail('guardian_cancel_unconfirmed');
+      }
       if (checkout.status === 'expired' && checkout.payment_status === 'unpaid') {
         await rpc('expire', { cycle_id: a.cycle_id, session_id: a.session_id });
         return null;
@@ -117,7 +129,7 @@ export function guardianActivationService({ stripe, rpc, settle, returnUrl, logg
     checkSession(session, a);
     // The return URL never confirms anything; webhooks and reconciliation do.
     let url = null;
-    if (a.status === 'pending' && session.status === 'open' && session.payment_status === 'unpaid') {
+    if (!a.cancellation_requested_at && a.status === 'pending' && session.status === 'open' && session.payment_status === 'unpaid') {
       const parsed = new URL(session.url);
       if (parsed.protocol !== 'https:' || parsed.hostname !== 'checkout.stripe.com' || parsed.username || parsed.password)
         fail('guardian_checkout_url_invalid');

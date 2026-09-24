@@ -75,12 +75,18 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         if (saved != null) {
           try {
             final value = Json.from(jsonDecode(saved));
-            if (!['checkout', 'amount', 'cancel'].contains(value['kind']) ||
+            if (![
+                  'checkout',
+                  'amount',
+                  'cancel',
+                  'cancel_activation',
+                ].contains(value['kind']) ||
                 value['key'] is! String ||
-                (value['kind'] != 'cancel' &&
+                (!['cancel', 'cancel_activation'].contains(value['kind']) &&
                     (value['cents'] is! int ||
                         value['consent_version'] != guardianConsent)) ||
-                (value['kind'] != 'checkout' && value['revision'] is! int)) {
+                (['amount', 'cancel'].contains(value['kind']) &&
+                    value['revision'] is! int)) {
               throw const FormatException('Intento incompleto');
             }
             intent = value;
@@ -97,6 +103,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       // Only authoritative terminal state releases an initial payment attempt.
       if (intent?['kind'] == 'checkout' &&
           (plan != null ||
+              activation?['cancellation_requested_at'] != null ||
               (activation?['key'] == intent?['key'] &&
                   [
                     'no_capacity',
@@ -109,6 +116,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       }
       if (plan == null &&
           intent == null &&
+          activation?['cancellation_requested_at'] == null &&
           activation?['status'] == 'pending' &&
           activation?['consent_version'] == guardianConsent) {
         intent = {
@@ -191,9 +199,9 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       if (!current) return;
       final next = cancel
           ? <String, dynamic>{
-              'kind': 'cancel',
-              'key': const Uuid().v4(),
-              'revision': plan!['revision'],
+              'kind': plan == null ? 'cancel_activation' : 'cancel',
+              'key': plan == null ? activation!['key'] : const Uuid().v4(),
+              'revision': plan?['revision'],
             }
           : intent ??
                 <String, dynamic>{
@@ -255,6 +263,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
     final status = p?['status'];
     final canStart =
         p == null &&
+        activation?['cancellation_requested_at'] == null &&
         (activation == null ||
             [
               'no_capacity',
@@ -263,7 +272,16 @@ class _GuardianState extends ConsumerState<GuardianScreen>
               'refunded',
             ].contains(activation?['status']));
     final canChange = status == 'active' && pending == null;
-    final canCancel = status == 'active';
+    final canCancel =
+        status == 'active' ||
+        (p == null &&
+            activation != null &&
+            activation?['cancellation_requested_at'] == null &&
+            [
+              'pending',
+              'funded_pending_schedule',
+              'attention',
+            ].contains(activation?['status']));
     final verified =
         ref.watch(identityControllerProvider).identity?.verified == true;
     final canSubmit =
@@ -283,6 +301,13 @@ class _GuardianState extends ConsumerState<GuardianScreen>
             'Guardián todavía no está disponible. Te avisaremos cuando puedas activar tu plan.',
           ),
         if (enabled) ...[
+          if (activation?['cancellation_requested_at'] != null)
+            Notice(switch (activation?['cancellation_status']) {
+              'stopped' => 'Alta detenida. Consulta abajo el estado del primer pago; detener el alta no confirma una devolución.',
+              'attention' =>
+                'Cancelación del alta en revisión. No inicies otro pago.',
+              _ => 'Cancelación del alta solicitada. Estamos confirmando el cierre con Stripe; un pago ya iniciado sigue en conciliación.',
+            }),
           const Notice(
             'Solo modo de prueba. No uses datos de una tarjeta real.',
           ),

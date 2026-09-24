@@ -277,3 +277,50 @@ select public.dopmi_guardian_change_server('canceled','${JSON.stringify({...canc
 assert.equal(query(`select status from private.dopmi_guardian_requests where id='${cancelId}';`),'applied');
 assert.equal(query("select status from private.dopmi_guardian_subscriptions where stripe_subscription_id='sub_collectionCI';"),'canceled');
 console.log('Guardian concurrent change processing: one lease, one counted write attempt, cancellation confirmed');
+
+// Owner cancellation and Checkout claim must serialize on the activation row.
+const stoppingOwner='74000000-0000-4000-8000-000000000009';
+query(`insert into auth.users(id,email,raw_user_meta_data,email_confirmed_at) values
+('${stoppingOwner}','guardian-stop@example.test','{"display_name":"Guardian CI","terms_version":"development-2026-09-13","terms_accepted":true}',now());
+update public.dopmi_rescue_records set reimbursable_cents=100000 where id='${expense}';`);
+const stoppingInput={...activationData,donor_id:stoppingOwner,key:crypto.randomUUID()};
+const stopping=JSON.parse(query(`select public.dopmi_guardian_activation_server('prepare','${JSON.stringify(stoppingInput)}');`));
+let stopReady;const stopStarted=new Promise(resolve=>{stopReady=resolve;});
+const stopActivation=concurrentQuery(`begin;set local role authenticated;
+select set_config('request.jwt.claim.sub','${stoppingOwner}',true);
+select public.dopmi_guardian_cancel_activation('${stoppingInput.key}');select pg_sleep(2);commit;`,output=>{
+ if(output.includes('"cancellation_status": "stopped"'))stopReady();
+});
+await Promise.race([stopStarted,stopActivation.then(()=>{throw Error('Activation stop did not report');})]);
+const blockedCheckout=concurrentQuery(`select public.dopmi_guardian_activation_server('claim_checkout','{"cycle_id":"${stopping.cycle_id}"}') is null;`);
+assert.equal((await Promise.all([stopActivation,blockedCheckout]))[1],'t');
+assert.equal(query(`select attempts from private.dopmi_guardian_activations where cycle_id='${stopping.cycle_id}';`),'0');
+console.log('Guardian activation cancellation wins before Checkout claim: no Stripe creation authorized');
+
+const setupOwner='74000000-0000-4000-8000-000000000008';
+query(`insert into auth.users(id,email,raw_user_meta_data,email_confirmed_at) values
+('${setupOwner}','guardian-stop-setup@example.test','{"display_name":"Guardian CI","terms_version":"development-2026-09-13","terms_accepted":true}',now());`);
+const setupInput={...activationData,donor_id:setupOwner,key:crypto.randomUUID()};
+const setup=JSON.parse(query(`select public.dopmi_guardian_activation_server('prepare','${JSON.stringify(setupInput)}');`));
+const setupClaim=JSON.parse(query(`select public.dopmi_guardian_activation_server('claim_checkout','{"cycle_id":"${setup.cycle_id}"}');`));
+query(`select public.dopmi_guardian_activation_server('save_checkout','${JSON.stringify({cycle_id:setup.cycle_id,lease:setupClaim.lease,session_id:'cs_test_stopCI'})}');
+select public.dopmi_guardian_settlement_server('settle_initial','${JSON.stringify({donor_id:setupOwner,checkout_session_id:'cs_test_stopCI',customer_id:'cus_stopCI',payment_method_id:'pm_stopCI',payment_intent_id:'pi_stopCI',charge_id:'ch_stopCI',gross_cents:2000,platform_fee_cents:40,stripe_fee_cents:60,net_cents:1900})}');`);
+const stopTransfer=JSON.parse(query(`select public.dopmi_guardian_settlement_server('claim','{"cycle_id":"${setup.cycle_id}"}');`));
+query(`select public.dopmi_guardian_settlement_server('finish','${JSON.stringify({job_id:stopTransfer.id,lease:stopTransfer.lease,result_id:'tr_stopCI'})}');
+select public.dopmi_guardian_schedule_server('prepare',jsonb_build_object('cycle_id','${setup.cycle_id}','charge_created',extract(epoch from now())::bigint));`);
+const stopScheduleClaim=JSON.parse(query(`select public.dopmi_guardian_schedule_server('claim','{"cycle_id":"${setup.cycle_id}"}');`));
+const stopScheduleData={cycle_id:setup.cycle_id,lease:stopScheduleClaim.lease};
+query(`select public.dopmi_guardian_schedule_server('price','${JSON.stringify({...stopScheduleData,price_id:'price_stopCI'})}');
+select public.dopmi_guardian_schedule_server('subscription','${JSON.stringify({...stopScheduleData,subscription_id:'sub_stopCI'})}');`);
+let setupStopReady;const setupStopStarted=new Promise(resolve=>{setupStopReady=resolve;});
+const setupStop=concurrentQuery(`begin;set local role authenticated;select set_config('request.jwt.claim.sub','${setupOwner}',true);
+select public.dopmi_guardian_cancel_activation('${setupInput.key}');select pg_sleep(2);commit;`,output=>{
+ if(output.includes('"cancellation_status": "pending"'))setupStopReady();
+});
+await Promise.race([setupStopStarted,setupStop.then(()=>{throw Error('Setup stop did not report');})]);
+const lateRegistration=concurrentQuery(`select public.dopmi_guardian_schedule_server('ready','${JSON.stringify(stopScheduleData)}');`);
+const setupRace=await Promise.allSettled([setupStop,lateRegistration]);
+assert.equal(setupRace[0].status,'fulfilled');assert.equal(setupRace[1].status,'rejected');
+assert.match(setupRace[1].reason.message,/Cancelación de alta pendiente/);
+assert.equal(query(`select count(*) from private.dopmi_guardian_subscriptions where donor_id='${setupOwner}';`),'0');
+console.log('Guardian activation cancellation wins before schedule registration: no collectible subscription');

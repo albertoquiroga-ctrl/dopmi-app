@@ -38,6 +38,22 @@ const isPaused = sub => sub.pause_collection?.behavior === 'keep_as_draft' && su
 // by end-of-period cancellation; only an atomic pause+uncancel update removes
 // that guard. Fixed request keys and persisted checkpoints recover lost replies.
 export function guardianScheduleService({ stripe, rpc, logger = console, now = () => Date.now() }) {
+  async function stopSetup(job) {
+    const owned = sub => {
+      if (sub?.id !== job.subscription_id || sub.livemode !== false || id(sub.customer) !== job.activation.customer_id)
+        fail('guardian_schedule_subscription_mismatch');
+    };
+    let sub = await stripe.subscriptions.retrieve(job.subscription_id);
+    owned(sub);
+    if (sub.status !== 'canceled') {
+      await stripe.subscriptions.cancel(sub.id, { invoice_now: false, prorate: false },
+        { idempotencyKey: `guardian-stop-setup:${job.cycle_id}` });
+      sub = await stripe.subscriptions.retrieve(job.subscription_id);
+      owned(sub);
+    }
+    if (sub.status !== 'canceled') fail('guardian_cancel_unconfirmed');
+    return rpc('canceled', { cycle_id: job.cycle_id, subscription_id: job.subscription_id });
+  }
   async function source(cycleId) {
     const a = await rpc('source', { cycle_id: cycleId });
     const s = a.settlement;
@@ -63,6 +79,7 @@ export function guardianScheduleService({ stripe, rpc, logger = console, now = (
   async function run(cycleId) {
     let job = await rpc('get', { cycle_id: cycleId });
     if (job && job.status !== 'pending') return job;
+    if (job?.activation.cancellation_requested_at && job.subscription_id) return stopSetup(job);
     const verified = await source(cycleId);
     job = await rpc('prepare', { cycle_id: cycleId, charge_created: verified.charge.created });
     if (job.status !== 'pending') return job;
@@ -89,9 +106,13 @@ export function guardianScheduleService({ stripe, rpc, logger = console, now = (
           billing_cycle_anchor_config: anchor.config, proration_behavior: 'none', cancel_at_period_end: true,
           automatic_tax: { enabled: false }, metadata: { dopmi_guardian_cycle: cycleId },
         }, { idempotencyKey: `guardian-subscription:${cycleId}` });
+      // A previous cancellation may have succeeded with its response lost.
+      if (job.activation.cancellation_requested_at && job.subscription_id) return await stopSetup(job);
       checkSubscription(sub, job);
       if (!isPaused(sub) && sub.cancel_at_period_end !== true) fail('guardian_schedule_missing_guard');
       if (!job.subscription_id) await checkpoint('subscription', { subscription_id: sub.id });
+      job = await rpc('get', { cycle_id: cycleId });
+      if (job.activation.cancellation_requested_at) return await stopSetup(job);
       if (!isPaused(sub)) {
         if (sub.pause_collection != null) fail('guardian_schedule_pause_changed');
         await stripe.subscriptions.update(sub.id, { pause_collection: { behavior: 'keep_as_draft' },
@@ -137,6 +158,10 @@ export function guardianScheduleService({ stripe, rpc, logger = console, now = (
     const job = await rpc('lookup_subscription', { subscription_id: subscriptionId });
     if (!job) return null;
     try {
+      if (job.activation.cancellation_requested_at && job.status !== 'canceled') {
+        await stopSetup(job);
+        return { received: true, guardian_schedule: true };
+      }
       if (job.lifecycle_pending) return { received: true, guardian_schedule: true };
       const sub = await stripe.subscriptions.retrieve(job.subscription_id);
       if (sub.id !== job.subscription_id || sub.livemode !== false || id(sub.customer) !== job.activation.customer_id)

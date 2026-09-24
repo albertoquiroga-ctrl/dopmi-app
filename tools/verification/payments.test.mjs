@@ -2145,3 +2145,102 @@ test('Guardian client never exposes raw processor errors or implies payment succ
   const handler=guardianClientHandler({enabled:()=>true,authenticate:async()=>({id:donor,email_confirmed_at:'now'}),checkout:async()=>{throw Error('secret');}});
   const r=await handler(clientRequest());assert.equal(r.status,503);assert.deepEqual(await r.json(),{error:'guardian_unavailable'});
 });
+
+const cancelActivation = async (actor=donor, activationKey=key) => {
+  await db.exec('savepoint activation_request');
+  await role(actor);
+  try { return (await db.query('select public.dopmi_guardian_cancel_activation($1) v',[activationKey])).rows[0].v; }
+  catch(error) { await db.exec('rollback to savepoint activation_request'); throw error; }
+  finally { await db.exec('reset role'); }
+};
+function enableSetupCancel(f, loseReply=false) {
+  f.stripe.subscriptions.cancel=async(id,fields)=>{
+    assert.equal(id,'sub_schedule1');assert.deepEqual(fields,{invoice_now:false,prorate:false});
+    [...f.subscriptions.values()][0].status='canceled';
+    if(loseReply) throw Error('lost cancel response');
+  };
+}
+test('Guardian owner can cancel an unclaimed activation without creating Stripe objects',async()=>{
+  const a=await activationPrepare();
+  const result=await cancelActivation();
+  assert.equal(result.activation.cancellation_status,'stopped');
+  assert.equal((await activationRpc('get',{cycle_id:a.cycle_id})).status,'expired');
+  assert.equal(await activationRpc('claim_checkout',{cycle_id:a.cycle_id}),null);
+  assert.deepEqual(await cancelActivation(),result);
+  await rejected(()=>activationPrepare({key:crypto.randomUUID()}),/ya tiene/);
+});
+test('Guardian activation cancellation is owner-only and remains available to suspended owners',async()=>{
+  await activationPrepare();
+  for(const actor of [other,staff]) await rejected(()=>cancelActivation(actor),/Alta no disponible/);
+  await db.query("update public.profiles set account_status='suspended' where id=$1",[donor]);
+  assert.equal((await cancelActivation()).activation.cancellation_status,'stopped');
+});
+test('Guardian canceled open Checkout expires with a fresh read after a lost response',async()=>{
+  const f=initialFixture();await f.initial.checkout(donor,initialInput);await cancelActivation();
+  f.stripe.checkout.sessions.expire=async()=>{[...f.sessions.values()][0].status='expired';throw Error('lost response');};
+  assert.equal((await f.initial.checkout(donor,initialInput)).checkout_url,null);
+  await f.initial.reconcile();
+  assert.equal((await cancelActivation()).activation.cancellation_status,'stopped');
+  assert.equal(f.creations.length,1);
+});
+test('Guardian cancellation with an uncertain Checkout create recovers the original session and expires it',async()=>{
+  const f=initialFixture();const create=f.stripe.checkout.sessions.create;
+  f.stripe.checkout.sessions.create=async(...args)=>{await create(...args);throw Error('lost create');};
+  await assert.rejects(f.initial.checkout(donor,initialInput),/lost create/);
+  assert.equal((await cancelActivation()).activation.cancellation_status,'pending');
+  f.stripe.checkout.sessions.create=create;
+  f.stripe.checkout.sessions.expire=async()=>{[...f.sessions.values()][0].status='expired';};
+  await f.initial.reconcile();
+  assert.equal(f.sessions.size,1);assert.deepEqual(f.creations[0],f.creations[1]);
+  assert.equal((await cancelActivation()).activation.cancellation_status,'stopped');
+});
+test('Guardian cancellation never reports Stripe closure while the open session is unconfirmed',async()=>{
+  const f=initialFixture();await f.initial.checkout(donor,initialInput);await cancelActivation();
+  f.stripe.checkout.sessions.expire=async()=>{throw Error('offline');};
+  assert.equal((await f.initial.reconcile()).failed,1);
+  assert.equal((await cancelActivation()).activation.cancellation_status,'pending');
+});
+test('Guardian payment winning the Checkout expiration race goes to full refund after cancellation',async()=>{
+  const f=initialFixture();await f.initial.checkout(donor,initialInput);await cancelActivation();
+  f.stripe.checkout.sessions.expire=async()=>{f.paid();throw Error('already complete');};
+  const result=await f.initial.reconcileSession('cs_test_initial1');
+  assert.equal(result.refund_cents,5000);assert.equal(result.allocated_cents,0);
+});
+test('Guardian cancellation after delivery prevents an unclaimed monthly schedule and preserves settlement',async()=>{
+  const f=await scheduleFixture();const before=await guardianSettlement('get',{cycle_id:f.cycleId});
+  assert.equal((await cancelActivation()).activation.cancellation_status,'stopped');
+  assert.deepEqual(await scheduleRpc('candidates',{}),[]);
+  await rejected(()=>f.scheduler().run(f.cycleId),/no entregado/);
+  assert.equal(f.scheduleCalls.length,0);
+  assert.deepEqual(await guardianSettlement('get',{cycle_id:f.cycleId}),before);
+});
+test('Guardian cancellation during subscription creation cancels before pause and never registers',async()=>{
+  const f=await scheduleFixture();enableSetupCancel(f);
+  const create=f.stripe.subscriptions.create;
+  f.stripe.subscriptions.create=async(...args)=>{const sub=await create(...args);await cancelActivation();return sub;};
+  assert.equal((await f.scheduler().run(f.cycleId)).status,'canceled');
+  assert.equal(f.scheduleCalls.some(c=>c.kind==='pause'),false);
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_subscriptions')).rows[0].n,0);
+});
+test('Guardian cancellation during pause blocks registration and monitor recovers a lost cancel reply',async()=>{
+  const f=await scheduleFixture();enableSetupCancel(f,true);
+  const update=f.stripe.subscriptions.update;
+  f.stripe.subscriptions.update=async(...args)=>{const sub=await update(...args);await cancelActivation();return sub;};
+  const independentRpc=async(op,data)=>{
+    await db.exec('savepoint schedule_rpc');
+    try { return await scheduleRpc(op,data); }
+    catch(error) { await db.exec('rollback to savepoint schedule_rpc');throw error; }
+  };
+  await assert.rejects(f.scheduler(independentRpc).run(f.cycleId),/Cancelación/);
+  await assert.rejects(f.scheduler().run(f.cycleId),/lost cancel response/);
+  await f.scheduler().reconcile();
+  assert.equal((await scheduleRpc('get',{cycle_id:f.cycleId})).status,'canceled');
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_subscriptions')).rows[0].n,0);
+});
+test('Guardian activation cancellation delegates atomically when registration already won',async()=>{
+  const f=await scheduleFixture();await f.scheduler().run(f.cycleId);
+  assert.equal((await cancelActivation()).plan.status,'cancel_requested');
+  await cancelActivation();
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_requests')).rows[0].n,1);
+  assert.deepEqual(await collectionRpc('sources',{}),[]);
+});

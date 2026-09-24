@@ -26,6 +26,14 @@ class GuardianRepository {
   }
 
   Future<Json> submit(Json intent) async {
+    if (intent['kind'] == 'cancel_activation') {
+      return Json.from(
+        await client.rpc(
+          'dopmi_guardian_cancel_activation',
+          params: {'activation_key': intent['key']},
+        ),
+      );
+    }
     if (intent['kind'] == 'checkout') {
       final result = await client.functions.invoke(
         'guardian-client',

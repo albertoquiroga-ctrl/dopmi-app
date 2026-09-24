@@ -94,5 +94,8 @@ select ok(has_function_privilege('service_role','public.dopmi_guardian_change_se
 select ok((select relrowsecurity from pg_class where oid='private.dopmi_guardian_prices'::regclass),'Guardian price history has RLS');
 select ok(not has_function_privilege('anon','public.dopmi_guardian_state()','execute'),'anonymous cannot read Guardian mobile state');
 select ok(has_function_privilege('authenticated','public.dopmi_guardian_state()','execute'),'authenticated can read own Guardian mobile state');
+select ok(not has_function_privilege('anon','public.dopmi_guardian_cancel_activation(uuid)','execute'),'anonymous cannot cancel an activation');
+select ok(has_function_privilege('authenticated','public.dopmi_guardian_cancel_activation(uuid)','execute'),'authenticated owner can cancel activation');
+select ok(not has_function_privilege('service_role','public.dopmi_guardian_cancel_activation(uuid)','execute'),'activation cancellation needs the owner session');
 select * from finish();
 rollback;

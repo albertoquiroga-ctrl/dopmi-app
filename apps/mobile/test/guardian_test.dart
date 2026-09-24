@@ -65,6 +65,14 @@ class FakeGuardian extends GuardianRepository {
         'checkout_url': 'https://checkout.stripe.com/test',
       };
     }
+    if (intent['kind'] == 'cancel_activation') {
+      value['activation'] = {
+        ...Json.from(value['activation']),
+        'cancellation_requested_at': '2026-09-24T18:00:00Z',
+        'cancellation_status': 'pending',
+      };
+      return value;
+    }
     final p = Json.from(value['plan']);
     p['revision'] = (p['revision'] as int) + 1;
     p['pending_request'] = {
@@ -366,4 +374,40 @@ void main() {
       findsOneWidget,
     );
   });
+  for (final stage in ['pending', 'funded_pending_schedule']) {
+    testWidgets('activation cancellation retries original key at $stage', (
+      tester,
+    ) async {
+      final repo = FakeGuardian()
+        ..fail = true
+        ..value = {
+          'plan': null,
+          'activation': {
+            'key': '72000000-0000-4000-8000-000000000001',
+            'status': stage,
+            'gross_cents': 5000,
+            'consent_version': guardianConsent,
+          },
+        };
+      await start(tester, repo);
+      await tester.ensureVisible(find.text('Cancelar mi plan'));
+      await tester.tap(find.text('Cancelar mi plan'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Confirmar cancelación'));
+      await tester.pumpAndSettle();
+      repo.fail = false;
+      await tapButton(tester, 'Reintentar mi solicitud');
+      await tester.pumpAndSettle();
+      expect(repo.calls.length, 2);
+      expect(repo.calls[0], repo.calls[1]);
+      expect(repo.calls[0]['kind'], 'cancel_activation');
+      expect(repo.calls[0]['key'], '72000000-0000-4000-8000-000000000001');
+      expect(repo.opened, 0);
+      expect(
+        find.textContaining('Cancelación del alta solicitada'),
+        findsOneWidget,
+      );
+      expect(find.text('Cancelar mi plan'), findsNothing);
+    });
+  }
 }
