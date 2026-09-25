@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Febrero corto y regreso al30 con nuevo monto — 25 de septiembre de 2026
+
+Solicitud b00e8cf7-6956-455b-a525-3f61f6ab85f0 aplicada20000, attempts1/error null, effective_from1803854883(28/2/2027), precio price_1UJi822ZjyMOQ0uL4bXOgGUl. Captura1000344226 acredita plan200 y fecha28/2. Factura enero sigue paid5000. Avances del reloj con keys dopmi-h5-calendar-ec3532d1-{february28,march30}; actual ready1806450483.
+
+Febrero in_1UJi8l2ZjyMOQ0uLVErWOLLT/ciclo5c23fdcc-cda1-459e-91ac-f172927d414e, período1803854883–1806446883(28/2→30/3), transferencia tr_3UJi902ZjyMOQ0uL1kLxd8NF fuente ch_3UJi902ZjyMOQ0uL1bAhaixk. Marzo in_1UJi9u2ZjyMOQ0uLju5UmewR/ciclo69f7b4fd-fd44-4c41-a7ca-ab32735fb94c, período1806446883–1809125283(30/3→30/4), transferencia tr_3UJiAy2ZjyMOQ0uL16MyFkiY fuente ch_3UJiAy2ZjyMOQ0uL1BGaKed2. Ambos paid20000, fee400/Stripe1299/net18301. Transferencias verificadas directamente test/18301/fuente exacta/revertido0. Listado completo seis facturas, todas paid con attempt_count1; sin factura extra del reset. Pendiente pantalla de ciclos febrero/marzo y cancelación normal con ausencia de siguiente factura. No repetir renovación.
+
 ## Renovaciones del calendario preparado hasta enero — 25 de septiembre de 2026
 
 Reloj integrado avanzado secuencialmente, esperando cada conciliación:30/10→30/11→30/12→30/1/2027. Actual ready1801352883; período de enero1801349283–1803854883, siguiente28/2/2027 22:48:03UTC. Cuatro facturas subscription_cycle pagadas5000, cada una con fee100/Stripe586/net4314 transferido. Lectura directa de las cuatro transferencias confirma test,4314, fuente exacta y reversión0. No factura adicional de reset en listado completo.
