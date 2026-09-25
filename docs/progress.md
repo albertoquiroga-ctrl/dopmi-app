@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Cruce incierto aceptado en Android — 25 de septiembre de 2026
+
+Capturas1000344188/1000344190 del titular,16:09: plan activo50, solicitud50 confirmada desde25/7/2028; historial de ese ciclo con siguiente25/8/2028, pago50, comisión1, Stripe5.86, asignado/transferido43.14 y asignación test confirmada. Coinciden con solicitud77f3f0f1-ebf8-49bd-a579-011647a534b4 y ciclo e9fecd46-53bc-44ad-9120-51d820897c31. Revisión independiente de2dd86c6 confirma coherencia técnica; estas capturas completan el único pendiente móvil del recorrido. No repetir. H5 sigue abierto por fin de mes y disputa posterior a transferencia.
+
+Investigación separada: menú del pago test existente en Dashboard ofrece allowlist/blocklist/acceso, sin disparador de disputa visible; esto sólo descarta esa vía, no prueba imposibilidad global. Fixture calendario aislada: precio price_1UJhJU2ZjyMOQ0uLyE8PdFOQ creado para5000 mensual; intento de suscripción con cliente técnico previo rechazado Missing email. Se actualizó sólo ese cliente técnico a dirección sintética guardian-calendar@example.invalid y la misma key volvió a devolver ese error. No se registró suscripción ni factura creada en estos intentos; verificar por lectura antes de continuar (posible resultado idempotente). No se vinculó cuenta nueva ni alteró calendario de Dopmi. Prueba de calendario aún no acreditada.
+
 ## Escritura real perdida y aniversario cruzado — 25 de septiembre de 2026
 
 Resultado posterior: conciliación normal applied a22:05:06.126948, attempts1/error null, conserva effective_from1848147669, verified_period_start1848147669 y boundary_invoice_id in_1UJhAE2ZjyMOQ0uLaG1E9SHD. Factura paid5000/attempt_count1, única del período en listado completo. Ciclo e9fecd46-53bc-44ad-9120-51d820897c31, cargo ch_3UJhFq2ZjyMOQ0uL107P1pCh test/paid5000/sin disputa ni devolución, fee100/Stripe586/net4314. Transferencia única tr_3UJhFq2ZjyMOQ0uL181fostv por4314 aacct_1UIimXFRDgVgGJcB, misma fuente, sin reversión, confirmada22:06:12.063514. No duplicados económicos observados ni aumento de intentos registrados. Backend/Stripe del cruce acreditado; falta pantalla móvil final del cambio y ciclo. Revisión independiente anterior pidió justamente fecha/período/factura originales y resultado económico, ahora consultados.
