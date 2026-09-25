@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Validate mobile build configuration
+        run: python3 scripts/test_mobile_config.py
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -73,7 +75,7 @@ jobs:
       - run: flutter pub get
         working-directory: apps/mobile
       - name: iOS simulator compilation (device signing is separate)
-        run: flutter build ios --simulator --no-codesign --dart-define-from-file=config.example.json
+        run: flutter build ios --simulator --no-codesign --dart-define-from-file=config.example.json --dart-define=ENABLE_GUARDIAN_TEST=true
         working-directory: apps/mobile
   identity-and-adoption-backend:
     runs-on: ubuntu-latest

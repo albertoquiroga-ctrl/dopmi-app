@@ -1,0 +1,66 @@
+name: Prepare Guardian server with checkout closed
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_test_mode:
+        description: Type H5-TEST to prepare the test workers and close new checkouts
+        required: true
+        type: string
+  push:
+    branches:
+      - codex/stripe-transfer-delivery
+    paths:
+      - .github/workflows/prepare-guardian-test.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-dopmi-payment-functions
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    if: github.event_name == 'push' || inputs.confirm_test_mode == 'H5-TEST'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: h4-test
+    steps:
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.117.0
+      - name: Prepare test workers while keeping new checkouts closed
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_ACCESS_TOKEN"
+          # Applies only non-secret feature flags to the existing test project.
+          # Does not replace keys, deploy code, migrate data or open checkout.
+          supabase secrets set --project-ref ohqxranynackjignryep \
+            DOPMI_GUARDIAN_CHECKOUT_ENABLED=false \
+            DOPMI_GUARDIAN_WORKER_ENABLED=true \
+            DOPMI_GUARDIAN_SCHEDULE_ENABLED=true \
+            DOPMI_GUARDIAN_COLLECTION_ENABLED=true \
+            DOPMI_GUARDIAN_CHANGES_ENABLED=true \
+            DOPMI_GUARDIAN_REFUNDS_ENABLED=true
+      - name: Confirm the public checkout gate stays closed
+        shell: bash
+        run: |
+          set -euo pipefail
+          task_body="$RUNNER_TEMP/dopmi-guardian-gate.json"
+          trap 'rm -f "$task_body"' EXIT
+          task_status=$(curl --silent --show-error --max-time 30 \
+            --output "$task_body" --write-out '%{http_code}' \
+            --request POST --header 'Content-Type: application/json' --data '{}' \
+            https://ohqxranynackjignryep.supabase.co/functions/v1/guardian-client)
+          test "$task_status" = 503
+          python - "$task_body" <<'PY'
+          import json, sys
+          with open(sys.argv[1], encoding='utf-8') as source:
+              result = json.load(source)
+          assert result == {'error': 'guardian_disabled'}, 'Unexpected checkout gate response'
+          print('Guardian checkout remains closed. Verify authenticated Cron separately.')
+          PY
