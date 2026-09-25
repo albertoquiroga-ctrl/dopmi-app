@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Cobertura local de disputa posterior a entrega — 25 de septiembre de 2026
+
+Prueba existente reforzada: adjustment review/disputed, historial propietario refund_review conserva asignado/transferido4314 y revertido0; reconciliación repetida no llama createReversal ni refunds.create. Variante nueva sin devolución elimina refunds del fixture y amount_refunded=0, cubriendo disputa sola después de transferencia. Evidencia Stripe simulada/RPC local real: no sustituye aceptación remota. Revisión independiente sin bloqueos, con ese límite explícito.
+
+`npm test` en tools/verification:388 aprobadas,0 fallos. Intento de filtro aislado falló en inicialización PGlite cerrado; ejecución completa payments337 pasó antes de añadir variante y suite final388 pasó después. Sin cambios de runtime ni despliegue. Disputa real posterior a transferencia sigue pendiente de mecanismo soportado por Stripe; consulta al titular para soporte sin respuesta en conversación.
+
 ## Fin de mes aceptado en app y cancelación sin renovación — 25 de septiembre de 2026
 
 Capturas1000344230/1000344228 confirman febrero28→marzo30 y marzo30→abril30, ambos pago200/fee4/Stripe12.99/net183.01, asignación confirmada. Captura1000344232 confirma Plan cancelado/Cancelación confirmada. SQL y Stripe consultados: suscripción y schedule canceled, seis ciclos mensuales. Revisión independiente anterior no encontró inconsistencias y limitó pendientes a estas pantallas y ausencia de renovación posterior.

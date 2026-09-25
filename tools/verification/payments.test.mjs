@@ -2823,12 +2823,30 @@ for(const stage of ['stripe','confirmed','complete'])test(`Guardian lost ${stage
   await refundReady();assert.equal((await f.returns().reconcileCycle(f.cycle.id)).adjustment.status,'completed');
   assert.equal(f.writes.length,1);assert.equal(f.reversals.size,1);
 });
-for(const status of ['pending','requires_action','failed','canceled','partial','disputed'])test(`Guardian ${status} refund never authorizes a reversal or frees capacity`,async()=>{
+for(const status of ['pending','requires_action','failed','canceled','partial','disputed','disputed_without_refund'])test(`Guardian ${status} refund never authorizes a reversal or frees capacity`,async()=>{
   const f=await guardianRefundFixture();
-  if(status==='partial')f.evidence(1000);else if(status==='disputed')f.charge.disputed=true;else f.evidence(5000,status);
+  if(status==='partial')f.evidence(1000);else if(status.startsWith('disputed')) {
+    f.charge.disputed=true;
+    if(status==='disputed_without_refund'){f.refunds.length=0;f.charge.amount_refunded=0;}
+  } else f.evidence(5000,status);
   const s=await f.returns().reconcileCycle(f.cycle.id);assert.equal(f.writes.length,0);
   assert.equal((await guardianSettlement('get',{cycle_id:f.cycle.id})).allocated_cents,4314);
   if(status==='partial')assert.equal(s.adjustment.confirmed_refund_cents,1000);
+  if(status.startsWith('disputed')) {
+    assert.equal(s.adjustment.status,'review');
+    assert.equal(s.adjustment.disputed,true);
+    await role(donor);
+    const item=(await history()).items.find(item=>item.id===f.cycle.id);
+    assert.equal(item.status,'refund_review');
+    assert.equal(item.assigned_cents,4314);
+    assert.equal(item.transferred_cents,4314);
+    assert.equal(item.reversed_cents,0);
+    await db.exec('reset role');
+    await f.returns().reconcileCycle(f.cycle.id);
+    assert.equal(f.writes.length,0);
+    assert.equal(f.calls.filter(call=>call.kind==='refund').length,0);
+    assert.equal((await guardianSettlement('get',{cycle_id:f.cycle.id})).allocated_cents,4314);
+  }
 });
 test('Guardian separate partial refunds summing to the full charge permit one full reversal',async()=>{
   const f=await guardianRefundFixture();f.refunds[0].amount=1000;f.refunds.push({...f.refunds[0],id:'re_external2',amount:4000});
