@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Reloj preparado antes del aniversario — 25 de septiembre de 2026
+
+Revisión independiente de bb3cbb4 confirma resuelto el bloqueo de atribución, sin nuevos bloqueos para preparar el despliegue temporal. Es revisión estática, no aceptación real. Lectura remota: plan test sub_1UJa0n2ZjyMOQ0uLrY1yEBLv active, 5000 centavos, management_revision 4, cero solicitudes pendientes; última solicitud amount withdrawn. Captura 1000344174 coincide. Se pidió sólo la parte inferior del formulario para verificar aviso residual.
+
+Reloj clock_1UJaEp2ZjyMOQ0uLL5n6YZe1 avanzado mediante key dopmi-h5-change-boundary-preparation-1848147669 y reconsultado ready en 1848147069, diez minutos antes del period_end 1848147669. Suscripción conserva monto 5000 y última factura in_1UJfSg2ZjyMOQ0uLCDHFixMy. No se cruzó aniversario ni solicitó cambio. Bundles originales recuperados: worker v15, webhook v15, client v7. Instrumento aún no desplegado; instalar sólo al coordinar operación del titular para no consumir la ventana de 30 minutos esperando.
+
 ## Preparación de cruce de aniversario incierto — 25 de septiembre de 2026
 
 Revisión independiente detectó falta de atribución por solicitud/precio. Corregido antes de despliegue: POST exige precio devuelto igual al solicitado y log registra UUID/precio; GET registra precio observado. Cuatro pruebas específicas aprobadas, incluyendo precio discordante y correlación. El operador deberá cotejar ambos identificadores con la solicitud persistida antes de avanzar el reloj. La ocultación GET es deliberadamente por suscripción/monto, no por solicitud. Sigue sin desplegar ni acreditar el escenario real.
