@@ -2,7 +2,7 @@
 
 ## Corrección del aviso tras cancelar un alta — 25 de septiembre de 2026
 
-La captura 1000343899 mostró una cancelación inicial ya terminada con el aviso transitorio de solicitud todavía visible. GuardianScreen limpia ahora ese mensaje cuando cancellation_status es stopped, además del caso de plan canceled existente; mantiene la información autoritativa sobre pago y devolución. Flutter analyze sin incidencias y las 51 pruebas Flutter aprobadas. Requiere nuevo build Android y comprobación visual; no modifica backend ni operaciones Stripe. Recorrido de abandono/reapertura/cancelación sin pago y reserva liberada documentado en guardian-acceptance.md.
+La captura 1000343899 mostró una cancelación inicial ya terminada con el aviso transitorio de solicitud todavía visible. GuardianScreen limpia ahora ese mensaje cuando cancellation_status es stopped, además del caso de plan canceled existente; mantiene la información autoritativa sobre pago y devolución. Flutter analyze sin incidencias y las 51 pruebas Flutter aprobadas. CI 36156881343 del commit fc4a6ef19037777b1c74e9cab9b3d71c073e2f96: los cuatro jobs (Flutter/Android, iOS, web/base de datos e identidad/adopción) terminaron success. Requiere nuevo build Android firmado y comprobación visual; no modifica backend ni operaciones Stripe. Recorrido de abandono/reapertura/cancelación sin pago y reserva liberada documentado en guardian-acceptance.md.
 
 
 ## Aceptación integrada actualizada — 25 de septiembre de 2026
