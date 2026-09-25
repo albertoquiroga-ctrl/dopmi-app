@@ -2,6 +2,12 @@
 
 ## Continuación local de H5 — 25 de septiembre de 2026 (UTC)
 
+- CI completo aprobado para arreglo de avisos 37895d26cb36d4c1697a0418af937c3533d3da32: run 36142869179, completed/success; jobs flutter/Android, iOS, identity-and-adoption-backend y web-and-database exitosos. No equivale a publicación de nuevo build en Play ni verificación visual de la corrección en dispositivo.
+
+- Devolución: ajuste completed sin error, capacidad ocupada por asignación original 4314−4314=0; refund 5000, comisión Dopmi 0, pérdida de plataforma por costo Stripe 586. Reprocesamiento autenticado de la misma devolución, request 2396, HTTP 200 completed. GET Stripe posterior conserva exactamente la misma única reversión trr_1UJZR32ZjyMOQ0uLWuhjvjkX por 4314; sin duplicado. Esto acredita repetición del reconciliador, no reenvío de webhook firmado ni fallo de red durante la escritura.
+
+- Devolución total integrada del alta de 50 MXN: lista previa de refunds vacía; emitida devolución test re_3UJNdz2ZjyMOQ0uL11JJyIzs por 5000, succeeded. Dopmi concilió y revirtió automáticamente transferencia tr_3UJNdz2ZjyMOQ0uL1m3TAIwR: GET Stripe confirma reversed true, amount_reversed 4314 y exactamente una reversión trr_1UJZR32ZjyMOQ0uLWuhjvjkX. RPC de historial del donante: alta refunded, refunded_cents 5000, reversed_cents 4314, assigned/transferred/platform_fee 0, Stripe fee histórico 586; mensual de 20000 permanece transferred con neto 18301. Pendiente captura móvil y comprobación detallada de liberación de capacidad e idempotencia posterior.
+
 - Corregidos avisos residuales observados al cancelar: la consulta de estado canceled limpia el mensaje transitorio de solicitud; el aviso de medio para próximos ciclos se muestra solo en plan active. Flutter analyze sin incidencias, 22 pruebas Guardián y suite completa de 51 pruebas aprobadas. Requiere nuevo build para verificar esta mejora visual en el teléfono; no cambia procesamiento de pagos.
 
 - Prueba posterior a cancelación: reloj clock_1UJNsh2ZjyMOQ0uLXx9GXAwl avanzado un mes adicional hasta frozen_time 1795570015 (24/11/2026, 19:26 GMT-6), después del siguiente aniversario. GET Stripe expandido confirma reloj ready, suscripción canceled y misma última factura in_1UJNvd2ZjyMOQ0uLTRvFgXMK. Supabase conserva dos ciclos y total autorizado histórico 25000 centavos, sin tercer ciclo. Se verifica que este aniversario posterior a cancelación no genera renovación del plan.
