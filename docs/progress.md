@@ -1,5 +1,13 @@
 # Dopmi — registro de avance
 
+## Renovaciones del calendario preparado hasta enero — 25 de septiembre de 2026
+
+Reloj integrado avanzado secuencialmente, esperando cada conciliación:30/10→30/11→30/12→30/1/2027. Actual ready1801352883; período de enero1801349283–1803854883, siguiente28/2/2027 22:48:03UTC. Cuatro facturas subscription_cycle pagadas5000, cada una con fee100/Stripe586/net4314 transferido. Lectura directa de las cuatro transferencias confirma test,4314, fuente exacta y reversión0. No factura adicional de reset en listado completo.
+
+Octubre in_1UJi122ZjyMOQ0uLzk5zOFNa/ciclo e2b5bfac-2dc7-4ff3-9d4d-b0a3dbffd517/tr_3UJi1J2ZjyMOQ0uL0AiN8qZN; noviembre in_1UJi282ZjyMOQ0uLJlI2rUgD/8189041a-ef2f-4491-b716-881577b919dc/tr_3UJi3C2ZjyMOQ0uL0wnxz6hP; diciembre in_1UJi3i2ZjyMOQ0uLfx3hFb8s/272da4d7-4277-4a99-873b-f89cd9b20614/tr_3UJi4A2ZjyMOQ0uL1vvnu1Qx; enero in_1UJi4r2ZjyMOQ0uLgU0nS1q0/e20cdb25-dad3-42e1-a4d2-3a54bd5bd0da/tr_3UJi582ZjyMOQ0uL1sGr1R8Z. Keys avances dopmi-h5-calendar-ec3532d1-{october30,november30,december30,january30}.
+
+Pendiente acción móvil: solicitar200 para28/2, comprobar enero conserva50, cruzar febrero y retorno30/3, cancelación y pantalla. No avanzar reloj mientras se coordina esa solicitud. H5 sigue abierto.
+
 ## Alta móvil real y calendario de fin de mes preparado — 25 de septiembre de 2026
 
 Capturas1000344214/1000344216: plan activo50 e inicial25/9 con pago50, fee1, Stripe5.86, asignado/transferido43.14. SQL y Stripe coinciden: ciclo ec3532d1-25e2-40b6-93e7-cf281fc854dc, sub_1UJhvU2ZjyMOQ0uLoXRDXJiU, price_1UJhvT2ZjyMOQ0uL4nKUoCXZ, cargo ch_3UJhuQ2ZjyMOQ0uL1SqAq1ae creado1790376483, transferencia tr_3UJhuQ2ZjyMOQ0uL1cq9IGIc4314 sin reversión. Schedule ready/attempt1, sin solicitudes pendientes. Reconsulta posterior de la sonda técnica cancelada anterior sigue sin facturas.
