@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Calendario real conservado por RPC e historial aislados — 25 de septiembre de 2026
+
+Nuevo ejecutor `tools/verification/guardian-calendar-readonly.mjs`: sólo GET Stripe, todas las migraciones en PGlite efímero, registro inicial explícitamente sintético y sin liquidaciones. Las renovaciones reales in_1UJhNA2ZjyMOQ0uLoTPtIK17 e in_1UJhNF2ZjyMOQ0uLeLZ4LlKx pasan guardianRenewalCandidate; preparación RPC repetida devuelve el mismo ciclo, decisión skip con fresh:false; historial bajo rol propietario conserva exactamente 28/2→31/3 y 31/3→30/4/2027 a14UTC, sin pago confirmado. Ejecución final aprobada, cero escrituras remotas. La factura inicial subscription_create no es una renovación válida.
+
+Revisión independiente sin bloqueos de seguridad; observó que exigir dos facturas no fijaba períodos concretos. Se añadieron expectativas exactas y unicidad de ambos períodos y se volvió a ejecutar satisfactoriamente. Alcance y comando en guardian-calendar-readonly.md. No acredita alta31, cobro/anulación mensual, año bisiesto, Supabase remoto ni app. H5 permanece abierto por calendario integrado completo y disputa posterior a transferencia; no repetir los casos ya aceptados.
+
 ## Calendario Stripe aislado: enero31–febrero28–marzo31 — 25 de septiembre de 2026
 
 Lectura del cliente técnico confirmó correo sintético guardado, cero suscripciones y has_more false tras rechazos previos. Nueva key dopmi-h5-calendar-fixture-sub-email-ready-20260925 creó sub_1UJhM62ZjyMOQ0uLA0uURMeR, precio price_1UJhJU2ZjyMOQ0uLyE8PdFOQ, ancla day31/hour14. Configuración del ancla calculada por guardianMonthlyAnchor con timestamp explícito de fixture1801404000; no representa fecha de un cargo Dopmi. Crear exactamente sobre el ancla produjo factura inicial in_1UJhM62ZjyMOQ0uLG3jZUY8r draft/due5000/paid0, por lo que falló la expectativa técnica latest_invoice null; no se considera alta de producción.
