@@ -1,5 +1,7 @@
 # Guardián — contrato de cobro de prueba
 
+> Continuidad al 25 de septiembre de 2026: documento acumulativo de diseño y evidencia por bloque. Las frases «aún no», «falta», «no se desplegó» y estados de flags dentro de bloques anteriores describen ese momento, no el estado actual. Alta, calendario, cobro, cambios, tarjeta, historial y reversiones ya están implementados; la aceptación integrada sigue pendiente. Para el estado operativo usar [codex-handoff.md](codex-handoff.md), [guardian-acceptance.md](guardian-acceptance.md) y la entrada más reciente de `progress.md`. Antes de migrar, comprobar la correspondencia local/remota en [migration-history-audit.md](migration-history-audit.md).
+
 Decisión confirmada por el titular el 23 de septiembre de 2026: cobrar al activar y después cada mes, solamente si puede asignarse completo el neto a gastos aprobados; sin saldo comunitario ni deuda por meses omitidos.
 
 ## Experiencia y estados

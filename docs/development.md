@@ -1,5 +1,13 @@
 # Desarrollo de Dopmi
 
+## Continuidad y alcance de esta guía
+
+Para retomar en Codex, empezar por [codex-handoff.md](codex-handoff.md). Rama de continuación al 25 de septiembre de 2026: `codex/stripe-transfer-delivery`; H5 sigue abierto para aceptación. El titular usa [Codemagic → TestFlight](guardian-acceptance.md). La configuración y las instalaciones descritas como «este Windows» son históricas del equipo original; no están incluidas en Git ni garantizadas en otra sesión.
+
+En una máquina nueva: Node 24, Flutter 3.47.4 / Dart 3.13.3 y Python 3; Docker para pruebas PostgreSQL. Instalar con `npm ci` en raíz, `apps/admin` y `tools/verification`; luego `flutter pub get` en `apps/mobile`. Los comandos reproducibles y las diferencias Java/Flutter entre CI y Codemagic están en la guía de continuidad. El panel actual también incluye rescates y aportaciones; la sección H2 conserva su descripción histórica.
+
+Para ver Guardián localmente, establecer `ENABLE_GUARDIAN_TEST` en `config.local.json` con el proyecto y clave publicable de prueba. No abre el alta del servidor. Los seis flags remotos y el estado de preparación se documentan en la guía de aceptación; no copiar claves de servidor a ese archivo.
+
 ## Áreas del repositorio
 
 - `src/`: prototipo React conservado como referencia, puerto 5173.
@@ -28,7 +36,7 @@ Pruebas completas de backend local:
 
 El script inicia Auth, PostgreSQL, Storage, Realtime y Mailpit, aplica migraciones locales y ejecuta pgTAP y los recorridos Flutter de identidad/adopción. Si el stack ya estaba iniciado excluyendo Storage/Realtime, ejecuta `supabase stop` antes para reiniciarlo con esos servicios. Las cuentas de aceptación solo se crean en loopback y se eliminan al terminar. La membresía administrativa de prueba se asigna mediante Docker/psql al UUID de la cuenta temporal, nunca desde el cliente.
 
-Las migraciones `202609130003`, `202609130004` y `202609130005` se aplicaron en el dashboard de desarrollo en una transacción. Inclúyelas en la reparación del historial de CLI descrita abajo antes de usar `db push` por primera vez.
+Las migraciones `202609130003`, `202609130004` y `202609130005` se aplicaron históricamente en el dashboard en una transacción. Revisar el historial actual y la auditoría enlazada abajo antes de decidir si necesitan reparación; no asumir que ese trabajo sigue pendiente.
 
 ## Iniciar en este Windows
 
@@ -122,7 +130,7 @@ El correo local se consulta en el servidor de pruebas que muestra `supabase stat
 
 El proyecto remoto ya tenía nueve identidades de prueba y tablas de otra versión. Se preservaron; la app usa `public.profiles` y `private.admin_memberships`. `public.dopmi_is_admin()` evita usar la función antigua `is_admin(uuid)`.
 
-Las migraciones `202609130001_identity.sql` y `202609130002_legacy_identity_boundary.sql` se aplicaron desde el editor SQL del dashboard el 13 de septiembre de 2026. No había historial de Supabase CLI. **Antes del primer `db push` hacia ese proyecto**, enlázalo con la CLI y registra cada versión como aplicada con `supabase migration repair VERSION --status applied --linked`; revisa primero `supabase migration list`. No vuelvas a ejecutar la primera migración sobre las tablas ya creadas.
+Las migraciones `202609130001_identity.sql` y `202609130002_legacy_identity_boundary.sql` se aplicaron desde SQL Editor el 13 de septiembre de 2026; entonces no había historial CLI. **Antes de cualquier `db push` o reparación**, comparar el historial remoto actual, el SQL/esquema aplicado y los archivos según [migration-history-audit.md](migration-history-audit.md). Solo usar `migration repair` cuando esa comparación demuestre la correspondencia. No reparar en bloque ni volver a ejecutar migraciones sobre tablas ya creadas.
 
 La segunda migración cierra el acceso de `anon` y `authenticated` a `public.users`, incluidos permisos por columna. Esa tabla permitía actualizar el rol propio mediante una protección heredada ineficaz. Sus registros y triggers quedan disponibles para el servidor; los clientes antiguos que consulten esa tabla deberán migrar a los endpoints nuevos. No hay vistas públicas que consulten `users` en el entorno revisado.
 

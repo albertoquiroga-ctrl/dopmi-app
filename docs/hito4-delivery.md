@@ -22,11 +22,13 @@
 - Supervisar Cron y respuestas HTTP del trabajador. HTTP 200 con `failed=0` es distinto de una ejecución SQL exitosa que solo encola la solicitud HTTP. Para errores persistentes o revisión manual, conciliar en Stripe antes de reintentar; nunca volver a cobrar ni reiniciar claves de idempotencia.
 - Configuración y recuperación segura en `docs/stripe-test-mode.md`. No conservar tokens en SQL del trabajo, código, móvil ni documentación.
 
-## Propuesta para Hito 5 — Guardián
+## Propuesta histórica para Hito 5 — Guardián
+
+La propuesta siguiente se conserva como antecedente. El titular decidió las reglas el 23 de septiembre y H5 ya fue implementado en modo prueba; sigue pendiente la aceptación integrada. Para continuar, usar [product-decisions.md](product-decisions.md), [backlog.md](backlog.md) y [codex-handoff.md](codex-handoff.md), sin volver a solicitar decisiones ya tomadas.
 
 1. Definir el ciclo mensual y la autorización del donante: $50/$200/$500 MXN o monto personalizado, con cancelación y estado transparentes. Validar sus decisiones de UX antes de implementar.
 2. En cada ciclo, obtener los gastos previamente pagados y aprobados de rescatistas habilitados; ordenar por urgencia aprobada y luego por aprobación más antigua. Cubrir cada faltante antes de asignar al siguiente, sin exceder el reembolso autorizado.
 3. Solo cobrar cuando **todo** el importe mensual pueda asignarse; si no hay suficiente gasto aprobado, omitir el ciclo sin deuda, sin «Guardadito» y sin reserva comunitaria. Si un cobro confirmado deja de ser asignable, devolver lo no asignado de forma auditable.
 4. Reutilizar los controles de Hito 4 para cobro, transferencias, devolución, duplicados, historial privado y conciliación; probar cancelación, cambios de gasto entre selección y confirmación, concurrencia y mes omitido. No activar bonos ni cashback simulados.
 
-El Hito 5 es propuesta de alcance, no una autorización para habilitar suscripciones ni cobros reales.
+Este antecedente no autoriza dinero real. El estado vigente de la preparación y apertura de altas test está en `guardian-acceptance.md`.

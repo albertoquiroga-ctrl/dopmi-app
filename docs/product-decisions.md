@@ -2,13 +2,13 @@
 
 ## Alcance
 
-App Flutter para Android/iPhone, panel React/TypeScript y Supabase. El primer hito cubre identidad, perfiles y consulta administrativa de usuarios. Los demás módulos se implementan por hitos.
+App Flutter para Android/iPhone, panel React/TypeScript y Supabase. Al corte del 25 de septiembre de 2026, H1–H3 están completos en desarrollo y H4 en modo prueba; H5 está implementado con aceptación integrada pendiente. Continuidad en `codex/stripe-transfer-delivery`, según [la guía para Codex](codex-handoff.md). El titular compila en Codemagic y prueba por TestFlight.
 
 Referencia visual: https://www.figma.com/design/96Dxvfc0V4Kn3lU6OTJ1g5/DopMi?node-id=133-624
 
 El prototipo React y la fuente funcional del ZIP son referencias de producto. Sus instrucciones para simular pagos, identidades y documentos no aplican a la app real. Los documentos comerciales aportan contexto; no reemplazan la navegación acordada.
 
-## Reglas económicas para los siguientes hitos
+## Reglas económicas vigentes (H4/H5)
 
 - Evidencia del gasto realizado antes de aprobar la solicitud de reembolso.
 - Solo solicitudes aprobadas de rescatistas habilitados pueden recibir aportaciones.

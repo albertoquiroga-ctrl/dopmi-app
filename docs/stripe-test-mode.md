@@ -2,6 +2,8 @@
 
 Este procedimiento activa el hito de aportaciones sin aceptar dinero real. El código rechaza claves de producción y objetos de Stripe con `livemode=true`.
 
+Esta guía conserva la operación H4. Para H5, seguir también [guardian-acceptance.md](guardian-acceptance.md) y [codex-handoff.md](codex-handoff.md): se añadió `guardian-client`, el webhook de prueba tiene 21 eventos según el último registro y el trabajador incluye Guardián. La lista mínima H4 de abajo no debe reemplazar ni reducir la configuración vigente del webhook. Los pasos de migración/despliegue son procedimientos históricos: comprobar qué está aplicado antes de repetirlos.
+
 ## Requisitos
 
 - Proyecto Supabase de Dopmi con las migraciones actuales aplicadas.

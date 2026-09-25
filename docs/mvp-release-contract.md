@@ -1,5 +1,7 @@
 # Dopmi — contrato del MVP público
 
+> Lectura de continuidad, 25 de septiembre de 2026: este contrato conserva el alcance y la checklist histórica de lanzamiento, no es el estado operativo más reciente. Consultar [codex-handoff.md](codex-handoff.md) y [backlog.md](backlog.md). R0–R6 y H1–H6 son listas diferentes. El repositorio ya configura iOS con `com.mycompany.dopmi`, integración `dopmi_app_store`, versión 2.3.3 y TestFlight; falta acreditar la nueva aceptación Guardián en dispositivo. Las casillas de credenciales/tiendas deben contrastarse con las cuentas antes de repetir o rotar configuraciones existentes. Una fecha programada de activación no acredita que se completó.
+
 Estado: **alcance completo autorizado**  
 Referencia funcional fijada: `albertoquiroga-ctrl/dopmi-functional-mockup@961b557cfb4163aceaf6283fd077ab2e659037ba`  
 Base de producción: `albertoquiroga-ctrl/dopmi-app@5e49f497edaad4b770203b5072423e6a2ba91a8a`  
@@ -96,7 +98,7 @@ La revisión de aceptación usará el recorrido y los estados, no solamente la e
 - [ ] Congelar esta referencia y conciliar documentación.
 - [ ] Mantener CI verde en web, admin, base, Android e iOS simulator.
 - [x] Confirmar Android package name: `com.mycompany.dopmi`.
-- [ ] Confirmar bundle ID de la app existente en App Store Connect.
+- [ ] Verificar identidad/firma con la ficha existente de App Store Connect en la nueva entrega. El repositorio ya configura `com.mycompany.dopmi`; no cambiarlo ni volver a crear la configuración TestFlight.
 - [x] Añadir `codemagic.yaml` sin secretos.
 - [x] Configurar versionado reproducible de Android desde `2.3.0+227`.
 - [x] Confirmar que Google Play App Signing protege la app de producción.
@@ -175,9 +177,9 @@ Nunca se enviarán secretos por chat ni se guardarán en Git.
 
 ## Próximos datos externos requeridos
 
-Para activar publicación automática:
+Pendientes externos de la planificación inicial; verificar cuáles siguen abiertos. El YAML ya usa las referencias siguientes, pero su presencia no demuestra acceso vigente ni una publicación exitosa:
 
 - cargar el nuevo upload keystore en Codemagic con referencia exacta `dopmi_upload_2026`;
 - crear o recuperar una cuenta de servicio de Google Play para Codemagic;
 - añadir las variables públicas de Supabase al grupo `dopmi_supabase`;
-- confirmar el bundle ID existente en App Store Connect antes de configurar TestFlight.
+- verificar la integración/firma existentes y la publicación efectiva del nuevo build TestFlight con `com.mycompany.dopmi`.

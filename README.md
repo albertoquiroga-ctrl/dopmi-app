@@ -1,67 +1,54 @@
-# DopMi Functional Prototype V2
+# Dopmi — app Flutter, administración y backend
 
-La implementación real del **hito 1 está completada y verificada** en `apps/mobile`, `apps/admin` y `supabase`: identidad, perfiles y consulta administrativa. [CI aprobado](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/34788208103). Consulta [la guía de desarrollo](docs/development.md), [las decisiones vigentes](docs/product-decisions.md) y [el avance verificado](docs/progress.md). El contenido siguiente y `src/` describen el prototipo de referencia; sus simulaciones económicas no son reglas de la app real.
+Dopmi conecta adoptantes, donantes y rescatistas. La implementación está en Flutter para Android/iOS, React/TypeScript para administración y Supabase para identidad, datos, permisos y funciones de pagos.
 
-Prototipo navegable para pruebas de UX basado en los frames vigentes de Figma y en `DopMi_Fuente_de_la_Verdad.md`.
+## Continuar en Codex
 
-## Reglas de producto (permanentes)
+**Lee primero [la guía de continuidad](docs/codex-handoff.md) y [AGENTS.md](AGENTS.md).** Corte documental: 25 de septiembre de 2026, UTC.
 
-- **Español:** todo el copy visible va en español de México. Si Figma trae inglés, se traduce antes de implementar. Excepciones: marcas y nombres propios (DopMi, Google, Apple Pay, etc.).
-- **Contraste WCAG 2.2 AA:** texto normal ≥ 4.5:1; texto grande e iconos necesarios ≥ 3:1. El amarillo de marca (`--yellow`) se usa en rellenos; para texto/íconos sobre fondo claro se usa `--yellow-ink`. Ver `.cursor/rules/dopmi-i18n-a11y.mdc`.
+La rama de continuación es **`codex/stripe-transfer-delivery`**. La predeterminada, `codex/Dopmi`, recibió el PR #2, pero al revisar aún no incluía los seis commits posteriores que preparan la aceptación y TestFlight. Comprueba las referencias remotas antes de trabajar; no tomes un checkout predeterminado como la última versión.
 
-## Ejecutar
+| Área | Estado de entrega |
+| --- | --- |
+| H1: identidad y perfiles | Completado en desarrollo. |
+| H2: adopción y comunicación | Completado en desarrollo. |
+| H3: rescatistas, casos y evidencia | Completado en desarrollo. |
+| H4: aportaciones únicas y Connect | Completado **en modo prueba**. |
+| H5: Guardián mensual | Implementación avanzada y CI aprobado; **aceptación integrada pendiente**. |
+| Beta, paridad completa y tiendas | Pendientes según el contrato de lanzamiento. |
 
-```bash
-export PATH="$PWD/.tools/node/bin:$PATH"
-npm run dev
-```
+El siguiente trabajo es preparar y aceptar Guardián mediante **Codemagic → TestFlight**, como solicitó el titular. El alta sigue cerrada según la última evidencia remota registrada. Tener la interfaz habilitada en un build no abre Checkout en el servidor ni acredita pagos o una prueba en dispositivo.
 
-La app abre en `http://127.0.0.1:5173`.
+## Dónde trabajar
 
-## Alcance
+| Ruta | Responsabilidad |
+| --- | --- |
+| `apps/mobile/` | App Flutter: identidad, adopción, rescate, comunicación, aportaciones y Guardián. |
+| `apps/admin/` | Panel con permisos de servidor: usuarios, adopciones, rescates y aportaciones. |
+| `supabase/migrations/` | Esquema, permisos y operaciones transaccionales. |
+| `supabase/functions/` | Checkout, Connect, Guardián, webhook y trabajador de conciliación. |
+| `tools/verification/` | Pruebas Node/PGlite, concurrencia PostgreSQL y comprobaciones remotas. |
+| `codemagic.yaml` | Compilación/firma y distribución Android/iOS. |
+| `src/`, `public/` | Prototipo visual conservado como referencia. |
 
-- Acceso, intención, onboarding y autenticación.
-- Onboarding con tres pistas de dos slides (Adoptante, Donante, Rescatista) según el rol elegido en Tipo de Cuenta.
-- Bienvenida con accesos sociales (Google/Apple), Iniciar sesión y Crear cuenta, como el frame `Welcome` de Figma.
-- Header común del flujo de acceso (`BrandHeader`): ranuras laterales de 40px a 24px del borde y logo de 144×48 centrado; las pantallas internas conservan la barra con título a 16px, como en Figma.
-- Cuenta compartida Adoptante/Donante y cambio a Rescatista.
-- Adopción (incluido el estado sin mascotas disponibles), guardados y mensajes.
-- Perfil público del rescatista con redes sociales, pestañas En Adopción / Casos / Actividad y reporte; lista de rescatistas guardados.
-- Donaciones con éxito/error, historial y notificaciones sincronizadas.
-- Tu Impacto: cuando no eres Guardián, carrusel de tres slides ("casos urgentes", "fondo comunitario", "reportes de impacto") con comunidad y beneficios; ya suscrito, muestra "Vidas que continúan gracias a ti" con las tarjetas de Luna, Milo, Max y Bella.
-- Flujo Guardián: "Elige tu apoyo" (montos $50/$200/$500 o cantidad personalizada, resumen, Apple/Google Pay y tarjeta predeterminada), pantalla "¡Ya eres Guardián!" con la membresía y error de pago según Modo prueba.
-- Selección de monto y administración de suscripción desde Billing.
-- Settings con Información Básica, Métodos de Pago y Billing (suscripción activa o sin suscripción, cambio de cantidad, cancelación e historial de pagos).
-- Centro de ayuda con las preguntas frecuentes de Donante y de Rescatista.
-- Lado rescatista: Home verificado con Cuenta Dopmi, acciones pendientes tipadas (mensajes, evidencia incompleta, evidencia nueva) y actividad reciente; sin verificar / en revisión muestran la tarjeta de estado del mock; Perfil con tarjeta pública, Settings con estado de verificación, información personal, redes sociales y datos bancarios.
-- Verificación de rescatista con el modal explicativo del reembolso, formulario único (información básica, experiencia, redes, documentos) y barra de progreso; el panel muestra el bono de $350 MXN al aprobar y en revisión el CTA "Simular verificación".
-- Publicar con dos entradas y Mis Casos con progreso de fondeo, interruptor de adopción y los estados Borrador y Rechazado.
-- Evidencia, ciclo de comida y estados simulados identificados.
-- Modo prueba para cambiar resultados de pago, verificación y cuenta activa.
+## Documentación
 
-No incluye Administración interna, landing pública ni Comunidad. Los estados sin frame aprobado muestran la leyenda `ESTADO SIMULADO`.
+- [Continuidad para Codex](docs/codex-handoff.md): estado, evidencia, prioridades, configuración y primer encargo.
+- [Decisiones de producto](docs/product-decisions.md): reglas vigentes; prevalecen sobre las simulaciones del prototipo.
+- [Backlog](docs/backlog.md) y [registro de avance](docs/progress.md): tareas y evidencia histórica.
+- [Aceptación Guardián / TestFlight](docs/guardian-acceptance.md): preparación y matriz de recorridos pendientes.
+- [Auditoría del historial de migraciones](docs/migration-history-audit.md): diferencias documentales por comprobar antes de un despliegue de esquema.
+- [Desarrollo](docs/development.md): herramientas, configuración local y pruebas.
+- [Diseño de cobro Guardián](docs/guardian-billing-design.md), [entrega H4](docs/hito4-delivery.md) y [operación Stripe test](docs/stripe-test-mode.md).
+- [Contrato del MVP público](docs/mvp-release-contract.md): paridad y lanzamiento; sus etapas R0–R6 no son los hitos H1–H6.
+- [Prototipo de referencia](docs/prototype-reference.md): README original de UX, assets y simulaciones.
 
-## Assets
+## Inicio local
 
-Todos los iconos, fotos y el logo viven en `public/assets` y provienen de Figma (exportaciones de los frames vigentes) o del logo entregado por el equipo:
+Usa Node 24, Flutter 3.47.4 / Dart 3.13.3 y los lockfiles del repositorio. Instala dependencias por separado en raíz, `apps/admin` y `tools/verification`; ejecuta `flutter pub get` en `apps/mobile`. Configura solo claves publicables en las apps; ejemplos y comandos completos en [desarrollo](docs/development.md).
 
-- `dopmi-wordmark.png` y `dopmi-mark.png`: logo oficial, usados en splash y pantallas de acceso.
-- `tab-*.svg` y `rtab-*.svg`: barras de navegación de Donante y Rescatista.
-- `notif-*.svg`: iconos de cada tipo de notificación con su color de chip.
-- `icon-*.svg`: campana, marcador, chevron, configuración, escudo, corazón, más y mensajes; también las filas de Settings (usuario, tarjeta, billing, ayuda, salir), el sello de verificado y las redes sociales.
-- `icon-google.svg`, `icon-apple.svg` y `welcome-pets.png`: accesos sociales e imagen de la pantalla de bienvenida.
-- `onb-*.svg`: chevron de retroceso e iconos de las ilustraciones del onboarding por rol.
-- `check-circle.svg` e `icon-doc.svg`: lista de requisitos de evidencia y aviso de revisión manual en la verificación del rescatista.
-- `icon-wallet.svg`, `icon-alert-circle.svg`, `icon-chat-yellow.svg`, `icon-camera-red.svg`, `icon-receipt-purple.svg` e `icon-donation-in.svg`: home del rescatista (Cuenta Dopmi, acciones pendientes y actividad).
-- `icon-share.svg`, `icon-bolt.svg` e `icon-clock.svg`: compartir en las tarjetas de impacto y los sellos del carrusel Guardián.
-- `impact-luna.png`, `impact-milo.png`, `impact-max.png` e `impact-bella.png`: fotos originales de las tarjetas de Tu Impacto suscrito.
-- `guardian-*.jpg`: fotos del carrusel Guardián. En Figma cada slide es una sola imagen plana dentro de un frame llamado "Placeholder for HeroCarousel", con el texto y las tarjetas incrustados en el pixel. Para conservar los mismos animales se recortaron las zonas de foto limpia de esas imágenes (`scripts/crop-guardian-photos.py` documenta los recuadros) y encima se reconstruyeron las tarjetas con componentes del sistema, respetando la distribución del mock: sellos apilados arriba a la izquierda, monto y caso en paralelo, diagrama del fondo en tres columnas y el panel de reportes sobre la mitad derecha.
+El `npm run dev` de la raíz inicia **el prototipo**, no la app Flutter. El `npm test` de la raíz tampoco sustituye las pruebas de Flutter, administración o backend.
 
-Los iconos de una sola tinta se pintan con `Icon`, que aplica el SVG como máscara CSS para heredar el color de estado (activo/inactivo). Los iconos multicolor se renderizan con `AssetIcon` como imagen. Cada uso define ancho y alto explícitos para conservar la geometría del diseño.
+## Evidencia más reciente revisada
 
-## Verificar
-
-```bash
-npm test
-npm run build
-```
+[CI 36074983990](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36074983990), sobre `8e6663d03ff2479ab6a75cc4776533dfc19e1bc4`: cuatro jobs aprobados; 356 pruebas backend, 191 pgTAP, 51 Flutter, 18 admin, cuatro del prototipo y seis de configuración. Incluye concurrencia PostgreSQL, integración local de identidad/adopción, Android debug e iOS simulator. **No acredita un IPA firmado nuevo, publicación en TestFlight, aceptación Guardián en dispositivo ni dinero real.**
