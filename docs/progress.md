@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Expiración natural aceptada en Android — 25 de septiembre de 2026
+
+Captura 1000344048 del titular, después de Actualizar estado a las 12:43 hora local: «Intento vencido sin pago confirmado», formulario de nueva alta por 50 MXN, consentimiento desmarcado y Activar en Stripe deshabilitado. No aparece plan activo ni aviso de solicitud recibida en la pantalla completa aportada. Coincide con el ciclo `dfda0ccb-ef61-4435-87e2-64348bf37a65` expired, reserva cero, ausencia de cancelación y sesión Stripe expired/unpaid sin PaymentIntent/suscripción comprobados a las 18:41:41 UTC. Queda completo el recorrido integrado de expiración natural sin pagar ni cancelar; no repetirlo. Esta captura no sustituye la comprobación específica del aviso tras retirar un cambio de monto ni identifica el versionCode instalado.
+
+El titular guardó la credencial test en un archivo privado local fuera del repositorio/OneDrive. Validación sin imprimirla: formato test correcto y consulta autenticada de la sesión esperada devuelve livemode false, expired/unpaid. Queda disponible el acceso del ejecutor local; no se acredita todavía ninguna escritura a través del proxy ni el escenario aislado completo.
+
 ## Expiración natural confirmada en backend y Stripe — 25 de septiembre de 2026
 
 Consulta a las 18:41:41 UTC del ciclo `dfda0ccb-ef61-4435-87e2-64348bf37a65`: activación expired, cancellation_requested_at null, reserva expired con reserved_cents 0 y cero suscripciones del donante. Conserva los vencimientos originales de Checkout 18:34:46 UTC y reserva 18:39:46 UTC. Consulta Stripe independiente de la misma sesión `cs_test_a1qfHlwmhBMH2VIXpcf9sUmt78LEQwY4XKzDJns4d653y7fUluM3dDXXi1`: test, expired/unpaid, total 5000, PaymentIntent y subscription null. No se canceló manualmente ni se modificaron fechas/estados para provocar el resultado. Queda acreditada expiración natural y liberación automática sin pago en backend/Stripe; falta captura Android tras Actualizar estado para cerrar el recorrido integrado.
