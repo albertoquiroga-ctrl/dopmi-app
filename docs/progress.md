@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Aviso móvil aceptado e instrumento temporal instalado — 25 de septiembre de 2026
+
+Captura 1000344178 muestra final del formulario tras actualizar: sin aviso genérico «Solicitud recibida», consentimiento desmarcado, monto 50 y botón deshabilitado. Junto a 1000344174/1000344176 (solicitud retirada, plan 50) cierra la comprobación visual pendiente. No muestra versionCode exacto.
+
+Lectura previa confirma active/5000/revisión4/cero pendientes. Desplegado instrumento de cambio revisado: worker v16, webhook v16, client v8; originales recuperados v15/v15/v7 para restaurar. Target exclusivo sub_1UJa0n2ZjyMOQ0uLrY1yEBLv, cliente e item conocidos, monto nuevo 20000, vencimiento 2026-09-25T22:15:00Z. Runtime selecciona fetch normal al vencer. Helper recuperado de los tres despliegues coincide con archivo local; 18 smoke checks aprobados. No cambiaron flags, secretos, esquema ni reglas económicas. Todavía no hay solicitud ni pérdida observada: falta operación del titular, cotejar request/precio, cruzar reloj y restaurar inmediatamente los bundles.
+
 ## Transporte de cambio comprobado con SDK — 25 de septiembre de 2026
 
 Prueba local adicional con Stripe SDK 22.6.0 y createFetchHttpClient: serialización real de subscriptions.update coincide con el filtro; SDK recibe StripeConnectionError tras consumir respuesta POST y lectura posterior. Al retirar wrapper, recupera la misma suscripción con monto nuevo mediante GET. Secuencia observada GET/POST/GET/GET, una sola escritura, eventos correlacionados por solicitud/precio. Cinco pruebas específicas aprobadas. Upstream simulado: no es aceptación remota ni cruce real. Instrumento sigue sin desplegar mientras se termina la captura pendiente del titular.
