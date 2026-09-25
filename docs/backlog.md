@@ -51,12 +51,12 @@ Corte: 25 de septiembre de 2026. Rama `codex/stripe-transfer-delivery`; guía pr
 - [ ] H5.B Comprobar/desplegar `guardian_preflight` de `payment-worker` según corresponda. Verificar lecturas y, por separado, escrituras necesarias de la clave Stripe del servidor. El preflight de metadatos ya aprobado solo demostró acceso y nombres de secretos.
 - [x] H5.C Preparación de flags de procesamiento con nuevas altas cerradas, acreditada por CI 36071101143 y registro previo. Reconsultar estado antes de abrir la aceptación; no contar como una comprobación remota nueva.
 - [x] H5.D Configuración TestFlight que incluye Guardián y conserva bundle/firma; CI 36074983990 aprobado. Configuración no equivale a IPA firmado ni instalación.
-- [ ] H5.E El titular compila en Codemagic con `ios-testflight` e instala desde TestFlight. Registrar SHA, versión/build y dispositivo.
+- [ ] H5.E El titular compila en Codemagic con `android-guardian-internal` e instala desde Google Play interno, según su elección posterior. Registrar SHA, versión/build y dispositivo. TestFlight queda como alternativa.
 - [ ] H5.F Con permisos/capacidad/Connect/dispositivo listos, habilitar altas **test**, comprobar smoke esperado y respuestas reales de Cron. Abrir test afecta a todos los usuarios autenticados elegibles; no hay allowlist individual.
 - [ ] H5.G Ejecutar [la matriz de aceptación](guardian-acceptance.md): primera aportación, renovación/omisión, rechazo/3DS/tarjeta, cambio/cancelación, aniversario, privacidad/historial, devolución/reversión y recuperación sin duplicados.
 - [ ] H5.H Corregir defectos, revisar independientemente y registrar el cierre verificable.
 
-Android conectado separado también está compilado; es una alternativa de aceptación, no un requisito adicional para que el titular siga su ruta TestFlight.
+La APK Android separada queda como alternativa. La ruta elegida ahora es Google Play interno; el workflow estándar `android-internal` no habilita Guardián.
 
 ## Hito 6 y lanzamiento público
 

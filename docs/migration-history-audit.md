@@ -1,4 +1,20 @@
-# Auditoría pendiente del historial de migraciones
+# Auditoría del historial de migraciones
+
+## Comprobación directa — 25 de septiembre de 2026
+
+Proyecto `ohqxranynackjignryep`, rama `codex/stripe-transfer-delivery`, migraciones del código `e16e1da` (sin cambios lógicos posteriores). Se consultó `supabase_migrations.schema_migrations` directamente: **19 filas** con una sentencia por fila; las 19 coinciden con el archivo local correspondiente tras normalizar CRLF/LF y espacios al principio/final. Sus timestamps difieren; se añade abajo `payment_delivery`, ausente en la comparación documental inicial. Las siete migraciones `202609130001`–`202609130007` no tienen fila de historial.
+
+Se reprodujeron las 26 migraciones en PGlite y se compararon catálogos con el proyecto real, sin modificarlo:
+
+- 30 tablas con los mismos estados RLS, 372 columnas (tipo, nulabilidad y default), 258 restricciones, 110 índices y nueve políticas sobre las tablas de Dopmi: coinciden.
+- 84 funciones presentes. Coinciden `security_definer`, configuración y ACL tras reproducir los permisos predeterminados reales de Supabase (`pg_default_acl`). 79 definiciones coinciden normalizando saltos de línea. Las cinco funciones de identidad restantes coinciden quitando espacios y el comentario explicativo de `admin_list_users`; se inspeccionaron sus cuerpos, no se asumió equivalencia por nombre.
+- La ejecución adicional por `service_role`, y por `anon` en `dopmi_can_write_photo`, proviene de esos defaults de plataforma; no es divergencia frente a ejecutar las migraciones sobre Supabase. La función conserva sus comprobaciones de identidad/propiedad y devuelve `false` sin sesión. El aislamiento de las nueve RPC Guardián de servidor y las tres consultas privadas también pasó en el smoke HTTP remoto.
+
+**Decisión por migración:** conservar las 19 versiones remotas y sus archivos locales, con la correspondencia explícita de la tabla. Para las primeras siete, conservar el antecedente de aplicación por SQL Editor y la evidencia del catálogo. No ejecutar `db push`, renombrar archivos ni realizar `migration repair` sobre este proyecto compartido: el historial CLI todavía no está alineado, aunque los objetos examinados concuerden. Una futura alineación debe preservar la exportación del historial y verificar también triggers, políticas de Storage y grants de tablas/columnas antes de marcar versiones como aplicadas. Esta auditoría no acredita aún esos elementos ni cierra H5.A por completo.
+
+Snapshots de trabajo (sin datos de usuarios ni credenciales): `.tools/h5-audit/migrations-remote.json`, `catalog-local.json`, `catalog-remote.json`, `schema-local.json` y `schema-remote.json`; se mantienen fuera de Git. No se alteró esquema ni historial remoto.
+
+## Comparación documental inicial
 
 Corte: 25 de septiembre de 2026. Comparación de archivos del repositorio en `8e6663d` con las versiones remotas **registradas en `docs/progress.md`**. No es una consulta nueva de `supabase_migrations.schema_migrations` ni prueba de que el SQL remoto sea diferente.
 
@@ -6,6 +22,7 @@ Hay 26 archivos locales; en 18 nombres, el timestamp del archivo difiere del tim
 
 | Nombre | Versión del archivo en Git | Versión remota documentada |
 | --- | --- | --- |
+| `payment_delivery` | `202609230001` | `20260923145807` |
 | `refund_reversal` | `20260923190407` | `20260923190919` |
 | `fix_payment_reconcile_candidates` | `20260923215745` | `20260923215929` |
 | `guardian_atomic_reservations` | `20260923224118` | `20260923225013` |
