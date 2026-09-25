@@ -1,5 +1,13 @@
 # Dopmi — registro de avance
 
+## Intento financiero: trabajador ganó la conciliación — 25 de septiembre de 2026
+
+Se ejecutó el instrumento local para ciclo c101a18a-e1ad-469a-9229-99fe05121f3c, cargo ch_3UJcwo2ZjyMOQ0uL0xVYySBz, transferencia tr_3UJcwo2ZjyMOQ0uL0VGq9emL. Lecturas previas: test, pagado 5000 MXN centavos, cliente esperado, sin disputa ni refund previo. Refund total re_3UJcwo2ZjyMOQ0uL0pXPw6Rs succeeded, creado con key estable dopmi-h5-response-loss-refund-c101a18a-e1ad-469a-9229-99fe05121f3c.
+
+El ejecutor usó el servicio de producción y se relayaron get/observe/claim/checked a la RPC real. El trabajador normal completó antes de observe: ajuste completed, asignación/comisión cero. La validación de claim del instrumento encontró reversión ya confirmada y salió AssertionError, attempted=false, evidence vacía; no envió POST a Stripe. Lectura Stripe independiente confirma una sola reversión trr_1UJgWX2ZjyMOQ0uLCxmCzVrM por 4314, transferencia completamente revertida, has_more=false. No se desactivó Cron, editó estado financiero ni reintentó bajo otra clave.
+
+Resultado no concluyente para pérdida de respuesta: sólo acredita conciliación normal y exclusión del ejecutor tardío. No repetir devoluciones al azar para ganar la carrera. El próximo mecanismo debe inyectar el fallo en el transporte del ejecutor que obtenga la concesión, restringido a una operación test concreta y con vencimiento; requiere revisión antes de desplegar. El proxy de precio previo y este intento no cierran el escenario financiero incierto.
+
 ## Preparación de pérdida de respuesta financiera — 25 de septiembre de 2026
 
 Se añadió guardian-refund-loss-runner.mjs: importa guardianRefundService de producción y comunica sus RPC por JSON secuencial al operador/conector Supabase, sin copiar credenciales de servidor. El único POST Stripe permitido es una reversión test indicada, con el cuerpo y key autorizados por la RPC; el proxy pierde la respuesta TCP real. No crea refunds ni modifica estados financieros directamente. Procedimiento en tools/verification/guardian-response-loss.md.
