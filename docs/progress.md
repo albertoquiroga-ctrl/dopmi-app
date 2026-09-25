@@ -1,5 +1,9 @@
 # Dopmi — registro de avance
 
+## Paginación Android aceptada — 25 de septiembre de 2026
+
+El titular confirmó «Sí salió» y aportó captura 1000344002 después de solicitar pulsar «Ver ciclos anteriores». Se ve el alta del 25/9/2026 debajo del ciclo omitido del 25/10/2026: autorizado/pagado 50.00 MXN, comisión 1.00, Stripe 5.86, neto asignado/transferido 43.14. Coincide con el único registro de la segunda página previamente verificada por RPC (20 + 1, sin intersección y cursor final null). Queda aceptado el recorrido de paginación Android con más de 20 ciclos. No necesita más avances del reloj ni repetir esta captura. La imagen no identifica versión/commit del build y no acredita la corrección visual de gestión de solicitudes `291dcd0`. Los demás pendientes de H5 permanecen abiertos.
+
 ## Historial de 21 ciclos preparado y CI aprobado — 25 de septiembre de 2026
 
 CI `36166363025`, commit `bf9d566a217523be985575a0aa628d1b3250954c`: ios, flutter, web-and-database e identity-and-adoption-backend terminaron success. El arreglo también se verificó en un caso nuevo: factura `in_1UJcno2ZjyMOQ0uL0zYYvlWY` quedó pending/guardian_recovery_void_unconfirmed tras la lectura inmediata de Stripe; Cron la cerró skipped en el segundo intento a las 17:24:04 UTC, sin reencolado manual ni pay_requested_at. Confirma recuperación automática posterior al despliegue, además del caso histórico reparado.
