@@ -1,5 +1,13 @@
 # Dopmi — registro de avance
 
+## Cuenta nueva y variante Checkout con cliente previo — 25 de septiembre de 2026
+
+El titular entregó captura 1000344172 de la nueva cuenta con correo confirmado. Lectura remota confirma correo validado y cero activaciones, suscripciones y ciclos Guardián. No se inició alta ni se vinculó esa cuenta al cliente técnico.
+
+Se probó únicamente con el cliente técnico de la entrada siguiente la variante Checkout payment con customer y sin customer_creation. Stripe creó cs_test_a1CEpSYMmow3xGVNweSMM1zmDLQhbZuhzoqcaWPSbtvBJL6tVOTaWECpFB, open/unpaid, customer_creation null y created 1790372316. Se expiró inmediatamente: expired/unpaid. Key estable dopmi-h5-calendar-compat-existing-only-20260925. No se abrió enlace ni se proporcionó medio de pago.
+
+Esto precisa la incompatibilidad previa: Stripe admite cliente existente con reloj, pero no junto a customer_creation=always. El validador actual del alta exige always; no se alteró para esta prueba. guardian-schedule.mjs obtiene el aniversario de verified.charge.created: la fecha de una sesión creada no acredita la fecha de un cargo ni la aceptación de fin de mes. Sigue pendiente un montaje válido para ese recorrido; no pedir todavía el pago al titular. Sin cambios en código desplegado ni estado financiero de Dopmi.
+
 ## Compatibilidad Checkout y reloj previo — 25 de septiembre de 2026
 
 Prueba API real de preparación, sin pago ni activación Dopmi: clock_1UJgih2ZjyMOQ0uLc9TDSqN3 y cliente técnico cus_VKLP2q0A8FgXQ4, test, metadata dopmi_acceptance=calendar_checkout_compat. Estado técnico fuera de Git en .tools/guardian-calendar-checkout-probe.json. Se intentó Checkout payment con customer preexistente del reloj y customer_creation=always para conservar la validación vigente del alta. Stripe 2026-08-26.dahlia rechazó HTTP 400, param customer: You may only specify one of these parameters: customer, customer_creation. Lectura posterior del cliente confirmó test_clock esperado, livemode false y cero sesiones (has_more false). Repetición diagnóstica conservó la misma key y fue rechazada igual; no hubo Checkout, cargo ni suscripción.
