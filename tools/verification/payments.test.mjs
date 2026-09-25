@@ -1171,6 +1171,57 @@ test('Guardian paid initial payment with invalidated eligibility refunds instead
   assert.equal((await f.service().work()).processed,1);assert.equal(f.transfers.size,0);
 });
 
+test('Guardian initial dispute persists review without settlement and cannot resume through a later webhook',async()=>{
+  const f=initialFixture();const opened=await f.initial.checkout(donor,initialInput);f.paid();
+  const before=await activationRpc('get',{cycle_id:opened.cycle_id});
+  const clean=guardianInitialEvidence([...f.sessions.values()][0],f.intent,before);
+  f.charge.disputed=true;
+  assert.throws(()=>guardianInitialEvidence([...f.sessions.values()][0],f.intent,before),/guardian_initial_disputed/);
+  assert.equal(await f.initial.reconcileSession('cs_test_initial1'),null);
+  const a=await activationRpc('get',{cycle_id:opened.cycle_id});
+  assert.equal(a.status,'attention');assert.equal(a.payment_review.reason,'disputed');
+  assert.equal(a.payment_review.charge_id,'ch_initial');assert.ok(a.payment_review_at);
+  assert.equal(a.settlement,null);assert.equal(a.hold_expires_at,before.hold_expires_at);
+  const c=(await db.query('select reserved_cents,status from private.dopmi_guardian_cycles where id=$1',[opened.cycle_id])).rows[0];
+  assert.equal(Number(c.reserved_cents),4900);assert.equal(c.status,'reserved');
+  f.charge.disputed=false;
+  await f.initial.handleWebhook('evt_initial');await f.initial.reconcile();
+  assert.deepEqual((await activationRpc('get',{cycle_id:opened.cycle_id})).payment_review,a.payment_review);
+  await rejected(()=>guardianSettlement('settle_initial',clean),/Pago inicial en revisión/);
+  assert.equal((await db.query('select count(*)::integer n from private.dopmi_guardian_jobs')).rows[0].n,0);
+  await role(donor);const item=(await history()).items[0];
+  assert.equal(item.status,'review');assert.equal(item.paid_cents,null);assert.equal(item.assigned_cents,null);
+  assert.doesNotMatch(JSON.stringify(item),/pi_initial|ch_initial|payment_review/);
+  await role(other);assert.deepEqual((await history()).items,[]);
+});
+
+test('Guardian initial dispute requires verified identity and service-only immutable review evidence',async()=>{
+  const f=initialFixture();const opened=await f.initial.checkout(donor,initialInput);f.paid();f.charge.disputed=true;
+  f.intent.customer='cus_foreign';
+  await assert.rejects(f.initial.reconcileSession('cs_test_initial1'),/guardian_initial_charge_mismatch/);
+  assert.equal((await activationRpc('get',{cycle_id:opened.cycle_id})).status,'pending');
+  const evidence={cycle_id:opened.cycle_id,session_id:'cs_test_initial1',reason:'disputed',
+    payment_intent_id:'pi_initial',charge_id:'ch_initial',gross_cents:5000,disputed:true};
+  for(const patch of [{session_id:'cs_test_other'},{gross_cents:2000},{disputed:false},{reason:'other'}])
+    await rejected(()=>activationRpc('review_payment',{...evidence,...patch}),/no coincide/);
+  for(const [actor,name] of [['','anon'],[donor,'authenticated'],[staff,'authenticated']]){
+    await role(actor,name);await rejected(()=>activationRpc('review_payment',evidence),/permission denied/);
+    await db.exec('reset role');
+  }
+  const a=await activationRpc('review_payment',evidence);
+  assert.equal((await activationRpc('review_payment',evidence)).payment_review_at,a.payment_review_at);
+  await rejected(()=>activationRpc('review_payment',{...evidence,charge_id:'ch_other'}),/otra evidencia/);
+});
+
+test('Guardian initial dispute observation cannot overwrite an existing settlement',async()=>{
+  const f=initialFixture();const opened=await f.initial.checkout(donor,initialInput);f.paid();
+  const settled=await f.initial.reconcileSession('cs_test_initial1');
+  const a=await activationRpc('review_payment',{cycle_id:opened.cycle_id,session_id:'cs_test_initial1',
+    reason:'disputed',payment_intent_id:'pi_initial',charge_id:'ch_initial',gross_cents:5000,disputed:true});
+  assert.equal(a.payment_review,null);assert.equal(a.status,'settled');
+  assert.deepEqual(a.settlement,settled);
+});
+
 test('Guardian initial evidence rejects another customer, live mode, unknown fee and reused charge',async()=>{
   const f=initialFixture();const result=await f.initial.checkout(donor,initialInput);f.paid();
   const a=await activationRpc('get',{cycle_id:result.cycle_id}),s=[...f.sessions.values()][0];

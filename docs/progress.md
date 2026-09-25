@@ -1,5 +1,13 @@
 # Dopmi — registro de avance
 
+## Disputa real antes de liquidación: corrección preparada — 25 de septiembre de 2026
+
+Alta nueva del titular: ciclo `fad96a44-93e9-4c05-be8d-55fb37a9c7e9`, sesión `cs_test_a1HOOVeaSqW9fcvFOvtHfBt8I8c4NjO6EpsGDaFMK98lGfozTEkHtwImc8`, PI `pi_3UJeKv2ZjyMOQ0uL1FykSWZS` succeeded y cargo `ch_3UJeKv2ZjyMOQ0uL1VaeVpvG` paid/disputed=true, sin refund, 5000 centavos test. A las 19:01:53 UTC la activación seguía pending pese a conciliación 19:01:02; reserva 4900, cero settlements y cero planes. El guard financiero bloqueaba correctamente la asignación, pero no persistía la necesidad de revisión: defecto confirmado, no prueba aprobada.
+
+Corrección: verificar identidad antes de clasificar disputa, guardar atención/evidencia privada mediante RPC service-only y bloquear settlement posterior por JS y SQL. No crear contabilidad ni alterar reserva, vencimiento, asignaciones o devoluciones. La caducidad y cancelación previas se conservan; no afirmar retención indefinida. Historial existente proyecta review y paid_cents null sin inventar liquidación. Tres regresiones cubren referencias ajenas, permisos, idempotencia, historial privado, replay y settlement ganador. Suite backend 379/379 aprobada; revisión independiente sin bloqueos. Pendiente desplegar y verificar el mismo caso real.
+
+El PostgreSQL local en ejecución conserva esquema anterior a H4/H5: aplicación de la nueva migración falló al faltar dopmi_guardian_activations y pgTAP contributions al faltar dopmi_connect_accounts; no se reseteó ni reconstruyó esa base. Identity/adoption/rescue aprobaron 120 comprobaciones. La suite PGlite sí aplicó todas las migraciones y las nuevas regresiones; CI de esta corrección debe acreditar el stack PostgreSQL completo.
+
 ## Pérdida real de respuesta de precio test — 25 de septiembre de 2026
 
 Ejecutor aislado `tools/verification/guardian-stripe-transport-acceptance.mjs`: a las 18:53:13 UTC Stripe respondió 200 a POST /v1/prices, Request-Id `req_GI3c5kTXelfvRC`; el proxy consumió la respuesta y cerró TCP sin entregarla. Stripe 22.6.0/Fetch observó StripeConnectionError. Reintento con mismo cuerpo/key recuperó `price_1UJeFA2ZjyMOQ0uLWSTNfwBu`; lectura independiente confirmó 5000 centavos MXN y listado del producto `prod_VKIquTAncoOfoG` devolvió un precio. La coincidencia con el ID del proxy acredita recuperación del mismo objeto; el listado por producto no pretende descartar productos duplicados globalmente.
