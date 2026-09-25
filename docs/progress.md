@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## CI final de cobertura de disputa — 25 de septiembre de 2026
+
+GitHub Actions [36202506285](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36202506285), commit `943a7d4fb8797333e49981cbf7f1d96de15f2583`: cuatro jobs completed/success, consultados directamente por ID. Incluye web/base de datos, permisos y concurrencia PostgreSQL, integración de identidad/adopción, análisis/tests Flutter y compilaciones Android/iOS simulator. La consulta inicial por commit no mostraba esta ejecución porque el conector filtra ejecuciones de pull request; esta se originó por push. No fue ausencia ni fallo de CI.
+
+No sustituye la prueba remota de disputa posterior a transferencia, único escenario de aceptación pendiente. No hay cambios de runtime ni necesidad de otro build móvil por esta evidencia. La consulta al titular sobre un mecanismo soportado por Stripe sigue sin respuesta; no consta un ticket de soporte enviado.
+
 ## Cobertura local de disputa posterior a entrega — 25 de septiembre de 2026
 
 Prueba existente reforzada: adjustment review/disputed, historial propietario refund_review conserva asignado/transferido4314 y revertido0; reconciliación repetida no llama createReversal ni refunds.create. Variante nueva sin devolución elimina refunds del fixture y amount_refunded=0, cubriendo disputa sola después de transferencia. Evidencia Stripe simulada/RPC local real: no sustituye aceptación remota. Revisión independiente sin bloqueos, con ese límite explícito.
