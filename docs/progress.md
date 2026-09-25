@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Fin de mes aceptado en app y cancelación sin renovación — 25 de septiembre de 2026
+
+Capturas1000344230/1000344228 confirman febrero28→marzo30 y marzo30→abril30, ambos pago200/fee4/Stripe12.99/net183.01, asignación confirmada. Captura1000344232 confirma Plan cancelado/Cancelación confirmada. SQL y Stripe consultados: suscripción y schedule canceled, seis ciclos mensuales. Revisión independiente anterior no encontró inconsistencias y limitó pendientes a estas pantallas y ausencia de renovación posterior.
+
+Avance del mismo reloj clock_1UJhwr2ZjyMOQ0uLZSfYQN1Q después del siguiente aniversario, key dopmi-h5-calendar-ec3532d1-canceled-april30. Verificado ready1809128883(30/4/2027 23:48:03UTC), suscripción canceled; listado completo conserva exactamente seis facturas pagadas, última in_1UJi9u2ZjyMOQ0uLju5UmewR de marzo, sin factura de abril. Base conserva seis ciclos, último inicio1806446883(30/3), sin ciclo posterior. Recorrido integrado fin de mes aceptado **desde calendario preparado**, sin atribuir ancla30 a fecha del cargo inicial. No repetir. H5 permanece abierto por disputa posterior a transferencia y cierre de esa evidencia.
+
 ## Febrero corto y regreso al30 con nuevo monto — 25 de septiembre de 2026
 
 Solicitud b00e8cf7-6956-455b-a525-3f61f6ab85f0 aplicada20000, attempts1/error null, effective_from1803854883(28/2/2027), precio price_1UJi822ZjyMOQ0uL4bXOgGUl. Captura1000344226 acredita plan200 y fecha28/2. Factura enero sigue paid5000. Avances del reloj con keys dopmi-h5-calendar-ec3532d1-{february28,march30}; actual ready1806450483.
