@@ -1,5 +1,13 @@
 # Dopmi — registro de avance
 
+## Escritura real perdida y aniversario cruzado — 25 de septiembre de 2026
+
+Titular confirmó disponibilidad antes de instalar target 5000, vencimiento 22:22:57 UTC, worker/webhook v20 y client v12; 18 smoke checks aprobados. Captura 1000344186 muestra plan 200 y solicitud nueva de 50 pendiente. Request 77f3f0f1-ebf8-49bd-a579-011647a534b4, price_1UJh932ZjyMOQ0uLpHTzqSn3, mutation_requested_at 21:59:05.735772, attempts1, effective_from1848147669.
+
+Log 21:59:06.616 UTC confirma POST real 200 consumido antes del SDK, req_vwuu8POq3m7aKk, mismo UUID/precio y monto5000. Lectura Stripe independiente confirma suscripción activa test con ese precio y monto; base mantiene pending/guardian_processor_unavailable. Reloj avanzado con key dopmi-h5-cross-77f3f0f1-ebf8-49bd-a579-011647a534b4 a1848151269 y verificado ready. Nuevo período1848147669–1850826069; factura in_1UJhAE2ZjyMOQ0uLaG1E9SHD draft, paid0/due5000 y línea del precio exacto. Consulta de solicitud después del cruce aún pending, applied_at null, misma fecha efectiva y attempts1.
+
+Instrumentación retirada inmediatamente: worker/webhook v21, client v13. Todos los archivos comparados iguales con originales y otros18 smoke checks aprobados. Falta observar recuperación normal después de available_at (failed impone espera5min), comprobar resultado/factura y pantalla móvil. No declarar todavía aceptación completa ni repetir POST. Esta es pérdida inyectada en transporte HTTP antes del SDK y ocultación temporal de lecturas, no un corte TCP.
+
 ## Intento de cruce no concluyente; restauración verificada — 25 de septiembre de 2026
 
 Tras tres consultas sin solicitud nueva, se empezó a retirar instrumentación. La operación del titular llegó durante esa restauración: request 107aab57-346c-4e39-8a1c-ed6b9ff3e1b5 creado 21:54:13.814845 UTC, aplicado normalmente con mutación 21:55:06.069927, attempts 1, price_1UJh5B2ZjyMOQ0uLkELo7LAE, effective_from 1848147669. Reinstalación temporal v18/v18/v10 llegó después de la ejecución normal; no acredita pérdida. Consulta de logs 21:50–21:56 sin guardian_test_change_response_consumed. No se cruzó reloj, no reescribió solicitud ni fabricó fallo.
