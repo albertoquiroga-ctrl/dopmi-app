@@ -1,5 +1,9 @@
 # Dopmi — registro de avance
 
+## Expiración natural confirmada en backend y Stripe — 25 de septiembre de 2026
+
+Consulta a las 18:41:41 UTC del ciclo `dfda0ccb-ef61-4435-87e2-64348bf37a65`: activación expired, cancellation_requested_at null, reserva expired con reserved_cents 0 y cero suscripciones del donante. Conserva los vencimientos originales de Checkout 18:34:46 UTC y reserva 18:39:46 UTC. Consulta Stripe independiente de la misma sesión `cs_test_a1qfHlwmhBMH2VIXpcf9sUmt78LEQwY4XKzDJns4d653y7fUluM3dDXXi1`: test, expired/unpaid, total 5000, PaymentIntent y subscription null. No se canceló manualmente ni se modificaron fechas/estados para provocar el resultado. Queda acreditada expiración natural y liberación automática sin pago en backend/Stripe; falta captura Android tras Actualizar estado para cerrar el recorrido integrado.
+
 ## CI del instrumento y SDK aprobado — 25 de septiembre de 2026
 
 Verificación directa en GitHub: CI `36171852910` sobre `c3bc62de89ac606aab7d1f1c3b4d8c57aec954e5` terminó success. CI posterior `36172547261` sobre `90823c66b81a74b45b8c1587a8cee3dbffdad4c9`, que incluye Stripe SDK 22.6.0 y sus pruebas de transporte, terminó también con flutter, ios, web-and-database e identity-and-adoption-backend todos success, confirmado a las 18:24:35 UTC. Los cambios son de verificación/documentación: no requieren otra instalación móvil ni despliegue de funciones.
