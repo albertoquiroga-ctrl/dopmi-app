@@ -4,7 +4,7 @@
 
 Capturas 1000344119 y 1000344121 acreditan estado Alta en revisión e historial En revisión para el alta disputada, separado del intento anterior cerrado sin pago. La pantalla conservaba una intención Checkout local y mostraba Reintentar mi solicitud junto a No vuelvas a pagar. Se ocultan formulario y reintento cuando esa intención está en attention, y se bloquea su envío en el controlador; se preservan referencia, actualización y cancelación. No cambia la conciliación del servidor.
 
-Flutter analyze sin incidencias; 52 pruebas Flutter aprobadas. La regresión reproduce pending → attention con intención conservada, verifica ausencia de nuevos envíos/apertura de Checkout y recuperación de la misma referencia si el servidor vuelve a pending. Pendiente CI y nuevo build Codemagic/validación en dispositivo; H5 permanece abierto.
+Flutter analyze sin incidencias; 52 pruebas Flutter aprobadas. La regresión reproduce pending → attention con intención conservada, verifica ausencia de nuevos envíos/apertura de Checkout y recuperación de la misma referencia si el servidor vuelve a pending. Capturas Android 1000344166 y 1000344168, tras actualización reportada por el titular, confirman Alta en revisión sin formulario ni botón de reintento, conservando Cancelar mi plan y Actualizar estado. El historial muestra el alta en revisión por 50 MXN y el intento anterior cerrado sin pago por separado. Corrección visual validada en dispositivo; estas capturas no muestran versionCode ni identifican el nuevo build. Pendiente cotejo de CI/build; H5 permanece abierto.
 
 ## Renovación distribuida a dos rescatistas — 25 de septiembre de 2026
 
