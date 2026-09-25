@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Alta móvil real y calendario de fin de mes preparado — 25 de septiembre de 2026
+
+Capturas1000344214/1000344216: plan activo50 e inicial25/9 con pago50, fee1, Stripe5.86, asignado/transferido43.14. SQL y Stripe coinciden: ciclo ec3532d1-25e2-40b6-93e7-cf281fc854dc, sub_1UJhvU2ZjyMOQ0uLoXRDXJiU, price_1UJhvT2ZjyMOQ0uL4nKUoCXZ, cargo ch_3UJhuQ2ZjyMOQ0uL1SqAq1ae creado1790376483, transferencia tr_3UJhuQ2ZjyMOQ0uL1cq9IGIc4314 sin reversión. Schedule ready/attempt1, sin solicitudes pendientes. Reconsulta posterior de la sonda técnica cancelada anterior sigue sin facturas.
+
+Asociado reloj clock_1UJhwr2ZjyMOQ0uLZSfYQN1Q al cliente real test cus_VKMdvrBZ0z0IUm; inicialización ready y avance al30/9/2026 22:48:03UTC(1790808483) confirmado. Preparación explícita por API: billing_cycle_anchor=now/proration_behavior=none; ancla anterior1792968483, nueva1790808483, siguiente1793400483(30/10). Pausa keep_as_draft conservada, active5000, listado completo de facturas vacío en lectura inmediata y posterior. SQL posterior active/ready/error null/cero pendientes. Keys dopmi-h5-calendar-ec3532d1-{clock,september30,reanchor30}. Estado ignorado .tools/guardian-integrated-calendar.json. No se editaron SQL ni fechas/referencias financieras. Pendiente avanzar renovaciones hacia febrero, gestionar monto/cancelación y validar móvil; esta preparación no demuestra alta originada en día30.
+
 ## Reanclaje Stripe test viable sin esperar fecha real — 25 de septiembre de 2026
 
 Titular solicita alternativa a esperar cinco días. Revisión independiente acepta fixture integrada desde plan preparado, con alta ordinaria acreditada aparte y referencias financieras reales. Prueba técnica real sin PM: sub_1UJhpP2ZjyMOQ0uLsAqf3eLp en cliente técnico del reloj31/3/2027, precio5000, send_invoice/due1, ancla25. Se activó pausa keep_as_draft y actualizó billing_cycle_anchor=now, proration_behavior=none. GET: active, ancla cambió1808661600→1806501600, siguiente1809093600(30/4), pausa conservada. Dos listados completos sin facturas/pagos. Suscripción técnica cancelada después con invoice_now=false/prorate=false; no altera fixture original. Keys dopmi-h5-anchor-reset-probe-{create,pause,reset,cleanup}-20260925; estado local ignorado .tools/guardian-anchor-reset-probe.json.
