@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Instrumentación de transporte revisada — 25 de septiembre de 2026
+
+Tras comprobar que el trabajador ganaba al relay, se preparó guardian-refund-loss-fetch.mjs sólo en tools/verification; no está importado ni desplegado. Inyecta pérdida antes de entregar al SDK una respuesta real de reversión compatible con transferencia/importe/MXN. Ruta, key, body y autorización test exactos; rechaza Stripe-Account. Límite 32 KiB/20 segundos y target <=30 minutos. Tres pruebas aprobadas, incluidas negativas por clave, cuenta, método, cuerpo y respuesta ajenos; añadidas a npm test.
+
+Revisión independiente sin bloqueo del wrapper; exige que la integración temporal use fetch normal cuando venza el target (no invocar entonces su constructor). La intercepción es por instancia, no global; documentado. Falta preparar target y bundle temporal, ejecutar la reversión real, comprobar recuperación e inmediatamente restaurar bundles. No se declara corte TCP ni aceptación financiera a partir de estas pruebas locales.
+
 ## Intento financiero: trabajador ganó la conciliación — 25 de septiembre de 2026
 
 Se ejecutó el instrumento local para ciclo c101a18a-e1ad-469a-9229-99fe05121f3c, cargo ch_3UJcwo2ZjyMOQ0uL0xVYySBz, transferencia tr_3UJcwo2ZjyMOQ0uL0VGq9emL. Lecturas previas: test, pagado 5000 MXN centavos, cliente esperado, sin disputa ni refund previo. Refund total re_3UJcwo2ZjyMOQ0uL0pXPw6Rs succeeded, creado con key estable dopmi-h5-response-loss-refund-c101a18a-e1ad-469a-9229-99fe05121f3c.

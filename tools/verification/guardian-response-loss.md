@@ -139,3 +139,27 @@ todavía esa ejecución financiera.
 La pérdida móvil→Edge y la pérdida Edge→Stripe son alcances diferentes. Este
 instrumento prepara la segunda frontera. Un test local verde, una excepción
 simulada o un reenvío de webhook no cierran ese recorrido integrado.
+
+
+## Instrumento temporal para el transporte del servidor
+
+`guardian-refund-loss-fetch.mjs` permite configurar una transferencia test exacta,
+importe, ciclo/gasto, clave de autorización del runtime y vencimiento máximo de
+30 minutos. No está importado por el runtime normal ni desplegado. Consume una
+respuesta Stripe real válida antes de entregarla al SDK: es pérdida inyectada en
+el cliente HTTP, no un corte TCP. No sustituye las pruebas del proxy TCP.
+
+El wrapper limita la lectura a 32 KiB/20 segundos y exige identidad de reversión,
+transferencia, importe y moneda MXN. Rechaza intercepción de Stripe-Account,
+autorización distinta, key/cuerpo/ruta ajenos, parámetros adicionales y GET.
+Errores upstream y respuestas incompatibles se entregan sin convertirlos en
+éxito. Tres pruebas con SDK Fetch y negativas aprobadas.
+
+Revisión independiente: al integrar temporalmente, configuración ausente o vencida
+debe seleccionar fetch normal ANTES de construir el wrapper; su constructor
+rechaza targets inválidos/vencidos. No introducir un fallo global al caducar.
+Una variable local limita la intercepción por instancia, no globalmente:
+conservar evidencias con Request-Id e ID y exigir una sola reversión económica.
+Tras probar, retirar el instrumento de todos los bundles temporales y comparar
+el código desplegado con el original. Aún no hay aceptación financiera de este
+mecanismo ni modificación desplegada.
