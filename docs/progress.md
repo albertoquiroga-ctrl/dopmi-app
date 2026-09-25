@@ -1,5 +1,9 @@
 # Dopmi — registro de avance
 
+## Estado de solicitud retirada visible en Android — 25 de septiembre de 2026
+
+Tras informar que instaló el nuevo build de Codemagic, el titular aportó 1000344033 y 1000344035. La pantalla del plan (1000344033) muestra Plan activo por 50 MXN y, debajo de Cambio a 200 MXN, «Solicitud retirada; se conservó el monto anterior». Queda acreditada la presentación del estado autoritativo solicitado; no necesita generar otro cambio para encontrar ese texto. No se ve el aviso genérico en la parte capturada, pero la imagen no incluye el final del formulario ni identifica versión/commit del build; no acredita por sí sola la ausencia del aviso en toda la pantalla ni una nueva operación de retiro. La captura del historial 1000344035 confirma el ciclo de mayo de 2028 por 50 MXN y 43.14 transferidos. También muestra marzo antes de abril: el historial actual pagina por creación del registro, no por período; revisar esta presentación separadamente, sin atribuirla a duplicación o nuevos cobros.
+
 ## Paginación Android aceptada — 25 de septiembre de 2026
 
 El titular confirmó «Sí salió» y aportó captura 1000344002 después de solicitar pulsar «Ver ciclos anteriores». Se ve el alta del 25/9/2026 debajo del ciclo omitido del 25/10/2026: autorizado/pagado 50.00 MXN, comisión 1.00, Stripe 5.86, neto asignado/transferido 43.14. Coincide con el único registro de la segunda página previamente verificada por RPC (20 + 1, sin intersección y cursor final null). Queda aceptado el recorrido de paginación Android con más de 20 ciclos. No necesita más avances del reloj ni repetir esta captura. La imagen no identifica versión/commit del build y no acredita la corrección visual de gestión de solicitudes `291dcd0`. Los demás pendientes de H5 permanecen abiertos.
