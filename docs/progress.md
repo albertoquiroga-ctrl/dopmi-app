@@ -2,6 +2,8 @@
 
 ## Preparación de cruce de aniversario incierto — 25 de septiembre de 2026
 
+Revisión independiente detectó falta de atribución por solicitud/precio. Corregido antes de despliegue: POST exige precio devuelto igual al solicitado y log registra UUID/precio; GET registra precio observado. Cuatro pruebas específicas aprobadas, incluyendo precio discordante y correlación. El operador deberá cotejar ambos identificadores con la solicitud persistida antes de avanzar el reloj. La ocultación GET es deliberadamente por suscripción/monto, no por solicitud. Sigue sin desplegar ni acreditar el escenario real.
+
 Se añadió instrumento local guardian-change-loss-fetch.mjs: consume respuesta real de cambio de precio y oculta temporalmente lecturas de la suscripción activa exacta con el monto nuevo, también entre instancias, para poder cruzar el reloj antes de confirmar. No cambia solicitudes ni fabrica evidencia. Scope test/customer/sub/item/monto, key Guardián y body exactos, límite de respuesta y vencimiento máximo 30 minutos; cancelación confirmada pasa sin ocultación. Procedimiento en tools/verification/guardian-change-loss.md. No importado ni desplegado.
 
 Tres pruebas de aislamiento/recuperación aprobadas; suite completa 385 aprobadas. Endurecimiento posterior para dejar pasar status canceled verificado con las tres pruebas específicas. Revisión independiente del instrumento solicitada y pendiente; no ejecutar todavía en remoto. No acredita el cruce integrado. Se pidió al titular confirmar el estado del plan existente para la comprobación móvil pendiente, sin solicitar aún cambio ni cancelación.

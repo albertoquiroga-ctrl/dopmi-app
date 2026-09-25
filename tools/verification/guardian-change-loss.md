@@ -13,6 +13,12 @@ Respuestas ajenas, antiguas, inválidas, no exitosas o mayores de 256 KiB pasan 
 alteración. Los logs sólo registran identificadores técnicos y monto; no objetos
 completos, claves ni secretos de cliente.
 
+POST exige que el precio devuelto coincida con el enviado y registra el UUID de
+solicitud y precio. GET registra precio observado; su ocultación es por suscripción
+y monto, no por UUID. Antes de avanzar el reloj se deben cotejar UUID/precio del
+POST con la solicitud persistida. No afirmar vinculación previa a una solicitud
+exacta: el UUID se conoce después de la operación del titular.
+
 Antes de desplegar: revisión independiente; confirmar plan test, reloj ready,
 monto previo distinto, consentimiento y capacidad del escenario. Conservar los
 bundles originales. Integración debe usar fetch normal si target ya venció (no

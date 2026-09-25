@@ -11,6 +11,7 @@ export function changeLossFetch({ fetchImpl, target, testKey, now = Date.now, re
   const path = `https://api.stripe.com/v1/subscriptions/${target.subscription}`;
   return async (url, init) => {
     const method = init?.method ?? 'GET';
+    let requestIdempotencyKey = null, requestedPrice = null;
     const headers = new Headers(init?.headers);
     if (now() >= target.expiresAt || String(url) !== path || !['GET', 'POST'].includes(method)
       || headers.get('authorization') !== `Bearer ${testKey}` || headers.has('stripe-account'))
@@ -23,6 +24,8 @@ export function changeLossFetch({ fetchImpl, target, testKey, now = Date.now, re
         || !validId('price', body.get('items[0][price]')) || body.get('items[0][quantity]') !== '1'
         || body.get('billing_cycle_anchor') !== 'unchanged' || body.get('proration_behavior') !== 'none')
         return fetchImpl(url, init);
+      requestIdempotencyKey = headers.get('idempotency-key');
+      requestedPrice = body.get('items[0][price]');
     }
     const response = await fetchImpl(url, init);
     if (!response.ok) return response;
@@ -50,11 +53,14 @@ export function changeLossFetch({ fetchImpl, target, testKey, now = Date.now, re
     if (result?.id !== target.subscription || result.livemode !== false || result.status !== 'active' || result.customer !== target.customer
       || result.items?.has_more !== false || result.items?.data?.length !== 1 || item?.id !== target.item
       || item.quantity !== 1 || item.price?.currency !== 'mxn' || item.price?.unit_amount !== target.amount
+      || !validId('price', item.price?.id) || (method === 'POST' && item.price.id !== requestedPrice)
       || now() >= target.expiresAt) return response;
     await response.body?.cancel();
     const requestId = response.headers.get('request-id');
     record({ event: 'guardian_test_change_response_consumed', method, subscription: target.subscription,
       status: response.status, amount: target.amount,
+      guardianRequest: requestIdempotencyKey?.slice('guardian-change-amount:'.length) ?? null,
+      price: item.price.id,
       requestId: validId('req', requestId) ? requestId : null, observedAt: new Date(now()).toISOString() });
     throw new TypeError('guardian_test_change_response_lost');
   };

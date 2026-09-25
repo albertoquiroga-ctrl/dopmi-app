@@ -7,7 +7,7 @@ const target = { subscription: 'sub_acceptance', customer: 'cus_acceptance', ite
 const path = `https://api.stripe.com/v1/subscriptions/${target.subscription}`;
 const headers = { authorization: 'Bearer sk_test_acceptance', 'idempotency-key': 'guardian-change-amount:12345678-1234-1234-1234-123456789012' };
 const body = new URLSearchParams({ 'items[0][id]': target.item, 'items[0][price]': 'price_new', 'items[0][quantity]': '1', billing_cycle_anchor: 'unchanged', proration_behavior: 'none' }).toString();
-const subscription = (amount = 20000) => ({ id: target.subscription, customer: target.customer, status: 'active', livemode: false, items: { has_more: false, data: [{ id: target.item, quantity: 1, price: { currency: 'mxn', unit_amount: amount } }] } });
+const subscription = (amount = 20000) => ({ id: target.subscription, customer: target.customer, status: 'active', livemode: false, items: { has_more: false, data: [{ id: target.item, quantity: 1, price: { id: 'price_new', currency: 'mxn', unit_amount: amount } }] } });
 const options = { target, testKey: 'sk_test_acceptance', now: () => now };
 
 test('real write is applied before loss; separate instances hide new state, expiry recovers same state', async () => {
@@ -24,6 +24,16 @@ test('real write is applied before loss; separate instances hide new state, expi
   const existing = create(); time = target.expiresAt;
   assert.equal((await (await existing(path, { method: 'GET', headers })).json()).items.data[0].price.unit_amount, 20000);
   assert.deepEqual(evidence.map(e => e.method), ['POST', 'GET']); assert.equal(writes, 1);
+  assert.equal(evidence[0].guardianRequest, '12345678-1234-1234-1234-123456789012');
+  assert.equal(evidence[0].price, 'price_new'); assert.equal(evidence[1].price, 'price_new');
+  assert.equal(evidence[1].guardianRequest, null);
+});
+
+test('POST response with a different price at same amount passes without false evidence', async () => {
+  const different = subscription(); different.items.data[0].price.id = 'price_other';
+  const response = new Response(JSON.stringify(different));
+  const wrapper = changeLossFetch({ ...options, fetchImpl: async () => response, record: () => assert.fail('wrong price attributed') });
+  assert.equal(await wrapper(path, { method: 'POST', headers, body }), response);
 });
 
 test('unrelated origin, auth, account, body, method, or request key passes untouched', async () => {
