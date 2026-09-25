@@ -2,6 +2,7 @@
 
 ## Continuación local de H5 — 25 de septiembre de 2026 (UTC)
 
+- Actualización posterior: el titular autorizó los permisos mínimos de la clave `Dopmi Supabase Test` y completó el SMS de Stripe. Configurados escritura en Customers, Products, Prices, Subscriptions e Invoices; lectura en Payment Methods y Setup Intents; permisos Connect conservados. Preflight `1616`: HTTP 200, `reads_ready=true`, las 16 lecturas HTTP 200. Se resuelve el bloqueo de lectura descrito debajo. La clave sigue restringida y test; `write_permissions=not_verified` hasta ejecutar los recorridos integrados.
 - Checkout sigue cerrado; H5 no está aceptado. Se recuperó la rama `codex/stripe-transfer-delivery` desde `e16e1da` y se verificó el entorno remoto `ohqxranynackjignryep`.
 - Corregida portabilidad Windows mediante `.gitattributes`: SQL permanece en LF. La conversión automática a CRLF rompía el reemplazo exacto de una definición en `guardian_payment_method`; no se cambió la lógica histórica. Tras corregirlo, 356 pruebas backend aprobadas. Flutter 3.47.4: análisis sin incidencias y 51 pruebas aprobadas; admin: 18 pruebas y build aprobados.
 - `payment-worker` v10 desplegado desde el código publicado, incorporando únicamente el diagnóstico autenticado `guardian_preflight` y su importación. Los otros 13 archivos compartidos ya coincidían. Se recuperaron los 15 archivos desplegados para comprobar su contenido. Autenticación por secreto existente conservada.
