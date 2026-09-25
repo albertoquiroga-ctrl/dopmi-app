@@ -24,6 +24,8 @@ Devolución total del alta de 50: refund `re_3UJNdz2ZjyMOQ0uL11JJyIzs` succeeded
 
 No borrar el reloj: elimina también el cliente y suscripciones. La asociación de clientes existentes está soportada desde 2026-05-27; no se modificaron fechas de base para simular el cobro. [Restricciones de los relojes](https://docs.stripe.com/billing/testing/test-clocks/api-advanced-usage).
 
+Nueva cuenta de aceptación: captura Android 1000343788 confirma plan activo de 50 MXN. Consulta autenticada de estado/historial en servidor confirma revisión 0, sin solicitudes pendientes ni pago en vuelo; ciclo inicial `7e93d285-de6d-4548-9599-9d728297eb2c` creado 2026-09-25T14:20:37.917199Z, pago 5000, comisión 100, costo Stripe 586, neto asignado/transferido 4314 centavos. Este nuevo plan queda disponible para los escenarios pendientes; aún no acredita omisión mensual ni una nueva consulta directa a Stripe.
+
 ## Ruta elegida por el titular: Google Play interno (25 de septiembre de 2026)
 
 El titular eligió probar primero en Android desde Google Play y ejecutar personalmente Codemagic. Usar rama `codex/stripe-transfer-delivery`, workflow **`android-guardian-internal` — Dopmi Guardián — Google Play Internal Testing**. El workflow anterior `android-internal` mantiene Guardián apagado y no sirve para esta aceptación.
