@@ -137,6 +137,13 @@ El preflight **no acredita permisos de escritura/reversión**, pagos, webhook fi
 
 ## Recorridos restantes y evidencia de cierre
 
+### Preparación ejecutable de los dos pendientes (25/9/2026)
+
+- **Fin de mes:** alta normal con cargo test creado el 30/9 UTC (comprobar fecha por API). Después de completar el alta, crear reloj para su cliente existente mediante `POST /v1/test_helpers/test_clocks`, parámetro `customer`; no introducir cliente preexistente en Checkout con `customer_creation=always`. Esa asociación ya se acreditó con el primer plan y el catálogo API actual confirma el parámetro. Revalidar elegibilidad/estado del cliente y suscripción antes de ejecutarla. No borrar el reloj: la asociación no se puede retirar y su eliminación afecta sus objetos. Avanzar por límites permitidos y verificar 30/1→28/2→30/3, cambio de monto en ese límite, precio del ciclo conservado y resultado consistente en Stripe/base/app. La fecha inicial se deriva del cargo real; hoy25/9 no se puede fabricar un alta30. La matriz exige fin de mes, no impone alta31 ni año bisiesto como bloqueos adicionales. Conservar la cobertura técnica31 separada de la aceptación móvil.
+- **Disputa posterior a transferencia:** consulta al titular para soporte Stripe pendiente. Texto: «En modo test usamos separate charges and transfers. Necesitamos crear una disputa de tarjeta sobre un cargo existente después de confirmar sus transferencias. Las tarjetas de disputa la generan antes de que termine nuestro reparto. ¿Existe un disparador manual o una demora configurable para esa prueba?». Documentación testing y catálogo API consultados describen tarjetas automáticas y lectura/actualización de disputas; no se encontró disparador de creación sobre cargo de tarjeta existente. Esto no prueba imposibilidad global. No sustituirlo por disputa inicial, Issuing ni webhook fabricado.
+
+No hay proceso de prueba corriendo que resuelva estas dependencias por sí mismo. Falta fecha apta y participación del titular para calendario, y una vía soportada de generación para disputa. H5 permanece abierto.
+
 La sección de estado al inicio registra los recorridos ya comprobados y sus límites. La siguiente matriz conserva el alcance completo; los casos todavía no acreditados siguen pendientes de aceptación integrada. Usar sólo cuentas y objetos de prueba, conservando su trazabilidad; no alterar aprobaciones reales ni simular firmas.
 
 | Recorrido | Evidencia necesaria |
