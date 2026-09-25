@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Preparación de pérdida de respuesta financiera — 25 de septiembre de 2026
+
+Se añadió guardian-refund-loss-runner.mjs: importa guardianRefundService de producción y comunica sus RPC por JSON secuencial al operador/conector Supabase, sin copiar credenciales de servidor. El único POST Stripe permitido es una reversión test indicada, con el cuerpo y key autorizados por la RPC; el proxy pierde la respuesta TCP real. No crea refunds ni modifica estados financieros directamente. Procedimiento en tools/verification/guardian-response-loss.md.
+
+Validación: node --check correcto; diez pruebas del proxy aprobadas. Revisión independiente security_review sin bloqueo de seguridad evidente para ejecución controlada; señaló el límite de cinco minutos del lease, relays tardíos y competencia con Cron. Ejecutar secuencialmente y conservar stdout. Si Cron gana o no hay evidencia 2xx descartada, no contar el caso como aprobado. Todavía no se ejecutó una reversión financiera mediante este instrumento: preparación técnica, no aceptación cerrada. No se requieren cambios desplegados ni otro build móvil.
+
 ## Build 252 y revisión independiente — 25 de septiembre de 2026
 
 Verificación directa en navegador: Codemagic 6ab6e1527e2cdbe815b37fa0, workflow android-guardian-internal, commit 0140fbded894cf71ac9ffd50c80d37b06d9a32fe, finished en 5m46s. Publicación Google Play internal completed, versión 2.3.3 (252), paquete com.mycompany.dopmi, Debuggable No; SHA256 AAB 00f4084c9c9dec96242ff36d39a19432c98abd1ce187ebb1e5f72b69dd32f23b. El build anterior 6ab6dd26d7b32e57ee0d9b68 falló instalando Android SDK 36 por archivo no ZIP; el reintento del mismo commit sí compiló/publicó. No hubo cambio de claves ni firma. El titular reportó actualización y capturas 1000344166/1000344168 validan el comportamiento; no muestran versionCode del teléfono.

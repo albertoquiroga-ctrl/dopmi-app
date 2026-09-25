@@ -87,6 +87,36 @@ RPC persistidas, pérdida al cruzar aniversario ni aceptación móvil.
 
 ## Requisitos para la aceptación financiera pendiente
 
+### Ejecutor del servicio real con RPC por canal local
+
+`guardian-refund-loss-runner.mjs --execute-test-reversal <cycle UUID> <transfer ID>`
+importa `guardianRefundService` sin modificarlo. No crea cargos ni refunds.
+Su única escritura Stripe permitida es la reversión indicada, con importe y clave
+devueltos por la RPC del servicio. El proxy consume la respuesta real y corta TCP.
+Los GET de comprobación usan Stripe test directamente. No desplegar este ejecutor.
+
+El operador debe mantener el proceso interactivo y atender cada línea
+`{type:"rpc",id,operation,data}` ejecutando exactamente
+`public.dopmi_guardian_refund_server(operation,data)` en el proyecto test mediante
+el conector autenticado. Devuelve por stdin una línea JSON
+`{id,ok:true,result:<resultado real de la RPC>}`; no fabricar ni modificar evidencia.
+No introducir claves de Supabase. El canal vence a los 90 segundos; la concesión
+de la RPC dura cinco minutos. No reiniciar automáticamente ante timeout: consultar
+Stripe y la base y dejar actuar al trabajador normal.
+
+Preparar antes un ciclo legítimo con devolución total ya confirmada, transferencias
+completas y una concesión disponible. El transfer elegido debe ser el primero que
+el servicio necesite revertir: se rechaza cualquier otro POST. Si el trabajador
+compartido gana la concesión o ya completó el ajuste, registrar que no se inyectó
+el fallo; no desactivar Cron ni cambiar estados para forzar el resultado.
+
+Guardar la evidencia final saneada del proxy, el error del transporte, estado de
+la RPC tras `fail` y las lecturas posteriores de recuperación. Salida 1 después
+de una respuesta descartada es esperada, pero por sí sola no demuestra el caso:
+exigir evidencia Stripe 2xx, ID real y `responseDropped`, seguida de conciliación
+normal y ausencia de reversión duplicada. La preparación del ejecutor no acredita
+todavía esa ejecución financiera.
+
 1. Preparar un escenario aislado y legítimo, con consentimiento y RPC reales.
    No usar el ciclo de expiración natural en curso ni desactivar Cron/webhooks
    compartidos. La escritura incierta al cruzar aniversario requiere exclusión
