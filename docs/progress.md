@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## CI completo del arreglo de disputa inicial — 25 de septiembre de 2026
+
+CI `36177947929`, commit `5984e16906e52716f6603e934980903e78db3aea` (incluye implementación `847e184`), terminó con identity-and-adoption-backend, web-and-database, flutter e ios todos success. Acredita migraciones/pgTAP/concurrencia en PostgreSQL del CI y compilaciones Android/iOS; no reemplaza la captura del teléfono. La ejecución previa `36177639142` fue sustituida al publicar documentación, por lo que no se declara success global de aquella ejecución.
+
+Lectura independiente de Stripe: una disputa `du_1UJeKy2ZjyMOQ0uLROCbzj8J`, test, needs_response, product_not_received, 5000 centavos MXN, vinculada al cargo original `ch_3UJeKv2ZjyMOQ0uL1VaeVpvG`. No se respondió la disputa ni se creó refund. Comprobación del backend a las 19:09:57 UTC conserva la misma marca de revisión de 19:08:02, cero settlements/jobs y reserva 4900. Pendiente evidencia Android; H5 permanece abierto con el resto de la matriz. Este registro es documental y no requiere otro build móvil.
+
 ## Disputa inicial enviada a revisión por el conciliador real — 25 de septiembre de 2026
 
 Corrección `847e184` desplegada: migración remota `20260925190650_guardian_initial_dispute_review` (archivo local `20260925190500`); payment-worker v13, stripe-webhook v13 y guardian-client v5. Consulta posterior de todos sus archivos coincide con el repositorio normalizando CRLF y salto final; verify_jwt=false conserva autenticación propia existente. Los 18 smokes remotos aprobaron. Permisos verificados: activation_server/settlement_server inaccesibles para anon/authenticated y ejecutables sólo por service_role. Advisors consultado conserva avisos del esquema heredado y de funciones públicas con seguridad de definidor; no aparece apertura de las dos RPC modificadas.
