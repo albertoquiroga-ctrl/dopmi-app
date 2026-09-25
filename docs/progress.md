@@ -1,5 +1,13 @@
 # Dopmi — registro de avance
 
+## Historial de 21 ciclos preparado y CI aprobado — 25 de septiembre de 2026
+
+CI `36166363025`, commit `bf9d566a217523be985575a0aa628d1b3250954c`: ios, flutter, web-and-database e identity-and-adoption-backend terminaron success. El arreglo también se verificó en un caso nuevo: factura `in_1UJcno2ZjyMOQ0uL0zYYvlWY` quedó pending/guardian_recovery_void_unconfirmed tras la lectura inmediata de Stripe; Cron la cerró skipped en el segundo intento a las 17:24:04 UTC, sin reencolado manual ni pay_requested_at. Confirma recuperación automática posterior al despliegue, además del caso histórico reparado.
+
+Reloj test del segundo plan avanzado por tandas, esperando conciliación entre ellas, hasta `1842880836` (25/5/2028 09:20 GMT-6), ready. Hay 21 ciclos (alta + 20 mensualidades), cero collection_jobs pendientes/en atención. Consulta Stripe completa sin has_more: 20 facturas test, 11 paid por 5000 con attempt_count 1 y nueve void con amount_paid 0. Los saltos de dos meses producen períodos anteriores omitidos por antigüedad; no presentarlos como omisión por capacidad ni como deuda recuperada. No se modificaron fechas de base.
+
+Consulta autenticada del historial con el tamaño predeterminado de la app: primera página 20 registros, cursor `0bc6abf4-bf0a-43bf-9d17-801c36506e56`/`2026-09-25T14:39:02.355138+00:00`; segunda página un registro, alta `7e93d285-de6d-4548-9599-9d728297eb2c`, next_cursor null, intersección de IDs cero. El ciclo más nuevo `c101a18a-e1ad-469a-9229-99fe05121f3c` corresponde a 25/5–25/6/2028: pagado 5000, comisión 100, Stripe 586, neto transferido 4314; factura `in_1UJcwV2ZjyMOQ0uLyTerC7Zw`, transferencia `tr_3UJcwo2ZjyMOQ0uL0VGq9emL`, verificada independientemente test por 4314, sin reversión. Datos preparados y paginación RPC acreditada; falta pulsar «Ver ciclos anteriores» en Android y comprobar el alta inicial. No generar más ciclos para esta prueba.
+
 ## Conciliación de anulación visible por etapas — 25 de septiembre de 2026
 
 Al preparar paginación mediante el reloj test del segundo plan, tres avances de dos meses llevaron el reloj a 25/8/2027 (`1819207236`) y el historial de 6 a 12 ciclos. Los períodos anteriores descubiertos fuera de la ventana de 48 horas se omiten; no son falta de capacidad ni cobros de deuda. Stripe confirmó los nuevos períodos pagados por 5000 una sola vez y los anteriores void con amount_paid 0/attempt_count 0. La paginación móvil todavía no está preparada (>20) ni aceptada.
