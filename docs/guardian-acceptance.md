@@ -2,6 +2,18 @@
 
 El hito 5 sigue abierto. Este documento organiza la prueba conjunta de app, Supabase y Stripe; los tests unitarios y las compilaciones no sustituyen esos recorridos.
 
+## Estado de aceptación actualizado — 25 de septiembre de 2026 UTC
+
+Esta sección prevalece sobre los cortes históricos de preparación que siguen. Ruta vigente: **Android desde Google Play interno**, build **2.3.3 (247)**, commit `3fe7a1d`; publicación comprobada en Codemagic y recorrido del titular visible en las capturas. Modelo y versión de Android aún pendientes.
+
+Checkout test ya está habilitado; el smoke de 18 respuestas con `--expect-enabled` aprobó y Cron devolvió HTTP 200 sin fallos Guardián. La clave del servidor aprobó 16 lecturas; las escrituras se acreditan por cada recorrido, no por el preflight.
+
+Primera aportación: ciclo `8724966d-3a05-47c4-9c0d-cd968e3a6c81`, pago de 50.00 MXN, comisión 1.00, costo Stripe 5.86 y neto asignado/transferido 43.14. Base, consulta Stripe y pantallas del titular coinciden. Plan activo; retorno manual e historial básico comprobados. La transferencia Connect no acredita depósito bancario. Los identificadores y consultas están registrados en [el avance](progress.md).
+
+Cambio de 50 a 200 MXN comprobado mediante consentimiento y «Solicitar cambio de monto»: solicitud aplicada en base y precio mensual 20000 centavos en Stripe, aniversario conservado y sin factura nueva. Sigue existiendo un solo ciclo, pagado por 5000 centavos y asignado por 4314. Tras «Actualizar estado», la captura del titular muestra «Confirmado. Aplica desde 24/10/2026» y plan de 200 MXN. Esto acredita el cambio ordinario; no las condiciones límite de aniversario ni fin de mes.
+
+La renovación acelerada requiere preparación adicional: `guardian-activation.mjs` crea Checkout con `customer_creation=always`, sin cliente previo ni reloj. El plan probado tiene `test_clock=null`. Calendario, cobro y cambios sí consultan el reloj cuando el cliente tiene uno. No modificar fechas o referencias de este plan en la base para fabricar evidencia; preparar un escenario trazable con reloj y procesamiento real antes de dar por aprobada la renovación. La prueba inicial no acredita renovación, omisión mensual, 3DS, cancelación, privacidad entre cuentas ni devolución/reversión.
+
 ## Ruta elegida por el titular: Google Play interno (25 de septiembre de 2026)
 
 El titular eligió probar primero en Android desde Google Play y ejecutar personalmente Codemagic. Usar rama `codex/stripe-transfer-delivery`, workflow **`android-guardian-internal` — Dopmi Guardián — Google Play Internal Testing**. El workflow anterior `android-internal` mantiene Guardián apagado y no sirve para esta aceptación.
@@ -10,7 +22,7 @@ El nuevo workflow conserva `com.mycompany.dopmi`, firma `dopmi_upload_2026` y gr
 
 Preflight remoto `1616` ya aprobó las 16 lecturas Stripe con la clave restringida de prueba. Los permisos de escritura se configuraron con autorización y SMS del titular, pero solo los recorridos integrados acreditarán su funcionamiento. Las 18 comprobaciones HTTP remotas aprobaron con Checkout cerrado. Mantener ese gate cerrado hasta que esté disponible el dispositivo/build y se prepare el recorrido; la compilación no lo activa.
 
-**Ruta acordada con el titular: Codemagic → TestFlight.** Android es una alternativa disponible. Corte documental: 25 de septiembre de 2026. [Continuidad y evidencia de CI](codex-handoff.md). El estado remoto de abajo es el último registrado, no una reconsulta durante este traspaso.
+**Corte histórico del traspaso: Codemagic → TestFlight**, sustituido después por la elección Android indicada arriba. [Continuidad y evidencia de CI](codex-handoff.md). El estado remoto de las secciones de preparación de abajo corresponde a ese corte, no al estado actualizado de aceptación.
 
 ## Entorno y preparación del 24 de septiembre de 2026
 
@@ -57,7 +69,7 @@ Revisar Cron por separado: una ejecución SQL que encola HTTP no demuestra una r
 
 La instalación, el inicio de sesión y el recorrido en un dispositivo siguen pendientes. Las compilaciones y pruebas automáticas aprobadas no acreditan esos pasos. Checkout permanece cerrado.
 
-## Codemagic → TestFlight (ruta principal)
+## Codemagic → TestFlight (alternativa)
 
 1. Seleccionar `albertoquiroga-ctrl/dopmi-app`, rama **`codex/stripe-transfer-delivery`** y workflow YAML **`ios-testflight` — Dopmi iOS — TestFlight**. La rama predeterminada anterior al traspaso no incluye la preparación de `8e6663d`.
 2. Conservar integración **`dopmi_app_store`**, firma `app_store` y bundle **`com.mycompany.dopmi`**. No crear otra ficha ni cambiar el identificador de la app existente.
@@ -85,7 +97,7 @@ El preflight **no acredita permisos de escritura/reversión**, pagos, webhook fi
 
 ## Recorridos restantes y evidencia de cierre
 
-Todos siguen **pendientes de aceptación integrada**. Usar sólo cuentas y objetos de prueba, conservando su trazabilidad; no alterar aprobaciones reales ni simular firmas.
+La primera aportación tiene la evidencia parcial indicada al inicio; los demás recorridos siguen **pendientes de aceptación integrada**. Usar sólo cuentas y objetos de prueba, conservando su trazabilidad; no alterar aprobaciones reales ni simular firmas.
 
 | Recorrido | Evidencia necesaria |
 | --- | --- |
