@@ -1,5 +1,13 @@
 # Dopmi — registro de avance
 
+## Revisión del alcance de recuperación — 25 de septiembre de 2026
+
+Auditoría independiente de coherencia de e693d96: evidencia suficiente para recuperación backend de reversión tras respuesta perdida antes del SDK, preservación de asignación pendiente y ausencia de duplicados económicos. Se precisa la redacción: attempts 1 más listado Stripe único no demuestra ausencia absoluta de peticiones HTTP adicionales; afirmar recuperación del mismo ID sin aumentar intentos registrados ni duplicar movimientos. Revisor no reconsultó fuentes remotas; consultas originales están descritas en la entrada anterior.
+
+Se retiró del resumen el pendiente genérico de reversión incierta ya acreditado. La matriz exige reversión de cada destino y recuperación sin duplicados; no exige una nueva combinación de todos los fallos. Se conservan fin de mes, gestión con escritura incierta al cruzar aniversario, disputa posterior a transferencia y validación móvil pendiente. No se declara H5 completo.
+
+Para fin de mes se revisaron calendar anchor y documentación Stripe: day_of_month 31 conserva fin de mes y febrero corto/bisiesto. Esto es documentación, no nueva evidencia integrada. Se solicitó al titular una cuenta de prueba sin plan previo, sin pedir pago aún. Falta establecer de forma válida el reloj del primer Checkout; no modificar fechas de cargos ni evidencia persistida para simularlo.
+
 ## Respuesta de reversión perdida y recuperada en entorno real — 25 de septiembre de 2026
 
 Caso ciclo 8bea3790-89ea-4237-9c93-05eb2c10bbc5 (25/4/2028), cargo ch_3UJcvm2ZjyMOQ0uL0bNx3MeA, transferencia tr_3UJcvm2ZjyMOQ0uL0iVTYd9I por 4314. Verificación previa: cargo test pagado 5000, cliente esperado, sin disputa ni refund. Refund total re_3UJcvm2ZjyMOQ0uL0ACjDAwJ succeeded con key dopmi-h5-worker-response-loss-8bea3790-89ea-4237-9c93-05eb2c10bbc5.
