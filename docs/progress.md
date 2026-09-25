@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Alta en revisión: ocultar reintento móvil — 25 de septiembre de 2026
+
+Capturas 1000344119 y 1000344121 acreditan estado Alta en revisión e historial En revisión para el alta disputada, separado del intento anterior cerrado sin pago. La pantalla conservaba una intención Checkout local y mostraba Reintentar mi solicitud junto a No vuelvas a pagar. Se ocultan formulario y reintento cuando esa intención está en attention, y se bloquea su envío en el controlador; se preservan referencia, actualización y cancelación. No cambia la conciliación del servidor.
+
+Flutter analyze sin incidencias; 52 pruebas Flutter aprobadas. La regresión reproduce pending → attention con intención conservada, verifica ausencia de nuevos envíos/apertura de Checkout y recuperación de la misma referencia si el servidor vuelve a pending. Pendiente CI y nuevo build Codemagic/validación en dispositivo; H5 permanece abierto.
+
 ## Renovación distribuida a dos rescatistas — 25 de septiembre de 2026
 
 El titular preparó y aprobó el segundo gasto; captura Android 1000344098 muestra Aprobado, versión 11. Consulta remota confirma gasto `9cc08f48-0b7b-440a-955c-9cdc757b36eb`, aprobado por 1549700 centavos, payable, con destino Connect test habilitado `acct_1UJfGkFIsxNzuUmN`. El gasto previo sigue urgente y primero por prioridad; capacidad previa 1491432 centavos. No se alteraron montos aprobados, urgencia ni fechas.

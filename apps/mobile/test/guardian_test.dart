@@ -162,6 +162,41 @@ void main() {
 
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
+  testWidgets('review blocks a retained Checkout but preserves its reference', (
+    tester,
+  ) async {
+    final repo = FakeGuardian();
+    await start(tester, repo);
+    await consent(tester);
+    await tapButton(tester, 'Activar en Stripe');
+    await tester.pumpAndSettle();
+    final original = Map<String, dynamic>.from(repo.calls.single);
+    repo.value['activation']['status'] = 'attention';
+    await tester.ensureVisible(find.text('Actualizar estado'));
+    await tester.tap(find.text('Actualizar estado'));
+    await tester.pumpAndSettle();
+    expect(find.text('Alta en revisión. No vuelvas a pagar.'), findsOneWidget);
+    expect(find.text('Reintentar mi solicitud'), findsNothing);
+    expect(find.textContaining('Conservamos tu solicitud'), findsNothing);
+    expect(find.byType(TextField), findsNothing);
+    expect(find.text('Cancelar mi plan'), findsOneWidget);
+    expect(repo.calls.length, 1);
+    expect(repo.opened, 1);
+    final prefs = await SharedPreferences.getInstance();
+    expect(
+      prefs.getString('dopmi-guardian:one:intent'),
+      contains(original['key']),
+    );
+    // A later authoritative pending state can resume the same attempt.
+    repo.value['activation']['status'] = 'pending';
+    await tester.ensureVisible(find.text('Actualizar estado'));
+    await tester.tap(find.text('Actualizar estado'));
+    await tester.pumpAndSettle();
+    await tapButton(tester, 'Reintentar mi solicitud');
+    await tester.pumpAndSettle();
+    expect(repo.calls.last, original);
+  });
+
   testWidgets(
     'Guardian is hidden by default and a disabled route performs no reads',
     (tester) async {

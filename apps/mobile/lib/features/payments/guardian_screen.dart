@@ -34,6 +34,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       data?['activation'] is Map ? Json.from(data!['activation']) : null;
   Json? get methodSetup =>
       data?['method_setup'] is Map ? Json.from(data!['method_setup']) : null;
+  bool get checkoutInReview =>
+      intent?['kind'] == 'checkout' && activation?['status'] == 'attention';
 
   @override
   void initState() {
@@ -201,6 +203,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
     bool withdraw = false,
   }) async {
     if (busy || confirming || !fresh || !current) return;
+    if (!cancel && !method && !withdraw && checkoutInReview) return;
     if (cancel || method || withdraw) {
       setState(() => confirming = true);
       final agreed = await showDialog<bool>(
@@ -379,6 +382,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         !busy &&
         !confirming &&
         fresh &&
+        !checkoutInReview &&
         (intent != null || (verified && consent && (canStart || canChange)));
     return CommunityFrame(
       children: [
@@ -501,6 +505,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   'Estado del alta en revisión. No vuelvas a pagar.',
             ),
           if (!['method', 'withdraw_amount'].contains(intent?['kind']) &&
+              !checkoutInReview &&
               (canStart || canChange || intent != null)) ...[
             const SizedBox(height: 16),
             Wrap(
