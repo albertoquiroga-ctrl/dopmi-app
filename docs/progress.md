@@ -1,5 +1,10 @@
 # Dopmi — registro de avance
 
+## Corrección del aviso tras cancelar un alta — 25 de septiembre de 2026
+
+La captura 1000343899 mostró una cancelación inicial ya terminada con el aviso transitorio de solicitud todavía visible. GuardianScreen limpia ahora ese mensaje cuando cancellation_status es stopped, además del caso de plan canceled existente; mantiene la información autoritativa sobre pago y devolución. Flutter analyze sin incidencias y las 51 pruebas Flutter aprobadas. Requiere nuevo build Android y comprobación visual; no modifica backend ni operaciones Stripe. Recorrido de abandono/reapertura/cancelación sin pago y reserva liberada documentado en guardian-acceptance.md.
+
+
 ## Aceptación integrada actualizada — 25 de septiembre de 2026
 
 Los registros detallados en `guardian-acceptance.md` y las capturas Android 1000343853, 1000343863 y 1000343881 completan omisión por capacidad, renovación posterior, rechazo mensual, actualización de tarjeta y renovación siguiente sin recobrar meses omitidos. Enero cobra 5000 centavos una vez y transfiere 4314; diciembre permanece omitido. También consta reenvío firmado de invoice.paid con HTTP 200 sin duplicado, y devolución parcial retenida en revisión hasta completar el total y conciliar la reversión. Estos resultados sustituyen los pendientes históricos equivalentes debajo, pero no cierran toda H5.

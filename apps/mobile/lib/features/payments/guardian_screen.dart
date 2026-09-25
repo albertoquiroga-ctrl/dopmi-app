@@ -112,7 +112,10 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       final result = await ref.read(guardianRepositoryProvider).state();
       if (!current) return;
       data = result;
-      if (plan?['status'] == 'canceled') message = null;
+      if (plan?['status'] == 'canceled' ||
+          activation?['cancellation_status'] == 'stopped') {
+        message = null;
+      }
       if (intent?['kind'] == 'method' &&
           (['canceled', 'cancel_requested'].contains(plan?['status']) ||
               (methodSetup?['key'] == intent?['key'] &&
