@@ -309,7 +309,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         if (!current) return;
         intent = null;
         consent = false;
-        message = 'Solicitud recibida. Consulta el estado para confirmar su aplicación.';
+        // load() displays the authoritative request status, including withdrawal.
+        message = null;
       } else if (result['checkout_url'] is String) {
         await repo.openCheckout(result['checkout_url'] as String);
       } else {

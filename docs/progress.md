@@ -1,5 +1,10 @@
 # Dopmi — registro de avance
 
+## Aviso transitorio en retiro de monto — 25 de septiembre de 2026
+
+Captura 1000343982 y estado remoto withdrawn mostraron que el aviso genérico Solicitud recibida también sobrevivía al retiro confirmado. Se elimina su asignación después de operaciones de gestión; la recarga existente presenta el estado autoritativo de solicitudes, incluido Solicitud retirada; se conservó el monto anterior, o el pendiente/revisión correspondiente. Evita nuevas excepciones por cada estado terminal. Flutter analyze --no-pub sin incidencias; 51 pruebas Flutter --no-pub aprobadas, incluidos retiro, recuperación y conflicto. Cambio móvil pendiente de próximo build y aceptación visual; no requiere despliegue de servidor.
+
+
 ## Corrección del aviso tras cancelar un alta — 25 de septiembre de 2026
 
 La captura 1000343899 mostró una cancelación inicial ya terminada con el aviso transitorio de solicitud todavía visible. GuardianScreen limpia ahora ese mensaje cuando cancellation_status es stopped, además del caso de plan canceled existente; mantiene la información autoritativa sobre pago y devolución. Flutter analyze sin incidencias y las 51 pruebas Flutter aprobadas. CI 36156881343 del commit fc4a6ef19037777b1c74e9cab9b3d71c073e2f96: los cuatro jobs (Flutter/Android, iOS, web/base de datos e identidad/adopción) terminaron success. Captura Android 1000343972 recibida del titular tras solicitar la actualización: conserva Alta detenida e Intento vencido sin pago confirmado y ya no muestra Solicitud recibida. Comprobación visual satisfecha; captura Codemagic 1000343974 identifica build 6ab69f12bbba44dc026a34ef terminado sobre 9cb3f5f, que contiene la corrección; versión/versionCode no visibles en esa captura. No modifica backend ni operaciones Stripe. Recorrido de abandono/reapertura/cancelación sin pago y reserva liberada documentado en guardian-acceptance.md.
