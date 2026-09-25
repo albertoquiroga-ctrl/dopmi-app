@@ -2,7 +2,7 @@
 
 ## Aviso transitorio en retiro de monto — 25 de septiembre de 2026
 
-Captura 1000343982 y estado remoto withdrawn mostraron que el aviso genérico Solicitud recibida también sobrevivía al retiro confirmado. Se elimina su asignación después de operaciones de gestión; la recarga existente presenta el estado autoritativo de solicitudes, incluido Solicitud retirada; se conservó el monto anterior, o el pendiente/revisión correspondiente. Evita nuevas excepciones por cada estado terminal. Flutter analyze --no-pub sin incidencias; 51 pruebas Flutter --no-pub aprobadas, incluidos retiro, recuperación y conflicto. Cambio móvil pendiente de próximo build y aceptación visual; no requiere despliegue de servidor.
+Captura 1000343982 y estado remoto withdrawn mostraron que el aviso genérico Solicitud recibida también sobrevivía al retiro confirmado. Se elimina su asignación después de operaciones de gestión; la recarga existente presenta el estado autoritativo de solicitudes, incluido Solicitud retirada; se conservó el monto anterior, o el pendiente/revisión correspondiente. Evita nuevas excepciones por cada estado terminal. Flutter analyze --no-pub sin incidencias; 51 pruebas Flutter --no-pub aprobadas, incluidos retiro, recuperación y conflicto. CI 36163237337 sobre 446d3947acfe769c654b90b095ba9ee71730db38 (contiene 291dcd0): cuatro jobs success. La ejecución previa 36163002243 terminó cancelada, no se cuenta como aprobada. Cambio móvil pendiente de próximo build y aceptación visual; no requiere despliegue de servidor.
 
 
 ## Corrección del aviso tras cancelar un alta — 25 de septiembre de 2026
