@@ -1,0 +1,57 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { changeLossFetch } from './guardian-change-loss-fetch.mjs';
+
+const now = 1000000;
+const target = { subscription: 'sub_acceptance', customer: 'cus_acceptance', item: 'si_acceptance', amount: 20000, expiresAt: now + 60000 };
+const path = `https://api.stripe.com/v1/subscriptions/${target.subscription}`;
+const headers = { authorization: 'Bearer sk_test_acceptance', 'idempotency-key': 'guardian-change-amount:12345678-1234-1234-1234-123456789012' };
+const body = new URLSearchParams({ 'items[0][id]': target.item, 'items[0][price]': 'price_new', 'items[0][quantity]': '1', billing_cycle_anchor: 'unchanged', proration_behavior: 'none' }).toString();
+const subscription = (amount = 20000) => ({ id: target.subscription, customer: target.customer, status: 'active', livemode: false, items: { has_more: false, data: [{ id: target.item, quantity: 1, price: { currency: 'mxn', unit_amount: amount } }] } });
+const options = { target, testKey: 'sk_test_acceptance', now: () => now };
+
+test('real write is applied before loss; separate instances hide new state, expiry recovers same state', async () => {
+  let amount = 5000, writes = 0, time = now; const evidence = [];
+  const fetchImpl = async (_url, init) => {
+    if (init.method === 'POST') { amount = 20000; writes++; }
+    return new Response(JSON.stringify(subscription(amount)), { headers: { 'request-id': 'req_test' } });
+  };
+  const create = () => changeLossFetch({ ...options, now: () => time, fetchImpl, record: event => evidence.push(event) });
+  assert.equal((await (await create()(path, { method: 'GET', headers })).json()).items.data[0].price.unit_amount, 5000);
+  await assert.rejects(create()(path, { method: 'POST', headers, body }), /response_lost/);
+  assert.equal(writes, 1); assert.equal(amount, 20000);
+  await assert.rejects(create()(path, { method: 'GET', headers }), /response_lost/);
+  const existing = create(); time = target.expiresAt;
+  assert.equal((await (await existing(path, { method: 'GET', headers })).json()).items.data[0].price.unit_amount, 20000);
+  assert.deepEqual(evidence.map(e => e.method), ['POST', 'GET']); assert.equal(writes, 1);
+});
+
+test('unrelated origin, auth, account, body, method, or request key passes untouched', async () => {
+  const cases = [
+    [path + '/other', { method: 'POST', headers, body }],
+    [path, { method: 'DELETE', headers }],
+    [path, { method: 'POST', headers: { ...headers, authorization: 'Bearer sk_live_other' }, body }],
+    [path, { method: 'POST', headers: { ...headers, 'stripe-account': 'acct_other' }, body }],
+    [path, { method: 'POST', headers: { ...headers, 'idempotency-key': 'other' }, body }],
+    [path, { method: 'POST', headers, body: body + '&unexpected=true' }],
+    [path, { method: 'POST', headers, body: body.replace('unchanged', 'now') }],
+  ];
+  for (const [url, init] of cases) {
+    const response = new Response(JSON.stringify(subscription()));
+    const wrapper = changeLossFetch({ ...options, fetchImpl: async () => response, record: () => assert.fail('unexpected interception') });
+    assert.equal(await wrapper(url, init), response);
+  }
+});
+
+test('invalid, foreign, live and oversized responses are not hidden', async () => {
+  const wrong = subscription(); wrong.customer = 'cus_other';
+  const live = subscription(); live.livemode = true;
+  const canceled = subscription(); canceled.status = 'canceled';
+  for (const response of [new Response('error', { status: 400 }), new Response('not json'), new Response(JSON.stringify(wrong)), new Response(JSON.stringify(live)), new Response(JSON.stringify(canceled)), new Response(JSON.stringify(subscription(5000))), new Response('x'.repeat(262145))]) {
+    const wrapper = changeLossFetch({ ...options, fetchImpl: async () => response, record: () => assert.fail('unexpected interception') });
+    assert.equal(await wrapper(path, { method: 'GET', headers }), response);
+    assert.ok((await response.text()).length);
+  }
+  assert.throws(() => changeLossFetch({ ...options, target: { ...target, expiresAt: now } }), /invalid_change_loss_target/);
+  assert.throws(() => changeLossFetch({ ...options, testKey: 'sk_live_other' }), /invalid_change_loss_target/);
+});

@@ -1,5 +1,13 @@
 # Dopmi — registro de avance
 
+## Preparación de cruce de aniversario incierto — 25 de septiembre de 2026
+
+Se añadió instrumento local guardian-change-loss-fetch.mjs: consume respuesta real de cambio de precio y oculta temporalmente lecturas de la suscripción activa exacta con el monto nuevo, también entre instancias, para poder cruzar el reloj antes de confirmar. No cambia solicitudes ni fabrica evidencia. Scope test/customer/sub/item/monto, key Guardián y body exactos, límite de respuesta y vencimiento máximo 30 minutos; cancelación confirmada pasa sin ocultación. Procedimiento en tools/verification/guardian-change-loss.md. No importado ni desplegado.
+
+Tres pruebas de aislamiento/recuperación aprobadas; suite completa 385 aprobadas. Endurecimiento posterior para dejar pasar status canceled verificado con las tres pruebas específicas. Revisión independiente del instrumento solicitada y pendiente; no ejecutar todavía en remoto. No acredita el cruce integrado. Se pidió al titular confirmar el estado del plan existente para la comprobación móvil pendiente, sin solicitar aún cambio ni cancelación.
+
+Revisión independiente del calendario: la fixture aislada puede probar calendario Stripe + servicios/RPC desde suscripción preparada, pero no un alta real del día 31. Mantener explícito ese límite; no sustituir silenciosamente el requisito ni falsificar charge.created. Consulta oficial de tarjetas de disputa confirma disparadores automáticos 0259/2685; no demuestra control del momento posterior a transferencia. Ese escenario sigue pendiente sin generar nuevos pagos al azar.
+
 ## Fecha real del cargo frente al reloj técnico — 25 de septiembre de 2026
 
 Prueba aislada Stripe test con el mismo cliente técnico, sin metadatos de ciclo Dopmi ni vínculo con la cuenta nueva: reloj ready frozen_time 1801404000 (2027-01-31T14:00:00Z). PaymentIntent pi_3UJgqn2ZjyMOQ0uL1ojS6N5q, tarjeta de prueba pm_card_visa, succeeded por 5000 MXN centavos; cargo ch_3UJgqn2ZjyMOQ0uL1FZ9KEaz paid y livemode false tiene created 1790372413 (2026-09-25T21:40:13Z), fecha real en lugar del reloj. Refund completo re_3UJgqn2ZjyMOQ0uL1RSxGH5w succeeded por 5000. Keys estables dopmi-h5-calendar-charge-timestamp-20260925 y dopmi-h5-calendar-charge-timestamp-refund-20260925.
