@@ -2,7 +2,8 @@
 
 `guardian-response-loss-proxy.mjs` prepara el caso pendiente de H5. No se importa
 en funciones desplegadas ni se expone al cliente público. Sus pruebas utilizan
-dos servidores TCP de loopback; **no acreditan todavía una escritura Stripe real**.
+dos servidores TCP de loopback. La ejecución real aislada descrita abajo acredita
+una escritura de precio test, no la recuperación financiera del servicio Guardián.
 
 El instrumento escucha exclusivamente en 127.0.0.1 y un puerto efímero. Su
 upstream real está fijado a HTTPS api.stripe.com; la única alternativa admitida
@@ -59,7 +60,32 @@ const stripe = new Stripe(testKey, {
 HTTP se limita al salto loopback; el proxy usa HTTPS hacia Stripe. Estas pruebas
 no ejecutan Deno ni Edge y no convierten el fixture en evidencia Stripe real.
 
-## Requisitos para la aceptación Stripe pendiente
+## Ejecución Stripe test aislada
+
+`guardian-stripe-transport-acceptance.mjs --execute-test-write` crea únicamente un
+precio/producto técnico sin cliente, suscripción ni pago. Lee la clave test del
+archivo privado `%LOCALAPPDATA%/Dopmi/acceptance/stripe-test.env`; nunca recibe
+secretos en argumentos. Conserva cuerpo y key en `.tools/guardian-stripe-transport.json`
+(ignorado por Git), valida su forma al reanudar y recupera con la misma key dentro
+de 23 horas. No borrar ese estado ni ejecutar procesos concurrentes. Un resultado
+incompleto requiere revisar la evidencia; no iniciar otro experimento automáticamente.
+
+El 25/9/2026 a las 18:53:13 UTC el proxy consumió un 200 de Stripe, Request-Id
+`req_GI3c5kTXelfvRC`, y perdió la respuesta de creación de
+`price_1UJeFA2ZjyMOQ0uLWSTNfwBu`. Fetch observó error de conexión; reenvío con
+el mismo cuerpo/key recuperó ese ID. Lectura independiente confirmó 5000 MXN
+centavos y listado del producto confirmó un precio. Producto
+`prod_VKIquTAncoOfoG` y precio quedaron inactivos, comprobados por lectura a las
+18:54:29 UTC. Para archivar fue necesario quitar el default_price del producto
+propio: Stripe rechazó inicialmente archivar su precio predeterminado.
+
+La revisión independiente detectó confianza excesiva en el cuerpo guardado;
+se añadió validación canónica de UUID/key/cuerpo/fechas y comprobación de identidad
+del producto antes de modificarlo. No se ejecuta automáticamente en CI ni importa
+el módulo de producción: este resultado **no cierra** recuperación financiera,
+RPC persistidas, pérdida al cruzar aniversario ni aceptación móvil.
+
+## Requisitos para la aceptación financiera pendiente
 
 1. Preparar un escenario aislado y legítimo, con consentimiento y RPC reales.
    No usar el ciclo de expiración natural en curso ni desactivar Cron/webhooks

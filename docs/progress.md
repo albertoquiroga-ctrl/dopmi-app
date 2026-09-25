@@ -1,5 +1,13 @@
 # Dopmi — registro de avance
 
+## Pérdida real de respuesta de precio test — 25 de septiembre de 2026
+
+Ejecutor aislado `tools/verification/guardian-stripe-transport-acceptance.mjs`: a las 18:53:13 UTC Stripe respondió 200 a POST /v1/prices, Request-Id `req_GI3c5kTXelfvRC`; el proxy consumió la respuesta y cerró TCP sin entregarla. Stripe 22.6.0/Fetch observó StripeConnectionError. Reintento con mismo cuerpo/key recuperó `price_1UJeFA2ZjyMOQ0uLWSTNfwBu`; lectura independiente confirmó 5000 centavos MXN y listado del producto `prod_VKIquTAncoOfoG` devolvió un precio. La coincidencia con el ID del proxy acredita recuperación del mismo objeto; el listado por producto no pretende descartar productos duplicados globalmente.
+
+No hubo clientes, suscripciones, pagos, transferencias ni refunds en este experimento. Precio/producto propios archivados y verificados a las 18:54:29 UTC; Stripe exigió quitar primero el default_price del producto. Reejecución posterior confirmó ambos inactivos sin nuevas escrituras. Estado técnico local ignorado por Git; credencial test fuera del repositorio, sin valores en evidencias. Revisión independiente P2 por cuerpo persistido no validado corregida antes de ejecutar: UUID/key/fechas/cuerpo canónico y producto propio comprobados; revisión final sin nuevos bloqueos. Diez pruebas TCP/SDK del instrumento aprobadas.
+
+Alcance explícito: evidencia real de transporte/idempotencia de precio, **no cierre de recuperación financiera ni worker/RPC/app**. H5 sigue abierto. Siguiente recorrido con titular: disputa test en un alta nueva; la cuenta del caso de expiración conserva plan null, activación expired sin cancelación y capacity_preview(5000).can_activate=true, comprobados nuevamente por RPC autenticadas. La documentación Stripe de testing describe la tarjeta 4000000000002685 para pago seguido de disputa product_not_received incluso con 3DS; no se ha realizado ese pago ni se declara disputa aprobada.
+
 ## Expiración natural aceptada en Android — 25 de septiembre de 2026
 
 Captura 1000344048 del titular, después de Actualizar estado a las 12:43 hora local: «Intento vencido sin pago confirmado», formulario de nueva alta por 50 MXN, consentimiento desmarcado y Activar en Stripe deshabilitado. No aparece plan activo ni aviso de solicitud recibida en la pantalla completa aportada. Coincide con el ciclo `dfda0ccb-ef61-4435-87e2-64348bf37a65` expired, reserva cero, ausencia de cancelación y sesión Stripe expired/unpaid sin PaymentIntent/suscripción comprobados a las 18:41:41 UTC. Queda completo el recorrido integrado de expiración natural sin pagar ni cancelar; no repetirlo. Esta captura no sustituye la comprobación específica del aviso tras retirar un cambio de monto ni identifica el versionCode instalado.
