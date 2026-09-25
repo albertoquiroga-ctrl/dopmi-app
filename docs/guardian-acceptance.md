@@ -2,7 +2,18 @@
 
 El hito 5 sigue abierto. Este documento organiza la prueba conjunta de app, Supabase y Stripe; los tests unitarios y las compilaciones no sustituyen esos recorridos.
 
-## Estado de aceptación actualizado — 25 de septiembre de 2026 UTC
+## Estado vigente tras la captura 1000343984 — 25 de septiembre de 2026
+
+Este resumen sustituye los pendientes de los cortes históricos inferiores. H5 permanece abierto; no repetir los recorridos ya acreditados.
+
+- Android es la ruta elegida. Último build identificado por el titular: Codemagic `6ab69f12bbba44dc026a34ef`, commit `9cb3f5f`, terminado; captura 1000343972 verifica el arreglo del aviso tras cancelar el alta. Su versionCode no está visible. El build anterior 2.3.3 (248) sí tiene publicación interna comprobada.
+- Completados con app/base/Stripe: alta y renovación; cambio ordinario de monto; setup/3DS y rechazo; cancelación y ausencia de renovación posterior; omisión por capacidad y renovación siguiente; rechazo mensual y recuperación con tarjeta válida sin recobrar el mes omitido; abandono, reapertura del mismo Checkout y cancelación sin pago; cambio cercano al aniversario, retiro y renovación de febrero por 50 MXN (captura 1000343984).
+- Devolución total del alta acreditada también en Android. Devolución parcial del ciclo mensual conservada en revisión y posterior devolución del resto conciliada en backend/Stripe. Este último resultado sustituye la observación histórica de que ese ciclo permanecía sin devolver. Reenvío firmado de invoice.paid sin duplicados y privacidad entre cuentas comprobados; paginación RPC comprobada con tamaño 1.
+- Corrección móvil `291dcd0`: elimina el aviso genérico residual después de gestionar solicitudes y conserva el estado autoritativo. Analyze y 51 pruebas aprobados; CI `36163237337` sobre `446d394` aprobó los cuatro jobs. Falta nuevo build firmado y verificación visual de esta corrección.
+
+Pendientes de aceptación integrada: expiración natural sin cancelar; calendario de fin de mes y escritura incierta al cruzar aniversario; pérdida real de respuesta durante una escritura y recuperación; disputa y reversión con múltiples destinos/resultado incierto; paginación móvil con más de 20 ciclos; comprobación visual del aviso corregido en el nuevo build. Los tests locales de esos casos no sustituyen evidencia integrada. Conservar H5.3–H5.5 y H5.G–H5.H abiertos hasta satisfacer la matriz completa.
+
+## Corte histórico inicial de aceptación — 25 de septiembre de 2026 UTC
 
 Esta sección prevalece sobre los cortes históricos de preparación que siguen. Ruta vigente: **Android desde Google Play interno**, build **2.3.3 (247)**, commit `3fe7a1d`; publicación comprobada en Codemagic y recorrido del titular visible en las capturas. Dispositivo confirmado por captura del titular: Samsung Galaxy S25 Ultra (SM-S938B). Android 16 y One UI 8.5 confirmados por captura de Información de software.
 
