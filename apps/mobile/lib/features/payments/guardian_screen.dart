@@ -112,6 +112,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       final result = await ref.read(guardianRepositoryProvider).state();
       if (!current) return;
       data = result;
+      if (plan?['status'] == 'canceled') message = null;
       if (intent?['kind'] == 'method' &&
           (['canceled', 'cancel_requested'].contains(plan?['status']) ||
               (methodSetup?['key'] == intent?['key'] &&
@@ -391,7 +392,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
             onPressed: () => context.push('/guardian/history'),
             child: const Text('Ver historial de ciclos'),
           ),
-          if (methodSetup != null)
+          if (methodSetup != null && status == 'active')
             Notice(
               guardianMethodLabels[methodSetup!['status']] ??
                   'Medio de pago en revisión.',
