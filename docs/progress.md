@@ -1,5 +1,12 @@
 # Dopmi — registro de avance
 
+## Aceptación integrada actualizada — 25 de septiembre de 2026
+
+Los registros detallados en `guardian-acceptance.md` y las capturas Android 1000343853, 1000343863 y 1000343881 completan omisión por capacidad, renovación posterior, rechazo mensual, actualización de tarjeta y renovación siguiente sin recobrar meses omitidos. Enero cobra 5000 centavos una vez y transfiere 4314; diciembre permanece omitido. También consta reenvío firmado de invoice.paid con HTTP 200 sin duplicado, y devolución parcial retenida en revisión hasta completar el total y conciliar la reversión. Estos resultados sustituyen los pendientes históricos equivalentes debajo, pero no cierran toda H5.
+
+Siguiente recorrido móvil: alta abandonada y recuperación del mismo intento, seguida de cancelación/expiración sin pago y liberación de reserva. Requiere cuenta sin plan previo y distinta del dueño del gasto aprobado; se solicitó al titular. La interfaz actual no ofrece alta sobre el registro de un plan cancelado. El Checkout inicial vence a los 35 minutos y la reserva a los 40; no alterar fechas de base para aparentar expiración integrada. Antes de pagar, comprobar recuperación del mismo identificador al reabrir la app. Mantener pendientes separados: límites de aniversario/fin de mes, pérdida real de respuesta durante escritura, disputa/múltiples destinos y paginación móvil. Las pruebas locales existentes de fallos y concurrencia no se presentan como evidencia remota de esos casos.
+
+
 ## Revisión independiente de Guardián — 25 de septiembre de 2026
 
 Revisión de seguridad independiente completada sobre `fe976a3`, incluyendo backend ya integrado en la rama predeterminada y no sólo el diff reciente. Sin vulnerabilidades verificables encontradas en el alcance inspeccionado: autenticación del cliente, worker y webhook, privilegios/RLS de RPC, propiedad e importes, reservas, idempotencia, cambios de tarjeta/monto, cancelación, devoluciones/reversiones e historial privado. Ocho pruebas existentes de evidencia financiera y propiedad de `guardian.test.mjs` ejecutadas por el revisor y aprobadas; no se repitió la suite completa.
