@@ -1,5 +1,15 @@
 # Dopmi — registro de avance
 
+## Continuación local de H5 — 25 de septiembre de 2026 (UTC)
+
+- Checkout sigue cerrado; H5 no está aceptado. Se recuperó la rama `codex/stripe-transfer-delivery` desde `e16e1da` y se verificó el entorno remoto `ohqxranynackjignryep`.
+- Corregida portabilidad Windows mediante `.gitattributes`: SQL permanece en LF. La conversión automática a CRLF rompía el reemplazo exacto de una definición en `guardian_payment_method`; no se cambió la lógica histórica. Tras corregirlo, 356 pruebas backend aprobadas. Flutter 3.47.4: análisis sin incidencias y 51 pruebas aprobadas; admin: 18 pruebas y build aprobados.
+- `payment-worker` v10 desplegado desde el código publicado, incorporando únicamente el diagnóstico autenticado `guardian_preflight` y su importación. Los otros 13 archivos compartidos ya coincidían. Se recuperaron los 15 archivos desplegados para comprobar su contenido. Autenticación por secreto existente conservada.
+- Preflight remoto mediante token de Vault sin exportarlo: petición `1599`, 2026-09-25 00:33:37 UTC, HTTP 503; clave restringida y test verificados. HTTP 403 en `customers`, `payment_methods`, `prices`, `subscriptions`, `invoices`, `invoice_payments`; HTTP 200 en las otras diez lecturas. Permisos de escritura todavía no verificados. Esto bloquea aceptación, no demuestra un fallo del procesamiento ordinario.
+- Cron `dopmi-payment-worker-reconcile` activo cada minuto; respuestas `1597`/`1598` HTTP 200 con todos los contadores de error en cero. Cero ciclos, suscripciones y liquidaciones Guardián al consultar. No se crearon operaciones financieras.
+- Historial consultado directamente: 19 filas remotas con SQL equivalente a los archivos locales normalizando CRLF/LF; 19 timestamps distintos, incluyendo `payment_delivery` omitido en la auditoría documental anterior. Las siete primeras migraciones no tienen fila de historial. Comparación inicial del catálogo: 84 funciones esperadas y 84 presentes; 79 definiciones idénticas normalizadas por saltos de línea. Quedan cinco funciones antiguas de identidad con diferencias de formato por revisar y diferencias de grants, incluida ejecución anónima adicional de `dopmi_can_write_photo`. No se reparó historial ni se cambió esquema. H5.A permanece pendiente hasta completar tablas, restricciones, índices, políticas y permisos.
+
+
 ## Traspaso documental a Codex — 25 de septiembre de 2026 (UTC)
 
 - Solicitud del titular: dejar GitHub listo para continuar en Codex; compilará en Codemagic y probará en TestFlight. [Guía de continuidad](codex-handoff.md), [matriz de aceptación](guardian-acceptance.md) y backlog reconciliados. README ahora describe la implementación; la referencia UX original se conserva en `prototype-reference.md`. `AGENTS.md` ya apunta al hito 5, no al 3.

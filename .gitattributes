@@ -1,0 +1,3 @@
+# SQL migrations patch PostgreSQL function definitions using exact text.
+# Preserve LF on Windows as well as Linux so fresh databases replay identically.
+*.sql text eol=lf
