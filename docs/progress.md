@@ -1,5 +1,13 @@
 # Dopmi — registro de avance
 
+## Calendario Stripe aislado: enero31–febrero28–marzo31 — 25 de septiembre de 2026
+
+Lectura del cliente técnico confirmó correo sintético guardado, cero suscripciones y has_more false tras rechazos previos. Nueva key dopmi-h5-calendar-fixture-sub-email-ready-20260925 creó sub_1UJhM62ZjyMOQ0uLA0uURMeR, precio price_1UJhJU2ZjyMOQ0uLyE8PdFOQ, ancla day31/hour14. Configuración del ancla calculada por guardianMonthlyAnchor con timestamp explícito de fixture1801404000; no representa fecha de un cargo Dopmi. Crear exactamente sobre el ancla produjo factura inicial in_1UJhM62ZjyMOQ0uLG3jZUY8r draft/due5000/paid0, por lo que falló la expectativa técnica latest_invoice null; no se considera alta de producción.
+
+Suscripción técnica puesta en send_invoice/keep_as_draft sin cancelación al final; auto_advance de factura inicial desactivado explícitamente. Reloj técnico clock_1UJgih2ZjyMOQ0uLc9TDSqN3 avanzado y verificado ready1806501600 (31/3/2027 14UTC). Listado completo, tres facturas draft/paid0/auto_advance false: inicial31/1→28/2; in_1UJhNA2ZjyMOQ0uLoTPtIK17 28/2→31/3; in_1UJhNF2ZjyMOQ0uLeLZ4LlKx 31/3→30/4. Todas5000, ancla31 conservada. Estado técnico ignorado en .tools/guardian-calendar-fixture.json.
+
+Acredita el calendario real de Stripe con la configuración calculada, sin cobros. No hay vínculo con cuenta nueva ni tablas Dopmi; no acredita integración RPC/app de fin de mes, alta móvil31 ni año bisiesto. Mantener ese requisito abierto. No modificar fechas reales de cargos para aparentar cobertura.
+
 ## Cruce incierto aceptado en Android — 25 de septiembre de 2026
 
 Capturas1000344188/1000344190 del titular,16:09: plan activo50, solicitud50 confirmada desde25/7/2028; historial de ese ciclo con siguiente25/8/2028, pago50, comisión1, Stripe5.86, asignado/transferido43.14 y asignación test confirmada. Coinciden con solicitud77f3f0f1-ebf8-49bd-a579-011647a534b4 y ciclo e9fecd46-53bc-44ad-9120-51d820897c31. Revisión independiente de2dd86c6 confirma coherencia técnica; estas capturas completan el único pendiente móvil del recorrido. No repetir. H5 sigue abierto por fin de mes y disputa posterior a transferencia.
