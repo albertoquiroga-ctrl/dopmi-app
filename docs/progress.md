@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Reanclaje Stripe test viable sin esperar fecha real — 25 de septiembre de 2026
+
+Titular solicita alternativa a esperar cinco días. Revisión independiente acepta fixture integrada desde plan preparado, con alta ordinaria acreditada aparte y referencias financieras reales. Prueba técnica real sin PM: sub_1UJhpP2ZjyMOQ0uLsAqf3eLp en cliente técnico del reloj31/3/2027, precio5000, send_invoice/due1, ancla25. Se activó pausa keep_as_draft y actualizó billing_cycle_anchor=now, proration_behavior=none. GET: active, ancla cambió1808661600→1806501600, siguiente1809093600(30/4), pausa conservada. Dos listados completos sin facturas/pagos. Suscripción técnica cancelada después con invoice_now=false/prorate=false; no altera fixture original. Keys dopmi-h5-anchor-reset-probe-{create,pause,reset,cleanup}-20260925; estado local ignorado .tools/guardian-anchor-reset-probe.json.
+
+Ruta elegida para futura alta del titular: reanclar al30/9 del reloj, anterior a primera renovación25/10; septiembre no tiene31. No requiere SQL manual ni cambios del servidor. Revisión pide comprobar facturación diferida del reset antes de usarla y tratar explícitamente cualquier factura subscription_update fuera de los validadores de renovación. Todavía no se pidió otro pago. Evidencia técnica viable, no aceptación móvil/económica completa ni prueba de programación inicial desde cargo31. Sustituye la espera real como dependencia obligatoria; H5 permanece abierto.
+
 ## Calendario real conservado por RPC e historial aislados — 25 de septiembre de 2026
 
 Nuevo ejecutor `tools/verification/guardian-calendar-readonly.mjs`: sólo GET Stripe, todas las migraciones en PGlite efímero, registro inicial explícitamente sintético y sin liquidaciones. Las renovaciones reales in_1UJhNA2ZjyMOQ0uLoTPtIK17 e in_1UJhNF2ZjyMOQ0uLeLZ4LlKx pasan guardianRenewalCandidate; preparación RPC repetida devuelve el mismo ciclo, decisión skip con fresh:false; historial bajo rol propietario conserva exactamente 28/2→31/3 y 31/3→30/4/2027 a14UTC, sin pago confirmado. Ejecución final aprobada, cero escrituras remotas. La factura inicial subscription_create no es una renovación válida.
