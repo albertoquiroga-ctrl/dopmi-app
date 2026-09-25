@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Intento de cruce no concluyente; restauración verificada — 25 de septiembre de 2026
+
+Tras tres consultas sin solicitud nueva, se empezó a retirar instrumentación. La operación del titular llegó durante esa restauración: request 107aab57-346c-4e39-8a1c-ed6b9ff3e1b5 creado 21:54:13.814845 UTC, aplicado normalmente con mutación 21:55:06.069927, attempts 1, price_1UJh5B2ZjyMOQ0uLkELo7LAE, effective_from 1848147669. Reinstalación temporal v18/v18/v10 llegó después de la ejecución normal; no acredita pérdida. Consulta de logs 21:50–21:56 sin guardian_test_change_response_consumed. No se cruzó reloj, no reescribió solicitud ni fabricó fallo.
+
+Instrumentación retirada de nuevo: worker v19, webhook v19, client v11. Todos los archivos recuperados comparados con originales v15/v15/v7, iguales; 18 smoke checks aprobados. Base active/20000/revisión5/cero pendientes. El siguiente intento requiere coordinar la acción antes de instalar/retirar para no repetir esta carrera; no interpretar ausencia momentánea de solicitud como abandono del titular. H5 y el caso de cruce incierto permanecen abiertos. Copia local ignorada .tools/guardian-change-originals.json conserva bundles originales sin valores de secretos.
+
 ## Aviso móvil aceptado e instrumento temporal instalado — 25 de septiembre de 2026
 
 Captura 1000344178 muestra final del formulario tras actualizar: sin aviso genérico «Solicitud recibida», consentimiento desmarcado, monto 50 y botón deshabilitado. Junto a 1000344174/1000344176 (solicitud retirada, plan 50) cierra la comprobación visual pendiente. No muestra versionCode exacto.
