@@ -6,7 +6,7 @@ El hito 5 sigue abierto. Este documento organiza la prueba conjunta de app, Supa
 
 Este resumen sustituye los pendientes de los cortes históricos inferiores. H5 permanece abierto; no repetir los recorridos ya acreditados.
 
-Segundo destino preparado por el titular. Renovación test del 25/6/2028 conciliada por 50 MXN, neto 43.14 distribuido en dos transferencias confirmadas: 20.00 y 23.14. Reservas técnicas de preparación liberadas. Falta captura Android de ambas asignaciones y probar refund/reversiones del mismo ciclo; referencias en progress.md. No declarar todavía devolución múltiple ni resultado incierto aceptados.
+Segundo destino preparado por el titular. Renovación test del 25/6/2028 conciliada por 50 MXN, neto 43.14 distribuido en dos transferencias confirmadas: 20.00 y 23.14. Reservas técnicas de preparación liberadas. Captura Android 1000344110 acredita ambas asignaciones. Devolución total de 50 MXN succeeded y ajuste completed: Stripe confirma exactamente una reversión por destino, de 20.00 y 23.14; SQL registra un intento por reversión, comisión y asignación finales cero. Pendiente captura Android del resultado de devolución; referencias en progress.md. No acredita pérdida de respuesta financiera ni recuperación incierta.
 
 Disputa antes de asignación observada y corregida en servidor (`847e184`): el cargo test pagado/disputado del nuevo alta pasó por conciliación normal a attention; no se creó liquidación, plan ni transferencia. La RPC propietaria ya devuelve historial review. CI `36177947929` sobre `5984e16` aprobó los cuatro jobs. Falta captura Android; tampoco acredita disputa posterior a transferencias o reversión múltiple. Referencias y despliegues en progress.md.
 

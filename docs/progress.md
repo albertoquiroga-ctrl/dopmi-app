@@ -8,7 +8,9 @@ Preparación sólo técnica mediante dopmi_guardian_reserve: claves `b55e0ea8-64
 
 Resultado real: ciclo `e27673c6-fa4b-4722-befc-d75e157319eb`, factura `in_1UJfSg2ZjyMOQ0uLCDHFixMy` paid 5000, attempt_count 1; cargo `ch_3UJfT52ZjyMOQ0uL1BgdOXxo`. Base concilia comisión 100, costo Stripe 586 y neto 4314. Stripe confirma dos transferencias test del mismo cargo y grupo del ciclo: `tr_3UJfT52ZjyMOQ0uL1Avwwllb` por 2000 al destino anterior y `tr_3UJfT52ZjyMOQ0uL1mVP4QV9` por 2314 al nuevo destino, ambas sin reversión. Reloj ready. Las dos reservas técnicas se liberaron mediante RPC y quedaron released.
 
-Pendiente captura del historial/Ver asignaciones de junio en Android, después devolución y conciliación de ambas reversiones. No se ha emitido refund de este ciclo. Este resultado acredita distribución real backend/Stripe a dos rescatistas, no el cierre de devolución múltiple ni recuperación incierta. No requiere nuevo build.
+Captura Android 1000344110 confirma el ciclo de junio y ambas asignaciones: test 20.00 y crowuetas 23.14 MXN, Transferencia confirmada. Distribución integrada aceptada.
+
+Se emitió una devolución test total de 5000 centavos con clave estable `dopmi-h5-multidest-refund-e27673c6-fa4b-4722-befc-d75e157319eb`. Lectura independiente confirma único refund `re_3UJfT52ZjyMOQ0uL16ynupl1`, succeeded. La conciliación normal completó el ajuste a las 20:21:42.626 UTC: reversión `trr_1UJfcm2ZjyMOQ0uL67YSoF26` por 2000 y `trr_1UJfcn2ZjyMOQ0uLG2LRlQSw` por 2314. Cada transferencia tiene exactamente una reversión completa en Stripe; cada registro SQL muestra attempts 1. Ajuste completed sin error, allocated_cents 0, platform_fee_cents 0, refund_cents 5000 y platform_loss_cents 586. No se editaron estados financieros manualmente. Pendiente captura Android de la devolución y ambas asignaciones revertidas. Este caso no acredita pérdida de respuesta financiera ni recuperación incierta. No requiere nuevo build.
 
 ## CI completo del arreglo de disputa inicial — 25 de septiembre de 2026
 
