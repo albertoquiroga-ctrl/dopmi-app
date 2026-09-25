@@ -2,11 +2,11 @@
 
 El hito 5 sigue abierto. Este documento organiza la prueba conjunta de app, Supabase y Stripe; los tests unitarios y las compilaciones no sustituyen esos recorridos.
 
-## Estado vigente tras la captura 1000343984 — 25 de septiembre de 2026
+## Estado vigente de aceptación — 25 de septiembre de 2026
 
 Este resumen sustituye los pendientes de los cortes históricos inferiores. H5 permanece abierto; no repetir los recorridos ya acreditados.
 
-- Android es la ruta elegida. Último build identificado por el titular: Codemagic `6ab69f12bbba44dc026a34ef`, commit `9cb3f5f`, terminado; captura 1000343972 verifica el arreglo del aviso tras cancelar el alta. Su versionCode no está visible. El build anterior 2.3.3 (248) sí tiene publicación interna comprobada.
+- Android es la ruta elegida. Último build publicado verificado directamente: Codemagic `6ab6b1ecd585f0389192548f`, commit `bcbc2e7`, versión 2.3.3 (250), internal completed y no depurable. Incluye `291dcd0`. El titular informa instalación, pero sus capturas no muestran el versionCode instalado. La captura anterior 1000343972 ya acredita la limpieza del aviso tras cancelar el alta.
 - Completados con app/base/Stripe: alta y renovación; cambio ordinario de monto; setup/3DS y rechazo; cancelación y ausencia de renovación posterior; omisión por capacidad y renovación siguiente; rechazo mensual y recuperación con tarjeta válida sin recobrar el mes omitido; abandono, reapertura del mismo Checkout y cancelación sin pago; cambio cercano al aniversario, retiro y renovación de febrero por 50 MXN (captura 1000343984).
 - Devolución total del alta acreditada también en Android. Devolución parcial del ciclo mensual conservada en revisión y posterior devolución del resto conciliada en backend/Stripe. Este último resultado sustituye la observación histórica de que ese ciclo permanecía sin devolver. Reenvío firmado de invoice.paid sin duplicados y privacidad entre cuentas comprobados; paginación RPC comprobada con tamaño 1.
 - Corrección móvil `291dcd0`: elimina el aviso genérico residual después de gestionar solicitudes y conserva el estado autoritativo. Analyze y 51 pruebas aprobados; CI `36163237337` sobre `446d394` aprobó los cuatro jobs. El titular informa nuevo build instalado; captura 1000344033 confirma «Solicitud retirada; se conservó el monto anterior» y plan de 50 MXN. No identifica versión/commit ni muestra el final del formulario: queda pendiente vincular el build y comprobar la ausencia del aviso residual después de una operación en esa versión.
@@ -14,6 +14,8 @@ Este resumen sustituye los pendientes de los cortes históricos inferiores. H5 p
 Paginación móvil aceptada: 21 ciclos en el segundo plan, reloj test ready en 25/5/2028, RPC predeterminada devuelve 20 + 1 registros sin duplicados y con cursor final null. Captura Android 1000344002 y confirmación del titular tras pulsar «Ver ciclos anteriores» muestran el alta del 25/9/2026 debajo del ciclo de octubre, con pago 50.00 MXN y neto transferido 43.14. No generar más ciclos ni repetir este recorrido. Evidencia técnica y CI del arreglo de anulación eventual `bf9d566` en progress.md.
 
 Pendientes de aceptación integrada: expiración natural sin cancelar; calendario de fin de mes y escritura incierta al cruzar aniversario; pérdida real de respuesta durante una escritura y recuperación; disputa y reversión con múltiples destinos/resultado incierto; comprobación visual del aviso corregido en el nuevo build. La captura de paginación no identifica build ni acredita esa corrección. Los tests locales de otros casos no sustituyen evidencia integrada. Conservar H5.3–H5.5 y H5.G–H5.H abiertos hasta satisfacer la matriz completa.
+
+Expiración natural en curso: ciclo `dfda0ccb-ef61-4435-87e2-64348bf37a65`, sin cancelar ni pagar; Checkout vence el 25/9 a las 18:34:46 UTC y reserva a las 18:39:46 UTC. Estado inicial contrastado con Stripe; no cerrar el recorrido hasta verificar el resultado posterior y la app. Para pérdida de respuesta se prepara un [instrumento local de transporte](../tools/verification/guardian-response-loss.md), separado de los servicios compartidos. Sus pruebas TCP locales no sustituyen la ejecución integrada con Stripe ni justifican modificar la sesión pendiente.
 
 ## Corte histórico inicial de aceptación — 25 de septiembre de 2026 UTC
 
