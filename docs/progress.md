@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Fecha real del cargo frente al reloj técnico — 25 de septiembre de 2026
+
+Prueba aislada Stripe test con el mismo cliente técnico, sin metadatos de ciclo Dopmi ni vínculo con la cuenta nueva: reloj ready frozen_time 1801404000 (2027-01-31T14:00:00Z). PaymentIntent pi_3UJgqn2ZjyMOQ0uL1ojS6N5q, tarjeta de prueba pm_card_visa, succeeded por 5000 MXN centavos; cargo ch_3UJgqn2ZjyMOQ0uL1FZ9KEaz paid y livemode false tiene created 1790372413 (2026-09-25T21:40:13Z), fecha real en lugar del reloj. Refund completo re_3UJgqn2ZjyMOQ0uL1RSxGH5w succeeded por 5000. Keys estables dopmi-h5-calendar-charge-timestamp-20260925 y dopmi-h5-calendar-charge-timestamp-refund-20260925.
+
+La ruta de cliente con reloj no basta para preparar el aniversario del día 31: guardian-schedule deriva el calendario del cargo verificado y además exige que el siguiente aniversario sea posterior al tiempo Stripe. No modificar charge_created en base ni suplantar la respuesta Stripe. No se pidió pago al titular. Se solicitó revisión independiente del montaje posible y del alcance que podría acreditar una fixture explícita frente al recorrido completo. Fin de mes permanece pendiente.
+
 ## Cuenta nueva y variante Checkout con cliente previo — 25 de septiembre de 2026
 
 El titular entregó captura 1000344172 de la nueva cuenta con correo confirmado. Lectura remota confirma correo validado y cero activaciones, suscripciones y ciclos Guardián. No se inició alta ni se vinculó esa cuenta al cliente técnico.
