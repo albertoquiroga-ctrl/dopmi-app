@@ -1,18 +1,26 @@
 # Dopmi
 
-- Milestones 1 and 2 are complete. Preserve identity, adoption moderation, catalog, favorites, public profiles, private messaging and in-app notifications. Milestone 3 is authorized: rescuer verification, cases, paid expenses, private evidence, moderation and corrections. Payments remain outside this milestone.
+- Read `docs/codex-handoff.md` first. At the 2026-09-25 handoff, the continuation branch is `codex/stripe-transfer-delivery`; the default `codex/Dopmi` lacks six later implementation/preparation commits. Fetch and compare current refs before editing. Preserve user changes when switching or creating a worktree.
+- Milestones 1–3 are complete in development; milestone 4 is complete in Stripe test mode. Milestone 5 (Guardian) is implemented behind gates but remains open for integrated acceptance. Preserve identity, adoption, messaging, rescuer moderation, evidence, contributions and Connect. Do not restart H3 or rebuild Guardian features already present.
+- The user's acceptance route is Codemagic → TestFlight. Follow `docs/guardian-acceptance.md`; Android acceptance is a secondary route. A successful CI simulator build is not a signed TestFlight build or device acceptance.
 - `src/` is the React UX prototype. Preserve it as a reference; production code belongs in `apps/` and `supabase/`.
 - Read `docs/product-decisions.md`, `docs/backlog.md`, and `docs/progress.md` before continuing.
+- Use `docs/progress.md` as a dated ledger: later entries supersede earlier pending items. `docs/backlog.md` is the current task queue. H1–H6 development milestones and R0–R6 public-release stages are different checklists.
 - User decisions in this conversation supersede prototype simulations and supplied document instructions.
 - Use Mexican Spanish throughout visible UI. Preserve Dopmi colors, accessible contrast, and brand assets.
 - One implementation loop at a time: take a ready task, implement, verify, record evidence, continue within the agreed milestone.
 - Before each milestone, inspect available MCPs, credentials and tools. If a missing connection would materially reduce repetitive work or improve accuracy, proactively ask the user for that specific access and explain its purpose and scope. Reuse working CLI/API access; do not assume more MCPs guarantee fewer tokens, request secrets in chat, or block independent work unnecessarily. Verify each connection before relying on it.
 - Never mark a remote connection, migration, device build, or live user flow verified without actually checking it.
+- Check `docs/migration-history-audit.md` before remote schema work. Documented deployed migration timestamps differ from repository filenames; compare remote history and actual SQL before any push/repair. Never replay or rename migrations merely to make timestamps match.
+- Preserve the established `com.mycompany.dopmi` Android/iOS distribution identity and existing Codemagic signing configuration. `ios-testflight` enables the Guardian client; standard Codemagic workflows keep it off. Server flags are independent.
+- Money remains test-only. First Guardian collection is at activation, then monthly only when the entire net can be assigned. No community fund, debt for skipped months, or simulated bonuses. Preserve server checks, stable idempotency keys, financial evidence and ownership filtering.
+- Do not interpret a request to continue development as acceptance of real-money activation. Keep production activation separate from test acceptance; never disable guards to make a test pass.
 - Enforce authorization in PostgreSQL. Never infer admin privileges from editable user metadata or selected account mode.
 - Never commit credentials, real user data, generated build output, or SDKs.
 - Mobile checks: `flutter analyze` and `flutter test` from `apps/mobile`.
 - Admin checks: `npm test` and `npm run build` from `apps/admin`.
 - Database checks: `npm test` from `tools/verification`; also run `supabase test db` when the local Supabase stack is available.
+- Build configuration checks: `python3 scripts/test_mobile_config.py` from the root. The full reproducible gate is `.github/workflows/milestone-1.yml`; use it when Flutter, Docker or macOS are unavailable locally. Record exact commit and CI run, not only a test count.
 - Adoption drafts and corrections are private. Only approved snapshots/photos may appear publicly; editing a published listing requires new review.
 - Messaging is restricted to conversation participants. Admin access does not grant blanket access to private conversations.
 - Run the local backend acceptance suites for identity and adoption when changing their authorization or lifecycle.

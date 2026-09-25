@@ -2,16 +2,19 @@
 
 El hito 5 sigue abierto. Este documento organiza la prueba conjunta de app, Supabase y Stripe; los tests unitarios y las compilaciones no sustituyen esos recorridos.
 
+**Ruta acordada con el titular: Codemagic → TestFlight.** Android es una alternativa disponible. Corte documental: 25 de septiembre de 2026. [Continuidad y evidencia de CI](codex-handoff.md). El estado remoto de abajo es el último registrado, no una reconsulta durante este traspaso.
+
 ## Entorno y preparación del 24 de septiembre de 2026
 
 - Repositorio `albertoquiroga-ctrl/dopmi-app`, rama `codex/stripe-transfer-delivery`.
 - Supabase `ohqxranynackjignryep`; Stripe **Entorno de prueba de DopMi**, `acct_1U2Dyq2ZjyMOQ0uL`, `livemode=false`.
 - Migraciones Guardián aplicadas hasta `20260924222351_guardian_refund_reversals`.
+- Esa es la versión remota documentada; el archivo local es `20260924220619_guardian_refund_reversals.sql`. Comprobar [el historial](migration-history-audit.md) antes de aplicar o reparar migraciones.
 - Código de pagos desplegado desde `5a38a36` (implementación de `fc99fd9`): `guardian-client` v1, `payment-worker` v8, `stripe-webhook` v9. Sus archivos remotos se compararon con el repositorio, sin diferencias. `payments` v7 ya coincide y se conserva.
 - `payment-return` v6 corrige un problema detectado en HTTP real: el dominio estándar de Supabase convierte HTML a texto plano y reemplaza su CSP. Ahora devuelve instrucciones legibles para volver a la app; no depende de botones HTML que el navegador no renderiza. [Restricción documentada por Supabase](https://supabase.com/docs/guides/functions/limits).
 - Webhook `we_1UI5JC2ZjyMOQ0uLhEBONUD1`, habilitado en test y con la misma URL, versión y secreto: se agregaron los 13 eventos faltantes, conservando los ocho anteriores. Su API de eventos permanece `2026-07-29.dahlia`; el servidor consulta la evidencia de Guardián con `2026-08-26.dahlia`.
 - Cron `dopmi-payment-worker-reconcile`: cada minuto, token obtenido desde Vault. Respuestas posteriores al despliegue comprobadas con HTTP 200 y `failed=0`.
-- Alta cerrada: POST `guardian-client` devuelve HTTP 503 `guardian_disabled`. El trabajador no ejecuta Guardián mientras su flag esté apagado. Cero ciclos, suscripciones y liquidaciones Guardián durante la preparación. No se emitieron cargos, transferencias ni devoluciones.
+- Alta cerrada: POST `guardian-client` devuelve HTTP 503 `guardian_disabled`. El procesamiento Guardián ya está habilitado para pruebas; las comprobaciones posteriores no registraron fallos ni operaciones pendientes. Cero ciclos, suscripciones y liquidaciones Guardián durante la preparación. No se emitieron cargos, transferencias ni devoluciones.
 
 ## Comprobación repetible antes de abrir la prueba
 
@@ -29,9 +32,9 @@ Revisar Cron por separado: una ejecución SQL que encola HTTP no demuestra una r
 
 ## Configuración pendiente antes del primer pago
 
-1. Acceder a la configuración privada de Edge Functions en el proyecto de prueba. La conexión MCP permite desplegar y consultar la base, pero no ofrece gestión de secretos. El navegador de esta sesión requiere iniciar sesión; la CLI local no tiene token configurado. No compartir credenciales por chat.
+1. Acceso a la configuración de prueba resuelto mediante la automatización existente. No hace falta iniciar una nueva sesión en el navegador para completar esta preparación.
 2. Comprobar `STRIPE_SECRET_KEY_H4_TEST` y sus permisos de prueba para los recursos utilizados: Events; Customers; Checkout; SetupIntents y PaymentMethods; Products/Prices; Subscriptions; Invoices e InvoicePayments; PaymentIntents, Charges y BalanceTransactions; cuentas Connect; Transfers y sus reversals; Refunds. Conceder escritura sólo donde el código la utiliza. El acceso de la conexión Stripe de ChatGPT no demuestra los permisos de esta clave de servidor. Conservar Stripe Tax apagado.
-3. Mantener `DOPMI_GUARDIAN_CHECKOUT_ENABLED=false` mientras se habilitan y comprueban los componentes del servidor:
+3. Preparación del servidor completada. Se mantiene `DOPMI_GUARDIAN_CHECKOUT_ENABLED=false`; los componentes de la tabla ya están habilitados:
 
    | Variable | Valor para el servidor de prueba |
    | --- | --- |
@@ -41,18 +44,32 @@ Revisar Cron por separado: una ejecución SQL que encola HTTP no demuestra una r
    | `DOPMI_GUARDIAN_CHANGES_ENABLED` | `true` |
    | `DOPMI_GUARDIAN_REFUNDS_ENABLED` | `true` |
 
-   Comprobar al menos una respuesta real de Cron con `guardian.failed=0`. Después habilitar `DOPMI_GUARDIAN_CHECKOUT_ENABLED=true` y ejecutar el smoke con `--expect-enabled`. El cliente exige los seis flags. Esto habilita el entorno compartido de prueba para usuarios autenticados elegibles; no es una lista de acceso limitada a un donante.
-4. Preparar la compilación móvil de prueba con `ENABLE_GUARDIAN_TEST=true` en **config.local.json**, manteniendo URL y clave publicable. No cambiar `config.example.json`. En el equipo Windows ya preparado:
+   Las respuestas reales de Cron ya se comprobaron sin fallos. Cuando estén listos el dispositivo y los permisos de Stripe, habilitar `DOPMI_GUARDIAN_CHECKOUT_ENABLED=true` y ejecutar el smoke con `--expect-enabled`. El cliente exige los seis flags. Esto habilita el entorno compartido de prueba para usuarios autenticados elegibles; no es una lista de acceso limitada a un donante.
+4. Preparar el build TestFlight según la sección siguiente. Como alternativa, la compilación Android conectada ya está disponible y aprobó sus verificaciones automáticas. Se instala como **Dopmi Guardián (prueba)** junto a la app habitual. Descargar el paquete de pruebas y extraer el APK correspondiente al dispositivo: `app-arm64-v8a-debug.apk` para ARM64, `app-armeabi-v7a-debug.apk` para ARM de 32 bits o `app-x86_64-debug.apk` para emulador x86_64. Registrar la versión del paquete y el dispositivo al probarlo. La compilación genérica no sirve como evidencia de aceptación conectada.
 
-   ```powershell
-   .\scripts\dev.ps1 android
-   ```
+La instalación, el inicio de sesión y el recorrido en un dispositivo siguen pendientes. Las compilaciones y pruebas automáticas aprobadas no acreditan esos pasos. Checkout permanece cerrado.
 
-   Instalar `apps/mobile/build/app/outputs/flutter-apk/app-debug.apk` en el teléfono o usar `scripts/emulate-android.ps1`. Registrar commit, versión de APK y dispositivo. El APK genérico del CI usa configuración vacía y flag apagado: no sirve como evidencia de aceptación Guardián conectada.
+## Codemagic → TestFlight (ruta principal)
 
-## Primer recorrido en Android
+1. Seleccionar `albertoquiroga-ctrl/dopmi-app`, rama **`codex/stripe-transfer-delivery`** y workflow YAML **`ios-testflight` — Dopmi iOS — TestFlight**. La rama predeterminada anterior al traspaso no incluye la preparación de `8e6663d`.
+2. Conservar integración **`dopmi_app_store`**, firma `app_store` y bundle **`com.mycompany.dopmi`**. No crear otra ficha ni cambiar el identificador de la app existente.
+3. Verificar el grupo **`dopmi_supabase`**: URL del proyecto test y `SUPABASE_PUBLISHABLE_KEY` de cliente. No incorporar claves de servidor, Stripe ni el secreto del trabajador al build.
+4. El workflow fija Flutter **3.47.4**, ejecuta `write-mobile-config.py --guardian-test` y activa `ENABLE_GUARDIAN_TEST=true`. Usa versión **2.3.3**, build **`PROJECT_BUILD_NUMBER + 231`**; comprobar que el número sea nuevo en App Store Connect. Exporta con `testFlightInternalTestingOnly=true`. Los otros workflows Codemagic mantienen Guardián apagado.
+5. El YAML publica con `auth: integration`, `submit_to_testflight: false` y `submit_to_app_store: false`; conservar el flujo interno existente y verificar la carga/procesamiento efectivos en App Store Connect. Esas opciones, la presencia del YAML y un build de simulador no acreditan que el IPA esté disponible para testers.
+6. Guardar **`guardian-build-info.txt`** (SHA, versión/build y distribución). Esperar procesamiento de Apple y disponibilidad para el tester interno; instalar desde TestFlight. Si no aparece, revisar carga y grupo interno antes de repetir builds.
+7. Registrar dispositivo/iOS e iniciar sesión. Si falta **Cuenta → Mi plan Guardián**, comprobar rama/SHA/flag cliente. Si está visible pero rechaza el alta, comprobar gates/permisos de servidor; no quitar controles ni volver a pagar.
 
-1. Entrar con la cuenta donante de prueba confirmada y activa. Abrir **Cuenta → Mi plan Guardián**.
+El titular compila e instala. Codex prepara backend y revisa evidencia; el flag cliente no habilita Checkout en el servidor. El APK Android conectado descrito arriba queda como alternativa, no como requisito para TestFlight.
+
+### Preflight Stripe pendiente
+
+`8e6663d` agrega `guardian_preflight` a `payment-worker`, detrás de su secreto existente. Devuelve estados de lecturas sin objetos ni credenciales. Comprobar primero si ese código está desplegado: un `400 invalid_action` puede corresponder al trabajador anterior. El último despliegue registrado precede a esta acción.
+
+El preflight **no acredita permisos de escritura/reversión**, pagos, webhook firmado ni Cron. Verificar también los permisos necesarios indicados en la preparación; no confundir acceso de un conector con permisos de la clave del servidor.
+
+## Primer recorrido en dispositivo
+
+1. Abrir **Dopmi desde TestFlight** e iniciar sesión con la cuenta donante de prueba confirmada y activa. Abrir **Cuenta → Mi plan Guardián**. En la alternativa Android usar **Dopmi Guardián (prueba)**: conserva una sesión separada; elegirla si Android pregunta qué app debe abrir el enlace de autenticación.
 2. Seleccionar $50 MXN. Comprobar condiciones, primera aportación, mensualidad, comisión, cancelación y consentimiento. Verificar antes la capacidad de gastos aprobados de prueba y la cuenta Connect lista.
 3. Sin capacidad, comprobar el aviso y la ausencia de Checkout, suscripción y cargo. Con capacidad, autorizar **una sola vez** y completar Checkout con datos de prueba de Stripe.
 4. En el retorno, volver manualmente a Dopmi y actualizar el plan. No iniciar otro pago si tarda. Confirmar por Stripe y base de datos el mismo intento, un cargo, la asignación completa del neto y las transferencias a sus destinos persistidos.
@@ -72,7 +89,7 @@ Todos siguen **pendientes de aceptación integrada**. Usar sólo cuentas y objet
 | Devolución total posterior a transferencias | Refund confirmado y cada reversión confirmada una vez; capacidad retenida hasta completar todas; neto/fee/capacidad e historial consistentes. |
 | Duplicados, interrupciones y revisión manual | Mismas referencias e importes tras reenvío firmado y Cron; respuesta perdida recuperada sin duplicados; parcial/disputa/resultado incierto conservado en revisión. |
 
-Registrar por recorrido: fecha UTC, commit/APK/dispositivo, identificadores técnicos de ciclo/Stripe, estado antes/después, evidencia de importes, respuesta del trabajador y resultado. No publicar tokens, documentos ni datos personales. Los experimentos aislados ya descritos en `guardian-billing-design.md` no sustituyen estos recorridos completos.
+Registrar por recorrido: fecha UTC, commit, versión/build TestFlight o APK, dispositivo/sistema, identificadores técnicos de ciclo/Stripe de prueba, estado antes/después, evidencia de importes, respuesta del trabajador y resultado. No publicar tokens, documentos ni datos personales. Los experimentos aislados ya descritos en `guardian-billing-design.md` no sustituyen estos recorridos completos.
 
 ## Operación y detención
 
