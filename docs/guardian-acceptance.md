@@ -134,3 +134,11 @@ Registrar por recorrido: fecha UTC, commit, versión/build TestFlight o APK, dis
 ## Despliegues siguientes
 
 El workflow `deploy-supabase-payments.yml` incluye ahora `guardian-client`, además de las cuatro funciones anteriores, y acepta `H5-TEST` en su ejecución manual. No configura flags ni modifica migraciones. Para desplegar esta rama mediante Actions, comprobar primero que el workflow pueda ejecutarse sobre ella; esta entrega se desplegó mediante la conexión Supabase y no ejecutó ese workflow.
+
+## Omisión mensual integrada — 25 de septiembre de 2026
+
+Nuevo plan test sub_1UJa0n2ZjyMOQ0uLrY1yEBLv, cliente cus_VKESR2SH0tfryp: Stripe confirmó activo, 5000 MXN centavos, send_invoice, pausa keep_as_draft sin resumes_at y sin factura inicial de suscripción. Reloj clock_1UJaEp2ZjyMOQ0uLL5n6YZe1 asociado al cliente y avanzado a 1792938996, ready (25 de octubre).
+
+Preparación técnica: dos reservas mediante dopmi_guardian_reserve, sin Checkout ni pago, bajo el donante del plan anteriormente cancelado. Claves 71e2ae69-5f36-4c1c-af16-735a12c9c921 y 71e2ae69-5f36-4c1c-af16-735a12c9c922; ciclos 2827bb80-5f80-43f9-add8-e0844e28ef37 y ee303b96-3083-459c-8b1f-e01aa5a53e62. Reservaron 980000 y 539000 centavos de la capacidad disponible de 1520585; preview del nuevo donante rechazó reservar 4900. No se alteraron gastos aprobados, fechas, reglas ni evidencia de Stripe. Son fixtures técnicos, no aportaciones autorizadas desde la app.
+
+Cron procesó el aniversario: ciclo 0bc6abf4-bf0a-43bf-9d17-801c36506e56, skipped/no_capacity, sin asignaciones ni transferencia. Stripe confirmó factura in_1UJaGh2ZjyMOQ0uLFtWeva0Q void, amount_paid 0, attempt_count 0, plan activo. El campo amount_remaining conserva 5000 en la factura anulada; su estado void es la evidencia de que no queda cobrable. Ambas reservas técnicas fueron liberadas mediante dopmi_guardian_release, estado released confirmado. Pendientes captura móvil de omisión y siguiente aniversario con capacidad restaurada para acreditar que no se recupera deuda del mes omitido.
