@@ -142,8 +142,14 @@ export function guardianCollectionService({ stripe, rpc, recoveryRpc, reconcileI
         await recovery.verifyVoided(job);
         return await checkpoint('voided');
       } catch (error) {
+        // Stripe may expose invoice.void before the default payment and intent
+        // become canceled. Re-read through the bounded collection retry queue;
+        // the void branch verifies all three objects and never calls pay/void.
+        const awaitingVoidVisibility = error instanceof GuardianBillingError
+          && error.code === 'guardian_recovery_void_unconfirmed'
+          && invoice.status === 'void' && !job.pay_requested_at;
         await checkpoint('failed', { error_code: error instanceof GuardianBillingError ? error.code : 'guardian_processor_unavailable',
-          attention: error instanceof GuardianBillingError });
+          attention: error instanceof GuardianBillingError && !awaitingVoidVisibility });
         throw error;
       }
     } finally { await rpc('checked', { invoice_id: invoiceId }); }

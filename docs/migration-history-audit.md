@@ -1,5 +1,11 @@
 # Auditoría del historial de migraciones
 
+## Adición del 25 de septiembre de 2026: reintento de visibilidad de anulación
+
+Nueva migración local `20260925171348_guardian_void_visibility_retry.sql`, aplicada como versión remota `20260925171711` tras desplegar el colector corregido. Reparación acotada de la cola, sin modificar esquema, reservas ni evidencia financiera. No se reparó ni reejecutó historial previo. El total pasa a 27 archivos locales y 20 entradas remotas; la correspondencia histórica inferior sigue vigente. Suite completa de 366 pruebas aprobada, con reparación idempotente y exclusiones de autorización, lease activo, error ajeno y límites de reintento.
+
+Antes de desplegar, las funciones remotas payment-worker v11, stripe-webhook v11 y guardian-client v3 coincidían con el repositorio salvo guardian-collection.mjs modificado en este arreglo. Después: v12/v12/v4, respectivamente, comparadas archivo por archivo con el paquete esperado; se preservan los demás archivos. La lectura actual de versiones sustituye los números del corte histórico inferior.
+
 ## Comprobación directa — 25 de septiembre de 2026
 
 Proyecto `ohqxranynackjignryep`, rama `codex/stripe-transfer-delivery`, migraciones del código `e16e1da` (sin cambios lógicos posteriores). Se consultó `supabase_migrations.schema_migrations` directamente: **19 filas** con una sentencia por fila; las 19 coinciden con el archivo local correspondiente tras normalizar CRLF/LF y espacios al principio/final. Sus timestamps difieren; se añade abajo `payment_delivery`, ausente en la comparación documental inicial. Las siete migraciones `202609130001`–`202609130007` no tienen fila de historial.

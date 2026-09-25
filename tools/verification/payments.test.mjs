@@ -1446,6 +1446,71 @@ async function collectionFixture() {
 }
 const collectionDue=()=>db.exec('update private.dopmi_guardian_collection_jobs set available_at=now()');
 
+test('Guardian unattempted void waits for Stripe cancellation visibility and then closes without another write',async()=>{
+  const f=await collectionFixture();
+  f.invoice.created-=3*86400;f.invoice.lines.data[0].period.start=f.invoice.created;
+  const retrieve=f.stripe.paymentIntents.retrieve;let cancellationVisible=false;
+  f.stripe.paymentIntents.retrieve=async(...args)=>({...await retrieve(...args),status:cancellationVisible?'canceled':'requires_confirmation'});
+  await assert.rejects(f.collector().run(f.invoice.id),/guardian_recovery_void_unconfirmed/);
+  const pending=await collectionRpc('get',{invoice_id:f.invoice.id});
+  assert.equal(pending.status,'pending');assert.equal(pending.pay_requested_at,null);
+  assert.equal(f.calls.filter(c=>c.kind==='void').length,1);
+  cancellationVisible=true;await collectionDue();
+  assert.equal((await f.collector().run(f.invoice.id)).status,'skipped');
+  assert.equal(f.calls.filter(c=>c.kind==='void').length,1);
+  assert.equal(f.calls.filter(c=>c.kind==='pay').length,0);
+});
+
+test('Guardian unattempted void with mismatched payment stays in review',async()=>{
+  const f=await collectionFixture();
+  f.invoice.created-=3*86400;f.invoice.lines.data[0].period.start=f.invoice.created;
+  const retrieve=f.stripe.paymentIntents.retrieve;
+  f.stripe.paymentIntents.retrieve=async(...args)=>({...await retrieve(...args),customer:'cus_foreign'});
+  await assert.rejects(f.collector().run(f.invoice.id),/guardian_recovery_intent_mismatch/);
+  assert.equal((await collectionRpc('get',{invoice_id:f.invoice.id})).status,'attention');
+  await collectionDue();await f.collector().run(f.invoice.id);
+  assert.equal(f.calls.filter(c=>c.kind==='void').length,1);
+  assert.equal(f.calls.filter(c=>c.kind==='pay').length,0);
+});
+
+test('Guardian unattempted void visibility retries stop at the existing collection limit',async()=>{
+  const f=await collectionFixture();
+  f.invoice.created-=3*86400;f.invoice.lines.data[0].period.start=f.invoice.created;
+  const retrieve=f.stripe.paymentIntents.retrieve;
+  f.stripe.paymentIntents.retrieve=async(...args)=>({...await retrieve(...args),status:'requires_confirmation'});
+  for(let attempt=0;attempt<8;attempt++) {
+    await collectionDue();
+    await assert.rejects(f.collector().run(f.invoice.id),/guardian_recovery_void_unconfirmed/);
+  }
+  await collectionDue();const terminal=await f.collector().run(f.invoice.id);
+  assert.equal(terminal.status,'attention');assert.equal(terminal.error_code,'retry_limit');
+  assert.equal(f.calls.filter(c=>c.kind==='void').length,1);
+  assert.equal(f.calls.filter(c=>c.kind==='pay').length,0);
+});
+
+for(const [label,change,expected] of [
+  ['eligible','', 'pending'],
+  ['authorized payment',",pay_requested_at=now()",'attention'],
+  ['collect decision',",decision='collect'",'attention'],
+  ['other evidence error',",error_code='guardian_recovery_intent_mismatch'",'attention'],
+  ['exhausted retries',',attempts=8','attention'],
+  ['expired retry window',",first_attempt_at=now()-interval '24 hours'",'attention'],
+  ['active lease',",lease=gen_random_uuid(),lease_until=now()+interval '5 minutes'",'attention'],
+]) test(`Guardian void queue repair preserves ${label}`,async()=>{
+  const f=await collectionFixture();const job=await f.prepare();
+  await db.exec(`update private.dopmi_guardian_collection_jobs set status='attention',decision='skip',
+    error_code='guardian_recovery_void_unconfirmed',attempts=1,first_attempt_at=now()`);
+  if(change)await db.exec(`update private.dopmi_guardian_collection_jobs set ${change.slice(1)}`);
+  const financialBefore=await db.query('select * from private.dopmi_guardian_cycles where id=$1',[job.cycle_id]);
+  const sql=(await readFile(new URL('../../supabase/migrations/20260925171348_guardian_void_visibility_retry.sql',import.meta.url),'utf8'))
+    .replace(/^begin;\s*/,'').replace(/\s*commit;\s*$/,'');
+  await db.exec(sql);await db.exec(sql);
+  const result=await collectionRpc('get',{invoice_id:f.invoice.id});
+  assert.equal(result.status,expected);assert.equal(result.error_code,'guardian_recovery_'+(label==='other evidence error'?'intent_mismatch':'void_unconfirmed'));
+  assert.deepEqual(await db.query('select * from private.dopmi_guardian_cycles where id=$1',[job.cycle_id]),financialBefore);
+  assert.equal(f.calls.some(c=>['pay','void'].includes(c.kind)),false);
+});
+
 test('Guardian monthly collection reserves before one off-session pay and settles actual net',async()=>{
   const f=await collectionFixture(),pay=f.stripe.invoices.pay;
   f.stripe.invoices.pay=async(...args)=>{
