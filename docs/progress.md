@@ -1,5 +1,13 @@
 # Dopmi — registro de avance
 
+## Disputa inicial enviada a revisión por el conciliador real — 25 de septiembre de 2026
+
+Corrección `847e184` desplegada: migración remota `20260925190650_guardian_initial_dispute_review` (archivo local `20260925190500`); payment-worker v13, stripe-webhook v13 y guardian-client v5. Consulta posterior de todos sus archivos coincide con el repositorio normalizando CRLF y salto final; verify_jwt=false conserva autenticación propia existente. Los 18 smokes remotos aprobaron. Permisos verificados: activation_server/settlement_server inaccesibles para anon/authenticated y ejecutables sólo por service_role. Advisors consultado conserva avisos del esquema heredado y de funciones públicas con seguridad de definidor; no aparece apertura de las dos RPC modificadas.
+
+A las 19:08:02 UTC el conciliador normal marcó el mismo ciclo `fad96a44-93e9-4c05-be8d-55fb37a9c7e9` attention, con motivo disputed y referencias originales. Comprobación 19:08:24: reserva 4900, cero settlements y cero jobs financieros. RPC del titular: plan null, activation attention; historial review, paid_cents/assigned_cents null, transferred/refunded cero y sin IDs Stripe privados. No se escribieron estados manualmente ni se repitió el pago. Esta evidencia cubre disputa anterior a asignación; no reemplaza la pendiente de disputa posterior a transferencias/múltiples destinos.
+
+Pendiente captura Android tras Actualizar estado y cierre del CI `36177639142` para `847e1845fbd970de88986f7457598cbfa16961df`. Identity-and-adoption-backend ya success; los otros tres jobs seguían en progreso al registrar. No declarar cierre integral de H5 ni CI completo todavía.
+
 ## Disputa real antes de liquidación: corrección preparada — 25 de septiembre de 2026
 
 Alta nueva del titular: ciclo `fad96a44-93e9-4c05-be8d-55fb37a9c7e9`, sesión `cs_test_a1HOOVeaSqW9fcvFOvtHfBt8I8c4NjO6EpsGDaFMK98lGfozTEkHtwImc8`, PI `pi_3UJeKv2ZjyMOQ0uL1FykSWZS` succeeded y cargo `ch_3UJeKv2ZjyMOQ0uL1VaeVpvG` paid/disputed=true, sin refund, 5000 centavos test. A las 19:01:53 UTC la activación seguía pending pese a conciliación 19:01:02; reserva 4900, cero settlements y cero planes. El guard financiero bloqueaba correctamente la asignación, pero no persistía la necesidad de revisión: defecto confirmado, no prueba aprobada.

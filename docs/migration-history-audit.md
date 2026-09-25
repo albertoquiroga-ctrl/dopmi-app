@@ -50,6 +50,7 @@ Hay 26 archivos locales; en 18 nombres, el timestamp del archivo difiere del tim
 | `guardian_cycle_history` | `20260924201240` | `20260924202605` |
 | `guardian_anniversary_review` | `20260924204840` | `20260924214410` |
 | `guardian_refund_reversals` | `20260924220619` | `20260924222351` |
+| `guardian_initial_dispute_review` | `20260925190500` | `20260925190650` |
 
 ## Procedimiento de comprobación
 
