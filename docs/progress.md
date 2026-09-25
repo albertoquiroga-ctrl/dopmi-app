@@ -1,5 +1,17 @@
 # Dopmi — registro de avance
 
+## Respuesta de reversión perdida y recuperada en entorno real — 25 de septiembre de 2026
+
+Caso ciclo 8bea3790-89ea-4237-9c93-05eb2c10bbc5 (25/4/2028), cargo ch_3UJcvm2ZjyMOQ0uL0bNx3MeA, transferencia tr_3UJcvm2ZjyMOQ0uL0iVTYd9I por 4314. Verificación previa: cargo test pagado 5000, cliente esperado, sin disputa ni refund. Refund total re_3UJcvm2ZjyMOQ0uL0ACjDAwJ succeeded con key dopmi-h5-worker-response-loss-8bea3790-89ea-4237-9c93-05eb2c10bbc5.
+
+Despliegue temporal limitado al transfer/ciclo/gasto/importe y vencimiento 1790373002390: worker/webhook v14 y client v6. Target vencido selecciona fetch normal. Se compararon bundles antes y después; 18 smoke checks aprobaron antes del refund. No se cambiaron flags, claves, SQL, leases ni Cron.
+
+Log real a las 21:25:53.224 UTC: guardian_test_refund_response_consumed, HTTP 200, Request-Id req_x2si1gKLDtLXdK, reversión trr_1UJgcu2ZjyMOQ0uLTPv3xSyH por 4314. Se consumió la respuesta en el cliente HTTP antes de entregarla al SDK; no se declara corte TCP. El servicio registró guardian_refund_processor_unavailable; lectura SQL posterior: reversal_id null, attempts 1, asignación 4314 y comisión 100 conservadas, available_at 21:26:53.266. Stripe independiente ya mostraba exactamente una reversión completa.
+
+Restaurados inmediatamente worker/webhook v15 y client v7. Comparación de todos los archivos contra los bundles originales: iguales, instrumento ausente. Otros 18 smoke checks aprobados. Sin intervención financiera posterior, ajuste completed a las 21:27:05.333 UTC: mismo reversal_id, attempts 1, refund 5000, comisión/asignación cero. Lectura Stripe posterior confirma una sola reversión 4314 y un solo refund succeeded 5000; ambos listados sin más páginas. Suite local completa: 382 pruebas aprobadas.
+
+Acredita recuperación del servicio desplegado y RPC reales ante respuesta de escritura financiera perdida en cliente HTTP, sin duplicados ni liberación anticipada de asignación. Pendiente captura Android del ciclo 25/4/2028; no acredita todavía cruce de aniversario incierto ni múltiples destinos con respuesta perdida (la devolución múltiple normal ya está aceptada).
+
 ## Instrumentación de transporte revisada — 25 de septiembre de 2026
 
 Tras comprobar que el trabajador ganaba al relay, se preparó guardian-refund-loss-fetch.mjs sólo en tools/verification; no está importado ni desplegado. Inyecta pérdida antes de entregar al SDK una respuesta real de reversión compatible con transferencia/importe/MXN. Ruta, key, body y autorización test exactos; rechaza Stripe-Account. Límite 32 KiB/20 segundos y target <=30 minutos. Tres pruebas aprobadas, incluidas negativas por clave, cuenta, método, cuerpo y respuesta ajenos; añadidas a npm test.
