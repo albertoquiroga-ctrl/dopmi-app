@@ -18,7 +18,7 @@ Log real a las 21:25:53.224 UTC: guardian_test_refund_response_consumed, HTTP 20
 
 Restaurados inmediatamente worker/webhook v15 y client v7. Comparación de todos los archivos contra los bundles originales: iguales, instrumento ausente. Otros 18 smoke checks aprobados. Sin intervención financiera posterior, ajuste completed a las 21:27:05.333 UTC: mismo reversal_id, attempts 1, refund 5000, comisión/asignación cero. Lectura Stripe posterior confirma una sola reversión 4314 y un solo refund succeeded 5000; ambos listados sin más páginas. Suite local completa: 382 pruebas aprobadas.
 
-Acredita recuperación del servicio desplegado y RPC reales ante respuesta de escritura financiera perdida en cliente HTTP, sin duplicados ni liberación anticipada de asignación. Pendiente captura Android del ciclo 25/4/2028; no acredita todavía cruce de aniversario incierto ni múltiples destinos con respuesta perdida (la devolución múltiple normal ya está aceptada).
+Acredita recuperación del servicio desplegado y RPC reales ante respuesta de escritura financiera perdida en cliente HTTP, sin duplicados ni liberación anticipada de asignación. Captura Android 1000344170 confirma ciclo 25/4/2028, siguiente aniversario 25/5/2028, devolución confirmada de 50.00 MXN, transferencias revertidas 43.14, comisión/asignación/transferido cero y asignación test de 43.14 con reversión confirmada. Costo Stripe histórico 5.86 sin reducir lo devuelto. Recorrido integrado de recuperación validado también en dispositivo; no acredita todavía cruce de aniversario incierto ni múltiples destinos con respuesta perdida (la devolución múltiple normal ya está aceptada).
 
 ## Instrumentación de transporte revisada — 25 de septiembre de 2026
 
