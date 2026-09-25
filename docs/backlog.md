@@ -47,7 +47,7 @@ Corte: 25 de septiembre de 2026. Rama `codex/stripe-transfer-delivery`; guía pr
 
 ### Cola inmediata
 
-- [ ] H5.A Comparar entorno remoto actual con el código y [historial de migraciones](migration-history-audit.md). Resolver diferencias antes de schema push/repair; no reejecutar migraciones ya aplicadas.
+- [x] H5.A Comparar entorno remoto actual con el código y [historial de migraciones](migration-history-audit.md). SQL, catálogos y cinco Edge Functions comparados; diferencias de timestamps/defaults/formato explicadas. Conservar correspondencia explícita y no usar `db push`/repair sin renovar la auditoría; no se reejecutó SQL ni se alineó artificialmente el historial.
 - [ ] H5.B Comprobar/desplegar `guardian_preflight` de `payment-worker` según corresponda. Verificar lecturas y, por separado, escrituras necesarias de la clave Stripe del servidor. El preflight de metadatos ya aprobado solo demostró acceso y nombres de secretos.
 - [x] H5.C Preparación de flags de procesamiento con nuevas altas cerradas, acreditada por CI 36071101143 y registro previo. Reconsultar estado antes de abrir la aceptación; no contar como una comprobación remota nueva.
 - [x] H5.D Configuración TestFlight que incluye Guardián y conserva bundle/firma; CI 36074983990 aprobado. Configuración no equivale a IPA firmado ni instalación.

@@ -17,6 +17,8 @@ Snapshots de trabajo (sin datos de usuarios ni credenciales): `.tools/h5-audit/m
 
 ## Comparación documental inicial
 
+Las funciones Edge recuperadas también coinciden archivo por archivo con el código local normalizando CRLF/LF: `guardian-client` v2 (14 archivos), `stripe-webhook` v10 (14), `payments` v8 (3), `payment-return` v7 (1), y `payment-worker` v10 (15) comprobado tras su despliegue. H5.A queda resuelto como auditoría/correspondencia; no representa reparación del historial CLI ni aceptación de pagos.
+
 Corte: 25 de septiembre de 2026. Comparación de archivos del repositorio en `8e6663d` con las versiones remotas **registradas en `docs/progress.md`**. No es una consulta nueva de `supabase_migrations.schema_migrations` ni prueba de que el SQL remoto sea diferente.
 
 Hay 26 archivos locales; en 18 nombres, el timestamp del archivo difiere del timestamp registrado para su aplicación remota. Las primeras migraciones también tienen antecedentes de aplicación por SQL Editor sin historial CLI. El próximo agente debe resolver la correspondencia antes de cualquier `db push` o reparación del historial. **No renombrar ni ejecutar de nuevo migraciones para hacer coincidir números.**
