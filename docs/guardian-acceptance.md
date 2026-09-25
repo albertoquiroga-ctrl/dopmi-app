@@ -8,13 +8,19 @@ Esta sección prevalece sobre los cortes históricos de preparación que siguen.
 
 Checkout test ya está habilitado; el smoke de 18 respuestas con `--expect-enabled` aprobó y Cron devolvió HTTP 200 sin fallos Guardián. La clave del servidor aprobó 16 lecturas; las escrituras se acreditan por cada recorrido, no por el preflight.
 
-Primera aportación: ciclo `8724966d-3a05-47c4-9c0d-cd968e3a6c81`, pago de 50.00 MXN, comisión 1.00, costo Stripe 5.86 y neto asignado/transferido 43.14. Base, consulta Stripe y pantallas del titular coinciden. Plan activo; retorno manual e historial básico comprobados. La transferencia Connect no acredita depósito bancario. Los identificadores y consultas están registrados en [el avance](progress.md).
+Primera aportación: ciclo `8724966d-3a05-47c4-9c0d-cd968e3a6c81`, pago de 50.00 MXN, comisión 1.00, costo Stripe 5.86 y neto asignado/transferido 43.14. Base, consulta Stripe y pantallas del titular coinciden. En el alta, plan activo; retorno manual e historial básico comprobados. El estado posterior de cancelación y devolución se describe abajo. La transferencia Connect no acredita depósito bancario. Los identificadores y consultas están registrados en [el avance](progress.md).
 
 Cambio de 50 a 200 MXN comprobado mediante consentimiento y «Solicitar cambio de monto»: solicitud aplicada en base y precio mensual 20000 centavos en Stripe, aniversario conservado y sin factura generada por el cambio. En ese momento seguía existiendo un solo ciclo, pagado por 5000 centavos y asignado por 4314. Tras «Actualizar estado», la captura del titular muestra «Confirmado. Aplica desde 24/10/2026» y plan de 200 MXN. Esto acredita el cambio ordinario; no las condiciones límite de aniversario ni fin de mes.
 
 Cambio de tarjeta completo en app/base/Stripe: consentimiento, Checkout setup, tarjeta test 3155, 3DS challenge authenticated y confirmación móvil sin cobro. El plan conserva monto y aniversario. Privacidad comprobada al cambiar a otra cuenta y volver: plan/historial vacíos para la otra identidad, estado propio restaurado al regresar. La identidad ajena también es administradora; las RPC no le exponen el ciclo. Detalle móvil de la asignación inicial coincide con el servidor. La paginación RPC con tamaño 1 devuelve los dos ciclos distintos y termina sin cursor; el botón móvil de más páginas aún no está acreditado.
 
-Renovación integrada del mismo plan: reloj `clock_1UJNsh2ZjyMOQ0uLXx9GXAwl` asociado al cliente existente y avanzado hasta `1792891615`. Factura `in_1UJNvd2ZjyMOQ0uLTRvFgXMK` paid por 20000 centavos, attempt_count 1, auto_advance false, suscripción con pausa keep_as_draft. Ciclo `06cbe7ae-6e08-4f3c-874c-5735923fe06c`: costo Stripe 1299, comisión 400, neto 18301 asignado/transferido. Transferencia `tr_3UJNwh2ZjyMOQ0uL0ePNuZko` verificada directamente en Stripe: mismo cargo origen, destino y ciclo, test, sin reversión. Cron se recuperó automáticamente de consultar el reloj mientras avanzaba. Pendiente captura móvil mensual y escenario sin capacidad; esto no acredita cancelación ni devolución/reversión.
+Renovación integrada del mismo plan: reloj `clock_1UJNsh2ZjyMOQ0uLXx9GXAwl` asociado al cliente existente y avanzado hasta `1792891615`. Factura `in_1UJNvd2ZjyMOQ0uLTRvFgXMK` paid por 20000 centavos, attempt_count 1, auto_advance false, suscripción con pausa keep_as_draft. Ciclo `06cbe7ae-6e08-4f3c-874c-5735923fe06c`: costo Stripe 1299, comisión 400, neto 18301 asignado/transferido. Transferencia `tr_3UJNwh2ZjyMOQ0uL0ePNuZko` verificada directamente en Stripe: mismo cargo origen, destino y ciclo, test, sin reversión. Cron se recuperó automáticamente de consultar el reloj mientras avanzaba. Captura móvil mensual recibida y coincidente en todos los importes. Sigue pendiente el escenario mensual sin capacidad.
+
+Tarjeta rechazada durante setup y recuperación en el mismo Checkout también comprobadas, incluida confirmación móvil. Esto no sustituye rechazo de cobro mensual off-session.
+
+Cancelación comprobada en Android/base/Stripe, con ambos ciclos conservados en historial. Reloj avanzado después al 24/11/2026 (`1795570015`, ready): plan canceled, misma última factura y dos ciclos, sin renovación posterior. Avisos residuales de la pantalla corregidos en `37895d2`, 51 pruebas locales y CI `36142869179` aprobados; falta nuevo build para ver la corrección en dispositivo.
+
+Devolución total del alta de 50: refund `re_3UJNdz2ZjyMOQ0uL11JJyIzs` succeeded, reversión automática única `trr_1UJZR32ZjyMOQ0uLWuhjvjkX` por 4314 centavos. Ajuste completed y capacidad ocupada cero; comisión anulada, costo Stripe 586 registrado como pérdida de plataforma. Reprocesamiento autenticado 2396 respondió completed sin otra reversión. Pendiente captura móvil de devolución; el ciclo mensual permanece sin devolver. No sustituye reenvío firmado, interrupción durante escritura ni devolución de múltiples destinos.
 
 No borrar el reloj: elimina también el cliente y suscripciones. La asociación de clientes existentes está soportada desde 2026-05-27; no se modificaron fechas de base para simular el cobro. [Restricciones de los relojes](https://docs.stripe.com/billing/testing/test-clocks/api-advanced-usage).
 
@@ -101,7 +107,7 @@ El preflight **no acredita permisos de escritura/reversión**, pagos, webhook fi
 
 ## Recorridos restantes y evidencia de cierre
 
-La primera aportación tiene la evidencia parcial indicada al inicio; los demás recorridos siguen **pendientes de aceptación integrada**. Usar sólo cuentas y objetos de prueba, conservando su trazabilidad; no alterar aprobaciones reales ni simular firmas.
+La sección de estado al inicio registra los recorridos ya comprobados y sus límites. La siguiente matriz conserva el alcance completo; los casos todavía no acreditados siguen pendientes de aceptación integrada. Usar sólo cuentas y objetos de prueba, conservando su trazabilidad; no alterar aprobaciones reales ni simular firmas.
 
 | Recorrido | Evidencia necesaria |
 | --- | --- |
