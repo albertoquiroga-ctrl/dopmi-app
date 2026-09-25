@@ -6,6 +6,8 @@ El hito 5 sigue abierto. Este documento organiza la prueba conjunta de app, Supa
 
 Este resumen sustituye los pendientes de los cortes históricos inferiores. H5 permanece abierto; no repetir los recorridos ya acreditados.
 
+Segundo destino preparado por el titular. Renovación test del 25/6/2028 conciliada por 50 MXN, neto 43.14 distribuido en dos transferencias confirmadas: 20.00 y 23.14. Reservas técnicas de preparación liberadas. Falta captura Android de ambas asignaciones y probar refund/reversiones del mismo ciclo; referencias en progress.md. No declarar todavía devolución múltiple ni resultado incierto aceptados.
+
 Disputa antes de asignación observada y corregida en servidor (`847e184`): el cargo test pagado/disputado del nuevo alta pasó por conciliación normal a attention; no se creó liquidación, plan ni transferencia. La RPC propietaria ya devuelve historial review. CI `36177947929` sobre `5984e16` aprobó los cuatro jobs. Falta captura Android; tampoco acredita disputa posterior a transferencias o reversión múltiple. Referencias y despliegues en progress.md.
 
 - Android es la ruta elegida. Último build publicado verificado directamente: Codemagic `6ab6b1ecd585f0389192548f`, commit `bcbc2e7`, versión 2.3.3 (250), internal completed y no depurable. Incluye `291dcd0`. El titular informa instalación, pero sus capturas no muestran el versionCode instalado. La captura anterior 1000343972 ya acredita la limpieza del aviso tras cancelar el alta.

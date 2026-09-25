@@ -1,5 +1,15 @@
 # Dopmi — registro de avance
 
+## Renovación distribuida a dos rescatistas — 25 de septiembre de 2026
+
+El titular preparó y aprobó el segundo gasto; captura Android 1000344098 muestra Aprobado, versión 11. Consulta remota confirma gasto `9cc08f48-0b7b-440a-955c-9cdc757b36eb`, aprobado por 1549700 centavos, payable, con destino Connect test habilitado `acct_1UJfGkFIsxNzuUmN`. El gasto previo sigue urgente y primero por prioridad; capacidad previa 1491432 centavos. No se alteraron montos aprobados, urgencia ni fechas.
+
+Preparación sólo técnica mediante dopmi_guardian_reserve: claves `b55e0ea8-6438-43fd-a8c2-746d530523e4` y `ec93875b-a30e-42e8-8bab-c772019f81ed`, ciclos `144f5b1e-8a53-40b9-9c97-753ad3e86b72` y `07d6b235-6089-4efe-b789-cfa95ce1d239`; reservaron 980000 y 509432 centavos sin Checkout/pago, dejando 2000 en el primer gasto. Se verificó previamente el plan ya autorizado de 5000 centavos, activo, send_invoice y keep_as_draft. Su reloj test se avanzó una vez de 1842880836 a 1845559269 (25/6/2028 después del aniversario), para esta prueba de múltiples destinos, no para repetir paginación.
+
+Resultado real: ciclo `e27673c6-fa4b-4722-befc-d75e157319eb`, factura `in_1UJfSg2ZjyMOQ0uLCDHFixMy` paid 5000, attempt_count 1; cargo `ch_3UJfT52ZjyMOQ0uL1BgdOXxo`. Base concilia comisión 100, costo Stripe 586 y neto 4314. Stripe confirma dos transferencias test del mismo cargo y grupo del ciclo: `tr_3UJfT52ZjyMOQ0uL1Avwwllb` por 2000 al destino anterior y `tr_3UJfT52ZjyMOQ0uL1mVP4QV9` por 2314 al nuevo destino, ambas sin reversión. Reloj ready. Las dos reservas técnicas se liberaron mediante RPC y quedaron released.
+
+Pendiente captura del historial/Ver asignaciones de junio en Android, después devolución y conciliación de ambas reversiones. No se ha emitido refund de este ciclo. Este resultado acredita distribución real backend/Stripe a dos rescatistas, no el cierre de devolución múltiple ni recuperación incierta. No requiere nuevo build.
+
 ## CI completo del arreglo de disputa inicial — 25 de septiembre de 2026
 
 CI `36177947929`, commit `5984e16906e52716f6603e934980903e78db3aea` (incluye implementación `847e184`), terminó con identity-and-adoption-backend, web-and-database, flutter e ios todos success. Acredita migraciones/pgTAP/concurrencia en PostgreSQL del CI y compilaciones Android/iOS; no reemplaza la captura del teléfono. La ejecución previa `36177639142` fue sustituida al publicar documentación, por lo que no se declara success global de aquella ejecución.
