@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## CI del instrumento y SDK aprobado — 25 de septiembre de 2026
+
+Verificación directa en GitHub: CI `36171852910` sobre `c3bc62de89ac606aab7d1f1c3b4d8c57aec954e5` terminó success. CI posterior `36172547261` sobre `90823c66b81a74b45b8c1587a8cee3dbffdad4c9`, que incluye Stripe SDK 22.6.0 y sus pruebas de transporte, terminó también con flutter, ios, web-and-database e identity-and-adoption-backend todos success, confirmado a las 18:24:35 UTC. Los cambios son de verificación/documentación: no requieren otra instalación móvil ni despliegue de funciones.
+
+Acceso del futuro ejecutor: no había variables Stripe/Supabase en la sesión local ni entradas Stripe/Guardián en los nombres de Vault consultados. El conector Stripe no permite interceptar su transporte. Se consultó al titular si ya existe un archivo local de credencial test, pidiendo sólo ubicación y nunca el secreto por chat; sin respuesta todavía. La sesión natural pendiente conserva su vencimiento 18:34:46 UTC y margen de reserva 18:39:46 UTC. Estos pendientes no se marcan aprobados por el CI.
+
 ## Transporte del SDK Stripe contrastado — 25 de septiembre de 2026
 
 Se fijó Stripe 22.6.0 como dependencia de verificación, la misma versión de `guardian-runtime.ts`. El SDK real con Fetch contra el proxy/fixture TCP observa StripeConnectionError tras un solo envío y recupera el mismo objeto por lectura. El transporte Node por defecto reintenta ECONNRESET una vez aun con maxNetworkRetries=0 (comprobado en README/código instalado y por prueba); el proxy rechaza ese segundo POST con 409 y el upstream conserva una sola escritura. La variante deno del paquete selecciona worker/WebPlatformFunctions/Fetch: el procedimiento exige Fetch explícito en el futuro ejecutor local. No cambiar el runtime remoto para adaptar la prueba.
