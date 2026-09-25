@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Compatibilidad Checkout y reloj previo — 25 de septiembre de 2026
+
+Prueba API real de preparación, sin pago ni activación Dopmi: clock_1UJgih2ZjyMOQ0uLc9TDSqN3 y cliente técnico cus_VKLP2q0A8FgXQ4, test, metadata dopmi_acceptance=calendar_checkout_compat. Estado técnico fuera de Git en .tools/guardian-calendar-checkout-probe.json. Se intentó Checkout payment con customer preexistente del reloj y customer_creation=always para conservar la validación vigente del alta. Stripe 2026-08-26.dahlia rechazó HTTP 400, param customer: You may only specify one of these parameters: customer, customer_creation. Lectura posterior del cliente confirmó test_clock esperado, livemode false y cero sesiones (has_more false). Repetición diagnóstica conservó la misma key y fue rechazada igual; no hubo Checkout, cargo ni suscripción.
+
+Esto descarta añadir simplemente un customer con reloj al request existente. No se cambió código desplegado, fechas de cargos, claves ni SQL. Los objetos técnicos quedan identificados para investigación; no pertenecen a una cuenta del titular ni contienen medio de pago. La prueba de fin de mes sigue pendiente: requiere un montaje que preserve evidencia financiera real, sin fingir que esta compatibilidad rechazada acredita el recorrido. La cuenta solicitada al titular aún no debe activar/pagar.
+
 ## Revisión del alcance de recuperación — 25 de septiembre de 2026
 
 Auditoría independiente de coherencia de e693d96: evidencia suficiente para recuperación backend de reversión tras respuesta perdida antes del SDK, preservación de asignación pendiente y ausencia de duplicados económicos. Se precisa la redacción: attempts 1 más listado Stripe único no demuestra ausencia absoluta de peticiones HTTP adicionales; afirmar recuperación del mismo ID sin aumentar intentos registrados ni duplicar movimientos. Revisor no reconsultó fuentes remotas; consultas originales están descritas en la entrada anterior.
