@@ -6,6 +6,8 @@ El hito 5 sigue abierto. Este documento organiza la prueba conjunta de app, Supa
 
 Este resumen sustituye los pendientes de los cortes históricos inferiores. H5 permanece abierto; no repetir los recorridos ya acreditados.
 
+Cruce con cambio incierto acreditado en backend/Stripe: respuesta POST real de cambio200→50 consumida antes del SDK, reloj cruzó aniversario con solicitud pendiente; conciliación normal applied conserva fecha original y verifica factura del período. Una factura pagada50, net43.14 transferido una vez, intentos registrados1. Instrumentación retirada y bundles comparados. Falta pantalla móvil final para cerrar este recorrido integrado; referencias en progress.md.
+
 Aviso residual tras retirar monto verificado en Android: capturas 1000344174/1000344176 muestran plan activo de 50 y solicitud de 200 retirada; 1000344178 muestra el final completo del formulario después de actualizar, sin «Solicitud recibida», consentimiento desmarcado y botón de cambio deshabilitado. Sustituye el pendiente visual de los cortes inferiores; no muestra versionCode exacto.
 
 Recuperación financiera backend/Stripe acreditada: ciclo 25/4/2028, respuesta real 200 de reversión consumida antes del SDK, servicio conserva asignación mientras el ID está incierto y conciliador normal recupera la misma reversión sin aumentar intentos registrados ni duplicar movimientos (attempts 1). Instrumentación temporal retirada y archivos comparados. Captura Android 1000344170 confirma devolución completa de 50.00 y asignación de 43.14 con reversión confirmada, comisión/asignación/transferido cero. Recorrido integrado aceptado; evidencia completa en progress.md. No equivale al cruce de aniversario incierto ni pérdida en múltiples destinos.
