@@ -4,7 +4,7 @@ El hito 5 sigue abierto. Este documento organiza la prueba conjunta de app, Supa
 
 ## Estado de aceptación actualizado — 25 de septiembre de 2026 UTC
 
-Esta sección prevalece sobre los cortes históricos de preparación que siguen. Ruta vigente: **Android desde Google Play interno**, build **2.3.3 (247)**, commit `3fe7a1d`; publicación comprobada en Codemagic y recorrido del titular visible en las capturas. Modelo y versión de Android aún pendientes.
+Esta sección prevalece sobre los cortes históricos de preparación que siguen. Ruta vigente: **Android desde Google Play interno**, build **2.3.3 (247)**, commit `3fe7a1d`; publicación comprobada en Codemagic y recorrido del titular visible en las capturas. Dispositivo confirmado por captura del titular: Samsung Galaxy S25 Ultra (SM-S938B). Versión de Android aún pendiente.
 
 Checkout test ya está habilitado; el smoke de 18 respuestas con `--expect-enabled` aprobó y Cron devolvió HTTP 200 sin fallos Guardián. La clave del servidor aprobó 16 lecturas; las escrituras se acreditan por cada recorrido, no por el preflight.
 
