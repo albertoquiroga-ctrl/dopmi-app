@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import Stripe from 'stripe';
 import { changeLossFetch } from './guardian-change-loss-fetch.mjs';
 
 const now = 1000000;
@@ -9,6 +10,31 @@ const headers = { authorization: 'Bearer sk_test_acceptance', 'idempotency-key':
 const body = new URLSearchParams({ 'items[0][id]': target.item, 'items[0][price]': 'price_new', 'items[0][quantity]': '1', billing_cycle_anchor: 'unchanged', proration_behavior: 'none' }).toString();
 const subscription = (amount = 20000) => ({ id: target.subscription, customer: target.customer, status: 'active', livemode: false, items: { has_more: false, data: [{ id: target.item, quantity: 1, price: { id: 'price_new', currency: 'mxn', unit_amount: amount } }] } });
 const options = { target, testKey: 'sk_test_acceptance', now: () => now };
+
+test('Stripe SDK Fetch transport serializes the targeted write and recovers without a second POST', async () => {
+  let amount = 5000; const requests = [], evidence = [];
+  const upstream = async (url, init) => {
+    assert.equal(String(url), path);
+    requests.push(init.method);
+    if (init.method === 'POST') {
+      assert.equal(new URLSearchParams(init.body).get('proration_behavior'), 'none');
+      amount = 20000;
+    }
+    return new Response(JSON.stringify(subscription(amount)), { headers: { 'content-type': 'application/json', 'request-id': 'req_sdk' } });
+  };
+  const create = fetchImpl => new Stripe(options.testKey, { apiVersion: '2026-08-26.dahlia', maxNetworkRetries: 0, httpClient: Stripe.createFetchHttpClient(fetchImpl) });
+  const instrumented = create(changeLossFetch({ ...options, fetchImpl: upstream, record: event => evidence.push(event) }));
+  assert.equal((await instrumented.subscriptions.retrieve(target.subscription)).items.data[0].price.unit_amount, 5000);
+  await assert.rejects(instrumented.subscriptions.update(target.subscription, {
+    items: [{ id: target.item, price: 'price_new', quantity: 1 }], billing_cycle_anchor: 'unchanged', proration_behavior: 'none',
+  }, { idempotencyKey: headers['idempotency-key'] }), error => error.type === 'StripeConnectionError');
+  await assert.rejects(instrumented.subscriptions.retrieve(target.subscription), error => error.type === 'StripeConnectionError');
+  const recovered = await create(upstream).subscriptions.retrieve(target.subscription);
+  assert.equal(recovered.items.data[0].price.unit_amount, 20000);
+  assert.deepEqual(requests, ['GET', 'POST', 'GET', 'GET']);
+  assert.deepEqual(evidence.map(event => event.method), ['POST', 'GET']);
+  assert.equal(evidence[0].guardianRequest, '12345678-1234-1234-1234-123456789012');
+});
 
 test('real write is applied before loss; separate instances hide new state, expiry recovers same state', async () => {
   let amount = 5000, writes = 0, time = now; const evidence = [];

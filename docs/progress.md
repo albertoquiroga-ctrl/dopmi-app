@@ -1,5 +1,9 @@
 # Dopmi — registro de avance
 
+## Transporte de cambio comprobado con SDK — 25 de septiembre de 2026
+
+Prueba local adicional con Stripe SDK 22.6.0 y createFetchHttpClient: serialización real de subscriptions.update coincide con el filtro; SDK recibe StripeConnectionError tras consumir respuesta POST y lectura posterior. Al retirar wrapper, recupera la misma suscripción con monto nuevo mediante GET. Secuencia observada GET/POST/GET/GET, una sola escritura, eventos correlacionados por solicitud/precio. Cinco pruebas específicas aprobadas. Upstream simulado: no es aceptación remota ni cruce real. Instrumento sigue sin desplegar mientras se termina la captura pendiente del titular.
+
 ## Reloj preparado antes del aniversario — 25 de septiembre de 2026
 
 Revisión independiente de bb3cbb4 confirma resuelto el bloqueo de atribución, sin nuevos bloqueos para preparar el despliegue temporal. Es revisión estática, no aceptación real. Lectura remota: plan test sub_1UJa0n2ZjyMOQ0uLrY1yEBLv active, 5000 centavos, management_revision 4, cero solicitudes pendientes; última solicitud amount withdrawn. Captura 1000344174 coincide. Se pidió sólo la parte inferior del formulario para verificar aviso residual.
