@@ -1,5 +1,12 @@
 # Dopmi — registro de avance
 
+## Revisión independiente de Guardián — 25 de septiembre de 2026
+
+Revisión de seguridad independiente completada sobre `fe976a3`, incluyendo backend ya integrado en la rama predeterminada y no sólo el diff reciente. Sin vulnerabilidades verificables encontradas en el alcance inspeccionado: autenticación del cliente, worker y webhook, privilegios/RLS de RPC, propiedad e importes, reservas, idempotencia, cambios de tarjeta/monto, cancelación, devoluciones/reversiones e historial privado. Ocho pruebas existentes de evidencia financiera y propiedad de `guardian.test.mjs` ejecutadas por el revisor y aprobadas; no se repitió la suite completa.
+
+Alcance estático, no auditoría exhaustiva de aplicación, infraestructura o dependencias; no acredita pruebas ofensivas ni una nueva verificación remota de permisos. La evaluación independiente queda registrada, pero H5.5 sigue abierto por los recorridos integrados pendientes de la matriz, especialmente omisión sin capacidad, límites de aniversario, interrupción de escrituras y evidencia de dispositivo. No autoriza dinero real.
+
+
 ## Continuación local de H5 — 25 de septiembre de 2026 (UTC)
 
 - CI completo aprobado para arreglo de avisos 37895d26cb36d4c1697a0418af937c3533d3da32: run 36142869179, completed/success; jobs flutter/Android, iOS, identity-and-adoption-backend y web-and-database exitosos. No equivale a publicación de nuevo build en Play ni verificación visual de la corrección en dispositivo.
