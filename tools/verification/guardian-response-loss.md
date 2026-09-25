@@ -36,6 +36,29 @@ por lectura, exclusión de escrituras concurrentes/repetidas, rechazo de rutas y
 credenciales no autorizadas y ausencia de evidencia falsa ante errores upstream.
 También forma parte de `npm test` de tools/verification.
 
+La dependencia de prueba Stripe está fijada a 22.6.0, igual que el runtime.
+Dos pruebas adicionales usan el SDK real contra el fixture TCP: Fetch entrega
+StripeConnectionError tras un solo envío y recupera por GET; el transporte Node
+reintenta ECONNRESET una vez incluso con maxNetworkRetries=0 y el proxy bloquea
+ese segundo POST con 409. No interpretar ese 409 como rechazo de la escritura
+original, que ya pudo aplicarse. El ejecutor debe usar explícitamente
+`Stripe.createFetchHttpClient()` para conservar la selección de transporte de la
+variante Deno del paquete (export deno → worker → WebPlatformFunctions).
+
+Configuración comprobada localmente, sin credenciales reales:
+
+```js
+const stripe = new Stripe(testKey, {
+  apiVersion: '2026-08-26.dahlia',
+  host: '127.0.0.1', port: proxy.port, protocol: 'http',
+  httpClient: Stripe.createFetchHttpClient(),
+  maxNetworkRetries: 0, timeout: 20000,
+});
+```
+
+HTTP se limita al salto loopback; el proxy usa HTTPS hacia Stripe. Estas pruebas
+no ejecutan Deno ni Edge y no convierten el fixture en evidencia Stripe real.
+
 ## Requisitos para la aceptación Stripe pendiente
 
 1. Preparar un escenario aislado y legítimo, con consentimiento y RPC reales.
@@ -45,9 +68,9 @@ También forma parte de `npm test` de tools/verification.
 2. Obtener credenciales test por el mecanismo seguro del ejecutor, nunca por chat
    ni argumentos de shell. No usar la clave de producción. El conector Stripe
    ejecuta sus propias peticiones: no permite interceptar el SDK del servicio.
-3. Configurar el cliente Stripe del ejecutor local para este puerto y desactivar
-   sus reintentos automáticos, conservando la versión API del runtime. Validar
-   esta configuración contra la versión instalada antes de ejecutar. Inyectar
+3. Configurar el cliente Stripe del ejecutor local para este puerto, usar Fetch y
+   maxNetworkRetries=0, conservando versión API/SDK del runtime. La configuración
+   anterior está comprobada contra el fixture con Stripe 22.6.0. Inyectar
    ese cliente en el módulo de servicio de producción, sin modificar dicho módulo.
 4. Fijar POST/ruta/idempotency key del objeto acordado y GETs de recuperación.
    No disparar una operación de escritura adicional desde el proxy.

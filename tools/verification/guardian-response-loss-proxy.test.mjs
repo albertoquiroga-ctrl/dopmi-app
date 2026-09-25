@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import test from 'node:test';
+import Stripe from 'stripe';
 import { startGuardianResponseLossProxy } from './guardian-response-loss-proxy.mjs';
 
 const testKey = 'sk_test_localFixtureOnly';
@@ -128,4 +129,33 @@ test('closing the instrument terminates in-flight upstream and downstream connec
   await proxy.close();
   assert.equal(await outcome, 'ECONNRESET');
   await new Promise(resolve => upstream.close(resolve));
+});
+
+test('Stripe 22.6 Fetch client reports the lost response and recovers the same object by reading', async t => {
+  const { proxy, requests } = await fixture(t);
+  const stripe = new Stripe(testKey, { apiVersion: '2026-08-26.dahlia',
+    host: '127.0.0.1', port: proxy.port, protocol: 'http',
+    maxNetworkRetries: 0, timeout: 2000, httpClient: Stripe.createFetchHttpClient() });
+  let sent = 0;
+  stripe.on('request', () => { sent++; });
+  await assert.rejects(stripe.subscriptions.update('sub_fixture', { proration_behavior: 'none' },
+    { idempotencyKey }), error => error.type === 'StripeConnectionError');
+  assert.equal(sent, 1);
+  const recovered = await stripe.subscriptions.retrieve('sub_fixture');
+  assert.equal(recovered.id, 'sub_fixture');
+  assert.equal(recovered.applied, true);
+  assert.deepEqual(requests, [{ method: 'POST', url: path }, { method: 'GET', url: path }]);
+});
+
+test('Stripe Node transport closed-connection retry is blocked even with maxNetworkRetries zero', async t => {
+  const { proxy, requests } = await fixture(t);
+  const stripe = new Stripe(testKey, { apiVersion: '2026-08-26.dahlia',
+    host: '127.0.0.1', port: proxy.port, protocol: 'http', maxNetworkRetries: 0, timeout: 2000 });
+  let sent = 0;
+  stripe.on('request', () => { sent++; });
+  await assert.rejects(stripe.subscriptions.update('sub_fixture', { proration_behavior: 'none' },
+    { idempotencyKey }), error => error.statusCode === 409);
+  assert.equal(sent, 2);
+  assert.equal(requests.length, 1);
+  assert.equal(proxy.evidence().length, 1);
 });

@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Transporte del SDK Stripe contrastado — 25 de septiembre de 2026
+
+Se fijó Stripe 22.6.0 como dependencia de verificación, la misma versión de `guardian-runtime.ts`. El SDK real con Fetch contra el proxy/fixture TCP observa StripeConnectionError tras un solo envío y recupera el mismo objeto por lectura. El transporte Node por defecto reintenta ECONNRESET una vez aun con maxNetworkRetries=0 (comprobado en README/código instalado y por prueba); el proxy rechaza ese segundo POST con 409 y el upstream conserva una sola escritura. La variante deno del paquete selecciona worker/WebPlatformFunctions/Fetch: el procedimiento exige Fetch explícito en el futuro ejecutor local. No cambiar el runtime remoto para adaptar la prueba.
+
+Diez pruebas del instrumento y suite completa de 376 pruebas aprobadas, cero fallos. npm añadió únicamente la dependencia Stripe fijada y reportó cero vulnerabilidades. No hubo llamadas Stripe reales, credenciales nuevas, Deno/Edge ejecutado ni cambios financieros; sigue pendiente la aceptación real del transporte. El CI `36171852910` corresponde al commit anterior `c3bc62d`, no a estas dos nuevas pruebas.
+
 ## Instrumento local para pérdida real de transporte — 25 de septiembre de 2026
 
 Se añadió `tools/verification/guardian-response-loss-proxy.mjs`, separado del runtime desplegado. Reenvía un único POST con ruta/clave de idempotencia exactas y credencial test; después de consumir el 2xx upstream destruye la conexión TCP descendente antes de responder al cliente. Sólo admite lecturas explícitas de recuperación, bloquea reintentos/concurrencia de escritura y no guarda credenciales ni cuerpos en la evidencia. Upstream real fijo HTTPS Stripe, alternativa sólo loopback para fixtures; escucha únicamente loopback. Plazo absoluto máximo de 20 segundos y cierre de conexiones en ambas direcciones.
