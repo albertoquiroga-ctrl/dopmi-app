@@ -1,5 +1,13 @@
 # Dopmi — registro de avance
 
+## Build 252 y revisión independiente — 25 de septiembre de 2026
+
+Verificación directa en navegador: Codemagic 6ab6e1527e2cdbe815b37fa0, workflow android-guardian-internal, commit 0140fbded894cf71ac9ffd50c80d37b06d9a32fe, finished en 5m46s. Publicación Google Play internal completed, versión 2.3.3 (252), paquete com.mycompany.dopmi, Debuggable No; SHA256 AAB 00f4084c9c9dec96242ff36d39a19432c98abd1ce187ebb1e5f72b69dd32f23b. El build anterior 6ab6dd26d7b32e57ee0d9b68 falló instalando Android SDK 36 por archivo no ZIP; el reintento del mismo commit sí compiló/publicó. No hubo cambio de claves ni firma. El titular reportó actualización y capturas 1000344166/1000344168 validan el comportamiento; no muestran versionCode del teléfono.
+
+GitHub CI 36187337633 sobre 0140fbd: flutter, web-and-database, identity-and-adoption-backend e ios success. Revisión independiente security_review del diff frente a f11061e: sin hallazgos verificables; bloqueo del Checkout en attention conserva referencia y cancelación, y pending permite recuperar la misma referencia. Alcance estático; ejecución local de 52 pruebas y capturas se acreditan separadamente. La prueba comprueba presencia de cancelación, no repite su recorrido sin cambios.
+
+H5 sigue abierto: calendario de fin de mes, recuperación de escritura financiera con respuesta perdida, cruce de aniversario con resultado incierto, disputa posterior a transferencia y comprobación específica del aviso tras retirar monto. La devolución a dos destinos y la pantalla de revisión inicial ya están acreditadas y no deben repetirse para cubrir esos casos distintos.
+
 ## Alta en revisión: ocultar reintento móvil — 25 de septiembre de 2026
 
 Capturas 1000344119 y 1000344121 acreditan estado Alta en revisión e historial En revisión para el alta disputada, separado del intento anterior cerrado sin pago. La pantalla conservaba una intención Checkout local y mostraba Reintentar mi solicitud junto a No vuelvas a pagar. Se ocultan formulario y reintento cuando esa intención está en attention, y se bloquea su envío en el controlador; se preservan referencia, actualización y cancelación. No cambia la conciliación del servidor.
