@@ -2,6 +2,14 @@
 
 El hito 5 sigue abierto. Este documento organiza la prueba conjunta de app, Supabase y Stripe; los tests unitarios y las compilaciones no sustituyen esos recorridos.
 
+## Ruta elegida por el titular: Google Play interno (25 de septiembre de 2026)
+
+El titular eligió probar primero en Android desde Google Play y ejecutar personalmente Codemagic. Usar rama `codex/stripe-transfer-delivery`, workflow **`android-guardian-internal` — Dopmi Guardián — Google Play Internal Testing**. El workflow anterior `android-internal` mantiene Guardián apagado y no sirve para esta aceptación.
+
+El nuevo workflow conserva `com.mycompany.dopmi`, firma `dopmi_upload_2026` y grupos `dopmi_supabase`/`dopmi_google_play`; fija Flutter 3.47.4, valida el proyecto test y activa Guardián mediante `--guardian-test`. Publica exclusivamente a `internal`, versión 2.3.3, build `PROJECT_BUILD_NUMBER + 231`. No usar el sufijo de la APK independiente. Descargar `guardian-build-info.txt` para registrar commit y número de build. Comprobar publicación exitosa en Codemagic y disponibilidad de esa misma versión para el tester en Play; instalar/actualizar y abrir Cuenta → Mi plan Guardián.
+
+Preflight remoto `1616` ya aprobó las 16 lecturas Stripe con la clave restringida de prueba. Los permisos de escritura se configuraron con autorización y SMS del titular, pero solo los recorridos integrados acreditarán su funcionamiento. Las 18 comprobaciones HTTP remotas aprobaron con Checkout cerrado. Mantener ese gate cerrado hasta que esté disponible el dispositivo/build y se prepare el recorrido; la compilación no lo activa.
+
 **Ruta acordada con el titular: Codemagic → TestFlight.** Android es una alternativa disponible. Corte documental: 25 de septiembre de 2026. [Continuidad y evidencia de CI](codex-handoff.md). El estado remoto de abajo es el último registrado, no una reconsulta durante este traspaso.
 
 ## Entorno y preparación del 24 de septiembre de 2026

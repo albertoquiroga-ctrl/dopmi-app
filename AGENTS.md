@@ -2,7 +2,7 @@
 
 - Read `docs/codex-handoff.md` first. At the 2026-09-25 handoff, the continuation branch is `codex/stripe-transfer-delivery`; the default `codex/Dopmi` lacks six later implementation/preparation commits. Fetch and compare current refs before editing. Preserve user changes when switching or creating a worktree.
 - Milestones 1–3 are complete in development; milestone 4 is complete in Stripe test mode. Milestone 5 (Guardian) is implemented behind gates but remains open for integrated acceptance. Preserve identity, adoption, messaging, rescuer moderation, evidence, contributions and Connect. Do not restart H3 or rebuild Guardian features already present.
-- The user's acceptance route is Codemagic → TestFlight. Follow `docs/guardian-acceptance.md`; Android acceptance is a secondary route. A successful CI simulator build is not a signed TestFlight build or device acceptance.
+- The user's latest acceptance route is Codemagic → Google Play internal testing, with the user starting the build. Use `android-guardian-internal` on the continuation branch; the standard `android-internal` workflow keeps Guardian disabled. Follow `docs/guardian-acceptance.md`; TestFlight remains an alternative. Build success is not device acceptance.
 - `src/` is the React UX prototype. Preserve it as a reference; production code belongs in `apps/` and `supabase/`.
 - Read `docs/product-decisions.md`, `docs/backlog.md`, and `docs/progress.md` before continuing.
 - Use `docs/progress.md` as a dated ledger: later entries supersede earlier pending items. `docs/backlog.md` is the current task queue. H1–H6 development milestones and R0–R6 public-release stages are different checklists.
