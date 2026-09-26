@@ -81,4 +81,4 @@ Cada fila necesita carga, vacío, error recuperable, reintento, interrupción, �
 | CLABE recolectada por formulario propio | Onboarding de Stripe Connect, sin duplicar datos bancarios |
 | Videos | Post-MVP; rechazar hasta implementar pipeline y moderación |
 
-La barra donante de referencia tiene Adoptar/Apoyar/Perfil; la actual tiene Adoptar/Guardados/Publicar/Mensajes/Cuenta. El mockup usa Inter/Fraunces, fondo blanco y púrpura #7841f2; Flutter usa tema Material, crema y #6430ce. H8 debe resolver estas diferencias antes de afirmar paridad.
+H8 incorpora Adoptar/Apoyar/Perfil para donantes y las cinco pestañas de rescatistas, Inter/Fraunces locales, fondo blanco y púrpura #7841f2. La bienvenida usa las tres intenciones y sus iconos de referencia. Guardados, mensajes y publicaciones siguen accesibles desde Perfil. La paridad del contenido de cada recorrido, onboarding y formularios sigue pendiente; ver [evidencia H8](design-foundation.md). No se declara aprobación visual por aplicar un tema.

@@ -6,6 +6,7 @@ import '../../core/ui.dart';
 import '../adoption/community_ui.dart';
 import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
+import '../identity/experience_controller.dart';
 import '../payments/guardian_repository.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -45,6 +46,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     try {
       final result = await ref.read(identityRepositoryProvider).loadProfile();
       if (mounted) {
+        ref.read(experienceProvider).applyProfile(result);
         setState(() {
           profile = result;
           name.text = result.name;
@@ -88,6 +90,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             mode: mode,
           );
       if (mounted) {
+        ref.read(experienceProvider).applyProfile(result);
         setState(() {
           profile = result;
           message = 'Guardamos los cambios de tu perfil.';
@@ -199,6 +202,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
             const SizedBox(height: 24),
           ],
+          for (final shortcut in const [
+            ('Guardados', '/saved', Icons.favorite_border),
+            ('Mis mensajes', '/messages', Icons.chat_bubble_outline),
+            ('Mis publicaciones', '/my-adoptions', Icons.pets_outlined),
+          ])
+            ListTile(
+              leading: Icon(shortcut.$3),
+              title: Text(shortcut.$1),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(shortcut.$2),
+            ),
           Form(
             key: form,
             child: Column(

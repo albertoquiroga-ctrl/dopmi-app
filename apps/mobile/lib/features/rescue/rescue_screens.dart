@@ -719,6 +719,8 @@ class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
   int page = 1;
   @override
   Widget build(BuildContext context) => CommunityFrame(
+    index: widget.caseId == null ? 1 : null,
+    back: widget.caseId != null,
     children: [
       Heading(
         widget.caseId == null
@@ -839,5 +841,26 @@ class RescuePublicPhoto extends ConsumerWidget {
               ),
             ),
     ),
+  );
+}
+
+class MyRescueCasesScreen extends StatelessWidget {
+  const MyRescueCasesScreen({super.key});
+  @override
+  Widget build(BuildContext context) => CommunityFrame(
+    index: 2,
+    back: false,
+    children: [
+      const Heading(
+        'Mis casos',
+        'Da seguimiento a tus rescates, gastos y correcciones.',
+      ),
+      ActionButton(
+        'Nuevo caso',
+        onPressed: () => context.push('/rescue/new?kind=case'),
+      ),
+      const SizedBox(height: 20),
+      const RescueList(kind: 'case'),
+    ],
   );
 }

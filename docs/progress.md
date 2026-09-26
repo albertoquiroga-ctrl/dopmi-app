@@ -1,5 +1,12 @@
 # Dopmi — registro de avance
 
+## H7 integrado; base visual H8 implementada — 25 de septiembre de 2026 (México)
+
+- H7 integrado mediante [PR #5](https://github.com/albertoquiroga-ctrl/dopmi-app/pull/5), head `08c72e2d44787ae16d59e0c57caadb41b306caa7`, merge `ba9f897f3fa418e952b98e4c604cffe468a8aa95`. CI [36208309068](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36208309068): cuatro trabajos success comprobados. Supersede el pendiente de integración anterior.
+- H8 en `codex/design-foundation`: fuentes locales con licencias, tokens/componentes, SVG y barras por experiencia; bienvenida con tres intenciones. Estado conservado entre pestañas y eliminado al cambiar de identidad. Recuperación y estados financieros existentes conservados. Referencia de Irlanda reconsultada: sigue `a246fa6`.
+- Pruebas locales: 57 Flutter + una generación de capturas; cuatro recorridos de backend real aprobados; análisis sin incidencias y seis pruebas de configuración móvil. Capturas a 377 × 852 y 320 × 640/texto 200 %, fuentes reales y sin datos personales; detalles en `design-foundation.md`.
+- H8 no está cerrado: pendiente portar onboarding/formularios y revisión visual de Irlanda. CI del PR de esta base pendiente al escribir esta entrada. No hay nuevo build firmado, aceptación móvil ni activación de dinero real. H9–H12 siguen pendientes.
+
 ## H6 integrado; H7 aplicado y verificado — 25 de septiembre de 2026 (México)
 
 - H6 integrado por [PR #4](https://github.com/albertoquiroga-ctrl/dopmi-app/pull/4), merge `99d3118ae69bc7c4c79200c28107bfb9cd2f26b1`. CI [36206671710](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36206671710) con cuatro jobs success sobre head `5741ef4`. Irlanda reconsultada al cierre: continúa `a246fa6`.

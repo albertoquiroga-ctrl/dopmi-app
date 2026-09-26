@@ -76,13 +76,16 @@ Plan autorizado: [H6–H12](release-roadmap.md). Las casillas de aceptación vis
 - [x] H7.4 Retirar exposiciones antiguas y documentar RPC/tablas privadas intencionales en legacy-retirement.md. Configuración de protección de contraseñas queda explícitamente en H10.6.
 - [x] H7.5 Modelos tipados en límites y servicio común de archivos (sin videos).
 
-Evidencia H7: [retiro reversible](legacy-retirement.md). Integración del PR y CI final pendientes. La restauración probada es lógica del legado, no recuperación completa de producción.
+Evidencia H7: [retiro reversible](legacy-retirement.md). PR #5 integrado en `ba9f897`, CI 36208309068 aprobado en sus cuatro trabajos. La restauración probada es lógica del legado, no recuperación completa de producción.
 
 ## H8 — Componentes y navegación
 
-- [ ] H8.1 Tokens, fuentes/assets, controles y componentes fieles al mockup.
-- [ ] H8.2 Navegación por experiencia, sesión, enlaces y borradores conservados.
+- [x] H8.1 Base de tokens, fuentes/assets y controles del mockup implementada; revisión visual pendiente H8.3.
+- [x] H8.2 Navegación por experiencia y conservación de estado entre pestañas; cuentas separadas y recuperación cubiertas por pruebas.
 - [ ] H8.3 Capturas comparables, accesibilidad y revisión de Irlanda.
+- [ ] H8.4 Completar paridad de los recorridos de acceso: onboarding contextual, entrada de cuenta y formularios; conservar confirmación/recuperación reales y gates OAuth. La bienvenida ya tiene los tres destinos del mockup.
+
+Detalle y capturas de la base: [H8](design-foundation.md). H8 permanece abierto hasta completar acceso y aceptación visual; no equivale a H9 ni a aceptación en dispositivo.
 
 ## H9 — Recorridos completos
 

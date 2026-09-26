@@ -113,6 +113,7 @@ class IdentityController extends ChangeNotifier {
         '/messages',
         '/notifications',
         '/rescuer',
+        '/my-cases',
         '/rescue',
         '/rescue-file',
         '/rescue-cases',
@@ -136,6 +137,7 @@ class IdentityController extends ChangeNotifier {
         path == '/connect' ||
         path.startsWith('/contribute/') ||
         path == '/rescuer' ||
+        path == '/my-cases' ||
         path == '/rescue-file' ||
         path.startsWith('/rescue/') ||
         path == '/saved' ||

@@ -196,7 +196,7 @@ void main() {
       await container.read(identityControllerProvider).logout();
       await tester.pumpAndSettle();
       expect(find.text('Hola, quiero conocer a Luna.'), findsNothing);
-      expect(find.text('Una nueva historia\nempieza contigo.'), findsOneWidget);
+      expect(find.text('Bienvenido a DopMi'), findsOneWidget);
     },
   );
   test('photo processing strips location and description while bounding dimensions', () {
