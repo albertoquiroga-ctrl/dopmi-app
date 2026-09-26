@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Contenido demo disponible — 26 de septiembre de 2026
+
+- Carga autorizada en Supabase de pruebas: cinco adopciones públicas con fotos y perfil ficticio, una en revisión, una con correcciones y tres casos demo (dos aprobados y uno cerrado). Inventario y límites en `demo-data.md`.
+- Verificado por API pública: catálogo, filtros, perfil y cinco fotos accesibles; dos fotos privadas bloqueadas. Casos visibles con cero nuevos montos reembolsables. Sin cambios de esquema, permisos, servicios o movimientos financieros.
+- Disponible para Internal Testing 2.3.3 (253) sin nuevo build. No se asignaron borradores a Irlanda sin confirmar su correo; revisión en dispositivo pendiente.
+
 ## H8: publicado para revisión por Internal Testing — 26 de septiembre de 2026
 
 - A petición del titular, Codex inició por API `android-guardian-internal` sobre `codex/design-foundation`, SHA `74fd92286b089a162cd1448e3835c34fc44bc4f8`.
