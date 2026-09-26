@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## Soporte Stripe confirma limitación de disputa diferida — 25 de septiembre de 2026
+
+Consulta enviada por chat del Dashboard con autorización explícita del titular. Agente humano Smile, caso `sco_VKNrYjqxXyMbJi`, respuesta observada el 25/9 a las 18:14 de México. Confirma que no se puede reproducir en test la secuencia cargo exitoso → transferencia confirmada → creación posterior de disputa: las tarjetas de disputa la generan al crear el cargo. No ofrece disparador manual, demora configurable ni mecanismo asistido por soporte para un cargo test ya liquidado.
+
+Soporte recomienda dos capas separadas: integración real con tarjetas de disputa automática, verificando webhook y charge.disputed; conciliación posterior a transferencia aislada con evidencia Stripe simulada y transferencia confirmada. Ambas tienen evidencia previa: disputa inicial remota y Android (847e184/0140fbd), y variante local sin devolución con historial/reconciliación repetida (943a7d4, 388 tests locales y CI36202506285 con cuatro jobs aprobados). Esta recomendación no acredita un recorrido remoto posterior a transferencia ni autoriza dinero real. No se modificaron controles ni se hicieron pagos durante la consulta. H5 no se marca cerrado automáticamente: queda por resolver el cierre de aceptación con esta limitación explícita.
+
 ## CI final de cobertura de disputa — 25 de septiembre de 2026
 
 GitHub Actions [36202506285](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36202506285), commit `943a7d4fb8797333e49981cbf7f1d96de15f2583`: cuatro jobs completed/success, consultados directamente por ID. Incluye web/base de datos, permisos y concurrencia PostgreSQL, integración de identidad/adopción, análisis/tests Flutter y compilaciones Android/iOS simulator. La consulta inicial por commit no mostraba esta ejecución porque el conector filtra ejecuciones de pull request; esta se originó por push. No fue ausencia ni fallo de CI.
