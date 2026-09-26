@@ -2,13 +2,13 @@
 
 ## Estado vigente — consolidación H6, 25 de septiembre de 2026 (México)
 
-Esta sección supersede las prioridades históricas siguientes. H5 está aceptado en test según `hito5-delivery.md`, con excepción de disputa explícita. El titular autorizó ejecutar `release-roadmap.md` (H6–H12). Trabajar desde `codex/mvp-consolidation` hasta integrar su PR en `codex/Dopmi`; verificar refs/CI antes de elegir base. No reiniciar H5.
+Esta sección supersede las prioridades históricas siguientes. H5 está aceptado en test según `hito5-delivery.md`, con excepción de disputa explícita. El titular autorizó ejecutar `release-roadmap.md` (H6–H12). H6 integrado por PR #4, commit `99d3118ae69bc7c4c79200c28107bfb9cd2f26b1`, CI 36206671710 aprobado. Continuación H7 en `codex/legacy-boundary`; verificar refs/CI antes de elegir base. No reiniciar H5.
 
 Referencia viva: `irlanda/apoyar-detalle-perfil`, SHA inicial `a246fa6f42ec517aae264d7fbd2358d647c4f840`. Ver `design-reference.json` y `design-parity.md`. Seguir nuevos commits al inicio/cierre de cada ciclo. Videos, Meta, push y analítica avanzada son post-MVP; tienda/fondo/bonos/cashback quedan fuera.
 
 Codemagic API verificada mediante variable local de usuario `CM_API_TOKEN` (nunca imprimir su valor). Android 2.3.3 (252), `0140fbd`, publicado desde `android-guardian-internal`; iOS 2.3.3 (241), `d74fe97`, es anterior. H11 exige el mismo candidato en Play interno y TestFlight.
 
-Siguiente: cerrar integración/CI de H6, después H7 con inventario, respaldo restaurado y retiro gradual. No borrar legado ni modificar historial de migraciones a ciegas. Dinero real requiere autorización separada.
+Siguiente: integrar H7 tras CI y continuar H8. Retiro remoto H7 aplicado por MCP; ver `legacy-retirement.md`, incluidos respaldo local y límites. No borrar legado ni modificar historial de migraciones a ciegas. Dinero real requiere autorización separada.
 
 ## Registro histórico de traspaso
 

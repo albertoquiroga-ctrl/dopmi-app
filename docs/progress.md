@@ -1,5 +1,15 @@
 # Dopmi — registro de avance
 
+## H6 integrado; H7 aplicado y verificado — 25 de septiembre de 2026 (México)
+
+- H6 integrado por [PR #4](https://github.com/albertoquiroga-ctrl/dopmi-app/pull/4), merge `99d3118ae69bc7c4c79200c28107bfb9cd2f26b1`. CI [36206671710](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36206671710) con cuatro jobs success sobre head `5741ef4`. Irlanda reconsultada al cierre: continúa `a246fa6`.
+- H7 continúa en `codex/legacy-boundary`. Titular autoriza Supabase MCP directo con datos de prueba. Respaldo lógico fuera de Git y restauración en PostgreSQL local con PostGIS aprobados: 29 tablas, 25 filas, 142 restricciones, 20 rutinas. Los blobs permanecen en Storage; no se afirma backup completo del proyecto.
+- Migración remota `20260926011355` aplicada; legado archivado, tres Cron antiguos desactivados, 16 políticas antiguas retiradas y buckets antiguos privados. Permisos actuales idénticos antes/después, trabajador financiero activo/succeeded y signup remoto transaccional revertido aprobado. Las 20 Edge antiguas en v13 responden retiro; fuentes comparadas, JWT preservado, cinco Edge actuales sin cambio. Detalles y recuperación en `legacy-retirement.md`.
+- Resueltos avisos antiguos de vistas expuestas y search_path. Documentadas tablas privadas y RPC deliberadas. Protección de contraseñas filtradas pendiente H10.6: el MCP disponible no expone configuración Auth. No se declara auditoría de producción completa.
+- Capa común de archivos Flutter implementada: validación, preparación sin EXIF, rutas/buckets/MIME, firma temporal y control de cambio de sesión; sin videos. Análisis Flutter sin hallazgos, 54 pruebas Flutter y cuatro recorridos backend local reales aprobados (identidad OTP/PKCE, adopción/Storage/mensajes y rescate/evidencia).
+- PostgreSQL local actualizado sin reset desde sus seis migraciones existentes; pgTAP aprobado, 191 pruebas. El primer intento detectó que esa base local aún carecía de H4; se corrigió aplicando sólo migraciones locales pendientes. Seis pruebas de configuración móvil aprobadas. Flutter 3.47.4 localizado en el SDK ya instalado y Docker Desktop iniciado: supersede la limitación local de la entrada H6 anterior.
+- Suite backend final: 391 pruebas aprobadas (incluye archivo/permisos y respuestas de retiro); administración: 18 pruebas y build aprobados. CI e integración final del PR H7 pendientes al escribir esta entrada. No se generó build Codemagic ni aceptación visual/dispositivo nueva. Dinero sigue en test.
+
 ## H6: consolidación y plan autorizado — 25 de septiembre de 2026 (México)
 
 - Fetch remoto y comparación completados: principal `c6114b6`, continuación `b1a4ac9`; rama `codex/mvp-consolidation` creada desde continuación e integrada con principal sin conflictos. Archivos no rastreados del usuario conservados. PR/CI/integración final pendientes al escribir esta entrada.

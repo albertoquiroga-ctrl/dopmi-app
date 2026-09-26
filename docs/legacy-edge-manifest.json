@@ -1,0 +1,112 @@
+{
+  "project": "ohqxranynackjignryep",
+  "retired": [
+    {
+      "name": "reimbursement-submit",
+      "original_version": 12,
+      "verify_jwt": true
+    },
+    {
+      "name": "rescuer-submit-application",
+      "original_version": 12,
+      "verify_jwt": true
+    },
+    {
+      "name": "donation-init-payment-sheet",
+      "original_version": 12,
+      "verify_jwt": true
+    },
+    {
+      "name": "payment-cancel-sponsorship",
+      "original_version": 12,
+      "verify_jwt": true
+    },
+    {
+      "name": "payment-webhook",
+      "original_version": 12,
+      "verify_jwt": false
+    },
+    {
+      "name": "payment-preview-sponsorship",
+      "original_version": 12,
+      "verify_jwt": true
+    },
+    {
+      "name": "payment-save-card",
+      "original_version": 12,
+      "verify_jwt": true
+    },
+    {
+      "name": "payment-sheet-finalize",
+      "original_version": 12,
+      "verify_jwt": true
+    },
+    {
+      "name": "pool-cancel",
+      "original_version": 12,
+      "verify_jwt": true
+    },
+    {
+      "name": "pool-disburse-propose",
+      "original_version": 12,
+      "verify_jwt": true
+    },
+    {
+      "name": "support-message-send",
+      "original_version": 12,
+      "verify_jwt": true
+    },
+    {
+      "name": "case-cancel",
+      "original_version": 12,
+      "verify_jwt": true
+    },
+    {
+      "name": "notification-list",
+      "original_version": 12,
+      "verify_jwt": true
+    },
+    {
+      "name": "payment-create-sponsorship",
+      "original_version": 12,
+      "verify_jwt": true
+    },
+    {
+      "name": "payment-delete-card",
+      "original_version": 12,
+      "verify_jwt": true
+    },
+    {
+      "name": "payment-sheet-init",
+      "original_version": 12,
+      "verify_jwt": true
+    },
+    {
+      "name": "notification-mark-read",
+      "original_version": 12,
+      "verify_jwt": true
+    },
+    {
+      "name": "payment-create-donation",
+      "original_version": 12,
+      "verify_jwt": true
+    },
+    {
+      "name": "pool-disburse-approve",
+      "original_version": 12,
+      "verify_jwt": true
+    },
+    {
+      "name": "pool-subscribe",
+      "original_version": 12,
+      "verify_jwt": true
+    }
+  ],
+  "preserve": [
+    "payments",
+    "stripe-webhook",
+    "payment-worker",
+    "payment-return",
+    "guardian-client"
+  ]
+}

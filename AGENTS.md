@@ -1,6 +1,6 @@
 # Dopmi
 
-- Read `docs/codex-handoff.md` first. H6 consolidation is on `codex/mvp-consolidation`, combining `codex/stripe-transfer-delivery` and `codex/Dopmi`. Verify the PR and current remote refs before selecting a base. Preserve local user changes.
+- Read `docs/codex-handoff.md` first. H6 is merged in `codex/Dopmi` at `99d3118`; H7 continues on `codex/legacy-boundary`. Read `docs/legacy-retirement.md` before remote schema work; legacy is already archived. Verify the PR and current remote refs before selecting a base. Preserve local user changes.
 - Milestones 1–3 are complete in development; milestone 4 is complete in Stripe test mode. Milestone 5 (Guardian) is accepted in test with the explicit dispute exception in `docs/hito5-delivery.md`; live money remains unauthorized. Preserve identity, adoption, messaging, rescuer moderation, evidence, contributions and Connect. Do not restart H3 or rebuild Guardian features already present.
 - The user's latest acceptance route is Codemagic → Google Play internal testing, with the user starting the build. Use `android-guardian-internal` on the continuation branch; the standard `android-internal` workflow keeps Guardian disabled. Follow `docs/guardian-acceptance.md`; TestFlight remains an alternative. Build success is not device acceptance.
 - `src/` is the React UX prototype. Preserve it as a reference; production code belongs in `apps/` and `supabase/`.
