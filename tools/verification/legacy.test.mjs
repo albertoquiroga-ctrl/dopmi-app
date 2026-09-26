@@ -49,4 +49,3 @@ test('legacy archive closes inherited grants, keeps current signup/storage/cron,
     assert.equal((await db.query('select count(*)::int n from public.pets join public.users on users.id=pets.rescuer_id')).rows[0].n,1);
   } finally { await db.close(); }
 });
-

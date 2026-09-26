@@ -91,4 +91,3 @@ try {
   await client.end();
   if (databaseCreated) execFileSync('docker',['exec','supabase_db_dopmi','psql','-U','postgres','-d','postgres','-v','ON_ERROR_STOP=1','-c',`drop database ${databaseName}`],{stdio:'pipe'});
 }
-

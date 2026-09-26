@@ -8,7 +8,7 @@
 - Resueltos avisos antiguos de vistas expuestas y search_path. Documentadas tablas privadas y RPC deliberadas. Protección de contraseñas filtradas pendiente H10.6: el MCP disponible no expone configuración Auth. No se declara auditoría de producción completa.
 - Capa común de archivos Flutter implementada: validación, preparación sin EXIF, rutas/buckets/MIME, firma temporal y control de cambio de sesión; sin videos. Análisis Flutter sin hallazgos, 54 pruebas Flutter y cuatro recorridos backend local reales aprobados (identidad OTP/PKCE, adopción/Storage/mensajes y rescate/evidencia).
 - PostgreSQL local actualizado sin reset desde sus seis migraciones existentes; pgTAP aprobado, 191 pruebas. El primer intento detectó que esa base local aún carecía de H4; se corrigió aplicando sólo migraciones locales pendientes. Seis pruebas de configuración móvil aprobadas. Flutter 3.47.4 localizado en el SDK ya instalado y Docker Desktop iniciado: supersede la limitación local de la entrada H6 anterior.
-- Suite backend final: 391 pruebas aprobadas (incluye archivo/permisos y respuestas de retiro). CI e integración final del PR H7 pendientes al escribir esta entrada. No se generó build Codemagic ni aceptación visual/dispositivo nueva. Dinero sigue en test.
+- Suite backend final: 391 pruebas aprobadas (incluye archivo/permisos y respuestas de retiro); administración: 18 pruebas y build aprobados. CI e integración final del PR H7 pendientes al escribir esta entrada. No se generó build Codemagic ni aceptación visual/dispositivo nueva. Dinero sigue en test.
 
 ## H6: consolidación y plan autorizado — 25 de septiembre de 2026 (México)
 
