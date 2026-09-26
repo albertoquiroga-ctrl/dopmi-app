@@ -35,15 +35,15 @@ Cada tarea se completa con código, prueba de aceptación y evidencia en `progre
 - [x] H4.5 Activar en el proyecto las funciones ya implementadas de Stripe Connect, webhooks y trabajador; validar una aportación, transferencia, devolución y conciliación completas en modo prueba bajo idempotencia. La producción queda fuera hasta una revisión independiente. Incluye trabajo periódico verificado con HTTP 200 y devolución/reversión comprobada en Stripe, base de datos y Android.
 - [x] H4.6 Cerrar documentación de entrega del hito y propuesta de siguiente alcance (Guardián). Véase `docs/hito4-delivery.md`.
 
-## Hito 5 — Guardián (abierto; continuación en Codex)
+## Hito 5 — Guardián (completado en modo prueba)
 
-Corte: 25 de septiembre de 2026. Rama `codex/stripe-transfer-delivery`; guía principal en [codex-handoff.md](codex-handoff.md). Se separa implementación de aceptación: no reconstruir funciones existentes porque una casilla integral siga abierta.
+Cierre: 25 de septiembre de 2026. Aceptación del titular con excepción explícita para disputa posterior a transferencia, según recomendación de soporte Stripe. Evidencia y límites en [entrega H5](hito5-delivery.md). No autoriza dinero real.
 
 - [x] H5.1 Planificador del neto: urgencia, antigüedad y desempate estable; sin asignación parcial cuando falta capacidad.
 - [x] H5.2 Decisiones del titular: primer cobro al activar, mensualidad condicionada, mes omitido sin deuda, cambio futuro y cancelación. Consentimiento e interfaz implementados. Reglas en `product-decisions.md`.
-- [ ] H5.3 Aceptación de reserva y liquidación transaccional. Código, migraciones, CI y concurrencia PostgreSQL implementados/verificados; alta y renovación integradas confirman el neto completo; devolución total y reversión conciliadas en backend/Stripe. Captura Android de devolución completa recibida y coincidente. Faltan los escenarios restantes de la matriz.
-- [ ] H5.4 Aceptación del ciclo de vida. Ya están implementados alta/abandono, calendario protegido, cobro mensual y omisión, recuperación, solicitudes de monto/cancelación, cancelación durante alta, cambio de tarjeta/3DS, historial privado, límites de aniversario y devoluciones/reversiones. Último CI revisado: cuatro jobs aprobados en `37895d2`, ejecución `36142869179`. Alta, renovación, monto, tarjeta/3DS, privacidad y cancelación ya cuentan con aceptación parcial integrada; faltan los escenarios específicos de la matriz.
-- [ ] H5.5 Revisión de seguridad independiente completada sobre `fe976a3`, sin vulnerabilidades verificables en el alcance inspeccionado; límites y ocho pruebas aprobadas registrados en `progress.md`. Faltan recorridos integrados completos antes de cerrar el hito. No habilita dinero real automáticamente.
+- [x] H5.3 Aceptación de reserva y liquidación transaccional completada en test: alta/renovación, omisión, concurrencia, devolución y reversiones conciliadas. Excepción de disputa documentada en hito5-delivery.md.
+- [x] H5.4 Ciclo de vida aceptado: alta/abandono, calendario, cobro/omisión, recuperación, monto/cancelación, tarjeta/3DS e historial privado. CI36202506285, commit943a7d4: cuatro jobs aprobados. Límites de calendario preparado y dispositivo explícitos en entrega H5.
+- [x] H5.5 Revisión independiente de seguridad y correcciones registrada; revisión final documental/test sin otro recorrido pendiente. Excepción de cobertura de disputa aceptada por el titular. No habilita dinero real.
 
 ### Cola inmediata
 
@@ -53,8 +53,8 @@ Corte: 25 de septiembre de 2026. Rama `codex/stripe-transfer-delivery`; guía pr
 - [x] H5.D Configuración TestFlight que incluye Guardián y conserva bundle/firma; CI 36074983990 aprobado. Configuración no equivale a IPA firmado ni instalación.
 - [x] H5.E Android 2.3.3 (247), SHA `3fe7a1d`, publicado por Codemagic e instalado desde Google Play interno; recorridos acreditados con capturas del titular. Dispositivo confirmado: Samsung Galaxy S25 Ultra (SM-S938B), Android 16, One UI 8.5. Actualización compilada e instalada según el titular; captura 1000343790 verifica el arreglo visual de cancelación. Codemagic confirma actualización 2.3.3 (248), commit a1e3b76267ff39200a47c720dbf472da044dc007, publicación internal completed; evidencia en la guía de aceptación. TestFlight queda como alternativa.
 - [x] H5.F Altas **test** habilitadas con dispositivo/capacidad/Connect listos; 18 smoke checks aprobados con --expect-enabled y respuestas reales de Cron comprobadas. Primera aportación y renovación procesadas en test. Abrir test afecta a todos los usuarios autenticados elegibles; no hay allowlist individual. Los recorridos restantes siguen en H5.G.
-- [ ] H5.G Ejecutar [la matriz de aceptación](guardian-acceptance.md): primera aportación, renovación/omisión, rechazo/3DS/tarjeta, cambio/cancelación, aniversario, privacidad/historial, devolución/reversión y recuperación sin duplicados.
-- [ ] H5.H Corregir defectos, revisar independientemente y registrar el cierre verificable.
+- [x] H5.G Matriz aceptada en modo prueba, con disputa automática remota y conciliación posterior a transferencia simulada como cobertura alternativa autorizada. La secuencia remota posterior a transferencia no se ejecutó.
+- [x] H5.H Defectos corregidos, revisiones independientes y cierre verificable registrados en hito5-delivery.md.
 
 La APK Android separada queda como alternativa. La ruta elegida ahora es Google Play interno; el workflow estándar `android-internal` no habilita Guardián.
 

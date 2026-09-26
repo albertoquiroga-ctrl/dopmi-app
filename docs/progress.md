@@ -1,5 +1,9 @@
 # Dopmi — registro de avance
 
+## H5 aceptado en modo prueba — 25 de septiembre de 2026
+
+El titular autoriza seguir la recomendación del agente humano de Stripe. Se registra la excepción explícita: disputa automática remota y conciliación post-transferencia aislada con evidencia Stripe simulada; secuencia remota completa no ejecutada. Caso sco_VKNrYjqxXyMbJi. Revisión independiente final no identifica otro recorrido funcional pendiente; alcance documental/test. CI36202506285 sobre943a7d4 reconsultado: cuatro jobs completed/success. Entrega y límites en hito5-delivery.md; backlog y decisiones actualizados. Sin cambios de runtime, schema, gates ni nuevo build. Dinero real y R0–R6 permanecen separados.
+
 ## Soporte Stripe confirma limitación de disputa diferida — 25 de septiembre de 2026
 
 Consulta enviada por chat del Dashboard con autorización explícita del titular. Agente humano Smile, caso `sco_VKNrYjqxXyMbJi`, respuesta observada el 25/9 a las 18:14 de México. Confirma que no se puede reproducir en test la secuencia cargo exitoso → transferencia confirmada → creación posterior de disputa: las tarjetas de disputa la generan al crear el cargo. No ofrece disparador manual, demora configurable ni mecanismo asistido por soporte para un cargo test ya liquidado.

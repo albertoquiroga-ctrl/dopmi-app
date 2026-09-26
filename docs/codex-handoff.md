@@ -1,5 +1,7 @@
 # Dopmi — continuidad de ChatGPT Work a Codex
 
+Actualización final del 25/9/2026: H5 aceptado en modo prueba con excepción explícita autorizada para la disputa posterior a transferencia. Consultar [entrega H5](hito5-delivery.md) y backlog vigente antes de los cortes históricos inferiores. No reiniciar pruebas aceptadas ni activar dinero real.
+
 Corte: **25 de septiembre de 2026, UTC**. Permite retomar el trabajo sin acceso al chat anterior. El titular pidió dejar la documentación en GitHub; continuará compilando en **Codemagic** y probando desde **TestFlight**.
 
 ## 1. Repositorio y rama de continuación
