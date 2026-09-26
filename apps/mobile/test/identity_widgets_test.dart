@@ -75,7 +75,9 @@ void main() {
       await start(tester, repo);
       await tap(tester, 'Dar en adopción');
       await tap(tester, 'Continuar');
-      await tap(tester, 'Crear mi cuenta');
+      await tap(tester, 'Continuar');
+      await tap(tester, 'Empezar');
+      await tap(tester, 'Crear cuenta');
       await tester.enterText(find.byType(TextFormField).at(0), 'Ana');
       await tester.enterText(
         find.byType(TextFormField).at(1),
@@ -153,6 +155,6 @@ void main() {
       find.text('Tu contraseña se actualizó. Inicia sesión con la nueva.'),
       findsOneWidget,
     );
-    expect(find.text('Iniciar sesión'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, 'Iniciar sesión'), findsOneWidget);
   });
 }

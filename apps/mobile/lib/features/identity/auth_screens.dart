@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/ui.dart';
 import 'identity_controller.dart';
 import 'identity_repository.dart';
+import 'auth_ui.dart';
 
 enum AuthFormMode { login, signup, forgot, reset }
 
@@ -104,189 +105,211 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
         reset = widget.mode == AuthFormMode.reset;
     final config = ref.watch(configProvider);
     final title = switch (widget.mode) {
-      AuthFormMode.login => 'Qué bueno\nverte de nuevo.',
-      AuthFormMode.signup => 'Hagamos equipo.',
+      AuthFormMode.login => 'Iniciar sesión',
+      AuthFormMode.signup => 'Crear cuenta',
       AuthFormMode.forgot => 'Recupera tu acceso.',
       AuthFormMode.reset => 'Una nueva\ncontraseña.',
     };
     final description = switch (widget.mode) {
-      AuthFormMode.login => 'Entra a tu comunidad Dopmi.',
-      AuthFormMode.signup => 'Tu primera huella en una comunidad que cuida.',
+      AuthFormMode.login => 'Bienvenido de vuelta a DopMi.',
+      AuthFormMode.signup =>
+        'Únete a DopMi y empieza a ayudar con seguimiento claro.',
       AuthFormMode.forgot => 'Te enviaremos las instrucciones a tu correo.',
       AuthFormMode.reset => 'Elige una contraseña segura para volver a entrar.',
     };
-    return PageFrame(
+    return AuthFrame(
       back: !reset,
-      children: [
-        Heading(
-          title,
-          description,
-          eyebrow: signup ? 'CREA TU CUENTA' : 'TU CUENTA DOPMI',
-        ),
-        if (login && GoRouterState.of(context).extra is String)
-          Notice(GoRouterState.of(context).extra! as String),
-        AutofillGroup(
-          child: Form(
-            key: form,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (signup) ...[
-                  TextFormField(
-                    controller: name,
-                    textCapitalization: TextCapitalization.words,
-                    maxLength: 80,
-                    autofillHints: const [AutofillHints.name],
-                    decoration: const InputDecoration(labelText: 'Nombre'),
-                    validator: (value) => (value ?? '').trim().isEmpty
-                        ? 'Escribe tu nombre.'
-                        : null,
-                  ),
-                  const SizedBox(height: 16),
-                ],
-                if (!reset) ...[
-                  TextFormField(
-                    controller: email,
-                    keyboardType: TextInputType.emailAddress,
-                    autocorrect: false,
-                    autofillHints: const [AutofillHints.email],
-                    maxLength: 254,
-                    decoration: const InputDecoration(
-                      labelText: 'Correo electrónico',
-                      counterText: '',
-                    ),
-                    validator: validateEmail,
-                  ),
-                  const SizedBox(height: 16),
-                ],
-                if (signup) ...[
-                  TextFormField(
-                    controller: phone,
-                    keyboardType: TextInputType.phone,
-                    maxLength: 24,
-                    autofillHints: const [AutofillHints.telephoneNumber],
-                    decoration: const InputDecoration(
-                      labelText: 'Teléfono (opcional)',
-                      counterText: '',
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
-                if (login || signup || reset) ...[
-                  PasswordField(
-                    controller: password,
-                    newPassword: !login,
-                    validator: login
-                        ? (value) => (value ?? '').isEmpty
-                              ? 'Escribe tu contraseña.'
-                              : null
-                        : validatePassword,
-                  ),
-                  const SizedBox(height: 16),
-                ],
-                if (signup || reset) ...[
-                  PasswordField(
-                    controller: confirmation,
-                    label: 'Confirmar contraseña',
-                    newPassword: true,
-                    validator: (value) => value != password.text
-                        ? 'Las contraseñas no coinciden.'
-                        : null,
-                  ),
-                  const SizedBox(height: 16),
-                ],
-                if (signup) ...[
-                  CheckboxListTile(
-                    contentPadding: EdgeInsets.zero,
-                    controlAffinity: ListTileControlAffinity.leading,
-                    value: consent,
-                    onChanged: busy
-                        ? null
-                        : (value) => setState(() => consent = value ?? false),
-                    title: const Text(
-                      'Leí y acepto el aviso de desarrollo.',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () => context.push('/terms'),
-                    child: const Text('Leer aviso y uso de mis datos'),
-                  ),
-                ],
-                if (error != null) Notice(error!, isError: true),
-                const SizedBox(height: 8),
-                ActionButton(
-                  switch (widget.mode) {
-                    AuthFormMode.login => 'Iniciar sesión',
-                    AuthFormMode.signup => 'Crear cuenta',
-                    AuthFormMode.forgot => 'Enviar instrucciones',
-                    AuthFormMode.reset => 'Actualizar contraseña',
-                  },
-                  busy: busy,
-                  sunny: signup,
-                  onPressed: submit,
-                ),
-                if (login) ...[
-                  TextButton(
-                    onPressed: busy ? null : () => context.push('/forgot'),
-                    child: const Text('Olvidé mi contraseña'),
-                  ),
-                  TextButton(
-                    onPressed: busy
-                        ? null
-                        : () => context.push(
-                            '/confirm',
-                            extra: email.text.trim(),
-                          ),
-                    child: const Text('Necesito confirmar mi correo'),
-                  ),
-                  if (config.googleEnabled || config.appleEnabled)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                      child: Text(
-                        'También puedes entrar con',
-                        textAlign: TextAlign.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AuthHeading(title, description),
+          if (login && GoRouterState.of(context).extra is String)
+            Notice(GoRouterState.of(context).extra! as String),
+          AutofillGroup(
+            child: Form(
+              key: form,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (signup) ...[
+                    LabeledField(
+                      'Nombre completo',
+                      child: TextFormField(
+                        controller: name,
+                        textCapitalization: TextCapitalization.words,
+                        maxLength: 80,
+                        autofillHints: const [AutofillHints.name],
+                        decoration: const InputDecoration(
+                          hintText: 'Tu nombre',
+                          counterText: '',
+                        ),
+                        validator: (value) => (value ?? '').trim().isEmpty
+                            ? 'Escribe tu nombre.'
+                            : null,
                       ),
                     ),
-                  if (config.googleEnabled)
-                    OutlinedButton(
-                      onPressed: busy ? null : () => social('google'),
-                      child: const Text('Continuar con Google'),
+                    const SizedBox(height: 16),
+                  ],
+                  if (!reset) ...[
+                    LabeledField(
+                      'Correo electrónico',
+                      child: TextFormField(
+                        controller: email,
+                        keyboardType: TextInputType.emailAddress,
+                        autocorrect: false,
+                        autofillHints: const [AutofillHints.email],
+                        maxLength: 254,
+                        decoration: const InputDecoration(
+                          hintText: 'tu@email.com',
+                          counterText: '',
+                        ),
+                        validator: validateEmail,
+                      ),
                     ),
-                  if (config.appleEnabled) ...[
-                    const SizedBox(height: 12),
-                    OutlinedButton(
-                      onPressed: busy ? null : () => social('apple'),
-                      child: const Text('Continuar con Apple'),
+                    const SizedBox(height: 16),
+                  ],
+                  if (signup) ...[
+                    LabeledField(
+                      'Teléfono (opcional)',
+                      child: TextFormField(
+                        controller: phone,
+                        keyboardType: TextInputType.phone,
+                        maxLength: 24,
+                        autofillHints: const [AutofillHints.telephoneNumber],
+                        decoration: const InputDecoration(
+                          hintText: '+52 123 456 7890',
+                          counterText: '',
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  if (login || signup || reset) ...[
+                    PasswordField(
+                      controller: password,
+                      labelAbove: true,
+                      newPassword: !login,
+                      validator: login
+                          ? (value) => (value ?? '').isEmpty
+                                ? 'Escribe tu contraseña.'
+                                : null
+                          : validatePassword,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  if (signup || reset) ...[
+                    PasswordField(
+                      controller: confirmation,
+                      labelAbove: true,
+                      label: 'Confirmar contraseña',
+                      newPassword: true,
+                      validator: (value) => value != password.text
+                          ? 'Las contraseñas no coinciden.'
+                          : null,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  if (signup) ...[
+                    CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      value: consent,
+                      onChanged: busy
+                          ? null
+                          : (value) => setState(() => consent = value ?? false),
+                      title: const Text(
+                        'Leí y acepto el aviso de desarrollo.',
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => context.push('/terms'),
+                      child: const Text('Leer aviso y uso de mis datos'),
                     ),
                   ],
-                  TextButton(
-                    onPressed: () => context.push('/signup'),
-                    child: const Text('Soy nuevo · Crear una cuenta'),
+                  if (login)
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: busy ? null : () => context.push('/forgot'),
+                        child: const Text(
+                          'Olvidé mi contraseña',
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ),
+                  if (error != null) Notice(error!, isError: true),
+                  const SizedBox(height: 8),
+                  ActionButton(
+                    switch (widget.mode) {
+                      AuthFormMode.login => 'Iniciar sesión',
+                      AuthFormMode.signup => 'Crear cuenta',
+                      AuthFormMode.forgot => 'Enviar instrucciones',
+                      AuthFormMode.reset => 'Actualizar contraseña',
+                    },
+                    busy: busy,
+                    onPressed: submit,
                   ),
-                ],
-                if (reset)
-                  TextButton(
-                    onPressed: busy
-                        ? null
-                        : () async {
-                            try {
-                              await ref
-                                  .read(identityControllerProvider)
-                                  .logout();
-                            } catch (cause) {
-                              if (mounted) {
-                                setState(() => error = identityError(cause));
+                  if (login) ...[
+                    TextButton(
+                      onPressed: busy
+                          ? null
+                          : () => context.push(
+                              '/confirm',
+                              extra: email.text.trim(),
+                            ),
+                      child: const Text('Necesito confirmar mi correo'),
+                    ),
+                    if (config.googleEnabled || config.appleEnabled)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        child: Text(
+                          'También puedes entrar con',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    if (config.googleEnabled)
+                      OutlinedButton(
+                        onPressed: busy ? null : () => social('google'),
+                        child: const Text('Continuar con Google'),
+                      ),
+                    if (config.appleEnabled) ...[
+                      const SizedBox(height: 12),
+                      OutlinedButton(
+                        onPressed: busy ? null : () => social('apple'),
+                        child: const Text('Continuar con Apple'),
+                      ),
+                    ],
+                    TextButton(
+                      onPressed: () => context.push('/signup'),
+                      child: const Text('Soy nuevo · Crear una cuenta'),
+                    ),
+                  ],
+                  if (reset)
+                    TextButton(
+                      onPressed: busy
+                          ? null
+                          : () async {
+                              try {
+                                await ref
+                                    .read(identityControllerProvider)
+                                    .logout();
+                              } catch (cause) {
+                                if (mounted) {
+                                  setState(() => error = identityError(cause));
+                                }
                               }
-                            }
-                          },
-                    child: const Text('Cancelar y cerrar sesión'),
-                  ),
-              ],
+                            },
+                      child: const Text('Cancelar y cerrar sesión'),
+                    ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -364,66 +387,70 @@ class _ConfirmationScreenState extends ConsumerState<ConfirmationScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => PageFrame(
-    children: [
-      const Icon(Icons.mark_email_unread_outlined, size: 76, color: purple),
-      const SizedBox(height: 28),
-      Heading(
-        'Revisa tu correo.',
-        widget.recovery
-            ? 'Si existe una cuenta con ese correo, recibirás instrucciones para recuperar el acceso.'
-            : 'Abre el enlace que te enviamos para confirmar tu cuenta.',
-        eyebrow: widget.recovery ? 'RECUPERA TU ACCESO' : 'UN PASO MÁS',
-      ),
-      const Text(
-        'Abre el enlace en este mismo dispositivo y navegador. Si tu correo incluye un código, también puedes ingresarlo aquí.',
-      ),
-      const SizedBox(height: 20),
-      Form(
-        key: form,
-        child: Column(
-          children: [
-            TextFormField(
-              controller: email,
-              decoration: const InputDecoration(
-                labelText: 'Correo electrónico',
+  Widget build(BuildContext context) => AuthFrame(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Icon(Icons.mark_email_unread_outlined, size: 76, color: purple),
+        const SizedBox(height: 28),
+        AuthHeading(
+          'Revisa tu correo.',
+          widget.recovery
+              ? 'Si existe una cuenta con ese correo, recibirás instrucciones para recuperar el acceso.'
+              : 'Abre el enlace que te enviamos para confirmar tu cuenta.',
+        ),
+        const Text(
+          'Abre el enlace en este mismo dispositivo y navegador. Si tu correo incluye un código, también puedes ingresarlo aquí.',
+        ),
+        const SizedBox(height: 20),
+        Form(
+          key: form,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: email,
+                decoration: const InputDecoration(
+                  labelText: 'Correo electrónico',
+                ),
+                keyboardType: TextInputType.emailAddress,
+                validator: validateEmail,
               ),
-              keyboardType: TextInputType.emailAddress,
-              validator: validateEmail,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: code,
-              keyboardType: TextInputType.number,
-              autofillHints: const [AutofillHints.oneTimeCode],
-              decoration: const InputDecoration(labelText: 'Código del correo'),
-              validator: (value) =>
-                  RegExp(r'^\d{6,10}$').hasMatch((value ?? '').trim())
-                  ? null
-                  : 'Escribe el código que recibiste.',
-            ),
-          ],
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: code,
+                keyboardType: TextInputType.number,
+                autofillHints: const [AutofillHints.oneTimeCode],
+                decoration: const InputDecoration(
+                  labelText: 'Código del correo',
+                ),
+                validator: (value) =>
+                    RegExp(r'^\d{6,10}$').hasMatch((value ?? '').trim())
+                    ? null
+                    : 'Escribe el código que recibiste.',
+              ),
+            ],
+          ),
         ),
-      ),
-      if (message != null) Notice(message!),
-      if (error != null) Notice(error!, isError: true),
-      const SizedBox(height: 24),
-      ActionButton(
-        'Verificar código',
-        busy: busy,
-        onPressed: () => perform(false),
-      ),
-      TextButton(
-        onPressed: busy || seconds > 0 ? null : () => perform(true),
-        child: Text(
-          seconds > 0 ? 'Reenviar en ${seconds}s' : 'Reenviar correo',
+        if (message != null) Notice(message!),
+        if (error != null) Notice(error!, isError: true),
+        const SizedBox(height: 24),
+        ActionButton(
+          'Verificar código',
+          busy: busy,
+          onPressed: () => perform(false),
         ),
-      ),
-      TextButton(
-        onPressed: () => context.go('/login'),
-        child: const Text('Volver a iniciar sesión'),
-      ),
-    ],
+        TextButton(
+          onPressed: busy || seconds > 0 ? null : () => perform(true),
+          child: Text(
+            seconds > 0 ? 'Reenviar en ${seconds}s' : 'Reenviar correo',
+          ),
+        ),
+        TextButton(
+          onPressed: () => context.go('/login'),
+          child: const Text('Volver a iniciar sesión'),
+        ),
+      ],
+    ),
   );
 }
 

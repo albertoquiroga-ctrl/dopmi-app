@@ -1,5 +1,12 @@
 # Dopmi — registro de avance
 
+## H8: acceso adaptado y revisión visual preparada — 25 de septiembre de 2026 (México)
+
+- PR #6 en borrador: `codex/design-foundation`. Primer commit `f9f3fe3d9eeb63292dff81c72cf85eea3fa422da`, CI [36210411470](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36210411470), cuatro trabajos success comprobados. La ampliación de acceso posterior requiere su propio CI; no atribuirle ese resultado.
+- Incorporados dos pasos de onboarding para cada intención, entrada de cuenta, formularios y confirmación con marco visual común. Ilustraciones Flutter basadas en assets/estructura de Irlanda; copias económicas corregidas para gastos pagados y aprobados. Google/Apple conservan gates; legal de desarrollo sigue pendiente H10.
+- Verificación local ampliada: 61 pruebas Flutter + generación de capturas aprobadas; regresión de historial cubre entrada por `push` y cambio de propietario. Navegación, regreso e intención de registro comprobados a 320 × 640 con texto al 200 %. Entrada normal rescatista resuelta sin reemplazar enlaces explícitos. Análisis sin incidencias y cuatro recorridos reales de backend local aprobados. Capturas HTML/Flutter por ruta versionadas en `design-reviews/h8-access`, con diferencias y límites en `design-foundation.md`.
+- CI incorporará capturas de los componentes reales y acceso como artefacto `dopmi-design-review` vinculado al SHA. H8.1, H8.2 y H8.4 implementados; **H8.3 pendiente de revisión de Irlanda y ajustes visuales**. Se solicitó revisión al titular; no se recibió aceptación todavía. H8 no se cierra automáticamente. H9–H12 no están completados y no se activó dinero real.
+
 ## H7 integrado; base visual H8 implementada — 25 de septiembre de 2026 (México)
 
 - H7 integrado mediante [PR #5](https://github.com/albertoquiroga-ctrl/dopmi-app/pull/5), head `08c72e2d44787ae16d59e0c57caadb41b306caa7`, merge `ba9f897f3fa418e952b98e4c604cffe468a8aa95`. CI [36208309068](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36208309068): cuatro trabajos success comprobados. Supersede el pendiente de integración anterior.

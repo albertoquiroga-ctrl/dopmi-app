@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'core/ui.dart';
 import 'core/navigation.dart';
 import 'features/identity/experience_controller.dart';
+import 'features/identity/experience_landing.dart';
 import 'features/identity/auth_screens.dart';
 import 'features/identity/identity_controller.dart';
 import 'features/identity/identity_repository.dart';
@@ -39,7 +40,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       final desired = identity.loading
           ? state.uri.path
           : Uri.parse(restoringPath ?? state.uri.toString()).path;
-      final target = identity.redirect(desired);
+      var target = identity.redirect(desired);
+      if (target == '/adoptions' && identity.identity?.verified == true) {
+        target = '/home';
+      }
       if (!identity.loading && restoringPath != null) {
         final restored = restoringPath;
         restoringPath = null;
@@ -48,6 +52,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       return target;
     },
     routes: [
+      GoRoute(
+        path: '/home',
+        builder: (_, _) => const ExperienceLandingScreen(),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (_, _, shell) =>
             DopmiNavigationHost(shell: shell, child: shell),
@@ -237,6 +245,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
+        path: '/start',
+        builder: (_, state) => AccountStartScreen(
+          intent: safeIntent(state.uri.queryParameters['intent']),
+        ),
+      ),
+      GoRoute(
         path: '/signup',
         builder: (_, state) => AuthFormScreen(
           mode: AuthFormMode.signup,
@@ -291,11 +305,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       ],
     ),
   );
-  void rememberLocation() => ref
-      .read(navigationSessionProvider.notifier)
-      .rememberLocation(
-        router.routerDelegate.currentConfiguration.uri.toString(),
-      );
+  void rememberLocation() {
+    if (router.routerDelegate.currentConfiguration.isNotEmpty) {
+      ref
+          .read(navigationSessionProvider.notifier)
+          .rememberLocation(router.state.uri.toString());
+    }
+  }
+
   router.routerDelegate.addListener(rememberLocation);
   ref.onDispose(() {
     router.routerDelegate.removeListener(rememberLocation);

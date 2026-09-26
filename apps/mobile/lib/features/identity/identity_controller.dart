@@ -106,6 +106,7 @@ class IdentityController extends ChangeNotifier {
     }
     if (identity?.verified == true) {
       const accountRoutes = [
+        '/home',
         '/profile',
         '/terms',
         '/saved',
@@ -130,7 +131,8 @@ class IdentityController extends ChangeNotifier {
           path.startsWith('/people/');
       return allowed ? null : '/adoptions';
     }
-    if (path == '/profile' ||
+    if (path == '/home' ||
+        path == '/profile' ||
         path == '/guardian' ||
         path == '/guardian/history' ||
         path == '/payments' ||

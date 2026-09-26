@@ -31,6 +31,7 @@ flutter:
     - assets/dopmi-wordmark.png
     - assets/welcome-pets.png
     - assets/navigation/
+    - assets/onboarding/
   fonts:
     - family: Inter
       fonts:

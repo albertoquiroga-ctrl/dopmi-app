@@ -7,6 +7,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dopmi_mobile/core/ui.dart';
 import 'package:dopmi_mobile/features/identity/onboarding_screen.dart';
+import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/features/identity/identity_controller.dart';
+import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../test/fake_identity_repository.dart';
+import '../test/community_test.dart' show FakeCommunity;
 
 import 'design_gallery.dart';
 
@@ -25,6 +32,9 @@ void main() {
       await tester.runAsync(loader.load);
     }
     final output = Directory('../../.tools/design-review');
+    final icons = FontLoader('MaterialIcons')
+      ..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'));
+    await tester.runAsync(icons.load);
     await tester.runAsync(() => output.create(recursive: true));
     for (final specification in [
       ('donor', false, const Size(377, 852), 1.0),
@@ -84,6 +94,64 @@ void main() {
     await tester.runAsync(
       () => saveCapture(welcomeKey, '${output.path}/welcome-selected.png'),
     );
+    for (final route in [
+      ('login', '/login'),
+      ('signup', '/signup'),
+      ('forgot', '/forgot'),
+      ('confirm', '/confirm'),
+      ('start', '/start?intent=adopt'),
+      ('onboarding-adopt', '/onboarding?intent=adopt'),
+      ('onboarding-donate', '/onboarding?intent=donate'),
+      ('onboarding-rescue', '/onboarding?intent=rescue'),
+    ]) {
+      final repo = FakeIdentityRepository();
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(repo),
+          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          routerInitialLocationProvider.overrideWithValue(route.$2),
+        ],
+      );
+      final key = GlobalKey();
+      await tester.pumpWidget(
+        RepaintBoundary(
+          key: key,
+          child: UncontrolledProviderScope(
+            container: container,
+            child: const DopmiApp(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      for (final asset in [
+        'assets/dopmi-wordmark.png',
+        'assets/onboarding/luna-card.png',
+        'assets/onboarding/luna-detail.png',
+        'assets/onboarding/nina-card.png',
+      ]) {
+        await tester.runAsync(
+          () => precacheImage(AssetImage(asset), key.currentContext!),
+        );
+      }
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      await tester.runAsync(
+        () => saveCapture(key, '${output.path}/${route.$1}.png'),
+      );
+      if (route.$1.startsWith('onboarding')) {
+        await tester.ensureVisible(
+          find.widgetWithText(FilledButton, 'Continuar'),
+        );
+        await tester.tap(find.widgetWithText(FilledButton, 'Continuar'));
+        await tester.pumpAndSettle();
+        await tester.runAsync(
+          () => saveCapture(key, '${output.path}/${route.$1}-2.png'),
+        );
+      }
+      await tester.pumpWidget(const SizedBox());
+      container.dispose();
+      await repo.changes.close();
+    }
     debugDisableShadows = true;
   });
 }

@@ -49,6 +49,7 @@ class ExperienceController extends ChangeNotifier {
   }
   final IdentityController identity;
   AccountExperience value = AccountExperience.donor;
+  bool loading = false;
   String? _owner;
   int _revision = 0;
   bool _disposed = false;
@@ -64,24 +65,33 @@ class ExperienceController extends ChangeNotifier {
     _owner = owner;
     final revision = ++_revision;
     value = AccountExperience.donor;
+    loading = owner != null;
     notifyListeners();
     if (owner != null) unawaited(_load(owner, revision));
   }
 
   Future<void> _load(String owner, int revision) async {
     try {
-      final profile = await identity.repository.loadProfile();
+      final profile = await identity.repository.loadProfile().timeout(
+        const Duration(seconds: 10),
+      );
       if (!_disposed && _owner == owner && revision == _revision) {
+        if (profile.id != owner) throw StateError('profile_owner_changed');
         applyProfile(profile);
       }
     } catch (_) {
       // The profile page presents recoverable errors. Navigation stays usable.
+      if (!_disposed && _owner == owner && revision == _revision) {
+        loading = false;
+        notifyListeners();
+      }
     }
   }
 
   void applyProfile(Profile profile) {
     if (_disposed || profile.id != _owner) return;
     _revision++;
+    loading = false;
     value = profile.mode == 'rescuer'
         ? AccountExperience.rescuer
         : AccountExperience.donor;

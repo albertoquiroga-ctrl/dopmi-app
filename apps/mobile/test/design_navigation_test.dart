@@ -7,14 +7,115 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/experience_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
+import 'rescue_test.dart' show FakeRescue;
 
 void main() {
+  testWidgets(
+    'restoring a rescuer opens their home without changing permissions',
+    (tester) async {
+      final identity = FakeIdentityRepository()
+        ..user = const Identity('one', 'ana@example.test', verified: true)
+        ..profile = const Profile(
+          id: 'one',
+          name: 'Ana',
+          phone: '',
+          city: '',
+          mode: 'rescuer',
+          intent: 'rescue',
+          status: 'active',
+          termsVersion: developmentTermsVersion,
+        );
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+        ],
+      );
+      addTearDown(() async {
+        container.dispose();
+        await identity.changes.close();
+      });
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const DopmiApp(),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(container.read(routerProvider).state.uri.path, '/rescuer');
+      expect(find.text('Casos'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  for (final intent in ['adopt', 'donate', 'rescue']) {
+    testWidgets(
+      'onboarding $intent preserves intent and back navigation with large text',
+      (tester) async {
+        tester.view.physicalSize = const Size(320, 640);
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = 2;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        final identity = FakeIdentityRepository();
+        final container = ProviderContainer(
+          overrides: [
+            identityRepositoryProvider.overrideWithValue(identity),
+            communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+            routerInitialLocationProvider.overrideWithValue(
+              '/onboarding?intent=$intent',
+            ),
+          ],
+        );
+        addTearDown(() async {
+          container.dispose();
+          await identity.changes.close();
+        });
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: const DopmiApp(),
+          ),
+        );
+        await tester.pumpAndSettle();
+        Future<void> tap(Finder finder) async {
+          await tester.ensureVisible(finder);
+          await tester.pumpAndSettle();
+          await tester.tap(finder);
+          await tester.pumpAndSettle();
+        }
+
+        final next = find.widgetWithText(FilledButton, 'Continuar');
+        final finish = find.widgetWithText(
+          FilledButton,
+          intent == 'adopt'
+              ? 'Quiero adoptar'
+              : intent == 'donate'
+              ? 'Quiero ayudar'
+              : 'Empezar',
+        );
+        await tap(next);
+        expect(finish, findsOneWidget);
+        await tap(find.byTooltip('Volver'));
+        expect(next, findsOneWidget);
+        await tap(next);
+        await tap(finish);
+        await tap(find.widgetWithText(FilledButton, 'Crear cuenta'));
+        final uri = container.read(routerProvider).state.uri;
+        expect(uri.path, '/signup');
+        expect(uri.queryParameters['intent'], intent);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
   testWidgets(
     'switching tabs preserves an unsaved profile and signing out removes it',
     (tester) async {

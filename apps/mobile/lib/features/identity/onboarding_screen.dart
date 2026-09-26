@@ -4,6 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/design_tokens.dart';
 
+export 'onboarding_flow.dart';
+
 import '../../core/ui.dart';
 
 String safeIntent(String? intent) =>
@@ -268,64 +270,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class OnboardingScreen extends StatelessWidget {
-  const OnboardingScreen({super.key, required this.intent});
-  final String intent;
-  @override
-  Widget build(BuildContext context) {
-    final rescue = intent == 'rescue';
-    return PageFrame(
-      children: [
-        const SizedBox(height: 20),
-        Container(
-          padding: const EdgeInsets.all(36),
-          decoration: const BoxDecoration(
-            color: yellow,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            rescue ? Icons.volunteer_activism_outlined : Icons.pets_rounded,
-            size: 86,
-            color: ink,
-          ),
-        ),
-        const SizedBox(height: 32),
-        Heading(
-          rescue
-              ? 'Tu cuidado merece\nuna comunidad.'
-              : 'Pequeños pasos.\nGrandes historias.',
-          rescue
-              ? 'Completa tu perfil y envía tus documentos para solicitar la verificación como rescatista.'
-              : 'Crea tu cuenta para ser parte de Dopmi y preparar tu perfil.',
-          eyebrow: 'TU PRIMER PASO',
-        ),
-        const ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: Icon(Icons.mail_outline, color: purple),
-          title: Text('Un correo, una cuenta'),
-          subtitle: Text('Confirma tu correo para cuidar tu acceso.'),
-        ),
-        const ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: Icon(Icons.swap_horiz_rounded, color: purple),
-          title: Text('Ayuda a tu manera'),
-          subtitle: Text('Alterna entre donante/adoptante y rescatista.'),
-        ),
-        const SizedBox(height: 24),
-        ActionButton(
-          'Crear mi cuenta',
-          sunny: true,
-          onPressed: () => context.push('/signup?intent=$intent'),
-        ),
-        TextButton(
-          onPressed: () => context.push('/login'),
-          child: const Text('Ya tengo cuenta'),
-        ),
-      ],
     );
   }
 }

@@ -8,7 +8,7 @@ Referencia viva: `irlanda/apoyar-detalle-perfil`, SHA inicial `a246fa6f42ec517aa
 
 Codemagic API verificada mediante variable local de usuario `CM_API_TOKEN` (nunca imprimir su valor). Android 2.3.3 (252), `0140fbd`, publicado desde `android-guardian-internal`; iOS 2.3.3 (241), `d74fe97`, es anterior. H11 exige el mismo candidato en Play interno y TestFlight.
 
-Siguiente: completar H8 y su revisión visual. Base de componentes/navegación y bienvenida implementada; evidencia y diferencias en `design-foundation.md`. H8 no está aceptado por Irlanda ni probado en dispositivo. Retiro remoto H7 aplicado por MCP; ver `legacy-retirement.md`, incluidos respaldo local y límites. No borrar legado ni modificar historial de migraciones a ciegas. Dinero real requiere autorización separada.
+Siguiente: revisión visual H8 y ajustes que resulten, antes del cierre. Componentes/navegación, bienvenida, onboarding contextual y formularios implementados en PR #6; evidencia y diferencias en `design-foundation.md`. H8 no está aceptado por Irlanda ni probado en dispositivo. Retiro remoto H7 aplicado por MCP; ver `legacy-retirement.md`, incluidos respaldo local y límites. No borrar legado ni modificar historial de migraciones a ciegas. Dinero real requiere autorización separada.
 
 ## Registro histórico de traspaso
 

@@ -83,9 +83,9 @@ Evidencia H7: [retiro reversible](legacy-retirement.md). PR #5 integrado en `ba9
 - [x] H8.1 Base de tokens, fuentes/assets y controles del mockup implementada; revisión visual pendiente H8.3.
 - [x] H8.2 Navegación por experiencia y conservación de estado entre pestañas; cuentas separadas y recuperación cubiertas por pruebas.
 - [ ] H8.3 Capturas comparables, accesibilidad y revisión de Irlanda.
-- [ ] H8.4 Completar paridad de los recorridos de acceso: onboarding contextual, entrada de cuenta y formularios; conservar confirmación/recuperación reales y gates OAuth. La bienvenida ya tiene los tres destinos del mockup.
+- [x] H8.4 Implementar onboarding contextual, entrada de cuenta y formularios con componentes de la referencia; conservar confirmación/recuperación reales y gates OAuth. Aceptación de paridad visual pendiente en H8.3.
 
-Detalle y capturas de la base: [H8](design-foundation.md). H8 permanece abierto hasta completar acceso y aceptación visual; no equivale a H9 ni a aceptación en dispositivo.
+Detalle y capturas de componentes/acceso: [H8](design-foundation.md). H8 permanece abierto hasta revisión y aceptación visual de Irlanda; no equivale a H9 ni a aceptación en dispositivo.
 
 ## H9 — Recorridos completos
 

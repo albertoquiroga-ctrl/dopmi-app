@@ -80,6 +80,7 @@ void main() {
     HistoryRepo repo, {
     bool enabled = true,
     bool verified = true,
+    bool pushed = false,
   }) async {
     tester.view.physicalSize = const Size(390, 2400);
     tester.view.devicePixelRatio = 1;
@@ -93,7 +94,9 @@ void main() {
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         guardianRepositoryProvider.overrideWithValue(repo),
         guardianEnabledProvider.overrideWithValue(enabled),
-        routerInitialLocationProvider.overrideWithValue('/guardian/history'),
+        routerInitialLocationProvider.overrideWithValue(
+          pushed ? '/profile' : '/guardian/history',
+        ),
       ],
     );
     addTearDown(() async {
@@ -103,6 +106,10 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(container: container, child: const DopmiApp()),
     );
+    if (pushed) {
+      await tester.pumpAndSettle();
+      unawaited(container.read(routerProvider).push('/guardian/history'));
+    }
     await pumpUntil(tester, find.text('Historial de ciclos'));
     return identity;
   }
@@ -212,7 +219,7 @@ void main() {
     'switching accounts removes already displayed financial details',
     (tester) async {
       final repo = HistoryRepo();
-      final identity = await start(tester, repo);
+      final identity = await start(tester, repo, pushed: true);
       await tester.pumpAndSettle();
       await tap(tester, 'Ver asignaciones');
       expect(find.text('Medicamentos'), findsOneWidget);

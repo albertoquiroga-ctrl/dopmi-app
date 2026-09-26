@@ -56,6 +56,15 @@ jobs:
         working-directory: apps/mobile
       - run: flutter analyze && flutter test
         working-directory: apps/mobile
+      - name: Capture actual Flutter components and access screens
+        run: flutter test tool/capture_design_test.dart
+        working-directory: apps/mobile
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dopmi-design-review
+          path: .tools/design-review/*.png
+          include-hidden-files: true
+          if-no-files-found: error
       - name: Android development build (no production credentials)
         run: flutter build apk --debug --dart-define-from-file=config.example.json
         working-directory: apps/mobile

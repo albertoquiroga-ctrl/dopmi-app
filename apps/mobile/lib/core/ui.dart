@@ -264,11 +264,12 @@ class PasswordField extends StatefulWidget {
     this.label = 'Contraseña',
     this.validator,
     this.newPassword = false,
+    this.labelAbove = false,
   });
   final TextEditingController controller;
   final String label;
   final String? Function(String?)? validator;
-  final bool newPassword;
+  final bool newPassword, labelAbove;
   @override
   State<PasswordField> createState() => _PasswordFieldState();
 }
@@ -276,26 +277,58 @@ class PasswordField extends StatefulWidget {
 class _PasswordFieldState extends State<PasswordField> {
   bool hidden = true;
   @override
-  Widget build(BuildContext context) => TextFormField(
-    controller: widget.controller,
-    obscureText: hidden,
-    autocorrect: false,
-    enableSuggestions: false,
-    validator: widget.validator,
-    autofillHints: [
-      widget.newPassword ? AutofillHints.newPassword : AutofillHints.password,
-    ],
-    decoration: InputDecoration(
-      labelText: widget.label,
-      suffixIcon: IconButton(
-        tooltip: hidden
-            ? 'Mostrar ${widget.label.toLowerCase()}'
-            : 'Ocultar ${widget.label.toLowerCase()}',
-        icon: Icon(
-          hidden ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+  Widget build(BuildContext context) {
+    final field = TextFormField(
+      controller: widget.controller,
+      obscureText: hidden,
+      autocorrect: false,
+      enableSuggestions: false,
+      validator: widget.validator,
+      autofillHints: [
+        widget.newPassword ? AutofillHints.newPassword : AutofillHints.password,
+      ],
+      decoration: InputDecoration(
+        labelText: widget.labelAbove ? null : widget.label,
+        hintText: widget.labelAbove
+            ? (widget.newPassword
+                  ? 'Elige una contraseña segura'
+                  : 'Tu contraseña')
+            : null,
+        suffixIcon: IconButton(
+          tooltip: hidden
+              ? 'Mostrar ${widget.label.toLowerCase()}'
+              : 'Ocultar ${widget.label.toLowerCase()}',
+          icon: Icon(
+            hidden ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+          ),
+          onPressed: () => setState(() => hidden = !hidden),
         ),
-        onPressed: () => setState(() => hidden = !hidden),
       ),
-    ),
+    );
+    return widget.labelAbove ? LabeledField(widget.label, child: field) : field;
+  }
+}
+
+class LabeledField extends StatelessWidget {
+  const LabeledField(this.label, {super.key, required this.child});
+  final String label;
+  final Widget child;
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      ExcludeSemantics(
+        child: Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: muted,
+          ),
+        ),
+      ),
+      const SizedBox(height: 7),
+      Semantics(label: label, child: child),
+    ],
   );
 }
