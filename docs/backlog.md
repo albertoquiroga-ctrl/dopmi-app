@@ -58,6 +58,65 @@ Cierre: 25 de septiembre de 2026. Aceptación del titular con excepción explíc
 
 La APK Android separada queda como alternativa. La ruta elegida ahora es Google Play interno; el workflow estándar `android-internal` no habilita Guardián.
 
-## Hito 6 y lanzamiento público
+## H6 — Base única y trazable (en curso)
 
-Después de la aceptación H5: beta, dispositivos, paridad completa, contenido definitivo, privacidad y tiendas. Mantener el alcance de [mvp-release-contract.md](mvp-release-contract.md); sus etapas R0–R6 no son los hitos H1–H6. Auditar las casillas históricas contra evidencia actual antes de repetir configuración de firma, proveedores o credenciales.
+Plan autorizado: [H6–H12](release-roadmap.md). Las casillas de aceptación visual/dispositivo nunca se cierran por código solamente.
+
+- [x] H6.1 Comparar refs y reunir continuación/principal sin perder archivos locales.
+- [x] H6.2 Registrar alcance MVP/post-MVP, responsables y correspondencia R0–R6.
+- [x] H6.3 Registrar referencia viva de Irlanda y matriz por ruta/estado.
+- [ ] H6.4 Publicar PR, verificar CI e integrar en la rama principal.
+- [ ] H6.5 Registrar SHA integrado y CI; comprobar referencia de diseño al cierre.
+
+## H7 — Legado y límites de código
+
+- [ ] H7.1 Inventariar objetos antiguos, dependencias, permisos, cron, Storage y funciones Edge.
+- [ ] H7.2 Respaldar legado fuera de Git y demostrar restauración aislada.
+- [ ] H7.3 Revocar superficies antiguas; retirar Cron/Edge/objetos por lotes; verificar autorización y sistema actual.
+- [ ] H7.4 Resolver avisos de seguridad; documentar excepciones justificadas.
+- [ ] H7.5 Modelos tipados en límites y servicio común de archivos (sin videos).
+
+## H8 — Componentes y navegación
+
+- [ ] H8.1 Tokens, fuentes/assets, controles y componentes fieles al mockup.
+- [ ] H8.2 Navegación por experiencia, sesión, enlaces y borradores conservados.
+- [ ] H8.3 Capturas comparables, accesibilidad y revisión de Irlanda.
+
+## H9 — Recorridos completos
+
+- [ ] H9.1 Adopción, detalle, guardados, perfil y contacto.
+- [ ] H9.2 Verificación, publicación, evidencia, revisión y correcciones.
+- [ ] H9.3 Apoyar, aportación, Guardián, tarjeta, cancelación e historial.
+- [ ] H9.4 Cuenta, ayuda, reportes y administración.
+- [ ] H9.5 Estados ausentes del mockup revisados y aceptación de matriz completa.
+
+## H10 — Identidad pública y operación
+
+- [ ] H10.1 Configurar/verificar Google y Apple, callbacks y no duplicación de identidad.
+- [ ] H10.2 Eliminación de cuenta y tratamiento de sesiones/contenido/evidencia.
+- [ ] H10.3 Analítica mínima y errores sin datos privados; consentimiento comprobado.
+- [ ] H10.4 Correo, soporte/moderación, legal y declaraciones de privacidad definitivas.
+- [ ] H10.5 Separar configuración test/producción, conservando identidad y firma.
+
+## H11 — Beta en ambas tiendas
+
+- [ ] H11.1 Mismo SHA por Codemagic en Play interno y TestFlight; verificar publicación.
+- [ ] H11.2 Recorridos en dispositivos, accesibilidad, instalación/actualización y recuperación.
+- [ ] H11.3 Usabilidad externa y revisión visual; cero defectos críticos/altos.
+- [ ] H11.4 Procedimiento de reversión probado.
+
+## H12 — Lanzamiento
+
+- [ ] H12.1 Landing, fichas, capturas, privacidad y soporte listos.
+- [ ] H12.2 Revisar Stripe live/Connect, conciliación, disputas, depósitos y límites.
+- [ ] H12.3 Obtener autorización explícita de dinero real antes de activarlo.
+- [ ] H12.4 Publicación gradual y monitoreo operativo verificado.
+
+## Controles recurrentes
+
+- [x] Monitor diario de diseño 09:00 configurado; sólo notifica novedades accionables.
+- [x] Revisión semanal de dependencias, seguridad, costos, soporte y deuda.
+- [x] Revisión mensual de restauración, accesos y firma.
+- [ ] Comprobación de artefactos/publicación por build y monitoreo de producción.
+
+Los monitores de Codex requieren equipo/conexiones disponibles; no reemplazan Cron ni observabilidad del servidor.

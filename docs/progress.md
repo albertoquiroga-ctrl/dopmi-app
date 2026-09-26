@@ -1,5 +1,15 @@
 # Dopmi — registro de avance
 
+## H6: consolidación y plan autorizado — 25 de septiembre de 2026 (México)
+
+- Fetch remoto y comparación completados: principal `c6114b6`, continuación `b1a4ac9`; rama `codex/mvp-consolidation` creada desde continuación e integrada con principal sin conflictos. Archivos no rastreados del usuario conservados. PR/CI/integración final pendientes al escribir esta entrada.
+- Actualizados alcance, instrucciones y backlog H6–H12. H5 conserva su aceptación test y excepción; videos/Meta/push/analítica avanzada post-MVP. Se mantiene la evidencia histórica.
+- Referencia de Irlanda `a246fa6f42ec517aae264d7fbd2358d647c4f840`, consultada por Git. Matriz de 52 rutas y hashes SHA256 de 126 archivos; no se declara aceptación visual ni de dispositivos. Copia de inspección en `.tools/design-reference`, ignorada por Git.
+- Codemagic API autenticada por variable de usuario: Android 2.3.3 (252), `0140fbd`, workflow `android-guardian-internal`, build `6ab6e1527e2cdbe815b37fa0`: firma/tests/publicación success. iOS 2.3.3 (241), `d74fe97`, build `6ab0b449b7d55fe4cc45f28e`, es anterior a Guardián. No se ejecutaron builds ni pagos nuevos.
+- Automatizaciones activas del chat: `dopmi-cambios-de-dise-o` (diario 09:00), `dopmi-revisi-n-semanal` (lunes 09:30), `dopmi-recuperaci-n-y-accesos` (día 1, 10:00), hora de México. Sólo novedades accionables; no sustituyen monitoreo de servidor.
+- Seis pruebas de configuración móvil aprobadas y diff sin errores. Docker instalado pero motor no disponible; Flutter no localizado en PATH. El gate completo se verificará en GitHub CI, sin atribuirlo a pruebas locales nuevas.
+
+
 ## H5 aceptado en modo prueba — 25 de septiembre de 2026
 
 El titular autoriza seguir la recomendación del agente humano de Stripe. Se registra la excepción explícita: disputa automática remota y conciliación post-transferencia aislada con evidencia Stripe simulada; secuencia remota completa no ejecutada. Caso sco_VKNrYjqxXyMbJi. Revisión independiente final no identifica otro recorrido funcional pendiente; alcance documental/test. CI36202506285 sobre943a7d4 reconsultado: cuatro jobs completed/success. Entrega y límites en hito5-delivery.md; backlog y decisiones actualizados. Sin cambios de runtime, schema, gates ni nuevo build. Dinero real y R0–R6 permanecen separados.

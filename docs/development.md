@@ -2,7 +2,7 @@
 
 ## Continuidad y alcance de esta guía
 
-Para retomar en Codex, empezar por [codex-handoff.md](codex-handoff.md). Rama de continuación al 25 de septiembre de 2026: `codex/stripe-transfer-delivery`; H5 sigue abierto para aceptación. El titular usa [Codemagic → TestFlight](guardian-acceptance.md). La configuración y las instalaciones descritas como «este Windows» son históricas del equipo original; no están incluidas en Git ni garantizadas en otra sesión.
+Para retomar en Codex, empezar por [codex-handoff.md](codex-handoff.md). Rama de continuación al 25 de septiembre de 2026: `codex/stripe-transfer-delivery`; H5 está aceptado en test; el plan vigente H6–H12 está en `release-roadmap.md`. El titular usa [Codemagic → TestFlight](guardian-acceptance.md). La configuración y las instalaciones descritas como «este Windows» son históricas del equipo original; no están incluidas en Git ni garantizadas en otra sesión.
 
 En una máquina nueva: Node 24, Flutter 3.47.4 / Dart 3.13.3 y Python 3; Docker para pruebas PostgreSQL. Instalar con `npm ci` en raíz, `apps/admin` y `tools/verification`; luego `flutter pub get` en `apps/mobile`. Los comandos reproducibles y las diferencias Java/Flutter entre CI y Codemagic están en la guía de continuidad. El panel actual también incluye rescates y aportaciones; la sección H2 conserva su descripción histórica.
 
