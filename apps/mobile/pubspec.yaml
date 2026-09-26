@@ -19,6 +19,7 @@ dependencies:
   uuid: ^4.6.0
   file_selector: ^1.1.0
   url_launcher: ^6.3.2
+  flutter_svg: ^2.3.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -29,3 +30,12 @@ flutter:
   assets:
     - assets/dopmi-wordmark.png
     - assets/welcome-pets.png
+    - assets/navigation/
+    - assets/onboarding/
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter.ttf
+    - family: Fraunces
+      fonts:
+        - asset: assets/fonts/Fraunces.ttf

@@ -73,9 +73,11 @@ void main() {
     (tester) async {
       final repo = FakeIdentityRepository();
       await start(tester, repo);
-      await tap(tester, 'Soy rescatista');
-      await tap(tester, 'Comenzar');
-      await tap(tester, 'Crear mi cuenta');
+      await tap(tester, 'Dar en adopción');
+      await tap(tester, 'Continuar');
+      await tap(tester, 'Continuar');
+      await tap(tester, 'Empezar');
+      await tap(tester, 'Crear cuenta');
       await tester.enterText(find.byType(TextFormField).at(0), 'Ana');
       await tester.enterText(
         find.byType(TextFormField).at(1),
@@ -113,7 +115,7 @@ void main() {
     expect(repo.profile.name, 'Ana editada');
     expect(find.text('Guardamos los cambios de tu perfil.'), findsOneWidget);
     await tap(tester, 'Cerrar sesión');
-    expect(find.text('Una nueva historia\nempieza contigo.'), findsOneWidget);
+    expect(find.text('Bienvenido a DopMi'), findsOneWidget);
     expect(find.text('Ana editada'), findsNothing);
   });
   testWidgets('a recovery link routes to reset without loading personal data', (
@@ -131,7 +133,7 @@ void main() {
     expect(find.text('Una nueva\ncontraseña.'), findsOneWidget);
     expect(repo.loads, 0);
     await tap(tester, 'Cancelar y cerrar sesión');
-    expect(find.text('Una nueva historia\nempieza contigo.'), findsOneWidget);
+    expect(find.text('Bienvenido a DopMi'), findsOneWidget);
   });
   testWidgets('password recovery ends at login with a success message', (
     tester,
@@ -153,6 +155,6 @@ void main() {
       find.text('Tu contraseña se actualizó. Inicia sesión con la nueva.'),
       findsOneWidget,
     );
-    expect(find.text('Iniciar sesión'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, 'Iniciar sesión'), findsOneWidget);
   });
 }

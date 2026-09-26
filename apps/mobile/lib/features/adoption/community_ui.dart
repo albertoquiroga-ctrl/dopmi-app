@@ -5,34 +5,40 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/navigation.dart';
+import '../identity/experience_controller.dart';
 import 'community_repository.dart';
 
-class CommunityNav extends StatelessWidget {
+class CommunityNav extends ConsumerWidget {
   const CommunityNav(this.index, {super.key});
   final int index;
   @override
-  Widget build(BuildContext context) => NavigationBar(
-    selectedIndex: index,
-    onDestinationSelected: (i) => context.go(
-      ['/adoptions', '/saved', '/my-adoptions', '/messages', '/profile'][i],
-    ),
-    destinations: const [
-      NavigationDestination(icon: Icon(Icons.pets_outlined), label: 'Adoptar'),
-      NavigationDestination(
-        icon: Icon(Icons.favorite_border),
-        label: 'Guardados',
-      ),
-      NavigationDestination(
-        icon: Icon(Icons.add_circle_outline),
-        label: 'Publicar',
-      ),
-      NavigationDestination(
-        icon: Icon(Icons.chat_bubble_outline),
-        label: 'Mensajes',
-      ),
-      NavigationDestination(icon: Icon(Icons.person_outline), label: 'Cuenta'),
-    ],
-  );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final experience = ref.watch(experienceProvider);
+    return ListenableBuilder(
+      listenable: experience,
+      builder: (context, _) {
+        final rescuer = experience.value == AccountExperience.rescuer;
+        final destinations = rescuer ? rescuerDestinations : donorDestinations;
+        final path = GoRouterState.of(context).uri.path;
+        final selected = destinations.any((item) => item.path == path)
+            ? path
+            : '/profile';
+        return DopmiBottomBar(
+          rescuer: rescuer,
+          selectedPath: selected,
+          onSelected: (destination) {
+            final shell = DopmiNavigationHost.of(context);
+            if (shell != null) {
+              shell.goBranch(destination.branch);
+            } else {
+              context.go(destination.path);
+            }
+          },
+        );
+      },
+    );
+  }
 }
 
 class CommunityFrame extends StatelessWidget {

@@ -7,13 +7,13 @@ Referencia observada: `irlanda/apoyar-detalle-perfil@a246fa6f42ec517aae264d7fbd2
 | Referencia | Implementación/entrada actual | Hito | Diferencia | Responsables | Aceptación |
 | --- | --- | --- | --- | --- | --- |
 | `/` | `/welcome` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/choose-account` | `/choose-intent` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/choose-intent` | `/choose-intent` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
+| `/choose-account` | `/welcome` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
+| `/choose-intent` | `/welcome` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
 | `/intro` | `/onboarding` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
 | `/onboarding/donor` | `/onboarding` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
 | `/onboarding/rescuer` | `/onboarding` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/welcome/donor` | `/welcome` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/welcome/rescuer` | `/welcome` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
+| `/welcome/donor` | `/start?intent=adopt` o `donate` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
+| `/welcome/rescuer` | `/start?intent=rescue` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
 | `/login/donor` | `/login` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
 | `/login/rescuer` | `/login` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
 | `/signup/donor` | `/signup` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
@@ -81,4 +81,4 @@ Cada fila necesita carga, vacío, error recuperable, reintento, interrupción, �
 | CLABE recolectada por formulario propio | Onboarding de Stripe Connect, sin duplicar datos bancarios |
 | Videos | Post-MVP; rechazar hasta implementar pipeline y moderación |
 
-La barra donante de referencia tiene Adoptar/Apoyar/Perfil; la actual tiene Adoptar/Guardados/Publicar/Mensajes/Cuenta. El mockup usa Inter/Fraunces, fondo blanco y púrpura #7841f2; Flutter usa tema Material, crema y #6430ce. H8 debe resolver estas diferencias antes de afirmar paridad.
+H8 incorpora Adoptar/Apoyar/Perfil para donantes y las cinco pestañas de rescatistas, Inter/Fraunces locales, fondo blanco y púrpura #7841f2. La bienvenida usa las tres intenciones y sus iconos de referencia. Guardados, mensajes y publicaciones siguen accesibles desde Perfil. Onboarding contextual y formularios de acceso implementados; aceptación visual y paridad de los recorridos H9 siguen pendientes; ver [evidencia H8](design-foundation.md). No se declara aprobación visual por aplicar un tema.

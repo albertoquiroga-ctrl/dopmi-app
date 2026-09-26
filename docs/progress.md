@@ -1,5 +1,39 @@
 # Dopmi — registro de avance
 
+## Contenido demo disponible — 26 de septiembre de 2026
+
+- Carga autorizada en Supabase de pruebas: cinco adopciones públicas con fotos y perfil ficticio, una en revisión, una con correcciones y tres casos demo (dos aprobados y uno cerrado). Inventario y límites en `demo-data.md`.
+- Verificado por API pública: catálogo, filtros, perfil y cinco fotos accesibles; dos fotos privadas bloqueadas. Casos visibles con cero nuevos montos reembolsables. Sin cambios de esquema, permisos, servicios o movimientos financieros.
+- Disponible para Internal Testing 2.3.3 (253) sin nuevo build. No se asignaron borradores a Irlanda sin confirmar su correo; revisión en dispositivo pendiente.
+
+## H8: publicado para revisión por Internal Testing — 26 de septiembre de 2026
+
+- A petición del titular, Codex inició por API `android-guardian-internal` sobre `codex/design-foundation`, SHA `74fd92286b089a162cd1448e3835c34fc44bc4f8`.
+- [Codemagic 6ab783481453f4d0a7737de5](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ab783481453f4d0a7737de5): finished; análisis, pruebas, compilación firmada y publicación success. Android **2.3.3 (253)**, paquete `com.mycompany.dopmi`.
+- Log de Publishing verificado: publicación en `internal` exitosa; consulta posterior `google-play tracks get` devuelve release `completed`, version code `253`. Firma y Guardián test conservados; dinero real sin activar.
+- Irlanda revisa exclusivamente desde Internal Testing. Instalación y aceptación visual pendientes; las capturas son complementarias. PR #6 continúa en borrador. iOS no se recompiló en esta entrega.
+- Este registro es documentación posterior al SHA distribuido, sin cambios de aplicación.
+
+## H8: CI final aprobado; aceptación visual pendiente — 25 de septiembre de 2026 (México)
+
+- Código `3d5c6e3aafb69d1724e98e01db6a8e5ddd27623d`, [CI 36211702329](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36211702329): los cuatro trabajos terminaron con success, consultados directamente. Incluye PostgreSQL/backend, integración real de identidad/adopción, análisis/pruebas Flutter, capturas y compilaciones Android/iOS simulator. Supersede el pendiente de CI de la entrada anterior.
+- [Artefacto de capturas 10895364071](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36211702329/artifacts/10895364071), `dopmi-design-review`, comprobado disponible. Capturas comparables permanentes y diferencias en `design-foundation.md`.
+- [PR #6](https://github.com/albertoquiroga-ctrl/dopmi-app/pull/6) permanece en borrador para revisión visual de Irlanda. No se recibió aceptación visual, no se fusionó H8 ni se inició H9. H6/H7 ya integrados. No se generó candidato Codemagic ni se activó dinero real. Este cierre documental no cambia el código validado.
+
+## H8: acceso adaptado y revisión visual preparada — 25 de septiembre de 2026 (México)
+
+- PR #6 en borrador: `codex/design-foundation`. Primer commit `f9f3fe3d9eeb63292dff81c72cf85eea3fa422da`, CI [36210411470](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36210411470), cuatro trabajos success comprobados. La ampliación de acceso posterior requiere su propio CI; no atribuirle ese resultado.
+- Incorporados dos pasos de onboarding para cada intención, entrada de cuenta, formularios y confirmación con marco visual común. Ilustraciones Flutter basadas en assets/estructura de Irlanda; copias económicas corregidas para gastos pagados y aprobados. Google/Apple conservan gates; legal de desarrollo sigue pendiente H10.
+- Verificación local ampliada: 61 pruebas Flutter + generación de capturas aprobadas; regresión de historial cubre entrada por `push` y cambio de propietario. Navegación, regreso e intención de registro comprobados a 320 × 640 con texto al 200 %. Entrada normal rescatista resuelta sin reemplazar enlaces explícitos. Análisis sin incidencias y cuatro recorridos reales de backend local aprobados. Capturas HTML/Flutter por ruta versionadas en `design-reviews/h8-access`, con diferencias y límites en `design-foundation.md`.
+- CI incorporará capturas de los componentes reales y acceso como artefacto `dopmi-design-review` vinculado al SHA. H8.1, H8.2 y H8.4 implementados; **H8.3 pendiente de revisión de Irlanda y ajustes visuales**. Se solicitó revisión al titular; no se recibió aceptación todavía. H8 no se cierra automáticamente. H9–H12 no están completados y no se activó dinero real.
+
+## H7 integrado; base visual H8 implementada — 25 de septiembre de 2026 (México)
+
+- H7 integrado mediante [PR #5](https://github.com/albertoquiroga-ctrl/dopmi-app/pull/5), head `08c72e2d44787ae16d59e0c57caadb41b306caa7`, merge `ba9f897f3fa418e952b98e4c604cffe468a8aa95`. CI [36208309068](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36208309068): cuatro trabajos success comprobados. Supersede el pendiente de integración anterior.
+- H8 en `codex/design-foundation`: fuentes locales con licencias, tokens/componentes, SVG y barras por experiencia; bienvenida con tres intenciones. Estado conservado entre pestañas y eliminado al cambiar de identidad. Recuperación y estados financieros existentes conservados. Referencia de Irlanda reconsultada: sigue `a246fa6`.
+- Pruebas locales: 57 Flutter + una generación de capturas; cuatro recorridos de backend real aprobados; análisis sin incidencias y seis pruebas de configuración móvil. Capturas a 377 × 852 y 320 × 640/texto 200 %, fuentes reales y sin datos personales; detalles en `design-foundation.md`.
+- H8 no está cerrado: pendiente portar onboarding/formularios y revisión visual de Irlanda. CI del PR de esta base pendiente al escribir esta entrada. No hay nuevo build firmado, aceptación móvil ni activación de dinero real. H9–H12 siguen pendientes.
+
 ## H6 integrado; H7 aplicado y verificado — 25 de septiembre de 2026 (México)
 
 - H6 integrado por [PR #4](https://github.com/albertoquiroga-ctrl/dopmi-app/pull/4), merge `99d3118ae69bc7c4c79200c28107bfb9cd2f26b1`. CI [36206671710](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36206671710) con cuatro jobs success sobre head `5741ef4`. Irlanda reconsultada al cierre: continúa `a246fa6`.

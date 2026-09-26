@@ -1,41 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-const ink = Color(0xff15110d);
-const cream = Color(0xfffaf8f2);
-const purple = Color(0xff6430ce);
-const yellow = Color(0xfff7cb2d);
-const muted = Color(0xff635d57);
+import 'design_tokens.dart';
 
-ThemeData dopmiTheme() {
+const ink = DopmiTokens.ink;
+const cream = DopmiTokens.surface;
+const purple = DopmiTokens.purple;
+const yellow = DopmiTokens.yellow;
+const muted = DopmiTokens.muted;
+
+ThemeData dopmiTheme({bool rescuer = false}) {
   final colors = ColorScheme.fromSeed(seedColor: purple).copyWith(
-    primary: purple,
-    onPrimary: Colors.white,
+    primary: rescuer ? purple : yellow,
+    onPrimary: rescuer ? Colors.white : ink,
     secondary: yellow,
     onSecondary: ink,
     surface: cream,
     onSurface: ink,
-    error: const Color(0xffa52929),
+    error: DopmiTokens.danger,
   );
   return ThemeData(
     useMaterial3: true,
+    fontFamily: DopmiTokens.bodyFont,
+    progressIndicatorTheme: const ProgressIndicatorThemeData(color: purple),
+    textSelectionTheme: const TextSelectionThemeData(cursorColor: ink),
+    cardTheme: CardThemeData(
+      elevation: 0,
+      color: Colors.white,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+        side: const BorderSide(color: DopmiTokens.line),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(foregroundColor: const Color(0xff59408f)),
+    ),
     colorScheme: colors,
     scaffoldBackgroundColor: cream,
     textTheme: const TextTheme(
       headlineLarge: TextStyle(
-        fontSize: 34,
-        fontWeight: FontWeight.w800,
+        fontFamily: DopmiTokens.displayFont,
+        fontSize: 32,
+        fontWeight: FontWeight.w600,
         height: 1.15,
         color: ink,
       ),
       headlineMedium: TextStyle(
+        fontFamily: DopmiTokens.displayFont,
         fontSize: 28,
-        fontWeight: FontWeight.w800,
+        fontWeight: FontWeight.w600,
         height: 1.2,
         color: ink,
       ),
       titleLarge: TextStyle(
-        fontSize: 21,
+        fontSize: 19,
         fontWeight: FontWeight.w700,
         color: ink,
       ),
@@ -45,25 +64,34 @@ ThemeData dopmiTheme() {
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: Colors.white,
-      contentPadding: const EdgeInsets.all(18),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Color(0xffc8c1b6)),
+        borderSide: const BorderSide(color: DopmiTokens.line),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: DopmiTokens.yellowInk, width: 2),
       ),
       errorMaxLines: 3,
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        minimumSize: const Size.fromHeight(54),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+        minimumSize: const Size.fromHeight(48),
+        shape: const StadiumBorder(),
+        textStyle: const TextStyle(
+          fontFamily: DopmiTokens.bodyFont,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        minimumSize: const Size.fromHeight(52),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        foregroundColor: rescuer ? purple : ink,
+        minimumSize: const Size.fromHeight(48),
+        shape: const StadiumBorder(),
       ),
     ),
     appBarTheme: const AppBarTheme(
@@ -124,7 +152,7 @@ class PageFrame extends StatelessWidget {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 520),
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
             children: children,
           ),
         ),
@@ -236,11 +264,12 @@ class PasswordField extends StatefulWidget {
     this.label = 'Contraseña',
     this.validator,
     this.newPassword = false,
+    this.labelAbove = false,
   });
   final TextEditingController controller;
   final String label;
   final String? Function(String?)? validator;
-  final bool newPassword;
+  final bool newPassword, labelAbove;
   @override
   State<PasswordField> createState() => _PasswordFieldState();
 }
@@ -248,26 +277,58 @@ class PasswordField extends StatefulWidget {
 class _PasswordFieldState extends State<PasswordField> {
   bool hidden = true;
   @override
-  Widget build(BuildContext context) => TextFormField(
-    controller: widget.controller,
-    obscureText: hidden,
-    autocorrect: false,
-    enableSuggestions: false,
-    validator: widget.validator,
-    autofillHints: [
-      widget.newPassword ? AutofillHints.newPassword : AutofillHints.password,
-    ],
-    decoration: InputDecoration(
-      labelText: widget.label,
-      suffixIcon: IconButton(
-        tooltip: hidden
-            ? 'Mostrar ${widget.label.toLowerCase()}'
-            : 'Ocultar ${widget.label.toLowerCase()}',
-        icon: Icon(
-          hidden ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+  Widget build(BuildContext context) {
+    final field = TextFormField(
+      controller: widget.controller,
+      obscureText: hidden,
+      autocorrect: false,
+      enableSuggestions: false,
+      validator: widget.validator,
+      autofillHints: [
+        widget.newPassword ? AutofillHints.newPassword : AutofillHints.password,
+      ],
+      decoration: InputDecoration(
+        labelText: widget.labelAbove ? null : widget.label,
+        hintText: widget.labelAbove
+            ? (widget.newPassword
+                  ? 'Elige una contraseña segura'
+                  : 'Tu contraseña')
+            : null,
+        suffixIcon: IconButton(
+          tooltip: hidden
+              ? 'Mostrar ${widget.label.toLowerCase()}'
+              : 'Ocultar ${widget.label.toLowerCase()}',
+          icon: Icon(
+            hidden ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+          ),
+          onPressed: () => setState(() => hidden = !hidden),
         ),
-        onPressed: () => setState(() => hidden = !hidden),
       ),
-    ),
+    );
+    return widget.labelAbove ? LabeledField(widget.label, child: field) : field;
+  }
+}
+
+class LabeledField extends StatelessWidget {
+  const LabeledField(this.label, {super.key, required this.child});
+  final String label;
+  final Widget child;
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      ExcludeSemantics(
+        child: Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: muted,
+          ),
+        ),
+      ),
+      const SizedBox(height: 7),
+      Semantics(label: label, child: child),
+    ],
   );
 }

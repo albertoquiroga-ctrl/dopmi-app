@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'core/ui.dart';
+import 'core/navigation.dart';
+import 'features/identity/experience_controller.dart';
+import 'features/identity/experience_landing.dart';
 import 'features/identity/auth_screens.dart';
 import 'features/identity/identity_controller.dart';
 import 'features/identity/identity_repository.dart';
@@ -22,10 +25,13 @@ final routerInitialLocationProvider = Provider<String>((ref) => '/welcome');
 
 final routerProvider = Provider<GoRouter>((ref) {
   final identity = ref.watch(identityControllerProvider);
+  final session = ref.watch(navigationSessionProvider);
   String? restoringPath;
   final router = GoRouter(
-    initialLocation: ref.watch(routerInitialLocationProvider),
-    overridePlatformDefaultLocation: false,
+    initialLocation: session == 0
+        ? ref.watch(routerInitialLocationProvider)
+        : ref.read(navigationSessionProvider.notifier).location,
+    overridePlatformDefaultLocation: session != 0,
     refreshListenable: identity,
     redirect: (_, state) {
       if (identity.loading && state.uri.path != '/loading') {
@@ -34,7 +40,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       final desired = identity.loading
           ? state.uri.path
           : Uri.parse(restoringPath ?? state.uri.toString()).path;
-      final target = identity.redirect(desired);
+      var target = identity.redirect(desired);
+      if (target == '/adoptions' && identity.identity?.verified == true) {
+        target = '/home';
+      }
       if (!identity.loading && restoringPath != null) {
         final restored = restoringPath;
         restoringPath = null;
@@ -43,6 +52,83 @@ final routerProvider = Provider<GoRouter>((ref) {
       return target;
     },
     routes: [
+      GoRoute(
+        path: '/home',
+        builder: (_, _) => const ExperienceLandingScreen(),
+      ),
+      StatefulShellRoute.indexedStack(
+        builder: (_, _, shell) =>
+            DopmiNavigationHost(shell: shell, child: shell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/adoptions',
+                builder: (_, state) => CatalogScreen(
+                  key: ValueKey('${identity.identity?.id}:${state.uri}'),
+                  owner: state.uri.queryParameters['owner'],
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/rescue-cases',
+                builder: (_, state) => RescueCatalogScreen(
+                  key: ValueKey('${identity.identity?.id}:${state.uri}'),
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/profile',
+                builder: (_, _) =>
+                    ProfileScreen(key: ValueKey(identity.identity?.id)),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/rescuer',
+                builder: (_, state) => RescueHomeScreen(
+                  key: ValueKey('${identity.identity?.id}:${state.uri}'),
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/my-cases',
+                builder: (_, _) =>
+                    MyRescueCasesScreen(key: ValueKey(identity.identity?.id)),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/my-adoptions',
+                builder: (_, _) =>
+                    MyAdoptionsScreen(key: ValueKey(identity.identity?.id)),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/messages',
+                builder: (_, _) =>
+                    ThreadsScreen(key: ValueKey(identity.identity?.id)),
+              ),
+            ],
+          ),
+        ],
+      ),
       GoRoute(
         path: '/guardian/history',
         builder: (_, _) =>
@@ -66,12 +152,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, state) => ContributeScreen(
           state.pathParameters['id']!,
           attempt: state.extra is Json ? state.extra! as Json : null,
-          key: ValueKey('${identity.identity?.id}:${state.uri}'),
-        ),
-      ),
-      GoRoute(
-        path: '/rescuer',
-        builder: (_, state) => RescueHomeScreen(
           key: ValueKey('${identity.identity?.id}:${state.uri}'),
         ),
       ),
@@ -103,23 +183,10 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
       ),
       GoRoute(
-        path: '/rescue-cases',
-        builder: (_, state) => RescueCatalogScreen(
-          key: ValueKey('${identity.identity?.id}:${state.uri}'),
-        ),
-      ),
-      GoRoute(
         path: '/rescue-cases/:id',
         builder: (_, state) => RescueCatalogScreen(
           caseId: state.pathParameters['id'],
           key: ValueKey('${identity.identity?.id}:${state.uri}'),
-        ),
-      ),
-      GoRoute(
-        path: '/adoptions',
-        builder: (_, state) => CatalogScreen(
-          key: ValueKey('${identity.identity?.id}:${state.uri}'),
-          owner: state.uri.queryParameters['owner'],
         ),
       ),
       GoRoute(
@@ -139,20 +206,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, state) => PublicProfileScreen(state.pathParameters['id']!),
       ),
       GoRoute(
-        path: '/my-adoptions',
-        builder: (_, _) =>
-            MyAdoptionsScreen(key: ValueKey(identity.identity?.id)),
-      ),
-      GoRoute(
         path: '/my-adoptions/:id',
         builder: (_, state) => PublicationScreen(
           state.pathParameters['id']!,
           key: ValueKey('${identity.identity?.id}:${state.uri}'),
         ),
-      ),
-      GoRoute(
-        path: '/messages',
-        builder: (_, _) => ThreadsScreen(key: ValueKey(identity.identity?.id)),
       ),
       GoRoute(
         path: '/messages/:id',
@@ -183,6 +241,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/onboarding',
         builder: (_, state) => OnboardingScreen(
+          intent: safeIntent(state.uri.queryParameters['intent']),
+        ),
+      ),
+      GoRoute(
+        path: '/start',
+        builder: (_, state) => AccountStartScreen(
           intent: safeIntent(state.uri.queryParameters['intent']),
         ),
       ),
@@ -229,10 +293,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/auth-error',
         builder: (_, _) => AuthErrorScreen(identity: identity),
       ),
-      GoRoute(
-        path: '/profile',
-        builder: (_, _) => ProfileScreen(key: ValueKey(identity.identity?.id)),
-      ),
       GoRoute(path: '/terms', builder: (_, _) => const TermsScreen()),
     ],
     errorBuilder: (context, _) => PageFrame(
@@ -245,22 +305,43 @@ final routerProvider = Provider<GoRouter>((ref) {
       ],
     ),
   );
-  ref.onDispose(router.dispose);
+  void rememberLocation() {
+    if (router.routerDelegate.currentConfiguration.isNotEmpty) {
+      ref
+          .read(navigationSessionProvider.notifier)
+          .rememberLocation(router.state.uri.toString());
+    }
+  }
+
+  router.routerDelegate.addListener(rememberLocation);
+  ref.onDispose(() {
+    router.routerDelegate.removeListener(rememberLocation);
+    router.dispose();
+  });
   return router;
 });
 
 class DopmiApp extends ConsumerWidget {
   const DopmiApp({super.key});
   @override
-  Widget build(BuildContext context, WidgetRef ref) => MaterialApp.router(
-    title: 'Dopmi',
-    debugShowCheckedModeBanner: false,
-    theme: dopmiTheme(),
-    locale: const Locale('es', 'MX'),
-    supportedLocales: const [Locale('es', 'MX')],
-    localizationsDelegates: GlobalMaterialLocalizations.delegates,
-    routerConfig: ref.watch(routerProvider),
-  );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
+    final experience = ref.watch(experienceProvider);
+    return ListenableBuilder(
+      listenable: experience,
+      builder: (context, _) => MaterialApp.router(
+        title: 'Dopmi',
+        debugShowCheckedModeBanner: false,
+        theme: dopmiTheme(
+          rescuer: experience.value == AccountExperience.rescuer,
+        ),
+        locale: const Locale('es', 'MX'),
+        supportedLocales: const [Locale('es', 'MX')],
+        localizationsDelegates: GlobalMaterialLocalizations.delegates,
+        routerConfig: router,
+      ),
+    );
+  }
 }
 
 class AuthErrorScreen extends StatefulWidget {
