@@ -1,5 +1,13 @@
 # Dopmi — registro de avance
 
+## H8: publicado para revisión por Internal Testing — 26 de septiembre de 2026
+
+- A petición del titular, Codex inició por API `android-guardian-internal` sobre `codex/design-foundation`, SHA `74fd92286b089a162cd1448e3835c34fc44bc4f8`.
+- [Codemagic 6ab783481453f4d0a7737de5](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ab783481453f4d0a7737de5): finished; análisis, pruebas, compilación firmada y publicación success. Android **2.3.3 (253)**, paquete `com.mycompany.dopmi`.
+- Log de Publishing verificado: publicación en `internal` exitosa; consulta posterior `google-play tracks get` devuelve release `completed`, version code `253`. Firma y Guardián test conservados; dinero real sin activar.
+- Irlanda revisa exclusivamente desde Internal Testing. Instalación y aceptación visual pendientes; las capturas son complementarias. PR #6 continúa en borrador. iOS no se recompiló en esta entrega.
+- Este registro es documentación posterior al SHA distribuido, sin cambios de aplicación.
+
 ## H8: CI final aprobado; aceptación visual pendiente — 25 de septiembre de 2026 (México)
 
 - Código `3d5c6e3aafb69d1724e98e01db6a8e5ddd27623d`, [CI 36211702329](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36211702329): los cuatro trabajos terminaron con success, consultados directamente. Incluye PostgreSQL/backend, integración real de identidad/adopción, análisis/pruebas Flutter, capturas y compilaciones Android/iOS simulator. Supersede el pendiente de CI de la entrada anterior.

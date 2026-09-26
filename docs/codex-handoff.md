@@ -6,7 +6,7 @@ Esta sección supersede las prioridades históricas siguientes. H5 está aceptad
 
 Referencia viva: `irlanda/apoyar-detalle-perfil`, SHA inicial `a246fa6f42ec517aae264d7fbd2358d647c4f840`. Ver `design-reference.json` y `design-parity.md`. Seguir nuevos commits al inicio/cierre de cada ciclo. Videos, Meta, push y analítica avanzada son post-MVP; tienda/fondo/bonos/cashback quedan fuera.
 
-Codemagic API verificada mediante variable local de usuario `CM_API_TOKEN` (nunca imprimir su valor). Android 2.3.3 (252), `0140fbd`, publicado desde `android-guardian-internal`; iOS 2.3.3 (241), `d74fe97`, es anterior. H11 exige el mismo candidato en Play interno y TestFlight.
+Codemagic API verificada mediante variable local de usuario `CM_API_TOKEN` (nunca imprimir su valor). Android H8 2.3.3 (253), `74fd92286b089a162cd1448e3835c34fc44bc4f8`, publicado desde `android-guardian-internal` por Codex a petición del titular; build `6ab783481453f4d0a7737de5`, canal Play `internal` comprobado `completed`. Irlanda revisa desde Internal Testing; instalación y aceptación visual pendientes; iOS 2.3.3 (241), `d74fe97`, es anterior. H11 exige el mismo candidato en Play interno y TestFlight.
 
 Siguiente: revisión visual H8 y ajustes que resulten, antes del cierre. Componentes/navegación, bienvenida, onboarding contextual y formularios implementados en PR #6; evidencia y diferencias en `design-foundation.md`. H8 no está aceptado por Irlanda ni probado en dispositivo. Retiro remoto H7 aplicado por MCP; ver `legacy-retirement.md`, incluidos respaldo local y límites. No borrar legado ni modificar historial de migraciones a ciegas. Dinero real requiere autorización separada.
 
