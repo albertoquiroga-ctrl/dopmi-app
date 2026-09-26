@@ -1171,6 +1171,57 @@ test('Guardian paid initial payment with invalidated eligibility refunds instead
   assert.equal((await f.service().work()).processed,1);assert.equal(f.transfers.size,0);
 });
 
+test('Guardian initial dispute persists review without settlement and cannot resume through a later webhook',async()=>{
+  const f=initialFixture();const opened=await f.initial.checkout(donor,initialInput);f.paid();
+  const before=await activationRpc('get',{cycle_id:opened.cycle_id});
+  const clean=guardianInitialEvidence([...f.sessions.values()][0],f.intent,before);
+  f.charge.disputed=true;
+  assert.throws(()=>guardianInitialEvidence([...f.sessions.values()][0],f.intent,before),/guardian_initial_disputed/);
+  assert.equal(await f.initial.reconcileSession('cs_test_initial1'),null);
+  const a=await activationRpc('get',{cycle_id:opened.cycle_id});
+  assert.equal(a.status,'attention');assert.equal(a.payment_review.reason,'disputed');
+  assert.equal(a.payment_review.charge_id,'ch_initial');assert.ok(a.payment_review_at);
+  assert.equal(a.settlement,null);assert.equal(a.hold_expires_at,before.hold_expires_at);
+  const c=(await db.query('select reserved_cents,status from private.dopmi_guardian_cycles where id=$1',[opened.cycle_id])).rows[0];
+  assert.equal(Number(c.reserved_cents),4900);assert.equal(c.status,'reserved');
+  f.charge.disputed=false;
+  await f.initial.handleWebhook('evt_initial');await f.initial.reconcile();
+  assert.deepEqual((await activationRpc('get',{cycle_id:opened.cycle_id})).payment_review,a.payment_review);
+  await rejected(()=>guardianSettlement('settle_initial',clean),/Pago inicial en revisión/);
+  assert.equal((await db.query('select count(*)::integer n from private.dopmi_guardian_jobs')).rows[0].n,0);
+  await role(donor);const item=(await history()).items[0];
+  assert.equal(item.status,'review');assert.equal(item.paid_cents,null);assert.equal(item.assigned_cents,null);
+  assert.doesNotMatch(JSON.stringify(item),/pi_initial|ch_initial|payment_review/);
+  await role(other);assert.deepEqual((await history()).items,[]);
+});
+
+test('Guardian initial dispute requires verified identity and service-only immutable review evidence',async()=>{
+  const f=initialFixture();const opened=await f.initial.checkout(donor,initialInput);f.paid();f.charge.disputed=true;
+  f.intent.customer='cus_foreign';
+  await assert.rejects(f.initial.reconcileSession('cs_test_initial1'),/guardian_initial_charge_mismatch/);
+  assert.equal((await activationRpc('get',{cycle_id:opened.cycle_id})).status,'pending');
+  const evidence={cycle_id:opened.cycle_id,session_id:'cs_test_initial1',reason:'disputed',
+    payment_intent_id:'pi_initial',charge_id:'ch_initial',gross_cents:5000,disputed:true};
+  for(const patch of [{session_id:'cs_test_other'},{gross_cents:2000},{disputed:false},{reason:'other'}])
+    await rejected(()=>activationRpc('review_payment',{...evidence,...patch}),/no coincide/);
+  for(const [actor,name] of [['','anon'],[donor,'authenticated'],[staff,'authenticated']]){
+    await role(actor,name);await rejected(()=>activationRpc('review_payment',evidence),/permission denied/);
+    await db.exec('reset role');
+  }
+  const a=await activationRpc('review_payment',evidence);
+  assert.equal((await activationRpc('review_payment',evidence)).payment_review_at,a.payment_review_at);
+  await rejected(()=>activationRpc('review_payment',{...evidence,charge_id:'ch_other'}),/otra evidencia/);
+});
+
+test('Guardian initial dispute observation cannot overwrite an existing settlement',async()=>{
+  const f=initialFixture();const opened=await f.initial.checkout(donor,initialInput);f.paid();
+  const settled=await f.initial.reconcileSession('cs_test_initial1');
+  const a=await activationRpc('review_payment',{cycle_id:opened.cycle_id,session_id:'cs_test_initial1',
+    reason:'disputed',payment_intent_id:'pi_initial',charge_id:'ch_initial',gross_cents:5000,disputed:true});
+  assert.equal(a.payment_review,null);assert.equal(a.status,'settled');
+  assert.deepEqual(a.settlement,settled);
+});
+
 test('Guardian initial evidence rejects another customer, live mode, unknown fee and reused charge',async()=>{
   const f=initialFixture();const result=await f.initial.checkout(donor,initialInput);f.paid();
   const a=await activationRpc('get',{cycle_id:result.cycle_id}),s=[...f.sessions.values()][0];
@@ -1445,6 +1496,71 @@ async function collectionFixture() {
   return {...f,subscription,calendar,collector,prepare};
 }
 const collectionDue=()=>db.exec('update private.dopmi_guardian_collection_jobs set available_at=now()');
+
+test('Guardian unattempted void waits for Stripe cancellation visibility and then closes without another write',async()=>{
+  const f=await collectionFixture();
+  f.invoice.created-=3*86400;f.invoice.lines.data[0].period.start=f.invoice.created;
+  const retrieve=f.stripe.paymentIntents.retrieve;let cancellationVisible=false;
+  f.stripe.paymentIntents.retrieve=async(...args)=>({...await retrieve(...args),status:cancellationVisible?'canceled':'requires_confirmation'});
+  await assert.rejects(f.collector().run(f.invoice.id),/guardian_recovery_void_unconfirmed/);
+  const pending=await collectionRpc('get',{invoice_id:f.invoice.id});
+  assert.equal(pending.status,'pending');assert.equal(pending.pay_requested_at,null);
+  assert.equal(f.calls.filter(c=>c.kind==='void').length,1);
+  cancellationVisible=true;await collectionDue();
+  assert.equal((await f.collector().run(f.invoice.id)).status,'skipped');
+  assert.equal(f.calls.filter(c=>c.kind==='void').length,1);
+  assert.equal(f.calls.filter(c=>c.kind==='pay').length,0);
+});
+
+test('Guardian unattempted void with mismatched payment stays in review',async()=>{
+  const f=await collectionFixture();
+  f.invoice.created-=3*86400;f.invoice.lines.data[0].period.start=f.invoice.created;
+  const retrieve=f.stripe.paymentIntents.retrieve;
+  f.stripe.paymentIntents.retrieve=async(...args)=>({...await retrieve(...args),customer:'cus_foreign'});
+  await assert.rejects(f.collector().run(f.invoice.id),/guardian_recovery_intent_mismatch/);
+  assert.equal((await collectionRpc('get',{invoice_id:f.invoice.id})).status,'attention');
+  await collectionDue();await f.collector().run(f.invoice.id);
+  assert.equal(f.calls.filter(c=>c.kind==='void').length,1);
+  assert.equal(f.calls.filter(c=>c.kind==='pay').length,0);
+});
+
+test('Guardian unattempted void visibility retries stop at the existing collection limit',async()=>{
+  const f=await collectionFixture();
+  f.invoice.created-=3*86400;f.invoice.lines.data[0].period.start=f.invoice.created;
+  const retrieve=f.stripe.paymentIntents.retrieve;
+  f.stripe.paymentIntents.retrieve=async(...args)=>({...await retrieve(...args),status:'requires_confirmation'});
+  for(let attempt=0;attempt<8;attempt++) {
+    await collectionDue();
+    await assert.rejects(f.collector().run(f.invoice.id),/guardian_recovery_void_unconfirmed/);
+  }
+  await collectionDue();const terminal=await f.collector().run(f.invoice.id);
+  assert.equal(terminal.status,'attention');assert.equal(terminal.error_code,'retry_limit');
+  assert.equal(f.calls.filter(c=>c.kind==='void').length,1);
+  assert.equal(f.calls.filter(c=>c.kind==='pay').length,0);
+});
+
+for(const [label,change,expected] of [
+  ['eligible','', 'pending'],
+  ['authorized payment',",pay_requested_at=now()",'attention'],
+  ['collect decision',",decision='collect'",'attention'],
+  ['other evidence error',",error_code='guardian_recovery_intent_mismatch'",'attention'],
+  ['exhausted retries',',attempts=8','attention'],
+  ['expired retry window',",first_attempt_at=now()-interval '24 hours'",'attention'],
+  ['active lease',",lease=gen_random_uuid(),lease_until=now()+interval '5 minutes'",'attention'],
+]) test(`Guardian void queue repair preserves ${label}`,async()=>{
+  const f=await collectionFixture();const job=await f.prepare();
+  await db.exec(`update private.dopmi_guardian_collection_jobs set status='attention',decision='skip',
+    error_code='guardian_recovery_void_unconfirmed',attempts=1,first_attempt_at=now()`);
+  if(change)await db.exec(`update private.dopmi_guardian_collection_jobs set ${change.slice(1)}`);
+  const financialBefore=await db.query('select * from private.dopmi_guardian_cycles where id=$1',[job.cycle_id]);
+  const sql=(await readFile(new URL('../../supabase/migrations/20260925171348_guardian_void_visibility_retry.sql',import.meta.url),'utf8'))
+    .replace(/^begin;\s*/,'').replace(/\s*commit;\s*$/,'');
+  await db.exec(sql);await db.exec(sql);
+  const result=await collectionRpc('get',{invoice_id:f.invoice.id});
+  assert.equal(result.status,expected);assert.equal(result.error_code,'guardian_recovery_'+(label==='other evidence error'?'intent_mismatch':'void_unconfirmed'));
+  assert.deepEqual(await db.query('select * from private.dopmi_guardian_cycles where id=$1',[job.cycle_id]),financialBefore);
+  assert.equal(f.calls.some(c=>['pay','void'].includes(c.kind)),false);
+});
 
 test('Guardian monthly collection reserves before one off-session pay and settles actual net',async()=>{
   const f=await collectionFixture(),pay=f.stripe.invoices.pay;
@@ -2707,12 +2823,30 @@ for(const stage of ['stripe','confirmed','complete'])test(`Guardian lost ${stage
   await refundReady();assert.equal((await f.returns().reconcileCycle(f.cycle.id)).adjustment.status,'completed');
   assert.equal(f.writes.length,1);assert.equal(f.reversals.size,1);
 });
-for(const status of ['pending','requires_action','failed','canceled','partial','disputed'])test(`Guardian ${status} refund never authorizes a reversal or frees capacity`,async()=>{
+for(const status of ['pending','requires_action','failed','canceled','partial','disputed','disputed_without_refund'])test(`Guardian ${status} refund never authorizes a reversal or frees capacity`,async()=>{
   const f=await guardianRefundFixture();
-  if(status==='partial')f.evidence(1000);else if(status==='disputed')f.charge.disputed=true;else f.evidence(5000,status);
+  if(status==='partial')f.evidence(1000);else if(status.startsWith('disputed')) {
+    f.charge.disputed=true;
+    if(status==='disputed_without_refund'){f.refunds.length=0;f.charge.amount_refunded=0;}
+  } else f.evidence(5000,status);
   const s=await f.returns().reconcileCycle(f.cycle.id);assert.equal(f.writes.length,0);
   assert.equal((await guardianSettlement('get',{cycle_id:f.cycle.id})).allocated_cents,4314);
   if(status==='partial')assert.equal(s.adjustment.confirmed_refund_cents,1000);
+  if(status.startsWith('disputed')) {
+    assert.equal(s.adjustment.status,'review');
+    assert.equal(s.adjustment.disputed,true);
+    await role(donor);
+    const item=(await history()).items.find(item=>item.id===f.cycle.id);
+    assert.equal(item.status,'refund_review');
+    assert.equal(item.assigned_cents,4314);
+    assert.equal(item.transferred_cents,4314);
+    assert.equal(item.reversed_cents,0);
+    await db.exec('reset role');
+    await f.returns().reconcileCycle(f.cycle.id);
+    assert.equal(f.writes.length,0);
+    assert.equal(f.calls.filter(call=>call.kind==='refund').length,0);
+    assert.equal((await guardianSettlement('get',{cycle_id:f.cycle.id})).allocated_cents,4314);
+  }
 });
 test('Guardian separate partial refunds summing to the full charge permit one full reversal',async()=>{
   const f=await guardianRefundFixture();f.refunds[0].amount=1000;f.refunds.push({...f.refunds[0],id:'re_external2',amount:4000});

@@ -1,5 +1,8 @@
 # Dopmi — contrato del MVP público
 
+> Actualización autorizada el 25 de septiembre de 2026 (México): `release-roadmap.md` y `backlog.md` gobiernan el alcance vigente. Referencia viva: rama `irlanda/apoyar-detalle-perfil`; se registra el SHA por entrega. Videos, Meta, push y analítica avanzada son post-MVP; tienda, fondo comunitario, bonos y cashback están excluidos. La regla histórica de implementar todo el mockup no incorpora esas simulaciones. Google/Apple, eliminación de cuenta y medición mínima sí forman parte del MVP. H5 está aceptado en test; dinero real requiere aceptación separada.
+
+
 > Lectura de continuidad, 25 de septiembre de 2026: este contrato conserva el alcance y la checklist histórica de lanzamiento, no es el estado operativo más reciente. Consultar [codex-handoff.md](codex-handoff.md) y [backlog.md](backlog.md). R0–R6 y H1–H6 son listas diferentes. El repositorio ya configura iOS con `com.mycompany.dopmi`, integración `dopmi_app_store`, versión 2.3.3 y TestFlight; falta acreditar la nueva aceptación Guardián en dispositivo. Las casillas de credenciales/tiendas deben contrastarse con las cuentas antes de repetir o rotar configuraciones existentes. Una fecha programada de activación no acredita que se completó.
 
 Estado: **alcance completo autorizado**  
@@ -46,7 +49,7 @@ El prototipo es la referencia de experiencia y contenido. Sus simulaciones no se
 - Publicación de adopciones y casos.
 - Borradores, revisión, rechazo, correcciones, retiro y cierre.
 - Necesidades de comida, medicina y veterinario.
-- Evidencia por categoría, comprobantes, videos y ciclos recurrentes de comida.
+- Evidencia por categoría, comprobantes y ciclos recurrentes de comida; videos post-MVP.
 - Mis casos, progreso de fondeo, adopción y estados.
 - Mensajes.
 - Perfil público y privado, edición, pagos, datos bancarios y centro legal.

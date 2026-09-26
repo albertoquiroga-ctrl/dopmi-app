@@ -106,6 +106,70 @@ workflows:
         track: internal
         submit_as_draft: false
 
+  android-guardian-internal:
+    name: Dopmi Guardián — Google Play Internal Testing
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    working_directory: apps/mobile
+
+    environment:
+      flutter: '3.47.4'
+      java: 17
+      android_signing:
+        - dopmi_upload_2026
+      groups:
+        - dopmi_supabase
+        - dopmi_google_play
+      vars:
+        PACKAGE_NAME: com.mycompany.dopmi
+        RELEASE_NAME: 2.3.3
+
+    cache:
+      cache_paths:
+        - $FLUTTER_ROOT/.pub-cache
+        - $HOME/.gradle/caches
+        - $HOME/.gradle/wrapper
+
+    scripts:
+      - name: Create Guardian test configuration
+        script: python3 ../../scripts/write-mobile-config.py --guardian-test
+      - name: Install dependencies
+        script: flutter pub get
+      - name: Static analysis
+        script: flutter analyze
+      - name: Unit and widget tests
+        script: flutter test
+      - name: Build signed Guardian Android App Bundle
+        script: |
+          set -euo pipefail
+          # Play uses the existing application ID, never the standalone APK suffix.
+          unset DOPMI_GUARDIAN_ACCEPTANCE_BUILD
+          BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 231))
+          flutter build appbundle \
+            --release \
+            --build-name="$RELEASE_NAME" \
+            --build-number="$BUILD_NUMBER" \
+            --dart-define-from-file=config.json
+          python3 - "$BUILD_NUMBER" <<'PYINFO'
+          import os, subprocess, sys
+          from pathlib import Path
+          sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+          Path('build/guardian-build-info.txt').write_text(
+              f"Commit: {sha}\nVersion: {os.environ['RELEASE_NAME']} ({sys.argv[1]})\n"
+              "Guardian test: true\nDistribution: Google Play internal\n")
+          PYINFO
+
+    artifacts:
+      - build/guardian-build-info.txt
+      - build/app/outputs/bundle/release/app-release.aab
+      - build/app/outputs/mapping/release/mapping.txt
+
+    publishing:
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
+        submit_as_draft: false
+
   ios-verify:
     name: Dopmi iOS — Build and Verify
     instance_type: mac_mini_m2

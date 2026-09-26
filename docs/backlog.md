@@ -35,29 +35,88 @@ Cada tarea se completa con código, prueba de aceptación y evidencia en `progre
 - [x] H4.5 Activar en el proyecto las funciones ya implementadas de Stripe Connect, webhooks y trabajador; validar una aportación, transferencia, devolución y conciliación completas en modo prueba bajo idempotencia. La producción queda fuera hasta una revisión independiente. Incluye trabajo periódico verificado con HTTP 200 y devolución/reversión comprobada en Stripe, base de datos y Android.
 - [x] H4.6 Cerrar documentación de entrega del hito y propuesta de siguiente alcance (Guardián). Véase `docs/hito4-delivery.md`.
 
-## Hito 5 — Guardián (abierto; continuación en Codex)
+## Hito 5 — Guardián (completado en modo prueba)
 
-Corte: 25 de septiembre de 2026. Rama `codex/stripe-transfer-delivery`; guía principal en [codex-handoff.md](codex-handoff.md). Se separa implementación de aceptación: no reconstruir funciones existentes porque una casilla integral siga abierta.
+Cierre: 25 de septiembre de 2026. Aceptación del titular con excepción explícita para disputa posterior a transferencia, según recomendación de soporte Stripe. Evidencia y límites en [entrega H5](hito5-delivery.md). No autoriza dinero real.
 
 - [x] H5.1 Planificador del neto: urgencia, antigüedad y desempate estable; sin asignación parcial cuando falta capacidad.
 - [x] H5.2 Decisiones del titular: primer cobro al activar, mensualidad condicionada, mes omitido sin deuda, cambio futuro y cancelación. Consentimiento e interfaz implementados. Reglas en `product-decisions.md`.
-- [ ] H5.3 Aceptación de reserva y liquidación transaccional. Código, migraciones, CI y concurrencia PostgreSQL implementados/verificados; falta recorrido integrado con Stripe/app que confirme neto completo o devolución total.
-- [ ] H5.4 Aceptación del ciclo de vida. Ya están implementados alta/abandono, calendario protegido, cobro mensual y omisión, recuperación, solicitudes de monto/cancelación, cancelación durante alta, cambio de tarjeta/3DS, historial privado, límites de aniversario y devoluciones/reversiones. Último CI revisado: 356 backend, 191 pgTAP, 51 Flutter, cuatro jobs aprobados en `8e6663d`. Falta aceptación integrada; ver matriz.
-- [ ] H5.5 Recorridos completos y revisión independiente, con evidencia antes de cerrar el hito. No habilita dinero real automáticamente.
+- [x] H5.3 Aceptación de reserva y liquidación transaccional completada en test: alta/renovación, omisión, concurrencia, devolución y reversiones conciliadas. Excepción de disputa documentada en hito5-delivery.md.
+- [x] H5.4 Ciclo de vida aceptado: alta/abandono, calendario, cobro/omisión, recuperación, monto/cancelación, tarjeta/3DS e historial privado. CI36202506285, commit943a7d4: cuatro jobs aprobados. Límites de calendario preparado y dispositivo explícitos en entrega H5.
+- [x] H5.5 Revisión independiente de seguridad y correcciones registrada; revisión final documental/test sin otro recorrido pendiente. Excepción de cobertura de disputa aceptada por el titular. No habilita dinero real.
 
 ### Cola inmediata
 
-- [ ] H5.A Comparar entorno remoto actual con el código y [historial de migraciones](migration-history-audit.md). Resolver diferencias antes de schema push/repair; no reejecutar migraciones ya aplicadas.
-- [ ] H5.B Comprobar/desplegar `guardian_preflight` de `payment-worker` según corresponda. Verificar lecturas y, por separado, escrituras necesarias de la clave Stripe del servidor. El preflight de metadatos ya aprobado solo demostró acceso y nombres de secretos.
+- [x] H5.A Comparar entorno remoto actual con el código y [historial de migraciones](migration-history-audit.md). SQL, catálogos y cinco Edge Functions comparados; diferencias de timestamps/defaults/formato explicadas. Conservar correspondencia explícita y no usar `db push`/repair sin renovar la auditoría; no se reejecutó SQL ni se alineó artificialmente el historial.
+- [x] H5.B `payment-worker` v10 desplegado y comparado; preflight 1616 aprobó las 16 lecturas. Escrituras acreditadas separadamente por alta, renovación, cambio de monto/tarjeta, cancelación y reversión automática de la devolución en Stripe test. Evidencia en `progress.md`; no equivale a cerrar todos los escenarios de H5.G.
 - [x] H5.C Preparación de flags de procesamiento con nuevas altas cerradas, acreditada por CI 36071101143 y registro previo. Reconsultar estado antes de abrir la aceptación; no contar como una comprobación remota nueva.
 - [x] H5.D Configuración TestFlight que incluye Guardián y conserva bundle/firma; CI 36074983990 aprobado. Configuración no equivale a IPA firmado ni instalación.
-- [ ] H5.E El titular compila en Codemagic con `ios-testflight` e instala desde TestFlight. Registrar SHA, versión/build y dispositivo.
-- [ ] H5.F Con permisos/capacidad/Connect/dispositivo listos, habilitar altas **test**, comprobar smoke esperado y respuestas reales de Cron. Abrir test afecta a todos los usuarios autenticados elegibles; no hay allowlist individual.
-- [ ] H5.G Ejecutar [la matriz de aceptación](guardian-acceptance.md): primera aportación, renovación/omisión, rechazo/3DS/tarjeta, cambio/cancelación, aniversario, privacidad/historial, devolución/reversión y recuperación sin duplicados.
-- [ ] H5.H Corregir defectos, revisar independientemente y registrar el cierre verificable.
+- [x] H5.E Android 2.3.3 (247), SHA `3fe7a1d`, publicado por Codemagic e instalado desde Google Play interno; recorridos acreditados con capturas del titular. Dispositivo confirmado: Samsung Galaxy S25 Ultra (SM-S938B), Android 16, One UI 8.5. Actualización compilada e instalada según el titular; captura 1000343790 verifica el arreglo visual de cancelación. Codemagic confirma actualización 2.3.3 (248), commit a1e3b76267ff39200a47c720dbf472da044dc007, publicación internal completed; evidencia en la guía de aceptación. TestFlight queda como alternativa.
+- [x] H5.F Altas **test** habilitadas con dispositivo/capacidad/Connect listos; 18 smoke checks aprobados con --expect-enabled y respuestas reales de Cron comprobadas. Primera aportación y renovación procesadas en test. Abrir test afecta a todos los usuarios autenticados elegibles; no hay allowlist individual. Los recorridos restantes siguen en H5.G.
+- [x] H5.G Matriz aceptada en modo prueba, con disputa automática remota y conciliación posterior a transferencia simulada como cobertura alternativa autorizada. La secuencia remota posterior a transferencia no se ejecutó.
+- [x] H5.H Defectos corregidos, revisiones independientes y cierre verificable registrados en hito5-delivery.md.
 
-Android conectado separado también está compilado; es una alternativa de aceptación, no un requisito adicional para que el titular siga su ruta TestFlight.
+La APK Android separada queda como alternativa. La ruta elegida ahora es Google Play interno; el workflow estándar `android-internal` no habilita Guardián.
 
-## Hito 6 y lanzamiento público
+## H6 — Base única y trazable (en curso)
 
-Después de la aceptación H5: beta, dispositivos, paridad completa, contenido definitivo, privacidad y tiendas. Mantener el alcance de [mvp-release-contract.md](mvp-release-contract.md); sus etapas R0–R6 no son los hitos H1–H6. Auditar las casillas históricas contra evidencia actual antes de repetir configuración de firma, proveedores o credenciales.
+Plan autorizado: [H6–H12](release-roadmap.md). Las casillas de aceptación visual/dispositivo nunca se cierran por código solamente.
+
+- [x] H6.1 Comparar refs y reunir continuación/principal sin perder archivos locales.
+- [x] H6.2 Registrar alcance MVP/post-MVP, responsables y correspondencia R0–R6.
+- [x] H6.3 Registrar referencia viva de Irlanda y matriz por ruta/estado.
+- [ ] H6.4 Publicar PR, verificar CI e integrar en la rama principal.
+- [ ] H6.5 Registrar SHA integrado y CI; comprobar referencia de diseño al cierre.
+
+## H7 — Legado y límites de código
+
+- [ ] H7.1 Inventariar objetos antiguos, dependencias, permisos, cron, Storage y funciones Edge.
+- [ ] H7.2 Respaldar legado fuera de Git y demostrar restauración aislada.
+- [ ] H7.3 Revocar superficies antiguas; retirar Cron/Edge/objetos por lotes; verificar autorización y sistema actual.
+- [ ] H7.4 Resolver avisos de seguridad; documentar excepciones justificadas.
+- [ ] H7.5 Modelos tipados en límites y servicio común de archivos (sin videos).
+
+## H8 — Componentes y navegación
+
+- [ ] H8.1 Tokens, fuentes/assets, controles y componentes fieles al mockup.
+- [ ] H8.2 Navegación por experiencia, sesión, enlaces y borradores conservados.
+- [ ] H8.3 Capturas comparables, accesibilidad y revisión de Irlanda.
+
+## H9 — Recorridos completos
+
+- [ ] H9.1 Adopción, detalle, guardados, perfil y contacto.
+- [ ] H9.2 Verificación, publicación, evidencia, revisión y correcciones.
+- [ ] H9.3 Apoyar, aportación, Guardián, tarjeta, cancelación e historial.
+- [ ] H9.4 Cuenta, ayuda, reportes y administración.
+- [ ] H9.5 Estados ausentes del mockup revisados y aceptación de matriz completa.
+
+## H10 — Identidad pública y operación
+
+- [ ] H10.1 Configurar/verificar Google y Apple, callbacks y no duplicación de identidad.
+- [ ] H10.2 Eliminación de cuenta y tratamiento de sesiones/contenido/evidencia.
+- [ ] H10.3 Analítica mínima y errores sin datos privados; consentimiento comprobado.
+- [ ] H10.4 Correo, soporte/moderación, legal y declaraciones de privacidad definitivas.
+- [ ] H10.5 Separar configuración test/producción, conservando identidad y firma.
+
+## H11 — Beta en ambas tiendas
+
+- [ ] H11.1 Mismo SHA por Codemagic en Play interno y TestFlight; verificar publicación.
+- [ ] H11.2 Recorridos en dispositivos, accesibilidad, instalación/actualización y recuperación.
+- [ ] H11.3 Usabilidad externa y revisión visual; cero defectos críticos/altos.
+- [ ] H11.4 Procedimiento de reversión probado.
+
+## H12 — Lanzamiento
+
+- [ ] H12.1 Landing, fichas, capturas, privacidad y soporte listos.
+- [ ] H12.2 Revisar Stripe live/Connect, conciliación, disputas, depósitos y límites.
+- [ ] H12.3 Obtener autorización explícita de dinero real antes de activarlo.
+- [ ] H12.4 Publicación gradual y monitoreo operativo verificado.
+
+## Controles recurrentes
+
+- [x] Monitor diario de diseño 09:00 configurado; sólo notifica novedades accionables.
+- [x] Revisión semanal de dependencias, seguridad, costos, soporte y deuda.
+- [x] Revisión mensual de restauración, accesos y firma.
+- [ ] Comprobación de artefactos/publicación por build y monitoreo de producción.
+
+Los monitores de Codex requieren equipo/conexiones disponibles; no reemplazan Cron ni observabilidad del servidor.

@@ -6,18 +6,9 @@ Dopmi conecta adoptantes, donantes y rescatistas. La implementación está en Fl
 
 **Lee primero [la guía de continuidad](docs/codex-handoff.md) y [AGENTS.md](AGENTS.md).** Corte documental: 25 de septiembre de 2026, UTC.
 
-La rama de continuación es **`codex/stripe-transfer-delivery`**. La predeterminada, `codex/Dopmi`, recibió el PR #2, pero al revisar aún no incluía los seis commits posteriores que preparan la aceptación y TestFlight. Comprueba las referencias remotas antes de trabajar; no tomes un checkout predeterminado como la última versión.
+La base H6 está en **`codex/mvp-consolidation`**, que reúne la continuación y la rama predeterminada mediante un PR. Verifica su integración y los refs antes de trabajar. H1–H3 están completos en desarrollo; H4/H5 están aceptados en test. H5 conserva la excepción explícita de disputa posterior a transferencia. Dinero real sigue separado.
 
-| Área | Estado de entrega |
-| --- | --- |
-| H1: identidad y perfiles | Completado en desarrollo. |
-| H2: adopción y comunicación | Completado en desarrollo. |
-| H3: rescatistas, casos y evidencia | Completado en desarrollo. |
-| H4: aportaciones únicas y Connect | Completado **en modo prueba**. |
-| H5: Guardián mensual | Implementación avanzada y CI aprobado; **aceptación integrada pendiente**. |
-| Beta, paridad completa y tiendas | Pendientes según el contrato de lanzamiento. |
-
-El siguiente trabajo es preparar y aceptar Guardián mediante **Codemagic → TestFlight**, como solicitó el titular. El alta sigue cerrada según la última evidencia remota registrada. Tener la interfaz habilitada en un build no abre Checkout en el servidor ni acredita pagos o una prueba en dispositivo.
+El trabajo vigente es [H6–H12](docs/release-roadmap.md): consolidación, retiro del legado, paridad con la rama de Irlanda, integraciones y aceptación en ambas tiendas. La [matriz de paridad](docs/design-parity.md) distingue funciones implementadas de aceptación visual.
 
 ## Dónde trabajar
 
@@ -36,8 +27,8 @@ El siguiente trabajo es preparar y aceptar Guardián mediante **Codemagic → Te
 - [Continuidad para Codex](docs/codex-handoff.md): estado, evidencia, prioridades, configuración y primer encargo.
 - [Decisiones de producto](docs/product-decisions.md): reglas vigentes; prevalecen sobre las simulaciones del prototipo.
 - [Backlog](docs/backlog.md) y [registro de avance](docs/progress.md): tareas y evidencia histórica.
-- [Aceptación Guardián / TestFlight](docs/guardian-acceptance.md): preparación y matriz de recorridos pendientes.
-- [Auditoría del historial de migraciones](docs/migration-history-audit.md): diferencias documentales por comprobar antes de un despliegue de esquema.
+- [Aceptación Guardián / TestFlight](docs/guardian-acceptance.md): matriz y evidencia de aceptación test.
+- [Auditoría del historial de migraciones](docs/migration-history-audit.md): correspondencia comprobada y límites para futuros cambios de esquema.
 - [Desarrollo](docs/development.md): herramientas, configuración local y pruebas.
 - [Diseño de cobro Guardián](docs/guardian-billing-design.md), [entrega H4](docs/hito4-delivery.md) y [operación Stripe test](docs/stripe-test-mode.md).
 - [Contrato del MVP público](docs/mvp-release-contract.md): paridad y lanzamiento; sus etapas R0–R6 no son los hitos H1–H6.
@@ -51,4 +42,4 @@ El `npm run dev` de la raíz inicia **el prototipo**, no la app Flutter. El `npm
 
 ## Evidencia más reciente revisada
 
-[CI 36074983990](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36074983990), sobre `8e6663d03ff2479ab6a75cc4776533dfc19e1bc4`: cuatro jobs aprobados; 356 pruebas backend, 191 pgTAP, 51 Flutter, 18 admin, cuatro del prototipo y seis de configuración. Incluye concurrencia PostgreSQL, integración local de identidad/adopción, Android debug e iOS simulator. **No acredita un IPA firmado nuevo, publicación en TestFlight, aceptación Guardián en dispositivo ni dinero real.**
+CI [36202506285](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36202506285), SHA `943a7d4`: cuatro jobs aprobados. H5 y sus límites en [la entrega](docs/hito5-delivery.md). Codemagic Android 2.3.3 (252), SHA `0140fbd`, build `6ab6e1527e2cdbe815b37fa0`, firma y publicación aprobadas. iOS 2.3.3 (241), SHA `d74fe97`, corresponde a una base anterior; no acredita el Guardián actual en TestFlight. Estas comprobaciones no certifican producción ni depósito bancario.

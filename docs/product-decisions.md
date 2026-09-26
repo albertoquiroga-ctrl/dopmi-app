@@ -1,8 +1,12 @@
 # Dopmi — decisiones vigentes
 
+## Decisiones de lanzamiento — 25 de septiembre de 2026 (México)
+
+El titular autorizó `release-roadmap.md`. MVP público en Android/iOS con Google/Apple, eliminación de cuenta, medición mínima y funciones actuales completas. Videos, Meta, push y analítica avanzada quedan post-MVP. No habrá tienda, fondo comunitario, bonos ni cashback. Seguir la última versión de Irlanda (`irlanda/apoyar-detalle-perfil`); las reglas económicas y de privacidad prevalecen sobre sus simulaciones. El sistema anterior al pivot era de pruebas; retirarlo tras respaldo, restauración y análisis de dependencias, preservando el sistema actual.
+
 ## Alcance
 
-App Flutter para Android/iPhone, panel React/TypeScript y Supabase. Al corte del 25 de septiembre de 2026, H1–H3 están completos en desarrollo y H4 en modo prueba; H5 está implementado con aceptación integrada pendiente. Continuidad en `codex/stripe-transfer-delivery`, según [la guía para Codex](codex-handoff.md). El titular compila en Codemagic y prueba por TestFlight.
+App Flutter para Android/iPhone, panel React/TypeScript y Supabase. Al corte del 25 de septiembre de 2026, H1–H3 están completos en desarrollo y H4 en modo prueba; H5 está aceptado en modo prueba con la excepción documentada en [entrega H5](hito5-delivery.md). Continuidad en `codex/stripe-transfer-delivery`, según [la guía para Codex](codex-handoff.md). El titular compila en Codemagic y la aceptación H5 utiliza Google Play interno; TestFlight queda como alternativa.
 
 Referencia visual: https://www.figma.com/design/96Dxvfc0V4Kn3lU6OTJ1g5/DopMi?node-id=133-624
 

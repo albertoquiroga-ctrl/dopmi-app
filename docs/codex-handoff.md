@@ -1,5 +1,20 @@
 # Dopmi — continuidad de ChatGPT Work a Codex
 
+## Estado vigente — consolidación H6, 25 de septiembre de 2026 (México)
+
+Esta sección supersede las prioridades históricas siguientes. H5 está aceptado en test según `hito5-delivery.md`, con excepción de disputa explícita. El titular autorizó ejecutar `release-roadmap.md` (H6–H12). Trabajar desde `codex/mvp-consolidation` hasta integrar su PR en `codex/Dopmi`; verificar refs/CI antes de elegir base. No reiniciar H5.
+
+Referencia viva: `irlanda/apoyar-detalle-perfil`, SHA inicial `a246fa6f42ec517aae264d7fbd2358d647c4f840`. Ver `design-reference.json` y `design-parity.md`. Seguir nuevos commits al inicio/cierre de cada ciclo. Videos, Meta, push y analítica avanzada son post-MVP; tienda/fondo/bonos/cashback quedan fuera.
+
+Codemagic API verificada mediante variable local de usuario `CM_API_TOKEN` (nunca imprimir su valor). Android 2.3.3 (252), `0140fbd`, publicado desde `android-guardian-internal`; iOS 2.3.3 (241), `d74fe97`, es anterior. H11 exige el mismo candidato en Play interno y TestFlight.
+
+Siguiente: cerrar integración/CI de H6, después H7 con inventario, respaldo restaurado y retiro gradual. No borrar legado ni modificar historial de migraciones a ciegas. Dinero real requiere autorización separada.
+
+## Registro histórico de traspaso
+
+
+Actualización final del 25/9/2026: H5 aceptado en modo prueba con excepción explícita autorizada para la disputa posterior a transferencia. Consultar [entrega H5](hito5-delivery.md) y backlog vigente antes de los cortes históricos inferiores. No reiniciar pruebas aceptadas ni activar dinero real.
+
 Corte: **25 de septiembre de 2026, UTC**. Permite retomar el trabajo sin acceso al chat anterior. El titular pidió dejar la documentación en GitHub; continuará compilando en **Codemagic** y probando desde **TestFlight**.
 
 ## 1. Repositorio y rama de continuación

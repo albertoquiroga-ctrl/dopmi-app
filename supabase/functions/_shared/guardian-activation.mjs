@@ -22,7 +22,7 @@ function checkSession(session, activation) {
 
 // The persisted Checkout ID is the ownership boundary. Neither redirect
 // parameters nor metadata supplied by a browser may establish a payment.
-export function guardianInitialEvidence(session, intent, activation) {
+function initialCharge(session, intent, activation) {
   checkSession(session, activation);
   if (session.status !== 'complete' || session.payment_status !== 'paid') fail('guardian_initial_unpaid');
   const customer = id(session.customer), method = id(intent?.payment_method);
@@ -36,8 +36,14 @@ export function guardianInitialEvidence(session, intent, activation) {
     || !charge || typeof charge === 'string' || !/^ch_[A-Za-z0-9]+$/.test(charge.id ?? '')
     || charge.livemode !== false || id(charge.payment_intent) !== intent.id || id(charge.customer) !== customer
     || charge.amount !== activation.gross_cents || charge.currency !== 'mxn'
-    || charge.paid !== true || charge.captured !== true || charge.disputed !== false || charge.amount_refunded !== 0)
+    || charge.paid !== true || charge.captured !== true || typeof charge.disputed !== 'boolean' || charge.amount_refunded !== 0)
     fail('guardian_initial_charge_mismatch');
+  return { customer, method, charge };
+}
+
+export function guardianInitialEvidence(session, intent, activation) {
+  const { customer, method, charge } = initialCharge(session, intent, activation);
+  if (charge.disputed) fail('guardian_initial_disputed');
   const balance = charge.balance_transaction;
   if (!balance || typeof balance === 'string' || id(balance.source) !== charge.id
     || balance.currency !== 'mxn' || balance.amount !== activation.gross_cents
@@ -86,6 +92,9 @@ export function guardianActivationService({ stripe, rpc, settle, returnUrl, logg
     const a = await rpc('lookup_session', { session_id: session });
     if (!a) return null;
     if (a.settlement) return a.settlement;
+    // A verified disputed payment needs an explicit operational decision.
+    // Later webhooks must not turn it into a settlement automatically.
+    if (a.payment_review) return null;
     try {
       let checkout = await stripe.checkout.sessions.retrieve(a.session_id);
       checkSession(checkout, a);
@@ -117,6 +126,13 @@ export function guardianActivationService({ stripe, rpc, settle, returnUrl, logg
       }
       if (!/^pi_[A-Za-z0-9]+$/.test(paymentIntentId ?? '')) fail('guardian_initial_charge_mismatch');
       const intent = await stripe.paymentIntents.retrieve(paymentIntentId, { expand: ['latest_charge.balance_transaction'] });
+      const { charge } = initialCharge(checkout, intent, a);
+      if (charge.disputed) {
+        await rpc('review_payment', { cycle_id: a.cycle_id, session_id: a.session_id,
+          reason: 'disputed', payment_intent_id: intent.id, charge_id: charge.id,
+          gross_cents: a.gross_cents, disputed: true });
+        return null;
+      }
       return await settle('settle_initial', guardianInitialEvidence(checkout, intent, a));
     } finally { await rpc('checked', { cycle_id: a.cycle_id }); }
   }

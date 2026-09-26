@@ -34,6 +34,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       data?['activation'] is Map ? Json.from(data!['activation']) : null;
   Json? get methodSetup =>
       data?['method_setup'] is Map ? Json.from(data!['method_setup']) : null;
+  bool get checkoutInReview =>
+      intent?['kind'] == 'checkout' && activation?['status'] == 'attention';
 
   @override
   void initState() {
@@ -112,6 +114,10 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       final result = await ref.read(guardianRepositoryProvider).state();
       if (!current) return;
       data = result;
+      if (plan?['status'] == 'canceled' ||
+          activation?['cancellation_status'] == 'stopped') {
+        message = null;
+      }
       if (intent?['kind'] == 'method' &&
           (['canceled', 'cancel_requested'].contains(plan?['status']) ||
               (methodSetup?['key'] == intent?['key'] &&
@@ -197,6 +203,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
     bool withdraw = false,
   }) async {
     if (busy || confirming || !fresh || !current) return;
+    if (!cancel && !method && !withdraw && checkoutInReview) return;
     if (cancel || method || withdraw) {
       setState(() => confirming = true);
       final agreed = await showDialog<bool>(
@@ -305,7 +312,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         if (!current) return;
         intent = null;
         consent = false;
-        message = 'Solicitud recibida. Consulta el estado para confirmar su aplicación.';
+        // load() displays the authoritative request status, including withdrawal.
+        message = null;
       } else if (result['checkout_url'] is String) {
         await repo.openCheckout(result['checkout_url'] as String);
       } else {
@@ -374,6 +382,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         !busy &&
         !confirming &&
         fresh &&
+        !checkoutInReview &&
         (intent != null || (verified && consent && (canStart || canChange)));
     return CommunityFrame(
       children: [
@@ -391,7 +400,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
             onPressed: () => context.push('/guardian/history'),
             child: const Text('Ver historial de ciclos'),
           ),
-          if (methodSetup != null)
+          if (methodSetup != null && status == 'active')
             Notice(
               guardianMethodLabels[methodSetup!['status']] ??
                   'Medio de pago en revisión.',
@@ -496,6 +505,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   'Estado del alta en revisión. No vuelvas a pagar.',
             ),
           if (!['method', 'withdraw_amount'].contains(intent?['kind']) &&
+              !checkoutInReview &&
               (canStart || canChange || intent != null)) ...[
             const SizedBox(height: 16),
             Wrap(
