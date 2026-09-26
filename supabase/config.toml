@@ -61,3 +61,7 @@ verify_jwt = false
 verify_jwt = false
 [functions.guardian-client]
 verify_jwt = false
+
+# Retired webhook returns 410 without inspecting or accepting a payment event.
+[functions.payment-webhook]
+verify_jwt = false

@@ -58,23 +58,25 @@ Cierre: 25 de septiembre de 2026. Aceptación del titular con excepción explíc
 
 La APK Android separada queda como alternativa. La ruta elegida ahora es Google Play interno; el workflow estándar `android-internal` no habilita Guardián.
 
-## H6 — Base única y trazable (en curso)
+## H6 — Base única y trazable (completado)
 
 Plan autorizado: [H6–H12](release-roadmap.md). Las casillas de aceptación visual/dispositivo nunca se cierran por código solamente.
 
 - [x] H6.1 Comparar refs y reunir continuación/principal sin perder archivos locales.
 - [x] H6.2 Registrar alcance MVP/post-MVP, responsables y correspondencia R0–R6.
 - [x] H6.3 Registrar referencia viva de Irlanda y matriz por ruta/estado.
-- [ ] H6.4 Publicar PR, verificar CI e integrar en la rama principal.
-- [ ] H6.5 Registrar SHA integrado y CI; comprobar referencia de diseño al cierre.
+- [x] H6.4 Publicar PR, verificar CI e integrar en la rama principal.
+- [x] H6.5 Registrar SHA integrado y CI; comprobar referencia de diseño al cierre.
 
 ## H7 — Legado y límites de código
 
-- [ ] H7.1 Inventariar objetos antiguos, dependencias, permisos, cron, Storage y funciones Edge.
-- [ ] H7.2 Respaldar legado fuera de Git y demostrar restauración aislada.
-- [ ] H7.3 Revocar superficies antiguas; retirar Cron/Edge/objetos por lotes; verificar autorización y sistema actual.
-- [ ] H7.4 Resolver avisos de seguridad; documentar excepciones justificadas.
-- [ ] H7.5 Modelos tipados en límites y servicio común de archivos (sin videos).
+- [x] H7.1 Inventariar objetos antiguos, dependencias, permisos, cron, Storage y funciones Edge.
+- [x] H7.2 Respaldar legado fuera de Git y demostrar restauración aislada.
+- [x] H7.3 Revocar superficies antiguas; retirar Cron/Edge/objetos por lotes; verificar autorización y sistema actual.
+- [x] H7.4 Retirar exposiciones antiguas y documentar RPC/tablas privadas intencionales en legacy-retirement.md. Configuración de protección de contraseñas queda explícitamente en H10.6.
+- [x] H7.5 Modelos tipados en límites y servicio común de archivos (sin videos).
+
+Evidencia H7: [retiro reversible](legacy-retirement.md). Integración del PR y CI final pendientes. La restauración probada es lógica del legado, no recuperación completa de producción.
 
 ## H8 — Componentes y navegación
 
@@ -97,6 +99,8 @@ Plan autorizado: [H6–H12](release-roadmap.md). Las casillas de aceptación vis
 - [ ] H10.3 Analítica mínima y errores sin datos privados; consentimiento comprobado.
 - [ ] H10.4 Correo, soporte/moderación, legal y declaraciones de privacidad definitivas.
 - [ ] H10.5 Separar configuración test/producción, conservando identidad y firma.
+
+- [ ] H10.6 Habilitar/verificar protección de contraseñas filtradas en Supabase Auth, sujeto a disponibilidad del plan. MCP actual no permite configurar Auth.
 
 ## H11 — Beta en ambas tiendas
 

@@ -1,5 +1,13 @@
 # Auditoría del historial de migraciones
 
+## Renovación H7 — 25 de septiembre de 2026 (México)
+
+Consultadas de nuevo las 21 entradas remotas previas: todas sus sentencias coinciden con los archivos locales normalizando CRLF/LF y espacios extremos. Se conservan los siete antecedentes sin fila CLI. Snapshot privado en `.tools/legacy-backup/migrations.json`; no se reejecutó ni reparó historial remoto.
+
+Nueva migración local `20260926010602_archive_legacy_surface.sql`, aplicada por MCP como `20260926011355`. Total posterior: 29 archivos locales y 22 entradas remotas. Traslada legado a esquema privado, retira accesos/políticas antiguas y desactiva tres Cron. Copia lógica restaurada en PostgreSQL local con PostGIS antes del cambio. Permisos actuales comparados antes/después sin diferencias. Ver `legacy-retirement.md`.
+
+Intentos iniciales se revirtieron completamente: Auth no permite alterar su trigger con el rol conectado y Cron no admite UPDATE directo; la versión aplicada retira el cuerpo de la rutina antigua y usa `cron.alter_job`. No se modificaron propietarios de objetos de plataforma. Un error de delimitación al transportar el SQL se corrigió leyendo el archivo probado literalmente; ninguna versión fallida quedó aplicada.
+
 ## Adición del 25 de septiembre de 2026: reintento de visibilidad de anulación
 
 Nueva migración local `20260925171348_guardian_void_visibility_retry.sql`, aplicada como versión remota `20260925171711` tras desplegar el colector corregido. Reparación acotada de la cola, sin modificar esquema, reservas ni evidencia financiera. No se reparó ni reejecutó historial previo. El total pasa a 27 archivos locales y 20 entradas remotas; la correspondencia histórica inferior sigue vigente. Suite completa de 366 pruebas aprobada, con reparación idempotente y exclusiones de autorización, lease activo, error ajeno y límites de reintento.

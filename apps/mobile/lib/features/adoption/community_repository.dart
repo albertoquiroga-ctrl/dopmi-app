@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image/image.dart' as img;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../core/media/media_store.dart';
+export '../../core/media/prepare_photo.dart' show preparePhoto;
 
 typedef Json = Map<String, dynamic>;
 const photoBucket = 'dopmi-adoption-photos';
@@ -153,25 +155,12 @@ class SupabaseCommunityRepository implements CommunityRepository {
   }
 
   @override
-  Future<String> uploadPhoto(String postId, Uint8List bytes) async {
-    final safe = await compute(preparePhoto, bytes);
-    final path = '$userId/$postId/${const Uuid().v4()}.jpg';
-    await client.storage
-        .from(photoBucket)
-        .uploadBinary(
-          path,
-          safe,
-          fileOptions: const FileOptions(
-            contentType: 'image/jpeg',
-            upsert: false,
-          ),
-        );
-    return path;
-  }
+  Future<String> uploadPhoto(String postId, Uint8List bytes) =>
+      MediaStore(client).upload(postId, bytes, MediaPurpose.adoptionPhoto);
 
   @override
   Future<String> photoUrl(String path) =>
-      client.storage.from(photoBucket).createSignedUrl(path, 60);
+      MediaStore(client).signedUrl(path, MediaPurpose.adoptionPhoto);
   @override
   Future<String> startThread(String postId) async =>
       await rpc('dopmi_start_thread', {'post_id': postId}) as String;
@@ -263,42 +252,6 @@ class SupabaseCommunityRepository implements CommunityRepository {
       unawaited(client.removeChannel(channel));
     };
   }
-}
-
-Uint8List preparePhoto(Uint8List bytes) {
-  if (bytes.length < 16) {
-    throw const FormatException(
-      'No pudimos abrir esa foto. Elige un archivo JPG, PNG o WebP.',
-    );
-  }
-  if (bytes.length > 15 * 1024 * 1024) {
-    throw const FormatException('La foto debe pesar menos de 15 MB.');
-  }
-  final decoder = img.findDecoderForData(bytes);
-  final info = decoder?.startDecode(bytes);
-  if (info == null || info.width * info.height > 40000000) {
-    throw const FormatException(
-      'Elige una foto JPG, PNG o WebP de hasta 40 megapíxeles.',
-    );
-  }
-  var photo = decoder!.decodeFrame(0);
-  if (photo == null) throw const FormatException('No pudimos abrir esa foto.');
-  photo = img.bakeOrientation(photo);
-  if (photo.width > 1600 || photo.height > 1600) {
-    photo = img.copyResize(
-      photo,
-      width: photo.width >= photo.height ? 1600 : null,
-      height: photo.height > photo.width ? 1600 : null,
-    );
-  }
-  // Copy pixels into a clean image so EXIF, location, comments and other metadata are not uploaded.
-  final clean = img.Image.fromBytes(
-    width: photo.width,
-    height: photo.height,
-    bytes: photo.getBytes(order: img.ChannelOrder.rgb).buffer,
-    numChannels: 3,
-  );
-  return Uint8List.fromList(img.encodeJpg(clean, quality: 85));
 }
 
 String communityError(Object error) {

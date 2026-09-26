@@ -2,7 +2,8 @@ import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:uuid/uuid.dart';
+
+import '../../core/media/media_store.dart';
 
 import '../adoption/community_repository.dart';
 
@@ -127,35 +128,16 @@ class RescueRepository {
   }
 
   Future<String> fileUrl(String path) =>
-      client.storage.from(rescueBucket).createSignedUrl(path, 60);
+      MediaStore(client).signedUrl(path, MediaPurpose.rescuePhoto);
   Future<String> upload(
     String recordId,
     Uint8List bytes, {
     required bool pdf,
-  }) async {
-    if (bytes.isEmpty || bytes.length > 5242880) {
-      throw const FormatException('Elige un archivo de hasta 5 MB.');
-    }
-    if (pdf &&
-        (bytes.length < 5 || String.fromCharCodes(bytes.take(5)) != '%PDF-')) {
-      throw const FormatException('El archivo no es un PDF válido.');
-    }
-    final clean = pdf ? bytes : preparePhoto(bytes);
-    final path =
-        '${client.auth.currentUser!.id}/$recordId/${const Uuid().v4()}.${pdf ? 'pdf' : 'jpg'}';
-    await client.storage
-        .from(rescueBucket)
-        .uploadBinary(
-          path,
-          clean,
-          fileOptions: FileOptions(
-            contentType: pdf ? 'application/pdf' : 'image/jpeg',
-            cacheControl: '0',
-            upsert: false,
-          ),
-        );
-    return path;
-  }
+  }) => MediaStore(client).upload(
+    recordId,
+    bytes,
+    pdf ? MediaPurpose.rescueDocument : MediaPurpose.rescuePhoto,
+  );
 }
 
 /// Decimal parsing never uses a floating-point amount for money.
