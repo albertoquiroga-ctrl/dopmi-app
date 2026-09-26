@@ -1,5 +1,11 @@
 # Dopmi — registro de avance
 
+## H8: CI final aprobado; aceptación visual pendiente — 25 de septiembre de 2026 (México)
+
+- Código `3d5c6e3aafb69d1724e98e01db6a8e5ddd27623d`, [CI 36211702329](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36211702329): los cuatro trabajos terminaron con success, consultados directamente. Incluye PostgreSQL/backend, integración real de identidad/adopción, análisis/pruebas Flutter, capturas y compilaciones Android/iOS simulator. Supersede el pendiente de CI de la entrada anterior.
+- [Artefacto de capturas 10895364071](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36211702329/artifacts/10895364071), `dopmi-design-review`, comprobado disponible. Capturas comparables permanentes y diferencias en `design-foundation.md`.
+- [PR #6](https://github.com/albertoquiroga-ctrl/dopmi-app/pull/6) permanece en borrador para revisión visual de Irlanda. No se recibió aceptación visual, no se fusionó H8 ni se inició H9. H6/H7 ya integrados. No se generó candidato Codemagic ni se activó dinero real. Este cierre documental no cambia el código validado.
+
 ## H8: acceso adaptado y revisión visual preparada — 25 de septiembre de 2026 (México)
 
 - PR #6 en borrador: `codex/design-foundation`. Primer commit `f9f3fe3d9eeb63292dff81c72cf85eea3fa422da`, CI [36210411470](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36210411470), cuatro trabajos success comprobados. La ampliación de acceso posterior requiere su propio CI; no atribuirle ese resultado.
