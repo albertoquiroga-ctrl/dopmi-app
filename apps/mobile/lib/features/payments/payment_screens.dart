@@ -20,14 +20,24 @@ class ContributeScreen extends ConsumerStatefulWidget {
   ConsumerState<ContributeScreen> createState() => _ContributeState();
 }
 
-class _ContributeState extends ConsumerState<ContributeScreen> {
+class _ContributeState extends ConsumerState<ContributeScreen>
+    with WidgetsBindingObserver {
   final amount = TextEditingController(text: '50');
-  bool busy = true, locked = false;
+  bool busy = true, locked = false, reviewing = false;
   String? error, attemptKey;
+  Json? outcome;
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     restore();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && attemptKey != null && !busy) {
+      checkOutcome();
+    }
   }
 
   String get storageKey =>
@@ -57,8 +67,50 @@ class _ContributeState extends ConsumerState<ContributeScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     amount.dispose();
     super.dispose();
+  }
+
+  Future<void> checkOutcome() async {
+    if (attemptKey == null) return;
+    setState(() => busy = true);
+    try {
+      final page = await ref.read(paymentRepositoryProvider).history(1);
+      final matches = page.items.where(
+        (item) => item['idempotency_key'] == attemptKey,
+      );
+      if (!mounted || matches.isEmpty) return;
+      outcome = matches.first;
+      final terminal = [
+        'confirmed',
+        'canceled',
+        'refunded',
+      ].contains(outcome!['payment_status']);
+      if (terminal) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove('$storageKey:key');
+        await prefs.remove('$storageKey:cents');
+      }
+    } catch (cause) {
+      if (mounted) setState(() => error = paymentError(cause));
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  void review() {
+    final cents = parsePesos(amount.text);
+    if (cents == null || cents < 1000 || cents > 1000000) {
+      setState(
+        () => error = 'Escribe un importe de \$10 a \$10,000 MXN, con hasta dos decimales.',
+      );
+      return;
+    }
+    setState(() {
+      reviewing = true;
+      error = null;
+    });
   }
 
   Future<void> pay() async {
@@ -85,6 +137,7 @@ class _ContributeState extends ConsumerState<ContributeScreen> {
       if (!mounted) return;
       if (result['url'] is String) {
         await repo.openStripe(result['url'] as String);
+        if (mounted) await checkOutcome();
       } else {
         await prefs.remove('$storageKey:key');
         await prefs.remove('$storageKey:cents');
@@ -126,17 +179,37 @@ class _ContributeState extends ConsumerState<ContributeScreen> {
               'Disponible para aportaciones: ${pesos(data['available_cents'] as int)}',
             ),
             const SizedBox(height: 16),
-            TextField(
-              controller: amount,
-              enabled: !busy && !locked,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
+            if (!reviewing && outcome == null) ...[
+              Text(
+                '¿Cuánto quieres aportar?',
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
-              decoration: const InputDecoration(
-                labelText: 'Tu aportación en MXN',
-                prefixText: '\$ ',
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 8,
+                children: [
+                  for (final value in [50, 150, 300])
+                    ChoiceChip(
+                      label: Text('\$$value'),
+                      selected: parsePesos(amount.text) == value * 100,
+                      onSelected: busy || locked
+                          ? null
+                          : (_) => setState(() => amount.text = '$value'),
+                    ),
+                ],
               ),
-            ),
+              TextField(
+                controller: amount,
+                enabled: !busy && !locked,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                decoration: const InputDecoration(
+                  labelText: 'Tu aportación en MXN',
+                  prefixText: '\$ ',
+                ),
+              ),
+            ],
             const SizedBox(height: 16),
             const Notice(
               'Dopmi descuenta el 2% del importe cobrado y los costos de Stripe. El neto destinado al rescatista cuenta para el reembolso. El importe que no pueda asignarse se devuelve.',
@@ -144,21 +217,74 @@ class _ContributeState extends ConsumerState<ContributeScreen> {
             const Notice(
               'Solo pagos de prueba. Stripe mostrará el importe antes de confirmar. Al regresar, revisa tu historial para conocer el resultado.',
             ),
-            if (locked)
+            if (reviewing && outcome == null)
+              Card(
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        'Resumen',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: const Text('Gasto'),
+                        trailing: SizedBox(
+                          width: 150,
+                          child: Text(
+                            data['title'] as String,
+                            textAlign: TextAlign.end,
+                          ),
+                        ),
+                      ),
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: const Text('Importe'),
+                        trailing: Text(pesos(parsePesos(amount.text) ?? 0)),
+                      ),
+                      const Text(
+                        'El método de pago se captura de forma segura en Stripe.',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            if (locked && outcome == null)
               const Notice(
                 'Conservamos tu intento de pago. Continuar abre la misma aportación.',
               ),
+            if (outcome != null) _PaymentOutcome(outcome!),
             if (error != null) Notice(error!, isError: true),
-            ActionButton(
-              locked ? 'Continuar mi aportación' : 'Continuar a Stripe',
-              busy: busy,
-              onPressed:
-                  locked ||
-                      (data['payable'] == true &&
-                          (data['available_cents'] as int) > 0)
-                  ? pay
-                  : null,
-            ),
+            if (outcome == null)
+              ActionButton(
+                reviewing || locked
+                    ? (locked
+                          ? 'Continuar mi aportación'
+                          : 'Confirmar en Stripe')
+                    : 'Revisar aportación',
+                busy: busy,
+                onPressed: locked
+                    ? pay
+                    : data['payable'] == true &&
+                          (data['available_cents'] as int) > 0
+                    ? (reviewing ? pay : review)
+                    : null,
+              ),
+            if (reviewing && !locked && outcome == null)
+              OutlinedButton(
+                onPressed: busy
+                    ? null
+                    : () => setState(() => reviewing = false),
+                child: const Text('Cambiar monto'),
+              ),
+            if (locked && outcome == null)
+              TextButton(
+                onPressed: busy ? null : checkOutcome,
+                child: const Text('Consultar resultado'),
+              ),
             TextButton(
               onPressed: refresh,
               child: const Text('Actualizar disponibilidad'),
@@ -172,6 +298,69 @@ class _ContributeState extends ConsumerState<ContributeScreen> {
       ),
     ],
   );
+}
+
+class _PaymentOutcome extends StatelessWidget {
+  const _PaymentOutcome(this.value);
+  final Json value;
+  @override
+  Widget build(BuildContext context) {
+    final status = value['payment_status'] as String? ?? 'pending';
+    final confirmed = status == 'confirmed';
+    return Card(
+      color: confirmed
+          ? const Color(0xffeef9f0)
+          : status == 'pending'
+          ? const Color(0xfffff8dc)
+          : const Color(0xffffeeee),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Icon(
+              confirmed
+                  ? Icons.check_circle
+                  : status == 'pending'
+                  ? Icons.hourglass_top
+                  : Icons.credit_card_off,
+              size: 44,
+              color: confirmed ? Colors.green : ink,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              switch (status) {
+                'confirmed' => 'Pago confirmado',
+                'canceled' => 'Pago cancelado',
+                'refunded' => 'Pago devuelto',
+                _ => 'Pago en procesamiento',
+              },
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(height: 8),
+            Text(switch (status) {
+              'confirmed' => 'Stripe confirmó el pago. Consulta abajo su asignación y transferencia.',
+              'canceled' => 'Stripe no confirmó un cobro para este intento.',
+              'refunded' => 'El servidor confirmó la devolución del pago.',
+              _ => 'Aún esperamos evidencia del procesador. No inicies otra aportación.',
+            }, textAlign: TextAlign.center),
+            if (confirmed)
+              Text(
+                'Asignado: ${pesos(value['allocated_cents'] as int? ?? 0)}',
+                textAlign: TextAlign.center,
+              ),
+            if (confirmed)
+              Text(
+                transferLabels[value['transfer_status']] ??
+                    'Transferencia en revisión',
+                textAlign: TextAlign.center,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class PaymentHistoryScreen extends ConsumerStatefulWidget {

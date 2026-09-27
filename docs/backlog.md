@@ -83,13 +83,13 @@ Evidencia H7: [retiro reversible](legacy-retirement.md). PR #5 integrado en `ba9
 Plan vigente: [h8-execution.md](h8-execution.md). Las casillas históricas inferiores documentan implementación parcial, no aceptación de H8. Los recorridos visibles de H9 se ejecutan ahora dentro de H8.
 
 - [x] H8.0 Matriz concreta de pantallas/acciones, dependencias y evidencia separada. Es un registro vivo: cada ciclo actualiza I/T/V sin borrar diferencias abiertas.
-- [ ] H8.1 Dos experiencias completas; cambio dedicado de modo y conservación de estado.
+- [x] H8.1 Dos experiencias completas; cambio dedicado de modo y conservación de estado. I/T completos; V pendiente del candidato instalado.
 - [x] H8.2 Swipe, filtros, personalidad, zona/radio aproximado y paginación. Implementación y comprobación técnica completas; aceptación visual se conserva en H8.7.
-- [ ] H8.3 Detalles, favoritos de mascotas/casos/rescatistas, Mis match y comunicación.
-- [ ] H8.4 Perfil, configuración separada, historial real y ayuda.
-- [ ] H8.5 Apoyar, historias moderadas, perfil público e impacto real.
-- [ ] H8.6 Panel/Casos/Publicar/Mensajes/Perfil rescatista; verificación/evidencia por pasos.
-- [ ] H8.7 Aportaciones/Guardián fieles con resultados reales; cierre visual/técnico/dispositivo.
+- [x] H8.3 Detalles, favoritos de mascotas/casos/rescatistas, Mis match y comunicación. I/T completos; V pendiente.
+- [x] H8.4 Perfil, configuración separada, historial real y ayuda. I/T completos; textos legales definitivos permanecen H10.
+- [x] H8.5 Apoyar, historias moderadas, perfil público e impacto real. I/T completos; V pendiente.
+- [x] H8.6 Panel/Casos/Publicar/Mensajes/Perfil rescatista; verificación/evidencia por pasos. I/T completos; V pendiente.
+- [ ] H8.7 Aportaciones/Guardián fieles con resultados reales: I/T completos. Falta candidato Internal Testing y aceptación visual/dispositivo para cerrar H8.
 
 ### Registro anterior: componentes implementados, no cierre de paridad
 

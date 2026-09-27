@@ -1,5 +1,10 @@
 # Datos demo — 26 de septiembre de 2026
 
+## Perfil público moderado
+
+- El rescatista de pruebas `b30ab8e7-c908-45de-ac9e-8f4613d9bd79` tiene un snapshot público aprobado como **Refugio Huellitas Norte**, Monterrey, Nuevo León, para revisar el perfil y sus casos desde Internal Testing.
+- No contiene avatar, redes, teléfono, correo, domicilio ni documentos. La fila se añadió directamente al proyecto de pruebas después de desplegar la migración de perfiles; no forma parte de migraciones ni se replica a producción.
+
 Carga solicitada por el titular en Supabase de pruebas `ohqxranynackjignryep`. Disponible para el build interno 2.3.3 (253) sin recompilar. Todos los textos nuevos identifican su carácter ficticio.
 
 ## Contenido y uso

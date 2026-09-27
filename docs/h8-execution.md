@@ -29,4 +29,4 @@ Entregas coherentes mediante `android-guardian-internal`, verificar publicación
 
 ## Estado
 
-H8.0 completo como definición trazable inicial. H8.1–H8.7 pendientes de cierre; los componentes y acceso previos son trabajo reutilizable, no tareas aceptadas. El primer bloque nuevo de H8.1/H8.4 separa Perfil, Información básica, Configuración y el cambio de modo, pero sigue pendiente su entrega instalada y aceptación visual. No hay aceptación visual/dispositivo de H8.
+H8.0–H8.7 están implementados y comprobados técnicamente en `codex/design-foundation`; la matriz conserva aceptación visual en **No**. El cierre de H8 todavía exige candidato instalado y revisión de Irlanda/titular. Las excepciones explícitas son OAuth/eliminación/analítica/legal de H10, iOS conjunto de H11 y dinero live de H12. No hay aceptación visual/dispositivo de esta versión.

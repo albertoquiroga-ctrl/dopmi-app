@@ -39,6 +39,19 @@ class FakePayments extends PaymentRepository {
   }
 
   @override
+  Future<DataPage<Json>> history(int page, {bool received = false}) async =>
+      calls.isEmpty
+      ? const DataPage([], 0)
+      : DataPage([
+          {
+            'idempotency_key': calls.last,
+            'payment_status': 'pending',
+            'allocated_cents': 0,
+            'transfer_status': 'not_started',
+          },
+        ], 1);
+
+  @override
   Future<void> openStripe(String url) async {}
 }
 
@@ -140,7 +153,9 @@ void main() {
       find.widgetWithText(TextField, 'Tu aportación en MXN'),
       '100.25',
     );
-    await tapButton(tester, 'Continuar a Stripe');
+    await tapButton(tester, 'Revisar aportación');
+    expect(find.text('Resumen'), findsOneWidget);
+    await tapButton(tester, 'Confirmar en Stripe');
     await pumpUntil(tester, find.text('Continuar mi aportación'));
     expect(payments.calls.length, 1);
     final prefs = await SharedPreferences.getInstance();
@@ -149,7 +164,7 @@ void main() {
     await tapButton(tester, 'Continuar mi aportación');
     await tester.pump(const Duration(milliseconds: 100));
     expect(payments.calls, [payments.calls.first, payments.calls.first]);
-    expect(find.text('100.25'), findsOneWidget);
+    expect(find.text('Pago en procesamiento'), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
     await tester.pump();

@@ -47,7 +47,8 @@ Evidencia por fila se anexará al completar cada ciclo con SHA de código/diseñ
 | PET, MATCH, SAVED, CHAT | Sí | Sí | No | Detalle/galería, favorito con rollback, contacto confirmado, búsqueda, guardados tipados/tombstones, acciones de casos/perfiles y mensajería idempotente cubiertos; falta comparación instalada. |
 | SUPPORT, CASE, STORY, PUBLIC, IMPACT | Sí | Sí | No | Apoyar, progreso/gastos reales, galería pública, avances moderados, perfil con pestañas e impacto propio asignado están conectados y tienen capturas Flutter; falta revisión instalada. |
 | RH, RC, VERIFY, EVIDENCE, RP | Sí | Sí | No | Inicio, Mis casos, formularios por pasos, verificación/evidencia y perfil público propio moderado están conectados; falta comparación y aceptación instalada. |
-| PAYMENT, GUARD, REPORT, LEGAL | Parcial | Parcial | No | Servicios previos reutilizables; falta paridad completa y estados del plan vigente. |
+| PAYMENT, GUARD, REPORT | Sí | Sí | No | Monto/revisión/Stripe/resultado persistido, membresía, impacto, historial, monto, tarjeta y cancelación están conectados; falta aceptación instalada. |
+| LEGAL | Parcial | Parcial | No | Ayuda respeta reglas vigentes; privacidad y textos definitivos permanecen en H10. |
 
 Referencia observada: `irlanda/apoyar-detalle-perfil@a246fa6f42ec517aae264d7fbd2358d647c4f840`. Inventario por lectura del código, no aceptación visual. Fuente y hashes en `design-reference.json`; volver a consultar la rama al inicio/cierre de cada ciclo.
 
@@ -77,12 +78,12 @@ Referencia observada: `irlanda/apoyar-detalle-perfil@a246fa6f42ec517aae264d7fbd2
 | `/donate` | `/rescue-cases` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
 | `/case/:caseId` | `/rescue-cases/:id` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
 | `/donate/:caseId/:needId` | `/contribute/:id` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/donation-success/:caseId` | `Sin equivalente dedicado` | H9 | Diseñar/conectar estado o función real; no copiar simulación. | Implementador / Irlanda / titular | Pendiente |
-| `/payment-error/:caseId/:needId` | `Sin equivalente dedicado` | H9 | Diseñar/conectar estado o función real; no copiar simulación. | Implementador / Irlanda / titular | Pendiente |
+| `/donation-success/:caseId` | `/contribute/:id` (estado confirmado del servidor) | H8 | Estado embebido para conservar la misma llave y consultar evidencia; falta aceptación instalada. | Implementador / Irlanda / titular | I/T sí; V pendiente |
+| `/payment-error/:caseId/:needId` | `/contribute/:id` (procesando/cancelado/devuelto/error) | H8 | Estados reales y reintento idempotente; no muestra éxito simulado. | Implementador / Irlanda / titular | I/T sí; V pendiente |
 | `/impact` | `/impact` | H8 | Impacto propio conectado a cantidades asignadas y avances públicos; falta comparación visual instalada. | Implementador / Irlanda / titular | I/T sí; V pendiente |
-| `/impact/support` | `/guardian` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/impact/success` | `Sin equivalente dedicado` | H9 | Diseñar/conectar estado o función real; no copiar simulación. | Implementador / Irlanda / titular | Pendiente |
-| `/impact/error` | `Sin equivalente dedicado` | H9 | Diseñar/conectar estado o función real; no copiar simulación. | Implementador / Irlanda / titular | Pendiente |
+| `/impact/support` | `/guardian` | H8 | Selección, consentimiento y gestión real; falta aceptación instalada. | Implementador / Irlanda / titular | I/T sí; V pendiente |
+| `/impact/success` | `/guardian` (membresía desde estado del servidor) | H8 | Tarjeta activa sólo tras confirmación persistida. | Implementador / Irlanda / titular | I/T sí; V pendiente |
+| `/impact/error` | `/guardian` (alta/revisión/error/cancelación) | H8 | Estado remoto y recuperación con la misma referencia. | Implementador / Irlanda / titular | I/T sí; V pendiente |
 | `/messages` | `/messages` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
 | `/messages/:threadId` | `/messages/:id` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
 | `/notifications` | `/notifications` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |

@@ -49,6 +49,8 @@ Salida ignorada: `.tools/design-review`. Revisar antes de reemplazar las captura
 
 ## Verificación y diferencias pendientes
 
+Capturas nuevas del cierre técnico H8.7: `contribution-amount.png`, `guardian-intro.png` y `guardian-active.png` en `.tools/design-review`. Reproducen componentes Flutter reales a 377 × 852. El perfil público moderado, el panel/casos/formularios rescatista y los recorridos de aportación/Guardián ya están implementados; la diferencia transversal restante es la aceptación instalada y cualquier ajuste que resulte de ella.
+
 - `flutter analyze`: sin incidencias.
 - `flutter test test tool/capture_design_test.dart`: 62 aprobadas (61 de la suite y una generación de capturas). Los tres onboardings se recorren con texto al 200 % en 320 × 640, incluyendo regreso y registro con intención preservada; la restauración de sesión rescatista abre su inicio.
 - `flutter test test_backend`: cuatro recorridos con Supabase local real aprobados. Configuración móvil: seis pruebas aprobadas.

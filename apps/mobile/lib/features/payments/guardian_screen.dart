@@ -13,6 +13,13 @@ import '../identity/identity_controller.dart';
 import '../rescue/rescue_repository.dart';
 import 'guardian_repository.dart';
 
+String _guardianDate(Object? value) {
+  final parsed = DateTime.tryParse(value?.toString() ?? '')?.toLocal();
+  return parsed == null
+      ? 'Por confirmar'
+      : '${parsed.day}/${parsed.month}/${parsed.year}';
+}
+
 class GuardianScreen extends ConsumerStatefulWidget {
   const GuardianScreen({super.key});
   @override
@@ -391,6 +398,13 @@ class _GuardianState extends ConsumerState<GuardianScreen>
           'Aporta a gastos aprobados de rescatistas con tu plan Guardián.',
           eyebrow: 'GUARDIÁN · PRUEBA',
         ),
+        if (enabled && p == null) const _GuardianIntro(),
+        if (enabled && p != null)
+          _GuardianMembershipCard(
+            status: status,
+            cents: p['gross_cents'] as int,
+            nextBilling: p['next_billing_at'],
+          ),
         if (!enabled)
           const Notice(
             'Guardián todavía no está disponible. Te avisaremos cuando puedas activar tu plan.',
@@ -400,6 +414,12 @@ class _GuardianState extends ConsumerState<GuardianScreen>
             onPressed: () => context.push('/guardian/history'),
             child: const Text('Ver historial de ciclos'),
           ),
+          if (p != null)
+            TextButton.icon(
+              onPressed: () => context.push('/impact'),
+              icon: const Icon(Icons.auto_stories_outlined),
+              label: const Text('Ver mi impacto'),
+            ),
           if (methodSetup != null && status == 'active')
             Notice(
               guardianMethodLabels[methodSetup!['status']] ??
@@ -588,4 +608,114 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       ],
     );
   }
+}
+
+class _GuardianIntro extends StatelessWidget {
+  const _GuardianIntro();
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Container(
+        padding: const EdgeInsets.all(22),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xff7140ef), Color(0xff9b72f6)],
+          ),
+          borderRadius: BorderRadius.circular(28),
+        ),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.volunteer_activism, color: Colors.white, size: 40),
+            SizedBox(height: 14),
+            Text(
+              'Conviértete en Guardián',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 28,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Desde \$50 MXN al mes. Tu neto se asigna a gastos pagados, aprobados y con capacidad real.',
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 12),
+      const Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          Chip(
+            avatar: Icon(Icons.fact_check_outlined),
+            label: Text('Impacto comprobable'),
+          ),
+          Chip(avatar: Icon(Icons.tune), label: Text('Monto ajustable')),
+          Chip(
+            avatar: Icon(Icons.event_busy),
+            label: Text('Cancela cuando quieras'),
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
+class _GuardianMembershipCard extends StatelessWidget {
+  const _GuardianMembershipCard({
+    required this.status,
+    required this.cents,
+    this.nextBilling,
+  });
+  final String? status;
+  final int cents;
+  final Object? nextBilling;
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(22),
+    decoration: BoxDecoration(
+      color: const Color(0xff201535),
+      borderRadius: BorderRadius.circular(28),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'MEMBRESÍA',
+          style: TextStyle(color: Color(0xffffd76b), letterSpacing: 1.2),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'Guardián',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 30,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        Text(
+          '${pesos(cents)} / mes',
+          style: const TextStyle(color: Colors.white, fontSize: 18),
+        ),
+        const SizedBox(height: 12),
+        Text(
+          status == 'active'
+              ? 'Activa'
+              : status == 'canceled'
+              ? 'Cancelada'
+              : 'En actualización',
+          style: const TextStyle(color: Color(0xffffd76b)),
+        ),
+        if (nextBilling != null)
+          Text(
+            'Próximo aniversario: ${_guardianDate(nextBilling)}',
+            style: const TextStyle(color: Colors.white70),
+          ),
+      ],
+    ),
+  );
 }

@@ -1,5 +1,12 @@
 # Dopmi — registro de avance
 
+## H8.7 aportaciones y Guardián — 26 de septiembre de 2026
+
+- Aportar separa monto y revisión, usa cantidades sugeridas/personalizada y resume gasto e importe antes de abrir Checkout. Stripe sigue capturando el método; al regresar o reanudar la app se consulta el historial por la misma llave idempotente.
+- El resultado sólo se presenta con estado persistido: procesamiento bloquea otro intento; confirmado muestra neto asignado y transferencia; cancelado y devuelto se distinguen. Un fallo incierto conserva llave e importe para reintentar sin duplicar el pago.
+- Guardián adopta la composición visual del mockup para introducción y membresía activa, sustituyendo el fondo comunitario por gastos pagados/aprobados y capacidad real. Mantiene consentimiento, primer cobro al activar, meses omitidos sin deuda, cambio futuro de monto/tarjeta, cancelación, impacto e historial H5.
+- Capturas Flutter reales a 377 × 852: `contribution-amount.png`, `guardian-intro.png` y `guardian-active.png`. La inspección comprobó jerarquía, importes reales y ausencia de fondo/bonos/cashback. Pruebas dirigidas: 36 aprobadas; análisis limpio. Aceptación instalada continúa pendiente.
+
 ## H8.6 perfil público moderado del rescatista — 26 de septiembre de 2026
 
 - Perfil propio separado del expediente de identidad: nombre público, avatar, descripción, ciudad/estado e Instagram/Facebook. Domicilio, teléfono, correo, documentos y datos bancarios no forman parte de esta superficie.

@@ -13,11 +13,16 @@ import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
+import 'package:dopmi_mobile/features/payments/payment_repository.dart';
+import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../test/fake_identity_repository.dart';
 import '../test/community_test.dart' show FakeCommunity;
 import '../test/rescue_test.dart' show FakeCaseUpdates, FakeRescue;
+import '../test/payments_test.dart' show FakePayments;
+import '../test/guardian_test.dart' show FakeGuardian, activePlan;
 
 import 'design_gallery.dart';
 
@@ -187,6 +192,52 @@ void main() {
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
           rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
+          routerInitialLocationProvider.overrideWithValue(route.$2),
+        ],
+      );
+      final key = GlobalKey();
+      await tester.pumpWidget(
+        RepaintBoundary(
+          key: key,
+          child: UncontrolledProviderScope(
+            container: container,
+            child: const DopmiApp(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      await tester.runAsync(
+        () => saveCapture(key, '${output.path}/${route.$1}.png'),
+      );
+      await tester.pumpWidget(const SizedBox());
+      container.dispose();
+      await identity.changes.close();
+    }
+    // ignore: invalid_use_of_visible_for_testing_member
+    SharedPreferences.setMockInitialValues({});
+    for (final route in [
+      ('contribution-amount', '/contribute/expense-one'),
+      ('guardian-intro', '/guardian'),
+      ('guardian-active', '/guardian'),
+    ]) {
+      final identity = FakeIdentityRepository()
+        ..user = const Identity(
+          'capture-user',
+          'captura@example.test',
+          verified: true,
+        );
+      final guardian = FakeGuardian();
+      if (route.$1 == 'guardian-active') {
+        guardian.value = {'plan': activePlan(), 'activation': null};
+      }
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          paymentRepositoryProvider.overrideWithValue(FakePayments()),
+          guardianRepositoryProvider.overrideWithValue(guardian),
+          guardianEnabledProvider.overrideWithValue(true),
           routerInitialLocationProvider.overrideWithValue(route.$2),
         ],
       );
