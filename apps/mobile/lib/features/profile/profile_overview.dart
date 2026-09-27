@@ -177,6 +177,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
                 const SizedBox(height: 20),
                 const SavedPetsRow(),
+                const SavedRescuersRow(),
                 ProfileRow(
                   title: 'Mi impacto',
                   subtitle: 'Avances de casos que apoyaste',
@@ -311,6 +312,22 @@ class SavedPetsRow extends ConsumerWidget {
           title: 'Mascotas guardadas',
           icon: Icons.bookmark_border,
           path: '/saved',
+          count: data.total,
+        ),
+      );
+}
+
+class SavedRescuersRow extends ConsumerWidget {
+  const SavedRescuersRow({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) =>
+      LiveSection<DataPage<SavedEntry>>(
+        tables: const ['dopmi_saved_rescuers'],
+        load: () => ref.read(communityRepositoryProvider).savedRescuers(1),
+        builder: (data, _) => ProfileRow(
+          title: 'Rescatistas guardados',
+          icon: Icons.bookmark_border,
+          path: '/saved?kind=rescuer',
           count: data.total,
         ),
       );

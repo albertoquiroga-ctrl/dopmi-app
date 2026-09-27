@@ -36,79 +36,66 @@ Evidencia por fila se anexará al completar cada ciclo con SHA de código/diseñ
 
 ### Estado I/T/V vigente
 
-| ID | Implementado | Comprobado técnicamente | Aceptado visualmente | Evidencia o diferencia abierta |
+La comprobación técnica significa que la ruta y su operación real están cubiertas; no equivale a aceptación visual. **V permanece en No para todas las filas hasta la revisión instalada de Irlanda/titular.** OAuth, eliminación de cuenta, analítica, legal definitivo, distribución iOS y dinero live pertenecen expresamente a H10–H12.
+
+| ID | I | T | V | Evidencia o diferencia abierta |
 | --- | --- | --- | --- | --- |
-| NAV | Parcial | Parcial | No | Cambio de modo dedicado y selector Publicar cubiertos; falta cerrar toda la conservación de estado y revisión instalada. |
-| AUTH | Parcial | Sí, sobre recorridos existentes | No | Acceso previo reutilizado; falta nueva comparación final con la referencia vigente. |
-| PROFILE | Parcial | Parcial | No | Vista principal, datos reales, historial/vacío/error y cambio de modo implementados; faltan rescatistas guardados y aceptación. |
-| SETTINGS | Parcial | Parcial | No | Información básica separada, ayuda, historial y cierre de sesión; método de pago depende de Guardián habilitado. |
-| PUBLISH | Parcial | Parcial | No | Selector inicial implementado; formularios por pasos y reanudación siguen abiertos. |
-| DISC, FILTER | Sí | Sí | No | Mazo, acciones, filtros, ubicación aproximada, paginación y casos elegibles cada dos adopciones conectados; falta revisión instalada. |
-| PET, MATCH, SAVED, CHAT | Sí | Sí | No | Detalle/galería, favorito con rollback, contacto confirmado, búsqueda, guardados tipados/tombstones, acciones de casos/perfiles y mensajería idempotente cubiertos; falta comparación instalada. |
-| SUPPORT, CASE, STORY, PUBLIC, IMPACT | Sí | Sí | No | Apoyar, progreso/gastos reales, galería pública, avances moderados, perfil con pestañas e impacto propio asignado están conectados y tienen capturas Flutter; falta revisión instalada. |
-| RH, RC, VERIFY, EVIDENCE, RP | Sí | Sí | No | Inicio, Mis casos, formularios por pasos, verificación/evidencia y perfil público propio moderado están conectados; falta comparación y aceptación instalada. |
-| PAYMENT, GUARD, REPORT | Sí | Sí | No | Monto/revisión/Stripe/resultado persistido, membresía, impacto, historial, monto, tarjeta y cancelación están conectados; falta aceptación instalada. |
-| LEGAL | Parcial | Parcial | No | Ayuda respeta reglas vigentes; privacidad y textos definitivos permanecen en H10. |
+| NAV | Sí | Sí | No | Barras 3/5 destinos, cambio dedicado, restauración, borradores y aislamiento por cuenta; revisión instalada pendiente. |
+| AUTH | Sí | Sí | No | Bienvenida/onboarding/acceso/confirmación/recuperación reales; OAuth oculto hasta H10. |
+| DISC | Sí | Sí | No | Mazo, gesto/botones, bloqueo, contacto confirmado, soporte intercalado, paginación y final. |
+| FILTER | Sí | Sí | No | Especie, sexo, tamaño, personalidad, ciudad y radio aproximado; permiso opcional/manual y sin distancia inventada. |
+| PET | Sí | Sí | No | Galería, historia, salud, convivencia, cuidados, rescatista, favorito/share/reporte/contacto. |
+| MATCH | Sí | Sí | No | Búsqueda, conversaciones, mensajes y acceso a guardados; no crea match recíproco. |
+| SAVED | Sí | Sí | No | Adopción/Donación/Rescatistas, contadores, tombstones y baja privada; Perfil abre mascotas y rescatistas directamente. |
+| CHAT | Sí | Sí | No | Lista/conversación/notificaciones con participantes, lectura, reconexión e idempotencia. |
+| PROFILE | Sí | Sí | No | Tarjeta, membresía real, historial/vacío/error, mascotas/rescatistas guardados, impacto, configuración y modo. |
+| SETTINGS | Sí | Sí | No | Información básica, medio/suscripción Guardián, historial, ayuda, legal provisional y cierre de sesión. |
+| SUPPORT | Sí | Sí | No | Casos elegibles, progreso, Ver todos y hero Guardián con fotografía/estilo de referencia y reglas reales. |
+| CASE | Sí | Sí | No | Galería pública aprobada, ubicación, responsable, historia, categorías, gastos, share/reporte/aporte. |
+| STORY | Sí | Sí | No | Avances persistentes moderados con fotos y snapshot público inmutable hasta aprobación. |
+| PUBLIC | Sí | Sí | No | Avatar/bio/ciudad/redes moderados y pestañas Actividad/En adopción/Casos. |
+| IMPACT | Sí | Sí | No | Sólo asignaciones propias y avances públicos, sin identidades de terceros. |
+| RH | Sí | Sí | No | Saludo, pendientes, actividad y Asignado/Transferido/En revisión, sin saldo bancario simulado. |
+| RC | Sí | Sí | No | Estados, detalle, edición/cierre y vínculo caso–adopción con ciclos independientes. |
+| PUBLISH | Sí | Sí | No | Selector Adopción/Caso, Fotos/Información/Revisión, guardado/reanudación y verificación requerida. |
+| VERIFY | Sí | Sí | No | Introducción, archivos, información, revisión y estados remotos/correcciones. |
+| EVIDENCE | Sí | Sí | No | Formularios de gasto, archivos privados, progreso, reintento y requisito pagado/aprobado. |
+| RP | Sí | Sí | No | Perfil propio/moderado, Connect, ayuda, configuración y regreso a donante. |
+| PAYMENT | Sí | Sí | No | Monto/revisión/Checkout y resultado persistido: pendiente, confirmado, asignado, transferido, devuelto/revisión. |
+| GUARD | Sí | Sí | No | Alta, consentimiento, impacto, historial, monto, tarjeta y cancelación; reglas H5 preservadas. |
+| REPORT | Sí | Sí | No | Mascota/caso/rescatista y bandeja administrativa restringida; acuse posterior a inserción. |
+| LEGAL | Parcial | Parcial | No | Ayuda y aviso provisional coherentes; privacidad/términos definitivos permanecen H10. |
 
-Referencia observada: `irlanda/apoyar-detalle-perfil@a246fa6f42ec517aae264d7fbd2358d647c4f840`. Inventario por lectura del código, no aceptación visual. Fuente y hashes en `design-reference.json`; volver a consultar la rama al inicio/cierre de cada ciclo.
+### Correspondencia de rutas vigente
 
-## Rutas
-
-| Referencia | Implementación/entrada actual | Hito | Diferencia | Responsables | Aceptación |
-| --- | --- | --- | --- | --- | --- |
-| `/` | `/welcome` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/choose-account` | `/welcome` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/choose-intent` | `/welcome` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/intro` | `/onboarding` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/onboarding/donor` | `/onboarding` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/onboarding/rescuer` | `/onboarding` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/welcome/donor` | `/start?intent=adopt` o `donate` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/welcome/rescuer` | `/start?intent=rescue` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/login/donor` | `/login` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/login/rescuer` | `/login` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/signup/donor` | `/signup` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/signup/rescuer` | `/signup` | H8 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/forgot-password` | `/forgot` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/terms/:mode` | `/terms` | H10 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/privacy/:mode` | `/terms (separación pendiente)` | H10 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/terms` | `/terms` | H10 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/privacy` | `/terms (separación pendiente)` | H10 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/adoption` | `/adoptions` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/adoption/:petId` | `/adoptions/:id` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/donate` | `/rescue-cases` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/case/:caseId` | `/rescue-cases/:id` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/donate/:caseId/:needId` | `/contribute/:id` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/donation-success/:caseId` | `/contribute/:id` (estado confirmado del servidor) | H8 | Estado embebido para conservar la misma llave y consultar evidencia; falta aceptación instalada. | Implementador / Irlanda / titular | I/T sí; V pendiente |
-| `/payment-error/:caseId/:needId` | `/contribute/:id` (procesando/cancelado/devuelto/error) | H8 | Estados reales y reintento idempotente; no muestra éxito simulado. | Implementador / Irlanda / titular | I/T sí; V pendiente |
-| `/impact` | `/impact` | H8 | Impacto propio conectado a cantidades asignadas y avances públicos; falta comparación visual instalada. | Implementador / Irlanda / titular | I/T sí; V pendiente |
-| `/impact/support` | `/guardian` | H8 | Selección, consentimiento y gestión real; falta aceptación instalada. | Implementador / Irlanda / titular | I/T sí; V pendiente |
-| `/impact/success` | `/guardian` (membresía desde estado del servidor) | H8 | Tarjeta activa sólo tras confirmación persistida. | Implementador / Irlanda / titular | I/T sí; V pendiente |
-| `/impact/error` | `/guardian` (alta/revisión/error/cancelación) | H8 | Estado remoto y recuperación con la misma referencia. | Implementador / Irlanda / titular | I/T sí; V pendiente |
-| `/messages` | `/messages` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/messages/:threadId` | `/messages/:id` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/notifications` | `/notifications` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/history` | `/payments` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/profile` | `/profile` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/saved` | `/saved` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/saved-rescuers` | `Sin equivalente dedicado` | H9 | Diseñar/conectar estado o función real; no copiar simulación. | Implementador / Irlanda / titular | Pendiente |
-| `/settings` | `Sin equivalente dedicado` | H9 | Diseñar/conectar estado o función real; no copiar simulación. | Implementador / Irlanda / titular | Pendiente |
-| `/settings/basic-info` | `/profile` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/settings/payment-methods` | `/guardian` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/settings/billing` | `/guardian` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/help` | `Sin equivalente dedicado` | H9 | Diseñar/conectar estado o función real; no copiar simulación. | Implementador / Irlanda / titular | Pendiente |
-| `/rescuer-profile/:caseId` | `/people/:id` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/rescuer` | `/rescuer` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/rescuer/verification` | `/rescue/new?kind=verification` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/rescuer/cases` | `/rescuer` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/rescuer/cases/:caseId` | `/rescue/:id` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/rescuer/publish` | `/rescue/new?kind=case o /my-adoptions/new` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/rescuer/evidence/:caseId/:needId` | `/rescue/:id?kind=expense` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/rescuer/food/:caseId/:needId` | `/rescue/:id?kind=expense` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/rescuer/messages` | `/messages` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/rescuer/profile` | `/profile` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/rescuer/profile/edit` | `/rescuer/profile/edit` | H8 | Editor moderado con avatar/bio/ciudad/redes y estados remotos; falta aceptación instalada. | Implementador / Irlanda / titular | I/T sí; V pendiente |
-| `/rescuer/settings` | `Sin equivalente dedicado` | H9 | Diseñar/conectar estado o función real; no copiar simulación. | Implementador / Irlanda / titular | Pendiente |
-
+| Referencia HTML | Flutter productivo | Estado técnico / excepción |
+| --- | --- | --- |
+| `/`, `/choose-account`, `/choose-intent` | `/welcome` | I/T; elección unificada de intención. |
+| `/intro`, `/onboarding/donor`, `/onboarding/rescuer` | `/onboarding?intent=…` | I/T; pistas adoptar/apoyar/rescatar. |
+| `/welcome/:mode`, `/login/:mode`, `/signup/:mode` | `/start`, `/login`, `/signup` con intención conservada | I/T; una identidad y sesión. |
+| `/forgot-password` | `/forgot`, `/reset-password`, `/confirm-recovery` | I/T real; la simulación HTML no se copia. |
+| `/terms…`, `/privacy…` | `/terms` | Parcial; documentos definitivos H10. |
+| `/adoption` | `/adoptions` | I/T; mazo swipe productivo. |
+| `/adoption/:petId` | `/adoptions/:id` | I/T. |
+| `/donate`, `/case/:caseId` | `/rescue-cases`, `/rescue-cases/:id` | I/T. |
+| `/donate/:caseId/:needId`, éxito/error | `/contribute/:id` con estado persistido | I/T; no existen pantallas de éxito simulado. |
+| `/impact`, `/impact/support`, éxito/error | `/impact`, `/guardian` | I/T; alta/resultado dependen del servidor. |
+| `/messages`, `/messages/:threadId`, `/notifications` | `/messages`, `/messages/:id`, `/notifications` | I/T. |
+| `/history` | `/payments` | I/T. |
+| `/profile` | `/profile` | I/T. |
+| `/saved`, `/saved-rescuers` | `/saved?kind=adoption|rescuer` | I/T; Donación es la tercera pestaña. |
+| `/settings`, `/settings/basic-info` | `/settings`, `/profile/basic-info` | I/T. |
+| `/settings/payment-methods`, `/settings/billing` | `/guardian` | I/T según capacidad real de Stripe. |
+| `/help` | `/help` | I/T; FAQ cambia por experiencia. |
+| `/rescuer-profile/:caseId` | `/people/:id` | I/T con perfil por UUID. |
+| `/rescuer` | `/rescuer` | I/T. |
+| `/rescuer/verification` | `/rescue/new?kind=verification` | I/T. |
+| `/rescuer/cases`, `/rescuer/cases/:caseId` | `/my-cases`, `/rescue/:id` | I/T. |
+| `/rescuer/publish` | `/publish` → `/my-adoptions/new` o `/rescue/new?kind=case` | I/T. |
+| `/rescuer/evidence…`, `/rescuer/food…` | `/rescue/:id?kind=expense` | I/T; formulario depende de categoría. |
+| `/rescuer/messages` | `/messages` | I/T con barra rescatista. |
+| `/rescuer/profile`, `/rescuer/profile/edit` | `/profile`, `/rescuer/profile/edit` | I/T. |
+| `/rescuer/settings` | `/settings`, `/connect`, `/help` | I/T; banco permanece en Stripe Connect. |
 ## Estados transversales obligatorios
 
 Cada fila necesita carga, vacío, error recuperable, reintento, interrupción, éxito y permisos cuando aplique. Adjuntar capturas del mockup/app con tamaño, SHA y datos de prueba equivalentes. Irlanda valida diseño, titular producto/dispositivo; el implementador registra evidencia.
@@ -131,4 +118,4 @@ Cada fila necesita carga, vacío, error recuperable, reintento, interrupción, �
 | CLABE recolectada por formulario propio | Onboarding de Stripe Connect, sin duplicar datos bancarios |
 | Videos | Post-MVP; rechazar hasta implementar pipeline y moderación |
 
-H8 incorpora Adoptar/Apoyar/Perfil para donantes y las cinco pestañas de rescatistas, Inter/Fraunces locales, fondo blanco y púrpura #7841f2. La bienvenida usa las tres intenciones y sus iconos de referencia. Guardados, mensajes y publicaciones siguen accesibles desde Perfil. Onboarding contextual y formularios de acceso implementados; aceptación visual y paridad de los recorridos H9 siguen pendientes; ver [evidencia H8](design-foundation.md). No se declara aprobación visual por aplicar un tema.
+H8 incorpora Adoptar/Apoyar/Perfil para donantes y las cinco pestañas de rescatistas, Inter/Fraunces locales, fondo blanco y púrpura #7841f2. La bienvenida usa las tres intenciones y sus iconos de referencia. Guardados, mensajes y publicaciones siguen accesibles desde Perfil. Los recorridos visibles antes asignados a H9 quedaron implementados y técnicamente comprobados dentro de H8; sólo su aceptación visual instalada permanece pendiente. Ver [evidencia H8](design-foundation.md). No se declara aprobación visual por aplicar un tema.

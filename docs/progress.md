@@ -1,5 +1,14 @@
 # Dopmi — registro de avance
 
+## H8 auditoría de cierre y correcciones de fidelidad — 26 de septiembre de 2026
+
+- La auditoría requisito por requisito detectó que la matriz seguía marcando rutas implementadas como parciales o inexistentes y que la evidencia HTML completa se detenía en acceso. `design-parity.md` ahora registra I/T/V vigentes y correspondencias reales; V continúa en No.
+- El HTML `a246fa6` se ejecutó localmente y se capturaron pantallas completas de Adoptar, Perfil, Apoyar, Inicio/Casos rescatista y detalle de caso. Las parejas HTML/Flutter quedaron versionadas en `docs/design-reviews/h8-complete`.
+- Perfil donante incorpora el acceso y contador de **Rescatistas guardados**; abre directamente `/saved?kind=rescuer`. La vista de guardados inicializa la pestaña solicitada sin duplicar repositorios ni exponer contenido retirado. Una prueba nueva cubre el recorrido.
+- Apoyar recupera la composición fotográfica y el CTA amarillo de Guardián con el asset vigente del mockup. El texto conserva las reglas reales: gastos pagados/aprobados, rescatistas verificados e impacto; no introduce fondo, bono o cashback. La suite detectó un overflow del hero a la altura inicial y se corrigió antes del cierre.
+- Verificación desde una copia exacta fuera de OneDrive: `flutter analyze` limpio, **80 pruebas Flutter**, dos pruebas de generación de capturas y seis pruebas de configuración móvil aprobadas. El checkout sincronizado retuvo temporalmente `build/unit_test_assets`; no se atribuyó a la aplicación y la misma fuente se comprobó fuera de esa carpeta.
+- Referencia Irlanda reconsultada al cierre: `a246fa6f42ec517aae264d7fbd2358d647c4f840`, sin cambios. Estas correcciones necesitan un nuevo candidato Internal Testing; build 254 no las contiene. Aceptación instalada sigue pendiente.
+
 ## H8 candidato completo en Google Play Internal Testing — 26 de septiembre de 2026
 
 - Candidato de aplicación: `4ffc20fd0b07f51953175e148cfe82b37ecc369a`, referencia Irlanda `a246fa6f42ec517aae264d7fbd2358d647c4f840`. Este SHA reúne H8.0–H8.7; el cierre visual continúa sujeto a revisión instalada.

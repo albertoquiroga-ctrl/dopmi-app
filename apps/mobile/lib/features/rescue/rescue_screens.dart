@@ -1225,29 +1225,77 @@ class _SupportHome extends StatelessWidget {
         InkWell(
           borderRadius: BorderRadius.circular(24),
           onTap: () => context.push('/guardian'),
-          child: Ink(
-            padding: const EdgeInsets.all(22),
-            decoration: BoxDecoration(
-              color: purple,
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Conviértete en Guardián',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: SizedBox(
+              height: 360,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.asset(
+                    'assets/guardian/guardian-urgent.jpg',
+                    fit: BoxFit.cover,
+                    semanticLabel: 'Mascota recibiendo atención veterinaria',
                   ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  'Desde \$50 MXN al mes · Sigue tu impacto · Cancela cuando quieras',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
+                  const DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.transparent, Color(0xdd171019)],
+                        stops: [0.25, 1],
+                      ),
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(22),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: yellow,
+                            borderRadius: BorderRadius.all(Radius.circular(22)),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 18,
+                              vertical: 10,
+                            ),
+                            child: Text(
+                              'Suscríbete ahora',
+                              style: TextStyle(fontWeight: FontWeight.w800),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          'Desde \$50 MXN al mes',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        SizedBox(height: 22),
+                        Text(
+                          'Apoya gastos urgentes',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 26,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Rescatistas verificados · Gastos pagados y aprobados · Sigue tu impacto',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

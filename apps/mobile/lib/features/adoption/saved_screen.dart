@@ -9,14 +9,21 @@ import 'community_ui.dart';
 enum SavedKind { adoption, donation, rescuer }
 
 class SavedScreen extends ConsumerStatefulWidget {
-  const SavedScreen({super.key});
+  const SavedScreen({super.key, this.initialKind = SavedKind.adoption});
+  final SavedKind initialKind;
   @override
   ConsumerState<SavedScreen> createState() => _SavedScreenState();
 }
 
 class _SavedScreenState extends ConsumerState<SavedScreen> {
-  SavedKind kind = SavedKind.adoption;
+  late SavedKind kind;
   int page = 1, revision = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    kind = widget.initialKind;
+  }
 
   Future<DataPage<SavedEntry>> load() {
     final repo = ref.read(communityRepositoryProvider);

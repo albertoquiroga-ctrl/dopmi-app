@@ -137,6 +137,7 @@ void main() {
         'assets/onboarding/luna-card.png',
         'assets/onboarding/luna-detail.png',
         'assets/onboarding/nina-card.png',
+        'assets/guardian/guardian-urgent.jpg',
       ]) {
         await tester.runAsync(
           () => precacheImage(AssetImage(asset), key.currentContext!),

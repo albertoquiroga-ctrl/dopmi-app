@@ -29,4 +29,4 @@ Entregas coherentes mediante `android-guardian-internal`, verificar publicación
 
 ## Estado
 
-H8.0–H8.7 están implementados y comprobados técnicamente en `codex/design-foundation`; la matriz conserva aceptación visual en **No**. El cierre de H8 todavía exige candidato instalado y revisión de Irlanda/titular. Las excepciones explícitas son OAuth/eliminación/analítica/legal de H10, iOS conjunto de H11 y dinero live de H12. No hay aceptación visual/dispositivo de esta versión.
+H8.0–H8.7 están implementados y comprobados técnicamente en `codex/design-foundation`; la matriz conserva aceptación visual en **No**. La auditoría de cierre añadió el acceso directo a rescatistas guardados, restauró el hero fotográfico de Apoyar y versionó comparaciones completas HTML/Flutter. Estas correcciones son posteriores al Android 2.3.3 (254), por lo que requieren un nuevo candidato instalado antes de la revisión de Irlanda/titular. Las excepciones explícitas son OAuth/eliminación/analítica/legal de H10, iOS conjunto de H11 y dinero live de H12.

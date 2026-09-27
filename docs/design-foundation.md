@@ -1,8 +1,8 @@
 # H8 — base visual y navegación
 
-> Corte histórico de implementación parcial. El plan vigente es [h8-execution.md](h8-execution.md), autorizado el 26/9/2026: H8 incluye recorridos completos antes asignados a H9. Los pendientes inferiores no se limitan a aceptación visual; no usar este registro como alcance vigente.
+> El plan vigente es [h8-execution.md](h8-execution.md), autorizado el 26/9/2026. H8 incluye los recorridos completos antes asignados a H9. Este documento reúne la evidencia visual; la aceptación instalada sigue separada de la implementación y las pruebas.
 
-Referencia: `dopmi-functional-mockup`, rama `irlanda/apoyar-detalle-perfil`, commit `a246fa6f42ec517aae264d7fbd2358d647c4f840`, reconsultada al inicio y cierre de este ciclo. Implementación: `codex/design-foundation`, desde H7 integrado (`ba9f897`). **H8 sigue abierto**: estas capturas no acreditan paridad de todos los recorridos ni aceptación de Irlanda/dispositivo.
+Referencia: `dopmi-functional-mockup`, rama `irlanda/apoyar-detalle-perfil`, commit `a246fa6f42ec517aae264d7fbd2358d647c4f840`, reconsultada al inicio y cierre de los bloques. Implementación: `codex/design-foundation`, desde H7 integrado (`ba9f897`). **H8 sigue abierto únicamente para revisión/aceptación instalada y las correcciones que ésta produzca.**
 
 ## Cambio implementado
 
@@ -39,6 +39,19 @@ Componentes reales: [donante](design-reviews/h8-foundation/donor.png), [rescatis
 
 Estados reales ausentes o simulados en el HTML: [recuperación](design-reviews/h8-access/forgot.png), [confirmación de correo](design-reviews/h8-access/confirm.png). La insignia «Modo prueba» pertenece al prototipo, no a las capturas Flutter.
 
+Comparaciones de pantallas completas generadas al ejecutar el HTML y las rutas Flutter a 377 × 852 con datos equivalentes de prueba:
+
+| Recorrido | HTML de referencia | Flutter |
+| --- | --- | --- |
+| Adoptar / swipe | [HTML](design-reviews/h8-complete/reference-adoption.png) | [App](design-reviews/h8-complete/adoption-swipe.png) |
+| Perfil donante | [HTML](design-reviews/h8-complete/reference-profile.png) | [App](design-reviews/h8-complete/profile-overview.png) |
+| Apoyar | [HTML](design-reviews/h8-complete/reference-support.png) | [App](design-reviews/h8-complete/support-home.png) |
+| Inicio rescatista | [HTML](design-reviews/h8-complete/reference-rescuer-home.png) | [App](design-reviews/h8-complete/rescuer-home.png) |
+| Casos rescatista | [HTML](design-reviews/h8-complete/reference-rescuer-cases.png) | [App](design-reviews/h8-complete/rescuer-cases.png) |
+| Detalle de caso | [HTML](design-reviews/h8-complete/reference-case-detail.png) | [App](design-reviews/h8-complete/case-detail.png) |
+
+La captura Flutter de swipe usa el estado sin foto de la prueba; el candidato instalado consume las fotos públicas aprobadas de Supabase. Apoyar conserva la fotografía y composición destacada de la referencia, sustituyendo sus promesas simuladas por gastos pagados/aprobados. Inicio rescatista sustituye “disponible” por Asignado/Transferido/En revisión porque una transferencia a Stripe no acredita depósito bancario. Perfil añade Mi impacto y conserva Configuración/cambio de modo al desplazarse; el acceso y contador de rescatistas guardados ya están en la vista principal.
+
 Regenerar desde `apps/mobile`:
 
 ```sh
@@ -51,12 +64,10 @@ Salida ignorada: `.tools/design-review`. Revisar antes de reemplazar las captura
 
 Capturas nuevas del cierre técnico H8.7: `contribution-amount.png`, `guardian-intro.png` y `guardian-active.png` en `.tools/design-review`. Reproducen componentes Flutter reales a 377 × 852. El perfil público moderado, el panel/casos/formularios rescatista y los recorridos de aportación/Guardián ya están implementados; la diferencia transversal restante es la aceptación instalada y cualquier ajuste que resulte de ella.
 
-- `flutter analyze`: sin incidencias.
-- `flutter test test tool/capture_design_test.dart`: 62 aprobadas (61 de la suite y una generación de capturas). Los tres onboardings se recorren con texto al 200 % en 320 × 640, incluyendo regreso y registro con intención preservada; la restauración de sesión rescatista abre su inicio.
+- `flutter analyze`: sin incidencias en la copia local fuera de OneDrive; la carpeta generada del checkout quedó bloqueada temporalmente por sincronización, sin afectar fuentes ni CI.
+- `flutter test`: **80 pruebas** aprobadas. `tool/capture_design_test.dart` y `tool/capture_profile_test.dart`: **2 generaciones de capturas** aprobadas. Los tres onboardings se recorren con texto al 200 % en 320 × 640, incluyendo regreso y registro con intención preservada; la restauración de sesión rescatista abre su inicio.
 - `flutter test test_backend`: cuatro recorridos con Supabase local real aprobados. Configuración móvil: seis pruebas aprobadas.
 - Regresión encontrada/corregida: al reconstruir el router por cambio de cuenta se recordaba la intención de ruta antes del redirect; ahora se registra el destino superior resuelto, incluidas páginas abiertas con `push`. El historial financiero de la nueva cuenta se muestra vacío y no conserva detalles anteriores.
-- CI del commit se registra por separado en `progress.md`. Posteriormente se publicó el candidato firmado Android 2.3.3 (253), SHA `74fd922`, mediante Codemagic `6ab783481453f4d0a7737de5`; Play Internal Testing devuelve `completed`. Irlanda revisa desde esa distribución; aceptación visual pendiente.
+- El candidato completo previo a esta corrección fue Android 2.3.3 (254), SHA `4ffc20f`, mediante Codemagic `6ab8927b80ac940ea0c3eaf8`; firma, pruebas y Publishing aprobaron. El próximo candidato incorporará el acceso directo de rescatistas guardados y la composición fotográfica de Apoyar. Irlanda revisa desde Internal Testing; aceptación visual pendiente.
 
-Pendiente H8.3: revisión visual de Irlanda y ajustes antes de declarar paridad. Diferencias explícitas: controles nativos con áreas táctiles amplias y mostrar/ocultar contraseña; gris/foco con mayor contraste; acceso anónimo y confirmación de correo disponibles; OAuth oculto mientras sus proveedores no estén configurados; consentimiento de desarrollo hasta H10; textos de gastos pagados/aprobados en lugar de financiación previa. Las ilustraciones de introducción no escalan como texto interactivo: el contenido explicativo exterior sí lo hace. Revisar también espaciados, encuadres y equivalencia de las ilustraciones nativas; las capturas no representan una aceptación 1:1 automática.
-
-Pendiente H9: contenido y estados de adopción/rescate/pagos/cuenta, sin copiar éxitos, verificaciones o promesas financieras simulados. Pendiente H11: dispositivo, enlaces externos, cámara/galería, teclado, VoiceOver/TalkBack y aceptación en ambas tiendas desde el mismo SHA.
+Pendiente de cierre H8: revisión visual de Irlanda/titular y ajustes antes de declarar paridad aceptada. Diferencias explícitas: controles nativos con áreas táctiles amplias y mostrar/ocultar contraseña; gris/foco con mayor contraste; acceso anónimo y confirmación de correo disponibles; OAuth oculto mientras sus proveedores no estén configurados; consentimiento de desarrollo hasta H10; textos de gastos pagados/aprobados en lugar de financiación previa. Las ilustraciones de introducción no escalan como texto interactivo: el contenido explicativo exterior sí lo hace. H9 conserva aceptación integrada y excepciones operativas; H11 conserva dispositivo, enlaces externos, cámara/galería, teclado, VoiceOver/TalkBack y distribución conjunta Android/iOS.

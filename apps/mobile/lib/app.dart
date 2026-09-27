@@ -250,7 +250,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/saved',
-        builder: (_, _) => SavedScreen(key: ValueKey(identity.identity?.id)),
+        builder: (_, state) => SavedScreen(
+          key: ValueKey('${identity.identity?.id}:${state.uri}'),
+          initialKind: switch (state.uri.queryParameters['kind']) {
+            'donation' => SavedKind.donation,
+            'rescuer' => SavedKind.rescuer,
+            _ => SavedKind.adoption,
+          },
+        ),
       ),
       GoRoute(
         path: '/impact',

@@ -33,6 +33,7 @@ flutter:
     - assets/welcome-pets.png
     - assets/navigation/
     - assets/onboarding/
+    - assets/guardian/
   fonts:
     - family: Inter
       fonts:
