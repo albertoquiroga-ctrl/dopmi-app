@@ -420,6 +420,13 @@ void main() {
           .download(avatar),
       isNotEmpty,
     );
+    await owner.storage.from('dopmi-rescuer-profile-media').remove([avatar]);
+    expect(
+      await anonymous.client.storage
+          .from('dopmi-rescuer-profile-media')
+          .download(avatar),
+      isNotEmpty,
+    );
     final linked = await ownerCommunity.save({'rescue_case_id': rescue.id});
     expect(linked.status, 'draft');
     expect((await ownerCommunity.ownForCase(rescue.id))!.id, linked.id);
