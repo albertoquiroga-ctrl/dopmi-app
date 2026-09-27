@@ -119,32 +119,36 @@ class PageFrame extends StatelessWidget {
     this.back = true,
     this.actions,
     this.bottomNavigationBar,
+    this.showAppBar = true,
   });
   final List<Widget> children;
   final bool back;
   final List<Widget>? actions;
   final Widget? bottomNavigationBar;
+  final bool showAppBar;
   @override
   Widget build(BuildContext context) => Scaffold(
     bottomNavigationBar: bottomNavigationBar,
-    appBar: AppBar(
-      title: const Brand(),
-      automaticallyImplyLeading: false,
-      leading: back
-          ? IconButton(
-              tooltip: 'Volver',
-              icon: const Icon(Icons.arrow_back_rounded),
-              onPressed: () {
-                if (context.canPop()) {
-                  context.pop();
-                } else {
-                  context.go('/welcome');
-                }
-              },
-            )
-          : null,
-      actions: actions,
-    ),
+    appBar: showAppBar
+        ? AppBar(
+            title: const Brand(),
+            automaticallyImplyLeading: false,
+            leading: back
+                ? IconButton(
+                    tooltip: 'Volver',
+                    icon: const Icon(Icons.arrow_back_rounded),
+                    onPressed: () {
+                      if (context.canPop()) {
+                        context.pop();
+                      } else {
+                        context.go('/welcome');
+                      }
+                    },
+                  )
+                : null,
+            actions: actions,
+          )
+        : null,
     body: SafeArea(
       top: false,
       child: Align(

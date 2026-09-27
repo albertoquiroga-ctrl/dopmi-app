@@ -6,10 +6,11 @@ insert into auth.users(id,email,raw_user_meta_data,email_confirmed_at)
 select ('20000000-0000-4000-8000-00000000000'||n)::uuid,'adoption-'||n||'@example.test',
   '{"display_name":"Nombre privado","terms_version":"development-2026-09-13","terms_accepted":true}',now() from generate_series(1,4) n;
 insert into private.admin_memberships(user_id) values('20000000-0000-4000-8000-000000000004');
-insert into public.dopmi_adoptions(id,owner_id,pet_name,city,region,story,publisher_name,photos)
+insert into public.dopmi_adoptions(id,owner_id,pet_name,city,region,story,publisher_name,photos,personality,approximate_latitude,approximate_longitude)
 values('30000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000001','Luna','Monterrey','Nuevo León',
  'Luna busca una familia que le dedique tiempo.','Refugio aprobado',
- array['20000000-0000-4000-8000-000000000001/30000000-0000-4000-8000-000000000001/40000000-0000-4000-8000-000000000001.jpg']);
+ array['20000000-0000-4000-8000-000000000001/30000000-0000-4000-8000-000000000001/40000000-0000-4000-8000-000000000001.jpg'],
+ array['affectionate','calm'],25.69,-100.32);
 
 set local role anon;
 select set_config('request.jwt.claim.sub','',true);
@@ -52,6 +53,13 @@ select set_config('request.jwt.claim.sub','',true);
 select is((dopmi_catalog('{"species":"dog","city":"monterrey","min_age":0}')->>'total')::int,1,'public filters find approved post');
 select is((dopmi_catalog('{"species":"cat"}')->>'total')::int,0,'nonmatching filter excludes');
 select is((dopmi_catalog('{}',2,1)->'items'), '[]'::jsonb,'catalog paginates');
+select is((dopmi_discovery('{"personality":["affectionate"]}')->>'total')::int,1,'discovery filters approved personality');
+select is((dopmi_discovery('{"personality":["playful"]}')->>'total')::int,0,'discovery excludes other personality');
+select is((dopmi_discovery('{"latitude":25.68,"longitude":-100.31,"radius_km":5}')->>'total')::int,1,'approximate radius includes nearby publication');
+select ok((dopmi_discovery('{"latitude":25.68,"longitude":-100.31,"radius_km":5}')->'items'->0->>'distance_km') is not null,'distance is calculated when both approximate locations exist');
+select is((dopmi_discovery('{"latitude":20,"longitude":-100,"radius_km":5}')->>'total')::int,0,'approximate radius excludes distant publication');
+select is((dopmi_discovery()->'items'->0) ?| array['approximate_latitude','approximate_longitude'],false,'discovery never exposes approximate coordinates');
+select throws_ok($$select dopmi_discovery('{"latitude":25.68}')$$,'22023',null,'partial location filter rejected');
 select is(dopmi_adoption_detail('30000000-0000-4000-8000-000000000001') ? 'review_feedback',false,'public detail excludes private moderation');
 select is(dopmi_public_profile('20000000-0000-4000-8000-000000000001')->>'name','Refugio aprobado','public name uses approved snapshot');
 select is(dopmi_public_profile('20000000-0000-4000-8000-000000000001') ?| array['email','phone','account_status'],false,'public profile excludes identity data');

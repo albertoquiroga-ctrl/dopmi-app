@@ -53,6 +53,7 @@ final communityRepositoryProvider = Provider<CommunityRepository>(
 abstract class CommunityRepository {
   String? get userId;
   Future<DataPage<Adoption>> catalog(Json filters, int page);
+  Future<DataPage<Adoption>> discovery(Json filters, int page);
   Future<Adoption?> detail(String id);
   Future<DataPage<Adoption>> mine(int page);
   Future<Adoption?> own(String id);
@@ -85,6 +86,18 @@ class SupabaseCommunityRepository implements CommunityRepository {
   @override
   Future<DataPage<Adoption>> catalog(Json filters, int page) async {
     final result = await rpc('dopmi_catalog', {
+      'filters': filters,
+      'page_number': page,
+    });
+    return DataPage(
+      (result['items'] as List).map((e) => Adoption(Json.from(e))).toList(),
+      result['total'] as int,
+    );
+  }
+
+  @override
+  Future<DataPage<Adoption>> discovery(Json filters, int page) async {
+    final result = await rpc('dopmi_discovery', {
       'filters': filters,
       'page_number': page,
     });

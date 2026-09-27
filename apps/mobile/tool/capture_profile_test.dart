@@ -54,6 +54,7 @@ void main() {
     final out = Directory('../../.tools/design-review');
     await tester.runAsync(() => out.create(recursive: true));
     for (final spec in [
+      ('adoption-swipe', '/adoptions'),
       ('profile-overview', '/profile'),
       ('profile-settings', '/settings'),
       ('publish-choice', '/publish'),

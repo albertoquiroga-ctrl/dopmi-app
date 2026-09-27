@@ -1,5 +1,11 @@
 # Auditoría del historial de migraciones
 
+## H8 descubrimiento — 26 de septiembre de 2026 (México)
+
+Antes del cambio se reconsultaron las 22 entradas remotas y la ausencia de columnas/RPC nuevas. Migración local `20260927013712_adoption_discovery.sql`, aplicada por MCP como `20260927014731`: añade personalidad y coordenadas redondeadas a publicaciones, más `dopmi_discovery` sin cambiar `dopmi_catalog` ni otra firma consumida por el build 253. La RPC sólo devuelve distancia calculada cuando el cliente aporta ubicación completa; nunca devuelve coordenadas. No se ejecutó `db push`, renombrado ni reparación del historial.
+
+Reproducción desde cero y `supabase test db`: cuatro archivos, 198 pruebas aprobadas. Verificación remota: dos perros juguetones, dos perros dentro de 10 km del punto de prueba en Monterrey, distancia presente y cero claves de coordenadas. El asesor conserva los avisos documentados de funciones públicas `SECURITY DEFINER`; `dopmi_discovery` es una lectura pública deliberada de publicaciones aprobadas, con filtros validados y `search_path` vacío.
+
 ## Renovación H7 — 25 de septiembre de 2026 (México)
 
 Consultadas de nuevo las 21 entradas remotas previas: todas sus sentencias coinciden con los archivos locales normalizando CRLF/LF y espacios extremos. Se conservan los siete antecedentes sin fila CLI. Snapshot privado en `.tools/legacy-backup/migrations.json`; no se reejecutó ni reparó historial remoto.

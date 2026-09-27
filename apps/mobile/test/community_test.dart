@@ -41,6 +41,9 @@ class FakeCommunity implements CommunityRepository {
   Future<DataPage<Adoption>> catalog(Json filters, int page) async =>
       DataPage([post], 1);
   @override
+  Future<DataPage<Adoption>> discovery(Json filters, int page) async =>
+      DataPage([post], 1);
+  @override
   Future<Adoption?> detail(String id) async => post;
   @override
   Future<Adoption?> own(String id) async => post;
@@ -146,13 +149,29 @@ void main() {
     (tester) async {
       final repo = FakeCommunity();
       await start(tester, repo, '/adoptions');
-      await tap(tester, 'Conocer su historia →');
+      await tester.tap(find.text('Luna'));
+      await tester.pumpAndSettle();
       await tap(tester, 'Guardar publicación');
       expect(repo.post.saved, true);
       expect(find.text('Quitar de guardados'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
+  testWidgets('swipe buttons pass and persist likes without double actions', (
+    tester,
+  ) async {
+    final repo = FakeCommunity();
+    await start(tester, repo, '/adoptions');
+    expect(find.text('Luna'), findsOneWidget);
+    await tester.tap(find.byTooltip('Me gusta'));
+    await tester.pumpAndSettle();
+    expect(repo.post.saved, true);
+    expect(
+      find.text('Nuestra manada llegó hasta aquí por ahora'),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
   testWidgets(
     'failed draft save preserves authored content and can be retried',
     (tester) async {

@@ -1,5 +1,13 @@
 # Dopmi — registro de avance
 
+## H8.2 descubrimiento funcional en desarrollo — 26 de septiembre de 2026
+
+- Adoptar ya usa un mazo con foto dominante, Perros/Gatos, Pasar, Contactar y Me gusta por gesto o botón. Me gusta persiste el favorito antes de avanzar; las acciones se bloquean mientras esperan al servidor. Incluye carga, error/reintento, fin del mazo, reinicio y acceso a filtros/favoritos.
+- Filtros funcionales de sexo, tamaño y personalidad; ubicación opcional con alternativa manual. El permiso se solicita sólo al pulsar “Usar mi ubicación aproximada”. El cliente redondea a dos decimales y el servidor devuelve únicamente distancia calculada, nunca coordenadas.
+- Migración `20260927013712_adoption_discovery.sql` aplicada por MCP como `20260927014731`. La RPC nueva mantiene `dopmi_catalog` y el build 253 compatibles. Cinco publicaciones demo aprobadas recibieron personalidad y ubicación aproximada ficticias para probar el mazo.
+- PostgreSQL local reconstruido desde cero: 198 pruebas aprobadas. Remoto: filtros de personalidad/radio y ausencia de coordenadas verificados. Flutter: análisis sin incidencias, 65 pruebas aprobadas. Captura inicial a 377 × 852 inspeccionada; se retiró el encabezado duplicado antes de la captura final.
+- H8.2 sigue parcial: falta intercalar casos elegibles cada dos adopciones, ampliar pruebas de gesto/paginación/fallo de red y publicar el paquete de revisión. Referencia Irlanda continúa en `a246fa6`.
+
 ## H8.0 cerrado y Perfil/cambio de modo en ejecución — 26 de septiembre de 2026
 
 - H8.0 convertido en matriz concreta de pantallas, acciones, datos, prueba y estado separado I/T/V. Ninguna pantalla se declara aceptada por Irlanda.

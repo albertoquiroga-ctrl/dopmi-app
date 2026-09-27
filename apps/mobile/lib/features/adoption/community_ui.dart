@@ -47,21 +47,28 @@ class CommunityFrame extends StatelessWidget {
     required this.children,
     this.index,
     this.back = true,
+    this.showNotifications = true,
+    this.showAppBar = true,
   });
   final List<Widget> children;
   final int? index;
   final bool back;
+  final bool showNotifications;
+  final bool showAppBar;
   @override
   Widget build(BuildContext context) => PageFrame(
     back: back,
     bottomNavigationBar: index == null ? null : CommunityNav(index!),
-    actions: [
-      IconButton(
-        tooltip: 'Notificaciones',
-        onPressed: () => context.push('/notifications'),
-        icon: const Icon(Icons.notifications_outlined),
-      ),
-    ],
+    showAppBar: showAppBar,
+    actions: showNotifications
+        ? [
+            IconButton(
+              tooltip: 'Notificaciones',
+              onPressed: () => context.push('/notifications'),
+              icon: const Icon(Icons.notifications_outlined),
+            ),
+          ]
+        : const [],
     children: children,
   );
 }

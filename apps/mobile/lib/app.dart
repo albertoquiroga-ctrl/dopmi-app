@@ -14,6 +14,7 @@ import 'features/identity/onboarding_screen.dart';
 import 'features/profile/profile_screen.dart';
 import 'features/profile/profile_overview.dart';
 import 'features/adoption/catalog_screens.dart';
+import 'features/adoption/discovery_screen.dart';
 import 'features/adoption/publication_screens.dart';
 import 'features/communication/message_screens.dart';
 import 'features/rescue/rescue_screens.dart';
@@ -65,10 +66,21 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/adoptions',
-                builder: (_, state) => CatalogScreen(
-                  key: ValueKey('${identity.identity?.id}:${state.uri}'),
-                  owner: state.uri.queryParameters['owner'],
-                ),
+                builder: (_, state) {
+                  final owner = state.uri.queryParameters['owner'];
+                  return owner == null
+                      ? DiscoveryScreen(
+                          key: ValueKey(
+                            '${identity.identity?.id}:${state.uri}',
+                          ),
+                        )
+                      : CatalogScreen(
+                          key: ValueKey(
+                            '${identity.identity?.id}:${state.uri}',
+                          ),
+                          owner: owner,
+                        );
+                },
               ),
             ],
           ),

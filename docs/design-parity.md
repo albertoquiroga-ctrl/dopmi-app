@@ -43,7 +43,8 @@ Evidencia por fila se anexará al completar cada ciclo con SHA de código/diseñ
 | PROFILE | Parcial | Parcial | No | Vista principal, datos reales, historial/vacío/error y cambio de modo implementados; faltan rescatistas guardados y aceptación. |
 | SETTINGS | Parcial | Parcial | No | Información básica separada, ayuda, historial y cierre de sesión; método de pago depende de Guardián habilitado. |
 | PUBLISH | Parcial | Parcial | No | Selector inicial implementado; formularios por pasos y reanudación siguen abiertos. |
-| DISC, FILTER, PET, MATCH, SAVED, CHAT | No | No | No | H8.2–H8.3 pendientes. |
+| DISC, FILTER | Parcial | Parcial | No | Mazo, acciones, filtros y ubicación aproximada conectados; falta tarjeta de apoyo, pruebas ampliadas y revisión instalada. |
+| PET, MATCH, SAVED, CHAT | No | No | No | H8.3 pendiente. |
 | SUPPORT, CASE, STORY, PUBLIC, IMPACT | No | No | No | H8.5 pendiente. |
 | RH, RC, VERIFY, EVIDENCE, RP | No | No | No | H8.6 pendiente. |
 | PAYMENT, GUARD, REPORT, LEGAL | Parcial | Parcial | No | Servicios previos reutilizables; falta paridad completa y estados del plan vigente. |
