@@ -134,9 +134,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               const SizedBox(height: 20),
               if (rescuer) ...[
                 ProfileRow(
-                  title: 'Verificación y perfil público',
+                  title: 'Editar perfil público',
                   icon: Icons.verified_user_outlined,
-                  path: '/rescuer',
+                  path: '/rescuer/profile/edit',
+                ),
+                ProfileRow(
+                  title: 'Ver mi perfil público',
+                  icon: Icons.public,
+                  path: '/people/${profile!.id}',
                 ),
                 ProfileRow(
                   title: 'Mis casos',
@@ -147,6 +152,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   title: 'Mis publicaciones de adopción',
                   icon: Icons.home_outlined,
                   path: '/my-adoptions',
+                ),
+                const ProfileRow(
+                  title: 'Configurar pagos con Stripe',
+                  icon: Icons.account_balance_outlined,
+                  path: '/connect',
+                ),
+                const ProfileRow(
+                  title: 'Ayuda para rescatistas',
+                  icon: Icons.help_outline,
+                  path: '/help',
                 ),
               ] else ...[
                 Text(

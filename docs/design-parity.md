@@ -46,7 +46,7 @@ Evidencia por fila se anexará al completar cada ciclo con SHA de código/diseñ
 | DISC, FILTER | Sí | Sí | No | Mazo, acciones, filtros, ubicación aproximada, paginación y casos elegibles cada dos adopciones conectados; falta revisión instalada. |
 | PET, MATCH, SAVED, CHAT | Sí | Sí | No | Detalle/galería, favorito con rollback, contacto confirmado, búsqueda, guardados tipados/tombstones, acciones de casos/perfiles y mensajería idempotente cubiertos; falta comparación instalada. |
 | SUPPORT, CASE, STORY, PUBLIC, IMPACT | Sí | Sí | No | Apoyar, progreso/gastos reales, galería pública, avances moderados, perfil con pestañas e impacto propio asignado están conectados y tienen capturas Flutter; falta revisión instalada. |
-| RH, RC, VERIFY, EVIDENCE, RP | Parcial | Parcial | No | Inicio usa verificación, pendientes, actividad y estados financieros reales; faltan cerrar Mis casos, pasos de publicación/evidencia y perfil propio. |
+| RH, RC, VERIFY, EVIDENCE, RP | Sí | Sí | No | Inicio, Mis casos, formularios por pasos, verificación/evidencia y perfil público propio moderado están conectados; falta comparación y aceptación instalada. |
 | PAYMENT, GUARD, REPORT, LEGAL | Parcial | Parcial | No | Servicios previos reutilizables; falta paridad completa y estados del plan vigente. |
 
 Referencia observada: `irlanda/apoyar-detalle-perfil@a246fa6f42ec517aae264d7fbd2358d647c4f840`. Inventario por lectura del código, no aceptación visual. Fuente y hashes en `design-reference.json`; volver a consultar la rama al inicio/cierre de cada ciclo.
@@ -105,7 +105,7 @@ Referencia observada: `irlanda/apoyar-detalle-perfil@a246fa6f42ec517aae264d7fbd2
 | `/rescuer/food/:caseId/:needId` | `/rescue/:id?kind=expense` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
 | `/rescuer/messages` | `/messages` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
 | `/rescuer/profile` | `/profile` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
-| `/rescuer/profile/edit` | `/profile` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
+| `/rescuer/profile/edit` | `/rescuer/profile/edit` | H8 | Editor moderado con avatar/bio/ciudad/redes y estados remotos; falta aceptación instalada. | Implementador / Irlanda / titular | I/T sí; V pendiente |
 | `/rescuer/settings` | `Sin equivalente dedicado` | H9 | Diseñar/conectar estado o función real; no copiar simulación. | Implementador / Irlanda / titular | Pendiente |
 
 ## Estados transversales obligatorios

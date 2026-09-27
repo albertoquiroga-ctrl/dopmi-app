@@ -9,12 +9,14 @@ enum MediaPurpose {
   rescuePhoto,
   rescueDocument,
   caseUpdatePhoto,
+  rescuerAvatar,
 }
 
 extension MediaPolicy on MediaPurpose {
   String get bucket => switch (this) {
     MediaPurpose.adoptionPhoto => 'dopmi-adoption-photos',
     MediaPurpose.caseUpdatePhoto => 'dopmi-case-update-media',
+    MediaPurpose.rescuerAvatar => 'dopmi-rescuer-profile-media',
     _ => 'dopmi-rescue-evidence',
   };
   bool get isDocument => this == MediaPurpose.rescueDocument;

@@ -14,6 +14,7 @@ import 'features/identity/onboarding_screen.dart';
 import 'features/profile/profile_screen.dart';
 import 'features/profile/profile_overview.dart';
 import 'features/profile/impact_screen.dart';
+import 'features/profile/rescuer_profile_edit_screen.dart';
 import 'features/adoption/catalog_screens.dart';
 import 'features/adoption/discovery_screen.dart';
 import 'features/adoption/saved_screen.dart';
@@ -155,6 +156,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/settings',
         builder: (_, _) => SettingsScreen(key: ValueKey(identity.identity?.id)),
+      ),
+      GoRoute(
+        path: '/rescuer/profile/edit',
+        builder: (_, _) => RescuerPublicProfileEditScreen(
+          key: ValueKey(identity.identity?.id),
+        ),
       ),
       GoRoute(path: '/help', builder: (_, _) => const HelpScreen()),
       GoRoute(

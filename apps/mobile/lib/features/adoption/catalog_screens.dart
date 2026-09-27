@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
 import '../community/content_actions.dart';
+import '../profile/rescuer_profile_repository.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
 import 'photo_recovery.dart';
@@ -709,11 +710,7 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const CircleAvatar(
-                radius: 44,
-                backgroundColor: yellow,
-                child: Icon(Icons.person_outline, size: 48, color: ink),
-              ),
+              _PublicRescuerAvatar(profile['avatar_path'] as String?),
               const SizedBox(height: 24),
               Heading(
                 profile['name'] as String,
@@ -724,6 +721,33 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
                 profile['bio'] as String,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
+              if ((profile['instagram_url'] as String? ?? '').isNotEmpty ||
+                  (profile['facebook_url'] as String? ?? '').isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    if ((profile['instagram_url'] as String? ?? '').isNotEmpty)
+                      ActionChip(
+                        avatar: const Icon(Icons.camera_alt_outlined, size: 18),
+                        label: const Text('Instagram'),
+                        onPressed: () => copyForSharing(
+                          context,
+                          profile['instagram_url'] as String,
+                        ),
+                      ),
+                    if ((profile['facebook_url'] as String? ?? '').isNotEmpty)
+                      ActionChip(
+                        avatar: const Icon(Icons.link, size: 18),
+                        label: const Text('Facebook'),
+                        onPressed: () => copyForSharing(
+                          context,
+                          profile['facebook_url'] as String,
+                        ),
+                      ),
+                  ],
+                ),
+              ],
               const SizedBox(height: 24),
               Notice(
                 '${profile['adopted_count']} adopciones marcadas como realizadas por esta cuenta.',
@@ -875,4 +899,30 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
       ),
     ],
   );
+}
+
+class _PublicRescuerAvatar extends ConsumerWidget {
+  const _PublicRescuerAvatar(this.path);
+  final String? path;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (path == null || path!.isEmpty) {
+      return const CircleAvatar(
+        radius: 44,
+        backgroundColor: yellow,
+        child: Icon(Icons.person_outline, size: 48, color: ink),
+      );
+    }
+    return FutureBuilder<String>(
+      future: ref.read(rescuerProfileRepositoryProvider).avatarUrl(path!),
+      builder: (_, result) => CircleAvatar(
+        radius: 44,
+        backgroundColor: yellow,
+        backgroundImage: result.hasData ? NetworkImage(result.data!) : null,
+        child: result.hasData
+            ? null
+            : const CircularProgressIndicator(strokeWidth: 2),
+      ),
+    );
+  }
 }

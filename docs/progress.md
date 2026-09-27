@@ -1,5 +1,14 @@
 # Dopmi — registro de avance
 
+## H8.6 perfil público moderado del rescatista — 26 de septiembre de 2026
+
+- Perfil propio separado del expediente de identidad: nombre público, avatar, descripción, ciudad/estado e Instagram/Facebook. Domicilio, teléfono, correo, documentos y datos bancarios no forman parte de esta superficie.
+- El dueño conserva borrador, correcciones, rechazo, envío y retiro. Una edición posterior no reemplaza la última instantánea pública aprobada; administración revisa y publica desde Moderación. La foto vive en un bucket privado y sólo se firma para el propietario o cuando aparece en la instantánea aprobada.
+- Flutter incorpora `/rescuer/profile/edit`, accesos separados para editar/ver perfil, ayuda y Stripe Connect. El perfil público usa avatar/enlaces aprobados y conserva Actividad, En adopción y Casos. Administración añade cola de perfiles con versión y decisión.
+- Migración local `20260927033610_moderated_rescuer_profiles.sql`, remota `20260927033251`. Remoto comprobado: tabla pública presente sin `SELECT` anónimo, auditoría en `private`, bucket no público y RPC administrativa sin ejecución anónima. El helper de política de Storage conserva ejecución anónima deliberada para evaluar avatares aprobados; retirar ese permiso rompió la prueba de lectura pública y se descartó localmente, sin aplicar una migración correctiva.
+- PostgreSQL local reproducido desde cero: 243 pruebas. Flutter: prueba nueva de corrección/guardado/envío y análisis limpio; administración: 19 pruebas y build aprobados. Aceptación visual instalada continúa pendiente.
+- La puerta financiera completa detectó que `public_case_progress` omitía las asignaciones de Guardián en los totales públicos. La migración local `20260927035600_public_case_guardian_progress.sql`, remota `20260927034007`, usa `dopmi_expense_funding` como fuente única para aportaciones individuales y Guardián. Las 338 regresiones financieras específicas aprobaron; remoto confirma que la RPC desplegada usa esa fuente sin referencia privada directa.
+
 ## H8.6 vínculo caso–adopción y publicación por pasos — 26 de septiembre de 2026
 
 - Un caso aprobado del propietario puede crear o reabrir una única publicación de adopción vinculada. El vínculo no cambia el estado del caso ni publica la adopción: sus ciclos de borrador, envío y moderación siguen independientes.

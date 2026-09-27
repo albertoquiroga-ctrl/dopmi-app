@@ -1,5 +1,11 @@
 # Auditoría del historial de migraciones
 
+## Adición H8.6 — 26 de septiembre de 2026
+
+Migración local `20260927033610_moderated_rescuer_profiles.sql`, aplicada por MCP como versión remota `20260927033251` con nombre `moderated_rescuer_profiles`. Es aditiva: tabla RPC-only para perfil público, auditoría privada, bucket privado y funciones versionadas de dueño/administración. No reutiliza legado ni cambia firmas consumidas por el build 253. La consulta posterior confirmó objetos, bucket privado, ausencia de lectura cruda anónima y denegación anónima de la RPC administrativa. PostgreSQL local fue reconstruido desde todas las migraciones y aprobó 243 pruebas; no se usó `db push`, reparación ni renombrado.
+
+Migración correctiva local `20260927035600_public_case_guardian_progress.sql`, remota `20260927034007`: conserva la firma pública y reemplaza el agregado incompleto de donaciones por `dopmi_expense_funding`, que incluye asignaciones confirmadas de Guardián. La suite financiera detectó el defecto y sus 338 pruebas aprobaron después del arreglo. La definición remota contiene la fuente canónica y no consulta tablas privadas directamente.
+
 ## H8 descubrimiento — 26 de septiembre de 2026 (México)
 
 Migración local `20260927020621_community_saved_reports.sql`, remota `20260927021744`: añade favoritos privados UUID de casos/rescatistas, búsqueda privada de conversaciones, marcadores de adopciones retiradas sin contenido y reportes con resolución administrativa auditada. No cambia firmas consumidas por el build 253. La migración siguiente `20260927021820_community_table_boundaries.sql`, remota `20260927021850`, registra políticas restrictivas para las tres tablas RPC-only. Ninguna concede lectura cruda a `authenticated`.

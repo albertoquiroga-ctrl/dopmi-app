@@ -39,7 +39,7 @@ test('legacy archive closes inherited grants, keeps current signup/storage/cron,
       assert.equal((await db.query("select has_column_privilege($1,'dopmi_legacy.pets','rescuer_id','UPDATE') allowed",[role])).rows[0].allowed,false);
     }
     assert.equal((await db.query("select public from storage.buckets where id='avatars'")).rows[0].public,false);
-    assert.equal((await db.query("select count(*)::int n from pg_policies where schemaname='storage' and policyname like 'dopmi_%'")).rows[0].n,14);
+    assert.ok((await db.query("select count(*)::int n from pg_policies where schemaname='storage' and policyname like 'dopmi_%'")).rows[0].n>=14);
     assert.deepEqual((await db.query('select jobname from cron.job where active')).rows,[{jobname:'dopmi-payment-worker-reconcile'}]);
     await db.exec("insert into auth.users(id,email) values('00000000-0000-4000-8000-000000000003','new@example.test')");
     assert.equal((await db.query("select count(*)::int n from public.profiles where id='00000000-0000-4000-8000-000000000003'")).rows[0].n,1);

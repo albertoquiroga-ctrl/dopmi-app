@@ -69,6 +69,16 @@ select is(dopmi_transition_rescue('61000000-0000-4000-8000-000000000001',3,'subm
 select set_config('request.jwt.claim.sub','60000000-0000-4000-8000-000000000004',true);
 select is(dopmi_review_rescue('61000000-0000-4000-8000-000000000001',4,'approved','Identidad comprobada',0,false,'',true)->>'status','approved','admin verifies identity');
 select set_config('request.jwt.claim.sub','60000000-0000-4000-8000-000000000001',true);
+select is((dopmi_save_rescuer_profile('{"display_name":"Refugio Uno","bio":"Rescate responsable en Monterrey.","city":"Monterrey","region":"Nuevo León","instagram_url":"https://instagram.com/refugio.uno","facebook_url":"","avatar_path":""}',null)->>'version')::int,2,'owner saves a separate public profile draft');
+insert into storage.objects(bucket_id,name) values('dopmi-rescuer-profile-media','60000000-0000-4000-8000-000000000001/60000000-0000-4000-8000-000000000001/62000000-0000-4000-8000-000000000007.jpg');
+select is((dopmi_save_rescuer_profile('{"display_name":"Refugio Uno","bio":"Rescate responsable en Monterrey.","city":"Monterrey","region":"Nuevo León","instagram_url":"https://instagram.com/refugio.uno","facebook_url":"","avatar_path":"60000000-0000-4000-8000-000000000001/60000000-0000-4000-8000-000000000001/62000000-0000-4000-8000-000000000007.jpg"}',2)->>'version')::int,3,'owner attaches an authorized avatar');
+select is(dopmi_transition_rescuer_profile(3,'submit')->>'status','submitted','verified owner submits public profile');
+select set_config('request.jwt.claim.sub','60000000-0000-4000-8000-000000000004',true);
+select is(dopmi_review_rescuer_profile('60000000-0000-4000-8000-000000000001',4,'published','')->>'status','published','admin publishes public profile snapshot');
+select set_config('request.jwt.claim.sub','60000000-0000-4000-8000-000000000001',true);
+select is(dopmi_save_rescuer_profile('{"display_name":"Nombre en revisión","bio":"Este cambio aún no debe ser público.","city":"Monterrey","region":"Nuevo León","instagram_url":"","facebook_url":"","avatar_path":""}',5)->>'status','draft','later edit returns to private draft');
+select is(dopmi_rescuer_public('60000000-0000-4000-8000-000000000001')->>'name','Refugio Uno','draft edit does not replace approved public profile');
+select is(dopmi_rescuer_profile_file_access('60000000-0000-4000-8000-000000000001/60000000-0000-4000-8000-000000000001/62000000-0000-4000-8000-000000000007.jpg'),true,'approved avatar remains readable while next draft is reviewed');
 select throws_ok($$select dopmi_save_rescue('verification','{}','{}','[]','61000000-0000-4000-8000-000000000001',5)$$,'22023',null,'approved identity immutable to owner');
 select is(dopmi_transition_rescue('61000000-0000-4000-8000-000000000002',1,'submit')->>'status','submitted','verified rescuer submits case');
 select throws_ok($$select dopmi_transition_rescue('61000000-0000-4000-8000-000000000003',1,'submit')$$,'22023',null,'expense requires approved case');
