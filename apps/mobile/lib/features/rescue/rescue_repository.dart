@@ -62,6 +62,8 @@ final rescueRepositoryProvider = Provider<RescueRepository>(
 class RescueRepository {
   RescueRepository(this.client);
   final SupabaseClient client;
+  Future<Json> dashboard() async =>
+      Json.from(await client.rpc('dopmi_rescuer_dashboard'));
   Future<DataPage<RescueRecord>> mine(
     String kind,
     int page, {

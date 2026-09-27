@@ -58,6 +58,34 @@ class FakeRescue extends RescueRepository {
     'public_data': {'title': 'Cirugía', 'photos': <String>[]},
   });
   @override
+  Future<Json> dashboard() async => {
+    'verification_status': 'approved',
+    'case_counts': {'active': 1, 'draft': 1, 'review': 0, 'corrections': 0},
+    'unread_messages': 2,
+    'financial': {
+      'assigned_cents': 9200,
+      'transferred_cents': 5000,
+      'in_review_cents': 4200,
+    },
+    'pending': [
+      {
+        'id': 'case-draft',
+        'kind': 'case',
+        'status': 'draft',
+        'title': 'Nina',
+        'feedback': '',
+      },
+    ],
+    'recent_activity': [
+      {
+        'expense_id': 'expense-one',
+        'expense_title': 'Cirugía',
+        'allocated_cents': 2500,
+        'transfer_status': 'pending',
+      },
+    ],
+  };
+  @override
   Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async =>
       DataPage(
         caseId == null ? [caseRecord] : [caseRecord, expenseRecord],
@@ -243,5 +271,39 @@ void main() {
     await tester.tap(find.widgetWithText(ListTile, 'Cirugía'));
     await tester.pumpAndSettle();
     expect(find.text('Aportar a este gasto'), findsOneWidget);
+  });
+
+  testWidgets('rescuer home labels real financial and pending states', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(390, 1400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final identity = FakeIdentityRepository()
+      ..user = const Identity('one', 'ana@example.test', verified: true);
+    final container = ProviderContainer(
+      overrides: [
+        identityRepositoryProvider.overrideWithValue(identity),
+        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+        rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+        routerInitialLocationProvider.overrideWithValue('/rescuer'),
+      ],
+    );
+    addTearDown(() async {
+      container.dispose();
+      await identity.changes.close();
+    });
+    await tester.pumpWidget(
+      UncontrolledProviderScope(container: container, child: const DopmiApp()),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Resumen comprobado'), findsOneWidget);
+    expect(find.text('\$92.00 MXN'), findsOneWidget);
+    expect(find.text('Transferido'), findsOneWidget);
+    expect(find.text('En revisión'), findsOneWidget);
+    expect(find.text('Nina'), findsOneWidget);
+    expect(find.text('2 sin leer'), findsOneWidget);
+    expect(find.text('Actividad reciente'), findsOneWidget);
   });
 }

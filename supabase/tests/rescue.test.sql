@@ -41,6 +41,8 @@ select throws_ok($$select dopmi_rescue_detail('61000000-0000-4000-8000-000000000
 select throws_ok($$select dopmi_transition_rescue('61000000-0000-4000-8000-000000000001',1,'submit')$$,'42501',null,'another user cannot submit');
 select throws_ok($$select dopmi_review_rescue('61000000-0000-4000-8000-000000000001',1,'approved','Aprobada',0,false,'',true)$$,'42501',null,'non-admin cannot approve');
 select set_config('request.jwt.claim.sub','60000000-0000-4000-8000-000000000001',true);
+select is(dopmi_rescuer_dashboard()->>'verification_status','draft','dashboard reads the owners real verification state');
+select is((dopmi_rescuer_dashboard()->'case_counts'->>'draft')::int,1,'dashboard counts the owners real draft cases');
 select throws_ok($$update dopmi_rescue_records set status='approved',reimbursable_cents=99999$$,'42501',null,'direct state and money updates blocked');
 select throws_ok($$select dopmi_save_rescue('case','{"is_admin":"true"}','{}','[]','61000000-0000-4000-8000-000000000002',1)$$,'22023',null,'unknown client fields rejected');
 select throws_ok($$select dopmi_save_rescue('case','{}','{}','[{"path":"forged/path.jpg","role":"public"}]','61000000-0000-4000-8000-000000000002',1)$$,'22023',null,'foreign attachment paths rejected');

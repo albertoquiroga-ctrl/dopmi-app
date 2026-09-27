@@ -1,5 +1,12 @@
 # Dopmi — registro de avance
 
+## H8.6 Inicio del rescatista — 26 de septiembre de 2026
+
+- Inicio consume un resumen autenticado y muestra verificación real, casos activos, borradores/correcciones, mensajes sin leer y actividad reciente. Las acciones conducen al registro o conversación correspondiente; el vacío ofrece Publicar.
+- La tarjeta financiera ya no presenta un “saldo disponible”: separa montos **Asignado**, **Transferido** y **En revisión**, según estados persistidos. No afirma depósito bancario y no expone identidades de donantes ni referencias del procesador.
+- Migración local `20260927031520_rescuer_dashboard.sql`, remota `20260927030616`. La RPC requiere cuenta autenticada. Remoto comprobado con un rescatista de pruebas: un caso activo, un gasto borrador y montos cero reales. PostgreSQL completo: 234 pruebas; Flutter dirigido: cuatro pruebas aprobadas y análisis limpio.
+- H8.6 continúa con tarjetas/acciones de Mis casos, formularios por pasos, verificación/evidencia y perfil/configuración propios. Aceptación visual instalada pendiente.
+
 ## H8.5 Apoyar y detalle de caso — 26 de septiembre de 2026
 
 - Apoyar reproduce la estructura vigente de Irlanda: encabezado con Mis match/notificaciones, “Descubre casos”, carrusel de progreso circular, “Ver todos” y entrada destacada a Guardián. Sólo muestra casos con gastos aprobados y capacidad restante; el vacío conduce a Adoptar.

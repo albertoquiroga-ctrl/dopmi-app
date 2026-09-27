@@ -20,72 +20,227 @@ class RescueHomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => CommunityFrame(
     index: 2,
     children: [
-      const Heading(
-        'Cada rescate\ncuenta.',
-        'Verifica tu identidad, comparte tus casos y documenta los gastos que ya realizaste.',
-        eyebrow: 'ESPACIO RESCATISTA',
+      const Heading('Hola', 'Tu panel de rescate'),
+      LiveSection<Json>(
+        tables: const [
+          'dopmi_rescue_records',
+          'dopmi_donations',
+          'dopmi_notifications',
+        ],
+        load: () => ref.read(rescueRepositoryProvider).dashboard(),
+        builder: (data, refresh) => _RescuerDashboard(data, refresh),
       ),
-      Card(
-        color: const Color(0xffeee7fc),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Icon(Icons.verified_user_outlined, color: purple, size: 36),
-              const SizedBox(height: 12),
-              Text(
-                'Tu verificación',
+    ],
+  );
+}
+
+class _RescuerDashboard extends StatelessWidget {
+  const _RescuerDashboard(this.data, this.refresh);
+  final Json data;
+  final VoidCallback refresh;
+
+  @override
+  Widget build(BuildContext context) {
+    final verification =
+        data['verification_status'] as String? ?? 'not_started';
+    final counts = Json.from(data['case_counts'] as Map? ?? {});
+    final financial = Json.from(data['financial'] as Map? ?? {});
+    final pending = (data['pending'] as List? ?? [])
+        .map((item) => Json.from(item))
+        .toList();
+    final activity = (data['recent_activity'] as List? ?? [])
+        .map((item) => Json.from(item))
+        .toList();
+    final unread = data['unread_messages'] as int? ?? 0;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (verification != 'approved')
+          Card(
+            color: const Color(0xffeee7fc),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Icon(
+                    Icons.verified_user_outlined,
+                    color: purple,
+                    size: 34,
+                  ),
+                  Text(
+                    _verificationTitle(verification),
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const Text(
+                    'La verificación protege a donantes y mascotas. Tus documentos no son públicos.',
+                  ),
+                  const SizedBox(height: 12),
+                  FilledButton(
+                    onPressed: () async {
+                      await context.push('/rescue/new?kind=verification');
+                      refresh();
+                    },
+                    child: Text(
+                      verification == 'not_started'
+                          ? 'Verificarme'
+                          : 'Ver estado',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        if (verification == 'approved')
+          Card(
+            color: purple,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text(
+                    'Resumen comprobado',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    runSpacing: 14,
+                    children: [
+                      _DashboardAmount(
+                        'Asignado',
+                        financial['assigned_cents'] as int? ?? 0,
+                      ),
+                      _DashboardAmount(
+                        'Transferido',
+                        financial['transferred_cents'] as int? ?? 0,
+                      ),
+                      _DashboardAmount(
+                        'En revisión',
+                        financial['in_review_cents'] as int? ?? 0,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    '${counts['active'] ?? 0} casos activos',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Acciones pendientes',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              const Text(
-                'Identificación y domicilio solo los revisa el equipo. No se publican.',
+            ),
+            if (pending.isNotEmpty || unread > 0)
+              Chip(label: Text('${pending.length + (unread > 0 ? 1 : 0)}')),
+          ],
+        ),
+        if (unread > 0)
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.chat_bubble_outline),
+              title: const Text('Responde mensajes pendientes'),
+              subtitle: Text('$unread sin leer'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.go('/messages'),
+            ),
+          ),
+        for (final item in pending)
+          Card(
+            child: ListTile(
+              leading: Icon(
+                item['status'] == 'draft'
+                    ? Icons.edit_note
+                    : Icons.error_outline,
+                color: purple,
               ),
-              LiveSection<DataPage<RescueRecord>>(
-                tables: const ['dopmi_rescue_records'],
-                load: () =>
-                    ref.read(rescueRepositoryProvider).mine('verification', 1),
-                builder: (data, refresh) => Column(
-                  children: [
-                    if (data.items.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Text(rescueStatuses[data.items.first.status]!),
-                      ),
-                    ActionButton(
-                      data.items.isEmpty
-                          ? 'Comenzar verificación'
-                          : 'Ver mi verificación',
-                      onPressed: () async {
-                        await context.push(
-                          data.items.isEmpty
-                              ? '/rescue/new?kind=verification'
-                              : '/rescue/${data.items.first.id}',
-                        );
-                        refresh();
-                      },
-                    ),
-                  ],
-                ),
+              title: Text(item['title'] as String),
+              subtitle: Text(
+                '${rescueStatuses[item['status']] ?? item['status']}${(item['feedback'] as String? ?? '').isEmpty ? '' : ' · ${item['feedback']}'}',
               ),
-            ],
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push('/rescue/${item['id']}'),
+            ),
+          ),
+        if (pending.isEmpty && unread == 0)
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(22),
+              child: Column(
+                children: [
+                  const Icon(Icons.favorite_outline, color: purple, size: 34),
+                  Text(
+                    'No tienes acciones pendientes',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const Text(
+                    'Los borradores, correcciones, mensajes y evidencias aparecerán aquí.',
+                  ),
+                  TextButton(
+                    onPressed: () => context.go('/publish'),
+                    child: const Text('Publicar caso'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        if (activity.isNotEmpty) ...[
+          const SizedBox(height: 20),
+          Text(
+            'Actividad reciente',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          for (final item in activity)
+            ListTile(
+              leading: const CircleAvatar(child: Icon(Icons.south_west)),
+              title: Text('${pesos(item['allocated_cents'] as int)} asignados'),
+              subtitle: Text(item['expense_title'] as String),
+            ),
+        ],
+      ],
+    );
+  }
+}
+
+String _verificationTitle(String status) => switch (status) {
+  'submitted' => 'Verificación en proceso',
+  'changes_requested' || 'rejected' => 'Corrige tu información',
+  'draft' => 'Continúa tu verificación',
+  _ => 'Verifícate para recibir aportaciones',
+};
+
+class _DashboardAmount extends StatelessWidget {
+  const _DashboardAmount(this.label, this.cents);
+  final String label;
+  final int cents;
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: 96,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          pesos(cents),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w800,
           ),
         ),
-      ),
-      const SizedBox(height: 20),
-      ActionButton(
-        'Nuevo caso',
-        sunny: true,
-        onPressed: () => context.push('/rescue/new?kind=case'),
-      ),
-      TextButton(
-        onPressed: () => context.push('/rescue-cases'),
-        child: const Text('Ver casos aprobados'),
-      ),
-      const SizedBox(height: 16),
-      Text('Mis casos', style: Theme.of(context).textTheme.titleLarge),
-      const RescueList(kind: 'case'),
-    ],
+        Text(label, style: const TextStyle(color: Colors.white70)),
+      ],
+    ),
   );
 }
 
