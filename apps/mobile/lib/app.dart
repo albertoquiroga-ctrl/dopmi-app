@@ -15,6 +15,7 @@ import 'features/profile/profile_screen.dart';
 import 'features/profile/profile_overview.dart';
 import 'features/adoption/catalog_screens.dart';
 import 'features/adoption/discovery_screen.dart';
+import 'features/adoption/saved_screen.dart';
 import 'features/adoption/publication_screens.dart';
 import 'features/communication/message_screens.dart';
 import 'features/rescue/rescue_screens.dart';
@@ -221,8 +222,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/saved',
-        builder: (_, _) =>
-            CatalogScreen(key: ValueKey(identity.identity?.id), saved: true),
+        builder: (_, _) => SavedScreen(key: ValueKey(identity.identity?.id)),
       ),
       GoRoute(
         path: '/adoptions/:id',

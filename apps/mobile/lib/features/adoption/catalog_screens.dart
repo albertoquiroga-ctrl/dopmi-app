@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -335,6 +336,8 @@ class AdoptionDetailScreen extends ConsumerStatefulWidget {
 
 class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
   bool busy = false;
+  bool? savedOverride;
+  int galleryIndex = 0;
   String? error;
   Future<void> perform(Future<void> Function() action) async {
     if (busy) return;
@@ -349,6 +352,93 @@ class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
     } finally {
       if (mounted) setState(() => busy = false);
     }
+  }
+
+  Future<void> toggleFavorite(
+    CommunityRepository repo,
+    Adoption post,
+    VoidCallback refresh,
+  ) async {
+    if (busy) return;
+    final previous = savedOverride ?? post.saved;
+    final next = !previous;
+    setState(() {
+      busy = true;
+      error = null;
+      savedOverride = next;
+    });
+    try {
+      await repo.favorite(post.id, next);
+      refresh();
+    } catch (cause) {
+      if (mounted) {
+        setState(() {
+          savedOverride = previous;
+          error = communityError(cause);
+        });
+      }
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  Future<void> share(Adoption post) async {
+    await Clipboard.setData(
+      ClipboardData(
+        text:
+            'Conoce la historia de ${post.name} en Dopmi. Publicación ${post.id}',
+      ),
+    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Información copiada para compartir.')),
+      );
+    }
+  }
+
+  Future<void> report(CommunityRepository repo, Adoption post) async {
+    final result = await showModalBottomSheet<(String, String)>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (_) => const _ReportSheet(),
+    );
+    if (result == null || !mounted) return;
+    await perform(() async {
+      await repo.report('adoption', post.id, result.$1, result.$2);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Recibimos tu reporte para revisión.')),
+        );
+      }
+    });
+  }
+
+  Future<void> contact(CommunityRepository repo, Adoption post) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('¿Iniciamos el proceso?'),
+        content: Text(
+          'Abriremos una conversación privada con ${post.text('publisher_name')} sobre ${post.name}.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => context.pop(false),
+            child: const Text('Ahora no'),
+          ),
+          FilledButton(
+            onPressed: () => context.pop(true),
+            child: const Text('Contactar'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    await perform(() async {
+      final id = await repo.startThread(post.id);
+      if (mounted) context.push('/messages/$id');
+    });
   }
 
   @override
@@ -371,14 +461,45 @@ class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
               'social_cats': 'Convive con gatos',
               'social_children': 'Convive con niñas y niños',
             };
+            final displayedSaved = savedOverride ?? post.saved;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                for (final path in post.photos)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: AdoptionPhoto(path),
+                if (post.photos.isEmpty)
+                  const SizedBox(
+                    height: 300,
+                    child: Center(child: Icon(Icons.pets, size: 72)),
+                  )
+                else ...[
+                  SizedBox(
+                    height: 330,
+                    child: PageView.builder(
+                      itemCount: post.photos.length,
+                      onPageChanged: (value) =>
+                          setState(() => galleryIndex = value),
+                      itemBuilder: (_, index) =>
+                          AdoptionPhoto(post.photos[index], height: 330),
+                    ),
                   ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (var index = 0; index < post.photos.length; index++)
+                        Container(
+                          width: index == galleryIndex ? 18 : 8,
+                          height: 8,
+                          margin: const EdgeInsets.symmetric(horizontal: 3),
+                          decoration: BoxDecoration(
+                            color: index == galleryIndex
+                                ? purple
+                                : Colors.black26,
+                            borderRadius: BorderRadius.circular(99),
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
                 const SizedBox(height: 12),
                 Heading(
                   post.name,
@@ -444,25 +565,46 @@ class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
                 ),
                 if (error != null) Notice(error!, isError: true),
                 const SizedBox(height: 16),
-                OutlinedButton.icon(
-                  onPressed: busy
-                      ? null
-                      : () {
-                          if (repo.userId == null) {
-                            context.push('/login');
-                            return;
-                          }
-                          perform(() async {
-                            await repo.favorite(post.id, !post.saved);
-                            refresh();
-                          });
-                        },
-                  icon: Icon(
-                    post.saved ? Icons.favorite : Icons.favorite_border,
-                  ),
-                  label: Text(
-                    post.saved ? 'Quitar de guardados' : 'Guardar publicación',
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: busy
+                            ? null
+                            : () {
+                                if (repo.userId == null) {
+                                  context.push('/login');
+                                  return;
+                                }
+                                toggleFavorite(repo, post, refresh);
+                              },
+                        icon: Icon(
+                          displayedSaved
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                        ),
+                        label: Text(displayedSaved ? 'Guardada' : 'Guardar'),
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: 'Compartir',
+                      onPressed: () => share(post),
+                      icon: const Icon(Icons.ios_share_outlined),
+                    ),
+                    IconButton(
+                      tooltip: 'Reportar',
+                      onPressed: busy
+                          ? null
+                          : () {
+                              if (repo.userId == null) {
+                                context.push('/login');
+                              } else {
+                                report(repo, post);
+                              }
+                            },
+                      icon: const Icon(Icons.flag_outlined),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 12),
                 if (repo.userId == post.owner)
@@ -475,15 +617,12 @@ class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
                     'Quiero conocerle',
                     busy: busy,
                     sunny: true,
-                    onPressed: () {
+                    onPressed: () async {
                       if (repo.userId == null) {
                         context.push('/login');
                         return;
                       }
-                      perform(() async {
-                        final id = await repo.startThread(post.id);
-                        if (context.mounted) context.push('/messages/$id');
-                      });
+                      await contact(repo, post);
                     },
                   ),
                 const SizedBox(height: 16),
@@ -499,18 +638,123 @@ class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
   }
 }
 
-class PublicProfileScreen extends ConsumerWidget {
+class _ReportSheet extends StatefulWidget {
+  const _ReportSheet();
+  @override
+  State<_ReportSheet> createState() => _ReportSheetState();
+}
+
+class _ReportSheetState extends State<_ReportSheet> {
+  String reason = 'incorrect';
+  final details = TextEditingController();
+  @override
+  void dispose() {
+    details.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: EdgeInsets.fromLTRB(
+      20,
+      20,
+      20,
+      MediaQuery.viewInsetsOf(context).bottom + 24,
+    ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Reportar contenido',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        const SizedBox(height: 12),
+        DropdownButtonFormField<String>(
+          initialValue: reason,
+          decoration: const InputDecoration(labelText: 'Motivo'),
+          items:
+              const {
+                    'incorrect': 'Información incorrecta',
+                    'unsafe': 'Riesgo o maltrato',
+                    'fraud': 'Posible fraude',
+                    'privacy': 'Datos personales expuestos',
+                    'other': 'Otro',
+                  }.entries
+                  .map(
+                    (item) => DropdownMenuItem(
+                      value: item.key,
+                      child: Text(item.value),
+                    ),
+                  )
+                  .toList(),
+          onChanged: (value) => setState(() => reason = value ?? reason),
+        ),
+        const SizedBox(height: 12),
+        TextField(
+          controller: details,
+          maxLength: 1000,
+          minLines: 2,
+          maxLines: 5,
+          decoration: const InputDecoration(labelText: 'Cuéntanos qué sucede'),
+        ),
+        ActionButton(
+          'Enviar reporte',
+          onPressed: () =>
+              Navigator.pop(context, (reason, details.text.trim())),
+        ),
+      ],
+    ),
+  );
+}
+
+class PublicProfileScreen extends ConsumerStatefulWidget {
   const PublicProfileScreen(this.id, {super.key});
   final String id;
   @override
-  Widget build(BuildContext context, WidgetRef ref) => CommunityFrame(
+  ConsumerState<PublicProfileScreen> createState() => _PublicProfileState();
+}
+
+class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
+  bool busy = false;
+  bool? savedOverride;
+  String? error;
+
+  Future<void> toggle(Json profile, VoidCallback refresh) async {
+    final previous = savedOverride ?? profile['saved'] == true;
+    setState(() {
+      busy = true;
+      error = null;
+      savedOverride = !previous;
+    });
+    try {
+      await ref
+          .read(communityRepositoryProvider)
+          .favoriteRescuer(widget.id, !previous);
+      refresh();
+    } catch (cause) {
+      if (mounted) {
+        setState(() {
+          savedOverride = previous;
+          error = communityError(cause);
+        });
+      }
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => CommunityFrame(
     children: [
       LiveSection<Json?>(
-        load: () => ref.read(communityRepositoryProvider).publicProfile(id),
-        builder: (profile, _) {
+        load: () =>
+            ref.read(communityRepositoryProvider).publicProfile(widget.id),
+        builder: (profile, refresh) {
           if (profile == null) {
             return const Notice('Este perfil público no está disponible.');
           }
+          final saved = savedOverride ?? profile['saved'] == true;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -533,9 +777,22 @@ class PublicProfileScreen extends ConsumerWidget {
               Notice(
                 '${profile['adopted_count']} adopciones marcadas como realizadas por esta cuenta.',
               ),
+              if (error != null) Notice(error!, isError: true),
+              OutlinedButton.icon(
+                onPressed:
+                    busy ||
+                        ref.read(communityRepositoryProvider).userId ==
+                            widget.id
+                    ? null
+                    : () => toggle(profile, refresh),
+                icon: Icon(saved ? Icons.favorite : Icons.favorite_border),
+                label: Text(
+                  saved ? 'Rescatista guardado' : 'Guardar rescatista',
+                ),
+              ),
               ActionButton(
                 'Ver sus publicaciones disponibles',
-                onPressed: () => context.push('/adoptions?owner=$id'),
+                onPressed: () => context.push('/adoptions?owner=${widget.id}'),
               ),
             ],
           );

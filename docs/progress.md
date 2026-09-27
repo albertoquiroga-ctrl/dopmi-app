@@ -1,5 +1,14 @@
 # Dopmi — registro de avance
 
+## H8.3 detalle, guardados y Mis match en desarrollo — 26 de septiembre de 2026
+
+- El detalle de adopción usa galería paginada, datos reales, historia, salud, convivencia, cuidados y responsable. Guardar es optimista y revierte ante fallo; compartir copia contenido identificable sin inventar un enlace; reportar persiste antes de confirmar; contactar exige confirmación y reutiliza el hilo idempotente existente.
+- Volver del detalle ya no reinicia el mazo: reconsulta sólo la tarjeta abierta y conserva posición/filtros. Si la publicación dejó de estar disponible, la retira sin exponer su nuevo borrador.
+- Mis match incorpora búsqueda real por mascota/persona, conversaciones y accesos a guardados. Guardados separa Adopción, Donación y Rescatistas, con conteos/vacíos y marcadores privados para contenido retirado; esos marcadores sólo incluyen UUID/disponibilidad y pueden eliminarse.
+- Migración local `20260927020621_community_saved_reports.sql`, remota `20260927021744`: favoritos UUID de casos/rescatistas, búsqueda de conversaciones, reportes persistentes y bandeja administrativa auditada. `20260927021820_community_table_boundaries.sql`, remota `20260927021850`, añade políticas restrictivas que documentan acceso exclusivamente por RPC. Las tablas no conceden lectura cruda a clientes.
+- PostgreSQL: 213 pruebas aprobadas desde la base local reproducida. Flutter: análisis sin incidencias y 72 pruebas aprobadas en secuencia; cubren rollback de favorito, confirmación de contacto, separación de guardados y reintento idempotente de mensajes. Remoto: objetos, ejecución autenticada y ausencia de lectura cruda comprobados. Los avisos nuevos de tablas sin políticas quedaron resueltos; permanecen avisos generales ya documentados y protección de contraseñas H10.
+- Referencia Irlanda reconsultada al cierre: `a246fa6f42ec517aae264d7fbd2358d647c4f840`, sin cambio. Este bloque no tiene aceptación visual instalada; H8.3 sigue abierto hasta completar acciones equivalentes en casos/perfiles, evidencia visual y revisión.
+
 ## H8.2 descubrimiento funcional en desarrollo — 26 de septiembre de 2026
 
 - Adoptar ya usa un mazo con foto dominante, Perros/Gatos, Pasar, Contactar y Me gusta por gesto o botón. Me gusta persiste el favorito antes de avanzar; las acciones se bloquean mientras esperan al servidor. Incluye carga, error/reintento, fin del mazo, reinicio y acceso a filtros/favoritos.

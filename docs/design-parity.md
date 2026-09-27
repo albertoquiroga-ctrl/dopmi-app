@@ -29,7 +29,7 @@ H8 comprende todos los recorridos siguientes. La tabla histórica de rutas más 
 | RP | Perfil/configuración rescatista | Perfil propio distinto, editar público separado del expediente | Perfil moderado; Connect | Datos bancarios externos; cambio modo no confiere autorización |
 | PAYMENT | Aportar, resultado/error/regreso | Diseño del resumen y estados reales en vez de éxito simulado | Checkout/conciliación test existentes | Abandono, pendiente, confirmado, devuelto, revisión; sin doble cobro |
 | GUARD | Presentación/monto/consentimiento/impacto/gestión | Adaptar carruseles, tarjeta, cambios/cancelación e historial | Guardián H5 existente | Sin capacidad, mes omitido, monto futuro, tarjeta, cancelación y errores |
-| REPORT | Reportar mascota/caso/rescatista; administración | Crear recepción persistente y bandeja con estado; quitar toast falso | RPC/RLS/reportes nuevos | Acuse sólo tras insertar, duplicados/reintento, denuncias privadas |
+| REPORT | Reportar mascota/caso/rescatista; administración | Recepción/RPC/bandeja persistente creadas; conectar caso, perfil y panel visual | RPC/RLS implementados | Acuse sólo tras insertar, duplicados/reintento, denuncias privadas |
 | LEGAL | Ayuda/términos/privacidad | Composición coherente sin presentar legal provisional como definitivo | Textos actuales; definitivo H10 | Regreso por modo y enlaces reales |
 
 Evidencia por fila se anexará al completar cada ciclo con SHA de código/diseño, prueba y capturas de pantallas reales. No cerrar por una captura de componente aislado.
@@ -44,7 +44,7 @@ Evidencia por fila se anexará al completar cada ciclo con SHA de código/diseñ
 | SETTINGS | Parcial | Parcial | No | Información básica separada, ayuda, historial y cierre de sesión; método de pago depende de Guardián habilitado. |
 | PUBLISH | Parcial | Parcial | No | Selector inicial implementado; formularios por pasos y reanudación siguen abiertos. |
 | DISC, FILTER | Sí | Sí | No | Mazo, acciones, filtros, ubicación aproximada, paginación y casos elegibles cada dos adopciones conectados; falta revisión instalada. |
-| PET, MATCH, SAVED, CHAT | No | No | No | H8.3 pendiente. |
+| PET, MATCH, SAVED, CHAT | Parcial | Parcial | No | Detalle/galería, favorito con rollback, contacto confirmado, búsqueda, guardados tipados/tombstones y mensajería idempotente cubiertos; faltan comparación instalada y terminar acciones de casos/perfiles. |
 | SUPPORT, CASE, STORY, PUBLIC, IMPACT | No | No | No | H8.5 pendiente. |
 | RH, RC, VERIFY, EVIDENCE, RP | No | No | No | H8.6 pendiente. |
 | PAYMENT, GUARD, REPORT, LEGAL | Parcial | Parcial | No | Servicios previos reutilizables; falta paridad completa y estados del plan vigente. |

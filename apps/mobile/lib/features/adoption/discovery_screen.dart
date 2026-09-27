@@ -151,6 +151,25 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
     }
   }
 
+  Future<void> refreshCard(String id) async {
+    try {
+      final current = await ref.read(communityRepositoryProvider).detail(id);
+      if (!mounted) return;
+      final position = cards.indexWhere((item) => item.id == id);
+      if (position < 0) return;
+      setState(() {
+        if (current == null) {
+          cards.removeAt(position);
+          if (index >= deck.length && index > 0) index--;
+        } else {
+          cards[position] = current;
+        }
+      });
+    } catch (cause) {
+      if (mounted) setState(() => error = communityError(cause));
+    }
+  }
+
   Future<void> openFilters() async {
     final result = await showModalBottomSheet<Json>(
       context: context,
@@ -291,7 +310,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
             contact: () => contact(current),
             open: () async {
               await context.push('/adoptions/${current.id}');
-              if (mounted) await load(reset: true);
+              if (mounted) await refreshCard(current.id);
             },
           )
         else

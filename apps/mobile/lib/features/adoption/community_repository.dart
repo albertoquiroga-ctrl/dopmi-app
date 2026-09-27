@@ -57,6 +57,15 @@ class SupportOpportunity {
   int get funded => data['funded_cents'] as int? ?? 0;
 }
 
+class SavedEntry {
+  SavedEntry(Json value) : data = Map.unmodifiable(value);
+  final Json data;
+  String text(String key) => data[key] as String? ?? '';
+  String get id => text('id');
+  bool get available => data['available'] == true;
+  Json get publicData => Json.from(data['public_data'] as Map? ?? {});
+}
+
 final communityRepositoryProvider = Provider<CommunityRepository>(
   (ref) => SupabaseCommunityRepository(Supabase.instance.client),
 );
@@ -72,11 +81,17 @@ abstract class CommunityRepository {
   Future<Adoption> save(Json payload, {String? id, int? version});
   Future<Adoption> transition(Adoption post, String action);
   Future<void> favorite(String id, bool saved);
+  Future<DataPage<SavedEntry>> savedAdoptions(int page);
+  Future<DataPage<SavedEntry>> savedCases(int page);
+  Future<DataPage<SavedEntry>> savedRescuers(int page);
+  Future<void> favoriteCase(String id, bool saved);
+  Future<void> favoriteRescuer(String id, bool saved);
+  Future<String> report(String type, String id, String reason, String details);
   Future<Json?> publicProfile(String id);
   Future<String> uploadPhoto(String postId, Uint8List bytes);
   Future<String> photoUrl(String path);
   Future<String> startThread(String postId);
-  Future<DataPage<Json>> threads(int page);
+  Future<DataPage<Json>> threads(int page, {String search = ''});
   Future<Json> thread(String id);
   Future<List<Json>> messages(String threadId, {Json? before});
   Future<Json> sendMessage(String threadId, String messageId, String body);
@@ -179,6 +194,43 @@ class SupabaseCommunityRepository implements CommunityRepository {
   @override
   Future<void> favorite(String id, bool saved) async =>
       await rpc('dopmi_set_favorite', {'post_id': id, 'saved': saved});
+  Future<DataPage<SavedEntry>> savedPage(String name, int page) async {
+    final result = await rpc(name, {'page_number': page});
+    return DataPage(
+      (result['items'] as List).map((e) => SavedEntry(Json.from(e))).toList(),
+      result['total'] as int,
+    );
+  }
+
+  @override
+  Future<DataPage<SavedEntry>> savedAdoptions(int page) =>
+      savedPage('dopmi_saved_adoptions', page);
+  @override
+  Future<DataPage<SavedEntry>> savedCases(int page) =>
+      savedPage('dopmi_saved_case_list', page);
+  @override
+  Future<DataPage<SavedEntry>> savedRescuers(int page) =>
+      savedPage('dopmi_saved_rescuer_list', page);
+  @override
+  Future<void> favoriteCase(String id, bool saved) async =>
+      await rpc('dopmi_set_case_favorite', {'target_case': id, 'saved': saved});
+  @override
+  Future<void> favoriteRescuer(String id, bool saved) async => await rpc(
+    'dopmi_set_rescuer_favorite',
+    {'target_rescuer': id, 'saved': saved},
+  );
+  @override
+  Future<String> report(
+    String type,
+    String id,
+    String reason,
+    String details,
+  ) async => await rpc('dopmi_report_content', {
+    'target_type': type,
+    'target_id': id,
+    'reason': reason,
+    'details': details,
+  }) as String;
   @override
   Future<Json?> publicProfile(String id) async {
     final result = await rpc('dopmi_public_profile', {'person_id': id});
@@ -196,8 +248,11 @@ class SupabaseCommunityRepository implements CommunityRepository {
   Future<String> startThread(String postId) async =>
       await rpc('dopmi_start_thread', {'post_id': postId}) as String;
   @override
-  Future<DataPage<Json>> threads(int page) async {
-    final result = await rpc('dopmi_list_threads', {'page_number': page});
+  Future<DataPage<Json>> threads(int page, {String search = ''}) async {
+    final result = await rpc('dopmi_match_threads', {
+      'search_text': search,
+      'page_number': page,
+    });
     return DataPage(
       (result['items'] as List).map((e) => Json.from(e)).toList(),
       result['total'] as int,

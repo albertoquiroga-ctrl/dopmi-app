@@ -17,30 +17,85 @@ class ThreadsScreen extends ConsumerStatefulWidget {
 
 class _ThreadsState extends ConsumerState<ThreadsScreen> {
   int page = 1;
+  String query = '';
+  final search = TextEditingController();
+  @override
+  void dispose() {
+    search.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) => CommunityFrame(
     index: 3,
     back: false,
     children: [
       const Heading(
-        'Una conversación,\nun nuevo comienzo.',
-        'Ponte de acuerdo sobre sus necesidades, cuidados y el proceso de adopción.',
-        eyebrow: 'MENSAJES',
+        'Mis match.',
+        'Retoma conversaciones y vuelve a las historias que guardaste.',
+        eyebrow: 'COMUNIDAD',
       ),
+      TextField(
+        controller: search,
+        textInputAction: TextInputAction.search,
+        decoration: InputDecoration(
+          labelText: 'Buscar por mascota o persona',
+          prefixIcon: const Icon(Icons.search),
+          suffixIcon: query.isEmpty
+              ? null
+              : IconButton(
+                  tooltip: 'Limpiar búsqueda',
+                  onPressed: () => setState(() {
+                    search.clear();
+                    query = '';
+                    page = 1;
+                  }),
+                  icon: const Icon(Icons.close),
+                ),
+        ),
+        onSubmitted: (value) => setState(() {
+          query = value.trim();
+          page = 1;
+        }),
+      ),
+      const SizedBox(height: 12),
+      Row(
+        children: [
+          Expanded(
+            child: OutlinedButton.icon(
+              onPressed: () => context.push('/saved'),
+              icon: const Icon(Icons.pets_outlined),
+              label: const Text('Guardados'),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: OutlinedButton.icon(
+              onPressed: () => context.push('/saved'),
+              icon: const Icon(Icons.volunteer_activism_outlined),
+              label: const Text('Donación'),
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 18),
       LiveSection<DataPage<Json>>(
-        key: ValueKey(page),
+        key: ValueKey('$page:$query'),
         tables: const [
           'dopmi_threads',
           'dopmi_messages',
           'dopmi_notifications',
         ],
-        load: () => ref.read(communityRepositoryProvider).threads(page),
+        load: () =>
+            ref.read(communityRepositoryProvider).threads(page, search: query),
         builder: (result, refresh) => Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (result.items.isEmpty)
-              const Notice(
-                'Abre una publicación y toca “Quiero conocerle” para iniciar una conversación.',
+              Notice(
+                query.isEmpty
+                    ? 'Abre una publicación y toca “Quiero conocerle” para iniciar una conversación.'
+                    : 'No encontramos conversaciones con “$query”.',
               ),
             for (final thread in result.items)
               Card(

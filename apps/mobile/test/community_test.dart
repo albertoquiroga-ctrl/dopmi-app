@@ -37,6 +37,7 @@ class FakeCommunity implements CommunityRepository {
   final sentIds = <String>[];
   final stored = <String, Json>{};
   Json? savedPayload;
+  Json? reported;
   @override
   String? get userId => 'one';
   @override
@@ -69,6 +70,37 @@ class FakeCommunity implements CommunityRepository {
     if (failFavorite) throw Exception('offline');
     post = Adoption({...post.data, 'saved': saved});
   }
+
+  @override
+  Future<DataPage<SavedEntry>> savedAdoptions(int page) async => DataPage([
+    SavedEntry({...post.data, 'available': true, 'saved': true}),
+  ], 1);
+  @override
+  Future<DataPage<SavedEntry>> savedCases(int page) async =>
+      const DataPage([], 0);
+  @override
+  Future<DataPage<SavedEntry>> savedRescuers(int page) async =>
+      const DataPage([], 0);
+  @override
+  Future<void> favoriteCase(String id, bool saved) async {}
+  @override
+  Future<void> favoriteRescuer(String id, bool saved) async {}
+  @override
+  Future<String> report(
+    String type,
+    String id,
+    String reason,
+    String details,
+  ) async {
+    reported = {'type': type, 'id': id, 'reason': reason, 'details': details};
+    return 'report-one';
+  }
+
+  @override
+  Future<String> startThread(String postId) async => 'thread-one';
+  @override
+  Future<DataPage<Json>> threads(int page, {String search = ''}) async =>
+      const DataPage([], 0);
 
   @override
   Future<Adoption> save(Json payload, {String? id, int? version}) async {
@@ -169,12 +201,48 @@ void main() {
       await start(tester, repo, '/adoptions');
       await tester.tap(find.text('Luna'));
       await tester.pumpAndSettle();
-      await tap(tester, 'Guardar publicación');
+      await tap(tester, 'Guardar');
       expect(repo.post.saved, true);
-      expect(find.text('Quitar de guardados'), findsOneWidget);
+      expect(find.text('Guardada'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
+  testWidgets('failed detail favorite rolls the optimistic state back', (
+    tester,
+  ) async {
+    final repo = FakeCommunity()..failFavorite = true;
+    await start(tester, repo, '/adoptions/post');
+    await tap(tester, 'Guardar');
+    expect(repo.post.saved, false);
+    expect(find.text('Guardar'), findsOneWidget);
+    expect(find.textContaining('No pudimos completar'), findsOneWidget);
+  });
+  testWidgets('contact asks for confirmation before opening the thread', (
+    tester,
+  ) async {
+    final repo = FakeCommunity();
+    await start(tester, repo, '/adoptions/post');
+    await tap(tester, 'Quiero conocerle');
+    expect(find.text('¿Iniciamos el proceso?'), findsOneWidget);
+    await tester.tap(find.text('Contactar'));
+    await tester.pumpAndSettle();
+    expect(find.text('Sobre Luna'), findsOneWidget);
+  });
+  testWidgets('saved experience separates adoption and donation', (
+    tester,
+  ) async {
+    final repo = FakeCommunity();
+    await start(tester, repo, '/saved');
+    expect(find.text('Luna'), findsOneWidget);
+    expect(find.text('Adopción'), findsOneWidget);
+    expect(find.text('Donación'), findsOneWidget);
+    await tester.tap(find.text('Donación'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Guarda un caso desde Apoyar para encontrarlo aquí.'),
+      findsOneWidget,
+    );
+  });
   testWidgets('swipe buttons pass and persist likes without double actions', (
     tester,
   ) async {
