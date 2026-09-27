@@ -44,7 +44,7 @@ Evidencia por fila se anexará al completar cada ciclo con SHA de código/diseñ
 | SETTINGS | Parcial | Parcial | No | Información básica separada, ayuda, historial y cierre de sesión; método de pago depende de Guardián habilitado. |
 | PUBLISH | Parcial | Parcial | No | Selector inicial implementado; formularios por pasos y reanudación siguen abiertos. |
 | DISC, FILTER | Sí | Sí | No | Mazo, acciones, filtros, ubicación aproximada, paginación y casos elegibles cada dos adopciones conectados; falta revisión instalada. |
-| PET, MATCH, SAVED, CHAT | Parcial | Parcial | No | Detalle/galería, favorito con rollback, contacto confirmado, búsqueda, guardados tipados/tombstones y mensajería idempotente cubiertos; faltan comparación instalada y terminar acciones de casos/perfiles. |
+| PET, MATCH, SAVED, CHAT | Sí | Sí | No | Detalle/galería, favorito con rollback, contacto confirmado, búsqueda, guardados tipados/tombstones, acciones de casos/perfiles y mensajería idempotente cubiertos; falta comparación instalada. |
 | SUPPORT, CASE, STORY, PUBLIC, IMPACT | No | No | No | H8.5 pendiente. |
 | RH, RC, VERIFY, EVIDENCE, RP | No | No | No | H8.6 pendiente. |
 | PAYMENT, GUARD, REPORT, LEGAL | Parcial | Parcial | No | Servicios previos reutilizables; falta paridad completa y estados del plan vigente. |

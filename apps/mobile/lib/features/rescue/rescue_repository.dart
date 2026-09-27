@@ -37,6 +37,7 @@ class RescueRecord {
   String get status => data['status'] as String;
   int get version => data['version'] as int? ?? 0;
   String? get parent => data['parent_id'] as String?;
+  bool get saved => data['saved'] == true;
   Json get publicData => Json.from(data['public_data'] as Map? ?? {});
   Json get privateData => Json.from(data['private_data'] as Map? ?? {});
   List<Json> get files =>

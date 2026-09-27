@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../community/content_actions.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
 import 'photo_recovery.dart';
@@ -383,26 +383,14 @@ class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
   }
 
   Future<void> share(Adoption post) async {
-    await Clipboard.setData(
-      ClipboardData(
-        text:
-            'Conoce la historia de ${post.name} en Dopmi. Publicación ${post.id}',
-      ),
+    await copyForSharing(
+      context,
+      'Conoce la historia de ${post.name} en Dopmi. Publicación ${post.id}',
     );
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Información copiada para compartir.')),
-      );
-    }
   }
 
   Future<void> report(CommunityRepository repo, Adoption post) async {
-    final result = await showModalBottomSheet<(String, String)>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      builder: (_) => const _ReportSheet(),
-    );
+    final result = await showContentReportSheet(context);
     if (result == null || !mounted) return;
     await perform(() async {
       await repo.report('adoption', post.id, result.$1, result.$2);
@@ -638,76 +626,6 @@ class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
   }
 }
 
-class _ReportSheet extends StatefulWidget {
-  const _ReportSheet();
-  @override
-  State<_ReportSheet> createState() => _ReportSheetState();
-}
-
-class _ReportSheetState extends State<_ReportSheet> {
-  String reason = 'incorrect';
-  final details = TextEditingController();
-  @override
-  void dispose() {
-    details.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: EdgeInsets.fromLTRB(
-      20,
-      20,
-      20,
-      MediaQuery.viewInsetsOf(context).bottom + 24,
-    ),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          'Reportar contenido',
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        const SizedBox(height: 12),
-        DropdownButtonFormField<String>(
-          initialValue: reason,
-          decoration: const InputDecoration(labelText: 'Motivo'),
-          items:
-              const {
-                    'incorrect': 'Información incorrecta',
-                    'unsafe': 'Riesgo o maltrato',
-                    'fraud': 'Posible fraude',
-                    'privacy': 'Datos personales expuestos',
-                    'other': 'Otro',
-                  }.entries
-                  .map(
-                    (item) => DropdownMenuItem(
-                      value: item.key,
-                      child: Text(item.value),
-                    ),
-                  )
-                  .toList(),
-          onChanged: (value) => setState(() => reason = value ?? reason),
-        ),
-        const SizedBox(height: 12),
-        TextField(
-          controller: details,
-          maxLength: 1000,
-          minLines: 2,
-          maxLines: 5,
-          decoration: const InputDecoration(labelText: 'Cuéntanos qué sucede'),
-        ),
-        ActionButton(
-          'Enviar reporte',
-          onPressed: () =>
-              Navigator.pop(context, (reason, details.text.trim())),
-        ),
-      ],
-    ),
-  );
-}
-
 class PublicProfileScreen extends ConsumerStatefulWidget {
   const PublicProfileScreen(this.id, {super.key});
   final String id;
@@ -739,6 +657,29 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
           error = communityError(cause);
         });
       }
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  Future<void> reportProfile() async {
+    final result = await showContentReportSheet(context);
+    if (result == null || !mounted) return;
+    setState(() {
+      busy = true;
+      error = null;
+    });
+    try {
+      await ref
+          .read(communityRepositoryProvider)
+          .report('rescuer', widget.id, result.$1, result.$2);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Recibimos tu reporte para revisión.')),
+        );
+      }
+    } catch (cause) {
+      if (mounted) setState(() => error = communityError(cause));
     } finally {
       if (mounted) setState(() => busy = false);
     }
@@ -778,17 +719,40 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
                 '${profile['adopted_count']} adopciones marcadas como realizadas por esta cuenta.',
               ),
               if (error != null) Notice(error!, isError: true),
-              OutlinedButton.icon(
-                onPressed:
-                    busy ||
-                        ref.read(communityRepositoryProvider).userId ==
-                            widget.id
-                    ? null
-                    : () => toggle(profile, refresh),
-                icon: Icon(saved ? Icons.favorite : Icons.favorite_border),
-                label: Text(
-                  saved ? 'Rescatista guardado' : 'Guardar rescatista',
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed:
+                          busy ||
+                              ref.read(communityRepositoryProvider).userId ==
+                                  widget.id
+                          ? null
+                          : () => toggle(profile, refresh),
+                      icon: Icon(
+                        saved ? Icons.favorite : Icons.favorite_border,
+                      ),
+                      label: Text(saved ? 'Guardado' : 'Guardar'),
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: 'Compartir',
+                    onPressed: () => copyForSharing(
+                      context,
+                      'Conoce el trabajo de ${profile['name']} en Dopmi. Perfil ${widget.id}',
+                    ),
+                    icon: const Icon(Icons.ios_share_outlined),
+                  ),
+                  IconButton(
+                    tooltip: 'Reportar',
+                    onPressed:
+                        busy ||
+                            ref.read(communityRepositoryProvider).userId == null
+                        ? null
+                        : reportProfile,
+                    icon: const Icon(Icons.flag_outlined),
+                  ),
+                ],
               ),
               ActionButton(
                 'Ver sus publicaciones disponibles',

@@ -8,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' show PostgrestException;
 import '../../core/ui.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
+import '../community/content_actions.dart';
 import '../payments/payment_repository.dart';
 import 'rescue_fields.dart';
 import 'rescue_repository.dart';
@@ -717,6 +718,63 @@ class RescueCatalogScreen extends ConsumerStatefulWidget {
 
 class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
   int page = 1;
+  bool busy = false;
+  bool? savedOverride;
+  String? error;
+
+  Future<void> toggleCase(RescueRecord record, VoidCallback refresh) async {
+    final repo = ref.read(communityRepositoryProvider);
+    if (repo.userId == null) {
+      context.push('/login');
+      return;
+    }
+    final previous = savedOverride ?? record.saved;
+    setState(() {
+      busy = true;
+      error = null;
+      savedOverride = !previous;
+    });
+    try {
+      await repo.favoriteCase(record.id, !previous);
+      refresh();
+    } catch (cause) {
+      if (mounted) {
+        setState(() {
+          savedOverride = previous;
+          error = communityError(cause);
+        });
+      }
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  Future<void> reportCase(RescueRecord record) async {
+    final repo = ref.read(communityRepositoryProvider);
+    if (repo.userId == null) {
+      context.push('/login');
+      return;
+    }
+    final result = await showContentReportSheet(context);
+    if (result == null || !mounted) return;
+    setState(() {
+      busy = true;
+      error = null;
+    });
+    try {
+      await repo.report('case', record.id, result.$1, result.$2);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Recibimos tu reporte para revisión.')),
+        );
+      }
+    } catch (cause) {
+      if (mounted) setState(() => error = communityError(cause));
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) => CommunityFrame(
     index: widget.caseId == null ? 1 : null,
@@ -740,6 +798,7 @@ class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
         builder: (data, refresh) => Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (error != null) Notice(error!, isError: true),
             if (data.items.isEmpty)
               const Notice('Todavía no hay contenido aprobado disponible.'),
             for (final r in data.items)
@@ -790,6 +849,41 @@ class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
                           onPressed: () =>
                               context.push('/rescue-cases/${r.id}'),
                           child: const Text('Ver seguimiento'),
+                        ),
+                      if (widget.caseId != null && r.kind == 'case')
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: busy
+                                    ? null
+                                    : () => toggleCase(r, refresh),
+                                icon: Icon(
+                                  (savedOverride ?? r.saved)
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                ),
+                                label: Text(
+                                  (savedOverride ?? r.saved)
+                                      ? 'Caso guardado'
+                                      : 'Guardar caso',
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              tooltip: 'Compartir',
+                              onPressed: () => copyForSharing(
+                                context,
+                                'Conoce el caso ${r.title} en Dopmi. Caso ${r.id}',
+                              ),
+                              icon: const Icon(Icons.ios_share_outlined),
+                            ),
+                            IconButton(
+                              tooltip: 'Reportar',
+                              onPressed: busy ? null : () => reportCase(r),
+                              icon: const Icon(Icons.flag_outlined),
+                            ),
+                          ],
                         ),
                       if (r.kind == 'expense' && r.status == 'approved')
                         TextButton(

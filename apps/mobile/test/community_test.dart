@@ -99,6 +99,16 @@ class FakeCommunity implements CommunityRepository {
   @override
   Future<String> startThread(String postId) async => 'thread-one';
   @override
+  Future<Json?> publicProfile(String id) async => {
+    'id': id,
+    'name': 'Refugio Luna',
+    'bio': 'Rescate responsable.',
+    'city': 'Monterrey',
+    'region': 'Nuevo León',
+    'adopted_count': 2,
+    'saved': false,
+  };
+  @override
   Future<DataPage<Json>> threads(int page, {String search = ''}) async =>
       const DataPage([], 0);
 
@@ -243,6 +253,22 @@ void main() {
       findsOneWidget,
     );
   });
+  testWidgets(
+    'public rescuer can be saved and reported with server acknowledgement',
+    (tester) async {
+      final repo = FakeCommunity();
+      await start(tester, repo, '/people/owner');
+      await tester.tap(find.text('Guardar'));
+      await tester.pumpAndSettle();
+      expect(find.text('Guardado'), findsOneWidget);
+      await tester.tap(find.byTooltip('Reportar'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Enviar reporte'));
+      await tester.pumpAndSettle();
+      expect(repo.reported?['type'], 'rescuer');
+      expect(find.text('Recibimos tu reporte para revisión.'), findsOneWidget);
+    },
+  );
   testWidgets('swipe buttons pass and persist likes without double actions', (
     tester,
   ) async {

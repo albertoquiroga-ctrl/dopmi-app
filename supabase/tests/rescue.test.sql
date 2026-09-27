@@ -104,6 +104,13 @@ select is(dopmi_rescue_file_access('60000000-0000-4000-8000-000000000001/6100000
 select is((select count(*) from storage.objects where bucket_id='dopmi-rescue-evidence'),1::bigint,'Storage RLS exposes only approved public photo');
 reset role;
 set local role authenticated;
+select set_config('request.jwt.claim.sub','60000000-0000-4000-8000-000000000002',true);
+select lives_ok($$select dopmi_set_case_favorite('61000000-0000-4000-8000-000000000002',true)$$,'public case may be saved');
+select is((dopmi_rescue_public('61000000-0000-4000-8000-000000000002')->'items'->0->>'saved')::boolean,true,'case detail reflects current account favorite');
+select is((dopmi_saved_case_list()->>'total')::int,1,'saved case list is scoped to the current account');
+select lives_ok($$select dopmi_report_content('case','61000000-0000-4000-8000-000000000002','incorrect','Revisar información')$$,'public case report persists');
+reset role;
+set local role authenticated;
 select set_config('request.jwt.claim.sub','60000000-0000-4000-8000-000000000001',true);
 select is(dopmi_transition_rescue('61000000-0000-4000-8000-000000000002',3,'close')->>'status','closed','case can close after review resolved');
 select throws_ok($$select dopmi_save_rescue('expense','{}','{}','[]',null,null,'61000000-0000-4000-8000-000000000002')$$,'22023',null,'closed case rejects new expense');
