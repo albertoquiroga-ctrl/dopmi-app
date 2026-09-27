@@ -1,5 +1,14 @@
 # Dopmi — registro de avance
 
+## H8 candidato corregido publicado — 26 de septiembre de 2026
+
+- Candidato de aplicación `ea5350e2cff28aeac29938512bd1206a122cd94e`, referencia Irlanda `a246fa6f42ec517aae264d7fbd2358d647c4f840`.
+- [CI 36294379013](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36294379013): los cuatro trabajos terminaron con `success`, incluidos formato, análisis, 80 pruebas Flutter, capturas, Android, iOS simulator, PostgreSQL/concurrencia financiera e integración real de identidad/adopción.
+- [Codemagic 6ab89b4db5c299cd1e6841cc](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ab89b4db5c299cd1e6841cc): workflow `android-guardian-internal`; configuración, firma, análisis, pruebas, AAB, Publishing y limpieza terminaron con `success`. Android **2.3.3 (256)**, paquete `com.mycompany.dopmi`, commit exacto comprobado.
+- El build previo `6ab89a9871afc738798a3077` se canceló durante instalación de SDK antes de compilar/publicar porque el primer CI detectó una diferencia de formato. No produjo una versión de tienda.
+- Google Play Internal Testing contiene el candidato corregido. H8 conserva V en No hasta que Irlanda/titular instalen 256, recorran la matriz y acepten o reporten diferencias. Dinero permanece en test; iOS de distribución sigue H11.
+- Esta entrada documental es posterior al SHA distribuido y no cambia la aplicación instalada.
+
 ## H8 auditoría de cierre y correcciones de fidelidad — 26 de septiembre de 2026
 
 - La auditoría requisito por requisito detectó que la matriz seguía marcando rutas implementadas como parciales o inexistentes y que la evidencia HTML completa se detenía en acceso. `design-parity.md` ahora registra I/T/V vigentes y correspondencias reales; V continúa en No.
