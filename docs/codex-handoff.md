@@ -2,6 +2,10 @@
 
 > Decisión vigente 27/9/2026: el titular admite las pantallas actuales para continuar; la fidelidad visual queda aplazada, sin aceptación atribuida a Irlanda. H9 autorizado: aceptación integrada y correcciones, con revisión final agrupada en Internal Testing. Ver [H9](h9-acceptance.md). Esta decisión supersede los bloqueos visuales históricos inferiores.
 
+## Continuidad H9 — 27/9/2026
+
+H9 implementado y comprobado técnicamente sobre 73c731f, CI36330974531 aprobado. Android 2.3.3 (259) publicado por Codemagic 6ab93b1e75e12724939f4af7 en Play internal/completed. Ver h9-acceptance.md y última entrada de progress.md. El titular admite pantallas actuales y aplaza fidelidad; falta su aceptación funcional agrupada, no repetir desarrollo H8/H9 ni atribuir aceptación visual a Irlanda. Tres migraciones H9 desplegadas y verificadas; correspondence en migration-history-audit.md. Continuación codex/design-foundation, PR6 abierto. Las secciones inferiores son históricas cuando contradigan este corte.
+
 ## Estado vigente — consolidación H6, 25 de septiembre de 2026 (México)
 
 Esta sección supersede las prioridades históricas siguientes. H5 está aceptado en test según `hito5-delivery.md`, con excepción de disputa explícita. El titular autorizó ejecutar `release-roadmap.md` (H6–H12). H6 integrado por PR #4, commit `99d3118ae69bc7c4c79200c28107bfb9cd2f26b1`, CI 36206671710 aprobado. H7 integrado por PR #5, merge `ba9f897f3fa418e952b98e4c604cffe468a8aa95`, CI 36208309068 aprobado. Continuación H8 en `codex/design-foundation`; verificar refs/CI antes de elegir base. No reiniciar H5.

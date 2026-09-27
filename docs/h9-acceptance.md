@@ -2,6 +2,12 @@
 
 Autorizado el 27/9/2026. Base: codex/design-foundation, c40eb73; candidato previo ea5350e, Android 2.3.3 (256). Referencia visual a246fa6. El titular admite las pantallas actuales para continuar y aplaza la fidelidad visual; no equivale a aceptación de Irlanda. Revisión funcional final agrupada en Internal Testing.
 
+## Candidato listo para revisar
+
+**Android 2.3.3 (259)**, publicado en Play Internal Testing desde `73c731fcdb4b99b4dd94bc40c15a0e272efb713c`. [CI aprobado](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36330974531), [Codemagic y Publishing aprobados](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ab93b1e75e12724939f4af7). Consulta de Play confirmó track internal/completed/versionCode259.
+
+Actualizar desde Play, comprobar build 259 y realizar la lista agrupada inferior. Registrar dispositivo y cualquier paso fallido; no hace falta reabrir la revisión visual. Aceptación del titular pendiente: esta publicación no cierra H9.
+
 ## Matriz de ejecución
 
 | ID | Actores y recorrido | Resultado exigido | Evidencia / estado |
@@ -11,7 +17,7 @@ Autorizado el 27/9/2026. Base: codex/design-foundation, c40eb73; candidato previ
 | H9.2 | Rescatista, tercero y moderador: verificar/corregir/caso/gasto/avance/perfil/adopción vinculada | Sólo snapshots aprobados públicos, archivos privados y revisión de versión | Integración real ampliada aprobada: avances, perfiles, vínculo, archivos y correcciones |
 | H9.3 | Donante, rescatista, servidor: Checkout/retorno/historial/Guardián | Resultado persistido, importes conciliados, reintento sin duplicación | Reutilizar H5 y regresiones; candidato instalado pendiente |
 | H9.4 | Reportante y administrador: recepción/revisión/resolución | Bandejas accesibles, evidencia visible, permisos y errores recuperables | 23 pruebas admin/build aprobados; RPC perfil, fotos, paginación y resolución corregidos |
-| H9.5 | Titular en Play interno | Revisión agrupada de 8 recorridos, cero defectos críticos/altos | Pendiente de candidato final y titular |
+| H9.5 | Titular en Play interno | Revisión agrupada de 8 recorridos, cero defectos críticos/altos | Candidato 259 publicado; pendiente del titular |
 
 ## Verificación y límites
 
@@ -61,3 +67,9 @@ Cuatro recorridos de integración reales aprobados en dopmi-h9, base desechable 
 Preparación instalada: usar la cuenta habitual del titular y una segunda cuenta de pruebas confirmada para actuar como responsable/adoptante; administración conserva la cuenta autorizada existente. El catálogo demo anterior se conserva. El candidato y los datos financieros son exclusivamente test. La revisión instalada y el suministro de cuentas remotas adicionales, si se necesitan, permanecen en H9.5.
 
 H9-D6: el borrador podía borrar el avatar del snapshot público vigente. Se protegió la ruta aprobada sin impedir subir un avatar nuevo. Integración real con intento de eliminación y lectura posterior aprobada. Esta corrección sustituye el candidato b7947cc como base final; conservar sus pruebas como evidencia intermedia.
+
+## Datos para la revisión instalada
+
+Se conservan cinco adopciones y cinco casos públicos de prueba. En **Choco · Recuperación demo** se añadió un avance con prefijo **DEMO H9**, sin fotos ni promesas de gasto real, mediante guardar → enviar → publicar. La auditoría identifica expresamente la preparación sintética por Codex autorizada por el titular; no se presenta como revisión humana. Consulta pública posterior: un avance. No se modificaron aportaciones ni se crearon cobros.
+
+La tercera migración `20260927154814_h9_preserve_approved_avatar.sql` corresponde a la versión remota `20260927154928`.

@@ -1,5 +1,18 @@
 # Dopmi — registro de avance
 
+## H9 candidato publicado — 27 de septiembre de 2026
+
+- Código candidato `73c731fcdb4b99b4dd94bc40c15a0e272efb713c`, diseño de referencia `a246fa6`. [CI 36330974531](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36330974531): cuatro trabajos success, incluidos PostgreSQL/concurrencia, integración real ampliada, Flutter y compilaciones Android/iOS simulator.
+- [Codemagic 6ab93b1e75e12724939f4af7](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ab93b1e75e12724939f4af7): android-guardian-internal, firma/análisis/tests/AAB/Publishing success; commit exacto comprobado. Android **2.3.3 (259)**, com.mycompany.dopmi. Log de publicación y consulta posterior de Play: track internal, status completed, versionCode259.
+- Builds intermedios 6ab939ff78f056c20c4318d2 y 6ab93a8025013d476dd567db cancelados para distribuir únicamente el candidato corregido. El primer CI detectó codificación Windows-1252 en una prueba; normalizada a UTF-8.
+- Protección adicional del avatar aprobado: migración 20260927154814 → remoto 20260927154928. Intento de borrado desde propietario y lectura posterior comprobados mediante Storage real. Las tres migraciones son compatibles con el cliente instalado anterior.
+- Remoto: cinco adopciones/cinco casos públicos conservados. Se añadió un avance DEMO H9 ficticio a Choco · Recuperación demo mediante RPC de guardar/enviar/revisar, con procedencia sintética explícita en auditoría; consulta pública comprobada. No representa revisión humana ni gasto real, y no creó pagos.
+- Pruebas integradas finales: cuatro recorridos completos aprobados, analyze limpio. Cero cuentas temporales de aceptación; instancia dopmi-h9 eliminada y contenedores locales originales restaurados conservando sus volúmenes.
+- Asesores Supabase conservan avisos conocidos: tablas privadas sin políticas públicas, RPC SECURITY DEFINER intencionales y protección de contraseñas pendiente H10. No se ampliaron grants ni se declara auditoría de producción.
+- H9 técnico listo para revisión agrupada en docs/h9-acceptance.md. **Aceptación funcional instalada del titular pendiente; H9 no cerrado.** Fidelidad visual aplazada por decisión del titular; no se atribuye aprobación a Irlanda. H10/H11, dinero live y excepción H5 permanecen separados.
+- Este registro documental es posterior al SHA distribuido y no cambia la app.
+
+
 ## H9 — integración y correcciones, 27 de septiembre de 2026
 
 - Autorizado H9 con aceptación final agrupada; el titular admite pantallas actuales y aplaza fidelidad visual. Matriz y guía en h9-acceptance.md. Rama codex/design-foundation preservada, PR6 abierto; Irlanda sigue a246fa6.

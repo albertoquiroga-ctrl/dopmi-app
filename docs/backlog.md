@@ -111,7 +111,7 @@ Plan autorizado 27/9/2026: [matriz, defectos y revisión agrupada](h9-acceptance
 - [x] H9.2 Integración de rescate, correcciones, fotos, avances, perfil y adopción vinculada; defectos de notificación/visibilidad corregidos.
 - [x] H9.3 Regresiones financieras y acceso remoto test; evidencia histórica H5 preservada. Aceptación instalada se agrupa en H9.5.
 - [x] H9.4 Correcciones de moderación, permisos, paginación y guía operativa.
-- [ ] H9.5 CI final, candidato Internal Testing y aceptación funcional agrupada del titular. No cerrar por compilación/publicación.
+- [ ] H9.5 CI 36330974531 aprobado; Android 2.3.3 (259) publicado en Internal Testing desde 73c731f. Falta aceptación funcional agrupada del titular; no cerrar por compilación/publicación.
 
 ## H10 — Identidad pública y operación
 
