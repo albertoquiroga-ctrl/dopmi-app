@@ -1,5 +1,17 @@
 # Dopmi — registro de avance
 
+## H9 — integración y correcciones, 27 de septiembre de 2026
+
+- Autorizado H9 con aceptación final agrupada; el titular admite pantallas actuales y aplaza fidelidad visual. Matriz y guía en h9-acceptance.md. Rama codex/design-foundation preservada, PR6 abierto; Irlanda sigue a246fa6.
+- Corregidos: fotos no visibles al moderar avances, ausencia de paginación/reintento, aprobación de perfil con parámetro inexistente, notificación duplicada al aprobar una corrección y acceso público a medios tras perder visibilidad/verificación. Panel conserva notas ante error, evita doble envío y exige resolución escrita.
+- Integración real ampliada en adoption_backend y rescue_backend: favoritos aislados/tombstones, reportes idempotentes y resolución, avances con corrección/foto/revisión, perfil aprobado frente a edición privada, adopción vinculada y retirada de permisos de archivos. Cuentas y objetos temporales eliminados por teardown.
+- Local: 23 pruebas admin y build; 80 Flutter; 391 Node/backend financiero; 247 pgTAP; seis configuración móvil; concurrencia financiera aprobada. Flutter analyze limpio después de corregir estilo. La evidencia final de CI y dispositivo se registra por separado.
+- El Storage local anterior falló antes de subir por un índice incompatible (42P10). Se preservó su volumen y se levantó dopmi-h9 desechable desde cero; las cargas reales funcionan. OneDrive bloqueó unit_test_assets; Flutter se verificó desde copia de la misma fuente fuera de OneDrive. No se corrigió RLS para ocultar fallos de infraestructura.
+- Supabase MCP, Codemagic API y lectura de cuenta Stripe test comprobados. Smoke financiero remoto: 18 comprobaciones aprobadas; Cron existente activo. No se efectuaron nuevos cobros ni se reabrió la excepción de disputa de H5.
+- Migraciones H9 aplicadas por MCP, versiones 20260927154149 y 20260927154152, sin alterar firmas ni permisos existentes. Cuerpos remotos coinciden normalizando saltos de línea; correspondencia en migration-history-audit.md. Nuevas URLs firmadas de medios respetan visibilidad; las ya emitidas vencen a los 60 segundos.
+- Pendiente: CI por SHA, candidato Internal Testing, preparación instalada y revisión del titular. No se declara H9 cerrado ni aceptación visual de Irlanda.
+
+
 ## H8 candidato corregido publicado — 26 de septiembre de 2026
 
 - Candidato de aplicación `ea5350e2cff28aeac29938512bd1206a122cd94e`, referencia Irlanda `a246fa6f42ec517aae264d7fbd2358d647c4f840`.

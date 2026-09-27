@@ -8,6 +8,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
+import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
+import 'package:dopmi_mobile/features/profile/rescuer_profile_repository.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +31,7 @@ void main() {
     authOptions: const AuthClientOptions(autoRefreshToken: false),
   );
   final clients = <SupabaseClient>[], users = <String>[], photos = <String>[];
+  final updatePhotos = <String>[], avatars = <String>[];
   SupabaseClient client() {
     final value = SupabaseClient(
       uri.toString(),
@@ -81,6 +84,14 @@ void main() {
     }
     if (photos.isNotEmpty) {
       await service.storage.from(rescueBucket).remove(photos);
+    }
+    if (updatePhotos.isNotEmpty) {
+      await service.storage
+          .from('dopmi-case-update-media')
+          .remove(updatePhotos);
+    }
+    if (avatars.isNotEmpty) {
+      await service.storage.from('dopmi-rescuer-profile-media').remove(avatars);
     }
     for (final id in users) {
       await service.auth.admin.deleteUser(id);
@@ -247,6 +258,178 @@ void main() {
       throwsA(isA<StorageException>()),
     );
 
+    // H9: new H8 repositories must work through real REST/Auth/Storage,
+    // including their moderation boundaries, not only SQL fixtures.
+    final ownerCommunity = SupabaseCommunityRepository(owner);
+    final reader = SupabaseCommunityRepository(outsider);
+    final publicReader = SupabaseCommunityRepository(anonymous.client);
+    await reader.favoriteCase(rescue.id, true);
+    await reader.favoriteCase(rescue.id, true);
+    expect((await reader.savedCases(1)).total, 1);
+    expect((await ownerCommunity.savedCases(1)).total, 0);
+    await reader.favoriteRescuer(owner.auth.currentUser!.id, true);
+    expect((await reader.savedRescuers(1)).total, 1);
+    expect((await ownerCommunity.savedRescuers(1)).total, 0);
+    final report = await reader.report(
+      'case',
+      rescue.id,
+      'incorrect',
+      'Revisión H9',
+    );
+    expect(
+      await reader.report('case', rescue.id, 'incorrect', 'Revisión H9'),
+      report,
+    );
+    await expectLater(
+      outsider.rpc('dopmi_admin_reports'),
+      throwsA(isA<PostgrestException>()),
+    );
+    final reports = await moderator.rpc('dopmi_admin_reports');
+    expect(
+      (reports['items'] as List).where((r) => r['id'] == report).length,
+      1,
+    );
+    await moderator.rpc(
+      'dopmi_admin_resolve_report',
+      params: {
+        'report_id': report,
+        'next_status': 'resolved',
+        'resolution_note': 'Comprobado en H9',
+      },
+    );
+    final resolved = await moderator.rpc(
+      'dopmi_admin_reports',
+      params: {'status_filter': 'resolved'},
+    );
+    expect(
+      (resolved['items'] as List).single['resolution'],
+      'Comprobado en H9',
+    );
+
+    final updates = CaseUpdateRepository(owner);
+    final publicUpdates = CaseUpdateRepository(anonymous.client);
+    var update = await updates.save(
+      rescue.id,
+      'Avance privado de recuperación',
+      [],
+    );
+    final updatePath = await updates.upload(update.id, photo);
+    updatePhotos.add(updatePath);
+    update = await updates.save(rescue.id, update.body, [
+      updatePath,
+    ], update: update);
+    expect(await publicUpdates.publicFor(rescue.id), isEmpty);
+    await expectLater(
+      publicUpdates.photoUrl(updatePath),
+      throwsA(isA<StorageException>()),
+    );
+    expect(await CaseUpdateRepository(outsider).mine(rescue.id), isEmpty);
+    update = await updates.transition(update, 'submit');
+    Future<CaseUpdate> reviewUpdate(CaseUpdate item, String decision) async =>
+        CaseUpdate(
+          Json.from(
+            await moderator.rpc(
+              'dopmi_review_case_update',
+              params: {
+                'update_id': item.id,
+                'expected_version': item.version,
+                'decision': decision,
+                'feedback': 'Revisión H9',
+              },
+            ),
+          ),
+        );
+    update = await reviewUpdate(update, 'changes_requested');
+    expect((await updates.mine(rescue.id)).single.photos, [updatePath]);
+    update = await updates.save(
+      rescue.id,
+      'Avance público corregido',
+      update.photos,
+      update: update,
+    );
+    update = await updates.transition(update, 'submit');
+    final staleUpdate = update;
+    update = await reviewUpdate(update, 'published');
+    await expectLater(
+      reviewUpdate(staleUpdate, 'rejected'),
+      throwsA(isA<PostgrestException>()),
+    );
+    expect(
+      (await publicUpdates.publicFor(rescue.id)).single.body,
+      'Avance público corregido',
+    );
+    expect(
+      await anonymous.client.storage
+          .from('dopmi-case-update-media')
+          .download(updatePath),
+      isNotEmpty,
+    );
+    await expectLater(
+      updates.save(rescue.id, 'Cambio sin revisión', [], update: update),
+      throwsA(isA<PostgrestException>()),
+    );
+
+    final profiles = SupabaseRescuerProfileRepository(owner);
+    final initialProfile = await profiles.save({});
+    final avatar = await profiles.uploadAvatar(photo);
+    avatars.add(avatar);
+    final publicPayload = <String, dynamic>{
+      'display_name': 'Refugio H9',
+      'bio': 'Recuperación con seguimiento responsable.',
+      'city': 'Monterrey',
+      'region': 'Nuevo León',
+      'instagram_url': '',
+      'facebook_url': '',
+      'avatar_path': avatar,
+    };
+    var profile = await profiles.save(
+      publicPayload,
+      version: initialProfile['version'] as int,
+    );
+    await expectLater(
+      SupabaseRescuerProfileRepository(anonymous.client).avatarUrl(avatar),
+      throwsA(isA<StorageException>()),
+    );
+    profile = await profiles.transition(profile['version'] as int, 'submit');
+    profile = Json.from(
+      await moderator.rpc(
+        'dopmi_review_rescuer_profile',
+        params: {
+          'profile_owner': owner.auth.currentUser!.id,
+          'expected_version': profile['version'],
+          'decision': 'published',
+          'feedback': '',
+        },
+      ),
+    );
+    expect(
+      (await publicReader.publicProfile(owner.auth.currentUser!.id))!['name'],
+      'Refugio H9',
+    );
+    await profiles.save({
+      ...publicPayload,
+      'display_name': 'Nombre privado pendiente',
+    }, version: profile['version'] as int);
+    expect(
+      (await publicReader.publicProfile(owner.auth.currentUser!.id))!['name'],
+      'Refugio H9',
+    );
+    expect(
+      await anonymous.client.storage
+          .from('dopmi-rescuer-profile-media')
+          .download(avatar),
+      isNotEmpty,
+    );
+    final linked = await ownerCommunity.save({'rescue_case_id': rescue.id});
+    expect(linked.status, 'draft');
+    expect((await ownerCommunity.ownForCase(rescue.id))!.id, linked.id);
+    expect(await reader.detail(linked.id), isNull);
+    await expectLater(
+      ownerCommunity.save({'rescue_case_id': rescue.id}),
+      throwsA(isA<PostgrestException>()),
+    );
+    expect(await reader.personalImpact(), isEmpty);
+
     var expense = await repo.save(
       'expense',
       {
@@ -342,6 +525,22 @@ void main() {
       await review(identity, decision: 'changes_requested'),
     );
     expect((await anonymous.catalog(1)).total, 0);
+    expect((await reader.savedCases(1)).items.single.available, false);
+    await reader.favoriteCase(rescue.id, false);
+    expect((await reader.savedCases(1)).total, 0);
+    expect(await publicUpdates.publicFor(rescue.id), isEmpty);
+    expect(
+      await publicReader.publicProfile(owner.auth.currentUser!.id),
+      isNull,
+    );
+    await expectLater(
+      SupabaseRescuerProfileRepository(anonymous.client).avatarUrl(avatar),
+      throwsA(isA<StorageException>()),
+    );
+    await expectLater(
+      publicUpdates.photoUrl(updatePath),
+      throwsA(isA<StorageException>()),
+    );
     await expectLater(
       anonymous.fileUrl(publicPath),
       throwsA(isA<StorageException>()),

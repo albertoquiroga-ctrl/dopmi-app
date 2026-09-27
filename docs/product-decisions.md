@@ -1,5 +1,7 @@
 # Dopmi — decisiones vigentes
 
+> Decisión vigente 27/9/2026: el titular admite las pantallas actuales para continuar; la fidelidad visual queda aplazada, sin aceptación atribuida a Irlanda. H9 autorizado: aceptación integrada y correcciones, con revisión final agrupada en Internal Testing. Ver [H9](h9-acceptance.md). Esta decisión supersede los bloqueos visuales históricos inferiores.
+
 ## Decisiones de lanzamiento — 25 de septiembre de 2026 (México)
 
 Actualización 26/9/2026: H8 incluye paridad completa y funcional de ambos modos, backend mínimo de favoritos/avances/perfil público/reportes y descubrimiento aproximado. H9 conserva aceptación integrada/excepciones. Historias persistentes, no temporales; ubicación aproximada opcional con alternativa manual; contacto público por ciudad y chat sin domicilio, teléfono ni correo personal. Ver `h8-execution.md`.

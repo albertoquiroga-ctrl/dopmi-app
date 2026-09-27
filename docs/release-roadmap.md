@@ -1,5 +1,7 @@
 # Dopmi — plan de lanzamiento autorizado
 
+> Decisión vigente 27/9/2026: el titular admite las pantallas actuales para continuar; la fidelidad visual queda aplazada, sin aceptación atribuida a Irlanda. H9 autorizado: aceptación integrada y correcciones, con revisión final agrupada en Internal Testing. Ver [H9](h9-acceptance.md). Esta decisión supersede los bloqueos visuales históricos inferiores.
+
 Decisión del titular: 25 de septiembre de 2026 (México). Este plan sustituye el alcance anterior de H6; H1–H5 conservan su evidencia. H5 está aceptado **sólo en test**, con la excepción de disputa descrita en `hito5-delivery.md`. Las etapas R0–R6 siguen como checklist de lanzamiento, no como hitos de desarrollo.
 
 ## Alcance y responsables

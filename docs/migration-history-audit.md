@@ -100,3 +100,11 @@ Hay 26 archivos locales; en 18 nombres, el timestamp del archivo difiere del tim
 6. Registrar fecha, proyecto, versión local/remota, resultado de comparación, acción y evidencia sin secretos. Actualizar este documento con la tabla de resultados.
 
 Este traspaso no ejecutó reparación ni cambio de esquema. La discrepancia se deja como trabajo técnico de continuidad, con evidencia suficiente para investigarla sin repetir migraciones a ciegas.
+## H9 — 27 de septiembre de 2026
+
+Dos migraciones aditivas aplicadas por MCP después de reproducir los fallos en Auth/REST/Storage locales:
+
+- `20260927153539_h9_case_update_review_notification.sql` → remoto `20260927154149`. La segunda decisión sobre un avance actualiza su notificación y conserva ambas revisiones auditadas.
+- `20260927154019_h9_moderated_media_visibility.sql` → remoto `20260927154152`. Fotos de avances, avatar aprobado y actividad pública respetan visibilidad vigente del caso/verificación.
+
+Antes: cuerpos remotos de las tres funciones de visibilidad coincidieron por MD5 con las migraciones originales; definición de revisión comparada. Después: los cuatro cuerpos coinciden exactamente normalizando CRLF a LF (hashes 7bd109951cc78d100788ddb619eedfc2, 243c968cf30d76fa29d2554ba850eccc, 8c358d9b8ebc416e378409c494680c8b, 06f26759f44bae4f492791dffab81696). Firmas, grants y search_path vacío conservados; sin push/repair ni replay histórico. URLs previamente firmadas conservan su vigencia breve (60 segundos); el cambio impide nuevas firmas/accesos autorizados cuando el contenido deja de ser público.

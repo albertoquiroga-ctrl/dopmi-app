@@ -267,6 +267,19 @@ void main() {
     await reader.favorite(post.id, true);
     expect((await reader.catalog({'saved': true}, 1)).items.single.id, post.id);
     expect((await stranger.catalog({'saved': true}, 1)).total, 0);
+    expect((await reader.savedAdoptions(1)).items.single.id, post.id);
+    expect((await reader.detail(post.id))!.saved, true);
+    expect((await stranger.savedAdoptions(1)).total, 0);
+    final reportId = await reader.report(
+      'adoption',
+      post.id,
+      'incorrect',
+      'Revisar datos H9',
+    );
+    expect(
+      await reader.report('adoption', post.id, 'incorrect', 'Revisar datos H9'),
+      reportId,
+    );
     final thread = await reader.startThread(post.id);
     expect(await reader.startThread(post.id), thread);
 
@@ -326,6 +339,7 @@ void main() {
     );
     await reader.favorite(post.id, false);
     expect((await reader.catalog({'saved': true}, 1)).total, 0);
+    await reader.favorite(post.id, true);
     post = await author.save(
       {
         ...payload,
@@ -341,5 +355,10 @@ void main() {
       throwsA(isA<StorageException>()),
     );
     expect((await author.own(post.id))!.name, 'Cambio pendiente');
+    final removed = (await reader.savedAdoptions(1)).items.single;
+    expect(removed.available, false);
+    expect(removed.publicData, isEmpty);
+    await reader.favorite(post.id, false);
+    expect((await reader.savedAdoptions(1)).total, 0);
   }, timeout: const Timeout(Duration(minutes: 3)));
 }

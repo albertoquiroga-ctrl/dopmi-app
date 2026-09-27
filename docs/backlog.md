@@ -1,5 +1,7 @@
 # Dopmi — entregas
 
+> Decisión vigente 27/9/2026: el titular admite las pantallas actuales para continuar; la fidelidad visual queda aplazada, sin aceptación atribuida a Irlanda. H9 autorizado: aceptación integrada y correcciones, con revisión final agrupada en Internal Testing. Ver [H9](h9-acceptance.md). Esta decisión supersede los bloqueos visuales históricos inferiores.
+
 Cada tarea se completa con código, prueba de aceptación y evidencia en `progress.md`.
 
 ## Hito 1 — completado
@@ -100,15 +102,16 @@ Plan vigente: [h8-execution.md](h8-execution.md). Las casillas históricas infer
 
 Detalle y capturas de componentes/acceso: [H8](design-foundation.md). H8 permanece abierto hasta revisión y aceptación visual de Irlanda; no equivale a H9 ni a aceptación en dispositivo.
 
-## H9 — Aceptación integrada y excepciones restantes
+## H9 — Aceptación integrada y confiabilidad funcional
 
-Las tareas siguientes describen recorridos cuya implementación/paridad pasa a H8. H9 conservará sólo aceptación integrada y excepciones no comprobadas allí, sin duplicar su desarrollo.
+Plan autorizado 27/9/2026: [matriz, defectos y revisión agrupada](h9-acceptance.md). El titular aplaza la fidelidad visual y admite las pantallas actuales para continuar.
 
-- [ ] H9.1 Adopción, detalle, guardados, perfil y contacto.
-- [ ] H9.2 Verificación, publicación, evidencia, revisión y correcciones.
-- [ ] H9.3 Apoyar, aportación, Guardián, tarjeta, cancelación e historial.
-- [ ] H9.4 Cuenta, ayuda, reportes y administración.
-- [ ] H9.5 Estados ausentes del mockup revisados y aceptación de matriz completa.
+- [x] H9.0 Base, conexiones, matriz y fixtures locales reproducibles.
+- [x] H9.1 Integración de adopción/favoritos/contacto/retiro y privacidad entre cuentas.
+- [x] H9.2 Integración de rescate, correcciones, fotos, avances, perfil y adopción vinculada; defectos de notificación/visibilidad corregidos.
+- [x] H9.3 Regresiones financieras y acceso remoto test; evidencia histórica H5 preservada. Aceptación instalada se agrupa en H9.5.
+- [x] H9.4 Correcciones de moderación, permisos, paginación y guía operativa.
+- [ ] H9.5 CI final, candidato Internal Testing y aceptación funcional agrupada del titular. No cerrar por compilación/publicación.
 
 ## H10 — Identidad pública y operación
 

@@ -1,4 +1,4 @@
-name: Dopmi identity and adoption
+name: Dopmi integrated acceptance
 on:
   push:
   pull_request:
@@ -109,7 +109,7 @@ jobs:
         run: tools/verification/node_modules/.bin/supabase status --output json > "$RUNNER_TEMP/supabase-status.json"
       - run: flutter pub get
         working-directory: apps/mobile
-      - name: Identity, adoption moderation, private photos and messaging
+      - name: Identity, adoption, rescues and H8 community integration
         env:
           DOPMI_LOCAL_CONFIG: ${{ runner.temp }}/supabase-status.json
         run: flutter test test_backend --reporter expanded --concurrency=1

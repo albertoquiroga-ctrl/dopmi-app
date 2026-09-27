@@ -1,5 +1,7 @@
 # Dopmi — continuidad de ChatGPT Work a Codex
 
+> Decisión vigente 27/9/2026: el titular admite las pantallas actuales para continuar; la fidelidad visual queda aplazada, sin aceptación atribuida a Irlanda. H9 autorizado: aceptación integrada y correcciones, con revisión final agrupada en Internal Testing. Ver [H9](h9-acceptance.md). Esta decisión supersede los bloqueos visuales históricos inferiores.
+
 ## Estado vigente — consolidación H6, 25 de septiembre de 2026 (México)
 
 Esta sección supersede las prioridades históricas siguientes. H5 está aceptado en test según `hito5-delivery.md`, con excepción de disputa explícita. El titular autorizó ejecutar `release-roadmap.md` (H6–H12). H6 integrado por PR #4, commit `99d3118ae69bc7c4c79200c28107bfb9cd2f26b1`, CI 36206671710 aprobado. H7 integrado por PR #5, merge `ba9f897f3fa418e952b98e4c604cffe468a8aa95`, CI 36208309068 aprobado. Continuación H8 en `codex/design-foundation`; verificar refs/CI antes de elegir base. No reiniciar H5.

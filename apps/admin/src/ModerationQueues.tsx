@@ -1,41 +1,103 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { errorMessage, type AdminApi, type CaseUpdate, type ContentReport, type RescuerPublicProfile } from './api';
 
-export default function ModerationQueues({api}:{api:AdminApi}) {
-  const [view,setView]=useState<'updates'|'reports'|'profiles'>('updates');
-  return <><header className="page-heading"><div><p className="eyebrow">Moderación</p><h1>Contenido y reportes</h1><p>Publica avances revisados y resuelve alertas sin abrir datos privados ajenos.</p></div></header>
-    <div className="moderation-filters"><button className={view==='updates'?'':'secondary'} onClick={()=>setView('updates')}>Avances</button><button className={view==='profiles'?'':'secondary'} onClick={()=>setView('profiles')}>Perfiles</button><button className={view==='reports'?'':'secondary'} onClick={()=>setView('reports')}>Reportes</button></div>
-    {view==='updates'?<Updates api={api}/>:view==='profiles'?<Profiles api={api}/>:<Reports api={api}/>}</>;
+type Page<T> = { items: T[]; total: number };
+
+export default function ModerationQueues({ api }: { api: AdminApi }) {
+  const [view, setView] = useState<'updates' | 'reports' | 'profiles'>('updates');
+  return <><header className="page-heading"><div><p className="eyebrow">Moderación</p><h1>Contenido y reportes</h1><p>Revisa textos y fotografías antes de publicar; registra el motivo de cada decisión.</p></div></header>
+    <div className="moderation-filters"><button onClick={() => setView('updates')}>Avances</button><button onClick={() => setView('profiles')}>Perfiles</button><button onClick={() => setView('reports')}>Reportes</button></div>
+    {view === 'updates' ? <Updates api={api} /> : view === 'profiles' ? <Profiles api={api} /> : <Reports api={api} />}</>;
 }
 
-function Profiles({api}:{api:AdminApi}) {
-  const [items,setItems]=useState<RescuerPublicProfile[]>([]); const [error,setError]=useState(''); const [loading,setLoading]=useState(true); const [revision,setRevision]=useState(0);
-  useEffect(()=>{let alive=true;setLoading(true);setError('');api.listRescuerProfiles!('submitted',1).then(v=>{if(alive)setItems(v.items)}).catch(e=>{if(alive)setError(errorMessage(e))}).finally(()=>{if(alive)setLoading(false)});return()=>{alive=false}},[api,revision]);
-  async function decide(item:RescuerPublicProfile,decision:string){const feedback=decision==='published'?'':'Ajusta la información o la fotografía pública antes de reenviar.';try{await api.reviewRescuerProfile!(item,decision,feedback);setRevision(v=>v+1)}catch(e){setError(errorMessage(e))}}
-  if(error)return <div className="empty-state"><div className="notice" role="alert">{error}</div><button onClick={()=>setRevision(v=>v+1)}>Volver a intentar</button></div>;
-  if(loading)return <div className="empty-state" role="status">Cargando perfiles…</div>;
-  if(!items.length)return <div className="empty-state"><h2>Perfiles al día</h2><p>No hay perfiles públicos esperando revisión.</p></div>;
-  return <div className="moderation-list">{items.map(item=><article key={item.id}><div>{item.avatar_path&&<Avatar api={api} path={item.avatar_path}/>}<p className="eyebrow">{item.city}, {item.region} · versión {item.version}</p><h2>{item.display_name}</h2><p>{item.bio}</p><p>{[item.instagram_url,item.facebook_url].filter(Boolean).join(' · ')||'Sin enlaces públicos.'}</p></div><div><button onClick={()=>void decide(item,'published')}>Publicar perfil</button><button className="secondary" onClick={()=>void decide(item,'changes_requested')}>Pedir cambios</button></div></article>)}</div>;
+function Queue<T extends { id: string }>({ load, empty, render }: {
+  load: (page: number) => Promise<Page<T>>; empty: string;
+  render: (item: T, refresh: () => void) => ReactNode;
+}) {
+  const [page, setPage] = useState(1), [revision, setRevision] = useState(0);
+  const [data, setData] = useState<Page<T>>({ items: [], total: 0 });
+  const [loading, setLoading] = useState(true), [error, setError] = useState('');
+  useEffect(() => {
+    let alive = true; setLoading(true); setError('');
+    load(page).then(value => {
+      if (!alive) return;
+      if (!value.items.length && page > 1) { setPage(page - 1); return; }
+      setData(value);
+    }).catch(e => { if (alive) setError(errorMessage(e)); }).finally(() => { if (alive) setLoading(false); });
+    return () => { alive = false; };
+  }, [load, page, revision]);
+  const refresh = () => setRevision(v => v + 1);
+  return <>
+    <button onClick={refresh} disabled={loading}>Actualizar cola</button>
+    {error ? <div role="alert">{error}<button onClick={refresh}>Volver a intentar</button></div> : loading ? <p role="status">Cargando cola…</p> : <>
+      {!data.items.length ? <p>{empty}</p> : <div className="moderation-list">{data.items.map(item => <article key={item.id}>{render(item, refresh)}</article>)}</div>}
+      <nav aria-label="Páginas de moderación"><button disabled={page === 1} onClick={() => setPage(v => v - 1)}>Anterior</button><span>Página {page} · {data.total} registros</span><button disabled={page * 20 >= data.total} onClick={() => setPage(v => v + 1)}>Siguiente</button></nav>
+    </>}
+  </>;
 }
 
-function Avatar({api,path}:{api:AdminApi;path:string}) { const [url,setUrl]=useState(''); useEffect(()=>{let alive=true;api.profileAvatarUrl!(path).then(v=>{if(alive)setUrl(v)});return()=>{alive=false}},[api,path]); return url?<img src={url} alt="Foto pública propuesta" width="96" height="96"/>:<span role="status">Cargando foto…</span>; }
-
-function Updates({api}:{api:AdminApi}) {
-  const [items,setItems]=useState<CaseUpdate[]>([]); const [error,setError]=useState(''); const [loading,setLoading]=useState(true); const [revision,setRevision]=useState(0);
-  useEffect(()=>{let alive=true;setLoading(true);setError('');api.listCaseUpdates!('submitted',1).then(v=>{if(alive)setItems(v.items)}).catch(e=>{if(alive)setError(errorMessage(e))}).finally(()=>{if(alive)setLoading(false)});return()=>{alive=false}},[api,revision]);
-  async function decide(item:CaseUpdate,decision:string){const feedback=decision==='published'?'':'Revisa el texto o las fotografías antes de volver a enviarlo.';try{await api.reviewCaseUpdate!(item,decision,feedback);setRevision(v=>v+1)}catch(e){setError(errorMessage(e))}}
-  if(error)return <div className="empty-state"><div className="notice" role="alert">{error}</div><button onClick={()=>setRevision(v=>v+1)}>Volver a intentar</button></div>;
-  if(loading)return <div className="empty-state" role="status">Cargando avances…</div>;
-  if(!items.length)return <div className="empty-state"><h2>Avances al día</h2><p>No hay historias esperando revisión.</p></div>;
-  return <div className="moderation-list">{items.map(item=><article key={item.id}><div><p className="eyebrow">Caso {item.case_id}</p><h2>{item.body}</h2><p>{item.photos.length} fotografías · versión {item.version}</p></div><div><button onClick={()=>void decide(item,'published')}>Publicar</button><button className="secondary" onClick={()=>void decide(item,'changes_requested')}>Pedir cambios</button></div></article>)}</div>;
+function ReviewMedia({ paths, resolve, onReady }: { paths: string[]; resolve: (path: string) => Promise<string>; onReady: (ready: boolean) => void }) {
+  const [urls, setUrls] = useState<string[]>([]), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
+  const loaded = useRef(new Set<number>());
+  const key = JSON.stringify(paths);
+  useEffect(() => {
+    let alive = true; loaded.current.clear(); setUrls([]); setError(''); onReady(paths.length === 0);
+    Promise.all(paths.map(resolve)).then(value => { if (alive) setUrls(value); }).catch(() => { if (alive) setError('No pudimos cargar las fotografías.'); });
+    return () => { alive = false; };
+    // key represents the ordered immutable snapshot, independent of array identity.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key, resolve, attempt, onReady]);
+  if (error) return <div role="alert">{error}<button onClick={() => setAttempt(v => v + 1)}>Reintentar fotografías</button></div>;
+  return <div>{paths.length > 0 && urls.length === 0 && <p role="status">Cargando fotografías…</p>}{urls.map((url, index) => <a key={url} href={url} target="_blank" rel="noreferrer"><img src={url} alt={`Fotografía para revisión ${index + 1}`} width="160" onLoad={() => { loaded.current.add(index); if (loaded.current.size === paths.length) onReady(true); }} onError={() => { onReady(false); setError('No pudimos cargar las fotografías.'); }} /></a>)}</div>;
 }
 
-function Reports({api}:{api:AdminApi}) {
-  const [items,setItems]=useState<ContentReport[]>([]); const [error,setError]=useState(''); const [loading,setLoading]=useState(true); const [revision,setRevision]=useState(0);
-  useEffect(()=>{let alive=true;setLoading(true);setError('');api.listReports!('open',1).then(v=>{if(alive)setItems(v.items)}).catch(e=>{if(alive)setError(errorMessage(e))}).finally(()=>{if(alive)setLoading(false)});return()=>{alive=false}},[api,revision]);
-  async function resolve(item:ContentReport,status:string){try{await api.resolveReport!(item.id,status,status==='resolved'?'Contenido revisado y atendido.':'No se encontró una infracción.');setRevision(v=>v+1)}catch(e){setError(errorMessage(e))}}
-  if(error)return <div className="empty-state"><div className="notice" role="alert">{error}</div><button onClick={()=>setRevision(v=>v+1)}>Volver a intentar</button></div>;
-  if(loading)return <div className="empty-state" role="status">Cargando reportes…</div>;
-  if(!items.length)return <div className="empty-state"><h2>Reportes al día</h2><p>No hay alertas abiertas.</p></div>;
-  return <div className="moderation-list">{items.map(item=><article key={item.id}><div><p className="eyebrow">{item.target_type} · {item.reason}</p><h2>{item.target_id}</h2><p>{item.details||'Sin detalles adicionales.'}</p></div><div><button onClick={()=>void resolve(item,'resolved')}>Resolver</button><button className="secondary" onClick={()=>void resolve(item,'dismissed')}>Descartar</button></div></article>)}</div>;
+function Decision({ publishLabel, ready, decide, refresh }: { publishLabel: string; ready: boolean; decide: (decision: string, note: string) => Promise<unknown>; refresh: () => void }) {
+  const [note, setNote] = useState(''), [error, setError] = useState(''), [busy, setBusy] = useState(false);
+  const pending = useRef(false);
+  async function submit(decision: string) {
+    if (pending.current) return;
+    if (decision !== 'published' && !note.trim()) { setError('Explica qué debe corregirse.'); return; }
+    pending.current = true; setBusy(true); setError('');
+    try { await decide(decision, note.trim()); refresh(); } catch (e) { setError(errorMessage(e)); }
+    finally { pending.current = false; setBusy(false); }
+  }
+  return <div><label>Observaciones de revisión<textarea maxLength={1000} value={note} onChange={e => setNote(e.target.value)} /></label>{error && <p role="alert">{error}</p>}
+    <button disabled={busy || !ready} onClick={() => void submit('published')}>{publishLabel}</button><button disabled={busy} onClick={() => void submit('changes_requested')}>Pedir cambios</button><button disabled={busy} onClick={() => void submit('rejected')}>Rechazar</button>
+  </div>;
+}
+
+function UpdateReview({ item, api, refresh }: { item: CaseUpdate; api: AdminApi; refresh: () => void }) {
+  const [ready, setReady] = useState(item.photos.length === 0);
+  return <><div><p>Caso {item.case_id} · versión {item.version}</p><h2>{item.body}</h2><ReviewMedia paths={item.photos} resolve={api.caseUpdatePhotoUrl!} onReady={setReady} /></div><Decision publishLabel="Publicar" ready={ready} decide={(decision, note) => api.reviewCaseUpdate!(item, decision, note)} refresh={refresh} /></>;
+}
+function Updates({ api }: { api: AdminApi }) {
+  const load = useCallback((page: number) => api.listCaseUpdates!('submitted', page), [api]);
+  return <Queue load={load} empty="No hay historias esperando revisión." render={(item, refresh) => <UpdateReview key={`${item.id}:${item.version}`} item={item} api={api} refresh={refresh} />} />;
+}
+function ProfileReview({ item, api, refresh }: { item: RescuerPublicProfile; api: AdminApi; refresh: () => void }) {
+  const [ready, setReady] = useState(!item.avatar_path);
+  return <><div><p>{item.city}, {item.region} · versión {item.version}</p><h2>{item.display_name}</h2><p>{item.bio}</p><p>{[item.instagram_url, item.facebook_url].filter(Boolean).join(' · ') || 'Sin enlaces públicos.'}</p><ReviewMedia paths={item.avatar_path ? [item.avatar_path] : []} resolve={api.profileAvatarUrl!} onReady={setReady} /></div><Decision publishLabel="Publicar perfil" ready={ready} decide={(decision, note) => api.reviewRescuerProfile!(item, decision, note)} refresh={refresh} /></>;
+}
+function Profiles({ api }: { api: AdminApi }) {
+  const load = useCallback(async (page: number) => { const data = await api.listRescuerProfiles!('submitted', page); return { ...data, items: data.items.map(item => ({ ...item, id: item.owner_id })) }; }, [api]);
+  return <Queue load={load} empty="No hay perfiles públicos esperando revisión." render={(item, refresh) => <ProfileReview key={`${item.id}:${item.version}`} item={item} api={api} refresh={refresh} />} />;
+}
+function ReportReview({ item, api, refresh }: { item: ContentReport; api: AdminApi; refresh: () => void }) {
+  const [note, setNote] = useState(''), [error, setError] = useState(''), [busy, setBusy] = useState(false);
+  const pending = useRef(false);
+  async function resolve(status: string) {
+    if (pending.current) return;
+    if (!note.trim()) { setError('Describe la revisión y la acción realizada.'); return; }
+    pending.current = true; setBusy(true); setError('');
+    try { await api.resolveReport!(item.id, status, note.trim()); refresh(); } catch (e) { setError(errorMessage(e)); }
+    finally { pending.current = false; setBusy(false); }
+  }
+  const types: Record<string, string> = { adoption: 'Adopción', case: 'Caso', rescuer: 'Rescatista' };
+  const reasons: Record<string, string> = { incorrect: 'Información incorrecta', unsafe: 'Riesgo', fraud: 'Posible fraude', privacy: 'Privacidad', other: 'Otro' };
+  return <><div><p>{types[item.target_type]} · {reasons[item.reason]}</p><h2>{item.target_id}</h2><p>{item.details || 'Sin detalles adicionales.'}</p><p>{item.resolution}</p></div><div><label>Resolución<textarea maxLength={1000} value={note} onChange={e => setNote(e.target.value)} /></label>{error && <p role="alert">{error}</p>}<button disabled={busy} onClick={() => void resolve('resolved')}>Resolver</button><button disabled={busy} onClick={() => void resolve('dismissed')}>Descartar</button></div></>;
+}
+function Reports({ api }: { api: AdminApi }) {
+  const [status, setStatus] = useState('open');
+  const load = useCallback((page: number) => api.listReports!(status, page), [api, status]);
+  return <><label>Estado del reporte<select value={status} onChange={e => setStatus(e.target.value)}><option value="open">Abiertos</option><option value="reviewing">En revisión</option><option value="resolved">Resueltos</option><option value="dismissed">Descartados</option></select></label><Queue key={status} load={load} empty="No hay reportes en este estado." render={(item, refresh) => <ReportReview item={item} api={api} refresh={refresh} />} /></>;
 }

@@ -41,7 +41,7 @@ export type Contribution = {
 };
 export type ContentReport = { id:string; target_type:'adoption'|'case'|'rescuer'; target_id:string; reason:string; details:string; status:string; resolution:string; created_at:string; updated_at:string };
 export type CaseUpdate = { id:string; case_id:string; owner_id:string; body:string; photos:string[]; status:string; version:number; review_feedback:string; submitted_at:string|null; created_at:string };
-export type RescuerPublicProfile = { id:string; owner_id:string; display_name:string; bio:string; city:string; region:string; instagram_url:string; facebook_url:string; avatar_path:string; status:string; version:number; review_feedback:string; submitted_at:string|null; updated_at:string };
+export type RescuerPublicProfile = { owner_id:string; display_name:string; bio:string; city:string; region:string; instagram_url:string; facebook_url:string; avatar_path:string; status:string; version:number; review_feedback:string; submitted_at:string|null; updated_at:string };
 export const adoptionStatus: Record<string, string> = { submitted: 'En revisión', published: 'Publicadas', changes_requested: 'Con correcciones', rejected: 'No aprobadas', adopted: 'Adopciones realizadas', archived: 'Retiradas', draft: 'Borradores' };
 export type AdminApi = {
   session: () => Promise<boolean>;
@@ -82,7 +82,7 @@ export function createAdminApi(client: SupabaseClient): AdminApi {
     async reviewCaseUpdate(update,decision,feedback) { const {data,error}=await client.rpc('dopmi_review_case_update',{update_id:update.id,expected_version:update.version,decision,feedback}); if(error) throw error; return data; },
     async caseUpdatePhotoUrl(path) { const {data,error}=await client.storage.from('dopmi-case-update-media').createSignedUrl(path,60); if(error) throw error; return data.signedUrl; },
     async listRescuerProfiles(status,page) { const {data,error}=await client.rpc('dopmi_admin_rescuer_profiles',{status_filter:status,page_number:page}); if(error) throw error; return data; },
-    async reviewRescuerProfile(profile,decision,feedback) { const {data,error}=await client.rpc('dopmi_review_rescuer_profile',{profile_id:profile.id,expected_version:profile.version,decision,feedback}); if(error) throw error; return data; },
+    async reviewRescuerProfile(profile,decision,feedback) { const {data,error}=await client.rpc('dopmi_review_rescuer_profile',{profile_owner:profile.owner_id,expected_version:profile.version,decision,feedback}); if(error) throw error; return data; },
     async profileAvatarUrl(path) { const {data,error}=await client.storage.from('dopmi-rescuer-profile-media').createSignedUrl(path,60); if(error) throw error; return data.signedUrl; },
     async session() { const { data, error } = await client.auth.getSession(); if (error) throw error; return !!data.session; },
     watch(onChange) { const { data } = client.auth.onAuthStateChange(() => onChange()); return () => data.subscription.unsubscribe(); },

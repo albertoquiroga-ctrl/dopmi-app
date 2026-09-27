@@ -1,5 +1,7 @@
 # Dopmi — matriz de paridad
 
+> Decisión vigente 27/9/2026: el titular admite las pantallas actuales para continuar; la fidelidad visual queda aplazada, sin aceptación atribuida a Irlanda. H9 autorizado: aceptación integrada y correcciones, con revisión final agrupada en Internal Testing. Ver [H9](h9-acceptance.md). Esta decisión supersede los bloqueos visuales históricos inferiores.
+
 ## Contrato vigente — 26/9/2026
 
 H8 comprende todos los recorridos siguientes. La tabla histórica de rutas más abajo localiza pantallas, pero sus asignaciones anteriores a H9 quedan supersedidas por `h8-execution.md`. Estado por defecto de cada fila: **I pendiente / T pendiente / V pendiente** (implementación, comprobación técnica, aceptación visual). Ninguna fila está aceptada por Irlanda.
