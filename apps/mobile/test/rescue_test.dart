@@ -92,6 +92,27 @@ class FakeRescue extends RescueRepository {
         caseId == null ? 1 : 2,
       );
   @override
+  Future<DataPage<RescueRecord>> mine(
+    String kind,
+    int page, {
+    String? parent,
+  }) async {
+    if (kind != 'case') return const DataPage([], 0);
+    return DataPage([
+      caseRecord,
+      RescueRecord({
+        'id': 'case-correction',
+        'owner_id': 'rescuer-one',
+        'kind': 'case',
+        'status': 'changes_requested',
+        'version': 2,
+        'feedback': 'Aclara la ubicación aproximada.',
+        'public_data': {'pet_name': 'Nina'},
+      }),
+    ], 2);
+  }
+
+  @override
   Future<Json> detail(String id) async => {
     'record': {
       'id': id,
@@ -305,5 +326,38 @@ void main() {
     expect(find.text('Nina'), findsOneWidget);
     expect(find.text('2 sin leer'), findsOneWidget);
     expect(find.text('Actividad reciente'), findsOneWidget);
+  });
+
+  testWidgets('my cases exposes status-specific actions and feedback', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(390, 1500);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final identity = FakeIdentityRepository()
+      ..user = const Identity('one', 'ana@example.test', verified: true);
+    final container = ProviderContainer(
+      overrides: [
+        identityRepositoryProvider.overrideWithValue(identity),
+        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+        rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+        routerInitialLocationProvider.overrideWithValue('/my-cases'),
+      ],
+    );
+    addTearDown(() async {
+      container.dispose();
+      await identity.changes.close();
+    });
+    await tester.pumpWidget(
+      UncontrolledProviderScope(container: container, child: const DopmiApp()),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Choco'), findsOneWidget);
+    expect(find.text('Administrar caso'), findsOneWidget);
+    expect(find.text('Nina'), findsOneWidget);
+    expect(find.text('Necesita correcciones'), findsOneWidget);
+    expect(find.text('Aclara la ubicación aproximada.'), findsOneWidget);
+    expect(find.text('Corregir publicación'), findsOneWidget);
   });
 }

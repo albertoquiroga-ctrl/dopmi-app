@@ -268,28 +268,100 @@ class _RescueListState extends ConsumerState<RescueList> {
             'Aquí aparecerán tus borradores y las respuestas del equipo.',
           ),
         for (final r in data.items)
-          Card(
-            color: Colors.white,
-            child: ListTile(
-              contentPadding: const EdgeInsets.all(16),
-              title: Text(r.title.isEmpty ? 'Borrador sin título' : r.title),
-              subtitle: Text(rescueStatuses[r.status]!),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () async {
-                await context.push('/rescue/${r.id}');
-                refresh();
-              },
-            ),
+          _OwnedRescueCard(record: r, refresh: refresh),
+        if (data.total > 20)
+          PageControls(
+            page: page,
+            total: data.total,
+            size: 20,
+            change: (p) => setState(() => page = p),
           ),
-        PageControls(
-          page: page,
-          total: data.total,
-          size: 20,
-          change: (p) => setState(() => page = p),
-        ),
       ],
     ),
   );
+}
+
+class _OwnedRescueCard extends StatelessWidget {
+  const _OwnedRescueCard({required this.record, required this.refresh});
+  final RescueRecord record;
+  final VoidCallback refresh;
+
+  @override
+  Widget build(BuildContext context) {
+    final needsAction = [
+      'draft',
+      'changes_requested',
+      'rejected',
+    ].contains(record.status);
+    final action = switch (record.status) {
+      'draft' => 'Continuar publicación',
+      'changes_requested' || 'rejected' => 'Corregir publicación',
+      'submitted' => 'Ver envío',
+      'approved' => 'Administrar caso',
+      'closed' => 'Ver caso cerrado',
+      _ => 'Ver caso',
+    };
+    return Card(
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: needsAction
+                      ? const Color(0xffffe9e7)
+                      : const Color(0xffeee7fc),
+                  child: Icon(
+                    needsAction ? Icons.edit_note : Icons.pets_outlined,
+                    color: needsAction ? Colors.red : purple,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        record.title.isEmpty
+                            ? 'Borrador sin título'
+                            : record.title,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      Text(rescueStatuses[record.status] ?? record.status),
+                    ],
+                  ),
+                ),
+                if (record.data['urgent'] == true)
+                  const Chip(label: Text('Urgente')),
+              ],
+            ),
+            if ((record.data['feedback'] as String? ?? '').isNotEmpty) ...[
+              const SizedBox(height: 10),
+              Notice(record.data['feedback'] as String, isError: needsAction),
+            ],
+            const SizedBox(height: 10),
+            FilledButton.tonal(
+              onPressed: () async {
+                await context.push('/rescue/${record.id}');
+                refresh();
+              },
+              child: Text(action),
+            ),
+            if (record.kind == 'case' && record.status == 'approved')
+              TextButton.icon(
+                onPressed: () =>
+                    context.push('/my-adoptions/new?case=${record.id}'),
+                icon: const Icon(Icons.home_outlined),
+                label: const Text('Crear publicación de adopción vinculada'),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class RescueEditorScreen extends ConsumerStatefulWidget {
@@ -1440,13 +1512,20 @@ class MyRescueCasesScreen extends StatelessWidget {
     index: 2,
     back: false,
     children: [
-      const Heading(
-        'Mis casos',
-        'Da seguimiento a tus rescates, gastos y correcciones.',
-      ),
-      ActionButton(
-        'Nuevo caso',
-        onPressed: () => context.push('/rescue/new?kind=case'),
+      Row(
+        children: [
+          Expanded(
+            child: Heading(
+              'Mis casos',
+              'Da seguimiento a borradores, revisiones, correcciones y casos publicados.',
+            ),
+          ),
+          IconButton.filled(
+            tooltip: 'Nuevo caso',
+            onPressed: () => context.push('/rescue/new?kind=case'),
+            icon: const Icon(Icons.add),
+          ),
+        ],
       ),
       const SizedBox(height: 20),
       const RescueList(kind: 'case'),
