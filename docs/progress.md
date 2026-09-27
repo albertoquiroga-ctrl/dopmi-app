@@ -1,5 +1,12 @@
 # Dopmi — registro de avance
 
+## H8.5 Apoyar y detalle de caso — 26 de septiembre de 2026
+
+- Apoyar reproduce la estructura vigente de Irlanda: encabezado con Mis match/notificaciones, “Descubre casos”, carrusel de progreso circular, “Ver todos” y entrada destacada a Guardián. Sólo muestra casos con gastos aprobados y capacidad restante; el vacío conduce a Adoptar.
+- El detalle usa ubicación pública aproximada, responsable enlazado, recibido/objetivo, categorías, historia, gastos desplegables, galería pública, Guardar/Compartir/Reportar y avances moderados. Cada gasto aporta únicamente por el flujo real; la interfaz no anticipa éxito.
+- La migración local `20260927030310_public_case_progress.sql`, remota `20260927025431`, repone en la RPC pública los agregados de asignación/transferencia y añade el objetivo calculado exclusivamente con gastos públicos aprobados. No expone donantes ni identificadores de Stripe y conserva firma/build 253.
+- PostgreSQL: 232 pruebas aprobadas. Flutter: análisis limpio, suite completa de 75 pruebas y generación de capturas aprobadas. La inspección a 377 × 852 corrigió monto truncado, paginación innecesaria y ausencia de Mis match. Referencia reconsultada al cierre: `a246fa6f42ec517aae264d7fbd2358d647c4f840`, sin cambio. Aceptación instalada de Irlanda permanece pendiente.
+
 ## H8.5 perfil público e impacto asignado — 26 de septiembre de 2026
 
 - El perfil público del rescatista ya obtiene un resumen único del servidor y separa **Actividad, En adopción y Casos**. Sólo agrega publicaciones y avances aprobados; conserva Guardar, Compartir, Reportar y el acceso a conversación sobre una publicación pública.

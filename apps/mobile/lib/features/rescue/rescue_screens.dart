@@ -780,143 +780,471 @@ class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
   Widget build(BuildContext context) => CommunityFrame(
     index: widget.caseId == null ? 1 : null,
     back: widget.caseId != null,
+    showMatches: widget.caseId == null,
     children: [
-      Heading(
-        widget.caseId == null
-            ? 'Historias que\nnos unen.'
-            : 'Seguimiento del caso.',
-        'Conoce el trabajo y los gastos revisados por el equipo Dopmi.',
-        eyebrow: 'RESCATES',
-      ),
-      const Notice(
-        'Las aportaciones de prueba se dirigen a gastos aprobados. El progreso del reembolso refleja el neto destinado al rescatista.',
-      ),
       LiveSection<DataPage<RescueRecord>>(
         key: ValueKey('${widget.caseId}:$page'),
         load: () => ref
             .read(rescueRepositoryProvider)
             .catalog(page, caseId: widget.caseId),
-        builder: (data, refresh) => Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (error != null) Notice(error!, isError: true),
-            if (data.items.isEmpty)
-              const Notice('Todavía no hay contenido aprobado disponible.'),
-            for (final r in data.items)
-              Card(
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      for (final path
-                          in (r.publicData['photos'] as List? ?? []))
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: RescuePublicPhoto(path as String),
-                        ),
-                      Text(
-                        r.title,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      Text(
-                        '${r.data['rescuer_name']} · ${r.status == 'closed'
-                            ? 'Caso cerrado'
-                            : r.kind == 'case'
-                            ? 'Caso aprobado'
-                            : 'Gasto aprobado'}',
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        (r.publicData['story'] ??
-                                r.publicData['description'] ??
-                                '')
-                            as String,
-                      ),
-                      if (r.kind == 'case')
-                        Text(
-                          '${r.publicData['city']}, ${r.publicData['state']}\nNecesidad: ${r.publicData['need']}',
-                        ),
-                      if (r.kind == 'expense')
-                        Text(
-                          'Monto reembolsable: ${pesos(r.data['reimbursable_cents'] as int)}${r.data['urgent'] == true ? ' · Urgencia aprobada' : ''}',
-                        ),
-                      Text(
-                        'Neto asignado: ${pesos(r.data['funded_cents'] as int? ?? 0)} · Transferido a Stripe: ${pesos(r.data['transferred_cents'] as int? ?? 0)}',
-                      ),
-                      if (widget.caseId == null)
-                        TextButton(
-                          onPressed: () =>
-                              context.push('/rescue-cases/${r.id}'),
-                          child: const Text('Ver seguimiento'),
-                        ),
-                      if (widget.caseId != null && r.kind == 'case')
-                        Row(
-                          children: [
-                            Expanded(
-                              child: OutlinedButton.icon(
-                                onPressed: busy
-                                    ? null
-                                    : () => toggleCase(r, refresh),
-                                icon: Icon(
-                                  (savedOverride ?? r.saved)
-                                      ? Icons.favorite
-                                      : Icons.favorite_border,
-                                ),
-                                label: Text(
-                                  (savedOverride ?? r.saved)
-                                      ? 'Caso guardado'
-                                      : 'Guardar caso',
-                                ),
-                              ),
-                            ),
-                            IconButton(
-                              tooltip: 'Compartir',
-                              onPressed: () => copyForSharing(
-                                context,
-                                'Conoce el caso ${r.title} en Dopmi. Caso ${r.id}',
-                              ),
-                              icon: const Icon(Icons.ios_share_outlined),
-                            ),
-                            IconButton(
-                              tooltip: 'Reportar',
-                              onPressed: busy ? null : () => reportCase(r),
-                              icon: const Icon(Icons.flag_outlined),
-                            ),
-                          ],
-                        ),
-                      if (widget.caseId != null && r.kind == 'case') ...[
-                        if (r.data['owner_id'] ==
-                            ref.read(communityRepositoryProvider).userId)
-                          TextButton.icon(
-                            onPressed: () =>
-                                context.push('/rescue-cases/${r.id}/updates'),
-                            icon: const Icon(Icons.edit_note_outlined),
-                            label: const Text('Administrar avances'),
-                          ),
-                        PublicCaseUpdates(r.id),
-                      ],
-                      if (r.kind == 'expense' && r.status == 'approved')
-                        TextButton(
-                          onPressed: () => context.push('/contribute/${r.id}'),
-                          child: const Text('Aportar a este gasto'),
-                        ),
-                    ],
-                  ),
-                ),
+        builder: (data, refresh) => widget.caseId == null
+            ? _SupportHome(
+                data: data,
+                page: page,
+                error: error,
+                changePage: (value) => setState(() => page = value),
+              )
+            : _PublicCaseDetail(
+                records: data.items,
+                busy: busy,
+                error: error,
+                savedOverride: savedOverride,
+                toggle: (record) => toggleCase(record, refresh),
+                report: reportCase,
               ),
-            PageControls(
-              page: page,
-              total: data.total,
-              size: 20,
-              change: (p) => setState(() => page = p),
-            ),
-          ],
-        ),
       ),
     ],
   );
+}
+
+class _SupportHome extends StatelessWidget {
+  const _SupportHome({
+    required this.data,
+    required this.page,
+    required this.error,
+    required this.changePage,
+  });
+  final DataPage<RescueRecord> data;
+  final int page;
+  final String? error;
+  final ValueChanged<int> changePage;
+
+  @override
+  Widget build(BuildContext context) {
+    final eligible = data.items
+        .where(
+          (item) => item.targetCents > 0 && item.fundedCents < item.targetCents,
+        )
+        .toList();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Descubre casos',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+            ),
+            TextButton(
+              onPressed: eligible.isEmpty
+                  ? null
+                  : () => context.push('/rescue-cases/${eligible.first.id}'),
+              child: const Text('Ver todos'),
+            ),
+          ],
+        ),
+        if (error != null) Notice(error!, isError: true),
+        if (eligible.isEmpty)
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                children: [
+                  const Icon(Icons.volunteer_activism_outlined, size: 40),
+                  const SizedBox(height: 12),
+                  Text(
+                    'No hay casos para apoyar',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const Text('Por ahora no hay gastos aprobados disponibles.'),
+                  TextButton(
+                    onPressed: () => context.go('/adoptions'),
+                    child: const Text('Ir a Adoptar'),
+                  ),
+                ],
+              ),
+            ),
+          )
+        else
+          SizedBox(
+            height: 138,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: eligible.length,
+              separatorBuilder: (_, _) => const SizedBox(width: 16),
+              itemBuilder: (_, index) => _CaseRing(eligible[index]),
+            ),
+          ),
+        if (data.total > 20)
+          PageControls(
+            page: page,
+            total: data.total,
+            size: 20,
+            change: changePage,
+          ),
+        const SizedBox(height: 20),
+        Text(
+          'Sé un Guardián',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        const Text(
+          'Apoya cada mes gastos reales, pagados y aprobados de rescatistas verificados.',
+        ),
+        const SizedBox(height: 12),
+        InkWell(
+          borderRadius: BorderRadius.circular(24),
+          onTap: () => context.push('/guardian'),
+          child: Ink(
+            padding: const EdgeInsets.all(22),
+            decoration: BoxDecoration(
+              color: purple,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Conviértete en Guardián',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'Desde \$50 MXN al mes · Sigue tu impacto · Cancela cuando quieras',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CaseRing extends ConsumerWidget {
+  const _CaseRing(this.record);
+  final RescueRecord record;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final photos = record.publicData['photos'] as List? ?? const [];
+    final ratio = record.targetCents <= 0
+        ? 0.0
+        : (record.fundedCents / record.targetCents).clamp(0.0, 1.0);
+    return Semantics(
+      button: true,
+      label:
+          '${record.title}, ${pesos(record.fundedCents)} de ${pesos(record.targetCents)}',
+      child: InkWell(
+        onTap: () => context.push('/rescue-cases/${record.id}'),
+        borderRadius: BorderRadius.circular(16),
+        child: SizedBox(
+          width: 92,
+          child: Column(
+            children: [
+              SizedBox(
+                width: 76,
+                height: 76,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    CircularProgressIndicator(
+                      value: ratio,
+                      strokeWidth: 4,
+                      backgroundColor: const Color(0xffe7e2da),
+                      color: yellow,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(7),
+                      child: ClipOval(
+                        child: photos.isEmpty
+                            ? const ColoredBox(
+                                color: Color(0xffeee7fc),
+                                child: Icon(Icons.pets_outlined),
+                              )
+                            : FutureBuilder<String>(
+                                future: ref
+                                    .read(rescueRepositoryProvider)
+                                    .fileUrl(photos.first as String),
+                                builder: (_, snapshot) => snapshot.hasData
+                                    ? Image.network(
+                                        snapshot.data!,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : const ColoredBox(
+                                        color: Color(0xffeee7fc),
+                                      ),
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                record.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontWeight: FontWeight.w800),
+              ),
+              Text(
+                '${_compactPesos(record.fundedCents)} / ${_compactPesos(record.targetCents)}',
+                maxLines: 1,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+String _compactPesos(int cents) => cents % 100 == 0
+    ? '\$${cents ~/ 100}'
+    : '\$${(cents / 100).toStringAsFixed(2)}';
+
+class _PublicCaseDetail extends StatelessWidget {
+  const _PublicCaseDetail({
+    required this.records,
+    required this.busy,
+    required this.error,
+    required this.savedOverride,
+    required this.toggle,
+    required this.report,
+  });
+  final List<RescueRecord> records;
+  final bool busy;
+  final String? error;
+  final bool? savedOverride;
+  final ValueChanged<RescueRecord> toggle;
+  final ValueChanged<RescueRecord> report;
+
+  @override
+  Widget build(BuildContext context) {
+    if (records.isEmpty) {
+      return const Notice('Este caso ya no está disponible.');
+    }
+    final record = records.firstWhere(
+      (item) => item.kind == 'case',
+      orElse: () => records.first,
+    );
+    final expenses = records.where((item) => item.kind == 'expense').toList();
+    final photos = record.publicData['photos'] as List? ?? const [];
+    final categories = expenses
+        .map(
+          (item) =>
+              (item.publicData['category'] ??
+                      item.publicData['type'] ??
+                      item.title)
+                  .toString(),
+        )
+        .toSet()
+        .toList();
+    final location = [
+      record.publicData['city'],
+      record.publicData['state'],
+    ].whereType<String>().where((value) => value.isNotEmpty).join(', ');
+    final ratio = record.targetCents <= 0
+        ? 0.0
+        : (record.fundedCents / record.targetCents).clamp(0.0, 1.0);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (photos.isNotEmpty) RescuePublicPhoto(photos.first as String),
+        const SizedBox(height: 16),
+        Text(record.title, style: Theme.of(context).textTheme.headlineMedium),
+        if (location.isNotEmpty) Text(location),
+        TextButton.icon(
+          onPressed: () => context.push('/people/${record.data['owner_id']}'),
+          icon: const Icon(Icons.verified_outlined),
+          label: Text(
+            record.data['rescuer_name'] as String? ?? 'Rescatista verificado',
+          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(child: _FundingStat('Recibido', record.fundedCents)),
+            Expanded(child: _FundingStat('Objetivo', record.targetCents)),
+          ],
+        ),
+        const SizedBox(height: 8),
+        LinearProgressIndicator(
+          value: ratio,
+          minHeight: 8,
+          borderRadius: BorderRadius.circular(8),
+          backgroundColor: const Color(0xffe7e2da),
+          color: yellow,
+        ),
+        if (categories.isNotEmpty) ...[
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final category in categories) Chip(label: Text(category)),
+            ],
+          ),
+        ],
+        const SizedBox(height: 20),
+        Text('Mi historia', style: Theme.of(context).textTheme.titleLarge),
+        Text(
+          (record.publicData['story'] ?? record.publicData['description'] ?? '')
+              as String,
+        ),
+        const SizedBox(height: 20),
+        Text(
+          'Ayúdame a recuperar',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        if (expenses.isEmpty)
+          const Notice('Este caso no tiene gastos disponibles para aportar.'),
+        for (final expense in expenses) _PublicExpenseCard(expense),
+        if (photos.length > 1) ...[
+          const SizedBox(height: 20),
+          Text('Galería', style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 10),
+          SizedBox(
+            height: 150,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: photos.length,
+              separatorBuilder: (_, _) => const SizedBox(width: 10),
+              itemBuilder: (_, index) => SizedBox(
+                width: 190,
+                child: RescuePublicPhoto(photos[index] as String),
+              ),
+            ),
+          ),
+        ],
+        if (error != null) Notice(error!, isError: true),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: busy ? null : () => toggle(record),
+                icon: Icon(
+                  (savedOverride ?? record.saved)
+                      ? Icons.favorite
+                      : Icons.favorite_border,
+                ),
+                label: Text(
+                  (savedOverride ?? record.saved)
+                      ? 'Caso guardado'
+                      : 'Guardar caso',
+                ),
+              ),
+            ),
+            IconButton(
+              tooltip: 'Compartir',
+              onPressed: () => copyForSharing(
+                context,
+                'Conoce el caso ${record.title} en Dopmi. Caso ${record.id}',
+              ),
+              icon: const Icon(Icons.ios_share_outlined),
+            ),
+            IconButton(
+              tooltip: 'Reportar',
+              onPressed: busy ? null : () => report(record),
+              icon: const Icon(Icons.flag_outlined),
+            ),
+          ],
+        ),
+        if (record.data['owner_id'] != null) PublicCaseUpdates(record.id),
+      ],
+    );
+  }
+}
+
+class _FundingStat extends StatelessWidget {
+  const _FundingStat(this.label, this.cents);
+  final String label;
+  final int cents;
+  @override
+  Widget build(BuildContext context) => Column(
+    children: [
+      Text(pesos(cents), style: Theme.of(context).textTheme.titleMedium),
+      Text(label),
+    ],
+  );
+}
+
+class _PublicExpenseCard extends StatefulWidget {
+  const _PublicExpenseCard(this.record);
+  final RescueRecord record;
+  @override
+  State<_PublicExpenseCard> createState() => _PublicExpenseCardState();
+}
+
+class _PublicExpenseCardState extends State<_PublicExpenseCard> {
+  bool open = false;
+  @override
+  Widget build(BuildContext context) {
+    final record = widget.record;
+    final ratio = record.targetCents <= 0
+        ? 0.0
+        : (record.fundedCents / record.targetCents).clamp(0.0, 1.0);
+    final remaining = (record.targetCents - record.fundedCents).clamp(
+      0,
+      record.targetCents,
+    );
+    final photos = record.publicData['photos'] as List? ?? const [];
+    return Card(
+      child: Column(
+        children: [
+          ListTile(
+            onTap: () => setState(() => open = !open),
+            leading: CircleAvatar(
+              child: Icon(
+                record.data['urgent'] == true
+                    ? Icons.priority_high
+                    : Icons.receipt_long_outlined,
+              ),
+            ),
+            title: Text(record.title),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                LinearProgressIndicator(value: ratio),
+                Text(
+                  '${pesos(record.fundedCents)} asignados · ${pesos(remaining)} faltantes',
+                ),
+              ],
+            ),
+            trailing: Icon(open ? Icons.expand_less : Icons.expand_more),
+          ),
+          if (open) ...[
+            if (photos.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: RescuePublicPhoto(photos.first as String),
+              ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              child: SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: remaining == 0
+                      ? null
+                      : () => context.push('/contribute/${record.id}'),
+                  icon: const Icon(Icons.volunteer_activism_outlined),
+                  label: Text(
+                    remaining == 0 ? 'Gasto cubierto' : 'Aportar a este gasto',
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
 }
 
 class RescuePublicPhoto extends ConsumerWidget {

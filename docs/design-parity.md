@@ -45,7 +45,7 @@ Evidencia por fila se anexará al completar cada ciclo con SHA de código/diseñ
 | PUBLISH | Parcial | Parcial | No | Selector inicial implementado; formularios por pasos y reanudación siguen abiertos. |
 | DISC, FILTER | Sí | Sí | No | Mazo, acciones, filtros, ubicación aproximada, paginación y casos elegibles cada dos adopciones conectados; falta revisión instalada. |
 | PET, MATCH, SAVED, CHAT | Sí | Sí | No | Detalle/galería, favorito con rollback, contacto confirmado, búsqueda, guardados tipados/tombstones, acciones de casos/perfiles y mensajería idempotente cubiertos; falta comparación instalada. |
-| SUPPORT, CASE, STORY, PUBLIC, IMPACT | Parcial | Parcial | No | Casos/avances moderados, perfil público con pestañas e impacto propio asignado conectados; falta la nueva composición de Apoyar, detalle visual completo y revisión instalada. |
+| SUPPORT, CASE, STORY, PUBLIC, IMPACT | Sí | Sí | No | Apoyar, progreso/gastos reales, galería pública, avances moderados, perfil con pestañas e impacto propio asignado están conectados y tienen capturas Flutter; falta revisión instalada. |
 | RH, RC, VERIFY, EVIDENCE, RP | No | No | No | H8.6 pendiente. |
 | PAYMENT, GUARD, REPORT, LEGAL | Parcial | Parcial | No | Servicios previos reutilizables; falta paridad completa y estados del plan vigente. |
 

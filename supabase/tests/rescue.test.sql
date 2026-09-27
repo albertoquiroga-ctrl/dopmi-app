@@ -99,6 +99,8 @@ set local role anon;
 select set_config('request.jwt.claim.sub','',true);
 select is((dopmi_rescue_public()->>'total')::int,1,'only approved case in public catalog');
 select is((dopmi_rescue_public('61000000-0000-4000-8000-000000000002')->>'total')::int,2,'case detail includes approved expense');
+select is((dopmi_rescue_public()->'items'->0->>'target_cents')::bigint,24000::bigint,'case goal totals approved expenses');
+select is((dopmi_rescue_public()->'items'->0->>'funded_cents')::bigint,0::bigint,'case progress totals allocated contributions');
 select ok(dopmi_rescue_public('61000000-0000-4000-8000-000000000002')::text !~ 'Nombre legal|8188888888|F-123|receipt_reference|private_data|62000000-0000-4000-8000-000000000004','public response omits PII and receipts');
 select is(dopmi_rescue_file_access('60000000-0000-4000-8000-000000000001/61000000-0000-4000-8000-000000000002/62000000-0000-4000-8000-000000000003.jpg'),true,'approved case photo publicly readable');
 select is(dopmi_rescue_file_access('60000000-0000-4000-8000-000000000001/61000000-0000-4000-8000-000000000003/62000000-0000-4000-8000-000000000004.pdf'),false,'approved expense receipt remains private');

@@ -9,11 +9,15 @@ import 'package:dopmi_mobile/core/ui.dart';
 import 'package:dopmi_mobile/features/identity/onboarding_screen.dart';
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
+import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../test/fake_identity_repository.dart';
 import '../test/community_test.dart' show FakeCommunity;
+import '../test/rescue_test.dart' show FakeCaseUpdates, FakeRescue;
 
 import 'design_gallery.dart';
 
@@ -151,6 +155,44 @@ void main() {
       await tester.pumpWidget(const SizedBox());
       container.dispose();
       await repo.changes.close();
+    }
+    for (final route in [
+      ('support-home', '/rescue-cases'),
+      ('case-detail', '/rescue-cases/case-one'),
+    ]) {
+      final identity = FakeIdentityRepository()
+        ..user = const Identity(
+          'capture-user',
+          'captura@example.test',
+          verified: true,
+        );
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+          caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
+          routerInitialLocationProvider.overrideWithValue(route.$2),
+        ],
+      );
+      final key = GlobalKey();
+      await tester.pumpWidget(
+        RepaintBoundary(
+          key: key,
+          child: UncontrolledProviderScope(
+            container: container,
+            child: const DopmiApp(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      await tester.runAsync(
+        () => saveCapture(key, '${output.path}/${route.$1}.png'),
+      );
+      await tester.pumpWidget(const SizedBox());
+      container.dispose();
+      await identity.changes.close();
     }
     debugDisableShadows = true;
   });
