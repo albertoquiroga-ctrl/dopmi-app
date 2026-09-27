@@ -86,7 +86,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           children: [
             if (profile == null && error == null)
               const Center(child: CircularProgressIndicator()),
-            if (error != null) ...[
+            if (error != null && profile == null) ...[
               Notice(error!, isError: true),
               TextButton(
                 onPressed: load,
@@ -162,6 +162,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
                 const SizedBox(height: 20),
                 const SavedPetsRow(),
+                ProfileRow(
+                  title: 'Mi impacto',
+                  subtitle: 'Avances de casos que apoyaste',
+                  icon: Icons.auto_stories_outlined,
+                  path: '/impact',
+                ),
               ],
               ProfileRow(
                 title: 'Configuración',
@@ -169,6 +175,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 path: '/settings',
               ),
               const SizedBox(height: 18),
+              if (error != null) Notice(error!, isError: true),
               DecoratedBox(
                 decoration: BoxDecoration(
                   border: Border.all(color: const Color(0xffe8e6e2)),

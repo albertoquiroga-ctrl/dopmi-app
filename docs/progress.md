@@ -1,5 +1,12 @@
 # Dopmi — registro de avance
 
+## H8.5 perfil público e impacto asignado — 26 de septiembre de 2026
+
+- El perfil público del rescatista ya obtiene un resumen único del servidor y separa **Actividad, En adopción y Casos**. Sólo agrega publicaciones y avances aprobados; conserva Guardar, Compartir, Reportar y el acceso a conversación sobre una publicación pública.
+- “Mi impacto” relaciona únicamente las aportaciones confirmadas y efectivamente asignadas de la persona autenticada con los avances públicos de esos casos. No devuelve identidades de otros donantes, datos de Stripe, documentos ni información privada del rescatista.
+- Migración local `20260927024050_public_rescuer_and_impact.sql`, remota `20260927024547`. Mantiene las RPC anteriores y el build 253 compatibles. En remoto se comprobó acceso anónimo al perfil público, denegación anónima de impacto y acceso autenticado sólo al impacto propio.
+- PostgreSQL local completo: 230 pruebas aprobadas. Flutter: análisis limpio y 23 pruebas dirigidas aprobadas, incluidos pestañas públicas, monto asignado/avances y cambio de experiencia. Falta la nueva composición de Apoyar, comparación visual instalada y aceptación de Irlanda; H8.5 continúa abierto.
+
 ## H8.5 avances moderados de casos — 26 de septiembre de 2026
 
 - Los casos aprobados/cerrados admiten avances independientes con borrador recuperable, hasta seis fotos, envío, correcciones/rechazo y publicación administrativa. La edición no sustituye un snapshot público: un avance publicado se archiva o se complementa con otro registro.

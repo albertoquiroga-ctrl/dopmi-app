@@ -113,6 +113,7 @@ class IdentityController extends ChangeNotifier {
         '/publish',
         '/terms',
         '/saved',
+        '/impact',
         '/my-adoptions',
         '/messages',
         '/notifications',
@@ -150,6 +151,7 @@ class IdentityController extends ChangeNotifier {
         path == '/rescue-file' ||
         path.startsWith('/rescue/') ||
         path == '/saved' ||
+        path == '/impact' ||
         path.startsWith('/my-adoptions') ||
         path.startsWith('/messages') ||
         path == '/notifications' ||

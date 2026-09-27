@@ -88,6 +88,7 @@ abstract class CommunityRepository {
   Future<void> favoriteRescuer(String id, bool saved);
   Future<String> report(String type, String id, String reason, String details);
   Future<Json?> publicProfile(String id);
+  Future<List<Json>> personalImpact();
   Future<String> uploadPhoto(String postId, Uint8List bytes);
   Future<String> photoUrl(String path);
   Future<String> startThread(String postId);
@@ -233,9 +234,17 @@ class SupabaseCommunityRepository implements CommunityRepository {
   }) as String;
   @override
   Future<Json?> publicProfile(String id) async {
-    final result = await rpc('dopmi_public_profile', {'person_id': id});
+    final result =
+        await rpc('dopmi_rescuer_public', {'person_id': id}) ??
+        await rpc('dopmi_public_profile', {'person_id': id});
     return result == null ? null : Json.from(result);
   }
+
+  @override
+  Future<List<Json>> personalImpact() async =>
+      (await rpc('dopmi_personal_impact') as List)
+          .map((value) => Json.from(value))
+          .toList();
 
   @override
   Future<String> uploadPhoto(String postId, Uint8List bytes) =>

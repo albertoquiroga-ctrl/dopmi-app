@@ -636,6 +636,7 @@ class PublicProfileScreen extends ConsumerStatefulWidget {
 class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
   bool busy = false;
   bool? savedOverride;
+  int tab = 0;
   String? error;
 
   Future<void> toggle(Json profile, VoidCallback refresh) async {
@@ -696,6 +697,15 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
             return const Notice('Este perfil público no está disponible.');
           }
           final saved = savedOverride ?? profile['saved'] == true;
+          final activity = (profile['activity'] as List? ?? [])
+              .map((value) => Json.from(value as Map))
+              .toList();
+          final adoptions = (profile['adoptions'] as List? ?? [])
+              .map((value) => Adoption(Json.from(value as Map)))
+              .toList();
+          final cases = (profile['cases'] as List? ?? [])
+              .map((value) => Json.from(value as Map))
+              .toList();
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -754,10 +764,111 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
                   ),
                 ],
               ),
-              ActionButton(
-                'Ver sus publicaciones disponibles',
-                onPressed: () => context.push('/adoptions?owner=${widget.id}'),
+              if (adoptions.isNotEmpty)
+                TextButton.icon(
+                  onPressed: busy
+                      ? null
+                      : () async {
+                          final confirmed = await showDialog<bool>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('¿Enviar mensaje?'),
+                              content: Text(
+                                'Abriremos una conversación sobre ${adoptions.first.data['pet_name']}.',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, false),
+                                  child: const Text('Ahora no'),
+                                ),
+                                FilledButton(
+                                  onPressed: () => Navigator.pop(context, true),
+                                  child: const Text('Continuar'),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (confirmed != true || !mounted) return;
+                          setState(() => busy = true);
+                          try {
+                            final thread = await ref
+                                .read(communityRepositoryProvider)
+                                .startThread(adoptions.first.id);
+                            if (context.mounted) {
+                              context.push('/messages/$thread');
+                            }
+                          } catch (cause) {
+                            if (mounted) {
+                              setState(() => error = communityError(cause));
+                            }
+                          } finally {
+                            if (mounted) setState(() => busy = false);
+                          }
+                        },
+                  icon: const Icon(Icons.chat_bubble_outline),
+                  label: const Text('Enviar mensaje'),
+                ),
+              const SizedBox(height: 20),
+              SegmentedButton<int>(
+                showSelectedIcon: false,
+                segments: const [
+                  ButtonSegment(value: 0, label: Text('Actividad')),
+                  ButtonSegment(value: 1, label: Text('En adopción')),
+                  ButtonSegment(value: 2, label: Text('Casos')),
+                ],
+                selected: {tab},
+                onSelectionChanged: (value) =>
+                    setState(() => tab = value.first),
               ),
+              const SizedBox(height: 16),
+              if (tab == 0) ...[
+                if (activity.isEmpty)
+                  const Notice('Todavía no hay avances públicos.')
+                else
+                  for (final item in activity)
+                    Card(
+                      child: ListTile(
+                        title: Text(item['body'] as String? ?? 'Avance'),
+                        subtitle: Text(
+                          localDate(item['published_at'] as String? ?? ''),
+                        ),
+                        onTap: () =>
+                            context.push('/rescue-cases/${item['case_id']}'),
+                      ),
+                    ),
+              ] else if (tab == 1) ...[
+                if (adoptions.isEmpty)
+                  const Notice('No hay mascotas disponibles en este momento.')
+                else
+                  for (final post in adoptions)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: AdoptionCard(
+                        post,
+                        open: () => context.push('/adoptions/${post.id}'),
+                      ),
+                    ),
+              ] else ...[
+                if (cases.isEmpty)
+                  const Notice('No hay casos públicos en este momento.')
+                else
+                  for (final item in cases)
+                    Card(
+                      child: ListTile(
+                        title: Text(
+                          Json.from(
+                                    item['public_data'] as Map? ?? {},
+                                  )['pet_name']
+                                  as String? ??
+                              'Caso de rescate',
+                        ),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () =>
+                            context.push('/rescue-cases/${item['id']}'),
+                      ),
+                    ),
+              ],
             ],
           );
         },

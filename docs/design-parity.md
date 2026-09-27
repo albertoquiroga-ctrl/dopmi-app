@@ -45,7 +45,7 @@ Evidencia por fila se anexará al completar cada ciclo con SHA de código/diseñ
 | PUBLISH | Parcial | Parcial | No | Selector inicial implementado; formularios por pasos y reanudación siguen abiertos. |
 | DISC, FILTER | Sí | Sí | No | Mazo, acciones, filtros, ubicación aproximada, paginación y casos elegibles cada dos adopciones conectados; falta revisión instalada. |
 | PET, MATCH, SAVED, CHAT | Sí | Sí | No | Detalle/galería, favorito con rollback, contacto confirmado, búsqueda, guardados tipados/tombstones, acciones de casos/perfiles y mensajería idempotente cubiertos; falta comparación instalada. |
-| SUPPORT, CASE, STORY, PUBLIC, IMPACT | Parcial | Parcial | No | Casos guardables/reportables y avances moderados conectados; faltan nueva composición de Apoyar, perfil con pestañas e impacto asignado. |
+| SUPPORT, CASE, STORY, PUBLIC, IMPACT | Parcial | Parcial | No | Casos/avances moderados, perfil público con pestañas e impacto propio asignado conectados; falta la nueva composición de Apoyar, detalle visual completo y revisión instalada. |
 | RH, RC, VERIFY, EVIDENCE, RP | No | No | No | H8.6 pendiente. |
 | PAYMENT, GUARD, REPORT, LEGAL | Parcial | Parcial | No | Servicios previos reutilizables; falta paridad completa y estados del plan vigente. |
 
@@ -79,7 +79,7 @@ Referencia observada: `irlanda/apoyar-detalle-perfil@a246fa6f42ec517aae264d7fbd2
 | `/donate/:caseId/:needId` | `/contribute/:id` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
 | `/donation-success/:caseId` | `Sin equivalente dedicado` | H9 | Diseñar/conectar estado o función real; no copiar simulación. | Implementador / Irlanda / titular | Pendiente |
 | `/payment-error/:caseId/:needId` | `Sin equivalente dedicado` | H9 | Diseñar/conectar estado o función real; no copiar simulación. | Implementador / Irlanda / titular | Pendiente |
-| `/impact` | `/guardian` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
+| `/impact` | `/impact` | H8 | Impacto propio conectado a cantidades asignadas y avances públicos; falta comparación visual instalada. | Implementador / Irlanda / titular | I/T sí; V pendiente |
 | `/impact/support` | `/guardian` | H9 | Paridad visual pendiente; conservar backend existente. | Implementador / Irlanda / titular | Pendiente |
 | `/impact/success` | `Sin equivalente dedicado` | H9 | Diseñar/conectar estado o función real; no copiar simulación. | Implementador / Irlanda / titular | Pendiente |
 | `/impact/error` | `Sin equivalente dedicado` | H9 | Diseñar/conectar estado o función real; no copiar simulación. | Implementador / Irlanda / titular | Pendiente |

@@ -107,7 +107,39 @@ class FakeCommunity implements CommunityRepository {
     'region': 'Nuevo León',
     'adopted_count': 2,
     'saved': false,
+    'activity': [
+      {
+        'id': 'update-one',
+        'case_id': 'case-one',
+        'body': 'Luna sigue mejorando.',
+        'photos': <String>[],
+        'published_at': '2026-09-26T20:00:00Z',
+      },
+    ],
+    'adoptions': [post.data],
+    'cases': [
+      {
+        'id': 'case-one',
+        'public_data': {'pet_name': 'Choco'},
+      },
+    ],
   };
+  @override
+  Future<List<Json>> personalImpact() async => [
+    {
+      'case_id': 'case-one',
+      'public_data': {'pet_name': 'Choco'},
+      'allocated_cents': 9200,
+      'updates': [
+        {
+          'id': 'update-one',
+          'body': 'Choco volvió a comer.',
+          'photos': <String>[],
+          'published_at': '2026-09-26T20:00:00Z',
+        },
+      ],
+    },
+  ];
   @override
   Future<DataPage<Json>> threads(int page, {String search = ''}) async =>
       const DataPage([], 0);
@@ -267,8 +299,33 @@ void main() {
       await tester.pumpAndSettle();
       expect(repo.reported?['type'], 'rescuer');
       expect(find.text('Recibimos tu reporte para revisión.'), findsOneWidget);
+      await tester.tap(find.text('Casos'));
+      await tester.pumpAndSettle();
+      expect(find.text('Choco'), findsOneWidget);
+      await tester.tap(find.text('Enviar mensaje'));
+      await tester.pumpAndSettle();
+      expect(find.text('¿Enviar mensaje?'), findsOneWidget);
+      expect(
+        find.text('Abriremos una conversación sobre Luna.'),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Ahora no'));
+      await tester.pumpAndSettle();
+      expect(find.text('Refugio Luna'), findsOneWidget);
     },
   );
+  testWidgets('personal impact only renders allocated cases and updates', (
+    tester,
+  ) async {
+    final repo = FakeCommunity();
+    await start(tester, repo, '/impact');
+    expect(find.text('Choco'), findsOneWidget);
+    expect(
+      find.text('\$92.00 MXN asignados de tus aportaciones'),
+      findsOneWidget,
+    );
+    expect(find.text('Choco volvió a comer.'), findsOneWidget);
+  });
   testWidgets('swipe buttons pass and persist likes without double actions', (
     tester,
   ) async {

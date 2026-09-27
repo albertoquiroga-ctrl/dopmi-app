@@ -13,6 +13,7 @@ import 'features/identity/identity_repository.dart';
 import 'features/identity/onboarding_screen.dart';
 import 'features/profile/profile_screen.dart';
 import 'features/profile/profile_overview.dart';
+import 'features/profile/impact_screen.dart';
 import 'features/adoption/catalog_screens.dart';
 import 'features/adoption/discovery_screen.dart';
 import 'features/adoption/saved_screen.dart';
@@ -243,6 +244,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/saved',
         builder: (_, _) => SavedScreen(key: ValueKey(identity.identity?.id)),
+      ),
+      GoRoute(
+        path: '/impact',
+        builder: (_, _) => ImpactScreen(key: ValueKey(identity.identity?.id)),
       ),
       GoRoute(
         path: '/adoptions/:id',
