@@ -89,7 +89,7 @@ Plan vigente: [h8-execution.md](h8-execution.md). Las casillas históricas infer
 - [x] H8.4 Perfil, configuración separada, historial real y ayuda. I/T completos; textos legales definitivos permanecen H10.
 - [x] H8.5 Apoyar, historias moderadas, perfil público e impacto real. I/T completos; V pendiente.
 - [x] H8.6 Panel/Casos/Publicar/Mensajes/Perfil rescatista; verificación/evidencia por pasos. I/T completos; V pendiente.
-- [ ] H8.7 Aportaciones/Guardián fieles con resultados reales: I/T completos. Falta candidato Internal Testing y aceptación visual/dispositivo para cerrar H8.
+- [ ] H8.7 Aportaciones/Guardián fieles con resultados reales: I/T completos. Candidato Android 2.3.3 (254), SHA `4ffc20f`, publicado con éxito en Internal Testing; falta aceptación visual/dispositivo de Irlanda para cerrar H8.
 
 ### Registro anterior: componentes implementados, no cierre de paridad
 

@@ -1,5 +1,14 @@
 # Dopmi — registro de avance
 
+## H8 candidato completo en Google Play Internal Testing — 26 de septiembre de 2026
+
+- Candidato de aplicación: `4ffc20fd0b07f51953175e148cfe82b37ecc369a`, referencia Irlanda `a246fa6f42ec517aae264d7fbd2358d647c4f840`. Este SHA reúne H8.0–H8.7; el cierre visual continúa sujeto a revisión instalada.
+- [CI 36292534700](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36292534700): `web-and-database`, `flutter`, `ios` e `identity-and-adoption-backend` terminaron con `success`. Incluye análisis/pruebas Flutter, capturas, PostgreSQL/backend, concurrencia financiera, Android e iOS simulator.
+- [Codemagic 6ab8927b80ac940ea0c3eaf8](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ab8927b80ac940ea0c3eaf8): workflow `android-guardian-internal`, rama `codex/design-foundation`, commit exacto comprobado. Configuración Guardian, firma, análisis, pruebas, AAB y acción separada de Publishing terminaron con `success`.
+- Android **2.3.3 (254)**, paquete `com.mycompany.dopmi`; artefacto firmado `app-release.aab`. El workflow publica en Google Play `internal` con `submit_as_draft: false`. Compilación y publicación quedaron verificadas por separado.
+- Irlanda puede actualizar desde Internal Testing y revisar Perfil, cambio de modo, ambos navbar, swipe, Mis match/guardados, Apoyar/historias, recorridos de rescatista, aportaciones y Guardián. H8 permanece abierto hasta registrar esa aceptación visual y cualquier corrección resultante. Dinero continúa exclusivamente en test; este candidato no incluye un TestFlight equivalente.
+- Esta entrada documental es posterior al SHA distribuido y no cambia la aplicación instalada.
+
 ## H8.7 aportaciones y Guardián — 26 de septiembre de 2026
 
 - Aportar separa monto y revisión, usa cantidades sugeridas/personalizada y resume gasto e importe antes de abrir Checkout. Stripe sigue capturando el método; al regresar o reanudar la app se consulta el historial por la misma llave idempotente.
