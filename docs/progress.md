@@ -7,7 +7,8 @@
 - Migración `20260927013712_adoption_discovery.sql` aplicada por MCP como `20260927014731`. La RPC nueva mantiene `dopmi_catalog` y el build 253 compatibles. Cinco publicaciones demo aprobadas recibieron personalidad y ubicación aproximada ficticias para probar el mazo.
 - PostgreSQL local reconstruido desde cero: 198 pruebas aprobadas. Remoto: filtros de personalidad/radio y ausencia de coordenadas verificados. Flutter: análisis sin incidencias, 65 pruebas aprobadas. Captura inicial a 377 × 852 inspeccionada; se retiró el encabezado duplicado antes de la captura final.
 - Casos reales elegibles se intercalan una sola vez después de cada dos adopciones. La fuente sólo incluye casos aprobados con gasto aprobado, pagable y capacidad restante; el botón abre la aportación de prueba y no declara éxito. Migración local `20260927015519_adoption_support_cards.sql`, remota `20260927015643`; consulta remota devolvió dos oportunidades reales de prueba.
-- H8.2 sigue parcial: falta ampliar pruebas de gesto/paginación/fallo de red y publicar el paquete de revisión. Referencia Irlanda continúa en `a246fa6`.
+- Pruebas ampliadas cubren arrastre corto/largo, botones equivalentes, fallo de favorito sin avanzar, paginación sin duplicados y tarjeta de apoyo después de dos adopciones; nueve pruebas de comunidad aprobadas y análisis limpio.
+- H8.2 queda implementado y comprobado técnicamente en local/remoto; falta el paquete instalado y aceptación visual, por lo que V permanece pendiente. Referencia Irlanda continúa en `a246fa6`.
 
 ## H8.0 cerrado y Perfil/cambio de modo en ejecución — 26 de septiembre de 2026
 

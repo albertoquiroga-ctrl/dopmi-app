@@ -84,7 +84,7 @@ Plan vigente: [h8-execution.md](h8-execution.md). Las casillas históricas infer
 
 - [x] H8.0 Matriz concreta de pantallas/acciones, dependencias y evidencia separada. Es un registro vivo: cada ciclo actualiza I/T/V sin borrar diferencias abiertas.
 - [ ] H8.1 Dos experiencias completas; cambio dedicado de modo y conservación de estado.
-- [ ] H8.2 Swipe, filtros, personalidad, zona/radio aproximado y paginación.
+- [x] H8.2 Swipe, filtros, personalidad, zona/radio aproximado y paginación. Implementación y comprobación técnica completas; aceptación visual se conserva en H8.7.
 - [ ] H8.3 Detalles, favoritos de mascotas/casos/rescatistas, Mis match y comunicación.
 - [ ] H8.4 Perfil, configuración separada, historial real y ayuda.
 - [ ] H8.5 Apoyar, historias moderadas, perfil público e impacto real.

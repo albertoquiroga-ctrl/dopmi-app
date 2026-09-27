@@ -30,7 +30,9 @@ class FakeCommunity implements CommunityRepository {
     'version': 1,
   });
   bool failSave = false, failSend = true;
+  bool failFavorite = false;
   List<Adoption>? discoveryItems;
+  Map<int, List<Adoption>>? discoveryPages;
   List<SupportOpportunity> supportItems = [];
   final sentIds = <String>[];
   final stored = <String, Json>{};
@@ -43,8 +45,19 @@ class FakeCommunity implements CommunityRepository {
   Future<DataPage<Adoption>> catalog(Json filters, int page) async =>
       DataPage([post], 1);
   @override
-  Future<DataPage<Adoption>> discovery(Json filters, int page) async =>
-      DataPage(discoveryItems ?? [post], (discoveryItems ?? [post]).length);
+  Future<DataPage<Adoption>> discovery(Json filters, int page) async {
+    if (discoveryPages != null) {
+      return DataPage(
+        discoveryPages![page] ?? [],
+        discoveryPages!.values.fold(0, (total, items) => total + items.length),
+      );
+    }
+    return DataPage(
+      discoveryItems ?? [post],
+      (discoveryItems ?? [post]).length,
+    );
+  }
+
   @override
   Future<List<SupportOpportunity>> discoverySupport() async => supportItems;
   @override
@@ -53,6 +66,7 @@ class FakeCommunity implements CommunityRepository {
   Future<Adoption?> own(String id) async => post;
   @override
   Future<void> favorite(String id, bool saved) async {
+    if (failFavorite) throw Exception('offline');
     post = Adoption({...post.data, 'saved': saved});
   }
 
@@ -202,6 +216,52 @@ void main() {
     expect(find.text('Choco'), findsOneWidget);
     expect(find.text('25 % cubierto'), findsOneWidget);
     expect(find.text('Apoyar este gasto'), findsOneWidget);
+  });
+  testWidgets('short drag returns and long drag passes the current card', (
+    tester,
+  ) async {
+    final repo = FakeCommunity();
+    repo.discoveryItems = [
+      repo.post,
+      Adoption({...repo.post.data, 'id': 'second', 'pet_name': 'Milo'}),
+    ];
+    await start(tester, repo, '/adoptions');
+    await tester.drag(find.text('Luna'), const Offset(-40, 0));
+    await tester.pumpAndSettle();
+    expect(find.text('Luna'), findsOneWidget);
+    await tester.drag(find.text('Luna'), const Offset(-150, 0));
+    await tester.pumpAndSettle();
+    expect(find.text('Milo'), findsOneWidget);
+  });
+  testWidgets('failed like keeps the card and exposes a retry', (tester) async {
+    final repo = FakeCommunity()..failFavorite = true;
+    await start(tester, repo, '/adoptions');
+    await tester.tap(find.byTooltip('Me gusta'));
+    await tester.pumpAndSettle();
+    expect(find.text('Luna'), findsOneWidget);
+    expect(find.text('Volver a intentar'), findsOneWidget);
+    expect(repo.post.saved, false);
+  });
+  testWidgets('the deck fetches the next page without duplicating cards', (
+    tester,
+  ) async {
+    final repo = FakeCommunity();
+    repo.discoveryPages = {
+      1: [
+        repo.post,
+        Adoption({...repo.post.data, 'id': 'second', 'pet_name': 'Milo'}),
+      ],
+      2: [
+        Adoption({...repo.post.data, 'id': 'third', 'pet_name': 'Nina'}),
+      ],
+    };
+    await start(tester, repo, '/adoptions');
+    await tester.tap(find.byTooltip('Pasar'));
+    await tester.pumpAndSettle();
+    expect(find.text('Milo'), findsOneWidget);
+    await tester.tap(find.byTooltip('Pasar'));
+    await tester.pumpAndSettle();
+    expect(find.text('Nina'), findsOneWidget);
   });
   testWidgets(
     'failed draft save preserves authored content and can be retried',
