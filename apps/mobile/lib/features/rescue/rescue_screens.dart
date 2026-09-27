@@ -11,6 +11,7 @@ import '../adoption/community_ui.dart';
 import '../community/content_actions.dart';
 import '../payments/payment_repository.dart';
 import 'rescue_fields.dart';
+import 'case_update_screens.dart';
 import 'rescue_repository.dart';
 
 class RescueHomeScreen extends ConsumerWidget {
@@ -885,6 +886,17 @@ class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
                             ),
                           ],
                         ),
+                      if (widget.caseId != null && r.kind == 'case') ...[
+                        if (r.data['owner_id'] ==
+                            ref.read(communityRepositoryProvider).userId)
+                          TextButton.icon(
+                            onPressed: () =>
+                                context.push('/rescue-cases/${r.id}/updates'),
+                            icon: const Icon(Icons.edit_note_outlined),
+                            label: const Text('Administrar avances'),
+                          ),
+                        PublicCaseUpdates(r.id),
+                      ],
                       if (r.kind == 'expense' && r.status == 'approved')
                         TextButton(
                           onPressed: () => context.push('/contribute/${r.id}'),

@@ -1,5 +1,13 @@
 # Dopmi — registro de avance
 
+## H8.5 avances moderados de casos — 26 de septiembre de 2026
+
+- Los casos aprobados/cerrados admiten avances independientes con borrador recuperable, hasta seis fotos, envío, correcciones/rechazo y publicación administrativa. La edición no sustituye un snapshot público: un avance publicado se archiva o se complementa con otro registro.
+- Storage nuevo `dopmi-case-update-media`, privado y limitado a imágenes de 5 MB. Escritura sólo del propietario mientras el avance es editable; lectura pública únicamente de rutas incluidas en el snapshot aprobado. Flutter reutiliza la preparación central que elimina EXIF y acota dimensiones.
+- El detalle público muestra “Historia hasta ahora” en orden cronológico; el dueño entra a administrar avances, reanuda borradores y ve estados remotos. El panel añadió Moderación para avances y reportes persistentes.
+- Migración local `20260927022858_moderated_case_updates.sql`, remota `20260927023747`. Es aditiva y no altera RPC consumidas por el build 253. Remoto comprobado: tablas pública/privada, bucket privado, RPC autenticada y ausencia de SELECT crudo. El aviso de tabla privada sin política pública es intencional y coincide con las tablas de auditoría existentes.
+- PostgreSQL local reconstruido y cuatro suites: 224 pruebas aprobadas. Administración: 19 pruebas y build de producción aprobados, incluida la moderación de avance y resolución de reporte. Flutter: análisis limpio y suite completa de 73 pruebas aprobada. Falta aceptación visual y un build instalado; H8.5 continúa con Apoyar, perfil público completo e impacto.
+
 ## H8.3 detalle, guardados y Mis match en desarrollo — 26 de septiembre de 2026
 
 - El detalle de adopción usa galería paginada, datos reales, historia, salud, convivencia, cuidados y responsable. Guardar es optimista y revierte ante fallo; compartir copia contenido identificable sin inventar un enlace; reportar persiste antes de confirmar; contactar exige confirmación y reutiliza el hilo idempotente existente.

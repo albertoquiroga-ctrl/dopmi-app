@@ -19,6 +19,7 @@ import 'features/adoption/saved_screen.dart';
 import 'features/adoption/publication_screens.dart';
 import 'features/communication/message_screens.dart';
 import 'features/rescue/rescue_screens.dart';
+import 'features/rescue/case_update_screens.dart';
 import 'features/payments/payment_screens.dart';
 import 'features/payments/guardian_screen.dart';
 import 'features/payments/guardian_history_screen.dart';
@@ -219,6 +220,25 @@ final routerProvider = Provider<GoRouter>((ref) {
           caseId: state.pathParameters['id'],
           key: ValueKey('${identity.identity?.id}:${state.uri}'),
         ),
+      ),
+      GoRoute(
+        path: '/rescue-cases/:id/updates',
+        builder: (_, state) => CaseUpdatesManageScreen(
+          state.pathParameters['id']!,
+          key: ValueKey('${identity.identity?.id}:${state.uri}'),
+        ),
+        routes: [
+          GoRoute(
+            path: ':updateId',
+            builder: (_, state) => CaseUpdateEditorScreen(
+              state.pathParameters['id']!,
+              updateId: state.pathParameters['updateId'] == 'new'
+                  ? null
+                  : state.pathParameters['updateId'],
+              key: ValueKey('${identity.identity?.id}:${state.uri}'),
+            ),
+          ),
+        ],
       ),
       GoRoute(
         path: '/saved',

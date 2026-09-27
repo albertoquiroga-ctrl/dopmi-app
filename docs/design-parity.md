@@ -18,7 +18,7 @@ H8 comprende todos los recorridos siguientes. La tabla histórica de rutas más 
 | SETTINGS | Configuración, información básica, pagos, ayuda | Pantallas separadas, regresos contextuales, acciones operativas | Perfil/Stripe existentes; FAQ por rol | Guardado fallido conserva edición; no pisa modo; cancelación/cierre sesión |
 | SUPPORT | Apoyar / Ver todos | Círculos de casos, progreso y entrada Guardián en lugar de lista uniforme | Catálogo/objetivos aprobados | Sin gastos elegibles, recarga, abrir caso/Guardián |
 | CASE | Caso público, gastos desplegables, galería/reportar | Foto principal, historia, categorías y gasto con evidencia pública aprobada | Casos/gastos/pagos actuales; reportes nuevos | Foto privada denegada, gasto agotado, share/deep link, reporte persistido |
-| STORY | Avances / historia hasta ahora | Crear timeline real y autoría; hoy no hay modelo moderado de avances | Nuevo ciclo de avances y Storage autorizado | Borrador/corrección privados, revisión/publicación y edición posterior |
+| STORY | Avances / historia hasta ahora | Timeline/ciclo/Storage implementados; falta comparación visual y datos demo instalados | `dopmi_case_updates`, snapshot moderado y Storage privado | Borrador/corrección privados, revisión/publicación y edición posterior |
 | PUBLIC | Perfil público: Actividad/En adopción/Casos | Avatar/bio/redes moderados; conteos verdaderos; guardar rescatista | Perfil público, agregados autorizados | Ciudad/chat públicos; ningún correo/documento; filtros por propietario |
 | IMPACT | Impacto personal | Sustituir ejemplos por avances de casos realmente apoyados | Asignaciones privadas y avances publicados | Usuario A no ve atribuciones de B; cero asignaciones muestra vacío |
 | RH | Inicio rescatista | Panel con saludo, casos, acciones pendientes y actividad | Resúmenes autorizados | Sin saldo ficticio; acciones abren entidad correcta; estados incompletos |
@@ -45,7 +45,7 @@ Evidencia por fila se anexará al completar cada ciclo con SHA de código/diseñ
 | PUBLISH | Parcial | Parcial | No | Selector inicial implementado; formularios por pasos y reanudación siguen abiertos. |
 | DISC, FILTER | Sí | Sí | No | Mazo, acciones, filtros, ubicación aproximada, paginación y casos elegibles cada dos adopciones conectados; falta revisión instalada. |
 | PET, MATCH, SAVED, CHAT | Sí | Sí | No | Detalle/galería, favorito con rollback, contacto confirmado, búsqueda, guardados tipados/tombstones, acciones de casos/perfiles y mensajería idempotente cubiertos; falta comparación instalada. |
-| SUPPORT, CASE, STORY, PUBLIC, IMPACT | No | No | No | H8.5 pendiente. |
+| SUPPORT, CASE, STORY, PUBLIC, IMPACT | Parcial | Parcial | No | Casos guardables/reportables y avances moderados conectados; faltan nueva composición de Apoyar, perfil con pestañas e impacto asignado. |
 | RH, RC, VERIFY, EVIDENCE, RP | No | No | No | H8.6 pendiente. |
 | PAYMENT, GUARD, REPORT, LEGAL | Parcial | Parcial | No | Servicios previos reutilizables; falta paridad completa y estados del plan vigente. |
 
