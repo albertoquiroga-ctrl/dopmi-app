@@ -60,7 +60,7 @@ Cuentas de integración: owner, adopter/outsider y moderator desechables en cada
 
 ## Evidencia técnica del candidato
 
-Código inicial H9: 2ee94f9; corrección de codificación de pruebas: b7947cc. El primer CI detectó texto Windows-1252 en una prueba del panel; normalizado a UTF-8 y suite de 23 aprobada. Primer Codemagic 6ab939ff78f056c20c4318d2 cancelado; candidato corregido 6ab93a8025013d476dd567db en curso. CI final 36330804226 pendiente.
+Historial de candidatos: 2ee94f9 y b7947cc fueron reemplazados por 73c731f. El primer CI detectó texto Windows-1252 en una prueba del panel; normalizado a UTF-8 y suite de 23 aprobada. Los builds 6ab939ff78f056c20c4318d2 y 6ab93a8025013d476dd567db se cancelaron. La evidencia final válida es CI36330974531 y Codemagic6ab93b1e75e12724939f4af7, ambos aprobados sobre 73c731f; Android259 publicado.
 
 Cuatro recorridos de integración reales aprobados en dopmi-h9, base desechable recreada desde migraciones. Flutter analyze limpio; 80 tests Flutter; 23 admin y build; 391 Node, 247 pgTAP, concurrencia financiera y seis de configuración. Estas cuentas son locales y se limpian; no sustituyen las cuentas usadas en el teléfono.
 
@@ -73,3 +73,20 @@ H9-D6: el borrador podía borrar el avatar del snapshot público vigente. Se pro
 Se conservan cinco adopciones y cinco casos públicos de prueba. En **Choco · Recuperación demo** se añadió un avance con prefijo **DEMO H9**, sin fotos ni promesas de gasto real, mediante guardar → enviar → publicar. La auditoría identifica expresamente la preparación sintética por Codex autorizada por el titular; no se presenta como revisión humana. Consulta pública posterior: un avance. No se modificaron aportaciones ni se crearon cobros.
 
 La tercera migración `20260927154814_h9_preserve_approved_avatar.sql` corresponde a la versión remota `20260927154928`.
+
+## Registro de aceptación instalada — pendiente
+
+Continuación solicitada por el titular el 27/9/2026. Se reconsultaron CI y Codemagic: candidato 73c731f aprobado/publicado como 259. No hay otro cambio de código identificado pendiente; no se repiten suites ya aprobadas sin un nuevo defecto. La instrucción de continuar no constituye un resultado de pruebas en dispositivo.
+
+| Recorrido | Resultado instalado |
+|---|---|
+| Descubrir, guardar y contactar | Pendiente del titular |
+| Recibir y responder | Pendiente del titular |
+| Cambiar modo y recuperar borrador | Pendiente del titular |
+| Publicar, corregir y moderar | Pendiente del titular |
+| Caso, avance y perfil público | Pendiente del titular |
+| Aportación test, historial y Guardián | Pendiente del titular |
+| Reporte y recepción administrativa | Pendiente del titular |
+| Reinicio y aislamiento entre cuentas | Pendiente del titular |
+
+Falta registrar dispositivo, versión instalada y resultado. Un fallo abre una corrección y revalidación del recorrido afectado; con los ocho resultados aprobados se documentará el cierre de H9. No se cambia esta condición sin una decisión explícita del titular.
