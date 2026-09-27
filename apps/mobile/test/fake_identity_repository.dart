@@ -90,19 +90,33 @@ class FakeIdentityRepository implements IdentityRepository {
   }
 
   @override
+  Future<Profile> setExperience(String mode) async {
+    if (failSave) throw StateError('network_unavailable');
+    return profile = Profile(
+      id: profile.id,
+      name: profile.name,
+      phone: profile.phone,
+      city: profile.city,
+      mode: mode,
+      intent: profile.intent,
+      status: profile.status,
+      termsVersion: profile.termsVersion,
+    );
+  }
+
+  @override
   Future<Profile> saveProfile({
     required String name,
     required String phone,
     required String city,
-    required String mode,
   }) async {
     if (failSave) throw StateError('network_unavailable');
     return profile = Profile(
-      id: 'one',
+      id: profile.id,
       name: name,
       phone: phone,
       city: city,
-      mode: mode,
+      mode: profile.mode,
       intent: profile.intent,
       status: profile.status,
       termsVersion: profile.termsVersion,

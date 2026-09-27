@@ -78,7 +78,20 @@ Plan autorizado: [H6–H12](release-roadmap.md). Las casillas de aceptación vis
 
 Evidencia H7: [retiro reversible](legacy-retirement.md). PR #5 integrado en `ba9f897`, CI 36208309068 aprobado en sus cuatro trabajos. La restauración probada es lógica del legado, no recuperación completa de producción.
 
-## H8 — Componentes y navegación
+## H8 — Paridad completa y funcional (alcance corregido 26/9/2026)
+
+Plan vigente: [h8-execution.md](h8-execution.md). Las casillas históricas inferiores documentan implementación parcial, no aceptación de H8. Los recorridos visibles de H9 se ejecutan ahora dentro de H8.
+
+- [x] H8.0 Matriz concreta de pantallas/acciones, dependencias y evidencia separada. Es un registro vivo: cada ciclo actualiza I/T/V sin borrar diferencias abiertas.
+- [ ] H8.1 Dos experiencias completas; cambio dedicado de modo y conservación de estado.
+- [ ] H8.2 Swipe, filtros, personalidad, zona/radio aproximado y paginación.
+- [ ] H8.3 Detalles, favoritos de mascotas/casos/rescatistas, Mis match y comunicación.
+- [ ] H8.4 Perfil, configuración separada, historial real y ayuda.
+- [ ] H8.5 Apoyar, historias moderadas, perfil público e impacto real.
+- [ ] H8.6 Panel/Casos/Publicar/Mensajes/Perfil rescatista; verificación/evidencia por pasos.
+- [ ] H8.7 Aportaciones/Guardián fieles con resultados reales; cierre visual/técnico/dispositivo.
+
+### Registro anterior: componentes implementados, no cierre de paridad
 
 - [x] H8.1 Base de tokens, fuentes/assets y controles del mockup implementada; revisión visual pendiente H8.3.
 - [x] H8.2 Navegación por experiencia y conservación de estado entre pestañas; cuentas separadas y recuperación cubiertas por pruebas.
@@ -87,7 +100,9 @@ Evidencia H7: [retiro reversible](legacy-retirement.md). PR #5 integrado en `ba9
 
 Detalle y capturas de componentes/acceso: [H8](design-foundation.md). H8 permanece abierto hasta revisión y aceptación visual de Irlanda; no equivale a H9 ni a aceptación en dispositivo.
 
-## H9 — Recorridos completos
+## H9 — Aceptación integrada y excepciones restantes
+
+Las tareas siguientes describen recorridos cuya implementación/paridad pasa a H8. H9 conservará sólo aceptación integrada y excepciones no comprobadas allí, sin duplicar su desarrollo.
 
 - [ ] H9.1 Adopción, detalle, guardados, perfil y contacto.
 - [ ] H9.2 Verificación, publicación, evidencia, revisión y correcciones.

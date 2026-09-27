@@ -1,5 +1,7 @@
 # H8 — base visual y navegación
 
+> Corte histórico de implementación parcial. El plan vigente es [h8-execution.md](h8-execution.md), autorizado el 26/9/2026: H8 incluye recorridos completos antes asignados a H9. Los pendientes inferiores no se limitan a aceptación visual; no usar este registro como alcance vigente.
+
 Referencia: `dopmi-functional-mockup`, rama `irlanda/apoyar-detalle-perfil`, commit `a246fa6f42ec517aae264d7fbd2358d647c4f840`, reconsultada al inicio y cierre de este ciclo. Implementación: `codex/design-foundation`, desde H7 integrado (`ba9f897`). **H8 sigue abierto**: estas capturas no acreditan paridad de todos los recorridos ni aceptación de Irlanda/dispositivo.
 
 ## Cambio implementado

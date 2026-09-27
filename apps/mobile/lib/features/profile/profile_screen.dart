@@ -7,15 +7,14 @@ import '../adoption/community_ui.dart';
 import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
 import '../identity/experience_controller.dart';
-import '../payments/guardian_repository.dart';
 
-class ProfileScreen extends ConsumerStatefulWidget {
-  const ProfileScreen({super.key});
+class BasicInfoScreen extends ConsumerStatefulWidget {
+  const BasicInfoScreen({super.key});
   @override
-  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
+  ConsumerState<BasicInfoScreen> createState() => _BasicInfoScreenState();
 }
 
-class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
   final form = GlobalKey<FormState>();
   final name = TextEditingController(),
       phone = TextEditingController(),
@@ -83,12 +82,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     await perform(() async {
       final result = await ref
           .read(identityRepositoryProvider)
-          .saveProfile(
-            name: name.text,
-            phone: phone.text,
-            city: city.text,
-            mode: mode,
-          );
+          .saveProfile(name: name.text, phone: phone.text, city: city.text);
       if (mounted) {
         ref.read(experienceProvider).applyProfile(result);
         setState(() {
@@ -105,11 +99,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final suspended = profile?.status == 'suspended';
     final accepted = profile?.termsVersion == developmentTermsVersion;
     return PageFrame(
-      back: false,
+      back: true,
       bottomNavigationBar: const CommunityNav(4),
       children: [
         const Heading(
-          'Tu perfil,\ntu forma de ayudar.',
+          'Información básica',
           'Este es tu espacio en Dopmi.',
           eyebrow: 'MI CUENTA',
         ),
@@ -255,59 +249,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 28),
-                Text(
-                  'Mi experiencia',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Usa la misma cuenta para adoptar, ayudar o compartir tu labor como rescatista.',
-                ),
-                const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  initialValue: mode,
-                  isExpanded: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Quiero usar Dopmi como',
-                  ),
-                  items: const [
-                    DropdownMenuItem(
-                      value: 'donor',
-                      child: Text('Donante / adoptante'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'rescuer',
-                      child: Text('Rescatista'),
-                    ),
-                  ],
-                  onChanged: suspended || !accepted || busy
-                      ? null
-                      : (value) => setState(() => mode = value!),
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  'Elegir rescatista no equivale a obtener una verificación. Envía tus documentos al equipo desde tu espacio de rescates.',
-                ),
-                TextButton.icon(
-                  onPressed: suspended || !accepted
-                      ? null
-                      : () => context.push('/rescuer'),
-                  icon: const Icon(Icons.verified_user_outlined),
-                  label: const Text('Verificación, casos y gastos'),
-                ),
-                TextButton.icon(
-                  onPressed: suspended || !accepted
-                      ? null
-                      : () => context.push('/payments'),
-                  icon: const Icon(Icons.receipt_long_outlined),
-                  label: const Text('Mis aportaciones y cobros'),
-                ),
-                if (ref.watch(guardianEnabledProvider))
-                  TextButton.icon(
-                    onPressed: () => context.push('/guardian'),
-                    icon: const Icon(Icons.favorite_outline),
-                    label: const Text('Mi plan Guardián'),
-                  ),
                 if (error != null) Notice(error!, isError: true),
                 if (message != null) Notice(message!),
                 const SizedBox(height: 24),

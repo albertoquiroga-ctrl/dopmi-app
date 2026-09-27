@@ -12,6 +12,7 @@ import 'features/identity/identity_controller.dart';
 import 'features/identity/identity_repository.dart';
 import 'features/identity/onboarding_screen.dart';
 import 'features/profile/profile_screen.dart';
+import 'features/profile/profile_overview.dart';
 import 'features/adoption/catalog_screens.dart';
 import 'features/adoption/publication_screens.dart';
 import 'features/communication/message_screens.dart';
@@ -87,6 +88,13 @@ final routerProvider = Provider<GoRouter>((ref) {
                 path: '/profile',
                 builder: (_, _) =>
                     ProfileScreen(key: ValueKey(identity.identity?.id)),
+                routes: [
+                  GoRoute(
+                    path: 'basic-info',
+                    builder: (_, _) =>
+                        BasicInfoScreen(key: ValueKey(identity.identity?.id)),
+                  ),
+                ],
               ),
             ],
           ),
@@ -112,9 +120,9 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/my-adoptions',
+                path: '/publish',
                 builder: (_, _) =>
-                    MyAdoptionsScreen(key: ValueKey(identity.identity?.id)),
+                    PublishChoiceScreen(key: ValueKey(identity.identity?.id)),
               ),
             ],
           ),
@@ -128,6 +136,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             ],
           ),
         ],
+      ),
+      GoRoute(
+        path: '/settings',
+        builder: (_, _) => SettingsScreen(key: ValueKey(identity.identity?.id)),
+      ),
+      GoRoute(path: '/help', builder: (_, _) => const HelpScreen()),
+      GoRoute(
+        path: '/my-adoptions',
+        builder: (_, _) =>
+            MyAdoptionsScreen(key: ValueKey(identity.identity?.id)),
       ),
       GoRoute(
         path: '/guardian/history',

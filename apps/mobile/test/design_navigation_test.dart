@@ -125,7 +125,9 @@ void main() {
         overrides: [
           identityRepositoryProvider.overrideWithValue(identity),
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
-          routerInitialLocationProvider.overrideWithValue('/profile'),
+          routerInitialLocationProvider.overrideWithValue(
+            '/profile/basic-info',
+          ),
         ],
       );
       addTearDown(() async {

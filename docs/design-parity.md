@@ -1,5 +1,53 @@
 # Dopmi — matriz de paridad
 
+## Contrato vigente — 26/9/2026
+
+H8 comprende todos los recorridos siguientes. La tabla histórica de rutas más abajo localiza pantallas, pero sus asignaciones anteriores a H9 quedan supersedidas por `h8-execution.md`. Estado por defecto de cada fila: **I pendiente / T pendiente / V pendiente** (implementación, comprobación técnica, aceptación visual). Ninguna fila está aceptada por Irlanda.
+
+| ID | Pantalla/acción de referencia | Diferencia concreta a resolver en Flutter | Datos/dependencia | Prueba/evidencia requerida |
+| --- | --- | --- | --- | --- |
+| NAV | Barras donante/rescatista, cambio desde Perfil/Configuración | Cambiar preferencia sin guardar datos; Publicar abre selector; perfiles por modo | profiles.active_mode, sesión única | Persistencia/restauración, error de guardado, borradores entre pestañas, cambio de cuenta |
+| AUTH | Splash, elección, introducciones, entrada, login/registro/recuperación | Revisar encuadres y espaciados existentes; confirmación real y OAuth gated | Auth existente | Cada intención, regreso, teclado y texto ampliado |
+| DISC | Inicio Adoptar | Sustituir lista/título genérico por foto dominante, swipe y controles Pasar/Me gusta/contacto | Catálogo, favoritos, casos elegibles | Arrastre corto/largo, doble pulsación, fallo de favorito, fin, reintento y paginación |
+| FILTER | Perros/Gatos; modal filtros/ubicación | Selector, chips sexo/tamaño/personalidad, ciudad/radio con aplicar/cancelar | Personalidad y zona aproximada nuevas | Filtro real, permisos denegados, sin ubicación, ninguna distancia inventada |
+| PET | Detalle de mascota, galería y contacto | Jerarquía fotográfica, datos/historia/cuidados, responsable y barra de acciones | Adopción aprobada, chat actual | Imagen/galería, volver mantiene mazo; contacto confirmado, retiro público |
+| MATCH | Mis match, búsqueda, chats y favoritos por tipo | Pantalla nueva; no es sólo lista de conversaciones | Threads/favoritos adopción/casos | Búsqueda propia, selección, vacío, errores, no simular reciprocidad |
+| SAVED | Mascotas, casos y rescatistas guardados | Conteos y listas separadas sincronizadas | Favoritos de casos/rescatistas nuevos | Alta/baja idempotente; terceros no acceden; retirados no filtran datos |
+| CHAT | Conversaciones de ambos modos, detalle y notificaciones | Rehacer presentación/badges conservando backend | Mensajes/lecturas/notificaciones actuales | Duplicados/red/reconexión, remitente auténtico, aislamiento |
+| PROFILE | Perfil donante | Sustituir formulario principal por tarjeta amarilla, historial corto, accesos e interruptor | Perfil, pagos y estado Guardián reales | Sin datos simulados; actualizado al volver; vacío/error |
+| SETTINGS | Configuración, información básica, pagos, ayuda | Pantallas separadas, regresos contextuales, acciones operativas | Perfil/Stripe existentes; FAQ por rol | Guardado fallido conserva edición; no pisa modo; cancelación/cierre sesión |
+| SUPPORT | Apoyar / Ver todos | Círculos de casos, progreso y entrada Guardián en lugar de lista uniforme | Catálogo/objetivos aprobados | Sin gastos elegibles, recarga, abrir caso/Guardián |
+| CASE | Caso público, gastos desplegables, galería/reportar | Foto principal, historia, categorías y gasto con evidencia pública aprobada | Casos/gastos/pagos actuales; reportes nuevos | Foto privada denegada, gasto agotado, share/deep link, reporte persistido |
+| STORY | Avances / historia hasta ahora | Crear timeline real y autoría; hoy no hay modelo moderado de avances | Nuevo ciclo de avances y Storage autorizado | Borrador/corrección privados, revisión/publicación y edición posterior |
+| PUBLIC | Perfil público: Actividad/En adopción/Casos | Avatar/bio/redes moderados; conteos verdaderos; guardar rescatista | Perfil público, agregados autorizados | Ciudad/chat públicos; ningún correo/documento; filtros por propietario |
+| IMPACT | Impacto personal | Sustituir ejemplos por avances de casos realmente apoyados | Asignaciones privadas y avances publicados | Usuario A no ve atribuciones de B; cero asignaciones muestra vacío |
+| RH | Inicio rescatista | Panel con saludo, casos, acciones pendientes y actividad | Resúmenes autorizados | Sin saldo ficticio; acciones abren entidad correcta; estados incompletos |
+| RC | Mis casos/detalle/editar/cerrar | Tarjetas por estado, progreso y vínculo a adopción | Relación caso–adopción nueva | Interruptor no publica; cierre/revisión correctos; guardado de corrección |
+| PUBLISH | Selector y formularios por pasos | Publicar deja de abrir Mis publicaciones; fotos/datos/revisión, recuperar borrador | Publicaciones/casos y archivos actuales | Cancelar selección, subir/interrumpir/reanudar, validar/enviar una vez |
+| VERIFY | Introducción/verificación/estado | Flujo progresivo con expediente privado y correcciones | Verificación/moderación actuales | No autoaprobar; estado remoto, documentos sólo autorizados |
+| EVIDENCE | Gasto veterinario/comida/medicina/otro | Pasos específicos y progreso persistido; evidencia antes de recibir aportaciones | Gastos pagados actuales | Adjuntos privados, fechas/importes, recibo duplicado, correcciones |
+| RP | Perfil/configuración rescatista | Perfil propio distinto, editar público separado del expediente | Perfil moderado; Connect | Datos bancarios externos; cambio modo no confiere autorización |
+| PAYMENT | Aportar, resultado/error/regreso | Diseño del resumen y estados reales en vez de éxito simulado | Checkout/conciliación test existentes | Abandono, pendiente, confirmado, devuelto, revisión; sin doble cobro |
+| GUARD | Presentación/monto/consentimiento/impacto/gestión | Adaptar carruseles, tarjeta, cambios/cancelación e historial | Guardián H5 existente | Sin capacidad, mes omitido, monto futuro, tarjeta, cancelación y errores |
+| REPORT | Reportar mascota/caso/rescatista; administración | Crear recepción persistente y bandeja con estado; quitar toast falso | RPC/RLS/reportes nuevos | Acuse sólo tras insertar, duplicados/reintento, denuncias privadas |
+| LEGAL | Ayuda/términos/privacidad | Composición coherente sin presentar legal provisional como definitivo | Textos actuales; definitivo H10 | Regreso por modo y enlaces reales |
+
+Evidencia por fila se anexará al completar cada ciclo con SHA de código/diseño, prueba y capturas de pantallas reales. No cerrar por una captura de componente aislado.
+
+### Estado I/T/V vigente
+
+| ID | Implementado | Comprobado técnicamente | Aceptado visualmente | Evidencia o diferencia abierta |
+| --- | --- | --- | --- | --- |
+| NAV | Parcial | Parcial | No | Cambio de modo dedicado y selector Publicar cubiertos; falta cerrar toda la conservación de estado y revisión instalada. |
+| AUTH | Parcial | Sí, sobre recorridos existentes | No | Acceso previo reutilizado; falta nueva comparación final con la referencia vigente. |
+| PROFILE | Parcial | Parcial | No | Vista principal, datos reales, historial/vacío/error y cambio de modo implementados; faltan rescatistas guardados y aceptación. |
+| SETTINGS | Parcial | Parcial | No | Información básica separada, ayuda, historial y cierre de sesión; método de pago depende de Guardián habilitado. |
+| PUBLISH | Parcial | Parcial | No | Selector inicial implementado; formularios por pasos y reanudación siguen abiertos. |
+| DISC, FILTER, PET, MATCH, SAVED, CHAT | No | No | No | H8.2–H8.3 pendientes. |
+| SUPPORT, CASE, STORY, PUBLIC, IMPACT | No | No | No | H8.5 pendiente. |
+| RH, RC, VERIFY, EVIDENCE, RP | No | No | No | H8.6 pendiente. |
+| PAYMENT, GUARD, REPORT, LEGAL | Parcial | Parcial | No | Servicios previos reutilizables; falta paridad completa y estados del plan vigente. |
+
 Referencia observada: `irlanda/apoyar-detalle-perfil@a246fa6f42ec517aae264d7fbd2358d647c4f840`. Inventario por lectura del código, no aceptación visual. Fuente y hashes en `design-reference.json`; volver a consultar la rama al inicio/cierre de cada ciclo.
 
 ## Rutas

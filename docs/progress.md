@@ -1,5 +1,14 @@
 # Dopmi — registro de avance
 
+## H8.0 cerrado y Perfil/cambio de modo en ejecución — 26 de septiembre de 2026
+
+- H8.0 convertido en matriz concreta de pantallas, acciones, datos, prueba y estado separado I/T/V. Ninguna pantalla se declara aceptada por Irlanda.
+- Perfil deja de ser el formulario de datos: incorpora tarjeta de identidad, condición real de miembro/Guardián, historial real con carga/vacío/error, guardados, Configuración y cambio de experiencia dedicado. Información básica conserva su formulario en una ruta separada.
+- Cambiar de modo actualiza únicamente `profiles.active_mode`, no confiere verificación y abre el inicio correspondiente. El guardado de datos personales ya no puede pisar esa preferencia. Publicar rescatista abre el selector Adopción/Caso.
+- Capturas reales a 377 × 852 generadas para Perfil, Configuración y selector Publicar. La inspección confirma las barras distintas por experiencia y ausencia de cifras simuladas; la comparación/aceptación en Internal Testing sigue pendiente.
+- Verificación del bloque: `flutter analyze --no-pub` sin incidencias; pruebas dirigidas de navegación, historial y cambio de modo, 20 aprobadas; suite completa Flutter, 64 aprobadas. La suite completa detectó inicialmente que Perfil intentaba construir el repositorio de pagos sin Supabase inicializado en pruebas; se corrigió convirtiendo esa lectura en error asíncrono presentable y la repetición completa aprobó.
+- Referencia reconsultada: `irlanda/apoyar-detalle-perfil@a246fa6f42ec517aae264d7fbd2358d647c4f840`, sin cambio. Dinero permanece en test.
+
 ## Contenido demo disponible — 26 de septiembre de 2026
 
 - Carga autorizada en Supabase de pruebas: cinco adopciones públicas con fotos y perfil ficticio, una en revisión, una con correcciones y tres casos demo (dos aprobados y uno cerrado). Inventario y límites en `demo-data.md`.

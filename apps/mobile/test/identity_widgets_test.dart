@@ -23,7 +23,7 @@ void main() {
         identityRepositoryProvider.overrideWithValue(repo),
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         routerInitialLocationProvider.overrideWithValue(
-          repo.user?.verified == true ? '/profile' : '/welcome',
+          repo.user?.verified == true ? '/profile/basic-info' : '/welcome',
         ),
       ],
     );

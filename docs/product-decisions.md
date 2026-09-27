@@ -2,6 +2,8 @@
 
 ## Decisiones de lanzamiento — 25 de septiembre de 2026 (México)
 
+Actualización 26/9/2026: H8 incluye paridad completa y funcional de ambos modos, backend mínimo de favoritos/avances/perfil público/reportes y descubrimiento aproximado. H9 conserva aceptación integrada/excepciones. Historias persistentes, no temporales; ubicación aproximada opcional con alternativa manual; contacto público por ciudad y chat sin domicilio, teléfono ni correo personal. Ver `h8-execution.md`.
+
 El titular autorizó `release-roadmap.md`. MVP público en Android/iOS con Google/Apple, eliminación de cuenta, medición mínima y funciones actuales completas. Videos, Meta, push y analítica avanzada quedan post-MVP. No habrá tienda, fondo comunitario, bonos ni cashback. Seguir la última versión de Irlanda (`irlanda/apoyar-detalle-perfil`); las reglas económicas y de privacidad prevalecen sobre sus simulaciones. El sistema anterior al pivot era de pruebas; retirarlo tras respaldo, restauración y análisis de dependencias, preservando el sistema actual.
 
 ## Alcance

@@ -108,6 +108,9 @@ class IdentityController extends ChangeNotifier {
       const accountRoutes = [
         '/home',
         '/profile',
+        '/settings',
+        '/help',
+        '/publish',
         '/terms',
         '/saved',
         '/my-adoptions',
@@ -133,6 +136,10 @@ class IdentityController extends ChangeNotifier {
     }
     if (path == '/home' ||
         path == '/profile' ||
+        path.startsWith('/profile/') ||
+        path == '/settings' ||
+        path == '/help' ||
+        path == '/publish' ||
         path == '/guardian' ||
         path == '/guardian/history' ||
         path == '/payments' ||

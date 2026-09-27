@@ -67,11 +67,11 @@ abstract class IdentityRepository {
   Future<void> logout();
   Future<void> oauth(String provider);
   Future<Profile> loadProfile();
+  Future<Profile> setExperience(String mode);
   Future<Profile> saveProfile({
     required String name,
     required String phone,
     required String city,
-    required String mode,
   });
   Future<void> acceptTerms();
 }
@@ -197,11 +197,28 @@ class SupabaseIdentityRepository implements IdentityRepository {
         .single(),
   );
   @override
+  Future<Profile> setExperience(String mode) async {
+    if (!['donor', 'rescuer'].contains(mode)) {
+      throw ArgumentError.value(mode, 'mode');
+    }
+    final owner = client.auth.currentUser!.id;
+    final result = await client
+        .from('profiles')
+        .update({'active_mode': mode})
+        .eq('id', owner)
+        .select()
+        .single();
+    if (client.auth.currentUser?.id != owner) {
+      throw StateError('profile_owner_changed');
+    }
+    return Profile.fromJson(result);
+  }
+
+  @override
   Future<Profile> saveProfile({
     required String name,
     required String phone,
     required String city,
-    required String mode,
   }) async {
     final result = await client
         .from('profiles')
@@ -209,7 +226,6 @@ class SupabaseIdentityRepository implements IdentityRepository {
           'display_name': name.trim(),
           'phone': phone.trim(),
           'city': city.trim(),
-          'active_mode': mode,
         })
         .eq('id', client.auth.currentUser!.id)
         .select()

@@ -49,6 +49,7 @@ class ExperienceController extends ChangeNotifier {
   }
   final IdentityController identity;
   AccountExperience value = AccountExperience.donor;
+  Profile? profile;
   bool loading = false;
   String? _owner;
   int _revision = 0;
@@ -65,6 +66,7 @@ class ExperienceController extends ChangeNotifier {
     _owner = owner;
     final revision = ++_revision;
     value = AccountExperience.donor;
+    profile = null;
     loading = owner != null;
     notifyListeners();
     if (owner != null) unawaited(_load(owner, revision));
@@ -92,6 +94,7 @@ class ExperienceController extends ChangeNotifier {
     if (_disposed || profile.id != _owner) return;
     _revision++;
     loading = false;
+    this.profile = profile;
     value = profile.mode == 'rescuer'
         ? AccountExperience.rescuer
         : AccountExperience.donor;

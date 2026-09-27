@@ -18,7 +18,7 @@ const donorDestinations = [
 const rescuerDestinations = [
   DopmiDestination('Inicio', '/rescuer', 'rtab-home.svg', 3),
   DopmiDestination('Casos', '/my-cases', 'rtab-cases.svg', 4),
-  DopmiDestination('Publicar', '/my-adoptions', 'rtab-publish.svg', 5),
+  DopmiDestination('Publicar', '/publish', 'rtab-publish.svg', 5),
   DopmiDestination('Mensajes', '/messages', 'rtab-messages.svg', 6),
   DopmiDestination('Perfil', '/profile', 'rtab-profile.svg', 2),
 ];
