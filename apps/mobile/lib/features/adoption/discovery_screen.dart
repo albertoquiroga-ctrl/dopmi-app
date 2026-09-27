@@ -24,11 +24,24 @@ class DiscoveryScreen extends ConsumerStatefulWidget {
 
 class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   final cards = <Adoption>[];
+  final support = <SupportOpportunity>[];
   Json filters = {'species': 'dog'};
   int index = 0, page = 1, total = 0;
   double dragX = 0;
   bool loading = true, acting = false, exhausted = false;
   String? error;
+
+  List<Object> get deck {
+    final result = <Object>[];
+    var supportIndex = 0;
+    for (var petIndex = 0; petIndex < cards.length; petIndex++) {
+      result.add(cards[petIndex]);
+      if ((petIndex + 1) % 2 == 0 && supportIndex < support.length) {
+        result.add(support[supportIndex++]);
+      }
+    }
+    return result;
+  }
 
   @override
   void initState() {
@@ -43,6 +56,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
       error = null;
       if (reset) {
         cards.clear();
+        support.clear();
         index = 0;
         page = 1;
         exhausted = false;
@@ -52,6 +66,11 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
       final result = await ref
           .read(communityRepositoryProvider)
           .discovery(filters, page);
+      if (reset) {
+        support.addAll(
+          await ref.read(communityRepositoryProvider).discoverySupport(),
+        );
+      }
       if (!mounted) return;
       final known = cards.map((item) => item.id).toSet();
       cards.addAll(result.items.where((item) => known.add(item.id)));
@@ -65,20 +84,31 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   }
 
   Future<void> advance({required bool save}) async {
-    if (acting || index >= cards.length) return;
-    final card = cards[index];
+    final items = deck;
+    if (acting || index >= items.length) return;
+    final card = items[index];
     setState(() => acting = true);
     try {
-      if (save && !card.saved) {
+      if (card is SupportOpportunity && save) {
+        if (mounted) {
+          setState(() => index++);
+          context.push('/contribute/${card.expenseId}');
+        }
+        return;
+      }
+      if (card is Adoption && save && !card.saved) {
         await ref.read(communityRepositoryProvider).favorite(card.id, true);
-        cards[index] = Adoption({...card.data, 'saved': true});
+        final position = cards.indexWhere((item) => item.id == card.id);
+        if (position >= 0) {
+          cards[position] = Adoption({...card.data, 'saved': true});
+        }
       }
       if (!mounted) return;
       setState(() {
         index++;
         dragX = 0;
       });
-      if (!exhausted && cards.length - index <= 2) {
+      if (!exhausted && deck.length - index <= 2) {
         page++;
         await load(reset: false);
       }
@@ -167,7 +197,8 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final current = index < cards.length ? cards[index] : null;
+    final items = deck;
+    final current = index < items.length ? items[index] : null;
     return CommunityFrame(
       index: 0,
       back: false,
@@ -242,7 +273,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
             restart: () => setState(() => index = 0),
             filters: openFilters,
           )
-        else
+        else if (current is Adoption)
           _SwipeCard(
             current,
             dragX: dragX,
@@ -262,8 +293,70 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
               await context.push('/adoptions/${current.id}');
               if (mounted) await load(reset: true);
             },
+          )
+        else
+          _SupportCard(
+            current as SupportOpportunity,
+            busy: acting,
+            pass: () => advance(save: false),
+            support: () => advance(save: true),
+            open: () => context.push('/rescue-cases/${current.id}'),
           ),
       ],
+    );
+  }
+}
+
+class _SupportCard extends StatelessWidget {
+  const _SupportCard(
+    this.item, {
+    required this.busy,
+    required this.pass,
+    required this.support,
+    required this.open,
+  });
+  final SupportOpportunity item;
+  final bool busy;
+  final VoidCallback pass, support, open;
+  @override
+  Widget build(BuildContext context) {
+    final progress = item.reimbursable == 0
+        ? 0.0
+        : (item.funded / item.reimbursable).clamp(0, 1).toDouble();
+    return Card(
+      color: const Color(0xfffff6cf),
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Icon(Icons.volunteer_activism, size: 54, color: purple),
+            const SizedBox(height: 18),
+            const Text('También puedes cambiar su historia apoyando'),
+            const SizedBox(height: 8),
+            Text(item.name, style: Theme.of(context).textTheme.headlineMedium),
+            Text(item.text('expense_title')),
+            const SizedBox(height: 16),
+            LinearProgressIndicator(value: progress),
+            const SizedBox(height: 8),
+            Text('${(progress * 100).round()} % cubierto'),
+            const SizedBox(height: 20),
+            OutlinedButton(
+              onPressed: busy ? null : open,
+              child: const Text('Ver caso'),
+            ),
+            FilledButton(
+              onPressed: busy ? null : support,
+              child: const Text('Apoyar este gasto'),
+            ),
+            TextButton(
+              onPressed: busy ? null : pass,
+              child: const Text('Seguir descubriendo'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

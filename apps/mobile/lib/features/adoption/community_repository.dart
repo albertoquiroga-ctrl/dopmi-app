@@ -46,6 +46,17 @@ class DataPage<T> {
   final int total;
 }
 
+class SupportOpportunity {
+  SupportOpportunity(Json value) : data = Map.unmodifiable(value);
+  final Json data;
+  String text(String key) => data[key] as String? ?? '';
+  String get id => text('case_id');
+  String get expenseId => text('expense_id');
+  String get name => text('pet_name');
+  int get reimbursable => data['reimbursable_cents'] as int? ?? 0;
+  int get funded => data['funded_cents'] as int? ?? 0;
+}
+
 final communityRepositoryProvider = Provider<CommunityRepository>(
   (ref) => SupabaseCommunityRepository(Supabase.instance.client),
 );
@@ -54,6 +65,7 @@ abstract class CommunityRepository {
   String? get userId;
   Future<DataPage<Adoption>> catalog(Json filters, int page);
   Future<DataPage<Adoption>> discovery(Json filters, int page);
+  Future<List<SupportOpportunity>> discoverySupport();
   Future<Adoption?> detail(String id);
   Future<DataPage<Adoption>> mine(int page);
   Future<Adoption?> own(String id);
@@ -106,6 +118,12 @@ class SupabaseCommunityRepository implements CommunityRepository {
       result['total'] as int,
     );
   }
+
+  @override
+  Future<List<SupportOpportunity>> discoverySupport() async =>
+      (await rpc('dopmi_discovery_support', {'page_size': 12}) as List)
+          .map((value) => SupportOpportunity(Json.from(value)))
+          .toList();
 
   @override
   Future<Adoption?> detail(String id) async {

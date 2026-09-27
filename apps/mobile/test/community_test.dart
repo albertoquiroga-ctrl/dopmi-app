@@ -30,6 +30,8 @@ class FakeCommunity implements CommunityRepository {
     'version': 1,
   });
   bool failSave = false, failSend = true;
+  List<Adoption>? discoveryItems;
+  List<SupportOpportunity> supportItems = [];
   final sentIds = <String>[];
   final stored = <String, Json>{};
   Json? savedPayload;
@@ -42,7 +44,9 @@ class FakeCommunity implements CommunityRepository {
       DataPage([post], 1);
   @override
   Future<DataPage<Adoption>> discovery(Json filters, int page) async =>
-      DataPage([post], 1);
+      DataPage(discoveryItems ?? [post], (discoveryItems ?? [post]).length);
+  @override
+  Future<List<SupportOpportunity>> discoverySupport() async => supportItems;
   @override
   Future<Adoption?> detail(String id) async => post;
   @override
@@ -171,6 +175,33 @@ void main() {
       findsOneWidget,
     );
     expect(tester.takeException(), isNull);
+  });
+  testWidgets('an eligible support card appears after two adoptions', (
+    tester,
+  ) async {
+    final repo = FakeCommunity();
+    repo.discoveryItems = [
+      repo.post,
+      Adoption({...repo.post.data, 'id': 'second', 'pet_name': 'Milo'}),
+    ];
+    repo.supportItems = [
+      SupportOpportunity({
+        'case_id': 'case-one',
+        'expense_id': 'expense-one',
+        'pet_name': 'Choco',
+        'expense_title': 'Tratamiento',
+        'reimbursable_cents': 10000,
+        'funded_cents': 2500,
+      }),
+    ];
+    await start(tester, repo, '/adoptions');
+    await tester.tap(find.byTooltip('Pasar'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Pasar'));
+    await tester.pumpAndSettle();
+    expect(find.text('Choco'), findsOneWidget);
+    expect(find.text('25 % cubierto'), findsOneWidget);
+    expect(find.text('Apoyar este gasto'), findsOneWidget);
   });
   testWidgets(
     'failed draft save preserves authored content and can be retried',
