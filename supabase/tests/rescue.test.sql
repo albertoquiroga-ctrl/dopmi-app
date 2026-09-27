@@ -75,6 +75,8 @@ select throws_ok($$select dopmi_transition_rescue('61000000-0000-4000-8000-00000
 select set_config('request.jwt.claim.sub','60000000-0000-4000-8000-000000000004',true);
 select is(dopmi_review_rescue('61000000-0000-4000-8000-000000000002',2,'approved','Caso comprobado',0,false,'',true)->>'status','approved','case approved separately');
 select set_config('request.jwt.claim.sub','60000000-0000-4000-8000-000000000001',true);
+select is(dopmi_save_adoption(jsonb_build_object('rescue_case_id','61000000-0000-4000-8000-000000000002'))->>'rescue_case_id','61000000-0000-4000-8000-000000000002','approved case creates an independently moderated adoption draft');
+select throws_ok($$select dopmi_save_adoption(jsonb_build_object('rescue_case_id','61000000-0000-4000-8000-000000000002'))$$,'23505',null,'case cannot create duplicate linked adoption drafts');
 select is(dopmi_transition_rescue('61000000-0000-4000-8000-000000000003',1,'submit')->>'status','submitted','paid food expense submitted');
 select throws_ok($$select dopmi_transition_rescue('61000000-0000-4000-8000-000000000002',3,'close')$$,'22023',null,'pending expense blocks case closure');
 select set_config('request.jwt.claim.sub','60000000-0000-4000-8000-000000000004',true);

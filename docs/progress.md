@@ -1,5 +1,12 @@
 # Dopmi — registro de avance
 
+## H8.6 vínculo caso–adopción y publicación por pasos — 26 de septiembre de 2026
+
+- Un caso aprobado del propietario puede crear o reabrir una única publicación de adopción vinculada. El vínculo no cambia el estado del caso ni publica la adopción: sus ciclos de borrador, envío y moderación siguen independientes.
+- La publicación de adopción usa **Fotos → Información → Revisión**. Cada avance guarda el borrador en servidor, conserva el vínculo y permite regresar; el resumen no declara publicación antes de la respuesta del servidor.
+- Migración local `20260927032540_case_adoption_link.sql`, remota `20260927031531`. Añade una FK aditiva/índice único parcial y conserva la firma de `dopmi_save_adoption`; build 253 sigue compatible. Remoto: columna presente, ejecución autenticada permitida y `anon` denegado.
+- PostgreSQL completo: 236 pruebas; cubre creación vinculada y rechazo de duplicado. Flutter: análisis limpio y 20 pruebas dirigidas, incluidos reintento de borrador por pasos y persistencia del UUID del caso. Falta captura/revisión instalada.
+
 ## H8.6 Inicio del rescatista — 26 de septiembre de 2026
 
 - Inicio consume un resumen autenticado y muestra verificación real, casos activos, borradores/correcciones, mensajes sin leer y actividad reciente. Las acciones conducen al registro o conversación correspondiente; el vacío ofrece Publicar.

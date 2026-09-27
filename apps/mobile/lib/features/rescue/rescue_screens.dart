@@ -281,13 +281,13 @@ class _RescueListState extends ConsumerState<RescueList> {
   );
 }
 
-class _OwnedRescueCard extends StatelessWidget {
+class _OwnedRescueCard extends ConsumerWidget {
   const _OwnedRescueCard({required this.record, required this.refresh});
   final RescueRecord record;
   final VoidCallback refresh;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final needsAction = [
       'draft',
       'changes_requested',
@@ -352,10 +352,20 @@ class _OwnedRescueCard extends StatelessWidget {
             ),
             if (record.kind == 'case' && record.status == 'approved')
               TextButton.icon(
-                onPressed: () =>
-                    context.push('/my-adoptions/new?case=${record.id}'),
+                onPressed: () async {
+                  final linked = await ref
+                      .read(communityRepositoryProvider)
+                      .ownForCase(record.id);
+                  if (!context.mounted) return;
+                  await context.push(
+                    linked == null
+                        ? '/my-adoptions/new?case=${record.id}'
+                        : '/my-adoptions/${linked.id}',
+                  );
+                  refresh();
+                },
                 icon: const Icon(Icons.home_outlined),
-                label: const Text('Crear publicación de adopción vinculada'),
+                label: const Text('Preparar publicación para adopción'),
               ),
           ],
         ),

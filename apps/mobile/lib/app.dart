@@ -264,6 +264,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/my-adoptions/:id',
         builder: (_, state) => PublicationScreen(
           state.pathParameters['id']!,
+          rescueCaseId: state.uri.queryParameters['case'],
           key: ValueKey('${identity.identity?.id}:${state.uri}'),
         ),
       ),

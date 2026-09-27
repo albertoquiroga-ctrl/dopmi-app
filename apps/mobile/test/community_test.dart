@@ -125,6 +125,8 @@ class FakeCommunity implements CommunityRepository {
     ],
   };
   @override
+  Future<Adoption?> ownForCase(String caseId) async => null;
+  @override
   Future<List<Json>> personalImpact() async => [
     {
       'case_id': 'case-one',
@@ -417,13 +419,15 @@ void main() {
   testWidgets(
     'failed draft save preserves authored content and can be retried',
     (tester) async {
-      final repo = FakeCommunity()..failSave = true;
+      final repo = FakeCommunity();
       await start(tester, repo, '/my-adoptions/new');
+      await tap(tester, 'Guardar y continuar');
       await tester.enterText(
         find.widgetWithText(TextFormField, 'Nombre de la mascota'),
         'Mora',
       );
-      await tap(tester, 'Guardar borrador');
+      repo.failSave = true;
+      await tap(tester, 'Guardar y continuar');
       expect(repo.savedPayload!['pet_name'], 'Mora');
       expect(
         find.text(
@@ -432,12 +436,28 @@ void main() {
         findsWidgets,
       );
       repo.failSave = false;
-      await tap(tester, 'Guardar borrador');
+      await tap(tester, 'Guardar y continuar');
       expect(repo.post.name, 'Mora');
       expect(repo.post.status, 'draft');
+      expect(find.text('Revisa antes de enviar'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
+  testWidgets('case-linked adoption keeps an independent moderated draft', (
+    tester,
+  ) async {
+    final repo = FakeCommunity();
+    await start(tester, repo, '/my-adoptions/new?case=case-one');
+    expect(
+      find.text(
+        'Esta publicación está vinculada a un caso aprobado. Su revisión de adopción es independiente.',
+      ),
+      findsOneWidget,
+    );
+    await tap(tester, 'Guardar y continuar');
+    expect(repo.savedPayload?['rescue_case_id'], 'case-one');
+    expect(find.text('Información'), findsOneWidget);
+  });
   testWidgets(
     'ambiguous message response retries with same id and removes private data on logout',
     (tester) async {

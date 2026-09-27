@@ -91,8 +91,9 @@ class _MyAdoptionsState extends ConsumerState<MyAdoptionsScreen> {
 }
 
 class PublicationScreen extends ConsumerStatefulWidget {
-  const PublicationScreen(this.id, {super.key});
+  const PublicationScreen(this.id, {super.key, this.rescueCaseId});
   final String id;
+  final String? rescueCaseId;
   @override
   ConsumerState<PublicationScreen> createState() => _PublicationState();
 }
@@ -118,7 +119,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
   Adoption? post;
   bool loading = false, busy = false;
   String? error, message;
-  int loaded = 0;
+  int loaded = 0, step = 0;
   CommunityRepository get repo => ref.read(communityRepositoryProvider);
   @override
   void initState() {
@@ -168,6 +169,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
               key: result.data[key],
           };
           photos = result.photos;
+          if (result.status == 'submitted') step = 2;
         });
       }
     } catch (cause) {
@@ -198,6 +200,8 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       ...choices,
       for (final entry in fields.entries) entry.key: entry.value.text.trim(),
       'photos': photos,
+      if (widget.rescueCaseId != null || post?.data['rescue_case_id'] != null)
+        'rescue_case_id': widget.rescueCaseId ?? post?.data['rescue_case_id'],
     };
     payload['age_months'] = int.tryParse(fields['age_months']!.text) ?? 0;
     final result = await repo.save(
@@ -323,6 +327,10 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       if (!loading && widget.id != 'new' && post == null)
         ActionButton('Volver a intentar', onPressed: load),
       if (!loading && (post != null || widget.id == 'new')) ...[
+        if (widget.rescueCaseId != null || post?.data['rescue_case_id'] != null)
+          const Notice(
+            'Esta publicación está vinculada a un caso aprobado. Su revisión de adopción es independiente.',
+          ),
         if (post?.text('review_feedback').isNotEmpty == true)
           Notice('Respuesta del equipo: ${post!.text('review_feedback')}'),
         if (post?.status == 'published' || post?.status == 'adopted')
@@ -333,112 +341,157 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
           const Notice(
             'Tu publicación está en revisión. Retírala de revisión si necesitas editarla.',
           ),
+        _PublishSteps(step: step),
+        const SizedBox(height: 18),
         Form(
           key: form,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'Su información',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 18),
-              field('pet_name', 'Nombre de la mascota', 80),
-              choice('species', 'Especie', {'dog': 'Perro', 'cat': 'Gato'}),
-              choice('sex', 'Sexo', {'female': 'Hembra', 'male': 'Macho'}),
-              field('age_months', 'Edad aproximada en meses', 3),
-              choice('size', 'Tamaño', {
-                'small': 'Pequeño',
-                'medium': 'Mediano',
-                'large': 'Grande',
-              }),
-              field('breed', 'Raza o mestizo (opcional)', 80),
-              field('city', 'Ciudad', 100),
-              field('region', 'Estado', 100),
-              field(
-                'story',
-                'Su historia y el hogar que necesita',
-                4000,
-                lines: 5,
-              ),
-              trait('vaccinated', '¿Tiene sus vacunas al día?'),
-              trait('sterilized', '¿Está esterilizado?'),
-              trait('social_dogs', '¿Convive con perros?'),
-              trait('social_cats', '¿Convive con gatos?'),
-              trait('social_children', '¿Convive con niñas y niños?'),
-              field(
-                'special_care',
-                'Cuidados especiales (opcional)',
-                1000,
-                lines: 3,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Tu presentación pública',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 12),
-                child: Text(
-                  'Estos datos aparecerán en la publicación y en tu perfil público después de la aprobación. No incluyas tu domicilio, teléfono ni documentos.',
+              if (step == 1) ...[
+                Text(
+                  'Su información',
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-              ),
-              field('publisher_name', 'Nombre público o del refugio', 80),
-              field(
-                'publisher_bio',
-                'Sobre ti y tu labor (opcional)',
-                1000,
-                lines: 3,
-              ),
-              Text(
-                'Fotos (${photos.length}/5)',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 12),
-                child: Text(
-                  'Usa fotos de la mascota sin documentos ni direcciones visibles. Eliminamos los metadatos de las imágenes antes de subirlas.',
+                const SizedBox(height: 18),
+                field('pet_name', 'Nombre de la mascota', 80),
+                choice('species', 'Especie', {'dog': 'Perro', 'cat': 'Gato'}),
+                choice('sex', 'Sexo', {'female': 'Hembra', 'male': 'Macho'}),
+                field('age_months', 'Edad aproximada en meses', 3),
+                choice('size', 'Tamaño', {
+                  'small': 'Pequeño',
+                  'medium': 'Mediano',
+                  'large': 'Grande',
+                }),
+                field('breed', 'Raza o mestizo (opcional)', 80),
+                field('city', 'Ciudad', 100),
+                field('region', 'Estado', 100),
+                field(
+                  'story',
+                  'Su historia y el hogar que necesita',
+                  4000,
+                  lines: 5,
                 ),
-              ),
-              for (final path in photos)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Column(
-                    children: [
-                      AdoptionPhoto(path, height: 200),
-                      if (post?.status != 'submitted')
-                        TextButton.icon(
-                          onPressed: busy
-                              ? null
-                              : () => setState(() => photos.remove(path)),
-                          icon: const Icon(Icons.close),
-                          label: const Text('Quitar foto del borrador'),
-                        ),
-                    ],
+                trait('vaccinated', '¿Tiene sus vacunas al día?'),
+                trait('sterilized', '¿Está esterilizado?'),
+                trait('social_dogs', '¿Convive con perros?'),
+                trait('social_cats', '¿Convive con gatos?'),
+                trait('social_children', '¿Convive con niñas y niños?'),
+                field(
+                  'special_care',
+                  'Cuidados especiales (opcional)',
+                  1000,
+                  lines: 3,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Tu presentación pública',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Text(
+                    'Estos datos aparecerán en la publicación y en tu perfil público después de la aprobación. No incluyas tu domicilio, teléfono ni documentos.',
                   ),
                 ),
-              if (photos.length < 5 && post?.status != 'submitted')
-                OutlinedButton.icon(
-                  onPressed: busy ? null : addPhoto,
-                  icon: const Icon(Icons.add_photo_alternate_outlined),
-                  label: const Text('Agregar una foto'),
+                field('publisher_name', 'Nombre público o del refugio', 80),
+                field(
+                  'publisher_bio',
+                  'Sobre ti y tu labor (opcional)',
+                  1000,
+                  lines: 3,
                 ),
+              ],
+              if (step == 0) ...[
+                Text(
+                  'Fotos (${photos.length}/5)',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Text(
+                    'Usa fotos de la mascota sin documentos ni direcciones visibles. Eliminamos los metadatos de las imágenes antes de subirlas.',
+                  ),
+                ),
+                for (final path in photos)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Column(
+                      children: [
+                        AdoptionPhoto(path, height: 200),
+                        if (post?.status != 'submitted')
+                          TextButton.icon(
+                            onPressed: busy
+                                ? null
+                                : () => setState(() => photos.remove(path)),
+                            icon: const Icon(Icons.close),
+                            label: const Text('Quitar foto del borrador'),
+                          ),
+                      ],
+                    ),
+                  ),
+                if (photos.length < 5 && post?.status != 'submitted')
+                  OutlinedButton.icon(
+                    onPressed: busy ? null : addPhoto,
+                    icon: const Icon(Icons.add_photo_alternate_outlined),
+                    label: const Text('Agregar una foto'),
+                  ),
+              ],
+              if (step == 2) ...[
+                Text(
+                  'Revisa antes de enviar',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 12),
+                _ReviewRow(
+                  'Mascota',
+                  fields['pet_name']!.text.trim().isEmpty
+                      ? 'Sin nombre'
+                      : fields['pet_name']!.text.trim(),
+                ),
+                _ReviewRow(
+                  'Ubicación',
+                  [
+                    fields['city']!.text.trim(),
+                    fields['region']!.text.trim(),
+                  ].where((value) => value.isNotEmpty).join(', '),
+                ),
+                _ReviewRow('Fotos', '${photos.length} de 5'),
+                const Notice(
+                  'Al enviar, el equipo revisará fotos, información y privacidad antes de publicar.',
+                ),
+              ],
               if (message != null) Notice(message!),
               if (error != null) Notice(error!, isError: true),
               const SizedBox(height: 20),
               if (post?.status != 'submitted') ...[
-                ActionButton(
-                  'Guardar borrador',
-                  busy: busy,
-                  onPressed: () {
-                    if (form.currentState!.validate()) perform(save);
-                  },
-                ),
-                const SizedBox(height: 12),
-                OutlinedButton(
-                  onPressed: busy ? null : () => change('submit'),
-                  child: const Text('Enviar a revisión'),
-                ),
+                if (step < 2)
+                  ActionButton(
+                    'Guardar y continuar',
+                    busy: busy,
+                    onPressed: () => perform(() async {
+                      if (!form.currentState!.validate()) return;
+                      await save();
+                      if (mounted) setState(() => step++);
+                    }),
+                  )
+                else ...[
+                  ActionButton(
+                    'Enviar a revisión',
+                    busy: busy,
+                    onPressed: () => change('submit'),
+                  ),
+                  const SizedBox(height: 12),
+                  OutlinedButton(
+                    onPressed: busy ? null : () => perform(save),
+                    child: const Text('Guardar borrador'),
+                  ),
+                ],
+                if (step > 0)
+                  TextButton(
+                    onPressed: busy ? null : () => setState(() => step--),
+                    child: const Text('Regresar al paso anterior'),
+                  ),
               ] else
                 ActionButton(
                   'Retirar de revisión para editar',
@@ -469,5 +522,46 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
         ),
       ],
     ],
+  );
+}
+
+class _PublishSteps extends StatelessWidget {
+  const _PublishSteps({required this.step});
+  final int step;
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: 'Paso ${step + 1} de 3',
+    child: Row(
+      children: [
+        for (final entry in ['Fotos', 'Información', 'Revisión'].indexed) ...[
+          Expanded(
+            child: Column(
+              children: [
+                LinearProgressIndicator(
+                  value: entry.$1 <= step ? 1 : 0,
+                  minHeight: 5,
+                  borderRadius: BorderRadius.circular(5),
+                  backgroundColor: const Color(0xffe7e2da),
+                ),
+                const SizedBox(height: 5),
+                Text(entry.$2, style: Theme.of(context).textTheme.bodySmall),
+              ],
+            ),
+          ),
+          if (entry.$1 < 2) const SizedBox(width: 8),
+        ],
+      ],
+    ),
+  );
+}
+
+class _ReviewRow extends StatelessWidget {
+  const _ReviewRow(this.label, this.value);
+  final String label, value;
+  @override
+  Widget build(BuildContext context) => ListTile(
+    contentPadding: EdgeInsets.zero,
+    title: Text(label),
+    subtitle: Text(value.isEmpty ? 'Falta completar' : value),
   );
 }

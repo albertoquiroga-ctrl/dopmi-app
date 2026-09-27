@@ -78,6 +78,7 @@ abstract class CommunityRepository {
   Future<Adoption?> detail(String id);
   Future<DataPage<Adoption>> mine(int page);
   Future<Adoption?> own(String id);
+  Future<Adoption?> ownForCase(String caseId);
   Future<Adoption> save(Json payload, {String? id, int? version});
   Future<Adoption> transition(Adoption post, String action);
   Future<void> favorite(String id, bool saved);
@@ -166,6 +167,17 @@ class SupabaseCommunityRepository implements CommunityRepository {
         .from('dopmi_adoptions')
         .select()
         .eq('id', id)
+        .eq('owner_id', userId!)
+        .maybeSingle();
+    return data == null ? null : Adoption(data);
+  }
+
+  @override
+  Future<Adoption?> ownForCase(String caseId) async {
+    final data = await client
+        .from('dopmi_adoptions')
+        .select()
+        .eq('rescue_case_id', caseId)
         .eq('owner_id', userId!)
         .maybeSingle();
     return data == null ? null : Adoption(data);
