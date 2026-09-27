@@ -216,11 +216,15 @@ void main() {
       }
     }
     expect(find.text('Borrador · Versión 4'), findsOneWidget);
+    repo.conflict = false;
+    await tester.tap(find.text('Guardar y continuar'));
+    await tester.pumpAndSettle();
+    repo.conflict = true;
     final phone = find.widgetWithText(TextField, 'Teléfono');
     await tester.enterText(phone, '8188888888');
     FocusManager.instance.primaryFocus?.unfocus();
     await tester.pump(const Duration(milliseconds: 50));
-    final save = find.text('Guardar borrador');
+    final save = find.text('Guardar y continuar');
     for (var i = 0; i < 12; i++) {
       if (save.evaluate().isNotEmpty) {
         break;
@@ -245,11 +249,16 @@ void main() {
       }
     }
     expect(repo.saved?['phone'], '8188888888');
-    expect(repo.saveCalls, 1);
+    expect(repo.saveCalls, 2);
     expect(
       find.text('La solicitud cambió. Recarga antes de continuar'),
       findsOneWidget,
     );
+    repo.conflict = false;
+    await tester.tap(find.text('Guardar y continuar'));
+    await tester.pumpAndSettle();
+    expect(find.text('Revisa antes de enviar'), findsOneWidget);
+    expect(find.text('0 adjuntos'), findsOneWidget);
     expect(tester.takeException(), null);
   });
 

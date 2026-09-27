@@ -6,6 +6,8 @@
 - La publicación de adopción usa **Fotos → Información → Revisión**. Cada avance guarda el borrador en servidor, conserva el vínculo y permite regresar; el resumen no declara publicación antes de la respuesta del servidor.
 - Migración local `20260927032540_case_adoption_link.sql`, remota `20260927031531`. Añade una FK aditiva/índice único parcial y conserva la firma de `dopmi_save_adoption`; build 253 sigue compatible. Remoto: columna presente, ejecución autenticada permitida y `anon` denegado.
 - PostgreSQL completo: 236 pruebas; cubre creación vinculada y rechazo de duplicado. Flutter: análisis limpio y 20 pruebas dirigidas, incluidos reintento de borrador por pasos y persistencia del UUID del caso. Falta captura/revisión instalada.
+- Verificación, caso y gasto usan ahora **Archivos → Información → Revisión**. Cada avance persiste el borrador, los estados enviados abren en resumen protegido y una operación de guardado/carga muestra progreso real. La prueba conserva campos privados tras un conflicto y completa el resumen al reintentar.
+- Capturas reales nuevas a 377 × 852: Inicio, Mis casos y primer paso de verificación. Se corrigió el botón de regreso indebido en Inicio y se comprobó la barra rescatista de cinco destinos. Falta aceptación instalada de Irlanda.
 
 ## H8.6 Inicio del rescatista — 26 de septiembre de 2026
 

@@ -19,6 +19,7 @@ class RescueHomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => CommunityFrame(
     index: 2,
+    back: false,
     children: [
       const Heading('Hola', 'Tu panel de rescate'),
       LiveSection<Json>(
@@ -391,6 +392,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
   final controllers = <String, TextEditingController>{};
   RescueRecord? record;
   List<Json> files = [], history = [];
+  int step = 0;
   bool loading = true, busy = false, dirty = false, loadFailed = false;
   String? error, message;
   String get kind => record?.kind ?? widget.kind;
@@ -432,6 +434,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
         record = RescueRecord(Json.from(data['record']));
         history = (data['history'] as List).map((e) => Json.from(e)).toList();
         files = record!.files;
+        if (!record!.editable) step = 2;
       }
       fields(record);
       dirty = false;
@@ -627,8 +630,14 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
             const Notice(
               'Los datos enviados están protegidos. Puedes consultar el estado actualizado al recargar.',
             ),
+          _RescueSteps(step: step),
+          if (busy)
+            const LinearProgressIndicator(
+              semanticsLabel: 'Guardando o subiendo archivos',
+            ),
           for (final private in [false, true]) ...[
-            if (rescueFields[kind]!.any((f) => f.private == private)) ...[
+            if (step == 1 &&
+                rescueFields[kind]!.any((f) => f.private == private)) ...[
               const SizedBox(height: 20),
               Text(
                 private
@@ -689,73 +698,91 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
                 ),
             ],
           ],
-          Text(
-            'Documentos y evidencia',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const Text(
-            'Hasta 12 archivos de 5 MB. JPG, PNG, WebP o PDF; para publicar, solo fotos.',
-          ),
-          for (final role
-              in kind == 'verification'
-                  ? ['identity', 'address']
-                  : kind == 'case'
-                  ? ['public']
-                  : ['receipt', 'proof', 'public'])
-            Card(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      '${evidenceRoles[role]} · ${role == 'public' ? 'Pública después de aprobación' : 'Privada'}',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    for (final file in files.where((f) => f['role'] == role))
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextButton.icon(
-                              icon: const Icon(Icons.description_outlined),
-                              label: Text(
-                                'Ver archivo ${files.indexOf(file) + 1}',
-                              ),
-                              onPressed: () => context.push(
-                                '/rescue-file',
-                                extra: file['path'],
-                              ),
-                            ),
-                          ),
-                          if (editable)
-                            IconButton(
-                              tooltip:
-                                  'Quitar archivo ${files.indexOf(file) + 1}',
-                              icon: const Icon(Icons.close),
-                              onPressed: busy
-                                  ? null
-                                  : () => setState(() {
-                                      files.remove(file);
-                                      dirty = true;
-                                    }),
-                            ),
-                        ],
+          if (step == 0) ...[
+            Text(
+              'Documentos y evidencia',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const Text(
+              'Hasta 12 archivos de 5 MB. JPG, PNG, WebP o PDF; para publicar, solo fotos.',
+            ),
+            for (final role
+                in kind == 'verification'
+                    ? ['identity', 'address']
+                    : kind == 'case'
+                    ? ['public']
+                    : ['receipt', 'proof', 'public'])
+              Card(
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        '${evidenceRoles[role]} · ${role == 'public' ? 'Pública después de aprobación' : 'Privada'}',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    if (editable)
-                      OutlinedButton.icon(
-                        onPressed: busy || files.length >= 12
-                            ? null
-                            : () => run(() => attach(role)),
-                        icon: const Icon(Icons.upload_file),
-                        label: Text(
-                          'Adjuntar ${evidenceRoles[role]!.toLowerCase()}',
+                      for (final file in files.where((f) => f['role'] == role))
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextButton.icon(
+                                icon: const Icon(Icons.description_outlined),
+                                label: Text(
+                                  'Ver archivo ${files.indexOf(file) + 1}',
+                                ),
+                                onPressed: () => context.push(
+                                  '/rescue-file',
+                                  extra: file['path'],
+                                ),
+                              ),
+                            ),
+                            if (editable)
+                              IconButton(
+                                tooltip:
+                                    'Quitar archivo ${files.indexOf(file) + 1}',
+                                icon: const Icon(Icons.close),
+                                onPressed: busy
+                                    ? null
+                                    : () => setState(() {
+                                        files.remove(file);
+                                        dirty = true;
+                                      }),
+                              ),
+                          ],
                         ),
-                      ),
-                  ],
+                      if (editable)
+                        OutlinedButton.icon(
+                          onPressed: busy || files.length >= 12
+                              ? null
+                              : () => run(() => attach(role)),
+                          icon: const Icon(Icons.upload_file),
+                          label: Text(
+                            'Adjuntar ${evidenceRoles[role]!.toLowerCase()}',
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
+          ],
+          if (step == 2) ...[
+            Text(
+              'Revisa antes de enviar',
+              style: Theme.of(context).textTheme.titleLarge,
             ),
+            const SizedBox(height: 12),
+            _RescueReviewRow('Tipo', rescueKinds[kind] ?? kind),
+            _RescueReviewRow(
+              'Nombre',
+              controllers[rescueFields[kind]!.first.key]?.text.trim() ?? '',
+            ),
+            _RescueReviewRow('Archivos', '${files.length} adjuntos'),
+            const Notice(
+              'El equipo revisará por separado la información pública, los documentos privados y la evidencia antes de aprobar.',
+            ),
+          ],
           if (record?.kind == 'expense' && record!.status == 'approved')
             LiveSection<Json>(
               key: ValueKey('funding:${record!.id}'),
@@ -779,15 +806,31 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
           if (editable) ...[
             if (error != null) Notice(error!, isError: true),
             if (message != null) Notice(message!),
-            ActionButton(
-              'Enviar a revisión',
-              busy: busy,
-              onPressed: () => run(() => transition('submit')),
-            ),
-            TextButton(
-              onPressed: busy ? null : () => run(save),
-              child: const Text('Guardar borrador'),
-            ),
+            if (step < 2)
+              ActionButton(
+                'Guardar y continuar',
+                busy: busy,
+                onPressed: () => run(() async {
+                  await save();
+                  if (mounted) setState(() => step++);
+                }),
+              )
+            else ...[
+              ActionButton(
+                'Enviar a revisión',
+                busy: busy,
+                onPressed: () => run(() => transition('submit')),
+              ),
+              TextButton(
+                onPressed: busy ? null : () => run(save),
+                child: const Text('Guardar borrador'),
+              ),
+            ],
+            if (step > 0)
+              TextButton(
+                onPressed: busy ? null : () => setState(() => step--),
+                child: const Text('Regresar al paso anterior'),
+              ),
           ],
           if (!editable && error != null) Notice(error!, isError: true),
           if (!editable && message != null) Notice(message!),
@@ -874,6 +917,55 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
         ],
       ],
     ),
+  );
+}
+
+class _RescueSteps extends StatelessWidget {
+  const _RescueSteps({required this.step});
+  final int step;
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: 'Paso ${step + 1} de 3',
+    child: Padding(
+      padding: const EdgeInsets.only(top: 16),
+      child: Row(
+        children: [
+          for (final entry in [
+            'Archivos',
+            'Información',
+            'Revisión',
+          ].indexed) ...[
+            Expanded(
+              child: Column(
+                children: [
+                  LinearProgressIndicator(
+                    value: entry.$1 <= step ? 1 : 0,
+                    minHeight: 5,
+                    borderRadius: BorderRadius.circular(5),
+                    backgroundColor: const Color(0xffe7e2da),
+                    color: purple,
+                  ),
+                  const SizedBox(height: 5),
+                  Text(entry.$2, style: Theme.of(context).textTheme.bodySmall),
+                ],
+              ),
+            ),
+            if (entry.$1 < 2) const SizedBox(width: 8),
+          ],
+        ],
+      ),
+    ),
+  );
+}
+
+class _RescueReviewRow extends StatelessWidget {
+  const _RescueReviewRow(this.label, this.value);
+  final String label, value;
+  @override
+  Widget build(BuildContext context) => ListTile(
+    contentPadding: EdgeInsets.zero,
+    title: Text(label),
+    subtitle: Text(value.isEmpty ? 'Falta completar' : value),
   );
 }
 

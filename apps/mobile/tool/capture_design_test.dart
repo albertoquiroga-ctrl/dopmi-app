@@ -159,6 +159,9 @@ void main() {
     for (final route in [
       ('support-home', '/rescue-cases'),
       ('case-detail', '/rescue-cases/case-one'),
+      ('rescuer-home', '/rescuer'),
+      ('rescuer-cases', '/my-cases'),
+      ('verification-files', '/rescue/verification-id'),
     ]) {
       final identity = FakeIdentityRepository()
         ..user = const Identity(
@@ -166,6 +169,18 @@ void main() {
           'captura@example.test',
           verified: true,
         );
+      if (route.$1.startsWith('rescuer') || route.$1 == 'verification-files') {
+        identity.profile = const Profile(
+          id: 'capture-user',
+          name: 'Ana',
+          phone: '',
+          city: 'Monterrey',
+          mode: 'rescuer',
+          intent: 'rescue',
+          status: 'active',
+          termsVersion: developmentTermsVersion,
+        );
+      }
       final container = ProviderContainer(
         overrides: [
           identityRepositoryProvider.overrideWithValue(identity),
