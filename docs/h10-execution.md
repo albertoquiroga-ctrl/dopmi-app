@@ -169,6 +169,20 @@ Pendientes de aceptación: inicio/cancelación/vinculación social en dispositiv
 revocación Apple con una identidad real, correo transaccional/Private Relay y
 entregas Android/TestFlight del mismo SHA. No se cierra H10 por las redirecciones.
 
+### Entrega candidata — 28/9
+
+SHA `c8894b4ccf5da5063e1617a1f3a8870e586bc9fc`, CI
+[36491606164](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36491606164):
+cuatro trabajos aprobados, incluidas compilaciones Android/iOS y backend local.
+
+- [Android 6abae7c8c3323875fd396d2e](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abae7c8c3323875fd396d2e):
+  2.3.3 (260), análisis/pruebas/firma/AAB aprobados; publicación Google Play
+  `internal` reconsultada como `completed`.
+- [iOS 6abae7c91b8a7fd2eacfde7b](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abae7c91b8a7fd2eacfde7b):
+  2.3.3 (261), análisis/pruebas/perfil/IPA aprobados; carga a App Store Connect
+  terminó `UPLOAD SUCCEEDED` sin errores. Falta comprobar su procesamiento y
+  disponibilidad en TestFlight, que la carga por sí sola no acredita.
+
 - Configuración inicial: Python 9 pruebas; Flutter analyze limpio y 82 pruebas
   aprobadas sobre copia temporal fuera de OneDrive. Aún sin CI/build de H10.
 - Producción permanece rechazada explícitamente hasta registrar su proyecto;

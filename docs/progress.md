@@ -15,6 +15,13 @@
   se aplicó `h10_auth_reference_cleanup` en test/producción. PostgreSQL local
   conserva 254 pruebas aprobadas; la instancia local tiene historial previo
   desalineado y no se reparó ni reejecutó.
+- CI [36491606164](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36491606164)
+  aprobó los cuatro trabajos del SHA `c8894b4`. Android Codemagic
+  [6abae7c8c3323875fd396d2e](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abae7c8c3323875fd396d2e)
+  publicó 2.3.3 (260) a Play internal con estado `completed`. iOS
+  [6abae7c91b8a7fd2eacfde7b](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abae7c91b8a7fd2eacfde7b)
+  cargó 2.3.3 (261) a App Store Connect con `UPLOAD SUCCEEDED`; procesamiento y
+  disponibilidad TestFlight aún deben reconsultarse. Ambos usan el mismo SHA.
 
 ## H10 política de privacidad publicada — 28 de septiembre de 2026
 

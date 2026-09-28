@@ -134,12 +134,13 @@ Apple sólo adaptador preparatorio. Ningún subhito H10 cerrado todavía.
   idempotente desplegado en test; conserva evidencia y contenido ajeno.
 - [x] Interfaces Analytics/Crashlytics con consentimientos independientes,
   apagados por defecto; configuración Firebase segura preparada en Codemagic.
-- [ ] Activar Google/Apple y vinculación manual en Supabase; mantener flags del
-  build apagados hasta comprobar la configuración.
+- [x] Activar Google/Apple y vinculación manual en Supabase test; flags seguros
+  activos en los candidatos H10. Falta comprobar el recorrido instalado.
 - [ ] Probar OAuth, cancelación, vínculo y eliminación en Android/iOS instalados.
 - [ ] Probar recepción/respuesta y elegir SMTP transaccional.
-- [ ] Aprobar costo cero actual y crear Supabase producción limpio y cerrado.
-- [ ] Publicar el mismo SHA en Internal Testing y TestFlight y registrar ambos.
+- [x] Aprobar costo cero actual y crear Supabase producción limpio y cerrado.
+- [x] Publicar el mismo SHA en Internal Testing y cargarlo a App Store Connect;
+  disponibilidad/procesamiento TestFlight y recorridos instalados siguen pendientes.
 
 ## H11 — Beta en ambas tiendas
 
