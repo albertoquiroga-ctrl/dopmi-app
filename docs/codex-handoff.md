@@ -1,5 +1,16 @@
 # Dopmi — continuidad de ChatGPT Work a Codex
 
+## Continuidad H10 — 28/9/2026
+
+H10 autorizado, ejecución en `docs/h10-execution.md`. El titular considera H9
+suficientemente aceptado para avanzar; esto supersede el bloqueo de aceptación
+agrupada inferior sin atribuir nuevos recorridos instalados. Primer bloque:
+guardas de entorno y Google nativo cliente, flags apagados; Apple espera
+revocación servidor. Flutter analyze/84 tests y Python/10 aprobados. H10 sigue
+abierto: no hay eliminación, medición, correo ni producción completos.
+Conservar rama codex/design-foundation y PR6; verificar remotos al continuar.
+
+
 > Decisión vigente 27/9/2026: el titular admite las pantallas actuales para continuar; la fidelidad visual queda aplazada, sin aceptación atribuida a Irlanda. H9 autorizado: aceptación integrada y correcciones, con revisión final agrupada en Internal Testing. Ver [H9](h9-acceptance.md). Esta decisión supersede los bloqueos visuales históricos inferiores.
 
 ## Continuidad H9 — 27/9/2026

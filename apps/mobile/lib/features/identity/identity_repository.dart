@@ -2,6 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/config.dart';
+import 'native_identity.dart';
 
 const developmentTermsVersion = 'development-2026-09-13';
 
@@ -77,7 +78,14 @@ abstract class IdentityRepository {
 }
 
 class SupabaseIdentityRepository implements IdentityRepository {
-  SupabaseIdentityRepository(this.client, this.config, this.preferences);
+  SupabaseIdentityRepository(
+    this.client,
+    this.config,
+    this.preferences, {
+    NativeIdentity? nativeIdentity,
+  }) : nativeIdentity = nativeIdentity ?? PlatformNativeIdentity(config);
+  final NativeIdentity nativeIdentity;
+  bool _oauthBusy = false;
   final SupabaseClient client;
   final AppConfig config;
   final SharedPreferences preferences;
@@ -177,15 +185,33 @@ class SupabaseIdentityRepository implements IdentityRepository {
   Future<void> logout() => client.auth.signOut(scope: SignOutScope.local);
   @override
   Future<void> oauth(String provider) async {
-    if ((provider == 'google' && !config.googleEnabled) ||
+    if (!['google', 'apple'].contains(provider) ||
+        (provider == 'google' && !config.googleEnabled) ||
         (provider == 'apple' && !config.appleEnabled)) {
       throw StateError('provider_not_configured');
     }
-    final launched = await client.auth.signInWithOAuth(
-      provider == 'apple' ? OAuthProvider.apple : OAuthProvider.google,
-      redirectTo: config.redirect,
-    );
-    if (!launched) throw StateError('browser_not_opened');
+    if (_oauthBusy) return;
+    _oauthBusy = true;
+    try {
+      if (nativeIdentity.supports(provider)) {
+        // Keep Apple closed until its server revocation path is commissioned.
+        if (provider == 'apple') throw StateError('provider_not_configured');
+        final credential = await nativeIdentity.authenticate(provider);
+        if (credential == null) return;
+        await client.auth.signInWithIdToken(
+          provider: OAuthProvider.google,
+          idToken: credential.idToken,
+        );
+        return;
+      }
+      final launched = await client.auth.signInWithOAuth(
+        provider == 'apple' ? OAuthProvider.apple : OAuthProvider.google,
+        redirectTo: config.redirect,
+      );
+      if (!launched) throw StateError('browser_not_opened');
+    } finally {
+      _oauthBusy = false;
+    }
   }
 
   @override

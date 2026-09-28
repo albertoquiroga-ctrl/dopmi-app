@@ -7,6 +7,9 @@ class AppConfig {
     required this.redirect,
     this.googleEnabled = false,
     this.appleEnabled = false,
+    this.environment = 'test',
+    this.googleServerClientId = '',
+    this.googleIosClientId = '',
   });
   factory AppConfig.environment() => const AppConfig(
     url: String.fromEnvironment('SUPABASE_URL'),
@@ -17,10 +20,20 @@ class AppConfig {
     ),
     googleEnabled: bool.fromEnvironment('ENABLE_GOOGLE_AUTH'),
     appleEnabled: bool.fromEnvironment('ENABLE_APPLE_AUTH'),
+    googleServerClientId: String.fromEnvironment('GOOGLE_SERVER_CLIENT_ID'),
+    googleIosClientId: String.fromEnvironment('GOOGLE_IOS_CLIENT_ID'),
+    environment: String.fromEnvironment(
+      'DOPMI_ENVIRONMENT',
+      defaultValue: 'test',
+    ),
   );
   final String url, key, redirect;
   final bool googleEnabled, appleEnabled;
+  final String environment;
+  final String googleServerClientId, googleIosClientId;
   bool get isValid {
+    // Production cannot be selected until its project has been commissioned.
+    if (environment != 'test') return false;
     final uri = Uri.tryParse(url);
     final callback = Uri.tryParse(redirect);
     if (uri == null ||
@@ -35,12 +48,12 @@ class AppConfig {
     }
     if (key.startsWith('sb_publishable_')) return true;
     try {
-      return (jsonDecode(
-            utf8.decode(
-              base64Url.decode(base64Url.normalize(key.split('.')[1])),
-            ),
-          ) as Map)['role'] ==
-          'anon';
+      final payload = jsonDecode(
+        utf8.decode(base64Url.decode(base64Url.normalize(key.split('.')[1]))),
+      ) as Map;
+      return payload['role'] == 'anon' &&
+          (payload['ref'] == null ||
+              payload['ref'] == uri.host.split('.').first);
     } catch (_) {
       return false;
     }

@@ -115,6 +115,10 @@ Plan autorizado 27/9/2026: [matriz, defectos y revisión agrupada](h9-acceptance
 
 ## H10 — Identidad pública y operación
 
+Plan autorizado y cola detallada: [h10-execution.md](h10-execution.md).
+Inicio 28/9: guardas de entorno y cliente Google nativo comprobados localmente;
+Apple sólo adaptador preparatorio. Ningún subhito H10 cerrado todavía.
+
 - [ ] H10.1 Configurar/verificar Google y Apple, callbacks y no duplicación de identidad.
 - [ ] H10.2 Eliminación de cuenta y tratamiento de sesiones/contenido/evidencia.
 - [ ] H10.3 Analítica mínima y errores sin datos privados; consentimiento comprobado.

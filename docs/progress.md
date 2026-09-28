@@ -1,5 +1,28 @@
 # Dopmi — registro de avance
 
+## H10 iniciado — 28 de septiembre de 2026
+
+- Titular acepta H9 suficientemente para continuar; no se atribuye una nueva
+  prueba instalada. Plan autorizado en h10-execution.md; pantallas aplazadas.
+- PR6 abierto/draft, remoto ef9f009 y principal ba9f897 comprobados; mockup
+  a246fa6 sin cambios. Archivos locales ajenos preservados.
+- Guardas de configuración: entorno test explícito, rechazo de producción no
+  comisionada, endpoint registrado y correspondencia de ref en claves anon.
+  Las claves publishable opacas requieren comprobación remota independiente.
+- Google nativo Android/iOS implementado a nivel cliente, cancelación y doble
+  pulsación probadas mediante proveedor inyectable. Adaptador Apple preparado
+  con nonce criptográfico; activación nativa bloqueada hasta disponer de
+  revocación servidor. No se declara OAuth real comprobado ni habilitado.
+- Python: 10 pruebas; Flutter analyze sin incidencias y 84 pruebas aprobadas
+  desde copia de fuente fuera de OneDrive (el checkout bloquea unit_test_assets).
+- MCP Supabase lista únicamente proyecto test ACTIVE_HEALTHY. No se desplegaron
+  migraciones ni se creó producción. Apple Developer devolvió conexión reset;
+  GoDaddy pendiente de acceso. Se solicitó apertura de ambas sesiones en Chrome.
+- Pendientes H10: credenciales/callbacks y vinculación, revocación Apple,
+  eliminación completa, medición/consentimientos, correo/legal, producción y
+  entrega instalada. No cerrar H10 por este primer bloque.
+
+
 ## H9 candidato publicado — 27 de septiembre de 2026
 
 - Código candidato `73c731fcdb4b99b4dd94bc40c15a0e272efb713c`, diseño de referencia `a246fa6`. [CI 36330974531](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36330974531): cuatro trabajos success, incluidos PostgreSQL/concurrencia, integración real ampliada, Flutter y compilaciones Android/iOS simulator.
