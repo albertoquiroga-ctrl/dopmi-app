@@ -1,5 +1,44 @@
 # Dopmi — registro de avance
 
+## H10 política de privacidad publicada — 28 de septiembre de 2026
+
+- El titular confirmó que el aviso cubre exclusivamente la nueva app móvil.
+  Se publicó en https://dopmi.org/privacy-policy desde el repositorio
+  `albertoquiroga-ctrl/dopmi-landing-mockup`, commits `654b86d`, `e77237f` y
+  `aa9a355`. La URL anterior redirige permanentemente a la nueva.
+- La ruta devuelve HTTP 200 por HTTPS sin login y el contenido publicado
+  identifica Dopmi, responsable y domicilio autorizado; detalla categorías de
+  datos, finalidades, visibilidad, proveedores, transferencias, conservación,
+  seguridad, permisos, mayores de 18 años, ARCO y eliminación por soporte.
+- `npm run lint`, `npm run build` y `git diff --check` aprobaron. La página se
+  comprobó en navegador, con navegación semántica y sin overlay de error. El
+  footer de la landing ahora enlaza la política.
+- El conector Vercel quedó instalado, pero no tiene alcance API para el equipo
+  `dop-mi` (403). Vercel/GitHub publicaron correctamente y la respuesta pública
+  lleva encabezado `Server: Vercel`; el acceso API del equipo queda pendiente.
+- La página no sustituye la eliminación dentro de la app ni cierra H10.2. Aún
+  deben probarse el buzón `soporte@dopmi.org`, la solicitud/eliminación real y
+  la correspondencia con Seguridad de los datos de Google Play antes del cierre.
+
+## H10 accesos y cotización — 28 de septiembre de 2026
+
+- Titular completó sesiones Google Cloud, Apple Developer y GoDaddy; verificadas
+  por lectura en Chrome. App ID actual conserva Sign in with Apple habilitado
+  como primario. Falta Services ID de Dopmi y clave de autenticación.
+- Clave Apple KLYH2Y22TT registrada sólo para Sign in with Apple/Dopmi. `.p8`
+  guardado fuera del repo con ACL del usuario. Services ID
+  `com.mycompany.dopmi.auth` registrado con App ID `com.mycompany.dopmi`, host
+  Supabase test y callback `/auth/v1/callback` guardados y reconsultados.
+  Proveedor Supabase aún deshabilitado y sin prueba real.
+- El titular completó la compra del buzón Pro Light preparado: MXN263.88. El
+  producto aparece en Correo electrónico y Office; su panel de alta seguía
+  vacío, así que soporte@dopmi.org aún no se declara creado. Renovación indicada
+  para septiembre2027 por MXN479.88 sujeta a cambios.
+- CI36447795107 sobre d45a367 completed/success. Remotos conservan d45a367
+  en continuación y ba9f897 en principal. No se alteraron firmas ni pagos.
+- Pendientes: alta del buzón, secreto de cliente/proveedor Supabase y prueba OAuth
+  real; el resto del alcance H10 continúa abierto.
+
 ## H10 servidor Apple — 28 de septiembre de 2026
 
 - Base67b4041 y CI36427673710 comprobados success (cuatro trabajos). Mockup

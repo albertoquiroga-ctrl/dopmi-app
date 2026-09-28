@@ -62,6 +62,44 @@ instalada. No cerrar H10 con integraciones simuladas o pendientes.
 
 ## Evidencia por ciclo
 
+### Accesos administrativos y preparación — 28/9
+
+- Sesiones Chrome Google Cloud, Apple Developer y GoDaddy comprobadas tras
+  autenticación del titular. Google confirmó que el ID aportado es un cliente
+  web; existen clientes Android/iOS antiguos, aún pendientes de cotejar firma.
+- Apple: com.mycompany.dopmi ya tiene Sign in with Apple como App ID primario.
+  Se registró la clave KLYH2Y22TT, `Dopmi Supabase Auth`, limitada a Sign in
+  with Apple para ese App ID. Su `.p8` de descarga única quedó fuera del repo
+  en `%USERPROFILE%/.dopmi-secrets/apple`, con ACL exclusiva del usuario.
+  Services ID `com.mycompany.dopmi.auth` registrado y asociado al App ID
+  primario `com.mycompany.dopmi`. Apple conserva como dominio
+  `ohqxranynackjignryep.supabase.co` y como retorno
+  `https://ohqxranynackjignryep.supabase.co/auth/v1/callback`. El proveedor de
+  Supabase aún permanece sin activar ni probar.
+- GoDaddy: el titular completó la compra preparada de Pro Light por MXN263.88;
+  el producto ya aparece en `Correo electrónico y Office`. Renovación indicada
+  para septiembre 2027 por MXN479.88, sujeta a cambios. El titular confirmó
+  después el alta de `soporte@dopmi.org`. La recepción y
+  respuesta todavía requieren una prueba real antes de declarar el buzón
+  operativo para H10; el correo transaccional sigue separado.
+- Aviso de privacidad integral de la nueva app publicado en
+  `https://dopmi.org/privacy-policy`. Fuente en
+  `albertoquiroga-ctrl/dopmi-landing-mockup`, commits `654b86d`, `e77237f` y
+  `aa9a355`. La ruta anterior `/pages/privacy-policy` se conserva mediante
+  redirección permanente.
+  Responde HTTP 200 por HTTPS, sin autenticación, con título, responsable,
+  domicilio autorizado, datos/finalidades, proveedores, conservación,
+  derechos ARCO, permisos y contacto. Compilación Vite y TypeScript aprobadas;
+  comprobación visual de escritorio aprobada. La política excluye expresamente
+  versiones anteriores. Esto no acredita todavía eliminación dentro de la app,
+  ficha Seguridad de los datos ni revisión jurídica profesional.
+- El conector Vercel instalado no tiene autorización sobre el scope `dop-mi`
+  (403 al consultar el equipo). La publicación sí quedó comprobada por el
+  dominio público y la integración GitHub existente; ampliar ese scope facilitará
+  consultar despliegues y logs por API, pero no bloquea la página publicada.
+- CI36447795107, SHA d45a3673d3b40ae1c849dd6fa400aa9cf7b807f6:
+  completed/success consultado por API. No hay build H10 nuevo ni OAuth real probado.
+
 ### Credenciales Apple — 28/9
 
 Servidor de registro/revocación preparado y desplegado en test, deshabilitado.
