@@ -68,3 +68,7 @@ instalada. No cerrar H10 con integraciones simuladas o pendientes.
   no constituye provisión o verificación de producción.
 - Acceso nativo en desarrollo; flags siguen apagados. Credenciales externas,
   vinculación y revocación Apple todavía pendientes.
+- Código inicial 7b3e589, CI 36427481966 en curso al registrar. Última suite
+  local: analyze limpio, 84 Flutter y 10 Python. Versiones de proveedores fijadas.
+- Google Cloud solicita reautenticación del titular; se conserva la pestaña de
+  Chrome para el handoff. No se accedió a secretos ni se configuraron proveedores.

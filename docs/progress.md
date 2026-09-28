@@ -21,6 +21,9 @@
 - Pendientes H10: credenciales/callbacks y vinculación, revocación Apple,
   eliminación completa, medición/consentimientos, correo/legal, producción y
   entrega instalada. No cerrar H10 por este primer bloque.
+- Código 7b3e589 enviado a PR6; CI 36427481966 iniciado, resultado pendiente.
+  Google Cloud exige reautenticación del titular para consultar los clientes;
+  pestaña conservada. No se compraron servicios ni se publicaron builds H10.
 
 
 ## H9 candidato publicado — 27 de septiembre de 2026
