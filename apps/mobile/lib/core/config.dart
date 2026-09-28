@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 class AppConfig {
   const AppConfig({
     required this.url,
@@ -31,6 +33,8 @@ class AppConfig {
   final bool googleEnabled, appleEnabled;
   final String environment;
   final String googleServerClientId, googleIosClientId;
+  bool get appleNativeAvailable =>
+      appleEnabled && !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
   bool get isValid {
     // Production cannot be selected until its project has been commissioned.
     if (environment != 'test') return false;

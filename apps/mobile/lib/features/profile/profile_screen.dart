@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../core/ui.dart';
+import '../../core/measurement.dart';
 import '../adoption/community_ui.dart';
 import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
@@ -93,11 +96,101 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
     });
   }
 
+  Future<void> deleteAccount() async {
+    final repo = ref.read(identityRepositoryProvider);
+    final passwordIdentity = repo.linkedProviders.contains('email');
+    final socialProvider = repo.linkedProviders.contains('apple')
+        ? 'apple'
+        : repo.linkedProviders.contains('google')
+        ? 'google'
+        : null;
+    final password = TextEditingController();
+    final confirmation = TextEditingController();
+    final approved = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Eliminar mi cuenta'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Bloquearemos el acceso, retiraremos tus publicaciones y cancelaremos futuras renovaciones. La evidencia necesaria de pagos y disputas se conservará con acceso restringido.',
+            ),
+            const SizedBox(height: 16),
+            if (passwordIdentity) ...[
+              TextField(
+                controller: password,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Contraseña para confirmar',
+                ),
+              ),
+              const SizedBox(height: 12),
+            ] else if (socialProvider != null) ...[
+              Text(
+                'Después de confirmar volveremos a validar tu acceso con ${socialProvider == 'apple' ? 'Apple' : 'Google'}.',
+              ),
+              const SizedBox(height: 12),
+            ],
+            TextField(
+              controller: confirmation,
+              decoration: const InputDecoration(labelText: 'Escribe ELIMINAR'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Conservar cuenta'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(
+              dialogContext,
+              confirmation.text.trim() == 'ELIMINAR',
+            ),
+            child: const Text('Eliminar cuenta'),
+          ),
+        ],
+      ),
+    );
+    if (approved != true) {
+      password.dispose();
+      confirmation.dispose();
+      return;
+    }
+    await perform(() async {
+      if (passwordIdentity) {
+        await repo.reauthenticate(password.text);
+      } else if (socialProvider != null) {
+        await repo.reauthenticateWithProvider(socialProvider);
+      } else {
+        throw const AuthException('recent_sign_in_required');
+      }
+      final state = await repo.requestAccountDeletion(const Uuid().v4());
+      if (state['status'] == 'completado') {
+        await ref.read(identityControllerProvider).logout();
+        if (mounted) context.go('/login', extra: 'Tu cuenta fue eliminada.');
+      } else if (mounted) {
+        setState(
+          () => message = 'Tu cuenta quedó bloqueada y la eliminación requiere atención de soporte.',
+        );
+      }
+    });
+    password.dispose();
+    confirmation.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final identity = ref.read(identityControllerProvider).identity;
     final suspended = profile?.status == 'suspended';
-    final accepted = profile?.termsVersion == developmentTermsVersion;
+    final accepted =
+        profile?.termsVersion == currentTermsVersion &&
+        profile?.privacyVersion == currentPrivacyVersion &&
+        profile?.adultConfirmed == true;
+    final measurement = ref.watch(measurementControllerProvider);
+    final config = ref.watch(configProvider);
+    final linked = ref.read(identityRepositoryProvider).linkedProviders;
     return PageFrame(
       back: true,
       bottomNavigationBar: const CommunityNav(4),
@@ -169,11 +262,11 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
             ),
           if (!accepted && !suspended) ...[
             const Notice(
-              'Antes de continuar, revisa el aviso de esta versión de desarrollo.',
+              'Antes de continuar, revisa y acepta los términos y el aviso de privacidad vigentes.',
             ),
             TextButton(
               onPressed: () => context.push('/terms'),
-              child: const Text('Leer aviso de desarrollo'),
+              child: const Text('Leer términos y privacidad'),
             ),
             CheckboxListTile(
               contentPadding: EdgeInsets.zero,
@@ -182,7 +275,9 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
               onChanged: busy
                   ? null
                   : (value) => setState(() => consent = value ?? false),
-              title: const Text('Leí y acepto el aviso de desarrollo.'),
+              title: const Text(
+                'Confirmo que tengo 18 años o más y acepto los términos y el aviso de privacidad.',
+              ),
             ),
             ActionButton(
               'Confirmar y continuar',
@@ -272,7 +367,74 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
         ),
         TextButton(
           onPressed: () => context.push('/terms'),
-          child: const Text('Aviso de desarrollo'),
+          child: const Text('Términos y privacidad'),
+        ),
+        const SizedBox(height: 12),
+        Text(
+          'Privacidad de medición',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: const Text('Analítica de uso'),
+          subtitle: const Text(
+            'Comparte navegación y conversiones básicas. No incluye mensajes, documentos, ubicación, correo ni datos financieros.',
+          ),
+          value: measurement?.analyticsEnabled ?? false,
+          onChanged: measurement == null || measurement.loading
+              ? null
+              : measurement.setAnalytics,
+        ),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: const Text('Diagnóstico de errores'),
+          subtitle: const Text(
+            'Envía fallos técnicos para ayudarnos a corregir la app. Puedes desactivarlo en cualquier momento.',
+          ),
+          value: measurement?.diagnosticsEnabled ?? false,
+          onChanged: measurement == null || measurement.loading
+              ? null
+              : measurement.setDiagnostics,
+        ),
+        if ((config.googleEnabled && !linked.contains('google')) ||
+            (config.appleNativeAvailable && !linked.contains('apple'))) ...[
+          const SizedBox(height: 12),
+          Text(
+            'Accesos vinculados',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const Text(
+            'Vincula un proveedor sólo desde esta sesión. Dopmi no combina cuentas por parecido de correo.',
+          ),
+          if (config.googleEnabled && !linked.contains('google'))
+            OutlinedButton(
+              onPressed: busy
+                  ? null
+                  : () => perform(
+                      () => ref
+                          .read(identityRepositoryProvider)
+                          .linkProvider('google'),
+                    ),
+              child: const Text('Vincular Google'),
+            ),
+          if (config.appleNativeAvailable && !linked.contains('apple'))
+            OutlinedButton(
+              onPressed: busy
+                  ? null
+                  : () => perform(
+                      () => ref
+                          .read(identityRepositoryProvider)
+                          .linkProvider('apple'),
+                    ),
+              child: const Text('Vincular Apple'),
+            ),
+        ],
+        TextButton(
+          onPressed: busy ? null : deleteAccount,
+          style: TextButton.styleFrom(
+            foregroundColor: Theme.of(context).colorScheme.error,
+          ),
+          child: const Text('Eliminar mi cuenta'),
         ),
       ],
     );

@@ -127,6 +127,32 @@ cero credenciales guardadas; HTTP401 sin Authorization y HTTP503 deshabilitado.
 Pendientes: acceso Apple Developer, secretos, integración del cliente nativo,
 registro de capacidades/perfiles, OAuth Android y prueba de revocación real.
 
+### Legal, eliminación y medición — 28/9
+
+- La app exige mayoría de edad y aceptación versionada
+  `terms-2026-09-28` / `privacy-2026-09-28`; retiró el aviso de desarrollo
+  y enlaza la política pública. `/terms` y `/delete-account` responden 200.
+- Supabase test contiene la solicitud idempotente y el proceso servidor. La
+  solicitud bloquea sesiones a nivel PostgreSQL, retira contenido público,
+  detiene ciclos futuros y la finalización anonimiza identidad. Mensajes de
+  terceros y evidencia financiera permanecen; medios prescindibles se eliminan.
+- `account-deletion` v2 autentica, exige acceso reciente, revoca Apple antes
+  de Auth, cierra sesiones globales y admite reintento/atención parcial.
+- Analytics y Crashlytics quedaron separados, apagados por defecto y por
+  cuenta. Sólo aceptan eventos tipados; cambiar de cuenta o retirar permiso
+  desactiva la recopilación sin reproducir eventos anteriores.
+- Firebase `dopmi-e3b6a` corresponde a `com.mycompany.dopmi` en Android/iOS.
+  Sus archivos nativos están excluidos de Git y Codemagic los reconstruye desde
+  variables seguras del grupo `dopmi_firebase`.
+- Verificación local: Flutter analyze limpio y 86 pruebas; backend 402 pruebas;
+  administración 23 pruebas y build; configuración móvil 10 pruebas.
+
+Bloqueos de aceptación: Supabase todavía publica Google/Apple como deshabilitados;
+la habilitación requiere guardar credenciales OAuth y vinculación manual. Ningún
+flujo social se declara probado en dispositivo. Supabase producción cuesta
+actualmente MXN/USD 0 mensual según el MCP para la organización Enlace Nest, pero
+no se crea sin aceptación explícita del titular.
+
 - Configuración inicial: Python 9 pruebas; Flutter analyze limpio y 82 pruebas
   aprobadas sobre copia temporal fuera de OneDrive. Aún sin CI/build de H10.
 - Producción permanece rechazada explícitamente hasta registrar su proyecto;

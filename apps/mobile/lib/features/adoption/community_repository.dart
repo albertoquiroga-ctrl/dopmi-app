@@ -368,7 +368,7 @@ String communityError(Object error) {
     }
     if (error.code == '22023') return error.message;
     if (error.code == '42501') {
-      return 'No tienes acceso a este contenido. Revisa tu sesión y el aviso de desarrollo en Mi cuenta.';
+      return 'No tienes acceso a este contenido. Revisa tu sesión y la aceptación de términos en Mi cuenta.';
     }
     if (error.code == '23514') {
       return 'Revisa los campos y sus límites antes de guardar.';

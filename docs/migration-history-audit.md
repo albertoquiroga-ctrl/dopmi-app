@@ -121,3 +121,18 @@ Dos migraciones aditivas aplicadas por MCP después de reproducir los fallos en 
 Antes: cuerpos remotos de las tres funciones de visibilidad coincidieron por MD5 con las migraciones originales; definición de revisión comparada. Después: los cuatro cuerpos coinciden exactamente normalizando CRLF a LF (hashes 7bd109951cc78d100788ddb619eedfc2, 243c968cf30d76fa29d2554ba850eccc, 8c358d9b8ebc416e378409c494680c8b, 06f26759f44bae4f492791dffab81696). Firmas, grants y search_path vacío conservados; sin push/repair ni replay histórico. URLs previamente firmadas conservan su vigencia breve (60 segundos); el cambio impide nuevas firmas/accesos autorizados cuando el contenido deja de ser público.
 
 Adición H9: `20260927154814_h9_preserve_approved_avatar.sql` conserva el avatar del snapshot aprobado cuando el propietario edita otro borrador. Niega escritura/borrado de esa ruta, permite cargar una ruta nueva. Integración Storage real: intento de borrado por dueño y lectura pública posterior aprobados. Aplicación remota y verificación de cláusula/grant realizadas por MCP; no cambia firma.
+
+## H10 — 28 de septiembre de 2026
+
+Después de consultar el historial remoto y sin ejecutar `db push` ni repair:
+
+- local `20260928205058_h10_terms_account_deletion.sql` → remoto
+  `20260928211754_h10_terms_account_deletion`;
+- local `20260928211922_h10_account_deletion_content_retention.sql` → remoto
+  `20260928212147_h10_account_deletion_content_retention`.
+
+La segunda migración sustituye únicamente la rutina servidor de eliminación para
+archivar y anonimizar publicaciones, redactar mensajes propios y conservar los
+mensajes del otro participante. Ambas se reprodujeron en la suite PGlite antes
+de aplicarse; 402 pruebas completas pasaron después. Se conserva la
+correspondencia explícita; no se renombraron migraciones históricas.

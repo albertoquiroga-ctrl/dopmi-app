@@ -12,6 +12,7 @@ workflows:
         - dopmi_upload_2026
       groups:
         - dopmi_supabase
+        - dopmi_firebase
       vars:
         PACKAGE_NAME: com.mycompany.dopmi
         RELEASE_NAME: 2.3.3
@@ -25,6 +26,8 @@ workflows:
     scripts:
       - name: Create runtime configuration
         script: python3 ../../scripts/write-mobile-config.py
+      - name: Create Firebase configuration
+        script: python3 ../../scripts/write-firebase-config.py
 
       - name: Install dependencies
         script: flutter pub get
@@ -62,6 +65,7 @@ workflows:
         - dopmi_upload_2026
       groups:
         - dopmi_supabase
+        - dopmi_firebase
         - dopmi_google_play
       vars:
         PACKAGE_NAME: com.mycompany.dopmi
@@ -76,6 +80,8 @@ workflows:
     scripts:
       - name: Create runtime configuration
         script: python3 ../../scripts/write-mobile-config.py
+      - name: Create Firebase configuration
+        script: python3 ../../scripts/write-firebase-config.py
 
       - name: Install dependencies
         script: flutter pub get
@@ -119,6 +125,7 @@ workflows:
         - dopmi_upload_2026
       groups:
         - dopmi_supabase
+        - dopmi_firebase
         - dopmi_google_play
       vars:
         PACKAGE_NAME: com.mycompany.dopmi
@@ -133,6 +140,8 @@ workflows:
     scripts:
       - name: Create Guardian test configuration
         script: python3 ../../scripts/write-mobile-config.py --guardian-test
+      - name: Create Firebase configuration
+        script: python3 ../../scripts/write-firebase-config.py
       - name: Install dependencies
         script: flutter pub get
       - name: Static analysis
@@ -184,6 +193,7 @@ workflows:
       xcode: latest
       groups:
         - dopmi_supabase
+        - dopmi_firebase
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.mycompany.dopmi
@@ -199,6 +209,8 @@ workflows:
     scripts:
       - name: Create runtime configuration
         script: python3 ../../scripts/write-mobile-config.py
+      - name: Create Firebase configuration
+        script: python3 ../../scripts/write-firebase-config.py
 
       - name: Install dependencies
         script: flutter pub get
@@ -247,6 +259,7 @@ workflows:
       xcode: latest
       groups:
         - dopmi_supabase
+        - dopmi_firebase
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.mycompany.dopmi
@@ -262,6 +275,8 @@ workflows:
     scripts:
       - name: Create runtime configuration
         script: python3 ../../scripts/write-mobile-config.py --guardian-test
+      - name: Create Firebase configuration
+        script: python3 ../../scripts/write-firebase-config.py
 
       - name: Install dependencies
         script: flutter pub get

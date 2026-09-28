@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import 'core/ui.dart';
 import 'core/navigation.dart';
+import 'core/measurement.dart';
 import 'features/identity/experience_controller.dart';
 import 'features/identity/experience_landing.dart';
 import 'features/identity/auth_screens.dart';
@@ -397,6 +398,11 @@ class DopmiApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
     final experience = ref.watch(experienceProvider);
+    final identity = ref.watch(identityControllerProvider).identity;
+    final measurement = ref.watch(measurementControllerProvider);
+    if (measurement != null && (!measurement.loading || identity != null)) {
+      Future.microtask(() => measurement.owner(identity?.id));
+    }
     return ListenableBuilder(
       listenable: experience,
       builder: (context, _) => MaterialApp.router(

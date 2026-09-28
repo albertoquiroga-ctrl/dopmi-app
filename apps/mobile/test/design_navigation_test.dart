@@ -30,7 +30,9 @@ void main() {
           mode: 'rescuer',
           intent: 'rescue',
           status: 'active',
-          termsVersion: developmentTermsVersion,
+          termsVersion: currentTermsVersion,
+          privacyVersion: currentPrivacyVersion,
+          adultConfirmed: true,
         );
       final container = ProviderContainer(
         overrides: [
@@ -168,7 +170,9 @@ void main() {
         mode: 'donor',
         intent: 'adopt',
         status: 'active',
-        termsVersion: developmentTermsVersion,
+        termsVersion: currentTermsVersion,
+        privacyVersion: currentPrivacyVersion,
+        adultConfirmed: true,
       );
       identity.emit(
         const IdentityEvent(

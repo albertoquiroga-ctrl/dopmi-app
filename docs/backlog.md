@@ -127,6 +127,20 @@ Apple sólo adaptador preparatorio. Ningún subhito H10 cerrado todavía.
 
 - [ ] H10.6 Habilitar/verificar protección de contraseñas filtradas en Supabase Auth, sujeto a disponibilidad del plan. MCP actual no permite configurar Auth.
 
+### Corte H10 del 28/9/2026
+
+- [x] Términos/privacidad/18+ versionados y aviso de desarrollo retirado.
+- [x] Eliminación dentro de Configuración, solicitud web y proceso servidor
+  idempotente desplegado en test; conserva evidencia y contenido ajeno.
+- [x] Interfaces Analytics/Crashlytics con consentimientos independientes,
+  apagados por defecto; configuración Firebase segura preparada en Codemagic.
+- [ ] Activar Google/Apple y vinculación manual en Supabase; mantener flags del
+  build apagados hasta comprobar la configuración.
+- [ ] Probar OAuth, cancelación, vínculo y eliminación en Android/iOS instalados.
+- [ ] Probar recepción/respuesta y elegir SMTP transaccional.
+- [ ] Aprobar costo cero actual y crear Supabase producción limpio y cerrado.
+- [ ] Publicar el mismo SHA en Internal Testing y TestFlight y registrar ambos.
+
 ## H11 — Beta en ambas tiendas
 
 - [ ] H11.1 Mismo SHA por Codemagic en Play interno y TestFlight; verificar publicación.

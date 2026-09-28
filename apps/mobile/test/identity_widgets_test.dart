@@ -87,7 +87,10 @@ void main() {
       await tester.enterText(find.byType(TextFormField).at(4), 'Password1234');
       await tap(tester, 'Crear cuenta');
       expect(repo.signupCount, 0);
-      await tap(tester, 'Leí y acepto el aviso de desarrollo.');
+      await tap(
+        tester,
+        'Confirmo que tengo 18 años o más y acepto los Términos y el Aviso de privacidad.',
+      );
       await tap(tester, 'Crear cuenta');
       expect(repo.signupCount, 1);
       expect(repo.signupIntent, 'rescue');

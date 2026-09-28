@@ -18,7 +18,9 @@ class FakeIdentityRepository implements IdentityRepository {
     mode: 'donor',
     intent: 'adopt',
     status: 'active',
-    termsVersion: developmentTermsVersion,
+    termsVersion: currentTermsVersion,
+    privacyVersion: currentPrivacyVersion,
+    adultConfirmed: true,
   );
   void emit(IdentityEvent event) {
     user = event.identity;
@@ -27,6 +29,8 @@ class FakeIdentityRepository implements IdentityRepository {
 
   @override
   Identity? get current => user;
+  @override
+  Set<String> get linkedProviders => const {'email'};
   @override
   Stream<IdentityEvent> get events => changes.stream;
   @override
@@ -84,6 +88,8 @@ class FakeIdentityRepository implements IdentityRepository {
   @override
   Future<void> oauth(String provider) async {}
   @override
+  Future<void> linkProvider(String provider) async {}
+  @override
   Future<Profile> loadProfile() async {
     loads++;
     return profile;
@@ -101,6 +107,8 @@ class FakeIdentityRepository implements IdentityRepository {
       intent: profile.intent,
       status: profile.status,
       termsVersion: profile.termsVersion,
+      privacyVersion: profile.privacyVersion,
+      adultConfirmed: profile.adultConfirmed,
     );
   }
 
@@ -120,9 +128,22 @@ class FakeIdentityRepository implements IdentityRepository {
       intent: profile.intent,
       status: profile.status,
       termsVersion: profile.termsVersion,
+      privacyVersion: profile.privacyVersion,
+      adultConfirmed: profile.adultConfirmed,
     );
   }
 
   @override
   Future<void> acceptTerms() async {}
+
+  @override
+  Future<void> reauthenticate(String password) async {}
+
+  @override
+  Future<void> reauthenticateWithProvider(String provider) async {}
+
+  @override
+  Future<Map<String, dynamic>> requestAccountDeletion(
+    String requestKey,
+  ) async => {'status': 'completado'};
 }

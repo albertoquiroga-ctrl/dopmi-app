@@ -904,3 +904,21 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
 - `flutter analyze`: sin incidencias. `flutter test`: diez pruebas aprobadas en esta sesión.
 - Se añadió `scripts/emulate-android.ps1` para abrir el dispositivo e instalar el APK; `-Rebuild` recompila cuando cambian código/configuración. El comando y las instrucciones para iOS están en `docs/development.md`. La sintaxis PowerShell se comprobó; el arranque/instalación se ejecutó con ese script y las comprobaciones posteriores usaron ADB.
 - iOS interactivo queda pendiente por plataforma: esta sesión dispone de Windows, sin una Mac/Xcode conectada. El simulador oficial requiere macOS. Se conserva la evidencia previa de compilación iOS en CI; no se declara una ejecución interactiva de iOS nueva.
+## H10 — legal, eliminación y medición — 28 de septiembre de 2026
+
+- Migraciones H10 de términos/eliminación y conservación de contenido aplicadas
+  en Supabase test como `20260928211754` y `20260928212147`.
+- `account-deletion` v2 ACTIVE: bloqueo inmediato, revocación de Apple,
+  limpieza de medios prescindibles, cierre global de sesión, eliminación Auth y
+  finalización idempotente. Evidencia financiera y mensajes ajenos se conservan.
+- App: términos y privacidad vigentes, mayoría de edad, eliminación en
+  Configuración, vínculo explícito de identidades y medición opcional separada.
+- Firebase Android/iOS validado para `com.mycompany.dopmi`; configuraciones
+  fuera de Git y variables seguras creadas en Codemagic. Google/Apple siguen
+  apagados porque los proveedores Supabase están deshabilitados.
+- Web pública: `https://dopmi.org/privacy-policy`, `/terms` y
+  `/delete-account` responden HTTP 200.
+- Verificaciones: Flutter analyze y 86 pruebas; backend 402; administración 23
+  y build; configuración móvil 10. Pagos permanecen test-only.
+- Pendiente externo: guardar OAuth/manual linking, pruebas instaladas, correo
+  transaccional, aprobación del proyecto Supabase producción y builds conjuntos.

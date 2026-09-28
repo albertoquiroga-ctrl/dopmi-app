@@ -64,6 +64,45 @@ function stripeFixture(d, overrides={}) {
   }};
 }
 const serviceFor = (stripe, overrideRpc=rpc) => paymentService({rpc:overrideRpc,stripe,returnUrl:'https://example.test/return',logger:{}});
+test('H10 legal consent is versioned and cannot be forged through profile updates', async () => {
+  await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[other]);
+  const accepted=(await db.query(`select public.dopmi_accept_legal('terms-2026-09-28','privacy-2026-09-28',true) as value`)).rows[0].value;
+  assert.equal(accepted.adult_confirmed,true);
+  const profile=(await db.query('select terms_version,privacy_version,adult_confirmed_at from public.profiles where id=$1',[other])).rows[0];
+  assert.equal(profile.terms_version,'terms-2026-09-28');
+  assert.equal(profile.privacy_version,'privacy-2026-09-28');
+  assert.ok(profile.adult_confirmed_at);
+  assert.equal((await db.query('select count(*)::int as n from private.dopmi_consents where owner_id=$1',[other])).rows[0].n,1);
+  await assert.rejects(db.query(`select public.dopmi_accept_legal('otro','privacy-2026-09-28',true)`),/inválida/);
+});
+test('H10 deletion blocks old sessions, is idempotent and leaves only an anonymous accounting subject', async () => {
+  const requestKey='79000000-0000-4000-8000-000000000001';
+  const post='79000000-0000-4000-8000-000000000002';
+  const thread='79000000-0000-4000-8000-000000000003';
+  await db.query(`insert into public.dopmi_adoptions(id,owner_id,pet_name,status) values($1,$2,'Luna','published')`,[post,other]);
+  await db.query(`insert into public.dopmi_threads(id,post_id,owner_id,adopter_id,pet_name) values($1,$2,$3,$4,'Luna')`,[thread,post,other,donor]);
+  await db.query(`insert into public.dopmi_messages(id,thread_id,sender_id,body) values
+    ('79000000-0000-4000-8000-000000000004',$1,$2,'Mensaje del propietario'),
+    ('79000000-0000-4000-8000-000000000005',$1,$3,'Mensaje del adoptante')`,[thread,other,donor]);
+  const input={owner_id:other,request_key:requestKey};
+  const request=(await db.query('select public.dopmi_account_deletion_server($1,$2::jsonb) as value',['request',JSON.stringify(input)])).rows[0].value;
+  assert.equal(request.status,'procesando');
+  await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[other]);
+  assert.equal((await db.query('select public.dopmi_actor_active() as value')).rows[0].value,false);
+  const replay=(await db.query('select public.dopmi_account_deletion_server($1,$2::jsonb) as value',['request',JSON.stringify(input)])).rows[0].value;
+  assert.equal(replay.status,'procesando');
+  const done=(await db.query('select public.dopmi_account_deletion_server($1,$2::jsonb) as value',['finalize',JSON.stringify({owner_id:other})])).rows[0].value;
+  assert.equal(done.status,'completado');
+  await db.query('delete from auth.users where id=$1',[other]);
+  const profile=(await db.query('select display_name,phone,city,account_status from public.profiles where id=$1',[other])).rows[0];
+  assert.deepEqual(profile,{display_name:'Cuenta eliminada',phone:'',city:'',account_status:'deleted'});
+  const messages=(await db.query('select sender_id,body from public.dopmi_messages where thread_id=$1 order by id',[thread])).rows;
+  assert.deepEqual(messages,[
+    {sender_id:other,body:'[Mensaje retirado por eliminación de cuenta]'},
+    {sender_id:donor,body:'Mensaje del adoptante'},
+  ]);
+  assert.equal((await db.query('select status,pet_name from public.dopmi_adoptions where id=$1',[post])).rows[0].status,'archived');
+});
 test('scheduled reconciliation finds pending checkouts without an ambiguous SQL alias',async () => {
   const d=await prepare();
   await rpc('checkout_save',{donation_id:d.id,session_id:'cs_pending',url:'https://example.test/checkout'});

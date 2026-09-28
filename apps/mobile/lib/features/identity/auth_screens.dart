@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/ui.dart';
 import 'identity_controller.dart';
@@ -40,7 +41,7 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
     if (busy || !form.currentState!.validate()) return;
     if (widget.mode == AuthFormMode.signup && !consent) {
       setState(
-        () => error = 'Lee y acepta el aviso de desarrollo para continuar.',
+        () => error = 'Confirma que eres mayor de edad y acepta los términos y el aviso de privacidad.',
       );
       return;
     }
@@ -218,13 +219,13 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                           ? null
                           : (value) => setState(() => consent = value ?? false),
                       title: const Text(
-                        'Leí y acepto el aviso de desarrollo.',
+                        'Confirmo que tengo 18 años o más y acepto los Términos y el Aviso de privacidad.',
                         style: TextStyle(fontSize: 14),
                       ),
                     ),
                     TextButton(
                       onPressed: () => context.push('/terms'),
-                      child: const Text('Leer aviso y uso de mis datos'),
+                      child: const Text('Leer términos y privacidad'),
                     ),
                   ],
                   if (login)
@@ -262,7 +263,7 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                             ),
                       child: const Text('Necesito confirmar mi correo'),
                     ),
-                    if (config.googleEnabled || config.appleEnabled)
+                    if (config.googleEnabled || config.appleNativeAvailable)
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 12),
                         child: Text(
@@ -275,7 +276,7 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                         onPressed: busy ? null : () => social('google'),
                         child: const Text('Continuar con Google'),
                       ),
-                    if (config.appleEnabled) ...[
+                    if (config.appleNativeAvailable) ...[
                       const SizedBox(height: 12),
                       OutlinedButton(
                         onPressed: busy ? null : () => social('apple'),
@@ -457,36 +458,49 @@ class _ConfirmationScreenState extends ConsumerState<ConfirmationScreen> {
 class TermsScreen extends StatelessWidget {
   const TermsScreen({super.key});
   @override
-  Widget build(BuildContext context) => const PageFrame(
+  Widget build(BuildContext context) => PageFrame(
     children: [
-      Heading(
-        'Aviso de desarrollo',
-        'Dopmi · Versión del 13 de septiembre de 2026',
+      const Heading(
+        'Términos y privacidad',
+        'Dopmi · Versión del 28 de septiembre de 2026',
       ),
-      Text(
-        'Esta versión sirve para probar registro, acceso y perfiles. No está habilitada para recibir aportaciones ni tramitar adopciones.',
+      const Text(
+        'Dopmi es un servicio para personas mayores de 18 años que facilita adopciones, comunicación con rescatistas y aportaciones de prueba sujetas a revisión y disponibilidad.',
       ),
-      SizedBox(height: 20),
-      Text(
-        'Datos de tu cuenta',
+      const SizedBox(height: 20),
+      const Text(
+        'Uso responsable',
         style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
       ),
-      SizedBox(height: 8),
-      Text(
-        'Guardamos tu correo, nombre, preferencias y los datos opcionales de tu perfil en el proyecto de desarrollo de Dopmi. El equipo autorizado puede consultarlos para operar y probar el servicio. Tu perfil todavía no es público.',
+      const SizedBox(height: 8),
+      const Text(
+        'Debes proporcionar información veraz, respetar la privacidad de otras personas y usar los canales de reporte y moderación. Una publicación o aportación puede quedar en revisión, requerir correcciones o retirarse.',
       ),
-      SizedBox(height: 20),
-      Text(
-        'Para las pruebas',
+      const SizedBox(height: 20),
+      const Text(
+        'Privacidad y pagos',
         style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
       ),
-      SizedBox(height: 8),
-      Text(
-        'Usa datos de prueba. No agregues documentos de identidad, información bancaria ni comprobantes. Puedes editar tu perfil o cerrar sesión en cualquier momento.',
+      const SizedBox(height: 8),
+      const Text(
+        'Tratamos los datos necesarios para operar tu cuenta, publicaciones, mensajes, moderación y pagos. Los datos de tarjeta se capturan con Stripe. No mostramos públicamente tu domicilio exacto, teléfono, correo, documentos o conversaciones privadas.',
       ),
-      SizedBox(height: 20),
-      Text(
-        'Antes del lanzamiento se publicarán los términos y el aviso de privacidad definitivos, con la identidad del responsable, contacto y mecanismos para ejercer tus derechos. Este aviso no los reemplaza.',
+      const SizedBox(height: 20),
+      const Text(
+        'Cuenta y soporte',
+        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
+      ),
+      const SizedBox(height: 8),
+      const Text(
+        'Puedes solicitar la eliminación de tu cuenta desde Configuración. Conservaremos únicamente la evidencia necesaria para atender pagos, disputas y obligaciones legales. Para ayuda escribe a soporte@dopmi.org.',
+      ),
+      const SizedBox(height: 24),
+      ActionButton(
+        'Abrir Aviso de privacidad',
+        onPressed: () => launchUrl(
+          Uri.parse('https://dopmi.org/privacy-policy'),
+          mode: LaunchMode.externalApplication,
+        ),
       ),
     ],
   );
