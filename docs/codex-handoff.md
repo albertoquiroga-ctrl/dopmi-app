@@ -2,6 +2,12 @@
 
 ## Continuidad H10 — 28/9/2026
 
+Adición: servidor de credenciales Apple preparado, probado (400 Node/backend,
+254 PostgreSQL, Deno check) y desplegado test con flag apagado. RPC sólo servidor,
+cifrado AES-GCM y verificación JWT. Migración local20260928154523 remota20260928155742.
+No habilitar Apple antes de secretos/capacidades, conexión nativa y prueba real.
+Google continúa requiriendo reautenticación en Chrome. Ver progress/h10-execution.
+
 H10 autorizado, ejecución en `docs/h10-execution.md`. El titular considera H9
 suficientemente aceptado para avanzar; esto supersede el bloqueo de aceptación
 agrupada inferior sin atribuir nuevos recorridos instalados. Primer bloque:

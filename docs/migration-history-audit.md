@@ -1,5 +1,16 @@
 # Auditoría del historial de migraciones
 
+## H10 credenciales Apple — 28/9/2026
+
+Local `20260928154523_h10_apple_credentials.sql` → remoto `20260928155742`.
+Antes se comprobó ausencia de tabla/RPC y presencia de auth.identities.provider_id;
+historial remoto conserva las tres migraciones H9. Aplicación aditiva por MCP,
+sin replay/repair/push. Después: tabla privada RLS, RPC sólo service_role, cero
+credenciales. No altera perfiles, pagos ni firmas existentes.
+Local original carecía de las tres correcciones H9; aplicadas sólo localmente
+tras confirmar el defecto de notificación anterior. Suite PostgreSQL:254 aprobadas.
+
+
 ## Adición H8.6 — 26 de septiembre de 2026
 
 Migración local `20260927033610_moderated_rescuer_profiles.sql`, aplicada por MCP como versión remota `20260927033251` con nombre `moderated_rescuer_profiles`. Es aditiva: tabla RPC-only para perfil público, auditoría privada, bucket privado y funciones versionadas de dueño/administración. No reutiliza legado ni cambia firmas consumidas por el build 253. La consulta posterior confirmó objetos, bucket privado, ausencia de lectura cruda anónima y denegación anónima de la RPC administrativa. PostgreSQL local fue reconstruido desde todas las migraciones y aprobó 243 pruebas; no se usó `db push`, reparación ni renombrado.

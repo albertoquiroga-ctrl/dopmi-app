@@ -1,5 +1,23 @@
 # Dopmi — registro de avance
 
+## H10 servidor Apple — 28 de septiembre de 2026
+
+- Base67b4041 y CI36427673710 comprobados success (cuatro trabajos). Mockup
+  a246fa6 sin cambios. Google sigue en reautenticación; no se declaran nuevos accesos.
+- Preparado registro privado cifrado y servicio de revocación Apple. Firma,
+  issuer/audience/nonce/subject/exp verificados con pruebas JWT criptográficas.
+  Incluye pérdida de respuesta al guardar, aislamiento por propietario y
+  conservación de credencial ante fallo de revocación.
+- Migración20260928154523 → remoto20260928155742; función apple-credentials v1,
+  flag apagado, HTTP401 sin sesión/503 deshabilitado. RPC anon/authenticated
+  denegada, RLS activo, cero credenciales. No hay login/revocación Apple real aún.
+- Suite completa400 pruebas (nueve nuevas específicas) y Deno check aprobados. PostgreSQL
+  local254 aprobadas después de aplicar las tres correcciones H9 ausentes en
+  esa instancia; fallo inicial documentado, sin regresión remota ni cambios pagos.
+- Pendiente integración nativa con registro servidor, secretos/capacidades Apple,
+  cuentas OAuth, eliminación completa y demás H10. No se publicaron builds.
+
+
 ## H10 iniciado — 28 de septiembre de 2026
 
 - Titular acepta H9 suficientemente para continuar; no se atribuye una nueva

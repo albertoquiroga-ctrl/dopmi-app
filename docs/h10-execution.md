@@ -62,6 +62,33 @@ instalada. No cerrar H10 con integraciones simuladas o pendientes.
 
 ## Evidencia por ciclo
 
+### Credenciales Apple — 28/9
+
+Servidor de registro/revocación preparado y desplegado en test, deshabilitado.
+`apple-credentials` v1 verifica el JWT Supabase y vincula el subject de Apple a
+`auth.identities`; el ID token de Apple requiere firma RSA, issuer, audience,
+vigencia y nonce. Credenciales cifradas AES-256-GCM con propietario como contexto.
+RPC sólo service_role, tabla privada con RLS, eliminación Auth restringida hasta
+retirar la credencial. No se expone revocación como acción elegible por el cliente.
+
+La configuración futura requiere APPLE_NATIVE_CLIENT_ID=com.mycompany.dopmi,
+APPLE_TEAM_ID, APPLE_KEY_ID, APPLE_PRIVATE_KEY y una clave de cifrado aleatoria
+de 32 bytes en base64 DOPMI_IDENTITY_ENCRYPTION_KEY con su KEY_ID. Deben residir
+en secretos de Edge, no en Flutter ni Git. DOPMI_APPLE_CREDENTIALS_ENABLED sigue
+apagado. No rotar la clave de cifrado sin recuperar/recifrar los registros previos.
+El secreto cliente de Apple se firma en servidor con vigencia de cinco minutos.
+La configuración del proveedor OAuth web de Supabase se gestiona por separado.
+
+Si falla la persistencia se comprueba primero si la escritura sí se guardó; si
+no, se intenta revocar el grant consumido. Una caída simultánea de proveedor y
+persistencia no se considera resuelta: exige nueva autenticación y revisión al
+implementar la eliminación. No afirmar revocación Apple real antes de sus pruebas.
+
+Verificado remoto: RLS=true, execute anon/authenticated=false, service_role=true,
+cero credenciales guardadas; HTTP401 sin Authorization y HTTP503 deshabilitado.
+Pendientes: acceso Apple Developer, secretos, integración del cliente nativo,
+registro de capacidades/perfiles, OAuth Android y prueba de revocación real.
+
 - Configuración inicial: Python 9 pruebas; Flutter analyze limpio y 82 pruebas
   aprobadas sobre copia temporal fuera de OneDrive. Aún sin CI/build de H10.
 - Producción permanece rechazada explícitamente hasta registrar su proyecto;
