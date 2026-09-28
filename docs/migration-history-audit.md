@@ -1,5 +1,20 @@
 # Auditoría del historial de migraciones
 
+## H10 eliminación y producción — 28/9/2026
+
+Test: `20260928205058_h10_terms_account_deletion.sql` → `20260928211754` y
+`20260928211922_h10_account_deletion_content_retention.sql` → `20260928212147`.
+La corrección local `20260928223000_h10_auth_reference_cleanup.sql` se aplicó por
+MCP como test `20260928221654` y producción `20260928221656`. Cambia únicamente
+las dos FK privadas de revisión a `ON DELETE SET NULL`, de modo que la evidencia
+moderada sobreviva sin impedir retirar la identidad del revisor.
+
+Producción `ysaoeuidcvgtlmphmeyb` se creó limpia y recibió secuencialmente las 47
+migraciones existentes mediante MCP; sus versiones remotas `20260928220554`–
+`20260928220743` corresponden al contenido local por nombre y orden. No usar esos
+timestamps para reparar test ni renombrar archivos. Tras el despliegue: cero
+usuarios/perfiles/aportaciones/adopciones/objetos Storage y ningún secreto Stripe.
+
 ## H10 credenciales Apple — 28/9/2026
 
 Local `20260928154523_h10_apple_credentials.sql` → remoto `20260928155742`.

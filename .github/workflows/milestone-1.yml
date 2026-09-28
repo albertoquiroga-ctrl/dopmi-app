@@ -49,6 +49,8 @@ jobs:
           cache: true
       - run: flutter pub get
         working-directory: apps/mobile
+      - name: Write compile-only Firebase placeholders
+        run: python3 scripts/write-ci-firebase-config.py
       - name: Check Dart formatting and show the exact diff
         run: |
           dart format lib test test_backend
@@ -83,6 +85,8 @@ jobs:
           cache: true
       - run: flutter pub get
         working-directory: apps/mobile
+      - name: Write compile-only Firebase placeholders
+        run: python3 scripts/write-ci-firebase-config.py
       - name: iOS simulator compilation (device signing is separate)
         run: flutter build ios --simulator --no-codesign --dart-define-from-file=config.example.json --dart-define=ENABLE_GUARDIAN_TEST=true
         working-directory: apps/mobile

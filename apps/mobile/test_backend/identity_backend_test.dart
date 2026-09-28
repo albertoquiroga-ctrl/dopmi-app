@@ -191,7 +191,7 @@ void main() {
         await eventually(() async => controller!.identity?.verified == true);
         final profile = await repository.loadProfile();
         expect(profile.name, 'Prueba de aceptación');
-        expect(profile.termsVersion, developmentTermsVersion);
+        expect(profile.termsVersion, currentTermsVersion);
         expect(profile.intent, 'rescue');
         await repository.saveProfile(
           name: 'Perfil actualizado',

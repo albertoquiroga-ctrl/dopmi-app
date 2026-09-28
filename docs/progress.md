@@ -1,5 +1,21 @@
 # Dopmi — registro de avance
 
+## H10 proveedores y producción — 28 de septiembre de 2026
+
+- Google/Apple habilitados en Supabase test; redirecciones OAuth comprobadas y
+  vinculación manual activa. Secretos fuera de Git. Codemagic tiene Firebase y
+  clientes sociales en grupos seguros, con ambos flags de aceptación activos.
+- `Dopmi Production` (`ysaoeuidcvgtlmphmeyb`, us-east-1, USD0/mes) creado con
+  esquema/funciones/buckets vigentes, sin usuarios ni datos demo. Registro y
+  proveedores sociales apagados; no existen secretos Stripe y el dinero real
+  sigue bloqueado.
+- CI del SHA `267646d` detectó configuración Firebase ausente en builds de
+  desarrollo, dos expectativas legales antiguas y una FK de revisión restrictiva.
+  Se prepararon placeholders no secretos sólo para CI, se actualizó la prueba y
+  se aplicó `h10_auth_reference_cleanup` en test/producción. PostgreSQL local
+  conserva 254 pruebas aprobadas; la instancia local tiene historial previo
+  desalineado y no se reparó ni reejecutó.
+
 ## H10 política de privacidad publicada — 28 de septiembre de 2026
 
 - El titular confirmó que el aviso cubre exclusivamente la nueva app móvil.

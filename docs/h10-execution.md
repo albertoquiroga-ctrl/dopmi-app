@@ -147,11 +147,27 @@ registro de capacidades/perfiles, OAuth Android y prueba de revocación real.
 - Verificación local: Flutter analyze limpio y 86 pruebas; backend 402 pruebas;
   administración 23 pruebas y build; configuración móvil 10 pruebas.
 
-Bloqueos de aceptación: Supabase todavía publica Google/Apple como deshabilitados;
-la habilitación requiere guardar credenciales OAuth y vinculación manual. Ningún
-flujo social se declara probado en dispositivo. Supabase producción cuesta
-actualmente MXN/USD 0 mensual según el MCP para la organización Enlace Nest, pero
-no se crea sin aceptación explícita del titular.
+### Proveedores y producción — 28/9
+
+- Google y Apple quedaron habilitados en Supabase test y las dos iniciaciones
+  OAuth responden con redirección al proveedor. La vinculación manual está activa.
+  Apple usa el Services ID `com.mycompany.dopmi.auth`; sus secretos y la clave de
+  cifrado sólo existen en Supabase/almacenamiento privado local. Codemagic recibió
+  los clientes y configuraciones Firebase mediante grupos seguros; ambos flags de
+  login están activos para los workflows de aceptación.
+- Se creó `Dopmi Production` (`ysaoeuidcvgtlmphmeyb`) en `us-east-1` con costo
+  confirmado de USD0/mes. Recibió las 47 migraciones base, las siete funciones
+  actuales y los cuatro buckets privados, sin usuarios, datos demo ni objetos
+  Storage. No tiene secretos Stripe ni proveedores sociales; nuevos registros
+  permanecen deshabilitados. Por ello no puede procesar dinero real ni recibir
+  usuarios antes de una activación separada.
+- La corrección `h10_auth_reference_cleanup` anonimiza referencias de moderadores
+  al retirar Auth. Se aplicó como test `20260928221654` y producción
+  `20260928221656`, sin tocar contenido ni contabilidad.
+
+Pendientes de aceptación: inicio/cancelación/vinculación social en dispositivos,
+revocación Apple con una identidad real, correo transaccional/Private Relay y
+entregas Android/TestFlight del mismo SHA. No se cierra H10 por las redirecciones.
 
 - Configuración inicial: Python 9 pruebas; Flutter analyze limpio y 82 pruebas
   aprobadas sobre copia temporal fuera de OneDrive. Aún sin CI/build de H10.
