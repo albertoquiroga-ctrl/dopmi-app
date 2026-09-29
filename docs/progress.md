@@ -1012,3 +1012,12 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   y la restauración usa inmediatamente la sesión local mientras termina la
   comprobación servidor, evitando la carrera que reemplazaba la ruta por una
   pantalla vacía. Flutter aprobó 94 pruebas y análisis sin incidencias.
+- Candidato conjunto correctivo desde
+  `d3beba30c1d52206414a77657483789f0cc2d06d`: los CI 36514850944 y
+  36514848612 terminaron `success`. Codemagic Android
+  `6abb28b041594690c23be43c` publicó `2.3.3 (266)`; Play Console confirmó el
+  código 266 disponible en Internal Testing. Codemagic iOS
+  `6abb28b1483a70bbe6cb024e` cargó `2.3.3 (267)` correctamente; App Store
+  Connect aún lo muestra `Procesando`. El build y la tienda no acreditan todavía
+  la corrección de Información básica ni la aceptación del consentimiento en un
+  dispositivo.

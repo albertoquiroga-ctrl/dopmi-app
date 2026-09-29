@@ -9,12 +9,12 @@ un alias como `google-a`, `apple-a` o `apple-relay-a`.
 
 | Campo | Android | iOS |
 |---|---|---|
-| SHA | `af8027a47ddd6c94caebdcc3b2672033baf2c29e` | `af8027a47ddd6c94caebdcc3b2672033baf2c29e` |
+| SHA | `d3beba30c1d52206414a77657483789f0cc2d06d` | `d3beba30c1d52206414a77657483789f0cc2d06d` |
 | Workflow | `android-guardian-internal` | `ios-testflight` |
-| Codemagic | build 16 (`6abb1b18a7c0e10e9a05069e`) | build 5 (`6abb1b1832bd8882759214f4`) |
-| Versión disponible | `2.3.3 (264)` | `2.3.3 (265)` |
+| Codemagic | build 17 (`6abb28b041594690c23be43c`) | build 6 (`6abb28b1483a70bbe6cb024e`) |
+| Versión disponible | `2.3.3 (266)` | `2.3.3 (267)` |
 | Dispositivo / SO | pendiente | pendiente |
-| Tienda disponible | Internal Testing desde 28/9/2026 20:15 | TestFlight, grupo `DopMi Inner Team`, estado `En pruebas` |
+| Tienda disponible | Internal Testing desde 28/9/2026 21:05 | carga aceptada; procesamiento de Apple pendiente |
 
 El candidato anterior quedó **superado** para la aceptación de cuenta: Android 262
 mostró pantalla negra al abrir **Información básica**, no expuso la eliminación
@@ -29,6 +29,13 @@ anterior podía entrar sin aceptar la mayoría de edad, términos y privacidad
 vigentes. El servidor registró las solicitudes de eliminación como `completado`,
 sin atención pendiente. El candidato 264/265 queda superado para continuar esta
 aceptación; la corrección requiere un nuevo candidato conjunto.
+
+El candidato actual 266/267 contiene la pantalla obligatoria de mayoría de edad,
+términos y privacidad para cualquier perfil incompleto o desactualizado. También
+mueve **Información básica** fuera de la navegación por pestañas y publica Google
+y Apple en **Crear cuenta**. CI, compilación y publicación Android aprobaron; la
+corrección de la pantalla negra y el gate de consentimiento permanecen pendientes
+de confirmación instalada.
 
 ## Recorrido Android
 
