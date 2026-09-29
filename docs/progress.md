@@ -1180,3 +1180,16 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   versiones exigirán también el access token. El cliente queda reforzado para
   obtenerlo y enviarlo en acceso, vinculación y reautenticación; prueba unitaria
   comprueba ambos tokens. Requiere gate y candidato nuevo.
+- Candidato final de la corrección Google fijado en el tag
+  `codex-h10-final-277`, SHA
+  `7e0a4b09ece6833c74afa44e2eb30e0651a6cff6`. La compuerta integrada
+  [36632568776](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36632568776)
+  aprobó sus cuatro trabajos. [Android Codemagic
+  `6abc2e07bb271484cec0e088`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc2e07bb271484cec0e088)
+  publicó **2.3.3 (277)** a Play `internal`; publicación y consulta posterior
+  marcaron `completed`. [iOS Codemagic
+  `6abc2e104ec1ec8d686c0180`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc2e104ec1ec8d686c0180)
+  cargó **2.3.3 (278)** a App Store Connect con `UPLOAD SUCCEEDED with no
+  errors`. Ambos usan el mismo SHA. Falta procesamiento/instalación de iOS 278,
+  instalación Android 277 y repetir Google con persistencia; Apple 276 conserva
+  su evidencia porque este cambio no alteró su token.

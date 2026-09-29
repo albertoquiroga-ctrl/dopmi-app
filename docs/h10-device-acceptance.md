@@ -250,3 +250,23 @@ El acceso aprobado emitió además la advertencia preventiva de Auth de que el
 cliente siguiente obtiene ambos tokens de Google y los envía de forma común en
 inicio, vinculación y reautenticación. Esta corrección requiere un candidato
 nuevo y no invalida la aceptación observada de 276.
+
+## Candidato final con access token de Google
+
+El tag `codex-h10-final-277` fija el SHA
+`7e0a4b09ece6833c74afa44e2eb30e0651a6cff6`. La compuerta integrada
+[36632568776](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36632568776)
+aprobó sus cuatro trabajos: formato, análisis y pruebas Flutter, APK Android de
+desarrollo, compilación iOS, administración, backend de identidad/adopción,
+permisos PostgreSQL y concurrencia de Guardián.
+
+[Codemagic Android `6abc2e07bb271484cec0e088`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc2e07bb271484cec0e088)
+aprobó configuración, firma, análisis, pruebas, AAB, publicación y limpieza.
+Google Play confirmó **2.3.3 (277)** en `internal`, estado `completed`.
+[Codemagic iOS `6abc2e104ec1ec8d686c0180`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc2e104ec1ec8d686c0180)
+aprobó configuración, firma, análisis, pruebas, IPA, publicación y limpieza;
+App Store Connect aceptó **2.3.3 (278)** con `UPLOAD SUCCEEDED with no errors`.
+Ambos artefactos proceden del mismo SHA. Falta confirmar procesamiento y
+disponibilidad de iOS 278 e instalar los dos candidatos. El recorrido afectado
+que debe repetirse es Google: acceso y persistencia de sesión, comprobando que
+Auth ya no emita la advertencia por falta de `access_token`.
