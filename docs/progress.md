@@ -1031,3 +1031,12 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   desde el siguiente candidato la versión/build compilados para eliminar dudas
   sobre qué paquete está instalado. Flutter: análisis limpio y 95 pruebas;
   configuración móvil: 11 pruebas. Requiere candidato y confirmación física.
+- Candidato de la segunda barrera desde
+  `419a56dd595ae412fe2ba423c8b97c1ac56ae414`: CI 36522764232 y
+  36522761588 aprobaron los cuatro trabajos. Codemagic Android
+  `6abb41991ed2d10dbfd22286` terminó con publicación exitosa; Play Console
+  confirmó `2.3.3 (268)` disponible en Internal Testing. Codemagic iOS
+  `6abb419aac4cd795b1d9af7c` terminó con publicación exitosa y el IPA firmado
+  confirma `2.3.3 (269)`, paquete `com.mycompany.dopmi`; queda comprobar su
+  procesamiento en TestFlight. La corrección funcional continúa pendiente de
+  prueba física.

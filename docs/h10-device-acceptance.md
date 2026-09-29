@@ -9,12 +9,12 @@ un alias como `google-a`, `apple-a` o `apple-relay-a`.
 
 | Campo | Android | iOS |
 |---|---|---|
-| SHA | `d3beba30c1d52206414a77657483789f0cc2d06d` | `d3beba30c1d52206414a77657483789f0cc2d06d` |
+| SHA | `419a56dd595ae412fe2ba423c8b97c1ac56ae414` | `419a56dd595ae412fe2ba423c8b97c1ac56ae414` |
 | Workflow | `android-guardian-internal` | `ios-testflight` |
-| Codemagic | build 17 (`6abb28b041594690c23be43c`) | build 6 (`6abb28b1483a70bbe6cb024e`) |
-| Versión disponible | `2.3.3 (266)` | `2.3.3 (267)` |
+| Codemagic | build 18 (`6abb41991ed2d10dbfd22286`) | build 7 (`6abb419aac4cd795b1d9af7c`) |
+| Versión disponible | `2.3.3 (268)` | `2.3.3 (269)` |
 | Dispositivo / SO | pendiente | pendiente |
-| Tienda disponible | Internal Testing desde 28/9/2026 21:05 | TestFlight, grupo `DopMi Inner Team`, estado `En pruebas` |
+| Tienda disponible | Internal Testing desde 28/9/2026 22:51 | carga aceptada por Apple; procesamiento en TestFlight pendiente de consulta |
 
 El candidato anterior quedó **superado** para la aceptación de cuenta: Android 262
 mostró pantalla negra al abrir **Información básica**, no expuso la eliminación
@@ -30,12 +30,19 @@ vigentes. El servidor registró las solicitudes de eliminación como `completado
 sin atención pendiente. El candidato 264/265 queda superado para continuar esta
 aceptación; la corrección requiere un nuevo candidato conjunto.
 
-El candidato actual 266/267 contiene la pantalla obligatoria de mayoría de edad,
+El candidato 266/267 contenía la primera pantalla obligatoria de mayoría de edad,
 términos y privacidad para cualquier perfil incompleto o desactualizado. También
 mueve **Información básica** fuera de la navegación por pestañas y publica Google
 y Apple en **Crear cuenta**. CI, compilación y publicación Android aprobaron; la
 corrección de la pantalla negra y el gate de consentimiento permanecen pendientes
 de confirmación instalada.
+
+La prueba instalada no reprodujo el aviso ni el alta social, y Supabase confirmó
+que el perfil Google seguía sin ninguna de las tres aceptaciones. El candidato
+actual 268/269 añade una barrera independiente que falla cerrada aunque no cargue
+el perfil, muestra el build exacto en Configuración y conserva acceso a términos,
+eliminación y cancelación de Guardián. Android 268 está disponible; iOS 269 fue
+cargado correctamente, pero su procesamiento en TestFlight aún no se verificó.
 
 ## Recorrido Android
 
