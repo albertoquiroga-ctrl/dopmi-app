@@ -29,8 +29,26 @@ class FirebaseProductAnalytics implements ProductAnalytics {
     'contribution_confirmed',
   };
   @override
-  Future<void> enabled(bool value) =>
-      analytics.setAnalyticsCollectionEnabled(value);
+  Future<void> enabled(bool value) async {
+    if (value) {
+      await analytics.setConsent(
+        analyticsStorageConsentGranted: true,
+        adStorageConsentGranted: false,
+        adUserDataConsentGranted: false,
+        adPersonalizationSignalsConsentGranted: false,
+      );
+      await analytics.setAnalyticsCollectionEnabled(true);
+      return;
+    }
+    await analytics.setAnalyticsCollectionEnabled(false);
+    await analytics.setConsent(
+      analyticsStorageConsentGranted: false,
+      adStorageConsentGranted: false,
+      adUserDataConsentGranted: false,
+      adPersonalizationSignalsConsentGranted: false,
+    );
+    await analytics.resetAnalyticsData();
+  }
   @override
   Future<void> event(String name, {Map<String, Object>? parameters}) async {
     if (!allowed.contains(name)) throw ArgumentError.value(name, 'name');

@@ -1095,3 +1095,10 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   base de datos, Storage y funciones; Firebase queda limitado a Analytics y
   Crashlytics opcionales. Se añadió una comprobación reproducible que impide
   introducir SDK de backend Firebase sin cambiar expresamente esta decisión.
+- Android 270: el titular ejecutó dos veces el resultado real de contacto sobre
+  Rocky Demo con Analítica activada. La conversación se creó/recuperó, pero GA4
+  Realtime no recibió `contact_started`; sólo mostró eventos heredados de
+  FlutterFlow. La aceptación de Analytics permanece abierta. Se corrigió la
+  integración para declarar explícitamente `analytics_storage` al activar,
+  mantener publicidad/personalización denegadas y reiniciar los datos locales
+  al retirar consentimiento o cambiar de identidad.
