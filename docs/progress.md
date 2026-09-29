@@ -1235,7 +1235,10 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   pruebas, firma, AAB y Publishing aprobaron. iOS Codemagic
   [`6abc3da82b57438d992a0231`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc3da82b57438d992a0231)
   generó, firmó y publicó **2.3.3 (280)**; análisis, 99 pruebas, IPA, Publishing
-  y limpieza aprobaron sobre el mismo SHA.
+  y limpieza aprobaron sobre el mismo SHA. Google Play confirmó por separado
+  que el bundle **279** está disponible para testers internos y que 277 quedó
+  desactivado. App Store Connect recibió **280** y lo muestra `Procesando`; aún
+  no se declara disponible en TestFlight.
   Falta instalar el candidato y probar una acción real después de retirar
   Analítica, además de confirmar que Diagnóstico retirado no ofrece ni envía la
   prueba interna.

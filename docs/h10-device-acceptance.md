@@ -208,6 +208,10 @@ El mismo SHA `d57aea8aef3fad2687b177d2f5ed3634c6672849` produjo Android
 **2.3.3 (280)** mediante `6abc3da82b57438d992a0231`; ambas ejecuciones
 aprobaron análisis, pruebas, firma, artefacto y Publishing. La instalación y la
 retirada observada siguen pendientes y no se sustituyen por estas cargas.
+Google Play confirmó directamente **Disponible para testers internos**, bundle
+279, publicado el 29/9 a las 16:45; el bundle 277 aparece desactivado. App Store
+Connect recibió 280 a las 16:52 y continúa `Procesando`. Sólo `Finalizado` y su
+aparición en el grupo interno permitirán pedir la instalación iOS.
 
 ## Candidato conjunto vigente
 
