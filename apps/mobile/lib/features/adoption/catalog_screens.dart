@@ -821,6 +821,9 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
                             final thread = await ref
                                 .read(communityRepositoryProvider)
                                 .startThread(adoptions.first.id);
+                            await ref
+                                .read(measurementControllerProvider)
+                                ?.event('contact_started');
                             if (context.mounted) {
                               context.push('/messages/$thread');
                             }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/measurement.dart';
 import '../../core/ui.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
@@ -143,6 +144,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
       final thread = await ref
           .read(communityRepositoryProvider)
           .startThread(card.id);
+      await ref.read(measurementControllerProvider)?.event('contact_started');
       if (mounted) context.push('/messages/$thread');
     } catch (cause) {
       if (mounted) setState(() => error = communityError(cause));

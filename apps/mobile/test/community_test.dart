@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/core/measurement.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
@@ -8,8 +9,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'fake_identity_repository.dart';
+
+class CommunityAnalyticsSpy implements ProductAnalytics {
+  final events = <String>[];
+  @override
+  Future<void> enabled(bool value) async {}
+  @override
+  Future<void> event(String name, {Map<String, Object>? parameters}) async {
+    events.add(name);
+  }
+}
+
+class CommunityDiagnosticsSpy implements ErrorDiagnostics {
+  @override
+  Future<void> discardPending() async {}
+  @override
+  Future<void> enabled(bool value) async {}
+  @override
+  Future<void> record(Object error, StackTrace stack, {String? reason}) async {}
+  @override
+  Future<void> sendPending() async {}
+}
 
 class FakeCommunity implements CommunityRepository {
   Adoption post = Adoption({
@@ -199,7 +222,9 @@ void main() {
   Future<ProviderContainer> start(
     WidgetTester tester,
     FakeCommunity repo,
-    String path,
+    String path, {
+    MeasurementController? measurement,
+  }
   ) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
@@ -212,6 +237,8 @@ void main() {
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(repo),
         routerInitialLocationProvider.overrideWithValue(path),
+        if (measurement != null)
+          measurementControllerProvider.overrideWith((ref) => measurement),
       ],
     );
     addTearDown(() async {
@@ -342,6 +369,34 @@ void main() {
       findsOneWidget,
     );
     expect(tester.takeException(), isNull);
+  });
+  testWidgets('swipe contact records analytics only after the thread exists', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final analytics = CommunityAnalyticsSpy();
+    final measurement = MeasurementController(
+      await SharedPreferences.getInstance(),
+      'test',
+      analytics,
+      CommunityDiagnosticsSpy(),
+    );
+    await measurement.owner('one');
+    await measurement.setAnalytics(true);
+    addTearDown(measurement.dispose);
+    await start(
+      tester,
+      FakeCommunity(),
+      '/adoptions',
+      measurement: measurement,
+    );
+    await tester.tap(find.byTooltip('Contactar'));
+    await tester.pumpAndSettle();
+    expect(analytics.events, isEmpty);
+    await tester.tap(find.text('Contactar'));
+    await tester.pumpAndSettle();
+    expect(analytics.events, ['contact_started']);
+    expect(find.text('Sobre Luna'), findsOneWidget);
   });
   testWidgets('an eligible support card appears after two adoptions', (
     tester,

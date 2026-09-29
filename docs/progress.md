@@ -1109,3 +1109,11 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   limpieza terminaron `success`; la consulta posterior del track confirmó
   `internal`, `completed`, código 272. Falta instalación y repetición del evento
   real; publicación no equivale a aceptación en dispositivo.
+- Android 272 instalado y comprobado por captura; Analítica encendida. El
+  contacto nuevo con Toby funcionó, pero `contact_started` no apareció. La
+  investigación confirmó que Firebase enlaza la app ID Android vigente al
+  stream `5400821083`, con recepción reciente y configuración descargada
+  idéntica a la usada por Codemagic. La causa estaba en la app: el detalle sí
+  medía el contacto, pero el botón del mazo/swipe usado en aceptación y el
+  acceso equivalente desde el perfil público omitían el evento. Ambos quedan
+  instrumentados después de `startThread`, nunca antes del resultado real.
