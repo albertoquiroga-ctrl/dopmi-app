@@ -9,12 +9,12 @@ un alias como `google-a`, `apple-a` o `apple-relay-a`.
 
 | Campo | Android | iOS |
 |---|---|---|
-| SHA | `419a56dd595ae412fe2ba423c8b97c1ac56ae414` | `419a56dd595ae412fe2ba423c8b97c1ac56ae414` |
+| SHA | `f1c0f7b63042122156536d626d5930cf296cc272` | `f1c0f7b63042122156536d626d5930cf296cc272` |
 | Workflow | `android-guardian-internal` | `ios-testflight` |
-| Codemagic | build 18 (`6abb41991ed2d10dbfd22286`) | build 7 (`6abb419aac4cd795b1d9af7c`) |
-| Versión disponible | `2.3.3 (268)` | `2.3.3 (269)` |
+| Codemagic | build 23 (`6abc0b9355f874ca95621932`) | build 9 (`6abc16a31bed101ce54ac895`) |
+| Versión disponible | `2.3.3 (275)` | IPA `2.3.3 (276)` cargado; disponibilidad pendiente |
 | Dispositivo / SO | dispositivo Android del titular; SO no registrado | pendiente |
-| Tienda disponible | Internal Testing desde 28/9/2026 22:51 | carga aceptada por Apple; procesamiento en TestFlight pendiente de consulta |
+| Tienda disponible | Internal Testing desde 29/9/2026 | carga aceptada sin errores; procesamiento en TestFlight pendiente de consulta |
 
 El candidato anterior quedó **superado** para la aceptación de cuenta: Android 262
 mostró pantalla negra al abrir **Información básica**, no expuso la eliminación
@@ -191,3 +191,18 @@ actividad y 49 eventos, predominantemente heredados de FlutterFlow, pero no
 mostró todavía `contact_started` en los resultados visibles consultados. Falta
 confirmar su procesamiento posterior; esto no justifica emitir eventos
 sintéticos ni agregar parámetros identificables.
+
+## Candidato conjunto vigente
+
+El tag `codex-h10-android-275` fija el SHA funcional ya instalado en Android.
+Codemagic iOS `6abc16a31bed101ce54ac895` tomó ese tag, aprobó configuración,
+análisis, 97 pruebas, firma, IPA, Publishing y limpieza. App Store Connect aceptó
+el IPA **2.3.3 (276)** con `UPLOAD SUCCEEDED with no errors`. La carga no acredita
+procesamiento ni instalación; la sesión web de App Store Connect estaba
+expirada al intentar consultarlo.
+
+Una consulta agregada de Supabase test registró 17 cuentas, identidades por
+proveedor `email: 16` y `google: 3`, una aceptación vigente completa
+`terms-2026-09-28` / `privacy-2026-09-28`, tres eliminaciones completadas,
+ninguna pendiente y cero credenciales Apple. No se consultaron ni documentaron
+correos, UUID o tokens.

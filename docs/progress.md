@@ -1147,3 +1147,15 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   nuevo evento entre los resultados visibles consultados. La recepción
   procesada por GA4 permanece pendiente; no se repetirá otro cambio de código
   sin evidencia de rechazo.
+- Se fijó el candidato Android 275 con el tag `codex-h10-android-275` y se lanzó
+  iOS desde el mismo SHA `f1c0f7b63042122156536d626d5930cf296cc272`.
+  [Codemagic `6abc16a31bed101ce54ac895`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc16a31bed101ce54ac895)
+  aprobó configuración, análisis, 97 pruebas, firma, IPA, Publishing y limpieza.
+  Apple aceptó **2.3.3 (276)** con `UPLOAD SUCCEEDED with no errors`. Falta
+  confirmar procesamiento/disponibilidad e instalarlo desde TestFlight; App
+  Store Connect solicitó una nueva sesión al intentar consultarlo.
+- Supabase test, por consulta agregada: 17 cuentas, identidades `email: 16` y
+  `google: 3`, una aceptación legal vigente completa, tres eliminaciones
+  `completado`, ninguna pendiente y cero credenciales Apple. Google/gate legal y
+  eliminación cuentan con evidencia real Android; Apple nativo, Private Relay
+  y revocación continúan pendientes de la identidad desechable en iPhone.
