@@ -1159,3 +1159,8 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   `completado`, ninguna pendiente y cero credenciales Apple. Google/gate legal y
   eliminación cuentan con evidencia real Android; Apple nativo, Private Relay
   y revocación continúan pendientes de la identidad desechable en iPhone.
+- Renovada la sesión, App Store Connect confirmó la carga iOS 276 como
+  **Finalizado** y el build como **En pruebas** dentro de `DopMi Inner Team`.
+  Registraba tres invitaciones y cero instalaciones. El candidato conjunto ya
+  está disponible en ambas tiendas internas; falta instalación y aceptación en
+  iPhone, en particular Google, Apple nativo/Private Relay y revocación.

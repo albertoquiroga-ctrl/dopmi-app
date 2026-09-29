@@ -12,9 +12,9 @@ un alias como `google-a`, `apple-a` o `apple-relay-a`.
 | SHA | `f1c0f7b63042122156536d626d5930cf296cc272` | `f1c0f7b63042122156536d626d5930cf296cc272` |
 | Workflow | `android-guardian-internal` | `ios-testflight` |
 | Codemagic | build 23 (`6abc0b9355f874ca95621932`) | build 9 (`6abc16a31bed101ce54ac895`) |
-| Versión disponible | `2.3.3 (275)` | IPA `2.3.3 (276)` cargado; disponibilidad pendiente |
+| Versión disponible | `2.3.3 (275)` | `2.3.3 (276)` |
 | Dispositivo / SO | dispositivo Android del titular; SO no registrado | pendiente |
-| Tienda disponible | Internal Testing desde 29/9/2026 | carga aceptada sin errores; procesamiento en TestFlight pendiente de consulta |
+| Tienda disponible | Internal Testing desde 29/9/2026 | TestFlight interno, **En pruebas**, desde 29/9/2026 |
 
 El candidato anterior quedó **superado** para la aceptación de cuenta: Android 262
 mostró pantalla negra al abrir **Información básica**, no expuso la eliminación
@@ -200,6 +200,12 @@ análisis, 97 pruebas, firma, IPA, Publishing y limpieza. App Store Connect acep
 el IPA **2.3.3 (276)** con `UPLOAD SUCCEEDED with no errors`. La carga no acredita
 procesamiento ni instalación; la sesión web de App Store Connect estaba
 expirada al intentar consultarlo.
+
+Tras renovar la sesión, App Store Connect mostró la carga 276 como
+**Finalizado** y el build como **En pruebas**, asignado a `DopMi Inner Team`,
+con tres invitaciones y cero instalaciones en el momento de la consulta. Queda
+acreditada su disponibilidad interna; falta instalarlo y ejecutar el recorrido
+iPhone.
 
 Una consulta agregada de Supabase test registró 17 cuentas, identidades por
 proveedor `email: 16` y `google: 3`, una aceptación vigente completa
