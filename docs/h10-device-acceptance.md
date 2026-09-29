@@ -210,8 +210,8 @@ aprobaron análisis, pruebas, firma, artefacto y Publishing. La instalación y l
 retirada observada siguen pendientes y no se sustituyen por estas cargas.
 Google Play confirmó directamente **Disponible para testers internos**, bundle
 279, publicado el 29/9 a las 16:45; el bundle 277 aparece desactivado. App Store
-Connect recibió 280 a las 16:52 y continúa `Procesando`. Sólo `Finalizado` y su
-aparición en el grupo interno permitirán pedir la instalación iOS.
+Connect recibió 280 a las 16:52, terminó de procesarlo y lo muestra **En
+pruebas** dentro de `DopMi Inner Team`, con tres invitaciones internas.
 
 ## Candidato conjunto vigente
 
