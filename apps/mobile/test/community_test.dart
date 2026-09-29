@@ -224,8 +224,7 @@ void main() {
     FakeCommunity repo,
     String path, {
     MeasurementController? measurement,
-  }
-  ) async {
+  }) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);

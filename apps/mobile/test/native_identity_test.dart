@@ -84,9 +84,7 @@ void main() {
       'signature',
     ].join('.');
     final mockHttp = MockClient((request) async {
-      requestBody = Map<String, dynamic>.from(
-        jsonDecode(request.body) as Map,
-      );
+      requestBody = Map<String, dynamic>.from(jsonDecode(request.body) as Map);
       return http.Response(
         jsonEncode({
           'access_token': jwt,
