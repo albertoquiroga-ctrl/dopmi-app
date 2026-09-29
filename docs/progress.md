@@ -974,3 +974,9 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   y asignarlo al grupo interno para volverlo instalable.
   La hoja `docs/h10-device-acceptance.md` conserva los recorridos y resultados
   pendientes sin documentar credenciales ni correos privados completos.
+- Apple Developer aceptó `dopmi.org` como fuente de Private Email Relay y mostró
+  SPF válido. App Store Connect guardó la declaración de exportación de iOS 263,
+  lo dejó listo para pruebas y disponible para `DopMi Inner Team`. Se observó una
+  instalación de 263 en iPhone 14 Pro Max / iOS 18.7.8. Falta comprobar correo al
+  alias privado y ejecutar los recorridos funcionales; no se documentó el alias
+  ni la identidad del tester.

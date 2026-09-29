@@ -242,3 +242,11 @@ aprobaron sus cuatro trabajos.
 La aceptación física se registra en `docs/h10-device-acceptance.md`. H10 continúa
 abierto hasta comprobar instalación, proveedores sociales, eliminación, Firebase
 y Private Relay en ambos dispositivos.
+
+Apple Developer registró `dopmi.org` como dominio de Private Email Relay con SPF
+válido. App Store Connect aceptó para iOS 263 la declaración de que el cliente no
+implementa los algoritmos de cifrado listados, cambió el build a **Lista para las
+pruebas** y lo hizo disponible al grupo interno existente. El grupo ya registra
+una instalación de 263 en iPhone 14 Pro Max con iOS 18.7.8; esto acredita entrega,
+no los recorridos sociales, de consentimiento o eliminación. La entrega al alias
+privado de Apple continúa pendiente hasta crear la identidad desechable acordada.

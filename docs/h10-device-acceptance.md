@@ -13,8 +13,8 @@ un alias como `google-a`, `apple-a` o `apple-relay-a`.
 | Workflow | `android-guardian-internal` | `ios-testflight` |
 | Codemagic | build 15 (`6abb04b63e1e341b2e6b97fb`) | build 4 (`6abb04b74427c92a169daabd`) |
 | Versión disponible | `2.3.3 (262)` | `2.3.3 (263)`, procesamiento finalizado |
-| Dispositivo / SO | pendiente | pendiente |
-| Tienda disponible | Internal Testing desde 28/9/2026 18:30 | falta declaración de exportación y grupo interno |
+| Dispositivo / SO | pendiente | iPhone 14 Pro Max / iOS 18.7.8, instalación registrada; recorrido pendiente |
+| Tienda disponible | Internal Testing desde 28/9/2026 18:30 | TestFlight, grupo `DopMi Inner Team` |
 
 ## Recorrido Android
 
@@ -67,7 +67,7 @@ un alias como `google-a`, `apple-a` o `apple-relay-a`.
 | Crashlytics apagado | pendiente | ausencia antes del consentimiento |
 | Diagnóstico interno habilitado | pendiente | no fatal `dopmi_diagnostics_test` |
 | Crashlytics retirado | pendiente | ausencia después de retirar |
-| Private Relay | pendiente | entrega confirmada sin documentar el alias |
+| Private Relay | dominio registrado; entrega pendiente | `dopmi.org` aceptado por Apple con SPF; falta prueba al alias |
 | Eliminación Google | pendiente | estado final y sesión antigua rechazada |
 | Eliminación Apple | pendiente | estado final, grant revocado y credencial ausente |
 
