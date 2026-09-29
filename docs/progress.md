@@ -1048,3 +1048,25 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   Ambos defectos quedan solucionados y aceptados en Android. El acceso Google
   desde alta, vinculación, Apple, medición y los demás recorridos H10 conservan
   su aceptación independiente.
+
+# 29/9/2026 — H10, preparación de aceptación final
+
+- Supabase test, consultado por MCP sin exponer identificadores: 17 cuentas,
+  identidades `email: 16` y `google: 3`, una aceptación 18+/legal vigente, tres
+  eliminaciones `completado`, ninguna pendiente y cero credenciales Apple.
+- Firebase DebugView no mostró dispositivo de depuración ni eventos durante la
+  observación. Crashlytics Android continúa en **Add SDK**; ambos recorridos
+  requieren activar los consentimientos y la acción de diagnóstico desde el
+  build instalado. La actividad histórica de Firebase no se acepta como prueba.
+- `apps/admin`: 23 pruebas y build aprobados. `tools/verification`: 105 pruebas
+  aprobadas. `scripts/test_mobile_config.py`: 11 pruebas aprobadas. Flutter no
+  está disponible localmente; CI del SHA candidato conserva esa comprobación.
+- Se corrigió el backlog: Resend/SMTP y recepción-respuesta de soporte ya estaban
+  comprobados. Permanecen Apple/Google en dispositivo, Private Relay,
+  Analytics/Crashlytics y disponibilidad instalada de TestFlight 269.
+- Prueba física Android 268: Firebase detectó el SDK tras habilitar Diagnóstico,
+  registrar el error controlado y reiniciar Dopmi, pero no recibió el reporte.
+  Se añadió un despacho explícito de reportes pendientes únicamente después de
+  `recordError` consentido. `flutter analyze` quedó limpio, la prueba dirigida
+  aprobó 6 casos y la suite Flutter completa aprobó 95 pruebas. La corrección
+  queda pendiente de candidato instalado y recepción visible en Crashlytics.

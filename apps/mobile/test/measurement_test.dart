@@ -23,11 +23,17 @@ class FailingAnalytics extends AnalyticsSpy {
 class DiagnosticsSpy implements ErrorDiagnostics {
   bool enabledValue = false;
   int reports = 0;
+  int sends = 0;
   @override
   Future<void> enabled(bool value) async => enabledValue = value;
   @override
   Future<void> record(Object error, StackTrace stack, {String? reason}) async {
     reports++;
+  }
+
+  @override
+  Future<void> sendPending() async {
+    sends++;
   }
 }
 
@@ -136,12 +142,15 @@ void main() {
     await controller.owner('alice');
     await controller.diagnosticTest();
     expect(diagnostics.reports, 0);
+    expect(diagnostics.sends, 0);
     await controller.setDiagnostics(true);
     await controller.diagnosticTest();
     expect(diagnostics.reports, 1);
+    expect(diagnostics.sends, 1);
     await controller.setDiagnostics(false);
     await controller.diagnosticTest();
     expect(diagnostics.reports, 1);
+    expect(diagnostics.sends, 1);
     controller.dispose();
   });
 

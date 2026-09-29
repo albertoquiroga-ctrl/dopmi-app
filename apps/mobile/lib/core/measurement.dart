@@ -14,6 +14,7 @@ abstract interface class ProductAnalytics {
 abstract interface class ErrorDiagnostics {
   Future<void> enabled(bool value);
   Future<void> record(Object error, StackTrace stack, {String? reason});
+  Future<void> sendPending();
 }
 
 class FirebaseProductAnalytics implements ProductAnalytics {
@@ -52,6 +53,8 @@ class FirebaseErrorDiagnostics implements ErrorDiagnostics {
   @override
   Future<void> record(Object error, StackTrace stack, {String? reason}) =>
       crashlytics.recordError(error, stack, reason: reason, fatal: false);
+  @override
+  Future<void> sendPending() => crashlytics.sendUnsentReports();
 }
 
 class MeasurementController extends ChangeNotifier {
@@ -132,6 +135,7 @@ class MeasurementController extends ChangeNotifier {
       StackTrace.current,
       reason: 'internal_acceptance_test',
     );
+    await diagnostics.sendPending();
   }
 
   void _installErrorHandler() {

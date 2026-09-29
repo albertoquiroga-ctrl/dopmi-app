@@ -108,6 +108,29 @@ separada.
 | Eliminación Google | pendiente | estado final y sesión antigua rechazada |
 | Eliminación Apple | pendiente | estado final, grant revocado y credencial ausente |
 
+Consulta de servicios del 29/9/2026, antes de continuar la aceptación física:
+
+- Supabase test registra 17 cuentas, 16 identidades por correo y 3 por Google;
+  una sola aceptación legal vigente, tres eliminaciones `completado`, ninguna
+  eliminación pendiente y ninguna credencial Apple almacenada. Las cantidades
+  se registran sin correos ni UUID.
+- Firebase DebugView no detectó dispositivos de depuración ni eventos de debug
+  en los 30 minutos observados. El panel general contiene actividad histórica
+  de la aplicación anterior y no sirve como evidencia del consentimiento H10.
+- Crashlytics todavía muestra el estado inicial **Add SDK** para Android. La
+  integración está compilada, pero falta habilitar Diagnóstico y emitir el error
+  no fatal controlado desde el candidato instalado para verificar la recepción.
+- Administración: 23 pruebas y build aprobaron. Verificación de backend: 105
+  pruebas aprobaron. Configuración móvil: 11 pruebas aprobaron. Flutter no está
+  instalado en esta estación; el `analyze` y la suite Flutter del mismo SHA se
+  acreditan mediante los dos trabajos CI aprobados ya vinculados al candidato.
+
+La prueba instalada del 29/9 activó Diagnóstico, registró el error controlado y
+reinició la aplicación. Firebase detectó el SDK, pero continuó esperando el
+primer reporte. No se acepta como entrega. El cliente ahora solicita el despacho
+explícito inmediatamente después de registrar el diagnóstico consentido; esta
+corrección requiere un nuevo candidato y repetir sólo este recorrido.
+
 ## Resultado
 
 H10 sólo se acepta cuando las dos columnas del candidato corresponden al mismo
