@@ -383,7 +383,6 @@ void main() {
     );
     await measurement.owner('one');
     await measurement.setAnalytics(true);
-    addTearDown(measurement.dispose);
     await start(
       tester,
       FakeCommunity(),
