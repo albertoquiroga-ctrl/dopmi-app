@@ -86,7 +86,7 @@ La comprobación técnica significa que la ruta y su operación real están cubi
 | `/history` | `/payments` | I/T. |
 | `/profile` | `/profile` | I/T. |
 | `/saved`, `/saved-rescuers` | `/saved?kind=adoption|rescuer` | I/T; Donación es la tercera pestaña. |
-| `/settings`, `/settings/basic-info` | `/settings`, `/profile/basic-info` | I/T. |
+| `/settings`, `/settings/basic-info` | `/settings`, `/basic-info` | I/T. |
 | `/settings/payment-methods`, `/settings/billing` | `/guardian` | I/T según capacidad real de Stripe. |
 | `/help` | `/help` | I/T; FAQ cambia por experiencia. |
 | `/rescuer-profile/:caseId` | `/people/:id` | I/T con perfil por UUID. |

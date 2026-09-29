@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/measurement.dart';
 import '../../core/ui.dart';
-import '../adoption/community_ui.dart';
 import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
 import '../identity/experience_controller.dart';
@@ -21,7 +20,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
       phone = TextEditingController(),
       city = TextEditingController();
   Profile? profile;
-  bool loading = true, busy = false, consent = false;
+  bool loading = true, busy = false;
   String mode = 'donor';
   String? error, message;
   @override
@@ -98,13 +97,8 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
   Widget build(BuildContext context) {
     final identity = ref.read(identityControllerProvider).identity;
     final suspended = profile?.status == 'suspended';
-    final accepted =
-        profile?.termsVersion == currentTermsVersion &&
-        profile?.privacyVersion == currentPrivacyVersion &&
-        profile?.adultConfirmed == true;
     return PageFrame(
       back: true,
-      bottomNavigationBar: const CommunityNav(4),
       children: [
         const Heading(
           'Información básica',
@@ -171,40 +165,6 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
               'Tu cuenta está suspendida. Contacta al equipo Dopmi para revisar tu acceso.',
               isError: true,
             ),
-          if (!accepted && !suspended) ...[
-            const Notice(
-              'Antes de continuar, revisa y acepta los términos y el aviso de privacidad vigentes.',
-            ),
-            TextButton(
-              onPressed: () => context.push('/terms'),
-              child: const Text('Leer términos y privacidad'),
-            ),
-            CheckboxListTile(
-              contentPadding: EdgeInsets.zero,
-              controlAffinity: ListTileControlAffinity.leading,
-              value: consent,
-              onChanged: busy
-                  ? null
-                  : (value) => setState(() => consent = value ?? false),
-              title: const Text(
-                'Confirmo que tengo 18 años o más y acepto los términos y el aviso de privacidad.',
-              ),
-            ),
-            ActionButton(
-              'Confirmar y continuar',
-              busy: busy,
-              onPressed: consent
-                  ? () => perform(() async {
-                      await ref.read(identityRepositoryProvider).acceptTerms();
-                      await ref
-                          .read(measurementControllerProvider)
-                          ?.event('sign_up_completed');
-                      await load();
-                    })
-                  : null,
-            ),
-            const SizedBox(height: 24),
-          ],
           for (final shortcut in const [
             ('Guardados', '/saved', Icons.favorite_border),
             ('Mis mensajes', '/messages', Icons.chat_bubble_outline),
@@ -228,7 +188,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
                 const SizedBox(height: 18),
                 TextFormField(
                   controller: name,
-                  enabled: !suspended && accepted && !busy,
+                  enabled: !suspended && !busy,
                   maxLength: 80,
                   decoration: const InputDecoration(labelText: 'Nombre'),
                   validator: (value) => (value ?? '').trim().isEmpty
@@ -238,7 +198,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: phone,
-                  enabled: !suspended && accepted && !busy,
+                  enabled: !suspended && !busy,
                   maxLength: 24,
                   keyboardType: TextInputType.phone,
                   decoration: const InputDecoration(
@@ -249,7 +209,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: city,
-                  enabled: !suspended && accepted && !busy,
+                  enabled: !suspended && !busy,
                   maxLength: 100,
                   textCapitalization: TextCapitalization.words,
                   decoration: const InputDecoration(
@@ -264,7 +224,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
                 ActionButton(
                   'Guardar cambios',
                   busy: busy,
-                  onPressed: suspended || !accepted ? null : save,
+                  onPressed: suspended ? null : save,
                 ),
               ],
             ),
@@ -286,4 +246,105 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
       ],
     );
   }
+}
+
+class ConsentScreen extends ConsumerStatefulWidget {
+  const ConsentScreen({super.key});
+
+  @override
+  ConsumerState<ConsentScreen> createState() => _ConsentScreenState();
+}
+
+class _ConsentScreenState extends ConsumerState<ConsentScreen> {
+  bool loading = true, busy = false, consent = false;
+  String? error;
+
+  @override
+  void initState() {
+    super.initState();
+    load();
+  }
+
+  Future<void> load() async {
+    if (mounted) {
+      setState(() {
+        loading = true;
+        error = null;
+      });
+    }
+    try {
+      final profile = await ref.read(identityRepositoryProvider).loadProfile();
+      if (!mounted) return;
+      ref.read(experienceProvider).applyProfile(profile);
+    } catch (cause) {
+      if (mounted) setState(() => error = identityError(cause));
+    } finally {
+      if (mounted) setState(() => loading = false);
+    }
+  }
+
+  Future<void> accept() async {
+    if (busy || !consent) return;
+    setState(() {
+      busy = true;
+      error = null;
+    });
+    try {
+      await ref.read(identityRepositoryProvider).acceptTerms();
+      await ref.read(measurementControllerProvider)?.event('sign_up_completed');
+      await load();
+    } catch (cause) {
+      if (mounted) setState(() => error = identityError(cause));
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => PageFrame(
+    back: false,
+    children: [
+      const Heading(
+        'Antes de continuar',
+        'Dopmi es exclusivamente para personas mayores de 18 años.',
+        eyebrow: 'TU CUENTA',
+      ),
+      if (loading) const Center(child: CircularProgressIndicator()),
+      if (!loading) ...[
+        const Notice(
+          'Revisa y acepta los términos y el aviso de privacidad vigentes para usar Dopmi.',
+        ),
+        TextButton(
+          onPressed: () => context.push('/terms'),
+          child: const Text('Leer términos y privacidad'),
+        ),
+        CheckboxListTile(
+          contentPadding: EdgeInsets.zero,
+          controlAffinity: ListTileControlAffinity.leading,
+          value: consent,
+          onChanged: busy
+              ? null
+              : (value) => setState(() => consent = value ?? false),
+          title: const Text(
+            'Confirmo que tengo 18 años o más y acepto los términos y el aviso de privacidad.',
+          ),
+        ),
+        if (error != null) Notice(error!, isError: true),
+        ActionButton(
+          'Confirmar y continuar',
+          busy: busy,
+          onPressed: consent ? accept : null,
+        ),
+        const SizedBox(height: 12),
+        OutlinedButton(
+          onPressed: busy
+              ? null
+              : () => ref.read(identityControllerProvider).logout(),
+          child: const Text('Cerrar sesión'),
+        ),
+      ],
+      if (!loading && error != null)
+        TextButton(onPressed: load, child: const Text('Volver a intentar')),
+    ],
+  );
 }

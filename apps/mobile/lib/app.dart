@@ -33,6 +33,7 @@ final routerInitialLocationProvider = Provider<String>((ref) => '/welcome');
 
 final routerProvider = Provider<GoRouter>((ref) {
   final identity = ref.watch(identityControllerProvider);
+  final experience = ref.read(experienceProvider);
   final session = ref.watch(navigationSessionProvider);
   String? restoringPath;
   final router = GoRouter(
@@ -40,15 +41,36 @@ final routerProvider = Provider<GoRouter>((ref) {
         ? ref.watch(routerInitialLocationProvider)
         : ref.read(navigationSessionProvider.notifier).location,
     overridePlatformDefaultLocation: session != 0,
-    refreshListenable: identity,
+    refreshListenable: Listenable.merge([identity, experience]),
     redirect: (_, state) {
+      // Supabase restores an existing local session synchronously. Keep the
+      // requested route mounted while the server validates it so a concurrent
+      // profile refresh cannot replace it with the loading route.
+      if (identity.loading && identity.repository.current != null) return null;
       if (identity.loading && state.uri.path != '/loading') {
-        restoringPath = state.uri.toString();
+        restoringPath ??= state.uri.toString();
       }
       final desired = identity.loading
           ? state.uri.path
           : Uri.parse(restoringPath ?? state.uri.toString()).path;
       var target = identity.redirect(desired);
+      if (target == null &&
+          identity.identity?.verified == true &&
+          experience.profile != null) {
+        final profile = experience.profile;
+        final accepted =
+            profile?.termsVersion == currentTermsVersion &&
+            profile?.privacyVersion == currentPrivacyVersion &&
+            profile?.adultConfirmed == true;
+        final consentExempt =
+            desired == '/consent' ||
+            desired == '/terms' ||
+            desired == '/account-privacy' ||
+            desired == '/guardian' ||
+            desired == '/guardian/history';
+        if (!accepted && !consentExempt) target = '/consent';
+        if (accepted && desired == '/consent') target = '/home';
+      }
       if (target == '/adoptions' && identity.identity?.verified == true) {
         target = '/home';
       }
@@ -63,6 +85,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/home',
         builder: (_, _) => const ExperienceLandingScreen(),
+      ),
+      GoRoute(
+        path: '/basic-info',
+        builder: (_, _) =>
+            BasicInfoScreen(key: ValueKey(identity.identity?.id)),
       ),
       StatefulShellRoute.indexedStack(
         builder: (_, _, shell) =>
@@ -106,13 +133,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                 path: '/profile',
                 builder: (_, _) =>
                     ProfileScreen(key: ValueKey(identity.identity?.id)),
-                routes: [
-                  GoRoute(
-                    path: 'basic-info',
-                    builder: (_, _) =>
-                        BasicInfoScreen(key: ValueKey(identity.identity?.id)),
-                  ),
-                ],
               ),
             ],
           ),
@@ -158,6 +178,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/settings',
         builder: (_, _) => SettingsScreen(key: ValueKey(identity.identity?.id)),
+      ),
+      GoRoute(
+        path: '/consent',
+        builder: (_, _) => ConsentScreen(key: ValueKey(identity.identity?.id)),
       ),
       GoRoute(
         path: '/account-privacy',

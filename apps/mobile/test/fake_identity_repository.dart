@@ -8,7 +8,7 @@ class FakeIdentityRepository implements IdentityRepository {
   Future<Identity?>? restoreResult;
   bool pending = false;
   bool failSave = false;
-  int signupCount = 0, passwordUpdates = 0, loads = 0;
+  int signupCount = 0, passwordUpdates = 0, loads = 0, consentCount = 0;
   String? signupIntent;
   Profile profile = const Profile(
     id: 'one',
@@ -134,7 +134,21 @@ class FakeIdentityRepository implements IdentityRepository {
   }
 
   @override
-  Future<void> acceptTerms() async {}
+  Future<void> acceptTerms() async {
+    consentCount++;
+    profile = Profile(
+      id: profile.id,
+      name: profile.name,
+      phone: profile.phone,
+      city: profile.city,
+      mode: profile.mode,
+      intent: profile.intent,
+      status: profile.status,
+      termsVersion: currentTermsVersion,
+      privacyVersion: currentPrivacyVersion,
+      adultConfirmed: true,
+    );
+  }
 
   @override
   Future<void> reauthenticate(String password) async {}

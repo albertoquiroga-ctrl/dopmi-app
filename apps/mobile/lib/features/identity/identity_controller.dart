@@ -18,7 +18,7 @@ final identityControllerProvider = Provider<IdentityController>((ref) {
 });
 
 class IdentityController extends ChangeNotifier {
-  IdentityController(this.repository);
+  IdentityController(this.repository) : identity = repository.current;
   final IdentityRepository repository;
   StreamSubscription<IdentityEvent>? _subscription;
   Identity? identity;
@@ -108,8 +108,10 @@ class IdentityController extends ChangeNotifier {
       const accountRoutes = [
         '/home',
         '/profile',
+        '/basic-info',
         '/settings',
         '/account-privacy',
+        '/consent',
         '/help',
         '/publish',
         '/terms',
@@ -139,8 +141,10 @@ class IdentityController extends ChangeNotifier {
     if (path == '/home' ||
         path == '/profile' ||
         path.startsWith('/profile/') ||
+        path == '/basic-info' ||
         path == '/settings' ||
         path == '/account-privacy' ||
+        path == '/consent' ||
         path == '/help' ||
         path == '/publish' ||
         path == '/guardian' ||

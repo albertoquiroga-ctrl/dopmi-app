@@ -22,6 +22,14 @@ desde Configuración y conservó el texto obsoleto **Aviso de desarrollo**. La
 cancelación inicial de Google sí quedó comprobada sin crear una identidad. Los
 demás recorridos deben ejecutarse en el candidato 264/265 descrito arriba.
 
+La revisión de Android 264 confirmó que la eliminación de cuenta se completó y
+permitió volver a autenticar con Google. También descubrió dos defectos altos:
+**Información básica** seguía mostrando una pantalla negra y un perfil social
+anterior podía entrar sin aceptar la mayoría de edad, términos y privacidad
+vigentes. El servidor registró las solicitudes de eliminación como `completado`,
+sin atención pendiente. El candidato 264/265 queda superado para continuar esta
+aceptación; la corrección requiere un nuevo candidato conjunto.
+
 ## Recorrido Android
 
 1. Instalar o actualizar desde Google Play Internal Testing y comprobar la

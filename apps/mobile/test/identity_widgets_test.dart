@@ -1,4 +1,5 @@
 import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/core/config.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
@@ -14,6 +15,7 @@ void main() {
     WidgetTester tester,
     FakeIdentityRepository repo, {
     String? initialLocation,
+    AppConfig? config,
   }) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
@@ -22,12 +24,11 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         identityRepositoryProvider.overrideWithValue(repo),
+        if (config != null) configProvider.overrideWithValue(config),
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         routerInitialLocationProvider.overrideWithValue(
           initialLocation ??
-              (repo.user?.verified == true
-                  ? '/profile/basic-info'
-                  : '/welcome'),
+              (repo.user?.verified == true ? '/basic-info' : '/welcome'),
         ),
       ],
     );
@@ -155,6 +156,52 @@ void main() {
     }
     expect(find.text('Eliminar mi cuenta'), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+  testWidgets('an outdated social profile must accept age and current terms', (
+    tester,
+  ) async {
+    final repo = FakeIdentityRepository()
+      ..user = const Identity('one', 'ana@example.test', verified: true)
+      ..profile = const Profile(
+        id: 'one',
+        name: 'Ana',
+        phone: '',
+        city: '',
+        mode: 'donor',
+        intent: 'adopt',
+        status: 'active',
+        termsVersion: developmentTermsVersion,
+      );
+    await start(tester, repo, initialLocation: '/adoptions');
+
+    expect(find.text('Antes de continuar'), findsOneWidget);
+    expect(find.text('Adoptar'), findsNothing);
+    await tap(
+      tester,
+      'Confirmo que tengo 18 años o más y acepto los términos y el aviso de privacidad.',
+    );
+    await tap(tester, 'Confirmar y continuar');
+    expect(repo.consentCount, 1);
+    expect(find.text('Antes de continuar'), findsNothing);
+  });
+
+  testWidgets('signup exposes Google as an account creation method', (
+    tester,
+  ) async {
+    final repo = FakeIdentityRepository();
+    await start(
+      tester,
+      repo,
+      initialLocation: '/signup',
+      config: const AppConfig(
+        url: 'https://example.supabase.co',
+        key: 'test',
+        redirect: 'io.dopmi.app://auth/callback',
+        googleEnabled: true,
+      ),
+    );
+
+    expect(find.text('Crear cuenta con Google'), findsOneWidget);
   });
   testWidgets('a recovery link routes to reset without loading personal data', (
     tester,

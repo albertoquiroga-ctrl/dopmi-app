@@ -441,7 +441,7 @@ class SettingsScreen extends ConsumerWidget {
         title: 'Información básica',
         subtitle: 'Edita tu perfil y datos personales',
         icon: Icons.person_outline,
-        path: '/profile/basic-info',
+        path: '/basic-info',
       ),
       if (ref.watch(guardianEnabledProvider)) ...[
         const ProfileRow(

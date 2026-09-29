@@ -998,3 +998,17 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   internos. Codemagic iOS `6abb1b1832bd8882759214f4` generó y cargó
   `2.3.3 (265)`; App Store Connect lo muestra `En pruebas` y asignado a
   `DopMi Inner Team`. Falta instalación y aceptación física de este candidato.
+- La prueba instalada de Android 264 completó la eliminación real y el posterior
+  acceso con Google. Supabase confirmó dos solicitudes `completado`, sin código
+  de atención. El acceso reutilizó otra identidad Dopmi previa vinculada al
+  proveedor; su perfil conservaba términos de desarrollo, sin versión de
+  privacidad ni confirmación 18+, y la app no lo bloqueó. Información básica
+  también continuó en negro.
+- Corrección posterior: el consentimiento 18+/términos/privacidad pasa a una
+  pantalla obligatoria global para cualquier perfil incompleto o desactualizado;
+  Guardián y eliminación conservan acceso para poder cancelar o cerrar la
+  cuenta. Google/Apple aparecen también como métodos en **Crear cuenta**. La
+  edición básica se movió a la ruta superior `/basic-info`, sin barra de pestañas,
+  y la restauración usa inmediatamente la sesión local mientras termina la
+  comprobación servidor, evitando la carrera que reemplazaba la ruta por una
+  pantalla vacía. Flutter aprobó 94 pruebas y análisis sin incidencias.

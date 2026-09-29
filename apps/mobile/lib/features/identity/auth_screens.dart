@@ -254,7 +254,7 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                     busy: busy,
                     onPressed: submit,
                   ),
-                  if (login) ...[
+                  if (login)
                     TextButton(
                       onPressed: busy
                           ? null
@@ -264,31 +264,42 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                             ),
                       child: const Text('Necesito confirmar mi correo'),
                     ),
-                    if (config.googleEnabled || config.appleNativeAvailable)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 12),
-                        child: Text(
-                          'También puedes entrar con',
-                          textAlign: TextAlign.center,
-                        ),
+                  if ((login || signup) &&
+                      (config.googleEnabled || config.appleNativeAvailable))
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Text(
+                        signup
+                            ? 'También puedes crear tu cuenta con'
+                            : 'También puedes entrar con',
+                        textAlign: TextAlign.center,
                       ),
-                    if (config.googleEnabled)
-                      OutlinedButton(
-                        onPressed: busy ? null : () => social('google'),
-                        child: const Text('Continuar con Google'),
+                    ),
+                  if ((login || signup) && config.googleEnabled)
+                    OutlinedButton(
+                      onPressed: busy ? null : () => social('google'),
+                      child: Text(
+                        signup
+                            ? 'Crear cuenta con Google'
+                            : 'Continuar con Google',
                       ),
-                    if (config.appleNativeAvailable) ...[
-                      const SizedBox(height: 12),
-                      OutlinedButton(
-                        onPressed: busy ? null : () => social('apple'),
-                        child: const Text('Continuar con Apple'),
+                    ),
+                  if ((login || signup) && config.appleNativeAvailable) ...[
+                    const SizedBox(height: 12),
+                    OutlinedButton(
+                      onPressed: busy ? null : () => social('apple'),
+                      child: Text(
+                        signup
+                            ? 'Crear cuenta con Apple'
+                            : 'Continuar con Apple',
                       ),
-                    ],
+                    ),
+                  ],
+                  if (login)
                     TextButton(
                       onPressed: () => context.push('/signup'),
                       child: const Text('Soy nuevo · Crear una cuenta'),
                     ),
-                  ],
                   if (reset)
                     TextButton(
                       onPressed: busy
