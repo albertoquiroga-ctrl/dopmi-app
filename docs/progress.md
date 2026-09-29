@@ -1040,3 +1040,11 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   confirma `2.3.3 (269)`, paquete `com.mycompany.dopmi`; queda comprobar su
   procesamiento en TestFlight. La corrección funcional continúa pendiente de
   prueba física.
+- Aceptación física Android 268 recibida del titular con capturas
+  `1000346255`, `1000346257`, `1000346259` y `1000346261`: Configuración muestra
+  la versión correcta, el perfil incompleto queda bloqueado por **Antes de
+  continuar**, la mayoría de edad y documentos vigentes requieren aceptación
+  explícita, e **Información básica** abre el perfil real sin pantalla negra.
+  Ambos defectos quedan solucionados y aceptados en Android. El acceso Google
+  desde alta, vinculación, Apple, medición y los demás recorridos H10 conservan
+  su aceptación independiente.

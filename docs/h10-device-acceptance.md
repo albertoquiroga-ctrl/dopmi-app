@@ -13,7 +13,7 @@ un alias como `google-a`, `apple-a` o `apple-relay-a`.
 | Workflow | `android-guardian-internal` | `ios-testflight` |
 | Codemagic | build 18 (`6abb41991ed2d10dbfd22286`) | build 7 (`6abb419aac4cd795b1d9af7c`) |
 | Versión disponible | `2.3.3 (268)` | `2.3.3 (269)` |
-| Dispositivo / SO | pendiente | pendiente |
+| Dispositivo / SO | dispositivo Android del titular; SO no registrado | pendiente |
 | Tienda disponible | Internal Testing desde 28/9/2026 22:51 | carga aceptada por Apple; procesamiento en TestFlight pendiente de consulta |
 
 El candidato anterior quedó **superado** para la aceptación de cuenta: Android 262
@@ -43,6 +43,15 @@ actual 268/269 añade una barrera independiente que falla cerrada aunque no carg
 el perfil, muestra el build exacto en Configuración y conserva acceso a términos,
 eliminación y cancelación de Guardián. Android 268 está disponible; iOS 269 fue
 cargado correctamente, pero su procesamiento en TestFlight aún no se verificó.
+
+El titular confirmó mediante las capturas `1000346255`, `1000346257`,
+`1000346259` y `1000346261` que Android **2.3.3 (268)** muestra el gate
+**Antes de continuar**, exige confirmar 18 años/términos/privacidad, identifica
+la versión instalada y abre **Información básica** con el perfil real sin la
+pantalla negra. Estos dos defectos quedan aceptados en Android. La captura del
+formulario de alta confirma el consentimiento de registro; no alcanza a mostrar
+el botón Google situado más abajo, por lo que ese punto conserva su prueba
+separada.
 
 ## Recorrido Android
 
