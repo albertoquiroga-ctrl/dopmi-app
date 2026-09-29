@@ -9,18 +9,18 @@ un alias como `google-a`, `apple-a` o `apple-relay-a`.
 
 | Campo | Android | iOS |
 |---|---|---|
-| SHA | `3472c5b4ba5785ab9ab695f4a5d96a3e0befd4a3` | `3472c5b4ba5785ab9ab695f4a5d96a3e0befd4a3` |
+| SHA | `af8027a47ddd6c94caebdcc3b2672033baf2c29e` | `af8027a47ddd6c94caebdcc3b2672033baf2c29e` |
 | Workflow | `android-guardian-internal` | `ios-testflight` |
-| Codemagic | build 15 (`6abb04b63e1e341b2e6b97fb`) | build 4 (`6abb04b74427c92a169daabd`) |
-| Versión disponible | `2.3.3 (262)` | `2.3.3 (263)`, procesamiento finalizado |
-| Dispositivo / SO | pendiente | iPhone 14 Pro Max / iOS 18.7.8, instalación registrada; recorrido pendiente |
-| Tienda disponible | Internal Testing desde 28/9/2026 18:30 | TestFlight, grupo `DopMi Inner Team` |
+| Codemagic | build 16 (`6abb1b18a7c0e10e9a05069e`) | build 5 (`6abb1b1832bd8882759214f4`) |
+| Versión disponible | `2.3.3 (264)` | `2.3.3 (265)` |
+| Dispositivo / SO | pendiente | pendiente |
+| Tienda disponible | Internal Testing desde 28/9/2026 20:15 | TestFlight, grupo `DopMi Inner Team`, estado `En pruebas` |
 
-Este candidato quedó **superado** para la aceptación de cuenta: Android 262
+El candidato anterior quedó **superado** para la aceptación de cuenta: Android 262
 mostró pantalla negra al abrir **Información básica**, no expuso la eliminación
 desde Configuración y conservó el texto obsoleto **Aviso de desarrollo**. La
 cancelación inicial de Google sí quedó comprobada sin crear una identidad. Los
-demás recorridos deben ejecutarse en el siguiente candidato conjunto.
+demás recorridos deben ejecutarse en el candidato 264/265 descrito arriba.
 
 ## Recorrido Android
 

@@ -991,3 +991,10 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
 - iOS declara `ITSAppUsesNonExemptEncryption = false`, coherente con la
   declaración ya aceptada para 263, para evitar repetir la intervención manual
   de exportación en candidatos que no incorporan cifrado no exento.
+- Candidato correctivo conjunto desde
+  `af8027a47ddd6c94caebdcc3b2672033baf2c29e`: CI 36510163492 aprobó sus cuatro
+  jobs. Codemagic Android `6abb1b18a7c0e10e9a05069e` generó y publicó
+  `2.3.3 (264)`; Play Console confirmó el código 264 disponible para testers
+  internos. Codemagic iOS `6abb1b1832bd8882759214f4` generó y cargó
+  `2.3.3 (265)`; App Store Connect lo muestra `En pruebas` y asignado a
+  `DopMi Inner Team`. Falta instalación y aceptación física de este candidato.
