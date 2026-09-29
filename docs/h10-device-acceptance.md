@@ -280,6 +280,8 @@ exigía enviar `access_token`. En uno de los recorridos el ID token no incluía
 ese token concreto. Es una observación informativa y no afectó la sesión.
 No se copiaron correos, UUID, tokens ni direcciones a esta evidencia.
 
-Queda aceptada la corrección Google del candidato conjunto. Permanecen fuera
-de esta prueba la vinculación explícita desde una sesión existente y Apple web
-en Android; deben conservarse como recorridos separados antes de cerrar H10.1.
+Queda aceptada la corrección Google del candidato conjunto. El titular confirmó
+además que la vinculación regresa al mismo perfil Dopmi. Por decisión de
+producto, Apple se ofrece únicamente en iOS/iPadOS; Android conserva acceso por
+Google y correo y no requiere Apple mediante navegador. Con esto queda cerrada
+la aceptación instalada de H10.1.

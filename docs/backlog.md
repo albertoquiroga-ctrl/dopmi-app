@@ -119,7 +119,7 @@ Plan autorizado y cola detallada: [h10-execution.md](h10-execution.md).
 Inicio 28/9: guardas de entorno y cliente Google nativo comprobados localmente;
 Apple sólo adaptador preparatorio. Ningún subhito H10 cerrado todavía.
 
-- [ ] H10.1 Configurar/verificar Google y Apple, callbacks y no duplicación de identidad.
+- [x] H10.1 Configurar/verificar Google y Apple, callbacks y no duplicación de identidad. Google aprobado en Android/iOS; Apple nativo aprobado sólo en iOS/iPadOS por decisión de producto; vinculación conserva el mismo perfil.
 - [ ] H10.2 Eliminación de cuenta y tratamiento de sesiones/contenido/evidencia.
 - [ ] H10.3 Analítica mínima y errores sin datos privados; consentimiento comprobado.
 - [ ] H10.4 Correo, soporte/moderación, legal y declaraciones de privacidad definitivas.
@@ -143,9 +143,9 @@ a H12 porque requiere Supabase Pro; debe cerrarse antes del lanzamiento público
 - [x] Activar Google/Apple y vinculación manual en Supabase test; flags seguros
   activos en los candidatos H10. Google quedó aceptado en Android/iOS; Apple
   nativo, Private Relay y revocación quedaron aceptados en iOS/iPadOS.
-- [ ] Completar los recorridos instalados restantes: vinculación explícita desde
-  una sesión existente y Apple web con retorno a la app en Android. OAuth,
-  cancelación, persistencia y eliminación social ya tienen evidencia real.
+- [x] Vinculación explícita confirmada sobre el mismo perfil. Apple web en
+  Android se retiró del alcance por decisión del titular: Android ofrece
+  Google/correo y Apple permanece exclusivo de iOS/iPadOS.
 - [x] Probar recepción/respuesta y configurar SMTP transaccional. Resend quedó
   verificado en ambos sentidos; la clave `Supabase` se reserva para Auth/SMTP
   y `Codex Dopmi` para envíos controlados de prueba.

@@ -1198,5 +1198,7 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   accesos Google HTTP 200 con `grant_type=id_token`; desapareció la advertencia
   anterior por `access_token` ausente. Un ID token no traía `at_hash` y Auth
   informó que el access token enviado no se utilizó en ese caso, sin error de
-  sesión. La corrección Google del candidato conjunto queda aceptada. Siguen
-  separados los recorridos de vinculación explícita y Apple web en Android.
+  sesión. La corrección Google del candidato conjunto queda aceptada. El
+  titular confirmó que la vinculación conserva el mismo perfil. Apple queda
+  disponible únicamente en iOS/iPadOS por decisión de producto; Android usa
+  Google/correo y no mostrará Apple web. H10.1 queda aceptado.
