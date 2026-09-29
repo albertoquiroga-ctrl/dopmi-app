@@ -1125,3 +1125,16 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   `554e66866d69e65f2e8473a9477398a003e3807c`. Google Play Internal Testing
   confirmó `completed`, Android **2.3.3 (274)**. Falta aceptación instalada del
   evento corregido.
+- Android 274 instalado: el titular confirmó por capturas el build, Analítica
+  encendida y la creación real de una conversación nueva con Milo desde el
+  mazo. GA4 Realtime todavía no mostró `contact_started`, aunque la app, el
+  stream y el nombre del evento están verificados. Para dejar de inferir el
+  comportamiento nativo, el candidato interno ahora muestra en Privacidad si
+  Firebase aceptó el evento, lo omitió sin consentimiento o devolvió un error;
+  conserva sólo ese resultado en memoria y no añade payloads.
+- [Codemagic `6abc0b9355f874ca95621932`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc0b9355f874ca95621932),
+  SHA `f1c0f7b63042122156536d626d5930cf296cc272`, aprobó configuración,
+  análisis, 97 pruebas, firma, AAB, Publishing y limpieza. Google Play Internal
+  Testing confirmó `completed`, Android **2.3.3 (275)**. Falta instalarlo,
+  crear un contacto real y leer la señal interna antes de volver a consultar
+  GA4.

@@ -165,3 +165,21 @@ H10 sólo se acepta cuando las dos columnas del candidato corresponden al mismo
 SHA, cada recorrido anterior tiene evidencia observada y no quedan defectos
 críticos o altos. Una compilación o carga a la tienda no sustituye la instalación
 ni las pruebas físicas.
+
+## Diagnóstico dirigido de Analytics — Android 275
+
+El candidato interno **2.3.3 (275)** corresponde al SHA
+`f1c0f7b63042122156536d626d5930cf296cc272` y quedó publicado en Play Internal
+Testing por Codemagic `6abc0b9355f874ca95621932`. Después de instalarlo:
+
+1. Conservar **Analítica de uso** encendida.
+2. Desde Adoptar, abrir **Contactar** sobre una mascota sin conversación previa
+   y confirmar el contacto.
+3. Abrir Perfil → Configuración → Privacidad y eliminación.
+4. Registrar el aviso interno exacto: aceptado por Firebase, omitido sin
+   consentimiento o error tipado. El aviso no contiene el mensaje, correo,
+   identificadores ni datos de la mascota.
+
+Sólo el resultado **aceptado por Firebase** habilita la comprobación posterior
+en GA4. La señal local acredita que el método nativo terminó; la recepción en
+GA4 se registra por separado.
