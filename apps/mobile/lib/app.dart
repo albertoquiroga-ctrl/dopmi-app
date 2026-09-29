@@ -14,6 +14,7 @@ import 'features/identity/identity_repository.dart';
 import 'features/identity/onboarding_screen.dart';
 import 'features/profile/profile_screen.dart';
 import 'features/profile/profile_overview.dart';
+import 'features/profile/account_privacy_screen.dart';
 import 'features/profile/impact_screen.dart';
 import 'features/profile/rescuer_profile_edit_screen.dart';
 import 'features/adoption/catalog_screens.dart';
@@ -157,6 +158,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/settings',
         builder: (_, _) => SettingsScreen(key: ValueKey(identity.identity?.id)),
+      ),
+      GoRoute(
+        path: '/account-privacy',
+        builder: (_, _) =>
+            AccountPrivacyScreen(key: ValueKey(identity.identity?.id)),
       ),
       GoRoute(
         path: '/rescuer/profile/edit',

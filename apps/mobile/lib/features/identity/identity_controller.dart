@@ -109,6 +109,7 @@ class IdentityController extends ChangeNotifier {
         '/home',
         '/profile',
         '/settings',
+        '/account-privacy',
         '/help',
         '/publish',
         '/terms',
@@ -139,6 +140,7 @@ class IdentityController extends ChangeNotifier {
         path == '/profile' ||
         path.startsWith('/profile/') ||
         path == '/settings' ||
+        path == '/account-privacy' ||
         path == '/help' ||
         path == '/publish' ||
         path == '/guardian' ||

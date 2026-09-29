@@ -16,6 +16,12 @@ un alias como `google-a`, `apple-a` o `apple-relay-a`.
 | Dispositivo / SO | pendiente | iPhone 14 Pro Max / iOS 18.7.8, instalación registrada; recorrido pendiente |
 | Tienda disponible | Internal Testing desde 28/9/2026 18:30 | TestFlight, grupo `DopMi Inner Team` |
 
+Este candidato quedó **superado** para la aceptación de cuenta: Android 262
+mostró pantalla negra al abrir **Información básica**, no expuso la eliminación
+desde Configuración y conservó el texto obsoleto **Aviso de desarrollo**. La
+cancelación inicial de Google sí quedó comprobada sin crear una identidad. Los
+demás recorridos deben ejecutarse en el siguiente candidato conjunto.
+
 ## Recorrido Android
 
 1. Instalar o actualizar desde Google Play Internal Testing y comprobar la

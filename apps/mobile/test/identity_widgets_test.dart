@@ -12,8 +12,9 @@ import 'fake_identity_repository.dart';
 void main() {
   Future<ProviderContainer> start(
     WidgetTester tester,
-    FakeIdentityRepository repo,
-  ) async {
+    FakeIdentityRepository repo, {
+    String? initialLocation,
+  }) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -23,7 +24,10 @@ void main() {
         identityRepositoryProvider.overrideWithValue(repo),
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         routerInitialLocationProvider.overrideWithValue(
-          repo.user?.verified == true ? '/profile/basic-info' : '/welcome',
+          initialLocation ??
+              (repo.user?.verified == true
+                  ? '/profile/basic-info'
+                  : '/welcome'),
         ),
       ],
     );
@@ -120,6 +124,37 @@ void main() {
     await tap(tester, 'Cerrar sesión');
     expect(find.text('Bienvenido a DopMi'), findsOneWidget);
     expect(find.text('Ana editada'), findsNothing);
+  });
+  testWidgets('settings opens basic info without a rendering exception', (
+    tester,
+  ) async {
+    final repo = FakeIdentityRepository()
+      ..user = const Identity('one', 'ana@example.test', verified: true);
+    await start(tester, repo, initialLocation: '/settings');
+
+    expect(find.text('Términos y privacidad'), findsOneWidget);
+    expect(find.text('Aviso de desarrollo'), findsNothing);
+    await tap(tester, 'Información básica');
+    expect(find.text('Mis datos'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('privacy route exposes account deletion', (tester) async {
+    final repo = FakeIdentityRepository()
+      ..user = const Identity('one', 'ana@example.test', verified: true);
+    await start(tester, repo, initialLocation: '/account-privacy');
+
+    expect(find.text('Privacidad y cuenta'), findsOneWidget);
+    for (
+      var attempt = 0;
+      attempt < 8 && find.text('Eliminar mi cuenta').evaluate().isEmpty;
+      attempt++
+    ) {
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -250));
+      await tester.pumpAndSettle();
+    }
+    expect(find.text('Eliminar mi cuenta'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
   testWidgets('a recovery link routes to reset without loading personal data', (
     tester,

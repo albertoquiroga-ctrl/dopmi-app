@@ -468,9 +468,15 @@ class SettingsScreen extends ConsumerWidget {
         path: '/help',
       ),
       const ProfileRow(
-        title: 'Aviso de desarrollo',
+        title: 'Términos y privacidad',
         icon: Icons.description_outlined,
         path: '/terms',
+      ),
+      const ProfileRow(
+        title: 'Privacidad y eliminación',
+        subtitle: 'Medición, accesos vinculados y eliminación de cuenta',
+        icon: Icons.privacy_tip_outlined,
+        path: '/account-privacy',
       ),
       OutlinedButton(
         onPressed: () async {

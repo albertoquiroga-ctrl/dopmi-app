@@ -980,3 +980,14 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   instalación de 263 en iPhone 14 Pro Max / iOS 18.7.8. Falta comprobar correo al
   alias privado y ejecutar los recorridos funcionales; no se documentó el alias
   ni la identidad del tester.
+- La aceptación Android 262 encontró un bloqueo crítico en Configuración: al
+  abrir **Información básica** el dispositivo podía quedar en negro; además, la
+  opción de eliminación no era visible en la lista y aún aparecía **Aviso de
+  desarrollo**. Se separó la edición básica de la nueva pantalla **Privacidad y
+  eliminación**, se autorizó explícitamente su ruta autenticada, se reemplazó el
+  texto obsoleto por **Términos y privacidad** y se añadieron pruebas de ambas
+  rutas. Flutter aprobó 92 pruebas y análisis sin incidencias; Android 262/iOS
+  263 quedan superados para estos recorridos y requieren un candidato nuevo.
+- iOS declara `ITSAppUsesNonExemptEncryption = false`, coherente con la
+  declaración ya aceptada para 263, para evitar repetir la intervención manual
+  de exportación en candidatos que no incorporan cifrado no exento.
