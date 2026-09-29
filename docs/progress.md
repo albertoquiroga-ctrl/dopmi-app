@@ -1138,3 +1138,12 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   Testing confirmó `completed`, Android **2.3.3 (275)**. Falta instalarlo,
   crear un contacto real y leer la señal interna antes de volver a consultar
   GA4.
+- Android 275 instalado y recorrido por el titular: Analítica permaneció
+  encendida, el contacto real con Nina creó/abrió la conversación y la señal
+  interna mostró **Firebase aceptó contact_started**. Queda comprobado que el
+  controlador consentido llamó al SDK sin payload y éste terminó sin error. La
+  consulta inmediata de GA4 Realtime mostró actividad vigente y 49 nombres de
+  eventos mezclados con telemetría antigua de FlutterFlow, pero no presentó el
+  nuevo evento entre los resultados visibles consultados. La recepción
+  procesada por GA4 permanece pendiente; no se repetirá otro cambio de código
+  sin evidencia de rechazo.

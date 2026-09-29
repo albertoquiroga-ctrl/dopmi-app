@@ -183,3 +183,11 @@ Testing por Codemagic `6abc0b9355f874ca95621932`. Después de instalarlo:
 Sólo el resultado **aceptado por Firebase** habilita la comprobación posterior
 en GA4. La señal local acredita que el método nativo terminó; la recepción en
 GA4 se registra por separado.
+
+El titular completó este recorrido el 29/9/2026 con Analítica encendida y una
+conversación nueva sobre Nina. La app mostró **Firebase aceptó
+contact_started**. La entrega al SDK queda aprobada. GA4 Realtime tenía
+actividad y 49 eventos, predominantemente heredados de FlutterFlow, pero no
+mostró todavía `contact_started` en los resultados visibles consultados. Falta
+confirmar su procesamiento posterior; esto no justifica emitir eventos
+sintéticos ni agregar parámetros identificables.
