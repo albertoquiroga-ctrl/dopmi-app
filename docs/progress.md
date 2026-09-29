@@ -1202,3 +1202,20 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   titular confirmó que la vinculación conserva el mismo perfil. Apple queda
   disponible únicamente en iOS/iPadOS por decisión de producto; Android usa
   Google/correo y no mostrará Apple web. H10.1 queda aceptado.
+- Auditoría de H10.2 añadió casos de cuenta vacía, aislamiento entre titulares,
+  aportación pendiente y cancelación Guardián pendiente. Las operaciones
+  financieras mantienen la cuenta bloqueada en `requiere_atencion` hasta su
+  conciliación; el reintento finaliza después sin crear ni repetir movimientos.
+  También se corrigió el reintento parcial: si PostgreSQL ya marcó la solicitud
+  `completado` pero Auth no pudo retirar al usuario, el siguiente intento vuelve
+  a cerrar sesiones globales y borrar Auth. `anon` y `authenticated` no pueden
+  ejecutar la RPC servidor; sólo `service_role`. Las **405 pruebas backend** y
+  las **12 comprobaciones de configuración móvil** aprobaron en el commit
+  `21e2132e21ec0c9381107ead4c3c14f3e7b5c898`. La función
+  `account-deletion` **v4** quedó activa con JWT obligatorio únicamente en
+  Supabase test. La compuerta integrada
+  [36637906708](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36637906708)
+  aprobó sus cuatro trabajos: identidad/adopción, Flutter/Android,
+  web/PostgreSQL e iOS simulator. H10.2 queda cerrado con la eliminación real
+  previa en Android y Apple, más los escenarios automatizados de reintento,
+  operación pendiente y aislamiento.

@@ -285,3 +285,23 @@ además que la vinculación regresa al mismo perfil Dopmi. Por decisión de
 producto, Apple se ofrece únicamente en iOS/iPadOS; Android conserva acceso por
 Google y correo y no requiere Apple mediante navegador. Con esto queda cerrada
 la aceptación instalada de H10.1.
+
+## Auditoría final de eliminación
+
+El commit `21e2132e21ec0c9381107ead4c3c14f3e7b5c898` amplía la evidencia
+automatizada de H10.2 a cuenta vacía, aislamiento entre titulares, aportación
+pendiente y Guardián activo con cancelación pendiente. En los dos últimos casos
+el acceso permanece bloqueado y el estado pasa a `requiere_atencion` hasta que
+el proceso financiero concluye. Ninguna prueba ejecuta operaciones Stripe
+reales.
+
+La función `account-deletion` v4 está activa sólo en Supabase test y exige JWT.
+Corrige el reintento posterior a una limpieza Auth parcial: aun cuando la base
+ya informe `completado`, vuelve a cerrar las sesiones globales y retirar el
+usuario Auth. La RPC interna sólo conserva `execute` para `service_role`; el
+cliente autenticado no puede elegir ni eliminar otro titular. Aprobaron 405
+pruebas backend locales y 12 comprobaciones de configuración móvil. La
+compuerta integrada
+[36637906708](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36637906708)
+aprobó sus cuatro trabajos para el mismo SHA. La eliminación real ya aceptada
+en Android y Apple, junto con estos escenarios automatizados, cierra H10.2.
