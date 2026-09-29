@@ -1239,6 +1239,10 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   que el bundle **279** está disponible para testers internos y que 277 quedó
   desactivado. App Store Connect terminó de procesar **280**, lo incorporó a
   `DopMi Inner Team` y lo muestra **En pruebas** para tres testers internos.
-  Falta instalar el candidato y probar una acción real después de retirar
-  Analítica, además de confirmar que Diagnóstico retirado no ofrece ni envía la
-  prueba interna.
+  Android 279 quedó instalado. Con Analítica y Diagnóstico apagados, un contacto
+  real mostró que `contact_started` fue omitido antes del SDK y la acción interna
+  de diagnóstico no apareció. La consulta posterior de GA4, ampliada hasta el
+  29/9, permaneció en **3 eventos de 2 usuarios**, sin incremento respecto de la
+  línea base. Las pruebas también acreditan borrado de reportes no enviados al
+  retirar, activar o cambiar de cuenta. H10.3 queda cerrado con consentimientos
+  independientes, apagados por defecto, recepción consentida y retirada real.

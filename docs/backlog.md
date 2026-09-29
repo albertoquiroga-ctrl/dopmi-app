@@ -121,7 +121,7 @@ Apple sólo adaptador preparatorio. Ningún subhito H10 cerrado todavía.
 
 - [x] H10.1 Configurar/verificar Google y Apple, callbacks y no duplicación de identidad. Google aprobado en Android/iOS; Apple nativo aprobado sólo en iOS/iPadOS por decisión de producto; vinculación conserva el mismo perfil.
 - [x] H10.2 Eliminación de cuenta y tratamiento de sesiones/contenido/evidencia. Reintento Auth parcial, operaciones pendientes, Guardián, aislamiento y permisos servidor verificados.
-- [ ] H10.3 Analítica mínima y errores sin datos privados; consentimiento comprobado.
+- [x] H10.3 Analítica mínima y errores sin datos privados; consentimiento comprobado.
 - [ ] H10.4 Correo, soporte/moderación, legal y declaraciones de privacidad definitivas.
 - [ ] H10.5 Separar configuración test/producción, conservando identidad y firma.
 

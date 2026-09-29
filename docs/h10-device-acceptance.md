@@ -98,12 +98,12 @@ separada.
 
 | Comprobación | Resultado | Evidencia mínima |
 |---|---|---|
-| Sin Analytics antes del consentimiento | pendiente | DebugView o eventos del dispositivo sin actividad Dopmi |
+| Sin Analytics antes del consentimiento | aprobado | recopilación nativa apagada por defecto y pruebas verifican cero envíos antes de aceptar |
 | Eventos permitidos con consentimiento | aprobado en Android | GA4 procesó 3 `contact_started` de 2 usuarios; el evento no acepta parámetros |
-| Sin Analytics después de retirar | pendiente | intervalo observado sin eventos nuevos |
-| Crashlytics apagado | pendiente | ausencia antes del consentimiento |
+| Sin Analytics después de retirar | aprobado en Android 279 | la app omitió un `contact_started` real y GA4 permaneció en 3 eventos de 2 usuarios |
+| Crashlytics apagado | aprobado | recopilación nativa apagada por defecto y pruebas verifican ausencia sin consentimiento |
 | Diagnóstico interno habilitado | aprobado en Android 270 | Firebase recibió 1 no fatal `dopmi_diagnostics_test`, motivo `internal_acceptance_test`, tras consentimiento explícito |
-| Crashlytics retirado | interfaz aprobada en Android 270; ajuste pendiente de candidato | titular apagó Diagnóstico y desapareció la acción de prueba; cliente actualizado para borrar reportes locales al retirar, activar o cambiar de cuenta |
+| Crashlytics retirado | aprobado en Android 279 | control apagado, acción interna ausente y borrado de reportes locales verificado al retirar, activar o cambiar de cuenta |
 | Private Relay | dominio registrado; entrega pendiente | `dopmi.org` aceptado por Apple con SPF; falta prueba al alias |
 | Eliminación Google | pendiente | estado final y sesión antigua rechazada |
 | Eliminación Apple | pendiente | estado final, grant revocado y credencial ausente |
@@ -196,8 +196,16 @@ La consulta posterior del reporte procesado de GA4, ampliada hasta el 29/9,
 mostró **3 `contact_started` de 2 usuarios**. Con ello queda acreditada la
 recepción real del evento permitido, además de la aceptación previa del SDK.
 El reporte no contiene parámetros de Dopmi porque la interfaz rechaza cualquier
-payload. Continúa pendiente la prueba instalada de retirada: apagar Analítica,
-completar un contacto real y comprobar que el contador procesado no aumente.
+payload. La prueba instalada de retirada se ejecutó después sobre Android 279.
+
+La retirada se comprobó en Android **2.3.3 (279)** el 29/9. Con Analítica y
+Diagnóstico apagados, la app informó que `contact_started` no se envió porque la
+analítica estaba desactivada; la acción de diagnóstico interno tampoco estaba
+disponible. La consulta posterior del reporte procesado de GA4, ampliada hasta
+el 29/9, permaneció exactamente en **3 eventos de 2 usuarios**. La captura
+`WhatsApp Image 2026-09-29 at 5.09.56 PM.jpeg` no contiene correos, UUID ni
+contenido de mensajes. Junto con las pruebas de borrado de reportes locales,
+queda aprobada la retirada independiente de ambos consentimientos.
 
 La auditoría de H10.3 añadió captura de errores asíncronos mediante
 `PlatformDispatcher` sólo mientras Diagnóstico esté consentido. Conserva el
@@ -206,8 +214,9 @@ de cuenta. `flutter analyze` aprobó y la suite local terminó con 99 pruebas.
 El mismo SHA `d57aea8aef3fad2687b177d2f5ed3634c6672849` produjo Android
 **2.3.3 (279)** mediante Codemagic `6abc3da85177262fd0fa5730` e iOS
 **2.3.3 (280)** mediante `6abc3da82b57438d992a0231`; ambas ejecuciones
-aprobaron análisis, pruebas, firma, artefacto y Publishing. La instalación y la
-retirada observada siguen pendientes y no se sustituyen por estas cargas.
+aprobaron análisis, pruebas, firma, artefacto y Publishing. Android 279 quedó
+instalado y completó la retirada observada de medición; la carga por sí sola no
+se usó como evidencia de comportamiento.
 Google Play confirmó directamente **Disponible para testers internos**, bundle
 279, publicado el 29/9 a las 16:45; el bundle 277 aparece desactivado. App Store
 Connect recibió 280 a las 16:52, terminó de procesarlo y lo muestra **En
