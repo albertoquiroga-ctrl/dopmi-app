@@ -1257,3 +1257,11 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   del titular. App Store exige una versión nueva para cambiar URLs de
   privacidad, soporte y marketing; los tipos de datos sí pueden corregirse de
   inmediato.
+- El Centro de ayuda móvil añadió contacto operativo con
+  `soporte@dopmi.org`, advertencia contra el envío de credenciales/datos de
+  tarjeta y alternativa visible si el dispositivo no abre el cliente de correo.
+  `flutter analyze`, las 99 pruebas Flutter y los 12 controles de configuración
+  aprobaron. La revisión contra las definiciones oficiales de Google retiró del
+  CSV la compartición por proveedores/acciones iniciadas por el usuario y los
+  datos de tarjeta que Stripe Checkout recibe directamente; quedan 15 tipos,
+  cero publicidad/personalización y cero compartición declarada.

@@ -10,14 +10,21 @@ permanecen apagados por defecto.
 ## Google Play — borrador para importar
 
 El CSV preparado para Data Safety declara los siguientes tipos: nombre, correo,
-ID de usuario, dirección, teléfono, datos de pago, historial de compras, otros
-datos financieros, ubicación aproximada, otros mensajes dentro de la app,
+ID de usuario, dirección, teléfono, historial de compras, ubicación aproximada,
+otros mensajes dentro de la app,
 fotos, informes de fallos, diagnóstico, archivos/documentos, interacciones con
 la app, otro contenido generado por usuarios e identificadores de dispositivo.
 
 - Se elimina `Vídeos` como tipo separado y `Historial de búsqueda dentro de la
   app`, porque el candidato no conserva esas búsquedas.
 - No se declara publicidad ni personalización.
+- No se declara información de tarjeta ni otros datos patrimoniales: Stripe
+  Checkout recibe los datos de pago directamente y Dopmi conserva referencias
+  técnicas y evidencia de la transacción, declaradas como historial de compras.
+- No se declara compartición. Los proveedores procesan datos por cuenta de
+  Dopmi y las publicaciones o mensajes visibles para otra persona resultan de
+  acciones concretas iniciadas por el usuario; ambos son supuestos excluidos por
+  la definición de compartición de Google Play.
 - Analítica se limita a informes de fallos, diagnóstico, interacciones e
   identificadores técnicos y sólo después del consentimiento correspondiente.
 - El correo y el ID de usuario son obligatorios; los campos de perfil y el
@@ -42,8 +49,8 @@ gestión de la cuenta:
 - ubicación aproximada cuando el usuario aporta ciudad o zona;
 - mensajes dentro de la app;
 - fotos o vídeos, archivos/documentos y otro contenido generado por el usuario;
-- datos de pago, historial de compras y otros datos financieros tratados para
-  aportaciones de prueba y Guardián en test.
+- información de pago e historial de compras tratados mediante Stripe para
+  aportaciones de prueba y Guardián en test; Dopmi no recibe números de tarjeta.
 
 Datos técnicos no vinculados, recopilados sólo con el consentimiento aplicable:
 
