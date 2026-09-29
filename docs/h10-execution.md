@@ -222,3 +222,23 @@ cuatro trabajos aprobados, incluidas compilaciones Android/iOS y backend local.
 Pendientes de cierre: pruebas sociales y eliminación en Android/iPhone, evento y
 diagnóstico visibles en Firebase, Private Relay y un candidato Android/TestFlight
 del mismo SHA con instalación comprobada.
+
+### Candidato conjunto de medición — 28/9
+
+SHA `3472c5b4ba5785ab9ab695f4a5d96a3e0befd4a3`. Los dos disparos de CI
+[36501932519](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36501932519)
+y [36501928018](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36501928018)
+aprobaron sus cuatro trabajos.
+
+- [Android Codemagic 6abb04b63e1e341b2e6b97fb](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abb04b63e1e341b2e6b97fb):
+  análisis, 90 pruebas, firma, AAB y publicación aprobados. Play Console muestra
+  `2.3.3 (262)` disponible para testers internos desde las 18:30.
+- [iOS Codemagic 6abb04b74427c92a169daabd](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abb04b74427c92a169daabd):
+  análisis, 90 pruebas, firma, IPA y carga aprobados. App Store Connect recibió
+  y terminó de procesar `2.3.3 (263)`. Apple exige completar la declaración de
+  cifrado y añadirlo al grupo interno antes de poder instalarlo; esos pasos no se
+  presentan como disponibilidad todavía.
+
+La aceptación física se registra en `docs/h10-device-acceptance.md`. H10 continúa
+abierto hasta comprobar instalación, proveedores sociales, eliminación, Firebase
+y Private Relay en ambos dispositivos.

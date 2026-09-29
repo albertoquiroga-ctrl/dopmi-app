@@ -965,3 +965,12 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
 - La protección contra contraseñas filtradas se difiere a H12 por decisión del
   titular, ya que requiere Supabase Pro. H10 continúa abierto por dispositivos,
   Firebase, Private Relay y un candidato conjunto nuevo.
+- Candidato conjunto generado desde `3472c5b4ba5785ab9ab695f4a5d96a3e0befd4a3`.
+  Los CI 36501932519 y 36501928018 aprobaron los cuatro trabajos. Android
+  Codemagic `6abb04b63e1e341b2e6b97fb` publicó `2.3.3 (262)` y Play Console lo
+  muestra disponible para testers internos. iOS Codemagic
+  `6abb04b74427c92a169daabd` cargó `2.3.3 (263)` correctamente; App Store
+  Connect terminó de procesarlo. Queda completar su declaración de exportación
+  y asignarlo al grupo interno para volverlo instalable.
+  La hoja `docs/h10-device-acceptance.md` conserva los recorridos y resultados
+  pendientes sin documentar credenciales ni correos privados completos.
