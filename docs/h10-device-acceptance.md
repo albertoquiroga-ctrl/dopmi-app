@@ -14,7 +14,7 @@ un alias como `google-a`, `apple-a` o `apple-relay-a`.
 | Codemagic | build 17 (`6abb28b041594690c23be43c`) | build 6 (`6abb28b1483a70bbe6cb024e`) |
 | Versión disponible | `2.3.3 (266)` | `2.3.3 (267)` |
 | Dispositivo / SO | pendiente | pendiente |
-| Tienda disponible | Internal Testing desde 28/9/2026 21:05 | carga aceptada; procesamiento de Apple pendiente |
+| Tienda disponible | Internal Testing desde 28/9/2026 21:05 | TestFlight, grupo `DopMi Inner Team`, estado `En pruebas` |
 
 El candidato anterior quedó **superado** para la aceptación de cuenta: Android 262
 mostró pantalla negra al abrir **Información básica**, no expuso la eliminación

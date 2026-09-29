@@ -1018,6 +1018,6 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   `6abb28b041594690c23be43c` publicó `2.3.3 (266)`; Play Console confirmó el
   código 266 disponible en Internal Testing. Codemagic iOS
   `6abb28b1483a70bbe6cb024e` cargó `2.3.3 (267)` correctamente; App Store
-  Connect aún lo muestra `Procesando`. El build y la tienda no acreditan todavía
-  la corrección de Información básica ni la aceptación del consentimiento en un
-  dispositivo.
+  Connect terminó de procesarlo y lo muestra `En pruebas`, asignado a
+  `DopMi Inner Team`. El build y las tiendas no acreditan todavía la corrección
+  de Información básica ni la aceptación del consentimiento en un dispositivo.
