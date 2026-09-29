@@ -41,18 +41,21 @@ titular en Play Console.
 
 ## App Store — declaración objetivo
 
-Datos vinculados con la identidad y usados para funcionalidad de la app o
-gestión de la cuenta:
+Datos vinculados con la identidad, cuenta o instalación y usados para
+funcionalidad de la app o gestión de la cuenta:
 
 - nombre, correo, teléfono y dirección;
 - ID de usuario;
 - ubicación aproximada cuando el usuario aporta ciudad o zona;
 - mensajes dentro de la app;
 - fotos o vídeos, archivos/documentos y otro contenido generado por el usuario;
-- información de pago e historial de compras tratados mediante Stripe para
-  aportaciones de prueba y Guardián en test; Dopmi no recibe números de tarjeta.
+- historial de compras tratado mediante Stripe para aportaciones de prueba y
+  Guardián en test. Apple indica que la información de pago introducida fuera de
+  la app y nunca accesible para el desarrollador no se declara; Dopmi no recibe
+  números de tarjeta.
 
-Datos técnicos no vinculados, recopilados sólo con el consentimiento aplicable:
+Datos técnicos vinculados a la instalación, recopilados sólo con el
+consentimiento aplicable:
 
 - interacción con el producto e identificador técnico para Analytics;
 - datos de errores, rendimiento y diagnóstico para Crashlytics.
@@ -61,16 +64,19 @@ No se declaran publicidad de terceros, marketing del desarrollador, seguimiento
 ni personalización comercial. Firebase no recibe correo, UUID de Supabase,
 mensajes, documentos, ubicación, importes o referencias financieras.
 
-La declaración publicada aún conserva siete tipos y usos antiguos: correo para
-publicidad/marketing, ubicación para personalización, y una URL vieja de
-privacidad. App Store Connect permite cambiar los tipos de datos inmediatamente,
-pero la URL de privacidad y las URLs de soporte/marketing requieren una nueva
-versión de App Store. Deben quedar así en el siguiente registro:
+La declaración publicada el 29/9/2026 contiene 15 tipos. Se retiraron publicidad
+y marketing del correo, así como analítica atribuida a ubicación; todos los
+tipos están configurados sin seguimiento. La ubicación aproximada se usa para
+funcionalidad y personalización de resultados. App Store Connect recibió una
+nueva versión 2.3.3 en preparación, con publicación manual y estas URLs:
 
 - privacidad: `https://dopmi.org/privacy-policy`;
 - opciones de privacidad: `https://dopmi.org/delete-account`;
 - soporte: `https://dopmi.org/support`;
 - marketing: `https://dopmi.org/`.
+
+La ficha 2.3.3 no se añadió a revisión ni tiene compilación seleccionada; estos
+cambios no autorizan ni provocan un lanzamiento público.
 
 ## Evidencia pública y operativa
 

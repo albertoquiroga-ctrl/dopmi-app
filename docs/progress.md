@@ -1265,3 +1265,14 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   CSV la compartición por proveedores/acciones iniciadas por el usuario y los
   datos de tarjeta que Stripe Checkout recibe directamente; quedan 15 tipos,
   cero publicidad/personalización y cero compartición declarada.
+- App Store App Privacy quedó publicada con 15 tipos, sin seguimiento y sin
+  publicidad/marketing. Nombre, correo, teléfono, dirección, ubicación
+  aproximada, mensajes, fotos, otro contenido, identificadores, compras,
+  interacción y diagnósticos se vinculan con la cuenta o instalación según la
+  definición de Apple. Se creó la ficha 2.3.3 **En preparación para el envío**,
+  con publicación manual, sin compilación y sin añadirla a revisión. En esa
+  versión se guardaron privacidad `/privacy-policy`, opciones de privacidad
+  `/delete-account`, soporte `/support` y marketing `/`; no implica lanzamiento
+  público. Google Play no recibió todavía el CSV: Chrome bloqueó la carga porque
+  la extensión ChatGPT no tiene habilitado acceso a URLs de archivo. El archivo
+  permanece preparado localmente y la consola conserva el importador abierto.
