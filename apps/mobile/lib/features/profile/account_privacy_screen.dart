@@ -160,6 +160,19 @@ class _AccountPrivacyScreenState extends ConsumerState<AccountPrivacyScreen> {
               ? null
               : measurement.setAnalytics,
         ),
+        if (config.measurementTestEnabled &&
+            measurement?.lastAnalyticsEvent != null) ...[
+          const SizedBox(height: 4),
+          Notice(
+            measurement!.lastAnalyticsResult == 'aceptado_por_sdk'
+                ? 'Prueba interna: Firebase aceptó ${measurement.lastAnalyticsEvent}.'
+                : measurement.lastAnalyticsResult ==
+                      'omitido_sin_consentimiento'
+                ? 'Prueba interna: ${measurement.lastAnalyticsEvent} no se envió porque la analítica estaba apagada.'
+                : 'Prueba interna: Firebase rechazó ${measurement.lastAnalyticsEvent} (${measurement.lastAnalyticsResult}).',
+            isError: measurement.lastAnalyticsResult != 'aceptado_por_sdk',
+          ),
+        ],
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
           title: const Text('Diagnóstico de errores'),

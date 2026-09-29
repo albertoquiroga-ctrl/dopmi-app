@@ -65,6 +65,8 @@ void main() {
       expect(analytics.events, isEmpty);
       expect(analytics.enabledValue, false);
       expect(diagnostics.enabledValue, false);
+      expect(controller.lastAnalyticsEvent, 'contact_started');
+      expect(controller.lastAnalyticsResult, 'omitido_sin_consentimiento');
       controller.dispose();
     },
   );
@@ -83,6 +85,8 @@ void main() {
     await controller.setAnalytics(true);
     await controller.event('publication_submitted');
     expect(analytics.events, ['publication_submitted']);
+    expect(controller.lastAnalyticsEvent, 'publication_submitted');
+    expect(controller.lastAnalyticsResult, 'aceptado_por_sdk');
     expect(diagnostics.enabledValue, false);
     expect(diagnostics.discards, 1);
     await controller.owner('bob');
@@ -90,6 +94,8 @@ void main() {
     await controller.owner('alice');
     expect(controller.analyticsEnabled, true);
     await controller.setAnalytics(false);
+    expect(controller.lastAnalyticsEvent, isNull);
+    expect(controller.lastAnalyticsResult, isNull);
     await controller.event('contact_started');
     expect(analytics.events, ['publication_submitted']);
     controller.dispose();
@@ -196,6 +202,8 @@ void main() {
     await controller.owner('alice');
     await controller.setAnalytics(true);
     await expectLater(controller.event('contact_started'), completes);
+    expect(controller.lastAnalyticsEvent, 'contact_started');
+    expect(controller.lastAnalyticsResult, 'error_StateError');
     controller.dispose();
   });
 }

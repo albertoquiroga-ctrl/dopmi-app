@@ -49,6 +49,7 @@ class FirebaseProductAnalytics implements ProductAnalytics {
     );
     await analytics.resetAnalyticsData();
   }
+
   @override
   Future<void> event(String name, {Map<String, Object>? parameters}) async {
     if (!allowed.contains(name)) throw ArgumentError.value(name, 'name');
@@ -91,6 +92,8 @@ class MeasurementController extends ChangeNotifier {
   final ErrorDiagnostics diagnostics;
   String? _owner;
   bool analyticsEnabled = false, diagnosticsEnabled = false, loading = true;
+  String? lastAnalyticsEvent;
+  String? lastAnalyticsResult;
   FlutterExceptionHandler? _previousFlutterHandler;
 
   String key(String kind) => 'dopmi.$namespace.${_owner ?? 'signed-out'}.$kind';
@@ -104,6 +107,8 @@ class MeasurementController extends ChangeNotifier {
       await diagnostics.discardPending();
     }
     _owner = value;
+    lastAnalyticsEvent = null;
+    lastAnalyticsResult = null;
     analyticsEnabled =
         value != null && (preferences.getBool(key('analytics')) ?? false);
     diagnosticsEnabled =
@@ -124,6 +129,10 @@ class MeasurementController extends ChangeNotifier {
     await analytics.enabled(value);
     await preferences.setBool(key('analytics'), value);
     analyticsEnabled = value;
+    if (!value) {
+      lastAnalyticsEvent = null;
+      lastAnalyticsResult = null;
+    }
     notifyListeners();
   }
 
@@ -153,13 +162,22 @@ class MeasurementController extends ChangeNotifier {
         'Dopmi measurement events do not accept payloads',
       );
     }
-    if (analyticsEnabled) {
-      try {
-        await analytics.event(name);
-      } catch (_) {
-        // Measurement is optional and must never change the product result.
-      }
+    if (!analyticsEnabled) {
+      lastAnalyticsEvent = name;
+      lastAnalyticsResult = 'omitido_sin_consentimiento';
+      notifyListeners();
+      return;
     }
+    try {
+      await analytics.event(name);
+      lastAnalyticsEvent = name;
+      lastAnalyticsResult = 'aceptado_por_sdk';
+    } catch (cause) {
+      lastAnalyticsEvent = name;
+      lastAnalyticsResult = 'error_${cause.runtimeType}';
+      // Measurement is optional and must never change the product result.
+    }
+    notifyListeners();
   }
 
   Future<void> diagnosticTest() async {
