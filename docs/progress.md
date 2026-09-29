@@ -1219,3 +1219,23 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   web/PostgreSQL e iOS simulator. H10.2 queda cerrado con la eliminación real
   previa en Android y Apple, más los escenarios automatizados de reintento,
   operación pendiente y aislamiento.
+- H10.3: el reporte procesado de Firebase/GA4 hasta el 29/9 confirmó **3 eventos
+  `contact_started` de 2 usuarios**. La recepción real de Analytics queda
+  acreditada sin payloads; la interfaz sólo admite los cinco nombres permitidos
+  y rechaza cualquier parámetro. La auditoría añadió los errores asíncronos de
+  `PlatformDispatcher` a Crashlytics únicamente durante consentimiento, con
+  restauración inmediata del manejador al apagar, salir o cambiar de cuenta.
+  `flutter analyze` quedó limpio, aprobaron 99 pruebas Flutter, 405 backend y
+  12 controles de configuración. CI
+  [36639760146](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36639760146)
+  aprobó los cuatro trabajos del SHA
+  `d57aea8aef3fad2687b177d2f5ed3634c6672849`. Android Codemagic
+  [`6abc3da85177262fd0fa5730`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc3da85177262fd0fa5730)
+  publicó **2.3.3 (279)** en Internal Testing desde ese SHA; análisis, 99
+  pruebas, firma, AAB y Publishing aprobaron. iOS Codemagic
+  [`6abc3da82b57438d992a0231`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc3da82b57438d992a0231)
+  generó, firmó y publicó **2.3.3 (280)**; análisis, 99 pruebas, IPA, Publishing
+  y limpieza aprobaron sobre el mismo SHA.
+  Falta instalar el candidato y probar una acción real después de retirar
+  Analítica, además de confirmar que Diagnóstico retirado no ofrece ni envía la
+  prueba interna.

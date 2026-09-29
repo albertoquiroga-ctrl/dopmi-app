@@ -99,7 +99,7 @@ separada.
 | Comprobación | Resultado | Evidencia mínima |
 |---|---|---|
 | Sin Analytics antes del consentimiento | pendiente | DebugView o eventos del dispositivo sin actividad Dopmi |
-| Eventos permitidos con consentimiento | pendiente | nombre del evento y hora; sin parámetros privados |
+| Eventos permitidos con consentimiento | aprobado en Android | GA4 procesó 3 `contact_started` de 2 usuarios; el evento no acepta parámetros |
 | Sin Analytics después de retirar | pendiente | intervalo observado sin eventos nuevos |
 | Crashlytics apagado | pendiente | ausencia antes del consentimiento |
 | Diagnóstico interno habilitado | aprobado en Android 270 | Firebase recibió 1 no fatal `dopmi_diagnostics_test`, motivo `internal_acceptance_test`, tras consentimiento explícito |
@@ -191,6 +191,23 @@ actividad y 49 eventos, predominantemente heredados de FlutterFlow, pero no
 mostró todavía `contact_started` en los resultados visibles consultados. Falta
 confirmar su procesamiento posterior; esto no justifica emitir eventos
 sintéticos ni agregar parámetros identificables.
+
+La consulta posterior del reporte procesado de GA4, ampliada hasta el 29/9,
+mostró **3 `contact_started` de 2 usuarios**. Con ello queda acreditada la
+recepción real del evento permitido, además de la aceptación previa del SDK.
+El reporte no contiene parámetros de Dopmi porque la interfaz rechaza cualquier
+payload. Continúa pendiente la prueba instalada de retirada: apagar Analítica,
+completar un contacto real y comprobar que el contador procesado no aumente.
+
+La auditoría de H10.3 añadió captura de errores asíncronos mediante
+`PlatformDispatcher` sólo mientras Diagnóstico esté consentido. Conserva el
+manejador anterior y lo restaura al apagar el control, cerrar sesión o cambiar
+de cuenta. `flutter analyze` aprobó y la suite local terminó con 99 pruebas.
+El mismo SHA `d57aea8aef3fad2687b177d2f5ed3634c6672849` produjo Android
+**2.3.3 (279)** mediante Codemagic `6abc3da85177262fd0fa5730` e iOS
+**2.3.3 (280)** mediante `6abc3da82b57438d992a0231`; ambas ejecuciones
+aprobaron análisis, pruebas, firma, artefacto y Publishing. La instalación y la
+retirada observada siguen pendientes y no se sustituyen por estas cargas.
 
 ## Candidato conjunto vigente
 
