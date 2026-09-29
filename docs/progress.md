@@ -1091,3 +1091,7 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   upload, aunque `altool` terminó con `UPLOAD SUCCEEDED` y delivery UUID. No se
   declara TestFlight disponible hasta consultar App Store Connect; la sesión web
   expiró y solicita nuevo acceso.
+- Decisión de arquitectura confirmada por el titular: Supabase concentra Auth,
+  base de datos, Storage y funciones; Firebase queda limitado a Analytics y
+  Crashlytics opcionales. Se añadió una comprobación reproducible que impide
+  introducir SDK de backend Firebase sin cambiar expresamente esta decisión.

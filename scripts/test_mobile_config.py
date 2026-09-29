@@ -80,6 +80,19 @@ class MobileConfigTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             config.build_config({**self.env, "SUPABASE_PUBLISHABLE_KEY": f"e30.{payload}.signature"})
 
+    def test_firebase_is_limited_to_measurement_sdks(self):
+        pubspec = (Path(__file__).resolve().parents[1] / "apps/mobile/pubspec.yaml").read_text()
+        declared = {
+            line.split(":", 1)[0].strip()
+            for line in pubspec.splitlines()
+            if line.startswith("  firebase_") or line.startswith("  cloud_")
+        }
+        self.assertEqual(
+            declared,
+            {"firebase_core", "firebase_analytics", "firebase_crashlytics"},
+            "Firebase must remain limited to optional Analytics and Crashlytics; Supabase is the product backend.",
+        )
+
     @staticmethod
     def jwt(role):
         payload = base64.urlsafe_b64encode(json.dumps({"role": role}).encode()).decode().rstrip("=")

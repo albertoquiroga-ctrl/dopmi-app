@@ -38,6 +38,14 @@ El prototipo React y la fuente funcional del ZIP son referencias de producto. Su
 - Administradores se asignan mediante una operación de servidor. No existe registro público de administradores.
 - Los textos legales de desarrollo son provisionales y no habilitan un lanzamiento público.
 
+## Límite Supabase/Firebase — 29 de septiembre de 2026
+
+- Supabase es el único backend del producto: Auth, PostgreSQL/RLS, Storage, Realtime y Edge Functions. Las sesiones sociales de Google y Apple siempre terminan en Supabase.
+- Firebase se conserva exclusivamente para Analytics y Crashlytics. Ambos servicios son opcionales, tienen consentimientos independientes y permanecen apagados hasta que la persona los active.
+- La app no usará Firebase Authentication, Firestore, Realtime Database, Storage, Cloud Functions ni Dynamic Links. Incorporar cualquiera de esos servicios requiere una nueva decisión explícita y una revisión de privacidad y arquitectura.
+- Las configuraciones Firebase de pruebas y producción deben pertenecer a ambientes separados. La medición nunca decide estados financieros ni sustituye la evidencia del servidor.
+- Los recursos del backend anterior en Firebase se consideran legado de pruebas: no reciben datos nuevos ni se migran usuarios desde ellos. Se inventariarán y retirarán cuando su ausencia de dependencias esté comprobada.
+
 ## Hito 2 — adopción y comunicación
 
 - El usuario autorizó iniciar este hito después del cierre de identidad. Incluye publicaciones de adopción, revisión, catálogo, filtros, detalle, guardados, perfiles públicos, conversaciones y notificaciones dentro de la app.
