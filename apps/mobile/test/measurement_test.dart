@@ -1,3 +1,5 @@
+import 'dart:ui' show PlatformDispatcher;
+
 import 'package:dopmi_mobile/core/measurement.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -166,6 +168,30 @@ void main() {
     await controller.diagnosticTest();
     expect(diagnostics.reports, 1);
     expect(diagnostics.sends, 1);
+    controller.dispose();
+  });
+
+  test('async platform errors are captured only while diagnostics is enabled', () async {
+    SharedPreferences.setMockInitialValues({});
+    final diagnostics = DiagnosticsSpy();
+    final previous = PlatformDispatcher.instance.onError;
+    final controller = MeasurementController(
+      await SharedPreferences.getInstance(),
+      'test',
+      AnalyticsSpy(),
+      diagnostics,
+    );
+    await controller.owner('alice');
+    expect(PlatformDispatcher.instance.onError, same(previous));
+    await controller.setDiagnostics(true);
+    final installed = PlatformDispatcher.instance.onError;
+    expect(installed, isNotNull);
+    expect(installed, isNot(same(previous)));
+    installed!(StateError('async_test'), StackTrace.current);
+    await Future<void>.delayed(Duration.zero);
+    expect(diagnostics.reports, 1);
+    await controller.setDiagnostics(false);
+    expect(PlatformDispatcher.instance.onError, same(previous));
     controller.dispose();
   });
 

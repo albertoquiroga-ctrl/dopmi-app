@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' show ErrorCallback, PlatformDispatcher;
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -94,7 +95,9 @@ class MeasurementController extends ChangeNotifier {
   bool analyticsEnabled = false, diagnosticsEnabled = false, loading = true;
   String? lastAnalyticsEvent;
   String? lastAnalyticsResult;
+  bool _handlersInstalled = false;
   FlutterExceptionHandler? _previousFlutterHandler;
+  ErrorCallback? _previousPlatformHandler;
 
   String key(String kind) => 'dopmi.$namespace.${_owner ?? 'signed-out'}.$kind';
 
@@ -191,8 +194,10 @@ class MeasurementController extends ChangeNotifier {
   }
 
   void _installErrorHandler() {
-    if (_previousFlutterHandler != null) return;
+    if (_handlersInstalled) return;
+    _handlersInstalled = true;
     _previousFlutterHandler = FlutterError.onError;
+    _previousPlatformHandler = PlatformDispatcher.instance.onError;
     FlutterError.onError = (details) {
       _previousFlutterHandler?.call(details);
       unawaited(
@@ -202,12 +207,19 @@ class MeasurementController extends ChangeNotifier {
         ),
       );
     };
+    PlatformDispatcher.instance.onError = (error, stack) {
+      unawaited(diagnostics.record(error, stack));
+      return _previousPlatformHandler?.call(error, stack) ?? true;
+    };
   }
 
   void _removeErrorHandler() {
-    if (_previousFlutterHandler == null) return;
+    if (!_handlersInstalled) return;
     FlutterError.onError = _previousFlutterHandler;
+    PlatformDispatcher.instance.onError = _previousPlatformHandler;
     _previousFlutterHandler = null;
+    _previousPlatformHandler = null;
+    _handlersInstalled = false;
   }
 
   @override
