@@ -270,3 +270,16 @@ Ambos artefactos proceden del mismo SHA. Falta confirmar procesamiento y
 disponibilidad de iOS 278 e instalar los dos candidatos. El recorrido afectado
 que debe repetirse es Google: acceso y persistencia de sesión, comprobando que
 Auth ya no emita la advertencia por falta de `access_token`.
+
+El titular instaló ambos candidatos y confirmó el resultado esperado en los
+dos sistemas: Google completó el acceso y la sesión sobrevivió al cierre y
+reinicio de Dopmi. Supabase test registró dos accesos Google recientes con
+HTTP 200 y `grant_type=id_token`. No reapareció la advertencia anterior que
+exigía enviar `access_token`. En uno de los recorridos el ID token no incluía
+`at_hash`; Supabase indicó que el access token recibido no era necesario para
+ese token concreto. Es una observación informativa y no afectó la sesión.
+No se copiaron correos, UUID, tokens ni direcciones a esta evidencia.
+
+Queda aceptada la corrección Google del candidato conjunto. Permanecen fuera
+de esta prueba la vinculación explícita desde una sesión existente y Apple web
+en Android; deben conservarse como recorridos separados antes de cerrar H10.1.

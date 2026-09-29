@@ -1193,3 +1193,10 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   errors`. Ambos usan el mismo SHA. Falta procesamiento/instalación de iOS 278,
   instalación Android 277 y repetir Google con persistencia; Apple 276 conserva
   su evidencia porque este cambio no alteró su token.
+- El titular instaló Android 277 e iOS/iPadOS 278 y confirmó en ambos Google
+  exitoso y sesión persistente tras reiniciar Dopmi. Supabase test registró dos
+  accesos Google HTTP 200 con `grant_type=id_token`; desapareció la advertencia
+  anterior por `access_token` ausente. Un ID token no traía `at_hash` y Auth
+  informó que el access token enviado no se utilizó en ese caso, sin error de
+  sesión. La corrección Google del candidato conjunto queda aceptada. Siguen
+  separados los recorridos de vinculación explícita y Apple web en Android.

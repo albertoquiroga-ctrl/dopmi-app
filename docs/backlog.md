@@ -141,14 +141,17 @@ a H12 porque requiere Supabase Pro; debe cerrarse antes del lanzamiento público
 - [x] Interfaces Analytics/Crashlytics con consentimientos independientes,
   apagados por defecto; configuración Firebase segura preparada en Codemagic.
 - [x] Activar Google/Apple y vinculación manual en Supabase test; flags seguros
-  activos en los candidatos H10. Falta comprobar el recorrido instalado.
-- [ ] Probar OAuth, cancelación, vínculo y eliminación en Android/iOS instalados.
+  activos en los candidatos H10. Google quedó aceptado en Android/iOS; Apple
+  nativo, Private Relay y revocación quedaron aceptados en iOS/iPadOS.
+- [ ] Completar los recorridos instalados restantes: vinculación explícita desde
+  una sesión existente y Apple web con retorno a la app en Android. OAuth,
+  cancelación, persistencia y eliminación social ya tienen evidencia real.
 - [x] Probar recepción/respuesta y configurar SMTP transaccional. Resend quedó
   verificado en ambos sentidos; la clave `Supabase` se reserva para Auth/SMTP
   y `Codex Dopmi` para envíos controlados de prueba.
 - [x] Aprobar costo cero actual y crear Supabase producción limpio y cerrado.
-- [x] Publicar el mismo SHA en Internal Testing y cargarlo a App Store Connect;
-  disponibilidad/procesamiento TestFlight y recorridos instalados siguen pendientes.
+- [x] Publicar el mismo SHA en Internal Testing y TestFlight e instalar ambos:
+  Android 277 e iOS/iPadOS 278; Google y persistencia aprobados por el titular.
 
 ## H11 — Beta en ambas tiendas
 
