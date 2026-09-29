@@ -1164,3 +1164,12 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   Registraba tres invitaciones y cero instalaciones. El candidato conjunto ya
   está disponible en ambas tiendas internas; falta instalación y aceptación en
   iPhone, en particular Google, Apple nativo/Private Relay y revocación.
+- iOS/iPadOS 276 instalado desde TestFlight. Google y Apple cancelados
+  regresaron limpiamente. Apple nativo con Ocultar mi correo exigió el gate de
+  18 años/términos y conservó sesión tras reinicio. Resend marcó `delivered` y
+  el titular confirmó en su buzón la recuperación reenviada por Private Relay.
+  La eliminación posterior terminó HTTP 200: Apple aceptó la revocación; el
+  estado quedó `completado`, perfil `deleted`, sin atención pendiente, y las
+  consultas posteriores mostraron cero usuario Auth, identidad, sesión y
+  credencial Apple. No se documentaron alias, UUID, tokens ni IP. La adaptación
+  visual específica de iPad queda como diferencia no bloqueante de H10.

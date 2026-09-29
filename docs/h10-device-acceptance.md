@@ -212,3 +212,28 @@ proveedor `email: 16` y `google: 3`, una aceptación vigente completa
 `terms-2026-09-28` / `privacy-2026-09-28`, tres eliminaciones completadas,
 ninguna pendiente y cero credenciales Apple. No se consultaron ni documentaron
 correos, UUID o tokens.
+
+## Aceptación iOS/iPadOS — build 276
+
+El titular instaló **2.3.3 (276)** desde TestFlight en un iPad. La disposición
+horizontal amplia queda registrada como diferencia visual de tablet, sin
+bloquear los recorridos H10 de identidad. Google y Apple regresaron limpiamente
+al inicio al cancelar, sin crear sesión ni mostrar un error técnico.
+
+El acceso nativo con Apple creó una identidad desechable usando **Ocultar mi
+correo**. Dopmi mostró el gate **Antes de continuar**, exigió mayoría de edad y
+aceptación de términos/privacidad, y conservó la sesión tras cerrar y volver a
+abrir la aplicación. Supabase test registró la identidad Apple y su credencial
+cifrada; no se copió el alias a esta evidencia.
+
+Se emitió una recuperación por el SMTP/Auth configurado. Resend registró
+`delivered` al alias de Apple y el titular confirmó el mensaje reenviado en su
+buzón. Esto acredita la entrega real por Apple Private Relay.
+
+El titular eliminó la misma cuenta desde la app. La función `account-deletion`
+v3 respondió HTTP 200; su diseño sólo finaliza después de que Apple acepta la
+revocación y la credencial se elimina con comparación del hash. La comprobación
+posterior confirmó: estado `completado`, perfil `deleted`, marca de finalización,
+sin atención pendiente, cero filas en Auth/identidades/sesiones y cero
+credenciales Apple. Los logs de Auth acreditan cierre global y eliminación por
+servidor. Producción no fue consultada ni modificada.
