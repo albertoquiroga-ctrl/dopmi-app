@@ -8,6 +8,7 @@ class FakeIdentityRepository implements IdentityRepository {
   Future<Identity?>? restoreResult;
   bool pending = false;
   bool failSave = false;
+  bool failLoad = false;
   int signupCount = 0, passwordUpdates = 0, loads = 0, consentCount = 0;
   String? signupIntent;
   Profile profile = const Profile(
@@ -92,6 +93,7 @@ class FakeIdentityRepository implements IdentityRepository {
   @override
   Future<Profile> loadProfile() async {
     loads++;
+    if (failLoad) throw StateError('network_unavailable');
     return profile;
   }
 

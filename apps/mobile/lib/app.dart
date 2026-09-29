@@ -428,7 +428,8 @@ class DopmiApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
     final experience = ref.watch(experienceProvider);
-    final identity = ref.watch(identityControllerProvider).identity;
+    final identityController = ref.watch(identityControllerProvider);
+    final identity = identityController.identity;
     final measurement = ref.watch(measurementControllerProvider);
     if (measurement != null && (!measurement.loading || identity != null)) {
       Future.microtask(() => measurement.owner(identity?.id));
@@ -445,6 +446,41 @@ class DopmiApp extends ConsumerWidget {
         supportedLocales: const [Locale('es', 'MX')],
         localizationsDelegates: GlobalMaterialLocalizations.delegates,
         routerConfig: router,
+        builder: (context, child) {
+          final currentIdentity = identityController.identity;
+          final path = router.routerDelegate.currentConfiguration.isEmpty
+              ? '/loading'
+              : router.state.uri.path;
+          final profile = experience.profile;
+          final accepted =
+              profile?.termsVersion == currentTermsVersion &&
+              profile?.privacyVersion == currentPrivacyVersion &&
+              profile?.adultConfirmed == true;
+          final exempt =
+              path == '/consent' ||
+              path == '/terms' ||
+              path == '/account-privacy' ||
+              path == '/guardian' ||
+              path == '/guardian/history';
+          // Fail closed in the widget tree as well as in GoRouter. This keeps
+          // an authenticated profile from entering the product if its profile
+          // request is delayed or fails before redirect reevaluation.
+          if (currentIdentity?.verified == true && !accepted && !exempt) {
+            return Stack(
+              children: [
+                if (child != null) Offstage(offstage: true, child: child),
+                Positioned.fill(
+                  child: ConsentScreen(
+                    key: ValueKey(currentIdentity!.id),
+                    onTerms: () => router.go('/terms'),
+                    onPrivacy: () => router.go('/account-privacy'),
+                  ),
+                ),
+              ],
+            );
+          }
+          return child ?? const SizedBox.shrink();
+        },
       ),
     );
   }

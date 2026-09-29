@@ -65,7 +65,19 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     final repo = FakeRescuerProfile();
     final identity = FakeIdentityRepository()
-      ..user = const Identity('owner-one', 'ana@example.test', verified: true);
+      ..user = const Identity('owner-one', 'ana@example.test', verified: true)
+      ..profile = const Profile(
+        id: 'owner-one',
+        name: 'Ana',
+        phone: '',
+        city: 'Monterrey',
+        mode: 'rescuer',
+        intent: 'rescue',
+        status: 'active',
+        termsVersion: currentTermsVersion,
+        privacyVersion: currentPrivacyVersion,
+        adultConfirmed: true,
+      );
     addTearDown(() async => identity.changes.close());
     await tester.pumpWidget(
       ProviderScope(

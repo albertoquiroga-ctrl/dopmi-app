@@ -224,6 +224,18 @@ void main() {
       await tap(tester, 'Ver asignaciones');
       expect(find.text('Medicamentos'), findsOneWidget);
       repo.read = (_) async => {'items': <Json>[], 'next_cursor': null};
+      identity.profile = const Profile(
+        id: 'two',
+        name: 'Dos',
+        phone: '',
+        city: '',
+        mode: 'donor',
+        intent: 'donate',
+        status: 'active',
+        termsVersion: currentTermsVersion,
+        privacyVersion: currentPrivacyVersion,
+        adultConfirmed: true,
+      );
       identity.emit(
         IdentityEvent(Identity('two', 'two@example.test', verified: true)),
       );

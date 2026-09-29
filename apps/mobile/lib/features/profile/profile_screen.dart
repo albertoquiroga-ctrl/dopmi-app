@@ -249,7 +249,8 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
 }
 
 class ConsentScreen extends ConsumerStatefulWidget {
-  const ConsentScreen({super.key});
+  const ConsentScreen({super.key, this.onTerms, this.onPrivacy});
+  final VoidCallback? onTerms, onPrivacy;
 
   @override
   ConsumerState<ConsentScreen> createState() => _ConsentScreenState();
@@ -315,7 +316,7 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
           'Revisa y acepta los términos y el aviso de privacidad vigentes para usar Dopmi.',
         ),
         TextButton(
-          onPressed: () => context.push('/terms'),
+          onPressed: widget.onTerms ?? () => context.push('/terms'),
           child: const Text('Leer términos y privacidad'),
         ),
         CheckboxListTile(
@@ -341,6 +342,10 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
               ? null
               : () => ref.read(identityControllerProvider).logout(),
           child: const Text('Cerrar sesión'),
+        ),
+        TextButton(
+          onPressed: widget.onPrivacy ?? () => context.push('/account-privacy'),
+          child: const Text('Privacidad y eliminación de cuenta'),
         ),
       ],
       if (!loading && error != null)

@@ -45,6 +45,8 @@ workflows:
             --release \
             --build-name="$RELEASE_NAME" \
             --build-number="$BUILD_NUMBER" \
+            --dart-define=DOPMI_RELEASE_NAME="$RELEASE_NAME" \
+            --dart-define=DOPMI_BUILD_NUMBER="$BUILD_NUMBER" \
             --dart-define-from-file=config.json
 
     artifacts:
@@ -99,6 +101,8 @@ workflows:
             --release \
             --build-name="$RELEASE_NAME" \
             --build-number="$BUILD_NUMBER" \
+            --dart-define=DOPMI_RELEASE_NAME="$RELEASE_NAME" \
+            --dart-define=DOPMI_BUILD_NUMBER="$BUILD_NUMBER" \
             --dart-define-from-file=config.json
 
     artifacts:
@@ -158,6 +162,8 @@ workflows:
             --release \
             --build-name="$RELEASE_NAME" \
             --build-number="$BUILD_NUMBER" \
+            --dart-define=DOPMI_RELEASE_NAME="$RELEASE_NAME" \
+            --dart-define=DOPMI_BUILD_NUMBER="$BUILD_NUMBER" \
             --dart-define-from-file=config.json
           python3 - "$BUILD_NUMBER" <<'PYINFO'
           import os, subprocess, sys
@@ -232,6 +238,8 @@ workflows:
             --build-name="$RELEASE_NAME" \
             --build-number="$BUILD_NUMBER" \
             --export-options-plist=/Users/builder/export_options.plist \
+            --dart-define=DOPMI_RELEASE_NAME="$RELEASE_NAME" \
+            --dart-define=DOPMI_BUILD_NUMBER="$BUILD_NUMBER" \
             --dart-define-from-file=config.json
           IPA_PATH="$(find "$CM_BUILD_DIR/apps/mobile/build/ios/ipa" -maxdepth 1 -type f -name '*.ipa' -print -quit)"
           if [ -z "$IPA_PATH" ]; then
@@ -300,6 +308,8 @@ workflows:
             --build-name="$RELEASE_NAME" \
             --build-number="$BUILD_NUMBER" \
             --export-options-plist=/Users/builder/export_options.plist \
+            --dart-define=DOPMI_RELEASE_NAME="$RELEASE_NAME" \
+            --dart-define=DOPMI_BUILD_NUMBER="$BUILD_NUMBER" \
             --dart-define-from-file=config.json
           IPA_PATH="$(find "$CM_BUILD_DIR/apps/mobile/build/ios/ipa" -maxdepth 1 -type f -name '*.ipa' -print -quit)"
           if [ -z "$IPA_PATH" ]; then

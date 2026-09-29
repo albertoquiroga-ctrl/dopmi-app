@@ -433,66 +433,75 @@ class _ProfileDonationLogState extends ConsumerState<ProfileDonationLog> {
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
   @override
-  Widget build(BuildContext context, WidgetRef ref) => ProfileFrame(
-    title: 'Configuración',
-    back: true,
-    children: [
-      const ProfileRow(
-        title: 'Información básica',
-        subtitle: 'Edita tu perfil y datos personales',
-        icon: Icons.person_outline,
-        path: '/basic-info',
-      ),
-      if (ref.watch(guardianEnabledProvider)) ...[
+  Widget build(BuildContext context, WidgetRef ref) {
+    final version = ref.watch(configProvider).versionLabel;
+    return ProfileFrame(
+      title: 'Configuración',
+      back: true,
+      children: [
         const ProfileRow(
-          title: 'Método de pago de Guardián',
-          subtitle: 'Consulta o cambia tu tarjeta',
-          icon: Icons.credit_card,
-          path: '/guardian',
+          title: 'Información básica',
+          subtitle: 'Edita tu perfil y datos personales',
+          icon: Icons.person_outline,
+          path: '/basic-info',
+        ),
+        if (ref.watch(guardianEnabledProvider)) ...[
+          const ProfileRow(
+            title: 'Método de pago de Guardián',
+            subtitle: 'Consulta o cambia tu tarjeta',
+            icon: Icons.credit_card,
+            path: '/guardian',
+          ),
+          const ProfileRow(
+            title: 'Suscripción y pagos',
+            subtitle: 'Administra tu apoyo mensual',
+            icon: Icons.receipt_long_outlined,
+            path: '/guardian',
+          ),
+        ],
+        const ProfileRow(
+          title: 'Historial de aportaciones',
+          icon: Icons.history,
+          path: '/payments',
         ),
         const ProfileRow(
-          title: 'Suscripción y pagos',
-          subtitle: 'Administra tu apoyo mensual',
-          icon: Icons.receipt_long_outlined,
-          path: '/guardian',
+          title: 'Centro de ayuda',
+          icon: Icons.help_outline,
+          path: '/help',
+        ),
+        const ProfileRow(
+          title: 'Términos y privacidad',
+          icon: Icons.description_outlined,
+          path: '/terms',
+        ),
+        const ProfileRow(
+          title: 'Privacidad y eliminación',
+          subtitle: 'Medición, accesos vinculados y eliminación de cuenta',
+          icon: Icons.privacy_tip_outlined,
+          path: '/account-privacy',
+        ),
+        OutlinedButton(
+          onPressed: () async {
+            try {
+              await ref.read(identityControllerProvider).logout();
+            } catch (e) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(identityError(e))));
+              }
+            }
+          },
+          child: const Text('Cerrar sesión'),
+        ),
+        Center(
+          child: Text(
+            'Versión $version',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
         ),
       ],
-      const ProfileRow(
-        title: 'Historial de aportaciones',
-        icon: Icons.history,
-        path: '/payments',
-      ),
-      const ProfileRow(
-        title: 'Centro de ayuda',
-        icon: Icons.help_outline,
-        path: '/help',
-      ),
-      const ProfileRow(
-        title: 'Términos y privacidad',
-        icon: Icons.description_outlined,
-        path: '/terms',
-      ),
-      const ProfileRow(
-        title: 'Privacidad y eliminación',
-        subtitle: 'Medición, accesos vinculados y eliminación de cuenta',
-        icon: Icons.privacy_tip_outlined,
-        path: '/account-privacy',
-      ),
-      OutlinedButton(
-        onPressed: () async {
-          try {
-            await ref.read(identityControllerProvider).logout();
-          } catch (e) {
-            if (context.mounted) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(identityError(e))));
-            }
-          }
-        },
-        child: const Text('Cerrar sesión'),
-      ),
-    ],
-  );
+    );
+  }
 }
 
 class HelpScreen extends StatelessWidget {

@@ -1021,3 +1021,13 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   Connect terminó de procesarlo y lo muestra `En pruebas`, asignado a
   `DopMi Inner Team`. El build y las tiendas no acreditan todavía la corrección
   de Información básica ni la aceptación del consentimiento en un dispositivo.
+- La prueba instalada posterior no reprodujo el gate 18+ ni la entrada Google
+  en alta. Supabase confirmó que el perfil Google reciente seguía con términos
+  y privacidad nulos y sin `adult_confirmed_at`; por tanto, no se acepta como
+  consentimiento previo. Se añadió una segunda barrera en el árbol de widgets:
+  cualquier identidad verificada sin perfil legal vigente queda cubierta por
+  **Antes de continuar**, incluso si la carga del perfil falla. Términos,
+  eliminación y cancelación de Guardián conservan acceso. Configuración muestra
+  desde el siguiente candidato la versión/build compilados para eliminar dudas
+  sobre qué paquete está instalado. Flutter: análisis limpio y 95 pruebas;
+  configuración móvil: 11 pruebas. Requiere candidato y confirmación física.

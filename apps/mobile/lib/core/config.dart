@@ -13,6 +13,8 @@ class AppConfig {
     this.googleServerClientId = '',
     this.googleIosClientId = '',
     this.measurementTestEnabled = false,
+    this.releaseName = 'desarrollo',
+    this.buildNumber = 'local',
   });
   factory AppConfig.environment() => const AppConfig(
     url: String.fromEnvironment('SUPABASE_URL'),
@@ -26,6 +28,14 @@ class AppConfig {
     googleServerClientId: String.fromEnvironment('GOOGLE_SERVER_CLIENT_ID'),
     googleIosClientId: String.fromEnvironment('GOOGLE_IOS_CLIENT_ID'),
     measurementTestEnabled: bool.fromEnvironment('ENABLE_MEASUREMENT_TEST'),
+    releaseName: String.fromEnvironment(
+      'DOPMI_RELEASE_NAME',
+      defaultValue: 'desarrollo',
+    ),
+    buildNumber: String.fromEnvironment(
+      'DOPMI_BUILD_NUMBER',
+      defaultValue: 'local',
+    ),
     environment: String.fromEnvironment(
       'DOPMI_ENVIRONMENT',
       defaultValue: 'test',
@@ -36,6 +46,8 @@ class AppConfig {
   final String environment;
   final String googleServerClientId, googleIosClientId;
   final bool measurementTestEnabled;
+  final String releaseName, buildNumber;
+  String get versionLabel => '$releaseName ($buildNumber)';
   bool get appleNativeAvailable =>
       appleEnabled && !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
   bool get isValid {

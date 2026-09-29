@@ -185,6 +185,20 @@ void main() {
     expect(find.text('Antes de continuar'), findsNothing);
   });
 
+  testWidgets('profile load failure cannot bypass legal consent', (
+    tester,
+  ) async {
+    final repo = FakeIdentityRepository()
+      ..user = const Identity('one', 'ana@example.test', verified: true)
+      ..failLoad = true;
+    final container = await start(tester, repo, initialLocation: '/basic-info');
+
+    expect(find.text('Antes de continuar'), findsOneWidget);
+    expect(find.text('Mis datos'), findsNothing);
+    await tap(tester, 'Privacidad y eliminación de cuenta');
+    expect(container.read(routerProvider).state.uri.path, '/account-privacy');
+  });
+
   testWidgets('signup exposes Google as an account creation method', (
     tester,
   ) async {
