@@ -1117,3 +1117,11 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   medía el contacto, pero el botón del mazo/swipe usado en aceptación y el
   acceso equivalente desde el perfil público omitían el evento. Ambos quedan
   instrumentados después de `startThread`, nunca antes del resultado real.
+- El primer gate de esta corrección (`6abbfa69b0dffe4b6f9e12a1`) detuvo la
+  publicación porque el nuevo test liberaba dos veces su controlador; no fue un
+  defecto productivo ni llegó a Play. Corregido el teardown, [Codemagic
+  `6abbfb850c4e011265ad1a16`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abbfb850c4e011265ad1a16)
+  aprobó análisis, 97 pruebas, firma, AAB, Publishing y limpieza sobre SHA
+  `554e66866d69e65f2e8473a9477398a003e3807c`. Google Play Internal Testing
+  confirmó `completed`, Android **2.3.3 (274)**. Falta aceptación instalada del
+  evento corregido.
