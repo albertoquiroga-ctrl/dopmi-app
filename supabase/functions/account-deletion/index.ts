@@ -90,9 +90,21 @@ Deno.serve(async request => {
     return result.data;
   };
 
+  const removeAuthAccess = async (state: Record<string, unknown>) => {
+    // A previous attempt may have completed the database work but failed while
+    // removing Auth. Retry that cleanup instead of treating the durable status
+    // as proof that every session and identity has already been removed.
+    await db.auth.admin.signOut(token, 'global');
+    const removed = await db.auth.admin.deleteUser(user.id, false);
+    if (removed.error && !/not found/i.test(removed.error.message)) {
+      return reply({ ...state, auth_cleanup: 'pending' }, 202);
+    }
+    return reply(state);
+  };
+
   try {
     let state = await call('request', { request_key: input.request_key });
-    if (state?.status === 'completado') return reply(state);
+    if (state?.status === 'completado') return await removeAuthAccess(state);
 
     const credential = await db.rpc('dopmi_apple_credential_server', {
       operation: 'get', owner: user.id, apple_subject: null,
@@ -117,12 +129,7 @@ Deno.serve(async request => {
 
     // Database authorization is already blocked. Global revocation closes all
     // refresh sessions before Auth is removed; the operation remains safe to retry.
-    await db.auth.admin.signOut(token, 'global');
-    const removed = await db.auth.admin.deleteUser(user.id, false);
-    if (removed.error && !/not found/i.test(removed.error.message)) {
-      return reply({ ...state, auth_cleanup: 'pending' }, 202);
-    }
-    return reply(state);
+    return await removeAuthAccess(state);
   } catch {
     try { await call('attention', { attention_code: 'procesamiento_incompleto' }); } catch { /* keep original failure */ }
     return reply({ error: 'deletion_unavailable' }, 503);

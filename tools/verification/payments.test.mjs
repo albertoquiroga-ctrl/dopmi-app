@@ -103,6 +103,104 @@ test('H10 deletion blocks old sessions, is idempotent and leaves only an anonymo
   ]);
   assert.equal((await db.query('select status,pet_name from public.dopmi_adoptions where id=$1',[post])).rows[0].status,'archived');
 });
+test('H10 deletion completes for an empty account without changing another profile', async () => {
+  const requestKey='79000000-0000-4000-8000-000000000011';
+  const donorBefore=(await db.query(
+    'select display_name,account_status from public.profiles where id=$1',
+    [donor],
+  )).rows[0];
+  const requested=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['request',JSON.stringify({owner_id:other,request_key:requestKey})],
+  )).rows[0].value;
+  assert.equal(requested.status,'procesando');
+  const completed=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['finalize',JSON.stringify({owner_id:other})],
+  )).rows[0].value;
+  assert.equal(completed.status,'completado');
+  assert.deepEqual((await db.query(
+    'select display_name,account_status from public.profiles where id=$1',
+    [donor],
+  )).rows[0],donorBefore);
+  assert.equal((await db.query(
+    'select count(*)::int as n from private.dopmi_account_deletions where owner_id<>$1',
+    [other],
+  )).rows[0].n,0);
+});
+test('H10 deletion keeps access blocked while a contribution remains pending', async () => {
+  const pending=await prepare({
+    actor:other,
+    key:'79000000-0000-4000-8000-000000000021',
+  });
+  const requested=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['request',JSON.stringify({
+      owner_id:other,
+      request_key:'79000000-0000-4000-8000-000000000022',
+    })],
+  )).rows[0].value;
+  assert.equal(requested.status,'procesando');
+  const attention=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['finalize',JSON.stringify({owner_id:other})],
+  )).rows[0].value;
+  assert.equal(attention.status,'requiere_atencion');
+  assert.equal(attention.attention_code,'operacion_financiera_pendiente');
+  await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[other]);
+  assert.equal((await db.query('select public.dopmi_actor_active() as value')).rows[0].value,false);
+  assert.equal((await db.query(
+    'select payment_status from public.dopmi_donations where id=$1',
+    [pending.id],
+  )).rows[0].payment_status,'pending');
+});
+test('H10 deletion requests Guardian cancellation and waits for its confirmation', async () => {
+  await db.query(
+    'select public.dopmi_guardian_subscription_server($1,$2::jsonb)',
+    ['register',JSON.stringify({
+      donor_id:other,
+      stripe_customer_id:'cus_H10Deletion',
+      stripe_subscription_id:'sub_H10Deletion',
+      stripe_price_id:'price_H10Deletion',
+      gross_cents:5000,
+      initial_payment_intent_id:'pi_H10Deletion',
+      initial_charge_id:'ch_H10Deletion',
+    })],
+  );
+  const requested=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['request',JSON.stringify({
+      owner_id:other,
+      request_key:'79000000-0000-4000-8000-000000000031',
+    })],
+  )).rows[0].value;
+  assert.equal(requested.status,'procesando');
+  const plan=(await db.query(
+    'select status,cancellation_requested_at from private.dopmi_guardian_subscriptions where donor_id=$1',
+    [other],
+  )).rows[0];
+  assert.equal(plan.status,'active');
+  assert.ok(plan.cancellation_requested_at);
+  assert.equal((await db.query(
+    "select count(*)::int as n from private.dopmi_guardian_requests where donor_id=$1 and kind='cancel' and status='pending'",
+    [other],
+  )).rows[0].n,1);
+  const attention=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['finalize',JSON.stringify({owner_id:other})],
+  )).rows[0].value;
+  assert.equal(attention.status,'requiere_atencion');
+  assert.equal(attention.attention_code,'operacion_financiera_pendiente');
+  await db.query(
+    'select public.dopmi_guardian_subscription_server($1,$2::jsonb)',
+    ['cancel',JSON.stringify({donor_id:other,stripe_subscription_id:'sub_H10Deletion'})],
+  );
+  const completed=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['finalize',JSON.stringify({owner_id:other})],
+  )).rows[0].value;
+  assert.equal(completed.status,'completado');
+});
 test('scheduled reconciliation finds pending checkouts without an ambiguous SQL alias',async () => {
   const d=await prepare();
   await rpc('checkout_save',{donation_id:d.id,session_id:'cs_pending',url:'https://example.test/checkout'});
