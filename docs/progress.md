@@ -1246,3 +1246,14 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   línea base. Las pruebas también acreditan borrado de reportes no enviados al
   retirar, activar o cambiar de cuenta. H10.3 queda cerrado con consentimientos
   independientes, apagados por defecto, recepción consentida y retirada real.
+- H10.4, auditoría de tiendas: la web pública añadió
+  `https://dopmi.org/support` y corrigió la ruta de eliminación dentro de la app
+  en el commit `bf8cd76` de `dopmi-landing-mockup`; ambas páginas responden 200
+  con el contenido nuevo. Google Play aún conserva una declaración Data Safety
+  de 2023 y Apple App Privacy siete tipos con usos antiguos, incluida publicidad
+  para correo, además de URLs obsoletas. Se preparó la matriz definitiva en
+  `docs/h10-store-privacy-declarations.md` y un CSV de Google para vista previa.
+  No se declara publicado: la importación/guardado externo requiere confirmación
+  del titular. App Store exige una versión nueva para cambiar URLs de
+  privacidad, soporte y marketing; los tipos de datos sí pueden corregirse de
+  inmediato.

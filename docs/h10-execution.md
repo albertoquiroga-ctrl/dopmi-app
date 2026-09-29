@@ -210,7 +210,9 @@ cuatro trabajos aprobados, incluidas compilaciones Android/iOS y backend local.
 - Resend quedó operativo con `dopmi.org` verificado. Una clave dedicada de envío
   para pruebas permanece fuera del repositorio y separada de la integración SMTP
   de Supabase. Un correo desde `soporte@dopmi.org` fue enviado y entregado, y su
-  respuesta llegó al buzón humano. Private Relay sigue pendiente del acceso Apple.
+  respuesta llegó al buzón humano. Apple Private Relay quedó verificado después:
+  Resend registró entrega al alias privado y el titular confirmó la recepción sin
+  publicar el alias.
 - Verificación local: Flutter analyze y 90 pruebas desde copia temporal limpia;
   backend 402; administración 23 y build; prototipo 4 y build; configuración
   móvil 11. El primer intento Flutter dentro de OneDrive chocó con su caché de
@@ -219,9 +221,9 @@ cuatro trabajos aprobados, incluidas compilaciones Android/iOS y backend local.
   decidió diferirla a H12, antes del lanzamiento público; no se presenta como
   activa durante H10/H11.
 
-Pendientes de cierre: pruebas sociales y eliminación en Android/iPhone, evento y
-diagnóstico visibles en Firebase, Private Relay y un candidato Android/TestFlight
-del mismo SHA con instalación comprobada.
+Estos pendientes se resolvieron en los ciclos posteriores: pruebas sociales y
+eliminación en Android/iOS, recepción consentida en Firebase, Private Relay y
+candidatos conjuntos instalados. El estado vigente está en `docs/progress.md`.
 
 ### Candidato conjunto de medición — 28/9
 

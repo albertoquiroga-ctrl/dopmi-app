@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/ui.dart';
 import '../adoption/community_repository.dart';
@@ -507,11 +508,11 @@ class SettingsScreen extends ConsumerWidget {
 class HelpScreen extends StatelessWidget {
   const HelpScreen({super.key});
   @override
-  Widget build(BuildContext context) => const ProfileFrame(
+  Widget build(BuildContext context) => ProfileFrame(
     title: 'Centro de ayuda',
     back: true,
     children: [
-      ExpansionTile(
+      const ExpansionTile(
         title: Text('¿Cómo contacto por una adopción?'),
         children: [
           Padding(
@@ -522,7 +523,7 @@ class HelpScreen extends StatelessWidget {
           ),
         ],
       ),
-      ExpansionTile(
+      const ExpansionTile(
         title: Text('¿Qué gastos puedo apoyar?'),
         children: [
           Padding(
@@ -533,7 +534,7 @@ class HelpScreen extends StatelessWidget {
           ),
         ],
       ),
-      ExpansionTile(
+      const ExpansionTile(
         title: Text('¿Cuándo cobra Guardián?'),
         children: [
           Padding(
@@ -544,7 +545,7 @@ class HelpScreen extends StatelessWidget {
           ),
         ],
       ),
-      ExpansionTile(
+      const ExpansionTile(
         title: Text('¿Cómo cancelo mi apoyo mensual?'),
         children: [
           Padding(
@@ -555,7 +556,7 @@ class HelpScreen extends StatelessWidget {
           ),
         ],
       ),
-      ExpansionTile(
+      const ExpansionTile(
         title: Text('¿Cambiar de modo me verifica como rescatista?'),
         children: [
           Padding(
@@ -565,6 +566,38 @@ class HelpScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+      const SizedBox(height: 24),
+      Text(
+        '¿Necesitas más ayuda?',
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
+      const SizedBox(height: 8),
+      const Text(
+        'Escríbenos desde el correo de tu cuenta. No envíes contraseñas, códigos de acceso ni datos completos de tarjeta.',
+      ),
+      const SizedBox(height: 12),
+      OutlinedButton.icon(
+        icon: const Icon(Icons.mail_outline),
+        label: const Text('Escribir a soporte@dopmi.org'),
+        onPressed: () async {
+          final opened = await launchUrl(
+            Uri(
+              scheme: 'mailto',
+              path: 'soporte@dopmi.org',
+              queryParameters: {'subject': 'Ayuda con Dopmi'},
+            ),
+          );
+          if (!opened && context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'No pudimos abrir tu correo. Escribe a soporte@dopmi.org.',
+                ),
+              ),
+            );
+          }
+        },
       ),
     ],
   );
