@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/measurement.dart';
 import '../community/content_actions.dart';
 import '../profile/rescuer_profile_repository.dart';
 import 'community_repository.dart';
@@ -426,6 +427,7 @@ class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
     if (confirmed != true || !mounted) return;
     await perform(() async {
       final id = await repo.startThread(post.id);
+      await ref.read(measurementControllerProvider)?.event('contact_started');
       if (mounted) context.push('/messages/$id');
     });
   }

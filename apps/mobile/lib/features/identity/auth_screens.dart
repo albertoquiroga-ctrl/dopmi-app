@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/ui.dart';
+import '../../core/measurement.dart';
 import 'identity_controller.dart';
 import 'identity_repository.dart';
 import 'auth_ui.dart';
@@ -379,6 +380,11 @@ class _ConfirmationScreenState extends ConsumerState<ConfirmationScreen> {
           code.text,
           recovery: widget.recovery,
         );
+        if (!widget.recovery) {
+          final measurement = ref.read(measurementControllerProvider);
+          await measurement?.owner(repo.current?.id);
+          await measurement?.event('sign_up_completed');
+        }
       }
     } catch (cause) {
       if (mounted) setState(() => error = identityError(cause));

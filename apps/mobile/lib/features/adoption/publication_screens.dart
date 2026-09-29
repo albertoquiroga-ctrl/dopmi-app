@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/ui.dart';
+import '../../core/measurement.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
 import 'photo_recovery.dart';
@@ -223,6 +224,11 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       await save();
     }
     final result = await repo.transition(post!, action);
+    if (action == 'submit') {
+      await ref
+          .read(measurementControllerProvider)
+          ?.event('publication_submitted');
+    }
     if (mounted) {
       setState(() {
         post = result;

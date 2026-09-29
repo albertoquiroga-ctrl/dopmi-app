@@ -285,6 +285,9 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
               onPressed: consent
                   ? () => perform(() async {
                       await ref.read(identityRepositoryProvider).acceptTerms();
+                      await ref
+                          .read(measurementControllerProvider)
+                          ?.event('sign_up_completed');
                       await load();
                     })
                   : null,
@@ -396,6 +399,23 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
               ? null
               : measurement.setDiagnostics,
         ),
+        if (config.measurementTestEnabled &&
+            measurement?.diagnosticsEnabled == true)
+          OutlinedButton.icon(
+            onPressed: busy
+                ? null
+                : () => perform(() async {
+                    await measurement!.diagnosticTest();
+                    if (mounted) {
+                      setState(
+                        () => message =
+                            'Enviamos el diagnóstico interno de prueba.',
+                      );
+                    }
+                  }),
+            icon: const Icon(Icons.bug_report_outlined),
+            label: const Text('Enviar diagnóstico de prueba'),
+          ),
         if ((config.googleEnabled && !linked.contains('google')) ||
             (config.appleNativeAvailable && !linked.contains('apple'))) ...[
           const SizedBox(height: 12),

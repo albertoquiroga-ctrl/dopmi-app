@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../core/ui.dart';
+import '../../core/measurement.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../identity/identity_controller.dart';
@@ -43,6 +44,14 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       data?['method_setup'] is Map ? Json.from(data!['method_setup']) : null;
   bool get checkoutInReview =>
       intent?['kind'] == 'checkout' && activation?['status'] == 'attention';
+  Future<void> trackOnce(String name, Object? attempt) async {
+    if (attempt is! String || attempt.isEmpty) return;
+    final prefs = await SharedPreferences.getInstance();
+    final key = '$storageKey:measurement:$name:$attempt';
+    if (prefs.getBool(key) == true) return;
+    await ref.read(measurementControllerProvider)?.event(name);
+    await prefs.setBool(key, true);
+  }
 
   @override
   void initState() {
@@ -121,6 +130,11 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       final result = await ref.read(guardianRepositoryProvider).state();
       if (!current) return;
       data = result;
+      if (intent?['kind'] == 'checkout' &&
+          (plan != null ||
+              activation?['status'] == 'funded_pending_schedule')) {
+        await trackOnce('contribution_confirmed', intent?['key']);
+      }
       if (plan?['status'] == 'canceled' ||
           activation?['cancellation_status'] == 'stopped') {
         message = null;
@@ -313,6 +327,9 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       if (!current) return;
       setState(() => intent = next);
       final result = await repo.submit(next);
+      if (next['kind'] == 'checkout') {
+        await trackOnce('contribution_started', next['key']);
+      }
       if (!current) return;
       if (!['checkout', 'method'].contains(next['kind'])) {
         await prefs.remove(storageKey);

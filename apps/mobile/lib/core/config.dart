@@ -12,6 +12,7 @@ class AppConfig {
     this.environment = 'test',
     this.googleServerClientId = '',
     this.googleIosClientId = '',
+    this.measurementTestEnabled = false,
   });
   factory AppConfig.environment() => const AppConfig(
     url: String.fromEnvironment('SUPABASE_URL'),
@@ -24,6 +25,7 @@ class AppConfig {
     appleEnabled: bool.fromEnvironment('ENABLE_APPLE_AUTH'),
     googleServerClientId: String.fromEnvironment('GOOGLE_SERVER_CLIENT_ID'),
     googleIosClientId: String.fromEnvironment('GOOGLE_IOS_CLIENT_ID'),
+    measurementTestEnabled: bool.fromEnvironment('ENABLE_MEASUREMENT_TEST'),
     environment: String.fromEnvironment(
       'DOPMI_ENVIRONMENT',
       defaultValue: 'test',
@@ -33,6 +35,7 @@ class AppConfig {
   final bool googleEnabled, appleEnabled;
   final String environment;
   final String googleServerClientId, googleIosClientId;
+  final bool measurementTestEnabled;
   bool get appleNativeAvailable =>
       appleEnabled && !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
   bool get isValid {

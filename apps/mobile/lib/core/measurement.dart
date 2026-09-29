@@ -32,6 +32,13 @@ class FirebaseProductAnalytics implements ProductAnalytics {
   @override
   Future<void> event(String name, {Map<String, Object>? parameters}) async {
     if (!allowed.contains(name)) throw ArgumentError.value(name, 'name');
+    if (parameters != null && parameters.isNotEmpty) {
+      throw ArgumentError.value(
+        parameters,
+        'parameters',
+        'Dopmi measurement events do not accept payloads',
+      );
+    }
     await analytics.logEvent(name: name, parameters: parameters);
   }
 }
@@ -99,7 +106,32 @@ class MeasurementController extends ChangeNotifier {
   }
 
   Future<void> event(String name, {Map<String, Object>? parameters}) async {
-    if (analyticsEnabled) await analytics.event(name, parameters: parameters);
+    if (!FirebaseProductAnalytics.allowed.contains(name)) {
+      throw ArgumentError.value(name, 'name');
+    }
+    if (parameters != null && parameters.isNotEmpty) {
+      throw ArgumentError.value(
+        parameters,
+        'parameters',
+        'Dopmi measurement events do not accept payloads',
+      );
+    }
+    if (analyticsEnabled) {
+      try {
+        await analytics.event(name);
+      } catch (_) {
+        // Measurement is optional and must never change the product result.
+      }
+    }
+  }
+
+  Future<void> diagnosticTest() async {
+    if (!diagnosticsEnabled) return;
+    await diagnostics.record(
+      StateError('dopmi_diagnostics_test'),
+      StackTrace.current,
+      reason: 'internal_acceptance_test',
+    );
   }
 
   void _installErrorHandler() {

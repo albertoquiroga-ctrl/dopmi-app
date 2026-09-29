@@ -139,7 +139,7 @@ workflows:
 
     scripts:
       - name: Create Guardian test configuration
-        script: python3 ../../scripts/write-mobile-config.py --guardian-test
+        script: python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test
       - name: Create Firebase configuration
         script: python3 ../../scripts/write-firebase-config.py
       - name: Install dependencies
@@ -274,7 +274,7 @@ workflows:
 
     scripts:
       - name: Create runtime configuration
-        script: python3 ../../scripts/write-mobile-config.py --guardian-test
+        script: python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test
       - name: Create Firebase configuration
         script: python3 ../../scripts/write-firebase-config.py
 

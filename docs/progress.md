@@ -945,3 +945,23 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   y build; configuración móvil 10. Pagos permanecen test-only.
 - Pendiente externo: guardar OAuth/manual linking, pruebas instaladas, correo
   transaccional, aprobación del proyecto Supabase producción y builds conjuntos.
+- Resend comprobado en el equipo `enlacenest`: `dopmi.org` está verificado y se
+  creó una credencial dedicada de envío, limitada a ese dominio y almacenada
+  fuera del repositorio. El correo controlado de H10 salió desde
+  `soporte@dopmi.org`, incluyó versiones HTML y texto, y Resend registró los
+  eventos `Sent` y `Delivered` el 28 de septiembre de 2026. La recepción de una
+  respuesta también se comprobó en el buzón `soporte@dopmi.org`: llegó desde la
+  cuenta destinataria, conservó el asunto de la prueba y mostró el contenido
+  esperado. El recorrido transaccional de ida y vuelta queda verificado.
+- Medición H10 completada en código: los cinco eventos permitidos se emiten sólo
+  tras confirmación del repositorio/servidor, sin payloads, y Firebase no puede
+  interrumpir el resultado del producto. Los pagos evitan duplicados por intento.
+  Los builds internos pueden mostrar una acción fija de Crashlytics mediante
+  `ENABLE_MEASUREMENT_TEST`; los workflows estándar la excluyen.
+- Gate local del bloque: Flutter analyze y 90 pruebas desde copia temporal limpia;
+  backend 402; administración 23 y build; prototipo 4 y build; configuración
+  móvil 11. La ejecución Flutter inicial dentro de OneDrive falló al copiar una
+  caché ya existente y se repitió correctamente fuera de OneDrive.
+- La protección contra contraseñas filtradas se difiere a H12 por decisión del
+  titular, ya que requiere Supabase Pro. H10 continúa abierto por dispositivos,
+  Firebase, Private Relay y un candidato conjunto nuevo.

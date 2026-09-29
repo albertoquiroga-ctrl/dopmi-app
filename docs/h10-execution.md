@@ -193,3 +193,32 @@ cuatro trabajos aprobados, incluidas compilaciones Android/iOS y backend local.
   local: analyze limpio, 84 Flutter y 10 Python. Versiones de proveedores fijadas.
 - Google Cloud solicita reautenticación del titular; se conserva la pestaña de
   Chrome para el handoff. No se accedió a secretos ni se configuraron proveedores.
+
+### Medición transaccional y correo operativo — 28/9
+
+- Los cinco eventos permitidos quedaron conectados únicamente después de
+  respuestas reales: registro confirmado/consentido, conversación creada,
+  publicación enviada, Checkout creado y pago confirmado por servidor. El
+  contrato rechaza eventos desconocidos y cualquier payload; no admite correos,
+  UUID, texto, ubicación, importes o referencias financieras.
+- La medición es de mejor esfuerzo: una falla de Firebase no cambia el resultado
+  de contacto, publicación o pago. Los intentos de aportación se marcan localmente
+  para evitar duplicados al regresar de Stripe y para no reproducir eventos que
+  ocurrieron sin consentimiento.
+- Los candidatos internos incorporan una acción de diagnóstico no fatal detrás
+  de `ENABLE_MEASUREMENT_TEST`; los workflows estándar la mantienen ausente.
+- Resend quedó operativo con `dopmi.org` verificado. Una clave dedicada de envío
+  para pruebas permanece fuera del repositorio y separada de la integración SMTP
+  de Supabase. Un correo desde `soporte@dopmi.org` fue enviado y entregado, y su
+  respuesta llegó al buzón humano. Private Relay sigue pendiente del acceso Apple.
+- Verificación local: Flutter analyze y 90 pruebas desde copia temporal limpia;
+  backend 402; administración 23 y build; prototipo 4 y build; configuración
+  móvil 11. El primer intento Flutter dentro de OneDrive chocó con su caché de
+  archivos; no fue un fallo de código y se repitió fuera de OneDrive.
+- La protección contra contraseñas filtradas requiere Supabase Pro. El titular
+  decidió diferirla a H12, antes del lanzamiento público; no se presenta como
+  activa durante H10/H11.
+
+Pendientes de cierre: pruebas sociales y eliminación en Android/iPhone, evento y
+diagnóstico visibles en Firebase, Private Relay y un candidato Android/TestFlight
+del mismo SHA con instalación comprobada.

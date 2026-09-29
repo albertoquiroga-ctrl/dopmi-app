@@ -20,6 +20,11 @@ class MobileConfigTests(unittest.TestCase):
         self.assertEqual(config.build_config(self.env)["ENABLE_GUARDIAN_TEST"], "false")
         self.assertEqual(config.build_config(self.env, True)["ENABLE_GUARDIAN_TEST"], "true")
 
+    def test_measurement_diagnostic_requires_explicit_build_option(self):
+        self.env["ENABLE_MEASUREMENT_TEST"] = "true"
+        self.assertEqual(config.build_config(self.env)["ENABLE_MEASUREMENT_TEST"], "false")
+        self.assertEqual(config.build_config(self.env, measurement_test=True)["ENABLE_MEASUREMENT_TEST"], "true")
+
     def test_guardian_rejects_another_project(self):
         self.env["SUPABASE_URL"] = "https://another-project.supabase.co"
         with self.assertRaises(ValueError):

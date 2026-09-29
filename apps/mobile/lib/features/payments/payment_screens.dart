@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../core/ui.dart';
+import '../../core/measurement.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../identity/identity_controller.dart';
@@ -42,6 +43,15 @@ class _ContributeState extends ConsumerState<ContributeScreen>
 
   String get storageKey =>
       'dopmi-payment:${ref.read(identityControllerProvider).identity?.id}:${widget.expense}';
+  Future<void> trackOnce(String name) async {
+    if (attemptKey == null) return;
+    final prefs = await SharedPreferences.getInstance();
+    final key = '$storageKey:measurement:$name:$attemptKey';
+    if (prefs.getBool(key) == true) return;
+    await ref.read(measurementControllerProvider)?.event(name);
+    await prefs.setBool(key, true);
+  }
+
   Future<void> restore() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -82,6 +92,9 @@ class _ContributeState extends ConsumerState<ContributeScreen>
       );
       if (!mounted || matches.isEmpty) return;
       outcome = matches.first;
+      if (outcome!['payment_status'] == 'confirmed') {
+        await trackOnce('contribution_confirmed');
+      }
       final terminal = [
         'confirmed',
         'canceled',
@@ -134,6 +147,7 @@ class _ContributeState extends ConsumerState<ContributeScreen>
       setState(() => locked = true);
       final repo = ref.read(paymentRepositoryProvider);
       final result = await repo.checkout(widget.expense, cents, attemptKey!);
+      await trackOnce('contribution_started');
       if (!mounted) return;
       if (result['url'] is String) {
         await repo.openStripe(result['url'] as String);

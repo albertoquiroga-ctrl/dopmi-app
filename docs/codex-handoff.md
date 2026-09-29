@@ -1,5 +1,16 @@
 # Dopmi — continuidad de ChatGPT Work a Codex
 
+## Continuidad H10 — medición y correo, 28/9/2026
+
+Los cinco eventos mínimos quedaron conectados a resultados reales, sin payloads,
+con tolerancia a fallos de Firebase y deduplicación local de pagos. Diagnóstico
+interno protegido por build. Gate local aprobado: Flutter 90, backend 402, admin
+23, prototipo 4 y configuración 11; builds web aprobados. Resend/dopmi.org y el
+recorrido de respuesta a soporte están verificados. Falta candidato nuevo, pruebas
+Android/iPhone, Firebase, Apple Private Relay y revocación social real. Supabase
+Pro/protección de contraseñas filtradas se difiere a H12. Continuar en
+`codex/design-foundation`; no cerrar H10 por compilación.
+
 ## Continuidad H10 — 28/9/2026
 
 Adición: servidor de credenciales Apple preparado, probado (400 Node/backend,

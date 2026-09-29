@@ -127,6 +127,12 @@ Apple sólo adaptador preparatorio. Ningún subhito H10 cerrado todavía.
 
 - [ ] H10.6 Habilitar/verificar protección de contraseñas filtradas en Supabase Auth, sujeto a disponibilidad del plan. MCP actual no permite configurar Auth.
 
+Estado vigente 28/9: proveedores test, eliminación servidor, medición, Resend y
+proyecto de producción ya están implementados/configurados. Las tareas H10.1–H10.5
+permanecen abiertas únicamente hasta completar aceptación instalada, Firebase,
+Private Relay y el candidato conjunto. H10.6 se difiere por decisión del titular
+a H12 porque requiere Supabase Pro; debe cerrarse antes del lanzamiento público.
+
 ### Corte H10 del 28/9/2026
 
 - [x] Términos/privacidad/18+ versionados y aviso de desarrollo retirado.

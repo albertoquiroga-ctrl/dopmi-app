@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show PostgrestException;
 
 import '../../core/ui.dart';
+import '../../core/measurement.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../community/content_actions.dart';
@@ -552,6 +553,11 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
       if (!mounted) return;
     }
     final result = await repository.transition(record!, action);
+    if (action == 'submit') {
+      await ref
+          .read(measurementControllerProvider)
+          ?.event('publication_submitted');
+    }
     if (!mounted) return;
     setState(() {
       record = result;
