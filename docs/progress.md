@@ -1102,3 +1102,10 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   integración para declarar explícitamente `analytics_storage` al activar,
   mantener publicidad/personalización denegadas y reiniciar los datos locales
   al retirar consentimiento o cambiar de identidad.
+- Candidato de corrección Analytics: [Codemagic
+  `6abbdec3af1a117ab3b161f5`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abbdec3af1a117ab3b161f5),
+  SHA `e772445e7446b42d49a8ab41163a30b42400b470`, Android **2.3.3
+  (272)**. Configuración Firebase, análisis, 96 pruebas, firma, AAB, Publishing y
+  limpieza terminaron `success`; la consulta posterior del track confirmó
+  `internal`, `completed`, código 272. Falta instalación y repetición del evento
+  real; publicación no equivale a aceptación en dispositivo.
