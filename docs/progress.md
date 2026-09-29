@@ -1173,3 +1173,10 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   consultas posteriores mostraron cero usuario Auth, identidad, sesión y
   credencial Apple. No se documentaron alias, UUID, tokens ni IP. La adaptación
   visual específica de iPad queda como diferencia no bloqueante de H10.
+- Google nativo en iPad falló primero con HTTP 400 por la comprobación de nonce.
+  Se activó `Skip nonce check` sólo para Google en Supabase test, como exige la
+  guía Flutter iOS; el mismo build entró después con HTTP 200, reutilizó el
+  perfil existente y conservó sesión tras reinicio. Auth advirtió que futuras
+  versiones exigirán también el access token. El cliente queda reforzado para
+  obtenerlo y enviarlo en acceso, vinculación y reautenticación; prueba unitaria
+  comprueba ambos tokens. Requiere gate y candidato nuevo.

@@ -237,3 +237,16 @@ posterior confirmó: estado `completado`, perfil `deleted`, marca de finalizaci�
 sin atención pendiente, cero filas en Auth/identidades/sesiones y cero
 credenciales Apple. Los logs de Auth acreditan cierre global y eliminación por
 servidor. Producción no fue consultada ni modificada.
+
+Google nativo inicialmente volvió al acceso con un mensaje genérico. Auth
+registró HTTP 400: el token iOS no incluía nonce y el proveedor exigía uno. Se
+activó **Skip nonce check** exclusivamente en Google del proyecto test, según la
+configuración indicada por Supabase para Flutter iOS; la repetición terminó
+HTTP 200, reutilizó una identidad existente con aceptación legal vigente y
+conservó la sesión tras reiniciar la app. No se creó una cuenta duplicada.
+
+El acceso aprobado emitió además la advertencia preventiva de Auth de que el
+`access_token` será obligatorio junto al ID token en versiones futuras. El
+cliente siguiente obtiene ambos tokens de Google y los envía de forma común en
+inicio, vinculación y reautenticación. Esta corrección requiere un candidato
+nuevo y no invalida la aceptación observada de 276.

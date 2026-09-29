@@ -226,6 +226,7 @@ class SupabaseIdentityRepository implements IdentityRepository {
               ? OAuthProvider.apple
               : OAuthProvider.google,
           idToken: credential.idToken,
+          accessToken: credential.accessToken,
           nonce: credential.nonce,
         );
         if (provider == 'apple') await _registerAppleCredential(credential);
@@ -268,6 +269,7 @@ class SupabaseIdentityRepository implements IdentityRepository {
             ? OAuthProvider.apple
             : OAuthProvider.google,
         idToken: credential.idToken,
+        accessToken: credential.accessToken,
         nonce: credential.nonce,
       );
       if (provider == 'apple') await _registerAppleCredential(credential);
@@ -361,6 +363,7 @@ class SupabaseIdentityRepository implements IdentityRepository {
           ? OAuthProvider.apple
           : OAuthProvider.google,
       idToken: credential.idToken,
+      accessToken: credential.accessToken,
       nonce: credential.nonce,
     );
     if (current?.id != owner) {

@@ -11,11 +11,12 @@ import '../../core/config.dart';
 class NativeIdentityCredential {
   const NativeIdentityCredential({
     required this.idToken,
+    this.accessToken,
     this.nonce,
     this.authorizationCode,
   });
   final String idToken;
-  final String? nonce, authorizationCode;
+  final String? accessToken, nonce, authorizationCode;
 }
 
 abstract interface class NativeIdentity {
@@ -27,6 +28,11 @@ class PlatformNativeIdentity implements NativeIdentity {
   PlatformNativeIdentity(this.config);
   final AppConfig config;
   Future<void>? _googleInitialization;
+  static const _googleScopes = <String>[
+    'openid',
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+  ];
 
   @override
   bool supports(String provider) =>
@@ -55,10 +61,20 @@ class PlatformNativeIdentity implements NativeIdentity {
               ? config.googleIosClientId
               : null,
         ));
-        final user = await GoogleSignIn.instance.authenticate();
+        final user = await GoogleSignIn.instance.authenticate(
+          scopeHint: _googleScopes,
+        );
         final token = user.authentication.idToken;
         if (token == null) throw StateError('provider_token_missing');
-        return NativeIdentityCredential(idToken: token);
+        final authorization =
+            await user.authorizationClient.authorizationForScopes(
+              _googleScopes,
+            ) ??
+            await user.authorizationClient.authorizeScopes(_googleScopes);
+        return NativeIdentityCredential(
+          idToken: token,
+          accessToken: authorization.accessToken,
+        );
       } on GoogleSignInException catch (error) {
         if (error.code == GoogleSignInExceptionCode.canceled) return null;
         rethrow;
