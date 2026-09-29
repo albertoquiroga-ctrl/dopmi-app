@@ -15,6 +15,7 @@ abstract interface class ErrorDiagnostics {
   Future<void> enabled(bool value);
   Future<void> record(Object error, StackTrace stack, {String? reason});
   Future<void> sendPending();
+  Future<void> discardPending();
 }
 
 class FirebaseProductAnalytics implements ProductAnalytics {
@@ -55,6 +56,8 @@ class FirebaseErrorDiagnostics implements ErrorDiagnostics {
       crashlytics.recordError(error, stack, reason: reason, fatal: false);
   @override
   Future<void> sendPending() => crashlytics.sendUnsentReports();
+  @override
+  Future<void> discardPending() => crashlytics.deleteUnsentReports();
 }
 
 class MeasurementController extends ChangeNotifier {
@@ -79,13 +82,20 @@ class MeasurementController extends ChangeNotifier {
     await analytics.enabled(false);
     await diagnostics.enabled(false);
     _removeErrorHandler();
+    if (_owner != null && _owner != value) {
+      await diagnostics.discardPending();
+    }
     _owner = value;
     analyticsEnabled =
         value != null && (preferences.getBool(key('analytics')) ?? false);
     diagnosticsEnabled =
         value != null && (preferences.getBool(key('diagnostics')) ?? false);
     await analytics.enabled(analyticsEnabled);
-    await diagnostics.enabled(diagnosticsEnabled);
+    if (diagnosticsEnabled) {
+      await diagnostics.enabled(true);
+    } else if (value != null) {
+      await diagnostics.discardPending();
+    }
     if (diagnosticsEnabled) _installErrorHandler();
     loading = false;
     notifyListeners();
@@ -101,7 +111,13 @@ class MeasurementController extends ChangeNotifier {
 
   Future<void> setDiagnostics(bool value) async {
     if (_owner == null) return;
-    await diagnostics.enabled(value);
+    if (value) {
+      await diagnostics.discardPending();
+      await diagnostics.enabled(true);
+    } else {
+      await diagnostics.enabled(false);
+      await diagnostics.discardPending();
+    }
     await preferences.setBool(key('diagnostics'), value);
     diagnosticsEnabled = value;
     value ? _installErrorHandler() : _removeErrorHandler();

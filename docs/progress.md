@@ -1070,3 +1070,24 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   `recordError` consentido. `flutter analyze` quedó limpio, la prueba dirigida
   aprobó 6 casos y la suite Flutter completa aprobó 95 pruebas. La corrección
   queda pendiente de candidato instalado y recepción visible en Crashlytics.
+- Android de corrección: Codemagic `6abbc365a2cb55def9efff17`, SHA `5c505c2`,
+  versión **2.3.3 (270)**. Configuración, análisis, 95 pruebas, firma, AAB,
+  Publishing y limpieza aprobaron. Play Console lo mostró como disponible para
+  Internal Testing a las 08:08; el bundle anterior 268 quedó desactivado. iOS
+  `6abbc3656e8a9a4c7f26ae72` seguía en cola al registrar esta evidencia.
+- Android 270, aceptación física: la captura del titular confirmó Analítica
+  apagada, Diagnóstico activado y el aviso de envío. Firebase recibió un no fatal
+  `dopmi_diagnostics_test` con motivo `internal_acceptance_test`, 1 evento y 1
+  usuario. El envío consentido de Crashlytics queda aprobado; falta comprobar la
+  retirada del consentimiento. iOS inició y aprobó preparación, configuración,
+  análisis, 95 pruebas y firma; la generación del IPA seguía en curso.
+- La captura `1000346267` confirmó ambos controles apagados y la desaparición de
+  la acción de diagnóstico. Se reforzó la retirada con `deleteUnsentReports`
+  antes de activar, al apagar y al cambiar de cuenta, para impedir el envío
+  posterior de reportes generados sin consentimiento. `flutter analyze` limpio,
+  7 pruebas dirigidas y 96 pruebas Flutter completas aprobaron.
+- iOS Codemagic `6abbc3656e8a9a4c7f26ae72` generó y firmó el IPA 2.3.3 (271).
+  Publishing quedó `failed`: Apple emitió tres HTTP 500 al cerrar estados del
+  upload, aunque `altool` terminó con `UPLOAD SUCCEEDED` y delivery UUID. No se
+  declara TestFlight disponible hasta consultar App Store Connect; la sesión web
+  expiró y solicita nuevo acceso.

@@ -102,8 +102,8 @@ separada.
 | Eventos permitidos con consentimiento | pendiente | nombre del evento y hora; sin parámetros privados |
 | Sin Analytics después de retirar | pendiente | intervalo observado sin eventos nuevos |
 | Crashlytics apagado | pendiente | ausencia antes del consentimiento |
-| Diagnóstico interno habilitado | pendiente | no fatal `dopmi_diagnostics_test` |
-| Crashlytics retirado | pendiente | ausencia después de retirar |
+| Diagnóstico interno habilitado | aprobado en Android 270 | Firebase recibió 1 no fatal `dopmi_diagnostics_test`, motivo `internal_acceptance_test`, tras consentimiento explícito |
+| Crashlytics retirado | interfaz aprobada en Android 270; ajuste pendiente de candidato | titular apagó Diagnóstico y desapareció la acción de prueba; cliente actualizado para borrar reportes locales al retirar, activar o cambiar de cuenta |
 | Private Relay | dominio registrado; entrega pendiente | `dopmi.org` aceptado por Apple con SPF; falta prueba al alias |
 | Eliminación Google | pendiente | estado final y sesión antigua rechazada |
 | Eliminación Apple | pendiente | estado final, grant revocado y credencial ausente |
@@ -130,6 +130,34 @@ reinició la aplicación. Firebase detectó el SDK, pero continuó esperando el
 primer reporte. No se acepta como entrega. El cliente ahora solicita el despacho
 explícito inmediatamente después de registrar el diagnóstico consentido; esta
 corrección requiere un nuevo candidato y repetir sólo este recorrido.
+
+El candidato de corrección parte de `5c505c2fca03aaf1753d8fbe23a77fe79f2368cc`.
+Android Codemagic `6abbc365a2cb55def9efff17` aprobó configuración, análisis,
+95 pruebas, firma, AAB y Publishing. Play Console confirmó **2.3.3 (270)**
+disponible para Internal Testing el 29/9/2026 a las 08:08, con versionCode 268
+desactivado. iOS Codemagic `6abbc3656e8a9a4c7f26ae72` permanece pendiente; el
+candidato conjunto no se acepta hasta comprobar su carga e instalación.
+
+El titular activó exclusivamente Diagnóstico en Android 270 y la app confirmó el
+envío. Firebase Crashlytics recibió un único no fatal originado en
+`MeasurementController.diagnosticTest`, con error `dopmi_diagnostics_test` y
+motivo `internal_acceptance_test`. La recepción consentida queda aprobada; falta
+apagar el control y confirmar que no exista una nueva vía de envío.
+
+La captura `1000346267` confirma que el titular apagó Diagnóstico en Android 270
+y que la acción **Enviar diagnóstico de prueba** desapareció; Analítica también
+permaneció apagada. La documentación de Firebase advierte que Crashlytics puede
+guardar reportes locales mientras la recopilación está desactivada. Por ello el
+cliente se reforzó para llamar `deleteUnsentReports` al retirar consentimiento,
+antes de una nueva activación y al cambiar de cuenta. El análisis quedó limpio,
+7 pruebas dirigidas y la suite completa de 96 pruebas aprobaron. Este refuerzo
+requiere un candidato posterior; la interfaz de retirada sí queda aceptada.
+
+iOS `6abbc3656e8a9a4c7f26ae72` generó y firmó correctamente el IPA **2.3.3
+(271)**. Apple respondió HTTP 500 al cerrar estados internos del upload; `altool`
+también informó `UPLOAD SUCCEEDED` y entregó un UUID, pero Codemagic marcó
+Publishing como fallido. App Store Connect requiere una nueva sesión para
+confirmar si 271 quedó procesándose antes de reintentar.
 
 ## Resultado
 

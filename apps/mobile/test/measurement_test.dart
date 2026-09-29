@@ -24,6 +24,7 @@ class DiagnosticsSpy implements ErrorDiagnostics {
   bool enabledValue = false;
   int reports = 0;
   int sends = 0;
+  int discards = 0;
   @override
   Future<void> enabled(bool value) async => enabledValue = value;
   @override
@@ -34,6 +35,11 @@ class DiagnosticsSpy implements ErrorDiagnostics {
   @override
   Future<void> sendPending() async {
     sends++;
+  }
+
+  @override
+  Future<void> discardPending() async {
+    discards++;
   }
 }
 
@@ -78,6 +84,7 @@ void main() {
     await controller.event('publication_submitted');
     expect(analytics.events, ['publication_submitted']);
     expect(diagnostics.enabledValue, false);
+    expect(diagnostics.discards, 1);
     await controller.owner('bob');
     expect(controller.analyticsEnabled, false);
     await controller.owner('alice');
@@ -144,15 +151,39 @@ void main() {
     expect(diagnostics.reports, 0);
     expect(diagnostics.sends, 0);
     await controller.setDiagnostics(true);
+    expect(diagnostics.discards, 2);
     await controller.diagnosticTest();
     expect(diagnostics.reports, 1);
     expect(diagnostics.sends, 1);
     await controller.setDiagnostics(false);
+    expect(diagnostics.discards, 3);
     await controller.diagnosticTest();
     expect(diagnostics.reports, 1);
     expect(diagnostics.sends, 1);
     controller.dispose();
   });
+
+  test(
+    'switching accounts discards diagnostics before the next owner',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final diagnostics = DiagnosticsSpy();
+      final controller = MeasurementController(
+        await SharedPreferences.getInstance(),
+        'test',
+        AnalyticsSpy(),
+        diagnostics,
+      );
+      await controller.owner('alice');
+      expect(diagnostics.discards, 1);
+      await controller.setDiagnostics(true);
+      expect(diagnostics.discards, 2);
+      await controller.owner('bob');
+      expect(diagnostics.discards, 4);
+      expect(controller.diagnosticsEnabled, false);
+      controller.dispose();
+    },
+  );
 
   test('provider failure never changes the product result', () async {
     SharedPreferences.setMockInitialValues({});
