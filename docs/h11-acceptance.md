@@ -9,22 +9,25 @@ funcionales, de usabilidad y accesibilidad críticos o altos, sin reabrir H8.
 
 | Plataforma | Versión | Distribución | Codemagic | Fuente | Estado |
 | --- | --- | --- | --- | --- | --- |
-| Android | 2.3.3 (281) | Google Play Internal Testing | `6abc62eb0f583f5c4835b814` | `0a25ba81fc39192c772ca0bbe4453697fb9ca905` | Disponible para testers internos |
-| iOS/iPadOS | 2.3.3 (282) | TestFlight / `DopMi Inner Team` | `6abc62ec0f583f5c4835b816` | `0a25ba81fc39192c772ca0bbe4453697fb9ca905` | Finalizado y En pruebas |
+| Android | 2.3.3 (283) | Google Play Internal Testing | `6abc771aec8422516e05ee18` | `94cb82e2496e4943065d6464962a111fa719bedd` | Disponible para testers internos |
+| iOS/iPadOS | 2.3.3 (284) | TestFlight / `DopMi Inner Team` | `6abc7724e5d014fada0172c5` | `94cb82e2496e4943065d6464962a111fa719bedd` | Finalizado y En pruebas |
 
 Los workflows aprobaron configuración, Firebase, dependencias, análisis,
-pruebas, firma, artefactos y publicación. El commit documental posterior no
-cambia los binarios. Producción continúa sin registros, proveedores sociales o
-secretos personalizados. Stripe permanece exclusivamente en test.
+pruebas, firma, artefactos y publicación. GitHub CI `36660362119` y
+`36660356662` aprobó los cuatro trabajos en el mismo SHA. Play confirmó 283
+disponible para testers internos y desactivó 281; App Store Connect confirmó
+284 `Finalizado`, `En pruebas` y en `DopMi Inner Team`. Los anteriores 281/282
+quedan como evidencia del recorrido inicial, no como candidatos finales.
+Producción continúa sin cambios y Stripe permanece exclusivamente en test.
 
 ## Matriz de aceptación
 
 Registrar plataforma, dispositivo, sistema, build y resultado. No registrar
 correos completos, alias privados, tokens, documentos ni referencias Stripe.
 
-| Recorrido | Android 281 | iOS 282 | Criterio |
+| Recorrido | Android 283 | iOS 284 | Criterio |
 | --- | --- | --- | --- |
-| Instalar o actualizar desde la tienda interna | Aprobado | Aprobado | Configuración muestra Android 2.3.3 (281) e iPadOS 2.3.3 (282) |
+| Instalar o actualizar desde la tienda interna | Pendiente | Pendiente | Configuración debe mostrar Android 2.3.3 (283) e iPadOS 2.3.3 (284) |
 | Sesión existente, cierre/reapertura y cierre de sesión | Aprobado | Aprobado | Ambos conservan sesión al reiniciar y cerrar sesión retira el acceso |
 | Google: cancelar, entrar y reutilizar perfil | Aprobado | Aprobado | En ambos, cancelar deja la app sin sesión; entrar vuelve al perfil Google existente sin repetir términos y persiste |
 | Apple nativo: cancelar, entrar y reutilizar perfil | No aplica | Aprobado | Identidad nueva con Ocultar mi correo exigió 18+/términos; cancelar dejó la app sin sesión; reingreso persistió |
@@ -37,7 +40,7 @@ correos completos, alias privados, tokens, documentos ni referencias Stripe.
 | Analytics y diagnóstico apagados/encendidos/retirados | Aprobado | Aprobado | Ambos persistieron encendidos, se retiraron y siguieron apagados tras reiniciar; sin diagnóstico de prueba |
 | Aportación y Guardián en Stripe test | Aprobado | Aprobado | Monto/resumen, método, suscripción e historial cargan/regresan; sin operación nueva; evidencia económica H5 reutilizada |
 | Texto ampliado, orientación y lector de pantalla básico | Pendiente | Pendiente | Acciones esenciales siguen visibles, etiquetadas y operables |
-| Interrupción de red y reintento | En corrección | En corrección | Una URL privada de 60 s dejó fotos sin cargar ocasionalmente; se amplió a 10 min y se agregó una renovación automática única |
+| Interrupción de red y reintento | Pendiente de 283 | Pendiente de 284 | Verificar carga de fotos, interrupción breve y renovación automática sin duplicar identidad, mensajes, publicaciones ni pagos |
 
 Los recorridos financieros pueden reutilizar evidencia H5 cuando el código no
 cambió, pero H11 exige al menos abrir las pantallas del candidato y comprobar
@@ -158,3 +161,10 @@ mayores; no se alteraron 281/282 porque no existe un defecto que lo justifique.
   tarjeta solicita una URL nueva una sola vez antes de ofrecer el reintento
   manual. La corrección requiere candidatos conjuntos nuevos y repetición del
   recorrido de catálogo; 281/282 dejan de ser candidatos finales de H11.
+- La corrección quedó en `94cb82e2496e4943065d6464962a111fa719bedd`.
+  Dos ejecuciones completas de CI aprobaron análisis, pruebas, capturas, APK de
+  desarrollo, iOS simulator, administración, PostgreSQL y backend. Codemagic
+  publicó Android 2.3.3 (283) en Play interno e iOS 2.3.3 (284) en TestFlight.
+  Play muestra 283 disponible y 281 desactivado; App Store Connect muestra 284
+  `Finalizado`, `En pruebas` y asignado al grupo interno. Falta instalación y
+  regresión física del catálogo en ambos candidatos.

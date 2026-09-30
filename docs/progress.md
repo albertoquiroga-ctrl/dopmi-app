@@ -1410,3 +1410,16 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   reintento manual. Se añadió una prueba que acota la vigencia entre cinco y
   diez minutos. Quedan pendientes CI, candidatos conjuntos nuevos y repetición
   del catálogo en ambos dispositivos; 281/282 ya no son finales.
+- Corrección de fotos publicada desde
+  `94cb82e2496e4943065d6464962a111fa719bedd`. GitHub CI
+  [36660362119](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36660362119)
+  y [36660356662](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36660356662)
+  aprobaron los cuatro trabajos, incluido análisis, pruebas Flutter y builds de
+  desarrollo Android/iOS. Codemagic Android
+  [6abc771aec8422516e05ee18](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc771aec8422516e05ee18)
+  publicó **2.3.3 (283)**; Play confirmó `Available to internal testers`, bundle
+  283 activo y 281 desactivado. Codemagic iOS
+  [6abc7724e5d014fada0172c5](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc7724e5d014fada0172c5)
+  publicó **2.3.3 (284)**; App Store Connect confirmó `Finalizado`, `En pruebas`
+  y `DopMi Inner Team`. Falta instalar 283/284 y repetir carga/reintento de fotos
+  en ambos dispositivos antes de cerrar el defecto y H11.
