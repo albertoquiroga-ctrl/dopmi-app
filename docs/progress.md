@@ -1276,8 +1276,11 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   público. En Google Play se habilitó el acceso local de la extensión, se importó
   el CSV y la vista previa confirmó 15 tipos recopilados, ninguno compartido,
   cifrado en tránsito y las URLs vigentes de privacidad y eliminación. El
-  guardado en Publishing overview y su envío a revisión permanecen pendientes
-  de la confirmación expresa del titular.
+  titular confirmó el guardado y Play Console respondió `Change saved`. En
+  Publishing overview figura exactamente un cambio no enviado: `Data safety —
+  Complete Data safety questionnaire`; las comprobaciones automáticas previas al
+  envío siguen en ejecución. El envío a revisión permanece pendiente de una
+  autorización separada.
 - El aviso de política de Google Play se inspeccionó por separado: identifica la
   URL histórica `https://dopmi.org/pages/privacy-policy` como inválida y exige
   guardar la corrección y enviarla a revisión. La pantalla vigente de Política

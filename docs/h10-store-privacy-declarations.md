@@ -39,8 +39,11 @@ personalización y compartición a datos que Dopmi usa para operar la cuenta y e
 servicio. El CSV se importó en Play Console el 29/9/2026. La vista previa
 resultante confirmó los 15 tipos anteriores, cero datos compartidos, cifrado en
 tránsito, eliminación completa en `/delete-account`, gestión parcial en
-`/privacy-policy` y la política vigente. El guardado en Publishing overview y
-el envío final siguen pendientes de confirmación expresa del titular.
+`/privacy-policy` y la política vigente. El titular autorizó el guardado y Play
+Console confirmó `Change saved`. Publishing overview muestra exactamente un
+cambio no enviado, `Data safety — Complete Data safety questionnaire`, sujeto a
+las comprobaciones automáticas de Google. El envío final sigue pendiente de una
+autorización separada.
 
 El aviso de política todavía visible cita exclusivamente la ruta histórica
 `/pages/privacy-policy`. La declaración de Política de privacidad ya contiene la
