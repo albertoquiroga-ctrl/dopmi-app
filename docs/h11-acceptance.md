@@ -24,7 +24,7 @@ correos completos, alias privados, tokens, documentos ni referencias Stripe.
 
 | Recorrido | Android 281 | iOS 282 | Criterio |
 | --- | --- | --- | --- |
-| Instalar o actualizar desde la tienda interna | Pendiente | Pendiente | La tienda muestra el build correcto y Dopmi abre sin pérdida de datos locales |
+| Instalar o actualizar desde la tienda interna | Aprobado | Pendiente | Android muestra 2.3.3 (281) en Configuración; falta iOS 282 |
 | Sesión existente, cierre/reapertura y cierre de sesión | Pendiente | Pendiente | Persiste al reiniciar; cerrar sesión retira el acceso |
 | Google: cancelar, entrar y reutilizar perfil | Pendiente | Pendiente | Cancelar no crea sesión; entrar conserva el mismo perfil y términos vigentes |
 | Apple nativo: cancelar, entrar y reutilizar perfil | No aplica | Pendiente | Sólo iOS/iPadOS; cancelar no crea sesión y entrar conserva el perfil |
@@ -93,3 +93,10 @@ Supabase, configuración, firma ni workflows. La versión anterior conserva
 `internal` y `submit_to_app_store: false`. Resultado:
 `ROLLBACK_REHEARSAL_OK`. Una reversión real recompilaría ese SHA con números
 mayores; no se alteraron 281/282 porque no existe un defecto que lo justifique.
+
+## Evidencia de dispositivo
+
+- Android: captura `1000346499.jpg`, aportada por el titular el 29/9, muestra
+  Dopmi abierto en Configuración con **Versión 2.3.3 (281)**. Se acredita la
+  instalación del candidato exacto; la captura no acredita todavía persistencia
+  de sesión, recuperación, accesibilidad ni los demás recorridos de la matriz.

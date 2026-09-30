@@ -1352,3 +1352,7 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   workflows internos, identidad `com.mycompany.dopmi` y ausencia de envío a
   App Store. No se retiró ningún build ni se publicó otro porque no existe un
   defecto que amerite una reversión real. H11.4 queda cerrado.
+- El titular aportó la captura `1000346499.jpg`: Android abre Configuración y
+  muestra **Versión 2.3.3 (281)**. Queda acreditada la instalación del candidato
+  Android exacto. Aún faltan los recorridos funcionales del build y la
+  instalación de iOS/iPadOS 282; no se atribuye aceptación por la captura sola.
