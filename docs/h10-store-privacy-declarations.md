@@ -7,7 +7,7 @@ Esta matriz describe el comportamiento del candidato interno Dopmi
 pagos reales. Analytics y Crashlytics requieren consentimientos separados y
 permanecen apagados por defecto.
 
-## Google Play — borrador para importar
+## Google Play — borrador importado y validado
 
 El CSV preparado para Data Safety declara los siguientes tipos: nombre, correo,
 ID de usuario, dirección, teléfono, historial de compras, ubicación aproximada,
@@ -36,8 +36,11 @@ la app, otro contenido generado por usuarios e identificadores de dispositivo.
 
 El borrador corrige la declaración publicada en 2023, que atribuía publicidad,
 personalización y compartición a datos que Dopmi usa para operar la cuenta y el
-servicio. La importación y el envío final siguen pendientes de confirmación del
-titular en Play Console.
+servicio. El CSV se importó en Play Console el 29/9/2026. La vista previa
+resultante confirmó los 15 tipos anteriores, cero datos compartidos, cifrado en
+tránsito, eliminación completa en `/delete-account`, gestión parcial en
+`/privacy-policy` y la política vigente. El guardado en Publishing overview y
+el envío final siguen pendientes de confirmación expresa del titular.
 
 ## App Store — declaración objetivo
 

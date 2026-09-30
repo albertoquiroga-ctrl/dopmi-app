@@ -1273,6 +1273,8 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   con publicación manual, sin compilación y sin añadirla a revisión. En esa
   versión se guardaron privacidad `/privacy-policy`, opciones de privacidad
   `/delete-account`, soporte `/support` y marketing `/`; no implica lanzamiento
-  público. Google Play no recibió todavía el CSV: Chrome bloqueó la carga porque
-  la extensión ChatGPT no tiene habilitado acceso a URLs de archivo. El archivo
-  permanece preparado localmente y la consola conserva el importador abierto.
+  público. En Google Play se habilitó el acceso local de la extensión, se importó
+  el CSV y la vista previa confirmó 15 tipos recopilados, ninguno compartido,
+  cifrado en tránsito y las URLs vigentes de privacidad y eliminación. El
+  guardado en Publishing overview y su envío a revisión permanecen pendientes
+  de la confirmación expresa del titular.
