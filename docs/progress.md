@@ -1385,3 +1385,11 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   sesión. Ayuda/FAQ y el botón de soporte funcionaron sin enviar correo; los
   términos y la pantalla de privacidad/eliminación abrieron y regresaron
   correctamente. No se inició eliminación.
+- Android 281 e iPadOS 282 aprobaron catálogo y comunicación: filtro
+  aplicar/limpiar, detalle, guardado/retirada, contacto, envío, reapertura y
+  cierre. El texto sintético `Prueba H11` persistió una sola vez al reabrir; no
+  hubo duplicado visible.
+- Publicar → Adopción aprobó el recorrido físico en ambos candidatos: foto no
+  personal, nombre sintético, salida/reinicio y recuperación del borrador sin
+  enviarlo. Android manejó rechazo inicial y concesión posterior del permiso;
+  iPadOS funcionó con acceso limitado a fotos.

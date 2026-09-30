@@ -30,9 +30,9 @@ correos completos, alias privados, tokens, documentos ni referencias Stripe.
 | Apple nativo: cancelar, entrar y reutilizar perfil | No aplica | Aprobado | Identidad nueva con Ocultar mi correo exigió 18+/términos; cancelar dejó la app sin sesión; reingreso persistió |
 | Correo: confirmación, recuperación y enlace de retorno | Pendiente | Pendiente | El enlace vuelve a Dopmi y no expone una sesión incorrecta |
 | Navegación por Adoptar/Apoyar/Perfil y cambio de modo | Aprobado | Aprobado | Pestañas, Configuración e Información básica abren/regresan sin pantalla negra ni pérdida de sesión |
-| Catálogo, filtros, detalle y guardado | Pendiente | Pendiente | Carga, vacío, reintento y éxito son utilizables |
-| Contacto, envío, reapertura y cierre de conversación | Pendiente | Pendiente | Sólo participantes leen; reintento no duplica mensajes |
-| Publicación/caso: borrador, foto, interrupción y retorno | Pendiente | Pendiente | Permisos denegados se explican; borrador no se publica ni se pierde |
+| Catálogo, filtros, detalle y guardado | Aprobado | Aprobado | Filtro aplicar/limpiar, detalle y alta/baja de guardado funcionaron en ambos |
+| Contacto, envío, reapertura y cierre de conversación | Aprobado | Aprobado | Contacto y cierre funcionaron; `Prueba H11` persistió una sola vez al reabrir |
+| Publicación/caso: borrador, foto, interrupción y retorno | Aprobado | Aprobado | Android manejó rechazo/concesión; iPadOS acceso limitado; foto y borrador persistieron sin enviarse |
 | Enlaces de términos, privacidad, ayuda y eliminación | Aprobado | Aprobado | Ayuda/FAQ/correo, términos y privacidad/eliminación abren y regresan; no se solicitó eliminación |
 | Analytics y diagnóstico apagados/encendidos/retirados | Pendiente | Pendiente | No hay emisión antes o después del consentimiento |
 | Aportación y Guardián en Stripe test | Pendiente | Pendiente | No usa dinero real; cancelación detiene ciclos futuros y conserva historial |
@@ -131,3 +131,12 @@ mayores; no se alteraron 281/282 porque no existe un defecto que lo justifique.
   el compositor sin enviar correo. Términos/privacidad y
   Privacidad/eliminación abrieron y regresaron correctamente; no se inició una
   eliminación.
+- Android 281 e iPadOS 282: se aplicó y limpió un filtro, se abrió el detalle de
+  una publicación demo y el guardado se activó/desactivó correctamente. Contactar
+  abrió la conversación; el mensaje `Prueba H11` apareció una sola vez después
+  de salir y reabrir, y la conversación pudo cerrarse. No se registró otro
+  contenido del chat.
+- Android 281 e iPadOS 282: en modo Rescatista, Publicar → Adopción permitió
+  seleccionar una imagen no personal y conservar el borrador al cerrar/reabrir.
+  Android explicó el permiso rechazado y funcionó al concederlo; iPadOS funcionó
+  con acceso limitado. El borrador no se envió a revisión.
