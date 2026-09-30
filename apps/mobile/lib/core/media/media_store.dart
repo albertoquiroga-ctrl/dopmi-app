@@ -4,6 +4,10 @@ import 'package:uuid/uuid.dart';
 
 import 'prepare_photo.dart';
 
+/// Gives private media enough time to load after navigation or a brief app
+/// suspension while keeping each generated URL short-lived.
+const mediaSignedUrlLifetimeSeconds = 10 * 60;
+
 enum MediaPurpose {
   adoptionPhoto,
   rescuePhoto,
@@ -95,5 +99,7 @@ class MediaStore {
   }
 
   Future<String> signedUrl(String path, MediaPurpose purpose) =>
-      client.storage.from(purpose.bucket).createSignedUrl(path, 60);
+      client.storage
+          .from(purpose.bucket)
+          .createSignedUrl(path, mediaSignedUrlLifetimeSeconds);
 }

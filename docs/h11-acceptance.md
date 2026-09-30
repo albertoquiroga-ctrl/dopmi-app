@@ -34,10 +34,10 @@ correos completos, alias privados, tokens, documentos ni referencias Stripe.
 | Contacto, envío, reapertura y cierre de conversación | Aprobado | Aprobado | Contacto y cierre funcionaron; `Prueba H11` persistió una sola vez al reabrir |
 | Publicación/caso: borrador, foto, interrupción y retorno | Aprobado | Aprobado | Android manejó rechazo/concesión; iPadOS acceso limitado; foto y borrador persistieron sin enviarse |
 | Enlaces de términos, privacidad, ayuda y eliminación | Aprobado | Aprobado | Ayuda/FAQ/correo, términos y privacidad/eliminación abren y regresan; no se solicitó eliminación |
-| Analytics y diagnóstico apagados/encendidos/retirados | Pendiente | Pendiente | No hay emisión antes o después del consentimiento |
-| Aportación y Guardián en Stripe test | Pendiente | Pendiente | No usa dinero real; cancelación detiene ciclos futuros y conserva historial |
+| Analytics y diagnóstico apagados/encendidos/retirados | Aprobado | Aprobado | Ambos persistieron encendidos, se retiraron y siguieron apagados tras reiniciar; sin diagnóstico de prueba |
+| Aportación y Guardián en Stripe test | Aprobado | Aprobado | Monto/resumen, método, suscripción e historial cargan/regresan; sin operación nueva; evidencia económica H5 reutilizada |
 | Texto ampliado, orientación y lector de pantalla básico | Pendiente | Pendiente | Acciones esenciales siguen visibles, etiquetadas y operables |
-| Interrupción de red y reintento | Pendiente | Pendiente | No duplica identidad, mensajes, publicaciones ni pagos |
+| Interrupción de red y reintento | En corrección | En corrección | Una URL privada de 60 s dejó fotos sin cargar ocasionalmente; se amplió a 10 min y se agregó una renovación automática única |
 
 Los recorridos financieros pueden reutilizar evidencia H5 cuando el código no
 cambió, pero H11 exige al menos abrir las pantallas del candidato y comprobar
@@ -140,3 +140,21 @@ mayores; no se alteraron 281/282 porque no existe un defecto que lo justifique.
   seleccionar una imagen no personal y conservar el borrador al cerrar/reabrir.
   Android explicó el permiso rechazado y funcionó al concederlo; iPadOS funcionó
   con acceso limitado. El borrador no se envió a revisión.
+- Android 281 e iPadOS 282: Aportar llegó al monto/resumen y regresó antes de
+  Checkout. Método de pago, Suscripción y pagos e Historial cargaron o mostraron
+  su estado y permitieron regresar, sin pantalla negra, dato productivo ni
+  operación nueva. H5 conserva la aceptación de alta/cancelación/devolución en
+  Stripe test; entre su SHA aceptado y este candidato no cambió el motor
+  financiero.
+- Android 281 e iPadOS 282: Analítica y Diagnóstico persistieron al activarlos
+  y navegar, se apagaron independientemente y continuaron apagados después de
+  reiniciar Dopmi. No se pulsó el diagnóstico interno ni se atribuye un evento
+  remoto nuevo; H10.3 conserva la comprobación de cero emisión tras retirada.
+- Android 281 e iPadOS 282: el titular observó ocasionalmente una publicación
+  con el marcador `Cargar foto` en ambas plataformas. La causa reproducible en
+  código fue la URL firmada privada con sólo 60 segundos de vigencia: podía
+  vencer durante una suspensión breve, navegación diferida o red lenta. Se
+  conserva Storage privado, se amplía la vigencia temporal a diez minutos y la
+  tarjeta solicita una URL nueva una sola vez antes de ofrecer el reintento
+  manual. La corrección requiere candidatos conjuntos nuevos y repetición del
+  recorrido de catálogo; 281/282 dejan de ser candidatos finales de H11.

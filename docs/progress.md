@@ -1393,3 +1393,20 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   personal, nombre sintético, salida/reinicio y recuperación del borrador sin
   enviarlo. Android manejó rechazo inicial y concesión posterior del permiso;
   iPadOS funcionó con acceso limitado a fotos.
+- Ambos candidatos aprobaron el smoke financiero sin movimientos nuevos:
+  Aportar hasta monto/resumen y regreso previo a Checkout; Método de pago,
+  Suscripción e Historial sin pantalla negra. No se cambió tarjeta, activó o
+  canceló un plan ni se generó un pago. Se reutiliza la evidencia económica H5,
+  pues el candidato sólo añadió el acceso de soporte y no cambió esos módulos.
+- Consentimientos aprobados en ambos candidatos: Analítica y Diagnóstico
+  persistieron al activarse, se retiraron por separado y permanecieron apagados
+  tras reiniciar. No se envió diagnóstico controlado nuevo; la recepción y cero
+  emisión posterior ya están acreditadas en H10.3 sobre el mismo código.
+- H11 detectó un fallo intermitente y multiplataforma al cargar fotos privadas
+  del catálogo: Android 281 e iPadOS 282 podían mostrar `Cargar foto`. El cliente
+  generaba URLs firmadas por sólo 60 segundos, insuficientes tras suspensión o
+  carga diferida. La corrección mantiene el bucket privado, amplía la URL a diez
+  minutos y renueva una sola vez automáticamente antes de dejar el control de
+  reintento manual. Se añadió una prueba que acota la vigencia entre cinco y
+  diez minutos. Quedan pendientes CI, candidatos conjuntos nuevos y repetición
+  del catálogo en ambos dispositivos; 281/282 ya no son finales.

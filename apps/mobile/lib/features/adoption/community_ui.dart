@@ -190,38 +190,68 @@ class AdoptionPhoto extends ConsumerStatefulWidget {
 }
 
 class _AdoptionPhotoState extends ConsumerState<AdoptionPhoto> {
-  late Future<String> url = ref
+  late Future<String> url = _photoUrl();
+  var automaticRetries = 0;
+  var retryScheduled = false;
+
+  Future<String> _photoUrl() => ref
       .read(communityRepositoryProvider)
       .photoUrl(widget.path);
+
+  void reload({bool automatic = false}) {
+    if (automatic) {
+      if (automaticRetries >= 1) return;
+      automaticRetries += 1;
+    } else {
+      automaticRetries = 0;
+    }
+    retryScheduled = false;
+    setState(() => url = _photoUrl());
+  }
+
+  void scheduleAutomaticRetry() {
+    if (automaticRetries >= 1 || retryScheduled) return;
+    retryScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      reload(automatic: true);
+    });
+  }
+
   @override
   void didUpdateWidget(AdoptionPhoto oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.path != widget.path) {
-      url = ref.read(communityRepositoryProvider).photoUrl(widget.path);
+      automaticRetries = 0;
+      retryScheduled = false;
+      url = _photoUrl();
     }
   }
 
-  Widget unavailable() => Container(
-    height: widget.height,
-    color: const Color(0xffeee7fc),
-    child: Center(
-      child: TextButton.icon(
-        onPressed: () => setState(
-          () =>
-              url = ref.read(communityRepositoryProvider).photoUrl(widget.path),
+  Widget unavailable({bool retryAutomatically = false}) {
+    if (retryAutomatically) scheduleAutomaticRetry();
+    return Container(
+      height: widget.height,
+      color: const Color(0xffeee7fc),
+      child: Center(
+        child: TextButton.icon(
+          onPressed: () => reload(),
+          icon: const Icon(Icons.refresh),
+          label: const Text('Cargar foto'),
         ),
-        icon: const Icon(Icons.refresh),
-        label: const Text('Cargar foto'),
       ),
-    ),
-  );
+    );
+  }
+
   @override
   Widget build(BuildContext context) => ClipRRect(
     borderRadius: BorderRadius.circular(20),
     child: FutureBuilder<String>(
       future: url,
       builder: (_, snapshot) {
-        if (snapshot.hasError) return unavailable();
+        if (snapshot.hasError) {
+          return unavailable(retryAutomatically: true);
+        }
         if (!snapshot.hasData) {
           return SizedBox(
             height: widget.height,
@@ -236,7 +266,7 @@ class _AdoptionPhotoState extends ConsumerState<AdoptionPhoto> {
           width: double.infinity,
           fit: BoxFit.cover,
           semanticLabel: 'Foto de la publicación',
-          errorBuilder: (_, _, _) => unavailable(),
+          errorBuilder: (_, _, _) => unavailable(retryAutomatically: true),
         );
       },
     ),
