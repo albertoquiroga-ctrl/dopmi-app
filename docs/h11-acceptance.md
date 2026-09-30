@@ -26,14 +26,14 @@ correos completos, alias privados, tokens, documentos ni referencias Stripe.
 | --- | --- | --- | --- |
 | Instalar o actualizar desde la tienda interna | Aprobado | Aprobado | Configuración muestra Android 2.3.3 (281) e iPadOS 2.3.3 (282) |
 | Sesión existente, cierre/reapertura y cierre de sesión | Aprobado | Aprobado | Ambos conservan sesión al reiniciar y cerrar sesión retira el acceso |
-| Google: cancelar, entrar y reutilizar perfil | Aprobado | Pendiente | Android: cancelar conserva el estado sin sesión; entrar vuelve al mismo perfil sin repetir términos |
+| Google: cancelar, entrar y reutilizar perfil | Aprobado | Aprobado | En ambos, cancelar deja la app sin sesión; entrar vuelve al perfil Google existente sin repetir términos y persiste |
 | Apple nativo: cancelar, entrar y reutilizar perfil | No aplica | Aprobado | Identidad nueva con Ocultar mi correo exigió 18+/términos; cancelar dejó la app sin sesión; reingreso persistió |
 | Correo: confirmación, recuperación y enlace de retorno | Pendiente | Pendiente | El enlace vuelve a Dopmi y no expone una sesión incorrecta |
-| Navegación por Adoptar/Apoyar/Perfil y cambio de modo | Pendiente | Pendiente | Sin pantalla negra, bloqueo o pérdida de estado inesperada |
+| Navegación por Adoptar/Apoyar/Perfil y cambio de modo | Aprobado | Aprobado | Pestañas, Configuración e Información básica abren/regresan sin pantalla negra ni pérdida de sesión |
 | Catálogo, filtros, detalle y guardado | Pendiente | Pendiente | Carga, vacío, reintento y éxito son utilizables |
 | Contacto, envío, reapertura y cierre de conversación | Pendiente | Pendiente | Sólo participantes leen; reintento no duplica mensajes |
 | Publicación/caso: borrador, foto, interrupción y retorno | Pendiente | Pendiente | Permisos denegados se explican; borrador no se publica ni se pierde |
-| Enlaces de términos, privacidad, ayuda y eliminación | Pendiente | Pendiente | Abren contenido vigente; eliminación exige confirmación explícita |
+| Enlaces de términos, privacidad, ayuda y eliminación | Aprobado | Aprobado | Ayuda/FAQ/correo, términos y privacidad/eliminación abren y regresan; no se solicitó eliminación |
 | Analytics y diagnóstico apagados/encendidos/retirados | Pendiente | Pendiente | No hay emisión antes o después del consentimiento |
 | Aportación y Guardián en Stripe test | Pendiente | Pendiente | No usa dinero real; cancelación detiene ciclos futuros y conserva historial |
 | Texto ampliado, orientación y lector de pantalla básico | Pendiente | Pendiente | Acciones esenciales siguen visibles, etiquetadas y operables |
@@ -122,3 +122,12 @@ mayores; no se alteraron 281/282 porque no existe un defecto que lo justifique.
   acceso terminó correctamente y persistió al cerrar/reabrir Dopmi. No se
   registró el alias. El gate de cuenta nueva es evidencia compatible con la
   regla de no fusionar automáticamente correos distintos.
+- iPadOS 282 / Google: cerrar la sesión Apple y cancelar Google mantuvo la app
+  sin sesión. Repetir Google regresó al perfil Google existente sin volver a
+  pedir términos y conservó la sesión después de cerrar/reabrir Dopmi.
+- Android 281 e iPadOS 282: Adoptar, Apoyar, Perfil, Configuración e Información
+  básica abrieron y permitieron regresar sin pantalla negra, bloqueo o pérdida
+  de sesión. Centro de ayuda desplegó su contenido y el botón de soporte abrió
+  el compositor sin enviar correo. Términos/privacidad y
+  Privacidad/eliminación abrieron y regresaron correctamente; no se inició una
+  eliminación.

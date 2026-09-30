@@ -1376,3 +1376,12 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   acceso; cancelar Apple no creó sesión; repetirlo entró correctamente y la
   sesión persistió tras reiniciar. No se registró el alias privado. La creación
   separada, con gate legal, confirma que no hubo fusión silenciosa por correo.
+- Google en iPadOS 282 también aprobó: cancelar dejó la app sin sesión; el nuevo
+  intento regresó al perfil Google existente sin repetir términos y la sesión
+  persistió al reiniciar. Identidad social queda aprobada en Android 281 e
+  iPadOS 282; Apple permanece exclusivo de iOS/iPadOS.
+- En ambos candidatos, el titular recorrió Adoptar, Apoyar, Perfil,
+  Configuración e Información básica sin pantalla negra, bloqueo ni pérdida de
+  sesión. Ayuda/FAQ y el botón de soporte funcionaron sin enviar correo; los
+  términos y la pantalla de privacidad/eliminación abrieron y regresaron
+  correctamente. No se inició eliminación.
