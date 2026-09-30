@@ -1356,3 +1356,14 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   muestra **Versión 2.3.3 (281)**. Queda acreditada la instalación del candidato
   Android exacto. Aún faltan los recorridos funcionales del build y la
   instalación de iOS/iPadOS 282; no se atribuye aceptación por la captura sola.
+- En Android 281, cerrar completamente y volver a abrir Dopmi conservó la sesión
+  sin pedir acceso ni repetir términos. Persistencia aprobada; el cierre de
+  sesión y reingreso se verifican por separado.
+- El titular aportó captura de iPadOS: Dopmi abierto desde TestFlight muestra
+  **Versión 2.3.3 (282)** en Configuración. Android 281 e iPadOS 282 quedan
+  instalados y corresponden al mismo SHA; la captura horizontal acredita que
+  las acciones principales son visibles, no todavía los recorridos funcionales.
+- Android 281 completó el recorrido de identidad: cerrar sesión regresó al
+  acceso, cancelar Google no creó sesión y un segundo intento entró con la misma
+  cuenta/perfil sin volver a pedir términos. Persistencia, cierre, cancelación y
+  reingreso Google quedan aprobados para el candidato exacto.

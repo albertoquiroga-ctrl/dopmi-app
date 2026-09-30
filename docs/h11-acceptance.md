@@ -24,9 +24,9 @@ correos completos, alias privados, tokens, documentos ni referencias Stripe.
 
 | Recorrido | Android 281 | iOS 282 | Criterio |
 | --- | --- | --- | --- |
-| Instalar o actualizar desde la tienda interna | Aprobado | Pendiente | Android muestra 2.3.3 (281) en Configuración; falta iOS 282 |
-| Sesión existente, cierre/reapertura y cierre de sesión | Pendiente | Pendiente | Persiste al reiniciar; cerrar sesión retira el acceso |
-| Google: cancelar, entrar y reutilizar perfil | Pendiente | Pendiente | Cancelar no crea sesión; entrar conserva el mismo perfil y términos vigentes |
+| Instalar o actualizar desde la tienda interna | Aprobado | Aprobado | Configuración muestra Android 2.3.3 (281) e iPadOS 2.3.3 (282) |
+| Sesión existente, cierre/reapertura y cierre de sesión | Aprobado | Pendiente | Android conserva sesión al reiniciar y cerrar sesión retira el acceso |
+| Google: cancelar, entrar y reutilizar perfil | Aprobado | Pendiente | Android: cancelar conserva el estado sin sesión; entrar vuelve al mismo perfil sin repetir términos |
 | Apple nativo: cancelar, entrar y reutilizar perfil | No aplica | Pendiente | Sólo iOS/iPadOS; cancelar no crea sesión y entrar conserva el perfil |
 | Correo: confirmación, recuperación y enlace de retorno | Pendiente | Pendiente | El enlace vuelve a Dopmi y no expone una sesión incorrecta |
 | Navegación por Adoptar/Apoyar/Perfil y cambio de modo | Pendiente | Pendiente | Sin pantalla negra, bloqueo o pérdida de estado inesperada |
@@ -100,3 +100,15 @@ mayores; no se alteraron 281/282 porque no existe un defecto que lo justifique.
   Dopmi abierto en Configuración con **Versión 2.3.3 (281)**. Se acredita la
   instalación del candidato exacto; la captura no acredita todavía persistencia
   de sesión, recuperación, accesibilidad ni los demás recorridos de la matriz.
+- Android 281: el titular cerró Dopmi completamente y volvió a abrirla. La sesión
+  se conservó y la app no volvió a pedir acceso ni aceptación de términos. Falta
+  probar el cierre explícito de sesión y el nuevo acceso en este build.
+- Android 281: **Cerrar sesión** volvió al acceso; cancelar el selector de Google
+  conservó el estado sin sesión; repetir Google entró con la misma cuenta y el
+  mismo perfil, sin volver a solicitar términos. Quedan aprobados cierre de
+  sesión, cancelación y reingreso Google para este candidato.
+- iPadOS: captura `Photo 1.jpg`, aportada por el titular el 29/9, muestra Dopmi
+  abierto desde TestFlight en Configuración con **Versión 2.3.3 (282)**. La
+  disposición horizontal conserva todas las acciones principales visibles. Se
+  acredita instalación; los recorridos funcionales y accesibilidad siguen
+  separados.
