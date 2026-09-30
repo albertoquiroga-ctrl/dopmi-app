@@ -98,8 +98,7 @@ class MediaStore {
     return path;
   }
 
-  Future<String> signedUrl(String path, MediaPurpose purpose) =>
-      client.storage
-          .from(purpose.bucket)
-          .createSignedUrl(path, mediaSignedUrlLifetimeSeconds);
+  Future<String> signedUrl(String path, MediaPurpose purpose) => client.storage
+      .from(purpose.bucket)
+      .createSignedUrl(path, mediaSignedUrlLifetimeSeconds);
 }
