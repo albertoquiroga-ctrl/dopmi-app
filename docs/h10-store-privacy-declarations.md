@@ -90,6 +90,11 @@ nueva versión 2.3.3 en preparación, con publicación manual y estas URLs:
 La ficha 2.3.3 no se añadió a revisión ni tiene compilación seleccionada; estos
 cambios no autorizan ni provocan un lanzamiento público.
 
+Por decisión del titular, el envío de esa ficha se aplaza hasta que terminen los
+demás pendientes y exista el candidato final que se seleccionará para revisión.
+Debe revalidarse junto con el resultado de Google antes del cierre del candidato;
+no requiere rehacer la declaración App Privacy ya publicada.
+
 ## Evidencia pública y operativa
 
 - `https://dopmi.org/privacy-policy`, `/terms`, `/delete-account` y `/support`

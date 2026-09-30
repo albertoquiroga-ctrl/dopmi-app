@@ -1288,3 +1288,9 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   de privacidad ya muestra `https://dopmi.org/privacy-policy`; el botón Guardar
   está deshabilitado allí porque esa corrección ya quedó registrada. El aviso no
   se declarará resuelto hasta que Google procese el envío.
+- Decisión del titular: H10.4 se cierra con la declaración Data Safety enviada a
+  revisión y App Privacy ya publicada. Apple no permite enviar la ficha 2.3.3 a
+  revisión sin seleccionar una compilación; ese envío se aplaza hasta terminar
+  los demás pendientes y disponer del candidato final. También se reconsultará
+  entonces la resolución del aviso histórico de Google. Las URLs y textos ya
+  guardados se conservan; no se inició lanzamiento público.
