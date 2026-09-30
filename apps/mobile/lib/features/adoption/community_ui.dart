@@ -194,9 +194,8 @@ class _AdoptionPhotoState extends ConsumerState<AdoptionPhoto> {
   var automaticRetries = 0;
   var retryScheduled = false;
 
-  Future<String> _photoUrl() => ref
-      .read(communityRepositoryProvider)
-      .photoUrl(widget.path);
+  Future<String> _photoUrl() =>
+      ref.read(communityRepositoryProvider).photoUrl(widget.path);
 
   void reload({bool automatic = false}) {
     if (automatic) {
