@@ -6,6 +6,7 @@ class FakeIdentityRepository implements IdentityRepository {
   final changes = StreamController<IdentityEvent>.broadcast(sync: true);
   Identity? user;
   Future<Identity?>? restoreResult;
+  Future<Profile>? profileResult;
   bool pending = false;
   bool failSave = false;
   bool failLoad = false;
@@ -94,6 +95,7 @@ class FakeIdentityRepository implements IdentityRepository {
   Future<Profile> loadProfile() async {
     loads++;
     if (failLoad) throw StateError('network_unavailable');
+    if (profileResult != null) return profileResult!;
     return profile;
   }
 

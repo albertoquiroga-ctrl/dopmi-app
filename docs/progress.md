@@ -1423,3 +1423,11 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   publicó **2.3.3 (284)**; App Store Connect confirmó `Finalizado`, `En pruebas`
   y `DopMi Inner Team`. Falta instalar 283/284 y repetir carga/reintento de fotos
   en ambos dispositivos antes de cerrar el defecto y H11.
+- Nuevo defecto H11 reproducido en código: una sesión con consentimiento vigente
+  podía mostrar `Antes de continuar` durante el intervalo entre Auth restaurado
+  y perfil cargado. El gate ahora distingue la consulta en curso y muestra
+  `Restaurando sesión`; si la consulta falla continúa bloqueando con el aviso,
+  por lo que no se debilita la protección de mayoría de edad. Se agregó una
+  prueba con carga deliberadamente demorada que prohíbe el destello. Por decisión
+  del titular, esta corrección se agrupa con los siguientes cambios y el QA
+  físico/visual final de Irlanda; no se pide otro recorrido manual completo.

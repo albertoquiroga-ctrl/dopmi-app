@@ -168,3 +168,11 @@ mayores; no se alteraron 281/282 porque no existe un defecto que lo justifique.
   Play muestra 283 disponible y 281 desactivado; App Store Connect muestra 284
   `Finalizado`, `En pruebas` y asignado al grupo interno. Falta instalación y
   regresión física del catálogo en ambos candidatos.
+- El titular reportó un destello ocasional de `Antes de continuar` al iniciar
+  una sesión que ya tenía el consentimiento vigente. La capa de seguridad veía
+  el perfil nulo durante su lectura y lo confundía por un cuadro con un perfil
+  sin aceptación. La corrección conserva el cierre seguro si la lectura falla,
+  pero durante la consulta muestra `Restaurando sesión`; una regresión con el
+  perfil deliberadamente demorado comprueba que el aviso legal nunca aparece.
+  Se integrará con los siguientes cambios antes del QA final agrupado de
+  Irlanda, sin solicitar otro recorrido manual completo para este parche.

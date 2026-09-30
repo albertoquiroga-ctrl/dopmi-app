@@ -462,6 +462,29 @@ class DopmiApp extends ConsumerWidget {
               path == '/account-privacy' ||
               path == '/guardian' ||
               path == '/guardian/history';
+          final checkingConsent =
+              currentIdentity?.verified == true &&
+              experience.loading &&
+              profile == null;
+          if (checkingConsent && !exempt) {
+            return Stack(
+              children: [
+                if (child != null) Offstage(offstage: true, child: child),
+                const Positioned.fill(
+                  child: PageFrame(
+                    back: false,
+                    children: [
+                      Center(
+                        child: CircularProgressIndicator(
+                          semanticsLabel: 'Restaurando sesión',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          }
           // Fail closed in the widget tree as well as in GoRouter. This keeps
           // an authenticated profile from entering the product if its profile
           // request is delayed or fails before redirect reevaluation.

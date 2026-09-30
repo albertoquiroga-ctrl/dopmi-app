@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/config.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
@@ -16,6 +18,7 @@ void main() {
     FakeIdentityRepository repo, {
     String? initialLocation,
     AppConfig? config,
+    bool settle = true,
   }) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
@@ -39,7 +42,11 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(container: container, child: const DopmiApp()),
     );
-    await tester.pumpAndSettle();
+    if (settle) {
+      await tester.pumpAndSettle();
+    } else {
+      await tester.pump();
+    }
     return container;
   }
 
@@ -183,6 +190,27 @@ void main() {
     await tap(tester, 'Confirmar y continuar');
     expect(repo.consentCount, 1);
     expect(find.text('Antes de continuar'), findsNothing);
+  });
+
+  testWidgets('restoring accepted consent never flashes the consent screen', (
+    tester,
+  ) async {
+    final profile = Completer<Profile>();
+    final repo = FakeIdentityRepository()
+      ..user = const Identity('one', 'ana@example.test', verified: true)
+      ..profileResult = profile.future;
+
+    await start(tester, repo, initialLocation: '/adoptions', settle: false);
+    await tester.pump();
+
+    expect(find.text('Antes de continuar'), findsNothing);
+    expect(find.bySemanticsLabel('Restaurando sesión'), findsOneWidget);
+
+    profile.complete(repo.profile);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Antes de continuar'), findsNothing);
+    expect(find.text('Adoptar'), findsWidgets);
   });
 
   testWidgets('profile load failure cannot bypass legal consent', (
