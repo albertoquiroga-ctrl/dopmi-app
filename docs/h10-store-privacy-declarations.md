@@ -41,9 +41,9 @@ resultante confirmó los 15 tipos anteriores, cero datos compartidos, cifrado en
 tránsito, eliminación completa en `/delete-account`, gestión parcial en
 `/privacy-policy` y la política vigente. El titular autorizó el guardado y Play
 Console confirmó `Change saved`. Publishing overview muestra exactamente un
-cambio no enviado, `Data safety — Complete Data safety questionnaire`, sujeto a
-las comprobaciones automáticas de Google. El envío final sigue pendiente de una
-autorización separada.
+cambio, `Data safety — Complete Data safety questionnaire`. Con autorización
+separada se envió a revisión; las comprobaciones automáticas terminaron sin
+incidencias y Publishing overview muestra `Your changes are now in review`.
 
 El aviso de política todavía visible cita exclusivamente la ruta histórica
 `/pages/privacy-policy`. La declaración de Política de privacidad ya contiene la

@@ -1278,9 +1278,10 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   cifrado en tránsito y las URLs vigentes de privacidad y eliminación. El
   titular confirmó el guardado y Play Console respondió `Change saved`. En
   Publishing overview figura exactamente un cambio no enviado: `Data safety —
-  Complete Data safety questionnaire`; las comprobaciones automáticas previas al
-  envío siguen en ejecución. El envío a revisión permanece pendiente de una
-  autorización separada.
+  Complete Data safety questionnaire`. Con autorización separada, se envió ese
+  único cambio; las comprobaciones automáticas terminaron sin incidencias y
+  Publishing overview muestra `Your changes are now in review`. El aviso de la
+  URL histórica permanece visible mientras Google resuelve la revisión.
 - El aviso de política de Google Play se inspeccionó por separado: identifica la
   URL histórica `https://dopmi.org/pages/privacy-policy` como inválida y exige
   guardar la corrección y enviarla a revisión. La pantalla vigente de Política
