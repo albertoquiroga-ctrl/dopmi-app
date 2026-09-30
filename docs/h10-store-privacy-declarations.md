@@ -42,6 +42,12 @@ tránsito, eliminación completa en `/delete-account`, gestión parcial en
 `/privacy-policy` y la política vigente. El guardado en Publishing overview y
 el envío final siguen pendientes de confirmación expresa del titular.
 
+El aviso de política todavía visible cita exclusivamente la ruta histórica
+`/pages/privacy-policy`. La declaración de Política de privacidad ya contiene la
+ruta vigente `/privacy-policy`; Google solicita guardar los cambios pendientes y
+enviarlos a revisión. El aviso se mantiene como pendiente hasta su resolución
+por Google.
+
 ## App Store — declaración objetivo
 
 Datos vinculados con la identidad, cuenta o instalación y usados para

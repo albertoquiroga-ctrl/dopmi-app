@@ -1278,3 +1278,9 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   cifrado en tránsito y las URLs vigentes de privacidad y eliminación. El
   guardado en Publishing overview y su envío a revisión permanecen pendientes
   de la confirmación expresa del titular.
+- El aviso de política de Google Play se inspeccionó por separado: identifica la
+  URL histórica `https://dopmi.org/pages/privacy-policy` como inválida y exige
+  guardar la corrección y enviarla a revisión. La pantalla vigente de Política
+  de privacidad ya muestra `https://dopmi.org/privacy-policy`; el botón Guardar
+  está deshabilitado allí porque esa corrección ya quedó registrada. El aviso no
+  se declarará resuelto hasta que Google procese el envío.
