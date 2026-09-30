@@ -155,10 +155,10 @@ a H12 porque requiere Supabase Pro; debe cerrarse antes del lanzamiento público
 
 ## H11 — Beta en ambas tiendas
 
-- [ ] H11.1 Mismo SHA por Codemagic en Play interno y TestFlight; verificar publicación.
+- [x] H11.1 Mismo SHA por Codemagic en Play interno y TestFlight; verificar publicación. Android 281 e iOS 282 provienen de `0a25ba8` y están disponibles en los canales internos.
 - [ ] H11.2 Recorridos en dispositivos, accesibilidad, instalación/actualización y recuperación.
 - [ ] H11.3 Usabilidad externa y revisión visual; cero defectos críticos/altos.
-- [ ] H11.4 Procedimiento de reversión probado.
+- [x] H11.4 Procedimiento de reversión probado sin mutar las tiendas: SHA conocido como bueno recuperable, diferencias acotadas, identidad/firma/canales conservados y rebuild monotónico definido. La reversión real sólo se ejecuta ante un defecto.
 
 ## H12 — Lanzamiento
 

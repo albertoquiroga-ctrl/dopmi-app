@@ -1331,3 +1331,24 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   La instalación/actualización de 281/282 y los recorridos integrales pertenecen
   a H11. La revisión pública de la versión Apple y la reconsulta del aviso
   histórico de Google continúan aplazadas hasta el candidato final.
+
+## Inicio H11 — 29 de septiembre de 2026
+
+- Se fijó la matriz de aceptación en `docs/h11-acceptance.md`. La referencia de
+  Irlanda continúa sin cambios en `a246fa6f42ec517aae264d7fbd2358d647c4f840`;
+  no hay una diferencia nueva que reabra H8.
+- H11.1 queda acreditado por Android 281 e iOS 282, ambos desde
+  `0a25ba81fc39192c772ca0bbe4453697fb9ca905` y disponibles en sus canales
+  internos. La instalación/actualización y los recorridos del build exacto aún
+  requieren los dispositivos del titular.
+- Se documentó una reversión de distribución segura: Android usa un rebuild del
+  último SHA bueno con número mayor; TestFlight retira el build del grupo y
+  reasigna o recompila con número mayor. El ensayo no altera 281/282, datos,
+  migraciones ni movimientos financieros. Falta ejecutar el ensayo de
+  comprobación y registrar revisión externa/cero defectos críticos o altos.
+- El ensayo de reversión terminó `ROLLBACK_REHEARSAL_OK`: Git puede reconstruir
+  `d57aea8aef3fad2687b177d2f5ed3634c6672849`; frente al candidato, el único
+  cambio de app es el acceso por correo del Centro de ayuda. Ese SHA conserva
+  workflows internos, identidad `com.mycompany.dopmi` y ausencia de envío a
+  App Store. No se retiró ningún build ni se publicó otro porque no existe un
+  defecto que amerite una reversión real. H11.4 queda cerrado.
