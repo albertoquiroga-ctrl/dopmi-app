@@ -1367,3 +1367,12 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   acceso, cancelar Google no creó sesión y un segundo intento entró con la misma
   cuenta/perfil sin volver a pedir términos. Persistencia, cierre, cancelación y
   reingreso Google quedan aprobados para el candidato exacto.
+- iPadOS 282 conservó la sesión después de cerrar completamente y volver a abrir
+  Dopmi, sin pedir acceso ni repetir términos. Persistencia aprobada; cierre de
+  sesión y accesos Google/Apple permanecen como pruebas separadas.
+- iPadOS 282 completó Apple nativo con una identidad nueva. Apple ofreció
+  compartir u ocultar el correo; el titular eligió Ocultar mi correo y Dopmi
+  exigió 18 años/términos antes de permitir acceso. Cerrar sesión retiró el
+  acceso; cancelar Apple no creó sesión; repetirlo entró correctamente y la
+  sesión persistió tras reiniciar. No se registró el alias privado. La creación
+  separada, con gate legal, confirma que no hubo fusión silenciosa por correo.

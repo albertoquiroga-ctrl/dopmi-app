@@ -25,9 +25,9 @@ correos completos, alias privados, tokens, documentos ni referencias Stripe.
 | Recorrido | Android 281 | iOS 282 | Criterio |
 | --- | --- | --- | --- |
 | Instalar o actualizar desde la tienda interna | Aprobado | Aprobado | Configuración muestra Android 2.3.3 (281) e iPadOS 2.3.3 (282) |
-| Sesión existente, cierre/reapertura y cierre de sesión | Aprobado | Pendiente | Android conserva sesión al reiniciar y cerrar sesión retira el acceso |
+| Sesión existente, cierre/reapertura y cierre de sesión | Aprobado | Aprobado | Ambos conservan sesión al reiniciar y cerrar sesión retira el acceso |
 | Google: cancelar, entrar y reutilizar perfil | Aprobado | Pendiente | Android: cancelar conserva el estado sin sesión; entrar vuelve al mismo perfil sin repetir términos |
-| Apple nativo: cancelar, entrar y reutilizar perfil | No aplica | Pendiente | Sólo iOS/iPadOS; cancelar no crea sesión y entrar conserva el perfil |
+| Apple nativo: cancelar, entrar y reutilizar perfil | No aplica | Aprobado | Identidad nueva con Ocultar mi correo exigió 18+/términos; cancelar dejó la app sin sesión; reingreso persistió |
 | Correo: confirmación, recuperación y enlace de retorno | Pendiente | Pendiente | El enlace vuelve a Dopmi y no expone una sesión incorrecta |
 | Navegación por Adoptar/Apoyar/Perfil y cambio de modo | Pendiente | Pendiente | Sin pantalla negra, bloqueo o pérdida de estado inesperada |
 | Catálogo, filtros, detalle y guardado | Pendiente | Pendiente | Carga, vacío, reintento y éxito son utilizables |
@@ -112,3 +112,13 @@ mayores; no se alteraron 281/282 porque no existe un defecto que lo justifique.
   disposición horizontal conserva todas las acciones principales visibles. Se
   acredita instalación; los recorridos funcionales y accesibilidad siguen
   separados.
+- iPadOS 282: el titular cerró Dopmi completamente y volvió a abrirla. La sesión
+  se conservó sin volver a pedir acceso ni términos. Falta comprobar cierre de
+  sesión y los proveedores sociales dentro de este candidato.
+- iPadOS 282 / Apple: Apple volvió a ofrecer **Compartir mi correo** u
+  **Ocultar mi correo**. El titular eligió ocultarlo; Dopmi mostró el gate de
+  mayoría de edad/términos y creó la sesión sólo después de aceptarlo. Tras
+  cerrar sesión, una cancelación de Apple dejó la app sin sesión. El siguiente
+  acceso terminó correctamente y persistió al cerrar/reabrir Dopmi. No se
+  registró el alias. El gate de cuenta nueva es evidencia compatible con la
+  regla de no fusionar automáticamente correos distintos.
