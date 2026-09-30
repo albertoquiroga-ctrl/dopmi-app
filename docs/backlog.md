@@ -155,13 +155,14 @@ a H12 porque requiere Supabase Pro; debe cerrarse antes del lanzamiento público
 
 ## H11 — Beta en ambas tiendas
 
-- [x] H11.1 Mismo SHA por Codemagic en Play interno y TestFlight; verificar publicación. Android 281 e iOS 282 provienen de `0a25ba8` y están disponibles en los canales internos.
-- [ ] H11.2 Recorridos en dispositivos, accesibilidad, instalación/actualización y recuperación.
-- [ ] H11.3 Usabilidad externa y revisión visual; cero defectos críticos/altos.
+- [x] H11.1 Mismo SHA por Codemagic en Play interno y TestFlight; verificar publicación. Android 283 e iOS 284 provienen de `94cb82e` y están disponibles en los canales internos.
+- [x] H11.2 Recorridos disponibles en Android, accesibilidad, instalación/actualización y recuperación. El titular trasladó correo real e iOS final a H12.
+- [x] H11.3 Sin defectos críticos/altos en la evidencia ejecutada; recuperación automática queda como fricción media. Revisión visual externa trasladada expresamente al candidato final H12.
 - [x] H11.4 Procedimiento de reversión probado sin mutar las tiendas: SHA conocido como bueno recuperable, diferencias acotadas, identidad/firma/canales conservados y rebuild monotónico definido. La reversión real sólo se ejecuta ante un defecto.
 
 ## H12 — Lanzamiento
 
+- [ ] H12.0 Integrar los cambios finales de Irlanda y el parche de consentimiento; publicar un mismo SHA nuevo en Play interno y TestFlight. Repetir regresión Android/iOS, correo real y revisión visual externa.
 - [ ] H12.1 Landing, fichas, capturas, privacidad y soporte listos.
 - [ ] H12.2 Revisar Stripe live/Connect, conciliación, disputas, depósitos y límites.
 - [ ] H12.3 Obtener autorización explícita de dinero real antes de activarlo.

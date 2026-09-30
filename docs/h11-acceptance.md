@@ -27,11 +27,11 @@ correos completos, alias privados, tokens, documentos ni referencias Stripe.
 
 | Recorrido | Android 283 | iOS 284 | Criterio |
 | --- | --- | --- | --- |
-| Instalar o actualizar desde la tienda interna | Pendiente | Pendiente | Configuración debe mostrar Android 2.3.3 (283) e iPadOS 2.3.3 (284) |
+| Instalar o actualizar desde la tienda interna | Aprobado | Pendiente | Configuración debe mostrar Android 2.3.3 (283) e iPadOS 2.3.3 (284) |
 | Sesión existente, cierre/reapertura y cierre de sesión | Aprobado | Aprobado | Ambos conservan sesión al reiniciar y cerrar sesión retira el acceso |
 | Google: cancelar, entrar y reutilizar perfil | Aprobado | Aprobado | En ambos, cancelar deja la app sin sesión; entrar vuelve al perfil Google existente sin repetir términos y persiste |
 | Apple nativo: cancelar, entrar y reutilizar perfil | No aplica | Aprobado | Identidad nueva con Ocultar mi correo exigió 18+/términos; cancelar dejó la app sin sesión; reingreso persistió |
-| Correo: confirmación, recuperación y enlace de retorno | Pendiente | Pendiente | El enlace vuelve a Dopmi y no expone una sesión incorrecta |
+| Correo: confirmación, recuperación y enlace de retorno | Parcial; entrega diferida a H12 | Diferido a H12 | Android manejó un callback inválido con error recuperable y conservó la sesión; la entrega desde buzón se valida con el candidato final |
 | Navegación por Adoptar/Apoyar/Perfil y cambio de modo | Aprobado | Aprobado | Pestañas, Configuración e Información básica abren/regresan sin pantalla negra ni pérdida de sesión |
 | Catálogo, filtros, detalle y guardado | Aprobado | Aprobado | Filtro aplicar/limpiar, detalle y alta/baja de guardado funcionaron en ambos |
 | Contacto, envío, reapertura y cierre de conversación | Aprobado | Aprobado | Contacto y cierre funcionaron; `Prueba H11` persistió una sola vez al reabrir |
@@ -39,8 +39,8 @@ correos completos, alias privados, tokens, documentos ni referencias Stripe.
 | Enlaces de términos, privacidad, ayuda y eliminación | Aprobado | Aprobado | Ayuda/FAQ/correo, términos y privacidad/eliminación abren y regresan; no se solicitó eliminación |
 | Analytics y diagnóstico apagados/encendidos/retirados | Aprobado | Aprobado | Ambos persistieron encendidos, se retiraron y siguieron apagados tras reiniciar; sin diagnóstico de prueba |
 | Aportación y Guardián en Stripe test | Aprobado | Aprobado | Monto/resumen, método, suscripción e historial cargan/regresan; sin operación nueva; evidencia económica H5 reutilizada |
-| Texto ampliado, orientación y lector de pantalla básico | Pendiente | Pendiente | Acciones esenciales siguen visibles, etiquetadas y operables |
-| Interrupción de red y reintento | Pendiente de 283 | Pendiente de 284 | Verificar carga de fotos, interrupción breve y renovación automática sin duplicar identidad, mensajes, publicaciones ni pagos |
+| Texto ampliado, orientación y lector de pantalla básico | Aprobado | Diferido a H12 | Android conserva acciones esenciales con texto ampliado y orientación horizontal; TalkBack enfocó, anunció y activó controles etiquetados |
+| Interrupción de red y reintento | Aprobado con fricción media | Pendiente de 284 | Android renovó la foto y restauró la misma sesión mediante reintento, sin duplicados; la recuperación no fue automática |
 
 Los recorridos financieros pueden reutilizar evidencia H5 cuando el código no
 cambió, pero H11 exige al menos abrir las pantallas del candidato y comprobar
@@ -60,6 +60,15 @@ H11 cierra con los dos builds instalados, matriz funcional aprobada, cero
 defectos críticos/altos abiertos, revisión externa registrada y reversión de
 distribución ensayada. La ficha pública Apple y el aviso histórico de Google se
 atienden después, con el candidato final acordado.
+
+### Corte autorizado para continuar a H12
+
+El 30/9 el titular autorizó cerrar el trabajo autónomo disponible en Android y
+trasladar al candidato final H12 la entrega real de correo, la regresión iOS 284
+y la revisión visual de Irlanda. No hay un defecto crítico o alto abierto en la
+evidencia ejecutada; la recuperación no automática de red queda como fricción
+media. Este corte permite iniciar H12, pero no convierte las filas diferidas en
+aceptación de iOS ni visual y no autoriza dinero real o publicación pública.
 
 ## Reversión de distribución
 
@@ -176,3 +185,27 @@ mayores; no se alteraron 281/282 porque no existe un defecto que lo justifique.
   perfil deliberadamente demorado comprueba que el aviso legal nunca aparece.
   Se integrará con los siguientes cambios antes del QA final agrupado de
   Irlanda, sin solicitar otro recorrido manual completo para este parche.
+- Android 283 se actualizó directamente desde Google Play Internal Testing en
+  un Samsung SM-S938B con Android 16. Configuración mostró **2.3.3 (283)**; la
+  actualización conservó la sesión y abrió Adoptar sin repetir acceso ni
+  consentimiento. La foto de Rocky cargó antes y después de una suspensión de
+  más de 60 segundos, acreditando en este dispositivo la corrección de la URL
+  firmada que fallaba en 281.
+- La prueba de red desactivó temporalmente Wi-Fi y datos y abrió Dopmi en frío.
+  La app cerró de forma segura mostrando el consentimiento mientras no podía
+  leer el perfil; al regresar la conexión, el primer reintento mostró la ruta
+  de recuperación y el segundo restauró la misma sesión, catálogo y foto. No
+  hubo reingreso, duplicado ni mutación de mensajes, publicaciones o pagos. Se
+  registra como fricción media: la recuperación requiere intervención y puede
+  mostrar temporalmente un aviso legal ya aceptado.
+- Con escala de texto aumentada de 1.15 a 1.30, Adoptar conservó visibles y
+  operables ubicación, especie, filtros, tarjeta, Pasar, Contactar, Me gusta y
+  la navegación inferior. Configuración funcionó en horizontal y el árbol de
+  accesibilidad expuso nombres para las acciones esenciales. TalkBack de
+  Samsung se habilitó temporalmente: recorrió por foco los controles, anunció
+  sus etiquetas y activó una ruta Guardián marcada como prueba. Se restauraron
+  TalkBack, escala y rotación a los valores originales.
+- Un callback Android controlado con error abrió la recuperación segura, mostró
+  acciones para reintentar o volver al acceso y, al regresar, conservó la
+  sesión existente. Esto acredita el manejo del enlace inválido sin acreditar
+  entrega de correo; el recorrido desde el buzón queda en H12.

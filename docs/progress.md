@@ -1431,3 +1431,28 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   prueba con carga deliberadamente demorada que prohíbe el destello. Por decisión
   del titular, esta corrección se agrupa con los siguientes cambios y el QA
   físico/visual final de Irlanda; no se pide otro recorrido manual completo.
+- Android 283 quedó instalado desde Play Internal Testing y verificado por ADB
+  en un Samsung SM-S938B con Android 16. Conservó la sesión durante la
+  actualización, mostró `Versión 2.3.3 (283)` y cargó la foto del catálogo tras
+  suspensión superior a 60 segundos. Una apertura en frío sin Wi-Fi ni datos
+  cerró de forma segura; tras restaurar la red, dos pulsaciones de reintento
+  recuperaron la misma sesión y la foto sin duplicados. La ausencia de
+  recuperación automática y la aparición temporal del consentimiento vigente
+  quedan como fricción media, no como pérdida de identidad. Texto ampliado
+  1.30, etiquetas semánticas y orientación horizontal conservaron las acciones
+  esenciales; se restauraron los ajustes del dispositivo. Falta TalkBack,
+  correo/retorno, iOS 284 y revisión visual externa para cerrar H11.2/H11.3.
+- TalkBack de Samsung se activó temporalmente sobre Android 283, conservando el
+  servicio de accesibilidad existente. El lector recorrió por foco controles
+  etiquetados y activó una ruta Guardián identificada como prueba; después se
+  restauró exactamente la configuración previa. Un callback inválido
+  controlado abrió el estado recuperable y el regreso conservó la sesión, sin
+  acreditar entrega desde correo.
+- Decisión del titular, 30/9: concluir H11 con toda la evidencia autónoma
+  disponible en Android y trasladar a H12 la entrega real de correo, regresión
+  iOS del candidato final y revisión visual de Irlanda. No quedan defectos
+  críticos/altos en lo ejecutado; la recuperación de red que requiere reintento
+  permanece como fricción media. H12 será el último hito previo al MVP e inicia
+  con un candidato conjunto que integre el parche de consentimiento y los
+  cambios finales de Irlanda. Este avance no acepta visual/iOS pendientes, no
+  publica las tiendas y no autoriza dinero real.

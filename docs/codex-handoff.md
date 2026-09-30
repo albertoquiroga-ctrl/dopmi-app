@@ -1,5 +1,22 @@
 # Dopmi — continuidad de ChatGPT Work a Codex
 
+## Continuidad H12 — cierre operativo de H11, 30/9/2026
+
+El titular autorizó concluir H11 con la evidencia autónoma disponible en
+Android y trasladar al candidato final H12 la entrega real de correo, regresión
+iOS y revisión visual de Irlanda. Android 2.3.3 (283), fuente `94cb82e`, se
+actualizó desde Play interno en Samsung SM-S938B/Android 16, conservó sesión y
+cargó fotos tras suspensión. Red interrumpida recuperó la misma sesión mediante
+reintento; queda fricción media, sin defecto crítico/alto. Texto 1.30,
+orientación, etiquetas y TalkBack funcionaron; configuración del teléfono fue
+restaurada. H12 es el último hito antes del MVP: integrar cambios finales de
+Irlanda y `23fcfab`, publicar el mismo SHA nuevo en Play/TestFlight, repetir QA
+Android/iOS, correo real y revisión visual, y luego completar fichas/landing,
+operación y publicación gradual. Dinero real continúa sin autorización.
+
+Referencia Irlanda reconsultada sin cambios:
+`irlanda/apoyar-detalle-perfil@a246fa6f42ec517aae264d7fbd2358d647c4f840`.
+
 ## Continuidad H10 — medición y correo, 28/9/2026
 
 Los cinco eventos mínimos quedaron conectados a resultados reales, sin payloads,

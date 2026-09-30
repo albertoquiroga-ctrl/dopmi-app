@@ -22,7 +22,7 @@ Irlanda revisa diseño; el titular acepta producto y recorridos en dispositivos;
 | H9 | Adopción/contacto → rescate/evidencia → aportaciones/Guardián → cuenta/ayuda/reportes/admin | H8 | Recorridos reales con estados de carga, vacío, error, reintento, interrupción y éxito |
 | H10 | Google/Apple, eliminación, analítica/errores, correo, soporte/legal y separación de entornos | H9 | Integraciones y configuraciones verificadas; sin exposición de contenido privado |
 | H11 | Mismo candidato por Play Internal y TestFlight, usabilidad y reversión | H10 | Cero defectos críticos/altos, aceptación visual y funcional en ambos sistemas |
-| H12 | Fichas, landing, revisión live, operación y publicación gradual | H11 | Autorización separada de dinero real y lanzamiento verificable |
+| H12 | Candidato final conjunto, cierre visual/correo/iOS, fichas, landing, revisión live, operación y publicación gradual | H11 | QA final Android/iOS, autorización separada de dinero real y lanzamiento verificable |
 
 H7 no permite borrar por similitud de nombres. Respaldar y restaurar antes de retirar; preservar evidencia financiera vigente. El titular confirmó que el sistema anterior era de pruebas. No resetear el proyecto compartido ni reproducir migraciones para alinear timestamps.
 
