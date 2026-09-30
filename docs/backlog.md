@@ -123,7 +123,7 @@ Apple sólo adaptador preparatorio. Ningún subhito H10 cerrado todavía.
 - [x] H10.2 Eliminación de cuenta y tratamiento de sesiones/contenido/evidencia. Reintento Auth parcial, operaciones pendientes, Guardián, aislamiento y permisos servidor verificados.
 - [x] H10.3 Analítica mínima y errores sin datos privados; consentimiento comprobado.
 - [x] H10.4 Correo, soporte/moderación, legal y declaraciones de privacidad definitivas. App Privacy quedó publicada; Data Safety fue enviada a revisión. La ficha Apple 2.3.3 y la resolución del aviso histórico de Google se revalidarán con el candidato final, sin bloquear el siguiente bloque.
-- [ ] H10.5 Separar configuración test/producción, conservando identidad y firma.
+- [x] H10.5 Separar configuración test/producción, conservando identidad y firma. Producción quedó sin altas, proveedores sociales, secretos personalizados, usuarios ni datos; Android 281 y iOS 282 se publicaron internamente desde el mismo SHA `0a25ba8`.
 
 - [ ] H10.6 Habilitar/verificar protección de contraseñas filtradas en Supabase Auth, sujeto a disponibilidad del plan. MCP actual no permite configurar Auth.
 

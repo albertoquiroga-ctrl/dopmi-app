@@ -335,3 +335,13 @@ compuerta integrada
 [36637906708](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36637906708)
 aprobó sus cuatro trabajos para el mismo SHA. La eliminación real ya aceptada
 en Android y Apple, junto con estos escenarios automatizados, cierra H10.2.
+
+## Candidato de transición a H11
+
+El SHA `0a25ba81fc39192c772ca0bbe4453697fb9ca905` produjo Android
+**2.3.3 (281)** y iOS **2.3.3 (282)**. Google Play muestra 281 disponible para
+testers internos; App Store Connect muestra 282 `Finalizado`, **En pruebas** y
+asignado a `DopMi Inner Team`. Codemagic aprobó análisis, pruebas, firma,
+artefactos y publicación en ambos sistemas. Esta evidencia acredita entrega y
+trazabilidad; instalación, actualización y recorridos del par 281/282 se
+registrarán en H11.

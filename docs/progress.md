@@ -1294,3 +1294,40 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   los demás pendientes y disponer del candidato final. También se reconsultará
   entonces la resolución del aviso histórico de Google. Las URLs y textos ya
   guardados se conservan; no se inició lanzamiento público.
+
+## H10.5 — aislamiento y candidato conjunto — 29 de septiembre de 2026
+
+- Supabase test `ohqxranynackjignryep` y producción `ysaoeuidcvgtlmphmeyb`
+  continúan separados y `ACTIVE_HEALTHY`. En producción se comprobaron cero
+  usuarios Auth, perfiles, donaciones, objetos Storage, secretos Vault y secretos
+  personalizados de Edge Functions. Los cuatro buckets existen vacíos y las
+  siete funciones actuales están desplegadas, pero sin secretos Stripe no pueden
+  procesar dinero real.
+- La configuración Auth de producción se inspeccionó directamente: altas,
+  vinculación manual y acceso anónimo están apagados; Google y Apple figuran
+  deshabilitados. Test conserva sus proveedores de aceptación. No se modificó
+  configuración remota durante esta auditoría.
+- Los advisories de seguridad de ambos proyectos coinciden: 27 tablas privadas
+  con RLS y sin políticas deliberadamente inaccesibles, 15 funciones
+  `SECURITY DEFINER` ejecutables por `anon` y 68 por `authenticated`, ya
+  cubiertas por los controles servidor/titular documentados. Test añade la
+  advertencia de protección de contraseñas filtradas, diferida a H12 por requerir
+  Supabase Pro. Referencias: [RLS sin políticas](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy),
+  [`anon` y SECURITY DEFINER](https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable)
+  y [`authenticated` y SECURITY DEFINER](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable).
+- Puertas locales: configuración móvil **12/12**, administración **23/23** y
+  build de producción, backend/PostgreSQL **405/405**. Flutter no está instalado
+  en este equipo; análisis y pruebas aprobaron dentro de los dos workflows
+  reproducibles de Codemagic.
+- El SHA `0a25ba81fc39192c772ca0bbe4453697fb9ca905` produjo ambos candidatos.
+  [Android Codemagic `6abc62eb0f583f5c4835b814`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc62eb0f583f5c4835b814)
+  aprobó configuración, Firebase, análisis, pruebas, firma, AAB y Publishing;
+  Google Play confirmó **2.3.3 (281)** disponible para testers internos y
+  desactivó 279. [iOS Codemagic `6abc62ec0f583f5c4835b816`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc62ec0f583f5c4835b816)
+  aprobó configuración, Firebase, análisis, pruebas, firma, IPA y Publishing;
+  App Store Connect confirmó **2.3.3 (282)** `Finalizado`, **En pruebas** y
+  asignado a `DopMi Inner Team`.
+- H10.5 queda cerrado por publicación interna trazable y aislamiento comprobado.
+  La instalación/actualización de 281/282 y los recorridos integrales pertenecen
+  a H11. La revisión pública de la versión Apple y la reconsulta del aviso
+  histórico de Google continúan aplazadas hasta el candidato final.

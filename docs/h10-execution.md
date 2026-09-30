@@ -225,6 +225,23 @@ Estos pendientes se resolvieron en los ciclos posteriores: pruebas sociales y
 eliminación en Android/iOS, recepción consentida en Firebase, Private Relay y
 candidatos conjuntos instalados. El estado vigente está en `docs/progress.md`.
 
+### Cierre H10.5 — aislamiento y entrega interna
+
+La auditoría final confirmó producción cerrada: cero usuarios, perfiles,
+donaciones, objetos Storage y secretos personalizados; altas y acceso anónimo
+apagados; Google, Apple y vinculación manual deshabilitados. Las funciones
+servidor desplegadas carecen de secretos Stripe, por lo que producción no puede
+registrar usuarios ni procesar dinero. Test conserva la configuración social y
+financiera de aceptación sin cruzarse con producción.
+
+El SHA `0a25ba81fc39192c772ca0bbe4453697fb9ca905` generó Android
+**2.3.3 (281)** mediante Codemagic `6abc62eb0f583f5c4835b814` e iOS
+**2.3.3 (282)** mediante `6abc62ec0f583f5c4835b816`. Google Play confirmó
+281 disponible en Internal Testing; App Store Connect confirmó 282 procesado,
+En pruebas y dentro del grupo interno. Los dos workflows aprobaron análisis,
+pruebas, firma, artefacto y publicación. La instalación y aceptación del par
+vigente pasan a H11.
+
 ### Candidato conjunto de medición — 28/9
 
 SHA `3472c5b4ba5785ab9ab695f4a5d96a3e0befd4a3`. Los dos disparos de CI
