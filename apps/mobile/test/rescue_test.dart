@@ -246,6 +246,26 @@ class PagedPublicCaseRescue extends FakeRescue {
 }
 
 void main() {
+  test(
+    'case titles handle absent or blank names without changing authored data',
+    () {
+      for (final name in [null, '', '   ']) {
+        final record = RescueRecord({
+          'kind': 'case',
+          'public_data': {'pet_name': name},
+        });
+        expect(record.title, 'Sin nombre');
+        expect(record.publicData['pet_name'], name);
+      }
+      expect(
+        RescueRecord({
+          'kind': 'case',
+          'public_data': {'pet_name': 'Mora'},
+        }).title,
+        'Mora',
+      );
+    },
+  );
   testWidgets(
     'owned case thumbnail retries a failed photo without overflow at large text',
     (tester) async {

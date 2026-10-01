@@ -45,12 +45,14 @@ class RescueRecord {
   Json get privateData => Json.from(data['private_data'] as Map? ?? {});
   List<Json> get files =>
       (data['files'] as List? ?? []).map((e) => Json.from(e as Map)).toList();
-  String get title =>
-      (publicData['public_name'] ??
-              publicData['pet_name'] ??
-              publicData['title'] ??
-              'Sin título')
-          as String;
+  String get title {
+    for (final key in ['public_name', 'pet_name', 'title']) {
+      final value = publicData[key] as String?;
+      if (value != null && value.trim().isNotEmpty) return value;
+    }
+    return kind == 'case' ? 'Sin nombre' : 'Sin título';
+  }
+
   bool get editable =>
       ['draft', 'changes_requested', 'rejected'].contains(status);
 }

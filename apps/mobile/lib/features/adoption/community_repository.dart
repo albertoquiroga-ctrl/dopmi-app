@@ -52,7 +52,8 @@ class SupportOpportunity {
   String text(String key) => data[key] as String? ?? '';
   String get id => text('case_id');
   String get expenseId => text('expense_id');
-  String get name => text('pet_name');
+  String get name =>
+      text('pet_name').trim().isEmpty ? 'Sin nombre' : text('pet_name');
   int get reimbursable => data['reimbursable_cents'] as int? ?? 0;
   int get funded => data['funded_cents'] as int? ?? 0;
 }
