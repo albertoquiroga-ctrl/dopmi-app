@@ -15,6 +15,7 @@ import 'guardian_repository.dart';
 import 'contribution_layout.dart';
 import 'payment_result_page.dart';
 import 'payment_history_row.dart';
+import 'guardian_history_screen.dart';
 
 class ContributeScreen extends ConsumerStatefulWidget {
   const ContributeScreen(
@@ -474,6 +475,15 @@ class _ContributeState extends ConsumerState<ContributeScreen>
   }
 }
 
+class PaymentHistoryData {
+  const PaymentHistoryData(this.donations, this.guardian);
+  final DataPage<Json> donations;
+  final Json? guardian;
+  List<Json> get cycles => (guardian?['items'] as List? ?? [])
+      .map((item) => Json.from(item))
+      .toList();
+}
+
 class PaymentHistoryScreen extends ConsumerStatefulWidget {
   const PaymentHistoryScreen({super.key});
   @override
@@ -483,6 +493,23 @@ class PaymentHistoryScreen extends ConsumerStatefulWidget {
 class _HistoryState extends ConsumerState<PaymentHistoryScreen> {
   int page = 1;
   bool received = false;
+  Future<PaymentHistoryData> loadHistory() async {
+    final includeGuardian =
+        ref.read(guardianEnabledProvider) && !received && page == 1;
+    final paymentRepo = ref.read(paymentRepositoryProvider);
+    final guardianRepo = includeGuardian
+        ? ref.read(guardianRepositoryProvider)
+        : null;
+    final results = await Future.wait<Object?>([
+      paymentRepo.history(page, received: received),
+      if (guardianRepo != null) guardianRepo.history(),
+    ]);
+    return PaymentHistoryData(
+      results.first as DataPage<Json>,
+      results.length > 1 ? results[1] as Json : null,
+    );
+  }
+
   @override
   Widget build(BuildContext context) => ContributionFrame(
     title: 'Mi historial',
@@ -493,18 +520,19 @@ class _HistoryState extends ConsumerState<PaymentHistoryScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Text('Consulta todo tu historial de pagos.'),
-          const SizedBox(height: 12),
-          LiveSection<DataPage<Json>>(
-            key: ValueKey('$received:$page'),
+          const SizedBox(height: 26),
+          LiveSection<PaymentHistoryData>(
+            key: ValueKey(
+              '$received:$page:${ref.watch(guardianEnabledProvider)}',
+            ),
             errorMessage: paymentError,
+            // Guardian cycles are private; their authorized RPC refreshes with this section.
             tables: const ['dopmi_donations'],
-            load: () => ref
-                .read(paymentRepositoryProvider)
-                .history(page, received: received),
+            load: loadHistory,
             builder: (data, refresh) => Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (data.items.isEmpty)
+                if (data.donations.items.isEmpty && data.cycles.isEmpty)
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 18,
@@ -520,19 +548,38 @@ class _HistoryState extends ConsumerState<PaymentHistoryScreen> {
                     ),
                   )
                 else
-                  Container(
+                  Material(
                     clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: const Color(0xffe6e2dd)),
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      side: const BorderSide(color: Color(0xffe6e2dd)),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Column(
                       children: [
-                        for (var i = 0; i < data.items.length; i++) ...[
+                        for (var i = 0; i < data.cycles.length; i++) ...[
                           if (i > 0)
                             const Divider(height: 1, color: Color(0xffe6e2dd)),
-                          for (final d in [data.items[i]])
+                          GuardianHistoryEntry(
+                            key: ValueKey('guardian:${data.cycles[i]['id']}'),
+                            item: data.cycles[i],
+                            owner: ref
+                                .read(identityControllerProvider)
+                                .identity!
+                                .id,
+                          ),
+                        ],
+                        if (data.cycles.isNotEmpty &&
+                            data.donations.items.isNotEmpty)
+                          const Divider(height: 1, color: Color(0xffe6e2dd)),
+                        for (
+                          var i = 0;
+                          i < data.donations.items.length;
+                          i++
+                        ) ...[
+                          if (i > 0)
+                            const Divider(height: 1, color: Color(0xffe6e2dd)),
+                          for (final d in [data.donations.items[i]])
                             PaymentHistoryRow(
                               key: ValueKey(d['id']),
                               payment: d,
@@ -593,13 +640,18 @@ class _HistoryState extends ConsumerState<PaymentHistoryScreen> {
                       ],
                     ),
                   ),
+                if (data.guardian?['next_cursor'] != null)
+                  TextButton(
+                    onPressed: () => context.push('/guardian/history'),
+                    child: const Text('Ver ciclos anteriores de Guardián'),
+                  ),
                 TextButton(
                   onPressed: refresh,
                   child: const Text('Actualizar historial'),
                 ),
                 PageControls(
                   page: page,
-                  total: data.total,
+                  total: data.donations.total,
                   size: 20,
                   change: (p) => setState(() => page = p),
                 ),

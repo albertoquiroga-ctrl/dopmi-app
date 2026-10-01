@@ -27,6 +27,7 @@ import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 
+import '../test/guardian_history_test.dart' show cycle;
 import '../test/guardian_test.dart' show FakeGuardian, activePlan;
 import 'capture_design_test.dart' show saveCapture;
 
@@ -110,6 +111,22 @@ class ContributionCapturePayments extends FakePayments {
     'transferred_cents': 0,
     'available_cents': 120000,
     'payable': true,
+  };
+}
+
+class HistoryCaptureGuardian extends FakeGuardian {
+  HistoryCaptureGuardian({this.empty = false});
+  final bool empty;
+  @override
+  Future<Json> history({Json? cursor}) async => {
+    'items': empty
+        ? <Json>[]
+        : [
+            cycle('fixture-cycle-paid', 'assigned'),
+            cycle('fixture-cycle-skipped', 'skipped'),
+            cycle('fixture-cycle-pending', 'processing'),
+          ],
+    'next_cursor': null,
   };
 }
 
@@ -360,7 +377,9 @@ void main() {
         debugNetworkImageHttpClientProvider = () =>
             FixturePhotoClient(fixturePhoto!);
       }
-      final guardian = FakeGuardian();
+      final guardian = spec.$1.startsWith('payment-history')
+          ? HistoryCaptureGuardian(empty: spec.$1.endsWith('-empty'))
+          : FakeGuardian();
       final community =
           (spec.$1.startsWith('adoption-detail') ||
               spec.$1 == 'adoption-end' ||

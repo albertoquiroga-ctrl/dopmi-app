@@ -8,9 +8,13 @@ class PaymentHistoryRow extends StatefulWidget {
     super.key,
     required this.payment,
     required this.details,
+    this.statusLabel,
+    this.methodLabel,
+    this.amountLabel,
   });
   final Map<String, dynamic> payment;
   final Widget details;
+  final String? statusLabel, methodLabel, amountLabel;
   @override
   State<PaymentHistoryRow> createState() => _PaymentHistoryRowState();
 }
@@ -36,13 +40,15 @@ class _PaymentHistoryRowState extends State<PaymentHistoryRow> {
       'nov',
       'dic',
     ];
-    final label = switch (d['payment_status']) {
-      'confirmed' => 'Pagado',
-      'pending' => 'En proceso',
-      'canceled' => 'Cancelado',
-      'refunded' => 'Devuelto',
-      _ => 'En revisión',
-    };
+    final label =
+        widget.statusLabel ??
+        switch (d['payment_status']) {
+          'confirmed' => 'Pagado',
+          'pending' => 'En proceso',
+          'canceled' => 'Cancelado',
+          'refunded' => 'Devuelto',
+          _ => 'En revisión',
+        };
     final background = switch (d['payment_status']) {
       'confirmed' => const Color(0xff2dc08e),
       'pending' => const Color(0xfff7cb2d),
@@ -74,7 +80,8 @@ class _PaymentHistoryRowState extends State<PaymentHistoryRow> {
         ),
         const SizedBox(height: 2),
         Text(
-          d['processor'] == 'stripe' ? 'Stripe' : 'Método no disponible',
+          widget.methodLabel ??
+              (d['processor'] == 'stripe' ? 'Stripe' : 'Método no disponible'),
           style: const TextStyle(fontSize: 12, height: 1.2, color: muted),
         ),
       ],
@@ -83,10 +90,11 @@ class _PaymentHistoryRowState extends State<PaymentHistoryRow> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
-          d['gross_cents'] is int
-              ? contributionMoney(d['gross_cents'] as int)
-                    .replaceAll(' MXN', '')
-              : 'Importe no disponible',
+          widget.amountLabel ??
+              (d['gross_cents'] is int
+                  ? contributionMoney(d['gross_cents'] as int)
+                        .replaceAll(' MXN', '')
+                  : 'Importe no disponible'),
           style: const TextStyle(
             fontSize: 13,
             height: 1.2,
