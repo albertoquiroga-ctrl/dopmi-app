@@ -3169,3 +3169,63 @@ test('personal impact hides withdrawn cases and rejects inactive and anonymous i
   await rejected(()=>db.query('select dopmi_personal_impact()'),/Sesión activa requerida/);
   await role('','anon');await rejected(()=>db.query('select dopmi_personal_impact()'),/permission denied/);
 });
+
+
+test('owned cases include confirmed punctual and Guardian net, not reservations or reversed allocations',async()=>{
+  const cycle=await boundGuardian();
+  const cases=async()=>(await db.query('select public.dopmi_my_cases() as value')).rows[0].value;
+  await role(rescuer);let result=await cases();
+  assert.equal(result.total,1);assert.equal(result.items[0].target_cents,12000);
+  assert.equal(result.items[0].funded_cents,0);assert.equal(result.items[0].transferred_cents,0);
+  await db.exec('reset role');await guardianSettlement('settle',guardianEvidence);
+  const donation=await prepare({gross_cents:5000});
+  await settle(donation.id,{gross_cents:5000,stripe_fee_cents:500,charge_id:'ch_owner',payment_intent_id:'pi_owner'});
+  await role(rescuer);result=await cases();assert.equal(result.items[0].funded_cents,4314+4400);
+  assert.equal(result.items[0].transferred_cents,0);
+  await db.exec('reset role');
+  await db.query("update private.dopmi_guardian_allocations set stripe_transfer_id='tr_owner',transferred_at=now(),reversed_cents=1000 where cycle_id=$1",[cycle.id]);
+  await role(rescuer);result=await cases();assert.equal(result.items[0].funded_cents,3314+4400);
+  assert.equal(result.items[0].transferred_cents,3314);
+  await db.exec('reset role');
+  await db.query('update private.dopmi_guardian_allocations set reversed_cents=allocated_cents where cycle_id=$1',[cycle.id]);
+  await role(rescuer);result=await cases();assert.equal(result.items[0].funded_cents,4400);
+  assert.equal(result.items[0].transferred_cents,0);
+});
+
+test('owned cases paginate every owner state and never grant staff or selected mode access to other private records',async()=>{
+  await db.query(`insert into public.dopmi_rescue_records(owner_id,kind,status,public_data,private_data,updated_at)
+    select $1,'case','draft','{"pet_name":"Borrador"}','{"fixture":"privado"}',now()+n*interval '1 second' from generate_series(1,22)n`,[rescuer]);
+  await db.query(`insert into public.dopmi_rescue_records(owner_id,kind,status,public_data,private_data)
+    values($1,'case','draft','{"pet_name":"Ajeno"}','{"fixture":"ajeno"}')`,[other]);
+  await role(rescuer);
+  const page=async n=>(await db.query('select public.dopmi_my_cases($1) as value',[n])).rows[0].value;
+  const first=await page(1),second=await page(2);
+  assert.equal(first.total,23);assert.equal(first.items.length,20);assert.equal(second.items.length,3);
+  assert.equal(new Set([...first.items,...second.items].map(v=>v.id)).size,23);
+  assert.ok(first.items.every(v=>v.owner_id===rescuer&&v.kind==='case'));
+  assert.equal(first.items[0].private_data.fixture,'privado');
+  assert.deepEqual((await page(3)).items,[]);
+  await role(staff);assert.deepEqual(await page(1),{total:0,items:[]});
+  await role(donor);assert.deepEqual(await page(1),{total:0,items:[]});
+  await role(other);const own=await page(1);assert.equal(own.total,1);assert.equal(own.items[0].private_data.fixture,'ajeno');
+});
+
+test('owned cases reject inactive or anonymous identities and invalid pages with restricted RPC privileges',async()=>{
+  const metadata=(await db.query(`select p.provolatile,p.prosecdef,p.proconfig,
+    has_function_privilege('anon',p.oid,'execute') as anon_execute,
+    has_function_privilege('authenticated',p.oid,'execute') as authenticated_execute,
+    md5(pg_get_functiondef(p.oid)) as definition_md5,
+    md5(pg_get_functiondef('public.dopmi_expense_funding(uuid)'::regprocedure)) as expense_funding_md5,
+    md5(pg_get_functiondef('public.dopmi_rescue_public(uuid,integer)'::regprocedure)) as public_cases_md5
+    from pg_proc p where p.oid='public.dopmi_my_cases(integer)'::regprocedure`)).rows[0];
+  assert.equal(metadata.provolatile,'s');assert.equal(metadata.prosecdef,true);
+  assert.deepEqual(metadata.proconfig,['search_path=""']);
+  assert.equal(metadata.anon_execute,false);assert.equal(metadata.authenticated_execute,true);
+  console.info('owned cases SQL verification',JSON.stringify(metadata));
+  await role(rescuer);await rejected(()=>db.query('select public.dopmi_my_cases(0)'),/Página inválida/);
+  await rejected(()=>db.query('select public.dopmi_my_cases(null)'),/Página inválida/);
+  await db.exec('reset role');await db.query("update profiles set account_status='suspended' where id=$1",[rescuer]);
+  await role(rescuer);await rejected(()=>db.query('select public.dopmi_my_cases()'),/Sesión activa requerida/);
+  await role('');await rejected(()=>db.query('select public.dopmi_my_cases()'),/Sesión activa requerida/);
+  await role('','anon');await rejected(()=>db.query('select public.dopmi_my_cases()'),/permission denied/);
+});

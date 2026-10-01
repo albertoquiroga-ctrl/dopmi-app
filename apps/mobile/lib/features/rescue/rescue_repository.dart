@@ -69,6 +69,17 @@ class RescueRepository {
     int page, {
     String? parent,
   }) async {
+    if (kind == 'case' && parent == null) {
+      final result = Json.from(
+        await client.rpc('dopmi_my_cases', params: {'page_number': page}),
+      );
+      return DataPage(
+        (result['items'] as List)
+            .map((item) => RescueRecord(Json.from(item as Map)))
+            .toList(),
+        result['total'] as int,
+      );
+    }
     var query = client
         .from('dopmi_rescue_records')
         .select()
