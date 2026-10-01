@@ -163,17 +163,9 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
             child: const Text('Otra cantidad'),
           ),
         const SizedBox(height: 16),
-        const Text(
-          'Resumen',
-          style: TextStyle(
-            fontSize: 18,
-            height: 1.3,
-            fontWeight: FontWeight.w700,
-            color: ink,
-          ),
-        ),
-        const SizedBox(height: 16),
         ContributionSummary(
+          title: 'Resumen',
+          balancedColumns: true,
           rows: [
             ('Apoyo mensual', amountLabel),
             ('Frecuencia', 'Mensual'),

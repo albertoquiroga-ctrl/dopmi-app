@@ -75,6 +75,33 @@ void main() {
     },
   );
   testWidgets(
+    'Enrollment starts at the reference heading and returning revokes consent without checkout',
+    (tester) async {
+      final repo = FakeGuardian();
+      await start(tester, repo);
+      await tester.tap(find.text('Suscribirme'));
+      await tester.pumpAndSettle();
+      expect(find.text('Suscripción Dopmi'), findsNothing);
+      expect(find.text('Historial de pagos'), findsNothing);
+      expect(tester.getTopLeft(find.text('Elige tu apoyo')).dy, closeTo(88, 2));
+      await tester.ensureVisible(find.byType(Checkbox));
+      await tester.tap(find.byType(Checkbox));
+      await tester.pump();
+      await tester.tap(find.byTooltip('Regresar'));
+      await tester.pumpAndSettle();
+      expect(find.text('Sin suscripción'), findsOneWidget);
+      expect(repo.calls, isEmpty);
+      expect(repo.opened, 0);
+      await tester.tap(find.text('Suscribirme'));
+      await tester.pumpAndSettle();
+      expect(tester.widget<Checkbox>(find.byType(Checkbox)).value, false);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text('Sin suscripción'), findsOneWidget);
+      expect(repo.calls, isEmpty);
+    },
+  );
+  testWidgets(
     'Pending activation never claims no subscription or permits another enrollment',
     (tester) async {
       final repo = FakeGuardian()

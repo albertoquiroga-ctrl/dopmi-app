@@ -231,20 +231,6 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       enrolling = true;
       consent = false;
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final target = enrollmentInput.currentContext;
-      if (!current || target == null) {
-        return;
-      }
-      Scrollable.ensureVisible(
-        target,
-        alignment: .15,
-        duration: MediaQuery.disableAnimationsOf(context)
-            ? Duration.zero
-            : const Duration(milliseconds: 280),
-        curve: Curves.easeOutCubic,
-      );
-    });
   }
 
   Future<void> changeAmount() async {
@@ -468,6 +454,87 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         fresh &&
         !checkoutInReview &&
         (intent != null || (verified && consent && (canStart || canChange)));
+    final showForm =
+        !['method', 'withdraw_amount'].contains(intent?['kind']) &&
+        !checkoutInReview &&
+        ((canStart && enrolling) || intent != null);
+    final enrollmentWidgets = <Widget>[
+      GuardianEnrollmentAmount(
+        headingKey: enrollmentInput,
+        amount: amount,
+        locked: busy || intent != null,
+        onChanged: () => setState(() => consent = false),
+      ),
+      const SizedBox(height: 12),
+      Notice(
+        p == null
+            ? 'Primer intento de cobro: hoy, ${date(DateTime.now().toIso8601String())}, al activar. Próxima fecha aproximada: ${date(guardianNextBilling(DateTime.now()).toIso8601String())}. Después, cada aniversario mensual; si el mes no tiene ese día, se usa su último día. Stripe te mostrará el importe antes de confirmar.'
+            : 'El nuevo importe aplica desde el siguiente ciclo. No se prorratea ni cambia el importe de un ciclo ya preparado.',
+      ),
+      if (intent == null)
+        CheckboxListTile(
+          value: consent,
+          onChanged: busy
+              ? null
+              : (value) => setState(() => consent = value ?? false),
+          title: Text(
+            p == null
+                ? 'Autorizo el primer pago y los cobros mensuales condicionados por el importe elegido, y guardar mi medio de pago en Stripe.'
+                : 'Autorizo el nuevo importe mensual desde el siguiente ciclo.',
+          ),
+        ),
+      if (intent != null)
+        const Notice(
+          'Conservamos tu solicitud. Reintentar usa la misma referencia y el mismo importe.',
+        ),
+      ContributionButton(
+        intent == null
+            ? (p == null ? 'Activar en Stripe' : 'Solicitar cambio de monto')
+            : 'Reintentar mi solicitud',
+        busy: busy,
+        onPressed: canSubmit ? () => submit() : null,
+      ),
+    ];
+    if (enabled && p == null && enrolling && showForm) {
+      void returnToBilling() => setState(() {
+        enrolling = false;
+        consent = false;
+      });
+      return PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          if (!didPop) returnToBilling();
+        },
+        child: ContributionFrame(
+          title: '',
+          back: returnToBilling,
+          child: SingleChildScrollView(
+            key: const ValueKey('guardian-enrollment-scroll'),
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ...enrollmentWidgets,
+                const SizedBox(height: 16),
+                const Notice(
+                  'Solo modo de prueba. No uses datos de una tarjeta real.',
+                ),
+                const Notice(
+                  'Solo se cobra si el neto completo puede asignarse a gastos aprobados. Si no hay capacidad, ese mes se omite sin cargo ni deuda. Dopmi descuenta el 2% y los costos de Stripe; el neto se asigna por prioridad. Puedes cancelar los ciclos futuros.',
+                ),
+                if (busy) const LinearProgressIndicator(),
+                if (error != null) Notice(error!, isError: true),
+                if (message != null) Notice(message!),
+                TextButton(
+                  onPressed: busy || confirming ? null : () => load(),
+                  child: const Text('Actualizar estado'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
     return ContributionFrame(
       title: 'Suscripción y pagos',
       back: () => context.canPop() ? context.pop() : context.go('/settings'),
@@ -648,48 +715,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
               const Notice(
                 'Solo se cobra si el neto completo puede asignarse a gastos aprobados. Si no hay capacidad, ese mes se omite sin cargo ni deuda. Dopmi descuenta el 2% y los costos de Stripe; el neto se asigna por prioridad. Puedes cancelar los ciclos futuros.',
               ),
-              if (!['method', 'withdraw_amount'].contains(intent?['kind']) &&
-                  !checkoutInReview &&
-                  ((canStart && enrolling) || intent != null)) ...[
-                const SizedBox(height: 16),
-                GuardianEnrollmentAmount(
-                  headingKey: enrollmentInput,
-                  amount: amount,
-                  locked: busy || intent != null,
-                  onChanged: () => setState(() => consent = false),
-                ),
-                const SizedBox(height: 12),
-                Notice(
-                  p == null
-                      ? 'Primer intento de cobro: hoy, ${date(DateTime.now().toIso8601String())}, al activar. Próxima fecha aproximada: ${date(guardianNextBilling(DateTime.now()).toIso8601String())}. Después, cada aniversario mensual; si el mes no tiene ese día, se usa su último día. Stripe te mostrará el importe antes de confirmar.'
-                      : 'El nuevo importe aplica desde el siguiente ciclo. No se prorratea ni cambia el importe de un ciclo ya preparado.',
-                ),
-                if (intent == null)
-                  CheckboxListTile(
-                    value: consent,
-                    onChanged: busy
-                        ? null
-                        : (value) => setState(() => consent = value ?? false),
-                    title: Text(
-                      p == null
-                          ? 'Autorizo el primer pago y los cobros mensuales condicionados por el importe elegido, y guardar mi medio de pago en Stripe.'
-                          : 'Autorizo el nuevo importe mensual desde el siguiente ciclo.',
-                    ),
-                  ),
-                if (intent != null)
-                  const Notice(
-                    'Conservamos tu solicitud. Reintentar usa la misma referencia y el mismo importe.',
-                  ),
-                ContributionButton(
-                  intent == null
-                      ? (p == null
-                            ? 'Activar en Stripe'
-                            : 'Solicitar cambio de monto')
-                      : 'Reintentar mi solicitud',
-                  busy: busy,
-                  onPressed: canSubmit ? () => submit() : null,
-                ),
-              ],
+              if (showForm) ...enrollmentWidgets,
               if (error != null) Notice(error!, isError: true),
               if (message != null) Notice(message!),
               TextButton(

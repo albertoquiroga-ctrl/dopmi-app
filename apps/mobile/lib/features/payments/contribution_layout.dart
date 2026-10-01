@@ -33,7 +33,8 @@ class ContributionFrame extends StatelessWidget {
       backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
-      toolbarHeight: MediaQuery.textScalerOf(context).scale(18) > 25
+      toolbarHeight:
+          title.isNotEmpty && MediaQuery.textScalerOf(context).scale(18) > 25
           ? MediaQuery.textScalerOf(context).scale(18) * 2.6 + 16
           : 67,
       leadingWidth: 60,
@@ -55,16 +56,18 @@ class ContributionFrame extends StatelessWidget {
           ),
         ),
       ),
-      title: Text(
-        title,
-        maxLines: MediaQuery.textScalerOf(context).scale(18) > 25 ? 3 : 1,
-        textAlign: TextAlign.center,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-          color: ink,
-        ),
-      ),
+      title: title.isEmpty
+          ? null
+          : Text(
+              title,
+              maxLines: MediaQuery.textScalerOf(context).scale(18) > 25 ? 3 : 1,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: ink,
+              ),
+            ),
     ),
     body: SafeArea(top: false, child: child),
   );
@@ -140,7 +143,14 @@ class ContributionCaseHeader extends StatelessWidget {
 }
 
 class ContributionSummary extends StatelessWidget {
-  const ContributionSummary({super.key, required this.rows});
+  const ContributionSummary({
+    super.key,
+    required this.rows,
+    this.title,
+    this.balancedColumns = false,
+  });
+  final String? title;
+  final bool balancedColumns;
   final List<(String, String)> rows;
   @override
   Widget build(BuildContext context) {
@@ -155,6 +165,18 @@ class ContributionSummary extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if (title != null) ...[
+            Text(
+              title!,
+              style: const TextStyle(
+                fontSize: 18,
+                height: 1.3,
+                fontWeight: FontWeight.w700,
+                color: ink,
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
           for (var i = 0; i < rows.length; i++) ...[
             if (i > 0) const SizedBox(height: 14),
             if (large)
@@ -193,7 +215,7 @@ class ContributionSummary extends StatelessWidget {
                   ),
                   const SizedBox(width: 14),
                   Expanded(
-                    flex: 2,
+                    flex: balancedColumns ? 1 : 2,
                     child: Text(
                       rows[i].$2,
                       textAlign: TextAlign.end,
