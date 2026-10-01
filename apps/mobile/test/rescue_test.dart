@@ -214,7 +214,60 @@ class PhotoPublicCaseRescue extends FakeRescue {
   }
 }
 
+class PagedPublicCaseRescue extends FakeRescue {
+  final calls = <int>[];
+  bool failSecond = false,
+      revokeSecond = false,
+      emptySecond = false,
+      duplicateSecond = false;
+  @override
+  Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async {
+    calls.add(page);
+    if (page == 2 && failSecond) throw StateError('network interrupted');
+    if (page == 2 && revokeSecond) return const DataPage([], 0);
+    if (page == 2 && emptySecond) return const DataPage([], 23);
+    final records = [
+      caseRecord,
+      for (var i = 1; i <= 22; i++)
+        RescueRecord({
+          ...expenseRecord.data,
+          'id': 'expense-$i',
+          'public_data': {
+            'title': 'Gasto $i',
+            'category': 'veterinary',
+            'photos': <String>[],
+          },
+        }),
+    ];
+    final items = records.skip((page - 1) * 20).take(20).toList();
+    if (page == 2 && duplicateSecond) items[0] = records[19];
+    return DataPage(items, records.length);
+  }
+}
+
 void main() {
+  test(
+    'complete public case loads all approved pages and fails as a whole',
+    () async {
+      final repo = PagedPublicCaseRescue();
+      final all = await repo.completeCaseCatalog('case-one');
+      expect(repo.calls, [1, 2]);
+      expect(all.items.length, 23);
+      expect(all.items.last.id, 'expense-22');
+      repo.failSecond = true;
+      await expectLater(repo.completeCaseCatalog('case-one'), throwsStateError);
+      repo.failSecond = false;
+      repo.duplicateSecond = true;
+      await expectLater(repo.completeCaseCatalog('case-one'), throwsStateError);
+      repo.duplicateSecond = false;
+      repo.emptySecond = true;
+      await expectLater(repo.completeCaseCatalog('case-one'), throwsStateError);
+      repo.emptySecond = false;
+      repo.revokeSecond = true;
+      expect((await repo.completeCaseCatalog('case-one')).items, isEmpty);
+    },
+  );
+
   Future<void> startPublicCase(WidgetTester tester, FakeRescue repo) async {
     tester.view.physicalSize = const Size(377, 852);
     tester.view.devicePixelRatio = 1;
@@ -554,6 +607,26 @@ void main() {
       );
       expect(tester.widget<Semantics>(dot).properties.selected, isTrue);
       expect(tester.getSize(find.byType(PageView)).height, 340);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
+    'public case exposes expenses beyond the first page without pagination controls',
+    (tester) async {
+      final repo = PagedPublicCaseRescue();
+      await startPublicCase(tester, repo);
+      expect(repo.calls, [1, 2]);
+      expect(find.text('Gasto 22'), findsOneWidget);
+      await tester.ensureVisible(find.text('Gasto 22'));
+      await tester.pumpAndSettle();
+      expect(find.byTooltip('Aportar a Gasto 22'), findsOneWidget);
+      await tester.ensureVisible(find.byTooltip('Aportar a Gasto 22'));
+      await tester.tap(find.byTooltip('Aportar a Gasto 22'));
+      await tester.pumpAndSettle();
+      expect(find.text('Elige un monto a donar:'), findsOneWidget);
+      expect(find.text('\$75'), findsOneWidget);
+      await tester.tap(find.byTooltip('Cerrar'));
+      await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
     },
   );

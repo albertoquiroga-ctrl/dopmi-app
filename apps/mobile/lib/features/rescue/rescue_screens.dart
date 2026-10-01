@@ -1121,9 +1121,13 @@ class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
       statusFrame: widget.caseId == null
           ? null
           : (child) => CaseStatusFrame(child),
-      load: () => ref
-          .read(rescueRepositoryProvider)
-          .catalog(page, caseId: widget.caseId),
+      load: () {
+        final repo = ref.read(rescueRepositoryProvider);
+        final caseId = widget.caseId;
+        return caseId == null
+            ? repo.catalog(page)
+            : repo.completeCaseCatalog(caseId);
+      },
       builder: (data, refresh) => widget.caseId == null
           ? SupportHomePage(
               data: data,

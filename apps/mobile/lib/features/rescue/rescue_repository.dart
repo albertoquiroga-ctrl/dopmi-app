@@ -133,6 +133,36 @@ class RescueRepository {
     );
   }
 
+  /// Load the complete approved case snapshot before exposing contribution choices.
+  /// Every page still goes through the public, authorization-filtered RPC.
+  Future<DataPage<RescueRecord>> completeCaseCatalog(String caseId) async {
+    final records = <String, RescueRecord>{};
+    var page = 1;
+    while (true) {
+      final result = await catalog(page, caseId: caseId);
+      // Revocation during pagination must discard data collected earlier.
+      if (result.total == 0) return const DataPage([], 0);
+      if (result.items.isEmpty) {
+        throw StateError(
+          'El catálogo cambió durante la carga. Vuelve a intentarlo.',
+        );
+      }
+      for (final record in result.items) {
+        records[record.id] = record;
+      }
+      if (page * 20 >= result.total) {
+        if (records.length != result.total) {
+          throw StateError(
+            'El catálogo cambió durante la carga. Vuelve a intentarlo.',
+          );
+        }
+        break;
+      }
+      page++;
+    }
+    return DataPage(records.values.toList(), records.length);
+  }
+
   Future<String> fileUrl(String path) =>
       MediaStore(client).signedUrl(path, MediaPurpose.rescuePhoto);
   Future<String> upload(
