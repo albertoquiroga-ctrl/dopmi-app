@@ -581,6 +581,8 @@ void main() {
       ('publish-review-large', '/my-adoptions/post'),
       ('publish-health', '/my-adoptions/post'),
       ('publish-health-large', '/my-adoptions/post'),
+      ('expense-dialog', '/rescue/expense-one'),
+      ('expense-dialog-large', '/rescue/expense-one'),
       ('expense-evidence', '/rescue/expense-one'),
       ('expense-evidence-large', '/rescue/expense-one'),
       ('expense-information', '/rescue/expense-one'),
@@ -1141,8 +1143,9 @@ void main() {
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('expense-') &&
-          !spec.$1.startsWith('expense-evidence')) {
-        final next = find.text('Guardar y continuar');
+          !spec.$1.startsWith('expense-evidence') &&
+          !spec.$1.startsWith('expense-dialog')) {
+        final next = find.text('Siguiente');
         await tester.scrollUntilVisible(
           next,
           300,

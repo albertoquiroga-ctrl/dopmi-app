@@ -31,7 +31,7 @@ class ExpenseEvidenceCard extends StatelessWidget {
             fontFamily: 'Inter',
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: const Color(0xff15110d),
+            color: Color(0xff15110d),
           ),
         ),
         const SizedBox(height: 8),

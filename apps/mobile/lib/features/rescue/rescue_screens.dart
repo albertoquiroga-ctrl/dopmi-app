@@ -17,6 +17,7 @@ import '../payments/payment_repository.dart';
 import 'rescue_fields.dart';
 import 'expense_field.dart';
 import 'expense_evidence_card.dart';
+import 'expense_frame.dart';
 import 'case_update_screens.dart';
 import 'rescue_repository.dart';
 import 'support_home.dart';
@@ -1434,6 +1435,39 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     ),
   );
 
+  Future<void> closeExpenseEditor() async {
+    if (!await confirmLeave() || !mounted) return;
+    setState(() => dirty = false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      if (context.canPop()) {
+        context.pop();
+      } else {
+        context.go(
+          record?.parent != null ? '/rescue/${record!.parent}' : '/my-cases',
+        );
+      }
+    });
+  }
+
+  Widget editorFrame({required List<Widget> children}) {
+    if (kind != 'expense') return CommunityFrame(children: children);
+    return ExpenseFrame(
+      step: step,
+      onBack: busy
+          ? null
+          : () {
+              if (step > 0 && editable) {
+                setState(() => step--);
+              } else {
+                closeExpenseEditor();
+              }
+            },
+      onClose: busy ? null : closeExpenseEditor,
+      children: children,
+    );
+  }
+
   Widget verificationForm() {
     final total = rescueFields['verification']!.length + 2;
     final captured =
@@ -1741,7 +1775,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
       },
       child: kind == 'verification'
           ? verificationForm()
-          : CommunityFrame(
+          : editorFrame(
               children: [
                 if (widget.showRecord && ownCase)
                   TextButton(
@@ -1750,19 +1784,20 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                         : context.go('/rescue/${record!.id}'),
                     child: const Text('Volver al caso'),
                   ),
-                Heading(
-                  kind == 'verification'
-                      ? 'Tu labor merece\nconfianza.'
-                      : kind == 'case'
-                      ? 'Cuéntanos su historia.'
-                      : 'Documenta el gasto.',
-                  kind == 'verification'
-                      ? 'El equipo revisará tus documentos y el enlace social.'
-                      : kind == 'case'
-                      ? 'Describe el rescate y la necesidad. El equipo revisa todo antes de publicarlo.'
-                      : 'Presenta un gasto ya pagado. Cada ronda de comida necesita su propia solicitud y revisión.',
-                  eyebrow: rescueKinds[kind]!.toUpperCase(),
-                ),
+                if (kind != 'expense')
+                  Heading(
+                    kind == 'verification'
+                        ? 'Tu labor merece\nconfianza.'
+                        : kind == 'case'
+                        ? 'Cuéntanos su historia.'
+                        : 'Documenta el gasto.',
+                    kind == 'verification'
+                        ? 'El equipo revisará tus documentos y el enlace social.'
+                        : kind == 'case'
+                        ? 'Describe el rescate y la necesidad. El equipo revisa todo antes de publicarlo.'
+                        : 'Presenta un gasto ya pagado. Cada ronda de comida necesita su propia solicitud y revisión.',
+                    eyebrow: rescueKinds[kind]!.toUpperCase(),
+                  ),
                 if (loading)
                   const Center(child: CircularProgressIndicator())
                 else if (loadFailed ||
@@ -1783,7 +1818,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                     const Notice(
                       'Los datos enviados están protegidos. Puedes consultar el estado actualizado al recargar.',
                     ),
-                  _RescueSteps(step: step),
+                  if (kind != 'expense') _RescueSteps(step: step),
                   if (busy)
                     const LinearProgressIndicator(
                       semanticsLabel: 'Guardando o subiendo archivos',
@@ -2007,25 +2042,49 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                   if (editable) ...[
                     if (error != null) Notice(error!, isError: true),
                     if (message != null) Notice(message!),
-                    if (step < 2)
-                      ActionButton(
-                        'Guardar y continuar',
-                        busy: busy,
-                        onPressed: () => run(() async {
-                          await save();
-                          if (mounted) setState(() => step++);
-                        }),
+                    if (kind == 'expense')
+                      ExpenseActions(
+                        primaryLabel: step < 2
+                            ? 'Siguiente'
+                            : 'Enviar a revisión',
+                        onSave: busy
+                            ? null
+                            : () => run(() async {
+                                await save();
+                                if (mounted) await closeExpenseEditor();
+                              }),
+                        onNext: busy
+                            ? null
+                            : () => run(() async {
+                                if (step < 2) {
+                                  await save();
+                                  if (mounted) setState(() => step++);
+                                } else {
+                                  await transition('submit');
+                                }
+                              }),
                       )
                     else ...[
-                      ActionButton(
-                        'Enviar a revisión',
-                        busy: busy,
-                        onPressed: () => run(() => transition('submit')),
-                      ),
-                      TextButton(
-                        onPressed: busy ? null : () => run(save),
-                        child: const Text('Guardar borrador'),
-                      ),
+                      if (step < 2)
+                        ActionButton(
+                          'Guardar y continuar',
+                          busy: busy,
+                          onPressed: () => run(() async {
+                            await save();
+                            if (mounted) setState(() => step++);
+                          }),
+                        )
+                      else ...[
+                        ActionButton(
+                          'Enviar a revisión',
+                          busy: busy,
+                          onPressed: () => run(() => transition('submit')),
+                        ),
+                        TextButton(
+                          onPressed: busy ? null : () => run(save),
+                          child: const Text('Guardar borrador'),
+                        ),
+                      ],
                     ],
                     if (step > 0)
                       TextButton(

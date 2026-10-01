@@ -2,6 +2,7 @@ import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import 'community_test.dart' show FakeCommunity;
 import 'publication_frame_test.dart' show startPublication;
@@ -49,6 +50,106 @@ class DraftExpenseRescue extends FakeRescue {
 
 void main() {
   testWidgets(
+    'expense close keeps an unsaved draft and save progress persists before leaving',
+    (tester) async {
+      final repo = DraftExpenseRescue();
+      await startPublication(tester, FakeCommunity(), '/publish', rescue: repo);
+      GoRouter.of(tester.element(find.byType(Scaffold).first))
+          .push('/rescue/expense-one')
+          .ignore();
+      await tester.pumpAndSettle();
+      final next = find.text('Siguiente');
+      await tester.scrollUntilVisible(
+        next,
+        300,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('expense-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+      tester
+          .state<ScrollableState>(
+            find
+                .descendant(
+                  of: find.byKey(const ValueKey('expense-form-body')),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+          )
+          .position
+          .jumpTo(0);
+      await tester.pumpAndSettle();
+      final title = find.byKey(const ValueKey('expense-field-title'));
+      await tester.scrollUntilVisible(
+        title,
+        300,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('expense-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+      await tester.enterText(title, 'Consulta corregida');
+      FocusManager.instance.primaryFocus?.unfocus();
+      tester.testTextInput.hide();
+      tester
+          .state<ScrollableState>(
+            find
+                .descendant(
+                  of: find.byKey(const ValueKey('expense-form-body')),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+          )
+          .position
+          .jumpTo(0);
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.byTooltip('Cerrar formulario'),
+        -300,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('expense-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Cerrar formulario'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Seguir editando'));
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<TextField>(title).controller!.text,
+        'Consulta corregida',
+      );
+      final save = find.text('Guardar progreso');
+      await tester.scrollUntilVisible(
+        save,
+        300,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('expense-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(save);
+      await tester.pumpAndSettle();
+      expect(repo.publicSaved!['title'], 'Consulta corregida');
+      expect(find.byKey(const ValueKey('expense-form-body')), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
     'removing a private receipt preserves the public photo role when saved',
     (tester) async {
       final repo = DraftExpenseRescue(
@@ -67,16 +168,26 @@ void main() {
       await tester.scrollUntilVisible(
         remove,
         300,
-        scrollable: find.byType(Scrollable).first,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('expense-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
       );
       await tester.pumpAndSettle();
       await tester.tap(remove);
       await tester.pumpAndSettle();
-      final next = find.text('Guardar y continuar');
+      final next = find.text('Siguiente');
       await tester.scrollUntilVisible(
         next,
         300,
-        scrollable: find.byType(Scrollable).first,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('expense-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
       );
       await tester.pumpAndSettle();
       await tester.tap(next);
@@ -104,12 +215,17 @@ void main() {
         rescue: repo,
       );
       Future<void> tapNext() async {
-        final next = find.text('Guardar y continuar');
+        final next = find.text('Siguiente');
         await tester.scrollUntilVisible(
           next,
           300,
           maxScrolls: 100,
-          scrollable: find.byType(Scrollable).first,
+          scrollable: find
+              .descendant(
+                of: find.byKey(const ValueKey('expense-form-body')),
+                matching: find.byType(Scrollable),
+              )
+              .first,
         );
         await tester.pumpAndSettle();
         await tester.tap(next);
@@ -119,14 +235,26 @@ void main() {
       await tapNext();
       final amount = find.byKey(const ValueKey('expense-field-amount_cents'));
       tester
-          .state<ScrollableState>(find.byType(Scrollable).first)
+          .state<ScrollableState>(
+            find
+                .descendant(
+                  of: find.byKey(const ValueKey('expense-form-body')),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+          )
           .position
           .jumpTo(0);
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(
         amount,
         300,
-        scrollable: find.byType(Scrollable).first,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('expense-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
       );
       expect(tester.widget<TextField>(amount).controller!.text, '123.45');
       await Scrollable.ensureVisible(tester.element(amount));
