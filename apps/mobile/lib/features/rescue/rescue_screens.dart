@@ -14,6 +14,7 @@ import '../payments/payment_repository.dart';
 import 'rescue_fields.dart';
 import 'case_update_screens.dart';
 import 'rescue_repository.dart';
+import 'support_home.dart';
 
 class RescueHomeScreen extends ConsumerWidget {
   const RescueHomeScreen({super.key});
@@ -1112,285 +1113,39 @@ class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => CommunityFrame(
-    index: widget.caseId == null ? 1 : null,
-    back: widget.caseId != null,
-    showMatches: widget.caseId == null,
-    children: [
-      LiveSection<DataPage<RescueRecord>>(
-        key: ValueKey('${widget.caseId}:$page'),
-        load: () => ref
-            .read(rescueRepositoryProvider)
-            .catalog(page, caseId: widget.caseId),
-        builder: (data, refresh) => widget.caseId == null
-            ? _SupportHome(
-                data: data,
-                page: page,
-                error: error,
-                changePage: (value) => setState(() => page = value),
-              )
-            : _PublicCaseDetail(
-                records: data.items,
-                busy: busy,
-                error: error,
-                savedOverride: savedOverride,
-                toggle: (record) => toggleCase(record, refresh),
-                report: reportCase,
-              ),
-      ),
-    ],
-  );
-}
-
-class _SupportHome extends StatelessWidget {
-  const _SupportHome({
-    required this.data,
-    required this.page,
-    required this.error,
-    required this.changePage,
-  });
-  final DataPage<RescueRecord> data;
-  final int page;
-  final String? error;
-  final ValueChanged<int> changePage;
-
-  @override
   Widget build(BuildContext context) {
-    final eligible = data.items
-        .where(
-          (item) => item.targetCents > 0 && item.fundedCents < item.targetCents,
-        )
-        .toList();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                'Descubre casos',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
+    final content = LiveSection<DataPage<RescueRecord>>(
+      key: ValueKey('${widget.caseId}:$page'),
+      load: () => ref
+          .read(rescueRepositoryProvider)
+          .catalog(page, caseId: widget.caseId),
+      builder: (data, refresh) => widget.caseId == null
+          ? SupportHomePage(
+              data: data,
+              page: page,
+              error: error,
+              changePage: (value) => setState(() => page = value),
+            )
+          : _PublicCaseDetail(
+              records: data.items,
+              busy: busy,
+              error: error,
+              savedOverride: savedOverride,
+              toggle: (record) => toggleCase(record, refresh),
+              report: reportCase,
             ),
-            TextButton(
-              onPressed: eligible.isEmpty
-                  ? null
-                  : () => context.push('/rescue-cases/${eligible.first.id}'),
-              child: const Text('Ver todos'),
-            ),
-          ],
-        ),
-        if (error != null) Notice(error!, isError: true),
-        if (eligible.isEmpty)
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  const Icon(Icons.volunteer_activism_outlined, size: 40),
-                  const SizedBox(height: 12),
-                  Text(
-                    'No hay casos para apoyar',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const Text('Por ahora no hay gastos aprobados disponibles.'),
-                  TextButton(
-                    onPressed: () => context.go('/adoptions'),
-                    child: const Text('Ir a Adoptar'),
-                  ),
-                ],
-              ),
-            ),
-          )
-        else
-          SizedBox(
-            height: 138,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: eligible.length,
-              separatorBuilder: (_, _) => const SizedBox(width: 16),
-              itemBuilder: (_, index) => _CaseRing(eligible[index]),
-            ),
-          ),
-        if (data.total > 20)
-          PageControls(
-            page: page,
-            total: data.total,
-            size: 20,
-            change: changePage,
-          ),
-        const SizedBox(height: 20),
-        Text(
-          'Sé un Guardián',
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        const Text(
-          'Apoya cada mes gastos reales, pagados y aprobados de rescatistas verificados.',
-        ),
-        const SizedBox(height: 12),
-        InkWell(
-          borderRadius: BorderRadius.circular(24),
-          onTap: () => context.push('/guardian'),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(24),
-            child: SizedBox(
-              height: 360,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Image.asset(
-                    'assets/guardian/guardian-urgent.jpg',
-                    fit: BoxFit.cover,
-                    semanticLabel: 'Mascota recibiendo atención veterinaria',
-                  ),
-                  const DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Colors.transparent, Color(0xdd171019)],
-                        stops: [0.25, 1],
-                      ),
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(22),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: yellow,
-                            borderRadius: BorderRadius.all(Radius.circular(22)),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 18,
-                              vertical: 10,
-                            ),
-                            child: Text(
-                              'Suscríbete ahora',
-                              style: TextStyle(fontWeight: FontWeight.w800),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          'Desde \$50 MXN al mes',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        SizedBox(height: 22),
-                        Text(
-                          'Apoya gastos urgentes',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 26,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Rescatistas verificados · Gastos pagados y aprobados · Sigue tu impacto',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
     );
+    if (widget.caseId == null) {
+      return Scaffold(
+        extendBody: true,
+        backgroundColor: Colors.white,
+        bottomNavigationBar: const CommunityNav(1),
+        body: content,
+      );
+    }
+    return CommunityFrame(back: true, children: [content]);
   }
 }
-
-class _CaseRing extends ConsumerWidget {
-  const _CaseRing(this.record);
-  final RescueRecord record;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final photos = record.publicData['photos'] as List? ?? const [];
-    final ratio = record.targetCents <= 0
-        ? 0.0
-        : (record.fundedCents / record.targetCents).clamp(0.0, 1.0);
-    return Semantics(
-      button: true,
-      label:
-          '${record.title}, ${pesos(record.fundedCents)} de ${pesos(record.targetCents)}',
-      child: InkWell(
-        onTap: () => context.push('/rescue-cases/${record.id}'),
-        borderRadius: BorderRadius.circular(16),
-        child: SizedBox(
-          width: 92,
-          child: Column(
-            children: [
-              SizedBox(
-                width: 76,
-                height: 76,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    CircularProgressIndicator(
-                      value: ratio,
-                      strokeWidth: 4,
-                      backgroundColor: const Color(0xffe7e2da),
-                      color: yellow,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(7),
-                      child: ClipOval(
-                        child: photos.isEmpty
-                            ? const ColoredBox(
-                                color: Color(0xffeee7fc),
-                                child: Icon(Icons.pets_outlined),
-                              )
-                            : FutureBuilder<String>(
-                                future: ref
-                                    .read(rescueRepositoryProvider)
-                                    .fileUrl(photos.first as String),
-                                builder: (_, snapshot) => snapshot.hasData
-                                    ? Image.network(
-                                        snapshot.data!,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : const ColoredBox(
-                                        color: Color(0xffeee7fc),
-                                      ),
-                              ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Text(
-                record.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontWeight: FontWeight.w800),
-              ),
-              Text(
-                '${_compactPesos(record.fundedCents)} / ${_compactPesos(record.targetCents)}',
-                maxLines: 1,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-String _compactPesos(int cents) => cents % 100 == 0
-    ? '\$${cents ~/ 100}'
-    : '\$${(cents / 100).toStringAsFixed(2)}';
 
 class _PublicCaseDetail extends StatelessWidget {
   const _PublicCaseDetail({

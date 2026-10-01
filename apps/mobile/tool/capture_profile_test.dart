@@ -16,8 +16,41 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../test/community_test.dart' show FakeCommunity;
 import '../test/fake_identity_repository.dart';
+import '../test/rescue_test.dart' show FakeRescue;
+
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+
 import '../test/guardian_test.dart' show FakeGuardian, activePlan;
 import 'capture_design_test.dart' show saveCapture;
+
+class SupportCaptureRescue extends FakeRescue {
+  @override
+  Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async =>
+      caseId != null
+      ? super.catalog(page, caseId: caseId)
+      : DataPage([
+          for (final item in [
+            ('Luna', 1200, 1800),
+            ('Milo', 800, 1200),
+            ('Nina', 4500, 9500),
+            ('Rocky', 25000, 145000),
+          ])
+            RescueRecord({
+              'id': item.$1,
+              'kind': 'case',
+              'status': 'approved',
+              'target_cents': item.$3,
+              'funded_cents': item.$2,
+              'public_data': {
+                'pet_name': item.$1,
+                'photos': ['fixture/approved'],
+              },
+            }),
+        ], 4);
+  @override
+  Future<String> fileUrl(String path) async =>
+      'https://fixture.invalid/approved';
+}
 
 Future<DataPage<Json>> fixturePaymentHistory() async => const DataPage([
   {
@@ -142,6 +175,8 @@ void main() {
       ('chat-bubbles', '/messages/thread-one'),
       ('chat-bubbles-large', '/messages/thread-one'),
       ('chat-bubbles-rescuer', '/messages/thread-one'),
+      ('support-home', '/rescue-cases'),
+      ('support-home-large', '/rescue-cases'),
       ('match-home', '/messages'),
       ('match-home-large', '/messages'),
       ('adoption-support', '/adoptions'),
@@ -216,6 +251,8 @@ void main() {
         overrides: [
           identityRepositoryProvider.overrideWithValue(repo),
           communityRepositoryProvider.overrideWithValue(community),
+          if (spec.$1.startsWith('support-home'))
+            rescueRepositoryProvider.overrideWithValue(SupportCaptureRescue()),
           guardianEnabledProvider.overrideWithValue(true),
           guardianRepositoryProvider.overrideWithValue(guardian),
           profilePaymentHistoryProvider.overrideWithValue(
@@ -334,6 +371,18 @@ void main() {
         await Scrollable.ensureVisible(
           tester.element(find.text('Explorar')),
           alignment: .35,
+        );
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1 == 'support-home-large') {
+        await tester.scrollUntilVisible(
+          find.text('Suscríbete ahora'),
+          150,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await Scrollable.ensureVisible(
+          tester.element(find.text('Suscríbete ahora')),
+          alignment: .5,
         );
         await tester.pumpAndSettle();
       }

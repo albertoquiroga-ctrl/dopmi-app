@@ -11,6 +11,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
+import 'guardian_test.dart' show FakeGuardian;
+
+import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
+import 'package:dopmi_mobile/features/payments/guardian_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FakeRescue extends RescueRepository {
   FakeRescue()
@@ -170,6 +175,12 @@ class FakeCaseUpdates extends CaseUpdateRepository {
       );
   @override
   Future<List<CaseUpdate>> publicFor(String caseId) async => [];
+}
+
+class EmptySupportRescue extends FakeRescue {
+  @override
+  Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async =>
+      const DataPage([], 0);
 }
 
 void main() {
@@ -369,4 +380,63 @@ void main() {
     expect(find.text('Aclara la ubicación aproximada.'), findsOneWidget);
     expect(find.text('Corregir publicación'), findsOneWidget);
   });
+  testWidgets(
+    'empty support promotion remains usable with large text and opens Guardian without activating it',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 640);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final identity = FakeIdentityRepository()
+        ..user = const Identity('one', 'fixture@example.test', verified: true);
+      SharedPreferences.setMockInitialValues({});
+      final guardian = FakeGuardian();
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          rescueRepositoryProvider.overrideWithValue(EmptySupportRescue()),
+          guardianEnabledProvider.overrideWithValue(true),
+          guardianRepositoryProvider.overrideWithValue(guardian),
+          routerInitialLocationProvider.overrideWithValue('/rescue-cases'),
+        ],
+      );
+      addTearDown(() async {
+        container.dispose();
+        await identity.changes.close();
+      });
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const DopmiApp(),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('No hay casos para apoyar'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('Suscríbete ahora'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      await Scrollable.ensureVisible(
+        tester.element(find.text('Suscríbete ahora')),
+        alignment: .5,
+      );
+      await tester.pumpAndSettle();
+      expect(
+        tester.getBottomRight(find.text('Suscríbete ahora')).dy,
+        lessThan(540),
+      );
+      expect(tester.takeException(), isNull);
+      await tester.tap(find.text('Suscríbete ahora'));
+      await tester.pumpAndSettle();
+      expect(find.byType(GuardianScreen), findsOneWidget);
+      expect(guardian.reads, greaterThan(0));
+      expect(guardian.calls, isEmpty);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }
