@@ -241,6 +241,8 @@ class SupportCaptureRescue extends FakeRescue {
 }
 
 class CaseCaptureRescue extends SupportCaptureRescue {
+  CaseCaptureRescue({this.planned = false});
+  final bool planned;
   @override
   Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async =>
       DataPage([
@@ -254,6 +256,17 @@ class CaseCaptureRescue extends SupportCaptureRescue {
           'rescuer_name': 'Patricia V.',
           'public_data': {
             'pet_name': 'Rocky',
+            if (planned)
+              'need_items': [
+                {
+                  'id': 'reviewed-one',
+                  'type': 'medicine',
+                  'title': 'Tratamiento revisado',
+                  'amount_cents': 12345,
+                  'detail': 'Indicado para su recuperación',
+                  'urgent': true,
+                },
+              ],
             'city': 'Monterrey',
             'state': 'MX',
             'story': 'Rocky llegó con heridas y desnutrición. Con tu apoyo cubriremos su cirugía, controles y alimentación mientras se recupera y busca un hogar.',
@@ -534,6 +547,8 @@ void main() {
       ('support-home', '/rescue-cases'),
       ('support-home-large', '/rescue-cases'),
       ('case-detail', '/rescue-cases/case-one'),
+      ('case-detail-planned', '/rescue-cases/case-one'),
+      ('case-detail-planned-large', '/rescue-cases/case-one'),
       (
         'contribution-result-confirmed',
         '/contribute/Cirugía?case=case-one&amount_cents=10000',
@@ -852,7 +867,11 @@ void main() {
             ),
           if (spec.$1.startsWith('case-detail') ||
               spec.$1.startsWith('contribution')) ...[
-            rescueRepositoryProvider.overrideWithValue(CaseCaptureRescue()),
+            rescueRepositoryProvider.overrideWithValue(
+              CaseCaptureRescue(
+                planned: spec.$1.startsWith('case-detail-planned'),
+              ),
+            ),
             caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
           ],
           if (spec.$1.startsWith('impact-feed'))
@@ -1056,6 +1075,18 @@ void main() {
         await Scrollable.ensureVisible(
           tester.element(find.text('Explorar')),
           alignment: .35,
+        );
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('case-detail-planned')) {
+        await tester.scrollUntilVisible(
+          find.text('Tratamiento revisado'),
+          150,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await Scrollable.ensureVisible(
+          tester.element(find.text('Costos estimados')),
+          alignment: .1,
         );
         await tester.pumpAndSettle();
       }

@@ -28,13 +28,19 @@ class _PublicExpenseCardState extends State<PublicExpenseCard> {
         (record.publicData['category'] ?? record.publicData['type'] ?? '')
             .toString();
     final tone = switch (category) {
-      'veterinary' ||
-      'Veterinario' => (const Color(0xffe8f1ff), const Color(0xff4f7cff), '🩺'),
-      'medicine' ||
-      'Medicina' => (const Color(0xffe7f8ef), const Color(0xff22bd90), '💊'),
+      'veterinary' || 'Veterinario' => (
+        const Color(0xffe8f1ff),
+        const Color(0xff4f7cff),
+        'veterinary',
+      ),
+      'medicine' || 'Medicina' => (
+        const Color(0xffe7f8ef),
+        const Color(0xff22bd90),
+        'medicine',
+      ),
       'food' ||
-      'Comida' => (const Color(0xfffde8f1), const Color(0xffe85d9a), '🥣'),
-      _ => (const Color(0xfff3f0ea), yellow, '✨'),
+      'Comida' => (const Color(0xfffde8f1), const Color(0xffe85d9a), 'food'),
+      _ => (const Color(0xfff3f0ea), yellow, ''),
     };
     final ratio = record.targetCents <= 0
         ? 0.0
@@ -105,10 +111,17 @@ class _PublicExpenseCardState extends State<PublicExpenseCard> {
                                       color: tone.$1,
                                       borderRadius: BorderRadius.circular(14),
                                     ),
-                                    child: Text(
-                                      tone.$3,
-                                      style: const TextStyle(fontSize: 22),
-                                    ),
+                                    child: tone.$3.isEmpty
+                                        ? Icon(
+                                            Icons.auto_awesome,
+                                            size: 22,
+                                            color: tone.$2,
+                                          )
+                                        : SvgPicture.asset(
+                                            'assets/profile/need-${tone.$3}.svg',
+                                            width: 22,
+                                            height: 22,
+                                          ),
                                   ),
                                 ),
                                 const SizedBox(width: 10),

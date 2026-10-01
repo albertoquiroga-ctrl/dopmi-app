@@ -245,6 +245,38 @@ class PagedPublicCaseRescue extends FakeRescue {
   }
 }
 
+class PlannedPublicCaseRescue extends FakeRescue {
+  @override
+  Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async {
+    final data = await super.catalog(page, caseId: caseId);
+    return DataPage(
+      data.items
+          .map(
+            (r) => r.kind != 'case'
+                ? r
+                : RescueRecord({
+                    ...r.data,
+                    'public_data': {
+                      ...r.publicData,
+                      'need_items': [
+                        {
+                          'id': 'approved-one',
+                          'type': 'medicine',
+                          'title': 'Tratamiento revisado',
+                          'amount_cents': 12345,
+                          'detail': 'Indicado para su recuperación',
+                          'urgent': true,
+                        },
+                      ],
+                    },
+                  }),
+          )
+          .toList(),
+      data.total,
+    );
+  }
+}
+
 void main() {
   test(
     'case titles handle absent or blank names without changing authored data',
@@ -490,7 +522,7 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     final identity = FakeIdentityRepository()
       ..user = const Identity('one', 'ana@example.test', verified: true);
-    final repo = FakeRescue();
+    final repo = PlannedPublicCaseRescue();
     final container = ProviderContainer(
       overrides: [
         identityRepositoryProvider.overrideWithValue(identity),
@@ -515,6 +547,14 @@ void main() {
     await tester.tap(find.text('Choco'));
     await tester.pumpAndSettle();
     expect(find.text('Mi historia'), findsOneWidget);
+    expect(find.text('Costos estimados'), findsOneWidget);
+    expect(find.text('Tratamiento revisado'), findsOneWidget);
+    expect(
+      find.text(r'$123.45 • Indicado para su recuperación'),
+      findsOneWidget,
+    );
+    expect(find.text('Eliminar'), findsNothing);
+    expect(find.text('Urgente'), findsNothing);
     expect(find.text('Ayúdame a recuperar:'), findsOneWidget);
     expect(find.text('Cirugía'), findsWidgets);
     await tester.tap(

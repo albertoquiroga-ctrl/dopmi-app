@@ -26,6 +26,7 @@ import 'expense_review.dart';
 import 'case_information.dart';
 import 'case_review.dart';
 import 'case_needs.dart';
+import 'case_need_row.dart';
 import 'case_update_screens.dart';
 import 'rescue_repository.dart';
 import 'support_home.dart';
@@ -2722,6 +2723,9 @@ class _PublicCaseDetail extends StatelessWidget {
     }
     final record = cases.first;
     final expenses = records.where((item) => item.kind == 'expense').toList();
+    final planned = ((record.publicData['need_items'] as List?) ?? const [])
+        .map((item) => Json.from(item as Map))
+        .toList();
     return CaseDetailLayout(
       record: record,
       expenses: expenses,
@@ -2735,7 +2739,37 @@ class _PublicCaseDetail extends StatelessWidget {
         'Conoce el caso ${record.title} en Dopmi. Caso ${record.id}',
       ),
       needs: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if (planned.isNotEmpty) ...[
+            const Text(
+              'Costos estimados',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Color(0xff151423),
+              ),
+            ),
+            const SizedBox(height: 8),
+            for (final item in planned) ...[
+              CaseNeedRow(
+                item: item,
+                key: ValueKey('public-need-${item['id']}'),
+              ),
+              const SizedBox(height: 8),
+            ],
+            const SizedBox(height: 8),
+            const Text(
+              'Los apoyos disponibles se muestran en cada gasto aprobado.',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 12,
+                color: Color(0xff616174),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
           if (expenses.isEmpty)
             const Notice('Este caso no tiene gastos disponibles para aportar.'),
           for (var i = 0; i < expenses.length; i++) ...[
