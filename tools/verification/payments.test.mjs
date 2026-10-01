@@ -3291,3 +3291,25 @@ test('case submission accepts an empty pet name without approval or reimbursable
   assert.equal(submitted.reimbursable_cents,0);
   assert.equal(submitted.approved_snapshot,null);
 });
+
+test('public planned needs use only approved snapshot and never inflate real expense funding', async () => {
+  const caseId='71000000-0000-4000-8000-000000000002';
+  const approved={id:'11111111-1111-4111-8111-111111111111',type:'medicine',title:'Medicina revisada',amount_cents:77777,detail:'Tratamiento revisado',urgent:true};
+  const edited={...approved,title:'Texto privado no revisado',amount_cents:99999};
+  await db.query("update public.dopmi_rescue_records set public_data=$1::jsonb, approved_snapshot=$2::jsonb, private_data='{\"internal_note\":\"privado\"}' where id=$3",
+    [JSON.stringify({pet_name:'Borrador privado',need_items:[edited]}),JSON.stringify({pet_name:'Luna',need_items:[approved]}),caseId]);
+  await db.exec('set local role anon');
+  const page=(await db.query('select public.dopmi_rescue_public($1) value',[caseId])).rows[0].value;
+  const record=page.items.find(r=>r.kind==='case');
+  assert.deepEqual(record.public_data.need_items,[approved]);
+  assert.equal(record.public_data.pet_name,'Luna');
+  assert.equal(record.target_cents,12000);
+  assert.equal(record.funded_cents,0);
+  assert.equal(record.private_data,undefined);
+  assert.ok(!JSON.stringify(page).includes('Texto privado no revisado'));
+  await db.exec('reset role');
+  await db.query("update public.dopmi_rescue_records set status='draft',approved_snapshot=null where id=$1",[caseId]);
+  await db.exec('set local role anon');
+  const hidden=(await db.query('select public.dopmi_rescue_public($1) value',[caseId])).rows[0].value;
+  assert.ok(!hidden.items.some(r=>r.id===caseId));
+});
