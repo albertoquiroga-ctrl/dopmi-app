@@ -16,6 +16,7 @@ import 'contribution_layout.dart';
 import 'guardian_membership_card.dart';
 import 'guardian_cancel_dialog.dart';
 import 'guardian_amount_dialog.dart';
+import 'guardian_history_screen.dart';
 
 class GuardianScreen extends ConsumerStatefulWidget {
   const GuardianScreen({super.key});
@@ -466,6 +467,28 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                     ? null
                     : changeAmount,
               ),
+            if (enabled && canCancel)
+              ContributionButton(
+                'Cancelar suscripción',
+                secondary: true,
+                onPressed: busy || confirming || !fresh
+                    ? null
+                    : () => submit(cancel: true),
+              ),
+            if (enabled && fresh) ...[
+              const Padding(
+                padding: EdgeInsets.only(top: 12),
+                child: Text(
+                  'Historial de pagos',
+                  style: TextStyle(
+                    fontSize: 18,
+                    height: 1.3,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              GuardianHistoryPreview(key: ValueKey(owner), owner: owner),
+            ],
             if (!enabled)
               const Notice(
                 'Guardián todavía no está disponible. Te avisaremos cuando puedas activar tu plan.',
@@ -654,13 +677,6 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   onPressed: canSubmit ? () => submit() : null,
                 ),
               ],
-              if (canCancel)
-                TextButton(
-                  onPressed: busy || confirming || !fresh
-                      ? null
-                      : () => submit(cancel: true),
-                  child: const Text('Cancelar mi plan'),
-                ),
               if (error != null) Notice(error!, isError: true),
               if (message != null) Notice(message!),
               TextButton(

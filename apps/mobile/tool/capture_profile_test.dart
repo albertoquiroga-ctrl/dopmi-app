@@ -334,6 +334,8 @@ void main() {
       ('guardian-billing-amount-large', '/guardian'),
       ('guardian-billing-cancel', '/guardian'),
       ('guardian-billing-cancel-large', '/guardian'),
+      ('guardian-billing-history-large', '/guardian'),
+      ('guardian-billing-receipt', '/guardian'),
       ('guardian-billing-active', '/guardian'),
       ('guardian-billing-active-large', '/guardian'),
       ('payment-history', '/payments'),
@@ -383,7 +385,9 @@ void main() {
         debugNetworkImageHttpClientProvider = () =>
             FixturePhotoClient(fixturePhoto!);
       }
-      final guardian = spec.$1.startsWith('payment-history')
+      final guardian =
+          (spec.$1.startsWith('payment-history') ||
+              spec.$1.startsWith('guardian-billing'))
           ? HistoryCaptureGuardian(empty: spec.$1.endsWith('-empty'))
           : FakeGuardian();
       final community =
@@ -535,6 +539,24 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1 == 'guardian-billing-history-large') {
+        await tester.ensureVisible(find.text('Historial de pagos'));
+        await Scrollable.ensureVisible(
+          tester.element(find.text('Historial de pagos')),
+          alignment: .1,
+        );
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1 == 'guardian-billing-receipt') {
+        await tester.ensureVisible(find.text('Suscripción').first);
+        await tester.tap(find.text('Suscripción').first);
+        await tester.pumpAndSettle();
+        await Scrollable.ensureVisible(
+          tester.element(find.text('Neto asignado: \$43.14 MXN')),
+          alignment: .2,
+        );
+        await tester.pumpAndSettle();
+      }
       if (spec.$1.startsWith('guardian-billing-amount')) {
         await tester.ensureVisible(find.text('Cambiar cantidad'));
         await tester.pumpAndSettle();
@@ -543,8 +565,8 @@ void main() {
         expect(find.text('Guardar nueva cantidad'), findsOneWidget);
       }
       if (spec.$1.startsWith('guardian-billing-cancel')) {
-        await tester.ensureVisible(find.text('Cancelar mi plan'));
-        await tester.tap(find.text('Cancelar mi plan'));
+        await tester.ensureVisible(find.text('Cancelar suscripción'));
+        await tester.tap(find.text('Cancelar suscripción'));
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('contribution-result')) {

@@ -3,6 +3,7 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
+import 'package:dopmi_mobile/features/payments/guardian_cancel_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,6 +28,11 @@ class FakeGuardian extends GuardianRepository {
   int reads = 0, opened = 0;
   bool available = true, fail = false;
   bool conflict = false;
+  @override
+  Future<Json> history({Json? cursor}) async => {
+    'items': <Json>[],
+    'next_cursor': null,
+  };
   @override
   Future<Json> state() async {
     reads++;
@@ -179,7 +185,7 @@ void main() {
     expect(find.text('Reintentar mi solicitud'), findsNothing);
     expect(find.textContaining('Conservamos tu solicitud'), findsNothing);
     expect(find.byType(TextField), findsNothing);
-    expect(find.text('Cancelar mi plan'), findsOneWidget);
+    expect(find.text('Cancelar suscripción'), findsOneWidget);
     expect(repo.calls.length, 1);
     expect(repo.opened, 1);
     final prefs = await SharedPreferences.getInstance();
@@ -332,7 +338,7 @@ void main() {
         findsOneWidget,
       );
       expect(find.text('Guardar nueva cantidad'), findsNothing);
-      expect(find.text('Cancelar mi plan'), findsOneWidget);
+      expect(find.text('Cancelar suscripción'), findsOneWidget);
     },
   );
   testWidgets(
@@ -344,11 +350,16 @@ void main() {
           'activation': null,
         };
       await start(tester, repo, verified: false);
-      await tester.ensureVisible(find.text('Cancelar mi plan'));
-      await tester.tap(find.text('Cancelar mi plan'));
+      await tester.ensureVisible(find.text('Cancelar suscripción'));
+      await tester.tap(find.text('Cancelar suscripción'));
       await tester.pumpAndSettle();
       expect(repo.calls, isEmpty);
-      await tester.tap(find.text('Cancelar suscripción'));
+      await tester.tap(
+        find.descendant(
+          of: find.byType(GuardianCancelDialog),
+          matching: find.text('Cancelar suscripción'),
+        ),
+      );
       await tester.pumpAndSettle();
       expect(repo.calls.single['kind'], 'cancel');
       expect(repo.calls.single['revision'], 2);
@@ -422,10 +433,15 @@ void main() {
       ..fail = true
       ..value = {'plan': activePlan(), 'activation': null};
     await start(tester, repo);
-    await tester.ensureVisible(find.text('Cancelar mi plan'));
-    await tester.tap(find.text('Cancelar mi plan'));
-    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Cancelar suscripción'));
     await tester.tap(find.text('Cancelar suscripción'));
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.descendant(
+        of: find.byType(GuardianCancelDialog),
+        matching: find.text('Cancelar suscripción'),
+      ),
+    );
     await tester.pumpAndSettle();
     repo.fail = false;
     await tapButton(tester, 'Reintentar mi solicitud');
@@ -453,10 +469,15 @@ void main() {
           },
         };
       await start(tester, repo);
-      await tester.ensureVisible(find.text('Cancelar mi plan'));
-      await tester.tap(find.text('Cancelar mi plan'));
-      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Cancelar suscripción'));
       await tester.tap(find.text('Cancelar suscripción'));
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.descendant(
+          of: find.byType(GuardianCancelDialog),
+          matching: find.text('Cancelar suscripción'),
+        ),
+      );
       await tester.pumpAndSettle();
       repo.fail = false;
       await tapButton(tester, 'Reintentar mi solicitud');
@@ -470,7 +491,7 @@ void main() {
         find.textContaining('Cancelación del alta solicitada'),
         findsOneWidget,
       );
-      expect(find.text('Cancelar mi plan'), findsNothing);
+      expect(find.text('Cancelar suscripción'), findsNothing);
     });
   }
   testWidgets(
@@ -563,7 +584,7 @@ void main() {
         };
       await start(tester, repo, verified: false);
       expect(find.text('Actualizar medio de pago'), findsNothing);
-      expect(find.text('Cancelar mi plan'), findsOneWidget);
+      expect(find.text('Cancelar suscripción'), findsOneWidget);
     },
   );
   Json waitingChange({bool canWithdraw = true}) => {
@@ -616,7 +637,7 @@ void main() {
         find.textContaining('qué importe corresponde al aniversario'),
         findsOneWidget,
       );
-      expect(find.text('Cancelar mi plan'), findsOneWidget);
+      expect(find.text('Cancelar suscripción'), findsOneWidget);
     },
   );
   testWidgets(
@@ -662,7 +683,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Retirar cambio de monto'), findsNothing);
       expect(find.text('Reintentar retiro del cambio'), findsNothing);
-      expect(find.text('Cancelar mi plan'), findsOneWidget);
+      expect(find.text('Cancelar suscripción'), findsOneWidget);
       expect(
         (await SharedPreferences.getInstance()).getString(
           'dopmi-guardian:one:intent',

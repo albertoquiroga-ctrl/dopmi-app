@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
 import '../adoption/community_repository.dart';
@@ -29,6 +30,83 @@ const _statusLabels = {
   'refund_review': 'Devolución en revisión',
   'refunded': 'Devolución confirmada',
 };
+
+class GuardianHistoryPreview extends ConsumerWidget {
+  const GuardianHistoryPreview({super.key, required this.owner});
+  final String owner;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!ref.watch(guardianEnabledProvider) ||
+        ref.read(identityControllerProvider).identity?.id != owner) {
+      return const SizedBox.shrink();
+    }
+    return LiveSection<Json>(
+      load: () => ref.read(guardianRepositoryProvider).history(),
+      errorMessage: (_) => 'No pudimos consultar tus pagos. Intenta de nuevo.',
+      builder: (data, refresh) {
+        final items = (data['items'] as List)
+            .map((item) => Json.from(item))
+            .toList();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (items.isEmpty)
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 22,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xfff7f5f1),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: const Text(
+                  'Aún no hay pagos registrados.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, height: 1.55, color: muted),
+                ),
+              )
+            else
+              Material(
+                color: Colors.white,
+                clipBehavior: Clip.antiAlias,
+                shape: RoundedRectangleBorder(
+                  side: const BorderSide(color: Color(0xffe6e2dd)),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Column(
+                  children: [
+                    for (var i = 0; i < items.length; i++) ...[
+                      if (i > 0)
+                        const Divider(
+                          height: 1,
+                          thickness: 1,
+                          color: Color(0xffe6e2dd),
+                        ),
+                      GuardianHistoryEntry(
+                        key: ValueKey('$owner:${items[i]['id']}'),
+                        owner: owner,
+                        item: items[i],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            if (data['next_cursor'] != null)
+              TextButton(
+                onPressed: () => context.push('/guardian/history'),
+                child: const Text('Ver ciclos anteriores'),
+              ),
+            TextButton(
+              onPressed: refresh,
+              child: const Text('Actualizar pagos'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
 
 class GuardianHistoryScreen extends ConsumerWidget {
   const GuardianHistoryScreen({super.key});
