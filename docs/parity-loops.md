@@ -348,6 +348,15 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
 - Pendientes para completar Mis match: encabezado de ubicación/logo, vista completa y orden de favoritos, arte vacío, dimensión visual34 del botón de chat, búsqueda integrada, filas/avatar/hora/no leídos de chats, rol rescatista y contraste de navegador. Estado parcial no acredita paridad completa ni dispositivo instalado.
 - Próximo ciclo continúa esta pantalla; objetivo global y Codemagic final siguen activos.
 
+
+## Loop 14 — filas de chats reales
+
+- Referencia Irlanda inicio/cierre `a3c969cd9103fd46dc5cd886999912526ce75efb` sin cambios. Inspeccionados DonorMessages y estilos thread-row/avatar48/borde/nombre16/preview14/tiempo12/badge amarillo.
+- MatchThreadRow reemplaza Card/ListTile: filas blancas con separación, nombre y participante diferenciados, preview gris, estado cerrado y conteo real. Actividad usa updated_at real (hora local hoy/Ayer/fecha); no afirma que sea hora de último mensaje. Datos ausentes no muestran null ni inventan actividad.
+- Avatar consulta detail(post_id) pública y usa sólo fotos aprobadas. Ausencia/retirada/error usa marcador; lectura protegida se mantiene. Consulta por fila con actualización periódica existente; optimización de payload y validación remota de desempeño pendientes, sin modificar RPC/autorización en este loop.
+- Prueba nueva cubre no leídos3/estado cerrado/previsualización y ausencia de null. Suite Flutter132 aprobada; analyze limpio; configuración12 aprobada. Capturador añade chats normal377×852 y320×640/200%.
+- Pendientes: contraste navegador con datos equivalentes, foto/avatar en fixture, encabezado de ubicación, búsqueda integrada, vista completa/orden/arte favoritos y rol rescatista. No atribuir paridad global ni aceptación instalada. Codemagic final pendiente de completar objetivo.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián

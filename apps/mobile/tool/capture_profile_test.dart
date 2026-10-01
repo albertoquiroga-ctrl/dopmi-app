@@ -133,6 +133,8 @@ void main() {
       ('adoption-empty', '/adoptions'),
       ('adoption-empty-large', '/adoptions'),
       ('adoption-end', '/adoptions'),
+      ('match-threads', '/messages'),
+      ('match-threads-large', '/messages'),
       ('match-home', '/messages'),
       ('match-home-large', '/messages'),
       ('adoption-support', '/adoptions'),
@@ -231,6 +233,29 @@ void main() {
             'reimbursable_cents': 1200,
             'funded_cents': 800,
           }),
+        ];
+      }
+      if (spec.$1.startsWith('match-threads')) {
+        community.threadItems = [
+          {
+            'id': 'one',
+            'post_id': 'post',
+            'pet_name': 'Rocky',
+            'participant_name': 'Patricia V.',
+            'last_message': 'Perfecto. ¿Cuándo podrías visitarlo?',
+            'unread_count': 1,
+            'status': 'active',
+            'updated_at': '2026-09-30T18:30:00Z',
+          },
+          {
+            'id': 'two',
+            'pet_name': 'Toby',
+            'participant_name': 'Carlos Ruiz',
+            'last_message':
+                'Gracias por tu interés en adoptar. ¿Quieres conocerlo?',
+            'unread_count': 0,
+            'status': 'active',
+          },
         ];
       }
       await tester.pumpWidget(

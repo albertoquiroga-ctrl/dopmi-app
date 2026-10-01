@@ -60,6 +60,7 @@ class FakeCommunity implements CommunityRepository {
   List<Adoption>? discoveryItems;
   Map<int, List<Adoption>>? discoveryPages;
   List<SupportOpportunity> supportItems = [];
+  List<Json> threadItems = [];
   final sentIds = <String>[];
   final stored = <String, Json>{};
   Json? savedPayload;
@@ -170,7 +171,7 @@ class FakeCommunity implements CommunityRepository {
   ];
   @override
   Future<DataPage<Json>> threads(int page, {String search = ''}) async =>
-      const DataPage([], 0);
+      DataPage(threadItems, threadItems.length);
 
   @override
   Future<Adoption> save(Json payload, {String? id, int? version}) async {
@@ -298,6 +299,37 @@ void main() {
       expect(find.text('Sí, contactar rescatista'), findsNothing);
     },
   );
+  testWidgets('match rows show real unread counts and closed status', (
+    tester,
+  ) async {
+    final repo = FakeCommunity()
+      ..threadItems = [
+        {
+          'id': 'one',
+          'post_id': 'post',
+          'pet_name': 'Luna',
+          'participant_name': 'Ana',
+          'last_message': 'Hola Luna',
+          'unread_count': 3,
+          'status': 'active',
+          'updated_at': '2026-09-30T18:30:00Z',
+        },
+        {
+          'id': 'two',
+          'pet_name': 'Milo',
+          'participant_name': 'Patricia',
+          'last_message': 'Old preview',
+          'unread_count': 0,
+          'status': 'closed',
+        },
+      ];
+    await start(tester, repo, '/messages');
+    expect(find.text('Hola Luna'), findsOneWidget);
+    expect(find.text('3'), findsOneWidget);
+    expect(find.text('Conversación cerrada'), findsOneWidget);
+    expect(find.text('Old preview'), findsNothing);
+    expect(find.textContaining('null'), findsNothing);
+  });
   testWidgets('failed detail favorite rolls the optimistic state back', (
     tester,
   ) async {

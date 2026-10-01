@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../core/ui.dart';
 import 'match_favorites.dart';
+import 'match_thread_row.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 
@@ -102,34 +103,14 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
                   color: muted,
                 ),
               ),
-            for (final thread in result.items)
-              Card(
-                color: Colors.white,
-                child: ListTile(
-                  contentPadding: const EdgeInsets.all(16),
-                  leading: Badge(
-                    isLabelVisible: (thread['unread_count'] as num) > 0,
-                    label: Text('${thread['unread_count']}'),
-                    child: const CircleAvatar(
-                      child: Icon(Icons.chat_bubble_outline),
-                    ),
-                  ),
-                  title: Text(
-                    '${thread['pet_name']} · ${thread['participant_name']}',
-                  ),
-                  subtitle: Text(
-                    thread['status'] == 'closed'
-                        ? 'Conversación cerrada'
-                        : thread['last_message'] as String? ??
-                              'Inicia la conversación',
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  onTap: () async {
-                    await context.push('/messages/${thread['id']}');
-                    refresh();
-                  },
-                ),
+            for (var i = 0; i < result.items.length; i++)
+              MatchThreadRow(
+                result.items[i],
+                last: i == result.items.length - 1,
+                open: () async {
+                  await context.push('/messages/${result.items[i]['id']}');
+                  refresh();
+                },
               ),
             if (result.total > 20)
               PageControls(
