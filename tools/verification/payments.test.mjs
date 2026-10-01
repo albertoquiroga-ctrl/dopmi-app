@@ -3128,3 +3128,44 @@ test('Guardian reversal age limit alone stops new writes and a partial refund ma
   await db.exec("update private.dopmi_guardian_reversals set first_attempt_at=now()-interval '24 hours'");
   f.stripe.transfers.createReversal=create;await assert.rejects(f.returns().reconcileCycle(f.cycle.id),/retry_limit/);assert.equal(f.writes.length,0);
 });
+
+
+test('personal impact combines settled Guardian net with punctual support and excludes other donors and reservations',async () => {
+  const cycle=await boundGuardian();
+  await role(donor,'authenticated');
+  const impact=async ()=>(await db.query('select public.dopmi_personal_impact() as value')).rows[0].value;
+  assert.deepEqual(await impact(),[]);
+  await db.exec('reset role');
+  await guardianSettlement('settle',guardianEvidence);
+  await role(donor,'authenticated');
+  let rows=await impact();
+  assert.equal(rows.length,1);
+  assert.equal(rows[0].allocated_cents,4314);
+  assert.equal(rows[0].public_data.pet_name,'Luna');
+  assert.deepEqual(Object.keys(rows[0]).sort(),['allocated_cents','case_id','last_supported_at','public_data','updates']);
+  await role(other,'authenticated');assert.deepEqual(await impact(),[]);
+  await role(staff,'authenticated');assert.deepEqual(await impact(),[]);
+  await db.exec('reset role');
+  const donation=await prepare({gross_cents:5000});
+  await settle(donation.id,{gross_cents:5000,stripe_fee_cents:500,charge_id:'ch_impact',payment_intent_id:'pi_impact'});
+  await role(donor,'authenticated');rows=await impact();
+  assert.equal(rows[0].allocated_cents,4314+4400);
+  await db.exec('reset role');
+  await db.query('update private.dopmi_guardian_allocations set reversed_cents=1000 where cycle_id=$1',[cycle.id]);
+  await role(donor,'authenticated');assert.equal((await impact())[0].allocated_cents,3314+4400);
+  await db.exec('reset role');
+  await db.query('update private.dopmi_guardian_allocations set reversed_cents=allocated_cents where cycle_id=$1',[cycle.id]);
+  await role(donor,'authenticated');assert.equal((await impact())[0].allocated_cents,4400);
+});
+
+test('personal impact hides withdrawn cases and rejects inactive and anonymous identities',async () => {
+  await boundGuardian();await guardianSettlement('settle',guardianEvidence);
+  await db.query("update public.dopmi_rescue_records set status='changes_requested' where kind='case'");
+  await role(donor,'authenticated');
+  assert.deepEqual((await db.query('select dopmi_personal_impact() as value')).rows[0].value,[]);
+  await db.exec('reset role');
+  await db.query("update profiles set account_status='suspended' where id=$1",[donor]);
+  await role(donor,'authenticated');
+  await rejected(()=>db.query('select dopmi_personal_impact()'),/Sesión activa requerida/);
+  await role('','anon');await rejected(()=>db.query('select dopmi_personal_impact()'),/permission denied/);
+});
