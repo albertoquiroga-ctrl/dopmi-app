@@ -59,6 +59,28 @@ class FakePayments extends PaymentRepository {
   Future<void> openStripe(String url) async {}
 }
 
+class ResultPayments extends FakePayments {
+  ResultPayments(this.status) {
+    this.fail = false;
+  }
+  final String status;
+  @override
+  Future<DataPage<Json>> history(int page, {bool received = false}) async =>
+      calls.isEmpty
+      ? const DataPage([], 0)
+      : DataPage([
+          {
+            'idempotency_key': calls.last,
+            'payment_status': status,
+            'gross_cents': 10025,
+            'allocated_cents': status == 'confirmed' ? 9200 : 0,
+            'transfer_status': status == 'confirmed'
+                ? 'pending'
+                : 'not_started',
+          },
+        ], 1);
+}
+
 Future<void> pumpUntil(
   WidgetTester tester,
   Finder finder, {
@@ -176,6 +198,74 @@ void main() {
         await tester.pump();
       },
     );
+  }
+  for (final status in ['confirmed', 'pending', 'canceled', 'refunded']) {
+    testWidgets('result follows server evidence and limits actions: $status', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({});
+      final identity = FakeIdentityRepository()
+        ..user = const Identity('one', 'fixture@example.test', verified: true);
+      final payments = ResultPayments(status);
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          paymentRepositoryProvider.overrideWithValue(payments),
+          routerInitialLocationProvider.overrideWithValue(
+            '/contribute/expense-one?amount_cents=10025',
+          ),
+        ],
+      );
+      addTearDown(() async {
+        container.dispose();
+        await identity.changes.close();
+      });
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const DopmiApp(),
+        ),
+      );
+      await pumpUntil(tester, find.text('Resumen'));
+      expect(payments.calls, isEmpty);
+      await tapButton(tester, 'Confirmar en Stripe');
+      await tester.pumpAndSettle();
+      expect(payments.calls.length, 1);
+      expect(
+        find.text('¡Eres mi héroe, choca esas huellitas!'),
+        status == 'confirmed' ? findsOneWidget : findsNothing,
+      );
+      if (status == 'confirmed') {
+        expect(
+          find.text('Asignado: ${String.fromCharCode(36)}92 MXN'),
+          findsOneWidget,
+        );
+        expect(find.text('Transferencia en proceso'), findsOneWidget);
+      }
+      expect(
+        find.text('Intentar de nuevo'),
+        status == 'canceled' ? findsOneWidget : findsNothing,
+      );
+      if (status == 'pending') {
+        await tapButton(tester, 'Consultar resultado');
+        await tester.pumpAndSettle();
+        expect(payments.calls.length, 1);
+      }
+      if (status == 'canceled') {
+        await tapButton(tester, 'Intentar de nuevo');
+        await tester.pumpAndSettle();
+        expect(find.text('Resumen'), findsOneWidget);
+        expect(payments.calls.length, 1);
+        await tapButton(tester, 'Confirmar en Stripe');
+        await tester.pumpAndSettle();
+        expect(payments.calls.length, 2);
+        expect(payments.calls[0], isNot(payments.calls[1]));
+      }
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump();
+    });
   }
   testWidgets(
     'selected amount opens review without checkout and stored attempt takes precedence',

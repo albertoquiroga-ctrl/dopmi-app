@@ -113,6 +113,28 @@ class ContributionCapturePayments extends FakePayments {
   };
 }
 
+class ResultCapturePayments extends ContributionCapturePayments {
+  ResultCapturePayments(this.status) {
+    this.fail = false;
+  }
+  final String status;
+  @override
+  Future<DataPage<Json>> history(int page, {bool received = false}) async =>
+      calls.isEmpty
+      ? const DataPage([], 0)
+      : DataPage([
+          {
+            'idempotency_key': calls.last,
+            'payment_status': status,
+            'gross_cents': 10000,
+            'allocated_cents': status == 'confirmed' ? 9200 : 0,
+            'transfer_status': status == 'confirmed'
+                ? 'pending'
+                : 'not_started',
+          },
+        ], 1);
+}
+
 Future<DataPage<Json>> fixturePaymentHistory() async => const DataPage([
   {
     'expense_title': 'Max · Comida',
@@ -189,6 +211,8 @@ void main() {
         'icon-share',
         'icon-alert-circle',
         'icon-verified',
+        'check',
+        'payment-card-error',
       ])
         'assets/profile/$name.svg',
       for (final name in [
@@ -239,6 +263,27 @@ void main() {
       ('support-home', '/rescue-cases'),
       ('support-home-large', '/rescue-cases'),
       ('case-detail', '/rescue-cases/case-one'),
+      (
+        'contribution-result-confirmed',
+        '/contribute/Cirugía?case=case-one&amount_cents=10000',
+      ),
+      (
+        'contribution-result-confirmed-large',
+        '/contribute/Cirugía?case=case-one&amount_cents=10000',
+      ),
+      (
+        'contribution-result-pending',
+        '/contribute/Cirugía?case=case-one&amount_cents=10000',
+      ),
+      (
+        'contribution-result-canceled',
+        '/contribute/Cirugía?case=case-one&amount_cents=10000',
+      ),
+      (
+        'contribution-result-refunded',
+        '/contribute/Cirugía?case=case-one&amount_cents=10000',
+      ),
+
       (
         'contribution-review',
         '/contribute/Cirugía?case=case-one&amount_cents=10000',
@@ -333,7 +378,13 @@ void main() {
           communityRepositoryProvider.overrideWithValue(community),
           if (spec.$1.startsWith('contribution'))
             paymentRepositoryProvider.overrideWithValue(
-              ContributionCapturePayments(),
+              spec.$1.startsWith('contribution-result')
+                  ? ResultCapturePayments(
+                      spec.$1
+                          .replaceFirst('contribution-result-', '')
+                          .replaceFirst('-large', ''),
+                    )
+                  : ContributionCapturePayments(),
             ),
           if (spec.$1.startsWith('case-detail') ||
               spec.$1.startsWith('contribution')) ...[
@@ -423,6 +474,11 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1.startsWith('contribution-result')) {
+        await tester.ensureVisible(find.text('Confirmar en Stripe'));
+        await tester.tap(find.text('Confirmar en Stripe'));
+        await tester.pumpAndSettle();
+      }
       if (spec.$1.startsWith('adoption-support')) {
         for (var i = 0; i < 2; i++) {
           await Scrollable.ensureVisible(
