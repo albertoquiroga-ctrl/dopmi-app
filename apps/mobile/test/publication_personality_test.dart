@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'community_test.dart' show FakeCommunity;
+import 'community_test.dart' show PhotoDraftCommunity;
 import 'fake_identity_repository.dart';
 
 void main() {
@@ -19,7 +19,7 @@ void main() {
       addTearDown(tester.view.resetDevicePixelRatio);
       final identity = FakeIdentityRepository()
         ..user = const Identity('one', 'fixture@example.test', verified: true);
-      final repository = FakeCommunity();
+      final repository = PhotoDraftCommunity();
       repository.post = Adoption({
         ...repository.post.data,
         'status': 'draft',
@@ -41,11 +41,11 @@ void main() {
       );
       await tester.pumpAndSettle();
       await Scrollable.ensureVisible(
-        tester.element(find.text('Guardar y continuar')),
+        tester.element(find.text('Continuar')),
         alignment: .5,
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Guardar y continuar'));
+      await tester.tap(find.text('Continuar'));
       await tester.pumpAndSettle();
       expect(repository.savedPayload?['personality'], ['affectionate']);
       await Scrollable.ensureVisible(
@@ -56,11 +56,11 @@ void main() {
       await tester.tap(find.text('Alegre'));
       await tester.pumpAndSettle();
       await Scrollable.ensureVisible(
-        tester.element(find.text('Guardar y continuar')),
+        tester.element(find.text('Continuar')),
         alignment: .5,
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Guardar y continuar'));
+      await tester.tap(find.text('Continuar'));
       await tester.pumpAndSettle();
       expect(repository.savedPayload?['personality'], [
         'affectionate',

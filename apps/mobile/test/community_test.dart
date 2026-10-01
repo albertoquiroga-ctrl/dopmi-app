@@ -244,6 +244,19 @@ class PagedMatchCommunity extends FakeCommunity {
   }
 }
 
+class PhotoDraftCommunity extends FakeCommunity {
+  PhotoDraftCommunity() {
+    post = Adoption({
+      ...post.data,
+      'status': 'draft',
+      'photos': ['fixture/draft-photo'],
+    });
+  }
+  @override
+  Future<String> photoUrl(String path) async =>
+      throw const FormatException('Foto sin conexión en fixture');
+}
+
 void main() {
   Future<ProviderContainer> start(
     WidgetTester tester,
@@ -661,15 +674,15 @@ void main() {
   testWidgets(
     'failed draft save preserves authored content and can be retried',
     (tester) async {
-      final repo = FakeCommunity();
-      await start(tester, repo, '/my-adoptions/new');
-      await tap(tester, 'Guardar y continuar');
+      final repo = PhotoDraftCommunity();
+      await start(tester, repo, '/my-adoptions/${repo.post.id}');
+      await tap(tester, 'Continuar');
       await tester.enterText(
         find.widgetWithText(TextFormField, 'Nombre de la mascota'),
         'Mora',
       );
       repo.failSave = true;
-      await tap(tester, 'Guardar y continuar');
+      await tap(tester, 'Continuar');
       expect(repo.savedPayload!['pet_name'], 'Mora');
       expect(
         find.text(
@@ -678,7 +691,7 @@ void main() {
         findsWidgets,
       );
       repo.failSave = false;
-      await tap(tester, 'Guardar y continuar');
+      await tap(tester, 'Continuar');
       expect(repo.post.name, 'Mora');
       expect(repo.post.status, 'draft');
       expect(find.text('Revisa antes de enviar'), findsOneWidget);
@@ -696,9 +709,16 @@ void main() {
       ),
       findsOneWidget,
     );
-    await tap(tester, 'Guardar y continuar');
+    await tap(tester, 'Guardar borrador');
     expect(repo.savedPayload?['rescue_case_id'], 'case-one');
-    expect(find.text('Información'), findsOneWidget);
+    expect(repo.post.status, 'draft');
+    expect(find.text('Sube fotos de la mascota'), findsOneWidget);
+    expect(
+      tester
+          .widget<FilledButton>(find.widgetWithText(FilledButton, 'Continuar'))
+          .onPressed,
+      isNull,
+    );
   });
   testWidgets(
     'ambiguous message response retries with same id and removes private data on logout',

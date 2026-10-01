@@ -9,6 +9,7 @@ import '../../core/measurement.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
 import 'photo_recovery.dart';
+import 'publication_frame.dart';
 import 'discovery_filters.dart' show personalityLabels, legacyPersonalityLabels;
 
 class MyAdoptionsScreen extends ConsumerStatefulWidget {
@@ -240,25 +241,26 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       });
     }
   });
-  Future<void> addPhoto() => perform(() async {
-    if (!form.currentState!.validate()) return;
-    await save(); // Preserve all fields before the operating system opens its photo picker.
-    final preferences = await SharedPreferences.getInstance();
-    final pendingKey = pendingPhotoKey(repo.userId!);
-    await preferences.setString(pendingKey, post!.id);
-    final file = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 1600,
-      maxHeight: 1600,
-      requestFullMetadata: false,
-    );
-    await preferences.remove(pendingKey);
-    if (file == null || !mounted) return;
-    final path = await repo.uploadPhoto(post!.id, await file.readAsBytes());
-    if (!mounted) return;
-    setState(() => photos.add(path));
-    await save();
-  });
+  Future<void> addPhoto({ImageSource source = ImageSource.gallery}) =>
+      perform(() async {
+        if (!form.currentState!.validate()) return;
+        await save(); // Preserve all fields before the operating system opens its photo picker.
+        final preferences = await SharedPreferences.getInstance();
+        final pendingKey = pendingPhotoKey(repo.userId!);
+        await preferences.setString(pendingKey, post!.id);
+        final file = await ImagePicker().pickImage(
+          source: source,
+          maxWidth: 1600,
+          maxHeight: 1600,
+          requestFullMetadata: false,
+        );
+        await preferences.remove(pendingKey);
+        if (file == null || !mounted) return;
+        final path = await repo.uploadPhoto(post!.id, await file.readAsBytes());
+        if (!mounted) return;
+        setState(() => photos.add(path));
+        await save();
+      });
   Widget field(String key, String label, int max, {int lines = 1}) => Padding(
     padding: const EdgeInsets.only(bottom: 16),
     child: TextFormField(
@@ -320,16 +322,53 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
             ),
     ),
   );
+  Widget publicationFooter() {
+    if (loading || (post == null && widget.id != 'new')) {
+      return const SizedBox.shrink();
+    }
+    final compact = MediaQuery.viewInsetsOf(context).bottom > 0;
+    if (post?.status == 'submitted') {
+      return PublicationFooter(
+        label: 'Retirar de revisión para editar',
+        busy: busy,
+        compact: compact,
+        onContinue: () => change('withdraw'),
+      );
+    }
+    return PublicationFooter(
+      label: step < 2 ? 'Continuar' : 'Enviar a revisión',
+      busy: busy,
+      compact: compact,
+      onSave: () => perform(save),
+      onContinue: step == 0 && photos.isEmpty
+          ? null
+          : step < 2
+          ? () => perform(() async {
+              if (!form.currentState!.validate()) return;
+              await save();
+              if (mounted) setState(() => step++);
+            })
+          : () => change('submit'),
+    );
+  }
+
   @override
-  Widget build(BuildContext context) => CommunityFrame(
+  Widget build(BuildContext context) => PublicationFrame(
+    title: 'Publicar caso',
+    step: step,
+    footer: publicationFooter(),
+    onBack: busy
+        ? null
+        : () {
+            if (step > 0 && post?.status != 'submitted') {
+              setState(() => step--);
+            } else if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/publish');
+            }
+          },
     children: [
-      Heading(
-        post?.name.isNotEmpty == true ? post!.name : 'Una nueva historia.',
-        'Completa lo que sabes. Puedes guardar un borrador antes de enviarlo.',
-        eyebrow: post == null
-            ? 'NUEVA PUBLICACIÓN'
-            : statusLabels[post!.status]?.toUpperCase(),
-      ),
       if (loading) const Center(child: CircularProgressIndicator()),
       if (error != null) Notice(error!, isError: true),
       if (!loading && widget.id != 'new' && post == null)
@@ -349,8 +388,6 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
           const Notice(
             'Tu publicación está en revisión. Retírala de revisión si necesitas editarla.',
           ),
-        _PublishSteps(step: step),
-        const SizedBox(height: 18),
         Form(
           key: form,
           child: Column(
@@ -444,39 +481,64 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                 ),
               ],
               if (step == 0) ...[
+                const Text(
+                  'Sube fotos de la mascota',
+                  style: TextStyle(
+                    fontSize: 18,
+                    height: 28 / 18,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xff151423),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                if (photos.length < 5 && post?.status != 'submitted') ...[
+                  PublicationPhotoPicker(
+                    onCamera: busy
+                        ? null
+                        : () => addPhoto(source: ImageSource.camera),
+                    onGallery: busy ? null : () => addPhoto(),
+                  ),
+                  const SizedBox(height: 16),
+                ],
                 Text(
-                  'Fotos (${photos.length}/5)',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                  child: Text(
-                    'Usa fotos de la mascota sin documentos ni direcciones visibles. Eliminamos los metadatos de las imágenes antes de subirlas.',
+                  photos.isEmpty
+                      ? 'Sube al menos una foto para continuar.'
+                      : 'Fotos agregadas (${photos.length}/5)',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    height: 1.5,
+                    color: Color(0xff616174),
                   ),
                 ),
-                for (final path in photos)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: Column(
-                      children: [
-                        AdoptionPhoto(path, height: 200),
-                        if (post?.status != 'submitted')
-                          TextButton.icon(
-                            onPressed: busy
-                                ? null
-                                : () => setState(() => photos.remove(path)),
-                            icon: const Icon(Icons.close),
-                            label: const Text('Quitar foto del borrador'),
-                          ),
-                      ],
+                if (photos.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  for (final path in photos)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Column(
+                        children: [
+                          AdoptionPhoto(path, height: 200),
+                          if (post?.status != 'submitted')
+                            TextButton.icon(
+                              onPressed: busy
+                                  ? null
+                                  : () => setState(() => photos.remove(path)),
+                              icon: const Icon(Icons.close),
+                              label: const Text('Quitar foto del borrador'),
+                            ),
+                        ],
+                      ),
                     ),
+                ],
+                const SizedBox(height: 16),
+                const Text(
+                  'Usa fotos sin documentos ni direcciones visibles. Eliminamos los metadatos antes de subirlas.',
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: 1.5,
+                    color: Color(0xff616174),
                   ),
-                if (photos.length < 5 && post?.status != 'submitted')
-                  OutlinedButton.icon(
-                    onPressed: busy ? null : addPhoto,
-                    icon: const Icon(Icons.add_photo_alternate_outlined),
-                    label: const Text('Agregar una foto'),
-                  ),
+                ),
               ],
               if (step == 2) ...[
                 Text(
@@ -503,42 +565,6 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                 ),
               ],
               if (message != null) Notice(message!),
-              if (error != null) Notice(error!, isError: true),
-              const SizedBox(height: 20),
-              if (post?.status != 'submitted') ...[
-                if (step < 2)
-                  ActionButton(
-                    'Guardar y continuar',
-                    busy: busy,
-                    onPressed: () => perform(() async {
-                      if (!form.currentState!.validate()) return;
-                      await save();
-                      if (mounted) setState(() => step++);
-                    }),
-                  )
-                else ...[
-                  ActionButton(
-                    'Enviar a revisión',
-                    busy: busy,
-                    onPressed: () => change('submit'),
-                  ),
-                  const SizedBox(height: 12),
-                  OutlinedButton(
-                    onPressed: busy ? null : () => perform(save),
-                    child: const Text('Guardar borrador'),
-                  ),
-                ],
-                if (step > 0)
-                  TextButton(
-                    onPressed: busy ? null : () => setState(() => step--),
-                    child: const Text('Regresar al paso anterior'),
-                  ),
-              ] else
-                ActionButton(
-                  'Retirar de revisión para editar',
-                  busy: busy,
-                  onPressed: () => change('withdraw'),
-                ),
               if (post?.status == 'published') ...[
                 const SizedBox(height: 12),
                 OutlinedButton(
@@ -563,36 +589,6 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
         ),
       ],
     ],
-  );
-}
-
-class _PublishSteps extends StatelessWidget {
-  const _PublishSteps({required this.step});
-  final int step;
-  @override
-  Widget build(BuildContext context) => Semantics(
-    label: 'Paso ${step + 1} de 3',
-    child: Row(
-      children: [
-        for (final entry in ['Fotos', 'Información', 'Revisión'].indexed) ...[
-          Expanded(
-            child: Column(
-              children: [
-                LinearProgressIndicator(
-                  value: entry.$1 <= step ? 1 : 0,
-                  minHeight: 5,
-                  borderRadius: BorderRadius.circular(5),
-                  backgroundColor: const Color(0xffe7e2da),
-                ),
-                const SizedBox(height: 5),
-                Text(entry.$2, style: Theme.of(context).textTheme.bodySmall),
-              ],
-            ),
-          ),
-          if (entry.$1 < 2) const SizedBox(width: 8),
-        ],
-      ],
-    ),
   );
 }
 

@@ -1,0 +1,146 @@
+import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/features/adoption/photo_recovery.dart';
+import 'package:dopmi_mobile/features/identity/identity_controller.dart';
+import 'package:dopmi_mobile/features/identity/identity_repository.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'community_test.dart' show FakeCommunity, PhotoDraftCommunity;
+import 'fake_identity_repository.dart';
+
+Future<void> startPublication(
+  WidgetTester tester,
+  FakeCommunity repo,
+  String path,
+) async {
+  SharedPreferences.setMockInitialValues({});
+  final identity = FakeIdentityRepository()
+    ..user = const Identity('one', 'fixture@example.test', verified: true);
+  identity.profile = const Profile(
+    id: 'one',
+    name: 'Ana',
+    phone: '',
+    city: '',
+    mode: 'rescuer',
+    intent: 'rescue',
+    status: 'active',
+    termsVersion: currentTermsVersion,
+    privacyVersion: currentPrivacyVersion,
+    adultConfirmed: true,
+  );
+  final container = ProviderContainer(
+    overrides: [
+      identityRepositoryProvider.overrideWithValue(identity),
+      communityRepositoryProvider.overrideWithValue(repo),
+      routerInitialLocationProvider.overrideWithValue(path),
+    ],
+  );
+  addTearDown(container.dispose);
+  await tester.pumpWidget(
+    UncontrolledProviderScope(container: container, child: const DopmiApp()),
+  );
+  await tester.pumpAndSettle();
+}
+
+void main() {
+  testWidgets(
+    'camera and gallery preserve a private draft and use sanitized picker options',
+    (tester) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final repo = FakeCommunity();
+      final sources = <int>[];
+      const channel = MethodChannel('plugins.flutter.io/image_picker');
+      final messenger =
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        if (call.method != 'pickImage') return null;
+        final args = Map<String, dynamic>.from(call.arguments as Map);
+        sources.add(args['source'] as int);
+        expect(args['requestFullMetadata'], isFalse);
+        expect(args['maxWidth'], 1600);
+        expect(args['maxHeight'], 1600);
+        expect(repo.post.status, 'draft');
+        expect(repo.savedPayload, isNotNull);
+        final preferences = await SharedPreferences.getInstance();
+        expect(preferences.getString(pendingPhotoKey('one')), repo.post.id);
+        return null; // The user cancels the platform picker; no photo is invented.
+      });
+      addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+      await startPublication(tester, repo, '/my-adoptions/new');
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.widgetWithText(FilledButton, 'Continuar'),
+            )
+            .onPressed,
+        isNull,
+      );
+      await tester.tap(find.text('Tomar foto'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Subir desde galería'));
+      await tester.pumpAndSettle();
+      expect(sources, [0, 1]);
+      expect(
+        (await SharedPreferences.getInstance()).getString(
+          pendingPhotoKey('one'),
+        ),
+        isNull,
+      );
+      expect(repo.post.photos, isEmpty);
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.widgetWithText(FilledButton, 'Continuar'),
+            )
+            .onPressed,
+        isNull,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'keyboard at 320px and 200% keeps authored text and restores full footer',
+    (tester) async {
+      tester.view.physicalSize = const Size(640, 1280);
+      tester.view.devicePixelRatio = 2;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetViewInsets);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final repo = PhotoDraftCommunity();
+      await startPublication(tester, repo, '/my-adoptions/${repo.post.id}');
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      final name = find.widgetWithText(TextFormField, 'Nombre de la mascota');
+      await tester.ensureVisible(name);
+      await tester.enterText(name, 'Mora desde el teclado');
+      tester.view.viewInsets = const FakeViewPadding(bottom: 600);
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<TextFormField>(name).controller!.text,
+        'Mora desde el teclado',
+      );
+      expect(tester.testTextInput.isVisible, isTrue);
+      expect(find.text('Guardar borrador'), findsNothing);
+      expect(tester.takeException(), isNull);
+      FocusManager.instance.primaryFocus?.unfocus();
+      tester.view.resetViewInsets();
+      await tester.pumpAndSettle();
+      expect(find.text('Guardar borrador'), findsOneWidget);
+      expect(
+        tester.widget<TextFormField>(name).controller!.text,
+        'Mora desde el teclado',
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+}
