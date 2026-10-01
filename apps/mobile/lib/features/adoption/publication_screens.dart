@@ -287,6 +287,18 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
           : null,
     ),
   );
+  Widget publicationChoice(
+    String key,
+    String label,
+    Map<String, String> options,
+  ) => PublicationChoiceRow(
+    label: label,
+    options: options,
+    value: choices[key] as String?,
+    onChanged: busy || post?.status == 'submitted'
+        ? null
+        : (value) => setState(() => choices[key] = value),
+  );
   Widget choice(String key, String label, Map<String, String> options) =>
       Padding(
         padding: const EdgeInsets.only(bottom: 16),
@@ -395,13 +407,24 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
             children: [
               if (step == 1) ...[
                 Text(
-                  'Su información',
-                  style: Theme.of(context).textTheme.titleLarge,
+                  'Información básica',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    height: 28 / 18,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xff151423),
+                  ),
                 ),
                 const SizedBox(height: 18),
                 field('pet_name', 'Nombre de la mascota', 80),
-                choice('species', 'Especie', {'dog': 'Perro', 'cat': 'Gato'}),
-                choice('sex', 'Sexo', {'female': 'Hembra', 'male': 'Macho'}),
+                publicationChoice('sex', 'Sexo', {
+                  'male': 'Macho',
+                  'female': 'Hembra',
+                }),
+                publicationChoice('species', 'Especie', {
+                  'dog': 'Perro',
+                  'cat': 'Gato',
+                }),
                 field('age_months', 'Edad aproximada en meses', 3),
                 choice('size', 'Tamaño', {
                   'small': 'Pequeño',

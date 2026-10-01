@@ -49,6 +49,54 @@ Future<void> startPublication(
 
 void main() {
   testWidgets(
+    'publication choices persist real enums and are locked during review',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 640);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final repo = PhotoDraftCommunity();
+      await startPublication(tester, repo, '/my-adoptions/${repo.post.id}');
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      for (final label in ['Hembra', 'Gato']) {
+        final target = find.widgetWithText(OutlinedButton, label);
+        await Scrollable.ensureVisible(tester.element(target), alignment: .2);
+        await tester.pumpAndSettle();
+        await tester.tap(target);
+        await tester.pumpAndSettle();
+      }
+      await tester.tap(find.text('Guardar borrador'));
+      await tester.pumpAndSettle();
+      expect(repo.savedPayload?['sex'], 'female');
+      expect(repo.savedPayload?['species'], 'cat');
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: PublicationChoiceRow(
+              label: 'Sexo',
+              options: {'male': 'Macho', 'female': 'Hembra'},
+              value: 'female',
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<OutlinedButton>(
+              find.widgetWithText(OutlinedButton, 'Hembra'),
+            )
+            .onPressed,
+        isNull,
+      );
+    },
+  );
+
+  testWidgets(
     'removing a cover promotes the next real photo and persists the draft',
     (tester) async {
       tester.view.physicalSize = const Size(377, 852);

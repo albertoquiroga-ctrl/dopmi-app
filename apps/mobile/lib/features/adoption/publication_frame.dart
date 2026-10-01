@@ -489,3 +489,95 @@ class PublicationPhotoThumbnail extends StatelessWidget {
     ),
   );
 }
+
+class PublicationChoiceRow extends StatelessWidget {
+  const PublicationChoiceRow({
+    super.key,
+    required this.label,
+    required this.options,
+    required this.value,
+    this.onChanged,
+  });
+  final String label;
+  final Map<String, String> options;
+  final String? value;
+  final ValueChanged<String>? onChanged;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 16),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            height: 1.55,
+            fontWeight: FontWeight.w500,
+            color: Color(0xff151423),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (final entry in options.entries) ...[
+              if (entry.key != options.keys.first) const SizedBox(width: 12),
+              Expanded(
+                child: Semantics(
+                  selected: value == entry.key,
+                  child: OutlinedButton(
+                    onPressed: onChanged == null
+                        ? null
+                        : () => onChanged!(entry.key),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(0, 46),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 10,
+                      ),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      foregroundColor: value == entry.key
+                          ? const Color(0xff7c3aed)
+                          : const Color(0xff151423),
+                      backgroundColor: value == entry.key
+                          ? const Color(0x147c3aed)
+                          : Colors.white,
+                      side: BorderSide(
+                        color: value == entry.key
+                            ? const Color(0xff7c3aed)
+                            : const Color(0xffe3e4ed),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      textStyle: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 14,
+                        height: 1.55,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    child: Text(entry.value, textAlign: TextAlign.center),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+        if (value == null) ...[
+          const SizedBox(height: 8),
+          const Text(
+            'Selecciona una opción para continuar.',
+            style: TextStyle(
+              fontSize: 12,
+              height: 1.55,
+              color: Color(0xff616174),
+            ),
+          ),
+        ],
+      ],
+    ),
+  );
+}
