@@ -333,7 +333,7 @@ class GuardianSupportCard extends StatelessWidget {
   final double height;
   @override
   Widget build(BuildContext context) => InkWell(
-    onTap: () => context.push('/guardian'),
+    onTap: () => context.push('/guardian?enroll=1'),
     borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
     child: ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
@@ -475,7 +475,7 @@ class GuardianSupportDock extends StatelessWidget {
     button: true,
     label: 'Suscríbete a Guardián, desde 50 pesos al mes',
     child: InkWell(
-      onTap: () => context.push('/guardian'),
+      onTap: () => context.push('/guardian?enroll=1'),
       borderRadius: BorderRadius.circular(24),
       child: LayoutBuilder(
         builder: (context, box) {

@@ -198,6 +198,31 @@ class DetailCaptureCommunity extends FakeCommunity {
   Future<Json?> publicProfile(String id) async => {'verified': true};
 }
 
+class ImpactCaptureCommunity extends DetailCaptureCommunity {
+  ImpactCaptureCommunity(this.empty);
+  final bool empty;
+  @override
+  Future<List<Json>> personalImpact() async => empty
+      ? []
+      : [
+          {
+            'case_id': 'case-one',
+            'allocated_cents': 9200,
+            'public_data': {
+              'pet_name': 'Choco',
+              'photos': ['approved-fixture.jpg'],
+            },
+            'updates': [
+              {
+                'id': 'approved-update',
+                'body': 'Choco volvió a comer. Su avance está publicado por el rescatista.',
+                'published_at': '2026-09-30T12:00:00Z',
+              },
+            ],
+          },
+        ];
+}
+
 void main() {
   testWidgets('capture actual profile/settings/publication screens', (
     tester,
@@ -338,6 +363,10 @@ void main() {
       ('guardian-billing-receipt', '/guardian'),
       ('guardian-billing-inactive', '/guardian'),
       ('guardian-billing-inactive-large', '/guardian'),
+      ('impact-feed', '/impact'),
+      ('impact-feed-large', '/impact'),
+      ('impact-feed-empty', '/impact'),
+      ('impact-feed-empty-large', '/impact'),
       ('guardian-promotion', '/impact/guardian'),
       ('guardian-promotion-large', '/impact/guardian'),
       ('guardian-promotion-controls-large', '/impact/guardian'),
@@ -407,10 +436,11 @@ void main() {
                   spec.$1.contains('enrollment'),
             )
           : FakeGuardian();
-      final community =
-          (spec.$1.startsWith('adoption-detail') ||
-              spec.$1 == 'adoption-end' ||
-              spec.$1.startsWith('adoption-support'))
+      final community = spec.$1.startsWith('impact-feed')
+          ? ImpactCaptureCommunity(spec.$1.contains('empty'))
+          : (spec.$1.startsWith('adoption-detail') ||
+                spec.$1 == 'adoption-end' ||
+                spec.$1.startsWith('adoption-support'))
           ? DetailCaptureCommunity()
           : FakeCommunity();
       if (spec.$1.startsWith('adoption-empty')) community.discoveryItems = [];
@@ -475,6 +505,8 @@ void main() {
             rescueRepositoryProvider.overrideWithValue(CaseCaptureRescue()),
             caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
           ],
+          if (spec.$1.startsWith('impact-feed'))
+            rescueRepositoryProvider.overrideWithValue(SupportCaptureRescue()),
           if (spec.$1.startsWith('support-home'))
             rescueRepositoryProvider.overrideWithValue(SupportCaptureRescue()),
           guardianEnabledProvider.overrideWithValue(true),

@@ -517,10 +517,8 @@ void main() {
     final repo = FakeCommunity();
     await start(tester, repo, '/impact');
     expect(find.text('Choco'), findsOneWidget);
-    expect(
-      find.text('\$92.00 MXN asignados de tus aportaciones'),
-      findsOneWidget,
-    );
+    expect(find.text('\$92.00 MXN'), findsOneWidget);
+    expect(find.text('Asignados de tus aportaciones'), findsOneWidget);
     expect(find.text('Choco volvió a comer.'), findsOneWidget);
   });
   testWidgets('swipe buttons pass and persist likes without double actions', (
