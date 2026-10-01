@@ -338,6 +338,16 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
 - Pruebas dirigidas16 + capturador25 estados aprobadas; después de espera de imagen, capturador repetido aprobado. Analyze limpio. Código de producción no cambiado en este loop; no esquema/pagos ni nuevos guards.
 - Continuar comparación de apoyo y luego favoritos/match/chat. Entrega final Codemagic android-guardian-internal sigue autorizada, pendiente de completar paridad global.
 
+
+## Loop 13 — Mis match, favoritos reales
+
+- Referencia Irlanda inicio/cierre `a3c969cd9103fd46dc5cd886999912526ce75efb` sin cambios. Se inspeccionaron DonorMessages y CSS match-fav (148px, radio20, separación12, nombre15 y contacto).
+- Nueva fila horizontal en Mis match consulta savedAdoptions; sólo disponibles muestran información/fotos. Ver más abre guardados existentes y refresca al regresar. Foto abre detalle; contacto confirma, crea hilo real, mide éxito y abre conversación; error no simula hilo. Textos Mis favoritos/Chats/aventura/Explorar tomados de referencia.
+- Se quitaron accesos redundantes a guardados/donación de la pantalla principal; los tres tipos siguen en `/saved`. Vacío chats ahora texto14/1.45; no paginación de una sola página.
+- Primera suite completa130 aprobada; tras agregar prueba de cancelación y ajustar vacío se aprobaron17 pruebas dirigidas + capturador27 estados. Analyze final limpio. Capturas normal y320×640/200% en loop13; no SQL ni cambios de autorización.
+- Pendientes para completar Mis match: encabezado de ubicación/logo, vista completa y orden de favoritos, arte vacío, dimensión visual34 del botón de chat, búsqueda integrada, filas/avatar/hora/no leídos de chats, rol rescatista y contraste de navegador. Estado parcial no acredita paridad completa ni dispositivo instalado.
+- Próximo ciclo continúa esta pantalla; objetivo global y Codemagic final siguen activos.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián

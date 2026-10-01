@@ -282,6 +282,22 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  testWidgets(
+    'match favorite contact can be cancelled without starting a thread',
+    (tester) async {
+      final repo = FakeCommunity();
+      await start(tester, repo, '/messages');
+      expect(find.text('Mis favoritos'), findsOneWidget);
+      expect(find.text('Luna'), findsOneWidget);
+      await tester.tap(find.byTooltip('Escribir sobre Luna'));
+      await tester.pumpAndSettle();
+      expect(find.text('Sí, contactar rescatista'), findsOneWidget);
+      await tester.tap(find.text('Todavía no'));
+      await tester.pumpAndSettle();
+      expect(find.text('Chats'), findsOneWidget);
+      expect(find.text('Sí, contactar rescatista'), findsNothing);
+    },
+  );
   testWidgets('failed detail favorite rolls the optimistic state back', (
     tester,
   ) async {

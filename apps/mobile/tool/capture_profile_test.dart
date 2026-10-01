@@ -133,6 +133,8 @@ void main() {
       ('adoption-empty', '/adoptions'),
       ('adoption-empty-large', '/adoptions'),
       ('adoption-end', '/adoptions'),
+      ('match-home', '/messages'),
+      ('match-home-large', '/messages'),
       ('adoption-support', '/adoptions'),
       ('adoption-support-large', '/adoptions'),
       ('profile-overview', '/profile'),

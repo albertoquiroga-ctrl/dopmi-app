@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../core/ui.dart';
+import 'match_favorites.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 
@@ -30,11 +31,28 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
     index: 3,
     back: false,
     children: [
-      const Heading(
-        'Mis match.',
-        'Retoma conversaciones y vuelve a las historias que guardaste.',
-        eyebrow: 'COMUNIDAD',
+      const Text(
+        'Mis match',
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 28,
+          fontWeight: FontWeight.w700,
+          color: ink,
+        ),
       ),
+      const SizedBox(height: 24),
+      const MatchFavorites(),
+      const SizedBox(height: 24),
+      const Text(
+        'Chats',
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+          color: ink,
+        ),
+      ),
+      const SizedBox(height: 12),
       TextField(
         controller: search,
         textInputAction: TextInputAction.search,
@@ -59,25 +77,6 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
         }),
       ),
       const SizedBox(height: 12),
-      Row(
-        children: [
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: () => context.push('/saved'),
-              icon: const Icon(Icons.pets_outlined),
-              label: const Text('Guardados'),
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: () => context.push('/saved'),
-              icon: const Icon(Icons.volunteer_activism_outlined),
-              label: const Text('Donación'),
-            ),
-          ),
-        ],
-      ),
       const SizedBox(height: 18),
       LiveSection<DataPage<Json>>(
         key: ValueKey('$page:$query'),
@@ -92,10 +91,16 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (result.items.isEmpty)
-              Notice(
+              Text(
                 query.isEmpty
-                    ? 'Abre una publicación y toca “Quiero conocerle” para iniciar una conversación.'
+                    ? 'Aún no tienes chats. Ponte en contacto con el rescatista de tu compañero favorito.'
                     : 'No encontramos conversaciones con “$query”.',
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 14,
+                  height: 1.45,
+                  color: muted,
+                ),
               ),
             for (final thread in result.items)
               Card(
@@ -126,12 +131,13 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
                   },
                 ),
               ),
-            PageControls(
-              page: page,
-              total: result.total,
-              size: 20,
-              change: (value) => setState(() => page = value),
-            ),
+            if (result.total > 20)
+              PageControls(
+                page: page,
+                total: result.total,
+                size: 20,
+                change: (value) => setState(() => page = value),
+              ),
           ],
         ),
       ),
