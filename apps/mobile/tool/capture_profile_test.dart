@@ -600,6 +600,8 @@ void main() {
       ('guardian-promotion-reports', '/impact/guardian'),
       ('guardian-billing-enrollment', '/guardian'),
       ('guardian-billing-enrollment-large', '/guardian'),
+      ('guardian-billing-enrollment-custom', '/guardian'),
+      ('guardian-billing-enrollment-custom-large', '/guardian'),
       ('guardian-billing-enrollment-confirmation', '/guardian'),
       ('guardian-billing-enrollment-confirmation-large', '/guardian'),
       ('guardian-billing-active', '/guardian'),
@@ -998,6 +1000,16 @@ void main() {
       if (spec.$1.startsWith('guardian-billing-enrollment')) {
         await tester.tap(find.text('Suscribirme'));
         await tester.pumpAndSettle();
+        if (spec.$1.contains('custom')) {
+          await tester.ensureVisible(find.text('Otra cantidad'));
+          await tester.tap(find.text('Otra cantidad'));
+          await tester.pumpAndSettle();
+          await tester.enterText(
+            find.byKey(const ValueKey('guardian-enrollment-custom-amount')),
+            '75.25',
+          );
+          await tester.pumpAndSettle();
+        }
         if (spec.$1.contains('confirmation')) {
           await tester.ensureVisible(find.text('Activar en Stripe'));
           await tester.pumpAndSettle();

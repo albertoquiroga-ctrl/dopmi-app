@@ -251,7 +251,7 @@ void main() {
     await start(tester, FakeGuardian());
     await consent(tester);
     await tester.enterText(
-      find.widgetWithText(TextField, 'Importe mensual en MXN'),
+      find.byKey(const ValueKey('guardian-enrollment-custom-amount')),
       '200',
     );
     await tester.pump();
@@ -274,7 +274,7 @@ void main() {
       final repo = FakeGuardian()..fail = true;
       await start(tester, repo);
       await tester.enterText(
-        find.widgetWithText(TextField, 'Importe mensual en MXN'),
+        find.byKey(const ValueKey('guardian-enrollment-custom-amount')),
         '100.25',
       );
       await consent(tester);

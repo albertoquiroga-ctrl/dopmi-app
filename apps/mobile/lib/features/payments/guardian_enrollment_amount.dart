@@ -154,23 +154,81 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
           ),
         const SizedBox(height: 8),
         if (showCustom) ...[
-          TextField(
-            controller: widget.amount,
-            focusNode: amountFocus,
-            textInputAction: TextInputAction.done,
-            onSubmitted: (_) => amountFocus.unfocus(),
-            enabled: !widget.locked,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            onChanged: (_) {
-              setState(() => custom = true);
-              widget.onChanged();
-            },
-            decoration: const InputDecoration(
-              labelText: 'Importe mensual en MXN',
-              prefixText: '\$ ',
-              suffixText: 'MXN',
-              helperText: 'De \$50 a \$10,000; hasta dos decimales.',
-              helperMaxLines: 3,
+          Semantics(
+            label: 'Importe mensual en MXN',
+            child: TextField(
+              key: const ValueKey('guardian-enrollment-custom-amount'),
+              controller: widget.amount,
+              focusNode: amountFocus,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => amountFocus.unfocus(),
+              enabled: !widget.locked,
+              style: const TextStyle(
+                fontSize: 18,
+                height: 1.2,
+                fontWeight: FontWeight.w700,
+                color: ink,
+              ),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              onChanged: (_) {
+                setState(() => custom = true);
+                widget.onChanged();
+              },
+              decoration: InputDecoration(
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
+                prefixIcon: const Padding(
+                  padding: EdgeInsets.only(left: 16, right: 8),
+                  child: ExcludeSemantics(
+                    child: Text(
+                      r'$',
+                      style: TextStyle(
+                        fontSize: 18,
+                        height: 1.2,
+                        fontWeight: FontWeight.w700,
+                        color: ink,
+                      ),
+                    ),
+                  ),
+                ),
+                prefixIconConstraints: const BoxConstraints(
+                  minWidth: 0,
+                  minHeight: 0,
+                ),
+                suffixIcon: const Padding(
+                  padding: EdgeInsets.only(left: 8, right: 16),
+                  child: ExcludeSemantics(
+                    child: Text(
+                      'MXN',
+                      style: TextStyle(
+                        fontSize: 14,
+                        height: 1.2,
+                        fontWeight: FontWeight.w500,
+                        color: muted,
+                      ),
+                    ),
+                  ),
+                ),
+                suffixIconConstraints: const BoxConstraints(
+                  minWidth: 0,
+                  minHeight: 0,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: const BorderSide(color: Color(0xfff4c917)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: const BorderSide(color: Color(0xfff4c917)),
+                ),
+                helperText: 'De \$50 a \$10,000; hasta dos decimales.',
+                helperMaxLines: 3,
+              ),
             ),
           ),
           TextButton(

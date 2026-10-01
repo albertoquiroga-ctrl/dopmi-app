@@ -41,6 +41,18 @@ void main() {
         await tester.tap(find.text('Otra cantidad'));
         await tester.pump();
         await tester.ensureVisible(find.byType(TextField));
+        expect(
+          tester.widget<TextField>(find.byType(TextField)).focusNode!.hasFocus,
+          true,
+        );
+        expect(
+          find.byWidgetPredicate(
+            (widget) =>
+                widget is Semantics &&
+                widget.properties.label == 'Importe mensual en MXN',
+          ),
+          findsOneWidget,
+        );
         await tester.enterText(find.byType(TextField), '75.25');
         await tester.pump();
         expect(find.text(r'$75.25 MXN'), findsNWidgets(2));
@@ -55,6 +67,14 @@ void main() {
         expect(amount.text, '500.00');
         expect(find.byType(TextField), findsNothing);
         expect(find.text(r'$500.00 MXN'), findsNWidgets(2));
+        await tester.ensureVisible(find.text('Otra cantidad'));
+        await tester.tap(find.text('Otra cantidad'));
+        await tester.pump();
+        await tester.ensureVisible(find.text('Volver a cantidades sugeridas'));
+        await tester.tap(find.text('Volver a cantidades sugeridas'));
+        await tester.pump();
+        expect(amount.text, '50.00');
+        expect(find.byType(TextField), findsNothing);
       },
     );
   }
