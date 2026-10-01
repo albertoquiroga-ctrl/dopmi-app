@@ -649,3 +649,9 @@ hasta que exista evidencia para todo el alcance, no sólo para este perfil.
 - No nueva captura de estilo: sólo foco/entrada de teclado, composición existente del39 preservada. Teclado nativo/retornoStripe y comparación de gestos en instalación continúan pendientes; Flutter widget no equivale a device. Sigue objetivo integral/Codemagic final pendiente.
 
 - Cierre loop44: suite completa200 aprobada; referencia cierre a3c969cd9103fd46dc5cd886999912526ce75efb sin cambios. No publicación ni aceptación instalada atribuidas.
+
+## Loop 45 — regresión del regreso Stripe y conexión instalada
+
+- Referencia Irlanda consultada `a3c969cd9103fd46dc5cd886999912526ce75efb` sin cambios. No se imita confirmación simulada: GuardianScreen ya consulta estado al resumed, conserva intent de Checkout pendiente y lo elimina sólo tras resultado autoritativo. Nueva prueba ejecuta ciclo válido inactive→hidden→paused→hidden→inactive→resumed, observa nueva lectura, pendiente sin éxito prematuro y key7525 persistida; siguiente retorno con plan activo limpia key. Calls de submit y aperturasStripe permanecen0 durante ambos regresos.
+- Analyze limpio; suite guardian24 aprobada. Inicialmente prueba usó await sobre callback void y secuencia Flutter sin hidden; corregidos errores del harness antes del gate final, sin modificar producto. No nueva captura ni suite completa atribuida: sólo nueva regresión de lifecycle, fuente funcional intacta.
+- ADB existente C:/Users/betoq/dopmi-functional-mockup/.tools/android-sdk/platform-tools/adb.exe comprobado dos veces con devices -l: ninguna entrada. Se solicitó conexión USB/depuración/autorización por pregunta asíncrona; pruebas independientes completas. No se atribuye retornoStripe/teclado/gestos en dispositivo actual. Codemagic final pendiente de paridad integral; continuar auditoría de rutas y animaciones mientras llega conexión. Dinero test-only, sin solicitudes financieras remotas.

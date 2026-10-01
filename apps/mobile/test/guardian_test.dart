@@ -295,6 +295,52 @@ void main() {
       expect(find.text('Plan activo'), findsNothing);
     },
   );
+  testWidgets(
+    'Stripe return keeps pending identity and only server confirmation clears the attempt',
+    (tester) async {
+      const attemptKey = 'checkout-return-fixture';
+      SharedPreferences.setMockInitialValues({
+        'dopmi-guardian:one:intent': '{"kind":"checkout","key":"checkout-return-fixture","cents":7525,"consent_version":"guardian-2026-09-24"}',
+      });
+      final repo = FakeGuardian()
+        ..value = {
+          'plan': null,
+          'activation': {
+            'key': attemptKey,
+            'gross_cents': 7525,
+            'status': 'pending',
+            'consent_version': guardianConsent,
+          },
+        };
+      await start(tester, repo);
+      final initialReads = repo.reads;
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pumpAndSettle();
+      expect(repo.reads, greaterThan(initialReads));
+      expect(find.text('Alta pendiente de confirmación'), findsOneWidget);
+      expect(find.text('Suscripción activa'), findsNothing);
+      final prefs = await SharedPreferences.getInstance();
+      expect(
+        prefs.getString('dopmi-guardian:one:intent'),
+        contains(attemptKey),
+      );
+      expect(repo.calls, isEmpty);
+      expect(repo.opened, 0);
+      repo.value = {'plan': activePlan(), 'activation': null};
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pumpAndSettle();
+      expect(find.text('Suscripción activa'), findsOneWidget);
+      expect(prefs.getString('dopmi-guardian:one:intent'), isNull);
+      expect(repo.calls, isEmpty);
+      expect(repo.opened, 0);
+    },
+  );
   testWidgets('stored attempts are isolated by account', (tester) async {
     SharedPreferences.setMockInitialValues({
       'dopmi-guardian:one:intent':
