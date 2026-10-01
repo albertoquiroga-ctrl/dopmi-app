@@ -192,9 +192,15 @@ class _LiveSectionState<T> extends ConsumerState<LiveSection<T>>
 }
 
 class AdoptionPhoto extends ConsumerStatefulWidget {
-  const AdoptionPhoto(this.path, {super.key, this.height = 240});
+  const AdoptionPhoto(
+    this.path, {
+    super.key,
+    this.height = 240,
+    this.radius = 20,
+  });
   final String path;
   final double height;
+  final double radius;
   @override
   ConsumerState<AdoptionPhoto> createState() => _AdoptionPhotoState();
 }
@@ -204,8 +210,15 @@ class _AdoptionPhotoState extends ConsumerState<AdoptionPhoto> {
   var automaticRetries = 0;
   var retryScheduled = false;
 
-  Future<String> _photoUrl() =>
-      ref.read(communityRepositoryProvider).photoUrl(widget.path);
+  Future<String> _photoUrl() {
+    final request = Future<String>.sync(
+      () => ref.read(communityRepositoryProvider).photoUrl(widget.path),
+    );
+    // A retry begins in a post-frame callback. Observe its failure immediately;
+    // FutureBuilder attaches on the next frame and still displays that error.
+    request.ignore();
+    return request;
+  }
 
   void reload({bool automatic = false}) {
     if (automatic) {
@@ -215,7 +228,9 @@ class _AdoptionPhotoState extends ConsumerState<AdoptionPhoto> {
       automaticRetries = 0;
     }
     retryScheduled = false;
-    setState(() => url = _photoUrl());
+    setState(() {
+      url = _photoUrl();
+    });
   }
 
   void scheduleAutomaticRetry() {
@@ -254,7 +269,7 @@ class _AdoptionPhotoState extends ConsumerState<AdoptionPhoto> {
 
   @override
   Widget build(BuildContext context) => ClipRRect(
-    borderRadius: BorderRadius.circular(20),
+    borderRadius: BorderRadius.circular(widget.radius),
     child: FutureBuilder<String>(
       future: url,
       builder: (_, snapshot) {

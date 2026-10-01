@@ -271,9 +271,10 @@ void main() {
       await start(tester, repo, '/adoptions');
       await tester.tap(find.text('Luna'));
       await tester.pumpAndSettle();
-      await tap(tester, 'Guardar');
+      await tester.tap(find.byTooltip('Guardar'));
+      await tester.pumpAndSettle();
       expect(repo.post.saved, true);
-      expect(find.text('Guardada'), findsOneWidget);
+      expect(find.byTooltip('Guardada'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
@@ -282,9 +283,10 @@ void main() {
   ) async {
     final repo = FakeCommunity()..failFavorite = true;
     await start(tester, repo, '/adoptions/post');
-    await tap(tester, 'Guardar');
+    await tester.tap(find.byTooltip('Guardar'));
+    await tester.pumpAndSettle();
     expect(repo.post.saved, false);
-    expect(find.text('Guardar'), findsOneWidget);
+    expect(find.byTooltip('Guardar'), findsOneWidget);
     expect(find.textContaining('No pudimos completar'), findsOneWidget);
   });
   testWidgets('contact asks for confirmation before opening the thread', (
@@ -292,7 +294,7 @@ void main() {
   ) async {
     final repo = FakeCommunity();
     await start(tester, repo, '/adoptions/post');
-    await tap(tester, 'Quiero conocerle');
+    await tap(tester, 'Quiero adoptar');
     expect(find.text('¿Iniciamos el proceso?'), findsOneWidget);
     await tester.tap(find.text('Sí, contactar rescatista'));
     await tester.pumpAndSettle();

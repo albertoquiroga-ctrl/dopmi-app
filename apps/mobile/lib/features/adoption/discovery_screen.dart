@@ -398,7 +398,10 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                   like: () => advance(save: true),
                   contact: () => contact(current),
                   open: () async {
-                    await context.push('/adoptions/${current.id}');
+                    await context.push(
+                      '/adoptions/${current.id}',
+                      extra: current.data['distance_km'],
+                    );
                     if (mounted) await refreshCard(current.id);
                   },
                 ),

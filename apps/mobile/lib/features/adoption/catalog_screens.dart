@@ -7,6 +7,7 @@ import '../../core/measurement.dart';
 import '../community/content_actions.dart';
 import '../profile/rescuer_profile_repository.dart';
 import 'adopt_start_dialog.dart';
+import 'adoption_detail_layout.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
 import 'photo_recovery.dart';
@@ -331,7 +332,8 @@ class _CatalogFiltersState extends State<CatalogFilters> {
 }
 
 class AdoptionDetailScreen extends ConsumerStatefulWidget {
-  const AdoptionDetailScreen(this.id, {super.key});
+  const AdoptionDetailScreen(this.id, {super.key, this.distanceKm});
+  final num? distanceKm;
   final String id;
   @override
   ConsumerState<AdoptionDetailScreen> createState() => _AdoptionDetailState();
@@ -340,7 +342,6 @@ class AdoptionDetailScreen extends ConsumerStatefulWidget {
 class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
   bool busy = false;
   bool? savedOverride;
-  int galleryIndex = 0;
   String? error;
   Future<void> perform(Future<void> Function() action) async {
     if (busy) return;
@@ -418,196 +419,63 @@ class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final repo = ref.read(communityRepositoryProvider);
-    return CommunityFrame(
-      children: [
-        LiveSection<Adoption?>(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        bottom: false,
+        child: LiveSection<Adoption?>(
           load: () => repo.detail(widget.id),
           builder: (post, refresh) {
             if (post == null) {
-              return const Notice(
-                'Esta publicación ya no está disponible. Puede estar en revisión, retirada o tener una adopción realizada.',
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Notice(
+                    'Esta publicación ya no está disponible. Puede estar en revisión, retirada o tener una adopción realizada.',
+                  ),
+                ),
               );
             }
-            final labels = {
-              'vaccinated': 'Vacunas al día',
-              'sterilized': 'Esterilización',
-              'social_dogs': 'Convive con perros',
-              'social_cats': 'Convive con gatos',
-              'social_children': 'Convive con niñas y niños',
-            };
-            final displayedSaved = savedOverride ?? post.saved;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (post.photos.isEmpty)
-                  const SizedBox(
-                    height: 300,
-                    child: Center(child: Icon(Icons.pets, size: 72)),
-                  )
-                else ...[
-                  SizedBox(
-                    height: 330,
-                    child: PageView.builder(
-                      itemCount: post.photos.length,
-                      onPageChanged: (value) =>
-                          setState(() => galleryIndex = value),
-                      itemBuilder: (_, index) =>
-                          AdoptionPhoto(post.photos[index], height: 330),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      for (var index = 0; index < post.photos.length; index++)
-                        Container(
-                          width: index == galleryIndex ? 18 : 8,
-                          height: 8,
-                          margin: const EdgeInsets.symmetric(horizontal: 3),
-                          decoration: BoxDecoration(
-                            color: index == galleryIndex
-                                ? purple
-                                : Colors.black26,
-                            borderRadius: BorderRadius.circular(99),
-                          ),
-                        ),
-                    ],
-                  ),
-                ],
-                const SizedBox(height: 12),
-                Heading(
-                  post.name,
-                  '${post.text('city')}, ${post.text('region')}',
-                  eyebrow: 'EN ADOPCIÓN',
-                ),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 6,
-                  children: [
-                    post.text('species') == 'dog' ? 'Perro' : 'Gato',
-                    post.text('sex') == 'female' ? 'Hembra' : 'Macho',
-                    post.age,
-                    {
-                          'small': 'Pequeño',
-                          'medium': 'Mediano',
-                          'large': 'Grande',
-                        }[post.text('size')] ??
-                        '',
-                    if (post.text('breed').isNotEmpty) post.text('breed'),
-                  ].map((s) => Chip(label: Text(s))).toList(),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  'Mi historia',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  post.text('story'),
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                const SizedBox(height: 20),
-                for (final entry in labels.entries)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Text(
-                      '${entry.value}: ${post.data[entry.key] == null
-                          ? 'Por confirmar'
-                          : post.data[entry.key] == true
-                          ? 'Sí'
-                          : 'No'}',
-                    ),
-                  ),
-                if (post.text('special_care').isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  Text(
-                    'Cuidados especiales',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  Text(post.text('special_care')),
-                ],
-                const SizedBox(height: 24),
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: const CircleAvatar(
-                    child: Icon(Icons.person_outline),
-                  ),
-                  title: Text(post.text('publisher_name')),
-                  subtitle: const Text('Conocer su perfil público'),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.push('/people/${post.owner}'),
-                ),
-                if (error != null) Notice(error!, isError: true),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: busy
-                            ? null
-                            : () {
-                                if (repo.userId == null) {
-                                  context.push('/login');
-                                  return;
-                                }
-                                toggleFavorite(repo, post, refresh);
-                              },
-                        icon: Icon(
-                          displayedSaved
-                              ? Icons.favorite
-                              : Icons.favorite_border,
-                        ),
-                        label: Text(displayedSaved ? 'Guardada' : 'Guardar'),
-                      ),
-                    ),
-                    IconButton(
-                      tooltip: 'Compartir',
-                      onPressed: () => share(post),
-                      icon: const Icon(Icons.ios_share_outlined),
-                    ),
-                    IconButton(
-                      tooltip: 'Reportar',
-                      onPressed: busy
-                          ? null
-                          : () {
-                              if (repo.userId == null) {
-                                context.push('/login');
-                              } else {
-                                report(repo, post);
-                              }
-                            },
-                      icon: const Icon(Icons.flag_outlined),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                if (repo.userId == post.owner)
-                  ActionButton(
-                    'Administrar mi publicación',
-                    onPressed: () => context.push('/my-adoptions/${post.id}'),
-                  )
-                else
-                  ActionButton(
-                    'Quiero conocerle',
-                    busy: busy,
-                    sunny: true,
-                    onPressed: () async {
-                      if (repo.userId == null) {
-                        context.push('/login');
-                        return;
-                      }
-                      await contact(repo, post);
-                    },
-                  ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Conversa sobre sus necesidades y acuerda una visita. Evita compartir tu dirección o datos sensibles antes de conocer a la otra persona.',
-                ),
-              ],
+            return AdoptionDetailLayout(
+              key: ValueKey(post.id),
+              post: Adoption({
+                ...post.data,
+                if (widget.distanceKm?.isFinite == true &&
+                    widget.distanceKm! >= 0)
+                  'distance_km': widget.distanceKm,
+              }),
+              saved: savedOverride ?? post.saved,
+              busy: busy,
+              owner: repo.userId == post.owner,
+              error: error,
+              share: () => share(post),
+              report: () {
+                if (repo.userId == null) {
+                  context.push('/login');
+                } else {
+                  report(repo, post);
+                }
+              },
+              favorite: () {
+                if (repo.userId == null) {
+                  context.push('/login');
+                } else {
+                  toggleFavorite(repo, post, refresh);
+                }
+              },
+              contact: () {
+                if (repo.userId == post.owner) {
+                  context.push('/my-adoptions/${post.id}');
+                } else if (repo.userId == null) {
+                  context.push('/login');
+                } else {
+                  contact(repo, post);
+                }
+              },
             );
           },
         ),
-      ],
+      ),
     );
   }
 }

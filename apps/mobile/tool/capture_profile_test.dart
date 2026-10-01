@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'fixture_photo_client.dart';
+
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
@@ -34,6 +36,13 @@ Future<DataPage<Json>> fixturePaymentHistory() async => const DataPage([
     'gross_cents': 2500,
   },
 ], 3);
+
+class DetailCaptureCommunity extends FakeCommunity {
+  @override
+  Future<String> photoUrl(String path) async => 'https://fixture.invalid/$path';
+  @override
+  Future<Json?> publicProfile(String id) async => {'verified': true};
+}
 
 void main() {
   testWidgets('capture actual profile/settings/publication screens', (
@@ -81,6 +90,11 @@ void main() {
         'intent-rescuer',
         'icon-x-muted',
         'discovery-message',
+        'back',
+        'location',
+        'icon-share',
+        'icon-alert-circle',
+        'icon-verified',
       ])
         'assets/profile/$name.svg',
       for (final name in [
@@ -100,6 +114,12 @@ void main() {
       );
     }
     await tester.runAsync(() => out.create(recursive: true));
+    final fixturePhoto = await tester.runAsync(
+      () => File('tool/fixtures/rocky.png').readAsBytes(),
+    );
+    debugNetworkImageHttpClientProvider = () =>
+        FixturePhotoClient(fixturePhoto!);
+    addTearDown(() => debugNetworkImageHttpClientProvider = null);
     for (final spec in [
       ('adoption-swipe', '/adoptions'),
       ('adoption-large', '/adoptions'),
@@ -108,6 +128,8 @@ void main() {
       ('adoption-filters-large', '/adoptions'),
       ('adoption-contact', '/adoptions'),
       ('adoption-contact-large', '/adoptions'),
+      ('adoption-detail', '/adoptions/post'),
+      ('adoption-detail-large', '/adoptions/post'),
       ('profile-overview', '/profile'),
       ('profile-overview-active', '/profile'),
       ('profile-overview-large', '/profile'),
@@ -130,7 +152,23 @@ void main() {
       tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
       final guardian = FakeGuardian();
-      final community = FakeCommunity();
+      final community = spec.$1.startsWith('adoption-detail')
+          ? DetailCaptureCommunity()
+          : FakeCommunity();
+      if (spec.$1.startsWith('adoption-detail')) {
+        community.post = Adoption({
+          ...community.post.data,
+          'pet_name': 'Rocky',
+          'publisher_name': 'Patricia V.',
+          'sex': 'male',
+          'size': 'large',
+          'region': 'MX',
+          'distance_km': 3.4,
+          'story': 'Rescatado de la calle el mes pasado. Muy amistoso y listo para encontrar hogar.',
+          'photos': ['fixture/one', 'fixture/two', 'fixture/three'],
+          'saved': true,
+        });
+      }
       if (spec.$1 == 'adoption-drag') {
         // The actual deck includes a second card beneath a drag.
         community.discoveryItems = [
@@ -238,6 +276,7 @@ void main() {
       container.dispose();
       await repo.changes.close();
     }
+    debugNetworkImageHttpClientProvider = null;
     debugDisableShadows = true;
   });
 }

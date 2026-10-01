@@ -304,6 +304,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/adoptions/:id',
         builder: (_, state) => AdoptionDetailScreen(
           state.pathParameters['id']!,
+          distanceKm: state.extra is num ? state.extra as num : null,
           key: ValueKey('${identity.identity?.id}:${state.uri}'),
         ),
       ),

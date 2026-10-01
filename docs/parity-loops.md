@@ -249,6 +249,42 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
   ni paridad integral atribuida. Próximo: detalle/galería, vacíos y apoyo
   intercalado. Entrega final Codemagic sigue pendiente, objetivo activo.
 
+## Loop 08 · Detalle y galería de adopción · 2026-09-30
+
+- Referencia inicio/cierre `a3c969cd9103fd46dc5cd886999912526ce75efb`.
+  Navegador377×852 en adoption/rocky, medidas de hero340, sheet318 y barra671/752.
+  Se reproduce incluso la banda blanca100px que produce la cascada real de
+  ScreenShell; no se usa el CSS aislado como prueba del resultado.
+- Detalle pasa a foto de ancho completo, botón volver40 con transparencia/blur,
+  enlace al publicador en cápsula, ficha blanca superpuesta22/radio28,
+  nombre/ubicación/verificación, estadísticas3 columnas y acciones fijas52.
+  SVG originales de volver/ubicación/compartir/reporte/verificación y corazón
+  original de guardado. Texto200% usa estadísticas apiladas y barra adaptable.
+- Galería usa sólo fotos aprobadas devueltas por detalle, dots según cantidad
+  real y PageView con índice accesible; cambio de lista aprobada restablece
+  página. No se agregan fotos/dots simulados ni zoom inexistente en la referencia.
+- Insignia depende de dopmi_rescuer_public/publicProfile con verified=true,
+  consulta renovada por LiveSection; errores/null no producen verificación.
+  Distancia calculada por discovery pasa por la ruta; entrada directa sin ese
+  dato muestra raya, sin kilómetros inventados. Datos clínicos/edad/raza siguen
+  accesibles en expansión; cuidados especiales permanecen visibles.
+- Guardar/contactar/reporte/compartir/perfil y administrar publicación propia
+  conservan operaciones reales. Se encontró fallo de reintento de AdoptionPhoto:
+  setState devolvía Future y el fallo post-frame podía quedar sin observador.
+  Callback ahora es void y Future se observa inmediatamente sin ocultar el error
+  a FutureBuilder. Pruebas de firmas fallidas/reintento y swipe pasan.
+- Cuatro pruebas nuevas cubren distancia trasladada desde discovery, verificación
+  obligatoria/cuidados accesibles, pager/reintento y acciones a texto200%.
+  Captura usa Rocky y datos equivalentes de referencia mediante HTTP sólo local
+  en tool, sin sockets ni cambios al cliente productivo; PNG fixture fuera de
+  assets empaquetados. Capturador20 estados aprobado, configuración12.
+  Gate final Flutter127 completos y analyze lib/test/tool limpio; lib/test/tool/
+  assets de la copia ejecutada idénticos byte a byte al checkout.
+- Diferencias pequeñas de métricas de tipografía/sombras requieren revisión
+  instalada; banda100 y datos adicionales están documentados. No aceptación
+  visual integral, CI remoto ni Codemagic atribuidos. Próximo: vacíos y apoyo
+  intercalado, luego favoritos/match/chat y demás recorridos. Objetivo activo.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián
