@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import 'auth_ui.dart';
 import 'onboarding_art.dart';
 
@@ -304,6 +305,7 @@ class AdoptionIntroduction extends StatelessWidget {
           const titleStyle = TextStyle(
             fontFamily: 'Fraunces',
             fontSize: 28,
+            fontVariations: DopmiTokens.display28Variations,
             height: 1.12,
             letterSpacing: -.56,
             fontWeight: FontWeight.w600,
@@ -615,10 +617,8 @@ class RescuerIntroduction extends StatelessWidget {
                                       style: const TextStyle(
                                         fontFamily: 'Fraunces',
                                         fontSize: 26,
-                                        fontVariations: [
-                                          FontVariation('opsz', 26),
-                                          FontVariation('WONK', 0),
-                                        ],
+                                        fontVariations:
+                                            DopmiTokens.display26Variations,
                                         height: 1.15,
                                         letterSpacing: -.52,
                                         fontWeight: FontWeight.w600,

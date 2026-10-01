@@ -17,4 +17,21 @@ abstract final class DopmiTokens {
   static const horizontalPadding = 16.0;
   static const bodyFont = 'Inter';
   static const displayFont = 'Fraunces';
+  // Match CSS font-optical-sizing:auto and the reference NonWonky face.
+  static const display26Variations = [
+    FontVariation('opsz', 26),
+    FontVariation('WONK', 0),
+  ];
+  static const display28Variations = [
+    FontVariation('opsz', 28),
+    FontVariation('WONK', 0),
+  ];
+  static const display32Variations = [
+    FontVariation('opsz', 32),
+    FontVariation('WONK', 0),
+  ];
+  static const display36Variations = [
+    FontVariation('opsz', 36),
+    FontVariation('WONK', 0),
+  ];
 }

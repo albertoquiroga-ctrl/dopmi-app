@@ -92,6 +92,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   const TextStyle(
                     fontFamily: DopmiTokens.displayFont,
                     fontSize: 28,
+                    fontVariations: DopmiTokens.display28Variations,
                     height: 1.15,
                     fontWeight: FontWeight.w600,
                   ),
@@ -133,6 +134,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   const TextStyle(
                     fontFamily: DopmiTokens.displayFont,
                     fontSize: 36,
+                    fontVariations: DopmiTokens.display36Variations,
                     height: 1.1,
                     fontWeight: FontWeight.w600,
                   ),
@@ -164,6 +166,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   const TextStyle(
                     fontFamily: DopmiTokens.displayFont,
                     fontSize: 28,
+                    fontVariations: DopmiTokens.display28Variations,
                     height: 1.15,
                     letterSpacing: -.56,
                     fontWeight: FontWeight.w600,
@@ -189,6 +192,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   const TextStyle(
                     fontFamily: DopmiTokens.displayFont,
                     fontSize: 32,
+                    fontVariations: DopmiTokens.display32Variations,
                     height: 1.15,
                     letterSpacing: -.64,
                     fontWeight: FontWeight.w600,
@@ -222,6 +226,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               const TextStyle(
                 fontFamily: DopmiTokens.displayFont,
                 fontSize: 28,
+                fontVariations: DopmiTokens.display28Variations,
                 height: 1.15,
                 letterSpacing: -.56,
                 fontWeight: FontWeight.w600,
@@ -249,6 +254,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       style: const TextStyle(
                         fontFamily: DopmiTokens.displayFont,
                         fontSize: 28,
+                        fontVariations: DopmiTokens.display28Variations,
                         height: 1.15,
                         letterSpacing: -.56,
                         fontWeight: FontWeight.w600,
@@ -356,6 +362,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             style: TextStyle(
                               fontFamily: DopmiTokens.displayFont,
                               fontSize: selected == null ? 32 : 28,
+                              fontVariations: selected == null
+                                  ? DopmiTokens.display32Variations
+                                  : DopmiTokens.display28Variations,
                               letterSpacing: selected == null ? -.64 : -.56,
                               height: 1.15,
                               fontWeight: FontWeight.w600,
@@ -504,6 +513,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                   style: const TextStyle(
                                     fontFamily: DopmiTokens.displayFont,
                                     fontSize: 36,
+                                    fontVariations:
+                                        DopmiTokens.display36Variations,
                                     color: ink,
                                     height: 1.1,
                                     fontWeight: FontWeight.w600,
