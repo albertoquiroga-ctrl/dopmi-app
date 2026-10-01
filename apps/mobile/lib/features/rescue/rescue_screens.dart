@@ -15,6 +15,7 @@ import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
 import '../payments/payment_repository.dart';
 import 'rescue_fields.dart';
+import 'expense_field.dart';
 import 'case_update_screens.dart';
 import 'rescue_repository.dart';
 import 'support_home.dart';
@@ -1068,9 +1069,10 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
 
   void fields(RescueRecord? r) {
     for (final f in rescueFields[kind]!) {
-      var value =
-          (f.private ? r?.privateData : r?.publicData)?[f.key] as String? ??
-          f.initial;
+      final raw = (f.private ? r?.privateData : r?.publicData)?[f.key];
+      var value = f.key == 'amount_cents' && raw is int
+          ? raw.toString()
+          : raw as String? ?? f.initial;
       if (f.key == 'amount_cents' && int.tryParse(value) != null) {
         final cents = int.parse(value);
         value = '${cents ~/ 100}.${(cents % 100).toString().padLeft(2, '0')}';
@@ -1805,56 +1807,64 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                       for (final f in rescueFields[kind]!.where(
                         (f) => f.private == private,
                       ))
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
-                          child: f.options == null
-                              ? TextField(
-                                  controller: controllers[f.key],
-                                  enabled: editable && !busy,
-                                  maxLength: f.max,
-                                  maxLines: f.lines,
-                                  keyboardType: f.key == 'amount_cents'
-                                      ? const TextInputType.numberWithOptions(
-                                          decimal: true,
+                        if (kind == 'expense')
+                          ExpenseField(
+                            field: f,
+                            controller: controllers[f.key]!,
+                            enabled: editable && !busy,
+                            onChanged: () => setState(() => dirty = true),
+                          )
+                        else
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: f.options == null
+                                ? TextField(
+                                    controller: controllers[f.key],
+                                    enabled: editable && !busy,
+                                    maxLength: f.max,
+                                    maxLines: f.lines,
+                                    keyboardType: f.key == 'amount_cents'
+                                        ? const TextInputType.numberWithOptions(
+                                            decimal: true,
+                                          )
+                                        : null,
+                                    decoration: InputDecoration(
+                                      labelText: f.label,
+                                      alignLabelWithHint: f.lines > 1,
+                                    ),
+                                    onChanged: (_) =>
+                                        setState(() => dirty = true),
+                                  )
+                                : DropdownButtonFormField<String>(
+                                    key: ValueKey(
+                                      '${f.key}:${controllers[f.key]!.text}',
+                                    ),
+                                    initialValue:
+                                        f.options!.containsKey(
+                                          controllers[f.key]!.text,
                                         )
-                                      : null,
-                                  decoration: InputDecoration(
-                                    labelText: f.label,
-                                    alignLabelWithHint: f.lines > 1,
+                                        ? controllers[f.key]!.text
+                                        : null,
+                                    isExpanded: true,
+                                    decoration: InputDecoration(
+                                      labelText: f.label,
+                                    ),
+                                    items: f.options!.entries
+                                        .map(
+                                          (e) => DropdownMenuItem(
+                                            value: e.key,
+                                            child: Text(e.value),
+                                          ),
+                                        )
+                                        .toList(),
+                                    onChanged: !editable || busy
+                                        ? null
+                                        : (v) => setState(() {
+                                            controllers[f.key]!.text = v!;
+                                            dirty = true;
+                                          }),
                                   ),
-                                  onChanged: (_) =>
-                                      setState(() => dirty = true),
-                                )
-                              : DropdownButtonFormField<String>(
-                                  key: ValueKey(
-                                    '${f.key}:${controllers[f.key]!.text}',
-                                  ),
-                                  initialValue:
-                                      f.options!.containsKey(
-                                        controllers[f.key]!.text,
-                                      )
-                                      ? controllers[f.key]!.text
-                                      : null,
-                                  isExpanded: true,
-                                  decoration: InputDecoration(
-                                    labelText: f.label,
-                                  ),
-                                  items: f.options!.entries
-                                      .map(
-                                        (e) => DropdownMenuItem(
-                                          value: e.key,
-                                          child: Text(e.value),
-                                        ),
-                                      )
-                                      .toList(),
-                                  onChanged: !editable || busy
-                                      ? null
-                                      : (v) => setState(() {
-                                          controllers[f.key]!.text = v!;
-                                          dirty = true;
-                                        }),
-                                ),
-                        ),
+                          ),
                     ],
                   ],
                   if (step == 0) ...[

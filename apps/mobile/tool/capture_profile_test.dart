@@ -19,6 +19,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../test/community_test.dart' show FakeCommunity;
 import '../test/fake_identity_repository.dart';
 import '../test/rescue_test.dart' show FakeRescue, FakeCaseUpdates;
+import '../test/expense_field_test.dart' show DraftExpenseRescue;
 import '../test/payments_test.dart' show FakePayments;
 
 import 'package:dopmi_mobile/features/payments/payment_repository.dart';
@@ -580,6 +581,10 @@ void main() {
       ('publish-review-large', '/my-adoptions/post'),
       ('publish-health', '/my-adoptions/post'),
       ('publish-health-large', '/my-adoptions/post'),
+      ('expense-information', '/rescue/expense-one'),
+      ('expense-information-large', '/rescue/expense-one'),
+      ('expense-private', '/rescue/expense-one'),
+      ('expense-private-large', '/rescue/expense-one'),
       ('verification-intro', '/rescue/new?kind=verification'),
       ('verification-intro-large', '/rescue/new?kind=verification'),
       ('verification-form', '/rescue/new?kind=verification'),
@@ -693,6 +698,8 @@ void main() {
         overrides: [
           identityRepositoryProvider.overrideWithValue(repo),
           communityRepositoryProvider.overrideWithValue(community),
+          if (spec.$1.startsWith('expense-'))
+            rescueRepositoryProvider.overrideWithValue(DraftExpenseRescue()),
           if (spec.$1.startsWith('verification-approved') ||
               spec.$1.startsWith('verification-review'))
             rescueRepositoryProvider.overrideWithValue(
@@ -1119,6 +1126,33 @@ void main() {
           tester.element(find.text('Salud')),
           alignment: 0,
         );
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('expense-')) {
+        final next = find.text('Guardar y continuar');
+        await tester.scrollUntilVisible(
+          next,
+          300,
+          maxScrolls: 100,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(next);
+        await tester.pumpAndSettle();
+        tester
+            .state<ScrollableState>(find.byType(Scrollable).first)
+            .position
+            .jumpTo(0);
+        await tester.pumpAndSettle();
+        final target = spec.$1.startsWith('expense-private')
+            ? find.text('Importe pagado en pesos MXN')
+            : find.text('Información para publicación');
+        await tester.scrollUntilVisible(
+          target,
+          300,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await Scrollable.ensureVisible(tester.element(target), alignment: .1);
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('verification-form')) {
