@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/publication_frame.dart';
 import 'rescue_public_photo.dart';
+import 'case_need_row.dart';
 
 class CaseReview extends StatelessWidget {
   const CaseReview({
@@ -156,15 +157,7 @@ class CaseReview extends StatelessWidget {
       heading('Necesidades', onEditNeeds),
       const SizedBox(height: 12),
       for (final item in items) ...[
-        card([
-          ('Necesidad', item['title'] as String),
-          (
-            'Costo estimado',
-            '\$${((item['amount_cents'] as int) / 100).toStringAsFixed(2)} MXN',
-          ),
-          ('Detalles', item['detail'] as String),
-          if (item['urgent'] == true) ('Prioridad solicitada', 'Urgente'),
-        ]),
+        CaseNeedRow(item: item),
         const SizedBox(height: 8),
       ],
       if ((values['need'] ?? '').isNotEmpty)

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../adoption/community_repository.dart';
 import 'case_need_dialog.dart';
+import 'case_need_row.dart';
 import 'case_information.dart';
 import 'rescue_fields.dart';
 
@@ -136,56 +137,15 @@ class CaseNeeds extends StatelessWidget {
         for (final item in items)
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xffe3e4ed)),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item['title'] as String,
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          Text(
-                            'Costo estimado: \$${((item['amount_cents'] as int) / 100).toStringAsFixed(2)} MXN',
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 12,
-                              color: Color(0xff616174),
-                            ),
-                          ),
-                          if (item['urgent'] == true)
-                            const Text(
-                              'Urgente',
-                              style: TextStyle(fontSize: 12),
-                            ),
-                        ],
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: enabled
-                          ? () => onItemsChanged(
-                              items
-                                  .where((i) => i['id'] != item['id'])
-                                  .toList(),
-                            )
-                          : null,
-                      child: const Text('Eliminar'),
-                    ),
-                  ],
-                ),
-              ),
+            child: CaseNeedRow(
+              item: item,
+              showRemove: true,
+              showUrgency: true,
+              onRemove: enabled
+                  ? () => onItemsChanged(
+                      items.where((i) => i['id'] != item['id']).toList(),
+                    )
+                  : null,
             ),
           ),
       ],

@@ -59,6 +59,39 @@ class OwnedHistoryCaptureUpdates extends FakeCaseUpdates {
 }
 
 class CasePublicationCaptureRescue extends DraftCaseRescue {
+  CasePublicationCaptureRescue({this.withNeeds = false});
+  final bool withNeeds;
+  @override
+  Future<Json> detail(String id) async {
+    final data = await super.detail(id);
+    if (withNeeds) {
+      final record = Json.from(data['record'] as Map);
+      record['public_data'] = {
+        ...Json.from(record['public_data'] as Map),
+        'need_items': [
+          {
+            'id': '11111111-1111-4111-8111-111111111111',
+            'type': 'medicine',
+            'title': 'Medicina prescrita',
+            'amount_cents': 12345,
+            'detail': 'Tratamiento indicado para su recuperación.',
+            'urgent': true,
+          },
+          {
+            'id': '22222222-2222-4222-8222-222222222222',
+            'type': 'veterinary',
+            'title': 'Consulta veterinaria',
+            'amount_cents': 70000,
+            'detail': '',
+            'urgent': false,
+          },
+        ],
+      };
+      return {...data, 'record': record};
+    }
+    return data;
+  }
+
   @override
   Future<String> fileUrl(String path) async =>
       'https://fixture.test/case-photo.jpg';
@@ -595,6 +628,10 @@ void main() {
       ('expense-submitted-footer-large', '/rescue/expense-one'),
       ('case-publication', '/rescue/new?kind=case'),
       ('case-publication-large', '/rescue/new?kind=case'),
+      ('case-publication-needs-list', '/rescue/case-one'),
+      ('case-publication-needs-list-large', '/rescue/case-one'),
+      ('case-publication-review-list', '/rescue/case-one'),
+      ('case-publication-review-list-large', '/rescue/case-one'),
       ('case-publication-needs-medicine', '/rescue/case-one'),
       ('case-publication-needs-medicine-large', '/rescue/case-one'),
       ('case-publication-needs-food', '/rescue/case-one'),
@@ -740,7 +777,9 @@ void main() {
           communityRepositoryProvider.overrideWithValue(community),
           if (spec.$1.startsWith('case-publication'))
             rescueRepositoryProvider.overrideWithValue(
-              CasePublicationCaptureRescue(),
+              CasePublicationCaptureRescue(
+                withNeeds: spec.$1.contains('-list'),
+              ),
             ),
           if (spec.$1.startsWith('expense-'))
             rescueRepositoryProvider.overrideWithValue(
@@ -1202,6 +1241,10 @@ void main() {
           await tester.tap(find.text('Continuar'));
           await tester.pumpAndSettle();
         }
+      }
+      if (spec.$1.contains('-list')) {
+        await tester.ensureVisible(find.text('Medicina prescrita'));
+        await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('case-publication-information')) {
         await tester.tap(find.text('Continuar'));
