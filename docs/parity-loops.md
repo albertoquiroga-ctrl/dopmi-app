@@ -664,3 +664,10 @@ hasta que exista evidencia para todo el alcance, no sólo para este perfil.
 - Pendiente auditoría restante de animaciones/gestos, render/rutas completas y dispositivo (ADB sin conexión en45). Codemagic final autorizado continúa pendiente de cierre integral; no afirmar paridad total por estas pruebas.
 
 - Cierre loop46:21 pruebas dirigidas aprobadas. Fuente temporal de evidencia dopmi-parity-loop46-tests.log; no suite completa nueva atribuida.
+
+## Loop 47 — contracción de bienvenida y selección accesible
+
+- Referencia Irlanda inicio/cierre `a3c969cd9103fd46dc5cd886999912526ce75efb`, sin cambios. CSS account-empty-header contrae550ms con cubic(.22,1,.36,1), opacity400ms ease; orb relleno/borde250ms ease. Flutter quitaba encabezado condicionalmente y usaba curva lineal250ms sin reduced motion.
+- WelcomeScreen reemplaza aparición/eliminación abrupta del encabezado por AnimatedCrossFade550ms, sizeCurve equivalente e intervalo400/550 ease para opacidad. Estado final conserva espacio28 seleccionado, encabezado/misión/paw/espacio inicial y enlaces reales. Círculos250ms ease y ambos controles duration0 bajo disableAnimations. No cambia selección/mode/registro/permisos.
+- Analyze limpio antes del último ajuste de intervalo;19 dirigidas navigation/identity antes y19 después aprobadas. Configuración12 aprobada. No nueva suite completa ni captura instalada atribuida; contraste temporal de bienvenida en navegador/dispositivo sigue pendiente, incluidas traducción−12/padding y posición de pregunta450ms que aún no se han reproducido. No declarar paridad de toda bienvenida sólo por esta contracción.
+- ADB pendiente de conexión solicitada en45. Continuar refinamiento restante de bienvenida y auditoría integral; final Codemagic autorizado después del cierre, no disparado en este loop.

@@ -61,37 +61,55 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       alignment: Alignment.centerLeft,
                       child: Brand(),
                     ),
-                    if (selected == null) ...[
-                      const SizedBox(height: 36),
-                      Text(
-                        'Bienvenido a DopMi',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headlineMedium,
+                    AnimatedCrossFade(
+                      duration: MediaQuery.disableAnimationsOf(context)
+                          ? Duration.zero
+                          : const Duration(milliseconds: 550),
+                      firstCurve: const Interval(0, 400 / 550, curve: Curves.ease),
+                      secondCurve: const Interval(0, 400 / 550, curve: Curves.ease),
+                      sizeCurve: const Cubic(.22, 1, .36, 1),
+                      alignment: Alignment.topCenter,
+                      crossFadeState: selected == null
+                          ? CrossFadeState.showFirst
+                          : CrossFadeState.showSecond,
+                      firstChild: Column(
+                        children: [
+                          const SizedBox(height: 36),
+                          Text(
+                            'Bienvenido a DopMi',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                          const SizedBox(height: 12),
+                          const Text(
+                            'Ayuda a mascotas rescatadas de forma segura, simple y transparente.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 13,
+                              height: 1.5,
+                              color: muted,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Center(
+                            child: SvgPicture.asset(
+                              'assets/navigation/choice-paw.svg',
+                              width: 28,
+                              height: 28,
+                            ),
+                          ),
+                          SizedBox(
+                            height:
+                                (constraints.maxHeight - 620).clamp(24, 220) /
+                                2,
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 12),
-                      const Text(
-                        'Ayuda a mascotas rescatadas de forma segura, simple y transparente.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 13,
-                          height: 1.5,
-                          color: muted,
-                        ),
+                      secondChild: const SizedBox(
+                        width: double.infinity,
+                        height: 28,
                       ),
-                      const SizedBox(height: 16),
-                      Center(
-                        child: SvgPicture.asset(
-                          'assets/navigation/choice-paw.svg',
-                          width: 28,
-                          height: 28,
-                        ),
-                      ),
-                      SizedBox(
-                        height:
-                            (constraints.maxHeight - 620).clamp(24, 220) / 2,
-                      ),
-                    ] else
-                      const SizedBox(height: 28),
+                    ),
                     Center(
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 240),
@@ -141,9 +159,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         AnimatedContainer(
-                                          duration: const Duration(
-                                            milliseconds: 250,
-                                          ),
+                                          duration:
+                                              MediaQuery.disableAnimationsOf(
+                                                context,
+                                              )
+                                              ? Duration.zero
+                                              : const Duration(
+                                                  milliseconds: 250,
+                                                ),
+                                          curve: Curves.ease,
                                           width: intent == option.$1
                                               ? 92
                                               : selected == null
