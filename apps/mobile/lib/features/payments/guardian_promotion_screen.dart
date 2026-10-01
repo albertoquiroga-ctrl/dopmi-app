@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import 'contribution_layout.dart';
 
 class GuardianPromotionScreen extends StatefulWidget {
@@ -133,6 +134,8 @@ class _GuardianPromotionState extends State<GuardianPromotionScreen> {
                     selected: active == index,
                     label: 'Ir a la página ${index + 1} de 3',
                     child: InkWell(
+                      splashFactory: NoSplash.splashFactory,
+                      highlightColor: Colors.transparent,
                       onTap: () => select(index),
                       borderRadius: BorderRadius.circular(22),
                       child: SizedBox(
@@ -144,7 +147,7 @@ class _GuardianPromotionState extends State<GuardianPromotionScreen> {
                             height: 8,
                             decoration: BoxDecoration(
                               color: active == index
-                                  ? yellow
+                                  ? DopmiTokens.yellowStrong
                                   : const Color(0xffd9d4cd),
                               borderRadius: BorderRadius.circular(999),
                             ),
