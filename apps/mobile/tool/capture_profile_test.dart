@@ -141,6 +141,7 @@ void main() {
       ('match-empty-large', '/messages'),
       ('chat-bubbles', '/messages/thread-one'),
       ('chat-bubbles-large', '/messages/thread-one'),
+      ('chat-bubbles-rescuer', '/messages/thread-one'),
       ('match-home', '/messages'),
       ('match-home-large', '/messages'),
       ('adoption-support', '/adoptions'),
@@ -208,7 +209,7 @@ void main() {
       if (spec.$1 == 'profile-overview-active') {
         guardian.value = {'plan': activePlan(), 'activation': null};
       }
-      if (spec.$1 == 'publish-choice') {
+      if (spec.$1 == 'publish-choice' || spec.$1 == 'chat-bubbles-rescuer') {
         await repo.setExperience('rescuer');
       }
       final container = ProviderContainer(

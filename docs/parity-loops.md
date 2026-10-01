@@ -406,6 +406,13 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
 - Prueba nueva confirma compositor sobre teclado300 y envío vacío deshabilitado; fixtures de confirmación actualizados al nuevo encabezado sin alterar condiciones de RPC. Flutter136, analyze limpio, configuración12 y capturador35 estados aprobados. Capturas normal377×852 y320×640/200% inspeccionadas: historial desplaza, compositor permanece accesible.
 - Pendientes: comparación simultánea en navegador, medidas exactas de barra/campo/superficies, acento del compositor rescatista, conservación de scroll y teclado físico. No atribuir paridad global ni aceptación instalada. Codemagic final sigue autorizado y pendiente de completar objetivo.
 
+## Loop 21 — medidas renderizadas del chat y modo rescatista
+
+- Referencia Irlanda inicio/cierre `a3c969cd9103fd46dc5cd886999912526ce75efb`, sin cambios. Vite local y navegador IAB a377×852: TopBar70, compositor77.6, input44.8/padding12×14/radio14, botón40 de ancho. ComputedStyle confirmó burbujas14/21.7 (el párrafo global prevalece sobre contenedor16); se corrige la suposición del loop19.
+- AppBar70 con borde por experiencia, título centrado, volver con SVG exacto y Ver detalle12/600/subrayado. Compositor usa borde y padding de referencia; botón alto calculado con fuente para conservar accesibilidad y texto multilineal. Adoptante amarillo/ink; rescatista lila#b995ff/icono blanco; ListenableBuilder reacciona a preferencia real sin conceder permisos. Texto de burbuja14/1.55.
+- analyze limpio, Flutter136, configuración12 y capturador36 estados aprobados. Inspeccionadas capturas normal/ampliada y rescatista; datos sintéticos, sin conversaciones reales. Referencias navegador archivadas conservan imágenes/textos propios del mockup y control Modo prueba; no equivalencia de fotos/píxeles afirmada. Campo vacío/deshabilitado y envío sintético en mockup comprobados; envío real/idempotencia cubiertos por suite existente.
+- Pendientes: scroll al enviar/recibir/teclado y mensajes anteriores, participante real en payload cuando disponible, menú real de cierre adicional a mockup, adjuntos según alcance autorizado, teclado/gestos instalados y comparación integral de rutas. No declarar paridad completa. Codemagic final continúa autorizado, pendiente del objetivo completo.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián

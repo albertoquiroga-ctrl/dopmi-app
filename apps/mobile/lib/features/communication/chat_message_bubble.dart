@@ -50,8 +50,8 @@ class ChatMessageBubble extends ConsumerWidget {
                     message['body'] as String? ?? '',
                     style: TextStyle(
                       fontFamily: 'Inter',
-                      fontSize: 16,
-                      height: 1.5,
+                      fontSize: 14,
+                      height: 1.55,
                       color: mine && rescuer ? Colors.white : ink,
                     ),
                   ),
