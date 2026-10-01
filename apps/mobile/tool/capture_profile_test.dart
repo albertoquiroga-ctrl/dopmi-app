@@ -79,6 +79,8 @@ void main() {
         'tab-adoption',
         'tab-donate',
         'intent-rescuer',
+        'icon-x-muted',
+        'discovery-message',
       ])
         'assets/profile/$name.svg',
       for (final name in [
@@ -100,6 +102,8 @@ void main() {
     await tester.runAsync(() => out.create(recursive: true));
     for (final spec in [
       ('adoption-swipe', '/adoptions'),
+      ('adoption-large', '/adoptions'),
+      ('adoption-drag', '/adoptions'),
       ('profile-overview', '/profile'),
       ('profile-overview-active', '/profile'),
       ('profile-overview-large', '/profile'),
@@ -122,6 +126,14 @@ void main() {
       tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
       final guardian = FakeGuardian();
+      final community = FakeCommunity();
+      if (spec.$1 == 'adoption-drag') {
+        // The actual deck includes a second card beneath a drag.
+        community.discoveryItems = [
+          community.post,
+          Adoption({...community.post.data, 'id': 'next', 'pet_name': 'Milo'}),
+        ];
+      }
       if (spec.$1 == 'profile-overview-active') {
         guardian.value = {'plan': activePlan(), 'activation': null};
       }
@@ -131,7 +143,7 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           identityRepositoryProvider.overrideWithValue(repo),
-          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          communityRepositoryProvider.overrideWithValue(community),
           guardianEnabledProvider.overrideWithValue(true),
           guardianRepositoryProvider.overrideWithValue(guardian),
           profilePaymentHistoryProvider.overrideWithValue(
@@ -156,6 +168,19 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1 == 'adoption-drag') {
+        final gesture = await tester.startGesture(
+          tester.getCenter(find.text('Luna')),
+        );
+        await gesture.moveBy(const Offset(65, 0));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 180));
+        await tester.runAsync(
+          () => saveCapture(key, '${out.path}/${spec.$1}.png'),
+        );
+        await gesture.cancel();
+        await tester.pumpAndSettle();
+      }
       if (spec.$1 == 'profile-support') {
         await tester.drag(find.byType(ListView).first, const Offset(0, -1600));
         await tester.pumpAndSettle();
@@ -176,9 +201,11 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.byType(DonorModeDialog), findsOneWidget);
       }
-      await tester.runAsync(
-        () => saveCapture(key, '${out.path}/${spec.$1}.png'),
-      );
+      if (spec.$1 != 'adoption-drag') {
+        await tester.runAsync(
+          () => saveCapture(key, '${out.path}/${spec.$1}.png'),
+        );
+      }
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
       container.dispose();

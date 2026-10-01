@@ -1,5 +1,9 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/measurement.dart';
@@ -17,6 +21,11 @@ const personalityLabels = <String, String>{
   'independent': 'Independiente',
 };
 
+double discoveryMediaHeight(BuildContext context) => math.max(
+  (MediaQuery.sizeOf(context).height - 220).clamp(340, 560) - 128,
+  MediaQuery.textScalerOf(context).scale(200),
+);
+
 class DiscoveryScreen extends ConsumerStatefulWidget {
   const DiscoveryScreen({super.key});
   @override
@@ -29,6 +38,8 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   Json filters = {'species': 'dog'};
   int index = 0, page = 1, total = 0;
   double dragX = 0;
+  bool dragging = false;
+  int exiting = 0;
   bool loading = true, acting = false, exhausted = false;
   String? error;
 
@@ -61,6 +72,9 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
         index = 0;
         page = 1;
         exhausted = false;
+        dragX = 0;
+        dragging = false;
+        exiting = 0;
       }
     });
     try {
@@ -84,7 +98,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
     }
   }
 
-  Future<void> advance({required bool save}) async {
+  Future<void> advance({required bool save, int? direction}) async {
     final items = deck;
     if (acting || index >= items.length) return;
     final card = items[index];
@@ -106,15 +120,31 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
       }
       if (!mounted) return;
       setState(() {
+        dragging = false;
+        exiting = direction ?? (save ? 1 : -1);
+      });
+      if (!MediaQuery.disableAnimationsOf(context)) {
+        await Future<void>.delayed(const Duration(milliseconds: 280));
+      }
+      if (!mounted) return;
+      setState(() {
         index++;
         dragX = 0;
+        exiting = 0;
       });
       if (!exhausted && deck.length - index <= 2) {
         page++;
         await load(reset: false);
       }
     } catch (cause) {
-      if (mounted) setState(() => error = communityError(cause));
+      if (mounted) {
+        setState(() {
+          error = communityError(cause);
+          dragX = 0;
+          dragging = false;
+          exiting = 0;
+        });
+      }
     } finally {
       if (mounted) setState(() => acting = false);
     }
@@ -211,6 +241,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   }
 
   void chooseSpecies(String species) {
+    if (acting) return;
     if (filters['species'] == species) return;
     filters['species'] = species;
     load(reset: true);
@@ -220,112 +251,235 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   Widget build(BuildContext context) {
     final items = deck;
     final current = index < items.length ? items[index] : null;
-    return CommunityFrame(
-      index: 0,
-      back: false,
-      showNotifications: false,
-      showAppBar: false,
-      children: [
-        Row(
+    return Scaffold(
+      extendBody: true,
+      backgroundColor: Colors.white,
+      bottomNavigationBar: const CommunityNav(0),
+      body: SafeArea(
+        bottom: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(18, 16, 18, 110),
           children: [
-            const CircleAvatar(
-              backgroundColor: purple,
-              foregroundColor: Colors.white,
-              child: Icon(Icons.pets),
+            Row(
+              children: [
+                SvgPicture.asset(
+                  'assets/profile/logo-paw.svg',
+                  width: 40,
+                  height: 40,
+                  semanticsLabel: 'Dopmi',
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: TextButton(
+                    onPressed: acting ? null : openLocation,
+                    style: TextButton.styleFrom(
+                      alignment: Alignment.centerLeft,
+                      foregroundColor: ink,
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.location_on_outlined, size: 14),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            filters['city'] as String? ?? 'Elegir ubicación',
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              height: 1.2,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                IconButton(
+                  tooltip: 'Notificaciones',
+                  onPressed: () => context.push('/notifications'),
+                  icon: SvgPicture.asset(
+                    'assets/profile/icon-bell.svg',
+                    width: 24,
+                    height: 24,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: TextButton.icon(
-                onPressed: openLocation,
-                icon: const Icon(Icons.location_on_outlined, size: 18),
-                label: Text(filters['city'] as String? ?? 'Elegir ubicación'),
-                style: TextButton.styleFrom(alignment: Alignment.centerLeft),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: Wrap(
+                    spacing: 18,
+                    children: [
+                      for (final species in const [
+                        ('dog', 'Perros'),
+                        ('cat', 'Gatos'),
+                      ])
+                        TextButton(
+                          onPressed: acting
+                              ? null
+                              : () => chooseSpecies(species.$1),
+                          style: TextButton.styleFrom(
+                            minimumSize: const Size(0, 48),
+                            padding: const EdgeInsets.symmetric(horizontal: 2),
+                            foregroundColor: filters['species'] == species.$1
+                                ? ink
+                                : const Color(0xff9a9289),
+                            textStyle: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: filters['species'] == species.$1
+                                  ? 28
+                                  : 22,
+                              fontWeight: filters['species'] == species.$1
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
+                              letterSpacing: 0,
+                            ),
+                          ),
+                          child: Text(species.$2),
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                IconButton(
+                  tooltip: 'Filtros',
+                  onPressed: acting ? null : openFilters,
+                  icon: const Icon(Icons.tune),
+                ),
+              ],
+            ),
+            const SizedBox(height: 36),
+            if (error != null) ...[
+              Notice(error!, isError: true),
+              TextButton(
+                onPressed: () => load(reset: cards.isEmpty),
+                child: const Text('Volver a intentar'),
               ),
-            ),
-            IconButton(
-              tooltip: 'Mis match',
-              onPressed: () => context.go('/messages'),
-              icon: const Icon(Icons.favorite_border),
-            ),
-            IconButton(
-              tooltip: 'Notificaciones',
-              onPressed: () => context.push('/notifications'),
-              icon: const Icon(Icons.notifications_none),
-            ),
+            ],
+            if (loading && cards.isEmpty)
+              const SizedBox(
+                height: 420,
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else if (current == null)
+              _DeckEnd(
+                filtered: filters.keys.any((key) => key != 'species'),
+                restart: () => setState(() => index = 0),
+                filters: openFilters,
+              )
+            else if (current is Adoption)
+              DiscoveryStack(
+                next: index + 1 < items.length && items[index + 1] is Adoption
+                    ? items[index + 1] as Adoption
+                    : null,
+                child: _SwipeCard(
+                  current,
+                  dragX: dragX,
+                  dragging: dragging,
+                  exiting: exiting,
+                  busy: acting,
+                  onDrag: (value) => setState(() => dragX = value),
+                  onStart: () => setState(() => dragging = true),
+                  onCancel: () => setState(() {
+                    dragging = false;
+                    dragX = 0;
+                  }),
+                  onEnd: () {
+                    if (dragX.abs() <= 110) {
+                      setState(() {
+                        dragging = false;
+                        dragX = 0;
+                      });
+                    } else {
+                      advance(save: dragX > 0);
+                    }
+                  },
+                  pass: () => advance(save: false),
+                  like: () => advance(save: true),
+                  contact: () => contact(current),
+                  open: () async {
+                    await context.push('/adoptions/${current.id}');
+                    if (mounted) await refreshCard(current.id);
+                  },
+                ),
+              )
+            else
+              _SupportCard(
+                current as SupportOpportunity,
+                busy: acting,
+                pass: () => advance(save: false),
+                support: () => advance(save: true),
+                open: () => context.push('/rescue-cases/${current.id}'),
+              ),
           ],
         ),
-        const SizedBox(height: 10),
-        Row(
-          children: [
-            Expanded(
-              child: SegmentedButton<String>(
-                segments: const [
-                  ButtonSegment(value: 'dog', label: Text('Perros')),
-                  ButtonSegment(value: 'cat', label: Text('Gatos')),
-                ],
-                selected: {filters['species'] as String},
-                onSelectionChanged: (value) => chooseSpecies(value.first),
-              ),
-            ),
-            const SizedBox(width: 10),
-            IconButton.filledTonal(
-              tooltip: 'Filtros',
-              onPressed: openFilters,
-              icon: const Icon(Icons.tune),
-            ),
-          ],
-        ),
-        const SizedBox(height: 18),
-        if (error != null) ...[
-          Notice(error!, isError: true),
-          TextButton(
-            onPressed: () => load(reset: cards.isEmpty),
-            child: const Text('Volver a intentar'),
-          ),
-        ],
-        if (loading && cards.isEmpty)
-          const SizedBox(
-            height: 420,
-            child: Center(child: CircularProgressIndicator()),
-          )
-        else if (current == null)
-          _DeckEnd(
-            filtered: filters.keys.any((key) => key != 'species'),
-            restart: () => setState(() => index = 0),
-            filters: openFilters,
-          )
-        else if (current is Adoption)
-          _SwipeCard(
-            current,
-            dragX: dragX,
-            busy: acting,
-            onDrag: (value) => setState(() => dragX = value),
-            onEnd: () {
-              if (dragX.abs() < 95) {
-                setState(() => dragX = 0);
-              } else {
-                advance(save: dragX > 0);
-              }
-            },
-            pass: () => advance(save: false),
-            like: () => advance(save: true),
-            contact: () => contact(current),
-            open: () async {
-              await context.push('/adoptions/${current.id}');
-              if (mounted) await refreshCard(current.id);
-            },
-          )
-        else
-          _SupportCard(
-            current as SupportOpportunity,
-            busy: acting,
-            pass: () => advance(save: false),
-            support: () => advance(save: true),
-            open: () => context.push('/rescue-cases/${current.id}'),
-          ),
-      ],
+      ),
     );
   }
+}
+
+class DiscoveryStack extends StatelessWidget {
+  const DiscoveryStack({super.key, required this.child, this.next});
+  final Widget child;
+  final Adoption? next;
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    height: discoveryMediaHeight(context) + 128,
+    child: Stack(
+      clipBehavior: Clip.none,
+      children: [
+        for (final far in [true, false])
+          Positioned(
+            top: far ? 14 : 7,
+            left: far ? 22 : 11,
+            right: far ? 22 : 11,
+            bottom: far ? 0 : 8,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(32),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x2415110d),
+                    blurRadius: 28,
+                    offset: Offset(0, 10),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        if (next != null)
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 16,
+            child: ExcludeSemantics(
+              child: IgnorePointer(
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 100),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(32),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(22),
+                    child: next!.photos.isEmpty
+                        ? const ColoredBox(color: Color(0xffcfc9c0))
+                        : AdoptionPhoto(next!.photos.first),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        Positioned(top: 0, left: 0, right: 0, bottom: 16, child: child),
+      ],
+    ),
+  );
 }
 
 class _SupportCard extends StatelessWidget {
@@ -386,8 +540,12 @@ class _SwipeCard extends StatelessWidget {
   const _SwipeCard(
     this.post, {
     required this.dragX,
+    required this.dragging,
+    required this.exiting,
     required this.busy,
     required this.onDrag,
+    required this.onStart,
+    required this.onCancel,
     required this.onEnd,
     required this.pass,
     required this.like,
@@ -396,127 +554,327 @@ class _SwipeCard extends StatelessWidget {
   });
   final Adoption post;
   final double dragX;
+  final bool dragging;
+  final int exiting;
   final bool busy;
   final ValueChanged<double> onDrag;
-  final VoidCallback onEnd, pass, like, contact, open;
+  final VoidCallback onStart, onCancel, onEnd, pass, like, contact, open;
   @override
   Widget build(BuildContext context) => AnimatedContainer(
-    duration: const Duration(milliseconds: 180),
+    key: ValueKey('discovery-motion-${post.id}'),
+    duration: MediaQuery.disableAnimationsOf(context) || dragging
+        ? Duration.zero
+        : Duration(milliseconds: exiting == 0 ? 250 : 280),
+    curve: const Cubic(.22, 1, .36, 1),
     transform: Matrix4.identity()
-      ..translateByDouble(dragX, 0, 0, 1)
-      ..rotateZ(dragX / 900),
-    transformAlignment: Alignment.bottomCenter,
-    child: GestureDetector(
-      onHorizontalDragUpdate: busy
-          ? null
-          : (event) => onDrag((dragX + event.delta.dx).clamp(-180, 180)),
-      onHorizontalDragEnd: busy ? null : (_) => onEnd(),
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        margin: EdgeInsets.zero,
-        child: Column(
-          children: [
-            InkWell(
-              onTap: open,
-              child: SizedBox(
-                height: 390,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    if (post.photos.isEmpty)
-                      const ColoredBox(
-                        color: Color(0xffeeeae5),
-                        child: Icon(Icons.pets, size: 80),
-                      )
-                    else
-                      AdoptionPhoto(post.photos.first),
-                    const DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.transparent, Color(0xcc17131c)],
-                          stops: [0.45, 1],
+      ..translateByDouble(exiting == 0 ? dragX : exiting * 420, 0, 0, 1)
+      ..rotateZ((exiting == 0 ? dragX / 28 : exiting * 18) * math.pi / 180),
+    transformAlignment: Alignment.center,
+    child: AnimatedOpacity(
+      opacity: exiting == 0 ? 1 : .35,
+      duration: MediaQuery.disableAnimationsOf(context)
+          ? Duration.zero
+          : const Duration(milliseconds: 280),
+      curve: Curves.ease,
+      child: GestureDetector(
+        dragStartBehavior: DragStartBehavior.down,
+        onHorizontalDragStart: busy ? null : (_) => onStart(),
+        onHorizontalDragUpdate: busy
+            ? null
+            : (event) => onDrag(dragX + event.delta.dx),
+        onHorizontalDragEnd: busy ? null : (_) => onEnd(),
+        onHorizontalDragCancel: busy ? null : onCancel,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(32),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x0f15110d),
+                blurRadius: 8,
+                offset: Offset(0, 2),
+              ),
+              BoxShadow(
+                color: Color(0x2415110d),
+                blurRadius: 32,
+                offset: Offset(0, 16),
+              ),
+              BoxShadow(
+                color: Color(0x1f15110d),
+                blurRadius: 56,
+                offset: Offset(0, 28),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(32),
+            child: Material(
+              color: Colors.white,
+              child: Column(
+                children: [
+                  InkWell(
+                    onTap: busy ? null : open,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(22),
+                        child: SizedBox(
+                          height: discoveryMediaHeight(context),
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              if (post.photos.isEmpty)
+                                const ColoredBox(
+                                  color: Color(0xffeeeae5),
+                                  child: Icon(Icons.pets, size: 80),
+                                )
+                              else
+                                AdoptionPhoto(post.photos.first),
+                              const DecoratedBox(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Colors.transparent,
+                                      Colors.transparent,
+                                      Color(0x8c15110d),
+                                      Color(0xe015110d),
+                                      Color(0xf015110d),
+                                    ],
+                                    stops: [0, .36, .63, .86, 1],
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                left: 16,
+                                right: 16,
+                                bottom: 14,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      post.name,
+                                      style: const TextStyle(
+                                        fontFamily: 'Fraunces',
+                                        fontSize: 28,
+                                        height: 1.1,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                        letterSpacing: 0,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      '${post.text('city')}, ${post.text('region')}',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                        letterSpacing: 0,
+                                      ),
+                                    ),
+                                    if (post.data['distance_km'] != null)
+                                      Text(
+                                        '${post.data['distance_km']} km aprox.',
+                                        style: const TextStyle(
+                                          color: Colors.white70,
+                                        ),
+                                      ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      post.text('story'),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        height: 1.45,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white,
+                                        letterSpacing: 0,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Wrap(
+                                      spacing: 6,
+                                      children:
+                                          [
+                                                post.text('sex') == 'female'
+                                                    ? 'Hembra'
+                                                    : 'Macho',
+                                                {
+                                                      'small': 'Chico',
+                                                      'medium': 'Mediano',
+                                                      'large': 'Grande',
+                                                    }[post.text('size')] ??
+                                                    '',
+                                              ]
+                                              .map(
+                                                (label) => Container(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 6,
+                                                      ),
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(
+                                                      0x7315110d,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          999,
+                                                        ),
+                                                    border: Border.all(
+                                                      color: const Color(
+                                                        0x2effffff,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: Text(
+                                                    label,
+                                                    style: const TextStyle(
+                                                      fontSize: 11,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      color: Colors.white,
+                                                      letterSpacing: 0,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                              .toList(),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                    Positioned(
-                      left: 20,
-                      right: 20,
-                      bottom: 20,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            post.name,
-                            style: Theme.of(context).textTheme.headlineMedium
-                                ?.copyWith(color: Colors.white),
-                          ),
-                          Text(
-                            '${post.text('city')}, ${post.text('region')}',
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          if (post.data['distance_km'] != null)
-                            Text(
-                              '${post.data['distance_km']} km aprox.',
-                              style: const TextStyle(color: Colors.white70),
-                            ),
-                          const SizedBox(height: 6),
-                          Text(
-                            post.text('story'),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          const SizedBox(height: 8),
-                          Wrap(
-                            spacing: 6,
-                            children: [
-                              post.text('sex') == 'female' ? 'Hembra' : 'Macho',
-                              {
-                                    'small': 'Chico',
-                                    'medium': 'Mediano',
-                                    'large': 'Grande',
-                                  }[post.text('size')] ??
-                                  '',
-                            ].map((label) => Chip(label: Text(label))).toList(),
-                          ),
-                        ],
-                      ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        DiscoveryControl(
+                          label: 'Pasar',
+                          icon: Icons.close,
+                          hot: dragX < -12 || exiting < 0,
+                          pass: true,
+                          onPressed: busy ? null : pass,
+                        ),
+                        const SizedBox(width: 18),
+                        DiscoveryControl(
+                          label: 'Contactar',
+                          icon: Icons.chat_bubble_outline,
+                          message: true,
+                          onPressed: busy ? null : contact,
+                        ),
+                        const SizedBox(width: 18),
+                        DiscoveryControl(
+                          label: 'Me gusta',
+                          icon: Icons.favorite_border,
+                          hot: dragX > 12 || exiting > 0,
+                          onPressed: busy ? null : like,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton.filledTonal(
-                    tooltip: 'Pasar',
-                    onPressed: busy ? null : pass,
-                    icon: const Icon(Icons.close),
-                  ),
-                  IconButton.filled(
-                    tooltip: 'Contactar',
-                    onPressed: busy ? null : contact,
-                    icon: const Icon(Icons.chat_bubble_outline),
-                  ),
-                  IconButton.filledTonal(
-                    tooltip: 'Me gusta',
-                    onPressed: busy ? null : like,
-                    icon: const Icon(Icons.favorite_border),
                   ),
                 ],
               ),
             ),
-            if (busy) const LinearProgressIndicator(),
-          ],
+          ),
         ),
       ),
     ),
   );
+}
+
+class DiscoveryControl extends StatelessWidget {
+  const DiscoveryControl({
+    super.key,
+    required this.label,
+    required this.icon,
+    required this.onPressed,
+    this.hot = false,
+    this.pass = false,
+    this.message = false,
+  });
+  final String label;
+  final IconData icon;
+  final VoidCallback? onPressed;
+  final bool hot, pass, message;
+  @override
+  Widget build(BuildContext context) {
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    final fill = message
+        ? ink
+        : hot
+        ? (pass ? const Color(0xffd92d20) : yellow)
+        : Colors.white;
+    final foreground = message || (hot && pass)
+        ? Colors.white
+        : pass
+        ? const Color(0xff8a837c)
+        : ink;
+    return AnimatedScale(
+      scale: hot ? 1.14 : 1,
+      duration: reduce ? Duration.zero : const Duration(milliseconds: 180),
+      curve: const Cubic(.22, 1, .36, 1),
+      child: AnimatedContainer(
+        width: message ? 64 : 58,
+        height: message ? 64 : 58,
+        duration: reduce ? Duration.zero : const Duration(milliseconds: 180),
+        curve: Curves.ease,
+        decoration: BoxDecoration(
+          color: fill,
+          shape: BoxShape.circle,
+          border: Border.all(
+            width: 1.5,
+            color: hot || message
+                ? Colors.transparent
+                : const Color(0xffe4e0d9),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: hot
+                  ? fill.withValues(alpha: .35)
+                  : ink.withValues(alpha: message ? .28 : .08),
+              blurRadius: hot
+                  ? 24
+                  : message
+                  ? 20
+                  : 12,
+              offset: Offset(
+                0,
+                hot
+                    ? 10
+                    : message
+                    ? 8
+                    : 4,
+              ),
+            ),
+          ],
+        ),
+        child: IconButton(
+          tooltip: label,
+          onPressed: onPressed,
+          icon: SvgPicture.asset(
+            'assets/profile/${message
+                ? 'discovery-message.svg'
+                : pass
+                ? 'icon-x-muted.svg'
+                : 'icon-heart.svg'}',
+            width: message ? 24 : 26,
+            height: message ? 24 : 26,
+            colorFilter: ColorFilter.mode(foreground, BlendMode.srcIn),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _DeckEnd extends StatelessWidget {

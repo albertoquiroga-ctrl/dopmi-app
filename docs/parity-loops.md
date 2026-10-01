@@ -121,6 +121,42 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
 - Próximo: terminar composición informativa y encabezado/badge con datos reales;
   luego comparar Adoptar, detalle, filtros y gestos contra la misma referencia.
 
+## Loop 04 · Adoptar: tarjeta y movimiento · 2026-09-30
+
+- Referencia inicio/cierre: `a3c969cd9103fd46dc5cd886999912526ce75efb`
+  en `irlanda/apoyar-detalle-perfil`; remoto reconsultado en ambos extremos.
+  PR6 abierto/draft, head remoto cae3c3c/base ba9f897 comprobados por GitHub
+  y git ls-remote. Se continúa el checkout local sin incluir cambios del titular.
+- Adoptar: encabezado con logo/campana originales, categorías tipográficas,
+  tarjeta radio32/media22, padding12, degradado, etiquetas oscuras, sombras
+  y controles58/64 con SVG de la referencia. Barra superpuesta; acciones de
+  mensajes/favoritos conservadas en Favoritos. La ubicación exige selección
+  real y no afirma Monterrey cuando no existe un filtro del usuario.
+- Gesto: seguimiento inmediato, rotación delta/28 grados, umbral estricto
+  ±110px, retorno250ms y salida280ms/cubic(.22,1,.36,1), ±420px/±18grados,
+  opacidad.35. Control caliente desde±12px, escala1.14/180ms. Cancelar vuelve
+  sin persistir; reducción de movimiento omite tiempos. La tarjeta siguiente
+  aparece detrás sin botones ni semántica interactiva; entra centrada.
+- Guardar espera confirmación real antes de salir, bloquea duplicados y
+  conserva tarjeta/error si falla. Texto200% aumenta altura de media para
+  evitar recortar nombre; categorías envuelven y la lista permite alcanzar
+  controles. No se cambió repositorio, backend ni autorización.
+- Gate:115 pruebas Flutter completas aprobadas después de corregir la
+  prueba que aún buscaba el acceso viejo Mis match. Incluyen arrastre inmediato,
+  umbral, cancelación, duración, tarjeta siguiente, guardado pendiente/fallo,
+  texto ampliado y reducción de movimiento. Configuración12 aprobadas;
+  capturador14 estados aprobado. Analyze final lib/test/tool sin incidencias.
+  Copia temporal fuera de OneDrive: lib/assets/test/tool idénticos por SHA256.
+- Evidencia: reference-adoption y adoption-swipe/drag/large en
+  `docs/design-reviews/parity-loop-04`,377×852 y320×640/texto200%.
+  Referencia ejecutada en navegador; se compara composición, no la fotografía
+  ficticia de Rocky con la fixture sin foto de Luna. Vite/tab temporales cerrados.
+- Pendientes de este recorrido: filtro/ubicación y sus hojas, confirmación de
+  contacto, detalle, vacíos/fin, badge de notificaciones con datos reales,
+  tarjeta de apoyo intercalada (todavía usa composición anterior y sin gesto),
+  capa siguiente cuando es apoyo, y verificación instalada. No paridad global,
+  aceptación visual, CI remoto ni Codemagic atribuidos a este checkpoint.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián

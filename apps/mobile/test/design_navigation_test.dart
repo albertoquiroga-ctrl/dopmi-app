@@ -118,9 +118,10 @@ void main() {
       },
     );
   }
-  testWidgets('Mis match can return to Adoptar from the donor navigation', (
+  testWidgets('favorites can return to Adoptar from the donor navigation', (
     tester,
   ) async {
+    final semantics = tester.ensureSemantics();
     final identity = FakeIdentityRepository()
       ..user = const Identity('one', 'ana@example.test', verified: true);
     final container = ProviderContainer(
@@ -139,15 +140,16 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byTooltip('Mis match'));
+    await tester.tap(find.bySemanticsLabel('Favoritos'));
     await tester.pumpAndSettle();
     expect(container.read(routerProvider).state.uri.path, '/messages');
 
     await tester.tap(find.bySemanticsLabel('Adoptar'));
     await tester.pumpAndSettle();
     expect(container.read(routerProvider).state.uri.path, '/adoptions');
-    expect(find.byTooltip('Mis match'), findsOneWidget);
+    expect(find.text('Luna'), findsOneWidget);
     expect(tester.takeException(), isNull);
+    semantics.dispose();
   });
   testWidgets('donor favorites navigation uses the real messages branch', (
     tester,
