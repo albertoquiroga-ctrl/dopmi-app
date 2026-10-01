@@ -323,6 +323,8 @@ void main() {
       ('chat-bubbles', '/messages/thread-one'),
       ('chat-bubbles-large', '/messages/thread-one'),
       ('chat-bubbles-rescuer', '/messages/thread-one'),
+      ('rescuer-home', '/rescuer'),
+      ('rescuer-home-large', '/rescuer'),
       ('support-home', '/rescue-cases'),
       ('support-home-large', '/rescue-cases'),
       ('case-detail', '/rescue-cases/case-one'),
@@ -481,13 +483,14 @@ void main() {
           'activation': null,
         };
       }
-      if (spec.$1 == 'publish-choice' || spec.$1 == 'chat-bubbles-rescuer') {
+      if (spec.$1.startsWith('rescuer-home') || spec.$1 == 'publish-choice' || spec.$1 == 'chat-bubbles-rescuer') {
         await repo.setExperience('rescuer');
       }
       final container = ProviderContainer(
         overrides: [
           identityRepositoryProvider.overrideWithValue(repo),
           communityRepositoryProvider.overrideWithValue(community),
+          if (spec.$1.startsWith('rescuer-home')) rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           if (spec.$1.startsWith('payment-history'))
             paymentRepositoryProvider.overrideWithValue(
               HistoryCapturePayments(empty: spec.$1.endsWith('-empty')),

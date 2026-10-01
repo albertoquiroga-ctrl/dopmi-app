@@ -97,47 +97,9 @@ class _RescuerDashboard extends StatelessWidget {
             ),
           ),
         if (verification == 'approved')
-          Card(
-            color: purple,
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Text(
-                    'Resumen comprobado',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Wrap(
-                    alignment: WrapAlignment.spaceBetween,
-                    runSpacing: 14,
-                    children: [
-                      _DashboardAmount(
-                        'Asignado',
-                        financial['assigned_cents'] as int? ?? 0,
-                      ),
-                      _DashboardAmount(
-                        'Transferido',
-                        financial['transferred_cents'] as int? ?? 0,
-                      ),
-                      _DashboardAmount(
-                        'En revisión',
-                        financial['in_review_cents'] as int? ?? 0,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    '${counts['active'] ?? 0} casos activos',
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
+          RescuerFundingSummary(
+            financial: financial,
+            activeCases: counts['active'] as int? ?? 0,
           ),
         const SizedBox(height: 20),
         Row(
@@ -226,27 +188,151 @@ String _verificationTitle(String status) => switch (status) {
   _ => 'Verifícate para recibir aportaciones',
 };
 
-class _DashboardAmount extends StatelessWidget {
-  const _DashboardAmount(this.label, this.cents);
-  final String label;
-  final int cents;
+class RescuerFundingSummary extends StatelessWidget {
+  const RescuerFundingSummary({
+    super.key,
+    required this.financial,
+    required this.activeCases,
+  });
+  final Json financial;
+  final int activeCases;
   @override
-  Widget build(BuildContext context) => SizedBox(
-    width: 96,
-    child: Column(
+  Widget build(BuildContext context) {
+    final large = MediaQuery.textScalerOf(context).scale(18) > 27;
+    final assigned = pesos(financial['assigned_cents'] as int? ?? 0);
+    Widget statistic(String label, String field) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          pesos(cents),
+          label,
           style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w800,
+            fontSize: 14,
+            height: 1.4,
+            color: Color(0xfff0e7ff),
           ),
         ),
-        Text(label, style: const TextStyle(color: Colors.white70)),
+        const SizedBox(height: 2),
+        Text(
+          pesos(financial[field] as int? ?? 0),
+          style: const TextStyle(
+            fontSize: 18,
+            height: 1.3,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
       ],
-    ),
-  );
+    );
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(28),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xff7c3aed), Color(0xff6d28d9)],
+        ),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x477841f2),
+            blurRadius: 20,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            spacing: 12,
+            runSpacing: 8,
+            children: [
+              const Wrap(
+                spacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Icon(
+                    Icons.account_balance_wallet_outlined,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                  Text(
+                    'Resumen comprobado',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+                decoration: BoxDecoration(
+                  color: const Color(0x38ffffff),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Text(
+                  '$activeCases casos activos',
+                  style: const TextStyle(fontSize: 12, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          if (large) ...[
+            Text(
+              assigned.replaceAll(' MXN', ''),
+              style: const TextStyle(
+                fontSize: 32,
+                height: 1,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
+            ),
+            const Text(
+              'MXN',
+              style: TextStyle(fontSize: 14, color: Colors.white),
+            ),
+          ] else
+            Text(
+              assigned,
+              style: const TextStyle(
+                fontSize: 48,
+                height: 1,
+                letterSpacing: .35,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
+            ),
+          const SizedBox(height: 8),
+          const Text(
+            'Asignado a gastos aprobados',
+            style: TextStyle(
+              fontSize: 14,
+              height: 1.4,
+              color: Color(0xfff0e7ff),
+            ),
+          ),
+          const SizedBox(height: 16),
+          if (large) ...[
+            statistic('Transferido', 'transferred_cents'),
+            const SizedBox(height: 12),
+            statistic('En revisión', 'in_review_cents'),
+          ] else
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: statistic('Transferido', 'transferred_cents')),
+                const SizedBox(width: 12),
+                Expanded(child: statistic('En revisión', 'in_review_cents')),
+              ],
+            ),
+        ],
+      ),
+    );
+  }
 }
 
 class RescueList extends ConsumerStatefulWidget {
