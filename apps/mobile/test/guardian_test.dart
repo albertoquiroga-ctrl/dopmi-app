@@ -157,6 +157,10 @@ void main() {
     );
     await pumpUntil(tester, find.text('Suscripción Dopmi'));
     await tester.pumpAndSettle();
+    if (enabled && find.text('Suscribirme').evaluate().isNotEmpty) {
+      await tester.tap(find.text('Suscribirme'));
+      await tester.pumpAndSettle();
+    }
   }
 
   Future<void> consent(WidgetTester tester) async {

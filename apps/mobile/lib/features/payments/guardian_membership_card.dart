@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/ui.dart';
 import '../rescue/rescue_repository.dart';
+import 'contribution_layout.dart';
 
 class GuardianMembershipCard extends StatelessWidget {
   const GuardianMembershipCard({
@@ -191,4 +192,58 @@ class GuardianMembershipCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class GuardianInactiveCard extends StatelessWidget {
+  const GuardianInactiveCard({super.key, required this.onSubscribe});
+  final VoidCallback? onSubscribe;
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(18),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      border: Border.all(color: const Color(0xffe6e2dd)),
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 12,
+          runSpacing: 10,
+          children: [
+            const Text(
+              'Suscripción mensual',
+              style: TextStyle(
+                fontSize: 16,
+                height: 1.2,
+                fontWeight: FontWeight.w700,
+                color: ink,
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: const Color(0xffefede8),
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: const Text(
+                'Sin suscripción',
+                style: TextStyle(
+                  fontSize: 12,
+                  height: 1.2,
+                  fontWeight: FontWeight.w600,
+                  color: muted,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        ContributionButton('Suscribirme', onPressed: onSubscribe),
+      ],
+    ),
+  );
 }

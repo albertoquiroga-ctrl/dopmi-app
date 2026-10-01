@@ -336,6 +336,9 @@ void main() {
       ('guardian-billing-cancel-large', '/guardian'),
       ('guardian-billing-history-large', '/guardian'),
       ('guardian-billing-receipt', '/guardian'),
+      ('guardian-billing-inactive', '/guardian'),
+      ('guardian-billing-inactive-large', '/guardian'),
+      ('guardian-billing-enrollment', '/guardian'),
       ('guardian-billing-active', '/guardian'),
       ('guardian-billing-active-large', '/guardian'),
       ('payment-history', '/payments'),
@@ -388,7 +391,12 @@ void main() {
       final guardian =
           (spec.$1.startsWith('payment-history') ||
               spec.$1.startsWith('guardian-billing'))
-          ? HistoryCaptureGuardian(empty: spec.$1.endsWith('-empty'))
+          ? HistoryCaptureGuardian(
+              empty:
+                  spec.$1.endsWith('-empty') ||
+                  spec.$1.contains('inactive') ||
+                  spec.$1.contains('enrollment'),
+            )
           : FakeGuardian();
       final community =
           (spec.$1.startsWith('adoption-detail') ||
@@ -420,7 +428,9 @@ void main() {
         ];
       }
       if (spec.$1 == 'profile-overview-active' ||
-          spec.$1.startsWith('guardian-billing')) {
+          (spec.$1.startsWith('guardian-billing') &&
+              !spec.$1.contains('inactive') &&
+              !spec.$1.contains('enrollment'))) {
         guardian.value = {
           'plan': {
             ...activePlan(),
@@ -539,6 +549,10 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1 == 'guardian-billing-enrollment') {
+        await tester.tap(find.text('Suscribirme'));
+        await tester.pumpAndSettle();
+      }
       if (spec.$1 == 'guardian-billing-history-large') {
         await tester.ensureVisible(find.text('Historial de pagos'));
         await Scrollable.ensureVisible(

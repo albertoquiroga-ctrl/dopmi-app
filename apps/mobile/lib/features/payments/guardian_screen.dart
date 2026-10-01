@@ -27,6 +27,8 @@ class GuardianScreen extends ConsumerStatefulWidget {
 class _GuardianState extends ConsumerState<GuardianScreen>
     with WidgetsBindingObserver {
   final amount = TextEditingController(text: '50');
+  final enrollmentInput = GlobalKey();
+  bool enrolling = false;
   Json? data, intent;
   bool busy = true, consent = false, fresh = false, confirming = false;
   String? error, message;
@@ -213,6 +215,35 @@ class _GuardianState extends ConsumerState<GuardianScreen>
     } finally {
       if (current) setState(() => busy = false);
     }
+  }
+
+  void beginEnrollment() {
+    if (!current ||
+        busy ||
+        confirming ||
+        !fresh ||
+        intent != null ||
+        plan != null) {
+      return;
+    }
+    setState(() {
+      enrolling = true;
+      consent = false;
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final target = enrollmentInput.currentContext;
+      if (!current || target == null) {
+        return;
+      }
+      Scrollable.ensureVisible(
+        target,
+        alignment: .15,
+        duration: MediaQuery.disableAnimationsOf(context)
+            ? Duration.zero
+            : const Duration(milliseconds: 280),
+        curve: Curves.easeOutCubic,
+      );
+    });
   }
 
   Future<void> changeAmount() async {
@@ -453,7 +484,10 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                 height: 1.3,
               ),
             ),
-            if (enabled && p == null) const _GuardianIntro(),
+            if (enabled && fresh && p == null && canStart && intent == null)
+              GuardianInactiveCard(
+                onSubscribe: busy || confirming ? null : beginEnrollment,
+              ),
             if (enabled && p != null)
               GuardianMembershipCard(
                 status: status,
@@ -615,7 +649,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
               ),
               if (!['method', 'withdraw_amount'].contains(intent?['kind']) &&
                   !checkoutInReview &&
-                  (canStart || intent != null)) ...[
+                  ((canStart && enrolling) || intent != null)) ...[
                 const SizedBox(height: 16),
                 Wrap(
                   spacing: 8,
@@ -634,6 +668,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   ],
                 ),
                 TextField(
+                  key: enrollmentInput,
                   controller: amount,
                   enabled: !busy && intent == null,
                   keyboardType: const TextInputType.numberWithOptions(
@@ -689,59 +724,4 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       ),
     );
   }
-}
-
-class _GuardianIntro extends StatelessWidget {
-  const _GuardianIntro();
-  @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      Container(
-        padding: const EdgeInsets.all(22),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xff7140ef), Color(0xff9b72f6)],
-          ),
-          borderRadius: BorderRadius.circular(28),
-        ),
-        child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(Icons.volunteer_activism, color: Colors.white, size: 40),
-            SizedBox(height: 14),
-            Text(
-              'Conviértete en Guardián',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 28,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Desde \$50 MXN al mes. Tu neto se asigna a gastos pagados, aprobados y con capacidad real.',
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
-        ),
-      ),
-      const SizedBox(height: 12),
-      const Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          Chip(
-            avatar: Icon(Icons.fact_check_outlined),
-            label: Text('Impacto comprobable'),
-          ),
-          Chip(avatar: Icon(Icons.tune), label: Text('Monto ajustable')),
-          Chip(
-            avatar: Icon(Icons.event_busy),
-            label: Text('Cancela cuando quieras'),
-          ),
-        ],
-      ),
-    ],
-  );
 }
