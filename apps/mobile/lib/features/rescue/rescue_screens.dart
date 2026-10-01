@@ -441,7 +441,8 @@ class RescuerPendingCard extends StatelessWidget {
 }
 
 class RescuerPendingEmpty extends StatelessWidget {
-  const RescuerPendingEmpty({super.key});
+  const RescuerPendingEmpty({super.key, this.cases = false});
+  final bool cases;
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.all(32),
@@ -461,14 +462,19 @@ class RescuerPendingEmpty extends StatelessWidget {
           ),
           alignment: Alignment.center,
           child: SvgPicture.asset(
-            'assets/profile/empty-pending-heart.svg',
+            cases
+                ? 'assets/navigation/rtab-cases.svg'
+                : 'assets/profile/empty-pending-heart.svg',
             width: 32,
             height: 32,
+            colorFilter: cases
+                ? const ColorFilter.mode(Color(0xff7c3aed), BlendMode.srcIn)
+                : null,
           ),
         ),
         const SizedBox(height: 16),
-        const Text(
-          'No tienes acciones pendientes',
+        Text(
+          cases ? 'No tienes casos todavía' : 'No tienes acciones pendientes',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 18,
@@ -479,8 +485,10 @@ class RescuerPendingEmpty extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        const Text(
-          'Los borradores, correcciones, mensajes y evidencias aparecerán aquí.',
+        Text(
+          cases
+              ? 'Tus borradores y casos aparecerán aquí para que puedas darles seguimiento.'
+              : 'Los borradores, correcciones, mensajes y evidencias aparecerán aquí.',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 14,
@@ -655,7 +663,13 @@ class RescuerFundingSummary extends StatelessWidget {
 }
 
 class RescueList extends ConsumerStatefulWidget {
-  const RescueList({super.key, required this.kind, this.parent});
+  const RescueList({
+    super.key,
+    required this.kind,
+    this.parent,
+    this.showCaseHeader = false,
+  });
+  final bool showCaseHeader;
   final String kind;
   final String? parent;
   @override
@@ -668,15 +682,33 @@ class _RescueListState extends ConsumerState<RescueList> {
   Widget build(BuildContext context) => LiveSection<DataPage<RescueRecord>>(
     key: ValueKey('${widget.kind}:${widget.parent}:$page'),
     tables: const ['dopmi_rescue_records'],
+    statusFrame: widget.showCaseHeader
+        ? (content) => Column(
+            children: [
+              const OwnedCasesHeading(),
+              const SizedBox(height: 18),
+              content,
+            ],
+          )
+        : null,
     load: () => ref
         .read(rescueRepositoryProvider)
         .mine(widget.kind, page, parent: widget.parent),
     builder: (data, refresh) => Column(
       children: [
+        if (widget.showCaseHeader) ...[
+          OwnedCasesHeading(total: data.total),
+          const SizedBox(height: 18),
+        ],
         if (data.items.isEmpty)
-          const Notice(
-            'Aquí aparecerán tus borradores y las respuestas del equipo.',
-          ),
+          widget.showCaseHeader && data.total == 0
+              ? const Padding(
+                  padding: EdgeInsets.only(top: 8),
+                  child: RescuerPendingEmpty(cases: true),
+                )
+              : const Notice(
+                  'Aquí aparecerán tus borradores y las respuestas del equipo.',
+                ),
         for (final r in data.items)
           _OwnedRescueCard(record: r, refresh: refresh),
         if (data.total > 20)
@@ -1723,30 +1755,64 @@ class _PublicCaseDetail extends StatelessWidget {
   }
 }
 
+class OwnedCasesHeading extends StatelessWidget {
+  const OwnedCasesHeading({super.key, this.total});
+  final int? total;
+  @override
+  Widget build(BuildContext context) => Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Mis casos',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 24,
+                height: 1.25,
+                letterSpacing: -.48,
+                fontWeight: FontWeight.w700,
+                color: Color(0xff151423),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              total == null
+                  ? 'Da seguimiento a tus casos'
+                  : total == 0
+                  ? 'Aún no tienes casos'
+                  : '$total ${total == 1 ? 'caso' : 'casos'} a tu cuidado',
+              style: const TextStyle(
+                fontSize: 12,
+                height: 1.5,
+                color: Color(0xff4f4e5c),
+              ),
+            ),
+          ],
+        ),
+      ),
+      if (total != 0) ...[
+        const SizedBox(width: 12),
+        FilledButton.icon(
+          onPressed: () => context.go('/publish'),
+          icon: const Icon(Icons.add_circle_outline, size: 16),
+          label: const Text('Nuevo'),
+          style: FilledButton.styleFrom(minimumSize: const Size(0, 48)),
+        ),
+      ],
+    ],
+  );
+}
+
 class MyRescueCasesScreen extends StatelessWidget {
   const MyRescueCasesScreen({super.key});
   @override
-  Widget build(BuildContext context) => CommunityFrame(
+  Widget build(BuildContext context) => const CommunityFrame(
     index: 2,
     back: false,
-    children: [
-      Row(
-        children: [
-          Expanded(
-            child: Heading(
-              'Mis casos',
-              'Da seguimiento a borradores, revisiones, correcciones y casos publicados.',
-            ),
-          ),
-          IconButton.filled(
-            tooltip: 'Nuevo caso',
-            onPressed: () => context.push('/rescue/new?kind=case'),
-            icon: const Icon(Icons.add),
-          ),
-        ],
-      ),
-      const SizedBox(height: 20),
-      const RescueList(kind: 'case'),
-    ],
+    showAppBar: false,
+    children: [RescueList(kind: 'case', showCaseHeader: true)],
   );
 }

@@ -49,12 +49,25 @@ class OwnedCasesCaptureRescue extends FakeRescue {
         ...caseRecord.data,
         'id': 'fixture-$status',
         'status': status,
-        'public_data': {'pet_name': 'Caso de ${ {'approved': 'Luna', 'draft': 'Toby', 'submitted': 'Nala', 'changes_requested': 'Milo', 'closed': 'Sol'}[status]}', 'photos': <String>[]},
+        'public_data': {
+          'pet_name':
+              'Caso de ${{'approved': 'Luna', 'draft': 'Toby', 'submitted': 'Nala', 'changes_requested': 'Milo', 'closed': 'Sol'}[status]}',
+          'photos': <String>[],
+        },
         'feedback': status == 'changes_requested'
             ? 'Adjunta la evidencia solicitada.'
             : '',
       }),
   ], 5);
+}
+
+class EmptyOwnedCasesCaptureRescue extends FakeRescue {
+  @override
+  Future<DataPage<RescueRecord>> mine(
+    String kind,
+    int page, {
+    String? parent,
+  }) async => DataPage([], 0);
 }
 
 class EmptyDashboardCaptureRescue extends FakeRescue {
@@ -380,6 +393,8 @@ void main() {
       ('rescuer-home-actions-large', '/rescuer'),
       ('owned-cases', '/my-cases'),
       ('owned-cases-large', '/my-cases'),
+      ('owned-cases-empty', '/my-cases'),
+      ('owned-cases-empty-large', '/my-cases'),
       ('owned-cases-correction', '/my-cases'),
       ('owned-cases-correction-large', '/my-cases'),
       ('rescuer-home', '/rescuer'),
@@ -554,7 +569,9 @@ void main() {
           communityRepositoryProvider.overrideWithValue(community),
           if (spec.$1.startsWith('owned-cases'))
             rescueRepositoryProvider.overrideWithValue(
-              OwnedCasesCaptureRescue(),
+              spec.$1.contains('empty')
+                  ? EmptyOwnedCasesCaptureRescue()
+                  : OwnedCasesCaptureRescue(),
             ),
           if (spec.$1.startsWith('rescuer-home'))
             rescueRepositoryProvider.overrideWithValue(
@@ -896,7 +913,11 @@ void main() {
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('owned-cases-correction')) {
-        await tester.scrollUntilVisible(find.text('Caso de Milo'),200,maxScrolls:20);
+        await tester.scrollUntilVisible(
+          find.text('Caso de Milo'),
+          200,
+          maxScrolls: 20,
+        );
         await Scrollable.ensureVisible(
           tester.element(find.text('Caso de Milo')),
           alignment: 0,
