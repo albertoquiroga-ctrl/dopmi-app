@@ -104,6 +104,8 @@ void main() {
       ('adoption-swipe', '/adoptions'),
       ('adoption-large', '/adoptions'),
       ('adoption-drag', '/adoptions'),
+      ('adoption-filters', '/adoptions'),
+      ('adoption-filters-large', '/adoptions'),
       ('profile-overview', '/profile'),
       ('profile-overview-active', '/profile'),
       ('profile-overview-large', '/profile'),
@@ -168,6 +170,20 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1.startsWith('adoption-filters')) {
+        await tester.tap(find.byTooltip('Filtros'));
+        await tester.pumpAndSettle();
+        if (spec.$1 == 'adoption-filters') {
+          await tester.tap(
+            find.descendant(
+              of: find.byType(Dialog),
+              matching: find.text('Hembra'),
+            ),
+          );
+          await tester.tap(find.byTooltip('Mediano'));
+          await tester.pumpAndSettle();
+        }
+      }
       if (spec.$1 == 'adoption-drag') {
         final gesture = await tester.startGesture(
           tester.getCenter(find.text('Luna')),

@@ -11,15 +11,7 @@ import '../../core/ui.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
 import 'location_service.dart';
-
-const personalityLabels = <String, String>{
-  'affectionate': 'Cariñoso',
-  'playful': 'Juguetón',
-  'calm': 'Tranquilo',
-  'active': 'Activo',
-  'sociable': 'Sociable',
-  'independent': 'Independiente',
-};
+import 'discovery_filters.dart';
 
 double discoveryMediaHeight(BuildContext context) => math.max(
   (MediaQuery.sizeOf(context).height - 220).clamp(340, 560) - 128,
@@ -37,6 +29,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   final support = <SupportOpportunity>[];
   Json filters = {'species': 'dog'};
   int index = 0, page = 1, total = 0;
+  int loadVersion = 0;
   double dragX = 0;
   bool dragging = false;
   int exiting = 0;
@@ -63,6 +56,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
 
   Future<void> load({required bool reset}) async {
     if (loading && !reset && cards.isNotEmpty) return;
+    final version = ++loadVersion;
     setState(() {
       loading = true;
       error = null;
@@ -80,11 +74,14 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
     try {
       final result = await ref
           .read(communityRepositoryProvider)
-          .discovery(filters, page);
+          .discovery(Map<String, dynamic>.from(filters), page);
+      if (!mounted || version != loadVersion) return;
       if (reset) {
-        support.addAll(
-          await ref.read(communityRepositoryProvider).discoverySupport(),
-        );
+        final opportunities = await ref
+            .read(communityRepositoryProvider)
+            .discoverySupport();
+        if (!mounted || version != loadVersion) return;
+        support.addAll(opportunities);
       }
       if (!mounted) return;
       final known = cards.map((item) => item.id).toSet();
@@ -92,9 +89,9 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
       total = result.total;
       exhausted = cards.length >= total || result.items.isEmpty;
     } catch (cause) {
-      if (mounted) error = communityError(cause);
+      if (mounted && version == loadVersion) error = communityError(cause);
     } finally {
-      if (mounted) setState(() => loading = false);
+      if (mounted && version == loadVersion) setState(() => loading = false);
     }
   }
 
@@ -203,10 +200,10 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   }
 
   Future<void> openFilters() async {
-    final result = await showModalBottomSheet<Json>(
+    final result = await showDialog<Json>(
       context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
+      barrierColor: ink.withValues(alpha: .48),
+      animationStyle: AnimationStyle.noAnimation,
       builder: (_) => DiscoveryFilters(filters),
     );
     if (result != null && mounted) {
@@ -348,7 +345,20 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                 IconButton(
                   tooltip: 'Filtros',
                   onPressed: acting ? null : openFilters,
-                  icon: const Icon(Icons.tune),
+                  icon: SvgPicture.string(
+                    discoveryFilterSvg,
+                    width: 22,
+                    height: 22,
+                    colorFilter: ColorFilter.mode(
+                      filters.keys.any(
+                            (key) =>
+                                ['sex', 'size', 'personality'].contains(key),
+                          )
+                          ? ink
+                          : const Color(0xff9a9289),
+                      BlendMode.srcIn,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -912,97 +922,6 @@ class _DeckEnd extends StatelessWidget {
           child: const Text('Ir a mis favoritos'),
         ),
       ],
-    ),
-  );
-}
-
-class DiscoveryFilters extends StatefulWidget {
-  const DiscoveryFilters(this.current, {super.key});
-  final Json current;
-  @override
-  State<DiscoveryFilters> createState() => _DiscoveryFiltersState();
-}
-
-class _DiscoveryFiltersState extends State<DiscoveryFilters> {
-  late String? sex = widget.current['sex'] as String?;
-  late String? size = widget.current['size'] as String?;
-  late Set<String> traits = Set<String>.from(
-    widget.current['personality'] as List? ?? const [],
-  );
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.all(24),
-    child: SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text('Filtros', style: Theme.of(context).textTheme.headlineSmall),
-          const SizedBox(height: 20),
-          const Text('Género'),
-          Wrap(
-            spacing: 8,
-            children: {'female': 'Hembra', 'male': 'Macho'}.entries
-                .map(
-                  (entry) => FilterChip(
-                    label: Text(entry.value),
-                    selected: sex == entry.key,
-                    onSelected: (_) => setState(
-                      () => sex = sex == entry.key ? null : entry.key,
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
-          const SizedBox(height: 16),
-          const Text('Tamaño'),
-          Wrap(
-            spacing: 8,
-            children: {'small': 'Chico', 'medium': 'Mediano', 'large': 'Grande'}
-                .entries
-                .map(
-                  (entry) => FilterChip(
-                    label: Text(entry.value),
-                    selected: size == entry.key,
-                    onSelected: (_) => setState(
-                      () => size = size == entry.key ? null : entry.key,
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
-          const SizedBox(height: 16),
-          const Text('Personalidad'),
-          Wrap(
-            spacing: 8,
-            children: personalityLabels.entries
-                .map(
-                  (entry) => FilterChip(
-                    label: Text(entry.value),
-                    selected: traits.contains(entry.key),
-                    onSelected: (selected) => setState(
-                      () => selected
-                          ? traits.add(entry.key)
-                          : traits.remove(entry.key),
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
-          const SizedBox(height: 24),
-          FilledButton(
-            onPressed: () => context.pop(<String, dynamic>{
-              if (sex != null) 'sex': sex,
-              if (size != null) 'size': size,
-              if (traits.isNotEmpty) 'personality': traits.toList(),
-            }),
-            child: const Text('Aplicar filtros'),
-          ),
-          TextButton(
-            onPressed: () => context.pop(<String, dynamic>{}),
-            child: const Text('Limpiar filtros'),
-          ),
-        ],
-      ),
     ),
   );
 }

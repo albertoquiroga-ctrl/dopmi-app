@@ -157,6 +157,41 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
   capa siguiente cuando es apoyo, y verificación instalada. No paridad global,
   aceptación visual, CI remoto ni Codemagic atribuidos a este checkpoint.
 
+## Loop 05 · Filtros de Adoptar · 2026-09-30
+
+- Referencia inicio/cierre `irlanda/apoyar-detalle-perfil` en
+  `a3c969cd9103fd46dc5cd886999912526ce75efb`, reconsultada con ls-remote.
+- Filtros cambia de hoja inferior a diálogo centrado, barrera ink48%, sin
+  animación añadida, panel blanco/radio24 y máximo88vh/720. Geometría/título
+  final contrastados con captura, incluyendo reglas CSS posteriores que
+  sobreescriben radio16/font18 en la fuente. Género en cápsula, iconos de tamaño
+  del SVG original (trazo/relleno según selección), chips de tonos y controles
+  de aplicar/limpiar con borde y tipografía de referencia. Botón de filtro usa
+  los dos deslizadores originales y cambia de color cuando hay filtros activos.
+- Datos reales: cerrar descarta borrador sin consulta; aplicar conserva especie
+  y utiliza sex/size/personality; reabrir conserva selección; limpiar retira sólo
+  esas tres claves. Versionado de cargas impide que una consulta antigua cambie
+  resultados o error/loading de la selección más reciente. No se cambió SQL.
+- Diferencia explícita aún pendiente: mockup ofrece12 rasgos emocionales; SQL
+  sólo admite6 rasgos existentes. Este loop conserva claves y etiquetas reales,
+  sin renombrarlas arbitrariamente ni mostrar filtros que el servidor rechaza.
+  La ampliación necesita revisión de migraciones/contrato/publicación y pruebas
+  de descubrimiento antes de cerrar esta paridad. Panel usa controles48px y
+  chips3 columnas para6 opciones; referencia usa4 columnas/12 y min34px.
+- Texto200%: panel desplazable, categorías/género se envuelven sin cortar palabras,
+  aplicar alcanzable y cerrar fijo. Captura ampliada conserva diferencias de
+  composición y requiere revisar pintura/etiqueta Género antes de aceptación
+  visual completa; una prueba de ausencia de overflow no demuestra esa aceptación.
+- Gate:119 pruebas Flutter completas; capturador16 estados aprobado;
+  configuración12 aprobadas; analyze lib/test/tool limpio tras corrección de
+  llaves en prueba. Lib/assets/test/tool idénticos por SHA256 en copia temporal
+  fuera de OneDrive. Evidencia seleccionada: docs/design-reviews/parity-loop-05.
+  Fuente ejecutada en Vite/navegador377×852; procesos/tab temporales cerrados.
+- Próximo: resolver contrato de personalidad y revisar etiqueta ampliada;
+  ubicación, confirmación, detalle/vacíos, apoyo intercalado, restantes rutas y
+  verificación instalada siguen abiertos. No nuevo CI remoto/Codemagic ni
+  aceptación atribuida. Objetivo activo; entrega final autorizada permanece.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián
