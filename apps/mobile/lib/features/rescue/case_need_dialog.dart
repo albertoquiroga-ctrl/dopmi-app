@@ -131,6 +131,7 @@ class _CaseNeedDialogState extends State<CaseNeedDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final clinical = widget.type != 'food';
     final noun = const {
       'food': 'comida',
       'medicine': 'medicina',
@@ -148,22 +149,27 @@ class _CaseNeedDialogState extends State<CaseNeedDialog> {
       child: ConstrainedBox(
         constraints: BoxConstraints(
           maxWidth: 393,
-          maxHeight: MediaQuery.sizeOf(context).height * .92,
+          maxHeight:
+              MediaQuery.sizeOf(context).height *
+              (widget.type == 'veterinary' ? .94 : .92),
         ),
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (widget.type == 'medicine') ...[
+              if (clinical) ...[
                 Stack(
+                  clipBehavior: Clip.none,
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: Column(
                         children: [
-                          const Text(
-                            'Agregar medicina',
+                          Text(
+                            widget.type == 'medicine'
+                                ? 'Agregar medicina'
+                                : 'Agregar servicio veterinario',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontFamily: 'Inter',
@@ -174,8 +180,10 @@ class _CaseNeedDialogState extends State<CaseNeedDialog> {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          const Text(
-                            'Agrega los detalles de la medicina que necesita la mascota.',
+                          Text(
+                            widget.type == 'medicine'
+                                ? 'Agrega los detalles de la medicina que necesita la mascota.'
+                                : 'Agrega los detalles del servicio veterinario que necesita la mascota.',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontFamily: 'Inter',
@@ -188,12 +196,21 @@ class _CaseNeedDialogState extends State<CaseNeedDialog> {
                       ),
                     ),
                     Positioned(
-                      right: 0,
-                      top: 0,
-                      child: IconButton(
-                        tooltip: 'Cerrar',
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.close, size: 20),
+                      right: -4,
+                      top: -12,
+                      child: SizedBox(
+                        width: 28,
+                        height: 28,
+                        child: IconButton(
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints.tightFor(
+                            width: 28,
+                            height: 28,
+                          ),
+                          tooltip: 'Cerrar',
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.close, size: 22),
+                        ),
                       ),
                     ),
                   ],
@@ -201,19 +218,31 @@ class _CaseNeedDialogState extends State<CaseNeedDialog> {
                 const SizedBox(height: 14),
                 medicineField(
                   'title',
-                  'Nombre de la medicina',
-                  'ej. Amoxicilina',
+                  widget.type == 'medicine'
+                      ? 'Nombre de la medicina'
+                      : 'Motivo de consulta *',
+                  widget.type == 'medicine'
+                      ? 'ej. Amoxicilina'
+                      : 'ej. Vacunación, revisión general',
                 ),
-                const SizedBox(height: 14),
-                medicineField('amount', 'Costo a cubrir', '0.00', money: true),
                 const SizedBox(height: 14),
                 medicineField(
-                  'detail',
-                  '¿Para qué tratamiento es?',
-                  'ej. Infección respiratoria',
-                  lines: 2,
+                  'amount',
+                  widget.type == 'medicine'
+                      ? 'Costo a cubrir'
+                      : 'Monto de la consulta *',
+                  '0.00',
+                  money: true,
                 ),
                 const SizedBox(height: 14),
+                if (widget.type == 'medicine')
+                  medicineField(
+                    'detail',
+                    '¿Para qué tratamiento es?',
+                    'ej. Infección respiratoria',
+                    lines: 2,
+                  ),
+                if (widget.type == 'medicine') const SizedBox(height: 14),
                 Semantics(
                   label:
                       'Marcar como urgente. Se requiere evidencia de urgencia.',
@@ -334,7 +363,7 @@ class _CaseNeedDialogState extends State<CaseNeedDialog> {
                   ),
                 ),
                 onPressed:
-                    widget.type == 'medicine' &&
+                    clinical &&
                         (controllers['title']!.text.trim().isEmpty ||
                             (parsePesos(controllers['amount']!.text) ?? 0) <
                                 1 ||
@@ -364,10 +393,12 @@ class _CaseNeedDialogState extends State<CaseNeedDialog> {
                 child: Text(
                   widget.type == 'medicine'
                       ? 'Guardar medicina'
+                      : widget.type == 'veterinary'
+                      ? 'Guardar consulta'
                       : 'Agregar necesidad',
                 ),
               ),
-              if (widget.type == 'medicine') ...[
+              if (clinical) ...[
                 const SizedBox(height: 14),
                 OutlinedButton(
                   onPressed: () => Navigator.pop(context),
