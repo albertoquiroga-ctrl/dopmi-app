@@ -22,6 +22,7 @@ import 'case_detail_layout.dart';
 import 'public_expense_card.dart';
 import 'rescue_public_photo.dart';
 import 'owned_case_detail.dart';
+import 'owned_expense_card.dart';
 
 class RescueHomeScreen extends ConsumerWidget {
   const RescueHomeScreen({super.key});
@@ -669,8 +670,9 @@ class RescueList extends ConsumerStatefulWidget {
     required this.kind,
     this.parent,
     this.showCaseHeader = false,
+    this.ownedExpenseCards = false,
   });
-  final bool showCaseHeader;
+  final bool showCaseHeader, ownedExpenseCards;
   final String kind;
   final String? parent;
   @override
@@ -711,7 +713,9 @@ class _RescueListState extends ConsumerState<RescueList> {
                   'Aquí aparecerán tus borradores y las respuestas del equipo.',
                 ),
         for (final r in data.items)
-          _OwnedRescueCard(record: r, refresh: refresh),
+          widget.ownedExpenseCards && r.kind == 'expense'
+              ? OwnedExpenseCard(r, key: ValueKey(r.id), refresh: refresh)
+              : _OwnedRescueCard(record: r, refresh: refresh),
         if (data.total > 20)
           PageControls(
             page: page,
@@ -1246,7 +1250,11 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
     if (ownCase && !loadFailed && !widget.showRecord) {
       return OwnedCaseDetail(
         record: record!,
-        needs: RescueList(kind: 'expense', parent: record!.id),
+        needs: RescueList(
+          kind: 'expense',
+          parent: record!.id,
+          ownedExpenseCards: true,
+        ),
         updates: PublicCaseUpdates(record!.id),
         busy: busy || loading,
         error: error,

@@ -649,6 +649,10 @@ void main() {
                   : ContributionCapturePayments(),
             ),
           if (spec.$1.startsWith('owned-case-detail'))
+            paymentRepositoryProvider.overrideWithValue(
+              ContributionCapturePayments(),
+            ),
+          if (spec.$1.startsWith('owned-case-detail'))
             caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
           if (spec.$1.startsWith('case-detail') ||
               spec.$1.startsWith('contribution')) ...[

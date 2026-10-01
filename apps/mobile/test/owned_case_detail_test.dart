@@ -4,6 +4,10 @@ import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 
+import 'package:dopmi_mobile/features/payments/payment_repository.dart';
+
+import 'payments_test.dart' show FakePayments;
+
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
 
@@ -66,6 +70,7 @@ void main() {
               OwnerDetailRescue(closed),
             ),
             caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
+            paymentRepositoryProvider.overrideWithValue(FakePayments()),
             routerInitialLocationProvider.overrideWithValue('/rescue/case-one'),
           ],
         );
