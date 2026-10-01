@@ -26,6 +26,7 @@ import 'owned_expense_card.dart';
 import 'owned_case_history.dart';
 import 'verification_intro.dart';
 import 'verification_form.dart';
+import 'verification_state.dart';
 
 class RescueHomeScreen extends ConsumerWidget {
   const RescueHomeScreen({super.key});
@@ -1037,7 +1038,8 @@ class RescueEditorScreen extends ConsumerStatefulWidget {
   ConsumerState<RescueEditorScreen> createState() => _RescueEditorState();
 }
 
-class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
+class _RescueEditorState extends ConsumerState<RescueEditorScreen>
+    with WidgetsBindingObserver {
   final controllers = <String, TextEditingController>{};
   RescueRecord? record;
   List<Json> files = [], history = [];
@@ -1051,11 +1053,13 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     load();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     for (final c in controllers.values) {
       c.dispose();
     }
@@ -1072,6 +1076,20 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
         value = '${cents ~/ 100}.${(cents % 100).toString().padLeft(2, '0')}';
       }
       (controllers[f.key] ??= TextEditingController()).text = value;
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed &&
+        mounted &&
+        kind == 'verification' &&
+        record != null &&
+        !editable &&
+        !loading &&
+        !busy &&
+        (ModalRoute.of(context)?.isCurrent ?? true)) {
+      load();
     }
   }
 
@@ -1604,7 +1622,15 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
             const VerificationSectionTitle('Historial'),
             for (final item in history)
               ListTile(
-                title: Text(rescueStatuses[item['action']] ?? 'Actualización'),
+                title: Text(
+                  rescueStatuses[item['action']] ??
+                      const {
+                        'submit': 'Enviado',
+                        'withdraw': 'Retirado a borrador',
+                        'close': 'Caso cerrado',
+                      }[item['action']] ??
+                      'Actualización',
+                ),
                 subtitle: Text(
                   '${localDate(item['created_at'] as String)} · Versión ${item['version']}\n${item['feedback']}',
                 ),
@@ -1624,6 +1650,28 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
         onContinue: () => setState(() => verificationIntroDismissed = true),
         onLater: () =>
             context.canPop() ? context.pop() : context.go('/rescuer'),
+      );
+    }
+
+    if (kind == 'verification' &&
+        record != null &&
+        ['submitted', 'approved'].contains(record!.status) &&
+        !loadFailed &&
+        !widget.showRecord) {
+      return VerificationStateScreen(
+        approved: record!.status == 'approved',
+        loading: loading || busy,
+        onBack: () => context.canPop() ? context.pop() : context.go('/rescuer'),
+        onHome: () => context.go('/rescuer'),
+        onPublish: () => context.go('/publish'),
+        onRecord: () async {
+          await context.push('/rescue/${record!.id}?record=1');
+          if (mounted) await load();
+        },
+        onRefresh: load,
+        onWithdraw: record!.status == 'submitted'
+            ? () => run(() => transition('withdraw'))
+            : null,
       );
     }
 

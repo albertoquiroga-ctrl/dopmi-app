@@ -154,6 +154,19 @@ class VerificationCaptureRescue extends FakeRescue {
   };
 }
 
+class VerificationStateCaptureRescue extends FakeRescue {
+  VerificationStateCaptureRescue(this.status);
+  final String status;
+  @override
+  Future<Json> detail(String id) async {
+    final data = await super.detail(id);
+    return {
+      ...data,
+      'record': {...Json.from(data['record']), 'status': status},
+    };
+  }
+}
+
 class SupportCaptureRescue extends FakeRescue {
   @override
   Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async =>
@@ -571,10 +584,15 @@ void main() {
       ('verification-intro-large', '/rescue/new?kind=verification'),
       ('verification-form', '/rescue/new?kind=verification'),
       ('verification-form-large', '/rescue/new?kind=verification'),
+      ('verification-approved', '/rescue/verification-id'),
+      ('verification-approved-large', '/rescue/verification-id'),
+      ('verification-review', '/rescue/verification-id'),
+      ('verification-review-large', '/rescue/verification-id'),
     ]) {
       const captureFilter = String.fromEnvironment('CAPTURE_FILTER');
-      if (captureFilter.isNotEmpty && !spec.$1.startsWith(captureFilter))
+      if (captureFilter.isNotEmpty && !spec.$1.startsWith(captureFilter)) {
         continue;
+      }
       // Synthetic preferences belong only to this flutter_test capturer.
       // ignore: invalid_use_of_visible_for_testing_member
       SharedPreferences.setMockInitialValues({});
@@ -675,6 +693,16 @@ void main() {
         overrides: [
           identityRepositoryProvider.overrideWithValue(repo),
           communityRepositoryProvider.overrideWithValue(community),
+          if (spec.$1.startsWith('verification-approved') ||
+              spec.$1.startsWith('verification-review'))
+            rescueRepositoryProvider.overrideWithValue(
+              VerificationStateCaptureRescue(
+                spec.$1.startsWith('verification-approved')
+                    ? 'approved'
+                    : 'submitted',
+              ),
+            ),
+
           if (spec.$1.startsWith('owned-case-detail'))
             rescueRepositoryProvider.overrideWithValue(
               OwnedCaseDetailCaptureRescue(spec.$1.contains('closed')),

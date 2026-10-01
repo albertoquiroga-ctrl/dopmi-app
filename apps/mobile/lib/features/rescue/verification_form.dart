@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 
 class VerificationFormFrame extends StatelessWidget {
-  const VerificationFormFrame({super.key, required this.children, this.onBack});
+  const VerificationFormFrame({
+    super.key,
+    required this.children,
+    this.onBack,
+    this.title = 'Formulario de verificación',
+    this.bodyPadding = const EdgeInsets.fromLTRB(16, 20, 16, 32),
+  });
   final List<Widget> children;
+  final String title;
+  final EdgeInsets bodyPadding;
   final VoidCallback? onBack;
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -32,11 +40,11 @@ class VerificationFormFrame extends StatelessWidget {
                         color: Color(0xff15110d),
                       ),
                     ),
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        'Formulario de verificación',
+                        title,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 18,
                           height: 1.55,
@@ -58,7 +66,7 @@ class VerificationFormFrame extends StatelessWidget {
           Expanded(
             child: ListView(
               key: const ValueKey('verification-form-body'),
-              padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+              padding: bodyPadding,
               children: children,
             ),
           ),

@@ -2,6 +2,7 @@ import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/adoption/publication_frame.dart';
 import 'package:dopmi_mobile/features/adoption/photo_recovery.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +17,9 @@ import 'fake_identity_repository.dart';
 Future<void> startPublication(
   WidgetTester tester,
   FakeCommunity repo,
-  String path,
-) async {
+  String path, {
+  RescueRepository? rescue,
+}) async {
   SharedPreferences.setMockInitialValues({});
   final identity = FakeIdentityRepository()
     ..user = const Identity('one', 'fixture@example.test', verified: true);
@@ -37,6 +39,7 @@ Future<void> startPublication(
     overrides: [
       identityRepositoryProvider.overrideWithValue(identity),
       communityRepositoryProvider.overrideWithValue(repo),
+      if (rescue != null) rescueRepositoryProvider.overrideWithValue(rescue),
       routerInitialLocationProvider.overrideWithValue(path),
     ],
   );
