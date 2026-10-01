@@ -232,6 +232,13 @@ void main() {
         );
         await tester.tap(find.widgetWithText(FilledButton, 'Continuar'));
         await tester.pumpAndSettle();
+        if (route.$1 == 'onboarding-rescue') {
+          final heading = tester.getRect(
+            find.text('Tú lo cuidas. Te ayudamos a cubrir lo que necesita.'),
+          );
+          expect(heading.top, closeTo(80, 1));
+          expect(heading.height, closeTo(59.8, 1));
+        }
         if (route.$1 == 'onboarding-adopt') {
           expect(
             tester

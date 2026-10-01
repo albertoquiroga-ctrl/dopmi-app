@@ -615,6 +615,10 @@ class RescuerIntroduction extends StatelessWidget {
                                       style: const TextStyle(
                                         fontFamily: 'Fraunces',
                                         fontSize: 26,
+                                        fontVariations: [
+                                          FontVariation('opsz', 26),
+                                          FontVariation('WONK', 0),
+                                        ],
                                         height: 1.15,
                                         letterSpacing: -.52,
                                         fontWeight: FontWeight.w600,
