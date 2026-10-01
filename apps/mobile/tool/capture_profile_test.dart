@@ -330,6 +330,8 @@ void main() {
         'contribution-review-large',
         '/contribute/Cirugía?case=case-one&amount_cents=10000',
       ),
+      ('guardian-billing-cancel', '/guardian'),
+      ('guardian-billing-cancel-large', '/guardian'),
       ('guardian-billing-active', '/guardian'),
       ('guardian-billing-active-large', '/guardian'),
       ('payment-history', '/payments'),
@@ -412,11 +414,11 @@ void main() {
         ];
       }
       if (spec.$1 == 'profile-overview-active' ||
-          spec.$1.startsWith('guardian-billing-active')) {
+          spec.$1.startsWith('guardian-billing')) {
         guardian.value = {
           'plan': {
             ...activePlan(),
-            if (spec.$1.startsWith('guardian-billing-active'))
+            if (spec.$1.startsWith('guardian-billing'))
               'next_billing_at': '2026-10-24T12:00:00Z',
           },
           'activation': null,
@@ -531,6 +533,11 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1.startsWith('guardian-billing-cancel')) {
+        await tester.ensureVisible(find.text('Cancelar mi plan'));
+        await tester.tap(find.text('Cancelar mi plan'));
+        await tester.pumpAndSettle();
+      }
       if (spec.$1.startsWith('contribution-result')) {
         await tester.ensureVisible(find.text('Confirmar en Stripe'));
         await tester.tap(find.text('Confirmar en Stripe'));

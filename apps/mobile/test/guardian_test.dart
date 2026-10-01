@@ -347,7 +347,7 @@ void main() {
       await tester.tap(find.text('Cancelar mi plan'));
       await tester.pumpAndSettle();
       expect(repo.calls, isEmpty);
-      await tester.tap(find.text('Confirmar cancelación'));
+      await tester.tap(find.text('Cancelar suscripción'));
       await tester.pumpAndSettle();
       expect(repo.calls.single['kind'], 'cancel');
       expect(repo.calls.single['revision'], 2);
@@ -422,7 +422,7 @@ void main() {
     await tester.ensureVisible(find.text('Cancelar mi plan'));
     await tester.tap(find.text('Cancelar mi plan'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Confirmar cancelación'));
+    await tester.tap(find.text('Cancelar suscripción'));
     await tester.pumpAndSettle();
     repo.fail = false;
     await tapButton(tester, 'Reintentar mi solicitud');
@@ -453,7 +453,7 @@ void main() {
       await tester.ensureVisible(find.text('Cancelar mi plan'));
       await tester.tap(find.text('Cancelar mi plan'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Confirmar cancelación'));
+      await tester.tap(find.text('Cancelar suscripción'));
       await tester.pumpAndSettle();
       repo.fail = false;
       await tapButton(tester, 'Reintentar mi solicitud');

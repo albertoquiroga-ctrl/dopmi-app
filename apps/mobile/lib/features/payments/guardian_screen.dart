@@ -14,6 +14,7 @@ import '../rescue/rescue_repository.dart';
 import 'guardian_repository.dart';
 import 'contribution_layout.dart';
 import 'guardian_membership_card.dart';
+import 'guardian_cancel_dialog.dart';
 
 class GuardianScreen extends ConsumerStatefulWidget {
   const GuardianScreen({super.key});
@@ -221,41 +222,45 @@ class _GuardianState extends ConsumerState<GuardianScreen>
     if (!cancel && !method && !withdraw && checkoutInReview) return;
     if (cancel || method || withdraw) {
       setState(() => confirming = true);
-      final agreed = await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(
-            withdraw
-                ? '¿Retirar el cambio de monto?'
-                : method
-                ? '¿Actualizar tu medio de pago?'
-                : '¿Cancelar tu plan Guardián?',
-          ),
-          content: Text(
-            withdraw
-                ? 'Mantendrás el importe anterior de tu plan: ${pesos(plan!['gross_cents'] as int)} al mes. Lo retiraremos si aún no comenzó a aplicarse; los próximos ciclos podrán continuar con el importe anterior. Esta acción no cancela tu plan.'
-                : method
-                ? 'Autorizo guardar y usar el nuevo medio en Stripe para los próximos ciclos de Guardián, con el monto y las condiciones vigentes. Stripe puede solicitar autenticación bancaria. Este cambio no cobra ni recupera ciclos omitidos.'
-                : 'Detendremos los ciclos futuros. Un pago ya iniciado puede terminar de procesarse. Los pagos anteriores conservan su historial y no se devuelven automáticamente.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(method || withdraw ? 'Volver' : 'Conservar plan'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(
-                withdraw
-                    ? 'Retirar y conservar monto'
-                    : method
-                    ? 'Autorizar y continuar'
-                    : 'Confirmar cancelación',
+      final agreed = cancel
+          ? await confirmGuardianCancellation(context)
+          : await showDialog<bool>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(
+                  withdraw
+                      ? '¿Retirar el cambio de monto?'
+                      : method
+                      ? '¿Actualizar tu medio de pago?'
+                      : '¿Cancelar tu plan Guardián?',
+                ),
+                content: Text(
+                  withdraw
+                      ? 'Mantendrás el importe anterior de tu plan: ${pesos(plan!['gross_cents'] as int)} al mes. Lo retiraremos si aún no comenzó a aplicarse; los próximos ciclos podrán continuar con el importe anterior. Esta acción no cancela tu plan.'
+                      : method
+                      ? 'Autorizo guardar y usar el nuevo medio en Stripe para los próximos ciclos de Guardián, con el monto y las condiciones vigentes. Stripe puede solicitar autenticación bancaria. Este cambio no cobra ni recupera ciclos omitidos.'
+                      : 'Detendremos los ciclos futuros. Un pago ya iniciado puede terminar de procesarse. Los pagos anteriores conservan su historial y no se devuelven automáticamente.',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text(
+                      method || withdraw ? 'Volver' : 'Conservar plan',
+                    ),
+                  ),
+                  FilledButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text(
+                      withdraw
+                          ? 'Retirar y conservar monto'
+                          : method
+                          ? 'Autorizar y continuar'
+                          : 'Confirmar cancelación',
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-      );
+            );
       if (!current) return;
       setState(() => confirming = false);
       if (agreed != true) return;
