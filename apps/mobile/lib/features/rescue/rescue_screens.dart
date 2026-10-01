@@ -24,6 +24,7 @@ import 'rescue_public_photo.dart';
 import 'owned_case_detail.dart';
 import 'owned_expense_card.dart';
 import 'owned_case_history.dart';
+import 'verification_intro.dart';
 
 class RescueHomeScreen extends ConsumerWidget {
   const RescueHomeScreen({super.key});
@@ -1040,6 +1041,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
   RescueRecord? record;
   List<Json> files = [], history = [];
   int step = 0;
+  bool verificationIntroDismissed = false;
   bool loading = true, busy = false, dirty = false, loadFailed = false;
   String? error, message;
   String get kind => record?.kind ?? widget.kind;
@@ -1242,6 +1244,16 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.id == 'new' &&
+        kind == 'verification' &&
+        !verificationIntroDismissed) {
+      return VerificationIntroScreen(
+        onContinue: () => setState(() => verificationIntroDismissed = true),
+        onLater: () =>
+            context.canPop() ? context.pop() : context.go('/rescuer'),
+      );
+    }
+
     final ownCase =
         record != null &&
         record!.kind == 'case' &&

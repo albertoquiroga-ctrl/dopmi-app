@@ -567,6 +567,8 @@ void main() {
       ('publish-review-large', '/my-adoptions/post'),
       ('publish-health', '/my-adoptions/post'),
       ('publish-health-large', '/my-adoptions/post'),
+      ('verification-intro', '/rescue/new?kind=verification'),
+      ('verification-intro-large', '/rescue/new?kind=verification'),
     ]) {
       // Synthetic preferences belong only to this flutter_test capturer.
       // ignore: invalid_use_of_visible_for_testing_member
@@ -660,6 +662,7 @@ void main() {
           spec.$1.startsWith('owned-cases') ||
           spec.$1.startsWith('rescuer-home') ||
           spec.$1.startsWith('publish-') ||
+          spec.$1.startsWith('verification-intro') ||
           spec.$1 == 'chat-bubbles-rescuer') {
         await repo.setExperience('rescuer');
       }
