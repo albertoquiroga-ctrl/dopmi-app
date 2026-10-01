@@ -135,6 +135,8 @@ void main() {
       ('adoption-end', '/adoptions'),
       ('match-threads', '/messages'),
       ('match-threads-large', '/messages'),
+      ('match-all', '/messages'),
+      ('match-all-large', '/messages'),
       ('match-home', '/messages'),
       ('match-home-large', '/messages'),
       ('adoption-support', '/adoptions'),
@@ -290,7 +292,15 @@ void main() {
         await tester.pumpAndSettle();
       }
       if (spec.$1 == 'match-threads-large') {
-        await tester.scrollUntilVisible(find.text('Perfecto. ¿Cuándo podrías visitarlo?'), 150, scrollable:find.byType(Scrollable).first);
+        await tester.scrollUntilVisible(
+          find.text('Perfecto. ¿Cuándo podrías visitarlo?'),
+          150,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('match-all')) {
+        await tester.tap(find.text('Ver más'));
         await tester.pumpAndSettle();
       }
       if (spec.$1 == 'adoption-end') {

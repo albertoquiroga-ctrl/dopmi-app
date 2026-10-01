@@ -20,6 +20,7 @@ class ThreadsScreen extends ConsumerStatefulWidget {
 
 class _ThreadsState extends ConsumerState<ThreadsScreen> {
   int page = 1;
+  bool allFavorites = false;
   String query = '';
   final search = TextEditingController();
   @override
@@ -74,98 +75,106 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 22),
-          const Text(
-            'Mis match',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 28,
-              fontWeight: FontWeight.w700,
-              color: ink,
+          SizedBox(height: allFavorites ? 12 : 22),
+          if (!allFavorites)
+            const Text(
+              'Mis match',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 28,
+                fontWeight: FontWeight.w700,
+                color: ink,
+              ),
             ),
+          if (!allFavorites) const SizedBox(height: 24),
+          MatchFavorites(
+            all: allFavorites,
+            showAll: (value) => setState(() => allFavorites = value),
           ),
           const SizedBox(height: 24),
-          const MatchFavorites(),
-          const SizedBox(height: 24),
-          const Text(
-            'Chats',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: ink,
+          if (!allFavorites) ...[
+            const Text(
+              'Chats',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: ink,
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: search,
-            textInputAction: TextInputAction.search,
-            decoration: InputDecoration(
-              labelText: 'Buscar por mascota o persona',
-              prefixIcon: const Icon(Icons.search),
-              suffixIcon: query.isEmpty
-                  ? null
-                  : IconButton(
-                      tooltip: 'Limpiar búsqueda',
-                      onPressed: () => setState(() {
-                        search.clear();
-                        query = '';
-                        page = 1;
-                      }),
-                      icon: const Icon(Icons.close),
-                    ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: search,
+              textInputAction: TextInputAction.search,
+              decoration: InputDecoration(
+                labelText: 'Buscar por mascota o persona',
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: query.isEmpty
+                    ? null
+                    : IconButton(
+                        tooltip: 'Limpiar búsqueda',
+                        onPressed: () => setState(() {
+                          search.clear();
+                          query = '';
+                          page = 1;
+                        }),
+                        icon: const Icon(Icons.close),
+                      ),
+              ),
+              onSubmitted: (value) => setState(() {
+                query = value.trim();
+                page = 1;
+              }),
             ),
-            onSubmitted: (value) => setState(() {
-              query = value.trim();
-              page = 1;
-            }),
-          ),
-          const SizedBox(height: 12),
-          const SizedBox(height: 18),
-          LiveSection<DataPage<Json>>(
-            key: ValueKey('$page:$query'),
-            tables: const [
-              'dopmi_threads',
-              'dopmi_messages',
-              'dopmi_notifications',
-            ],
-            load: () => ref
-                .read(communityRepositoryProvider)
-                .threads(page, search: query),
-            builder: (result, refresh) => Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (result.items.isEmpty)
-                  Text(
-                    query.isEmpty
-                        ? 'Aún no tienes chats. Ponte en contacto con el rescatista de tu compañero favorito.'
-                        : 'No encontramos conversaciones con “$query”.',
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 14,
-                      height: 1.45,
-                      color: muted,
-                    ),
-                  ),
-                for (var i = 0; i < result.items.length; i++)
-                  MatchThreadRow(
-                    result.items[i],
-                    last: i == result.items.length - 1,
-                    open: () async {
-                      await context.push('/messages/${result.items[i]['id']}');
-                      refresh();
-                    },
-                  ),
-                if (result.total > 20)
-                  PageControls(
-                    page: page,
-                    total: result.total,
-                    size: 20,
-                    change: (value) => setState(() => page = value),
-                  ),
+            const SizedBox(height: 12),
+            const SizedBox(height: 18),
+            LiveSection<DataPage<Json>>(
+              key: ValueKey('$page:$query'),
+              tables: const [
+                'dopmi_threads',
+                'dopmi_messages',
+                'dopmi_notifications',
               ],
+              load: () => ref
+                  .read(communityRepositoryProvider)
+                  .threads(page, search: query),
+              builder: (result, refresh) => Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (result.items.isEmpty)
+                    Text(
+                      query.isEmpty
+                          ? 'Aún no tienes chats. Ponte en contacto con el rescatista de tu compañero favorito.'
+                          : 'No encontramos conversaciones con “$query”.',
+                      style: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 14,
+                        height: 1.45,
+                        color: muted,
+                      ),
+                    ),
+                  for (var i = 0; i < result.items.length; i++)
+                    MatchThreadRow(
+                      result.items[i],
+                      last: i == result.items.length - 1,
+                      open: () async {
+                        await context.push(
+                          '/messages/${result.items[i]['id']}',
+                        );
+                        refresh();
+                      },
+                    ),
+                  if (result.total > 20)
+                    PageControls(
+                      page: page,
+                      total: result.total,
+                      size: 20,
+                      change: (value) => setState(() => page = value),
+                    ),
+                ],
+              ),
             ),
-          ),
+          ],
         ],
       ),
     ),

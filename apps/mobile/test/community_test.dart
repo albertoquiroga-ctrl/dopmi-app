@@ -222,6 +222,23 @@ class FakeCommunity implements CommunityRepository {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class PagedMatchCommunity extends FakeCommunity {
+  final pages = <int>[];
+  @override
+  Future<DataPage<SavedEntry>> savedAdoptions(int page) async {
+    pages.add(page);
+    return DataPage([
+      for (var i = (page - 1) * 20; i < (page == 1 ? 20 : 21); i++)
+        SavedEntry({
+          ...post.data,
+          'id': 'pet-$i',
+          'pet_name': 'Mascota $i',
+          'available': true,
+        }),
+    ], 21);
+  }
+}
+
 void main() {
   Future<ProviderContainer> start(
     WidgetTester tester,
@@ -330,6 +347,27 @@ void main() {
     expect(find.text('Old preview'), findsNothing);
     expect(find.textContaining('null'), findsNothing);
   });
+  testWidgets(
+    'all match favorites load beyond first page and sort the complete list',
+    (tester) async {
+      final repo = PagedMatchCommunity();
+      await start(tester, repo, '/messages');
+      await tester.tap(find.text('Ver más'));
+      await tester.pumpAndSettle();
+      expect(repo.pages, contains(2));
+      expect(find.text('Chats'), findsNothing);
+      await tester.tap(find.text('Ordenar Más recientes'));
+      await tester.pumpAndSettle();
+      expect(find.text('Ordenar Más antiguos'), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('Mascota 20')).dy,
+        lessThan(tester.getTopLeft(find.text('Mascota 0')).dy),
+      );
+      await tester.tap(find.byTooltip('Volver a Mis match'));
+      await tester.pumpAndSettle();
+      expect(find.text('Chats'), findsOneWidget);
+    },
+  );
   testWidgets('failed detail favorite rolls the optimistic state back', (
     tester,
   ) async {

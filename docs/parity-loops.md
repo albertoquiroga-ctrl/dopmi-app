@@ -365,6 +365,15 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
 - Pruebas dirigidas18 + capturador29 estados aprobadas; analyze limpio. Tras copiar path exacto SVG se repite capturador. Sólo presentación; no cambios SQL/identidad/finanzas.
 - Capturas loop15 normal/ampliada. Pendientes: contador real de notificaciones (página parcial no prueba total), foto equivalente, búsqueda integrada, vista completa/orden/arte vacío, rol rescatista y navegador. No declarar paridad global ni aceptación instalada. Objetivo y Codemagic final continúan pendientes.
 
+
+## Loop 16 — vista completa de favoritos
+
+- Referencia Irlanda inicio/cierre `a3c969cd9103fd46dc5cd886999912526ce75efb`, sin cambios. Se inspeccionaron cuadrícula3/gap10/tarjeta20/nombre13/chat30, volver y ordenar de DonorMessages.
+- Ver más abre vista interna con cuadrícula y oculta título/chats. Volver conserva Mis match; fotografía/contacto usan los mismos servicios reales y confirmación. Vista completa consulta todas las páginas de20, deduplica y conserva orden SQL; más antiguos invierte la lista completa, no sólo la primera página. Disponibles únicamente muestran fotos/nombre; guardados retirados conservan gestión en `/saved` desde Perfil.
+- Tarjetas tres columnas normales; una al200% para nombres/controles legibles. Orden usa tipografía16/12 y colores ink/muted; espaciado superior corregido tras captura. Sin SQL ni autorización/finanzas modificadas.
+- Prueba con21 favoritos comprueba segunda página, orden completo y regreso. Flutter133/analyze aprobados; después de espaciado/color,19 pruebas dirigidas y capturador31 estados aprobados. PNGs loop16 normal/ampliada.
+- Pendientes: comparación simultánea navegador/datos equivalentes, gesto Android de regreso de vista interna, arte vacío y búsqueda, contador notificaciones, rol rescatista y rendimiento de listas largas. No declarar paridad global ni aceptación instalada. Codemagic final sigue pendiente del objetivo completo.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián
