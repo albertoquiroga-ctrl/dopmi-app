@@ -1332,31 +1332,3 @@ class HelpScreen extends StatelessWidget {
     ],
   );
 }
-
-class PublishChoiceScreen extends StatelessWidget {
-  const PublishChoiceScreen({super.key});
-  @override
-  Widget build(BuildContext context) => ProfileFrame(
-    title: '¿Qué quieres publicar?',
-    children: [
-      const Text('Selecciona el tipo de publicación que deseas crear'),
-      const SizedBox(height: 24),
-      const ProfileRow(
-        title: 'Dar en adopción',
-        subtitle: 'Publica una mascota que esté lista para encontrar un hogar',
-        icon: Icons.home_outlined,
-        path: '/my-adoptions/new',
-      ),
-      const ProfileRow(
-        title: 'Crear caso para recibir aportaciones',
-        subtitle: 'El caso y los gastos requieren revisión. Para recibir aportaciones necesitas verificación.',
-        icon: Icons.volunteer_activism_outlined,
-        path: '/rescue/new?kind=case',
-      ),
-      TextButton(
-        onPressed: () => context.go('/my-cases'),
-        child: const Text('Cancelar'),
-      ),
-    ],
-  );
-}

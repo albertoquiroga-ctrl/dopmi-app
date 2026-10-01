@@ -556,6 +556,7 @@ void main() {
       ('transparency', '/transparency'),
       ('transparency-criteria', '/transparency'),
       ('publish-choice', '/publish'),
+      ('publish-choice-large', '/publish'),
     ]) {
       // Synthetic preferences belong only to this flutter_test capturer.
       // ignore: invalid_use_of_visible_for_testing_member
@@ -634,7 +635,7 @@ void main() {
       if (spec.$1.startsWith('owned-case-detail') ||
           spec.$1.startsWith('owned-cases') ||
           spec.$1.startsWith('rescuer-home') ||
-          spec.$1 == 'publish-choice' ||
+          spec.$1.startsWith('publish-choice') ||
           spec.$1 == 'chat-bubbles-rescuer') {
         await repo.setExperience('rescuer');
       }
