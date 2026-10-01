@@ -202,3 +202,7 @@ Local20261001123000_case_planned_needs.sql → dev20261001184124/case_planned_ne
 
 ## Paridad94 — nombre opcional, 1/10/2026
 Local20261001194500_optional_case_name.sql → DEVohqxranynackjignryep20261001193350/optional_case_name. Aplicada una vez tras comparar validate previo MD5 6e816a1e05430d518938b7440c6d4f68 e historial. validate nuevo MD5 14a02a6b34f343dd0b7fe7812521b3cd coincide local, search_path vacío/securitydefiner, EXECUTEauthenticatedfalse. SQL remoto sintético comprueba que nombre vacío llega al requisito de foto y que ausencia de historia sigue rechazada. No datos privados consultados ni fixture persistida;419PGlite93 prueba submitconStorage. No Auth/REST/app/dispositivo remoto acreditado, no producción, rename/replay.
+
+
+## Paridad100 — mínimo nuevo Guardian, 1/10/2026
+Local20261001203000_guardian_minimum_fifty.sql → DEV20261001201058/guardian_minimum_fifty. Historial y hashes previos verificados antes de aplicar una vez; guards/hashes posteriores activation7e5cab881e0af229d7d20beaebf6a2dc/request736ad31bb7d8f109a26c61971932e2f2 y ACL sin cambio comprobados. Backend423 local99;38 Guardian móvil100/analyze. No Auth/REST/cobro remoto ni producción/repair/replay/rename.

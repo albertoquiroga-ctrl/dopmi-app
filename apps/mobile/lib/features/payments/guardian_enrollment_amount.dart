@@ -106,7 +106,10 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
         ),
       ),
     );
-    final amountLabel = cents != null && cents >= 1000 && cents <= 1000000
+    final amountLabel =
+        cents != null &&
+            cents >= (widget.locked ? 1000 : 5000) &&
+            cents <= 1000000
         ? pesos(cents)
         : 'Importe por confirmar';
     return Column(
@@ -164,7 +167,7 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
               labelText: 'Importe mensual en MXN',
               prefixText: '\$ ',
               suffixText: 'MXN',
-              helperText: 'De \$10 a \$10,000; hasta dos decimales.',
+              helperText: 'De \$50 a \$10,000; hasta dos decimales.',
               helperMaxLines: 3,
             ),
           ),

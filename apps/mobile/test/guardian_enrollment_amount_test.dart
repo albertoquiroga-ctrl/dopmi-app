@@ -40,7 +40,7 @@ void main() {
         await tester.pump();
         expect(find.text(r'$75.25 MXN'), findsNWidgets(2));
         expect(tester.takeException(), isNull);
-        await tester.enterText(find.byType(TextField), '9.99');
+        await tester.enterText(find.byType(TextField), '49.99');
         await tester.pump();
         expect(find.text('Importe por confirmar'), findsNWidgets(2));
         expect(find.text(r'$0 MXN'), findsNothing);
@@ -50,7 +50,7 @@ void main() {
   testWidgets(
     'Restored attempt amount is visible and cannot be changed through a preset',
     (tester) async {
-      final amount = TextEditingController(text: '75.25');
+      final amount = TextEditingController(text: '10.00');
       addTearDown(amount.dispose);
       bool changed = false;
       await tester.pumpWidget(
@@ -68,7 +68,8 @@ void main() {
       );
       await tester.tap(find.text(r'$200'));
       await tester.pump();
-      expect(amount.text, '75.25');
+      expect(amount.text, '10.00');
+      expect(find.text(r'$10.00 MXN'), findsNWidgets(2));
       expect(changed, false);
       expect(tester.widget<TextField>(find.byType(TextField)).enabled, false);
     },

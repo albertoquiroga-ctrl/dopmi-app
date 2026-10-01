@@ -320,9 +320,9 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         !method &&
         !withdraw &&
         intent == null &&
-        (!consent || cents == null || cents < 1000 || cents > 1000000)) {
+        (!consent || cents == null || cents < 5000 || cents > 1000000)) {
       setState(
-        () => error = 'Elige un importe de \$10 a \$10,000 MXN, con hasta dos decimales, y confirma la autorización.',
+        () => error = 'Elige un importe de \$50 a \$10,000 MXN, con hasta dos decimales, y confirma la autorización.',
       );
       return;
     }

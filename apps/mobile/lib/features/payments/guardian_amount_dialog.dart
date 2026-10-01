@@ -62,7 +62,7 @@ class _GuardianAmountDialogState extends State<GuardianAmountDialog> {
     final cents = parsePesos(amount.text);
     final valid =
         cents != null &&
-        cents >= 1000 &&
+        cents >= 5000 &&
         cents <= 1000000 &&
         cents != widget.currentCents;
     final large = MediaQuery.textScalerOf(context).scale(22) > 33;
@@ -241,7 +241,7 @@ class _GuardianAmountDialogState extends State<GuardianAmountDialog> {
                                 labelText: 'Importe mensual en MXN',
                                 prefixText: '\$ ',
                                 helperMaxLines: 3,
-                                helperText: 'De \$10 a \$10,000 MXN; hasta dos decimales.',
+                                helperText: 'De \$50 a \$10,000 MXN; hasta dos decimales.',
                               ),
                             ),
                             const SizedBox(height: 12),
