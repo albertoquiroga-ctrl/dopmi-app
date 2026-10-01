@@ -108,6 +108,11 @@ class CaseInformation extends StatelessWidget {
       field(rescueFields['case']!.first),
       PublicationChoiceRow(
         label: 'Sexo',
+        required: true,
+        leading: const {
+          'male': Icon(Icons.male, size: 16),
+          'female': Icon(Icons.female, size: 16),
+        },
         options: const {'male': 'Macho', 'female': 'Hembra'},
         value: controllers['sex']!.text,
         onChanged: enabled ? (value) => choose('sex', value) : null,
@@ -134,6 +139,7 @@ class CaseInformation extends StatelessWidget {
       const SizedBox(height: 16),
       PublicationChoiceRow(
         label: 'Especie',
+        required: true,
         options: const {'dog': 'Perro', 'cat': 'Gato'},
         value: controllers['species']!.text,
         onChanged: enabled ? (value) => choose('species', value) : null,

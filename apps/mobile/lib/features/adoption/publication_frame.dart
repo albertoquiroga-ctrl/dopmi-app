@@ -508,8 +508,12 @@ class PublicationChoiceRow extends StatelessWidget {
     required this.options,
     required this.value,
     this.onChanged,
+    this.leading = const {},
+    this.required = false,
   });
   final String label;
+  final Map<String, Widget> leading;
+  final bool required;
   final Map<String, String> options;
   final String? value;
   final ValueChanged<String>? onChanged;
@@ -520,14 +524,23 @@ class PublicationChoiceRow extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 14,
-            height: 1.55,
-            fontWeight: FontWeight.w500,
-            color: Color(0xff151423),
-          ),
+        Row(
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 14,
+                height: 1.55,
+                fontWeight: FontWeight.w500,
+                color: Color(0xff151423),
+              ),
+            ),
+            if (required)
+              const Text(
+                ' *',
+                style: TextStyle(fontSize: 14, color: Color(0xffd52222)),
+              ),
+          ],
         ),
         const SizedBox(height: 8),
         Row(
@@ -570,7 +583,16 @@ class PublicationChoiceRow extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    child: Text(entry.value, textAlign: TextAlign.center),
+                    child: Wrap(
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 8,
+                      children: [
+                        if (leading[entry.key] != null)
+                          ExcludeSemantics(child: leading[entry.key]!),
+                        Text(entry.value, textAlign: TextAlign.center),
+                      ],
+                    ),
                   ),
                 ),
               ),
