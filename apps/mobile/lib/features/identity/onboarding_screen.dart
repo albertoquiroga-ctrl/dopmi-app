@@ -157,99 +157,122 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         )
                       else
                         const SizedBox(height: 40),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          for (final option in options)
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 0),
-                                child: Semantics(
-                                  label: option.$2,
-                                  checked: intent == option.$1,
-                                  inMutuallyExclusiveGroup: true,
-                                  button: true,
-                                  onTap: () =>
-                                      setState(() => intent = option.$1),
-                                  child: ExcludeSemantics(
-                                    child: InkWell(
-                                      splashFactory: NoSplash.splashFactory,
-                                      highlightColor: Colors.transparent,
-                                      borderRadius: BorderRadius.circular(50),
+                      Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 280),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (final option in options) ...[
+                                if (option != options.first)
+                                  const SizedBox(width: 16),
+                                Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(top: 0),
+                                    child: Semantics(
+                                      label: option.$2,
+                                      checked: intent == option.$1,
+                                      inMutuallyExclusiveGroup: true,
+                                      button: true,
                                       onTap: () =>
                                           setState(() => intent = option.$1),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          SizedBox(
-                                            key: ValueKey(
-                                              'welcome-orb-${option.$1}',
-                                            ),
-                                            width: 92,
-                                            height: 92,
-                                            child: AnimatedContainer(
-                                              duration:
-                                                  MediaQuery.disableAnimationsOf(
-                                                    context,
-                                                  )
-                                                  ? Duration.zero
-                                                  : const Duration(
-                                                      milliseconds: 250,
+                                      child: ExcludeSemantics(
+                                        child: InkWell(
+                                          splashFactory: NoSplash.splashFactory,
+                                          highlightColor: Colors.transparent,
+                                          borderRadius: BorderRadius.circular(
+                                            50,
+                                          ),
+                                          onTap: () => setState(
+                                            () => intent = option.$1,
+                                          ),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              SizedBox(
+                                                key: ValueKey(
+                                                  'welcome-orb-${option.$1}',
+                                                ),
+                                                width: 92,
+                                                height: 92,
+                                                child: AnimatedContainer(
+                                                  duration:
+                                                      MediaQuery.disableAnimationsOf(
+                                                        context,
+                                                      )
+                                                      ? Duration.zero
+                                                      : const Duration(
+                                                          milliseconds: 250,
+                                                        ),
+                                                  curve: Curves.ease,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: intent == option.$1
+                                                        ? const Color(
+                                                            0xfffff6cf,
+                                                          )
+                                                        : Colors.white,
+                                                    border: Border.all(
+                                                      color: yellow,
+                                                      width: intent == option.$1
+                                                          ? 2
+                                                          : 1.5,
                                                     ),
-                                              curve: Curves.ease,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: intent == option.$1
-                                                    ? const Color(0xfffff6cf)
-                                                    : Colors.white,
-                                                border: Border.all(
-                                                  color: yellow,
-                                                  width: intent == option.$1
-                                                      ? 2
-                                                      : 1.5,
+                                                  ),
+                                                  alignment: Alignment.center,
+                                                  child: SvgPicture.asset(
+                                                    'assets/navigation/choice-${option.$1}.svg',
+                                                    width: 32,
+                                                    height: 32,
+                                                  ),
                                                 ),
                                               ),
-                                              alignment: Alignment.center,
-                                              child: SvgPicture.asset(
-                                                'assets/navigation/choice-${option.$1}.svg',
-                                                width: 32,
-                                                height: 32,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(height: 10),
-                                          AnimatedDefaultTextStyle(
-                                            duration:
-                                                MediaQuery.disableAnimationsOf(
-                                                  context,
-                                                )
-                                                ? Duration.zero
-                                                : const Duration(
-                                                    milliseconds: 250,
+                                              const SizedBox(height: 10),
+                                              AnimatedDefaultTextStyle(
+                                                duration:
+                                                    MediaQuery.disableAnimationsOf(
+                                                      context,
+                                                    )
+                                                    ? Duration.zero
+                                                    : const Duration(
+                                                        milliseconds: 250,
+                                                      ),
+                                                curve: Curves.ease,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                      DopmiTokens.bodyFont,
+                                                  fontSize: 12,
+                                                  height: 1.3,
+                                                  color: intent == option.$1
+                                                      ? ink
+                                                      : muted,
+                                                  fontWeight:
+                                                      intent == option.$1
+                                                      ? FontWeight.w700
+                                                      : FontWeight.w500,
+                                                ),
+                                                child: ConstrainedBox(
+                                                  constraints: BoxConstraints(
+                                                    maxWidth:
+                                                        MediaQuery.textScalerOf(
+                                                          context,
+                                                        ).scale(85.2),
                                                   ),
-                                            curve: Curves.ease,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontFamily: DopmiTokens.bodyFont,
-                                              fontSize: 12,
-                                              height: 1.3,
-                                              color: intent == option.$1
-                                                  ? ink
-                                                  : muted,
-                                              fontWeight: intent == option.$1
-                                                  ? FontWeight.w700
-                                                  : FontWeight.w500,
-                                            ),
-                                            child: Text(option.$2),
+                                                  child: Text(option.$2),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
-                        ],
+                              ],
+                            ],
+                          ),
+                        ),
                       ),
                       if (selected != null) ...[
                         SizedBox(
@@ -273,13 +296,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              Text(
-                                selected.$3,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  height: 1.5,
-                                  color: muted,
+                              Center(
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: MediaQuery.textScalerOf(context)
+                                        .scale(247.3),
+                                  ),
+                                  child: Text(
+                                    selected.$3,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      height: 1.5,
+                                      color: muted,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
