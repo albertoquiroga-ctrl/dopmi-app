@@ -54,7 +54,7 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
                   widget.onChanged();
                 },
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 15),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -84,7 +84,7 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
       ),
     );
     final amountLabel = cents != null && cents >= 1000 && cents <= 1000000
-        ? contributionMoney(cents)
+        ? pesos(cents)
         : 'Importe por confirmar';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -94,7 +94,7 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
           key: widget.headingKey,
           style: const TextStyle(
             fontSize: 26,
-            height: 1.3,
+            height: 1.2,
             fontWeight: FontWeight.w700,
             color: ink,
           ),
@@ -124,7 +124,7 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
               ],
             ],
           ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 8),
         if (showCustom) ...[
           TextField(
             controller: widget.amount,
@@ -160,16 +160,24 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
               setState(() => custom = true);
               widget.onChanged();
             },
-            child: const Text('Otra cantidad'),
+            child: const Text(
+              'Otra cantidad',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                height: 1.2,
+              ),
+            ),
           ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 10),
         ContributionSummary(
           title: 'Resumen',
           balancedColumns: true,
+          emphasizeLast: true,
           rows: [
             ('Apoyo mensual', amountLabel),
             ('Frecuencia', 'Mensual'),
-            ('Autorizado al activar', amountLabel),
+            ('Total al activar', amountLabel),
           ],
         ),
       ],

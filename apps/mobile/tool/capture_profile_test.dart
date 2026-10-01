@@ -340,6 +340,8 @@ void main() {
       ('guardian-billing-inactive-large', '/guardian'),
       ('guardian-billing-enrollment', '/guardian'),
       ('guardian-billing-enrollment-large', '/guardian'),
+      ('guardian-billing-enrollment-confirmation', '/guardian'),
+      ('guardian-billing-enrollment-confirmation-large', '/guardian'),
       ('guardian-billing-active', '/guardian'),
       ('guardian-billing-active-large', '/guardian'),
       ('payment-history', '/payments'),
@@ -553,6 +555,10 @@ void main() {
       if (spec.$1.startsWith('guardian-billing-enrollment')) {
         await tester.tap(find.text('Suscribirme'));
         await tester.pumpAndSettle();
+        if (spec.$1.contains('confirmation')) {
+          await tester.ensureVisible(find.text('Activar en Stripe'));
+          await tester.pumpAndSettle();
+        }
       }
       if (spec.$1 == 'guardian-billing-history-large') {
         await tester.ensureVisible(find.text('Historial de pagos'));

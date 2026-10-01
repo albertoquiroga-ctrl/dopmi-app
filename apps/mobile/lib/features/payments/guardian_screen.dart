@@ -18,6 +18,7 @@ import 'guardian_cancel_dialog.dart';
 import 'guardian_amount_dialog.dart';
 import 'guardian_history_screen.dart';
 import 'guardian_enrollment_amount.dart';
+import 'guardian_enrollment_confirmation.dart';
 
 class GuardianScreen extends ConsumerStatefulWidget {
   const GuardianScreen({super.key});
@@ -465,24 +466,35 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         locked: busy || intent != null,
         onChanged: () => setState(() => consent = false),
       ),
-      const SizedBox(height: 12),
-      Notice(
-        p == null
-            ? 'Primer intento de cobro: hoy, ${date(DateTime.now().toIso8601String())}, al activar. Próxima fecha aproximada: ${date(guardianNextBilling(DateTime.now()).toIso8601String())}. Después, cada aniversario mensual; si el mes no tiene ese día, se usa su último día. Stripe te mostrará el importe antes de confirmar.'
-            : 'El nuevo importe aplica desde el siguiente ciclo. No se prorratea ni cambia el importe de un ciclo ya preparado.',
-      ),
-      if (intent == null)
-        CheckboxListTile(
-          value: consent,
-          onChanged: busy
+      const SizedBox(height: 16),
+      if (p == null)
+        GuardianEnrollmentConfirmation(
+          firstPaymentDate: date(DateTime.now().toIso8601String()),
+          nextBillingDate: date(
+            guardianNextBilling(DateTime.now()).toIso8601String(),
+          ),
+          consent: consent,
+          restored: intent != null,
+          onConsentChanged: busy
               ? null
               : (value) => setState(() => consent = value ?? false),
-          title: Text(
-            p == null
-                ? 'Autorizo el primer pago y los cobros mensuales condicionados por el importe elegido, y guardar mi medio de pago en Stripe.'
-                : 'Autorizo el nuevo importe mensual desde el siguiente ciclo.',
-          ),
+        )
+      else ...[
+        const Notice(
+          'El nuevo importe aplica desde el siguiente ciclo. No se prorratea ni cambia el importe de un ciclo ya preparado.',
         ),
+        if (intent == null)
+          CheckboxListTile(
+            value: consent,
+            onChanged: busy
+                ? null
+                : (value) => setState(() => consent = value ?? false),
+            title: const Text(
+              'Autorizo el nuevo importe mensual desde el siguiente ciclo.',
+            ),
+          ),
+      ],
+      const SizedBox(height: 16),
       if (intent != null)
         const Notice(
           'Conservamos tu solicitud. Reintentar usa la misma referencia y el mismo importe.',
@@ -516,12 +528,6 @@ class _GuardianState extends ConsumerState<GuardianScreen>
               children: [
                 ...enrollmentWidgets,
                 const SizedBox(height: 16),
-                const Notice(
-                  'Solo modo de prueba. No uses datos de una tarjeta real.',
-                ),
-                const Notice(
-                  'Solo se cobra si el neto completo puede asignarse a gastos aprobados. Si no hay capacidad, ese mes se omite sin cargo ni deuda. Dopmi descuenta el 2% y los costos de Stripe; el neto se asigna por prioridad. Puedes cancelar los ciclos futuros.',
-                ),
                 if (busy) const LinearProgressIndicator(),
                 if (error != null) Notice(error!, isError: true),
                 if (message != null) Notice(message!),

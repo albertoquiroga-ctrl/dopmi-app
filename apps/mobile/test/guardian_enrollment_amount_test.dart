@@ -31,7 +31,7 @@ void main() {
         await tester.tap(find.text(r'$200'));
         await tester.pump();
         expect(amount.text, '200.00');
-        expect(find.text(r'$200 MXN'), findsNWidgets(2));
+        expect(find.text(r'$200.00 MXN'), findsNWidgets(2));
         await tester.ensureVisible(find.text('Otra cantidad'));
         await tester.tap(find.text('Otra cantidad'));
         await tester.pump();

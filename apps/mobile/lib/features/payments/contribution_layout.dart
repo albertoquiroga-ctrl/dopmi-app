@@ -148,9 +148,10 @@ class ContributionSummary extends StatelessWidget {
     required this.rows,
     this.title,
     this.balancedColumns = false,
+    this.emphasizeLast = false,
   });
   final String? title;
-  final bool balancedColumns;
+  final bool balancedColumns, emphasizeLast;
   final List<(String, String)> rows;
   @override
   Widget build(BuildContext context) {
@@ -185,13 +186,21 @@ class ContributionSummary extends StatelessWidget {
                 children: [
                   Text(
                     rows[i].$1,
-                    style: const TextStyle(fontSize: 13, color: muted),
+                    style: TextStyle(
+                      fontSize: emphasizeLast && i == rows.length - 1 ? 15 : 13,
+                      fontWeight: emphasizeLast && i == rows.length - 1
+                          ? FontWeight.w700
+                          : null,
+                      color: emphasizeLast && i == rows.length - 1
+                          ? ink
+                          : muted,
+                    ),
                   ),
                   const SizedBox(height: 6),
                   Text(
                     rows[i].$2,
-                    style: const TextStyle(
-                      fontSize: 13,
+                    style: TextStyle(
+                      fontSize: emphasizeLast && i == rows.length - 1 ? 17 : 13,
                       fontWeight: FontWeight.w700,
                       color: ink,
                       height: 1.2,
@@ -206,9 +215,16 @@ class ContributionSummary extends StatelessWidget {
                   Expanded(
                     child: Text(
                       rows[i].$1,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: muted,
+                      style: TextStyle(
+                        fontSize: emphasizeLast && i == rows.length - 1
+                            ? 15
+                            : 13,
+                        fontWeight: emphasizeLast && i == rows.length - 1
+                            ? FontWeight.w700
+                            : null,
+                        color: emphasizeLast && i == rows.length - 1
+                            ? ink
+                            : muted,
                         height: 1.2,
                       ),
                     ),
@@ -219,8 +235,10 @@ class ContributionSummary extends StatelessWidget {
                     child: Text(
                       rows[i].$2,
                       textAlign: TextAlign.end,
-                      style: const TextStyle(
-                        fontSize: 13,
+                      style: TextStyle(
+                        fontSize: emphasizeLast && i == rows.length - 1
+                            ? 17
+                            : 13,
                         fontWeight: FontWeight.w700,
                         color: ink,
                         height: 1.2,
