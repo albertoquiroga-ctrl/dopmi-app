@@ -585,6 +585,10 @@ void main() {
       ('expense-submitted', '/rescue/expense-one'),
       ('expense-submitted-large', '/rescue/expense-one'),
       ('expense-submitted-footer-large', '/rescue/expense-one'),
+      ('expense-review', '/rescue/expense-one'),
+      ('expense-review-large', '/rescue/expense-one'),
+      ('expense-review-private', '/rescue/expense-one'),
+      ('expense-review-private-large', '/rescue/expense-one'),
       ('expense-dialog', '/rescue/expense-one'),
       ('expense-dialog-large', '/rescue/expense-one'),
       ('expense-evidence', '/rescue/expense-one'),
@@ -1140,6 +1144,37 @@ void main() {
         );
         await tester.pumpAndSettle();
       }
+      if (spec.$1.startsWith('expense-review')) {
+        for (var i = 0; i < 2; i++) {
+          await tester.scrollUntilVisible(
+            find.text('Siguiente'),
+            300,
+            maxScrolls: 100,
+            scrollable: find.byType(Scrollable).first,
+          );
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('Siguiente'));
+          await tester.pumpAndSettle();
+        }
+        final outer = tester.state<ScrollableState>(
+          find.byType(Scrollable).first,
+        );
+        outer.position.jumpTo(0);
+        await tester.pumpAndSettle();
+        await tester.scrollUntilVisible(
+          find.text('Revisa antes de enviar'),
+          300,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('expense-review-private')) {
+        await Scrollable.ensureVisible(
+          tester.element(find.text('Solo para revisión privada')),
+          alignment: 0,
+        );
+        await tester.pumpAndSettle();
+      }
       if (spec.$1.startsWith('expense-submitted')) {
         for (var i = 0; i < 3; i++) {
           final action = find.text(i < 2 ? 'Siguiente' : 'Enviar a revisión');
@@ -1175,7 +1210,8 @@ void main() {
       if (spec.$1.startsWith('expense-') &&
           !spec.$1.startsWith('expense-evidence') &&
           !spec.$1.startsWith('expense-dialog') &&
-          !spec.$1.startsWith('expense-submitted')) {
+          !spec.$1.startsWith('expense-submitted') &&
+          !spec.$1.startsWith('expense-review')) {
         final next = find.text('Siguiente');
         await tester.scrollUntilVisible(
           next,

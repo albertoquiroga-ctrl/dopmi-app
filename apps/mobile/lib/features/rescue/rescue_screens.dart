@@ -18,6 +18,7 @@ import 'rescue_fields.dart';
 import 'expense_field.dart';
 import 'expense_evidence_card.dart';
 import 'expense_frame.dart';
+import 'expense_review.dart';
 import 'case_update_screens.dart';
 import 'rescue_repository.dart';
 import 'support_home.dart';
@@ -2009,7 +2010,23 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                           ),
                         ),
                   ],
-                  if (step == 2) ...[
+                  if (step == 2 && kind == 'expense')
+                    ExpenseReview(
+                      values: {
+                        for (final entry in controllers.entries)
+                          entry.key: entry.value.text.trim(),
+                      },
+                      files: files,
+                      onOpen: (i) =>
+                          context.push('/rescue-file', extra: files[i]['path']),
+                      onEditInformation: editable && !busy
+                          ? () => setState(() => step = 1)
+                          : null,
+                      onEditFiles: editable && !busy
+                          ? () => setState(() => step = 0)
+                          : null,
+                    ),
+                  if (step == 2 && kind != 'expense') ...[
                     Text(
                       'Revisa antes de enviar',
                       style: Theme.of(context).textTheme.titleLarge,

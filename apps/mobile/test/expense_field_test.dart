@@ -76,6 +76,36 @@ class SubmittedExpenseRescue extends DraftExpenseRescue {
 
 void main() {
   testWidgets(
+    'a submitted expense shows its private record without edit actions or a fresh success notice',
+    (tester) async {
+      final repo = SubmittedExpenseRescue()..remoteStatus = 'submitted';
+      await startPublication(
+        tester,
+        FakeCommunity(),
+        '/rescue/expense-one',
+        rescue: repo,
+      );
+      final review = find.byKey(const ValueKey('expense-review-amount_cents'));
+      await tester.scrollUntilVisible(
+        review,
+        300,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('expense-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+      expect(tester.widget<Text>(review).data, '123.45');
+      expect(find.text('Editar'), findsNothing);
+      expect(find.text('Has subido tu evidencia para revisión.'), findsNothing);
+      expect(find.text('Guardar progreso'), findsNothing);
+      expect(find.text('Enviar a revisión'), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
     'evidence confirmation waits for the actual submitted result and never follows a failed request',
     (tester) async {
       tester.view.physicalSize = const Size(320, 640);
@@ -364,7 +394,49 @@ void main() {
       expect(repo.publicSaved!.containsKey('amount_cents'), isFalse);
       expect(repo.publicSaved!.containsKey('vendor'), isFalse);
       expect(repo.publicSaved!['category'], 'medicine');
-      expect(find.text('Enviar a revisión'), findsOneWidget);
+      expect(
+        tester
+            .widget<Text>(
+              find.byKey(const ValueKey('expense-review-amount_cents')),
+            )
+            .data,
+        '87.09',
+      );
+      final edit = find.byTooltip('Editar Información para publicación');
+      await tester.scrollUntilVisible(
+        edit,
+        -300,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('expense-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(edit);
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('expense-field-amount_cents')),
+        300,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('expense-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<TextField>(
+              find.byKey(const ValueKey('expense-field-amount_cents')),
+            )
+            .controller!
+            .text,
+        '87.09',
+      );
+      expect(find.text('Enviar a revisión'), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );
