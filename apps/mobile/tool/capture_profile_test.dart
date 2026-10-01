@@ -563,6 +563,8 @@ void main() {
       ('publish-photo-grid-large', '/my-adoptions/post'),
       ('publish-information', '/my-adoptions/post'),
       ('publish-information-large', '/my-adoptions/post'),
+      ('publish-review', '/my-adoptions/post'),
+      ('publish-review-large', '/my-adoptions/post'),
     ]) {
       // Synthetic preferences belong only to this flutter_test capturer.
       // ignore: invalid_use_of_visible_for_testing_member
@@ -601,12 +603,14 @@ void main() {
                 spec.$1 == 'adoption-end' ||
                 spec.$1.startsWith('adoption-support') ||
                 (spec.$1.startsWith('publish-photo-grid') ||
-                    spec.$1.startsWith('publish-information')))
+                    (spec.$1.startsWith('publish-information') ||
+                        spec.$1.startsWith('publish-review'))))
           ? DetailCaptureCommunity()
           : FakeCommunity();
       if (spec.$1.startsWith('adoption-empty')) community.discoveryItems = [];
       if ((spec.$1.startsWith('publish-photo-grid') ||
-          spec.$1.startsWith('publish-information'))) {
+          (spec.$1.startsWith('publish-information') ||
+              spec.$1.startsWith('publish-review')))) {
         community.post = Adoption({
           ...community.post.data,
           'status': 'draft',
@@ -1048,7 +1052,8 @@ void main() {
         );
         await tester.pumpAndSettle();
       }
-      if (spec.$1.startsWith('publish-information')) {
+      if ((spec.$1.startsWith('publish-information') ||
+          spec.$1.startsWith('publish-review'))) {
         await tester.tap(find.text('Continuar'));
         await tester.pumpAndSettle();
         if (large) {
@@ -1058,6 +1063,15 @@ void main() {
           );
           await tester.pumpAndSettle();
         }
+      }
+      if (spec.$1.startsWith('publish-review')) {
+        await tester.tap(find.text('Continuar'));
+        await tester.pumpAndSettle();
+        await Scrollable.ensureVisible(
+          tester.element(find.text('Información básica')),
+          alignment: 0,
+        );
+        await tester.pumpAndSettle();
       }
       if (spec.$1 != 'adoption-drag') {
         await tester.runAsync(

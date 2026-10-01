@@ -49,6 +49,54 @@ Future<void> startPublication(
 
 void main() {
   testWidgets(
+    'review links preserve authored data and expose no editing when submitted',
+    (tester) async {
+      tester.view.physicalSize = const Size(377, 852);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final repo = PhotoDraftCommunity();
+      await startPublication(tester, repo, '/my-adoptions/${repo.post.id}');
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      final name = find.byKey(const ValueKey('publication-field-pet_name'));
+      await tester.enterText(name, 'Mora revisada');
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      expect(find.text('Mora revisada'), findsOneWidget);
+      final edit = find.byTooltip('Editar Información básica');
+      await Scrollable.ensureVisible(tester.element(edit), alignment: .2);
+      await tester.pumpAndSettle();
+      await tester.tap(edit);
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<TextFormField>(name).controller!.text,
+        'Mora revisada',
+      );
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      final photosEdit = find.byTooltip('Editar Fotos');
+      await Scrollable.ensureVisible(tester.element(photosEdit), alignment: .2);
+      await tester.pumpAndSettle();
+      await tester.tap(photosEdit);
+      await tester.pumpAndSettle();
+      expect(find.byType(PublicationPhotoThumbnail), findsOneWidget);
+      repo.post = Adoption({...repo.post.data, 'status': 'submitted'});
+      final reload = find.text('Descartar cambios y cargar versión guardada');
+      await Scrollable.ensureVisible(tester.element(reload), alignment: .2);
+      await tester.pumpAndSettle();
+      await tester.tap(reload);
+      await tester.pumpAndSettle();
+      expect(find.byTooltip('Editar Fotos'), findsNothing);
+      expect(find.byTooltip('Editar Información básica'), findsNothing);
+      expect(find.text('Retirar de revisión para editar'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'publication choices persist real enums and are locked during review',
     (tester) async {
       tester.view.physicalSize = const Size(320, 640);

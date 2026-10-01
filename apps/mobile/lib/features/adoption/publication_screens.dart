@@ -393,6 +393,11 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
             ),
     ),
   );
+  String reviewTrait(String key) => choices[key] == true
+      ? 'Sí'
+      : choices[key] == false
+      ? 'No'
+      : 'Por confirmar';
   Widget publicationFooter() {
     if (loading || (post == null && widget.id != 'new')) {
       return const SizedBox.shrink();
@@ -621,25 +626,105 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                 ),
               ],
               if (step == 2) ...[
-                Text(
+                const Text(
                   'Revisa antes de enviar',
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: TextStyle(
+                    fontSize: 18,
+                    height: 28 / 18,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xff151423),
+                  ),
                 ),
-                const SizedBox(height: 12),
-                _ReviewRow(
-                  'Mascota',
-                  fields['pet_name']!.text.trim().isEmpty
-                      ? 'Sin nombre'
-                      : fields['pet_name']!.text.trim(),
+                const SizedBox(height: 24),
+                _ReviewSection(
+                  title: 'Fotos',
+                  onEdit: busy || post?.status == 'submitted'
+                      ? null
+                      : () => setState(() => step = 0),
+                  child: Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: [
+                      for (final path in photos)
+                        SizedBox(
+                          width: 110,
+                          height: 110,
+                          child: AdoptionPhoto(path, height: 110),
+                        ),
+                    ],
+                  ),
                 ),
-                _ReviewRow(
-                  'Ubicación',
-                  [
-                    fields['city']!.text.trim(),
-                    fields['region']!.text.trim(),
-                  ].where((value) => value.isNotEmpty).join(', '),
+                const SizedBox(height: 24),
+                _ReviewSection(
+                  title: 'Información básica',
+                  onEdit: busy || post?.status == 'submitted'
+                      ? null
+                      : () => setState(() => step = 1),
+                  child: _ReviewCard(
+                    rows: [
+                      (
+                        'Nombre',
+                        fields['pet_name']!.text.trim().isEmpty
+                            ? 'Sin nombre'
+                            : fields['pet_name']!.text.trim(),
+                      ),
+                      (
+                        'Sexo',
+                        choices['sex'] == 'male'
+                            ? 'Macho'
+                            : choices['sex'] == 'female'
+                            ? 'Hembra'
+                            : 'Por confirmar',
+                      ),
+                      (
+                        'Especie',
+                        choices['species'] == 'dog'
+                            ? 'Perro'
+                            : choices['species'] == 'cat'
+                            ? 'Gato'
+                            : 'Por confirmar',
+                      ),
+                      ('Edad', '${fields['age_months']!.text.trim()} meses'),
+                      ('Historia', fields['story']!.text.trim()),
+                      (
+                        'Ubicación',
+                        [
+                          fields['city']!.text.trim(),
+                          fields['region']!.text.trim(),
+                        ].where((value) => value.isNotEmpty).join(', '),
+                      ),
+                    ],
+                  ),
                 ),
-                _ReviewRow('Fotos', '${photos.length} de 5'),
+                const SizedBox(height: 24),
+                _ReviewSection(
+                  title: 'Salud',
+                  child: _ReviewCard(
+                    rows: [
+                      ('Vacunado', reviewTrait('vaccinated')),
+                      ('Esterilizado', reviewTrait('sterilized')),
+                      (
+                        'Cuidados especiales',
+                        fields['special_care']!.text.trim(),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                _ReviewSection(
+                  title: 'Social',
+                  child: _ReviewCard(
+                    rows: [
+                      ('Convive con perros', reviewTrait('social_dogs')),
+                      ('Convive con gatos', reviewTrait('social_cats')),
+                      (
+                        'Convive con niñas y niños',
+                        reviewTrait('social_children'),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
                 const Notice(
                   'Al enviar, el equipo revisará fotos, información y privacidad antes de publicar.',
                 ),
@@ -672,13 +757,89 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
   );
 }
 
-class _ReviewRow extends StatelessWidget {
-  const _ReviewRow(this.label, this.value);
-  final String label, value;
+class _ReviewSection extends StatelessWidget {
+  const _ReviewSection({required this.title, required this.child, this.onEdit});
+  final String title;
+  final Widget child;
+  final VoidCallback? onEdit;
   @override
-  Widget build(BuildContext context) => ListTile(
-    contentPadding: EdgeInsets.zero,
-    title: Text(label),
-    subtitle: Text(value.isEmpty ? 'Falta completar' : value),
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Row(
+        children: [
+          Expanded(
+            child: Semantics(
+              header: true,
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  height: 1.55,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff151423),
+                ),
+              ),
+            ),
+          ),
+          if (onEdit != null)
+            Tooltip(
+              message: 'Editar $title',
+              child: TextButton(
+                onPressed: onEdit,
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xff7c3aed),
+                  textStyle: const TextStyle(fontFamily: 'Inter', fontSize: 14),
+                  padding: EdgeInsets.zero,
+                ),
+                child: const Text('Editar'),
+              ),
+            ),
+        ],
+      ),
+      const SizedBox(height: 12),
+      child,
+    ],
+  );
+}
+
+class _ReviewCard extends StatelessWidget {
+  const _ReviewCard({required this.rows});
+  final List<(String, String)> rows;
+  @override
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: BoxDecoration(
+      color: Colors.white,
+      border: Border.all(color: const Color(0xffe3e4ed)),
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var index = 0; index < rows.length; index++) ...[
+            if (index > 0) const SizedBox(height: 8),
+            Text(
+              rows[index].$1,
+              style: const TextStyle(
+                fontSize: 12,
+                height: 1.55,
+                color: Color(0xff616174),
+              ),
+            ),
+            Text(
+              rows[index].$2.isEmpty ? 'Por confirmar' : rows[index].$2,
+              style: const TextStyle(
+                fontSize: 16,
+                height: 1.5,
+                fontWeight: FontWeight.w500,
+                color: Color(0xff151423),
+              ),
+            ),
+          ],
+        ],
+      ),
+    ),
   );
 }
