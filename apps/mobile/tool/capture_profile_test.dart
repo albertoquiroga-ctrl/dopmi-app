@@ -24,12 +24,36 @@ import '../test/payments_test.dart' show FakePayments;
 import 'package:dopmi_mobile/features/payments/payment_repository.dart';
 
 import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
+import 'package:dopmi_mobile/features/rescue/owned_case_history.dart';
 
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 
 import '../test/guardian_history_test.dart' show cycle;
 import '../test/guardian_test.dart' show FakeGuardian, activePlan;
 import 'capture_design_test.dart' show saveCapture;
+
+class OwnedHistoryCaptureUpdates extends FakeCaseUpdates {
+  @override
+  Future<List<CaseUpdate>> publicFor(String caseId) async => [
+    CaseUpdate({
+      'id': 'story-one',
+      'case_id': caseId,
+      'body': 'Choco recibió atención veterinaria y continúa su recuperación.',
+      'photos': ['approved-story-one'],
+      'published_at': '2026-09-30T16:00:00Z',
+    }),
+    CaseUpdate({
+      'id': 'story-two',
+      'case_id': caseId,
+      'body': 'Seguimos los cuidados indicados por el equipo veterinario.',
+      'photos': <String>[],
+      'published_at': '2026-10-01T16:00:00Z',
+    }),
+  ];
+  @override
+  Future<String> photoUrl(String path) async =>
+      'https://fixture.example.test/story/$path.png';
+}
 
 class OwnedCasesCaptureRescue extends FakeRescue {
   @override
@@ -433,6 +457,10 @@ void main() {
       ('rescuer-home-actions-large', '/rescuer'),
       ('owned-case-detail', '/rescue/case-one'),
       ('owned-case-detail-large', '/rescue/case-one'),
+      ('owned-case-detail-story', '/rescue/case-one'),
+      ('owned-case-detail-story-large', '/rescue/case-one'),
+      ('owned-case-detail-history-empty', '/rescue/case-one'),
+      ('owned-case-detail-history-empty-large', '/rescue/case-one'),
       ('owned-case-detail-bottom', '/rescue/case-one'),
       ('owned-case-detail-bottom-large', '/rescue/case-one'),
       ('owned-case-detail-closed', '/rescue/case-one'),
@@ -653,7 +681,11 @@ void main() {
               ContributionCapturePayments(),
             ),
           if (spec.$1.startsWith('owned-case-detail'))
-            caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
+            caseUpdateRepositoryProvider.overrideWithValue(
+              spec.$1.contains('history-empty')
+                  ? FakeCaseUpdates()
+                  : OwnedHistoryCaptureUpdates(),
+            ),
           if (spec.$1.startsWith('case-detail') ||
               spec.$1.startsWith('contribution')) ...[
             rescueRepositoryProvider.overrideWithValue(CaseCaptureRescue()),
@@ -738,10 +770,14 @@ void main() {
           ),
         ),
       );
-      await tester.pumpAndSettle();
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)),
-      );
+      // Let the signed URL future mount its image, then let the fixture image
+      // stream decode before settling animated loading indicators.
+      for (var imagePhase = 0; imagePhase < 3; imagePhase++) {
+        await tester.pump(const Duration(seconds: 1));
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 100)),
+        );
+      }
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
       if (spec.$1 == 'guardian-promotion-controls-large') {
@@ -965,6 +1001,13 @@ void main() {
           spec.$1.startsWith('rescuer-home-empty')) {
         await Scrollable.ensureVisible(
           tester.element(find.text('Acciones pendientes')),
+          alignment: 0,
+        );
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('owned-case-detail-story')) {
+        await Scrollable.ensureVisible(
+          tester.element(find.byType(OwnedCaseStory).first),
           alignment: 0,
         );
         await tester.pumpAndSettle();

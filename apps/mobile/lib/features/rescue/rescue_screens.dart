@@ -23,6 +23,7 @@ import 'public_expense_card.dart';
 import 'rescue_public_photo.dart';
 import 'owned_case_detail.dart';
 import 'owned_expense_card.dart';
+import 'owned_case_history.dart';
 
 class RescueHomeScreen extends ConsumerWidget {
   const RescueHomeScreen({super.key});
@@ -1255,7 +1256,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
           parent: record!.id,
           ownedExpenseCards: true,
         ),
-        updates: PublicCaseUpdates(record!.id),
+        updates: OwnedCaseHistory(record!.id),
         busy: busy || loading,
         error: error,
         onBack: () =>
