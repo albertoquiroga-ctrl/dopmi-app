@@ -124,7 +124,7 @@ class DopmiBottomBar extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: rescuer ? 0 : 10,
-              vertical: 8,
+              vertical: rescuer ? 0 : 8,
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,15 +175,18 @@ class _NavigationItem extends StatelessWidget {
         child: InkWell(
           onTap: onPressed,
           borderRadius: BorderRadius.circular(32),
-          splashFactory: rescuer ? null : NoSplash.splashFactory,
+          splashFactory: NoSplash.splashFactory,
+          highlightColor: rescuer ? Colors.transparent : null,
+          hoverColor: rescuer ? Colors.transparent : null,
           child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 48),
+            constraints: BoxConstraints(minHeight: rescuer ? 56 : 48),
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  width: rescuer ? 40 : 48,
-                  height: rescuer ? 40 : 48,
+                  width: rescuer ? 28 : 48,
+                  height: rescuer ? 28 : 48,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
@@ -196,12 +199,14 @@ class _NavigationItem extends StatelessWidget {
                   child: SvgPicture.asset(
                     'assets/navigation/${destination.asset}',
                     width:
-                        destination.path == '/profile' ||
+                        rescuer ||
+                            destination.path == '/profile' ||
                             destination.path == '/messages'
                         ? 20
                         : 22,
                     height:
-                        destination.path == '/profile' ||
+                        rescuer ||
+                            destination.path == '/profile' ||
                             destination.path == '/messages'
                         ? 20
                         : 22,
@@ -209,15 +214,15 @@ class _NavigationItem extends StatelessWidget {
                   ),
                 ),
                 if (rescuer) ...[
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 3),
                   Text(
                     destination.label,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 9,
                       height: 1.2,
                       color: color,
-                      fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
                     ),
                   ),
                 ],
