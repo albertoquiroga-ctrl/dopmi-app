@@ -289,6 +289,10 @@ void main() {
         );
         await tester.pumpAndSettle();
       }
+      if (spec.$1 == 'match-threads-large') {
+        await tester.scrollUntilVisible(find.text('Perfecto. ¿Cuándo podrías visitarlo?'), 150, scrollable:find.byType(Scrollable).first);
+        await tester.pumpAndSettle();
+      }
       if (spec.$1 == 'adoption-end') {
         await tester.tap(find.byTooltip('Pasar'));
         await tester.pumpAndSettle();
