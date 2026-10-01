@@ -595,6 +595,8 @@ void main() {
       ('expense-submitted-footer-large', '/rescue/expense-one'),
       ('case-publication', '/rescue/new?kind=case'),
       ('case-publication-large', '/rescue/new?kind=case'),
+      ('case-publication-needs', '/rescue/case-one'),
+      ('case-publication-needs-large', '/rescue/case-one'),
       ('case-publication-review', '/rescue/case-one'),
       ('case-publication-review-large', '/rescue/case-one'),
       ('case-publication-information', '/rescue/case-one'),
@@ -1170,8 +1172,14 @@ void main() {
         );
         await tester.pumpAndSettle();
       }
-      if (spec.$1.startsWith('case-publication-review')) {
+      if (spec.$1.startsWith('case-publication-needs')) {
         for (var i = 0; i < 2; i++) {
+          await tester.tap(find.text('Continuar'));
+          await tester.pumpAndSettle();
+        }
+      }
+      if (spec.$1.startsWith('case-publication-review')) {
+        for (var i = 0; i < 3; i++) {
           await tester.tap(find.text('Continuar'));
           await tester.pumpAndSettle();
         }

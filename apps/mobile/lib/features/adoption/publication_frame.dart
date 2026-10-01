@@ -8,19 +8,25 @@ class PublicationFrame extends StatelessWidget {
     super.key,
     required this.title,
     required this.step,
+    this.totalSteps = 3,
     required this.children,
     required this.footer,
     required this.onBack,
   });
   final String title;
-  final int step;
+  final int step, totalSteps;
   final List<Widget> children;
   final Widget footer;
   final VoidCallback? onBack;
   @override
   Widget build(BuildContext context) {
     final keyboard = MediaQuery.viewInsetsOf(context).bottom > 0;
-    final header = _PublicationHeader(title: title, step: step, onBack: onBack);
+    final header = _PublicationHeader(
+      title: title,
+      step: step,
+      totalSteps: totalSteps,
+      onBack: onBack,
+    );
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: keyboard
@@ -61,10 +67,11 @@ class _PublicationHeader extends StatelessWidget {
   const _PublicationHeader({
     required this.title,
     required this.step,
+    required this.totalSteps,
     required this.onBack,
   });
   final String title;
-  final int step;
+  final int step, totalSteps;
   final VoidCallback? onBack;
   @override
   Widget build(BuildContext context) => Container(
@@ -123,22 +130,26 @@ class _PublicationHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
-        PublicationStepper(step: step),
+        PublicationStepper(step: step, totalSteps: totalSteps),
       ],
     ),
   );
 }
 
 class PublicationStepper extends StatelessWidget {
-  const PublicationStepper({super.key, required this.step});
-  final int step;
+  const PublicationStepper({
+    super.key,
+    required this.step,
+    this.totalSteps = 3,
+  });
+  final int step, totalSteps;
   @override
   Widget build(BuildContext context) => Semantics(
-    label: 'Paso ${step + 1} de 3',
+    label: 'Paso ${step + 1} de $totalSteps',
     child: ExcludeSemantics(
       child: Row(
         children: [
-          for (var index = 0; index < 3; index++) ...[
+          for (var index = 0; index < totalSteps; index++) ...[
             Container(
               width: 32,
               height: 32,
@@ -159,7 +170,7 @@ class PublicationStepper extends StatelessWidget {
                 ),
               ),
             ),
-            if (index < 2)
+            if (index < totalSteps - 1)
               Expanded(
                 child: Container(
                   height: 2,

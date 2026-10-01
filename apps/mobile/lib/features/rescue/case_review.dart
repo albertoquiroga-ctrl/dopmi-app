@@ -12,11 +12,12 @@ class CaseReview extends StatelessWidget {
     required this.onOpen,
     this.onEditPhotos,
     this.onEditInformation,
+    this.onEditNeeds,
   });
   final Map<String, String> values;
   final List<Json> files;
   final ValueChanged<String> onOpen;
-  final VoidCallback? onEditPhotos, onEditInformation;
+  final VoidCallback? onEditPhotos, onEditInformation, onEditNeeds;
 
   Widget heading(String title, VoidCallback? edit) => Row(
     children: [
@@ -151,7 +152,7 @@ class CaseReview extends StatelessWidget {
         ('Estado', values['state'] ?? ''),
       ]),
       const SizedBox(height: 24),
-      heading('Necesidades', onEditInformation),
+      heading('Necesidades', onEditNeeds),
       const SizedBox(height: 12),
       card([('Necesidad y cuidados', values['need'] ?? '')]),
     ],

@@ -138,7 +138,7 @@ class CaseInformation extends StatelessWidget {
       ),
       const SizedBox(height: 16),
       for (final entry in rescueFields['case']!.where(
-        (f) => !['pet_name', 'sex', 'species'].contains(f.key),
+        (f) => !['pet_name', 'sex', 'species', 'need'].contains(f.key),
       ))
         field(entry),
       const Text(

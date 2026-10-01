@@ -25,6 +25,7 @@ import 'expense_frame.dart';
 import 'expense_review.dart';
 import 'case_information.dart';
 import 'case_review.dart';
+import 'case_needs.dart';
 import 'case_update_screens.dart';
 import 'rescue_repository.dart';
 import 'support_home.dart';
@@ -1058,6 +1059,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   bool loading = true, busy = false, dirty = false, loadFailed = false;
   bool expenseSubmitted = false;
   final caseInformationKey = GlobalKey(debugLabel: 'case-information');
+  final caseNeedsKey = GlobalKey(debugLabel: 'case-needs');
   String? error, message;
   String get kind => record?.kind ?? widget.kind;
   bool get editable => record?.editable ?? true;
@@ -1573,8 +1575,9 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   Widget editorFrame({required List<Widget> children}) {
     if (kind == 'case' && editable) {
       return PublicationFrame(
-        title: step == 2 ? 'Revisa tu caso' : 'Publicar caso',
+        title: step == 3 ? 'Revisa tu caso' : 'Publicar caso',
         step: step,
+        totalSteps: 4,
         onBack: busy
             ? null
             : () {
@@ -1585,7 +1588,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                 }
               },
         footer: PublicationFooter(
-          label: step == 2 ? 'Enviar a revisión' : 'Continuar',
+          label: step == 3 ? 'Enviar a revisión' : 'Continuar',
           busy: busy || loading,
           compact: MediaQuery.viewInsetsOf(context).bottom > 0,
           onSave: loadFailed ? null : () => run(save),
@@ -1599,9 +1602,14 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                       ))
               ? null
               : () => run(() async {
-                  if (step < 2) {
+                  if (step < 3) {
                     await save();
-                    if (mounted) setState(() => step++);
+                    if (mounted) {
+                      setState(() {
+                        step++;
+                        message = null;
+                      });
+                    }
                   } else {
                     await transition('submit');
                   }
@@ -2224,6 +2232,13 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                           : null,
                     ),
                   if (step == 2 && kind == 'case' && editable)
+                    CaseNeeds(
+                      key: caseNeedsKey,
+                      controller: controllers['need']!,
+                      enabled: !busy,
+                      onChanged: () => setState(() => dirty = true),
+                    ),
+                  if (step == 3 && kind == 'case' && editable)
                     CaseReview(
                       values: {
                         for (final entry in controllers.entries)
@@ -2238,6 +2253,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                       onEditInformation: busy
                           ? null
                           : () => setState(() => step = 1),
+                      onEditNeeds: busy ? null : () => setState(() => step = 2),
                     ),
                   if (step == 2 &&
                       kind != 'expense' &&
@@ -2341,17 +2357,18 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                           : () => run(() => transition('withdraw')),
                       child: const Text('Retirar a borrador'),
                     ),
-                  TextButton(
-                    onPressed: busy
-                        ? null
-                        : () async {
-                            if (await confirmLeave()) {
-                              await load();
-                            }
-                          },
-                    child: const Text('Recargar estado'),
-                  ),
-                  if (record?.kind == 'case') ...[
+                  if (!(kind == 'case' && editable))
+                    TextButton(
+                      onPressed: busy
+                          ? null
+                          : () async {
+                              if (await confirmLeave()) {
+                                await load();
+                              }
+                            },
+                      child: const Text('Recargar estado'),
+                    ),
+                  if (record?.kind == 'case' && !editable) ...[
                     const SizedBox(height: 24),
                     Text(
                       'Gastos de este caso',

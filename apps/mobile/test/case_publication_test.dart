@@ -49,6 +49,67 @@ class DraftCaseRescue extends FakeRescue {
 }
 
 void main() {
+  testWidgets('case needs keeps focus at large text and saves before review', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(tester.view.resetViewInsets);
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    final repo = DraftCaseRescue();
+    await startPublication(
+      tester,
+      FakeCommunity(),
+      '/rescue/case-one',
+      rescue: repo,
+    );
+    for (var i = 0; i < 2; i++) {
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+    }
+    expect(
+      tester
+          .widget<PublicationStepper>(find.byType(PublicationStepper))
+          .totalSteps,
+      4,
+    );
+    final need = find.byKey(const ValueKey('case-field-need'));
+    await tester.ensureVisible(need);
+    await tester.pumpAndSettle();
+    await tester.enterText(need, 'Comida y seguimiento');
+    tester.view.viewInsets = const FakeViewPadding(bottom: 240);
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<EditableText>(
+            find.descendant(of: need, matching: find.byType(EditableText)),
+          )
+          .focusNode
+          .hasFocus,
+      isTrue,
+    );
+    expect(tester.testTextInput.isVisible, isTrue);
+    expect(
+      tester.widget<TextField>(need).controller!.text,
+      'Comida y seguimiento',
+    );
+    tester.view.resetViewInsets();
+    tester.testTextInput.hide();
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Continuar'));
+    await tester.pumpAndSettle();
+    expect(repo.publicSaved!['need'], 'Comida y seguimiento');
+    expect(find.text('Registrar gasto realizado'), findsNothing);
+    expect(find.text('Recargar estado'), findsNothing);
+    expect(find.text('Borrador guardado.'), findsNothing);
+    expect(find.text('Enviar a revisión'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets(
     'case review displays saved data and editing preserves the draft',
     (tester) async {
@@ -70,6 +131,15 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Continuar'));
       await tester.pumpAndSettle();
+      final need = find.byKey(const ValueKey('case-field-need'));
+      expect(need, findsOneWidget);
+      await tester.enterText(need, 'Seguimiento veterinario');
+      FocusManager.instance.primaryFocus?.unfocus();
+      tester.testTextInput.hide();
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      expect(repo.publicSaved!['need'], 'Seguimiento veterinario');
       expect(repo.publicSaved!['story'], 'Rescatada bajo la lluvia');
       expect(find.text('Revisa tu caso'), findsOneWidget);
       expect(
@@ -90,6 +160,25 @@ void main() {
       expect(
         tester.widget<TextField>(story).controller!.text,
         'Rescatada bajo la lluvia',
+      );
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<TextField>(need).controller!.text,
+        'Seguimiento veterinario',
+      );
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      final editNeeds = find.byKey(
+        const ValueKey('case-review-edit-Necesidades'),
+      );
+      await tester.ensureVisible(editNeeds);
+      await tester.pumpAndSettle();
+      await tester.tap(editNeeds);
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<TextField>(need).controller!.text,
+        'Seguimiento veterinario',
       );
       await tester.tap(find.text('Continuar'));
       await tester.pumpAndSettle();
