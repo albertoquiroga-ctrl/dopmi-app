@@ -492,7 +492,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text('Choco'), findsOneWidget);
-    expect(find.text('Administrar caso'), findsOneWidget);
+    expect(find.text('Administrar'), findsOneWidget);
     expect(find.text('Nina'), findsOneWidget);
     expect(find.text('Necesita correcciones'), findsOneWidget);
     expect(find.text('Aclara la ubicación aproximada.'), findsOneWidget);

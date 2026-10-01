@@ -739,7 +739,7 @@ class _OwnedRescueCard extends ConsumerWidget {
       'draft' => 'Continuar publicación',
       'changes_requested' || 'rejected' => 'Corregir publicación',
       'submitted' => 'Ver envío',
-      'approved' => 'Administrar caso',
+      'approved' => 'Administrar',
       'closed' => 'Ver caso cerrado',
       _ => 'Ver caso',
     };
@@ -750,191 +750,202 @@ class _OwnedRescueCard extends ConsumerWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: const Color(0xffe3e4ed)),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (record.kind == 'case')
-                  SizedBox(
-                    width: 76,
-                    height: 76,
-                    child:
-                        (record.publicData['photos'] as List? ?? [])
-                            .whereType<String>()
-                            .isNotEmpty
-                        ? RescuePublicPhoto(
-                            (record.publicData['photos'] as List)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (record.kind == 'case')
+                      SizedBox(
+                        width: 76,
+                        height: 76,
+                        child:
+                            (record.publicData['photos'] as List? ?? [])
                                 .whereType<String>()
-                                .first,
-                            height: 76,
-                            radius: 14,
-                          )
-                        : Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xfff0eff8),
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            child: const Icon(
-                              Icons.pets_outlined,
-                              color: purple,
-                              size: 28,
-                            ),
-                          ),
-                  )
-                else
-                  CircleAvatar(
-                    backgroundColor: const Color(0xffeee7fc),
-                    child: Icon(
-                      needsAction ? Icons.edit_note : Icons.pets_outlined,
-                      color: purple,
-                    ),
-                  ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        record.title.isEmpty
-                            ? 'Borrador sin título'
-                            : record.title,
-                        style: const TextStyle(
-                          fontSize: 17,
-                          height: 1.3,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xff151423),
+                                .isNotEmpty
+                            ? RescuePublicPhoto(
+                                (record.publicData['photos'] as List)
+                                    .whereType<String>()
+                                    .first,
+                                height: 76,
+                                radius: 14,
+                              )
+                            : Container(
+                                decoration: BoxDecoration(
+                                  color: const Color(0xfff0eff8),
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                child: const Icon(
+                                  Icons.pets_outlined,
+                                  color: purple,
+                                  size: 28,
+                                ),
+                              ),
+                      )
+                    else
+                      CircleAvatar(
+                        backgroundColor: const Color(0xffeee7fc),
+                        child: Icon(
+                          needsAction ? Icons.edit_note : Icons.pets_outlined,
+                          color: purple,
                         ),
                       ),
-                      const SizedBox(height: 6),
-                      Wrap(
-                        spacing: 6,
-                        runSpacing: 6,
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
+                          Text(
+                            record.title.isEmpty
+                                ? 'Borrador sin título'
+                                : record.title,
+                            style: const TextStyle(
+                              fontSize: 17,
+                              height: 1.3,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xff151423),
                             ),
-                            decoration: BoxDecoration(
-                              color: record.status == 'submitted'
-                                  ? const Color(0xffeef5ff)
-                                  : needsAction
-                                  ? const Color(0xfff7eeee)
-                                  : const Color(0xfff0eff8),
-                              borderRadius: BorderRadius.circular(99),
-                            ),
-                            child: Text(
-                              rescueStatuses[record.status] ?? record.status,
+                          ),
+                          const SizedBox(height: 6),
+                          Wrap(
+                            spacing: 6,
+                            runSpacing: 6,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: record.status == 'submitted'
+                                      ? const Color(0xffeef5ff)
+                                      : needsAction
+                                      ? const Color(0xfff7eeee)
+                                      : const Color(0xfff0eff8),
+                                  borderRadius: BorderRadius.circular(99),
+                                ),
+                                child: Text(
+                                  rescueStatuses[record.status] ??
+                                      record.status,
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    height: 1.3,
+                                    color: Color(0xff4f4e5c),
+                                  ),
+                                ),
+                              ),
+                              if (record.data['urgent'] == true)
+                                const Text(
+                                  'Urgente',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xffb51224),
+                                  ),
+                                ),
+                            ],
+                          ),
+                          if (record.kind == 'case' &&
+                              (record.publicData['age'] as String? ?? '')
+                                  .trim()
+                                  .isNotEmpty) ...[
+                            const SizedBox(height: 6),
+                            Text(
+                              record.publicData['age'] as String,
                               style: const TextStyle(
-                                fontSize: 11,
-                                height: 1.3,
+                                fontSize: 13,
+                                height: 1.4,
                                 color: Color(0xff4f4e5c),
                               ),
                             ),
-                          ),
-                          if (record.data['urgent'] == true)
-                            const Text(
-                              'Urgente',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xffb51224),
+                          ],
+                          if (record.kind == 'case' &&
+                              record.status == 'approved' &&
+                              record.targetCents > 0) ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              'Asignado: ${pesos(record.fundedCents)}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                height: 1.35,
+                                color: Color(0xff4f4e5c),
                               ),
                             ),
+                            const SizedBox(height: 6),
+                            LinearProgressIndicator(
+                              value: (record.fundedCents / record.targetCents)
+                                  .clamp(0, 1),
+                              minHeight: 6,
+                              borderRadius: BorderRadius.circular(99),
+                              color: purple,
+                              backgroundColor: const Color(0xffece9f2),
+                              semanticsLabel: 'Progreso de gastos aprobados',
+                              semanticsValue:
+                                  '${((record.fundedCents / record.targetCents).clamp(0, 1) * 100).round()}%',
+                            ),
+                          ],
                         ],
                       ),
-                      if (record.kind == 'case' &&
-                          (record.publicData['age'] as String? ?? '')
-                              .trim()
-                              .isNotEmpty) ...[
-                        const SizedBox(height: 6),
-                        Text(
-                          record.publicData['age'] as String,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            height: 1.4,
-                            color: Color(0xff4f4e5c),
-                          ),
-                        ),
-                      ],
-                      if (record.kind == 'case' &&
-                          record.status == 'approved' &&
-                          record.targetCents > 0) ...[
-                        const SizedBox(height: 8),
-                        Text(
-                          'Asignado: ${pesos(record.fundedCents)}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            height: 1.35,
-                            color: Color(0xff4f4e5c),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        LinearProgressIndicator(
-                          value: (record.fundedCents / record.targetCents)
-                              .clamp(0, 1),
-                          minHeight: 6,
-                          borderRadius: BorderRadius.circular(99),
-                          color: purple,
-                          backgroundColor: const Color(0xffece9f2),
-                          semanticsLabel: 'Progreso de gastos aprobados',
-                          semanticsValue:
-                              '${((record.fundedCents / record.targetCents).clamp(0, 1) * 100).round()}%',
-                        ),
-                      ],
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+                if ((record.data['feedback'] as String? ?? '').isNotEmpty) ...[
+                  const SizedBox(height: 10),
+                  Notice(
+                    record.data['feedback'] as String,
+                    isError: needsAction,
+                  ),
+                ],
               ],
             ),
-            if ((record.data['feedback'] as String? ?? '').isNotEmpty) ...[
-              const SizedBox(height: 10),
-              Notice(record.data['feedback'] as String, isError: needsAction),
-            ],
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.only(top: 12),
-              decoration: const BoxDecoration(
-                border: Border(top: BorderSide(color: Color(0xffe3e4ed))),
-              ),
-              child: Wrap(
-                alignment: WrapAlignment.end,
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  if (needsAction)
-                    FilledButton.tonal(
-                      onPressed: () async {
-                        await context.push('/rescue/${record.id}');
-                        refresh();
-                      },
-                      style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xffede9fe),
-                        foregroundColor: purple,
-                        minimumSize: const Size(0, 48),
-                      ),
-                      child: Text(action),
-                    )
-                  else
-                    OutlinedButton.icon(
-                      onPressed: () async {
-                        await context.push('/rescue/${record.id}');
-                        refresh();
-                      },
-                      icon: const Icon(Icons.open_in_new, size: 16),
-                      label: Text(action),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xff151423),
-                        minimumSize: const Size(0, 48),
-                        side: const BorderSide(color: Color(0xffe3e4ed)),
-                      ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: const BoxDecoration(
+              border: Border(top: BorderSide(color: Color(0xffe3e4ed))),
+            ),
+            child: Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                if (needsAction)
+                  FilledButton.tonal(
+                    onPressed: () async {
+                      await context.push('/rescue/${record.id}');
+                      refresh();
+                    },
+                    style: FilledButton.styleFrom(
+                      backgroundColor: const Color(0xffede9fe),
+                      foregroundColor: purple,
+                      minimumSize: const Size(0, 48),
                     ),
-                  if (record.kind == 'case' && record.status == 'approved')
-                    TextButton.icon(
+                    child: Text(action),
+                  )
+                else
+                  OutlinedButton.icon(
+                    onPressed: () async {
+                      await context.push('/rescue/${record.id}');
+                      refresh();
+                    },
+                    icon: const Icon(Icons.open_in_new, size: 16),
+                    label: Text(action),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xff151423),
+                      minimumSize: const Size(0, 48),
+                      side: const BorderSide(color: Color(0xffe3e4ed)),
+                    ),
+                  ),
+                if (record.kind == 'case' && record.status == 'approved')
+                  Tooltip(
+                    message: 'Preparar publicación para adopción',
+                    child: TextButton.icon(
                       onPressed: () async {
                         final linked = await ref
                             .read(communityRepositoryProvider)
@@ -948,13 +959,13 @@ class _OwnedRescueCard extends ConsumerWidget {
                         refresh();
                       },
                       icon: const Icon(Icons.home_outlined, size: 16),
-                      label: const Text('Preparar adopción'),
+                      label: const Text('Adopción'),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
