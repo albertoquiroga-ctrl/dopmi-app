@@ -106,6 +106,8 @@ void main() {
       ('adoption-drag', '/adoptions'),
       ('adoption-filters', '/adoptions'),
       ('adoption-filters-large', '/adoptions'),
+      ('adoption-contact', '/adoptions'),
+      ('adoption-contact-large', '/adoptions'),
       ('profile-overview', '/profile'),
       ('profile-overview-active', '/profile'),
       ('profile-overview-large', '/profile'),
@@ -170,6 +172,15 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1.startsWith('adoption-contact')) {
+        await Scrollable.ensureVisible(
+          tester.element(find.byTooltip('Contactar')),
+          alignment: .25,
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.byTooltip('Contactar'));
+        await tester.pumpAndSettle();
+      }
       if (spec.$1.startsWith('adoption-filters')) {
         await tester.tap(find.byTooltip('Filtros'));
         await tester.pumpAndSettle();

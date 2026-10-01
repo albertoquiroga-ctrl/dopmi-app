@@ -222,6 +222,33 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
   Adoptar, luego restantes recorridos. Objetivo y entrega Codemagic final siguen
   activos; este checkpoint no completa la paridad integral.
 
+## Loop 07 · Confirmación de contacto · 2026-09-30
+
+- Referencia inicio/cierre `a3c969cd9103fd46dc5cd886999912526ce75efb`.
+  Vite/navegador377×852 comprobados; PNG reference-contact guardado. El mockup
+  muestra ciudad del perfil como texto estático: no hay selector de ubicación
+  que copiar. Se conserva el selector real existente, cuya persistencia de
+  coordenadas/radio al reabrir necesita un ciclo propio.
+- Adoptar y detalle reutilizan AdoptStartDialog: texto de referencia, blanco,
+  radio24, barrera ink48%, sin animación de entrada, padding28/22/22, título22
+  Inter700, cuerpo14/1.45 y acciones apiladas48px. Captura normal reproduce
+  panel y posición contra referencia. Texto200% elimina padding del título
+  para conservar palabras completas; scroll y cerrar fijo.
+- Confirmar sigue llamando startThread real y mide contact_started sólo cuando
+  resulta; cancelar/cerrar no crea conversaciones. Error conserva tarjeta y
+  permite nuevo intento. Se impide contacto mientras otra acción de tarjeta
+  está pendiente. El diálogo de contacto desde perfil público conserva su
+  semántica actual para revisarlo con esa ruta, no se reemplaza a ciegas.
+- Tres pruebas nuevas: cancelar/cerrar, fallo y reintento real, texto ampliado
+  con confirmación desplazable y cierre visible. Pruebas existentes del detalle
+  y medición conservadas. Capturador incorpora dos estados nuevos de contacto.
+  Gate final: Flutter123 completos, analyze lib/test/tool limpio, configuración12
+  y captura18 estados aprobados; lib/test/tool ejecutados idénticos al checkout.
+- Diferencias abiertas: tarjeta de fondo usa fixture sin foto y ubicación aún
+  difiere; referencia tiene foto Rocky/datos de prueba. No aceptación instalada
+  ni paridad integral atribuida. Próximo: detalle/galería, vacíos y apoyo
+  intercalado. Entrega final Codemagic sigue pendiente, objetivo activo.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián

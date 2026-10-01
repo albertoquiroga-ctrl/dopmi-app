@@ -6,6 +6,7 @@ import '../../core/ui.dart';
 import '../../core/measurement.dart';
 import '../community/content_actions.dart';
 import '../profile/rescuer_profile_repository.dart';
+import 'adopt_start_dialog.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
 import 'photo_recovery.dart';
@@ -405,25 +406,7 @@ class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
   }
 
   Future<void> contact(CommunityRepository repo, Adoption post) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('¿Iniciamos el proceso?'),
-        content: Text(
-          'Abriremos una conversación privada con ${post.text('publisher_name')} sobre ${post.name}.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(false),
-            child: const Text('Ahora no'),
-          ),
-          FilledButton(
-            onPressed: () => context.pop(true),
-            child: const Text('Contactar'),
-          ),
-        ],
-      ),
-    );
+    final confirmed = await confirmAdoptionContact(context);
     if (confirmed != true || !mounted) return;
     await perform(() async {
       final id = await repo.startThread(post.id);

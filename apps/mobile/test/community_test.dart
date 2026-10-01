@@ -294,7 +294,7 @@ void main() {
     await start(tester, repo, '/adoptions/post');
     await tap(tester, 'Quiero conocerle');
     expect(find.text('¿Iniciamos el proceso?'), findsOneWidget);
-    await tester.tap(find.text('Contactar'));
+    await tester.tap(find.text('Sí, contactar rescatista'));
     await tester.pumpAndSettle();
     expect(find.text('Sobre Luna'), findsOneWidget);
   });
@@ -391,7 +391,7 @@ void main() {
     await tester.tap(find.byTooltip('Contactar'));
     await tester.pumpAndSettle();
     expect(analytics.events, isEmpty);
-    await tester.tap(find.text('Contactar'));
+    await tester.tap(find.text('Sí, contactar rescatista'));
     await tester.pumpAndSettle();
     expect(analytics.events, ['contact_started']);
     expect(find.text('Sobre Luna'), findsOneWidget);

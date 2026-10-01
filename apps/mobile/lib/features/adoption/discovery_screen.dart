@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/measurement.dart';
 import '../../core/ui.dart';
+import 'adopt_start_dialog.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
 import 'location_service.dart';
@@ -148,23 +149,8 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   }
 
   Future<void> contact(Adoption card) async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('¿Iniciamos el proceso?'),
-        content: Text('Abriremos una conversación sobre ${card.name}.'),
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(false),
-            child: const Text('Ahora no'),
-          ),
-          FilledButton(
-            onPressed: () => context.pop(true),
-            child: const Text('Contactar'),
-          ),
-        ],
-      ),
-    );
+    if (acting) return;
+    final confirm = await confirmAdoptionContact(context);
     if (confirm != true || !mounted) return;
     setState(() => acting = true);
     try {
