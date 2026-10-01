@@ -434,7 +434,7 @@ class AdoptionIntroduction extends StatelessWidget {
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: SizedBox(
-                                    width: copyWidth,
+                                    width: step == 0 ? copyWidth : width,
                                     child: OnboardingArt(
                                       intent: 'adopt',
                                       step: step,

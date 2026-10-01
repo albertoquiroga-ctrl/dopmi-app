@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dopmi_mobile/core/ui.dart';
 import 'package:dopmi_mobile/features/identity/onboarding_screen.dart';
@@ -175,6 +176,18 @@ void main() {
       ]) {
         await tester.runAsync(
           () => precacheImage(AssetImage(asset), key.currentContext!),
+        );
+      }
+      for (final path in [
+        'assets/profile/icon-verified.svg',
+        'assets/onboarding/send.svg',
+      ]) {
+        final asset = SvgAssetLoader(path);
+        await tester.runAsync(
+          () => svg.cache.putIfAbsent(
+            asset.cacheKey(null),
+            () => asset.loadBytes(null),
+          ),
         );
       }
       await tester.pumpAndSettle();

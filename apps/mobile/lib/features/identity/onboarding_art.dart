@@ -280,47 +280,239 @@ class OnboardingArt extends StatelessWidget {
     },
   );
 
-  Widget adoptionDetail() => panel([
-    identity(detail: true),
-    const SizedBox(height: 12),
-    const Text(
-      'SALUD',
-      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: muted),
-    ),
-    const SizedBox(height: 6),
-    Wrap(spacing: 6, children: [tag('Vacunada'), tag('Esterilizada')]),
-    const SizedBox(height: 12),
-    const Text(
-      'CONVIVE CON',
-      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: muted),
-    ),
-    const SizedBox(height: 6),
-    Wrap(spacing: 6, children: [tag('Perros'), tag('Gatos'), tag('Niños')]),
-    const SizedBox(height: 12),
-    const Text(
-      'Cada publicación pasa por revisión de DopMi.',
-      style: TextStyle(fontSize: 12, color: muted),
-    ),
-    const SizedBox(height: 12),
-    Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: const Color(0xfff7f4ef),
-        borderRadius: BorderRadius.circular(99),
-      ),
-      child: const Row(
+  Widget adoptionDetail() => LayoutBuilder(
+    builder: (_, box) {
+      Widget detailTag(String text) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: const Color(0xfffff9df),
+          borderRadius: BorderRadius.circular(99),
+          border: Border.all(color: yellow.withValues(alpha: .4)),
+        ),
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 12,
+            height: 1.2,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0,
+            color: ink,
+          ),
+        ),
+      );
+      Widget section(String title, List<String> tags) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Text(
-              '¡Hola! Me interesa Luna',
-              style: TextStyle(fontSize: 12),
+          Text(
+            title,
+            style: const TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 11,
+              height: 1.2,
+              fontWeight: FontWeight.w700,
+              letterSpacing: .44,
+              color: muted,
             ),
           ),
-          Icon(Icons.send_outlined, size: 18),
+          const SizedBox(height: 6),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: tags.map(detailTag).toList(),
+          ),
         ],
-      ),
-    ),
-  ]);
+      );
+      final card = Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: const Color(0xffe6e2dd)),
+          boxShadow: [
+            BoxShadow(
+              color: ink.withValues(alpha: .08),
+              offset: const Offset(0, 10),
+              blurRadius: 28,
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                photo('luna-detail', 64, 64, radius: 18),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Luna',
+                        style: TextStyle(
+                          fontFamily: 'Fraunces',
+                          fontSize: 22,
+                          height: 1.15,
+                          letterSpacing: 0,
+                          fontWeight: FontWeight.w600,
+                          color: ink,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          const Text(
+                            'Refugio Patitas',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 13,
+                              height: 1.2,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0,
+                              color: muted,
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 3,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xfffff9df),
+                              borderRadius: BorderRadius.circular(99),
+                              border: Border.all(
+                                color: yellow.withValues(alpha: .45),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(18),
+                                  child: SvgPicture.asset(
+                                    'assets/profile/icon-verified.svg',
+                                    width: 64,
+                                    height: 64,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                const Flexible(
+                                  child: Text(
+                                    'Verificada',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 11,
+                                      height: 1.2,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 0,
+                                      color: ink,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              decoration: const BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: Color(0xffe6e2dd)),
+                  bottom: BorderSide(color: Color(0xffe6e2dd)),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  section('SALUD', ['Vacunada', 'Esterilizada']),
+                  const SizedBox(height: 10),
+                  section('CONVIVE CON', ['Perros', 'Gatos', 'Niños']),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.fromLTRB(14, 8, 8, 8),
+              decoration: BoxDecoration(
+                color: const Color(0xfff7f4ef),
+                borderRadius: BorderRadius.circular(99),
+                border: Border.all(color: const Color(0xffe6e2dd)),
+              ),
+              child: Row(
+                children: [
+                  const Expanded(
+                    child: Text(
+                      '¡Hola! Me interesa Luna',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 14,
+                        height: 1.2,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0,
+                        color: ink,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: const BoxDecoration(
+                      color: yellow,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        'assets/onboarding/send.svg',
+                        width: 14,
+                        height: 14,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Cada publicación pasa por revisión de DopMi.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 12,
+                height: 1.4,
+                letterSpacing: 0,
+                color: muted,
+              ),
+            ),
+          ],
+        ),
+      );
+      // Source reserves 320px while the decorative card extends below it.
+      // Narrow layouts instead retain the full intrinsic height for readable copy.
+      if (box.maxWidth < 320) return card;
+      return SizedBox(
+        height: 320,
+        child: OverflowBox(
+          alignment: Alignment.topCenter,
+          minHeight: 0,
+          maxHeight: double.infinity,
+          child: card,
+        ),
+      );
+    },
+  );
 
   Widget donation() => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
