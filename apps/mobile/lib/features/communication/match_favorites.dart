@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -186,10 +187,20 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
                                       height: 34,
                                     ),
                                     padding: EdgeInsets.zero,
-                                    icon: const Icon(
-                                      Icons.chat_bubble_outline,
-                                      size: 16,
-                                      color: ink,
+                                    style: IconButton.styleFrom(
+                                      minimumSize: const Size(34, 34),
+                                      maximumSize: const Size(34, 34),
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                    ),
+                                    icon: SvgPicture.string(
+                                      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M7.9 20c1.91.98 4.1 1.24 6.19.75 2.09-.5 3.93-1.72 5.19-3.45 1.26-1.73 1.86-3.86 1.7-6-.17-2.14-1.09-4.15-2.61-5.66C16.85 4.11 14.84 3.19 12.7 3.02c-2.14-.17-4.27.44-6 1.7C5 6 3.75 7.82 3.25 9.91c-.5 2.09-.23 4.28.75 6.19L2 22l5.9-2z" stroke="#15110d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                                      width: 16,
+                                      height: 16,
+                                      colorFilter: const ColorFilter.mode(
+                                        ink,
+                                        BlendMode.srcIn,
+                                      ),
                                     ),
                                   ),
                                 ),

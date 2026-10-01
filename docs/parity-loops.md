@@ -357,6 +357,14 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
 - Prueba nueva cubre no leídos3/estado cerrado/previsualización y ausencia de null. Suite Flutter132 aprobada; analyze limpio; configuración12 aprobada. Capturador añade chats normal377×852 y320×640/200%.
 - Pendientes: contraste navegador con datos equivalentes, foto/avatar en fixture, encabezado de ubicación, búsqueda integrada, vista completa/orden/arte favoritos y rol rescatista. No atribuir paridad global ni aceptación instalada. Codemagic final pendiente de completar objetivo.
 
+
+## Loop 15 — encabezado Mis match e icono favorito
+
+- Referencia inicio/cierre `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`, sin cambios. DonorChromeTop de Mis match no contiene ubicación; se conserva esa diferencia respecto a Adoptar.
+- Reemplazado PageFrame genérico por Scaffold blanco, SafeArea y ListView18/16/18/110 con barra flotante; logo huella40 y campana20 en círculo42/borde1.5. Encabezado desplaza con contenido. Botón favorito ahora34 y SVG inline exacto del renderFavCard de referencia.
+- Pruebas dirigidas18 + capturador29 estados aprobadas; analyze limpio. Tras copiar path exacto SVG se repite capturador. Sólo presentación; no cambios SQL/identidad/finanzas.
+- Capturas loop15 normal/ampliada. Pendientes: contador real de notificaciones (página parcial no prueba total), foto equivalente, búsqueda integrada, vista completa/orden/arte vacío, rol rescatista y navegador. No declarar paridad global ni aceptación instalada. Objetivo y Codemagic final continúan pendientes.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián
