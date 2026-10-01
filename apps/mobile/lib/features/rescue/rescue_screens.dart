@@ -10,6 +10,7 @@ import '../../core/ui.dart';
 import '../../core/measurement.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
+import '../adoption/publication_frame.dart';
 import '../community/content_actions.dart';
 import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
@@ -1457,6 +1458,45 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   }
 
   Widget editorFrame({required List<Widget> children}) {
+    if (kind == 'case' && editable) {
+      return PublicationFrame(
+        title: step == 2 ? 'Revisa tu caso' : 'Publicar caso',
+        step: step,
+        onBack: busy
+            ? null
+            : () {
+                if (step > 0) {
+                  setState(() => step--);
+                } else {
+                  closeExpenseEditor();
+                }
+              },
+        footer: PublicationFooter(
+          label: step == 2 ? 'Enviar a revisión' : 'Continuar',
+          busy: busy || loading,
+          compact: MediaQuery.viewInsetsOf(context).bottom > 0,
+          onSave: loadFailed ? null : () => run(save),
+          onContinue:
+              loadFailed ||
+                  (step == 0 &&
+                      !files.any(
+                        (f) =>
+                            f['role'] == 'public' &&
+                            (f['path'] as String? ?? '').isNotEmpty,
+                      ))
+              ? null
+              : () => run(() async {
+                  if (step < 2) {
+                    await save();
+                    if (mounted) setState(() => step++);
+                  } else {
+                    await transition('submit');
+                  }
+                }),
+        ),
+        children: children,
+      );
+    }
     if (kind != 'expense') return CommunityFrame(children: children);
     return ExpenseFrame(
       step: step,
@@ -1794,7 +1834,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                         : context.go('/rescue/${record!.id}'),
                     child: const Text('Volver al caso'),
                   ),
-                if (kind != 'expense')
+                if (kind != 'expense' && !(kind == 'case' && editable))
                   Heading(
                     kind == 'verification'
                         ? 'Tu labor merece\nconfianza.'
@@ -1860,7 +1900,8 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                       const Notice(
                         'Los datos enviados están protegidos. Puedes consultar el estado actualizado al recargar.',
                       ),
-                  if (kind != 'expense') _RescueSteps(step: step),
+                  if (kind != 'expense' && !(kind == 'case' && editable))
+                    _RescueSteps(step: step),
                   if (busy)
                     const LinearProgressIndicator(
                       semanticsLabel: 'Guardando o subiendo archivos',
@@ -2123,7 +2164,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                                 }
                               }),
                       )
-                    else ...[
+                    else if (kind != 'case') ...[
                       if (step < 2)
                         ActionButton(
                           'Guardar y continuar',
@@ -2145,7 +2186,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                         ),
                       ],
                     ],
-                    if (step > 0)
+                    if (step > 0 && kind != 'case')
                       TextButton(
                         onPressed: busy ? null : () => setState(() => step--),
                         child: const Text('Regresar al paso anterior'),

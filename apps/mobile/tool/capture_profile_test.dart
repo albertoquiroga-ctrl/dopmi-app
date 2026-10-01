@@ -586,6 +586,8 @@ void main() {
       ('expense-submitted', '/rescue/expense-one'),
       ('expense-submitted-large', '/rescue/expense-one'),
       ('expense-submitted-footer-large', '/rescue/expense-one'),
+      ('case-publication', '/rescue/new?kind=case'),
+      ('case-publication-large', '/rescue/new?kind=case'),
       ('expense-record', '/rescue/expense-one'),
       ('expense-record-large', '/rescue/expense-one'),
       ('expense-review', '/rescue/expense-one'),
@@ -705,6 +707,7 @@ void main() {
       if (spec.$1.startsWith('owned-case-detail') ||
           spec.$1.startsWith('owned-cases') ||
           spec.$1.startsWith('rescuer-home') ||
+          spec.$1.startsWith('case-publication') ||
           spec.$1.startsWith('publish-') ||
           spec.$1.startsWith('verification-') ||
           spec.$1 == 'chat-bubbles-rescuer') {
@@ -714,6 +717,8 @@ void main() {
         overrides: [
           identityRepositoryProvider.overrideWithValue(repo),
           communityRepositoryProvider.overrideWithValue(community),
+          if (spec.$1.startsWith('case-publication'))
+            rescueRepositoryProvider.overrideWithValue(DraftExpenseRescue()),
           if (spec.$1.startsWith('expense-'))
             rescueRepositoryProvider.overrideWithValue(
               spec.$1.startsWith('expense-record')
