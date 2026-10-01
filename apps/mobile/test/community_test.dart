@@ -12,6 +12,9 @@ import 'package:image/image.dart' as img;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'fake_identity_repository.dart';
+import 'rescue_test.dart' show FakeRescue;
+
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 
 class CommunityAnalyticsSpy implements ProductAnalytics {
   final events = <String>[];
@@ -235,6 +238,7 @@ void main() {
       overrides: [
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(repo),
+        rescueRepositoryProvider.overrideWithValue(FakeRescue()),
         routerInitialLocationProvider.overrideWithValue(path),
         if (measurement != null)
           measurementControllerProvider.overrideWith((ref) => measurement),
@@ -425,6 +429,18 @@ void main() {
     final semantics = tester.ensureSemantics();
     expect(find.bySemanticsLabel(RegExp('25 % cubierto')), findsOneWidget);
     expect(find.text(r'$25 de $100'), findsOneWidget);
+    expect(find.text('Apoya con sus necesidades'), findsOneWidget);
+    await tester.drag(find.text('Choco'), const Offset(40, 0));
+    await tester.pumpAndSettle();
+    expect(find.text('Choco'), findsOneWidget);
+    await tester.tap(find.text('Apoya con sus necesidades'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Choco necesita recuperarse'), findsOneWidget);
+    final context = tester.element(
+      find.textContaining('Choco necesita recuperarse'),
+    );
+    Navigator.of(context).pop();
+    await tester.pumpAndSettle();
     expect(find.text('Apoya con sus necesidades'), findsOneWidget);
     await tester.drag(find.text('Choco'), const Offset(150, 0));
     await tester.pumpAndSettle();

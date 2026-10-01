@@ -329,6 +329,15 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
 - Analyze limpio, pruebas dirigidas16 + captura25 estados aprobadas, configuración12 aprobada. Suite completa130 aprobada tras corregir disposición ampliada; no aceptación instalada/Play/Codemagic atribuida.
 - Objetivo completo activo. Próximo: completar comparación y pruebas de navegación de esta tarjeta; después favoritos/match/chat y demás rutas. Codemagic final autorizado y pendiente.
 
+
+## Loop 12 — apoyo, regreso y foto equivalente
+
+- Referencia Irlanda SHA `a3c969cd9103fd46dc5cd886999912526ce75efb`, reconsultada sin cambios. Reutiliza foto pública `milo-card.png` sólo como fixture del capturador, sin empaquetarla en producción.
+- Prueba ampliada comprueba arrastre corto, CTA hacia caso real, historia del caso, regreso a la misma oportunidad y arrastre derecho hasta fin sin formulario de aportación. Repositorio de casos de prueba sustituye servicios externos; no acredita cuenta/flujo remoto instalado.
+- Captura espera carga/decodificación tras cambiar tarjeta; PNG equivalente Milo ya visible. Normal reproduce fotografía, marco amarillo, radios32/22, progreso6 y CTA de referencia observada en loop10. Evidencia en loop12. Revisión simultánea navegador y cancelación explícita aún pendientes; no se declara equivalencia total del gesto desde una imagen.
+- Pruebas dirigidas16 + capturador25 estados aprobadas; después de espera de imagen, capturador repetido aprobado. Analyze limpio. Código de producción no cambiado en este loop; no esquema/pagos ni nuevos guards.
+- Continuar comparación de apoyo y luego favoritos/match/chat. Entrega final Codemagic android-guardian-internal sigue autorizada, pendiente de completar paridad global.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián

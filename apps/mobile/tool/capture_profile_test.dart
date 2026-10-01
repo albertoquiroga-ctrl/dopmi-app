@@ -156,9 +156,20 @@ void main() {
           : const Size(377, 852);
       tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      if (spec.$1.startsWith('adoption-support')) {
+        final milo = await tester.runAsync(
+          () => File('tool/fixtures/milo.png').readAsBytes(),
+        );
+        debugNetworkImageHttpClientProvider = () => FixturePhotoClient(milo!);
+      } else {
+        debugNetworkImageHttpClientProvider = () =>
+            FixturePhotoClient(fixturePhoto!);
+      }
       final guardian = FakeGuardian();
       final community =
-          (spec.$1.startsWith('adoption-detail') || spec.$1 == 'adoption-end')
+          (spec.$1.startsWith('adoption-detail') ||
+              spec.$1 == 'adoption-end' ||
+              spec.$1.startsWith('adoption-support'))
           ? DetailCaptureCommunity()
           : FakeCommunity();
       if (spec.$1.startsWith('adoption-empty')) community.discoveryItems = [];
@@ -213,6 +224,7 @@ void main() {
             'case_id': 'case-one',
             'expense_id': 'expense-one',
             'pet_name': 'Milo',
+            'photo': 'approved/milo.png',
             'expense_title': 'Spray para heridas',
             'reimbursable_cents': 1200,
             'funded_cents': 800,
@@ -243,6 +255,12 @@ void main() {
           await tester.tap(find.byTooltip('Pasar'));
           await tester.pumpAndSettle();
         }
+      }
+      if (spec.$1.startsWith('adoption-support')) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 300)),
+        );
+        await tester.pumpAndSettle();
       }
       if (spec.$1 == 'adoption-end') {
         await tester.tap(find.byTooltip('Pasar'));
