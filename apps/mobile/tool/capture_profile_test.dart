@@ -16,7 +16,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../test/community_test.dart' show FakeCommunity;
 import '../test/fake_identity_repository.dart';
-import '../test/rescue_test.dart' show FakeRescue;
+import '../test/rescue_test.dart' show FakeRescue, FakeCaseUpdates;
+
+import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 
@@ -50,6 +52,48 @@ class SupportCaptureRescue extends FakeRescue {
   @override
   Future<String> fileUrl(String path) async =>
       'https://fixture.invalid/approved';
+}
+
+class CaseCaptureRescue extends SupportCaptureRescue {
+  @override
+  Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async =>
+      DataPage([
+        RescueRecord({
+          'id': 'case-one',
+          'owner_id': 'rescuer-one',
+          'kind': 'case',
+          'status': 'approved',
+          'target_cents': 250000,
+          'funded_cents': 50000,
+          'rescuer_name': 'Patricia V.',
+          'public_data': {
+            'pet_name': 'Rocky',
+            'city': 'Monterrey',
+            'state': 'MX',
+            'story': 'Rocky llegó con heridas y desnutrición. Con tu apoyo cubriremos su cirugía, controles y alimentación mientras se recupera y busca un hogar.',
+            'photos': ['fixture/one', 'fixture/two', 'fixture/three'],
+          },
+        }),
+        for (final item in [
+          ('Cirugía', 'veterinary', 145000, 25000),
+          ('Cita veterinario', 'veterinary', 70000, 20000),
+          ('Desparasitante', 'medicine', 25000, 5000),
+          ('Croquetas', 'food', 10000, 0),
+        ])
+          RescueRecord({
+            'id': item.$1,
+            'kind': 'expense',
+            'status': 'approved',
+            'parent_id': 'case-one',
+            'target_cents': item.$3,
+            'funded_cents': item.$4,
+            'public_data': {
+              'title': item.$1,
+              'category': item.$2,
+              'photos': <String>[],
+            },
+          }),
+      ], 5);
 }
 
 Future<DataPage<Json>> fixturePaymentHistory() async => const DataPage([
@@ -177,6 +221,8 @@ void main() {
       ('chat-bubbles-rescuer', '/messages/thread-one'),
       ('support-home', '/rescue-cases'),
       ('support-home-large', '/rescue-cases'),
+      ('case-detail', '/rescue-cases/case-one'),
+      ('case-detail-large', '/rescue-cases/case-one'),
       ('match-home', '/messages'),
       ('match-home-large', '/messages'),
       ('adoption-support', '/adoptions'),
@@ -251,6 +297,10 @@ void main() {
         overrides: [
           identityRepositoryProvider.overrideWithValue(repo),
           communityRepositoryProvider.overrideWithValue(community),
+          if (spec.$1.startsWith('case-detail')) ...[
+            rescueRepositoryProvider.overrideWithValue(CaseCaptureRescue()),
+            caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
+          ],
           if (spec.$1.startsWith('support-home'))
             rescueRepositoryProvider.overrideWithValue(SupportCaptureRescue()),
           guardianEnabledProvider.overrideWithValue(true),

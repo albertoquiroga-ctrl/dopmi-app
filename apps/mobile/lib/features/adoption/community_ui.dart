@@ -99,11 +99,13 @@ class LiveSection<T> extends ConsumerStatefulWidget {
     required this.builder,
     this.tables = const [],
     this.errorMessage,
+    this.statusFrame,
   });
   final Future<T> Function() load;
   final Widget Function(T data, VoidCallback refresh) builder;
   final List<String> tables;
   final String Function(Object)? errorMessage;
+  final Widget Function(Widget content)? statusFrame;
   @override
   ConsumerState<LiveSection<T>> createState() => _LiveSectionState<T>();
 }
@@ -168,23 +170,29 @@ class _LiveSectionState<T> extends ConsumerState<LiveSection<T>>
 
   @override
   Widget build(BuildContext context) {
+    Widget frame(Widget content) =>
+        widget.statusFrame?.call(content) ?? content;
     if (loading) {
-      return const Center(
-        child: CircularProgressIndicator(semanticsLabel: 'Cargando'),
+      return frame(
+        const Center(
+          child: CircularProgressIndicator(semanticsLabel: 'Cargando'),
+        ),
       );
     }
     if (error != null) {
-      return Column(
-        children: [
-          Notice(
-            (widget.errorMessage ?? communityError)(error!),
-            isError: true,
-          ),
-          TextButton(
-            onPressed: refresh,
-            child: const Text('Volver a intentar'),
-          ),
-        ],
+      return frame(
+        Column(
+          children: [
+            Notice(
+              (widget.errorMessage ?? communityError)(error!),
+              isError: true,
+            ),
+            TextButton(
+              onPressed: refresh,
+              child: const Text('Volver a intentar'),
+            ),
+          ],
+        ),
       );
     }
     return widget.builder(data as T, refresh);

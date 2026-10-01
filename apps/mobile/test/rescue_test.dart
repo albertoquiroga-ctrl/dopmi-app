@@ -16,6 +16,7 @@ import 'guardian_test.dart' show FakeGuardian;
 import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
 import 'package:dopmi_mobile/features/payments/guardian_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_public_photo.dart';
 
 class FakeRescue extends RescueRepository {
   FakeRescue()
@@ -183,7 +184,65 @@ class EmptySupportRescue extends FakeRescue {
       const DataPage([], 0);
 }
 
+class ClosedPublicCaseRescue extends FakeRescue {
+  @override
+  Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async =>
+      DataPage([
+        RescueRecord({...caseRecord.data, 'status': 'closed'}),
+        expenseRecord,
+      ], 2);
+}
+
+class PhotoPublicCaseRescue extends FakeRescue {
+  int photoRequests = 0;
+  @override
+  Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async =>
+      DataPage([
+        RescueRecord({
+          ...caseRecord.data,
+          'public_data': {
+            ...caseRecord.publicData,
+            'photos': ['approved/one', 'approved/two'],
+          },
+        }),
+        expenseRecord,
+      ], 2);
+  @override
+  Future<String> fileUrl(String path) async {
+    photoRequests++;
+    throw Exception('offline');
+  }
+}
+
 void main() {
+  Future<void> startPublicCase(WidgetTester tester, FakeRescue repo) async {
+    tester.view.physicalSize = const Size(377, 852);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final identity = FakeIdentityRepository()
+      ..user = const Identity('one', 'fixture@example.test', verified: true);
+    final container = ProviderContainer(
+      overrides: [
+        identityRepositoryProvider.overrideWithValue(identity),
+        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+        rescueRepositoryProvider.overrideWithValue(repo),
+        caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
+        routerInitialLocationProvider.overrideWithValue(
+          '/rescue-cases/case-one',
+        ),
+      ],
+    );
+    addTearDown(() async {
+      container.dispose();
+      await identity.changes.close();
+    });
+    await tester.pumpWidget(
+      UncontrolledProviderScope(container: container, child: const DopmiApp()),
+    );
+    await tester.pumpAndSettle();
+  }
+
   test('money parsing preserves cent precision and rejects rounding or scientific notation', () {
     expect(parsePesos('250.50'), 25050);
     expect(parsePesos('0.01'), 1);
@@ -307,7 +366,7 @@ void main() {
     await tester.tap(find.text('Choco'));
     await tester.pumpAndSettle();
     expect(find.text('Mi historia'), findsOneWidget);
-    expect(find.text('Ayúdame a recuperar'), findsOneWidget);
+    expect(find.text('Ayúdame a recuperar:'), findsOneWidget);
     expect(find.text('Cirugía'), findsWidgets);
     await tester.tap(find.widgetWithText(ListTile, 'Cirugía'));
     await tester.pumpAndSettle();
@@ -436,6 +495,57 @@ void main() {
       expect(find.byType(GuardianScreen), findsOneWidget);
       expect(guardian.reads, greaterThan(0));
       expect(guardian.calls, isEmpty);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
+    'closed public case keeps history and disables every contribution entry',
+    (tester) async {
+      await startPublicCase(tester, ClosedPublicCaseRescue());
+      final footer = find.widgetWithText(
+        FilledButton,
+        'Sin gastos disponibles',
+      );
+      expect(tester.widget<FilledButton>(footer).onPressed, isNull);
+      final expense = find.widgetWithText(ListTile, 'Cirugía');
+      await tester.scrollUntilVisible(
+        expense,
+        160,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(expense);
+      await tester.pumpAndSettle();
+      final action = find.widgetWithText(
+        FilledButton,
+        'Aportación no disponible',
+      );
+      expect(tester.widget<FilledButton>(action).onPressed, isNull);
+      expect(find.text('Mi historia'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
+    'case photo retry preserves hero geometry and gallery supports swipe',
+    (tester) async {
+      final repo = PhotoPublicCaseRescue();
+      await startPublicCase(tester, repo);
+      final firstPhoto = find.byType(RescuePublicPhoto).first;
+      final before = tester.getSize(firstPhoto);
+      final requests = repo.photoRequests;
+      await tester.tap(
+        find.descendant(of: firstPhoto, matching: find.text('Reintentar foto')),
+      );
+      await tester.pumpAndSettle();
+      expect(repo.photoRequests, requests + 1);
+      expect(tester.getSize(firstPhoto), before);
+      await tester.drag(find.byType(PageView), const Offset(-260, 0));
+      await tester.pumpAndSettle();
+      final dot = find.byWidgetPredicate(
+        (widget) =>
+            widget is Semantics && widget.properties.label == 'Foto 2 de 2',
+      );
+      expect(tester.widget<Semantics>(dot).properties.selected, isTrue);
+      expect(tester.getSize(find.byType(PageView)).height, 340);
       expect(tester.takeException(), isNull);
     },
   );
