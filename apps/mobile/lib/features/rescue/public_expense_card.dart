@@ -97,6 +97,8 @@ class _PublicExpenseCardState extends State<PublicExpenseCard> {
                         label:
                             '${open ? 'Ocultar' : 'Ver'} evidencia de ${record.title}',
                         child: InkWell(
+                          splashFactory: NoSplash.splashFactory,
+                          highlightColor: Colors.transparent,
                           onTap: () => setState(() => open = !open),
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(14, 14, 10, 14),

@@ -566,6 +566,24 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.byTooltip('Aportar a Cirugía'), findsOneWidget);
+    expect(find.text('No hay evidencia pública disponible.'), findsNothing);
+    await tester.tap(
+      find.byWidgetPredicate(
+        (w) =>
+            w is Semantics && w.properties.label == 'Ver evidencia de Cirugía',
+      ),
+    );
+    await tester.pump();
+    expect(find.text('No hay evidencia pública disponible.'), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (w) =>
+            w is Semantics &&
+            w.properties.label == 'Ocultar evidencia de Cirugía' &&
+            w.properties.expanded == true,
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('rescuer home labels real financial and pending states', (
