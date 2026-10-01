@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import 'match_favorites_empty.dart';
 import '../../core/measurement.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
@@ -244,31 +245,9 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
             ),
           const SizedBox(height: 12),
           if (error != null) Notice(error!, isError: true),
-          if (items.isEmpty) ...[
-            const Center(
-              child: SizedBox(
-                width: 220,
-                child: Text(
-                  'Es tiempo de compartir una nueva aventura',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 18,
-                    height: 1.3,
-                    fontWeight: FontWeight.w700,
-                    color: ink,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Center(
-              child: FilledButton(
-                onPressed: () => context.go('/adoptions'),
-                child: const Text('Explorar →'),
-              ),
-            ),
-          ] else if (widget.all)
+          if (items.isEmpty)
+            const MatchFavoritesEmpty()
+          else if (widget.all)
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),

@@ -137,6 +137,8 @@ void main() {
       ('match-threads-large', '/messages'),
       ('match-all', '/messages'),
       ('match-all-large', '/messages'),
+      ('match-empty', '/messages'),
+      ('match-empty-large', '/messages'),
       ('match-home', '/messages'),
       ('match-home-large', '/messages'),
       ('adoption-support', '/adoptions'),
@@ -260,6 +262,7 @@ void main() {
           },
         ];
       }
+      if (spec.$1.startsWith('match-empty')) community.savedItems = [];
       await tester.pumpWidget(
         RepaintBoundary(
           key: key,
@@ -301,6 +304,18 @@ void main() {
       }
       if (spec.$1.startsWith('match-all')) {
         await tester.tap(find.text('Ver más'));
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1 == 'match-empty-large') {
+        await tester.scrollUntilVisible(
+          find.text('Explorar'),
+          150,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await Scrollable.ensureVisible(
+          tester.element(find.text('Explorar')),
+          alignment: .35,
+        );
         await tester.pumpAndSettle();
       }
       if (spec.$1 == 'adoption-end') {

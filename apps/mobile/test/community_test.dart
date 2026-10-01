@@ -61,6 +61,7 @@ class FakeCommunity implements CommunityRepository {
   Map<int, List<Adoption>>? discoveryPages;
   List<SupportOpportunity> supportItems = [];
   List<Json> threadItems = [];
+  List<SavedEntry>? savedItems;
   final sentIds = <String>[];
   final stored = <String, Json>{};
   Json? savedPayload;
@@ -99,9 +100,13 @@ class FakeCommunity implements CommunityRepository {
   }
 
   @override
-  Future<DataPage<SavedEntry>> savedAdoptions(int page) async => DataPage([
-    SavedEntry({...post.data, 'available': true, 'saved': true}),
-  ], 1);
+  Future<DataPage<SavedEntry>> savedAdoptions(int page) async => DataPage(
+    savedItems ??
+        [
+          SavedEntry({...post.data, 'available': true, 'saved': true}),
+        ],
+    savedItems?.length ?? 1,
+  );
   @override
   Future<DataPage<SavedEntry>> savedCases(int page) async =>
       const DataPage([], 0);
@@ -386,6 +391,21 @@ void main() {
       expect(find.text('Ordenar Más recientes'), findsNothing);
     },
   );
+  testWidgets('empty favorites explores the real adoption feed', (
+    tester,
+  ) async {
+    final repo = FakeCommunity()..savedItems = [];
+    await start(tester, repo, '/messages');
+    expect(
+      find.text('Es tiempo de compartir una nueva aventura'),
+      findsOneWidget,
+    );
+    expect(find.text('Ver más'), findsNothing);
+    await tester.tap(find.text('Explorar'));
+    await tester.pumpAndSettle();
+    expect(find.text('Perros'), findsOneWidget);
+    expect(find.byTooltip('Pasar'), findsOneWidget);
+  });
   testWidgets('failed detail favorite rolls the optimistic state back', (
     tester,
   ) async {

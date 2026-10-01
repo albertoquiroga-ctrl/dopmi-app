@@ -383,6 +383,14 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
 - Prueba nueva usa handlePopRoute y verifica Mis match/Chats; prueba multipágina ampliada confirma Más antiguos al reabrir. Pruebas dirigidas20, suite completa134, analyze y configuración12 aprobados. No nueva captura estática: el cambio es de navegación/estado; no se atribuye gesto físico instalado.
 - Pendientes: probar scroll restaurado con contenido largo/dispositivo, Android predictive-back instalado, contraste de navegador, vacío/búsqueda/notificaciones/rol rescatista y rutas restantes. Objetivo global sigue activo; Codemagic final autorizado, pendiente de completar paridad.
 
+
+## Loop 18 — vacío de favoritos
+
+- Referencia Irlanda inicio/cierre `a3c969cd9103fd46dc5cd886999912526ce75efb`, sin cambios. Copia composición CSS140×110/tarjetas78×92/radio14/borde3/rotaciones-12° y10° y capa central. Rocky/Toby copiados como arte estático; Luna reutilizada de onboarding. ExcludeSemantics evita presentarlos como publicaciones/personas reales.
+- Texto aventura18/1.3/700, ancho que escala con fuente; CTA48 cápsula amarilla15/700, flecha28 y sombra de referencia. Explorar abre catálogo real mediante navegación existente. Vacío no fabrica favoritos ni conteos.
+- Prueba nueva confirma vacío sin Ver más y acceso real a Adoptar. Flutter135 y analyze aprobados; tras ajustar ancho ampliado se repitieron21 pruebas dirigidas y capturador33 estados, aprobados. PNGs loop18 normal y320×640/200% desplazado para mostrar CTA. Sólo scratch limpio para regenerar manifiesto de assets; producción/builds locales del titular preservados.
+- Pendientes: medir ancho18ch y geometría en navegador simultáneo, fotos equivalentes para listas reales, búsqueda/notificaciones/rol rescatista/rutas restantes y pruebas físicas instaladas. Paridad global no completa. Codemagic final sigue autorizado y pendiente.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián
