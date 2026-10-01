@@ -3229,3 +3229,31 @@ test('owned cases reject inactive or anonymous identities and invalid pages with
   await role('');await rejected(()=>db.query('select public.dopmi_my_cases()'),/Sesión activa requerida/);
   await role('','anon');await rejected(()=>db.query('select public.dopmi_my_cases()'),/permission denied/);
 });
+
+
+test('planned case needs persist privately and do not create expenses or funding', async () => {
+  await db.query("select set_config('request.jwt.claim.sub',$1,true)",[rescuer]);
+  await db.exec('set local role authenticated');
+  const item={id:'84000000-0000-4000-8000-000000000001',type:'medicine',title:'Medicamento indicado',amount_cents:12345,detail:'Tratamiento prescrito',urgent:false};
+  const data={pet_name:'Luna',species:'dog',sex:'unknown',need:'Seguimiento',need_items:[item]};
+  const result=(await db.query("select public.dopmi_save_rescue('case',$1::jsonb,'{}','[]') as value",[JSON.stringify(data)])).rows[0].value;
+  assert.deepEqual(result.public_data.need_items,[item]);
+  assert.equal(result.status,'draft');
+  assert.equal(result.reimbursable_cents,0);
+  assert.equal(result.approved_snapshot,null);
+  await db.exec('reset role');
+  assert.equal((await db.query('select count(*)::int n from dopmi_rescue_records where parent_id=$1',[result.id])).rows[0].n,0);
+  await db.query("select set_config('request.jwt.claim.sub',$1,true)",[other]);
+  await db.exec('set local role authenticated');
+  await assert.rejects(db.query("select public.dopmi_save_rescue('case',$1::jsonb,'{}','[]',$2,$3)",[JSON.stringify(data),result.id,result.version]),e=>e.code==='42501');
+});
+
+test('planned needs reject malformed entries and invented financial state', async () => {
+  const item={id:'84000000-0000-4000-8000-000000000001',type:'food',title:'Alimento',amount_cents:12345,detail:'Una bolsa',urgent:false};
+  for (const items of [null,{},[item,item],[{...item,type:'cashback'}],[{...item,amount_cents:'12345'}],[{...item,amount_cents:1.5}],[{...item,amount_cents:0}],[{...item,urgent:'true'}],[{...item,funded_cents:500}],[{...item,title:''}]]) {
+    await db.exec('savepoint malformed_need');
+    await assert.rejects(db.query('select private.dopmi_case_fields($1::jsonb)',[JSON.stringify({need_items:items})]),e=>e.code==='22023');
+    await db.exec('rollback to savepoint malformed_need');
+  }
+  assert.deepEqual((await db.query('select private.dopmi_case_fields($1::jsonb) value',[JSON.stringify({need:'Cuidados existentes'})])).rows[0].value,{need:'Cuidados existentes'});
+});
