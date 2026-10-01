@@ -50,6 +50,61 @@ class DraftCaseRescue extends FakeRescue {
 
 void main() {
   testWidgets(
+    'case review displays saved data and editing preserves the draft',
+    (tester) async {
+      final repo = DraftCaseRescue();
+      await startPublication(
+        tester,
+        FakeCommunity(),
+        '/rescue/case-one',
+        rescue: repo,
+      );
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      final story = find.byKey(const ValueKey('case-field-story'));
+      await tester.ensureVisible(story);
+      await tester.pumpAndSettle();
+      await tester.enterText(story, 'Rescatada bajo la lluvia');
+      FocusManager.instance.primaryFocus?.unfocus();
+      tester.testTextInput.hide();
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      expect(repo.publicSaved!['story'], 'Rescatada bajo la lluvia');
+      expect(find.text('Revisa tu caso'), findsOneWidget);
+      expect(
+        tester.getSize(find.byType(PublicationPhotoThumbnail)),
+        const Size(110, 110),
+      );
+      final review = find.text('Rescatada bajo la lluvia');
+      await tester.ensureVisible(review);
+      await tester.pumpAndSettle();
+      expect(review, findsOneWidget);
+      final edit = find.byKey(
+        const ValueKey('case-review-edit-Información básica'),
+      );
+      await tester.ensureVisible(edit);
+      await tester.pumpAndSettle();
+      await tester.tap(edit);
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<TextField>(story).controller!.text,
+        'Rescatada bajo la lluvia',
+      );
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      final photos = find.byKey(const ValueKey('case-review-edit-Fotos'));
+      await tester.ensureVisible(photos);
+      await tester.pumpAndSettle();
+      await tester.tap(photos);
+      await tester.pumpAndSettle();
+      expect(find.byType(PublicationPhotoPicker), findsOneWidget);
+      expect(repo.publicSaved!['story'], 'Rescatada bajo la lluvia');
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'case information keeps real enum values and authored text through the large keyboard',
     (tester) async {
       tester.view.physicalSize = const Size(320, 640);

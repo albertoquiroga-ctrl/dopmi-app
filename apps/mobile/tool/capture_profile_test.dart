@@ -595,6 +595,8 @@ void main() {
       ('expense-submitted-footer-large', '/rescue/expense-one'),
       ('case-publication', '/rescue/new?kind=case'),
       ('case-publication-large', '/rescue/new?kind=case'),
+      ('case-publication-review', '/rescue/case-one'),
+      ('case-publication-review-large', '/rescue/case-one'),
       ('case-publication-information', '/rescue/case-one'),
       ('case-publication-information-large', '/rescue/case-one'),
       ('case-publication-grid', '/rescue/case-one'),
@@ -1167,6 +1169,12 @@ void main() {
           alignment: 0,
         );
         await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('case-publication-review')) {
+        for (var i = 0; i < 2; i++) {
+          await tester.tap(find.text('Continuar'));
+          await tester.pumpAndSettle();
+        }
       }
       if (spec.$1.startsWith('case-publication-information')) {
         await tester.tap(find.text('Continuar'));
