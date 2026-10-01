@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -56,17 +58,39 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ]
         : const [
             (
-              'Tu nuevo mejor amigo ya te está esperando.',
+              'Tu nuevo mejor amigo ya te espera.',
               'Descubre mascotas que buscan un hogar y conoce su historia.',
               'Continuar',
             ),
             (
-              'Conoce a quien está detrás de cada historia.',
-              'Revisa la información de la mascota, conoce al rescatista y contacta directamente para continuar.',
+              'Conoce a quien cuida cada historia.',
+              'Revisa salud y convivencia, conoce al rescatista y escríbele directo.',
               'Quiero adoptar',
             ),
           ];
     final slide = slides[step];
+    if (!rescue && !donate) {
+      return PopScope(
+        canPop: step == 0,
+        onPopInvokedWithResult: (didPop, _) {
+          if (!didPop) back();
+        },
+        child: AdoptionIntroduction(
+          step: step,
+          title: slide.$1,
+          description: slide.$2,
+          cta: slide.$3,
+          onBack: back,
+          onNext: () {
+            if (step == slides.length - 1) {
+              context.push('/start?intent=${widget.intent}');
+            } else {
+              setState(() => step++);
+            }
+          },
+        ),
+      );
+    }
     return PopScope(
       canPop: step == 0,
       onPopInvokedWithResult: (didPop, _) {
@@ -229,4 +253,266 @@ class OnboardingEntrance extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Adopter layout: art fills the upper region; copy stays above dots and CTA.
+class AdoptionIntroduction extends StatelessWidget {
+  const AdoptionIntroduction({
+    super.key,
+    required this.step,
+    required this.title,
+    required this.description,
+    required this.cta,
+    required this.onBack,
+    required this.onNext,
+  });
+  final int step;
+  final String title, description, cta;
+  final VoidCallback onBack, onNext;
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    body: SafeArea(
+      child: LayoutBuilder(
+        builder: (context, box) {
+          final scaler = MediaQuery.textScalerOf(context);
+          final width = math.min(393.0, box.maxWidth) - 40;
+          final copyWidth = math.min(width, scaler.scale(321.74));
+          const titleStyle = TextStyle(
+            fontFamily: 'Fraunces',
+            fontSize: 28,
+            height: 1.12,
+            letterSpacing: -.56,
+            fontWeight: FontWeight.w600,
+            color: ink,
+          );
+          const bodyStyle = TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 15,
+            height: 1.45,
+            letterSpacing: 0,
+            color: muted,
+          );
+          const noteStyle = TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 12,
+            height: 1.4,
+            letterSpacing: 0,
+            color: muted,
+          );
+          const note =
+              'Con tu cuenta guardas favoritos y escribes a rescatistas.';
+          double height(String text, TextStyle style, double maxWidth) {
+            final painter = TextPainter(
+              text: TextSpan(text: text, style: style),
+              textDirection: Directionality.of(context),
+              textScaler: scaler,
+            )..layout(maxWidth: math.max(1, maxWidth));
+            final result = painter.height;
+            painter.dispose();
+            return result;
+          }
+
+          final copyHeight =
+              height(
+                title,
+                titleStyle,
+                math.min(copyWidth, scaler.scale(300.38)),
+              ) +
+              8 +
+              height(description, bodyStyle, copyWidth) +
+              (step == 1
+                  ? 8 +
+                        height(
+                          note,
+                          noteStyle,
+                          math.min(width, scaler.scale(257.39)),
+                        )
+                  : 0);
+          final buttonHeight = math.max(
+            52.0,
+            height(
+                  cta,
+                  const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 16,
+                    height: 1.2,
+                  ),
+                  width - 32,
+                ) +
+                22,
+          );
+          // Extra header row at large text is measured by the wrapping layout;
+          // scrolling permits it without clipping the art, copy or controls.
+          final bodyHeight = math.max(
+            248 + copyHeight + 40,
+            box.maxHeight - 24 - 48 - 4 - 16 - buttonHeight - 20,
+          );
+          final artHeight = bodyHeight - 8 - copyHeight - 24 - 16;
+          return Align(
+            alignment: Alignment.topCenter,
+            child: SizedBox(
+              width: math.min(393.0, box.maxWidth),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        alignment: WrapAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                tooltip: 'Volver',
+                                onPressed: onBack,
+                                style: IconButton.styleFrom(
+                                  splashFactory: NoSplash.splashFactory,
+                                  highlightColor: Colors.transparent,
+                                ),
+                                icon: const Icon(
+                                  Icons.arrow_back_rounded,
+                                  size: 24,
+                                ),
+                              ),
+                              const Brand(),
+                            ],
+                          ),
+                          TextButton(
+                            onPressed: () => context.push('/login'),
+                            style: TextButton.styleFrom(
+                              foregroundColor: ink,
+                              splashFactory: NoSplash.splashFactory,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                                vertical: 8,
+                              ),
+                            ),
+                            child: const Text(
+                              'Ya tengo cuenta',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                decoration: TextDecoration.underline,
+                                letterSpacing: 0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      OnboardingEntrance(
+                        key: ValueKey('adopt:$step'),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 8),
+                            ConstrainedBox(
+                              constraints: BoxConstraints(minHeight: artHeight),
+                              child: Center(
+                                heightFactor: 1,
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: SizedBox(
+                                    width: copyWidth,
+                                    child: OnboardingArt(
+                                      intent: 'adopt',
+                                      step: step,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Semantics(
+                              header: true,
+                              child: SizedBox(
+                                width: math.min(
+                                  copyWidth,
+                                  scaler.scale(300.38),
+                                ),
+                                child: Text(title, style: titleStyle),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              width: copyWidth,
+                              child: Text(description, style: bodyStyle),
+                            ),
+                            if (step == 1) ...[
+                              const SizedBox(height: 8),
+                              SizedBox(
+                                width: math.min(width, scaler.scale(257.39)),
+                                child: Text(note, style: noteStyle),
+                              ),
+                            ],
+                            const SizedBox(height: 12),
+                            Semantics(
+                              label: 'Paso ${step + 1} de 2',
+                              child: SizedBox(
+                                height: 16,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    for (var index = 0; index < 2; index++)
+                                      AnimatedContainer(
+                                        duration:
+                                            MediaQuery.disableAnimationsOf(
+                                              context,
+                                            )
+                                            ? Duration.zero
+                                            : const Duration(milliseconds: 350),
+                                        curve: Curves.ease,
+                                        margin: const EdgeInsets.symmetric(
+                                          horizontal: 4,
+                                        ),
+                                        width: index == step ? 24 : 8,
+                                        height: 8,
+                                        decoration: BoxDecoration(
+                                          color: index == step
+                                              ? yellow
+                                              : const Color(0xffe5e0d8),
+                                          borderRadius: BorderRadius.circular(
+                                            99,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      FilledButton(
+                        onPressed: onNext,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: ink,
+                          foregroundColor: Colors.white,
+                          minimumSize: Size.fromHeight(buttonHeight),
+                          shape: const StadiumBorder(),
+                          splashFactory: NoSplash.splashFactory,
+                          textStyle: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        child: Text(cta),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    ),
+  );
 }

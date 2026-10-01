@@ -182,12 +182,38 @@ void main() {
       await tester.runAsync(
         () => saveCapture(key, '${output.path}/${route.$1}.png'),
       );
+      if (route.$1 == 'onboarding-adopt') {
+        // Source adopter copy/CTA, 377×852, a3c969c, settled animation.
+        final title = tester.getRect(
+          find.text('Tu nuevo mejor amigo ya te espera.'),
+        );
+        expect(title.left, 20);
+        expect(title.top, closeTo(621.8, 2));
+        expect(
+          tester.getRect(find.widgetWithText(FilledButton, 'Continuar')).top,
+          closeTo(780, 1),
+        );
+      }
       if (route.$1.startsWith('onboarding')) {
         await tester.ensureVisible(
           find.widgetWithText(FilledButton, 'Continuar'),
         );
         await tester.tap(find.widgetWithText(FilledButton, 'Continuar'));
         await tester.pumpAndSettle();
+        if (route.$1 == 'onboarding-adopt') {
+          expect(
+            tester
+                .getRect(find.text('Conoce a quien cuida cada historia.'))
+                .top,
+            closeTo(580.2, 2),
+          );
+          expect(
+            tester
+                .getRect(find.widgetWithText(FilledButton, 'Quiero adoptar'))
+                .top,
+            closeTo(780, 1),
+          );
+        }
         await tester.runAsync(
           () => saveCapture(key, '${output.path}/${route.$1}-2.png'),
         );
