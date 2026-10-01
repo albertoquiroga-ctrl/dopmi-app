@@ -368,9 +368,15 @@ void main() {
     expect(find.text('Mi historia'), findsOneWidget);
     expect(find.text('Ayúdame a recuperar:'), findsOneWidget);
     expect(find.text('Cirugía'), findsWidgets);
-    await tester.tap(find.widgetWithText(ListTile, 'Cirugía'));
+    await tester.tap(
+      find.byWidgetPredicate(
+        (w) =>
+            w is Semantics &&
+            w.properties.label == 'Ocultar evidencia de Cirugía',
+      ),
+    );
     await tester.pumpAndSettle();
-    expect(find.text('Aportar a este gasto'), findsOneWidget);
+    expect(find.byTooltip('Aportar a Cirugía'), findsOneWidget);
   });
 
   testWidgets('rescuer home labels real financial and pending states', (
@@ -507,7 +513,10 @@ void main() {
         'Sin gastos disponibles',
       );
       expect(tester.widget<FilledButton>(footer).onPressed, isNull);
-      final expense = find.widgetWithText(ListTile, 'Cirugía');
+      final expense = find.byWidgetPredicate(
+        (w) =>
+            w is Semantics && w.properties.label == 'Ver evidencia de Cirugía',
+      );
       await tester.scrollUntilVisible(
         expense,
         160,
@@ -515,11 +524,10 @@ void main() {
       );
       await tester.tap(expense);
       await tester.pumpAndSettle();
-      final action = find.widgetWithText(
-        FilledButton,
-        'Aportación no disponible',
+      final action = find.byWidgetPredicate(
+        (w) => w is IconButton && w.tooltip == 'Aportación no disponible',
       );
-      expect(tester.widget<FilledButton>(action).onPressed, isNull);
+      expect(tester.widget<IconButton>(action).onPressed, isNull);
       expect(find.text('Mi historia'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },

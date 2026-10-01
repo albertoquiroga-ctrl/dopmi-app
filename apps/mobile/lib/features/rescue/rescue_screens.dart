@@ -16,7 +16,7 @@ import 'case_update_screens.dart';
 import 'rescue_repository.dart';
 import 'support_home.dart';
 import 'case_detail_layout.dart';
-import 'rescue_public_photo.dart';
+import 'public_expense_card.dart';
 
 class RescueHomeScreen extends ConsumerWidget {
   const RescueHomeScreen({super.key});
@@ -1190,94 +1190,29 @@ class _PublicCaseDetail extends StatelessWidget {
         children: [
           if (expenses.isEmpty)
             const Notice('Este caso no tiene gastos disponibles para aportar.'),
-          for (final expense in expenses)
-            _PublicExpenseCard(
-              expense,
+          for (var i = 0; i < expenses.length; i++) ...[
+            if (i > 0) const SizedBox(height: 12),
+            PublicExpenseCard(
+              expenses[i],
+              key: ValueKey(expenses[i].id),
+              initiallyOpen:
+                  i ==
+                  expenses.indexWhere(
+                    (e) =>
+                        record.status == 'approved' &&
+                        e.status == 'approved' &&
+                        e.targetCents > e.fundedCents,
+                  ),
               canContribute:
-                  record.status == 'approved' && expense.status == 'approved',
+                  record.status == 'approved' &&
+                  expenses[i].status == 'approved',
             ),
+          ],
         ],
       ),
       updates: record.data['owner_id'] != null
           ? PublicCaseUpdates(record.id)
           : null,
-    );
-  }
-}
-
-class _PublicExpenseCard extends StatefulWidget {
-  const _PublicExpenseCard(this.record, {this.canContribute = true});
-  final RescueRecord record;
-  final bool canContribute;
-  @override
-  State<_PublicExpenseCard> createState() => _PublicExpenseCardState();
-}
-
-class _PublicExpenseCardState extends State<_PublicExpenseCard> {
-  bool open = false;
-  @override
-  Widget build(BuildContext context) {
-    final record = widget.record;
-    final ratio = record.targetCents <= 0
-        ? 0.0
-        : (record.fundedCents / record.targetCents).clamp(0.0, 1.0);
-    final remaining = (record.targetCents - record.fundedCents).clamp(
-      0,
-      record.targetCents,
-    );
-    final photos = record.publicData['photos'] as List? ?? const [];
-    return Card(
-      child: Column(
-        children: [
-          ListTile(
-            onTap: () => setState(() => open = !open),
-            leading: CircleAvatar(
-              child: Icon(
-                record.data['urgent'] == true
-                    ? Icons.priority_high
-                    : Icons.receipt_long_outlined,
-              ),
-            ),
-            title: Text(record.title),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                LinearProgressIndicator(value: ratio),
-                Text(
-                  '${pesos(record.fundedCents)} asignados · ${pesos(remaining)} faltantes',
-                ),
-              ],
-            ),
-            trailing: Icon(open ? Icons.expand_less : Icons.expand_more),
-          ),
-          if (open) ...[
-            if (photos.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: RescuePublicPhoto(photos.first as String),
-              ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-              child: SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  onPressed: !widget.canContribute || remaining == 0
-                      ? null
-                      : () => context.push('/contribute/${record.id}'),
-                  icon: const Icon(Icons.volunteer_activism_outlined),
-                  label: Text(
-                    !widget.canContribute
-                        ? 'Aportación no disponible'
-                        : remaining == 0
-                        ? 'Gasto cubierto'
-                        : 'Aportar a este gasto',
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ],
-      ),
     );
   }
 }

@@ -430,6 +430,13 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
 - analyze limpio, Flutter139, configuración12 y capturador40 estados aprobados. PNGs normal/320×640 al200% inspeccionados; estadísticas se apilan y contenido desplaza al ampliar. Publicación/gesto físico no verificados. Sin SQL, tarifas, mínimo Guardián o flags cambiados.
 - Pendientes: tarjetas de gastos/evidencia aún genéricas; diálogo de monto del mock frente a ruta real de aportación actual; paginar todos los gastos de casos con más de20 registros; perfil público/avances y errores equivalentes; fotos posteriores equivalentes, layout/animaciones/gestos instalados. No declarar caso/paridad global completos. Codemagic final continúa autorizado, pendiente del objetivo completo.
 
+## Loop 24 — tarjetas de gastos y evidencia pública
+
+- Referencia Irlanda inicio/cierre `a3c969cd9103fd46dc5cd886999912526ce75efb`, sin cambios. Contraste de fuente NeedCard/CSS: radio18, icono44/radio14, columna de acción48, padding14, progreso6, chevron20 y evidencia16:10/radio14. Apertura instantánea como referencia; primer gasto aprobado con remanente abierto inicialmente, identidad de widget conserva selección.
+- PublicExpenseCard sustituye tarjetas genéricas con categoría/color, progreso e importes reales, título/urgencia del snapshot público aprobado y aportación existente. Estado cerrado/cubierto conserva acción deshabilitada. Sólo public_data.photos alimenta evidencia; nunca archivos privados ni comprobantes de ejemplo. Ausencia aprobada se informa explícitamente, diferencia necesaria frente a imagen simulada del mockup.
+- analyze limpio, Flutter139, configuración12 y capturador42 estados aprobados. Pruebas dirigidas9 incluyen capturador y apertura/caso cerrado; selector Semantics ajustado a etiqueta explícita por composición de etiquetas descendientes. PNGs normal377×852 y320×640/200% inspeccionados y archivados. No overflow; importes se apilan con texto ampliado. Emojis no renderizados por fuente de capturador: apariencia Android pendiente, no equivalencia afirmada. Fixture no tiene evidencia pública y no prueba comparación visual de recibos llenos.
+- Sin SQL, autorización ni dinero modificados. Pendientes: evidencia aprobada con fotos equivalentes, contraste de tarjeta renderizada en navegador/dispositivo, diálogo de monto, paginación completa de gastos, perfil/avances/Guardián y demás rutas. No declarar caso ni objetivo completos. Codemagic final autorizado, pendiente de completar paridad integral.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián

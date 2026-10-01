@@ -223,6 +223,8 @@ void main() {
       ('support-home-large', '/rescue-cases'),
       ('case-detail', '/rescue-cases/case-one'),
       ('case-detail-large', '/rescue-cases/case-one'),
+      ('case-detail-expenses', '/rescue-cases/case-one'),
+      ('case-detail-expenses-large', '/rescue-cases/case-one'),
       ('match-home', '/messages'),
       ('match-home-large', '/messages'),
       ('adoption-support', '/adoptions'),
@@ -422,6 +424,20 @@ void main() {
           tester.element(find.text('Explorar')),
           alignment: .35,
         );
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('case-detail-expenses')) {
+        final card = find.byWidgetPredicate(
+          (w) =>
+              w is Semantics &&
+              w.properties.label == 'Ocultar evidencia de Cirugía',
+        );
+        await tester.scrollUntilVisible(
+          card,
+          150,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await Scrollable.ensureVisible(tester.element(card), alignment: .1);
         await tester.pumpAndSettle();
       }
       if (spec.$1 == 'support-home-large') {
