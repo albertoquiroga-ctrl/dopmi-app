@@ -31,6 +31,32 @@ import '../test/guardian_history_test.dart' show cycle;
 import '../test/guardian_test.dart' show FakeGuardian, activePlan;
 import 'capture_design_test.dart' show saveCapture;
 
+class OwnedCasesCaptureRescue extends FakeRescue {
+  @override
+  Future<DataPage<RescueRecord>> mine(
+    String kind,
+    int page, {
+    String? parent,
+  }) async => DataPage([
+    for (final status in [
+      'approved',
+      'draft',
+      'submitted',
+      'changes_requested',
+      'closed',
+    ])
+      RescueRecord({
+        ...caseRecord.data,
+        'id': 'fixture-$status',
+        'status': status,
+        'public_data': {'pet_name': 'Caso de ${ {'approved': 'Luna', 'draft': 'Toby', 'submitted': 'Nala', 'changes_requested': 'Milo', 'closed': 'Sol'}[status]}', 'photos': <String>[]},
+        'feedback': status == 'changes_requested'
+            ? 'Adjunta la evidencia solicitada.'
+            : '',
+      }),
+  ], 5);
+}
+
 class EmptyDashboardCaptureRescue extends FakeRescue {
   @override
   Future<Json> dashboard() async => {
@@ -352,6 +378,10 @@ void main() {
       ('rescuer-home-empty-large', '/rescuer'),
       ('rescuer-home-actions', '/rescuer'),
       ('rescuer-home-actions-large', '/rescuer'),
+      ('owned-cases', '/my-cases'),
+      ('owned-cases-large', '/my-cases'),
+      ('owned-cases-correction', '/my-cases'),
+      ('owned-cases-correction-large', '/my-cases'),
       ('rescuer-home', '/rescuer'),
       ('rescuer-home-large', '/rescuer'),
       ('support-home', '/rescue-cases'),
@@ -512,7 +542,8 @@ void main() {
           'activation': null,
         };
       }
-      if (spec.$1.startsWith('rescuer-home') ||
+      if (spec.$1.startsWith('owned-cases') ||
+          spec.$1.startsWith('rescuer-home') ||
           spec.$1 == 'publish-choice' ||
           spec.$1 == 'chat-bubbles-rescuer') {
         await repo.setExperience('rescuer');
@@ -521,6 +552,10 @@ void main() {
         overrides: [
           identityRepositoryProvider.overrideWithValue(repo),
           communityRepositoryProvider.overrideWithValue(community),
+          if (spec.$1.startsWith('owned-cases'))
+            rescueRepositoryProvider.overrideWithValue(
+              OwnedCasesCaptureRescue(),
+            ),
           if (spec.$1.startsWith('rescuer-home'))
             rescueRepositoryProvider.overrideWithValue(
               spec.$1.contains('empty')
@@ -856,6 +891,14 @@ void main() {
           spec.$1.startsWith('rescuer-home-empty')) {
         await Scrollable.ensureVisible(
           tester.element(find.text('Acciones pendientes')),
+          alignment: 0,
+        );
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('owned-cases-correction')) {
+        await tester.scrollUntilVisible(find.text('Caso de Milo'),200,maxScrolls:20);
+        await Scrollable.ensureVisible(
+          tester.element(find.text('Caso de Milo')),
           alignment: 0,
         );
         await tester.pumpAndSettle();

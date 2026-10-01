@@ -20,6 +20,7 @@ import 'rescue_repository.dart';
 import 'support_home.dart';
 import 'case_detail_layout.dart';
 import 'public_expense_card.dart';
+import 'rescue_public_photo.dart';
 
 class RescueHomeScreen extends ConsumerWidget {
   const RescueHomeScreen({super.key});
@@ -710,25 +711,57 @@ class _OwnedRescueCard extends ConsumerWidget {
       'closed' => 'Ver caso cerrado',
       _ => 'Ver caso',
     };
-    return Card(
-      color: Colors.white,
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xffe3e4ed)),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  backgroundColor: needsAction
-                      ? const Color(0xffffe9e7)
-                      : const Color(0xffeee7fc),
-                  child: Icon(
-                    needsAction ? Icons.edit_note : Icons.pets_outlined,
-                    color: needsAction ? Colors.red : purple,
+                if (record.kind == 'case')
+                  SizedBox(
+                    width: 76,
+                    height: 76,
+                    child:
+                        (record.publicData['photos'] as List? ?? [])
+                            .whereType<String>()
+                            .isNotEmpty
+                        ? RescuePublicPhoto(
+                            (record.publicData['photos'] as List)
+                                .whereType<String>()
+                                .first,
+                            height: 76,
+                            radius: 14,
+                          )
+                        : Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xfff0eff8),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: const Icon(
+                              Icons.pets_outlined,
+                              color: purple,
+                              size: 28,
+                            ),
+                          ),
+                  )
+                else
+                  CircleAvatar(
+                    backgroundColor: const Color(0xffeee7fc),
+                    child: Icon(
+                      needsAction ? Icons.edit_note : Icons.pets_outlined,
+                      color: purple,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -737,14 +770,79 @@ class _OwnedRescueCard extends ConsumerWidget {
                         record.title.isEmpty
                             ? 'Borrador sin título'
                             : record.title,
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: const TextStyle(
+                          fontSize: 17,
+                          height: 1.3,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xff151423),
+                        ),
                       ),
-                      Text(rescueStatuses[record.status] ?? record.status),
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: record.status == 'submitted'
+                                  ? const Color(0xffeef5ff)
+                                  : needsAction
+                                  ? const Color(0xfff7eeee)
+                                  : const Color(0xfff0eff8),
+                              borderRadius: BorderRadius.circular(99),
+                            ),
+                            child: Text(
+                              rescueStatuses[record.status] ?? record.status,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                height: 1.3,
+                                color: Color(0xff4f4e5c),
+                              ),
+                            ),
+                          ),
+                          if (record.data['urgent'] == true)
+                            const Text(
+                              'Urgente',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xffb51224),
+                              ),
+                            ),
+                        ],
+                      ),
+                      if (record.kind == 'case' &&
+                          record.status == 'approved' &&
+                          record.targetCents > 0) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          'Asignado: ${pesos(record.fundedCents)}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            height: 1.35,
+                            color: Color(0xff4f4e5c),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        LinearProgressIndicator(
+                          value: (record.fundedCents / record.targetCents)
+                              .clamp(0, 1),
+                          minHeight: 6,
+                          borderRadius: BorderRadius.circular(99),
+                          color: purple,
+                          backgroundColor: const Color(0xffece9f2),
+                          semanticsLabel: 'Progreso de gastos aprobados',
+                          semanticsValue:
+                              '${((record.fundedCents / record.targetCents).clamp(0, 1) * 100).round()}%',
+                        ),
+                      ],
                     ],
                   ),
                 ),
-                if (record.data['urgent'] == true)
-                  const Chip(label: Text('Urgente')),
               ],
             ),
             if ((record.data['feedback'] as String? ?? '').isNotEmpty) ...[
