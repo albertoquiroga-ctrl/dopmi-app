@@ -440,6 +440,7 @@ void main() {
     debugNetworkImageHttpClientProvider = () =>
         FixturePhotoClient(fixturePhoto!);
     addTearDown(() => debugNetworkImageHttpClientProvider = null);
+    var captureCount = 0;
     for (final spec in [
       ('adoption-swipe', '/adoptions'),
       ('adoption-large', '/adoptions'),
@@ -585,6 +586,8 @@ void main() {
       ('expense-submitted', '/rescue/expense-one'),
       ('expense-submitted-large', '/rescue/expense-one'),
       ('expense-submitted-footer-large', '/rescue/expense-one'),
+      ('expense-record', '/rescue/expense-one'),
+      ('expense-record-large', '/rescue/expense-one'),
       ('expense-review', '/rescue/expense-one'),
       ('expense-review-large', '/rescue/expense-one'),
       ('expense-review-private', '/rescue/expense-one'),
@@ -610,6 +613,7 @@ void main() {
       if (captureFilter.isNotEmpty && !spec.$1.startsWith(captureFilter)) {
         continue;
       }
+      captureCount++;
       // Synthetic preferences belong only to this flutter_test capturer.
       // ignore: invalid_use_of_visible_for_testing_member
       SharedPreferences.setMockInitialValues({});
@@ -712,7 +716,9 @@ void main() {
           communityRepositoryProvider.overrideWithValue(community),
           if (spec.$1.startsWith('expense-'))
             rescueRepositoryProvider.overrideWithValue(
-              spec.$1.startsWith('expense-submitted')
+              spec.$1.startsWith('expense-record')
+                  ? (SubmittedExpenseRescue()..remoteStatus = 'submitted')
+                  : spec.$1.startsWith('expense-submitted')
                   ? SubmittedExpenseRescue()
                   : DraftExpenseRescue(),
             ),
@@ -1211,7 +1217,8 @@ void main() {
           !spec.$1.startsWith('expense-evidence') &&
           !spec.$1.startsWith('expense-dialog') &&
           !spec.$1.startsWith('expense-submitted') &&
-          !spec.$1.startsWith('expense-review')) {
+          !spec.$1.startsWith('expense-review') &&
+          !spec.$1.startsWith('expense-record')) {
         final next = find.text('Siguiente');
         await tester.scrollUntilVisible(
           next,
@@ -1255,6 +1262,11 @@ void main() {
       container.dispose();
       await repo.changes.close();
     }
+    expect(
+      captureCount,
+      greaterThan(0),
+      reason: 'CAPTURE_FILTER must select at least one screen',
+    );
     debugNetworkImageHttpClientProvider = null;
     debugDisableShadows = true;
   });

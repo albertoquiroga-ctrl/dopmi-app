@@ -12,7 +12,9 @@ class ExpenseReview extends StatelessWidget {
     required this.onOpen,
     this.onEditInformation,
     this.onEditFiles,
+    this.readOnly = false,
   });
+  final bool readOnly;
   final Map<String, String> values;
   final List<Json> files;
   final ValueChanged<int> onOpen;
@@ -49,9 +51,9 @@ class ExpenseReview extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      const Text(
-        'Revisa antes de enviar',
-        style: TextStyle(
+      Text(
+        readOnly ? 'Datos del gasto' : 'Revisa antes de enviar',
+        style: const TextStyle(
           fontFamily: 'Inter',
           fontSize: 18,
           height: 1.3,

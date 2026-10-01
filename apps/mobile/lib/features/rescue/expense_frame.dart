@@ -9,10 +9,11 @@ class ExpenseFrame extends StatelessWidget {
     required this.onBack,
     required this.onClose,
     this.confirmation = false,
+    this.readOnly = false,
   });
   final List<Widget> children;
   final int step;
-  final bool confirmation;
+  final bool confirmation, readOnly;
   final VoidCallback? onBack, onClose;
 
   @override
@@ -85,10 +86,12 @@ class ExpenseFrame extends StatelessWidget {
                             ],
                           ),
                           if (!confirmation) ...[
-                            const Text(
-                              'Sube tu evidencia',
+                            Text(
+                              readOnly
+                                  ? 'Evidencia del gasto'
+                                  : 'Sube tu evidencia',
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: 'Inter',
                                 fontSize: 18,
                                 height: 1.3,
@@ -98,20 +101,23 @@ class ExpenseFrame extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 8),
+                            if (!readOnly)
+                              Text(
+                                'Paso ${step + 1} de 3',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 12,
+                                  color: Color(0xff554e48),
+                                ),
+                              ),
+                            const SizedBox(height: 8),
                             Text(
-                              'Paso ${step + 1} de 3',
+                              readOnly
+                                  ? 'Consulta los datos y comprobantes de tu solicitud.'
+                                  : 'Comparte los comprobantes de la necesidad cubierta. El equipo de Dopmi revisará el gasto antes de publicarlo y recibir aportaciones.',
                               textAlign: TextAlign.center,
                               style: const TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 12,
-                                color: Color(0xff554e48),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            const Text(
-                              'Comparte los comprobantes de la necesidad cubierta. El equipo de Dopmi revisará el gasto antes de publicarlo y recibir aportaciones.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
                                 fontFamily: 'Inter',
                                 fontSize: 14,
                                 height: 20 / 14,

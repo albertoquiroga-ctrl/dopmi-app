@@ -51,11 +51,16 @@ class DraftExpenseRescue extends FakeRescue {
 }
 
 class SubmittedExpenseRescue extends DraftExpenseRescue {
-  bool failSubmit = false;
+  bool failSubmit = false, failDetail = false;
+  int detailReads = 0;
   String remoteStatus = 'draft';
   Completer<RescueRecord>? pending;
   @override
   Future<Json> detail(String id) async {
+    detailReads++;
+    if (failDetail) {
+      throw const FormatException('No pudimos leer el expediente.');
+    }
     final data = await super.detail(id);
     (data['record'] as Json)['status'] = remoteStatus;
     return data;
@@ -74,7 +79,73 @@ class SubmittedExpenseRescue extends DraftExpenseRescue {
   }
 }
 
+void resumeExpense(WidgetTester tester) {
+  for (final state in [
+    AppLifecycleState.inactive,
+    AppLifecycleState.hidden,
+    AppLifecycleState.paused,
+    AppLifecycleState.hidden,
+    AppLifecycleState.inactive,
+    AppLifecycleState.resumed,
+  ]) {
+    tester.binding.handleAppLifecycleStateChanged(state);
+  }
+}
+
 void main() {
+  testWidgets(
+    'expense resume discards stale record data on failure and reads corrections from the server',
+    (tester) async {
+      final repo = SubmittedExpenseRescue()..remoteStatus = 'submitted';
+      await startPublication(
+        tester,
+        FakeCommunity(),
+        '/rescue/expense-one',
+        rescue: repo,
+      );
+      expect(find.text('Evidencia del gasto'), findsOneWidget);
+      expect(repo.detailReads, 1);
+      repo.failDetail = true;
+      resumeExpense(tester);
+      await tester.pumpAndSettle();
+      expect(repo.detailReads, 2);
+      expect(
+        find.byKey(const ValueKey('expense-review-amount_cents')),
+        findsNothing,
+      );
+      repo.failDetail = false;
+      repo.remoteStatus = 'changes_requested';
+      final retry = find.text('Volver a intentar');
+      await tester.scrollUntilVisible(
+        retry,
+        300,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('expense-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(retry);
+      await tester.pumpAndSettle();
+      expect(repo.detailReads, 3);
+      final edit = find.byTooltip('Editar Información para publicación');
+      await tester.scrollUntilVisible(
+        edit,
+        300,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('expense-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+      expect(edit, findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets(
     'a submitted expense shows its private record without edit actions or a fresh success notice',
     (tester) async {
@@ -385,6 +456,9 @@ void main() {
       await Scrollable.ensureVisible(tester.element(amount));
       await tester.pumpAndSettle();
       await tester.enterText(amount, '87.09');
+      resumeExpense(tester);
+      await tester.pump();
+      expect(tester.widget<TextField>(amount).controller!.text, '87.09');
       tester.testTextInput.hide();
       FocusManager.instance.primaryFocus?.unfocus();
       await tester.pumpAndSettle();

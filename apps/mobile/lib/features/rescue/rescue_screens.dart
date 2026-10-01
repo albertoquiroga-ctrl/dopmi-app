@@ -1089,7 +1089,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed &&
         mounted &&
-        kind == 'verification' &&
+        ['verification', 'expense'].contains(kind) &&
         record != null &&
         !editable &&
         !loading &&
@@ -1460,6 +1460,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     if (kind != 'expense') return CommunityFrame(children: children);
     return ExpenseFrame(
       step: step,
+      readOnly: !editable,
       onBack: busy
           ? null
           : () {
@@ -1818,15 +1819,47 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                   ),
                 ] else ...[
                   if (record != null)
-                    Notice(
-                      '${rescueStatuses[record!.status]} · Versión ${record!.version}',
-                    ),
+                    if (kind == 'expense')
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: const Color(0x80f0eff8),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          rescueStatuses[record!.status] ?? record!.status,
+                          style: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xff15110d),
+                          ),
+                        ),
+                      )
+                    else
+                      Notice(
+                        '${rescueStatuses[record!.status]} · Versión ${record!.version}',
+                      ),
                   if ((record?.data['feedback'] as String? ?? '').isNotEmpty)
                     Notice('Respuesta del equipo: ${record!.data['feedback']}'),
                   if (!editable)
-                    const Notice(
-                      'Los datos enviados están protegidos. Puedes consultar el estado actualizado al recargar.',
-                    ),
+                    if (kind == 'expense')
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Text(
+                          'Los datos enviados están protegidos. Recarga para consultar la respuesta del equipo.',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 12,
+                            height: 1.55,
+                            color: Color(0xff554e48),
+                          ),
+                        ),
+                      )
+                    else
+                      const Notice(
+                        'Los datos enviados están protegidos. Puedes consultar el estado actualizado al recargar.',
+                      ),
                   if (kind != 'expense') _RescueSteps(step: step),
                   if (busy)
                     const LinearProgressIndicator(
@@ -2012,6 +2045,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                   ],
                   if (step == 2 && kind == 'expense')
                     ExpenseReview(
+                      readOnly: !editable,
                       values: {
                         for (final entry in controllers.entries)
                           entry.key: entry.value.text.trim(),
