@@ -21,6 +21,12 @@ ThemeData dopmiTheme({bool rescuer = false}) {
   );
   return ThemeData(
     useMaterial3: true,
+    pageTransitionsTheme: PageTransitionsTheme(
+      builders: {
+        for (final platform in TargetPlatform.values)
+          platform: const DopmiPageTransitionsBuilder(),
+      },
+    ),
     fontFamily: DopmiTokens.bodyFont,
     progressIndicatorTheme: const ProgressIndicatorThemeData(color: purple),
     textSelectionTheme: const TextSelectionThemeData(cursorColor: ink),
@@ -335,4 +341,19 @@ class LabeledField extends StatelessWidget {
       Semantics(label: label, child: child),
     ],
   );
+}
+
+/// The reference replaces route content immediately; component motion is local.
+class DopmiPageTransitionsBuilder extends PageTransitionsBuilder {
+  const DopmiPageTransitionsBuilder();
+  @override
+  Duration get transitionDuration => Duration.zero;
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) => child;
 }
