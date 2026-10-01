@@ -7,9 +7,15 @@ import 'rescue_fields.dart';
 import 'rescue_repository.dart';
 
 Future<Json?> addCaseNeed(BuildContext context, String type) =>
-    showDialog<Json>(
+    showGeneralDialog<Json>(
       context: context,
-      builder: (_) => CaseNeedDialog(type: type),
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: const Color(0x7a15110d),
+      transitionDuration: Duration.zero,
+      pageBuilder: (dialogContext, animation, secondaryAnimation) => SafeArea(
+        child: InheritedTheme.captureAll(context, CaseNeedDialog(type: type)),
+      ),
     );
 
 class CaseNeedDialog extends StatefulWidget {

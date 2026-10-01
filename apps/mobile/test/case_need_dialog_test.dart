@@ -66,4 +66,64 @@ void main() {
       },
     );
   }
+  for (final dismissal in ['outside', 'cancel', 'close', 'back']) {
+    testWidgets('need dialog opens immediately and dismisses by $dismissal', (
+      tester,
+    ) async {
+      var completed = false;
+      Map<String, dynamic>? result;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder: (context) {
+              return Scaffold(
+                body: TextButton(
+                  onPressed: () async {
+                    result = await addCaseNeed(context, 'medicine');
+                    completed = true;
+                  },
+                  child: const Text('Abrir'),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+      await tester.tap(find.text('Abrir'));
+      await tester.pump();
+      final route = ModalRoute.of(tester.element(find.byType(CaseNeedDialog)))!;
+      expect(route.animation!.value, 1);
+      final barrier = tester.widget<ModalBarrier>(
+        find.byType(ModalBarrier).last,
+      );
+      expect(barrier.color, const Color(0x7a15110d));
+      await tester.enterText(
+        find.byKey(const ValueKey('case-field-title')),
+        'Necesidad pendiente',
+      );
+      await tester.tap(find.text('Agregar medicina'));
+      await tester.pump();
+      expect(completed, isFalse);
+      expect(find.text('Necesidad pendiente'), findsOneWidget);
+      FocusManager.instance.primaryFocus?.unfocus();
+      tester.testTextInput.hide();
+      await tester.pumpAndSettle();
+      switch (dismissal) {
+        case 'outside':
+          await tester.tapAt(const Offset(5, 5));
+        case 'cancel':
+          await tester.ensureVisible(find.text('Cancelar'));
+          await tester.tap(find.text('Cancelar'));
+        case 'close':
+          await tester.tap(find.byTooltip('Cerrar'));
+        case 'back':
+          await tester.binding.handlePopRoute();
+      }
+      await tester.pumpAndSettle();
+      expect(completed, isTrue);
+      expect(result, isNull);
+      expect(find.byType(CaseNeedDialog), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+  }
 }
