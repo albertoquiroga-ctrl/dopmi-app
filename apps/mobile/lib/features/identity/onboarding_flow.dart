@@ -70,6 +70,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ];
     final slide = slides[step];
+    if (rescue) {
+      return PopScope(
+        canPop: step == 0,
+        onPopInvokedWithResult: (didPop, _) {
+          if (!didPop) back();
+        },
+        child: RescuerIntroduction(
+          step: step,
+          title: slide.$1,
+          description: slide.$2,
+          cta: slide.$3,
+          onBack: back,
+          onNext: () {
+            if (step == slides.length - 1) {
+              context.push('/start?intent=${widget.intent}');
+            } else {
+              setState(() => step++);
+            }
+          },
+        ),
+      );
+    }
     if (!rescue && !donate) {
       return PopScope(
         canPop: step == 0,
@@ -360,66 +382,7 @@ class AdoptionIntroduction extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        alignment: WrapAlignment.spaceBetween,
-                        children: [
-                          Transform.translate(
-                            offset: const Offset(-10, 0),
-                            child: SizedBox(
-                              height: 44,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    tooltip: 'Volver',
-                                    onPressed: onBack,
-                                    style: IconButton.styleFrom(
-                                      minimumSize: const Size(40, 44),
-                                      fixedSize: const Size(40, 44),
-                                      padding: EdgeInsets.zero,
-                                      tapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
-                                      splashFactory: NoSplash.splashFactory,
-                                      highlightColor: Colors.transparent,
-                                    ),
-                                    icon: SvgPicture.asset(
-                                      'assets/profile/back.svg',
-                                      width: 24,
-                                      height: 24,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 2),
-                                  const Brand(),
-                                ],
-                              ),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () => context.push('/login'),
-                            style: TextButton.styleFrom(
-                              foregroundColor: ink,
-                              minimumSize: const Size(0, 44),
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              splashFactory: NoSplash.splashFactory,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 4,
-                                vertical: 8,
-                              ),
-                            ),
-                            child: const Text(
-                              'Ya tengo cuenta',
-                              style: TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                decoration: TextDecoration.underline,
-                                letterSpacing: 0,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      _IntroductionHeader(onBack: onBack),
                       const SizedBox(height: 4),
                       OnboardingEntrance(
                         key: ValueKey('adopt:$step'),
@@ -529,6 +492,226 @@ class AdoptionIntroduction extends StatelessWidget {
             ),
           );
         },
+      ),
+    ),
+  );
+}
+
+class _IntroductionHeader extends StatelessWidget {
+  const _IntroductionHeader({required this.onBack, this.headerHeight = 44});
+  final VoidCallback onBack;
+  final double headerHeight;
+  @override
+  Widget build(BuildContext context) => Wrap(
+    crossAxisAlignment: WrapCrossAlignment.center,
+    alignment: WrapAlignment.spaceBetween,
+    children: [
+      Transform.translate(
+        offset: const Offset(-10, 0),
+        child: SizedBox(
+          height: headerHeight,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                tooltip: 'Volver',
+                onPressed: onBack,
+                style: IconButton.styleFrom(
+                  minimumSize: Size(40, headerHeight),
+                  fixedSize: Size(40, headerHeight),
+                  padding: EdgeInsets.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  splashFactory: NoSplash.splashFactory,
+                  highlightColor: Colors.transparent,
+                ),
+                icon: SvgPicture.asset(
+                  'assets/profile/back.svg',
+                  width: 24,
+                  height: 24,
+                ),
+              ),
+              const SizedBox(width: 2),
+              const Brand(),
+            ],
+          ),
+        ),
+      ),
+      TextButton(
+        onPressed: () => context.push('/login'),
+        style: TextButton.styleFrom(
+          foregroundColor: ink,
+          minimumSize: Size(0, headerHeight),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          splashFactory: NoSplash.splashFactory,
+          padding: EdgeInsets.symmetric(
+            horizontal: headerHeight == 40 ? 0 : 4,
+            vertical: 8,
+          ),
+        ),
+        child: const Text(
+          'Ya tengo cuenta',
+          style: TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            decoration: TextDecoration.underline,
+            letterSpacing: 0,
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+class RescuerIntroduction extends StatelessWidget {
+  const RescuerIntroduction({
+    super.key,
+    required this.step,
+    required this.title,
+    required this.description,
+    required this.cta,
+    required this.onBack,
+    required this.onNext,
+  });
+  final int step;
+  final String title, description, cta;
+  final VoidCallback onBack, onNext;
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    body: SafeArea(
+      child: LayoutBuilder(
+        builder: (context, box) => Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 393),
+            child: SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: box.maxHeight),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(28, 32, 28, 28),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _IntroductionHeader(onBack: onBack, headerHeight: 40),
+                          const SizedBox(height: 8),
+                          OnboardingEntrance(
+                            key: ValueKey('rescue:$step'),
+                            child: Column(
+                              children: [
+                                ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: MediaQuery.textScalerOf(context)
+                                        .scale(314.03),
+                                  ),
+                                  child: Semantics(
+                                    header: true,
+                                    child: Text(
+                                      title,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontFamily: 'Fraunces',
+                                        fontSize: 26,
+                                        height: 1.15,
+                                        letterSpacing: -.52,
+                                        fontWeight: FontWeight.w600,
+                                        color: ink,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: MediaQuery.textScalerOf(context)
+                                        .scale(262.44),
+                                  ),
+                                  child: Text(
+                                    description,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 13,
+                                      height: 1.5,
+                                      letterSpacing: 0,
+                                      color: muted,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 18),
+                                OnboardingArt(intent: 'rescue', step: step),
+                                const SizedBox(height: 18),
+                                Semantics(
+                                  label: 'Paso ${step + 1} de 2',
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      for (var i = 0; i < 2; i++)
+                                        AnimatedContainer(
+                                          duration:
+                                              MediaQuery.disableAnimationsOf(
+                                                context,
+                                              )
+                                              ? Duration.zero
+                                              : const Duration(
+                                                  milliseconds: 350,
+                                                ),
+                                          curve: Curves.ease,
+                                          margin: const EdgeInsets.symmetric(
+                                            horizontal: 4,
+                                          ),
+                                          width: i == step ? 24 : 8,
+                                          height: 8,
+                                          decoration: BoxDecoration(
+                                            color: i == step
+                                                ? yellow
+                                                : const Color(0xffe5e0d8),
+                                            borderRadius: BorderRadius.circular(
+                                              99,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: FilledButton(
+                          onPressed: onNext,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: ink,
+                            foregroundColor: Colors.white,
+                            minimumSize: const Size.fromHeight(52),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 11,
+                            ),
+                            shape: const StadiumBorder(),
+                            splashFactory: NoSplash.splashFactory,
+                            textStyle: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          child: Text(cta),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     ),
   );

@@ -195,6 +195,21 @@ void main() {
       await tester.runAsync(
         () => saveCapture(key, '${output.path}/${route.$1}.png'),
       );
+      if (route.$1 == 'onboarding-rescue') {
+        // Source rescuer heading/CTA, 377×852, a3c969c.
+        expect(
+          tester
+              .getRect(
+                find.text('Encontrarle hogar también es parte del rescate.'),
+              )
+              .top,
+          closeTo(80, 1),
+        );
+        expect(
+          tester.getRect(find.widgetWithText(FilledButton, 'Continuar')).top,
+          closeTo(772, 1),
+        );
+      }
       if (route.$1 == 'onboarding-adopt') {
         // Source adopter copy/CTA, 377×852, a3c969c, settled animation.
         final title = tester.getRect(

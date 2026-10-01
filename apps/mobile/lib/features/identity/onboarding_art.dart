@@ -596,70 +596,196 @@ class OnboardingArt extends StatelessWidget {
     ],
   );
 
-  Widget rescue() => Column(
-    children: [
-      if (step == 0)
-        const Text(
-          'Tu próxima publicación',
-          style: TextStyle(fontSize: 12, color: muted),
-        )
-      else
-        tag('Ejemplo de un caso con apoyo'),
-      const SizedBox(height: 12),
-      panel([
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+  Widget rescue() => step == 0
+      ? publicationPreview()
+      : Column(
           children: [
-            const CircleAvatar(
-              radius: 27,
-              backgroundColor: Color(0xfffff9df),
-              child: Text('M', style: TextStyle(color: ink)),
+            if (step == 0)
+              const Text(
+                'Tu próxima publicación',
+                style: TextStyle(fontSize: 12, color: muted),
+              )
+            else
+              tag('Ejemplo de un caso con apoyo'),
+            const SizedBox(height: 12),
+            panel([
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircleAvatar(
+                    radius: 27,
+                    backgroundColor: Color(0xfffff9df),
+                    child: Text('M', style: TextStyle(color: ink)),
+                  ),
+                  const SizedBox(width: 10),
+                  ClipOval(child: photo('nina-card', 86, 86, radius: 43)),
+                ],
+              ),
+              const SizedBox(height: 14),
+              if (step == 0) ...[
+                const Text(
+                  'Canela',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Fraunces',
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    color: ink,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Vacunada · Convive con niños',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 12, color: muted),
+                ),
+                const SizedBox(height: 12),
+                Center(child: tag('En adopción')),
+              ] else ...[
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    tag('Comida'),
+                    tag('Medicina'),
+                    tag('Veterinario'),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                const Text(
+                  'Gastos pagados y aprobados',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Tu cuenta verificada ayuda a que las personas confíen en ti.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 12, color: muted),
+                ),
+              ],
+            ]),
+          ],
+        );
+  Widget publicationPreview() => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      const Text(
+        'Tu próxima publicación',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 12,
+          height: 1.55,
+          letterSpacing: 0,
+          fontWeight: FontWeight.w700,
+          color: muted,
+        ),
+      ),
+      const SizedBox(height: 10),
+      Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: const Color(0xffe6e2dd)),
+        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: const BoxDecoration(
+                    color: yellow,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'M',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0,
+                        color: ink,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: ink.withValues(alpha: .1),
+                        offset: const Offset(0, 4),
+                        blurRadius: 12,
+                      ),
+                    ],
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: photo('nina-card', 84, 84, radius: 18),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 10),
-            ClipOval(child: photo('nina-card', 86, 86, radius: 43)),
+            const SizedBox(height: 10),
+            const Text(
+              'Canela',
+              style: TextStyle(
+                fontFamily: 'Fraunces',
+                fontSize: 22,
+                height: 1.2363636,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0,
+                color: ink,
+              ),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Vacunada · Convive con niños',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 12,
+                height: 1.2666667,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0,
+                color: muted,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: yellow,
+                borderRadius: BorderRadius.circular(99),
+              ),
+              child: const Text(
+                'En adopción',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 12,
+                  height: 1.2666667,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0,
+                  color: ink,
+                ),
+              ),
+            ),
           ],
         ),
-        const SizedBox(height: 14),
-        if (step == 0) ...[
-          const Text(
-            'Canela',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'Fraunces',
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-              color: ink,
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Vacunada · Convive con niños',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12, color: muted),
-          ),
-          const SizedBox(height: 12),
-          Center(child: tag('En adopción')),
-        ] else ...[
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 6,
-            runSpacing: 6,
-            children: [tag('Comida'), tag('Medicina'), tag('Veterinario')],
-          ),
-          const SizedBox(height: 14),
-          const Text(
-            'Gastos pagados y aprobados',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 12),
-          const Text(
-            'Tu cuenta verificada ayuda a que las personas confíen en ti.',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12, color: muted),
-          ),
-        ],
-      ]),
+      ),
     ],
   );
 }
