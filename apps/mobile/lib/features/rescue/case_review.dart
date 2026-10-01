@@ -133,7 +133,12 @@ class CaseReview extends StatelessWidget {
       heading('Información básica', onEditInformation),
       const SizedBox(height: 12),
       card([
-        ('Nombre', values['pet_name'] ?? ''),
+        (
+          'Nombre',
+          (values['pet_name'] ?? '').trim().isEmpty
+              ? 'Sin nombre'
+              : values['pet_name']!,
+        ),
         ('Edad', values['age'] ?? ''),
         ('Historia', values['story'] ?? ''),
         (

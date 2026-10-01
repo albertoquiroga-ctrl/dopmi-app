@@ -42,7 +42,9 @@ class CaseInformation extends StatelessWidget {
             key: ValueKey('case-field-${field.key}'),
             controller: controllers[field.key],
             enabled: enabled,
-            maxLength: field.max,
+            maxLength: field.key == 'pet_name'
+                ? (controllers['pet_name']!.text.length > 25 ? 80 : 25)
+                : field.max,
             maxLines: field.lines,
             keyboardType: field.key == 'amount'
                 ? const TextInputType.numberWithOptions(decimal: true)
@@ -56,7 +58,11 @@ class CaseInformation extends StatelessWidget {
               color: Color(0xff151423),
             ),
             decoration: InputDecoration(
-              hintText: field.key == 'age' ? 'ej. 3 meses' : null,
+              hintText: field.key == 'pet_name'
+                  ? 'Opcional'
+                  : field.key == 'age'
+                  ? 'ej. 3 meses'
+                  : null,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,
                 vertical: 8,
@@ -77,6 +83,16 @@ class CaseInformation extends StatelessWidget {
             onChanged: (_) => onChanged(),
           ),
         ),
+        if (field.key == 'pet_name')
+          const Text(
+            'Si aún no tiene nombre, puedes dejarlo vacío.',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 12,
+              height: 1.55,
+              color: Color(0xff616174),
+            ),
+          ),
         if (field.key == 'age')
           const Text(
             'Puede ser aproximada.',

@@ -199,3 +199,6 @@ No se concedieron accesos nuevos. pgTAP local pendiente: Docker no disponible.
 
 ## Paridad85 — necesidades planeadas, 1/10/2026
 Local20261001123000_case_planned_needs.sql → dev20261001184124/case_planned_needs. Aplicada una vez por MCP tras comparar cuerpos previos e historial; helper/save/validate bodyMD5 coinciden con SQL local. Array sintético/legado y permiso helper verificados por SQL remoto;418PGlite locales. No replay/rename, no producción ni Auth/REST remoto acreditados.
+
+## Paridad94 — nombre opcional, 1/10/2026
+Local20261001194500_optional_case_name.sql → DEVohqxranynackjignryep20261001193350/optional_case_name. Aplicada una vez tras comparar validate previo MD5 6e816a1e05430d518938b7440c6d4f68 e historial. validate nuevo MD5 14a02a6b34f343dd0b7fe7812521b3cd coincide local, search_path vacío/securitydefiner, EXECUTEauthenticatedfalse. SQL remoto sintético comprueba que nombre vacío llega al requisito de foto y que ausencia de historia sigue rechazada. No datos privados consultados ni fixture persistida;419PGlite93 prueba submitconStorage. No Auth/REST/app/dispositivo remoto acreditado, no producción, rename/replay.

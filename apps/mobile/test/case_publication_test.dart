@@ -90,12 +90,12 @@ void main() {
           '/rescue/case-one',
           rescue: rescue,
         );
-        for (var i = 0; i < 2; i++) {
-          await tester.tap(
-            find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
-          );
-          await tester.pumpAndSettle();
-        }
+        final name = find.byKey(const ValueKey('case-field-pet_name'));
+        await tester.tap(find.text('Continuar'));
+        await tester.pumpAndSettle();
+        await tester.enterText(name, '');
+        await tester.tap(find.text('Continuar'));
+        await tester.pumpAndSettle();
         await tester.enterText(
           find.byKey(const ValueKey('case-field-need')),
           'Cuidados del borrador',
@@ -110,6 +110,7 @@ void main() {
           GoRouter.of(context).routeInformationProvider.value.uri.path,
           reject ? '/rescue/case-one' : '/my-cases',
         );
+        expect(rescue.publicSaved!['pet_name'], '');
         expect(rescue.publicSaved!['need'], 'Cuidados del borrador');
         if (reject) {
           expect(find.text('Enviar a revisión'), findsOneWidget);

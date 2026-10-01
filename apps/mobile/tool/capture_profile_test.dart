@@ -59,33 +59,35 @@ class OwnedHistoryCaptureUpdates extends FakeCaseUpdates {
 }
 
 class CasePublicationCaptureRescue extends DraftCaseRescue {
-  CasePublicationCaptureRescue({this.withNeeds = false});
-  final bool withNeeds;
+  CasePublicationCaptureRescue({this.withNeeds = false, this.nameless = false});
+  final bool withNeeds, nameless;
   @override
   Future<Json> detail(String id) async {
     final data = await super.detail(id);
-    if (withNeeds) {
+    if (withNeeds || nameless) {
       final record = Json.from(data['record'] as Map);
       record['public_data'] = {
         ...Json.from(record['public_data'] as Map),
-        'need_items': [
-          {
-            'id': '11111111-1111-4111-8111-111111111111',
-            'type': 'medicine',
-            'title': 'Medicina prescrita',
-            'amount_cents': 12345,
-            'detail': 'Tratamiento indicado para su recuperación.',
-            'urgent': true,
-          },
-          {
-            'id': '22222222-2222-4222-8222-222222222222',
-            'type': 'veterinary',
-            'title': 'Consulta veterinaria',
-            'amount_cents': 70000,
-            'detail': '',
-            'urgent': false,
-          },
-        ],
+        if (nameless) 'pet_name': '',
+        if (withNeeds)
+          'need_items': [
+            {
+              'id': '11111111-1111-4111-8111-111111111111',
+              'type': 'medicine',
+              'title': 'Medicina prescrita',
+              'amount_cents': 12345,
+              'detail': 'Tratamiento indicado para su recuperación.',
+              'urgent': true,
+            },
+            {
+              'id': '22222222-2222-4222-8222-222222222222',
+              'type': 'veterinary',
+              'title': 'Consulta veterinaria',
+              'amount_cents': 70000,
+              'detail': '',
+              'urgent': false,
+            },
+          ],
       };
       return {...data, 'record': record};
     }
@@ -628,6 +630,10 @@ void main() {
       ('expense-submitted-footer-large', '/rescue/expense-one'),
       ('case-publication', '/rescue/new?kind=case'),
       ('case-publication-large', '/rescue/new?kind=case'),
+      ('case-publication-information-nameless', '/rescue/case-one'),
+      ('case-publication-information-nameless-large', '/rescue/case-one'),
+      ('case-publication-review-nameless', '/rescue/case-one'),
+      ('case-publication-review-nameless-large', '/rescue/case-one'),
       ('case-publication-needs-list', '/rescue/case-one'),
       ('case-publication-needs-list-large', '/rescue/case-one'),
       ('case-publication-review-list', '/rescue/case-one'),
@@ -779,6 +785,7 @@ void main() {
             rescueRepositoryProvider.overrideWithValue(
               CasePublicationCaptureRescue(
                 withNeeds: spec.$1.contains('-list'),
+                nameless: spec.$1.contains('-nameless'),
               ),
             ),
           if (spec.$1.startsWith('expense-'))
