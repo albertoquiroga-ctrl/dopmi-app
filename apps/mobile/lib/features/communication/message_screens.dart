@@ -380,61 +380,192 @@ class _ThreadState extends ConsumerState<ThreadScreen>
   }
 
   @override
-  Widget build(BuildContext context) => CommunityFrame(
-    children: [
-      Heading(
-        thread == null ? 'Conversación' : 'Sobre ${thread!['pet_name']}',
-        'Solo tú y la otra persona pueden leer estos mensajes.',
-        eyebrow: 'ADOPCIÓN',
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: Colors.white,
+    appBar: AppBar(
+      backgroundColor: Colors.white,
+      automaticallyImplyLeading: false,
+      leading: IconButton(
+        tooltip: 'Volver',
+        onPressed: () =>
+            context.canPop() ? context.pop() : context.go('/messages'),
+        icon: const Icon(Icons.arrow_back),
       ),
-      if (loading) const Center(child: CircularProgressIndicator()),
-      if (error != null) Notice(error!, isError: true),
-      if (!loading && thread == null)
-        ActionButton('Volver a cargar', onPressed: refresh),
-      if (thread != null) ...[
-        if (hasOlder && messages.isNotEmpty)
-          TextButton(
-            onPressed: olderBusy ? null : older,
-            child: Text(olderBusy ? 'Cargando…' : 'Ver mensajes anteriores'),
-          ),
-        if (messages.isEmpty)
-          const Notice('Saluda y cuéntale por qué te interesa esta adopción.'),
-        for (final message in messages)
-          ChatMessageBubble(message, mine: message['sender_id'] == repo.userId),
-        if (thread!['status'] == 'closed')
-          const Notice(
-            'Esta conversación está cerrada. Puedes consultar su historial.',
-          )
-        else ...[
-          const SizedBox(height: 16),
-          TextField(
-            controller: composer,
-            minLines: 2,
-            maxLines: 5,
-            maxLength: 2000,
-            readOnly: busy || pendingId != null,
-            decoration: const InputDecoration(labelText: 'Tu mensaje'),
-          ),
-          ActionButton(
-            pendingId == null ? 'Enviar mensaje' : 'Reintentar envío',
-            busy: busy,
-            onPressed: send,
-          ),
-          if (pendingId != null && !busy)
-            TextButton(
-              onPressed: () => setState(() {
-                pendingId = null;
-                pendingBody = null;
-              }),
-              child: const Text('Cancelar reintento y editar'),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            thread?['pet_name'] as String? ?? 'Conversación',
+            style: const TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: ink,
             ),
-          TextButton(
-            onPressed: busy ? null : close,
-            child: const Text('Cerrar conversación'),
           ),
+          if ((thread?['participant_name'] as String? ?? '').isNotEmpty)
+            Text(
+              thread!['participant_name'] as String,
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 12,
+                color: muted,
+              ),
+            ),
         ],
+      ),
+      actions: [
+        if (thread?['post_id'] != null)
+          TextButton(
+            onPressed: () => context.push('/adoptions/${thread!['post_id']}'),
+            child: const Text('Ver detalle'),
+          ),
+        if (thread != null && thread!['status'] != 'closed')
+          PopupMenuButton<String>(
+            tooltip: 'Opciones de conversación',
+            enabled: !busy,
+            onSelected: (_) => close(),
+            itemBuilder: (_) => [
+              const PopupMenuItem(
+                value: 'close',
+                child: Text('Cerrar conversación'),
+              ),
+            ],
+          ),
       ],
-    ],
+    ),
+    body: Column(
+      children: [
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              if (loading) const Center(child: CircularProgressIndicator()),
+              if (error != null) Notice(error!, isError: true),
+              if (!loading && thread == null)
+                ActionButton('Volver a cargar', onPressed: refresh),
+              if (thread != null) ...[
+                if (hasOlder && messages.isNotEmpty)
+                  TextButton(
+                    onPressed: olderBusy ? null : older,
+                    child: Text(
+                      olderBusy ? 'Cargando…' : 'Ver mensajes anteriores',
+                    ),
+                  ),
+                if (messages.isEmpty)
+                  const Text(
+                    'Saluda y cuéntale por qué te interesa esta adopción.',
+                    style: TextStyle(color: muted),
+                  ),
+                for (final message in messages)
+                  ChatMessageBubble(
+                    message,
+                    mine: message['sender_id'] == repo.userId,
+                  ),
+                if (thread!['status'] == 'closed')
+                  const Notice(
+                    'Esta conversación está cerrada. Puedes consultar su historial.',
+                  ),
+              ],
+            ],
+          ),
+        ),
+        if (thread != null && thread!['status'] != 'closed')
+          Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              border: Border(top: BorderSide(color: Color(0xffe3e4ed))),
+            ),
+            child: SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: composer,
+                            minLines: 1,
+                            maxLines: 5,
+                            maxLength: 2000,
+                            readOnly: busy || pendingId != null,
+                            decoration: const InputDecoration(
+                              hintText: 'Escribe un mensaje...',
+                              counterText: '',
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        ValueListenableBuilder<TextEditingValue>(
+                          valueListenable: composer,
+                          builder: (context, value, _) => SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: IconButton(
+                              tooltip: pendingId == null
+                                  ? 'Enviar mensaje'
+                                  : 'Reintentar envío',
+                              onPressed: busy || value.text.trim().isEmpty
+                                  ? null
+                                  : send,
+                              style: IconButton.styleFrom(
+                                backgroundColor: yellow,
+                                disabledBackgroundColor: yellow.withValues(
+                                  alpha: .45,
+                                ),
+                                foregroundColor: ink,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                              icon: busy
+                                  ? const SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : SvgPicture.string(
+                                      "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"15.9857\" height=\"15.9857\" viewBox=\"0 0 15.9857 15.9857\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><g id=\"Icon\" clip-path=\"url(#clip0_0_19)\"><path id=\"Vector\" d=\"M9.68201 14.4444C9.70731 14.5075 9.7513 14.5613 9.80808 14.5986C9.86485 14.636 9.93169 14.6551 9.99962 14.6533C10.0675 14.6516 10.1333 14.6291 10.1881 14.5889C10.2429 14.5487 10.2841 14.4927 10.3061 14.4284L14.6356 1.77308C14.6569 1.71406 14.661 1.65019 14.6473 1.58895C14.6336 1.5277 14.6028 1.47161 14.5585 1.42724C14.5141 1.38287 14.458 1.35205 14.3968 1.3384C14.3355 1.32474 14.2716 1.32881 14.2126 1.35013L1.55727 5.67959C1.493 5.70163 1.437 5.74281 1.3968 5.79759C1.3566 5.85238 1.33412 5.91815 1.33238 5.98608C1.33064 6.05402 1.34972 6.12085 1.38706 6.17763C1.42441 6.2344 1.47822 6.27839 1.54129 6.30369L6.82323 8.4218C6.99021 8.48865 7.14191 8.58862 7.26921 8.71569C7.3965 8.84276 7.49675 8.99428 7.5639 9.16114L9.68201 14.4444Z\" stroke=\"#FCFBFF\" stroke-width=\"1.33214\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path id=\"Vector_2\" d=\"M14.5563 1.43005L7.2695 8.7162\" stroke=\"#FCFBFF\" stroke-width=\"1.33214\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g><defs><clipPath id=\"clip0_0_19\"><rect width=\"15.9857\" height=\"15.9857\" fill=\"white\"/></clipPath></defs></svg>",
+                                      width: 16,
+                                      height: 16,
+                                      colorFilter: const ColorFilter.mode(
+                                        ink,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (pendingId != null) ...[
+                      ActionButton(
+                        'Reintentar envío',
+                        busy: busy,
+                        onPressed: send,
+                      ),
+                      if (!busy)
+                        TextButton(
+                          onPressed: () => setState(() {
+                            pendingId = null;
+                            pendingBody = null;
+                          }),
+                          child: const Text('Cancelar reintento y editar'),
+                        ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ),
+      ],
+    ),
   );
 }
 

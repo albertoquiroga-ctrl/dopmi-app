@@ -406,6 +406,45 @@ void main() {
     expect(find.text('Perros'), findsOneWidget);
     expect(find.byTooltip('Pasar'), findsOneWidget);
   });
+  testWidgets(
+    'chat composer remains above the keyboard and empty send is disabled',
+    (tester) async {
+      final repo = FakeCommunity();
+      await start(tester, repo, '/messages/thread-one');
+      expect(
+        tester
+            .widget<IconButton>(
+              find.byWidgetPredicate(
+                (widget) =>
+                    widget is IconButton && widget.tooltip == 'Enviar mensaje',
+              ),
+            )
+            .onPressed,
+        isNull,
+      );
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+      addTearDown(tester.view.resetViewInsets);
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), 'Hola');
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<IconButton>(
+              find.byWidgetPredicate(
+                (widget) =>
+                    widget is IconButton && widget.tooltip == 'Enviar mensaje',
+              ),
+            )
+            .onPressed,
+        isNotNull,
+      );
+      expect(
+        tester.getBottomRight(find.byTooltip('Enviar mensaje')).dy,
+        lessThanOrEqualTo(544),
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets('failed detail favorite rolls the optimistic state back', (
     tester,
   ) async {
@@ -426,7 +465,7 @@ void main() {
     expect(find.text('¿Iniciamos el proceso?'), findsOneWidget);
     await tester.tap(find.text('Sí, contactar rescatista'));
     await tester.pumpAndSettle();
-    expect(find.text('Sobre Luna'), findsOneWidget);
+    expect(find.text('Luna'), findsOneWidget);
   });
   testWidgets('saved experience separates adoption and donation', (
     tester,
@@ -524,7 +563,7 @@ void main() {
     await tester.tap(find.text('Sí, contactar rescatista'));
     await tester.pumpAndSettle();
     expect(analytics.events, ['contact_started']);
-    expect(find.text('Sobre Luna'), findsOneWidget);
+    expect(find.text('Luna'), findsOneWidget);
   });
   testWidgets('an eligible support card appears after two adoptions', (
     tester,
@@ -672,7 +711,9 @@ void main() {
         find.byType(TextField),
         'Hola, quiero conocer a Luna.',
       );
-      await tap(tester, 'Enviar mensaje');
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Enviar mensaje'));
+      await tester.pumpAndSettle();
       expect(find.text('Reintentar envío'), findsOneWidget);
       await tap(tester, 'Reintentar envío');
       expect(repo.sentIds.length, 2);

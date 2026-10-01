@@ -80,7 +80,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(repository.starts, 1);
       expect(find.text('Luna'), findsOneWidget);
-      expect(find.text('Sobre Luna'), findsNothing);
+      expect(
+        find.descendant(of: find.byType(AppBar), matching: find.text('Luna')),
+        findsNothing,
+      );
       repository.fail = false;
       await Scrollable.ensureVisible(
         tester.element(find.byTooltip('Contactar')),
@@ -92,7 +95,10 @@ void main() {
       await tester.tap(find.text('Sí, contactar rescatista'));
       await tester.pumpAndSettle();
       expect(repository.starts, 2);
-      expect(find.text('Sobre Luna'), findsOneWidget);
+      expect(
+        find.descendant(of: find.byType(AppBar), matching: find.text('Luna')),
+        findsOneWidget,
+      );
     },
   );
 
@@ -116,7 +122,10 @@ void main() {
       await tester.tap(find.text('Sí, contactar rescatista'));
       await tester.pumpAndSettle();
       expect(repository.starts, 1);
-      expect(find.text('Sobre Luna'), findsOneWidget);
+      expect(
+        find.descendant(of: find.byType(AppBar), matching: find.text('Luna')),
+        findsOneWidget,
+      );
       expect(tester.takeException(), isNull);
     },
   );

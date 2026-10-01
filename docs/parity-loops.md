@@ -399,6 +399,13 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
 - Envío, idempotencia, retry/cancelar, reconexión, cierre y autorización no cambiados. Pruebas dirigidas21 y suite completa135 aprobadas; analyze limpio; capturador35 estados aprobado, incluyendo conversación ficticia explícita normal377×852 y320×640/200%. PNGs loop19; datos de fixture nunca empaquetados como conversaciones reales.
 - Sólo burbujas contrastadas con CSS; encabezado genérico, compositor desplazable y cierre aún difieren del mockup. Próximo ciclo reestructura chat con barra superior y compositor fijo, conserva errores/reintentos reales. Comparación de navegador y teclado/dispositivo pendientes; no declarar chat o paridad global completos. Codemagic final continúa pendiente.
 
+## Loop 20 — compositor fijo y teclado del chat
+
+- Referencia Irlanda inicio/cierre `a3c969cd9103fd46dc5cd886999912526ce75efb`, sin cambios. Historial desplazable separado de AppBar y compositor fijo; SafeArea y ajuste por teclado conservan acceso al envío. Nombre real de mascota, participante sólo cuando disponible; detalle y cierre usan rutas/RPC existentes.
+- Campo multilínea con límite2000, icono send SVG de referencia, botón40/radio14/gap8 y vacío deshabilitado. Reintento ambiguo conserva identificador/cuerpo; cancelar permite editar. Cierre se encuentra en menú y respeta busy. No cambios de permisos, esquema o dinero.
+- Prueba nueva confirma compositor sobre teclado300 y envío vacío deshabilitado; fixtures de confirmación actualizados al nuevo encabezado sin alterar condiciones de RPC. Flutter136, analyze limpio, configuración12 y capturador35 estados aprobados. Capturas normal377×852 y320×640/200% inspeccionadas: historial desplaza, compositor permanece accesible.
+- Pendientes: comparación simultánea en navegador, medidas exactas de barra/campo/superficies, acento del compositor rescatista, conservación de scroll y teclado físico. No atribuir paridad global ni aceptación instalada. Codemagic final sigue autorizado y pendiente de completar objetivo.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián
