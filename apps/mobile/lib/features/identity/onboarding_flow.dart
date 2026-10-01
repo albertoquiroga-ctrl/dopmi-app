@@ -100,35 +100,50 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         ),
         child: Column(
           children: [
-            if (donate && step == 0) ...[
-              const Chip(label: Text('Apoyo puntual')),
-              const SizedBox(height: 10),
-            ],
-            Semantics(
-              header: true,
-              child: Text(
-                slide.$1,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineMedium
-                    ?.copyWith(fontSize: 26),
+            OnboardingEntrance(
+              key: ValueKey('${widget.intent}:$step'),
+              child: Column(
+                children: [
+                  if (donate && step == 0) ...[
+                    const Chip(label: Text('Apoyo puntual')),
+                    const SizedBox(height: 10),
+                  ],
+                  Semantics(
+                    header: true,
+                    child: Text(
+                      slide.$1,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(fontSize: 26),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    slide.$2,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      height: 1.5,
+                      color: muted,
+                    ),
+                  ),
+                  const SizedBox(height: 22),
+                  OnboardingArt(intent: widget.intent, step: step),
+                  const SizedBox(height: 22),
+                ],
               ),
             ),
-            const SizedBox(height: 10),
-            Text(
-              slide.$2,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 13, height: 1.5, color: muted),
-            ),
-            const SizedBox(height: 22),
-            OnboardingArt(intent: widget.intent, step: step),
-            const SizedBox(height: 22),
             Semantics(
               label: 'Paso ${step + 1} de ${slides.length}',
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   for (var index = 0; index < slides.length; index++)
-                    Container(
+                    AnimatedContainer(
+                      duration: MediaQuery.disableAnimationsOf(context)
+                          ? Duration.zero
+                          : const Duration(milliseconds: 350),
+                      curve: Curves.ease,
                       margin: const EdgeInsets.symmetric(horizontal: 4),
                       width: index == step ? 24 : 8,
                       height: 8,
@@ -187,6 +202,29 @@ class AccountStartScreen extends StatelessWidget {
             AuthHeading(copy.$1, copy.$2),
             const Icon(Icons.pets_outlined, color: yellow, size: 28),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Match onb-in: 450ms, cubic-bezier(.22,1,.36,1), opacity and 10px rise.
+class OnboardingEntrance extends StatelessWidget {
+  const OnboardingEntrance({super.key, required this.child});
+  final Widget child;
+  @override
+  Widget build(BuildContext context) {
+    if (MediaQuery.disableAnimationsOf(context)) return child;
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: const Duration(milliseconds: 450),
+      curve: const Cubic(.22, 1, .36, 1),
+      child: child,
+      builder: (_, value, content) => Opacity(
+        opacity: value,
+        child: Transform.translate(
+          offset: Offset(0, 10 * (1 - value)),
+          child: content,
         ),
       ),
     );
