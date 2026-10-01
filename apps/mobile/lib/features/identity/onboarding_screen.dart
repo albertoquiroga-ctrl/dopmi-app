@@ -21,11 +21,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   String? intent;
   static const options = [
     (
-      'donate',
-      'Donar',
-      'Apoya necesidades concretas de casos reales y sigue el impacto de tu aportación.',
-    ),
-    (
       'adopt',
       'Adoptar',
       'Conoce mascotas rescatadas listas para un hogar y habla con su rescatista.',
@@ -168,9 +163,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           for (final option in options)
                             Expanded(
                               child: Padding(
-                                padding: EdgeInsets.only(
-                                  top: option.$1 == 'adopt' ? 0 : 22,
-                                ),
+                                padding: EdgeInsets.only(top: 0),
                                 child: Semantics(
                                   label: option.$2,
                                   checked: intent == option.$1,
@@ -192,16 +185,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                             key: ValueKey(
                                               'welcome-orb-${option.$1}',
                                             ),
-                                            width: intent == option.$1
-                                                ? 92
-                                                : selected == null
-                                                ? 76
-                                                : 64,
-                                            height: intent == option.$1
-                                                ? 92
-                                                : selected == null
-                                                ? 76
-                                                : 64,
+                                            width: 92,
+                                            height: 92,
                                             child: AnimatedContainer(
                                               duration:
                                                   MediaQuery.disableAnimationsOf(
@@ -227,12 +212,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                               alignment: Alignment.center,
                                               child: SvgPicture.asset(
                                                 'assets/navigation/choice-${option.$1}.svg',
-                                                width: intent == option.$1
-                                                    ? 32
-                                                    : 26,
-                                                height: intent == option.$1
-                                                    ? 32
-                                                    : 26,
+                                                width: 32,
+                                                height: 32,
                                               ),
                                             ),
                                           ),
@@ -249,6 +230,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                             curve: Curves.ease,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
+                                              fontFamily: DopmiTokens.bodyFont,
                                               fontSize: 12,
                                               height: 1.3,
                                               color: intent == option.$1
