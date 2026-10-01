@@ -1,5 +1,6 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -211,84 +212,291 @@ class _RescuerDashboard extends StatelessWidget {
             financial: financial,
             activeCases: counts['active'] as int? ?? 0,
           ),
-        const SizedBox(height: 20),
-        Row(
+        const SizedBox(height: 24),
+        Wrap(
+          spacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            Expanded(
-              child: Text(
-                'Acciones pendientes',
-                style: Theme.of(context).textTheme.titleLarge,
+            if (pending.isNotEmpty || unread > 0)
+              const Icon(
+                Icons.error_outline,
+                size: 20,
+                color: Color(0xff151423),
+              ),
+            const Text(
+              'Acciones pendientes',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Color(0xff151423),
               ),
             ),
             if (pending.isNotEmpty || unread > 0)
-              Chip(label: Text('${pending.length + (unread > 0 ? 1 : 0)}')),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+                decoration: BoxDecoration(
+                  color: const Color(0xfff0eff8),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Text(
+                  '${pending.length + (unread > 0 ? 1 : 0)}',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Color(0xff2c2b41),
+                  ),
+                ),
+              ),
           ],
         ),
-        if (unread > 0)
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.chat_bubble_outline),
-              title: const Text('Responde mensajes pendientes'),
-              subtitle: Text('$unread sin leer'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.go('/messages'),
-            ),
+        const SizedBox(height: 12),
+        if (unread > 0) ...[
+          RescuerPendingCard(
+            title: 'Responde mensajes pendientes',
+            subtitle: '$unread sin leer',
+            cta: 'Ir a mensajes',
+            icon: Icons.chat_bubble_outline,
+            message: true,
+            onPressed: () => context.go('/messages'),
           ),
-        for (final item in pending)
-          Card(
-            child: ListTile(
-              leading: Icon(
-                item['status'] == 'draft'
-                    ? Icons.edit_note
-                    : Icons.error_outline,
-                color: purple,
-              ),
-              title: Text(item['title'] as String),
-              subtitle: Text(
+          const SizedBox(height: 8),
+        ],
+        for (final item in pending) ...[
+          RescuerPendingCard(
+            title: item['title'] as String,
+            subtitle:
                 '${rescueStatuses[item['status']] ?? item['status']}${(item['feedback'] as String? ?? '').isEmpty ? '' : ' · ${item['feedback']}'}',
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.push('/rescue/${item['id']}'),
-            ),
+            cta: item['status'] == 'draft'
+                ? 'Continuar borrador'
+                : 'Ver expediente',
+            icon: item['status'] == 'draft'
+                ? Icons.edit_note
+                : Icons.error_outline,
+            correction: [
+              'changes_requested',
+              'rejected',
+            ].contains(item['status']),
+            onPressed: () => context.push('/rescue/${item['id']}'),
           ),
-        if (pending.isEmpty && unread == 0)
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(22),
-              child: Column(
-                children: [
-                  const Icon(Icons.favorite_outline, color: purple, size: 34),
-                  Text(
-                    'No tienes acciones pendientes',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const Text(
-                    'Los borradores, correcciones, mensajes y evidencias aparecerán aquí.',
-                  ),
-                  TextButton(
-                    onPressed: () => context.go('/publish'),
-                    child: const Text('Publicar caso'),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          const SizedBox(height: 8),
+        ],
+        if (pending.isEmpty && unread == 0) const RescuerPendingEmpty(),
         if (activity.isNotEmpty) ...[
           const SizedBox(height: 20),
           Text(
             'Actividad reciente',
-            style: Theme.of(context).textTheme.titleLarge,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Color(0xff151423),
+            ),
           ),
+          const SizedBox(height: 12),
           for (final item in activity)
-            ListTile(
-              leading: const CircleAvatar(child: Icon(Icons.south_west)),
-              title: Text('${pesos(item['allocated_cents'] as int)} asignados'),
-              subtitle: Text(item['expense_title'] as String),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0x1a2dc08e),
+                    ),
+                    child: const Icon(
+                      Icons.south_west,
+                      size: 20,
+                      color: Color(0xff0b7a5d),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${pesos(item['allocated_cents'] as int)} asignados',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            height: 1.4,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xff151423),
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          item['expense_title'] as String,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            height: 1.4,
+                            color: Color(0xff4f4e5c),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
         ],
       ],
     );
   }
+}
+
+class RescuerPendingCard extends StatelessWidget {
+  const RescuerPendingCard({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.cta,
+    required this.icon,
+    required this.onPressed,
+    this.message = false,
+    this.correction = false,
+  });
+  final String title, subtitle, cta;
+  final IconData icon;
+  final VoidCallback onPressed;
+  final bool message, correction;
+  @override
+  Widget build(BuildContext context) {
+    final tone = correction
+        ? const Color(0xffb51224)
+        : message
+        ? const Color(0xff6b5000)
+        : purple;
+    return Material(
+      color: message
+          ? Colors.white
+          : correction
+          ? const Color(0xfffef4f4)
+          : const Color(0xfff8f5fe),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(
+          color: message ? const Color(0xffe3e4ed) : tone.withValues(alpha: .2),
+        ),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.all(13),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Icon(icon, size: 20, color: tone),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        height: 1.4,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xff151423),
+                      ),
+                    ),
+                    Text(
+                      subtitle,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        height: 1.35,
+                        color: Color(0xff4f4e5c),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      cta,
+                      style: TextStyle(
+                        fontSize: 12,
+                        height: 1.4,
+                        fontWeight: FontWeight.w500,
+                        color: tone,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Icon(
+                Icons.chevron_right,
+                size: 20,
+                color: Color(0xff4f4e5c),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class RescuerPendingEmpty extends StatelessWidget {
+  const RescuerPendingEmpty({super.key});
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(32),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(24),
+      border: Border.all(color: const Color(0xffe3e4ed)),
+    ),
+    child: Column(
+      children: [
+        Container(
+          width: 64,
+          height: 64,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: Color(0x1a7c3aed),
+          ),
+          alignment: Alignment.center,
+          child: SvgPicture.asset(
+            'assets/profile/empty-pending-heart.svg',
+            width: 32,
+            height: 32,
+          ),
+        ),
+        const SizedBox(height: 16),
+        const Text(
+          'No tienes acciones pendientes',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 18,
+            height: 1.3,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -.36,
+            color: Color(0xff151423),
+          ),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'Los borradores, correcciones, mensajes y evidencias aparecerán aquí.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 14,
+            height: 20 / 14,
+            color: Color(0xff4f4e5c),
+          ),
+        ),
+        const SizedBox(height: 24),
+        FilledButton.icon(
+          onPressed: () => context.go('/publish'),
+          icon: const Icon(Icons.add, size: 16),
+          label: const Text('Publicar caso'),
+          style: FilledButton.styleFrom(minimumSize: const Size(0, 48)),
+        ),
+      ],
+    ),
+  );
 }
 
 String _verificationTitle(String status) => switch (status) {

@@ -31,6 +31,16 @@ import '../test/guardian_history_test.dart' show cycle;
 import '../test/guardian_test.dart' show FakeGuardian, activePlan;
 import 'capture_design_test.dart' show saveCapture;
 
+class EmptyDashboardCaptureRescue extends FakeRescue {
+  @override
+  Future<Json> dashboard() async => {
+    ...await super.dashboard(),
+    'pending': <Json>[],
+    'recent_activity': <Json>[],
+    'unread_messages': 0,
+  };
+}
+
 class VerificationCaptureRescue extends FakeRescue {
   VerificationCaptureRescue(this.status);
   final String status;
@@ -258,6 +268,7 @@ void main() {
     for (final path in [
       for (final name in [
         'logo-paw',
+        'empty-pending-heart',
         'icon-star',
         'icon-shield',
         'rtab-home',
@@ -337,6 +348,10 @@ void main() {
       ('rescuer-home-unverified-large', '/rescuer'),
       ('rescuer-home-review', '/rescuer'),
       ('rescuer-home-review-large', '/rescuer'),
+      ('rescuer-home-empty', '/rescuer'),
+      ('rescuer-home-empty-large', '/rescuer'),
+      ('rescuer-home-actions', '/rescuer'),
+      ('rescuer-home-actions-large', '/rescuer'),
       ('rescuer-home', '/rescuer'),
       ('rescuer-home-large', '/rescuer'),
       ('support-home', '/rescue-cases'),
@@ -508,7 +523,9 @@ void main() {
           communityRepositoryProvider.overrideWithValue(community),
           if (spec.$1.startsWith('rescuer-home'))
             rescueRepositoryProvider.overrideWithValue(
-              spec.$1.contains('unverified')
+              spec.$1.contains('empty')
+                  ? EmptyDashboardCaptureRescue()
+                  : spec.$1.contains('unverified')
                   ? VerificationCaptureRescue('not_started')
                   : spec.$1.contains('review')
                   ? VerificationCaptureRescue('submitted')
@@ -834,6 +851,14 @@ void main() {
         await tester.tap(target);
         await tester.pumpAndSettle();
         expect(find.byType(DonorModeDialog), findsOneWidget);
+      }
+      if (spec.$1.startsWith('rescuer-home-actions') ||
+          spec.$1.startsWith('rescuer-home-empty')) {
+        await Scrollable.ensureVisible(
+          tester.element(find.text('Acciones pendientes')),
+          alignment: 0,
+        );
+        await tester.pumpAndSettle();
       }
       if (spec.$1 != 'adoption-drag') {
         await tester.runAsync(
