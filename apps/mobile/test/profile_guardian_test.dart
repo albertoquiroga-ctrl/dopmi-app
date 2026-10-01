@@ -53,7 +53,7 @@ void main() {
   );
 
   testWidgets(
-    'returning from Guardian management refreshes membership from the repository',
+    'active Guardian opens impact and refreshes membership on return',
     (tester) async {
       final repo = ProfileGuardian()
         ..value = {'plan': activePlan(), 'activation': null};
@@ -64,7 +64,7 @@ void main() {
             builder: (_, _) => const Scaffold(body: DonorGuardianFeature()),
           ),
           GoRoute(
-            path: '/guardian',
+            path: '/impact',
             builder: (context, _) => Scaffold(
               body: TextButton(
                 onPressed: () {

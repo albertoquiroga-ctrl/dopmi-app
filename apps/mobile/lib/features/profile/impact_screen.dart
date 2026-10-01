@@ -9,8 +9,38 @@ import '../adoption/community_ui.dart';
 import '../community/content_actions.dart';
 import '../payments/contribution_layout.dart';
 import '../payments/guardian_repository.dart';
+import '../payments/guardian_promotion_screen.dart';
 import '../rescue/rescue_public_photo.dart';
 import '../rescue/rescue_repository.dart';
+
+/// Membership decides the entry, while history remains reachable for former
+/// Guardians and people who only made punctual contributions.
+class ImpactEntryScreen extends ConsumerWidget {
+  const ImpactEntryScreen({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!ref.watch(guardianEnabledProvider)) return const ImpactScreen();
+    return LiveSection<Json>(
+      load: () => ref.read(guardianRepositoryProvider).state(),
+      errorMessage: (_) =>
+          'No pudimos consultar tu estado de Guardián. Vuelve a intentarlo.',
+      statusFrame: (content) => Scaffold(
+        backgroundColor: Colors.white,
+        bottomNavigationBar: const CommunityNav(3),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: content,
+          ),
+        ),
+      ),
+      builder: (state, _) =>
+          state['plan'] == null && state['activation'] == null
+          ? const GuardianPromotionScreen(navigation: CommunityNav(3))
+          : const ImpactScreen(),
+    );
+  }
+}
 
 class ImpactScreen extends ConsumerWidget {
   const ImpactScreen({super.key});

@@ -14,6 +14,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
+import 'guardian_test.dart' show FakeGuardian, activePlan;
+import 'profile_guardian_test.dart' show ProfileGuardian;
 
 class ImpactCommunity extends FakeCommunity {
   List<Json> items = [];
@@ -43,6 +45,7 @@ void main() {
     WidgetTester tester,
     ImpactCommunity repo, {
     double scale = 1,
+    FakeGuardian? guardian,
   }) async {
     tester.view.physicalSize = const Size(320, 640);
     tester.view.devicePixelRatio = 1;
@@ -56,7 +59,9 @@ void main() {
       overrides: [
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(repo),
-        guardianEnabledProvider.overrideWithValue(false),
+        guardianEnabledProvider.overrideWithValue(guardian != null),
+        if (guardian != null)
+          guardianRepositoryProvider.overrideWithValue(guardian),
         routerInitialLocationProvider.overrideWithValue('/impact'),
       ],
     );
@@ -80,6 +85,54 @@ void main() {
     return identity;
   }
 
+  testWidgets(
+    'Inactive entry shows promotion and keeps real history reachable',
+    (tester) async {
+      final repo = ImpactCommunity()..items = [contributionCase];
+      final guardian = FakeGuardian();
+      await start(tester, repo, guardian: guardian);
+      expect(find.byType(PageView), findsOneWidget);
+      expect(repo.reads, 0);
+      await tester.ensureVisible(find.text('Ver mi impacto'));
+      await tester.tap(find.text('Ver mi impacto'));
+      await tester.pumpAndSettle();
+      expect(find.text('Caso aprobado'), findsOneWidget);
+      expect(repo.reads, greaterThan(0));
+      expect(guardian.calls, isEmpty);
+      expect(guardian.opened, 0);
+    },
+  );
+  testWidgets(
+    'Active entry uses confirmed membership and opens public impact',
+    (tester) async {
+      final repo = ImpactCommunity()..items = [contributionCase];
+      final guardian = FakeGuardian()
+        ..value = {'plan': activePlan(), 'activation': null};
+      await start(tester, repo, guardian: guardian);
+      expect(find.text('Caso aprobado'), findsOneWidget);
+      expect(find.byType(PageView), findsNothing);
+      expect(guardian.calls, isEmpty);
+    },
+  );
+  testWidgets('Membership error never implies inactive and can retry', (
+    tester,
+  ) async {
+    final repo = ImpactCommunity();
+    final guardian = ProfileGuardian()..failState = true;
+    await start(tester, repo, guardian: guardian);
+    expect(find.byType(PageView), findsNothing);
+    expect(
+      find.text(
+        'No pudimos consultar tu estado de Guardián. Vuelve a intentarlo.',
+      ),
+      findsOneWidget,
+    );
+    guardian.failState = false;
+    await tester.tap(find.text('Volver a intentar'));
+    await tester.pumpAndSettle();
+    expect(find.byType(PageView), findsOneWidget);
+    expect(guardian.calls, isEmpty);
+  });
   testWidgets(
     'Only a successful empty response claims no assigned advances; errors can retry',
     (tester) async {

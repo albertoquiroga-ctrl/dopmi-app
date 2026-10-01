@@ -190,7 +190,7 @@ class _GuardianPromotionState extends State<GuardianPromotionScreen> {
                     : null,
               ),
               TextButton(
-                onPressed: () => context.push('/impact'),
+                onPressed: () => context.push('/impact?history=1'),
                 child: const Text('Ver mi impacto'),
               ),
               TextButton(

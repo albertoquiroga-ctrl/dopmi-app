@@ -317,7 +317,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/impact',
-        builder: (_, _) => ImpactScreen(key: ValueKey(identity.identity?.id)),
+        builder: (_, state) => state.uri.queryParameters['history'] == '1'
+            ? ImpactScreen(key: ValueKey(identity.identity?.id))
+            : ImpactEntryScreen(key: ValueKey(identity.identity?.id)),
       ),
       GoRoute(
         path: '/adoptions/:id',
