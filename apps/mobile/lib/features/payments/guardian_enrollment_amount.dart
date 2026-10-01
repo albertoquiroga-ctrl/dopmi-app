@@ -66,6 +66,8 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
           borderRadius: BorderRadius.circular(16),
         ),
         child: InkWell(
+          splashFactory: NoSplash.splashFactory,
+          highlightColor: Colors.transparent,
           onTap: widget.locked
               ? null
               : () {
@@ -77,7 +79,7 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
                   widget.onChanged();
                 },
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 14),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

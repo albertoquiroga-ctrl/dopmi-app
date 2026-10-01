@@ -30,6 +30,11 @@ void main() {
         await tester.ensureVisible(find.text(r'$200'));
         await tester.tap(find.text(r'$200'));
         await tester.pump();
+        final preset = tester.widget<InkWell>(
+          find.ancestor(of: find.text(r'$200'), matching: find.byType(InkWell)),
+        );
+        expect(preset.splashFactory, NoSplash.splashFactory);
+        expect(preset.highlightColor, Colors.transparent);
         expect(amount.text, '200.00');
         expect(find.text(r'$200.00 MXN'), findsNWidgets(2));
         await tester.ensureVisible(find.text('Otra cantidad'));
@@ -44,6 +49,12 @@ void main() {
         await tester.pump();
         expect(find.text('Importe por confirmar'), findsNWidgets(2));
         expect(find.text(r'$0 MXN'), findsNothing);
+        await tester.ensureVisible(find.text(r'$500'));
+        await tester.tap(find.text(r'$500'));
+        await tester.pump();
+        expect(amount.text, '500.00');
+        expect(find.byType(TextField), findsNothing);
+        expect(find.text(r'$500.00 MXN'), findsNWidgets(2));
       },
     );
   }
