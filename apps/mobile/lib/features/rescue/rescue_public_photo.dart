@@ -9,9 +9,11 @@ class RescuePublicPhoto extends ConsumerStatefulWidget {
     super.key,
     this.height = 220,
     this.radius = 20,
+    this.compact = false,
   });
   final String path;
   final double height, radius;
+  final bool compact;
   @override
   ConsumerState<RescuePublicPhoto> createState() => _RescuePublicPhotoState();
 }
@@ -32,23 +34,36 @@ class _RescuePublicPhotoState extends ConsumerState<RescuePublicPhoto> {
     if (oldWidget.path != widget.path) url = _load();
   }
 
-  Widget unavailable() => SizedBox(
-    height: widget.height,
-    child: Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text('Foto no disponible'),
-          TextButton(
-            onPressed: () => setState(() {
-              url = _load();
-            }),
-            child: const Text('Reintentar foto'),
+  Widget unavailable() => widget.compact
+      ? SizedBox(
+          height: widget.height,
+          child: Center(
+            child: IconButton(
+              tooltip: 'Foto no disponible. Reintentar foto',
+              onPressed: () => setState(() {
+                url = _load();
+              }),
+              icon: const Icon(Icons.refresh),
+            ),
           ),
-        ],
-      ),
-    ),
-  );
+        )
+      : SizedBox(
+          height: widget.height,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Foto no disponible'),
+                TextButton(
+                  onPressed: () => setState(() {
+                    url = _load();
+                  }),
+                  child: const Text('Reintentar foto'),
+                ),
+              ],
+            ),
+          ),
+        );
   @override
   Widget build(BuildContext context) => ClipRRect(
     borderRadius: BorderRadius.circular(widget.radius),
@@ -67,6 +82,17 @@ class _RescuePublicPhotoState extends ConsumerState<RescuePublicPhoto> {
               )
             : snapshot.hasError
             ? unavailable()
+            : widget.compact
+            ? const Center(
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    semanticsLabel: 'Cargando foto',
+                  ),
+                ),
+              )
             : const Center(child: Text('Cargando foto…')),
       ),
     ),

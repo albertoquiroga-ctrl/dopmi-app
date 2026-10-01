@@ -775,6 +775,7 @@ class _OwnedRescueCard extends ConsumerWidget {
                                     .first,
                                 height: 76,
                                 radius: 14,
+                                compact: true,
                               )
                             : Container(
                                 decoration: BoxDecoration(
@@ -801,56 +802,18 @@ class _OwnedRescueCard extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            record.title.isEmpty
-                                ? 'Borrador sin título'
-                                : record.title,
-                            style: const TextStyle(
-                              fontSize: 17,
-                              height: 1.3,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xff151423),
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Wrap(
-                            spacing: 6,
-                            runSpacing: 6,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: record.status == 'submitted'
-                                      ? const Color(0xffeef5ff)
-                                      : needsAction
-                                      ? const Color(0xfff7eeee)
-                                      : const Color(0xfff0eff8),
-                                  borderRadius: BorderRadius.circular(99),
-                                ),
-                                child: Text(
-                                  rescueStatuses[record.status] ??
-                                      record.status,
-                                  style: const TextStyle(
-                                    fontSize: 11,
-                                    height: 1.3,
-                                    color: Color(0xff4f4e5c),
-                                  ),
-                                ),
+                          _OwnedCaseHeading(record: record),
+                          if (record.data['urgent'] == true) ...[
+                            const SizedBox(height: 6),
+                            const Text(
+                              'Urgente',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xffb51224),
                               ),
-                              if (record.data['urgent'] == true)
-                                const Text(
-                                  'Urgente',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w600,
-                                    color: Color(0xffb51224),
-                                  ),
-                                ),
-                            ],
-                          ),
+                            ),
+                          ],
                           if (record.kind == 'case' &&
                               (record.publicData['age'] as String? ?? '')
                                   .trim()
@@ -967,6 +930,61 @@ class _OwnedRescueCard extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _OwnedCaseHeading extends StatelessWidget {
+  const _OwnedCaseHeading({required this.record});
+  final RescueRecord record;
+  @override
+  Widget build(BuildContext context) {
+    final name = Text(
+      record.title.isEmpty ? 'Borrador sin título' : record.title,
+      style: const TextStyle(
+        fontSize: 17,
+        height: 1.3,
+        fontWeight: FontWeight.w700,
+        color: Color(0xff151423),
+      ),
+    );
+    final badge = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: switch (record.status) {
+          'approved' => const Color(0xffdef6ee),
+          'submitted' => const Color(0xffeef5ff),
+          'changes_requested' || 'rejected' => const Color(0xfff7eeee),
+          _ => const Color(0xfff0eff8),
+        },
+        borderRadius: BorderRadius.circular(99),
+      ),
+      child: Text(
+        rescueStatuses[record.status] ?? record.status,
+        style: TextStyle(
+          fontSize: 10,
+          height: 1.3,
+          fontWeight: FontWeight.w600,
+          color: record.status == 'approved'
+              ? const Color(0xff176c55)
+              : const Color(0xff4f4e5c),
+        ),
+      ),
+    );
+    if (MediaQuery.textScalerOf(context).scale(17) > 22 ||
+        ['changes_requested', 'rejected'].contains(record.status)) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [name, const SizedBox(height: 6), badge],
+      );
+    }
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: name),
+        const SizedBox(width: 8),
+        badge,
+      ],
     );
   }
 }

@@ -33,6 +33,10 @@ import 'capture_design_test.dart' show saveCapture;
 
 class OwnedCasesCaptureRescue extends FakeRescue {
   @override
+  Future<String> fileUrl(String path) async =>
+      'https://fixture.example.test/owned-case.png';
+
+  @override
   Future<DataPage<RescueRecord>> mine(
     String kind,
     int page, {
@@ -52,7 +56,10 @@ class OwnedCasesCaptureRescue extends FakeRescue {
         'public_data': {
           'pet_name':
               'Caso de ${{'approved': 'Luna', 'draft': 'Toby', 'submitted': 'Nala', 'changes_requested': 'Milo', 'closed': 'Sol'}[status]}',
-          'photos': <String>[],
+          'photos': status == 'approved'
+              ? <String>['fixture-owned-photo']
+              : <String>[],
+          'age': '2 años',
         },
         'feedback': status == 'changes_requested'
             ? 'Adjunta la evidencia solicitada.'

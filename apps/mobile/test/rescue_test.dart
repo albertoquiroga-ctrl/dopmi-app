@@ -246,6 +246,46 @@ class PagedPublicCaseRescue extends FakeRescue {
 }
 
 void main() {
+  testWidgets(
+    'owned case thumbnail retries a failed photo without overflow at large text',
+    (tester) async {
+      final rescue = PhotoPublicCaseRescue();
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [rescueRepositoryProvider.overrideWithValue(rescue)],
+          child: MaterialApp(
+            home: MediaQuery(
+              data: const MediaQueryData(textScaler: TextScaler.linear(2)),
+              child: const Scaffold(
+                body: SizedBox(
+                  width: 76,
+                  height: 76,
+                  child: RescuePublicPhoto(
+                    'owned/photo',
+                    height: 76,
+                    radius: 14,
+                    compact: true,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(rescue.photoRequests, 1);
+      expect(
+        tester.getSize(find.byType(RescuePublicPhoto)),
+        const Size(76, 76),
+      );
+      await tester.tap(find.byTooltip('Foto no disponible. Reintentar foto'));
+      await tester.pumpAndSettle();
+      expect(rescue.photoRequests, 2);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   test(
     'complete public case loads all approved pages and fails as a whole',
     () async {
