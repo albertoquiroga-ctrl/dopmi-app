@@ -30,7 +30,17 @@ class CommunityNav extends ConsumerWidget {
           onSelected: (destination) {
             final shell = DopmiNavigationHost.of(context);
             if (shell != null) {
-              shell.goBranch(destination.branch);
+              // A shell root can be opened imperatively (for example,
+              // Mis match used to push /messages over Adoptar). In that case
+              // the visible path and the shell's current branch disagree, so
+              // goBranch(currentIndex) is a no-op. Route explicitly whenever
+              // the requested destination is already the recorded branch.
+              if (shell.currentIndex == destination.branch &&
+                  path != destination.path) {
+                context.go(destination.path);
+              } else {
+                shell.goBranch(destination.branch);
+              }
             } else {
               context.go(destination.path);
             }
@@ -66,7 +76,7 @@ class CommunityFrame extends StatelessWidget {
       if (showMatches)
         IconButton(
           tooltip: 'Mis match',
-          onPressed: () => context.push('/messages'),
+          onPressed: () => context.go('/messages'),
           icon: const Icon(Icons.favorite_border),
         ),
       if (showNotifications)

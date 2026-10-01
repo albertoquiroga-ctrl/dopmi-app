@@ -118,6 +118,37 @@ void main() {
       },
     );
   }
+  testWidgets('Mis match can return to Adoptar from the donor navigation', (
+    tester,
+  ) async {
+    final identity = FakeIdentityRepository()
+      ..user = const Identity('one', 'ana@example.test', verified: true);
+    final container = ProviderContainer(
+      overrides: [
+        identityRepositoryProvider.overrideWithValue(identity),
+        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+        routerInitialLocationProvider.overrideWithValue('/adoptions'),
+      ],
+    );
+    addTearDown(() async {
+      container.dispose();
+      await identity.changes.close();
+    });
+    await tester.pumpWidget(
+      UncontrolledProviderScope(container: container, child: const DopmiApp()),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Mis match'));
+    await tester.pumpAndSettle();
+    expect(container.read(routerProvider).state.uri.path, '/messages');
+
+    await tester.tap(find.bySemanticsLabel('Adoptar'));
+    await tester.pumpAndSettle();
+    expect(container.read(routerProvider).state.uri.path, '/adoptions');
+    expect(find.byTooltip('Mis match'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
   testWidgets('switching accounts removes an unsaved private profile draft', (
     tester,
   ) async {

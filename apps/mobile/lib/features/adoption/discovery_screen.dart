@@ -244,7 +244,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
             ),
             IconButton(
               tooltip: 'Mis match',
-              onPressed: () => context.push('/messages'),
+              onPressed: () => context.go('/messages'),
               icon: const Icon(Icons.favorite_border),
             ),
             IconButton(
