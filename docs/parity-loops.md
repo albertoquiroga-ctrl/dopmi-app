@@ -391,6 +391,14 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
 - Prueba nueva confirma vacío sin Ver más y acceso real a Adoptar. Flutter135 y analyze aprobados; tras ajustar ancho ampliado se repitieron21 pruebas dirigidas y capturador33 estados, aprobados. PNGs loop18 normal y320×640/200% desplazado para mostrar CTA. Sólo scratch limpio para regenerar manifiesto de assets; producción/builds locales del titular preservados.
 - Pendientes: medir ancho18ch y geometría en navegador simultáneo, fotos equivalentes para listas reales, búsqueda/notificaciones/rol rescatista/rutas restantes y pruebas físicas instaladas. Paridad global no completa. Codemagic final sigue autorizado y pendiente.
 
+
+## Loop 19 — burbujas del chat
+
+- Referencia Irlanda inicio/cierre `a3c969cd9103fd46dc5cd886999912526ce75efb`, sin cambios. Leídos Messages/bubble/adopter-chat: ancho78%, padding10/16/8, radios24 y esquina12, tiempo10 y gap14.
+- ChatMessageBubble usa remitente real contra repo.userId para alineación; preferencias existentes cambian acento amarillo adoptante/morado rescatista, sin permisos derivados del modo. Entrantes #efede8/#f0eff8; contenido seleccionable. Se quitaron etiquetas repetidas visibles Tú/La otra persona; accesibilidad conserva origen y fecha completa. Hora local procede de created_at, ausencia no inventa hora.
+- Envío, idempotencia, retry/cancelar, reconexión, cierre y autorización no cambiados. Pruebas dirigidas21 y suite completa135 aprobadas; analyze limpio; capturador35 estados aprobado, incluyendo conversación ficticia explícita normal377×852 y320×640/200%. PNGs loop19; datos de fixture nunca empaquetados como conversaciones reales.
+- Sólo burbujas contrastadas con CSS; encabezado genérico, compositor desplazable y cierre aún difieren del mockup. Próximo ciclo reestructura chat con barra superior y compositor fijo, conserva errores/reintentos reales. Comparación de navegador y teclado/dispositivo pendientes; no declarar chat o paridad global completos. Codemagic final continúa pendiente.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián

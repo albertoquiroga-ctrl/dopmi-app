@@ -9,6 +9,7 @@ import 'package:uuid/uuid.dart';
 import '../../core/ui.dart';
 import 'match_favorites.dart';
 import 'match_thread_row.dart';
+import 'chat_message_bubble.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 
@@ -399,45 +400,7 @@ class _ThreadState extends ConsumerState<ThreadScreen>
         if (messages.isEmpty)
           const Notice('Saluda y cuéntale por qué te interesa esta adopción.'),
         for (final message in messages)
-          Align(
-            alignment: message['sender_id'] == repo.userId
-                ? Alignment.centerRight
-                : Alignment.centerLeft,
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.all(16),
-              constraints: const BoxConstraints(maxWidth: 370),
-              decoration: BoxDecoration(
-                color: message['sender_id'] == repo.userId
-                    ? const Color(0xffeee7fc)
-                    : Colors.white,
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    message['sender_id'] == repo.userId
-                        ? 'Tú'
-                        : 'La otra persona',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: purple,
-                    ),
-                  ),
-                  SelectableText(
-                    message['body'] as String,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    localDate(message['created_at'] as String),
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            ),
-          ),
+          ChatMessageBubble(message, mine: message['sender_id'] == repo.userId),
         if (thread!['status'] == 'closed')
           const Notice(
             'Esta conversación está cerrada. Puedes consultar su historial.',

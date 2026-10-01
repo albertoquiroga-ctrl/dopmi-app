@@ -139,6 +139,8 @@ void main() {
       ('match-all-large', '/messages'),
       ('match-empty', '/messages'),
       ('match-empty-large', '/messages'),
+      ('chat-bubbles', '/messages/thread-one'),
+      ('chat-bubbles-large', '/messages/thread-one'),
       ('match-home', '/messages'),
       ('match-home-large', '/messages'),
       ('adoption-support', '/adoptions'),
@@ -263,6 +265,22 @@ void main() {
         ];
       }
       if (spec.$1.startsWith('match-empty')) community.savedItems = [];
+      if (spec.$1.startsWith('chat-bubbles')) {
+        community.stored.addAll({
+          'one': {
+            'id': 'one',
+            'sender_id': 'rescuer',
+            'body': 'Hola, gracias por interesarte en Luna.',
+            'created_at': '2026-10-01T16:30:00Z',
+          },
+          'two': {
+            'id': 'two',
+            'sender_id': 'one',
+            'body': 'Me gustaría conocerla este fin de semana.',
+            'created_at': '2026-10-01T16:31:00Z',
+          },
+        });
+      }
       await tester.pumpWidget(
         RepaintBoundary(
           key: key,
@@ -315,6 +333,18 @@ void main() {
         await Scrollable.ensureVisible(
           tester.element(find.text('Explorar')),
           alignment: .35,
+        );
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('chat-bubbles')) {
+        await tester.scrollUntilVisible(
+          find.text('Hola, gracias por interesarte en Luna.'),
+          150,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await Scrollable.ensureVisible(
+          tester.element(find.text('Hola, gracias por interesarte en Luna.')),
+          alignment: .15,
         );
         await tester.pumpAndSettle();
       }
