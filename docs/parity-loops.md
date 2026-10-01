@@ -374,6 +374,15 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
 - Prueba con21 favoritos comprueba segunda página, orden completo y regreso. Flutter133/analyze aprobados; después de espaciado/color,19 pruebas dirigidas y capturador31 estados aprobados. PNGs loop16 normal/ampliada.
 - Pendientes: comparación simultánea navegador/datos equivalentes, gesto Android de regreso de vista interna, arte vacío y búsqueda, contador notificaciones, rol rescatista y rendimiento de listas largas. No declarar paridad global ni aceptación instalada. Codemagic final sigue pendiente del objetivo completo.
 
+
+## Loop 17 — regreso del sistema y conservación del orden
+
+- Referencia Irlanda inicio/cierre `a3c969cd9103fd46dc5cd886999912526ce75efb`, sin cambios.
+- PopScope de Mis match intercepta Atrás sólo cuando está abierta la cuadrícula interna; devuelve la vista principal en vez de abandonar la ruta. Flecha y evento de plataforma comparten showFavorites. ScrollController guarda/restaura offset de la vista principal limitado al contenido vigente.
+- Clave estable en MatchFavorites conserva el orden escogido al regresar/reabrir, aunque cambie el conjunto de widgets del encabezado. La consulta pública y su refresco siguen protegidos.
+- Prueba nueva usa handlePopRoute y verifica Mis match/Chats; prueba multipágina ampliada confirma Más antiguos al reabrir. Pruebas dirigidas20, suite completa134, analyze y configuración12 aprobados. No nueva captura estática: el cambio es de navegación/estado; no se atribuye gesto físico instalado.
+- Pendientes: probar scroll restaurado con contenido largo/dispositivo, Android predictive-back instalado, contraste de navegador, vacío/búsqueda/notificaciones/rol rescatista y rutas restantes. Objetivo global sigue activo; Codemagic final autorizado, pendiente de completar paridad.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián

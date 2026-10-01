@@ -366,6 +366,24 @@ void main() {
       await tester.tap(find.byTooltip('Volver a Mis match'));
       await tester.pumpAndSettle();
       expect(find.text('Chats'), findsOneWidget);
+      await tester.tap(find.text('Ver más'));
+      await tester.pumpAndSettle();
+      expect(find.text('Ordenar Más antiguos'), findsOneWidget);
+    },
+  );
+  testWidgets(
+    'system back from full favorites returns to match instead of leaving the app',
+    (tester) async {
+      final repo = PagedMatchCommunity();
+      await start(tester, repo, '/messages');
+      await tester.tap(find.text('Ver más'));
+      await tester.pumpAndSettle();
+      expect(find.text('Chats'), findsNothing);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text('Mis match'), findsOneWidget);
+      expect(find.text('Chats'), findsOneWidget);
+      expect(find.text('Ordenar Más recientes'), findsNothing);
     },
   );
   testWidgets('failed detail favorite rolls the optimistic state back', (

@@ -23,159 +23,184 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
   bool allFavorites = false;
   String query = '';
   final search = TextEditingController();
+  final scroll = ScrollController();
+  double homeOffset = 0;
+  void showFavorites(bool value) {
+    if (value && scroll.hasClients) homeOffset = scroll.offset;
+    setState(() => allFavorites = value);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !scroll.hasClients) return;
+      scroll.jumpTo(
+        (value ? 0.0 : homeOffset).clamp(0.0, scroll.position.maxScrollExtent),
+      );
+    });
+  }
+
   @override
   void dispose() {
     search.dispose();
+    scroll.dispose();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    extendBody: true,
-    backgroundColor: Colors.white,
-    bottomNavigationBar: const CommunityNav(3),
-    body: SafeArea(
-      bottom: false,
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(18, 16, 18, 110),
-        children: [
-          SizedBox(
-            height: 42,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SvgPicture.asset(
-                  'assets/profile/logo-paw.svg',
-                  width: 40,
-                  height: 40,
-                  semanticsLabel: 'Dopmi',
-                ),
-                SizedBox(
-                  width: 42,
-                  height: 42,
-                  child: IconButton(
-                    tooltip: 'Notificaciones',
-                    onPressed: () => context.push('/notifications'),
-                    style: IconButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      side: const BorderSide(
-                        color: Color(0xffd9d3ca),
-                        width: 1.5,
+  Widget build(BuildContext context) => PopScope(
+    canPop: !allFavorites,
+    onPopInvokedWithResult: (didPop, result) {
+      if (!didPop && allFavorites) showFavorites(false);
+    },
+    child: Scaffold(
+      extendBody: true,
+      backgroundColor: Colors.white,
+      bottomNavigationBar: const CommunityNav(3),
+      body: SafeArea(
+        bottom: false,
+        child: ListView(
+          controller: scroll,
+          padding: const EdgeInsets.fromLTRB(18, 16, 18, 110),
+          children: [
+            SizedBox(
+              height: 42,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SvgPicture.asset(
+                    'assets/profile/logo-paw.svg',
+                    width: 40,
+                    height: 40,
+                    semanticsLabel: 'Dopmi',
+                  ),
+                  SizedBox(
+                    width: 42,
+                    height: 42,
+                    child: IconButton(
+                      tooltip: 'Notificaciones',
+                      onPressed: () => context.push('/notifications'),
+                      style: IconButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        side: const BorderSide(
+                          color: Color(0xffd9d3ca),
+                          width: 1.5,
+                        ),
+                        shape: const CircleBorder(),
                       ),
-                      shape: const CircleBorder(),
-                    ),
-                    icon: SvgPicture.asset(
-                      'assets/profile/icon-bell.svg',
-                      width: 20,
-                      height: 20,
-                      colorFilter: const ColorFilter.mode(ink, BlendMode.srcIn),
+                      icon: SvgPicture.asset(
+                        'assets/profile/icon-bell.svg',
+                        width: 20,
+                        height: 20,
+                        colorFilter: const ColorFilter.mode(
+                          ink,
+                          BlendMode.srcIn,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: allFavorites ? 12 : 22),
-          if (!allFavorites)
-            const Text(
-              'Mis match',
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 28,
-                fontWeight: FontWeight.w700,
-                color: ink,
-              ),
-            ),
-          if (!allFavorites) const SizedBox(height: 24),
-          MatchFavorites(
-            all: allFavorites,
-            showAll: (value) => setState(() => allFavorites = value),
-          ),
-          const SizedBox(height: 24),
-          if (!allFavorites) ...[
-            const Text(
-              'Chats',
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: ink,
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: search,
-              textInputAction: TextInputAction.search,
-              decoration: InputDecoration(
-                labelText: 'Buscar por mascota o persona',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: query.isEmpty
-                    ? null
-                    : IconButton(
-                        tooltip: 'Limpiar búsqueda',
-                        onPressed: () => setState(() {
-                          search.clear();
-                          query = '';
-                          page = 1;
-                        }),
-                        icon: const Icon(Icons.close),
-                      ),
-              ),
-              onSubmitted: (value) => setState(() {
-                query = value.trim();
-                page = 1;
-              }),
-            ),
-            const SizedBox(height: 12),
-            const SizedBox(height: 18),
-            LiveSection<DataPage<Json>>(
-              key: ValueKey('$page:$query'),
-              tables: const [
-                'dopmi_threads',
-                'dopmi_messages',
-                'dopmi_notifications',
-              ],
-              load: () => ref
-                  .read(communityRepositoryProvider)
-                  .threads(page, search: query),
-              builder: (result, refresh) => Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (result.items.isEmpty)
-                    Text(
-                      query.isEmpty
-                          ? 'Aún no tienes chats. Ponte en contacto con el rescatista de tu compañero favorito.'
-                          : 'No encontramos conversaciones con “$query”.',
-                      style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 14,
-                        height: 1.45,
-                        color: muted,
-                      ),
-                    ),
-                  for (var i = 0; i < result.items.length; i++)
-                    MatchThreadRow(
-                      result.items[i],
-                      last: i == result.items.length - 1,
-                      open: () async {
-                        await context.push(
-                          '/messages/${result.items[i]['id']}',
-                        );
-                        refresh();
-                      },
-                    ),
-                  if (result.total > 20)
-                    PageControls(
-                      page: page,
-                      total: result.total,
-                      size: 20,
-                      change: (value) => setState(() => page = value),
-                    ),
                 ],
               ),
             ),
+            SizedBox(height: allFavorites ? 12 : 22),
+            if (!allFavorites)
+              const Text(
+                'Mis match',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                  color: ink,
+                ),
+              ),
+            if (!allFavorites) const SizedBox(height: 24),
+            MatchFavorites(
+              key: const ValueKey('match-favorites'),
+              all: allFavorites,
+              showAll: showFavorites,
+            ),
+            const SizedBox(height: 24),
+            if (!allFavorites) ...[
+              const Text(
+                'Chats',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: ink,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: search,
+                textInputAction: TextInputAction.search,
+                decoration: InputDecoration(
+                  labelText: 'Buscar por mascota o persona',
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: query.isEmpty
+                      ? null
+                      : IconButton(
+                          tooltip: 'Limpiar búsqueda',
+                          onPressed: () => setState(() {
+                            search.clear();
+                            query = '';
+                            page = 1;
+                          }),
+                          icon: const Icon(Icons.close),
+                        ),
+                ),
+                onSubmitted: (value) => setState(() {
+                  query = value.trim();
+                  page = 1;
+                }),
+              ),
+              const SizedBox(height: 12),
+              const SizedBox(height: 18),
+              LiveSection<DataPage<Json>>(
+                key: ValueKey('$page:$query'),
+                tables: const [
+                  'dopmi_threads',
+                  'dopmi_messages',
+                  'dopmi_notifications',
+                ],
+                load: () => ref
+                    .read(communityRepositoryProvider)
+                    .threads(page, search: query),
+                builder: (result, refresh) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (result.items.isEmpty)
+                      Text(
+                        query.isEmpty
+                            ? 'Aún no tienes chats. Ponte en contacto con el rescatista de tu compañero favorito.'
+                            : 'No encontramos conversaciones con “$query”.',
+                        style: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 14,
+                          height: 1.45,
+                          color: muted,
+                        ),
+                      ),
+                    for (var i = 0; i < result.items.length; i++)
+                      MatchThreadRow(
+                        result.items[i],
+                        last: i == result.items.length - 1,
+                        open: () async {
+                          await context.push(
+                            '/messages/${result.items[i]['id']}',
+                          );
+                          refresh();
+                        },
+                      ),
+                    if (result.total > 20)
+                      PageControls(
+                        page: page,
+                        total: result.total,
+                        size: 20,
+                        change: (value) => setState(() => page = value),
+                      ),
+                  ],
+                ),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     ),
   );
