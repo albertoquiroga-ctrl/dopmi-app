@@ -130,6 +130,9 @@ void main() {
       ('adoption-contact-large', '/adoptions'),
       ('adoption-detail', '/adoptions/post'),
       ('adoption-detail-large', '/adoptions/post'),
+      ('adoption-empty', '/adoptions'),
+      ('adoption-empty-large', '/adoptions'),
+      ('adoption-end', '/adoptions'),
       ('profile-overview', '/profile'),
       ('profile-overview-active', '/profile'),
       ('profile-overview-large', '/profile'),
@@ -155,6 +158,7 @@ void main() {
       final community = spec.$1.startsWith('adoption-detail')
           ? DetailCaptureCommunity()
           : FakeCommunity();
+      if (spec.$1.startsWith('adoption-empty')) community.discoveryItems = [];
       if (spec.$1.startsWith('adoption-detail')) {
         community.post = Adoption({
           ...community.post.data,
@@ -210,6 +214,10 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1 == 'adoption-end') {
+        await tester.tap(find.byTooltip('Pasar'));
+        await tester.pumpAndSettle();
+      }
       if (spec.$1.startsWith('adoption-contact')) {
         await Scrollable.ensureVisible(
           tester.element(find.byTooltip('Contactar')),

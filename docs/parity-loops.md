@@ -285,6 +285,30 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
   visual integral, CI remoto ni Codemagic atribuidos. Próximo: vacíos y apoyo
   intercalado, luego favoritos/match/chat y demás recorridos. Objetivo activo.
 
+## Loop 09 · Vacíos reales de Adoptar · 2026-09-30
+
+- Referencia `a3c969cd9103fd46dc5cd886999912526ce75efb` reconsultada. Sin
+  publicaciones y fin del recorrido ahora son estados distintos. Empty usa
+  tarjeta320/radio28, Fraunces26/1.2, cuerpo14/1.45 y acción cápsula52; se
+  revisó la cascada posterior: acción global negra y secundaria #faf8f5.
+- Vacío global sólo después de comprobar las dos especies sin filtros. Si la
+  consulta de la otra especie falla, no se afirma vacío global. Vacío filtrado
+  permite limpiar claves conservando especie; vacío de categoría consulta la
+  alternativa; apoyo abre la ruta real. Reiniciar al final vuelve a consultar
+  publicaciones vigentes en lugar de restaurar sólo el caché.
+- End reproduce textos/acciones de referencia; mosaico de fotos y énfasis de
+  palabras siguen pendientes antes de cerrar su paridad. Tarjeta de apoyo
+  intercalada aún requiere su ciclo propio. No se declara Adoptar completo.
+- Tres pruebas nuevas cubren categoría alternativa, ambas vacías y limpieza
+  real. Capturador añade vacío normal/ampliado y fin del recorrido. Evidencia
+  de comparación en docs/design-reviews/parity-loop-09; revisión de navegador
+  de esos estados aún pendiente. No aceptación instalada/Codemagic atribuidos.
+  Suite Flutter130 y analyze limpios; tras ajustar radio cápsula se repitieron
+  las tres pruebas de vacío y captura23 estados, aprobadas. Configuración12.
+- Próximo: terminar mosaico/énfasis y tarjeta de apoyo intercalada; luego
+  favoritos/match/chat y resto de rutas. Objetivo original y entrega final
+  android-guardian-internal permanecen activos.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián

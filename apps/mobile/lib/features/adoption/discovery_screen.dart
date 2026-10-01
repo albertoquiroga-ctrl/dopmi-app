@@ -13,6 +13,7 @@ import 'community_repository.dart';
 import 'community_ui.dart';
 import 'location_service.dart';
 import 'discovery_filters.dart';
+import 'discovery_empty.dart';
 
 double discoveryMediaHeight(BuildContext context) => math.max(
   (MediaQuery.sizeOf(context).height - 220).clamp(340, 560) - 128,
@@ -35,6 +36,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   bool dragging = false;
   int exiting = 0;
   bool loading = true, acting = false, exhausted = false;
+  bool allSpeciesEmpty = false;
   String? error;
 
   List<Object> get deck {
@@ -62,6 +64,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
       loading = true;
       error = null;
       if (reset) {
+        allSpeciesEmpty = false;
         cards.clear();
         support.clear();
         index = 0;
@@ -77,6 +80,17 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
           .read(communityRepositoryProvider)
           .discovery(Map<String, dynamic>.from(filters), page);
       if (!mounted || version != loadVersion) return;
+      if (reset && result.total == 0 && filters.length == 1) {
+        try {
+          final other = await ref.read(communityRepositoryProvider).discovery({
+            'species': filters['species'] == 'dog' ? 'cat' : 'dog',
+          }, 1);
+          if (!mounted || version != loadVersion) return;
+          allSpeciesEmpty = other.total == 0;
+        } catch (_) {
+          // A failed alternate-category lookup cannot prove the entire catalog empty.
+        }
+      }
       if (reset) {
         final opportunities = await ref
             .read(communityRepositoryProvider)
@@ -362,11 +376,23 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                 child: Center(child: CircularProgressIndicator()),
               )
             else if (current == null)
-              _DeckEnd(
-                filtered: filters.keys.any((key) => key != 'species'),
-                restart: () => setState(() => index = 0),
-                filters: openFilters,
-              )
+              cards.isEmpty
+                  ? DiscoveryEmpty(
+                      filtered: filters.keys.any((key) => key != 'species'),
+                      global: allSpeciesEmpty,
+                      species: filters['species'] as String,
+                      clear: () {
+                        filters.removeWhere((key, _) => key != 'species');
+                        load(reset: true);
+                      },
+                      switchSpecies: () {
+                        filters['species'] = filters['species'] == 'dog'
+                            ? 'cat'
+                            : 'dog';
+                        load(reset: true);
+                      },
+                    )
+                  : DiscoveryEnd(restart: () => load(reset: true))
             else if (current is Adoption)
               DiscoveryStack(
                 next: index + 1 < items.length && items[index + 1] is Adoption
@@ -874,45 +900,6 @@ class DiscoveryControl extends StatelessWidget {
       ),
     );
   }
-}
-
-class _DeckEnd extends StatelessWidget {
-  const _DeckEnd({
-    required this.filtered,
-    required this.restart,
-    required this.filters,
-  });
-  final bool filtered;
-  final VoidCallback restart, filters;
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 70),
-    child: Column(
-      children: [
-        const Icon(Icons.pets, size: 72, color: purple),
-        const SizedBox(height: 20),
-        Text(
-          'Nuestra manada llegó hasta aquí por ahora',
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        const SizedBox(height: 10),
-        Text(
-          filtered ? 'Ajusta los filtros para descubrir más historias.' : 'El catálogo se actualiza cuando Dopmi aprueba nuevas publicaciones.',
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 20),
-        FilledButton(
-          onPressed: filtered ? filters : restart,
-          child: Text(filtered ? 'Ajustar filtros' : 'Volver a descubrir'),
-        ),
-        TextButton(
-          onPressed: () => context.push('/saved'),
-          child: const Text('Ir a mis favoritos'),
-        ),
-      ],
-    ),
-  );
 }
 
 class DiscoveryLocation extends ConsumerStatefulWidget {
