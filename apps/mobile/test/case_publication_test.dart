@@ -2,7 +2,11 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/adoption/publication_frame.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dopmi_mobile/features/adoption/photo_recovery.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import 'community_test.dart' show FakeCommunity;
 import 'publication_frame_test.dart' show startPublication;
@@ -32,6 +36,7 @@ class DraftCaseRescue extends FakeRescue {
     RescueRecord? record,
     String? parent,
   }) async {
+    saveCalls++;
     publicSaved = publicData;
     return RescueRecord({
       ...record!.data,
@@ -44,6 +49,71 @@ class DraftCaseRescue extends FakeRescue {
 }
 
 void main() {
+  testWidgets('tapping a case photo opens the existing private file route', (
+    tester,
+  ) async {
+    await startPublication(
+      tester,
+      FakeCommunity(),
+      '/rescue/case-one',
+      rescue: DraftCaseRescue(),
+    );
+    final thumbnail = find.byType(PublicationPhotoThumbnail);
+    await tester.ensureVisible(thumbnail);
+    await tester.pumpAndSettle();
+    await tester.tapAt(tester.getTopLeft(thumbnail) + const Offset(20, 20));
+    await tester.pumpAndSettle();
+    final scaffold = find.byType(Scaffold).last;
+    expect(GoRouterState.of(tester.element(scaffold)).uri.path, '/rescue-file');
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets(
+    'case camera and gallery save first and cancellation never adds a photo',
+    (tester) async {
+      final repo = DraftCaseRescue();
+      final sources = <int>[];
+      const channel = MethodChannel('plugins.flutter.io/image_picker');
+      final messenger =
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        if (call.method != 'pickImage') return null;
+        final args = Map<String, dynamic>.from(call.arguments as Map);
+        sources.add(args['source'] as int);
+        expect(args['maxWidth'], 1600);
+        expect(args['maxHeight'], 1600);
+        expect(args['requestFullMetadata'], isFalse);
+        expect(repo.saveCalls, sources.length);
+        final preferences = await SharedPreferences.getInstance();
+        expect(
+          preferences.getString(pendingPhotoKey('one')),
+          'rescue:case-one',
+        );
+        return null;
+      });
+      addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+      await startPublication(
+        tester,
+        FakeCommunity(),
+        '/rescue/case-one',
+        rescue: repo,
+      );
+      for (final label in ['Tomar foto', 'Subir desde galería']) {
+        await tester.ensureVisible(find.text(label));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(label));
+        await tester.pumpAndSettle();
+      }
+      expect(sources, [0, 1]);
+      expect(find.byType(PublicationPhotoThumbnail), findsOneWidget);
+      expect(
+        (await SharedPreferences.getInstance()).getString(
+          pendingPhotoKey('one'),
+        ),
+        isNull,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets('a new case cannot continue without a real public photo', (
     tester,
   ) async {

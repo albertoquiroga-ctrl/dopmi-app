@@ -19,6 +19,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../test/community_test.dart' show FakeCommunity;
 import '../test/fake_identity_repository.dart';
 import '../test/rescue_test.dart' show FakeRescue, FakeCaseUpdates;
+import '../test/case_publication_test.dart' show DraftCaseRescue;
 import '../test/expense_field_test.dart'
     show DraftExpenseRescue, SubmittedExpenseRescue;
 import '../test/payments_test.dart' show FakePayments;
@@ -55,6 +56,12 @@ class OwnedHistoryCaptureUpdates extends FakeCaseUpdates {
   @override
   Future<String> photoUrl(String path) async =>
       'https://fixture.example.test/story/$path.png';
+}
+
+class CasePublicationCaptureRescue extends DraftCaseRescue {
+  @override
+  Future<String> fileUrl(String path) async =>
+      'https://fixture.test/case-photo.jpg';
 }
 
 class OwnedCasesCaptureRescue extends FakeRescue {
@@ -588,6 +595,8 @@ void main() {
       ('expense-submitted-footer-large', '/rescue/expense-one'),
       ('case-publication', '/rescue/new?kind=case'),
       ('case-publication-large', '/rescue/new?kind=case'),
+      ('case-publication-grid', '/rescue/case-one'),
+      ('case-publication-grid-large', '/rescue/case-one'),
       ('expense-record', '/rescue/expense-one'),
       ('expense-record-large', '/rescue/expense-one'),
       ('expense-review', '/rescue/expense-one'),
@@ -718,7 +727,9 @@ void main() {
           identityRepositoryProvider.overrideWithValue(repo),
           communityRepositoryProvider.overrideWithValue(community),
           if (spec.$1.startsWith('case-publication'))
-            rescueRepositoryProvider.overrideWithValue(DraftExpenseRescue()),
+            rescueRepositoryProvider.overrideWithValue(
+              CasePublicationCaptureRescue(),
+            ),
           if (spec.$1.startsWith('expense-'))
             rescueRepositoryProvider.overrideWithValue(
               spec.$1.startsWith('expense-record')

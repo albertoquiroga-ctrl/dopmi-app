@@ -248,6 +248,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
         final preferences = await SharedPreferences.getInstance();
         final pendingKey = pendingPhotoKey(repo.userId!);
         await preferences.setString(pendingKey, post!.id);
+        await preferences.setString(pendingPhotoActorKey, repo.userId!);
         final file = await ImagePicker().pickImage(
           source: source,
           maxWidth: 1600,
@@ -255,6 +256,9 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
           requestFullMetadata: false,
         );
         await preferences.remove(pendingKey);
+        if (preferences.getString(pendingPhotoActorKey) == repo.userId) {
+          await preferences.remove(pendingPhotoActorKey);
+        }
         if (file == null || !mounted) return;
         final path = await repo.uploadPhoto(post!.id, await file.readAsBytes());
         if (!mounted) return;

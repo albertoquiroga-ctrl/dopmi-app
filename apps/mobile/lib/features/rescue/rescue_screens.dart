@@ -1,5 +1,7 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart' show ImagePicker, ImageSource;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +13,7 @@ import '../../core/measurement.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../adoption/publication_frame.dart';
+import '../adoption/photo_recovery.dart';
 import '../community/content_actions.dart';
 import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
@@ -1181,6 +1184,102 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     });
   }
 
+  Future<void> pickCasePhoto(ImageSource source) async {
+    final actor = ref.read(communityRepositoryProvider).userId;
+    if (actor == null) throw const FormatException('Vuelve a iniciar sesión.');
+    await save();
+    if (!mounted) return;
+    final preferences = await SharedPreferences.getInstance();
+    final key = pendingPhotoKey(actor);
+    final token = 'rescue:${record!.id}';
+    await preferences.setString(key, token);
+    await preferences.setString(pendingPhotoActorKey, actor);
+    final file = await ImagePicker().pickImage(
+      source: source,
+      maxWidth: 1600,
+      maxHeight: 1600,
+      requestFullMetadata: false,
+    );
+    if (preferences.getString(key) == token) {
+      await preferences.remove(key);
+      if (preferences.getString(pendingPhotoActorKey) == actor) {
+        await preferences.remove(pendingPhotoActorKey);
+      }
+    }
+    if (file == null || !mounted) return;
+    if (ref.read(communityRepositoryProvider).userId != actor) {
+      throw const FormatException(
+        'La sesión cambió. Retoma el borrador con su cuenta.',
+      );
+    }
+    if (await file.length() > 5242880) {
+      throw const FormatException('El archivo debe pesar hasta 5 MB.');
+    }
+    final path = await repository.upload(
+      record!.id,
+      await file.readAsBytes(),
+      pdf: false,
+    );
+    if (!mounted) return;
+    setState(() {
+      files = [
+        ...files,
+        {'role': 'public', 'path': path},
+      ];
+      dirty = true;
+    });
+    await save();
+  }
+
+  Widget casePhotos() => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      PublicationPhotoPicker(
+        onCamera: editable && !busy && files.length < 12
+            ? () => run(() => pickCasePhoto(ImageSource.camera))
+            : null,
+        onGallery: editable && !busy && files.length < 12
+            ? () => run(() => pickCasePhoto(ImageSource.gallery))
+            : null,
+      ),
+      const SizedBox(height: 16),
+      Wrap(
+        spacing: 12,
+        runSpacing: 12,
+        children: [
+          for (var i = 0; i < files.length; i++)
+            if (files[i]['role'] == 'public')
+              PublicationPhotoThumbnail(
+                photo: Semantics(
+                  button: true,
+                  label: 'Ver foto ${i + 1}',
+                  child: InkWell(
+                    splashFactory: NoSplash.splashFactory,
+                    highlightColor: Colors.transparent,
+                    onTap: () =>
+                        context.push('/rescue-file', extra: files[i]['path']),
+                    child: RescuePublicPhoto(
+                      files[i]['path'] as String,
+                      height: 167,
+                      radius: 0,
+                      compact: true,
+                    ),
+                  ),
+                ),
+                principal:
+                    i == files.indexWhere((file) => file['role'] == 'public'),
+                onRemove: editable && !busy
+                    ? () => setState(() {
+                        files.removeAt(i);
+                        dirty = true;
+                      })
+                    : null,
+              ),
+        ],
+      ),
+    ],
+  );
+
   Future<void> attach(String role) async {
     await save();
     if (!mounted) return;
@@ -1494,7 +1593,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                   }
                 }),
         ),
-        children: children,
+        children: [const PhotoRecoveryNotice(), ...children],
       );
     }
     if (kind != 'expense') return CommunityFrame(children: children);
@@ -1986,7 +2085,8 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                           ),
                     ],
                   ],
-                  if (step == 0) ...[
+                  if (step == 0 && kind == 'case') casePhotos(),
+                  if (step == 0 && kind != 'case') ...[
                     Text(
                       'Documentos y evidencia',
                       style: Theme.of(context).textTheme.titleLarge,
