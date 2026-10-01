@@ -338,6 +338,12 @@ void main() {
       ('guardian-billing-receipt', '/guardian'),
       ('guardian-billing-inactive', '/guardian'),
       ('guardian-billing-inactive-large', '/guardian'),
+      ('guardian-promotion', '/impact/guardian'),
+      ('guardian-promotion-large', '/impact/guardian'),
+      ('guardian-promotion-controls-large', '/impact/guardian'),
+      ('guardian-promotion-join-large', '/impact/guardian'),
+      ('guardian-promotion-second', '/impact/guardian'),
+      ('guardian-promotion-reports', '/impact/guardian'),
       ('guardian-billing-enrollment', '/guardian'),
       ('guardian-billing-enrollment-large', '/guardian'),
       ('guardian-billing-enrollment-confirmation', '/guardian'),
@@ -552,6 +558,38 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1 == 'guardian-promotion-controls-large') {
+        final dot = find.byWidgetPredicate(
+          (widget) =>
+              widget is Semantics &&
+              widget.properties.label == 'Ir a la página 3 de 3',
+        );
+        await tester.ensureVisible(dot);
+        await tester.tap(dot);
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1 == 'guardian-promotion-join-large') {
+        await tester.ensureVisible(find.text('Unirme como Guardián'));
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1 == 'guardian-promotion-second' ||
+          spec.$1 == 'guardian-promotion-reports') {
+        final index = spec.$1.endsWith('reports') ? 3 : 2;
+        final dot = find.byWidgetPredicate(
+          (widget) =>
+              widget is Semantics &&
+              widget.properties.label == 'Ir a la página $index de 3',
+        );
+        await tester.ensureVisible(dot);
+        await tester.tap(dot);
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text('Conviértete en Guardián'));
+        await tester.drag(
+          find.byType(SingleChildScrollView).first,
+          const Offset(0, 200),
+        );
+        await tester.pumpAndSettle();
+      }
       if (spec.$1.startsWith('guardian-billing-enrollment')) {
         await tester.tap(find.text('Suscribirme'));
         await tester.pumpAndSettle();

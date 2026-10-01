@@ -1,3 +1,7 @@
+import 'features/adoption/community_ui.dart';
+import 'features/payments/guardian_repository.dart';
+import 'features/payments/guardian_promotion_screen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -213,7 +217,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/guardian',
-        builder: (_, _) => GuardianScreen(key: ValueKey(identity.identity?.id)),
+        builder: (_, state) => GuardianScreen(
+          key: ValueKey(identity.identity?.id),
+          initialEnrollment: state.uri.queryParameters['enroll'] == '1',
+        ),
       ),
       GoRoute(
         path: '/payments',
@@ -298,6 +305,14 @@ final routerProvider = Provider<GoRouter>((ref) {
             'rescuer' => SavedKind.rescuer,
             _ => SavedKind.adoption,
           },
+        ),
+      ),
+      GoRoute(
+        path: '/impact/guardian',
+        builder: (_, _) => GuardianPromotionScreen(
+          key: ValueKey(identity.identity?.id),
+          available: ref.read(guardianEnabledProvider),
+          navigation: const CommunityNav(3),
         ),
       ),
       GoRoute(

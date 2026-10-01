@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
-import 'guardian_test.dart' show FakeGuardian;
+import 'guardian_test.dart' show FakeGuardian, activePlan;
 
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
@@ -18,6 +18,7 @@ void main() {
     WidgetTester tester,
     FakeGuardian repo, {
     bool enabled = true,
+    String location = '/guardian',
   }) async {
     tester.view.physicalSize = const Size(377, 1800);
     tester.view.devicePixelRatio = 1;
@@ -31,7 +32,7 @@ void main() {
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         guardianRepositoryProvider.overrideWithValue(repo),
         guardianEnabledProvider.overrideWithValue(enabled),
-        routerInitialLocationProvider.overrideWithValue('/guardian'),
+        routerInitialLocationProvider.overrideWithValue(location),
       ],
     );
     addTearDown(() async {
@@ -44,6 +45,47 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  testWidgets(
+    'Disabled promotion never offers enrollment or reads financial state',
+    (tester) async {
+      final repo = FakeGuardian();
+      await start(tester, repo, location: '/impact/guardian', enabled: false);
+      expect(find.text('Unirme como Guardián'), findsNothing);
+      expect(find.text('Guardián todavía no está disponible'), findsOneWidget);
+      expect(repo.reads, 0);
+      expect(repo.calls, isEmpty);
+    },
+  );
+  testWidgets('Promotion opens fresh enrollment without a payment', (
+    tester,
+  ) async {
+    final repo = FakeGuardian();
+    await start(tester, repo, location: '/impact/guardian');
+    expect(repo.reads, 0);
+    await tester.ensureVisible(find.text('Unirme como Guardián'));
+    await tester.tap(find.text('Unirme como Guardián'));
+    await tester.pumpAndSettle();
+    expect(find.text('Elige tu apoyo'), findsOneWidget);
+    expect(find.text('Suscribirme'), findsNothing);
+    expect(repo.reads, greaterThan(0));
+    expect(repo.calls, isEmpty);
+    expect(repo.opened, 0);
+  });
+  testWidgets(
+    'Promotion never offers a second enrollment when server returns an active plan',
+    (tester) async {
+      final repo = FakeGuardian()
+        ..value = {'plan': activePlan(), 'activation': null};
+      await start(tester, repo, location: '/impact/guardian');
+      await tester.ensureVisible(find.text('Unirme como Guardián'));
+      await tester.tap(find.text('Unirme como Guardián'));
+      await tester.pumpAndSettle();
+      expect(find.text('Suscripción activa'), findsOneWidget);
+      expect(find.text('Elige tu apoyo'), findsNothing);
+      expect(repo.calls, isEmpty);
+      expect(repo.opened, 0);
+    },
+  );
   testWidgets(
     'Subscribe opens authorization without payment; only explicit Stripe confirmation starts checkout',
     (tester) async {

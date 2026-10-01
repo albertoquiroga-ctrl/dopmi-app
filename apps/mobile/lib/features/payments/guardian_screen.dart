@@ -21,7 +21,8 @@ import 'guardian_enrollment_amount.dart';
 import 'guardian_enrollment_confirmation.dart';
 
 class GuardianScreen extends ConsumerStatefulWidget {
-  const GuardianScreen({super.key});
+  const GuardianScreen({super.key, this.initialEnrollment = false});
+  final bool initialEnrollment;
   @override
   ConsumerState<GuardianScreen> createState() => _GuardianState();
 }
@@ -58,6 +59,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   void initState() {
     super.initState();
     owner = ref.read(identityControllerProvider).identity!.id;
+    enrolling = widget.initialEnrollment;
     WidgetsBinding.instance.addObserver(this);
     if (ref.read(guardianEnabledProvider)) {
       load(restore: true);
@@ -507,7 +509,11 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         onPressed: canSubmit ? () => submit() : null,
       ),
     ];
-    if (enabled && p == null && enrolling && showForm) {
+    if (enabled &&
+        p == null &&
+        enrolling &&
+        showForm &&
+        (fresh || data != null)) {
       void returnToBilling() => setState(() {
         enrolling = false;
         consent = false;

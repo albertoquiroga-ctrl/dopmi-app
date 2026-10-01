@@ -688,8 +688,8 @@ class _DonorGuardianFeatureState extends ConsumerState<DonorGuardianFeature> {
     });
   }
 
-  Future<void> open() async {
-    await context.push('/guardian');
+  Future<void> open({bool introduction = false}) async {
+    await context.push(introduction ? '/impact/guardian' : '/guardian');
     if (mounted) reload();
   }
 
@@ -720,7 +720,11 @@ class _DonorGuardianFeatureState extends ConsumerState<DonorGuardianFeature> {
             ? 'Consulta mi impacto a la manada'
             : 'Apoyo mensual con reportes de impacto',
         icon: active ? Icons.shield_outlined : Icons.star_border,
-        onPressed: open,
+        onPressed: () => open(
+          introduction:
+              snapshot.data?['plan'] == null &&
+              snapshot.data?['activation'] == null,
+        ),
       );
     },
   );
