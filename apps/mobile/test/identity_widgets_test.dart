@@ -182,7 +182,7 @@ void main() {
     await start(tester, repo, initialLocation: '/adoptions');
 
     expect(find.text('Antes de continuar'), findsOneWidget);
-    expect(find.text('Adoptar'), findsNothing);
+    expect(find.bySemanticsLabel('Adoptar'), findsNothing);
     await tap(
       tester,
       'Confirmo que tengo 18 años o más y acepto los términos y el aviso de privacidad.',
@@ -210,7 +210,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Antes de continuar'), findsNothing);
-    expect(find.text('Adoptar'), findsWidgets);
+    expect(find.bySemanticsLabel('Adoptar'), findsOneWidget);
   });
 
   testWidgets('profile load failure cannot bypass legal consent', (

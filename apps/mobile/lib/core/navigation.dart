@@ -13,6 +13,7 @@ class DopmiDestination {
 const donorDestinations = [
   DopmiDestination('Adoptar', '/adoptions', 'rtab-home.svg', 0),
   DopmiDestination('Apoyar', '/rescue-cases', 'tab-donate.svg', 1),
+  DopmiDestination('Favoritos', '/messages', 'icon-heart.svg', 6),
   DopmiDestination('Perfil', '/profile', 'tab-profile.svg', 2),
 ];
 const rescuerDestinations = [
@@ -52,6 +53,51 @@ class DopmiBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final destinations = rescuer ? rescuerDestinations : donorDestinations;
+    if (!rescuer) {
+      return SafeArea(
+        top: false,
+        minimum: const EdgeInsets.only(bottom: 14),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          child: Center(
+            heightFactor: 1,
+            child: Container(
+              width: 240,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: DopmiTokens.ink,
+                borderRadius: BorderRadius.circular(999),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x5215110d),
+                    offset: Offset(0, 8),
+                    blurRadius: 24,
+                  ),
+                  BoxShadow(
+                    color: Color(0x3315110d),
+                    offset: Offset(0, 2),
+                    blurRadius: 8,
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  for (var index = 0; index < destinations.length; index++) ...[
+                    if (index > 0) const SizedBox(width: 8),
+                    _NavigationItem(
+                      destination: destinations[index],
+                      selected: selectedPath == destinations[index].path,
+                      rescuer: false,
+                      onPressed: () => onSelected(destinations[index]),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return SafeArea(
       top: false,
       child: Padding(
@@ -117,7 +163,9 @@ class _NavigationItem extends StatelessWidget {
         ? DopmiTokens.purple
         : selected
         ? DopmiTokens.ink
-        : DopmiTokens.muted;
+        : rescuer
+        ? DopmiTokens.muted
+        : const Color(0xffe3e2e2);
     return Semantics(
       button: true,
       selected: selected,
@@ -127,39 +175,52 @@ class _NavigationItem extends StatelessWidget {
         child: InkWell(
           onTap: onPressed,
           borderRadius: BorderRadius.circular(32),
+          splashFactory: rescuer ? null : NoSplash.splashFactory,
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 48),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 40,
-                  height: 40,
+                  width: rescuer ? 40 : 48,
+                  height: rescuer ? 40 : 48,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: selected && !rescuer
                         ? DopmiTokens.yellow
-                        : Colors.transparent,
+                        : rescuer
+                        ? Colors.transparent
+                        : const Color(0xff3a342e),
                   ),
                   child: SvgPicture.asset(
                     'assets/navigation/${destination.asset}',
-                    width: 22,
-                    height: 22,
+                    width:
+                        destination.path == '/profile' ||
+                            destination.path == '/messages'
+                        ? 20
+                        : 22,
+                    height:
+                        destination.path == '/profile' ||
+                            destination.path == '/messages'
+                        ? 20
+                        : 22,
                     colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  destination.label,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 11,
-                    height: 1.2,
-                    color: color,
-                    fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
+                if (rescuer) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    destination.label,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 11,
+                      height: 1.2,
+                      color: color,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
           ),

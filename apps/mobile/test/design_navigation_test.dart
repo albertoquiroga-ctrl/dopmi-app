@@ -149,6 +149,47 @@ void main() {
     expect(find.byTooltip('Mis match'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+  testWidgets('donor favorites navigation uses the real messages branch', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    final identity = FakeIdentityRepository()
+      ..user = const Identity('one', 'ana@example.test', verified: true);
+    final container = ProviderContainer(
+      overrides: [
+        identityRepositoryProvider.overrideWithValue(identity),
+        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+        routerInitialLocationProvider.overrideWithValue('/profile'),
+      ],
+    );
+    addTearDown(() async {
+      container.dispose();
+      await identity.changes.close();
+    });
+    await tester.pumpWidget(
+      UncontrolledProviderScope(container: container, child: const DopmiApp()),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Favoritos'));
+    await tester.pumpAndSettle();
+    expect(container.read(routerProvider).state.uri.path, '/messages');
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Favoritos')),
+      matchesSemantics(
+        label: 'Favoritos',
+        isButton: true,
+        isSelected: true,
+        hasSelectedState: true,
+        hasTapAction: true,
+      ),
+    );
+    await tester.tap(find.bySemanticsLabel('Perfil'));
+    await tester.pumpAndSettle();
+    expect(container.read(routerProvider).state.uri.path, '/profile');
+    expect(find.text('Ana'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    semantics.dispose();
+  });
   testWidgets('switching accounts removes an unsaved private profile draft', (
     tester,
   ) async {
@@ -238,7 +279,13 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
-        expect(find.text(rescuer ? 'Casos' : 'Apoyar'), findsOneWidget);
+        final target = find.bySemanticsLabel(rescuer ? 'Casos' : 'Apoyar');
+        expect(target, findsOneWidget);
+        if (!rescuer) {
+          expect(find.text('Apoyar'), findsNothing);
+          expect(find.bySemanticsLabel('Favoritos'), findsOneWidget);
+          expect(tester.getSize(target), const Size(48, 48));
+        }
         expect(
           tester
               .getSemantics(find.bySemanticsLabel(rescuer ? 'Casos' : 'Apoyar'))
@@ -246,7 +293,7 @@ void main() {
               .hasAction(SemanticsAction.tap),
           isTrue,
         );
-        await tester.tap(find.text(rescuer ? 'Casos' : 'Apoyar'));
+        await tester.tap(target);
         expect(selected, rescuer ? '/my-cases' : '/rescue-cases');
         expect(tester.takeException(), isNull);
         semantics.dispose();

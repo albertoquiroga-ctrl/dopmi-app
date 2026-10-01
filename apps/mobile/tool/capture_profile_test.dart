@@ -5,13 +5,16 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/profile/profile_overview.dart';
+import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../test/community_test.dart' show FakeCommunity;
 import '../test/fake_identity_repository.dart';
+import '../test/guardian_test.dart' show FakeGuardian, activePlan;
 import 'capture_design_test.dart' show saveCapture;
 
 Future<DataPage<Json>> fixturePaymentHistory() async => const DataPage([
@@ -37,6 +40,8 @@ void main() {
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
+    debugDisableShadows = false;
+    addTearDown(() => debugDisableShadows = true);
     tester.view.physicalSize = const Size(377, 852);
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
@@ -52,15 +57,61 @@ void main() {
       await tester.runAsync(loader.load);
     }
     final out = Directory('../../.tools/design-review');
+    for (final path in [
+      for (final name in [
+        'logo-paw',
+        'icon-star',
+        'icon-shield',
+        'rtab-home',
+        'onb-camera',
+        'rtab-publish',
+        'onb-adopt-heart',
+        'icon-user',
+        'icon-card',
+        'icon-billing',
+        'icon-clock',
+        'icon-heart',
+      ])
+        'assets/profile/$name.svg',
+      for (final name in [
+        'rtab-home',
+        'tab-donate',
+        'icon-heart',
+        'tab-profile',
+      ])
+        'assets/navigation/$name.svg',
+    ]) {
+      final asset = SvgAssetLoader(path);
+      await tester.runAsync(
+        () => svg.cache.putIfAbsent(
+          asset.cacheKey(null),
+          () => asset.loadBytes(null),
+        ),
+      );
+    }
     await tester.runAsync(() => out.create(recursive: true));
     for (final spec in [
       ('adoption-swipe', '/adoptions'),
       ('profile-overview', '/profile'),
+      ('profile-overview-active', '/profile'),
+      ('profile-overview-large', '/profile'),
+      ('profile-mode-dialog', '/profile'),
       ('profile-settings', '/settings'),
       ('publish-choice', '/publish'),
     ]) {
       final repo = FakeIdentityRepository()
         ..user = const Identity('one', 'fixture@example.test', verified: true);
+      await repo.saveProfile(name: 'Ana', phone: '', city: 'Monterrey, NL');
+      final large = spec.$1 == 'profile-overview-large';
+      tester.view.physicalSize = large
+          ? const Size(320, 640)
+          : const Size(377, 852);
+      tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final guardian = FakeGuardian();
+      if (spec.$1 == 'profile-overview-active') {
+        guardian.value = {'plan': activePlan(), 'activation': null};
+      }
       if (spec.$1 == 'publish-choice') {
         await repo.setExperience('rescuer');
       }
@@ -68,6 +119,8 @@ void main() {
         overrides: [
           identityRepositoryProvider.overrideWithValue(repo),
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          guardianEnabledProvider.overrideWithValue(true),
+          guardianRepositoryProvider.overrideWithValue(guardian),
           profilePaymentHistoryProvider.overrideWithValue(
             fixturePaymentHistory,
           ),
@@ -85,7 +138,19 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 100)),
+      );
+      await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1 == 'profile-mode-dialog') {
+        final target = find.text('Publica un caso de adopción');
+        await Scrollable.ensureVisible(tester.element(target), alignment: .25);
+        await tester.pumpAndSettle();
+        await tester.tap(target);
+        await tester.pumpAndSettle();
+        expect(find.byType(DonorModeDialog), findsOneWidget);
+      }
       await tester.runAsync(
         () => saveCapture(key, '${out.path}/${spec.$1}.png'),
       );
@@ -93,5 +158,6 @@ void main() {
       container.dispose();
       await repo.changes.close();
     }
+    debugDisableShadows = true;
   });
 }

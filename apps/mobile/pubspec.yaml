@@ -39,6 +39,7 @@ flutter:
     - assets/dopmi-wordmark.png
     - assets/welcome-pets.png
     - assets/navigation/
+    - assets/profile/
     - assets/onboarding/
     - assets/guardian/
   fonts:

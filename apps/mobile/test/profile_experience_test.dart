@@ -3,6 +3,7 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/identity/experience_controller.dart';
+import 'package:dopmi_mobile/features/profile/profile_overview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +12,71 @@ import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
 
 void main() {
+  for (final reduced in [false, true]) {
+    testWidgets(
+      'profile feature press cancels safely; reduced motion=$reduced',
+      (tester) async {
+        var activations = 0;
+        await tester.pumpWidget(
+          MaterialApp(
+            home: MediaQuery(
+              data: MediaQueryData(disableAnimations: reduced),
+              child: Scaffold(
+                body: DonorFeature(
+                  title: 'Publica un caso de adopción',
+                  subtitle: 'Tu perfil se conserva',
+                  icon: Icons.add,
+                  onPressed: () => activations++,
+                ),
+              ),
+            ),
+          ),
+        );
+        final feature = find.byType(DonorFeature);
+        final gesture = await tester.startGesture(tester.getCenter(feature));
+        await tester.pump(const Duration(milliseconds: 150));
+        expect(
+          tester
+              .widget<AnimatedScale>(
+                find.descendant(
+                  of: feature,
+                  matching: find.byType(AnimatedScale),
+                ),
+              )
+              .scale,
+          .99,
+        );
+        expect(
+          tester
+              .widget<AnimatedScale>(
+                find.descendant(
+                  of: feature,
+                  matching: find.byType(AnimatedScale),
+                ),
+              )
+              .duration,
+          reduced ? Duration.zero : const Duration(milliseconds: 120),
+        );
+        await gesture.cancel();
+        await tester.pumpAndSettle();
+        expect(activations, 0);
+        expect(
+          tester
+              .widget<AnimatedScale>(
+                find.descendant(
+                  of: feature,
+                  matching: find.byType(AnimatedScale),
+                ),
+              )
+              .scale,
+          1,
+        );
+        await tester.tap(feature);
+        await tester.pumpAndSettle();
+        expect(activations, 1);
+      },
+    );
+  }
   for (final fail in [false, true]) {
     testWidgets(
       'dedicated experience change preserves personal data; failure=$fail',
@@ -37,15 +103,29 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(find.byType(TextFormField), findsNothing);
-        final target = find.text('Cambiar a modo rescatista');
+        final target = find.text('Publica un caso de adopción');
         await tester.scrollUntilVisible(
           target,
           200,
           scrollable: find.byType(Scrollable).first,
         );
-        await tester.drag(find.byType(Scrollable).first, const Offset(0, -120));
+        await Scrollable.ensureVisible(tester.element(target), alignment: .25);
         await tester.pumpAndSettle();
         await tester.tap(target);
+        await tester.pumpAndSettle();
+        expect(identity.profile.mode, 'donor');
+        await tester.ensureVisible(find.text('Ahora no'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Ahora no'));
+        await tester.pumpAndSettle();
+        expect(identity.profile.mode, 'donor');
+        expect(container.read(routerProvider).state.uri.path, '/profile');
+        await Scrollable.ensureVisible(tester.element(target), alignment: .25);
+        await tester.pumpAndSettle();
+        await tester.tap(target);
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text('Sí, cambiar a Rescatista'));
+        await tester.tap(find.text('Sí, cambiar a Rescatista'));
         await tester.pumpAndSettle();
         expect(identity.profile.name, 'Ana');
         expect(identity.profile.phone, '');
@@ -109,6 +189,8 @@ void main() {
       200,
       scrollable: find.byType(Scrollable).first,
     );
+    await Scrollable.ensureVisible(tester.element(link), alignment: .25);
+    await tester.pumpAndSettle();
     await tester.tap(link);
     await tester.pumpAndSettle();
     expect(
