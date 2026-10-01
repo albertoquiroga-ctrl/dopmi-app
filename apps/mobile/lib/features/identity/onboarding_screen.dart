@@ -256,26 +256,33 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         height:
                             (constraints.maxHeight - 620).clamp(24, 220) / 2,
                       ),
-                      const SizedBox(height: 28),
-                      Text(
-                        selected.$2,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontFamily: DopmiTokens.displayFont,
-                          fontSize: 36,
-                          color: ink,
-                          height: 1.1,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        selected.$3,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          height: 1.5,
-                          color: muted,
+                      WelcomeSummaryEntrance(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const SizedBox(height: 28),
+                            Text(
+                              selected.$2,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontFamily: DopmiTokens.displayFont,
+                                fontSize: 36,
+                                color: ink,
+                                height: 1.1,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              selected.$3,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                height: 1.5,
+                                color: muted,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(height: 28),
@@ -322,4 +329,60 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       ),
     );
   }
+}
+
+/// Matches account-summary opacity (.45s + .12s) and translation (.55s + .08s).
+class WelcomeSummaryEntrance extends StatefulWidget {
+  const WelcomeSummaryEntrance({super.key, required this.child});
+  final Widget child;
+  @override
+  State<WelcomeSummaryEntrance> createState() => _WelcomeSummaryEntranceState();
+}
+
+class _WelcomeSummaryEntranceState extends State<WelcomeSummaryEntrance>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 630),
+  );
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (MediaQuery.disableAnimationsOf(context)) {
+      controller.value = 1;
+    } else if (controller.status == AnimationStatus.dismissed) {
+      controller.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+    animation: controller,
+    child: widget.child,
+    builder: (_, child) {
+      final opacity = const Interval(
+        120 / 630,
+        570 / 630,
+        curve: Curves.ease,
+      ).transform(controller.value);
+      final position = const Interval(
+        80 / 630,
+        1,
+        curve: Cubic(.22, 1, .36, 1),
+      ).transform(controller.value);
+      return Opacity(
+        opacity: opacity,
+        child: Transform.translate(
+          offset: Offset(0, 18 * (1 - position)),
+          child: child,
+        ),
+      );
+    },
+  );
 }
