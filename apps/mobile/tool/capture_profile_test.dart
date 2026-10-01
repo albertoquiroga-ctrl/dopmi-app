@@ -330,6 +330,8 @@ void main() {
         'contribution-review-large',
         '/contribute/Cirugía?case=case-one&amount_cents=10000',
       ),
+      ('guardian-billing-active', '/guardian'),
+      ('guardian-billing-active-large', '/guardian'),
       ('payment-history', '/payments'),
       ('payment-history-large', '/payments'),
       ('payment-history-empty', '/payments'),
@@ -409,8 +411,16 @@ void main() {
           Adoption({...community.post.data, 'id': 'next', 'pet_name': 'Milo'}),
         ];
       }
-      if (spec.$1 == 'profile-overview-active') {
-        guardian.value = {'plan': activePlan(), 'activation': null};
+      if (spec.$1 == 'profile-overview-active' ||
+          spec.$1.startsWith('guardian-billing-active')) {
+        guardian.value = {
+          'plan': {
+            ...activePlan(),
+            if (spec.$1.startsWith('guardian-billing-active'))
+              'next_billing_at': '2026-10-24T12:00:00Z',
+          },
+          'activation': null,
+        };
       }
       if (spec.$1 == 'publish-choice' || spec.$1 == 'chat-bubbles-rescuer') {
         await repo.setExperience('rescuer');

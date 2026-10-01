@@ -149,7 +149,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(container: container, child: const DopmiApp()),
     );
-    await pumpUntil(tester, find.text('Tu ayuda, mes a mes.'));
+    await pumpUntil(tester, find.text('Suscripción Dopmi'));
     await tester.pumpAndSettle();
   }
 

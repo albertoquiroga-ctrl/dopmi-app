@@ -57,6 +57,8 @@ class ContributionFrame extends StatelessWidget {
       ),
       title: Text(
         title,
+        maxLines: MediaQuery.textScalerOf(context).scale(18) > 25 ? 3 : 1,
+        textAlign: TextAlign.center,
         style: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w700,

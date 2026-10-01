@@ -9,17 +9,11 @@ import 'package:uuid/uuid.dart';
 import '../../core/ui.dart';
 import '../../core/measurement.dart';
 import '../adoption/community_repository.dart';
-import '../adoption/community_ui.dart';
 import '../identity/identity_controller.dart';
 import '../rescue/rescue_repository.dart';
 import 'guardian_repository.dart';
-
-String _guardianDate(Object? value) {
-  final parsed = DateTime.tryParse(value?.toString() ?? '')?.toLocal();
-  return parsed == null
-      ? 'Por confirmar'
-      : '${parsed.day}/${parsed.month}/${parsed.year}';
-}
+import 'contribution_layout.dart';
+import 'guardian_membership_card.dart';
 
 class GuardianScreen extends ConsumerStatefulWidget {
   const GuardianScreen({super.key});
@@ -408,221 +402,235 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         fresh &&
         !checkoutInReview &&
         (intent != null || (verified && consent && (canStart || canChange)));
-    return CommunityFrame(
-      children: [
-        const Heading(
-          'Tu ayuda, mes a mes.',
-          'Aporta a gastos aprobados de rescatistas con tu plan Guardián.',
-          eyebrow: 'GUARDIÁN · PRUEBA',
-        ),
-        if (enabled && p == null) const _GuardianIntro(),
-        if (enabled && p != null)
-          _GuardianMembershipCard(
-            status: status,
-            cents: p['gross_cents'] as int,
-            nextBilling: p['next_billing_at'],
-          ),
-        if (!enabled)
-          const Notice(
-            'Guardián todavía no está disponible. Te avisaremos cuando puedas activar tu plan.',
-          ),
-        if (enabled) ...[
-          TextButton(
-            onPressed: () => context.push('/guardian/history'),
-            child: const Text('Ver historial de ciclos'),
-          ),
-          if (p != null)
-            TextButton.icon(
-              onPressed: () => context.push('/impact'),
-              icon: const Icon(Icons.auto_stories_outlined),
-              label: const Text('Ver mi impacto'),
-            ),
-          if (methodSetup != null && status == 'active')
-            Notice(
-              guardianMethodLabels[methodSetup!['status']] ??
-                  'Medio de pago en revisión.',
-            ),
-          if (data?['payment_issue'] is Map &&
-              [
-                'authentication_required',
-                'payment_failed',
-              ].contains(data!['payment_issue']['reason']))
-            Notice(
-              data!['payment_issue']['status'] == 'skipped'
-                  ? 'El último ciclo se omitió por rechazo o autenticación bancaria pendiente. No se volverá a cobrar ese ciclo. Puedes actualizar y autenticar tu medio para los próximos.'
-                  : 'Un pago necesita revisión bancaria y sigue en conciliación. Espera su resultado antes de cambiar el medio de pago.',
-            ),
-          if (verified &&
-              status == 'active' &&
-              data?['method_change_available'] == true &&
-              intent == null)
-            TextButton(
-              onPressed: busy || confirming || !fresh
-                  ? null
-                  : () => submit(method: true),
-              child: const Text('Actualizar medio de pago'),
-            ),
-          if (pending is Map && pending['review_reason'] != null)
-            Notice(
-              guardianReviewLabels[pending['review_reason']] ??
-                  'El cambio está en revisión.',
-            ),
-          if (pending is Map &&
-              pending['can_withdraw'] == true &&
-              intent == null)
-            TextButton(
-              onPressed: busy || confirming || !fresh
-                  ? null
-                  : () => submit(withdraw: true),
-              child: const Text('Retirar cambio de monto'),
-            ),
-          if (intent?['kind'] == 'withdraw_amount')
-            ActionButton(
-              'Reintentar retiro del cambio',
-              busy: busy,
-              onPressed: canSubmit ? () => submit() : null,
-            ),
-          if (intent?['kind'] == 'method')
-            ActionButton(
-              'Continuar actualización en Stripe',
-              busy: busy,
-              onPressed: canSubmit ? () => submit() : null,
-            ),
-          if (activation?['cancellation_requested_at'] != null)
-            Notice(switch (activation?['cancellation_status']) {
-              'stopped' => 'Alta detenida. Consulta abajo el estado del primer pago; detener el alta no confirma una devolución.',
-              'attention' =>
-                'Cancelación del alta en revisión. No inicies otro pago.',
-              _ => 'Cancelación del alta solicitada. Estamos confirmando el cierre con Stripe; un pago ya iniciado sigue en conciliación.',
-            }),
-          const Notice(
-            'Solo modo de prueba. No uses datos de una tarjeta real.',
-          ),
-          if (busy) const LinearProgressIndicator(),
-          if (p != null) ...[
-            Text(switch (status) {
-              'active' => 'Plan activo',
-              'cancel_requested' =>
-                'Cancelación solicitada: futuros cobros detenidos',
-              'canceled' => 'Plan cancelado',
-              _ => 'Estado por confirmar',
-            }, style: Theme.of(context).textTheme.titleLarge),
-            Text('Monto autorizado: ${pesos(p['gross_cents'] as int)} al mes'),
-            if (pending is Map)
-              Notice(
-                pending['kind'] == 'cancel'
-                    ? 'Estamos confirmando la cancelación con Stripe.'
-                    : 'Cambio a ${pesos(pending['new_gross_cents'] as int)} solicitado. El importe anterior se conserva hasta confirmar la aplicación.',
+    return ContributionFrame(
+      title: 'Suscripción y pagos',
+      back: () => context.canPop() ? context.pop() : context.go('/settings'),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: 10,
+          children: [
+            const Text(
+              'Suscripción Dopmi',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                height: 1.3,
               ),
-            if (p['payment_in_flight'] == true)
+            ),
+            if (enabled && p == null) const _GuardianIntro(),
+            if (enabled && p != null)
+              GuardianMembershipCard(
+                status: status,
+                cents: p['gross_cents'] as int,
+                nextBilling: p['next_billing_at'],
+              ),
+            if (!enabled)
               const Notice(
-                'Hay un pago previamente iniciado en conciliación. Cancelar no confirma su devolución.',
+                'Guardián todavía no está disponible. Te avisaremos cuando puedas activar tu plan.',
               ),
-            for (final r in p['requests'] as List? ?? [])
-              ListTile(
-                title: Text(
-                  r['kind'] == 'cancel'
-                      ? 'Cancelación'
-                      : 'Cambio a ${pesos(r['new_gross_cents'] as int)}',
+            if (enabled) ...[
+              TextButton(
+                onPressed: () => context.push('/guardian/history'),
+                child: const Text('Ver historial de ciclos'),
+              ),
+              if (p != null)
+                TextButton.icon(
+                  onPressed: () => context.push('/impact'),
+                  icon: const Icon(Icons.auto_stories_outlined),
+                  label: const Text('Ver mi impacto'),
                 ),
-                subtitle: Text(switch (r['status']) {
-                  'applied' =>
-                    r['kind'] == 'amount'
-                        ? 'Confirmado. Aplica desde ${date(r['effective_at'])}.'
-                        : 'Cancelación confirmada.',
-                  'superseded' => 'Sustituido por cancelación.',
-                  'withdrawn' =>
-                    'Solicitud retirada; se conservó el monto anterior.',
-                  _ => 'Pendiente de confirmación.',
+              if (methodSetup != null && status == 'active')
+                Notice(
+                  guardianMethodLabels[methodSetup!['status']] ??
+                      'Medio de pago en revisión.',
+                ),
+              if (data?['payment_issue'] is Map &&
+                  [
+                    'authentication_required',
+                    'payment_failed',
+                  ].contains(data!['payment_issue']['reason']))
+                Notice(
+                  data!['payment_issue']['status'] == 'skipped'
+                      ? 'El último ciclo se omitió por rechazo o autenticación bancaria pendiente. No se volverá a cobrar ese ciclo. Puedes actualizar y autenticar tu medio para los próximos.'
+                      : 'Un pago necesita revisión bancaria y sigue en conciliación. Espera su resultado antes de cambiar el medio de pago.',
+                ),
+              if (verified &&
+                  status == 'active' &&
+                  data?['method_change_available'] == true &&
+                  intent == null)
+                TextButton(
+                  onPressed: busy || confirming || !fresh
+                      ? null
+                      : () => submit(method: true),
+                  child: const Text('Actualizar medio de pago'),
+                ),
+              if (pending is Map && pending['review_reason'] != null)
+                Notice(
+                  guardianReviewLabels[pending['review_reason']] ??
+                      'El cambio está en revisión.',
+                ),
+              if (pending is Map &&
+                  pending['can_withdraw'] == true &&
+                  intent == null)
+                TextButton(
+                  onPressed: busy || confirming || !fresh
+                      ? null
+                      : () => submit(withdraw: true),
+                  child: const Text('Retirar cambio de monto'),
+                ),
+              if (intent?['kind'] == 'withdraw_amount')
+                ActionButton(
+                  'Reintentar retiro del cambio',
+                  busy: busy,
+                  onPressed: canSubmit ? () => submit() : null,
+                ),
+              if (intent?['kind'] == 'method')
+                ActionButton(
+                  'Continuar actualización en Stripe',
+                  busy: busy,
+                  onPressed: canSubmit ? () => submit() : null,
+                ),
+              if (activation?['cancellation_requested_at'] != null)
+                Notice(switch (activation?['cancellation_status']) {
+                  'stopped' => 'Alta detenida. Consulta abajo el estado del primer pago; detener el alta no confirma una devolución.',
+                  'attention' =>
+                    'Cancelación del alta en revisión. No inicies otro pago.',
+                  _ => 'Cancelación del alta solicitada. Estamos confirmando el cierre con Stripe; un pago ya iniciado sigue en conciliación.',
                 }),
-              ),
-          ] else if (activation != null)
-            Notice(
-              guardianActivationLabels[activation!['status']] ??
-                  'Estado del alta en revisión. No vuelvas a pagar.',
-            ),
-          if (!['method', 'withdraw_amount'].contains(intent?['kind']) &&
-              !checkoutInReview &&
-              (canStart || canChange || intent != null)) ...[
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 8,
-              children: [
-                for (final value in [50, 200, 500])
-                  ChoiceChip(
-                    label: Text('\$$value MXN'),
-                    selected: parsePesos(amount.text) == value * 100,
-                    onSelected: busy || intent != null
-                        ? null
-                        : (_) => setState(() {
-                            amount.text = '$value';
-                            consent = false;
-                          }),
-                  ),
-              ],
-            ),
-            TextField(
-              controller: amount,
-              enabled: !busy && intent == null,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              onChanged: (_) => setState(() => consent = false),
-              decoration: const InputDecoration(
-                labelText: 'Importe mensual en MXN',
-                prefixText: '\$ ',
-              ),
-            ),
-            const SizedBox(height: 12),
-            Notice(
-              p == null
-                  ? 'Primer intento de cobro: hoy, ${date(DateTime.now().toIso8601String())}, al activar. Próxima fecha aproximada: ${date(guardianNextBilling(DateTime.now()).toIso8601String())}. Después, cada aniversario mensual; si el mes no tiene ese día, se usa su último día. Stripe te mostrará el importe antes de confirmar.'
-                  : 'El nuevo importe aplica desde el siguiente ciclo. No se prorratea ni cambia el importe de un ciclo ya preparado.',
-            ),
-            const Notice(
-              'Solo se cobra si el neto completo puede asignarse a gastos aprobados. Si no hay capacidad, ese mes se omite sin cargo ni deuda. Dopmi descuenta el 2% y los costos de Stripe; el neto se asigna por prioridad. Puedes cancelar los ciclos futuros.',
-            ),
-            if (intent == null)
-              CheckboxListTile(
-                value: consent,
-                onChanged: busy
-                    ? null
-                    : (value) => setState(() => consent = value ?? false),
-                title: Text(
-                  p == null
-                      ? 'Autorizo el primer pago y los cobros mensuales condicionados por el importe elegido, y guardar mi medio de pago en Stripe.'
-                      : 'Autorizo el nuevo importe mensual desde el siguiente ciclo.',
-                ),
-              ),
-            if (intent != null)
               const Notice(
-                'Conservamos tu solicitud. Reintentar usa la misma referencia y el mismo importe.',
+                'Solo modo de prueba. No uses datos de una tarjeta real.',
               ),
-            ActionButton(
-              intent == null
-                  ? (p == null
-                        ? 'Activar en Stripe'
-                        : 'Solicitar cambio de monto')
-                  : 'Reintentar mi solicitud',
-              busy: busy,
-              onPressed: canSubmit ? () => submit() : null,
-            ),
+              if (busy) const LinearProgressIndicator(),
+              if (p != null) ...[
+                Text(switch (status) {
+                  'active' => 'Plan activo',
+                  'cancel_requested' =>
+                    'Cancelación solicitada: futuros cobros detenidos',
+                  'canceled' => 'Plan cancelado',
+                  _ => 'Estado por confirmar',
+                }, style: Theme.of(context).textTheme.titleLarge),
+                Text(
+                  'Monto autorizado: ${pesos(p['gross_cents'] as int)} al mes',
+                ),
+                if (pending is Map)
+                  Notice(
+                    pending['kind'] == 'cancel'
+                        ? 'Estamos confirmando la cancelación con Stripe.'
+                        : 'Cambio a ${pesos(pending['new_gross_cents'] as int)} solicitado. El importe anterior se conserva hasta confirmar la aplicación.',
+                  ),
+                if (p['payment_in_flight'] == true)
+                  const Notice(
+                    'Hay un pago previamente iniciado en conciliación. Cancelar no confirma su devolución.',
+                  ),
+                for (final r in p['requests'] as List? ?? [])
+                  ListTile(
+                    title: Text(
+                      r['kind'] == 'cancel'
+                          ? 'Cancelación'
+                          : 'Cambio a ${pesos(r['new_gross_cents'] as int)}',
+                    ),
+                    subtitle: Text(switch (r['status']) {
+                      'applied' =>
+                        r['kind'] == 'amount'
+                            ? 'Confirmado. Aplica desde ${date(r['effective_at'])}.'
+                            : 'Cancelación confirmada.',
+                      'superseded' => 'Sustituido por cancelación.',
+                      'withdrawn' =>
+                        'Solicitud retirada; se conservó el monto anterior.',
+                      _ => 'Pendiente de confirmación.',
+                    }),
+                  ),
+              ] else if (activation != null)
+                Notice(
+                  guardianActivationLabels[activation!['status']] ??
+                      'Estado del alta en revisión. No vuelvas a pagar.',
+                ),
+              if (!['method', 'withdraw_amount'].contains(intent?['kind']) &&
+                  !checkoutInReview &&
+                  (canStart || canChange || intent != null)) ...[
+                const SizedBox(height: 16),
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    for (final value in [50, 200, 500])
+                      ChoiceChip(
+                        label: Text('\$$value MXN'),
+                        selected: parsePesos(amount.text) == value * 100,
+                        onSelected: busy || intent != null
+                            ? null
+                            : (_) => setState(() {
+                                amount.text = '$value';
+                                consent = false;
+                              }),
+                      ),
+                  ],
+                ),
+                TextField(
+                  controller: amount,
+                  enabled: !busy && intent == null,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  onChanged: (_) => setState(() => consent = false),
+                  decoration: const InputDecoration(
+                    labelText: 'Importe mensual en MXN',
+                    prefixText: '\$ ',
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Notice(
+                  p == null
+                      ? 'Primer intento de cobro: hoy, ${date(DateTime.now().toIso8601String())}, al activar. Próxima fecha aproximada: ${date(guardianNextBilling(DateTime.now()).toIso8601String())}. Después, cada aniversario mensual; si el mes no tiene ese día, se usa su último día. Stripe te mostrará el importe antes de confirmar.'
+                      : 'El nuevo importe aplica desde el siguiente ciclo. No se prorratea ni cambia el importe de un ciclo ya preparado.',
+                ),
+                const Notice(
+                  'Solo se cobra si el neto completo puede asignarse a gastos aprobados. Si no hay capacidad, ese mes se omite sin cargo ni deuda. Dopmi descuenta el 2% y los costos de Stripe; el neto se asigna por prioridad. Puedes cancelar los ciclos futuros.',
+                ),
+                if (intent == null)
+                  CheckboxListTile(
+                    value: consent,
+                    onChanged: busy
+                        ? null
+                        : (value) => setState(() => consent = value ?? false),
+                    title: Text(
+                      p == null
+                          ? 'Autorizo el primer pago y los cobros mensuales condicionados por el importe elegido, y guardar mi medio de pago en Stripe.'
+                          : 'Autorizo el nuevo importe mensual desde el siguiente ciclo.',
+                    ),
+                  ),
+                if (intent != null)
+                  const Notice(
+                    'Conservamos tu solicitud. Reintentar usa la misma referencia y el mismo importe.',
+                  ),
+                ActionButton(
+                  intent == null
+                      ? (p == null
+                            ? 'Activar en Stripe'
+                            : 'Solicitar cambio de monto')
+                      : 'Reintentar mi solicitud',
+                  busy: busy,
+                  onPressed: canSubmit ? () => submit() : null,
+                ),
+              ],
+              if (canCancel)
+                TextButton(
+                  onPressed: busy || confirming || !fresh
+                      ? null
+                      : () => submit(cancel: true),
+                  child: const Text('Cancelar mi plan'),
+                ),
+              if (error != null) Notice(error!, isError: true),
+              if (message != null) Notice(message!),
+              TextButton(
+                onPressed: busy || confirming ? null : () => load(),
+                child: const Text('Actualizar estado'),
+              ),
+            ],
           ],
-          if (canCancel)
-            TextButton(
-              onPressed: busy || confirming || !fresh
-                  ? null
-                  : () => submit(cancel: true),
-              child: const Text('Cancelar mi plan'),
-            ),
-          if (error != null) Notice(error!, isError: true),
-          if (message != null) Notice(message!),
-          TextButton(
-            onPressed: busy || confirming ? null : () => load(),
-            child: const Text('Actualizar estado'),
-          ),
-        ],
-      ],
+        ),
+      ),
     );
   }
 }
@@ -679,60 +687,5 @@ class _GuardianIntro extends StatelessWidget {
         ],
       ),
     ],
-  );
-}
-
-class _GuardianMembershipCard extends StatelessWidget {
-  const _GuardianMembershipCard({
-    required this.status,
-    required this.cents,
-    this.nextBilling,
-  });
-  final String? status;
-  final int cents;
-  final Object? nextBilling;
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(22),
-    decoration: BoxDecoration(
-      color: const Color(0xff201535),
-      borderRadius: BorderRadius.circular(28),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'MEMBRESÍA',
-          style: TextStyle(color: Color(0xffffd76b), letterSpacing: 1.2),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Guardián',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 30,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        Text(
-          '${pesos(cents)} / mes',
-          style: const TextStyle(color: Colors.white, fontSize: 18),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          status == 'active'
-              ? 'Activa'
-              : status == 'canceled'
-              ? 'Cancelada'
-              : 'En actualización',
-          style: const TextStyle(color: Color(0xffffd76b)),
-        ),
-        if (nextBilling != null)
-          Text(
-            'Próximo aniversario: ${_guardianDate(nextBilling)}',
-            style: const TextStyle(color: Colors.white70),
-          ),
-      ],
-    ),
   );
 }
