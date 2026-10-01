@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../adoption/publication_frame.dart';
 import 'rescue_fields.dart';
@@ -140,6 +141,14 @@ class CaseInformation extends StatelessWidget {
       PublicationChoiceRow(
         label: 'Especie',
         required: true,
+        leading: {
+          for (final species in ['dog', 'cat'])
+            species: SvgPicture.asset(
+              'assets/profile/species-$species.svg',
+              width: 20,
+              height: 20,
+            ),
+        },
         options: const {'dog': 'Perro', 'cat': 'Gato'},
         value: controllers['species']!.text,
         onChanged: enabled ? (value) => choose('species', value) : null,
