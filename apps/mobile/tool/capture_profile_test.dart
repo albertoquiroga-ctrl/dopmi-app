@@ -339,6 +339,7 @@ void main() {
       ('guardian-billing-inactive', '/guardian'),
       ('guardian-billing-inactive-large', '/guardian'),
       ('guardian-billing-enrollment', '/guardian'),
+      ('guardian-billing-enrollment-large', '/guardian'),
       ('guardian-billing-active', '/guardian'),
       ('guardian-billing-active-large', '/guardian'),
       ('payment-history', '/payments'),
@@ -549,7 +550,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
-      if (spec.$1 == 'guardian-billing-enrollment') {
+      if (spec.$1.startsWith('guardian-billing-enrollment')) {
         await tester.tap(find.text('Suscribirme'));
         await tester.pumpAndSettle();
       }

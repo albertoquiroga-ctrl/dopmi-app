@@ -53,6 +53,9 @@ void main() {
       expect(find.byType(TextField), findsNothing);
       await tester.tap(find.text('Suscribirme'));
       await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Otra cantidad'));
+      await tester.tap(find.text('Otra cantidad'));
+      await tester.pumpAndSettle();
       expect(find.byType(TextField), findsOneWidget);
       expect(repo.calls, isEmpty);
       expect(repo.opened, 0);

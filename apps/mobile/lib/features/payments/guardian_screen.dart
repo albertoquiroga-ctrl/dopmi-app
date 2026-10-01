@@ -17,6 +17,7 @@ import 'guardian_membership_card.dart';
 import 'guardian_cancel_dialog.dart';
 import 'guardian_amount_dialog.dart';
 import 'guardian_history_screen.dart';
+import 'guardian_enrollment_amount.dart';
 
 class GuardianScreen extends ConsumerStatefulWidget {
   const GuardianScreen({super.key});
@@ -651,34 +652,11 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   !checkoutInReview &&
                   ((canStart && enrolling) || intent != null)) ...[
                 const SizedBox(height: 16),
-                Wrap(
-                  spacing: 8,
-                  children: [
-                    for (final value in [50, 200, 500])
-                      ChoiceChip(
-                        label: Text('\$$value MXN'),
-                        selected: parsePesos(amount.text) == value * 100,
-                        onSelected: busy || intent != null
-                            ? null
-                            : (_) => setState(() {
-                                amount.text = '$value';
-                                consent = false;
-                              }),
-                      ),
-                  ],
-                ),
-                TextField(
-                  key: enrollmentInput,
-                  controller: amount,
-                  enabled: !busy && intent == null,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  onChanged: (_) => setState(() => consent = false),
-                  decoration: const InputDecoration(
-                    labelText: 'Importe mensual en MXN',
-                    prefixText: '\$ ',
-                  ),
+                GuardianEnrollmentAmount(
+                  headingKey: enrollmentInput,
+                  amount: amount,
+                  locked: busy || intent != null,
+                  onChanged: () => setState(() => consent = false),
                 ),
                 const SizedBox(height: 12),
                 Notice(
@@ -702,7 +680,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   const Notice(
                     'Conservamos tu solicitud. Reintentar usa la misma referencia y el mismo importe.',
                   ),
-                ActionButton(
+                ContributionButton(
                   intent == null
                       ? (p == null
                             ? 'Activar en Stripe'

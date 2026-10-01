@@ -160,6 +160,11 @@ void main() {
     if (enabled && find.text('Suscribirme').evaluate().isNotEmpty) {
       await tester.tap(find.text('Suscribirme'));
       await tester.pumpAndSettle();
+      if (find.text('Otra cantidad').evaluate().isNotEmpty) {
+        await tester.ensureVisible(find.text('Otra cantidad'));
+        await tester.tap(find.text('Otra cantidad'));
+        await tester.pumpAndSettle();
+      }
     }
   }
 
