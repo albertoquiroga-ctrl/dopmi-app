@@ -848,6 +848,20 @@ class _OwnedRescueCard extends ConsumerWidget {
                         ],
                       ),
                       if (record.kind == 'case' &&
+                          (record.publicData['age'] as String? ?? '')
+                              .trim()
+                              .isNotEmpty) ...[
+                        const SizedBox(height: 6),
+                        Text(
+                          record.publicData['age'] as String,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            height: 1.4,
+                            color: Color(0xff4f4e5c),
+                          ),
+                        ),
+                      ],
+                      if (record.kind == 'case' &&
                           record.status == 'approved' &&
                           record.targetCents > 0) ...[
                         const SizedBox(height: 8),
@@ -881,31 +895,64 @@ class _OwnedRescueCard extends ConsumerWidget {
               const SizedBox(height: 10),
               Notice(record.data['feedback'] as String, isError: needsAction),
             ],
-            const SizedBox(height: 10),
-            FilledButton.tonal(
-              onPressed: () async {
-                await context.push('/rescue/${record.id}');
-                refresh();
-              },
-              child: Text(action),
-            ),
-            if (record.kind == 'case' && record.status == 'approved')
-              TextButton.icon(
-                onPressed: () async {
-                  final linked = await ref
-                      .read(communityRepositoryProvider)
-                      .ownForCase(record.id);
-                  if (!context.mounted) return;
-                  await context.push(
-                    linked == null
-                        ? '/my-adoptions/new?case=${record.id}'
-                        : '/my-adoptions/${linked.id}',
-                  );
-                  refresh();
-                },
-                icon: const Icon(Icons.home_outlined),
-                label: const Text('Preparar publicación para adopción'),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.only(top: 12),
+              decoration: const BoxDecoration(
+                border: Border(top: BorderSide(color: Color(0xffe3e4ed))),
               ),
+              child: Wrap(
+                alignment: WrapAlignment.end,
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  if (needsAction)
+                    FilledButton.tonal(
+                      onPressed: () async {
+                        await context.push('/rescue/${record.id}');
+                        refresh();
+                      },
+                      style: FilledButton.styleFrom(
+                        backgroundColor: const Color(0xffede9fe),
+                        foregroundColor: purple,
+                        minimumSize: const Size(0, 48),
+                      ),
+                      child: Text(action),
+                    )
+                  else
+                    OutlinedButton.icon(
+                      onPressed: () async {
+                        await context.push('/rescue/${record.id}');
+                        refresh();
+                      },
+                      icon: const Icon(Icons.open_in_new, size: 16),
+                      label: Text(action),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color(0xff151423),
+                        minimumSize: const Size(0, 48),
+                        side: const BorderSide(color: Color(0xffe3e4ed)),
+                      ),
+                    ),
+                  if (record.kind == 'case' && record.status == 'approved')
+                    TextButton.icon(
+                      onPressed: () async {
+                        final linked = await ref
+                            .read(communityRepositoryProvider)
+                            .ownForCase(record.id);
+                        if (!context.mounted) return;
+                        await context.push(
+                          linked == null
+                              ? '/my-adoptions/new?case=${record.id}'
+                              : '/my-adoptions/${linked.id}',
+                        );
+                        refresh();
+                      },
+                      icon: const Icon(Icons.home_outlined, size: 16),
+                      label: const Text('Preparar adopción'),
+                    ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
