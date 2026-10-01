@@ -49,6 +49,41 @@ Future<void> startPublication(
 
 void main() {
   testWidgets(
+    'health checkbox preserves yes no and unknown in the real draft',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 640);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final repo = PhotoDraftCommunity();
+      await startPublication(tester, repo, '/my-adoptions/${repo.post.id}');
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      final control = find.byKey(
+        const ValueKey('publication-trait-vaccinated'),
+      );
+      expect(tester.widget<PublicationTraitCheck>(control).value, isNull);
+      for (final value in <bool?>[true, false, null]) {
+        final checkbox = find.descendant(
+          of: control,
+          matching: find.byType(Checkbox),
+        );
+        await Scrollable.ensureVisible(tester.element(checkbox), alignment: .1);
+        await tester.pumpAndSettle();
+        await tester.tap(checkbox);
+        await tester.pumpAndSettle();
+        expect(tester.widget<PublicationTraitCheck>(control).value, value);
+        await tester.tap(find.text('Guardar borrador'));
+        await tester.pumpAndSettle();
+        expect(repo.savedPayload?['vaccinated'], value);
+        expect(tester.takeException(), isNull);
+      }
+    },
+  );
+
+  testWidgets(
     'review links preserve authored data and expose no editing when submitted',
     (tester) async {
       tester.view.physicalSize = const Size(377, 852);

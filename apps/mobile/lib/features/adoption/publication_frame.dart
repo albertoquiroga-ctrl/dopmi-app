@@ -581,3 +581,126 @@ class PublicationChoiceRow extends StatelessWidget {
     ),
   );
 }
+
+class PublicationTraitCard extends StatelessWidget {
+  const PublicationTraitCard({
+    super.key,
+    required this.title,
+    required this.children,
+  });
+  final String title;
+  final List<Widget> children;
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 16),
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: const Color(0xffe3e4ed)),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Semantics(
+              header: true,
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  height: 1.55,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xff151423),
+                ),
+              ),
+            ),
+            for (final child in children) ...[
+              const SizedBox(height: 12),
+              child,
+            ],
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+class PublicationTraitCheck extends StatelessWidget {
+  const PublicationTraitCheck({
+    super.key,
+    required this.label,
+    required this.value,
+    this.onChanged,
+  });
+  final String label;
+  final bool? value;
+  final ValueChanged<bool?>? onChanged;
+  void advance() => onChanged?.call(
+    value == null
+        ? true
+        : value == true
+        ? false
+        : null,
+  );
+  @override
+  Widget build(BuildContext context) => MergeSemantics(
+    child: InkWell(
+      onTap: onChanged == null ? null : advance,
+      borderRadius: BorderRadius.circular(4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 24,
+            height: 24,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Transform.scale(
+                scale: 16 / 18,
+                child: Checkbox(
+                  value: value,
+                  tristate: true,
+                  onChanged: onChanged == null ? null : (_) => advance(),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  visualDensity: VisualDensity.compact,
+                  activeColor: const Color(0xff7841f2),
+                  checkColor: Colors.white,
+                  side: const BorderSide(color: Color(0xffe3e4ed)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    height: 1.55,
+                    color: Color(0xff151423),
+                  ),
+                ),
+                if (value == null)
+                  const Text(
+                    'Por confirmar',
+                    style: TextStyle(
+                      fontSize: 12,
+                      height: 1.55,
+                      color: Color(0xff616174),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}

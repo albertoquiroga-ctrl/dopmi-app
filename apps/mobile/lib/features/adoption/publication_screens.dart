@@ -374,24 +374,13 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
               : (value) => setState(() => choices[key] = value),
         ),
       );
-  Widget trait(String key, String label) => Padding(
-    padding: const EdgeInsets.only(bottom: 16),
-    child: DropdownButtonFormField<String>(
-      key: ValueKey('$key:$loaded'),
-      initialValue: choices[key] == null ? 'unknown' : '${choices[key]}',
-      isExpanded: true,
-      decoration: InputDecoration(labelText: label),
-      items: const [
-        DropdownMenuItem(value: 'unknown', child: Text('Por confirmar')),
-        DropdownMenuItem(value: 'true', child: Text('Sí')),
-        DropdownMenuItem(value: 'false', child: Text('No')),
-      ],
-      onChanged: busy || post?.status == 'submitted'
-          ? null
-          : (value) => setState(
-              () => choices[key] = value == 'unknown' ? null : value == 'true',
-            ),
-    ),
+  Widget trait(String key, String label) => PublicationTraitCheck(
+    key: ValueKey('publication-trait-$key'),
+    label: label,
+    value: choices[key] as bool?,
+    onChanged: busy || post?.status == 'submitted'
+        ? null
+        : (value) => setState(() => choices[key] = value),
   );
   String reviewTrait(String key) => choices[key] == true
       ? 'Sí'
@@ -537,16 +526,26 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                   4000,
                   lines: 5,
                 ),
-                trait('vaccinated', '¿Tiene sus vacunas al día?'),
-                trait('sterilized', '¿Está esterilizado?'),
-                trait('social_dogs', '¿Convive con perros?'),
-                trait('social_cats', '¿Convive con gatos?'),
-                trait('social_children', '¿Convive con niñas y niños?'),
-                field(
-                  'special_care',
-                  'Cuidados especiales (opcional)',
-                  1000,
-                  lines: 3,
+                PublicationTraitCard(
+                  title: 'Salud',
+                  children: [
+                    trait('vaccinated', 'Vacunado'),
+                    trait('sterilized', 'Esterilizado'),
+                    field(
+                      'special_care',
+                      'Cuidados especiales (opcional)',
+                      1000,
+                      lines: 3,
+                    ),
+                  ],
+                ),
+                PublicationTraitCard(
+                  title: 'Social',
+                  children: [
+                    trait('social_dogs', 'Social con perros'),
+                    trait('social_cats', 'Social con gatos'),
+                    trait('social_children', 'Social con niñas y niños'),
+                  ],
                 ),
                 const SizedBox(height: 8),
                 Text(
