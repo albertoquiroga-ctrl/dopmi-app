@@ -20,7 +20,9 @@ class DraftCaseRescue extends FakeRescue {
       ...caseRecord.data,
       'owner_id': 'one',
       'status': 'draft',
-      'public_data': {'pet_name': 'Mora', 'species': 'dog', 'sex': 'unknown'},
+      'public_data':
+          publicSaved ??
+          {'pet_name': 'Mora', 'species': 'dog', 'sex': 'unknown'},
       'files': <Json>[
         {'role': 'public', 'path': 'one/case-one/photo.jpg'},
       ],
@@ -49,6 +51,91 @@ class DraftCaseRescue extends FakeRescue {
 }
 
 void main() {
+  testWidgets(
+    'medicine needs cancel, save, reopen and remove through the actual draft',
+    (tester) async {
+      final repo = DraftCaseRescue();
+      await startPublication(
+        tester,
+        FakeCommunity(),
+        '/rescue/case-one',
+        rescue: repo,
+      );
+      for (var i = 0; i < 2; i++) {
+        await tester.tap(find.text('Continuar'));
+        await tester.pumpAndSettle();
+      }
+      await tester.tap(find.text('Medicina'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Cerrar'));
+      await tester.pumpAndSettle();
+      expect(find.text('Necesidades agregadas'), findsNothing);
+      await tester.tap(find.text('Medicina'));
+      await tester.pumpAndSettle();
+      for (final pair in [
+        ('title', 'Medicina prescrita'),
+        ('amount', '123.45'),
+        ('detail', 'Seguimiento indicado'),
+      ]) {
+        final field = find.byKey(ValueKey('case-field-${pair.$1}'));
+        await tester.ensureVisible(field);
+        await tester.pumpAndSettle();
+        await tester.enterText(field, pair.$2);
+      }
+      FocusManager.instance.primaryFocus?.unfocus();
+      tester.testTextInput.hide();
+      await tester.pumpAndSettle();
+      final add = find.text('Agregar necesidad');
+      await tester.ensureVisible(add);
+      await tester.pumpAndSettle();
+      await tester.tap(add);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Guardar borrador'));
+      await tester.pumpAndSettle();
+      final saved = List<Json>.from(repo.publicSaved!['need_items'] as List);
+      expect(saved.single['title'], 'Medicina prescrita');
+      expect(saved.single['amount_cents'], 12345);
+      expect(saved.single['type'], 'medicine');
+      expect(saved.single['urgent'], false);
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pumpAndSettle();
+      await startPublication(
+        tester,
+        FakeCommunity(),
+        '/rescue/case-one',
+        rescue: repo,
+      );
+      for (var i = 0; i < 2; i++) {
+        await tester.tap(find.text('Continuar'));
+        await tester.pumpAndSettle();
+      }
+      final restored = find.text('Medicina prescrita');
+      await tester.ensureVisible(restored);
+      await tester.pumpAndSettle();
+      expect(restored, findsOneWidget);
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      final review = find.text('Medicina prescrita');
+      await tester.ensureVisible(review);
+      await tester.pumpAndSettle();
+      expect(review, findsOneWidget);
+      final edit = find.byKey(const ValueKey('case-review-edit-Necesidades'));
+      await tester.ensureVisible(edit);
+      await tester.pumpAndSettle();
+      await tester.tap(edit);
+      await tester.pumpAndSettle();
+      final remove = find.text('Eliminar');
+      await tester.ensureVisible(remove);
+      await tester.pumpAndSettle();
+      await tester.tap(remove);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Guardar borrador'));
+      await tester.pumpAndSettle();
+      expect(repo.publicSaved!['need_items'], isEmpty);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('case needs keeps focus at large text and saves before review', (
     tester,
   ) async {

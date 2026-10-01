@@ -1060,6 +1060,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   bool expenseSubmitted = false;
   final caseInformationKey = GlobalKey(debugLabel: 'case-information');
   final caseNeedsKey = GlobalKey(debugLabel: 'case-needs');
+  List<Json> needItems = [];
   String? error, message;
   String get kind => record?.kind ?? widget.kind;
   bool get editable => record?.editable ?? true;
@@ -1081,6 +1082,11 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   }
 
   void fields(RescueRecord? r) {
+    if (kind == 'case') {
+      needItems = ((r?.publicData['need_items'] as List?) ?? [])
+          .map((item) => Json.from(item as Map))
+          .toList();
+    }
     for (final f in rescueFields[kind]!) {
       final raw = (f.private ? r?.privateData : r?.publicData)?[f.key];
       var value = f.key == 'amount_cents' && raw is int
@@ -1172,6 +1178,11 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
         value = cents.toString();
       }
       (f.private ? priv : pub)[f.key] = value;
+    }
+    if (kind == 'case' &&
+        (needItems.isNotEmpty ||
+            record?.publicData.containsKey('need_items') == true)) {
+      pub['need_items'] = needItems;
     }
     final saved = await repository.save(
       kind,
@@ -2234,12 +2245,18 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                   if (step == 2 && kind == 'case' && editable)
                     CaseNeeds(
                       key: caseNeedsKey,
+                      items: needItems,
+                      onItemsChanged: (items) => setState(() {
+                        needItems = items;
+                        dirty = true;
+                      }),
                       controller: controllers['need']!,
                       enabled: !busy,
                       onChanged: () => setState(() => dirty = true),
                     ),
                   if (step == 3 && kind == 'case' && editable)
                     CaseReview(
+                      items: needItems,
                       values: {
                         for (final entry in controllers.entries)
                           entry.key: entry.value.text.trim(),

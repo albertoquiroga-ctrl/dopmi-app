@@ -9,13 +9,14 @@ class CaseReview extends StatelessWidget {
     super.key,
     required this.values,
     required this.files,
+    this.items = const [],
     required this.onOpen,
     this.onEditPhotos,
     this.onEditInformation,
     this.onEditNeeds,
   });
   final Map<String, String> values;
-  final List<Json> files;
+  final List<Json> files, items;
   final ValueChanged<String> onOpen;
   final VoidCallback? onEditPhotos, onEditInformation, onEditNeeds;
 
@@ -154,7 +155,29 @@ class CaseReview extends StatelessWidget {
       const SizedBox(height: 24),
       heading('Necesidades', onEditNeeds),
       const SizedBox(height: 12),
-      card([('Necesidad y cuidados', values['need'] ?? '')]),
+      for (final item in items) ...[
+        card([
+          ('Necesidad', item['title'] as String),
+          (
+            'Costo estimado',
+            '\$${((item['amount_cents'] as int) / 100).toStringAsFixed(2)} MXN',
+          ),
+          ('Detalles', item['detail'] as String),
+          if (item['urgent'] == true) ('Prioridad solicitada', 'Urgente'),
+        ]),
+        const SizedBox(height: 8),
+      ],
+      if ((values['need'] ?? '').isNotEmpty)
+        card([('Necesidad y cuidados', values['need']!)]),
+      if (items.isEmpty && (values['need'] ?? '').isEmpty)
+        const Text(
+          'Sin necesidades agregadas.',
+          style: TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 12,
+            color: Color(0xff616174),
+          ),
+        ),
     ],
   );
 }

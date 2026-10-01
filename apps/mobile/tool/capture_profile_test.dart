@@ -595,6 +595,12 @@ void main() {
       ('expense-submitted-footer-large', '/rescue/expense-one'),
       ('case-publication', '/rescue/new?kind=case'),
       ('case-publication-large', '/rescue/new?kind=case'),
+      ('case-publication-needs-medicine', '/rescue/case-one'),
+      ('case-publication-needs-medicine-large', '/rescue/case-one'),
+      ('case-publication-needs-food', '/rescue/case-one'),
+      ('case-publication-needs-food-large', '/rescue/case-one'),
+      ('case-publication-needs-veterinary', '/rescue/case-one'),
+      ('case-publication-needs-veterinary-large', '/rescue/case-one'),
       ('case-publication-needs', '/rescue/case-one'),
       ('case-publication-needs-large', '/rescue/case-one'),
       ('case-publication-review', '/rescue/case-one'),
@@ -1175,6 +1181,19 @@ void main() {
       if (spec.$1.startsWith('case-publication-needs')) {
         for (var i = 0; i < 2; i++) {
           await tester.tap(find.text('Continuar'));
+          await tester.pumpAndSettle();
+        }
+      }
+      for (final entry in {
+        'medicine': 'Medicina',
+        'food': 'Comida',
+        'veterinary': 'Veterinario',
+      }.entries) {
+        if (spec.$1.startsWith('case-publication-needs-${entry.key}')) {
+          final card = find.text(entry.value);
+          await tester.ensureVisible(card);
+          await tester.pumpAndSettle();
+          await tester.tap(card);
           await tester.pumpAndSettle();
         }
       }

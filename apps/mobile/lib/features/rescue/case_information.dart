@@ -43,7 +43,9 @@ class CaseInformation extends StatelessWidget {
             enabled: enabled,
             maxLength: field.max,
             maxLines: field.lines,
-            keyboardType: field.lines > 1
+            keyboardType: field.key == 'amount'
+                ? const TextInputType.numberWithOptions(decimal: true)
+                : field.lines > 1
                 ? TextInputType.multiline
                 : TextInputType.text,
             style: const TextStyle(

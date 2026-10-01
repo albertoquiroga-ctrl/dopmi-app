@@ -3257,3 +3257,20 @@ test('planned needs reject malformed entries and invented financial state', asyn
   }
   assert.deepEqual((await db.query('select private.dopmi_case_fields($1::jsonb) value',[JSON.stringify({need:'Cuidados existentes'})])).rows[0].value,{need:'Cuidados existentes'});
 });
+
+
+test('case submission accepts no planned financial needs while retaining photo and public information requirements', async () => {
+  const data={pet_name:'Luna',species:'dog',sex:'unknown',age:'3 años',story:'Rescatada con atención pendiente',city:'Monterrey',state:'Nuevo León',need_items:[]};
+  await db.query("select set_config('request.jwt.claim.sub',$1,true)",[rescuer]);
+  await db.exec('set local role authenticated');
+  let r=(await db.query("select dopmi_save_rescue('case',$1::jsonb,'{}','[]') value",[JSON.stringify(data)])).rows[0].value;
+  const path=`${rescuer}/${r.id}/85000000-0000-4000-8000-000000000001.jpg`;
+  await db.exec('reset role');
+  await db.query("insert into storage.objects(bucket_id,name,owner_id) values('dopmi-rescue-evidence',$1,$2)",[path,rescuer]);
+  await db.exec('set local role authenticated');
+  r=(await db.query("select dopmi_save_rescue('case',$1::jsonb,'{}',$2::jsonb,$3,$4) value",[JSON.stringify(data),JSON.stringify([{role:'public',path}]),r.id,r.version])).rows[0].value;
+  const submitted=(await db.query("select dopmi_transition_rescue($1,$2,'submit') value",[r.id,r.version])).rows[0].value;
+  assert.equal(submitted.status,'submitted');
+  assert.equal(submitted.reimbursable_cents,0);
+  assert.equal(submitted.approved_snapshot,null);
+});
