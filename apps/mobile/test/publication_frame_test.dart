@@ -204,7 +204,7 @@ void main() {
       await startPublication(tester, repo, '/my-adoptions/${repo.post.id}');
       await tester.tap(find.text('Continuar'));
       await tester.pumpAndSettle();
-      final name = find.widgetWithText(TextFormField, 'Nombre de la mascota');
+      final name = find.byKey(const ValueKey('publication-field-pet_name'));
       await tester.ensureVisible(name);
       await tester.enterText(name, 'Mora desde el teclado');
       tester.view.viewInsets = const FakeViewPadding(bottom: 600);

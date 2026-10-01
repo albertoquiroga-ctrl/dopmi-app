@@ -678,7 +678,7 @@ void main() {
       await start(tester, repo, '/my-adoptions/${repo.post.id}');
       await tap(tester, 'Continuar');
       await tester.enterText(
-        find.widgetWithText(TextFormField, 'Nombre de la mascota'),
+        find.byKey(const ValueKey('publication-field-pet_name')),
         'Mora',
       );
       repo.failSave = true;

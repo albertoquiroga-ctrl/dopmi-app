@@ -263,28 +263,87 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       });
   Widget field(String key, String label, int max, {int lines = 1}) => Padding(
     padding: const EdgeInsets.only(bottom: 16),
-    child: TextFormField(
-      controller: fields[key],
-      enabled: !busy && post?.status != 'submitted',
-      maxLength: max,
-      maxLines: lines,
-      keyboardType: key == 'age_months'
-          ? TextInputType.number
-          : lines > 1
-          ? TextInputType.multiline
-          : TextInputType.text,
-      decoration: InputDecoration(
-        labelText: label,
-        counterText: lines > 1 ? null : '',
-      ),
-      validator: key == 'age_months'
-          ? (value) {
-              final months = int.tryParse(value ?? '');
-              return months == null || months < 0 || months > 360
-                  ? 'Escribe de 0 a 360 meses.'
-                  : null;
-            }
-          : null,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            height: 1.55,
+            fontWeight: FontWeight.w500,
+            color: Color(0xff151423),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Semantics(
+          label: label,
+          child: TextFormField(
+            key: ValueKey('publication-field-$key'),
+            controller: fields[key],
+            enabled: !busy && post?.status != 'submitted',
+            maxLength: max,
+            maxLines: lines,
+            style: const TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 16,
+              height: 1.55,
+              color: Color(0xff151423),
+            ),
+            keyboardType: key == 'age_months'
+                ? TextInputType.number
+                : lines > 1
+                ? TextInputType.multiline
+                : TextInputType.text,
+            decoration: InputDecoration(
+              isDense: true,
+              hintText: key == 'pet_name'
+                  ? 'Opcional'
+                  : key == 'story'
+                  ? 'Cuenta cómo la encontraste.'
+                  : null,
+              counterText: lines > 1 ? null : '',
+              filled: true,
+              fillColor: Colors.white,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 8,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: Color(0xffeaeaf3)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: Color(0xffeaeaf3)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: Color(0xff7c3aed)),
+              ),
+            ),
+            validator: key == 'age_months'
+                ? (value) {
+                    final months = int.tryParse(value ?? '');
+                    return months == null || months < 0 || months > 360
+                        ? 'Escribe de 0 a 360 meses.'
+                        : null;
+                  }
+                : null,
+          ),
+        ),
+        if (key == 'pet_name') ...[
+          const SizedBox(height: 8),
+          const Text(
+            'Si aún no tiene nombre, puedes dejarlo vacío.',
+            style: TextStyle(
+              fontSize: 12,
+              height: 1.55,
+              color: Color(0xff616174),
+            ),
+          ),
+        ],
+      ],
     ),
   );
   Widget publicationChoice(
