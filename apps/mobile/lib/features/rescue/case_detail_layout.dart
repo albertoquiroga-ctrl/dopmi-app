@@ -599,6 +599,7 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                             eligible.first.id,
                             eligible.first.targetCents -
                                 eligible.first.fundedCents,
+                            caseId: widget.record.id,
                           ),
                     style: FilledButton.styleFrom(
                       backgroundColor: ink,

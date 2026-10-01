@@ -10,6 +10,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'community_test.dart' show FakeCommunity;
+import 'rescue_test.dart' show FakeRescue;
+
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+
 import 'fake_identity_repository.dart';
 
 class FakePayments extends PaymentRepository {
@@ -116,6 +120,63 @@ void main() {
       await repo.changes.close();
     },
   );
+  for (final caseId in ['case-one', 'different-case']) {
+    testWidgets(
+      'seed review only shows a public case matching the expense: $caseId',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({});
+        final identity = FakeIdentityRepository()
+          ..user = const Identity(
+            'one',
+            'fixture@example.test',
+            verified: true,
+          );
+        final payments = FakePayments();
+        final rescue = FakeRescue();
+        final container = ProviderContainer(
+          overrides: [
+            identityRepositoryProvider.overrideWithValue(identity),
+            communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+            paymentRepositoryProvider.overrideWithValue(payments),
+            rescueRepositoryProvider.overrideWithValue(rescue),
+            routerInitialLocationProvider.overrideWithValue(
+              '/contribute/expense-one?case=$caseId&amount_cents=10025',
+            ),
+          ],
+        );
+        addTearDown(() async {
+          container.dispose();
+          await identity.changes.close();
+        });
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: const DopmiApp(),
+          ),
+        );
+        await pumpUntil(tester, find.text('Resumen'));
+        expect(
+          find.text(rescue.caseRecord.title),
+          caseId == 'case-one' ? findsNWidgets(2) : findsNothing,
+        );
+        expect(find.text('En Stripe'), findsOneWidget);
+        expect(find.text('\$100.25 MXN'), findsOneWidget);
+        expect(payments.calls, isEmpty);
+        await tester.ensureVisible(find.text('Cambiar monto'));
+        await tester.tap(find.text('Cambiar monto'));
+        await tester.pumpAndSettle();
+        expect(
+          find.widgetWithText(TextField, 'Tu aportación en MXN'),
+          findsOneWidget,
+        );
+        expect(find.text('Resumen'), findsNothing);
+        expect(payments.calls, isEmpty);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+        await tester.pump();
+      },
+    );
+  }
   testWidgets(
     'selected amount opens review without checkout and stored attempt takes precedence',
     (tester) async {

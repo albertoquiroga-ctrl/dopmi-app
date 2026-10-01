@@ -12,6 +12,7 @@ import '../identity/identity_controller.dart';
 import '../rescue/rescue_repository.dart';
 import 'payment_repository.dart';
 import 'guardian_repository.dart';
+import 'contribution_layout.dart';
 
 class ContributeScreen extends ConsumerStatefulWidget {
   const ContributeScreen(
@@ -19,8 +20,10 @@ class ContributeScreen extends ConsumerStatefulWidget {
     super.key,
     this.attempt,
     this.initialCents,
+    this.caseId,
   });
   final String expense;
+  final String? caseId;
   final int? initialCents;
   final Json? attempt;
   @override
@@ -175,153 +178,253 @@ class _ContributeState extends ConsumerState<ContributeScreen>
     }
   }
 
+  Future<Json> loadFunding() async {
+    final data = await ref
+        .read(paymentRepositoryProvider)
+        .funding(widget.expense);
+    final caseId = widget.caseId;
+    if (caseId == null) return data;
+    try {
+      final catalog = await ref
+          .read(rescueRepositoryProvider)
+          .completeCaseCatalog(caseId);
+      final matchingExpense = catalog.items.any(
+        (record) =>
+            record.id == widget.expense &&
+            record.kind == 'expense' &&
+            record.parent == caseId,
+      );
+      final cases = catalog.items.where(
+        (record) => record.id == caseId && record.kind == 'case',
+      );
+      if (matchingExpense && cases.isNotEmpty) {
+        return {...data, 'public_case': cases.first};
+      }
+    } catch (_) {
+      // Funding stays authoritative; a failed public photo/context read cannot
+      // replace it with a guessed case, method or amount.
+    }
+    return data;
+  }
+
+  void back() {
+    if (reviewing && !locked && outcome == null) {
+      setState(() => reviewing = false);
+    } else if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go(
+        widget.caseId == null ? '/payments' : '/rescue-cases/${widget.caseId}',
+      );
+    }
+  }
+
   @override
-  Widget build(BuildContext context) => CommunityFrame(
-    children: [
-      const Heading(
-        'Ayuda con un gasto.',
-        'Tu aportación se dirige al gasto aprobado que elegiste.',
-        eyebrow: 'APORTACIÓN DE PRUEBA',
-      ),
-      LiveSection<Json>(
-        errorMessage: paymentError,
-        load: () => ref.read(paymentRepositoryProvider).funding(widget.expense),
-        builder: (data, refresh) => Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              data['title'] as String,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            Text(
-              'Reembolso aprobado: ${pesos(data['reimbursable_cents'] as int)}',
-            ),
-            Text('Neto asignado: ${pesos(data['funded_cents'] as int)}'),
-            Text(
-              'Transferido a Stripe: ${pesos(data['transferred_cents'] as int? ?? 0)}',
-            ),
-            Text(
-              'Disponible para aportaciones: ${pesos(data['available_cents'] as int)}',
-            ),
-            const SizedBox(height: 16),
-            if (!reviewing && outcome == null) ...[
-              Text(
-                '¿Cuánto quieres aportar?',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                children: [
-                  for (final value in [50, 150, 300])
-                    ChoiceChip(
-                      label: Text('\$$value'),
-                      selected: parsePesos(amount.text) == value * 100,
-                      onSelected: busy || locked
-                          ? null
-                          : (_) => setState(() => amount.text = '$value'),
+  Widget build(BuildContext context) => PopScope(
+    canPop: !reviewing || locked || outcome != null,
+    onPopInvokedWithResult: (didPop, _) {
+      if (!didPop && !busy) back();
+    },
+    child: ContributionFrame(
+      title: outcome != null
+          ? 'Tu aportación'
+          : reviewing || locked
+          ? 'Revisa tu donación'
+          : 'Elige tu aportación',
+      back: busy ? null : back,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+        child: LiveSection<Json>(
+          errorMessage: paymentError,
+          load: loadFunding,
+          builder: (data, refresh) {
+            final record = data['public_case'] as RescueRecord?;
+            final title = data['title'] as String;
+            final payable =
+                data['payable'] == true && (data['available_cents'] as int) > 0;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ContributionCaseHeader(expenseTitle: title, record: record),
+                const SizedBox(height: 18),
+                if (!reviewing && !locked && outcome == null) ...[
+                  const Text(
+                    '¿Cuánto quieres donar?',
+                    style: TextStyle(
+                      fontSize: 19,
+                      fontWeight: FontWeight.w700,
+                      height: 1.3,
+                      color: ink,
                     ),
-                ],
-              ),
-              TextField(
-                controller: amount,
-                enabled: !busy && !locked,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                decoration: const InputDecoration(
-                  labelText: 'Tu aportación en MXN',
-                  prefixText: '\$ ',
-                ),
-              ),
-            ],
-            const SizedBox(height: 16),
-            const Notice(
-              'Dopmi descuenta el 2% del importe cobrado y los costos de Stripe. El neto destinado al rescatista cuenta para el reembolso. El importe que no pueda asignarse se devuelve.',
-            ),
-            const Notice(
-              'Solo pagos de prueba. Stripe mostrará el importe antes de confirmar. Al regresar, revisa tu historial para conocer el resultado.',
-            ),
-            if (reviewing && outcome == null)
-              Card(
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(18),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        'Resumen',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: const Text('Gasto'),
-                        trailing: SizedBox(
-                          width: 150,
-                          child: Text(
-                            data['title'] as String,
-                            textAlign: TextAlign.end,
+                  ),
+                  const SizedBox(height: 18),
+                  LayoutBuilder(
+                    builder: (context, constraints) => Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: [
+                        for (final cents in {
+                          5000,
+                          15000,
+                          30000,
+                          if ((data['available_cents'] as int) > 0)
+                            data['available_cents'] as int,
+                        })
+                          SizedBox(
+                            width:
+                                MediaQuery.textScalerOf(context).scale(14) > 22
+                                ? constraints.maxWidth
+                                : (constraints.maxWidth - 10) / 2,
+                            child: OutlinedButton(
+                              onPressed: busy
+                                  ? null
+                                  : () => setState(
+                                      () => amount.text = (cents / 100)
+                                          .toStringAsFixed(2),
+                                    ),
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor:
+                                    parsePesos(amount.text) == cents
+                                    ? const Color(0xfffff8d7)
+                                    : Colors.white,
+                                foregroundColor: ink,
+                                padding: const EdgeInsets.all(16),
+                                side: BorderSide(
+                                  color: parsePesos(amount.text) == cents
+                                      ? yellow
+                                      : const Color(0xffe6e2dd),
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ),
+                              child: Text(
+                                pesos(cents),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  TextField(
+                    controller: amount,
+                    enabled: !busy && !locked,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    decoration: const InputDecoration(
+                      labelText: 'Tu aportación en MXN',
+                      prefixText: '\$ ',
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                ],
+                if ((reviewing || locked) && outcome == null) ...[
+                  const Text(
+                    'Resumen',
+                    style: TextStyle(
+                      fontSize: 19,
+                      fontWeight: FontWeight.w700,
+                      height: 1.3,
+                      color: ink,
+                    ),
+                  ),
+                  const SizedBox(height: 33.77),
+                  ContributionSummary(
+                    rows: [
+                      if (record != null) ('Caso', record.title),
+                      ('Necesidad', title),
+                      (
+                        'Monto',
+                        contributionMoney(parsePesos(amount.text) ?? 0),
                       ),
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: const Text('Importe'),
-                        trailing: Text(pesos(parsePesos(amount.text) ?? 0)),
-                      ),
-                      const Text(
-                        'El método de pago se captura de forma segura en Stripe.',
-                      ),
+                      ('Método', 'En Stripe'),
                     ],
                   ),
+                  const SizedBox(height: 18),
+                ],
+                if (locked && outcome == null) ...[
+                  const Notice(
+                    'Conservamos tu intento de pago. Continuar abre la misma aportación.',
+                  ),
+                  const SizedBox(height: 18),
+                ],
+                if (outcome != null) _PaymentOutcome(outcome!),
+                if (error != null) Notice(error!, isError: true),
+                if (outcome == null)
+                  ContributionButton(
+                    reviewing || locked
+                        ? (locked
+                              ? 'Continuar mi aportación'
+                              : 'Confirmar en Stripe')
+                        : 'Revisar aportación',
+                    busy: busy,
+                    onPressed: locked
+                        ? pay
+                        : payable
+                        ? (reviewing ? pay : review)
+                        : null,
+                  ),
+                if (reviewing && !locked && outcome == null) ...[
+                  const SizedBox(height: 18),
+                  ContributionButton(
+                    'Cambiar monto',
+                    secondary: true,
+                    onPressed: busy
+                        ? null
+                        : () => setState(() => reviewing = false),
+                  ),
+                ],
+                const SizedBox(height: 18),
+                const Text(
+                  'Solo pagos de prueba. El método de pago se captura de forma segura en Stripe. Stripe mostrará el importe antes de confirmar.',
+                  style: TextStyle(fontSize: 13, height: 1.55, color: muted),
                 ),
-              ),
-            if (locked && outcome == null)
-              const Notice(
-                'Conservamos tu intento de pago. Continuar abre la misma aportación.',
-              ),
-            if (outcome != null) _PaymentOutcome(outcome!),
-            if (error != null) Notice(error!, isError: true),
-            if (outcome == null)
-              ActionButton(
-                reviewing || locked
-                    ? (locked
-                          ? 'Continuar mi aportación'
-                          : 'Confirmar en Stripe')
-                    : 'Revisar aportación',
-                busy: busy,
-                onPressed: locked
-                    ? pay
-                    : data['payable'] == true &&
-                          (data['available_cents'] as int) > 0
-                    ? (reviewing ? pay : review)
-                    : null,
-              ),
-            if (reviewing && !locked && outcome == null)
-              OutlinedButton(
-                onPressed: busy
-                    ? null
-                    : () => setState(() => reviewing = false),
-                child: const Text('Cambiar monto'),
-              ),
-            if (locked && outcome == null)
-              TextButton(
-                onPressed: busy ? null : checkOutcome,
-                child: const Text('Consultar resultado'),
-              ),
-            TextButton(
-              onPressed: refresh,
-              child: const Text('Actualizar disponibilidad'),
-            ),
-          ],
+                const SizedBox(height: 12),
+                const Text(
+                  'Dopmi descuenta el 2% del importe cobrado y los costos de Stripe. El neto destinado al rescatista cuenta para el reembolso. El importe que no pueda asignarse se devuelve.',
+                  style: TextStyle(fontSize: 13, height: 1.55, color: muted),
+                ),
+                const SizedBox(height: 18),
+                Text(
+                  'Reembolso aprobado: ${pesos(data['reimbursable_cents'] as int)}',
+                  style: const TextStyle(fontSize: 12, color: muted),
+                ),
+                Text(
+                  'Neto asignado: ${pesos(data['funded_cents'] as int)}',
+                  style: const TextStyle(fontSize: 12, color: muted),
+                ),
+                Text(
+                  'Transferido a Stripe: ${pesos(data['transferred_cents'] as int? ?? 0)}',
+                  style: const TextStyle(fontSize: 12, color: muted),
+                ),
+                Text(
+                  'Disponible para aportaciones: ${pesos(data['available_cents'] as int)}',
+                  style: const TextStyle(fontSize: 12, color: muted),
+                ),
+                if (locked && outcome == null)
+                  TextButton(
+                    onPressed: busy ? null : checkOutcome,
+                    child: const Text('Consultar resultado'),
+                  ),
+                TextButton(
+                  onPressed: busy ? null : refresh,
+                  child: const Text('Actualizar disponibilidad'),
+                ),
+                TextButton(
+                  onPressed: () => context.push('/payments'),
+                  child: const Text('Ver mi historial'),
+                ),
+              ],
+            );
+          },
         ),
       ),
-      TextButton(
-        onPressed: () => context.push('/payments'),
-        child: const Text('Ver mi historial'),
-      ),
-    ],
+    ),
   );
 }
 

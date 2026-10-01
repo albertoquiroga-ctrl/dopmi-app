@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'fixture_photo_client.dart';
 
 import 'package:dopmi_mobile/app.dart';
@@ -17,6 +19,9 @@ import 'package:flutter_test/flutter_test.dart';
 import '../test/community_test.dart' show FakeCommunity;
 import '../test/fake_identity_repository.dart';
 import '../test/rescue_test.dart' show FakeRescue, FakeCaseUpdates;
+import '../test/payments_test.dart' show FakePayments;
+
+import 'package:dopmi_mobile/features/payments/payment_repository.dart';
 
 import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 
@@ -94,6 +99,18 @@ class CaseCaptureRescue extends SupportCaptureRescue {
             },
           }),
       ], 5);
+}
+
+class ContributionCapturePayments extends FakePayments {
+  @override
+  Future<Json> funding(String expense) async => {
+    'title': 'Cirugía',
+    'reimbursable_cents': 145000,
+    'funded_cents': 25000,
+    'transferred_cents': 0,
+    'available_cents': 120000,
+    'payable': true,
+  };
 }
 
 Future<DataPage<Json>> fixturePaymentHistory() async => const DataPage([
@@ -222,6 +239,16 @@ void main() {
       ('support-home', '/rescue-cases'),
       ('support-home-large', '/rescue-cases'),
       ('case-detail', '/rescue-cases/case-one'),
+      (
+        'contribution-review',
+        '/contribute/Cirugía?case=case-one&amount_cents=10000',
+      ),
+      (
+        'contribution-review-large',
+        '/contribute/Cirugía?case=case-one&amount_cents=10000',
+      ),
+      ('contribution-amount', '/contribute/Cirugía?case=case-one'),
+      ('contribution-amount-large', '/contribute/Cirugía?case=case-one'),
       ('case-detail-large', '/rescue-cases/case-one'),
       ('case-detail-expenses', '/rescue-cases/case-one'),
       ('case-detail-amount', '/rescue-cases/case-one'),
@@ -243,6 +270,9 @@ void main() {
       ('transparency-criteria', '/transparency'),
       ('publish-choice', '/publish'),
     ]) {
+      // Synthetic preferences belong only to this flutter_test capturer.
+      // ignore: invalid_use_of_visible_for_testing_member
+      SharedPreferences.setMockInitialValues({});
       final repo = FakeIdentityRepository()
         ..user = const Identity('one', 'fixture@example.test', verified: true);
       await repo.saveProfile(name: 'Ana', phone: '', city: 'Monterrey, NL');
@@ -301,7 +331,12 @@ void main() {
         overrides: [
           identityRepositoryProvider.overrideWithValue(repo),
           communityRepositoryProvider.overrideWithValue(community),
-          if (spec.$1.startsWith('case-detail')) ...[
+          if (spec.$1.startsWith('contribution'))
+            paymentRepositoryProvider.overrideWithValue(
+              ContributionCapturePayments(),
+            ),
+          if (spec.$1.startsWith('case-detail') ||
+              spec.$1.startsWith('contribution')) ...[
             rescueRepositoryProvider.overrideWithValue(CaseCaptureRescue()),
             caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
           ],

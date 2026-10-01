@@ -228,6 +228,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/contribute/:id',
         builder: (_, state) => ContributeScreen(
           state.pathParameters['id']!,
+          caseId: state.uri.queryParameters['case'],
           initialCents: int.tryParse(
             state.uri.queryParameters['amount_cents'] ?? '',
           ),

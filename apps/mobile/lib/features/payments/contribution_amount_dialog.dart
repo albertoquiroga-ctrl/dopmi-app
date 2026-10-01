@@ -8,8 +8,9 @@ import '../rescue/rescue_repository.dart' show parsePesos;
 Future<void> chooseContribution(
   BuildContext context,
   String expense,
-  int remainingCents,
-) async {
+  int remainingCents, {
+  String? caseId,
+}) async {
   final cents = await showGeneralDialog<int>(
     context: context,
     barrierDismissible: true,
@@ -20,7 +21,12 @@ Future<void> chooseContribution(
         ContributionAmountDialog(remainingCents: remainingCents),
   );
   if (cents != null && context.mounted) {
-    context.push('/contribute/$expense?amount_cents=$cents');
+    context.push(
+      Uri(
+        path: '/contribute/$expense',
+        queryParameters: {'amount_cents': '$cents', 'case': ?caseId},
+      ).toString(),
+    );
   }
 }
 

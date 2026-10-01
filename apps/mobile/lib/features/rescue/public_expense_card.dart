@@ -224,6 +224,7 @@ class _PublicExpenseCardState extends State<PublicExpenseCard> {
                                 context,
                                 record.id,
                                 remaining,
+                                caseId: record.parent,
                               )
                             : null,
                         style: IconButton.styleFrom(
