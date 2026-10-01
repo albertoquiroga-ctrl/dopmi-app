@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +50,100 @@ class DraftExpenseRescue extends FakeRescue {
   }
 }
 
+class SubmittedExpenseRescue extends DraftExpenseRescue {
+  bool failSubmit = false;
+  String remoteStatus = 'draft';
+  Completer<RescueRecord>? pending;
+  @override
+  Future<Json> detail(String id) async {
+    final data = await super.detail(id);
+    (data['record'] as Json)['status'] = remoteStatus;
+    return data;
+  }
+
+  @override
+  Future<RescueRecord> transition(RescueRecord record, String action) async {
+    if (failSubmit) {
+      throw const FormatException('Faltan comprobantes para enviar.');
+    }
+    final result = pending == null
+        ? RescueRecord({...record.data, 'status': 'submitted'})
+        : await pending!.future;
+    remoteStatus = result.status;
+    return result;
+  }
+}
+
 void main() {
+  testWidgets(
+    'evidence confirmation waits for the actual submitted result and never follows a failed request',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 640);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final repo = SubmittedExpenseRescue()..failSubmit = true;
+      await startPublication(tester, FakeCommunity(), '/publish', rescue: repo);
+      GoRouter.of(tester.element(find.byType(Scaffold).first))
+          .push('/rescue/expense-one')
+          .ignore();
+      await tester.pumpAndSettle();
+      final outer = find
+          .descendant(
+            of: find.byKey(const ValueKey('expense-form-body')),
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      for (var i = 0; i < 2; i++) {
+        final next = find.text('Siguiente');
+        await tester.scrollUntilVisible(next, 300, scrollable: outer);
+        await tester.pumpAndSettle();
+        await tester.tap(next);
+        await tester.pumpAndSettle();
+      }
+      final submit = find.text('Enviar a revisión');
+      await tester.scrollUntilVisible(submit, 300, scrollable: outer);
+      await tester.pumpAndSettle();
+      await tester.tap(submit);
+      await tester.pumpAndSettle();
+      expect(find.text('Has subido tu evidencia para revisión.'), findsNothing);
+      expect(find.text('Faltan comprobantes para enviar.'), findsOneWidget);
+      repo.failSubmit = false;
+      repo.pending = Completer<RescueRecord>();
+      await tester.scrollUntilVisible(submit, 300, scrollable: outer);
+      await tester.pumpAndSettle();
+      await tester.tap(submit);
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(find.text('Has subido tu evidencia para revisión.'), findsNothing);
+      repo.pending!.complete(
+        RescueRecord({
+          ...repo.expenseRecord.data,
+          'status': 'submitted',
+          'owner_id': 'one',
+        }),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Has subido tu evidencia para revisión.'),
+        findsOneWidget,
+      );
+      expect(find.text('Enviar a revisión'), findsNothing);
+      await tester.scrollUntilVisible(
+        find.text('Entendido'),
+        300,
+        scrollable: outer,
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Entendido'), findsOneWidget);
+      await tester.tap(find.text('Entendido'));
+      await tester.pumpAndSettle();
+      expect(find.text('Has subido tu evidencia para revisión.'), findsNothing);
+      expect(repo.remoteStatus, 'submitted');
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets(
     'expense close keeps an unsaved draft and save progress persists before leaving',
     (tester) async {

@@ -1049,6 +1049,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   int step = 0;
   bool verificationIntroDismissed = false;
   bool loading = true, busy = false, dirty = false, loadFailed = false;
+  bool expenseSubmitted = false;
   String? error, message;
   String get kind => record?.kind ?? widget.kind;
   bool get editable => record?.editable ?? true;
@@ -1232,6 +1233,10 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     if (!mounted) return;
     setState(() {
       record = result;
+      expenseSubmitted =
+          action == 'submit' &&
+          result.kind == 'expense' &&
+          result.status == 'submitted';
       message = action == 'submit'
           ? 'Solicitud enviada. Te avisaremos cuando el equipo responda.'
           : action == 'close'
@@ -1680,6 +1685,9 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
 
   @override
   Widget build(BuildContext context) {
+    if (expenseSubmitted) {
+      return ExpenseSubmitted(onClose: closeExpenseEditor);
+    }
     if (widget.id == 'new' &&
         kind == 'verification' &&
         !verificationIntroDismissed) {

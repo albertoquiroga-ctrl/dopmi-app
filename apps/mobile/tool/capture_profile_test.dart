@@ -19,7 +19,8 @@ import 'package:flutter_test/flutter_test.dart';
 import '../test/community_test.dart' show FakeCommunity;
 import '../test/fake_identity_repository.dart';
 import '../test/rescue_test.dart' show FakeRescue, FakeCaseUpdates;
-import '../test/expense_field_test.dart' show DraftExpenseRescue;
+import '../test/expense_field_test.dart'
+    show DraftExpenseRescue, SubmittedExpenseRescue;
 import '../test/payments_test.dart' show FakePayments;
 
 import 'package:dopmi_mobile/features/payments/payment_repository.dart';
@@ -581,6 +582,9 @@ void main() {
       ('publish-review-large', '/my-adoptions/post'),
       ('publish-health', '/my-adoptions/post'),
       ('publish-health-large', '/my-adoptions/post'),
+      ('expense-submitted', '/rescue/expense-one'),
+      ('expense-submitted-large', '/rescue/expense-one'),
+      ('expense-submitted-footer-large', '/rescue/expense-one'),
       ('expense-dialog', '/rescue/expense-one'),
       ('expense-dialog-large', '/rescue/expense-one'),
       ('expense-evidence', '/rescue/expense-one'),
@@ -703,7 +707,11 @@ void main() {
           identityRepositoryProvider.overrideWithValue(repo),
           communityRepositoryProvider.overrideWithValue(community),
           if (spec.$1.startsWith('expense-'))
-            rescueRepositoryProvider.overrideWithValue(DraftExpenseRescue()),
+            rescueRepositoryProvider.overrideWithValue(
+              spec.$1.startsWith('expense-submitted')
+                  ? SubmittedExpenseRescue()
+                  : DraftExpenseRescue(),
+            ),
           if (spec.$1.startsWith('verification-approved') ||
               spec.$1.startsWith('verification-review'))
             rescueRepositoryProvider.overrideWithValue(
@@ -1132,6 +1140,28 @@ void main() {
         );
         await tester.pumpAndSettle();
       }
+      if (spec.$1.startsWith('expense-submitted')) {
+        for (var i = 0; i < 3; i++) {
+          final action = find.text(i < 2 ? 'Siguiente' : 'Enviar a revisión');
+          await tester.scrollUntilVisible(
+            action,
+            300,
+            maxScrolls: 100,
+            scrollable: find.byType(Scrollable).first,
+          );
+          await tester.pumpAndSettle();
+          await tester.tap(action);
+          await tester.pumpAndSettle();
+        }
+      }
+      if (spec.$1 == 'expense-submitted-footer-large') {
+        await tester.scrollUntilVisible(
+          find.text('Entendido'),
+          300,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+      }
       if (spec.$1.startsWith('expense-evidence')) {
         final target = find.text('Documentos y evidencia');
         await tester.scrollUntilVisible(
@@ -1144,7 +1174,8 @@ void main() {
       }
       if (spec.$1.startsWith('expense-') &&
           !spec.$1.startsWith('expense-evidence') &&
-          !spec.$1.startsWith('expense-dialog')) {
+          !spec.$1.startsWith('expense-dialog') &&
+          !spec.$1.startsWith('expense-submitted')) {
         final next = find.text('Siguiente');
         await tester.scrollUntilVisible(
           next,

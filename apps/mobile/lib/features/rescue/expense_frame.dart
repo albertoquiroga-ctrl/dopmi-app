@@ -8,9 +8,11 @@ class ExpenseFrame extends StatelessWidget {
     required this.step,
     required this.onBack,
     required this.onClose,
+    this.confirmation = false,
   });
   final List<Widget> children;
   final int step;
+  final bool confirmation;
   final VoidCallback? onBack, onClose;
 
   @override
@@ -57,15 +59,20 @@ class ExpenseFrame extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              IconButton(
-                                onPressed: onBack,
-                                tooltip: step > 0 ? 'Paso anterior' : 'Cerrar',
-                                icon: SvgPicture.asset(
-                                  'assets/profile/back.svg',
-                                  width: 20,
-                                  height: 20,
+                              if (confirmation)
+                                const SizedBox(width: 48)
+                              else
+                                IconButton(
+                                  onPressed: onBack,
+                                  tooltip: step > 0
+                                      ? 'Paso anterior'
+                                      : 'Cerrar',
+                                  icon: SvgPicture.asset(
+                                    'assets/profile/back.svg',
+                                    width: 20,
+                                    height: 20,
+                                  ),
                                 ),
-                              ),
                               IconButton(
                                 onPressed: onClose,
                                 tooltip: 'Cerrar formulario',
@@ -77,40 +84,42 @@ class ExpenseFrame extends StatelessWidget {
                               ),
                             ],
                           ),
-                          const Text(
-                            'Sube tu evidencia',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 18,
-                              height: 1.3,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: -.36,
-                              color: Color(0xff15110d),
+                          if (!confirmation) ...[
+                            const Text(
+                              'Sube tu evidencia',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 18,
+                                height: 1.3,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: -.36,
+                                color: Color(0xff15110d),
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Paso ${step + 1} de 3',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 12,
-                              color: Color(0xff554e48),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Paso ${step + 1} de 3',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 12,
+                                color: Color(0xff554e48),
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          const Text(
-                            'Comparte los comprobantes de la necesidad cubierta. El equipo de Dopmi revisará el gasto antes de publicarlo y recibir aportaciones.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 14,
-                              height: 20 / 14,
-                              color: Color(0xff554e48),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Comparte los comprobantes de la necesidad cubierta. El equipo de Dopmi revisará el gasto antes de publicarlo y recibir aportaciones.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 14,
+                                height: 20 / 14,
+                                color: Color(0xff554e48),
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 16),
+                            const SizedBox(height: 16),
+                          ],
                           ...children,
                         ],
                       ),
@@ -161,6 +170,7 @@ class ExpenseActions extends StatelessWidget {
     final next = FilledButton(
       onPressed: onNext,
       style: style.copyWith(
+        foregroundColor: const WidgetStatePropertyAll(Colors.white),
         backgroundColor: WidgetStateProperty.resolveWith(
           (states) => states.contains(WidgetState.disabled)
               ? const Color(0xffbba0f8)
@@ -185,4 +195,79 @@ class ExpenseActions extends StatelessWidget {
             ),
     );
   }
+}
+
+class ExpenseSubmitted extends StatelessWidget {
+  const ExpenseSubmitted({super.key, required this.onClose});
+  final VoidCallback onClose;
+  @override
+  Widget build(BuildContext context) => ExpenseFrame(
+    step: 2,
+    confirmation: true,
+    onBack: null,
+    onClose: onClose,
+    children: [
+      Center(
+        child: Container(
+          width: 48,
+          height: 48,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: Color(0x1f7841f2),
+          ),
+          alignment: Alignment.center,
+          child: SvgPicture.asset(
+            'assets/profile/check.svg',
+            width: 22,
+            height: 22,
+            colorFilter: const ColorFilter.mode(
+              Color(0xff6b21a8),
+              BlendMode.srcIn,
+            ),
+          ),
+        ),
+      ),
+      const SizedBox(height: 12),
+      const Text(
+        'Has subido tu evidencia para revisión.',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 18,
+          height: 1.35,
+          fontWeight: FontWeight.w600,
+          color: Color(0xff15110d),
+        ),
+      ),
+      const SizedBox(height: 12),
+      const Text(
+        'Gracias por tu esfuerzo. Nuestro equipo revisará tu solicitud y te avisará cuando haya una respuesta.',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 14,
+          height: 1.45,
+          color: Color(0xff554e48),
+        ),
+      ),
+      const SizedBox(height: 20),
+      FilledButton(
+        onPressed: onClose,
+        style: FilledButton.styleFrom(
+          foregroundColor: Colors.white,
+          backgroundColor: const Color(0xff7841f2),
+          minimumSize: const Size(0, 36),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          textStyle: const TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        child: const Text('Entendido'),
+      ),
+    ],
+  );
 }
