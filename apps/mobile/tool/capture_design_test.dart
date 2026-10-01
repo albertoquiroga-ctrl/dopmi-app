@@ -94,6 +94,20 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+    // Empty-state Source DOM at 377×852, a3c969c.
+    final emptyPromptRect = tester.getRect(
+      find.byKey(const ValueKey('welcome-prompt-region')),
+    );
+    expect(emptyPromptRect.top, closeTo(231.2, 1));
+    expect(emptyPromptRect.height, closeTo(447.6, 1));
+    expect(
+      tester.getRect(find.byKey(const ValueKey('welcome-orb-adopt'))).top,
+      closeTo(686.8, 1),
+    );
+    expect(
+      tester.getRect(find.text('Bienvenido a DopMi')).top,
+      closeTo(104, 1),
+    );
     await tester.runAsync(
       () => saveCapture(welcomeKey, '${output.path}/welcome.png'),
     );

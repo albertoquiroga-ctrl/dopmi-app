@@ -44,13 +44,22 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           builder: (context, constraints) {
             final scaler = MediaQuery.textScalerOf(context);
             final bodyWidth = math.max(0.0, constraints.maxWidth - 56);
-            double textHeight(String text, TextStyle style, double width) {
+            double textHeight(
+              String text,
+              TextStyle style,
+              double width, {
+              bool cssLeading = false,
+            }) {
               final painter = TextPainter(
                 text: TextSpan(text: text, style: style),
                 textScaler: scaler,
                 textDirection: Directionality.of(context),
               )..layout(maxWidth: math.max(1, width));
-              final height = painter.height;
+              final height = cssLeading
+                  ? painter.computeLineMetrics().length *
+                        scaler.scale(style.fontSize!) *
+                        (style.height ?? 1)
+                  : painter.height;
               painter.dispose();
               return height;
             }
@@ -145,6 +154,80 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               math.min(280.0, availableSummary),
             );
             final footerGap = math.max(0.0, availableSummary - summaryHeight);
+            final emptyHeaderHeight =
+                36 +
+                12 +
+                16 +
+                28 +
+                textHeight(
+                  'Bienvenido a DopMi',
+                  const TextStyle(
+                    fontFamily: DopmiTokens.displayFont,
+                    fontSize: 28,
+                    height: 1.15,
+                    letterSpacing: -.56,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  math.max(1, bodyWidth - 16),
+                  cssLeading: true,
+                ) +
+                textHeight(
+                  'Ayuda a mascotas rescatadas de forma segura, simple y transparente.',
+                  const TextStyle(
+                    fontFamily: DopmiTokens.bodyFont,
+                    fontSize: 13,
+                    height: 1.5,
+                    letterSpacing: 0,
+                  ),
+                  math.min(scaler.scale(246.04), math.max(1, bodyWidth - 16)),
+                  cssLeading: true,
+                );
+            final emptyPromptRequired =
+                48 +
+                textHeight(
+                  '¿Cómo quieres ayudar hoy?',
+                  const TextStyle(
+                    fontFamily: DopmiTokens.displayFont,
+                    fontSize: 32,
+                    height: 1.15,
+                    letterSpacing: -.64,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  math.min(256.9, bodyWidth),
+                );
+            final emptyLabelsHeight = options
+                .map(
+                  (option) => textHeight(
+                    option.$2,
+                    labelStyle,
+                    math.min(
+                      scaler.scale(85.2),
+                      (math.min(280, bodyWidth) - 16) / 2,
+                    ),
+                    cssLeading: true,
+                  ),
+                )
+                .reduce(math.max);
+            final emptyPromptHeight = math.max(
+              emptyPromptRequired,
+              constraints.maxHeight -
+                  60 -
+                  36 -
+                  emptyHeaderHeight -
+                  math.max(118, 92 + 10 + emptyLabelsHeight) -
+                  12,
+            );
+            final selectedPromptHeight = textHeight(
+              '¿Cómo quieres ayudar?',
+              const TextStyle(
+                fontFamily: DopmiTokens.displayFont,
+                fontSize: 28,
+                height: 1.15,
+                letterSpacing: -.56,
+                fontWeight: FontWeight.w600,
+              ),
+              math.min(240, bodyWidth),
+            );
             final welcomeHeader = AnimatedContainer(
               duration: MediaQuery.disableAnimationsOf(context)
                   ? Duration.zero
@@ -155,32 +238,52 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 selected == null ? 0 : -12,
                 0,
               ),
-              child: Column(
-                children: [
-                  const SizedBox(height: 36),
-                  Text(
-                    'Bienvenido a DopMi',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Ayuda a mascotas rescatadas de forma segura, simple y transparente.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 13, height: 1.5, color: muted),
-                  ),
-                  const SizedBox(height: 16),
-                  Center(
-                    child: SvgPicture.asset(
-                      'assets/navigation/choice-paw.svg',
-                      width: 28,
-                      height: 28,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 36),
+                    Text(
+                      'Bienvenido a DopMi',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontFamily: DopmiTokens.displayFont,
+                        fontSize: 28,
+                        height: 1.15,
+                        letterSpacing: -.56,
+                        fontWeight: FontWeight.w600,
+                        color: ink,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: (constraints.maxHeight - 620).clamp(24, 220) / 2,
-                  ),
-                ],
+                    const SizedBox(height: 12),
+                    Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: scaler.scale(246.04),
+                        ),
+                        child: const Text(
+                          'Ayuda a mascotas rescatadas de forma segura, simple y transparente.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: DopmiTokens.bodyFont,
+                            fontSize: 13,
+                            height: 1.5,
+                            letterSpacing: 0,
+                            color: muted,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Center(
+                      child: SvgPicture.asset(
+                        'assets/navigation/choice-paw.svg',
+                        width: 28,
+                        height: 28,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
             return SingleChildScrollView(
@@ -230,9 +333,20 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             height: 28,
                           ),
                         ),
-                      Center(
+                      AnimatedContainer(
+                        key: const ValueKey('welcome-prompt-region'),
+                        duration: MediaQuery.disableAnimationsOf(context)
+                            ? Duration.zero
+                            : const Duration(milliseconds: 550),
+                        curve: const Cubic(.22, 1, .36, 1),
+                        height: selected == null
+                            ? emptyPromptHeight
+                            : selectedPromptHeight,
+                        alignment: Alignment.center,
                         child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 240),
+                          constraints: BoxConstraints(
+                            maxWidth: selected == null ? 256.9 : 240,
+                          ),
                           child: AnimatedDefaultTextStyle(
                             duration: MediaQuery.disableAnimationsOf(context)
                                 ? Duration.zero
@@ -255,13 +369,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           ),
                         ),
                       ),
-                      if (selected == null)
-                        SizedBox(
-                          height:
-                              (constraints.maxHeight - 620).clamp(24, 220) / 2,
-                        )
-                      else
-                        const SizedBox(height: 40),
+                      SizedBox(height: selected == null ? 8 : 40),
                       Center(
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 280),
@@ -473,7 +581,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           ),
                         ),
                       ],
-                      SizedBox(height: selected == null ? 12 : 28),
+                      SizedBox(height: selected == null ? 32 : 28),
                       TextButton(
                         onPressed: () => context.push('/login'),
                         child: const Text('Ya tengo cuenta · Iniciar sesión'),
