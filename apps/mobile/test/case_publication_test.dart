@@ -85,7 +85,7 @@ void main() {
       FocusManager.instance.primaryFocus?.unfocus();
       tester.testTextInput.hide();
       await tester.pumpAndSettle();
-      final add = find.text('Agregar necesidad');
+      final add = find.text('Guardar medicina');
       await tester.ensureVisible(add);
       await tester.pumpAndSettle();
       await tester.tap(add);
