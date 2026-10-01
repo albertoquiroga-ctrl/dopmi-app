@@ -68,6 +68,39 @@ class OwnedCasesCaptureRescue extends FakeRescue {
   ], 5);
 }
 
+class OwnedCaseDetailCaptureRescue extends FakeRescue {
+  OwnedCaseDetailCaptureRescue(this.closed);
+  final bool closed;
+  @override
+  Future<String> fileUrl(String path) async =>
+      'https://fixture.example.test/owned/$path.png';
+  @override
+  Future<Json> detail(String id) async => {
+    'record': {
+      ...caseRecord.data,
+      'id': id,
+      'owner_id': 'one',
+      'status': closed ? 'closed' : 'approved',
+      'public_data': {
+        ...caseRecord.publicData,
+        'age': '2 años',
+        'photos': ['owner-one', 'owner-two'],
+      },
+    },
+    'history': <Json>[],
+  };
+  @override
+  Future<DataPage<RescueRecord>> mine(
+    String kind,
+    int page, {
+    String? parent,
+  }) async => kind == 'expense'
+      ? DataPage([
+          RescueRecord({...expenseRecord.data, 'owner_id': 'one'}),
+        ], 1)
+      : super.mine(kind, page, parent: parent);
+}
+
 class EmptyOwnedCasesCaptureRescue extends FakeRescue {
   @override
   Future<DataPage<RescueRecord>> mine(
@@ -398,6 +431,12 @@ void main() {
       ('rescuer-home-empty-large', '/rescuer'),
       ('rescuer-home-actions', '/rescuer'),
       ('rescuer-home-actions-large', '/rescuer'),
+      ('owned-case-detail', '/rescue/case-one'),
+      ('owned-case-detail-large', '/rescue/case-one'),
+      ('owned-case-detail-bottom', '/rescue/case-one'),
+      ('owned-case-detail-bottom-large', '/rescue/case-one'),
+      ('owned-case-detail-closed', '/rescue/case-one'),
+      ('owned-case-detail-closed-large', '/rescue/case-one'),
       ('owned-cases', '/my-cases'),
       ('owned-cases-large', '/my-cases'),
       ('owned-cases-empty', '/my-cases'),
@@ -564,7 +603,8 @@ void main() {
           'activation': null,
         };
       }
-      if (spec.$1.startsWith('owned-cases') ||
+      if (spec.$1.startsWith('owned-case-detail') ||
+          spec.$1.startsWith('owned-cases') ||
           spec.$1.startsWith('rescuer-home') ||
           spec.$1 == 'publish-choice' ||
           spec.$1 == 'chat-bubbles-rescuer') {
@@ -574,6 +614,10 @@ void main() {
         overrides: [
           identityRepositoryProvider.overrideWithValue(repo),
           communityRepositoryProvider.overrideWithValue(community),
+          if (spec.$1.startsWith('owned-case-detail'))
+            rescueRepositoryProvider.overrideWithValue(
+              OwnedCaseDetailCaptureRescue(spec.$1.contains('closed')),
+            ),
           if (spec.$1.startsWith('owned-cases'))
             rescueRepositoryProvider.overrideWithValue(
               spec.$1.contains('empty')
@@ -604,6 +648,8 @@ void main() {
                     )
                   : ContributionCapturePayments(),
             ),
+          if (spec.$1.startsWith('owned-case-detail'))
+            caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
           if (spec.$1.startsWith('case-detail') ||
               spec.$1.startsWith('contribution')) ...[
             rescueRepositoryProvider.overrideWithValue(CaseCaptureRescue()),
@@ -916,6 +962,13 @@ void main() {
         await Scrollable.ensureVisible(
           tester.element(find.text('Acciones pendientes')),
           alignment: 0,
+        );
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('owned-case-detail-bottom')) {
+        await Scrollable.ensureVisible(
+          tester.element(find.text('Consultar expediente')),
+          alignment: 1,
         );
         await tester.pumpAndSettle();
       }

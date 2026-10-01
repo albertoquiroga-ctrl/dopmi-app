@@ -21,6 +21,7 @@ import 'support_home.dart';
 import 'case_detail_layout.dart';
 import 'public_expense_card.dart';
 import 'rescue_public_photo.dart';
+import 'owned_case_detail.dart';
 
 class RescueHomeScreen extends ConsumerWidget {
   const RescueHomeScreen({super.key});
@@ -1020,9 +1021,11 @@ class RescueEditorScreen extends ConsumerStatefulWidget {
     super.key,
     this.kind = 'case',
     this.parent,
+    this.showRecord = false,
   });
   final String id, kind;
   final String? parent;
+  final bool showRecord;
   @override
   ConsumerState<RescueEditorScreen> createState() => _RescueEditorState();
 }
@@ -1233,335 +1236,397 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => PopScope(
-    canPop: !dirty || !editable,
-    onPopInvokedWithResult: (didPop, result) async {
-      if (!didPop && await confirmLeave() && context.mounted) {
-        setState(() => dirty = false);
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (context.mounted) context.pop();
-        });
-      }
-    },
-    child: CommunityFrame(
-      children: [
-        Heading(
-          kind == 'verification'
-              ? 'Tu labor merece\nconfianza.'
-              : kind == 'case'
-              ? 'Cuéntanos su historia.'
-              : 'Documenta el gasto.',
-          kind == 'verification'
-              ? 'El equipo revisará tus documentos y el enlace social.'
-              : kind == 'case'
-              ? 'Describe el rescate y la necesidad. El equipo revisa todo antes de publicarlo.'
-              : 'Presenta un gasto ya pagado. Cada ronda de comida necesita su propia solicitud y revisión.',
-          eyebrow: rescueKinds[kind]!.toUpperCase(),
-        ),
-        if (loading)
-          const Center(child: CircularProgressIndicator())
-        else if (loadFailed || (record == null && widget.id != 'new')) ...[
-          Notice(error ?? 'Solicitud no disponible', isError: true),
-          TextButton(onPressed: load, child: const Text('Volver a intentar')),
-        ] else ...[
-          if (record != null)
-            Notice(
-              '${rescueStatuses[record!.status]} · Versión ${record!.version}',
+  Widget build(BuildContext context) {
+    final ownCase =
+        record != null &&
+        record!.kind == 'case' &&
+        ['approved', 'closed'].contains(record!.status) &&
+        record!.data['owner_id'] ==
+            ref.read(identityControllerProvider).identity?.id;
+    if (ownCase && !loadFailed && !widget.showRecord) {
+      return OwnedCaseDetail(
+        record: record!,
+        needs: RescueList(kind: 'expense', parent: record!.id),
+        updates: PublicCaseUpdates(record!.id),
+        busy: busy || loading,
+        error: error,
+        onBack: () =>
+            context.canPop() ? context.pop() : context.go('/my-cases'),
+        onRecord: () async {
+          await context.push('/rescue/${record!.id}?record=1');
+          if (mounted) await load();
+        },
+        onRefresh: load,
+        onExpense: () =>
+            context.push('/rescue/new?kind=expense&case=${record!.id}'),
+        onUpdates: () => context.push('/rescue-cases/${record!.id}/updates'),
+        onClose: () => run(() async {
+          final close = await showDialog<bool>(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text('¿Cerrar este caso?'),
+              content: const Text(
+                'Ya no podrás agregar gastos. El seguimiento aprobado seguirá disponible.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx, false),
+                  child: const Text('Continuar caso'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx, true),
+                  child: const Text('Cerrar caso'),
+                ),
+              ],
             ),
-          if ((record?.data['feedback'] as String? ?? '').isNotEmpty)
-            Notice('Respuesta del equipo: ${record!.data['feedback']}'),
-          if (!editable)
-            const Notice(
-              'Los datos enviados están protegidos. Puedes consultar el estado actualizado al recargar.',
+          );
+          if (close == true) await transition('close');
+        }),
+      );
+    }
+    return PopScope(
+      canPop: !dirty || !editable,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (!didPop && await confirmLeave() && context.mounted) {
+          setState(() => dirty = false);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (context.mounted) context.pop();
+          });
+        }
+      },
+      child: CommunityFrame(
+        children: [
+          if (widget.showRecord && ownCase)
+            TextButton(
+              onPressed: () => context.canPop()
+                  ? context.pop()
+                  : context.go('/rescue/${record!.id}'),
+              child: const Text('Volver al caso'),
             ),
-          _RescueSteps(step: step),
-          if (busy)
-            const LinearProgressIndicator(
-              semanticsLabel: 'Guardando o subiendo archivos',
-            ),
-          for (final private in [false, true]) ...[
-            if (step == 1 &&
-                rescueFields[kind]!.any((f) => f.private == private)) ...[
-              const SizedBox(height: 20),
+          Heading(
+            kind == 'verification'
+                ? 'Tu labor merece\nconfianza.'
+                : kind == 'case'
+                ? 'Cuéntanos su historia.'
+                : 'Documenta el gasto.',
+            kind == 'verification'
+                ? 'El equipo revisará tus documentos y el enlace social.'
+                : kind == 'case'
+                ? 'Describe el rescate y la necesidad. El equipo revisa todo antes de publicarlo.'
+                : 'Presenta un gasto ya pagado. Cada ronda de comida necesita su propia solicitud y revisión.',
+            eyebrow: rescueKinds[kind]!.toUpperCase(),
+          ),
+          if (loading)
+            const Center(child: CircularProgressIndicator())
+          else if (loadFailed || (record == null && widget.id != 'new')) ...[
+            Notice(error ?? 'Solicitud no disponible', isError: true),
+            TextButton(onPressed: load, child: const Text('Volver a intentar')),
+          ] else ...[
+            if (record != null)
+              Notice(
+                '${rescueStatuses[record!.status]} · Versión ${record!.version}',
+              ),
+            if ((record?.data['feedback'] as String? ?? '').isNotEmpty)
+              Notice('Respuesta del equipo: ${record!.data['feedback']}'),
+            if (!editable)
+              const Notice(
+                'Los datos enviados están protegidos. Puedes consultar el estado actualizado al recargar.',
+              ),
+            _RescueSteps(step: step),
+            if (busy)
+              const LinearProgressIndicator(
+                semanticsLabel: 'Guardando o subiendo archivos',
+              ),
+            for (final private in [false, true]) ...[
+              if (step == 1 &&
+                  rescueFields[kind]!.any((f) => f.private == private)) ...[
+                const SizedBox(height: 20),
+                Text(
+                  private
+                      ? 'Solo para revisión privada'
+                      : 'Información para publicación',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                if (!private)
+                  const Text(
+                    'No incluyas domicilios particulares, teléfonos ni datos de tus comprobantes.',
+                  ),
+                const SizedBox(height: 16),
+                for (final f in rescueFields[kind]!.where(
+                  (f) => f.private == private,
+                ))
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: f.options == null
+                        ? TextField(
+                            controller: controllers[f.key],
+                            enabled: editable && !busy,
+                            maxLength: f.max,
+                            maxLines: f.lines,
+                            keyboardType: f.key == 'amount_cents'
+                                ? const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  )
+                                : null,
+                            decoration: InputDecoration(
+                              labelText: f.label,
+                              alignLabelWithHint: f.lines > 1,
+                            ),
+                            onChanged: (_) => setState(() => dirty = true),
+                          )
+                        : DropdownButtonFormField<String>(
+                            key: ValueKey(
+                              '${f.key}:${controllers[f.key]!.text}',
+                            ),
+                            initialValue:
+                                f.options!.containsKey(controllers[f.key]!.text)
+                                ? controllers[f.key]!.text
+                                : null,
+                            isExpanded: true,
+                            decoration: InputDecoration(labelText: f.label),
+                            items: f.options!.entries
+                                .map(
+                                  (e) => DropdownMenuItem(
+                                    value: e.key,
+                                    child: Text(e.value),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: !editable || busy
+                                ? null
+                                : (v) => setState(() {
+                                    controllers[f.key]!.text = v!;
+                                    dirty = true;
+                                  }),
+                          ),
+                  ),
+              ],
+            ],
+            if (step == 0) ...[
               Text(
-                private
-                    ? 'Solo para revisión privada'
-                    : 'Información para publicación',
+                'Documentos y evidencia',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              if (!private)
-                const Text(
-                  'No incluyas domicilios particulares, teléfonos ni datos de tus comprobantes.',
-                ),
-              const SizedBox(height: 16),
-              for (final f in rescueFields[kind]!.where(
-                (f) => f.private == private,
-              ))
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: f.options == null
-                      ? TextField(
-                          controller: controllers[f.key],
-                          enabled: editable && !busy,
-                          maxLength: f.max,
-                          maxLines: f.lines,
-                          keyboardType: f.key == 'amount_cents'
-                              ? const TextInputType.numberWithOptions(
-                                  decimal: true,
-                                )
-                              : null,
-                          decoration: InputDecoration(
-                            labelText: f.label,
-                            alignLabelWithHint: f.lines > 1,
-                          ),
-                          onChanged: (_) => setState(() => dirty = true),
-                        )
-                      : DropdownButtonFormField<String>(
-                          key: ValueKey('${f.key}:${controllers[f.key]!.text}'),
-                          initialValue:
-                              f.options!.containsKey(controllers[f.key]!.text)
-                              ? controllers[f.key]!.text
-                              : null,
-                          isExpanded: true,
-                          decoration: InputDecoration(labelText: f.label),
-                          items: f.options!.entries
-                              .map(
-                                (e) => DropdownMenuItem(
-                                  value: e.key,
-                                  child: Text(e.value),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: !editable || busy
-                              ? null
-                              : (v) => setState(() {
-                                  controllers[f.key]!.text = v!;
-                                  dirty = true;
-                                }),
+              const Text(
+                'Hasta 12 archivos de 5 MB. JPG, PNG, WebP o PDF; para publicar, solo fotos.',
+              ),
+              for (final role
+                  in kind == 'verification'
+                      ? ['identity', 'address']
+                      : kind == 'case'
+                      ? ['public']
+                      : ['receipt', 'proof', 'public'])
+                Card(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          '${evidenceRoles[role]} · ${role == 'public' ? 'Pública después de aprobación' : 'Privada'}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-                ),
-            ],
-          ],
-          if (step == 0) ...[
-            Text(
-              'Documentos y evidencia',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const Text(
-              'Hasta 12 archivos de 5 MB. JPG, PNG, WebP o PDF; para publicar, solo fotos.',
-            ),
-            for (final role
-                in kind == 'verification'
-                    ? ['identity', 'address']
-                    : kind == 'case'
-                    ? ['public']
-                    : ['receipt', 'proof', 'public'])
-              Card(
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        '${evidenceRoles[role]} · ${role == 'public' ? 'Pública después de aprobación' : 'Privada'}',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      for (final file in files.where((f) => f['role'] == role))
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TextButton.icon(
-                                icon: const Icon(Icons.description_outlined),
-                                label: Text(
-                                  'Ver archivo ${files.indexOf(file) + 1}',
-                                ),
-                                onPressed: () => context.push(
-                                  '/rescue-file',
-                                  extra: file['path'],
+                        for (final file in files.where(
+                          (f) => f['role'] == role,
+                        ))
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextButton.icon(
+                                  icon: const Icon(Icons.description_outlined),
+                                  label: Text(
+                                    'Ver archivo ${files.indexOf(file) + 1}',
+                                  ),
+                                  onPressed: () => context.push(
+                                    '/rescue-file',
+                                    extra: file['path'],
+                                  ),
                                 ),
                               ),
+                              if (editable)
+                                IconButton(
+                                  tooltip:
+                                      'Quitar archivo ${files.indexOf(file) + 1}',
+                                  icon: const Icon(Icons.close),
+                                  onPressed: busy
+                                      ? null
+                                      : () => setState(() {
+                                          files.remove(file);
+                                          dirty = true;
+                                        }),
+                                ),
+                            ],
+                          ),
+                        if (editable)
+                          OutlinedButton.icon(
+                            onPressed: busy || files.length >= 12
+                                ? null
+                                : () => run(() => attach(role)),
+                            icon: const Icon(Icons.upload_file),
+                            label: Text(
+                              'Adjuntar ${evidenceRoles[role]!.toLowerCase()}',
                             ),
-                            if (editable)
-                              IconButton(
-                                tooltip:
-                                    'Quitar archivo ${files.indexOf(file) + 1}',
-                                icon: const Icon(Icons.close),
-                                onPressed: busy
-                                    ? null
-                                    : () => setState(() {
-                                        files.remove(file);
-                                        dirty = true;
-                                      }),
-                              ),
-                          ],
-                        ),
-                      if (editable)
-                        OutlinedButton.icon(
-                          onPressed: busy || files.length >= 12
-                              ? null
-                              : () => run(() => attach(role)),
-                          icon: const Icon(Icons.upload_file),
-                          label: Text(
-                            'Adjuntar ${evidenceRoles[role]!.toLowerCase()}',
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
+            ],
+            if (step == 2) ...[
+              Text(
+                'Revisa antes de enviar',
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-          ],
-          if (step == 2) ...[
-            Text(
-              'Revisa antes de enviar',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 12),
-            _RescueReviewRow('Tipo', rescueKinds[kind] ?? kind),
-            _RescueReviewRow(
-              'Nombre',
-              controllers[rescueFields[kind]!.first.key]?.text.trim() ?? '',
-            ),
-            _RescueReviewRow('Archivos', '${files.length} adjuntos'),
-            const Notice(
-              'El equipo revisará por separado la información pública, los documentos privados y la evidencia antes de aprobar.',
-            ),
-          ],
-          if (record?.kind == 'expense' && record!.status == 'approved')
-            LiveSection<Json>(
-              key: ValueKey('funding:${record!.id}'),
-              tables: const ['dopmi_donations'],
-              errorMessage: paymentError,
-              load: () =>
-                  ref.read(paymentRepositoryProvider).funding(record!.id),
-              builder: (funding, refresh) => Column(
-                children: [
-                  Notice(
-                    'Monto reembolsable: ${pesos(funding['reimbursable_cents'] as int)}${record!.data['urgent'] == true ? ' · Urgencia aprobada' : ''}. Neto asignado: ${pesos(funding['funded_cents'] as int)}. Transferido a Stripe: ${pesos(funding['transferred_cents'] as int? ?? 0)}. Disponible: ${pesos(funding['available_cents'] as int)}.',
-                  ),
-                  TextButton(
-                    onPressed: refresh,
-                    child: const Text('Actualizar aportaciones'),
-                  ),
-                ],
+              const SizedBox(height: 12),
+              _RescueReviewRow('Tipo', rescueKinds[kind] ?? kind),
+              _RescueReviewRow(
+                'Nombre',
+                controllers[rescueFields[kind]!.first.key]?.text.trim() ?? '',
               ),
-            ),
-          const SizedBox(height: 24),
-          if (editable) ...[
-            if (error != null) Notice(error!, isError: true),
-            if (message != null) Notice(message!),
-            if (step < 2)
-              ActionButton(
-                'Guardar y continuar',
-                busy: busy,
-                onPressed: () => run(() async {
-                  await save();
-                  if (mounted) setState(() => step++);
-                }),
-              )
-            else ...[
-              ActionButton(
-                'Enviar a revisión',
-                busy: busy,
-                onPressed: () => run(() => transition('submit')),
-              ),
-              TextButton(
-                onPressed: busy ? null : () => run(save),
-                child: const Text('Guardar borrador'),
+              _RescueReviewRow('Archivos', '${files.length} adjuntos'),
+              const Notice(
+                'El equipo revisará por separado la información pública, los documentos privados y la evidencia antes de aprobar.',
               ),
             ],
-            if (step > 0)
-              TextButton(
-                onPressed: busy ? null : () => setState(() => step--),
-                child: const Text('Regresar al paso anterior'),
+            if (record?.kind == 'expense' && record!.status == 'approved')
+              LiveSection<Json>(
+                key: ValueKey('funding:${record!.id}'),
+                tables: const ['dopmi_donations'],
+                errorMessage: paymentError,
+                load: () =>
+                    ref.read(paymentRepositoryProvider).funding(record!.id),
+                builder: (funding, refresh) => Column(
+                  children: [
+                    Notice(
+                      'Monto reembolsable: ${pesos(funding['reimbursable_cents'] as int)}${record!.data['urgent'] == true ? ' · Urgencia aprobada' : ''}. Neto asignado: ${pesos(funding['funded_cents'] as int)}. Transferido a Stripe: ${pesos(funding['transferred_cents'] as int? ?? 0)}. Disponible: ${pesos(funding['available_cents'] as int)}.',
+                    ),
+                    TextButton(
+                      onPressed: refresh,
+                      child: const Text('Actualizar aportaciones'),
+                    ),
+                  ],
+                ),
               ),
-          ],
-          if (!editable && error != null) Notice(error!, isError: true),
-          if (!editable && message != null) Notice(message!),
-          if (record?.status == 'submitted')
-            OutlinedButton(
-              onPressed: busy ? null : () => run(() => transition('withdraw')),
-              child: const Text('Retirar a borrador'),
-            ),
-          TextButton(
-            onPressed: busy
-                ? null
-                : () async {
-                    if (await confirmLeave()) {
-                      await load();
-                    }
-                  },
-            child: const Text('Recargar estado'),
-          ),
-          if (record?.kind == 'case') ...[
             const SizedBox(height: 24),
-            Text(
-              'Gastos de este caso',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            if (record!.status != 'closed')
-              ActionButton(
-                'Registrar gasto realizado',
-                sunny: true,
-                onPressed: busy
-                    ? null
-                    : () => context.push(
-                        '/rescue/new?kind=expense&case=${record!.id}',
-                      ),
-              ),
-            RescueList(kind: 'expense', parent: record!.id),
-            if (record!.status == 'approved')
+            if (editable) ...[
+              if (error != null) Notice(error!, isError: true),
+              if (message != null) Notice(message!),
+              if (step < 2)
+                ActionButton(
+                  'Guardar y continuar',
+                  busy: busy,
+                  onPressed: () => run(() async {
+                    await save();
+                    if (mounted) setState(() => step++);
+                  }),
+                )
+              else ...[
+                ActionButton(
+                  'Enviar a revisión',
+                  busy: busy,
+                  onPressed: () => run(() => transition('submit')),
+                ),
+                TextButton(
+                  onPressed: busy ? null : () => run(save),
+                  child: const Text('Guardar borrador'),
+                ),
+              ],
+              if (step > 0)
+                TextButton(
+                  onPressed: busy ? null : () => setState(() => step--),
+                  child: const Text('Regresar al paso anterior'),
+                ),
+            ],
+            if (!editable && error != null) Notice(error!, isError: true),
+            if (!editable && message != null) Notice(message!),
+            if (record?.status == 'submitted')
               OutlinedButton(
                 onPressed: busy
                     ? null
-                    : () => run(() async {
-                        final close = await showDialog<bool>(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                            title: const Text('¿Cerrar este caso?'),
-                            content: const Text(
-                              'Ya no podrás agregar gastos. El seguimiento aprobado seguirá disponible.',
+                    : () => run(() => transition('withdraw')),
+                child: const Text('Retirar a borrador'),
+              ),
+            TextButton(
+              onPressed: busy
+                  ? null
+                  : () async {
+                      if (await confirmLeave()) {
+                        await load();
+                      }
+                    },
+              child: const Text('Recargar estado'),
+            ),
+            if (record?.kind == 'case') ...[
+              const SizedBox(height: 24),
+              Text(
+                'Gastos de este caso',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              if (record!.status != 'closed')
+                ActionButton(
+                  'Registrar gasto realizado',
+                  sunny: true,
+                  onPressed: busy
+                      ? null
+                      : () => context.push(
+                          '/rescue/new?kind=expense&case=${record!.id}',
+                        ),
+                ),
+              RescueList(kind: 'expense', parent: record!.id),
+              if (record!.status == 'approved')
+                OutlinedButton(
+                  onPressed: busy
+                      ? null
+                      : () => run(() async {
+                          final close = await showDialog<bool>(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text('¿Cerrar este caso?'),
+                              content: const Text(
+                                'Ya no podrás agregar gastos. El seguimiento aprobado seguirá disponible.',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, false),
+                                  child: const Text('Continuar caso'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, true),
+                                  child: const Text('Cerrar caso'),
+                                ),
+                              ],
                             ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(ctx, false),
-                                child: const Text('Continuar caso'),
-                              ),
-                              TextButton(
-                                onPressed: () => Navigator.pop(ctx, true),
-                                child: const Text('Cerrar caso'),
-                              ),
-                            ],
-                          ),
-                        );
-                        if (close == true) await transition('close');
-                      }),
-                child: const Text('Cerrar caso'),
-              ),
-          ],
-          if (history.isNotEmpty) ...[
-            const SizedBox(height: 24),
-            Text('Historial', style: Theme.of(context).textTheme.titleLarge),
-            for (final item in history)
-              ListTile(
-                title: Text(
-                  rescueStatuses[item['action']] ??
-                      {
-                        'submit': 'Enviado',
-                        'withdraw': 'Retirado a borrador',
-                        'close': 'Caso cerrado',
-                      }[item['action']] ??
-                      'Actualización',
+                          );
+                          if (close == true) await transition('close');
+                        }),
+                  child: const Text('Cerrar caso'),
                 ),
-                subtitle: Text(
-                  '${localDate(item['created_at'] as String)} · Versión ${item['version']}\n${item['feedback']}',
+            ],
+            if (history.isNotEmpty) ...[
+              const SizedBox(height: 24),
+              Text('Historial', style: Theme.of(context).textTheme.titleLarge),
+              for (final item in history)
+                ListTile(
+                  title: Text(
+                    rescueStatuses[item['action']] ??
+                        {
+                          'submit': 'Enviado',
+                          'withdraw': 'Retirado a borrador',
+                          'close': 'Caso cerrado',
+                        }[item['action']] ??
+                        'Actualización',
+                  ),
+                  subtitle: Text(
+                    '${localDate(item['created_at'] as String)} · Versión ${item['version']}\n${item['feedback']}',
+                  ),
                 ),
-              ),
+            ],
           ],
         ],
-      ],
-    ),
-  );
+      ),
+    );
+  }
 }
 
 class _RescueSteps extends StatelessWidget {

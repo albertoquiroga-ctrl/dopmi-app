@@ -256,6 +256,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               ? state.uri.queryParameters['kind']!
               : 'case',
           parent: state.uri.queryParameters['case'],
+          showRecord: state.uri.queryParameters['record'] == '1',
           key: ValueKey('${identity.identity?.id}:${state.uri}'),
         ),
       ),

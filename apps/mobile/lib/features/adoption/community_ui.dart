@@ -10,8 +10,9 @@ import '../identity/experience_controller.dart';
 import 'community_repository.dart';
 
 class CommunityNav extends ConsumerWidget {
-  const CommunityNav(this.index, {super.key});
+  const CommunityNav(this.index, {super.key, this.selectedPath});
   final int index;
+  final String? selectedPath;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final experience = ref.watch(experienceProvider);
@@ -21,9 +22,9 @@ class CommunityNav extends ConsumerWidget {
         final rescuer = experience.value == AccountExperience.rescuer;
         final destinations = rescuer ? rescuerDestinations : donorDestinations;
         final path = GoRouterState.of(context).uri.path;
-        final selected = destinations.any((item) => item.path == path)
-            ? path
-            : '/profile';
+        final selected =
+            selectedPath ??
+            (destinations.any((item) => item.path == path) ? path : '/profile');
         return DopmiBottomBar(
           rescuer: rescuer,
           selectedPath: selected,
