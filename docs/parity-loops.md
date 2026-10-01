@@ -309,6 +309,16 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
   favoritos/match/chat y resto de rutas. Objetivo original y entrega final
   android-guardian-internal permanecen activos.
 
+
+## Loop 10 — cierre de Adoptar y contraste de vacíos
+
+- Referencia verificada al inicio/final: `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
+- DiscoveryEnd usa cuatro fotos decorativas de las publicaciones aprobadas retornadas; sin imágenes simuladas en producción. Reproduce saturación .85, opacidad .38, radios22, dos columnas y recorte del contenedor de referencia. Botones enfatizan favoritos/descubrir; se añadió la segunda sombra de la tarjeta.
+- Navegador377×852: vacío global, recorrido Gatos→Misha→Nube→apoyo Milo (arrastre)→fin y reinicio a Misha comprobados. Medidas: tarjeta final x28.8/y144/ancho320/alto333.2; contenedor final termina493.2. Título vacío max244.244. Se corrigieron los22px extra de separación sólo en los estados sin tarjeta vigente.
+- Evidencia reference/actual en `docs/design-reviews/parity-loop-10`. Datos/fotos equivalentes siguen pendientes para comparar el mosaico exacto; encabezado con ubicación real puede mostrar Elegir ubicación, y el tono del contorno secundario requiere contraste adicional. No se declara paridad total ni aceptación instalada.
+- Flutter130 pruebas aprobadas; analyze limpio; config12 aprobadas. Después de separación/recorte, pruebas de vacío3 y capturador23 estados aprobados. Sin cambios de esquema ni permisos.
+- Próximo ciclo: tarjeta de apoyo intercalada, incluyendo arrastre y transición. Entrega final Codemagic android-guardian-internal autorizada, todavía pendiente de completar el alcance.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián

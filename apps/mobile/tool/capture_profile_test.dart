@@ -155,11 +155,13 @@ void main() {
       tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
       final guardian = FakeGuardian();
-      final community = spec.$1.startsWith('adoption-detail')
+      final community =
+          (spec.$1.startsWith('adoption-detail') || spec.$1 == 'adoption-end')
           ? DetailCaptureCommunity()
           : FakeCommunity();
       if (spec.$1.startsWith('adoption-empty')) community.discoveryItems = [];
-      if (spec.$1.startsWith('adoption-detail')) {
+      if ((spec.$1.startsWith('adoption-detail') ||
+          spec.$1 == 'adoption-end')) {
         community.post = Adoption({
           ...community.post.data,
           'pet_name': 'Rocky',

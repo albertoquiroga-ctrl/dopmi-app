@@ -362,7 +362,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 36),
+            SizedBox(height: current == null && !loading ? 14 : 36),
             if (error != null) ...[
               Notice(error!, isError: true),
               TextButton(
@@ -392,7 +392,10 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                         load(reset: true);
                       },
                     )
-                  : DiscoveryEnd(restart: () => load(reset: true))
+                  : DiscoveryEnd(
+                      restart: () => load(reset: true),
+                      photos: cards.expand((post) => post.photos).toList(),
+                    )
             else if (current is Adoption)
               DiscoveryStack(
                 next: index + 1 < items.length && items[index + 1] is Adoption
