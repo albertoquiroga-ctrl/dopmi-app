@@ -228,6 +228,9 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/contribute/:id',
         builder: (_, state) => ContributeScreen(
           state.pathParameters['id']!,
+          initialCents: int.tryParse(
+            state.uri.queryParameters['amount_cents'] ?? '',
+          ),
           attempt: state.extra is Json ? state.extra! as Json : null,
           key: ValueKey('${identity.identity?.id}:${state.uri}'),
         ),

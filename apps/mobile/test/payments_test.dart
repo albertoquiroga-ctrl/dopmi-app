@@ -116,6 +116,48 @@ void main() {
       await repo.changes.close();
     },
   );
+  testWidgets(
+    'selected amount opens review without checkout and stored attempt takes precedence',
+    (tester) async {
+      tester.view.physicalSize = const Size(390, 2200);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      SharedPreferences.setMockInitialValues({
+        'dopmi-payment:one:expense-one:key': 'existing-attempt',
+        'dopmi-payment:one:expense-one:cents': 7525,
+      });
+      final identity = FakeIdentityRepository()
+        ..user = const Identity('one', 'ana@example.test', verified: true);
+      final payments = FakePayments();
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          paymentRepositoryProvider.overrideWithValue(payments),
+          routerInitialLocationProvider.overrideWithValue(
+            '/contribute/expense-one?amount_cents=120025',
+          ),
+        ],
+      );
+      addTearDown(() async {
+        container.dispose();
+        await identity.changes.close();
+      });
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const DopmiApp(),
+        ),
+      );
+      await pumpUntil(tester, find.text('Resumen'));
+      expect(find.text('\$75.25 MXN'), findsOneWidget);
+      expect(find.text('Continuar mi aportación'), findsOneWidget);
+      expect(payments.calls, isEmpty);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump();
+    },
+  );
   testWidgets('lost response preserves amount and idempotency key for retry', (
     tester,
   ) async {

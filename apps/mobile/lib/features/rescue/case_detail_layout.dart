@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../payments/contribution_amount_dialog.dart';
 import 'rescue_repository.dart';
 import 'rescue_public_photo.dart';
 
@@ -593,8 +594,12 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                   child: FilledButton(
                     onPressed: widget.busy || eligible.isEmpty
                         ? null
-                        : () =>
-                              context.push('/contribute/${eligible.first.id}'),
+                        : () => chooseContribution(
+                            context,
+                            eligible.first.id,
+                            eligible.first.targetCents -
+                                eligible.first.fundedCents,
+                          ),
                     style: FilledButton.styleFrom(
                       backgroundColor: ink,
                       foregroundColor: Colors.white,

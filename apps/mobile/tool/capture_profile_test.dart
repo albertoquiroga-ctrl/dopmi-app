@@ -224,6 +224,8 @@ void main() {
       ('case-detail', '/rescue-cases/case-one'),
       ('case-detail-large', '/rescue-cases/case-one'),
       ('case-detail-expenses', '/rescue-cases/case-one'),
+      ('case-detail-amount', '/rescue-cases/case-one'),
+      ('case-detail-amount-large', '/rescue-cases/case-one'),
       ('case-detail-expenses-large', '/rescue-cases/case-one'),
       ('match-home', '/messages'),
       ('match-home-large', '/messages'),
@@ -424,6 +426,10 @@ void main() {
           tester.element(find.text('Explorar')),
           alignment: .35,
         );
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('case-detail-amount')) {
+        await tester.tap(find.text('Donar'));
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('case-detail-expenses')) {

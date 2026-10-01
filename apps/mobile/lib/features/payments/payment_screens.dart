@@ -14,8 +14,14 @@ import 'payment_repository.dart';
 import 'guardian_repository.dart';
 
 class ContributeScreen extends ConsumerStatefulWidget {
-  const ContributeScreen(this.expense, {super.key, this.attempt});
+  const ContributeScreen(
+    this.expense, {
+    super.key,
+    this.attempt,
+    this.initialCents,
+  });
   final String expense;
+  final int? initialCents;
   final Json? attempt;
   @override
   ConsumerState<ContributeScreen> createState() => _ContributeState();
@@ -31,6 +37,11 @@ class _ContributeState extends ConsumerState<ContributeScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    final seed = widget.initialCents;
+    if (seed != null && seed >= 1000 && seed <= 1000000) {
+      amount.text = (seed / 100).toStringAsFixed(2);
+      reviewing = true;
+    }
     restore();
   }
 

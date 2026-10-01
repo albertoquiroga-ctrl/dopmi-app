@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../payments/contribution_amount_dialog.dart';
 import 'rescue_repository.dart';
 import 'rescue_public_photo.dart';
 
@@ -220,7 +220,11 @@ class _PublicExpenseCardState extends State<PublicExpenseCard> {
                             ? 'Gasto cubierto'
                             : 'Aportar a ${record.title}',
                         onPressed: enabled
-                            ? () => context.push('/contribute/${record.id}')
+                            ? () => chooseContribution(
+                                context,
+                                record.id,
+                                remaining,
+                              )
                             : null,
                         style: IconButton.styleFrom(
                           backgroundColor: yellow,
