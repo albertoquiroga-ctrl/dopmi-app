@@ -44,306 +44,323 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return Scaffold(
       body: SafeArea(
         child: LayoutBuilder(
-          builder: (context, constraints) => SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(28, 32, 28, 28),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: (constraints.maxHeight - 60).clamp(
-                    0,
-                    double.infinity,
+          builder: (context, constraints) {
+            final welcomeHeader = AnimatedContainer(
+              duration: MediaQuery.disableAnimationsOf(context)
+                  ? Duration.zero
+                  : const Duration(milliseconds: 550),
+              curve: const Cubic(.22, 1, .36, 1),
+              transform: Matrix4.translationValues(
+                0,
+                selected == null ? 0 : -12,
+                0,
+              ),
+              child: Column(
+                children: [
+                  const SizedBox(height: 36),
+                  Text(
+                    'Bienvenido a DopMi',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Brand(),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Ayuda a mascotas rescatadas de forma segura, simple y transparente.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 13, height: 1.5, color: muted),
+                  ),
+                  const SizedBox(height: 16),
+                  Center(
+                    child: SvgPicture.asset(
+                      'assets/navigation/choice-paw.svg',
+                      width: 28,
+                      height: 28,
                     ),
-                    AnimatedCrossFade(
-                      duration: MediaQuery.disableAnimationsOf(context)
-                          ? Duration.zero
-                          : const Duration(milliseconds: 550),
-                      firstCurve: const Interval(
-                        0,
-                        400 / 550,
-                        curve: Curves.ease,
-                      ),
-                      secondCurve: const Interval(
-                        0,
-                        400 / 550,
-                        curve: Curves.ease,
-                      ),
-                      sizeCurve: const Cubic(.22, 1, .36, 1),
-                      alignment: Alignment.topCenter,
-                      crossFadeState: selected == null
-                          ? CrossFadeState.showFirst
-                          : CrossFadeState.showSecond,
-                      firstChild: AnimatedContainer(
-                        duration: MediaQuery.disableAnimationsOf(context)
-                            ? Duration.zero
-                            : const Duration(milliseconds: 550),
-                        curve: const Cubic(.22, 1, .36, 1),
-                        transform: Matrix4.translationValues(
-                          0,
-                          selected == null ? 0 : -12,
-                          0,
-                        ),
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 36),
-                            Text(
-                              'Bienvenido a DopMi',
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.headlineMedium,
-                            ),
-                            const SizedBox(height: 12),
-                            const Text(
-                              'Ayuda a mascotas rescatadas de forma segura, simple y transparente.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 13,
-                                height: 1.5,
-                                color: muted,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Center(
-                              child: SvgPicture.asset(
-                                'assets/navigation/choice-paw.svg',
-                                width: 28,
-                                height: 28,
-                              ),
-                            ),
-                            SizedBox(
-                              height:
-                                  (constraints.maxHeight - 620).clamp(24, 220) /
-                                  2,
-                            ),
-                          ],
-                        ),
-                      ),
-                      secondChild: const SizedBox(
-                        width: double.infinity,
-                        height: 28,
-                      ),
+                  ),
+                  SizedBox(
+                    height: (constraints.maxHeight - 620).clamp(24, 220) / 2,
+                  ),
+                ],
+              ),
+            );
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(28, 32, 28, 28),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: (constraints.maxHeight - 60).clamp(
+                      0,
+                      double.infinity,
                     ),
-                    Center(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 240),
-                        child: AnimatedDefaultTextStyle(
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Brand(),
+                      ),
+                      if (MediaQuery.disableAnimationsOf(context))
+                        selected == null
+                            ? welcomeHeader
+                            : const SizedBox(width: double.infinity, height: 28)
+                      else
+                        AnimatedCrossFade(
                           duration: MediaQuery.disableAnimationsOf(context)
                               ? Duration.zero
-                              : const Duration(milliseconds: 450),
-                          curve: const Cubic(.22, 1, .36, 1),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: DopmiTokens.displayFont,
-                            fontSize: selected == null ? 32 : 28,
-                            letterSpacing: selected == null ? -.64 : -.56,
-                            height: 1.15,
-                            fontWeight: FontWeight.w600,
-                            color: ink,
+                              : const Duration(milliseconds: 550),
+                          firstCurve: const Interval(
+                            0,
+                            400 / 550,
+                            curve: Curves.ease,
                           ),
-                          child: Text(
-                            selected == null
-                                ? '¿Cómo quieres ayudar hoy?'
-                                : '¿Cómo quieres ayudar?',
+                          secondCurve: const Interval(
+                            0,
+                            400 / 550,
+                            curve: Curves.ease,
+                          ),
+                          sizeCurve: const Cubic(.22, 1, .36, 1),
+                          alignment: Alignment.topCenter,
+                          crossFadeState: selected == null
+                              ? CrossFadeState.showFirst
+                              : CrossFadeState.showSecond,
+                          firstChild: welcomeHeader,
+                          secondChild: const SizedBox(
+                            width: double.infinity,
+                            height: 28,
+                          ),
+                        ),
+                      Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 240),
+                          child: AnimatedDefaultTextStyle(
+                            duration: MediaQuery.disableAnimationsOf(context)
+                                ? Duration.zero
+                                : const Duration(milliseconds: 450),
+                            curve: const Cubic(.22, 1, .36, 1),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: DopmiTokens.displayFont,
+                              fontSize: selected == null ? 32 : 28,
+                              letterSpacing: selected == null ? -.64 : -.56,
+                              height: 1.15,
+                              fontWeight: FontWeight.w600,
+                              color: ink,
+                            ),
+                            child: Text(
+                              selected == null
+                                  ? '¿Cómo quieres ayudar hoy?'
+                                  : '¿Cómo quieres ayudar?',
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    if (selected == null)
-                      SizedBox(
-                        height:
-                            (constraints.maxHeight - 620).clamp(24, 220) / 2,
-                      )
-                    else
-                      const SizedBox(height: 40),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        for (final option in options)
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                top: option.$1 == 'adopt' ? 0 : 22,
-                              ),
-                              child: Semantics(
-                                label: option.$2,
-                                checked: intent == option.$1,
-                                inMutuallyExclusiveGroup: true,
-                                button: true,
-                                onTap: () => setState(() => intent = option.$1),
-                                child: ExcludeSemantics(
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(50),
-                                    onTap: () =>
-                                        setState(() => intent = option.$1),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        AnimatedContainer(
-                                          duration:
-                                              MediaQuery.disableAnimationsOf(
-                                                context,
-                                              )
-                                              ? Duration.zero
-                                              : const Duration(
-                                                  milliseconds: 250,
-                                                ),
-                                          curve: Curves.ease,
-                                          width: intent == option.$1
-                                              ? 92
-                                              : selected == null
-                                              ? 76
-                                              : 64,
-                                          height: intent == option.$1
-                                              ? 92
-                                              : selected == null
-                                              ? 76
-                                              : 64,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: intent == option.$1
-                                                ? const Color(0xfffff6cf)
-                                                : Colors.white,
-                                            border: Border.all(
-                                              color: yellow,
+                      if (selected == null)
+                        SizedBox(
+                          height:
+                              (constraints.maxHeight - 620).clamp(24, 220) / 2,
+                        )
+                      else
+                        const SizedBox(height: 40),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          for (final option in options)
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  top: option.$1 == 'adopt' ? 0 : 22,
+                                ),
+                                child: Semantics(
+                                  label: option.$2,
+                                  checked: intent == option.$1,
+                                  inMutuallyExclusiveGroup: true,
+                                  button: true,
+                                  onTap: () =>
+                                      setState(() => intent = option.$1),
+                                  child: ExcludeSemantics(
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(50),
+                                      onTap: () =>
+                                          setState(() => intent = option.$1),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          AnimatedContainer(
+                                            duration:
+                                                MediaQuery.disableAnimationsOf(
+                                                  context,
+                                                )
+                                                ? Duration.zero
+                                                : const Duration(
+                                                    milliseconds: 250,
+                                                  ),
+                                            curve: Curves.ease,
+                                            width: intent == option.$1
+                                                ? 92
+                                                : selected == null
+                                                ? 76
+                                                : 64,
+                                            height: intent == option.$1
+                                                ? 92
+                                                : selected == null
+                                                ? 76
+                                                : 64,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: intent == option.$1
+                                                  ? const Color(0xfffff6cf)
+                                                  : Colors.white,
+                                              border: Border.all(
+                                                color: yellow,
+                                                width: intent == option.$1
+                                                    ? 2
+                                                    : 1.5,
+                                              ),
+                                            ),
+                                            alignment: Alignment.center,
+                                            child: SvgPicture.asset(
+                                              'assets/navigation/choice-${option.$1}.svg',
                                               width: intent == option.$1
-                                                  ? 2
-                                                  : 1.5,
+                                                  ? 32
+                                                  : 26,
+                                              height: intent == option.$1
+                                                  ? 32
+                                                  : 26,
                                             ),
                                           ),
-                                          alignment: Alignment.center,
-                                          child: SvgPicture.asset(
-                                            'assets/navigation/choice-${option.$1}.svg',
-                                            width: intent == option.$1
-                                                ? 32
-                                                : 26,
-                                            height: intent == option.$1
-                                                ? 32
-                                                : 26,
+                                          const SizedBox(height: 10),
+                                          Text(
+                                            option.$2,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              height: 1.3,
+                                              color: intent == option.$1
+                                                  ? ink
+                                                  : muted,
+                                              fontWeight: intent == option.$1
+                                                  ? FontWeight.w700
+                                                  : FontWeight.w500,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        Text(
-                                          option.$2,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            height: 1.3,
-                                            color: intent == option.$1
-                                                ? ink
-                                                : muted,
-                                            fontWeight: intent == option.$1
-                                                ? FontWeight.w700
-                                                : FontWeight.w500,
-                                          ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
+                        ],
+                      ),
+                      if (selected != null) ...[
+                        SizedBox(
+                          height:
+                              (constraints.maxHeight - 620).clamp(24, 220) / 2,
+                        ),
+                        WelcomeSelectionEntrance(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              const SizedBox(height: 28),
+                              Text(
+                                selected.$2,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontFamily: DopmiTokens.displayFont,
+                                  fontSize: 36,
+                                  color: ink,
+                                  height: 1.1,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                selected.$3,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  height: 1.5,
+                                  color: muted,
+                                ),
+                              ),
+                            ],
                           ),
+                        ),
+                        const SizedBox(height: 28),
+                        SizedBox(
+                          height:
+                              (constraints.maxHeight - 620).clamp(24, 220) / 2,
+                        ),
+                        WelcomeSelectionEntrance(
+                          footer: true,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              FilledButton(
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: ink,
+                                  foregroundColor: Colors.white,
+                                  minimumSize: const Size.fromHeight(52),
+                                ),
+                                onPressed: () =>
+                                    context.push('/onboarding?intent=$intent'),
+                                child: const Text('Continuar'),
+                              ),
+                              const SizedBox(height: 14),
+                              const Text(
+                                'Puedes cambiar tu selección en cualquier momento desde la configuración de tu perfil.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  height: 1.5,
+                                  color: muted,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
-                    ),
-                    if (selected != null) ...[
-                      SizedBox(
-                        height:
-                            (constraints.maxHeight - 620).clamp(24, 220) / 2,
+                      const SizedBox(height: 12),
+                      TextButton(
+                        onPressed: () => context.push('/login'),
+                        child: const Text('Ya tengo cuenta · Iniciar sesión'),
                       ),
-                      WelcomeSummaryEntrance(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            const SizedBox(height: 28),
-                            Text(
-                              selected.$2,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontFamily: DopmiTokens.displayFont,
-                                fontSize: 36,
-                                color: ink,
-                                height: 1.1,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              selected.$3,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                height: 1.5,
-                                color: muted,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 28),
-                      SizedBox(
-                        height:
-                            (constraints.maxHeight - 620).clamp(24, 220) / 2,
-                      ),
-                      FilledButton(
-                        style: FilledButton.styleFrom(
-                          backgroundColor: ink,
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size.fromHeight(52),
-                        ),
-                        onPressed: () =>
-                            context.push('/onboarding?intent=$intent'),
-                        child: const Text('Continuar'),
-                      ),
-                      const SizedBox(height: 14),
-                      const Text(
-                        'Puedes cambiar tu selección en cualquier momento desde la configuración de tu perfil.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 12,
-                          height: 1.5,
-                          color: muted,
-                        ),
+                      TextButton(
+                        onPressed: () => context.go('/adoptions'),
+                        child: const Text('Explorar adopciones sin cuenta'),
                       ),
                     ],
-                    const SizedBox(height: 12),
-                    TextButton(
-                      onPressed: () => context.push('/login'),
-                      child: const Text('Ya tengo cuenta · Iniciar sesión'),
-                    ),
-                    TextButton(
-                      onPressed: () => context.go('/adoptions'),
-                      child: const Text('Explorar adopciones sin cuenta'),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
   }
 }
 
-/// Matches account-summary opacity (.45s + .12s) and translation (.55s + .08s).
-class WelcomeSummaryEntrance extends StatefulWidget {
-  const WelcomeSummaryEntrance({super.key, required this.child});
+/// Reference summary and footer enter with independent delays and translations.
+class WelcomeSelectionEntrance extends StatefulWidget {
+  const WelcomeSelectionEntrance({
+    super.key,
+    required this.child,
+    this.footer = false,
+  });
+  final bool footer;
   final Widget child;
   @override
-  State<WelcomeSummaryEntrance> createState() => _WelcomeSummaryEntranceState();
+  State<WelcomeSelectionEntrance> createState() =>
+      _WelcomeSelectionEntranceState();
 }
 
-class _WelcomeSummaryEntranceState extends State<WelcomeSummaryEntrance>
+class _WelcomeSelectionEntranceState extends State<WelcomeSelectionEntrance>
     with SingleTickerProviderStateMixin {
   late final AnimationController controller = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 630),
+    duration: Duration(milliseconds: widget.footer ? 620 : 630),
   );
   @override
   void didChangeDependencies() {
@@ -366,20 +383,21 @@ class _WelcomeSummaryEntranceState extends State<WelcomeSummaryEntrance>
     animation: controller,
     child: widget.child,
     builder: (_, child) {
-      final opacity = const Interval(
-        120 / 630,
-        570 / 630,
+      final total = widget.footer ? 620.0 : 630.0;
+      final opacity = Interval(
+        (widget.footer ? 180 : 120) / total,
+        (widget.footer ? 580 : 570) / total,
         curve: Curves.ease,
       ).transform(controller.value);
-      final position = const Interval(
-        80 / 630,
+      final position = Interval(
+        (widget.footer ? 120 : 80) / total,
         1,
-        curve: Cubic(.22, 1, .36, 1),
+        curve: const Cubic(.22, 1, .36, 1),
       ).transform(controller.value);
       return Opacity(
         opacity: opacity,
         child: Transform.translate(
-          offset: Offset(0, 18 * (1 - position)),
+          offset: Offset(0, (widget.footer ? 16 : 18) * (1 - position)),
           child: child,
         ),
       );
