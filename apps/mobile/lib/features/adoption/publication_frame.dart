@@ -160,15 +160,19 @@ class PublicationStepper extends StatelessWidget {
                     : const Color(0xfff0eff8),
                 shape: BoxShape.circle,
               ),
-              child: Text(
-                '${index + 1}',
-                style: TextStyle(
-                  fontSize: 14,
-                  height: 1,
-                  fontWeight: FontWeight.w700,
-                  color: index <= step ? Colors.white : const Color(0xff616174),
-                ),
-              ),
+              child: index < step
+                  ? const Icon(Icons.check, size: 18, color: Colors.white)
+                  : Text(
+                      '${index + 1}',
+                      style: TextStyle(
+                        fontSize: 14,
+                        height: 1,
+                        fontWeight: FontWeight.w700,
+                        color: index <= step
+                            ? Colors.white
+                            : const Color(0xff616174),
+                      ),
+                    ),
             ),
             if (index < totalSteps - 1)
               Expanded(

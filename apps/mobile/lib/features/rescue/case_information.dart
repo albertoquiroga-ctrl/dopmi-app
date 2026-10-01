@@ -26,18 +26,18 @@ class CaseInformation extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          field.label,
+          field.key == 'age' ? 'Edad' : field.label,
           style: const TextStyle(
             fontFamily: 'Inter',
             fontSize: 14,
-            height: 1.55,
+            height: 1.2,
             fontWeight: FontWeight.w500,
             color: Color(0xff151423),
           ),
         ),
         const SizedBox(height: 8),
         Semantics(
-          label: field.label,
+          label: field.key == 'age' ? 'Edad' : field.label,
           child: TextField(
             key: ValueKey('case-field-${field.key}'),
             controller: controllers[field.key],
@@ -45,7 +45,7 @@ class CaseInformation extends StatelessWidget {
             maxLength: field.key == 'pet_name'
                 ? (controllers['pet_name']!.text.length > 25 ? 80 : 25)
                 : field.max,
-            maxLines: field.lines,
+            maxLines: field.key == 'story' ? 3 : field.lines,
             keyboardType: field.key == 'amount'
                 ? const TextInputType.numberWithOptions(decimal: true)
                 : field.lines > 1
@@ -54,14 +54,19 @@ class CaseInformation extends StatelessWidget {
             style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 16,
-              height: 1.55,
+              height: 1.2,
               color: Color(0xff151423),
             ),
             decoration: InputDecoration(
+              isDense: true,
+              constraints: const BoxConstraints(minHeight: 36),
+              counterText: '',
               hintText: field.key == 'pet_name'
                   ? 'Opcional'
                   : field.key == 'age'
                   ? 'ej. 3 meses'
+                  : field.key == 'story'
+                  ? 'Cuenta cómo la encontraste.'
                   : null,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,
@@ -83,13 +88,14 @@ class CaseInformation extends StatelessWidget {
             onChanged: (_) => onChanged(),
           ),
         ),
+        if (['pet_name', 'age'].contains(field.key)) const SizedBox(height: 8),
         if (field.key == 'pet_name')
           const Text(
             'Si aún no tiene nombre, puedes dejarlo vacío.',
             style: TextStyle(
               fontFamily: 'Inter',
               fontSize: 12,
-              height: 1.55,
+              height: 1.2,
               color: Color(0xff616174),
             ),
           ),
@@ -99,7 +105,7 @@ class CaseInformation extends StatelessWidget {
             style: TextStyle(
               fontFamily: 'Inter',
               fontSize: 12,
-              height: 1.55,
+              height: 1.2,
               color: Color(0xff616174),
             ),
           ),
@@ -179,7 +185,7 @@ class CaseInformation extends StatelessWidget {
         style: TextStyle(
           fontFamily: 'Inter',
           fontSize: 12,
-          height: 1.55,
+          height: 1.2,
           color: Color(0xff616174),
         ),
       ),
