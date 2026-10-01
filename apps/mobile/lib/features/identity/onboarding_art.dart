@@ -596,78 +596,197 @@ class OnboardingArt extends StatelessWidget {
     ],
   );
 
-  Widget rescue() => step == 0
-      ? publicationPreview()
-      : Column(
+  Widget rescue() => step == 0 ? publicationPreview() : supportPreview();
+
+  Widget supportPreview() => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: ink,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (step == 0)
-              const Text(
-                'Tu próxima publicación',
-                style: TextStyle(fontSize: 12, color: muted),
-              )
-            else
-              tag('Ejemplo de un caso con apoyo'),
-            const SizedBox(height: 12),
-            panel([
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const CircleAvatar(
-                    radius: 27,
-                    backgroundColor: Color(0xfffff9df),
-                    child: Text('M', style: TextStyle(color: ink)),
-                  ),
-                  const SizedBox(width: 10),
-                  ClipOval(child: photo('nina-card', 86, 86, radius: 43)),
-                ],
+            Padding(
+              padding: const EdgeInsets.only(top: 1),
+              child: SvgPicture.asset(
+                'assets/profile/icon-bell.svg',
+                width: 14,
+                height: 14,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
               ),
-              const SizedBox(height: 14),
-              if (step == 0) ...[
-                const Text(
-                  'Canela',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'Fraunces',
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                    color: ink,
+            ),
+            const SizedBox(width: 8),
+            const Expanded(
+              child: Text(
+                'Ejemplo de un caso con apoyo',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 12,
+                  height: 1.35,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 10),
+      Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: const Color(0xffe6e2dd)),
+        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: const BoxDecoration(
+                    color: yellow,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'M',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0,
+                        color: ink,
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Vacunada · Convive con niños',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: muted),
-                ),
-                const SizedBox(height: 12),
-                Center(child: tag('En adopción')),
-              ] else ...[
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 6,
-                  runSpacing: 6,
-                  children: [
-                    tag('Comida'),
-                    tag('Medicina'),
-                    tag('Veterinario'),
-                  ],
-                ),
-                const SizedBox(height: 14),
-                const Text(
-                  'Gastos pagados y aprobados',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  'Tu cuenta verificada ayuda a que las personas confíen en ti.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: muted),
+                const SizedBox(width: 10),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: ink.withValues(alpha: .1),
+                        offset: const Offset(0, 4),
+                        blurRadius: 12,
+                      ),
+                    ],
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: photo('nina-card', 84, 84, radius: 18),
+                  ),
                 ),
               ],
-            ]),
+            ),
+            const SizedBox(height: 10),
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (final need in [
+                    ('Comida', 'assets/profile/tab-donate.svg'),
+                    ('Medicina', 'assets/onboarding/onb-syringe.svg'),
+                    ('Veterinario', 'assets/onboarding/icon-plus-circle.svg'),
+                  ]) ...[
+                    if (need.$1 != 'Comida') const SizedBox(width: 8),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xfffff9df),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: yellow.withValues(alpha: .35),
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SvgPicture.asset(need.$2, width: 18, height: 18),
+                            const SizedBox(height: 6),
+                            Text(
+                              need.$1,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 11,
+                                height: 1.2,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0,
+                                color: ink,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Gastos pagados y aprobados',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 13,
+                height: 1.2,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0,
+                color: ink,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SvgPicture.asset(
+                  'assets/profile/icon-verified.svg',
+                  width: 14,
+                  height: 14,
+                ),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text(
+                    'Tu cuenta verificada ayuda a que las personas confíen en ti.',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 12,
+                      height: 1.4,
+                      letterSpacing: 0,
+                      color: muted,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ],
-        );
+        ),
+      ),
+    ],
+  );
+
   Widget publicationPreview() => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [

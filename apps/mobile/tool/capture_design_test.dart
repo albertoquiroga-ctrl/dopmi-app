@@ -180,6 +180,10 @@ void main() {
       }
       for (final path in [
         'assets/profile/icon-verified.svg',
+        'assets/onboarding/onb-syringe.svg',
+        'assets/onboarding/icon-plus-circle.svg',
+        'assets/profile/icon-bell.svg',
+        'assets/profile/tab-donate.svg',
         'assets/onboarding/send.svg',
       ]) {
         final asset = SvgAssetLoader(path);
