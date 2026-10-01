@@ -151,3 +151,24 @@ archivar y anonimizar publicaciones, redactar mensajes propios y conservar los
 mensajes del otro participante. Ambas se reprodujeron en la suite PGlite antes
 de aplicarse; 402 pruebas completas pasaron después. Se conserva la
 correspondencia explícita; no se renombraron migraciones históricas.
+
+## Paridad de personalidad · 30 de septiembre de 2026 (México)
+
+Proyecto de desarrollo `ohqxranynackjignryep`. Local
+`20261001042203_adoption_personality_parity.sql` → remoto
+`20261001042909_adoption_personality_parity`, aplicado por MCP tras pruebas
+PGlite. No push, repair, renombrado ni repetición histórica.
+
+Antes: cuerpos locales/remotos de save y discovery idénticos en UTF-8,
+normalizando CRLF; hashes MD5 `936ee5be7b3eab329b14ac2324793892` y
+`f722fd54426b62a0fac4085d24ef8424`. Restricción remota confirmó seis claves.
+Después: hashes `740811926f07ae14edfdb56b83c66850` y
+`0d1e3a6346439b562326d2bbb285ae46` coinciden con la migración nueva.
+Firmas, SECURITY DEFINER, search_path vacío y ACL conservados. Consulta remota
+de los doce rasgos aceptada. Se conserva cada valor anterior; omitir personalidad
+preserva sus datos y una lista vacía los limpia. Guardar cambios devuelve toda
+la publicación a borrador y exige aprobación antes de discovery.
+
+Asesores antes/después conservan categorías y conteos: RLS sin políticas27,
+RPC SECURITY DEFINER anon15/authenticated68 y protección de contraseñas1.
+No se concedieron accesos nuevos. pgTAP local pendiente: Docker no disponible.

@@ -192,6 +192,36 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
   verificación instalada siguen abiertos. No nuevo CI remoto/Codemagic ni
   aceptación atribuida. Objetivo activo; entrega final autorizada permanece.
 
+## Loop 06 · Doce rasgos con datos reales · 2026-09-30
+
+- Referencia inicio/cierre `a3c969cd9103fd46dc5cd886999912526ce75efb`,
+  consultada en la rama Irlanda. Los doce nombres, orden y tonos pasan al
+  selector real. Cuatro columnas y chips34px en escala normal; texto200% usa
+  una columna desplazable para conservar palabras completas. Género vuelve a
+  aparecer en la captura ampliada. Acciones42px y composición contrastadas con
+  reference-filters.png; persisten pequeñas diferencias de tipografía/espaciado.
+- Publicación carga/conserva personalidad, permite seleccionar rasgos nuevos
+  y envía el payload real. Los rasgos anteriores se conservan literalmente;
+  se muestran en el editor si ya estaban seleccionados, sin equivalencias
+  emocionales inventadas. Filtros usa las doce claves nuevas, no etiquetas que
+  el servidor rechaza.
+- Migración nueva local20261001042203/remota20261001042909 aplicada sólo en
+  desarrollo. Correspondencia de cuerpos y ACL verificada antes/después en
+  migration-history-audit.md; consulta remota de doce rasgos aceptada.
+  Guardado conserva propietario/versionado, bloquea edición enviada y devuelve
+  las publicaciones editadas a borrador. Exposición exige revisión vigente.
+- Backend410 pruebas; cinco pruebas nuevas comprueban filtro legado/nuevo,
+  conservación/limpieza, retiro público, envío/aprobación y entradas inválidas.
+  Capturador16 estados y cuatro pruebas de filtro pasan. Nueva prueba de editor
+  comprueba conservación legado y selección/payload nuevo. Configuración12.
+  Gate final Flutter120 y analyze lib/test/tool limpio; archivos lib/test de
+  la copia ejecutada coinciden byte a byte con el checkout.
+  Evidencia PNG en docs/design-reviews/parity-loop-06. pgTAP pendiente porque
+  Docker no está disponible; no se atribuye aceptación instalada/visual general.
+- Próximo: ubicación, confirmación, detalle/vacíos y apoyo intercalado de
+  Adoptar, luego restantes recorridos. Objetivo y entrega Codemagic final siguen
+  activos; este checkpoint no completa la paridad integral.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián

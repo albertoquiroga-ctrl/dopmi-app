@@ -106,7 +106,7 @@ void main() {
       'species': 'dog',
       'sex': 'female',
       'size': 'medium',
-      'personality': ['calm'],
+      'personality': ['tranquilo'],
     });
     await tester.tap(find.byTooltip('Filtros'));
     await tester.pumpAndSettle();

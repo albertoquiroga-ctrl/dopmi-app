@@ -9,6 +9,7 @@ import '../../core/measurement.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
 import 'photo_recovery.dart';
+import 'discovery_filters.dart' show personalityLabels, legacyPersonalityLabels;
 
 class MyAdoptionsScreen extends ConsumerStatefulWidget {
   const MyAdoptionsScreen({super.key});
@@ -166,6 +167,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
               'social_dogs',
               'social_cats',
               'social_children',
+              'personality',
             ])
               key: result.data[key],
           };
@@ -369,6 +371,39 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                   'medium': 'Mediano',
                   'large': 'Grande',
                 }),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Text('Personalidad'),
+                ),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final item in {
+                      ...personalityLabels,
+                      for (final entry in legacyPersonalityLabels.entries)
+                        if ((choices['personality'] as List? ?? const [])
+                            .contains(entry.key))
+                          entry.key: entry.value,
+                    }.entries)
+                      FilterChip(
+                        label: Text(item.value),
+                        selected: (choices['personality'] as List? ?? const [])
+                            .contains(item.key),
+                        onSelected: busy || post?.status == 'submitted'
+                            ? null
+                            : (selected) => setState(() {
+                                final traits = List<String>.from(
+                                  choices['personality'] as List? ?? const [],
+                                );
+                                selected
+                                    ? traits.add(item.key)
+                                    : traits.remove(item.key);
+                                choices['personality'] = traits;
+                              }),
+                      ),
+                  ],
+                ),
                 field('breed', 'Raza o mestizo (opcional)', 80),
                 field('city', 'Ciudad', 100),
                 field('region', 'Estado', 100),

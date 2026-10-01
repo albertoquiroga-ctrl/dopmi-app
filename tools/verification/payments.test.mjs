@@ -64,6 +64,60 @@ function stripeFixture(d, overrides={}) {
   }};
 }
 const serviceFor = (stripe, overrideRpc=rpc) => paymentService({rpc:overrideRpc,stripe,returnUrl:'https://example.test/return',logger:{}});
+test('personality preserves legacy data, supports new traits and removes edited posts from discovery', async () => {
+  const post='30000000-0000-4000-8000-000000000001';
+  await db.query("insert into dopmi_adoptions(id,owner_id,status,personality) values($1,$2,'published',array['calm','alegre'])",[post,rescuer]);
+  await db.exec('set local role anon');
+  for (const trait of ['calm','alegre']) {
+    const result=(await db.query('select dopmi_discovery($1::jsonb) as value',[JSON.stringify({personality:[trait]})])).rows[0].value;
+    assert.equal(result.total,1);
+    assert.deepEqual(result.items[0].personality,['calm','alegre']);
+  }
+  await db.exec('reset role');
+  await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[rescuer]);
+  await db.exec('set local role authenticated');
+  const preserved=(await db.query("select dopmi_save_adoption('{}',$1,1) as value",[post])).rows[0].value;
+  assert.deepEqual(preserved.personality,['calm','alegre']);
+  assert.equal(preserved.status,'draft');
+  const edited=(await db.query(`select dopmi_save_adoption('{"personality":["triste","tranquilo"]}',$1,2) as value`,[post])).rows[0].value;
+  assert.deepEqual(edited.personality,['triste','tranquilo']);
+  await db.exec('reset role; set local role anon');
+  assert.equal((await db.query(`select dopmi_discovery('{"personality":["triste"]}') as value`)).rows[0].value.total,0);
+  await db.exec('reset role; set local role authenticated');
+  const cleared=(await db.query(`select dopmi_save_adoption('{"personality":[]}',$1,3) as value`,[post])).rows[0].value;
+  assert.deepEqual(cleared.personality,[]);
+  await db.exec('reset role');
+});
+
+test('new personality reaches discovery only after owner submission and staff review', async () => {
+  await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[rescuer]);
+  await db.exec('set local role authenticated');
+  const payload={pet_name:'Luna',city:'Monterrey',region:'Nuevo León',publisher_name:'Refugio',
+    story:'Luna busca una familia que la acompañe.',personality:['esperanzado','nervioso']};
+  const saved=(await db.query('select dopmi_save_adoption($1::jsonb) as value',[JSON.stringify(payload)])).rows[0].value;
+  const photo=`${rescuer}/${saved.id}/40000000-0000-4000-8000-000000000001.jpg`;
+  await db.query('select dopmi_save_adoption($1::jsonb,$2,1)',[JSON.stringify({...payload,photos:[photo]}),saved.id]);
+  await db.exec('reset role');
+  await db.query("insert into storage.objects(bucket_id,name) values('dopmi-adoption-photos',$1)",[photo]);
+  await db.exec('set local role authenticated');
+  await db.query("select dopmi_transition_adoption($1,2,'submit')",[saved.id]);
+  await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[staff]);
+  await db.query("select dopmi_review_adoption($1,3,'published')",[saved.id]);
+  await db.exec('reset role; set local role anon');
+  const result=(await db.query(`select dopmi_discovery('{"personality":["esperanzado"]}') as value`)).rows[0].value;
+  assert.equal(result.total,1);
+  assert.deepEqual(result.items[0].personality,payload.personality);
+  await db.exec('reset role');
+});
+
+for (const traits of ['alegre', ['inventado'], Array(19).fill('alegre')]) {
+  test(`personality rejects unsupported shape, values or cardinality: ${JSON.stringify(traits)}`, async () => {
+    await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[rescuer]);
+    await db.exec('set local role authenticated');
+    await assert.rejects(db.query('select dopmi_save_adoption($1::jsonb)',[JSON.stringify({personality:traits})]),e=>e.code==='22023');
+  });
+}
+
 test('H10 legal consent is versioned and cannot be forged through profile updates', async () => {
   await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[other]);
   const accepted=(await db.query(`select public.dopmi_accept_legal('terms-2026-09-28','privacy-2026-09-28',true) as value`)).rows[0].value;

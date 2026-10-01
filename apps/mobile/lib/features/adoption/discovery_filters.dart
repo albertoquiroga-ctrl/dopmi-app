@@ -8,6 +8,36 @@ import '../../core/ui.dart';
 import 'community_repository.dart';
 
 const personalityLabels = <String, String>{
+  'alegre': 'Alegre',
+  'feliz': 'Feliz',
+  'esperanzado': 'Esperanzado',
+  'emocionado': 'Emocionado',
+  'triste': 'Triste',
+  'enojado': 'Enojado',
+  'ansioso': 'Ansioso',
+  'tranquilo': 'Tranquilo',
+  'contento': 'Contento',
+  'satisfecho': 'Satisfecho',
+  'solo': 'Solo',
+  'nervioso': 'Nervioso',
+};
+
+const personalityColors = <String, Color>{
+  'alegre': Color(0xfff7f4ef),
+  'feliz': Color(0xfff7efb8),
+  'esperanzado': Color(0xffd8efc4),
+  'emocionado': Color(0xfff6d0dc),
+  'triste': Color(0xffd7dceb),
+  'enojado': Color(0xfff5d0b8),
+  'ansioso': Color(0xffe8dcc8),
+  'tranquilo': Color(0xffcfe4f5),
+  'contento': Color(0xffcfeee0),
+  'satisfecho': Color(0xffddd0f0),
+  'solo': Color(0xffc9d7f2),
+  'nervioso': Color(0xffe8efb8),
+};
+
+const legacyPersonalityLabels = <String, String>{
   'affectionate': 'Cariñoso',
   'playful': 'Juguetón',
   'calm': 'Tranquilo',
@@ -173,7 +203,11 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                 LayoutBuilder(
                   builder: (context, constraints) {
                     final columns =
-                        MediaQuery.textScalerOf(context).scale(11) > 15 ? 2 : 3;
+                        MediaQuery.textScalerOf(context).scale(11) > 20
+                        ? 1
+                        : MediaQuery.textScalerOf(context).scale(11) > 15
+                        ? 2
+                        : 4;
                     return Wrap(
                       spacing: 8,
                       runSpacing: 8,
@@ -186,14 +220,7 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                             child: FilterOption(
                               label: item.value,
                               selected: traits.contains(item.key),
-                              fill: const {
-                                'affectionate': Color(0xfff6d0dc),
-                                'playful': Color(0xfff7efb8),
-                                'calm': Color(0xffcfe4f5),
-                                'active': Color(0xfff5d0b8),
-                                'sociable': Color(0xffd8efc4),
-                                'independent': Color(0xffddd0f0),
-                              }[item.key]!,
+                              fill: personalityColors[item.key]!,
                               foreground: ink,
                               fontSize: 11,
                               outlined: true,
@@ -211,6 +238,8 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                 const SizedBox(height: 32),
                 FilledButton(
                   style: FilledButton.styleFrom(
+                    minimumSize: const Size(0, 42),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     backgroundColor: yellow,
                     foregroundColor: ink,
                     textStyle: const TextStyle(
@@ -233,6 +262,8 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                 const SizedBox(height: 12),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(
+                    minimumSize: const Size(0, 42),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     foregroundColor: ink,
                     side: const BorderSide(color: Color(0xffe6e2dd)),
                     textStyle: const TextStyle(
@@ -288,8 +319,12 @@ class FilterOption extends StatelessWidget {
     selected: selected,
     child: TextButton(
       style: TextButton.styleFrom(
-        minimumSize: const Size(0, 48),
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+        minimumSize: Size(0, outlined ? 34 : 40),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        padding: EdgeInsets.symmetric(
+          horizontal: outlined ? 0 : 4,
+          vertical: 6,
+        ),
         backgroundColor: fill,
         foregroundColor: foreground,
         side: BorderSide(
@@ -306,7 +341,12 @@ class FilterOption extends StatelessWidget {
         ),
       ),
       onPressed: onPressed,
-      child: Text(label, textAlign: TextAlign.center),
+      child: Text(
+        label,
+        textAlign: TextAlign.center,
+        softWrap: MediaQuery.textScalerOf(context).scale(fontSize) > 15,
+        overflow: TextOverflow.visible,
+      ),
     ),
   );
 }
