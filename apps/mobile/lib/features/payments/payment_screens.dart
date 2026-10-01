@@ -14,6 +14,7 @@ import 'payment_repository.dart';
 import 'guardian_repository.dart';
 import 'contribution_layout.dart';
 import 'payment_result_page.dart';
+import 'payment_history_row.dart';
 
 class ContributeScreen extends ConsumerStatefulWidget {
   const ContributeScreen(
@@ -483,110 +484,151 @@ class _HistoryState extends ConsumerState<PaymentHistoryScreen> {
   int page = 1;
   bool received = false;
   @override
-  Widget build(BuildContext context) => CommunityFrame(
-    children: [
-      const Heading(
-        'Cada aportación, clara.',
-        'Consulta pagos y transferencias confirmados.',
-        eyebrow: 'HISTORIAL DE PRUEBA',
-      ),
-      if (ref.watch(guardianEnabledProvider))
-        TextButton(
-          onPressed: () => context.push('/guardian'),
-          child: const Text('Mi plan Guardián'),
-        ),
-      const Notice(
-        'Una transferencia llega a la cuenta Stripe del rescatista. El depósito bancario es un paso posterior y sus tiempos dependen de Stripe.',
-      ),
-      SwitchListTile(
-        title: const Text('Ver aportaciones recibidas'),
-        value: received,
-        onChanged: (value) => setState(() {
-          received = value;
-          page = 1;
-        }),
-      ),
-      LiveSection<DataPage<Json>>(
-        key: ValueKey('$received:$page'),
-        errorMessage: paymentError,
-        tables: const ['dopmi_donations'],
-        load: () => ref
-            .read(paymentRepositoryProvider)
-            .history(page, received: received),
-        builder: (data, refresh) => Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (data.items.isEmpty)
-              const Notice('Todavía no hay aportaciones en este historial.'),
-            for (final d in data.items)
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        d['expense_title'] as String,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      Text('Importe: ${pesos(d['gross_cents'] as int)}'),
-                      Text(
-                        paymentLabels[d['payment_status']] ??
-                            'Estado en revisión',
-                      ),
-                      Text(
-                        transferLabels[d['transfer_status']] ??
-                            'Transferencia en revisión',
-                      ),
-                      if (d['processed_at'] != null) ...[
-                        Text(
-                          'Comisión Dopmi: ${pesos(d['platform_fee_cents'] as int)}',
-                        ),
-                        Text(
-                          'Costos de Stripe: ${pesos(d['stripe_fee_cents'] as int)}',
-                        ),
-                        Text(
-                          'Neto para el rescatista: ${pesos(d['allocated_cents'] as int)}',
-                        ),
-                        if ((d['refund_cents'] as int) > 0)
-                          Text(
-                            '${d['refund_status'] == 'refunded' ? 'Devuelto' : 'Devolución en proceso'}: ${pesos(d['refund_cents'] as int)}',
-                          ),
+  Widget build(BuildContext context) => ContributionFrame(
+    title: 'Mi historial',
+    back: () => context.canPop() ? context.pop() : context.go('/profile'),
+    child: SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text('Consulta todo tu historial de pagos.'),
+          const SizedBox(height: 12),
+          LiveSection<DataPage<Json>>(
+            key: ValueKey('$received:$page'),
+            errorMessage: paymentError,
+            tables: const ['dopmi_donations'],
+            load: () => ref
+                .read(paymentRepositoryProvider)
+                .history(page, received: received),
+            builder: (data, refresh) => Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (data.items.isEmpty)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 22,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xfff7f5f1),
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: const Text(
+                      'Aún no hay movimientos en tu historial.',
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                else
+                  Container(
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: const Color(0xffe6e2dd)),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Column(
+                      children: [
+                        for (var i = 0; i < data.items.length; i++) ...[
+                          if (i > 0)
+                            const Divider(height: 1, color: Color(0xffe6e2dd)),
+                          for (final d in [data.items[i]])
+                            PaymentHistoryRow(
+                              key: ValueKey(d['id']),
+                              payment: d,
+                              details: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    d['expense_title'] as String,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge,
+                                  ),
+                                  Text(
+                                    'Importe: ${pesos(d['gross_cents'] as int)}',
+                                  ),
+                                  Text(
+                                    paymentLabels[d['payment_status']] ??
+                                        'Estado en revisión',
+                                  ),
+                                  Text(
+                                    transferLabels[d['transfer_status']] ??
+                                        'Transferencia en revisión',
+                                  ),
+                                  if (d['processed_at'] != null) ...[
+                                    Text(
+                                      'Comisión Dopmi: ${pesos(d['platform_fee_cents'] as int)}',
+                                    ),
+                                    Text(
+                                      'Costos de Stripe: ${pesos(d['stripe_fee_cents'] as int)}',
+                                    ),
+                                    Text(
+                                      'Neto para el rescatista: ${pesos(d['allocated_cents'] as int)}',
+                                    ),
+                                    if ((d['refund_cents'] as int) > 0)
+                                      Text(
+                                        '${d['refund_status'] == 'refunded' ? 'Devuelto' : 'Devolución en proceso'}: ${pesos(d['refund_cents'] as int)}',
+                                      ),
+                                  ],
+                                  if (!received &&
+                                      d['payment_status'] == 'pending')
+                                    TextButton(
+                                      onPressed: () => context.push(
+                                        '/contribute/${d['expense_id']}',
+                                        extra: d,
+                                      ),
+                                      child: const Text('Continuar aportación'),
+                                    ),
+                                  Text(
+                                    'Referencia: ${d['id']}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall,
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
                       ],
-                      if (!received && d['payment_status'] == 'pending')
-                        TextButton(
-                          onPressed: () => context.push(
-                            '/contribute/${d['expense_id']}',
-                            extra: d,
-                          ),
-                          child: const Text('Continuar aportación'),
-                        ),
-                      Text(
-                        'Referencia: ${d['id']}',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ],
+                    ),
                   ),
+                TextButton(
+                  onPressed: refresh,
+                  child: const Text('Actualizar historial'),
                 ),
-              ),
+                PageControls(
+                  page: page,
+                  total: data.total,
+                  size: 20,
+                  change: (p) => setState(() => page = p),
+                ),
+              ],
+            ),
+          ),
+          SwitchListTile(
+            title: const Text('Ver aportaciones recibidas'),
+            value: received,
+            onChanged: (value) => setState(() {
+              received = value;
+              page = 1;
+            }),
+          ),
+          if (ref.watch(guardianEnabledProvider))
             TextButton(
-              onPressed: refresh,
-              child: const Text('Actualizar historial'),
+              onPressed: () => context.push('/guardian'),
+              child: const Text('Mi plan Guardián'),
             ),
-            PageControls(
-              page: page,
-              total: data.total,
-              size: 20,
-              change: (p) => setState(() => page = p),
-            ),
-          ],
-        ),
+          const Notice(
+            'Una transferencia llega a la cuenta Stripe del rescatista. El depósito bancario es un paso posterior y sus tiempos dependen de Stripe.',
+          ),
+          TextButton(
+            onPressed: () => context.push('/connect'),
+            child: const Text('Mi cuenta de cobro y depósitos'),
+          ),
+        ],
       ),
-      TextButton(
-        onPressed: () => context.push('/connect'),
-        child: const Text('Mi cuenta de cobro y depósitos'),
-      ),
-    ],
+    ),
   );
 }
 

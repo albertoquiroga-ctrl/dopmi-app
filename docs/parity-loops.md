@@ -497,3 +497,11 @@ Usar datos equivalentes de prueba para comparaciones; separar las diferencias
 necesarias por reglas reales. Compilación y pruebas unitarias no prueban sensaciones
 en dispositivo ni aceptación visual del titular/Irlanda. El objetivo sigue activo
 hasta que exista evidencia para todo el alcance, no sólo para este perfil.
+
+## Loop 30 — historial compacto con comprobantes reales
+
+- Referencia Irlanda inicio/cierre `a3c969cd9103fd46dc5cd886999912526ce75efb`, sin cambios. App.tsx History y styles.css profile-activity-row: columnas52/1fr/auto, gap10, padding12/14, altura mínima64, radios20, fecha12, título14, importe13 y pill11/padding3/9. Sin nueva simulación de cobros.
+- Historial usa barra Mi historial, explicación y lista compacta; fechas/importe/estado vienen de cada fila autorizada. Métodos muestran Stripe sólo cuando processor=stripe; falta de datos no inventa tarjeta ni importe. Confirmed/pending/canceled/refunded se muestran Pagado/En proceso/Cancelado/Devuelto.
+- Tocar fila despliega comprobante real, referencia, costos, neto, devolución, transferencia y continuación sólo de pendientes enviados. Detalles permanecen dentro de pantalla protegida por identidad; no se cachea comprobante en un modal que sobreviva al cambio de actor. Filtro recibido, refresco, paginación, Guardián y Connect conservados bajo lista. Ningún cambio de consultas/RLS/cobros.
+- Flutter158 y configuración12 aprobados; analyze limpio. Después del ajuste de interlineado, dirigidas3 más capturador aprobado (56 estados). PNG normal/320×640 a200% y vacío archivados; primera captura tenía filas72, corregido interlineado1.2 a filas64 aproximadas. Texto ampliado cambia a columnas verticales sin overflow.
+- Diferencias necesarias: método real, títulos de gasto públicos disponibles y comprobante expandible en lugar de inventar mascota o navegación desde un account_id de Stripe. Pendientes: integrar movimientos reales de Guardián al historial común, perfil de barra, comparación renderizada exacta/gestos instalados y resto del alcance global. No se afirma paridad integral ni aceptación instalada. Codemagic final autorizado sigue pendiente de completar objetivo.

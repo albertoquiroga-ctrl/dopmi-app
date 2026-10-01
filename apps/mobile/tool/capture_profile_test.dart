@@ -113,6 +113,27 @@ class ContributionCapturePayments extends FakePayments {
   };
 }
 
+class HistoryCapturePayments extends FakePayments {
+  HistoryCapturePayments({this.empty = false});
+  final bool empty;
+  @override
+  Future<DataPage<Json>> history(int page, {bool received = false}) async {
+    if (empty) return const DataPage([], 0);
+    final fixture = await fixturePaymentHistory();
+    return DataPage([
+      for (var i = 0; i < fixture.items.length; i++)
+        {
+          ...fixture.items[i],
+          'id': 'fixture-payment-$i',
+          'expense_id': 'fixture-expense-$i',
+          'created_at': '2026-04-${29 - i * 4}T12:00:00Z',
+          'processor': 'stripe',
+          'transfer_status': 'pending',
+        },
+    ], fixture.total);
+  }
+}
+
 class ResultCapturePayments extends ContributionCapturePayments {
   ResultCapturePayments(this.status) {
     this.fail = false;
@@ -292,6 +313,9 @@ void main() {
         'contribution-review-large',
         '/contribute/Cirugía?case=case-one&amount_cents=10000',
       ),
+      ('payment-history', '/payments'),
+      ('payment-history-large', '/payments'),
+      ('payment-history-empty', '/payments'),
       ('contribution-amount', '/contribute/Cirugía?case=case-one'),
       ('contribution-amount-large', '/contribute/Cirugía?case=case-one'),
       ('case-detail-large', '/rescue-cases/case-one'),
@@ -376,6 +400,10 @@ void main() {
         overrides: [
           identityRepositoryProvider.overrideWithValue(repo),
           communityRepositoryProvider.overrideWithValue(community),
+          if (spec.$1.startsWith('payment-history'))
+            paymentRepositoryProvider.overrideWithValue(
+              HistoryCapturePayments(empty: spec.$1.endsWith('-empty')),
+            ),
           if (spec.$1.startsWith('contribution'))
             paymentRepositoryProvider.overrideWithValue(
               spec.$1.startsWith('contribution-result')

@@ -1,0 +1,163 @@
+import 'package:flutter/material.dart';
+
+import '../../core/ui.dart';
+import 'contribution_layout.dart';
+
+class PaymentHistoryRow extends StatefulWidget {
+  const PaymentHistoryRow({
+    super.key,
+    required this.payment,
+    required this.details,
+  });
+  final Map<String, dynamic> payment;
+  final Widget details;
+  @override
+  State<PaymentHistoryRow> createState() => _PaymentHistoryRowState();
+}
+
+class _PaymentHistoryRowState extends State<PaymentHistoryRow> {
+  bool expanded = false;
+  @override
+  Widget build(BuildContext context) {
+    final d = widget.payment;
+    final date = DateTime.tryParse(d['created_at']?.toString() ?? '')
+        ?.toLocal();
+    const months = [
+      'ene',
+      'feb',
+      'mar',
+      'abr',
+      'may',
+      'jun',
+      'jul',
+      'ago',
+      'sep',
+      'oct',
+      'nov',
+      'dic',
+    ];
+    final label = switch (d['payment_status']) {
+      'confirmed' => 'Pagado',
+      'pending' => 'En proceso',
+      'canceled' => 'Cancelado',
+      'refunded' => 'Devuelto',
+      _ => 'En revisión',
+    };
+    final background = switch (d['payment_status']) {
+      'confirmed' => const Color(0xff2dc08e),
+      'pending' => const Color(0xfff7cb2d),
+      _ => const Color(0xffe8e4de),
+    };
+    final dateView = Text(
+      date == null ? '—' : '${date.day} ${months[date.month - 1]}',
+      style: const TextStyle(
+        fontSize: 12,
+        height: 1.2,
+        fontWeight: FontWeight.w600,
+        color: muted,
+      ),
+    );
+    final large = MediaQuery.textScalerOf(context).scale(14) > 21;
+    final body = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          d['expense_title']?.toString() ?? 'Aportación',
+          maxLines: large ? null : 1,
+          overflow: large ? null : TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontSize: 14,
+            height: 1.2,
+            fontWeight: FontWeight.w700,
+            color: ink,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          d['processor'] == 'stripe' ? 'Stripe' : 'Método no disponible',
+          style: const TextStyle(fontSize: 12, height: 1.2, color: muted),
+        ),
+      ],
+    );
+    final amount = Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          d['gross_cents'] is int
+              ? contributionMoney(d['gross_cents'] as int)
+                    .replaceAll(' MXN', '')
+              : 'Importe no disponible',
+          style: const TextStyle(
+            fontSize: 13,
+            height: 1.2,
+            fontWeight: FontWeight.w700,
+            color: Color(0xff6b5000),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+          decoration: BoxDecoration(
+            color: background,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 11,
+              height: 1.2,
+              fontWeight: FontWeight.w500,
+              color: ink,
+            ),
+          ),
+        ),
+      ],
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Semantics(
+          button: true,
+          expanded: expanded,
+          child: InkWell(
+            onTap: () => setState(() => expanded = !expanded),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 64),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
+                child: large
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          dateView,
+                          const SizedBox(height: 10),
+                          body,
+                          const SizedBox(height: 10),
+                          amount,
+                        ],
+                      )
+                    : Row(
+                        children: [
+                          SizedBox(width: 52, child: dateView),
+                          const SizedBox(width: 10),
+                          Expanded(child: body),
+                          const SizedBox(width: 10),
+                          amount,
+                        ],
+                      ),
+              ),
+            ),
+          ),
+        ),
+        if (expanded)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 0, 14, 16),
+            child: widget.details,
+          ),
+      ],
+    );
+  }
+}
