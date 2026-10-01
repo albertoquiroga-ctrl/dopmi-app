@@ -10,6 +10,8 @@ import '../../core/measurement.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../community/content_actions.dart';
+import '../identity/identity_controller.dart';
+import '../identity/identity_repository.dart';
 import '../payments/payment_repository.dart';
 import 'rescue_fields.dart';
 import 'case_update_screens.dart';
@@ -25,7 +27,8 @@ class RescueHomeScreen extends ConsumerWidget {
     index: 2,
     back: false,
     children: [
-      const Heading('Hola', 'Tu panel de rescate'),
+      const RescuerGreeting(),
+      const SizedBox(height: 24),
       LiveSection<Json>(
         tables: const [
           'dopmi_rescue_records',
@@ -36,6 +39,141 @@ class RescueHomeScreen extends ConsumerWidget {
         builder: (data, refresh) => _RescuerDashboard(data, refresh),
       ),
     ],
+  );
+}
+
+class RescuerGreeting extends ConsumerWidget {
+  const RescuerGreeting({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    Widget greeting(String? name) => Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          name == null || name.trim().isEmpty
+              ? 'Hola'
+              : 'Hola, ${name.trim().split(RegExp(r"\s+")).first}',
+          style: const TextStyle(
+            fontSize: 24,
+            height: 1.25,
+            letterSpacing: .07,
+            fontWeight: FontWeight.w700,
+            color: Color(0xff151423),
+          ),
+        ),
+        const Text(
+          'Tu panel de rescate',
+          style: TextStyle(fontSize: 14, height: 1.4, color: Color(0xff4f4e5c)),
+        ),
+      ],
+    );
+    return LiveSection<Profile>(
+      load: () => ref.read(identityRepositoryProvider).loadProfile(),
+      statusFrame: (_) => greeting(null),
+      builder: (profile, _) => greeting(
+        profile.id == ref.read(identityControllerProvider).identity?.id
+            ? profile.name
+            : null,
+      ),
+    );
+  }
+}
+
+class RescuerVerificationCard extends StatelessWidget {
+  const RescuerVerificationCard({
+    super.key,
+    required this.status,
+    required this.onPressed,
+  });
+  final String status;
+  final VoidCallback onPressed;
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(24),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(24),
+      border: Border.all(color: const Color(0x4d7c3aed)),
+      gradient: const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0x1a7c3aed), Color(0x0d7c3aed)],
+      ),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (MediaQuery.textScalerOf(context).scale(16) > 24)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(0x337c3aed),
+                ),
+                child: const Icon(
+                  Icons.verified_user_outlined,
+                  size: 24,
+                  color: purple,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                _verificationTitle(status),
+                style: const TextStyle(
+                  fontSize: 16,
+                  height: 1.5,
+                  fontWeight: FontWeight.w700,
+                  color: purple,
+                ),
+              ),
+            ],
+          )
+        else
+          Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(0x337c3aed),
+                ),
+                child: const Icon(
+                  Icons.verified_user_outlined,
+                  size: 24,
+                  color: purple,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  _verificationTitle(status),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    height: 1.5,
+                    fontWeight: FontWeight.w700,
+                    color: purple,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        const SizedBox(height: 16),
+        const Text(
+          'La verificación protege a donantes y mascotas. Tus documentos no son públicos.',
+          style: TextStyle(fontSize: 14, height: 1.5, color: Color(0xff4f4e5c)),
+        ),
+        const SizedBox(height: 16),
+        FilledButton(
+          onPressed: onPressed,
+          style: FilledButton.styleFrom(minimumSize: const Size(0, 48)),
+          child: Text(status == 'not_started' ? 'Verificarme' : 'Ver estado'),
+        ),
+      ],
+    ),
   );
 }
 
@@ -61,40 +199,12 @@ class _RescuerDashboard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (verification != 'approved')
-          Card(
-            color: const Color(0xffeee7fc),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Icon(
-                    Icons.verified_user_outlined,
-                    color: purple,
-                    size: 34,
-                  ),
-                  Text(
-                    _verificationTitle(verification),
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const Text(
-                    'La verificación protege a donantes y mascotas. Tus documentos no son públicos.',
-                  ),
-                  const SizedBox(height: 12),
-                  FilledButton(
-                    onPressed: () async {
-                      await context.push('/rescue/new?kind=verification');
-                      refresh();
-                    },
-                    child: Text(
-                      verification == 'not_started'
-                          ? 'Verificarme'
-                          : 'Ver estado',
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          RescuerVerificationCard(
+            status: verification,
+            onPressed: () async {
+              await context.push('/rescue/new?kind=verification');
+              refresh();
+            },
           ),
         if (verification == 'approved')
           RescuerFundingSummary(

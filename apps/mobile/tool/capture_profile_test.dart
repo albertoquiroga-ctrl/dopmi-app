@@ -31,6 +31,16 @@ import '../test/guardian_history_test.dart' show cycle;
 import '../test/guardian_test.dart' show FakeGuardian, activePlan;
 import 'capture_design_test.dart' show saveCapture;
 
+class VerificationCaptureRescue extends FakeRescue {
+  VerificationCaptureRescue(this.status);
+  final String status;
+  @override
+  Future<Json> dashboard() async => {
+    ...await super.dashboard(),
+    'verification_status': status,
+  };
+}
+
 class SupportCaptureRescue extends FakeRescue {
   @override
   Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async =>
@@ -323,6 +333,10 @@ void main() {
       ('chat-bubbles', '/messages/thread-one'),
       ('chat-bubbles-large', '/messages/thread-one'),
       ('chat-bubbles-rescuer', '/messages/thread-one'),
+      ('rescuer-home-unverified', '/rescuer'),
+      ('rescuer-home-unverified-large', '/rescuer'),
+      ('rescuer-home-review', '/rescuer'),
+      ('rescuer-home-review-large', '/rescuer'),
       ('rescuer-home', '/rescuer'),
       ('rescuer-home-large', '/rescuer'),
       ('support-home', '/rescue-cases'),
@@ -483,14 +497,23 @@ void main() {
           'activation': null,
         };
       }
-      if (spec.$1.startsWith('rescuer-home') || spec.$1 == 'publish-choice' || spec.$1 == 'chat-bubbles-rescuer') {
+      if (spec.$1.startsWith('rescuer-home') ||
+          spec.$1 == 'publish-choice' ||
+          spec.$1 == 'chat-bubbles-rescuer') {
         await repo.setExperience('rescuer');
       }
       final container = ProviderContainer(
         overrides: [
           identityRepositoryProvider.overrideWithValue(repo),
           communityRepositoryProvider.overrideWithValue(community),
-          if (spec.$1.startsWith('rescuer-home')) rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+          if (spec.$1.startsWith('rescuer-home'))
+            rescueRepositoryProvider.overrideWithValue(
+              spec.$1.contains('unverified')
+                  ? VerificationCaptureRescue('not_started')
+                  : spec.$1.contains('review')
+                  ? VerificationCaptureRescue('submitted')
+                  : FakeRescue(),
+            ),
           if (spec.$1.startsWith('payment-history'))
             paymentRepositoryProvider.overrideWithValue(
               HistoryCapturePayments(empty: spec.$1.endsWith('-empty')),
