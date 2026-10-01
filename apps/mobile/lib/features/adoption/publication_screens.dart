@@ -512,23 +512,21 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                 ),
                 if (photos.isNotEmpty) ...[
                   const SizedBox(height: 16),
-                  for (final path in photos)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: Column(
-                        children: [
-                          AdoptionPhoto(path, height: 200),
-                          if (post?.status != 'submitted')
-                            TextButton.icon(
-                              onPressed: busy
-                                  ? null
-                                  : () => setState(() => photos.remove(path)),
-                              icon: const Icon(Icons.close),
-                              label: const Text('Quitar foto del borrador'),
-                            ),
-                        ],
-                      ),
-                    ),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: [
+                      for (var index = 0; index < photos.length; index++)
+                        PublicationPhotoThumbnail(
+                          key: ValueKey(photos[index]),
+                          photo: AdoptionPhoto(photos[index], height: 167),
+                          principal: index == 0,
+                          onRemove: busy || post?.status == 'submitted'
+                              ? null
+                              : () => setState(() => photos.removeAt(index)),
+                        ),
+                    ],
+                  ),
                 ],
                 const SizedBox(height: 16),
                 const Text(

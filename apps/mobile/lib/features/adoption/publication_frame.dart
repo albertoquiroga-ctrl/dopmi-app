@@ -407,3 +407,85 @@ class _PhotoBorder extends CustomPainter {
   @override
   bool shouldRepaint(_PhotoBorder oldDelegate) => false;
 }
+
+class PublicationPhotoThumbnail extends StatelessWidget {
+  const PublicationPhotoThumbnail({
+    super.key,
+    required this.photo,
+    required this.principal,
+    this.onRemove,
+  });
+  final Widget photo;
+  final bool principal;
+  final VoidCallback? onRemove;
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: 167,
+    height: 167,
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: DecoratedBox(
+        position: DecorationPosition.foreground,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xffe3e4ed)),
+        ),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            photo,
+            if (principal)
+              Positioned(
+                left: 8,
+                bottom: 8,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: const Color(0xff7c3aed),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+                    child: Text(
+                      'Principal',
+                      style: TextStyle(
+                        fontSize: 12,
+                        height: 1.55,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            if (onRemove != null)
+              Positioned(
+                right: 8,
+                top: 8,
+                child: SizedBox(
+                  width: 28,
+                  height: 28,
+                  child: IconButton(
+                    onPressed: onRemove,
+                    tooltip: 'Quitar foto del borrador',
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints.tightFor(
+                      width: 28,
+                      height: 28,
+                    ),
+                    style: IconButton.styleFrom(
+                      backgroundColor: const Color(0xb3000000),
+                      foregroundColor: Colors.white,
+                      hoverColor: const Color(0xcc000000),
+                      shape: const CircleBorder(),
+                    ),
+                    icon: const Icon(Icons.close, size: 16),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    ),
+  );
+}

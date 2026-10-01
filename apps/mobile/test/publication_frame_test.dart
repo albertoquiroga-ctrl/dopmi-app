@@ -1,5 +1,6 @@
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/features/adoption/publication_frame.dart';
 import 'package:dopmi_mobile/features/adoption/photo_recovery.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
@@ -47,6 +48,41 @@ Future<void> startPublication(
 }
 
 void main() {
+  testWidgets(
+    'removing a cover promotes the next real photo and persists the draft',
+    (tester) async {
+      tester.view.physicalSize = const Size(377, 852);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final repo = PhotoDraftCommunity();
+      repo.post = Adoption({
+        ...repo.post.data,
+        'photos': ['fixture/first', 'fixture/second'],
+      });
+      await startPublication(tester, repo, '/my-adoptions/${repo.post.id}');
+      final first = find.byKey(const ValueKey('fixture/first'));
+      final second = find.byKey(const ValueKey('fixture/second'));
+      expect(tester.getSize(first), const Size(167, 167));
+      expect(tester.getTopLeft(second).dy - tester.getTopLeft(first).dy, 179);
+      expect(find.text('Principal'), findsOneWidget);
+      await tester.ensureVisible(first);
+      await tester.tap(
+        find.descendant(of: first, matching: find.byType(IconButton)),
+      );
+      await tester.pumpAndSettle();
+      expect(first, findsNothing);
+      expect(
+        tester.widget<PublicationPhotoThumbnail>(second).principal,
+        isTrue,
+      );
+      await tester.tap(find.text('Guardar borrador'));
+      await tester.pumpAndSettle();
+      expect(repo.savedPayload?['photos'], ['fixture/second']);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets(
     'camera and gallery preserve a private draft and use sanitized picker options',
     (tester) async {

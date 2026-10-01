@@ -559,6 +559,8 @@ void main() {
       ('publish-choice-large', '/publish'),
       ('publish-photos', '/my-adoptions/new'),
       ('publish-photos-large', '/my-adoptions/new'),
+      ('publish-photo-grid', '/my-adoptions/post'),
+      ('publish-photo-grid-large', '/my-adoptions/post'),
     ]) {
       // Synthetic preferences belong only to this flutter_test capturer.
       // ignore: invalid_use_of_visible_for_testing_member
@@ -595,10 +597,18 @@ void main() {
           ? ImpactCaptureCommunity(spec.$1.contains('empty'))
           : (spec.$1.startsWith('adoption-detail') ||
                 spec.$1 == 'adoption-end' ||
-                spec.$1.startsWith('adoption-support'))
+                spec.$1.startsWith('adoption-support') ||
+                spec.$1.startsWith('publish-photo-grid'))
           ? DetailCaptureCommunity()
           : FakeCommunity();
       if (spec.$1.startsWith('adoption-empty')) community.discoveryItems = [];
+      if (spec.$1.startsWith('publish-photo-grid')) {
+        community.post = Adoption({
+          ...community.post.data,
+          'status': 'draft',
+          'photos': ['fixture/one', 'fixture/two'],
+        });
+      }
       if ((spec.$1.startsWith('adoption-detail') ||
           spec.$1 == 'adoption-end')) {
         community.post = Adoption({
