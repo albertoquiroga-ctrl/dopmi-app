@@ -50,7 +50,78 @@ class DraftCaseRescue extends FakeRescue {
   }
 }
 
+class SubmittingCaseRescue extends DraftCaseRescue {
+  SubmittingCaseRescue(this.reject);
+  final bool reject;
+  int submits = 0;
+  RescueRecord? submitted;
+  @override
+  Future<RescueRecord> transition(RescueRecord record, String action) async {
+    submits++;
+    if (reject) throw const FormatException('No se pudo enviar. Reintenta.');
+    submitted = RescueRecord({
+      ...record.data,
+      'status': 'submitted',
+      'version': record.version + 1,
+    });
+    return submitted!;
+  }
+
+  @override
+  Future<DataPage<RescueRecord>> mine(
+    String kind,
+    int page, {
+    String? parent,
+  }) async => DataPage(
+    submitted == null ? <RescueRecord>[] : [submitted!],
+    submitted == null ? 0 : 1,
+  );
+}
+
 void main() {
+  for (final reject in [false, true]) {
+    testWidgets(
+      'case submission returns to owned cases only on confirmation reject=$reject',
+      (tester) async {
+        final rescue = SubmittingCaseRescue(reject);
+        await startPublication(
+          tester,
+          FakeCommunity(),
+          '/rescue/case-one',
+          rescue: rescue,
+        );
+        for (var i = 0; i < 2; i++) {
+          await tester.tap(
+            find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
+          );
+          await tester.pumpAndSettle();
+        }
+        await tester.enterText(
+          find.byKey(const ValueKey('case-field-need')),
+          'Cuidados del borrador',
+        );
+        await tester.tap(find.text('Continuar a revisión'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Enviar a revisión'));
+        await tester.pumpAndSettle();
+        expect(rescue.submits, 1);
+        final context = tester.element(find.byType(Scaffold).first);
+        expect(
+          GoRouter.of(context).routeInformationProvider.value.uri.path,
+          reject ? '/rescue/case-one' : '/my-cases',
+        );
+        expect(rescue.publicSaved!['need'], 'Cuidados del borrador');
+        if (reject) {
+          expect(find.text('Enviar a revisión'), findsOneWidget);
+          expect(find.textContaining('No se pudo enviar'), findsOneWidget);
+        } else {
+          expect(find.text('Enviar a revisión'), findsNothing);
+          expect(rescue.submitted!.status, 'submitted');
+        }
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
   testWidgets(
     'medicine needs cancel, save, reopen and remove through the actual draft',
     (tester) async {
@@ -62,7 +133,9 @@ void main() {
         rescue: repo,
       );
       for (var i = 0; i < 2; i++) {
-        await tester.tap(find.text('Continuar'));
+        await tester.tap(
+          find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
+        );
         await tester.pumpAndSettle();
       }
       await tester.tap(find.text('Medicina'));
@@ -106,14 +179,18 @@ void main() {
         rescue: repo,
       );
       for (var i = 0; i < 2; i++) {
-        await tester.tap(find.text('Continuar'));
+        await tester.tap(
+          find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
+        );
         await tester.pumpAndSettle();
       }
       final restored = find.text('Medicina prescrita');
       await tester.ensureVisible(restored);
       await tester.pumpAndSettle();
       expect(restored, findsOneWidget);
-      await tester.tap(find.text('Continuar'));
+      await tester.tap(
+        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
+      );
       await tester.pumpAndSettle();
       final review = find.text('Medicina prescrita');
       await tester.ensureVisible(review);
@@ -154,7 +231,9 @@ void main() {
       rescue: repo,
     );
     for (var i = 0; i < 2; i++) {
-      await tester.tap(find.text('Continuar'));
+      await tester.tap(
+        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
+      );
       await tester.pumpAndSettle();
     }
     expect(
@@ -187,7 +266,7 @@ void main() {
     tester.testTextInput.hide();
     FocusManager.instance.primaryFocus?.unfocus();
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Continuar'));
+    await tester.tap(find.textContaining(RegExp(r'^Continuar( a revisión)?$')));
     await tester.pumpAndSettle();
     expect(repo.publicSaved!['need'], 'Comida y seguimiento');
     expect(find.text('Registrar gasto realizado'), findsNothing);
@@ -207,7 +286,9 @@ void main() {
         '/rescue/case-one',
         rescue: repo,
       );
-      await tester.tap(find.text('Continuar'));
+      await tester.tap(
+        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
+      );
       await tester.pumpAndSettle();
       final story = find.byKey(const ValueKey('case-field-story'));
       await tester.ensureVisible(story);
@@ -216,7 +297,9 @@ void main() {
       FocusManager.instance.primaryFocus?.unfocus();
       tester.testTextInput.hide();
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Continuar'));
+      await tester.tap(
+        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
+      );
       await tester.pumpAndSettle();
       final need = find.byKey(const ValueKey('case-field-need'));
       expect(need, findsOneWidget);
@@ -224,7 +307,9 @@ void main() {
       FocusManager.instance.primaryFocus?.unfocus();
       tester.testTextInput.hide();
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Continuar'));
+      await tester.tap(
+        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
+      );
       await tester.pumpAndSettle();
       expect(repo.publicSaved!['need'], 'Seguimiento veterinario');
       expect(repo.publicSaved!['story'], 'Rescatada bajo la lluvia');
@@ -248,13 +333,17 @@ void main() {
         tester.widget<TextField>(story).controller!.text,
         'Rescatada bajo la lluvia',
       );
-      await tester.tap(find.text('Continuar'));
+      await tester.tap(
+        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
+      );
       await tester.pumpAndSettle();
       expect(
         tester.widget<TextField>(need).controller!.text,
         'Seguimiento veterinario',
       );
-      await tester.tap(find.text('Continuar'));
+      await tester.tap(
+        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
+      );
       await tester.pumpAndSettle();
       final editNeeds = find.byKey(
         const ValueKey('case-review-edit-Necesidades'),
@@ -267,7 +356,9 @@ void main() {
         tester.widget<TextField>(need).controller!.text,
         'Seguimiento veterinario',
       );
-      await tester.tap(find.text('Continuar'));
+      await tester.tap(
+        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
+      );
       await tester.pumpAndSettle();
       final photos = find.byKey(const ValueKey('case-review-edit-Fotos'));
       await tester.ensureVisible(photos);
@@ -296,7 +387,9 @@ void main() {
         '/rescue/case-one',
         rescue: repo,
       );
-      await tester.tap(find.text('Continuar'));
+      await tester.tap(
+        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
+      );
       await tester.pumpAndSettle();
       final name = find.byKey(const ValueKey('case-field-pet_name'));
       await tester.ensureVisible(name);
@@ -327,7 +420,9 @@ void main() {
         await tester.tap(choice);
         await tester.pumpAndSettle();
       }
-      await tester.tap(find.text('Continuar'));
+      await tester.tap(
+        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
+      );
       await tester.pumpAndSettle();
       expect(repo.publicSaved!['pet_name'], 'Mora corregida');
       expect(repo.publicSaved!['sex'], 'unknown');
@@ -433,7 +528,9 @@ void main() {
         '/rescue/case-one',
         rescue: repo,
       );
-      await tester.tap(find.text('Continuar'));
+      await tester.tap(
+        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
+      );
       await tester.pumpAndSettle();
       expect(repo.publicSaved!['pet_name'], 'Mora');
       expect(repo.publicSaved!['sex'], 'unknown');

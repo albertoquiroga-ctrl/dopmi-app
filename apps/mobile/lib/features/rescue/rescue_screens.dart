@@ -1371,6 +1371,13 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
           ? 'Caso cerrado.'
           : 'Retiramos la solicitud a borrador.';
     });
+    if (action == 'submit' &&
+        result.kind == 'case' &&
+        result.status == 'submitted') {
+      dirty = false;
+      context.go('/my-cases');
+      return;
+    }
     await load();
   }
 
@@ -1599,7 +1606,11 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                 }
               },
         footer: PublicationFooter(
-          label: step == 3 ? 'Enviar a revisión' : 'Continuar',
+          label: step == 3
+              ? 'Enviar a revisión'
+              : step == 2
+              ? 'Continuar a revisión'
+              : 'Continuar',
           busy: busy || loading,
           compact: MediaQuery.viewInsetsOf(context).bottom > 0,
           onSave: loadFailed ? null : () => run(save),

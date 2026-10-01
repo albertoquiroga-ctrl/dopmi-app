@@ -1238,7 +1238,9 @@ void main() {
       }
       if (spec.$1.startsWith('case-publication-review')) {
         for (var i = 0; i < 3; i++) {
-          await tester.tap(find.text('Continuar'));
+          await tester.tap(
+            find.text(i == 2 ? 'Continuar a revisión' : 'Continuar'),
+          );
           await tester.pumpAndSettle();
         }
       }
