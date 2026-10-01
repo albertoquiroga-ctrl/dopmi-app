@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/ui.dart';
 
@@ -104,115 +105,179 @@ class OnboardingArt extends StatelessWidget {
   }
 
   Widget adoptionStack() => LayoutBuilder(
-    builder: (_, box) => SizedBox(
-      height: 230,
-      child: Stack(
-        children: [
-          Positioned(
-            right: 0,
-            top: 28,
-            child: Transform.rotate(
-              angle: .07,
+    builder: (_, box) {
+      final width = box.maxWidth;
+      Widget card(Widget child, {required bool main}) => Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: ink.withValues(alpha: main ? .12 : .1),
+              offset: Offset(0, main ? 12 : 8),
+              blurRadius: main ? 28 : 20,
+            ),
+          ],
+        ),
+        child: Container(
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: const Color(0xffe6e2dd)),
+          ),
+          child: child,
+        ),
+      );
+      return SizedBox(
+        height: 248,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Positioned(
+              right: 0,
+              top: 0,
+              child: Transform.rotate(
+                angle: .0872664626,
+                child: SizedBox(
+                  width: width * .44,
+                  height: 248 * .7,
+                  child: card(
+                    Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        photo('nina-card', width * .44, 248 * .7, radius: 24),
+                        Positioned(
+                          left: 8,
+                          right: 8,
+                          bottom: 8,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: ink.withValues(alpha: .78),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Text(
+                              'Michi también busca hogar',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 11,
+                                height: 1.25,
+                                letterSpacing: 0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    main: false,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 0,
+              bottom: 0,
               child: SizedBox(
-                width: box.maxWidth * .42,
-                height: 150,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    photo('nina-card', box.maxWidth * .42, 150, radius: 22),
-                    Positioned(
-                      left: 8,
-                      right: 8,
-                      bottom: 8,
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: ink.withValues(alpha: .75),
-                          borderRadius: BorderRadius.circular(12),
+                width: width * .82,
+                height: 248 * .92,
+                child: card(
+                  Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      photo('luna-card', width * .82, 248 * .92, radius: 24),
+                      const Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        height: 248 * .92 * .48,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              stops: [0, .45, 1],
+                              colors: [
+                                Color(0x0015110d),
+                                Color(0x8c15110d),
+                                Color(0xe015110d),
+                              ],
+                            ),
+                          ),
                         ),
-                        child: const Text(
-                          'Michi también busca hogar',
-                          style: TextStyle(
+                      ),
+                      const Positioned(
+                        left: 16,
+                        right: 56,
+                        bottom: 16,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Luna',
+                              style: TextStyle(
+                                fontFamily: 'Fraunces',
+                                fontSize: 24,
+                                height: 1.1,
+                                letterSpacing: 0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'Refugio Patitas',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 13,
+                                letterSpacing: 0,
+                                color: Color(0xebffffff),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        top: 12,
+                        right: 12,
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
                             color: Colors.white,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: ink.withValues(alpha: .12),
+                                offset: const Offset(0, 4),
+                                blurRadius: 12,
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: SvgPicture.asset(
+                              'assets/profile/icon-heart.svg',
+                              width: 40,
+                              height: 40,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                  main: true,
                 ),
               ),
             ),
-          ),
-          Positioned(
-            left: 4,
-            top: 8,
-            child: SizedBox(
-              width: box.maxWidth * .78,
-              height: 200,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(22),
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    photo('luna-card', box.maxWidth * .78, 200, radius: 22),
-                    const DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.center,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.transparent, Color(0x66000000)],
-                        ),
-                      ),
-                    ),
-                    const Positioned(
-                      left: 12,
-                      bottom: 12,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Luna',
-                            style: TextStyle(
-                              fontFamily: 'Fraunces',
-                              color: Colors.white,
-                              fontSize: 22,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          Text(
-                            'Refugio Patitas',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Positioned(
-                      top: 12,
-                      right: 12,
-                      child: CircleAvatar(
-                        radius: 17,
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          Icons.favorite_border,
-                          color: purple,
-                          size: 24,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
+          ],
+        ),
+      );
+    },
   );
 
   Widget adoptionDetail() => panel([

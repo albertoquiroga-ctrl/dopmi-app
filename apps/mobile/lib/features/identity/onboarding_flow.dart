@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/ui.dart';
 import 'auth_ui.dart';
@@ -346,7 +347,7 @@ class AdoptionIntroduction extends StatelessWidget {
           // scrolling permits it without clipping the art, copy or controls.
           final bodyHeight = math.max(
             248 + copyHeight + 40,
-            box.maxHeight - 24 - 48 - 4 - 16 - buttonHeight - 20,
+            box.maxHeight - 24 - 44 - 4 - 16 - buttonHeight - 20,
           );
           final artHeight = bodyHeight - 8 - copyHeight - 24 - 16;
           return Align(
@@ -363,28 +364,43 @@ class AdoptionIntroduction extends StatelessWidget {
                         crossAxisAlignment: WrapCrossAlignment.center,
                         alignment: WrapAlignment.spaceBetween,
                         children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                tooltip: 'Volver',
-                                onPressed: onBack,
-                                style: IconButton.styleFrom(
-                                  splashFactory: NoSplash.splashFactory,
-                                  highlightColor: Colors.transparent,
-                                ),
-                                icon: const Icon(
-                                  Icons.arrow_back_rounded,
-                                  size: 24,
-                                ),
+                          Transform.translate(
+                            offset: const Offset(-10, 0),
+                            child: SizedBox(
+                              height: 44,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    tooltip: 'Volver',
+                                    onPressed: onBack,
+                                    style: IconButton.styleFrom(
+                                      minimumSize: const Size(40, 44),
+                                      fixedSize: const Size(40, 44),
+                                      padding: EdgeInsets.zero,
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                      splashFactory: NoSplash.splashFactory,
+                                      highlightColor: Colors.transparent,
+                                    ),
+                                    icon: SvgPicture.asset(
+                                      'assets/profile/back.svg',
+                                      width: 24,
+                                      height: 24,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 2),
+                                  const Brand(),
+                                ],
                               ),
-                              const Brand(),
-                            ],
+                            ),
                           ),
                           TextButton(
                             onPressed: () => context.push('/login'),
                             style: TextButton.styleFrom(
                               foregroundColor: ink,
+                              minimumSize: const Size(0, 44),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               splashFactory: NoSplash.splashFactory,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 4,
@@ -454,6 +470,7 @@ class AdoptionIntroduction extends StatelessWidget {
                             Semantics(
                               label: 'Paso ${step + 1} de 2',
                               child: SizedBox(
+                                width: step == 0 ? copyWidth : width,
                                 height: 16,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
