@@ -133,6 +133,8 @@ void main() {
       ('adoption-empty', '/adoptions'),
       ('adoption-empty-large', '/adoptions'),
       ('adoption-end', '/adoptions'),
+      ('adoption-support', '/adoptions'),
+      ('adoption-support-large', '/adoptions'),
       ('profile-overview', '/profile'),
       ('profile-overview-active', '/profile'),
       ('profile-overview-large', '/profile'),
@@ -201,6 +203,22 @@ void main() {
         ],
       );
       final key = GlobalKey();
+      if (spec.$1.startsWith('adoption-support')) {
+        community.discoveryItems = [
+          community.post,
+          Adoption({...community.post.data, 'id': 'second'}),
+        ];
+        community.supportItems = [
+          SupportOpportunity({
+            'case_id': 'case-one',
+            'expense_id': 'expense-one',
+            'pet_name': 'Milo',
+            'expense_title': 'Spray para heridas',
+            'reimbursable_cents': 1200,
+            'funded_cents': 800,
+          }),
+        ];
+      }
       await tester.pumpWidget(
         RepaintBoundary(
           key: key,
@@ -216,6 +234,16 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1.startsWith('adoption-support')) {
+        for (var i = 0; i < 2; i++) {
+          await Scrollable.ensureVisible(
+            tester.element(find.byTooltip('Pasar')),
+          );
+          await tester.pumpAndSettle();
+          await tester.tap(find.byTooltip('Pasar'));
+          await tester.pumpAndSettle();
+        }
+      }
       if (spec.$1 == 'adoption-end') {
         await tester.tap(find.byTooltip('Pasar'));
         await tester.pumpAndSettle();

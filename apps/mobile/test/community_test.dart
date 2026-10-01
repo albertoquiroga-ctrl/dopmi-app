@@ -422,8 +422,18 @@ void main() {
     await tester.tap(find.byTooltip('Pasar'));
     await tester.pumpAndSettle();
     expect(find.text('Choco'), findsOneWidget);
-    expect(find.text('25 % cubierto'), findsOneWidget);
-    expect(find.text('Apoyar este gasto'), findsOneWidget);
+    final semantics = tester.ensureSemantics();
+    expect(find.bySemanticsLabel(RegExp('25 % cubierto')), findsOneWidget);
+    expect(find.text(r'$25 de $100'), findsOneWidget);
+    expect(find.text('Apoya con sus necesidades'), findsOneWidget);
+    await tester.drag(find.text('Choco'), const Offset(150, 0));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Nuestra manada llegó hasta aquí por ahora'),
+      findsOneWidget,
+    );
+    expect(find.text('Confirmar aportación'), findsNothing);
+    semantics.dispose();
   });
   testWidgets('short drag returns and long drag passes the current card', (
     tester,

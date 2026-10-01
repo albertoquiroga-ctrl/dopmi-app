@@ -319,6 +319,16 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
 - Flutter130 pruebas aprobadas; analyze limpio; config12 aprobadas. Después de separación/recorte, pruebas de vacío3 y capturador23 estados aprobados. Sin cambios de esquema ni permisos.
 - Próximo ciclo: tarjeta de apoyo intercalada, incluyendo arrastre y transición. Entrega final Codemagic android-guardian-internal autorizada, todavía pendiente de completar el alcance.
 
+
+## Loop 11 — tarjeta de apoyo intercalada
+
+- Referencia inicio/cierre `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`. CSS/handlers leídos: amarillo, foto, degradado, nombre28 Fraunces, gasto/progreso6/montos, CTA y círculo64 con tab-donate original.
+- Tarjeta real ahora usa `photo` del snapshot aprobado, `expense_title`, `funded_cents` y `reimbursable_cents`. Sin foto conserva fallback visible; no imagen simulada en app.
+- Arrastre inmediato, retorno250ms, salida280ms ±420px/18°, opacidad .35 y umbral110 como Adoptar. Ambos sentidos pasan la oportunidad; tap/CTA abre `/rescue-cases/:id`. Se eliminó el salto previo al formulario por swipe. Acción accesible Seguir descubriendo; animación reducida y bloqueo durante salida conservados.
+- Texto200% usa CTA vertical y tarjeta más alta. Capturas normal377×852 y pequeño320×640 en `docs/design-reviews/parity-loop-11`. Fixture sin foto prueba fallback; falta foto equivalente Milo, contraste directo de navegador, tap/regreso y cancelación de la tarjeta de apoyo para declarar el ciclo completo.
+- Analyze limpio, pruebas dirigidas16 + captura25 estados aprobadas, configuración12 aprobada. Suite completa130 aprobada tras corregir disposición ampliada; no aceptación instalada/Play/Codemagic atribuida.
+- Objetivo completo activo. Próximo: completar comparación y pruebas de navegación de esta tarjeta; después favoritos/match/chat y demás rutas. Codemagic final autorizado y pendiente.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián

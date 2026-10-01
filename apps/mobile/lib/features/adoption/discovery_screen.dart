@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -116,13 +117,6 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
     final card = items[index];
     setState(() => acting = true);
     try {
-      if (card is SupportOpportunity && save) {
-        if (mounted) {
-          setState(() => index++);
-          context.push('/contribute/${card.expenseId}');
-        }
-        return;
-      }
       if (card is Adoption && save && !card.saved) {
         await ref.read(communityRepositoryProvider).favorite(card.id, true);
         final position = cards.indexWhere((item) => item.id == card.id);
@@ -436,12 +430,35 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                 ),
               )
             else
-              _SupportCard(
-                current as SupportOpportunity,
-                busy: acting,
-                pass: () => advance(save: false),
-                support: () => advance(save: true),
-                open: () => context.push('/rescue-cases/${current.id}'),
+              DiscoveryStack(
+                footerHeight: MediaQuery.textScalerOf(context).scale(16) > 22
+                    ? 256
+                    : 128,
+                child: _SupportCard(
+                  current as SupportOpportunity,
+                  busy: acting,
+                  dragX: dragX,
+                  dragging: dragging,
+                  exiting: exiting,
+                  onDrag: (value) => setState(() => dragX = value),
+                  onStart: () => setState(() => dragging = true),
+                  onCancel: () => setState(() {
+                    dragging = false;
+                    dragX = 0;
+                  }),
+                  onEnd: () {
+                    if (dragX.abs() <= 110) {
+                      setState(() {
+                        dragging = false;
+                        dragX = 0;
+                      });
+                    } else {
+                      advance(save: false, direction: dragX > 0 ? 1 : -1);
+                    }
+                  },
+                  pass: () => advance(save: false),
+                  open: () => context.push('/rescue-cases/${current.id}'),
+                ),
               ),
           ],
         ),
@@ -451,12 +468,20 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
 }
 
 class DiscoveryStack extends StatelessWidget {
-  const DiscoveryStack({super.key, required this.child, this.next});
+  const DiscoveryStack({
+    super.key,
+    required this.child,
+    this.next,
+    this.footerHeight = 128,
+  });
   final Widget child;
   final Adoption? next;
+  final double footerHeight;
   @override
   Widget build(BuildContext context) => SizedBox(
-    height: discoveryMediaHeight(context) + 128,
+    height:
+        discoveryMediaHeight(context) +
+        math.max(footerHeight, MediaQuery.textScalerOf(context).scale(64) + 64),
     child: Stack(
       clipBehavior: Clip.none,
       children: [
@@ -514,54 +539,242 @@ class _SupportCard extends StatelessWidget {
   const _SupportCard(
     this.item, {
     required this.busy,
+    required this.dragX,
+    required this.dragging,
+    required this.exiting,
+    required this.onDrag,
+    required this.onStart,
+    required this.onCancel,
+    required this.onEnd,
     required this.pass,
-    required this.support,
     required this.open,
   });
   final SupportOpportunity item;
-  final bool busy;
-  final VoidCallback pass, support, open;
+  final bool busy, dragging;
+  final double dragX;
+  final int exiting;
+  final ValueChanged<double> onDrag;
+  final VoidCallback onStart, onCancel, onEnd, pass, open;
+  String amount(int cents) =>
+      (cents / 100).toStringAsFixed(cents % 100 == 0 ? 0 : 2);
   @override
-  Widget build(BuildContext context) {
-    final progress = item.reimbursable == 0
-        ? 0.0
-        : (item.funded / item.reimbursable).clamp(0, 1).toDouble();
-    return Card(
-      color: const Color(0xfffff6cf),
-      clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Icon(Icons.volunteer_activism, size: 54, color: purple),
-            const SizedBox(height: 18),
-            const Text('También puedes cambiar su historia apoyando'),
-            const SizedBox(height: 8),
-            Text(item.name, style: Theme.of(context).textTheme.headlineMedium),
-            Text(item.text('expense_title')),
-            const SizedBox(height: 16),
-            LinearProgressIndicator(value: progress),
-            const SizedBox(height: 8),
-            Text('${(progress * 100).round()} % cubierto'),
-            const SizedBox(height: 20),
-            OutlinedButton(
-              onPressed: busy ? null : open,
-              child: const Text('Ver caso'),
+  Widget build(BuildContext context) => AnimatedContainer(
+    key: ValueKey('discovery-motion-support-${item.expenseId}'),
+    duration: MediaQuery.disableAnimationsOf(context) || dragging
+        ? Duration.zero
+        : Duration(milliseconds: exiting == 0 ? 250 : 280),
+    curve: const Cubic(.22, 1, .36, 1),
+    transform: Matrix4.identity()
+      ..translateByDouble(exiting == 0 ? dragX : exiting * 420, 0, 0, 1)
+      ..rotateZ((exiting == 0 ? dragX / 28 : exiting * 18) * math.pi / 180),
+    transformAlignment: Alignment.center,
+    child: AnimatedOpacity(
+      opacity: exiting == 0 ? 1 : .35,
+      duration: MediaQuery.disableAnimationsOf(context)
+          ? Duration.zero
+          : const Duration(milliseconds: 280),
+      curve: Curves.ease,
+      child: GestureDetector(
+        dragStartBehavior: DragStartBehavior.down,
+        onHorizontalDragStart: busy ? null : (_) => onStart(),
+        onHorizontalDragUpdate: busy
+            ? null
+            : (event) => onDrag(dragX + event.delta.dx),
+        onHorizontalDragEnd: busy ? null : (_) => onEnd(),
+        onHorizontalDragCancel: busy ? null : onCancel,
+        child: Semantics(
+          customSemanticsActions: {
+            const CustomSemanticsAction(label: 'Seguir descubriendo'): pass,
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: yellow,
+              borderRadius: BorderRadius.circular(32),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x2415110d),
+                  blurRadius: 32,
+                  offset: Offset(0, 16),
+                ),
+              ],
             ),
-            FilledButton(
-              onPressed: busy ? null : support,
-              child: const Text('Apoyar este gasto'),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(32),
+              child: Material(
+                color: yellow,
+                child: Column(
+                  children: [
+                    InkWell(
+                      onTap: busy ? null : open,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(22),
+                          child: SizedBox(
+                            height: discoveryMediaHeight(context),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                if (item.text('photo').isNotEmpty)
+                                  AdoptionPhoto(item.text('photo'), radius: 0)
+                                else
+                                  const ColoredBox(
+                                    color: Color(0xffcfc9c0),
+                                    child: Icon(Icons.pets, size: 80),
+                                  ),
+                                const DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.transparent,
+                                        Colors.transparent,
+                                        Color(0x8c15110d),
+                                        Color(0xe015110d),
+                                        Color(0xf015110d),
+                                      ],
+                                      stops: [0, .36, .63, .86, 1],
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  left: 16,
+                                  right: 16,
+                                  bottom: 14,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        item.name,
+                                        style: const TextStyle(
+                                          fontFamily: 'Fraunces',
+                                          fontSize: 28,
+                                          height: 1.1,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        item.text('expense_title'),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 13,
+                                          height: 1.45,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Semantics(
+                                        label:
+                                            '${item.reimbursable == 0 ? 0 : (item.funded / item.reimbursable * 100).round()} % cubierto',
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            999,
+                                          ),
+                                          child: LinearProgressIndicator(
+                                            value: item.reimbursable == 0
+                                                ? 0
+                                                : (item.funded /
+                                                          item.reimbursable)
+                                                      .clamp(0, 1)
+                                                      .toDouble(),
+                                            minHeight: 6,
+                                            color: yellow,
+                                            backgroundColor: const Color(
+                                              0x47ffffff,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        '\$${amount(item.funded)} de \$${amount(item.reimbursable)}',
+                                        style: const TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(22, 16, 22, 20),
+                        child: InkWell(
+                          onTap: busy ? null : open,
+                          child: Flex(
+                            direction:
+                                MediaQuery.textScalerOf(context).scale(16) > 22
+                                ? Axis.vertical
+                                : Axis.horizontal,
+                            children: [
+                              const Expanded(
+                                child: Text(
+                                  'Apoya con sus necesidades',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 16,
+                                    height: 1.25,
+                                    fontWeight: FontWeight.w700,
+                                    color: ink,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Container(
+                                width: 64,
+                                height: 64,
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0x1f1c160c),
+                                      blurRadius: 16,
+                                      offset: Offset(0, 6),
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: SvgPicture.asset(
+                                    'assets/navigation/tab-donate.svg',
+                                    width: 26,
+                                    height: 26,
+                                    colorFilter: const ColorFilter.mode(
+                                      ink,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            TextButton(
-              onPressed: busy ? null : pass,
-              child: const Text('Seguir descubriendo'),
-            ),
-          ],
+          ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
 
 class _SwipeCard extends StatelessWidget {
