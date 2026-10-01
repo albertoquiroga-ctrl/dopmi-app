@@ -49,13 +49,19 @@ void main() {
       expect(find.byType(VerificationIntroScreen), findsNothing);
       expect(find.byType(RescueEditorScreen), findsOneWidget);
       await tester.scrollUntilVisible(
-        find.text('Documentos y evidencia'),
+        find.text('Documentos'),
         200,
         maxScrolls: 20,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('verification-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
       );
       await tester.pumpAndSettle();
-      expect(find.text('Documentos y evidencia'), findsOneWidget);
-      expect(find.text('Enviar a revisión'), findsNothing);
+      expect(find.text('Documentos'), findsOneWidget);
+      expect(find.text('Formulario de verificación'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );

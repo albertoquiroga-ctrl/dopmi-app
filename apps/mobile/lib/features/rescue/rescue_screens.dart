@@ -25,6 +25,7 @@ import 'owned_case_detail.dart';
 import 'owned_expense_card.dart';
 import 'owned_case_history.dart';
 import 'verification_intro.dart';
+import 'verification_form.dart';
 
 class RescueHomeScreen extends ConsumerWidget {
   const RescueHomeScreen({super.key});
@@ -1242,6 +1243,378 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
         false;
   }
 
+  Widget verificationField(String key) {
+    final field = rescueFields['verification']!.firstWhere(
+      (item) => item.key == key,
+    );
+    final border = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: const BorderSide(color: Color(0xffe6e2dd)),
+    );
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            field.label,
+            style: const TextStyle(
+              fontSize: 12,
+              height: 1.55,
+              fontWeight: FontWeight.w600,
+              color: Color(0xff554e48),
+            ),
+          ),
+          const SizedBox(height: 7),
+          if (field.options == null)
+            Semantics(
+              label: field.label,
+              child: TextField(
+                key: ValueKey('verification-field-$key'),
+                controller: controllers[key],
+                enabled: editable && !busy,
+                maxLength: field.max,
+                maxLines: field.lines,
+                keyboardType: key == 'phone'
+                    ? TextInputType.phone
+                    : key == 'social_url'
+                    ? TextInputType.url
+                    : field.lines > 1
+                    ? TextInputType.multiline
+                    : TextInputType.text,
+                style: const TextStyle(
+                  fontSize: 16,
+                  height: 1.55,
+                  color: Color(0xff15110d),
+                ),
+                decoration: InputDecoration(
+                  counterText: '',
+                  isDense: true,
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
+                  border: border,
+                  enabledBorder: border,
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: Color(0xff7841f2)),
+                  ),
+                ),
+                onChanged: (_) => setState(() => dirty = true),
+              ),
+            ),
+          if (field.options != null)
+            DropdownButtonFormField<String>(
+              key: ValueKey(
+                'verification-$key:${record?.id ?? 'new'}:${record?.version ?? 0}',
+              ),
+              initialValue: field.options!.containsKey(controllers[key]!.text)
+                  ? controllers[key]!.text
+                  : null,
+              isExpanded: true,
+              decoration: InputDecoration(
+                isDense: true,
+                border: border,
+                enabledBorder: border,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
+              ),
+              items: field.options!.entries
+                  .map(
+                    (entry) => DropdownMenuItem(
+                      value: entry.key,
+                      child: Text(entry.value),
+                    ),
+                  )
+                  .toList(),
+              onChanged: editable && !busy
+                  ? (value) => setState(() {
+                      controllers[key]!.text = value!;
+                      dirty = true;
+                    })
+                  : null,
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget verificationDocument(String role) => Padding(
+    padding: const EdgeInsets.only(bottom: 16),
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: const Color(0xffe6e2dd)),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              evidenceRoles[role]!,
+              style: const TextStyle(
+                fontSize: 14,
+                height: 1.55,
+                fontWeight: FontWeight.w600,
+                color: Color(0xff15110d),
+              ),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'Privado · Solo para revisión del equipo',
+              style: TextStyle(
+                fontSize: 12,
+                height: 1.55,
+                color: Color(0xff554e48),
+              ),
+            ),
+            for (final file in files.where((file) => file['role'] == role))
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton.icon(
+                      icon: const Icon(Icons.description_outlined),
+                      label: Text('Ver archivo ${files.indexOf(file) + 1}'),
+                      onPressed: () =>
+                          context.push('/rescue-file', extra: file['path']),
+                    ),
+                  ),
+                  if (editable)
+                    IconButton(
+                      tooltip: 'Quitar archivo ${files.indexOf(file) + 1}',
+                      icon: const Icon(Icons.close),
+                      onPressed: busy
+                          ? null
+                          : () => setState(() {
+                              files.remove(file);
+                              dirty = true;
+                            }),
+                    ),
+                ],
+              ),
+            if (editable)
+              OutlinedButton.icon(
+                onPressed: busy || files.length >= 12
+                    ? null
+                    : () => run(() => attach(role)),
+                icon: const Icon(Icons.upload_file_outlined),
+                label: Text('Adjuntar ${evidenceRoles[role]!.toLowerCase()}'),
+              ),
+          ],
+        ),
+      ),
+    ),
+  );
+
+  Widget verificationForm() {
+    final total = rescueFields['verification']!.length + 2;
+    final captured =
+        rescueFields['verification']!
+            .where(
+              (field) =>
+                  controllers[field.key]?.text.trim().isNotEmpty == true &&
+                  (field.key != 'social_url' ||
+                      RegExp(r'^https://[^ /]+/.+')
+                          .hasMatch(controllers[field.key]!.text.trim())),
+            )
+            .length +
+        ['identity', 'address']
+            .where(
+              (role) => files.any(
+                (file) =>
+                    file['role'] == role &&
+                    (file['path'] as String? ?? '').isNotEmpty,
+              ),
+            )
+            .length;
+    return VerificationFormFrame(
+      onBack: busy
+          ? null
+          : () async {
+              if (!await confirmLeave() || !mounted) return;
+              setState(() => dirty = false);
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go('/rescuer');
+                  }
+                }
+              });
+            },
+      children: [
+        const Text(
+          'Completa tu información para verificar tu cuenta de rescatista',
+          style: TextStyle(
+            fontSize: 14,
+            height: 1.55,
+            color: Color(0xff554e48),
+          ),
+        ),
+        const SizedBox(height: 16),
+        if (loading)
+          const Center(child: CircularProgressIndicator())
+        else if (loadFailed || (record == null && widget.id != 'new')) ...[
+          Notice(error ?? 'Solicitud no disponible', isError: true),
+          TextButton(onPressed: load, child: const Text('Volver a intentar')),
+        ] else ...[
+          if (record != null)
+            Notice(
+              '${rescueStatuses[record!.status]} · Versión ${record!.version}',
+            ),
+          if ((record?.data['feedback'] as String? ?? '').isNotEmpty)
+            Notice('Respuesta del equipo: ${record!.data['feedback']}'),
+          if (!editable)
+            const Notice(
+              'Los datos enviados están protegidos. Puedes consultar el estado actualizado al recargar.',
+            ),
+          if (busy)
+            const LinearProgressIndicator(
+              semanticsLabel: 'Guardando o subiendo archivos',
+            ),
+          const VerificationSectionTitle('Información básica'),
+          const Text(
+            'Estos datos son privados y se usarán para revisar tu solicitud.',
+            style: TextStyle(
+              fontSize: 12,
+              height: 1.55,
+              color: Color(0xff554e48),
+            ),
+          ),
+          const SizedBox(height: 16),
+          verificationField('legal_name'),
+          verificationField('phone'),
+          const VerificationSectionTitle('Experiencia de rescate'),
+          verificationField('experience'),
+          const VerificationSectionTitle('Redes sociales'),
+          const Text(
+            'El equipo revisará el perfil que compartas.',
+            style: TextStyle(
+              fontSize: 12,
+              height: 1.55,
+              color: Color(0xff554e48),
+            ),
+          ),
+          const SizedBox(height: 16),
+          verificationField('social_url'),
+          const VerificationSectionTitle('Perfil público'),
+          const Text(
+            'Estos datos aparecerán después de la aprobación. No incluyas domicilios particulares, teléfonos ni datos de tus comprobantes.',
+            style: TextStyle(
+              fontSize: 12,
+              height: 1.55,
+              color: Color(0xff554e48),
+            ),
+          ),
+          const SizedBox(height: 16),
+          verificationField('public_name'),
+          verificationField('bio'),
+          verificationField('city'),
+          verificationField('state'),
+          const VerificationSectionTitle('Documentos'),
+          verificationField('identity_type'),
+          const Text(
+            'Hasta 12 archivos de 5 MB. JPG, PNG, WebP o PDF.',
+            style: TextStyle(
+              fontSize: 12,
+              height: 1.55,
+              color: Color(0xff554e48),
+            ),
+          ),
+          const SizedBox(height: 16),
+          verificationDocument('identity'),
+          verificationDocument('address'),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border.all(color: const Color(0xffe6e2dd)),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text(
+                    'Progreso del formulario',
+                    style: TextStyle(
+                      fontSize: 14,
+                      height: 1.55,
+                      color: Color(0xff554e48),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text('$captured de $total requisitos capturados'),
+                  const SizedBox(height: 12),
+                  LinearProgressIndicator(
+                    value: captured / total,
+                    minHeight: 8,
+                    borderRadius: BorderRadius.circular(99),
+                    color: const Color(0xff7841f2),
+                    backgroundColor: const Color(0xffefede8),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'El equipo verificará la información y los documentos antes de aprobar.',
+                    style: TextStyle(
+                      fontSize: 12,
+                      height: 1.55,
+                      color: Color(0xff554e48),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          if (error != null) Notice(error!, isError: true),
+          if (message != null) Notice(message!),
+          if (editable) ...[
+            ActionButton(
+              'Enviar a revisión',
+              busy: busy,
+              onPressed: () => run(() => transition('submit')),
+            ),
+            TextButton(
+              onPressed: busy ? null : () => run(save),
+              child: const Text('Guardar borrador'),
+            ),
+          ],
+          if (record?.status == 'submitted')
+            OutlinedButton(
+              onPressed: busy ? null : () => run(() => transition('withdraw')),
+              child: const Text('Retirar a borrador'),
+            ),
+          TextButton(
+            onPressed: busy
+                ? null
+                : () async {
+                    if (await confirmLeave()) await load();
+                  },
+            child: const Text('Recargar estado'),
+          ),
+          if (history.isNotEmpty) ...[
+            const VerificationSectionTitle('Historial'),
+            for (final item in history)
+              ListTile(
+                title: Text(rescueStatuses[item['action']] ?? 'Actualización'),
+                subtitle: Text(
+                  '${localDate(item['created_at'] as String)} · Versión ${item['version']}\n${item['feedback']}',
+                ),
+              ),
+          ],
+        ],
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.id == 'new' &&
@@ -1315,337 +1688,361 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen> {
           });
         }
       },
-      child: CommunityFrame(
-        children: [
-          if (widget.showRecord && ownCase)
-            TextButton(
-              onPressed: () => context.canPop()
-                  ? context.pop()
-                  : context.go('/rescue/${record!.id}'),
-              child: const Text('Volver al caso'),
-            ),
-          Heading(
-            kind == 'verification'
-                ? 'Tu labor merece\nconfianza.'
-                : kind == 'case'
-                ? 'Cuéntanos su historia.'
-                : 'Documenta el gasto.',
-            kind == 'verification'
-                ? 'El equipo revisará tus documentos y el enlace social.'
-                : kind == 'case'
-                ? 'Describe el rescate y la necesidad. El equipo revisa todo antes de publicarlo.'
-                : 'Presenta un gasto ya pagado. Cada ronda de comida necesita su propia solicitud y revisión.',
-            eyebrow: rescueKinds[kind]!.toUpperCase(),
-          ),
-          if (loading)
-            const Center(child: CircularProgressIndicator())
-          else if (loadFailed || (record == null && widget.id != 'new')) ...[
-            Notice(error ?? 'Solicitud no disponible', isError: true),
-            TextButton(onPressed: load, child: const Text('Volver a intentar')),
-          ] else ...[
-            if (record != null)
-              Notice(
-                '${rescueStatuses[record!.status]} · Versión ${record!.version}',
-              ),
-            if ((record?.data['feedback'] as String? ?? '').isNotEmpty)
-              Notice('Respuesta del equipo: ${record!.data['feedback']}'),
-            if (!editable)
-              const Notice(
-                'Los datos enviados están protegidos. Puedes consultar el estado actualizado al recargar.',
-              ),
-            _RescueSteps(step: step),
-            if (busy)
-              const LinearProgressIndicator(
-                semanticsLabel: 'Guardando o subiendo archivos',
-              ),
-            for (final private in [false, true]) ...[
-              if (step == 1 &&
-                  rescueFields[kind]!.any((f) => f.private == private)) ...[
-                const SizedBox(height: 20),
-                Text(
-                  private
-                      ? 'Solo para revisión privada'
-                      : 'Información para publicación',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                if (!private)
-                  const Text(
-                    'No incluyas domicilios particulares, teléfonos ni datos de tus comprobantes.',
+      child: kind == 'verification'
+          ? verificationForm()
+          : CommunityFrame(
+              children: [
+                if (widget.showRecord && ownCase)
+                  TextButton(
+                    onPressed: () => context.canPop()
+                        ? context.pop()
+                        : context.go('/rescue/${record!.id}'),
+                    child: const Text('Volver al caso'),
                   ),
-                const SizedBox(height: 16),
-                for (final f in rescueFields[kind]!.where(
-                  (f) => f.private == private,
-                ))
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: f.options == null
-                        ? TextField(
-                            controller: controllers[f.key],
-                            enabled: editable && !busy,
-                            maxLength: f.max,
-                            maxLines: f.lines,
-                            keyboardType: f.key == 'amount_cents'
-                                ? const TextInputType.numberWithOptions(
-                                    decimal: true,
-                                  )
-                                : null,
-                            decoration: InputDecoration(
-                              labelText: f.label,
-                              alignLabelWithHint: f.lines > 1,
-                            ),
-                            onChanged: (_) => setState(() => dirty = true),
-                          )
-                        : DropdownButtonFormField<String>(
-                            key: ValueKey(
-                              '${f.key}:${controllers[f.key]!.text}',
-                            ),
-                            initialValue:
-                                f.options!.containsKey(controllers[f.key]!.text)
-                                ? controllers[f.key]!.text
-                                : null,
-                            isExpanded: true,
-                            decoration: InputDecoration(labelText: f.label),
-                            items: f.options!.entries
-                                .map(
-                                  (e) => DropdownMenuItem(
-                                    value: e.key,
-                                    child: Text(e.value),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: !editable || busy
-                                ? null
-                                : (v) => setState(() {
-                                    controllers[f.key]!.text = v!;
-                                    dirty = true;
-                                  }),
-                          ),
-                  ),
-              ],
-            ],
-            if (step == 0) ...[
-              Text(
-                'Documentos y evidencia',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const Text(
-                'Hasta 12 archivos de 5 MB. JPG, PNG, WebP o PDF; para publicar, solo fotos.',
-              ),
-              for (final role
-                  in kind == 'verification'
-                      ? ['identity', 'address']
+                Heading(
+                  kind == 'verification'
+                      ? 'Tu labor merece\nconfianza.'
                       : kind == 'case'
-                      ? ['public']
-                      : ['receipt', 'proof', 'public'])
-                Card(
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          '${evidenceRoles[role]} · ${role == 'public' ? 'Pública después de aprobación' : 'Privada'}',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                      ? 'Cuéntanos su historia.'
+                      : 'Documenta el gasto.',
+                  kind == 'verification'
+                      ? 'El equipo revisará tus documentos y el enlace social.'
+                      : kind == 'case'
+                      ? 'Describe el rescate y la necesidad. El equipo revisa todo antes de publicarlo.'
+                      : 'Presenta un gasto ya pagado. Cada ronda de comida necesita su propia solicitud y revisión.',
+                  eyebrow: rescueKinds[kind]!.toUpperCase(),
+                ),
+                if (loading)
+                  const Center(child: CircularProgressIndicator())
+                else if (loadFailed ||
+                    (record == null && widget.id != 'new')) ...[
+                  Notice(error ?? 'Solicitud no disponible', isError: true),
+                  TextButton(
+                    onPressed: load,
+                    child: const Text('Volver a intentar'),
+                  ),
+                ] else ...[
+                  if (record != null)
+                    Notice(
+                      '${rescueStatuses[record!.status]} · Versión ${record!.version}',
+                    ),
+                  if ((record?.data['feedback'] as String? ?? '').isNotEmpty)
+                    Notice('Respuesta del equipo: ${record!.data['feedback']}'),
+                  if (!editable)
+                    const Notice(
+                      'Los datos enviados están protegidos. Puedes consultar el estado actualizado al recargar.',
+                    ),
+                  _RescueSteps(step: step),
+                  if (busy)
+                    const LinearProgressIndicator(
+                      semanticsLabel: 'Guardando o subiendo archivos',
+                    ),
+                  for (final private in [false, true]) ...[
+                    if (step == 1 &&
+                        rescueFields[kind]!.any(
+                          (f) => f.private == private,
+                        )) ...[
+                      const SizedBox(height: 20),
+                      Text(
+                        private
+                            ? 'Solo para revisión privada'
+                            : 'Información para publicación',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      if (!private)
+                        const Text(
+                          'No incluyas domicilios particulares, teléfonos ni datos de tus comprobantes.',
                         ),
-                        for (final file in files.where(
-                          (f) => f['role'] == role,
-                        ))
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextButton.icon(
-                                  icon: const Icon(Icons.description_outlined),
-                                  label: Text(
-                                    'Ver archivo ${files.indexOf(file) + 1}',
+                      const SizedBox(height: 16),
+                      for (final f in rescueFields[kind]!.where(
+                        (f) => f.private == private,
+                      ))
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: f.options == null
+                              ? TextField(
+                                  controller: controllers[f.key],
+                                  enabled: editable && !busy,
+                                  maxLength: f.max,
+                                  maxLines: f.lines,
+                                  keyboardType: f.key == 'amount_cents'
+                                      ? const TextInputType.numberWithOptions(
+                                          decimal: true,
+                                        )
+                                      : null,
+                                  decoration: InputDecoration(
+                                    labelText: f.label,
+                                    alignLabelWithHint: f.lines > 1,
                                   ),
-                                  onPressed: () => context.push(
-                                    '/rescue-file',
-                                    extra: file['path'],
+                                  onChanged: (_) =>
+                                      setState(() => dirty = true),
+                                )
+                              : DropdownButtonFormField<String>(
+                                  key: ValueKey(
+                                    '${f.key}:${controllers[f.key]!.text}',
                                   ),
-                                ),
-                              ),
-                              if (editable)
-                                IconButton(
-                                  tooltip:
-                                      'Quitar archivo ${files.indexOf(file) + 1}',
-                                  icon: const Icon(Icons.close),
-                                  onPressed: busy
+                                  initialValue:
+                                      f.options!.containsKey(
+                                        controllers[f.key]!.text,
+                                      )
+                                      ? controllers[f.key]!.text
+                                      : null,
+                                  isExpanded: true,
+                                  decoration: InputDecoration(
+                                    labelText: f.label,
+                                  ),
+                                  items: f.options!.entries
+                                      .map(
+                                        (e) => DropdownMenuItem(
+                                          value: e.key,
+                                          child: Text(e.value),
+                                        ),
+                                      )
+                                      .toList(),
+                                  onChanged: !editable || busy
                                       ? null
-                                      : () => setState(() {
-                                          files.remove(file);
+                                      : (v) => setState(() {
+                                          controllers[f.key]!.text = v!;
                                           dirty = true;
                                         }),
                                 ),
+                        ),
+                    ],
+                  ],
+                  if (step == 0) ...[
+                    Text(
+                      'Documentos y evidencia',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const Text(
+                      'Hasta 12 archivos de 5 MB. JPG, PNG, WebP o PDF; para publicar, solo fotos.',
+                    ),
+                    for (final role
+                        in kind == 'verification'
+                            ? ['identity', 'address']
+                            : kind == 'case'
+                            ? ['public']
+                            : ['receipt', 'proof', 'public'])
+                      Card(
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                '${evidenceRoles[role]} · ${role == 'public' ? 'Pública después de aprobación' : 'Privada'}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              for (final file in files.where(
+                                (f) => f['role'] == role,
+                              ))
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: TextButton.icon(
+                                        icon: const Icon(
+                                          Icons.description_outlined,
+                                        ),
+                                        label: Text(
+                                          'Ver archivo ${files.indexOf(file) + 1}',
+                                        ),
+                                        onPressed: () => context.push(
+                                          '/rescue-file',
+                                          extra: file['path'],
+                                        ),
+                                      ),
+                                    ),
+                                    if (editable)
+                                      IconButton(
+                                        tooltip:
+                                            'Quitar archivo ${files.indexOf(file) + 1}',
+                                        icon: const Icon(Icons.close),
+                                        onPressed: busy
+                                            ? null
+                                            : () => setState(() {
+                                                files.remove(file);
+                                                dirty = true;
+                                              }),
+                                      ),
+                                  ],
+                                ),
+                              if (editable)
+                                OutlinedButton.icon(
+                                  onPressed: busy || files.length >= 12
+                                      ? null
+                                      : () => run(() => attach(role)),
+                                  icon: const Icon(Icons.upload_file),
+                                  label: Text(
+                                    'Adjuntar ${evidenceRoles[role]!.toLowerCase()}',
+                                  ),
+                                ),
                             ],
                           ),
-                        if (editable)
-                          OutlinedButton.icon(
-                            onPressed: busy || files.length >= 12
-                                ? null
-                                : () => run(() => attach(role)),
-                            icon: const Icon(Icons.upload_file),
-                            label: Text(
-                              'Adjuntar ${evidenceRoles[role]!.toLowerCase()}',
-                            ),
-                          ),
-                      ],
+                        ),
+                      ),
+                  ],
+                  if (step == 2) ...[
+                    Text(
+                      'Revisa antes de enviar',
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                  ),
-                ),
-            ],
-            if (step == 2) ...[
-              Text(
-                'Revisa antes de enviar',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 12),
-              _RescueReviewRow('Tipo', rescueKinds[kind] ?? kind),
-              _RescueReviewRow(
-                'Nombre',
-                controllers[rescueFields[kind]!.first.key]?.text.trim() ?? '',
-              ),
-              _RescueReviewRow('Archivos', '${files.length} adjuntos'),
-              const Notice(
-                'El equipo revisará por separado la información pública, los documentos privados y la evidencia antes de aprobar.',
-              ),
-            ],
-            if (record?.kind == 'expense' && record!.status == 'approved')
-              LiveSection<Json>(
-                key: ValueKey('funding:${record!.id}'),
-                tables: const ['dopmi_donations'],
-                errorMessage: paymentError,
-                load: () =>
-                    ref.read(paymentRepositoryProvider).funding(record!.id),
-                builder: (funding, refresh) => Column(
-                  children: [
-                    Notice(
-                      'Monto reembolsable: ${pesos(funding['reimbursable_cents'] as int)}${record!.data['urgent'] == true ? ' · Urgencia aprobada' : ''}. Neto asignado: ${pesos(funding['funded_cents'] as int)}. Transferido a Stripe: ${pesos(funding['transferred_cents'] as int? ?? 0)}. Disponible: ${pesos(funding['available_cents'] as int)}.',
+                    const SizedBox(height: 12),
+                    _RescueReviewRow('Tipo', rescueKinds[kind] ?? kind),
+                    _RescueReviewRow(
+                      'Nombre',
+                      controllers[rescueFields[kind]!.first.key]?.text.trim() ??
+                          '',
                     ),
-                    TextButton(
-                      onPressed: refresh,
-                      child: const Text('Actualizar aportaciones'),
+                    _RescueReviewRow('Archivos', '${files.length} adjuntos'),
+                    const Notice(
+                      'El equipo revisará por separado la información pública, los documentos privados y la evidencia antes de aprobar.',
                     ),
                   ],
-                ),
-              ),
-            const SizedBox(height: 24),
-            if (editable) ...[
-              if (error != null) Notice(error!, isError: true),
-              if (message != null) Notice(message!),
-              if (step < 2)
-                ActionButton(
-                  'Guardar y continuar',
-                  busy: busy,
-                  onPressed: () => run(() async {
-                    await save();
-                    if (mounted) setState(() => step++);
-                  }),
-                )
-              else ...[
-                ActionButton(
-                  'Enviar a revisión',
-                  busy: busy,
-                  onPressed: () => run(() => transition('submit')),
-                ),
-                TextButton(
-                  onPressed: busy ? null : () => run(save),
-                  child: const Text('Guardar borrador'),
-                ),
-              ],
-              if (step > 0)
-                TextButton(
-                  onPressed: busy ? null : () => setState(() => step--),
-                  child: const Text('Regresar al paso anterior'),
-                ),
-            ],
-            if (!editable && error != null) Notice(error!, isError: true),
-            if (!editable && message != null) Notice(message!),
-            if (record?.status == 'submitted')
-              OutlinedButton(
-                onPressed: busy
-                    ? null
-                    : () => run(() => transition('withdraw')),
-                child: const Text('Retirar a borrador'),
-              ),
-            TextButton(
-              onPressed: busy
-                  ? null
-                  : () async {
-                      if (await confirmLeave()) {
-                        await load();
-                      }
-                    },
-              child: const Text('Recargar estado'),
-            ),
-            if (record?.kind == 'case') ...[
-              const SizedBox(height: 24),
-              Text(
-                'Gastos de este caso',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              if (record!.status != 'closed')
-                ActionButton(
-                  'Registrar gasto realizado',
-                  sunny: true,
-                  onPressed: busy
-                      ? null
-                      : () => context.push(
-                          '/rescue/new?kind=expense&case=${record!.id}',
-                        ),
-                ),
-              RescueList(kind: 'expense', parent: record!.id),
-              if (record!.status == 'approved')
-                OutlinedButton(
-                  onPressed: busy
-                      ? null
-                      : () => run(() async {
-                          final close = await showDialog<bool>(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                              title: const Text('¿Cerrar este caso?'),
-                              content: const Text(
-                                'Ya no podrás agregar gastos. El seguimiento aprobado seguirá disponible.',
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(ctx, false),
-                                  child: const Text('Continuar caso'),
-                                ),
-                                TextButton(
-                                  onPressed: () => Navigator.pop(ctx, true),
-                                  child: const Text('Cerrar caso'),
-                                ),
-                              ],
-                            ),
-                          );
-                          if (close == true) await transition('close');
+                  if (record?.kind == 'expense' && record!.status == 'approved')
+                    LiveSection<Json>(
+                      key: ValueKey('funding:${record!.id}'),
+                      tables: const ['dopmi_donations'],
+                      errorMessage: paymentError,
+                      load: () => ref
+                          .read(paymentRepositoryProvider)
+                          .funding(record!.id),
+                      builder: (funding, refresh) => Column(
+                        children: [
+                          Notice(
+                            'Monto reembolsable: ${pesos(funding['reimbursable_cents'] as int)}${record!.data['urgent'] == true ? ' · Urgencia aprobada' : ''}. Neto asignado: ${pesos(funding['funded_cents'] as int)}. Transferido a Stripe: ${pesos(funding['transferred_cents'] as int? ?? 0)}. Disponible: ${pesos(funding['available_cents'] as int)}.',
+                          ),
+                          TextButton(
+                            onPressed: refresh,
+                            child: const Text('Actualizar aportaciones'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  const SizedBox(height: 24),
+                  if (editable) ...[
+                    if (error != null) Notice(error!, isError: true),
+                    if (message != null) Notice(message!),
+                    if (step < 2)
+                      ActionButton(
+                        'Guardar y continuar',
+                        busy: busy,
+                        onPressed: () => run(() async {
+                          await save();
+                          if (mounted) setState(() => step++);
                         }),
-                  child: const Text('Cerrar caso'),
-                ),
-            ],
-            if (history.isNotEmpty) ...[
-              const SizedBox(height: 24),
-              Text('Historial', style: Theme.of(context).textTheme.titleLarge),
-              for (final item in history)
-                ListTile(
-                  title: Text(
-                    rescueStatuses[item['action']] ??
-                        {
-                          'submit': 'Enviado',
-                          'withdraw': 'Retirado a borrador',
-                          'close': 'Caso cerrado',
-                        }[item['action']] ??
-                        'Actualización',
+                      )
+                    else ...[
+                      ActionButton(
+                        'Enviar a revisión',
+                        busy: busy,
+                        onPressed: () => run(() => transition('submit')),
+                      ),
+                      TextButton(
+                        onPressed: busy ? null : () => run(save),
+                        child: const Text('Guardar borrador'),
+                      ),
+                    ],
+                    if (step > 0)
+                      TextButton(
+                        onPressed: busy ? null : () => setState(() => step--),
+                        child: const Text('Regresar al paso anterior'),
+                      ),
+                  ],
+                  if (!editable && error != null) Notice(error!, isError: true),
+                  if (!editable && message != null) Notice(message!),
+                  if (record?.status == 'submitted')
+                    OutlinedButton(
+                      onPressed: busy
+                          ? null
+                          : () => run(() => transition('withdraw')),
+                      child: const Text('Retirar a borrador'),
+                    ),
+                  TextButton(
+                    onPressed: busy
+                        ? null
+                        : () async {
+                            if (await confirmLeave()) {
+                              await load();
+                            }
+                          },
+                    child: const Text('Recargar estado'),
                   ),
-                  subtitle: Text(
-                    '${localDate(item['created_at'] as String)} · Versión ${item['version']}\n${item['feedback']}',
-                  ),
-                ),
-            ],
-          ],
-        ],
-      ),
+                  if (record?.kind == 'case') ...[
+                    const SizedBox(height: 24),
+                    Text(
+                      'Gastos de este caso',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    if (record!.status != 'closed')
+                      ActionButton(
+                        'Registrar gasto realizado',
+                        sunny: true,
+                        onPressed: busy
+                            ? null
+                            : () => context.push(
+                                '/rescue/new?kind=expense&case=${record!.id}',
+                              ),
+                      ),
+                    RescueList(kind: 'expense', parent: record!.id),
+                    if (record!.status == 'approved')
+                      OutlinedButton(
+                        onPressed: busy
+                            ? null
+                            : () => run(() async {
+                                final close = await showDialog<bool>(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: const Text('¿Cerrar este caso?'),
+                                    content: const Text(
+                                      'Ya no podrás agregar gastos. El seguimiento aprobado seguirá disponible.',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(ctx, false),
+                                        child: const Text('Continuar caso'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(ctx, true),
+                                        child: const Text('Cerrar caso'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                                if (close == true) await transition('close');
+                              }),
+                        child: const Text('Cerrar caso'),
+                      ),
+                  ],
+                  if (history.isNotEmpty) ...[
+                    const SizedBox(height: 24),
+                    Text(
+                      'Historial',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    for (final item in history)
+                      ListTile(
+                        title: Text(
+                          rescueStatuses[item['action']] ??
+                              {
+                                'submit': 'Enviado',
+                                'withdraw': 'Retirado a borrador',
+                                'close': 'Caso cerrado',
+                              }[item['action']] ??
+                              'Actualización',
+                        ),
+                        subtitle: Text(
+                          '${localDate(item['created_at'] as String)} · Versión ${item['version']}\n${item['feedback']}',
+                        ),
+                      ),
+                  ],
+                ],
+              ],
+            ),
     );
   }
 }

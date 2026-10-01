@@ -380,14 +380,38 @@ void main() {
     }
     expect(find.text('Borrador · Versión 4'), findsOneWidget);
     repo.conflict = false;
-    await tester.tap(find.text('Guardar y continuar'));
+    await tester.scrollUntilVisible(
+      find.text('Guardar borrador'),
+      400,
+      maxScrolls: 30,
+      scrollable: find
+          .descendant(
+            of: find.byKey(const ValueKey('verification-form-body')),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Guardar borrador'));
     await tester.pumpAndSettle();
     repo.conflict = true;
-    final phone = find.widgetWithText(TextField, 'Teléfono');
+    final phone = find.byKey(const ValueKey('verification-field-phone'));
+    await tester.scrollUntilVisible(
+      phone,
+      -400,
+      maxScrolls: 30,
+      scrollable: find
+          .descendant(
+            of: find.byKey(const ValueKey('verification-form-body')),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await tester.pumpAndSettle();
     await tester.enterText(phone, '8188888888');
     FocusManager.instance.primaryFocus?.unfocus();
     await tester.pump(const Duration(milliseconds: 50));
-    final save = find.text('Guardar y continuar');
+    final save = find.text('Guardar borrador');
     for (var i = 0; i < 12; i++) {
       if (save.evaluate().isNotEmpty) {
         break;
@@ -418,10 +442,22 @@ void main() {
       findsOneWidget,
     );
     repo.conflict = false;
-    await tester.tap(find.text('Guardar y continuar'));
+    await tester.scrollUntilVisible(
+      find.text('Guardar borrador'),
+      400,
+      maxScrolls: 30,
+      scrollable: find
+          .descendant(
+            of: find.byKey(const ValueKey('verification-form-body')),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
     await tester.pumpAndSettle();
-    expect(find.text('Revisa antes de enviar'), findsOneWidget);
-    expect(find.text('0 adjuntos'), findsOneWidget);
+    await tester.tap(find.text('Guardar borrador'));
+    await tester.pumpAndSettle();
+    expect(repo.saved?['phone'], '8188888888');
+    expect(find.text('Progreso del formulario'), findsOneWidget);
     expect(tester.takeException(), null);
   });
 

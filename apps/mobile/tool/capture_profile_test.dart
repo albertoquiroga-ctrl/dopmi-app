@@ -569,7 +569,12 @@ void main() {
       ('publish-health-large', '/my-adoptions/post'),
       ('verification-intro', '/rescue/new?kind=verification'),
       ('verification-intro-large', '/rescue/new?kind=verification'),
+      ('verification-form', '/rescue/new?kind=verification'),
+      ('verification-form-large', '/rescue/new?kind=verification'),
     ]) {
+      const captureFilter = String.fromEnvironment('CAPTURE_FILTER');
+      if (captureFilter.isNotEmpty && !spec.$1.startsWith(captureFilter))
+        continue;
       // Synthetic preferences belong only to this flutter_test capturer.
       // ignore: invalid_use_of_visible_for_testing_member
       SharedPreferences.setMockInitialValues({});
@@ -662,7 +667,7 @@ void main() {
           spec.$1.startsWith('owned-cases') ||
           spec.$1.startsWith('rescuer-home') ||
           spec.$1.startsWith('publish-') ||
-          spec.$1.startsWith('verification-intro') ||
+          spec.$1.startsWith('verification-') ||
           spec.$1 == 'chat-bubbles-rescuer') {
         await repo.setExperience('rescuer');
       }
@@ -1086,6 +1091,13 @@ void main() {
           tester.element(find.text('Salud')),
           alignment: 0,
         );
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('verification-form')) {
+        final next = find.text('Continuar a verificación');
+        await Scrollable.ensureVisible(tester.element(next), alignment: .5);
+        await tester.pumpAndSettle();
+        await tester.tap(next);
         await tester.pumpAndSettle();
       }
       if (spec.$1 != 'adoption-drag') {
