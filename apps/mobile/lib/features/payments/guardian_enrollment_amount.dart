@@ -23,6 +23,28 @@ class GuardianEnrollmentAmount extends StatefulWidget {
 
 class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
   bool custom = false;
+  final amountFocus = FocusNode();
+  @override
+  void dispose() {
+    amountFocus.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant GuardianEnrollmentAmount oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.locked && !oldWidget.locked) amountFocus.unfocus();
+  }
+
+  void openCustom() {
+    if (widget.locked) return;
+    setState(() => custom = true);
+    widget.onChanged();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && custom && !widget.locked) amountFocus.requestFocus();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final cents = parsePesos(widget.amount.text);
@@ -47,6 +69,7 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
           onTap: widget.locked
               ? null
               : () {
+                  amountFocus.unfocus();
                   setState(() {
                     custom = false;
                     widget.amount.text = (value / 100).toStringAsFixed(2);
@@ -128,6 +151,9 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
         if (showCustom) ...[
           TextField(
             controller: widget.amount,
+            focusNode: amountFocus,
+            textInputAction: TextInputAction.done,
+            onSubmitted: (_) => amountFocus.unfocus(),
             enabled: !widget.locked,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             onChanged: (_) {
@@ -146,6 +172,7 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
             onPressed: widget.locked
                 ? null
                 : () {
+                    amountFocus.unfocus();
                     setState(() {
                       custom = false;
                       widget.amount.text = '50.00';
@@ -156,10 +183,7 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
           ),
         ] else
           TextButton(
-            onPressed: () {
-              setState(() => custom = true);
-              widget.onChanged();
-            },
+            onPressed: widget.locked ? null : openCustom,
             child: const Text(
               'Otra cantidad',
               style: TextStyle(

@@ -99,6 +99,10 @@ void main() {
       await tester.tap(find.text('Otra cantidad'));
       await tester.pumpAndSettle();
       expect(find.byType(TextField), findsOneWidget);
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).focusNode!.hasFocus,
+        isTrue,
+      );
       expect(repo.calls, isEmpty);
       expect(repo.opened, 0);
       await tester.enterText(find.byType(TextField), '75.25');

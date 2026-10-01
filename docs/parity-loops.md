@@ -640,3 +640,12 @@ hasta que exista evidencia para todo el alcance, no sólo para este perfil.
 - Pendiente siguiente: foco/teclado de Otra cantidad y retorno a presets, retornoStripe y auditoría integral de rutas/gestos instalados. Codemagic final continúa pendiente de cierre de objetivo, sin atribuir aprobación visual ni publicación.
 
 - Cierre loop43: capturador82 aprobado; entrada normal/200% archivada e inspeccionada en docs/design-reviews/parity-loop-43. Mismo carrusel permitido del40, scroll mantiene contenido ampliado sin overflow. Referencia cierre a3c969cd9103fd46dc5cd886999912526ce75efb sin cambios.
+
+## Loop 44 — foco y regreso de importe personalizado Guardian
+
+- Referencia Irlanda `a3c969cd9103fd46dc5cd886999912526ce75efb`: ImpactSupport usa input autoFocus al cambiar a Otra cantidad y al volver elimina campo/reestablece50. GuardianEnrollmentAmount incorpora FocusNode propio, solicitud post-frame sólo después de toque explícito y checks mounted/custom/locked; entrar con importe existente o pendiente no dispara teclado automáticamente. Dispose libera nodo.
+- Volver a sugeridas/presets, Done y bloqueo durante solicitud liberan foco. No se solicita pago por focus, keyboard o presets; el controlador conserva validación de centavos/límites reales y autorizaciones vigentes. No se copian min20 ni otras reglas económicas del mock.
+- Prueba integrada de alta verifica focus.hasFocus al revelar campo y conserva submit7525 sólo tras Checkbox/Stripe explícitos. Dos pruebas nuevas recorren personalizado75.25→presets50.00 con foco liberado y campo eliminado en320/texto100% y200%. Analyze limpio,7 dirigidas de alta y configuración12 aprobados; suite completa en curso, resultado se registra al cierre.
+- No nueva captura de estilo: sólo foco/entrada de teclado, composición existente del39 preservada. Teclado nativo/retornoStripe y comparación de gestos en instalación continúan pendientes; Flutter widget no equivale a device. Sigue objetivo integral/Codemagic final pendiente.
+
+- Cierre loop44: suite completa200 aprobada; referencia cierre a3c969cd9103fd46dc5cd886999912526ce75efb sin cambios. No publicación ni aceptación instalada atribuidas.
