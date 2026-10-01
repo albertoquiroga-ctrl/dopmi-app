@@ -16,6 +16,7 @@ import 'features/profile/profile_screen.dart';
 import 'features/profile/profile_overview.dart';
 import 'features/profile/account_privacy_screen.dart';
 import 'features/profile/impact_screen.dart';
+import 'features/profile/information_screens.dart';
 import 'features/profile/rescuer_profile_edit_screen.dart';
 import 'features/adoption/catalog_screens.dart';
 import 'features/adoption/discovery_screen.dart';
@@ -195,6 +196,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(path: '/help', builder: (_, _) => const HelpScreen()),
+      GoRoute(path: '/about', builder: (_, _) => const AboutScreen()),
+      GoRoute(
+        path: '/transparency',
+        builder: (_, _) => const TransparencyScreen(),
+      ),
       GoRoute(
         path: '/my-adoptions',
         builder: (_, _) =>

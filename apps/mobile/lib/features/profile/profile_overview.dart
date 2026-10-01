@@ -456,12 +456,11 @@ class DonorProfileView extends ConsumerWidget {
               IconButton(
                 tooltip: 'Notificaciones',
                 onPressed: () => context.push('/notifications'),
-                icon: const Icon(Icons.notifications_none),
-              ),
-              IconButton(
-                tooltip: 'Guardados',
-                onPressed: () => context.push('/saved'),
-                icon: const Icon(Icons.bookmark_border),
+                icon: SvgPicture.asset(
+                  'assets/profile/icon-bell.svg',
+                  width: 24,
+                  height: 24,
+                ),
               ),
             ],
           ),
@@ -570,25 +569,21 @@ class DonorProfileView extends ConsumerWidget {
             ),
           if (error != null) Notice(error!, isError: true),
           const SizedBox(height: 20),
-          const ProfileRow(
+          DonorSupportRow(
+            title: 'Sobre Nosotros',
+            asset: 'icon-doc.svg',
+            onPressed: () => context.push('/about'),
+          ),
+          const SizedBox(height: 10),
+          DonorSupportRow(
             title: 'Centro de ayuda',
-            icon: Icons.help_outline,
-            path: '/help',
+            asset: 'icon-help.svg',
+            onPressed: () => context.push('/help'),
           ),
-          const ProfileRow(
-            title: 'Configuración',
-            icon: Icons.settings_outlined,
-            path: '/settings',
-          ),
-          const ProfileRow(
-            title: 'Mi impacto',
-            icon: Icons.auto_stories_outlined,
-            path: '/impact',
-          ),
-          const SavedRescuersRow(),
-          TextButton.icon(
-            icon: const Icon(Icons.logout),
-            label: const Text('Cerrar sesión'),
+          const SizedBox(height: 10),
+          DonorSupportRow(
+            asset: 'icon-logout.svg',
+            title: 'Cerrar sesión',
             onPressed: () async {
               try {
                 await ref.read(identityControllerProvider).logout();
@@ -601,6 +596,77 @@ class DonorProfileView extends ConsumerWidget {
             },
           ),
         ],
+      ),
+    ),
+  );
+}
+
+class DonorSupportRow extends StatelessWidget {
+  const DonorSupportRow({
+    super.key,
+    required this.title,
+    required this.asset,
+    required this.onPressed,
+  });
+  final String title, asset;
+  final VoidCallback onPressed;
+  @override
+  Widget build(BuildContext context) => Container(
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(18),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0x0f15110d),
+          blurRadius: 22,
+          offset: Offset(0, 8),
+        ),
+      ],
+    ),
+    child: Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: const BoxDecoration(
+                  color: Color(0xfff0eeea),
+                  shape: BoxShape.circle,
+                ),
+                alignment: Alignment.center,
+                child: SvgPicture.asset(
+                  'assets/profile/$asset',
+                  width: 20,
+                  height: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: ink,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              SvgPicture.asset(
+                'assets/profile/icon-chevron-right.svg',
+                width: 20,
+                height: 20,
+              ),
+            ],
+          ),
+        ),
       ),
     ),
   );

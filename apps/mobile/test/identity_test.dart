@@ -30,6 +30,8 @@ void main() {
       const IdentityEvent(Identity('one', 'ana@example.test', verified: true)),
     );
     expect(controller.redirect('/login'), '/adoptions');
+    expect(controller.redirect('/about'), isNull);
+    expect(controller.redirect('/transparency'), isNull);
   });
   test(
     'recovery events and persisted recovery cannot fall through to profile',

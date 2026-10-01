@@ -71,6 +71,14 @@ void main() {
         'icon-billing',
         'icon-clock',
         'icon-heart',
+        'icon-bell',
+        'icon-doc',
+        'icon-help',
+        'icon-logout',
+        'icon-chevron-right',
+        'tab-adoption',
+        'tab-donate',
+        'intent-rescuer',
       ])
         'assets/profile/$name.svg',
       for (final name in [
@@ -97,12 +105,17 @@ void main() {
       ('profile-overview-large', '/profile'),
       ('profile-mode-dialog', '/profile'),
       ('profile-settings', '/settings'),
+      ('profile-support', '/profile'),
+      ('about', '/about'),
+      ('about-large', '/about'),
+      ('transparency', '/transparency'),
+      ('transparency-criteria', '/transparency'),
       ('publish-choice', '/publish'),
     ]) {
       final repo = FakeIdentityRepository()
         ..user = const Identity('one', 'fixture@example.test', verified: true);
       await repo.saveProfile(name: 'Ana', phone: '', city: 'Monterrey, NL');
-      final large = spec.$1 == 'profile-overview-large';
+      final large = spec.$1.endsWith('-large');
       tester.view.physicalSize = large
           ? const Size(320, 640)
           : const Size(377, 852);
@@ -143,6 +156,18 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1 == 'profile-support') {
+        await tester.drag(find.byType(ListView).first, const Offset(0, -1600));
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1 == 'transparency-criteria') {
+        final target = find.text('Ver criterios');
+        await tester.scrollUntilVisible(target, 300);
+        await Scrollable.ensureVisible(tester.element(target), alignment: .25);
+        await tester.pumpAndSettle();
+        await tester.tap(target);
+        await tester.pumpAndSettle();
+      }
       if (spec.$1 == 'profile-mode-dialog') {
         final target = find.text('Publica un caso de adopción');
         await Scrollable.ensureVisible(tester.element(target), alignment: .25);
@@ -154,6 +179,7 @@ void main() {
       await tester.runAsync(
         () => saveCapture(key, '${out.path}/${spec.$1}.png'),
       );
+      expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
       container.dispose();
       await repo.changes.close();

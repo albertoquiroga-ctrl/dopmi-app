@@ -169,6 +169,13 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
             ('Guardados', '/saved', Icons.favorite_border),
             ('Mis mensajes', '/messages', Icons.chat_bubble_outline),
             ('Mis publicaciones', '/my-adoptions', Icons.pets_outlined),
+            (
+              'Rescatistas guardados',
+              '/saved?kind=rescuer',
+              Icons.bookmark_border,
+            ),
+            ('Mi impacto', '/impact', Icons.auto_stories_outlined),
+            ('Configuración', '/settings', Icons.settings_outlined),
           ])
             ListTile(
               leading: Icon(shortcut.$3),

@@ -88,6 +88,39 @@ publicación no acredita instalación ni aceptación visual y no autoriza dinero
   de destino al entrar a vistas subordinadas; barra superpuesta en otros
   recorridos se revisa con su pantalla completa. No declarar paridad global.
 
+## Loop 03 · Información y enlaces de Perfil · 2026-09-30
+
+- Referencia al inicio/cierre: `irlanda/apoyar-detalle-perfil`, SHA
+  `a3c969cd9103fd46dc5cd886999912526ce75efb`, comprobado con ls-remote.
+- Perfil adoptante usa sólo campana original en el encabezado y las tres
+  filas del mockup: Sobre Nosotros, Centro de ayuda, Cerrar sesión. Iconos,
+  círculos40, radio18, padding12/14 y sombras de la referencia. Configuración,
+  impacto y rescatistas guardados se conservan desde Mi cuenta. Favoritos
+  conserva el acceso a Guardados en mensajes; no se retiraron operaciones.
+- Rutas reales /about y /transparency; se corrigió la lista de navegación
+  autenticada, que inicialmente desviaba estas rutas a Adoptar. Regresar
+  restaura la pantalla anterior y tiene fallback cuando se abre directamente.
+- Páginas informativas replican encabezado68, borde, márgenes16/20,
+  secciones28, tipografía y tarjetas/criterios. Se eliminó el espaciado de
+  letras heredado de Material que alteraba los saltos de línea. Quedan ajustes
+  menores de métricas verticales y la composición final de listas/footer;
+  las capturas no justifican todavía declarar paridad exacta de esas páginas.
+- Contenido de Transparencia explica gastos pagados/aprobados, conciliación,
+  devolución íntegra y cobro mensual condicionado. No copia reparto93/5/2,
+  fondo comunitario, reasignación arbitraria ni exposición de comprobantes.
+  Contacto abre un borrador a soporte@dopmi.org; privacidad abre el destino
+  oficial establecido y ambos reportan fallo de apertura. No envía mensajes.
+- Validación:111 pruebas Flutter completas; después10 dirigidas incluyendo
+  captura tras último ajuste tipográfico. Analyze lib/test/tool limpio también
+  después del ajuste; configuración12 aprobadas. Copia fuera de OneDrive con
+  SHA256 idéntico para lib/assets/test/tool. Capturas12 generadas sin errores,
+  incluyendo /about320×640/texto200%, criterios expandibles y perfil inferior.
+  Evidencia seleccionada en docs/design-reviews/parity-loop-03; referencia
+  ejecutada en Vite y capturada en navegador377×852. No instalación/dispositivo,
+  aceptación de Irlanda, CI remoto ni publicación Codemagic en este loop.
+- Próximo: terminar composición informativa y encabezado/badge con datos reales;
+  luego comparar Adoptar, detalle, filtros y gestos contra la misma referencia.
+
 ## Secuencia pendiente
 
 1. Completar Perfil y navegación global contra el mismo SHA; estados Guardián

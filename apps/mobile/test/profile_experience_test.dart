@@ -163,7 +163,7 @@ void main() {
     },
   );
 
-  testWidgets('profile opens the dedicated saved rescuers view', (
+  testWidgets('account preserves access to the dedicated saved rescuers view', (
     tester,
   ) async {
     final identity = FakeIdentityRepository()
@@ -172,7 +172,7 @@ void main() {
       overrides: [
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
-        routerInitialLocationProvider.overrideWithValue('/profile'),
+        routerInitialLocationProvider.overrideWithValue('/basic-info'),
       ],
     );
     addTearDown(() async {

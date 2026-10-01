@@ -113,6 +113,8 @@ class IdentityController extends ChangeNotifier {
         '/account-privacy',
         '/consent',
         '/help',
+        '/about',
+        '/transparency',
         '/publish',
         '/terms',
         '/saved',
