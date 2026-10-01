@@ -2227,15 +2227,15 @@ test('Guardian amount application keeps pause and calendar, disables proration a
   await f.manager().run(requestId);assert.equal(f.changeCalls.length,2);
 });
 test('Guardian current-period invoice discovered after a price change retains its old authorized amount',async()=>{
-  const f=await changeFixture(),requestId=await f.request('amount',0,1000);await f.manager().run(requestId);
+  const f=await changeFixture(),requestId=await f.request('amount',0,6000);await f.manager().run(requestId);
   const current=await f.collector().run(f.invoice.id);assert.equal(current.status,'paid');assert.equal(current.gross_cents,5000);assert.equal(current.price_id,'price_schedule1');
   assert.equal((await guardianSettlement('get',{cycle_id:current.cycle_id})).allocated_cents,4314);
-  const next=await collectionRpc('prepare',{invoice_id:'in_nextPrice',subscription_id:f.subscription.id,cycle_key:nextRequestKey,verified_price_id:'price_change1',verified_gross_cents:1000,
+  const next=await collectionRpc('prepare',{invoice_id:'in_nextPrice',subscription_id:f.subscription.id,cycle_key:nextRequestKey,verified_price_id:'price_change1',verified_gross_cents:6000,
     period_start:f.item.current_period_end,period_end:f.item.current_period_end+30*86400,fresh:true});
-  assert.equal(next.gross_cents,1000);assert.equal(next.price_id,'price_change1');
+  assert.equal(next.gross_cents,6000);assert.equal(next.price_id,'price_change1');
 });
 test('Guardian an old bound invoice reconciles after its subscription changes price and is canceled',async()=>{
-  const f=await changeFixture();const old=await f.prepare();const requestId=await f.request('amount',0,1000);await f.manager().run(requestId);
+  const f=await changeFixture();const old=await f.prepare();const requestId=await f.request('amount',0,6000);await f.manager().run(requestId);
   const cancelId=await f.request('cancel',1,null,nextRequestKey);await f.manager().run(cancelId);
   await f.stripe.invoices.pay(f.invoice.id,{},{});
   const settled=await f.service().reconcileInvoice(f.invoice.id);assert.equal(settled.gross_cents,5000);assert.equal(settled.allocated_cents,4314);
@@ -2246,10 +2246,10 @@ test('Guardian paid invoice cannot substitute a different period for its stored 
   await assert.rejects(()=>f.service().reconcileInvoice(f.invoice.id),/snapshot_mismatch/);
 });
 test('Guardian successive amount changes before renewal retain history and choose the newest authorized price',async()=>{
-  const f=await changeFixture();await f.manager().run(await f.request('amount',0,1000));
-  await f.manager().run(await f.request('amount',1,2000,nextRequestKey));
+  const f=await changeFixture();await f.manager().run(await f.request('amount',0,6000));
+  await f.manager().run(await f.request('amount',1,7000,nextRequestKey));
   const source=await collectionRpc('source',{subscription_id:f.subscription.id,period_start:f.item.current_period_end});
-  assert.equal(source.gross_cents,2000);assert.equal(source.stripe_price_id,'price_change2');
+  assert.equal(source.gross_cents,7000);assert.equal(source.stripe_price_id,'price_change2');
   const old=await collectionRpc('source',{subscription_id:f.subscription.id,period_start:f.item.current_period_end-1});
   assert.equal(old.gross_cents,5000);assert.equal((await db.query('select count(*)::int as n from private.dopmi_guardian_prices')).rows[0].n,3);
 });
@@ -2831,7 +2831,7 @@ test('Guardian stale invoice source cannot reserve a newly changed amount after 
   const f=await changeFixture(),target=f.item.current_period_end;let raced=false;
   f.invoice.lines.data[0].period={start:target,end:target+30*86400};f.invoice.created=target;
   const wrapped=async(op,data)=>{const result=await collectionRpc(op,data);if(op==='source'&&!raced){
-    raced=true;await f.manager().run(await f.request('amount',0,1000));changeClock(f,target+1);
+    raced=true;await f.manager().run(await f.request('amount',0,6000));changeClock(f,target+1);
   }return result;};
   await rejected(()=>f.collector(wrapped).run(f.invoice.id),/factura no coincide/);
   assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_collection_jobs')).rows[0].n,0);
@@ -3312,4 +3312,44 @@ test('public planned needs use only approved snapshot and never inflate real exp
   await db.exec('set local role anon');
   const hidden=(await db.query('select public.dopmi_rescue_public($1) value',[caseId])).rows[0].value;
   assert.ok(!hidden.items.some(r=>r.id===caseId));
+});
+
+test('new Guardian activation and owner amount requests require fifty pesos without any charge',async()=>{
+  await rejected(()=>activationPrepare({key:crypto.randomUUID(),gross_cents:4999}),/mínimo Guardián/);
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_activations')).rows[0].n,0);
+  await collectionFixture(); await role(donor);
+  await rejected(()=>ownerRequest('amount',0,4999),/mínimo Guardián/);
+  const accepted=await ownerRequest('amount',0,5001);
+  assert.equal(accepted.request.new_gross_cents,5001);
+  assert.equal(accepted.plan.gross_cents,5000);
+});
+
+// Reconstruct only the immediately prior minimum policy inside the test rollback.
+// Retain all subsequent ownership, dispute and cancellation protections.
+async function legacyGuardianAuthorization(signature, guard, authorize) {
+  const definition=(await db.query('select pg_get_functiondef($1::regprocedure) as value',[signature])).rows[0].value;
+  assert.equal(definition.split(guard).length,2);
+  await db.exec(definition.replace(guard,''));
+  try { return await authorize(); } finally { await db.exec('reset role'); await db.exec(definition); }
+}
+
+test('an already authorized Guardian activation below fifty retains its stable-key retry',async()=>{
+  const input={key:crypto.randomUUID(),gross_cents:1000};
+  const original=await legacyGuardianAuthorization('public.dopmi_guardian_activation_server(text,jsonb)',
+    " if gross<5000 then raise exception 'El mínimo Guardián es $50 MXN' using errcode='22023'; end if;",
+    ()=>activationPrepare(input));
+  assert.deepEqual(await activationPrepare(input),original);
+  await rejected(()=>activationPrepare({...input,key:crypto.randomUUID()}),/mínimo Guardián/);
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_activations')).rows[0].n,1);
+});
+
+test('an already authorized Guardian amount below fifty retains its owner retry and revision',async()=>{
+  await collectionFixture(); const legacyKey=crypto.randomUUID();
+  const original=await legacyGuardianAuthorization('public.dopmi_guardian_request(text,uuid,bigint,bigint,text)',
+    " if request_kind='amount' and new_gross_cents<5000 then raise exception 'El mínimo Guardián es $50 MXN' using errcode='22023'; end if;",
+    async()=>{await role(donor);return ownerRequest('amount',0,1000,legacyKey);});
+  await role(donor);
+  assert.deepEqual(await ownerRequest('amount',0,1000,legacyKey),original);
+  await rejected(()=>ownerRequest('amount',1,1000,crypto.randomUUID()),/mínimo Guardián/);
+  assert.equal((await ownerPlan()).revision,1);
 });
