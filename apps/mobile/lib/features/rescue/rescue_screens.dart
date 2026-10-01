@@ -832,13 +832,29 @@ class _OwnedRescueCard extends ConsumerWidget {
                               record.status == 'approved' &&
                               record.targetCents > 0) ...[
                             const SizedBox(height: 8),
-                            Text(
-                              'Asignado: ${pesos(record.fundedCents)}',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                height: 1.35,
-                                color: Color(0xff4f4e5c),
-                              ),
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              spacing: 8,
+                              runSpacing: 4,
+                              children: [
+                                const Text(
+                                  'Asignación a gastos',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    height: 1.4,
+                                    color: Color(0xff4f4e5c),
+                                  ),
+                                ),
+                                Text(
+                                  '${((record.fundedCents / record.targetCents).clamp(0, 1) * 100).round()}%',
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    height: 1.4,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xff151423),
+                                  ),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 6),
                             LinearProgressIndicator(
@@ -851,6 +867,15 @@ class _OwnedRescueCard extends ConsumerWidget {
                               semanticsLabel: 'Progreso de gastos aprobados',
                               semanticsValue:
                                   '${((record.fundedCents / record.targetCents).clamp(0, 1) * 100).round()}%',
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              'Asignado: ${pesos(record.fundedCents)}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                height: 1.35,
+                                color: Color(0xff4f4e5c),
+                              ),
                             ),
                           ],
                         ],
