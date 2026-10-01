@@ -581,6 +581,8 @@ void main() {
       ('publish-review-large', '/my-adoptions/post'),
       ('publish-health', '/my-adoptions/post'),
       ('publish-health-large', '/my-adoptions/post'),
+      ('expense-evidence', '/rescue/expense-one'),
+      ('expense-evidence-large', '/rescue/expense-one'),
       ('expense-information', '/rescue/expense-one'),
       ('expense-information-large', '/rescue/expense-one'),
       ('expense-private', '/rescue/expense-one'),
@@ -1128,7 +1130,18 @@ void main() {
         );
         await tester.pumpAndSettle();
       }
-      if (spec.$1.startsWith('expense-')) {
+      if (spec.$1.startsWith('expense-evidence')) {
+        final target = find.text('Documentos y evidencia');
+        await tester.scrollUntilVisible(
+          target,
+          300,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await Scrollable.ensureVisible(tester.element(target), alignment: 0);
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('expense-') &&
+          !spec.$1.startsWith('expense-evidence')) {
         final next = find.text('Guardar y continuar');
         await tester.scrollUntilVisible(
           next,

@@ -16,6 +16,7 @@ import '../identity/identity_repository.dart';
 import '../payments/payment_repository.dart';
 import 'rescue_fields.dart';
 import 'expense_field.dart';
+import 'expense_evidence_card.dart';
 import 'case_update_screens.dart';
 import 'rescue_repository.dart';
 import 'support_home.dart';
@@ -1881,66 +1882,89 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                             : kind == 'case'
                             ? ['public']
                             : ['receipt', 'proof', 'public'])
-                      Card(
-                        color: Colors.white,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Text(
-                                '${evidenceRoles[role]} · ${role == 'public' ? 'Pública después de aprobación' : 'Privada'}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              for (final file in files.where(
-                                (f) => f['role'] == role,
-                              ))
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: TextButton.icon(
-                                        icon: const Icon(
-                                          Icons.description_outlined,
-                                        ),
-                                        label: Text(
-                                          'Ver archivo ${files.indexOf(file) + 1}',
-                                        ),
-                                        onPressed: () => context.push(
-                                          '/rescue-file',
-                                          extra: file['path'],
-                                        ),
-                                      ),
-                                    ),
-                                    if (editable)
-                                      IconButton(
-                                        tooltip:
-                                            'Quitar archivo ${files.indexOf(file) + 1}',
-                                        icon: const Icon(Icons.close),
-                                        onPressed: busy
-                                            ? null
-                                            : () => setState(() {
-                                                files.remove(file);
-                                                dirty = true;
-                                              }),
-                                      ),
-                                  ],
-                                ),
-                              if (editable)
-                                OutlinedButton.icon(
-                                  onPressed: busy || files.length >= 12
-                                      ? null
-                                      : () => run(() => attach(role)),
-                                  icon: const Icon(Icons.upload_file),
-                                  label: Text(
-                                    'Adjuntar ${evidenceRoles[role]!.toLowerCase()}',
+                      if (kind == 'expense')
+                        ExpenseEvidenceCard(
+                          title: evidenceRoles[role]!,
+                          public: role == 'public',
+                          fileIndexes: [
+                            for (var i = 0; i < files.length; i++)
+                              if (files[i]['role'] == role) i,
+                          ],
+                          onOpen: (i) => context.push(
+                            '/rescue-file',
+                            extra: files[i]['path'],
+                          ),
+                          onRemove: editable && !busy
+                              ? (i) => setState(() {
+                                  files.removeAt(i);
+                                  dirty = true;
+                                })
+                              : null,
+                          onAttach: editable && !busy && files.length < 12
+                              ? () => run(() => attach(role))
+                              : null,
+                        )
+                      else
+                        Card(
+                          color: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(
+                                  '${evidenceRoles[role]} · ${role == 'public' ? 'Pública después de aprobación' : 'Privada'}',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                            ],
+                                for (final file in files.where(
+                                  (f) => f['role'] == role,
+                                ))
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextButton.icon(
+                                          icon: const Icon(
+                                            Icons.description_outlined,
+                                          ),
+                                          label: Text(
+                                            'Ver archivo ${files.indexOf(file) + 1}',
+                                          ),
+                                          onPressed: () => context.push(
+                                            '/rescue-file',
+                                            extra: file['path'],
+                                          ),
+                                        ),
+                                      ),
+                                      if (editable)
+                                        IconButton(
+                                          tooltip:
+                                              'Quitar archivo ${files.indexOf(file) + 1}',
+                                          icon: const Icon(Icons.close),
+                                          onPressed: busy
+                                              ? null
+                                              : () => setState(() {
+                                                  files.remove(file);
+                                                  dirty = true;
+                                                }),
+                                        ),
+                                    ],
+                                  ),
+                                if (editable)
+                                  OutlinedButton.icon(
+                                    onPressed: busy || files.length >= 12
+                                        ? null
+                                        : () => run(() => attach(role)),
+                                    icon: const Icon(Icons.upload_file),
+                                    label: Text(
+                                      'Adjuntar ${evidenceRoles[role]!.toLowerCase()}',
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
                   ],
                   if (step == 2) ...[
                     Text(

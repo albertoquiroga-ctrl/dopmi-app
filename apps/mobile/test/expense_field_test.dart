@@ -8,6 +8,9 @@ import 'publication_frame_test.dart' show startPublication;
 import 'rescue_test.dart' show FakeRescue;
 
 class DraftExpenseRescue extends FakeRescue {
+  DraftExpenseRescue({this.initialFiles = const []});
+  final List<Json> initialFiles;
+  List<Json>? savedFiles;
   Json? publicSaved;
   @override
   Future<Json> detail(String id) async => {
@@ -17,7 +20,7 @@ class DraftExpenseRescue extends FakeRescue {
       'status': 'draft',
       'private_data': {'amount_cents': 12345, 'vendor': 'Clínica'},
       'public_data': {'title': 'Consulta', 'category': 'medicine'},
-      'files': <Json>[],
+      'files': initialFiles,
     },
     'history': <Json>[],
   };
@@ -31,6 +34,7 @@ class DraftExpenseRescue extends FakeRescue {
     RescueRecord? record,
     String? parent,
   }) async {
+    savedFiles = files.map((file) => Json.from(file)).toList();
     saved = privateData;
     publicSaved = publicData;
     return RescueRecord({
@@ -44,6 +48,45 @@ class DraftExpenseRescue extends FakeRescue {
 }
 
 void main() {
+  testWidgets(
+    'removing a private receipt preserves the public photo role when saved',
+    (tester) async {
+      final repo = DraftExpenseRescue(
+        initialFiles: [
+          {'role': 'receipt', 'path': 'one/expense-one/receipt.pdf'},
+          {'role': 'public', 'path': 'one/expense-one/photo.jpg'},
+        ],
+      );
+      await startPublication(
+        tester,
+        FakeCommunity(),
+        '/rescue/expense-one',
+        rescue: repo,
+      );
+      final remove = find.byTooltip('Quitar archivo 1');
+      await tester.scrollUntilVisible(
+        remove,
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(remove);
+      await tester.pumpAndSettle();
+      final next = find.text('Guardar y continuar');
+      await tester.scrollUntilVisible(
+        next,
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+      expect(repo.savedFiles, [
+        {'role': 'public', 'path': 'one/expense-one/photo.jpg'},
+      ]);
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets(
     'expense inputs retain private exact cents through review at large text',
     (tester) async {
