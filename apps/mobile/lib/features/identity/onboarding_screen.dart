@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -40,6 +42,109 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
+            final scaler = MediaQuery.textScalerOf(context);
+            final bodyWidth = math.max(0.0, constraints.maxWidth - 56);
+            double textHeight(String text, TextStyle style, double width) {
+              final painter = TextPainter(
+                text: TextSpan(text: text, style: style),
+                textScaler: scaler,
+                textDirection: Directionality.of(context),
+              )..layout(maxWidth: math.max(1, width));
+              final height = painter.height;
+              painter.dispose();
+              return height;
+            }
+
+            const labelStyle = TextStyle(
+              fontFamily: DopmiTokens.bodyFont,
+              fontSize: 12,
+              height: 1.3,
+              fontWeight: FontWeight.w500,
+            );
+            final labelsHeight = options
+                .map(
+                  (option) => textHeight(
+                    option.$2,
+                    labelStyle,
+                    math.min(
+                      scaler.scale(85.2),
+                      (math.min(280, bodyWidth) - 16) / 2,
+                    ),
+                  ),
+                )
+                .reduce(math.max);
+            final headerHeight =
+                36 +
+                28 +
+                40 +
+                math.max(118, 92 + 10 + labelsHeight) +
+                textHeight(
+                  '¿Cómo quieres ayudar?',
+                  const TextStyle(
+                    fontFamily: DopmiTokens.displayFont,
+                    fontSize: 28,
+                    height: 1.15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  math.min(240, bodyWidth),
+                );
+            const footerCopy =
+                'Puedes cambiar tu selección en cualquier momento desde la configuración de tu perfil.';
+            final buttonHeight = math.max(
+              52.0,
+              textHeight(
+                    'Continuar',
+                    const TextStyle(
+                      fontFamily: DopmiTokens.bodyFont,
+                      fontSize: 16,
+                      height: 1.2,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    math.max(1, bodyWidth - 32),
+                  ) +
+                  22,
+            );
+            final footerHeight =
+                buttonHeight +
+                14 +
+                textHeight(
+                  footerCopy,
+                  const TextStyle(
+                    fontFamily: DopmiTokens.bodyFont,
+                    fontSize: 11,
+                    height: 1.45,
+                  ),
+                  math.min(bodyWidth, scaler.scale(235.94)),
+                );
+            final summaryRequired =
+                44 +
+                10 +
+                textHeight(
+                  selected?.$2 ?? '',
+                  const TextStyle(
+                    fontFamily: DopmiTokens.displayFont,
+                    fontSize: 36,
+                    height: 1.1,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  bodyWidth,
+                ) +
+                textHeight(
+                  selected?.$3 ?? '',
+                  const TextStyle(
+                    fontFamily: DopmiTokens.bodyFont,
+                    fontSize: 14,
+                    height: 1.5,
+                  ),
+                  math.min(bodyWidth, scaler.scale(247.3)),
+                );
+            final availableSummary =
+                constraints.maxHeight - 60 - headerHeight - footerHeight;
+            final summaryHeight = math.max(
+              summaryRequired,
+              math.min(280.0, availableSummary),
+            );
+            final footerGap = math.max(0.0, availableSummary - summaryHeight);
             final welcomeHeader = AnimatedContainer(
               duration: MediaQuery.disableAnimationsOf(context)
                   ? Duration.zero
@@ -275,52 +380,51 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         ),
                       ),
                       if (selected != null) ...[
-                        SizedBox(
-                          height:
-                              (constraints.maxHeight - 620).clamp(24, 220) / 2,
-                        ),
                         WelcomeSelectionEntrance(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              const SizedBox(height: 28),
-                              Text(
-                                selected.$2,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontFamily: DopmiTokens.displayFont,
-                                  fontSize: 36,
-                                  color: ink,
-                                  height: 1.1,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Center(
-                                child: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxWidth: MediaQuery.textScalerOf(context)
-                                        .scale(247.3),
+                          child: Container(
+                            key: const ValueKey('welcome-summary-region'),
+                            height: summaryHeight,
+                            padding: const EdgeInsets.only(top: 28, bottom: 16),
+                            alignment: Alignment.center,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(
+                                  selected.$2,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontFamily: DopmiTokens.displayFont,
+                                    fontSize: 36,
+                                    color: ink,
+                                    height: 1.1,
+                                    fontWeight: FontWeight.w600,
                                   ),
-                                  child: Text(
-                                    selected.$3,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      height: 1.5,
-                                      color: muted,
+                                ),
+                                const SizedBox(height: 10),
+                                Center(
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxWidth: MediaQuery.textScalerOf(context)
+                                          .scale(247.3),
+                                    ),
+                                    child: Text(
+                                      selected.$3,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        letterSpacing: 0,
+                                        height: 1.5,
+                                        color: muted,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 28),
-                        SizedBox(
-                          height:
-                              (constraints.maxHeight - 620).clamp(24, 220) / 2,
-                        ),
+                        SizedBox(height: footerGap),
                         WelcomeSelectionEntrance(
                           footer: true,
                           child: Column(
@@ -330,27 +434,46 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                 style: FilledButton.styleFrom(
                                   backgroundColor: ink,
                                   foregroundColor: Colors.white,
-                                  minimumSize: const Size.fromHeight(52),
+                                  minimumSize: Size.fromHeight(buttonHeight),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 11,
+                                  ),
+                                  textStyle: const TextStyle(
+                                    fontFamily: DopmiTokens.bodyFont,
+                                    fontSize: 16,
+                                    height: 1.2,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                                 onPressed: () =>
                                     context.push('/onboarding?intent=$intent'),
                                 child: const Text('Continuar'),
                               ),
                               const SizedBox(height: 14),
-                              const Text(
-                                'Puedes cambiar tu selección en cualquier momento desde la configuración de tu perfil.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  height: 1.5,
-                                  color: muted,
+                              Center(
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: scaler.scale(235.94),
+                                  ),
+                                  child: const Text(
+                                    footerCopy,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: DopmiTokens.bodyFont,
+                                      fontSize: 11,
+                                      letterSpacing: 0,
+                                      height: 1.45,
+                                      color: muted,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
                           ),
                         ),
                       ],
-                      const SizedBox(height: 12),
+                      SizedBox(height: selected == null ? 12 : 28),
                       TextButton(
                         onPressed: () => context.push('/login'),
                         child: const Text('Ya tengo cuenta · Iniciar sesión'),

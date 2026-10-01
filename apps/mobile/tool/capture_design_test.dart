@@ -100,6 +100,26 @@ void main() {
     await tester.tap(find.text('Adoptar'));
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
+    // Source DOM measured at 377×852, irlanda/apoyar-detalle-perfil@a3c969c.
+    final summaryRect = tester.getRect(
+      find.byKey(const ValueKey('welcome-summary-region')),
+    );
+    final continueRect = tester.getRect(
+      find.ancestor(
+        of: find.text('Continuar'),
+        matching: find.byType(FilledButton),
+      ),
+    );
+    final footnoteRect = tester.getRect(
+      find.text(
+        'Puedes cambiar tu selección en cualquier momento desde la configuración de tu perfil.',
+      ),
+    );
+    expect(summaryRect.top, closeTo(333.6, 1));
+    expect(summaryRect.height, 280);
+    expect(continueRect.top, closeTo(726.1, 1));
+    expect(footnoteRect.bottom, closeTo(824, 1));
+
     await tester.runAsync(
       () => saveCapture(welcomeKey, '${output.path}/welcome-selected.png'),
     );
