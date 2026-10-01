@@ -48,6 +48,7 @@ ThemeData dopmiTheme({bool rescuer = false}) {
       headlineLarge: TextStyle(
         fontFamily: DopmiTokens.displayFont,
         fontSize: 32,
+        fontVariations: DopmiTokens.display32Variations,
         fontWeight: FontWeight.w600,
         height: 1.15,
         color: ink,
@@ -55,6 +56,7 @@ ThemeData dopmiTheme({bool rescuer = false}) {
       headlineMedium: TextStyle(
         fontFamily: DopmiTokens.displayFont,
         fontSize: 28,
+        fontVariations: DopmiTokens.display28Variations,
         fontWeight: FontWeight.w600,
         height: 1.2,
         color: ink,

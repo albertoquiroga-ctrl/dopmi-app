@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../community/content_actions.dart';
@@ -168,6 +169,7 @@ class ImpactEmptyCard extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: 'Fraunces',
                   fontSize: 26,
+                  fontVariations: DopmiTokens.display26Variations,
                   height: 1.2,
                   letterSpacing: -.52,
                   fontWeight: FontWeight.w600,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 
 /// Decorative teaching examples from the mockup; never a live catalog.
 class OnboardingArt extends StatelessWidget {
@@ -66,6 +67,7 @@ class OnboardingArt extends StatelessWidget {
               'Luna',
               style: TextStyle(
                 fontFamily: detail ? 'Fraunces' : 'Inter',
+                fontVariations: detail ? DopmiTokens.display20Variations : null,
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
                 color: ink,
@@ -222,6 +224,7 @@ class OnboardingArt extends StatelessWidget {
                               style: TextStyle(
                                 fontFamily: 'Fraunces',
                                 fontSize: 24,
+                                fontVariations: DopmiTokens.display24Variations,
                                 height: 1.1,
                                 letterSpacing: 0,
                                 color: Colors.white,
@@ -354,6 +357,7 @@ class OnboardingArt extends StatelessWidget {
                         style: TextStyle(
                           fontFamily: 'Fraunces',
                           fontSize: 22,
+                          fontVariations: DopmiTokens.display22Variations,
                           height: 1.15,
                           letterSpacing: 0,
                           fontWeight: FontWeight.w600,
@@ -864,6 +868,7 @@ class OnboardingArt extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'Fraunces',
                 fontSize: 22,
+                fontVariations: DopmiTokens.display22Variations,
                 height: 1.2363636,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 0,

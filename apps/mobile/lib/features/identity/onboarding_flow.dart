@@ -162,7 +162,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       slide.$1,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.headlineMedium
-                          ?.copyWith(fontSize: 26),
+                          ?.copyWith(
+                            fontSize: 26,
+                            fontVariations: DopmiTokens.display26Variations,
+                          ),
                     ),
                   ),
                   const SizedBox(height: 10),

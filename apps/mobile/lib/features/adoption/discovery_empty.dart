@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import 'community_ui.dart';
 
 class DiscoveryEmpty extends StatelessWidget {
@@ -47,6 +48,7 @@ class DiscoveryEmpty extends StatelessWidget {
                     style: TextStyle(
                       fontFamily: 'Fraunces',
                       fontSize: 26,
+                      fontVariations: DopmiTokens.display26Variations,
                       height: 1.2,
                       letterSpacing: -.52,
                       fontWeight: FontWeight.w600,

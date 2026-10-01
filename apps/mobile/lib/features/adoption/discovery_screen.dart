@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/measurement.dart';
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import 'adopt_start_dialog.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
@@ -651,6 +652,8 @@ class _SupportCard extends StatelessWidget {
                                         style: const TextStyle(
                                           fontFamily: 'Fraunces',
                                           fontSize: 28,
+                                          fontVariations:
+                                              DopmiTokens.display28Variations,
                                           height: 1.1,
                                           fontWeight: FontWeight.w600,
                                           color: Colors.white,
@@ -899,6 +902,8 @@ class _SwipeCard extends StatelessWidget {
                                       style: const TextStyle(
                                         fontFamily: 'Fraunces',
                                         fontSize: 28,
+                                        fontVariations:
+                                            DopmiTokens.display28Variations,
                                         height: 1.1,
                                         fontWeight: FontWeight.w600,
                                         color: Colors.white,
