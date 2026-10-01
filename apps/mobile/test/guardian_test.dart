@@ -317,12 +317,13 @@ void main() {
       final repo = FakeGuardian()
         ..value = {'plan': activePlan(), 'activation': null};
       await start(tester, repo);
+      await tapButton(tester, 'Cambiar cantidad');
       await tester.enterText(
         find.widgetWithText(TextField, 'Importe mensual en MXN'),
         '200',
       );
       await consent(tester);
-      await tapButton(tester, 'Solicitar cambio de monto');
+      await tapButton(tester, 'Guardar nueva cantidad');
       await tester.pumpAndSettle();
       expect(repo.calls.single['revision'], 2);
       expect(find.text('Monto autorizado: \$50.00 MXN al mes'), findsOneWidget);
@@ -330,7 +331,7 @@ void main() {
         find.textContaining('Cambio a \$200.00 MXN solicitado'),
         findsOneWidget,
       );
-      expect(find.text('Solicitar cambio de monto'), findsNothing);
+      expect(find.text('Guardar nueva cantidad'), findsNothing);
       expect(find.text('Cancelar mi plan'), findsOneWidget);
     },
   );
@@ -396,14 +397,16 @@ void main() {
         ..conflict = true
         ..value = {'plan': activePlan(), 'activation': null};
       await start(tester, repo);
+      await tapButton(tester, 'Cambiar cantidad');
       await tester.enterText(
         find.widgetWithText(TextField, 'Importe mensual en MXN'),
         '200',
       );
       await consent(tester);
-      await tapButton(tester, 'Solicitar cambio de monto');
+      await tapButton(tester, 'Guardar nueva cantidad');
       await tester.pumpAndSettle();
       expect(find.text('Reintentar mi solicitud'), findsNothing);
+      await tapButton(tester, 'Cambiar cantidad');
       expect(
         tester.widget<CheckboxListTile>(find.byType(CheckboxListTile)).value,
         false,

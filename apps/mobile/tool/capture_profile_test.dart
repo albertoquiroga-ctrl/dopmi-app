@@ -330,6 +330,8 @@ void main() {
         'contribution-review-large',
         '/contribute/Cirugía?case=case-one&amount_cents=10000',
       ),
+      ('guardian-billing-amount', '/guardian'),
+      ('guardian-billing-amount-large', '/guardian'),
       ('guardian-billing-cancel', '/guardian'),
       ('guardian-billing-cancel-large', '/guardian'),
       ('guardian-billing-active', '/guardian'),
@@ -533,6 +535,13 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1.startsWith('guardian-billing-amount')) {
+        await tester.ensureVisible(find.text('Cambiar cantidad'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Cambiar cantidad'));
+        await tester.pumpAndSettle();
+        expect(find.text('Guardar nueva cantidad'), findsOneWidget);
+      }
       if (spec.$1.startsWith('guardian-billing-cancel')) {
         await tester.ensureVisible(find.text('Cancelar mi plan'));
         await tester.tap(find.text('Cancelar mi plan'));

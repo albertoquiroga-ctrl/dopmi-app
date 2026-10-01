@@ -15,6 +15,7 @@ import 'guardian_repository.dart';
 import 'contribution_layout.dart';
 import 'guardian_membership_card.dart';
 import 'guardian_cancel_dialog.dart';
+import 'guardian_amount_dialog.dart';
 
 class GuardianScreen extends ConsumerStatefulWidget {
   const GuardianScreen({super.key});
@@ -211,6 +212,33 @@ class _GuardianState extends ConsumerState<GuardianScreen>
     } finally {
       if (current) setState(() => busy = false);
     }
+  }
+
+  Future<void> changeAmount() async {
+    if (!current ||
+        busy ||
+        confirming ||
+        !fresh ||
+        intent != null ||
+        plan?['status'] != 'active' ||
+        plan?['pending_request'] != null) {
+      return;
+    }
+    setState(() => confirming = true);
+    final selected = await chooseGuardianAmount(
+      context,
+      plan!['gross_cents'] as int,
+      identity: ref.read(identityControllerProvider),
+      canView: () => current,
+    );
+    if (!current) return;
+    setState(() => confirming = false);
+    if (selected == null) return;
+    setState(() {
+      amount.text = (selected / 100).toStringAsFixed(2);
+      consent = true;
+    });
+    await submit();
   }
 
   Future<void> submit({
@@ -431,6 +459,13 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                 cents: p['gross_cents'] as int,
                 nextBilling: p['next_billing_at'],
               ),
+            if (enabled && canChange && intent == null)
+              ContributionButton(
+                'Cambiar cantidad',
+                onPressed: busy || confirming || !fresh || !verified
+                    ? null
+                    : changeAmount,
+              ),
             if (!enabled)
               const Notice(
                 'Guardián todavía no está disponible. Te avisaremos cuando puedas activar tu plan.',
@@ -552,9 +587,12 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   guardianActivationLabels[activation!['status']] ??
                       'Estado del alta en revisión. No vuelvas a pagar.',
                 ),
+              const Notice(
+                'Solo se cobra si el neto completo puede asignarse a gastos aprobados. Si no hay capacidad, ese mes se omite sin cargo ni deuda. Dopmi descuenta el 2% y los costos de Stripe; el neto se asigna por prioridad. Puedes cancelar los ciclos futuros.',
+              ),
               if (!['method', 'withdraw_amount'].contains(intent?['kind']) &&
                   !checkoutInReview &&
-                  (canStart || canChange || intent != null)) ...[
+                  (canStart || intent != null)) ...[
                 const SizedBox(height: 16),
                 Wrap(
                   spacing: 8,
@@ -589,9 +627,6 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   p == null
                       ? 'Primer intento de cobro: hoy, ${date(DateTime.now().toIso8601String())}, al activar. Próxima fecha aproximada: ${date(guardianNextBilling(DateTime.now()).toIso8601String())}. Después, cada aniversario mensual; si el mes no tiene ese día, se usa su último día. Stripe te mostrará el importe antes de confirmar.'
                       : 'El nuevo importe aplica desde el siguiente ciclo. No se prorratea ni cambia el importe de un ciclo ya preparado.',
-                ),
-                const Notice(
-                  'Solo se cobra si el neto completo puede asignarse a gastos aprobados. Si no hay capacidad, ese mes se omite sin cargo ni deuda. Dopmi descuenta el 2% y los costos de Stripe; el neto se asigna por prioridad. Puedes cancelar los ciclos futuros.',
                 ),
                 if (intent == null)
                   CheckboxListTile(
