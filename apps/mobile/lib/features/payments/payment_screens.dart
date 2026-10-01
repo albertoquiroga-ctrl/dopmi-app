@@ -100,14 +100,21 @@ class _ContributeState extends ConsumerState<ContributeScreen>
 
   Future<void> checkOutcome() async {
     if (attemptKey == null) return;
-    setState(() => busy = true);
+    setState(() {
+      busy = true;
+      error = null;
+    });
     try {
-      final page = await ref.read(paymentRepositoryProvider).history(1);
-      final matches = page.items.where(
-        (item) => item['idempotency_key'] == attemptKey,
-      );
-      if (!mounted || matches.isEmpty) return;
-      outcome = matches.first;
+      final result = await ref
+          .read(paymentRepositoryProvider)
+          .outcome(widget.expense, attemptKey!);
+      if (!mounted) return;
+      if (result == null) {
+        outcome = null;
+        error = 'Aún no encontramos evidencia de este intento. Vuelve a consultar; no inicies otra aportación.';
+        return;
+      }
+      outcome = result;
       if (outcome!['payment_status'] == 'confirmed') {
         await trackOnce('contribution_confirmed');
       }

@@ -38,6 +38,23 @@ class PaymentRepository {
     return DataPage(result.data.map(Json.from).toList(), result.count);
   }
 
+  Future<Json?> outcome(String expense, String key) async {
+    final actor = client.auth.currentUser?.id;
+    if (actor == null) {
+      throw const FormatException(
+        'Inicia sesión para consultar tu aportación.',
+      );
+    }
+    final row = await client
+        .from('dopmi_donations')
+        .select()
+        .eq('donor_id', actor)
+        .eq('expense_id', expense)
+        .eq('idempotency_key', key)
+        .maybeSingle();
+    return row == null ? null : Json.from(row);
+  }
+
   Future<void> openStripe(String value) async {
     final url = Uri.parse(value);
     if (url.scheme != 'https' ||

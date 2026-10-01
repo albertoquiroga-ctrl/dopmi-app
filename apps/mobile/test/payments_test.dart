@@ -56,6 +56,13 @@ class FakePayments extends PaymentRepository {
         ], 1);
 
   @override
+  Future<Json?> outcome(String expense, String key) async {
+    final page = await history(1);
+    final matches = page.items.where((row) => row['idempotency_key'] == key);
+    return matches.isEmpty ? null : matches.first;
+  }
+
+  @override
   Future<void> openStripe(String url) async {}
 }
 
@@ -79,6 +86,27 @@ class ResultPayments extends FakePayments {
                 : 'not_started',
           },
         ], 1);
+}
+
+class OldResultPayments extends FakePayments {
+  final lookups = <(String, String)>[];
+  @override
+  Future<DataPage<Json>> history(int page, {bool received = false}) async =>
+      DataPage([
+        for (var i = 0; i < 20; i++)
+          {'idempotency_key': 'recent-$i', 'payment_status': 'pending'},
+      ], 21);
+  @override
+  Future<Json?> outcome(String expense, String key) async {
+    lookups.add((expense, key));
+    return {
+      'idempotency_key': key,
+      'payment_status': 'confirmed',
+      'gross_cents': 7525,
+      'allocated_cents': 7000,
+      'transfer_status': 'pending',
+    };
+  }
 }
 
 Future<void> pumpUntil(
@@ -267,6 +295,58 @@ void main() {
       await tester.pump();
     });
   }
+  testWidgets(
+    'old stored attempt resolves outside first history page without another checkout',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({
+        'dopmi-payment:one:expense-one:key': 'historical-attempt',
+        'dopmi-payment:one:expense-one:cents': 7525,
+      });
+      final identity = FakeIdentityRepository()
+        ..user = const Identity('one', 'fixture@example.test', verified: true);
+      final payments = OldResultPayments();
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          paymentRepositoryProvider.overrideWithValue(payments),
+          routerInitialLocationProvider.overrideWithValue(
+            '/contribute/expense-one',
+          ),
+        ],
+      );
+      addTearDown(() async {
+        container.dispose();
+        await identity.changes.close();
+      });
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const DopmiApp(),
+        ),
+      );
+      await pumpUntil(tester, find.text('Resumen'));
+      final lookup = find.widgetWithText(TextButton, 'Consultar resultado');
+      await tester.ensureVisible(lookup);
+      await tester.tap(lookup);
+      await tester.pumpAndSettle();
+      expect(payments.lookups, [('expense-one', 'historical-attempt')]);
+      expect(payments.calls, isEmpty);
+      expect(
+        find.text('¡Eres mi héroe, choca esas huellitas!'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Asignado: ${String.fromCharCode(36)}70 MXN'),
+        findsOneWidget,
+      );
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.containsKey('dopmi-payment:one:expense-one:key'), isFalse);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump();
+    },
+  );
   testWidgets(
     'selected amount opens review without checkout and stored attempt takes precedence',
     (tester) async {
