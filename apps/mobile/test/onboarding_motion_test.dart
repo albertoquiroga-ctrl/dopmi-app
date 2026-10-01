@@ -155,6 +155,46 @@ void main() {
       },
     );
   }
+  testWidgets('Welcome orb sizes switch immediately while its fill animates', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(377, 852));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(const MaterialApp(home: WelcomeScreen()));
+    await tester.pumpAndSettle();
+    final adopt = find.byKey(const ValueKey('welcome-orb-adopt'));
+    final donate = find.byKey(const ValueKey('welcome-orb-donate'));
+    expect(tester.getSize(adopt), const Size(76, 76));
+    final tap = find.ancestor(of: adopt, matching: find.byType(InkWell));
+    expect(tester.widget<InkWell>(tap).splashFactory, NoSplash.splashFactory);
+    await tester.tap(adopt);
+    await tester.pump();
+    expect(tester.getSize(adopt), const Size(92, 92));
+    expect(tester.getSize(donate), const Size(64, 64));
+    Color fill() =>
+        (tester
+                    .widget<DecoratedBox>(
+                      find.descendant(
+                        of: adopt,
+                        matching: find.byType(DecoratedBox),
+                      ),
+                    )
+                    .decoration
+                as BoxDecoration)
+            .color!;
+    expect(fill(), Colors.white);
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(fill(), isNot(Colors.white));
+    expect(fill(), isNot(const Color(0xfffff6cf)));
+    await tester.pumpAndSettle();
+    expect(fill(), const Color(0xfffff6cf));
+    await tester.tap(donate);
+    await tester.pump();
+    expect(tester.getSize(donate), const Size(92, 92));
+    expect(tester.getSize(adopt), const Size(64, 64));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+  });
   testWidgets('Reduced motion shows onboarding immediately', (tester) async {
     await tester.pumpWidget(
       const MaterialApp(

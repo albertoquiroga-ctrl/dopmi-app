@@ -180,22 +180,18 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                       setState(() => intent = option.$1),
                                   child: ExcludeSemantics(
                                     child: InkWell(
+                                      splashFactory: NoSplash.splashFactory,
+                                      highlightColor: Colors.transparent,
                                       borderRadius: BorderRadius.circular(50),
                                       onTap: () =>
                                           setState(() => intent = option.$1),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          AnimatedContainer(
-                                            duration:
-                                                MediaQuery.disableAnimationsOf(
-                                                  context,
-                                                )
-                                                ? Duration.zero
-                                                : const Duration(
-                                                    milliseconds: 250,
-                                                  ),
-                                            curve: Curves.ease,
+                                          SizedBox(
+                                            key: ValueKey(
+                                              'welcome-orb-${option.$1}',
+                                            ),
                                             width: intent == option.$1
                                                 ? 92
                                                 : selected == null
@@ -206,32 +202,51 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                                 : selected == null
                                                 ? 76
                                                 : 64,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: intent == option.$1
-                                                  ? const Color(0xfffff6cf)
-                                                  : Colors.white,
-                                              border: Border.all(
-                                                color: yellow,
-                                                width: intent == option.$1
-                                                    ? 2
-                                                    : 1.5,
+                                            child: AnimatedContainer(
+                                              duration:
+                                                  MediaQuery.disableAnimationsOf(
+                                                    context,
+                                                  )
+                                                  ? Duration.zero
+                                                  : const Duration(
+                                                      milliseconds: 250,
+                                                    ),
+                                              curve: Curves.ease,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: intent == option.$1
+                                                    ? const Color(0xfffff6cf)
+                                                    : Colors.white,
+                                                border: Border.all(
+                                                  color: yellow,
+                                                  width: intent == option.$1
+                                                      ? 2
+                                                      : 1.5,
+                                                ),
                                               ),
-                                            ),
-                                            alignment: Alignment.center,
-                                            child: SvgPicture.asset(
-                                              'assets/navigation/choice-${option.$1}.svg',
-                                              width: intent == option.$1
-                                                  ? 32
-                                                  : 26,
-                                              height: intent == option.$1
-                                                  ? 32
-                                                  : 26,
+                                              alignment: Alignment.center,
+                                              child: SvgPicture.asset(
+                                                'assets/navigation/choice-${option.$1}.svg',
+                                                width: intent == option.$1
+                                                    ? 32
+                                                    : 26,
+                                                height: intent == option.$1
+                                                    ? 32
+                                                    : 26,
+                                              ),
                                             ),
                                           ),
                                           const SizedBox(height: 10),
-                                          Text(
-                                            option.$2,
+                                          AnimatedDefaultTextStyle(
+                                            duration:
+                                                MediaQuery.disableAnimationsOf(
+                                                  context,
+                                                )
+                                                ? Duration.zero
+                                                : const Duration(
+                                                    milliseconds: 250,
+                                                  ),
+                                            curve: Curves.ease,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontSize: 12,
@@ -243,6 +258,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                                   ? FontWeight.w700
                                                   : FontWeight.w500,
                                             ),
+                                            child: Text(option.$2),
                                           ),
                                         ],
                                       ),
