@@ -172,3 +172,10 @@ la publicación a borrador y exige aprobación antes de discovery.
 Asesores antes/después conservan categorías y conteos: RLS sin políticas27,
 RPC SECURITY DEFINER anon15/authenticated68 y protección de contraseñas1.
 No se concedieron accesos nuevos. pgTAP local pendiente: Docker no disponible.
+
+## Preflight del loop 42 — Impacto mensual, 1/10/2026
+
+- Acceso MCP de lectura comprobado en desarrollo `ohqxranynackjignryep`; producción no consultada ni modificada. Historial remoto conserva `20260927024547_public_rescuer_and_impact` y termina en `20261001042909_adoption_personality_parity`. No push, repair ni replay.
+- Cuerpo local y remoto de `public.dopmi_personal_impact()` idénticos normalizando CRLF: MD5 `55b06e7880046036bea6fdeecdb05277`. Definición remota MD5 `718c6b460232701b0938d954b3b40efc`; stable/SECURITY DEFINER/search_path vacío conservados. EXECUTE anon=false/authenticated=true comprobado por consulta separada.
+- Brecha confirmada: la RPC sólo agrega dopmi_donations confirmadas. Guardian no aparece aunque tenga asignaciones. El helper remoto private.dopmi_guardian_funded(uuid,boolean) suma allocated_cents menos reversed_cents, igual que el SQL local de refund_reversals; reservas amount_cents no equivalen a apoyo. Metadatos remotos confirman donor_id en ciclos, allocated/reversed en asignaciones y created_at en settlements. No se consultaron ni exportaron filas privadas de donantes.
+- Siguiente implementación: migración nueva que agregue ambas fuentes por caso, filtre identidad vigente/caso público, use neto de asignación mensual confirmado y conserve contrato/copy público. Probar donante distinto, reserva sin pago, reverso parcial/completo, suma con puntual y retiro de publicación antes de aplicación remota. Dinero y Stripe no se modifican. PGlite de payments.test.mjs ya carga todas las migraciones; reutilizar ese gate y añadir prueba de consulta, sin sustituir PostgreSQL real por assertions textuales.
