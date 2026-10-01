@@ -23,6 +23,7 @@ import 'expense_field.dart';
 import 'expense_evidence_card.dart';
 import 'expense_frame.dart';
 import 'expense_review.dart';
+import 'case_information.dart';
 import 'case_update_screens.dart';
 import 'rescue_repository.dart';
 import 'support_home.dart';
@@ -1055,6 +1056,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   bool verificationIntroDismissed = false;
   bool loading = true, busy = false, dirty = false, loadFailed = false;
   bool expenseSubmitted = false;
+  final caseInformationKey = GlobalKey(debugLabel: 'case-information');
   String? error, message;
   String get kind => record?.kind ?? widget.kind;
   bool get editable => record?.editable ?? true;
@@ -1234,6 +1236,17 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   Widget casePhotos() => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
+      const Text(
+        'Sube fotos de la mascota',
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 18,
+          height: 28 / 18,
+          fontWeight: FontWeight.w600,
+          color: Color(0xff151423),
+        ),
+      ),
+      const SizedBox(height: 16),
       PublicationPhotoPicker(
         onCamera: editable && !busy && files.length < 12
             ? () => run(() => pickCasePhoto(ImageSource.camera))
@@ -1957,7 +1970,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                     child: const Text('Volver a intentar'),
                   ),
                 ] else ...[
-                  if (record != null)
+                  if (record != null && !(kind == 'case' && editable))
                     if (kind == 'expense')
                       Container(
                         padding: const EdgeInsets.all(12),
@@ -2005,8 +2018,16 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                     const LinearProgressIndicator(
                       semanticsLabel: 'Guardando o subiendo archivos',
                     ),
+                  if (step == 1 && kind == 'case')
+                    CaseInformation(
+                      key: caseInformationKey,
+                      controllers: controllers,
+                      enabled: editable && !busy,
+                      onChanged: () => setState(() => dirty = true),
+                    ),
                   for (final private in [false, true]) ...[
                     if (step == 1 &&
+                        kind != 'case' &&
                         rescueFields[kind]!.any(
                           (f) => f.private == private,
                         )) ...[

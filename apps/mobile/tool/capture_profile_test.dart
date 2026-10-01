@@ -595,6 +595,8 @@ void main() {
       ('expense-submitted-footer-large', '/rescue/expense-one'),
       ('case-publication', '/rescue/new?kind=case'),
       ('case-publication-large', '/rescue/new?kind=case'),
+      ('case-publication-information', '/rescue/case-one'),
+      ('case-publication-information-large', '/rescue/case-one'),
       ('case-publication-grid', '/rescue/case-one'),
       ('case-publication-grid-large', '/rescue/case-one'),
       ('expense-record', '/rescue/expense-one'),
@@ -1164,6 +1166,10 @@ void main() {
           tester.element(find.text('Salud')),
           alignment: 0,
         );
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('case-publication-information')) {
+        await tester.tap(find.text('Continuar'));
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('expense-review')) {

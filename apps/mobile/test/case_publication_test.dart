@@ -49,6 +49,61 @@ class DraftCaseRescue extends FakeRescue {
 }
 
 void main() {
+  testWidgets(
+    'case information keeps real enum values and authored text through the large keyboard',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 640);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final repo = DraftCaseRescue();
+      await startPublication(
+        tester,
+        FakeCommunity(),
+        '/rescue/case-one',
+        rescue: repo,
+      );
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      final name = find.byKey(const ValueKey('case-field-pet_name'));
+      await tester.ensureVisible(name);
+      await tester.pumpAndSettle();
+      await tester.enterText(name, 'Mora corregida');
+      tester.view.viewInsets = const FakeViewPadding(bottom: 240);
+      await tester.pumpAndSettle();
+      expect(tester.widget<TextField>(name).controller!.text, 'Mora corregida');
+      expect(tester.testTextInput.isVisible, isTrue);
+      expect(
+        tester
+            .widget<EditableText>(
+              find.descendant(of: name, matching: find.byType(EditableText)),
+            )
+            .focusNode
+            .hasFocus,
+        isTrue,
+      );
+      expect(find.text('Guardar borrador'), findsNothing);
+      tester.view.resetViewInsets();
+      tester.testTextInput.hide();
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
+      for (final label in ['Hembra', 'Gato', 'Por determinar']) {
+        final choice = find.text(label);
+        await tester.ensureVisible(choice);
+        await tester.pumpAndSettle();
+        await tester.tap(choice);
+        await tester.pumpAndSettle();
+      }
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      expect(repo.publicSaved!['pet_name'], 'Mora corregida');
+      expect(repo.publicSaved!['sex'], 'unknown');
+      expect(repo.publicSaved!['species'], 'cat');
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets('tapping a case photo opens the existing private file route', (
     tester,
   ) async {
