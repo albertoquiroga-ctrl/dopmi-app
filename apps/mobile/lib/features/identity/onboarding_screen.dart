@@ -65,45 +65,64 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       duration: MediaQuery.disableAnimationsOf(context)
                           ? Duration.zero
                           : const Duration(milliseconds: 550),
-                      firstCurve: const Interval(0, 400 / 550, curve: Curves.ease),
-                      secondCurve: const Interval(0, 400 / 550, curve: Curves.ease),
+                      firstCurve: const Interval(
+                        0,
+                        400 / 550,
+                        curve: Curves.ease,
+                      ),
+                      secondCurve: const Interval(
+                        0,
+                        400 / 550,
+                        curve: Curves.ease,
+                      ),
                       sizeCurve: const Cubic(.22, 1, .36, 1),
                       alignment: Alignment.topCenter,
                       crossFadeState: selected == null
                           ? CrossFadeState.showFirst
                           : CrossFadeState.showSecond,
-                      firstChild: Column(
-                        children: [
-                          const SizedBox(height: 36),
-                          Text(
-                            'Bienvenido a DopMi',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.headlineMedium,
-                          ),
-                          const SizedBox(height: 12),
-                          const Text(
-                            'Ayuda a mascotas rescatadas de forma segura, simple y transparente.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 13,
-                              height: 1.5,
-                              color: muted,
+                      firstChild: AnimatedContainer(
+                        duration: MediaQuery.disableAnimationsOf(context)
+                            ? Duration.zero
+                            : const Duration(milliseconds: 550),
+                        curve: const Cubic(.22, 1, .36, 1),
+                        transform: Matrix4.translationValues(
+                          0,
+                          selected == null ? 0 : -12,
+                          0,
+                        ),
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 36),
+                            Text(
+                              'Bienvenido a DopMi',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.headlineMedium,
                             ),
-                          ),
-                          const SizedBox(height: 16),
-                          Center(
-                            child: SvgPicture.asset(
-                              'assets/navigation/choice-paw.svg',
-                              width: 28,
-                              height: 28,
+                            const SizedBox(height: 12),
+                            const Text(
+                              'Ayuda a mascotas rescatadas de forma segura, simple y transparente.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 13,
+                                height: 1.5,
+                                color: muted,
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            height:
-                                (constraints.maxHeight - 620).clamp(24, 220) /
-                                2,
-                          ),
-                        ],
+                            const SizedBox(height: 16),
+                            Center(
+                              child: SvgPicture.asset(
+                                'assets/navigation/choice-paw.svg',
+                                width: 28,
+                                height: 28,
+                              ),
+                            ),
+                            SizedBox(
+                              height:
+                                  (constraints.maxHeight - 620).clamp(24, 220) /
+                                  2,
+                            ),
+                          ],
+                        ),
                       ),
                       secondChild: const SizedBox(
                         width: double.infinity,
@@ -113,17 +132,24 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     Center(
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 240),
-                        child: Text(
-                          selected == null
-                              ? '¿Cómo quieres ayudar hoy?'
-                              : '¿Cómo quieres ayudar?',
+                        child: AnimatedDefaultTextStyle(
+                          duration: MediaQuery.disableAnimationsOf(context)
+                              ? Duration.zero
+                              : const Duration(milliseconds: 450),
+                          curve: const Cubic(.22, 1, .36, 1),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontFamily: DopmiTokens.displayFont,
                             fontSize: selected == null ? 32 : 28,
+                            letterSpacing: selected == null ? -.64 : -.56,
                             height: 1.15,
                             fontWeight: FontWeight.w600,
                             color: ink,
+                          ),
+                          child: Text(
+                            selected == null
+                                ? '¿Cómo quieres ayudar hoy?'
+                                : '¿Cómo quieres ayudar?',
                           ),
                         ),
                       ),
