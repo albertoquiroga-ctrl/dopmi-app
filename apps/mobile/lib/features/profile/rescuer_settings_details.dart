@@ -145,7 +145,7 @@ class SettingsDataRow extends StatelessWidget {
                 style: const TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 12,
-                  height: 1.4,
+                  height: 15.2 / 12,
                   letterSpacing: 0,
                   color: Color(0xff554e48),
                 ),
@@ -157,7 +157,7 @@ class SettingsDataRow extends StatelessWidget {
                   fontFamily: 'Inter',
                   fontSize: 16,
                   height: 1.2,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w700,
                   letterSpacing: 0,
                   color: Color(0xff15110d),
                 ),

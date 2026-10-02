@@ -1032,27 +1032,54 @@ class ProfileFrame extends StatelessWidget {
     this.back = false,
     this.rescuerOverview = false,
     this.showNotifications = true,
+    this.rescuerSettings = false,
   });
   final String title;
   final List<Widget> children;
-  final bool back, rescuerOverview, showNotifications;
+  final bool back, rescuerOverview, showNotifications, rescuerSettings;
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: rescuerOverview
         ? null
         : AppBar(
             automaticallyImplyLeading: false,
-            centerTitle: false,
+            centerTitle: rescuerSettings,
+            toolbarHeight: rescuerSettings ? 68 : kToolbarHeight,
+            leadingWidth: rescuerSettings ? 62 : null,
+            shape: rescuerSettings
+                ? const Border(bottom: BorderSide(color: Color(0xffe6e2dd)))
+                : null,
             leading: back
-                ? IconButton(
-                    tooltip: 'Regresar',
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () => context.canPop()
-                        ? context.pop()
-                        : context.go('/profile'),
+                ? Padding(
+                    padding: EdgeInsets.only(left: rescuerSettings ? 14 : 0),
+                    child: IconButton(
+                      tooltip: 'Regresar',
+                      icon: rescuerSettings
+                          ? SvgPicture.asset(
+                              'assets/profile/back.svg',
+                              width: 20,
+                              height: 20,
+                            )
+                          : const Icon(Icons.arrow_back),
+                      onPressed: () => context.canPop()
+                          ? context.pop()
+                          : context.go('/profile'),
+                    ),
                   )
                 : null,
-            title: Text(title, style: Theme.of(context).textTheme.titleLarge),
+            title: Text(
+              title,
+              style: rescuerSettings
+                  ? const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      height: 1.25,
+                      letterSpacing: -.36,
+                      color: Color(0xff15110d),
+                    )
+                  : Theme.of(context).textTheme.titleLarge,
+            ),
             actions: [
               if (showNotifications)
                 IconButton(
@@ -1068,6 +1095,8 @@ class ProfileFrame extends StatelessWidget {
       child: ListView(
         padding: rescuerOverview
             ? const EdgeInsets.fromLTRB(16, 20, 16, 88)
+            : rescuerSettings
+            ? const EdgeInsets.fromLTRB(16, 20, 16, 32)
             : const EdgeInsets.fromLTRB(16, 14, 16, 28),
         children: [
           if (rescuerOverview) ...[
@@ -1337,6 +1366,7 @@ class SettingsScreen extends ConsumerWidget {
         title: 'Configuración',
         back: true,
         showNotifications: false,
+        rescuerSettings: true,
         children: [
           const RescuerSettingsVerification(),
           const RescuerSettingsModeSwitch(),

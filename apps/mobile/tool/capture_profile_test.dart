@@ -1,3 +1,4 @@
+import 'package:dopmi_mobile/features/profile/rescuer_settings_verification.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_logout_row.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_access.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_repository.dart';
@@ -1475,6 +1476,24 @@ void main() {
         await tester.pumpAndSettle();
       }
       if (spec.$1 != 'adoption-drag') {
+        if (spec.$1 == 'rescuer-settings') {
+          expect(
+            tester.getTopLeft(find.text('Estado de verificación')).dy,
+            closeTo(88, 1),
+          );
+          expect(
+            tester.getTopLeft(find.byType(SettingsVerificationCard)).dy,
+            closeTo(121.4, 1),
+          );
+          expect(
+            tester.getCenter(find.text('Configuración')).dx,
+            closeTo(377 / 2, 1),
+          );
+          expect(
+            tester.getCenter(find.byTooltip('Regresar')).dx,
+            closeTo(38, 1),
+          );
+        }
         if (spec.$1 == 'rescuer-settings-footer') {
           await tester.scrollUntilVisible(
             find.text('Cerrar sesión'),
