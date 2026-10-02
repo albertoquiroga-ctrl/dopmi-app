@@ -2216,3 +2216,12 @@ Loop276 fue progreso de bloques de Ayuda. Source RescuerEditPublicProfile y CSS 
 
 No se copian dirección, teléfono ni email públicos de Source: prohibidos por decisiones de privacidad vigentes. Sin modificaciones Supabase/SQL/guards/pagos. Encabezado completo, campos/espacios, cámara/botones y contraste de navegador siguen pendientes. Dos capturas editor normal/200% elevan matriz284estados34URLs sólo después de verificación; no son aceptación instalada. BuildPlay286 no incluye este loop posterior.
 Verificación loop277: pruebas perfil+capturador2 aprobadas4s; analyze limpio28.6s. Primera captura usó repositorio no inyectado y mostró error: no se acreditó paridad por esa imagen. Fixture corregido con FakeRescuerProfile sólo en capturador y experiencia rescuer; capturas finales1 aprobada2s. No backend remoto verificado mediante fixture. Formato/diffcheck aprobados.
+
+## Loop278 — 2026-10-02 — campos del editor público
+
+Loop277 fue progreso de tarjeta/estado de guardado. Campos productivos usan labels externos14/w500/ink151423/gap8, separaciones16 y descripción5 líneas, como publish-field del mockup. Botones Guardar borrador/Enviar a revisión conservan acciones reales y ahora separación16. Bloqueo busy/revisión y campos permitidos se preservan; no PII pública ni publicación directa.
+
+Referencia reconsultada a3c969cd9103fd46dc5cd886999912526ce75efb. Capturador normal/large aprobó1 en4s dentro suite inicial que falló el test antiguo al buscar Ciudad dentro de TextField: label ahora externo. Se agrega key de campo y se actualiza test para desplazarse/editar ciudad, desplazar y comprobar submit hitTestable; no se eliminan aserciones de privacidad/guardado/version/revisión. Test final perfil1 aprobada2s. Imagen normal inspeccionada. Header/cámara/foco/tamaños exactos/teclado y aceptación instalada siguen pendientes. Matriz284estados34URLs desde277; sin nuevos estados278.
+
+CI448/37073584291 exacto01ad5661a55803e84a6c89249a489c2f222c701c confirmado in_progress; no gate integral ni nuevoPlay acreditado. Cambios locales ajenos preservados. Soporte directo/adjuntos, foto/apellidos/cambio de correo de Información básica y contraste completo pendientes. No schema/flags/pagos modificados.
+Gate final loop278: flutter analyze limpio7.9s, formato/diffcheck aprobados; test final mantiene corrección y revisión reales con repo de prueba, no acredita flujo remoto.

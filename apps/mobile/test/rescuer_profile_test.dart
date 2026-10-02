@@ -100,11 +100,25 @@ void main() {
     );
     expect(find.text('Teléfono'), findsNothing);
     expect(find.text('Correo'), findsNothing);
-    await tester.enterText(
-      find.widgetWithText(TextField, 'Ciudad'),
-      'San Pedro Garza García',
+    final city = find.byKey(const ValueKey('public-profile-Ciudad'));
+    await tester.scrollUntilVisible(
+      city,
+      200,
+      scrollable: find.byType(Scrollable).first,
     );
-    await tester.tap(find.text('Enviar a revisión'));
+    await tester.enterText(city, 'San Pedro Garza García');
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    final submit = find.text('Enviar a revisión');
+    await tester.scrollUntilVisible(
+      submit,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.ensureVisible(submit);
+    await tester.pumpAndSettle();
+    expect(submit.hitTestable(), findsOneWidget);
+    await tester.tap(submit);
     await tester.pumpAndSettle();
     expect(repo.saves, 1);
     expect(repo.value['city'], 'San Pedro Garza García');

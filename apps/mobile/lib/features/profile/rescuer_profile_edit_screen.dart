@@ -230,43 +230,44 @@ class _RescuerPublicProfileEditState
           const SizedBox(height: 16),
           _StatusCard(status, profile?['review_feedback'] as String? ?? ''),
           const SizedBox(height: 12),
-          TextField(
-            controller: name,
-            enabled: editable && !busy,
-            decoration: const InputDecoration(labelText: 'Nombre público'),
-          ),
-          TextField(
-            controller: bio,
-            enabled: editable && !busy,
-            minLines: 3,
-            maxLines: 6,
-            decoration: const InputDecoration(labelText: 'Descripción'),
-          ),
-          TextField(
-            controller: city,
-            enabled: editable && !busy,
-            decoration: const InputDecoration(labelText: 'Ciudad'),
-          ),
-          TextField(
-            controller: region,
-            enabled: editable && !busy,
-            decoration: const InputDecoration(labelText: 'Estado'),
-          ),
-          TextField(
-            controller: instagram,
-            enabled: editable && !busy,
-            keyboardType: TextInputType.url,
-            decoration: const InputDecoration(
-              labelText: 'Instagram (https://)',
+          for (final item in [
+            ('Nombre', name, 1),
+            ('Descripción', bio, 5),
+            ('Ciudad', city, 1),
+            ('Estado', region, 1),
+            ('Instagram (https://)', instagram, 1),
+            ('Facebook (https://)', facebook, 1),
+          ]) ...[
+            Semantics(
+              label: item.$1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    item.$1,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xff151423),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    key: ValueKey('public-profile-${item.$1}'),
+                    controller: item.$2,
+                    enabled: editable && !busy,
+                    minLines: item.$3,
+                    maxLines: item.$3 == 1 ? 1 : null,
+                    keyboardType: item.$2 == instagram || item.$2 == facebook
+                        ? TextInputType.url
+                        : null,
+                    decoration: const InputDecoration(),
+                  ),
+                ],
+              ),
             ),
-          ),
-          TextField(
-            controller: facebook,
-            enabled: editable && !busy,
-            keyboardType: TextInputType.url,
-            decoration: const InputDecoration(labelText: 'Facebook (https://)'),
-          ),
-          const SizedBox(height: 16),
+            const SizedBox(height: 16),
+          ],
           if (error != null) Notice(error!, isError: true),
           if (busy)
             const LinearProgressIndicator(semanticsLabel: 'Guardando perfil'),
@@ -275,6 +276,7 @@ class _RescuerPublicProfileEditState
               onPressed: busy ? null : save,
               child: const Text('Guardar borrador'),
             ),
+            const SizedBox(height: 16),
             ActionButton(
               'Enviar a revisión',
               busy: busy,
