@@ -273,6 +273,12 @@ class SupportCaptureRescue extends FakeRescue {
       'https://fixture.invalid/approved';
 }
 
+class EmptySupportCaptureRescue extends SupportCaptureRescue {
+  @override
+  Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async =>
+      DataPage([], 0);
+}
+
 class CaseCaptureRescue extends SupportCaptureRescue {
   CaseCaptureRescue({this.planned = false});
   final bool planned;
@@ -627,6 +633,8 @@ void main() {
       ('rescuer-home-large', '/rescuer'),
       ('support-home', '/rescue-cases'),
       ('support-home-large', '/rescue-cases'),
+      ('support-home-empty', '/rescue-cases'),
+      ('support-home-empty-large', '/rescue-cases'),
       ('support-home-case-focus', '/rescue-cases'),
       ('support-home-case-focus-large', '/rescue-cases'),
       ('support-home-guardian-card-focus', '/rescue-cases'),
@@ -1066,7 +1074,11 @@ void main() {
           if (spec.$1.startsWith('impact-feed'))
             rescueRepositoryProvider.overrideWithValue(SupportCaptureRescue()),
           if (spec.$1.startsWith('support-home'))
-            rescueRepositoryProvider.overrideWithValue(SupportCaptureRescue()),
+            rescueRepositoryProvider.overrideWithValue(
+              spec.$1.startsWith('support-home-empty')
+                  ? EmptySupportCaptureRescue()
+                  : SupportCaptureRescue(),
+            ),
           guardianEnabledProvider.overrideWithValue(true),
           guardianRepositoryProvider.overrideWithValue(guardian),
           profilePaymentHistoryProvider.overrideWithValue(
@@ -1187,6 +1199,22 @@ void main() {
         expect(cta.left, closeTo(189.2, 1));
         expect(price.width, closeTo(114.475, 1));
         expect(price.top, closeTo(729.6, 1));
+      }
+      if (spec.$1 == 'support-home-empty') {
+        expect(
+          tester.getTopLeft(find.text('Sé un Guardián')).dy,
+          closeTo(136.8, 1),
+        );
+        expect(
+          tester.getTopLeft(find.byType(GuardianSupportCard)).dy,
+          closeTo(252.55, 1),
+        );
+        expect(
+          tester
+              .widget<GuardianSupportCard>(find.byType(GuardianSupportCard))
+              .height,
+          closeTo(895.2, 1),
+        );
       }
       if (spec.$1 == 'adoption-empty') {
         // Effective Source cascade measured in IAB at377x852, a3c969c.

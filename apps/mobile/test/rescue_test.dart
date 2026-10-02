@@ -1,4 +1,3 @@
-
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
@@ -714,7 +713,17 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
-        expect(find.text('No hay casos para apoyar'), findsOneWidget);
+        expect(find.text('No hay casos para apoyar'), findsNothing);
+        expect(
+          find.byWidgetPredicate(
+            (widget) =>
+                widget is Semantics &&
+                (widget.properties.label ?? '').startsWith(
+                  'No hay casos para apoyar.',
+                ),
+          ),
+          findsOneWidget,
+        );
         final label = entry.startsWith('keyboard-')
             ? 'Apoya a casos urgentes'
             : entry;

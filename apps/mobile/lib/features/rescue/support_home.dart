@@ -95,7 +95,7 @@ class SupportHomePage extends StatelessWidget {
                     color: ink,
                   ),
                 ),
-                const SizedBox(height: 16),
+                if (eligible.isNotEmpty) const SizedBox(height: 16),
                 if (error != null) Notice(error!, isError: true),
                 if (eligible.isNotEmpty)
                   SizedBox(
@@ -110,29 +110,10 @@ class SupportHomePage extends StatelessWidget {
                     ),
                   )
                 else
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Column(
-                      children: [
-                        const Text(
-                          'No hay casos para apoyar',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: ink,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'Por ahora no hay gastos aprobados disponibles.',
-                          textAlign: TextAlign.center,
-                        ),
-                        TextButton(
-                          onPressed: () => context.go('/adoptions'),
-                          child: const Text('Ir a Adoptar'),
-                        ),
-                      ],
-                    ),
+                  Semantics(
+                    liveRegion: true,
+                    label: 'No hay casos para apoyar. Por ahora no hay gastos aprobados disponibles.',
+                    child: const SizedBox.shrink(),
                   ),
                 if (data.total > 20)
                   PageControls(
@@ -174,7 +155,12 @@ class SupportHomePage extends StatelessWidget {
                 GuardianSupportCard(
                   height: math.max(
                     scaler.scale(300) + 180,
-                    MediaQuery.sizeOf(context).height - 100,
+                    eligible.isEmpty
+                        ? MediaQuery.sizeOf(context).height -
+                              MediaQuery.paddingOf(context).top -
+                              (106 + scaler.scale(28) * 1.1) +
+                              180
+                        : MediaQuery.sizeOf(context).height - 100,
                   ),
                 ),
               ],
