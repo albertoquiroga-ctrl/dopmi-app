@@ -1964,3 +1964,8 @@ First combined run failed old amount expectation25.00MXN/100.00MXN; updated pres
 
 Final analyze noissues exit0 (9.5s). Final normalcase PNG inspected after border/title repair.
 
+
+## Loop253 — 2026-10-02: full mobile regression checkpoint
+
+Reference remote a3c969cd9103fd46dc5cd886999912526ce75efb unchanged verified. Complete Flutter test suite419passed exit0 (2m26s), scratch synced changes250–252. Explicit terminal session50399 confirmed after allpassed output. Buildconfig python12pass exit0; formatter8changedfiles0changes exit0. No backend/schema change thisloop. Push83e081f557a4c9ebb3a058cba23c24b5a3563cd5 verified, PR6headsame/draft/baseba9f897f3fa418e952b98e4c604cffe468a8aa95. CI37052064032 #426 queued verified exactSHA; previous424success coversb38acd8 before250. PR body rewritten current checkpoint/mobile-onlyscope and pending installed parity. No device or Play acceptance inferred.
+

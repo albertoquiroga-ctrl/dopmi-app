@@ -126,3 +126,6 @@ Loop243 compara el perfil público con el runtime Source /rescuer-profile/luna e
 
 Loops244–246 complete bottom-aligned public hero content, elliptical radial highlight and Reportar keyboard outline. Counts remain250states29URLs. Local captures/tests verified; CI422 for3dcc568 is in progress, device/full visual acceptance remains pending.
 
+
+Loop253: corte83e081f557a4c9ebb3a058cba23c24b5a3563cd5,419pruebas móviles completas y12configuración aprobadas. Swipe ya no espera red entre tarjetas; favorito fallido tiene reintento para mascota original. Avatar público renueva al reanudar. Pestañas públicas contrastadas con Source renderizado, tipografía/botones/progreso corregidos. Referencia a3c969 sin cambios. CI424 aprobado b38acd8; nuevo426queued para corte actual. Criterio móvil excluye hover; capturas250estados29URLs no son aceptación instalada. Codemagic final pendiente.
+
