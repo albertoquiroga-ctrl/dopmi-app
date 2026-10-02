@@ -175,6 +175,51 @@ void main() {
   });
 
   testWidgets(
+    'a short drag returns on the CSS curve and a new drag interrupts it',
+    (tester) async {
+      final repo = await open(tester);
+      final first = await tester.startGesture(
+        tester.getCenter(find.text('Luna')),
+      );
+      await first.moveBy(const Offset(60, 0));
+      await tester.pump();
+      await first.up();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 125));
+      Transform rendered() => tester.widget<Transform>(
+        find
+            .descendant(
+              of: find.byKey(const ValueKey('discovery-motion-post')),
+              matching: find.byType(Transform),
+            )
+            .first,
+      );
+      final remaining = 1 - const Cubic(.22, 1, .36, 1).transform(.5);
+      expect(rendered().transform.storage[12], closeTo(60 * remaining, .001));
+      expect(
+        math.atan2(
+              rendered().transform.storage[1],
+              rendered().transform.storage[0],
+            ) *
+            180 /
+            math.pi,
+        closeTo(60 / 28 * remaining, .00001),
+      );
+      final second = await tester.startGesture(
+        tester.getCenter(find.text('Luna')),
+      );
+      await second.moveBy(const Offset(-30, 0));
+      await tester.pump();
+      expect(rendered().transform.storage[12], closeTo(-30, .001));
+      await second.cancel();
+      await tester.pumpAndSettle();
+      expect(rendered().transform.storage[12], 0);
+      expect(find.text('Luna'), findsOneWidget);
+      expect(repo.post.saved, false);
+    },
+  );
+
+  testWidgets(
     'exit frames interpolate CSS angle and translation independently',
     (tester) async {
       await open(tester);
