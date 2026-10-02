@@ -9,6 +9,7 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/profile/profile_overview.dart';
+import 'package:dopmi_mobile/features/profile/rescuer_profile_hero.dart';
 import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -1250,6 +1251,15 @@ void main() {
           alignment: 0,
         );
         await tester.pumpAndSettle();
+      }
+      if (spec.$1 == 'rescuer-profile') {
+        final heading = tester.getRect(find.text('Mi perfil'));
+        final hero = tester.getRect(find.byType(RescuerIdentityCard));
+        expect(heading.top, closeTo(20, 1));
+        expect(heading.height, closeTo(30, 1));
+        expect(hero.top, closeTo(74, 1));
+        expect(hero.left, closeTo(16, 1));
+        expect(hero.width, closeTo(345, 1));
       }
       if (spec.$1.startsWith('owned-case-detail-story')) {
         await Scrollable.ensureVisible(

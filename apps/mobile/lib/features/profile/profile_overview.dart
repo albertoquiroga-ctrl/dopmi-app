@@ -93,7 +93,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           );
         }
         return ProfileFrame(
-          title: 'Perfil',
+          title: rescuer ? 'Mi perfil' : 'Perfil',
+          rescuerOverview: rescuer,
           children: [
             if (profile == null && error == null)
               const Center(child: CircularProgressIndicator()),
@@ -963,38 +964,63 @@ class ProfileFrame extends StatelessWidget {
     required this.title,
     required this.children,
     this.back = false,
+    this.rescuerOverview = false,
   });
   final String title;
   final List<Widget> children;
-  final bool back;
+  final bool back, rescuerOverview;
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      automaticallyImplyLeading: false,
-      centerTitle: false,
-      leading: back
-          ? IconButton(
-              tooltip: 'Regresar',
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () =>
-                  context.canPop() ? context.pop() : context.go('/profile'),
-            )
-          : null,
-      title: Text(title, style: Theme.of(context).textTheme.titleLarge),
-      actions: [
-        IconButton(
-          tooltip: 'Notificaciones',
-          onPressed: () => context.push('/notifications'),
-          icon: const Icon(Icons.notifications_none),
-        ),
-      ],
-    ),
+    appBar: rescuerOverview
+        ? null
+        : AppBar(
+            automaticallyImplyLeading: false,
+            centerTitle: false,
+            leading: back
+                ? IconButton(
+                    tooltip: 'Regresar',
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () => context.canPop()
+                        ? context.pop()
+                        : context.go('/profile'),
+                  )
+                : null,
+            title: Text(title, style: Theme.of(context).textTheme.titleLarge),
+            actions: [
+              IconButton(
+                tooltip: 'Notificaciones',
+                onPressed: () => context.push('/notifications'),
+                icon: const Icon(Icons.notifications_none),
+              ),
+            ],
+          ),
     bottomNavigationBar: const CommunityNav(4),
     body: SafeArea(
-      top: false,
+      top: rescuerOverview,
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 28),
-        children: children,
+        padding: rescuerOverview
+            ? const EdgeInsets.fromLTRB(16, 20, 16, 88)
+            : const EdgeInsets.fromLTRB(16, 14, 16, 28),
+        children: [
+          if (rescuerOverview) ...[
+            Semantics(
+              header: true,
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 24,
+                  height: 1.25,
+                  letterSpacing: -.48,
+                  fontWeight: FontWeight.w700,
+                  color: ink,
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+          ],
+          ...children,
+        ],
       ),
     ),
   );
