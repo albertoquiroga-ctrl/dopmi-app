@@ -1,3 +1,4 @@
+import 'package:dopmi_mobile/features/rescue/rescue_screens.dart';
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
@@ -16,7 +17,75 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+class GuardianActivityRescue extends FakeRescue {
+  @override
+  Future<Json> dashboard() async => {
+    ...await super.dashboard(),
+    'financial': {
+      'assigned_cents': 3314,
+      'transferred_cents': 3314,
+      'in_review_cents': 0,
+    },
+    'recent_activity': [
+      {
+        'source': 'guardian',
+        'expense_id': 'expense-one',
+        'expense_title': 'Medicamentos',
+        'allocated_cents': 3314,
+        'transfer_status': 'transferred',
+      },
+    ],
+  };
+  @override
+  Future<Json> detail(String id) async => id == 'expense-one'
+      ? {
+          'record': {...expenseRecord.data, 'owner_id': 'one'},
+          'expenses': <Json>[],
+        }
+      : super.detail(id);
+}
+
 void main() {
+  testWidgets(
+    'settled Guardian activity displays net and opens its actual expense',
+    (tester) async {
+      final identity = FakeIdentityRepository()
+        ..user = const Identity('one', 'ana@example.test', verified: true);
+      await identity.setExperience('rescuer');
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          rescueRepositoryProvider.overrideWithValue(GuardianActivityRescue()),
+          routerInitialLocationProvider.overrideWithValue('/profile'),
+        ],
+      );
+      addTearDown(() async {
+        container.dispose();
+        await identity.changes.close();
+      });
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const DopmiApp(),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.textContaining(r'$33.14 MXN asignados'), findsOneWidget);
+      expect(find.text('Transferido a la cuenta Stripe'), findsOneWidget);
+      final activity = find.byType(RescuerProfileActivityRow);
+      await tester.ensureVisible(activity);
+      await tester.pumpAndSettle();
+      await tester.tap(activity);
+      await tester.pumpAndSettle();
+      final route = container.read(routerProvider).state.uri;
+      expect(route.path, '/rescue/expense-one');
+      expect(route.queryParameters, {'kind': 'expense', 'record': '1'});
+      expect(find.byType(RescueEditorScreen), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('activity home link opens the actual rescuer home by keyboard', (
     tester,
   ) async {

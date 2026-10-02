@@ -3383,3 +3383,46 @@ test('rescuer dashboard remains private and rejects suspended actors',async()=>{
   await db.query("update profiles set account_status='suspended' where id=$1",[rescuer]);
   await role(rescuer);await rejected(()=>db.query('select public.dopmi_rescuer_dashboard()'),/Cuenta activa y confirmada requerida/);
 });
+
+
+test('rescuer recent activity includes only owned settled Guardian net with actual transfer status',async()=>{
+  const cycle=await boundGuardian();
+  const activity=async()=>(await db.query('select public.dopmi_rescuer_dashboard() as value')).rows[0].value.recent_activity;
+  await role(rescuer);assert.deepEqual(await activity(),[]);
+  await db.exec('reset role');await guardianSettlement('settle',guardianEvidence);
+  await role(rescuer);let rows=await activity();assert.equal(rows.length,1);
+  assert.equal(rows[0].source,'guardian');assert.equal(rows[0].expense_id,expense);
+  assert.equal(rows[0].expense_title,'Medicamentos');assert.equal(rows[0].allocated_cents,4314);
+  assert.equal(rows[0].transfer_status,'pending');
+  assert.deepEqual(Object.keys(rows[0]).sort(),['allocated_cents','created_at','expense_id','expense_title','source','transfer_status']);
+  await role(other);assert.deepEqual(await activity(),[]);
+  await db.exec('reset role');
+  await db.query("update private.dopmi_guardian_jobs set status='attention' where cycle_id=$1 and kind='transfer'",[cycle.id]);
+  await role(rescuer);rows=await activity();assert.equal(rows[0].transfer_status,'attention');
+  await db.exec('reset role');
+  await db.query("update private.dopmi_guardian_allocations set stripe_transfer_id='tr_activity',transferred_at=now(),reversed_cents=1000 where cycle_id=$1",[cycle.id]);
+  await role(rescuer);rows=await activity();assert.equal(rows[0].allocated_cents,3314);assert.equal(rows[0].transfer_status,'transferred');
+  await db.exec('reset role');
+  const donation=await prepare({gross_cents:5000});
+  await settle(donation.id,{gross_cents:5000,stripe_fee_cents:500,charge_id:'ch_activity',payment_intent_id:'pi_activity'});
+  await db.query("update private.dopmi_guardian_settlements set created_at=now()-interval '1 minute' where cycle_id=$1",[cycle.id]);
+  await role(rescuer);rows=await activity();
+  assert.deepEqual(rows.map(row=>row.source),['individual','guardian']);
+  assert.equal(rows[0].allocated_cents,4400);
+  await db.exec('reset role');
+  await db.query('update private.dopmi_guardian_allocations set reversed_cents=allocated_cents where cycle_id=$1',[cycle.id]);
+  await role(rescuer);rows=await activity();assert.equal(rows.length,1);assert.equal(rows[0].source,'individual');
+});
+
+
+test('rescuer mixed recent activity keeps a deterministic six-item limit',async()=>{
+  await boundGuardian();await guardianSettlement('settle',guardianEvidence);
+  for(let n=0;n<7;n++){
+    const d=await prepare({gross_cents:1000,key:`72000000-0000-4000-8000-${String(n+2).padStart(12,'0')}`});
+    await settle(d.id,{gross_cents:1000,stripe_fee_cents:100,charge_id:`ch_recent${n}`,payment_intent_id:`pi_recent${n}`});
+  }
+  await role(rescuer);
+  const activity=async()=>(await db.query('select public.dopmi_rescuer_dashboard() as value')).rows[0].value.recent_activity;
+  const rows=await activity();assert.equal(rows.length,6);assert.equal(rows[0].source,'guardian');
+  assert.deepEqual(await activity(),rows);
+});
