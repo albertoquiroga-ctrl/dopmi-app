@@ -2202,3 +2202,10 @@ Loop274 fue progreso de formulario con handoff real. Nueva prueba HelpSupportDia
 
 CI446/37072620520 SHA b4dd14d386bdfb2dddfa14afa3392f9795a8873b: GETjobs confirma backend, web/PostgreSQL e iOS success; Flutter formato/análisis/tests/capturas success, Android desarrollo aún in_progress. No gate integral aprobado ni buildPlay nuevo. Persistencia/envío interno/adjuntos soporte siguen pendientes; no reutilizar support-message-send legado410. Sin modificación Supabase/SQL/dinero ni aceptación instalada.
 Gate final loop275: flutter analyze sin problemas6.4s, formato/diffcheck aprobados. Push incluye Ayuda273/formulario274 y prueba275; no está en Play286.
+
+## Loop276 — 2026-10-02 — bloques de explicación de apoyos
+
+Loop275 fue progreso verificable de fallos/reintento del correo y push. Corrección de composición Source: Cómo funcionan los apoyos contiene encabezados y párrafos, no acordeones. Ayuda ahora muestra ambos bloques al seleccionar ese tema, con encabezados15/w700/margen8 y copy14/1.5/gap10; otros temas conservan FAQ. Se preserva contenido financiero real ya aprobado, sin copiar fondo comunitario. Fuente reconsultada a3c969cd9103fd46dc5cd886999912526ce75efb. No cambio de SQL/Auth/pagos.
+
+Dos nuevos estados help-center-rules normal/200%: matriz282estados33URLs; verificación en ejecución específica de capturador, no aceptación instalada. CI448/37073584291 exacto01ad5661a55803e84a6c89249a489c2f222c701c confirmado in_progress. No reiniciar ningún build por espera. Envío interno/adjuntos soporte, foto/apellidos/correo e editor público continúan pendientes, además de comparación completa y aceptación instalada. BuildPlay286 sigue2c36339 sin mejoras posteriores.
+Verificación final loop276: capturador1 aprobada5s con ambos estados; imágenes normal y200% inspeccionadas, texto envuelve y permite scroll bajo header. flutter analyze limpio32.4s, formato/diffcheck aprobados. No constituye paridad completa/aceptación del teléfono.

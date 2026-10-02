@@ -317,54 +317,74 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
               ),
               const SizedBox(height: 12),
               for (var i = 0; i < _topics[topic!].$3.length; i++) ...[
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: const Color(0xffe6e2dd)),
-                    borderRadius: BorderRadius.circular(18),
+                if (topic == 0) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    _topics[topic!].$3[i].$1,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: ink,
+                    ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.all(16),
-                          foregroundColor: openFaq == i
-                              ? const Color(0xff6b5000)
-                              : ink,
-                        ),
-                        onPressed: () =>
-                            setState(() => openFaq = openFaq == i ? null : i),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                _topics[topic!].$3[i].$1,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w700,
+                  const SizedBox(height: 10),
+                  Text(
+                    _topics[topic!].$3[i].$2,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      height: 1.5,
+                      color: muted,
+                    ),
+                  ),
+                ] else
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: const Color(0xffe6e2dd)),
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.all(16),
+                            foregroundColor: openFaq == i
+                                ? const Color(0xff6b5000)
+                                : ink,
+                          ),
+                          onPressed: () =>
+                              setState(() => openFaq = openFaq == i ? null : i),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  _topics[topic!].$3[i].$1,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            const Icon(Icons.chevron_right, size: 18),
-                          ],
-                        ),
-                      ),
-                      if (openFaq == i)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                          child: Text(
-                            _topics[topic!].$3[i].$2,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              height: 1.5,
-                              color: muted,
-                            ),
+                              const SizedBox(width: 12),
+                              const Icon(Icons.chevron_right, size: 18),
+                            ],
                           ),
                         ),
-                    ],
+                        if (openFaq == i)
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                            child: Text(
+                              _topics[topic!].$3[i].$2,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                height: 1.5,
+                                color: muted,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
                 const SizedBox(height: 10),
               ],
               if (topic == 7)

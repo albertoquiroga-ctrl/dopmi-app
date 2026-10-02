@@ -41,7 +41,7 @@ sin evidencia. Capturas normal/large en `design-reviews/parity-loop260`.
 Datos Connect/verificación/revisión reales conservados. CI432 aún ejecutándose;
 esto no acredita aceptación en Samsung ni paridad completa.
 
-`apps/mobile/tool/capture_profile_test.dart` contiene **280 estados en 33 URLs**:
+`apps/mobile/tool/capture_profile_test.dart` contiene **282 estados en 33 URLs**:
 256 recontados en loop259, dos estados de evidencia pendiente añadidos261 y
 dos de bienvenida Guardian263 y dos de fallo Guardian264. Ambos resultados
 dependen del servidor y mismo intento; reintento exige autorización nueva.

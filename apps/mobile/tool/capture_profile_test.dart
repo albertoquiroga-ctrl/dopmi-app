@@ -825,6 +825,8 @@ void main() {
       ('help-center-adoption-large', '/help'),
       ('help-center-support', '/help'),
       ('help-center-support-large', '/help'),
+      ('help-center-rules', '/help'),
+      ('help-center-rules-large', '/help'),
       ('payment-history', '/payments'),
       ('payment-history-large', '/payments'),
       ('payment-history-empty', '/payments'),
@@ -1418,6 +1420,30 @@ void main() {
         await tester.pumpAndSettle();
         expect(next.hitTestable(), findsOneWidget);
         expect(find.text('Recibimos tu mensaje.'), findsNothing);
+        expect(tester.takeException(), isNull);
+      }
+      if (spec.$1.startsWith('help-center-rules')) {
+        final rules = find.widgetWithText(
+          OutlinedButton,
+          'Cómo funcionan los apoyos',
+        );
+        await tester.ensureVisible(rules);
+        await tester.pumpAndSettle();
+        await tester.tap(rules);
+        await tester.pumpAndSettle();
+        final heading = find.text('Cuando apoyas a un caso');
+        await tester.scrollUntilVisible(
+          heading,
+          150,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await Scrollable.ensureVisible(tester.element(heading), alignment: .1);
+        await tester.pumpAndSettle();
+        expect(
+          find.widgetWithText(TextButton, 'Cuando apoyas a un caso'),
+          findsNothing,
+        );
+        expect(find.textContaining('gastos ya pagados'), findsOneWidget);
         expect(tester.takeException(), isNull);
       }
       if (spec.$1 == 'help-center-adoption-large') {
