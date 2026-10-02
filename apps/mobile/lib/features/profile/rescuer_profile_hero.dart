@@ -1,3 +1,5 @@
+import '../../core/css_linear_gradient.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -394,9 +396,8 @@ class _RescuerIdentityCardState extends State<RescuerIdentityCard> {
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-        gradient: const LinearGradient(
-          begin: Alignment(-.42, -.91),
-          end: Alignment(.42, .91),
+        gradient: const CssLinearGradient(
+          degrees: 155,
           colors: [Color(0xff7841f2), Color(0xff9b6cff), Color(0xffc4a8ff)],
           stops: [0, .55, 1],
         ),

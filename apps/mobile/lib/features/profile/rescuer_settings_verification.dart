@@ -1,3 +1,5 @@
+import '../../core/css_linear_gradient.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -118,11 +120,7 @@ class SettingsVerificationCard extends StatelessWidget {
               ? const Color(0xffffd4d8)
               : const Color(0x4d7c3aed),
         ),
-        gradient: LinearGradient(
-          begin: const Alignment(-.52, -.86),
-          end: const Alignment(.52, .86),
-          colors: gradient,
-        ),
+        gradient: CssLinearGradient(degrees: 149, colors: gradient),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
