@@ -1,3 +1,5 @@
+import '../../core/reference_focus_outline.dart';
+
 import '../../core/css_linear_gradient.dart';
 
 import 'package:flutter/material.dart';
@@ -250,40 +252,62 @@ class _RescuerIdentityCardState extends State<RescuerIdentityCard> {
       null || 'draft' || 'not_started' => 'Sin verificar',
       _ => 'Verificación no disponible',
     };
-    final edit = AnimatedScale(
-      scale: pressed ? .97 : 1,
-      duration: MediaQuery.disableAnimationsOf(context)
-          ? Duration.zero
-          : const Duration(milliseconds: 120),
-      curve: Curves.ease,
-      child: TextButton.icon(
-        key: const ValueKey('rescuer-profile-edit'),
-        onPressed: widget.onEdit,
-        statesController: states,
-        icon: ExcludeSemantics(
-          child: SvgPicture.asset(
-            'assets/profile/icon-edit.svg',
-            width: 16,
-            height: 16,
-            colorFilter: const ColorFilter.mode(
-              Color(0xff7841f2),
-              BlendMode.srcIn,
+    final visualEditHeight =
+        (MediaQuery.textScalerOf(context).scale(13) * 16 / 13 + 16).clamp(
+          44.0,
+          double.infinity,
+        );
+    final editInset = ((48 - visualEditHeight) / 2).clamp(0.0, 2.0);
+    final edit = Transform.translate(
+      offset: Offset(0, -editInset),
+      child: AnimatedScale(
+        scale: pressed ? .97 : 1,
+        duration: MediaQuery.disableAnimationsOf(context)
+            ? Duration.zero
+            : const Duration(milliseconds: 120),
+        curve: Curves.ease,
+        child: ReferenceFocusOutline(
+          radius: 99,
+          outlineInset: EdgeInsets.symmetric(vertical: editInset),
+          child: TextButton(
+            key: const ValueKey('rescuer-profile-edit'),
+            onPressed: widget.onEdit,
+            statesController: states,
+            style: TextButton.styleFrom(
+              backgroundColor: const Color(0xf2ffffff),
+              foregroundColor: const Color(0xff7841f2),
+              minimumSize: const Size(48, 44),
+              tapTargetSize: MaterialTapTargetSize.padded,
+              overlayColor: Colors.transparent,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              shape: const StadiumBorder(),
+              splashFactory: NoSplash.splashFactory,
+              textStyle: const TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 13,
+                height: 16 / 13,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0,
+              ),
             ),
-          ),
-        ),
-        label: const Text('Editar'),
-        style: TextButton.styleFrom(
-          backgroundColor: const Color(0xf2ffffff),
-          foregroundColor: const Color(0xff7841f2),
-          minimumSize: const Size(48, 48),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          shape: const StadiumBorder(),
-          splashFactory: NoSplash.splashFactory,
-          textStyle: const TextStyle(
-            fontFamily: 'Inter',
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ExcludeSemantics(
+                  child: SvgPicture.asset(
+                    'assets/profile/icon-edit.svg',
+                    width: 16,
+                    height: 16,
+                    colorFilter: const ColorFilter.mode(
+                      Color(0xff7841f2),
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 6),
+                const Text('Editar'),
+              ],
+            ),
           ),
         ),
       ),

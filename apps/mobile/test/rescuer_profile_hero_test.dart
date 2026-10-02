@@ -1,8 +1,47 @@
 import 'package:dopmi_mobile/features/profile/rescuer_profile_hero.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets(
+    'edit keeps a 44px visible pill and a 48px target with keyboard focus',
+    (tester) async {
+      var edits = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: RescuerIdentityCard(
+                name: 'Ana',
+                city: 'Monterrey',
+                status: 'approved',
+                onEdit: () => edits++,
+              ),
+            ),
+          ),
+        ),
+      );
+      final button = find.byKey(const ValueKey('rescuer-profile-edit'));
+      expect(tester.getSize(button).height, 48);
+      final pill = find.descendant(of: button, matching: find.byType(Material));
+      expect(tester.getSize(pill).height, 44);
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      final outline = find.byKey(const ValueKey('reference-keyboard-outline'));
+      expect(outline, findsOneWidget);
+      expect(tester.getSize(outline).height, 54);
+      expect(edits, 0);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(edits, 1);
+      await tester.tapAt(tester.getTopLeft(button) + const Offset(2, 2));
+      await tester.pumpAndSettle();
+      expect(edits, 2);
+      expect(outline, findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
   for (final status in ['submitted', 'changes_requested', 'approved']) {
     testWidgets(
       'rescuer identity reflows and edits only with approved status: $status',

@@ -665,6 +665,7 @@ void main() {
       ('adoption-support-large', '/adoptions'),
       ('rescuer-profile', '/profile'),
       ('rescuer-profile-reference', '/profile'),
+      ('rescuer-profile-reference-focus', '/profile'),
       ('rescuer-profile-reference-large', '/profile'),
       ('rescuer-settings', '/settings'),
       ('rescuer-settings-footer', '/settings'),
@@ -1324,6 +1325,16 @@ void main() {
           alignment: 0,
         );
         await tester.pumpAndSettle();
+      }
+      if (spec.$1 == 'rescuer-profile-reference-focus') {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pump();
+        final outline = find.descendant(
+          of: find.byType(RescuerIdentityCard),
+          matching: find.byKey(const ValueKey('reference-keyboard-outline')),
+        );
+        expect(outline, findsOneWidget);
+        expect(tester.getSize(outline).height, closeTo(54, 1));
       }
       if (spec.$1 == 'rescuer-profile-reference') {
         final hero = tester.getRect(find.byType(RescuerIdentityCard));
