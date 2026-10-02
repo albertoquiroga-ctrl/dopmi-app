@@ -1,4 +1,5 @@
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/rescue/support_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +9,85 @@ import 'package:go_router/go_router.dart';
 
 void main() {
   for (final large in [false, true]) {
+    testWidgets('support rail drag does not open a case; large=$large', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(320, 640);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final destinations = <String>[];
+      final records = List.generate(
+        6,
+        (index) => RescueRecord({
+          'id': 'case-$index',
+          'kind': 'case',
+          'status': 'approved',
+          'target_cents': 10000,
+          'funded_cents': 5000,
+          'public_data': {'pet_name': 'Mascota $index', 'photos': <String>[]},
+        }),
+      );
+      final router = GoRouter(
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (_, _) => SupportHomePage(
+              data: DataPage(records, 6),
+              page: 1,
+              error: null,
+              changePage: (_) {},
+            ),
+          ),
+          GoRoute(
+            path: '/rescue-cases/:id',
+            builder: (_, state) {
+              destinations.add(state.pathParameters['id']!);
+              return const Scaffold(body: Text('Caso seleccionado'));
+            },
+          ),
+        ],
+      );
+      addTearDown(router.dispose);
+      await tester.pumpWidget(
+        ProviderScope(child: MaterialApp.router(routerConfig: router)),
+      );
+      await tester.pumpAndSettle();
+      final rail = find.byWidgetPredicate(
+        (widget) =>
+            widget is ListView && widget.scrollDirection == Axis.horizontal,
+      );
+      final scroll = find.descendant(
+        of: rail,
+        matching: find.byType(Scrollable),
+      );
+      final first = find.byWidgetPredicate(
+        (widget) => widget is SupportCaseRing && widget.record.id == 'case-0',
+      );
+      await tester.drag(first, const Offset(-180, 0));
+      await tester.pumpAndSettle();
+      expect(
+        tester.state<ScrollableState>(scroll).position.pixels,
+        greaterThan(0),
+      );
+      expect(destinations, isEmpty);
+      final last = find.byWidgetPredicate(
+        (widget) => widget is SupportCaseRing && widget.record.id == 'case-5',
+      );
+      await tester.scrollUntilVisible(last, 150, scrollable: scroll);
+      await tester.pumpAndSettle();
+      expect(destinations, isEmpty);
+      await tester.scrollUntilVisible(first, -150, scrollable: scroll);
+      await tester.pumpAndSettle();
+      expect(destinations, isEmpty);
+      await tester.tap(first);
+      await tester.pumpAndSettle();
+      expect(destinations, ['case-0']);
+      expect(find.text('Caso seleccionado'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
     testWidgets('support case keyboard destination; large=$large', (
       tester,
     ) async {
@@ -61,9 +141,13 @@ void main() {
         find.byKey(const ValueKey('reference-keyboard-outline')),
         findsOneWidget,
       );
-      final outline = tester.widget<DecoratedBox>(
-        find.byKey(const ValueKey('reference-keyboard-outline')),
-      ).decoration as BoxDecoration;
+      final outline =
+          tester
+                  .widget<DecoratedBox>(
+                    find.byKey(const ValueKey('reference-keyboard-outline')),
+                  )
+                  .decoration
+              as BoxDecoration;
       expect(outline.borderRadius, BorderRadius.zero);
       expect(destinations, isEmpty);
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
