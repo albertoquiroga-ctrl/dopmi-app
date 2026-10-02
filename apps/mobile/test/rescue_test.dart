@@ -314,6 +314,35 @@ class PlannedPublicCaseRescue extends FakeRescue {
 }
 
 void main() {
+  testWidgets('case photo renews signing on resume and stops after disposal', (
+    tester,
+  ) async {
+    final rescue = PhotoPublicCaseRescue();
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [rescueRepositoryProvider.overrideWithValue(rescue)],
+        child: const MaterialApp(
+          home: Scaffold(body: RescuePublicPhoto('approved/photo')),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(rescue.photoRequests, 1);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    await tester.pump();
+    expect(rescue.photoRequests, 1);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pumpAndSettle();
+    expect(rescue.photoRequests, 2);
+    expect(find.text('Reintentar foto'), findsOneWidget);
+    expect(tester.getSize(find.byType(RescuePublicPhoto)).height, 220);
+    await tester.pumpWidget(const SizedBox.shrink());
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+    expect(rescue.photoRequests, 2);
+    expect(tester.takeException(), isNull);
+  });
   test(
     'peso labels group thousands while preserving signed cent precision',
     () {

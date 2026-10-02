@@ -18,7 +18,8 @@ class RescuePublicPhoto extends ConsumerStatefulWidget {
   ConsumerState<RescuePublicPhoto> createState() => _RescuePublicPhotoState();
 }
 
-class _RescuePublicPhotoState extends ConsumerState<RescuePublicPhoto> {
+class _RescuePublicPhotoState extends ConsumerState<RescuePublicPhoto>
+    with WidgetsBindingObserver {
   late Future<String> url = _load();
   Future<String> _load() {
     final result = Future<String>.sync(
@@ -26,6 +27,27 @@ class _RescuePublicPhotoState extends ConsumerState<RescuePublicPhoto> {
     );
     result.ignore();
     return result;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      setState(() {
+        url = _load();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
