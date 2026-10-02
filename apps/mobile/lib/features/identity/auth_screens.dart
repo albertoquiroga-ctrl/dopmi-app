@@ -87,6 +87,7 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
   }
 
   Future<void> social(String provider) async {
+    if (busy) return;
     setState(() {
       busy = true;
       error = null;
@@ -301,35 +302,12 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                     ),
                   if ((login || signup) &&
                       (config.googleEnabled || config.appleNativeAvailable))
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Text(
-                        signup
-                            ? 'También puedes crear tu cuenta con'
-                            : 'También puedes entrar con',
-                        textAlign: TextAlign.center,
-                      ),
+                    AuthProviderIcons(
+                      google: config.googleEnabled,
+                      apple: config.appleNativeAvailable,
+                      busy: busy,
+                      onPick: social,
                     ),
-                  if ((login || signup) && config.googleEnabled)
-                    OutlinedButton(
-                      onPressed: busy ? null : () => social('google'),
-                      child: Text(
-                        signup
-                            ? 'Crear cuenta con Google'
-                            : 'Continuar con Google',
-                      ),
-                    ),
-                  if ((login || signup) && config.appleNativeAvailable) ...[
-                    const SizedBox(height: 12),
-                    OutlinedButton(
-                      onPressed: busy ? null : () => social('apple'),
-                      child: Text(
-                        signup
-                            ? 'Crear cuenta con Apple'
-                            : 'Continuar con Apple',
-                      ),
-                    ),
-                  ],
                   if (login)
                     TextButton(
                       onPressed: () =>

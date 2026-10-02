@@ -384,3 +384,67 @@ class AuthIdleBorder extends OutlineInputBorder {
   @override
   ShapeBorder? lerpTo(ShapeBorder? b, double t) => b;
 }
+
+/// Source's auth-gate-alt; capabilities and actual authentication are supplied
+/// by the form, so unsupported providers never become simulated entry points.
+class AuthProviderIcons extends StatelessWidget {
+  const AuthProviderIcons({
+    super.key,
+    required this.google,
+    required this.apple,
+    required this.busy,
+    required this.onPick,
+  });
+  final bool google, apple, busy;
+  final Future<void> Function(String) onPick;
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(top: 16),
+    child: Column(
+      children: [
+        const Divider(height: 1, thickness: 1, color: DopmiTokens.line),
+        const SizedBox(height: 8),
+        const Text(
+          'Continuar con',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 13,
+            height: 1.3,
+            letterSpacing: 0,
+            color: muted,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 18,
+          runSpacing: 12,
+          alignment: WrapAlignment.center,
+          children: [
+            if (apple) button('apple', 'Apple'),
+            if (google) button('google', 'Google'),
+          ],
+        ),
+      ],
+    ),
+  );
+  Widget button(String provider, String name) => IconButton(
+    tooltip: 'Continuar con $name',
+    onPressed: busy ? null : () => onPick(provider),
+    style: IconButton.styleFrom(
+      fixedSize: const Size(52, 52),
+      minimumSize: const Size(52, 52),
+      padding: EdgeInsets.zero,
+      backgroundColor: Colors.white,
+      foregroundColor: ink,
+      side: const BorderSide(color: DopmiTokens.line),
+      shape: const CircleBorder(),
+      splashFactory: NoSplash.splashFactory,
+      highlightColor: Colors.transparent,
+    ),
+    icon: SvgPicture.asset(
+      'assets/onboarding/icon-$provider.svg',
+      width: 22,
+      height: 22,
+    ),
+  );
+}

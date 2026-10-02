@@ -243,8 +243,42 @@ void main() {
       ),
     );
 
-    expect(find.text('Crear cuenta con Google'), findsOneWidget);
+    expect(find.byTooltip('Continuar con Google'), findsOneWidget);
   });
+  testWidgets(
+    'form social icons dispatch one request and recover after provider failure',
+    (tester) async {
+      final repo = BlockingFormSocial();
+      await start(
+        tester,
+        repo,
+        initialLocation: '/login',
+        config: const AppConfig(
+          url: 'https://example.supabase.co',
+          key: 'test',
+          redirect: 'io.dopmi.app://auth/callback',
+          googleEnabled: true,
+        ),
+      );
+      final google = find.byWidgetPredicate(
+        (widget) =>
+            widget is IconButton && widget.tooltip == 'Continuar con Google',
+      );
+      await tester.ensureVisible(google);
+      await tester.pumpAndSettle();
+      await tester.tap(google);
+      await tester.tap(google);
+      expect(repo.requests, ['google']);
+      await tester.pump();
+      expect(tester.widget<IconButton>(google).onPressed, isNull);
+      repo.response.completeError(StateError('provider_not_configured'));
+      await tester.pumpAndSettle();
+      expect(tester.widget<IconButton>(google).onPressed, isNotNull);
+      expect(repo.current, isNull);
+      expect(find.byType(TextFormField), findsNWidgets(2));
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets('a recovery link routes to reset without loading personal data', (
     tester,
   ) async {
@@ -284,4 +318,14 @@ void main() {
     );
     expect(find.widgetWithText(FilledButton, 'Iniciar sesión'), findsOneWidget);
   });
+}
+
+class BlockingFormSocial extends FakeIdentityRepository {
+  final response = Completer<void>();
+  final requests = <String>[];
+  @override
+  Future<void> oauth(String provider) {
+    requests.add(provider);
+    return response.future;
+  }
 }
