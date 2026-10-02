@@ -17,8 +17,22 @@ class ReferenceFocusOutline extends StatefulWidget {
   State<ReferenceFocusOutline> createState() => _ReferenceFocusOutlineState();
 }
 
+class _ReferenceOutlineFocusNode extends FocusNode {}
+
 class _ReferenceFocusOutlineState extends State<ReferenceFocusOutline> {
+  final focusNode = _ReferenceOutlineFocusNode();
   bool focused = false;
+  void focusChanged() {
+    FocusNode? target = FocusManager.instance.primaryFocus;
+    while (target != null && target is! _ReferenceOutlineFocusNode) {
+      target = target.parent;
+    }
+    final ownsFocus = identical(target, focusNode);
+    if (mounted && ownsFocus != focused) {
+      setState(() => focused = ownsFocus);
+    }
+  }
+
   void highlightModeChanged(FocusHighlightMode mode) {
     if (mounted) setState(() {});
   }
@@ -27,19 +41,23 @@ class _ReferenceFocusOutlineState extends State<ReferenceFocusOutline> {
   void initState() {
     super.initState();
     FocusManager.instance.addHighlightModeListener(highlightModeChanged);
+    FocusManager.instance.addListener(focusChanged);
   }
 
   @override
   void dispose() {
     FocusManager.instance.removeHighlightModeListener(highlightModeChanged);
+    FocusManager.instance.removeListener(focusChanged);
+    focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) => Focus(
+    focusNode: focusNode,
     canRequestFocus: false,
     skipTraversal: true,
-    onFocusChange: (value) => setState(() => focused = value),
+    onFocusChange: (_) => focusChanged(),
     child: Stack(
       clipBehavior: Clip.none,
       children: [

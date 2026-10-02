@@ -65,6 +65,20 @@ void main() {
               : BorderRadius.zero,
         );
         expect(destinations, isEmpty);
+        if (card && large) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+          await tester.pumpAndSettle();
+          final outline = find.byKey(
+            const ValueKey('reference-keyboard-outline'),
+          );
+          expect(outline, findsOneWidget);
+          expect(
+            (tester.widget<DecoratedBox>(outline).decoration as BoxDecoration)
+                .borderRadius,
+            BorderRadius.zero,
+          );
+          expect(destinations, isEmpty);
+        }
         await tester.sendKeyEvent(LogicalKeyboardKey.enter);
         await tester.pumpAndSettle();
         expect(destinations, ['/guardian?enroll=1']);

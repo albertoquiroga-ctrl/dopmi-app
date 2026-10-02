@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dopmi_mobile/features/communication/match_thread_row.dart';
 import 'package:dopmi_mobile/core/reference_focus_outline.dart';
+import 'package:dopmi_mobile/features/rescue/support_home.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_activity.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_metrics.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_verification_card.dart';
@@ -628,6 +629,10 @@ void main() {
       ('support-home-large', '/rescue-cases'),
       ('support-home-case-focus', '/rescue-cases'),
       ('support-home-case-focus-large', '/rescue-cases'),
+      ('support-home-guardian-card-focus', '/rescue-cases'),
+      ('support-home-guardian-card-focus-large', '/rescue-cases'),
+      ('support-home-guardian-dock-focus', '/rescue-cases'),
+      ('support-home-guardian-dock-focus-large', '/rescue-cases'),
       ('case-detail', '/rescue-cases/case-one'),
       ('case-detail-planned', '/rescue-cases/case-one'),
       ('case-detail-planned-large', '/rescue-cases/case-one'),
@@ -1360,6 +1365,32 @@ void main() {
       if (spec.$1.startsWith('support-home-case-focus')) {
         await tester.sendKeyEvent(LogicalKeyboardKey.tab);
         await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
+        expect(
+          find.byKey(const ValueKey('reference-keyboard-outline')),
+          findsOneWidget,
+        );
+      }
+      if (spec.$1.startsWith('support-home-guardian-')) {
+        final dock = spec.$1.contains('-dock-');
+        final target = dock
+            ? find.byType(GuardianSupportDock)
+            : find.byKey(const ValueKey('guardian-support-card-action'));
+        if (target.evaluate().isEmpty) {
+          await tester.scrollUntilVisible(
+            target,
+            150,
+            scrollable: find.byType(Scrollable).first,
+          );
+          await tester.pumpAndSettle();
+        }
+        await Scrollable.ensureVisible(tester.element(target), alignment: .5);
+        await tester.pumpAndSettle();
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        final gesture = find
+            .descendant(of: target, matching: find.byType(GestureDetector))
+            .first;
+        Focus.of(tester.element(gesture)).requestFocus();
         await tester.pumpAndSettle();
         expect(
           find.byKey(const ValueKey('reference-keyboard-outline')),
