@@ -247,6 +247,7 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                   ],
                   if (login || signup || reset) ...[
                     PasswordField(
+                      showVisibilityToggle: !(login || signup),
                       controller: password,
                       style: fieldText,
                       labelStyle: fieldLabel,
@@ -262,6 +263,7 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                   ],
                   if (signup || reset) ...[
                     PasswordField(
+                      showVisibilityToggle: !signup,
                       controller: confirmation,
                       style: fieldText,
                       labelStyle: fieldLabel,

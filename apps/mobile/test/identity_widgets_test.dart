@@ -83,6 +83,53 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  for (final route in ['/login', '/signup']) {
+    testWidgets('reference auth $route retains private password fields', (
+      tester,
+    ) async {
+      final repo = FakeIdentityRepository();
+      await start(tester, repo, initialLocation: route);
+      final fields = find.byType(TextFormField);
+      final passwordIndex = route == '/login' ? 1 : 3;
+      await tester.enterText(fields.at(passwordIndex), 'Password1234');
+      final password = tester.widget<TextField>(
+        find.descendant(
+          of: fields.at(passwordIndex),
+          matching: find.byType(TextField),
+        ),
+      );
+      expect(password.obscureText, isTrue);
+      expect(password.controller!.text, 'Password1234');
+      expect(password.autocorrect, isFalse);
+      expect(password.enableSuggestions, isFalse);
+      expect(
+        password.autofillHints,
+        contains(
+          route == '/login'
+              ? AutofillHints.password
+              : AutofillHints.newPassword,
+        ),
+      );
+      expect(find.byTooltip('Mostrar contraseña'), findsNothing);
+      if (route == '/signup') {
+        await tester.enterText(fields.at(4), 'Password1234');
+        expect(
+          tester
+              .widget<TextField>(
+                find.descendant(
+                  of: fields.at(4),
+                  matching: find.byType(TextField),
+                ),
+              )
+              .obscureText,
+          isTrue,
+        );
+        expect(find.byTooltip('Mostrar confirmar contraseña'), findsNothing);
+      }
+      expect(repo.signupCount, 0);
+    });
+  }
+
   testWidgets('signup consent target and legal reading preserve draft', (
     tester,
   ) async {

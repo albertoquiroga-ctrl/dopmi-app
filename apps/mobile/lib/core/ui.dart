@@ -276,6 +276,7 @@ class PasswordField extends StatefulWidget {
     this.label = 'Contraseña',
     this.validator,
     this.newPassword = false,
+    this.showVisibilityToggle = true,
     this.labelAbove = false,
     this.style,
     this.labelStyle,
@@ -286,7 +287,7 @@ class PasswordField extends StatefulWidget {
   final TextStyle? style, labelStyle;
   final String? hintText;
   final String? Function(String?)? validator;
-  final bool newPassword, labelAbove;
+  final bool newPassword, labelAbove, showVisibilityToggle;
   @override
   State<PasswordField> createState() => _PasswordFieldState();
 }
@@ -298,7 +299,7 @@ class _PasswordFieldState extends State<PasswordField> {
     final field = TextFormField(
       controller: widget.controller,
       style: widget.style,
-      obscureText: hidden,
+      obscureText: !widget.showVisibilityToggle || hidden,
       autocorrect: false,
       enableSuggestions: false,
       validator: widget.validator,
@@ -314,15 +315,19 @@ class _PasswordFieldState extends State<PasswordField> {
                       ? 'Elige una contraseña segura'
                       : 'Tu contraseña')
                 : null),
-        suffixIcon: IconButton(
-          tooltip: hidden
-              ? 'Mostrar ${widget.label.toLowerCase()}'
-              : 'Ocultar ${widget.label.toLowerCase()}',
-          icon: Icon(
-            hidden ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-          ),
-          onPressed: () => setState(() => hidden = !hidden),
-        ),
+        suffixIcon: widget.showVisibilityToggle
+            ? IconButton(
+                tooltip: hidden
+                    ? 'Mostrar ${widget.label.toLowerCase()}'
+                    : 'Ocultar ${widget.label.toLowerCase()}',
+                icon: Icon(
+                  hidden
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                ),
+                onPressed: () => setState(() => hidden = !hidden),
+              )
+            : null,
       ),
     );
     return widget.labelAbove
