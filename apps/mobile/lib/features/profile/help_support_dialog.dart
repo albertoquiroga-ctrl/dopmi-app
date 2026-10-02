@@ -8,9 +8,11 @@ class HelpSupportDialog extends StatefulWidget {
     super.key,
     required this.topics,
     required this.initialTopic,
+    this.openMail,
   });
   final List<String> topics;
   final int initialTopic;
+  final Future<bool> Function(Uri)? openMail;
 
   @override
   State<HelpSupportDialog> createState() => _HelpSupportDialogState();
@@ -40,7 +42,7 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
         '${caseName.text.trim().isEmpty ? '' : 'Caso relacionado: ${caseName.text.trim()}\n'}\n'
         '${message.text.trim()}';
     try {
-      final opened = await launchUrl(
+      final opened = await (widget.openMail ?? (uri) => launchUrl(uri))(
         Uri(
           scheme: 'mailto',
           path: 'soporte@dopmi.org',
