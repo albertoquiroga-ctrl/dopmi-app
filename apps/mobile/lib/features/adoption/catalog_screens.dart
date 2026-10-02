@@ -568,7 +568,10 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             PublicProfileIdentity(
-              avatar: _PublicRescuerAvatar(profile['avatar_path'] as String?),
+              avatar: _PublicRescuerAvatar(
+                profile['avatar_path'] as String?,
+                profile['name'] as String,
+              ),
               name: profile['name'] as String,
               city: '${profile['city']}, ${profile['region']}',
               bio: profile['bio'] as String,
@@ -577,29 +580,10 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
             ),
             if ((profile['instagram_url'] as String? ?? '').isNotEmpty ||
                 (profile['facebook_url'] as String? ?? '').isNotEmpty) ...[
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                children: [
-                  if ((profile['instagram_url'] as String? ?? '').isNotEmpty)
-                    ActionChip(
-                      avatar: const Icon(Icons.camera_alt_outlined, size: 18),
-                      label: const Text('Instagram'),
-                      onPressed: () => copyForSharing(
-                        context,
-                        profile['instagram_url'] as String,
-                      ),
-                    ),
-                  if ((profile['facebook_url'] as String? ?? '').isNotEmpty)
-                    ActionChip(
-                      avatar: const Icon(Icons.link, size: 18),
-                      label: const Text('Facebook'),
-                      onPressed: () => copyForSharing(
-                        context,
-                        profile['facebook_url'] as String,
-                      ),
-                    ),
-                ],
+              PublicProfileSocials(
+                instagram: profile['instagram_url'] as String? ?? '',
+                facebook: profile['facebook_url'] as String? ?? '',
+                open: (url) => copyForSharing(context, url),
               ),
             ],
             const SizedBox(height: 24),
@@ -731,28 +715,69 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
   );
 }
 
-class _PublicRescuerAvatar extends ConsumerWidget {
-  const _PublicRescuerAvatar(this.path);
+class _PublicRescuerAvatar extends ConsumerStatefulWidget {
+  const _PublicRescuerAvatar(this.path, this.name);
   final String? path;
+  final String name;
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    if (path == null || path!.isEmpty) {
-      return const CircleAvatar(
-        radius: 44,
-        backgroundColor: yellow,
-        child: Icon(Icons.person_outline, size: 48, color: ink),
-      );
-    }
-    return FutureBuilder<String>(
-      future: ref.read(rescuerProfileRepositoryProvider).avatarUrl(path!),
-      builder: (_, result) => CircleAvatar(
-        radius: 44,
-        backgroundColor: yellow,
-        backgroundImage: result.hasData ? NetworkImage(result.data!) : null,
-        child: result.hasData
-            ? null
-            : const CircularProgressIndicator(strokeWidth: 2),
-      ),
-    );
+  ConsumerState<_PublicRescuerAvatar> createState() =>
+      _PublicRescuerAvatarState();
+}
+
+class _PublicRescuerAvatarState extends ConsumerState<_PublicRescuerAvatar> {
+  Future<String>? signedUrl;
+  @override
+  void initState() {
+    super.initState();
+    renew();
   }
+
+  @override
+  void didUpdateWidget(covariant _PublicRescuerAvatar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.path != widget.path) renew();
+  }
+
+  void renew() {
+    signedUrl = widget.path == null || widget.path!.isEmpty
+        ? null
+        : ref.read(rescuerProfileRepositoryProvider).avatarUrl(widget.path!);
+  }
+
+  Widget get fallback => Center(
+    child: Text(
+      widget.name.trim().isEmpty
+          ? '?'
+          : widget.name.trim().characters.first.toUpperCase(),
+      style: const TextStyle(
+        fontSize: 34,
+        fontWeight: FontWeight.w800,
+        color: Color(0xff6b5000),
+      ),
+    ),
+  );
+  @override
+  Widget build(BuildContext context) => ClipOval(
+    child: SizedBox(
+      width: 96,
+      height: 96,
+      child: ColoredBox(
+        color: const Color(0xfffff2b8),
+        child: signedUrl == null
+            ? fallback
+            : FutureBuilder<String>(
+                future: signedUrl,
+                builder: (_, result) => result.hasData
+                    ? Image.network(
+                        result.data!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, error, stack) => fallback,
+                        loadingBuilder: (_, child, progress) =>
+                            progress == null ? child : fallback,
+                      )
+                    : fallback,
+              ),
+      ),
+    ),
+  );
 }

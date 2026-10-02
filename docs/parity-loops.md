@@ -1833,3 +1833,12 @@ hasta que exista evidencia para todo el alcance, no sólo para este perfil.
 Reference remote branch irlanda/apoyar-detalle-perfil verified at a3c969cd9103fd46dc5cd886999912526ce75efb. Integrated white blurred public header, centered identity with verified badge only from server, currently visible public case count and underline tabs. Preserved favorite rollback, persisted report and confirmed adoption contact; existing real activity remains accessible. Share moved to header. Public statistics, social styling, avatar recovery and actual reference captures remain pending; this is not visual acceptance. First community run found tab overflow with test font; measured label widths now choose wrapping. Repeat community_test.dart: 27 passed, exit 0. Android ADB interaction authorization remains pending; no installation or final Codemagic dispatch.
 
 Static verification: flutter analyze --no-pub passed, exit 0 (22.4s), scratch copy of current production files. Initial test invocation from repository root failed for missing pubspec; actual gates ran from mobile scratch.
+
+## Loop 237 — 2026-10-02: public avatar, socials and rendered typography
+
+Source irlanda/apoyar-detalle-perfil remote verified a3c969cd9103fd46dc5cd886999912526ce75efb. Public avatar now 96px, actual-name initial fallback and cached approved-path signature; network failure also renders initial rather than endless progress. Social controls use original SVGs, 12px gaps, outlined pills and only actual published URLs; existing sharing action retained. Rendered capture revealed button typography falling back instead of Inter; fixed explicit button and measured-label families. No public financial statistics fabricated. Remaining gaps: public dashboard numeralia, case cards, avatar retry/resume, complete Source comparison and device gestures.
+
+Verification: community_test.dart 27 passed exit 0; new narrow 320px controls at 1x/2x text plus public-profile capture (normal/large) 3 passed exit 0. Two rendered PNGs retained in docs/design-reviews/parity-loop237; normal inspected with real text and no overflow. flutter analyze --no-pub passed exit 0 (6.2s). Capture matrix now adds two public-profile states and /people/owner. These are synthetic fixtures, not device or server acceptance.
+
+CI checkpoint 68c098424a3688e7dc89b36df10897c3a7738239: integrated acceptance run 37039192375 #418 confirmed completed success through GitHub API. This predates loops 236–237. No final Codemagic dispatch or Android installation; requested ADB UI authorization still pending.
+

@@ -208,6 +208,68 @@ class PublicProfileIdentity extends StatelessWidget {
   );
 }
 
+class PublicProfileSocials extends StatelessWidget {
+  const PublicProfileSocials({
+    super.key,
+    required this.instagram,
+    required this.facebook,
+    required this.open,
+  });
+  final String instagram, facebook;
+  final ValueChanged<String> open;
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      const Text(
+        'Redes sociales',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: ink),
+      ),
+      const SizedBox(height: 12),
+      Wrap(
+        spacing: 12,
+        runSpacing: 12,
+        children: [
+          for (final entry in [
+            ('Instagram', instagram, 'icon-instagram'),
+            ('Facebook', facebook, 'icon-facebook'),
+          ])
+            if (entry.$2.isNotEmpty)
+              ReferenceFocusOutline(
+                radius: 999,
+                child: OutlinedButton.icon(
+                  onPressed: () => open(entry.$2),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: Size.zero,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 10,
+                    ),
+                    backgroundColor: Colors.white,
+                    foregroundColor: ink,
+                    side: const BorderSide(color: Color(0xffe6e2dd)),
+                    shape: const StadiumBorder(),
+                    textStyle: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  icon: SvgPicture.asset(
+                    'assets/profile/${entry.$3}.svg',
+                    width: 18,
+                    height: 18,
+                  ),
+                  label: Text(entry.$1),
+                ),
+              ),
+        ],
+      ),
+      const SizedBox(height: 4),
+    ],
+  );
+}
+
 class PublicProfileTabs extends StatelessWidget {
   const PublicProfileTabs({
     super.key,
@@ -237,6 +299,7 @@ class PublicProfileTabs extends StatelessWidget {
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           foregroundColor: selected == index ? const Color(0xff6b5000) : muted,
           textStyle: TextStyle(
+            fontFamily: 'Inter',
             fontSize: 14,
             height: 1.55,
             fontWeight: selected == index ? FontWeight.w600 : FontWeight.w400,
@@ -268,7 +331,11 @@ class PublicProfileTabs extends StatelessWidget {
                 minimumSize: Size.zero,
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 foregroundColor: muted,
-                textStyle: const TextStyle(fontSize: 14, height: 1.55),
+                textStyle: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 14,
+                  height: 1.55,
+                ),
               ),
               child: const Text('Reportar'),
             ),
@@ -280,6 +347,7 @@ class PublicProfileTabs extends StatelessWidget {
                       text: TextSpan(
                         text: label,
                         style: const TextStyle(
+                          fontFamily: 'Inter',
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),

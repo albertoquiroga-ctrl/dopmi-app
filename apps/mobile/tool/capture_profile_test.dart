@@ -54,6 +54,16 @@ import '../test/guardian_history_test.dart' show cycle;
 import '../test/guardian_test.dart' show FakeGuardian, activePlan;
 import 'capture_design_test.dart' show saveCapture;
 
+class PublicProfileCaptureCommunity extends FakeCommunity {
+  @override
+  Future<Json?> publicProfile(String id) async => {
+    ...?await super.publicProfile(id),
+    'verified': true,
+    'instagram_url': 'https://instagram.com/fixture-refugio',
+    'facebook_url': 'https://facebook.com/fixture-refugio',
+  };
+}
+
 class OwnedHistoryCaptureUpdates extends FakeCaseUpdates {
   @override
   Future<List<CaseUpdate>> publicFor(String caseId) async => [
@@ -802,6 +812,8 @@ void main() {
       ('rescuer-settings-edit-focus', '/settings'),
       ('rescuer-settings-large', '/settings'),
       ('rescuer-profile-large', '/profile'),
+      ('public-profile', '/people/owner'),
+      ('public-profile-large', '/people/owner'),
       ('profile-overview', '/profile'),
       ('profile-overview-active', '/profile'),
       ('profile-overview-large', '/profile'),
@@ -949,6 +961,8 @@ void main() {
                         spec.$1.startsWith('publish-review') ||
                         spec.$1.startsWith('publish-health'))))
           ? DetailCaptureCommunity()
+          : spec.$1.startsWith('public-profile')
+          ? PublicProfileCaptureCommunity()
           : FakeCommunity();
       if (spec.$1.startsWith('adoption-empty')) community.discoveryItems = [];
       if ((spec.$1.startsWith('publish-photo-grid') ||
