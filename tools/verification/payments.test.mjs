@@ -12,6 +12,25 @@ const staff = '70000000-0000-4000-8000-000000000003';
 const other = '70000000-0000-4000-8000-000000000004';
 const expense = '71000000-0000-4000-8000-000000000003';
 const key = '72000000-0000-4000-8000-000000000001';
+test('support media is private and only the owner can write before receipt; staff reads only linked attachments',async()=>{
+  const path=`${donor}/${key}/73000000-0000-4000-8000-000000000001.jpg`;
+  const access=async(write=false)=>(await db.query('select dopmi_support_file_access($1,$2) value',[path,write])).rows[0].value;
+  await role(donor);assert.equal(await access(true),true);assert.equal(await access(),true);
+  await role(other);assert.equal(await access(true),false);assert.equal(await access(),false);
+  await role(staff);assert.equal(await access(),false);assert.equal(await access(true),false);
+  await db.exec('reset role');
+  await db.query(`insert into private.dopmi_support_requests(owner_id,request_id,topic,message,attachment_path) values($1,$2,'account','Ayuda',$3)`,[donor,key,path]);
+  await role(staff);assert.equal(await access(),true);
+  await role(donor);assert.equal(await access(true),false);
+  await db.exec('reset role');
+  await db.query("update profiles set account_status='suspended' where id=$1",[donor]);
+  await role(donor);assert.equal(await access(),false);
+  await role('', 'anon');assert.equal(await access(),false);
+  await db.exec('reset role');
+  const bucket=(await db.query("select * from storage.buckets where id='dopmi-support-media'")).rows[0];
+  assert.equal(bucket.public,false);assert.equal(bucket.file_size_limit,5242880);
+  assert.deepEqual(bucket.allowed_mime_types,['image/jpeg']);
+});
 test('support is private, retries one durable receipt and rejects changed replay content', async () => {
   await role(donor);
   const body=JSON.stringify({topic:'guardian',case_name:'Luna',message:'Ayuda en México.'});

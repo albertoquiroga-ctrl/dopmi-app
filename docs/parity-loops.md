@@ -2455,3 +2455,19 @@ de import/tipo/método se añaden al índice mediante patch; cambio ajeno y
 api.test.ts permanecen sin staging. No publicación Vercel, correo real, lectura
 de solicitudes privadas remotas ni Codemagic nuevo. Adjuntos/recorrido Auth
 remoto y paridad final pendientes; panel conectado local no equivale desplegado.
+# Loop295 — base privada para imágenes de soporte
+
+Referencia remota2/10/2026:a3c969cd9103fd46dc5cd886999912526ce75efb.
+CLI creó20261002234156_private_support_media.sql; migración local agrega columna
+attachment_path y bucket privado JPEG/5MB. Helper/políticas permiten al dueño
+cargar antes del recibo, niegan cambios posteriores y sólo permiten al staff
+leer una imagen vinculada a solicitud. Anon, otro usuario y dueño suspendido
+sin acceso. Incluye fronteras restrictivas y prohibición de UPDATE en bucket.
+MediaPurpose.supportAttachment reutiliza normalización JPEG sin EXIF,
+orientación/límites existentes, sin nuevos procesadores ni Storage legado.
+Cuatro pruebas PostgreSQL dirigidas, gate435/435 aprobado25.2s y tres pruebas
+media aprobadas (PNG→JPEG, PDF y tamaño excesivo rechazados para soporte).
+No selección visual ni envío de adjunto aún: siguiente bloque vincular payload
+a objeto existente y conectar repositorio/formulario. Migración no desplegada;
+sin fotos/solicitudes remotas, correo real o Codemagic nuevo.
+Analyze sin incidencias43.2s.

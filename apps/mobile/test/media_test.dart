@@ -19,6 +19,7 @@ void main() {
       for (final purpose in [
         MediaPurpose.adoptionPhoto,
         MediaPurpose.rescuePhoto,
+        MediaPurpose.supportAttachment,
       ]) {
         final result = prepareMedia((purpose, bytes));
         expect(result.contentType, 'image/jpeg');
@@ -34,6 +35,14 @@ void main() {
   );
 
   test('documents retain bytes but require PDF signature and the evidence size limit', () {
+    expect(MediaPurpose.supportAttachment.bucket, 'dopmi-support-media');
+    expect(
+      () => prepareMedia((
+        MediaPurpose.supportAttachment,
+        Uint8List(5 * 1024 * 1024 + 1),
+      )),
+      throwsFormatException,
+    );
     final pdf = Uint8List.fromList('%PDF-1.7\n%%EOF'.codeUnits);
     final result = prepareMedia((MediaPurpose.rescueDocument, pdf));
     expect(result.bytes, pdf);
