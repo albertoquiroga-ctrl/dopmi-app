@@ -145,6 +145,7 @@ class IdentityController extends ChangeNotifier {
         path.startsWith('/profile/') ||
         path == '/basic-info' ||
         path == '/settings' ||
+        path.startsWith('/settings/') ||
         path == '/account-privacy' ||
         path == '/consent' ||
         path == '/help' ||

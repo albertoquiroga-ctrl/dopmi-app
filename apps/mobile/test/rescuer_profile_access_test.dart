@@ -1,4 +1,3 @@
-import 'package:dopmi_mobile/features/profile/rescuer_settings_details.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_repository.dart';
 
 import 'rescuer_profile_test.dart' show FakeRescuerProfile;
@@ -100,11 +99,29 @@ void main() {
       expect(find.byType(SettingsScreen), findsOneWidget);
       expect(find.text('Estado de verificación'), findsOneWidget);
       expect(find.text('Cuenta verificada'), findsOneWidget);
+      expect(find.text('Información básica'), findsNothing);
+      await tester.scrollUntilVisible(
+        find.text('Cuenta y privacidad'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await Scrollable.ensureVisible(
+        tester.element(find.text('Cuenta y privacidad')),
+        alignment: .5,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Cuenta y privacidad'));
+      await tester.pumpAndSettle();
+      expect(find.byType(RescuerAccountOptionsScreen), findsOneWidget);
       final expected = {
-        'Configurar pagos con Stripe': '/connect',
         'Editar perfil público': '/rescuer/profile/edit',
         'Ver mi perfil público': '/people/one',
         'Mis publicaciones de adopción': '/my-adoptions',
+        'Información básica': '/basic-info',
+        'Historial de aportaciones': '/payments',
+        'Términos y privacidad': '/terms',
+        'Privacidad y eliminación': '/account-privacy',
+        'Configurar pagos con Stripe': '/connect',
       };
       for (final entry in expected.entries) {
         await tester.scrollUntilVisible(
@@ -115,15 +132,10 @@ void main() {
         final row = tester.widget(
           find.ancestor(
             of: find.text(entry.key),
-            matching: entry.value == '/connect'
-                ? find.byType(SettingsDataRow)
-                : find.byType(ProfileRow),
+            matching: find.byType(ProfileRow),
           ),
         );
-        expect(
-          row is ProfileRow ? row.path : (row as SettingsDataRow).path,
-          entry.value,
-        );
+        expect((row as ProfileRow).path, entry.value);
       }
       expect(tester.takeException(), isNull);
     },

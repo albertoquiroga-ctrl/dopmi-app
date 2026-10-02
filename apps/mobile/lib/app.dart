@@ -186,6 +186,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => SettingsScreen(key: ValueKey(identity.identity?.id)),
       ),
       GoRoute(
+        path: '/settings/account',
+        builder: (_, _) =>
+            RescuerAccountOptionsScreen(key: ValueKey(identity.identity?.id)),
+      ),
+      GoRoute(
         path: '/consent',
         builder: (_, _) => ConsentScreen(key: ValueKey(identity.identity?.id)),
       ),
