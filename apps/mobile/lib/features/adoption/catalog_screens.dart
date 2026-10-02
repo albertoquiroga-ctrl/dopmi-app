@@ -11,6 +11,7 @@ import 'adoption_detail_layout.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
 import 'photo_recovery.dart';
+import 'public_profile_layout.dart';
 
 class CatalogScreen extends ConsumerStatefulWidget {
   const CatalogScreen({super.key, this.saved = false, this.owner});
@@ -541,219 +542,192 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => CommunityFrame(
-    children: [
-      LiveSection<Json?>(
-        load: () =>
-            ref.read(communityRepositoryProvider).publicProfile(widget.id),
-        builder: (profile, refresh) {
-          if (profile == null) {
-            return const Notice('Este perfil público no está disponible.');
-          }
-          final saved = savedOverride ?? profile['saved'] == true;
-          final activity = (profile['activity'] as List? ?? [])
-              .map((value) => Json.from(value as Map))
-              .toList();
-          final adoptions = (profile['adoptions'] as List? ?? [])
-              .map((value) => Adoption(Json.from(value as Map)))
-              .toList();
-          final cases = (profile['cases'] as List? ?? [])
-              .map((value) => Json.from(value as Map))
-              .toList();
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _PublicRescuerAvatar(profile['avatar_path'] as String?),
-              const SizedBox(height: 24),
-              Heading(
-                profile['name'] as String,
-                '${profile['city']}, ${profile['region']}',
-                eyebrow: 'COMUNIDAD DOPMI',
-              ),
-              Text(
-                profile['bio'] as String,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              if ((profile['instagram_url'] as String? ?? '').isNotEmpty ||
-                  (profile['facebook_url'] as String? ?? '').isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Wrap(
-                  spacing: 8,
-                  children: [
-                    if ((profile['instagram_url'] as String? ?? '').isNotEmpty)
-                      ActionChip(
-                        avatar: const Icon(Icons.camera_alt_outlined, size: 18),
-                        label: const Text('Instagram'),
-                        onPressed: () => copyForSharing(
-                          context,
-                          profile['instagram_url'] as String,
-                        ),
-                      ),
-                    if ((profile['facebook_url'] as String? ?? '').isNotEmpty)
-                      ActionChip(
-                        avatar: const Icon(Icons.link, size: 18),
-                        label: const Text('Facebook'),
-                        onPressed: () => copyForSharing(
-                          context,
-                          profile['facebook_url'] as String,
-                        ),
-                      ),
-                  ],
-                ),
-              ],
-              const SizedBox(height: 24),
-              Notice(
-                '${profile['adopted_count']} adopciones marcadas como realizadas por esta cuenta.',
-              ),
-              if (error != null) Notice(error!, isError: true),
-              Row(
+  Widget build(BuildContext context) => PublicProfileFrame(
+    share: () => copyForSharing(
+      context,
+      'Conoce este perfil en Dopmi. Perfil ${widget.id}',
+    ),
+    child: LiveSection<Json?>(
+      load: () =>
+          ref.read(communityRepositoryProvider).publicProfile(widget.id),
+      builder: (profile, refresh) {
+        if (profile == null) {
+          return const Notice('Este perfil público no está disponible.');
+        }
+        final saved = savedOverride ?? profile['saved'] == true;
+        final activity = (profile['activity'] as List? ?? [])
+            .map((value) => Json.from(value as Map))
+            .toList();
+        final adoptions = (profile['adoptions'] as List? ?? [])
+            .map((value) => Adoption(Json.from(value as Map)))
+            .toList();
+        final cases = (profile['cases'] as List? ?? [])
+            .map((value) => Json.from(value as Map))
+            .toList();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            PublicProfileIdentity(
+              avatar: _PublicRescuerAvatar(profile['avatar_path'] as String?),
+              name: profile['name'] as String,
+              city: '${profile['city']}, ${profile['region']}',
+              bio: profile['bio'] as String,
+              caseCount: cases.length,
+              verified: profile['verified'] == true,
+            ),
+            if ((profile['instagram_url'] as String? ?? '').isNotEmpty ||
+                (profile['facebook_url'] as String? ?? '').isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 8,
                 children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed:
-                          busy ||
-                              ref.read(communityRepositoryProvider).userId ==
-                                  widget.id
-                          ? null
-                          : () => toggle(profile, refresh),
-                      icon: Icon(
-                        saved ? Icons.favorite : Icons.favorite_border,
+                  if ((profile['instagram_url'] as String? ?? '').isNotEmpty)
+                    ActionChip(
+                      avatar: const Icon(Icons.camera_alt_outlined, size: 18),
+                      label: const Text('Instagram'),
+                      onPressed: () => copyForSharing(
+                        context,
+                        profile['instagram_url'] as String,
                       ),
-                      label: Text(saved ? 'Guardado' : 'Guardar'),
                     ),
-                  ),
-                  IconButton(
-                    tooltip: 'Compartir',
-                    onPressed: () => copyForSharing(
-                      context,
-                      'Conoce el trabajo de ${profile['name']} en Dopmi. Perfil ${widget.id}',
+                  if ((profile['facebook_url'] as String? ?? '').isNotEmpty)
+                    ActionChip(
+                      avatar: const Icon(Icons.link, size: 18),
+                      label: const Text('Facebook'),
+                      onPressed: () => copyForSharing(
+                        context,
+                        profile['facebook_url'] as String,
+                      ),
                     ),
-                    icon: const Icon(Icons.ios_share_outlined),
-                  ),
-                  IconButton(
-                    tooltip: 'Reportar',
+                ],
+              ),
+            ],
+            const SizedBox(height: 24),
+            Notice(
+              '${profile['adopted_count']} adopciones marcadas como realizadas por esta cuenta.',
+            ),
+            if (error != null) Notice(error!, isError: true),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
                     onPressed:
                         busy ||
-                            ref.read(communityRepositoryProvider).userId == null
+                            ref.read(communityRepositoryProvider).userId ==
+                                widget.id
                         ? null
-                        : reportProfile,
-                    icon: const Icon(Icons.flag_outlined),
+                        : () => toggle(profile, refresh),
+                    icon: Icon(saved ? Icons.favorite : Icons.favorite_border),
+                    label: Text(saved ? 'Guardado' : 'Guardar'),
                   ),
-                ],
-              ),
-              if (adoptions.isNotEmpty)
-                TextButton.icon(
-                  onPressed: busy
-                      ? null
-                      : () async {
-                          final confirmed = await showDialog<bool>(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('¿Enviar mensaje?'),
-                              content: Text(
-                                'Abriremos una conversación sobre ${adoptions.first.data['pet_name']}.',
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.pop(context, false),
-                                  child: const Text('Ahora no'),
-                                ),
-                                FilledButton(
-                                  onPressed: () => Navigator.pop(context, true),
-                                  child: const Text('Continuar'),
-                                ),
-                              ],
-                            ),
-                          );
-                          if (confirmed != true || !mounted) return;
-                          setState(() => busy = true);
-                          try {
-                            final thread = await ref
-                                .read(communityRepositoryProvider)
-                                .startThread(adoptions.first.id);
-                            await ref
-                                .read(measurementControllerProvider)
-                                ?.event('contact_started');
-                            if (context.mounted) {
-                              context.push('/messages/$thread');
-                            }
-                          } catch (cause) {
-                            if (mounted) {
-                              setState(() => error = communityError(cause));
-                            }
-                          } finally {
-                            if (mounted) setState(() => busy = false);
-                          }
-                        },
-                  icon: const Icon(Icons.chat_bubble_outline),
-                  label: const Text('Enviar mensaje'),
                 ),
-              const SizedBox(height: 20),
-              SegmentedButton<int>(
-                showSelectedIcon: false,
-                segments: const [
-                  ButtonSegment(value: 0, label: Text('Actividad')),
-                  ButtonSegment(value: 1, label: Text('En adopción')),
-                  ButtonSegment(value: 2, label: Text('Casos')),
-                ],
-                selected: {tab},
-                onSelectionChanged: (value) =>
-                    setState(() => tab = value.first),
-              ),
-              const SizedBox(height: 16),
-              if (tab == 0) ...[
-                if (activity.isEmpty)
-                  const Notice('Todavía no hay avances públicos.')
-                else
-                  for (final item in activity)
-                    Card(
-                      child: ListTile(
-                        title: Text(item['body'] as String? ?? 'Avance'),
-                        subtitle: Text(
-                          localDate(item['published_at'] as String? ?? ''),
-                        ),
-                        onTap: () =>
-                            context.push('/rescue-cases/${item['case_id']}'),
-                      ),
-                    ),
-              ] else if (tab == 1) ...[
-                if (adoptions.isEmpty)
-                  const Notice('No hay mascotas disponibles en este momento.')
-                else
-                  for (final post in adoptions)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: AdoptionCard(
-                        post,
-                        open: () => context.push('/adoptions/${post.id}'),
-                      ),
-                    ),
-              ] else ...[
-                if (cases.isEmpty)
-                  const Notice('No hay casos públicos en este momento.')
-                else
-                  for (final item in cases)
-                    Card(
-                      child: ListTile(
-                        title: Text(
-                          Json.from(
-                                    item['public_data'] as Map? ?? {},
-                                  )['pet_name']
-                                  as String? ??
-                              'Caso de rescate',
-                        ),
-                        trailing: const Icon(Icons.chevron_right),
-                        onTap: () =>
-                            context.push('/rescue-cases/${item['id']}'),
-                      ),
-                    ),
               ],
+            ),
+            if (adoptions.isNotEmpty)
+              TextButton.icon(
+                onPressed: busy
+                    ? null
+                    : () async {
+                        final confirmed = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('¿Enviar mensaje?'),
+                            content: Text(
+                              'Abriremos una conversación sobre ${adoptions.first.data['pet_name']}.',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: const Text('Ahora no'),
+                              ),
+                              FilledButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                child: const Text('Continuar'),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (confirmed != true || !mounted) return;
+                        setState(() => busy = true);
+                        try {
+                          final thread = await ref
+                              .read(communityRepositoryProvider)
+                              .startThread(adoptions.first.id);
+                          await ref
+                              .read(measurementControllerProvider)
+                              ?.event('contact_started');
+                          if (context.mounted) {
+                            context.push('/messages/$thread');
+                          }
+                        } catch (cause) {
+                          if (mounted) {
+                            setState(() => error = communityError(cause));
+                          }
+                        } finally {
+                          if (mounted) setState(() => busy = false);
+                        }
+                      },
+                icon: const Icon(Icons.chat_bubble_outline),
+                label: const Text('Enviar mensaje'),
+              ),
+            const SizedBox(height: 20),
+            PublicProfileTabs(
+              selected: tab,
+              select: (value) => setState(() => tab = value),
+              report:
+                  busy || ref.read(communityRepositoryProvider).userId == null
+                  ? null
+                  : reportProfile,
+            ),
+            const SizedBox(height: 16),
+            if (tab == 0) ...[
+              if (activity.isEmpty)
+                const Notice('Todavía no hay avances públicos.')
+              else
+                for (final item in activity)
+                  Card(
+                    child: ListTile(
+                      title: Text(item['body'] as String? ?? 'Avance'),
+                      subtitle: Text(
+                        localDate(item['published_at'] as String? ?? ''),
+                      ),
+                      onTap: () =>
+                          context.push('/rescue-cases/${item['case_id']}'),
+                    ),
+                  ),
+            ] else if (tab == 1) ...[
+              if (adoptions.isEmpty)
+                const Notice('No hay mascotas disponibles en este momento.')
+              else
+                for (final post in adoptions)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: AdoptionCard(
+                      post,
+                      open: () => context.push('/adoptions/${post.id}'),
+                    ),
+                  ),
+            ] else ...[
+              if (cases.isEmpty)
+                const Notice('No hay casos públicos en este momento.')
+              else
+                for (final item in cases)
+                  Card(
+                    child: ListTile(
+                      title: Text(
+                        Json.from(item['public_data'] as Map? ?? {})['pet_name']
+                                as String? ??
+                            'Caso de rescate',
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => context.push('/rescue-cases/${item['id']}'),
+                    ),
+                  ),
             ],
-          );
-        },
-      ),
-    ],
+          ],
+        );
+      },
+    ),
   );
 }
 
