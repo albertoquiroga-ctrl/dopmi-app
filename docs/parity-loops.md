@@ -2132,3 +2132,15 @@ Verificación local en copia de trabajo temporal: 49 pruebas de comunidad/notifi
 CI #442 / 37070247225 de `ae57e06c7a818f7893873dfe2625bb301a364638`: concluido con fallo, 445 pruebas aprobadas y una expectativa antigua de textos de Guardados en profile_experience_test. Se actualiza esa prueba conservando la comprobación de ruta /saved?kind=rescuer, título, selector y estado vacío. Backend, PostgreSQL/web e iOS aprobaron; #442 no constituye gate integral aprobado. El candidato nuevo correrá nuevamente pruebas completas en Codemagic.
 
 Enviar `android-guardian-internal` desde `codex/design-foundation`; registrar por separado arranque, SHA, compilación y publicación Play. No declarar paridad terminada ni aceptación visual del teléfono. Los cambios ajenos locales permanecen fuera del commit.
+
+### Envío Codemagic 268 verificado
+
+API aceptó build `6ac02cc4554e6c4660850bf2`, workflow solicitado `android-guardian-internal`, rama `codex/design-foundation`. GET específico confirmó estado `queued` y commit exacto `2c36339a6961755e7b0a37e189f8c1fa9b791e17`. Enlace: https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ac02cc4554e6c4660850bf2. Todavía no hay compilación ni publicación Play verificadas. La paridad completa continúa activa.
+
+## Loop 269 — 2026-10-02 — continuidad y candidato en ejecución
+
+El turno previo realizó progreso: pager productivo corregido, comprobación de navegación actualizada, commit2c36339 publicado y Codemagic iniciado. GET específico de build6ac02cc4554e6c4660850bf2 confirma fetching y SHA2c36339; no se reinicia el build ni se acredita publicación aún.
+
+Información básica contrastada nuevamente con Source App.tsx BasicInfo: referencia tiene foto editable, Nombre/Apellido separados, correo editable, teléfono y ciudad. La implementación actual conserva nombre único y correo Auth, sin API de avatar/cambio de correo identificada. No se copiarán fallbacks simulados Alberto/Quiroga/Monterrey, ni una edición falsa de correo/foto. El próximo loop debe resolver presentación y recorrido de datos reales preservando cuenta suspendida, saveProfile y preferencias; investigar capacidades existentes antes de agregar persistencia. La pantalla actual aún usa Heading/card amarilla/atajos: discrepancia confirmada, no aceptación visual.
+
+parity-current-review actualizado: 272 estados/31URLs y paginación larga verificada, aceptación instalada pendiente. Cambios locales ajenos conservados.

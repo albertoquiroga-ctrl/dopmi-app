@@ -4,10 +4,16 @@ Referencia: `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75
 Auditoría vigente loop265: [rutas y pendientes concretos](parity-route-audit-2026-10-02.md).
 Loop266 sustituye composición genérica de Guardados y añade seis capturas;
 Loop267 añade rescatistas con métricas públicas y prueba de retiro concurrente;
-falta paginación larga e integración instalada. Source no permite sembrar
+Loop268 verifica paginación larga a 320px/texto200%; falta integración instalada.
+Source no permite sembrar
 rescatistas guardados por UI: contraste poblado usa componente/CSS, no browser.
 Información básica, Ayuda y Editor público siguen pendientes concretos. No es
-un conteo final de pantallas sin aceptación. Próximo bloque: cerrar Guardados.
+un conteo final de pantallas sin aceptación. Próximo bloque: Información básica.
+Codemagic intermedio autorizado por el titular: build `6ac02cc4554e6c4660850bf2`,
+workflow `android-guardian-internal`, SHA `2c36339a6961755e7b0a37e189f8c1fa9b791e17`.
+GET confirmó `fetching`; compilación y publicación Play todavía pendientes.
+CI442 de ae57 concluyó con una expectativa antigua de textos de Guardados;
+corregida en 2c36339 y suite perfil aprobada13. No acreditar gate integral442.
 Corte integral aprobado: `3374c507004cd2de7a693de87658e85cc445c0f8`,
 run37067524998 #440 completed/success, verificado en loop267.
 Incluye mazo257, teclado258, galería/selector259, regresión260 e Inicio261.
@@ -25,7 +31,7 @@ sin evidencia. Capturas normal/large en `design-reviews/parity-loop260`.
 Datos Connect/verificación/revisión reales conservados. CI432 aún ejecutándose;
 esto no acredita aceptación en Samsung ni paridad completa.
 
-`apps/mobile/tool/capture_profile_test.dart` contiene **270 estados en 31 URLs**:
+`apps/mobile/tool/capture_profile_test.dart` contiene **272 estados en 31 URLs**:
 256 recontados en loop259, dos estados de evidencia pendiente añadidos261 y
 dos de bienvenida Guardian263 y dos de fallo Guardian264. Ambos resultados
 dependen del servidor y mismo intento; reintento exige autorización nueva.
