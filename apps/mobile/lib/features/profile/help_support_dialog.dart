@@ -1,10 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/ui.dart';
+import '../../core/media/media_store.dart';
 import 'support_repository.dart';
 
 class HelpSupportDialog extends StatefulWidget {
@@ -14,11 +17,13 @@ class HelpSupportDialog extends StatefulWidget {
     required this.initialTopic,
     this.openMail,
     this.repository,
+    this.pickImage,
   });
   final List<String> topics;
   final int initialTopic;
   final Future<bool> Function(Uri)? openMail;
   final SupportRepository? repository;
+  final Future<Uint8List?> Function()? pickImage;
 
   @override
   State<HelpSupportDialog> createState() => _HelpSupportDialogState();
@@ -29,6 +34,10 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
   final caseName = TextEditingController(), message = TextEditingController();
   bool busy = false;
   bool sending = false;
+  bool picking = false;
+  Uint8List? attachment;
+  int attachmentRevision = 0;
+  String? attachmentPath;
   String? notice;
   bool received = false;
   String? requestId, requestContent;
@@ -44,16 +53,65 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
     'trust_safety',
   ];
 
+  Future<void> chooseImage() async {
+    if (busy || received) return;
+    setState(() {
+      busy = true;
+      picking = true;
+      notice = null;
+    });
+    try {
+      final Uint8List? bytes;
+      if (widget.pickImage != null) {
+        bytes = await widget.pickImage!();
+      } else {
+        final selected = await ImagePicker().pickImage(
+          source: ImageSource.gallery,
+          imageQuality: 90,
+          requestFullMetadata: false,
+        );
+        bytes = await selected?.readAsBytes();
+      }
+      if (bytes == null || !mounted) return;
+      final prepared = await compute(prepareMedia, (
+        MediaPurpose.supportAttachment,
+        bytes,
+      ));
+      if (!mounted) return;
+      setState(() {
+        attachment = prepared.bytes;
+        attachmentRevision++;
+        attachmentPath = null;
+      });
+    } catch (_) {
+      if (mounted) {
+        setState(
+          () => notice =
+              'No pudimos abrir esa imagen. Elige una foto de hasta 5 MB.',
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          busy = false;
+          picking = false;
+        });
+      }
+    }
+  }
+
   Future<void> send() async {
     if (busy || received || message.text.trim().isEmpty) return;
     final content = jsonEncode([
       topic,
       caseName.text.trim(),
       message.text.trim(),
+      attachmentRevision,
     ]);
     if (requestContent != content) {
       requestContent = content;
       requestId = const Uuid().v4();
+      attachmentPath = null;
     }
     setState(() {
       busy = true;
@@ -61,11 +119,20 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
       notice = null;
     });
     try {
-      await (widget.repository ?? SupportRepository.supabase()).submit(
+      final repository = widget.repository ?? SupportRepository.supabase();
+      if (attachment != null && attachmentPath == null) {
+        attachmentPath = await repository.uploadAttachment(
+          requestId!,
+          attachment!,
+        );
+        if (!mounted) return;
+      }
+      await repository.submit(
         requestId: requestId!,
         topic: topicIds[topic],
         caseName: caseName.text,
         message: message.text,
+        attachmentPath: attachmentPath,
       );
       if (mounted) setState(() => received = true);
     } catch (_) {
@@ -92,7 +159,7 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
   }
 
   Future<void> continueInMail() async {
-    if (busy || message.text.trim().isEmpty) return;
+    if (busy || message.text.trim().isEmpty || attachment != null) return;
     setState(() {
       busy = true;
       notice = null;
@@ -282,6 +349,38 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                     ),
                     const SizedBox(height: 12),
                   ],
+                  OutlinedButton(
+                    onPressed: busy ? null : chooseImage,
+                    child: Text(
+                      attachment == null
+                          ? 'Adjuntar imagen (opcional)'
+                          : 'Cambiar imagen',
+                    ),
+                  ),
+                  if (attachment != null) ...[
+                    const SizedBox(height: 12),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: Image.memory(
+                        attachment!,
+                        height: 140,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        semanticLabel: 'Adjunto seleccionado',
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: busy
+                          ? null
+                          : () => setState(() {
+                              attachment = null;
+                              attachmentPath = null;
+                              attachmentRevision++;
+                            }),
+                      child: const Text('Quitar imagen'),
+                    ),
+                  ],
+                  const SizedBox(height: 12),
                   FilledButton(
                     style: FilledButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
@@ -300,7 +399,9 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                         : send,
                     child: busy
                         ? Semantics(
-                            label: sending
+                            label: picking
+                                ? 'Abriendo galería'
+                                : sending
                                 ? 'Enviando mensaje'
                                 : 'Abriendo correo',
                             child: const SizedBox(
@@ -326,7 +427,10 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    onPressed: busy || message.text.trim().isEmpty
+                    onPressed:
+                        busy ||
+                            message.text.trim().isEmpty ||
+                            attachment != null
                         ? null
                         : continueInMail,
                     child: const Text(

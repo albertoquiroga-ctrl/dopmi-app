@@ -2499,3 +2499,18 @@ Siete pruebas repositorio/media aprobadas. No Storage real ni formulario de
 selección aún: falta selector/preview, retención de ruta por intento, despliegue
 support_media y panel de imagen. No correo ni nuevo Codemagic.
 Analyze detectó bloque sin llaves de prueba; corregido y repetido limpio20.6s.
+
+# Loop298 — selector y vista previa de soporte
+
+Referencia remota2/10/2026:a3c969cd9103fd46dc5cd886999912526ce75efb.
+Formulario integra galería real, preparación JPEG privada, vista previa140px,
+cambio y eliminación. Selección no carga; enviar conserva ruta y UUID durante
+reintento sin volver a cargar imagen. Recepción sólo muestra confirmación;
+correo alternativo se deshabilita con adjunto para evitar omitirlo silenciosamente.
+Cuatro pruebas widget aprobadas, incluida foto sintética normalizada y retry con
+una sola carga. Analyze limpio35.8s. Capturador soporte normal/200% aprobado;
+inspeccionada captura grande: controles envueltos y alcanzables sin overflow.
+Primer comando test se lanzó desde raíz sin pubspec; corregido al scratch móvil.
+Sin Storage/galería reales verificados: support_media sigue local, falta panel
+con imagen y despliegue autorizado/recorrido autenticado. No nuevo Codemagic;
+por instrucción del titular, siguiente envío sólo tras completar objetivo.
