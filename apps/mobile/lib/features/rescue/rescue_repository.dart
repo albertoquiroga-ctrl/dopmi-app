@@ -200,8 +200,16 @@ int? parsePesos(String text) {
   return cents > 0 && cents <= 100000000 ? cents : null;
 }
 
-String pesos(int cents) =>
-    '\$${(cents ~/ 100).toString()}.${(cents % 100).toString().padLeft(2, '0')} MXN';
+String pesos(int cents) {
+  final magnitude = cents.abs();
+  final whole = (magnitude ~/ 100).toString().replaceAllMapped(
+    RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+    (match) => '${match[1]},',
+  );
+  final fraction = (magnitude % 100).toString().padLeft(2, '0');
+  return '${cents < 0 ? '-' : ''}\$$whole.$fraction MXN';
+}
+
 String rescueError(Object error) {
   if (error is PostgrestException && ['22023', '40001'].contains(error.code)) {
     return error.message;

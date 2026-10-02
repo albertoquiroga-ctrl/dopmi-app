@@ -314,6 +314,17 @@ class PlannedPublicCaseRescue extends FakeRescue {
 }
 
 void main() {
+  test(
+    'peso labels group thousands while preserving signed cent precision',
+    () {
+      expect(pesos(0), '\$0.00 MXN');
+      expect(pesos(5), '\$0.05 MXN');
+      expect(pesos(99999), '\$999.99 MXN');
+      expect(pesos(145000), '\$1,450.00 MXN');
+      expect(pesos(100000001), '\$1,000,000.01 MXN');
+      expect(pesos(-100005), '-\$1,000.05 MXN');
+    },
+  );
   for (final compact in [false, true]) {
     testWidgets('photo retry shows pending request; compact=$compact', (
       tester,
