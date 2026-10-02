@@ -279,6 +279,12 @@ class EmptySupportCaptureRescue extends SupportCaptureRescue {
       DataPage([], 0);
 }
 
+class FailedSupportCaptureRescue extends SupportCaptureRescue {
+  @override
+  Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async =>
+      throw Exception('offline');
+}
+
 class CaseCaptureRescue extends SupportCaptureRescue {
   CaseCaptureRescue({this.planned = false});
   final bool planned;
@@ -635,6 +641,8 @@ void main() {
       ('support-home-large', '/rescue-cases'),
       ('support-home-empty', '/rescue-cases'),
       ('support-home-empty-large', '/rescue-cases'),
+      ('support-home-error', '/rescue-cases'),
+      ('support-home-error-large', '/rescue-cases'),
       ('support-home-case-focus', '/rescue-cases'),
       ('support-home-case-focus-large', '/rescue-cases'),
       ('support-home-guardian-card-focus', '/rescue-cases'),
@@ -1077,6 +1085,8 @@ void main() {
             rescueRepositoryProvider.overrideWithValue(
               spec.$1.startsWith('support-home-empty')
                   ? EmptySupportCaptureRescue()
+                  : spec.$1.startsWith('support-home-error')
+                  ? FailedSupportCaptureRescue()
                   : SupportCaptureRescue(),
             ),
           guardianEnabledProvider.overrideWithValue(true),

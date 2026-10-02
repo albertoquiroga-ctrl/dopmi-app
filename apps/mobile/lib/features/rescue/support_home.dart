@@ -18,11 +18,13 @@ class SupportHomePage extends StatelessWidget {
     required this.page,
     required this.error,
     required this.changePage,
+    this.status,
   });
   final DataPage<RescueRecord> data;
   final int page;
   final String? error;
   final ValueChanged<int> changePage;
+  final Widget? status;
 
   @override
   Widget build(BuildContext context) {
@@ -95,9 +97,12 @@ class SupportHomePage extends StatelessWidget {
                     color: ink,
                   ),
                 ),
-                if (eligible.isNotEmpty) const SizedBox(height: 16),
+                if (eligible.isNotEmpty || status != null)
+                  const SizedBox(height: 16),
                 if (error != null) Notice(error!, isError: true),
-                if (eligible.isNotEmpty)
+                if (status != null)
+                  status!
+                else if (eligible.isNotEmpty)
                   SizedBox(
                     height: 100 + scaler.scale(26.4) + (large ? 4 : 0),
                     child: ListView.separated(
@@ -155,7 +160,7 @@ class SupportHomePage extends StatelessWidget {
                 GuardianSupportCard(
                   height: math.max(
                     scaler.scale(300) + 180,
-                    eligible.isEmpty
+                    eligible.isEmpty && status == null
                         ? MediaQuery.sizeOf(context).height -
                               MediaQuery.paddingOf(context).top -
                               (106 + scaler.scale(28) * 1.1) +

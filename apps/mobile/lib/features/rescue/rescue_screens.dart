@@ -2664,7 +2664,13 @@ class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
     final content = LiveSection<DataPage<RescueRecord>>(
       key: ValueKey('${widget.caseId}:$page'),
       statusFrame: widget.caseId == null
-          ? null
+          ? (child) => SupportHomePage(
+              data: const DataPage([], 0),
+              page: page,
+              error: null,
+              changePage: (value) => setState(() => page = value),
+              status: child,
+            )
           : (child) => CaseStatusFrame(child),
       load: () {
         final repo = ref.read(rescueRepositoryProvider);

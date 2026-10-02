@@ -186,6 +186,17 @@ class EmptySupportRescue extends FakeRescue {
       const DataPage([], 0);
 }
 
+class RetrySupportRescue extends FakeRescue {
+  bool failCatalog = true;
+  int catalogCalls = 0;
+  @override
+  Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async {
+    catalogCalls++;
+    if (failCatalog) throw Exception('offline');
+    return super.catalog(page, caseId: caseId);
+  }
+}
+
 class ClosedPublicCaseRescue extends FakeRescue {
   @override
   Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async =>
@@ -362,8 +373,17 @@ void main() {
     },
   );
 
-  Future<void> startPublicCase(WidgetTester tester, FakeRescue repo) async {
-    tester.view.physicalSize = const Size(377, 852);
+  Future<void> startPublicCase(
+    WidgetTester tester,
+    FakeRescue repo, {
+    String path = '/rescue-cases/case-one',
+    bool large = false,
+  }) async {
+    tester.view.physicalSize = large
+        ? const Size(320, 640)
+        : const Size(377, 852);
+    tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
@@ -375,9 +395,7 @@ void main() {
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         rescueRepositoryProvider.overrideWithValue(repo),
         caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
-        routerInitialLocationProvider.overrideWithValue(
-          '/rescue-cases/case-one',
-        ),
+        routerInitialLocationProvider.overrideWithValue(path),
       ],
     );
     addTearDown(() async {
@@ -398,6 +416,58 @@ void main() {
       expect(parsePesos(v), null);
     }
   });
+  for (final large in [false, true]) {
+    testWidgets(
+      'support catalog failure preserves home and retries; large=$large',
+      (tester) async {
+        final repo = RetrySupportRescue();
+        await startPublicCase(
+          tester,
+          repo,
+          path: '/rescue-cases',
+          large: large,
+        );
+        expect(find.text('Descubre casos'), findsOneWidget);
+        expect(find.textContaining('No pudimos completar'), findsOneWidget);
+        expect(
+          find.byWidgetPredicate(
+            (widget) =>
+                widget is Semantics &&
+                (widget.properties.label ?? '').startsWith(
+                  'No hay casos para apoyar.',
+                ),
+          ),
+          findsNothing,
+        );
+        expect(repo.catalogCalls, 1);
+        repo.failCatalog = false;
+        await tester.scrollUntilVisible(
+          find.text('Volver a intentar'),
+          150,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await Scrollable.ensureVisible(
+          tester.element(find.text('Volver a intentar')),
+          alignment: .3,
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Volver a intentar'));
+        await tester.pumpAndSettle();
+        expect(repo.catalogCalls, 2);
+        await tester.scrollUntilVisible(
+          find.text('Descubre casos'),
+          -150,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('Descubre casos'), findsOneWidget);
+        expect(find.text('Choco'), findsOneWidget);
+        expect(find.textContaining('No pudimos completar'), findsNothing);
+        expect(find.text('Volver a intentar'), findsNothing);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
   testWidgets('rescuer draft keeps private fields after a save conflict', (
     tester,
   ) async {
