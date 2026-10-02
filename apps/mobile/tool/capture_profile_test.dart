@@ -648,6 +648,8 @@ void main() {
       ('rescuer-home-actions', '/rescuer'),
       ('rescuer-home-actions-large', '/rescuer'),
       ('owned-case-detail', '/rescue/case-one'),
+      ('owned-case-detail-back-focus', '/rescue/case-one'),
+      ('owned-case-detail-back-focus-large', '/rescue/case-one'),
       ('owned-case-detail-large', '/rescue/case-one'),
       ('owned-case-detail-story', '/rescue/case-one'),
       ('owned-case-detail-story-large', '/rescue/case-one'),
@@ -1794,6 +1796,14 @@ void main() {
           alignment: 0,
         );
         await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('owned-case-detail-back-focus')) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
+        expect(
+          find.byKey(const ValueKey('reference-keyboard-outline')),
+          findsOneWidget,
+        );
       }
       if (spec.$1.startsWith('case-detail-story')) {
         await Scrollable.ensureVisible(
