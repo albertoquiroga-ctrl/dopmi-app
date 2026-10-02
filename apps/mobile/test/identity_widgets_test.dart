@@ -89,7 +89,7 @@ void main() {
       await tap(tester, 'Continuar');
       await tap(tester, 'Continuar');
       await tap(tester, 'Empezar');
-      await tap(tester, 'Crear cuenta');
+      await tap(tester, 'Crea una cuenta');
       await tester.enterText(find.byType(TextFormField).at(0), 'Ana');
       await tester.enterText(
         find.byType(TextFormField).at(1),

@@ -1,12 +1,15 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/ui.dart';
 import '../../core/design_tokens.dart';
 import 'auth_ui.dart';
+import 'identity_controller.dart';
+import 'identity_repository.dart';
 import 'onboarding_art.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -363,11 +366,11 @@ class AccountStartScreen extends StatelessWidget {
                                         ),
                                       ),
                                       const SizedBox(height: 16),
-                                      const ExcludeSemantics(
-                                        child: Icon(
-                                          Icons.pets_outlined,
-                                          color: yellow,
-                                          size: 28,
+                                      ExcludeSemantics(
+                                        child: SvgPicture.asset(
+                                          'assets/onboarding/account-paw.svg',
+                                          width: 28,
+                                          height: 28,
                                         ),
                                       ),
                                     ],
@@ -411,7 +414,7 @@ class AccountStartScreen extends StatelessWidget {
                                       onPressed: () => context.push(
                                         '/signup?intent=$intent',
                                       ),
-                                      child: const Text('Crear cuenta'),
+                                      child: const Text('Crea una cuenta'),
                                     ),
                                     const SizedBox(height: 14),
                                     TextButton(
@@ -426,6 +429,7 @@ class AccountStartScreen extends StatelessWidget {
                                       onPressed: () => context.push('/login'),
                                       child: const Text('Inicia sesión'),
                                     ),
+                                    const AccountSocialActions(),
                                   ],
                                 ),
                               ),
@@ -906,6 +910,114 @@ class RescuerIntroduction extends StatelessWidget {
           ),
         ),
       ),
+    ),
+  );
+}
+
+/// Configured providers use the same repository and session listener as login.
+/// Cancellation never opens the authenticated app or fabricates an identity.
+class AccountSocialActions extends ConsumerStatefulWidget {
+  const AccountSocialActions({super.key});
+  @override
+  ConsumerState<AccountSocialActions> createState() =>
+      _AccountSocialActionsState();
+}
+
+class _AccountSocialActionsState extends ConsumerState<AccountSocialActions> {
+  bool busy = false;
+  String? error;
+
+  Future<void> social(String provider) async {
+    if (busy) return;
+    setState(() {
+      busy = true;
+      error = null;
+    });
+    try {
+      await ref.read(identityRepositoryProvider).oauth(provider);
+    } catch (cause) {
+      if (mounted) setState(() => error = identityError(cause));
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final config = ref.watch(configProvider);
+    if (!config.googleEnabled && !config.appleNativeAvailable) {
+      return const SizedBox.shrink();
+    }
+    return Column(
+      children: [
+        const SizedBox(height: 18),
+        const Divider(height: 1, thickness: 1, color: DopmiTokens.line),
+        const SizedBox(height: 16),
+        const Text(
+          'Continuar con',
+          style: TextStyle(
+            fontSize: 13,
+            height: 1.3,
+            letterSpacing: 0,
+            color: muted,
+          ),
+        ),
+        const SizedBox(height: 14),
+        Wrap(
+          spacing: 18,
+          runSpacing: 12,
+          alignment: WrapAlignment.center,
+          children: [
+            if (config.appleNativeAvailable) providerButton('apple', 'Apple'),
+            if (config.googleEnabled) providerButton('google', 'Google'),
+          ],
+        ),
+        if (busy)
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Semantics(
+              label: 'Abriendo inicio de sesión',
+              child: const SizedBox(
+                width: 22,
+                height: 22,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+          ),
+        if (error != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Semantics(
+              liveRegion: true,
+              child: Text(
+                error!,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: DopmiTokens.danger),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget providerButton(String provider, String label) => IconButton(
+    tooltip: 'Continuar con $label',
+    onPressed: busy ? null : () => social(provider),
+    style: IconButton.styleFrom(
+      fixedSize: const Size(52, 52),
+      minimumSize: const Size(52, 52),
+      padding: EdgeInsets.zero,
+      backgroundColor: Colors.white,
+      foregroundColor: ink,
+      side: const BorderSide(color: DopmiTokens.line),
+      shape: const CircleBorder(),
+      splashFactory: NoSplash.splashFactory,
+      highlightColor: Colors.transparent,
+    ),
+    icon: SvgPicture.asset(
+      'assets/onboarding/icon-$provider.svg',
+      width: 22,
+      height: 22,
     ),
   );
 }

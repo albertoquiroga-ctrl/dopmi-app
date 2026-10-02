@@ -110,7 +110,7 @@ void main() {
         expect(next, findsOneWidget);
         await tap(next);
         await tap(finish);
-        await tap(find.widgetWithText(FilledButton, 'Crear cuenta'));
+        await tap(find.widgetWithText(FilledButton, 'Crea una cuenta'));
         final uri = container.read(routerProvider).state.uri;
         expect(uri.path, '/signup');
         expect(uri.queryParameters['intent'], intent);

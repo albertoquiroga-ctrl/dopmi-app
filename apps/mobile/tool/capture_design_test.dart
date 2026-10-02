@@ -188,6 +188,9 @@ void main() {
         'assets/profile/icon-bell.svg',
         'assets/profile/tab-donate.svg',
         'assets/onboarding/send.svg',
+        'assets/onboarding/account-paw.svg',
+        'assets/onboarding/icon-apple.svg',
+        'assets/onboarding/icon-google.svg',
       ]) {
         final asset = SvgAssetLoader(path);
         await tester.runAsync(
