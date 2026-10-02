@@ -674,6 +674,7 @@ void main() {
       ('rescuer-profile-reference-transfer-focus-large', '/profile'),
       ('rescuer-profile-reference-large', '/profile'),
       ('rescuer-settings', '/settings'),
+      ('rescuer-settings-scroll-blur', '/settings'),
       ('rescuer-settings-footer', '/settings'),
       ('rescuer-settings-logout-focus', '/settings'),
       ('rescuer-settings-mode-focus', '/settings'),
@@ -1617,6 +1618,16 @@ void main() {
           expect(social.height, closeTo(70, 1));
           expect(editor.size, const Size(48, 48));
           expect(editor.center.dx, closeTo(social.right - 35, 1));
+        }
+        if (spec.$1 == 'rescuer-settings-scroll-blur') {
+          final headerRect = tester.getRect(find.byType(AppBar));
+          await tester.drag(find.byType(ListView).first, const Offset(0, -90));
+          await tester.pumpAndSettle();
+          expect(tester.getRect(find.byType(AppBar)), headerRect);
+          expect(
+            tester.getTopLeft(find.text('Estado de verificación')).dy,
+            lessThan(headerRect.bottom),
+          );
         }
         if (spec.$1 == 'rescuer-settings-footer' ||
             spec.$1 == 'rescuer-settings-logout-focus' ||

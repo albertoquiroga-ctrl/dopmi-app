@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -100,53 +102,57 @@ class DopmiBottomBar extends StatelessWidget {
     }
     return SafeArea(
       top: false,
-      child: DecoratedBox(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          border: Border(top: BorderSide(color: Color(0xffe3e4ed))),
-        ),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            // Keep the reference's five columns when every label fits. Larger
-            // system text gets more room without splitting destination names.
-            var minimumWidth = 48.0;
-            for (final destination in destinations) {
-              final painter = TextPainter(
-                text: TextSpan(
-                  text: destination.label,
-                  style: DefaultTextStyle.of(context).style.copyWith(
-                    fontSize: 9,
-                    height: 1.2,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                textDirection: Directionality.of(context),
-                textScaler: MediaQuery.textScalerOf(context),
-              )..layout();
-              final width = painter.width + 8;
-              if (width > minimumWidth) minimumWidth = width;
-              painter.dispose();
-            }
-            final columns = (constraints.maxWidth / minimumWidth).floor().clamp(
-              1,
-              destinations.length,
-            );
-            return Wrap(
-              alignment: WrapAlignment.center,
-              children: [
-                for (final destination in destinations)
-                  SizedBox(
-                    width: constraints.maxWidth / columns,
-                    child: _NavigationItem(
-                      destination: destination,
-                      selected: selectedPath == destination.path,
-                      rescuer: true,
-                      onPressed: () => onSelected(destination),
+      child: ClipRect(
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: DecoratedBox(
+            decoration: const BoxDecoration(
+              color: Color(0xf7ffffff),
+              border: Border(top: BorderSide(color: Color(0xffe3e4ed))),
+            ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                // Keep the reference's five columns when every label fits. Larger
+                // system text gets more room without splitting destination names.
+                var minimumWidth = 48.0;
+                for (final destination in destinations) {
+                  final painter = TextPainter(
+                    text: TextSpan(
+                      text: destination.label,
+                      style: DefaultTextStyle.of(context).style.copyWith(
+                        fontSize: 9,
+                        height: 1.2,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
-              ],
-            );
-          },
+                    textDirection: Directionality.of(context),
+                    textScaler: MediaQuery.textScalerOf(context),
+                  )..layout();
+                  final width = painter.width + 8;
+                  if (width > minimumWidth) minimumWidth = width;
+                  painter.dispose();
+                }
+                final columns = (constraints.maxWidth / minimumWidth)
+                    .floor()
+                    .clamp(1, destinations.length);
+                return Wrap(
+                  alignment: WrapAlignment.center,
+                  children: [
+                    for (final destination in destinations)
+                      SizedBox(
+                        width: constraints.maxWidth / columns,
+                        child: _NavigationItem(
+                          destination: destination,
+                          selected: selectedPath == destination.path,
+                          rescuer: true,
+                          onPressed: () => onSelected(destination),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ),
         ),
       ),
     );

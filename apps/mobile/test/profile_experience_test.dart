@@ -16,6 +16,47 @@ import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
 
 void main() {
+  testWidgets('rescuer settings scrolls behind its fixed translucent header', (
+    tester,
+  ) async {
+    final identity = FakeIdentityRepository()
+      ..user = const Identity('one', 'ana@example.test', verified: true);
+    await identity.setExperience('rescuer');
+    final container = ProviderContainer(
+      overrides: [
+        identityRepositoryProvider.overrideWithValue(identity),
+        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+        rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+        routerInitialLocationProvider.overrideWithValue('/settings'),
+      ],
+    );
+    addTearDown(() async {
+      container.dispose();
+      await identity.changes.close();
+    });
+    await tester.pumpWidget(
+      UncontrolledProviderScope(container: container, child: const DopmiApp()),
+    );
+    await tester.pumpAndSettle();
+    final header = find.byType(AppBar);
+    final headerRect = tester.getRect(header);
+    final appBar = tester.widget<AppBar>(header);
+    expect(appBar.backgroundColor, Colors.transparent);
+    expect(appBar.scrolledUnderElevation, 0);
+    expect(
+      find.descendant(of: header, matching: find.byType(BackdropFilter)),
+      findsOneWidget,
+    );
+    final heading = find.text('Estado de verificación');
+    final initialTop = tester.getTopLeft(heading).dy;
+    expect(initialTop, closeTo(headerRect.bottom + 20, 1));
+    await tester.drag(find.byType(ListView).first, const Offset(0, -90));
+    await tester.pumpAndSettle();
+    expect(tester.getRect(header), headerRect);
+    expect(tester.getTopLeft(heading).dy, lessThan(headerRect.bottom));
+    expect(tester.takeException(), isNull);
+  });
+
   for (final fail in [false, true]) {
     for (final path in ['/profile', '/settings']) {
       testWidgets(

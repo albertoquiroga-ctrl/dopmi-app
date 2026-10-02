@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import '../../core/reference_focus_outline.dart';
 
 import 'package:flutter/material.dart';
@@ -1057,15 +1059,31 @@ class ProfileFrame extends StatelessWidget {
   final bool back, rescuerOverview, showNotifications, rescuerSettings;
   @override
   Widget build(BuildContext context) => Scaffold(
+    extendBodyBehindAppBar: rescuerSettings,
     appBar: rescuerOverview
         ? null
         : AppBar(
             automaticallyImplyLeading: false,
             centerTitle: rescuerSettings,
             toolbarHeight: rescuerSettings ? 68 : kToolbarHeight,
+            backgroundColor: rescuerSettings ? Colors.transparent : null,
+            surfaceTintColor: rescuerSettings ? Colors.transparent : null,
+            elevation: rescuerSettings ? 0 : null,
+            scrolledUnderElevation: rescuerSettings ? 0 : null,
+            flexibleSpace: rescuerSettings
+                ? ClipRect(
+                    child: BackdropFilter(
+                      filter: ui.ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                      child: const ColoredBox(
+                        color: Color(0xf5ffffff),
+                        child: SizedBox.expand(),
+                      ),
+                    ),
+                  )
+                : null,
             leadingWidth: rescuerSettings ? 62 : null,
             shape: rescuerSettings
-                ? const Border(bottom: BorderSide(color: Color(0xffe6e2dd)))
+                ? const Border(bottom: BorderSide(color: Color(0xffe3e4ed)))
                 : null,
             leading: back
                 ? Padding(
@@ -1094,7 +1112,7 @@ class ProfileFrame extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                       height: 1.25,
                       letterSpacing: -.36,
-                      color: Color(0xff15110d),
+                      color: Color(0xff151423),
                     )
                   : Theme.of(context).textTheme.titleLarge,
             ),
@@ -1114,7 +1132,12 @@ class ProfileFrame extends StatelessWidget {
         padding: rescuerOverview
             ? const EdgeInsets.fromLTRB(16, 20, 16, 88)
             : rescuerSettings
-            ? const EdgeInsets.fromLTRB(16, 20, 16, 32)
+            ? EdgeInsets.fromLTRB(
+                16,
+                88 + MediaQuery.paddingOf(context).top,
+                16,
+                32,
+              )
             : const EdgeInsets.fromLTRB(16, 14, 16, 28),
         children: [
           if (rescuerOverview) ...[
