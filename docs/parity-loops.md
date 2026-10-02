@@ -2487,3 +2487,15 @@ y repetido con éxito. Ninguna versión fallida aplicada remotamente.
 No selector/upload móvil, panel de imagen ni despliegue aún; no archivo/correo
 real ni nuevo Codemagic. Goal completo sigue pendiente.
 Gate backend436/436 aprobado20.9s.
+# Loop297 — repositorio móvil de adjuntos y recuperación
+
+Referencia remota2/10/2026:a3c969cd9103fd46dc5cd886999912526ce75efb.
+SupportRepository.supabase conecta uploadAttachment al MediaStore vigente y
+propósito privado supportAttachment. Provider reutiliza misma fábrica. Submit
+incluye attachment_path opcional y lo conserva en expected_payload de lectura
+tras pérdida de respuesta; nunca vuelve a cargar foto al reconciliar recibo.
+Prueba de transporte fixture verifica una carga y submit/receipt con ruta igual.
+Siete pruebas repositorio/media aprobadas. No Storage real ni formulario de
+selección aún: falta selector/preview, retención de ruta por intento, despliegue
+support_media y panel de imagen. No correo ni nuevo Codemagic.
+Analyze detectó bloque sin llaves de prueba; corregido y repetido limpio20.6s.

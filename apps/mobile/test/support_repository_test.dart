@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dopmi_mobile/features/profile/support_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -6,6 +7,42 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() {
   const id = '00000000-0000-4000-8000-000000000001';
+  test('attachment upload is separate from request replay and the exact path participates in recovery', () async {
+    const path = 'owner/request/photo.jpg';
+    var uploads = 0;
+    final calls = <String>[];
+    final bytes = Uint8List.fromList([1, 2, 3]);
+    final repo = SupportRepository(
+      (name, params) async {
+        calls.add(name);
+        final payload =
+            params[name == 'dopmi_submit_support_request'
+                    ? 'payload'
+                    : 'expected_payload']
+                as Map;
+        expect(payload['attachment_path'], path);
+        if (name == 'dopmi_submit_support_request') {
+          throw const SocketException('lost');
+        }
+        return {'request_id': id, 'status': 'received'};
+      },
+      upload: (requestId, data) async {
+        uploads++;
+        expect(requestId, id);
+        expect(data, bytes);
+        return path;
+      },
+    );
+    final storedPath = await repo.uploadAttachment(id, bytes);
+    await repo.submit(
+      requestId: id,
+      topic: 'account',
+      message: 'Ayuda.',
+      attachmentPath: storedPath,
+    );
+    expect(uploads, 1);
+    expect(calls, ['dopmi_submit_support_request', 'dopmi_my_support_request']);
+  });
   Future<void> send(SupportRepository repo) => repo.submit(
     requestId: id,
     topic: 'guardian',
