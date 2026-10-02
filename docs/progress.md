@@ -1,5 +1,281 @@
 # Dopmi — registro de avance
 
+## H10 proveedores y producción — 28 de septiembre de 2026
+
+- Google/Apple habilitados en Supabase test; redirecciones OAuth comprobadas y
+  vinculación manual activa. Secretos fuera de Git. Codemagic tiene Firebase y
+  clientes sociales en grupos seguros, con ambos flags de aceptación activos.
+- `Dopmi Production` (`ysaoeuidcvgtlmphmeyb`, us-east-1, USD0/mes) creado con
+  esquema/funciones/buckets vigentes, sin usuarios ni datos demo. Registro y
+  proveedores sociales apagados; no existen secretos Stripe y el dinero real
+  sigue bloqueado.
+- CI del SHA `267646d` detectó configuración Firebase ausente en builds de
+  desarrollo, dos expectativas legales antiguas y una FK de revisión restrictiva.
+  Se prepararon placeholders no secretos sólo para CI, se actualizó la prueba y
+  se aplicó `h10_auth_reference_cleanup` en test/producción. PostgreSQL local
+  conserva 254 pruebas aprobadas; la instancia local tiene historial previo
+  desalineado y no se reparó ni reejecutó.
+- CI [36491606164](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36491606164)
+  aprobó los cuatro trabajos del SHA `c8894b4`. Android Codemagic
+  [6abae7c8c3323875fd396d2e](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abae7c8c3323875fd396d2e)
+  publicó 2.3.3 (260) a Play internal con estado `completed`. iOS
+  [6abae7c91b8a7fd2eacfde7b](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abae7c91b8a7fd2eacfde7b)
+  cargó 2.3.3 (261) a App Store Connect con `UPLOAD SUCCEEDED`; procesamiento y
+  disponibilidad TestFlight aún deben reconsultarse. Ambos usan el mismo SHA.
+
+## H10 política de privacidad publicada — 28 de septiembre de 2026
+
+- El titular confirmó que el aviso cubre exclusivamente la nueva app móvil.
+  Se publicó en https://dopmi.org/privacy-policy desde el repositorio
+  `albertoquiroga-ctrl/dopmi-landing-mockup`, commits `654b86d`, `e77237f` y
+  `aa9a355`. La URL anterior redirige permanentemente a la nueva.
+- La ruta devuelve HTTP 200 por HTTPS sin login y el contenido publicado
+  identifica Dopmi, responsable y domicilio autorizado; detalla categorías de
+  datos, finalidades, visibilidad, proveedores, transferencias, conservación,
+  seguridad, permisos, mayores de 18 años, ARCO y eliminación por soporte.
+- `npm run lint`, `npm run build` y `git diff --check` aprobaron. La página se
+  comprobó en navegador, con navegación semántica y sin overlay de error. El
+  footer de la landing ahora enlaza la política.
+- El conector Vercel quedó instalado, pero no tiene alcance API para el equipo
+  `dop-mi` (403). Vercel/GitHub publicaron correctamente y la respuesta pública
+  lleva encabezado `Server: Vercel`; el acceso API del equipo queda pendiente.
+- La página no sustituye la eliminación dentro de la app ni cierra H10.2. Aún
+  deben probarse el buzón `soporte@dopmi.org`, la solicitud/eliminación real y
+  la correspondencia con Seguridad de los datos de Google Play antes del cierre.
+
+## H10 accesos y cotización — 28 de septiembre de 2026
+
+- Titular completó sesiones Google Cloud, Apple Developer y GoDaddy; verificadas
+  por lectura en Chrome. App ID actual conserva Sign in with Apple habilitado
+  como primario. Falta Services ID de Dopmi y clave de autenticación.
+- Clave Apple KLYH2Y22TT registrada sólo para Sign in with Apple/Dopmi. `.p8`
+  guardado fuera del repo con ACL del usuario. Services ID
+  `com.mycompany.dopmi.auth` registrado con App ID `com.mycompany.dopmi`, host
+  Supabase test y callback `/auth/v1/callback` guardados y reconsultados.
+  Proveedor Supabase aún deshabilitado y sin prueba real.
+- El titular completó la compra del buzón Pro Light preparado: MXN263.88. El
+  producto aparece en Correo electrónico y Office; su panel de alta seguía
+  vacío, así que soporte@dopmi.org aún no se declara creado. Renovación indicada
+  para septiembre2027 por MXN479.88 sujeta a cambios.
+- CI36447795107 sobre d45a367 completed/success. Remotos conservan d45a367
+  en continuación y ba9f897 en principal. No se alteraron firmas ni pagos.
+- Pendientes: alta del buzón, secreto de cliente/proveedor Supabase y prueba OAuth
+  real; el resto del alcance H10 continúa abierto.
+
+## H10 servidor Apple — 28 de septiembre de 2026
+
+- Base67b4041 y CI36427673710 comprobados success (cuatro trabajos). Mockup
+  a246fa6 sin cambios. Google sigue en reautenticación; no se declaran nuevos accesos.
+- Preparado registro privado cifrado y servicio de revocación Apple. Firma,
+  issuer/audience/nonce/subject/exp verificados con pruebas JWT criptográficas.
+  Incluye pérdida de respuesta al guardar, aislamiento por propietario y
+  conservación de credencial ante fallo de revocación.
+- Migración20260928154523 → remoto20260928155742; función apple-credentials v1,
+  flag apagado, HTTP401 sin sesión/503 deshabilitado. RPC anon/authenticated
+  denegada, RLS activo, cero credenciales. No hay login/revocación Apple real aún.
+- Suite completa400 pruebas (nueve nuevas específicas) y Deno check aprobados. PostgreSQL
+  local254 aprobadas después de aplicar las tres correcciones H9 ausentes en
+  esa instancia; fallo inicial documentado, sin regresión remota ni cambios pagos.
+- Pendiente integración nativa con registro servidor, secretos/capacidades Apple,
+  cuentas OAuth, eliminación completa y demás H10. No se publicaron builds.
+
+
+## H10 iniciado — 28 de septiembre de 2026
+
+- Titular acepta H9 suficientemente para continuar; no se atribuye una nueva
+  prueba instalada. Plan autorizado en h10-execution.md; pantallas aplazadas.
+- PR6 abierto/draft, remoto ef9f009 y principal ba9f897 comprobados; mockup
+  a246fa6 sin cambios. Archivos locales ajenos preservados.
+- Guardas de configuración: entorno test explícito, rechazo de producción no
+  comisionada, endpoint registrado y correspondencia de ref en claves anon.
+  Las claves publishable opacas requieren comprobación remota independiente.
+- Google nativo Android/iOS implementado a nivel cliente, cancelación y doble
+  pulsación probadas mediante proveedor inyectable. Adaptador Apple preparado
+  con nonce criptográfico; activación nativa bloqueada hasta disponer de
+  revocación servidor. No se declara OAuth real comprobado ni habilitado.
+- Python: 10 pruebas; Flutter analyze sin incidencias y 84 pruebas aprobadas
+  desde copia de fuente fuera de OneDrive (el checkout bloquea unit_test_assets).
+- MCP Supabase lista únicamente proyecto test ACTIVE_HEALTHY. No se desplegaron
+  migraciones ni se creó producción. Apple Developer devolvió conexión reset;
+  GoDaddy pendiente de acceso. Se solicitó apertura de ambas sesiones en Chrome.
+- Pendientes H10: credenciales/callbacks y vinculación, revocación Apple,
+  eliminación completa, medición/consentimientos, correo/legal, producción y
+  entrega instalada. No cerrar H10 por este primer bloque.
+- Código 7b3e589 enviado a PR6; CI 36427481966 iniciado, resultado pendiente.
+  Google Cloud exige reautenticación del titular para consultar los clientes;
+  pestaña conservada. No se compraron servicios ni se publicaron builds H10.
+
+
+## H9 candidato publicado — 27 de septiembre de 2026
+
+- Código candidato `73c731fcdb4b99b4dd94bc40c15a0e272efb713c`, diseño de referencia `a246fa6`. [CI 36330974531](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36330974531): cuatro trabajos success, incluidos PostgreSQL/concurrencia, integración real ampliada, Flutter y compilaciones Android/iOS simulator.
+- [Codemagic 6ab93b1e75e12724939f4af7](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ab93b1e75e12724939f4af7): android-guardian-internal, firma/análisis/tests/AAB/Publishing success; commit exacto comprobado. Android **2.3.3 (259)**, com.mycompany.dopmi. Log de publicación y consulta posterior de Play: track internal, status completed, versionCode259.
+- Builds intermedios 6ab939ff78f056c20c4318d2 y 6ab93a8025013d476dd567db cancelados para distribuir únicamente el candidato corregido. El primer CI detectó codificación Windows-1252 en una prueba; normalizada a UTF-8.
+- Protección adicional del avatar aprobado: migración 20260927154814 → remoto 20260927154928. Intento de borrado desde propietario y lectura posterior comprobados mediante Storage real. Las tres migraciones son compatibles con el cliente instalado anterior.
+- Remoto: cinco adopciones/cinco casos públicos conservados. Se añadió un avance DEMO H9 ficticio a Choco · Recuperación demo mediante RPC de guardar/enviar/revisar, con procedencia sintética explícita en auditoría; consulta pública comprobada. No representa revisión humana ni gasto real, y no creó pagos.
+- Pruebas integradas finales: cuatro recorridos completos aprobados, analyze limpio. Cero cuentas temporales de aceptación; instancia dopmi-h9 eliminada y contenedores locales originales restaurados conservando sus volúmenes.
+- Asesores Supabase conservan avisos conocidos: tablas privadas sin políticas públicas, RPC SECURITY DEFINER intencionales y protección de contraseñas pendiente H10. No se ampliaron grants ni se declara auditoría de producción.
+- H9 técnico listo para revisión agrupada en docs/h9-acceptance.md. **Aceptación funcional instalada del titular pendiente; H9 no cerrado.** Fidelidad visual aplazada por decisión del titular; no se atribuye aprobación a Irlanda. H10/H11, dinero live y excepción H5 permanecen separados.
+- Este registro documental es posterior al SHA distribuido y no cambia la app.
+
+
+## H9 — integración y correcciones, 27 de septiembre de 2026
+
+- Autorizado H9 con aceptación final agrupada; el titular admite pantallas actuales y aplaza fidelidad visual. Matriz y guía en h9-acceptance.md. Rama codex/design-foundation preservada, PR6 abierto; Irlanda sigue a246fa6.
+- Corregidos: fotos no visibles al moderar avances, ausencia de paginación/reintento, aprobación de perfil con parámetro inexistente, notificación duplicada al aprobar una corrección y acceso público a medios tras perder visibilidad/verificación. Panel conserva notas ante error, evita doble envío y exige resolución escrita.
+- Integración real ampliada en adoption_backend y rescue_backend: favoritos aislados/tombstones, reportes idempotentes y resolución, avances con corrección/foto/revisión, perfil aprobado frente a edición privada, adopción vinculada y retirada de permisos de archivos. Cuentas y objetos temporales eliminados por teardown.
+- Local: 23 pruebas admin y build; 80 Flutter; 391 Node/backend financiero; 247 pgTAP; seis configuración móvil; concurrencia financiera aprobada. Flutter analyze limpio después de corregir estilo. La evidencia final de CI y dispositivo se registra por separado.
+- El Storage local anterior falló antes de subir por un índice incompatible (42P10). Se preservó su volumen y se levantó dopmi-h9 desechable desde cero; las cargas reales funcionan. OneDrive bloqueó unit_test_assets; Flutter se verificó desde copia de la misma fuente fuera de OneDrive. No se corrigió RLS para ocultar fallos de infraestructura.
+- Supabase MCP, Codemagic API y lectura de cuenta Stripe test comprobados. Smoke financiero remoto: 18 comprobaciones aprobadas; Cron existente activo. No se efectuaron nuevos cobros ni se reabrió la excepción de disputa de H5.
+- Migraciones H9 aplicadas por MCP, versiones 20260927154149 y 20260927154152, sin alterar firmas ni permisos existentes. Cuerpos remotos coinciden normalizando saltos de línea; correspondencia en migration-history-audit.md. Nuevas URLs firmadas de medios respetan visibilidad; las ya emitidas vencen a los 60 segundos.
+- Pendiente: CI por SHA, candidato Internal Testing, preparación instalada y revisión del titular. No se declara H9 cerrado ni aceptación visual de Irlanda.
+
+
+## H8 candidato corregido publicado — 26 de septiembre de 2026
+
+- Candidato de aplicación `ea5350e2cff28aeac29938512bd1206a122cd94e`, referencia Irlanda `a246fa6f42ec517aae264d7fbd2358d647c4f840`.
+- [CI 36294379013](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36294379013): los cuatro trabajos terminaron con `success`, incluidos formato, análisis, 80 pruebas Flutter, capturas, Android, iOS simulator, PostgreSQL/concurrencia financiera e integración real de identidad/adopción.
+- [Codemagic 6ab89b4db5c299cd1e6841cc](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ab89b4db5c299cd1e6841cc): workflow `android-guardian-internal`; configuración, firma, análisis, pruebas, AAB, Publishing y limpieza terminaron con `success`. Android **2.3.3 (256)**, paquete `com.mycompany.dopmi`, commit exacto comprobado.
+- El build previo `6ab89a9871afc738798a3077` se canceló durante instalación de SDK antes de compilar/publicar porque el primer CI detectó una diferencia de formato. No produjo una versión de tienda.
+- Google Play Internal Testing contiene el candidato corregido. H8 conserva V en No hasta que Irlanda/titular instalen 256, recorran la matriz y acepten o reporten diferencias. Dinero permanece en test; iOS de distribución sigue H11.
+- Esta entrada documental es posterior al SHA distribuido y no cambia la aplicación instalada.
+
+## H8 auditoría de cierre y correcciones de fidelidad — 26 de septiembre de 2026
+
+- La auditoría requisito por requisito detectó que la matriz seguía marcando rutas implementadas como parciales o inexistentes y que la evidencia HTML completa se detenía en acceso. `design-parity.md` ahora registra I/T/V vigentes y correspondencias reales; V continúa en No.
+- El HTML `a246fa6` se ejecutó localmente y se capturaron pantallas completas de Adoptar, Perfil, Apoyar, Inicio/Casos rescatista y detalle de caso. Las parejas HTML/Flutter quedaron versionadas en `docs/design-reviews/h8-complete`.
+- Perfil donante incorpora el acceso y contador de **Rescatistas guardados**; abre directamente `/saved?kind=rescuer`. La vista de guardados inicializa la pestaña solicitada sin duplicar repositorios ni exponer contenido retirado. Una prueba nueva cubre el recorrido.
+- Apoyar recupera la composición fotográfica y el CTA amarillo de Guardián con el asset vigente del mockup. El texto conserva las reglas reales: gastos pagados/aprobados, rescatistas verificados e impacto; no introduce fondo, bono o cashback. La suite detectó un overflow del hero a la altura inicial y se corrigió antes del cierre.
+- Verificación desde una copia exacta fuera de OneDrive: `flutter analyze` limpio, **80 pruebas Flutter**, dos pruebas de generación de capturas y seis pruebas de configuración móvil aprobadas. El checkout sincronizado retuvo temporalmente `build/unit_test_assets`; no se atribuyó a la aplicación y la misma fuente se comprobó fuera de esa carpeta.
+- Referencia Irlanda reconsultada al cierre: `a246fa6f42ec517aae264d7fbd2358d647c4f840`, sin cambios. Estas correcciones necesitan un nuevo candidato Internal Testing; build 254 no las contiene. Aceptación instalada sigue pendiente.
+
+## H8 candidato completo en Google Play Internal Testing — 26 de septiembre de 2026
+
+- Candidato de aplicación: `4ffc20fd0b07f51953175e148cfe82b37ecc369a`, referencia Irlanda `a246fa6f42ec517aae264d7fbd2358d647c4f840`. Este SHA reúne H8.0–H8.7; el cierre visual continúa sujeto a revisión instalada.
+- [CI 36292534700](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36292534700): `web-and-database`, `flutter`, `ios` e `identity-and-adoption-backend` terminaron con `success`. Incluye análisis/pruebas Flutter, capturas, PostgreSQL/backend, concurrencia financiera, Android e iOS simulator.
+- [Codemagic 6ab8927b80ac940ea0c3eaf8](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ab8927b80ac940ea0c3eaf8): workflow `android-guardian-internal`, rama `codex/design-foundation`, commit exacto comprobado. Configuración Guardian, firma, análisis, pruebas, AAB y acción separada de Publishing terminaron con `success`.
+- Android **2.3.3 (254)**, paquete `com.mycompany.dopmi`; artefacto firmado `app-release.aab`. El workflow publica en Google Play `internal` con `submit_as_draft: false`. Compilación y publicación quedaron verificadas por separado.
+- Irlanda puede actualizar desde Internal Testing y revisar Perfil, cambio de modo, ambos navbar, swipe, Mis match/guardados, Apoyar/historias, recorridos de rescatista, aportaciones y Guardián. H8 permanece abierto hasta registrar esa aceptación visual y cualquier corrección resultante. Dinero continúa exclusivamente en test; este candidato no incluye un TestFlight equivalente.
+- Esta entrada documental es posterior al SHA distribuido y no cambia la aplicación instalada.
+
+## H8.7 aportaciones y Guardián — 26 de septiembre de 2026
+
+- Aportar separa monto y revisión, usa cantidades sugeridas/personalizada y resume gasto e importe antes de abrir Checkout. Stripe sigue capturando el método; al regresar o reanudar la app se consulta el historial por la misma llave idempotente.
+- El resultado sólo se presenta con estado persistido: procesamiento bloquea otro intento; confirmado muestra neto asignado y transferencia; cancelado y devuelto se distinguen. Un fallo incierto conserva llave e importe para reintentar sin duplicar el pago.
+- Guardián adopta la composición visual del mockup para introducción y membresía activa, sustituyendo el fondo comunitario por gastos pagados/aprobados y capacidad real. Mantiene consentimiento, primer cobro al activar, meses omitidos sin deuda, cambio futuro de monto/tarjeta, cancelación, impacto e historial H5.
+- Capturas Flutter reales a 377 × 852: `contribution-amount.png`, `guardian-intro.png` y `guardian-active.png`. La inspección comprobó jerarquía, importes reales y ausencia de fondo/bonos/cashback. Pruebas dirigidas: 36 aprobadas; análisis limpio. Aceptación instalada continúa pendiente.
+
+## H8.6 perfil público moderado del rescatista — 26 de septiembre de 2026
+
+- Perfil propio separado del expediente de identidad: nombre público, avatar, descripción, ciudad/estado e Instagram/Facebook. Domicilio, teléfono, correo, documentos y datos bancarios no forman parte de esta superficie.
+- El dueño conserva borrador, correcciones, rechazo, envío y retiro. Una edición posterior no reemplaza la última instantánea pública aprobada; administración revisa y publica desde Moderación. La foto vive en un bucket privado y sólo se firma para el propietario o cuando aparece en la instantánea aprobada.
+- Flutter incorpora `/rescuer/profile/edit`, accesos separados para editar/ver perfil, ayuda y Stripe Connect. El perfil público usa avatar/enlaces aprobados y conserva Actividad, En adopción y Casos. Administración añade cola de perfiles con versión y decisión.
+- Migración local `20260927033610_moderated_rescuer_profiles.sql`, remota `20260927033251`. Remoto comprobado: tabla pública presente sin `SELECT` anónimo, auditoría en `private`, bucket no público y RPC administrativa sin ejecución anónima. El helper de política de Storage conserva ejecución anónima deliberada para evaluar avatares aprobados; retirar ese permiso rompió la prueba de lectura pública y se descartó localmente, sin aplicar una migración correctiva.
+- PostgreSQL local reproducido desde cero: 243 pruebas. Flutter: prueba nueva de corrección/guardado/envío y análisis limpio; administración: 19 pruebas y build aprobados. Aceptación visual instalada continúa pendiente.
+- La puerta financiera completa detectó que `public_case_progress` omitía las asignaciones de Guardián en los totales públicos. La migración local `20260927035600_public_case_guardian_progress.sql`, remota `20260927034007`, usa `dopmi_expense_funding` como fuente única para aportaciones individuales y Guardián. Las 338 regresiones financieras específicas aprobaron; remoto confirma que la RPC desplegada usa esa fuente sin referencia privada directa.
+
+## H8.6 vínculo caso–adopción y publicación por pasos — 26 de septiembre de 2026
+
+- Un caso aprobado del propietario puede crear o reabrir una única publicación de adopción vinculada. El vínculo no cambia el estado del caso ni publica la adopción: sus ciclos de borrador, envío y moderación siguen independientes.
+- La publicación de adopción usa **Fotos → Información → Revisión**. Cada avance guarda el borrador en servidor, conserva el vínculo y permite regresar; el resumen no declara publicación antes de la respuesta del servidor.
+- Migración local `20260927032540_case_adoption_link.sql`, remota `20260927031531`. Añade una FK aditiva/índice único parcial y conserva la firma de `dopmi_save_adoption`; build 253 sigue compatible. Remoto: columna presente, ejecución autenticada permitida y `anon` denegado.
+- PostgreSQL completo: 236 pruebas; cubre creación vinculada y rechazo de duplicado. Flutter: análisis limpio y 20 pruebas dirigidas, incluidos reintento de borrador por pasos y persistencia del UUID del caso. Falta captura/revisión instalada.
+- Verificación, caso y gasto usan ahora **Archivos → Información → Revisión**. Cada avance persiste el borrador, los estados enviados abren en resumen protegido y una operación de guardado/carga muestra progreso real. La prueba conserva campos privados tras un conflicto y completa el resumen al reintentar.
+- Capturas reales nuevas a 377 × 852: Inicio, Mis casos y primer paso de verificación. Se corrigió el botón de regreso indebido en Inicio y se comprobó la barra rescatista de cinco destinos. Falta aceptación instalada de Irlanda.
+
+## H8.6 Inicio del rescatista — 26 de septiembre de 2026
+
+- Inicio consume un resumen autenticado y muestra verificación real, casos activos, borradores/correcciones, mensajes sin leer y actividad reciente. Las acciones conducen al registro o conversación correspondiente; el vacío ofrece Publicar.
+- La tarjeta financiera ya no presenta un “saldo disponible”: separa montos **Asignado**, **Transferido** y **En revisión**, según estados persistidos. No afirma depósito bancario y no expone identidades de donantes ni referencias del procesador.
+- Migración local `20260927031520_rescuer_dashboard.sql`, remota `20260927030616`. La RPC requiere cuenta autenticada. Remoto comprobado con un rescatista de pruebas: un caso activo, un gasto borrador y montos cero reales. PostgreSQL completo: 234 pruebas; Flutter dirigido: cuatro pruebas aprobadas y análisis limpio.
+- Mis casos ya diferencia borrador, revisión, correcciones, publicado y cerrado; presenta feedback del equipo y acciones específicas. Un caso aprobado ofrece preparar una publicación de adopción separada, sin publicar mediante interruptor. La prueba a 390 px detectó y corrigió una restricción infinita en el encabezado.
+- H8.6 continúa con el vínculo persistente caso–adopción, formularios por pasos, verificación/evidencia y perfil/configuración propios. Aceptación visual instalada pendiente.
+
+## H8.5 Apoyar y detalle de caso — 26 de septiembre de 2026
+
+- Apoyar reproduce la estructura vigente de Irlanda: encabezado con Mis match/notificaciones, “Descubre casos”, carrusel de progreso circular, “Ver todos” y entrada destacada a Guardián. Sólo muestra casos con gastos aprobados y capacidad restante; el vacío conduce a Adoptar.
+- El detalle usa ubicación pública aproximada, responsable enlazado, recibido/objetivo, categorías, historia, gastos desplegables, galería pública, Guardar/Compartir/Reportar y avances moderados. Cada gasto aporta únicamente por el flujo real; la interfaz no anticipa éxito.
+- La migración local `20260927030310_public_case_progress.sql`, remota `20260927025431`, repone en la RPC pública los agregados de asignación/transferencia y añade el objetivo calculado exclusivamente con gastos públicos aprobados. No expone donantes ni identificadores de Stripe y conserva firma/build 253.
+- PostgreSQL: 232 pruebas aprobadas. Flutter: análisis limpio, suite completa de 75 pruebas y generación de capturas aprobadas. La inspección a 377 × 852 corrigió monto truncado, paginación innecesaria y ausencia de Mis match. Referencia reconsultada al cierre: `a246fa6f42ec517aae264d7fbd2358d647c4f840`, sin cambio. Aceptación instalada de Irlanda permanece pendiente.
+
+## H8.5 perfil público e impacto asignado — 26 de septiembre de 2026
+
+- El perfil público del rescatista ya obtiene un resumen único del servidor y separa **Actividad, En adopción y Casos**. Sólo agrega publicaciones y avances aprobados; conserva Guardar, Compartir, Reportar y el acceso a conversación sobre una publicación pública.
+- “Mi impacto” relaciona únicamente las aportaciones confirmadas y efectivamente asignadas de la persona autenticada con los avances públicos de esos casos. No devuelve identidades de otros donantes, datos de Stripe, documentos ni información privada del rescatista.
+- Migración local `20260927024050_public_rescuer_and_impact.sql`, remota `20260927024547`. Mantiene las RPC anteriores y el build 253 compatibles. En remoto se comprobó acceso anónimo al perfil público, denegación anónima de impacto y acceso autenticado sólo al impacto propio.
+- PostgreSQL local completo: 230 pruebas aprobadas. Flutter: análisis limpio y 23 pruebas dirigidas aprobadas, incluidos pestañas públicas, monto asignado/avances y cambio de experiencia. Falta la nueva composición de Apoyar, comparación visual instalada y aceptación de Irlanda; H8.5 continúa abierto.
+
+## H8.5 avances moderados de casos — 26 de septiembre de 2026
+
+- Los casos aprobados/cerrados admiten avances independientes con borrador recuperable, hasta seis fotos, envío, correcciones/rechazo y publicación administrativa. La edición no sustituye un snapshot público: un avance publicado se archiva o se complementa con otro registro.
+- Storage nuevo `dopmi-case-update-media`, privado y limitado a imágenes de 5 MB. Escritura sólo del propietario mientras el avance es editable; lectura pública únicamente de rutas incluidas en el snapshot aprobado. Flutter reutiliza la preparación central que elimina EXIF y acota dimensiones.
+- El detalle público muestra “Historia hasta ahora” en orden cronológico; el dueño entra a administrar avances, reanuda borradores y ve estados remotos. El panel añadió Moderación para avances y reportes persistentes.
+- Migración local `20260927022858_moderated_case_updates.sql`, remota `20260927023747`. Es aditiva y no altera RPC consumidas por el build 253. Remoto comprobado: tablas pública/privada, bucket privado, RPC autenticada y ausencia de SELECT crudo. El aviso de tabla privada sin política pública es intencional y coincide con las tablas de auditoría existentes.
+- PostgreSQL local reconstruido y cuatro suites: 224 pruebas aprobadas. Administración: 19 pruebas y build de producción aprobados, incluida la moderación de avance y resolución de reporte. Flutter: análisis limpio y suite completa de 73 pruebas aprobada. Falta aceptación visual y un build instalado; H8.5 continúa con Apoyar, perfil público completo e impacto.
+
+## H8.3 detalle, guardados y Mis match en desarrollo — 26 de septiembre de 2026
+
+- El detalle de adopción usa galería paginada, datos reales, historia, salud, convivencia, cuidados y responsable. Guardar es optimista y revierte ante fallo; compartir copia contenido identificable sin inventar un enlace; reportar persiste antes de confirmar; contactar exige confirmación y reutiliza el hilo idempotente existente.
+- Volver del detalle ya no reinicia el mazo: reconsulta sólo la tarjeta abierta y conserva posición/filtros. Si la publicación dejó de estar disponible, la retira sin exponer su nuevo borrador.
+- Mis match incorpora búsqueda real por mascota/persona, conversaciones y accesos a guardados. Guardados separa Adopción, Donación y Rescatistas, con conteos/vacíos y marcadores privados para contenido retirado; esos marcadores sólo incluyen UUID/disponibilidad y pueden eliminarse.
+- Migración local `20260927020621_community_saved_reports.sql`, remota `20260927021744`: favoritos UUID de casos/rescatistas, búsqueda de conversaciones, reportes persistentes y bandeja administrativa auditada. `20260927021820_community_table_boundaries.sql`, remota `20260927021850`, añade políticas restrictivas que documentan acceso exclusivamente por RPC. Las tablas no conceden lectura cruda a clientes.
+- PostgreSQL: 213 pruebas aprobadas desde la base local reproducida. Flutter: análisis sin incidencias y 72 pruebas aprobadas en secuencia; cubren rollback de favorito, confirmación de contacto, separación de guardados y reintento idempotente de mensajes. Remoto: objetos, ejecución autenticada y ausencia de lectura cruda comprobados. Los avisos nuevos de tablas sin políticas quedaron resueltos; permanecen avisos generales ya documentados y protección de contraseñas H10.
+- Casos y perfiles públicos ya tienen Guardar, Compartir y Reportar con el mismo acuse de servidor. La migración local `20260927022451_public_case_favorite_state.sql`, remota `20260927022716`, añade el estado privado `saved` a la respuesta pública sin revelar al usuario ni alterar la firma. PostgreSQL aumentó a 217 pruebas y comunidad Flutter a 13; la prueba detectó/corrigió un desbordamiento del selector de reporte a 390 px.
+- Referencia Irlanda reconsultada al cierre: `a246fa6f42ec517aae264d7fbd2358d647c4f840`, sin cambio. Este bloque no tiene aceptación visual instalada; H8.3 sigue abierto hasta generar evidencia visual y revisión en Internal Testing.
+
+## H8.2 descubrimiento funcional en desarrollo — 26 de septiembre de 2026
+
+- Adoptar ya usa un mazo con foto dominante, Perros/Gatos, Pasar, Contactar y Me gusta por gesto o botón. Me gusta persiste el favorito antes de avanzar; las acciones se bloquean mientras esperan al servidor. Incluye carga, error/reintento, fin del mazo, reinicio y acceso a filtros/favoritos.
+- Filtros funcionales de sexo, tamaño y personalidad; ubicación opcional con alternativa manual. El permiso se solicita sólo al pulsar “Usar mi ubicación aproximada”. El cliente redondea a dos decimales y el servidor devuelve únicamente distancia calculada, nunca coordenadas.
+- Migración `20260927013712_adoption_discovery.sql` aplicada por MCP como `20260927014731`. La RPC nueva mantiene `dopmi_catalog` y el build 253 compatibles. Cinco publicaciones demo aprobadas recibieron personalidad y ubicación aproximada ficticias para probar el mazo.
+- PostgreSQL local reconstruido desde cero: 198 pruebas aprobadas. Remoto: filtros de personalidad/radio y ausencia de coordenadas verificados. Flutter: análisis sin incidencias, 65 pruebas aprobadas. Captura inicial a 377 × 852 inspeccionada; se retiró el encabezado duplicado antes de la captura final.
+- Casos reales elegibles se intercalan una sola vez después de cada dos adopciones. La fuente sólo incluye casos aprobados con gasto aprobado, pagable y capacidad restante; el botón abre la aportación de prueba y no declara éxito. Migración local `20260927015519_adoption_support_cards.sql`, remota `20260927015643`; consulta remota devolvió dos oportunidades reales de prueba.
+- Pruebas ampliadas cubren arrastre corto/largo, botones equivalentes, fallo de favorito sin avanzar, paginación sin duplicados y tarjeta de apoyo después de dos adopciones; nueve pruebas de comunidad aprobadas y análisis limpio.
+- H8.2 queda implementado y comprobado técnicamente en local/remoto; falta el paquete instalado y aceptación visual, por lo que V permanece pendiente. Referencia Irlanda continúa en `a246fa6`.
+
+## H8.0 cerrado y Perfil/cambio de modo en ejecución — 26 de septiembre de 2026
+
+- H8.0 convertido en matriz concreta de pantallas, acciones, datos, prueba y estado separado I/T/V. Ninguna pantalla se declara aceptada por Irlanda.
+- Perfil deja de ser el formulario de datos: incorpora tarjeta de identidad, condición real de miembro/Guardián, historial real con carga/vacío/error, guardados, Configuración y cambio de experiencia dedicado. Información básica conserva su formulario en una ruta separada.
+- Cambiar de modo actualiza únicamente `profiles.active_mode`, no confiere verificación y abre el inicio correspondiente. El guardado de datos personales ya no puede pisar esa preferencia. Publicar rescatista abre el selector Adopción/Caso.
+- Capturas reales a 377 × 852 generadas para Perfil, Configuración y selector Publicar. La inspección confirma las barras distintas por experiencia y ausencia de cifras simuladas; la comparación/aceptación en Internal Testing sigue pendiente.
+- Verificación del bloque: `flutter analyze --no-pub` sin incidencias; pruebas dirigidas de navegación, historial y cambio de modo, 20 aprobadas; suite completa Flutter, 64 aprobadas. La suite completa detectó inicialmente que Perfil intentaba construir el repositorio de pagos sin Supabase inicializado en pruebas; se corrigió convirtiendo esa lectura en error asíncrono presentable y la repetición completa aprobó.
+- Referencia reconsultada: `irlanda/apoyar-detalle-perfil@a246fa6f42ec517aae264d7fbd2358d647c4f840`, sin cambio. Dinero permanece en test.
+
+## Contenido demo disponible — 26 de septiembre de 2026
+
+- Carga autorizada en Supabase de pruebas: cinco adopciones públicas con fotos y perfil ficticio, una en revisión, una con correcciones y tres casos demo (dos aprobados y uno cerrado). Inventario y límites en `demo-data.md`.
+- Verificado por API pública: catálogo, filtros, perfil y cinco fotos accesibles; dos fotos privadas bloqueadas. Casos visibles con cero nuevos montos reembolsables. Sin cambios de esquema, permisos, servicios o movimientos financieros.
+- Disponible para Internal Testing 2.3.3 (253) sin nuevo build. No se asignaron borradores a Irlanda sin confirmar su correo; revisión en dispositivo pendiente.
+
+## H8: publicado para revisión por Internal Testing — 26 de septiembre de 2026
+
+- A petición del titular, Codex inició por API `android-guardian-internal` sobre `codex/design-foundation`, SHA `74fd92286b089a162cd1448e3835c34fc44bc4f8`.
+- [Codemagic 6ab783481453f4d0a7737de5](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ab783481453f4d0a7737de5): finished; análisis, pruebas, compilación firmada y publicación success. Android **2.3.3 (253)**, paquete `com.mycompany.dopmi`.
+- Log de Publishing verificado: publicación en `internal` exitosa; consulta posterior `google-play tracks get` devuelve release `completed`, version code `253`. Firma y Guardián test conservados; dinero real sin activar.
+- Irlanda revisa exclusivamente desde Internal Testing. Instalación y aceptación visual pendientes; las capturas son complementarias. PR #6 continúa en borrador. iOS no se recompiló en esta entrega.
+- Este registro es documentación posterior al SHA distribuido, sin cambios de aplicación.
+
+## H8: CI final aprobado; aceptación visual pendiente — 25 de septiembre de 2026 (México)
+
+- Código `3d5c6e3aafb69d1724e98e01db6a8e5ddd27623d`, [CI 36211702329](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36211702329): los cuatro trabajos terminaron con success, consultados directamente. Incluye PostgreSQL/backend, integración real de identidad/adopción, análisis/pruebas Flutter, capturas y compilaciones Android/iOS simulator. Supersede el pendiente de CI de la entrada anterior.
+- [Artefacto de capturas 10895364071](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36211702329/artifacts/10895364071), `dopmi-design-review`, comprobado disponible. Capturas comparables permanentes y diferencias en `design-foundation.md`.
+- [PR #6](https://github.com/albertoquiroga-ctrl/dopmi-app/pull/6) permanece en borrador para revisión visual de Irlanda. No se recibió aceptación visual, no se fusionó H8 ni se inició H9. H6/H7 ya integrados. No se generó candidato Codemagic ni se activó dinero real. Este cierre documental no cambia el código validado.
+
+## H8: acceso adaptado y revisión visual preparada — 25 de septiembre de 2026 (México)
+
+- PR #6 en borrador: `codex/design-foundation`. Primer commit `f9f3fe3d9eeb63292dff81c72cf85eea3fa422da`, CI [36210411470](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36210411470), cuatro trabajos success comprobados. La ampliación de acceso posterior requiere su propio CI; no atribuirle ese resultado.
+- Incorporados dos pasos de onboarding para cada intención, entrada de cuenta, formularios y confirmación con marco visual común. Ilustraciones Flutter basadas en assets/estructura de Irlanda; copias económicas corregidas para gastos pagados y aprobados. Google/Apple conservan gates; legal de desarrollo sigue pendiente H10.
+- Verificación local ampliada: 61 pruebas Flutter + generación de capturas aprobadas; regresión de historial cubre entrada por `push` y cambio de propietario. Navegación, regreso e intención de registro comprobados a 320 × 640 con texto al 200 %. Entrada normal rescatista resuelta sin reemplazar enlaces explícitos. Análisis sin incidencias y cuatro recorridos reales de backend local aprobados. Capturas HTML/Flutter por ruta versionadas en `design-reviews/h8-access`, con diferencias y límites en `design-foundation.md`.
+- CI incorporará capturas de los componentes reales y acceso como artefacto `dopmi-design-review` vinculado al SHA. H8.1, H8.2 y H8.4 implementados; **H8.3 pendiente de revisión de Irlanda y ajustes visuales**. Se solicitó revisión al titular; no se recibió aceptación todavía. H8 no se cierra automáticamente. H9–H12 no están completados y no se activó dinero real.
+
+## H7 integrado; base visual H8 implementada — 25 de septiembre de 2026 (México)
+
+- H7 integrado mediante [PR #5](https://github.com/albertoquiroga-ctrl/dopmi-app/pull/5), head `08c72e2d44787ae16d59e0c57caadb41b306caa7`, merge `ba9f897f3fa418e952b98e4c604cffe468a8aa95`. CI [36208309068](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36208309068): cuatro trabajos success comprobados. Supersede el pendiente de integración anterior.
+- H8 en `codex/design-foundation`: fuentes locales con licencias, tokens/componentes, SVG y barras por experiencia; bienvenida con tres intenciones. Estado conservado entre pestañas y eliminado al cambiar de identidad. Recuperación y estados financieros existentes conservados. Referencia de Irlanda reconsultada: sigue `a246fa6`.
+- Pruebas locales: 57 Flutter + una generación de capturas; cuatro recorridos de backend real aprobados; análisis sin incidencias y seis pruebas de configuración móvil. Capturas a 377 × 852 y 320 × 640/texto 200 %, fuentes reales y sin datos personales; detalles en `design-foundation.md`.
+- H8 no está cerrado: pendiente portar onboarding/formularios y revisión visual de Irlanda. CI del PR de esta base pendiente al escribir esta entrada. No hay nuevo build firmado, aceptación móvil ni activación de dinero real. H9–H12 siguen pendientes.
+
 ## H6 integrado; H7 aplicado y verificado — 25 de septiembre de 2026 (México)
 
 - H6 integrado por [PR #4](https://github.com/albertoquiroga-ctrl/dopmi-app/pull/4), merge `99d3118ae69bc7c4c79200c28107bfb9cd2f26b1`. CI [36206671710](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36206671710) con cuatro jobs success sobre head `5741ef4`. Irlanda reconsultada al cierre: continúa `a246fa6`.
@@ -651,3 +927,532 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
 - `flutter analyze`: sin incidencias. `flutter test`: diez pruebas aprobadas en esta sesión.
 - Se añadió `scripts/emulate-android.ps1` para abrir el dispositivo e instalar el APK; `-Rebuild` recompila cuando cambian código/configuración. El comando y las instrucciones para iOS están en `docs/development.md`. La sintaxis PowerShell se comprobó; el arranque/instalación se ejecutó con ese script y las comprobaciones posteriores usaron ADB.
 - iOS interactivo queda pendiente por plataforma: esta sesión dispone de Windows, sin una Mac/Xcode conectada. El simulador oficial requiere macOS. Se conserva la evidencia previa de compilación iOS en CI; no se declara una ejecución interactiva de iOS nueva.
+## H10 — legal, eliminación y medición — 28 de septiembre de 2026
+
+- Migraciones H10 de términos/eliminación y conservación de contenido aplicadas
+  en Supabase test como `20260928211754` y `20260928212147`.
+- `account-deletion` v2 ACTIVE: bloqueo inmediato, revocación de Apple,
+  limpieza de medios prescindibles, cierre global de sesión, eliminación Auth y
+  finalización idempotente. Evidencia financiera y mensajes ajenos se conservan.
+- App: términos y privacidad vigentes, mayoría de edad, eliminación en
+  Configuración, vínculo explícito de identidades y medición opcional separada.
+- Firebase Android/iOS validado para `com.mycompany.dopmi`; configuraciones
+  fuera de Git y variables seguras creadas en Codemagic. Google/Apple siguen
+  apagados porque los proveedores Supabase están deshabilitados.
+- Web pública: `https://dopmi.org/privacy-policy`, `/terms` y
+  `/delete-account` responden HTTP 200.
+- Verificaciones: Flutter analyze y 86 pruebas; backend 402; administración 23
+  y build; configuración móvil 10. Pagos permanecen test-only.
+- Pendiente externo: guardar OAuth/manual linking, pruebas instaladas, correo
+  transaccional, aprobación del proyecto Supabase producción y builds conjuntos.
+- Resend comprobado en el equipo `enlacenest`: `dopmi.org` está verificado y se
+  creó una credencial dedicada de envío, limitada a ese dominio y almacenada
+  fuera del repositorio. El correo controlado de H10 salió desde
+  `soporte@dopmi.org`, incluyó versiones HTML y texto, y Resend registró los
+  eventos `Sent` y `Delivered` el 28 de septiembre de 2026. La recepción de una
+  respuesta también se comprobó en el buzón `soporte@dopmi.org`: llegó desde la
+  cuenta destinataria, conservó el asunto de la prueba y mostró el contenido
+  esperado. El recorrido transaccional de ida y vuelta queda verificado.
+- Medición H10 completada en código: los cinco eventos permitidos se emiten sólo
+  tras confirmación del repositorio/servidor, sin payloads, y Firebase no puede
+  interrumpir el resultado del producto. Los pagos evitan duplicados por intento.
+  Los builds internos pueden mostrar una acción fija de Crashlytics mediante
+  `ENABLE_MEASUREMENT_TEST`; los workflows estándar la excluyen.
+- Gate local del bloque: Flutter analyze y 90 pruebas desde copia temporal limpia;
+  backend 402; administración 23 y build; prototipo 4 y build; configuración
+  móvil 11. La ejecución Flutter inicial dentro de OneDrive falló al copiar una
+  caché ya existente y se repitió correctamente fuera de OneDrive.
+- La protección contra contraseñas filtradas se difiere a H12 por decisión del
+  titular, ya que requiere Supabase Pro. H10 continúa abierto por dispositivos,
+  Firebase, Private Relay y un candidato conjunto nuevo.
+- Candidato conjunto generado desde `3472c5b4ba5785ab9ab695f4a5d96a3e0befd4a3`.
+  Los CI 36501932519 y 36501928018 aprobaron los cuatro trabajos. Android
+  Codemagic `6abb04b63e1e341b2e6b97fb` publicó `2.3.3 (262)` y Play Console lo
+  muestra disponible para testers internos. iOS Codemagic
+  `6abb04b74427c92a169daabd` cargó `2.3.3 (263)` correctamente; App Store
+  Connect terminó de procesarlo. Queda completar su declaración de exportación
+  y asignarlo al grupo interno para volverlo instalable.
+  La hoja `docs/h10-device-acceptance.md` conserva los recorridos y resultados
+  pendientes sin documentar credenciales ni correos privados completos.
+- Apple Developer aceptó `dopmi.org` como fuente de Private Email Relay y mostró
+  SPF válido. App Store Connect guardó la declaración de exportación de iOS 263,
+  lo dejó listo para pruebas y disponible para `DopMi Inner Team`. Se observó una
+  instalación de 263 en iPhone 14 Pro Max / iOS 18.7.8. Falta comprobar correo al
+  alias privado y ejecutar los recorridos funcionales; no se documentó el alias
+  ni la identidad del tester.
+- La aceptación Android 262 encontró un bloqueo crítico en Configuración: al
+  abrir **Información básica** el dispositivo podía quedar en negro; además, la
+  opción de eliminación no era visible en la lista y aún aparecía **Aviso de
+  desarrollo**. Se separó la edición básica de la nueva pantalla **Privacidad y
+  eliminación**, se autorizó explícitamente su ruta autenticada, se reemplazó el
+  texto obsoleto por **Términos y privacidad** y se añadieron pruebas de ambas
+  rutas. Flutter aprobó 92 pruebas y análisis sin incidencias; Android 262/iOS
+  263 quedan superados para estos recorridos y requieren un candidato nuevo.
+- iOS declara `ITSAppUsesNonExemptEncryption = false`, coherente con la
+  declaración ya aceptada para 263, para evitar repetir la intervención manual
+  de exportación en candidatos que no incorporan cifrado no exento.
+- Candidato correctivo conjunto desde
+  `af8027a47ddd6c94caebdcc3b2672033baf2c29e`: CI 36510163492 aprobó sus cuatro
+  jobs. Codemagic Android `6abb1b18a7c0e10e9a05069e` generó y publicó
+  `2.3.3 (264)`; Play Console confirmó el código 264 disponible para testers
+  internos. Codemagic iOS `6abb1b1832bd8882759214f4` generó y cargó
+  `2.3.3 (265)`; App Store Connect lo muestra `En pruebas` y asignado a
+  `DopMi Inner Team`. Falta instalación y aceptación física de este candidato.
+- La prueba instalada de Android 264 completó la eliminación real y el posterior
+  acceso con Google. Supabase confirmó dos solicitudes `completado`, sin código
+  de atención. El acceso reutilizó otra identidad Dopmi previa vinculada al
+  proveedor; su perfil conservaba términos de desarrollo, sin versión de
+  privacidad ni confirmación 18+, y la app no lo bloqueó. Información básica
+  también continuó en negro.
+- Corrección posterior: el consentimiento 18+/términos/privacidad pasa a una
+  pantalla obligatoria global para cualquier perfil incompleto o desactualizado;
+  Guardián y eliminación conservan acceso para poder cancelar o cerrar la
+  cuenta. Google/Apple aparecen también como métodos en **Crear cuenta**. La
+  edición básica se movió a la ruta superior `/basic-info`, sin barra de pestañas,
+  y la restauración usa inmediatamente la sesión local mientras termina la
+  comprobación servidor, evitando la carrera que reemplazaba la ruta por una
+  pantalla vacía. Flutter aprobó 94 pruebas y análisis sin incidencias.
+- Candidato conjunto correctivo desde
+  `d3beba30c1d52206414a77657483789f0cc2d06d`: los CI 36514850944 y
+  36514848612 terminaron `success`. Codemagic Android
+  `6abb28b041594690c23be43c` publicó `2.3.3 (266)`; Play Console confirmó el
+  código 266 disponible en Internal Testing. Codemagic iOS
+  `6abb28b1483a70bbe6cb024e` cargó `2.3.3 (267)` correctamente; App Store
+  Connect terminó de procesarlo y lo muestra `En pruebas`, asignado a
+  `DopMi Inner Team`. El build y las tiendas no acreditan todavía la corrección
+  de Información básica ni la aceptación del consentimiento en un dispositivo.
+- La prueba instalada posterior no reprodujo el gate 18+ ni la entrada Google
+  en alta. Supabase confirmó que el perfil Google reciente seguía con términos
+  y privacidad nulos y sin `adult_confirmed_at`; por tanto, no se acepta como
+  consentimiento previo. Se añadió una segunda barrera en el árbol de widgets:
+  cualquier identidad verificada sin perfil legal vigente queda cubierta por
+  **Antes de continuar**, incluso si la carga del perfil falla. Términos,
+  eliminación y cancelación de Guardián conservan acceso. Configuración muestra
+  desde el siguiente candidato la versión/build compilados para eliminar dudas
+  sobre qué paquete está instalado. Flutter: análisis limpio y 95 pruebas;
+  configuración móvil: 11 pruebas. Requiere candidato y confirmación física.
+- Candidato de la segunda barrera desde
+  `419a56dd595ae412fe2ba423c8b97c1ac56ae414`: CI 36522764232 y
+  36522761588 aprobaron los cuatro trabajos. Codemagic Android
+  `6abb41991ed2d10dbfd22286` terminó con publicación exitosa; Play Console
+  confirmó `2.3.3 (268)` disponible en Internal Testing. Codemagic iOS
+  `6abb419aac4cd795b1d9af7c` terminó con publicación exitosa y el IPA firmado
+  confirma `2.3.3 (269)`, paquete `com.mycompany.dopmi`; queda comprobar su
+  procesamiento en TestFlight. La corrección funcional continúa pendiente de
+  prueba física.
+- Aceptación física Android 268 recibida del titular con capturas
+  `1000346255`, `1000346257`, `1000346259` y `1000346261`: Configuración muestra
+  la versión correcta, el perfil incompleto queda bloqueado por **Antes de
+  continuar**, la mayoría de edad y documentos vigentes requieren aceptación
+  explícita, e **Información básica** abre el perfil real sin pantalla negra.
+  Ambos defectos quedan solucionados y aceptados en Android. El acceso Google
+  desde alta, vinculación, Apple, medición y los demás recorridos H10 conservan
+  su aceptación independiente.
+
+# 29/9/2026 — H10, preparación de aceptación final
+
+- Supabase test, consultado por MCP sin exponer identificadores: 17 cuentas,
+  identidades `email: 16` y `google: 3`, una aceptación 18+/legal vigente, tres
+  eliminaciones `completado`, ninguna pendiente y cero credenciales Apple.
+- Firebase DebugView no mostró dispositivo de depuración ni eventos durante la
+  observación. Crashlytics Android continúa en **Add SDK**; ambos recorridos
+  requieren activar los consentimientos y la acción de diagnóstico desde el
+  build instalado. La actividad histórica de Firebase no se acepta como prueba.
+- `apps/admin`: 23 pruebas y build aprobados. `tools/verification`: 105 pruebas
+  aprobadas. `scripts/test_mobile_config.py`: 11 pruebas aprobadas. Flutter no
+  está disponible localmente; CI del SHA candidato conserva esa comprobación.
+- Se corrigió el backlog: Resend/SMTP y recepción-respuesta de soporte ya estaban
+  comprobados. Permanecen Apple/Google en dispositivo, Private Relay,
+  Analytics/Crashlytics y disponibilidad instalada de TestFlight 269.
+- Prueba física Android 268: Firebase detectó el SDK tras habilitar Diagnóstico,
+  registrar el error controlado y reiniciar Dopmi, pero no recibió el reporte.
+  Se añadió un despacho explícito de reportes pendientes únicamente después de
+  `recordError` consentido. `flutter analyze` quedó limpio, la prueba dirigida
+  aprobó 6 casos y la suite Flutter completa aprobó 95 pruebas. La corrección
+  queda pendiente de candidato instalado y recepción visible en Crashlytics.
+- Android de corrección: Codemagic `6abbc365a2cb55def9efff17`, SHA `5c505c2`,
+  versión **2.3.3 (270)**. Configuración, análisis, 95 pruebas, firma, AAB,
+  Publishing y limpieza aprobaron. Play Console lo mostró como disponible para
+  Internal Testing a las 08:08; el bundle anterior 268 quedó desactivado. iOS
+  `6abbc3656e8a9a4c7f26ae72` seguía en cola al registrar esta evidencia.
+- Android 270, aceptación física: la captura del titular confirmó Analítica
+  apagada, Diagnóstico activado y el aviso de envío. Firebase recibió un no fatal
+  `dopmi_diagnostics_test` con motivo `internal_acceptance_test`, 1 evento y 1
+  usuario. El envío consentido de Crashlytics queda aprobado; falta comprobar la
+  retirada del consentimiento. iOS inició y aprobó preparación, configuración,
+  análisis, 95 pruebas y firma; la generación del IPA seguía en curso.
+- La captura `1000346267` confirmó ambos controles apagados y la desaparición de
+  la acción de diagnóstico. Se reforzó la retirada con `deleteUnsentReports`
+  antes de activar, al apagar y al cambiar de cuenta, para impedir el envío
+  posterior de reportes generados sin consentimiento. `flutter analyze` limpio,
+  7 pruebas dirigidas y 96 pruebas Flutter completas aprobaron.
+- iOS Codemagic `6abbc3656e8a9a4c7f26ae72` generó y firmó el IPA 2.3.3 (271).
+  Publishing quedó `failed`: Apple emitió tres HTTP 500 al cerrar estados del
+  upload, aunque `altool` terminó con `UPLOAD SUCCEEDED` y delivery UUID. No se
+  declara TestFlight disponible hasta consultar App Store Connect; la sesión web
+  expiró y solicita nuevo acceso.
+- Decisión de arquitectura confirmada por el titular: Supabase concentra Auth,
+  base de datos, Storage y funciones; Firebase queda limitado a Analytics y
+  Crashlytics opcionales. Se añadió una comprobación reproducible que impide
+  introducir SDK de backend Firebase sin cambiar expresamente esta decisión.
+- Android 270: el titular ejecutó dos veces el resultado real de contacto sobre
+  Rocky Demo con Analítica activada. La conversación se creó/recuperó, pero GA4
+  Realtime no recibió `contact_started`; sólo mostró eventos heredados de
+  FlutterFlow. La aceptación de Analytics permanece abierta. Se corrigió la
+  integración para declarar explícitamente `analytics_storage` al activar,
+  mantener publicidad/personalización denegadas y reiniciar los datos locales
+  al retirar consentimiento o cambiar de identidad.
+- Candidato de corrección Analytics: [Codemagic
+  `6abbdec3af1a117ab3b161f5`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abbdec3af1a117ab3b161f5),
+  SHA `e772445e7446b42d49a8ab41163a30b42400b470`, Android **2.3.3
+  (272)**. Configuración Firebase, análisis, 96 pruebas, firma, AAB, Publishing y
+  limpieza terminaron `success`; la consulta posterior del track confirmó
+  `internal`, `completed`, código 272. Falta instalación y repetición del evento
+  real; publicación no equivale a aceptación en dispositivo.
+- Android 272 instalado y comprobado por captura; Analítica encendida. El
+  contacto nuevo con Toby funcionó, pero `contact_started` no apareció. La
+  investigación confirmó que Firebase enlaza la app ID Android vigente al
+  stream `5400821083`, con recepción reciente y configuración descargada
+  idéntica a la usada por Codemagic. La causa estaba en la app: el detalle sí
+  medía el contacto, pero el botón del mazo/swipe usado en aceptación y el
+  acceso equivalente desde el perfil público omitían el evento. Ambos quedan
+  instrumentados después de `startThread`, nunca antes del resultado real.
+- El primer gate de esta corrección (`6abbfa69b0dffe4b6f9e12a1`) detuvo la
+  publicación porque el nuevo test liberaba dos veces su controlador; no fue un
+  defecto productivo ni llegó a Play. Corregido el teardown, [Codemagic
+  `6abbfb850c4e011265ad1a16`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abbfb850c4e011265ad1a16)
+  aprobó análisis, 97 pruebas, firma, AAB, Publishing y limpieza sobre SHA
+  `554e66866d69e65f2e8473a9477398a003e3807c`. Google Play Internal Testing
+  confirmó `completed`, Android **2.3.3 (274)**. Falta aceptación instalada del
+  evento corregido.
+- Android 274 instalado: el titular confirmó por capturas el build, Analítica
+  encendida y la creación real de una conversación nueva con Milo desde el
+  mazo. GA4 Realtime todavía no mostró `contact_started`, aunque la app, el
+  stream y el nombre del evento están verificados. Para dejar de inferir el
+  comportamiento nativo, el candidato interno ahora muestra en Privacidad si
+  Firebase aceptó el evento, lo omitió sin consentimiento o devolvió un error;
+  conserva sólo ese resultado en memoria y no añade payloads.
+- [Codemagic `6abc0b9355f874ca95621932`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc0b9355f874ca95621932),
+  SHA `f1c0f7b63042122156536d626d5930cf296cc272`, aprobó configuración,
+  análisis, 97 pruebas, firma, AAB, Publishing y limpieza. Google Play Internal
+  Testing confirmó `completed`, Android **2.3.3 (275)**. Falta instalarlo,
+  crear un contacto real y leer la señal interna antes de volver a consultar
+  GA4.
+- Android 275 instalado y recorrido por el titular: Analítica permaneció
+  encendida, el contacto real con Nina creó/abrió la conversación y la señal
+  interna mostró **Firebase aceptó contact_started**. Queda comprobado que el
+  controlador consentido llamó al SDK sin payload y éste terminó sin error. La
+  consulta inmediata de GA4 Realtime mostró actividad vigente y 49 nombres de
+  eventos mezclados con telemetría antigua de FlutterFlow, pero no presentó el
+  nuevo evento entre los resultados visibles consultados. La recepción
+  procesada por GA4 permanece pendiente; no se repetirá otro cambio de código
+  sin evidencia de rechazo.
+- Se fijó el candidato Android 275 con el tag `codex-h10-android-275` y se lanzó
+  iOS desde el mismo SHA `f1c0f7b63042122156536d626d5930cf296cc272`.
+  [Codemagic `6abc16a31bed101ce54ac895`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc16a31bed101ce54ac895)
+  aprobó configuración, análisis, 97 pruebas, firma, IPA, Publishing y limpieza.
+  Apple aceptó **2.3.3 (276)** con `UPLOAD SUCCEEDED with no errors`. Falta
+  confirmar procesamiento/disponibilidad e instalarlo desde TestFlight; App
+  Store Connect solicitó una nueva sesión al intentar consultarlo.
+- Supabase test, por consulta agregada: 17 cuentas, identidades `email: 16` y
+  `google: 3`, una aceptación legal vigente completa, tres eliminaciones
+  `completado`, ninguna pendiente y cero credenciales Apple. Google/gate legal y
+  eliminación cuentan con evidencia real Android; Apple nativo, Private Relay
+  y revocación continúan pendientes de la identidad desechable en iPhone.
+- Renovada la sesión, App Store Connect confirmó la carga iOS 276 como
+  **Finalizado** y el build como **En pruebas** dentro de `DopMi Inner Team`.
+  Registraba tres invitaciones y cero instalaciones. El candidato conjunto ya
+  está disponible en ambas tiendas internas; falta instalación y aceptación en
+  iPhone, en particular Google, Apple nativo/Private Relay y revocación.
+- iOS/iPadOS 276 instalado desde TestFlight. Google y Apple cancelados
+  regresaron limpiamente. Apple nativo con Ocultar mi correo exigió el gate de
+  18 años/términos y conservó sesión tras reinicio. Resend marcó `delivered` y
+  el titular confirmó en su buzón la recuperación reenviada por Private Relay.
+  La eliminación posterior terminó HTTP 200: Apple aceptó la revocación; el
+  estado quedó `completado`, perfil `deleted`, sin atención pendiente, y las
+  consultas posteriores mostraron cero usuario Auth, identidad, sesión y
+  credencial Apple. No se documentaron alias, UUID, tokens ni IP. La adaptación
+  visual específica de iPad queda como diferencia no bloqueante de H10.
+- Google nativo en iPad falló primero con HTTP 400 por la comprobación de nonce.
+  Se activó `Skip nonce check` sólo para Google en Supabase test, como exige la
+  guía Flutter iOS; el mismo build entró después con HTTP 200, reutilizó el
+  perfil existente y conservó sesión tras reinicio. Auth advirtió que futuras
+  versiones exigirán también el access token. El cliente queda reforzado para
+  obtenerlo y enviarlo en acceso, vinculación y reautenticación; prueba unitaria
+  comprueba ambos tokens. Requiere gate y candidato nuevo.
+- Candidato final de la corrección Google fijado en el tag
+  `codex-h10-final-277`, SHA
+  `7e0a4b09ece6833c74afa44e2eb30e0651a6cff6`. La compuerta integrada
+  [36632568776](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36632568776)
+  aprobó sus cuatro trabajos. [Android Codemagic
+  `6abc2e07bb271484cec0e088`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc2e07bb271484cec0e088)
+  publicó **2.3.3 (277)** a Play `internal`; publicación y consulta posterior
+  marcaron `completed`. [iOS Codemagic
+  `6abc2e104ec1ec8d686c0180`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc2e104ec1ec8d686c0180)
+  cargó **2.3.3 (278)** a App Store Connect con `UPLOAD SUCCEEDED with no
+  errors`. Ambos usan el mismo SHA. Falta procesamiento/instalación de iOS 278,
+  instalación Android 277 y repetir Google con persistencia; Apple 276 conserva
+  su evidencia porque este cambio no alteró su token.
+- El titular instaló Android 277 e iOS/iPadOS 278 y confirmó en ambos Google
+  exitoso y sesión persistente tras reiniciar Dopmi. Supabase test registró dos
+  accesos Google HTTP 200 con `grant_type=id_token`; desapareció la advertencia
+  anterior por `access_token` ausente. Un ID token no traía `at_hash` y Auth
+  informó que el access token enviado no se utilizó en ese caso, sin error de
+  sesión. La corrección Google del candidato conjunto queda aceptada. El
+  titular confirmó que la vinculación conserva el mismo perfil. Apple queda
+  disponible únicamente en iOS/iPadOS por decisión de producto; Android usa
+  Google/correo y no mostrará Apple web. H10.1 queda aceptado.
+- Auditoría de H10.2 añadió casos de cuenta vacía, aislamiento entre titulares,
+  aportación pendiente y cancelación Guardián pendiente. Las operaciones
+  financieras mantienen la cuenta bloqueada en `requiere_atencion` hasta su
+  conciliación; el reintento finaliza después sin crear ni repetir movimientos.
+  También se corrigió el reintento parcial: si PostgreSQL ya marcó la solicitud
+  `completado` pero Auth no pudo retirar al usuario, el siguiente intento vuelve
+  a cerrar sesiones globales y borrar Auth. `anon` y `authenticated` no pueden
+  ejecutar la RPC servidor; sólo `service_role`. Las **405 pruebas backend** y
+  las **12 comprobaciones de configuración móvil** aprobaron en el commit
+  `21e2132e21ec0c9381107ead4c3c14f3e7b5c898`. La función
+  `account-deletion` **v4** quedó activa con JWT obligatorio únicamente en
+  Supabase test. La compuerta integrada
+  [36637906708](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36637906708)
+  aprobó sus cuatro trabajos: identidad/adopción, Flutter/Android,
+  web/PostgreSQL e iOS simulator. H10.2 queda cerrado con la eliminación real
+  previa en Android y Apple, más los escenarios automatizados de reintento,
+  operación pendiente y aislamiento.
+- H10.3: el reporte procesado de Firebase/GA4 hasta el 29/9 confirmó **3 eventos
+  `contact_started` de 2 usuarios**. La recepción real de Analytics queda
+  acreditada sin payloads; la interfaz sólo admite los cinco nombres permitidos
+  y rechaza cualquier parámetro. La auditoría añadió los errores asíncronos de
+  `PlatformDispatcher` a Crashlytics únicamente durante consentimiento, con
+  restauración inmediata del manejador al apagar, salir o cambiar de cuenta.
+  `flutter analyze` quedó limpio, aprobaron 99 pruebas Flutter, 405 backend y
+  12 controles de configuración. CI
+  [36639760146](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36639760146)
+  aprobó los cuatro trabajos del SHA
+  `d57aea8aef3fad2687b177d2f5ed3634c6672849`. Android Codemagic
+  [`6abc3da85177262fd0fa5730`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc3da85177262fd0fa5730)
+  publicó **2.3.3 (279)** en Internal Testing desde ese SHA; análisis, 99
+  pruebas, firma, AAB y Publishing aprobaron. iOS Codemagic
+  [`6abc3da82b57438d992a0231`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc3da82b57438d992a0231)
+  generó, firmó y publicó **2.3.3 (280)**; análisis, 99 pruebas, IPA, Publishing
+  y limpieza aprobaron sobre el mismo SHA. Google Play confirmó por separado
+  que el bundle **279** está disponible para testers internos y que 277 quedó
+  desactivado. App Store Connect terminó de procesar **280**, lo incorporó a
+  `DopMi Inner Team` y lo muestra **En pruebas** para tres testers internos.
+  Android 279 quedó instalado. Con Analítica y Diagnóstico apagados, un contacto
+  real mostró que `contact_started` fue omitido antes del SDK y la acción interna
+  de diagnóstico no apareció. La consulta posterior de GA4, ampliada hasta el
+  29/9, permaneció en **3 eventos de 2 usuarios**, sin incremento respecto de la
+  línea base. Las pruebas también acreditan borrado de reportes no enviados al
+  retirar, activar o cambiar de cuenta. H10.3 queda cerrado con consentimientos
+  independientes, apagados por defecto, recepción consentida y retirada real.
+- H10.4, auditoría de tiendas: la web pública añadió
+  `https://dopmi.org/support` y corrigió la ruta de eliminación dentro de la app
+  en el commit `bf8cd76` de `dopmi-landing-mockup`; ambas páginas responden 200
+  con el contenido nuevo. Google Play aún conserva una declaración Data Safety
+  de 2023 y Apple App Privacy siete tipos con usos antiguos, incluida publicidad
+  para correo, además de URLs obsoletas. Se preparó la matriz definitiva en
+  `docs/h10-store-privacy-declarations.md` y un CSV de Google para vista previa.
+  No se declara publicado: la importación/guardado externo requiere confirmación
+  del titular. App Store exige una versión nueva para cambiar URLs de
+  privacidad, soporte y marketing; los tipos de datos sí pueden corregirse de
+  inmediato.
+- El Centro de ayuda móvil añadió contacto operativo con
+  `soporte@dopmi.org`, advertencia contra el envío de credenciales/datos de
+  tarjeta y alternativa visible si el dispositivo no abre el cliente de correo.
+  `flutter analyze`, las 99 pruebas Flutter y los 12 controles de configuración
+  aprobaron. La revisión contra las definiciones oficiales de Google retiró del
+  CSV la compartición por proveedores/acciones iniciadas por el usuario y los
+  datos de tarjeta que Stripe Checkout recibe directamente; quedan 15 tipos,
+  cero publicidad/personalización y cero compartición declarada.
+- App Store App Privacy quedó publicada con 15 tipos, sin seguimiento y sin
+  publicidad/marketing. Nombre, correo, teléfono, dirección, ubicación
+  aproximada, mensajes, fotos, otro contenido, identificadores, compras,
+  interacción y diagnósticos se vinculan con la cuenta o instalación según la
+  definición de Apple. Se creó la ficha 2.3.3 **En preparación para el envío**,
+  con publicación manual, sin compilación y sin añadirla a revisión. En esa
+  versión se guardaron privacidad `/privacy-policy`, opciones de privacidad
+  `/delete-account`, soporte `/support` y marketing `/`; no implica lanzamiento
+  público. En Google Play se habilitó el acceso local de la extensión, se importó
+  el CSV y la vista previa confirmó 15 tipos recopilados, ninguno compartido,
+  cifrado en tránsito y las URLs vigentes de privacidad y eliminación. El
+  titular confirmó el guardado y Play Console respondió `Change saved`. En
+  Publishing overview figura exactamente un cambio no enviado: `Data safety —
+  Complete Data safety questionnaire`. Con autorización separada, se envió ese
+  único cambio; las comprobaciones automáticas terminaron sin incidencias y
+  Publishing overview muestra `Your changes are now in review`. El aviso de la
+  URL histórica permanece visible mientras Google resuelve la revisión.
+- El aviso de política de Google Play se inspeccionó por separado: identifica la
+  URL histórica `https://dopmi.org/pages/privacy-policy` como inválida y exige
+  guardar la corrección y enviarla a revisión. La pantalla vigente de Política
+  de privacidad ya muestra `https://dopmi.org/privacy-policy`; el botón Guardar
+  está deshabilitado allí porque esa corrección ya quedó registrada. El aviso no
+  se declarará resuelto hasta que Google procese el envío.
+- Decisión del titular: H10.4 se cierra con la declaración Data Safety enviada a
+  revisión y App Privacy ya publicada. Apple no permite enviar la ficha 2.3.3 a
+  revisión sin seleccionar una compilación; ese envío se aplaza hasta terminar
+  los demás pendientes y disponer del candidato final. También se reconsultará
+  entonces la resolución del aviso histórico de Google. Las URLs y textos ya
+  guardados se conservan; no se inició lanzamiento público.
+
+## H10.5 — aislamiento y candidato conjunto — 29 de septiembre de 2026
+
+- Supabase test `ohqxranynackjignryep` y producción `ysaoeuidcvgtlmphmeyb`
+  continúan separados y `ACTIVE_HEALTHY`. En producción se comprobaron cero
+  usuarios Auth, perfiles, donaciones, objetos Storage, secretos Vault y secretos
+  personalizados de Edge Functions. Los cuatro buckets existen vacíos y las
+  siete funciones actuales están desplegadas, pero sin secretos Stripe no pueden
+  procesar dinero real.
+- La configuración Auth de producción se inspeccionó directamente: altas,
+  vinculación manual y acceso anónimo están apagados; Google y Apple figuran
+  deshabilitados. Test conserva sus proveedores de aceptación. No se modificó
+  configuración remota durante esta auditoría.
+- Los advisories de seguridad de ambos proyectos coinciden: 27 tablas privadas
+  con RLS y sin políticas deliberadamente inaccesibles, 15 funciones
+  `SECURITY DEFINER` ejecutables por `anon` y 68 por `authenticated`, ya
+  cubiertas por los controles servidor/titular documentados. Test añade la
+  advertencia de protección de contraseñas filtradas, diferida a H12 por requerir
+  Supabase Pro. Referencias: [RLS sin políticas](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy),
+  [`anon` y SECURITY DEFINER](https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable)
+  y [`authenticated` y SECURITY DEFINER](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable).
+- Puertas locales: configuración móvil **12/12**, administración **23/23** y
+  build de producción, backend/PostgreSQL **405/405**. Flutter no está instalado
+  en este equipo; análisis y pruebas aprobaron dentro de los dos workflows
+  reproducibles de Codemagic.
+- El SHA `0a25ba81fc39192c772ca0bbe4453697fb9ca905` produjo ambos candidatos.
+  [Android Codemagic `6abc62eb0f583f5c4835b814`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc62eb0f583f5c4835b814)
+  aprobó configuración, Firebase, análisis, pruebas, firma, AAB y Publishing;
+  Google Play confirmó **2.3.3 (281)** disponible para testers internos y
+  desactivó 279. [iOS Codemagic `6abc62ec0f583f5c4835b816`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc62ec0f583f5c4835b816)
+  aprobó configuración, Firebase, análisis, pruebas, firma, IPA y Publishing;
+  App Store Connect confirmó **2.3.3 (282)** `Finalizado`, **En pruebas** y
+  asignado a `DopMi Inner Team`.
+- H10.5 queda cerrado por publicación interna trazable y aislamiento comprobado.
+  La instalación/actualización de 281/282 y los recorridos integrales pertenecen
+  a H11. La revisión pública de la versión Apple y la reconsulta del aviso
+  histórico de Google continúan aplazadas hasta el candidato final.
+
+## Inicio H11 — 29 de septiembre de 2026
+
+- Se fijó la matriz de aceptación en `docs/h11-acceptance.md`. La referencia de
+  Irlanda continúa sin cambios en `a246fa6f42ec517aae264d7fbd2358d647c4f840`;
+  no hay una diferencia nueva que reabra H8.
+- H11.1 queda acreditado por Android 281 e iOS 282, ambos desde
+  `0a25ba81fc39192c772ca0bbe4453697fb9ca905` y disponibles en sus canales
+  internos. La instalación/actualización y los recorridos del build exacto aún
+  requieren los dispositivos del titular.
+- Se documentó una reversión de distribución segura: Android usa un rebuild del
+  último SHA bueno con número mayor; TestFlight retira el build del grupo y
+  reasigna o recompila con número mayor. El ensayo no altera 281/282, datos,
+  migraciones ni movimientos financieros. Falta ejecutar el ensayo de
+  comprobación y registrar revisión externa/cero defectos críticos o altos.
+- El ensayo de reversión terminó `ROLLBACK_REHEARSAL_OK`: Git puede reconstruir
+  `d57aea8aef3fad2687b177d2f5ed3634c6672849`; frente al candidato, el único
+  cambio de app es el acceso por correo del Centro de ayuda. Ese SHA conserva
+  workflows internos, identidad `com.mycompany.dopmi` y ausencia de envío a
+  App Store. No se retiró ningún build ni se publicó otro porque no existe un
+  defecto que amerite una reversión real. H11.4 queda cerrado.
+- El titular aportó la captura `1000346499.jpg`: Android abre Configuración y
+  muestra **Versión 2.3.3 (281)**. Queda acreditada la instalación del candidato
+  Android exacto. Aún faltan los recorridos funcionales del build y la
+  instalación de iOS/iPadOS 282; no se atribuye aceptación por la captura sola.
+- En Android 281, cerrar completamente y volver a abrir Dopmi conservó la sesión
+  sin pedir acceso ni repetir términos. Persistencia aprobada; el cierre de
+  sesión y reingreso se verifican por separado.
+- El titular aportó captura de iPadOS: Dopmi abierto desde TestFlight muestra
+  **Versión 2.3.3 (282)** en Configuración. Android 281 e iPadOS 282 quedan
+  instalados y corresponden al mismo SHA; la captura horizontal acredita que
+  las acciones principales son visibles, no todavía los recorridos funcionales.
+- Android 281 completó el recorrido de identidad: cerrar sesión regresó al
+  acceso, cancelar Google no creó sesión y un segundo intento entró con la misma
+  cuenta/perfil sin volver a pedir términos. Persistencia, cierre, cancelación y
+  reingreso Google quedan aprobados para el candidato exacto.
+- iPadOS 282 conservó la sesión después de cerrar completamente y volver a abrir
+  Dopmi, sin pedir acceso ni repetir términos. Persistencia aprobada; cierre de
+  sesión y accesos Google/Apple permanecen como pruebas separadas.
+- iPadOS 282 completó Apple nativo con una identidad nueva. Apple ofreció
+  compartir u ocultar el correo; el titular eligió Ocultar mi correo y Dopmi
+  exigió 18 años/términos antes de permitir acceso. Cerrar sesión retiró el
+  acceso; cancelar Apple no creó sesión; repetirlo entró correctamente y la
+  sesión persistió tras reiniciar. No se registró el alias privado. La creación
+  separada, con gate legal, confirma que no hubo fusión silenciosa por correo.
+- Google en iPadOS 282 también aprobó: cancelar dejó la app sin sesión; el nuevo
+  intento regresó al perfil Google existente sin repetir términos y la sesión
+  persistió al reiniciar. Identidad social queda aprobada en Android 281 e
+  iPadOS 282; Apple permanece exclusivo de iOS/iPadOS.
+- En ambos candidatos, el titular recorrió Adoptar, Apoyar, Perfil,
+  Configuración e Información básica sin pantalla negra, bloqueo ni pérdida de
+  sesión. Ayuda/FAQ y el botón de soporte funcionaron sin enviar correo; los
+  términos y la pantalla de privacidad/eliminación abrieron y regresaron
+  correctamente. No se inició eliminación.
+- Android 281 e iPadOS 282 aprobaron catálogo y comunicación: filtro
+  aplicar/limpiar, detalle, guardado/retirada, contacto, envío, reapertura y
+  cierre. El texto sintético `Prueba H11` persistió una sola vez al reabrir; no
+  hubo duplicado visible.
+- Publicar → Adopción aprobó el recorrido físico en ambos candidatos: foto no
+  personal, nombre sintético, salida/reinicio y recuperación del borrador sin
+  enviarlo. Android manejó rechazo inicial y concesión posterior del permiso;
+  iPadOS funcionó con acceso limitado a fotos.
+- Ambos candidatos aprobaron el smoke financiero sin movimientos nuevos:
+  Aportar hasta monto/resumen y regreso previo a Checkout; Método de pago,
+  Suscripción e Historial sin pantalla negra. No se cambió tarjeta, activó o
+  canceló un plan ni se generó un pago. Se reutiliza la evidencia económica H5,
+  pues el candidato sólo añadió el acceso de soporte y no cambió esos módulos.
+- Consentimientos aprobados en ambos candidatos: Analítica y Diagnóstico
+  persistieron al activarse, se retiraron por separado y permanecieron apagados
+  tras reiniciar. No se envió diagnóstico controlado nuevo; la recepción y cero
+  emisión posterior ya están acreditadas en H10.3 sobre el mismo código.
+- H11 detectó un fallo intermitente y multiplataforma al cargar fotos privadas
+  del catálogo: Android 281 e iPadOS 282 podían mostrar `Cargar foto`. El cliente
+  generaba URLs firmadas por sólo 60 segundos, insuficientes tras suspensión o
+  carga diferida. La corrección mantiene el bucket privado, amplía la URL a diez
+  minutos y renueva una sola vez automáticamente antes de dejar el control de
+  reintento manual. Se añadió una prueba que acota la vigencia entre cinco y
+  diez minutos. Quedan pendientes CI, candidatos conjuntos nuevos y repetición
+  del catálogo en ambos dispositivos; 281/282 ya no son finales.
+- Corrección de fotos publicada desde
+  `94cb82e2496e4943065d6464962a111fa719bedd`. GitHub CI
+  [36660362119](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36660362119)
+  y [36660356662](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36660356662)
+  aprobaron los cuatro trabajos, incluido análisis, pruebas Flutter y builds de
+  desarrollo Android/iOS. Codemagic Android
+  [6abc771aec8422516e05ee18](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc771aec8422516e05ee18)
+  publicó **2.3.3 (283)**; Play confirmó `Available to internal testers`, bundle
+  283 activo y 281 desactivado. Codemagic iOS
+  [6abc7724e5d014fada0172c5](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc7724e5d014fada0172c5)
+  publicó **2.3.3 (284)**; App Store Connect confirmó `Finalizado`, `En pruebas`
+  y `DopMi Inner Team`. Falta instalar 283/284 y repetir carga/reintento de fotos
+  en ambos dispositivos antes de cerrar el defecto y H11.
+- Nuevo defecto H11 reproducido en código: una sesión con consentimiento vigente
+  podía mostrar `Antes de continuar` durante el intervalo entre Auth restaurado
+  y perfil cargado. El gate ahora distingue la consulta en curso y muestra
+  `Restaurando sesión`; si la consulta falla continúa bloqueando con el aviso,
+  por lo que no se debilita la protección de mayoría de edad. Se agregó una
+  prueba con carga deliberadamente demorada que prohíbe el destello. Por decisión
+  del titular, esta corrección se agrupa con los siguientes cambios y el QA
+  físico/visual final de Irlanda; no se pide otro recorrido manual completo.
+- Android 283 quedó instalado desde Play Internal Testing y verificado por ADB
+  en un Samsung SM-S938B con Android 16. Conservó la sesión durante la
+  actualización, mostró `Versión 2.3.3 (283)` y cargó la foto del catálogo tras
+  suspensión superior a 60 segundos. Una apertura en frío sin Wi-Fi ni datos
+  cerró de forma segura; tras restaurar la red, dos pulsaciones de reintento
+  recuperaron la misma sesión y la foto sin duplicados. La ausencia de
+  recuperación automática y la aparición temporal del consentimiento vigente
+  quedan como fricción media, no como pérdida de identidad. Texto ampliado
+  1.30, etiquetas semánticas y orientación horizontal conservaron las acciones
+  esenciales; se restauraron los ajustes del dispositivo. Falta TalkBack,
+  correo/retorno, iOS 284 y revisión visual externa para cerrar H11.2/H11.3.
+- TalkBack de Samsung se activó temporalmente sobre Android 283, conservando el
+  servicio de accesibilidad existente. El lector recorrió por foco controles
+  etiquetados y activó una ruta Guardián identificada como prueba; después se
+  restauró exactamente la configuración previa. Un callback inválido
+  controlado abrió el estado recuperable y el regreso conservó la sesión, sin
+  acreditar entrega desde correo.
+- Decisión del titular, 30/9: concluir H11 con toda la evidencia autónoma
+  disponible en Android y trasladar a H12 la entrega real de correo, regresión
+  iOS del candidato final y revisión visual de Irlanda. No quedan defectos
+  críticos/altos en lo ejecutado; la recuperación de red que requiere reintento
+  permanece como fricción media. H12 será el último hito previo al MVP e inicia
+  con un candidato conjunto que integre el parche de consentimiento y los
+  cambios finales de Irlanda. Este avance no acepta visual/iOS pendientes, no
+  publica las tiendas y no autoriza dinero real.

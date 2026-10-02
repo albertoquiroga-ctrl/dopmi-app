@@ -51,6 +51,9 @@ select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000004'
 select is((select count(*) from dopmi_donations),0::bigint,'unrelated user sees no payments');
 select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000001',true);
 select is((select count(*) from dopmi_donations),1::bigint,'donor can read own payment');
+select is(jsonb_array_length(dopmi_personal_impact()),1,'donor impact contains only cases with confirmed assigned funds');
+select is((dopmi_personal_impact()->0->>'allocated_cents')::bigint,9200::bigint,'impact uses the donor own assigned amount');
+select ok(dopmi_personal_impact()::text !~ 'rescuer_id|donor_id|stripe_|destination','impact omits identities and financial provider data');
 select set_config('request.jwt.claim.sub','70000000-0000-4000-8000-000000000003',true);
 select is((dopmi_admin_donations()->>'total')::int,1,'server-authorized admin can inspect history');
 reset role;

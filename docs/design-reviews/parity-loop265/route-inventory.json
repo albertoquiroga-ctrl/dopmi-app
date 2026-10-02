@@ -1,0 +1,1199 @@
+{
+  "reference_sha": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "source_route_patterns": [
+    "/",
+    "/choose-account",
+    "/choose-intent",
+    "/intro",
+    "/onboarding/donor",
+    "/onboarding/rescuer",
+    "/welcome/donor",
+    "/welcome/rescuer",
+    "/login/donor",
+    "/login/rescuer",
+    "/signup/donor",
+    "/signup/rescuer",
+    "/forgot-password",
+    "/terms/:mode",
+    "/privacy/:mode",
+    "/terms",
+    "/privacy",
+    "/adoption",
+    "/adoption/:petId",
+    "/donate",
+    "/case/:caseId",
+    "/donate/:caseId/:needId",
+    "/donation-success/:caseId",
+    "/payment-error/:caseId/:needId",
+    "/impact",
+    "/impact/support",
+    "/impact/success",
+    "/impact/error",
+    "/messages",
+    "/messages/:threadId",
+    "/notifications",
+    "/history",
+    "/profile",
+    "/saved",
+    "/saved-rescuers",
+    "/settings",
+    "/settings/basic-info",
+    "/settings/payment-methods",
+    "/settings/billing",
+    "/help",
+    "/about",
+    "/transparency",
+    "/rescuer-profile/:caseId",
+    "/rescuer",
+    "/rescuer/verification",
+    "/rescuer/cases",
+    "/rescuer/cases/:caseId",
+    "/rescuer/publish",
+    "/rescuer/evidence/:caseId/:needId",
+    "/rescuer/food/:caseId/:needId",
+    "/rescuer/messages",
+    "/rescuer/profile",
+    "/rescuer/profile/edit",
+    "/rescuer/settings",
+    "*"
+  ],
+  "native_route_patterns": [
+    "/home",
+    "/basic-info",
+    "/adoptions",
+    "/rescue-cases",
+    "/profile",
+    "/rescuer",
+    "/my-cases",
+    "/publish",
+    "/messages",
+    "/settings",
+    "/settings/account",
+    "/consent",
+    "/account-privacy",
+    "/rescuer/profile/edit",
+    "/help",
+    "/about",
+    "/transparency",
+    "/my-adoptions",
+    "/guardian/history",
+    "/guardian",
+    "/payments",
+    "/connect",
+    "/contribute/:id",
+    "/rescue/:id",
+    "/rescue-file",
+    "/rescue-cases/:id",
+    "/rescue-cases/:id/updates",
+    ":updateId",
+    "/saved",
+    "/impact/guardian",
+    "/impact",
+    "/adoptions/:id",
+    "/people/:id",
+    "/my-adoptions/:id",
+    "/messages/:id",
+    "/notifications",
+    "/loading",
+    "/welcome",
+    "/onboarding",
+    "/start",
+    "/signup",
+    "/login",
+    "/forgot",
+    "/reset-password",
+    "/confirm",
+    "/confirm-recovery",
+    "/auth/callback",
+    "/auth-error",
+    "/terms"
+  ],
+  "capture_states": 262,
+  "capture_urls": {
+    "/adoptions": 13,
+    "/adoptions/post": 2,
+    "/messages": 18,
+    "/messages/thread-one": 7,
+    "/rescuer": 12,
+    "/rescue/case-one": 36,
+    "/my-cases": 6,
+    "/rescue-cases": 18,
+    "/notifications": 7,
+    "/rescue-cases/case-one": 16,
+    "/contribute/Cirugía?case=case-one&amount_cents=10000": 7,
+    "/guardian": 20,
+    "/impact?history=1": 4,
+    "/impact": 2,
+    "/impact/guardian": 6,
+    "/payments": 3,
+    "/contribute/Cirugía?case=case-one": 2,
+    "/profile": 18,
+    "/settings": 8,
+    "/people/owner": 12,
+    "/about": 2,
+    "/transparency": 2,
+    "/publish": 2,
+    "/my-adoptions/new": 2,
+    "/my-adoptions/post": 8,
+    "/rescue/expense-one": 17,
+    "/rescue/new?kind=case": 4,
+    "/rescue/new?kind=verification": 4,
+    "/rescue/verification-id": 4
+  },
+  "limitations": [
+    "Source and native routes have different names and dynamic identifiers; counts do not establish parity.",
+    "Native access/component captures belong to another capturer.",
+    "Runtime states and dialogs may share one route.",
+    "Fixture captures do not prove installed runtime or services."
+  ],
+  "capture_specs": [
+    {
+      "name": "adoption-swipe",
+      "url": "/adoptions"
+    },
+    {
+      "name": "adoption-large",
+      "url": "/adoptions"
+    },
+    {
+      "name": "adoption-drag",
+      "url": "/adoptions"
+    },
+    {
+      "name": "adoption-filters",
+      "url": "/adoptions"
+    },
+    {
+      "name": "adoption-filters-large",
+      "url": "/adoptions"
+    },
+    {
+      "name": "adoption-contact",
+      "url": "/adoptions"
+    },
+    {
+      "name": "adoption-contact-large",
+      "url": "/adoptions"
+    },
+    {
+      "name": "adoption-detail",
+      "url": "/adoptions/post"
+    },
+    {
+      "name": "adoption-detail-large",
+      "url": "/adoptions/post"
+    },
+    {
+      "name": "adoption-empty",
+      "url": "/adoptions"
+    },
+    {
+      "name": "adoption-empty-large",
+      "url": "/adoptions"
+    },
+    {
+      "name": "adoption-empty-wide-large",
+      "url": "/adoptions"
+    },
+    {
+      "name": "adoption-end",
+      "url": "/adoptions"
+    },
+    {
+      "name": "match-threads",
+      "url": "/messages"
+    },
+    {
+      "name": "match-threads-large",
+      "url": "/messages"
+    },
+    {
+      "name": "match-all",
+      "url": "/messages"
+    },
+    {
+      "name": "match-all-large",
+      "url": "/messages"
+    },
+    {
+      "name": "match-empty",
+      "url": "/messages"
+    },
+    {
+      "name": "match-empty-large",
+      "url": "/messages"
+    },
+    {
+      "name": "chat-bubbles",
+      "url": "/messages/thread-one"
+    },
+    {
+      "name": "chat-bubbles-large",
+      "url": "/messages/thread-one"
+    },
+    {
+      "name": "chat-bubbles-rescuer",
+      "url": "/messages/thread-one"
+    },
+    {
+      "name": "chat-detail-focus",
+      "url": "/messages/thread-one"
+    },
+    {
+      "name": "chat-detail-focus-large",
+      "url": "/messages/thread-one"
+    },
+    {
+      "name": "chat-keyboard",
+      "url": "/messages/thread-one"
+    },
+    {
+      "name": "chat-keyboard-large",
+      "url": "/messages/thread-one"
+    },
+    {
+      "name": "rescuer-home-unverified",
+      "url": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-unverified-large",
+      "url": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-review",
+      "url": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-review-large",
+      "url": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-empty",
+      "url": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-empty-large",
+      "url": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-actions",
+      "url": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-actions-large",
+      "url": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-evidence",
+      "url": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-evidence-large",
+      "url": "/rescuer"
+    },
+    {
+      "name": "owned-case-detail",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "owned-case-detail-back-focus",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "owned-case-detail-dot-focus",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "owned-case-detail-dot-focus-large",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "owned-case-detail-back-focus-large",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "owned-case-detail-large",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "owned-case-detail-story",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "owned-case-detail-story-large",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "owned-case-detail-history-empty",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "owned-case-detail-history-empty-large",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "owned-case-detail-bottom",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "owned-case-detail-bottom-large",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "owned-case-detail-closed",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "owned-case-detail-closed-large",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "owned-cases",
+      "url": "/my-cases"
+    },
+    {
+      "name": "owned-cases-large",
+      "url": "/my-cases"
+    },
+    {
+      "name": "owned-cases-empty",
+      "url": "/my-cases"
+    },
+    {
+      "name": "owned-cases-empty-large",
+      "url": "/my-cases"
+    },
+    {
+      "name": "owned-cases-correction",
+      "url": "/my-cases"
+    },
+    {
+      "name": "owned-cases-correction-large",
+      "url": "/my-cases"
+    },
+    {
+      "name": "rescuer-home",
+      "url": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-large",
+      "url": "/rescuer"
+    },
+    {
+      "name": "support-home",
+      "url": "/rescue-cases"
+    },
+    {
+      "name": "notifications-reference",
+      "url": "/notifications"
+    },
+    {
+      "name": "notifications-reference-large",
+      "url": "/notifications"
+    },
+    {
+      "name": "notifications-reference-read",
+      "url": "/notifications"
+    },
+    {
+      "name": "notifications-reference-kinds",
+      "url": "/notifications"
+    },
+    {
+      "name": "notifications-reference-kinds-large",
+      "url": "/notifications"
+    },
+    {
+      "name": "notifications-reference-header-focus",
+      "url": "/notifications"
+    },
+    {
+      "name": "notifications-reference-header-focus-large",
+      "url": "/notifications"
+    },
+    {
+      "name": "support-home-large",
+      "url": "/rescue-cases"
+    },
+    {
+      "name": "support-home-empty",
+      "url": "/rescue-cases"
+    },
+    {
+      "name": "support-home-empty-large",
+      "url": "/rescue-cases"
+    },
+    {
+      "name": "support-home-error",
+      "url": "/rescue-cases"
+    },
+    {
+      "name": "support-home-error-large",
+      "url": "/rescue-cases"
+    },
+    {
+      "name": "support-home-error-retry",
+      "url": "/rescue-cases"
+    },
+    {
+      "name": "support-home-error-retry-large",
+      "url": "/rescue-cases"
+    },
+    {
+      "name": "support-home-notification-focus",
+      "url": "/rescue-cases"
+    },
+    {
+      "name": "support-home-notification-focus-large",
+      "url": "/rescue-cases"
+    },
+    {
+      "name": "support-home-notification-badge",
+      "url": "/rescue-cases"
+    },
+    {
+      "name": "support-home-notification-badge-large",
+      "url": "/rescue-cases"
+    },
+    {
+      "name": "support-home-case-focus",
+      "url": "/rescue-cases"
+    },
+    {
+      "name": "support-home-case-focus-large",
+      "url": "/rescue-cases"
+    },
+    {
+      "name": "support-home-guardian-card-focus",
+      "url": "/rescue-cases"
+    },
+    {
+      "name": "support-home-guardian-card-focus-large",
+      "url": "/rescue-cases"
+    },
+    {
+      "name": "support-home-guardian-dock-focus",
+      "url": "/rescue-cases"
+    },
+    {
+      "name": "support-home-guardian-dock-focus-large",
+      "url": "/rescue-cases"
+    },
+    {
+      "name": "case-detail",
+      "url": "/rescue-cases/case-one"
+    },
+    {
+      "name": "case-detail-photo-focus",
+      "url": "/rescue-cases/case-one"
+    },
+    {
+      "name": "case-detail-photo-focus-large",
+      "url": "/rescue-cases/case-one"
+    },
+    {
+      "name": "case-detail-story",
+      "url": "/rescue-cases/case-one"
+    },
+    {
+      "name": "case-detail-story-large",
+      "url": "/rescue-cases/case-one"
+    },
+    {
+      "name": "case-detail-gallery",
+      "url": "/rescue-cases/case-one"
+    },
+    {
+      "name": "case-detail-gallery-large",
+      "url": "/rescue-cases/case-one"
+    },
+    {
+      "name": "case-detail-amount",
+      "url": "/rescue-cases/case-one"
+    },
+    {
+      "name": "case-detail-amount-large",
+      "url": "/rescue-cases/case-one"
+    },
+    {
+      "name": "case-detail-planned",
+      "url": "/rescue-cases/case-one"
+    },
+    {
+      "name": "case-detail-planned-large",
+      "url": "/rescue-cases/case-one"
+    },
+    {
+      "name": "contribution-result-confirmed",
+      "url": "/contribute/Cirugía?case=case-one&amount_cents=10000"
+    },
+    {
+      "name": "contribution-result-confirmed-large",
+      "url": "/contribute/Cirugía?case=case-one&amount_cents=10000"
+    },
+    {
+      "name": "contribution-result-pending",
+      "url": "/contribute/Cirugía?case=case-one&amount_cents=10000"
+    },
+    {
+      "name": "contribution-result-canceled",
+      "url": "/contribute/Cirugía?case=case-one&amount_cents=10000"
+    },
+    {
+      "name": "contribution-result-refunded",
+      "url": "/contribute/Cirugía?case=case-one&amount_cents=10000"
+    },
+    {
+      "name": "contribution-review",
+      "url": "/contribute/Cirugía?case=case-one&amount_cents=10000"
+    },
+    {
+      "name": "contribution-review-large",
+      "url": "/contribute/Cirugía?case=case-one&amount_cents=10000"
+    },
+    {
+      "name": "guardian-billing-amount",
+      "url": "/guardian"
+    },
+    {
+      "name": "guardian-billing-amount-large",
+      "url": "/guardian"
+    },
+    {
+      "name": "guardian-billing-cancel",
+      "url": "/guardian"
+    },
+    {
+      "name": "guardian-billing-cancel-large",
+      "url": "/guardian"
+    },
+    {
+      "name": "guardian-billing-history-large",
+      "url": "/guardian"
+    },
+    {
+      "name": "guardian-billing-receipt",
+      "url": "/guardian"
+    },
+    {
+      "name": "guardian-billing-inactive",
+      "url": "/guardian"
+    },
+    {
+      "name": "guardian-billing-inactive-large",
+      "url": "/guardian"
+    },
+    {
+      "name": "impact-feed",
+      "url": "/impact?history=1"
+    },
+    {
+      "name": "impact-feed-large",
+      "url": "/impact?history=1"
+    },
+    {
+      "name": "impact-feed-empty",
+      "url": "/impact?history=1"
+    },
+    {
+      "name": "impact-feed-empty-large",
+      "url": "/impact?history=1"
+    },
+    {
+      "name": "impact-entry",
+      "url": "/impact"
+    },
+    {
+      "name": "impact-entry-large",
+      "url": "/impact"
+    },
+    {
+      "name": "guardian-promotion",
+      "url": "/impact/guardian"
+    },
+    {
+      "name": "guardian-promotion-large",
+      "url": "/impact/guardian"
+    },
+    {
+      "name": "guardian-promotion-controls-large",
+      "url": "/impact/guardian"
+    },
+    {
+      "name": "guardian-promotion-join-large",
+      "url": "/impact/guardian"
+    },
+    {
+      "name": "guardian-promotion-second",
+      "url": "/impact/guardian"
+    },
+    {
+      "name": "guardian-promotion-reports",
+      "url": "/impact/guardian"
+    },
+    {
+      "name": "guardian-billing-enrollment",
+      "url": "/guardian"
+    },
+    {
+      "name": "guardian-billing-enrollment-large",
+      "url": "/guardian"
+    },
+    {
+      "name": "guardian-billing-enrollment-custom",
+      "url": "/guardian"
+    },
+    {
+      "name": "guardian-billing-enrollment-custom-large",
+      "url": "/guardian"
+    },
+    {
+      "name": "guardian-billing-enrollment-confirmation",
+      "url": "/guardian"
+    },
+    {
+      "name": "guardian-billing-enrollment-confirmation-large",
+      "url": "/guardian"
+    },
+    {
+      "name": "guardian-billing-active",
+      "url": "/guardian"
+    },
+    {
+      "name": "guardian-billing-active-large",
+      "url": "/guardian"
+    },
+    {
+      "name": "guardian-activation-success",
+      "url": "/guardian"
+    },
+    {
+      "name": "guardian-activation-success-large",
+      "url": "/guardian"
+    },
+    {
+      "name": "guardian-activation-failed",
+      "url": "/guardian"
+    },
+    {
+      "name": "guardian-activation-failed-large",
+      "url": "/guardian"
+    },
+    {
+      "name": "payment-history",
+      "url": "/payments"
+    },
+    {
+      "name": "payment-history-large",
+      "url": "/payments"
+    },
+    {
+      "name": "payment-history-empty",
+      "url": "/payments"
+    },
+    {
+      "name": "contribution-amount",
+      "url": "/contribute/Cirugía?case=case-one"
+    },
+    {
+      "name": "contribution-amount-large",
+      "url": "/contribute/Cirugía?case=case-one"
+    },
+    {
+      "name": "case-detail-large",
+      "url": "/rescue-cases/case-one"
+    },
+    {
+      "name": "case-detail-expenses",
+      "url": "/rescue-cases/case-one"
+    },
+    {
+      "name": "case-detail-amount",
+      "url": "/rescue-cases/case-one"
+    },
+    {
+      "name": "case-detail-amount-large",
+      "url": "/rescue-cases/case-one"
+    },
+    {
+      "name": "case-detail-expenses-large",
+      "url": "/rescue-cases/case-one"
+    },
+    {
+      "name": "rescuer-messages",
+      "url": "/messages"
+    },
+    {
+      "name": "rescuer-messages-large",
+      "url": "/messages"
+    },
+    {
+      "name": "rescuer-messages-empty",
+      "url": "/messages"
+    },
+    {
+      "name": "rescuer-messages-empty-large",
+      "url": "/messages"
+    },
+    {
+      "name": "match-threads-photo-search",
+      "url": "/messages"
+    },
+    {
+      "name": "match-threads-photo-search-large",
+      "url": "/messages"
+    },
+    {
+      "name": "match-threads-photo-focus",
+      "url": "/messages"
+    },
+    {
+      "name": "match-threads-photo-focus-large",
+      "url": "/messages"
+    },
+    {
+      "name": "match-threads-focus",
+      "url": "/messages"
+    },
+    {
+      "name": "match-threads-focus-large",
+      "url": "/messages"
+    },
+    {
+      "name": "match-home",
+      "url": "/messages"
+    },
+    {
+      "name": "match-home-large",
+      "url": "/messages"
+    },
+    {
+      "name": "adoption-support",
+      "url": "/adoptions"
+    },
+    {
+      "name": "adoption-support-large",
+      "url": "/adoptions"
+    },
+    {
+      "name": "rescuer-profile",
+      "url": "/profile"
+    },
+    {
+      "name": "rescuer-profile-home-link-focus",
+      "url": "/profile"
+    },
+    {
+      "name": "rescuer-profile-row-focus",
+      "url": "/profile"
+    },
+    {
+      "name": "rescuer-profile-row-focus-large",
+      "url": "/profile"
+    },
+    {
+      "name": "rescuer-profile-reference",
+      "url": "/profile"
+    },
+    {
+      "name": "rescuer-profile-reference-wide",
+      "url": "/profile"
+    },
+    {
+      "name": "rescuer-profile-reference-focus",
+      "url": "/profile"
+    },
+    {
+      "name": "rescuer-profile-reference-activity-focus",
+      "url": "/profile"
+    },
+    {
+      "name": "rescuer-profile-reference-metric-focus",
+      "url": "/profile"
+    },
+    {
+      "name": "rescuer-profile-reference-transfer-focus",
+      "url": "/profile"
+    },
+    {
+      "name": "rescuer-profile-reference-transfer-focus-large",
+      "url": "/profile"
+    },
+    {
+      "name": "rescuer-profile-reference-large",
+      "url": "/profile"
+    },
+    {
+      "name": "rescuer-settings",
+      "url": "/settings"
+    },
+    {
+      "name": "rescuer-settings-scroll-blur",
+      "url": "/settings"
+    },
+    {
+      "name": "rescuer-settings-footer",
+      "url": "/settings"
+    },
+    {
+      "name": "rescuer-settings-logout-focus",
+      "url": "/settings"
+    },
+    {
+      "name": "rescuer-settings-mode-focus",
+      "url": "/settings"
+    },
+    {
+      "name": "rescuer-settings-edit-focus",
+      "url": "/settings"
+    },
+    {
+      "name": "rescuer-settings-large",
+      "url": "/settings"
+    },
+    {
+      "name": "rescuer-profile-large",
+      "url": "/profile"
+    },
+    {
+      "name": "public-profile",
+      "url": "/people/owner"
+    },
+    {
+      "name": "public-profile-large",
+      "url": "/people/owner"
+    },
+    {
+      "name": "public-profile-reference",
+      "url": "/people/owner"
+    },
+    {
+      "name": "public-profile-reference-large",
+      "url": "/people/owner"
+    },
+    {
+      "name": "public-profile-metrics",
+      "url": "/people/owner"
+    },
+    {
+      "name": "public-profile-metrics-large",
+      "url": "/people/owner"
+    },
+    {
+      "name": "public-profile-metrics-stats",
+      "url": "/people/owner"
+    },
+    {
+      "name": "public-profile-metrics-stats-large",
+      "url": "/people/owner"
+    },
+    {
+      "name": "public-profile-adoptions",
+      "url": "/people/owner"
+    },
+    {
+      "name": "public-profile-adoptions-large",
+      "url": "/people/owner"
+    },
+    {
+      "name": "public-profile-cases",
+      "url": "/people/owner"
+    },
+    {
+      "name": "public-profile-cases-large",
+      "url": "/people/owner"
+    },
+    {
+      "name": "profile-overview",
+      "url": "/profile"
+    },
+    {
+      "name": "profile-overview-active",
+      "url": "/profile"
+    },
+    {
+      "name": "profile-overview-large",
+      "url": "/profile"
+    },
+    {
+      "name": "profile-mode-dialog",
+      "url": "/profile"
+    },
+    {
+      "name": "profile-settings",
+      "url": "/settings"
+    },
+    {
+      "name": "profile-support",
+      "url": "/profile"
+    },
+    {
+      "name": "about",
+      "url": "/about"
+    },
+    {
+      "name": "about-large",
+      "url": "/about"
+    },
+    {
+      "name": "transparency",
+      "url": "/transparency"
+    },
+    {
+      "name": "transparency-criteria",
+      "url": "/transparency"
+    },
+    {
+      "name": "publish-choice",
+      "url": "/publish"
+    },
+    {
+      "name": "publish-choice-large",
+      "url": "/publish"
+    },
+    {
+      "name": "publish-photos",
+      "url": "/my-adoptions/new"
+    },
+    {
+      "name": "publish-photos-large",
+      "url": "/my-adoptions/new"
+    },
+    {
+      "name": "publish-photo-grid",
+      "url": "/my-adoptions/post"
+    },
+    {
+      "name": "publish-photo-grid-large",
+      "url": "/my-adoptions/post"
+    },
+    {
+      "name": "publish-information",
+      "url": "/my-adoptions/post"
+    },
+    {
+      "name": "publish-information-large",
+      "url": "/my-adoptions/post"
+    },
+    {
+      "name": "publish-review",
+      "url": "/my-adoptions/post"
+    },
+    {
+      "name": "publish-review-large",
+      "url": "/my-adoptions/post"
+    },
+    {
+      "name": "publish-health",
+      "url": "/my-adoptions/post"
+    },
+    {
+      "name": "publish-health-large",
+      "url": "/my-adoptions/post"
+    },
+    {
+      "name": "expense-submitted",
+      "url": "/rescue/expense-one"
+    },
+    {
+      "name": "expense-submitted-large",
+      "url": "/rescue/expense-one"
+    },
+    {
+      "name": "expense-submitted-footer-large",
+      "url": "/rescue/expense-one"
+    },
+    {
+      "name": "case-publication",
+      "url": "/rescue/new?kind=case"
+    },
+    {
+      "name": "case-publication-header-focus",
+      "url": "/rescue/new?kind=case"
+    },
+    {
+      "name": "case-publication-header-focus-large",
+      "url": "/rescue/new?kind=case"
+    },
+    {
+      "name": "case-publication-large",
+      "url": "/rescue/new?kind=case"
+    },
+    {
+      "name": "case-publication-information-nameless",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-information-nameless-large",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-review-nameless",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-review-nameless-large",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-needs-list",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-needs-list-large",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-review-list",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-review-list-large",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-needs-medicine",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-needs-medicine-large",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-needs-food",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-needs-food-large",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-needs-veterinary",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-needs-veterinary-large",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-needs",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-needs-large",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-review",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-review-large",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-information",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-information-large",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-grid",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "case-publication-grid-large",
+      "url": "/rescue/case-one"
+    },
+    {
+      "name": "expense-record",
+      "url": "/rescue/expense-one"
+    },
+    {
+      "name": "expense-record-large",
+      "url": "/rescue/expense-one"
+    },
+    {
+      "name": "expense-review",
+      "url": "/rescue/expense-one"
+    },
+    {
+      "name": "expense-review-large",
+      "url": "/rescue/expense-one"
+    },
+    {
+      "name": "expense-review-private",
+      "url": "/rescue/expense-one"
+    },
+    {
+      "name": "expense-review-private-large",
+      "url": "/rescue/expense-one"
+    },
+    {
+      "name": "expense-dialog",
+      "url": "/rescue/expense-one"
+    },
+    {
+      "name": "expense-dialog-large",
+      "url": "/rescue/expense-one"
+    },
+    {
+      "name": "expense-evidence",
+      "url": "/rescue/expense-one"
+    },
+    {
+      "name": "expense-evidence-large",
+      "url": "/rescue/expense-one"
+    },
+    {
+      "name": "expense-information",
+      "url": "/rescue/expense-one"
+    },
+    {
+      "name": "expense-information-large",
+      "url": "/rescue/expense-one"
+    },
+    {
+      "name": "expense-private",
+      "url": "/rescue/expense-one"
+    },
+    {
+      "name": "expense-private-large",
+      "url": "/rescue/expense-one"
+    },
+    {
+      "name": "verification-intro",
+      "url": "/rescue/new?kind=verification"
+    },
+    {
+      "name": "verification-intro-large",
+      "url": "/rescue/new?kind=verification"
+    },
+    {
+      "name": "verification-form",
+      "url": "/rescue/new?kind=verification"
+    },
+    {
+      "name": "verification-form-large",
+      "url": "/rescue/new?kind=verification"
+    },
+    {
+      "name": "verification-approved",
+      "url": "/rescue/verification-id"
+    },
+    {
+      "name": "verification-approved-large",
+      "url": "/rescue/verification-id"
+    },
+    {
+      "name": "verification-review",
+      "url": "/rescue/verification-id"
+    },
+    {
+      "name": "verification-review-large",
+      "url": "/rescue/verification-id"
+    }
+  ]
+}

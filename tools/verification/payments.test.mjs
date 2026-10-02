@@ -64,6 +64,197 @@ function stripeFixture(d, overrides={}) {
   }};
 }
 const serviceFor = (stripe, overrideRpc=rpc) => paymentService({rpc:overrideRpc,stripe,returnUrl:'https://example.test/return',logger:{}});
+test('personality preserves legacy data, supports new traits and removes edited posts from discovery', async () => {
+  const post='30000000-0000-4000-8000-000000000001';
+  await db.query("insert into dopmi_adoptions(id,owner_id,status,personality) values($1,$2,'published',array['calm','alegre'])",[post,rescuer]);
+  await db.exec('set local role anon');
+  for (const trait of ['calm','alegre']) {
+    const result=(await db.query('select dopmi_discovery($1::jsonb) as value',[JSON.stringify({personality:[trait]})])).rows[0].value;
+    assert.equal(result.total,1);
+    assert.deepEqual(result.items[0].personality,['calm','alegre']);
+  }
+  await db.exec('reset role');
+  await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[rescuer]);
+  await db.exec('set local role authenticated');
+  const preserved=(await db.query("select dopmi_save_adoption('{}',$1,1) as value",[post])).rows[0].value;
+  assert.deepEqual(preserved.personality,['calm','alegre']);
+  assert.equal(preserved.status,'draft');
+  const edited=(await db.query(`select dopmi_save_adoption('{"personality":["triste","tranquilo"]}',$1,2) as value`,[post])).rows[0].value;
+  assert.deepEqual(edited.personality,['triste','tranquilo']);
+  await db.exec('reset role; set local role anon');
+  assert.equal((await db.query(`select dopmi_discovery('{"personality":["triste"]}') as value`)).rows[0].value.total,0);
+  await db.exec('reset role; set local role authenticated');
+  const cleared=(await db.query(`select dopmi_save_adoption('{"personality":[]}',$1,3) as value`,[post])).rows[0].value;
+  assert.deepEqual(cleared.personality,[]);
+  await db.exec('reset role');
+});
+
+test('new personality reaches discovery only after owner submission and staff review', async () => {
+  await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[rescuer]);
+  await db.exec('set local role authenticated');
+  const payload={pet_name:'Luna',city:'Monterrey',region:'Nuevo León',publisher_name:'Refugio',
+    story:'Luna busca una familia que la acompañe.',personality:['esperanzado','nervioso']};
+  const saved=(await db.query('select dopmi_save_adoption($1::jsonb) as value',[JSON.stringify(payload)])).rows[0].value;
+  const photo=`${rescuer}/${saved.id}/40000000-0000-4000-8000-000000000001.jpg`;
+  await db.query('select dopmi_save_adoption($1::jsonb,$2,1)',[JSON.stringify({...payload,photos:[photo]}),saved.id]);
+  await db.exec('reset role');
+  await db.query("insert into storage.objects(bucket_id,name) values('dopmi-adoption-photos',$1)",[photo]);
+  await db.exec('set local role authenticated');
+  await db.query("select dopmi_transition_adoption($1,2,'submit')",[saved.id]);
+  await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[staff]);
+  await db.query("select dopmi_review_adoption($1,3,'published')",[saved.id]);
+  await db.exec('reset role; set local role anon');
+  const result=(await db.query(`select dopmi_discovery('{"personality":["esperanzado"]}') as value`)).rows[0].value;
+  assert.equal(result.total,1);
+  assert.deepEqual(result.items[0].personality,payload.personality);
+  await db.exec('reset role');
+});
+
+for (const traits of ['alegre', ['inventado'], Array(19).fill('alegre')]) {
+  test(`personality rejects unsupported shape, values or cardinality: ${JSON.stringify(traits)}`, async () => {
+    await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[rescuer]);
+    await db.exec('set local role authenticated');
+    await assert.rejects(db.query('select dopmi_save_adoption($1::jsonb)',[JSON.stringify({personality:traits})]),e=>e.code==='22023');
+  });
+}
+
+test('H10 legal consent is versioned and cannot be forged through profile updates', async () => {
+  await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[other]);
+  const accepted=(await db.query(`select public.dopmi_accept_legal('terms-2026-09-28','privacy-2026-09-28',true) as value`)).rows[0].value;
+  assert.equal(accepted.adult_confirmed,true);
+  const profile=(await db.query('select terms_version,privacy_version,adult_confirmed_at from public.profiles where id=$1',[other])).rows[0];
+  assert.equal(profile.terms_version,'terms-2026-09-28');
+  assert.equal(profile.privacy_version,'privacy-2026-09-28');
+  assert.ok(profile.adult_confirmed_at);
+  assert.equal((await db.query('select count(*)::int as n from private.dopmi_consents where owner_id=$1',[other])).rows[0].n,1);
+  await assert.rejects(db.query(`select public.dopmi_accept_legal('otro','privacy-2026-09-28',true)`),/inválida/);
+});
+test('H10 deletion blocks old sessions, is idempotent and leaves only an anonymous accounting subject', async () => {
+  const requestKey='79000000-0000-4000-8000-000000000001';
+  const post='79000000-0000-4000-8000-000000000002';
+  const thread='79000000-0000-4000-8000-000000000003';
+  await db.query(`insert into public.dopmi_adoptions(id,owner_id,pet_name,status) values($1,$2,'Luna','published')`,[post,other]);
+  await db.query(`insert into public.dopmi_threads(id,post_id,owner_id,adopter_id,pet_name) values($1,$2,$3,$4,'Luna')`,[thread,post,other,donor]);
+  await db.query(`insert into public.dopmi_messages(id,thread_id,sender_id,body) values
+    ('79000000-0000-4000-8000-000000000004',$1,$2,'Mensaje del propietario'),
+    ('79000000-0000-4000-8000-000000000005',$1,$3,'Mensaje del adoptante')`,[thread,other,donor]);
+  const input={owner_id:other,request_key:requestKey};
+  const request=(await db.query('select public.dopmi_account_deletion_server($1,$2::jsonb) as value',['request',JSON.stringify(input)])).rows[0].value;
+  assert.equal(request.status,'procesando');
+  await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[other]);
+  assert.equal((await db.query('select public.dopmi_actor_active() as value')).rows[0].value,false);
+  const replay=(await db.query('select public.dopmi_account_deletion_server($1,$2::jsonb) as value',['request',JSON.stringify(input)])).rows[0].value;
+  assert.equal(replay.status,'procesando');
+  const done=(await db.query('select public.dopmi_account_deletion_server($1,$2::jsonb) as value',['finalize',JSON.stringify({owner_id:other})])).rows[0].value;
+  assert.equal(done.status,'completado');
+  await db.query('delete from auth.users where id=$1',[other]);
+  const profile=(await db.query('select display_name,phone,city,account_status from public.profiles where id=$1',[other])).rows[0];
+  assert.deepEqual(profile,{display_name:'Cuenta eliminada',phone:'',city:'',account_status:'deleted'});
+  const messages=(await db.query('select sender_id,body from public.dopmi_messages where thread_id=$1 order by id',[thread])).rows;
+  assert.deepEqual(messages,[
+    {sender_id:other,body:'[Mensaje retirado por eliminación de cuenta]'},
+    {sender_id:donor,body:'Mensaje del adoptante'},
+  ]);
+  assert.equal((await db.query('select status,pet_name from public.dopmi_adoptions where id=$1',[post])).rows[0].status,'archived');
+});
+test('H10 deletion completes for an empty account without changing another profile', async () => {
+  const requestKey='79000000-0000-4000-8000-000000000011';
+  const donorBefore=(await db.query(
+    'select display_name,account_status from public.profiles where id=$1',
+    [donor],
+  )).rows[0];
+  const requested=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['request',JSON.stringify({owner_id:other,request_key:requestKey})],
+  )).rows[0].value;
+  assert.equal(requested.status,'procesando');
+  const completed=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['finalize',JSON.stringify({owner_id:other})],
+  )).rows[0].value;
+  assert.equal(completed.status,'completado');
+  assert.deepEqual((await db.query(
+    'select display_name,account_status from public.profiles where id=$1',
+    [donor],
+  )).rows[0],donorBefore);
+  assert.equal((await db.query(
+    'select count(*)::int as n from private.dopmi_account_deletions where owner_id<>$1',
+    [other],
+  )).rows[0].n,0);
+});
+test('H10 deletion keeps access blocked while a contribution remains pending', async () => {
+  const pending=await prepare({
+    actor:other,
+    key:'79000000-0000-4000-8000-000000000021',
+  });
+  const requested=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['request',JSON.stringify({
+      owner_id:other,
+      request_key:'79000000-0000-4000-8000-000000000022',
+    })],
+  )).rows[0].value;
+  assert.equal(requested.status,'procesando');
+  const attention=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['finalize',JSON.stringify({owner_id:other})],
+  )).rows[0].value;
+  assert.equal(attention.status,'requiere_atencion');
+  assert.equal(attention.attention_code,'operacion_financiera_pendiente');
+  await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[other]);
+  assert.equal((await db.query('select public.dopmi_actor_active() as value')).rows[0].value,false);
+  assert.equal((await db.query(
+    'select payment_status from public.dopmi_donations where id=$1',
+    [pending.id],
+  )).rows[0].payment_status,'pending');
+});
+test('H10 deletion requests Guardian cancellation and waits for its confirmation', async () => {
+  await db.query(
+    'select public.dopmi_guardian_subscription_server($1,$2::jsonb)',
+    ['register',JSON.stringify({
+      donor_id:other,
+      stripe_customer_id:'cus_H10Deletion',
+      stripe_subscription_id:'sub_H10Deletion',
+      stripe_price_id:'price_H10Deletion',
+      gross_cents:5000,
+      initial_payment_intent_id:'pi_H10Deletion',
+      initial_charge_id:'ch_H10Deletion',
+    })],
+  );
+  const requested=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['request',JSON.stringify({
+      owner_id:other,
+      request_key:'79000000-0000-4000-8000-000000000031',
+    })],
+  )).rows[0].value;
+  assert.equal(requested.status,'procesando');
+  const plan=(await db.query(
+    'select status,cancellation_requested_at from private.dopmi_guardian_subscriptions where donor_id=$1',
+    [other],
+  )).rows[0];
+  assert.equal(plan.status,'active');
+  assert.ok(plan.cancellation_requested_at);
+  assert.equal((await db.query(
+    "select count(*)::int as n from private.dopmi_guardian_requests where donor_id=$1 and kind='cancel' and status='pending'",
+    [other],
+  )).rows[0].n,1);
+  const attention=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['finalize',JSON.stringify({owner_id:other})],
+  )).rows[0].value;
+  assert.equal(attention.status,'requiere_atencion');
+  assert.equal(attention.attention_code,'operacion_financiera_pendiente');
+  await db.query(
+    'select public.dopmi_guardian_subscription_server($1,$2::jsonb)',
+    ['cancel',JSON.stringify({donor_id:other,stripe_subscription_id:'sub_H10Deletion'})],
+  );
+  const completed=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['finalize',JSON.stringify({owner_id:other})],
+  )).rows[0].value;
+  assert.equal(completed.status,'completado');
+});
 test('scheduled reconciliation finds pending checkouts without an ambiguous SQL alias',async () => {
   const d=await prepare();
   await rpc('checkout_save',{donation_id:d.id,session_id:'cs_pending',url:'https://example.test/checkout'});
@@ -781,6 +972,24 @@ test('status and replay/lease RPCs remain service-only even for administrators',
     }
     await db.exec('reset role');
   }
+});
+
+test('public rescuer metrics include approved history, deduplicate linked pets and omit private payment data',async () => {
+  const d=await prepare(); await settle(d.id);
+  await db.exec('reset role');
+  await db.query(`insert into public.dopmi_adoptions(id,owner_id,status,published_at,rescue_case_id) values
+    ('30000000-0000-4000-8000-000000000091',$1,'published',now(),'71000000-0000-4000-8000-000000000002'),
+    ('30000000-0000-4000-8000-000000000092',$1,'archived',now(),null),
+    ('30000000-0000-4000-8000-000000000093',$1,'draft',null,null)`,[rescuer]);
+  await role('', 'anon');
+  const metrics=(await db.query('select public.dopmi_rescuer_public_metrics($1) v',[rescuer])).rows[0].v;
+  assert.deepEqual(metrics,{published_cases:1,active_donation_cases:1,active_adoptions:1,published_donation_cases:1,
+    published_adoptions:2,funded_cents:9200,completed_needs:0,helped_pets:2,closed_cases:0});
+  for(const sensitive of [donor,d.id,'ch_one','tr_fixture','pet_name','draft']) assert.equal(JSON.stringify(metrics).includes(sensitive),false);
+  await db.exec('reset role');
+  await db.query("update public.profiles set account_status='suspended' where id=$1",[rescuer]);
+  await role('', 'anon');
+  assert.equal((await db.query('select public.dopmi_rescuer_public_metrics($1) v',[rescuer])).rows[0].v,null);
 });
 
 test('case totals distinguish assigned from transferred net and contain no private payment information',async () => {
@@ -2036,15 +2245,15 @@ test('Guardian amount application keeps pause and calendar, disables proration a
   await f.manager().run(requestId);assert.equal(f.changeCalls.length,2);
 });
 test('Guardian current-period invoice discovered after a price change retains its old authorized amount',async()=>{
-  const f=await changeFixture(),requestId=await f.request('amount',0,1000);await f.manager().run(requestId);
+  const f=await changeFixture(),requestId=await f.request('amount',0,6000);await f.manager().run(requestId);
   const current=await f.collector().run(f.invoice.id);assert.equal(current.status,'paid');assert.equal(current.gross_cents,5000);assert.equal(current.price_id,'price_schedule1');
   assert.equal((await guardianSettlement('get',{cycle_id:current.cycle_id})).allocated_cents,4314);
-  const next=await collectionRpc('prepare',{invoice_id:'in_nextPrice',subscription_id:f.subscription.id,cycle_key:nextRequestKey,verified_price_id:'price_change1',verified_gross_cents:1000,
+  const next=await collectionRpc('prepare',{invoice_id:'in_nextPrice',subscription_id:f.subscription.id,cycle_key:nextRequestKey,verified_price_id:'price_change1',verified_gross_cents:6000,
     period_start:f.item.current_period_end,period_end:f.item.current_period_end+30*86400,fresh:true});
-  assert.equal(next.gross_cents,1000);assert.equal(next.price_id,'price_change1');
+  assert.equal(next.gross_cents,6000);assert.equal(next.price_id,'price_change1');
 });
 test('Guardian an old bound invoice reconciles after its subscription changes price and is canceled',async()=>{
-  const f=await changeFixture();const old=await f.prepare();const requestId=await f.request('amount',0,1000);await f.manager().run(requestId);
+  const f=await changeFixture();const old=await f.prepare();const requestId=await f.request('amount',0,6000);await f.manager().run(requestId);
   const cancelId=await f.request('cancel',1,null,nextRequestKey);await f.manager().run(cancelId);
   await f.stripe.invoices.pay(f.invoice.id,{},{});
   const settled=await f.service().reconcileInvoice(f.invoice.id);assert.equal(settled.gross_cents,5000);assert.equal(settled.allocated_cents,4314);
@@ -2055,10 +2264,10 @@ test('Guardian paid invoice cannot substitute a different period for its stored 
   await assert.rejects(()=>f.service().reconcileInvoice(f.invoice.id),/snapshot_mismatch/);
 });
 test('Guardian successive amount changes before renewal retain history and choose the newest authorized price',async()=>{
-  const f=await changeFixture();await f.manager().run(await f.request('amount',0,1000));
-  await f.manager().run(await f.request('amount',1,2000,nextRequestKey));
+  const f=await changeFixture();await f.manager().run(await f.request('amount',0,6000));
+  await f.manager().run(await f.request('amount',1,7000,nextRequestKey));
   const source=await collectionRpc('source',{subscription_id:f.subscription.id,period_start:f.item.current_period_end});
-  assert.equal(source.gross_cents,2000);assert.equal(source.stripe_price_id,'price_change2');
+  assert.equal(source.gross_cents,7000);assert.equal(source.stripe_price_id,'price_change2');
   const old=await collectionRpc('source',{subscription_id:f.subscription.id,period_start:f.item.current_period_end-1});
   assert.equal(old.gross_cents,5000);assert.equal((await db.query('select count(*)::int as n from private.dopmi_guardian_prices')).rows[0].n,3);
 });
@@ -2640,7 +2849,7 @@ test('Guardian stale invoice source cannot reserve a newly changed amount after 
   const f=await changeFixture(),target=f.item.current_period_end;let raced=false;
   f.invoice.lines.data[0].period={start:target,end:target+30*86400};f.invoice.created=target;
   const wrapped=async(op,data)=>{const result=await collectionRpc(op,data);if(op==='source'&&!raced){
-    raced=true;await f.manager().run(await f.request('amount',0,1000));changeClock(f,target+1);
+    raced=true;await f.manager().run(await f.request('amount',0,6000));changeClock(f,target+1);
   }return result;};
   await rejected(()=>f.collector(wrapped).run(f.invoice.id),/factura no coincide/);
   assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_collection_jobs')).rows[0].n,0);
@@ -2936,4 +3145,302 @@ test('Guardian reversal age limit alone stops new writes and a partial refund ma
   await assert.rejects(f.returns().reconcileCycle(f.cycle.id));await refundReady();
   await db.exec("update private.dopmi_guardian_reversals set first_attempt_at=now()-interval '24 hours'");
   f.stripe.transfers.createReversal=create;await assert.rejects(f.returns().reconcileCycle(f.cycle.id),/retry_limit/);assert.equal(f.writes.length,0);
+});
+
+
+test('personal impact combines settled Guardian net with punctual support and excludes other donors and reservations',async () => {
+  const cycle=await boundGuardian();
+  await role(donor,'authenticated');
+  const impact=async ()=>(await db.query('select public.dopmi_personal_impact() as value')).rows[0].value;
+  assert.deepEqual(await impact(),[]);
+  await db.exec('reset role');
+  await guardianSettlement('settle',guardianEvidence);
+  await role(donor,'authenticated');
+  let rows=await impact();
+  assert.equal(rows.length,1);
+  assert.equal(rows[0].allocated_cents,4314);
+  assert.equal(rows[0].public_data.pet_name,'Luna');
+  assert.deepEqual(Object.keys(rows[0]).sort(),['allocated_cents','case_id','last_supported_at','public_data','updates']);
+  await role(other,'authenticated');assert.deepEqual(await impact(),[]);
+  await role(staff,'authenticated');assert.deepEqual(await impact(),[]);
+  await db.exec('reset role');
+  const donation=await prepare({gross_cents:5000});
+  await settle(donation.id,{gross_cents:5000,stripe_fee_cents:500,charge_id:'ch_impact',payment_intent_id:'pi_impact'});
+  await role(donor,'authenticated');rows=await impact();
+  assert.equal(rows[0].allocated_cents,4314+4400);
+  await db.exec('reset role');
+  await db.query('update private.dopmi_guardian_allocations set reversed_cents=1000 where cycle_id=$1',[cycle.id]);
+  await role(donor,'authenticated');assert.equal((await impact())[0].allocated_cents,3314+4400);
+  await db.exec('reset role');
+  await db.query('update private.dopmi_guardian_allocations set reversed_cents=allocated_cents where cycle_id=$1',[cycle.id]);
+  await role(donor,'authenticated');assert.equal((await impact())[0].allocated_cents,4400);
+});
+
+test('personal impact hides withdrawn cases and rejects inactive and anonymous identities',async () => {
+  await boundGuardian();await guardianSettlement('settle',guardianEvidence);
+  await db.query("update public.dopmi_rescue_records set status='changes_requested' where kind='case'");
+  await role(donor,'authenticated');
+  assert.deepEqual((await db.query('select dopmi_personal_impact() as value')).rows[0].value,[]);
+  await db.exec('reset role');
+  await db.query("update profiles set account_status='suspended' where id=$1",[donor]);
+  await role(donor,'authenticated');
+  await rejected(()=>db.query('select dopmi_personal_impact()'),/Sesión activa requerida/);
+  await role('','anon');await rejected(()=>db.query('select dopmi_personal_impact()'),/permission denied/);
+});
+
+
+test('owned cases include confirmed punctual and Guardian net, not reservations or reversed allocations',async()=>{
+  const cycle=await boundGuardian();
+  const cases=async()=>(await db.query('select public.dopmi_my_cases() as value')).rows[0].value;
+  await role(rescuer);let result=await cases();
+  assert.equal(result.total,1);assert.equal(result.items[0].target_cents,12000);
+  assert.equal(result.items[0].funded_cents,0);assert.equal(result.items[0].transferred_cents,0);
+  await db.exec('reset role');await guardianSettlement('settle',guardianEvidence);
+  const donation=await prepare({gross_cents:5000});
+  await settle(donation.id,{gross_cents:5000,stripe_fee_cents:500,charge_id:'ch_owner',payment_intent_id:'pi_owner'});
+  await role(rescuer);result=await cases();assert.equal(result.items[0].funded_cents,4314+4400);
+  assert.equal(result.items[0].transferred_cents,0);
+  await db.exec('reset role');
+  await db.query("update private.dopmi_guardian_allocations set stripe_transfer_id='tr_owner',transferred_at=now(),reversed_cents=1000 where cycle_id=$1",[cycle.id]);
+  await role(rescuer);result=await cases();assert.equal(result.items[0].funded_cents,3314+4400);
+  assert.equal(result.items[0].transferred_cents,3314);
+  await db.exec('reset role');
+  await db.query('update private.dopmi_guardian_allocations set reversed_cents=allocated_cents where cycle_id=$1',[cycle.id]);
+  await role(rescuer);result=await cases();assert.equal(result.items[0].funded_cents,4400);
+  assert.equal(result.items[0].transferred_cents,0);
+});
+
+test('owned cases paginate every owner state and never grant staff or selected mode access to other private records',async()=>{
+  await db.query(`insert into public.dopmi_rescue_records(owner_id,kind,status,public_data,private_data,updated_at)
+    select $1,'case','draft','{"pet_name":"Borrador"}','{"fixture":"privado"}',now()+n*interval '1 second' from generate_series(1,22)n`,[rescuer]);
+  await db.query(`insert into public.dopmi_rescue_records(owner_id,kind,status,public_data,private_data)
+    values($1,'case','draft','{"pet_name":"Ajeno"}','{"fixture":"ajeno"}')`,[other]);
+  await role(rescuer);
+  const page=async n=>(await db.query('select public.dopmi_my_cases($1) as value',[n])).rows[0].value;
+  const first=await page(1),second=await page(2);
+  assert.equal(first.total,23);assert.equal(first.items.length,20);assert.equal(second.items.length,3);
+  assert.equal(new Set([...first.items,...second.items].map(v=>v.id)).size,23);
+  assert.ok(first.items.every(v=>v.owner_id===rescuer&&v.kind==='case'));
+  assert.equal(first.items[0].private_data.fixture,'privado');
+  assert.deepEqual((await page(3)).items,[]);
+  await role(staff);assert.deepEqual(await page(1),{total:0,items:[]});
+  await role(donor);assert.deepEqual(await page(1),{total:0,items:[]});
+  await role(other);const own=await page(1);assert.equal(own.total,1);assert.equal(own.items[0].private_data.fixture,'ajeno');
+});
+
+test('owned cases reject inactive or anonymous identities and invalid pages with restricted RPC privileges',async()=>{
+  const metadata=(await db.query(`select p.provolatile,p.prosecdef,p.proconfig,
+    has_function_privilege('anon',p.oid,'execute') as anon_execute,
+    has_function_privilege('authenticated',p.oid,'execute') as authenticated_execute,
+    md5(pg_get_functiondef(p.oid)) as definition_md5,
+    md5(pg_get_functiondef('public.dopmi_expense_funding(uuid)'::regprocedure)) as expense_funding_md5,
+    md5(pg_get_functiondef('public.dopmi_rescue_public(uuid,integer)'::regprocedure)) as public_cases_md5
+    from pg_proc p where p.oid='public.dopmi_my_cases(integer)'::regprocedure`)).rows[0];
+  assert.equal(metadata.provolatile,'s');assert.equal(metadata.prosecdef,true);
+  assert.deepEqual(metadata.proconfig,['search_path=""']);
+  assert.equal(metadata.anon_execute,false);assert.equal(metadata.authenticated_execute,true);
+  console.info('owned cases SQL verification',JSON.stringify(metadata));
+  await role(rescuer);await rejected(()=>db.query('select public.dopmi_my_cases(0)'),/Página inválida/);
+  await rejected(()=>db.query('select public.dopmi_my_cases(null)'),/Página inválida/);
+  await db.exec('reset role');await db.query("update profiles set account_status='suspended' where id=$1",[rescuer]);
+  await role(rescuer);await rejected(()=>db.query('select public.dopmi_my_cases()'),/Sesión activa requerida/);
+  await role('');await rejected(()=>db.query('select public.dopmi_my_cases()'),/Sesión activa requerida/);
+  await role('','anon');await rejected(()=>db.query('select public.dopmi_my_cases()'),/permission denied/);
+});
+
+
+test('planned case needs persist privately and do not create expenses or funding', async () => {
+  await db.query("select set_config('request.jwt.claim.sub',$1,true)",[rescuer]);
+  await db.exec('set local role authenticated');
+  const item={id:'84000000-0000-4000-8000-000000000001',type:'medicine',title:'Medicamento indicado',amount_cents:12345,detail:'Tratamiento prescrito',urgent:false};
+  const data={pet_name:'Luna',species:'dog',sex:'unknown',need:'Seguimiento',need_items:[item]};
+  const result=(await db.query("select public.dopmi_save_rescue('case',$1::jsonb,'{}','[]') as value",[JSON.stringify(data)])).rows[0].value;
+  assert.deepEqual(result.public_data.need_items,[item]);
+  assert.equal(result.status,'draft');
+  assert.equal(result.reimbursable_cents,0);
+  assert.equal(result.approved_snapshot,null);
+  await db.exec('reset role');
+  assert.equal((await db.query('select count(*)::int n from dopmi_rescue_records where parent_id=$1',[result.id])).rows[0].n,0);
+  await db.query("select set_config('request.jwt.claim.sub',$1,true)",[other]);
+  await db.exec('set local role authenticated');
+  await assert.rejects(db.query("select public.dopmi_save_rescue('case',$1::jsonb,'{}','[]',$2,$3)",[JSON.stringify(data),result.id,result.version]),e=>e.code==='42501');
+});
+
+test('planned needs reject malformed entries and invented financial state', async () => {
+  const item={id:'84000000-0000-4000-8000-000000000001',type:'food',title:'Alimento',amount_cents:12345,detail:'Una bolsa',urgent:false};
+  for (const items of [null,{},[item,item],[{...item,type:'cashback'}],[{...item,amount_cents:'12345'}],[{...item,amount_cents:1.5}],[{...item,amount_cents:0}],[{...item,urgent:'true'}],[{...item,funded_cents:500}],[{...item,title:''}]]) {
+    await db.exec('savepoint malformed_need');
+    await assert.rejects(db.query('select private.dopmi_case_fields($1::jsonb)',[JSON.stringify({need_items:items})]),e=>e.code==='22023');
+    await db.exec('rollback to savepoint malformed_need');
+  }
+  assert.deepEqual((await db.query('select private.dopmi_case_fields($1::jsonb) value',[JSON.stringify({need:'Cuidados existentes'})])).rows[0].value,{need:'Cuidados existentes'});
+});
+
+
+test('case submission accepts no planned financial needs while retaining photo and public information requirements', async () => {
+  const data={pet_name:'Luna',species:'dog',sex:'unknown',age:'3 años',story:'Rescatada con atención pendiente',city:'Monterrey',state:'Nuevo León',need_items:[]};
+  await db.query("select set_config('request.jwt.claim.sub',$1,true)",[rescuer]);
+  await db.exec('set local role authenticated');
+  let r=(await db.query("select dopmi_save_rescue('case',$1::jsonb,'{}','[]') value",[JSON.stringify(data)])).rows[0].value;
+  const path=`${rescuer}/${r.id}/85000000-0000-4000-8000-000000000001.jpg`;
+  await db.exec('reset role');
+  await db.query("insert into storage.objects(bucket_id,name,owner_id) values('dopmi-rescue-evidence',$1,$2)",[path,rescuer]);
+  await db.exec('set local role authenticated');
+  r=(await db.query("select dopmi_save_rescue('case',$1::jsonb,'{}',$2::jsonb,$3,$4) value",[JSON.stringify(data),JSON.stringify([{role:'public',path}]),r.id,r.version])).rows[0].value;
+  const submitted=(await db.query("select dopmi_transition_rescue($1,$2,'submit') value",[r.id,r.version])).rows[0].value;
+  assert.equal(submitted.status,'submitted');
+  assert.equal(submitted.reimbursable_cents,0);
+  assert.equal(submitted.approved_snapshot,null);
+});
+
+test('case submission accepts an empty pet name without approval or reimbursable funds', async () => {
+  const data={pet_name:'',species:'dog',sex:'unknown',age:'3 años',story:'Rescatada con atención pendiente',city:'Monterrey',state:'Nuevo León',need_items:[]};
+  await db.query("select set_config('request.jwt.claim.sub',$1,true)",[rescuer]);
+  await db.exec('set local role authenticated');
+  let r=(await db.query("select dopmi_save_rescue('case',$1::jsonb,'{}','[]') value",[JSON.stringify(data)])).rows[0].value;
+  const path=`${rescuer}/${r.id}/85000000-0000-4000-8000-000000000001.jpg`;
+  await db.exec('reset role');
+  await db.query("insert into storage.objects(bucket_id,name,owner_id) values('dopmi-rescue-evidence',$1,$2)",[path,rescuer]);
+  await db.exec('set local role authenticated');
+  r=(await db.query("select dopmi_save_rescue('case',$1::jsonb,'{}',$2::jsonb,$3,$4) value",[JSON.stringify(data),JSON.stringify([{role:'public',path}]),r.id,r.version])).rows[0].value;
+  const submitted=(await db.query("select dopmi_transition_rescue($1,$2,'submit') value",[r.id,r.version])).rows[0].value;
+  assert.equal(submitted.public_data.pet_name,'');
+  assert.equal(submitted.status,'submitted');
+  assert.equal(submitted.reimbursable_cents,0);
+  assert.equal(submitted.approved_snapshot,null);
+});
+
+test('public planned needs use only approved snapshot and never inflate real expense funding', async () => {
+  const caseId='71000000-0000-4000-8000-000000000002';
+  const approved={id:'11111111-1111-4111-8111-111111111111',type:'medicine',title:'Medicina revisada',amount_cents:77777,detail:'Tratamiento revisado',urgent:true};
+  const edited={...approved,title:'Texto privado no revisado',amount_cents:99999};
+  await db.query("update public.dopmi_rescue_records set public_data=$1::jsonb, approved_snapshot=$2::jsonb, private_data='{\"internal_note\":\"privado\"}' where id=$3",
+    [JSON.stringify({pet_name:'Borrador privado',need_items:[edited]}),JSON.stringify({pet_name:'Luna',need_items:[approved]}),caseId]);
+  await db.exec('set local role anon');
+  const page=(await db.query('select public.dopmi_rescue_public($1) value',[caseId])).rows[0].value;
+  const record=page.items.find(r=>r.kind==='case');
+  assert.deepEqual(record.public_data.need_items,[approved]);
+  assert.equal(record.public_data.pet_name,'Luna');
+  assert.equal(record.target_cents,12000);
+  assert.equal(record.funded_cents,0);
+  assert.equal(record.private_data,undefined);
+  assert.ok(!JSON.stringify(page).includes('Texto privado no revisado'));
+  await db.exec('reset role');
+  await db.query("update public.dopmi_rescue_records set status='draft',approved_snapshot=null where id=$1",[caseId]);
+  await db.exec('set local role anon');
+  const hidden=(await db.query('select public.dopmi_rescue_public($1) value',[caseId])).rows[0].value;
+  assert.ok(!hidden.items.some(r=>r.id===caseId));
+});
+
+test('new Guardian activation and owner amount requests require fifty pesos without any charge',async()=>{
+  await rejected(()=>activationPrepare({key:crypto.randomUUID(),gross_cents:4999}),/mínimo Guardián/);
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_activations')).rows[0].n,0);
+  await collectionFixture(); await role(donor);
+  await rejected(()=>ownerRequest('amount',0,4999),/mínimo Guardián/);
+  const accepted=await ownerRequest('amount',0,5001);
+  assert.equal(accepted.request.new_gross_cents,5001);
+  assert.equal(accepted.plan.gross_cents,5000);
+});
+
+// Reconstruct only the immediately prior minimum policy inside the test rollback.
+// Retain all subsequent ownership, dispute and cancellation protections.
+async function legacyGuardianAuthorization(signature, guard, authorize) {
+  const definition=(await db.query('select pg_get_functiondef($1::regprocedure) as value',[signature])).rows[0].value;
+  assert.equal(definition.split(guard).length,2);
+  await db.exec(definition.replace(guard,''));
+  try { return await authorize(); } finally { await db.exec('reset role'); await db.exec(definition); }
+}
+
+test('an already authorized Guardian activation below fifty retains its stable-key retry',async()=>{
+  const input={key:crypto.randomUUID(),gross_cents:1000};
+  const original=await legacyGuardianAuthorization('public.dopmi_guardian_activation_server(text,jsonb)',
+    " if gross<5000 then raise exception 'El mínimo Guardián es $50 MXN' using errcode='22023'; end if;",
+    ()=>activationPrepare(input));
+  assert.deepEqual(await activationPrepare(input),original);
+  await rejected(()=>activationPrepare({...input,key:crypto.randomUUID()}),/mínimo Guardián/);
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_activations')).rows[0].n,1);
+});
+
+test('an already authorized Guardian amount below fifty retains its owner retry and revision',async()=>{
+  await collectionFixture(); const legacyKey=crypto.randomUUID();
+  const original=await legacyGuardianAuthorization('public.dopmi_guardian_request(text,uuid,bigint,bigint,text)',
+    " if request_kind='amount' and new_gross_cents<5000 then raise exception 'El mínimo Guardián es $50 MXN' using errcode='22023'; end if;",
+    async()=>{await role(donor);return ownerRequest('amount',0,1000,legacyKey);});
+  await role(donor);
+  assert.deepEqual(await ownerRequest('amount',0,1000,legacyKey),original);
+  await rejected(()=>ownerRequest('amount',1,1000,crypto.randomUUID()),/mínimo Guardián/);
+  assert.equal((await ownerPlan()).revision,1);
+});
+
+
+test('rescuer dashboard includes settled Guardian net and excludes reservations and reversals',async()=>{
+  const cycle=await boundGuardian();
+  const dashboard=async()=>(await db.query('select public.dopmi_rescuer_dashboard() as value')).rows[0].value;
+  await role(rescuer);let result=await dashboard();
+  assert.deepEqual(result.financial,{assigned_cents:0,transferred_cents:0,in_review_cents:0});
+  await db.exec('reset role');await guardianSettlement('settle',guardianEvidence);
+  await role(rescuer);result=await dashboard();
+  assert.deepEqual(result.financial,{assigned_cents:4314,transferred_cents:0,in_review_cents:4314});
+  await role(other);result=await dashboard();
+  assert.deepEqual(result.financial,{assigned_cents:0,transferred_cents:0,in_review_cents:0});
+  await db.exec('reset role');
+  const donation=await prepare({gross_cents:5000});
+  await settle(donation.id,{gross_cents:5000,stripe_fee_cents:500,charge_id:'ch_dashboard',payment_intent_id:'pi_dashboard'});
+  await db.query("update private.dopmi_guardian_allocations set stripe_transfer_id='tr_dashboard',transferred_at=now(),reversed_cents=1000 where cycle_id=$1",[cycle.id]);
+  await role(rescuer);result=await dashboard();
+  assert.deepEqual(result.financial,{assigned_cents:7714,transferred_cents:3314,in_review_cents:4400});
+  await db.exec('reset role');
+  await db.query('update private.dopmi_guardian_allocations set reversed_cents=allocated_cents where cycle_id=$1',[cycle.id]);
+  await role(rescuer);result=await dashboard();
+  assert.deepEqual(result.financial,{assigned_cents:4400,transferred_cents:0,in_review_cents:4400});
+});
+
+test('rescuer dashboard remains private and rejects suspended actors',async()=>{
+  await role('','anon');await rejected(()=>db.query('select public.dopmi_rescuer_dashboard()'),/permission denied/);
+  await db.exec('reset role');
+  await db.query("update profiles set account_status='suspended' where id=$1",[rescuer]);
+  await role(rescuer);await rejected(()=>db.query('select public.dopmi_rescuer_dashboard()'),/Cuenta activa y confirmada requerida/);
+});
+
+
+test('rescuer recent activity includes only owned settled Guardian net with actual transfer status',async()=>{
+  const cycle=await boundGuardian();
+  const activity=async()=>(await db.query('select public.dopmi_rescuer_dashboard() as value')).rows[0].value.recent_activity;
+  await role(rescuer);assert.deepEqual(await activity(),[]);
+  await db.exec('reset role');await guardianSettlement('settle',guardianEvidence);
+  await role(rescuer);let rows=await activity();assert.equal(rows.length,1);
+  assert.equal(rows[0].source,'guardian');assert.equal(rows[0].expense_id,expense);
+  assert.equal(rows[0].expense_title,'Medicamentos');assert.equal(rows[0].allocated_cents,4314);
+  assert.equal(rows[0].transfer_status,'pending');
+  assert.deepEqual(Object.keys(rows[0]).sort(),['allocated_cents','created_at','expense_id','expense_title','source','transfer_status']);
+  await role(other);assert.deepEqual(await activity(),[]);
+  await db.exec('reset role');
+  await db.query("update private.dopmi_guardian_jobs set status='attention' where cycle_id=$1 and kind='transfer'",[cycle.id]);
+  await role(rescuer);rows=await activity();assert.equal(rows[0].transfer_status,'attention');
+  await db.exec('reset role');
+  await db.query("update private.dopmi_guardian_allocations set stripe_transfer_id='tr_activity',transferred_at=now(),reversed_cents=1000 where cycle_id=$1",[cycle.id]);
+  await role(rescuer);rows=await activity();assert.equal(rows[0].allocated_cents,3314);assert.equal(rows[0].transfer_status,'transferred');
+  await db.exec('reset role');
+  const donation=await prepare({gross_cents:5000});
+  await settle(donation.id,{gross_cents:5000,stripe_fee_cents:500,charge_id:'ch_activity',payment_intent_id:'pi_activity'});
+  await db.query("update private.dopmi_guardian_settlements set created_at=now()-interval '1 minute' where cycle_id=$1",[cycle.id]);
+  await role(rescuer);rows=await activity();
+  assert.deepEqual(rows.map(row=>row.source),['individual','guardian']);
+  assert.equal(rows[0].allocated_cents,4400);
+  await db.exec('reset role');
+  await db.query('update private.dopmi_guardian_allocations set reversed_cents=allocated_cents where cycle_id=$1',[cycle.id]);
+  await role(rescuer);rows=await activity();assert.equal(rows.length,1);assert.equal(rows[0].source,'individual');
+});
+
+
+test('rescuer mixed recent activity keeps a deterministic six-item limit',async()=>{
+  await boundGuardian();await guardianSettlement('settle',guardianEvidence);
+  for(let n=0;n<7;n++){
+    const d=await prepare({gross_cents:1000,key:`72000000-0000-4000-8000-${String(n+2).padStart(12,'0')}`});
+    await settle(d.id,{gross_cents:1000,stripe_fee_cents:100,charge_id:`ch_recent${n}`,payment_intent_id:`pi_recent${n}`});
+  }
+  await role(rescuer);
+  const activity=async()=>(await db.query('select public.dopmi_rescuer_dashboard() as value')).rows[0].value.recent_activity;
+  const rows=await activity();assert.equal(rows.length,6);assert.equal(rows[0].source,'guardian');
+  assert.deepEqual(await activity(),rows);
 });

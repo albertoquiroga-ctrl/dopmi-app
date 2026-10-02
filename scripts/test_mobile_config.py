@@ -20,6 +20,11 @@ class MobileConfigTests(unittest.TestCase):
         self.assertEqual(config.build_config(self.env)["ENABLE_GUARDIAN_TEST"], "false")
         self.assertEqual(config.build_config(self.env, True)["ENABLE_GUARDIAN_TEST"], "true")
 
+    def test_measurement_diagnostic_requires_explicit_build_option(self):
+        self.env["ENABLE_MEASUREMENT_TEST"] = "true"
+        self.assertEqual(config.build_config(self.env)["ENABLE_MEASUREMENT_TEST"], "false")
+        self.assertEqual(config.build_config(self.env, measurement_test=True)["ENABLE_MEASUREMENT_TEST"], "true")
+
     def test_guardian_rejects_another_project(self):
         self.env["SUPABASE_URL"] = "https://another-project.supabase.co"
         with self.assertRaises(ValueError):
@@ -33,11 +38,18 @@ class MobileConfigTests(unittest.TestCase):
             self.assertNotIn(key, str(caught.exception))
 
     def test_preserves_existing_anon_client_and_social_options(self):
-        self.env.update(SUPABASE_PUBLISHABLE_KEY=self.jwt("anon"), ENABLE_GOOGLE_AUTH=" true ", ENABLE_APPLE_AUTH="false")
+        self.env.update(SUPABASE_PUBLISHABLE_KEY=self.jwt("anon"), ENABLE_GOOGLE_AUTH=" true ", ENABLE_APPLE_AUTH="false",
+                        GOOGLE_SERVER_CLIENT_ID="123-unit-test.apps.googleusercontent.com")
         result = config.build_config(self.env, True)
         self.assertEqual(result["ENABLE_GOOGLE_AUTH"], "true")
         self.assertEqual(result["ENABLE_APPLE_AUTH"], "false")
         self.assertEqual(result["AUTH_REDIRECT_URL"], "io.dopmi.app://auth/callback")
+
+    def test_google_requires_public_client_configuration(self):
+        with self.assertRaises(ValueError):
+            config.build_config({**self.env, "ENABLE_GOOGLE_AUTH": "true"})
+        with self.assertRaises(ValueError):
+            config.build_config({**self.env, "GOOGLE_SERVER_CLIENT_ID": "not-an-oauth-client"})
 
     def test_invalid_or_missing_options_fail_early(self):
         for name, value in (("SUPABASE_URL", ""), ("SUPABASE_PUBLISHABLE_KEY", ""),
@@ -51,6 +63,35 @@ class MobileConfigTests(unittest.TestCase):
         result = config.build_config(self.env, True)
         self.assertFalse(result["SUPABASE_URL"].endswith("/"))
         self.assertNotIn("\n", result["SUPABASE_PUBLISHABLE_KEY"])
+
+    def test_all_workflows_reject_unregistered_projects(self):
+        for guardian in (False, True):
+            with self.subTest(guardian=guardian), self.assertRaises(ValueError):
+                config.build_config({**self.env, "SUPABASE_URL": "https://another-project.supabase.co"}, guardian)
+
+    def test_production_stays_closed_until_commissioned(self):
+        for environment in ("production", "staging", ""):
+            with self.subTest(environment=environment), self.assertRaises(ValueError):
+                config.build_config({**self.env, "DOPMI_ENVIRONMENT": environment})
+        self.assertEqual(config.build_config(self.env)["DOPMI_ENVIRONMENT"], "test")
+
+    def test_rejects_anon_key_from_another_project(self):
+        payload = base64.urlsafe_b64encode(json.dumps({"role": "anon", "ref": "another-project"}).encode()).decode().rstrip("=")
+        with self.assertRaises(ValueError):
+            config.build_config({**self.env, "SUPABASE_PUBLISHABLE_KEY": f"e30.{payload}.signature"})
+
+    def test_firebase_is_limited_to_measurement_sdks(self):
+        pubspec = (Path(__file__).resolve().parents[1] / "apps/mobile/pubspec.yaml").read_text()
+        declared = {
+            line.split(":", 1)[0].strip()
+            for line in pubspec.splitlines()
+            if line.startswith("  firebase_") or line.startswith("  cloud_")
+        }
+        self.assertEqual(
+            declared,
+            {"firebase_core", "firebase_analytics", "firebase_crashlytics"},
+            "Firebase must remain limited to optional Analytics and Crashlytics; Supabase is the product backend.",
+        )
 
     @staticmethod
     def jwt(role):

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
 import '../adoption/community_repository.dart';
@@ -7,6 +8,7 @@ import '../adoption/community_ui.dart';
 import '../identity/identity_controller.dart';
 import '../rescue/rescue_repository.dart';
 import 'guardian_repository.dart';
+import 'payment_history_row.dart';
 
 String _date(Object? value) {
   final parsed = DateTime.tryParse(value?.toString() ?? '')?.toLocal();
@@ -28,6 +30,83 @@ const _statusLabels = {
   'refund_review': 'Devolución en revisión',
   'refunded': 'Devolución confirmada',
 };
+
+class GuardianHistoryPreview extends ConsumerWidget {
+  const GuardianHistoryPreview({super.key, required this.owner});
+  final String owner;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!ref.watch(guardianEnabledProvider) ||
+        ref.read(identityControllerProvider).identity?.id != owner) {
+      return const SizedBox.shrink();
+    }
+    return LiveSection<Json>(
+      load: () => ref.read(guardianRepositoryProvider).history(),
+      errorMessage: (_) => 'No pudimos consultar tus pagos. Intenta de nuevo.',
+      builder: (data, refresh) {
+        final items = (data['items'] as List)
+            .map((item) => Json.from(item))
+            .toList();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (items.isEmpty)
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 22,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xfff7f5f1),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: const Text(
+                  'Aún no hay pagos registrados.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, height: 1.55, color: muted),
+                ),
+              )
+            else
+              Material(
+                color: Colors.white,
+                clipBehavior: Clip.antiAlias,
+                shape: RoundedRectangleBorder(
+                  side: const BorderSide(color: Color(0xffe6e2dd)),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Column(
+                  children: [
+                    for (var i = 0; i < items.length; i++) ...[
+                      if (i > 0)
+                        const Divider(
+                          height: 1,
+                          thickness: 1,
+                          color: Color(0xffe6e2dd),
+                        ),
+                      GuardianHistoryEntry(
+                        key: ValueKey('$owner:${items[i]['id']}'),
+                        owner: owner,
+                        item: items[i],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            if (data['next_cursor'] != null)
+              TextButton(
+                onPressed: () => context.push('/guardian/history'),
+                child: const Text('Ver ciclos anteriores'),
+              ),
+            TextButton(
+              onPressed: refresh,
+              child: const Text('Actualizar pagos'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
 
 class GuardianHistoryScreen extends ConsumerWidget {
   const GuardianHistoryScreen({super.key});
@@ -136,93 +215,7 @@ class _HistoryState extends ConsumerState<_GuardianHistory> {
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${item['kind'] == 'initial'
-                          ? 'Intento de alta'
-                          : item['kind'] == 'monthly'
-                          ? 'Ciclo mensual'
-                          : 'Ciclo'} · ${_date(item['period_start'] ?? item['created_at'])}',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    if (item['period_end'] != null)
-                      Text(
-                        'Siguiente aniversario de este ciclo: ${_date(item['period_end'])}',
-                      ),
-                    Text(
-                      _statusLabels[item['status']] ?? 'Estado por confirmar',
-                    ),
-                    Text(
-                      'Importe autorizado: ${pesos(item['authorized_cents'] as int)}',
-                    ),
-                    if (item['paid_cents'] != null) ...[
-                      Text(
-                        'Pago confirmado: ${pesos(item['paid_cents'] as int)}',
-                      ),
-                      Text(
-                        'Comisión Dopmi: ${pesos(item['platform_fee_cents'] as int)}',
-                      ),
-                      Text(
-                        'Costos de Stripe: ${pesos(item['stripe_fee_cents'] as int)}',
-                      ),
-                      Text(
-                        'Neto asignado: ${pesos(item['assigned_cents'] as int)}',
-                      ),
-                      Text(
-                        'Transferido: ${pesos(item['transferred_cents'] as int)}',
-                      ),
-                    ],
-                    if ((item['refund_cents'] as int? ?? 0) > 0)
-                      Text(
-                        '${item['status'] == 'refunded' ? 'Devuelto' : 'Por devolver'}: ${pesos(item['refund_cents'] as int)}',
-                      ),
-                    if ([
-                          'refund_reconciling',
-                          'refund_review',
-                        ].contains(item['status']) &&
-                        (item['refunded_cents'] as int? ?? 0) > 0)
-                      Text(
-                        'Devuelto confirmado: ${pesos(item['refunded_cents'] as int)}',
-                      ),
-                    if (item['status'] == 'refund_reconciling')
-                      const Text(
-                        'El pago ya fue devuelto. Seguimos conciliando las transferencias anteriores.',
-                      ),
-                    if ((item['reversed_cents'] as int? ?? 0) > 0)
-                      Text(
-                        'Transferencias revertidas: ${pesos(item['reversed_cents'] as int)}',
-                      ),
-                    if (item['status'] == 'refund_pending' ||
-                        item['status'] == 'refunded')
-                      const Text(
-                        'La devolución corresponde al importe completo del pago. Los costos de procesamiento no reducen lo que se te devuelve.',
-                      ),
-                    if (item['status'] == 'processing' ||
-                        item['status'] == 'review')
-                      const Text(
-                        'Esperamos confirmación del resultado. No inicies otro pago para este ciclo.',
-                      ),
-                    if (item['skip_reason'] != null)
-                      Text(switch (item['skip_reason']) {
-                        'no_capacity' => 'No había capacidad para asignar la aportación completa.',
-                        'authentication_required' => 'Se requería autenticación bancaria. Actualizar el medio de pago sólo aplica a próximos ciclos.',
-                        'payment_failed' => 'El pago fue rechazado. Puedes actualizar el medio para próximos ciclos.',
-                        _ => 'El ciclo se cerró sin cobro.',
-                      }),
-                    if (item['needs_review'] == true)
-                      const Notice(
-                        'La entrega o devolución requiere revisión. El importe confirmado se conserva en este historial.',
-                      ),
-                    if ((item['allocation_count'] as int? ?? 0) > 0)
-                      _Allocations(
-                        key: ValueKey('$owner:$revision:${item['id']}'),
-                        owner: owner,
-                        cycle: item['id'] as String,
-                      ),
-                  ],
-                ),
+                child: GuardianCycleReceipt(owner: owner, item: item),
               ),
             ),
           if (error != null) Notice(error!, isError: true),
@@ -239,6 +232,128 @@ class _HistoryState extends ConsumerState<_GuardianHistory> {
       ],
     );
   }
+}
+
+class GuardianHistoryEntry extends StatelessWidget {
+  const GuardianHistoryEntry({
+    super.key,
+    required this.owner,
+    required this.item,
+  });
+  final String owner;
+  final Json item;
+  @override
+  Widget build(BuildContext context) {
+    final paid = item['paid_cents'] as int?;
+    final confirmed = paid != null && paid > 0;
+    final status = item['status'];
+    final label = switch (status) {
+      'assigned' || 'transferred' => confirmed ? 'Pagado' : 'En revisión',
+      'skipped' => 'Sin cargo',
+      'not_paid' => 'Sin pago',
+      'processing' => 'En proceso',
+      'refund_pending' => 'Por devolver',
+      'refunded' => 'Devuelto',
+      'refund_reconciling' => 'En conciliación',
+      _ => 'En revisión',
+    };
+    final tone = switch (status) {
+      'assigned' || 'transferred' => confirmed ? 'confirmed' : 'review',
+      'processing' || 'refund_pending' => 'pending',
+      _ => 'review',
+    };
+    return PaymentHistoryRow(
+      payment: {
+        'created_at': item['period_start'] ?? item['created_at'],
+        'expense_title': item['kind'] == 'initial'
+            ? 'Activación Guardián'
+            : 'Suscripción',
+        'gross_cents': confirmed ? paid : item['authorized_cents'],
+        'payment_status': tone,
+      },
+      statusLabel: label,
+      methodLabel: confirmed ? 'Pago confirmado' : 'Importe autorizado',
+      details: GuardianCycleReceipt(owner: owner, item: item),
+    );
+  }
+}
+
+class GuardianCycleReceipt extends StatelessWidget {
+  const GuardianCycleReceipt({
+    super.key,
+    required this.owner,
+    required this.item,
+  });
+  final String owner;
+  final Json item;
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        '${item['kind'] == 'initial'
+            ? 'Intento de alta'
+            : item['kind'] == 'monthly'
+            ? 'Ciclo mensual'
+            : 'Ciclo'} · ${_date(item['period_start'] ?? item['created_at'])}',
+        style: Theme.of(context).textTheme.titleMedium,
+      ),
+      if (item['period_end'] != null)
+        Text(
+          'Siguiente aniversario de este ciclo: ${_date(item['period_end'])}',
+        ),
+      Text(_statusLabels[item['status']] ?? 'Estado por confirmar'),
+      Text('Importe autorizado: ${pesos(item['authorized_cents'] as int)}'),
+      if (item['paid_cents'] != null) ...[
+        Text('Pago confirmado: ${pesos(item['paid_cents'] as int)}'),
+        Text('Comisión Dopmi: ${pesos(item['platform_fee_cents'] as int)}'),
+        Text('Costos de Stripe: ${pesos(item['stripe_fee_cents'] as int)}'),
+        Text('Neto asignado: ${pesos(item['assigned_cents'] as int)}'),
+        Text('Transferido: ${pesos(item['transferred_cents'] as int)}'),
+      ],
+      if ((item['refund_cents'] as int? ?? 0) > 0)
+        Text(
+          '${item['status'] == 'refunded' ? 'Devuelto' : 'Por devolver'}: ${pesos(item['refund_cents'] as int)}',
+        ),
+      if (['refund_reconciling', 'refund_review'].contains(item['status']) &&
+          (item['refunded_cents'] as int? ?? 0) > 0)
+        Text('Devuelto confirmado: ${pesos(item['refunded_cents'] as int)}'),
+      if (item['status'] == 'refund_reconciling')
+        const Text(
+          'El pago ya fue devuelto. Seguimos conciliando las transferencias anteriores.',
+        ),
+      if ((item['reversed_cents'] as int? ?? 0) > 0)
+        Text(
+          'Transferencias revertidas: ${pesos(item['reversed_cents'] as int)}',
+        ),
+      if (item['status'] == 'refund_pending' || item['status'] == 'refunded')
+        const Text(
+          'La devolución corresponde al importe completo del pago. Los costos de procesamiento no reducen lo que se te devuelve.',
+        ),
+      if (item['status'] == 'processing' || item['status'] == 'review')
+        const Text(
+          'Esperamos confirmación del resultado. No inicies otro pago para este ciclo.',
+        ),
+      if (item['skip_reason'] != null)
+        Text(switch (item['skip_reason']) {
+          'no_capacity' =>
+            'No había capacidad para asignar la aportación completa.',
+          'authentication_required' => 'Se requería autenticación bancaria. Actualizar el medio de pago sólo aplica a próximos ciclos.',
+          'payment_failed' => 'El pago fue rechazado. Puedes actualizar el medio para próximos ciclos.',
+          _ => 'El ciclo se cerró sin cobro.',
+        }),
+      if (item['needs_review'] == true)
+        const Notice(
+          'La entrega o devolución requiere revisión. El importe confirmado se conserva en este historial.',
+        ),
+      if ((item['allocation_count'] as int? ?? 0) > 0)
+        _Allocations(
+          key: ValueKey('$owner:${item['id']}'),
+          owner: owner,
+          cycle: item['id'] as String,
+        ),
+    ],
+  );
 }
 
 class _Allocations extends ConsumerStatefulWidget {

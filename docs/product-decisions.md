@@ -1,12 +1,16 @@
 # Dopmi — decisiones vigentes
 
+> Decisión vigente 27/9/2026: el titular admite las pantallas actuales para continuar; la fidelidad visual queda aplazada, sin aceptación atribuida a Irlanda. H9 autorizado: aceptación integrada y correcciones, con revisión final agrupada en Internal Testing. Ver [H9](h9-acceptance.md). Esta decisión supersede los bloqueos visuales históricos inferiores.
+
 ## Decisiones de lanzamiento — 25 de septiembre de 2026 (México)
+
+Actualización 26/9/2026: H8 incluye paridad completa y funcional de ambos modos, backend mínimo de favoritos/avances/perfil público/reportes y descubrimiento aproximado. H9 conserva aceptación integrada/excepciones. Historias persistentes, no temporales; ubicación aproximada opcional con alternativa manual; contacto público por ciudad y chat sin domicilio, teléfono ni correo personal. Ver `h8-execution.md`.
 
 El titular autorizó `release-roadmap.md`. MVP público en Android/iOS con Google/Apple, eliminación de cuenta, medición mínima y funciones actuales completas. Videos, Meta, push y analítica avanzada quedan post-MVP. No habrá tienda, fondo comunitario, bonos ni cashback. Seguir la última versión de Irlanda (`irlanda/apoyar-detalle-perfil`); las reglas económicas y de privacidad prevalecen sobre sus simulaciones. El sistema anterior al pivot era de pruebas; retirarlo tras respaldo, restauración y análisis de dependencias, preservando el sistema actual.
 
 ## Alcance
 
-App Flutter para Android/iPhone, panel React/TypeScript y Supabase. Al corte del 25 de septiembre de 2026, H1–H3 están completos en desarrollo y H4 en modo prueba; H5 está aceptado en modo prueba con la excepción documentada en [entrega H5](hito5-delivery.md). Continuidad en la base consolidada `codex/Dopmi` y rama H7 `codex/legacy-boundary`, según [la guía para Codex](codex-handoff.md). El titular compila en Codemagic y la aceptación H5 utiliza Google Play interno; TestFlight queda como alternativa.
+App Flutter para Android/iPhone, panel React/TypeScript y Supabase. Al corte del 25 de septiembre de 2026, H1–H3 están completos en desarrollo y H4 en modo prueba; H5 está aceptado en modo prueba con la excepción documentada en [entrega H5](hito5-delivery.md). Continuidad en la base consolidada `codex/Dopmi` y rama H8 `codex/design-foundation`, según [la guía para Codex](codex-handoff.md). El titular compila en Codemagic y la aceptación H5 utiliza Google Play interno; TestFlight queda como alternativa.
 
 Referencia visual: https://www.figma.com/design/96Dxvfc0V4Kn3lU6OTJ1g5/DopMi?node-id=133-624
 
@@ -33,6 +37,14 @@ El prototipo React y la fuente funcional del ZIP son referencias de producto. Su
 - Google/Apple se habilitan solo con sus proveedores configurados; nunca simular autenticación exitosa.
 - Administradores se asignan mediante una operación de servidor. No existe registro público de administradores.
 - Los textos legales de desarrollo son provisionales y no habilitan un lanzamiento público.
+
+## Límite Supabase/Firebase — 29 de septiembre de 2026
+
+- Supabase es el único backend del producto: Auth, PostgreSQL/RLS, Storage, Realtime y Edge Functions. Las sesiones sociales de Google y Apple siempre terminan en Supabase.
+- Firebase se conserva exclusivamente para Analytics y Crashlytics. Ambos servicios son opcionales, tienen consentimientos independientes y permanecen apagados hasta que la persona los active.
+- La app no usará Firebase Authentication, Firestore, Realtime Database, Storage, Cloud Functions ni Dynamic Links. Incorporar cualquiera de esos servicios requiere una nueva decisión explícita y una revisión de privacidad y arquitectura.
+- Las configuraciones Firebase de pruebas y producción deben pertenecer a ambientes separados. La medición nunca decide estados financieros ni sustituye la evidencia del servidor.
+- Los recursos del backend anterior en Firebase se consideran legado de pruebas: no reciben datos nuevos ni se migran usuarios desde ellos. Se inventariarán y retirarán cuando su ausencia de dependencias esté comprobada.
 
 ## Hito 2 — adopción y comunicación
 

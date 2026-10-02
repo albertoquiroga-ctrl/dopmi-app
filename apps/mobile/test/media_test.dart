@@ -5,6 +5,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 
 void main() {
+  test('private media links allow delayed loading but remain short-lived', () {
+    expect(mediaSignedUrlLifetimeSeconds, greaterThanOrEqualTo(5 * 60));
+    expect(mediaSignedUrlLifetimeSeconds, lessThanOrEqualTo(10 * 60));
+  });
+
   test(
     'photo policies share normalization and never accept a PDF as a photo',
     () {

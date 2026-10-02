@@ -37,16 +37,22 @@ class RescueRecord {
   String get status => data['status'] as String;
   int get version => data['version'] as int? ?? 0;
   String? get parent => data['parent_id'] as String?;
+  bool get saved => data['saved'] == true;
+  int get targetCents => data['target_cents'] as int? ?? 0;
+  int get fundedCents => data['funded_cents'] as int? ?? 0;
+  int get transferredCents => data['transferred_cents'] as int? ?? 0;
   Json get publicData => Json.from(data['public_data'] as Map? ?? {});
   Json get privateData => Json.from(data['private_data'] as Map? ?? {});
   List<Json> get files =>
       (data['files'] as List? ?? []).map((e) => Json.from(e as Map)).toList();
-  String get title =>
-      (publicData['public_name'] ??
-              publicData['pet_name'] ??
-              publicData['title'] ??
-              'Sin título')
-          as String;
+  String get title {
+    for (final key in ['public_name', 'pet_name', 'title']) {
+      final value = publicData[key] as String?;
+      if (value != null && value.trim().isNotEmpty) return value;
+    }
+    return kind == 'case' ? 'Sin nombre' : 'Sin título';
+  }
+
   bool get editable =>
       ['draft', 'changes_requested', 'rejected'].contains(status);
 }
@@ -58,11 +64,24 @@ final rescueRepositoryProvider = Provider<RescueRepository>(
 class RescueRepository {
   RescueRepository(this.client);
   final SupabaseClient client;
+  Future<Json> dashboard() async =>
+      Json.from(await client.rpc('dopmi_rescuer_dashboard'));
   Future<DataPage<RescueRecord>> mine(
     String kind,
     int page, {
     String? parent,
   }) async {
+    if (kind == 'case' && parent == null) {
+      final result = Json.from(
+        await client.rpc('dopmi_my_cases', params: {'page_number': page}),
+      );
+      return DataPage(
+        (result['items'] as List)
+            .map((item) => RescueRecord(Json.from(item as Map)))
+            .toList(),
+        result['total'] as int,
+      );
+    }
     var query = client
         .from('dopmi_rescue_records')
         .select()
@@ -127,6 +146,36 @@ class RescueRepository {
     );
   }
 
+  /// Load the complete approved case snapshot before exposing contribution choices.
+  /// Every page still goes through the public, authorization-filtered RPC.
+  Future<DataPage<RescueRecord>> completeCaseCatalog(String caseId) async {
+    final records = <String, RescueRecord>{};
+    var page = 1;
+    while (true) {
+      final result = await catalog(page, caseId: caseId);
+      // Revocation during pagination must discard data collected earlier.
+      if (result.total == 0) return const DataPage([], 0);
+      if (result.items.isEmpty) {
+        throw StateError(
+          'El catálogo cambió durante la carga. Vuelve a intentarlo.',
+        );
+      }
+      for (final record in result.items) {
+        records[record.id] = record;
+      }
+      if (page * 20 >= result.total) {
+        if (records.length != result.total) {
+          throw StateError(
+            'El catálogo cambió durante la carga. Vuelve a intentarlo.',
+          );
+        }
+        break;
+      }
+      page++;
+    }
+    return DataPage(records.values.toList(), records.length);
+  }
+
   Future<String> fileUrl(String path) =>
       MediaStore(client).signedUrl(path, MediaPurpose.rescuePhoto);
   Future<String> upload(
@@ -151,8 +200,16 @@ int? parsePesos(String text) {
   return cents > 0 && cents <= 100000000 ? cents : null;
 }
 
-String pesos(int cents) =>
-    '\$${(cents ~/ 100).toString()}.${(cents % 100).toString().padLeft(2, '0')} MXN';
+String pesos(int cents) {
+  final magnitude = cents.abs();
+  final whole = (magnitude ~/ 100).toString().replaceAllMapped(
+    RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+    (match) => '${match[1]},',
+  );
+  final fraction = (magnitude % 100).toString().padLeft(2, '0');
+  return '${cents < 0 ? '-' : ''}\$$whole.$fraction MXN';
+}
+
 String rescueError(Object error) {
   if (error is PostgrestException && ['22023', '40001'].contains(error.code)) {
     return error.message;

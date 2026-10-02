@@ -4,12 +4,25 @@ import 'package:uuid/uuid.dart';
 
 import 'prepare_photo.dart';
 
-enum MediaPurpose { adoptionPhoto, rescuePhoto, rescueDocument }
+/// Gives private media enough time to load after navigation or a brief app
+/// suspension while keeping each generated URL short-lived.
+const mediaSignedUrlLifetimeSeconds = 10 * 60;
+
+enum MediaPurpose {
+  adoptionPhoto,
+  rescuePhoto,
+  rescueDocument,
+  caseUpdatePhoto,
+  rescuerAvatar,
+}
 
 extension MediaPolicy on MediaPurpose {
-  String get bucket => this == MediaPurpose.adoptionPhoto
-      ? 'dopmi-adoption-photos'
-      : 'dopmi-rescue-evidence';
+  String get bucket => switch (this) {
+    MediaPurpose.adoptionPhoto => 'dopmi-adoption-photos',
+    MediaPurpose.caseUpdatePhoto => 'dopmi-case-update-media',
+    MediaPurpose.rescuerAvatar => 'dopmi-rescuer-profile-media',
+    _ => 'dopmi-rescue-evidence',
+  };
   bool get isDocument => this == MediaPurpose.rescueDocument;
   int get inputLimit =>
       this == MediaPurpose.adoptionPhoto ? 15 * 1024 * 1024 : 5 * 1024 * 1024;
@@ -85,6 +98,7 @@ class MediaStore {
     return path;
   }
 
-  Future<String> signedUrl(String path, MediaPurpose purpose) =>
-      client.storage.from(purpose.bucket).createSignedUrl(path, 60);
+  Future<String> signedUrl(String path, MediaPurpose purpose) => client.storage
+      .from(purpose.bucket)
+      .createSignedUrl(path, mediaSignedUrlLifetimeSeconds);
 }

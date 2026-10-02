@@ -46,6 +46,27 @@ class DataPage<T> {
   final int total;
 }
 
+class SupportOpportunity {
+  SupportOpportunity(Json value) : data = Map.unmodifiable(value);
+  final Json data;
+  String text(String key) => data[key] as String? ?? '';
+  String get id => text('case_id');
+  String get expenseId => text('expense_id');
+  String get name =>
+      text('pet_name').trim().isEmpty ? 'Sin nombre' : text('pet_name');
+  int get reimbursable => data['reimbursable_cents'] as int? ?? 0;
+  int get funded => data['funded_cents'] as int? ?? 0;
+}
+
+class SavedEntry {
+  SavedEntry(Json value) : data = Map.unmodifiable(value);
+  final Json data;
+  String text(String key) => data[key] as String? ?? '';
+  String get id => text('id');
+  bool get available => data['available'] == true;
+  Json get publicData => Json.from(data['public_data'] as Map? ?? {});
+}
+
 final communityRepositoryProvider = Provider<CommunityRepository>(
   (ref) => SupabaseCommunityRepository(Supabase.instance.client),
 );
@@ -53,23 +74,34 @@ final communityRepositoryProvider = Provider<CommunityRepository>(
 abstract class CommunityRepository {
   String? get userId;
   Future<DataPage<Adoption>> catalog(Json filters, int page);
+  Future<DataPage<Adoption>> discovery(Json filters, int page);
+  Future<List<SupportOpportunity>> discoverySupport();
   Future<Adoption?> detail(String id);
   Future<DataPage<Adoption>> mine(int page);
   Future<Adoption?> own(String id);
+  Future<Adoption?> ownForCase(String caseId);
   Future<Adoption> save(Json payload, {String? id, int? version});
   Future<Adoption> transition(Adoption post, String action);
   Future<void> favorite(String id, bool saved);
+  Future<DataPage<SavedEntry>> savedAdoptions(int page);
+  Future<DataPage<SavedEntry>> savedCases(int page);
+  Future<DataPage<SavedEntry>> savedRescuers(int page);
+  Future<void> favoriteCase(String id, bool saved);
+  Future<void> favoriteRescuer(String id, bool saved);
+  Future<String> report(String type, String id, String reason, String details);
   Future<Json?> publicProfile(String id);
+  Future<List<Json>> personalImpact();
   Future<String> uploadPhoto(String postId, Uint8List bytes);
   Future<String> photoUrl(String path);
   Future<String> startThread(String postId);
-  Future<DataPage<Json>> threads(int page);
+  Future<DataPage<Json>> threads(int page, {String search = ''});
   Future<Json> thread(String id);
   Future<List<Json>> messages(String threadId, {Json? before});
   Future<Json> sendMessage(String threadId, String messageId, String body);
   Future<void> closeThread(String id);
   Future<void> readThread(String id);
   Future<DataPage<Json>> notifications(int page);
+  Future<int> unreadNotificationCount();
   Future<void> readNotification(String id);
   VoidCallback watch(List<String> tables, VoidCallback refresh);
 }
@@ -93,6 +125,24 @@ class SupabaseCommunityRepository implements CommunityRepository {
       result['total'] as int,
     );
   }
+
+  @override
+  Future<DataPage<Adoption>> discovery(Json filters, int page) async {
+    final result = await rpc('dopmi_discovery', {
+      'filters': filters,
+      'page_number': page,
+    });
+    return DataPage(
+      (result['items'] as List).map((e) => Adoption(Json.from(e))).toList(),
+      result['total'] as int,
+    );
+  }
+
+  @override
+  Future<List<SupportOpportunity>> discoverySupport() async =>
+      (await rpc('dopmi_discovery_support', {'page_size': 12}) as List)
+          .map((value) => SupportOpportunity(Json.from(value)))
+          .toList();
 
   @override
   Future<Adoption?> detail(String id) async {
@@ -125,6 +175,17 @@ class SupabaseCommunityRepository implements CommunityRepository {
   }
 
   @override
+  Future<Adoption?> ownForCase(String caseId) async {
+    final data = await client
+        .from('dopmi_adoptions')
+        .select()
+        .eq('rescue_case_id', caseId)
+        .eq('owner_id', userId!)
+        .maybeSingle();
+    return data == null ? null : Adoption(data);
+  }
+
+  @override
   Future<Adoption> save(Json payload, {String? id, int? version}) async =>
       Adoption(
         Json.from(
@@ -148,11 +209,65 @@ class SupabaseCommunityRepository implements CommunityRepository {
   @override
   Future<void> favorite(String id, bool saved) async =>
       await rpc('dopmi_set_favorite', {'post_id': id, 'saved': saved});
+  Future<DataPage<SavedEntry>> savedPage(String name, int page) async {
+    final result = await rpc(name, {'page_number': page});
+    return DataPage(
+      (result['items'] as List).map((e) => SavedEntry(Json.from(e))).toList(),
+      result['total'] as int,
+    );
+  }
+
+  @override
+  Future<DataPage<SavedEntry>> savedAdoptions(int page) =>
+      savedPage('dopmi_saved_adoptions', page);
+  @override
+  Future<DataPage<SavedEntry>> savedCases(int page) =>
+      savedPage('dopmi_saved_case_list', page);
+  @override
+  Future<DataPage<SavedEntry>> savedRescuers(int page) =>
+      savedPage('dopmi_saved_rescuer_list', page);
+  @override
+  Future<void> favoriteCase(String id, bool saved) async =>
+      await rpc('dopmi_set_case_favorite', {'target_case': id, 'saved': saved});
+  @override
+  Future<void> favoriteRescuer(String id, bool saved) async => await rpc(
+    'dopmi_set_rescuer_favorite',
+    {'target_rescuer': id, 'saved': saved},
+  );
+  @override
+  Future<String> report(
+    String type,
+    String id,
+    String reason,
+    String details,
+  ) async => await rpc('dopmi_report_content', {
+    'target_type': type,
+    'target_id': id,
+    'reason': reason,
+    'details': details,
+  }) as String;
   @override
   Future<Json?> publicProfile(String id) async {
-    final result = await rpc('dopmi_public_profile', {'person_id': id});
-    return result == null ? null : Json.from(result);
+    final result =
+        await rpc('dopmi_rescuer_public', {'person_id': id}) ??
+        await rpc('dopmi_public_profile', {'person_id': id});
+    if (result == null) return null;
+    final profile = Json.from(result);
+    if (profile['verified'] == true) {
+      final metrics = await rpc('dopmi_rescuer_public_metrics', {
+        'person_id': id,
+      });
+      if (metrics == null) return null;
+      profile['metrics'] = Json.from(metrics);
+    }
+    return profile;
   }
+
+  @override
+  Future<List<Json>> personalImpact() async =>
+      (await rpc('dopmi_personal_impact') as List)
+          .map((value) => Json.from(value))
+          .toList();
 
   @override
   Future<String> uploadPhoto(String postId, Uint8List bytes) =>
@@ -165,8 +280,11 @@ class SupabaseCommunityRepository implements CommunityRepository {
   Future<String> startThread(String postId) async =>
       await rpc('dopmi_start_thread', {'post_id': postId}) as String;
   @override
-  Future<DataPage<Json>> threads(int page) async {
-    final result = await rpc('dopmi_list_threads', {'page_number': page});
+  Future<DataPage<Json>> threads(int page, {String search = ''}) async {
+    final result = await rpc('dopmi_match_threads', {
+      'search_text': search,
+      'page_number': page,
+    });
     return DataPage(
       (result['items'] as List).map((e) => Json.from(e)).toList(),
       result['total'] as int,
@@ -217,6 +335,15 @@ class SupabaseCommunityRepository implements CommunityRepository {
   Future<void> readNotification(String id) async =>
       await rpc('dopmi_read_notification', {'notification_id': id});
   @override
+  Future<int> unreadNotificationCount() async {
+    if (userId == null) return 0;
+    return await client
+        .from('dopmi_notifications')
+        .count(CountOption.exact)
+        .isFilter('read_at', null);
+  }
+
+  @override
   VoidCallback watch(List<String> tables, VoidCallback refresh) {
     final actor = userId;
     if (actor == null || tables.isEmpty) return () {};
@@ -261,7 +388,7 @@ String communityError(Object error) {
     }
     if (error.code == '22023') return error.message;
     if (error.code == '42501') {
-      return 'No tienes acceso a este contenido. Revisa tu sesión y el aviso de desarrollo en Mi cuenta.';
+      return 'No tienes acceso a este contenido. Revisa tu sesión y la aceptación de términos en Mi cuenta.';
     }
     if (error.code == '23514') {
       return 'Revisa los campos y sus límites antes de guardar.';

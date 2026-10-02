@@ -1,0 +1,15 @@
+begin;
+set local search_path = public, extensions;
+create extension if not exists pgtap with schema extensions;
+select plan(7);
+select ok(not has_function_privilege('anon','public.dopmi_apple_credential_server(text,uuid,text,text,jsonb)','execute'),'anonymous cannot call credential RPC');
+select ok(not has_function_privilege('authenticated','public.dopmi_apple_credential_server(text,uuid,text,text,jsonb)','execute'),'signed-in client cannot call credential RPC');
+select ok(has_function_privilege('service_role','public.dopmi_apple_credential_server(text,uuid,text,text,jsonb)','execute'),'server can call credential RPC');
+select ok(not has_table_privilege('authenticated','private.dopmi_apple_credentials','select'),'client cannot read encrypted tokens');
+select ok((select relrowsecurity from pg_class where oid='private.dopmi_apple_credentials'::regclass),'credential table has RLS');
+set local role service_role;
+select throws_ok($$select public.dopmi_apple_credential_server('save','a0000000-0000-4000-8000-000000000001','unlinked')$$,'42501','apple_identity_required','unlinked identity rejected');
+select is(public.dopmi_apple_credential_server('get','a0000000-0000-4000-8000-000000000001'), null::jsonb,'missing credential remains absent');
+reset role;
+select * from finish();
+rollback;

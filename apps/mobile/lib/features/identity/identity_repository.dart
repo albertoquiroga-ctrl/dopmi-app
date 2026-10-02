@@ -2,7 +2,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/config.dart';
+import 'native_identity.dart';
 
+const currentTermsVersion = 'terms-2026-09-28';
+const currentPrivacyVersion = 'privacy-2026-09-28';
+// Kept for build-253 test fixtures and migration compatibility only.
 const developmentTermsVersion = 'development-2026-09-13';
 
 class Identity {
@@ -31,6 +35,8 @@ class Profile {
     required this.intent,
     required this.status,
     required this.termsVersion,
+    this.privacyVersion,
+    this.adultConfirmed = false,
   });
   factory Profile.fromJson(Map<String, dynamic> json) => Profile(
     id: json['id'] as String,
@@ -41,13 +47,18 @@ class Profile {
     intent: json['intent'] as String,
     status: json['account_status'] as String,
     termsVersion: json['terms_version'] as String?,
+    privacyVersion: json['privacy_version'] as String?,
+    adultConfirmed: json['adult_confirmed_at'] != null,
   );
   final String id, name, phone, city, mode, intent, status;
   final String? termsVersion;
+  final String? privacyVersion;
+  final bool adultConfirmed;
 }
 
 abstract class IdentityRepository {
   Identity? get current;
+  Set<String> get linkedProviders => const {};
   Stream<IdentityEvent> get events;
   Future<Identity?> restore();
   Future<bool> recoveryPending();
@@ -66,18 +77,32 @@ abstract class IdentityRepository {
   Future<void> updatePassword(String password);
   Future<void> logout();
   Future<void> oauth(String provider);
+  Future<void> linkProvider(String provider);
   Future<Profile> loadProfile();
+  Future<Profile> setExperience(String mode);
   Future<Profile> saveProfile({
     required String name,
     required String phone,
     required String city,
-    required String mode,
   });
   Future<void> acceptTerms();
+  Future<void> reauthenticate(String password) =>
+      throw UnsupportedError('reauthentication_not_implemented');
+  Future<void> reauthenticateWithProvider(String provider) =>
+      throw UnsupportedError('provider_reauthentication_not_implemented');
+  Future<Map<String, dynamic>> requestAccountDeletion(String requestKey) =>
+      throw UnsupportedError('account_deletion_not_implemented');
 }
 
 class SupabaseIdentityRepository implements IdentityRepository {
-  SupabaseIdentityRepository(this.client, this.config, this.preferences);
+  SupabaseIdentityRepository(
+    this.client,
+    this.config,
+    this.preferences, {
+    NativeIdentity? nativeIdentity,
+  }) : nativeIdentity = nativeIdentity ?? PlatformNativeIdentity(config);
+  final NativeIdentity nativeIdentity;
+  bool _oauthBusy = false;
   final SupabaseClient client;
   final AppConfig config;
   final SharedPreferences preferences;
@@ -91,6 +116,12 @@ class SupabaseIdentityRepository implements IdentityRepository {
         );
   @override
   Identity? get current => _identity(client.auth.currentUser);
+  @override
+  Set<String> get linkedProviders =>
+      client.auth.currentUser?.identities
+          ?.map((identity) => identity.provider)
+          .toSet() ??
+      const {};
   @override
   Stream<IdentityEvent> get events => client.auth.onAuthStateChange.map(
     (event) => IdentityEvent(
@@ -137,8 +168,10 @@ class SupabaseIdentityRepository implements IdentityRepository {
         'display_name': name.trim(),
         'phone': phone.trim(),
         'intent': intent,
-        'terms_version': developmentTermsVersion,
+        'terms_version': currentTermsVersion,
         'terms_accepted': true,
+        'privacy_version': currentPrivacyVersion,
+        'adult_confirmed': true,
       },
     );
   }
@@ -177,11 +210,72 @@ class SupabaseIdentityRepository implements IdentityRepository {
   Future<void> logout() => client.auth.signOut(scope: SignOutScope.local);
   @override
   Future<void> oauth(String provider) async {
-    if ((provider == 'google' && !config.googleEnabled) ||
+    if (!['google', 'apple'].contains(provider) ||
+        (provider == 'google' && !config.googleEnabled) ||
         (provider == 'apple' && !config.appleEnabled)) {
       throw StateError('provider_not_configured');
     }
-    final launched = await client.auth.signInWithOAuth(
+    if (_oauthBusy) return;
+    _oauthBusy = true;
+    try {
+      if (nativeIdentity.supports(provider)) {
+        final credential = await nativeIdentity.authenticate(provider);
+        if (credential == null) return;
+        await client.auth.signInWithIdToken(
+          provider: provider == 'apple'
+              ? OAuthProvider.apple
+              : OAuthProvider.google,
+          idToken: credential.idToken,
+          accessToken: credential.accessToken,
+          nonce: credential.nonce,
+        );
+        if (provider == 'apple') await _registerAppleCredential(credential);
+        return;
+      }
+      final launched = await client.auth.signInWithOAuth(
+        provider == 'apple' ? OAuthProvider.apple : OAuthProvider.google,
+        redirectTo: config.redirect,
+      );
+      if (!launched) throw StateError('browser_not_opened');
+    } finally {
+      _oauthBusy = false;
+    }
+  }
+
+  Future<void> _registerAppleCredential(
+    NativeIdentityCredential credential,
+  ) async {
+    final result = await client.functions.invoke(
+      'apple-credentials',
+      body: {'code': credential.authorizationCode, 'nonce': credential.nonce},
+    );
+    if (result.status >= 400) {
+      throw const AuthException('apple_registration_incomplete');
+    }
+  }
+
+  @override
+  Future<void> linkProvider(String provider) async {
+    if (!['google', 'apple'].contains(provider) ||
+        (provider == 'google' && !config.googleEnabled) ||
+        (provider == 'apple' && !config.appleEnabled)) {
+      throw StateError('provider_not_configured');
+    }
+    if (nativeIdentity.supports(provider)) {
+      final credential = await nativeIdentity.authenticate(provider);
+      if (credential == null) return;
+      await client.auth.linkIdentityWithIdToken(
+        provider: provider == 'apple'
+            ? OAuthProvider.apple
+            : OAuthProvider.google,
+        idToken: credential.idToken,
+        accessToken: credential.accessToken,
+        nonce: credential.nonce,
+      );
+      if (provider == 'apple') await _registerAppleCredential(credential);
+      return;
+    }
+    final launched = await client.auth.linkIdentity(
       provider == 'apple' ? OAuthProvider.apple : OAuthProvider.google,
       redirectTo: config.redirect,
     );
@@ -197,11 +291,28 @@ class SupabaseIdentityRepository implements IdentityRepository {
         .single(),
   );
   @override
+  Future<Profile> setExperience(String mode) async {
+    if (!['donor', 'rescuer'].contains(mode)) {
+      throw ArgumentError.value(mode, 'mode');
+    }
+    final owner = client.auth.currentUser!.id;
+    final result = await client
+        .from('profiles')
+        .update({'active_mode': mode})
+        .eq('id', owner)
+        .select()
+        .single();
+    if (client.auth.currentUser?.id != owner) {
+      throw StateError('profile_owner_changed');
+    }
+    return Profile.fromJson(result);
+  }
+
+  @override
   Future<Profile> saveProfile({
     required String name,
     required String phone,
     required String city,
-    required String mode,
   }) async {
     final result = await client
         .from('profiles')
@@ -209,7 +320,6 @@ class SupabaseIdentityRepository implements IdentityRepository {
           'display_name': name.trim(),
           'phone': phone.trim(),
           'city': city.trim(),
-          'active_mode': mode,
         })
         .eq('id', client.auth.currentUser!.id)
         .select()
@@ -219,7 +329,61 @@ class SupabaseIdentityRepository implements IdentityRepository {
 
   @override
   Future<void> acceptTerms() async {
-    await client.rpc('accept_current_terms');
+    await client.rpc(
+      'dopmi_accept_legal',
+      params: {
+        'accepted_terms': currentTermsVersion,
+        'accepted_privacy': currentPrivacyVersion,
+        'confirms_adult': true,
+      },
+    );
+  }
+
+  @override
+  Future<void> reauthenticate(String password) async {
+    final email = current?.email;
+    if (email == null || email.isEmpty || password.isEmpty) {
+      throw const AuthException('recent_sign_in_required');
+    }
+    await client.auth.signInWithPassword(email: email, password: password);
+  }
+
+  @override
+  Future<void> reauthenticateWithProvider(String provider) async {
+    final owner = current?.id;
+    if (owner == null || !linkedProviders.contains(provider)) {
+      throw const AuthException('recent_sign_in_required');
+    }
+    final credential = await nativeIdentity.authenticate(provider);
+    if (credential == null) {
+      throw const AuthException('reauthentication_canceled');
+    }
+    await client.auth.signInWithIdToken(
+      provider: provider == 'apple'
+          ? OAuthProvider.apple
+          : OAuthProvider.google,
+      idToken: credential.idToken,
+      accessToken: credential.accessToken,
+      nonce: credential.nonce,
+    );
+    if (current?.id != owner) {
+      await client.auth.signOut(scope: SignOutScope.local);
+      throw const AuthException('identity_mismatch');
+    }
+    if (provider == 'apple') await _registerAppleCredential(credential);
+  }
+
+  @override
+  Future<Map<String, dynamic>> requestAccountDeletion(String requestKey) async {
+    final result = await client.functions.invoke(
+      'account-deletion',
+      body: {'request_key': requestKey, 'confirmation': 'ELIMINAR'},
+    );
+    if (result.status >= 400) {
+      final code = result.data is Map ? result.data['error']?.toString() : null;
+      throw AuthException(code ?? 'deletion_unavailable');
+    }
+    return Map<String, dynamic>.from(result.data as Map);
   }
 }
 
@@ -242,6 +406,13 @@ String identityError(Object error) {
       'Usa al menos 10 caracteres, una mayúscula, una minúscula y un número.',
     'same_password' => 'Elige una contraseña diferente a la anterior.',
     '42501' => 'Tu cuenta no tiene permiso para realizar esta acción.',
+    'recent_sign_in_required' =>
+      'Por seguridad, vuelve a iniciar sesión antes de eliminar tu cuenta.',
+    'confirmation_required' => 'Escribe ELIMINAR para confirmar.',
+    'deletion_unavailable' => 'No pudimos completar la eliminación. Tu acceso quedó bloqueado de forma segura; soporte puede revisar el proceso.',
+    'apple_registration_incomplete' => 'Apple autorizó el acceso, pero no pudimos preparar su revocación segura. Inténtalo otra vez.',
+    'reauthentication_canceled' => 'Cancelaste la confirmación de identidad.',
+    'identity_mismatch' => 'El proveedor devolvió otra cuenta. Inicia sesión nuevamente con la cuenta vinculada.',
     _ => 'No pudimos completar la solicitud. Comprueba tu conexión e inténtalo de nuevo.',
   };
 }

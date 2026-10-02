@@ -62,6 +62,12 @@ verify_jwt = false
 [functions.guardian-client]
 verify_jwt = false
 
+# Validates the supplied Supabase token and linked Apple identity in the handler.
+[functions.apple-credentials]
+verify_jwt = false
+[functions.account-deletion]
+verify_jwt = false
+
 # Retired webhook returns 410 without inspecting or accepting a payment event.
 [functions.payment-webhook]
 verify_jwt = false

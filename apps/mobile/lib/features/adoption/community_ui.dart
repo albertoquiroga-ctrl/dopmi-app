@@ -5,34 +5,51 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/navigation.dart';
+import '../identity/experience_controller.dart';
 import 'community_repository.dart';
 
-class CommunityNav extends StatelessWidget {
-  const CommunityNav(this.index, {super.key});
+class CommunityNav extends ConsumerWidget {
+  const CommunityNav(this.index, {super.key, this.selectedPath});
   final int index;
+  final String? selectedPath;
   @override
-  Widget build(BuildContext context) => NavigationBar(
-    selectedIndex: index,
-    onDestinationSelected: (i) => context.go(
-      ['/adoptions', '/saved', '/my-adoptions', '/messages', '/profile'][i],
-    ),
-    destinations: const [
-      NavigationDestination(icon: Icon(Icons.pets_outlined), label: 'Adoptar'),
-      NavigationDestination(
-        icon: Icon(Icons.favorite_border),
-        label: 'Guardados',
-      ),
-      NavigationDestination(
-        icon: Icon(Icons.add_circle_outline),
-        label: 'Publicar',
-      ),
-      NavigationDestination(
-        icon: Icon(Icons.chat_bubble_outline),
-        label: 'Mensajes',
-      ),
-      NavigationDestination(icon: Icon(Icons.person_outline), label: 'Cuenta'),
-    ],
-  );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final experience = ref.watch(experienceProvider);
+    return ListenableBuilder(
+      listenable: experience,
+      builder: (context, _) {
+        final rescuer = experience.value == AccountExperience.rescuer;
+        final destinations = rescuer ? rescuerDestinations : donorDestinations;
+        final path = GoRouterState.of(context).uri.path;
+        final selected =
+            selectedPath ??
+            (destinations.any((item) => item.path == path) ? path : '/profile');
+        return DopmiBottomBar(
+          rescuer: rescuer,
+          selectedPath: selected,
+          onSelected: (destination) {
+            final shell = DopmiNavigationHost.of(context);
+            if (shell != null) {
+              // A shell root can be opened imperatively (for example,
+              // Mis match used to push /messages over Adoptar). In that case
+              // the visible path and the shell's current branch disagree, so
+              // goBranch(currentIndex) is a no-op. Route explicitly whenever
+              // the requested destination is already the recorded branch.
+              if (shell.currentIndex == destination.branch &&
+                  path != destination.path) {
+                context.go(destination.path);
+              } else {
+                shell.goBranch(destination.branch);
+              }
+            } else {
+              context.go(destination.path);
+            }
+          },
+        );
+      },
+    );
+  }
 }
 
 class CommunityFrame extends StatelessWidget {
@@ -41,20 +58,34 @@ class CommunityFrame extends StatelessWidget {
     required this.children,
     this.index,
     this.back = true,
+    this.showNotifications = true,
+    this.showMatches = false,
+    this.showAppBar = true,
   });
   final List<Widget> children;
   final int? index;
   final bool back;
+  final bool showNotifications;
+  final bool showMatches;
+  final bool showAppBar;
   @override
   Widget build(BuildContext context) => PageFrame(
     back: back,
     bottomNavigationBar: index == null ? null : CommunityNav(index!),
+    showAppBar: showAppBar,
     actions: [
-      IconButton(
-        tooltip: 'Notificaciones',
-        onPressed: () => context.push('/notifications'),
-        icon: const Icon(Icons.notifications_outlined),
-      ),
+      if (showMatches)
+        IconButton(
+          tooltip: 'Mis match',
+          onPressed: () => context.go('/messages'),
+          icon: const Icon(Icons.favorite_border),
+        ),
+      if (showNotifications)
+        IconButton(
+          tooltip: 'Notificaciones',
+          onPressed: () => context.push('/notifications'),
+          icon: const Icon(Icons.notifications_outlined),
+        ),
     ],
     children: children,
   );
@@ -69,11 +100,13 @@ class LiveSection<T> extends ConsumerStatefulWidget {
     required this.builder,
     this.tables = const [],
     this.errorMessage,
+    this.statusFrame,
   });
   final Future<T> Function() load;
   final Widget Function(T data, VoidCallback refresh) builder;
   final List<String> tables;
   final String Function(Object)? errorMessage;
+  final Widget Function(Widget content)? statusFrame;
   @override
   ConsumerState<LiveSection<T>> createState() => _LiveSectionState<T>();
 }
@@ -138,23 +171,29 @@ class _LiveSectionState<T> extends ConsumerState<LiveSection<T>>
 
   @override
   Widget build(BuildContext context) {
+    Widget frame(Widget content) =>
+        widget.statusFrame?.call(content) ?? content;
     if (loading) {
-      return const Center(
-        child: CircularProgressIndicator(semanticsLabel: 'Cargando'),
+      return frame(
+        const Center(
+          child: CircularProgressIndicator(semanticsLabel: 'Cargando'),
+        ),
       );
     }
     if (error != null) {
-      return Column(
-        children: [
-          Notice(
-            (widget.errorMessage ?? communityError)(error!),
-            isError: true,
-          ),
-          TextButton(
-            onPressed: refresh,
-            child: const Text('Volver a intentar'),
-          ),
-        ],
+      return frame(
+        Column(
+          children: [
+            Notice(
+              (widget.errorMessage ?? communityError)(error!),
+              isError: true,
+            ),
+            TextButton(
+              onPressed: refresh,
+              child: const Text('Volver a intentar'),
+            ),
+          ],
+        ),
       );
     }
     return widget.builder(data as T, refresh);
@@ -162,46 +201,105 @@ class _LiveSectionState<T> extends ConsumerState<LiveSection<T>>
 }
 
 class AdoptionPhoto extends ConsumerStatefulWidget {
-  const AdoptionPhoto(this.path, {super.key, this.height = 240});
+  const AdoptionPhoto(
+    this.path, {
+    super.key,
+    this.height = 240,
+    this.radius = 20,
+  });
   final String path;
   final double height;
+  final double radius;
   @override
   ConsumerState<AdoptionPhoto> createState() => _AdoptionPhotoState();
 }
 
 class _AdoptionPhotoState extends ConsumerState<AdoptionPhoto> {
-  late Future<String> url = ref
-      .read(communityRepositoryProvider)
-      .photoUrl(widget.path);
+  late Future<String> url = _photoUrl();
+  var automaticRetries = 0;
+  var retryScheduled = false;
+
+  Future<String> _photoUrl() {
+    final request = Future<String>.sync(
+      () => ref.read(communityRepositoryProvider).photoUrl(widget.path),
+    );
+    // A retry begins in a post-frame callback. Observe its failure immediately;
+    // FutureBuilder attaches on the next frame and still displays that error.
+    request.ignore();
+    return request;
+  }
+
+  void reload({bool automatic = false}) {
+    if (automatic) {
+      if (automaticRetries >= 1) return;
+      automaticRetries += 1;
+    } else {
+      automaticRetries = 0;
+    }
+    retryScheduled = false;
+    setState(() {
+      url = _photoUrl();
+    });
+  }
+
+  void scheduleAutomaticRetry() {
+    if (automaticRetries >= 1 || retryScheduled) return;
+    retryScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      reload(automatic: true);
+    });
+  }
+
   @override
   void didUpdateWidget(AdoptionPhoto oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.path != widget.path) {
-      url = ref.read(communityRepositoryProvider).photoUrl(widget.path);
+      automaticRetries = 0;
+      retryScheduled = false;
+      url = _photoUrl();
     }
   }
 
-  Widget unavailable() => Container(
-    height: widget.height,
-    color: const Color(0xffeee7fc),
-    child: Center(
-      child: TextButton.icon(
-        onPressed: () => setState(
-          () =>
-              url = ref.read(communityRepositoryProvider).photoUrl(widget.path),
+  Widget unavailable({bool retryAutomatically = false}) {
+    if (retryAutomatically) scheduleAutomaticRetry();
+    return Container(
+      height: widget.height,
+      color: const Color(0xffeee7fc),
+      child: Center(
+        child: LayoutBuilder(
+          builder: (context, constraints) =>
+              constraints.maxWidth < 120 || constraints.maxHeight < 80
+              ? IconButton(
+                  tooltip: 'Cargar foto',
+                  onPressed: () => reload(),
+                  padding: EdgeInsets.zero,
+                  style: IconButton.styleFrom(
+                    minimumSize: const Size(48, 48),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  icon: const Icon(Icons.refresh),
+                )
+              : TextButton.icon(
+                  onPressed: () => reload(),
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Cargar foto'),
+                ),
         ),
-        icon: const Icon(Icons.refresh),
-        label: const Text('Cargar foto'),
       ),
-    ),
-  );
+    );
+  }
+
   @override
   Widget build(BuildContext context) => ClipRRect(
-    borderRadius: BorderRadius.circular(20),
+    borderRadius: BorderRadius.circular(widget.radius),
     child: FutureBuilder<String>(
+      key: ObjectKey(url),
       future: url,
       builder: (_, snapshot) {
-        if (snapshot.hasError) return unavailable();
+        if (snapshot.hasError) {
+          return unavailable(retryAutomatically: true);
+        }
         if (!snapshot.hasData) {
           return SizedBox(
             height: widget.height,
@@ -216,7 +314,7 @@ class _AdoptionPhotoState extends ConsumerState<AdoptionPhoto> {
           width: double.infinity,
           fit: BoxFit.cover,
           semanticLabel: 'Foto de la publicación',
-          errorBuilder: (_, _, _) => unavailable(),
+          errorBuilder: (_, _, _) => unavailable(retryAutomatically: true),
         );
       },
     ),
@@ -244,8 +342,14 @@ class PageControls extends StatelessWidget {
           onPressed: page > 1 ? () => change(page - 1) : null,
           icon: const Icon(Icons.chevron_left),
         ),
-        Text(
-          'Página $page de ${((total + size - 1) ~/ size).clamp(1, 999999)}',
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Text(
+              'Página $page de ${((total + size - 1) ~/ size).clamp(1, 999999)}',
+              textAlign: TextAlign.center,
+            ),
+          ),
         ),
         IconButton(
           tooltip: 'Página siguiente',

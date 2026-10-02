@@ -1,8 +1,9 @@
 {
   "repository": "albertoquiroga-ctrl/dopmi-functional-mockup",
   "branch": "irlanda/apoyar-detalle-perfil",
-  "observed_sha": "a246fa6f42ec517aae264d7fbd2358d647c4f840",
-  "observed_at": "2026-09-26",
+  "observed_sha": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "observed_at": "2026-09-30",
+  "files_snapshot_sha": "a246fa6f42ec517aae264d7fbd2358d647c4f840",
   "policy": "Follow latest branch; observation is not visual acceptance.",
   "files": {
     ".cursor/rules/dopmi-i18n-a11y.mdc": "d94d757a75a8cc272dae29942c9d15cd7d9847eef996b34e59a13954cad77254",

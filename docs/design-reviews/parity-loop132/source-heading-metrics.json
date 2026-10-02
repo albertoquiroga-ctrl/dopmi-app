@@ -1,0 +1,22 @@
+{
+  "sha": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "viewportRequested": [
+    377,
+    852
+  ],
+  "routes": [
+    "/login/donor",
+    "/signup/donor"
+  ],
+  "heading": {
+    "maxWidth": 262.836,
+    "lineHeight": 32.2,
+    "height": 32.2
+  },
+  "description": {
+    "maxWidth": 282.625,
+    "width": 282.625,
+    "lineHeight": 21,
+    "height": 42
+  }
+}

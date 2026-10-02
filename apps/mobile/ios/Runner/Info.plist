@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+  <key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
+  <false/>
+  <key>FirebaseCrashlyticsCollectionEnabled</key>
+  <false/>
+  <key>NSLocationWhenInUseUsageDescription</key>
+  <string>Dopmi usa tu ubicación aproximada sólo cuando eliges buscar mascotas cercanas.</string>
   <key>NSPhotoLibraryUsageDescription</key>
   <string>Elige fotos de la mascota para su publicación de adopción en Dopmi.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
@@ -17,6 +23,10 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array><string>io.dopmi.app</string></array>
+		</dict>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array><string>com.googleusercontent.apps.623928073757-439do5al810qu3vd717rgdmphtnrsclh</string></array>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
@@ -37,6 +47,8 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

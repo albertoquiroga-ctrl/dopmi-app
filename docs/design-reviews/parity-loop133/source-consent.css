@@ -1,0 +1,6 @@
+/* irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb */
+.auth-check {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13px; line-height: 1.4; color: var(--muted);
+}
+.auth-check input { width: 18px; height: 18px; min-height: 0; margin: 2px 0 0; flex: 0 0 auto; }

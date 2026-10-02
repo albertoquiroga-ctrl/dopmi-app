@@ -1,4 +1,4 @@
-name: Dopmi identity and adoption
+name: Dopmi integrated acceptance
 on:
   push:
   pull_request:
@@ -49,6 +49,8 @@ jobs:
           cache: true
       - run: flutter pub get
         working-directory: apps/mobile
+      - name: Write compile-only Firebase placeholders
+        run: python3 scripts/write-ci-firebase-config.py
       - name: Check Dart formatting and show the exact diff
         run: |
           dart format lib test test_backend
@@ -56,6 +58,18 @@ jobs:
         working-directory: apps/mobile
       - run: flutter analyze && flutter test
         working-directory: apps/mobile
+      - name: Capture actual Flutter components and access screens
+        run: flutter test tool/capture_design_test.dart
+        working-directory: apps/mobile
+      - name: Capture actual profile, cases, messages and state screens
+        run: flutter test tool/capture_profile_test.dart
+        working-directory: apps/mobile
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dopmi-design-review
+          path: .tools/design-review/*.png
+          include-hidden-files: true
+          if-no-files-found: error
       - name: Android development build (no production credentials)
         run: flutter build apk --debug --dart-define-from-file=config.example.json
         working-directory: apps/mobile
@@ -74,6 +88,8 @@ jobs:
           cache: true
       - run: flutter pub get
         working-directory: apps/mobile
+      - name: Write compile-only Firebase placeholders
+        run: python3 scripts/write-ci-firebase-config.py
       - name: iOS simulator compilation (device signing is separate)
         run: flutter build ios --simulator --no-codesign --dart-define-from-file=config.example.json --dart-define=ENABLE_GUARDIAN_TEST=true
         working-directory: apps/mobile
@@ -100,7 +116,7 @@ jobs:
         run: tools/verification/node_modules/.bin/supabase status --output json > "$RUNNER_TEMP/supabase-status.json"
       - run: flutter pub get
         working-directory: apps/mobile
-      - name: Identity, adoption moderation, private photos and messaging
+      - name: Identity, adoption, rescues and H8 community integration
         env:
           DOPMI_LOCAL_CONFIG: ${{ runner.temp }}/supabase-status.json
         run: flutter test test_backend --reporter expanded --concurrency=1

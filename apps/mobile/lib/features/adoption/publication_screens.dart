@@ -5,9 +5,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/ui.dart';
+import '../../core/measurement.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
 import 'photo_recovery.dart';
+import 'publication_frame.dart';
+import 'discovery_filters.dart' show personalityLabels, legacyPersonalityLabels;
 
 class MyAdoptionsScreen extends ConsumerStatefulWidget {
   const MyAdoptionsScreen({super.key});
@@ -91,8 +94,9 @@ class _MyAdoptionsState extends ConsumerState<MyAdoptionsScreen> {
 }
 
 class PublicationScreen extends ConsumerStatefulWidget {
-  const PublicationScreen(this.id, {super.key});
+  const PublicationScreen(this.id, {super.key, this.rescueCaseId});
   final String id;
+  final String? rescueCaseId;
   @override
   ConsumerState<PublicationScreen> createState() => _PublicationState();
 }
@@ -118,7 +122,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
   Adoption? post;
   bool loading = false, busy = false;
   String? error, message;
-  int loaded = 0;
+  int loaded = 0, step = 0;
   CommunityRepository get repo => ref.read(communityRepositoryProvider);
   @override
   void initState() {
@@ -164,10 +168,12 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
               'social_dogs',
               'social_cats',
               'social_children',
+              'personality',
             ])
               key: result.data[key],
           };
           photos = result.photos;
+          if (result.status == 'submitted') step = 2;
         });
       }
     } catch (cause) {
@@ -198,6 +204,8 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       ...choices,
       for (final entry in fields.entries) entry.key: entry.value.text.trim(),
       'photos': photos,
+      if (widget.rescueCaseId != null || post?.data['rescue_case_id'] != null)
+        'rescue_case_id': widget.rescueCaseId ?? post?.data['rescue_case_id'],
     };
     payload['age_months'] = int.tryParse(fields['age_months']!.text) ?? 0;
     final result = await repo.save(
@@ -219,6 +227,11 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       await save();
     }
     final result = await repo.transition(post!, action);
+    if (action == 'submit') {
+      await ref
+          .read(measurementControllerProvider)
+          ?.event('publication_submitted');
+    }
     if (mounted) {
       setState(() {
         post = result;
@@ -228,50 +241,126 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       });
     }
   });
-  Future<void> addPhoto() => perform(() async {
-    if (!form.currentState!.validate()) return;
-    await save(); // Preserve all fields before the operating system opens its photo picker.
-    final preferences = await SharedPreferences.getInstance();
-    final pendingKey = pendingPhotoKey(repo.userId!);
-    await preferences.setString(pendingKey, post!.id);
-    final file = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 1600,
-      maxHeight: 1600,
-      requestFullMetadata: false,
-    );
-    await preferences.remove(pendingKey);
-    if (file == null || !mounted) return;
-    final path = await repo.uploadPhoto(post!.id, await file.readAsBytes());
-    if (!mounted) return;
-    setState(() => photos.add(path));
-    await save();
-  });
+  Future<void> addPhoto({ImageSource source = ImageSource.gallery}) =>
+      perform(() async {
+        if (!form.currentState!.validate()) return;
+        await save(); // Preserve all fields before the operating system opens its photo picker.
+        final preferences = await SharedPreferences.getInstance();
+        final pendingKey = pendingPhotoKey(repo.userId!);
+        await preferences.setString(pendingKey, post!.id);
+        await preferences.setString(pendingPhotoActorKey, repo.userId!);
+        final file = await ImagePicker().pickImage(
+          source: source,
+          maxWidth: 1600,
+          maxHeight: 1600,
+          requestFullMetadata: false,
+        );
+        await preferences.remove(pendingKey);
+        if (preferences.getString(pendingPhotoActorKey) == repo.userId) {
+          await preferences.remove(pendingPhotoActorKey);
+        }
+        if (file == null || !mounted) return;
+        final path = await repo.uploadPhoto(post!.id, await file.readAsBytes());
+        if (!mounted) return;
+        setState(() => photos.add(path));
+        await save();
+      });
   Widget field(String key, String label, int max, {int lines = 1}) => Padding(
     padding: const EdgeInsets.only(bottom: 16),
-    child: TextFormField(
-      controller: fields[key],
-      enabled: !busy && post?.status != 'submitted',
-      maxLength: max,
-      maxLines: lines,
-      keyboardType: key == 'age_months'
-          ? TextInputType.number
-          : lines > 1
-          ? TextInputType.multiline
-          : TextInputType.text,
-      decoration: InputDecoration(
-        labelText: label,
-        counterText: lines > 1 ? null : '',
-      ),
-      validator: key == 'age_months'
-          ? (value) {
-              final months = int.tryParse(value ?? '');
-              return months == null || months < 0 || months > 360
-                  ? 'Escribe de 0 a 360 meses.'
-                  : null;
-            }
-          : null,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            height: 1.55,
+            fontWeight: FontWeight.w500,
+            color: Color(0xff151423),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Semantics(
+          label: label,
+          child: TextFormField(
+            key: ValueKey('publication-field-$key'),
+            controller: fields[key],
+            enabled: !busy && post?.status != 'submitted',
+            maxLength: max,
+            maxLines: lines,
+            style: const TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 16,
+              height: 1.55,
+              color: Color(0xff151423),
+            ),
+            keyboardType: key == 'age_months'
+                ? TextInputType.number
+                : lines > 1
+                ? TextInputType.multiline
+                : TextInputType.text,
+            decoration: InputDecoration(
+              isDense: true,
+              hintText: key == 'pet_name'
+                  ? 'Opcional'
+                  : key == 'story'
+                  ? 'Cuenta cómo la encontraste.'
+                  : null,
+              counterText: lines > 1 ? null : '',
+              filled: true,
+              fillColor: Colors.white,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 8,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: Color(0xffeaeaf3)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: Color(0xffeaeaf3)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: Color(0xff7c3aed)),
+              ),
+            ),
+            validator: key == 'age_months'
+                ? (value) {
+                    final months = int.tryParse(value ?? '');
+                    return months == null || months < 0 || months > 360
+                        ? 'Escribe de 0 a 360 meses.'
+                        : null;
+                  }
+                : null,
+          ),
+        ),
+        if (key == 'pet_name') ...[
+          const SizedBox(height: 8),
+          const Text(
+            'Si aún no tiene nombre, puedes dejarlo vacío.',
+            style: TextStyle(
+              fontSize: 12,
+              height: 1.55,
+              color: Color(0xff616174),
+            ),
+          ),
+        ],
+      ],
     ),
+  );
+  Widget publicationChoice(
+    String key,
+    String label,
+    Map<String, String> options,
+  ) => PublicationChoiceRow(
+    label: label,
+    options: options,
+    value: choices[key] as String?,
+    onChanged: busy || post?.status == 'submitted'
+        ? null
+        : (value) => setState(() => choices[key] = value),
   );
   Widget choice(String key, String label, Map<String, String> options) =>
       Padding(
@@ -289,40 +378,75 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
               : (value) => setState(() => choices[key] = value),
         ),
       );
-  Widget trait(String key, String label) => Padding(
-    padding: const EdgeInsets.only(bottom: 16),
-    child: DropdownButtonFormField<String>(
-      key: ValueKey('$key:$loaded'),
-      initialValue: choices[key] == null ? 'unknown' : '${choices[key]}',
-      isExpanded: true,
-      decoration: InputDecoration(labelText: label),
-      items: const [
-        DropdownMenuItem(value: 'unknown', child: Text('Por confirmar')),
-        DropdownMenuItem(value: 'true', child: Text('Sí')),
-        DropdownMenuItem(value: 'false', child: Text('No')),
-      ],
-      onChanged: busy || post?.status == 'submitted'
-          ? null
-          : (value) => setState(
-              () => choices[key] = value == 'unknown' ? null : value == 'true',
-            ),
-    ),
+  Widget trait(String key, String label) => PublicationTraitCheck(
+    key: ValueKey('publication-trait-$key'),
+    label: label,
+    value: choices[key] as bool?,
+    onChanged: busy || post?.status == 'submitted'
+        ? null
+        : (value) => setState(() => choices[key] = value),
   );
+  String reviewTrait(String key) => choices[key] == true
+      ? 'Sí'
+      : choices[key] == false
+      ? 'No'
+      : 'Por confirmar';
+  Widget publicationFooter() {
+    if (loading || (post == null && widget.id != 'new')) {
+      return const SizedBox.shrink();
+    }
+    final compact = MediaQuery.viewInsetsOf(context).bottom > 0;
+    if (post?.status == 'submitted') {
+      return PublicationFooter(
+        label: 'Retirar de revisión para editar',
+        busy: busy,
+        compact: compact,
+        onContinue: () => change('withdraw'),
+      );
+    }
+    return PublicationFooter(
+      label: step < 2 ? 'Continuar' : 'Enviar a revisión',
+      busy: busy,
+      compact: compact,
+      onSave: () => perform(save),
+      onContinue: step == 0 && photos.isEmpty
+          ? null
+          : step < 2
+          ? () => perform(() async {
+              if (!form.currentState!.validate()) return;
+              await save();
+              if (mounted) setState(() => step++);
+            })
+          : () => change('submit'),
+    );
+  }
+
   @override
-  Widget build(BuildContext context) => CommunityFrame(
+  Widget build(BuildContext context) => PublicationFrame(
+    title: 'Publicar caso',
+    step: step,
+    footer: publicationFooter(),
+    onBack: busy
+        ? null
+        : () {
+            if (step > 0 && post?.status != 'submitted') {
+              setState(() => step--);
+            } else if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/publish');
+            }
+          },
     children: [
-      Heading(
-        post?.name.isNotEmpty == true ? post!.name : 'Una nueva historia.',
-        'Completa lo que sabes. Puedes guardar un borrador antes de enviarlo.',
-        eyebrow: post == null
-            ? 'NUEVA PUBLICACIÓN'
-            : statusLabels[post!.status]?.toUpperCase(),
-      ),
       if (loading) const Center(child: CircularProgressIndicator()),
       if (error != null) Notice(error!, isError: true),
       if (!loading && widget.id != 'new' && post == null)
         ActionButton('Volver a intentar', onPressed: load),
       if (!loading && (post != null || widget.id == 'new')) ...[
+        if (widget.rescueCaseId != null || post?.data['rescue_case_id'] != null)
+          const Notice(
+            'Esta publicación está vinculada a un caso aprobado. Su revisión de adopción es independiente.',
+          ),
         if (post?.text('review_feedback').isNotEmpty == true)
           Notice('Respuesta del equipo: ${post!.text('review_feedback')}'),
         if (post?.status == 'published' || post?.status == 'adopted')
@@ -338,113 +462,277 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'Su información',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 18),
-              field('pet_name', 'Nombre de la mascota', 80),
-              choice('species', 'Especie', {'dog': 'Perro', 'cat': 'Gato'}),
-              choice('sex', 'Sexo', {'female': 'Hembra', 'male': 'Macho'}),
-              field('age_months', 'Edad aproximada en meses', 3),
-              choice('size', 'Tamaño', {
-                'small': 'Pequeño',
-                'medium': 'Mediano',
-                'large': 'Grande',
-              }),
-              field('breed', 'Raza o mestizo (opcional)', 80),
-              field('city', 'Ciudad', 100),
-              field('region', 'Estado', 100),
-              field(
-                'story',
-                'Su historia y el hogar que necesita',
-                4000,
-                lines: 5,
-              ),
-              trait('vaccinated', '¿Tiene sus vacunas al día?'),
-              trait('sterilized', '¿Está esterilizado?'),
-              trait('social_dogs', '¿Convive con perros?'),
-              trait('social_cats', '¿Convive con gatos?'),
-              trait('social_children', '¿Convive con niñas y niños?'),
-              field(
-                'special_care',
-                'Cuidados especiales (opcional)',
-                1000,
-                lines: 3,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Tu presentación pública',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 12),
-                child: Text(
-                  'Estos datos aparecerán en la publicación y en tu perfil público después de la aprobación. No incluyas tu domicilio, teléfono ni documentos.',
+              if (step == 1) ...[
+                Text(
+                  'Información básica',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    height: 28 / 18,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xff151423),
+                  ),
                 ),
-              ),
-              field('publisher_name', 'Nombre público o del refugio', 80),
-              field(
-                'publisher_bio',
-                'Sobre ti y tu labor (opcional)',
-                1000,
-                lines: 3,
-              ),
-              Text(
-                'Fotos (${photos.length}/5)',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 12),
-                child: Text(
-                  'Usa fotos de la mascota sin documentos ni direcciones visibles. Eliminamos los metadatos de las imágenes antes de subirlas.',
+                const SizedBox(height: 18),
+                field('pet_name', 'Nombre de la mascota', 80),
+                publicationChoice('sex', 'Sexo', {
+                  'male': 'Macho',
+                  'female': 'Hembra',
+                }),
+                publicationChoice('species', 'Especie', {
+                  'dog': 'Perro',
+                  'cat': 'Gato',
+                }),
+                field('age_months', 'Edad aproximada en meses', 3),
+                choice('size', 'Tamaño', {
+                  'small': 'Pequeño',
+                  'medium': 'Mediano',
+                  'large': 'Grande',
+                }),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Text('Personalidad'),
                 ),
-              ),
-              for (final path in photos)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Column(
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final item in {
+                      ...personalityLabels,
+                      for (final entry in legacyPersonalityLabels.entries)
+                        if ((choices['personality'] as List? ?? const [])
+                            .contains(entry.key))
+                          entry.key: entry.value,
+                    }.entries)
+                      FilterChip(
+                        label: Text(item.value),
+                        selected: (choices['personality'] as List? ?? const [])
+                            .contains(item.key),
+                        onSelected: busy || post?.status == 'submitted'
+                            ? null
+                            : (selected) => setState(() {
+                                final traits = List<String>.from(
+                                  choices['personality'] as List? ?? const [],
+                                );
+                                selected
+                                    ? traits.add(item.key)
+                                    : traits.remove(item.key);
+                                choices['personality'] = traits;
+                              }),
+                      ),
+                  ],
+                ),
+                field('breed', 'Raza o mestizo (opcional)', 80),
+                field('city', 'Ciudad', 100),
+                field('region', 'Estado', 100),
+                field(
+                  'story',
+                  'Su historia y el hogar que necesita',
+                  4000,
+                  lines: 5,
+                ),
+                PublicationTraitCard(
+                  title: 'Salud',
+                  children: [
+                    trait('vaccinated', 'Vacunado'),
+                    trait('sterilized', 'Esterilizado'),
+                    field(
+                      'special_care',
+                      'Cuidados especiales (opcional)',
+                      1000,
+                      lines: 3,
+                    ),
+                  ],
+                ),
+                PublicationTraitCard(
+                  title: 'Social',
+                  children: [
+                    trait('social_dogs', 'Social con perros'),
+                    trait('social_cats', 'Social con gatos'),
+                    trait('social_children', 'Social con niñas y niños'),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Tu presentación pública',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Text(
+                    'Estos datos aparecerán en la publicación y en tu perfil público después de la aprobación. No incluyas tu domicilio, teléfono ni documentos.',
+                  ),
+                ),
+                field('publisher_name', 'Nombre público o del refugio', 80),
+                field(
+                  'publisher_bio',
+                  'Sobre ti y tu labor (opcional)',
+                  1000,
+                  lines: 3,
+                ),
+              ],
+              if (step == 0) ...[
+                const Text(
+                  'Sube fotos de la mascota',
+                  style: TextStyle(
+                    fontSize: 18,
+                    height: 28 / 18,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xff151423),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                if (photos.length < 5 && post?.status != 'submitted') ...[
+                  PublicationPhotoPicker(
+                    onCamera: busy
+                        ? null
+                        : () => addPhoto(source: ImageSource.camera),
+                    onGallery: busy ? null : () => addPhoto(),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+                Text(
+                  photos.isEmpty
+                      ? 'Sube al menos una foto para continuar.'
+                      : 'Fotos agregadas (${photos.length}/5)',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    height: 1.5,
+                    color: Color(0xff616174),
+                  ),
+                ),
+                if (photos.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
                     children: [
-                      AdoptionPhoto(path, height: 200),
-                      if (post?.status != 'submitted')
-                        TextButton.icon(
-                          onPressed: busy
+                      for (var index = 0; index < photos.length; index++)
+                        PublicationPhotoThumbnail(
+                          key: ValueKey(photos[index]),
+                          photo: AdoptionPhoto(photos[index], height: 167),
+                          principal: index == 0,
+                          onRemove: busy || post?.status == 'submitted'
                               ? null
-                              : () => setState(() => photos.remove(path)),
-                          icon: const Icon(Icons.close),
-                          label: const Text('Quitar foto del borrador'),
+                              : () => setState(() => photos.removeAt(index)),
+                        ),
+                    ],
+                  ),
+                ],
+                const SizedBox(height: 16),
+                const Text(
+                  'Usa fotos sin documentos ni direcciones visibles. Eliminamos los metadatos antes de subirlas.',
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: 1.5,
+                    color: Color(0xff616174),
+                  ),
+                ),
+              ],
+              if (step == 2) ...[
+                const Text(
+                  'Revisa antes de enviar',
+                  style: TextStyle(
+                    fontSize: 18,
+                    height: 28 / 18,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xff151423),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                _ReviewSection(
+                  title: 'Fotos',
+                  onEdit: busy || post?.status == 'submitted'
+                      ? null
+                      : () => setState(() => step = 0),
+                  child: Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: [
+                      for (final path in photos)
+                        SizedBox(
+                          width: 110,
+                          height: 110,
+                          child: AdoptionPhoto(path, height: 110),
                         ),
                     ],
                   ),
                 ),
-              if (photos.length < 5 && post?.status != 'submitted')
-                OutlinedButton.icon(
-                  onPressed: busy ? null : addPhoto,
-                  icon: const Icon(Icons.add_photo_alternate_outlined),
-                  label: const Text('Agregar una foto'),
+                const SizedBox(height: 24),
+                _ReviewSection(
+                  title: 'Información básica',
+                  onEdit: busy || post?.status == 'submitted'
+                      ? null
+                      : () => setState(() => step = 1),
+                  child: _ReviewCard(
+                    rows: [
+                      (
+                        'Nombre',
+                        fields['pet_name']!.text.trim().isEmpty
+                            ? 'Sin nombre'
+                            : fields['pet_name']!.text.trim(),
+                      ),
+                      (
+                        'Sexo',
+                        choices['sex'] == 'male'
+                            ? 'Macho'
+                            : choices['sex'] == 'female'
+                            ? 'Hembra'
+                            : 'Por confirmar',
+                      ),
+                      (
+                        'Especie',
+                        choices['species'] == 'dog'
+                            ? 'Perro'
+                            : choices['species'] == 'cat'
+                            ? 'Gato'
+                            : 'Por confirmar',
+                      ),
+                      ('Edad', '${fields['age_months']!.text.trim()} meses'),
+                      ('Historia', fields['story']!.text.trim()),
+                      (
+                        'Ubicación',
+                        [
+                          fields['city']!.text.trim(),
+                          fields['region']!.text.trim(),
+                        ].where((value) => value.isNotEmpty).join(', '),
+                      ),
+                    ],
+                  ),
                 ),
+                const SizedBox(height: 24),
+                _ReviewSection(
+                  title: 'Salud',
+                  child: _ReviewCard(
+                    rows: [
+                      ('Vacunado', reviewTrait('vaccinated')),
+                      ('Esterilizado', reviewTrait('sterilized')),
+                      (
+                        'Cuidados especiales',
+                        fields['special_care']!.text.trim(),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                _ReviewSection(
+                  title: 'Social',
+                  child: _ReviewCard(
+                    rows: [
+                      ('Convive con perros', reviewTrait('social_dogs')),
+                      ('Convive con gatos', reviewTrait('social_cats')),
+                      (
+                        'Convive con niñas y niños',
+                        reviewTrait('social_children'),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                const Notice(
+                  'Al enviar, el equipo revisará fotos, información y privacidad antes de publicar.',
+                ),
+              ],
               if (message != null) Notice(message!),
-              if (error != null) Notice(error!, isError: true),
-              const SizedBox(height: 20),
-              if (post?.status != 'submitted') ...[
-                ActionButton(
-                  'Guardar borrador',
-                  busy: busy,
-                  onPressed: () {
-                    if (form.currentState!.validate()) perform(save);
-                  },
-                ),
-                const SizedBox(height: 12),
-                OutlinedButton(
-                  onPressed: busy ? null : () => change('submit'),
-                  child: const Text('Enviar a revisión'),
-                ),
-              ] else
-                ActionButton(
-                  'Retirar de revisión para editar',
-                  busy: busy,
-                  onPressed: () => change('withdraw'),
-                ),
               if (post?.status == 'published') ...[
                 const SizedBox(height: 12),
                 OutlinedButton(
@@ -469,5 +757,92 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
         ),
       ],
     ],
+  );
+}
+
+class _ReviewSection extends StatelessWidget {
+  const _ReviewSection({required this.title, required this.child, this.onEdit});
+  final String title;
+  final Widget child;
+  final VoidCallback? onEdit;
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Row(
+        children: [
+          Expanded(
+            child: Semantics(
+              header: true,
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  height: 1.55,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff151423),
+                ),
+              ),
+            ),
+          ),
+          if (onEdit != null)
+            Tooltip(
+              message: 'Editar $title',
+              child: TextButton(
+                onPressed: onEdit,
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xff7c3aed),
+                  textStyle: const TextStyle(fontFamily: 'Inter', fontSize: 14),
+                  padding: EdgeInsets.zero,
+                ),
+                child: const Text('Editar'),
+              ),
+            ),
+        ],
+      ),
+      const SizedBox(height: 12),
+      child,
+    ],
+  );
+}
+
+class _ReviewCard extends StatelessWidget {
+  const _ReviewCard({required this.rows});
+  final List<(String, String)> rows;
+  @override
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: BoxDecoration(
+      color: Colors.white,
+      border: Border.all(color: const Color(0xffe3e4ed)),
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var index = 0; index < rows.length; index++) ...[
+            if (index > 0) const SizedBox(height: 8),
+            Text(
+              rows[index].$1,
+              style: const TextStyle(
+                fontSize: 12,
+                height: 1.55,
+                color: Color(0xff616174),
+              ),
+            ),
+            Text(
+              rows[index].$2.isEmpty ? 'Por confirmar' : rows[index].$2,
+              style: const TextStyle(
+                fontSize: 16,
+                height: 1.5,
+                fontWeight: FontWeight.w500,
+                color: Color(0xff151423),
+              ),
+            ),
+          ],
+        ],
+      ),
+    ),
   );
 }
