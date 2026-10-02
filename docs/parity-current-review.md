@@ -75,6 +75,31 @@ teclado. Después perfiles/ajustes, publicación/evidencia/verificación y
 aportación/Guardian/impacto. Las comparaciones previas son puntos de partida,
 no una razón para reconstruir funciones aceptadas.
 
+## Prioridad PUBLIC identificada en loop235
+
+`/people/:id` no está cubierto por el capturador anterior. La lectura actual de
+`catalog_screens.dart` confirma presentación genérica: avatar88, Heading con
+eyebrow, chips Material, contador de adopciones en Notice, SegmentedButton y
+ListTile. La referencia `PublicRescuerProfile` usa TopBar sin título, avatar96,
+identidad centrada, verificación explícita, casos publicados, redes con botones
+propios, pestañas subrayadas y numeralia. Tener la operación funcional no prueba
+esa composición. Esta pantalla requiere implementación visual completa.
+
+Trabajo inmediato: marco, identidad aprobada y pestañas; después numeralia,
+tarjetas de adopción/casos, vacío/error y comparación renderizada normal/grande.
+Conservar favorito, compartir, reporte persistido y contacto confirmado reales.
+No sustituir `activity` por métricas inventadas: los avances públicos existentes
+siguen siendo información real que debe quedar accesible.
+
+El SQL local vigente de `dopmi_rescuer_public` devuelve nombre/bio/ciudad/región,
+avatar/redes aprobados, verified/saved, adopted_count y listas completas de
+adopciones públicas, casos visibles y avances publicados. No devuelve el conjunto
+de agregados que presenta el mock (recaudación, necesidades cubiertas y otros).
+No estimar historia publicada desde las listas visibles ni usar el dashboard
+privado de otro propietario. Revisar/implementar un contrato de agregados públicos
+autorizados antes de mostrar esos valores. Esta inspección es de SQL del
+repositorio; no es una nueva verificación del servidor remoto.
+
 ## Android y entrega
 
 Samsung SM-S938B conectado y autorizado, comprobado en loop223. Tiene
