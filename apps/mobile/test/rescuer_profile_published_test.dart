@@ -1,3 +1,6 @@
+import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/features/identity/identity_controller.dart';
+import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_repository.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_hero.dart';
@@ -45,6 +48,66 @@ class PublishedAvatar extends FakeRescuerProfile {
 }
 
 void main() {
+  testWidgets(
+    'owner contacts come from the current account and disappear on logout',
+    (tester) async {
+      final identity = FakeIdentityRepository()
+        ..user = const Identity(
+          'one',
+          'owner-contact@example.test',
+          verified: true,
+        );
+      await identity.saveProfile(
+        name: 'Ana',
+        phone: '+52 55 0000 0000',
+        city: 'Monterrey',
+      );
+      await identity.setExperience('rescuer');
+      final community = PublishedCommunity();
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(community),
+          rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+          routerInitialLocationProvider.overrideWithValue('/profile'),
+        ],
+      );
+      addTearDown(() async {
+        container.dispose();
+        await identity.changes.close();
+      });
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const DopmiApp(),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('owner-contact@example.test'),
+        150,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('+52 55 0000 0000'), findsOneWidget);
+      expect(find.text('private-fixture@example.test'), findsNothing);
+      identity.emit(
+        const IdentityEvent(
+          Identity('one', 'updated-contact@example.test', verified: true),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('owner-contact@example.test'), findsNothing);
+      expect(find.text('updated-contact@example.test'), findsOneWidget);
+      await container.read(identityControllerProvider).logout();
+      await tester.pumpAndSettle();
+      expect(find.text('+52 55 0000 0000', skipOffstage: false), findsNothing);
+      expect(
+        find.text('updated-contact@example.test', skipOffstage: false),
+        findsNothing,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets('approved avatar retries signing and disappears on withdrawal', (
     tester,
   ) async {

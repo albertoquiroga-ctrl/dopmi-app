@@ -393,6 +393,32 @@ Future<DataPage<Json>> fixturePaymentHistory() async => const DataPage([
   },
 ], 3);
 
+class RescuerReferenceCaptureCommunity extends FakeCommunity {
+  @override
+  Future<Json?> publicProfile(String id) async => {
+    'id': id,
+    'name': 'María Rescatista',
+    'city': 'Ciudad de México',
+    'region': 'CDMX',
+    'bio': 'Refugio dedicado al rescate y rehabilitación de animales en situación de calle. Trabajamos con amor y compromiso para darles una segunda oportunidad.',
+  };
+}
+
+class RescuerReferenceCaptureRescue extends FakeRescue {
+  @override
+  Future<Json> dashboard() async => {
+    ...await super.dashboard(),
+    'case_counts': {'active': 0, 'draft': 0, 'review': 0, 'corrections': 0},
+    'financial': {
+      'assigned_cents': 0,
+      'transferred_cents': 0,
+      'in_review_cents': 0,
+    },
+    'recent_activity': <Json>[],
+    'pending': <Json>[],
+  };
+}
+
 class DetailCaptureCommunity extends FakeCommunity {
   @override
   Future<String> photoUrl(String path) async => 'https://fixture.invalid/$path';
@@ -638,6 +664,8 @@ void main() {
       ('adoption-support', '/adoptions'),
       ('adoption-support-large', '/adoptions'),
       ('rescuer-profile', '/profile'),
+      ('rescuer-profile-reference', '/profile'),
+      ('rescuer-profile-reference-large', '/profile'),
       ('rescuer-settings', '/settings'),
       ('rescuer-settings-footer', '/settings'),
       ('rescuer-settings-logout-focus', '/settings'),
@@ -728,6 +756,19 @@ void main() {
       final repo = FakeIdentityRepository()
         ..user = const Identity('one', 'fixture@example.test', verified: true);
       await repo.saveProfile(name: 'Ana', phone: '', city: 'Monterrey, NL');
+      if (spec.$1.startsWith('rescuer-profile-reference')) {
+        // Synthetic account from the public mockup; never production identity.
+        repo.user = const Identity(
+          'one',
+          'maria@rescatista.com',
+          verified: true,
+        );
+        await repo.saveProfile(
+          name: 'María Rescatista',
+          phone: '+52 55 1234 5678',
+          city: 'Ciudad de México, CDMX',
+        );
+      }
       final large = spec.$1.endsWith('-large');
       tester.view.physicalSize = large && spec.$1 != 'adoption-empty-wide-large'
           ? const Size(320, 640)
@@ -753,7 +794,9 @@ void main() {
                   spec.$1.contains('enrollment'),
             )
           : FakeGuardian();
-      final community = spec.$1.startsWith('impact-feed')
+      final community = spec.$1.startsWith('rescuer-profile-reference')
+          ? RescuerReferenceCaptureCommunity()
+          : spec.$1.startsWith('impact-feed')
           ? ImpactCaptureCommunity(spec.$1.contains('empty'))
           : (spec.$1.startsWith('adoption-detail') ||
                 spec.$1 == 'adoption-end' ||
@@ -827,7 +870,11 @@ void main() {
           communityRepositoryProvider.overrideWithValue(community),
           if (spec.$1.startsWith('rescuer-profile') ||
               spec.$1.startsWith('rescuer-settings'))
-            rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+            rescueRepositoryProvider.overrideWithValue(
+              spec.$1.startsWith('rescuer-profile-reference')
+                  ? RescuerReferenceCaptureRescue()
+                  : FakeRescue(),
+            ),
           if (spec.$1.startsWith('rescuer-settings'))
             rescuerProfileRepositoryProvider.overrideWithValue(
               FakeRescuerProfile()..value['owner_id'] = 'one',

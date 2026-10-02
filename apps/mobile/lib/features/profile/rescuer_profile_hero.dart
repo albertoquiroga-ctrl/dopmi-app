@@ -15,8 +15,15 @@ import 'rescuer_profile_activity.dart';
 import 'rescuer_verification_card.dart';
 
 class RescuerProfileHero extends ConsumerWidget {
-  const RescuerProfileHero(this.profile, {super.key});
+  const RescuerProfileHero(
+    this.profile, {
+    super.key,
+    this.contactEmail,
+    this.contactPhone,
+  });
   final Profile profile;
+  // Supplied only by the authenticated owner route, never by public projection.
+  final String? contactEmail, contactPhone;
   @override
   Widget build(BuildContext context, WidgetRef ref) => LiveSection<Json>(
     tables: const [
@@ -164,6 +171,14 @@ class RescuerProfileHero extends ConsumerWidget {
                       letterSpacing: 0,
                     ),
                   ),
+                  if ((contactPhone ?? '').trim().isNotEmpty ||
+                      (contactEmail ?? '').trim().isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    RescuerOwnerContacts(
+                      phone: contactPhone ?? '',
+                      email: contactEmail,
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -436,6 +451,60 @@ class _RescuerIdentityCardState extends State<RescuerIdentityCard> {
           );
         },
       ),
+    );
+  }
+}
+
+/// Private account contacts shown only within the owner's profile screen.
+class RescuerOwnerContacts extends StatelessWidget {
+  const RescuerOwnerContacts({super.key, required this.phone, this.email});
+  final String phone;
+  final String? email;
+  @override
+  Widget build(BuildContext context) {
+    final entries = [
+      if (phone.trim().isNotEmpty) ('icon-phone', phone.trim()),
+      if ((email ?? '').trim().isNotEmpty) ('icon-mail', email!.trim()),
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < entries.length; i++) ...[
+          if (i > 0) const SizedBox(height: 8),
+          ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 28),
+            child: Row(
+              children: [
+                ExcludeSemantics(
+                  child: SvgPicture.asset(
+                    'assets/profile/${entries[i].$1}.svg',
+                    width: 14,
+                    height: 14,
+                    colorFilter: const ColorFilter.mode(
+                      Color(0xff7841f2),
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    entries[i].$2,
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      height: 1.55,
+                      letterSpacing: 0,
+                      color: Color(0xff15110d),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

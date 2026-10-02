@@ -84,8 +84,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final experience = ref.watch(experienceProvider);
+    final account = ref.watch(identityControllerProvider);
     return ListenableBuilder(
-      listenable: experience,
+      listenable: Listenable.merge([experience, account]),
       builder: (context, _) {
         profile = experience.profile ?? profile;
         final rescuer = experience.value == AccountExperience.rescuer;
@@ -112,7 +113,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ],
             if (profile != null) ...[
               if (rescuer)
-                RescuerProfileHero(profile!)
+                RescuerProfileHero(
+                  profile!,
+                  contactEmail: account.identity?.id == profile!.id
+                      ? account.identity?.email
+                      : null,
+                  contactPhone: account.identity?.id == profile!.id
+                      ? profile!.phone
+                      : null,
+                )
               else
                 Container(
                   padding: const EdgeInsets.all(20),
