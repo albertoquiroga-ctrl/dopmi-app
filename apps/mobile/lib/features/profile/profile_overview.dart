@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/ui.dart';
 import 'rescuer_profile_hero.dart';
+import 'rescuer_profile_access.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../identity/experience_controller.dart';
@@ -148,36 +149,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
               const SizedBox(height: 20),
               if (rescuer) ...[
-                ProfileRow(
-                  title: 'Editar perfil público',
-                  icon: Icons.verified_user_outlined,
-                  path: '/rescuer/profile/edit',
-                ),
-                ProfileRow(
-                  title: 'Ver mi perfil público',
-                  icon: Icons.public,
-                  path: '/people/${profile!.id}',
-                ),
-                ProfileRow(
-                  title: 'Mis casos',
-                  icon: Icons.pets_outlined,
-                  path: '/my-cases',
-                ),
-                ProfileRow(
-                  title: 'Mis publicaciones de adopción',
-                  icon: Icons.home_outlined,
-                  path: '/my-adoptions',
-                ),
-                const ProfileRow(
-                  title: 'Configurar pagos con Stripe',
-                  icon: Icons.account_balance_outlined,
-                  path: '/connect',
-                ),
-                const ProfileRow(
-                  title: 'Ayuda para rescatistas',
-                  icon: Icons.help_outline,
-                  path: '/help',
-                ),
+                const RescuerProfileAccess(),
               ] else ...[
                 Text(
                   'Registro de donaciones',
@@ -200,11 +172,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   path: '/impact',
                 ),
               ],
-              ProfileRow(
-                title: 'Configuración',
-                icon: Icons.settings_outlined,
-                path: '/settings',
-              ),
+              if (!rescuer)
+                ProfileRow(
+                  title: 'Configuración',
+                  icon: Icons.settings_outlined,
+                  path: '/settings',
+                ),
               const SizedBox(height: 18),
               if (error != null) Notice(error!, isError: true),
               DecoratedBox(
@@ -1200,6 +1173,36 @@ class SettingsScreen extends ConsumerWidget {
       title: 'Configuración',
       back: true,
       children: [
+        if (ref.watch(experienceProvider).value ==
+            AccountExperience.rescuer) ...[
+          const ProfileRow(
+            title: 'Verificación',
+            icon: Icons.shield_outlined,
+            path: '/rescue/new?kind=verification',
+          ),
+          const ProfileRow(
+            title: 'Editar perfil público',
+            icon: Icons.edit_outlined,
+            path: '/rescuer/profile/edit',
+          ),
+          if (ref.watch(identityControllerProvider).identity != null)
+            ProfileRow(
+              title: 'Ver mi perfil público',
+              icon: Icons.public,
+              path:
+                  '/people/${ref.watch(identityControllerProvider).identity!.id}',
+            ),
+          const ProfileRow(
+            title: 'Mis publicaciones de adopción',
+            icon: Icons.home_outlined,
+            path: '/my-adoptions',
+          ),
+          const ProfileRow(
+            title: 'Configurar pagos con Stripe',
+            icon: Icons.account_balance_outlined,
+            path: '/connect',
+          ),
+        ],
         const ProfileRow(
           title: 'Información básica',
           subtitle: 'Edita tu perfil y datos personales',
