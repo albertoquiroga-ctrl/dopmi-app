@@ -25,6 +25,7 @@ class OwnedCaseHistory extends ConsumerWidget {
                 fontFamily: 'Inter',
                 fontSize: 19,
                 height: 1.3,
+                letterSpacing: 0,
                 fontWeight: FontWeight.w700,
                 color: Color(0xff15110d),
               ),
@@ -95,8 +96,10 @@ class OwnedCaseStory extends StatelessWidget {
                 Text(
                   update.body,
                   style: const TextStyle(
+                    fontFamily: 'Inter',
                     fontSize: 14,
-                    height: 1.5,
+                    height: 1.55,
+                    letterSpacing: 0,
                     color: Color(0xff15110d),
                   ),
                 ),
@@ -138,8 +141,10 @@ class _StoryDate extends StatelessWidget {
           child: Text(
             date,
             style: const TextStyle(
+              fontFamily: 'Inter',
               fontSize: 11,
               height: 1.4,
+              letterSpacing: 0,
               fontWeight: FontWeight.w600,
               color: Color(0xff15110d),
             ),

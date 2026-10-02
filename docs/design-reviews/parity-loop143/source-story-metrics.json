@@ -1,0 +1,35 @@
+{
+  "source_sha": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "url": "http://127.0.0.1:5173/rescuer/cases/luna",
+  "viewport_requested": [
+    377,
+    852
+  ],
+  "heading": {
+    "fontSize": 19,
+    "lineHeight": 24.7,
+    "weight": 700,
+    "letterSpacing": "normal"
+  },
+  "paragraph": {
+    "fontSize": 14,
+    "lineHeight": 21.7,
+    "weight": 400,
+    "letterSpacing": "normal",
+    "width": 316
+  },
+  "date": {
+    "fontSize": 11,
+    "lineHeight": "normal",
+    "weight": 600,
+    "letterSpacing": "normal",
+    "padding": "4px 8px"
+  },
+  "card": {
+    "radius": 18,
+    "width": 345.6000061035156
+  },
+  "media": {
+    "width": 344
+  }
+}
