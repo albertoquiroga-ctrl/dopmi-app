@@ -16,8 +16,36 @@ class RescuerProfileHero extends ConsumerWidget {
   final Profile profile;
   @override
   Widget build(BuildContext context, WidgetRef ref) => LiveSection<Json>(
-    tables: const ['dopmi_rescue_records', 'dopmi_donations'],
-    load: () => ref.read(rescueRepositoryProvider).dashboard(),
+    tables: const [
+      'dopmi_rescue_records',
+      'dopmi_donations',
+      'dopmi_rescuer_profiles',
+    ],
+    load: () async {
+      final data = await ref.read(rescueRepositoryProvider).dashboard();
+      Json? published;
+      var publicFailed = false;
+      if (data['verification_status'] == 'approved') {
+        try {
+          published = await ref
+              .read(communityRepositoryProvider)
+              .publicProfile(profile.id);
+          if (published != null && published['id'] != profile.id) {
+            throw const FormatException(
+              'El perfil público no corresponde a tu cuenta.',
+            );
+          }
+        } catch (_) {
+          published = null;
+          publicFailed = true;
+        }
+      }
+      return {
+        ...data,
+        'published_profile': published,
+        'published_profile_failed': publicFailed,
+      };
+    },
     statusFrame: (content) => Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -31,44 +59,110 @@ class RescuerProfileHero extends ConsumerWidget {
         content,
       ],
     ),
-    builder: (data, _) => Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        RescuerIdentityCard(
-          name: profile.name,
-          city: profile.city,
-          status: data['verification_status'] as String?,
-          onEdit: () => context.push('/rescuer/profile/edit'),
-        ),
-        const SizedBox(height: 18),
-        RescuerProfileMetrics(
-          data: data,
-          onCases: () => context.go('/my-cases'),
-          onTransfers: () => context.go('/rescuer'),
-        ),
-        const SizedBox(height: 18),
-        RescuerVerificationCard(
-          status: data['verification_status'] as String?,
-          onPressed: () => context.push('/rescue/new?kind=verification'),
-        ),
-        const SizedBox(height: 18),
-        RescuerProfileActivity(
-          data: data,
-          onHome: () => context.go('/rescuer'),
-          onExpense: (id) => context.push(
-            Uri(
-              path: '/rescue/$id',
-              queryParameters: {'kind': 'expense', 'record': '1'},
-            ).toString(),
+    builder: (data, refresh) {
+      final published = data['published_profile'] as Json?;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          RescuerIdentityCard(
+            name: published?['name'] as String? ?? profile.name,
+            city: published == null
+                ? profile.city
+                : [published['city'], published['region']]
+                      .whereType<String>()
+                      .where((value) => value.isNotEmpty)
+                      .join(', '),
+            status: data['verification_status'] as String?,
+            onEdit: () async {
+              await context.push('/rescuer/profile/edit');
+              if (context.mounted) refresh();
+            },
           ),
-          onStart: () => context.push(
-            data['verification_status'] == 'approved'
-                ? '/rescue/new?kind=case'
-                : '/rescue/new?kind=verification',
+          const SizedBox(height: 18),
+          RescuerProfileMetrics(
+            data: data,
+            onCases: () => context.go('/my-cases'),
+            onTransfers: () => context.go('/rescuer'),
           ),
-        ),
-      ],
-    ),
+          const SizedBox(height: 18),
+          RescuerVerificationCard(
+            status: data['verification_status'] as String?,
+            onPressed: () => context.push('/rescue/new?kind=verification'),
+          ),
+          if (data['published_profile_failed'] == true) ...[
+            const SizedBox(height: 18),
+            const Text('No pudimos consultar tu perfil público.'),
+            TextButton(
+              onPressed: refresh,
+              child: const Text('Reintentar perfil público'),
+            ),
+          ],
+          if ((published?['bio'] as String? ?? '').trim().isNotEmpty) ...[
+            const SizedBox(height: 18),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: const Color(0xffe6e2dd)),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Semantics(
+                    header: true,
+                    child: const Text(
+                      'Sobre ti',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 17,
+                        height: 1.3,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xff15110d),
+                        letterSpacing: 0,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    published!['bio'] as String,
+                    maxLines: MediaQuery.textScalerOf(context).scale(14) > 20
+                        ? null
+                        : 3,
+                    overflow: MediaQuery.textScalerOf(context).scale(14) > 20
+                        ? TextOverflow.visible
+                        : TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 14,
+                      height: 1.5,
+                      color: Color(0xff554e48),
+                      letterSpacing: 0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          const SizedBox(height: 18),
+          RescuerProfileActivity(
+            data: data,
+            onHome: () => context.go('/rescuer'),
+            onExpense: (id) => context.push(
+              Uri(
+                path: '/rescue/$id',
+                queryParameters: {'kind': 'expense', 'record': '1'},
+              ).toString(),
+            ),
+            onStart: () => context.push(
+              data['verification_status'] == 'approved'
+                  ? '/rescue/new?kind=case'
+                  : '/rescue/new?kind=verification',
+            ),
+          ),
+        ],
+      );
+    },
   );
 }
 
