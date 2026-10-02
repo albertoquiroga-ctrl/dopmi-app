@@ -404,7 +404,9 @@ class _ThreadState extends ConsumerState<ThreadScreen>
         });
       }
     } catch (cause) {
-      if (mounted) setState(() => error = communityError(cause));
+      if (mounted && current == generation) {
+        setState(() => error = communityError(cause));
+      }
     } finally {
       if (mounted) setState(() => olderBusy = false);
     }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/measurement.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
@@ -58,6 +60,31 @@ class ReceiptThreadCommunity extends DetailThreadCommunity {
         'created_at': '2026-10-02T16:00:00Z',
       },
   ];
+}
+
+class HistoryThreadCommunity extends DetailThreadCommunity {
+  bool denyThread = false;
+  @override
+  Future<Json> thread(String id) async {
+    if (denyThread) throw Exception('access denied');
+    return super.thread(id);
+  }
+
+  Completer<List<Json>>? pendingOlder;
+  final cursors = <String>[];
+  Json message(int number) => {
+    'id': 'message-$number',
+    'sender_id': 'other',
+    'body': 'Mensaje $number',
+    'created_at': DateTime.utc(2026, 10, 1, 0, number).toIso8601String(),
+  };
+  @override
+  Future<List<Json>> messages(String id, {Json? before}) async {
+    if (before == null) return List.generate(40, (index) => message(index + 1));
+    cursors.add(before['id'] as String);
+    if (pendingOlder != null) return pendingOlder!.future;
+    return [message(0), message(1)];
+  }
 }
 
 class CommunityAnalyticsSpy implements ProductAnalytics {
@@ -350,6 +377,59 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  testWidgets('conversation history pages and ignores an obsolete page error', (
+    tester,
+  ) async {
+    final repo = HistoryThreadCommunity()
+      ..pendingOlder = Completer<List<Json>>();
+    await start(tester, repo, '/messages/thread-one');
+    await tester.enterText(find.byType(TextField), 'Borrador pendiente');
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Ver mensajes anteriores'));
+    await tester.pump();
+    expect(repo.cursors, ['message-1']);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pumpAndSettle();
+    repo.pendingOlder!.completeError(Exception('obsolete page response'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('No pudimos completar'), findsNothing);
+    repo.pendingOlder = null;
+    await tester.tap(find.text('Ver mensajes anteriores'));
+    await tester.pumpAndSettle();
+    expect(repo.cursors, ['message-1', 'message-1']);
+    expect(find.text('Mensaje 0'), findsOneWidget);
+    expect(find.text('Mensaje 1'), findsOneWidget);
+    expect(find.text('Ver mensajes anteriores'), findsNothing);
+    await tester.scrollUntilVisible(
+      find.text('Mensaje 40'),
+      400,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Mensaje 40'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Mensaje 0'),
+      -400,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Mensaje 0'), findsOneWidget);
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).controller!.text,
+      'Borrador pendiente',
+    );
+    repo.denyThread = true;
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pumpAndSettle();
+    expect(find.text('Mensaje 0'), findsNothing);
+    expect(find.byType(TextField), findsNothing);
+    expect(find.text('Volver a cargar'), findsOneWidget);
+    expect(repo.sentIds, isEmpty);
+    expect(tester.takeException(), isNull);
+  });
   testWidgets('receipt failure keeps history and resume recovers with draft', (
     tester,
   ) async {
