@@ -9,6 +9,14 @@ aceptación global ni instalada. Entradas históricas debajo están fechadas.
 
 ## Capturas reproducibles actuales
 
+Actualización loop260: recorrido Perfil rescatista → Configuración → regreso
+contrastado en mockup ejecutado y router productivo. Regreso conserva posición,
+nombre y experiencia a tamaño normal y200%;29pruebas dirigidas aprobadas.
+Paleta efectiva y recorte de biografía ya coincidían: no modificación visual
+sin evidencia. Capturas normal/large en `design-reviews/parity-loop260`.
+Datos Connect/verificación/revisión reales conservados. CI432 aún ejecutándose;
+esto no acredita aceptación en Samsung ni paridad completa.
+
 `apps/mobile/tool/capture_profile_test.dart` contiene **256 estados en 29 URLs**,
 recontados desde todas las tuplas, incluidas las multilínea, en loop259.
 Incluye conversación con300px de teclado simulado y cuatro nuevos estados de

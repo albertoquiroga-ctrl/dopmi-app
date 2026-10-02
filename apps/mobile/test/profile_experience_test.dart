@@ -16,6 +16,63 @@ import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
 
 void main() {
+  for (final large in [false, true]) {
+    testWidgets('profile settings return preserves the real profile: $large', (
+      tester,
+    ) async {
+      tester.view.physicalSize = large
+          ? const Size(320, 640)
+          : const Size(377, 852);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final identity = FakeIdentityRepository()
+        ..user = const Identity('one', 'ana@example.test', verified: true);
+      await identity.saveProfile(name: 'Ana', phone: '', city: 'Monterrey');
+      await identity.setExperience('rescuer');
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+          routerInitialLocationProvider.overrideWithValue('/profile'),
+        ],
+      );
+      addTearDown(() async {
+        container.dispose();
+        await identity.changes.close();
+      });
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const DopmiApp(),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final access = find.text('Configuración');
+      await tester.scrollUntilVisible(
+        access,
+        240,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(access);
+      await tester.pumpAndSettle();
+      final position = tester.getTopLeft(access);
+      await tester.tap(access);
+      await tester.pumpAndSettle();
+      expect(container.read(routerProvider).state.uri.path, '/settings');
+      expect(find.text('Estado de verificación'), findsOneWidget);
+      await tester.tap(find.byTooltip('Regresar'));
+      await tester.pumpAndSettle();
+      expect(container.read(routerProvider).state.uri.path, '/profile');
+      expect(tester.getTopLeft(access), position);
+      expect(identity.profile.name, 'Ana');
+      expect(identity.profile.mode, 'rescuer');
+      expect(tester.takeException(), isNull);
+    });
+  }
   testWidgets('rescuer settings scrolls behind its fixed translucent header', (
     tester,
   ) async {
