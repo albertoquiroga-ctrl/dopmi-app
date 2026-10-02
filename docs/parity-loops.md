@@ -2305,3 +2305,15 @@ Prueba extiende error inicial→reintento→nombre original→edición/galería:
 2 aprobadas3s. Ningún guardado antes de recuperar datos. No aceptación instalada
 ni paridad completa; sin envío nuevo a Codemagic.
 Analyze sin incidencias29.7s.
+# Loop285 — presentación del contacto de Ayuda
+
+Referencia remota2/10/2026:
+`irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
+Formulario adapta CSS help-support-form: campos Inter14/500, bordes/radio14,
+padding14x12 y margen superior28. Tema permite texto multilinea en vez de
+ellipsis; scroll permite cerrar teclado con arrastre. Prueba de handoff de
+correo1 aprobada1s, captura normal/grande1 suite aprobada3s, imagen grande
+inspeccionada con mensaje y CTA visibles. Envío interno y adjuntos continúan
+pendientes: correo externo no sustituye esa parte del objetivo. No acuse falso,
+ningún mensaje enviado ni build Codemagic nuevo.
+Analyze sin incidencias9s.

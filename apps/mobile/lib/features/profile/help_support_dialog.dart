@@ -86,110 +86,146 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
   );
 
   @override
-  Widget build(BuildContext context) => Dialog(
-    backgroundColor: Colors.white,
-    insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-    child: ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 361),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Expanded(
-                  child: Text(
-                    'Contactar a soporte',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: ink,
-                      height: 1.2,
+  Widget build(BuildContext context) => Theme(
+    data: Theme.of(context).copyWith(
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 12,
+        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Color(0xffe6e2dd)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: purple, width: 2),
+        ),
+      ),
+      textTheme: Theme.of(context).textTheme.copyWith(
+        bodyLarge: const TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: ink,
+        ),
+      ),
+    ),
+    child: Dialog(
+      backgroundColor: Colors.white,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 361),
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          padding: const EdgeInsets.fromLTRB(20, 28, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Expanded(
+                    child: Text(
+                      'Contactar a soporte',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        color: ink,
+                        height: 1.2,
+                      ),
                     ),
                   ),
-                ),
-                IconButton(
-                  tooltip: 'Cerrar',
-                  onPressed: busy ? null : () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.close, size: 20),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            field(
-              'Tema',
-              DropdownButtonFormField<int>(
-                initialValue: topic,
-                isExpanded: true,
-                items: [
-                  for (var i = 0; i < widget.topics.length; i++)
-                    DropdownMenuItem(
-                      value: i,
-                      child: Text(widget.topics[i], softWrap: true),
-                    ),
+                  IconButton(
+                    tooltip: 'Cerrar',
+                    onPressed: busy ? null : () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.close, size: 20),
+                  ),
                 ],
-                selectedItemBuilder: (_) => widget.topics
-                    .map((item) => Text(item, overflow: TextOverflow.ellipsis))
-                    .toList(),
-                onChanged: busy
-                    ? null
-                    : (value) => setState(() => topic = value ?? topic),
               ),
-            ),
-            const SizedBox(height: 12),
-            field(
-              'Caso relacionado (opcional)',
-              TextField(
-                controller: caseName,
-                enabled: !busy,
-                decoration: const InputDecoration(hintText: 'Ej. Rocky, Luna…'),
-              ),
-            ),
-            const SizedBox(height: 12),
-            field(
-              'Mensaje',
-              TextField(
-                controller: message,
-                enabled: !busy,
-                minLines: 4,
-                maxLines: null,
-                onChanged: (_) => setState(() {}),
-                decoration: const InputDecoration(
-                  hintText: 'Cuéntanos qué necesitas',
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            if (notice != null) ...[
-              Text(notice!, style: const TextStyle(fontSize: 14, color: muted)),
               const SizedBox(height: 12),
+              field(
+                'Tema',
+                DropdownButtonFormField<int>(
+                  initialValue: topic,
+                  itemHeight: null,
+                  isExpanded: true,
+                  items: [
+                    for (var i = 0; i < widget.topics.length; i++)
+                      DropdownMenuItem(
+                        value: i,
+                        child: Text(widget.topics[i], softWrap: true),
+                      ),
+                  ],
+                  selectedItemBuilder: (_) => widget.topics
+                      .map((item) => Text(item, softWrap: true))
+                      .toList(),
+                  onChanged: busy
+                      ? null
+                      : (value) => setState(() => topic = value ?? topic),
+                ),
+              ),
+              const SizedBox(height: 12),
+              field(
+                'Caso relacionado (opcional)',
+                TextField(
+                  controller: caseName,
+                  enabled: !busy,
+                  decoration: const InputDecoration(
+                    hintText: 'Ej. Rocky, Luna…',
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              field(
+                'Mensaje',
+                TextField(
+                  controller: message,
+                  enabled: !busy,
+                  minLines: 4,
+                  maxLines: null,
+                  onChanged: (_) => setState(() {}),
+                  decoration: const InputDecoration(
+                    hintText: 'Cuéntanos qué necesitas',
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              if (notice != null) ...[
+                Text(
+                  notice!,
+                  style: const TextStyle(fontSize: 14, color: muted),
+                ),
+                const SizedBox(height: 12),
+              ],
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 12,
+                  ),
+                  minimumSize: const Size(0, 48),
+                  textStyle: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                onPressed: busy || message.text.trim().isEmpty
+                    ? null
+                    : continueInMail,
+                child: const Text(
+                  'Continuar en correo',
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ],
-            FilledButton(
-              style: FilledButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 12,
-                ),
-                minimumSize: const Size(0, 48),
-                textStyle: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              onPressed: busy || message.text.trim().isEmpty
-                  ? null
-                  : continueInMail,
-              child: const Text(
-                'Continuar en correo',
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     ),
