@@ -288,7 +288,7 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                       AuthFormMode.reset => 'Actualizar contraseña',
                     },
                     busy: busy,
-                    onPressed: submit,
+                    onPressed: signup && !consent ? null : submit,
                   ),
                   if (login)
                     TextButton(

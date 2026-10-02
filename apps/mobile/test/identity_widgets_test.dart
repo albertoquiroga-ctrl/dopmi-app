@@ -97,6 +97,8 @@ void main() {
       );
       await tester.enterText(find.byType(TextFormField).at(3), 'Password1234');
       await tester.enterText(find.byType(TextFormField).at(4), 'Password1234');
+      final signupButton = find.widgetWithText(FilledButton, 'Crear cuenta');
+      expect(tester.widget<FilledButton>(signupButton).onPressed, isNull);
       await tap(tester, 'Crear cuenta');
       expect(repo.signupCount, 0);
       await tap(

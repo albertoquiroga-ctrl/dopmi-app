@@ -63,6 +63,8 @@ class AuthFrame extends StatelessWidget {
           style: FilledButton.styleFrom(
             backgroundColor: ink,
             foregroundColor: Colors.white,
+            disabledBackgroundColor: sheet ? const Color(0xffcfc8bf) : null,
+            disabledForegroundColor: sheet ? Colors.white : null,
             minimumSize: const Size.fromHeight(52),
             shape: const StadiumBorder(),
             textStyle: const TextStyle(
