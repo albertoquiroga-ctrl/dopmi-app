@@ -267,10 +267,24 @@ class _AdoptionPhotoState extends ConsumerState<AdoptionPhoto> {
       height: widget.height,
       color: const Color(0xffeee7fc),
       child: Center(
-        child: TextButton.icon(
-          onPressed: () => reload(),
-          icon: const Icon(Icons.refresh),
-          label: const Text('Cargar foto'),
+        child: LayoutBuilder(
+          builder: (context, constraints) =>
+              constraints.maxWidth < 120 || constraints.maxHeight < 80
+              ? IconButton(
+                  tooltip: 'Cargar foto',
+                  onPressed: () => reload(),
+                  padding: EdgeInsets.zero,
+                  style: IconButton.styleFrom(
+                    minimumSize: const Size(48, 48),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  icon: const Icon(Icons.refresh),
+                )
+              : TextButton.icon(
+                  onPressed: () => reload(),
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Cargar foto'),
+                ),
         ),
       ),
     );
@@ -280,6 +294,7 @@ class _AdoptionPhotoState extends ConsumerState<AdoptionPhoto> {
   Widget build(BuildContext context) => ClipRRect(
     borderRadius: BorderRadius.circular(widget.radius),
     child: FutureBuilder<String>(
+      key: ObjectKey(url),
       future: url,
       builder: (_, snapshot) {
         if (snapshot.hasError) {

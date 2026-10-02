@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dopmi_mobile/features/communication/match_thread_row.dart';
 import 'package:dopmi_mobile/core/reference_focus_outline.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_activity.dart';
@@ -685,6 +687,8 @@ void main() {
       ('rescuer-messages-large', '/messages'),
       ('rescuer-messages-empty', '/messages'),
       ('rescuer-messages-empty-large', '/messages'),
+      ('match-threads-photo-focus', '/messages'),
+      ('match-threads-photo-focus-large', '/messages'),
       ('match-threads-focus', '/messages'),
       ('match-threads-focus-large', '/messages'),
       ('match-home', '/messages'),
@@ -844,6 +848,7 @@ void main() {
           : (spec.$1.startsWith('adoption-detail') ||
                 spec.$1 == 'adoption-end' ||
                 spec.$1.startsWith('adoption-support') ||
+                spec.$1.startsWith('match-threads-photo') ||
                 (spec.$1.startsWith('publish-photo-grid') ||
                     (spec.$1.startsWith('publish-information') ||
                         spec.$1.startsWith('publish-review') ||
@@ -1063,6 +1068,29 @@ void main() {
             'funded_cents': 800,
           }),
         ];
+      }
+      if (spec.$1.startsWith('match-threads-photo')) {
+        community.post = Adoption({
+          ...community.post.data,
+          'photos': ['approved/rocky.png'],
+        });
+        await tester.runAsync(() async {
+          final ready = Completer<void>();
+          final stream = const NetworkImage(
+            'https://fixture.invalid/approved/rocky.png',
+          ).resolve(ImageConfiguration.empty);
+          final listener = ImageStreamListener(
+            (info, synchronous) => ready.complete(),
+            onError: (Object error, StackTrace? stack) =>
+                ready.completeError(error, stack),
+          );
+          stream.addListener(listener);
+          try {
+            await ready.future.timeout(const Duration(seconds: 10));
+          } finally {
+            stream.removeListener(listener);
+          }
+        });
       }
       if (spec.$1.startsWith('match-threads')) {
         community.threadItems = [
@@ -1450,10 +1478,24 @@ void main() {
         await tester.pumpAndSettle();
         expect(tester.getRect(outline), tester.getRect(button).inflate(5));
       }
-      if (spec.$1.startsWith('match-threads-focus')) {
-        await tester.scrollUntilVisible(find.byKey(const ValueKey('match-thread-list')), 200, scrollable: find.byType(Scrollable).first);
+      if (spec.$1.startsWith('match-threads-focus') ||
+          spec.$1.startsWith('match-threads-photo-focus')) {
+        await tester.scrollUntilVisible(
+          find.byKey(const ValueKey('match-thread-list')),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
         await tester.pumpAndSettle();
         final row = find.byType(MatchThreadRow).first;
+        if (spec.$1.startsWith('match-threads-photo')) {
+          final image = find.descendant(
+            of: row,
+            matching: find.byType(RawImage),
+          );
+          expect(image, findsOneWidget);
+          expect(tester.widget<RawImage>(image).image, isNotNull);
+          expect(tester.getSize(image), const Size(48, 48));
+        }
         await tester.ensureVisible(row);
         await tester.pumpAndSettle();
         final outline = find.descendant(
