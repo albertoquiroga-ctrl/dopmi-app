@@ -100,47 +100,53 @@ class DopmiBottomBar extends StatelessWidget {
     }
     return SafeArea(
       top: false,
-      child: Padding(
-        padding: rescuer
-            ? EdgeInsets.zero
-            : const EdgeInsets.fromLTRB(18, 4, 18, 12),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: rescuer ? null : BorderRadius.circular(999),
-            border: rescuer
-                ? const Border(top: BorderSide(color: DopmiTokens.line))
-                : null,
-            boxShadow: rescuer
-                ? null
-                : const [
-                    BoxShadow(
-                      color: Color(0x2415110d),
-                      offset: Offset(0, 8),
-                      blurRadius: 24,
-                    ),
-                  ],
-          ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: rescuer ? 0 : 10,
-              vertical: rescuer ? 0 : 8,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: DecoratedBox(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          border: Border(top: BorderSide(color: Color(0xffe3e4ed))),
+        ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // Keep the reference's five columns when every label fits. Larger
+            // system text gets more room without splitting destination names.
+            var minimumWidth = 48.0;
+            for (final destination in destinations) {
+              final painter = TextPainter(
+                text: TextSpan(
+                  text: destination.label,
+                  style: DefaultTextStyle.of(context).style.copyWith(
+                    fontSize: 9,
+                    height: 1.2,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                textDirection: Directionality.of(context),
+                textScaler: MediaQuery.textScalerOf(context),
+              )..layout();
+              final width = painter.width + 16;
+              if (width > minimumWidth) minimumWidth = width;
+              painter.dispose();
+            }
+            final columns = (constraints.maxWidth / minimumWidth).floor().clamp(
+              1,
+              destinations.length,
+            );
+            return Wrap(
+              alignment: WrapAlignment.center,
               children: [
                 for (final destination in destinations)
-                  Expanded(
+                  SizedBox(
+                    width: constraints.maxWidth / columns,
                     child: _NavigationItem(
                       destination: destination,
                       selected: selectedPath == destination.path,
-                      rescuer: rescuer,
+                      rescuer: true,
                       onPressed: () => onSelected(destination),
                     ),
                   ),
               ],
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
@@ -218,6 +224,8 @@ class _NavigationItem extends StatelessWidget {
                   Text(
                     destination.label,
                     textAlign: TextAlign.center,
+                    maxLines: 1,
+                    softWrap: false,
                     style: TextStyle(
                       fontSize: 9,
                       height: 1.2,

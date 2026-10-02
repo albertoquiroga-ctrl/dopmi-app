@@ -1,4 +1,4 @@
-import 'dart:ui' show SemanticsAction;
+import 'package:flutter/rendering.dart';
 
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/navigation.dart';
@@ -295,6 +295,31 @@ void main() {
               .hasAction(SemanticsAction.tap),
           isTrue,
         );
+        if (rescuer) {
+          final bar = tester.getRect(find.byType(DopmiBottomBar));
+          for (final destination in rescuerDestinations) {
+            final label = find.text(destination.label);
+            final paragraph = tester.renderObject<RenderParagraph>(label);
+            expect(paragraph.didExceedMaxLines, isFalse);
+            expect(
+              paragraph.getBoxesForSelection(
+                TextSelection(
+                  baseOffset: 0,
+                  extentOffset: destination.label.length,
+                ),
+              ),
+              hasLength(1),
+            );
+            final bounds = tester.getRect(label);
+            expect(bar.contains(bounds.topLeft), isTrue);
+            expect(bar.contains(bounds.bottomRight), isTrue);
+            final button = find.bySemanticsLabel(destination.label);
+            expect(tester.getSize(button).width, greaterThanOrEqualTo(48));
+            expect(tester.getSize(button).height, greaterThanOrEqualTo(48));
+            await tester.tap(button);
+            expect(selected, destination.path);
+          }
+        }
         await tester.tap(target);
         expect(selected, rescuer ? '/my-cases' : '/rescue-cases');
         expect(tester.takeException(), isNull);
