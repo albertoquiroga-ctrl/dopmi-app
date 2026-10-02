@@ -13,7 +13,8 @@ envío interno, acuse y adjuntos continúan pendientes. El endpoint legado
 support-message-send está retirado y no se reutiliza.
 Loops286–288 añaden contrato y migración local privada/idempotente con lectura
 administrativa auditada. Loop290 conecta formulario al repositorio RPC; aún sin
-despliegue ni panel conectado, adjuntos pendientes.
+panel conectado, adjuntos pendientes. Loop291 despliega/verifica RPC y permisos
+en DEV; no acredita recorrido Auth/REST autenticado ni recepción instalada.
 Loops277–284 ajustan tarjeta, campos, encabezado, cancelar, teclado y errores del editor público;
 contraste completo, cámara/gestos y aceptación instalada siguen pendientes.
 Este corte no es un conteo final de pantallas aceptadas.

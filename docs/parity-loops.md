@@ -2401,3 +2401,19 @@ Las RPC siguen locales sin desplegar y el panel aún no está conectado; no
 afirmar envío remoto real. Adjuntos y comparación final permanecen pendientes.
 Sin email emitido ni Codemagic nuevo.
 Analyze detectó bloque sin llaves; corregido y repetido limpio5.8s.
+# Loop291 — soporte desplegado y permisos remotos comprobados
+
+Referencia remota2/10/2026:
+`irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
+Migración soporte aplicada por MCP en DEV como20261002233059 tras verificar
+50 antecedentes, ausencia de objetos y guardas de identidad/admin. Tres
+cuerpos remotos coinciden con fuente probada; RLS y grants comprobados. DO
+rechaza submit/receipt/inbox sin identidad. Cero solicitudes almacenadas; no se
+consultó contenido privado ni enviaron mensajes. Asesores agregan únicamente
+tabla privada sin políticas públicas y tres RPC autenticadas deliberadas;
+correspondencia y límites en migration-history-audit. Comparador inicial de
+tooltext tomó el marcador citado por el wrapper; corregido para capturar array
+de datos y comparación ejecutada sin repetir migración.
+No Auth/REST autenticada, recepción instalada ni atención operativa acreditada.
+Panel, adjuntos, pruebas remotas completas y paridad final pendientes.
+Producción intacta; no Codemagic nuevo.

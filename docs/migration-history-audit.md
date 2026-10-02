@@ -1,5 +1,25 @@
 # Auditoría del historial de migraciones
 
+## Soporte privado — 2/10/2026, loop291
+
+Local `20261002231534_private_support_requests.sql` → DEV
+`ohqxranynackjignryep` `20261002233059/private_support_requests`.
+Preflight:50 antecedentes remotos (último public_rescuer_metrics), tabla y tres
+RPC ausentes, require_actor/is_admin actuales inspeccionados contra fuente.
+Aplicada una vez por MCP, sin db push, replay, repair, rename ni producción.
+Tres cuerpos desplegados comparados con archivo local normalizando whitespace:
+coinciden. SECURITY DEFINER/search_path vacío, anonEXECUTEfalse,
+authenticatedEXECUTEtrue. Tabla privada RLS=true, SELECT anon/authenticated/
+service_role=false; cero solicitudes. DO remoto acredita rechazo sin actor de
+submit, receipt e inbox, sin datos de usuarios ni solicitud persistida.
+
+Gate previo434/434; cliente5/analyze limpio. No prueba Auth/REST autenticada ni
+app instalada. Asesores antes27/16/70/1 y después28/16/73/1: una tabla privada
+sin políticas públicas y tres RPC autenticadas deliberadas. Aislamiento
+intencional y guardas reales cubiertas; avisos previos siguen sin resolver.
+Referencias: [RLS privado](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy),
+[RPC autorizadas](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable).
+
 ## H10 eliminación y producción — 28/9/2026
 
 Test: `20260928205058_h10_terms_account_deletion.sql` → `20260928211754` y
