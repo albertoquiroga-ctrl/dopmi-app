@@ -820,6 +820,9 @@ void main() {
       ('basic-info', '/basic-info'),
       ('basic-info-large', '/basic-info'),
       ('basic-info-keyboard-large', '/basic-info'),
+      ('help-center', '/help'),
+      ('help-center-large', '/help'),
+      ('help-center-adoption-large', '/help'),
       ('payment-history', '/payments'),
       ('payment-history-large', '/payments'),
       ('payment-history-empty', '/payments'),
@@ -1385,6 +1388,25 @@ void main() {
           await tester.pumpAndSettle();
           expect(find.text('Guardado 21'), findsOneWidget);
         }
+        expect(tester.takeException(), isNull);
+      }
+      if (spec.$1 == 'help-center-adoption-large') {
+        final topic = find.widgetWithText(OutlinedButton, 'Adoptar');
+        await tester.ensureVisible(topic);
+        await tester.pumpAndSettle();
+        expect(topic.hitTestable(), findsOneWidget);
+        await tester.tap(topic);
+        await tester.pumpAndSettle();
+        final faq = find.text('¿Cómo contacto a una rescatista?');
+        await tester.ensureVisible(faq);
+        await tester.pumpAndSettle();
+        expect(faq.hitTestable(), findsOneWidget);
+        await tester.tap(faq);
+        await tester.pumpAndSettle();
+        final answer = find.textContaining('La conversación sólo es visible');
+        expect(answer, findsOneWidget);
+        await tester.ensureVisible(answer);
+        await tester.pumpAndSettle();
         expect(tester.takeException(), isNull);
       }
       if (spec.$1.startsWith('basic-info-keyboard')) {

@@ -19,6 +19,7 @@ import 'features/identity/identity_repository.dart';
 import 'features/identity/onboarding_screen.dart';
 import 'features/profile/profile_screen.dart';
 import 'features/profile/profile_overview.dart';
+import 'features/profile/help_center_screen.dart';
 import 'features/profile/account_privacy_screen.dart';
 import 'features/profile/impact_screen.dart';
 import 'features/profile/information_screens.dart';
@@ -205,7 +206,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           key: ValueKey(identity.identity?.id),
         ),
       ),
-      GoRoute(path: '/help', builder: (_, _) => const HelpScreen()),
+      GoRoute(path: '/help', builder: (_, _) => const HelpCenterScreen()),
       GoRoute(path: '/about', builder: (_, _) => const AboutScreen()),
       GoRoute(
         path: '/transparency',

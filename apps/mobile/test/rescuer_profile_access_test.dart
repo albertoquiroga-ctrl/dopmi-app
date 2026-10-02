@@ -10,6 +10,7 @@ import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'rescue_test.dart' show FakeRescue;
 
 import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/features/profile/help_center_screen.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
@@ -222,7 +223,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(help);
       await tester.pumpAndSettle();
-      expect(find.byType(HelpScreen), findsOneWidget);
+      expect(find.byType(HelpCenterScreen), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
