@@ -10,6 +10,9 @@ rescatistas guardados por UI: contraste poblado usa componente/CSS, no browser.
 Información básica, Ayuda y Editor público siguen pendientes concretos. Loop273
 implementa temas/selección/FAQ de Ayuda; soporte real equivalente y contraste
 completo siguen pendientes. No es
+Loop274 añade formulario de contacto para preparar correo con tema/caso/mensaje;
+acuse/envío interno y adjuntos continúan pendientes. Endpoint antiguo retirado
+support-message-send no se reutiliza.
 un conteo final de pantallas sin aceptación. Próximo bloque: Información básica.
 Loops270/271 ajustan encabezado y formulario real de Información básica;
 foto, apellidos separados, cambio de correo y medición exacta siguen pendientes.
@@ -38,7 +41,7 @@ sin evidencia. Capturas normal/large en `design-reviews/parity-loop260`.
 Datos Connect/verificación/revisión reales conservados. CI432 aún ejecutándose;
 esto no acredita aceptación en Samsung ni paridad completa.
 
-`apps/mobile/tool/capture_profile_test.dart` contiene **278 estados en 33 URLs**:
+`apps/mobile/tool/capture_profile_test.dart` contiene **280 estados en 33 URLs**:
 256 recontados en loop259, dos estados de evidencia pendiente añadidos261 y
 dos de bienvenida Guardian263 y dos de fallo Guardian264. Ambos resultados
 dependen del servidor y mismo intento; reintento exige autorización nueva.

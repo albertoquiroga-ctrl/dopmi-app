@@ -2186,3 +2186,12 @@ Pruebas navegación rescuer+capturador:7 aprobadas3s. Capturas inicial/large y t
 
 No aceptación completa de Ayuda: soporte aún usa mailto en vez de formulario real equivalente al mockup, textos/bloques completos y medición de browser pendientes, así como teléfono instalado. Source contiene respuestas incompatibles con reglas reales; no copiar aquellas simulaciones. Información básica conserva pendientes foto/apellidos/cambio de correo. PublicEditor pendiente. BuildPlay286 no contiene este loop posterior.
 Gate final loop273: flutter analyze sin problemas13.2s tras estilos finales; formato y diffcheck aprobados. 30.8s anterior precedió footer/chips y no sustituye este gate.
+
+## Loop274 — 2026-10-02 — formulario de contacto real por correo
+
+Loop273 fue progreso productivo Centro de ayuda. Se añade HelpSupportDialog con tema precargado/selector, caso opcional, mensaje, cierre y desplazamiento con texto grande. Mensaje vacío deshabilita continuar; abrir correo utiliza mailto con subject/body codificados por componente, evita duplicados busy, conserva borrador ante fallo y distingue abrir compositor de envío confirmado. No se envía correo desde herramientas ni se afirma Recibimos tu mensaje. Acción visible Continuar en correo informa el paso real disponible.
+
+Referencia Source reconsultada a3c969cd9103fd46dc5cd886999912526ce75efb; formulario/CSS revisados. Capturas normal y200% comprueban botón deshabilitado/habilitado tras texto y hitTestable; prueba capturador1 aprobada4s. Primer fallo fue falta de construcción del botón fuera del cache de ListView a200%; capturador ahora desplaza con scrollUntilVisible antes de ensureVisible. No supresión de advertencias ni cambio a datos reales. Imagen normal inspeccionada. Matriz280estados33URLs.
+
+La entrega interna equivalente aún falta: sin adjunto/envío directo/acuse backend. support-message-send existente inspeccionado: sólo legacyRetiredResponse, incluido en manifiesto legado y sustituido HTTP410; docs/legacy-retirement leído. No restaurar endpoint ni tablas/buckets retirados para soporte. Implementar servicio actual separado cuando se aborde persistencia; no hay modificación Supabase/Auth/SQL ni conexión remota verificada en este loop. CI446/37072620520 exactob4dd14d confirmado in_progress, no aprobado aún. BuildPlay286 conserva SHA2c36339 y no incluye estas mejoras posteriores.
+Gate final loop274: flutter analyze sin problemas6.2s tras corregir2 lints de llaves; formato/diffcheck aprobados. No se acredita envío externo ni acceso backend mediante capturas.

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
+
+import 'help_support_dialog.dart';
 
 import '../../core/ui.dart';
 import '../identity/experience_controller.dart';
@@ -180,28 +181,13 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
     super.dispose();
   }
 
-  Future<void> contact() async {
-    try {
-      final opened = await launchUrl(
-        Uri(
-          scheme: 'mailto',
-          path: 'soporte@dopmi.org',
-          queryParameters: {'subject': 'Ayuda con Dopmi'},
-        ),
-      );
-      if (opened) return;
-    } catch (_) {
-      // A missing mail client must not claim the message was sent.
-    }
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'No pudimos abrir tu correo. Escribe a soporte@dopmi.org.',
-        ),
-      ),
-    );
-  }
+  Future<void> contact() => showDialog<void>(
+    context: context,
+    builder: (_) => HelpSupportDialog(
+      topics: _topics.map((item) => item.$1).toList(),
+      initialTopic: topic ?? 0,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {

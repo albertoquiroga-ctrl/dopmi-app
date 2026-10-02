@@ -823,6 +823,8 @@ void main() {
       ('help-center', '/help'),
       ('help-center-large', '/help'),
       ('help-center-adoption-large', '/help'),
+      ('help-center-support', '/help'),
+      ('help-center-support-large', '/help'),
       ('payment-history', '/payments'),
       ('payment-history-large', '/payments'),
       ('payment-history-empty', '/payments'),
@@ -1388,6 +1390,34 @@ void main() {
           await tester.pumpAndSettle();
           expect(find.text('Guardado 21'), findsOneWidget);
         }
+        expect(tester.takeException(), isNull);
+      }
+      if (spec.$1.startsWith('help-center-support')) {
+        final support = find.widgetWithText(
+          FilledButton,
+          'Contactar a soporte',
+        );
+        await tester.scrollUntilVisible(
+          support,
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.ensureVisible(support);
+        await tester.pumpAndSettle();
+        await tester.tap(support);
+        await tester.pumpAndSettle();
+        final next = find.widgetWithText(FilledButton, 'Continuar en correo');
+        expect(tester.widget<FilledButton>(next).onPressed, isNull);
+        await tester.enterText(
+          find.byType(TextField).last,
+          'Necesito ayuda con mi cuenta.',
+        );
+        await tester.pumpAndSettle();
+        expect(tester.widget<FilledButton>(next).onPressed, isNotNull);
+        await tester.ensureVisible(next);
+        await tester.pumpAndSettle();
+        expect(next.hitTestable(), findsOneWidget);
+        expect(find.text('Recibimos tu mensaje.'), findsNothing);
         expect(tester.takeException(), isNull);
       }
       if (spec.$1 == 'help-center-adoption-large') {
