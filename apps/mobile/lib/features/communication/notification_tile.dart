@@ -14,7 +14,11 @@ class NotificationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final unread = item['read_at'] == null;
-    final kind = item['kind'] == 'message' ? 'message' : 'case';
+    final kind = item['kind'] == 'message'
+        ? 'message'
+        : item['rescue_id'] != null || item['kind'] == 'rescue'
+        ? 'case'
+        : 'pet';
     final large = MediaQuery.textScalerOf(context).scale(14) > 20;
     final title = Text(
       item['title'] as String,
@@ -83,7 +87,9 @@ class NotificationTile extends StatelessWidget {
                           shape: BoxShape.circle,
                           color: kind == 'message'
                               ? const Color(0xffeff6ff)
-                              : const Color(0xfffaf5ff),
+                              : kind == 'case'
+                              ? const Color(0xfffaf5ff)
+                              : const Color(0xfffefce8),
                         ),
                         alignment: Alignment.center,
                         child: SvgPicture.asset(

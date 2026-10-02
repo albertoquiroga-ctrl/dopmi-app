@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import 'community_test.dart' show FakeCommunity;
+
 void main() {
   for (final large in [false, true]) {
     for (final card in [false, true]) {
@@ -128,7 +130,12 @@ void main() {
       );
       addTearDown(router.dispose);
       await tester.pumpWidget(
-        ProviderScope(child: MaterialApp.router(routerConfig: router)),
+        ProviderScope(
+          overrides: [
+            communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          ],
+          child: MaterialApp.router(routerConfig: router),
+        ),
       );
       await tester.pumpAndSettle();
       final rail = find.byWidgetPredicate(

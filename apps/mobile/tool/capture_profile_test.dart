@@ -462,6 +462,27 @@ class NotificationCountCaptureCommunity extends FakeCommunity {
   Future<int> unreadNotificationCount() async => 3;
 }
 
+class NotificationKindsCaptureCommunity extends NotificationCommunity {
+  @override
+  Future<DataPage<Json>> notifications(int page) async => DataPage([
+    for (final kind in ['message', 'review', 'rescue'])
+      {
+        'id': 'notice-$kind',
+        'kind': kind,
+        'title': kind == 'message'
+            ? 'Patricia te escribió'
+            : kind == 'review'
+            ? 'Tu publicación fue revisada'
+            : 'Tu caso fue revisado',
+        'rescue_id': kind == 'rescue' ? 'case-one' : null,
+        'post_id': kind == 'review' ? 'post-one' : null,
+        'thread_id': kind == 'message' ? 'thread-one' : null,
+        'created_at': '2026-10-02T12:00:00Z',
+        'read_at': null,
+      },
+  ], 3);
+}
+
 class DetailCaptureCommunity extends FakeCommunity {
   @override
   Future<String> photoUrl(String path) async => 'https://fixture.invalid/$path';
@@ -648,6 +669,10 @@ void main() {
       ('notifications-reference', '/notifications'),
       ('notifications-reference-large', '/notifications'),
       ('notifications-reference-read', '/notifications'),
+      ('notifications-reference-kinds', '/notifications'),
+      ('notifications-reference-kinds-large', '/notifications'),
+      ('notifications-reference-header-focus', '/notifications'),
+      ('notifications-reference-header-focus-large', '/notifications'),
       ('support-home-large', '/rescue-cases'),
       ('support-home-empty', '/rescue-cases'),
       ('support-home-empty-large', '/rescue-cases'),
@@ -895,7 +920,9 @@ void main() {
                   spec.$1.contains('enrollment'),
             )
           : FakeGuardian();
-      final community = spec.$1.startsWith('support-home-notification-badge')
+      final community = spec.$1.startsWith('notifications-reference-kinds')
+          ? NotificationKindsCaptureCommunity()
+          : spec.$1.startsWith('support-home-notification-badge')
           ? NotificationCountCaptureCommunity()
           : spec.$1.startsWith('notifications-reference')
           ? (NotificationCommunity()..read = spec.$1.endsWith('-read'))
@@ -1419,6 +1446,14 @@ void main() {
         );
         await Scrollable.ensureVisible(tester.element(card), alignment: .1);
         await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('notifications-reference-header-focus')) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
+        expect(
+          find.byKey(const ValueKey('reference-keyboard-outline')),
+          findsOneWidget,
+        );
       }
       if (spec.$1.startsWith('support-home-error-retry')) {
         final retry = find.text('Volver a intentar');

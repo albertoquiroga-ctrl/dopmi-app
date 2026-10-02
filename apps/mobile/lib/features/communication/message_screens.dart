@@ -12,7 +12,7 @@ import '../../core/reference_focus_outline.dart';
 import 'match_favorites.dart';
 import 'match_thread_row.dart';
 import 'notification_tile.dart';
-import '../profile/information_screens.dart';
+import 'notification_frame.dart';
 import 'chat_message_bubble.dart';
 import 'rescuer_threads_screen.dart';
 import '../adoption/community_repository.dart';
@@ -743,9 +743,7 @@ class _NotificationsState extends ConsumerState<NotificationsScreen> {
   String? error;
   bool busy = false;
   @override
-  Widget build(BuildContext context) => InformationFrame(
-    title: 'Notificaciones',
-    fallback: '/profile',
+  Widget build(BuildContext context) => NotificationFrame(
     children: [
       if (error != null) Notice(error!, isError: true),
       LiveSection<DataPage<Json>>(
@@ -792,10 +790,9 @@ class _NotificationsState extends ConsumerState<NotificationsScreen> {
                       },
               ),
             if (result.total > 20)
-              PageControls(
+              NotificationPagination(
                 page: page,
                 total: result.total,
-                size: 20,
                 change: (value) => setState(() => page = value),
               ),
           ],

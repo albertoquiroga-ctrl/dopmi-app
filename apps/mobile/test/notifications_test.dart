@@ -1,6 +1,10 @@
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/communication/message_screens.dart';
+import 'package:dopmi_mobile/features/communication/notification_frame.dart';
+import 'package:dopmi_mobile/features/communication/notification_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -31,7 +35,141 @@ class NotificationCommunity extends FakeCommunity {
   }
 }
 
+class PagedNotifications extends NotificationCommunity {
+  final pages = <int>[];
+  @override
+  Future<DataPage<Json>> notifications(int page) async {
+    pages.add(page);
+    return DataPage(
+      List.generate(
+        page == 1 ? 20 : 1,
+        (index) => {
+          'id': 'notice-${(page - 1) * 20 + index + 1}',
+          'kind': 'review',
+          'post_id': 'post-one',
+          'title': 'Aviso ${(page - 1) * 20 + index + 1}',
+          'created_at': '2026-10-02T12:00:00Z',
+          'read_at': null,
+        },
+      ),
+      21,
+    );
+  }
+}
+
 void main() {
+  testWidgets('notification header keyboard returns to its fallback profile', (
+    tester,
+  ) async {
+    final router = GoRouter(
+      initialLocation: '/notifications',
+      routes: [
+        GoRoute(
+          path: '/notifications',
+          builder: (_, _) => const NotificationFrame(children: []),
+        ),
+        GoRoute(
+          path: '/profile',
+          builder: (_, _) => const Scaffold(body: Text('Perfil de regreso')),
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+    await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('reference-keyboard-outline')),
+      findsOneWidget,
+    );
+    expect(find.text('Perfil de regreso'), findsNothing);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.text('Perfil de regreso'), findsOneWidget);
+  });
+  for (final entry in [
+    ('message', null, 'message'),
+    ('rescue', 'case-one', 'case'),
+    ('review', null, 'pet'),
+  ]) {
+    testWidgets('notification icon follows its real kind: ${entry.$1}', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: NotificationTile({
+              'kind': entry.$1,
+              'rescue_id': entry.$2,
+              'title': 'Aviso real',
+              'created_at': '2026-10-02T12:00:00Z',
+              'read_at': null,
+            }, onTap: () {}),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final loader =
+          tester.widget<SvgPicture>(find.byType(SvgPicture)).bytesLoader
+              as SvgAssetLoader;
+      expect(loader.assetName, 'assets/profile/notif-${entry.$3}.svg');
+      expect(tester.takeException(), isNull);
+    });
+  }
+  testWidgets('notifications paginate both ways at 200 percent', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    final repo = PagedNotifications();
+    final router = GoRouter(
+      initialLocation: '/notifications',
+      routes: [
+        GoRoute(
+          path: '/notifications',
+          builder: (_, _) => const NotificationsScreen(),
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [communityRepositoryProvider.overrideWithValue(repo)],
+        child: MaterialApp.router(routerConfig: router),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.byTooltip('Página siguiente'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await Scrollable.ensureVisible(
+      tester.element(find.byTooltip('Página siguiente')),
+      alignment: .8,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Página siguiente'));
+    await tester.pumpAndSettle();
+    expect(repo.pages, [1, 2]);
+    expect(find.text('Aviso 21'), findsOneWidget);
+    await tester.ensureVisible(find.byTooltip('Página anterior'));
+    await Scrollable.ensureVisible(
+      tester.element(find.byTooltip('Página anterior')),
+      alignment: .8,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Página anterior'));
+    await tester.pumpAndSettle();
+    expect(repo.pages, [1, 2, 1]);
+    expect(find.text('Aviso 21'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
   for (final large in [false, true]) {
     testWidgets(
       'notification read failure retries before real destination; large=$large',
