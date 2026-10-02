@@ -2317,3 +2317,22 @@ inspeccionada con mensaje y CTA visibles. Envío interno y adjuntos continúan
 pendientes: correo externo no sustituye esa parte del objetivo. No acuse falso,
 ningún mensaje enviado ni build Codemagic nuevo.
 Analyze sin incidencias9s.
+# Loop286 — contrato servidor de solicitudes de soporte
+
+Referencia remota consultada2/10/2026:
+`irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
+Skill Supabase leída; MCP confirma DEV/PROD ACTIVE_HEALTHY. Docs oficiales de
+envío Edge/Resend consultadas y changelog descargado (web rechazó MIME markdown;
+Invoke-WebRequest sí permitió leerlo). Sin cambios remotos ni secretos nuevos.
+Nuevo módulo support-request valida UUIDv4 estable, nueve temas vigentes,
+mensaje/caso acotados, rechaza claves de identidad cliente y no filtra errores.
+Handler exige autorizador antes de persistir y sólo emite received si el
+repositorio entrega recibo durable con el mismo request_id/status. No afirma
+entrega de email. Tres pruebas nuevas de contrato aprobadas; incorporadas al
+gate tools/verification. Autoridad real PostgreSQL, persistencia/idempotencia,
+Edge desplegada, adjuntos y cliente aún pendientes: no es servicio conectado.
+No se reutiliza support-message-send retirado ni se envían correos.
+Por error de directorio se ejecutó primero npm test raíz:4 pruebas aprobadas;
+después se lanzó el gate backend en tools/verification.
+Gate backend431/431 aprobado31.9s. Este contrato usa dependencias de prueba;
+no acredita Auth ni almacenamiento remoto. Próximo bloque: RPC privada durable.
