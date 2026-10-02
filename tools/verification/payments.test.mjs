@@ -974,6 +974,24 @@ test('status and replay/lease RPCs remain service-only even for administrators',
   }
 });
 
+test('public rescuer metrics include approved history, deduplicate linked pets and omit private payment data',async () => {
+  const d=await prepare(); await settle(d.id);
+  await db.exec('reset role');
+  await db.query(`insert into public.dopmi_adoptions(id,owner_id,status,published_at,rescue_case_id) values
+    ('30000000-0000-4000-8000-000000000091',$1,'published',now(),'71000000-0000-4000-8000-000000000002'),
+    ('30000000-0000-4000-8000-000000000092',$1,'archived',now(),null),
+    ('30000000-0000-4000-8000-000000000093',$1,'draft',null,null)`,[rescuer]);
+  await role('', 'anon');
+  const metrics=(await db.query('select public.dopmi_rescuer_public_metrics($1) v',[rescuer])).rows[0].v;
+  assert.deepEqual(metrics,{published_cases:1,active_donation_cases:1,active_adoptions:1,published_donation_cases:1,
+    published_adoptions:2,funded_cents:9200,completed_needs:0,helped_pets:2,closed_cases:0});
+  for(const sensitive of [donor,d.id,'ch_one','tr_fixture','pet_name','draft']) assert.equal(JSON.stringify(metrics).includes(sensitive),false);
+  await db.exec('reset role');
+  await db.query("update public.profiles set account_status='suspended' where id=$1",[rescuer]);
+  await role('', 'anon');
+  assert.equal((await db.query('select public.dopmi_rescuer_public_metrics($1) v',[rescuer])).rows[0].v,null);
+});
+
 test('case totals distinguish assigned from transferred net and contain no private payment information',async () => {
   const d=await prepare(); await settle(d.id);
   const funding=async () => (await db.query('select public.dopmi_expense_funding($1) v',[expense])).rows[0].v;
