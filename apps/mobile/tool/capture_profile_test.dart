@@ -827,6 +827,8 @@ void main() {
       ('help-center-support-large', '/help'),
       ('help-center-rules', '/help'),
       ('help-center-rules-large', '/help'),
+      ('public-profile-editor', '/rescuer/profile/edit'),
+      ('public-profile-editor-large', '/rescuer/profile/edit'),
       ('payment-history', '/payments'),
       ('payment-history-large', '/payments'),
       ('payment-history-empty', '/payments'),
@@ -1122,6 +1124,7 @@ void main() {
           spec.$1.startsWith('owned-cases') ||
           spec.$1.startsWith('rescuer-home') ||
           spec.$1.startsWith('rescuer-profile') ||
+          spec.$1.startsWith('public-profile-editor') ||
           spec.$1.startsWith('rescuer-settings') ||
           spec.$1.startsWith('case-publication') ||
           spec.$1.startsWith('publish-') ||
@@ -1176,7 +1179,8 @@ void main() {
                   ? ActivityRowsCaptureRescue()
                   : FakeRescue(),
             ),
-          if (spec.$1.startsWith('rescuer-settings'))
+          if (spec.$1.startsWith('rescuer-settings') ||
+              spec.$1.startsWith('public-profile-editor'))
             rescuerProfileRepositoryProvider.overrideWithValue(
               FakeRescuerProfile()..value['owner_id'] = 'one',
             ),

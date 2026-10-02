@@ -32,6 +32,17 @@ class _RescuerPublicProfileEditState
     load();
   }
 
+  @override
+  void dispose() {
+    name.dispose();
+    bio.dispose();
+    city.dispose();
+    region.dispose();
+    instagram.dispose();
+    facebook.dispose();
+    super.dispose();
+  }
+
   Future<void> load() async {
     try {
       final value = await ref.read(rescuerProfileRepositoryProvider).load();
@@ -146,7 +157,7 @@ class _RescuerPublicProfileEditState
       'rejected',
     ].contains(status);
     return ProfileFrame(
-      title: 'Perfil público',
+      title: 'Editar perfil público',
       back: true,
       children: [
         const Text(
@@ -155,50 +166,95 @@ class _RescuerPublicProfileEditState
         const SizedBox(height: 16),
         if (loading) const LinearProgressIndicator(),
         if (!loading) ...[
-          Center(
-            child: CircleAvatar(
-              radius: 48,
-              backgroundColor: yellow,
-              backgroundImage: avatarUrl == null
-                  ? null
-                  : NetworkImage(avatarUrl!),
-              child: avatarUrl == null
-                  ? const Icon(Icons.person_outline, size: 48, color: ink)
-                  : null,
+          Material(
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: const BorderSide(color: Color(0xffe6e2dd)),
+            ),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: editable && !busy ? pickAvatar : null,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 32,
+                      backgroundColor: const Color(0xffe9dfff),
+                      foregroundColor: purple,
+                      backgroundImage: avatarUrl == null
+                          ? null
+                          : NetworkImage(avatarUrl!),
+                      child: avatarUrl == null
+                          ? Text(
+                              name.text.trim().isEmpty
+                                  ? '?'
+                                  : name.text
+                                        .trim()
+                                        .substring(0, 1)
+                                        .toUpperCase(),
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            )
+                          : null,
+                    ),
+                    const SizedBox(width: 16),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Foto de perfil',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: ink,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'Cambia tu foto de perfil',
+                            style: TextStyle(fontSize: 12, color: muted),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-          TextButton.icon(
-            onPressed: editable && !busy ? pickAvatar : null,
-            icon: const Icon(Icons.photo_camera_outlined),
-            label: const Text('Elegir foto pública'),
-          ),
+          const SizedBox(height: 16),
           _StatusCard(status, profile?['review_feedback'] as String? ?? ''),
           const SizedBox(height: 12),
           TextField(
             controller: name,
-            enabled: editable,
+            enabled: editable && !busy,
             decoration: const InputDecoration(labelText: 'Nombre público'),
           ),
           TextField(
             controller: bio,
-            enabled: editable,
+            enabled: editable && !busy,
             minLines: 3,
             maxLines: 6,
             decoration: const InputDecoration(labelText: 'Descripción'),
           ),
           TextField(
             controller: city,
-            enabled: editable,
+            enabled: editable && !busy,
             decoration: const InputDecoration(labelText: 'Ciudad'),
           ),
           TextField(
             controller: region,
-            enabled: editable,
+            enabled: editable && !busy,
             decoration: const InputDecoration(labelText: 'Estado'),
           ),
           TextField(
             controller: instagram,
-            enabled: editable,
+            enabled: editable && !busy,
             keyboardType: TextInputType.url,
             decoration: const InputDecoration(
               labelText: 'Instagram (https://)',
@@ -206,7 +262,7 @@ class _RescuerPublicProfileEditState
           ),
           TextField(
             controller: facebook,
-            enabled: editable,
+            enabled: editable && !busy,
             keyboardType: TextInputType.url,
             decoration: const InputDecoration(labelText: 'Facebook (https://)'),
           ),
