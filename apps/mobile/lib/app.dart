@@ -397,7 +397,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/forgot',
-        builder: (_, _) => const AuthFormScreen(mode: AuthFormMode.forgot),
+        builder: (_, state) => AuthFormScreen(
+          mode: AuthFormMode.forgot,
+          intent: safeIntent(state.uri.queryParameters['intent']),
+          initialEmail: state.extra is String ? state.extra! as String : null,
+        ),
       ),
       GoRoute(
         path: '/reset-password',

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show AuthException;
 
 import '../../core/ui.dart';
 import '../../core/measurement.dart';
@@ -14,9 +15,15 @@ import 'auth_ui.dart';
 enum AuthFormMode { login, signup, forgot, reset }
 
 class AuthFormScreen extends ConsumerStatefulWidget {
-  const AuthFormScreen({super.key, required this.mode, this.intent = 'adopt'});
+  const AuthFormScreen({
+    super.key,
+    required this.mode,
+    this.intent = 'adopt',
+    this.initialEmail,
+  });
   final AuthFormMode mode;
   final String intent;
+  final String? initialEmail;
   @override
   ConsumerState<AuthFormScreen> createState() => _AuthFormScreenState();
 }
@@ -28,8 +35,14 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
       confirmation = TextEditingController(),
       name = TextEditingController(),
       phone = TextEditingController();
-  bool busy = false, consent = false;
+  bool busy = false, consent = false, needsEmailConfirmation = false;
   String? error;
+  @override
+  void initState() {
+    super.initState();
+    email.text = widget.initialEmail ?? '';
+  }
+
   @override
   void dispose() {
     for (final item in [email, password, confirmation, name, phone]) {
@@ -49,6 +62,7 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
     setState(() {
       busy = true;
       error = null;
+      needsEmailConfirmation = false;
     });
     final repo = ref.read(identityRepositoryProvider);
     final navigation = GoRouter.of(context);
@@ -80,7 +94,12 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
           );
       }
     } catch (cause) {
-      if (mounted) setState(() => error = identityError(cause));
+      if (mounted)
+        setState(() {
+          error = identityError(cause);
+          needsEmailConfirmation =
+              cause is AuthException && cause.code == 'email_not_confirmed';
+        });
     } finally {
       if (mounted) setState(() => busy = false);
     }
@@ -91,11 +110,17 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
     setState(() {
       busy = true;
       error = null;
+      needsEmailConfirmation = false;
     });
     try {
       await ref.read(identityRepositoryProvider).oauth(provider);
     } catch (cause) {
-      if (mounted) setState(() => error = identityError(cause));
+      if (mounted)
+        setState(() {
+          error = identityError(cause);
+          needsEmailConfirmation =
+              cause is AuthException && cause.code == 'email_not_confirmed';
+        });
     } finally {
       if (mounted) setState(() => busy = false);
     }
@@ -270,7 +295,12 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: busy ? null : () => context.push('/forgot'),
+                        onPressed: busy
+                            ? null
+                            : () => context.push(
+                                '/forgot?intent=${widget.intent}',
+                                extra: email.text.trim(),
+                              ),
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.zero,
                           minimumSize: const Size(48, 48),
@@ -305,7 +335,8 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                     busy: busy,
                     onPressed: signup && !consent ? null : submit,
                   ),
-                  if (login)
+                  if ((login && needsEmailConfirmation) ||
+                      widget.mode == AuthFormMode.forgot)
                     TextButton(
                       onPressed: busy
                           ? null

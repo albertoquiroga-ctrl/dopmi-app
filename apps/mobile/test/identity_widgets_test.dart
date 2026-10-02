@@ -9,6 +9,7 @@ import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show AuthException;
 
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
@@ -339,6 +340,17 @@ void main() {
         AuthFormMode.forgot,
       );
       expect(
+        tester
+            .widget<TextFormField>(find.byType(TextFormField).first)
+            .controller!
+            .text,
+        'ana@example.test',
+      );
+      expect(
+        find.widgetWithText(TextButton, 'Necesito confirmar mi correo'),
+        findsOneWidget,
+      );
+      expect(
         find.widgetWithText(FilledButton, 'Enviar instrucciones'),
         findsOneWidget,
       );
@@ -355,6 +367,48 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  for (final code in ['email_not_confirmed', 'invalid_credentials']) {
+    testWidgets(
+      'confirmation access follows Auth code without creating a session, $code',
+      (tester) async {
+        final repo = FailedFormLogin(code);
+        await start(tester, repo, initialLocation: '/login');
+        expect(find.text('Necesito confirmar mi correo'), findsNothing);
+        await tester.enterText(
+          find.byType(TextFormField).at(0),
+          'ana@example.test',
+        );
+        await tester.enterText(
+          find.byType(TextFormField).at(1),
+          'Password1234',
+        );
+        final submit = find.widgetWithText(FilledButton, 'Inicia sesión');
+        await tester.ensureVisible(submit);
+        await tester.tap(submit);
+        await tester.pumpAndSettle();
+        if (code == 'email_not_confirmed') {
+          final confirm = find.widgetWithText(
+            TextButton,
+            'Necesito confirmar mi correo',
+          );
+          await tester.ensureVisible(confirm);
+          await tester.tap(confirm);
+          await tester.pumpAndSettle();
+          expect(
+            tester
+                .widget<ConfirmationScreen>(find.byType(ConfirmationScreen))
+                .email,
+            'ana@example.test',
+          );
+        } else {
+          expect(find.text('Necesito confirmar mi correo'), findsNothing);
+          expect(find.text('Revisa tu correo y contraseña.'), findsOneWidget);
+        }
+        expect(repo.current, isNull);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
   testWidgets('a recovery link routes to reset without loading personal data', (
     tester,
   ) async {
@@ -403,5 +457,14 @@ class BlockingFormSocial extends FakeIdentityRepository {
   Future<void> oauth(String provider) {
     requests.add(provider);
     return response.future;
+  }
+}
+
+class FailedFormLogin extends FakeIdentityRepository {
+  FailedFormLogin(this.code);
+  final String code;
+  @override
+  Future<void> login(String email, String password) async {
+    throw AuthException('Login rejected', code: code);
   }
 }
