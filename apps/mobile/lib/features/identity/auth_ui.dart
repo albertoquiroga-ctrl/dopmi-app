@@ -151,6 +151,74 @@ class AuthFrame extends StatelessWidget {
   }
 }
 
+class AuthConsentRow extends StatelessWidget {
+  const AuthConsentRow({
+    super.key,
+    required this.value,
+    required this.onChanged,
+  });
+  final bool value;
+  final ValueChanged<bool>? onChanged;
+  static const label =
+      'Confirmo que tengo 18 años o más y acepto los Términos y el Aviso de privacidad.';
+
+  @override
+  Widget build(BuildContext context) {
+    final toggle = onChanged == null ? null : () => onChanged!(!value);
+    return Semantics(
+      label: label,
+      checked: value,
+      enabled: onChanged != null,
+      onTap: toggle,
+      child: ExcludeSemantics(
+        child: InkWell(
+          onTap: toggle,
+          splashFactory: NoSplash.splashFactory,
+          overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 48),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: IgnorePointer(
+                    child: SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: Checkbox(
+                        value: value,
+                        onChanged: onChanged == null
+                            ? null
+                            : (next) => onChanged!(next ?? false),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                const Expanded(
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 13,
+                      height: 1.4,
+                      letterSpacing: 0,
+                      color: muted,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class AuthHeading extends StatelessWidget {
   const AuthHeading(
     this.title,

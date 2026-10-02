@@ -5,6 +5,7 @@ import 'package:dopmi_mobile/core/config.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/auth_screens.dart';
+import 'package:dopmi_mobile/features/identity/auth_ui.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -81,6 +82,51 @@ void main() {
     await tester.tap(target().last);
     await tester.pumpAndSettle();
   }
+
+  testWidgets('signup consent target and legal reading preserve draft', (
+    tester,
+  ) async {
+    final repo = FakeIdentityRepository();
+    await start(tester, repo, initialLocation: '/signup?intent=rescue');
+    await tester.enterText(
+      find.byType(TextFormField).at(1),
+      'ana@example.test',
+    );
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    final row = find.byType(AuthConsentRow);
+    await tester.ensureVisible(row);
+    expect(tester.getSize(row).height, greaterThanOrEqualTo(48));
+    await tester.tapAt(tester.getRect(row).topLeft + const Offset(2, 3));
+    await tester.pumpAndSettle();
+    expect(tester.widget<AuthConsentRow>(row).value, isTrue);
+    await tap(tester, 'Leer términos y privacidad');
+    expect(find.byType(TermsScreen), findsOneWidget);
+    expect(repo.signupCount, 0);
+    await tester.tap(find.byTooltip('Volver'));
+    await tester.pumpAndSettle();
+    expect(tester.widget<AuthConsentRow>(row).value, isTrue);
+    expect(
+      tester
+          .widget<TextFormField>(find.byType(TextFormField).at(1))
+          .controller!
+          .text,
+      'ana@example.test',
+    );
+    await tester.ensureVisible(row);
+    await tester.tap(find.text(AuthConsentRow.label));
+    await tester.pumpAndSettle();
+    expect(tester.widget<AuthConsentRow>(row).value, isFalse);
+    expect(
+      tester
+          .widget<FilledButton>(
+            find.widgetWithText(FilledButton, 'Crea una cuenta'),
+          )
+          .onPressed,
+      isNull,
+    );
+    expect(repo.signupCount, 0);
+  });
 
   testWidgets(
     'onboarding passes the rescuer intent and registration requires consent',

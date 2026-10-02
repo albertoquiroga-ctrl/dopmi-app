@@ -276,17 +276,11 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                     SizedBox(height: login || signup ? 12 : 16),
                   ],
                   if (signup) ...[
-                    CheckboxListTile(
-                      contentPadding: EdgeInsets.zero,
-                      controlAffinity: ListTileControlAffinity.leading,
+                    AuthConsentRow(
                       value: consent,
                       onChanged: busy
                           ? null
-                          : (value) => setState(() => consent = value ?? false),
-                      title: const Text(
-                        'Confirmo que tengo 18 años o más y acepto los Términos y el Aviso de privacidad.',
-                        style: TextStyle(fontSize: 14),
-                      ),
+                          : (value) => setState(() => consent = value),
                     ),
                     TextButton(
                       onPressed: () => context.push('/terms'),
