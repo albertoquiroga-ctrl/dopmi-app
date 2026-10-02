@@ -929,22 +929,32 @@ class _SwipeCard extends StatelessWidget {
                                       ),
                                     ),
                                     const SizedBox(height: 6),
-                                    Text(
-                                      '${post.text('city')}, ${post.text('region')}',
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                        letterSpacing: 0,
-                                      ),
-                                    ),
-                                    if (post.data['distance_km'] != null)
-                                      Text(
-                                        '${post.data['distance_km']} km aprox.',
-                                        style: const TextStyle(
-                                          color: Colors.white70,
+                                    Row(
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/profile/location.svg',
+                                          width: 12,
+                                          height: 12,
+                                          colorFilter: const ColorFilter.mode(
+                                            Colors.white,
+                                            BlendMode.srcIn,
+                                          ),
                                         ),
-                                      ),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text(
+                                            '${post.text('city')}, ${post.text('region')}',
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              height: 1.55,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                              letterSpacing: 0,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                     const SizedBox(height: 6),
                                     Text(
                                       post.text('story'),
@@ -998,6 +1008,7 @@ class _SwipeCard extends StatelessWidget {
                                                     label,
                                                     style: const TextStyle(
                                                       fontSize: 11,
+                                                      height: 1.2,
                                                       fontWeight:
                                                           FontWeight.w700,
                                                       color: Colors.white,

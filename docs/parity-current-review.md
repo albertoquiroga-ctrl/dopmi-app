@@ -131,3 +131,5 @@ Loop253: corte83e081f557a4c9ebb3a058cba23c24b5a3563cd5,419pruebas móviles compl
 
 
 Loop256: complete Adoptar → detalle → confirmación → regreso contrastado en Source377x852; arrastre60 retorna y150 sale, parámetros coinciden con producción. Capturas nativas normal/200% retenidas, mazo fixture alineado a Rocky/foto aprobada. Diferencias de datos (ubicación no elegida, distancia real y guardado) documentadas. 424 pruebas móviles completas aprobadas sobre9e1c27d; CI428 en curso. No equivale a gesto en Samsung ni a cierre de las demás rutas. Próximo bloque: mensajes con teclado/galerías/regreso, seguido de cierre de estados por grupo.
+
+Loop257 supersedes deck distance difference256: extra distance row removed to match Source card; actual computed distance still reaches detail and filters. Location SVG and text/tag lineboxes corrected; same Rocky fixture/photo normal/large captured and inspected. Motion/detail/community38pass; final motion/detail/capture12pass and analyze7.6s clean. Installed motion remains separate. Continue with whole message/keyboard/back path, not hover.
