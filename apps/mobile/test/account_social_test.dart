@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:dopmi_mobile/features/identity/auth_screens.dart';
 import 'package:dopmi_mobile/core/config.dart';
 import 'package:dopmi_mobile/core/ui.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
@@ -38,6 +40,50 @@ void main() {
         home: const Scaffold(body: AccountSocialActions()),
       ),
     ),
+  );
+  testWidgets(
+    'compact login layout retains a 48px target and opens the real form',
+    (tester) async {
+      final repo = SocialRepository();
+      final router = GoRouter(
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (_, _) => const Scaffold(body: AccountSocialActions()),
+          ),
+          GoRoute(
+            path: '/login',
+            builder: (_, _) => const AuthFormScreen(mode: AuthFormMode.login),
+          ),
+        ],
+      );
+      addTearDown(router.dispose);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            identityRepositoryProvider.overrideWithValue(repo),
+            configProvider.overrideWithValue(
+              const AppConfig(
+                url: '',
+                key: '',
+                redirect: '',
+                googleEnabled: true,
+              ),
+            ),
+          ],
+          child: MaterialApp.router(theme: dopmiTheme(), routerConfig: router),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final login = find.widgetWithText(TextButton, 'Inicia sesión');
+      expect(tester.getSize(login).height, greaterThanOrEqualTo(48));
+      // Hit near the top of its native target, beyond the compact text bounds.
+      await tester.tapAt(tester.getRect(login).topCenter + const Offset(0, 1));
+      await tester.pumpAndSettle();
+      expect(find.byType(AuthFormScreen), findsOneWidget);
+      expect(find.byType(TextFormField), findsNWidgets(2));
+      expect(repo.current, isNull);
+    },
   );
   testWidgets('unconfigured providers expose no simulated access', (
     tester,

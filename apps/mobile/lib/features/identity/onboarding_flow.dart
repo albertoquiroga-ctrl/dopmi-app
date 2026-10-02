@@ -251,18 +251,27 @@ class AccountStartScreen extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              const DecoratedBox(
+              DecoratedBox(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [
-                      Color(0xc715110d),
-                      Color(0x6b15110d),
-                      Color(0x8c15110d),
-                      Color(0xe015110d),
-                    ],
-                    stops: [0, .34, .58, 1],
+                    colors: intent == 'rescue'
+                        ? const [
+                            Color(0xd1281248),
+                            Color(0x7315110d),
+                            Color(0x9415110d),
+                            Color(0xe615110d),
+                          ]
+                        : const [
+                            Color(0xc715110d),
+                            Color(0x6b15110d),
+                            Color(0x8c15110d),
+                            Color(0xe015110d),
+                          ],
+                    stops: intent == 'rescue'
+                        ? const [0, .36, .60, 1]
+                        : const [0, .34, .58, 1],
                   ),
                 ),
               ),
@@ -290,6 +299,9 @@ class AccountStartScreen extends StatelessWidget {
                                     },
                                     style: IconButton.styleFrom(
                                       fixedSize: const Size(40, 40),
+                                      minimumSize: const Size(40, 40),
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
                                       padding: EdgeInsets.zero,
                                       splashFactory: NoSplash.splashFactory,
                                       highlightColor: Colors.transparent,
@@ -335,34 +347,52 @@ class AccountStartScreen extends StatelessWidget {
                                     children: [
                                       Semantics(
                                         header: true,
-                                        child: Text(
-                                          copy.$1,
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headlineLarge!
-                                              .copyWith(
-                                                color: Colors.white,
-                                                letterSpacing: -.64,
-                                                shadows: const [
-                                                  Shadow(
-                                                    color: Color(0x59100000),
-                                                    offset: Offset(0, 1),
-                                                    blurRadius: 2,
-                                                  ),
-                                                ],
-                                              ),
+                                        child: ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                            maxWidth:
+                                                299.712 *
+                                                MediaQuery.textScalerOf(context)
+                                                    .scale(32) /
+                                                32,
+                                          ),
+                                          child: Text(
+                                            copy.$1,
+                                            textAlign: TextAlign.center,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineLarge!
+                                                .copyWith(
+                                                  color: Colors.white,
+                                                  letterSpacing: -.64,
+                                                  shadows: const [
+                                                    Shadow(
+                                                      color: Color(0x59000000),
+                                                      offset: Offset(0, 1),
+                                                      blurRadius: 2,
+                                                    ),
+                                                  ],
+                                                ),
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(height: 12),
-                                      Text(
-                                        copy.$2,
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                          fontSize: 15,
-                                          height: 1.5,
-                                          letterSpacing: 0,
-                                          color: Color(0xf2ffffff),
+                                      ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          maxWidth:
+                                              302.8125 *
+                                              MediaQuery.textScalerOf(context)
+                                                  .scale(15) /
+                                              15,
+                                        ),
+                                        child: Text(
+                                          copy.$2,
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            fontSize: 15,
+                                            height: 1.5,
+                                            letterSpacing: 0,
+                                            color: Color(0xebffffff),
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(height: 16),
@@ -378,6 +408,7 @@ class AccountStartScreen extends StatelessWidget {
                                 ),
                               ),
                               Container(
+                                key: const ValueKey('account-actions'),
                                 padding: const EdgeInsets.fromLTRB(
                                   20,
                                   22,
@@ -415,19 +446,6 @@ class AccountStartScreen extends StatelessWidget {
                                         '/signup?intent=$intent',
                                       ),
                                       child: const Text('Crea una cuenta'),
-                                    ),
-                                    const SizedBox(height: 14),
-                                    TextButton(
-                                      style: TextButton.styleFrom(
-                                        foregroundColor: ink,
-                                        textStyle: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w700,
-                                          fontFamily: 'Inter',
-                                        ),
-                                      ),
-                                      onPressed: () => context.push('/login'),
-                                      child: const Text('Inicia sesión'),
                                     ),
                                     const AccountSocialActions(),
                                   ],
@@ -945,14 +963,53 @@ class _AccountSocialActionsState extends ConsumerState<AccountSocialActions> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watch(configProvider);
-    if (!config.googleEnabled && !config.appleNativeAvailable) {
-      return const SizedBox.shrink();
+    final hasSocial = config.googleEnabled || config.appleNativeAvailable;
+    final loginLine = MediaQuery.textScalerOf(context).scale(14) * 1.55;
+    final loginTouch = math.max(48.0, loginLine);
+    final login = TextButton(
+      style: TextButton.styleFrom(
+        foregroundColor: ink,
+        padding: EdgeInsets.zero,
+        minimumSize: Size.fromHeight(loginTouch),
+        textStyle: const TextStyle(
+          fontSize: 14,
+          height: 1.55,
+          letterSpacing: 0,
+          fontWeight: FontWeight.w700,
+          fontFamily: 'Inter',
+        ),
+      ),
+      onPressed: () => context.push('/login'),
+      child: const Text('Inicia sesión'),
+    );
+    if (!hasSocial) {
+      return Padding(padding: const EdgeInsets.only(top: 14), child: login);
     }
     return Column(
       children: [
-        const SizedBox(height: 18),
-        const Divider(height: 1, thickness: 1, color: DopmiTokens.line),
-        const SizedBox(height: 16),
+        // Source's link is 21.7px. Its surrounding gaps accommodate the native
+        // 48px hit area without changing the visual positions of the rule.
+        SizedBox(
+          height: 14 + loginLine + 18 + 1 + 16,
+          child: Stack(
+            children: [
+              Positioned(
+                top: 14 + (loginLine - loginTouch) / 2,
+                left: 0,
+                right: 0,
+                height: loginTouch,
+                child: login,
+              ),
+              Positioned(
+                top: 14 + loginLine + 18,
+                left: 0,
+                right: 0,
+                height: 1,
+                child: const ColoredBox(color: DopmiTokens.line),
+              ),
+            ],
+          ),
+        ),
         const Text(
           'Continuar con',
           style: TextStyle(

@@ -205,6 +205,19 @@ void main() {
       await tester.runAsync(
         () => saveCapture(key, '${output.path}/${route.$1}.png'),
       );
+      if (route.$1.startsWith('start') &&
+          const bool.fromEnvironment('ENABLE_GOOGLE_AUTH')) {
+        // Source DOM 377×852, a3c969c; one or two providers share the same row height.
+        final panel = tester.getRect(
+          find.byKey(const ValueKey('account-actions')),
+        );
+        expect(panel.top, closeTo(584.4, 2));
+        expect(panel.height, closeTo(247.6, 2));
+        final cta = tester.getRect(
+          find.widgetWithText(FilledButton, 'Crea una cuenta'),
+        );
+        expect(cta.top, closeTo(606.4, 2));
+      }
       if (route.$1 == 'onboarding-rescue') {
         // Source rescuer heading/CTA, 377×852, a3c969c.
         expect(
