@@ -409,23 +409,27 @@ class _OwnedCaseHeroState extends State<OwnedCaseHero> {
                             children: [
                               for (var n = 0; n < paths.length; n++) ...[
                                 if (n > 0) const SizedBox(width: 8),
-                                InkWell(
-                                  key: ValueKey('owned-case-photo-$n'),
-                                  onTap: () => select(n),
-                                  excludeFromSemantics: true,
-                                  splashFactory: NoSplash.splashFactory,
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  hoverColor: Colors.transparent,
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: Container(
-                                    width: 8,
-                                    height: 8,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: n == index
-                                          ? Colors.white
-                                          : const Color(0x73ffffff),
+                                ReferenceFocusOutline(
+                                  radius: 4,
+                                  child: InkWell(
+                                    key: ValueKey('owned-case-photo-$n'),
+                                    onTap: () => select(n),
+                                    excludeFromSemantics: true,
+                                    splashFactory: NoSplash.splashFactory,
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    borderRadius: BorderRadius.circular(4),
+                                    child: Container(
+                                      width: 8,
+                                      height: 8,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: n == index
+                                            ? Colors.white
+                                            : const Color(0x73ffffff),
+                                      ),
                                     ),
                                   ),
                                 ),

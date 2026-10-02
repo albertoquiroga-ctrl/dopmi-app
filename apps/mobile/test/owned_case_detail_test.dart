@@ -204,6 +204,12 @@ void main() {
       await tester.pump();
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.pump();
+      final dotOutline = find.byKey(
+        const ValueKey('reference-keyboard-outline'),
+      );
+      expect(dotOutline, findsOneWidget);
+      expect(tester.getSize(dotOutline), const Size(18, 18));
+      expect(find.text('1 / 3'), findsOneWidget);
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
       expect(find.text('2 / 3'), findsOneWidget);
