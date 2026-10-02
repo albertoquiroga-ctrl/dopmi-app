@@ -12,6 +12,37 @@ const staff = '70000000-0000-4000-8000-000000000003';
 const other = '70000000-0000-4000-8000-000000000004';
 const expense = '71000000-0000-4000-8000-000000000003';
 const key = '72000000-0000-4000-8000-000000000001';
+test('support is private, retries one durable receipt and rejects changed replay content', async () => {
+  await role(donor);
+  const body=JSON.stringify({topic:'guardian',case_name:'Luna',message:'Ayuda en México.'});
+  const submit=async(data=body)=>(await db.query('select dopmi_submit_support_request($1,$2::jsonb) value',[key,data])).rows[0].value;
+  const first=await submit(); assert.equal(first.status,'received');
+  assert.deepEqual(await submit(),first);
+  assert.deepEqual((await db.query('select dopmi_my_support_request($1) value',[key])).rows[0].value,first);
+  await rejected(()=>submit(JSON.stringify({topic:'guardian',message:'Otra solicitud'})),/solicitud cambió/);
+  await role(other);
+  assert.equal((await db.query('select dopmi_my_support_request($1) value',[key])).rows[0].value,null);
+  await rejected(()=>db.query('select * from private.dopmi_support_requests'),/permission denied/);
+  await db.exec('reset role');
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_support_requests')).rows[0].n,1);
+});
+test('support requires active identity and enforces per-account rate without blocking stable retries',async()=>{
+  await role(donor);
+  const body=JSON.stringify({topic:'account',message:'Necesito ayuda.'});
+  for (const invalid of [{topic:'shop',message:'Ayuda'}, {topic:'account',message:'\n\t'},
+    {topic:'account',message:'Ayuda',owner_id:other}, {topic:'account',message:'a'.repeat(4001)}]) {
+    await rejected(()=>db.query('select dopmi_submit_support_request($1,$2::jsonb)',[key,JSON.stringify(invalid)]),/inválida/);
+  }
+  for(let n=1;n<=5;n++) await db.query('select dopmi_submit_support_request($1,$2::jsonb)',[`72000000-0000-4000-8000-${String(n).padStart(12,'0')}`,body]);
+  await db.query('select dopmi_submit_support_request($1,$2::jsonb)',[key,body]);
+  await rejected(()=>db.query('select dopmi_submit_support_request($1,$2::jsonb)',['72000000-0000-4000-8000-000000000006',body]),/Espera/);
+  await db.exec('reset role');
+  await db.query("update profiles set account_status='suspended' where id=$1",[donor]);
+  await role(donor);
+  await rejected(()=>db.query('select dopmi_my_support_request($1)',[key]),/activa/);
+  await db.exec('reset role; set local role anon');
+  await rejected(()=>db.query('select dopmi_my_support_request($1)',[key]),/permission denied/);
+});
 before(async () => {
   db = new PGlite();
   await db.exec(`create role anon; create role authenticated; create role service_role;

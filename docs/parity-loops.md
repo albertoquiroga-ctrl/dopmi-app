@@ -2336,3 +2336,23 @@ Por error de directorio se ejecutó primero npm test raíz:4 pruebas aprobadas;
 después se lanzó el gate backend en tools/verification.
 Gate backend431/431 aprobado31.9s. Este contrato usa dependencias de prueba;
 no acredita Auth ni almacenamiento remoto. Próximo bloque: RPC privada durable.
+# Loop287 — solicitudes durables privadas en PostgreSQL
+
+Referencia remota consultada2/10/2026:
+`irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
+CLI migration new (help consultado) creó
+`20261002231534_private_support_requests.sql`: tabla private/RLS sin grants de
+cliente, RPC submit/receipt autorizadas por dopmi_require_actor existente.
+Bloqueo transaccional por cuenta serializa idempotencia y límite5/hora; una
+clave repetida devuelve mismo recibo sólo con contenido idéntico. Recibo ajeno
+devuelveNULL; cliente no puede leer tabla ni inyectar identidad. Suspensión y
+anon se rechazan. Eliminación de cuenta retira su solicitud por FK cascade.
+Dos pruebas PostgreSQL dirigidas aprobadas; cargan todas las migraciones reales
+y no sustituyen require_actor por stub. Se corrigió harness inicial: rechazos
+esperados necesitan savepoint para continuar transacción, no era defecto RPC.
+Persistencia es recepción, no entrega de correo ni consulta del equipo.
+Sin despliegue remoto, repair, replay, secretos, email ni build Codemagic.
+Quedan adjuntos, consulta operativa autorizada, cliente y despliegue/aceptación.
+Gate backend433/433 aprobado24.9s. docker info reconsultado: no existe pipe
+dockerDesktopLinuxEngine; supabase test db local no ejecutado. Se registra
+limitación en progress sin incorporar cambios concurrentes de ese archivo.
