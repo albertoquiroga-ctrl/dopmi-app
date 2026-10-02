@@ -7,19 +7,31 @@ import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../identity/identity_repository.dart';
 import '../rescue/rescue_repository.dart';
+import 'rescuer_profile_metrics.dart';
 
 class RescuerProfileHero extends ConsumerWidget {
   const RescuerProfileHero(this.profile, {super.key});
   final Profile profile;
   @override
   Widget build(BuildContext context, WidgetRef ref) => LiveSection<Json>(
-    tables: const ['dopmi_rescue_records'],
+    tables: const ['dopmi_rescue_records', 'dopmi_donations'],
     load: () => ref.read(rescueRepositoryProvider).dashboard(),
-    builder: (data, _) => RescuerIdentityCard(
-      name: profile.name,
-      city: profile.city,
-      status: data['verification_status'] as String?,
-      onEdit: () => context.push('/rescuer/profile/edit'),
+    builder: (data, _) => Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        RescuerIdentityCard(
+          name: profile.name,
+          city: profile.city,
+          status: data['verification_status'] as String?,
+          onEdit: () => context.push('/rescuer/profile/edit'),
+        ),
+        const SizedBox(height: 18),
+        RescuerProfileMetrics(
+          data: data,
+          onCases: () => context.go('/my-cases'),
+          onTransfers: () => context.go('/rescuer'),
+        ),
+      ],
     ),
   );
 }
@@ -64,7 +76,7 @@ class _RescuerIdentityCardState extends State<RescuerIdentityCard> {
       'approved' => 'Verificado',
       'submitted' => 'En revisión',
       'changes_requested' || 'rejected' => 'Requiere correcciones',
-      null || 'draft' => 'Sin verificar',
+      null || 'draft' || 'not_started' => 'Sin verificar',
       _ => 'Verificación no disponible',
     };
     final edit = AnimatedScale(
