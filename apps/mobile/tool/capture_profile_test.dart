@@ -628,6 +628,8 @@ void main() {
       ('adoption-support', '/adoptions'),
       ('adoption-support-large', '/adoptions'),
       ('rescuer-profile', '/profile'),
+      ('rescuer-settings', '/settings'),
+      ('rescuer-settings-large', '/settings'),
       ('rescuer-profile-large', '/profile'),
       ('profile-overview', '/profile'),
       ('profile-overview-active', '/profile'),
@@ -798,6 +800,7 @@ void main() {
           spec.$1.startsWith('owned-cases') ||
           spec.$1.startsWith('rescuer-home') ||
           spec.$1.startsWith('rescuer-profile') ||
+          spec.$1.startsWith('rescuer-settings') ||
           spec.$1.startsWith('case-publication') ||
           spec.$1.startsWith('publish-') ||
           spec.$1.startsWith('verification-') ||
@@ -808,7 +811,8 @@ void main() {
         overrides: [
           identityRepositoryProvider.overrideWithValue(repo),
           communityRepositoryProvider.overrideWithValue(community),
-          if (spec.$1.startsWith('rescuer-profile'))
+          if (spec.$1.startsWith('rescuer-profile') ||
+              spec.$1.startsWith('rescuer-settings'))
             rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           if (spec.$1.startsWith('case-publication'))
             rescueRepositoryProvider.overrideWithValue(

@@ -1,3 +1,7 @@
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+
+import 'rescue_test.dart' show FakeRescue;
+
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
@@ -71,6 +75,7 @@ void main() {
           identityRepositoryProvider.overrideWithValue(identity),
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
           routerInitialLocationProvider.overrideWithValue('/settings'),
+          rescueRepositoryProvider.overrideWithValue(FakeRescue()),
         ],
       );
       addTearDown(() async {
@@ -85,6 +90,8 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.byType(SettingsScreen), findsOneWidget);
+      expect(find.text('Estado de verificación'), findsOneWidget);
+      expect(find.text('Cuenta verificada'), findsOneWidget);
       final expected = {
         'Editar perfil público': '/rescuer/profile/edit',
         'Ver mi perfil público': '/people/one',

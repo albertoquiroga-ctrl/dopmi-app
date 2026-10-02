@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/ui.dart';
 import 'rescuer_profile_hero.dart';
 import 'rescuer_profile_access.dart';
+import 'rescuer_settings_verification.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../identity/experience_controller.dart';
@@ -1250,6 +1251,7 @@ class SettingsScreen extends ConsumerWidget {
       children: [
         if (ref.watch(experienceProvider).value ==
             AccountExperience.rescuer) ...[
+          const RescuerSettingsVerification(),
           const ProfileRow(
             title: 'Verificación',
             icon: Icons.shield_outlined,
