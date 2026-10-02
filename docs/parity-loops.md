@@ -2117,3 +2117,5 @@ Fixture nuevo SavedRescuerCommunity verifica nombreaprobado/verificado/8casos de
 CI37067524998 #440 completed/success exact3374c507004cd2de7a693de87658e85cc445c0f8 verificado267. Cubre resultados263/264, precede Guardados266/267. No Codemagic ni Play final; dinero test. Archivos concurrentes preservados.
 
 Gate final267: community31pass10s exit0; analyze UI limpio8.3s, formato/diffcheck. Sin procesos Flutter locales activos. Sin sembrar estado oculto de Source ni aceptación instalada por fixture.
+
+Checkpoint267: remotoae57e06c7a818f7893873dfe2625bb301a364638 corroborado; PR6 actualizado draft/mergeable/baseba9f897. CI37070247225 #442 in_progress exactSHA. Cubre266/267, no afirmar gate integral aprobado ni Play.
