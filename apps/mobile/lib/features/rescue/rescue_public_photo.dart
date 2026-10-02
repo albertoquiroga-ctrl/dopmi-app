@@ -71,6 +71,7 @@ class _RescuePublicPhotoState extends ConsumerState<RescuePublicPhoto> {
       height: widget.height,
       width: double.infinity,
       child: FutureBuilder<String>(
+        key: ObjectKey(url),
         future: url,
         builder: (_, snapshot) => snapshot.hasData
             ? Image.network(

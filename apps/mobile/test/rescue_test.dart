@@ -240,6 +240,16 @@ class PhotoPublicCaseRescue extends FakeRescue {
   }
 }
 
+class PendingPublicPhotoRescue extends PhotoPublicCaseRescue {
+  final pending = Completer<String>();
+  @override
+  Future<String> fileUrl(String path) {
+    photoRequests++;
+    if (photoRequests == 1) return Future.error(StateError('offline'));
+    return pending.future;
+  }
+}
+
 class PagedPublicCaseRescue extends FakeRescue {
   final calls = <int>[];
   bool failSecond = false,
@@ -304,6 +314,41 @@ class PlannedPublicCaseRescue extends FakeRescue {
 }
 
 void main() {
+  for (final compact in [false, true]) {
+    testWidgets('photo retry shows pending request; compact=$compact', (
+      tester,
+    ) async {
+      final rescue = PendingPublicPhotoRescue();
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [rescueRepositoryProvider.overrideWithValue(rescue)],
+          child: MaterialApp(
+            home: Scaffold(
+              body: RescuePublicPhoto('approved/photo', compact: compact),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final retry = compact
+          ? find.byTooltip('Foto no disponible. Reintentar foto')
+          : find.text('Reintentar foto');
+      await tester.tap(retry);
+      await tester.pump();
+      expect(rescue.photoRequests, 2);
+      expect(retry, findsNothing);
+      expect(tester.getSize(find.byType(RescuePublicPhoto)).height, 220);
+      if (compact) {
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      } else {
+        expect(find.text('Cargando foto…'), findsOneWidget);
+      }
+      rescue.pending.completeError(StateError('offline again'));
+      await tester.pumpAndSettle();
+      expect(retry, findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+  }
   test(
     'case titles handle absent or blank names without changing authored data',
     () {
