@@ -163,16 +163,22 @@ class GuardianActivationSuccess extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                SizedBox(
-                  height: MediaQuery.textScalerOf(context).scale(16) > 24
-                      ? 72
-                      : 48,
+                ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 48),
                   child: FilledButton(
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 12,
+                      ),
+                    ),
                     onPressed: onReturn,
                     child: const Text(
                       'Volver a Apoyar',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 16,
+                        height: 1.2,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0,
                       ),

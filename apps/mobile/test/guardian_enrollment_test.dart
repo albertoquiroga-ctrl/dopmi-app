@@ -136,9 +136,66 @@ void main() {
         };
       await start(tester, repo);
       expect(find.text('¡Ya eres Guardián!'), findsNothing);
+      expect(
+        find.text('No pudimos procesar tu pago'),
+        state == 'failed' ? findsOneWidget : findsNothing,
+      );
       expect(repo.calls, isEmpty);
       expect(repo.opened, 0);
     });
+  }
+
+  for (final action in ['Intentar de nuevo', 'Cambiar método de pago']) {
+    testWidgets(
+      'Confirmed failed checkout: $action requires fresh authorization',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({
+          'dopmi-guardian:one:intent': jsonEncode({
+            'kind': 'checkout',
+            'key': 'failed-one',
+            'cents': 7525,
+            'consent_version': guardianConsent,
+          }),
+        });
+        final repo = FakeGuardian()
+          ..value = {
+            'plan': null,
+            'activation': {
+              'status': 'failed',
+              'key': 'failed-one',
+              'gross_cents': 7525,
+            },
+          };
+        await start(tester, repo);
+        expect(find.text('No pudimos procesar tu pago'), findsOneWidget);
+        expect(find.text('Se elige en Stripe'), findsOneWidget);
+        expect(
+          (await SharedPreferences.getInstance()).getString(
+            'dopmi-guardian:one:intent',
+          ),
+          isNull,
+        );
+        if (action.startsWith('Cambiar')) {
+          tester.view.physicalSize = const Size(320, 640);
+          tester.platformDispatcher.textScaleFactorTestValue = 2;
+          addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+          await tester.pumpAndSettle();
+        }
+        await tester.ensureVisible(find.text(action));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(action));
+        await tester.pumpAndSettle();
+        expect(find.text('No pudimos procesar tu pago'), findsNothing);
+        expect(find.byType(CheckboxListTile), findsOneWidget);
+        expect(
+          tester.widget<CheckboxListTile>(find.byType(CheckboxListTile)).value,
+          false,
+        );
+        expect(repo.calls, isEmpty);
+        expect(repo.opened, 0);
+        expect(tester.takeException(), isNull);
+      },
+    );
   }
 
   testWidgets(

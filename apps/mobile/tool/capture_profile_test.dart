@@ -804,6 +804,8 @@ void main() {
       ('guardian-billing-active-large', '/guardian'),
       ('guardian-activation-success', '/guardian'),
       ('guardian-activation-success-large', '/guardian'),
+      ('guardian-activation-failed', '/guardian'),
+      ('guardian-activation-failed-large', '/guardian'),
       ('payment-history', '/payments'),
       ('payment-history-large', '/payments'),
       ('payment-history-empty', '/payments'),
@@ -986,7 +988,7 @@ void main() {
                   spec.$1.contains('enrollment'),
             )
           : FakeGuardian();
-      if (spec.$1.startsWith('guardian-activation-success')) {
+      if (spec.$1.startsWith('guardian-activation-')) {
         // Synthetic checkout is scoped to this flutter_test capturer.
         // ignore: invalid_use_of_visible_for_testing_member
         SharedPreferences.setMockInitialValues({
@@ -998,13 +1000,15 @@ void main() {
           }),
         });
         guardian.value = {
-          'plan': {
-            ...activePlan(),
-            'gross_cents': 7525,
-            'next_billing_at': '2026-11-02T18:00:00Z',
-          },
+          'plan': spec.$1.contains('failed')
+              ? null
+              : {
+                  ...activePlan(),
+                  'gross_cents': 7525,
+                  'next_billing_at': '2026-11-02T18:00:00Z',
+                },
           'activation': {
-            'status': 'active',
+            'status': spec.$1.contains('failed') ? 'failed' : 'active',
             'key': 'capture-confirmed',
             'gross_cents': 7525,
           },
@@ -1520,7 +1524,14 @@ void main() {
         );
         await tester.pumpAndSettle();
       }
-      if (spec.$1 == 'guardian-activation-success-large') {
+      if (spec.$1.startsWith('guardian-activation-') && large) {
+        final label = spec.$1.contains('failed')
+            ? 'Intentar de nuevo'
+            : 'Volver a Apoyar';
+        final text = tester.getRect(find.text(label));
+        final button = tester.getRect(find.widgetWithText(FilledButton, label));
+        expect(text.top, greaterThanOrEqualTo(button.top));
+        expect(text.bottom, lessThanOrEqualTo(button.bottom));
         await tester.ensureVisible(find.text('Volver a Apoyar'));
         await tester.pumpAndSettle();
       }

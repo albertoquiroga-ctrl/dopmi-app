@@ -18,9 +18,10 @@ sin evidencia. Capturas normal/large en `design-reviews/parity-loop260`.
 Datos Connect/verificación/revisión reales conservados. CI432 aún ejecutándose;
 esto no acredita aceptación en Samsung ni paridad completa.
 
-`apps/mobile/tool/capture_profile_test.dart` contiene **260 estados en 29 URLs**:
+`apps/mobile/tool/capture_profile_test.dart` contiene **262 estados en 29 URLs**:
 256 recontados en loop259, dos estados de evidencia pendiente añadidos261 y
-dos de bienvenida Guardian263. Confirmación depende del servidor y mismo intento.
+dos de bienvenida Guardian263 y dos de fallo Guardian264. Ambos resultados
+dependen del servidor y mismo intento; reintento exige autorización nueva.
 Incluye conversación con300px de teclado simulado y cuatro nuevos estados de
 galería/selector de monto del caso, normal/200%.
 El último CI integral aprobado capturó258 estados. No son258 pantallas aceptadas,
@@ -40,7 +41,7 @@ usan fixtures de prueba: no acreditan sesión, Storage ni pagos reales.
 | `/notifications` | 7 |
 | `/rescue-cases/case-one` | 16 |
 | `/contribute/Cirugía?case=case-one&amount_cents=10000` | 7 |
-| `/guardian` | 16 |
+| `/guardian` | 20 |
 | `/impact?history=1` | 4 |
 | `/impact` | 2 |
 | `/impact/guardian` | 6 |

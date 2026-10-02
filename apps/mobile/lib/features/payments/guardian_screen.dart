@@ -20,6 +20,7 @@ import 'guardian_history_screen.dart';
 import 'guardian_enrollment_amount.dart';
 import 'guardian_enrollment_confirmation.dart';
 import 'guardian_activation_success.dart';
+import 'guardian_activation_failure.dart';
 
 class GuardianScreen extends ConsumerStatefulWidget {
   const GuardianScreen({super.key, this.initialEnrollment = false});
@@ -38,6 +39,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   String? error, message;
   String? confirmedActivationKey;
   int? confirmedActivationCents;
+  String? failedActivationKey;
+  int? failedActivationCents;
   late final String owner;
   String get storageKey => 'dopmi-guardian:$owner:intent';
   bool get current =>
@@ -137,6 +140,14 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       if (!current) return;
       data = result;
       if (intent?['kind'] == 'checkout' &&
+          plan == null &&
+          activation?['status'] == 'failed' &&
+          activation?['key'] == intent?['key'] &&
+          activation?['gross_cents'] == intent?['cents']) {
+        failedActivationKey = intent!['key'] as String;
+        failedActivationCents = intent!['cents'] as int;
+      }
+      if (intent?['kind'] == 'checkout' &&
           plan?['status'] == 'active' &&
           activation?['status'] == 'active' &&
           activation?['key'] == intent?['key'] &&
@@ -222,7 +233,11 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       }
       if (!current) return;
       if (restore || intent != null) {
-        final cents = intent?['cents'] ?? plan?['gross_cents'] ?? 5000;
+        final cents =
+            intent?['cents'] ??
+            plan?['gross_cents'] ??
+            failedActivationCents ??
+            5000;
         amount.text = ((cents as int) / 100).toStringAsFixed(2);
       }
       fresh = true;
@@ -243,6 +258,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       return;
     }
     setState(() {
+      failedActivationKey = null;
       enrolling = true;
       consent = false;
     });
@@ -434,6 +450,24 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   @override
   Widget build(BuildContext context) {
     final enabled = ref.watch(guardianEnabledProvider);
+    if (enabled &&
+        current &&
+        fresh &&
+        !busy &&
+        !confirming &&
+        plan == null &&
+        intent == null &&
+        failedActivationKey != null &&
+        activation?['key'] == failedActivationKey &&
+        activation?['gross_cents'] == failedActivationCents &&
+        activation?['status'] == 'failed' &&
+        activation?['cancellation_requested_at'] == null) {
+      return GuardianActivationFailure(
+        cents: failedActivationCents!,
+        onRetry: beginEnrollment,
+        onReturn: () => context.go('/rescue-cases'),
+      );
+    }
     if (enabled &&
         current &&
         fresh &&
