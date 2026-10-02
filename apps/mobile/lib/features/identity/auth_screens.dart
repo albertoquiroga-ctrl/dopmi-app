@@ -94,12 +94,13 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
           );
       }
     } catch (cause) {
-      if (mounted)
+      if (mounted) {
         setState(() {
           error = identityError(cause);
           needsEmailConfirmation =
               cause is AuthException && cause.code == 'email_not_confirmed';
         });
+      }
     } finally {
       if (mounted) setState(() => busy = false);
     }
@@ -115,12 +116,13 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
     try {
       await ref.read(identityRepositoryProvider).oauth(provider);
     } catch (cause) {
-      if (mounted)
+      if (mounted) {
         setState(() {
           error = identityError(cause);
           needsEmailConfirmation =
               cause is AuthException && cause.code == 'email_not_confirmed';
         });
+      }
     } finally {
       if (mounted) setState(() => busy = false);
     }
