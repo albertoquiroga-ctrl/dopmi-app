@@ -2438,3 +2438,20 @@ anuncio de envío presente y sin excepción de layout. No acredita gestos del
 teléfono, recepción remota autenticada ni cierre global. Panel/adjuntos siguen
 pendientes; sin email real ni nuevo Codemagic.
 Analyze detectó bloque finally sin llaves; corregido y repetido limpio9.8s.
+# Loop294 — bandeja de soporte conectada al panel
+
+Referencia remota2/10/2026:a3c969cd9103fd46dc5cd886999912526ce75efb.
+Moderación→Soporte incorpora consulta real dopmi_admin_support_requests con
+la misma sesión Supabase del panel; no crea otro cliente Auth. Paginación25,
+actualización, errores, vacío, texto de mensaje escapado por React y enlace
+explícito Responder por correo. Nunca simula respuesta enviada. Consulta
+administrativa/autorización/auditoría permanecen en PostgreSQL desplegado291.
+Respuesta antigua se ignora tras desmontaje/cambio de API. Pruebas panel26/26
+aprobadas7.35s, incluyen contenido como texto sin script y cambio de API/denegado.
+Build tsc/vite aprobado66 módulos. Skill react-best-practices revisada: una
+consulta acotada por página, cleanup de respuesta tardía, hooks y claves estables.
+api.ts tenía modificación concurrente en errorMessage: sólo tres líneas propias
+de import/tipo/método se añaden al índice mediante patch; cambio ajeno y
+api.test.ts permanecen sin staging. No publicación Vercel, correo real, lectura
+de solicitudes privadas remotas ni Codemagic nuevo. Adjuntos/recorrido Auth
+remoto y paridad final pendientes; panel conectado local no equivale desplegado.

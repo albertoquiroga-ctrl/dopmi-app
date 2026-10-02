@@ -15,6 +15,8 @@ Loops286–288 añaden contrato y migración local privada/idempotente con lectu
 administrativa auditada. Loop290 conecta formulario al repositorio RPC; aún sin
 panel conectado, adjuntos pendientes. Loop291 despliega/verifica RPC y permisos
 en DEV; no acredita recorrido Auth/REST autenticado ni recepción instalada.
+Loop294 conecta bandeja local administrativa bajo Moderación→Soporte;
+publicación del panel y adjuntos siguen pendientes.
 Loops277–284 ajustan tarjeta, campos, encabezado, cancelar, teclado y errores del editor público;
 contraste completo, cámara/gestos y aceptación instalada siguen pendientes.
 Este corte no es un conteo final de pantallas aceptadas.

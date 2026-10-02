@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { supportRequests, type SupportPage } from './supportApi';
 
 export type AdminUser = {
   id: string; display_name: string; email: string | null; phone: string; city: string;
@@ -44,6 +45,7 @@ export type CaseUpdate = { id:string; case_id:string; owner_id:string; body:stri
 export type RescuerPublicProfile = { owner_id:string; display_name:string; bio:string; city:string; region:string; instagram_url:string; facebook_url:string; avatar_path:string; status:string; version:number; review_feedback:string; submitted_at:string|null; updated_at:string };
 export const adoptionStatus: Record<string, string> = { submitted: 'En revisión', published: 'Publicadas', changes_requested: 'Con correcciones', rejected: 'No aprobadas', adopted: 'Adopciones realizadas', archived: 'Retiradas', draft: 'Borradores' };
 export type AdminApi = {
+  listSupportRequests?: (page: number) => Promise<SupportPage>;
   session: () => Promise<boolean>;
   watch: (onChange: () => void) => () => void;
   login: (email: string, password: string) => Promise<void>;
@@ -71,6 +73,7 @@ export type AdminApi = {
 
 export function createAdminApi(client: SupabaseClient): AdminApi {
   return {
+    listSupportRequests: supportRequests(client),
     async listRescue(kind, status, page) { const {data,error}=await client.rpc('dopmi_admin_rescue',{kind_filter:kind,status_filter:status,page_number:page}); if(error) throw error; return data; },
     async rescueDetail(id) { const {data,error}=await client.rpc('dopmi_rescue_detail',{record_id:id}); if(error) throw error; return data; },
     async reviewRescue(record, decision) { const {data,error}=await client.rpc('dopmi_review_rescue',{record_id:record.id,expected_version:record.version,...decision}); if(error) throw error; return data; },
