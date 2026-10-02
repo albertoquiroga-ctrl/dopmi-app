@@ -220,91 +220,99 @@ class _RescuerProfileActivityRowState extends State<RescuerProfileActivityRow> {
         '${cents == null ? '—' : pesos(cents)} asignados · ${widget.item['expense_title'] as String? ?? 'Gasto'}';
     return Semantics(
       button: widget.onPressed != null,
-      child: AnimatedContainer(
-        duration: MediaQuery.disableAnimationsOf(context)
-            ? Duration.zero
-            : const Duration(milliseconds: 120),
-        curve: Curves.ease,
-        color: hovered ? const Color(0xfffffdf5) : Colors.white,
-        constraints: const BoxConstraints(minHeight: 64),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: widget.onPressed,
-            onHover: (value) => setState(() => hovered = value),
-            splashFactory: NoSplash.splashFactory,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              child: Row(
-                children: [
-                  ExcludeSemantics(
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: const Color(0xfff3eefc),
-                        borderRadius: BorderRadius.circular(12),
+      child: ReferenceFocusOutline(
+        radius: 0,
+        child: AnimatedContainer(
+          duration: MediaQuery.disableAnimationsOf(context)
+              ? Duration.zero
+              : const Duration(milliseconds: 120),
+          curve: Curves.ease,
+          width: double.infinity,
+          color: hovered ? const Color(0xfffffdf5) : Colors.transparent,
+          constraints: const BoxConstraints(minHeight: 64),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: widget.onPressed,
+              onHover: (value) => setState(() => hovered = value),
+              splashFactory: NoSplash.splashFactory,
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
+                child: Row(
+                  children: [
+                    ExcludeSemantics(
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: const Color(0xfff3eefc),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: SvgPicture.asset(
+                          'assets/profile/icon-donation-in.svg',
+                          width: 18,
+                          height: 18,
+                        ),
                       ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            title,
+                            maxLines:
+                                MediaQuery.textScalerOf(context).scale(14) > 20
+                                ? null
+                                : 1,
+                            overflow:
+                                MediaQuery.textScalerOf(context).scale(14) > 20
+                                ? TextOverflow.visible
+                                : TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              height: 1.2,
+                              letterSpacing: 0,
+                              color: Color(0xff151423),
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            transferLabels[widget.item['transfer_status']] ??
+                                'Estado de transferencia no disponible',
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 12,
+                              height: 15.2 / 12,
+                              letterSpacing: 0,
+                              color: Color(0xff4f4e5c),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    ExcludeSemantics(
                       child: SvgPicture.asset(
-                        'assets/profile/icon-donation-in.svg',
-                        width: 18,
-                        height: 18,
+                        'assets/profile/icon-chevron-right.svg',
+                        width: 20,
+                        height: 20,
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          title,
-                          maxLines:
-                              MediaQuery.textScalerOf(context).scale(14) > 20
-                              ? null
-                              : 1,
-                          overflow:
-                              MediaQuery.textScalerOf(context).scale(14) > 20
-                              ? TextOverflow.visible
-                              : TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            height: 1.2,
-                            letterSpacing: 0,
-                            color: Color(0xff151423),
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          transferLabels[widget.item['transfer_status']] ??
-                              'Estado de transferencia no disponible',
-                          style: const TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 12,
-                            height: 1.4,
-                            letterSpacing: 0,
-                            color: Color(0xff4f4e5c),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  ExcludeSemantics(
-                    child: SvgPicture.asset(
-                      'assets/profile/icon-chevron-right.svg',
-                      width: 20,
-                      height: 20,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

@@ -191,6 +191,22 @@ class EmptyOwnedCasesCaptureRescue extends FakeRescue {
   }) async => DataPage([], 0);
 }
 
+class ActivityRowsCaptureRescue extends FakeRescue {
+  @override
+  Future<Json> dashboard() async => {
+    ...await super.dashboard(),
+    'recent_activity': [
+      for (var n = 0; n < 3; n++)
+        {
+          'expense_id': 'expense-$n',
+          'expense_title': 'Medicamentos',
+          'allocated_cents': 3314,
+          'transfer_status': n == 1 ? 'transferred' : 'pending',
+        },
+    ],
+  };
+}
+
 class EmptyDashboardCaptureRescue extends FakeRescue {
   @override
   Future<Json> dashboard() async => {
@@ -669,6 +685,8 @@ void main() {
       ('adoption-support-large', '/adoptions'),
       ('rescuer-profile', '/profile'),
       ('rescuer-profile-home-link-focus', '/profile'),
+      ('rescuer-profile-row-focus', '/profile'),
+      ('rescuer-profile-row-focus-large', '/profile'),
       ('rescuer-profile-reference', '/profile'),
       ('rescuer-profile-reference-wide', '/profile'),
       ('rescuer-profile-reference-focus', '/profile'),
@@ -889,6 +907,8 @@ void main() {
             rescueRepositoryProvider.overrideWithValue(
               spec.$1.startsWith('rescuer-profile-reference')
                   ? RescuerReferenceCaptureRescue()
+                  : spec.$1.startsWith('rescuer-profile-row-focus')
+                  ? ActivityRowsCaptureRescue()
                   : FakeRescue(),
             ),
           if (spec.$1.startsWith('rescuer-settings'))
@@ -1388,6 +1408,23 @@ void main() {
         await Scrollable.ensureVisible(tester.element(button), alignment: .4);
         await tester.pumpAndSettle();
         expect(tester.getRect(outline), tester.getRect(button).inflate(5));
+      }
+      if (spec.$1.startsWith('rescuer-profile-row-focus')) {
+        final row = find.byType(RescuerProfileActivityRow).at(1);
+        await Scrollable.ensureVisible(tester.element(row), alignment: .4);
+        await tester.pumpAndSettle();
+        final outline = find.descendant(
+          of: row,
+          matching: find.byKey(const ValueKey('reference-keyboard-outline')),
+        );
+        for (var i = 0; i < 16 && outline.evaluate().isEmpty; i++) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+          await tester.pump();
+        }
+        expect(outline, findsOneWidget);
+        await Scrollable.ensureVisible(tester.element(row), alignment: .4);
+        await tester.pumpAndSettle();
+        expect(tester.getRect(outline), tester.getRect(row).inflate(5));
       }
       if (spec.$1 == 'rescuer-profile-home-link-focus') {
         final link = find.byType(RescuerActivityHomeLink);

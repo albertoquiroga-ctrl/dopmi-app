@@ -213,6 +213,22 @@ void main() {
         await tester.pumpAndSettle();
         expect(home, 2);
         expect(opened, ['expense-0']);
+        final second = find.byType(RescuerProfileActivityRow).at(1);
+        final rowOutline = find.descendant(
+          of: second,
+          matching: find.byKey(const ValueKey('reference-keyboard-outline')),
+        );
+        for (var i = 0; i < 8 && rowOutline.evaluate().isEmpty; i++) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+          await tester.pumpAndSettle();
+        }
+        expect(rowOutline, findsOneWidget);
+        expect(tester.getRect(rowOutline), tester.getRect(second).inflate(5));
+        expect(opened, ['expense-0']);
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        expect(opened, ['expense-0', 'expense-1']);
+
         expect(tester.takeException(), isNull);
       },
     );
