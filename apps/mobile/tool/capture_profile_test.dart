@@ -975,7 +975,7 @@ void main() {
           find.widgetWithText(FilledButton, 'Ir a Apoyar'),
         );
         debugPrint(
-          'Empty metrics: card=$card action=$action title=${tester.getRect(find.text('No hay mascotas disponibles'))}',
+          'Empty metrics: card=$card action=$action title=${tester.getRect(find.byKey(const ValueKey('discovery-empty-heading')))}',
         );
         expect(card.top, closeTo(144, 1));
         expect(card.width, closeTo(320, 1));

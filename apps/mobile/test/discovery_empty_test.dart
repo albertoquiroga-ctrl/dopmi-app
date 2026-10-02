@@ -1,10 +1,12 @@
 import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_screens.dart';
 import 'package:dopmi_mobile/features/adoption/discovery_empty.dart';
 import 'package:dopmi_mobile/core/ui.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -59,9 +61,36 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(
-        tester.getSize(find.text('No hay mascotas disponibles')).width,
+        tester
+            .getSize(find.byKey(const ValueKey('discovery-empty-heading')))
+            .width,
         closeTo(scale == 1 ? 244.244 : 270, .5),
       );
+      for (final word in ['No', 'hay', 'mascotas', 'disponibles']) {
+        final paragraph = tester.renderObject<RenderParagraph>(find.text(word));
+        expect(
+          paragraph.getBoxesForSelection(
+            TextSelection(baseOffset: 0, extentOffset: word.length),
+          ),
+          hasLength(1),
+          reason: '$word must stay on one line',
+        );
+      }
+      final semantics = tester.ensureSemantics();
+      try {
+        await tester.pump();
+        expect(
+          tester.getSemantics(
+            find.byKey(const ValueKey('discovery-empty-heading-semantics')),
+          ),
+          matchesSemantics(
+            label: 'No hay mascotas disponibles',
+            isHeader: true,
+          ),
+        );
+      } finally {
+        semantics.dispose();
+      }
       final action = find.byType(FilledButton);
       await tester.ensureVisible(action);
       await tester.tap(action);
@@ -70,8 +99,15 @@ void main() {
     });
   }
 
-  Future<void> open(WidgetTester tester, EmptyRepository repo) async {
-    tester.view.physicalSize = const Size(377, 852);
+  Future<void> open(
+    WidgetTester tester,
+    EmptyRepository repo, {
+    Size size = const Size(377, 852),
+    double scale = 1,
+  }) async {
+    tester.view.physicalSize = size;
+    tester.platformDispatcher.textScaleFactorTestValue = scale;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
@@ -91,12 +127,33 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  testWidgets('small enlarged empty view scrolls to real support', (
+    tester,
+  ) async {
+    await open(
+      tester,
+      EmptyRepository()..cats = false,
+      size: const Size(320, 640),
+      scale: 2,
+    );
+    final action = find.widgetWithText(FilledButton, 'Ir a Apoyar');
+    await tester.ensureVisible(action);
+    await tester.pumpAndSettle();
+    await tester.tap(action);
+    await tester.pumpAndSettle();
+    expect(find.byType(RescueCatalogScreen), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('empty species switches to real alternate-category results', (
     tester,
   ) async {
     final repo = EmptyRepository();
     await open(tester, repo);
-    expect(find.text('No hay mascotas disponibles'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('discovery-empty-heading')),
+      findsOneWidget,
+    );
     expect(find.text('Ver gatos'), findsOneWidget);
     await tester.tap(find.text('Ver gatos'));
     await tester.pumpAndSettle();

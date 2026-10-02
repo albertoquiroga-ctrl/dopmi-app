@@ -41,26 +41,7 @@ class DiscoveryEmpty extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Center(
-                child: SizedBox(
-                  // Source max-width:14ch scales with the h2 font size.
-                  width:
-                      244.244 * MediaQuery.textScalerOf(context).scale(26) / 26,
-                  child: const Text(
-                    'No hay mascotas disponibles',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Fraunces',
-                      fontSize: 26,
-                      fontVariations: DopmiTokens.display26Variations,
-                      height: 1.2,
-                      letterSpacing: -.52,
-                      fontWeight: FontWeight.w600,
-                      color: ink,
-                    ),
-                  ),
-                ),
-              ),
+              const _EmptyHeading(),
               const SizedBox(height: 8),
               Center(
                 child: SizedBox(
@@ -332,4 +313,81 @@ class DiscoveryEnd extends StatelessWidget {
       ],
     ),
   );
+}
+
+/// HTML word-break:normal keeps long words intact even when they extend into
+/// the card padding. Flutter Text would otherwise split them mid-word.
+class _EmptyHeading extends StatelessWidget {
+  const _EmptyHeading();
+  static const title = 'No hay mascotas disponibles';
+  static const style = TextStyle(
+    fontFamily: 'Fraunces',
+    fontSize: 26,
+    fontVariations: DopmiTokens.display26Variations,
+    height: 1.2,
+    letterSpacing: -.52,
+    fontWeight: FontWeight.w600,
+    color: ink,
+  );
+  @override
+  Widget build(BuildContext context) {
+    final scaler = MediaQuery.textScalerOf(context);
+    final space = TextPainter(
+      text: const TextSpan(text: ' ', style: style),
+      textDirection: Directionality.of(context),
+      textScaler: scaler,
+    )..layout();
+    final spacing = space.width;
+    space.dispose();
+    Widget wordWidget(String word) {
+      final measure = TextPainter(
+        text: TextSpan(text: word, style: style),
+        textDirection: Directionality.of(context),
+        textScaler: scaler,
+      )..layout();
+      final width = measure.width;
+      final height = measure.height;
+      measure.dispose();
+      return LayoutBuilder(
+        builder: (_, constraints) => SizedBox(
+          width: width.clamp(0.0, constraints.maxWidth).toDouble(),
+          height: height,
+          child: OverflowBox(
+            alignment: Alignment.center,
+            minWidth: width,
+            maxWidth: width,
+            minHeight: height,
+            maxHeight: height,
+            child: Text(
+              word,
+              style: style,
+              softWrap: false,
+              overflow: TextOverflow.visible,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Center(
+      child: SizedBox(
+        key: const ValueKey('discovery-empty-heading'),
+        width: 244.244 * scaler.scale(26) / 26,
+        child: Semantics(
+          key: const ValueKey('discovery-empty-heading-semantics'),
+          container: true,
+          header: true,
+          label: title,
+          child: ExcludeSemantics(
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              spacing: spacing,
+              children: [for (final word in title.split(' ')) wordWidget(word)],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
