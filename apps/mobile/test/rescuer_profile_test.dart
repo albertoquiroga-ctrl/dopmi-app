@@ -29,10 +29,15 @@ class FakeRescuerProfile implements RescuerProfileRepository {
     'version': 3,
   };
   int saves = 0;
+  bool failLoad = false;
   @override
   String? get userId => 'owner-one';
   @override
-  Future<Json?> load() async => value;
+  Future<Json?> load() async {
+    if (failLoad) throw StateError('offline');
+    return value;
+  }
+
   @override
   Future<Json> save(Json payload, {int? version}) async {
     saves++;
@@ -62,6 +67,7 @@ void main() {
     'photo picker prevents duplicate taps and retains draft on cancellation and failure',
     (tester) async {
       final repo = FakeRescuerProfile();
+      repo.failLoad = true;
       final identity = FakeIdentityRepository()
         ..user = const Identity('owner-one', 'ana@example.test', verified: true)
         ..profile = const Profile(
@@ -106,7 +112,14 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('public-profile-photo')), findsNothing);
+      expect(find.text('Guardar borrador'), findsNothing);
+      expect(repo.saves, 0);
+      repo.failLoad = false;
+      await tester.tap(find.text('Volver a intentar'));
+      await tester.pumpAndSettle();
       final name = find.byKey(const ValueKey('public-profile-Nombre'));
+      expect(tester.widget<TextField>(name).controller!.text, 'Refugio Luna');
       await tester.enterText(name, 'Borrador conservado');
       final editor = find.descendant(
         of: name,

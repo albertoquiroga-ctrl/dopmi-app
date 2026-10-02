@@ -25,7 +25,7 @@ class _RescuerPublicProfileEditState
   final facebook = TextEditingController();
   Json? profile;
   String? avatarUrl, error;
-  bool loading = true, busy = false;
+  bool loading = true, busy = false, loadFailed = false;
 
   @override
   void initState() {
@@ -45,6 +45,11 @@ class _RescuerPublicProfileEditState
   }
 
   Future<void> load() async {
+    setState(() {
+      loading = true;
+      loadFailed = false;
+      error = null;
+    });
     try {
       final value = await ref.read(rescuerProfileRepositoryProvider).load();
       if (!mounted) return;
@@ -62,6 +67,7 @@ class _RescuerPublicProfileEditState
             .avatarUrl(path);
       }
     } catch (cause) {
+      loadFailed = true;
       error = communityError(cause);
     } finally {
       if (mounted) setState(() => loading = false);
@@ -209,7 +215,14 @@ class _RescuerPublicProfileEditState
             ),
             const SizedBox(height: 16),
             if (loading) const LinearProgressIndicator(),
-            if (!loading) ...[
+            if (!loading && loadFailed) ...[
+              Notice(error!, isError: true),
+              OutlinedButton(
+                onPressed: load,
+                child: const Text('Volver a intentar'),
+              ),
+            ],
+            if (!loading && !loadFailed) ...[
               Material(
                 color: Colors.white,
                 shape: RoundedRectangleBorder(

@@ -2293,3 +2293,15 @@ guardado del repositorio fixture. Capturador:1 suite aprobada3s; imagen
 inspeccionada. Total actual285 estados/34URLs. No prueba teclado/galería en
 teléfono ni constituye aceptación visual global. Sin nuevos builds Codemagic.
 Analyze sin incidencias7.7s.
+# Loop284 — recuperación de carga del editor
+
+Referencia remota2/10/2026:
+`irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
+Inspección de router y Scaffold confirma editor fuera del shell y sin barra
+inferior; no se modifica navegación por un pendiente histórico ya inexistente.
+Si falla cargar el perfil real, se muestra error/reintento en vez de formulario
+vacío editable. Reintentar recarga datos/versionado y conserva el guardado real.
+Prueba extiende error inicial→reintento→nombre original→edición/galería:
+2 aprobadas3s. Ningún guardado antes de recuperar datos. No aceptación instalada
+ni paridad completa; sin envío nuevo a Codemagic.
+Analyze sin incidencias29.7s.
