@@ -532,6 +532,7 @@ void main() {
         'icon-verified',
         'check',
         'payment-card-error',
+        'empty-publish-plus',
       ])
         'assets/profile/$name.svg',
       for (final name in [
@@ -679,6 +680,10 @@ void main() {
       ('case-detail-amount', '/rescue-cases/case-one'),
       ('case-detail-amount-large', '/rescue-cases/case-one'),
       ('case-detail-expenses-large', '/rescue-cases/case-one'),
+      ('rescuer-messages', '/messages'),
+      ('rescuer-messages-large', '/messages'),
+      ('rescuer-messages-empty', '/messages'),
+      ('rescuer-messages-empty-large', '/messages'),
       ('match-home', '/messages'),
       ('match-home-large', '/messages'),
       ('adoption-support', '/adoptions'),
@@ -804,7 +809,8 @@ void main() {
       final large = spec.$1.endsWith('-large');
       tester.view.physicalSize = large && spec.$1 != 'adoption-empty-wide-large'
           ? const Size(320, 640)
-          : spec.$1 == 'rescuer-profile-reference-wide'
+          : (spec.$1 == 'rescuer-profile-reference-wide' ||
+                spec.$1.startsWith('rescuer-messages'))
           ? const Size(384, 852)
           : const Size(377, 852);
       tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
@@ -895,8 +901,39 @@ void main() {
           spec.$1.startsWith('case-publication') ||
           spec.$1.startsWith('publish-') ||
           spec.$1.startsWith('verification-') ||
+          spec.$1.startsWith('rescuer-messages') ||
           spec.$1 == 'chat-bubbles-rescuer') {
         await repo.setExperience('rescuer');
+      }
+      if (spec.$1.startsWith('rescuer-messages')) {
+        community.threadItems = spec.$1.contains('empty')
+            ? []
+            : [
+                {
+                  'id': 'thread-one',
+                  'participant_name': 'Ana P.',
+                  'pet_name': 'Luna',
+                  'last_message': 'Perfecto. Nos vemos el fin de semana.',
+                  'unread_count': 3,
+                  'status': 'active',
+                },
+                {
+                  'id': 'thread-two',
+                  'participant_name': 'Carlos M.',
+                  'pet_name': 'Rocky',
+                  'last_message': 'Puedo visitarlo este fin de semana?',
+                  'unread_count': 0,
+                  'status': 'active',
+                },
+                {
+                  'id': 'thread-three',
+                  'participant_name': 'Lucia G.',
+                  'pet_name': 'Milo',
+                  'last_message': 'Gracias por la actualizacion!',
+                  'unread_count': 0,
+                  'status': 'closed',
+                },
+              ];
       }
       final container = ProviderContainer(
         overrides: [

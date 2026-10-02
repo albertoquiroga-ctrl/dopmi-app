@@ -10,6 +10,7 @@ import '../../core/ui.dart';
 import 'match_favorites.dart';
 import 'match_thread_row.dart';
 import 'chat_message_bubble.dart';
+import 'rescuer_threads_screen.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../identity/experience_controller.dart';
@@ -46,7 +47,17 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => PopScope(
+  Widget build(BuildContext context) {
+    final experience = ref.watch(experienceProvider);
+    return ListenableBuilder(
+      listenable: experience,
+      builder: (context, _) => experience.value == AccountExperience.rescuer
+          ? const RescuerThreadsScreen()
+          : donor(context),
+    );
+  }
+
+  Widget donor(BuildContext context) => PopScope(
     canPop: !allFavorites,
     onPopInvokedWithResult: (didPop, result) {
       if (!didPop && allFavorites) showFavorites(false);
