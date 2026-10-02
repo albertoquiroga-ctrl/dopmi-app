@@ -87,45 +87,58 @@ void main() {
     tester,
   ) async {
     final repo = FakeIdentityRepository();
-    await start(tester, repo, initialLocation: '/signup?intent=rescue');
-    await tester.enterText(
-      find.byType(TextFormField).at(1),
-      'ana@example.test',
-    );
-    FocusManager.instance.primaryFocus?.unfocus();
-    await tester.pumpAndSettle();
-    final row = find.byType(AuthConsentRow);
-    await tester.ensureVisible(row);
-    expect(tester.getSize(row).height, greaterThanOrEqualTo(48));
-    await tester.tapAt(tester.getRect(row).topLeft + const Offset(2, 3));
-    await tester.pumpAndSettle();
-    expect(tester.widget<AuthConsentRow>(row).value, isTrue);
-    await tap(tester, 'Leer términos y privacidad');
-    expect(find.byType(TermsScreen), findsOneWidget);
-    expect(repo.signupCount, 0);
-    await tester.tap(find.byTooltip('Volver'));
-    await tester.pumpAndSettle();
-    expect(tester.widget<AuthConsentRow>(row).value, isTrue);
-    expect(
-      tester
-          .widget<TextFormField>(find.byType(TextFormField).at(1))
-          .controller!
-          .text,
-      'ana@example.test',
-    );
-    await tester.ensureVisible(row);
-    await tester.tap(find.text(AuthConsentRow.label));
-    await tester.pumpAndSettle();
-    expect(tester.widget<AuthConsentRow>(row).value, isFalse);
-    expect(
-      tester
-          .widget<FilledButton>(
-            find.widgetWithText(FilledButton, 'Crea una cuenta'),
-          )
-          .onPressed,
-      isNull,
-    );
-    expect(repo.signupCount, 0);
+    final semantics = tester.ensureSemantics();
+    try {
+      await start(tester, repo, initialLocation: '/signup?intent=rescue');
+      await tester.enterText(
+        find.byType(TextFormField).at(1),
+        'ana@example.test',
+      );
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
+      final row = find.byType(AuthConsentRow);
+      await tester.ensureVisible(row);
+      expect(tester.getSize(row).height, greaterThanOrEqualTo(48));
+      await tester.tapAt(tester.getRect(row).topLeft + const Offset(2, 3));
+      await tester.pumpAndSettle();
+      expect(tester.widget<AuthConsentRow>(row).value, isTrue);
+      expect(find.bySemanticsLabel('Términos y Condiciones'), findsOneWidget);
+      expect(find.bySemanticsLabel('Aviso de Privacidad'), findsOneWidget);
+      await tap(tester, 'Términos y Condiciones');
+      expect(find.byType(TermsScreen), findsOneWidget);
+      expect(repo.signupCount, 0);
+      await tester.tap(find.byTooltip('Volver'));
+      await tester.pumpAndSettle();
+      expect(tester.widget<AuthConsentRow>(row).value, isTrue);
+      expect(
+        tester
+            .widget<TextFormField>(find.byType(TextFormField).at(1))
+            .controller!
+            .text,
+        'ana@example.test',
+      );
+      await tester.ensureVisible(row);
+      await tester.tapAt(tester.getRect(row).topLeft + const Offset(2, 3));
+      await tester.pumpAndSettle();
+      expect(tester.widget<AuthConsentRow>(row).value, isFalse);
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.widgetWithText(FilledButton, 'Crea una cuenta'),
+            )
+            .onPressed,
+        isNull,
+      );
+      expect(repo.signupCount, 0);
+      await tap(tester, 'Aviso de Privacidad');
+      expect(find.byType(TermsScreen), findsOneWidget);
+      await tester.tap(find.byTooltip('Volver'));
+      await tester.pumpAndSettle();
+      expect(tester.widget<AuthConsentRow>(row).value, isFalse);
+      expect(repo.signupCount, 0);
+    } finally {
+      semantics.dispose();
+    }
   });
 
   testWidgets(
@@ -149,10 +162,10 @@ void main() {
       expect(tester.widget<FilledButton>(signupButton).onPressed, isNull);
       await tap(tester, 'Crea una cuenta');
       expect(repo.signupCount, 0);
-      await tap(
-        tester,
-        'Confirmo que tengo 18 años o más y acepto los Términos y el Aviso de privacidad.',
-      );
+      final consent = find.byType(AuthConsentRow);
+      await tester.ensureVisible(consent);
+      await tester.tapAt(tester.getRect(consent).topLeft + const Offset(2, 3));
+      await tester.pumpAndSettle();
       await tap(tester, 'Crea una cuenta');
       expect(repo.signupCount, 1);
       expect(repo.signupIntent, 'rescue');

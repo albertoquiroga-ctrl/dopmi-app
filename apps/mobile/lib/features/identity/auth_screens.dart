@@ -281,10 +281,8 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                       onChanged: busy
                           ? null
                           : (value) => setState(() => consent = value),
-                    ),
-                    TextButton(
-                      onPressed: () => context.push('/terms'),
-                      child: const Text('Leer términos y privacidad'),
+                      onOpenTerms: () => context.push('/terms'),
+                      onOpenPrivacy: () => context.push('/terms'),
                     ),
                   ],
                   if (login)

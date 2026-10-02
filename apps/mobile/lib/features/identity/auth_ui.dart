@@ -156,11 +156,14 @@ class AuthConsentRow extends StatelessWidget {
     super.key,
     required this.value,
     required this.onChanged,
+    required this.onOpenTerms,
+    required this.onOpenPrivacy,
   });
   final bool value;
   final ValueChanged<bool>? onChanged;
+  final VoidCallback onOpenTerms, onOpenPrivacy;
   static const label =
-      'Confirmo que tengo 18 años o más y acepto los Términos y el Aviso de privacidad.';
+      'Confirmo que tengo 18 años o más y acepto los Términos y Condiciones y el Aviso de Privacidad.';
 
   @override
   Widget build(BuildContext context) {
@@ -170,18 +173,19 @@ class AuthConsentRow extends StatelessWidget {
       checked: value,
       enabled: onChanged != null,
       onTap: toggle,
-      child: ExcludeSemantics(
-        child: InkWell(
-          onTap: toggle,
-          splashFactory: NoSplash.splashFactory,
-          overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 48),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
+      child: InkWell(
+        excludeFromSemantics: true,
+        onTap: toggle,
+        splashFactory: NoSplash.splashFactory,
+        overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: ExcludeSemantics(
                   child: IgnorePointer(
                     child: SizedBox(
                       width: 18,
@@ -197,26 +201,70 @@ class AuthConsentRow extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
-                const Expanded(
-                  child: Text(
-                    label,
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 13,
-                      height: 1.4,
-                      letterSpacing: 0,
-                      color: muted,
-                    ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      const TextSpan(
+                        text: 'Confirmo que tengo 18 años o más y acepto los ',
+                        semanticsLabel: '',
+                      ),
+                      WidgetSpan(
+                        alignment: PlaceholderAlignment.baseline,
+                        baseline: TextBaseline.alphabetic,
+                        child: _legalLink(
+                          'Términos y Condiciones',
+                          onOpenTerms,
+                        ),
+                      ),
+                      const TextSpan(text: ' y el ', semanticsLabel: ''),
+                      WidgetSpan(
+                        alignment: PlaceholderAlignment.baseline,
+                        baseline: TextBaseline.alphabetic,
+                        child: _legalLink('Aviso de Privacidad', onOpenPrivacy),
+                      ),
+                      const TextSpan(text: '.', semanticsLabel: ''),
+                    ],
+                  ),
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 13,
+                    height: 1.4,
+                    letterSpacing: 0,
+                    color: muted,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
+
+  Widget _legalLink(String text, VoidCallback open) => TextButton(
+    onPressed: onChanged == null ? null : open,
+    style: TextButton.styleFrom(
+      padding: EdgeInsets.zero,
+      minimumSize: Size.zero,
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      splashFactory: NoSplash.splashFactory,
+      overlayColor: Colors.transparent,
+      textStyle: const TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 13,
+        height: 1.4,
+        letterSpacing: 0,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+    child: Text(
+      text,
+      style: const TextStyle(decoration: TextDecoration.underline),
+    ),
+  );
 }
 
 class AuthHeading extends StatelessWidget {
