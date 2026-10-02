@@ -205,6 +205,45 @@ void main() {
       await tester.runAsync(
         () => saveCapture(key, '${output.path}/${route.$1}.png'),
       );
+      if (route.$1 == 'login') {
+        final emailField = find.byType(TextFormField).first;
+        final input = find.descendant(
+          of: emailField,
+          matching: find.byType(InputDecorator),
+        );
+        expect(tester.getSize(input).height, closeTo(48, .5));
+        await tester.tap(emailField);
+        await tester.pump(const Duration(milliseconds: 1));
+        // Focus notifications rebuild at the first frame; paint on the next.
+        await tester.pump(const Duration(milliseconds: 1));
+        final boundary =
+            key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+        await tester.runAsync(() async {
+          final focusedImage = await boundary.toImage(pixelRatio: 1);
+          final pixels = await focusedImage.toByteData(
+            format: ui.ImageByteFormat.rawRgba,
+          );
+          final rect = tester.getRect(input);
+          final root = tester.getRect(find.byKey(key));
+          final sampleX = (rect.left - root.left - 2).round();
+          final sampleY = (rect.center.dy - root.top).round();
+          final offset = (sampleY * focusedImage.width + sampleX) * 4;
+          // Source rgba(247,203,45,.22) over white, 2px outside the field.
+          expect(pixels!.getUint8(offset), closeTo(253, 1));
+          expect(pixels.getUint8(offset + 1), closeTo(244, 1));
+          expect(pixels.getUint8(offset + 2), closeTo(209, 1));
+          focusedImage.dispose();
+        });
+        await tester.runAsync(
+          () => saveCapture(key, '${output.path}/login-focused.png'),
+        );
+        await tester.pumpAndSettle();
+        expect(tester.widget<InputDecorator>(input).isFocused, isTrue);
+        await tester.runAsync(
+          () => saveCapture(key, '${output.path}/login-focused-settled.png'),
+        );
+        expect(tester.takeException(), isNull);
+      }
       if (route.$1.startsWith('start') &&
           const bool.fromEnvironment('ENABLE_GOOGLE_AUTH')) {
         // Source DOM 377×852, a3c969c; one or two providers share the same row height.

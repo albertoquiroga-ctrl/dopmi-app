@@ -277,9 +277,14 @@ class PasswordField extends StatefulWidget {
     this.validator,
     this.newPassword = false,
     this.labelAbove = false,
+    this.style,
+    this.labelStyle,
+    this.hintText,
   });
   final TextEditingController controller;
   final String label;
+  final TextStyle? style, labelStyle;
+  final String? hintText;
   final String? Function(String?)? validator;
   final bool newPassword, labelAbove;
   @override
@@ -292,6 +297,7 @@ class _PasswordFieldState extends State<PasswordField> {
   Widget build(BuildContext context) {
     final field = TextFormField(
       controller: widget.controller,
+      style: widget.style,
       obscureText: hidden,
       autocorrect: false,
       enableSuggestions: false,
@@ -301,11 +307,13 @@ class _PasswordFieldState extends State<PasswordField> {
       ],
       decoration: InputDecoration(
         labelText: widget.labelAbove ? null : widget.label,
-        hintText: widget.labelAbove
-            ? (widget.newPassword
-                  ? 'Elige una contraseña segura'
-                  : 'Tu contraseña')
-            : null,
+        hintText:
+            widget.hintText ??
+            (widget.labelAbove
+                ? (widget.newPassword
+                      ? 'Elige una contraseña segura'
+                      : 'Tu contraseña')
+                : null),
         suffixIcon: IconButton(
           tooltip: hidden
               ? 'Mostrar ${widget.label.toLowerCase()}'
@@ -317,14 +325,26 @@ class _PasswordFieldState extends State<PasswordField> {
         ),
       ),
     );
-    return widget.labelAbove ? LabeledField(widget.label, child: field) : field;
+    return widget.labelAbove
+        ? LabeledField(
+            widget.label,
+            labelStyle: widget.labelStyle,
+            child: field,
+          )
+        : field;
   }
 }
 
 class LabeledField extends StatelessWidget {
-  const LabeledField(this.label, {super.key, required this.child});
+  const LabeledField(
+    this.label, {
+    super.key,
+    required this.child,
+    this.labelStyle,
+  });
   final String label;
   final Widget child;
+  final TextStyle? labelStyle;
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -332,11 +352,13 @@ class LabeledField extends StatelessWidget {
       ExcludeSemantics(
         child: Text(
           label,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: muted,
-          ),
+          style:
+              labelStyle ??
+              const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: muted,
+              ),
         ),
       ),
       const SizedBox(height: 7),

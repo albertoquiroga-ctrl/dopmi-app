@@ -30,6 +30,31 @@ class AuthFrame extends StatelessWidget {
     final theme = Theme.of(context);
     return Theme(
       data: theme.copyWith(
+        inputDecorationTheme: sheet
+            ? theme.inputDecorationTheme.copyWith(
+                filled: true,
+                fillColor: WidgetStateColor.resolveWith(
+                  (states) => states.contains(WidgetState.focused)
+                      ? Colors.white
+                      : const Color(0xfffaf8f5),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
+                constraints: const BoxConstraints(minHeight: 48),
+                hintStyle: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 13,
+                  height: 1.2,
+                  letterSpacing: 0,
+                  fontWeight: FontWeight.w400,
+                ),
+                enabledBorder: const AuthIdleBorder(),
+                focusedBorder: const AuthFocusBorder(),
+              )
+            : theme.inputDecorationTheme,
+
         colorScheme: theme.colorScheme.copyWith(
           primary: ink,
           onPrimary: Colors.white,
@@ -307,4 +332,55 @@ class _AuthSheet extends StatelessWidget {
       ),
     ),
   );
+}
+
+/// Source focus has an immediate 3px spread and no blur/transition.
+/// Paint the ring outside the input border, excluding native validation text.
+class AuthFocusBorder extends OutlineInputBorder {
+  const AuthFocusBorder()
+    : super(
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
+        borderSide: const BorderSide(color: yellow),
+      );
+  @override
+  void paint(
+    Canvas canvas,
+    Rect rect, {
+    double? gapStart,
+    double gapExtent = 0,
+    double gapPercentage = 0,
+    TextDirection? textDirection,
+  }) {
+    final inner = borderRadius.toRRect(rect);
+    canvas.drawDRRect(
+      inner.inflate(3),
+      inner,
+      Paint()..color = const Color.fromRGBO(247, 203, 45, .22),
+    );
+    super.paint(
+      canvas,
+      rect,
+      gapStart: gapStart,
+      gapExtent: gapExtent,
+      gapPercentage: gapPercentage,
+      textDirection: textDirection,
+    );
+  }
+
+  @override
+  ShapeBorder? lerpFrom(ShapeBorder? a, double t) => this;
+  @override
+  ShapeBorder? lerpTo(ShapeBorder? b, double t) => b;
+}
+
+class AuthIdleBorder extends OutlineInputBorder {
+  const AuthIdleBorder()
+    : super(
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
+        borderSide: const BorderSide(color: Color(0xffe8e2d9)),
+      );
+  @override
+  ShapeBorder? lerpFrom(ShapeBorder? a, double t) => this;
+  @override
+  ShapeBorder? lerpTo(ShapeBorder? b, double t) => b;
 }

@@ -106,6 +106,27 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
         login = widget.mode == AuthFormMode.login,
         reset = widget.mode == AuthFormMode.reset;
     final config = ref.watch(configProvider);
+    final fieldLabel = login || signup
+        ? const TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 14,
+            height: 1.2,
+            letterSpacing: 0,
+            fontWeight: FontWeight.w600,
+            color: muted,
+          )
+        : null;
+    final fieldText = login || signup
+        ? const TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 13,
+            height: 1.2,
+            letterSpacing: 0,
+            fontWeight: FontWeight.w400,
+            color: ink,
+          )
+        : null;
+
     final title = switch (widget.mode) {
       AuthFormMode.login => 'Inicia sesión',
       AuthFormMode.signup => 'Crea tu cuenta',
@@ -139,7 +160,9 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                   if (signup) ...[
                     LabeledField(
                       'Nombre completo',
+                      labelStyle: fieldLabel,
                       child: TextFormField(
+                        style: fieldText,
                         controller: name,
                         textCapitalization: TextCapitalization.words,
                         maxLength: 80,
@@ -153,12 +176,14 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                             : null,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: login || signup ? 12 : 16),
                   ],
                   if (!reset) ...[
                     LabeledField(
                       'Correo electrónico',
+                      labelStyle: fieldLabel,
                       child: TextFormField(
+                        style: fieldText,
                         controller: email,
                         keyboardType: TextInputType.emailAddress,
                         autocorrect: false,
@@ -171,12 +196,14 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                         validator: validateEmail,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: login || signup ? 12 : 16),
                   ],
                   if (signup) ...[
                     LabeledField(
                       'Teléfono (opcional)',
+                      labelStyle: fieldLabel,
                       child: TextFormField(
+                        style: fieldText,
                         controller: phone,
                         keyboardType: TextInputType.phone,
                         maxLength: 24,
@@ -187,11 +214,13 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: login || signup ? 12 : 16),
                   ],
                   if (login || signup || reset) ...[
                     PasswordField(
                       controller: password,
+                      style: fieldText,
+                      labelStyle: fieldLabel,
                       labelAbove: true,
                       newPassword: !login,
                       validator: login
@@ -200,11 +229,14 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                                 : null
                           : validatePassword,
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: login || signup ? 12 : 16),
                   ],
                   if (signup || reset) ...[
                     PasswordField(
                       controller: confirmation,
+                      style: fieldText,
+                      labelStyle: fieldLabel,
+                      hintText: signup ? 'Confirma tu contraseña' : null,
                       labelAbove: true,
                       label: 'Confirmar contraseña',
                       newPassword: true,
@@ -212,7 +244,7 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                           ? 'Las contraseñas no coinciden.'
                           : null,
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: login || signup ? 12 : 16),
                   ],
                   if (signup) ...[
                     CheckboxListTile(
