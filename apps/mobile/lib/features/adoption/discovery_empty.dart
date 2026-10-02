@@ -24,10 +24,12 @@ class DiscoveryEmpty extends StatelessWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 320),
         child: Container(
-          padding: const EdgeInsets.fromLTRB(22, 28, 22, 22),
+          key: const ValueKey('discovery-empty-card'),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(28),
+            border: Border.all(color: const Color(0xffe6e2dd)),
+            borderRadius: BorderRadius.circular(24),
             boxShadow: const [
               BoxShadow(
                 color: Color(0x2415110d),
@@ -39,10 +41,12 @@ class DiscoveryEmpty extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Center(
+              Center(
                 child: SizedBox(
-                  width: 244.244,
-                  child: Text(
+                  // Source max-width:14ch scales with the h2 font size.
+                  width:
+                      244.244 * MediaQuery.textScalerOf(context).scale(26) / 26,
+                  child: const Text(
                     'No hay mascotas disponibles',
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -58,21 +62,28 @@ class DiscoveryEmpty extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
-                filtered
-                    ? 'Prueba otros filtros o limpia la selección para ver más opciones.'
-                    : global
-                    ? 'Por ahora no hay mascotas en adopción. Vuelve pronto o apoya a quienes ya buscan ayuda.'
-                    : 'Por ahora no hay ${species == 'dog' ? 'perros' : 'gatos'} en adopción. Prueba la otra categoría o vuelve pronto.',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 14,
-                  height: 1.45,
-                  color: muted,
+              Center(
+                child: SizedBox(
+                  width:
+                      264.961 * MediaQuery.textScalerOf(context).scale(14) / 14,
+                  child: Text(
+                    filtered
+                        ? 'Prueba otros filtros o limpia la selección para ver más opciones.'
+                        : global
+                        ? 'Por ahora no hay mascotas en adopción. Vuelve pronto o apoya a quienes ya buscan ayuda.'
+                        : 'Por ahora no hay ${species == 'dog' ? 'perros' : 'gatos'} en adopción. Prueba la otra categoría o vuelve pronto.',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 14,
+                      height: 1.45,
+                      color: muted,
+                    ),
+                  ),
                 ),
               ),
-              const SizedBox(height: 18),
+              // Source paragraph margin16 + grid gap8 + button margin4.
+              const SizedBox(height: 28),
               FilledButton(
                 onPressed: filtered
                     ? clear

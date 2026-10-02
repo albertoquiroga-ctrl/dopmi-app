@@ -1,0 +1,47 @@
+{
+  "sha": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "route": "/adoption",
+  "scenario": "Empty states via visible test switch",
+  "viewportRequested": [
+    377,
+    852
+  ],
+  "card": {
+    "x": 28.8,
+    "y": 144,
+    "w": 320,
+    "h": 276.9,
+    "padding": "32px 24px",
+    "radius": 24,
+    "border": 0.8,
+    "borderColor": "rgb(230,226,221)"
+  },
+  "title": {
+    "maxWidth": 244.244,
+    "w": 244.2375,
+    "h": 62.4,
+    "font": 26
+  },
+  "body": {
+    "maxWidth": 264.961,
+    "h": 60.9,
+    "marginBottom": 16
+  },
+  "button": {
+    "y": 336.1,
+    "w": 270.4,
+    "h": 52
+  },
+  "native": {
+    "card": [
+      28.5,
+      144,
+      320,
+      276
+    ],
+    "titleHeight": 62,
+    "buttonTop": 335,
+    "buttonWidth": 270
+  },
+  "residual": "1.1px button top; expanded-word wrapping remains unverified against Source"
+}

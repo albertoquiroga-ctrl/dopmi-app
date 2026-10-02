@@ -1,4 +1,6 @@
 import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/features/adoption/discovery_empty.dart';
+import 'package:dopmi_mobile/core/ui.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
@@ -24,6 +26,50 @@ class EmptyRepository extends FakeCommunity {
 }
 
 void main() {
+  for (final scale in [1.0, 2.0]) {
+    testWidgets('empty heading scales its reference width at $scale', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(377, 852);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      var switched = false;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: dopmiTheme(),
+          home: MediaQuery(
+            data: MediaQueryData(
+              size: const Size(377, 852),
+              textScaler: TextScaler.linear(scale),
+            ),
+            child: Scaffold(
+              body: SingleChildScrollView(
+                child: DiscoveryEmpty(
+                  filtered: false,
+                  global: false,
+                  species: 'dog',
+                  clear: () {},
+                  switchSpecies: () => switched = true,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        tester.getSize(find.text('No hay mascotas disponibles')).width,
+        closeTo(scale == 1 ? 244.244 : 270, .5),
+      );
+      final action = find.byType(FilledButton);
+      await tester.ensureVisible(action);
+      await tester.tap(action);
+      expect(switched, isTrue);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
   Future<void> open(WidgetTester tester, EmptyRepository repo) async {
     tester.view.physicalSize = const Size(377, 852);
     tester.view.devicePixelRatio = 1;

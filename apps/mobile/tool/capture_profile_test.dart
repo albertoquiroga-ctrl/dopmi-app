@@ -508,6 +508,7 @@ void main() {
       ('adoption-detail-large', '/adoptions/post'),
       ('adoption-empty', '/adoptions'),
       ('adoption-empty-large', '/adoptions'),
+      ('adoption-empty-wide-large', '/adoptions'),
       ('adoption-end', '/adoptions'),
       ('match-threads', '/messages'),
       ('match-threads-large', '/messages'),
@@ -704,7 +705,7 @@ void main() {
         ..user = const Identity('one', 'fixture@example.test', verified: true);
       await repo.saveProfile(name: 'Ana', phone: '', city: 'Monterrey, NL');
       final large = spec.$1.endsWith('-large');
-      tester.view.physicalSize = large
+      tester.view.physicalSize = large && spec.$1 != 'adoption-empty-wide-large'
           ? const Size(320, 640)
           : const Size(377, 852);
       tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
@@ -965,6 +966,25 @@ void main() {
       }
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1 == 'adoption-empty') {
+        // Effective Source cascade measured in IAB at377x852, a3c969c.
+        final card = tester.getRect(
+          find.byKey(const ValueKey('discovery-empty-card')),
+        );
+        final action = tester.getRect(
+          find.widgetWithText(FilledButton, 'Ir a Apoyar'),
+        );
+        debugPrint(
+          'Empty metrics: card=$card action=$action title=${tester.getRect(find.text('No hay mascotas disponibles'))}',
+        );
+        expect(card.top, closeTo(144, 1));
+        expect(card.width, closeTo(320, 1));
+        expect(card.height, closeTo(276.9, 1));
+        // Source fractional line boxes vs Flutter whole-pixel line heights
+        // accumulate 1.1px here (measured title62 vs62.4, body60 vs60.9).
+        expect(action.top, closeTo(336.1, 2));
+        expect(action.width, closeTo(270.4, 1));
+      }
       if (spec.$1 == 'guardian-promotion-controls-large') {
         final dot = find.byWidgetPredicate(
           (widget) =>
