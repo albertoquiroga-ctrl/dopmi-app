@@ -93,7 +93,7 @@ void main() {
         ),
       ),
     );
-    expect(find.text('â€”'), findsNWidgets(3));
+    expect(find.text('—'), findsNWidgets(3));
     expect(find.text('0'), findsNothing);
     expect(tester.takeException(), isNull);
   });

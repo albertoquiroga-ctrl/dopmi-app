@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
@@ -6,9 +9,11 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_hero.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../tool/fixture_photo_client.dart';
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
 import 'rescue_test.dart' show FakeRescue;
@@ -111,6 +116,17 @@ void main() {
   testWidgets('approved avatar retries signing and disappears on withdrawal', (
     tester,
   ) async {
+    final photo = await tester.runAsync(
+      () => File('assets/onboarding/account-rescue.jpg').readAsBytes(),
+    );
+    final previousClient = debugNetworkImageHttpClientProvider;
+    PaintingBinding.instance.imageCache.clear();
+    debugNetworkImageHttpClientProvider = () => FixturePhotoClient(photo!);
+    addTearDown(() {
+      debugNetworkImageHttpClientProvider = previousClient;
+      PaintingBinding.instance.imageCache.clear();
+      PaintingBinding.instance.imageCache.clearLiveImages();
+    });
     final community = PublishedCommunity()..avatarPath = 'one/approved.jpg';
     final avatar = PublishedAvatar();
     await tester.pumpWidget(
@@ -135,6 +151,23 @@ void main() {
     expect(find.text('Reintentar foto de perfil'), findsOneWidget);
     expect(find.byKey(const ValueKey('rescuer-profile-avatar')), findsNothing);
     expect(avatar.paths, ['one/approved.jpg']);
+    await tester.runAsync(() async {
+      final ready = Completer<void>();
+      final stream = const NetworkImage('https://example.test/approved-avatar')
+          .resolve(ImageConfiguration.empty);
+      final listener = ImageStreamListener(
+        (info, synchronous) => ready.complete(),
+        onError: (Object error, StackTrace? stack) =>
+            ready.completeError(error, stack),
+      );
+      stream.addListener(listener);
+      try {
+        await ready.future.timeout(const Duration(seconds: 10));
+      } finally {
+        stream.removeListener(listener);
+      }
+    });
+    debugNetworkImageHttpClientProvider = previousClient;
     avatar.fail = false;
     await tester.ensureVisible(find.text('Reintentar foto de perfil'));
     await tester.tap(find.text('Reintentar foto de perfil'));
@@ -150,6 +183,23 @@ void main() {
     expect(image.height, 72);
     expect(image.fit, BoxFit.cover);
     expect(image.errorBuilder, isNotNull);
+    await tester.pumpAndSettle();
+    final rendered = find.descendant(
+      of: find.byKey(const ValueKey('rescuer-profile-avatar')),
+      matching: find.byType(RawImage),
+    );
+    expect(rendered, findsOneWidget);
+    final renderImage = tester.renderObject<RenderImage>(rendered);
+    expect(renderImage.image, isNotNull);
+    expect(renderImage.image!.width, greaterThan(0));
+    expect(renderImage.image!.height, greaterThan(0));
+    expect(renderImage.size, const Size(72, 72));
+    expect(renderImage.fit, BoxFit.cover);
+    expect(
+      find.ancestor(of: rendered, matching: find.byType(ClipOval)),
+      findsOneWidget,
+    );
+
     expect(find.text('Reintentar foto de perfil'), findsNothing);
     expect(avatar.paths, ['one/approved.jpg', 'one/approved.jpg']);
     community.visible = false;

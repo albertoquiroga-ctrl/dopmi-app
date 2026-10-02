@@ -39,10 +39,10 @@ class RescuerProfileMetrics extends StatelessWidget {
       'corrections',
     ].every((key) => counts[key] is int);
     final values = [
-      completeCounts ? '$open' : 'â€”',
-      counts['active'] is int ? '${counts['active']}' : 'â€”',
+      completeCounts ? '$open' : '—',
+      counts['active'] is int ? '${counts['active']}' : '—',
       cents == null
-          ? 'â€”'
+          ? '—'
           : '\$${(cents / 100).toStringAsFixed(cents % 100 == 0 ? 0 : 2)}',
     ];
     const labels = ['Casos', 'Activos', 'Transferido'];
