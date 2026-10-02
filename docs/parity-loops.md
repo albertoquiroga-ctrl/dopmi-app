@@ -2153,3 +2153,14 @@ Referencia reconsultada: irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd8869
 
 Codemagic build6ac02cc4554e6c4660850bf2 confirmado building, SHA2c36339a6961755e7b0a37e189f8c1fa9b791e17. Este loop270 posterior al envío no está incluido en ese candidato; compilación/publicación todavía sin resultado terminal.
 Análisis local loop270: flutter analyze sin problemas (31.3s); formato y diffcheck aprobados.
+
+## Loop 271 — 2026-10-02 — formulario de Información básica
+
+Turno270 fue progreso productivo (encabezado/capturas). Loop271 retira tarjeta amarilla genérica y coloca primero el formulario real; accesos existentes se conservan después del guardado. Labels externos12/w600/gap7, espacios16, correo Auth real seleccionable de solo lectura, campos nombre/teléfono/ciudad conservan repositorio, límites, validación y suspensión. CTA16/w600 con mínimo48 y crecimiento natural a texto grande; bloqueo busy y semántica Procesando conservados. No cambio backend/SQL/Auth.
+
+Referencia reconsultada a3c969cd9103fd46dc5cd886999912526ce75efb. Dos capturas normal/200% inspeccionadas; ahora datos son visibles al entrar. Suite identidad/perfil/capturador32 aprobadas12s tras composición y CTA. Mis datos ya no es un heading agregado; pruebas verifican Ciudad / estado y Correo electrónico, y ausencia del formulario ante fallo de consentimiento. Fallo al guardar sigue preservando edición y permite reintento, sin reset de experiencia. Formato/diffcheck aprobados.
+
+No aceptación completa: falta foto editable real, estructura de nombre/apellido, cambio de correo con confirmación, medición exacta de campos en navegador Source y teclado/dispositivo. No se simulan foto/correo ni se reutiliza almacenamiento legado. Matriz274 estados32URLs sin nuevos estados este loop.
+
+Codemagic6ac02cc4554e6c4660850bf2: GET buildActions confirma Static analysis y Unit and widget tests success; Build signed Guardian Android App Bundle todavía sin status terminal. Publicación Play pendiente. Build exacto2c36339 no contiene loops270/271 posteriores.
+Análisis final loop271 limpio22.9s tras corregir const no admitido por Semantics al preservar Procesando. El intento de análisis desde raíz fue cancelado y no constituye verificación. Análisis efectivo ejecutado en apps/mobile de copia temporal.

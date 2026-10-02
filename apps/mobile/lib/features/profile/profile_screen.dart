@@ -149,61 +149,97 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
               ActionButton('Volver a intentar', onPressed: load),
             ],
             if (!loading && profile != null) ...[
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: yellow,
-                  borderRadius: BorderRadius.circular(24),
+              if (suspended)
+                const Notice(
+                  'Tu cuenta está suspendida. Contacta al equipo Dopmi para revisar tu acceso.',
+                  isError: true,
                 ),
-                child: Row(
+              Form(
+                key: form,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const CircleAvatar(
-                      radius: 27,
-                      backgroundColor: cream,
-                      child: Icon(Icons.person_outline, color: ink, size: 32),
+                    _BasicInfoField(
+                      label: 'Nombre',
+                      child: TextFormField(
+                        controller: name,
+                        enabled: !suspended && !busy,
+                        maxLength: 80,
+                        decoration: const InputDecoration(counterText: ''),
+                        validator: (value) => (value ?? '').trim().isEmpty
+                            ? 'Escribe tu nombre.'
+                            : null,
+                      ),
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            profile!.name,
-                            style: Theme.of(context).textTheme.titleLarge,
+                    const SizedBox(height: 16),
+                    _BasicInfoField(
+                      label: 'Correo electrónico',
+                      child: InputDecorator(
+                        decoration: const InputDecoration(),
+                        child: SelectableText(
+                          identity?.email ?? '',
+                          style: const TextStyle(fontSize: 14, color: ink),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _BasicInfoField(
+                      label: 'Teléfono',
+                      child: TextFormField(
+                        controller: phone,
+                        enabled: !suspended && !busy,
+                        maxLength: 24,
+                        keyboardType: TextInputType.phone,
+                        decoration: const InputDecoration(counterText: ''),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _BasicInfoField(
+                      label: 'Ciudad / estado',
+                      child: TextFormField(
+                        controller: city,
+                        enabled: !suspended && !busy,
+                        maxLength: 100,
+                        textCapitalization: TextCapitalization.words,
+                        decoration: const InputDecoration(counterText: ''),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    if (error != null) Notice(error!, isError: true),
+                    if (message != null) Notice(message!),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(minHeight: 48),
+                      child: FilledButton(
+                        style: FilledButton.styleFrom(
+                          textStyle: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            height: 1.2,
                           ),
-                          Text(
-                            identity?.email ?? '',
-                            style: const TextStyle(color: ink),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 12,
                           ),
-                          const SizedBox(height: 4),
-                          const Row(
-                            children: [
-                              Icon(
-                                Icons.verified_outlined,
-                                size: 16,
-                                color: ink,
-                              ),
-                              SizedBox(width: 5),
-                              Expanded(
-                                child: Text(
-                                  'Correo confirmado',
-                                  style: TextStyle(color: ink),
+                        ),
+                        onPressed: suspended || busy ? null : save,
+                        child: busy
+                            ? Semantics(
+                                label: 'Procesando',
+                                child: const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              )
+                            : const Text('Guardar cambios'),
                       ),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 24),
-              if (suspended)
-                const Notice(
-                  'Tu cuenta está suspendida. Contacta al equipo Dopmi para revisar tu acceso.',
-                  isError: true,
-                ),
               for (final shortcut in const [
                 ('Guardados', '/saved', Icons.favorite_border),
                 ('Mis mensajes', '/messages', Icons.chat_bubble_outline),
@@ -222,59 +258,6 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => context.push(shortcut.$2),
                 ),
-              Form(
-                key: form,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'Mis datos',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 18),
-                    TextFormField(
-                      controller: name,
-                      enabled: !suspended && !busy,
-                      maxLength: 80,
-                      decoration: const InputDecoration(labelText: 'Nombre'),
-                      validator: (value) => (value ?? '').trim().isEmpty
-                          ? 'Escribe tu nombre.'
-                          : null,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: phone,
-                      enabled: !suspended && !busy,
-                      maxLength: 24,
-                      keyboardType: TextInputType.phone,
-                      decoration: const InputDecoration(
-                        labelText: 'Teléfono (opcional)',
-                        counterText: '',
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: city,
-                      enabled: !suspended && !busy,
-                      maxLength: 100,
-                      textCapitalization: TextCapitalization.words,
-                      decoration: const InputDecoration(
-                        labelText: 'Ciudad (opcional)',
-                        counterText: '',
-                      ),
-                    ),
-                    const SizedBox(height: 28),
-                    if (error != null) Notice(error!, isError: true),
-                    if (message != null) Notice(message!),
-                    const SizedBox(height: 24),
-                    ActionButton(
-                      'Guardar cambios',
-                      busy: busy,
-                      onPressed: suspended ? null : save,
-                    ),
-                  ],
-                ),
-              ),
             ],
             const SizedBox(height: 20),
             OutlinedButton(
@@ -294,6 +277,34 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
       ),
     );
   }
+}
+
+class _BasicInfoField extends StatelessWidget {
+  const _BasicInfoField({required this.label, required this.child});
+  final String label;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: label,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: muted,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            height: 1.2,
+            letterSpacing: 0,
+          ),
+        ),
+        const SizedBox(height: 7),
+        child,
+      ],
+    ),
+  );
 }
 
 class ConsentScreen extends ConsumerStatefulWidget {

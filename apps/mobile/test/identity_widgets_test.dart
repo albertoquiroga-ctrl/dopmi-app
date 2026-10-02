@@ -253,7 +253,8 @@ void main() {
     expect(find.text('Términos y privacidad'), findsOneWidget);
     expect(find.text('Aviso de desarrollo'), findsNothing);
     await tap(tester, 'Información básica');
-    expect(find.text('Mis datos'), findsOneWidget);
+    expect(find.text('Ciudad / estado'), findsOneWidget);
+    expect(find.text('Correo electrónico'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -332,7 +333,7 @@ void main() {
     final container = await start(tester, repo, initialLocation: '/basic-info');
 
     expect(find.text('Antes de continuar'), findsOneWidget);
-    expect(find.text('Mis datos'), findsNothing);
+    expect(find.text('Ciudad / estado'), findsNothing);
     await tap(tester, 'Privacidad y eliminación de cuenta');
     expect(container.read(routerProvider).state.uri.path, '/account-privacy');
   });
