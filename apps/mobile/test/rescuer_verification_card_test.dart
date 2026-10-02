@@ -1,3 +1,8 @@
+import 'package:flutter/services.dart';
+import 'package:dopmi_mobile/features/profile/rescuer_profile_repository.dart';
+
+import 'rescuer_profile_test.dart' show FakeRescuerProfile;
+
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
@@ -14,7 +19,52 @@ import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
 import 'rescue_test.dart' show FakeRescue;
 
+class VerificationNavigationRescue extends FakeRescue {
+  VerificationNavigationRescue(this.status);
+  final String status;
+  @override
+  Future<Json> dashboard() async => {
+    ...await super.dashboard(),
+    'verification_status': status,
+  };
+}
+
 void main() {
+  testWidgets(
+    'verification keyboard focus highlights the card without activating it',
+    (tester) async {
+      var opens = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: RescuerVerificationCard(
+                status: 'approved',
+                onPressed: () => opens++,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      expect(
+        find.byKey(const ValueKey('reference-keyboard-outline')),
+        findsOneWidget,
+      );
+      expect(opens, 0);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(opens, 1);
+      await tester.tap(find.byType(RescuerVerificationCard));
+      await tester.pump();
+      expect(opens, 2);
+      expect(
+        find.byKey(const ValueKey('reference-keyboard-outline')),
+        findsNothing,
+      );
+    },
+  );
   for (final status in [
     'not_started',
     'submitted',
@@ -59,32 +109,51 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
-  testWidgets('profile verification opens existing real verification editor', (
-    tester,
-  ) async {
-    final identity = FakeIdentityRepository()
-      ..user = const Identity('one', 'fixture@example.test', verified: true);
-    await identity.setExperience('rescuer');
-    final container = ProviderContainer(
-      overrides: [
-        identityRepositoryProvider.overrideWithValue(identity),
-        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
-        rescueRepositoryProvider.overrideWithValue(FakeRescue()),
-        routerInitialLocationProvider.overrideWithValue('/profile'),
-      ],
-    );
-    addTearDown(() async {
-      container.dispose();
-      await identity.changes.close();
+  for (final status in ['approved', 'submitted']) {
+    testWidgets('profile verification opens the real destination: $status', (
+      tester,
+    ) async {
+      final identity = FakeIdentityRepository()
+        ..user = const Identity('one', 'fixture@example.test', verified: true);
+      await identity.setExperience('rescuer');
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          rescueRepositoryProvider.overrideWithValue(
+            VerificationNavigationRescue(status),
+          ),
+          rescuerProfileRepositoryProvider.overrideWithValue(
+            FakeRescuerProfile()..value['owner_id'] = 'one',
+          ),
+          routerInitialLocationProvider.overrideWithValue('/profile'),
+        ],
+      );
+      addTearDown(() async {
+        container.dispose();
+        await identity.changes.close();
+      });
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const DopmiApp(),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final label = status == 'approved'
+          ? 'Cuenta verificada'
+          : 'Verificación en proceso';
+      await tester.ensureVisible(find.text(label));
+      await tester.tap(find.text(label));
+      await tester.pumpAndSettle();
+      if (status == 'approved') {
+        expect(container.read(routerProvider).state.uri.path, '/settings');
+        expect(find.text('Configuración'), findsOneWidget);
+        expect(find.byType(RescueEditorScreen), findsNothing);
+      } else {
+        expect(find.byType(RescueEditorScreen), findsOneWidget);
+      }
+      expect(tester.takeException(), isNull);
     });
-    await tester.pumpWidget(
-      UncontrolledProviderScope(container: container, child: const DopmiApp()),
-    );
-    await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Cuenta verificada'));
-    await tester.tap(find.text('Cuenta verificada'));
-    await tester.pumpAndSettle();
-    expect(find.byType(RescueEditorScreen), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
+  }
 }

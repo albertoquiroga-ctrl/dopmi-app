@@ -1,3 +1,4 @@
+import 'package:dopmi_mobile/features/profile/rescuer_verification_card.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_settings_details.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_settings_verification.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_logout_row.dart';
@@ -665,6 +666,7 @@ void main() {
       ('adoption-support-large', '/adoptions'),
       ('rescuer-profile', '/profile'),
       ('rescuer-profile-reference', '/profile'),
+      ('rescuer-profile-reference-wide', '/profile'),
       ('rescuer-profile-reference-focus', '/profile'),
       ('rescuer-profile-reference-large', '/profile'),
       ('rescuer-settings', '/settings'),
@@ -773,6 +775,8 @@ void main() {
       final large = spec.$1.endsWith('-large');
       tester.view.physicalSize = large && spec.$1 != 'adoption-empty-wide-large'
           ? const Size(320, 640)
+          : spec.$1 == 'rescuer-profile-reference-wide'
+          ? const Size(384, 852)
           : const Size(377, 852);
       tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
@@ -1336,10 +1340,21 @@ void main() {
         expect(outline, findsOneWidget);
         expect(tester.getSize(outline).height, closeTo(54, 1));
       }
-      if (spec.$1 == 'rescuer-profile-reference') {
+      if (spec.$1 == 'rescuer-profile-reference' ||
+          spec.$1 == 'rescuer-profile-reference-wide') {
         final hero = tester.getRect(find.byType(RescuerIdentityCard));
         expect(hero.top, closeTo(74, 1));
         expect(hero.height, closeTo(147.2, 1));
+        final verification = tester.getRect(
+          find.byType(RescuerVerificationCard),
+        );
+        expect(verification.top, closeTo(341.2, 1));
+        expect(verification.height, closeTo(80.4, 1));
+        final about = tester.getRect(
+          find.byKey(const ValueKey('rescuer-profile-about')),
+        );
+        expect(about.top, closeTo(439.6, 1));
+        expect(about.height, closeTo(202.7, 1));
         expect(
           tester.getSize(find.text('Ciudad de México, CDMX')).height,
           closeTo(32, 1),

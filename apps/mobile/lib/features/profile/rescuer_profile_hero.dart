@@ -114,7 +114,11 @@ class RescuerProfileHero extends ConsumerWidget {
           const SizedBox(height: 18),
           RescuerVerificationCard(
             status: data['verification_status'] as String?,
-            onPressed: () => context.push('/rescue/new?kind=verification'),
+            onPressed: () => context.push(
+              data['verification_status'] == 'approved'
+                  ? '/settings'
+                  : '/rescue/new?kind=verification',
+            ),
           ),
           if (data['avatar_failed'] == true) ...[
             TextButton(
@@ -133,10 +137,11 @@ class RescuerProfileHero extends ConsumerWidget {
           if ((published?['bio'] as String? ?? '').trim().isNotEmpty) ...[
             const SizedBox(height: 18),
             Container(
+              key: const ValueKey('rescuer-profile-about'),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
-                border: Border.all(color: const Color(0xffe6e2dd)),
+                border: Border.all(color: const Color(0xffe3e4ed)),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
@@ -151,7 +156,7 @@ class RescuerProfileHero extends ConsumerWidget {
                         fontSize: 17,
                         height: 1.3,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xff15110d),
+                        color: Color(0xff151423),
                         letterSpacing: 0,
                       ),
                     ),
@@ -169,7 +174,7 @@ class RescuerProfileHero extends ConsumerWidget {
                       fontFamily: 'Inter',
                       fontSize: 14,
                       height: 1.5,
-                      color: Color(0xff554e48),
+                      color: Color(0xff4f4e5c),
                       letterSpacing: 0,
                     ),
                   ),
@@ -521,7 +526,7 @@ class RescuerOwnerContacts extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                       height: 1.55,
                       letterSpacing: 0,
-                      color: Color(0xff15110d),
+                      color: Color(0xff151423),
                     ),
                   ),
                 ),
