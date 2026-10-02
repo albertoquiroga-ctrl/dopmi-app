@@ -1,9 +1,10 @@
 # Corte de evidencia de paridad — 2/10/2026
 
 Referencia: `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
-Corte productivo: `4a206db` (loop257); CI integral aprobado para
-`9e1c27d82aba6825e0d59391e0ffaae709e94141`, run37053996279 #428.
-El CI precede la corrección del mazo257 y las capturas de teclado258.
+Corte integral aprobado: `f71473b2aa2dcca6b5314a439db5ac8beb03295f`,
+run37058006192 #432 completed/success, verificado en loop261.
+Incluye mazo257, teclado258, galería y selector259; precede la regresión260
+y los cambios de Inicio261, que requieren el siguiente gate.
 Este inventario organiza revisión pendiente y evidencia técnica; no acredita
 aceptación global ni instalada. Entradas históricas debajo están fechadas.
 
@@ -17,12 +18,12 @@ sin evidencia. Capturas normal/large en `design-reviews/parity-loop260`.
 Datos Connect/verificación/revisión reales conservados. CI432 aún ejecutándose;
 esto no acredita aceptación en Samsung ni paridad completa.
 
-`apps/mobile/tool/capture_profile_test.dart` contiene **256 estados en 29 URLs**,
-recontados desde todas las tuplas, incluidas las multilínea, en loop259.
+`apps/mobile/tool/capture_profile_test.dart` contiene **258 estados en 29 URLs**:
+256 recontados en loop259 y dos estados de evidencia pendiente añadidos261.
 Incluye conversación con300px de teclado simulado y cuatro nuevos estados de
 galería/selector de monto del caso, normal/200%.
-El último CI integral aprobado capturó250 estados; los dos nuevos aprobaron
-localmente junto a las pruebas de comunidad. No son252 pantallas aceptadas,
+El último CI integral aprobado capturó256 estados; los dos nuevos aprobaron
+localmente con las pruebas del recorrido de evidencia. No son258 pantallas aceptadas,
 ni29 pantallas que haya que implementar desde cero. Los widgets productivos
 usan fixtures de prueba: no acreditan sesión, Storage ni pagos reales.
 
@@ -32,7 +33,7 @@ usan fixtures de prueba: no acreditan sesión, Storage ni pagos reales.
 | `/adoptions/post` | 2 |
 | `/messages` | 18 |
 | `/messages/thread-one` | 7 |
-| `/rescuer` | 10 |
+| `/rescuer` | 12 |
 | `/rescue/case-one` | 36 |
 | `/my-cases` | 6 |
 | `/rescue-cases` | 18 |

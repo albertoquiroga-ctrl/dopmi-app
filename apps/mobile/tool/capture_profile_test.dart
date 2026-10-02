@@ -38,6 +38,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../test/community_test.dart' show FakeCommunity;
 import '../test/fake_identity_repository.dart';
 import '../test/rescue_test.dart' show FakeRescue, FakeCaseUpdates;
+import '../test/rescuer_pending_evidence_test.dart' show PendingEvidenceRescue;
 import '../test/case_publication_test.dart' show DraftCaseRescue;
 import '../test/expense_field_test.dart'
     show DraftExpenseRescue, SubmittedExpenseRescue;
@@ -683,6 +684,8 @@ void main() {
       ('rescuer-home-empty-large', '/rescuer'),
       ('rescuer-home-actions', '/rescuer'),
       ('rescuer-home-actions-large', '/rescuer'),
+      ('rescuer-home-evidence', '/rescuer'),
+      ('rescuer-home-evidence-large', '/rescuer'),
       ('owned-case-detail', '/rescue/case-one'),
       ('owned-case-detail-back-focus', '/rescue/case-one'),
       ('owned-case-detail-dot-focus', '/rescue/case-one'),
@@ -1156,7 +1159,9 @@ void main() {
             ),
           if (spec.$1.startsWith('rescuer-home'))
             rescueRepositoryProvider.overrideWithValue(
-              spec.$1.contains('empty')
+              spec.$1.contains('evidence')
+                  ? PendingEvidenceRescue()
+                  : spec.$1.contains('empty')
                   ? EmptyDashboardCaptureRescue()
                   : spec.$1.contains('unverified')
                   ? VerificationCaptureRescue('not_started')
@@ -1729,6 +1734,7 @@ void main() {
         expect(find.byType(DonorModeDialog), findsOneWidget);
       }
       if (spec.$1.startsWith('rescuer-home-actions') ||
+          spec.$1.startsWith('rescuer-home-evidence') ||
           spec.$1.startsWith('rescuer-home-empty')) {
         await Scrollable.ensureVisible(
           tester.element(find.text('Acciones pendientes')),

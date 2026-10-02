@@ -830,7 +830,11 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text('Resumen comprobado'), findsOneWidget);
-    expect(find.text('\$92.00 MXN'), findsOneWidget);
+    expect(find.text('\$92.00'), findsOneWidget);
+    expect(
+      tester.widget<Text>(find.text('\$92.00')).semanticsLabel,
+      '\$92.00 MXN',
+    );
     expect(find.text('Transferido'), findsOneWidget);
     expect(find.text('En revisión'), findsOneWidget);
     expect(find.text('Nina'), findsOneWidget);

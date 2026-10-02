@@ -49,8 +49,19 @@ class RescueHomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => CommunityFrame(
     index: 2,
     back: false,
+    showAppBar: false,
     children: [
-      const RescuerGreeting(),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Expanded(child: RescuerGreeting()),
+          IconButton(
+            tooltip: 'Notificaciones',
+            onPressed: () => context.push('/notifications'),
+            icon: const Icon(Icons.notifications_outlined),
+          ),
+        ],
+      ),
       const SizedBox(height: 24),
       LiveSection<Json>(
         tables: const [
@@ -284,19 +295,29 @@ class _RescuerDashboard extends StatelessWidget {
         ],
         for (final item in pending) ...[
           RescuerPendingCard(
-            title: item['title'] as String,
-            subtitle:
-                '${rescueStatuses[item['status']] ?? item['status']}${(item['feedback'] as String? ?? '').isEmpty ? '' : ' · ${item['feedback']}'}',
+            title: item['kind'] == 'expense' && item['status'] == 'draft'
+                ? 'Termina una evidencia pendiente'
+                : item['title'] as String,
+            subtitle: item['kind'] == 'expense' && item['status'] == 'draft'
+                ? 'Ya empezaste este formulario. Complétalo para enviarlo.'
+                : '${rescueStatuses[item['status']] ?? item['status']}${(item['feedback'] as String? ?? '').isEmpty ? '' : ' · ${item['feedback']}'}',
+            contextText: item['kind'] == 'expense' && item['status'] == 'draft'
+                ? 'Necesidad: ${item['title']} · Progreso: incompleto'
+                : null,
             cta: item['status'] == 'draft'
-                ? 'Continuar borrador'
+                ? item['kind'] == 'expense'
+                      ? 'Continuar evidencia'
+                      : 'Continuar borrador'
                 : 'Ver expediente',
             icon: item['status'] == 'draft'
                 ? Icons.edit_note
                 : Icons.error_outline,
-            correction: [
-              'changes_requested',
-              'rejected',
-            ].contains(item['status']),
+            iconAsset: item['kind'] == 'expense' && item['status'] == 'draft'
+                ? 'icon-camera-red.svg'
+                : null,
+            correction:
+                (item['kind'] == 'expense' && item['status'] == 'draft') ||
+                ['changes_requested', 'rejected'].contains(item['status']),
             onPressed: () => context.push('/rescue/${item['id']}'),
           ),
           const SizedBox(height: 8),
@@ -374,10 +395,14 @@ class RescuerPendingCard extends StatelessWidget {
     required this.cta,
     required this.icon,
     required this.onPressed,
+    this.contextText,
+    this.iconAsset,
     this.message = false,
     this.correction = false,
   });
   final String title, subtitle, cta;
+  final String? contextText;
+  final String? iconAsset;
   final IconData icon;
   final VoidCallback onPressed;
   final bool message, correction;
@@ -410,7 +435,15 @@ class RescuerPendingCard extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 2),
-                child: Icon(icon, size: 20, color: tone),
+                child: iconAsset == null
+                    ? Icon(icon, size: 20, color: tone)
+                    : ExcludeSemantics(
+                        child: SvgPicture.asset(
+                          'assets/profile/$iconAsset',
+                          width: 20,
+                          height: 20,
+                        ),
+                      ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -434,6 +467,16 @@ class RescuerPendingCard extends StatelessWidget {
                         color: Color(0xff4f4e5c),
                       ),
                     ),
+                    if (contextText != null) ...[
+                      Text(
+                        contextText!,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          height: 1.35,
+                          color: Color(0xff4f4e5c),
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 4),
                     Text(
                       cta,
@@ -645,7 +688,8 @@ class RescuerFundingSummary extends StatelessWidget {
             ),
           ] else
             Text(
-              assigned,
+              assigned.replaceAll(' MXN', ''),
+              semanticsLabel: assigned,
               style: const TextStyle(
                 fontSize: 48,
                 height: 1,
