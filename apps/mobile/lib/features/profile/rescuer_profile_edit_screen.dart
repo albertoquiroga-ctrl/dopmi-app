@@ -201,6 +201,7 @@ class _RescuerPublicProfileEditState
       body: SafeArea(
         top: false,
         child: ListView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
           children: [
             const Text(
@@ -343,6 +344,9 @@ class _RescuerPublicProfileEditState
                             ? (_) => setState(() {})
                             : null,
                         controller: item.$2,
+                        autofillHints: item.$2 == name
+                            ? const [AutofillHints.name]
+                            : null,
                         enabled: editable && !busy,
                         minLines: item.$3,
                         maxLines: item.$3 == 1 ? 1 : null,

@@ -108,8 +108,14 @@ void main() {
       await tester.pumpAndSettle();
       final name = find.byKey(const ValueKey('public-profile-Nombre'));
       await tester.enterText(name, 'Borrador conservado');
-      FocusManager.instance.primaryFocus?.unfocus();
+      final editor = find.descendant(
+        of: name,
+        matching: find.byType(EditableText),
+      );
+      expect(tester.widget<EditableText>(editor).focusNode.hasFocus, isTrue);
+      await tester.drag(find.byType(ListView).first, const Offset(0, -80));
       await tester.pumpAndSettle();
+      expect(tester.widget<EditableText>(editor).focusNode.hasFocus, isFalse);
       final photo = find.byKey(const ValueKey('public-profile-photo'));
       await tester.ensureVisible(photo);
       await tester.pumpAndSettle();

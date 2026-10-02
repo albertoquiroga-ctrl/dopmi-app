@@ -829,6 +829,7 @@ void main() {
       ('help-center-rules-large', '/help'),
       ('public-profile-editor', '/rescuer/profile/edit'),
       ('public-profile-editor-large', '/rescuer/profile/edit'),
+      ('public-profile-editor-keyboard-large', '/rescuer/profile/edit'),
       ('payment-history', '/payments'),
       ('payment-history-large', '/payments'),
       ('payment-history-empty', '/payments'),
@@ -1467,6 +1468,28 @@ void main() {
         expect(answer, findsOneWidget);
         await tester.ensureVisible(answer);
         await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+      }
+      if (spec.$1.startsWith('public-profile-editor-keyboard')) {
+        tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+        final facebook = find.byKey(
+          const ValueKey('public-profile-Facebook (https://)'),
+        );
+        await tester.scrollUntilVisible(
+          facebook,
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.enterText(facebook, 'https://facebook.com/refugio');
+        await tester.pumpAndSettle();
+        final save = find.widgetWithText(FilledButton, 'Guardar borrador');
+        await tester.ensureVisible(save);
+        await tester.pumpAndSettle();
+        expect(save.hitTestable(), findsOneWidget);
+        expect(tester.getBottomRight(save).dy, lessThanOrEqualTo(340));
+        await tester.tap(save);
+        await tester.pumpAndSettle();
+        expect(find.text('Guardamos tu borrador.'), findsOneWidget);
         expect(tester.takeException(), isNull);
       }
       if (spec.$1.startsWith('basic-info-keyboard')) {

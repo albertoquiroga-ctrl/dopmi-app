@@ -2280,3 +2280,16 @@ revisión permanecen vigentes. Flutter perfil:2 aprobadas; capturador normal y
 paridad completa ni aceptación instalada. Sin nuevo envío Codemagic, conforme
 a la última instrucción del titular: enviar sólo al completar el objetivo.
 Analyze sin incidencias25.9s; imagen grande inspeccionada sin desbordamiento.
+# Loop283 — teclado y arrastre del editor público
+
+Referencia remota consultada2/10/2026:
+`irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
+El formulario cierra el teclado al arrastrar y ofrece autofill nativo de nombre.
+Prueba de perfil verifica foco antes/después del gesto, texto conservado y
+cancelación/reintento de galería:2 pruebas aprobadas3s. Nuevo estado
+public-profile-editor-keyboard-large a320x640/texto200% con inset300 escribe
+Facebook, encuentra guardar completamente sobre el teclado, toca y confirma
+guardado del repositorio fixture. Capturador:1 suite aprobada3s; imagen
+inspeccionada. Total actual285 estados/34URLs. No prueba teclado/galería en
+teléfono ni constituye aceptación visual global. Sin nuevos builds Codemagic.
+Analyze sin incidencias7.7s.
