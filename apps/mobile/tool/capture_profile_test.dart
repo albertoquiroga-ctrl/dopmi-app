@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import '../test/notifications_test.dart' show NotificationCommunity;
+
 import 'package:dopmi_mobile/features/communication/match_thread_row.dart';
 import 'package:dopmi_mobile/core/reference_focus_outline.dart';
 import 'package:dopmi_mobile/features/rescue/support_home.dart';
@@ -638,6 +640,9 @@ void main() {
       ('rescuer-home', '/rescuer'),
       ('rescuer-home-large', '/rescuer'),
       ('support-home', '/rescue-cases'),
+      ('notifications-reference', '/notifications'),
+      ('notifications-reference-large', '/notifications'),
+      ('notifications-reference-read', '/notifications'),
       ('support-home-large', '/rescue-cases'),
       ('support-home-empty', '/rescue-cases'),
       ('support-home-empty-large', '/rescue-cases'),
@@ -883,7 +888,9 @@ void main() {
                   spec.$1.contains('enrollment'),
             )
           : FakeGuardian();
-      final community = spec.$1.startsWith('rescuer-profile-reference')
+      final community = spec.$1.startsWith('notifications-reference')
+          ? (NotificationCommunity()..read = spec.$1.endsWith('-read'))
+          : spec.$1.startsWith('rescuer-profile-reference')
           ? RescuerReferenceCaptureCommunity()
           : spec.$1.startsWith('chat-detail-focus')
           ? ChatHeaderCaptureCommunity()

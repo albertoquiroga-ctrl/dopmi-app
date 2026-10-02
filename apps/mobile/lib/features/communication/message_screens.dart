@@ -11,6 +11,8 @@ import '../../core/ui.dart';
 import '../../core/reference_focus_outline.dart';
 import 'match_favorites.dart';
 import 'match_thread_row.dart';
+import 'notification_tile.dart';
+import '../profile/information_screens.dart';
 import 'chat_message_bubble.dart';
 import 'rescuer_threads_screen.dart';
 import '../adoption/community_repository.dart';
@@ -741,13 +743,10 @@ class _NotificationsState extends ConsumerState<NotificationsScreen> {
   String? error;
   bool busy = false;
   @override
-  Widget build(BuildContext context) => CommunityFrame(
+  Widget build(BuildContext context) => InformationFrame(
+    title: 'Notificaciones',
+    fallback: '/profile',
     children: [
-      const Heading(
-        'Lo nuevo en Dopmi.',
-        'Respuestas del equipo y mensajes de la comunidad.',
-        eyebrow: 'NOTIFICACIONES',
-      ),
       if (error != null) Notice(error!, isError: true),
       LiveSection<DataPage<Json>>(
         key: ValueKey(page),
@@ -761,58 +760,44 @@ class _NotificationsState extends ConsumerState<NotificationsScreen> {
                 'Cuando haya una respuesta o un mensaje, lo encontrarás aquí.',
               ),
             for (final item in result.items)
-              Card(
-                color: item['read_at'] == null
-                    ? const Color(0xffeee7fc)
-                    : Colors.white,
-                child: ListTile(
-                  contentPadding: const EdgeInsets.all(16),
-                  leading: Icon(
-                    item['kind'] == 'message'
-                        ? Icons.chat_bubble_outline
-                        : Icons.fact_check_outlined,
-                    color: purple,
-                  ),
-                  title: Text(item['title'] as String),
-                  subtitle: Text(
-                    '${item['read_at'] == null ? 'Sin leer · ' : ''}${localDate(item['created_at'] as String)}',
-                  ),
-                  onTap: busy
-                      ? null
-                      : () async {
-                          setState(() {
-                            busy = true;
-                            error = null;
-                          });
-                          try {
-                            await ref
-                                .read(communityRepositoryProvider)
-                                .readNotification(item['id'] as String);
-                            if (!context.mounted) return;
-                            await context.push(
-                              item['rescue_id'] != null
-                                  ? '/rescue/${item['rescue_id']}'
-                                  : item['thread_id'] == null
-                                  ? '/my-adoptions/${item['post_id']}'
-                                  : '/messages/${item['thread_id']}',
-                            );
-                            refresh();
-                          } catch (cause) {
-                            if (mounted) {
-                              setState(() => error = communityError(cause));
-                            }
-                          } finally {
-                            if (mounted) setState(() => busy = false);
+              NotificationTile(
+                item,
+                onTap: busy
+                    ? null
+                    : () async {
+                        setState(() {
+                          busy = true;
+                          error = null;
+                        });
+                        try {
+                          await ref
+                              .read(communityRepositoryProvider)
+                              .readNotification(item['id'] as String);
+                          if (!context.mounted) return;
+                          await context.push(
+                            item['rescue_id'] != null
+                                ? '/rescue/${item['rescue_id']}'
+                                : item['thread_id'] == null
+                                ? '/my-adoptions/${item['post_id']}'
+                                : '/messages/${item['thread_id']}',
+                          );
+                          refresh();
+                        } catch (cause) {
+                          if (mounted) {
+                            setState(() => error = communityError(cause));
                           }
-                        },
-                ),
+                        } finally {
+                          if (mounted) setState(() => busy = false);
+                        }
+                      },
               ),
-            PageControls(
-              page: page,
-              total: result.total,
-              size: 20,
-              change: (value) => setState(() => page = value),
-            ),
+            if (result.total > 20)
+              PageControls(
+                page: page,
+                total: result.total,
+                size: 20,
+                change: (value) => setState(() => page = value),
+              ),
           ],
         ),
       ),
