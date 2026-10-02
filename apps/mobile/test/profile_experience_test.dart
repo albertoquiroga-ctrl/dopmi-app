@@ -371,9 +371,10 @@ void main() {
       container.read(routerProvider).state.uri.toString(),
       '/saved?kind=rescuer',
     );
-    expect(find.text('Rescatistas'), findsOneWidget);
+    expect(find.text('Rescatistas guardados'), findsOneWidget);
+    expect(find.byTooltip('Tipos de guardados'), findsOneWidget);
     expect(
-      find.text('Guarda un perfil público para seguir su trabajo.'),
+      find.text('Guarda perfiles desde el detalle de un caso.'),
       findsOneWidget,
     );
   });

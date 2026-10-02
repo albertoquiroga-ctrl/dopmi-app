@@ -36,7 +36,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../test/community_test.dart' show FakeCommunity, SavedRescuerCommunity;
+import '../test/community_test.dart'
+    show FakeCommunity, SavedRescuerCommunity, PagedSavedCommunity;
 import '../test/fake_identity_repository.dart';
 import '../test/rescue_test.dart' show FakeRescue, FakeCaseUpdates;
 import '../test/rescuer_pending_evidence_test.dart' show PendingEvidenceRescue;
@@ -814,6 +815,8 @@ void main() {
       ('saved-rescuers-empty-large', '/saved?kind=rescuer'),
       ('saved-rescuers', '/saved?kind=rescuer'),
       ('saved-rescuers-large', '/saved?kind=rescuer'),
+      ('saved-pagination-large', '/saved'),
+      ('saved-pagination-second-large', '/saved'),
       ('payment-history', '/payments'),
       ('payment-history-large', '/payments'),
       ('payment-history-empty', '/payments'),
@@ -1022,8 +1025,9 @@ void main() {
           },
         };
       }
-      final community =
-          spec.$1 == 'saved-rescuers' || spec.$1 == 'saved-rescuers-large'
+      final community = spec.$1.startsWith('saved-pagination')
+          ? PagedSavedCommunity()
+          : spec.$1 == 'saved-rescuers' || spec.$1 == 'saved-rescuers-large'
           ? SavedRescuerCommunity()
           : spec.$1.startsWith('saved-adoptions-empty')
           ? (FakeCommunity()..savedItems = [])
@@ -1368,6 +1372,18 @@ void main() {
       }
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1.startsWith('saved-pagination')) {
+        await tester.ensureVisible(find.byTooltip('Página siguiente'));
+        await tester.pumpAndSettle();
+        if (spec.$1.contains('-second')) {
+          await tester.tap(find.byTooltip('Página siguiente'));
+          await tester.pumpAndSettle();
+          await tester.ensureVisible(find.byTooltip('Página anterior'));
+          await tester.pumpAndSettle();
+          expect(find.text('Guardado 21'), findsOneWidget);
+        }
+        expect(tester.takeException(), isNull);
+      }
       if (spec.$1.startsWith('chat-keyboard')) {
         tester.view.viewInsets = const FakeViewPadding(bottom: 300);
         await tester.enterText(

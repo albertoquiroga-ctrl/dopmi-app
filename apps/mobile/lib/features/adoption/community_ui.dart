@@ -342,8 +342,14 @@ class PageControls extends StatelessWidget {
           onPressed: page > 1 ? () => change(page - 1) : null,
           icon: const Icon(Icons.chevron_left),
         ),
-        Text(
-          'Página $page de ${((total + size - 1) ~/ size).clamp(1, 999999)}',
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Text(
+              'Página $page de ${((total + size - 1) ~/ size).clamp(1, 999999)}',
+              textAlign: TextAlign.center,
+            ),
+          ),
         ),
         IconButton(
           tooltip: 'Página siguiente',

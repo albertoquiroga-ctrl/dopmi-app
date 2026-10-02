@@ -2119,3 +2119,16 @@ CI37067524998 #440 completed/success exact3374c507004cd2de7a693de87658e85cc445c0
 Gate final267: community31pass10s exit0; analyze UI limpio8.3s, formato/diffcheck. Sin procesos Flutter locales activos. Sin sembrar estado oculto de Source ni aceptación instalada por fixture.
 
 Checkpoint267: remotoae57e06c7a818f7893873dfe2625bb301a364638 corroborado; PR6 actualizado draft/mergeable/baseba9f897. CI37070247225 #442 in_progress exactSHA. Cubre266/267, no afirmar gate integral aprobado ni Play.
+
+## Loop 268 — 2026-10-02 — candidato intermedio solicitado para Codemagic
+
+Referencia remota reconsultada: `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
+El titular solicita enviar el estado actual sin esperar el cierre de paridad. Se conserva el objetivo completo activo y la distribución Guardian en modo de prueba.
+
+Paginación de Guardados: el texto central ahora puede envolver en 320 px con texto al 200%; las flechas conservan sus áreas de toque. Prueba con 21 elementos comprueba página 1 → 2 → 1 y lecturas [1,2,1]. Dos capturas adicionales del pie de página elevan la matriz a 272 estados / 31 URLs; capturas de prueba no equivalen a aceptación en dispositivo.
+
+Verificación local en copia de trabajo temporal: 49 pruebas de comunidad/notificaciones/historial/capturas aprobadas (19 s); 13 pruebas de experiencia/perfil aprobadas (6 s); flutter analyze sin problemas (37.6 s). Formato y git diff --check aprobados.
+
+CI #442 / 37070247225 de `ae57e06c7a818f7893873dfe2625bb301a364638`: concluido con fallo, 445 pruebas aprobadas y una expectativa antigua de textos de Guardados en profile_experience_test. Se actualiza esa prueba conservando la comprobación de ruta /saved?kind=rescuer, título, selector y estado vacío. Backend, PostgreSQL/web e iOS aprobaron; #442 no constituye gate integral aprobado. El candidato nuevo correrá nuevamente pruebas completas en Codemagic.
+
+Enviar `android-guardian-internal` desde `codex/design-foundation`; registrar por separado arranque, SHA, compilación y publicación Play. No declarar paridad terminada ni aceptación visual del teléfono. Los cambios ajenos locales permanecen fuera del commit.

@@ -330,6 +330,27 @@ class PhotoDraftCommunity extends FakeCommunity {
       throw const FormatException('Foto sin conexión en fixture');
 }
 
+class PagedSavedCommunity extends FakeCommunity {
+  final pages = <int>[];
+  @override
+  Future<DataPage<SavedEntry>> savedAdoptions(int page) async {
+    pages.add(page);
+    return DataPage(
+      List.generate(page == 1 ? 20 : 1, (index) {
+        final number = (page - 1) * 20 + index + 1;
+        return SavedEntry({
+          'id': 'saved-$number',
+          'pet_name': 'Guardado $number',
+          'available': true,
+          'sex': 'female',
+          'age_months': 24,
+        });
+      }),
+      21,
+    );
+  }
+}
+
 class PendingSavedRemovalCommunity extends FakeCommunity {
   final pendingRemoval = Completer<void>();
   int removalCalls = 0;
@@ -799,6 +820,31 @@ void main() {
       );
       expect(find.text(communityError(Exception('offline'))), findsNothing);
       expect(repo.removalCalls, 1);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
+    'saved list reaches its second page and returns with large text',
+    (tester) async {
+      final repo = PagedSavedCommunity();
+      await start(tester, repo, '/saved');
+      tester.view.physicalSize = const Size(320, 640);
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byTooltip('Página siguiente'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Página siguiente'));
+      await tester.pumpAndSettle();
+      expect(find.text('Guardado 21'), findsOneWidget);
+      expect(find.text('Guardado 1'), findsNothing);
+      await tester.ensureVisible(find.byTooltip('Página anterior'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Página anterior'));
+      await tester.pumpAndSettle();
+      expect(find.text('Guardado 1'), findsOneWidget);
+      expect(find.text('Guardado 21'), findsNothing);
+      expect(repo.pages, [1, 2, 1]);
       expect(tester.takeException(), isNull);
     },
   );
