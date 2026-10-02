@@ -1860,3 +1860,10 @@ Gates: community_test.dart 27 passed exit0 (12s); new case card tests 2 passed e
 
 Pending: public numeralia contract and honest historical counts, Source runtime comparison, original case title age/distance when authorized, hover/focus/shadows, device gestures and final Codemagic/Play acceptance. Goal remains active.
 
+
+## Loop240 — 2026-10-02: public adoption distance, button shadow and stale favorites
+
+Reference remote a3c969cd9103fd46dc5cd886999912526ce75efb unchanged. Public adoption title row displays a distance pill only for actual finite nonnegative distance_km; no generated location or distance. Added Source yellow CTA shadow (offset0,4 blur10 alpha35%). Favorite requests capture post id/generation; replacement card resets local state and ignores stale failure/finalization. Authoritative saved changes reset prior overrides when idle.
+
+Tests: public_profile_adoption_card_test.dart 2 passed exit0 (1s), including pending favorite response after replacement and actual3.4km field plus original failure/retry. Test import initially appended below declarations, moved before declarations and rerun passed. Capture normal/large 1 passed exit0 (2s); normal inspected with yellow shadow/bookmark and retained PNGs loop240. flutter analyze --no-pub exit0/noissues (7s). Matrix unchanged244states29URLs. Distance absence in fixture is intentional. Still pending public aggregates, complete runtime/photo/device comparisons and final Codemagic; no live money or device install.
+

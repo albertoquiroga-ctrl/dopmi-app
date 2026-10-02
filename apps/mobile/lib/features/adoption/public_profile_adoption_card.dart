@@ -21,8 +21,24 @@ class _PublicProfileAdoptionCardState
   bool? saved;
   bool busy = false;
   String? error;
+  int generation = 0;
+  @override
+  void didUpdateWidget(covariant PublicProfileAdoptionCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.post.id != widget.post.id) {
+      generation++;
+      saved = null;
+      busy = false;
+      error = null;
+    } else if (!busy && oldWidget.post.saved != widget.post.saved) {
+      saved = null;
+    }
+  }
+
   Future<void> toggle() async {
     if (busy) return;
+    final request = ++generation;
+    final id = widget.post.id;
     final previous = saved ?? widget.post.saved;
     setState(() {
       saved = !previous;
@@ -30,18 +46,16 @@ class _PublicProfileAdoptionCardState
       error = null;
     });
     try {
-      await ref
-          .read(communityRepositoryProvider)
-          .favorite(widget.post.id, !previous);
+      await ref.read(communityRepositoryProvider).favorite(id, !previous);
     } catch (cause) {
-      if (mounted) {
+      if (mounted && request == generation) {
         setState(() {
           saved = previous;
           error = communityError(cause);
         });
       }
     } finally {
-      if (mounted) setState(() => busy = false);
+      if (mounted && request == generation) setState(() => busy = false);
     }
   }
 
@@ -97,14 +111,43 @@ class _PublicProfileAdoptionCardState
                     left: 14,
                     right: 14,
                     bottom: 14,
-                    child: Text(
-                      '${post.name}${post.data['age_months'] == null ? '' : ', ${post.age}'}',
-                      style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                      ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '${post.name}${post.data['age_months'] == null ? '' : ', ${post.age}'}',
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        if (post.data['distance_km'] is num &&
+                            (post.data['distance_km'] as num).isFinite &&
+                            (post.data['distance_km'] as num) >= 0) ...[
+                          const SizedBox(width: 10),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 9,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(99),
+                            ),
+                            child: Text(
+                              '${(post.data['distance_km'] as num).toStringAsFixed(1)} km',
+                              style: const TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 11,
+                                color: ink,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                 ],
@@ -141,21 +184,33 @@ class _PublicProfileAdoptionCardState
                   Expanded(
                     child: ReferenceFocusOutline(
                       radius: 999,
-                      child: FilledButton(
-                        onPressed: widget.open,
-                        style: FilledButton.styleFrom(
-                          backgroundColor: yellow,
-                          foregroundColor: ink,
-                          minimumSize: const Size(0, 44),
-                          textStyle: const TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(999),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x59f7cb2d),
+                              offset: Offset(0, 4),
+                              blurRadius: 10,
+                            ),
+                          ],
                         ),
-                        child: Text(
-                          'Conoce la historia de ${post.name}',
-                          textAlign: TextAlign.center,
+                        child: FilledButton(
+                          onPressed: widget.open,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: yellow,
+                            foregroundColor: ink,
+                            minimumSize: const Size(0, 44),
+                            textStyle: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          child: Text(
+                            'Conoce la historia de ${post.name}',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                     ),
