@@ -1877,3 +1877,13 @@ New test on all production migrations initially caught nonexistent adoption appr
 
 Flutter numeralia integration/rendered Source comparison is next, not achieved by this server contract. Existing CI420 for6f81976 covers earlier PUBLIC checkpoint; new migration not yet covered. LocalDocker/Supabase stack previously unavailable; PGlite actual SQL suite passed, dedicated supabase test db remains CI gate. Money test-only, no final Codemagic or device installation.
 
+
+## Loop242 — 2026-10-02: public activity numeralia integration
+
+Source remote confirmed a3c969cd9103fd46dc5cd886999912526ce75efb. Supabase publicProfile now joins authorized public metrics after verified rescuer profile; revoked metrics discard prior profile rather than retain stale identity. Public activity renders two gradient highlight cards and six public stats, keeping published advances below. Missing individual counts display dash, not fabricated0; net cents stay exact, whole pesos omit.00. Labels clarify public history and assigned net instead of implying gross receipts. Original check-circle asset added, no simulated social/payment action.
+
+Verification: community+metrics29passed exit0 (15s); HTTP repository tests2passed exit0 validate RPC parameters, metrics and revocation. Mock response initially lacked request field required by current Postgrest; fixed before pass. Combined metrics/repository/capture5passed exit0 (4s). Four metrics captures (normal/large highlights/stats) inspected; large initially used uneven intrinsic widths, fixed grid stretching and added288px full-width assertions. Final metrics/capture3passed exit0 (4s). Captures retained loop242. No endpoint money writes. Matrix expands244→248states,29URLs.
+
+CI37043766184 #420 completed/success confirmed for6f81976d5c67d5178cb2bb32d2906e50364ad550; predates241SQL/242client. Still pending Source runtime full comparison (including header controls extra vertical spacing), radial glow, device gestures and final Codemagic/Play. No full parity claim.
+
+Final flutter analyze --no-pub: no issues, exit0 (8.8s) after grid repair.

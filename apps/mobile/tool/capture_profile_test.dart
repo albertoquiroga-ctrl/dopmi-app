@@ -61,6 +61,17 @@ class PublicProfileCaptureCommunity extends FakeCommunity {
     'verified': true,
     'instagram_url': 'https://instagram.com/fixture-refugio',
     'facebook_url': 'https://facebook.com/fixture-refugio',
+    'metrics': {
+      'published_cases': 1,
+      'active_donation_cases': 1,
+      'active_adoptions': 1,
+      'published_donation_cases': 1,
+      'published_adoptions': 3,
+      'funded_cents': 2500,
+      'completed_needs': 0,
+      'helped_pets': 3,
+      'closed_cases': 0,
+    },
   };
 }
 
@@ -570,6 +581,9 @@ void main() {
         'icon-instagram',
         'icon-facebook',
         'icon-bookmark',
+        'check-circle',
+        'notif-case',
+        'notif-pet',
         'icon-messages',
         'rtab-cases',
         'rtab-home',
@@ -815,6 +829,10 @@ void main() {
       ('rescuer-profile-large', '/profile'),
       ('public-profile', '/people/owner'),
       ('public-profile-large', '/people/owner'),
+      ('public-profile-metrics', '/people/owner'),
+      ('public-profile-metrics-large', '/people/owner'),
+      ('public-profile-metrics-stats', '/people/owner'),
+      ('public-profile-metrics-stats-large', '/people/owner'),
       ('public-profile-adoptions', '/people/owner'),
       ('public-profile-adoptions-large', '/people/owner'),
       ('public-profile-cases', '/people/owner'),
@@ -1283,6 +1301,13 @@ void main() {
         await tester.tap(find.text('En adopción'));
         await tester.pumpAndSettle();
         await tester.ensureVisible(find.text('Conoce la historia de Luna'));
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('public-profile-metrics')) {
+        final target = spec.$1.contains('-stats')
+            ? find.text('Casos de donación')
+            : find.textContaining('Numeralia de lo que');
+        await Scrollable.ensureVisible(tester.element(target), alignment: .15);
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('public-profile-cases')) {

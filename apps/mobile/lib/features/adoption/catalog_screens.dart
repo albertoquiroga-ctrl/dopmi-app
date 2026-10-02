@@ -14,6 +14,7 @@ import 'community_ui.dart';
 import 'photo_recovery.dart';
 import 'public_profile_layout.dart';
 import 'public_profile_adoption_card.dart';
+import 'public_profile_metrics.dart';
 
 class CatalogScreen extends ConsumerStatefulWidget {
   const CatalogScreen({super.key, this.saved = false, this.owner});
@@ -667,6 +668,18 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
             ),
             const SizedBox(height: 16),
             if (tab == 0) ...[
+              if (profile['metrics'] is Map) ...[
+                PublicProfileMetrics(
+                  name: profile['name'] as String,
+                  metrics: Json.from(profile['metrics'] as Map),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Avances publicados',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 12),
+              ],
               if (activity.isEmpty)
                 const Notice('Todavía no hay avances públicos.')
               else

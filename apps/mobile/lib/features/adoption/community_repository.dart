@@ -251,7 +251,16 @@ class SupabaseCommunityRepository implements CommunityRepository {
     final result =
         await rpc('dopmi_rescuer_public', {'person_id': id}) ??
         await rpc('dopmi_public_profile', {'person_id': id});
-    return result == null ? null : Json.from(result);
+    if (result == null) return null;
+    final profile = Json.from(result);
+    if (profile['verified'] == true) {
+      final metrics = await rpc('dopmi_rescuer_public_metrics', {
+        'person_id': id,
+      });
+      if (metrics == null) return null;
+      profile['metrics'] = Json.from(metrics);
+    }
+    return profile;
   }
 
   @override

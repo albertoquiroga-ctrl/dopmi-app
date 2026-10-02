@@ -117,3 +117,6 @@ El estado genérico descrito en loop235 quedó reemplazado por marco blanco con 
 
 CI68c098424a3688e7dc89b36df10897c3a7738239, run37039192375 #418, fue confirmado completed/success en loop237. Cubre el corte hasta234, no los cambios PUBLIC nuevos. No se ha enviado el candidato final a Codemagic.
 
+
+Loop242 añade cuatro estados de numeralia pública normal/grande y vista de estadísticas: 248 estados en29URLs. CI37043766184/420 confirmado completed/success para6f81976; no cubre241–242. Numeralia tiene contrato real aplicado enDEV e integración cliente con pruebas de revocación; falta comparación completa del runtime Source y dispositivo.
+
