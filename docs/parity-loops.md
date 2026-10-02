@@ -1851,3 +1851,12 @@ Verification: existing community suite 27 passed; new favorite failure/retry tes
 
 Still pending: exact Source runtime side-by-side, real photo/large motion device validation, card distance when authorized data exists, CTA shadow/hover, public case cards and public numeralia. No final Codemagic build or device installation.
 
+
+## Loop239 — 2026-10-02: public case cards with authorized amounts
+
+Reference remote irlanda/apoyar-detalle-perfil confirmed a3c969cd9103fd46dc5cd886999912526ce75efb. Replaced public profile case ListTiles with 24px cards, 258px approved photo/fallback, gradient identity, first public approved expense/title, exact cents via existing pesos formatter, progress and Ver caso/Donar actions. Case data comes exclusively from existing completeCaseCatalog public RPC, including paginated visibility checks; no owner dashboard or private detail query. Existing contribution selector and server-validated checkout remain intact, no payment initiated by testing. Closed/fully funded/own case donation disabled; missing/revoked case renders unavailable instead of prior profile snapshot. This uses additional public reads per mounted case; batch public-profile contract remains a potential optimization.
+
+Gates: community_test.dart 27 passed exit0 (12s); new case card tests 2 passed exit0, including actual amount selector and revoked-case suppression. First amount expectation omitted MXN and was corrected to actual existing formatter. Capture normal/large 1 passed exit0 (2s), both PNGs inspected/retained docs/design-reviews/parity-loop239. No real photo present in fixtures. Analyzer first flagged missing braces, fixed; repeat analyze exit0/no issues (5.6s). Matrix now244states29URLs, own inventory updated. Existing Supabase skill reread; changelog markdown fetch through web failed unsupported content type. No new SDK/API convention, remote schema mutation or SQL deployment performed.
+
+Pending: public numeralia contract and honest historical counts, Source runtime comparison, original case title age/distance when authorized, hover/focus/shadows, device gestures and final Codemagic/Play acceptance. Goal remains active.
+

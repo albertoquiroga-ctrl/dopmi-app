@@ -110,3 +110,10 @@ Entrega final autorizada: `android-guardian-internal` → Google Play internal.
 Conservar firma e identidad y verificar compilación y publicación por separado.
 El APK debug con configuración de ejemplo de GitHub Actions no es ese candidato.
 Dinero continúa en test; no copiar tienda, fondo, bonos, cashback o simulaciones.
+
+## Actualización PUBLIC — loops236–239
+
+El estado genérico descrito en loop235 quedó reemplazado por marco blanco con encabezado difuminado, identidad centrada/avatar96, redes con SVG, pestañas subrayadas y tarjetas públicas de adopción y casos. Guardado, reporte y contacto siguen reales. El capturador añade seis estados de /people/owner (normal/grande, adopciones y casos): 244 estados en 29 URLs. Se capturaron por grupos en loops237–239. Numeralia pública, comparación completa con runtime Source y dispositivo siguen pendientes; las capturas fixture no prueban sesión ni pagos reales.
+
+CI68c098424a3688e7dc89b36df10897c3a7738239, run37039192375 #418, fue confirmado completed/success en loop237. Cubre el corte hasta234, no los cambios PUBLIC nuevos. No se ha enviado el candidato final a Codemagic.
+

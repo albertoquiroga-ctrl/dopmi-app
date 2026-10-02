@@ -6,6 +6,7 @@ import '../../core/ui.dart';
 import '../../core/measurement.dart';
 import '../community/content_actions.dart';
 import '../profile/rescuer_profile_repository.dart';
+import '../rescue/public_profile_case_card.dart';
 import 'adopt_start_dialog.dart';
 import 'adoption_detail_layout.dart';
 import 'community_repository.dart';
@@ -698,15 +699,11 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
                 const Notice('No hay casos públicos en este momento.')
               else
                 for (final item in cases)
-                  Card(
-                    child: ListTile(
-                      title: Text(
-                        Json.from(item['public_data'] as Map? ?? {})['pet_name']
-                                as String? ??
-                            'Caso de rescate',
-                      ),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => context.push('/rescue-cases/${item['id']}'),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: PublicProfileCaseCard(
+                      item['id'] as String,
+                      key: ValueKey(item['id']),
                     ),
                   ),
             ],

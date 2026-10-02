@@ -817,6 +817,8 @@ void main() {
       ('public-profile-large', '/people/owner'),
       ('public-profile-adoptions', '/people/owner'),
       ('public-profile-adoptions-large', '/people/owner'),
+      ('public-profile-cases', '/people/owner'),
+      ('public-profile-cases-large', '/people/owner'),
       ('profile-overview', '/profile'),
       ('profile-overview-active', '/profile'),
       ('profile-overview-large', '/profile'),
@@ -1060,6 +1062,8 @@ void main() {
         overrides: [
           identityRepositoryProvider.overrideWithValue(repo),
           communityRepositoryProvider.overrideWithValue(community),
+          if (spec.$1.startsWith('public-profile-cases'))
+            rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           if (spec.$1.startsWith('rescuer-profile') ||
               spec.$1.startsWith('rescuer-settings'))
             rescueRepositoryProvider.overrideWithValue(
@@ -1279,6 +1283,14 @@ void main() {
         await tester.tap(find.text('En adopción'));
         await tester.pumpAndSettle();
         await tester.ensureVisible(find.text('Conoce la historia de Luna'));
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('public-profile-cases')) {
+        await tester.ensureVisible(find.text('Casos'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Casos'));
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text('Ver caso'));
         await tester.pumpAndSettle();
       }
       if (spec.$1 == 'support-home') {
