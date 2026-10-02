@@ -1005,6 +1005,56 @@ void main() {
     },
   );
   testWidgets(
+    'public gallery dots support keyboard focus, selection and exact spacing',
+    (tester) async {
+      await startPublicCase(tester, PhotoPublicCaseRescue());
+      final first = find.byKey(const ValueKey('public-case-photo-0'));
+      final second = find.byKey(const ValueKey('public-case-photo-1'));
+      expect(tester.getSize(first), const Size(11, 48));
+      expect(tester.getSize(second), const Size(10, 48));
+      final firstInk = tester.widget<InkWell>(first);
+      expect(firstInk.onTap, isNotNull);
+      final outline = find.descendant(
+        of: find.ancestor(of: first, matching: find.byType(Semantics)).first,
+        matching: find.byKey(const ValueKey('reference-keyboard-outline')),
+      );
+      for (
+        var attempt = 0;
+        attempt < 10 && outline.evaluate().isEmpty;
+        attempt++
+      ) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pump();
+      }
+      expect(outline, findsOneWidget);
+      expect(tester.getSize(outline), const Size(18, 18));
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      final selectedSecond = find.byWidgetPredicate(
+        (widget) =>
+            widget is Semantics && widget.properties.label == 'Foto 2 de 2',
+      );
+      expect(
+        tester.widget<Semantics>(selectedSecond).properties.selected,
+        true,
+      );
+      expect(tester.getSize(second), const Size(11, 48));
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await tester.pump();
+      expect(
+        tester.widget<Semantics>(selectedSecond).properties.selected,
+        false,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
     'case photo retry preserves hero geometry and gallery supports swipe',
     (tester) async {
       final repo = PhotoPublicCaseRescue();

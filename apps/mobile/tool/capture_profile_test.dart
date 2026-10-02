@@ -695,6 +695,8 @@ void main() {
       ('support-home-guardian-dock-focus', '/rescue-cases'),
       ('support-home-guardian-dock-focus-large', '/rescue-cases'),
       ('case-detail', '/rescue-cases/case-one'),
+      ('case-detail-photo-focus', '/rescue-cases/case-one'),
+      ('case-detail-photo-focus-large', '/rescue-cases/case-one'),
       ('case-detail-story', '/rescue-cases/case-one'),
       ('case-detail-story-large', '/rescue-cases/case-one'),
       ('case-detail-planned', '/rescue-cases/case-one'),
@@ -1812,10 +1814,29 @@ void main() {
         await tester.pumpAndSettle();
         await tester.sendKeyEvent(LogicalKeyboardKey.tab);
         await tester.pumpAndSettle();
-        final outline = find.byKey(const ValueKey('reference-keyboard-outline'));
+        final outline = find.byKey(
+          const ValueKey('reference-keyboard-outline'),
+        );
         expect(outline, findsOneWidget);
         expect(tester.getSize(outline), const Size(18, 18));
         expect(find.text('1 / 2'), findsOneWidget);
+      }
+      if (spec.$1.startsWith('case-detail-photo-focus')) {
+        final dot = find.byKey(const ValueKey('public-case-photo-0'));
+        final outline = find.descendant(
+          of: find.ancestor(of: dot, matching: find.byType(Semantics)).first,
+          matching: find.byKey(const ValueKey('reference-keyboard-outline')),
+        );
+        for (
+          var attempt = 0;
+          attempt < 10 && outline.evaluate().isEmpty;
+          attempt++
+        ) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+          await tester.pumpAndSettle();
+        }
+        expect(outline, findsOneWidget);
+        expect(tester.getSize(outline), const Size(18, 18));
       }
       if (spec.$1.startsWith('case-detail-story')) {
         await Scrollable.ensureVisible(

@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/reference_focus_outline.dart';
 import '../payments/contribution_amount_dialog.dart';
 import 'rescue_repository.dart';
 import 'rescue_public_photo.dart';
@@ -62,6 +63,47 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
   void selectPhoto(int index) {
     if (photosController.hasClients) photosController.jumpToPage(index);
     setState(() => photoIndex = index);
+  }
+
+  Widget photoDot(int index, int count) {
+    final size = index == photoIndex ? 8.0 : 7.0;
+    final left = index == 0 ? 0.0 : 3.0;
+    final right = index == count - 1 ? 0.0 : 3.0;
+    return Semantics(
+      button: true,
+      selected: photoIndex == index,
+      label: 'Foto ${index + 1} de $count',
+      onTap: () => selectPhoto(index),
+      child: ReferenceFocusOutline(
+        radius: size / 2,
+        outlineInset: EdgeInsets.fromLTRB(left, 20, right, 28 - size),
+        child: InkWell(
+          key: ValueKey('public-case-photo-$index'),
+          onTap: () => selectPhoto(index),
+          excludeFromSemantics: true,
+          splashFactory: NoSplash.splashFactory,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          child: SizedBox(
+            width: left + size + right,
+            height: 48,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(left, 20, right, 28 - size),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withValues(
+                    alpha: index == photoIndex ? 1 : .45,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget svg(String name, double size, {Color? color}) => SvgPicture.asset(
@@ -227,41 +269,14 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                             ),
                           if (photoPaths.isNotEmpty)
                             Positioned(
-                              bottom: 20,
+                              bottom: 8,
                               left: 0,
                               right: 0,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   for (var i = 0; i < photoPaths.length; i++)
-                                    Semantics(
-                                      button: true,
-                                      selected: photoIndex == i,
-                                      label:
-                                          'Foto ${i + 1} de ${photoPaths.length}',
-                                      child: GestureDetector(
-                                        behavior: HitTestBehavior.opaque,
-                                        onTap: () => selectPhoto(i),
-                                        child: SizedBox(
-                                          width: 13,
-                                          height: 24,
-                                          child: Center(
-                                            child: Container(
-                                              width: i == photoIndex ? 8 : 7,
-                                              height: i == photoIndex ? 8 : 7,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Colors.white.withValues(
-                                                  alpha: i == photoIndex
-                                                      ? 1
-                                                      : .45,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                    photoDot(i, photoPaths.length),
                                 ],
                               ),
                             ),

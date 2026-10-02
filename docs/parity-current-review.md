@@ -7,10 +7,13 @@ registradas en `parity-loops.md` ni acredita aceptación global.
 
 ## Capturas reproducibles actuales
 
-`apps/mobile/tool/capture_profile_test.dart` contiene **236 estados en 28 URLs**.
-El conteo incluye las siete tuplas multilínea de aportación que la búsqueda del
+`apps/mobile/tool/capture_profile_test.dart` contiene **238 estados en 28 URLs**
+tras los dos estados de foco de galería pública añadidos en loop233. El corte
+229 tenía 236 estados. Ese conteo incluye las siete tuplas multilínea de aportación que la búsqueda del
 loop227 no incluyó en sus 229 tuplas de una línea. No son 236 rutas distintas.
-Los 236 PNG existen tras el pase completo local del loop227 (108s, exit0).
+Los 236 PNG iniciales existen tras el pase completo local del loop227 (108s, exit0).
+Los dos estados nuevos se capturaron y revisaron por separado en loop233 (3s,
+exit0); el corte CI indicado debajo precede esa ampliación.
 El CI [37034721943](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37034721943)
 aprobó ambas etapas de captura y la carga del artefacto al consultar en loop229;
 el APK de desarrollo seguía compilando. Las capturas usan repositorios fixture
@@ -26,7 +29,7 @@ y widgets de producción; no prueban sesión, almacenamiento ni pagos reales.
 | `/my-cases` | 6 |
 | `/rescue/case-one` | 36 |
 | `/rescue-cases` | 18 |
-| `/rescue-cases/case-one` | 10 |
+| `/rescue-cases/case-one` | 12 |
 | `/notifications` | 7 |
 | `/contribute/Cirugía?case=case-one` | 2 |
 | `/contribute/Cirugía?case=case-one&amount_cents=10000` | 7 |
