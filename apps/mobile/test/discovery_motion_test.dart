@@ -121,6 +121,11 @@ void main() {
       await open(tester, repository: repo);
       await tester.tap(find.byTooltip('Me gusta'));
       await tester.pump();
+      final pendingMotion = tester.widget<AnimatedContainer>(
+        find.byKey(const ValueKey('discovery-motion-post')),
+      );
+      expect(pendingMotion.transform!.storage[12], 420);
+      expect(pendingMotion.duration, const Duration(milliseconds: 280));
       await tester.tap(find.byTooltip('Me gusta'));
       await tester.tap(find.byTooltip('Pasar'));
       await tester.pump(const Duration(milliseconds: 400));
@@ -135,6 +140,25 @@ void main() {
         find.byKey(const ValueKey('discovery-motion-post')),
       );
       expect(motion.transform!.storage[12], 0);
+    },
+  );
+  testWidgets(
+    'favorite confirmation shares the exit time instead of delaying it',
+    (tester) async {
+      final repo = PendingFavorite();
+      await open(tester, repository: repo);
+      await tester.tap(find.byTooltip('Me gusta'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 140));
+      expect(find.text('Milo'), findsNothing);
+      repo.result.complete();
+      await tester.pump();
+      expect(repo.post.saved, true);
+      expect(find.text('Milo'), findsNothing);
+      await tester.pump(const Duration(milliseconds: 140));
+      await tester.pump();
+      expect(find.text('Milo'), findsOneWidget);
+      expect(repo.saves, 1);
     },
   );
   testWidgets('reduced motion advances without a timed exit', (tester) async {

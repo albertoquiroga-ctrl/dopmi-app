@@ -117,23 +117,27 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
     final items = deck;
     if (acting || index >= items.length) return;
     final card = items[index];
-    setState(() => acting = true);
+    setState(() {
+      acting = true;
+      dragging = false;
+      exiting = direction ?? (save ? 1 : -1);
+    });
     try {
-      if (card is Adoption && save && !card.saved) {
-        await ref.read(communityRepositoryProvider).favorite(card.id, true);
-        final position = cards.indexWhere((item) => item.id == card.id);
-        if (position >= 0) {
-          cards[position] = Adoption({...card.data, 'saved': true});
-        }
-      }
-      if (!mounted) return;
-      setState(() {
-        dragging = false;
-        exiting = direction ?? (save ? 1 : -1);
-      });
-      if (!MediaQuery.disableAnimationsOf(context)) {
-        await Future<void>.delayed(const Duration(milliseconds: 280));
-      }
+      // Start the reference exit immediately; server confirmation still owns
+      // advancement, and a failed save restores this card for retry.
+      await Future.wait<void>([
+        if (card is Adoption && save && !card.saved)
+          () async {
+            await ref.read(communityRepositoryProvider).favorite(card.id, true);
+            if (!mounted) return;
+            final position = cards.indexWhere((item) => item.id == card.id);
+            if (position >= 0) {
+              cards[position] = Adoption({...card.data, 'saved': true});
+            }
+          }(),
+        if (!MediaQuery.disableAnimationsOf(context))
+          Future<void>.delayed(const Duration(milliseconds: 280)),
+      ]);
       if (!mounted) return;
       setState(() {
         index++;
