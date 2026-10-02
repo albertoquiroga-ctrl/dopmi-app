@@ -12,6 +12,27 @@ const staff = '70000000-0000-4000-8000-000000000003';
 const other = '70000000-0000-4000-8000-000000000004';
 const expense = '71000000-0000-4000-8000-000000000003';
 const key = '72000000-0000-4000-8000-000000000001';
+test('support receipt binds a real stored JPEG to its owner and request, and recovery includes the attachment',async()=>{
+  const path=`${donor}/${key}/73000000-0000-4000-8000-000000000001.jpg`;
+  const payload={topic:'account',case_name:'Luna',message:'Revisa esta imagen.',attachment_path:path};
+  const submit=async(value=payload)=>(await db.query('select dopmi_submit_support_request($1,$2::jsonb) value',[key,JSON.stringify(value)])).rows[0].value;
+  await role(donor);
+  await rejected(()=>submit(),/Adjunto inválido/);
+  await db.exec('reset role');
+  await db.query(`insert into storage.objects(bucket_id,name,metadata) values('dopmi-support-media',$1,'{"mimetype":"image/jpeg","size":100}')`,[path]);
+  await role(donor);
+  await rejected(()=>submit({...payload,attachment_path:path.replace(donor,other)}),/Adjunto inválido/);
+  await rejected(()=>submit({...payload,attachment_path:path.replace(key,'72000000-0000-4000-8000-000000000002')}),/Adjunto inválido/);
+  const receipt=await submit();assert.equal(receipt.status,'received');
+  assert.deepEqual(await submit(),receipt);
+  const recover=async(value)=>(await db.query('select dopmi_my_support_request($1,$2::jsonb) value',[key,JSON.stringify(value)])).rows[0].value;
+  assert.deepEqual(await recover(payload),receipt);
+  const {attachment_path:ignored,...without}=payload;
+  assert.equal(await recover(without),null);
+  await rejected(()=>submit(without),/solicitud cambió/);
+  await role(staff);
+  assert.equal((await db.query('select dopmi_admin_support_requests() value')).rows[0].value.items[0].attachment_path,path);
+});
 test('support media is private and only the owner can write before receipt; staff reads only linked attachments',async()=>{
   const path=`${donor}/${key}/73000000-0000-4000-8000-000000000001.jpg`;
   const access=async(write=false)=>(await db.query('select dopmi_support_file_access($1,$2) value',[path,write])).rows[0].value;

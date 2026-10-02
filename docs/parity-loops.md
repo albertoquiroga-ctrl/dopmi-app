@@ -2471,3 +2471,19 @@ No selección visual ni envío de adjunto aún: siguiente bloque vincular payloa
 a objeto existente y conectar repositorio/formulario. Migración no desplegada;
 sin fotos/solicitudes remotas, correo real o Codemagic nuevo.
 Analyze sin incidencias43.2s.
+# Loop296 — vínculo de adjunto y recibo en servidor
+
+Referencia remota2/10/2026:a3c969cd9103fd46dc5cd886999912526ce75efb.
+Completa migración local support_media aún no desplegada: submit admite
+attachment_path sólo si coincide dueño/requestUUID y objeto privado existente
+JPEG/size1–5MB. Ruta queda en solicitud/bandeja; replay compara imagen además
+del texto y receipt esperado incluye ruta sin exponer contenido a otra cuenta.
+Clientes sin adjunto mantienen contrato anterior. Cinco pruebas PostgreSQL
+dirigidas aprobadas2.4s: ausente/ajeno/otrorequest rechazados, correcto recibido,
+reintento igual conserva recibo y omitir imagen no confirma solicitud previa.
+La generación inicial de SQL usó replacement string JS que interpretó $' del
+regex: prueba detectó sintaxis inválida; reconstruido mediante callback literal
+y repetido con éxito. Ninguna versión fallida aplicada remotamente.
+No selector/upload móvil, panel de imagen ni despliegue aún; no archivo/correo
+real ni nuevo Codemagic. Goal completo sigue pendiente.
+Gate backend436/436 aprobado20.9s.
