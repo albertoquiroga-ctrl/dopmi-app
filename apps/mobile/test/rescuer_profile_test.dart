@@ -101,6 +101,11 @@ void main() {
     );
     expect(find.text('Teléfono'), findsNothing);
     expect(find.text('Correo'), findsNothing);
+    final name = find.byKey(const ValueKey('public-profile-Nombre'));
+    await tester.ensureVisible(name);
+    await tester.enterText(name, 'Érika');
+    await tester.pumpAndSettle();
+    expect(find.text('É'), findsOneWidget);
     final city = find.byKey(const ValueKey('public-profile-Ciudad'));
     await tester.scrollUntilVisible(
       city,
@@ -122,6 +127,7 @@ void main() {
     await tester.tap(submit);
     await tester.pumpAndSettle();
     expect(repo.saves, 1);
+    expect(repo.value['display_name'], 'Érika');
     expect(repo.value['city'], 'San Pedro Garza García');
     expect(repo.value['status'], 'submitted');
     expect(find.textContaining('Estado: En revisión'), findsOneWidget);

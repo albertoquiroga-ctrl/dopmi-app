@@ -2234,3 +2234,10 @@ Referencia reconsultada a3c969cd9103fd46dc5cd886999912526ce75efb. Perfil+captura
 
 Matiz284estados34URLs sin nuevos estados; cámara/foco/tamaños exactos/teclado/contraste completo e instalación aún pendientes. Soporte envío interno/adjuntos y datos de Información básica pendientes. CI448/37073584291 exacto01ad566 confirmado in_progress al inicio; no gate completo. BuildPlay286 conserva2c36339 sin cambios posteriores.
 Gate final loop279: flutter analyze sin problemas23.8s, formato/diffcheck aprobados. Prueba cancelar usa navegación real del widget y no envía acciones remotas.
+
+## Loop280 — 2026-10-02 — distintivo de cámara e inicial del editor
+
+Loop279 fue progreso encabezado/cancelar verificado. Tarjeta de foto incorpora SVGonb-camera existente, blanco sobre círculo violeta22 con borde blanco2 y offsetright/bottom-2, conforme avatar-camera Source. La inicial usa primer grapheme Unicode en vez de substring UTF16 y se actualiza al editar Nombre; vacío muestra icono de persona sin inicial simulada. No se modifica upload/review/publicación/privacidad. Fuente reconsultada a3c969cd9103fd46dc5cd886999912526ce75efb. Captura normal inspeccionada con distintivo.
+
+Suite perfil+capturas2 aprobadas2s antes de onChanged; análisis final del código productivo con onChanged limpio30.8s. Prueba ampliada verifica inicialÉ y display_nameÉrika guardado, sin alterar verificaciones ciudad/revisión/cancelar. Matriz284estados34URLs sin estados nuevos. CI448/37073584291 exacto01ad566 siguein_progress consultado al inicio; no gate integral ni Playnuevo. Selección real de galería/gestos/foco/tamaños exactos/comparación browser e instalación siguen pendientes. Dinero test-only; no SQL/Auth/flags ni legado reactivados.
+Gate final loop280: prueba perfil ampliada1 aprobada3s, formato/diffcheck aprobados. SHA256 SVG cámara igual en Source y asset nativo65A7EFE0367ED7EC3C80223ACB3F11D40727B3894AF92583DB34FE4303A58378. No apertura de galería real ni aceptación instalada atribuida por fixture.

@@ -215,27 +215,62 @@ class _RescuerPublicProfileEditState
                     padding: const EdgeInsets.all(16),
                     child: Row(
                       children: [
-                        CircleAvatar(
-                          radius: 32,
-                          backgroundColor: const Color(0xffe9dfff),
-                          foregroundColor: purple,
-                          backgroundImage: avatarUrl == null
-                              ? null
-                              : NetworkImage(avatarUrl!),
-                          child: avatarUrl == null
-                              ? Text(
-                                  name.text.trim().isEmpty
-                                      ? '?'
-                                      : name.text
-                                            .trim()
-                                            .substring(0, 1)
-                                            .toUpperCase(),
-                                  style: const TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w800,
+                        Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            CircleAvatar(
+                              radius: 32,
+                              backgroundColor: const Color(0xffe9dfff),
+                              foregroundColor: purple,
+                              backgroundImage: avatarUrl == null
+                                  ? null
+                                  : NetworkImage(avatarUrl!),
+                              child: avatarUrl == null
+                                  ? name.text.trim().isEmpty
+                                        ? const Icon(
+                                            Icons.person_outline,
+                                            color: purple,
+                                          )
+                                        : Text(
+                                            name.text
+                                                .trim()
+                                                .characters
+                                                .first
+                                                .toUpperCase(),
+                                            style: const TextStyle(
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.w800,
+                                            ),
+                                          )
+                                  : null,
+                            ),
+                            Positioned(
+                              right: -2,
+                              bottom: -2,
+                              child: Container(
+                                width: 22,
+                                height: 22,
+                                decoration: BoxDecoration(
+                                  color: purple,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 2,
                                   ),
-                                )
-                              : null,
+                                ),
+                                alignment: Alignment.center,
+                                child: SvgPicture.asset(
+                                  'assets/profile/onb-camera.svg',
+                                  width: 12,
+                                  height: 12,
+                                  colorFilter: const ColorFilter.mode(
+                                    Colors.white,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(width: 16),
                         const Expanded(
@@ -290,6 +325,9 @@ class _RescuerPublicProfileEditState
                       const SizedBox(height: 8),
                       TextField(
                         key: ValueKey('public-profile-${item.$1}'),
+                        onChanged: item.$2 == name
+                            ? (_) => setState(() {})
+                            : null,
                         controller: item.$2,
                         enabled: editable && !busy,
                         minLines: item.$3,
