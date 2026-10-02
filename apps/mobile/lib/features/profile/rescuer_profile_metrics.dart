@@ -1,3 +1,5 @@
+import '../../core/reference_focus_outline.dart';
+
 import 'package:flutter/material.dart';
 
 import '../adoption/community_repository.dart';
@@ -37,10 +39,10 @@ class RescuerProfileMetrics extends StatelessWidget {
       'corrections',
     ].every((key) => counts[key] is int);
     final values = [
-      completeCounts ? '$open' : '—',
-      counts['active'] is int ? '${counts['active']}' : '—',
+      completeCounts ? '$open' : 'â€”',
+      counts['active'] is int ? '${counts['active']}' : 'â€”',
       cents == null
-          ? '—'
+          ? 'â€”'
           : '\$${(cents / 100).toStringAsFixed(cents % 100 == 0 ? 0 : 2)}',
     ];
     const labels = ['Casos', 'Activos', 'Transferido'];
@@ -113,60 +115,68 @@ class _RescuerProfileMetricState extends State<RescuerProfileMetric> {
       scale: pressed ? .98 : 1,
       duration: duration,
       curve: Curves.ease,
-      child: AnimatedContainer(
-        duration: duration,
-        curve: Curves.ease,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(22),
-          boxShadow: [
-            BoxShadow(
-              color: hovered
-                  ? const Color(0x1a15110d)
-                  : const Color(0x0f15110d),
-              offset: Offset(0, hovered ? 10 : 8),
-              blurRadius: hovered ? 28 : 24,
-            ),
-          ],
-        ),
-        child: Material(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(22),
-          child: InkWell(
-            onTap: widget.onPressed,
-            onHighlightChanged: (value) => setState(() => pressed = value),
-            onHover: (value) => setState(() => hovered = value),
-            splashFactory: NoSplash.splashFactory,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            hoverColor: Colors.transparent,
+      child: ReferenceFocusOutline(
+        radius: 22,
+        child: AnimatedContainer(
+          width: double.infinity,
+          duration: duration,
+          curve: Curves.ease,
+          decoration: BoxDecoration(
+            color: Colors.white,
             borderRadius: BorderRadius.circular(22),
-            child: Container(
-              constraints: const BoxConstraints(minHeight: 84),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    widget.value,
-                    textAlign: TextAlign.center,
-                    style: RescuerProfileMetrics.valueStyle,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    widget.label,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      height: 1.25,
-                      letterSpacing: 0,
-                      color: Color(0xff4f4e5c),
+            boxShadow: [
+              BoxShadow(
+                color: hovered
+                    ? const Color(0x1a15110d)
+                    : const Color(0x0f15110d),
+                offset: Offset(0, hovered ? 10 : 8),
+                blurRadius: hovered ? 28 : 24,
+              ),
+            ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(22),
+            child: InkWell(
+              onTap: widget.onPressed,
+              focusColor: Colors.transparent,
+              onHighlightChanged: (value) => setState(() => pressed = value),
+              onHover: (value) => setState(() => hovered = value),
+              splashFactory: NoSplash.splashFactory,
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              borderRadius: BorderRadius.circular(22),
+              child: Container(
+                constraints: const BoxConstraints(minHeight: 84),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 16,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      widget.value,
+                      textAlign: TextAlign.center,
+                      style: RescuerProfileMetrics.valueStyle,
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 4),
+                    Text(
+                      widget.label,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        height: 1.25,
+                        letterSpacing: 0,
+                        color: Color(0xff4f4e5c),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
