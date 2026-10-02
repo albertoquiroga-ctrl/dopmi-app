@@ -1,3 +1,5 @@
+import '../../core/reference_focus_outline.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -91,46 +93,51 @@ class _PublicationHeader extends StatelessWidget {
           button: true,
           label: 'Volver',
           enabled: onBack != null,
-          child: TextButton(
-            onPressed: onBack,
-            style:
-                TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  minimumSize: Size.zero,
-                  splashFactory: NoSplash.splashFactory,
-                ).copyWith(
-                  overlayColor: const WidgetStatePropertyAll(
-                    Colors.transparent,
-                  ),
-                ),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 48),
-              child: Row(
-                children: [
-                  ExcludeSemantics(
-                    child: SvgPicture.asset(
-                      'assets/profile/back.svg',
-                      width: 24,
-                      height: 24,
+          child: ReferenceFocusOutline(
+            radius: 0,
+            child: TextButton(
+              key: const ValueKey('publication-header-back'),
+              onPressed: onBack,
+              style:
+                  TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: Size.zero,
+                    splashFactory: NoSplash.splashFactory,
+                  ).copyWith(
+                    overlayColor: const WidgetStatePropertyAll(
+                      Colors.transparent,
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Semantics(
-                      header: true,
-                      child: Text(
-                        title,
-                        style: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 24,
-                          height: 32 / 24,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xff151423),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 48),
+                child: Row(
+                  children: [
+                    ExcludeSemantics(
+                      child: SvgPicture.asset(
+                        'assets/profile/back.svg',
+                        width: 24,
+                        height: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Semantics(
+                        header: true,
+                        child: Text(
+                          title,
+                          style: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 24,
+                            height: 32 / 24,
+                            letterSpacing: -.48,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xff151423),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

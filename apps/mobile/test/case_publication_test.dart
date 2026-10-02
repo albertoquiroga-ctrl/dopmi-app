@@ -1,3 +1,4 @@
+import 'package:dopmi_mobile/core/reference_focus_outline.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/adoption/publication_frame.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
@@ -542,7 +543,26 @@ void main() {
       await tester.pumpAndSettle();
       expect(repo.publicSaved!['pet_name'], 'Mora');
       expect(repo.publicSaved!['sex'], 'unknown');
-      await tester.tap(find.widgetWithText(TextButton, 'Publicar caso').first);
+
+      final header = find.byKey(const ValueKey('publication-header-back'));
+      await tester.ensureVisible(header);
+      await tester.pumpAndSettle();
+      final focusScope = find.ancestor(
+        of: header,
+        matching: find.byType(ReferenceFocusOutline),
+      );
+      final outline = find.descendant(
+        of: focusScope,
+        matching: find.byKey(const ValueKey('reference-keyboard-outline')),
+      );
+      for (var i = 0; i < 30 && outline.evaluate().isEmpty; i++) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
+      }
+      expect(outline, findsOneWidget);
+      expect(repo.publicSaved!['pet_name'], 'Mora');
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+
       await tester.pumpAndSettle();
       expect(find.text('Publicar caso'), findsOneWidget);
       expect(

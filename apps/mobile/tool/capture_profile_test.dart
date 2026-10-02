@@ -1,3 +1,4 @@
+import 'package:dopmi_mobile/core/reference_focus_outline.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_activity.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_metrics.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_verification_card.dart';
@@ -710,6 +711,8 @@ void main() {
       ('expense-submitted-large', '/rescue/expense-one'),
       ('expense-submitted-footer-large', '/rescue/expense-one'),
       ('case-publication', '/rescue/new?kind=case'),
+      ('case-publication-header-focus', '/rescue/new?kind=case'),
+      ('case-publication-header-focus-large', '/rescue/new?kind=case'),
       ('case-publication-large', '/rescue/new?kind=case'),
       ('case-publication-information-nameless', '/rescue/case-one'),
       ('case-publication-information-nameless-large', '/rescue/case-one'),
@@ -1632,6 +1635,25 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(next);
         await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('case-publication-header-focus')) {
+        final header = find.byKey(const ValueKey('publication-header-back'));
+        final focusScope = find.ancestor(
+          of: header,
+          matching: find.byType(ReferenceFocusOutline),
+        );
+        final outline = find.descendant(
+          of: focusScope,
+          matching: find.byKey(const ValueKey('reference-keyboard-outline')),
+        );
+        for (var i = 0; i < 12 && outline.evaluate().isEmpty; i++) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+          await tester.pump();
+        }
+        expect(outline, findsOneWidget);
+        await Scrollable.ensureVisible(tester.element(header), alignment: .1);
+        await tester.pumpAndSettle();
+        expect(tester.getRect(outline), tester.getRect(header).inflate(5));
       }
       if (spec.$1 != 'adoption-drag') {
         if (spec.$1 == 'rescuer-settings') {
