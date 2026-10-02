@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../rescue/rescue_repository.dart';
+import 'rescuer_settings_details.dart';
 
 class RescuerSettingsVerification extends ConsumerWidget {
   const RescuerSettingsVerification({super.key});
@@ -18,9 +19,18 @@ class RescuerSettingsVerification extends ConsumerWidget {
       LiveSection<Json>(
         tables: const ['dopmi_rescue_records'],
         load: () => ref.read(rescueRepositoryProvider).dashboard(),
-        builder: (data, _) => SettingsVerificationCard(
-          status: data['verification_status'] as String?,
-          onPressed: () => context.push('/rescue/new?kind=verification'),
+        builder: (data, _) => Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SettingsVerificationCard(
+              status: data['verification_status'] as String?,
+              onPressed: () => context.push('/rescue/new?kind=verification'),
+            ),
+            if (data['verification_status'] == 'approved')
+              const RescuerSettingsDetails()
+            else
+              const SettingsBankingSection(),
+          ],
         ),
       ),
       const SizedBox(height: 10),

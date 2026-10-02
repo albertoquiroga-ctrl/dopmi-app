@@ -1,3 +1,7 @@
+import 'package:dopmi_mobile/features/profile/rescuer_profile_repository.dart';
+
+import '../test/rescuer_profile_test.dart' show FakeRescuerProfile;
+
 import 'dart:io';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -448,6 +452,8 @@ void main() {
         'icon-edit',
         'icon-donation-in',
         'icon-settings',
+        'icon-instagram',
+        'icon-facebook',
         'icon-messages',
         'rtab-cases',
         'rtab-home',
@@ -814,6 +820,10 @@ void main() {
           if (spec.$1.startsWith('rescuer-profile') ||
               spec.$1.startsWith('rescuer-settings'))
             rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+          if (spec.$1.startsWith('rescuer-settings'))
+            rescuerProfileRepositoryProvider.overrideWithValue(
+              FakeRescuerProfile()..value['owner_id'] = 'one',
+            ),
           if (spec.$1.startsWith('case-publication'))
             rescueRepositoryProvider.overrideWithValue(
               CasePublicationCaptureRescue(

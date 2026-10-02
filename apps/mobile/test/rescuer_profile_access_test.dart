@@ -1,3 +1,8 @@
+import 'package:dopmi_mobile/features/profile/rescuer_settings_details.dart';
+import 'package:dopmi_mobile/features/profile/rescuer_profile_repository.dart';
+
+import 'rescuer_profile_test.dart' show FakeRescuerProfile;
+
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 
 import 'rescue_test.dart' show FakeRescue;
@@ -76,6 +81,9 @@ void main() {
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
           routerInitialLocationProvider.overrideWithValue('/settings'),
           rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+          rescuerProfileRepositoryProvider.overrideWithValue(
+            FakeRescuerProfile()..value['owner_id'] = 'one',
+          ),
         ],
       );
       addTearDown(() async {
@@ -93,10 +101,10 @@ void main() {
       expect(find.text('Estado de verificación'), findsOneWidget);
       expect(find.text('Cuenta verificada'), findsOneWidget);
       final expected = {
+        'Configurar pagos con Stripe': '/connect',
         'Editar perfil público': '/rescuer/profile/edit',
         'Ver mi perfil público': '/people/one',
         'Mis publicaciones de adopción': '/my-adoptions',
-        'Configurar pagos con Stripe': '/connect',
       };
       for (final entry in expected.entries) {
         await tester.scrollUntilVisible(
@@ -104,13 +112,18 @@ void main() {
           200,
           scrollable: find.byType(Scrollable).first,
         );
-        final row = tester.widget<ProfileRow>(
+        final row = tester.widget(
           find.ancestor(
             of: find.text(entry.key),
-            matching: find.byType(ProfileRow),
+            matching: entry.value == '/connect'
+                ? find.byType(SettingsDataRow)
+                : find.byType(ProfileRow),
           ),
         );
-        expect(row.path, entry.value);
+        expect(
+          row is ProfileRow ? row.path : (row as SettingsDataRow).path,
+          entry.value,
+        );
       }
       expect(tester.takeException(), isNull);
     },

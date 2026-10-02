@@ -1014,10 +1014,11 @@ class ProfileFrame extends StatelessWidget {
     required this.children,
     this.back = false,
     this.rescuerOverview = false,
+    this.showNotifications = true,
   });
   final String title;
   final List<Widget> children;
-  final bool back, rescuerOverview;
+  final bool back, rescuerOverview, showNotifications;
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: rescuerOverview
@@ -1036,11 +1037,12 @@ class ProfileFrame extends StatelessWidget {
                 : null,
             title: Text(title, style: Theme.of(context).textTheme.titleLarge),
             actions: [
-              IconButton(
-                tooltip: 'Notificaciones',
-                onPressed: () => context.push('/notifications'),
-                icon: const Icon(Icons.notifications_none),
-              ),
+              if (showNotifications)
+                IconButton(
+                  tooltip: 'Notificaciones',
+                  onPressed: () => context.push('/notifications'),
+                  icon: const Icon(Icons.notifications_none),
+                ),
             ],
           ),
     bottomNavigationBar: const CommunityNav(4),
@@ -1248,6 +1250,8 @@ class SettingsScreen extends ConsumerWidget {
     return ProfileFrame(
       title: 'Configuración',
       back: true,
+      showNotifications:
+          ref.watch(experienceProvider).value != AccountExperience.rescuer,
       children: [
         if (ref.watch(experienceProvider).value ==
             AccountExperience.rescuer) ...[
@@ -1273,11 +1277,6 @@ class SettingsScreen extends ConsumerWidget {
             title: 'Mis publicaciones de adopción',
             icon: Icons.home_outlined,
             path: '/my-adoptions',
-          ),
-          const ProfileRow(
-            title: 'Configurar pagos con Stripe',
-            icon: Icons.account_balance_outlined,
-            path: '/connect',
           ),
         ],
         const ProfileRow(
