@@ -144,6 +144,7 @@ void main() {
       ('forgot', '/forgot'),
       ('confirm', '/confirm'),
       ('start', '/start?intent=adopt'),
+      ('start-rescue', '/start?intent=rescue'),
       ('onboarding-adopt', '/onboarding?intent=adopt'),
       ('onboarding-donate', '/onboarding?intent=donate'),
       ('onboarding-rescue', '/onboarding?intent=rescue'),
@@ -172,6 +173,8 @@ void main() {
         'assets/onboarding/luna-card.png',
         'assets/onboarding/luna-detail.png',
         'assets/onboarding/nina-card.png',
+        'assets/onboarding/account-rescue.jpg',
+        'assets/welcome-pets.png',
         'assets/guardian/guardian-urgent.jpg',
       ]) {
         await tester.runAsync(

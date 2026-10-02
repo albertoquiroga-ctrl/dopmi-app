@@ -232,27 +232,213 @@ class AccountStartScreen extends StatelessWidget {
             'Casi listo para encontrar hogar',
             'Guarda favoritos, revisa historias y contacta al rescatista cuando quieras.',
           );
-    return AuthFrame(
-      footer: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ActionButton(
-            'Crear cuenta',
-            onPressed: () => context.push('/signup?intent=$intent'),
+    return Scaffold(
+      backgroundColor: ink,
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 393),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              ExcludeSemantics(
+                child: Image.asset(
+                  intent == 'rescue'
+                      ? 'assets/onboarding/account-rescue.jpg'
+                      : 'assets/welcome-pets.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xc715110d),
+                      Color(0x6b15110d),
+                      Color(0x8c15110d),
+                      Color(0xe015110d),
+                    ],
+                    stops: [0, .34, .58, 1],
+                  ),
+                ),
+              ),
+              SafeArea(
+                child: LayoutBuilder(
+                  builder: (context, box) => SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(minHeight: box.maxHeight),
+                      child: IntrinsicHeight(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Row(
+                                children: [
+                                  IconButton(
+                                    tooltip: 'Volver',
+                                    onPressed: () {
+                                      if (context.canPop()) {
+                                        context.pop();
+                                      } else {
+                                        context.go('/welcome');
+                                      }
+                                    },
+                                    style: IconButton.styleFrom(
+                                      fixedSize: const Size(40, 40),
+                                      padding: EdgeInsets.zero,
+                                      splashFactory: NoSplash.splashFactory,
+                                      highlightColor: Colors.transparent,
+                                    ),
+                                    icon: SvgPicture.asset(
+                                      'assets/profile/back.svg',
+                                      width: 24,
+                                      height: 24,
+                                      colorFilter: const ColorFilter.mode(
+                                        Colors.white,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xf0ffffff),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: const SizedBox(
+                                      height: 36,
+                                      child: Brand(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    8,
+                                    24,
+                                    8,
+                                    20,
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Semantics(
+                                        header: true,
+                                        child: Text(
+                                          copy.$1,
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineLarge!
+                                              .copyWith(
+                                                color: Colors.white,
+                                                letterSpacing: -.64,
+                                                shadows: const [
+                                                  Shadow(
+                                                    color: Color(0x59100000),
+                                                    offset: Offset(0, 1),
+                                                    blurRadius: 2,
+                                                  ),
+                                                ],
+                                              ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Text(
+                                        copy.$2,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          height: 1.5,
+                                          letterSpacing: 0,
+                                          color: Color(0xf2ffffff),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      const ExcludeSemantics(
+                                        child: Icon(
+                                          Icons.pets_outlined,
+                                          color: yellow,
+                                          size: 28,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.fromLTRB(
+                                  20,
+                                  22,
+                                  20,
+                                  20,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(28),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Color(0x4715110d),
+                                      offset: Offset(0, 12),
+                                      blurRadius: 32,
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    FilledButton(
+                                      style: FilledButton.styleFrom(
+                                        backgroundColor: ink,
+                                        foregroundColor: Colors.white,
+                                        minimumSize: const Size.fromHeight(52),
+                                        shape: const StadiumBorder(),
+                                        textStyle: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: 'Inter',
+                                        ),
+                                      ),
+                                      onPressed: () => context.push(
+                                        '/signup?intent=$intent',
+                                      ),
+                                      child: const Text('Crear cuenta'),
+                                    ),
+                                    const SizedBox(height: 14),
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                        foregroundColor: ink,
+                                        textStyle: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700,
+                                          fontFamily: 'Inter',
+                                        ),
+                                      ),
+                                      onPressed: () => context.push('/login'),
+                                      child: const Text('Inicia sesión'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => context.push('/login'),
-            child: const Text('¿Ya tienes cuenta? Inicia sesión'),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 56),
-        child: Column(
-          children: [
-            AuthHeading(copy.$1, copy.$2),
-            const Icon(Icons.pets_outlined, color: yellow, size: 28),
-          ],
         ),
       ),
     );
