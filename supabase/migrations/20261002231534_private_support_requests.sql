@@ -61,6 +61,31 @@ begin
   return jsonb_build_object('request_id',item.request_id,'status','received','created_at',item.created_at);
 end;
 $$;
-revoke all on function public.dopmi_submit_support_request(uuid,jsonb),public.dopmi_my_support_request(uuid) from public,anon,authenticated,service_role;
+create function public.dopmi_admin_support_requests(page_number integer default 1,page_size integer default 25) returns jsonb
+language plpgsql security definer set search_path='' as $$
+declare actor uuid:=private.dopmi_require_actor(); result jsonb;
+begin
+  if not public.dopmi_is_admin() then
+    raise exception 'Acceso administrativo requerido' using errcode='42501';
+  end if;
+  if page_number is null or page_number<1 or page_size is null or page_size not between 1 and 50 then
+    raise exception 'Paginación inválida' using errcode='22023';
+  end if;
+  with paged as (
+    select r.request_id,r.owner_id,r.topic,r.case_name,r.message,r.created_at,
+      p.display_name,u.email
+    from private.dopmi_support_requests r
+    join public.profiles p on p.id=r.owner_id join auth.users u on u.id=r.owner_id
+    order by r.created_at desc,r.owner_id,r.request_id
+    limit page_size offset (page_number::bigint-1)*page_size
+  )
+  select jsonb_build_object('total',(select count(*) from private.dopmi_support_requests),
+    'items',coalesce((select jsonb_agg(to_jsonb(paged) order by created_at desc,owner_id,request_id) from paged),'[]'::jsonb)) into result;
+  insert into private.admin_access_log(actor_id,action) values(actor,'support.requests.list');
+  return result;
+end;
+$$;
+revoke all on function public.dopmi_submit_support_request(uuid,jsonb),public.dopmi_my_support_request(uuid),public.dopmi_admin_support_requests(integer,integer) from public,anon,authenticated,service_role;
 grant execute on function public.dopmi_submit_support_request(uuid,jsonb),public.dopmi_my_support_request(uuid) to authenticated;
+grant execute on function public.dopmi_admin_support_requests(integer,integer) to authenticated;
 commit;

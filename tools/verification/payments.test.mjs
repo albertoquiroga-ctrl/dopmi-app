@@ -26,6 +26,27 @@ test('support is private, retries one durable receipt and rejects changed replay
   await db.exec('reset role');
   assert.equal((await db.query('select count(*)::int n from private.dopmi_support_requests')).rows[0].n,1);
 });
+test('support administrative inbox requires real membership, is paginated and audited',async()=>{
+  await role(donor);
+  await db.query('select dopmi_submit_support_request($1,$2::jsonb)',[key,JSON.stringify({topic:'account',message:'Ayuda privada.'})]);
+  await rejected(()=>db.query('select dopmi_admin_support_requests()'),/administrativo/);
+  await db.exec('reset role');
+  await db.query(`update auth.users set raw_user_meta_data='{"role":"admin","is_admin":true}' where id=$1`,[donor]);
+  await role(donor);
+  await rejected(()=>db.query('select dopmi_admin_support_requests()'),/administrativo/);
+  await role(staff);
+  const first=(await db.query('select dopmi_admin_support_requests(1,1) value')).rows[0].value;
+  assert.equal(first.total,1);assert.equal(first.items[0].message,'Ayuda privada.');
+  assert.equal(first.items[0].owner_id,donor);
+  assert.equal(first.items[0].email,donor+'@example.test');
+  assert.deepEqual((await db.query('select dopmi_admin_support_requests(2,1) value')).rows[0].value.items,[]);
+  await rejected(()=>db.query('select dopmi_admin_support_requests(1,51)'),/Paginación/);
+  await db.exec('reset role');
+  assert.equal((await db.query("select count(*)::int n from private.admin_access_log where action='support.requests.list' and actor_id=$1",[staff])).rows[0].n,2);
+  await db.query('update private.admin_memberships set active=false where user_id=$1',[staff]);
+  await role(staff);
+  await rejected(()=>db.query('select dopmi_admin_support_requests()'),/administrativo/);
+});
 test('support requires active identity and enforces per-account rate without blocking stable retries',async()=>{
   await role(donor);
   const body=JSON.stringify({topic:'account',message:'Necesito ayuda.'});

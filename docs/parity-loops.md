@@ -2356,3 +2356,18 @@ Quedan adjuntos, consulta operativa autorizada, cliente y despliegue/aceptación
 Gate backend433/433 aprobado24.9s. docker info reconsultado: no existe pipe
 dockerDesktopLinuxEngine; supabase test db local no ejecutado. Se registra
 limitación en progress sin incorporar cambios concurrentes de ese archivo.
+# Loop288 — bandeja administrativa autorizada de soporte
+
+Referencia remota2/10/2026:
+`irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
+Se completa la migración local todavía no desplegada con
+dopmi_admin_support_requests: require_actor y dopmi_is_admin actuales,
+paginación1–50 con orden determinista y auditoría support.requests.list.
+Devuelve exclusivamente solicitudes dirigidas a soporte y correo de respuesta;
+no abre conversaciones privadas ni restaura legado. SELECT crudo permanece
+revocado. Nueva prueba demuestra no-admin denegado, metadataeditableadmin
+denegada, staff real permitido/paginado/auditado y revocación efectiva.
+Tres pruebas PostgreSQL dirigidas aprobadas3.2s; gate completo ejecutándose.
+Sin despliegue remoto ni panel/clientes conectados todavía; no aceptación de
+entrega de correo o teléfono. No Codemagic nuevo.
+Gate completo backend434/434 aprobado26.6s.

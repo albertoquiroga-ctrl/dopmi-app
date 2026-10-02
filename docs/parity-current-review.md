@@ -11,6 +11,8 @@ Información básica, Ayuda y Editor público siguen pendientes concretos.
 Loops273–276 implementan temas/FAQ/bloques y formulario para preparar correo;
 envío interno, acuse y adjuntos continúan pendientes. El endpoint legado
 support-message-send está retirado y no se reutiliza.
+Loops286–288 añaden contrato y migración local privada/idempotente con lectura
+administrativa auditada. Aún sin despliegue ni formulario/panel conectado.
 Loops277–284 ajustan tarjeta, campos, encabezado, cancelar, teclado y errores del editor público;
 contraste completo, cámara/gestos y aceptación instalada siguen pendientes.
 Este corte no es un conteo final de pantallas aceptadas.
