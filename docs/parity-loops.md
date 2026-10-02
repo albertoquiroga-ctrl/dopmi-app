@@ -1901,3 +1901,8 @@ Verification: first community run failed because the successful report Snackbar 
 
 Reference remote a3c969cd9103fd46dc5cd886999912526ce75efb confirmed. Hero Column now aligns content to bottom under its minimum118px constraint, matching Source align-content:end measured243. Normal capture inspected: numeral/text now sit at bottom with14px padding rather than top. Both normal/large PNGs retained. Metrics/capture3tests passed exit0 (2s), flutter analyze noissues exit0 (6.3s). First scratch command copied from wrong relative cwd and ran old code; explicitly recopied absolute production file and reran final checks above. Radial highlight, broad parity/device checks and final Codemagic remain pending; no new device acceptance claimed.
 
+
+## Loop245 — 2026-10-02: reference radial hero highlight
+
+Reference remote a3c969cd9103fd46dc5cd886999912526ce75efb confirmed and actual styles.css5505–5515 inspected. Added clipped elliptical highlight80%width/90%height centered upper-right, white alpha.55 yellow/.12 dark fading to transparent at55%, behind existing text and interactive semantics. Canvas uses current dimensions, including accessible expanded cards. Normal capture inspected; both normal/large retained. Metrics/capture3pass exit0 (2s), analyze noissues exit0 (7.6s). Full route/device fidelity and Codemagic/Play remain pending.
+

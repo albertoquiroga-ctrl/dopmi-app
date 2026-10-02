@@ -40,6 +40,11 @@ class PublicProfileMetrics extends StatelessWidget {
       child: Stack(
         alignment: Alignment.bottomLeft,
         children: [
+          Positioned.fill(
+            child: IgnorePointer(
+              child: CustomPaint(painter: _HeroHighlight(dark: dark)),
+            ),
+          ),
           Positioned(
             top: 12,
             right: 12,
@@ -265,4 +270,34 @@ class PublicProfileMetrics extends StatelessWidget {
       ),
     );
   }
+}
+
+class _HeroHighlight extends CustomPainter {
+  const _HeroHighlight({required this.dark});
+  final bool dark;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty) return;
+    canvas.save();
+    canvas.clipRRect(
+      RRect.fromRectAndRadius(Offset.zero & size, const Radius.circular(20)),
+    );
+    // CSS ellipse: 80% 90% at the upper-right corner, fading at 55%.
+    canvas.translate(size.width, 0);
+    canvas.scale(size.width * .8, size.height * .9);
+    final paint = Paint()
+      ..shader = RadialGradient(
+        colors: [
+          Colors.white.withValues(alpha: dark ? .12 : .55),
+          Colors.white.withValues(alpha: 0),
+        ],
+        stops: const [0, .55],
+      ).createShader(const Rect.fromLTRB(-1, -1, 1, 1));
+    canvas.drawRect(const Rect.fromLTRB(-1.25, 0, 0, 1 / .9), paint);
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_HeroHighlight oldDelegate) => oldDelegate.dark != dark;
 }
