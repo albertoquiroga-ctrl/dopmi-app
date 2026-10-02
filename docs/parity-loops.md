@@ -1952,3 +1952,15 @@ New lifecycle test exercises real public screen, retries failed URL, resume rene
 
 Final flutter analyze noissues exit0 (6.5s).
 
+
+## Loop252 — 2026-10-02: rendered public adoption/case tabs comparison
+
+Reference remote a3c969cd9103fd46dc5cd886999912526ce75efb confirmed. Source Vite44975 + CUA IABtab9 rendered public /rescuer-profile/luna at377×852. Actual adoption card335.6h/image258/actions76 with44buttons; CTAfont16/600/pad11x18. Case377.6h/image258/summary118, progress8, CTA38/font16/600/pad7x12,gap8. Case strong18h21.6. Source screenshots both tabs retained; Modo prueba overlay excluded from app. Tab closed/viewport reset/Vite stoppedCtrlC exit1expected.
+
+Production corrected CTA14→16, normal tracking/lineboxes, case button38/adoption44, casegap8/progress8/lightyellowtrack, approvedexpense amount yellowink instead of purple and compact wholepesos while preserving fractionalcents. Donar borderline e6e2dd restored explicitly instead of inherited gray. Title typography follows measured Source. Real favorite/chooseContribution remains; no fictionalage/distance/photo introduced. Native four normal/large tab captures retained. Fixtures differ from Sourceidentity/photos/counters, so not pixel-identical acceptance.
+
+First combined run failed old amount expectation25.00MXN/100.00MXN; updated presentation assertion, real selector test preserved. Final cards/capture5pass exit0 (8s) after last border/title fixes. First analyze flagged one redundantconst, removed; final result recorded after completion. WholePUBLIC/device/motion acceptance still pending.
+
+
+Final analyze noissues exit0 (9.5s). Final normalcase PNG inspected after border/title repair.
+

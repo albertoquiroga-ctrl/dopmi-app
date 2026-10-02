@@ -45,7 +45,7 @@ void main() {
       await start(tester, FakeRescue());
       expect(find.text('Choco'), findsOneWidget);
       expect(find.text('Cirugía'), findsOneWidget);
-      expect(find.text('\$25.00 MXN / \$100.00 MXN'), findsOneWidget);
+      expect(find.text('\$25 / \$100'), findsOneWidget);
       await tester.tap(find.text('Donar'));
       await tester.pumpAndSettle();
       expect(find.text('Elige un monto a donar:'), findsOneWidget);

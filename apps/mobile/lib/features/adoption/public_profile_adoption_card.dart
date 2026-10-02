@@ -119,6 +119,8 @@ class _PublicProfileAdoptionCardState
                             style: const TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 18,
+                              height: 1.2,
+                              letterSpacing: 0,
                               fontWeight: FontWeight.w700,
                               color: Colors.white,
                             ),
@@ -142,6 +144,8 @@ class _PublicProfileAdoptionCardState
                               style: const TextStyle(
                                 fontFamily: 'Inter',
                                 fontSize: 11,
+                                height: 1.2,
+                                letterSpacing: 0,
                                 color: ink,
                               ),
                             ),
@@ -201,9 +205,16 @@ class _PublicProfileAdoptionCardState
                             backgroundColor: yellow,
                             foregroundColor: ink,
                             minimumSize: const Size(0, 44),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 18,
+                              vertical: 11,
+                            ),
                             textStyle: const TextStyle(
                               fontFamily: 'Inter',
-                              fontSize: 14,
+                              fontSize: 16,
+                              height: 1.2,
+                              letterSpacing: 0,
                               fontWeight: FontWeight.w600,
                             ),
                           ),

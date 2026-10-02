@@ -100,6 +100,8 @@ class PublicProfileCaseCard extends ConsumerWidget {
                       style: const TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 18,
+                        height: 1.2,
+                        letterSpacing: 0,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
                       ),
@@ -123,15 +125,19 @@ class PublicProfileCaseCard extends ConsumerWidget {
                           expense.title,
                           style: const TextStyle(
                             fontSize: 13,
+                            height: 1.2,
+                            letterSpacing: 0,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                         Text(
-                          '${pesos(expense.fundedCents)} / ${pesos(expense.targetCents)}',
+                          '${pesos(expense.fundedCents).replaceAll(' MXN', '').replaceFirst(RegExp(r'\.00$'), '')} / ${pesos(expense.targetCents).replaceAll(' MXN', '').replaceFirst(RegExp(r'\.00$'), '')}',
                           style: const TextStyle(
                             fontSize: 13,
+                            height: 1.2,
+                            letterSpacing: 0,
                             fontWeight: FontWeight.w700,
-                            color: purple,
+                            color: Color(0xff6b5000),
                           ),
                         ),
                       ],
@@ -141,9 +147,9 @@ class PublicProfileCaseCard extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(999),
                       child: LinearProgressIndicator(
                         value: ratio,
-                        minHeight: 6,
+                        minHeight: 8,
                         color: yellow,
-                        backgroundColor: const Color(0xfff0ede7),
+                        backgroundColor: const Color(0xfffff2b5),
                         semanticsLabel: 'Avance de ${expense.title}',
                       ),
                     ),
@@ -157,10 +163,17 @@ class PublicProfileCaseCard extends ConsumerWidget {
                           style: FilledButton.styleFrom(
                             backgroundColor: yellow,
                             foregroundColor: ink,
-                            minimumSize: const Size(0, 44),
+                            minimumSize: const Size(0, 38),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 7,
+                            ),
                             textStyle: const TextStyle(
                               fontFamily: 'Inter',
-                              fontSize: 14,
+                              fontSize: 16,
+                              height: 1.2,
+                              letterSpacing: 0,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -168,7 +181,7 @@ class PublicProfileCaseCard extends ConsumerWidget {
                         ),
                       ),
                       if (expense != null) ...[
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 8),
                         Expanded(
                           child: OutlinedButton(
                             onPressed: enabled
@@ -180,11 +193,19 @@ class PublicProfileCaseCard extends ConsumerWidget {
                                   )
                                 : null,
                             style: OutlinedButton.styleFrom(
-                              minimumSize: const Size(0, 44),
+                              side: const BorderSide(color: Color(0xffe6e2dd)),
+                              minimumSize: const Size(0, 38),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 7,
+                              ),
                               foregroundColor: ink,
                               textStyle: const TextStyle(
                                 fontFamily: 'Inter',
-                                fontSize: 14,
+                                fontSize: 16,
+                                height: 1.2,
+                                letterSpacing: 0,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
