@@ -1909,3 +1909,8 @@ Reference remote a3c969cd9103fd46dc5cd886999912526ce75efb confirmed and actual s
 
 Checkpoint245: push3dcc5687170943f73bc166f8ca9acc5958cca82a verified; PR6 remains open/draft/mergeable, baseba9f897f3fa418e952b98e4c604cffe468a8aa95. CI37048298328 #422 verified queued for exactSHA; pending terminal result. PR description updated with public metrics/composition and prior420success.
 
+
+## Loop246 — 2026-10-02: public report keyboard interaction
+
+Reference remote a3c969cd9103fd46dc5cd886999912526ce75efb unchanged. styles.css32–35 defines keyboard-visible3px purple30% outline/2px offset for all buttons; public Reportar had lacked existing ReferenceFocusOutline wrapper. Added square outline consistent with tabs, preserving report callback/disabled semantics and layout. New keyboard test traverses four controls viaTab, asserts outline surrounds Reportar and Enter invokes callback exactly once. Layout/community29pass exit0 (13s), final keyboard/layout3pass exit0 (1s), analyze noissues exit0 (9.6s). CI37048298328 #422 stillin_progress confirmed on3dcc5687170943f73bc166f8ca9acc5958cca82a, predates246. Device gestures and final Codemagic/Play remain pending.
+

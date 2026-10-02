@@ -337,23 +337,26 @@ class PublicProfileTabs extends StatelessWidget {
             tab(1, 'En adopción'),
             tab(2, 'Casos'),
           ];
-          final reportButton = Tooltip(
-            message: 'Reportar',
-            child: TextButton(
-              onPressed: report,
-              style: TextButton.styleFrom(
-                minimumSize: Size.zero,
-                padding: const EdgeInsets.only(top: 10, bottom: 12),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                foregroundColor: muted,
-                textStyle: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 14,
-                  height: 1.171428571,
-                  fontWeight: FontWeight.w500,
+          final reportButton = ReferenceFocusOutline(
+            radius: 0,
+            child: Tooltip(
+              message: 'Reportar',
+              child: TextButton(
+                onPressed: report,
+                style: TextButton.styleFrom(
+                  minimumSize: Size.zero,
+                  padding: const EdgeInsets.only(top: 10, bottom: 12),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  foregroundColor: muted,
+                  textStyle: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                    height: 1.171428571,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
+                child: const Text('Reportar'),
               ),
-              child: const Text('Reportar'),
             ),
           );
           final requiredWidth =
