@@ -985,7 +985,9 @@ void main() {
           ? ChatHeaderCaptureCommunity()
           : spec.$1.startsWith('impact-feed')
           ? ImpactCaptureCommunity(spec.$1.contains('empty'))
-          : (spec.$1.startsWith('adoption-detail') ||
+          : (spec.$1 == 'adoption-swipe' ||
+                spec.$1 == 'adoption-large' ||
+                spec.$1.startsWith('adoption-detail') ||
                 spec.$1 == 'adoption-end' ||
                 spec.$1.startsWith('adoption-support') ||
                 spec.$1.startsWith('match-threads-photo') ||
@@ -1010,7 +1012,9 @@ void main() {
           'photos': ['fixture/one', 'fixture/two'],
         });
       }
-      if ((spec.$1.startsWith('adoption-detail') ||
+      if ((spec.$1 == 'adoption-swipe' ||
+          spec.$1 == 'adoption-large' ||
+          spec.$1.startsWith('adoption-detail') ||
           spec.$1 == 'adoption-end')) {
         community.post = Adoption({
           ...community.post.data,
