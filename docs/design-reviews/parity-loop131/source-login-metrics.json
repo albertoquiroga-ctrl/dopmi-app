@@ -1,0 +1,28 @@
+{
+  "sha": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "route": "/login/donor",
+  "viewportRequested": [
+    377,
+    852
+  ],
+  "cssSheetWidth": 345.600006,
+  "sheet": {
+    "y": 304.350006,
+    "height": 531.650024
+  },
+  "passwordGroup": {
+    "y": 506.350006,
+    "height": 71.800003
+  },
+  "forgot": {
+    "y": 590.150024,
+    "height": 16,
+    "width": 134.287506
+  },
+  "submit": {
+    "y": 618.150024,
+    "height": 52
+  },
+  "recoverySpan": 40,
+  "nativeRecoverySpan": 48
+}

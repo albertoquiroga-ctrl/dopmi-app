@@ -331,6 +331,14 @@ void main() {
       final forgot = find.widgetWithText(TextButton, 'Olvidé mi contraseña');
       await tester.ensureVisible(forgot);
       expect(tester.getSize(forgot).height, greaterThanOrEqualTo(48));
+      final passwordRect = tester.getRect(find.byType(TextFormField).last);
+      final forgotRect = tester.getRect(forgot);
+      final submitRect = tester.getRect(
+        find.widgetWithText(FilledButton, 'Inicia sesión'),
+      );
+      expect(forgotRect.top, closeTo(passwordRect.bottom, 0.5));
+      expect(submitRect.top, closeTo(forgotRect.bottom, 0.5));
+      expect(submitRect.top - passwordRect.bottom, closeTo(48, 0.5));
       await tester.tapAt(
         tester.getRect(forgot).bottomCenter - const Offset(0, 1),
       );

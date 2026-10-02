@@ -258,7 +258,7 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                                 : null
                           : validatePassword,
                     ),
-                    SizedBox(height: login || signup ? 12 : 16),
+                    if (!login) SizedBox(height: signup ? 12 : 16),
                   ],
                   if (signup || reset) ...[
                     PasswordField(
@@ -304,7 +304,9 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                                 extra: email.text.trim(),
                               ),
                         style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
+                          // Keep the label 12px below the field while the full
+                          // 48px target stays between password and submit.
+                          padding: const EdgeInsets.only(bottom: 8),
                           minimumSize: const Size(48, 48),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           splashFactory: NoSplash.splashFactory,
@@ -326,7 +328,7 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                       ),
                     ),
                   if (error != null) Notice(error!, isError: true),
-                  const SizedBox(height: 8),
+                  if (!login) const SizedBox(height: 8),
                   ActionButton(
                     switch (widget.mode) {
                       AuthFormMode.login => 'Inicia sesión',
