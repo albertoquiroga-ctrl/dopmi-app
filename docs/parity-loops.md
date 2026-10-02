@@ -2066,3 +2066,5 @@ Primera comparación detectó tarjeta centrada y demasiado alta: corregida aline
 CI37064192697 #436 exact122f64a8b8bf9ce33b8e84e7b19b142ddd1c99dc completed/success verificado263; precede bienvenida263. Codemagic final, publicación Play y Samsung pendientes; no prueba instalada de resultado financiero. Tab16cerrado, viewportrestaurado y servidor15456detenidoCtrlCexit1 esperado. Estados de error/pendiente siguen siguiente revisión. Archivos concurrentes del usuario preservados.
 
 Gate final263: flutter analyze --no-pub exit0 sin incidencias31.0s tras todos los ajustes. Formato3archivos sin cambios;42pruebas/captura aprobadas10s. No procesos Flutter pendientes.
+
+Checkpoint263: remoto25583bd6a640d5fe88b9018f8b581851d494bda7/baseba9f897 corroborados. PR6 actualizado; CI37066563308 #438 queued sobre25583bd. No atribuir aprobación integral ni Play a este checkpoint.
