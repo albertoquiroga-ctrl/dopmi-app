@@ -60,6 +60,7 @@ void main() {
       );
       final back = find.byKey(const ValueKey('owned-case-back'));
       expect(tester.getSize(back), const Size(48, 48));
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       Focus.of(
         tester.element(
           find
@@ -68,6 +69,10 @@ void main() {
         ),
       ).requestFocus();
       await tester.pump();
+      expect(backs, 0);
+      final outline = find.byKey(const ValueKey('reference-keyboard-outline'));
+      expect(outline, findsOneWidget);
+      expect(tester.getSize(outline), const Size(50, 50));
       await tester.sendKeyEvent(key);
       await tester.pumpAndSettle();
       expect(backs, 1);

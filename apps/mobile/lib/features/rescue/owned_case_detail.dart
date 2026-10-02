@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../core/reference_focus_outline.dart';
 import '../adoption/community_ui.dart';
 import 'rescue_repository.dart';
 import 'rescue_public_photo.dart';
@@ -299,34 +300,39 @@ class _OwnedCaseHeroState extends State<OwnedCaseHero> {
               label: 'Volver',
               onTap: widget.onBack,
               child: ExcludeSemantics(
-                child: InkWell(
-                  key: const ValueKey('owned-case-back'),
-                  excludeFromSemantics: true,
-                  splashFactory: NoSplash.splashFactory,
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  borderRadius: BorderRadius.circular(24),
-                  onTap: widget.onBack,
-                  child: SizedBox(
-                    width: 48,
-                    height: 48,
-                    child: Center(
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0x73000000),
-                        ),
-                        child: Center(
-                          child: SvgPicture.asset(
-                            'assets/profile/back.svg',
-                            width: 20,
-                            height: 20,
-                            colorFilter: const ColorFilter.mode(
-                              Colors.white,
-                              BlendMode.srcIn,
+                child: ReferenceFocusOutline(
+                  radius: 20,
+                  outlineInset: const EdgeInsets.all(4),
+                  child: InkWell(
+                    key: const ValueKey('owned-case-back'),
+                    excludeFromSemantics: true,
+                    splashFactory: NoSplash.splashFactory,
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    borderRadius: BorderRadius.circular(24),
+                    onTap: widget.onBack,
+                    child: SizedBox(
+                      width: 48,
+                      height: 48,
+                      child: Center(
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color(0x73000000),
+                          ),
+                          child: Center(
+                            child: SvgPicture.asset(
+                              'assets/profile/back.svg',
+                              width: 20,
+                              height: 20,
+                              colorFilter: const ColorFilter.mode(
+                                Colors.white,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
                         ),
