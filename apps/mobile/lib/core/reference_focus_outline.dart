@@ -7,10 +7,12 @@ class ReferenceFocusOutline extends StatefulWidget {
     required this.child,
     this.radius = 20,
     this.outlineInset = EdgeInsets.zero,
+    this.outlineBorderRadius,
   });
   final Widget child;
   final double radius;
   final EdgeInsets outlineInset;
+  final BorderRadius? outlineBorderRadius;
   @override
   State<ReferenceFocusOutline> createState() => _ReferenceFocusOutlineState();
 }
@@ -59,9 +61,11 @@ class _ReferenceFocusOutlineState extends State<ReferenceFocusOutline> {
                       color: const Color(0x4d7841f2),
                       width: 3,
                     ),
-                    borderRadius: BorderRadius.circular(
-                      widget.radius == 0 ? 0 : widget.radius + 5,
-                    ),
+                    borderRadius:
+                        widget.outlineBorderRadius ??
+                        BorderRadius.circular(
+                          widget.radius == 0 ? 0 : widget.radius + 5,
+                        ),
                   ),
                 ),
               ),

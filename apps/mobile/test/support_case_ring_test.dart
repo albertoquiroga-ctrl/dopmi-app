@@ -9,6 +9,68 @@ import 'package:go_router/go_router.dart';
 
 void main() {
   for (final large in [false, true]) {
+    for (final card in [false, true]) {
+      testWidgets('Guardian support focus shape; card=$card large=$large', (
+        tester,
+      ) async {
+        tester.view.physicalSize = const Size(320, 640);
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        final destinations = <String>[];
+        final router = GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, _) => Scaffold(
+                body: SingleChildScrollView(
+                  child: Center(
+                    child: SizedBox(
+                      width: 280,
+                      child: card
+                          ? GuardianSupportCard(height: large ? 780 : 300)
+                          : const GuardianSupportDock(),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            GoRoute(
+              path: '/guardian',
+              builder: (_, state) {
+                destinations.add(state.uri.toString());
+                return const Scaffold(body: Text('Presentación Guardian'));
+              },
+            ),
+          ],
+        );
+        addTearDown(router.dispose);
+        await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+        await tester.pumpAndSettle();
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
+        final decoration =
+            tester
+                    .widget<DecoratedBox>(
+                      find.byKey(const ValueKey('reference-keyboard-outline')),
+                    )
+                    .decoration
+                as BoxDecoration;
+        expect(
+          decoration.borderRadius,
+          card
+              ? const BorderRadius.vertical(top: Radius.circular(33))
+              : BorderRadius.zero,
+        );
+        expect(destinations, isEmpty);
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        expect(destinations, ['/guardian?enroll=1']);
+        expect(tester.takeException(), isNull);
+      });
+    }
     testWidgets('support rail drag does not open a case; large=$large', (
       tester,
     ) async {
