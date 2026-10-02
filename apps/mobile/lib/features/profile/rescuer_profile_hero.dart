@@ -16,6 +16,19 @@ class RescuerProfileHero extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => LiveSection<Json>(
     tables: const ['dopmi_rescue_records', 'dopmi_donations'],
     load: () => ref.read(rescueRepositoryProvider).dashboard(),
+    statusFrame: (content) => Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        RescuerIdentityCard(
+          name: profile.name,
+          city: profile.city,
+          status: 'unavailable',
+          onEdit: () {},
+        ),
+        const SizedBox(height: 18),
+        content,
+      ],
+    ),
     builder: (data, _) => Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
