@@ -162,7 +162,7 @@ void main() {
   }
 
   testWidgets(
-    'owner gallery dots select actual photos, swipe changes counter and changed record resets index',
+    'owner gallery Tab Enter Space and touch select photos; swipe and changed record reset correctly',
     (tester) async {
       final rescue = PhotoPublicCaseRescue();
       var record = RescueRecord({
@@ -187,6 +187,28 @@ void main() {
       }
 
       await show();
+      expect(find.text('1 / 3'), findsOneWidget);
+      final firstDot = find.byKey(const ValueKey('owned-case-photo-0'));
+      Focus.of(
+        tester.element(
+          find
+              .descendant(of: firstDot, matching: find.byType(GestureDetector))
+              .first,
+        ),
+      ).requestFocus();
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(find.text('2 / 3'), findsOneWidget);
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await tester.pumpAndSettle();
+      expect(find.text('3 / 3'), findsOneWidget);
+      await tester.tap(firstDot);
+      await tester.pumpAndSettle();
       expect(find.text('1 / 3'), findsOneWidget);
       final selector = find.byKey(const ValueKey('owned-case-photo-selector'));
       final rect = tester.getRect(selector);
