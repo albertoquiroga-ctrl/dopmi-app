@@ -1,3 +1,5 @@
+import 'package:dopmi_mobile/features/profile/rescuer_logout_row.dart';
+import 'package:dopmi_mobile/features/profile/rescuer_profile_access.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_repository.dart';
 
 import '../test/rescuer_profile_test.dart' show FakeRescuerProfile;
@@ -1484,6 +1486,11 @@ void main() {
             alignment: .7,
           );
           await tester.pumpAndSettle();
+          final helpBottom = tester
+              .getBottomLeft(find.byType(RescuerNavigationRow))
+              .dy;
+          final logoutTop = tester.getTopLeft(find.byType(RescuerLogoutRow)).dy;
+          expect(logoutTop - helpBottom, closeTo(10, 1));
         }
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),

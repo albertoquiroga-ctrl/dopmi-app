@@ -1340,11 +1340,12 @@ class SettingsScreen extends ConsumerWidget {
         children: [
           const RescuerSettingsVerification(),
           const RescuerSettingsModeSwitch(),
-          const ProfileRow(
+          const RescuerNavigationRow(
             title: 'Centro de ayuda',
-            icon: Icons.help_outline,
+            icon: 'icon-help',
             path: '/help',
           ),
+          const SizedBox(height: 10),
           RescuerLogoutRow(onLogout: logout),
           TextButton(
             onPressed: () => context.push('/settings/account'),

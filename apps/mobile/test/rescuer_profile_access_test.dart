@@ -1,3 +1,6 @@
+import 'dart:ui' show PointerDeviceKind;
+
+import 'package:flutter/services.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_repository.dart';
 
 import 'rescuer_profile_test.dart' show FakeRescuerProfile;
@@ -21,6 +24,76 @@ import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
 
 void main() {
+  testWidgets('navigation hover is immediate and keyboard focus opens help', (
+    tester,
+  ) async {
+    FocusManager.instance.highlightStrategy =
+        FocusHighlightStrategy.alwaysTraditional;
+    addTearDown(
+      () => FocusManager.instance.highlightStrategy =
+          FocusHighlightStrategy.automatic,
+    );
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (_, _) => const Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 320,
+                child: RescuerNavigationRow(
+                  title: 'Centro de ayuda',
+                  icon: 'icon-help',
+                  path: '/help',
+                ),
+              ),
+            ),
+          ),
+        ),
+        GoRoute(
+          path: '/help',
+          builder: (_, _) => const Scaffold(body: Text('Help destination')),
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+    await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+    await tester.pumpAndSettle();
+    Color borderColor() =>
+        ((tester
+                            .widget<Container>(
+                              find.byKey(
+                                const ValueKey('rescuer-navigation-card'),
+                              ),
+                            )
+                            .decoration
+                        as BoxDecoration)
+                    .border
+                as Border)
+            .top
+            .color;
+    expect(borderColor(), const Color(0xffe6e2dd));
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(tester.getCenter(find.text('Centro de ayuda')));
+    await tester.pump();
+    expect(borderColor(), const Color(0xffd8d2ca));
+    await mouse.moveTo(Offset.zero);
+    await tester.pump();
+    expect(borderColor(), const Color(0xffe6e2dd));
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pump();
+    expect(
+      find.byKey(const ValueKey('rescuer-navigation-focus')),
+      findsOneWidget,
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.text('Help destination'), findsOneWidget);
+    await mouse.removePointer();
+    expect(tester.takeException(), isNull);
+  });
+
   for (final item in [
     ('Configuración', '/settings'),
     ('Mis casos', '/my-cases'),
@@ -137,6 +210,19 @@ void main() {
         );
         expect((row as ProfileRow).path, entry.value);
       }
+      await tester.tap(find.byTooltip('Regresar'));
+      await tester.pumpAndSettle();
+      final help = find.text('Centro de ayuda');
+      await tester.scrollUntilVisible(
+        help,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await Scrollable.ensureVisible(tester.element(help), alignment: .5);
+      await tester.pumpAndSettle();
+      await tester.tap(help);
+      await tester.pumpAndSettle();
+      expect(find.byType(HelpScreen), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
