@@ -1,3 +1,4 @@
+
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
@@ -5,6 +6,7 @@ import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -668,7 +670,12 @@ void main() {
     expect(find.text('Aclara la ubicación aproximada.'), findsOneWidget);
     expect(find.text('Corregir publicación'), findsOneWidget);
   });
-  for (final entry in ['Suscríbete ahora', 'Apoya a casos urgentes']) {
+  for (final entry in [
+    'Suscríbete ahora',
+    'Apoya a casos urgentes',
+    'keyboard-enter',
+    'keyboard-space',
+  ]) {
     testWidgets(
       'empty support $entry remains usable with large text and opens Guardian without activating it',
       (tester) async {
@@ -708,21 +715,50 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(find.text('No hay casos para apoyar'), findsOneWidget);
+        final label = entry.startsWith('keyboard-')
+            ? 'Apoya a casos urgentes'
+            : entry;
         await tester.scrollUntilVisible(
-          find.text(entry),
+          find.text(label),
           200,
           scrollable: find.byType(Scrollable).first,
         );
         await tester.pumpAndSettle();
         await Scrollable.ensureVisible(
-          tester.element(find.text(entry)),
+          tester.element(find.text(label)),
           alignment: .5,
         );
         await tester.pumpAndSettle();
-        expect(tester.getBottomRight(find.text(entry)).dy, lessThan(540));
+        expect(tester.getBottomRight(find.text(label)).dy, lessThan(540));
         expect(tester.takeException(), isNull);
-        await tester.tap(find.text(entry));
-        await tester.pumpAndSettle();
+        final semantics = tester.ensureSemantics();
+        try {
+          await tester.pump();
+          final card = find.byKey(
+            const ValueKey('guardian-support-card-action'),
+          );
+          final data = tester.getSemantics(card).getSemanticsData();
+          expect(data.flagsCollection.isButton, isTrue);
+          expect(data.hasAction(SemanticsAction.tap), isTrue);
+          expect(data.label, contains('Apoya a casos urgentes'));
+          if (entry.startsWith('keyboard-')) {
+            final gesture = find
+                .descendant(of: card, matching: find.byType(GestureDetector))
+                .first;
+            Focus.of(tester.element(gesture)).requestFocus();
+            await tester.pumpAndSettle();
+            await tester.sendKeyEvent(
+              entry == 'keyboard-space'
+                  ? LogicalKeyboardKey.space
+                  : LogicalKeyboardKey.enter,
+            );
+          } else {
+            await tester.tap(find.text(label));
+          }
+          await tester.pumpAndSettle();
+        } finally {
+          semantics.dispose();
+        }
         expect(find.byType(GuardianScreen), findsOneWidget);
         expect(guardian.reads, greaterThan(0));
         expect(guardian.calls, isEmpty);
