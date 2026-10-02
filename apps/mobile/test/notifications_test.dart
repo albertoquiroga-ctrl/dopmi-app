@@ -58,6 +58,56 @@ class PagedNotifications extends NotificationCommunity {
 }
 
 void main() {
+  testWidgets(
+    'compact time exposes the precise date without opening the notice',
+    (tester) async {
+      var taps = 0;
+      final created = DateTime.now()
+          .subtract(const Duration(minutes: 5))
+          .toUtc()
+          .toIso8601String();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: NotificationTile({
+              'kind': 'message',
+              'title': 'Aviso real',
+              'created_at': created,
+              'read_at': null,
+            }, onTap: () => taps++),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final precise = tester.widget<Tooltip>(find.byType(Tooltip)).message!;
+      await tester.longPress(find.text('Hace 5 min'));
+      await tester.pumpAndSettle();
+      expect(find.text(precise), findsOneWidget);
+      expect(taps, 0);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  test('notification time uses actual elapsed time and calendar days', () {
+    final now = DateTime(2026, 10, 2, 12, 0);
+    String at(DateTime date) =>
+        notificationTime(date.toIso8601String(), now: now);
+    expect(at(now.subtract(const Duration(seconds: 30))), 'Ahora');
+    expect(at(now.subtract(const Duration(minutes: 5))), 'Hace 5 min');
+    expect(at(now.subtract(const Duration(hours: 2))), 'Hace 2 h');
+    expect(at(DateTime(2026, 10, 1, 23, 59)), 'Ayer');
+    expect(at(DateTime(2026, 9, 30)), 'Hace 2 días');
+    expect(at(DateTime(2026, 9, 25)), '25/9/2026');
+    expect(notificationTime('invalid', now: now), '');
+    expect(at(now.add(const Duration(minutes: 5))), '2/10/2026 12:05');
+    final midnight = DateTime(2026, 10, 2, 0, 1);
+    expect(
+      notificationTime(
+        DateTime(2026, 10, 1, 23, 59).toIso8601String(),
+        now: midnight,
+      ),
+      'Ayer',
+    );
+  });
   testWidgets('notification header keyboard returns to its fallback profile', (
     tester,
   ) async {

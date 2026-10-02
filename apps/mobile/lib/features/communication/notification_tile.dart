@@ -6,6 +6,27 @@ import '../../core/ui.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart' show localDate;
 
+String notificationTime(String value, {DateTime? now}) {
+  final date = DateTime.tryParse(value)?.toLocal();
+  if (date == null) return '';
+  final current = (now ?? DateTime.now()).toLocal();
+  final elapsed = current.difference(date);
+  if (elapsed.isNegative) return localDate(value);
+  final days = DateTime.utc(
+    current.year,
+    current.month,
+    current.day,
+  ).difference(DateTime.utc(date.year, date.month, date.day)).inDays;
+  if (days == 0) {
+    if (elapsed.inMinutes == 0) return 'Ahora';
+    if (elapsed.inHours == 0) return 'Hace ${elapsed.inMinutes} min';
+    return 'Hace ${elapsed.inHours} h';
+  }
+  if (days == 1) return 'Ayer';
+  if (days < 7) return 'Hace $days días';
+  return '${date.day}/${date.month}/${date.year}';
+}
+
 class NotificationTile extends StatelessWidget {
   const NotificationTile(this.item, {super.key, required this.onTap});
   final Json item;
@@ -30,13 +51,16 @@ class NotificationTile extends StatelessWidget {
         color: ink,
       ),
     );
-    final time = Text(
-      localDate(item['created_at'] as String),
-      style: const TextStyle(
-        fontSize: 12,
-        height: 1.2,
-        letterSpacing: 0,
-        color: muted,
+    final time = Tooltip(
+      message: localDate(item['created_at'] as String),
+      child: Text(
+        notificationTime(item['created_at'] as String),
+        style: const TextStyle(
+          fontSize: 12,
+          height: 1.2,
+          letterSpacing: 0,
+          color: muted,
+        ),
       ),
     );
     return Padding(
