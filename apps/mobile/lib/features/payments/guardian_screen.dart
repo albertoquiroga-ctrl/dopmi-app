@@ -19,6 +19,7 @@ import 'guardian_amount_dialog.dart';
 import 'guardian_history_screen.dart';
 import 'guardian_enrollment_amount.dart';
 import 'guardian_enrollment_confirmation.dart';
+import 'guardian_activation_success.dart';
 
 class GuardianScreen extends ConsumerStatefulWidget {
   const GuardianScreen({super.key, this.initialEnrollment = false});
@@ -35,6 +36,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   Json? data, intent;
   bool busy = true, consent = false, fresh = false, confirming = false;
   String? error, message;
+  String? confirmedActivationKey;
+  int? confirmedActivationCents;
   late final String owner;
   String get storageKey => 'dopmi-guardian:$owner:intent';
   bool get current =>
@@ -133,6 +136,15 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       final result = await ref.read(guardianRepositoryProvider).state();
       if (!current) return;
       data = result;
+      if (intent?['kind'] == 'checkout' &&
+          plan?['status'] == 'active' &&
+          activation?['status'] == 'active' &&
+          activation?['key'] == intent?['key'] &&
+          activation?['gross_cents'] == intent?['cents'] &&
+          plan?['gross_cents'] == intent?['cents']) {
+        confirmedActivationKey = intent!['key'] as String;
+        confirmedActivationCents = intent!['cents'] as int;
+      }
       if (intent?['kind'] == 'checkout' &&
           (plan != null ||
               activation?['status'] == 'funded_pending_schedule')) {
@@ -422,6 +434,22 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   @override
   Widget build(BuildContext context) {
     final enabled = ref.watch(guardianEnabledProvider);
+    if (enabled &&
+        current &&
+        fresh &&
+        !busy &&
+        confirmedActivationKey != null &&
+        activation?['key'] == confirmedActivationKey &&
+        activation?['gross_cents'] == confirmedActivationCents &&
+        plan?['gross_cents'] == confirmedActivationCents &&
+        activation?['status'] == 'active' &&
+        plan?['status'] == 'active') {
+      return GuardianActivationSuccess(
+        cents: plan!['gross_cents'] as int,
+        nextBilling: plan!['next_billing_at'] as String?,
+        onReturn: () => context.go('/rescue-cases'),
+      );
+    }
     final p = plan;
     final pending = p?['pending_request'];
     final status = p?['status'];

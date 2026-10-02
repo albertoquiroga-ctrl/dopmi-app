@@ -1,10 +1,10 @@
 # Corte de evidencia de paridad — 2/10/2026
 
 Referencia: `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
-Corte integral aprobado: `6a4f7893aa0ec66b815417a66ce1e49c6a5c456c`,
-run37061193420 #434 completed/success, verificado en loop262.
+Corte integral aprobado: `122f64a8b8bf9ce33b8e84e7b19b142ddd1c99dc`,
+run37064192697 #436 completed/success, verificado en loop263.
 Incluye mazo257, teclado258, galería/selector259, regresión260 e Inicio261.
-Precede cambios de campo/regreso/carrusel Guardian262.
+Incluye campo/regreso/carrusel Guardian262; precede bienvenida263.
 Este inventario organiza revisión pendiente y evidencia técnica; no acredita
 aceptación global ni instalada. Entradas históricas debajo están fechadas.
 
@@ -18,8 +18,9 @@ sin evidencia. Capturas normal/large en `design-reviews/parity-loop260`.
 Datos Connect/verificación/revisión reales conservados. CI432 aún ejecutándose;
 esto no acredita aceptación en Samsung ni paridad completa.
 
-`apps/mobile/tool/capture_profile_test.dart` contiene **258 estados en 29 URLs**:
-256 recontados en loop259 y dos estados de evidencia pendiente añadidos261.
+`apps/mobile/tool/capture_profile_test.dart` contiene **260 estados en 29 URLs**:
+256 recontados en loop259, dos estados de evidencia pendiente añadidos261 y
+dos de bienvenida Guardian263. Confirmación depende del servidor y mismo intento.
 Incluye conversación con300px de teclado simulado y cuatro nuevos estados de
 galería/selector de monto del caso, normal/200%.
 El último CI integral aprobado capturó258 estados. No son258 pantallas aceptadas,

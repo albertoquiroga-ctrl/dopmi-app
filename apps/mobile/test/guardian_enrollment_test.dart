@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
@@ -54,6 +55,90 @@ void main() {
       UncontrolledProviderScope(container: container, child: const DopmiApp()),
     );
     await tester.pumpAndSettle();
+  }
+
+  testWidgets(
+    'Matching server activation welcomes its owner without another charge',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({
+        'dopmi-guardian:one:intent': jsonEncode({
+          'kind': 'checkout',
+          'key': 'confirmed-one',
+          'cents': 7525,
+          'consent_version': guardianConsent,
+        }),
+      });
+      final repo = FakeGuardian()
+        ..value = {
+          'plan': {
+            ...activePlan(),
+            'gross_cents': 7525,
+            'next_billing_at': '2026-11-02T18:00:00Z',
+          },
+          'activation': {
+            'status': 'active',
+            'key': 'confirmed-one',
+            'gross_cents': 7525,
+          },
+        };
+      await start(tester, repo);
+      expect(find.text('¡Ya eres Guardián!'), findsOneWidget);
+      expect(find.text('Próximo cargo: 2 de noviembre, 2026'), findsOneWidget);
+      expect(repo.calls, isEmpty);
+      expect(repo.opened, 0);
+      expect(
+        (await SharedPreferences.getInstance()).getString(
+          'dopmi-guardian:one:intent',
+        ),
+        isNull,
+      );
+      tester.view.physicalSize = const Size(320, 640);
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Volver a Apoyar'));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      await tester.tap(find.text('Volver a Apoyar'));
+      await tester.pumpAndSettle();
+      expect(find.text('¡Ya eres Guardián!'), findsNothing);
+      expect(repo.calls, isEmpty);
+    },
+  );
+
+  for (final state in [
+    'funded_pending_schedule',
+    'attention',
+    'failed',
+    'expired',
+    'refunded',
+    'unrelated',
+  ]) {
+    testWidgets('Activation $state never claims matching active membership', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'dopmi-guardian:one:intent': jsonEncode({
+          'kind': 'checkout',
+          'key': 'confirmed-one',
+          'cents': 5000,
+          'consent_version': guardianConsent,
+        }),
+      });
+      final repo = FakeGuardian()
+        ..value = {
+          'plan': state == 'unrelated' ? activePlan() : null,
+          'activation': {
+            'status': state == 'unrelated' ? 'active' : state,
+            'key': state == 'unrelated' ? 'another-attempt' : 'confirmed-one',
+            'gross_cents': 5000,
+          },
+        };
+      await start(tester, repo);
+      expect(find.text('¡Ya eres Guardián!'), findsNothing);
+      expect(repo.calls, isEmpty);
+      expect(repo.opened, 0);
+    });
   }
 
   testWidgets(

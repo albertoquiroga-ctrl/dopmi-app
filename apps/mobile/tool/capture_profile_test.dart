@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import '../test/notifications_test.dart' show NotificationCommunity;
 
@@ -801,6 +802,8 @@ void main() {
       ('guardian-billing-enrollment-confirmation-large', '/guardian'),
       ('guardian-billing-active', '/guardian'),
       ('guardian-billing-active-large', '/guardian'),
+      ('guardian-activation-success', '/guardian'),
+      ('guardian-activation-success-large', '/guardian'),
       ('payment-history', '/payments'),
       ('payment-history-large', '/payments'),
       ('payment-history-empty', '/payments'),
@@ -983,6 +986,30 @@ void main() {
                   spec.$1.contains('enrollment'),
             )
           : FakeGuardian();
+      if (spec.$1.startsWith('guardian-activation-success')) {
+        // Synthetic checkout is scoped to this flutter_test capturer.
+        // ignore: invalid_use_of_visible_for_testing_member
+        SharedPreferences.setMockInitialValues({
+          'dopmi-guardian:one:intent': jsonEncode({
+            'kind': 'checkout',
+            'key': 'capture-confirmed',
+            'cents': 7525,
+            'consent_version': guardianConsent,
+          }),
+        });
+        guardian.value = {
+          'plan': {
+            ...activePlan(),
+            'gross_cents': 7525,
+            'next_billing_at': '2026-11-02T18:00:00Z',
+          },
+          'activation': {
+            'status': 'active',
+            'key': 'capture-confirmed',
+            'gross_cents': 7525,
+          },
+        };
+      }
       final community = spec.$1.startsWith('notifications-reference-kinds')
           ? NotificationKindsCaptureCommunity()
           : spec.$1.startsWith('support-home-notification-badge')
@@ -1491,6 +1518,10 @@ void main() {
           tester.element(find.text('Historial de pagos')),
           alignment: .1,
         );
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1 == 'guardian-activation-success-large') {
+        await tester.ensureVisible(find.text('Volver a Apoyar'));
         await tester.pumpAndSettle();
       }
       if (spec.$1 == 'guardian-billing-receipt') {
