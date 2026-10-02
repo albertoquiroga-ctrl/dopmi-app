@@ -966,6 +966,19 @@ void main() {
       }
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1 == 'support-home') {
+        // Source dock measured in IAB377x852, a3c969c.
+        final cta = tester.getRect(
+          find.byKey(const ValueKey('guardian-support-cta')),
+        );
+        final price = tester.getRect(find.text('Desde \$50 / mes'));
+        expect(cta.top, closeTo(716, 1));
+        expect(cta.height, closeTo(44, 1));
+        expect(cta.width, closeTo(152.4, 1));
+        expect(cta.left, closeTo(189.2, 1));
+        expect(price.width, closeTo(114.475, 1));
+        expect(price.top, closeTo(729.6, 1));
+      }
       if (spec.$1 == 'adoption-empty') {
         // Effective Source cascade measured in IAB at377x852, a3c969c.
         final card = tester.getRect(

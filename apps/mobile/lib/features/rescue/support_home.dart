@@ -499,6 +499,10 @@ class GuardianSupportDock extends StatelessWidget {
     button: true,
     label: 'Suscríbete a Guardián, desde 50 pesos al mes',
     child: InkWell(
+      splashFactory: NoSplash.splashFactory,
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      hoverColor: Colors.transparent,
       onTap: () => context.push('/guardian?enroll=1'),
       borderRadius: BorderRadius.circular(24),
       child: LayoutBuilder(
@@ -509,10 +513,12 @@ class GuardianSupportDock extends StatelessWidget {
               fontFamily: 'Inter',
               fontSize: 14,
               fontWeight: FontWeight.w600,
+              height: 1.2,
+              letterSpacing: 0,
               color: Colors.white,
               shadows: [
                 Shadow(
-                  color: Color(0x5915110d),
+                  color: Color(0x59000000),
                   offset: Offset(0, 1),
                   blurRadius: 2,
                 ),
@@ -520,6 +526,8 @@ class GuardianSupportDock extends StatelessWidget {
             ),
           );
           final button = Container(
+            key: const ValueKey('guardian-support-cta'),
+            alignment: Alignment.center,
             constraints: const BoxConstraints(minHeight: 44),
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
             decoration: BoxDecoration(
@@ -541,6 +549,7 @@ class GuardianSupportDock extends StatelessWidget {
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
                 height: 1.2,
+                letterSpacing: 0,
                 color: ink,
               ),
             ),
@@ -554,12 +563,15 @@ class GuardianSupportDock extends StatelessWidget {
                   fontFamily: 'Inter',
                   fontSize: 14,
                   fontWeight: weight,
+                  letterSpacing: 0,
                 ),
               ),
               textScaler: scaler,
               textDirection: Directionality.of(context),
             )..layout();
-            return painter.width;
+            final width = painter.width;
+            painter.dispose();
+            return width;
           }
 
           if (scaler.scale(14) > 20 ||
