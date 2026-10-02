@@ -806,6 +806,12 @@ void main() {
       ('guardian-activation-success-large', '/guardian'),
       ('guardian-activation-failed', '/guardian'),
       ('guardian-activation-failed-large', '/guardian'),
+      ('saved-adoptions', '/saved'),
+      ('saved-adoptions-large', '/saved'),
+      ('saved-adoptions-empty', '/saved'),
+      ('saved-adoptions-empty-large', '/saved'),
+      ('saved-rescuers-empty', '/saved?kind=rescuer'),
+      ('saved-rescuers-empty-large', '/saved?kind=rescuer'),
       ('payment-history', '/payments'),
       ('payment-history-large', '/payments'),
       ('payment-history-empty', '/payments'),
@@ -1014,7 +1020,9 @@ void main() {
           },
         };
       }
-      final community = spec.$1.startsWith('notifications-reference-kinds')
+      final community = spec.$1.startsWith('saved-adoptions-empty')
+          ? (FakeCommunity()..savedItems = [])
+          : spec.$1.startsWith('notifications-reference-kinds')
           ? NotificationKindsCaptureCommunity()
           : spec.$1.startsWith('support-home-notification-badge')
           ? NotificationCountCaptureCommunity()

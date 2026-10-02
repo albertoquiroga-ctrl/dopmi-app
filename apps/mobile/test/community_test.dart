@@ -714,6 +714,9 @@ void main() {
     final repo = FakeCommunity();
     await start(tester, repo, '/saved');
     expect(find.text('Luna'), findsOneWidget);
+    expect(find.text('Mis mascotas'), findsOneWidget);
+    await tester.tap(find.byTooltip('Tipos de guardados'));
+    await tester.pumpAndSettle();
     expect(find.text('Adopción'), findsOneWidget);
     expect(find.text('Donación'), findsOneWidget);
     await tester.tap(find.text('Donación'));
@@ -722,6 +725,29 @@ void main() {
       find.text('Guarda un caso desde Apoyar para encontrarlo aquí.'),
       findsOneWidget,
     );
+  });
+  testWidgets('failed saved removal keeps the item and remains retryable', (
+    tester,
+  ) async {
+    final repo = FakeCommunity()..failFavorite = true;
+    await start(tester, repo, '/saved');
+    await tester.tap(find.byTooltip('Quitar de guardados'));
+    await tester.pumpAndSettle();
+    expect(find.text('Luna'), findsOneWidget);
+    expect(find.text(communityError(Exception('offline'))), findsOneWidget);
+    expect(
+      tester
+          .widget<IconButton>(
+            find.byWidgetPredicate(
+              (widget) =>
+                  widget is IconButton &&
+                  widget.tooltip == 'Quitar de guardados',
+            ),
+          )
+          .onPressed,
+      isNotNull,
+    );
+    expect(tester.takeException(), isNull);
   });
   testWidgets(
     'public rescuer can be saved and reported with server acknowledgement',

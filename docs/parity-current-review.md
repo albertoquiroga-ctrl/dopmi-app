@@ -2,9 +2,10 @@
 
 Referencia: `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
 Auditoría vigente loop265: [rutas y pendientes concretos](parity-route-audit-2026-10-02.md).
-Guardados, Información básica, Ayuda y Editor público conservan composición
-genérica confirmada en código. Son pendientes de implementación/revisión, no
-un conteo final de pantallas sin aceptación. Próximo bloque: Guardados.
+Loop266 sustituye composición genérica de Guardados y añade seis capturas;
+faltan contraste de rescatistas poblados y estados de retiro/paginación.
+Información básica, Ayuda y Editor público siguen pendientes concretos. No es
+un conteo final de pantallas sin aceptación. Próximo bloque: cerrar Guardados.
 Corte integral aprobado: `122f64a8b8bf9ce33b8e84e7b19b142ddd1c99dc`,
 run37064192697 #436 completed/success, verificado en loop263.
 Incluye mazo257, teclado258, galería/selector259, regresión260 e Inicio261.
@@ -22,7 +23,7 @@ sin evidencia. Capturas normal/large en `design-reviews/parity-loop260`.
 Datos Connect/verificación/revisión reales conservados. CI432 aún ejecutándose;
 esto no acredita aceptación en Samsung ni paridad completa.
 
-`apps/mobile/tool/capture_profile_test.dart` contiene **262 estados en 29 URLs**:
+`apps/mobile/tool/capture_profile_test.dart` contiene **268 estados en 31 URLs**:
 256 recontados en loop259, dos estados de evidencia pendiente añadidos261 y
 dos de bienvenida Guardian263 y dos de fallo Guardian264. Ambos resultados
 dependen del servidor y mismo intento; reintento exige autorización nueva.
@@ -46,6 +47,8 @@ usan fixtures de prueba: no acreditan sesión, Storage ni pagos reales.
 | `/rescue-cases/case-one` | 16 |
 | `/contribute/Cirugía?case=case-one&amount_cents=10000` | 7 |
 | `/guardian` | 20 |
+| `/saved` | 4 |
+| `/saved?kind=rescuer` | 2 |
 | `/impact?history=1` | 4 |
 | `/impact` | 2 |
 | `/impact/guardian` | 6 |
