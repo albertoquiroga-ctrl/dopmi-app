@@ -15,6 +15,17 @@ import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
 import 'rescue_test.dart' show FakeRescue;
 
+class RetryInbox extends FakeCommunity {
+  bool failing = true;
+  int requests = 0;
+  @override
+  Future<DataPage<Json>> threads(int page, {String search = ''}) async {
+    requests++;
+    if (failing) throw const FormatException('Offline fixture');
+    return super.threads(page, search: search);
+  }
+}
+
 void main() {
   Future<ProviderContainer> start(
     WidgetTester tester,
@@ -51,6 +62,34 @@ void main() {
     return container;
   }
 
+  testWidgets(
+    'rescuer inbox retries a failed request without presenting a false empty state',
+    (tester) async {
+      final repo = RetryInbox()
+        ..threadItems = [
+          {
+            'id': 'thread-one',
+            'participant_name': 'Ana',
+            'pet_name': 'Luna',
+            'last_message': 'Mensaje recuperado',
+            'unread_count': 1,
+            'status': 'active',
+          },
+        ];
+      await start(tester, repo, false);
+      expect(find.text('No tienes mensajes'), findsNothing);
+      expect(find.byType(RescuerThreadRow), findsNothing);
+      final before = repo.requests;
+      repo.failing = false;
+      await tester.tap(find.text('Volver a intentar'));
+      await tester.pumpAndSettle();
+      expect(repo.requests, greaterThan(before));
+      expect(find.text('Mensaje recuperado'), findsOneWidget);
+      expect(find.text('Volver a intentar'), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   for (final large in [false, true]) {
     testWidgets('rescuer empty inbox opens actual publication; large=$large', (
       tester,
@@ -81,7 +120,8 @@ void main() {
           ..threadItems = [
             {
               'id': 'thread-one',
-              'participant_name': 'Ana',
+              'participant_name': 'Ana Patricia Hernandez',
+              'updated_at': '2025-09-30T18:30:00Z',
               'pet_name': 'Luna',
               'unread_count': 3,
               'last_message': 'Hola Luna',

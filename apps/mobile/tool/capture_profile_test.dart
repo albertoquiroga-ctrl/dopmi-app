@@ -911,7 +911,8 @@ void main() {
             : [
                 {
                   'id': 'thread-one',
-                  'participant_name': 'Ana P.',
+                  'participant_name': 'Ana Patricia Hernandez',
+                  'updated_at': '2025-09-30T18:30:00Z',
                   'pet_name': 'Luna',
                   'last_message': 'Perfecto. Nos vemos el fin de semana.',
                   'unread_count': 3,

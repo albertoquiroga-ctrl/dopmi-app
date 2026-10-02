@@ -322,10 +322,11 @@ class _RescuerThreadRowState extends State<RescuerThreadRow> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
+                        if (MediaQuery.textScalerOf(context).scale(16) > 20)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
                                 name.isEmpty ? 'Participante' : name,
                                 style: const TextStyle(
                                   fontFamily: 'Inter',
@@ -336,23 +337,53 @@ class _RescuerThreadRowState extends State<RescuerThreadRow> {
                                   color: _ink,
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              MatchThreadRow(
-                                thread,
-                                open: widget.open,
-                              ).activity(DateTime.now()),
-                              style: const TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 12,
-                                height: 15.2 / 12,
-                                letterSpacing: 0,
-                                color: _muted,
+                              Text(
+                                MatchThreadRow(
+                                  thread,
+                                  open: widget.open,
+                                ).activity(DateTime.now()),
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 12,
+                                  height: 15.2 / 12,
+                                  letterSpacing: 0,
+                                  color: _muted,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          )
+                        else
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  name.isEmpty ? 'Participante' : name,
+                                  style: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 16,
+                                    height: 1.2,
+                                    letterSpacing: 0,
+                                    fontWeight: FontWeight.w600,
+                                    color: _ink,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                MatchThreadRow(
+                                  thread,
+                                  open: widget.open,
+                                ).activity(DateTime.now()),
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 12,
+                                  height: 15.2 / 12,
+                                  letterSpacing: 0,
+                                  color: _muted,
+                                ),
+                              ),
+                            ],
+                          ),
                         const SizedBox(height: 1),
                         Text(
                           'Sobre ${thread['pet_name'] ?? 'la mascota'}',
