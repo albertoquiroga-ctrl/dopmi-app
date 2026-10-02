@@ -228,7 +228,7 @@ class ImpactCaseCard extends StatelessWidget {
       ],
     );
     final share = OutlinedButton.icon(
-      onPressed: () => copyForSharing(
+      onPressed: () => shareContent(
         context,
         'Conoce el caso $name en Dopmi. Caso ${item['case_id']}',
       ),

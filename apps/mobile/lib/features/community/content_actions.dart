@@ -1,14 +1,56 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/ui.dart';
 
-Future<void> copyForSharing(BuildContext context, String text) async {
-  await Clipboard.setData(ClipboardData(text: text));
-  if (context.mounted) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Información copiada para compartir.')),
+bool _sharing = false;
+
+Future<void> shareContent(BuildContext context, String text) async {
+  if (_sharing) return;
+  _sharing = true;
+  try {
+    final box = context.findRenderObject();
+    await SharePlus.instance.share(
+      ShareParams(
+        text: text,
+        sharePositionOrigin: box is RenderBox
+            ? box.localToGlobal(Offset.zero) & box.size
+            : null,
+      ),
     );
+  } catch (_) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'No pudimos abrir las opciones para compartir. Intenta de nuevo.',
+          ),
+        ),
+      );
+    }
+  } finally {
+    _sharing = false;
+  }
+}
+
+Future<void> openPublicSocialUrl(BuildContext context, String value) async {
+  final uri = Uri.tryParse(value);
+  try {
+    if (uri == null ||
+        !['https', 'http'].contains(uri.scheme) ||
+        uri.host.isEmpty ||
+        !await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      throw const FormatException('Unavailable link');
+    }
+  } catch (_) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No pudimos abrir esta red social. Intenta de nuevo.'),
+        ),
+      );
+    }
   }
 }
 

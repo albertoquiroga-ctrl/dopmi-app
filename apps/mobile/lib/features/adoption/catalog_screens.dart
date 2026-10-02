@@ -391,7 +391,7 @@ class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
   }
 
   Future<void> share(Adoption post) async {
-    await copyForSharing(
+    await shareContent(
       context,
       'Conoce la historia de ${post.name} en Dopmi. Publicación ${post.id}',
     );
@@ -550,7 +550,7 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
 
   @override
   Widget build(BuildContext context) => PublicProfileFrame(
-    share: () => copyForSharing(
+    share: () => shareContent(
       context,
       'Conoce este perfil en Dopmi. Perfil ${widget.id}',
     ),
@@ -590,7 +590,7 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
               PublicProfileSocials(
                 instagram: profile['instagram_url'] as String? ?? '',
                 facebook: profile['facebook_url'] as String? ?? '',
-                open: (url) => copyForSharing(context, url),
+                open: (url) => openPublicSocialUrl(context, url),
               ),
             ],
 

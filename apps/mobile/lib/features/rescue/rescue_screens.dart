@@ -2740,7 +2740,7 @@ class _PublicCaseDetail extends StatelessWidget {
       saved: savedOverride ?? record.saved,
       favorite: () => toggle(record),
       report: () => report(record),
-      share: () => copyForSharing(
+      share: () => shareContent(
         context,
         'Conoce el caso ${record.title} en Dopmi. Caso ${record.id}',
       ),
