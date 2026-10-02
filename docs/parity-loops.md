@@ -1942,3 +1942,13 @@ Initial motion/filter11pass; expanded suite exposed old community test expecting
 
 Final flutter analyze noissues exit0 (7.3s).
 
+
+## Loop251 — 2026-10-02: approved public avatar mobile recovery
+
+Reference remote a3c969cd9103fd46dc5cd886999912526ce75efb confirmed. Public avatar previously cached original signedURL future and permanently fell back to initial on failures. Added lifecycle resume renewal, dispose cleanup, explicit tap/semantics retry on URL/image failure, and ObjectKey future reset to prevent older photo retention. Default96px initial/fill unchanged; only approved profile avatar_path used, no draft/private read. Future errors observed before builder subscribes.
+
+New lifecycle test exercises real public screen, retries failed URL, resume renewal, sameapprovedpath requests, and no calls after disposal. Initial test fixture omitted required bio and failed before avatar; fixed fixture contract, not production bypass. Final avatar/community28pass exit0 (10s). CI37049347038 #424 completed/success verified on b38acd8f82ba7444901117ee8b43eca0d7f9fff5; covers through248, predates250/251. Actual approved photo decoding and installed recovery remain unverified, not wholePUBLIC acceptance. Final analyze recorded after completion.
+
+
+Final flutter analyze noissues exit0 (6.5s).
+

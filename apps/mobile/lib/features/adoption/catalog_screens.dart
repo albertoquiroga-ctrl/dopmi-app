@@ -739,12 +739,25 @@ class _PublicRescuerAvatar extends ConsumerStatefulWidget {
       _PublicRescuerAvatarState();
 }
 
-class _PublicRescuerAvatarState extends ConsumerState<_PublicRescuerAvatar> {
+class _PublicRescuerAvatarState extends ConsumerState<_PublicRescuerAvatar>
+    with WidgetsBindingObserver {
   Future<String>? signedUrl;
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     renew();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && mounted) setState(renew);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -756,8 +769,22 @@ class _PublicRescuerAvatarState extends ConsumerState<_PublicRescuerAvatar> {
   void renew() {
     signedUrl = widget.path == null || widget.path!.isEmpty
         ? null
-        : ref.read(rescuerProfileRepositoryProvider).avatarUrl(widget.path!);
+        : Future<String>.sync(
+            () => ref
+                .read(rescuerProfileRepositoryProvider)
+                .avatarUrl(widget.path!),
+          );
+    signedUrl?.ignore();
   }
+
+  Widget get unavailable => Tooltip(
+    message: 'Reintentar foto de perfil',
+    child: Semantics(
+      button: true,
+      label: 'Reintentar foto de perfil',
+      child: InkWell(onTap: () => setState(renew), child: fallback),
+    ),
+  );
 
   Widget get fallback => Center(
     child: Text(
@@ -781,15 +808,18 @@ class _PublicRescuerAvatarState extends ConsumerState<_PublicRescuerAvatar> {
         child: signedUrl == null
             ? fallback
             : FutureBuilder<String>(
+                key: ObjectKey(signedUrl),
                 future: signedUrl,
                 builder: (_, result) => result.hasData
                     ? Image.network(
                         result.data!,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, error, stack) => fallback,
+                        errorBuilder: (_, error, stack) => unavailable,
                         loadingBuilder: (_, child, progress) =>
                             progress == null ? child : fallback,
                       )
+                    : result.hasError
+                    ? unavailable
                     : fallback,
               ),
       ),
