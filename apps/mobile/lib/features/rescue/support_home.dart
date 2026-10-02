@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/donor_notification_button.dart';
 import '../../core/ui.dart';
 import '../../core/reference_focus_outline.dart';
 import '../adoption/community_repository.dart';
@@ -57,31 +58,7 @@ class SupportHomePage extends StatelessWidget {
                         height: 40,
                         semanticsLabel: 'Dopmi',
                       ),
-                      SizedBox(
-                        width: 42,
-                        height: 42,
-                        child: IconButton(
-                          tooltip: 'Notificaciones',
-                          onPressed: () => context.push('/notifications'),
-                          style: IconButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            side: const BorderSide(
-                              color: Color(0xffd9d3ca),
-                              width: 1.5,
-                            ),
-                            shape: const CircleBorder(),
-                          ),
-                          icon: SvgPicture.asset(
-                            'assets/profile/icon-bell.svg',
-                            width: 20,
-                            height: 20,
-                            colorFilter: const ColorFilter.mode(
-                              ink,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                        ),
-                      ),
+                      const DonorNotificationButton(),
                     ],
                   ),
                 ),

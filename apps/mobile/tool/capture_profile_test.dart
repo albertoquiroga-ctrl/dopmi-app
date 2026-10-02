@@ -643,6 +643,10 @@ void main() {
       ('support-home-empty-large', '/rescue-cases'),
       ('support-home-error', '/rescue-cases'),
       ('support-home-error-large', '/rescue-cases'),
+      ('support-home-error-retry', '/rescue-cases'),
+      ('support-home-error-retry-large', '/rescue-cases'),
+      ('support-home-notification-focus', '/rescue-cases'),
+      ('support-home-notification-focus-large', '/rescue-cases'),
       ('support-home-case-focus', '/rescue-cases'),
       ('support-home-case-focus-large', '/rescue-cases'),
       ('support-home-guardian-card-focus', '/rescue-cases'),
@@ -1399,6 +1403,25 @@ void main() {
         );
         await Scrollable.ensureVisible(tester.element(card), alignment: .1);
         await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('support-home-error-retry')) {
+        final retry = find.text('Volver a intentar');
+        await tester.scrollUntilVisible(
+          retry,
+          150,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await Scrollable.ensureVisible(tester.element(retry), alignment: .3);
+        await tester.pumpAndSettle();
+        expect(retry.hitTestable(), findsOneWidget);
+      }
+      if (spec.$1.startsWith('support-home-notification-focus')) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
+        expect(
+          find.byKey(const ValueKey('reference-keyboard-outline')),
+          findsOneWidget,
+        );
       }
       if (spec.$1.startsWith('support-home-case-focus')) {
         await tester.sendKeyEvent(LogicalKeyboardKey.tab);

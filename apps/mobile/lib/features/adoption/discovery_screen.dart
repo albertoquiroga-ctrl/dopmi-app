@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/measurement.dart';
+import '../../core/donor_notification_button.dart';
 import '../../core/ui.dart';
 import '../../core/design_tokens.dart';
 import 'adopt_start_dialog.dart';
@@ -288,15 +289,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                     ),
                   ),
                 ),
-                IconButton(
-                  tooltip: 'Notificaciones',
-                  onPressed: () => context.push('/notifications'),
-                  icon: SvgPicture.asset(
-                    'assets/profile/icon-bell.svg',
-                    width: 24,
-                    height: 24,
-                  ),
-                ),
+                const DonorNotificationButton(),
               ],
             ),
             const SizedBox(height: 10),

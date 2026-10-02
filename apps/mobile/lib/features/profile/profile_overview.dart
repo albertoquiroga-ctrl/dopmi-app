@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/donor_notification_button.dart';
 import '../../core/ui.dart';
 import 'rescuer_profile_hero.dart';
 import 'rescuer_profile_access.dart';
@@ -544,15 +545,7 @@ class DonorProfileView extends ConsumerWidget {
                 semanticsLabel: 'Dopmi',
               ),
               const Spacer(),
-              IconButton(
-                tooltip: 'Notificaciones',
-                onPressed: () => context.push('/notifications'),
-                icon: SvgPicture.asset(
-                  'assets/profile/icon-bell.svg',
-                  width: 24,
-                  height: 24,
-                ),
-              ),
+              const DonorNotificationButton(),
             ],
           ),
           const SizedBox(height: 28),
