@@ -9,72 +9,14 @@ import '../../core/ui.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import 'case_update_repository.dart';
+import 'owned_case_history.dart';
 import 'rescue_repository.dart';
 
-class PublicCaseUpdates extends ConsumerWidget {
+class PublicCaseUpdates extends StatelessWidget {
   const PublicCaseUpdates(this.caseId, {super.key});
   final String caseId;
   @override
-  Widget build(
-    BuildContext context,
-    WidgetRef ref,
-  ) => LiveSection<List<CaseUpdate>>(
-    tables: const ['dopmi_case_updates'],
-    load: () => ref.read(caseUpdateRepositoryProvider).publicFor(caseId),
-    builder: (items, _) => Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const SizedBox(height: 24),
-        Text(
-          'Historia hasta ahora',
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        const SizedBox(height: 12),
-        if (items.isEmpty)
-          const Notice('Los avances aprobados del rescate aparecerán aquí.'),
-        for (final item in items)
-          Card(
-            color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.all(18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    localDate(item.publishedAt ?? ''),
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(item.body, style: Theme.of(context).textTheme.bodyLarge),
-                  for (final photo in item.photos) ...[
-                    const SizedBox(height: 12),
-                    _UpdatePhoto(photo),
-                  ],
-                ],
-              ),
-            ),
-          ),
-      ],
-    ),
-  );
-}
-
-class _UpdatePhoto extends ConsumerWidget {
-  const _UpdatePhoto(this.path);
-  final String path;
-  @override
-  Widget build(BuildContext context, WidgetRef ref) => FutureBuilder<String>(
-    future: ref.read(caseUpdateRepositoryProvider).photoUrl(path),
-    builder: (_, value) => value.hasData
-        ? ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.network(value.data!, height: 220, fit: BoxFit.cover),
-          )
-        : const SizedBox(
-            height: 80,
-            child: Center(child: CircularProgressIndicator()),
-          ),
-  );
+  Widget build(BuildContext context) => OwnedCaseHistory(caseId);
 }
 
 class CaseUpdatesManageScreen extends ConsumerWidget {

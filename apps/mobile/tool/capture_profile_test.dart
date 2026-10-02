@@ -691,6 +691,8 @@ void main() {
       ('support-home-guardian-dock-focus', '/rescue-cases'),
       ('support-home-guardian-dock-focus-large', '/rescue-cases'),
       ('case-detail', '/rescue-cases/case-one'),
+      ('case-detail-story', '/rescue-cases/case-one'),
+      ('case-detail-story-large', '/rescue-cases/case-one'),
       ('case-detail-planned', '/rescue-cases/case-one'),
       ('case-detail-planned-large', '/rescue-cases/case-one'),
       (
@@ -1124,7 +1126,11 @@ void main() {
                 planned: spec.$1.startsWith('case-detail-planned'),
               ),
             ),
-            caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
+            caseUpdateRepositoryProvider.overrideWithValue(
+              spec.$1.startsWith('case-detail-story')
+                  ? OwnedHistoryCaptureUpdates()
+                  : FakeCaseUpdates(),
+            ),
           ],
           if (spec.$1.startsWith('impact-feed'))
             rescueRepositoryProvider.overrideWithValue(SupportCaptureRescue()),
@@ -1788,6 +1794,14 @@ void main() {
           alignment: 0,
         );
         await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('case-detail-story')) {
+        await Scrollable.ensureVisible(
+          tester.element(find.text('La historia hasta ahora')),
+          alignment: .1,
+        );
+        await tester.pumpAndSettle();
+        expect(find.byType(OwnedCaseStory), findsNWidgets(2));
       }
       if (spec.$1.startsWith('owned-case-detail-bottom')) {
         await Scrollable.ensureVisible(

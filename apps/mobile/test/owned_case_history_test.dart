@@ -1,6 +1,7 @@
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 import 'package:dopmi_mobile/features/rescue/owned_case_history.dart';
+import 'package:dopmi_mobile/features/rescue/case_update_screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -36,6 +37,36 @@ class StoryFixture extends FakeCaseUpdates {
 }
 
 void main() {
+  testWidgets(
+    'public history shares approved cards and recovers failed photos',
+    (tester) async {
+      final updates = StoryFixture();
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            caseUpdateRepositoryProvider.overrideWithValue(updates),
+            communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          ],
+          child: const MaterialApp(
+            home: Scaffold(
+              body: SingleChildScrollView(child: PublicCaseUpdates('case-one')),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('La historia hasta ahora'), findsOneWidget);
+      expect(find.text('Avance aprobado del rescate'), findsOneWidget);
+      expect(updates.publicCalls, 1);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(tester.getSize(find.byType(OwnedStoryPhoto)).height, 160);
+      await tester.tap(find.text('Reintentar foto'));
+      await tester.pumpAndSettle();
+      expect(updates.photoCalls, 2);
+      expect(tester.getSize(find.byType(OwnedStoryPhoto)).height, 160);
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets(
     'owner history uses approved projection and retry keeps photo geometry',
     (tester) async {
