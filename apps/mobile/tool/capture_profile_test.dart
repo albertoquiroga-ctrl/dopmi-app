@@ -446,6 +446,7 @@ void main() {
         'icon-star',
         'icon-shield',
         'icon-edit',
+        'icon-donation-in',
         'rtab-home',
         'onb-camera',
         'rtab-publish',

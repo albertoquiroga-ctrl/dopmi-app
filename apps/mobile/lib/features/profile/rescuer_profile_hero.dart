@@ -8,6 +8,7 @@ import '../adoption/community_ui.dart';
 import '../identity/identity_repository.dart';
 import '../rescue/rescue_repository.dart';
 import 'rescuer_profile_metrics.dart';
+import 'rescuer_profile_activity.dart';
 import 'rescuer_verification_card.dart';
 
 class RescuerProfileHero extends ConsumerWidget {
@@ -49,6 +50,22 @@ class RescuerProfileHero extends ConsumerWidget {
         RescuerVerificationCard(
           status: data['verification_status'] as String?,
           onPressed: () => context.push('/rescue/new?kind=verification'),
+        ),
+        const SizedBox(height: 18),
+        RescuerProfileActivity(
+          data: data,
+          onHome: () => context.go('/rescuer'),
+          onExpense: (id) => context.push(
+            Uri(
+              path: '/rescue/$id',
+              queryParameters: {'kind': 'expense', 'record': '1'},
+            ).toString(),
+          ),
+          onStart: () => context.push(
+            data['verification_status'] == 'approved'
+                ? '/rescue/new?kind=case'
+                : '/rescue/new?kind=verification',
+          ),
         ),
       ],
     ),
