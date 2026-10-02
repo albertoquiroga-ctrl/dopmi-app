@@ -18,11 +18,13 @@ class AuthFrame extends StatelessWidget {
     this.accountLink = false,
     this.sheet = false,
     this.intent = 'adopt',
+    this.sheetBottomPadding = 18,
   });
   final Widget child;
   final Widget? footer;
   final bool back, accountLink, sheet;
   final String intent;
+  final double sheetBottomPadding;
   final VoidCallback? onBack;
 
   @override
@@ -79,7 +81,13 @@ class AuthFrame extends StatelessWidget {
         ),
       ),
       child: sheet
-          ? _AuthSheet(intent: intent, back: back, onBack: onBack, child: child)
+          ? _AuthSheet(
+              intent: intent,
+              back: back,
+              onBack: onBack,
+              bottomPadding: sheetBottomPadding,
+              child: child,
+            )
           : Scaffold(
               body: SafeArea(
                 child: LayoutBuilder(
@@ -192,8 +200,10 @@ class _AuthSheet extends StatelessWidget {
     required this.back,
     this.onBack,
     required this.child,
+    required this.bottomPadding,
   });
   final String intent;
+  final double bottomPadding;
   final bool back;
   final VoidCallback? onBack;
   final Widget child;
@@ -313,11 +323,11 @@ class _AuthSheet extends StatelessWidget {
                             child: SingleChildScrollView(
                               keyboardDismissBehavior:
                                   ScrollViewKeyboardDismissBehavior.onDrag,
-                              padding: const EdgeInsets.fromLTRB(
+                              padding: EdgeInsets.fromLTRB(
                                 18,
                                 22,
                                 18,
-                                18,
+                                bottomPadding,
                               ),
                               child: child,
                             ),
@@ -448,5 +458,103 @@ class AuthProviderIcons extends StatelessWidget {
       width: 22,
       height: 22,
     ),
+  );
+}
+
+/// Fits the 48px link target inside Source's 14px gap, 20.15px paragraph,
+/// and 18px sheet padding. Large text falls back to an unconstrained Wrap.
+class AuthSwitchFooter extends StatelessWidget {
+  const AuthSwitchFooter({
+    super.key,
+    required this.signup,
+    required this.busy,
+    required this.intent,
+  });
+  final bool signup, busy;
+  final String intent;
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, box) {
+      const labelStyle = TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 13,
+        height: 1.55,
+        letterSpacing: 0,
+        color: muted,
+      );
+      const actionStyle = TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 13,
+        height: 1.55,
+        letterSpacing: 0,
+        fontWeight: FontWeight.w700,
+        decoration: TextDecoration.underline,
+      );
+      final question = signup ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?';
+      final action = signup ? 'Inicia sesión' : 'Crear cuenta';
+      final scaler = MediaQuery.textScalerOf(context);
+      double width(String text, TextStyle style) {
+        final painter = TextPainter(
+          text: TextSpan(text: text, style: style),
+          textDirection: Directionality.of(context),
+          textScaler: scaler,
+        )..layout();
+        final result = painter.width;
+        painter.dispose();
+        return result;
+      }
+
+      final actionWidth = width(action, actionStyle);
+      final rowWidth =
+          width(question, labelStyle) +
+          4 +
+          (actionWidth < 48 ? 48 : actionWidth);
+      final label = Text(question, style: labelStyle);
+      final button = TextButton(
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.zero,
+          minimumSize: const Size(48, 48),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          textStyle: actionStyle,
+        ),
+        onPressed: busy
+            ? null
+            : () => context.push(
+                '${signup ? '/login' : '/signup'}?intent=$intent',
+              ),
+        child: Text(action),
+      );
+      final lineHeight = scaler.scale(13) * 1.55;
+      if (rowWidth <= box.maxWidth && lineHeight <= 48) {
+        return SizedBox(
+          key: const ValueKey('auth-switch-footer'),
+          height: 14 + lineHeight + 18,
+          child: Stack(
+            children: [
+              Positioned(
+                top: 14 + (lineHeight - 48) / 2,
+                left: 0,
+                right: 0,
+                height: 48,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [label, const SizedBox(width: 4), button],
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+      return Padding(
+        key: const ValueKey('auth-switch-footer'),
+        padding: const EdgeInsets.only(top: 14, bottom: 18),
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 4,
+          children: [label, button],
+        ),
+      );
+    },
   );
 }

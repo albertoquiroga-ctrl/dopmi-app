@@ -206,6 +206,21 @@ void main() {
         () => saveCapture(key, '${output.path}/${route.$1}.png'),
       );
       if (route.$1 == 'login') {
+        // Source: gap12 + margin2 + paragraph13*1.55 + sheet bottom18.
+        final footer = tester.getRect(
+          find.byKey(const ValueKey('auth-switch-footer')),
+        );
+        expect(footer.height, closeTo(52.15, .5));
+        expect(
+          footer.bottom,
+          closeTo(
+            tester
+                .getRect(find.byKey(const ValueKey('auth-form-sheet')))
+                .bottom,
+            .5,
+          ),
+        );
+
         final emailField = find.byType(TextFormField).first;
         final input = find.descendant(
           of: emailField,

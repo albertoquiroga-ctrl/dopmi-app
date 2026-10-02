@@ -299,7 +299,10 @@ void main() {
       await tester.enterText(email, 'ana@example.test');
       final signupLink = find.widgetWithText(TextButton, 'Crear cuenta');
       await tester.ensureVisible(signupLink);
-      await tester.tap(signupLink);
+      expect(tester.getSize(signupLink).height, greaterThanOrEqualTo(48));
+      await tester.tapAt(
+        tester.getRect(signupLink).bottomCenter - const Offset(0, 1),
+      );
       await tester.pumpAndSettle();
       final screen = tester.widget<AuthFormScreen>(find.byType(AuthFormScreen));
       expect(screen.mode, AuthFormMode.signup);

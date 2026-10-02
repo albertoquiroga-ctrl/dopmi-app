@@ -144,6 +144,7 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
     };
     return AuthFrame(
       sheet: login || signup,
+      sheetBottomPadding: login || signup ? 0 : 18,
       intent: widget.intent,
       back: !reset,
       child: Column(
@@ -309,48 +310,10 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                       onPick: social,
                     ),
                   if (login || signup)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 14),
-                      child: Wrap(
-                        alignment: WrapAlignment.center,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        spacing: 4,
-                        children: [
-                          Text(
-                            signup
-                                ? '¿Ya tienes cuenta?'
-                                : '¿No tienes cuenta?',
-                            style: const TextStyle(
-                              fontSize: 13,
-                              height: 1.55,
-                              letterSpacing: 0,
-                              color: muted,
-                            ),
-                          ),
-                          TextButton(
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              minimumSize: const Size(48, 48),
-                              textStyle: const TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 13,
-                                height: 1.55,
-                                letterSpacing: 0,
-                                fontWeight: FontWeight.w700,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                            onPressed: busy
-                                ? null
-                                : () => context.push(
-                                    '${signup ? '/login' : '/signup'}?intent=${widget.intent}',
-                                  ),
-                            child: Text(
-                              signup ? 'Inicia sesión' : 'Crear cuenta',
-                            ),
-                          ),
-                        ],
-                      ),
+                    AuthSwitchFooter(
+                      signup: signup,
+                      busy: busy,
+                      intent: widget.intent,
                     ),
                   if (reset)
                     TextButton(
