@@ -243,6 +243,57 @@ void main() {
     expect(find.text('Bienvenido a DopMi'), findsOneWidget);
     expect(find.text('Ana editada'), findsNothing);
   });
+  testWidgets(
+    'basic info preserves all edits through the large keyboard and retry',
+    (tester) async {
+      final repo = FakeIdentityRepository()
+        ..user = const Identity('one', 'ana@example.test', verified: true)
+        ..failSave = true;
+      await start(tester, repo);
+      tester.view.physicalSize = const Size(320, 640);
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      addTearDown(tester.view.resetViewInsets);
+      await tester.pumpAndSettle();
+      final fields = find.byType(TextFormField);
+      final values = [
+        'Ana María López',
+        '5512345678',
+        'Ciudad de México, CDMX',
+      ];
+      for (var i = 0; i < values.length; i++) {
+        await tester.ensureVisible(fields.at(i));
+        await tester.enterText(fields.at(i), values[i]);
+        await tester.pumpAndSettle();
+      }
+      final save = find.widgetWithText(FilledButton, 'Guardar cambios');
+      await tester.ensureVisible(save);
+      await tester.pumpAndSettle();
+      expect(save.hitTestable(), findsOneWidget);
+      expect(tester.getBottomRight(save).dy, lessThanOrEqualTo(340));
+      await tester.tap(save);
+      await tester.pumpAndSettle();
+      for (var i = 0; i < values.length; i++) {
+        expect(
+          tester.widget<TextFormField>(fields.at(i)).controller!.text,
+          values[i],
+        );
+      }
+      repo.failSave = false;
+      await tester.ensureVisible(save);
+      await tester.pumpAndSettle();
+      expect(save.hitTestable(), findsOneWidget);
+      expect(tester.getBottomRight(save).dy, lessThanOrEqualTo(340));
+      await tester.tap(save);
+      await tester.pumpAndSettle();
+      expect(repo.profile.name, values[0]);
+      expect(repo.profile.phone, values[1]);
+      expect(repo.profile.city, values[2]);
+      expect(repo.user!.email, 'ana@example.test');
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets('settings opens basic info without a rendering exception', (
     tester,
   ) async {

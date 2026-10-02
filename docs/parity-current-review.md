@@ -13,8 +13,10 @@ Loops270/271 ajustan encabezado y formulario real de Información básica;
 foto, apellidos separados, cambio de correo y medición exacta siguen pendientes.
 Codemagic intermedio autorizado por el titular: build `6ac02cc4554e6c4660850bf2`,
 workflow `android-guardian-internal`, SHA `2c36339a6961755e7b0a37e189f8c1fa9b791e17`.
-GET confirmó `building`; análisis y pruebas success en buildActions.
-Bundle firmado y publicación Play todavía pendientes.
+GET confirmó `finished`; análisis, pruebas, bundle firmado y publicación success.
+Log Publishing confirma2.3.3(286), com.mycompany.dopmi, trackinternal;
+consulta posterior del track retorna completed. Instalación/aceptación pendientes.
+Cambios de Información básica270–272 no están en ese candidato2c36339.
 CI442 de ae57 concluyó con una expectativa antigua de textos de Guardados;
 corregida en 2c36339 y suite perfil aprobada13. No acreditar gate integral442.
 Corte integral aprobado: `3374c507004cd2de7a693de87658e85cc445c0f8`,
@@ -34,7 +36,7 @@ sin evidencia. Capturas normal/large en `design-reviews/parity-loop260`.
 Datos Connect/verificación/revisión reales conservados. CI432 aún ejecutándose;
 esto no acredita aceptación en Samsung ni paridad completa.
 
-`apps/mobile/tool/capture_profile_test.dart` contiene **274 estados en 32 URLs**:
+`apps/mobile/tool/capture_profile_test.dart` contiene **275 estados en 32 URLs**:
 256 recontados en loop259, dos estados de evidencia pendiente añadidos261 y
 dos de bienvenida Guardian263 y dos de fallo Guardian264. Ambos resultados
 dependen del servidor y mismo intento; reintento exige autorización nueva.

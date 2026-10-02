@@ -212,6 +212,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
                       child: FilledButton(
                         style: FilledButton.styleFrom(
                           textStyle: const TextStyle(
+                            fontFamily: 'Inter',
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             height: 1.2,

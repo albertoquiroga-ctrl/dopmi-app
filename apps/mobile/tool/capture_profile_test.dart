@@ -819,6 +819,7 @@ void main() {
       ('saved-pagination-second-large', '/saved'),
       ('basic-info', '/basic-info'),
       ('basic-info-large', '/basic-info'),
+      ('basic-info-keyboard-large', '/basic-info'),
       ('payment-history', '/payments'),
       ('payment-history-large', '/payments'),
       ('payment-history-empty', '/payments'),
@@ -1384,6 +1385,21 @@ void main() {
           await tester.pumpAndSettle();
           expect(find.text('Guardado 21'), findsOneWidget);
         }
+        expect(tester.takeException(), isNull);
+      }
+      if (spec.$1.startsWith('basic-info-keyboard')) {
+        tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+        await tester.ensureVisible(find.byType(TextFormField).last);
+        await tester.enterText(
+          find.byType(TextFormField).last,
+          'Ciudad de México, CDMX',
+        );
+        await tester.pumpAndSettle();
+        final save = find.widgetWithText(FilledButton, 'Guardar cambios');
+        await tester.ensureVisible(save);
+        await tester.pumpAndSettle();
+        expect(save.hitTestable(), findsOneWidget);
+        expect(tester.getBottomRight(save).dy, lessThanOrEqualTo(340));
         expect(tester.takeException(), isNull);
       }
       if (spec.$1.startsWith('chat-keyboard')) {

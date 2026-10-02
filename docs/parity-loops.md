@@ -2164,3 +2164,14 @@ No aceptación completa: falta foto editable real, estructura de nombre/apellido
 
 Codemagic6ac02cc4554e6c4660850bf2: GET buildActions confirma Static analysis y Unit and widget tests success; Build signed Guardian Android App Bundle todavía sin status terminal. Publicación Play pendiente. Build exacto2c36339 no contiene loops270/271 posteriores.
 Análisis final loop271 limpio22.9s tras corregir const no admitido por Semantics al preservar Procesando. El intento de análisis desde raíz fue cancelado y no constituye verificación. Análisis efectivo ejecutado en apps/mobile de copia temporal.
+
+## Entrega intermedia Codemagic — 2026-10-02 — publicada en Play
+
+Build6ac02cc4554e6c4660850bf2 finalizado a2026-10-02T16:24:51.306-06:00, SHA2c36339a6961755e7b0a37e189f8c1fa9b791e17. API confirma finished; análisis, pruebas completas, bundle firmado y Publishing success. Log autorizado de Publishing6ac02cc5aec582ee070d7ca8 confirma Version2.3.3, Version code286, paquete com.mycompany.dopmi, carga del AAB, actualización del track internal y Successfully published App Bundle to Google Play track internal. Consulta posterior google-play tracks get --track internal --package-name com.mycompany.dopmi registrada en el mismo log retorna trackinternal/statuscompleted/name2.3.3. Esto verifica compilación y publicación remota por separado; no prueba disponibilidad en la cuenta del tester, actualización instalada ni aceptación visual. Los loops270/271/272 posteriores no están incluidos en este build. No nuevo build ni activación de dinero real.
+
+## Loop272 — 2026-10-02 — teclado y tipografía de Información básica
+
+Prueba nueva a320x640/texto200%/inset300 edita nombre completo, teléfono y ciudad; mantiene los3 tras fallo y reintenta guardado conservando correo Auth. Botón hitTestable y límite inferior<=340 comprobados en ambos intentos. Fallo inicial del test fue tap antes de pump tras ensureVisible del segundo intento; corregida sincronización, sin suprimir advertencias ni eliminar aserciones. Prueba dirigida1 aprobada2s; suite final identidad+capturas20 aprobadas11s.
+
+Captura nueva basic-info-keyboard-large permite inspeccionar CTA con teclado simulado. Primera imagen reveló fallback tipográfico de FilledButton.styleFrom: texto personalizado sin fontFamily. Se fija Inter explícita; captura final inspeccionada muestra Guardar cambios legible, envolviendo y completo. Esto mejora estilo productivo y evita fallback Ahem en test; no es aprobación Samsung. Fuente de referencia reconsultada a3c969cd9103fd46dc5cd886999912526ce75efb. Matriz275estados32URLs. Foto/apellidos/cambio de correo y medición browser pendientes; objetivo completo activo.
+Gate final loop272: flutter analyze sin problemas7.1s, formato/diffcheck aprobados. Análisis6.9s anterior precedió cambio Inter; no se usa como gate final.
