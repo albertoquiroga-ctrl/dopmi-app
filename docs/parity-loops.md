@@ -2267,3 +2267,16 @@ Analyze detectó un import redundante en la prueba; retirado y repetido:
 sin incidencias (11.5s).
 Este cambio es posterior al candidato Codemagic `6ac036fb95ce3d2da3061421`,
 que GET confirma `building`; no forma parte de su SHA `e4f4e85`.
+# Loop282 — campos y botón del editor público
+
+Referencia consultada 2/10/2026: `irlanda/apoyar-detalle-perfil`
+`a3c969cd9103fd46dc5cd886999912526ce75efb`.
+Campos adoptan CSS publish-field: Inter16/400, padding12x8, borde#eaeaf3,
+radio14 y placeholders de nombre/descripción. Guardar borrador adopta botón
+morado sólido, radio14, Inter14/500, conservando mínimo táctil48 y guardado real.
+No se copian domicilio/teléfono/correo públicos del prototipo: privacidad y
+revisión permanecen vigentes. Flutter perfil:2 aprobadas; capturador normal y
+320px/texto200%:1 suite aprobada. Imagen normal inspeccionada; esto no acredita
+paridad completa ni aceptación instalada. Sin nuevo envío Codemagic, conforme
+a la última instrucción del titular: enviar sólo al completar el objetivo.
+Analyze sin incidencias25.9s; imagen grande inspeccionada sin desbordamiento.

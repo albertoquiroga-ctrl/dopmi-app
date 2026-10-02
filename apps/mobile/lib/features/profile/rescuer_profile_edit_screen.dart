@@ -333,6 +333,12 @@ class _RescuerPublicProfileEditState
                       const SizedBox(height: 8),
                       TextField(
                         key: ValueKey('public-profile-${item.$1}'),
+                        style: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff151423),
+                        ),
                         onChanged: item.$2 == name
                             ? (_) => setState(() {})
                             : null,
@@ -344,7 +350,30 @@ class _RescuerPublicProfileEditState
                             item.$2 == instagram || item.$2 == facebook
                             ? TextInputType.url
                             : null,
-                        decoration: const InputDecoration(),
+                        decoration: InputDecoration(
+                          hintText: item.$2 == name
+                              ? 'Tu nombre o el de tu refugio'
+                              : item.$2 == bio
+                              ? 'Cuenta quién eres y cómo ayudas a las mascotas'
+                              : null,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: const BorderSide(
+                              color: Color(0xffeaeaf3),
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: const BorderSide(
+                              color: purple,
+                              width: 2,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -357,7 +386,19 @@ class _RescuerPublicProfileEditState
                   semanticsLabel: 'Guardando perfil',
                 ),
               if (editable) ...[
-                OutlinedButton(
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: purple,
+                    foregroundColor: const Color(0xfffbfbff),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    textStyle: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                   onPressed: busy ? null : save,
                   child: const Text('Guardar borrador'),
                 ),
