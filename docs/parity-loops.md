@@ -2144,3 +2144,12 @@ El turno previo realizó progreso: pager productivo corregido, comprobación de 
 Información básica contrastada nuevamente con Source App.tsx BasicInfo: referencia tiene foto editable, Nombre/Apellido separados, correo editable, teléfono y ciudad. La implementación actual conserva nombre único y correo Auth, sin API de avatar/cambio de correo identificada. No se copiarán fallbacks simulados Alberto/Quiroga/Monterrey, ni una edición falsa de correo/foto. El próximo loop debe resolver presentación y recorrido de datos reales preservando cuenta suspendida, saveProfile y preferencias; investigar capacidades existentes antes de agregar persistencia. La pantalla actual aún usa Heading/card amarilla/atajos: discrepancia confirmada, no aceptación visual.
 
 parity-current-review actualizado: 272 estados/31URLs y paginación larga verificada, aceptación instalada pendiente. Cambios locales ajenos conservados.
+
+## Loop 270 — 2026-10-02 — encabezado real de Información básica
+
+Progreso sobre loop269: pantalla productiva BasicInfo abandona PageFrame/Brand/Heading promocional y usa encabezado fijo Información básica, SVG de regreso, separador y márgenes16/20/32 de Source. A texto grande el encabezado crece; regreso conserva pop si hay historial y utiliza /settings sin historial. Sin cambio de repositorio, restricciones de suspensión, guardado, privacidad ni preferencia de experiencia.
+
+Referencia reconsultada: irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb. Pruebas identidad/perfil:31 aprobadas9s; capturador basic-info normal/200%:1 aprobada2s. Captura grande inspeccionada: sin excepción/desbordamiento, pero tarjeta amarilla y atajos anteriores al formulario todavía divergen de Source. No se acredita paridad de esta pantalla. Matriz añade2 estados /basic-info:274 estados32URLs. El formulario, foto y edición de correo continúan pendientes con funciones reales; no se reutiliza bucket avatars legado archivado.
+
+Codemagic build6ac02cc4554e6c4660850bf2 confirmado building, SHA2c36339a6961755e7b0a37e189f8c1fa9b791e17. Este loop270 posterior al envío no está incluido en ese candidato; compilación/publicación todavía sin resultado terminal.
+Análisis local loop270: flutter analyze sin problemas (31.3s); formato y diffcheck aprobados.

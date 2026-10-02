@@ -817,6 +817,8 @@ void main() {
       ('saved-rescuers-large', '/saved?kind=rescuer'),
       ('saved-pagination-large', '/saved'),
       ('saved-pagination-second-large', '/saved'),
+      ('basic-info', '/basic-info'),
+      ('basic-info-large', '/basic-info'),
       ('payment-history', '/payments'),
       ('payment-history-large', '/payments'),
       ('payment-history-empty', '/payments'),
