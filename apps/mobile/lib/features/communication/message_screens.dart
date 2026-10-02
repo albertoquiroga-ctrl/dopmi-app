@@ -504,18 +504,25 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                   fontFamily: 'Inter',
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
+                  height: 1.25,
+                  letterSpacing: -.36,
                   color: textInk,
                 ),
               ),
-              if ((thread?['participant_name'] as String? ?? '').isNotEmpty)
+              if ((thread?['participant_name'] as String? ?? '')
+                  .isNotEmpty) ...[
+                const SizedBox(height: 2),
                 Text(
                   thread!['participant_name'] as String,
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 12,
+                    height: 1.2,
+                    letterSpacing: 0,
                     color: textMuted,
                   ),
                 ),
+              ],
             ],
           ),
           actions: [
@@ -611,6 +618,7 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                                   fontFamily: 'Inter',
                                   fontSize: 16,
                                   height: 1.2,
+                                  letterSpacing: 0,
                                   color: textInk,
                                 ),
                                 decoration: InputDecoration(
@@ -619,6 +627,7 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                                     color: textMuted,
                                     fontSize: 16,
                                     height: 1.2,
+                                    letterSpacing: 0,
                                   ),
                                   counterText: '',
                                   isDense: true,
