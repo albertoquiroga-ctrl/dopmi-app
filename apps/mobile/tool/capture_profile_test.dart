@@ -687,6 +687,8 @@ void main() {
       ('rescuer-messages-large', '/messages'),
       ('rescuer-messages-empty', '/messages'),
       ('rescuer-messages-empty-large', '/messages'),
+      ('match-threads-photo-search', '/messages'),
+      ('match-threads-photo-search-large', '/messages'),
       ('match-threads-photo-focus', '/messages'),
       ('match-threads-photo-focus-large', '/messages'),
       ('match-threads-focus', '/messages'),
@@ -1477,6 +1479,22 @@ void main() {
         await Scrollable.ensureVisible(tester.element(button), alignment: .4);
         await tester.pumpAndSettle();
         expect(tester.getRect(outline), tester.getRect(button).inflate(5));
+      }
+      if (spec.$1.startsWith('match-threads-photo-search')) {
+        final open = find.byTooltip('Buscar conversaciones');
+        await tester.scrollUntilVisible(
+          open,
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await Scrollable.ensureVisible(tester.element(open), alignment: .3);
+        await tester.pumpAndSettle();
+        await tester.tap(open);
+        await tester.pumpAndSettle();
+        final field = find.byType(TextField);
+        expect(field, findsOneWidget);
+        await Scrollable.ensureVisible(tester.element(field), alignment: .35);
+        await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('match-threads-focus') ||
           spec.$1.startsWith('match-threads-photo-focus')) {

@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../core/ui.dart';
+import '../../core/reference_focus_outline.dart';
 import 'match_favorites.dart';
 import 'match_thread_row.dart';
 import 'chat_message_bubble.dart';
@@ -24,8 +25,10 @@ class ThreadsScreen extends ConsumerStatefulWidget {
 class _ThreadsState extends ConsumerState<ThreadsScreen> {
   int page = 1;
   bool allFavorites = false;
+  bool showSearch = false;
   String query = '';
   final search = TextEditingController();
+  final searchFocus = FocusNode();
   final scroll = ScrollController();
   double homeOffset = 0;
   void showFavorites(bool value) {
@@ -42,6 +45,7 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
   @override
   void dispose() {
     search.dispose();
+    searchFocus.dispose();
     scroll.dispose();
     super.dispose();
   }
@@ -130,40 +134,85 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
             ),
             const SizedBox(height: 24),
             if (!allFavorites) ...[
-              const Text(
-                'Chats',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: ink,
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: search,
-                textInputAction: TextInputAction.search,
-                decoration: InputDecoration(
-                  labelText: 'Buscar por mascota o persona',
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: query.isEmpty
-                      ? null
-                      : IconButton(
-                          tooltip: 'Limpiar búsqueda',
-                          onPressed: () => setState(() {
+              Row(
+                children: [
+                  const Expanded(
+                    child: Text(
+                      'Chats',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: ink,
+                      ),
+                    ),
+                  ),
+                  ReferenceFocusOutline(
+                    radius: 99,
+                    child: IconButton(
+                      tooltip: showSearch
+                          ? 'Cerrar búsqueda'
+                          : 'Buscar conversaciones',
+                      onPressed: () {
+                        if (showSearch) FocusScope.of(context).unfocus();
+                        setState(() {
+                          showSearch = !showSearch;
+                          if (!showSearch) {
                             search.clear();
                             query = '';
                             page = 1;
-                          }),
-                          icon: const Icon(Icons.close),
-                        ),
-                ),
-                onSubmitted: (value) => setState(() {
-                  query = value.trim();
-                  page = 1;
-                }),
+                          }
+                        });
+                        if (showSearch) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            if (mounted && showSearch) {
+                              searchFocus.requestFocus();
+                            }
+                          });
+                        }
+                      },
+                      style: IconButton.styleFrom(
+                        minimumSize: const Size(48, 48),
+                        overlayColor: Colors.transparent,
+                      ),
+                      icon: Icon(
+                        showSearch ? Icons.close : Icons.search,
+                        color: ink,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 12),
+              if (showSearch) ...[
+                const SizedBox(height: 12),
+                TextField(
+                  focusNode: searchFocus,
+                  controller: search,
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    labelText: 'Buscar por mascota o persona',
+                    labelStyle: const TextStyle(color: muted),
+                    floatingLabelStyle: const TextStyle(color: ink),
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: query.isEmpty
+                        ? null
+                        : IconButton(
+                            tooltip: 'Limpiar búsqueda',
+                            onPressed: () => setState(() {
+                              search.clear();
+                              query = '';
+                              page = 1;
+                            }),
+                            icon: const Icon(Icons.close),
+                          ),
+                  ),
+                  onSubmitted: (value) => setState(() {
+                    query = value.trim();
+                    page = 1;
+                  }),
+                ),
+                const SizedBox(height: 12),
+              ],
               const SizedBox(height: 18),
               LiveSection<DataPage<Json>>(
                 key: ValueKey('$page:$query'),

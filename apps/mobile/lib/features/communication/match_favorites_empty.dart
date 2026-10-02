@@ -124,7 +124,9 @@ class MatchFavoritesEmpty extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('Explorar'),
+                const Flexible(
+                  child: Text('Explorar', textAlign: TextAlign.center),
+                ),
                 const SizedBox(width: 10),
                 ExcludeSemantics(
                   child: Container(
