@@ -3,6 +3,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets('two-panel selection uses distance instead of a fixed 300ms', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(320, 640));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(const MaterialApp(home: GuardianPromotionScreen()));
+    await tester.pumpAndSettle();
+    final first = find.byWidgetPredicate(
+      (widget) =>
+          widget is Semantics &&
+          widget.properties.label == 'Ir a la página 1 de 3',
+    );
+    await tester.ensureVisible(first);
+    await tester.tap(first);
+    await tester.pump();
+    expect(tester.takeException(), isNull);
+    final third = find.byWidgetPredicate(
+      (widget) =>
+          widget is Semantics &&
+          widget.properties.label == 'Ir a la página 3 de 3',
+    );
+    await tester.ensureVisible(third);
+    await tester.tap(third);
+    await tester.pump();
+    final pages = tester.widget<PageView>(find.byType(PageView)).controller!;
+    expect(pages.position.viewportDimension, 288);
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(pages.page, greaterThan(0));
+    expect(pages.page, lessThan(2));
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(pages.page, 2);
+    expect(tester.takeException(), isNull);
+  });
   for (final setting in [
     (1.0, false),
     (2.0, false),

@@ -29,13 +29,26 @@ class _GuardianPromotionState extends State<GuardianPromotionScreen> {
   }
 
   void select(int index) {
+    if (!pages.hasClients) return;
     if (MediaQuery.disableAnimationsOf(context)) {
       pages.jumpToPage(index);
     } else {
+      final distance = (index * pages.position.viewportDimension - pages.offset)
+          .abs();
+      if (distance < .01) return;
+      // The reference delegates smooth scrolling to Chromium: its duration
+      // grows with the square root of the remaining distance, not page count.
+      final platform = Theme.of(context).platform;
+      final mobile =
+          platform == TargetPlatform.android || platform == TargetPlatform.iOS;
       pages.animateToPage(
         index,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
+        duration: Duration(
+          microseconds: (math.sqrt(distance) / 60 * 1000000)
+              .clamp(0, mobile ? 700000 : 1500000)
+              .round(),
+        ),
+        curve: mobile ? Curves.easeInOut : const Cubic(.4, 0, 0, 1),
       );
     }
   }
