@@ -1308,7 +1308,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
       if (spec.$1.startsWith('public-profile-adoptions')) {
-        await tester.ensureVisible(find.text('En adopción'));
+        await Scrollable.ensureVisible(
+          tester.element(find.text('En adopción')),
+          alignment: .3,
+        );
         await tester.pumpAndSettle();
         await tester.tap(find.text('En adopción'));
         await tester.pumpAndSettle();
@@ -1323,7 +1326,10 @@ void main() {
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('public-profile-cases')) {
-        await tester.ensureVisible(find.text('Casos'));
+        await Scrollable.ensureVisible(
+          tester.element(find.text('Casos')),
+          alignment: .3,
+        );
         await tester.pumpAndSettle();
         await tester.tap(find.text('Casos'));
         await tester.pumpAndSettle();

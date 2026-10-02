@@ -1922,3 +1922,8 @@ Inspected Source styles.css90–94:40px icon-button circle, transparent default,
 
 Final analyze noissues exit0 (7.6s). Source checkout used a3c969cd9103fd46dc5cd886999912526ce75efb last verified246; remote recheck247 failed connection github.com443 after21s, so current remote unchanged is not newly verified.
 
+
+## Loop248 — 2026-10-02: CI capture interaction repair
+
+Reference remote a3c969cd9103fd46dc5cd886999912526ce75efb reverified. CI422 Flutter job110975078267 failed capture_profile_test1315 after tab tap1313 missed under sticky header; actual flutter analyze/test and first capturer passed, web/database and identity/adoption jobs successful, iOS still compiling when inspected. Replaced ensureVisible top-edge alignment for public adoption/case tabs with Scrollable.ensureVisible alignment.3 before actual pointer tap. No production bypass or skipped screenshot. Full public-profile capture group pass exit0 (9s). Entire capture_profile_test started session17427, live and progressing through Guardian states when recorded; terminal result still pending. First group/session82746 was still running when full started, both group then terminated0; next checks must remain sequential. Final Codemagic/device acceptance pending.
+
