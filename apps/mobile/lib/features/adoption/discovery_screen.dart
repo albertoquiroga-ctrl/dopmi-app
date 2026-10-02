@@ -17,6 +17,7 @@ import 'community_ui.dart';
 import 'location_service.dart';
 import 'discovery_filters.dart';
 import 'discovery_empty.dart';
+import 'discovery_card_motion.dart';
 
 double discoveryMediaHeight(BuildContext context) => math.max(
   (MediaQuery.sizeOf(context).height - 220).clamp(340, 560) - 128,
@@ -556,16 +557,13 @@ class _SupportCard extends StatelessWidget {
   String amount(int cents) =>
       (cents / 100).toStringAsFixed(cents % 100 == 0 ? 0 : 2);
   @override
-  Widget build(BuildContext context) => AnimatedContainer(
+  Widget build(BuildContext context) => DiscoveryCardMotion(
     key: ValueKey('discovery-motion-support-${item.expenseId}'),
     duration: MediaQuery.disableAnimationsOf(context) || dragging
         ? Duration.zero
         : Duration(milliseconds: exiting == 0 ? 250 : 280),
-    curve: const Cubic(.22, 1, .36, 1),
-    transform: Matrix4.identity()
-      ..translateByDouble(exiting == 0 ? dragX : exiting * 420, 0, 0, 1)
-      ..rotateZ((exiting == 0 ? dragX / 28 : exiting * 18) * math.pi / 180),
-    transformAlignment: Alignment.center,
+    translation: exiting == 0 ? dragX : exiting * 420,
+    angleDegrees: exiting == 0 ? dragX / 28 : exiting * 18,
     child: AnimatedOpacity(
       opacity: exiting == 0 ? 1 : .35,
       duration: MediaQuery.disableAnimationsOf(context)
@@ -801,16 +799,13 @@ class _SwipeCard extends StatelessWidget {
   final ValueChanged<double> onDrag;
   final VoidCallback onStart, onCancel, onEnd, pass, like, contact, open;
   @override
-  Widget build(BuildContext context) => AnimatedContainer(
+  Widget build(BuildContext context) => DiscoveryCardMotion(
     key: ValueKey('discovery-motion-${post.id}'),
     duration: MediaQuery.disableAnimationsOf(context) || dragging
         ? Duration.zero
         : Duration(milliseconds: exiting == 0 ? 250 : 280),
-    curve: const Cubic(.22, 1, .36, 1),
-    transform: Matrix4.identity()
-      ..translateByDouble(exiting == 0 ? dragX : exiting * 420, 0, 0, 1)
-      ..rotateZ((exiting == 0 ? dragX / 28 : exiting * 18) * math.pi / 180),
-    transformAlignment: Alignment.center,
+    translation: exiting == 0 ? dragX : exiting * 420,
+    angleDegrees: exiting == 0 ? dragX / 28 : exiting * 18,
     child: AnimatedOpacity(
       opacity: exiting == 0 ? 1 : .35,
       duration: MediaQuery.disableAnimationsOf(context)

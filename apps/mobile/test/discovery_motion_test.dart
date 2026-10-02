@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/features/adoption/discovery_card_motion.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
@@ -74,11 +76,11 @@ void main() {
       );
       await gesture.moveBy(const Offset(60, 0));
       await tester.pump();
-      final motion = tester.widget<AnimatedContainer>(
+      final motion = tester.widget<DiscoveryCardMotion>(
         find.byKey(const ValueKey('discovery-motion-post')),
       );
       expect(motion.duration, Duration.zero);
-      expect(motion.transform!.storage[12], closeTo(60, .1));
+      expect(motion.translation, closeTo(60, .1));
       await gesture.cancel();
       await tester.pumpAndSettle();
       expect(repo.post.saved, false);
@@ -93,10 +95,10 @@ void main() {
       expect(find.text('Milo'), findsNothing);
       await tester.pumpAndSettle();
       expect(find.text('Milo'), findsOneWidget);
-      final next = tester.widget<AnimatedContainer>(
+      final next = tester.widget<DiscoveryCardMotion>(
         find.byKey(const ValueKey('discovery-motion-next')),
       );
-      expect(next.transform!.storage[12], 0);
+      expect(next.translation, 0);
     },
   );
 
@@ -121,10 +123,10 @@ void main() {
       await open(tester, repository: repo);
       await tester.tap(find.byTooltip('Me gusta'));
       await tester.pump();
-      final pendingMotion = tester.widget<AnimatedContainer>(
+      final pendingMotion = tester.widget<DiscoveryCardMotion>(
         find.byKey(const ValueKey('discovery-motion-post')),
       );
-      expect(pendingMotion.transform!.storage[12], 420);
+      expect(pendingMotion.translation, 420);
       expect(pendingMotion.duration, const Duration(milliseconds: 280));
       await tester.tap(find.byTooltip('Me gusta'));
       await tester.tap(find.byTooltip('Pasar'));
@@ -136,10 +138,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Luna'), findsOneWidget);
       expect(find.text('Volver a intentar'), findsOneWidget);
-      final motion = tester.widget<AnimatedContainer>(
+      final motion = tester.widget<DiscoveryCardMotion>(
         find.byKey(const ValueKey('discovery-motion-post')),
       );
-      expect(motion.transform!.storage[12], 0);
+      expect(motion.translation, 0);
     },
   );
   testWidgets(
@@ -171,4 +173,34 @@ void main() {
     expect(find.text('Milo'), findsOneWidget);
     expect(find.text('Luna'), findsNothing);
   });
+
+  testWidgets(
+    'exit frames interpolate CSS angle and translation independently',
+    (tester) async {
+      await open(tester);
+      await tester.tap(find.byTooltip('Pasar'));
+      await tester.pump();
+      for (final elapsed in [70, 140, 210]) {
+        await tester.pump(const Duration(milliseconds: 70));
+        final progress = const Cubic(.22, 1, .36, 1).transform(elapsed / 280);
+        final rendered = tester.widget<Transform>(
+          find
+              .descendant(
+                of: find.byKey(const ValueKey('discovery-motion-post')),
+                matching: find.byType(Transform),
+              )
+              .first,
+        );
+        final matrix = rendered.transform;
+        expect(matrix.storage[12], closeTo(-420 * progress, .001));
+        expect(
+          math.atan2(matrix.storage[1], matrix.storage[0]) * 180 / math.pi,
+          closeTo(-18 * progress, .00001),
+        );
+        expect(matrix.determinant(), closeTo(1, .00001));
+      }
+      await tester.pumpAndSettle();
+      expect(find.text('Milo'), findsOneWidget);
+    },
+  );
 }
