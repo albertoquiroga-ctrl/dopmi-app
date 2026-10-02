@@ -2080,3 +2080,6 @@ Dos nuevas pruebas de recorrido ejercen botones normal/200%, checkbox desmarcado
 CI37066563308 #438 exact25583bd6a640d5fe88b9018f8b581851d494bda7 confirmado live in_progress: backend/web-database success, flutter/iOS todavía activos; precede cambios264. No reinicio por espera. Codemagic/Play final y prueba Samsung pendientes. Servidor11447 detenidoCtrlCexit1 esperado, tab17cerrado, viewportrestaurado. Pendientes sin equivalente simulado del Source deben conservar recuperación real; siguiente revisión será inventario conjunto de rutas/estados y evidencia restante, sin redefinir alcance. Archivos del usuario preservados.
 
 Gate final264: analyze sin incidencias7.0s exit0 tras botones flexibles y comprobación de texto. Formato sin pendientes; capturador4estados1pass3s y suite44pass13s. Sin procesos Flutter locales pendientes.
+
+Checkpoint264: push exit0 y ref3374c507004cd2de7a693de87658e85cc445c0f8 corroborados, PR6 actualizado. Primera consulta CI usó SHA mal compuesto y devolvió vacío: no acredita ausencia de workflow; corregida a SHA obtenido de git. Resultado del run nuevo se consultará con SHA exacto.
+CI37067524998 #440 pending exact3374c507004cd2de7a693de87658e85cc445c0f8, confirmado tras corrección. Predecesor438 seguía live; no reiniciar ninguno por estado pending.
