@@ -4,6 +4,7 @@ import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/config.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
+import 'package:dopmi_mobile/features/identity/auth_screens.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -97,15 +98,15 @@ void main() {
       );
       await tester.enterText(find.byType(TextFormField).at(3), 'Password1234');
       await tester.enterText(find.byType(TextFormField).at(4), 'Password1234');
-      final signupButton = find.widgetWithText(FilledButton, 'Crear cuenta');
+      final signupButton = find.widgetWithText(FilledButton, 'Crea una cuenta');
       expect(tester.widget<FilledButton>(signupButton).onPressed, isNull);
-      await tap(tester, 'Crear cuenta');
+      await tap(tester, 'Crea una cuenta');
       expect(repo.signupCount, 0);
       await tap(
         tester,
         'Confirmo que tengo 18 años o más y acepto los Términos y el Aviso de privacidad.',
       );
-      await tap(tester, 'Crear cuenta');
+      await tap(tester, 'Crea una cuenta');
       expect(repo.signupCount, 1);
       expect(repo.signupIntent, 'rescue');
       expect(find.text('Revisa tu correo.'), findsOneWidget);
@@ -281,6 +282,41 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  testWidgets(
+    'auth switch preserves rescuer intent and login input when returning',
+    (tester) async {
+      final repo = FakeIdentityRepository();
+      await start(tester, repo, initialLocation: '/signup?intent=rescue');
+      final loginLink = find.widgetWithText(TextButton, 'Inicia sesión');
+      await tester.ensureVisible(loginLink);
+      await tester.tap(loginLink);
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<AuthFormScreen>(find.byType(AuthFormScreen)).intent,
+        'rescue',
+      );
+      final email = find.byType(TextFormField).first;
+      await tester.enterText(email, 'ana@example.test');
+      final signupLink = find.widgetWithText(TextButton, 'Crear cuenta');
+      await tester.ensureVisible(signupLink);
+      await tester.tap(signupLink);
+      await tester.pumpAndSettle();
+      final screen = tester.widget<AuthFormScreen>(find.byType(AuthFormScreen));
+      expect(screen.mode, AuthFormMode.signup);
+      expect(screen.intent, 'rescue');
+      await tester.tap(find.byTooltip('Volver'));
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<TextFormField>(find.byType(TextFormField).first)
+            .controller!
+            .text,
+        'ana@example.test',
+      );
+      expect(repo.current, isNull);
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets('a recovery link routes to reset without loading personal data', (
     tester,
   ) async {
@@ -318,7 +354,7 @@ void main() {
       find.text('Tu contraseña se actualizó. Inicia sesión con la nueva.'),
       findsOneWidget,
     );
-    expect(find.widgetWithText(FilledButton, 'Iniciar sesión'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, 'Inicia sesión'), findsOneWidget);
   });
 }
 

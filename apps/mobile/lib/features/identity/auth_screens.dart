@@ -282,8 +282,8 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                   const SizedBox(height: 8),
                   ActionButton(
                     switch (widget.mode) {
-                      AuthFormMode.login => 'Iniciar sesión',
-                      AuthFormMode.signup => 'Crear cuenta',
+                      AuthFormMode.login => 'Inicia sesión',
+                      AuthFormMode.signup => 'Crea una cuenta',
                       AuthFormMode.forgot => 'Enviar instrucciones',
                       AuthFormMode.reset => 'Actualizar contraseña',
                     },
@@ -308,11 +308,49 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                       busy: busy,
                       onPick: social,
                     ),
-                  if (login)
-                    TextButton(
-                      onPressed: () =>
-                          context.push('/signup?intent=${widget.intent}'),
-                      child: const Text('Soy nuevo · Crear una cuenta'),
+                  if (login || signup)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 14),
+                      child: Wrap(
+                        alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 4,
+                        children: [
+                          Text(
+                            signup
+                                ? '¿Ya tienes cuenta?'
+                                : '¿No tienes cuenta?',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              height: 1.55,
+                              letterSpacing: 0,
+                              color: muted,
+                            ),
+                          ),
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              minimumSize: const Size(48, 48),
+                              textStyle: const TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 13,
+                                height: 1.55,
+                                letterSpacing: 0,
+                                fontWeight: FontWeight.w700,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                            onPressed: busy
+                                ? null
+                                : () => context.push(
+                                    '${signup ? '/login' : '/signup'}?intent=${widget.intent}',
+                                  ),
+                            child: Text(
+                              signup ? 'Inicia sesión' : 'Crear cuenta',
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   if (reset)
                     TextButton(

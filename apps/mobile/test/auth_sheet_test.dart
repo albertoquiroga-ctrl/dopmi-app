@@ -62,7 +62,7 @@ void main() {
         await tester.pumpAndSettle();
         final submit = find.widgetWithText(
           FilledButton,
-          mode == AuthFormMode.login ? 'Iniciar sesión' : 'Crear cuenta',
+          mode == AuthFormMode.login ? 'Inicia sesión' : 'Crea una cuenta',
         );
         await tester.ensureVisible(submit);
         await tester.pumpAndSettle();
