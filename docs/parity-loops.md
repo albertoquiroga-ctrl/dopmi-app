@@ -1906,3 +1906,6 @@ Reference remote a3c969cd9103fd46dc5cd886999912526ce75efb confirmed. Hero Column
 
 Reference remote a3c969cd9103fd46dc5cd886999912526ce75efb confirmed and actual styles.css5505–5515 inspected. Added clipped elliptical highlight80%width/90%height centered upper-right, white alpha.55 yellow/.12 dark fading to transparent at55%, behind existing text and interactive semantics. Canvas uses current dimensions, including accessible expanded cards. Normal capture inspected; both normal/large retained. Metrics/capture3pass exit0 (2s), analyze noissues exit0 (7.6s). Full route/device fidelity and Codemagic/Play remain pending.
 
+
+Checkpoint245: push3dcc5687170943f73bc166f8ca9acc5958cca82a verified; PR6 remains open/draft/mergeable, baseba9f897f3fa418e952b98e4c604cffe468a8aa95. CI37048298328 #422 verified queued for exactSHA; pending terminal result. PR description updated with public metrics/composition and prior420success.
+
