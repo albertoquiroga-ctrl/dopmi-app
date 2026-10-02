@@ -3353,3 +3353,33 @@ test('an already authorized Guardian amount below fifty retains its owner retry 
   await rejected(()=>ownerRequest('amount',1,1000,crypto.randomUUID()),/mínimo Guardián/);
   assert.equal((await ownerPlan()).revision,1);
 });
+
+
+test('rescuer dashboard includes settled Guardian net and excludes reservations and reversals',async()=>{
+  const cycle=await boundGuardian();
+  const dashboard=async()=>(await db.query('select public.dopmi_rescuer_dashboard() as value')).rows[0].value;
+  await role(rescuer);let result=await dashboard();
+  assert.deepEqual(result.financial,{assigned_cents:0,transferred_cents:0,in_review_cents:0});
+  await db.exec('reset role');await guardianSettlement('settle',guardianEvidence);
+  await role(rescuer);result=await dashboard();
+  assert.deepEqual(result.financial,{assigned_cents:4314,transferred_cents:0,in_review_cents:4314});
+  await role(other);result=await dashboard();
+  assert.deepEqual(result.financial,{assigned_cents:0,transferred_cents:0,in_review_cents:0});
+  await db.exec('reset role');
+  const donation=await prepare({gross_cents:5000});
+  await settle(donation.id,{gross_cents:5000,stripe_fee_cents:500,charge_id:'ch_dashboard',payment_intent_id:'pi_dashboard'});
+  await db.query("update private.dopmi_guardian_allocations set stripe_transfer_id='tr_dashboard',transferred_at=now(),reversed_cents=1000 where cycle_id=$1",[cycle.id]);
+  await role(rescuer);result=await dashboard();
+  assert.deepEqual(result.financial,{assigned_cents:7714,transferred_cents:3314,in_review_cents:4400});
+  await db.exec('reset role');
+  await db.query('update private.dopmi_guardian_allocations set reversed_cents=allocated_cents where cycle_id=$1',[cycle.id]);
+  await role(rescuer);result=await dashboard();
+  assert.deepEqual(result.financial,{assigned_cents:4400,transferred_cents:0,in_review_cents:4400});
+});
+
+test('rescuer dashboard remains private and rejects suspended actors',async()=>{
+  await role('','anon');await rejected(()=>db.query('select public.dopmi_rescuer_dashboard()'),/permission denied/);
+  await db.exec('reset role');
+  await db.query("update profiles set account_status='suspended' where id=$1",[rescuer]);
+  await role(rescuer);await rejected(()=>db.query('select public.dopmi_rescuer_dashboard()'),/Cuenta activa y confirmada requerida/);
+});
