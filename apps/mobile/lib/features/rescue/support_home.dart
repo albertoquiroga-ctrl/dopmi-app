@@ -334,110 +334,126 @@ class GuardianSupportCard extends StatelessWidget {
   const GuardianSupportCard({super.key, required this.height});
   final double height;
   @override
-  Widget build(BuildContext context) => InkWell(
-    onTap: () => context.push('/guardian?enroll=1'),
-    borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-    child: ClipRRect(
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: const BoxDecoration(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      boxShadow: [
+        BoxShadow(
+          color: Color(0x3815110d),
+          offset: Offset(0, 16),
+          blurRadius: 40,
+        ),
+      ],
+    ),
+    child: InkWell(
+      splashFactory: NoSplash.splashFactory,
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      onTap: () => context.push('/guardian?enroll=1'),
       borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-      child: SizedBox(
-        height: height,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            ExcludeSemantics(
-              child: Image.asset(
-                'assets/guardian/guardian-urgent.jpg',
-                fit: BoxFit.cover,
-              ),
-            ),
-            const DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0x8c15110d),
-                    Color(0x3815110d),
-                    Color(0x7315110d),
-                    Color(0xe015110d),
-                  ],
-                  stops: [0, .34, .58, 1],
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        child: SizedBox(
+          height: height,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              ExcludeSemantics(
+                child: Image.asset(
+                  'assets/guardian/guardian-urgent.jpg',
+                  fit: BoxFit.cover,
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(18, 22, 18, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Apoya a casos urgentes',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
-                      height: 1.2,
-                      letterSpacing: -.48,
-                      color: Colors.white,
-                      shadows: [
-                        Shadow(
-                          color: Color(0x5915110d),
-                          offset: Offset(0, 1),
-                          blurRadius: 2,
+              const DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0x8c15110d),
+                      Color(0x3815110d),
+                      Color(0x7315110d),
+                      Color(0xe015110d),
+                    ],
+                    stops: [0, .34, .58, 1],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(18, 22, 18, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Apoya a casos urgentes',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        height: 1.2,
+                        letterSpacing: -.48,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            color: Color(0x59000000),
+                            offset: Offset(0, 1),
+                            blurRadius: 2,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    _benefit(
+                      'Rescatistas y casos verificados',
+                      SvgPicture.asset(
+                        'assets/profile/icon-shield.svg',
+                        width: 14,
+                        height: 14,
+                        colorFilter: const ColorFilter.mode(
+                          yellow,
+                          BlendMode.srcIn,
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  _benefit(
-                    'Rescatistas y casos verificados',
-                    SvgPicture.asset(
-                      'assets/profile/icon-shield.svg',
-                      width: 14,
-                      height: 14,
-                      colorFilter: const ColorFilter.mode(
-                        yellow,
-                        BlendMode.srcIn,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  _benefit(
-                    'Sigue tu huella',
-                    SvgPicture.string(
-                      _impact,
-                      width: 14,
-                      height: 14,
-                      colorFilter: const ColorFilter.mode(
-                        yellow,
-                        BlendMode.srcIn,
+                    const SizedBox(height: 10),
+                    _benefit(
+                      'Sigue tu huella',
+                      SvgPicture.string(
+                        _impact,
+                        width: 14,
+                        height: 14,
+                        colorFilter: const ColorFilter.mode(
+                          yellow,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  _benefit(
-                    'Cancela cuando quieras',
-                    SvgPicture.string(
-                      _check,
-                      width: 14,
-                      height: 14,
-                      colorFilter: const ColorFilter.mode(
-                        yellow,
-                        BlendMode.srcIn,
+                    const SizedBox(height: 10),
+                    _benefit(
+                      'Cancela cuando quieras',
+                      SvgPicture.string(
+                        _check,
+                        width: 14,
+                        height: 14,
+                        colorFilter: const ColorFilter.mode(
+                          yellow,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            if (MediaQuery.textScalerOf(context).scale(14) > 20)
-              const Positioned(
-                left: 18,
-                right: 18,
-                bottom: 110,
-                child: GuardianSupportDock(),
-              ),
-          ],
+              if (MediaQuery.textScalerOf(context).scale(14) > 20)
+                const Positioned(
+                  left: 18,
+                  right: 18,
+                  bottom: 110,
+                  child: GuardianSupportDock(),
+                ),
+            ],
+          ),
         ),
       ),
     ),
@@ -454,11 +470,12 @@ class GuardianSupportCard extends StatelessWidget {
             fontFamily: 'Inter',
             fontSize: 14,
             fontWeight: FontWeight.w500,
+            letterSpacing: 0,
             height: 1.3,
             color: Color(0xebffffff),
             shadows: [
               Shadow(
-                color: Color(0x4d15110d),
+                color: Color(0x4d000000),
                 offset: Offset(0, 1),
                 blurRadius: 2,
               ),
