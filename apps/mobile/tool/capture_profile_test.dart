@@ -667,6 +667,7 @@ void main() {
       ('adoption-support', '/adoptions'),
       ('adoption-support-large', '/adoptions'),
       ('rescuer-profile', '/profile'),
+      ('rescuer-profile-home-link-focus', '/profile'),
       ('rescuer-profile-reference', '/profile'),
       ('rescuer-profile-reference-wide', '/profile'),
       ('rescuer-profile-reference-focus', '/profile'),
@@ -1384,6 +1385,22 @@ void main() {
         await Scrollable.ensureVisible(tester.element(button), alignment: .4);
         await tester.pumpAndSettle();
         expect(tester.getRect(outline), tester.getRect(button).inflate(5));
+      }
+      if (spec.$1 == 'rescuer-profile-home-link-focus') {
+        final link = find.byType(RescuerActivityHomeLink);
+        final outline = find.descendant(
+          of: link,
+          matching: find.byKey(const ValueKey('reference-keyboard-outline')),
+        );
+        for (var i = 0; i < 12 && outline.evaluate().isEmpty; i++) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+          await tester.pump();
+        }
+        expect(outline, findsOneWidget);
+        await Scrollable.ensureVisible(tester.element(link), alignment: .3);
+        await tester.pumpAndSettle();
+        expect(tester.getSize(link).height, 48);
+        expect(tester.getSize(outline).height, 54);
       }
       if (spec.$1 == 'rescuer-profile-reference-focus') {
         await tester.sendKeyEvent(LogicalKeyboardKey.tab);

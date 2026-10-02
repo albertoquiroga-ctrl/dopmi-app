@@ -48,24 +48,7 @@ class RescuerProfileActivity extends StatelessWidget {
                 ),
               ),
             ),
-            if (items.isNotEmpty)
-              TextButton(
-                onPressed: onHome,
-                style: TextButton.styleFrom(
-                  minimumSize: const Size(48, 48),
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  foregroundColor: const Color(0xff7841f2),
-                ),
-                child: const Text(
-                  'Ver inicio',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0,
-                  ),
-                ),
-              ),
+            if (items.isNotEmpty) RescuerActivityHomeLink(onPressed: onHome),
           ],
         ),
         const SizedBox(height: 12),
@@ -164,6 +147,55 @@ class RescuerProfileActivity extends StatelessWidget {
       ],
     );
   }
+}
+
+class RescuerActivityHomeLink extends StatefulWidget {
+  const RescuerActivityHomeLink({super.key, required this.onPressed});
+  final VoidCallback onPressed;
+  @override
+  State<RescuerActivityHomeLink> createState() =>
+      _RescuerActivityHomeLinkState();
+}
+
+class _RescuerActivityHomeLinkState extends State<RescuerActivityHomeLink> {
+  bool hovered = false;
+  @override
+  Widget build(BuildContext context) => MouseRegion(
+    onEnter: (_) => setState(() => hovered = true),
+    onExit: (_) => setState(() => hovered = false),
+    child: ReferenceFocusOutline(
+      radius: 0,
+      outlineInset: const EdgeInsets.symmetric(vertical: 2),
+      child: TextButton(
+        onPressed: widget.onPressed,
+        style: TextButton.styleFrom(
+          minimumSize: const Size(48, 44),
+          tapTargetSize: MaterialTapTargetSize.padded,
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          foregroundColor: const Color(0xff7841f2),
+          backgroundColor: Colors.transparent,
+          overlayColor: Colors.transparent,
+          shape: const RoundedRectangleBorder(),
+          animationDuration: Duration.zero,
+          splashFactory: NoSplash.splashFactory,
+        ),
+        child: Text(
+          'Ver inicio',
+          style: TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 13,
+            height: 16 / 13,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0,
+            decoration: hovered
+                ? TextDecoration.underline
+                : TextDecoration.none,
+            decorationColor: const Color(0xff7841f2),
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 class RescuerProfileActivityRow extends StatefulWidget {

@@ -1,3 +1,14 @@
+import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/features/identity/identity_controller.dart';
+import 'package:dopmi_mobile/features/identity/identity_repository.dart';
+import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'fake_identity_repository.dart';
+import 'community_test.dart' show FakeCommunity;
+import 'rescue_test.dart' show FakeRescue;
+
 import 'dart:ui' show PointerDeviceKind;
 
 import 'package:dopmi_mobile/features/profile/rescuer_profile_activity.dart';
@@ -6,6 +17,48 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets('activity home link opens the actual rescuer home by keyboard', (
+    tester,
+  ) async {
+    final identity = FakeIdentityRepository()
+      ..user = const Identity('one', 'ana@example.test', verified: true);
+    await identity.setExperience('rescuer');
+    final container = ProviderContainer(
+      overrides: [
+        identityRepositoryProvider.overrideWithValue(identity),
+        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+        rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+        routerInitialLocationProvider.overrideWithValue('/profile'),
+      ],
+    );
+    addTearDown(() async {
+      container.dispose();
+      await identity.changes.close();
+    });
+    await tester.pumpWidget(
+      UncontrolledProviderScope(container: container, child: const DopmiApp()),
+    );
+    await tester.pumpAndSettle();
+    final link = find.byType(RescuerActivityHomeLink);
+    await tester.ensureVisible(link);
+    await tester.pumpAndSettle();
+    final outline = find.descendant(
+      of: link,
+      matching: find.byKey(const ValueKey('reference-keyboard-outline')),
+    );
+    for (var i = 0; i < 12 && outline.evaluate().isEmpty; i++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+    }
+    expect(outline, findsOneWidget);
+    expect(container.read(routerProvider).state.uri.path, '/profile');
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(container.read(routerProvider).state.uri.path, '/rescuer');
+    expect(find.text('Acciones pendientes'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   for (final large in [false, true]) {
     testWidgets(
       'activity shows actual allocation states and expense IDs; large=$large',
@@ -52,13 +105,44 @@ void main() {
         expect(find.text('Transferencia revertida'), findsNWidgets(2));
         expect(find.textContaining(r'$50.15 MXN asignados'), findsNWidgets(3));
         expect(find.textContaining('Consulta veterinaria 3'), findsNothing);
+
+        final link = find.byType(RescuerActivityHomeLink);
+        expect(tester.getSize(link).height, 48);
+        final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+        await mouse.addPointer(location: Offset.zero);
+        await mouse.moveTo(tester.getCenter(link));
+        await tester.pump();
+        expect(
+          tester.widget<Text>(find.text('Ver inicio')).style!.decoration,
+          TextDecoration.underline,
+        );
+        expect(home, 0);
+        await mouse.moveTo(Offset.zero);
+        await tester.pump();
+        expect(
+          tester.widget<Text>(find.text('Ver inicio')).style!.decoration,
+          TextDecoration.none,
+        );
+        await mouse.removePointer();
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
+        final outline = find.descendant(
+          of: link,
+          matching: find.byKey(const ValueKey('reference-keyboard-outline')),
+        );
+        expect(outline, findsOneWidget);
+        expect(tester.getSize(outline).height, 54);
+        expect(home, 0);
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        expect(home, 1);
         await tester.tap(find.text('Ver inicio'));
         await tester.ensureVisible(
           find.byType(RescuerProfileActivityRow).first,
         );
         await tester.tap(find.byType(RescuerProfileActivityRow).first);
         await tester.pumpAndSettle();
-        expect(home, 1);
+        expect(home, 2);
         expect(opened, ['expense-0']);
         expect(tester.takeException(), isNull);
       },
