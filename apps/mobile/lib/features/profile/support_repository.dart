@@ -10,6 +10,12 @@ final supportRepositoryProvider = Provider<SupportRepository>((ref) {
 
 class SupportRepository {
   SupportRepository(this.rpc);
+  factory SupportRepository.supabase() {
+    final client = Supabase.instance.client;
+    return SupportRepository(
+      (name, params) => client.rpc(name, params: params),
+    );
+  }
   final SupportRpc rpc;
 
   bool isReceipt(dynamic value, String requestId) =>

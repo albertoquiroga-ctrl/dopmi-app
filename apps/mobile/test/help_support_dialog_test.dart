@@ -2,10 +2,63 @@ import 'dart:async';
 
 import 'package:dopmi_mobile/core/ui.dart';
 import 'package:dopmi_mobile/features/profile/help_support_dialog.dart';
+import 'package:dopmi_mobile/features/profile/support_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets(
+    'internal submission preserves draft and stable retry key and acknowledges only a receipt',
+    (tester) async {
+      final ids = <String>[];
+      var pending = Completer<dynamic>();
+      final repo = SupportRepository((name, params) {
+        expect(name, 'dopmi_submit_support_request');
+        ids.add(params['target_request'] as String);
+        expect((params['payload'] as Map)['topic'], 'support_rules');
+        return pending.future;
+      });
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: dopmiTheme(),
+          home: Scaffold(
+            body: HelpSupportDialog(
+              topics: const ['Cómo funcionan los apoyos'],
+              initialTopic: 0,
+              repository: repo,
+            ),
+          ),
+        ),
+      );
+      await tester.enterText(find.byType(TextField).last, 'Necesito ayuda.');
+      await tester.pumpAndSettle();
+      final send = find.widgetWithText(FilledButton, 'Enviar mensaje');
+      final action = tester.widget<FilledButton>(send).onPressed!;
+      action();
+      action();
+      await tester.pump();
+      expect(ids, hasLength(1));
+      expect(find.text('Recibimos tu mensaje.'), findsNothing);
+      pending.completeError(StateError('failed'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Tu mensaje sigue aquí'), findsOneWidget);
+      expect(
+        tester.widget<TextField>(find.byType(TextField).last).controller!.text,
+        'Necesito ayuda.',
+      );
+      pending = Completer<dynamic>();
+      tester.widget<FilledButton>(send).onPressed!();
+      await tester.pump();
+      expect(ids, hasLength(2));
+      expect(ids[0], ids[1]);
+      pending.complete({'request_id': ids.last, 'status': 'received'});
+      await tester.pumpAndSettle();
+      expect(find.text('Recibimos tu mensaje.'), findsOneWidget);
+      expect(find.text('Enviar mensaje'), findsNothing);
+      expect(find.text('Entendido'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets(
     'mail handoff preserves accents and draft after failure, prevents duplicates and never claims delivery',
     (tester) async {

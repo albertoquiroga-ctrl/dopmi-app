@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/ui.dart';
+import 'support_repository.dart';
 
 class HelpSupportDialog extends StatefulWidget {
   const HelpSupportDialog({
@@ -9,10 +13,12 @@ class HelpSupportDialog extends StatefulWidget {
     required this.topics,
     required this.initialTopic,
     this.openMail,
+    this.repository,
   });
   final List<String> topics;
   final int initialTopic;
   final Future<bool> Function(Uri)? openMail;
+  final SupportRepository? repository;
 
   @override
   State<HelpSupportDialog> createState() => _HelpSupportDialogState();
@@ -23,6 +29,53 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
   final caseName = TextEditingController(), message = TextEditingController();
   bool busy = false;
   String? notice;
+  bool received = false;
+  String? requestId, requestContent;
+  static const topicIds = [
+    'support_rules',
+    'contribute',
+    'guardian',
+    'adopt',
+    'verification',
+    'publish_cases',
+    'funds_evidence',
+    'account',
+    'trust_safety',
+  ];
+
+  Future<void> send() async {
+    if (busy || received || message.text.trim().isEmpty) return;
+    final content = jsonEncode([
+      topic,
+      caseName.text.trim(),
+      message.text.trim(),
+    ]);
+    if (requestContent != content) {
+      requestContent = content;
+      requestId = const Uuid().v4();
+    }
+    setState(() {
+      busy = true;
+      notice = null;
+    });
+    try {
+      await (widget.repository ?? SupportRepository.supabase()).submit(
+        requestId: requestId!,
+        topic: topicIds[topic],
+        caseName: caseName.text,
+        message: message.text,
+      );
+      if (mounted) setState(() => received = true);
+    } catch (_) {
+      if (mounted) {
+        setState(
+          () => notice = 'No pudimos confirmar la recepción. Tu mensaje sigue aquí; vuelve a intentar.',
+        );
+      }
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
 
   @override
   void dispose() {
@@ -130,10 +183,12 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'Contactar a soporte',
-                      style: TextStyle(
+                      received
+                          ? 'Recibimos tu mensaje.'
+                          : 'Contactar a soporte',
+                      style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w700,
                         color: ink,
@@ -149,81 +204,97 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                 ],
               ),
               const SizedBox(height: 12),
-              field(
-                'Tema',
-                DropdownButtonFormField<int>(
-                  initialValue: topic,
-                  itemHeight: null,
-                  isExpanded: true,
-                  items: [
-                    for (var i = 0; i < widget.topics.length; i++)
-                      DropdownMenuItem(
-                        value: i,
-                        child: Text(widget.topics[i], softWrap: true),
-                      ),
-                  ],
-                  selectedItemBuilder: (_) => widget.topics
-                      .map((item) => Text(item, softWrap: true))
-                      .toList(),
-                  onChanged: busy
-                      ? null
-                      : (value) => setState(() => topic = value ?? topic),
-                ),
-              ),
-              const SizedBox(height: 12),
-              field(
-                'Caso relacionado (opcional)',
-                TextField(
-                  controller: caseName,
-                  enabled: !busy,
-                  decoration: const InputDecoration(
-                    hintText: 'Ej. Rocky, Luna…',
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              field(
-                'Mensaje',
-                TextField(
-                  controller: message,
-                  enabled: !busy,
-                  minLines: 4,
-                  maxLines: null,
-                  onChanged: (_) => setState(() {}),
-                  decoration: const InputDecoration(
-                    hintText: 'Cuéntanos qué necesitas',
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              if (notice != null) ...[
-                Text(
-                  notice!,
-                  style: const TextStyle(fontSize: 14, color: muted),
+              if (received) ...[
+                const Text(
+                  'Tu solicitud quedó registrada para el equipo de soporte. Podemos responder al correo de tu cuenta.',
                 ),
                 const SizedBox(height: 12),
+                FilledButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Entendido'),
+                ),
+              ] else ...[
+                field(
+                  'Tema',
+                  DropdownButtonFormField<int>(
+                    initialValue: topic,
+                    itemHeight: null,
+                    isExpanded: true,
+                    items: [
+                      for (var i = 0; i < widget.topics.length; i++)
+                        DropdownMenuItem(
+                          value: i,
+                          child: Text(widget.topics[i], softWrap: true),
+                        ),
+                    ],
+                    selectedItemBuilder: (_) => widget.topics
+                        .map((item) => Text(item, softWrap: true))
+                        .toList(),
+                    onChanged: busy
+                        ? null
+                        : (value) => setState(() => topic = value ?? topic),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                field(
+                  'Caso relacionado (opcional)',
+                  TextField(
+                    controller: caseName,
+                    enabled: !busy,
+                    decoration: const InputDecoration(
+                      hintText: 'Ej. Rocky, Luna…',
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                field(
+                  'Mensaje',
+                  TextField(
+                    controller: message,
+                    enabled: !busy,
+                    minLines: 4,
+                    maxLines: null,
+                    onChanged: (_) => setState(() {}),
+                    decoration: const InputDecoration(
+                      hintText: 'Cuéntanos qué necesitas',
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                if (notice != null) ...[
+                  Text(
+                    notice!,
+                    style: const TextStyle(fontSize: 14, color: muted),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+                FilledButton(
+                  onPressed: busy || message.text.trim().isEmpty ? null : send,
+                  child: const Text('Enviar mensaje'),
+                ),
+                const SizedBox(height: 12),
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 12,
+                    ),
+                    minimumSize: const Size(0, 48),
+                    textStyle: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  onPressed: busy || message.text.trim().isEmpty
+                      ? null
+                      : continueInMail,
+                  child: const Text(
+                    'Continuar en correo',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ],
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 18,
-                    vertical: 12,
-                  ),
-                  minimumSize: const Size(0, 48),
-                  textStyle: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                onPressed: busy || message.text.trim().isEmpty
-                    ? null
-                    : continueInMail,
-                child: const Text(
-                  'Continuar en correo',
-                  textAlign: TextAlign.center,
-                ),
-              ),
             ],
           ),
         ),

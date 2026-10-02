@@ -2386,3 +2386,18 @@ Formulario/panel siguen sin conectar; despliegue, adjuntos y aceptación faltan.
 No correo enviado, secreto, migración remota ni Codemagic nuevo.
 Gate backend434/434 aprobado26.6s. Analyze detectó dos bloques sin llaves en
 pruebas; corregidos y repetido sin incidencias6.4s.
+# Loop290 — envío interno conectado al formulario móvil
+
+Referencia remota2/10/2026:
+`irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
+HelpSupportDialog incorpora Enviar mensaje con repositorio RPC Supabase real.
+Un UUID se conserva mientras tema/caso/mensaje normalizados sean idénticos;
+editar genera otro. Guard busy evita doble envío; fallo conserva formulario y
+recibo válido cambia a Recibimos tu mensaje/Entendido. Se distingue recepción
+durable de email entregado; no se promete respuesta el mismo día. Correo externo
+permanece como alternativa explícita. Cinco pruebas de diálogo/repositorio
+aprobadas1s; captura normal/200%1 suite aprobada3s, imagen normal inspeccionada.
+Las RPC siguen locales sin desplegar y el panel aún no está conectado; no
+afirmar envío remoto real. Adjuntos y comparación final permanecen pendientes.
+Sin email emitido ni Codemagic nuevo.
+Analyze detectó bloque sin llaves; corregido y repetido limpio5.8s.
