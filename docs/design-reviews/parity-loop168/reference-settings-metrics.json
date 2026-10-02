@@ -1,0 +1,80 @@
+[
+  {
+    "background": "rgba(0, 0, 0, 0)",
+    "borderRadius": "50%",
+    "font": "16px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "height": 40,
+    "label": "Editar Instagram",
+    "lineHeight": "normal",
+    "margin": "0px",
+    "padding": "1px 6px",
+    "width": 40,
+    "x": 306.8000183105469,
+    "y": 348.6000061035156
+  },
+  {
+    "background": "rgba(0, 0, 0, 0)",
+    "borderRadius": "50%",
+    "font": "16px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "height": 40,
+    "label": "Editar Facebook",
+    "lineHeight": "normal",
+    "margin": "0px",
+    "padding": "1px 6px",
+    "width": 40,
+    "x": 306.8000183105469,
+    "y": 428.2000122070313
+  },
+  {
+    "background": "rgba(0, 0, 0, 0)",
+    "borderRadius": "0px",
+    "font": "12px / 18.6px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "height": 37.20000076293945,
+    "label": "Vincula tus cuentas para comprobar que eres el dueño. Es ideal agregar ambas.",
+    "lineHeight": "18.6px",
+    "margin": "-4px 4px 0px",
+    "padding": "0px",
+    "width": 337.6000061035156,
+    "x": 20,
+    "y": 489
+  },
+  {
+    "background": "rgba(0, 0, 0, 0)",
+    "borderRadius": "50%",
+    "font": "16px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "height": 40,
+    "label": "Editar CLABE",
+    "lineHeight": "normal",
+    "margin": "0px",
+    "padding": "1px 6px",
+    "width": 40,
+    "x": 306.8000183105469,
+    "y": 596.4000244140625
+  },
+  {
+    "background": "rgba(0, 0, 0, 0)",
+    "borderRadius": "0px",
+    "font": "12px / 18.6px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "height": 37.20000076293945,
+    "label": "La CLABE solo es visible para ti y nunca se muestra a los donantes.",
+    "lineHeight": "18.6px",
+    "margin": "-4px 4px 0px",
+    "padding": "0px",
+    "width": 337.6000061035156,
+    "x": 20,
+    "y": 657.2000122070312
+  },
+  {
+    "background": "rgba(0, 0, 0, 0)",
+    "borderRadius": "0px",
+    "font": "12px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "height": 15.199999809265137,
+    "label": "Cambia tu experiencia en la app",
+    "lineHeight": "normal",
+    "margin": "0px",
+    "padding": "0px",
+    "width": 205.6625061035156,
+    "x": 32.79999923706055,
+    "y": 742.4000244140625
+  }
+]

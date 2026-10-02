@@ -1,3 +1,4 @@
+import 'package:dopmi_mobile/features/profile/rescuer_settings_details.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_settings_verification.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_logout_row.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_access.dart';
@@ -641,6 +642,7 @@ void main() {
       ('rescuer-settings-footer', '/settings'),
       ('rescuer-settings-logout-focus', '/settings'),
       ('rescuer-settings-mode-focus', '/settings'),
+      ('rescuer-settings-edit-focus', '/settings'),
       ('rescuer-settings-large', '/settings'),
       ('rescuer-profile-large', '/profile'),
       ('profile-overview', '/profile'),
@@ -1495,10 +1497,16 @@ void main() {
             tester.getCenter(find.byTooltip('Regresar')).dx,
             closeTo(38, 1),
           );
+          final social = tester.getRect(find.byType(SettingsDataRow).first);
+          final editor = tester.getRect(find.byTooltip('Editar Instagram'));
+          expect(social.height, closeTo(70, 1));
+          expect(editor.size, const Size(48, 48));
+          expect(editor.center.dx, closeTo(social.right - 35, 1));
         }
         if (spec.$1 == 'rescuer-settings-footer' ||
             spec.$1 == 'rescuer-settings-logout-focus' ||
-            spec.$1 == 'rescuer-settings-mode-focus') {
+            spec.$1 == 'rescuer-settings-mode-focus' ||
+            spec.$1 == 'rescuer-settings-edit-focus') {
           await tester.scrollUntilVisible(
             find.text('Cerrar sesión'),
             250,
@@ -1517,6 +1525,8 @@ void main() {
           if (spec.$1.endsWith('-focus')) {
             final focusTarget = spec.$1 == 'rescuer-settings-mode-focus'
                 ? find.byType(RescuerDonorModeCard)
+                : spec.$1 == 'rescuer-settings-edit-focus'
+                ? find.byTooltip('Editar Instagram')
                 : find.byType(RescuerLogoutRow);
             final outline = find.descendant(
               of: focusTarget,
@@ -1529,7 +1539,14 @@ void main() {
               await tester.pump();
             }
             expect(outline, findsOneWidget);
-            expect(find.byType(RescuerLogoutRow), findsOneWidget);
+            if (spec.$1 == 'rescuer-settings-edit-focus') {
+              await Scrollable.ensureVisible(
+                tester.element(focusTarget),
+                alignment: .4,
+              );
+              await tester.pumpAndSettle();
+              expect(tester.getSize(outline), const Size(50, 50));
+            }
           }
         }
         await tester.runAsync(

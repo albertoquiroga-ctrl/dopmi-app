@@ -1,3 +1,5 @@
+import '../../core/reference_focus_outline.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -51,16 +53,9 @@ class RescuerSettingsDetails extends ConsumerWidget {
                 editLabel: 'Editar ${item.$1}',
               ),
             ],
-            const SizedBox(height: 10),
-            const Text(
+            const SizedBox(height: 6),
+            const SettingsFieldHint(
               'Los cambios de tu perfil público pasan por revisión.',
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 12,
-                height: 1.4,
-                letterSpacing: 0,
-                color: Color(0xff554e48),
-              ),
             ),
           ],
         ),
@@ -104,93 +99,89 @@ class SettingsDataRow extends StatelessWidget {
   final String? icon;
   final VoidCallback? onReturn;
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(14),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      border: Border.all(color: const Color(0xffe6e2dd)),
-      borderRadius: BorderRadius.circular(18),
-    ),
-    child: Row(
-      children: [
-        if (icon != null) ...[
-          ExcludeSemantics(
-            child: Container(
-              width: 40,
-              height: 40,
-              alignment: Alignment.center,
-              decoration: const BoxDecoration(
-                color: Color(0xffefede8),
-                shape: BoxShape.circle,
-              ),
-              child: SvgPicture.asset(
-                'assets/profile/$icon.svg',
-                width: 18,
-                height: 18,
-                colorFilter: const ColorFilter.mode(
-                  Color(0xff554e48),
-                  BlendMode.srcIn,
+  Widget build(BuildContext context) => Stack(
+    children: [
+      Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: const Color(0xffe6e2dd)),
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Row(
+          children: [
+            if (icon != null) ...[
+              ExcludeSemantics(
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                    color: Color(0xffefede8),
+                    shape: BoxShape.circle,
+                  ),
+                  child: SvgPicture.asset(
+                    'assets/profile/$icon.svg',
+                    width: 18,
+                    height: 18,
+                    colorFilter: const ColorFilter.mode(
+                      Color(0xff554e48),
+                      BlendMode.srcIn,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          const SizedBox(width: 12),
-        ],
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 12,
-                  height: 15.2 / 12,
-                  letterSpacing: 0,
-                  color: Color(0xff554e48),
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                value,
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 16,
-                  height: 1.2,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0,
-                  color: Color(0xff15110d),
-                ),
-              ),
+              const SizedBox(width: 12),
             ],
-          ),
-        ),
-        const SizedBox(width: 12),
-        IconButton(
-          tooltip: editLabel,
-          onPressed: () async {
-            await context.push(path);
-            if (context.mounted) onReturn?.call();
-          },
-          style: IconButton.styleFrom(
-            minimumSize: const Size(48, 48),
-            maximumSize: const Size(48, 48),
-            padding: EdgeInsets.zero,
-            splashFactory: NoSplash.splashFactory,
-            overlayColor: Colors.transparent,
-          ),
-          icon: SvgPicture.asset(
-            'assets/profile/icon-edit.svg',
-            width: 16,
-            height: 16,
-            colorFilter: const ColorFilter.mode(
-              Color(0xff15110d),
-              BlendMode.srcIn,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 12,
+                      height: 15.2 / 12,
+                      letterSpacing: 0,
+                      color: Color(0xff554e48),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    value,
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 16,
+                      height: 1.2,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0,
+                      color: Color(0xff15110d),
+                    ),
+                  ),
+                ],
+              ),
             ),
+            const SizedBox(width: 12),
+            const SizedBox(width: 40),
+          ],
+        ),
+      ),
+      Positioned(
+        right: 11,
+        top: 0,
+        bottom: 0,
+        child: Center(
+          child: SettingsEditButton(
+            label: editLabel,
+            onPressed: () async {
+              await context.push(path);
+              if (context.mounted) onReturn?.call();
+            },
           ),
         ),
-      ],
-    ),
+      ),
+    ],
   );
 }
 
@@ -209,17 +200,89 @@ class SettingsBankingSection extends StatelessWidget {
         path: '/connect',
         editLabel: 'Gestionar datos bancarios en Stripe',
       ),
-      const SizedBox(height: 10),
-      const Text(
+      const SizedBox(height: 6),
+      const SettingsFieldHint(
         'Administra tus datos bancarios directamente en Stripe.',
-        style: TextStyle(
-          fontFamily: 'Inter',
-          fontSize: 12,
-          height: 1.4,
-          letterSpacing: 0,
-          color: Color(0xff554e48),
-        ),
       ),
     ],
+  );
+}
+
+class SettingsFieldHint extends StatelessWidget {
+  const SettingsFieldHint(this.text, {super.key});
+  final String text;
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 4),
+    child: Text(
+      text,
+      style: const TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 12,
+        height: 1.55,
+        letterSpacing: 0,
+        color: Color(0xff554e48),
+      ),
+    ),
+  );
+}
+
+class SettingsEditButton extends StatefulWidget {
+  const SettingsEditButton({
+    super.key,
+    required this.label,
+    required this.onPressed,
+  });
+  final String label;
+  final VoidCallback onPressed;
+  @override
+  State<SettingsEditButton> createState() => _SettingsEditButtonState();
+}
+
+class _SettingsEditButtonState extends State<SettingsEditButton> {
+  bool hovered = false;
+  @override
+  Widget build(BuildContext context) => Tooltip(
+    message: widget.label,
+    child: ReferenceFocusOutline(
+      radius: 20,
+      outlineInset: const EdgeInsets.all(4),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: widget.onPressed,
+          onHover: (value) => setState(() => hovered = value),
+          borderRadius: BorderRadius.circular(24),
+          splashFactory: NoSplash.splashFactory,
+          overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+          child: SizedBox(
+            width: 48,
+            height: 48,
+            child: Center(
+              child: Container(
+                key: const ValueKey('settings-edit-circle'),
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: hovered ? const Color(0xfff0ede7) : Colors.transparent,
+                ),
+                child: Center(
+                  child: SvgPicture.asset(
+                    'assets/profile/icon-edit.svg',
+                    width: 16,
+                    height: 16,
+                    colorFilter: const ColorFilter.mode(
+                      Color(0xff15110d),
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
   );
 }
