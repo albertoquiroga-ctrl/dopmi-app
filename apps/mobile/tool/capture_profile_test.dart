@@ -444,6 +444,7 @@ void main() {
         'empty-pending-heart',
         'icon-star',
         'icon-shield',
+        'icon-edit',
         'rtab-home',
         'onb-camera',
         'rtab-publish',
@@ -621,6 +622,8 @@ void main() {
       ('match-home-large', '/messages'),
       ('adoption-support', '/adoptions'),
       ('adoption-support-large', '/adoptions'),
+      ('rescuer-profile', '/profile'),
+      ('rescuer-profile-large', '/profile'),
       ('profile-overview', '/profile'),
       ('profile-overview-active', '/profile'),
       ('profile-overview-large', '/profile'),
@@ -789,6 +792,7 @@ void main() {
       if (spec.$1.startsWith('owned-case-detail') ||
           spec.$1.startsWith('owned-cases') ||
           spec.$1.startsWith('rescuer-home') ||
+          spec.$1.startsWith('rescuer-profile') ||
           spec.$1.startsWith('case-publication') ||
           spec.$1.startsWith('publish-') ||
           spec.$1.startsWith('verification-') ||
@@ -799,6 +803,8 @@ void main() {
         overrides: [
           identityRepositoryProvider.overrideWithValue(repo),
           communityRepositoryProvider.overrideWithValue(community),
+          if (spec.$1.startsWith('rescuer-profile'))
+            rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           if (spec.$1.startsWith('case-publication'))
             rescueRepositoryProvider.overrideWithValue(
               CasePublicationCaptureRescue(

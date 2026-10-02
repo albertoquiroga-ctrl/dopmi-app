@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/ui.dart';
+import 'rescuer_profile_hero.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../identity/experience_controller.dart';
@@ -104,43 +105,46 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
             ],
             if (profile != null) ...[
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: rescuer ? const Color(0xfff3eefc) : yellow,
-                  borderRadius: BorderRadius.circular(26),
-                ),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: Colors.white,
-                      foregroundColor: ink,
-                      radius: 28,
-                      child: Text(
-                        profile!.name.isEmpty
-                            ? '?'
-                            : profile!.name.characters.first.toUpperCase(),
+              if (rescuer)
+                RescuerProfileHero(profile!)
+              else
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: rescuer ? const Color(0xfff3eefc) : yellow,
+                    borderRadius: BorderRadius.circular(26),
+                  ),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: Colors.white,
+                        foregroundColor: ink,
+                        radius: 28,
+                        child: Text(
+                          profile!.name.isEmpty
+                              ? '?'
+                              : profile!.name.characters.first.toUpperCase(),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            profile!.name,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          if (rescuer)
-                            const Text('Tu espacio de rescatista')
-                          else
-                            const GuardianMembership(),
-                        ],
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              profile!.name,
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            if (rescuer)
+                              const Text('Tu espacio de rescatista')
+                            else
+                              const GuardianMembership(),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
               const SizedBox(height: 20),
               if (rescuer) ...[
                 ProfileRow(
