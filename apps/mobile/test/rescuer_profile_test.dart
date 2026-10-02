@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+import 'dart:async';
 
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
@@ -6,6 +6,7 @@ import 'package:dopmi_mobile/features/profile/rescuer_profile_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -57,6 +58,94 @@ class FakeRescuerProfile implements RescuerProfileRepository {
 }
 
 void main() {
+  testWidgets(
+    'photo picker prevents duplicate taps and retains draft on cancellation and failure',
+    (tester) async {
+      final repo = FakeRescuerProfile();
+      final identity = FakeIdentityRepository()
+        ..user = const Identity('owner-one', 'ana@example.test', verified: true)
+        ..profile = const Profile(
+          id: 'owner-one',
+          name: 'Ana',
+          phone: '',
+          city: 'Monterrey',
+          mode: 'rescuer',
+          intent: 'rescue',
+          status: 'active',
+          termsVersion: currentTermsVersion,
+          privacyVersion: currentPrivacyVersion,
+          adultConfirmed: true,
+        );
+      addTearDown(() async => identity.changes.close());
+      const channel = MethodChannel('plugins.flutter.io/image_picker');
+      final messenger =
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      var calls = 0;
+      var selection = Completer<String?>();
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        if (call.method != 'pickImage') return null;
+        calls++;
+        final args = Map<String, dynamic>.from(call.arguments as Map);
+        expect(args['source'], 1);
+        expect(args['imageQuality'], 90);
+        expect(args['requestFullMetadata'], isFalse);
+        return selection.future;
+      });
+      addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            rescuerProfileRepositoryProvider.overrideWithValue(repo),
+            identityRepositoryProvider.overrideWithValue(identity),
+            communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+            routerInitialLocationProvider.overrideWithValue(
+              '/rescuer/profile/edit',
+            ),
+          ],
+          child: const DopmiApp(),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final name = find.byKey(const ValueKey('public-profile-Nombre'));
+      await tester.enterText(name, 'Borrador conservado');
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
+      final photo = find.byKey(const ValueKey('public-profile-photo'));
+      await tester.ensureVisible(photo);
+      await tester.pumpAndSettle();
+      final tap = tester.widget<InkWell>(photo).onTap!;
+      tap();
+      tap();
+      await tester.pump();
+      expect(calls, 1);
+      selection.complete(null);
+      await tester.pumpAndSettle();
+      expect(repo.saves, 0);
+      expect(tester.widget<InkWell>(photo).onTap, isNotNull);
+      selection = Completer<String?>();
+      await tester.tap(photo);
+      await tester.pump();
+      selection.completeError(PlatformException(code: 'photo_access_denied'));
+      await tester.pumpAndSettle();
+      expect(calls, 2);
+      expect(repo.saves, 0);
+      expect(
+        tester.widget<TextField>(name).controller!.text,
+        'Borrador conservado',
+      );
+      expect(tester.takeException(), isNull);
+      expect(tester.widget<InkWell>(photo).onTap, isNotNull);
+      selection = Completer<String?>();
+      await tester.tap(photo);
+      await tester.pump();
+      selection.complete(null);
+      await tester.pumpAndSettle();
+      expect(calls, 3);
+      expect(repo.saves, 0);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('corrige, guarda y envía el perfil público sin datos privados', (
     tester,
   ) async {

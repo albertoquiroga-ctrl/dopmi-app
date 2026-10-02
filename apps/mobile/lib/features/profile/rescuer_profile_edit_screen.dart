@@ -104,17 +104,24 @@ class _RescuerPublicProfileEditState
 
   Future<void> pickAvatar() async {
     if (busy) return;
-    final selected = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 90,
-      requestFullMetadata: false,
-    );
-    if (selected == null || !mounted) return;
-    if (profile == null && !await save(announce: false)) return;
-    setState(() => busy = true);
+    setState(() {
+      busy = true;
+      error = null;
+    });
     try {
+      final selected = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 90,
+        requestFullMetadata: false,
+      );
+      if (selected == null || !mounted) return;
       final repo = ref.read(rescuerProfileRepositoryProvider);
+      if (profile == null) {
+        profile = await repo.save(payload());
+        if (!mounted) return;
+      }
       final path = await repo.uploadAvatar(await selected.readAsBytes());
+      if (!mounted) return;
       profile = await repo.save(
         payload(avatarPath: path),
         version: profile?['version'] as int?,
@@ -209,6 +216,7 @@ class _RescuerPublicProfileEditState
                   side: const BorderSide(color: Color(0xffe6e2dd)),
                 ),
                 child: InkWell(
+                  key: const ValueKey('public-profile-photo'),
                   borderRadius: BorderRadius.circular(20),
                   onTap: editable && !busy ? pickAvatar : null,
                   child: Padding(

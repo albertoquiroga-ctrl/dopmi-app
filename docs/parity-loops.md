@@ -2251,3 +2251,19 @@ POST autorizado inició `android-guardian-internal`, build
 Compilación, publicación Play y aceptación instalada de este candidato quedan
 pendientes; el build286 anterior no acredita estos cambios. La paridad global
 continúa abierta y dinero real permanece sin autorización.
+# Loop281 — selector de foto sin duplicados ni pérdida de borrador
+
+Referencia remota consultada: `irlanda/apoyar-detalle-perfil`
+`a3c969cd9103fd46dc5cd886999912526ce75efb` (2/10/2026).
+El editor bloquea la operación antes de abrir la galería y captura también
+errores del selector nativo. Cancelar no guarda ni inventa una foto. El primer
+perfil se guarda sólo después de seleccionar una imagen; carga, versión y
+revisión conservan el repositorio real. Tras error o cancelación vuelve a
+permitirse el intento y el texto permanece en sus controladores.
+Flutter test `test/rescuer_profile_test.dart`: 2 aprobadas, incluida selección
+concurrente, cancelación, error de plataforma y reintento, con galería/calidad90
+y metadata completa deshabilitada. No acredita galería en teléfono.
+Analyze detectó un import redundante en la prueba; retirado y repetido:
+sin incidencias (11.5s).
+Este cambio es posterior al candidato Codemagic `6ac036fb95ce3d2da3061421`,
+que GET confirma `building`; no forma parte de su SHA `e4f4e85`.
