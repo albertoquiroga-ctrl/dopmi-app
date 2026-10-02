@@ -12,6 +12,7 @@ import 'community_repository.dart';
 import 'community_ui.dart';
 import 'photo_recovery.dart';
 import 'public_profile_layout.dart';
+import 'public_profile_adoption_card.dart';
 
 class CatalogScreen extends ConsumerStatefulWidget {
   const CatalogScreen({super.key, this.saved = false, this.owner});
@@ -686,8 +687,9 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
                 for (final post in adoptions)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 12),
-                    child: AdoptionCard(
+                    child: PublicProfileAdoptionCard(
                       post,
+                      key: ValueKey(post.id),
                       open: () => context.push('/adoptions/${post.id}'),
                     ),
                   ),

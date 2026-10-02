@@ -569,6 +569,7 @@ void main() {
         'icon-settings',
         'icon-instagram',
         'icon-facebook',
+        'icon-bookmark',
         'icon-messages',
         'rtab-cases',
         'rtab-home',
@@ -814,6 +815,8 @@ void main() {
       ('rescuer-profile-large', '/profile'),
       ('public-profile', '/people/owner'),
       ('public-profile-large', '/people/owner'),
+      ('public-profile-adoptions', '/people/owner'),
+      ('public-profile-adoptions-large', '/people/owner'),
       ('profile-overview', '/profile'),
       ('profile-overview-active', '/profile'),
       ('profile-overview-large', '/profile'),
@@ -1270,6 +1273,14 @@ void main() {
       }
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1.startsWith('public-profile-adoptions')) {
+        await tester.ensureVisible(find.text('En adopción'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('En adopción'));
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text('Conoce la historia de Luna'));
+        await tester.pumpAndSettle();
+      }
       if (spec.$1 == 'support-home') {
         // Source dock measured in IAB377x852, a3c969c.
         final cta = tester.getRect(

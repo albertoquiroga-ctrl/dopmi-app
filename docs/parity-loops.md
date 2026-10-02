@@ -1842,3 +1842,12 @@ Verification: community_test.dart 27 passed exit 0; new narrow 320px controls at
 
 CI checkpoint 68c098424a3688e7dc89b36df10897c3a7738239: integrated acceptance run 37039192375 #418 confirmed completed success through GitHub API. This predates loops 236–237. No final Codemagic dispatch or Android installation; requested ADB UI authorization still pending.
 
+
+## Loop 238 — 2026-10-02: public adoption cards
+
+Remote mockup irlanda/apoyar-detalle-perfil remains a3c969cd9103fd46dc5cd886999912526ce75efb. Replaced generic public adoption tiles with 24px rounded cards, 258px photo, lower gradient/name+actual age, original 44px bookmark and yellow story action. Favorite persists through existing repository and rolls back on failure; retry and navigation verified. Stable post keys preserve card identity. No invented distance or photo. Bookmark asset matches Source SHA256 F83E85AD75CA8781D979BDB2E446A1E5A3AEDF39EAD07FA9C70BC4FF9C6D5829.
+
+Verification: existing community suite 27 passed; new favorite failure/retry test passed. Final clean scratch run new test plus normal/large capture: 2 passed exit 0. analyze passed exit 0 after lint repair (14.4s). Initial new test had a syntax error corrected before acceptance. Captures first lacked asset because stale unit asset bundle; pub get alone did not fix, flutter clean + offline pub get rebuilt bundle and final capture inspected with bookmark visible. Capture large tabs initially tapped before scrolling settled; corrected test await. Retained two fixture PNGs in docs/design-reviews/parity-loop238; fixture intentionally has no photo. Current matrix adds two public adoption states (244 total, 29 URLs); inventory reconciliation pending.
+
+Still pending: exact Source runtime side-by-side, real photo/large motion device validation, card distance when authorized data exists, CTA shadow/hover, public case cards and public numeralia. No final Codemagic build or device installation.
+
