@@ -1079,6 +1079,39 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  for (final large in [false, true]) {
+    testWidgets(
+      'public gallery thumbnail selects the hero photo; large=$large',
+      (tester) async {
+        await startPublicCase(tester, PhotoPublicCaseRescue(), large: large);
+        final thumbnail = find.byWidgetPredicate(
+          (widget) =>
+              widget is Semantics && widget.properties.label == 'Ver foto 2',
+        );
+        await Scrollable.ensureVisible(
+          tester.element(thumbnail),
+          alignment: .25,
+        );
+        await tester.pumpAndSettle();
+        // Select the thumbnail away from its offline-photo retry control.
+        await tester.tapAt(tester.getTopLeft(thumbnail) + const Offset(20, 20));
+        await tester.pumpAndSettle();
+        final second = find.byWidgetPredicate(
+          (widget) =>
+              widget is Semantics && widget.properties.label == 'Foto 2 de 2',
+        );
+        expect(tester.widget<Semantics>(second).properties.selected, isTrue);
+        expect(
+          tester
+              .widgetList<RescuePublicPhoto>(find.byType(RescuePublicPhoto))
+              .map((photo) => photo.path)
+              .toSet(),
+          {'approved/one', 'approved/two'},
+        );
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
   testWidgets(
     'public case exposes expenses beyond the first page without pagination controls',
     (tester) async {

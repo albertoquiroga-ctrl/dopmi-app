@@ -735,6 +735,10 @@ void main() {
       ('case-detail-photo-focus-large', '/rescue-cases/case-one'),
       ('case-detail-story', '/rescue-cases/case-one'),
       ('case-detail-story-large', '/rescue-cases/case-one'),
+      ('case-detail-gallery', '/rescue-cases/case-one'),
+      ('case-detail-gallery-large', '/rescue-cases/case-one'),
+      ('case-detail-amount', '/rescue-cases/case-one'),
+      ('case-detail-amount-large', '/rescue-cases/case-one'),
       ('case-detail-planned', '/rescue-cases/case-one'),
       ('case-detail-planned-large', '/rescue-cases/case-one'),
       (
@@ -1544,6 +1548,13 @@ void main() {
       if (spec.$1.startsWith('case-detail-amount')) {
         await tester.tap(find.text('Donar'));
         await tester.pumpAndSettle();
+        if (!large) {
+          expect(tester.getSize(find.byType(TextField)).height, closeTo(52, 1));
+          expect(
+            tester.getSize(find.text('Otra cantidad:')).height,
+            closeTo(18.4, 1),
+          );
+        }
       }
       if (spec.$1.startsWith('case-detail-expenses')) {
         final card = find.byWidgetPredicate(
@@ -1937,6 +1948,24 @@ void main() {
         }
         expect(outline, findsOneWidget);
         expect(tester.getSize(outline), const Size(18, 18));
+      }
+      if (spec.$1.startsWith('case-detail-gallery')) {
+        final thumbnail = find.byWidgetPredicate(
+          (widget) =>
+              widget is Semantics && widget.properties.label == 'Ver foto 3',
+        );
+        await Scrollable.ensureVisible(
+          tester.element(thumbnail),
+          alignment: .25,
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(thumbnail);
+        await tester.pumpAndSettle();
+        final selected = find.byWidgetPredicate(
+          (widget) =>
+              widget is Semantics && widget.properties.label == 'Foto 3 de 3',
+        );
+        expect(tester.widget<Semantics>(selected).properties.selected, isTrue);
       }
       if (spec.$1.startsWith('case-detail-story')) {
         await Scrollable.ensureVisible(

@@ -9,9 +9,10 @@ aceptación global ni instalada. Entradas históricas debajo están fechadas.
 
 ## Capturas reproducibles actuales
 
-`apps/mobile/tool/capture_profile_test.dart` contiene **252 estados en 29 URLs**,
-recontados desde todas las tuplas, incluidas las multilínea, en loop258.
-Se añaden dos estados de conversación con300px de teclado simulado normal/200%.
+`apps/mobile/tool/capture_profile_test.dart` contiene **256 estados en 29 URLs**,
+recontados desde todas las tuplas, incluidas las multilínea, en loop259.
+Incluye conversación con300px de teclado simulado y cuatro nuevos estados de
+galería/selector de monto del caso, normal/200%.
 El último CI integral aprobado capturó250 estados; los dos nuevos aprobaron
 localmente junto a las pruebas de comunidad. No son252 pantallas aceptadas,
 ni29 pantallas que haya que implementar desde cero. Los widgets productivos
@@ -28,7 +29,7 @@ usan fixtures de prueba: no acreditan sesión, Storage ni pagos reales.
 | `/my-cases` | 6 |
 | `/rescue-cases` | 18 |
 | `/notifications` | 7 |
-| `/rescue-cases/case-one` | 12 |
+| `/rescue-cases/case-one` | 16 |
 | `/contribute/Cirugía?case=case-one&amount_cents=10000` | 7 |
 | `/guardian` | 16 |
 | `/impact?history=1` | 4 |
@@ -132,3 +133,6 @@ Loop253: corte83e081f557a4c9ebb3a058cba23c24b5a3563cd5,419pruebas móviles compl
 Loop256: complete Adoptar → detalle → confirmación → regreso contrastado en Source377x852; arrastre60 retorna y150 sale, parámetros coinciden con producción. Capturas nativas normal/200% retenidas, mazo fixture alineado a Rocky/foto aprobada. Diferencias de datos (ubicación no elegida, distancia real y guardado) documentadas. 424 pruebas móviles completas aprobadas sobre9e1c27d; CI428 en curso. No equivale a gesto en Samsung ni a cierre de las demás rutas. Próximo bloque: mensajes con teclado/galerías/regreso, seguido de cierre de estados por grupo.
 
 Loop257 supersedes deck distance difference256: extra distance row removed to match Source card; actual computed distance still reaches detail and filters. Location SVG and text/tag lineboxes corrected; same Rocky fixture/photo normal/large captured and inspected. Motion/detail/community38pass; final motion/detail/capture12pass and analyze7.6s clean. Installed motion remains separate. Continue with whole message/keyboard/back path, not hover.
+
+
+Loop259: Apoyar → caso → selección de foto → galería → monto comparado con Source renderizado377x852. Galería real sólo muestra fotos aprobadas; Source repite imágenes hasta6, no se inventan copias. Selector real conserva mínimo10/centavos y descuento real de costos en vez del checkbox simulado0. Se corrigen lineboxes/campo52 y se añaden4capturas normal/large. Último CI430: análisis, pruebas, ambos capturadores, iOS y backend exitosos; Android falló por Maven403 al descargar Kotlin. No es gate completo aprobado. Próximo cierre: comparar perfil/ajustes y panel/formularios rescatista completos, después recorridos de Guardian/pago test y candidato instalado.

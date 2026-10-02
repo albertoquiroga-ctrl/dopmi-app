@@ -199,6 +199,8 @@ class _ContributionAmountDialogState extends State<ContributionAmountDialog> {
                         'Otra cantidad:',
                         style: TextStyle(
                           fontSize: 15,
+                          height: 18.4 / 15,
+                          letterSpacing: 0,
                           fontWeight: FontWeight.w600,
                           color: ink,
                         ),
@@ -216,16 +218,22 @@ class _ContributionAmountDialogState extends State<ContributionAmountDialog> {
                           onChanged: (_) => setState(() => selected = null),
                           style: const TextStyle(
                             fontSize: 18,
+                            height: 1.2,
+                            letterSpacing: 0,
                             fontWeight: FontWeight.w600,
                             color: ink,
                           ),
                           decoration: InputDecoration(
+                            isDense: true,
+                            constraints: const BoxConstraints(minHeight: 52),
                             prefixIcon: const Padding(
                               padding: EdgeInsets.only(left: 14, right: 4),
                               child: Text(
                                 '\$',
                                 style: TextStyle(
                                   fontSize: 18,
+                                  height: 1.2,
+                                  letterSpacing: 0,
                                   fontWeight: FontWeight.w600,
                                   color: Color(0xffb0a89f),
                                 ),
@@ -237,6 +245,8 @@ class _ContributionAmountDialogState extends State<ContributionAmountDialog> {
                             ),
                             prefixStyle: const TextStyle(
                               fontSize: 18,
+                              height: 1.2,
+                              letterSpacing: 0,
                               fontWeight: FontWeight.w600,
                               color: Color(0xffb0a89f),
                             ),
@@ -256,7 +266,7 @@ class _ContributionAmountDialogState extends State<ContributionAmountDialog> {
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
                               borderSide: const BorderSide(
-                                color: yellow,
+                                color: Color(0xfff4c917),
                                 width: 1.5,
                               ),
                             ),
@@ -268,6 +278,8 @@ class _ContributionAmountDialogState extends State<ContributionAmountDialog> {
                         'De \$10 a \$10,000 MXN, con hasta dos decimales.',
                         style: TextStyle(
                           fontSize: 12,
+                          height: 15.2 / 12,
+                          letterSpacing: 0,
                           fontWeight: FontWeight.w500,
                           color: muted,
                         ),
@@ -320,8 +332,9 @@ class _ContributionAmountDialogState extends State<ContributionAmountDialog> {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
-                          height: 1.4,
-                          color: muted,
+                          height: 1.55,
+                          letterSpacing: 0,
+                          color: ink,
                         ),
                       ),
                     ],
