@@ -48,7 +48,52 @@ class PendingStoryPhoto extends StoryFixture {
   }
 }
 
+class PendingStoryHistory extends StoryFixture {
+  final initial = Completer<List<CaseUpdate>>();
+  @override
+  Future<List<CaseUpdate>> publicFor(String caseId) {
+    if (publicCalls == 0) {
+      publicCalls++;
+      return initial.future;
+    }
+    return super.publicFor(caseId);
+  }
+}
+
 void main() {
+  testWidgets(
+    'history heading stays visible through pending, error and retry',
+    (tester) async {
+      final updates = PendingStoryHistory();
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            caseUpdateRepositoryProvider.overrideWithValue(updates),
+            communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          ],
+          child: const MaterialApp(
+            home: Scaffold(
+              body: SingleChildScrollView(child: PublicCaseUpdates('case-one')),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      expect(find.text('La historia hasta ahora'), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.textContaining('Los avances aprobados'), findsNothing);
+      updates.initial.completeError(const FormatException('Offline'));
+      await tester.pumpAndSettle();
+      expect(find.text('La historia hasta ahora'), findsOneWidget);
+      expect(find.textContaining('Los avances aprobados'), findsNothing);
+      await tester.tap(find.text('Volver a intentar'));
+      await tester.pumpAndSettle();
+      expect(updates.publicCalls, 2);
+      expect(find.text('La historia hasta ahora'), findsOneWidget);
+      expect(find.text('Avance aprobado del rescate'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets('photo retry replaces the old error while signing is pending', (
     tester,
   ) async {

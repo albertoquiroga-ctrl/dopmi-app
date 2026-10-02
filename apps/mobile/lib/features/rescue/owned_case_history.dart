@@ -10,7 +10,22 @@ class OwnedCaseHistory extends ConsumerWidget {
   final String caseId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) =>
+  Widget build(BuildContext context, WidgetRef ref) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      const SizedBox(height: 24),
+      const Text(
+        'La historia hasta ahora',
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 19,
+          height: 1.3,
+          letterSpacing: 0,
+          fontWeight: FontWeight.w700,
+          color: Color(0xff15110d),
+        ),
+      ),
+      const SizedBox(height: 12),
       LiveSection<List<CaseUpdate>>(
         key: ValueKey('owned-case-history:$caseId'),
         tables: const ['dopmi_case_updates'],
@@ -18,19 +33,6 @@ class OwnedCaseHistory extends ConsumerWidget {
         builder: (items, _) => Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 24),
-            const Text(
-              'La historia hasta ahora',
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 19,
-                height: 1.3,
-                letterSpacing: 0,
-                fontWeight: FontWeight.w700,
-                color: Color(0xff15110d),
-              ),
-            ),
-            const SizedBox(height: 12),
             if (items.isEmpty)
               const Text(
                 'Los avances aprobados del rescate aparecerán aquí.',
@@ -44,7 +46,9 @@ class OwnedCaseHistory extends ConsumerWidget {
               OwnedCaseStory(item, key: ValueKey(item.id)),
           ],
         ),
-      );
+      ),
+    ],
+  );
 }
 
 class OwnedCaseStory extends StatelessWidget {
