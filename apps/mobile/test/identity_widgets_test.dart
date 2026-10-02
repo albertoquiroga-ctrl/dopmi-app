@@ -320,6 +320,41 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  testWidgets(
+    'forgot link opens real recovery and back retains entered email',
+    (tester) async {
+      final repo = FakeIdentityRepository();
+      await start(tester, repo, initialLocation: '/login');
+      final email = find.byType(TextFormField).first;
+      await tester.enterText(email, 'ana@example.test');
+      final forgot = find.widgetWithText(TextButton, 'Olvidé mi contraseña');
+      await tester.ensureVisible(forgot);
+      expect(tester.getSize(forgot).height, greaterThanOrEqualTo(48));
+      await tester.tapAt(
+        tester.getRect(forgot).bottomCenter - const Offset(0, 1),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<AuthFormScreen>(find.byType(AuthFormScreen)).mode,
+        AuthFormMode.forgot,
+      );
+      expect(
+        find.widgetWithText(FilledButton, 'Enviar instrucciones'),
+        findsOneWidget,
+      );
+      await tester.tap(find.byTooltip('Volver'));
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<TextFormField>(find.byType(TextFormField).first)
+            .controller!
+            .text,
+        'ana@example.test',
+      );
+      expect(repo.current, isNull);
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets('a recovery link routes to reset without loading personal data', (
     tester,
   ) async {

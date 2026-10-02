@@ -271,6 +271,20 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: busy ? null : () => context.push('/forgot'),
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          minimumSize: const Size(48, 48),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          splashFactory: NoSplash.splashFactory,
+                          overlayColor: Colors.transparent,
+                          textStyle: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 13,
+                            height: 1.2,
+                            letterSpacing: 0,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                         child: const Text(
                           'Olvidé mi contraseña',
                           style: TextStyle(
