@@ -649,6 +649,8 @@ void main() {
       ('rescuer-home-actions-large', '/rescuer'),
       ('owned-case-detail', '/rescue/case-one'),
       ('owned-case-detail-back-focus', '/rescue/case-one'),
+      ('owned-case-detail-dot-focus', '/rescue/case-one'),
+      ('owned-case-detail-dot-focus-large', '/rescue/case-one'),
       ('owned-case-detail-back-focus-large', '/rescue/case-one'),
       ('owned-case-detail-large', '/rescue/case-one'),
       ('owned-case-detail-story', '/rescue/case-one'),
@@ -1804,6 +1806,16 @@ void main() {
           find.byKey(const ValueKey('reference-keyboard-outline')),
           findsOneWidget,
         );
+      }
+      if (spec.$1.startsWith('owned-case-detail-dot-focus')) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
+        final outline = find.byKey(const ValueKey('reference-keyboard-outline'));
+        expect(outline, findsOneWidget);
+        expect(tester.getSize(outline), const Size(18, 18));
+        expect(find.text('1 / 2'), findsOneWidget);
       }
       if (spec.$1.startsWith('case-detail-story')) {
         await Scrollable.ensureVisible(
