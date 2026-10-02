@@ -178,25 +178,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   icon: Icons.settings_outlined,
                   path: '/settings',
                 ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 20),
               if (error != null) Notice(error!, isError: true),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xffe8e6e2)),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: SwitchListTile.adaptive(
-                  title: Text(
-                    rescuer
-                        ? 'Cambiar a modo donante'
-                        : 'Cambiar a modo rescatista',
-                  ),
-                  subtitle: const Text('Cambia tu experiencia en la app'),
-                  value: false,
-                  onChanged: busy || profile!.status != 'active'
-                      ? null
-                      : (_) => switchMode(!rescuer),
-                ),
+              RescuerDonorModeCard(
+                enabled: !busy && profile!.status == 'active',
+                onPressed: () => switchMode(false),
               ),
               if (busy)
                 const LinearProgressIndicator(
@@ -208,6 +194,95 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       },
     );
   }
+}
+
+class RescuerDonorModeCard extends StatelessWidget {
+  const RescuerDonorModeCard({
+    super.key,
+    required this.enabled,
+    required this.onPressed,
+  });
+  final bool enabled;
+  final VoidCallback onPressed;
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      border: Border.all(color: const Color(0xffe6e2dd)),
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Row(
+      children: [
+        const Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Modo donante',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  height: 1.2,
+                  letterSpacing: 0,
+                  color: Color(0xff15110d),
+                ),
+              ),
+              SizedBox(height: 2),
+              Text(
+                'Adopta, apoya y sigue impacto',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 12,
+                  height: 1.4,
+                  letterSpacing: 0,
+                  color: Color(0xff554e48),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 12),
+        Semantics(
+          label: 'Cambiar a modo donante',
+          toggled: false,
+          enabled: enabled,
+          child: InkWell(
+            onTap: enabled ? onPressed : null,
+            borderRadius: BorderRadius.circular(99),
+            splashFactory: NoSplash.splashFactory,
+            overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+            child: SizedBox(
+              width: 48,
+              height: 48,
+              child: Center(
+                child: Container(
+                  key: const ValueKey('rescuer-donor-switch'),
+                  width: 32,
+                  height: 19,
+                  padding: const EdgeInsets.all(1),
+                  alignment: Alignment.centerLeft,
+                  decoration: BoxDecoration(
+                    color: const Color(0xffdad7d2),
+                    borderRadius: BorderRadius.circular(99),
+                  ),
+                  child: Container(
+                    width: 16,
+                    height: 16,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 class DonorModeDialog extends StatelessWidget {
