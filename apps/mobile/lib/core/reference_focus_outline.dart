@@ -59,7 +59,9 @@ class _ReferenceFocusOutlineState extends State<ReferenceFocusOutline> {
                       color: const Color(0x4d7841f2),
                       width: 3,
                     ),
-                    borderRadius: BorderRadius.circular(widget.radius + 5),
+                    borderRadius: BorderRadius.circular(
+                      widget.radius == 0 ? 0 : widget.radius + 5,
+                    ),
                   ),
                 ),
               ),

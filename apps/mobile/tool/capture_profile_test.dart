@@ -626,6 +626,8 @@ void main() {
       ('rescuer-home-large', '/rescuer'),
       ('support-home', '/rescue-cases'),
       ('support-home-large', '/rescue-cases'),
+      ('support-home-case-focus', '/rescue-cases'),
+      ('support-home-case-focus-large', '/rescue-cases'),
       ('case-detail', '/rescue-cases/case-one'),
       ('case-detail-planned', '/rescue-cases/case-one'),
       ('case-detail-planned-large', '/rescue-cases/case-one'),
@@ -1354,6 +1356,15 @@ void main() {
         );
         await Scrollable.ensureVisible(tester.element(card), alignment: .1);
         await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('support-home-case-focus')) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
+        expect(
+          find.byKey(const ValueKey('reference-keyboard-outline')),
+          findsOneWidget,
+        );
       }
       if (spec.$1 == 'support-home-large') {
         await tester.scrollUntilVisible(

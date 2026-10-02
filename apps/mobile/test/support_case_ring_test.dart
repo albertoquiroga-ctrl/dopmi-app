@@ -61,6 +61,10 @@ void main() {
         find.byKey(const ValueKey('reference-keyboard-outline')),
         findsOneWidget,
       );
+      final outline = tester.widget<DecoratedBox>(
+        find.byKey(const ValueKey('reference-keyboard-outline')),
+      ).decoration as BoxDecoration;
+      expect(outline.borderRadius, BorderRadius.zero);
       expect(destinations, isEmpty);
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
