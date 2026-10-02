@@ -2371,3 +2371,18 @@ Tres pruebas PostgreSQL dirigidas aprobadas3.2s; gate completo ejecutándose.
 Sin despliegue remoto ni panel/clientes conectados todavía; no aceptación de
 entrega de correo o teléfono. No Codemagic nuevo.
 Gate completo backend434/434 aprobado26.6s.
+# Loop289 — cliente de soporte y recuperación del mismo contenido
+
+Referencia remota2/10/2026:
+`irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
+Repositorio Flutter usa RPC real de recepción y, tras fallo de transporte,
+consulta el recibo del mismo request_id con expected_payload exacto. Migración
+local no desplegada añade ese argumento opcional sin cambiar lecturas de un
+argumento. Contenido distinto devuelveNULL; SQL40001 u otro rechazo no se
+convierte en éxito por un recibo viejo. Respuesta directa ajena/pending se
+rechaza, y no se hace un segundo POST al reconciliar. Tres pruebas cliente y
+tres PostgreSQL dirigidas aprobadas. Docs RPC Dart oficiales consultadas.
+Formulario/panel siguen sin conectar; despliegue, adjuntos y aceptación faltan.
+No correo enviado, secreto, migración remota ni Codemagic nuevo.
+Gate backend434/434 aprobado26.6s. Analyze detectó dos bloques sin llaves en
+pruebas; corregidos y repetido sin incidencias6.4s.

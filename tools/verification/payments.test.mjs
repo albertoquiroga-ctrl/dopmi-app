@@ -18,6 +18,8 @@ test('support is private, retries one durable receipt and rejects changed replay
   const submit=async(data=body)=>(await db.query('select dopmi_submit_support_request($1,$2::jsonb) value',[key,data])).rows[0].value;
   const first=await submit(); assert.equal(first.status,'received');
   assert.deepEqual(await submit(),first);
+  assert.equal((await db.query('select dopmi_my_support_request($1,$2::jsonb) value',[key,JSON.stringify({topic:'guardian',case_name:'Luna',message:'Changed'})])).rows[0].value,null);
+  assert.deepEqual((await db.query('select dopmi_my_support_request($1,$2::jsonb) value',[key,body])).rows[0].value,first);
   assert.deepEqual((await db.query('select dopmi_my_support_request($1) value',[key])).rows[0].value,first);
   await rejected(()=>submit(JSON.stringify({topic:'guardian',message:'Otra solicitud'})),/solicitud cambió/);
   await role(other);

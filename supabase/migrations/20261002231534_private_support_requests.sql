@@ -52,12 +52,16 @@ begin
   return jsonb_build_object('request_id',item.request_id,'status','received','created_at',item.created_at);
 end;
 $$;
-create function public.dopmi_my_support_request(target_request uuid) returns jsonb
+create function public.dopmi_my_support_request(target_request uuid,expected_payload jsonb default null) returns jsonb
 language plpgsql security definer set search_path='' as $$
 declare actor uuid:=private.dopmi_require_actor(); item private.dopmi_support_requests;
 begin
   select * into item from private.dopmi_support_requests where owner_id=actor and request_id=target_request;
   if not found then return null; end if;
+  if expected_payload is not null and expected_payload is distinct from
+    jsonb_build_object('topic',item.topic,'case_name',item.case_name,'message',item.message) then
+    return null;
+  end if;
   return jsonb_build_object('request_id',item.request_id,'status','received','created_at',item.created_at);
 end;
 $$;
@@ -85,7 +89,7 @@ begin
   return result;
 end;
 $$;
-revoke all on function public.dopmi_submit_support_request(uuid,jsonb),public.dopmi_my_support_request(uuid),public.dopmi_admin_support_requests(integer,integer) from public,anon,authenticated,service_role;
-grant execute on function public.dopmi_submit_support_request(uuid,jsonb),public.dopmi_my_support_request(uuid) to authenticated;
+revoke all on function public.dopmi_submit_support_request(uuid,jsonb),public.dopmi_my_support_request(uuid,jsonb),public.dopmi_admin_support_requests(integer,integer) from public,anon,authenticated,service_role;
+grant execute on function public.dopmi_submit_support_request(uuid,jsonb),public.dopmi_my_support_request(uuid,jsonb) to authenticated;
 grant execute on function public.dopmi_admin_support_requests(integer,integer) to authenticated;
 commit;
