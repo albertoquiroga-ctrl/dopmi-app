@@ -449,6 +449,17 @@ class DetailCaptureCommunity extends FakeCommunity {
   Future<Json?> publicProfile(String id) async => {'verified': true};
 }
 
+class ChatHeaderCaptureCommunity extends DetailCaptureCommunity {
+  @override
+  Future<Json> thread(String id) async => {
+    'id': id,
+    'pet_name': 'Luna',
+    'participant_name': 'Patricia V.',
+    'post_id': 'post',
+    'status': 'active',
+  };
+}
+
 class ImpactCaptureCommunity extends DetailCaptureCommunity {
   ImpactCaptureCommunity(this.empty);
   final bool empty;
@@ -585,6 +596,8 @@ void main() {
       ('chat-bubbles', '/messages/thread-one'),
       ('chat-bubbles-large', '/messages/thread-one'),
       ('chat-bubbles-rescuer', '/messages/thread-one'),
+      ('chat-detail-focus', '/messages/thread-one'),
+      ('chat-detail-focus-large', '/messages/thread-one'),
       ('rescuer-home-unverified', '/rescuer'),
       ('rescuer-home-unverified-large', '/rescuer'),
       ('rescuer-home-review', '/rescuer'),
@@ -845,6 +858,8 @@ void main() {
           : FakeGuardian();
       final community = spec.$1.startsWith('rescuer-profile-reference')
           ? RescuerReferenceCaptureCommunity()
+          : spec.$1.startsWith('chat-detail-focus')
+          ? ChatHeaderCaptureCommunity()
           : spec.$1.startsWith('impact-feed')
           ? ImpactCaptureCommunity(spec.$1.contains('empty'))
           : (spec.$1.startsWith('adoption-detail') ||
@@ -1351,6 +1366,18 @@ void main() {
           alignment: .5,
         );
         await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('chat-detail-focus')) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
+        expect(
+          find.descendant(
+            of: find.byKey(const ValueKey('chat-detail-link')),
+            matching: find.byKey(const ValueKey('reference-keyboard-outline')),
+          ),
+          findsOneWidget,
+        );
       }
       if (spec.$1.startsWith('chat-bubbles')) {
         await tester.scrollUntilVisible(

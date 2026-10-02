@@ -528,6 +528,7 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 12,
+                    fontWeight: FontWeight.w400,
                     height: 1.2,
                     letterSpacing: 0,
                     color: textMuted,
@@ -541,6 +542,13 @@ class _ThreadState extends ConsumerState<ThreadScreen>
               ReferenceFocusOutline(
                 key: const ValueKey('chat-detail-link'),
                 radius: 0,
+                outlineInset: EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical:
+                      (48 - MediaQuery.textScalerOf(context).scale(12) * 1.2)
+                          .clamp(0, 48) /
+                      2,
+                ),
                 child: TextButton(
                   onPressed: () =>
                       context.push('/adoptions/${thread!['post_id']}'),
@@ -548,9 +556,11 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                     foregroundColor: textInk,
                     overlayColor: Colors.transparent,
                     splashFactory: NoSplash.splashFactory,
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     textStyle: const TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 12,
+                      height: 1.2,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0,
                       decoration: TextDecoration.underline,
