@@ -20,7 +20,7 @@ class PendingFavorite extends FakeCommunity {
   @override
   Future<void> favorite(String id, bool saved) async {
     saves++;
-    await result.future;
+    if (saves == 1) await result.future;
     await super.favorite(id, saved);
   }
 }
@@ -117,7 +117,7 @@ void main() {
     expect(find.text('Milo'), findsOneWidget);
   });
   testWidgets(
-    'pending favorite locks duplicate actions and failure restores the card',
+    'slow favorite does not delay next card and failure offers persistence retry',
     (tester) async {
       final repo = PendingFavorite();
       await open(tester, repository: repo);
@@ -132,16 +132,30 @@ void main() {
       await tester.tap(find.byTooltip('Pasar'));
       await tester.pump(const Duration(milliseconds: 400));
       expect(repo.saves, 1);
-      expect(find.text('Luna'), findsOneWidget);
+      expect(find.text('Milo'), findsOneWidget);
       expect(repo.post.saved, false);
       repo.result.completeError(Exception('offline'));
       await tester.pumpAndSettle();
-      expect(find.text('Luna'), findsOneWidget);
+      expect(find.text('Milo'), findsOneWidget);
+      expect(
+        find.text('No pudimos guardar a Luna. Intenta de nuevo.'),
+        findsOneWidget,
+      );
       expect(find.text('Volver a intentar'), findsOneWidget);
       final motion = tester.widget<DiscoveryCardMotion>(
-        find.byKey(const ValueKey('discovery-motion-post')),
+        find.byKey(const ValueKey('discovery-motion-next')),
       );
       expect(motion.translation, 0);
+      await tester.ensureVisible(find.text('Volver a intentar'));
+      await tester.tap(find.text('Volver a intentar'));
+      await tester.pumpAndSettle();
+      expect(repo.saves, 2);
+      expect(repo.post.saved, true);
+      expect(
+        find.text('No pudimos guardar a Luna. Intenta de nuevo.'),
+        findsNothing,
+      );
+      expect(find.text('Milo'), findsOneWidget);
     },
   );
   testWidgets(

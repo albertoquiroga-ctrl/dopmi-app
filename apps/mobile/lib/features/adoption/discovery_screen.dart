@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -42,6 +43,28 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   bool loading = true, acting = false, exhausted = false;
   bool allSpeciesEmpty = false;
   String? error;
+  final pendingFavorites = <String>{};
+  final failedFavorites = <String, Adoption>{};
+
+  Future<void> persistFavorite(Adoption card) async {
+    if (!mounted || !pendingFavorites.add(card.id)) return;
+    setState(() {});
+    try {
+      await ref.read(communityRepositoryProvider).favorite(card.id, true);
+      if (!mounted) return;
+      setState(() {
+        failedFavorites.remove(card.id);
+        final position = cards.indexWhere((item) => item.id == card.id);
+        if (position >= 0) {
+          cards[position] = Adoption({...cards[position].data, 'saved': true});
+        }
+      });
+    } catch (cause) {
+      if (mounted) setState(() => failedFavorites[card.id] = card);
+    } finally {
+      if (mounted) setState(() => pendingFavorites.remove(card.id));
+    }
+  }
 
   List<Object> get deck {
     final result = <Object>[];
@@ -124,21 +147,12 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
       exiting = direction ?? (save ? 1 : -1);
     });
     try {
-      // Start the reference exit immediately; server confirmation still owns
-      // advancement, and a failed save restores this card for retry.
-      await Future.wait<void>([
-        if (card is Adoption && save && !card.saved)
-          () async {
-            await ref.read(communityRepositoryProvider).favorite(card.id, true);
-            if (!mounted) return;
-            final position = cards.indexWhere((item) => item.id == card.id);
-            if (position >= 0) {
-              cards[position] = Adoption({...card.data, 'saved': true});
-            }
-          }(),
-        if (!MediaQuery.disableAnimationsOf(context))
-          Future<void>.delayed(const Duration(milliseconds: 280)),
-      ]);
+      if (card is Adoption && save && !card.saved) {
+        unawaited(persistFavorite(card));
+      }
+      if (!MediaQuery.disableAnimationsOf(context)) {
+        await Future<void>.delayed(const Duration(milliseconds: 280));
+      }
       if (!mounted) return;
       setState(() {
         index++;
@@ -356,6 +370,18 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
               ],
             ),
             SizedBox(height: current == null && !loading ? 14 : 36),
+            for (final failed in failedFavorites.values) ...[
+              Notice(
+                'No pudimos guardar a ${failed.name}. Intenta de nuevo.',
+                isError: true,
+              ),
+              TextButton(
+                onPressed: pendingFavorites.contains(failed.id)
+                    ? null
+                    : () => persistFavorite(failed),
+                child: const Text('Volver a intentar'),
+              ),
+            ],
             if (error != null) ...[
               Notice(error!, isError: true),
               TextButton(

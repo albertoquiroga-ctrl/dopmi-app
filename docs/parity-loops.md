@@ -1932,3 +1932,13 @@ Reference remote a3c969cd9103fd46dc5cd886999912526ce75efb reverified. CI422 Flut
 
 Resumed live session17427 without restart; entire capture_profile_test completed1testpass exit0 (2m01s). Final analyze noissues exit0 (6.7s). CI422 jobs inspected: iOS, web/database, identity/adoption successful; Flutter test/analyze successful but capture failed, Android build skipped. Push b38acd8f82ba7444901117ee8b43eca0d7f9fff5 confirmed; new CI37049347038 #424 queued verified exactSHA. PR6 description updated, remains draft. No full visual/device acceptance inferred from capturer success. Final Codemagic/Play pending.
 
+
+## Loop250 — 2026-10-02: resumed mobile parity, network-independent swipe
+
+Titular clarified resume objective to completion after pause; goal active confirmed. Scope excludes hover and desktop-only interactions. Reference remote a3c969cd9103fd46dc5cd886999912526ce75efb confirmed; App.tsx1293–1303 fling advances after280ms independently of simulated favorite. Production now starts real favorite RPC independently and advances after reference280ms, rather than waiting for both. Failed writes remain visible by original pet with explicit retry; pending IDs prevent duplicate writes and retries disable while active. Only confirmed RPC marks saved. Next card is preserved during failure/retry; no fabricated success or delayed forced rollback of current deck.
+
+Initial motion/filter11pass; expanded suite exposed old community test expecting original card after failure. Updated it to assert nextcard plus originalpet-specific persistence error and successful retry; final motion/filter/community38pass exit0 (11s), includes slowpending/writefailure/retry, thresholds, interrupted curves, reduced motion, pagination and contact tests. Prior analyze noissues24.1s; final analyze result recorded next. Device experience still unverified, not entire discovery route acceptance. CI424 for b38acd8 stillin_progress when consulted; predates250. Codemagic remains final authorized delivery.
+
+
+Final flutter analyze noissues exit0 (7.3s).
+

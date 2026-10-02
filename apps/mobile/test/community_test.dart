@@ -877,14 +877,34 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Milo'), findsOneWidget);
   });
-  testWidgets('failed like keeps the card and exposes a retry', (tester) async {
+  testWidgets('failed like remains retryable while the deck advances', (
+    tester,
+  ) async {
     final repo = FakeCommunity()..failFavorite = true;
+    repo.discoveryItems = [
+      repo.post,
+      Adoption({...repo.post.data, 'id': 'second', 'pet_name': 'Milo'}),
+    ];
     await start(tester, repo, '/adoptions');
     await tester.tap(find.byTooltip('Me gusta'));
     await tester.pumpAndSettle();
-    expect(find.text('Luna'), findsOneWidget);
+    expect(find.text('Milo'), findsOneWidget);
+    expect(
+      find.text('No pudimos guardar a Luna. Intenta de nuevo.'),
+      findsOneWidget,
+    );
     expect(find.text('Volver a intentar'), findsOneWidget);
     expect(repo.post.saved, false);
+    repo.failFavorite = false;
+    await tester.ensureVisible(find.text('Volver a intentar'));
+    await tester.tap(find.text('Volver a intentar'));
+    await tester.pumpAndSettle();
+    expect(repo.post.saved, true);
+    expect(find.text('Milo'), findsOneWidget);
+    expect(
+      find.text('No pudimos guardar a Luna. Intenta de nuevo.'),
+      findsNothing,
+    );
   });
   testWidgets('the deck fetches the next page without duplicating cards', (
     tester,
