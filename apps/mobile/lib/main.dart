@@ -13,6 +13,7 @@ import 'core/config.dart';
 import 'core/storage.dart';
 import 'core/measurement.dart';
 import 'core/ui.dart';
+import 'core/content_links.dart';
 import 'features/identity/identity_controller.dart';
 import 'features/identity/identity_repository.dart';
 
@@ -29,6 +30,7 @@ class Bootstrap extends StatefulWidget {
 
 class _BootstrapState extends State<Bootstrap> {
   final config = AppConfig.environment();
+  final contentLinks = PlatformContentLinkSource();
   late Future<
     ({IdentityRepository identity, MeasurementController measurement})
   >
@@ -84,6 +86,7 @@ class _BootstrapState extends State<Bootstrap> {
             return ProviderScope(
               overrides: [
                 configProvider.overrideWithValue(config),
+                contentLinkSourceProvider.overrideWithValue(contentLinks),
                 identityRepositoryProvider.overrideWithValue(
                   snapshot.data!.identity,
                 ),
@@ -91,7 +94,7 @@ class _BootstrapState extends State<Bootstrap> {
                   (ref) => snapshot.data!.measurement,
                 ),
               ],
-              child: const DopmiApp(),
+              child: const ContentLinkListener(child: DopmiApp()),
             );
           }
           return MaterialApp(

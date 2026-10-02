@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/content_links.dart';
 import '../../core/design_tokens.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
@@ -230,7 +231,7 @@ class ImpactCaseCard extends StatelessWidget {
     final share = OutlinedButton.icon(
       onPressed: () => shareContent(
         context,
-        'Conoce el caso $name en Dopmi. Caso ${item['case_id']}',
+        'Conoce el caso $name en Dopmi. ${publicContentLink(PublicContent.rescueCase, item['case_id'] as String)}',
       ),
       style: OutlinedButton.styleFrom(
         minimumSize: const Size(0, 40),

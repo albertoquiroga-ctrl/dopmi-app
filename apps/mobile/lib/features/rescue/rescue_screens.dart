@@ -1,5 +1,8 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+
+import '../../core/content_links.dart';
+
 import 'package:image_picker/image_picker.dart' show ImagePicker, ImageSource;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -2742,7 +2745,7 @@ class _PublicCaseDetail extends StatelessWidget {
       report: () => report(record),
       share: () => shareContent(
         context,
-        'Conoce el caso ${record.title} en Dopmi. Caso ${record.id}',
+        'Conoce el caso ${record.title} en Dopmi. ${publicContentLink(PublicContent.rescueCase, record.id)}',
       ),
       needs: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

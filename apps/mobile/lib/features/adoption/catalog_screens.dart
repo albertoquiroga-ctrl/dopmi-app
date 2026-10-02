@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/content_links.dart';
 import '../../core/measurement.dart';
 import '../community/content_actions.dart';
 import '../profile/rescuer_profile_repository.dart';
@@ -393,7 +394,7 @@ class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
   Future<void> share(Adoption post) async {
     await shareContent(
       context,
-      'Conoce la historia de ${post.name} en Dopmi. Publicación ${post.id}',
+      'Conoce la historia de ${post.name} en Dopmi. ${publicContentLink(PublicContent.adoption, post.id)}',
     );
   }
 
@@ -552,7 +553,7 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
   Widget build(BuildContext context) => PublicProfileFrame(
     share: () => shareContent(
       context,
-      'Conoce este perfil en Dopmi. Perfil ${widget.id}',
+      'Conoce este perfil en Dopmi. ${publicContentLink(PublicContent.profile, widget.id)}',
     ),
     child: LiveSection<Json?>(
       load: () =>
