@@ -1927,3 +1927,8 @@ Final analyze noissues exit0 (7.6s). Source checkout used a3c969cd9103fd46dc5cd8
 
 Reference remote a3c969cd9103fd46dc5cd886999912526ce75efb reverified. CI422 Flutter job110975078267 failed capture_profile_test1315 after tab tap1313 missed under sticky header; actual flutter analyze/test and first capturer passed, web/database and identity/adoption jobs successful, iOS still compiling when inspected. Replaced ensureVisible top-edge alignment for public adoption/case tabs with Scrollable.ensureVisible alignment.3 before actual pointer tap. No production bypass or skipped screenshot. Full public-profile capture group pass exit0 (9s). Entire capture_profile_test started session17427, live and progressing through Guardian states when recorded; terminal result still pending. First group/session82746 was still running when full started, both group then terminated0; next checks must remain sequential. Final Codemagic/device acceptance pending.
 
+
+## Loop249 — 2026-10-02: complete capture regression and new CI
+
+Resumed live session17427 without restart; entire capture_profile_test completed1testpass exit0 (2m01s). Final analyze noissues exit0 (6.7s). CI422 jobs inspected: iOS, web/database, identity/adoption successful; Flutter test/analyze successful but capture failed, Android build skipped. Push b38acd8f82ba7444901117ee8b43eca0d7f9fff5 confirmed; new CI37049347038 #424 queued verified exactSHA. PR6 description updated, remains draft. No full visual/device acceptance inferred from capturer success. Final Codemagic/Play pending.
+
