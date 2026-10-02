@@ -457,6 +457,11 @@ class RescuerReferenceCaptureRescue extends FakeRescue {
   };
 }
 
+class NotificationCountCaptureCommunity extends FakeCommunity {
+  @override
+  Future<int> unreadNotificationCount() async => 3;
+}
+
 class DetailCaptureCommunity extends FakeCommunity {
   @override
   Future<String> photoUrl(String path) async => 'https://fixture.invalid/$path';
@@ -652,6 +657,8 @@ void main() {
       ('support-home-error-retry-large', '/rescue-cases'),
       ('support-home-notification-focus', '/rescue-cases'),
       ('support-home-notification-focus-large', '/rescue-cases'),
+      ('support-home-notification-badge', '/rescue-cases'),
+      ('support-home-notification-badge-large', '/rescue-cases'),
       ('support-home-case-focus', '/rescue-cases'),
       ('support-home-case-focus-large', '/rescue-cases'),
       ('support-home-guardian-card-focus', '/rescue-cases'),
@@ -888,7 +895,9 @@ void main() {
                   spec.$1.contains('enrollment'),
             )
           : FakeGuardian();
-      final community = spec.$1.startsWith('notifications-reference')
+      final community = spec.$1.startsWith('support-home-notification-badge')
+          ? NotificationCountCaptureCommunity()
+          : spec.$1.startsWith('notifications-reference')
           ? (NotificationCommunity()..read = spec.$1.endsWith('-read'))
           : spec.$1.startsWith('rescuer-profile-reference')
           ? RescuerReferenceCaptureCommunity()

@@ -140,6 +140,8 @@ class FakeCommunity implements CommunityRepository {
   @override
   String? get userId => 'one';
   @override
+  Future<int> unreadNotificationCount() async => 0;
+  @override
   VoidCallback watch(List<String> tables, VoidCallback refresh) => () {};
   @override
   Future<DataPage<Adoption>> catalog(Json filters, int page) async =>

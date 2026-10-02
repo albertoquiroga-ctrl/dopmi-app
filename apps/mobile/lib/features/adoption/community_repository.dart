@@ -101,6 +101,7 @@ abstract class CommunityRepository {
   Future<void> closeThread(String id);
   Future<void> readThread(String id);
   Future<DataPage<Json>> notifications(int page);
+  Future<int> unreadNotificationCount();
   Future<void> readNotification(String id);
   VoidCallback watch(List<String> tables, VoidCallback refresh);
 }
@@ -324,6 +325,15 @@ class SupabaseCommunityRepository implements CommunityRepository {
   @override
   Future<void> readNotification(String id) async =>
       await rpc('dopmi_read_notification', {'notification_id': id});
+  @override
+  Future<int> unreadNotificationCount() async {
+    if (userId == null) return 0;
+    return await client
+        .from('dopmi_notifications')
+        .count(CountOption.exact)
+        .isFilter('read_at', null);
+  }
+
   @override
   VoidCallback watch(List<String> tables, VoidCallback refresh) {
     final actor = userId;
