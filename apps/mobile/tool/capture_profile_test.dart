@@ -640,6 +640,7 @@ void main() {
       ('rescuer-settings', '/settings'),
       ('rescuer-settings-footer', '/settings'),
       ('rescuer-settings-logout-focus', '/settings'),
+      ('rescuer-settings-mode-focus', '/settings'),
       ('rescuer-settings-large', '/settings'),
       ('rescuer-profile-large', '/profile'),
       ('profile-overview', '/profile'),
@@ -1496,7 +1497,8 @@ void main() {
           );
         }
         if (spec.$1 == 'rescuer-settings-footer' ||
-            spec.$1 == 'rescuer-settings-logout-focus') {
+            spec.$1 == 'rescuer-settings-logout-focus' ||
+            spec.$1 == 'rescuer-settings-mode-focus') {
           await tester.scrollUntilVisible(
             find.text('Cerrar sesión'),
             250,
@@ -1512,9 +1514,15 @@ void main() {
               .dy;
           final logoutTop = tester.getTopLeft(find.byType(RescuerLogoutRow)).dy;
           expect(logoutTop - helpBottom, closeTo(10, 1));
-          if (spec.$1 == 'rescuer-settings-logout-focus') {
-            final outline = find.byKey(
-              const ValueKey('reference-keyboard-outline'),
+          if (spec.$1.endsWith('-focus')) {
+            final focusTarget = spec.$1 == 'rescuer-settings-mode-focus'
+                ? find.byType(RescuerDonorModeCard)
+                : find.byType(RescuerLogoutRow);
+            final outline = find.descendant(
+              of: focusTarget,
+              matching: find.byKey(
+                const ValueKey('reference-keyboard-outline'),
+              ),
             );
             for (var i = 0; i < 20 && outline.evaluate().isEmpty; i++) {
               await tester.sendKeyEvent(LogicalKeyboardKey.tab);

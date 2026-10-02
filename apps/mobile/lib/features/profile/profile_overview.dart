@@ -1,3 +1,5 @@
+import '../../core/reference_focus_outline.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -240,7 +242,7 @@ class RescuerDonorModeCard extends StatelessWidget {
                 style: const TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 12,
-                  height: 1.4,
+                  height: 15.2 / 12,
                   letterSpacing: 0,
                   color: Color(0xff554e48),
                 ),
@@ -255,42 +257,49 @@ class RescuerDonorModeCard extends StatelessWidget {
               : 'Cambiar a modo donante',
           toggled: settings,
           enabled: enabled,
-          child: InkWell(
-            onTap: enabled ? onPressed : null,
-            borderRadius: BorderRadius.circular(99),
-            splashFactory: NoSplash.splashFactory,
-            overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-            child: SizedBox(
-              width: 48,
-              height: 48,
-              child: Center(
-                child: Container(
-                  key: const ValueKey('rescuer-donor-switch'),
-                  width: 32,
-                  height: 19,
-                  padding: const EdgeInsets.all(1),
-                  alignment: Alignment.centerLeft,
-                  decoration: BoxDecoration(
-                    color: settings
-                        ? const Color(0xff7841f2)
-                        : const Color(0xffdad7d2),
-                    borderRadius: BorderRadius.circular(99),
-                  ),
-                  child: AnimatedContainer(
-                    transform: Matrix4.translationValues(
-                      settings ? 13 : 0,
-                      0,
-                      0,
+          child: ReferenceFocusOutline(
+            radius: 99,
+            outlineInset: const EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 14.5,
+            ),
+            child: InkWell(
+              onTap: enabled ? onPressed : null,
+              borderRadius: BorderRadius.circular(99),
+              splashFactory: NoSplash.splashFactory,
+              overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+              child: SizedBox(
+                width: 48,
+                height: 48,
+                child: Center(
+                  child: Container(
+                    key: const ValueKey('rescuer-donor-switch'),
+                    width: 32,
+                    height: 19,
+                    padding: const EdgeInsets.all(1),
+                    alignment: Alignment.centerLeft,
+                    decoration: BoxDecoration(
+                      color: settings
+                          ? const Color(0xff7841f2)
+                          : const Color(0xffdad7d2),
+                      borderRadius: BorderRadius.circular(99),
                     ),
-                    duration: MediaQuery.disableAnimationsOf(context)
-                        ? Duration.zero
-                        : const Duration(milliseconds: 180),
-                    curve: Curves.ease,
-                    width: 16,
-                    height: 16,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
+                    child: AnimatedContainer(
+                      transform: Matrix4.translationValues(
+                        settings ? 13 : 0,
+                        0,
+                        0,
+                      ),
+                      duration: MediaQuery.disableAnimationsOf(context)
+                          ? Duration.zero
+                          : const Duration(milliseconds: 180),
+                      curve: Curves.ease,
+                      width: 16,
+                      height: 16,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
                     ),
                   ),
                 ),

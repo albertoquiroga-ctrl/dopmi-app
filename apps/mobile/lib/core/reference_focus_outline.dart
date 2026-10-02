@@ -6,9 +6,11 @@ class ReferenceFocusOutline extends StatefulWidget {
     super.key,
     required this.child,
     this.radius = 20,
+    this.outlineInset = EdgeInsets.zero,
   });
   final Widget child;
   final double radius;
+  final EdgeInsets outlineInset;
   @override
   State<ReferenceFocusOutline> createState() => _ReferenceFocusOutlineState();
 }
@@ -44,10 +46,10 @@ class _ReferenceFocusOutlineState extends State<ReferenceFocusOutline> {
             FocusManager.instance.highlightMode ==
                 FocusHighlightMode.traditional)
           Positioned(
-            left: -5,
-            right: -5,
-            top: -5,
-            bottom: -5,
+            left: widget.outlineInset.left - 5,
+            right: widget.outlineInset.right - 5,
+            top: widget.outlineInset.top - 5,
+            bottom: widget.outlineInset.bottom - 5,
             child: IgnorePointer(
               child: ExcludeSemantics(
                 child: DecoratedBox(
