@@ -1896,3 +1896,8 @@ Native adjustments: real favorite/contact/adopted-count actions relocated to foo
 
 Verification: first community run failed because the successful report Snackbar temporarily overlaid the footer message button; test now waits its actual4s dismissal before contact, preserving success evidence. Final community/layout/metrics/capture32pass exit0 (10s); repeat reference capture1pass exit0 (2s) before last metric line-height change, then final combined32pass includes that change. Two native PNGs + Source PNG retained loop243; final normal inspected with introductory composition aligned, numbers remain fixture values not matched mock simulations. analyze exit0/noissues (6.0s). Matrix250states29URLs. Source tab closed, temporary viewport reset, Vite stoppedCtrlC exit1expected. Still pending radial highlight, broad route/device gesture comparisons and Codemagic/Play final acceptance; no device UI or installation performed.
 
+
+## Loop244 — 2026-10-02: public metrics bottom alignment
+
+Reference remote a3c969cd9103fd46dc5cd886999912526ce75efb confirmed. Hero Column now aligns content to bottom under its minimum118px constraint, matching Source align-content:end measured243. Normal capture inspected: numeral/text now sit at bottom with14px padding rather than top. Both normal/large PNGs retained. Metrics/capture3tests passed exit0 (2s), flutter analyze noissues exit0 (6.3s). First scratch command copied from wrong relative cwd and ran old code; explicitly recopied absolute production file and reran final checks above. Radial highlight, broad parity/device checks and final Codemagic remain pending; no new device acceptance claimed.
+

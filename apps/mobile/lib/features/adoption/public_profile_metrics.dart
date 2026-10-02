@@ -56,6 +56,7 @@ class PublicProfileMetrics extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(14, 16, 14, 14),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
