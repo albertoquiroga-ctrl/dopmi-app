@@ -205,6 +205,16 @@ void main() {
       await tester.runAsync(
         () => saveCapture(key, '${output.path}/${route.$1}.png'),
       );
+      if (route.$1 == 'login' || route.$1 == 'signup') {
+        // Source rendered 32ch Inter14 at 377x852, a3c969c.
+        final description = route.$1 == 'login'
+            ? 'Entra para seguir tus favoritos y retomar donde lo dejaste.'
+            : 'Completa tus datos para guardar favoritos y contactar al rescatista.';
+        expect(
+          tester.getSize(find.text(description)).width,
+          closeTo(282.625, .5),
+        );
+      }
       if (route.$1 == 'login') {
         // Source: gap12 + margin2 + paragraph13*1.55 + sheet bottom18.
         final footer = tester.getRect(

@@ -163,28 +163,44 @@ class AuthHeading extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
     children: [
-      Semantics(
-        header: true,
-        child: Text(
-          title,
-          textAlign: TextAlign.center,
-          style: sheet
-              ? Theme.of(context).textTheme.headlineMedium!.copyWith(
-                  fontVariations: DopmiTokens.display28Variations,
-                  letterSpacing: -.56,
-                )
-              : Theme.of(context).textTheme.headlineLarge,
+      ConstrainedBox(
+        constraints: BoxConstraints(
+          // Source 14ch at Fraunces28; honor the user's text scale.
+          maxWidth: sheet
+              ? 262.836 * MediaQuery.textScalerOf(context).scale(28) / 28
+              : double.infinity,
+        ),
+        child: Semantics(
+          header: true,
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: sheet
+                ? Theme.of(context).textTheme.headlineMedium!.copyWith(
+                    fontVariations: DopmiTokens.display28Variations,
+                    letterSpacing: -.56,
+                  )
+                : Theme.of(context).textTheme.headlineLarge,
+          ),
         ),
       ),
       SizedBox(height: sheet ? 6 : 8),
-      Text(
-        description,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: sheet ? 14 : 13,
-          height: 1.5,
-          letterSpacing: 0,
-          color: muted,
+      ConstrainedBox(
+        constraints: BoxConstraints(
+          // Source 32ch at Inter14, measured in the rendered reference.
+          maxWidth: sheet
+              ? 282.625 * MediaQuery.textScalerOf(context).scale(14) / 14
+              : double.infinity,
+        ),
+        child: Text(
+          description,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: sheet ? 14 : 13,
+            height: 1.5,
+            letterSpacing: 0,
+            color: muted,
+          ),
         ),
       ),
       SizedBox(height: sheet ? 16 : 22),
