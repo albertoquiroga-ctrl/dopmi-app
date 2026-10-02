@@ -470,6 +470,8 @@ class _ThreadState extends ConsumerState<ThreadScreen>
           ref.read(experienceProvider).value == AccountExperience.rescuer;
       final accent = rescuer ? const Color(0xffb995ff) : yellow;
       final foreground = rescuer ? Colors.white : ink;
+      final textInk = rescuer ? const Color(0xff151423) : ink;
+      final textMuted = rescuer ? const Color(0xff4f4e5c) : muted;
       final line = rescuer ? const Color(0xffe3e4ed) : const Color(0xffe6e2dd);
       return Scaffold(
         backgroundColor: Colors.white,
@@ -498,20 +500,20 @@ class _ThreadState extends ConsumerState<ThreadScreen>
             children: [
               Text(
                 thread?['pet_name'] as String? ?? 'Conversación',
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
-                  color: ink,
+                  color: textInk,
                 ),
               ),
               if ((thread?['participant_name'] as String? ?? '').isNotEmpty)
                 Text(
                   thread!['participant_name'] as String,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 12,
-                    color: muted,
+                    color: textMuted,
                   ),
                 ),
             ],
@@ -522,7 +524,7 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                 onPressed: () =>
                     context.push('/adoptions/${thread!['post_id']}'),
                 style: TextButton.styleFrom(
-                  foregroundColor: ink,
+                  foregroundColor: textInk,
                   textStyle: const TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 12,
@@ -605,16 +607,16 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                                 maxLines: 5,
                                 maxLength: 2000,
                                 readOnly: busy || pendingId != null,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontFamily: 'Inter',
                                   fontSize: 16,
                                   height: 1.2,
-                                  color: ink,
+                                  color: textInk,
                                 ),
                                 decoration: InputDecoration(
                                   hintText: 'Escribe un mensaje...',
-                                  hintStyle: const TextStyle(
-                                    color: muted,
+                                  hintStyle: TextStyle(
+                                    color: textMuted,
                                     fontSize: 16,
                                     height: 1.2,
                                   ),
@@ -628,9 +630,7 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(14),
-                                    borderSide: const BorderSide(
-                                      color: Color(0xffe6e2dd),
-                                    ),
+                                    borderSide: BorderSide(color: line),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(14),

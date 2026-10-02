@@ -263,6 +263,7 @@ void main() {
     FakeCommunity repo,
     String path, {
     MeasurementController? measurement,
+    bool rescuer = false,
   }) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
@@ -270,6 +271,7 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     final identity = FakeIdentityRepository()
       ..user = const Identity('one', 'ana@example.test', verified: true);
+    if (rescuer) await identity.setExperience('rescuer');
     final container = ProviderContainer(
       overrides: [
         identityRepositoryProvider.overrideWithValue(identity),
@@ -304,6 +306,43 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  for (final rescuer in [false, true]) {
+    testWidgets(
+      'conversation composer palette and keyboard; rescuer=$rescuer',
+      (tester) async {
+        await start(
+          tester,
+          FakeCommunity(),
+          '/messages/thread-one',
+          rescuer: rescuer,
+        );
+        final field = tester.widget<TextField>(find.byType(TextField));
+        final border = field.decoration!.enabledBorder! as OutlineInputBorder;
+        expect(
+          border.borderSide.color,
+          rescuer ? const Color(0xffe3e4ed) : const Color(0xffe6e2dd),
+        );
+        expect(
+          field.style!.color,
+          rescuer ? const Color(0xff151423) : const Color(0xff15110d),
+        );
+        expect(
+          field.decoration!.hintStyle!.color,
+          rescuer ? const Color(0xff4f4e5c) : const Color(0xff554e48),
+        );
+        tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+        addTearDown(tester.view.resetViewInsets);
+        await tester.pumpAndSettle();
+        await tester.enterText(find.byType(TextField), 'Hola');
+        await tester.pumpAndSettle();
+        expect(
+          tester.getBottomRight(find.byTooltip('Enviar mensaje')).dy,
+          lessThanOrEqualTo(544),
+        );
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
   testWidgets(
     'catalog opens approved detail and persists a favorite at narrow width',
     (tester) async {
