@@ -36,7 +36,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../test/community_test.dart' show FakeCommunity;
+import '../test/community_test.dart' show FakeCommunity, SavedRescuerCommunity;
 import '../test/fake_identity_repository.dart';
 import '../test/rescue_test.dart' show FakeRescue, FakeCaseUpdates;
 import '../test/rescuer_pending_evidence_test.dart' show PendingEvidenceRescue;
@@ -812,6 +812,8 @@ void main() {
       ('saved-adoptions-empty-large', '/saved'),
       ('saved-rescuers-empty', '/saved?kind=rescuer'),
       ('saved-rescuers-empty-large', '/saved?kind=rescuer'),
+      ('saved-rescuers', '/saved?kind=rescuer'),
+      ('saved-rescuers-large', '/saved?kind=rescuer'),
       ('payment-history', '/payments'),
       ('payment-history-large', '/payments'),
       ('payment-history-empty', '/payments'),
@@ -1020,7 +1022,10 @@ void main() {
           },
         };
       }
-      final community = spec.$1.startsWith('saved-adoptions-empty')
+      final community =
+          spec.$1 == 'saved-rescuers' || spec.$1 == 'saved-rescuers-large'
+          ? SavedRescuerCommunity()
+          : spec.$1.startsWith('saved-adoptions-empty')
           ? (FakeCommunity()..savedItems = [])
           : spec.$1.startsWith('notifications-reference-kinds')
           ? NotificationKindsCaptureCommunity()

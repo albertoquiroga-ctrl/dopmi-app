@@ -330,6 +330,45 @@ class PhotoDraftCommunity extends FakeCommunity {
       throw const FormatException('Foto sin conexión en fixture');
 }
 
+class PendingSavedRemovalCommunity extends FakeCommunity {
+  final pendingRemoval = Completer<void>();
+  int removalCalls = 0;
+  @override
+  Future<void> favorite(String id, bool saved) async {
+    removalCalls++;
+    await pendingRemoval.future;
+  }
+}
+
+class SavedRescuerCommunity extends FakeCommunity {
+  bool failPublic = false;
+  final publicReads = <String>[];
+  @override
+  Future<DataPage<SavedEntry>> savedRescuers(int page) async => DataPage([
+    SavedEntry({
+      'id': 'owner',
+      'name': 'Nombre anterior',
+      'city': 'Monterrey',
+      'region': 'NL',
+      'available': true,
+    }),
+    SavedEntry({'id': 'retired', 'name': 'Nombre privado', 'available': false}),
+  ], 2);
+  @override
+  Future<Json?> publicProfile(String id) async {
+    publicReads.add(id);
+    if (failPublic) throw Exception('offline');
+    return {
+      'id': id,
+      'name': 'María R.',
+      'city': 'Monterrey',
+      'region': 'NL',
+      'verified': true,
+      'metrics': {'published_cases': 8},
+    };
+  }
+}
+
 void main() {
   Future<ProviderContainer> start(
     WidgetTester tester,
@@ -708,6 +747,61 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Luna'), findsOneWidget);
   });
+  testWidgets(
+    'saved rescuer uses approved public metrics and never enriches withdrawn content',
+    (tester) async {
+      final repo = SavedRescuerCommunity();
+      await start(tester, repo, '/saved?kind=rescuer');
+      expect(find.text('María R.'), findsOneWidget);
+      expect(find.text('8 casos publicados'), findsOneWidget);
+      expect(find.text('Contenido no disponible'), findsOneWidget);
+      expect(find.text('Nombre privado'), findsNothing);
+      expect(repo.publicReads, ['owner']);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets('saved rescuer read failure never fabricates public metrics', (
+    tester,
+  ) async {
+    final repo = SavedRescuerCommunity()..failPublic = true;
+    await start(tester, repo, '/saved?kind=rescuer');
+    expect(find.text('Nombre anterior'), findsOneWidget);
+    expect(find.textContaining('casos publicados'), findsNothing);
+    expect(find.text('Nombre privado'), findsNothing);
+    expect(repo.publicReads, ['owner']);
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets(
+    'saved removal is single flight and an old category failure cannot replace the new list',
+    (tester) async {
+      final repo = PendingSavedRemovalCommunity();
+      await start(tester, repo, '/saved');
+      final button = find.byWidgetPredicate(
+        (widget) =>
+            widget is IconButton && widget.tooltip == 'Quitar de guardados',
+      );
+      final action = tester.widget<IconButton>(button).onPressed!;
+      action();
+      action();
+      await tester.pump();
+      expect(repo.removalCalls, 1);
+      expect(tester.widget<IconButton>(button).onPressed, isNull);
+      await tester.tap(find.byTooltip('Tipos de guardados'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Donación'));
+      await tester.pumpAndSettle();
+      repo.pendingRemoval.completeError(Exception('offline'));
+      await tester.pumpAndSettle();
+      expect(find.text('Casos guardados'), findsOneWidget);
+      expect(
+        find.text('Guarda un caso desde Apoyar para encontrarlo aquí.'),
+        findsOneWidget,
+      );
+      expect(find.text(communityError(Exception('offline'))), findsNothing);
+      expect(repo.removalCalls, 1);
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets('saved experience separates adoption and donation', (
     tester,
   ) async {

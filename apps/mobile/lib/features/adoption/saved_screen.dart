@@ -28,13 +28,35 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
     kind = widget.initialKind;
   }
 
-  Future<DataPage<SavedEntry>> load() {
+  Future<DataPage<SavedEntry>> load() async {
     final repo = ref.read(communityRepositoryProvider);
-    return switch (kind) {
+    final selectedKind = kind;
+    final result = await switch (selectedKind) {
       SavedKind.adoption => repo.savedAdoptions(page),
       SavedKind.donation => repo.savedCases(page),
       SavedKind.rescuer => repo.savedRescuers(page),
     };
+    if (selectedKind != SavedKind.rescuer) return result;
+    final items = await Future.wait(
+      result.items.map((item) async {
+        if (!item.available) return item;
+        try {
+          final profile = await repo.publicProfile(item.id);
+          if (profile == null) {
+            return SavedEntry({'id': item.id, 'available': false});
+          }
+          return SavedEntry({
+            ...item.data,
+            ...profile,
+            'id': item.id,
+            'available': true,
+          });
+        } catch (_) {
+          return item;
+        }
+      }),
+    );
+    return DataPage(items, result.total);
   }
 
   Future<void> remove(SavedEntry item) async {
@@ -301,7 +323,7 @@ class _SavedCard extends StatelessWidget {
       SavedKind.donation =>
         item.publicData['story'] as String? ??
             'Conoce su historia y gastos aprobados.',
-      SavedKind.rescuer => '${item.text('city')}, ${item.text('region')}',
+      SavedKind.rescuer => item.text('city'),
     };
   }
 
@@ -334,6 +356,13 @@ class _SavedCard extends StatelessWidget {
         ? [sex, age].where((v) => v.isNotEmpty).join(' · ')
         : subtitle;
     final open = item.available ? () => context.push(route) : null;
+    final metrics =
+        item.available &&
+            kind == SavedKind.rescuer &&
+            item.data['metrics'] is Map
+        ? Json.from(item.data['metrics'])
+        : null;
+    final publishedCases = metrics?['published_cases'];
     return Container(
       margin: EdgeInsets.only(bottom: adoption ? 0 : 10),
       padding: adoption
@@ -363,6 +392,7 @@ class _SavedCard extends StatelessWidget {
                         ? Text(
                             title.isEmpty ? '?' : title.characters.first,
                             style: const TextStyle(
+                              fontSize: 16,
                               fontWeight: FontWeight.w800,
                               color: Color(0xff6b5000),
                             ),
@@ -380,30 +410,77 @@ class _SavedCard extends StatelessWidget {
             child: InkWell(
               onTap: open,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: EdgeInsets.symmetric(vertical: adoption ? 8 : 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        height: 1.2,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0,
-                        color: ink,
-                      ),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            title,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              height: 1.2,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0,
+                              color: ink,
+                            ),
+                          ),
+                        ),
+                        if (item.available &&
+                            kind == SavedKind.rescuer &&
+                            item.data['verified'] == true)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 6),
+                            child: SvgPicture.asset(
+                              'assets/profile/icon-verified.svg',
+                              width: 14,
+                              height: 14,
+                            ),
+                          ),
+                      ],
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      detail,
-                      style: TextStyle(
-                        fontSize: adoption ? 11 : 12,
-                        height: 1.2,
-                        letterSpacing: 0,
-                        color: muted,
-                      ),
+                    Row(
+                      children: [
+                        if (item.available && kind == SavedKind.rescuer) ...[
+                          SvgPicture.asset(
+                            'assets/profile/location.svg',
+                            width: 12,
+                            height: 12,
+                            colorFilter: const ColorFilter.mode(
+                              muted,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                        ],
+                        Expanded(
+                          child: Text(
+                            detail,
+                            style: TextStyle(
+                              fontSize: adoption ? 11 : 12,
+                              height: 1.2,
+                              letterSpacing: 0,
+                              color: muted,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+                    if (publishedCases is int && publishedCases >= 0) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        '$publishedCases casos publicados',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          height: 1.2,
+                          letterSpacing: 0,
+                          color: muted,
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
