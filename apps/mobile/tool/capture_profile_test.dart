@@ -1,3 +1,4 @@
+import 'package:dopmi_mobile/features/profile/rescuer_profile_activity.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_metrics.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_verification_card.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_settings_details.dart';
@@ -669,6 +670,7 @@ void main() {
       ('rescuer-profile-reference', '/profile'),
       ('rescuer-profile-reference-wide', '/profile'),
       ('rescuer-profile-reference-focus', '/profile'),
+      ('rescuer-profile-reference-activity-focus', '/profile'),
       ('rescuer-profile-reference-metric-focus', '/profile'),
       ('rescuer-profile-reference-transfer-focus', '/profile'),
       ('rescuer-profile-reference-transfer-focus-large', '/profile'),
@@ -1363,6 +1365,25 @@ void main() {
             tester.view.physicalSize.width / tester.view.devicePixelRatio,
           ),
         );
+      }
+      if (spec.$1 == 'rescuer-profile-reference-activity-focus') {
+        final activity = find.byType(RescuerProfileActivity);
+        final button = find.descendant(
+          of: activity,
+          matching: find.byType(FilledButton),
+        );
+        final outline = find.descendant(
+          of: activity,
+          matching: find.byKey(const ValueKey('reference-keyboard-outline')),
+        );
+        for (var i = 0; i < 12 && outline.evaluate().isEmpty; i++) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+          await tester.pump();
+        }
+        expect(outline, findsOneWidget);
+        await Scrollable.ensureVisible(tester.element(button), alignment: .4);
+        await tester.pumpAndSettle();
+        expect(tester.getRect(outline), tester.getRect(button).inflate(5));
       }
       if (spec.$1 == 'rescuer-profile-reference-focus') {
         await tester.sendKeyEvent(LogicalKeyboardKey.tab);

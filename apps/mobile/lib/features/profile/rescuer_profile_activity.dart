@@ -1,3 +1,5 @@
+import '../../core/reference_focus_outline.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -90,30 +92,42 @@ class RescuerProfileActivity extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    onPressed: onStart,
-                    style: FilledButton.styleFrom(
-                      minimumSize: const Size(48, 48),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
+                ReferenceFocusOutline(
+                  radius: 14,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      onPressed: onStart,
+                      style:
+                          FilledButton.styleFrom(
+                            minimumSize: const Size(48, 48),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            backgroundColor: const Color(0xff7841f2),
+                            overlayColor: Colors.transparent,
+                            foregroundColor: const Color(0xfffbfbff),
+                            textStyle: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 0,
+                            ),
+                          ).copyWith(
+                            animationDuration: Duration.zero,
+                            backgroundColor: WidgetStateProperty.resolveWith(
+                              (states) => states.contains(WidgetState.hovered)
+                                  ? const Color(0xff6d28d9)
+                                  : const Color(0xff7841f2),
+                            ),
+                          ),
+                      child: Text(
+                        approved ? 'Publicar caso' : 'Ir a verificación',
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      backgroundColor: const Color(0xff7841f2),
-                      foregroundColor: const Color(0xfffbfbff),
-                      textStyle: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0,
-                      ),
-                    ),
-                    child: Text(
-                      approved ? 'Publicar caso' : 'Ir a verificación',
                     ),
                   ),
                 ),

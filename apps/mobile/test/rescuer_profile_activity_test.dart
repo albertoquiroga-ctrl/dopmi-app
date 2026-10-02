@@ -1,5 +1,8 @@
+import 'dart:ui' show PointerDeviceKind;
+
 import 'package:dopmi_mobile/features/profile/rescuer_profile_activity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -82,11 +85,43 @@ void main() {
         ),
       );
       expect(find.text('Ver inicio'), findsNothing);
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset.zero);
+      await mouse.moveTo(tester.getCenter(find.byType(FilledButton)));
+      await tester.pump();
+      final paintedButton = find.descendant(
+        of: find.byType(FilledButton),
+        matching: find.byType(Material),
+      );
+      expect(
+        tester.widget<Material>(paintedButton).color,
+        const Color(0xff6d28d9),
+      );
+      await mouse.moveTo(Offset.zero);
+      await tester.pump();
+      expect(
+        tester.widget<Material>(paintedButton).color,
+        const Color(0xff7841f2),
+      );
+      await mouse.removePointer();
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+      final button = find.byType(FilledButton);
+      final outline = find.byKey(const ValueKey('reference-keyboard-outline'));
+      expect(outline, findsOneWidget);
+      expect(tester.getRect(outline), tester.getRect(button).inflate(5));
+      expect(starts, 0);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(starts, 1);
+
       await tester.tap(
         find.text(approved ? 'Publicar caso' : 'Ir a verificación'),
       );
       await tester.pumpAndSettle();
-      expect(starts, 1);
+      expect(starts, 2);
+      expect(outline, findsNothing);
       expect(tester.takeException(), isNull);
     });
   }

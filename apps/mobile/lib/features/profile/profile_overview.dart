@@ -225,7 +225,7 @@ class RescuerDonorModeCard extends StatelessWidget {
     padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
       color: Colors.white,
-      border: Border.all(color: const Color(0xffe6e2dd)),
+      border: Border.all(color: const Color(0xffe3e4ed)),
       borderRadius: BorderRadius.circular(20),
     ),
     child: Row(
@@ -242,7 +242,7 @@ class RescuerDonorModeCard extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                   height: 1.2,
                   letterSpacing: 0,
-                  color: Color(0xff15110d),
+                  color: Color(0xff151423),
                 ),
               ),
               const SizedBox(height: 2),
@@ -255,7 +255,7 @@ class RescuerDonorModeCard extends StatelessWidget {
                   fontSize: 12,
                   height: 15.2 / 12,
                   letterSpacing: 0,
-                  color: Color(0xff554e48),
+                  color: Color(0xff4f4e5c),
                 ),
               ),
             ],
