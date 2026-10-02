@@ -639,6 +639,7 @@ void main() {
       ('rescuer-profile', '/profile'),
       ('rescuer-settings', '/settings'),
       ('rescuer-settings-footer', '/settings'),
+      ('rescuer-settings-logout-focus', '/settings'),
       ('rescuer-settings-large', '/settings'),
       ('rescuer-profile-large', '/profile'),
       ('profile-overview', '/profile'),
@@ -1494,7 +1495,8 @@ void main() {
             closeTo(38, 1),
           );
         }
-        if (spec.$1 == 'rescuer-settings-footer') {
+        if (spec.$1 == 'rescuer-settings-footer' ||
+            spec.$1 == 'rescuer-settings-logout-focus') {
           await tester.scrollUntilVisible(
             find.text('Cerrar sesión'),
             250,
@@ -1510,6 +1512,17 @@ void main() {
               .dy;
           final logoutTop = tester.getTopLeft(find.byType(RescuerLogoutRow)).dy;
           expect(logoutTop - helpBottom, closeTo(10, 1));
+          if (spec.$1 == 'rescuer-settings-logout-focus') {
+            final outline = find.byKey(
+              const ValueKey('reference-keyboard-outline'),
+            );
+            for (var i = 0; i < 20 && outline.evaluate().isEmpty; i++) {
+              await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+              await tester.pump();
+            }
+            expect(outline, findsOneWidget);
+            expect(find.byType(RescuerLogoutRow), findsOneWidget);
+          }
         }
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),

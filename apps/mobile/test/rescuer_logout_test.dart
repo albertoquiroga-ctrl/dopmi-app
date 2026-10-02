@@ -7,6 +7,7 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_logout_row.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -24,6 +25,41 @@ class LogoutIdentity extends FakeIdentityRepository {
 }
 
 void main() {
+  testWidgets('logout shows keyboard focus and Enter starts only one request', (
+    tester,
+  ) async {
+    final pending = Completer<void>();
+    var calls = 0;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: RescuerLogoutRow(
+            onLogout: () {
+              calls++;
+              return pending.future;
+            },
+          ),
+        ),
+      ),
+    );
+    final outline = find.byKey(const ValueKey('reference-keyboard-outline'));
+    expect(outline, findsNothing);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pump();
+    expect(outline, findsOneWidget);
+    expect(calls, 0);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pump();
+    expect(calls, 1);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    pending.complete();
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Cerrar sesión'));
+    await tester.pumpAndSettle();
+    expect(outline, findsNothing);
+  });
   testWidgets('logout ignores repeated activation during a pending request', (
     tester,
   ) async {
