@@ -364,8 +364,6 @@ class _ThreadState extends ConsumerState<ThreadScreen>
         loading = false;
         error = null;
       });
-      // Reading notifications is separate from receiving a message; a failed read can be retried.
-      await repo.readThread(widget.id);
     } catch (cause) {
       if (mounted && current == generation) {
         setState(() {
@@ -374,6 +372,17 @@ class _ThreadState extends ConsumerState<ThreadScreen>
           loading = false;
           error = communityError(cause);
         });
+      }
+      return;
+    }
+    // A receipt failure must not discard a successfully authorized history.
+    try {
+      await repo.readThread(widget.id);
+    } catch (_) {
+      if (mounted && current == generation) {
+        setState(
+          () => error = 'No pudimos marcar la conversación como leída. Volveremos a intentarlo.',
+        );
       }
     }
   }

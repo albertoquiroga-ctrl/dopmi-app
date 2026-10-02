@@ -32,6 +32,34 @@ class DetailThreadCommunity extends FakeCommunity {
   }
 }
 
+class ReceiptThreadCommunity extends DetailThreadCommunity {
+  bool failReceipt = true;
+  int reads = 0;
+  bool resumed = false;
+  @override
+  Future<void> readThread(String id) async {
+    reads++;
+    if (failReceipt) throw Exception('offline');
+  }
+
+  @override
+  Future<List<Json>> messages(String id, {Json? before}) async => [
+    {
+      'id': 'first',
+      'sender_id': 'other',
+      'body': 'Puedes conocer a Luna el domingo.',
+      'created_at': '2026-10-01T16:00:00Z',
+    },
+    if (resumed)
+      {
+        'id': 'second',
+        'sender_id': 'other',
+        'body': 'Te esperamos a las diez.',
+        'created_at': '2026-10-02T16:00:00Z',
+      },
+  ];
+}
+
 class CommunityAnalyticsSpy implements ProductAnalytics {
   final events = <String>[];
   @override
@@ -322,6 +350,35 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  testWidgets('receipt failure keeps history and resume recovers with draft', (
+    tester,
+  ) async {
+    final repo = ReceiptThreadCommunity();
+    await start(tester, repo, '/messages/thread-one');
+    expect(find.text('Puedes conocer a Luna el domingo.'), findsOneWidget);
+    expect(find.textContaining('No pudimos marcar'), findsOneWidget);
+    expect(find.text('Volver a cargar'), findsNothing);
+    await tester.enterText(find.byType(TextField), 'Nos vemos el domingo');
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    repo.failReceipt = false;
+    repo.resumed = true;
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pumpAndSettle();
+    expect(repo.reads, 2);
+    expect(find.textContaining('No pudimos marcar'), findsNothing);
+    expect(find.text('Puedes conocer a Luna el domingo.'), findsOneWidget);
+    expect(find.text('Te esperamos a las diez.'), findsOneWidget);
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).controller!.text,
+      'Nos vemos el domingo',
+    );
+    expect(repo.sentIds, isEmpty);
+    expect(tester.takeException(), isNull);
+  });
   testWidgets('chat detail keyboard navigation keeps the unsent draft', (
     tester,
   ) async {
