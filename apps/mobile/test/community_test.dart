@@ -1,11 +1,10 @@
-import 'dart:typed_data';
-
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/measurement.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
@@ -15,6 +14,23 @@ import 'fake_identity_repository.dart';
 import 'rescue_test.dart' show FakeRescue;
 
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+
+class DetailThreadCommunity extends FakeCommunity {
+  final openedPosts = <String>[];
+  @override
+  Future<Json> thread(String id) async => {
+    'id': id,
+    'post_id': 'post',
+    'pet_name': 'Luna',
+    'participant_name': 'Patricia V.',
+    'status': 'active',
+  };
+  @override
+  Future<Adoption?> detail(String id) async {
+    openedPosts.add(id);
+    return post;
+  }
+}
 
 class CommunityAnalyticsSpy implements ProductAnalytics {
   final events = <String>[];
@@ -306,6 +322,40 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  testWidgets('chat detail keyboard navigation keeps the unsent draft', (
+    tester,
+  ) async {
+    final repo = DetailThreadCommunity();
+    await start(tester, repo, '/messages/thread-one');
+    expect(find.text('Patricia V.'), findsOneWidget);
+    await tester.enterText(find.byType(TextField), 'Quiero conocer a Luna');
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(repo.openedPosts, isEmpty);
+    final link = find.byKey(const ValueKey('chat-detail-link'));
+    expect(
+      find.descendant(
+        of: link,
+        matching: find.byKey(const ValueKey('reference-keyboard-outline')),
+      ),
+      findsOneWidget,
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(repo.openedPosts, ['post']);
+    expect(find.text('Quiero adoptar'), findsOneWidget);
+    await tester.tap(find.byTooltip('Volver'));
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).controller!.text,
+      'Quiero conocer a Luna',
+    );
+    expect(repo.sentIds, isEmpty);
+    expect(tester.takeException(), isNull);
+  });
   for (final rescuer in [false, true]) {
     testWidgets(
       'conversation composer palette and keyboard; rescuer=$rescuer',

@@ -527,19 +527,26 @@ class _ThreadState extends ConsumerState<ThreadScreen>
           ),
           actions: [
             if (thread?['post_id'] != null)
-              TextButton(
-                onPressed: () =>
-                    context.push('/adoptions/${thread!['post_id']}'),
-                style: TextButton.styleFrom(
-                  foregroundColor: textInk,
-                  textStyle: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    decoration: TextDecoration.underline,
+              ReferenceFocusOutline(
+                key: const ValueKey('chat-detail-link'),
+                radius: 0,
+                child: TextButton(
+                  onPressed: () =>
+                      context.push('/adoptions/${thread!['post_id']}'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: textInk,
+                    overlayColor: Colors.transparent,
+                    splashFactory: NoSplash.splashFactory,
+                    textStyle: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0,
+                      decoration: TextDecoration.underline,
+                    ),
                   ),
+                  child: const Text('Ver detalle'),
                 ),
-                child: const Text('Ver detalle'),
               ),
             if (thread != null && thread!['status'] != 'closed')
               PopupMenuButton<String>(
