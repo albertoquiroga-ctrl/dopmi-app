@@ -170,7 +170,7 @@ class _NavigationItem extends StatelessWidget {
         : selected
         ? DopmiTokens.ink
         : rescuer
-        ? DopmiTokens.muted
+        ? const Color(0xff4f4e5c)
         : const Color(0xffe3e2e2);
     return Semantics(
       button: true,

@@ -40,7 +40,7 @@ class RescuerProfileActivity extends StatelessWidget {
                     fontSize: 18,
                     height: 1.3,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xff15110d),
+                    color: Color(0xff151423),
                     letterSpacing: 0,
                   ),
                 ),
@@ -85,7 +85,7 @@ class RescuerProfileActivity extends StatelessWidget {
                     fontFamily: 'Inter',
                     fontSize: 14,
                     height: 1.55,
-                    color: Color(0xff554e48),
+                    color: Color(0xff4f4e5c),
                     letterSpacing: 0,
                   ),
                 ),
@@ -125,7 +125,7 @@ class RescuerProfileActivity extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(color: const Color(0xffe6e2dd)),
+              border: Border.all(color: const Color(0xffe3e4ed)),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(
@@ -135,7 +135,7 @@ class RescuerProfileActivity extends StatelessWidget {
                     const Divider(
                       height: 1,
                       thickness: 1,
-                      color: Color(0xffe6e2dd),
+                      color: Color(0xffe3e4ed),
                     ),
                   RescuerProfileActivityRow(
                     item: items[n],
@@ -232,7 +232,7 @@ class _RescuerProfileActivityRowState extends State<RescuerProfileActivityRow> {
                             fontWeight: FontWeight.w600,
                             height: 1.2,
                             letterSpacing: 0,
-                            color: Color(0xff15110d),
+                            color: Color(0xff151423),
                           ),
                         ),
                         const SizedBox(height: 2),
@@ -244,7 +244,7 @@ class _RescuerProfileActivityRowState extends State<RescuerProfileActivityRow> {
                             fontSize: 12,
                             height: 1.4,
                             letterSpacing: 0,
-                            color: Color(0xff554e48),
+                            color: Color(0xff4f4e5c),
                           ),
                         ),
                       ],

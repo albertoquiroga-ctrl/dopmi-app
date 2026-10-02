@@ -51,7 +51,7 @@ class _RescuerAccessHeading extends StatelessWidget {
         height: 1.3,
         fontWeight: FontWeight.w700,
         letterSpacing: 0,
-        color: Color(0xff15110d),
+        color: Color(0xff151423),
       ),
     ),
   );
@@ -98,7 +98,7 @@ class _RescuerNavigationRowState extends State<RescuerNavigationRow> {
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(
-            color: hovered ? const Color(0xffd8d2ca) : const Color(0xffe6e2dd),
+            color: hovered ? const Color(0xffd8d2ca) : const Color(0xffe3e4ed),
           ),
           borderRadius: BorderRadius.circular(20),
         ),
@@ -160,7 +160,7 @@ class _RescuerNavigationRowState extends State<RescuerNavigationRow> {
                               fontWeight: FontWeight.w500,
                               height: 1.2,
                               letterSpacing: 0,
-                              color: Color(0xff15110d),
+                              color: Color(0xff151423),
                             ),
                           ),
                           if (widget.subtitle.isNotEmpty) ...[
@@ -172,7 +172,7 @@ class _RescuerNavigationRowState extends State<RescuerNavigationRow> {
                                 fontSize: 12,
                                 height: 1.4,
                                 letterSpacing: 0,
-                                color: Color(0xff554e48),
+                                color: Color(0xff4f4e5c),
                               ),
                             ),
                           ],

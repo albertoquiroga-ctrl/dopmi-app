@@ -57,7 +57,7 @@ class _RescuerVerificationCardState extends State<RescuerVerificationCard> {
                   ? const Color(0x477841f2)
                   : hovered
                   ? const Color(0xffd8d2ca)
-                  : const Color(0xffe6e2dd),
+                  : const Color(0xffe3e4ed),
             ),
             color: approved ? null : Colors.white,
             gradient: approved
@@ -145,7 +145,7 @@ class _RescuerVerificationCardState extends State<RescuerVerificationCard> {
                         width: 20,
                         height: 20,
                         colorFilter: const ColorFilter.mode(
-                          Color(0xff554e48),
+                          Color(0xff4f4e5c),
                           BlendMode.srcIn,
                         ),
                       ),

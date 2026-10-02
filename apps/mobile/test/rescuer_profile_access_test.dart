@@ -72,7 +72,7 @@ void main() {
                 as Border)
             .top
             .color;
-    expect(borderColor(), const Color(0xffe6e2dd));
+    expect(borderColor(), const Color(0xffe3e4ed));
     final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
     await mouse.addPointer(location: Offset.zero);
     await mouse.moveTo(tester.getCenter(find.text('Centro de ayuda')));
@@ -80,7 +80,7 @@ void main() {
     expect(borderColor(), const Color(0xffd8d2ca));
     await mouse.moveTo(Offset.zero);
     await tester.pump();
-    expect(borderColor(), const Color(0xffe6e2dd));
+    expect(borderColor(), const Color(0xffe3e4ed));
     await tester.sendKeyEvent(LogicalKeyboardKey.tab);
     await tester.pump();
     expect(

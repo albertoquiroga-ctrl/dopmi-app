@@ -79,7 +79,7 @@ class SettingsSectionHeading extends StatelessWidget {
         height: 1.3,
         fontWeight: FontWeight.w700,
         letterSpacing: 0,
-        color: Color(0xff15110d),
+        color: Color(0xff151423),
       ),
     ),
   );
@@ -105,7 +105,7 @@ class SettingsDataRow extends StatelessWidget {
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(color: const Color(0xffe6e2dd)),
+          border: Border.all(color: const Color(0xffe3e4ed)),
           borderRadius: BorderRadius.circular(18),
         ),
         child: Row(
@@ -125,7 +125,7 @@ class SettingsDataRow extends StatelessWidget {
                     width: 18,
                     height: 18,
                     colorFilter: const ColorFilter.mode(
-                      Color(0xff554e48),
+                      Color(0xff4f4e5c),
                       BlendMode.srcIn,
                     ),
                   ),
@@ -144,7 +144,7 @@ class SettingsDataRow extends StatelessWidget {
                       fontSize: 12,
                       height: 15.2 / 12,
                       letterSpacing: 0,
-                      color: Color(0xff554e48),
+                      color: Color(0xff4f4e5c),
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -156,7 +156,7 @@ class SettingsDataRow extends StatelessWidget {
                       height: 1.2,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0,
-                      color: Color(0xff15110d),
+                      color: Color(0xff151423),
                     ),
                   ),
                 ],
@@ -221,7 +221,7 @@ class SettingsFieldHint extends StatelessWidget {
         fontSize: 12,
         height: 1.55,
         letterSpacing: 0,
-        color: Color(0xff554e48),
+        color: Color(0xff4f4e5c),
       ),
     ),
   );
@@ -273,7 +273,7 @@ class _SettingsEditButtonState extends State<SettingsEditButton> {
                     width: 16,
                     height: 16,
                     colorFilter: const ColorFilter.mode(
-                      Color(0xff15110d),
+                      Color(0xff151423),
                       BlendMode.srcIn,
                     ),
                   ),

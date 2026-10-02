@@ -17,7 +17,7 @@ class RescuerProfileMetrics extends StatelessWidget {
     height: 1.1,
     fontWeight: FontWeight.w800,
     letterSpacing: -.66,
-    color: Color(0xff15110d),
+    color: Color(0xff151423),
   );
   @override
   Widget build(BuildContext context) {
@@ -163,7 +163,7 @@ class _RescuerProfileMetricState extends State<RescuerProfileMetric> {
                       fontWeight: FontWeight.w600,
                       height: 1.25,
                       letterSpacing: 0,
-                      color: Color(0xff554e48),
+                      color: Color(0xff4f4e5c),
                     ),
                   ),
                 ],
