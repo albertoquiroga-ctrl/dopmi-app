@@ -299,8 +299,14 @@ class _OwnedCaseHeroState extends State<OwnedCaseHero> {
               label: 'Volver',
               onTap: widget.onBack,
               child: ExcludeSemantics(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
+                child: InkWell(
+                  key: const ValueKey('owned-case-back'),
+                  excludeFromSemantics: true,
+                  splashFactory: NoSplash.splashFactory,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  borderRadius: BorderRadius.circular(24),
                   onTap: widget.onBack,
                   child: SizedBox(
                     width: 48,

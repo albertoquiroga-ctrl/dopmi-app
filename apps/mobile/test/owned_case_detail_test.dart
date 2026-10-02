@@ -14,6 +14,7 @@ import 'fake_identity_repository.dart';
 import 'package:dopmi_mobile/features/rescue/owned_case_detail.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -39,6 +40,41 @@ class OwnerDetailRescue extends PhotoPublicCaseRescue {
 }
 
 void main() {
+  for (final key in [LogicalKeyboardKey.enter, LogicalKeyboardKey.space]) {
+    testWidgets('owner back opens real callback with ${key.keyLabel}', (
+      tester,
+    ) async {
+      var backs = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: OwnedCaseHero(
+              record: RescueRecord({
+                'id': 'one',
+                'public_data': {'photos': <String>[]},
+              }),
+              onBack: () => backs++,
+            ),
+          ),
+        ),
+      );
+      final back = find.byKey(const ValueKey('owned-case-back'));
+      expect(tester.getSize(back), const Size(48, 48));
+      Focus.of(
+        tester.element(
+          find
+              .descendant(of: back, matching: find.byType(GestureDetector))
+              .first,
+        ),
+      ).requestFocus();
+      await tester.pump();
+      await tester.sendKeyEvent(key);
+      await tester.pumpAndSettle();
+      expect(backs, 1);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
   for (final closed in [false, true]) {
     testWidgets(
       'owner case consultation returns to the same gallery; closed=$closed',
