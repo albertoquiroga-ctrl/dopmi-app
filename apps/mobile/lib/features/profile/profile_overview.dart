@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/ui.dart';
 import 'rescuer_profile_hero.dart';
 import 'rescuer_profile_access.dart';
+import 'rescuer_logout_row.dart';
 import 'rescuer_settings_verification.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
@@ -1247,6 +1248,17 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final version = ref.watch(configProvider).versionLabel;
+    Future<void> logout() async {
+      try {
+        await ref.read(identityControllerProvider).logout();
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(identityError(e))));
+        }
+      }
+    }
+
     return ProfileFrame(
       title: 'Configuración',
       back: true,
@@ -1320,19 +1332,10 @@ class SettingsScreen extends ConsumerWidget {
           icon: Icons.privacy_tip_outlined,
           path: '/account-privacy',
         ),
-        OutlinedButton(
-          onPressed: () async {
-            try {
-              await ref.read(identityControllerProvider).logout();
-            } catch (e) {
-              if (context.mounted) {
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text(identityError(e))));
-              }
-            }
-          },
-          child: const Text('Cerrar sesión'),
-        ),
+        if (ref.watch(experienceProvider).value == AccountExperience.rescuer)
+          RescuerLogoutRow(onLogout: logout)
+        else
+          OutlinedButton(onPressed: logout, child: const Text('Cerrar sesión')),
         Center(
           child: Text(
             'Versión $version',
