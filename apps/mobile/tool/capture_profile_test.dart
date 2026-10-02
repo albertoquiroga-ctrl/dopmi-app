@@ -565,6 +565,7 @@ void main() {
     tester.view.physicalSize = const Size(377, 852);
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(tester.view.resetViewInsets);
     for (final family in ['Inter', 'Fraunces', 'MaterialIcons']) {
       final loader = FontLoader(family)
         ..addFont(
@@ -672,6 +673,8 @@ void main() {
       ('chat-bubbles-rescuer', '/messages/thread-one'),
       ('chat-detail-focus', '/messages/thread-one'),
       ('chat-detail-focus-large', '/messages/thread-one'),
+      ('chat-keyboard', '/messages/thread-one'),
+      ('chat-keyboard-large', '/messages/thread-one'),
       ('rescuer-home-unverified', '/rescuer'),
       ('rescuer-home-unverified-large', '/rescuer'),
       ('rescuer-home-review', '/rescuer'),
@@ -981,7 +984,8 @@ void main() {
           ? (NotificationCommunity()..read = spec.$1.endsWith('-read'))
           : spec.$1.startsWith('rescuer-profile-reference')
           ? RescuerReferenceCaptureCommunity()
-          : spec.$1.startsWith('chat-detail-focus')
+          : (spec.$1.startsWith('chat-detail-focus') ||
+                spec.$1.startsWith('chat-keyboard'))
           ? ChatHeaderCaptureCommunity()
           : spec.$1.startsWith('impact-feed')
           ? ImpactCaptureCommunity(spec.$1.contains('empty'))
@@ -1311,6 +1315,18 @@ void main() {
       }
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1.startsWith('chat-keyboard')) {
+        tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+        await tester.enterText(
+          find.byType(TextField),
+          'Quiero conocer a Luna.',
+        );
+        await tester.pumpAndSettle();
+        expect(
+          tester.getBottomRight(find.byTooltip('Enviar mensaje')).dy,
+          lessThanOrEqualTo(tester.view.physicalSize.height - 300),
+        );
+      }
       if (spec.$1.startsWith('public-profile-adoptions')) {
         await Scrollable.ensureVisible(
           tester.element(find.text('En adopción')),
@@ -2220,6 +2236,7 @@ void main() {
       }
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
+      tester.view.resetViewInsets();
       container.dispose();
       await repo.changes.close();
     }

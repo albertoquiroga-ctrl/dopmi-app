@@ -1,52 +1,51 @@
 # Corte de evidencia de paridad — 2/10/2026
 
 Referencia: `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
-Implementación/capturador/CI: `64fd0568cc989a06173f0d9c4ea78ebf860f7128`.
-Este inventario organiza la revisión pendiente; no sustituye las comparaciones
-registradas en `parity-loops.md` ni acredita aceptación global.
+Corte productivo: `4a206db` (loop257); CI integral aprobado para
+`9e1c27d82aba6825e0d59391e0ffaae709e94141`, run37053996279 #428.
+El CI precede la corrección del mazo257 y las capturas de teclado258.
+Este inventario organiza revisión pendiente y evidencia técnica; no acredita
+aceptación global ni instalada. Entradas históricas debajo están fechadas.
 
 ## Capturas reproducibles actuales
 
-`apps/mobile/tool/capture_profile_test.dart` contiene **238 estados en 28 URLs**
-tras los dos estados de foco de galería pública añadidos en loop233. El corte
-229 tenía 236 estados. Ese conteo incluye las siete tuplas multilínea de aportación que la búsqueda del
-loop227 no incluyó en sus 229 tuplas de una línea. No son 236 rutas distintas.
-Los 236 PNG iniciales existen tras el pase completo local del loop227 (108s, exit0).
-Los dos estados nuevos se capturaron y revisaron por separado en loop233 (3s,
-exit0); el corte CI indicado debajo precede esa ampliación.
-El CI [37034721943](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37034721943)
-aprobó ambas etapas de captura y la carga del artefacto al consultar en loop229;
-el APK de desarrollo seguía compilando. Las capturas usan repositorios fixture
-y widgets de producción; no prueban sesión, almacenamiento ni pagos reales.
+`apps/mobile/tool/capture_profile_test.dart` contiene **252 estados en 29 URLs**,
+recontados desde todas las tuplas, incluidas las multilínea, en loop258.
+Se añaden dos estados de conversación con300px de teclado simulado normal/200%.
+El último CI integral aprobado capturó250 estados; los dos nuevos aprobaron
+localmente junto a las pruebas de comunidad. No son252 pantallas aceptadas,
+ni29 pantallas que haya que implementar desde cero. Los widgets productivos
+usan fixtures de prueba: no acreditan sesión, Storage ni pagos reales.
 
 | URL del capturador | Estados |
 | --- | ---: |
 | `/adoptions` | 13 |
 | `/adoptions/post` | 2 |
 | `/messages` | 18 |
-| `/messages/thread-one` | 5 |
+| `/messages/thread-one` | 7 |
 | `/rescuer` | 10 |
-| `/my-cases` | 6 |
 | `/rescue/case-one` | 36 |
+| `/my-cases` | 6 |
 | `/rescue-cases` | 18 |
-| `/rescue-cases/case-one` | 12 |
 | `/notifications` | 7 |
-| `/contribute/Cirugía?case=case-one` | 2 |
+| `/rescue-cases/case-one` | 12 |
 | `/contribute/Cirugía?case=case-one&amount_cents=10000` | 7 |
 | `/guardian` | 16 |
-| `/impact` | 2 |
 | `/impact?history=1` | 4 |
+| `/impact` | 2 |
 | `/impact/guardian` | 6 |
 | `/payments` | 3 |
+| `/contribute/Cirugía?case=case-one` | 2 |
 | `/profile` | 18 |
 | `/settings` | 8 |
+| `/people/owner` | 12 |
 | `/about` | 2 |
 | `/transparency` | 2 |
 | `/publish` | 2 |
 | `/my-adoptions/new` | 2 |
 | `/my-adoptions/post` | 8 |
-| `/rescue/new?kind=case` | 4 |
 | `/rescue/expense-one` | 17 |
+| `/rescue/new?kind=case` | 4 |
 | `/rescue/new?kind=verification` | 4 |
 | `/rescue/verification-id` | 4 |
 
@@ -75,7 +74,7 @@ teclado. Después perfiles/ajustes, publicación/evidencia/verificación y
 aportación/Guardian/impacto. Las comparaciones previas son puntos de partida,
 no una razón para reconstruir funciones aceptadas.
 
-## Prioridad PUBLIC identificada en loop235
+## Diagnóstico histórico PUBLIC — loop235, supersedido por236–255
 
 `/people/:id` no está cubierto por el capturador anterior. La lectura actual de
 `catalog_screens.dart` confirma presentación genérica: avatar88, Heading con
