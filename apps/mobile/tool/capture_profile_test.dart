@@ -1,3 +1,4 @@
+import 'package:dopmi_mobile/features/profile/rescuer_profile_metrics.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_verification_card.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_settings_details.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_settings_verification.dart';
@@ -668,6 +669,9 @@ void main() {
       ('rescuer-profile-reference', '/profile'),
       ('rescuer-profile-reference-wide', '/profile'),
       ('rescuer-profile-reference-focus', '/profile'),
+      ('rescuer-profile-reference-metric-focus', '/profile'),
+      ('rescuer-profile-reference-transfer-focus', '/profile'),
+      ('rescuer-profile-reference-transfer-focus-large', '/profile'),
       ('rescuer-profile-reference-large', '/profile'),
       ('rescuer-settings', '/settings'),
       ('rescuer-settings-footer', '/settings'),
@@ -1329,6 +1333,35 @@ void main() {
           alignment: 0,
         );
         await tester.pumpAndSettle();
+      }
+      if (spec.$1.contains('reference-metric-focus') ||
+          spec.$1.contains('reference-transfer-focus')) {
+        final metric = find
+            .byType(RescuerProfileMetric)
+            .at(spec.$1.contains('transfer') ? 2 : 0);
+        final outline = find.descendant(
+          of: metric,
+          matching: find.byKey(const ValueKey('reference-keyboard-outline')),
+        );
+        for (var i = 0; i < 10 && outline.evaluate().isEmpty; i++) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+          await tester.pump();
+        }
+        expect(outline, findsOneWidget);
+        await Scrollable.ensureVisible(tester.element(metric), alignment: .4);
+        await tester.pumpAndSettle();
+        final cardRect = tester.getRect(metric);
+        final focusRect = tester.getRect(outline);
+        expect(focusRect, cardRect.inflate(5));
+        expect(cardRect.width, greaterThanOrEqualTo(48));
+        expect(cardRect.height, greaterThanOrEqualTo(84));
+        expect(focusRect.left, greaterThanOrEqualTo(0));
+        expect(
+          focusRect.right,
+          lessThanOrEqualTo(
+            tester.view.physicalSize.width / tester.view.devicePixelRatio,
+          ),
+        );
       }
       if (spec.$1 == 'rescuer-profile-reference-focus') {
         await tester.sendKeyEvent(LogicalKeyboardKey.tab);
