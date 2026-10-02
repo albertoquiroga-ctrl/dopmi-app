@@ -5,6 +5,7 @@ import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -541,6 +542,21 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text('Descubre casos'), findsOneWidget);
+    // Source CSS h1 letter-spacing:0; paragraph inherits normal (0).
+    for (final copy in [
+      'Descubre casos',
+      'Con cada aporte mensual ayudarás a cubrir necesidades reales de mascotas que buscan un hogar.',
+    ]) {
+      expect(
+        tester
+            .renderObject<RenderParagraph>(find.text(copy))
+            .text
+            .style!
+            .letterSpacing,
+        0,
+      );
+    }
+
     expect(find.text('Sé un Guardián'), findsOneWidget);
     expect(find.text('Choco'), findsOneWidget);
     expect(find.text('\$25 / \$100'), findsOneWidget);
