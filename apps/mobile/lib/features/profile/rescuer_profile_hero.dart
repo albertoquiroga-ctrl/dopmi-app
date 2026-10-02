@@ -8,6 +8,7 @@ import '../adoption/community_ui.dart';
 import '../identity/identity_repository.dart';
 import '../rescue/rescue_repository.dart';
 import 'rescuer_profile_metrics.dart';
+import 'rescuer_verification_card.dart';
 
 class RescuerProfileHero extends ConsumerWidget {
   const RescuerProfileHero(this.profile, {super.key});
@@ -43,6 +44,11 @@ class RescuerProfileHero extends ConsumerWidget {
           data: data,
           onCases: () => context.go('/my-cases'),
           onTransfers: () => context.go('/rescuer'),
+        ),
+        const SizedBox(height: 18),
+        RescuerVerificationCard(
+          status: data['verification_status'] as String?,
+          onPressed: () => context.push('/rescue/new?kind=verification'),
         ),
       ],
     ),
