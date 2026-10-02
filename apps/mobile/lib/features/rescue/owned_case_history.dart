@@ -214,6 +214,7 @@ class _OwnedStoryPhotoState extends ConsumerState<OwnedStoryPhoto>
     child: ColoredBox(
       color: const Color(0xffeeeeee),
       child: FutureBuilder<String>(
+        key: ObjectKey(url),
         future: url,
         builder: (context, result) {
           if (result.hasError) return unavailable();

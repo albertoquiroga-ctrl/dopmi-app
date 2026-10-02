@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 import 'package:dopmi_mobile/features/rescue/owned_case_history.dart';
@@ -36,7 +38,43 @@ class StoryFixture extends FakeCaseUpdates {
   }
 }
 
+class PendingStoryPhoto extends StoryFixture {
+  final retry = Completer<String>();
+  @override
+  Future<String> photoUrl(String path) {
+    photoCalls++;
+    if (photoCalls == 1) return Future.error(const FormatException('Offline'));
+    return retry.future;
+  }
+}
+
 void main() {
+  testWidgets('photo retry replaces the old error while signing is pending', (
+    tester,
+  ) async {
+    final updates = PendingStoryPhoto();
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [caseUpdateRepositoryProvider.overrideWithValue(updates)],
+        child: const MaterialApp(
+          home: Scaffold(body: OwnedStoryPhoto('approved-only')),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Reintentar foto'), findsOneWidget);
+    await tester.tap(find.text('Reintentar foto'));
+    await tester.pump();
+    expect(updates.photoCalls, 2);
+    expect(find.text('Reintentar foto'), findsNothing);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(tester.getSize(find.byType(OwnedStoryPhoto)).height, 160);
+    updates.retry.completeError(const FormatException('Still offline'));
+    await tester.pumpAndSettle();
+    expect(find.text('Reintentar foto'), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
   testWidgets(
     'public history shares approved cards and recovers failed photos',
     (tester) async {
