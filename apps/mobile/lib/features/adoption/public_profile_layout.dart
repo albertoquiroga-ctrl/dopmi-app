@@ -74,7 +74,7 @@ class PublicProfileFrame extends StatelessWidget {
   );
 }
 
-class _PublicHeaderButton extends StatelessWidget {
+class _PublicHeaderButton extends StatefulWidget {
   const _PublicHeaderButton({
     required this.label,
     required this.asset,
@@ -83,25 +83,51 @@ class _PublicHeaderButton extends StatelessWidget {
   final String label, asset;
   final VoidCallback action;
   @override
+  State<_PublicHeaderButton> createState() => _PublicHeaderButtonState();
+}
+
+class _PublicHeaderButtonState extends State<_PublicHeaderButton> {
+  bool hovered = false;
+  @override
   Widget build(BuildContext context) => Center(
     child: ReferenceFocusOutline(
       radius: 20,
       outlineInset: const EdgeInsets.all(4),
-      child: SizedBox(
-        width: 48,
-        height: 48,
-        child: IconButton(
-          tooltip: label,
-          onPressed: action,
-          style: IconButton.styleFrom(
-            splashFactory: NoSplash.splashFactory,
-            overlayColor: Colors.transparent,
-          ),
-          icon: SvgPicture.asset(
-            asset,
-            width: 20,
-            height: 20,
-            colorFilter: const ColorFilter.mode(ink, BlendMode.srcIn),
+      child: MouseRegion(
+        onEnter: (_) => setState(() => hovered = true),
+        onExit: (_) => setState(() => hovered = false),
+        child: SizedBox(
+          width: 48,
+          height: 48,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              if (hovered)
+                const SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Color(0xfff0ede7),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+              IconButton(
+                tooltip: widget.label,
+                onPressed: widget.action,
+                style: IconButton.styleFrom(
+                  splashFactory: NoSplash.splashFactory,
+                  overlayColor: Colors.transparent,
+                ),
+                icon: SvgPicture.asset(
+                  widget.asset,
+                  width: 20,
+                  height: 20,
+                  colorFilter: const ColorFilter.mode(ink, BlendMode.srcIn),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -308,6 +334,8 @@ class PublicProfileTabs extends StatelessWidget {
       child: TextButton(
         onPressed: () => select(index),
         style: TextButton.styleFrom(
+          splashFactory: NoSplash.splashFactory,
+          overlayColor: Colors.transparent,
           minimumSize: Size.zero,
           padding: const EdgeInsets.only(top: 10, bottom: 12),
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -344,6 +372,8 @@ class PublicProfileTabs extends StatelessWidget {
               child: TextButton(
                 onPressed: report,
                 style: TextButton.styleFrom(
+                  splashFactory: NoSplash.splashFactory,
+                  overlayColor: Colors.transparent,
                   minimumSize: Size.zero,
                   padding: const EdgeInsets.only(top: 10, bottom: 12),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,

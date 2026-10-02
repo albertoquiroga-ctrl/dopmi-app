@@ -1914,3 +1914,11 @@ Checkpoint245: push3dcc5687170943f73bc166f8ca9acc5958cca82a verified; PR6 remain
 
 Reference remote a3c969cd9103fd46dc5cd886999912526ce75efb unchanged. styles.css32–35 defines keyboard-visible3px purple30% outline/2px offset for all buttons; public Reportar had lacked existing ReferenceFocusOutline wrapper. Added square outline consistent with tabs, preserving report callback/disabled semantics and layout. New keyboard test traverses four controls viaTab, asserts outline surrounds Reportar and Enter invokes callback exactly once. Layout/community29pass exit0 (13s), final keyboard/layout3pass exit0 (1s), analyze noissues exit0 (9.6s). CI37048298328 #422 stillin_progress confirmed on3dcc5687170943f73bc166f8ca9acc5958cca82a, predates246. Device gestures and final Codemagic/Play remain pending.
 
+
+## Loop247 — 2026-10-02: public header pointer and tab feedback
+
+Inspected Source styles.css90–94:40px icon-button circle, transparent default, hover#f0ede7. Added matching40px hovered background within existing48px native target, preserving focus outline/share/back handlers. Source tabs have no hover/pressed fill; removed native ripple/overlay from tab/report buttons. Layout/capture4pass exit0 (7s), final pointer/keyboard/layout4pass exit0 (1s). New pointer test verifies40px circle, exit removal and actual share callback. Initial test import insertion landed after declarations; corrected before final parsing/test. Captures regenerated without resting-state changes. CI422 remainsin_progress on3dcc568, does not include246–247. Device motion and final Codemagic remain pending.
+
+
+Final analyze noissues exit0 (7.6s). Source checkout used a3c969cd9103fd46dc5cd886999912526ce75efb last verified246; remote recheck247 failed connection github.com443 after21s, so current remote unchanged is not newly verified.
+
