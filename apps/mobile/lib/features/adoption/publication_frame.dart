@@ -34,29 +34,35 @@ class PublicationFrame extends StatelessWidget {
           : const CommunityNav(3, selectedPath: '/publish'),
       body: SafeArea(
         bottom: false,
-        child: Column(
-          children: [
-            if (!keyboard) header,
-            Expanded(
-              child: ListView(
-                key: const PageStorageKey('publication-body'),
-                padding: EdgeInsets.zero,
-                children: [
-                  // Let the focused field scroll the header away on short keyboard
-                  // viewports; controllers and the keyed Form retain authored text.
-                  if (keyboard) header,
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: children,
-                    ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final scrollHeader = keyboard || constraints.maxHeight < 500;
+            return Column(
+              children: [
+                if (!scrollHeader) header,
+                Expanded(
+                  child: ListView(
+                    key: const PageStorageKey('publication-body'),
+                    padding: EdgeInsets.zero,
+                    children: [
+                      // Short viewports and large navigation need the same
+                      // scrolling header as an open keyboard. Keep the footer
+                      // reachable and the keyed Form's authored text intact.
+                      if (scrollHeader) header,
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: children,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            footer,
-          ],
+                ),
+                footer,
+              ],
+            );
+          },
         ),
       ),
     );

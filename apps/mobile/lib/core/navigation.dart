@@ -123,7 +123,7 @@ class DopmiBottomBar extends StatelessWidget {
                 textDirection: Directionality.of(context),
                 textScaler: MediaQuery.textScalerOf(context),
               )..layout();
-              final width = painter.width + 16;
+              final width = painter.width + 8;
               if (width > minimumWidth) minimumWidth = width;
               painter.dispose();
             }

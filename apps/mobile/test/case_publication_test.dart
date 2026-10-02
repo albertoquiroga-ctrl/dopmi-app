@@ -244,7 +244,14 @@ void main() {
       4,
     );
     final need = find.byKey(const ValueKey('case-field-need'));
-    await tester.ensureVisible(need);
+    await tester.scrollUntilVisible(
+      need,
+      150,
+      scrollable: find.descendant(
+        of: find.byKey(const PageStorageKey('publication-body')),
+        matching: find.byType(Scrollable),
+      ),
+    );
     await tester.pumpAndSettle();
     await tester.enterText(need, 'Comida y seguimiento');
     tester.view.viewInsets = const FakeViewPadding(bottom: 240);
