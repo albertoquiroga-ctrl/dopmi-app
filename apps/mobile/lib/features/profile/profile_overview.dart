@@ -203,8 +203,9 @@ class RescuerDonorModeCard extends StatelessWidget {
     super.key,
     required this.enabled,
     required this.onPressed,
+    this.settings = false,
   });
-  final bool enabled;
+  final bool enabled, settings;
   final VoidCallback onPressed;
   @override
   Widget build(BuildContext context) => Container(
@@ -216,13 +217,13 @@ class RescuerDonorModeCard extends StatelessWidget {
     ),
     child: Row(
       children: [
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Modo donante',
-                style: TextStyle(
+                settings ? 'Cambiar a usuario donante' : 'Modo donante',
+                style: const TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
@@ -231,10 +232,12 @@ class RescuerDonorModeCard extends StatelessWidget {
                   color: Color(0xff15110d),
                 ),
               ),
-              SizedBox(height: 2),
+              const SizedBox(height: 2),
               Text(
-                'Adopta, apoya y sigue impacto',
-                style: TextStyle(
+                settings
+                    ? 'Cambia tu experiencia en la app'
+                    : 'Adopta, apoya y sigue impacto',
+                style: const TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 12,
                   height: 1.4,
@@ -247,8 +250,10 @@ class RescuerDonorModeCard extends StatelessWidget {
         ),
         const SizedBox(width: 12),
         Semantics(
-          label: 'Cambiar a modo donante',
-          toggled: false,
+          label: settings
+              ? 'Cambiar a usuario donante'
+              : 'Cambiar a modo donante',
+          toggled: settings,
           enabled: enabled,
           child: InkWell(
             onTap: enabled ? onPressed : null,
@@ -266,10 +271,21 @@ class RescuerDonorModeCard extends StatelessWidget {
                   padding: const EdgeInsets.all(1),
                   alignment: Alignment.centerLeft,
                   decoration: BoxDecoration(
-                    color: const Color(0xffdad7d2),
+                    color: settings
+                        ? const Color(0xff7841f2)
+                        : const Color(0xffdad7d2),
                     borderRadius: BorderRadius.circular(99),
                   ),
-                  child: Container(
+                  child: AnimatedContainer(
+                    transform: Matrix4.translationValues(
+                      settings ? 13 : 0,
+                      0,
+                      0,
+                    ),
+                    duration: MediaQuery.disableAnimationsOf(context)
+                        ? Duration.zero
+                        : const Duration(milliseconds: 180),
+                    curve: Curves.ease,
                     width: 16,
                     height: 16,
                     decoration: const BoxDecoration(
@@ -1243,6 +1259,63 @@ class _ProfileDonationLogState extends ConsumerState<ProfileDonationLog> {
   );
 }
 
+class RescuerSettingsModeSwitch extends ConsumerStatefulWidget {
+  const RescuerSettingsModeSwitch({super.key});
+  @override
+  ConsumerState<RescuerSettingsModeSwitch> createState() =>
+      _RescuerSettingsModeSwitchState();
+}
+
+class _RescuerSettingsModeSwitchState
+    extends ConsumerState<RescuerSettingsModeSwitch> {
+  bool busy = false;
+  String? error;
+  Future<void> changeMode() async {
+    if (busy) return;
+    final owner = ref.read(identityControllerProvider).identity?.id;
+    if (owner == null) return;
+    setState(() {
+      busy = true;
+      error = null;
+    });
+    try {
+      final next = await ref
+          .read(identityRepositoryProvider)
+          .setExperience('donor');
+      if (!mounted ||
+          ref.read(identityControllerProvider).identity?.id != owner) {
+        return;
+      }
+      ref.read(experienceProvider).applyProfile(next);
+      context.go('/adoptions');
+    } catch (cause) {
+      if (mounted &&
+          ref.read(identityControllerProvider).identity?.id == owner) {
+        setState(() => error = identityError(cause));
+      }
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      if (error != null) Notice(error!, isError: true),
+      RescuerDonorModeCard(
+        settings: true,
+        enabled:
+            !busy && ref.watch(experienceProvider).profile?.status == 'active',
+        onPressed: changeMode,
+      ),
+      if (busy)
+        const LinearProgressIndicator(semanticsLabel: 'Cambiando experiencia'),
+      const SizedBox(height: 10),
+    ],
+  );
+}
+
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
   @override
@@ -1316,6 +1389,8 @@ class SettingsScreen extends ConsumerWidget {
           icon: Icons.history,
           path: '/payments',
         ),
+        if (ref.watch(experienceProvider).value == AccountExperience.rescuer)
+          const RescuerSettingsModeSwitch(),
         const ProfileRow(
           title: 'Centro de ayuda',
           icon: Icons.help_outline,

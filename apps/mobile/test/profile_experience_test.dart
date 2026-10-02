@@ -17,62 +17,77 @@ import 'fake_identity_repository.dart';
 
 void main() {
   for (final fail in [false, true]) {
-    testWidgets(
-      'rescuer source switch returns to donor only after server success: $fail',
-      (tester) async {
-        final identity = FakeIdentityRepository()
-          ..user = const Identity('one', 'ana@example.test', verified: true);
-        await identity.setExperience('rescuer');
-        identity.failSave = fail;
-        final container = ProviderContainer(
-          overrides: [
-            identityRepositoryProvider.overrideWithValue(identity),
-            communityRepositoryProvider.overrideWithValue(FakeCommunity()),
-            rescueRepositoryProvider.overrideWithValue(FakeRescue()),
-            routerInitialLocationProvider.overrideWithValue('/profile'),
-          ],
-        );
-        addTearDown(() async {
-          container.dispose();
-          await identity.changes.close();
-        });
-        await tester.pumpWidget(
-          UncontrolledProviderScope(
-            container: container,
-            child: const DopmiApp(),
-          ),
-        );
-        await tester.pumpAndSettle();
-        final target = find.byKey(const ValueKey('rescuer-donor-switch'));
-        await tester.scrollUntilVisible(
-          target,
-          240,
-          scrollable: find.byType(Scrollable).first,
-        );
-        await tester.ensureVisible(target);
-        await tester.pumpAndSettle();
-        expect(find.text('Modo donante'), findsOneWidget);
-        expect(find.text('Adopta, apoya y sigue impacto'), findsOneWidget);
-        expect(tester.getSize(target), const Size(32, 19));
-        await tester.tap(target);
-        await tester.pumpAndSettle();
-        expect(identity.profile.mode, fail ? 'rescuer' : 'donor');
-        expect(identity.profile.name, 'Ana');
-        expect(
-          container.read(routerProvider).state.uri.path,
-          fail ? '/profile' : '/adoptions',
-        );
-        if (fail) {
+    for (final path in ['/profile', '/settings']) {
+      testWidgets(
+        'rescuer source switch returns to donor only after server success: $fail $path',
+        (tester) async {
+          final identity = FakeIdentityRepository()
+            ..user = const Identity('one', 'ana@example.test', verified: true);
+          await identity.setExperience('rescuer');
+          identity.failSave = fail;
+          final container = ProviderContainer(
+            overrides: [
+              identityRepositoryProvider.overrideWithValue(identity),
+              communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+              rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+              routerInitialLocationProvider.overrideWithValue(path),
+            ],
+          );
+          addTearDown(() async {
+            container.dispose();
+            await identity.changes.close();
+          });
+          await tester.pumpWidget(
+            UncontrolledProviderScope(
+              container: container,
+              child: const DopmiApp(),
+            ),
+          );
+          await tester.pumpAndSettle();
+          final target = find.byKey(const ValueKey('rescuer-donor-switch'));
+          await tester.scrollUntilVisible(
+            target,
+            240,
+            scrollable: find.byType(Scrollable).first,
+          );
+          await tester.ensureVisible(target);
+          await tester.pumpAndSettle();
           expect(
-            find.byKey(const ValueKey('rescuer-donor-switch')),
+            find.text(
+              path == '/settings'
+                  ? 'Cambiar a usuario donante'
+                  : 'Modo donante',
+            ),
             findsOneWidget,
           );
-        }
-        expect(tester.takeException(), isNull);
-      },
-    );
+          expect(
+            find.text(
+              path == '/settings'
+                  ? 'Cambia tu experiencia en la app'
+                  : 'Adopta, apoya y sigue impacto',
+            ),
+            findsOneWidget,
+          );
+          expect(tester.getSize(target), const Size(32, 19));
+          await tester.tap(target);
+          await tester.pumpAndSettle();
+          expect(identity.profile.mode, fail ? 'rescuer' : 'donor');
+          expect(identity.profile.name, 'Ana');
+          expect(
+            container.read(routerProvider).state.uri.path,
+            fail ? path : '/adoptions',
+          );
+          if (fail) {
+            expect(
+              find.byKey(const ValueKey('rescuer-donor-switch')),
+              findsOneWidget,
+            );
+          }
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
   }
-
   for (final reduced in [false, true]) {
     testWidgets(
       'profile feature press cancels safely; reduced motion=$reduced',
