@@ -1325,6 +1325,15 @@ void main() {
         );
         await tester.pumpAndSettle();
       }
+      if (spec.$1 == 'rescuer-profile-reference') {
+        final hero = tester.getRect(find.byType(RescuerIdentityCard));
+        expect(hero.top, closeTo(74, 1));
+        expect(hero.height, closeTo(147.2, 1));
+        expect(
+          tester.getSize(find.text('Ciudad de México, CDMX')).height,
+          closeTo(32, 1),
+        );
+      }
       if (spec.$1 == 'rescuer-profile') {
         final heading = tester.getRect(find.text('Mi perfil'));
         final hero = tester.getRect(find.byType(RescuerIdentityCard));

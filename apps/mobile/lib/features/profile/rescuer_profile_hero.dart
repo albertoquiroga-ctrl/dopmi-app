@@ -380,7 +380,7 @@ class _RescuerIdentityCardState extends State<RescuerIdentityCard> {
                         style: const TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 12,
-                          height: 1.2,
+                          height: 15.2 / 12,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
                           letterSpacing: 0,
@@ -397,6 +397,7 @@ class _RescuerIdentityCardState extends State<RescuerIdentityCard> {
                   style: const TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 13,
+                    height: 16 / 13,
                     color: Color(0xebffffff),
                     letterSpacing: 0,
                   ),
