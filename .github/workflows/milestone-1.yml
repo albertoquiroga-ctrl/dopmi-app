@@ -61,6 +61,9 @@ jobs:
       - name: Capture actual Flutter components and access screens
         run: flutter test tool/capture_design_test.dart
         working-directory: apps/mobile
+      - name: Capture actual profile, cases, messages and state screens
+        run: flutter test tool/capture_profile_test.dart
+        working-directory: apps/mobile
       - uses: actions/upload-artifact@v4
         with:
           name: dopmi-design-review
