@@ -2241,3 +2241,13 @@ Loop279 fue progreso encabezado/cancelar verificado. Tarjeta de foto incorpora S
 
 Suite perfil+capturas2 aprobadas2s antes de onChanged; análisis final del código productivo con onChanged limpio30.8s. Prueba ampliada verifica inicialÉ y display_nameÉrika guardado, sin alterar verificaciones ciudad/revisión/cancelar. Matriz284estados34URLs sin estados nuevos. CI448/37073584291 exacto01ad566 siguein_progress consultado al inicio; no gate integral ni Playnuevo. Selección real de galería/gestos/foco/tamaños exactos/comparación browser e instalación siguen pendientes. Dinero test-only; no SQL/Auth/flags ni legado reactivados.
 Gate final loop280: prueba perfil ampliada1 aprobada3s, formato/diffcheck aprobados. SHA256 SVG cámara igual en Source y asset nativo65A7EFE0367ED7EC3C80223ACB3F11D40727B3894AF92583DB34FE4303A58378. No apertura de galería real ni aceptación instalada atribuida por fixture.
+# Entrega intermedia a Codemagic — 2/10/2026
+
+El titular pidió enviar lo disponible. Se publicó la rama
+`codex/design-foundation` en `e4f4e8585612389e7193310c7fdfe137b61c7762`,
+incluyendo loops276–280, sin incorporar cambios locales ajenos.
+POST autorizado inició `android-guardian-internal`, build
+`6ac036fb95ce3d2da3061421`. GET confirmó estado `queued` y el SHA exacto.
+Compilación, publicación Play y aceptación instalada de este candidato quedan
+pendientes; el build286 anterior no acredita estos cambios. La paridad global
+continúa abierta y dinero real permanece sin autorización.
