@@ -1,10 +1,10 @@
 # Corte de evidencia de paridad — 2/10/2026
 
 Referencia: `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
-Corte integral aprobado: `f71473b2aa2dcca6b5314a439db5ac8beb03295f`,
-run37058006192 #432 completed/success, verificado en loop261.
-Incluye mazo257, teclado258, galería y selector259; precede la regresión260
-y los cambios de Inicio261, que requieren el siguiente gate.
+Corte integral aprobado: `6a4f7893aa0ec66b815417a66ce1e49c6a5c456c`,
+run37061193420 #434 completed/success, verificado en loop262.
+Incluye mazo257, teclado258, galería/selector259, regresión260 e Inicio261.
+Precede cambios de campo/regreso/carrusel Guardian262.
 Este inventario organiza revisión pendiente y evidencia técnica; no acredita
 aceptación global ni instalada. Entradas históricas debajo están fechadas.
 
@@ -22,8 +22,7 @@ esto no acredita aceptación en Samsung ni paridad completa.
 256 recontados en loop259 y dos estados de evidencia pendiente añadidos261.
 Incluye conversación con300px de teclado simulado y cuatro nuevos estados de
 galería/selector de monto del caso, normal/200%.
-El último CI integral aprobado capturó256 estados; los dos nuevos aprobaron
-localmente con las pruebas del recorrido de evidencia. No son258 pantallas aceptadas,
+El último CI integral aprobado capturó258 estados. No son258 pantallas aceptadas,
 ni29 pantallas que haya que implementar desde cero. Los widgets productivos
 usan fixtures de prueba: no acreditan sesión, Storage ni pagos reales.
 

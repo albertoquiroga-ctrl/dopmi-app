@@ -152,7 +152,7 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
               ],
             ],
           ),
-        const SizedBox(height: 8),
+        SizedBox(height: showCustom ? 16 : 8),
         if (showCustom) ...[
           Semantics(
             label: 'Importe mensual en MXN',
@@ -180,7 +180,7 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
-                  vertical: 14,
+                  vertical: 26.8,
                 ),
                 prefixIcon: const Padding(
                   padding: EdgeInsets.only(left: 16, right: 8),
@@ -226,8 +226,18 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
                   borderRadius: BorderRadius.circular(16),
                   borderSide: const BorderSide(color: Color(0xfff4c917)),
                 ),
-                helperText: 'De \$50 a \$10,000; hasta dos decimales.',
-                helperMaxLines: 3,
+              ),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 6, 16, 0),
+            child: Text(
+              'De \$50 a \$10,000; hasta dos decimales.',
+              style: TextStyle(
+                fontSize: 12,
+                height: 1.55,
+                letterSpacing: 0,
+                color: muted,
               ),
             ),
           ),

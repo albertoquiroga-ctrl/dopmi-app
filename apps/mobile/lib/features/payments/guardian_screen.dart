@@ -514,10 +514,22 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         enrolling &&
         showForm &&
         (fresh || data != null)) {
-      void returnToBilling() => setState(() {
-        enrolling = false;
-        consent = false;
-      });
+      void returnToBilling() {
+        if (busy || confirming) return;
+        if (widget.initialEnrollment && intent == null) {
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.go('/rescue-cases');
+          }
+          return;
+        }
+        setState(() {
+          enrolling = false;
+          consent = false;
+        });
+      }
+
       return PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) {
@@ -525,7 +537,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         },
         child: ContributionFrame(
           title: '',
-          back: returnToBilling,
+          back: busy || confirming ? null : returnToBilling,
           child: SingleChildScrollView(
             key: const ValueKey('guardian-enrollment-scroll'),
             padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),

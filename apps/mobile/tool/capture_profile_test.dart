@@ -1457,6 +1457,28 @@ void main() {
             '75.25',
           );
           await tester.pumpAndSettle();
+          if (!large) {
+            FocusManager.instance.primaryFocus?.unfocus();
+            Scrollable.of(
+              tester.element(
+                find.byKey(const ValueKey('guardian-enrollment-custom-amount')),
+              ),
+            ).position.jumpTo(0);
+            await tester.pumpAndSettle();
+            expect(
+              InputDecorator.containerOf(
+                tester.element(
+                  find.descendant(
+                    of: find.byKey(
+                      const ValueKey('guardian-enrollment-custom-amount'),
+                    ),
+                    matching: find.byType(EditableText),
+                  ),
+                ),
+              )!.size.height,
+              closeTo(75.2, 1),
+            );
+          }
         }
         if (spec.$1.contains('confirmation')) {
           await tester.ensureVisible(find.text('Activar en Stripe'));

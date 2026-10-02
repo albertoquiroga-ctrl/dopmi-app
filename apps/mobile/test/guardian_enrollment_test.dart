@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +14,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
 import 'guardian_test.dart' show FakeGuardian, activePlan;
+import 'rescue_test.dart' show FakeRescue;
+
+class PendingCapacityGuardian extends FakeGuardian {
+  final pendingCapacity = Completer<bool>();
+  @override
+  Future<bool> capacity(int cents) => pendingCapacity.future;
+}
 
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
@@ -31,6 +41,7 @@ void main() {
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         guardianRepositoryProvider.overrideWithValue(repo),
+        rescueRepositoryProvider.overrideWithValue(FakeRescue()),
         guardianEnabledProvider.overrideWithValue(enabled),
         routerInitialLocationProvider.overrideWithValue(location),
       ],
@@ -62,6 +73,15 @@ void main() {
     final repo = FakeGuardian();
     await start(tester, repo, location: '/impact/guardian');
     expect(repo.reads, 0);
+    final second = find.byWidgetPredicate(
+      (widget) =>
+          widget is Semantics &&
+          widget.properties.label == 'Ir a la página 2 de 3',
+    );
+    await tester.ensureVisible(second);
+    await tester.tap(second);
+    await tester.pumpAndSettle();
+    expect(tester.widget<Semantics>(second).properties.selected, true);
     await tester.ensureVisible(find.text('Unirme como Guardián'));
     await tester.tap(find.text('Unirme como Guardián'));
     await tester.pumpAndSettle();
@@ -70,6 +90,67 @@ void main() {
     expect(repo.reads, greaterThan(0));
     expect(repo.calls, isEmpty);
     expect(repo.opened, 0);
+    await tester.tap(find.byTooltip('Regresar'));
+    await tester.pumpAndSettle();
+    expect(find.text('Conviértete en Guardián'), findsOneWidget);
+    final first = find.byWidgetPredicate(
+      (widget) =>
+          widget is Semantics &&
+          widget.properties.label == 'Ir a la página 1 de 3',
+    );
+    expect(tester.widget<Semantics>(first).properties.selected, true);
+    expect(repo.calls, isEmpty);
+    expect(repo.opened, 0);
+  });
+  testWidgets('System back returns fresh enrollment to its promotion origin', (
+    tester,
+  ) async {
+    final repo = FakeGuardian();
+    await start(tester, repo, location: '/impact/guardian');
+    await tester.ensureVisible(find.text('Unirme como Guardián'));
+    await tester.tap(find.text('Unirme como Guardián'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(r'$200'));
+    await tester.pumpAndSettle();
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.text('Conviértete en Guardián'), findsOneWidget);
+    expect(repo.calls, isEmpty);
+    expect(repo.opened, 0);
+  });
+  testWidgets('Fresh enrollment without history returns to support', (
+    tester,
+  ) async {
+    final repo = FakeGuardian();
+    await start(tester, repo, location: '/guardian?enroll=1');
+    await tester.tap(find.byTooltip('Regresar'));
+    await tester.pumpAndSettle();
+    expect(find.text('Descubre casos'), findsOneWidget);
+    expect(repo.calls, isEmpty);
+    expect(repo.opened, 0);
+  });
+  testWidgets('System back keeps an in-flight capacity check recoverable', (
+    tester,
+  ) async {
+    final repo = PendingCapacityGuardian();
+    await start(tester, repo, location: '/guardian?enroll=1');
+    await tester.ensureVisible(find.byType(Checkbox));
+    await tester.tap(find.byType(Checkbox));
+    await tester.pump();
+    await tester.ensureVisible(find.text('Activar en Stripe'));
+    await tester.tap(find.text('Activar en Stripe'));
+    await tester.pump();
+    await tester.binding.handlePopRoute();
+    await tester.pump();
+    expect(find.text('Elige tu apoyo'), findsOneWidget);
+    expect(repo.calls, isEmpty);
+    repo.pendingCapacity.complete(false);
+    await tester.pumpAndSettle();
+    expect(repo.calls, isEmpty);
+    expect(repo.opened, 0);
+    await tester.tap(find.byTooltip('Regresar'));
+    await tester.pumpAndSettle();
+    expect(find.text('Descubre casos'), findsOneWidget);
   });
   testWidgets(
     'Promotion never offers a second enrollment when server returns an active plan',

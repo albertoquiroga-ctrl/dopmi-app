@@ -202,7 +202,10 @@ class _GuardianPromotionState extends State<GuardianPromotionScreen> {
                     ? 'Unirme como Guardián'
                     : 'Guardián todavía no está disponible',
                 onPressed: widget.available
-                    ? () => context.push('/guardian?enroll=1')
+                    ? () async {
+                        await context.push('/guardian?enroll=1');
+                        if (mounted && pages.hasClients) pages.jumpToPage(0);
+                      }
                     : null,
               ),
               TextButton(
