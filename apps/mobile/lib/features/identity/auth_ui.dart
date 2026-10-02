@@ -186,17 +186,20 @@ class AuthConsentRow extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 2),
                 child: ExcludeSemantics(
-                  child: IgnorePointer(
-                    child: SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: Checkbox(
-                        value: value,
-                        onChanged: onChanged == null
-                            ? null
-                            : (next) => onChanged!(next ?? false),
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        visualDensity: VisualDensity.compact,
+                  child: ExcludeFocus(
+                    child: IgnorePointer(
+                      child: SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: Checkbox(
+                          value: value,
+                          onChanged: onChanged == null
+                              ? null
+                              : (next) => onChanged!(next ?? false),
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          visualDensity: VisualDensity.compact,
+                        ),
                       ),
                     ),
                   ),
