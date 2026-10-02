@@ -447,7 +447,7 @@ class AccountStartScreen extends StatelessWidget {
                                       ),
                                       child: const Text('Crea una cuenta'),
                                     ),
-                                    const AccountSocialActions(),
+                                    AccountSocialActions(intent: intent),
                                   ],
                                 ),
                               ),
@@ -935,7 +935,8 @@ class RescuerIntroduction extends StatelessWidget {
 /// Configured providers use the same repository and session listener as login.
 /// Cancellation never opens the authenticated app or fabricates an identity.
 class AccountSocialActions extends ConsumerStatefulWidget {
-  const AccountSocialActions({super.key});
+  const AccountSocialActions({super.key, this.intent = 'adopt'});
+  final String intent;
   @override
   ConsumerState<AccountSocialActions> createState() =>
       _AccountSocialActionsState();
@@ -979,7 +980,7 @@ class _AccountSocialActionsState extends ConsumerState<AccountSocialActions> {
           fontFamily: 'Inter',
         ),
       ),
-      onPressed: () => context.push('/login'),
+      onPressed: () => context.push('/login?intent=${widget.intent}'),
       child: const Text('Inicia sesión'),
     );
     if (!hasSocial) {

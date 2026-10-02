@@ -107,24 +107,27 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
         reset = widget.mode == AuthFormMode.reset;
     final config = ref.watch(configProvider);
     final title = switch (widget.mode) {
-      AuthFormMode.login => 'Iniciar sesión',
-      AuthFormMode.signup => 'Crear cuenta',
+      AuthFormMode.login => 'Inicia sesión',
+      AuthFormMode.signup => 'Crea tu cuenta',
       AuthFormMode.forgot => 'Recupera tu acceso.',
       AuthFormMode.reset => 'Una nueva\ncontraseña.',
     };
     final description = switch (widget.mode) {
-      AuthFormMode.login => 'Bienvenido de vuelta a DopMi.',
+      AuthFormMode.login =>
+        'Entra para seguir tus favoritos y retomar donde lo dejaste.',
       AuthFormMode.signup =>
-        'Únete a DopMi y empieza a ayudar con seguimiento claro.',
+        'Completa tus datos para guardar favoritos y contactar al rescatista.',
       AuthFormMode.forgot => 'Te enviaremos las instrucciones a tu correo.',
       AuthFormMode.reset => 'Elige una contraseña segura para volver a entrar.',
     };
     return AuthFrame(
+      sheet: login || signup,
+      intent: widget.intent,
       back: !reset,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AuthHeading(title, description),
+          AuthHeading(title, description, sheet: login || signup),
           if (login && GoRouterState.of(context).extra is String)
             Notice(GoRouterState.of(context).extra! as String),
           AutofillGroup(
@@ -297,7 +300,8 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                   ],
                   if (login)
                     TextButton(
-                      onPressed: () => context.push('/signup'),
+                      onPressed: () =>
+                          context.push('/signup?intent=${widget.intent}'),
                       child: const Text('Soy nuevo · Crear una cuenta'),
                     ),
                   if (reset)

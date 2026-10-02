@@ -390,7 +390,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/login',
-        builder: (_, _) => const AuthFormScreen(mode: AuthFormMode.login),
+        builder: (_, state) => AuthFormScreen(
+          mode: AuthFormMode.login,
+          intent: safeIntent(state.uri.queryParameters['intent']),
+        ),
       ),
       GoRoute(
         path: '/forgot',
