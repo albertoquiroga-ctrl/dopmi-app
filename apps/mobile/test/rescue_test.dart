@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
@@ -184,6 +186,17 @@ class EmptySupportRescue extends FakeRescue {
   @override
   Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async =>
       const DataPage([], 0);
+}
+
+class PendingSupportRescue extends FakeRescue {
+  final pending = Completer<DataPage<RescueRecord>>();
+  int catalogCalls = 0;
+
+  @override
+  Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) {
+    catalogCalls++;
+    return pending.future;
+  }
 }
 
 class RetrySupportRescue extends FakeRescue {
@@ -378,6 +391,7 @@ void main() {
     FakeRescue repo, {
     String path = '/rescue-cases/case-one',
     bool large = false,
+    bool settle = true,
   }) async {
     tester.view.physicalSize = large
         ? const Size(320, 640)
@@ -405,7 +419,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(container: container, child: const DopmiApp()),
     );
-    await tester.pumpAndSettle();
+    if (settle) await tester.pumpAndSettle();
   }
 
   test('money parsing preserves cent precision and rejects rounding or scientific notation', () {
@@ -417,6 +431,38 @@ void main() {
     }
   });
   for (final large in [false, true]) {
+    testWidgets('pending support catalog preserves home; large=$large', (
+      tester,
+    ) async {
+      final repo = PendingSupportRescue();
+      await startPublicCase(
+        tester,
+        repo,
+        path: '/rescue-cases',
+        large: large,
+        settle: false,
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(repo.catalogCalls, 1);
+      expect(find.text('Descubre casos'), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is Semantics &&
+              (widget.properties.label ?? '').startsWith(
+                'No hay casos para apoyar.',
+              ),
+        ),
+        findsNothing,
+      );
+      repo.pending.complete(DataPage([repo.caseRecord], 1));
+      await tester.pumpAndSettle();
+      expect(find.text('Choco'), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(repo.catalogCalls, 1);
+      expect(tester.takeException(), isNull);
+    });
     testWidgets(
       'support catalog failure preserves home and retries; large=$large',
       (tester) async {
