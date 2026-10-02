@@ -1,3 +1,4 @@
+import 'package:dopmi_mobile/features/communication/match_thread_row.dart';
 import 'package:dopmi_mobile/core/reference_focus_outline.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_activity.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_metrics.dart';
@@ -684,6 +685,8 @@ void main() {
       ('rescuer-messages-large', '/messages'),
       ('rescuer-messages-empty', '/messages'),
       ('rescuer-messages-empty-large', '/messages'),
+      ('match-threads-focus', '/messages'),
+      ('match-threads-focus-large', '/messages'),
       ('match-home', '/messages'),
       ('match-home-large', '/messages'),
       ('adoption-support', '/adoptions'),
@@ -1446,6 +1449,25 @@ void main() {
         await Scrollable.ensureVisible(tester.element(button), alignment: .4);
         await tester.pumpAndSettle();
         expect(tester.getRect(outline), tester.getRect(button).inflate(5));
+      }
+      if (spec.$1.startsWith('match-threads-focus')) {
+        await tester.scrollUntilVisible(find.byKey(const ValueKey('match-thread-list')), 200, scrollable: find.byType(Scrollable).first);
+        await tester.pumpAndSettle();
+        final row = find.byType(MatchThreadRow).first;
+        await tester.ensureVisible(row);
+        await tester.pumpAndSettle();
+        final outline = find.descendant(
+          of: row,
+          matching: find.byKey(const ValueKey('reference-keyboard-outline')),
+        );
+        for (var i = 0; i < 40 && outline.evaluate().isEmpty; i++) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+          await tester.pump();
+        }
+        expect(outline, findsOneWidget);
+        await Scrollable.ensureVisible(tester.element(row), alignment: .4);
+        await tester.pumpAndSettle();
+        expect(tester.getRect(outline), tester.getRect(row).inflate(5));
       }
       if (spec.$1.startsWith('rescuer-profile-row-focus')) {
         final row = find.byType(RescuerProfileActivityRow).at(1);

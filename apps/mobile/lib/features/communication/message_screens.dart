@@ -190,16 +190,38 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
                           color: muted,
                         ),
                       ),
-                    for (var i = 0; i < result.items.length; i++)
-                      MatchThreadRow(
-                        result.items[i],
-                        last: i == result.items.length - 1,
-                        open: () async {
-                          await context.push(
-                            '/messages/${result.items[i]['id']}',
-                          );
-                          refresh();
-                        },
+                    if (result.items.isNotEmpty)
+                      Container(
+                        key: const ValueKey('match-thread-list'),
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: const Color(0xffe6e2dd)),
+                          borderRadius: BorderRadius.circular(22),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x1415110d),
+                              offset: Offset(0, 2),
+                              blurRadius: 12,
+                              spreadRadius: -2,
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            for (var i = 0; i < result.items.length; i++)
+                              MatchThreadRow(
+                                result.items[i],
+                                last: i == result.items.length - 1,
+                                open: () async {
+                                  await context.push(
+                                    '/messages/${result.items[i]['id']}',
+                                  );
+                                  refresh();
+                                },
+                              ),
+                          ],
+                        ),
                       ),
                     if (result.total > 20)
                       PageControls(
