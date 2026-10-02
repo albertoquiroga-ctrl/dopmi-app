@@ -1,6 +1,10 @@
 # Corte de evidencia de paridad — 2/10/2026
 
 Referencia: `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
+Auditoría vigente loop265: [rutas y pendientes concretos](parity-route-audit-2026-10-02.md).
+Guardados, Información básica, Ayuda y Editor público conservan composición
+genérica confirmada en código. Son pendientes de implementación/revisión, no
+un conteo final de pantallas sin aceptación. Próximo bloque: Guardados.
 Corte integral aprobado: `122f64a8b8bf9ce33b8e84e7b19b142ddd1c99dc`,
 run37064192697 #436 completed/success, verificado en loop263.
 Incluye mazo257, teclado258, galería/selector259, regresión260 e Inicio261.

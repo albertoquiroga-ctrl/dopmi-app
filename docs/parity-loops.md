@@ -2083,3 +2083,11 @@ Gate final264: analyze sin incidencias7.0s exit0 tras botones flexibles y compro
 
 Checkpoint264: push exit0 y ref3374c507004cd2de7a693de87658e85cc445c0f8 corroborados, PR6 actualizado. Primera consulta CI usó SHA mal compuesto y devolvió vacío: no acredita ausencia de workflow; corregida a SHA obtenido de git. Resultado del run nuevo se consultará con SHA exacto.
 CI37067524998 #440 pending exact3374c507004cd2de7a693de87658e85cc445c0f8, confirmado tras corrección. Predecesor438 seguía live; no reiniciar ninguno por estado pending.
+
+### Loop265 — 2/10/2026: auditoría de rutas completa y próximos huecos
+
+Inspección de Source App.tsx, router productivo, bloque del capturador y builders actuales. Artefactos parity-route-audit-2026-10-02.md y design-reviews/parity-loop265/route-inventory.json registran55patronesSource/49native/262fixtures29URLs y especificaciones exactas. Extracción inicial global encontró tuples de historial y omitió tuples multilínea: se corrigió al bloque for-spec con regex multiline/trailingcomma; no se publicó258/31como conteo vigente. Diferencias de nombres/redirecciones/estados no equivalen a pantallas faltantes.
+
+Cuatro huecos concretos no cubiertos por captura directa: SavedScreen mantiene Heading/SegmentedButton/ListTile/CircleAvatar en lugar de listas Source; BasicInfo conserva tarjeta/atajos antiguos; Help conserva Material ExpansionTile/FAQ común; editor público mantiene formulario genérico. Auditoría distingue nuevas extensiones reales y rutas con cobertura indirecta, sin afirmar paridad por I/T históricos. Próximo trabajo listo Guardados mascotas/rescatistas, preservando casos/tombstones/privacidad/paginación. Objetivo entero permanece; inventario no acredita aceptación instalada.
+
+Source remoto a3c969c nuevamente comprobado. CI37066563308 #438 exact25583bd completed/cancelled tras envío264; no afirmar aprobado/fallo app ni reiniciar por cancelación. CI37067524998 #440 exact3374c507004cd2de7a693de87658e85cc445c0f8 verificado live in_progress al inicio265. Último gate integral aprobado sigue436/122f, precede resultados263/264. No cambios de producción265, sin Flutter/Vite/tab nuevos; archivos concurrentes preservados. Codemagic/Play/Samsung pendientes.
