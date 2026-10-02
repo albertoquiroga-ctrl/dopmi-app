@@ -73,6 +73,7 @@ class PublicProfileMetrics extends StatelessWidget {
                   label,
                   style: TextStyle(
                     fontSize: 13,
+                    height: 16 / 13,
                     fontWeight: FontWeight.w700,
                     color: foreground,
                   ),
@@ -82,6 +83,7 @@ class PublicProfileMetrics extends StatelessWidget {
                   hint,
                   style: TextStyle(
                     fontSize: 11,
+                    height: 12.8 / 11,
                     fontWeight: FontWeight.w500,
                     color: foreground.withValues(alpha: dark ? .78 : .72),
                   ),
@@ -137,6 +139,7 @@ class PublicProfileMetrics extends StatelessWidget {
               label,
               style: const TextStyle(
                 fontSize: 12,
+                height: 1.2,
                 fontWeight: FontWeight.w700,
                 color: ink,
               ),
@@ -146,6 +149,7 @@ class PublicProfileMetrics extends StatelessWidget {
               hint,
               style: const TextStyle(
                 fontSize: 11,
+                height: 12.8 / 11,
                 fontWeight: FontWeight.w500,
                 color: muted,
               ),
@@ -161,100 +165,103 @@ class PublicProfileMetrics extends StatelessWidget {
               .replaceAll(' MXN', '')
               .replaceFirst(RegExp(r'\.00$'), '')
         : '—';
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final single =
-            MediaQuery.textScalerOf(context).scale(14) > 20 ||
-            constraints.maxWidth < 280;
-        Widget grid(List<Widget> cards) => Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            for (var i = 0; i < cards.length; i += single ? 1 : 2) ...[
-              if (i > 0) const SizedBox(height: 10),
-              if (single)
-                cards[i]
-              else
-                IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Expanded(child: cards[i]),
-                      const SizedBox(width: 10),
-                      Expanded(child: cards[i + 1]),
-                    ],
-                  ),
-                ),
-            ],
-          ],
-        );
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: Column(
+    return DefaultTextStyle.merge(
+      style: const TextStyle(letterSpacing: 0),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final single =
+              MediaQuery.textScalerOf(context).scale(14) > 20 ||
+              constraints.maxWidth < 280;
+          Widget grid(List<Widget> cards) => Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'Numeralia de lo que ${name.trim().split(' ').first} ha impulsado en Dopmi.',
-                style: const TextStyle(
-                  fontSize: 14,
-                  height: 1.45,
-                  color: muted,
-                ),
-              ),
-              const SizedBox(height: 16),
-              grid([
-                hero(
-                  'active_donation_cases',
-                  'Donaciones activas',
-                  'Con meta abierta ahora',
-                  'tab-donate',
-                  false,
-                ),
-                hero(
-                  'active_adoptions',
-                  'Adopciones activas',
-                  'Buscando hogar',
-                  'tab-adoption',
-                  true,
-                ),
-              ]),
-              const SizedBox(height: 16),
-              grid([
-                stat(
-                  count('published_donation_cases'),
-                  'Casos de donación',
-                  'Historial público',
-                  'notif-case',
-                ),
-                stat(
-                  count('published_adoptions'),
-                  'Publicaciones de adopción',
-                  'En todo el historial',
-                  'notif-pet',
-                ),
-                stat(money, 'Recaudado', 'Neto asignado', 'icon-donation-in'),
-                stat(
-                  count('completed_needs'),
-                  'Necesidades cubiertas',
-                  'Metas completadas',
-                  'check-circle',
-                ),
-                stat(
-                  count('helped_pets'),
-                  'Mascotas ayudadas',
-                  'Adopción y donación',
-                  'empty-impact-paw',
-                ),
-                stat(
-                  count('closed_cases'),
-                  'Casos cerrados',
-                  'Historial concluido',
-                  'icon-verified',
-                ),
-              ]),
+              for (var i = 0; i < cards.length; i += single ? 1 : 2) ...[
+                if (i > 0) const SizedBox(height: 10),
+                if (single)
+                  cards[i]
+                else
+                  IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(child: cards[i]),
+                        const SizedBox(width: 10),
+                        Expanded(child: cards[i + 1]),
+                      ],
+                    ),
+                  ),
+              ],
             ],
-          ),
-        );
-      },
+          );
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Numeralia de lo que ${name.trim().split(' ').first} ha impulsado en Dopmi.',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    height: 1.45,
+                    color: muted,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                grid([
+                  hero(
+                    'active_donation_cases',
+                    'Donaciones activas',
+                    'Con meta abierta ahora',
+                    'tab-donate',
+                    false,
+                  ),
+                  hero(
+                    'active_adoptions',
+                    'Adopciones activas',
+                    'Buscando hogar',
+                    'tab-adoption',
+                    true,
+                  ),
+                ]),
+                const SizedBox(height: 16),
+                grid([
+                  stat(
+                    count('published_donation_cases'),
+                    'Casos de donación',
+                    'Historial público',
+                    'notif-case',
+                  ),
+                  stat(
+                    count('published_adoptions'),
+                    'Publicaciones de adopción',
+                    'En todo el historial',
+                    'notif-pet',
+                  ),
+                  stat(money, 'Recaudado', 'Neto asignado', 'icon-donation-in'),
+                  stat(
+                    count('completed_needs'),
+                    'Necesidades cubiertas',
+                    'Metas completadas',
+                    'check-circle',
+                  ),
+                  stat(
+                    count('helped_pets'),
+                    'Mascotas ayudadas',
+                    'Adopción y donación',
+                    'empty-impact-paw',
+                  ),
+                  stat(
+                    count('closed_cases'),
+                    'Casos cerrados',
+                    'Historial concluido',
+                    'icon-verified',
+                  ),
+                ]),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

@@ -538,7 +538,11 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
         );
       }
     } catch (cause) {
-      if (mounted) setState(() => error = communityError(cause));
+      if (mounted) {
+        setState(() => error = communityError(cause));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(error!)));
+      }
     } finally {
       if (mounted) setState(() => busy = false);
     }
@@ -588,6 +592,68 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
                 facebook: profile['facebook_url'] as String? ?? '',
                 open: (url) => copyForSharing(context, url),
               ),
+            ],
+
+            PublicProfileTabs(
+              selected: tab,
+              select: (value) => setState(() => tab = value),
+              report:
+                  busy || ref.read(communityRepositoryProvider).userId == null
+                  ? null
+                  : reportProfile,
+            ),
+            if (tab == 0) ...[
+              if (profile['metrics'] is Map) ...[
+                PublicProfileMetrics(
+                  name: profile['name'] as String,
+                  metrics: Json.from(profile['metrics'] as Map),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Avances publicados',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 12),
+              ],
+              if (activity.isEmpty)
+                const Notice('Todavía no hay avances públicos.')
+              else
+                for (final item in activity)
+                  Card(
+                    child: ListTile(
+                      title: Text(item['body'] as String? ?? 'Avance'),
+                      subtitle: Text(
+                        localDate(item['published_at'] as String? ?? ''),
+                      ),
+                      onTap: () =>
+                          context.push('/rescue-cases/${item['case_id']}'),
+                    ),
+                  ),
+            ] else if (tab == 1) ...[
+              if (adoptions.isEmpty)
+                const Notice('No hay mascotas disponibles en este momento.')
+              else
+                for (final post in adoptions)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: PublicProfileAdoptionCard(
+                      post,
+                      key: ValueKey(post.id),
+                      open: () => context.push('/adoptions/${post.id}'),
+                    ),
+                  ),
+            ] else ...[
+              if (cases.isEmpty)
+                const Notice('No hay casos públicos en este momento.')
+              else
+                for (final item in cases)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: PublicProfileCaseCard(
+                      item['id'] as String,
+                      key: ValueKey(item['id']),
+                    ),
+                  ),
             ],
             const SizedBox(height: 24),
             Notice(
@@ -657,69 +723,6 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
                 icon: const Icon(Icons.chat_bubble_outline),
                 label: const Text('Enviar mensaje'),
               ),
-            const SizedBox(height: 20),
-            PublicProfileTabs(
-              selected: tab,
-              select: (value) => setState(() => tab = value),
-              report:
-                  busy || ref.read(communityRepositoryProvider).userId == null
-                  ? null
-                  : reportProfile,
-            ),
-            const SizedBox(height: 16),
-            if (tab == 0) ...[
-              if (profile['metrics'] is Map) ...[
-                PublicProfileMetrics(
-                  name: profile['name'] as String,
-                  metrics: Json.from(profile['metrics'] as Map),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Avances publicados',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 12),
-              ],
-              if (activity.isEmpty)
-                const Notice('Todavía no hay avances públicos.')
-              else
-                for (final item in activity)
-                  Card(
-                    child: ListTile(
-                      title: Text(item['body'] as String? ?? 'Avance'),
-                      subtitle: Text(
-                        localDate(item['published_at'] as String? ?? ''),
-                      ),
-                      onTap: () =>
-                          context.push('/rescue-cases/${item['case_id']}'),
-                    ),
-                  ),
-            ] else if (tab == 1) ...[
-              if (adoptions.isEmpty)
-                const Notice('No hay mascotas disponibles en este momento.')
-              else
-                for (final post in adoptions)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: PublicProfileAdoptionCard(
-                      post,
-                      key: ValueKey(post.id),
-                      open: () => context.push('/adoptions/${post.id}'),
-                    ),
-                  ),
-            ] else ...[
-              if (cases.isEmpty)
-                const Notice('No hay casos públicos en este momento.')
-              else
-                for (final item in cases)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: PublicProfileCaseCard(
-                      item['id'] as String,
-                      key: ValueKey(item['id']),
-                    ),
-                  ),
-            ],
           ],
         );
       },

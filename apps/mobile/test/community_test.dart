@@ -728,18 +728,26 @@ void main() {
     (tester) async {
       final repo = FakeCommunity();
       await start(tester, repo, '/people/owner');
+      await tester.ensureVisible(find.text('Guardar'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Guardar'));
       await tester.pumpAndSettle();
       expect(find.text('Guardado'), findsOneWidget);
+      await tester.ensureVisible(find.byTooltip('Reportar'));
+      await tester.pumpAndSettle();
       await tester.tap(find.byTooltip('Reportar'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Enviar reporte'));
       await tester.pumpAndSettle();
       expect(repo.reported?['type'], 'rescuer');
       expect(find.text('Recibimos tu reporte para revisión.'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 4));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Casos'));
       await tester.pumpAndSettle();
       expect(find.text('Choco'), findsOneWidget);
+      await tester.ensureVisible(find.text('Enviar mensaje'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Enviar mensaje'));
       await tester.pumpAndSettle();
       expect(find.text('¿Enviar mensaje?'), findsOneWidget);

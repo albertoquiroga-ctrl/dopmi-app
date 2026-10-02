@@ -55,10 +55,18 @@ import '../test/guardian_test.dart' show FakeGuardian, activePlan;
 import 'capture_design_test.dart' show saveCapture;
 
 class PublicProfileCaptureCommunity extends FakeCommunity {
+  PublicProfileCaptureCommunity({this.reference = false});
+  final bool reference;
   @override
   Future<Json?> publicProfile(String id) async => {
     ...?await super.publicProfile(id),
     'verified': true,
+    if (reference) ...{
+      'name': 'María R.',
+      'city': 'Monterrey',
+      'region': 'MX',
+      'bio': 'Rescata perritos de calle desde 2019. Trabaja con una clínica veterinaria aliada en Monterrey.',
+    },
     'instagram_url': 'https://instagram.com/fixture-refugio',
     'facebook_url': 'https://facebook.com/fixture-refugio',
     'metrics': {
@@ -829,6 +837,8 @@ void main() {
       ('rescuer-profile-large', '/profile'),
       ('public-profile', '/people/owner'),
       ('public-profile-large', '/people/owner'),
+      ('public-profile-reference', '/people/owner'),
+      ('public-profile-reference-large', '/people/owner'),
       ('public-profile-metrics', '/people/owner'),
       ('public-profile-metrics-large', '/people/owner'),
       ('public-profile-metrics-stats', '/people/owner'),
@@ -985,7 +995,9 @@ void main() {
                         spec.$1.startsWith('publish-health'))))
           ? DetailCaptureCommunity()
           : spec.$1.startsWith('public-profile')
-          ? PublicProfileCaptureCommunity()
+          ? PublicProfileCaptureCommunity(
+              reference: spec.$1.contains('-reference'),
+            )
           : FakeCommunity();
       if (spec.$1.startsWith('adoption-empty')) community.discoveryItems = [];
       if ((spec.$1.startsWith('publish-photo-grid') ||

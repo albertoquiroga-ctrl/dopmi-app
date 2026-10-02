@@ -143,7 +143,8 @@ class PublicProfileIdentity extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 26,
-                  height: 1.2,
+                  height: 1.25,
+                  letterSpacing: -.52,
                   fontWeight: FontWeight.w700,
                   color: ink,
                 ),
@@ -177,6 +178,7 @@ class PublicProfileIdentity extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 14,
                     height: 1.55,
+                    letterSpacing: 0,
                     color: muted,
                   ),
                 ),
@@ -190,7 +192,8 @@ class PublicProfileIdentity extends StatelessWidget {
           textAlign: TextAlign.center,
           style: const TextStyle(
             fontSize: 14,
-            height: 1.55,
+            height: 1.2,
+            letterSpacing: 0,
             fontWeight: FontWeight.w700,
             color: ink,
           ),
@@ -200,7 +203,12 @@ class PublicProfileIdentity extends StatelessWidget {
           Text(
             bio,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 14, height: 1.5, color: muted),
+            style: const TextStyle(
+              fontSize: 14,
+              height: 1.5,
+              letterSpacing: 0,
+              color: muted,
+            ),
           ),
         ],
       ],
@@ -223,7 +231,12 @@ class PublicProfileSocials extends StatelessWidget {
     children: [
       const Text(
         'Redes sociales',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: ink),
+        style: TextStyle(
+          fontSize: 18,
+          height: 1.3,
+          fontWeight: FontWeight.w700,
+          color: ink,
+        ),
       ),
       const SizedBox(height: 12),
       Wrap(
@@ -241,9 +254,10 @@ class PublicProfileSocials extends StatelessWidget {
                   onPressed: () => open(entry.$2),
                   style: OutlinedButton.styleFrom(
                     minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 18,
-                      vertical: 10,
+                      vertical: 11,
                     ),
                     backgroundColor: Colors.white,
                     foregroundColor: ink,
@@ -251,7 +265,8 @@ class PublicProfileSocials extends StatelessWidget {
                     shape: const StadiumBorder(),
                     textStyle: const TextStyle(
                       fontFamily: 'Inter',
-                      fontSize: 14,
+                      fontSize: 16,
+                      height: 1.175,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -265,7 +280,6 @@ class PublicProfileSocials extends StatelessWidget {
               ),
         ],
       ),
-      const SizedBox(height: 4),
     ],
   );
 }
@@ -295,13 +309,13 @@ class PublicProfileTabs extends StatelessWidget {
         onPressed: () => select(index),
         style: TextButton.styleFrom(
           minimumSize: Size.zero,
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.only(top: 10, bottom: 12),
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           foregroundColor: selected == index ? const Color(0xff6b5000) : muted,
           textStyle: TextStyle(
             fontFamily: 'Inter',
             fontSize: 14,
-            height: 1.55,
+            height: 1.171428571,
             fontWeight: selected == index ? FontWeight.w600 : FontWeight.w400,
           ),
         ),
@@ -329,12 +343,14 @@ class PublicProfileTabs extends StatelessWidget {
               onPressed: report,
               style: TextButton.styleFrom(
                 minimumSize: Size.zero,
-                padding: const EdgeInsets.symmetric(vertical: 10),
+                padding: const EdgeInsets.only(top: 10, bottom: 12),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 foregroundColor: muted,
                 textStyle: const TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 14,
-                  height: 1.55,
+                  height: 1.171428571,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               child: const Text('Reportar'),
@@ -370,8 +386,10 @@ class PublicProfileTabs extends StatelessWidget {
               buttons[1],
               const SizedBox(width: 16),
               buttons[2],
+              const SizedBox(width: 16),
               const Spacer(),
               reportButton,
+              const Spacer(),
             ],
           );
         },

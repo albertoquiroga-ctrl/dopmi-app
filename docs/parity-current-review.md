@@ -120,3 +120,6 @@ CI68c098424a3688e7dc89b36df10897c3a7738239, run37039192375 #418, fue confirmado 
 
 Loop242 añade cuatro estados de numeralia pública normal/grande y vista de estadísticas: 248 estados en29URLs. CI37043766184/420 confirmado completed/success para6f81976; no cubre241–242. Numeralia tiene contrato real aplicado enDEV e integración cliente con pruebas de revocación; falta comparación completa del runtime Source y dispositivo.
 
+
+Loop243 compara el perfil público con el runtime Source /rescuer-profile/luna en IAB377×852 y captura la app con los mismos textos de identidad para comparar composición. Guardado/contacto/conteo realizado se conservan al final; encabezado, identidad, redes y pestañas ya siguen el orden Source. Se corrigieron alturas y espaciados medidos (incluido margen automático bilateral de Reportar). Añade dos estados de identidad de referencia normal/grande:250estados29URLs. No acredita datos del servidor ni dispositivo; los totales fixture difieren del mock y el brillo radial sigue pendiente.
+
