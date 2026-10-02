@@ -51,6 +51,15 @@ void main() {
       await tester.pump();
       expect(ids, hasLength(2));
       expect(ids[0], ids[1]);
+      pending.completeError(StateError('failed again'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField).last, 'Mensaje corregido.');
+      await tester.pumpAndSettle();
+      pending = Completer<dynamic>();
+      tester.widget<FilledButton>(send).onPressed!();
+      await tester.pump();
+      expect(ids, hasLength(3));
+      expect(ids[2], isNot(ids[1]));
       pending.complete({'request_id': ids.last, 'status': 'received'});
       await tester.pumpAndSettle();
       expect(find.text('Recibimos tu mensaje.'), findsOneWidget);
@@ -86,13 +95,13 @@ void main() {
         'Necesito ayuda: México + información.',
       );
       await tester.pumpAndSettle();
-      final next = find.widgetWithText(FilledButton, 'Continuar en correo');
-      final action = tester.widget<FilledButton>(next).onPressed!;
+      final next = find.widgetWithText(OutlinedButton, 'Continuar en correo');
+      final action = tester.widget<OutlinedButton>(next).onPressed!;
       action();
       action();
       await tester.pump();
       expect(calls, hasLength(1));
-      expect(tester.widget<FilledButton>(next).onPressed, isNull);
+      expect(tester.widget<OutlinedButton>(next).onPressed, isNull);
       expect(calls.single.scheme, 'mailto');
       expect(calls.single.path, 'soporte@dopmi.org');
       expect(
@@ -116,7 +125,7 @@ void main() {
       );
       expect(find.textContaining('Tu mensaje sigue aquí'), findsOneWidget);
       pending = Completer<bool>();
-      tester.widget<FilledButton>(next).onPressed!();
+      tester.widget<OutlinedButton>(next).onPressed!();
       pending.complete(true);
       await tester.pumpAndSettle();
       expect(calls, hasLength(2));

@@ -269,12 +269,25 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                   const SizedBox(height: 12),
                 ],
                 FilledButton(
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 12,
+                    ),
+                    minimumSize: const Size(0, 48),
+                    textStyle: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   onPressed: busy || message.text.trim().isEmpty ? null : send,
                   child: const Text('Enviar mensaje'),
                 ),
                 const SizedBox(height: 12),
-                FilledButton(
-                  style: FilledButton.styleFrom(
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: ink,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 18,
                       vertical: 12,

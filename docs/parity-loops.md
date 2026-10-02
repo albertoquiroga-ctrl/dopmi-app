@@ -2417,3 +2417,13 @@ de datos y comparación ejecutada sin repetir migración.
 No Auth/REST autenticada, recepción instalada ni atención operativa acreditada.
 Panel, adjuntos, pruebas remotas completas y paridad final pendientes.
 Producción intacta; no Codemagic nuevo.
+# Loop292 — acción principal y mensaje corregido de soporte
+
+Referencia remota2/10/2026:a3c969cd9103fd46dc5cd886999912526ce75efb.
+Enviar mensaje adapta Inter16/600/padding18x12/mínimo48 del botón principal.
+Alternativa de correo pasa a botón secundario de contorno. Prueba verifica
+reintento idéntico con misma clave y mensaje corregido tras segundo fallo con
+clave nueva, seguido de recibo válido. Diálogo y capturador normal/200%:
+3 pruebas aprobadas4s. No correo real enviado ni nuevo build Codemagic.
+Panel, adjuntos, recorrido remoto autenticado y paridad final siguen pendientes.
+Analyze sin incidencias19s.
