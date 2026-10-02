@@ -8,6 +8,7 @@ import '../adoption/community_ui.dart';
 import '../identity/identity_repository.dart';
 import '../rescue/rescue_repository.dart';
 import 'rescuer_profile_metrics.dart';
+import 'rescuer_profile_repository.dart';
 import 'rescuer_profile_activity.dart';
 import 'rescuer_verification_card.dart';
 
@@ -40,8 +41,22 @@ class RescuerProfileHero extends ConsumerWidget {
           publicFailed = true;
         }
       }
+      String? avatarUrl;
+      var avatarFailed = false;
+      final avatarPath = published?['avatar_path'] as String?;
+      if (avatarPath != null && avatarPath.isNotEmpty) {
+        try {
+          avatarUrl = await ref
+              .read(rescuerProfileRepositoryProvider)
+              .avatarUrl(avatarPath);
+        } catch (_) {
+          avatarFailed = true;
+        }
+      }
       return {
         ...data,
+        'avatar_url': avatarUrl,
+        'avatar_failed': avatarFailed,
         'published_profile': published,
         'published_profile_failed': publicFailed,
       };
@@ -73,6 +88,7 @@ class RescuerProfileHero extends ConsumerWidget {
                       .where((value) => value.isNotEmpty)
                       .join(', '),
             status: data['verification_status'] as String?,
+            avatarUrl: data['avatar_url'] as String?,
             onEdit: () async {
               await context.push('/rescuer/profile/edit');
               if (context.mounted) refresh();
@@ -89,6 +105,12 @@ class RescuerProfileHero extends ConsumerWidget {
             status: data['verification_status'] as String?,
             onPressed: () => context.push('/rescue/new?kind=verification'),
           ),
+          if (data['avatar_failed'] == true) ...[
+            TextButton(
+              onPressed: refresh,
+              child: const Text('Reintentar foto de perfil'),
+            ),
+          ],
           if (data['published_profile_failed'] == true) ...[
             const SizedBox(height: 18),
             const Text('No pudimos consultar tu perfil público.'),
@@ -173,9 +195,11 @@ class RescuerIdentityCard extends StatefulWidget {
     required this.city,
     required this.status,
     required this.onEdit,
+    this.avatarUrl,
   });
   final String name, city;
   final String? status;
+  final String? avatarUrl;
   final VoidCallback onEdit;
   @override
   State<RescuerIdentityCard> createState() => _RescuerIdentityCardState();
@@ -247,6 +271,16 @@ class _RescuerIdentityCardState extends State<RescuerIdentityCard> {
         ),
       ),
     );
+    final initial = Text(
+      widget.name.isEmpty ? '?' : widget.name.characters.first.toUpperCase(),
+      style: const TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 28,
+        fontWeight: FontWeight.w700,
+        color: Color(0xff7841f2),
+        letterSpacing: 0,
+      ),
+    );
     final identity = Row(
       children: [
         Container(
@@ -264,17 +298,20 @@ class _RescuerIdentityCardState extends State<RescuerIdentityCard> {
               ),
             ],
           ),
-          child: Text(
-            widget.name.isEmpty
-                ? '?'
-                : widget.name.characters.first.toUpperCase(),
-            style: const TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 28,
-              fontWeight: FontWeight.w700,
-              color: Color(0xff7841f2),
-              letterSpacing: 0,
-            ),
+          child: ClipOval(
+            child: widget.avatarUrl == null
+                ? initial
+                : Image.network(
+                    widget.avatarUrl!,
+                    key: const ValueKey('rescuer-profile-avatar'),
+                    width: 72,
+                    height: 72,
+                    fit: BoxFit.cover,
+                    excludeFromSemantics: true,
+                    frameBuilder: (context, child, frame, synchronous) =>
+                        frame == null && !synchronous ? initial : child,
+                    errorBuilder: (context, error, stack) => initial,
+                  ),
           ),
         ),
         const SizedBox(width: 14),

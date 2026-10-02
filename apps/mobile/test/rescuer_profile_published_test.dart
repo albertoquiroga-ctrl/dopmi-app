@@ -1,3 +1,4 @@
+import 'package:dopmi_mobile/features/profile/rescuer_profile_repository.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_hero.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
@@ -8,9 +9,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
 import 'rescue_test.dart' show FakeRescue;
+import 'rescuer_profile_test.dart' show FakeRescuerProfile;
 
 class PublishedCommunity extends FakeCommunity {
   bool visible = true, fail = false, wrongOwner = false;
+  String? avatarPath;
   final requested = <String>[];
   @override
   Future<Json?> publicProfile(String id) async {
@@ -18,6 +21,7 @@ class PublishedCommunity extends FakeCommunity {
     if (fail) throw const FormatException('Offline');
     if (!visible) return null;
     return {
+      'avatar_path': avatarPath,
       'id': wrongOwner ? 'other' : id,
       'name': wrongOwner ? 'Nombre ajeno' : 'Nombre público aprobado',
       'city': 'Monterrey',
@@ -29,7 +33,71 @@ class PublishedCommunity extends FakeCommunity {
   }
 }
 
+class PublishedAvatar extends FakeRescuerProfile {
+  bool fail = true;
+  final paths = <String>[];
+  @override
+  Future<String> avatarUrl(String path) async {
+    paths.add(path);
+    if (fail) throw const FormatException('No disponible');
+    return 'https://example.test/approved-avatar';
+  }
+}
+
 void main() {
+  testWidgets('approved avatar retries signing and disappears on withdrawal', (
+    tester,
+  ) async {
+    final community = PublishedCommunity()..avatarPath = 'one/approved.jpg';
+    final avatar = PublishedAvatar();
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          communityRepositoryProvider.overrideWithValue(community),
+          rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+          rescuerProfileRepositoryProvider.overrideWithValue(avatar),
+        ],
+        child: MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: RescuerProfileHero(FakeIdentityRepository().profile),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Nombre público aprobado'), findsOneWidget);
+    expect(find.text('Verificado'), findsOneWidget);
+    expect(find.text('Reintentar foto de perfil'), findsOneWidget);
+    expect(find.byKey(const ValueKey('rescuer-profile-avatar')), findsNothing);
+    expect(avatar.paths, ['one/approved.jpg']);
+    avatar.fail = false;
+    await tester.ensureVisible(find.text('Reintentar foto de perfil'));
+    await tester.tap(find.text('Reintentar foto de perfil'));
+    await tester.pumpAndSettle();
+    final image = tester.widget<Image>(
+      find.byKey(const ValueKey('rescuer-profile-avatar')),
+    );
+    expect(
+      (image.image as NetworkImage).url,
+      'https://example.test/approved-avatar',
+    );
+    expect(image.width, 72);
+    expect(image.height, 72);
+    expect(image.fit, BoxFit.cover);
+    expect(image.errorBuilder, isNotNull);
+    expect(find.text('Reintentar foto de perfil'), findsNothing);
+    expect(avatar.paths, ['one/approved.jpg', 'one/approved.jpg']);
+    community.visible = false;
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('rescuer-profile-avatar')), findsNothing);
+    expect(find.text('A'), findsOneWidget);
+    expect(avatar.paths.length, 2);
+    expect(tester.takeException(), isNull);
+  });
   testWidgets(
     'withdrawal removes public identity and biography without reading private draft fields',
     (tester) async {
