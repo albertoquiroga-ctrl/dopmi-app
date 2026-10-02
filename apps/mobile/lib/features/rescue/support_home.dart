@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/reference_focus_outline.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import 'rescue_repository.dart';
@@ -205,90 +206,102 @@ class SupportCaseRing extends ConsumerWidget {
       button: true,
       label:
           '${record.title}, ${pesos(record.fundedCents)} de ${pesos(record.targetCents)}',
-      child: InkWell(
-        onTap: () => context.push('/rescue-cases/${record.id}'),
-        borderRadius: BorderRadius.circular(16),
-        child: SizedBox(
-          width: math.max(84, MediaQuery.textScalerOf(context).scale(84)),
-          child: Column(
-            children: [
-              SizedBox(
-                width: 72,
-                height: 72,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    CustomPaint(painter: _CaseProgress(ratio)),
-                    Padding(
-                      padding: const EdgeInsets.all(7),
-                      child: ClipOval(
-                        child: photos.isEmpty
-                            ? const ColoredBox(
-                                color: Color(0xffefe8dc),
-                                child: Icon(Icons.pets_outlined),
-                              )
-                            : FutureBuilder<String>(
-                                future: ref
-                                    .read(rescueRepositoryProvider)
-                                    .fileUrl(photos.first as String),
-                                builder: (_, snapshot) => snapshot.hasData
-                                    ? Image.network(
-                                        snapshot.data!,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (_, _, _) =>
-                                            const ColoredBox(
-                                              color: Color(0xffefe8dc),
-                                              child: Icon(Icons.pets_outlined),
-                                            ),
-                                      )
-                                    : const ColoredBox(
-                                        color: Color(0xffefe8dc),
-                                        child: Icon(Icons.pets_outlined),
-                                      ),
-                              ),
+      child: ReferenceFocusOutline(
+        radius: 0,
+        child: InkWell(
+          splashFactory: NoSplash.splashFactory,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          onTap: () => context.push('/rescue-cases/${record.id}'),
+          borderRadius: BorderRadius.circular(16),
+          child: SizedBox(
+            width: math.max(84, MediaQuery.textScalerOf(context).scale(84)),
+            child: Column(
+              children: [
+                SizedBox(
+                  width: 72,
+                  height: 72,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      CustomPaint(painter: _CaseProgress(ratio)),
+                      Padding(
+                        padding: const EdgeInsets.all(7),
+                        child: ClipOval(
+                          child: photos.isEmpty
+                              ? const ColoredBox(
+                                  color: Color(0xffefe8dc),
+                                  child: Icon(Icons.pets_outlined),
+                                )
+                              : FutureBuilder<String>(
+                                  future: ref
+                                      .read(rescueRepositoryProvider)
+                                      .fileUrl(photos.first as String),
+                                  builder: (_, snapshot) => snapshot.hasData
+                                      ? Image.network(
+                                          snapshot.data!,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (_, _, _) =>
+                                              const ColoredBox(
+                                                color: Color(0xffefe8dc),
+                                                child: Icon(
+                                                  Icons.pets_outlined,
+                                                ),
+                                              ),
+                                        )
+                                      : const ColoredBox(
+                                          color: Color(0xffefe8dc),
+                                          child: Icon(Icons.pets_outlined),
+                                        ),
+                                ),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                record.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  height: 1.1,
-                  color: ink,
+                const SizedBox(height: 8),
+                Text(
+                  record.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 13,
+                    letterSpacing: 0,
+                    fontWeight: FontWeight.w700,
+                    height: 1.1,
+                    color: ink,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: _compactPesos(record.fundedCents),
-                      style: const TextStyle(
-                        color: ink,
-                        fontWeight: FontWeight.w700,
+                const SizedBox(height: 8),
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: _compactPesos(record.fundedCents),
+                        style: const TextStyle(
+                          color: ink,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                    ),
-                    TextSpan(text: ' / ${_compactPesos(record.targetCents)}'),
-                  ],
+                      TextSpan(text: ' / ${_compactPesos(record.targetCents)}'),
+                    ],
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 11,
+                    letterSpacing: 0,
+                    fontWeight: FontWeight.w500,
+                    height: 1.1,
+                    color: muted,
+                  ),
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                  height: 1.1,
-                  color: muted,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
