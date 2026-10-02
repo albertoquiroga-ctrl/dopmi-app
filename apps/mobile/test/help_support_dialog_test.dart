@@ -7,67 +7,90 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets(
-    'internal submission preserves draft and stable retry key and acknowledges only a receipt',
-    (tester) async {
-      final ids = <String>[];
-      var pending = Completer<dynamic>();
-      final repo = SupportRepository((name, params) {
-        expect(name, 'dopmi_submit_support_request');
-        ids.add(params['target_request'] as String);
-        expect((params['payload'] as Map)['topic'], 'support_rules');
-        return pending.future;
-      });
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: dopmiTheme(),
-          home: Scaffold(
-            body: HelpSupportDialog(
-              topics: const ['Cómo funcionan los apoyos'],
-              initialTopic: 0,
-              repository: repo,
+  for (final scale in [1.0, 2.0]) {
+    testWidgets(
+      'internal submission preserves draft and stable retry key at text scale $scale',
+      (tester) async {
+        tester.view.physicalSize = scale == 2
+            ? const Size(320, 640)
+            : const Size(390, 844);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        final ids = <String>[];
+        var pending = Completer<dynamic>();
+        final repo = SupportRepository((name, params) {
+          expect(name, 'dopmi_submit_support_request');
+          ids.add(params['target_request'] as String);
+          expect((params['payload'] as Map)['topic'], 'support_rules');
+          return pending.future;
+        });
+        await tester.pumpWidget(
+          MaterialApp(
+            builder: (context, child) => MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: TextScaler.linear(scale)),
+              child: child!,
+            ),
+            theme: dopmiTheme(),
+            home: Scaffold(
+              body: HelpSupportDialog(
+                topics: const ['Cómo funcionan los apoyos'],
+                initialTopic: 0,
+                repository: repo,
+              ),
             ),
           ),
-        ),
-      );
-      await tester.enterText(find.byType(TextField).last, 'Necesito ayuda.');
-      await tester.pumpAndSettle();
-      final send = find.widgetWithText(FilledButton, 'Enviar mensaje');
-      final action = tester.widget<FilledButton>(send).onPressed!;
-      action();
-      action();
-      await tester.pump();
-      expect(ids, hasLength(1));
-      expect(find.text('Recibimos tu mensaje.'), findsNothing);
-      pending.completeError(StateError('failed'));
-      await tester.pumpAndSettle();
-      expect(find.textContaining('Tu mensaje sigue aquí'), findsOneWidget);
-      expect(
-        tester.widget<TextField>(find.byType(TextField).last).controller!.text,
-        'Necesito ayuda.',
-      );
-      pending = Completer<dynamic>();
-      tester.widget<FilledButton>(send).onPressed!();
-      await tester.pump();
-      expect(ids, hasLength(2));
-      expect(ids[0], ids[1]);
-      pending.completeError(StateError('failed again'));
-      await tester.pumpAndSettle();
-      await tester.enterText(find.byType(TextField).last, 'Mensaje corregido.');
-      await tester.pumpAndSettle();
-      pending = Completer<dynamic>();
-      tester.widget<FilledButton>(send).onPressed!();
-      await tester.pump();
-      expect(ids, hasLength(3));
-      expect(ids[2], isNot(ids[1]));
-      pending.complete({'request_id': ids.last, 'status': 'received'});
-      await tester.pumpAndSettle();
-      expect(find.text('Recibimos tu mensaje.'), findsOneWidget);
-      expect(find.text('Enviar mensaje'), findsNothing);
-      expect(find.text('Entendido'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    },
-  );
+        );
+        await tester.enterText(find.byType(TextField).last, 'Necesito ayuda.');
+        await tester.pumpAndSettle();
+        final send = find.widgetWithText(FilledButton, 'Enviar mensaje');
+        await tester.ensureVisible(send);
+        await tester.pumpAndSettle();
+        expect(send.hitTestable(), findsOneWidget);
+        final action = tester.widget<FilledButton>(send).onPressed!;
+        action();
+        action();
+        await tester.pump();
+        expect(ids, hasLength(1));
+        expect(find.bySemanticsLabel('Enviando mensaje'), findsOneWidget);
+        expect(find.text('Recibimos tu mensaje.'), findsNothing);
+        pending.completeError(StateError('failed'));
+        await tester.pumpAndSettle();
+        expect(find.textContaining('Tu mensaje sigue aquí'), findsOneWidget);
+        expect(
+          tester
+              .widget<TextField>(find.byType(TextField).last)
+              .controller!
+              .text,
+          'Necesito ayuda.',
+        );
+        pending = Completer<dynamic>();
+        tester.widget<FilledButton>(send).onPressed!();
+        await tester.pump();
+        expect(ids, hasLength(2));
+        expect(ids[0], ids[1]);
+        pending.completeError(StateError('failed again'));
+        await tester.pumpAndSettle();
+        await tester.enterText(
+          find.byType(TextField).last,
+          'Mensaje corregido.',
+        );
+        await tester.pumpAndSettle();
+        pending = Completer<dynamic>();
+        tester.widget<FilledButton>(send).onPressed!();
+        await tester.pump();
+        expect(ids, hasLength(3));
+        expect(ids[2], isNot(ids[1]));
+        pending.complete({'request_id': ids.last, 'status': 'received'});
+        await tester.pumpAndSettle();
+        expect(find.text('Recibimos tu mensaje.'), findsOneWidget);
+        expect(find.text('Enviar mensaje'), findsNothing);
+        expect(find.text('Entendido'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
   testWidgets(
     'mail handoff preserves accents and draft after failure, prevents duplicates and never claims delivery',
     (tester) async {

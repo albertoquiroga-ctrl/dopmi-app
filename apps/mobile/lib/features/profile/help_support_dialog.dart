@@ -28,6 +28,7 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
   late int topic = widget.initialTopic;
   final caseName = TextEditingController(), message = TextEditingController();
   bool busy = false;
+  bool sending = false;
   String? notice;
   bool received = false;
   String? requestId, requestContent;
@@ -56,6 +57,7 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
     }
     setState(() {
       busy = true;
+      sending = true;
       notice = null;
     });
     try {
@@ -73,7 +75,12 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
         );
       }
     } finally {
-      if (mounted) setState(() => busy = false);
+      if (mounted) {
+        setState(() {
+          busy = false;
+          sending = false;
+        });
+      }
     }
   }
 
@@ -167,148 +174,169 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
         ),
       ),
     ),
-    child: Dialog(
-      backgroundColor: Colors.white,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 361),
-        child: SingleChildScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: const EdgeInsets.fromLTRB(20, 28, 20, 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      received
-                          ? 'Recibimos tu mensaje.'
-                          : 'Contactar a soporte',
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                        color: ink,
-                        height: 1.2,
+    child: PopScope(
+      canPop: !busy,
+      child: Dialog(
+        backgroundColor: Colors.white,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 361),
+          child: SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            padding: const EdgeInsets.fromLTRB(20, 28, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        received
+                            ? 'Recibimos tu mensaje.'
+                            : 'Contactar a soporte',
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          color: ink,
+                          height: 1.2,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: 'Cerrar',
+                      onPressed: busy
+                          ? null
+                          : () => Navigator.of(context).pop(),
+                      icon: const Icon(Icons.close, size: 20),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                if (received) ...[
+                  const Text(
+                    'Tu solicitud quedó registrada para el equipo de soporte. Podemos responder al correo de tu cuenta.',
+                  ),
+                  const SizedBox(height: 12),
+                  FilledButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Entendido'),
+                  ),
+                ] else ...[
+                  field(
+                    'Tema',
+                    DropdownButtonFormField<int>(
+                      initialValue: topic,
+                      itemHeight: null,
+                      isExpanded: true,
+                      items: [
+                        for (var i = 0; i < widget.topics.length; i++)
+                          DropdownMenuItem(
+                            value: i,
+                            child: Text(widget.topics[i], softWrap: true),
+                          ),
+                      ],
+                      selectedItemBuilder: (_) => widget.topics
+                          .map((item) => Text(item, softWrap: true))
+                          .toList(),
+                      onChanged: busy
+                          ? null
+                          : (value) => setState(() => topic = value ?? topic),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  field(
+                    'Caso relacionado (opcional)',
+                    TextField(
+                      controller: caseName,
+                      enabled: !busy,
+                      decoration: const InputDecoration(
+                        hintText: 'Ej. Rocky, Luna…',
                       ),
                     ),
                   ),
-                  IconButton(
-                    tooltip: 'Cerrar',
-                    onPressed: busy ? null : () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.close, size: 20),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              if (received) ...[
-                const Text(
-                  'Tu solicitud quedó registrada para el equipo de soporte. Podemos responder al correo de tu cuenta.',
-                ),
-                const SizedBox(height: 12),
-                FilledButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Entendido'),
-                ),
-              ] else ...[
-                field(
-                  'Tema',
-                  DropdownButtonFormField<int>(
-                    initialValue: topic,
-                    itemHeight: null,
-                    isExpanded: true,
-                    items: [
-                      for (var i = 0; i < widget.topics.length; i++)
-                        DropdownMenuItem(
-                          value: i,
-                          child: Text(widget.topics[i], softWrap: true),
-                        ),
-                    ],
-                    selectedItemBuilder: (_) => widget.topics
-                        .map((item) => Text(item, softWrap: true))
-                        .toList(),
-                    onChanged: busy
-                        ? null
-                        : (value) => setState(() => topic = value ?? topic),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                field(
-                  'Caso relacionado (opcional)',
-                  TextField(
-                    controller: caseName,
-                    enabled: !busy,
-                    decoration: const InputDecoration(
-                      hintText: 'Ej. Rocky, Luna…',
+                  const SizedBox(height: 12),
+                  field(
+                    'Mensaje',
+                    TextField(
+                      controller: message,
+                      enabled: !busy,
+                      minLines: 4,
+                      maxLines: null,
+                      onChanged: (_) => setState(() {}),
+                      decoration: const InputDecoration(
+                        hintText: 'Cuéntanos qué necesitas',
+                      ),
                     ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                field(
-                  'Mensaje',
-                  TextField(
-                    controller: message,
-                    enabled: !busy,
-                    minLines: 4,
-                    maxLines: null,
-                    onChanged: (_) => setState(() {}),
-                    decoration: const InputDecoration(
-                      hintText: 'Cuéntanos qué necesitas',
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                if (notice != null) ...[
-                  Text(
-                    notice!,
-                    style: const TextStyle(fontSize: 14, color: muted),
                   ),
                   const SizedBox(height: 12),
+                  if (notice != null) ...[
+                    Semantics(
+                      liveRegion: true,
+                      child: Text(
+                        notice!,
+                        style: const TextStyle(fontSize: 14, color: muted),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                  FilledButton(
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 12,
+                      ),
+                      minimumSize: const Size(0, 48),
+                      textStyle: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    onPressed: busy || message.text.trim().isEmpty
+                        ? null
+                        : send,
+                    child: busy
+                        ? Semantics(
+                            label: sending
+                                ? 'Enviando mensaje'
+                                : 'Abriendo correo',
+                            child: const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          )
+                        : const Text('Enviar mensaje'),
+                  ),
+                  const SizedBox(height: 12),
+                  OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: ink,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 12,
+                      ),
+                      minimumSize: const Size(0, 48),
+                      textStyle: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    onPressed: busy || message.text.trim().isEmpty
+                        ? null
+                        : continueInMail,
+                    child: const Text(
+                      'Continuar en correo',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ],
-                FilledButton(
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 18,
-                      vertical: 12,
-                    ),
-                    minimumSize: const Size(0, 48),
-                    textStyle: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  onPressed: busy || message.text.trim().isEmpty ? null : send,
-                  child: const Text('Enviar mensaje'),
-                ),
-                const SizedBox(height: 12),
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: ink,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 18,
-                      vertical: 12,
-                    ),
-                    minimumSize: const Size(0, 48),
-                    textStyle: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  onPressed: busy || message.text.trim().isEmpty
-                      ? null
-                      : continueInMail,
-                  child: const Text(
-                    'Continuar en correo',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
               ],
-            ],
+            ),
           ),
         ),
       ),

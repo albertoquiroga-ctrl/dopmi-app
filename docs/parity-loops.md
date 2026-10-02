@@ -2427,3 +2427,14 @@ clave nueva, seguido de recibo válido. Diálogo y capturador normal/200%:
 3 pruebas aprobadas4s. No correo real enviado ni nuevo build Codemagic.
 Panel, adjuntos, recorrido remoto autenticado y paridad final siguen pendientes.
 Analyze sin incidencias19s.
+# Loop293 — estados de soporte accesibles a200%
+
+Referencia remota2/10/2026:a3c969cd9103fd46dc5cd886999912526ce75efb.
+Indicador de envío distingue Enviando mensaje/Abriendo correo, aviso de error
+liveRegion y PopScope evita cierre durante operación pendiente. Tres pruebas
+de diálogo aprobadas2s incluyen secuencia enviar/fallo/reintento/mensaje
+corregido/recibo a390x844 normal y320x640/texto200%; botón inicial hitTestable,
+anuncio de envío presente y sin excepción de layout. No acredita gestos del
+teléfono, recepción remota autenticada ni cierre global. Panel/adjuntos siguen
+pendientes; sin email real ni nuevo Codemagic.
+Analyze detectó bloque finally sin llaves; corregido y repetido limpio9.8s.
