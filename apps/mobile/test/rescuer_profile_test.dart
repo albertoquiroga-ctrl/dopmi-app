@@ -8,6 +8,7 @@ import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import 'fake_identity_repository.dart';
 import 'community_test.dart' show FakeCommunity;
@@ -125,5 +126,19 @@ void main() {
     expect(repo.value['status'], 'submitted');
     expect(find.textContaining('Estado: En revisión'), findsOneWidget);
     expect(find.text('Retirar de revisión'), findsOneWidget);
+    final cancel = find.widgetWithText(OutlinedButton, 'Cancelar');
+    await tester.scrollUntilVisible(
+      cancel,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.ensureVisible(cancel);
+    await tester.pumpAndSettle();
+    final router = GoRouter.of(tester.element(cancel));
+    await tester.tap(cancel);
+    await tester.pumpAndSettle();
+    expect(router.routeInformationProvider.value.uri.path, '/rescuer/profile');
+    expect(repo.saves, 1);
+    expect(repo.value['status'], 'submitted');
   });
 }

@@ -2225,3 +2225,12 @@ Referencia reconsultada a3c969cd9103fd46dc5cd886999912526ce75efb. Capturador nor
 
 CI448/37073584291 exacto01ad5661a55803e84a6c89249a489c2f222c701c confirmado in_progress; no gate integral ni nuevoPlay acreditado. Cambios locales ajenos preservados. Soporte directo/adjuntos, foto/apellidos/cambio de correo de Información básica y contraste completo pendientes. No schema/flags/pagos modificados.
 Gate final loop278: flutter analyze limpio7.9s, formato/diffcheck aprobados; test final mantiene corrección y revisión reales con repo de prueba, no acredita flujo remoto.
+
+## Loop279 — 2026-10-02 — encabezado y cancelar del editor público
+
+Loop278 fue progreso de campos/espacios. Editor usa Scaffold dedicado en vez de ProfileFrame genérico: header18/w700/1.2/centro, SVG atrás, altura67normal/adaptable200%, líneae6e2dd, body16/20/32. Regreso y Cancelar navegan explícitamente /rescuer/profile como Source; botones reales de guardar/revisión/retiro permanecen. Cancelar bloqueado busy, no retira solicitud ni borra draft guardado. Sin schema/Auth/PII/pagos.
+
+Referencia reconsultada a3c969cd9103fd46dc5cd886999912526ce75efb. Perfil+capturador2 aprobadas4s con ambas capturas. Prueba ampliada de cancelar conserva saves1/statussubmitted y ruta real /rescuer/profile:1 aprobada4s. Fallo inicial de lectura route.state fue consulta del router desde container en test, no defecto productivo demostrado; corregido para consultar GoRouter.of del control real y routeInformationProvider. No afirmar navegación productiva vacía por ese fallo. Destino explícito se conserva por fidelidad a Source. Corte review actualizado y prosa rota corregida.
+
+Matiz284estados34URLs sin nuevos estados; cámara/foco/tamaños exactos/teclado/contraste completo e instalación aún pendientes. Soporte envío interno/adjuntos y datos de Información básica pendientes. CI448/37073584291 exacto01ad566 confirmado in_progress al inicio; no gate completo. BuildPlay286 conserva2c36339 sin cambios posteriores.
+Gate final loop279: flutter analyze sin problemas23.8s, formato/diffcheck aprobados. Prueba cancelar usa navegación real del widget y no envía acciones remotas.

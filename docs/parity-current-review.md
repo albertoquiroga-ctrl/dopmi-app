@@ -7,13 +7,13 @@ Loop267 añade rescatistas con métricas públicas y prueba de retiro concurrent
 Loop268 verifica paginación larga a 320px/texto200%; falta integración instalada.
 Source no permite sembrar
 rescatistas guardados por UI: contraste poblado usa componente/CSS, no browser.
-Información básica, Ayuda y Editor público siguen pendientes concretos. Loop273
-implementa temas/selección/FAQ de Ayuda; soporte real equivalente y contraste
-completo siguen pendientes. No es
-Loop274 añade formulario de contacto para preparar correo con tema/caso/mensaje;
-acuse/envío interno y adjuntos continúan pendientes. Endpoint antiguo retirado
-support-message-send no se reutiliza.
-un conteo final de pantallas sin aceptación. Próximo bloque: Información básica.
+Información básica, Ayuda y Editor público siguen pendientes concretos.
+Loops273–276 implementan temas/FAQ/bloques y formulario para preparar correo;
+envío interno, acuse y adjuntos continúan pendientes. El endpoint legado
+support-message-send está retirado y no se reutiliza.
+Loops277–279 ajustan tarjeta, campos, encabezado y cancelar del editor público;
+contraste completo, cámara/gestos y aceptación instalada siguen pendientes.
+Este corte no es un conteo final de pantallas aceptadas.
 Loops270/271 ajustan encabezado y formulario real de Información básica;
 foto, apellidos separados, cambio de correo y medición exacta siguen pendientes.
 Codemagic intermedio autorizado por el titular: build `6ac02cc4554e6c4660850bf2`,
