@@ -2840,3 +2840,28 @@ ni hover. Browserviewport restaurado/tabcerrada/Vite terminado explícitamente.
 Final widgets+capturador23/23 aprobadas9s; analyze limpio7.3s. Capturas291/34 no
 son aceptación global. Persistencia Auth/REST/galeríaAndroid, reabrir datos y
 fuentesruntime comparables pendientes. No Codemagic, objetivo activo.
+
+# Loop318 — aceptación Auth/REST/Storage privada en DEV
+
+Referencia remota a3c969cd9103fd46dc5cd886999912526ce75efb sin cambio. Acceso
+publicanon disponible en .tools/demo-seed/key.txt; credenciales antiguas ausentes.
+Preparadas dos fixtures nuevas @example.invalid por MCP (confirmación/consentimiento
+sintéticos, no envío de correo ni aceptación de flujo signup). Credenciales sólo
+TempfueraGit, no impresas ni comprometidas. Guard/hash actor y migraciónfoto313
+preflight verificados. No cuentas personales ni PROD.
+
+Nuevo tools/verification/private-account-photo-acceptance.mjs exige flag explícito,
+URLDEV exacta, dosUUIDv4/emailsfixture y clavepublicanon/publishable. Ejecución real
+salió0 en6.80s: loginpassword enAuth ambas, save/getnombre-apellido, getterfotonull,
+uploadJPEG dueño, savefoto dosveces/mismapath y reread, getterdelotro null,
+firmadueñoHTTP200/content-typeJPEG, firmaotro+anon rechazadas, RPCsavefotoajena
+rechazada. No UI/galería, decodeimagen ni correochange confirmados por ese run.
+
+Cleanup: clearpath/deleteStorage por tokenpropio, getter/firmaausencia comprobados;
+logoutglobal ambos. Authfixtures borradas por IDs+emails exactos. Primer readback
+reveló perfiles2/nombre1 retenidos; limpiados explícitamente sólo IDs sintéticos
+sinAuth, con nombresQA conocidos. Final SQL cuentas/perfiles/nombres/fotos/objetos/
+identidades/sesiones todos0. Archivo credencialesTemp eliminado, journal sinsecrets
+conservado fueraGit. node --check aprobado. Sin schema/grants nuevos, dinero real
+ni Codemagic. Objetivo global sigue activo; próxima regresión completa y resto
+visual/gestos, confirmacióncorreo y dispositivo permanecen sin aceptación.
