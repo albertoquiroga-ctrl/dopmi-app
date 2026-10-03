@@ -1,4 +1,10 @@
-# Corte vigente — loop518, 3/10/2026
+# Corte vigente — loop523, 3/10/2026
+
+Fuente bb3cd91, producción c92bc24: dirigido17353exit0,8/8,6s con2capturas; Socialchildren320/200 completo dentroScrollable/readonly/datosconservados, PNGinspeccionado. Full56544/analyzer48063 en curso sobre mismo código;230Dart/cuatroSVG ycapturador raíz-scratch iguales antes. Manifest523. Full609517 anterior519–522 no gate actual completo.
+
+Inventario403522 (dosSocialextras),401capturadorcompleto511 anterior últimas correcciones, másdirigidas. No403aceptaciones ni403pasadafull. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Android/global/StripeSDK pendientes. Sinpush/Codemagic hastaobjetivocompleto.
+
+# Corte anterior — loop518, 3/10/2026
 
 Fuente4571644: full65835exit0,609/609,3m45s; analyzer45360exit0 limpio195.8s.230Dart/cuatroSVG iguales raíz/scratch y hashes sin cambios antes/después. Manifest517. Incluye publicación513–517 y prueba adicional de picker200%; supersede608509.
 

@@ -2530,3 +2530,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/AppCSSinspeccionado/
 ### Loop522 — Social capturado/alineación de casillas, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/CSSgap8check16/runtime519previo. c92bc24 checkboxtranslate-4 conserva24leading/16marca/8gap y ciclos/readonly. CapturadorSocialnormal/largeañadidos, inventario522403unique/55Source/51native/38patterns/44paths, no403capturasfull.11462exit0,8/8,6s con4fixtures;96354analyzerexit0clean. NormalSocial3filascompletasinspeccionadas;largeprimerafila+segundaparcial,tercerafuera noaceptada. README/PNG/inventario522. Full609517anterior519–522,401capturer511anteriordosfixtures. Sinbackend/SQL/push/Codemagic/físico/global.
+
+### Loop523 — Socialchildren200% alcanzable y gate integrado en curso, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado sinruntime nuevo. bb3cd91 test/capturer,productionc92bc24unchanged:320/200ensureVisibletercerafila rectlabeldentroScrollable/readonly/touchesnoconservedata,backscroll.17353exit0,8/8,6s con2fixtures; PNGlargeúltimafilacompletainspeccionado,complementa522. Inventario403522unchanged.230Dart/cuatroSVG/capturerraízscratchigualesantes. Full56544/analyzer48063encurso,noresultadoterminalatribuido. README/hash/PNG523/currentreviewactualizados;full609517pre519–522. Sinbackend/SQL/push/Codemagic/físico/global/StripeSDK.
