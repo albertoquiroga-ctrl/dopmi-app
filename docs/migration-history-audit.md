@@ -377,3 +377,6 @@ Overlays conservan bundles remotos: payment-worker26→27/19files, stripe-webhoo
 
 
 Loop433: local20261003110000_canceled_guardian_saved_methods no desplegada. Helperprivada + patchexacto2guards en dopmi_saved_card_method_server(text,jsonb); PGlite580 aprobado. Antesremote comparar definiciónvigente/anchors/grants y latesthistory. No timestampremoto, no replay/rename/repair/dbpush.
+
+
+Loop435 supersede local-only433: 20261003110000_canceled_guardian_saved_methods aplicadaDEV ohqxranynackjignryep porMCP como20261003130559/canceled_guardian_saved_methods. Preflight latest092721/native_saved_wallet, helperausente/2anchors; postflight2guards/privilegiospreservados. Transactionfixture canceledprepare/reactivationwriteblocked aprobada yrollback0usuarios/wallets/plans/jobs. No replay/rename/repair/dbpush. Conciliación collection in-flight sigueauditoría pendiente; no Stripe/deviceacceptance atribuida.

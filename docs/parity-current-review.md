@@ -591,3 +591,12 @@ Baseaba1230; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Guard
 Dos recorridosWidget completos adicionales canceled(default/remove) ejercitan autorización, lostresponse, persistkey+target, mismo retry, receipt+cards frescas ycleanup sin cambiar estado canceled. Testcancel_requested comprueba ausencia de botones ywrites. Guardian suite58/58 pasa10s78164/e38cae en scratch sincronizado (dosarchivos propios); analyzer65845/c5a7a9 sinissues48.4s. Format/diffchecklimpios; logs externos Temp/dopmi-loop434-mobile.log y dopmi-loop434-analyze.log. No fullmóvilnuevo/captura/sourcepixel/device atribuidos.
 
 Código local; migración433/deploycheckout/redisplay y Stripe auténtico siguen pendientes. No changeschema remoto, no dinero real/CM/push. Siguiente preflightRPCremoto y overlayconpostflight, validar estadoscancelados en backendreal y métodos guardados conStripe test trasreautenticación. Scopeglobalvisual/motion/native sigueabierto.
+
+
+### Loop435 — cancelación y métodos desplegados en DEV, 3/10/2026
+
+Base14d8350; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Preflight MCP DEV ohqxranynackjignryep: latest20261003092721/native_saved_wallet, helperausente, definiciónsaved_card_method_server contiene2anchors exactos, servicegranttrue/browserfalse. Aplicada una vez migraciónlocal20261003110000 como remota20261003130559/canceled_guardian_saved_methods, success verificado. No replay/repair/rename/dbpush. Postflight2guardsnuevos, helperpresente, server service=true/anon=false/auth=false yhelperbrowser=false. Se conserva definiciónexistente incluyendo textosprevios, no otrosmódulos/esquema/flags.
+
+Prueba PostgreSQL remota enBEGIN/DO/ROLLBACK conUUIDsintético: Authfixtureconfirmado/wallet/customer/registrycanceled; helperpermite, RPCprepare+claim+snapshot funcionan. Cambioactivoanteswrite provoca null ymutation_requested_at sigue null, validado mediante excepcionessiincorrecto. Rollback completo; consultaindependiente confirma0usuarios/0wallets/0plans/0jobsloop435. No tokenAuthcliente/StripeAPI/recorridoinstalado acreditado.
+
+Revisión plan_view identifica payment_in_flight basado en collectionpay_requested_at/status no paid/skipped: siguiente loop debe comprobar si elegibilidadSQL debe incorporar también esa conciliación antespermitirmétodos trascancelación; no declarar todosestadoscerrados. Checkout429/redisplay431 siguenlocales, StripeMCP reautenticación pendiente. GoalglobalvisualgestosSDKdevice yCodemagicfinal pendientes; noCM/push/dinero real.
