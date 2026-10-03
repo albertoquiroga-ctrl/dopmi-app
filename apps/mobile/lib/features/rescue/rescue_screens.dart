@@ -5,6 +5,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../core/content_links.dart';
+import '../../core/css_linear_gradient.dart';
 
 import 'package:image_picker/image_picker.dart' show ImagePicker, ImageSource;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -622,9 +623,8 @@ class RescuerFundingSummary extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(28),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        gradient: const CssLinearGradient(
+          degrees: 146,
           colors: [Color(0xff7c3aed), Color(0xff6d28d9)],
         ),
         boxShadow: const [
@@ -643,14 +643,15 @@ class RescuerFundingSummary extends StatelessWidget {
             spacing: 12,
             runSpacing: 8,
             children: [
-              const Wrap(
+              Wrap(
                 spacing: 8,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  Icon(
-                    Icons.account_balance_wallet_outlined,
-                    size: 20,
-                    color: Colors.white,
+                  SvgPicture.asset(
+                    'assets/profile/icon-wallet.svg',
+                    width: 20,
+                    height: 20,
+                    excludeFromSemantics: true,
                   ),
                   Text(
                     'Resumen comprobado',
@@ -669,7 +670,7 @@ class RescuerFundingSummary extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Text(
-                  '$activeCases casos activos',
+                  '$activeCases ${activeCases == 1 ? 'caso activo' : 'casos activos'}',
                   style: const TextStyle(fontSize: 12, color: Colors.white),
                 ),
               ),

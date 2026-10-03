@@ -772,6 +772,7 @@ void main() {
         'icon-clock',
         'icon-heart',
         'icon-bell',
+        'icon-wallet',
         'icon-doc',
         'icon-help',
         'icon-logout',
