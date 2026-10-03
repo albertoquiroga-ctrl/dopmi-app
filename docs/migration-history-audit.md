@@ -380,3 +380,6 @@ Loop433: local20261003110000_canceled_guardian_saved_methods no desplegada. Help
 
 
 Loop435 supersede local-only433: 20261003110000_canceled_guardian_saved_methods aplicadaDEV ohqxranynackjignryep porMCP como20261003130559/canceled_guardian_saved_methods. Preflight latest092721/native_saved_wallet, helperausente/2anchors; postflight2guards/privilegiospreservados. Transactionfixture canceledprepare/reactivationwriteblocked aprobada yrollback0usuarios/wallets/plans/jobs. No replay/rename/repair/dbpush. Conciliación collection in-flight sigueauditoría pendiente; no Stripe/deviceacceptance atribuida.
+
+
+Loop436 local20261003131000_canceled_wallet_collection_guard no desplegada: reemplazahelper433 con guardcollectioninflight y nuevaactivationhelper/parcheexacto2guards. PGlite587 aprobado; preflight remotos latest130559/helperprevia/2activationanchors antes apply. No timestampremotoasignado ni replay/rename/repair.

@@ -4190,6 +4190,42 @@ test('canceled Guardian eligibility helper remains private to server authorizati
   await rejected(()=>db.query('select private.dopmi_guardian_blocks_saved_method($1)',[donor]),/permission denied/);
  }
 });
+
+async function canceledCollectionWallet() {
+ const f=await collectionFixture();await f.prepare();
+ await db.query("update private.dopmi_guardian_subscriptions set status='canceled',canceled_at=now() where donor_id=$1",[donor]);
+ await db.exec("update private.dopmi_guardian_schedule_jobs set status='canceled',lease_until=null");
+ await db.query("insert into private.dopmi_saved_card_customers(owner_id,stripe_customer_id) values($1,'cus_initial')",[donor]);
+ return f;
+}
+const canceledMethodInput=()=>({owner_id:donor,key:crypto.randomUUID(),consent:true,consent_version:'saved-card-methods-2026-10-03',action:'default',selected_method_id:'pm_target'});
+
+for(const status of ['pending','attention','paid','skipped'])test(`canceled wallet respects requested collection ${status}`,async()=>{
+ const f=await canceledCollectionWallet();
+ await db.query('update private.dopmi_guardian_collection_jobs set pay_requested_at=now(),status=$1 where invoice_id=$2',[status,f.invoice.id]);
+ const before=(await db.query('select to_jsonb(j) value from private.dopmi_guardian_collection_jobs j')).rows[0].value;
+ if(['pending','attention'].includes(status))await rejected(()=>independentMethod('prepare',canceledMethodInput()),/Consulta tu medio/);
+ else assert.equal((await independentMethod('prepare',canceledMethodInput())).status,'pending');
+ assert.deepEqual((await db.query('select to_jsonb(j) value from private.dopmi_guardian_collection_jobs j')).rows[0].value,before);
+});
+
+test('collection requested after wallet snapshot blocks the independent provider write',async()=>{
+ const f=await canceledCollectionWallet();
+ const job=await independentMethod('prepare',canceledMethodInput());
+ const claim=await independentMethod('claim',{id:job.id});
+ await independentMethod('snapshot',{id:job.id,lease:claim.lease,default_method_id:'pm_previous'});
+ await db.query('update private.dopmi_guardian_collection_jobs set pay_requested_at=now() where invoice_id=$1',[f.invoice.id]);
+ assert.equal(await independentMethod('write_mutation',{id:job.id,lease:claim.lease}),null);
+ assert.equal((await independentMethod('get',{id:job.id})).mutation_requested_at,null);
+});
+
+for(const scenario of ['pending activation','unrelated settlement'])test(`canceled wallet cannot exempt ${scenario} as historical activation`,async()=>{
+ await canceledCollectionWallet();
+ if(scenario==='pending activation')await db.exec("update private.dopmi_guardian_activations set status='pending'");
+ else await db.exec("update private.dopmi_guardian_subscriptions set initial_payment_intent_id='pi_unrelated'");
+ await rejected(()=>independentMethod('prepare',canceledMethodInput()),/Consulta tu medio/);
+ assert.equal((await db.query('select count(*)::int n from private.dopmi_saved_card_method_jobs')).rows[0].n,0);
+});
 test('independent method SQL reserves immutable customer/target and denies browser writes',async()=>{
  const j=await independentMethodFixture();
  const input={owner_id:donor,key,consent:true,consent_version:'saved-card-methods-2026-10-03',action:'default',selected_method_id:'pm_independent'};

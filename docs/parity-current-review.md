@@ -600,3 +600,12 @@ Base14d8350; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Prefl
 Prueba PostgreSQL remota enBEGIN/DO/ROLLBACK conUUIDsintético: Authfixtureconfirmado/wallet/customer/registrycanceled; helperpermite, RPCprepare+claim+snapshot funcionan. Cambioactivoanteswrite provoca null ymutation_requested_at sigue null, validado mediante excepcionessiincorrecto. Rollback completo; consultaindependiente confirma0usuarios/0wallets/0plans/0jobsloop435. No tokenAuthcliente/StripeAPI/recorridoinstalado acreditado.
 
 Revisión plan_view identifica payment_in_flight basado en collectionpay_requested_at/status no paid/skipped: siguiente loop debe comprobar si elegibilidadSQL debe incorporar también esa conciliación antespermitirmétodos trascancelación; no declarar todosestadoscerrados. Checkout429/redisplay431 siguenlocales, StripeMCP reautenticación pendiente. GoalglobalvisualgestosSDKdevice yCodemagicfinal pendientes; noCM/push/dinero real.
+
+
+### Loop436 — cobro en conciliación y activación histórica, 3/10/2026
+
+Basebf50857; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Migración local20261003131000_canceled_wallet_collection_guard extiende helper433 para collectionpay_requested_at/statusno paid/skipped; pending/attention siguen bloqueo incluso registrycanceled. Nueva helperprivada activation distingue pendiente/attention de settledhistórico: excepción sólo con schedulecanceled yregistrycanceled+fecha, mismoowner/cycle, settlement payment_intent+charge coincidentes con registro. Parche exacto2activationguards enRPCprepare/write, no se modifica status/evidencia del primerpago.
+
+Primer full585:582pasan/3fallan porque fixture completa mantiene activationsettled histórico, reveló bloqueo real que fixture433 sinprimeraactivación no cubría. No falsepass: corregida regla SQL con vínculo comprobado. Full585posterior pasa24.438s8291/64db77; dosnegativos añadidos, final587/58724.401s25135/2bc9c1, log externo Temp/dopmi-loop436-backend-final2.log. Siete pruebas nuevas: pending/attention rechazan prepare; paid/skipped permiten sin modificarcollectionrecord; pay_requested tardío bloquea write sinmutationtimestamp; activationpending/comprobanteajeno no se eximen ni creanjob. diffcheck limpio.
+
+Sólo local; migración no aplicadaDEV aún. Próximo compararhelper/activationanchors remotos y aplicarúnicavezconpostflight, más UI payment_in_flight. No afirmar flujo completo porSQL ni fullmobile; Stripe reauth/checkoutdeploy/redisplay/SDK/device yparidadglobal pendientes. SinCM/push/dinero real.
