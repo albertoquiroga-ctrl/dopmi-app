@@ -129,3 +129,12 @@ Previo377 progreso3ffc721 (backend526/52626s/Deno3entrypoints6.39s). Referencia 
 Overlay mínimo yordenworker→webhook→client: worker25→26 runtime reemplazado+saved-card-method nuevo/16otrosconservados/18archivos; webhook25→26 mismo/15otrosconservados/17; client18→19 runtime+handler+indexreemplazados/módulonuevo/13otrosconservados/17. TodosACTIVE verify_jwtfalse previo conservado, autenticacióngetUser/worker-secret/firmadewebhook sigue enentrypointspreservados. GetEdge posterior18/17/17 coincideoverlay0mismatches/0extras. No publicarotroscambiosajenos.
 
 Smokeampliado dosRPC nuevos23/23real7.84s41ac01/exit0: cliente401/worker401/webhook400sinfirma,return200 yserver/stateanónimos401/42501 explícito. No RPCmissing. No Authpositivo/Stripewrite/reconcilepositivo/device acreditados. No flags/cuentas/dinero/CM/push/goalcomplete. Siguecableadoclientepropietario/consent/key/retry/listaconfirmada/accionesnonsuscrito/capturas/fixtureAuthStripe y restoobjetivoglobal.
+
+
+### Loop379 — repositorio móvil de acciones sin Guardián, 3/10/2026
+
+Previo378 progresoaa9531d; servidorDEV RPC75406/client19/worker26/webhook26. Fuentea3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. GuardianRepository.savedCardMethodState consulta ownerRPC sin identificadorbrowser; receipt exigeUUID/actiondefault-remove/statuscompatible/pmopaque y conserva sólo key/action/status/card_id. submit saved_card_method usa accionesendpointnuevas/key/target/consentversion exacta, sinrevision/owner/customer; response200 ykey/action/cardmatching requeridos, no éxitooptimista. RutasGuardianprevias sincambios.
+
+Trespruebas nuevas HTTPdefault/remove y validaciónreceipt: AuthBearer, bodyallowlist, misma keyreplay, camposprivados descartados y RPCowner sinparams (JSONnull). Primer9test7pass/2fail por MockResponse sinrequestrequiredPostgrest, corregido; luego2expectations{}erróneas para RPCsinparams corregidas a null. Gatefinal59/59(9HTTP+50Guardian)21s96565/exit0, analyze limpio40.3s47892/exit0; scratch dosarchivos propios sincronizados. No fixtureAuthrealnuevo/captura/device/globalfullnuevo.
+
+Esta capa NO habilita todavía botonesnonsuscrito: siguiente loopstateowner/keypersistida/consent/confirmaciones/retry y lista fresh antesfeedback/pérdida de fila. Billeteras, apoyo puntual con tarjeta y matrizglobal siguenpendientes. Sin backend/schema/flags/dinero/CM/push; objetivoactivo.

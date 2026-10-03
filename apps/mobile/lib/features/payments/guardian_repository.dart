@@ -7,6 +7,7 @@ import 'guardian_payment_card.dart';
 
 const guardianConsent = 'guardian-2026-09-24';
 const savedCardConsent = 'saved-cards-2026-10-03';
+const savedCardMethodConsent = 'saved-card-methods-2026-10-03';
 final guardianEnabledProvider = Provider<bool>(
   (ref) => const bool.fromEnvironment('ENABLE_GUARDIAN_TEST'),
 );
@@ -17,6 +18,11 @@ final guardianRepositoryProvider = Provider<GuardianRepository>(
 class GuardianRepository {
   GuardianRepository(this.client);
   final SupabaseClient client;
+  Future<Json?> savedCardMethodState() async {
+    final result = await client.rpc('dopmi_saved_card_method_state');
+    return result == null ? null : savedCardMethodReceipt(result);
+  }
+
   Future<Json?> savedCardState() async {
     final result = await client.rpc('dopmi_saved_card_state');
     return result == null ? null : savedCardReceipt(result);
@@ -69,6 +75,34 @@ class GuardianRepository {
   }
 
   Future<Json> submit(Json intent) async {
+    if (intent['kind'] == 'saved_card_method') {
+      if (!['default', 'remove'].contains(intent['action']) ||
+          intent['consent_version'] != savedCardMethodConsent) {
+        throw const FormatException('Solicitud de tarjeta incompleta');
+      }
+      final result = await client.functions.invoke(
+        'guardian-client',
+        body: {
+          'action': intent['action'] == 'remove'
+              ? 'saved_card_remove'
+              : 'saved_card_default',
+          'key': intent['key'],
+          'payment_method_id': intent['selected_method_id'],
+          'consent': true,
+          'consent_version': savedCardMethodConsent,
+        },
+      );
+      if (result.status != 200) {
+        throw const FormatException('Cambio de tarjeta no confirmado');
+      }
+      final receipt = savedCardMethodReceipt(result.data);
+      if (receipt['key'] != intent['key'] ||
+          receipt['action'] != intent['action'] ||
+          receipt['card_id'] != intent['selected_method_id']) {
+        throw const FormatException('Cambio de tarjeta no confirmado');
+      }
+      return receipt;
+    }
     if (intent['kind'] == 'add_card') {
       final result = await client.functions.invoke(
         'guardian-client',
@@ -152,6 +186,33 @@ class GuardianRepository {
 
   Future<void> openCheckout(String url) =>
       PaymentRepository(client).openStripe(url);
+}
+
+Json savedCardMethodReceipt(Object? value) {
+  if (value is! Map) throw const FormatException('Solicitud no confirmada');
+  final key = value['key'], action = value['action'], status = value['status'];
+  final card = value['card_id'];
+  if (key is! String ||
+      !RegExp(
+        r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+        caseSensitive: false,
+      ).hasMatch(key) ||
+      !['default', 'remove'].contains(action) ||
+      ![
+        'pending',
+        'applied',
+        'removed',
+        'refused',
+        'expired',
+        'attention',
+      ].contains(status) ||
+      (status == 'applied' && action != 'default') ||
+      (status == 'removed' && action != 'remove') ||
+      card is! String ||
+      !RegExp(r'^pm_[A-Za-z0-9]+$').hasMatch(card)) {
+    throw const FormatException('Solicitud no confirmada');
+  }
+  return {'key': key, 'action': action, 'status': status, 'card_id': card};
 }
 
 Json savedCardReceipt(Object? value) {
