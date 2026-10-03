@@ -1919,3 +1919,10 @@ Referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. Siguiente fami
 Basee8019e3; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. Source Edge425 /notifications377x852/fonts.ready/DOM medido título14/17, hora12/15, cuerpo12/19.2; tarjetas/chips/bordes previos corresponden. Cliente fija height17/14 y15/12, antes1.2. Semántica leído/no leído y repositorio/destinos reales sin cambios. FixtureSource tres avisos conbody difiere Flutter uno sinbody: no comparaciónpixel de mismo estado.
 
 10/10 notifications_test+captureprefixnotifications pasan6s37527/8020a4→063889. Cobertura inspectada: fecha exacta accesible, header teclado/fallback, kindreal, paginación200, fallo/success lectura y destino. Analyzer85967/5bec6f limpio82.5s. CapturasSource/Flutter normal/200/read/kinds y métricas guardadas, normalFlutter inspeccionada. Browser cerrado2e3f9c; Vite67425 CtrlCexit1 esperado. Full558424 antecede sóloheight425; testsdirigidos cubrenalcance. Objetivo global/configSDK/device pendientes; siguiente comparación confixtureSource equivalente, resto de estados/history/matriz, sinCodemagic/push.
+
+
+### Loop426 — geometría de aviso equivalente, 3/10/2026
+
+Basebe308fa; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge426 /notifications377x852, fixture local15 con mismo títuloPatricia/horaAyer/bodyvacío/kindmessage/unread. fonts.ready y DOM: card74/y88, chipx33/y105. Cliente Padding16 enDecoratedBox no reservaba borderCSS1; cambiado17 para dimensiones/offset equivalentes. Fuente/capturas normal Source yFlutter inspeccionadas: tarjeta corresponde, badgeModo prueba excluido; no identidadpixel/global atribuida.
+
+10/10 notifications+capture pasan5s64705/aff286→0ad20c, analyzer49164/b4c3b1 limpio49s. Normal/200/read ySource/métricas guardadasparity-loop426. Browser cerrado1b0acd; Vite63620 CtrlCexit1 esperado. Semántica/read/destinos reales preservados. Próximo histórico real de pagos y restantes estados/matriz, sin repetir sólo prueba de tarjeta; SDK/device/finalacceptance pendientes. SinCodemagic/push.

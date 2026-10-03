@@ -1,3 +1,7 @@
+# Corte vigente — loop426
+
+Notificación equivalenteSource/Flutter comparada: borderinset17 reproducecard74 ychipx33/y105.10tests/capture pasan/analyzer limpio49s. Próximo historialreal/restomatriz; SDK/device/global siguenpendientes. Codemagic sóloobjetivo completo.
+
 # Corte vigente — loop425
 
 Notificacionestitle17/time15 medidosSource ycorregidos;10tests/capture pasan/analyzer limpio82.5s. Fixturesnoequivalentes, falta comparaciónestado equivalente yphysical/global. Full558424 previoheight425. Codemagic sóloobjetivo completo.

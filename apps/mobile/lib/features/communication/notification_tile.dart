@@ -100,7 +100,7 @@ class NotificationTile extends StatelessWidget {
                 focusColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(17),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

@@ -1,0 +1,19 @@
+{
+  "source": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "notice": {
+    "title": "Patricia te escribió",
+    "time": "Ayer",
+    "body": "",
+    "read": false,
+    "kind": "message"
+  },
+  "card": {
+    "height": 74,
+    "y": 88
+  },
+  "chip": {
+    "x": 33,
+    "y": 105
+  },
+  "fonts_ready": true
+}
