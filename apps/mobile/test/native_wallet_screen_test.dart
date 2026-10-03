@@ -56,6 +56,7 @@ void main() {
     FakeGuardian cards,
     FakeWallet wallet, {
     List<String>? sdkCalls,
+    bool nativeSucceeds = false,
   }) async {
     final identity = FakeIdentityRepository()
       ..user = Identity('one', 'one@example.test', verified: true);
@@ -68,6 +69,7 @@ void main() {
       supported: (params) async => true,
       confirm: (secret, params) async {
         sdkCalls?.add(secret);
+        if (nativeSucceeds) return;
         throw StateError('native sheet canceled');
       },
     );
@@ -129,6 +131,35 @@ void main() {
       },
     );
   }
+  testWidgets(
+    'native return waits for server confirmation with the same intent',
+    (tester) async {
+      final wallet = FakeWallet();
+      final sdkCalls = <String>[];
+      await start(
+        tester,
+        FakeGuardian(),
+        wallet,
+        sdkCalls: sdkCalls,
+        nativeSucceeds: true,
+      );
+      await tester.ensureVisible(find.text('Google Pay'));
+      await tester.tap(find.text('Google Pay'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Guardar y continuar'));
+      await tester.pumpAndSettle();
+      expect(sdkCalls, ['seti_fixture_secret_fixture']);
+      expect(wallet.calls, hasLength(2));
+      expect(wallet.calls.last, wallet.calls.first);
+      expect(find.text('Google Pay vinculado'), findsNothing);
+      expect(find.text('Continuar autorización'), findsOneWidget);
+      final prefs = await SharedPreferences.getInstance();
+      expect(
+        jsonDecode(prefs.getString('dopmi-native-wallet:one:intent')!),
+        wallet.calls.first,
+      );
+    },
+  );
   testWidgets('saved wallet waits for fresh matching card and announces once', (
     tester,
   ) async {

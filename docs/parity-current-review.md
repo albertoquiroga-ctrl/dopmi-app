@@ -1,3 +1,9 @@
+# Corte vigente — loop400, 3/10/2026
+
+6screen tests pasan con nuevo retornoSDKsustituto sin serverreceipt terminal: mismointent conservado/noéxitosupuesto. Analyzer97876 limpio147.3s; build40473 confirmadoactivo186dff, retomarhandle pararesultadoterminal, logTemp dopmi-native-build-loop399-fixed.log. No aceptaciónSDK/dispositivo/paridadglobal, configreal pendiente. Codemagic únicamenteobjetivocompleto.
+
+## Corte399 anterior
+
 # Corte vigente — loop399, 3/10/2026
 
 Nativebuild43721 falló Java17/Kotlin21; ajuste rootGradle sólo Stripe a JVM17 preserva validación.16config pasan. Reintento corregido40473 ACTIVO/logTemp dopmi-native-build-loop399-fixed.log: retomarhandle antes de nueva acción, compilación aún no verificada. Config real/SDK/device/matriz global pendientes, Codemagic sólo final.
