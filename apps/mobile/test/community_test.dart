@@ -1181,7 +1181,7 @@ void main() {
       await tap(tester, 'Continuar');
       expect(repo.post.name, 'Mora');
       expect(repo.post.status, 'draft');
-      expect(find.text('Revisa antes de enviar'), findsOneWidget);
+      expect(find.text('Revisa tu caso'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
