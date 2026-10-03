@@ -1,4 +1,12 @@
-# Auditoría de cobertura de rutas — 3/10/2026, loop484
+# Corte vigente de cobertura — loop502, 3/10/2026
+
+El inventario484 inferior sigue localizando rutas, no aceptaciones. Fuente actual del gate `8270386d3b531907d4618ebd4358ebd221a88146`:607/607,3m54s;229Dart iguales raíz/scratch antes/después, análisis limpio y configuración16/16. Supersede el gate592479 citado en el corte histórico.
+
+Revisiones posteriores: perfil público483/485, opciones ampliadas486, chat487, Mis match488/490/491, back489, capturador401492, mazo493/494/496, filtros495, indicadores497, introducción498 y Nuevo499/500. Ninguna de estas comprobaciones cierra automáticamente su familia completa. El corte de [movimiento](parity-motion-audit-2026-10-02.md) enumera contratos, evidencia y límites concretos; próximo punto listo es expansión del gasto público en CASE.
+
+Siguen pendientes el contraste completo por familias, funciones físicas Android y Stripe nativo TEST. La cuenta de401fixtures no equivale a401pantallas aceptadas ni permite deducir cuántas pantallas faltan restando patrones. Sin push ni Codemagic; publicación final separada de compilación y aceptación instalada.
+
+# Corte anterior de cobertura — loop484
 
 Referencia actual `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`. Producción comprobada `e11eb8dd1389b5d92d8d36d8d56ddc5ec33727a6`, full592/592 en loop479. Los227Dart de lib/test coincidieron entre raíz y scratch, con hashes normalizados antes/después sin cambios durante ejecución. Source local HEAD coincide y App.tsx/styles.css sin cambios locales; capture-access.mjs no versionado no modifica la referencia. La tabla I/T/V histórica y los inventarios265/pausa no prueban finalización actual.
 

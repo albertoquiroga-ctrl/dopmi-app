@@ -1,4 +1,21 @@
-# Corte de movimiento y regreso — loop341, 2/10/2026
+# Corte vigente de movimiento — loop502, 3/10/2026
+
+Cliente verificado `8270386d3b531907d4618ebd4358ebd221a88146`, full607/607 y análisis sin incidencias en loops500/501. Referencia `a3c969cd9103fd46dc5cd886999912526ce75efb`. Este corte supersede las cifras inferiores; no afirma paridad global ni aceptación instalada.
+
+| Interacción | Evidencia actual inspeccionada | Límite / siguiente comprobación |
+| --- | --- | --- |
+| Adoptar: retorno, salida y tarjeta siguiente | RuntimeSource493: retorno250, salida280 y nueva tarjeta entra desde±420/±18 durante250; opacity1. Cliente corregido493, prueba inicio/medio/final y gesto interrumpido. | Browser mouse y widgets; falta dedo físico. No usar sólo la salida280 como prueba de entrada. |
+| Oportunidad de apoyo dentro del mazo | Pruebas494 normal/reduced: entrada, captura de nuevo gesto, cancelación a cero y monto real conservados. | Comparte mecanismo, pero no hay nuevo runtimeSource de oportunidad de apoyo en494. |
+| Filtros | RuntimeSource495 inserción sin animación, radio24; cierre fuera descarta selección. Cliente primerpump y cierres Atrás/fuera sin nueva consulta. | No teclado físico ni aceptación visual global del modal. |
+| Regreso de Favoritos a Adoptar | Prueba496 conserva misma instancia/tarjeta y traslado0 al primerpump/125ms. | Continuidad móvil establecida; no atribuir persistencia del índice al prototipo React. |
+| Indicadores de Perfil | RuntimeSource497 down real: matriz0.98/timing120ease. Cliente primerpump y ScaleTransition final120 normal200. | Eventos de sombra por hover excluidos. Falta dedo físico. |
+| Entrada de introducciones | CSS actual y keys por paso inspeccionados498; opacidad/traslado exactos a225 y450, reduced/demoras anteriores cubiertos. |498 no ejecutó nuevo runtimeSource; conserva prueba de rutas341 en la suite completa. |
+| Nuevo en Mis casos | RuntimeSource500 superficie91.21875x34/top20/radio14. Cliente499 y test500 superficie compacta/target48; toque bajo superficie abrePublicar normal200. | Prueba geométrica y de hitarea; no equivalencia de todos los estados de Mis casos. |
+| Gasto público desplegable | Regla Source donate-need-chevron usa giro inmediato; código anterior identificado en341. | **Siguiente trabajo listo:** ejecutar expansión/cierre Source y ruta Flutter, comprobar primerframe, evidencia pública y foco/regreso. La regla antigua need-expand150ms no justifica animar el componente vigente. |
+
+Fuente y hashes del gate completo en [mobile-consistency.json](design-reviews/parity-loop500/mobile-consistency.json). Capturador401492 es anterior a los cambios493/499; no401aceptaciones. ADB494 vacío; StripeSDK TEST, funciones nativas y familias restantes siguen pendientes. Codemagic únicamente al completar el objetivo.
+
+# Corte anterior de movimiento — loop341, 2/10/2026
 
 Referencia irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb. Cliente inicial a02ecac. Esta revisión distingue movimiento aplicable de CSS antiguo o hover y acredita únicamente las comprobaciones descritas.
 

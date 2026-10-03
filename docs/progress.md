@@ -2430,3 +2430,7 @@ CSS Sourcecompact34/padding8x12/radio14 y referencia histórica inspeccionados, 
 ### Loop500/501 — geometría actual y gate integrado, 3/10/2026
 
 Recupera entrada500 no escrita por OSError22OneDrive sin pérdida de ledger. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb; runtimeEdge377x852 Nuevo91.21875x34/x269.78125y20/radio14/Inter14w500. Test63919exit0,2/2,1s normal200 comprueba superficie y target≥48/toque inferior abrePublicar. Fuente8270386d3b531907d4618ebd4358ebd221a88146. Full16280exit0,607/607,3m54s; analyzer72747exit0sinincidencias; config14208exit0,16/16.229Dart raíz/scratch/hash iguales antes/después. Supersede601493. README/hash500/currentreview actualizados. Remotoba9f897/e4f4e858 reconsultado sin push. No backend/SQL/Codemagic/aceptación física o visual global; continúa contrastefamilias/StripeSDK.
+
+### Loop502 — cobertura y movimiento vigentes, 3/10/2026
+
+Auditorías route/motion tenían gates históricos592479/481341 como encabezado. Reconciliadas con fuente8270386/full607500,229Dart, config16/análisis y pruebas493–500; contratos/límites separados por interacción. No vuelve a ejecutar tests sin cambio ni atribuye401aceptaciones. RuntimeSource de apoyo494/onboarding498 no inventado; regreso496 es continuidad móvil no índiceReact. Próxima acciónlista CASE expansión/cierre realSource+Flutter primerframe/evidencia/foco. Sin producción/backend/SQL/push/Codemagic; objetivo/físico/StripeSDK/global abiertos.
