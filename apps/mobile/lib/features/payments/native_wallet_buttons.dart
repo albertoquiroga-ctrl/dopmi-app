@@ -42,7 +42,7 @@ class NativeWalletButtons extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SvgPicture.asset(
-          'assets/profile/icon-$asset.svg',
+          'assets/onboarding/icon-$asset.svg',
           width: 18,
           height: 18,
           excludeFromSemantics: true,

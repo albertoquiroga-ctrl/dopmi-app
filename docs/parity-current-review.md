@@ -1,3 +1,9 @@
+# Corte vigente — loop396, 3/10/2026
+
+Cuatro capturas wallet ready/review normal200 revisadas confonts/SVGcargados. Se reutilizan assets onboardingidénticos y retiran duplicadosprofile.4captures pasan/analyzer limpio27.1s;328states/37URLs es inventario, no aceptaciónglobal. Text200review requiere scroll; falta bottom/ownerchange/casos/compilación/config/nativeacceptance/matrizglobal. Codemagic sólo final.
+
+## Corte395 anterior
+
 # Corte vigente — loop395, 3/10/2026
 
 attention muestra revisión y bloquea botón/handler, noContinuar.4screen tests pasan/analyzer limpio28.8s. Sigue ownerchange/casos/capturas/nativecompile/config/device ymatrizglobal. Objetivo global activo/Codemagic sólo final.

@@ -3453,3 +3453,10 @@ Base80c0194; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada si
 Base998c0db; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. attention restaura intento remoto y muestra aviso explícito, sinContinuar; botonesSDK y handler bloqueados anteattention/errorconsulta. Nuevo test descubrió callbackGoogleactivo visualmente peseaguardiahandler; parche deindentación noaplicado inicialmente y testfalló, corregido conapply_patchexacto.
 
 4/4screen tests final89299/0b42c1 pasan, analyzer limpio28.8s39736/316e60. Mantiene consent/cancel/lostreply/freshlistfeedback. Noefectoremoto/Stripe/CM/push/device/capturas/compilación nuevos. Pendientes ownerchange/casos adicionales/capturas/nativeacceptance/configPK/MerchantID ymatrizglobalparidad. Objetivo global activo; Codemagic únicamente al terminar.
+
+
+### Loop396 — capturas nativas normal/200 y assets compartidos, 3/10/2026
+
+Base1beb95c; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. capture_native_wallet_test renderiza app/router Métodosdepago con fontsreales/SDKreposfake a377x852normal y320x852text200, ready/review. CuatroPNGs revisadas en docs/design-reviews/parity-loop396. Inicialmente SVG ausentes: warmupestricto detectó profileicons no empaquetados en assets de scratch; mismos assets yaexistían onboarding, hashesidénticos comprobados. Producción reutiliza onboarding y elimina dosduplicados añadidos392. WarmupSVG yfontsantescapture impiden atribuir screenshot incompleta alresultadofinal.
+
+4/4capturas finales38004/9782ee pasan, analyzer limpio27.1s86738/312134. Lints capturetool corregidos: visible_for_testing dentrotooltest anotado y llaves. Ready muestraGooglehabilitado/Appleinactivo; reviewambosdisabled/avisoreal. Text200 crece/wrap sinoverflow; review excede viewport y requiere scroll, no afirmar inspección delbottom ni accesibilidad instalada. No Sourcebrowsernuevo/pixelidentity niSDKnative/compilación/device. Capturas328/37URLs total sólo inventario, no328aceptadas. Continúan ownerchange/flujos/configPK/MerchantID/compilación/matrizglobal/finalacceptance; Codemagic sólo final.
