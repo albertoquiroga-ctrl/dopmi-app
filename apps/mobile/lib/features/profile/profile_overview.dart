@@ -1194,25 +1194,42 @@ class ProfileRow extends StatelessWidget {
   final int? count;
   final IconData icon;
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 10),
-    child: Card(
-      margin: EdgeInsets.zero,
-      child: ListTile(
-        leading: Icon(icon),
-        title: Text(title),
-        subtitle: subtitle == null ? null : Text(subtitle!),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (count != null) Text('$count'),
-            const Icon(Icons.chevron_right),
-          ],
+  Widget build(BuildContext context) {
+    final expandedText = MediaQuery.textScalerOf(context).scale(16) >= 24;
+    final trailing = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (count != null) Text('$count'),
+        const Icon(Icons.chevron_right),
+      ],
+    );
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Card(
+        margin: EdgeInsets.zero,
+        child: ListTile(
+          leading: expandedText ? null : Icon(icon),
+          title: expandedText
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [Icon(icon), trailing],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(title),
+                  ],
+                )
+              : Text(title),
+          subtitle: subtitle == null ? null : Text(subtitle!),
+          trailing: expandedText ? null : trailing,
+          onTap: () => context.push(path),
         ),
-        onTap: () => context.push(path),
       ),
-    ),
-  );
+    );
+  }
 }
 
 class SavedPetsRow extends ConsumerWidget {
