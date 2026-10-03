@@ -295,3 +295,23 @@ check aprobado --node-modules-dir=none. Backend439/439 aprobado27.84s antes de
 actualizar6. Versión6 ACTIVE/verify_jwttrue y tres archivos leídos de servidor
 coinciden normalizados con local. No eliminación real ni Auth/REST/Storage ni
 selección instalada acreditadas; PROD/legado/dinero real sin cambios.
+
+
+## Lectura privada de métodos Guardian — loop352, 2/10/2026 México
+
+Local `20261003000100_guardian_payment_method_read.sql` → DEV
+`ohqxranynackjignryep` `20261003045529/guardian_payment_method_read`.
+Preflight54migraciones (última private_account_photo20261003010703), función nueva
+inexistente, registry/customer/subscription y profile account_status comprobados.
+Aplicada una vez por MCP, sin dbpush/replay/repair/rename ni producción.
+Cuerpo desplegado inspeccionado: coincide con SQL local; SECURITY DEFINER y
+search_path vacío. EXECUTEanonfalse/authenticatedfalse/service_roletrue.
+DO remoto comprueba rechazo42501 sin actor; no usuarios/tarjetas mutados.
+
+Edge guardian-client14→15ACTIVE conserva verify_jwt=false de14 y autenticación
+explícita getUser/actorconfirmado, flags y testkeyguard. Preflight archivos14:
+sólo index/guardian-runtime/guardian-client difieren por lectura nueva; quince
+archivos15 comparados contra bundle local normalizandoCRLF:0diferencias.
+POST methods sinAuthorization y tokeninválido:401sign_in_required reales.
+Gate previo453/45329.46s y Denocheck exit0. No lectura AuthREST autenticada,
+Stripe real/card/default/billetera/device acreditada todavía. No CM/push.
