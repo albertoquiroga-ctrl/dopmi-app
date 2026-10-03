@@ -25,7 +25,10 @@ class FakeGuardian extends GuardianRepository {
         ),
       );
   List<GuardianPaymentCard> cards = [];
-  bool failCards = false, applySelected = false;
+  bool failCards = false,
+      applySelected = false,
+      applyRemoval = false,
+      refuseRemoval = false;
   @override
   Future<List<GuardianPaymentCard>> paymentMethods() async {
     if (failCards) throw Exception('fixture');
@@ -85,6 +88,23 @@ class FakeGuardian extends GuardianRepository {
           'status': 'pending',
         },
       };
+      if (intent['remove_saved'] == true) {
+        value['method_setup']['action'] = 'remove';
+        if (refuseRemoval) {
+          value['method_setup']['status'] = 'superseded';
+          value['method_setup']['reason'] = 'in_use';
+          value['method_change_available'] = true;
+          return {'status': 'superseded'};
+        }
+        if (applyRemoval) {
+          cards = cards
+              .where((card) => card.id != intent['selected_method_id'])
+              .toList();
+          value['method_setup']['status'] = 'applied';
+          value['method_change_available'] = true;
+        }
+        return {'status': applyRemoval ? 'applied' : 'pending'};
+      }
       if (intent['selected_method_id'] != null) {
         if (applySelected) {
           cards = [
@@ -789,6 +809,116 @@ void main() {
       expect(find.text('Predeterminada'), findsOneWidget);
     },
   );
+  for (final large in [false, true]) {
+    testWidgets(
+      'card removal confirms, retains uncertain row and retries one target: large=$large',
+      (tester) async {
+        final repo = FakeGuardian()
+          ..fail = true
+          ..cards = [
+            const GuardianPaymentCard(
+              id: 'pm_old',
+              brand: 'visa',
+              last4: '4242',
+              isDefault: true,
+            ),
+            const GuardianPaymentCard(
+              id: 'pm_remove',
+              brand: 'mastercard',
+              last4: '5556',
+              isDefault: false,
+            ),
+          ]
+          ..value = {
+            'plan': activePlan(),
+            'activation': null,
+            'method_change_available': true,
+          };
+        await start(tester, repo, methods: true);
+        if (large) {
+          tester.view.physicalSize = const Size(320, 640);
+          tester.platformDispatcher.textScaleFactorTestValue = 2;
+          addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+          await tester.pumpAndSettle();
+        }
+        expect(find.byTooltip('Eliminar tarjeta'), findsOneWidget);
+        await tester.ensureVisible(find.byTooltip('Eliminar tarjeta'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byTooltip('Eliminar tarjeta'));
+        await tester.pumpAndSettle();
+        expect(find.text('¿Eliminar esta tarjeta?'), findsOneWidget);
+        expect(repo.calls, isEmpty);
+        await tester.ensureVisible(find.text('Volver'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Volver'));
+        await tester.pumpAndSettle();
+        expect(repo.calls, isEmpty);
+        await tester.ensureVisible(find.byTooltip('Eliminar tarjeta'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byTooltip('Eliminar tarjeta'));
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text('Eliminar tarjeta'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Eliminar tarjeta'));
+        await tester.pumpAndSettle();
+        expect(repo.calls.single['selected_method_id'], 'pm_remove');
+        expect(repo.calls.single['remove_saved'], true);
+        expect(repo.cards, hasLength(2));
+        expect(find.text('Tarjeta eliminada.'), findsNothing);
+        repo.fail = false;
+        repo.applyRemoval = true;
+        await tester.scrollUntilVisible(
+          find.text('Reintentar eliminación'),
+          180,
+        );
+        await tester.pumpAndSettle();
+        await tapButton(tester, 'Reintentar eliminación');
+        await tester.pumpAndSettle();
+        expect(repo.calls, hasLength(2));
+        expect(repo.calls.first, repo.calls.last);
+        expect(repo.opened, 0);
+        expect(repo.cards, hasLength(1));
+        expect(repo.cards.single.isDefault, true);
+        await tester.scrollUntilVisible(find.text('Tarjeta eliminada.'), -180);
+        await tester.pumpAndSettle();
+        expect(find.text('Tarjeta eliminada.'), findsOneWidget);
+        expect(find.textContaining('Medio de pago actualizado'), findsNothing);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+  testWidgets('in-use removal shows rejection and retains the card', (
+    tester,
+  ) async {
+    final repo = FakeGuardian()
+      ..refuseRemoval = true
+      ..cards = [
+        const GuardianPaymentCard(
+          id: 'pm_remove',
+          brand: 'mastercard',
+          last4: '5556',
+          isDefault: false,
+        ),
+      ]
+      ..value = {
+        'plan': activePlan(),
+        'activation': null,
+        'method_change_available': true,
+      };
+    await start(tester, repo, methods: true);
+    await tester.tap(find.byTooltip('Eliminar tarjeta'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Eliminar tarjeta'));
+    await tester.pumpAndSettle();
+    expect(
+      find.textContaining('No se eliminó la tarjeta porque está en uso'),
+      findsOneWidget,
+    );
+    expect(find.text('Tarjeta eliminada.'), findsNothing);
+    expect(repo.cards, hasLength(1));
+    expect(find.text('Reintentar eliminación'), findsNothing);
+    expect(repo.opened, 0);
+  });
   testWidgets(
     'method change needs explicit consent and uncertain replies reuse one key',
     (tester) async {
@@ -821,9 +951,18 @@ void main() {
       expect(find.textContaining('Medio de pago actualizado'), findsNothing);
     },
   );
-  for (final methods in [false, true]) {
+  for (final spec in [
+    (false, 'setup'),
+    (true, 'setup'),
+    (false, 'remove'),
+    (true, 'remove'),
+  ]) {
+    final methods = spec.$1, action = spec.$2;
+    final retryLabel = action == 'remove'
+        ? 'Reintentar eliminación'
+        : 'Continuar actualización';
     testWidgets(
-      'lost local method target resumes server request without promising Stripe: methods=$methods',
+      'lost local method target resumes server request without promising Stripe: methods=$methods action=$action',
       (tester) async {
         final repo = FakeGuardian()
           ..fail = true
@@ -834,19 +973,21 @@ void main() {
               'key': '77000000-0000-4000-8000-000000000001',
               'revision': 1,
               'status': 'pending',
+              'action': action,
             },
           };
         await start(tester, repo, methods: methods);
         expect(find.textContaining('continúa en Stripe'), findsNothing);
         expect(find.text('Continuar actualización en Stripe'), findsNothing);
-        await tapButton(tester, 'Continuar actualización');
+        await tapButton(tester, retryLabel);
         await tester.pumpAndSettle();
-        await tapButton(tester, 'Continuar actualización');
+        await tapButton(tester, retryLabel);
         await tester.pumpAndSettle();
         expect(repo.calls, hasLength(2));
         expect(repo.calls.first, repo.calls.last);
         expect(repo.calls.first['key'], '77000000-0000-4000-8000-000000000001');
         expect(repo.calls.first.containsKey('selected_method_id'), false);
+        expect(repo.calls.first['remove_saved'] == true, action == 'remove');
         expect(repo.opened, 0);
         expect(find.textContaining('Medio de pago actualizado'), findsNothing);
       },

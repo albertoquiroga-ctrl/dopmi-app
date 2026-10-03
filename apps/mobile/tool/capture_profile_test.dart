@@ -820,6 +820,11 @@ void main() {
       ('payment-methods-inactive', '/settings/payment-methods'),
       ('payment-methods-cards', '/settings/payment-methods'),
       ('payment-methods-cards-large', '/settings/payment-methods'),
+      ('payment-methods-cards-remove-confirm', '/settings/payment-methods'),
+      (
+        'payment-methods-cards-remove-confirm-large',
+        '/settings/payment-methods',
+      ),
       ('guardian-billing-amount', '/guardian'),
       ('guardian-billing-amount-large', '/guardian'),
       ('guardian-billing-cancel', '/guardian'),
@@ -2163,6 +2168,13 @@ void main() {
         await gesture.moveBy(const Offset(65, 0));
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 180));
+        if (spec.$1.startsWith('payment-methods-cards-remove-confirm')) {
+          await tester.ensureVisible(find.byTooltip('Eliminar tarjeta'));
+          await tester.pumpAndSettle();
+          await tester.tap(find.byTooltip('Eliminar tarjeta'));
+          await tester.pumpAndSettle();
+          expect(find.text('¿Eliminar esta tarjeta?'), findsOneWidget);
+        }
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),
         );
@@ -2732,6 +2744,13 @@ void main() {
             alignment: .7,
           );
           await tester.pumpAndSettle();
+        }
+        if (spec.$1.startsWith('payment-methods-cards-remove-confirm')) {
+          await tester.ensureVisible(find.byTooltip('Eliminar tarjeta'));
+          await tester.pumpAndSettle();
+          await tester.tap(find.byTooltip('Eliminar tarjeta'));
+          await tester.pumpAndSettle();
+          expect(find.text('¿Eliminar esta tarjeta?'), findsOneWidget);
         }
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),

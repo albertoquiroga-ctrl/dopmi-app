@@ -88,7 +88,9 @@ class GuardianRepository {
         body: {
           'action':
               intent['kind'] == 'method' && intent['selected_method_id'] != null
-              ? 'default_method'
+              ? intent['remove_saved'] == true
+                    ? 'remove_method'
+                    : 'default_method'
               : intent['kind'],
           if (intent['kind'] == 'method' &&
               intent['selected_method_id'] != null)
@@ -171,6 +173,24 @@ const guardianMethodLabels = {
   'superseded':
       'La actualización se detuvo porque cambió el estado de tu plan.',
 };
+
+String? guardianMethodNotice(Json? setup) {
+  if (setup == null) return null;
+  if (setup['action'] != 'remove') return guardianMethodLabels[setup['status']];
+  if (setup['reason'] == 'in_use') {
+    return 'No se eliminó la tarjeta porque está en uso. Puedes elegir otra tarjeta predeterminada antes de volver a intentar.';
+  }
+  return switch (setup['status']) {
+    'pending' => 'Eliminación pendiente: retoma la misma solicitud para confirmar el resultado.',
+    'attention' => 'La eliminación está en revisión. Conservamos tu solicitud.',
+    'applied' => 'Tarjeta eliminada.',
+    'expired' =>
+      'La eliminación venció sin aplicarse. Puedes autorizar una nueva.',
+    'superseded' =>
+      'La eliminación se detuvo porque cambió el estado de tu plan.',
+    _ => 'Eliminación en revisión.',
+  };
+}
 
 const guardianActivationLabels = {
   'pending': 'Alta pendiente de confirmación',

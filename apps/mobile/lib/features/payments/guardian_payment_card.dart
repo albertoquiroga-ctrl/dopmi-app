@@ -52,16 +52,18 @@ class GuardianPaymentCardRow extends StatelessWidget {
     required this.card,
     this.showMakeDefault = false,
     this.onMakeDefault,
+    this.showRemove = false,
+    this.onRemove,
   });
-  final bool showMakeDefault;
-  final VoidCallback? onMakeDefault;
+  final bool showMakeDefault, showRemove;
+  final VoidCallback? onMakeDefault, onRemove;
   final GuardianPaymentCard card;
   @override
   Widget build(BuildContext context) {
     final action = !card.isDefault && showMakeDefault
         ? TextButton(
             style: TextButton.styleFrom(
-              foregroundColor: ink,
+              foregroundColor: const Color(0xff554e48),
               padding: EdgeInsets.zero,
               minimumSize: const Size(44, 44),
               textStyle: const TextStyle(
@@ -74,6 +76,23 @@ class GuardianPaymentCardRow extends StatelessWidget {
             child: const Text(
               'Hacer predeterminada',
               textAlign: TextAlign.right,
+            ),
+          )
+        : null;
+    final remove = !card.isDefault && showRemove
+        ? IconButton(
+            tooltip: 'Eliminar tarjeta',
+            onPressed: onRemove,
+            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+            padding: EdgeInsets.zero,
+            icon: SvgPicture.asset(
+              'assets/profile/icon-trash.svg',
+              width: 18,
+              height: 18,
+              colorFilter: const ColorFilter.mode(
+                Color(0xffd92d20),
+                BlendMode.srcIn,
+              ),
             ),
           )
         : null;
@@ -141,10 +160,20 @@ class GuardianPaymentCardRow extends StatelessWidget {
                 const SizedBox(width: 8),
                 SizedBox(width: 92, child: action),
               ],
+              if (remove != null && !large) ...[
+                const SizedBox(width: 12),
+                remove,
+              ],
             ],
           ),
-          if (action != null && large)
-            Align(alignment: Alignment.centerRight, child: action),
+          if ((action != null || remove != null) && large)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (action != null) Flexible(child: action),
+                if (remove != null) ...[const SizedBox(width: 12), remove],
+              ],
+            ),
         ],
       ),
     );

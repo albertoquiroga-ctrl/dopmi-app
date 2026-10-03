@@ -60,6 +60,11 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       data?['activation'] is Map ? Json.from(data!['activation']) : null;
   Json? get methodSetup =>
       data?['method_setup'] is Map ? Json.from(data!['method_setup']) : null;
+  String get methodRetryLabel => intent?['remove_saved'] == true
+      ? 'Reintentar eliminación'
+      : intent?['selected_method_id'] == null
+      ? 'Continuar actualización'
+      : 'Reintentar cambio de tarjeta';
   bool get checkoutInReview =>
       intent?['kind'] == 'checkout' && activation?['status'] == 'attention';
   String? get paymentIssueMessage {
@@ -208,6 +213,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
           'key': methodSetup!['key'],
           'revision': methodSetup!['revision'],
           'consent_version': guardianConsent,
+          if (methodSetup!['action'] == 'remove') 'remove_saved': true,
         };
         if (!await prefs.setString(storageKey, jsonEncode(intent))) {
           throw const FormatException('No se pudo conservar el intento.');
@@ -334,9 +340,11 @@ class _GuardianState extends ConsumerState<GuardianScreen>
     bool method = false,
     bool withdraw = false,
     GuardianPaymentCard? selectedCard,
+    bool removeCard = false,
   }) async {
     if (busy || confirming || !fresh || !current) return;
     if (!cancel && !method && !withdraw && checkoutInReview) return;
+    if (removeCard && (!method || selectedCard == null)) return;
     if (selectedCard != null &&
         (!method ||
             intent != null ||
@@ -353,12 +361,41 @@ class _GuardianState extends ConsumerState<GuardianScreen>
           ? await confirmGuardianCancellation(context)
           : await showDialog<bool>(
               context: context,
+              barrierColor: ink.withValues(alpha: .48),
+              animationStyle: AnimationStyle.noAnimation,
               builder: (context) => AlertDialog(
+                scrollable: true,
+                backgroundColor: Colors.white,
+                surfaceTintColor: Colors.transparent,
+                insetPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 24,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                titleTextStyle: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: MediaQuery.textScalerOf(context).scale(22) > 33
+                      ? 18
+                      : 22,
+                  height: 1.3,
+                  fontWeight: FontWeight.w700,
+                  color: ink,
+                ),
+                contentTextStyle: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 14,
+                  height: 1.55,
+                  color: muted,
+                ),
                 title: Text(
                   withdraw
                       ? '¿Retirar el cambio de monto?'
                       : method
-                      ? selectedCard == null
+                      ? removeCard
+                            ? '¿Eliminar esta tarjeta?'
+                            : selectedCard == null
                             ? '¿Actualizar tu medio de pago?'
                             : '¿Usar esta tarjeta como predeterminada?'
                       : '¿Cancelar tu plan Guardián?',
@@ -367,25 +404,55 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   withdraw
                       ? 'Mantendrás el importe anterior de tu plan: ${pesos(plan!['gross_cents'] as int)} al mes. Lo retiraremos si aún no comenzó a aplicarse; los próximos ciclos podrán continuar con el importe anterior. Esta acción no cancela tu plan.'
                       : method
-                      ? selectedCard == null
+                      ? removeCard
+                            ? 'Eliminarás ${selectedCard!.brandLabel} •••• ${selectedCard.last4} de tus tarjetas guardadas. Tu tarjeta predeterminada y tu plan no cambiarán. Para volver a usarla tendrás que agregarla de nuevo.'
+                            : selectedCard == null
                             ? 'Autorizo guardar y usar el nuevo medio en Stripe para los próximos ciclos de Guardián, con el monto y las condiciones vigentes. Stripe puede solicitar autenticación bancaria. Este cambio no cobra ni recupera ciclos omitidos.'
                             : 'Autorizo usar ${selectedCard.brandLabel} •••• ${selectedCard.last4} como medio predeterminado para los próximos ciclos de Guardián, con el monto y las condiciones vigentes. Este cambio no cobra ni recupera ciclos omitidos.'
                       : 'Detendremos los ciclos futuros. Un pago ya iniciado puede terminar de procesarse. Los pagos anteriores conservan su historial y no se devuelven automáticamente.',
                 ),
                 actions: [
                   TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: ink,
+                      minimumSize: const Size(44, 44),
+                      textStyle: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                     onPressed: () => Navigator.pop(context, false),
                     child: Text(
                       method || withdraw ? 'Volver' : 'Conservar plan',
                     ),
                   ),
                   FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: removeCard
+                          ? const Color(0xffd52f26)
+                          : ink,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(double.infinity, 48),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 11,
+                      ),
+                      shape: const StadiumBorder(),
+                      textStyle: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     onPressed: () => Navigator.pop(context, true),
                     child: Text(
                       withdraw
                           ? 'Retirar y conservar monto'
                           : method
-                          ? 'Autorizar y continuar'
+                          ? removeCard
+                                ? 'Eliminar tarjeta'
+                                : 'Autorizar y continuar'
                           : 'Confirmar cancelación',
                     ),
                   ),
@@ -448,6 +515,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   'revision': plan?['revision'],
                   if (selectedCard != null)
                     'selected_method_id': selectedCard.id,
+                  if (removeCard) 'remove_saved': true,
                 };
       if (intent == null && !cancel && !withdraw) {
         next['consent_version'] = guardianConsent;
@@ -474,8 +542,10 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         await repo.openCheckout(result['checkout_url'] as String);
       } else {
         message = next['kind'] == 'method'
-            ? guardianMethodLabels[result['status']] ??
-                  'Actualización en revisión.'
+            ? next['remove_saved'] == true
+                  ? null
+                  : guardianMethodLabels[result['status']] ??
+                        'Actualización en revisión.'
             : guardianActivationLabels[result['status']] ??
                   'El alta sigue en revisión. No vuelvas a pagar.';
       }
@@ -599,6 +669,19 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                 GuardianPaymentCardRow(
                   card: cards![i],
                   showMakeDefault: verified && status == 'active',
+                  showRemove: verified && status == 'active',
+                  onRemove:
+                      busy ||
+                          confirming ||
+                          !fresh ||
+                          intent != null ||
+                          data?['method_change_available'] != true
+                      ? null
+                      : () => submit(
+                          method: true,
+                          selectedCard: cards![i],
+                          removeCard: true,
+                        ),
                   onMakeDefault:
                       busy ||
                           confirming ||
@@ -657,9 +740,9 @@ class _GuardianState extends ConsumerState<GuardianScreen>
             if (message != null) Notice(message!),
             if (enabled &&
                 methodSetup != null &&
-                message != guardianMethodLabels[methodSetup!['status']])
+                message != guardianMethodNotice(methodSetup))
               Notice(
-                guardianMethodLabels[methodSetup!['status']] ??
+                guardianMethodNotice(methodSetup) ??
                     'Medio de pago en revisión.',
               ),
             const SizedBox(height: 12),
@@ -688,9 +771,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
               ),
             if (enabled && intent?['kind'] == 'method')
               ActionButton(
-                intent?['selected_method_id'] == null
-                    ? 'Continuar actualización'
-                    : 'Reintentar cambio de tarjeta',
+                methodRetryLabel,
                 busy: busy,
                 onPressed: canSubmit ? () => submit() : null,
               ),
@@ -884,7 +965,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                 ),
               if (methodSetup != null && status == 'active')
                 Notice(
-                  guardianMethodLabels[methodSetup!['status']] ??
+                  guardianMethodNotice(methodSetup) ??
                       'Medio de pago en revisión.',
                 ),
               if (paymentIssueMessage != null) Notice(paymentIssueMessage!),
@@ -920,9 +1001,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                 ),
               if (intent?['kind'] == 'method')
                 ActionButton(
-                  intent?['selected_method_id'] == null
-                      ? 'Continuar actualización'
-                      : 'Reintentar cambio de tarjeta',
+                  methodRetryLabel,
                   busy: busy,
                   onPressed: canSubmit ? () => submit() : null,
                 ),
