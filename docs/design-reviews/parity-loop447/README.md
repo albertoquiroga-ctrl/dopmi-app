@@ -1,0 +1,7 @@
+### Loop447 — geometría del cambio de experiencia sin reducir área táctil, 3/10/2026
+
+Base3545f66; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, métricas runtime446 switchcard71/track32x19 vigentes. RescuerDonorModeCard settings separa espacio de track32x19 de overlaytáctil48x48 centrado; overlay queda dentro Stack/card, right9 produce trackright17 respecto borde. Título16/20 y secundario12/15+gap2 conpadding16/border1 dan71px normal. Sin altura máxima: texto ampliado puede crecer. Perfil fuera Settings conserva estructura/layout previo. Semántica toggled/enabled, focusoutline y AnimatedContainer180ms/reducedmotion preservados; cambio confirmado por repositorio antesnavigate.
+
+Final16/16 pruebas6s21054exit0. Capturerasserts nuevos comprueban card71, track32x19, margen17, área48x48 ycentrocoincidente. Pruebas profile_experience ahora tocan20px a derecha del centro (fuera track16 y dentro touch24): éxito/fallo ambosmodos sin alterar datos personales, fracaso conserva modo/ruta. Capturas sieteestados guardadas; foco normal y200 inspeccionadas. Analyzer86614 limpio34.9s producciónfinal, precede sóloaserts/nuevo punto de toque deltest. Primera16/16 antecede nuevosasserts; corrida final los ejecuta. Diffcheck limpio.
+
+No teléfono/Stripe/nueva aceptaciónvisualglobal. Las fuentes reales siguen generando contenido/alto distinto deSourcefixture; objetivo entero sigue abierto. Próximo obtener fixture social equivalente ycomparar campos/hints/gestosdiálogo, continuar resto matriz. SinCM/push/deploy; envío sóloobjetivo completo.

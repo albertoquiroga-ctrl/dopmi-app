@@ -179,7 +179,13 @@ void main() {
             findsOneWidget,
           );
           expect(tester.getSize(target), const Size(32, 19));
-          await tester.tap(target);
+          final touch = find.ancestor(
+            of: target,
+            matching: find.byType(InkWell),
+          );
+          expect(tester.getSize(touch), const Size(48, 48));
+          // Tap beyond the visible 32px track, inside the 48px touch target.
+          await tester.tapAt(tester.getCenter(target) + const Offset(20, 0));
           await tester.pumpAndSettle();
           expect(identity.profile.mode, fail ? 'rescuer' : 'donor');
           expect(identity.profile.name, 'Ana');

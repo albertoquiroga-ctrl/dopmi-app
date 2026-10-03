@@ -1,3 +1,7 @@
+# Corte vigente — loop447
+
+Tarjeta switch Settings71px/track32x19/margen17 coincideSource446; overlay48x48 mantiene área táctil.16 pruebas pasan6s con toque fuera track ygeometría activa; analyzer producción limpio34.9s. Capturas foco/200 inspeccionadas. Pendiente fixtureequivalente/social/diálogo/gestosfísicos/restomatriz. Codemagic sólo objetivo completo.
+
 # Corte vigente — loop446
 
 Ruta Source correcta rescuer=/rescuer/settings; cliente /settings por modo es equivalente a esa ruta. Ayuda restaurada al tema rescuer,16 pruebas pasan7s y analyzer limpio33.4s. Source switchcard71 vscliente82 identificado; siguiente corregir geometría sin perder gesto/semántica/servidor. Donor445 vigente. Codemagic sólo objetivo completo.

@@ -222,106 +222,107 @@ class RescuerDonorModeCard extends StatelessWidget {
   final bool enabled, settings;
   final VoidCallback onPressed;
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      border: Border.all(color: const Color(0xffe3e4ed)),
-      borderRadius: BorderRadius.circular(20),
-    ),
-    child: Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                settings ? 'Cambiar a usuario donante' : 'Modo donante',
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  height: 1.2,
-                  letterSpacing: 0,
-                  color: Color(0xff151423),
+  Widget build(BuildContext context) {
+    final target = Semantics(
+      label: settings ? 'Cambiar a usuario donante' : 'Cambiar a modo donante',
+      toggled: settings,
+      enabled: enabled,
+      child: ReferenceFocusOutline(
+        radius: 99,
+        outlineInset: const EdgeInsets.symmetric(horizontal: 8, vertical: 14.5),
+        child: InkWell(
+          onTap: enabled ? onPressed : null,
+          borderRadius: BorderRadius.circular(99),
+          splashFactory: NoSplash.splashFactory,
+          overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+          child: SizedBox(
+            width: 48,
+            height: 48,
+            child: Center(
+              child: Container(
+                key: const ValueKey('rescuer-donor-switch'),
+                width: 32,
+                height: 19,
+                padding: const EdgeInsets.all(1),
+                alignment: Alignment.centerLeft,
+                decoration: BoxDecoration(
+                  color: settings
+                      ? const Color(0xff7841f2)
+                      : const Color(0xffdad7d2),
+                  borderRadius: BorderRadius.circular(99),
                 ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                settings
-                    ? 'Cambia tu experiencia en la app'
-                    : 'Adopta, apoya y sigue impacto',
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 12,
-                  height: 15.2 / 12,
-                  letterSpacing: 0,
-                  color: Color(0xff4f4e5c),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 12),
-        Semantics(
-          label: settings
-              ? 'Cambiar a usuario donante'
-              : 'Cambiar a modo donante',
-          toggled: settings,
-          enabled: enabled,
-          child: ReferenceFocusOutline(
-            radius: 99,
-            outlineInset: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 14.5,
-            ),
-            child: InkWell(
-              onTap: enabled ? onPressed : null,
-              borderRadius: BorderRadius.circular(99),
-              splashFactory: NoSplash.splashFactory,
-              overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-              child: SizedBox(
-                width: 48,
-                height: 48,
-                child: Center(
-                  child: Container(
-                    key: const ValueKey('rescuer-donor-switch'),
-                    width: 32,
-                    height: 19,
-                    padding: const EdgeInsets.all(1),
-                    alignment: Alignment.centerLeft,
-                    decoration: BoxDecoration(
-                      color: settings
-                          ? const Color(0xff7841f2)
-                          : const Color(0xffdad7d2),
-                      borderRadius: BorderRadius.circular(99),
-                    ),
-                    child: AnimatedContainer(
-                      transform: Matrix4.translationValues(
-                        settings ? 13 : 0,
-                        0,
-                        0,
-                      ),
-                      duration: MediaQuery.disableAnimationsOf(context)
-                          ? Duration.zero
-                          : const Duration(milliseconds: 180),
-                      curve: Curves.ease,
-                      width: 16,
-                      height: 16,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
+                child: AnimatedContainer(
+                  transform: Matrix4.translationValues(settings ? 13 : 0, 0, 0),
+                  duration: MediaQuery.disableAnimationsOf(context)
+                      ? Duration.zero
+                      : const Duration(milliseconds: 180),
+                  curve: Curves.ease,
+                  width: 16,
+                  height: 16,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
                   ),
                 ),
               ),
             ),
           ),
         ),
+      ),
+    );
+    final card = Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: const Color(0xffe3e4ed)),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  settings ? 'Cambiar a usuario donante' : 'Modo donante',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    height: settings ? 1.25 : 1.2,
+                    letterSpacing: 0,
+                    color: Color(0xff151423),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  settings
+                      ? 'Cambia tu experiencia en la app'
+                      : 'Adopta, apoya y sigue impacto',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 12,
+                    height: settings ? 1.25 : 15.2 / 12,
+                    letterSpacing: 0,
+                    color: Color(0xff4f4e5c),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          if (settings) const SizedBox(width: 32, height: 19) else target,
+        ],
+      ),
+    );
+    if (!settings) return card;
+    return Stack(
+      children: [
+        card,
+        Positioned(right: 9, top: 0, bottom: 0, child: Center(child: target)),
       ],
-    ),
-  );
+    );
+  }
 }
 
 class DonorModeDialog extends StatelessWidget {

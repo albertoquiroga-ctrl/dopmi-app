@@ -2722,6 +2722,20 @@ void main() {
       }
       if (spec.$1 != 'adoption-drag') {
         if (spec.$1 == 'rescuer-settings') {
+          final modeCard = find.byType(RescuerDonorModeCard);
+          final track = find.byKey(const ValueKey('rescuer-donor-switch'));
+          expect(tester.getSize(modeCard).height, closeTo(71, .1));
+          expect(tester.getSize(track), const Size(32, 19));
+          expect(
+            tester.getRect(modeCard).right - tester.getRect(track).right,
+            closeTo(17, .1),
+          );
+          final touch = find.ancestor(
+            of: track,
+            matching: find.byType(InkWell),
+          );
+          expect(tester.getSize(touch), const Size(48, 48));
+          expect(tester.getCenter(touch), tester.getCenter(track));
           expect(
             tester.getTopLeft(find.text('Estado de verificación')).dy,
             closeTo(88, 1),
