@@ -6,6 +6,97 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  for (final large in [false, true]) {
+    testWidgets(
+      'report requires a motive and cancels without a submission large=$large',
+      (tester) async {
+        tester.view.physicalSize = large
+            ? const Size(320, 640)
+            : const Size(377, 852);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        (String, String)? result;
+        var returned = false;
+        await tester.pumpWidget(
+          MaterialApp(
+            builder: (context, child) => MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: TextScaler.linear(large ? 2 : 1)),
+              child: child!,
+            ),
+            home: Scaffold(
+              body: Builder(
+                builder: (context) => TextButton(
+                  onPressed: () async {
+                    result = await showContentReportSheet(
+                      context,
+                      title: 'Reportar caso',
+                    );
+                    returned = true;
+                  },
+                  child: const Text('Abrir'),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.tap(find.text('Abrir'));
+        await tester.pumpAndSettle();
+        expect(find.byType(Dialog), findsOneWidget);
+        expect(
+          tester
+              .widget<FilledButton>(
+                find.widgetWithText(FilledButton, 'Enviar reporte'),
+              )
+              .onPressed,
+          isNull,
+        );
+        await tester.enterText(find.byType(TextField), '  ');
+        await tester.pump();
+        expect(
+          tester
+              .widget<FilledButton>(
+                find.widgetWithText(FilledButton, 'Enviar reporte'),
+              )
+              .onPressed,
+          isNull,
+        );
+        await tester.enterText(
+          find.byType(TextField),
+          '  Información incorrecta  ',
+        );
+        await tester.pump();
+        await tester.ensureVisible(find.text('Enviar reporte'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Enviar reporte'));
+        await tester.pumpAndSettle();
+        expect(result, ('other', 'Información incorrecta'));
+        expect(returned, true);
+        for (final cancel in ['Cancelar', 'Cerrar', 'back']) {
+          returned = false;
+          result = null;
+          await tester.tap(find.text('Abrir'));
+          await tester.pumpAndSettle();
+          if (cancel == 'back') {
+            await tester.binding.handlePopRoute();
+          } else if (cancel == 'Cerrar') {
+            await tester.tap(find.byTooltip('Cerrar'));
+          } else {
+            await tester.ensureVisible(find.text('Cancelar'));
+            await tester.pumpAndSettle();
+            await tester.tap(find.text('Cancelar'));
+          }
+          await tester.pumpAndSettle();
+          expect(returned, true);
+          expect(result, isNull);
+          expect(find.byType(Dialog), findsNothing);
+          expect(tester.takeException(), isNull);
+        }
+      },
+    );
+  }
+
   testWidgets(
     'native share preserves text, prevents duplicate sheets and handles failure',
     (tester) async {

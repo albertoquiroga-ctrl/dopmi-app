@@ -903,8 +903,23 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byTooltip('Reportar'));
       await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.widgetWithText(FilledButton, 'Enviar reporte'),
+            )
+            .onPressed,
+        isNull,
+      );
+      await tester.enterText(
+        find.byType(TextField),
+        'Datos del perfil incorrectos',
+      );
+      await tester.pump();
       await tester.tap(find.text('Enviar reporte'));
       await tester.pumpAndSettle();
+      expect(repo.reported?['reason'], 'other');
+      expect(repo.reported?['details'], 'Datos del perfil incorrectos');
       expect(repo.reported?['type'], 'rescuer');
       expect(find.text('Recibimos tu reporte para revisión.'), findsOneWidget);
       await tester.pump(const Duration(seconds: 4));

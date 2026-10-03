@@ -2686,7 +2686,10 @@ class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
       context.push('/login');
       return;
     }
-    final result = await showContentReportSheet(context);
+    final result = await showContentReportSheet(
+      context,
+      title: 'Reportar caso',
+    );
     if (result == null || !mounted) return;
     setState(() {
       busy = true;
