@@ -1,3 +1,11 @@
+# Corte vigente — loop380, 3/10/2026
+
+Cliente de tarjetas sin registro Guardian conectado: consentimiento, clave persistida por propietario, recuperación y lista fresca antes de confirmar default/remove. Gate64/64, analyze limpio y4capturas normal/200% revisadas;324estados/37URLs. ServidorDEV worker26/webhook26/client19 y migración75406 de378. Falta aceptación Auth+Stripe real de estas dos acciones; no dispositivo.
+
+Wallets reales, uso tarjeta en apoyo puntual, cuentas Guardian canceladas y matriz completa de pantallas/animaciones/gestos siguen pendientes. Último fullmóvil504/359 anterior; siguiente regresión completa. Fuentea3c969c sin cambios; dinero test-only. Codemagic sólo al completar objetivo global.
+
+## Corte378 anterior
+
 # Corte vigente — loop378, 3/10/2026
 
 Acciones de tarjeta sinGuardian desplegadas DEV: local80000/remota75406, RLS/ACL/guards comprobados, worker26/webhook26/client19ACTIVE y bundles18/17/17sin diferencias. Smoke23/23real7.84s; backend526/377 yDeno3entrypoints con alcance local. Aún falta cliente/consent/key/recuperación/listafresh y aceptaciónAuthStripe real de estasacciones; no dispositivo.

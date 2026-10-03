@@ -819,6 +819,22 @@ void main() {
       ('payment-methods-large', '/settings/payment-methods'),
       ('payment-methods-inactive', '/settings/payment-methods'),
       ('payment-methods-cards', '/settings/payment-methods'),
+      (
+        'payment-methods-cards-independent-default-confirm',
+        '/settings/payment-methods',
+      ),
+      (
+        'payment-methods-cards-independent-default-confirm-large',
+        '/settings/payment-methods',
+      ),
+      (
+        'payment-methods-cards-independent-remove-confirm',
+        '/settings/payment-methods',
+      ),
+      (
+        'payment-methods-cards-independent-remove-confirm-large',
+        '/settings/payment-methods',
+      ),
       ('payment-methods-cards-add-confirm', '/settings/payment-methods'),
       ('payment-methods-cards-add-confirm-large', '/settings/payment-methods'),
       ('payment-methods-cards-added-toast', '/settings/payment-methods'),
@@ -1102,6 +1118,9 @@ void main() {
         };
       }
       if (spec.$1.startsWith('payment-methods-cards')) {
+        if (spec.$1.contains('independent')) {
+          guardian.value = {'plan': null, 'activation': null};
+        }
         guardian.applySelected = spec.$1.contains('default-toast');
         guardian.cards = [
           const GuardianPaymentCard(
@@ -2783,6 +2802,14 @@ void main() {
             await tester.pumpAndSettle();
             expect(find.text('Tarjeta agregada'), findsOneWidget);
           }
+        }
+        if (spec.$1.startsWith('payment-methods-cards-independent')) {
+          await tester.tap(
+            spec.$1.contains('remove')
+                ? find.byTooltip('Eliminar tarjeta')
+                : find.text('Hacer predeterminada'),
+          );
+          await tester.pumpAndSettle();
         }
         if (spec.$1.startsWith('payment-methods-cards-default-toast')) {
           await tester.scrollUntilVisible(

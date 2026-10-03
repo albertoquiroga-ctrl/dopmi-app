@@ -51,6 +51,10 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   Json? savedCardIntent, savedCardStatus;
   String? pendingSavedFeedback, savedCardError;
   bool savedCardFresh = false;
+  Json? independentIntent, independentStatus;
+  bool independentFresh = false;
+  String? independentError;
+  String get independentStorageKey => 'dopmi-saved-card-method:$owner:intent';
   String? methodsFeedback, methodsFeedbackKey;
   bool feedbackIsRemoval = false;
   final shownMethodsFeedback = <String>{};
@@ -327,6 +331,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       if (widget.paymentMethodsOnly &&
           ref.read(identityControllerProvider).identity?.verified == true) {
         await loadSavedCard(prefs, restore: restore);
+        await loadIndependentMethod(prefs, restore: restore);
         if (!current) return;
         cardsError = null;
         cards = null;
@@ -338,6 +343,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
           cards = result;
           confirmMethodsFeedback();
           await confirmSavedFeedback(prefs);
+          await confirmIndependentMethod(prefs);
         } catch (_) {
           if (current) cardsError = 'No se pudieron consultar tus tarjetas. Actualiza el estado para reintentar.';
         }
@@ -439,6 +445,170 @@ class _GuardianState extends ConsumerState<GuardianScreen>
     methodsFeedback = 'Tarjeta agregada';
   }
 
+  Future<void> loadIndependentMethod(
+    SharedPreferences prefs, {
+    required bool restore,
+  }) async {
+    independentFresh = false;
+    independentError = null;
+    try {
+      if (restore && prefs.getString(independentStorageKey) != null) {
+        final value = Json.from(
+          jsonDecode(prefs.getString(independentStorageKey)!),
+        );
+        if (value['kind'] != 'saved_card_method' ||
+            value['consent_version'] != savedCardMethodConsent) {
+          throw const FormatException('Intento incompleto');
+        }
+        savedCardMethodReceipt({
+          'key': value['key'],
+          'action': value['action'],
+          'status': 'pending',
+          'card_id': value['selected_method_id'],
+        });
+        independentIntent = value;
+      }
+      final result = await ref
+          .read(guardianRepositoryProvider)
+          .savedCardMethodState();
+      if (!current) return;
+      independentStatus = result;
+      if (result != null &&
+          independentIntent != null &&
+          result['key'] != independentIntent!['key']) {
+        await prefs.remove(independentStorageKey);
+        independentIntent = null;
+      }
+      if (independentIntent == null &&
+          ['pending', 'attention'].contains(result?['status'])) {
+        final recovered = <String, dynamic>{
+          'kind': 'saved_card_method',
+          'key': result!['key'],
+          'action': result['action'],
+          'selected_method_id': result['card_id'],
+          'consent_version': savedCardMethodConsent,
+        };
+        if (!await prefs.setString(
+          independentStorageKey,
+          jsonEncode(recovered),
+        )) {
+          throw const FormatException('Intento no conservado');
+        }
+        if (!current) return;
+        independentIntent = recovered;
+      }
+      if (independentIntent != null &&
+          result?['key'] == independentIntent!['key'] &&
+          ['refused', 'expired'].contains(result?['status'])) {
+        await prefs.remove(independentStorageKey);
+        if (!current) return;
+        independentIntent = null;
+        independentError = result?['status'] == 'refused'
+            ? 'No se cambió la tarjeta porque está en uso. Consulta su estado antes de volver a intentar.'
+            : 'La solicitud venció sin aplicarse. Puedes autorizar una nueva.';
+      }
+      independentFresh = true;
+    } catch (_) {
+      if (current) independentError = 'No pudimos consultar el cambio de tarjeta. Actualiza el estado antes de continuar.';
+    }
+  }
+
+  Future<void> confirmIndependentMethod(SharedPreferences prefs) async {
+    final candidate = independentIntent, receipt = independentStatus;
+    if (candidate == null ||
+        receipt == null ||
+        receipt['key'] != candidate['key'] ||
+        receipt['action'] != candidate['action'] ||
+        receipt['card_id'] != candidate['selected_method_id'] ||
+        cards == null ||
+        cardsError != null) {
+      return;
+    }
+    final removed = receipt['action'] == 'remove', target = receipt['card_id'];
+    if (removed
+        ? receipt['status'] != 'removed' || cards!.any((c) => c.id == target)
+        : receipt['status'] != 'applied' ||
+              !cards!.any((c) => c.id == target && c.isDefault)) {
+      return;
+    }
+    await prefs.remove(independentStorageKey);
+    if (!current) return;
+    independentIntent = null;
+    final key = receipt['key'] as String;
+    if (!shownMethodsFeedback.add(key)) return;
+    methodsFeedbackKey = key;
+    feedbackIsRemoval = removed;
+    methodsFeedback = removed
+        ? 'Tarjeta eliminada.'
+        : 'Método predeterminado actualizado';
+  }
+
+  Future<void> changeIndependentMethod({
+    GuardianPaymentCard? card,
+    bool remove = false,
+  }) async {
+    if (!current ||
+        busy ||
+        confirming ||
+        !fresh ||
+        !independentFresh ||
+        plan != null ||
+        !ref.read(guardianEnabledProvider) ||
+        ref.read(identityControllerProvider).identity?.verified != true ||
+        intent != null ||
+        savedCardIntent != null ||
+        independentStatus?['status'] == 'attention') {
+      return;
+    }
+    if (independentIntent == null) {
+      if (card == null ||
+          card.isDefault ||
+          !(cards ?? []).any((c) => c.id == card.id)) {
+        return;
+      }
+      setState(() => confirming = true);
+      final agreed = await confirmIndependentCardMethod(
+        context,
+        card,
+        remove: remove,
+      );
+      if (!current) return;
+      setState(() => confirming = false);
+      if (!agreed) return;
+    }
+    setState(() {
+      busy = true;
+      independentError = null;
+    });
+    try {
+      final next =
+          independentIntent ??
+          <String, dynamic>{
+            'kind': 'saved_card_method',
+            'key': const Uuid().v4(),
+            'action': remove ? 'remove' : 'default',
+            'selected_method_id': card!.id,
+            'consent_version': savedCardMethodConsent,
+          };
+      final prefs = await SharedPreferences.getInstance();
+      if (!await prefs.setString(independentStorageKey, jsonEncode(next))) {
+        throw const FormatException('Intento no conservado');
+      }
+      if (!current) return;
+      independentIntent = next;
+      await ref.read(guardianRepositoryProvider).submit(next);
+      if (current) await load();
+    } catch (_) {
+      if (current) {
+        setState(
+          () => independentError = 'No pudimos confirmar el cambio. Reintenta la misma solicitud para consultar su resultado.',
+        );
+      }
+    } finally {
+      if (current) setState(() => busy = false);
+    }
+  }
+
   Future<void> addSavedCard() async {
     if (!current ||
         busy ||
@@ -448,6 +618,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         !ref.read(guardianEnabledProvider) ||
         ref.read(identityControllerProvider).identity?.verified != true ||
         intent != null ||
+        independentIntent != null ||
+        !independentFresh ||
         savedCardStatus?['status'] == 'attention' ||
         (savedCardIntent == null && !savedCardFresh)) {
       return;
@@ -881,31 +1053,50 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                       if (i > 0) const SizedBox(height: 10),
                       GuardianPaymentCardRow(
                         card: cards![i],
-                        showMakeDefault: verified && status == 'active',
-                        showRemove: verified && status == 'active',
+                        showMakeDefault:
+                            verified &&
+                            (status == 'active' ||
+                                (plan == null && independentFresh)),
+                        showRemove:
+                            verified &&
+                            (status == 'active' ||
+                                (plan == null && independentFresh)),
                         onRemove:
                             busy ||
                                 confirming ||
                                 !fresh ||
                                 intent != null ||
                                 savedCardIntent != null ||
-                                data?['method_change_available'] != true
+                                independentIntent != null ||
+                                (plan != null &&
+                                    data?['method_change_available'] != true)
                             ? null
-                            : () => submit(
-                                method: true,
-                                selectedCard: cards![i],
-                                removeCard: true,
-                              ),
+                            : () => plan == null
+                                  ? changeIndependentMethod(
+                                      card: cards![i],
+                                      remove: true,
+                                    )
+                                  : submit(
+                                      method: true,
+                                      selectedCard: cards![i],
+                                      removeCard: true,
+                                    ),
                         onMakeDefault:
                             busy ||
                                 confirming ||
                                 !fresh ||
                                 intent != null ||
                                 savedCardIntent != null ||
-                                data?['method_change_available'] != true
+                                independentIntent != null ||
+                                (plan != null &&
+                                    data?['method_change_available'] != true)
                             ? null
-                            : () =>
-                                  submit(method: true, selectedCard: cards![i]),
+                            : () => plan == null
+                                  ? changeIndependentMethod(card: cards![i])
+                                  : submit(
+                                      method: true,
+                                      selectedCard: cards![i],
+                                    ),
                       ),
                     ],
                   if (cards == null || cards!.isEmpty)
@@ -977,8 +1168,10 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                               !fresh ||
                               !verified ||
                               !savedCardFresh ||
+                              !independentFresh ||
                               intent != null ||
-                              savedCardIntent != null
+                              savedCardIntent != null ||
+                              independentIntent != null
                           ? null
                           : addSavedCard,
                       icon: SvgPicture.asset(
@@ -988,6 +1181,22 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                       ),
                       label: const Text('Agregar tarjeta'),
                     ),
+                  if (independentError != null)
+                    Notice(independentError!, isError: true),
+                  if (independentIntent != null)
+                    independentStatus?['status'] == 'attention'
+                        ? const Notice(
+                            'El cambio de tarjeta requiere revisión. Conservamos tu solicitud.',
+                          )
+                        : ActionButton(
+                            independentIntent?['action'] == 'remove'
+                                ? 'Reintentar eliminación'
+                                : 'Continuar actualización',
+                            busy: busy,
+                            onPressed: busy || confirming
+                                ? null
+                                : () => changeIndependentMethod(),
+                          ),
                   if (savedCardError != null)
                     Notice(savedCardError!, isError: true),
                   if (savedCardIntent != null &&

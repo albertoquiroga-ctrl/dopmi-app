@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
 
 import '../../core/ui.dart';
+import 'guardian_payment_card.dart';
 
-Future<bool> confirmSavedCard(BuildContext context) async {
+Future<bool> confirmSavedCard(BuildContext context) => _confirm(context);
+
+Future<bool> confirmIndependentCardMethod(
+  BuildContext context,
+  GuardianPaymentCard card, {
+  required bool remove,
+}) => _confirm(context, card: card, remove: remove);
+
+Future<bool> _confirm(
+  BuildContext context, {
+  GuardianPaymentCard? card,
+  bool remove = false,
+}) async {
   var resolved = false;
   void finish(BuildContext context, bool agreed) {
     if (resolved) return;
@@ -38,9 +51,19 @@ Future<bool> confirmSavedCard(BuildContext context) async {
             height: 1.55,
             color: muted,
           ),
-          title: const Text('Agregar tarjeta'),
-          content: const Text(
-            'Autorizo guardar mi tarjeta en Stripe para usarla en futuros apoyos que yo autorice. Esta acción no realiza un cobro, no activa Guardián y no cambia mi tarjeta predeterminada. Stripe puede solicitar autenticación bancaria.',
+          title: Text(
+            card == null
+                ? 'Agregar tarjeta'
+                : remove
+                ? '¿Eliminar esta tarjeta?'
+                : '¿Usar esta tarjeta por defecto?',
+          ),
+          content: Text(
+            card != null
+                ? remove
+                      ? 'Eliminarás ${card.brandLabel} •••• ${card.last4} de tus tarjetas guardadas. Tu tarjeta predeterminada no cambiará. Para volver a usarla tendrás que agregarla de nuevo.'
+                      : 'Autorizo usar ${card.brandLabel} •••• ${card.last4} como mi tarjeta predeterminada para futuros apoyos que yo autorice. Este cambio no genera un cobro ni activa Guardián.'
+                : 'Autorizo guardar mi tarjeta en Stripe para usarla en futuros apoyos que yo autorice. Esta acción no realiza un cobro, no activa Guardián y no cambia mi tarjeta predeterminada. Stripe puede solicitar autenticación bancaria.',
           ),
           actions: [
             TextButton(
@@ -58,7 +81,7 @@ Future<bool> confirmSavedCard(BuildContext context) async {
             ),
             FilledButton(
               style: FilledButton.styleFrom(
-                backgroundColor: ink,
+                backgroundColor: remove ? const Color(0xffe52b21) : ink,
                 foregroundColor: Colors.white,
                 minimumSize: const Size(48, 48),
                 shape: const StadiumBorder(),
@@ -69,7 +92,14 @@ Future<bool> confirmSavedCard(BuildContext context) async {
                 ),
               ),
               onPressed: () => finish(context, true),
-              child: const Text('Guardar y continuar'),
+              child: Text(
+                card == null
+                    ? 'Guardar y continuar'
+                    : remove
+                    ? 'Eliminar tarjeta'
+                    : 'Autorizar y continuar',
+                textAlign: TextAlign.center,
+              ),
             ),
           ],
         ),
