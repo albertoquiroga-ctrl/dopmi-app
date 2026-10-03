@@ -156,16 +156,106 @@ void main() {
       },
     );
   }
+  for (final scale in [1.0, 2.0]) {
+    testWidgets(
+      'topic menu dismissal preserves dialog and selection sends the correct topic at $scale',
+      (tester) async {
+        tester.view.physicalSize = scale == 2
+            ? const Size(320, 640)
+            : const Size(377, 852);
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        var submissions = 0;
+        final repository = SupportRepository((_, params) async {
+          submissions++;
+          expect((params['payload'] as Map)['topic'], 'guardian');
+          expect(
+            (params['payload'] as Map)['message'],
+            'Mi mensaje permanece.',
+          );
+          expect((params['payload'] as Map)['case_name'], 'Luna');
+          return {'request_id': params['target_request'], 'status': 'received'};
+        });
+        await tester.pumpWidget(
+          _host(
+            repository,
+            topics: const [
+              'Cómo funcionan los apoyos',
+              'Apoyar',
+              'Guardián',
+              'Adoptar',
+              'Verificación',
+              'Publicar casos',
+              'Fondos y evidencia',
+              'Mi cuenta',
+              'Confianza y seguridad',
+            ],
+          ),
+        );
+        await tester.tap(find.text('Abrir soporte'));
+        await tester.pumpAndSettle();
+        await tester.enterText(find.byType(TextField).first, 'Luna');
+        await tester.enterText(
+          find.byType(TextField).last,
+          'Mi mensaje permanece.',
+        );
+        await tester.pumpAndSettle();
+        final menu = find.byType(DropdownButtonFormField<int>);
+        for (final dismissal in ['outside', 'back', 'select']) {
+          await tester.ensureVisible(menu);
+          await tester.pumpAndSettle();
+          await tester.tap(menu);
+          await tester.pumpAndSettle();
+          if (dismissal == 'outside') {
+            await tester.tapAt(const Offset(2, 2));
+          } else if (dismissal == 'back') {
+            await tester.binding.handlePopRoute();
+          } else {
+            final option = find.text('Guardián').last;
+            await tester.ensureVisible(option);
+            await tester.pumpAndSettle();
+            expect(option.hitTestable(), findsOneWidget);
+            await tester.tap(option);
+          }
+          await tester.pumpAndSettle();
+          expect(find.byType(HelpSupportDialog), findsOneWidget);
+          expect(
+            tester
+                .widget<TextField>(find.byType(TextField).last)
+                .controller!
+                .text,
+            'Mi mensaje permanece.',
+          );
+          expect(submissions, 0);
+        }
+        expect(find.text('Guardián'), findsOneWidget);
+        final send = find.widgetWithText(FilledButton, 'Enviar mensaje');
+        await tester.ensureVisible(send);
+        await tester.pumpAndSettle();
+        await tester.tap(send);
+        await tester.pumpAndSettle();
+        expect(submissions, 1);
+        expect(find.text('Recibimos tu mensaje.'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
 }
 
-Widget _host(SupportRepository repository) => MaterialApp(
+Widget _host(
+  SupportRepository repository, {
+  List<String> topics = const ['Cómo funcionan los apoyos'],
+}) => MaterialApp(
   theme: dopmiTheme(),
   home: Scaffold(
     body: Builder(
       builder: (context) => TextButton(
         onPressed: () => showHelpSupportDialog(
           context,
-          topics: const ['Cómo funcionan los apoyos'],
+          topics: topics,
           initialTopic: 0,
           repository: repository,
         ),
