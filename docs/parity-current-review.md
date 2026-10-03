@@ -1,3 +1,9 @@
+# Corte vigente — loop392, 3/10/2026
+
+Componente botoneswallets con assets/medidasSource y sólo provider soportado habilitado.2widgettests text100/200 pasan y analyzer limpio6.3s. Falta inserciónpantalla, consentimiento, flujoowner/reanudación/receipt+freshlist, capturas y prueba nativa real. No paridad global completada; Codemagic sólo final.
+
+## Corte391 anterior
+
 # Corte vigente — loop391, 3/10/2026
 
 Store de intento nativo por cuenta preparado: sólo key/provider/consent, replayestable y no descartar por cancelaciónSDK/receiptajeno.10tests pasan, analyzer limpio26.4s. Falta UI/guardidentidad/listafresca, compilación y aceptación real. ConfigPK/MerchantID pendiente. Objetivo global activo; Codemagic sólo final.
