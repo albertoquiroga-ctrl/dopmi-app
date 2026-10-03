@@ -10,6 +10,17 @@ class FakeIdentityRepository implements IdentityRepository {
   bool pending = false;
   bool failSave = false;
   bool failLoad = false;
+  bool failEmailChange = false;
+  String? requestedEmail;
+  int emailChangeRequests = 0;
+  @override
+  Future<EmailChangeStatus> changeEmail(String email) async {
+    emailChangeRequests++;
+    if (failEmailChange) throw StateError('email_change_failed');
+    requestedEmail = email.trim();
+    return EmailChangeStatus.pendingConfirmation;
+  }
+
   AccountNames? accountNames;
   int accountNameLoads = 0;
   int signupCount = 0, passwordUpdates = 0, loads = 0, consentCount = 0;

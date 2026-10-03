@@ -309,6 +309,7 @@ void main() {
       final values = [
         'Ana María',
         'López García',
+        'ana@example.test',
         '5512345678',
         'Ciudad de México, CDMX',
       ];
@@ -340,10 +341,36 @@ void main() {
       expect(repo.profile.name, '${values[0]} ${values[1]}');
       expect(repo.accountNames!.firstName, values[0]);
       expect(repo.accountNames!.lastName, values[1]);
-      expect(repo.profile.phone, values[2]);
-      expect(repo.profile.city, values[3]);
+      expect(repo.profile.phone, values[3]);
+      expect(repo.profile.city, values[4]);
       expect(repo.user!.email, 'ana@example.test');
       expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
+    'email request preserves draft on failure and requires confirmation',
+    (tester) async {
+      final repo = FakeIdentityRepository()
+        ..user = const Identity('one', 'ana@example.test', verified: true)
+        ..failEmailChange = true;
+      await start(tester, repo);
+      await tester.enterText(
+        find.byType(TextFormField).at(2),
+        'nueva@example.test',
+      );
+      await tap(tester, 'Guardar cambios');
+      expect(find.text('nueva@example.test'), findsOneWidget);
+      expect(find.text('Guardamos los cambios de tu perfil.'), findsNothing);
+      repo.failEmailChange = false;
+      await tap(tester, 'Guardar cambios');
+      expect(repo.requestedEmail, 'nueva@example.test');
+      expect(repo.current!.email, 'ana@example.test');
+      expect(
+        find.textContaining('Revisa los correos de confirmación'),
+        findsOneWidget,
+      );
+      await tap(tester, 'Guardar cambios');
+      expect(repo.emailChangeRequests, 2);
     },
   );
   testWidgets('settings opens basic info without a rendering exception', (

@@ -36,6 +36,8 @@ class AccountNames {
   );
 }
 
+enum EmailChangeStatus { confirmed, pendingConfirmation }
+
 class Profile {
   const Profile({
     required this.id,
@@ -86,6 +88,7 @@ abstract class IdentityRepository {
   Future<void> confirmCode(String email, String code, {required bool recovery});
   Future<void> requestRecovery(String email);
   Future<void> updatePassword(String password);
+  Future<EmailChangeStatus> changeEmail(String email);
   Future<void> logout();
   Future<void> oauth(String provider);
   Future<void> linkProvider(String provider);
@@ -222,6 +225,38 @@ class SupabaseIdentityRepository implements IdentityRepository {
   @override
   Future<void> updatePassword(String password) async {
     await client.auth.updateUser(UserAttributes(password: password));
+  }
+
+  @override
+  Future<EmailChangeStatus> changeEmail(String email) async {
+    final actor = current?.id;
+    if (actor == null) throw StateError('profile_owner_changed');
+    final target = email.trim();
+    if (target.isEmpty ||
+        target.length > 254 ||
+        !RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(target)) {
+      throw const AuthException('Escribe un correo electrónico válido.');
+    }
+    if (current?.email.toLowerCase() == target.toLowerCase()) {
+      return EmailChangeStatus.confirmed;
+    }
+    if (client.auth.currentUser?.newEmail?.toLowerCase() == target.toLowerCase()) {
+      return EmailChangeStatus.pendingConfirmation;
+    }
+    final response = await client.auth.updateUser(
+      UserAttributes(email: target),
+      emailRedirectTo: config.redirect,
+    );
+    if (current?.id != actor || response.user?.id != actor) {
+      throw StateError('profile_owner_changed');
+    }
+    if (response.user?.email?.toLowerCase() == target.toLowerCase()) {
+      return EmailChangeStatus.confirmed;
+    }
+    if (response.user?.newEmail?.toLowerCase() == target.toLowerCase()) {
+      return EmailChangeStatus.pendingConfirmation;
+    }
+    throw StateError('email_change_not_acknowledged');
   }
 
   @override

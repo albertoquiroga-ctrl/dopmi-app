@@ -2767,3 +2767,22 @@ backend439/43927.84s. Versión6 ACTIVE/JWTtrue y archivos remotos iguales a loca
 No operación real de borrado, cargaAuth/REST, selectorAndroid ni aceptación
 visual global. No Codemagic. Referencia a3c969 sin cambio del loop312; próxima
 comprobación para implementación de correo. Objetivo global continúa activo.
+
+# Loop314 — correo editable mediante Auth real
+
+Referencia remota a3c969cd9103fd46dc5cd886999912526ce75efb sin cambio.
+Información básica permite editar/validar email con teclado apropiado y guarda
+por Supabase Auth.updateUser/UserAttributes + redirect configurado. Contrato
+EmailChangeStatus distingue email vigente confirmado vs newEmail pendiente;
+respuesta sin coincidencia o identidad cambiada se rechaza. No escribe correo
+en metadata/perfiles ni afirma confirmación/entrega de correo. Usa newEmail
+vigente para no repetir solicitud reconocida incluso al reabrir pantalla.
+
+UI conserva borrador ante error; guarda perfil/foto antes de solicitar correo,
+acuse pendiente indica confirmar por correos y repetición local no vuelve a
+solicitar. Cuenta suspendida continúa readonly. Fixture aislada; prueba nueva
+fallo→retry→acuse pendiente→repetición y large/keyboard actualizada5campos.
+28/28 identity/widgets/photo aprobadas; analyze limpio26s. Format tuvo bloqueo
+OneDrive1224 una vez en test, reintento exitoso. No correo real enviado/recibido,
+no confirmación Auth/REST acreditada, pruebas de transporte reales simuladas y
+reconciliación respuesta perdida pendientes del siguiente loop. No Codemagic.

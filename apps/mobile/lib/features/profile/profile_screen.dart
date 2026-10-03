@@ -38,6 +38,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
   final form = GlobalKey<FormState>();
   final name = TextEditingController(),
       lastName = TextEditingController(),
+      email = TextEditingController(),
       phone = TextEditingController(),
       city = TextEditingController();
   Profile? profile;
@@ -47,6 +48,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
   Uint8List? photoBytes;
   String? photoUrl, photoPath, pendingPhotoPath, photoError;
   bool photoLoading = false, photoDirty = false;
+  String? pendingEmail;
   @override
   void initState() {
     super.initState();
@@ -59,6 +61,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
     WidgetsBinding.instance.removeObserver(this);
     name.dispose();
     lastName.dispose();
+    email.dispose();
     phone.dispose();
     city.dispose();
     super.dispose();
@@ -140,6 +143,8 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
           profile = result;
           name.text = names.firstName;
           lastName.text = names.lastName;
+          email.text =
+              ref.read(identityRepositoryProvider).current?.email ?? '';
           phone.text = result.phone;
           city.text = result.city;
           mode = result.mode;
@@ -196,10 +201,26 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
         photoDirty = false;
       }
       if (mounted) {
+        final identities = ref.read(identityRepositoryProvider);
+        if (identities.current?.id != result.id) {
+          throw StateError('profile_owner_changed');
+        }
+        final targetEmail = email.text.trim();
+        if (targetEmail.toLowerCase() !=
+                identities.current?.email.toLowerCase() &&
+            targetEmail.toLowerCase() != pendingEmail?.toLowerCase()) {
+          final status = await identities.changeEmail(targetEmail);
+          if (!mounted || identities.current?.id != result.id) return;
+          pendingEmail = status == EmailChangeStatus.pendingConfirmation
+              ? targetEmail
+              : null;
+        }
         ref.read(experienceProvider).applyProfile(result);
         setState(() {
           profile = result;
-          message = 'Guardamos los cambios de tu perfil.';
+          message = pendingEmail == null
+              ? 'Guardamos los cambios de tu perfil.'
+              : 'Guardamos tu perfil. Revisa los correos de confirmación para completar el cambio de correo electrónico.';
         });
       }
     });
@@ -207,7 +228,6 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
 
   @override
   Widget build(BuildContext context) {
-    final identity = ref.read(identityControllerProvider).identity;
     final suspended = profile?.status == 'suspended';
     final large = MediaQuery.textScalerOf(context).scale(18) > 25;
     return Scaffold(
@@ -328,12 +348,18 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
                     const SizedBox(height: 16),
                     _BasicInfoField(
                       label: 'Correo electrónico',
-                      child: InputDecorator(
-                        decoration: const InputDecoration(),
-                        child: SelectableText(
-                          identity?.email ?? '',
-                          style: const TextStyle(fontSize: 14, color: ink),
-                        ),
+                      child: TextFormField(
+                        controller: email,
+                        enabled: !suspended && !busy,
+                        keyboardType: TextInputType.emailAddress,
+                        autocorrect: false,
+                        maxLength: 254,
+                        decoration: const InputDecoration(counterText: ''),
+                        validator: (value) =>
+                            RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$')
+                                .hasMatch((value ?? '').trim())
+                            ? null
+                            : 'Escribe un correo electrónico válido.',
                       ),
                     ),
                     const SizedBox(height: 16),
