@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,6 +9,16 @@ import 'package:go_router/go_router.dart';
 import '../../core/ui.dart';
 import '../adoption/community_repository.dart';
 import 'rescuer_profile_repository.dart';
+
+final publicProfilePhotoPickerProvider = Provider<Future<XFile?> Function()>((
+  ref,
+) {
+  return () => ImagePicker().pickImage(
+    source: ImageSource.gallery,
+    imageQuality: 90,
+    requestFullMetadata: false,
+  );
+});
 
 class RescuerPublicProfileEditScreen extends ConsumerStatefulWidget {
   const RescuerPublicProfileEditScreen({super.key});
@@ -24,6 +36,9 @@ class _RescuerPublicProfileEditState
   final instagram = TextEditingController();
   final facebook = TextEditingController();
   Json? profile;
+  Uint8List? avatarBytes;
+  String? pendingAvatarPath;
+  bool avatarDirty = false;
   String? avatarUrl, error;
   bool loading = true, busy = false, loadFailed = false;
 
@@ -91,9 +106,24 @@ class _RescuerPublicProfileEditState
       error = null;
     });
     try {
-      profile = await ref
-          .read(rescuerProfileRepositoryProvider)
-          .save(payload(), version: profile?['version'] as int?);
+      final repo = ref.read(rescuerProfileRepositoryProvider);
+      final owner = repo.userId;
+      if (owner == null) {
+        throw StateError('Inicia sesión para guardar tu perfil.');
+      }
+      if (avatarDirty && avatarBytes != null && pendingAvatarPath == null) {
+        final path = await repo.uploadAvatar(avatarBytes!);
+        if (!mounted || repo.userId != owner) return false;
+        pendingAvatarPath = path;
+      }
+      final saved = await repo.save(
+        payload(avatarPath: pendingAvatarPath),
+        version: profile?['version'] as int?,
+      );
+      if (!mounted || repo.userId != owner) return false;
+      profile = saved;
+      avatarDirty = false;
+      pendingAvatarPath = null;
       if (mounted && announce) {
         ScaffoldMessenger.of(
           context,
@@ -115,24 +145,18 @@ class _RescuerPublicProfileEditState
       error = null;
     });
     try {
-      final selected = await ImagePicker().pickImage(
-        source: ImageSource.gallery,
-        imageQuality: 90,
-        requestFullMetadata: false,
-      );
-      if (selected == null || !mounted) return;
       final repo = ref.read(rescuerProfileRepositoryProvider);
-      if (profile == null) {
-        profile = await repo.save(payload());
-        if (!mounted) return;
+      final owner = repo.userId;
+      if (owner == null) {
+        throw StateError('Inicia sesión para cambiar tu foto.');
       }
-      final path = await repo.uploadAvatar(await selected.readAsBytes());
-      if (!mounted) return;
-      profile = await repo.save(
-        payload(avatarPath: path),
-        version: profile?['version'] as int?,
-      );
-      avatarUrl = await repo.avatarUrl(path);
+      final selected = await ref.read(publicProfilePhotoPickerProvider)();
+      if (selected == null || !mounted || repo.userId != owner) return;
+      final bytes = await selected.readAsBytes();
+      if (!mounted || repo.userId != owner) return;
+      avatarBytes = bytes;
+      avatarDirty = true;
+      pendingAvatarPath = null;
     } catch (cause) {
       if (mounted) setState(() => error = communityError(cause));
     } finally {
@@ -247,10 +271,12 @@ class _RescuerPublicProfileEditState
                               radius: 32,
                               backgroundColor: const Color(0xffe9dfff),
                               foregroundColor: purple,
-                              backgroundImage: avatarUrl == null
+                              backgroundImage: avatarBytes != null
+                                  ? MemoryImage(avatarBytes!)
+                                  : avatarUrl == null
                                   ? null
                                   : NetworkImage(avatarUrl!),
-                              child: avatarUrl == null
+                              child: avatarBytes == null && avatarUrl == null
                                   ? name.text.trim().isEmpty
                                         ? const Icon(
                                             Icons.person_outline,
