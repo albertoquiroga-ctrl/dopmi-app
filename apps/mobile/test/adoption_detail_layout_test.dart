@@ -1,5 +1,6 @@
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/features/adoption/adoption_detail_layout.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,61 @@ class DistanceRepository extends DetailRepository {
 }
 
 void main() {
+  testWidgets(
+    'changing publication resets gallery even with shared photo paths',
+    (tester) async {
+      final repo = DetailRepository();
+      final container = ProviderContainer(
+        overrides: [communityRepositoryProvider.overrideWithValue(repo)],
+      );
+      addTearDown(container.dispose);
+      Future<void> show(String id) async {
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: MaterialApp(
+              home: Scaffold(
+                body: AdoptionDetailLayout(
+                  post: Adoption({
+                    ...repo.post.data,
+                    'id': id,
+                    'photos': ['approved/one', 'approved/two'],
+                  }),
+                  saved: false,
+                  busy: false,
+                  owner: false,
+                  favorite: () {},
+                  contact: () {},
+                  share: () {},
+                  report: () {},
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+      }
+
+      final semantics = tester.ensureSemantics();
+      await show('first');
+      await tester.drag(find.byType(PageView), const Offset(-600, 0));
+      await tester.pumpAndSettle();
+      expect(find.bySemanticsLabel('Foto 2 de 2'), findsOneWidget);
+      await show('second');
+      expect(find.bySemanticsLabel('Foto 1 de 2'), findsOneWidget);
+      final position = tester
+          .state<ScrollableState>(
+            find.descendant(
+              of: find.byType(PageView),
+              matching: find.byType(Scrollable),
+            ),
+          )
+          .position;
+      expect(position.pixels, 0);
+      semantics.dispose();
+      expect(tester.takeException(), isNull);
+    },
+  );
   Future<DetailRepository> open(
     WidgetTester tester, {
     bool large = false,

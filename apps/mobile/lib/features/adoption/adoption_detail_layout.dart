@@ -37,7 +37,8 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
   @override
   void didUpdateWidget(AdoptionDetailLayout oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.post.photos.join('|') != widget.post.photos.join('|')) {
+    if (oldWidget.post.id != widget.post.id ||
+        oldWidget.post.photos.join('|') != widget.post.photos.join('|')) {
       galleryIndex = 0;
     }
   }
@@ -97,7 +98,9 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                           )
                         else
                           PageView.builder(
-                            key: ValueKey(post.photos.join('|')),
+                            key: ValueKey(
+                              '${post.id}:${post.photos.join('|')}',
+                            ),
                             itemCount: post.photos.length,
                             onPageChanged: (value) =>
                                 setState(() => galleryIndex = value),

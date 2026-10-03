@@ -1,3 +1,9 @@
+# Corte vigente — loop402, 3/10/2026
+
+GaleríaAdoptar reiniciaíndice/página porpost.id ademásdephotos;5detalle tests pasan/analyzer limpio28.6s. Sourcecheckout/remotoa3c969c confirmado: adopciónheroestático, casodots/thumbnailsinstantáneos; galería móvil real preservada. AndroidStripe compile401 aprobado sóloficticio/pre-candidato, configreal/SDK/device/matrizglobal pendientes. Codemagic sóloobjetivo completo.
+
+## Corte401 anterior
+
 # Corte vigente — loop401, 3/10/2026
 
 Android debug con Stripe compiló40473 exit0/556.2s, APK externo ficticio sin distribución/servicios; no candidato exactoHEAD por sincronizaciónscratch durantebuild. finishWallet valida id+wallet.type;16targeted pasan. Analyzer34524 limpio95.4s. Configreal/SDK/device/matrizglobal pendientes, Codemagic sóloobjetivo completo.
