@@ -484,7 +484,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
 
   @override
   Widget build(BuildContext context) => PublicationFrame(
-    title: 'Publicar caso',
+    title: step == 2 ? 'Revisa tu caso' : 'Publicar caso',
     step: step,
     footer: publicationFooter(),
     onBack: busy
