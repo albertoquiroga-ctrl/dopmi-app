@@ -4095,3 +4095,7 @@ Base41a87ab; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado.9fixtur
 ### Loop481 — visor privado compacto, 3/10/2026
 
 Base9b160f1; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. VisorContributionFrame rescuer18/List16-20-16-32/intro14.45/backpopoperfil, conserva seguridad/recargaPDFimagen480.58648exit0,7/7,12s seis pruebas+capturador9, counters9regresos y tresrecargas; analyzer16729clean27.5s. PNG final/before480 revisados. Extensión sin SourceURLliteral; no launchPDFnativo/Storage/Android/fullactual atribuido. Full592479 anterior480/481. Sin SQL/push/Codemagic. Próximo familias Source/gestos/movimiento.
+
+### Loop482 — movimiento y galería real, 3/10/2026
+
+Base225f983; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; Edge377x852/case/rocky Foto2src cambia/activo1/ceroanimaciones; Foto3observerclickreal delta7.8ms, transition/animationDuration0s. CapturaSource inspeccionada. Fortalece rescue_test ruta real selección teclado y touch:377/0pixels primerpump e isScrollingfalse; final94784exit0,1/1,2s. Gate34673exit0,36/36,9s rutas/onboarding/discovery/nav/Guardian/gallerylifecycle actuales; analyze4410clean34.7s. No producción modificada/fullnuevo/gesto físico. Browsercerrado/Vite14151detenido. Switch180CSS sólo paneltestSource excluido. Auditoría rutas incluye480/481; full592479 anteriorvisor. Alcanceglobal/matriz/Android pendientes; sin push/Codemagic.

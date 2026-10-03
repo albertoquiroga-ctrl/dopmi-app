@@ -1044,6 +1044,14 @@ void main() {
         tester.widget<Semantics>(selectedSecond).properties.selected,
         true,
       );
+      final gallery = tester.state<ScrollableState>(
+        find.descendant(
+          of: find.byType(PageView),
+          matching: find.byType(Scrollable),
+        ),
+      );
+      expect(gallery.position.pixels, 377);
+      expect(gallery.position.isScrollingNotifier.value, false);
       expect(tester.getSize(second), const Size(11, 48));
       await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
@@ -1055,6 +1063,14 @@ void main() {
         tester.widget<Semantics>(selectedSecond).properties.selected,
         false,
       );
+      await tester.tap(second);
+      await tester.pump();
+      expect(gallery.position.pixels, 377);
+      expect(gallery.position.isScrollingNotifier.value, false);
+      await tester.tap(first);
+      await tester.pump();
+      expect(gallery.position.pixels, 0);
+      expect(gallery.position.isScrollingNotifier.value, false);
       expect(tester.takeException(), isNull);
     },
   );
