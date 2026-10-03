@@ -238,7 +238,7 @@ class _RescuerPublicProfileEditState
           children: [
             const Text(
               'Tu nombre público, foto, descripción, ciudad y enlaces serán visibles después de la revisión. No mostramos domicilio, teléfono ni correo.',
-              style: TextStyle(fontSize: 14, height: 1.2, color: ink),
+              style: TextStyle(fontSize: 14, height: 1.55, color: ink),
             ),
             const SizedBox(height: 16),
             if (loading) const LinearProgressIndicator(),
@@ -443,18 +443,18 @@ class _RescuerPublicProfileEditState
                   style: FilledButton.styleFrom(
                     backgroundColor: purple,
                     foregroundColor: const Color(0xfffbfbff),
-                    minimumSize: const Size(0, 48),
+                    minimumSize: const Size(0, 36),
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 18,
-                      vertical: 12,
+                      horizontal: 16,
+                      vertical: 8,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
                     textStyle: const TextStyle(
                       fontFamily: 'Inter',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   onPressed: busy ? null : save,

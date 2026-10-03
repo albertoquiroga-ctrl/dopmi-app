@@ -2927,3 +2927,9 @@ Analyze inicial y segundo: dos lint curly braces en throws ownernull; primer int
 
 Corte56afd159b41888bd21600fc082588ef2b81d9f8f; Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb confirmada. Evidencia nueva sobre comportamiento325: test con GoRouter selecciona PNG, Cancelar→/rescuer/profile, uploads0/saves0; reabre editor y comprueba sin MemoryImage. Otro test mantiene selector pendiente, cambia owner y responde; sin preview/upload/save ni excepción. Los tres casos draftPhoto aprobados2s. Primera ejecución falló compilación por paréntesis extra en nuevo fixture; corregido antes de reintento. Sin cambios productivos ni backend, sin Codemagic ni push. Esto prueba widget/rutas y sesión simulada; galería/dispositivo real y Auth/Storage público continúan pendientes.
 Analyze final limpio8.9s. Pendiente contraste runtime completo antes del cierre global.
+
+# Loop327 — editor Source renderizado y corrección de medidas
+
+Vite5176/IAB22 temporal, viewport377x852 (CSS377.6/inner378). /rescuer/profile/edit medido: TopBar68; lead14/line21.7 alto43.4; photo97.6; inputs36.8; textarea113.6; Guardar cambios36/text14w500/p8x16; Cancelar48/text16w600. Esto contradice inferencia324 de botón48: corregido Guardar borrador a36/14w500/p8x16 y lead1.55, conservando mínimo tap accesible del framework. Datos públicos/revisión real siguen sustituyendo campos privados simulados. Lectura document.fonts iterable no soportada; no prueba fuentes equivalentes.
+Cancelar en Source confirmó /rescuer/profile, coincide326. Capturador editor tresestados aprobado3s; diezpruebas foto/perfil/settings aprobadas5s. IAB22 cerrado, viewport restaurado, Vite4565 detenido explícitamente. Análisis final en curso. Sin push/Codemagic. No declarar equivalencia total: estados reales, tipografía exacta/gestosdispositivo y demás familias siguen abiertos.
+Analyze final limpio33.1s; captura teclado200% inspeccionada, botones/resultado accesibles.
