@@ -67,6 +67,35 @@ import 'package:dopmi_mobile/features/payments/guardian_payment_card.dart';
 
 import 'capture_design_test.dart' show saveCapture;
 
+class MyAdoptionsCaptureCommunity extends FakeCommunity {
+  MyAdoptionsCaptureCommunity({required this.empty, required this.fail});
+  final bool empty, fail;
+  @override
+  Future<DataPage<Adoption>> mine(int page) async {
+    if (fail) throw Exception('fixture unavailable');
+    if (empty) return const DataPage([], 0);
+    final items = [
+      for (final status in [
+        'draft',
+        'submitted',
+        'changes_requested',
+        'published',
+      ])
+        Adoption({
+          ...post.data,
+          'id': 'own-$status',
+          'owner_id': 'one',
+          'pet_name': status == 'draft' ? '' : 'Luna',
+          'status': status,
+          if (status == 'changes_requested')
+            'review_feedback':
+                'Agrega una foto clara y confirma los cuidados necesarios.',
+        }),
+    ];
+    return DataPage(items, items.length);
+  }
+}
+
 class PublicProfileCaptureCommunity extends FakeCommunity {
   PublicProfileCaptureCommunity({this.reference = false});
   final bool reference;
@@ -1026,6 +1055,15 @@ void main() {
       ('transparency-criteria', '/transparency'),
       ('publish-choice', '/publish'),
       ('publish-choice-large', '/publish'),
+      ('my-adoptions', '/my-adoptions'),
+      ('my-adoptions-large', '/my-adoptions'),
+      ('my-adoptions-empty', '/my-adoptions'),
+      ('my-adoptions-empty-large', '/my-adoptions'),
+      ('my-adoptions-error', '/my-adoptions'),
+      ('my-adoptions-error-large', '/my-adoptions'),
+      ('my-adoptions-content-large', '/my-adoptions'),
+      ('my-adoptions-empty-content-large', '/my-adoptions'),
+      ('my-adoptions-error-content-large', '/my-adoptions'),
       ('publish-photos', '/my-adoptions/new'),
       ('publish-photos-large', '/my-adoptions/new'),
       ('publish-photo-grid', '/my-adoptions/post'),
@@ -1209,7 +1247,12 @@ void main() {
           },
         };
       }
-      final community = spec.$1.startsWith('saved-pagination')
+      final community = spec.$1.startsWith('my-adoptions')
+          ? MyAdoptionsCaptureCommunity(
+              empty: spec.$1.contains('empty'),
+              fail: spec.$1.contains('error'),
+            )
+          : spec.$1.startsWith('saved-pagination')
           ? PagedSavedCommunity()
           : spec.$1 == 'saved-rescuers' || spec.$1 == 'saved-rescuers-large'
           ? SavedRescuerCommunity()
@@ -3097,6 +3140,23 @@ void main() {
             );
             await tester.ensureVisible(find.text('Actualizar estado'));
             await tester.pumpAndSettle();
+          }
+        }
+        if (spec.$1.startsWith('my-adoptions')) {
+          final target = spec.$1.contains('error')
+              ? find.text('Volver a intentar')
+              : spec.$1.contains('empty')
+              ? find.text(
+                  'Aquí encontrarás tus borradores, las publicaciones en revisión y sus respuestas.',
+                )
+              : find.text('Borrador sin nombre');
+          if (spec.$1.contains('content')) {
+            await tester.scrollUntilVisible(target, 200);
+            await tester.ensureVisible(target);
+            await tester.pumpAndSettle();
+            expect(target.hitTestable(), findsOneWidget);
+          } else if (!spec.$1.endsWith('-large')) {
+            expect(target, findsOneWidget);
           }
         }
         TestGesture? helpHold;

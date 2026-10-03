@@ -2258,3 +2258,8 @@ GuardianHistory new4fixtures normal/200/datos/empty /guardian/history;HistoryCap
 ### Loop466 — marco compacto del historial de ciclos, 3/10/2026
 
 Producción c9bd74c; referencia a3c969cd9103fd46dc5cd886999912526ce75efb. ContributionFrame reemplaza marco genérico; conserva etiquetas de prueba, recibos, propiedad, paginación y devoluciones. Regreso al origen o /guardian. Capturador cuatro estados pasó; normal inspeccionado. flutter analyze limpio 33.4 s; 12/12 guardian_history_test.dart verdes en 3 s (dopmi-loop466-history-final2.log). Primera prueba esperaba asentamiento de consulta Guardian fuera de alcance; bombeo acotado corrigió sólo la prueba. Full579 anterior en 2bba0c2 no acredita cambio466. Sin aceptación instalada, push ni Codemagic; envío al completar objetivo según usuario.
+
+
+### Loop467 — publicaciones propias, nueve estados de captura, 3/10/2026
+
+Base b9495d3/producción c9bd74c; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Fixture mine sólo capturador con borrador/revisión/correcciones/publicada, vacío/error. Nueve estados normal200+contenido desplazado200 verifican acceso al contenido/reintento. Final14330 exit0,1test/9capturas5s. Analyzer65499 limpio35.3s antes adición scroll/assert; final compila. Primera aserción sobre lazy fuera de viewport corregida desplazando sólo estados content. Normal/vacío200/contenido datoserror200 revisados. Source integra adopciones en Mis Casos, no /my-adoptions literal. Encabezado slogan Fraunces domina viewport; siguiente alinearlo con composición Inter de listado sin reconstruir lifecycle. Sin cambios producción/aceptación instalada/Codemagic/push.
