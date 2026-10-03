@@ -1,4 +1,10 @@
-# Corte vigente — loop506, 3/10/2026
+# Corte vigente — loop510, 3/10/2026
+
+Fuente9e76c84fb1cc66e1dcf1c0c7ae6d770dc054c63c: full608/608,3m54s,87957exit0; analyzer46356exit0clean205.7s.230Dart/cuatroSVG idénticos raíz/scratch y hashes sin cambios durante ejecución. Incluye pendientes507/toque508/iconos509; supersede full608506.
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. ADB510 vacío. Capturador401492 precede cambios493/499/505/507/509; próxima pasada completa actual. Esta pasada no implica401aceptaciones. Contraste global/funciones físicas/StripeSDK pendientes. Sin push/Codemagic hasta objetivo completo.
+
+# Corte anterior — loop506, 3/10/2026
 
 Fuentec1e18561e4717c5dacd13eaf3437b07630bb8170: full608/608,3m49s,49826exit0.230Dart y SVGwallet coinciden raíz/scratch y hashes sin cambios durante ejecución. Incluye503/504 y degradado/SVG505. Analyzer505clean36.1s misma producción antes únicamente de precargaSVG del capturador; config16/16 de501 sin cambio de configuración. Supersede607500.
 

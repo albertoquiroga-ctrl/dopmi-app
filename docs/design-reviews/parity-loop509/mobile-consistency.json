@@ -239,5 +239,7 @@
   },
   "full_handle": 87957,
   "analyzer_handle": 46356,
-  "status": "running, not approved"
+  "status": "full608/608 exit0; analyzer clean; hashes unchanged after execution",
+  "full_duration": "3m54s",
+  "analyzer_seconds": 205.7
 }
