@@ -690,16 +690,6 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                 ),
               ],
               if (step == 2) ...[
-                const Text(
-                  'Revisa antes de enviar',
-                  style: TextStyle(
-                    fontSize: 18,
-                    height: 28 / 18,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xff151423),
-                  ),
-                ),
-                const SizedBox(height: 24),
                 _ReviewSection(
                   title: 'Fotos',
                   onEdit: busy || post?.status == 'submitted'
@@ -878,7 +868,7 @@ class _ReviewCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(20),
     ),
     child: Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(17),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -888,7 +878,7 @@ class _ReviewCard extends StatelessWidget {
               rows[index].$1,
               style: const TextStyle(
                 fontSize: 12,
-                height: 1.55,
+                height: 15 / 12,
                 color: Color(0xff616174),
               ),
             ),
