@@ -1,3 +1,9 @@
+# Corte vigente — loop413, 3/10/2026
+
+Introducción de verificación comparada con Source renderizado: títulos, iconos, alturas y margen corregidos.2 pruebas/capture pasan; analyzer limpio37.3s. Navegación/cierre/documentos reales accesibles con200. No aceptación global ni teléfono; siguen otras familias, animaciones/gestos y configuración SDK. Codemagic únicamente objetivo completo.
+
+## Corte412 anterior
+
 # Corte vigente — loop412, 3/10/2026
 
 Formulario de verificación usa paleta rescatista del Source; 31 comprobaciones pasan y analyzer limpio36.8s. Capturas normal/200 revisadas. Privacidad y revisión reales preservadas. No aceptación global ni instalada; siguen otras familias, animaciones/gestos y configuración SDK real. Codemagic sólo al completar el objetivo.

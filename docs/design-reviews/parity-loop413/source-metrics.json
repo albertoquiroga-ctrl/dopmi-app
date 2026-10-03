@@ -1,0 +1,36 @@
+{
+  "viewport": [
+    377,
+    852
+  ],
+  "source": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "font_ready": true,
+  "heading": {
+    "font": 22,
+    "line": 28.6,
+    "weight": 700
+  },
+  "intro_strong": {
+    "font": 16,
+    "line": 20,
+    "weight": 700
+  },
+  "section_heading": {
+    "font": 16,
+    "line": 20,
+    "weight": 700
+  },
+  "requirements": {
+    "font": 16,
+    "line": 20,
+    "weight": 700
+  },
+  "notice_strong": {
+    "font": 14,
+    "line": 17,
+    "weight": 700
+  },
+  "dialog_height": 732.71875,
+  "dialog_y": 59.640625,
+  "animations": "No CSS animation declaration on modal/dialog/verify-intro; no invented transition."
+}

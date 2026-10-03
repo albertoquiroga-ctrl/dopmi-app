@@ -11,12 +11,13 @@ class VerificationIntroScreen extends StatelessWidget {
   static const purple = Color(0xff7841f2);
   static const ink = Color(0xff15110d);
   static const muted = Color(0xff554e48);
-  Widget icon(String name, double size) => SvgPicture.asset(
-    'assets/profile/$name',
-    width: size,
-    height: size,
-    colorFilter: const ColorFilter.mode(purple, BlendMode.srcIn),
-  );
+  Widget icon(String name, double size, {Color color = purple}) =>
+      SvgPicture.asset(
+        'assets/profile/$name',
+        width: size,
+        height: size,
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
 
   Widget card(String title, String copy, {bool notice = false}) => DecoratedBox(
     decoration: BoxDecoration(
@@ -31,7 +32,7 @@ class VerificationIntroScreen extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          icon(notice ? 'icon-doc.svg' : 'icon-shield.svg', 18),
+          icon(notice ? 'icon-doc.svg' : 'icon-shield.svg', 18, color: ink),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -40,9 +41,9 @@ class VerificationIntroScreen extends StatelessWidget {
                 Text(
                   title,
                   style: TextStyle(
-                    fontSize: 14,
-                    height: 1.55,
-                    fontWeight: FontWeight.w600,
+                    fontSize: notice ? 14 : 16,
+                    height: notice ? 17 / 14 : 1.25,
+                    fontWeight: FontWeight.w700,
                     color: notice ? purple : ink,
                   ),
                 ),
@@ -65,9 +66,9 @@ class VerificationIntroScreen extends StatelessWidget {
   Widget requirement(String title, String copy) => Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      const Padding(
-        padding: EdgeInsets.only(top: 3),
-        child: Icon(Icons.check_circle_outline, size: 16, color: purple),
+      Padding(
+        padding: const EdgeInsets.only(top: 3),
+        child: icon('check-circle.svg', 16),
       ),
       const SizedBox(width: 10),
       Expanded(
@@ -77,9 +78,9 @@ class VerificationIntroScreen extends StatelessWidget {
             Text(
               title,
               style: const TextStyle(
-                fontSize: 14,
-                height: 1.55,
-                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                height: 1.25,
+                fontWeight: FontWeight.w700,
                 color: ink,
               ),
             ),
@@ -139,7 +140,7 @@ class VerificationIntroScreen extends StatelessWidget {
                                 style: TextStyle(
                                   fontFamily: 'Inter',
                                   fontSize: 22,
-                                  height: 1.55,
+                                  height: 1.3,
                                   fontWeight: FontWeight.w700,
                                   color: ink,
                                 ),
@@ -155,8 +156,8 @@ class VerificationIntroScreen extends StatelessWidget {
                               'Cómo funciona el reembolso',
                               style: TextStyle(
                                 fontSize: 16,
-                                height: 1.55,
-                                fontWeight: FontWeight.w600,
+                                height: 1.25,
+                                fontWeight: FontWeight.w700,
                                 color: ink,
                               ),
                             ),
@@ -169,7 +170,7 @@ class VerificationIntroScreen extends StatelessWidget {
                                 color: muted,
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 20),
                             requirement(
                               'Para comida:',
                               'Comprobante de compra y fotografías de la mascota con la comida.',
