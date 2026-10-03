@@ -1,3 +1,9 @@
+# Corte vigente — loop410, 3/10/2026
+
+SelectorPublish usa paletaSource rescatista151423/4f4e5c/e3e4ed; comparaciónrenderizada normal/captura200 revisadas.7targeted con captura pasan/analyzer limpio47s. AvisoUnicodeSource vsIconcliente sigue diferencia por revisar; no familiaPublish cerrada. ConfigSDKreal/matrizglobal/device/finalacceptancependientes, Codemagic sóloobjetivo completo.
+
+## Corte409 anterior
+
 # Corte vigente — loop409, 3/10/2026
 
 Capturador completo408 aprobado2m35s. Chat comparado conSource real ydatos iguales: hora12px ycomposer46px explícitos;33targeted con captura pasan/analyzerfinal limpio26.4s. Capturas donor/rescuer/keyboard200 revisadas, sinaceptaciónhardware/global niSource200nuevo. Full558407 antecede sólocambiochat409. ConfigSDKreal/matrizglobal/device/finalgates pendientes; Codemagic únicamenteobjetivo completo.

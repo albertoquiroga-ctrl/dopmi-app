@@ -1795,3 +1795,12 @@ Browsermetrics .bubble76.375/p43.375/time12 y composerinput46. Cliente hora10 he
 32/32community tests87745/be91df pasan14s antesconstraint; capturechat1/128131/20bc71 pasa6s. Final community+capturechat33/33 pasan98514/9d9b0e13s sobreconstraint; analyzerfinal21980/d85528 limpio26.4s (primero18837/40450d54.8s antecedeconstraint). PNGequivalentes Source yFlutter donor/rescuer/keyboard200 y metrics guardados/revisados parity-loop409. Normal muestra mejora burbuja/compositor, rescuer mantienepaleta ytextoselectable;200composer accesible coninset simulado. NoSource200nuevo/SDK/hardware/identidadpixelglobal. Full558407 antecede sólo ajustes409; captura completa408 antecede409, dirigidachat actual pasa.
 
 Browser409 cerrado9d1ab0; Vite24212 CtrlCexit1esperado. SinCM/push/configrealSDK, matrizglobal/dispositivo/finalacceptancependientes. Próximo revisar publicación/verificación y otrasfamilias con capturas actuales; Codemagic únicamenteobjetivo completo.
+
+
+### Loop410 — paleta de rescatista en selector de publicación, 3/10/2026
+
+Base5f2dc56; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Capturasactuales408 publish-choice normal/200 revisadas; Source nuevo Edgeagent-browser410 /rescuer/publish377x852, fonts.ready/Interchecktrue, DOM ycolorescomputed registrados. Composición/títulos/cards/cancel/navbar corresponden; diferencia concreta: clientehardcodeaba donorink15110d/muted554e48/linee6e2dd pero Source.rescuer-theme usa151423/4f4e5c/e3e4ed. Ajuste sóloesasconstantes en publish_choice_screen, sin tamaños/rutas/estado/permisos/hovernuevo. Sombras específicas ycoloresgradientes preservados.
+
+7/7targeted publish_choice+captureprefijopublish-choice pasan89007/ed96b1 en7s: estadosverificación/rutas/bloqueotardío ycapturasnormal200. Analyzer limpio47.0s94617/ff6a0d, diffcheck limpio. PNGequivalentesSource/Flutter normal200 ysource-colors.json guardadas/revisadas parity-loop410. SourcebadgeModo prueba no se copia; avisoUnicode⚠️ Source vsIconwarningamber cliente permanece diferencia visible pendiente de revisar, no declarar selectoridéntico ni familiaPublish cerrada. Source200nuevo/nohardware noacreditados.
+
+Browser410 cerrado bcd8ae; Vite97298 CtrlCexit1esperado. Full558407+captercompleto408 antecedencambioschat409/paleta410, dirigidosactuales cubrenal alcance. Próximo aviso/intakeverificación y formulariosPublicación, manteniendoobjetivoglobal/configSDKreal/device/finalacceptance. SinCM/push, Codemagic sóloobjetivo completo.

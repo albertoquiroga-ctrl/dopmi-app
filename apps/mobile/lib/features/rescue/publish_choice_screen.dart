@@ -104,7 +104,7 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
                                     height: 1.15,
                                     letterSpacing: -.56,
                                     fontWeight: FontWeight.w700,
-                                    color: Color(0xff15110d),
+                                    color: Color(0xff151423),
                                   ),
                                 ),
                                 SizedBox(height: 8),
@@ -114,7 +114,7 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
                                   style: TextStyle(
                                     fontSize: 15,
                                     height: 1.5,
-                                    color: Color(0xff554e48),
+                                    color: Color(0xff4f4e5c),
                                   ),
                                 ),
                               ],
@@ -169,7 +169,7 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
                                   ? null
                                   : () => context.go('/rescuer'),
                               style: TextButton.styleFrom(
-                                foregroundColor: const Color(0xff554e48),
+                                foregroundColor: const Color(0xff4f4e5c),
                                 minimumSize: const Size(48, 48),
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 16,
@@ -258,7 +258,7 @@ class _PublishTypeCardState extends State<PublishTypeCard> {
               border: Border.all(
                 color: hover
                     ? const Color(0xffd8d2ca)
-                    : const Color(0xffe6e2dd),
+                    : const Color(0xffe3e4ed),
               ),
               boxShadow: [
                 BoxShadow(
@@ -301,7 +301,7 @@ class _PublishTypeCardState extends State<PublishTypeCard> {
                           height: 1.2,
                           letterSpacing: -.34,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xff15110d),
+                          color: Color(0xff151423),
                         ),
                       ),
                       const SizedBox(height: 5),
@@ -310,7 +310,7 @@ class _PublishTypeCardState extends State<PublishTypeCard> {
                         style: const TextStyle(
                           fontSize: 14,
                           height: 20 / 14,
-                          color: Color(0xff554e48),
+                          color: Color(0xff4f4e5c),
                         ),
                       ),
                       if (widget.verification) ...[
