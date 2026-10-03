@@ -1,3 +1,9 @@
+# Corte vigente — loop404, 3/10/2026
+
+Fullmobile558/558 sobre65ffc3145b40a71f794e2aef1e673fbbc64da390 pasa3m59s;223Dart lib/test scratchnormalizados idénticos. Analyzer403 mismo código limpio. Regresión técnica no aceptaciónvisualglobal/Androidinstalado; configSDKreal/matrizglobal/device/finalgates siguen pendientes. Codemagic sóloobjetivo completo. Próximo comparaciónrenderizada por familias frenteSource vigente, sin rehacer flujos aceptados.
+
+## Corte403 anterior
+
 # Corte vigente — loop403, 3/10/2026
 
 Galeríacasos conserva refresh y reinicia porrecord.id/cambiofotos;27suite rescue+galeríalifecycle pasan/analyzer limpio39.5s. Sourcea3c969c reconsultado. Sinaceptacióninstalada/global; configSDKreal/device/matrizglobal pendientes, Codemagic únicamenteobjetivo completo.
