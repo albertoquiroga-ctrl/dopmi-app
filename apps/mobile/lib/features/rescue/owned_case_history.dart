@@ -69,14 +69,14 @@ class OwnedCaseStory extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (var index = 0; index < update.photos.length; index++)
+          if (update.photos.length == 1)
             Stack(
               children: [
                 OwnedStoryPhoto(
-                  update.photos[index],
-                  key: ValueKey(update.photos[index]),
+                  update.photos.first,
+                  key: ValueKey(update.photos.first),
                 ),
-                if (index == 0 && date.isNotEmpty)
+                if (date.isNotEmpty)
                   Positioned(
                     top: 10,
                     left: 10,
@@ -87,6 +87,38 @@ class OwnedCaseStory extends StatelessWidget {
                     ),
                   ),
               ],
+            )
+          else if (update.photos.length > 1)
+            SizedBox(
+              height: 160,
+              child: PageView(
+                key: ValueKey('story-gallery:${update.id}'),
+                children: [
+                  for (var index = 0; index < update.photos.length; index++)
+                    Semantics(
+                      label:
+                          'Foto ${index + 1} de ${update.photos.length} del avance',
+                      child: Stack(
+                        children: [
+                          OwnedStoryPhoto(
+                            update.photos[index],
+                            key: ValueKey(update.photos[index]),
+                          ),
+                          if (date.isNotEmpty)
+                            Positioned(
+                              top: 10,
+                              left: 10,
+                              right: 10,
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: _StoryDate(date),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
             ),
           Padding(
             padding: const EdgeInsets.all(14),

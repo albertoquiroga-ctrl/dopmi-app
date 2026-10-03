@@ -218,4 +218,45 @@ void main() {
     expect(find.textContaining('El caso continúa'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+  testWidgets(
+    'multiple approved story photos swipe within one 160px media area',
+    (tester) async {
+      final story = CaseUpdate({
+        'id': 'gallery',
+        'body': 'Historia real',
+        'photos': ['approved-first', 'approved-second'],
+        'published_at': '2026-10-01T16:00:00Z',
+      });
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            caseUpdateRepositoryProvider.overrideWithValue(StoryFixture()),
+          ],
+          child: MaterialApp(home: Scaffold(body: OwnedCaseStory(story))),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final gallery = find.byKey(const ValueKey('story-gallery:gallery'));
+      expect(tester.getSize(gallery).height, 160);
+      expect(
+        find.byKey(const ValueKey('approved-first')).hitTestable(),
+        findsOneWidget,
+      );
+      await tester.drag(gallery, const Offset(-600, 0));
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('approved-second')).hitTestable(),
+        findsOneWidget,
+      );
+      expect(tester.getSize(gallery).height, 160);
+      expect(find.text('Historia real'), findsOneWidget);
+      await tester.drag(gallery, const Offset(600, 0));
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('approved-first')).hitTestable(),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
 }
