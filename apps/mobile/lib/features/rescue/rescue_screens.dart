@@ -1515,7 +1515,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
             field.label,
             style: const TextStyle(
               fontSize: 12,
-              height: 1.55,
+              height: 15 / 12,
               fontWeight: FontWeight.w600,
               color: Color(0xff4f4e5c),
             ),
@@ -1538,11 +1538,15 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                     ? TextInputType.multiline
                     : TextInputType.text,
                 style: const TextStyle(
-                  fontSize: 16,
-                  height: 1.55,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  height: 15 / 12,
                   color: Color(0xff151423),
                 ),
                 decoration: InputDecoration(
+                  constraints: BoxConstraints(
+                    minHeight: field.lines > 1 ? 112 : 44,
+                  ),
                   counterText: '',
                   isDense: true,
                   filled: true,
@@ -1570,6 +1574,12 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                   ? controllers[key]!.text
                   : null,
               isExpanded: true,
+              style: const TextStyle(
+                fontSize: 12,
+                height: 15 / 12,
+                fontWeight: FontWeight.w600,
+                color: Color(0xff151423),
+              ),
               decoration: InputDecoration(
                 isDense: true,
                 border: border,
