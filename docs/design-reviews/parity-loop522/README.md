@@ -1,0 +1,5 @@
+# Loop522 — Social visible y casilla alineada, 3/10/2026
+
+Referenciaa3c969cd9103fd46dc5cd886999912526ce75efb reconsultada;SourceCSSgap8/check16 y runtime519 previo. c92bc24 desplaza visualCheckbox4px a izquierda dentro de leading24:marca empieza enpadding17delcard y etiqueta24pxdespués (16+8), antesgapvisual4. Value/ciclo/guardado/readonly conservados. Capturador añadeSocial normal/ampliado y desplaza desde resumen para mostrarlo. Inventario522403fixtures únicas,55Source/51nativos/38capturedpatterns/44paths sin cambio. No403capturascompletasniaceptaciones: fullcapturer511401antes de nuevas2.
+
+11462exit0,8/8,6s: sietepruebas+capturador4fixtures.96354analyzerexit0 limpio. NormalSocialPNGinspeccionado3filas/Porconfirmar/indicadoralineado. LargeSocialPNG muestra primerafila ypartesegunda, tercera fuera; no inspecciónatribuida a esa fila fuera delviewport. Texto200requiere desplazamiento; pruebastriestado/back521 siguenpasando. SinSource runtime nuevo522/Androidfísico/global/StripeSDK. Full609517 precede519–522. Sinbackend/SQL/push/Codemagic.

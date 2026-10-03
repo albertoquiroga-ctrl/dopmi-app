@@ -2526,3 +2526,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/CSSinspeccionado/run
 ### Loop521 — tarjetasSalud/Social con estados reales, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/AppCSSinspeccionado/runtime519previo. b42cd9f summaryTraitCard/Checkreadonly títuloinside/padding17/label17/helper15/indicadortri preserveunknown ycaretexto. Test320/200true/false/nullguardado→reviewreadonlysinmutación→back;91537exit1headerlazy,testscrolluntilvisiblefix;38849exit0,8/8,7s con2fixtures;2515analyzerexit0clean25s. NormalPNGSaludinspeccionado;Socialfuera viewportnoaceptado,alineacióncasillapendiente. README/PNG521;full609517anterior519–521. Sinbackend/SQL/push/Codemagic/físico/global.
+
+### Loop522 — Social capturado/alineación de casillas, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/CSSgap8check16/runtime519previo. c92bc24 checkboxtranslate-4 conserva24leading/16marca/8gap y ciclos/readonly. CapturadorSocialnormal/largeañadidos, inventario522403unique/55Source/51native/38patterns/44paths, no403capturasfull.11462exit0,8/8,6s con4fixtures;96354analyzerexit0clean. NormalSocial3filascompletasinspeccionadas;largeprimerafila+segundaparcial,tercerafuera noaceptada. README/PNG/inventario522. Full609517anterior519–522,401capturer511anteriordosfixtures. Sinbackend/SQL/push/Codemagic/físico/global.
