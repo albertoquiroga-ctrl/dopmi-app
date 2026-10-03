@@ -86,6 +86,76 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  for (final scale in [1.0, 2.0]) {
+    testWidgets(
+      'support touch focus and keyboard scroll preserve send at $scale',
+      (tester) async {
+        tester.view.physicalSize = scale == 2
+            ? const Size(320, 640)
+            : const Size(377, 852);
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.view.resetViewInsets);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        var submissions = 0;
+        final repository = SupportRepository((_, params) async {
+          submissions++;
+          expect((params['payload'] as Map)['message'], 'Necesito ayuda.');
+          return {'request_id': params['target_request'], 'status': 'received'};
+        });
+        await tester.pumpWidget(_host(repository));
+        await tester.tap(find.text('Abrir soporte'));
+        await tester.pumpAndSettle();
+        final message = find.byType(TextField).last;
+        await tester.ensureVisible(message);
+        await tester.pumpAndSettle();
+        await tester.tap(message);
+        await tester.enterText(message, 'Necesito ayuda.');
+        await tester.pumpAndSettle();
+        final outline = find.byKey(
+          const ValueKey('reference-keyboard-outline'),
+        );
+        expect(outline, findsOneWidget);
+        final border =
+            (tester.widget<DecoratedBox>(outline).decoration as BoxDecoration)
+                    .border
+                as Border;
+        expect(border.top.width, 3);
+        expect(border.top.color, const Color(0x4d7841f2));
+        expect(tester.getRect(outline), tester.getRect(message).inflate(5));
+        tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+        await tester.pumpAndSettle();
+        final send = find.widgetWithText(FilledButton, 'Enviar mensaje');
+        await tester.ensureVisible(send);
+        await tester.pumpAndSettle();
+        expect(send.hitTestable(), findsOneWidget);
+        expect(
+          tester.getRect(send).bottom,
+          lessThanOrEqualTo(tester.view.physicalSize.height - 300),
+        );
+        final scroll = tester.getRect(find.byType(SingleChildScrollView));
+        await tester.dragFrom(
+          Offset(scroll.left + 8, scroll.center.dy),
+          const Offset(0, 60),
+        );
+        await tester.pumpAndSettle();
+        expect(tester.testTextInput.isVisible, isFalse);
+        expect(
+          tester.widget<TextField>(message).controller!.text,
+          'Necesito ayuda.',
+        );
+        await tester.ensureVisible(send);
+        await tester.pumpAndSettle();
+        await tester.tap(send);
+        await tester.pumpAndSettle();
+        expect(submissions, 1);
+        expect(find.text('Recibimos tu mensaje.'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
 }
 
 Widget _host(SupportRepository repository) => MaterialApp(

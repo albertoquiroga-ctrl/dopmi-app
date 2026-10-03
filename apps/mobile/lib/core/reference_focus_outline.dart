@@ -8,11 +8,14 @@ class ReferenceFocusOutline extends StatefulWidget {
     this.radius = 20,
     this.outlineInset = EdgeInsets.zero,
     this.outlineBorderRadius,
+    this.showForTouchFocus = false,
   });
   final Widget child;
   final double radius;
   final EdgeInsets outlineInset;
   final BorderRadius? outlineBorderRadius;
+  // Editable fields remain focus-visible after a touch, as in the reference.
+  final bool showForTouchFocus;
   @override
   State<ReferenceFocusOutline> createState() => _ReferenceFocusOutlineState();
 }
@@ -63,8 +66,9 @@ class _ReferenceFocusOutlineState extends State<ReferenceFocusOutline> {
       children: [
         widget.child,
         if (focused &&
-            FocusManager.instance.highlightMode ==
-                FocusHighlightMode.traditional)
+            (widget.showForTouchFocus ||
+                FocusManager.instance.highlightMode ==
+                    FocusHighlightMode.traditional))
           Positioned(
             left: widget.outlineInset.left - 5,
             right: widget.outlineInset.right - 5,

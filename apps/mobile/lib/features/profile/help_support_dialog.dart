@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/ui.dart';
+import '../../core/reference_focus_outline.dart';
 import '../../core/media/media_store.dart';
 import 'support_repository.dart';
 
@@ -253,7 +254,7 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: purple, width: 2),
+          borderSide: const BorderSide(color: Color(0xffe6e2dd)),
         ),
       ),
       textTheme: Theme.of(context).textTheme.copyWith(
@@ -382,14 +383,18 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                             ),
                           ),
                           const SizedBox(height: 6),
-                          TextField(
-                            controller: caseName,
-                            enabled: !busy,
-                            decoration: const InputDecoration(
-                              hintText: 'Ej. Rocky, Luna…',
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 13,
+                          ReferenceFocusOutline(
+                            radius: 14,
+                            showForTouchFocus: true,
+                            child: TextField(
+                              controller: caseName,
+                              enabled: !busy,
+                              decoration: const InputDecoration(
+                                hintText: 'Ej. Rocky, Luna…',
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 13,
+                                ),
                               ),
                             ),
                           ),
@@ -398,14 +403,18 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                       const SizedBox(height: 12),
                       field(
                         'Mensaje',
-                        TextField(
-                          controller: message,
-                          enabled: !busy,
-                          minLines: 4,
-                          maxLines: null,
-                          onChanged: (_) => setState(() {}),
-                          decoration: const InputDecoration(
-                            hintText: 'Cuéntanos qué necesitas',
+                        ReferenceFocusOutline(
+                          radius: 14,
+                          showForTouchFocus: true,
+                          child: TextField(
+                            controller: message,
+                            enabled: !busy,
+                            minLines: 4,
+                            maxLines: null,
+                            onChanged: (_) => setState(() {}),
+                            decoration: const InputDecoration(
+                              hintText: 'Cuéntanos qué necesitas',
+                            ),
                           ),
                         ),
                       ),

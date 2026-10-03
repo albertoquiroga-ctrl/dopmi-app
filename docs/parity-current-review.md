@@ -1,4 +1,8 @@
-# Corte vigente — loop460
+# Corte vigente — loop461
+
+Inputs soporteoutline3/offset2/touchoptin;defaultcomponente unchanged. Ruta6/6pasa2s,4dialog+4mode+1captureprevpasaron;15únicoschecksseparados. Analyzer36.5sclean. viewInsets300/scroll/dragdismiss/1RPC verificadoswidgetnormal/200, no tecladofísico.12fixtures/5PNG. Próximo fullintegrado fuenteactual porcorechange;full564/452 anterior453–461. Matrizglobal/StripeSDK/device sigueabierta, Codemagic sólofinal.
+
+# Corte anterior — loop460
 
 Soporte medidoSource select45/input44/textarea96;Native coincide,closeInter22center331.71875/hit48,primariosyellow ambosmodos.11tests pasan9s,analyzer42.4sclean;10fixturesnormal/200. CardNative506/Source505.594 porlineceil, noigualdadglobal. Próximo focusoutline3offset2/keyboard/selector. Full564/452previo453–460,SDKStripe/device/matrizglobal pendientes;Codemagic sólofinal.
 

@@ -921,6 +921,8 @@ void main() {
       ('help-center-adoption-large', '/help'),
       ('help-center-support', '/help'),
       ('help-center-support-large', '/help'),
+      ('help-center-support-keyboard', '/help'),
+      ('help-center-support-keyboard-large', '/help'),
       ('help-center-support-rescuer', '/help'),
       ('help-center-support-rescuer-large', '/help'),
       ('help-center-support-photo', '/help'),
@@ -1622,11 +1624,19 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(tester.widget<FilledButton>(next).onPressed, isNotNull);
+        if (spec.$1.contains('-keyboard')) {
+          tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+          addTearDown(tester.view.resetViewInsets);
+          await tester.pumpAndSettle();
+        }
         await tester.ensureVisible(next);
         await tester.pumpAndSettle();
         expect(next.hitTestable(), findsOneWidget);
         expect(find.text('Recibimos tu mensaje.'), findsNothing);
-        if (!large && !photoState && !receiptState) {
+        if (!large &&
+            !photoState &&
+            !receiptState &&
+            !spec.$1.contains('-keyboard')) {
           expect(
             tester.getSize(find.byType(DropdownButtonFormField<int>)).height,
             closeTo(45, .1),

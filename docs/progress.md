@@ -2221,3 +2221,11 @@ Format rechazóFuture<void?>, corregidoFuture<void> previo pruebas. Final11/11pa
 Base3638567; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. SourceViteEdge377fontsready SourceDOMcard505.59375/y173.203125,select45/input44/textarea96/closecenter331.71875/relative24; paddingcoincide. Native45/44/96 corregidos paddingdropdown10.5/case13, adjuntarwhite/bordere6e2dd, ×Inter22/w400/noScaling/right5.28125/hit48. SoporteHelpcontact/send/receipt yellow/ink0d0d0d explícito ambosmodos segúnHelpplainSource.
 
 Capturador añade rescuer normal/200 ygeometría normalambosmodos campos±.1/card±.5(closeactual506vs505.594 títuloceil)/closecenter/color. Primera fallóassertyellow undefined, corregidoconColorfuente. Final11/11pasa9s18087exit0;analyzer57741clean42.4s.10fixtures,6PNGsourceJSONguardados docs/design-reviews/parity-loop460;normaldonor/rescuer/granderescuer inspeccionados. SourcePNGblur vsnativefoco explícito, noigualdadglobal. Próximo focusSourceoutline3offset2 vsnativepurpleborder2 + teclado/selectorreal. Browserclosed/ViteCtrlCexpectedexit1. Full564/452precede453–460; SDKStripe/device/matrizglobal abierto;sinCM/push.
+
+### Loop461 — outline inputs soporte y teclado, 3/10/2026
+
+Base57abd9d;Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. ReferenceFocusOutline optinshowForTouchFocus defaultfalse; sóloCaso/Mensaje soporte true, outline3/alpha.3/offset2/extrectinflate5/radio19;focusedBordergray1 reemplazapurple2. Sinlayout/hit/semanitic changes.
+
+Target5427:13pass/2fail por dragcentrocampo contralímitekeyboardstillvisible. Cambiogestotestmargin+downscroll, noregresiónproducción para forzarpass; finalruta6/6 pasa2s49757exit0.4dialog+4modecontrols+capturador12fixtures(support10prev+2keyboard),1test pasóoriginal.15casosúnicoscubiertosseparados no15suitetotalgreen. Analyzer10595clean36.5s antes sólofixgesturetest. Nuevosnormal/200 muestranoutlineexactRect,sendaboveinset300,dragdismissTestTextInput,retaintext+1RPC+receipt.5PNGconservadasnormal/large/keyboard/keyboardlarge/rescuer inspecciónnormal/keyboard200 docs/design-reviews/parity-loop461. viewInsets no teclado físico niSourcefocusruntime; CSSsourceevidenciaactual.
+
+Full564/452antes453–461; siguiente fullgateactual porcomponentcore optin;objetivomatrizglobal/StripeSDK/device abiertos. SinCM/push.
