@@ -1479,3 +1479,6 @@ Loop368, 3/10/2026: integración LOCAL de alta independiente en endpoint/runtime
 
 
 Loop369, 3/10/2026: alta independiente DEV aplicada una vez, local70000/71000→remote65211/65233. Worker25/webhook25/cliente18ACTIVE, overlays17/16/16archivos0dif yguards/ACL/RLS verificadas;21smokeremoto5.77s b935fbexit0. No Authmutación/StripeCheckoutreal/UI/device aceptados aún; sinflags/PROD/CM/push. Siguiente UIAgregar/retorno yfixtureAuthStripe; generaldefault/remove/billeteras/matrizglobal pendientes. Evidencia parity-loops369/migration-history-audit. Objetivoactivo.
+
+
+Loop370, 3/10/2026: UIAgregar independiente (noactivar/cobrar/cambiardefault), key propia persistida/consentimiento y recuperación porowner; saved+cardlistaFresh anuncia y confirma, no historical/replay.58/58dirigidas11s40889exit0, analyze19.1s78738limpio,4capturas4s56682inspeccionadas normal200%,320/37. READMEparity-loop370 detalla límites. PR6MCPabiertodraft/refsunchanged; gh no disponible. Sin AuthCheckoutpositivo/Stripe real/device/CM/push ni objetivo completo. Siguen billeteras/composiciónauxiliar/default-remove sinGuardian/apoyopuntualsavedcard/matrizglobal; próximofixtureAuthStripe real.

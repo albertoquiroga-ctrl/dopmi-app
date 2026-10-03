@@ -1,3 +1,11 @@
+# Corte vigente — loop370, 3/10/2026
+
+Fuente Irlanda a3c969c sin cambios; servidoraltaindependiente369 DEV migraciones65211/65233 y cliente18/worker25/webhook25 verificados (21smoke/overlays0dif). Cliente370 agrega consentimiento/keyownerpersistida/retorno/listafresh antes de éxito,58dirigidas11s/analyze limpio19.1s/capturas4normal200%,320estados/37URLs. AuthCheckoutpositivo/Stripe real de este alta y revisióninstalada siguen pendientes. Default/remove sinGuardian y apoyo puntual usando cardguardada aún abiertos; billeteras ausentes y enlacesauxiliares fuera de composiciónSource requieren cierre.
+
+Full móvil504/359 precede360–370; backend503/368 yDeno3entrypoints tienen alcance separado. Continúa matriz de todas las familias/gestos, soporteAuthadjunto/adminpositivo, correo confirmado, galeríaAndroid, reportecaso remoto y candidato instalado. No aceptaciónIrlanda ni paridadglobal atribuida a tests/capturas. Codemagic/push sólo candidatofinal.
+
+## Corte368 anterior
+
 # Corte vigente — loop368, 3/10/2026
 
 Referencia Irlanda a3c969c sin cambios. Feedback366 commit29d37df y basealta367 f8ac9c2; integración368 local, no publicada. Último gatebackend503/50324.41s handle89380exit0, Deno3entrypoints limpio. Tarjetas: listado/default/eliminaciónGuardian desplegados hasta363; fixtureStripezero default361/remove365 y feedback366 con lista confirmada. Altaindependiente local endpoint/customercompartido/reader/worker/webhook requiere migraciones y EdgeDEV, cliente visual y aceptaciónreal. Default/remove sinGuardian y billeteras pendientes. No confundir base local con función instalada.

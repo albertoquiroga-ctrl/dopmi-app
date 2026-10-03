@@ -15,6 +15,7 @@ import '../rescue/rescue_repository.dart';
 import 'guardian_repository.dart';
 import 'guardian_payment_card.dart';
 import 'payment_methods_feedback.dart';
+import 'saved_card_confirmation.dart';
 import 'payment_method_border.dart';
 import 'contribution_layout.dart';
 import 'guardian_membership_card.dart';
@@ -47,6 +48,9 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   List<GuardianPaymentCard>? cards;
   String? cardsError;
   Json? pendingMethodsFeedback;
+  Json? savedCardIntent, savedCardStatus;
+  String? pendingSavedFeedback, savedCardError;
+  bool savedCardFresh = false;
   String? methodsFeedback, methodsFeedbackKey;
   bool feedbackIsRemoval = false;
   final shownMethodsFeedback = <String>{};
@@ -58,6 +62,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   int? failedActivationCents;
   late final String owner;
   String get storageKey => 'dopmi-guardian:$owner:intent';
+  String get savedCardStorageKey => 'dopmi-saved-card:$owner:intent';
   bool get current =>
       mounted && ref.read(identityControllerProvider).identity?.id == owner;
   Json? get plan => data?['plan'] is Map ? Json.from(data!['plan']) : null;
@@ -170,6 +175,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       busy = true;
       error = null;
       fresh = false;
+      savedCardFresh = false;
     });
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -320,6 +326,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       fresh = true;
       if (widget.paymentMethodsOnly &&
           ref.read(identityControllerProvider).identity?.verified == true) {
+        await loadSavedCard(prefs, restore: restore);
+        if (!current) return;
         cardsError = null;
         cards = null;
         try {
@@ -329,12 +337,160 @@ class _GuardianState extends ConsumerState<GuardianScreen>
           if (!current) return;
           cards = result;
           confirmMethodsFeedback();
+          await confirmSavedFeedback(prefs);
         } catch (_) {
           if (current) cardsError = 'No se pudieron consultar tus tarjetas. Actualiza el estado para reintentar.';
         }
       }
     } catch (cause) {
       if (current) error = guardianError(cause);
+    } finally {
+      if (current) setState(() => busy = false);
+    }
+  }
+
+  Future<void> loadSavedCard(
+    SharedPreferences prefs, {
+    required bool restore,
+  }) async {
+    savedCardError = null;
+    if (restore && prefs.getString(savedCardStorageKey) != null) {
+      try {
+        final value = Json.from(
+          jsonDecode(prefs.getString(savedCardStorageKey)!),
+        );
+        if (value['kind'] != 'add_card' ||
+            value['consent_version'] != savedCardConsent) {
+          throw const FormatException('Intento incompleto');
+        }
+        savedCardReceipt({
+          'key': value['key'],
+          'status': 'pending',
+          'card_id': null,
+        });
+        savedCardIntent = value;
+      } catch (_) {
+        savedCardError =
+            'Consultamos el servidor para recuperar el alta de tu tarjeta.';
+      }
+    }
+    pendingSavedFeedback ??= savedCardIntent?['key'];
+    try {
+      final result = await ref
+          .read(guardianRepositoryProvider)
+          .savedCardState();
+      if (!current) return;
+      savedCardStatus = result;
+      if (result != null &&
+          savedCardIntent != null &&
+          result['key'] != savedCardIntent!['key']) {
+        await prefs.remove(savedCardStorageKey);
+        if (!current) return;
+        savedCardIntent = null;
+        pendingSavedFeedback = null;
+      }
+      if (savedCardIntent == null &&
+          ['pending', 'attention'].contains(result?['status'])) {
+        final recovered = <String, dynamic>{
+          'kind': 'add_card',
+          'key': result!['key'],
+          'consent_version': savedCardConsent,
+        };
+        if (!await prefs.setString(
+          savedCardStorageKey,
+          jsonEncode(recovered),
+        )) {
+          throw const FormatException('No se pudo conservar el intento');
+        }
+        if (!current) return;
+        savedCardIntent = recovered;
+        pendingSavedFeedback = result['key'];
+      }
+      if (result?['status'] == 'expired' &&
+          result?['key'] == savedCardIntent?['key']) {
+        await prefs.remove(savedCardStorageKey);
+        if (!current) return;
+        savedCardIntent = null;
+        pendingSavedFeedback = null;
+        savedCardError = 'El alta de tu tarjeta venció sin completarse. Puedes agregarla de nuevo.';
+      }
+      savedCardFresh = true;
+    } catch (_) {
+      if (current) savedCardError = 'No pudimos consultar el alta de tu tarjeta. Actualiza el estado o reintenta la misma solicitud.';
+    }
+  }
+
+  Future<void> confirmSavedFeedback(SharedPreferences prefs) async {
+    final result = savedCardStatus;
+    if (!savedCardFresh ||
+        result?['status'] != 'saved' ||
+        pendingSavedFeedback != result?['key'] ||
+        !(cards ?? []).any((card) => card.id == result?['card_id'])) {
+      return;
+    }
+    await prefs.remove(savedCardStorageKey);
+    if (!current) return;
+    savedCardIntent = null;
+    pendingSavedFeedback = null;
+    final key = result!['key'] as String;
+    if (!shownMethodsFeedback.add(key)) return;
+    methodsFeedbackKey = key;
+    feedbackIsRemoval = false;
+    methodsFeedback = 'Tarjeta agregada';
+  }
+
+  Future<void> addSavedCard() async {
+    if (!current ||
+        busy ||
+        confirming ||
+        !fresh ||
+        !widget.paymentMethodsOnly ||
+        !ref.read(guardianEnabledProvider) ||
+        ref.read(identityControllerProvider).identity?.verified != true ||
+        intent != null ||
+        savedCardStatus?['status'] == 'attention' ||
+        (savedCardIntent == null && !savedCardFresh)) {
+      return;
+    }
+    if (savedCardIntent == null) {
+      setState(() => confirming = true);
+      final agreed = await confirmSavedCard(context);
+      if (!current) return;
+      setState(() => confirming = false);
+      if (!agreed) return;
+    }
+    setState(() {
+      busy = true;
+      savedCardError = null;
+    });
+    try {
+      final next =
+          savedCardIntent ??
+          <String, dynamic>{
+            'kind': 'add_card',
+            'key': const Uuid().v4(),
+            'consent_version': savedCardConsent,
+          };
+      final prefs = await SharedPreferences.getInstance();
+      if (!await prefs.setString(savedCardStorageKey, jsonEncode(next))) {
+        throw const FormatException('No se pudo conservar el intento');
+      }
+      if (!current) return;
+      savedCardIntent = next;
+      pendingSavedFeedback = next['key'];
+      final repo = ref.read(guardianRepositoryProvider);
+      final result = await repo.submit(next);
+      if (!current) return;
+      if (result['checkout_url'] is String) {
+        await repo.openCheckout(result['checkout_url']);
+      }
+      if (current) await load();
+    } catch (_) {
+      if (current) {
+        setState(
+          () => savedCardError = 'No pudimos confirmar el alta. Reintenta la misma solicitud para continuar; tu tarjeta todavía no está confirmada.',
+        );
+      }
     } finally {
       if (current) setState(() => busy = false);
     }
@@ -725,6 +881,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                               confirming ||
                               !fresh ||
                               intent != null ||
+                              savedCardIntent != null ||
                               data?['method_change_available'] != true
                           ? null
                           : () => submit(
@@ -737,6 +894,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                               confirming ||
                               !fresh ||
                               intent != null ||
+                              savedCardIntent != null ||
                               data?['method_change_available'] != true
                           ? null
                           : () => submit(method: true, selectedCard: cards![i]),
@@ -775,10 +933,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                                 : error != null && !fresh
                                 ? 'No se pudo confirmar tu medio de pago.'
                                 : busy && data == null
-                                ? 'Consultando tu suscripción…'
-                                : status == 'active'
-                                ? 'Gestionado en Stripe'
-                                : 'No tienes una suscripción activa de Guardián.',
+                                ? 'Consultando tus tarjetas…'
+                                : 'Aún no tienes tarjetas guardadas.',
                           ),
                         ),
                       ],
@@ -794,11 +950,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                     message != methodsNotice)
                   Notice(methodsNotice ?? 'Medio de pago en revisión.'),
                 const SizedBox(height: 12),
-                if (enabled &&
-                    verified &&
-                    status == 'active' &&
-                    data?['method_change_available'] == true &&
-                    intent == null)
+                if (enabled)
                   OutlinedButton.icon(
                     style: OutlinedButton.styleFrom(
                       foregroundColor: ink,
@@ -806,16 +958,48 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                       side: const BorderSide(color: Color(0xffd5cfc6)),
                       textStyle: const TextStyle(
                         fontFamily: 'Inter',
-                        fontSize: 14,
+                        fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
                       shape: const PaymentMethodBorder(),
                     ),
-                    onPressed: busy || confirming || !fresh
+                    onPressed:
+                        busy ||
+                            confirming ||
+                            !fresh ||
+                            !verified ||
+                            !savedCardFresh ||
+                            intent != null ||
+                            savedCardIntent != null
                         ? null
-                        : () => submit(method: true),
-                    icon: const Icon(Icons.add, size: 18),
-                    label: const Text('Actualizar medio de pago'),
+                        : addSavedCard,
+                    icon: SvgPicture.asset(
+                      'assets/profile/icon-plus.svg',
+                      width: 18,
+                      height: 18,
+                    ),
+                    label: const Text('Agregar tarjeta'),
+                  ),
+                if (savedCardError != null)
+                  Notice(savedCardError!, isError: true),
+                if (savedCardIntent != null &&
+                    savedCardStatus?['status'] == 'attention')
+                  const Notice(
+                    'El alta de tu tarjeta requiere revisión. Conservamos tu solicitud.',
+                  ),
+                if (savedCardIntent != null &&
+                    savedCardStatus?['status'] != 'attention')
+                  ActionButton(
+                    'Reintentar alta de tarjeta',
+                    busy: busy,
+                    onPressed:
+                        busy ||
+                            confirming ||
+                            !fresh ||
+                            !verified ||
+                            intent != null
+                        ? null
+                        : addSavedCard,
                   ),
                 if (enabled && intent?['kind'] == 'method')
                   ActionButton(

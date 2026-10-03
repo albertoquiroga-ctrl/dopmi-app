@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/payments/guardian_payment_card.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
@@ -25,6 +27,14 @@ class FakeGuardian extends GuardianRepository {
         ),
       );
   List<GuardianPaymentCard> cards = [];
+  Json? savedCard;
+  bool failSavedCardState = false;
+  @override
+  Future<Json?> savedCardState() async {
+    if (failSavedCardState) throw Exception('fixture');
+    return savedCard == null ? null : Json.from(savedCard!);
+  }
+
   bool failCards = false,
       applySelected = false,
       applyRemoval = false,
@@ -62,6 +72,13 @@ class FakeGuardian extends GuardianRepository {
   Future<Json> submit(Json intent) async {
     calls.add(Json.from(intent));
     if (fail) throw Exception('lost response');
+    if (intent['kind'] == 'add_card') {
+      savedCard = {'key': intent['key'], 'status': 'pending', 'card_id': null};
+      return {
+        ...savedCard!,
+        'checkout_url': 'https://checkout.stripe.com/setup',
+      };
+    }
     if (conflict) {
       throw const PostgrestException(
         message: 'revision changed',
@@ -603,7 +620,7 @@ void main() {
     });
   }
   testWidgets(
-    'dedicated methods route confirms and retries the same Stripe intent',
+    'dedicated methods route independently saves and retries the same card intent',
     (tester) async {
       SharedPreferences.setMockInitialValues({});
       final repo = FakeGuardian()
@@ -614,17 +631,17 @@ void main() {
           'method_change_available': true,
         };
       await start(tester, repo, methods: true);
-      expect(find.text('Gestionado en Stripe'), findsOneWidget);
+      expect(find.text('Aún no tienes tarjetas guardadas.'), findsOneWidget);
       expect(find.text('Suscripción Dopmi'), findsNothing);
-      await tester.ensureVisible(find.text('Actualizar medio de pago'));
-      await tester.tap(find.text('Actualizar medio de pago'));
+      await tester.ensureVisible(find.text('Agregar tarjeta'));
+      await tester.tap(find.text('Agregar tarjeta'));
       await tester.pumpAndSettle();
       expect(repo.calls, isEmpty);
-      await tester.tap(find.text('Autorizar y continuar'));
+      await tester.tap(find.text('Guardar y continuar'));
       await tester.pumpAndSettle();
-      expect(repo.calls.single['kind'], 'method');
+      expect(repo.calls.single['kind'], 'add_card');
       repo.fail = false;
-      await tapButton(tester, 'Continuar actualización');
+      await tapButton(tester, 'Reintentar alta de tarjeta');
       await tester.pumpAndSettle();
       expect(repo.calls.length, 2);
       expect(repo.calls.first, repo.calls.last);
@@ -639,10 +656,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     final repo = FakeGuardian();
     await start(tester, repo, methods: true);
-    expect(
-      find.text('No tienes una suscripción activa de Guardián.'),
-      findsOneWidget,
-    );
+    expect(find.text('Aún no tienes tarjetas guardadas.'), findsOneWidget);
     expect(find.text('Actualizar medio de pago'), findsNothing);
     expect(find.text('Suscribirme'), findsNothing);
     expect(repo.calls, isEmpty);
@@ -675,10 +689,7 @@ void main() {
       );
       await tester.scrollUntilVisible(explanation, 180);
       expect(explanation, findsOneWidget);
-      await tester.scrollUntilVisible(
-        find.text('Actualizar medio de pago'),
-        180,
-      );
+      await tester.scrollUntilVisible(find.text('Agregar tarjeta'), 180);
       expect(tester.takeException(), isNull);
       expect(repo.calls, isEmpty);
     },
@@ -694,6 +705,192 @@ void main() {
       findsOneWidget,
     );
     expect(repo.reads, 0);
+    expect(repo.calls, isEmpty);
+  });
+
+  for (final large in [false, true]) {
+    testWidgets(
+      'add card needs explicit saving consent without activating Guardian: large=$large',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({});
+        final repo = FakeGuardian();
+        await start(tester, repo, methods: true);
+        if (large) {
+          tester.view.physicalSize = const Size(320, 640);
+          tester.platformDispatcher.textScaleFactorTestValue = 2;
+          addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+          await tester.pumpAndSettle();
+        }
+        await tester.ensureVisible(find.text('Agregar tarjeta'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Agregar tarjeta'));
+        await tester.pumpAndSettle();
+        expect(find.textContaining('no activa Guardián'), findsOneWidget);
+        expect(repo.calls, isEmpty);
+        await tester.ensureVisible(find.text('Volver'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Volver'));
+        await tester.pumpAndSettle();
+        expect(repo.calls, isEmpty);
+        await tester.ensureVisible(find.text('Agregar tarjeta'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Agregar tarjeta'));
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text('Guardar y continuar'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Guardar y continuar'));
+        await tester.pumpAndSettle();
+        expect(repo.calls.single['kind'], 'add_card');
+        expect(repo.calls.single['consent_version'], savedCardConsent);
+        expect(repo.calls.single.containsKey('revision'), false);
+        expect(repo.value['plan'], null);
+        expect(repo.opened, 1);
+        expect(find.text('Tarjeta agregada'), findsNothing);
+        expect(repo.cards, isEmpty);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+  testWidgets(
+    'saved card confirmation survives failed list, expires feedback and never replays',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final repo = FakeGuardian();
+      await start(tester, repo, methods: true);
+      await tester.tap(find.text('Agregar tarjeta'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Guardar y continuar'));
+      await tester.pumpAndSettle();
+      final key = repo.calls.single['key'];
+      repo.savedCard = {'key': key, 'status': 'saved', 'card_id': 'pm_added'};
+      repo.cards = [
+        const GuardianPaymentCard(
+          id: 'pm_added',
+          brand: 'visa',
+          last4: '4242',
+          isDefault: false,
+        ),
+      ];
+      repo.failCards = true;
+      await tester.tap(find.text('Actualizar estado'));
+      await tester.pumpAndSettle();
+      expect(find.text('Tarjeta agregada'), findsNothing);
+      repo.failCards = false;
+      await tester.tap(find.text('Actualizar estado'));
+      await tester.pumpAndSettle();
+      expect(find.text('Tarjeta agregada'), findsOneWidget);
+      expect(find.text('Visa •••• 4242'), findsOneWidget);
+      expect(repo.value['plan'], null);
+      await tester.pump(const Duration(seconds: 3));
+      expect(find.text('Tarjeta agregada'), findsNothing);
+      await tester.tap(find.text('Actualizar estado'));
+      await tester.pumpAndSettle();
+      expect(find.text('Tarjeta agregada'), findsNothing);
+      expect(repo.calls, hasLength(1));
+    },
+  );
+  testWidgets(
+    'lost card setup response survives reopening with the original key',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final repo = FakeGuardian()..fail = true;
+      await start(tester, repo, methods: true);
+      await tester.tap(find.text('Agregar tarjeta'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Guardar y continuar'));
+      await tester.pumpAndSettle();
+      await tester.pumpWidget(const SizedBox());
+      repo.fail = false;
+      await start(tester, repo, methods: true);
+      await tapButton(tester, 'Reintentar alta de tarjeta');
+      await tester.pumpAndSettle();
+      expect(repo.calls, hasLength(2));
+      expect(repo.calls.first, repo.calls.last);
+      expect(repo.opened, 1);
+      expect(repo.value['plan'], null);
+    },
+  );
+  testWidgets(
+    'server-only card setup receipt resumes with no local target or new consent',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final repo = FakeGuardian()
+        ..savedCard = {
+          'key': '77000000-0000-4000-8000-000000000001',
+          'status': 'pending',
+          'card_id': null,
+        };
+      await start(tester, repo, methods: true);
+      await tapButton(tester, 'Reintentar alta de tarjeta');
+      await tester.pumpAndSettle();
+      expect(repo.calls.single['key'], '77000000-0000-4000-8000-000000000001');
+      expect(find.text('Guardar y continuar'), findsNothing);
+      expect(repo.opened, 1);
+    },
+  );
+  testWidgets(
+    'card setup history never claims fresh success and read failure disables a new setup',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final repo = FakeGuardian()
+        ..savedCard = {
+          'key': '77000000-0000-4000-8000-000000000001',
+          'status': 'saved',
+          'card_id': 'pm_added',
+        };
+      await start(tester, repo, methods: true);
+      expect(find.text('Tarjeta agregada'), findsNothing);
+      repo.failSavedCardState = true;
+      await tester.tap(find.text('Actualizar estado'));
+      await tester.pumpAndSettle();
+      final button = tester.widget<OutlinedButton>(
+        find.widgetWithText(OutlinedButton, 'Agregar tarjeta'),
+      );
+      expect(button.onPressed, null);
+      expect(repo.calls, isEmpty);
+    },
+  );
+
+  testWidgets(
+    'double confirmation submits once and keeps payment-methods route open',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final repo = FakeGuardian();
+      await start(tester, repo, methods: true);
+      await tester.tap(find.text('Agregar tarjeta'));
+      await tester.pumpAndSettle();
+      final save = tester.widget<FilledButton>(
+        find.widgetWithText(FilledButton, 'Guardar y continuar'),
+      );
+      save.onPressed!();
+      save.onPressed!();
+      await tester.pumpAndSettle();
+      expect(repo.calls, hasLength(1));
+      expect(find.text('Métodos de pago'), findsOneWidget);
+      expect(repo.value['plan'], null);
+    },
+  );
+  testWidgets('another account local card receipt is never resumed', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({
+      'dopmi-saved-card:other:intent': jsonEncode({
+        'kind': 'add_card',
+        'key': '77000000-0000-4000-8000-000000000001',
+        'consent_version': savedCardConsent,
+      }),
+    });
+    final repo = FakeGuardian();
+    await start(tester, repo, methods: true, owner: 'one');
+    expect(find.text('Reintentar alta de tarjeta'), findsNothing);
+    expect(
+      tester
+          .widget<OutlinedButton>(
+            find.widgetWithText(OutlinedButton, 'Agregar tarjeta'),
+          )
+          .onPressed,
+      isNotNull,
+    );
     expect(repo.calls, isEmpty);
   });
   testWidgets('methods shows only server-confirmed card and default marker', (

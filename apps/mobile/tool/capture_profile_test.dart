@@ -819,6 +819,11 @@ void main() {
       ('payment-methods-large', '/settings/payment-methods'),
       ('payment-methods-inactive', '/settings/payment-methods'),
       ('payment-methods-cards', '/settings/payment-methods'),
+      ('payment-methods-cards-add-confirm', '/settings/payment-methods'),
+      ('payment-methods-cards-add-confirm-large', '/settings/payment-methods'),
+      ('payment-methods-cards-added-toast', '/settings/payment-methods'),
+      ('payment-methods-cards-added-toast-large', '/settings/payment-methods'),
+
       ('payment-methods-cards-large', '/settings/payment-methods'),
       ('payment-methods-cards-default-toast', '/settings/payment-methods'),
       (
@@ -2174,30 +2179,6 @@ void main() {
         await gesture.moveBy(const Offset(65, 0));
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 180));
-        if (spec.$1.startsWith('payment-methods-cards-default-toast')) {
-          await tester.scrollUntilVisible(
-            find.text('Hacer predeterminada'),
-            180,
-          );
-          await tester.pumpAndSettle();
-          await tester.tap(find.text('Hacer predeterminada'));
-          await tester.pumpAndSettle();
-          await tester.ensureVisible(find.text('Autorizar y continuar'));
-          await tester.pumpAndSettle();
-          await tester.tap(find.text('Autorizar y continuar'));
-          await tester.pumpAndSettle();
-          expect(
-            find.text('Método predeterminado actualizado'),
-            findsOneWidget,
-          );
-        }
-        if (spec.$1.startsWith('payment-methods-cards-remove-confirm')) {
-          await tester.ensureVisible(find.byTooltip('Eliminar tarjeta'));
-          await tester.pumpAndSettle();
-          await tester.tap(find.byTooltip('Eliminar tarjeta'));
-          await tester.pumpAndSettle();
-          expect(find.text('¿Eliminar esta tarjeta?'), findsOneWidget);
-        }
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),
         );
@@ -2767,6 +2748,41 @@ void main() {
             alignment: .7,
           );
           await tester.pumpAndSettle();
+        }
+        if (spec.$1.startsWith('payment-methods-cards-add')) {
+          await tester.scrollUntilVisible(find.text('Agregar tarjeta'), 180);
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('Agregar tarjeta'));
+          await tester.pumpAndSettle();
+          expect(find.textContaining('no activa Guardián'), findsOneWidget);
+          if (spec.$1.startsWith('payment-methods-cards-added-toast')) {
+            await tester.ensureVisible(find.text('Guardar y continuar'));
+            await tester.pumpAndSettle();
+            await tester.tap(find.text('Guardar y continuar'));
+            await tester.pumpAndSettle();
+            guardian.savedCard = {
+              'key': guardian.calls.last['key'],
+              'status': 'saved',
+              'card_id': 'pm_added',
+            };
+            guardian.cards = [
+              ...guardian.cards,
+              const GuardianPaymentCard(
+                id: 'pm_added',
+                brand: 'visa',
+                last4: '9999',
+                isDefault: false,
+              ),
+            ];
+            await tester.scrollUntilVisible(
+              find.text('Actualizar estado'),
+              180,
+            );
+            await tester.pumpAndSettle();
+            await tester.tap(find.text('Actualizar estado'));
+            await tester.pumpAndSettle();
+            expect(find.text('Tarjeta agregada'), findsOneWidget);
+          }
         }
         if (spec.$1.startsWith('payment-methods-cards-default-toast')) {
           await tester.scrollUntilVisible(

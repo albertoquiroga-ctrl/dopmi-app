@@ -1,3 +1,9 @@
+# Estado vigente — loop370, 3/10/2026
+
+ClienteAgregar independiente conectado (consentimiento/key/recuperación owner-scoped/retorno/lista confirmada/toast2600),58/58 dirigidas/analyze limpio/capturas4normal200%,320/37 inventario. Servidor369DEV cliente18/worker25/webhook25 y21smoke verificados. AuthCheckoutpositivo/Stripe real todavía pendientes; capturas no dispositivo. Composición aún sinbilleteras y enlacesauxiliares extraSource; default/remove sinGuardian y uso de cardguardada en apoyo puntual pendientes. No paridadglobal/aceptaciónIrlanda; CM únicamentefinal.
+
+## Corte369 anterior
+
 # Estado vigente — loop369, 3/10/2026
 
 Alta independiente desplegada en DEV: local70000/71000→remote65211/65233; worker25/webhook25/cliente18ACTIVE y17/16/16archivos0mismatches. Guards/ACL/RLS comprobados,21smoke real5.77s. Endpoint/lista nonsuscrito ycustomercompartido en servidor; UIAgregar/retorno y AuthCheckoutreal todavía pendientes. No anunciar aceptación completa. Default/remove sinGuardian, billeteras y matrizglobal siguen abiertos. Codemagic únicamente final.

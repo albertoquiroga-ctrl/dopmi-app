@@ -6,6 +6,7 @@ import 'payment_repository.dart';
 import 'guardian_payment_card.dart';
 
 const guardianConsent = 'guardian-2026-09-24';
+const savedCardConsent = 'saved-cards-2026-10-03';
 final guardianEnabledProvider = Provider<bool>(
   (ref) => const bool.fromEnvironment('ENABLE_GUARDIAN_TEST'),
 );
@@ -16,6 +17,11 @@ final guardianRepositoryProvider = Provider<GuardianRepository>(
 class GuardianRepository {
   GuardianRepository(this.client);
   final SupabaseClient client;
+  Future<Json?> savedCardState() async {
+    final result = await client.rpc('dopmi_saved_card_state');
+    return result == null ? null : savedCardReceipt(result);
+  }
+
   Future<List<GuardianPaymentCard>> paymentMethods() async {
     final response = await client.functions.invoke(
       'guardian-client',
@@ -63,6 +69,28 @@ class GuardianRepository {
   }
 
   Future<Json> submit(Json intent) async {
+    if (intent['kind'] == 'add_card') {
+      final result = await client.functions.invoke(
+        'guardian-client',
+        body: {
+          'action': 'add_card',
+          'key': intent['key'],
+          'consent': true,
+          'consent_version': intent['consent_version'],
+        },
+      );
+      if (result.status != 200) {
+        throw const FormatException('Alta no confirmada');
+      }
+      final receipt = savedCardReceipt(result.data);
+      if (receipt['key'] != intent['key'] ||
+          (result.data['checkout_url'] != null &&
+              (result.data['checkout_url'] is! String ||
+                  receipt['status'] != 'pending'))) {
+        throw const FormatException('Alta no confirmada');
+      }
+      return {...receipt, 'checkout_url': result.data['checkout_url']};
+    }
     if (intent['kind'] == 'withdraw_amount') {
       return Json.from(
         await client.rpc(
@@ -124,6 +152,27 @@ class GuardianRepository {
 
   Future<void> openCheckout(String url) =>
       PaymentRepository(client).openStripe(url);
+}
+
+Json savedCardReceipt(Object? value) {
+  if (value is! Map ||
+      value['key'] is! String ||
+      !RegExp(
+        r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+        caseSensitive: false,
+      ).hasMatch(value['key']) ||
+      !['pending', 'saved', 'expired', 'attention'].contains(value['status']) ||
+      (value['status'] == 'saved'
+          ? value['card_id'] is! String ||
+                !RegExp(r'^pm_[A-Za-z0-9]+$').hasMatch(value['card_id'])
+          : value['card_id'] != null)) {
+    throw const FormatException('Alta no confirmada');
+  }
+  return {
+    'key': value['key'],
+    'status': value['status'],
+    'card_id': value['card_id'],
+  };
 }
 
 String guardianError(Object error) {

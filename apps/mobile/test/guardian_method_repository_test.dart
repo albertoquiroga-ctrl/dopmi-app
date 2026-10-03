@@ -9,7 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'payment_repository_test.dart' show session;
 
 void main() {
-  for (final mode in ['setup', 'default', 'remove', 'restored-remove']) {
+  for (final mode in ['setup', 'default', 'remove', 'restored-remove', 'add']) {
     final selected = mode == 'default' || mode == 'remove';
     test('method HTTP authorization and stable retry: mode=$mode', () async {
       final requests = <http.Request>[];
@@ -23,7 +23,16 @@ void main() {
         }
         requests.add(request);
         return http.Response(
-          jsonEncode({'status': 'pending'}),
+          jsonEncode(
+            mode == 'add'
+                ? {
+                    'key': '00000000-0000-4000-8000-000000000003',
+                    'status': 'pending',
+                    'card_id': null,
+                    'checkout_url': 'https://checkout.stripe.com/setup',
+                  }
+                : {'status': 'pending'},
+          ),
           200,
           headers: {'content-type': 'application/json'},
         );
@@ -41,10 +50,10 @@ void main() {
       );
       final repository = GuardianRepository(client);
       final intent = <String, dynamic>{
-        'kind': 'method',
+        'kind': mode == 'add' ? 'add_card' : 'method',
         'key': '00000000-0000-4000-8000-000000000003',
         'revision': 7,
-        'consent_version': guardianConsent,
+        'consent_version': mode == 'add' ? savedCardConsent : guardianConsent,
         if (selected) 'selected_method_id': 'pm_savedFixture',
         if (mode.contains('remove')) 'remove_saved': true,
         'donor_id': 'untrusted-local-owner',
@@ -57,18 +66,41 @@ void main() {
       expect(requests.first.headers['authorization'], startsWith('Bearer '));
       final body = jsonDecode(requests.first.body);
       expect(body, {
-        'action': selected
+        'action': mode == 'add'
+            ? 'add_card'
+            : selected
             ? mode == 'remove'
                   ? 'remove_method'
                   : 'default_method'
             : 'method',
         if (selected) 'payment_method_id': 'pm_savedFixture',
         'key': intent['key'],
-        'revision': 7,
+        if (mode != 'add') 'revision': 7,
         'consent': true,
-        'consent_version': guardianConsent,
+        'consent_version': mode == 'add' ? savedCardConsent : guardianConsent,
       });
       expect(jsonDecode(requests.last.body), body);
     });
   }
+  test('saved-card receipt validates status and card details and omits extra fields', () {
+    const key = '00000000-0000-4000-8000-000000000003';
+    for (final invalid in [
+      null,
+      {'key': 'bad', 'status': 'pending'},
+      {'key': key, 'status': 'saved'},
+      {'key': key, 'status': 'pending', 'card_id': 'pm_added'},
+      {'key': key, 'status': 'paid'},
+    ]) {
+      expect(() => savedCardReceipt(invalid), throwsFormatException);
+    }
+    expect(
+      savedCardReceipt({
+        'key': key,
+        'status': 'saved',
+        'card_id': 'pm_added',
+        'client_secret': 'must-not-leave-boundary',
+      }),
+      {'key': key, 'status': 'saved', 'card_id': 'pm_added'},
+    );
+  });
 }
