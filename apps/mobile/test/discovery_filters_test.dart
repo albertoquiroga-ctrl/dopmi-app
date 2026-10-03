@@ -93,6 +93,38 @@ void main() {
     ]);
     expect(find.text('Luna'), findsOneWidget);
   });
+  testWidgets('filter opens immediately and back or outside discards drafts', (
+    tester,
+  ) async {
+    final repo = await open(tester);
+    await tester.tap(find.byTooltip('Cerrar'));
+    await tester.pumpAndSettle();
+    for (final outside in [false, true]) {
+      await tester.tap(find.byTooltip('Filtros'));
+      await tester.pump();
+      final context = tester.element(find.byType(DiscoveryFilters));
+      expect(ModalRoute.of(context)!.animation!.value, 1);
+      await tester.tap(label('Hembra'));
+      await tester.pump();
+      if (outside) {
+        await tester.tapAt(const Offset(4, 4));
+      } else {
+        await tester.binding.handlePopRoute();
+      }
+      await tester.pump();
+      expect(find.byType(DiscoveryFilters), findsNothing);
+      expect(repo.queries, [
+        {'species': 'dog'},
+      ]);
+    }
+    await tester.tap(find.byTooltip('Filtros'));
+    await tester.pump();
+    final option = tester.widget<FilterOption>(
+      find.ancestor(of: label('Hembra'), matching: find.byType(FilterOption)).first,
+    );
+    expect(option.selected, false);
+    expect(tester.takeException(), isNull);
+  });
   testWidgets('apply sends real keys and clear preserves species', (
     tester,
   ) async {
