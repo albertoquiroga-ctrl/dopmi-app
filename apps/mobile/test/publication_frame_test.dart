@@ -107,7 +107,13 @@ void main() {
       final edit = find.byTooltip('Editar Información básica');
       await Scrollable.ensureVisible(tester.element(edit), alignment: .2);
       await tester.pumpAndSettle();
-      await tester.tap(edit);
+      final editButton = find.descendant(
+        of: edit,
+        matching: find.byType(TextButton),
+      );
+      expect(tester.getSize(editButton).height, greaterThanOrEqualTo(48));
+      final editRect = tester.getRect(editButton);
+      await tester.tapAt(Offset(editRect.center.dx, editRect.bottom - 2));
       await tester.pumpAndSettle();
       expect(
         tester.widget<TextFormField>(name).controller!.text,

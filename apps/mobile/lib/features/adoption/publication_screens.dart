@@ -817,44 +817,83 @@ class _ReviewSection extends StatelessWidget {
   final Widget child;
   final VoidCallback? onEdit;
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      Row(
-        children: [
-          Expanded(
-            child: Semantics(
-              header: true,
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  height: 1.55,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xff151423),
-                ),
-              ),
-            ),
-          ),
-          if (onEdit != null)
-            Tooltip(
-              message: 'Editar $title',
-              child: TextButton(
-                onPressed: onEdit,
-                style: TextButton.styleFrom(
-                  foregroundColor: const Color(0xff7c3aed),
-                  textStyle: const TextStyle(fontFamily: 'Inter', fontSize: 14),
-                  padding: EdgeInsets.zero,
-                ),
-                child: const Text('Editar'),
-              ),
-            ),
-        ],
+  Widget build(BuildContext context) {
+    final scaler = MediaQuery.textScalerOf(context);
+    final large = scaler.scale(16) > 20;
+    final heading = Semantics(
+      header: true,
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 16,
+          height: 20 / 16,
+          fontWeight: FontWeight.w500,
+          color: Color(0xff151423),
+        ),
       ),
-      const SizedBox(height: 12),
-      child,
-    ],
-  );
+    );
+    Widget edit({bool compact = false}) => Tooltip(
+      message: 'Editar $title',
+      child: SizedBox(
+        width: large ? scaler.scale(42) : 64,
+        height: 48,
+        child: TextButton(
+          onPressed: onEdit,
+          style:
+              TextButton.styleFrom(
+                foregroundColor: const Color(0xff7c3aed),
+                textStyle: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 14,
+                  height: 17 / 14,
+                ),
+                minimumSize: const Size(48, 48),
+                alignment: compact ? Alignment.topCenter : Alignment.center,
+                padding: compact
+                    ? EdgeInsets.only(
+                        top: (scaler.scale(20) - scaler.scale(17)) / 2,
+                      )
+                    : EdgeInsets.zero,
+                splashFactory: NoSplash.splashFactory,
+              ).copyWith(
+                overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+              ),
+          child: const Text('Editar'),
+        ),
+      ),
+    );
+    if (large || onEdit == null) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Expanded(child: heading),
+              if (onEdit != null) edit(),
+            ],
+          ),
+          const SizedBox(height: 12),
+          child,
+        ],
+      );
+    }
+    // Keep the reference's compact heading while the full 48px target remains
+    // inside this section's bounds, above the card's first content line.
+    return Stack(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(padding: const EdgeInsets.only(right: 76), child: heading),
+            const SizedBox(height: 12),
+            child,
+          ],
+        ),
+        Positioned(top: 0, right: 0, child: edit(compact: true)),
+      ],
+    );
+  }
 }
 
 class _ReviewCard extends StatelessWidget {
