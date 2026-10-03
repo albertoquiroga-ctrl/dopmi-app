@@ -1878,3 +1878,12 @@ Base7351bae; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. S
 Basee196bd6; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. CaseReview reduce minimumHeight48→20 y tapTarget shrinkWrap para reproducir heading20 medidoSource419; textoEditar14/17/400 explícito. Ancho48, Semantics y callbacks existentes preservados; área táctil vertical es20, no afirmar target48 accesible. Text200 conserva adaptación de texto, práctica física pendiente.
 
 11/11 case_publication+capture review pasan10s26036/0afbe3. Analyzer91549/b6b44a limpio44.5s antes del cambio adicional sólo test. Test existente de revisión agrega medida real20 y activación Enter desde foco del Text; fotos/necesidades conservan taps y datos.10/10 finalcase_publication pasan7s23776/fe0eb3, sin excepciones. Format aprobado, capturas normal/200 guardadas y normal inspeccionada: foto alineada153 comoSource; campos reales adicionales extienden card, no ocultados. No equivalenciapixel/Androidaceptado. Próximo ampliar auditoría de publicación/adopción y animaciones/gestos; matrizglobal/configSDK/device pendientes. SinCodemagic/push.
+
+
+### Loop421 — auditoría de movimiento y navegación vigente, 3/10/2026
+
+Base540efe3; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. Se leyeron CSS y implementación/test de onboarding, descubrimiento, rutas y switch de perfil. Onb-in450ms/Cubic(.22,1,.36,1)/opacity0→1/translateY10→0 coinciden; dots350ms/ease, switch180ms/ease/13px también coinciden por lectura. DISC salida280ms y retorno250ms misma curva, umbral estricto110px, seguimiento inmediato. Source onPointerCancel llama onPointerUp y podría guardar; cliente cancel nunca guarda, preserva intención real y evita favorito por interrupción del sistema. No copiar efecto persistente simulado por cancel.
+
+21/21 onboarding_motion_test+discovery_motion_test+route_motion_test pasan4s39955/f3522f: interpolación a mitad/final, delays/reduced motion, retorno/interrupción/swipe/errores de persistencia, regreso inmediato Android/iOS y borrador de registro. Se inspeccionó cobertura antes de usar resultado: son widgets/repositorios falsos, no gestos físicos ni frame pacing real. Switch coincidencia sólo código, no timeline verificada en este loop. Sin cambios de producción ni aceptación global por este gate.
+
+Siguiente: ampliar matriz de movimiento a galerías, paneles/modales y cambio de modo; confirmar timelines y recorridos faltantes con runtime, manteniendo revisión nativa/SDK y candidato final pendientes. No hover requerido. SinCodemagic/push.

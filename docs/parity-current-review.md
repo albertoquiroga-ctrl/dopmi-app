@@ -1,3 +1,7 @@
+# Corte vigente — loop421
+
+Auditoría motion: onboarding/dots, swipe110/retorno250/salida280 y rutas inmediatas corresponden al Source;21 pruebas pasan. Cancelación no guarda en cliente, conserva intención real. Switch180/13px sólo lectura. Próximo galerías/modales/cambio modo y timelines runtime; físico/global/SDK pendientes. Codemagic sólo objetivo completo.
+
 # Corte vigente — loop420
 
 Review Editar20/17/400 coincide composiciónSource; altura real20 y Enter comprobados, fotos/necesidades taps preservan datos.11capture/tests +10finaltests pasan; analyzer previo test limpio44.5s. Área táctil20 pendiente revisión física; global/configSDK/device abiertos. Codemagic sólo objetivo completo.
