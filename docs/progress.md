@@ -2454,3 +2454,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; Edge377x852/rescuer
 ### Loop507 — pendientes mensaje icono/contador reales, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, código/CSSpendingActions inspeccionado sin nuevo runtime. icon-chat-yellow.svg copiado exacto, unreadbadge amarillo reemplazaflecha; Rowintrinsiccentraextremo/iconarriba. No conteo3 ni conversaciónsinrespuesta simulados. Gate53044exit0,27/27,8s con12capturas; analyzer20509exit0clean37.6s. PNGnormal200 inspeccionados, pendientes200 fuera viewport noaceptadosporimagen. Fuente 3df438102d102af9d1b3706b225fc13e95f58112. Full608506 anteriorproducción507,integradoactualpendiente. README/PNG507;sinbackend/SQL/push/Codemagic/físico/global.
+
+### Loop508 — pendientes200 y toque real de contador, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado sinruntime. PNGactions/evidencelarge507 ya desplazados a pendientes inspeccionados: título/CTA/counter completos, segundaevidenciafuera noaceptadacompleta. No nuevacaptura508. Pruebaexistentehome mantienefinanciero/pendientes/actividad y añade toque scopedbadge2→/messages.39516exit0,26/26,6s fuente 77633dd6b1cc18c46c0331c0c6ead054718b2755 sólo test/producción3df4381unchanged. README/PNG508, full608506 anterior507 integradoactualpendiente. Sinbackend/SQL/push/Codemagic/físico/global.

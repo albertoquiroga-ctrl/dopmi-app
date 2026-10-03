@@ -1,0 +1,5 @@
+# Loop508 — pendientes ampliados y toque de contador
+
+Las fixtures existentes actions-large y evidence-large ya desplazan a Acciones pendientes en el capturador; las capturas507 vistas aquí muestran contador2 centrado, título completo con palabras enteras, subtítulo2sinleer y CTA. La segunda tarjeta de evidencia continúa fuera del viewport, no se afirma inspección completa por su cabecera. Son PNG del gate507, no nueva ejecución del capturador508.
+
+Prueba de ruta existente del inicio rescatista conserva comprobaciones de asignado92/transferido/revisión/pendientes/actividad y ahora localiza el badge dentro de la tarjeta message, lo toca y verifica ruta /messages sin excepciones.39516exit0,26/26,6s, log dopmi-loop508-badge.log; fuente 77633dd6b1cc18c46c0331c0c6ead054718b2755 sólo test, producción3df4381 sin cambio. SourceSHA a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; no nuevo runtimeSource. Full608506 precede producción507; gate integrado actual pendiente. Sin backend/SQL/push/Codemagic ni gesto físico/globalaceptación.
