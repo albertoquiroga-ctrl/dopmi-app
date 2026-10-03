@@ -4086,3 +4086,72 @@ test('general saved-card owner lookup is private, confirmed and coherent with Gu
   await db.query("update private.dopmi_guardian_subscriptions set stripe_customer_id='cus_different'");
   await rejected(()=>lookup(donor),/Clientes de tarjeta en revisión/);
 });
+
+
+async function independentMethod(op,data={}) {
+ return (await db.query('select dopmi_saved_card_method_server($1,$2::jsonb) value',[op,JSON.stringify(data)])).rows[0].value;
+}
+async function independentMethodFixture(action='default') {
+ await db.query("insert into private.dopmi_saved_card_customers(owner_id,stripe_customer_id) values($1,'cus_independent')",[donor]);
+ return independentMethod('prepare',{owner_id:donor,key,consent:true,consent_version:'saved-card-methods-2026-10-03',action,selected_method_id:'pm_independent'});
+}
+test('independent method SQL reserves immutable customer/target and denies browser writes',async()=>{
+ const j=await independentMethodFixture();
+ const input={owner_id:donor,key,consent:true,consent_version:'saved-card-methods-2026-10-03',action:'default',selected_method_id:'pm_independent'};
+ assert.equal((await independentMethod('prepare',input)).id,j.id);
+ await rejected(()=>independentMethod('prepare',{...input,selected_method_id:'pm_changed'}),/solicitud cambi/);
+ for(const actor of [donor,other,staff]) {
+  await role(actor);
+  await rejected(()=>independentMethod('get',{id:j.id}),/permission denied/);
+  await rejected(()=>db.query('select * from private.dopmi_saved_card_method_jobs'),/permission denied/);
+  const receipt=(await db.query('select dopmi_saved_card_method_state() value')).rows[0].value;
+  assert.deepEqual(receipt,actor===donor?{key,action:'default',status:'pending',card_id:'pm_independent'}:null);
+ }
+});
+test('independent method SQL requires lease, snapshot and matching proof before confirmation',async()=>{
+ const j=await independentMethodFixture('remove');
+ const c=await independentMethod('claim',{id:j.id});
+ assert.equal(await independentMethod('claim',{id:j.id}),null);
+ await rejected(()=>independentMethod('snapshot',{id:j.id,lease:key,default_method_id:'pm_old'}),/vencido/);
+ await rejected(()=>independentMethod('write_mutation',{id:j.id,lease:c.lease}),/no verificada/);
+ await independentMethod('snapshot',{id:j.id,lease:c.lease,default_method_id:'pm_old'});
+ await independentMethod('write_mutation',{id:j.id,lease:c.lease});
+ await rejected(()=>independentMethod('expired',{id:j.id,lease:c.lease}),/en revisi/);
+ await rejected(()=>independentMethod('removed',{id:j.id,lease:c.lease,payment_method_id:'pm_other'}),/no confirmada/);
+ const done=await independentMethod('removed',{id:j.id,lease:c.lease,payment_method_id:'pm_independent'});
+ assert.equal(done.status,'removed'); assert.equal(done.default_method_id,'pm_old');
+ await role(donor);
+ assert.deepEqual((await db.query('select dopmi_saved_card_method_state() value')).rows[0].value,{key,action:'remove',status:'removed',card_id:'pm_independent'});
+});
+test('independent method SQL expiry and response-loss safety window preserve uncertain intent',async()=>{
+ const j=await independentMethodFixture();
+ await db.query("update private.dopmi_saved_card_method_jobs set expires_at=now()-interval '1 hour' where id=$1",[j.id]);
+ assert.equal(await independentMethod('claim',{id:j.id}),null);
+ assert.equal((await independentMethod('get',{id:j.id})).status,'expired');
+ await db.query("update private.dopmi_saved_card_method_jobs set status='pending',snapshot_at=now(),mutation_requested_at=now()-interval '24 hours' where id=$1",[j.id]);
+ assert.equal(await independentMethod('claim',{id:j.id}),null);
+ assert.equal((await independentMethod('get',{id:j.id})).status,'attention');
+});
+test('independent method SQL pending request blocks another save and Guardian activation',async()=>{
+ await independentMethodFixture();
+ await rejected(()=>savedCardRpc('prepare',{owner_id:donor,key:'72000000-0000-4000-8000-000000000009',consent:true,consent_version:savedCardConsentVersion,return_url:savedCardReturn}),/Cambio de tarjeta pendiente/);
+ await rejected(()=>activationPrepare(),/cambio de tarjeta/);
+});
+
+test('independent method SQL respects setup and activation reservations in the reverse direction',async()=>{
+ await db.query("insert into private.dopmi_saved_card_customers(owner_id,stripe_customer_id) values($1,'cus_independent')",[donor]);
+ const input={owner_id:donor,key,consent:true,consent_version:'saved-card-methods-2026-10-03',action:'default',selected_method_id:'pm_independent'};
+ await savedCardRpc('prepare',{owner_id:donor,...savedCardInput,return_url:savedCardReturn});
+ await rejected(()=>independentMethod('prepare',input),/Solicitud de tarjeta pendiente/);
+ await db.query("update private.dopmi_saved_card_jobs set status='expired'");
+ await activationPrepare();
+ await rejected(()=>independentMethod('prepare',input),/medio de Guardi/);
+});
+test('independent method SQL checks account confirmation again before mutation',async()=>{
+ const j=await independentMethodFixture(); const c=await independentMethod('claim',{id:j.id});
+ await independentMethod('snapshot',{id:j.id,lease:c.lease,default_method_id:'pm_old'});
+ await db.query('update auth.users set email_confirmed_at=null where id=$1',[donor]);
+ assert.equal(await independentMethod('write_mutation',{id:j.id,lease:c.lease}),null);
+ assert.equal((await independentMethod('get',{id:j.id})).mutation_requested_at,null);
+ await role(donor); await rejected(()=>db.query('select dopmi_saved_card_method_state()'),/Cuenta no disponible/);
+});

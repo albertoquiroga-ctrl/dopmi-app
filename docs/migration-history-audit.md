@@ -352,3 +352,8 @@ Overlays mínimos:payment-worker23→24 ystripe-webhook23→24 sólo guardian-me
 ## Loop369 — alta independiente y cliente compartido, 3/10/2026
 
 DEVohqxranynackjignryep: local20261003070000_saved_card_setup→remote20261003065211/saved_card_setup; local20261003071000_saved_card_customer_coherence→remote20261003065233/saved_card_customer_coherence. Preflightlatest55326/tablas y snapshotausentes, cuatrofragmentos realesactivationpresentes; luego fragmentoguardsavedcardconfirmado antes71000. Aplicadas una vez porMCP; snapshot/locks/guards/RLS/ACL comprobados. Worker25/webhook25/client18ACTIVE, bundles17/16/16sin diferencias contraoverlay. Sin reparación/renombrado/replay/dbpush/PROD. SQL completo503local/368;21smokeremoto369sin tokensusuarios.
+
+
+## Loop376 local, not deployed
+
+20261003080000_saved_card_methods is local only; no remote timestamp assigned. PostgreSQL/PGlite full gate522/52222.95s passed. Before remote application compare deployed definitions and last history; do not repair, replay or rename timestamps.
