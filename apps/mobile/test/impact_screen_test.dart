@@ -8,6 +8,9 @@ import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:dopmi_mobile/features/profile/impact_screen.dart';
+import 'package:dopmi_mobile/core/content_links.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -214,4 +217,78 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  testWidgets('impact share uses public link and case back retains allocation', (
+    tester,
+  ) async {
+    const caseId = '41028a40-8b42-4c03-8417-8d33f91d6f52';
+    const channel = MethodChannel('dev.fluttercommunity.plus/share');
+    final calls = <MethodCall>[];
+    final messenger =
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      calls.add(call);
+      return 'dev.fluttercommunity.plus/share/dismissed';
+    });
+    addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+    final identity = FakeIdentityRepository()
+      ..user = const Identity('one', 'fixture@example.test', verified: true);
+    addTearDown(() => identity.changes.close());
+    final repo = ImpactCommunity()
+      ..items = [
+        {...contributionCase, 'case_id': caseId},
+      ];
+    final router = GoRouter(
+      initialLocation: '/impact',
+      routes: [
+        GoRoute(path: '/impact', builder: (_, _) => const ImpactScreen()),
+        GoRoute(
+          path: '/rescue-cases/:id',
+          builder: (context, state) => Scaffold(
+            appBar: AppBar(),
+            body: Text('Caso ${state.pathParameters['id']}'),
+          ),
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(repo),
+          guardianEnabledProvider.overrideWithValue(false),
+        ],
+        child: MaterialApp.router(routerConfig: router),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final share = find.text('Compartir');
+    await tester.ensureVisible(share);
+    await tester.tap(share);
+    await tester.pumpAndSettle();
+    expect(calls.length, 1);
+    expect(
+      calls.single.arguments['text'],
+      'Conoce el caso Caso aprobado en Dopmi. io.dopmi.app://content/rescue-cases/$caseId',
+    );
+    expect(
+      contentLinkDestination(
+        publicContentLink(PublicContent.rescueCase, caseId),
+      ),
+      '/rescue-cases/$caseId',
+    );
+    expect(find.byType(SnackBar), findsNothing);
+    final name = find.text('Caso aprobado');
+    await tester.ensureVisible(name);
+    final before = tester.getTopLeft(name);
+    await tester.tap(name);
+    await tester.pumpAndSettle();
+    expect(router.state.uri.path, '/rescue-cases/$caseId');
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(router.state.uri.path, '/impact');
+    expect(find.text(r'$75.25 MXN'), findsOneWidget);
+    expect(tester.getTopLeft(name), before);
+    expect(tester.takeException(), isNull);
+  });
 }
