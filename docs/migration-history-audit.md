@@ -315,3 +315,28 @@ archivos15 comparados contra bundle local normalizandoCRLF:0diferencias.
 POST methods sinAuthorization y tokeninválido:401sign_in_required reales.
 Gate previo453/45329.46s y Denocheck exit0. No lectura AuthREST autenticada,
 Stripe real/card/default/billetera/device acreditada todavía. No CM/push.
+
+
+## Selección de tarjeta guardada Guardian — loop357, 2/10/2026 México
+
+Local `20261003050000_guardian_saved_method_selection.sql` → DEV
+`20261003051924/guardian_saved_method_selection`. Preflight último remote
+20261003045529, columna inexistente y seis fragmentos antiguos del cuerpo
+real presentes. Aplicada una vez por MCP. Cuerpo posterior contiene los seis
+fragmentos nuevos; selected_method_id existe. EXECUTEanonfalse/authfalse/
+service_roletrue conservados; sin repair/replay/rename/dbpush/producción.
+
+Guardian-client15→16, payment-worker22→23, stripe-webhook22→23 ACTIVE,
+verify_jwt=false previo preservado: Auth getUser, worker secret y firma webhook
+continúan en sus entrypoints. Worker/webhook se desplegaron antes del cliente.
+Overlay mínimo: sólo guardian-method.mjs en worker/webhook sobre 14/13 archivos
+originales conservados; cliente tres archivos356 sobre12 originales352.
+Los módulos guardian-method originales de los tres consumidores coincidían.
+Los quince/quince/catorce archivos devueltos tras deploy coinciden con overlay
+normalizandoCRLF:0mismatches. No se afirma igualdad completa con todo el árbol
+local: conservar bundles remotos evita publicar cambios ajenos.
+
+Gate460/46028.54s356, Deno check tresentrypoints limpio7.82s357 y smoke remoto
+18/18pass6.02s: rechazo anónimo cliente/worker/RPC, webhook sin firma400,
+return200. No authmutación real/defaultStripe/UI/cron/dispositivo acreditados.
+Sin cambiosflags/usuarios/Stripewrite/producción/Codemagic/push.

@@ -3136,3 +3136,10 @@ Nueva migraciónlocal20261003050000_guardian_saved_method_selection.sql(selected
 Gatefinaltools/verification460/460pass28.54s handle75919exit0 con todasmigracionesPGlite; Deno checkguardian-client/index.ts node-modules-dirnoneexit0. Nuevas pruebas sourceguards/savedreplay/foreignmethod/expiry/read-crossing-expiry/lostupdateresponse/serverrestoration +endpointconsent/actor/fieldvalidation. Primer456gate455pass1fail expire_savedcheckpointclasificadocomosuperseded: corregido terminalallowlist yguardasantesregresiones458,459,460; npmroot accidental4prototypepass25.49s no gatebackend.
 
 Sin deploy/nuevoStripewrite/runtimeacceptance/UIbutton/CM/push. Antesdeploy verificarhistorial y cuerpo remotos; actualizar TODOSconsumidores guardian-method (guardian-client/payment-worker/stripe-webhook) para quejobsselectednoentrenenCheckoutlegacy, preservarverifyJWT/config actual yotrasdependencias. Sólodespuésconectarbotóncliente yverificarrespuesta tardía/error/200%sinfalseéxito. Goalcompletoactivo.
+
+
+### Loop357 — selección desplegada en todos los consumidoresDEV
+
+PreflightSQLseisoldpatchespresentes/latest45529/columnaausente y módulosoriginalesidénticos encliente/worker/webhook. Migraciónremota20261003051924 mapeadalocal20261003050000audit, seisnewpatchesverificados/columntrue/ACLanon-authfalse-service true. Overlay remoto:worker22→23sólomethodmjs;webhook22→23sólomethodmjs;cliente15→16index/client/methodmjs. Preservadosotros14/13/12archivos yJWTfalseprevios/authguards. Quince/quince/catorce archivos retornados comparadosoverlay0dif. Primerbundlewalkerestáticoomitióimports dinámicos ycomparaciónmostrófaltantes, noeran cambiosreales; corregidoestrategiaoverlay antesdeploy. No SDKs/secretos/cobros.
+
+Deno check3entrypoints7.82sexit0;18smokeremotes6.02sexit0, no prueba signedwebhook/cron/Stripekeypermissions/mutaciónautenticada. Clientbutton aúnpendiente, empezarconservandointentkey yconfirmación actual; no falsaactualización/defaultlocal. No CM/push/goalcomplete.
