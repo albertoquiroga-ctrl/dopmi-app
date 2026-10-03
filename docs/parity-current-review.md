@@ -1,3 +1,9 @@
+# Corte vigente — loop387, 3/10/2026
+
+Contrato móvil NativeWalletRepository preparado: key/provider estables, receipt mínimo sinsecret y SDKsecret sólo transitorio pendiente.3tests pasan; Flutter analyze limpio49.3s. NO SDK/capacidades/UI/reanudación o billetera real acreditados. Próximo integración nativa y visual; PK/MerchantID pendiente. Servidor386 desplegado, objetivo global activo y Codemagic sólo final.
+
+## Corte386 anterior
+
 # Corte vigente — loop386, 3/10/2026
 
 SQL nativo aplicado una vez en DEV como20261003092721; worker27/webhook27/client20 ACTIVE, bundles verificados0diferencias. Permisos privados/owner y25smoke remoto pasan. Sin flags nuevos ni autorización de billetera real; SDK/config/capacidades/cliente y aceptación móvil pendientes. Backend557/385; móvil538/381. Objetivo global activo, Codemagic únicamente al terminar.
