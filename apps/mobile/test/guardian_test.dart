@@ -1,4 +1,5 @@
 import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/features/payments/guardian_payment_card.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
@@ -23,6 +24,14 @@ class FakeGuardian extends GuardianRepository {
           authOptions: const AuthClientOptions(autoRefreshToken: false),
         ),
       );
+  List<GuardianPaymentCard> cards = [];
+  bool failCards = false;
+  @override
+  Future<List<GuardianPaymentCard>> paymentMethods() async {
+    if (failCards) throw Exception('fixture');
+    return cards;
+  }
+
   Json value = {'plan': null, 'activation': null};
   final calls = <Json>[];
   int reads = 0, opened = 0;
@@ -628,7 +637,10 @@ void main() {
       );
       await tester.scrollUntilVisible(explanation, 180);
       expect(explanation, findsOneWidget);
-      await tester.scrollUntilVisible(find.text('Actualizar medio de pago'), 180);
+      await tester.scrollUntilVisible(
+        find.text('Actualizar medio de pago'),
+        180,
+      );
       expect(tester.takeException(), isNull);
       expect(repo.calls, isEmpty);
     },
@@ -646,6 +658,64 @@ void main() {
     expect(repo.reads, 0);
     expect(repo.calls, isEmpty);
   });
+  testWidgets('methods shows only server-confirmed card and default marker', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final repo = FakeGuardian()
+      ..cards = [
+        const GuardianPaymentCard(
+          id: 'pm_one',
+          brand: 'visa',
+          last4: '4242',
+          isDefault: true,
+        ),
+        const GuardianPaymentCard(
+          id: 'pm_two',
+          brand: 'mastercard',
+          last4: '5556',
+          isDefault: false,
+        ),
+      ]
+      ..value = {'plan': activePlan(), 'activation': null};
+    await start(tester, repo, methods: true);
+    expect(find.text('Visa •••• 4242'), findsOneWidget);
+    expect(find.text('Mastercard •••• 5556'), findsOneWidget);
+    expect(find.text('Predeterminada'), findsOneWidget);
+    expect(repo.calls, isEmpty);
+  });
+  testWidgets(
+    'card read failure remains recoverable without inventing a card',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final repo = FakeGuardian()
+        ..failCards = true
+        ..value = {'plan': activePlan(), 'activation': null};
+      await start(tester, repo, methods: true);
+      expect(
+        find.textContaining('No se pudieron consultar tus tarjetas.'),
+        findsOneWidget,
+      );
+      expect(find.byType(GuardianPaymentCardRow), findsNothing);
+      repo.failCards = false;
+      repo.cards = [
+        const GuardianPaymentCard(
+          id: 'pm_recovered',
+          brand: 'visa',
+          last4: '9999',
+          isDefault: true,
+        ),
+      ];
+      await tester.tap(find.text('Actualizar estado'));
+      await tester.pumpAndSettle();
+      expect(find.text('Visa •••• 9999'), findsOneWidget);
+      expect(
+        find.textContaining('No se pudieron consultar tus tarjetas.'),
+        findsNothing,
+      );
+      expect(repo.calls, isEmpty);
+    },
+  );
   testWidgets(
     'method change needs explicit consent and uncertain replies reuse one key',
     (tester) async {

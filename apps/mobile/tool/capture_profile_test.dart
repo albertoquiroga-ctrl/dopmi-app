@@ -61,6 +61,9 @@ import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 
 import '../test/guardian_history_test.dart' show cycle;
 import '../test/guardian_test.dart' show FakeGuardian, activePlan;
+
+import 'package:dopmi_mobile/features/payments/guardian_payment_card.dart';
+
 import 'capture_design_test.dart' show saveCapture;
 
 class PublicProfileCaptureCommunity extends FakeCommunity {
@@ -815,6 +818,8 @@ void main() {
       ('payment-methods', '/settings/payment-methods'),
       ('payment-methods-large', '/settings/payment-methods'),
       ('payment-methods-inactive', '/settings/payment-methods'),
+      ('payment-methods-cards', '/settings/payment-methods'),
+      ('payment-methods-cards-large', '/settings/payment-methods'),
       ('guardian-billing-amount', '/guardian'),
       ('guardian-billing-amount-large', '/guardian'),
       ('guardian-billing-cancel', '/guardian'),
@@ -1080,6 +1085,22 @@ void main() {
           'activation': null,
           'method_change_available': true,
         };
+      }
+      if (spec.$1.startsWith('payment-methods-cards')) {
+        guardian.cards = [
+          const GuardianPaymentCard(
+            id: 'pm_one',
+            brand: 'visa',
+            last4: '4242',
+            isDefault: true,
+          ),
+          const GuardianPaymentCard(
+            id: 'pm_two',
+            brand: 'mastercard',
+            last4: '5556',
+            isDefault: false,
+          ),
+        ];
       }
       if (spec.$1.startsWith('guardian-activation-')) {
         // Synthetic checkout is scoped to this flutter_test capturer.

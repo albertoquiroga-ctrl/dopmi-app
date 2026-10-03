@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../adoption/community_repository.dart';
 import 'payment_repository.dart';
+import 'guardian_payment_card.dart';
 
 const guardianConsent = 'guardian-2026-09-24';
 final guardianEnabledProvider = Provider<bool>(
@@ -15,6 +16,26 @@ final guardianRepositoryProvider = Provider<GuardianRepository>(
 class GuardianRepository {
   GuardianRepository(this.client);
   final SupabaseClient client;
+  Future<List<GuardianPaymentCard>> paymentMethods() async {
+    final response = await client.functions.invoke(
+      'guardian-client',
+      body: {'action': 'methods'},
+    );
+    final body = response.data;
+    if (response.status != 200 || body is! Map || body['items'] is! List) {
+      throw const FormatException('No se pudieron consultar las tarjetas');
+    }
+    final cards = (body['items'] as List).map((item) {
+      if (item is! Map) throw const FormatException('Tarjeta no confirmada');
+      return GuardianPaymentCard.fromJson(Map<String, dynamic>.from(item));
+    }).toList();
+    if (cards.map((card) => card.id).toSet().length != cards.length ||
+        cards.where((card) => card.isDefault).length > 1) {
+      throw const FormatException('Lista no confirmada');
+    }
+    return cards;
+  }
+
   Future<Json> state() async =>
       Json.from(await client.rpc('dopmi_guardian_state'));
   Future<Json> history({Json? cursor}) async => Json.from(

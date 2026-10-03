@@ -13,6 +13,7 @@ import '../adoption/community_repository.dart';
 import '../identity/identity_controller.dart';
 import '../rescue/rescue_repository.dart';
 import 'guardian_repository.dart';
+import 'guardian_payment_card.dart';
 import 'payment_method_border.dart';
 import 'contribution_layout.dart';
 import 'guardian_membership_card.dart';
@@ -42,6 +43,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   final enrollmentInput = GlobalKey();
   bool enrolling = false;
   Json? data, intent;
+  List<GuardianPaymentCard>? cards;
+  String? cardsError;
   bool busy = true, consent = false, fresh = false, confirming = false;
   String? error, message;
   String? confirmedActivationKey;
@@ -262,6 +265,20 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         amount.text = ((cents as int) / 100).toStringAsFixed(2);
       }
       fresh = true;
+      if (widget.paymentMethodsOnly &&
+          ref.read(identityControllerProvider).identity?.verified == true) {
+        cardsError = null;
+        cards = null;
+        try {
+          final result = await ref
+              .read(guardianRepositoryProvider)
+              .paymentMethods();
+          if (!current) return;
+          cards = result;
+        } catch (_) {
+          if (current) cardsError = 'No se pudieron consultar tus tarjetas. Actualiza el estado para reintentar.';
+        }
+      }
     } catch (cause) {
       if (current) error = guardianError(cause);
     } finally {
@@ -550,51 +567,62 @@ class _GuardianState extends ConsumerState<GuardianScreen>
           padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
           children: [
             const Text(
-              'Medio de pago de Guardián',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+              'Tarjetas guardadas',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: ink,
+              ),
             ),
             const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: const Color(0xffe6e2dd)),
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: const BoxDecoration(
-                      color: Color(0xffefede8),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: SvgPicture.asset(
-                        'assets/profile/icon-card.svg',
-                        width: 18,
-                        height: 18,
+            if (enabled && cardsError != null) Notice(cardsError!),
+            if (enabled && cards != null && cards!.isNotEmpty)
+              for (var i = 0; i < cards!.length; i++) ...[
+                if (i > 0) const SizedBox(height: 12),
+                GuardianPaymentCardRow(card: cards![i]),
+              ],
+            if (cards == null || cards!.isEmpty)
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: const Color(0xffe6e2dd)),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: const BoxDecoration(
+                        color: Color(0xffefede8),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: SvgPicture.asset(
+                          'assets/profile/icon-card.svg',
+                          width: 18,
+                          height: 18,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      !enabled
-                          ? 'Guardián no está disponible en esta versión.'
-                          : error != null && !fresh
-                          ? 'No se pudo confirmar tu medio de pago.'
-                          : busy && data == null
-                          ? 'Consultando tu suscripción…'
-                          : status == 'active'
-                          ? 'Gestionado en Stripe'
-                          : 'No tienes una suscripción activa de Guardián.',
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        !enabled
+                            ? 'Guardián no está disponible en esta versión.'
+                            : error != null && !fresh
+                            ? 'No se pudo confirmar tu medio de pago.'
+                            : busy && data == null
+                            ? 'Consultando tu suscripción…'
+                            : status == 'active'
+                            ? 'Gestionado en Stripe'
+                            : 'No tienes una suscripción activa de Guardián.',
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
             if (enabled && paymentIssueMessage != null)
               Notice(paymentIssueMessage!),
             if (error != null) Notice(error!),
