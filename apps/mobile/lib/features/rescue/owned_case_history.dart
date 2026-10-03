@@ -13,7 +13,7 @@ class OwnedCaseHistory extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      const SizedBox(height: 24),
+      const SizedBox(height: 32),
       const Text(
         'La historia hasta ahora',
         style: TextStyle(
@@ -22,10 +22,10 @@ class OwnedCaseHistory extends ConsumerWidget {
           height: 1.3,
           letterSpacing: 0,
           fontWeight: FontWeight.w700,
-          color: Color(0xff15110d),
+          color: Color(0xff151423),
         ),
       ),
-      const SizedBox(height: 12),
+      const SizedBox(height: 32),
       LiveSection<List<CaseUpdate>>(
         key: ValueKey('owned-case-history:$caseId'),
         tables: const ['dopmi_case_updates'],
@@ -39,7 +39,7 @@ class OwnedCaseHistory extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 14,
                   height: 1.5,
-                  color: Color(0xff554e48),
+                  color: Color(0xff4f4e5c),
                 ),
               ),
             for (final item in items)
@@ -63,7 +63,7 @@ class OwnedCaseStory extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xffe6e2dd)),
+        border: Border.all(color: const Color(0xffe3e4ed)),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -136,7 +136,7 @@ class OwnedCaseStory extends StatelessWidget {
                     fontSize: 14,
                     height: 1.55,
                     letterSpacing: 0,
-                    color: Color(0xff15110d),
+                    color: Color(0xff4f4e5c),
                   ),
                 ),
               ],
@@ -167,7 +167,7 @@ class _StoryDate extends StatelessWidget {
             width: 12,
             height: 12,
             colorFilter: const ColorFilter.mode(
-              Color(0xff15110d),
+              Color(0xff151423),
               BlendMode.srcIn,
             ),
           ),
@@ -179,10 +179,10 @@ class _StoryDate extends StatelessWidget {
             style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 11,
-              height: 1.4,
+              height: 1.2,
               letterSpacing: 0,
               fontWeight: FontWeight.w600,
-              color: Color(0xff15110d),
+              color: Color(0xff151423),
             ),
           ),
         ),
