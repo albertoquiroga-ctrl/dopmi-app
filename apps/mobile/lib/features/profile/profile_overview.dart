@@ -1210,18 +1210,26 @@ class SavedPetsRow extends ConsumerWidget {
 }
 
 class SavedRescuersRow extends ConsumerWidget {
-  const SavedRescuersRow({super.key});
+  const SavedRescuersRow({super.key, this.referenceStyle = false});
+  final bool referenceStyle;
   @override
   Widget build(BuildContext context, WidgetRef ref) =>
       LiveSection<DataPage<SavedEntry>>(
         tables: const ['dopmi_saved_rescuers'],
         load: () => ref.read(communityRepositoryProvider).savedRescuers(1),
-        builder: (data, _) => ProfileRow(
-          title: 'Rescatistas guardados',
-          icon: Icons.bookmark_border,
-          path: '/saved?kind=rescuer',
-          count: data.total,
-        ),
+        builder: (data, _) => referenceStyle
+            ? RescuerNavigationRow(
+                title: 'Rescatistas guardados',
+                icon: 'icon-bookmark',
+                path: '/saved?kind=rescuer',
+                count: data.total,
+              )
+            : ProfileRow(
+                title: 'Rescatistas guardados',
+                icon: Icons.bookmark_border,
+                path: '/saved?kind=rescuer',
+                count: data.total,
+              ),
       );
 }
 
@@ -1459,24 +1467,29 @@ class SettingsScreen extends ConsumerWidget {
         const SizedBox(height: 12),
         const DonorSettingsModeSwitch(),
         const SizedBox(height: 12),
-        const ProfileRow(
+        const RescuerNavigationRow(
           title: 'Historial de aportaciones',
-          icon: Icons.history,
+          icon: 'icon-billing',
           path: '/payments',
         ),
-        const SavedRescuersRow(),
-        const ProfileRow(
+        const SizedBox(height: 12),
+        const SavedRescuersRow(referenceStyle: true),
+        const SizedBox(height: 12),
+        const RescuerNavigationRow(
           title: 'Términos y privacidad',
-          icon: Icons.description_outlined,
+          icon: 'icon-billing',
           path: '/terms',
         ),
-        const ProfileRow(
+        const SizedBox(height: 12),
+        const RescuerNavigationRow(
           title: 'Privacidad y eliminación',
           subtitle: 'Medición, accesos vinculados y eliminación de cuenta',
-          icon: Icons.privacy_tip_outlined,
+          icon: 'icon-shield',
           path: '/account-privacy',
         ),
-        OutlinedButton(onPressed: logout, child: const Text('Cerrar sesión')),
+        const SizedBox(height: 12),
+        RescuerLogoutRow(onLogout: logout),
+        const SizedBox(height: 12),
         Center(
           child: Text(
             'Versión $version',

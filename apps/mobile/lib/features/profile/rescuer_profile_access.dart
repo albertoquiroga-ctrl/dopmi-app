@@ -66,10 +66,12 @@ class RescuerNavigationRow extends StatefulWidget {
     required this.path,
     this.onPressed,
     this.enabled = true,
+    this.count,
   });
   final String title, subtitle, icon, path;
   final VoidCallback? onPressed;
   final bool enabled;
+  final int? count;
   @override
   State<RescuerNavigationRow> createState() => _RescuerNavigationRowState();
 }
@@ -187,6 +189,17 @@ class _RescuerNavigationRowState extends State<RescuerNavigationRow> {
                         ],
                       ),
                     ),
+                    if (widget.count != null) ...[
+                      const SizedBox(width: 8),
+                      Text(
+                        '${widget.count}',
+                        style: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 12,
+                          color: Color(0xff4f4e5c),
+                        ),
+                      ),
+                    ],
                     const SizedBox(width: 12),
                     ExcludeSemantics(
                       child: SvgPicture.asset(

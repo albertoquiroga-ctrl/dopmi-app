@@ -904,6 +904,8 @@ void main() {
       ('profile-mode-dialog', '/profile'),
       ('profile-settings', '/settings'),
       ('profile-settings-large', '/settings'),
+      ('profile-settings-footer', '/settings'),
+      ('profile-settings-footer-large', '/settings'),
       ('profile-support', '/profile'),
       ('about', '/about'),
       ('about-large', '/about'),
@@ -2563,6 +2565,16 @@ void main() {
               expect(tester.getSize(outline), const Size(50, 50));
             }
           }
+        }
+        if (spec.$1.startsWith('profile-settings-footer')) {
+          await tester.scrollUntilVisible(
+            find.text('Cerrar sesión'), 250,
+            scrollable: find.byType(Scrollable).first,
+          );
+          await Scrollable.ensureVisible(
+            tester.element(find.text('Cerrar sesión')), alignment: .7,
+          );
+          await tester.pumpAndSettle();
         }
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),
