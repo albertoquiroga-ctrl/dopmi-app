@@ -3925,3 +3925,10 @@ Full78989 terminaexit1 fc06a2:563aprobadas/1fallo3m20s sobre426f8743292ba673880c
 Corregido ProfileModeCard conStack/Positionedestable enambosmodos; Rowreserva32x19Settings/48x48Perfil, right9/17 conserva posiciones yaltura71/82 yárea48. MismoAnimatedContainer continúaEstado entreboolsettings. Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado d313a2. Target20/20pasa12s39493exit0(incluye15fixturesSettings ygeometría); testmovimiento ampliado retorno13→0 conmid90msEase y180endpoint, reducedmotion instantáneo ambasdirecciones:4/4pasa85375exit0. Analyzer96931 limpio28.7s producciónfinal, precede sóloasserts inversos. SourceRoot/scratch224idénticos antes primerafull; producciónnuevo sólo2archivoscopiados.
 
 ADB d313a2 lista vacía, no UIAndroid/instalación. Card/modal/fracciones/SDK/Stripe/restomatriz permanecenabiertos. Siguiente repetirfullporfalloreal yfixproducción, no extrapolartarget20 a564integradas. NoCM/push/deploy.
+
+
+### Loop452 — regresión integrada final aprobada, 3/10/2026
+
+Recheck5996 terminalexit0 58648d:564/564 aprobadas3m47s, logexterno Temp/dopmi-full-mobile-loop452-recheck.log, códigoexactoaea2e21b7936ed5f2cc65728f223c4d4ec043409. Sin cambioslib/test durante corrida.224Dartroot/scratch idénticos después de terminar; fuentes yconjuntoscomparados previamente. Resuelve único fallo inicial deAnimatedContainer perdiendoState al cambiarContainer→Stack; mismaestructura ahora verifica180ms/reducedmotion ambossentidos en gatecompleto. Supersede full562/443 yprimerafull452563/1fallo; no aceptaciónvisualglobal/device/Stripe atribuida.
+
+Últimoanalyzer452clean28.7s producciónfinal; testinverso añadido trasanalyzer pasótarget4 yfull564. Backend587/436 vigente sinchangesbackend en444–452. ADB452 vacío, no teléfono accesible; noCM/push. Próxima familiaready: revisar diálogo sociallineboxes/otrosestados ygestosrestomatriz, conservando fullverde comobase técnica.

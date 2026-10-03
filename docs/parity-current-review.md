@@ -1,3 +1,7 @@
+# Corte vigente — loop452 full aprobado
+
+564/5643m47s sobreaea2e21b7936ed5f2cc65728f223c4d4ec043409, handle5996exit0;224Dartroot/scratch idénticos. Resuelto salto deanimaciónState/reducedmotion/180ms ambasdirecciones. Analyzer28.7s limpio. Matrizglobal/lineboxes/device/Stripe/SDK continúanabiertos; ADBvacío. NoCM/push; sóloobjetivo completo.
+
 # Corte vigente — loop452 corrección
 
 Full426f874:563/1fallo saltoAnimatedContainer al reconstruir Settings. Estructuraestablecorregida;20 targetpasan12s y4movimientoextendidaspasan;analyzer28.7s limpio. Deberepetirsefullcódigo nuevo; no564verde aún. ADBvacío,SDK/Stripe/device/restomatriz abiertos. Codemagic sólo objetivo completo.
