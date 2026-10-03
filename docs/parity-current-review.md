@@ -1,3 +1,7 @@
+# Corte vigente — loop446
+
+Ruta Source correcta rescuer=/rescuer/settings; cliente /settings por modo es equivalente a esa ruta. Ayuda restaurada al tema rescuer,16 pruebas pasan7s y analyzer limpio33.4s. Source switchcard71 vscliente82 identificado; siguiente corregir geometría sin perder gesto/semántica/servidor. Donor445 vigente. Codemagic sólo objetivo completo.
+
 # Corte vigente — loop445
 
 Filas donor Configuración igualan Source444 en y88/170/264 y alturas70/82/82, con paleta común scoped.19 pruebas pasan6s; capture con asserts geométricos pasa3s; analyzer producción limpio20.9s. Composición rescuer, encabezado/píxeles y aceptación física pendientes. Codemagic sólo objetivo completo.

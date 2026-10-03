@@ -1417,7 +1417,6 @@ class SettingsScreen extends ConsumerWidget {
           const RescuerSettingsVerification(),
           const RescuerSettingsModeSwitch(),
           const RescuerNavigationRow(
-            standardSettings: true,
             title: 'Centro de ayuda',
             icon: 'icon-help',
             path: '/help',

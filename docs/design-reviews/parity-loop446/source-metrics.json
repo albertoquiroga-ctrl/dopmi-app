@@ -1,0 +1,125 @@
+[
+  {
+    "border": "rgb(21, 20, 35)",
+    "children": [],
+    "color": "rgb(21, 20, 35)",
+    "rect": {
+      "bottom": 111.390625,
+      "height": 23.390625,
+      "left": 16,
+      "right": 361,
+      "top": 88,
+      "width": 345,
+      "x": 16,
+      "y": 88
+    },
+    "text": "Estado de verificación"
+  },
+  {
+    "border": "rgb(21, 20, 35)",
+    "children": [],
+    "color": "rgb(21, 20, 35)",
+    "rect": {
+      "bottom": 324.15625,
+      "height": 23.390625,
+      "left": 16,
+      "right": 361,
+      "top": 300.765625,
+      "width": 345,
+      "x": 16,
+      "y": 300.765625
+    },
+    "text": "Redes sociales"
+  },
+  {
+    "border": "rgb(21, 20, 35)",
+    "children": [],
+    "color": "rgb(21, 20, 35)",
+    "rect": {
+      "bottom": 572.734375,
+      "height": 23.390625,
+      "left": 16,
+      "right": 361,
+      "top": 549.34375,
+      "width": 345,
+      "x": 16,
+      "y": 549.34375
+    },
+    "text": "Datos bancarios"
+  },
+  {
+    "border": "rgb(227, 228, 237)",
+    "children": [
+      {
+        "color": "rgb(21, 20, 35)",
+        "font": "16px",
+        "line": "normal",
+        "text": "Cambiar a usuario donante"
+      },
+      {
+        "color": "rgb(79, 78, 92)",
+        "font": "12px",
+        "line": "normal",
+        "text": "Cambia tu experiencia en la app"
+      }
+    ],
+    "color": "rgb(21, 20, 35)",
+    "rect": {
+      "bottom": 776.921875,
+      "height": 71,
+      "left": 16,
+      "right": 361,
+      "top": 705.921875,
+      "width": 345,
+      "x": 16,
+      "y": 705.921875
+    },
+    "text": "Cambiar a usuario donanteCambia tu experiencia en la app"
+  },
+  {
+    "border": "rgb(227, 228, 237)",
+    "children": [
+      {
+        "color": "rgb(21, 20, 35)",
+        "font": "16px",
+        "line": "normal",
+        "text": "Centro de ayuda"
+      }
+    ],
+    "color": "rgb(21, 20, 35)",
+    "rect": {
+      "bottom": 856.921875,
+      "height": 70,
+      "left": 16,
+      "right": 361,
+      "top": 786.921875,
+      "width": 345,
+      "x": 16,
+      "y": 786.921875
+    },
+    "text": "Centro de ayuda"
+  },
+  {
+    "border": "rgb(255, 212, 216)",
+    "children": [
+      {
+        "color": "rgb(217, 45, 32)",
+        "font": "16px",
+        "line": "normal",
+        "text": "Cerrar sesión"
+      }
+    ],
+    "color": "rgb(217, 45, 32)",
+    "rect": {
+      "bottom": 924.921875,
+      "height": 58,
+      "left": 16,
+      "right": 361,
+      "top": 866.921875,
+      "width": 345,
+      "x": 16,
+      "y": 866.921875
+    },
+    "text": "Cerrar sesión"
+  }
+]
