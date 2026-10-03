@@ -1,3 +1,9 @@
+# Corte vigente — loop397, 3/10/2026
+
+5screen tests pasan incluyendo signout/respuestatardía sinSDK; analyzer limpio61.7s. Nativebuildprimerfalló sinpluginsmetadata en scratch; regenerados19plugins inclStripe yreintentoACTIVOsession43721/logTemp dopmi-native-build-loop397-retry.log. No compilación verificada; retomarhandleantesdenuevaacción. Capturas396/objetivoglobal/config/device/matriz siguen pendientes; Codemagic sólo final.
+
+## Corte396 anterior
+
 # Corte vigente — loop396, 3/10/2026
 
 Cuatro capturas wallet ready/review normal200 revisadas confonts/SVGcargados. Se reutilizan assets onboardingidénticos y retiran duplicadosprofile.4captures pasan/analyzer limpio27.1s;328states/37URLs es inventario, no aceptaciónglobal. Text200review requiere scroll; falta bottom/ownerchange/casos/compilación/config/nativeacceptance/matrizglobal. Codemagic sólo final.

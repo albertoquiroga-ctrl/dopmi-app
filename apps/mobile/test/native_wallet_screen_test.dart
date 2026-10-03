@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
@@ -29,6 +30,7 @@ class FakeWallet extends NativeWalletRepository {
       );
   Json? receipt;
   bool fail = false;
+  Completer<Json>? response;
   final calls = <Json>[];
   @override
   Future<Json?> state() async => receipt;
@@ -41,6 +43,7 @@ class FakeWallet extends NativeWalletRepository {
       'status': 'pending',
       'card_id': null,
     };
+    if (response != null) return response!.future;
     if (fail) throw StateError('lost reply');
     return {...receipt!, 'setup_client_secret': 'seti_fixture_secret_fixture'};
   }
@@ -48,11 +51,12 @@ class FakeWallet extends NativeWalletRepository {
 
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
-  Future<void> start(
+  Future<FakeIdentityRepository> start(
     WidgetTester tester,
     FakeGuardian cards,
-    FakeWallet wallet,
-  ) async {
+    FakeWallet wallet, {
+    List<String>? sdkCalls,
+  }) async {
     final identity = FakeIdentityRepository()
       ..user = Identity('one', 'one@example.test', verified: true);
     final sdk = NativeWalletSdk(
@@ -63,6 +67,7 @@ void main() {
       initialize: (key, merchant) async {},
       supported: (params) async => true,
       confirm: (secret, params) async {
+        sdkCalls?.add(secret);
         throw StateError('native sheet canceled');
       },
     );
@@ -87,6 +92,7 @@ void main() {
       UncontrolledProviderScope(container: container, child: const DopmiApp()),
     );
     await tester.pumpAndSettle();
+    return identity;
   }
 
   for (final lost in [false, true]) {
@@ -196,6 +202,37 @@ void main() {
         jsonDecode(prefs.getString('dopmi-native-wallet:one:intent')!)['key'],
         key,
       );
+    },
+  );
+  testWidgets(
+    'sign-out while wallet reply is in flight prevents SDK and keeps owner intent',
+    (tester) async {
+      final wallet = FakeWallet()..response = Completer<Json>();
+      final sdkCalls = <String>[];
+      final identity = await start(
+        tester,
+        FakeGuardian(),
+        wallet,
+        sdkCalls: sdkCalls,
+      );
+      await tester.ensureVisible(find.text('Google Pay'));
+      await tester.tap(find.text('Google Pay'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Guardar y continuar'));
+      await tester.pump();
+      expect(wallet.calls, hasLength(1));
+      identity.emit(const IdentityEvent(null));
+      await tester.pump();
+      wallet.response!.complete({
+        ...wallet.receipt!,
+        'setup_client_secret': 'seti_fixture_secret_fixture',
+      });
+      await tester.pumpAndSettle();
+      expect(sdkCalls, isEmpty);
+      expect(find.text('Google Pay vinculado'), findsNothing);
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getString('dopmi-native-wallet:one:intent'), isNotNull);
+      expect(prefs.getString('dopmi-native-wallet:peer:intent'), null);
     },
   );
 }
