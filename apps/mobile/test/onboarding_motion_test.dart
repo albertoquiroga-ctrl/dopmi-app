@@ -19,7 +19,12 @@ void main() {
     expect(tester.widget<Opacity>(opacity).opacity, 0);
     final start = tester.getTopLeft(find.text('Contenido')).dy;
     await tester.pump(const Duration(milliseconds: 225));
-    expect(tester.widget<Opacity>(opacity).opacity, inExclusiveRange(0, 1));
+    final progress = const Cubic(.22, 1, .36, 1).transform(.5);
+    expect(tester.widget<Opacity>(opacity).opacity, closeTo(progress, .00001));
+    expect(
+      start - tester.getTopLeft(find.text('Contenido')).dy,
+      closeTo(10 * progress, .001),
+    );
     await tester.pump(const Duration(milliseconds: 225));
     expect(tester.widget<Opacity>(opacity).opacity, 1);
     expect(
