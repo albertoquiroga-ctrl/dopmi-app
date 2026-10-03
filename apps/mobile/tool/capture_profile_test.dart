@@ -3438,8 +3438,8 @@ void main() {
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),
         );
         if (spec.$1.startsWith('private-file')) {
-          expect(find.byTooltip('Volver').hitTestable(), findsOneWidget);
-          await tester.tap(find.byTooltip('Volver'));
+          expect(find.byTooltip('Regresar').hitTestable(), findsOneWidget);
+          await tester.tap(find.byTooltip('Regresar'));
           await tester.pumpAndSettle();
           expect(container.read(routerProvider).state.uri.path, spec.$2);
           expect(privateFile.saveCalls, 0);

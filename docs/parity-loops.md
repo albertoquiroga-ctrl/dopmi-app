@@ -4091,3 +4091,7 @@ Fuentee11eb8dd1389b5d92d8d36d8d56ddc5ec33727a6; fullfluttertest17646 exit0,592/5
 ### Loop480 — archivo privado y recarga, 3/10/2026
 
 Base41a87ab; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado.9fixtures abren Verarchivo1 desde solicitud sintética/path extra, URI privada exacta, recarga renueva acceso mismo path y regresan a solicitud sin saves, counters9/9. Capturador47609 pasó1/9; bug real setStatecallback retornabaFuture corregido con request sync/async observado/bloquevoid/keyFutureBuilder descartaimagenprevia durantevalidación.6tests finales81497 exit0/1s normal200 prueban pendiente/revocación/reintento/freshPDF antes launchMethodChannel simulado. Fallos previos scrollambiguo y montajegrande lazy corregidos sólo capturador/test; analyzer34810clean26.9s antesmontajefinal. PNG revisados marcosgenéricos pendientes481. Full592479 anterior a este fix; no nuevofull/device/nativePDF/SQL/push/Codemagic. Próximo marco visor privado yfamiliasglobales/gestos.
+
+### Loop481 — visor privado compacto, 3/10/2026
+
+Base9b160f1; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. VisorContributionFrame rescuer18/List16-20-16-32/intro14.45/backpopoperfil, conserva seguridad/recargaPDFimagen480.58648exit0,7/7,12s seis pruebas+capturador9, counters9regresos y tresrecargas; analyzer16729clean27.5s. PNG final/before480 revisados. Extensión sin SourceURLliteral; no launchPDFnativo/Storage/Android/fullactual atribuido. Full592479 anterior480/481. Sin SQL/push/Codemagic. Próximo familias Source/gestos/movimiento.

@@ -21,6 +21,7 @@ import '../community/content_actions.dart';
 import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
 import '../payments/payment_repository.dart';
+import '../payments/contribution_layout.dart';
 import 'rescue_fields.dart';
 import 'expense_field.dart';
 import 'expense_evidence_card.dart';
@@ -2597,56 +2598,67 @@ class _RescueFileState extends ConsumerState<RescueFileScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => CommunityFrame(
-    children: [
-      const Heading(
-        'Archivo adjunto',
-        'El acceso se comprueba al abrir cada archivo.',
-      ),
-      if (error != null) Notice(error!, isError: true),
-      FutureBuilder<String>(
-        key: ValueKey(url),
-        future: url,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Notice(rescueError(snapshot.error!), isError: true);
-          }
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (widget.path.endsWith('.pdf')) {
-            return ActionButton(
-              'Abrir PDF',
-              onPressed: () async {
-                try {
-                  final fresh = await ref
-                      .read(rescueRepositoryProvider)
-                      .fileUrl(widget.path);
-                  if (!mounted) return;
-                  if (!await launchUrl(
-                    Uri.parse(fresh),
-                    mode: LaunchMode.externalApplication,
-                  )) {
-                    throw const FormatException('No pudimos abrir el PDF.');
+  Widget build(BuildContext context) => ContributionFrame(
+    title: 'Archivo adjunto',
+    rescuer: true,
+    back: () => context.canPop() ? context.pop() : context.go('/profile'),
+    child: ListView(
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+      children: [
+        const Text(
+          'El acceso se comprueba al abrir cada archivo.',
+          style: TextStyle(
+            fontSize: 14,
+            height: 1.45,
+            color: Color(0xff4f4e5c),
+          ),
+        ),
+        const SizedBox(height: 20),
+        if (error != null) Notice(error!, isError: true),
+        FutureBuilder<String>(
+          key: ValueKey(url),
+          future: url,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Notice(rescueError(snapshot.error!), isError: true);
+            }
+            if (!snapshot.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (widget.path.endsWith('.pdf')) {
+              return ActionButton(
+                'Abrir PDF',
+                onPressed: () async {
+                  try {
+                    final fresh = await ref
+                        .read(rescueRepositoryProvider)
+                        .fileUrl(widget.path);
+                    if (!mounted) return;
+                    if (!await launchUrl(
+                      Uri.parse(fresh),
+                      mode: LaunchMode.externalApplication,
+                    )) {
+                      throw const FormatException('No pudimos abrir el PDF.');
+                    }
+                  } catch (cause) {
+                    if (mounted) setState(() => error = rescueError(cause));
                   }
-                } catch (cause) {
-                  if (mounted) setState(() => error = rescueError(cause));
-                }
-              },
+                },
+              );
+            }
+            return Image.network(
+              snapshot.data!,
+              fit: BoxFit.contain,
+              errorBuilder: (_, _, _) => const Notice(
+                'No pudimos cargar la imagen. Recarga el archivo.',
+                isError: true,
+              ),
             );
-          }
-          return Image.network(
-            snapshot.data!,
-            fit: BoxFit.contain,
-            errorBuilder: (_, _, _) => const Notice(
-              'No pudimos cargar la imagen. Recarga el archivo.',
-              isError: true,
-            ),
-          );
-        },
-      ),
-      TextButton(onPressed: reload, child: const Text('Recargar archivo')),
-    ],
+          },
+        ),
+        TextButton(onPressed: reload, child: const Text('Recargar archivo')),
+      ],
+    ),
   );
 }
 
