@@ -2865,3 +2865,27 @@ identidades/sesiones todos0. Archivo credencialesTemp eliminado, journal sinsecr
 conservado fueraGit. node --check aprobado. Sin schema/grants nuevos, dinero real
 ni Codemagic. Objetivo global sigue activo; próxima regresión completa y resto
 visual/gestos, confirmacióncorreo y dispositivo permanecen sin aceptación.
+
+# Loop319 — regresión completa y recuperación del acceso a guardados
+
+Full flutter test sobre85827f5/lib+test normalizados iguales al workspace:
+467pass/3fail en3:53. Falló ruta rescatistasguardados retirada deBasicInfo y dos
+localizadores antiguos del editor. Corrección inicial sólo cambió ruta aPerfil,
+pero verificó defecto real: DonorProfileView tampoco expone esa entrada.
+Restaurado SavedRescuersRow en Configuración (extensión real de cuenta;
+selector conserva mascotas/casos). BasicInfo permanece dedicado sin shortcuts.
+Prueba navega BasicInfo→Volver→Configuración→guardados y comprueba URL/empty.
+
+Editor usa key public-profile-Instagram y tooltipVolver, ya implementados281;
+TopBar Source vuelve a /rescuer/profile, preservado. Regresión ahora prueba
+handlePopRoute del teléfono para volver aSettings y refrescar datos privados;
+no cambia BackSource para forzar test. Diagnóstico con --plain-name regex no
+seleccionó tests; corregido --name. Final dosarchivos18/18 aprobadas7s.
+Analyze limpio53.9s; profile-settings captura regenerada1/1 aprobada2s.
+
+Admin build aprobado3.86s; npmtest inicial no ejecutó tests por7timeouts de
+arranqueworkers. npm test -- --maxWorkers=1 aprobado7archivos/27tests32.63s.
+Userapi.ts/test siguen sinstaging ni cambios. Configuración12/12 aprobada.
+Actualizada parity-current-review con evidencia311–318 y límites fuentes,
+Auth/REST/dispositivo/alcancecompleto. No claiming gate completo móvil verde:
+falta repetir fullsuite tras correcciones en próximo corte. No Codemagic.

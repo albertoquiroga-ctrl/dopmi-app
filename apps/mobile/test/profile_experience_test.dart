@@ -375,6 +375,9 @@ void main() {
       UncontrolledProviderScope(container: container, child: const DopmiApp()),
     );
     await tester.pumpAndSettle();
+    expect(find.text('Rescatistas guardados'), findsNothing);
+    await tester.tap(find.byTooltip('Volver'));
+    await tester.pumpAndSettle();
     final link = find.text('Rescatistas guardados');
     await tester.scrollUntilVisible(
       link,

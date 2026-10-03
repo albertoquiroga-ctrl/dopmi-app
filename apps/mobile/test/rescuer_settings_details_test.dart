@@ -162,11 +162,7 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.byType(RescuerPublicProfileEditScreen), findsOneWidget);
         await tester.scrollUntilVisible(
-          find.byWidgetPredicate(
-            (widget) =>
-                widget is TextField &&
-                widget.decoration?.labelText == 'Instagram (https://)',
-          ),
+          find.byKey(const ValueKey('public-profile-Instagram (https://)')),
           200,
           scrollable: find.byType(Scrollable).first,
         );
@@ -183,7 +179,8 @@ void main() {
         );
         profile.value['instagram_url'] =
             'https://www.instagram.com/updated-profile';
-        await tester.tap(find.byTooltip('Regresar'));
+        expect(find.byTooltip('Volver'), findsOneWidget);
+        await tester.binding.handlePopRoute();
         await tester.pumpAndSettle();
         expect(
           find.text('https://www.instagram.com/updated-profile'),

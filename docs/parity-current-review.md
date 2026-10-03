@@ -190,3 +190,25 @@ Loop257 supersedes deck distance difference256: extra distance row removed to ma
 
 
 Loop259: Apoyar → caso → selección de foto → galería → monto comparado con Source renderizado377x852. Galería real sólo muestra fotos aprobadas; Source repite imágenes hasta6, no se inventan copias. Selector real conserva mínimo10/centavos y descuento real de costos en vez del checkbox simulado0. Se corrigen lineboxes/campo52 y se añaden4capturas normal/large. Último CI430: análisis, pruebas, ambos capturadores, iOS y backend exitosos; Android falló por Maven403 al descargar Kotlin. No es gate completo aprobado. Próximo cierre: comparar perfil/ajustes y panel/formularios rescatista completos, después recorridos de Guardian/pago test y candidato instalado.
+
+## Corte Información básica — loops306–318, 2/10/2026
+
+El pendiente del loop265 ya tiene formulario dedicado sin shortcuts redundantes,
+Nombre/Apellido privados explícitos, foto privada seleccionable, correo editable
+y aviso flotante de éxito2600ms. Loop317 contrastó Source renderizado377×852:
+campos44/texto12w600, foto16w700/12 y botón48; capturas normales, ampliadas,
+teclado y éxito. Fuente externa Source no cargó (document.fonts vacío), por lo
+que esa sesión no prueba equivalencia de rasterización tipográfica.
+
+Nombres y foto privados sí tienen evidencia Auth/REST/Storage DEV318: dos cuentas
+sintéticas, subida/link/read/retry, firma propia y rechazo ajeno/anon; limpieza
+verificada en remoto. Confirmación de cambio de correo real, selector de galería
+Android y navegación instalada actual siguen pendientes. Los tests de transporte
+Auth315 y capturas fixture no sustituyen esos recorridos.
+
+Ayuda y editor público tienen composición e integración implementadas según
+loops273–305/281–284; la aceptación Auth/REST completa de soporte y contraste de
+editor renderizado siguen pendientes. Inventario265 conserva alcance total,
+no interpretar estos cuatro grupos como único cierre necesario. Capturas291/34;
+no son conteo de pantallas aceptadas. Codemagic siguiente sólo al completar y
+verificar objetivo, por última instrucción del titular.

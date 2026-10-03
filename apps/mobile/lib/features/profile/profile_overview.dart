@@ -1449,6 +1449,7 @@ class SettingsScreen extends ConsumerWidget {
           icon: Icons.history,
           path: '/payments',
         ),
+        const SavedRescuersRow(),
         const ProfileRow(
           title: 'Centro de ayuda',
           icon: Icons.help_outline,
