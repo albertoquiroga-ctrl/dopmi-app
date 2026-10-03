@@ -30,8 +30,9 @@ class ExpenseEvidenceCard extends StatelessWidget {
           style: const TextStyle(
             fontFamily: 'Inter',
             fontSize: 14,
+            height: 17 / 14,
             fontWeight: FontWeight.w500,
-            color: Color(0xff15110d),
+            color: Color(0xff151423),
           ),
         ),
         const SizedBox(height: 8),
@@ -41,12 +42,12 @@ class ExpenseEvidenceCard extends StatelessWidget {
               : 'Archivo privado para revisión. No se muestra a los donantes.',
           style: const TextStyle(
             fontFamily: 'Inter',
-            fontSize: 14,
-            height: 1.55,
-            color: Color(0xff554e48),
+            fontSize: 12,
+            height: 16 / 12,
+            color: Color(0xff4f4e5c),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
         for (final index in fileIndexes)
           Container(
             margin: const EdgeInsets.only(bottom: 12),
@@ -81,44 +82,58 @@ class ExpenseEvidenceCard extends StatelessWidget {
           painter: const _EvidenceDropBorder(),
           child: OutlinedButton(
             onPressed: onAttach,
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size(0, 148),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 28),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
-              ),
-              side: BorderSide.none,
-              backgroundColor: Colors.transparent,
-              foregroundColor: const Color(0xff15110d),
-            ),
+            style:
+                OutlinedButton.styleFrom(
+                  minimumSize: const Size(0, 148),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 28,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  side: BorderSide.none,
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: const Color(0xff151423),
+                  splashFactory: NoSplash.splashFactory,
+                ).copyWith(
+                  overlayColor: const WidgetStatePropertyAll(
+                    Colors.transparent,
+                  ),
+                ),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 SvgPicture.asset(
                   'assets/profile/publish-upload.svg',
                   width: 28,
                   height: 28,
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 6),
                 Text(
                   'Adjuntar ${title.toLowerCase()}',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 14,
+                    height: 17 / 14,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  public
-                      ? 'JPG, PNG o WebP, máximo 5 MB'
-                      : 'JPG, PNG, WebP o PDF, máximo 5 MB',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 12,
-                    height: 1.55,
-                    color: Color(0xff554e48),
+                const SizedBox(height: 6),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 240),
+                  child: Text(
+                    public
+                        ? 'JPG, PNG o WebP, máximo 5 MB'
+                        : 'JPG, PNG, WebP o PDF, máximo 5 MB',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 12,
+                      height: 15 / 12,
+                      color: Color(0xff4f4e5c),
+                    ),
                   ),
                 ),
               ],
