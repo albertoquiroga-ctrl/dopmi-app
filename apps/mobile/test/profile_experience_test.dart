@@ -1,3 +1,4 @@
+import 'package:dopmi_mobile/core/navigation.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 
 import 'rescue_test.dart' show FakeRescue;
@@ -19,6 +20,79 @@ import 'fake_account_photo_repository.dart';
 import 'package:dopmi_mobile/features/profile/account_photo_repository.dart';
 
 void main() {
+  for (final mode in ['donor', 'rescuer']) {
+    testWidgets(
+      'settings has no selected tab and profile tap opens its real root: $mode',
+      (tester) async {
+        final identity = FakeIdentityRepository()
+          ..user = const Identity(
+            'one',
+            'fixture@example.test',
+            verified: true,
+          );
+        await identity.setExperience(mode);
+        final container = ProviderContainer(
+          overrides: [
+            identityRepositoryProvider.overrideWithValue(identity),
+            accountPhotoRepositoryProvider.overrideWithValue(
+              emptyAccountPhotoRepository(identity),
+            ),
+            communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+            rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+            routerInitialLocationProvider.overrideWithValue('/settings'),
+          ],
+        );
+        addTearDown(() async {
+          container.dispose();
+          await identity.changes.close();
+        });
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: const DopmiApp(),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final bar = find.byType(DopmiBottomBar);
+        final semantics = find.descendant(
+          of: bar,
+          matching: find.byType(Semantics),
+        );
+        expect(
+          tester
+              .widgetList<Semantics>(semantics)
+              .where((node) => node.properties.selected == true),
+          isEmpty,
+        );
+        final profile = find.descendant(
+          of: bar,
+          matching: find.byWidgetPredicate(
+            (widget) =>
+                widget is Semantics && widget.properties.label == 'Perfil',
+          ),
+        );
+        await tester.tap(profile);
+        await tester.pumpAndSettle();
+        expect(container.read(routerProvider).state.uri.path, '/profile');
+        expect(
+          tester
+              .widgetList<Semantics>(
+                find.descendant(
+                  of: find.byType(DopmiBottomBar),
+                  matching: find.byType(Semantics),
+                ),
+              )
+              .where((node) => node.properties.selected == true)
+              .map((node) => node.properties.label),
+          ['Perfil'],
+        );
+        expect(identity.profile.name, 'Ana');
+        expect(identity.profile.mode, mode);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   for (final large in [false, true]) {
     testWidgets('profile settings return preserves the real profile: $large', (
       tester,

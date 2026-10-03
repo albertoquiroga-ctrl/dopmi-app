@@ -1127,7 +1127,10 @@ class ProfileFrame extends StatelessWidget {
                 ),
             ],
           ),
-    bottomNavigationBar: const CommunityNav(4),
+    bottomNavigationBar: CommunityNav(
+      4,
+      selectedPath: rescuerSettings ? '/settings' : null,
+    ),
     body: SafeArea(
       top: rescuerOverview,
       child: ListView(
