@@ -207,6 +207,7 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
           fontSize: 13,
           fontWeight: FontWeight.w600,
           color: ink,
+          height: 16 / 13,
         ),
       ),
       const SizedBox(height: 6),
@@ -218,6 +219,7 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
   Widget build(BuildContext context) => Theme(
     data: Theme.of(context).copyWith(
       inputDecorationTheme: InputDecorationTheme(
+        isDense: true,
         filled: true,
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(
@@ -240,6 +242,7 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
           fontSize: 14,
           fontWeight: FontWeight.w500,
           color: ink,
+          height: 1.25,
         ),
       ),
     ),
@@ -271,7 +274,7 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
                           color: ink,
-                          height: 1.2,
+                          height: 1.3,
                         ),
                       ),
                     ),
@@ -289,6 +292,19 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                       field(
                         'Tema',
                         DropdownButtonFormField<int>(
+                          style: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: ink,
+                            height: 1.25,
+                          ),
+                          decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 10,
+                            ),
+                          ),
                           initialValue: topic,
                           itemHeight: null,
                           isExpanded: true,
@@ -309,15 +325,37 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      field(
-                        'Caso relacionado (opcional)',
-                        TextField(
-                          controller: caseName,
-                          enabled: !busy,
-                          decoration: const InputDecoration(
-                            hintText: 'Ej. Rocky, Luna…',
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const Text(
+                            'Caso relacionado',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: ink,
+                              height: 16 / 13,
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 6),
+                          const Text(
+                            '(opcional)',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: muted,
+                              height: 16 / 13,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          TextField(
+                            controller: caseName,
+                            enabled: !busy,
+                            decoration: const InputDecoration(
+                              hintText: 'Ej. Rocky, Luna…',
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 12),
                       field(

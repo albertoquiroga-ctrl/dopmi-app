@@ -2567,3 +2567,22 @@ Cuatro pruebas soporte y capturador normal/200% cinco tests aprobados4s; captura
 normal inspeccionada y Analyze limpio25.2s. No aceptación de teléfono ni comparación
 completa Source renderizado de Ayuda: continúa como siguiente comprobación.
 No Codemagic nuevo, cambios privados concurrentes preservados.
+
+# Loop303 — Ayuda renderizada y medidas del formulario
+
+Referencia remota a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios.
+Vite temporal5176 + IAB377x852: Ayuda inicial → Contactar → escribir → Cerrar →
+Cómo funcionan los apoyos, retorno conserva página. DOM medido formulario:
+h2 22/28.6px, label13px, select/input44px, textarea96px, botones48px; opcional
+es otra fila del grid con gap6. Corrige Flutter opcional separado con peso500
+muted, título1.3, campos densos/texto14x1.25 y selector estilo explícito14/pad10
+para compensar altura mínima de control Flutter. Mantiene escala adaptativa.
+
+Repetición final cuatro widgets y capturador normal/200% cinco tests aprobados8s,
+Analyze limpio7.3s. Captura normal inspeccionada. Source aún muestra overflow
+horizontal provocado por input visually-hidden y control resize desktop: no se
+copia al teléfono. Contenido financiero simulado del Source no reemplaza reglas
+implementadas. No aceptación visual completa ni dispositivo; deben contrastarse
+familias restantes y reproducir estados de adjunto/recepción antes de cierre.
+Tab20 cerrada, viewport restablecido y servidor5188 detenido de forma explícita.
+Sin nuevos Codemagic. Cambios concurrentes preservados.
