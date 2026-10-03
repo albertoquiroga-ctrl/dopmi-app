@@ -201,3 +201,8 @@ Loop341: auditoría de movimiento vigente en parity-motion-audit-2026-10-02.md;3
 Loop343: espera de aportación conserva tamaño/etiqueta del botón; guardia previene doble callback antes del redibujo, fallo conserva intento y no acusa éxito.12tests de pagos/analyze limpio y2capturas espera examinadas;307estados/36URLs. Full494 sobredff4386 antecede343, no suite completa nueva. No cambio financiero/Stripe/Guardian ni CM/push; sigue matriz completa.
 
 Loop344: Network+CSSCDP confirman Inter/Fraunces custom efectivas en Source, no fallback demostrado por la lectura previa document.fonts. Comparación de archivos/ejes del corpus documentado: Inter230sin diferencias; Fraunces222avancesidénticos y3contornos con diferencias<.002px28. Véase design-reviews/parity-loop344/README.md; no igualdad general de rasterización/device ni fuentes cambiadas. Sin app/CM/push;307/36 sin nuevas.
+
+
+### Actualización354 — métodos de pago
+
+Ruta dedicada/settings/payment-methods con tarjetasdelecturareal en15489a1;30testsGuardian/analyzelimpio y312estados/37URLs(5methods) con normal/200% contrastadas. ReaderDEV352 Edge15/migración20261003045529,453testsbackend351. AuthREST354 verificalista vacía cuenta fixture/noregistry yboundary400/403/logout/limpiezacero. No atribuirfixturecardsStripe ni completarGuardar/Predeterminar/Eliminar/wallets: esbrechafinancieraexplicit350, no pantallaidéntica lograda. Goalcompletoactivo, CMúnicamentefinal.
