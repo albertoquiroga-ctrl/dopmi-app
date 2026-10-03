@@ -3798,3 +3798,12 @@ Base0e22658; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. payme
 Deploy MCP payments10→11 ACTIVE, bundlehash731b3beb46c005137e25633c388a48bc5e9cd2d535d06dfb7f636676d6e1b56b. Preserva3files yverify_jwtfalseprevio, AuthgetUser/token/emailconfirmado guardasentrypointintactas. GetEdgepostflight0mismatch/0extra normalizandoCRLF vs fuenteslocalesprobadas. HTTP real GET405 method_not_allowed yPOSTsinAuth401 sign_in_required (3ea42d). No Stripewrite/ownerfixturecheckout/redisplayselecciónreal niaceptacióndevice atribuidos. Dinero test-onlysinflagsnuevos.
 
 Checkout429 ya remoto; redisplay431 aún requiereoverlaysworker/webhook/client ypostflight. StripeMCP reauthsiguependiente. Laspruebasdeboundary no sustituyen checkoutautenticado ni selecciónreal/SDK; objectiveglobalvisual/motion/device continúa. SinCodemagic/push.
+
+
+### Loop439 — redisplay consentido desplegado en DEV, 3/10/2026
+
+Base0814808; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. GetEdgeworker27/19files,webhook27/18,client20/18: saved-card.mjs idéntico en los tres. Comparacióndeterminística localquitando sólo guardconsent_version/consent_at ybloqueredisplay devuelvebaselineexacto; no diferenciasnoautorizadas. Backupsexternos Temp/dopmi-loop439-{slug}-before.json. Deno check tresentrypoints exit0b88348; backend587/436 cubre módulosaved-cardlocal sin cambios después.
+
+Deployoverlay sólo _shared/saved-card.mjs, demásarchivosremotos yverify_jwtfalseprevio preservados: worker28 ACTIVEhash75b132db770f713fd06acec6a34f3db0f6d81c70385e0c89c16a6c53c5d77624; webhook28 ACTIVEhash31c9392915d7827078cd5083292a2b35a4b19d0e203b529c111498f0ee53d133; client21 ACTIVEhashcac9b4a1e31cdf60f412b87a89afeeeedd150b848defb3aba2d4705a1868437f. GetEdgeposterior0mismatch/0extra en19/18/18files por CRLFnormalizado. POSTsincredencial realworker401access_denied/webhook400invalid_signature/client401sign_in_required46b36d. Auth/secreto/firma/testkeys guardasintactas.
+
+No schema/flags/secrets/Stripewrite ni usuariosnuevos; redisplay431 ya remoto. Estaspruebas comprueban despliegue/boundaries, no SDK ni tarjeta realdeprueba/configuracióndeCheckoutselección. StripeMCP reauthpendiente ytarjetasprevias/nativewallets no se habilitan retrospectivamente por esteupdate. Sigue aceptaciónAuthStripe ymatrizglobalvisual/motion/device, noCM/push/dinero real.
