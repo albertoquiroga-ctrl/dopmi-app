@@ -1,3 +1,7 @@
+# Corte vigente — loop422
+
+35 pruebas de modales/modos/filtros/galería pasan; primer comandoexit1 por archivo inexistente. Invocacióncorrecta adoption_detail_layout_test suma5/5aprobadas. Cobertura40widgets, sin aceptaciónbackend/device/global. Siguiente revisar accesoAndroid/evidenciafuentesgestos y continuarfamilias. Codemagic sólo objetivo completo.
+
 # Corte vigente — loop421
 
 Auditoría motion: onboarding/dots, swipe110/retorno250/salida280 y rutas inmediatas corresponden al Source;21 pruebas pasan. Cancelación no guarda en cliente, conserva intención real. Switch180/13px sólo lectura. Próximo galerías/modales/cambio modo y timelines runtime; físico/global/SDK pendientes. Codemagic sólo objetivo completo.

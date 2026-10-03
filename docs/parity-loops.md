@@ -3655,3 +3655,12 @@ Base540efe3; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. S
 21/21 onboarding_motion_test+discovery_motion_test+route_motion_test pasan4s39955/f3522f: interpolación a mitad/final, delays/reduced motion, retorno/interrupción/swipe/errores de persistencia, regreso inmediato Android/iOS y borrador de registro. Se inspeccionó cobertura antes de usar resultado: son widgets/repositorios falsos, no gestos físicos ni frame pacing real. Switch coincidencia sólo código, no timeline verificada en este loop. Sin cambios de producción ni aceptación global por este gate.
 
 Siguiente: ampliar matriz de movimiento a galerías, paneles/modales y cambio de modo; confirmar timelines y recorridos faltantes con runtime, manteniendo revisión nativa/SDK y candidato final pendientes. No hover requerido. SinCodemagic/push.
+
+
+### Loop422 — recorridos de modales, galerías y modo, 3/10/2026
+
+Baseeba6d59; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. Se inspeccionaron entradas reales: modos/adoptStart/report usan noAnimation; necesidades/montosGuardian/contribution transitionDuration0. Corresponden a overlaySource sin declaración CSS de transición. Confirmaciones sólo reales (cerrar conversación, recuperación/borrador, privacidad) y filtrocatálogo heredado conservan componentes nativos; no se les atribuye un equivalente Source.
+
+Suite42443/6754cf→9b4db2:35 pruebas ejecutadas pasan17s, pero comando exit1 por ruta mal nombrada adoption_detail_test.dart inexistente. Se corrigió sólo la invocación a adoption_detail_layout_test.dart;38111/986ee8:5/5 pasan2s. No se oculta primer error ni se afirma primer gate verde. Cobertura comprobada: modo sólo cambia tras éxito servidor y conserva origen/datos; cancelación/confirmación/back/barrier en modales, filtros descartan draft o aplican claves reales, galerías responden swipe/selección/reintento aprobado y reinician otroregistro sin perder refresh. Son widgets/fakes, sin dispositivo/backend ni visual global aprobados. Sin cambios de producción.
+
+Siguiente: verificar estado actual del acceso Android y resolver evidencia nativa de fuente/gestos; después gates del candidato final y demásfamilias pendientes. La revisión física no se sustituye por estas40 pruebas. Codemagic sólo objetivo completo, sin push/build.
