@@ -1,3 +1,9 @@
+# Corte vigente — loop394, 3/10/2026
+
+Tres recorridos UI nativa pasan con repositorios/SDKfake: consent/cancel/lostreply/stablekey/freshcard/feedbackonce y guards tarjeta. Analyzer limpio6.8s. Faltan ownerchange/attention/otroscasos, capturas, compilación y aceptaciónSDK real/config/dispositivo. Objetivo global activo; Codemagic sólo final.
+
+## Corte393 anterior
+
 # Corte vigente — loop393, 3/10/2026
 
 Sección billeteras conectada a ownerintent/SDK/consentimiento y serverreceipt+freshlist.67tests regresión pasan y analyzer limpio7.6s; NO recorridos específicos nueva pantalla ni capturas aún. Próximo pruebas nativasUI/guards/cancel/identity/lostreply/lista y visual. Config real/compilación/device pendientes. Objetivo global activo, Codemagic sólo final.

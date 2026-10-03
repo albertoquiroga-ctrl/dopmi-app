@@ -675,6 +675,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         confirming ||
         !fresh ||
         !independentFresh ||
+        walletIntent != null ||
         plan != null ||
         !ref.read(guardianEnabledProvider) ||
         ref.read(identityControllerProvider).identity?.verified != true ||
@@ -742,6 +743,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         ref.read(identityControllerProvider).identity?.verified != true ||
         intent != null ||
         independentIntent != null ||
+        walletIntent != null ||
         !independentFresh ||
         savedCardStatus?['status'] == 'attention' ||
         (savedCardIntent == null && !savedCardFresh)) {
@@ -1177,10 +1179,12 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                       GuardianPaymentCardRow(
                         card: cards![i],
                         showMakeDefault:
+                            walletIntent == null &&
                             verified &&
                             (status == 'active' ||
                                 (plan == null && independentFresh)),
                         showRemove:
+                            walletIntent == null &&
                             verified &&
                             (status == 'active' ||
                                 (plan == null && independentFresh)),
