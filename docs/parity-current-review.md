@@ -1,3 +1,7 @@
+# Corte vigente — loop452 en ejecución
+
+Fullflutter ACTIVO78989 sobre426f8743292ba673880c4c09a8ceb6f143917981/log Temp/dopmi-full-mobile-loop452.log;224Dartroot/scratchidénticos ysinextras. Retomarhandle antesotraspruebas/edicionesapp, no greenfinal aún.451compactIGy8tests/aprobados/analyzerclean26.3s vigente. Objetivo global/SDK/Stripe/device pendiente; Codemagic sólo completo.
+
 # Corte vigente — loop451
 
 Instagramcompacto@usuario sóloURLperfilpropia; persistenciaURLconservada.8 pruebas pasan7s, fila70assert/capturanormal200. Analyzerfinal limpio26.3s;224Dartroot/scratch0diferencias. Próximo fullmobile actualizado (562/443 previo444–451). Linebox.8125/SDK/Stripe/device/restomatriz pendientes. Codemagic sólo objetivo completo.

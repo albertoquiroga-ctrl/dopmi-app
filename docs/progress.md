@@ -2143,3 +2143,8 @@ Base9b1f8b5; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, Sourc
 Final8/8pasa7s19898exit0 incluyendo widgetcancel/save/owner/retry/logout ycapturer8fixtures (modal6 yfila normal/200). Fixture@Maria rescata produceInstagramrow70px assertactivo377; normalfila inspeccionada. Saveassert conserva URL https://www.instagram.com/updated_profile yotroscampos/version/borrador. Unit testhostimpostor/userinfo/rutapublicación/Facebook noenmascarados. Capturasguardadasparity-loop451; Source446/449 vigentes. DatosbancariosStripe/reviewhint yFacebooksinagregar sonrealfixture, no igualdadglobaldecontenido.
 
 Analyzerinicial2info curlyenhelper; trascorregir detecta1info curlyencapturer: corregido. Final18345clean26.3s; cambiossóllaves desde8pass sin comportamientoalterado. Comparación224Dartlib/test root/scratch0diferencias bd978c. Full562/443 antecedemodal/menú444–451; siguiente fullregresiónmóvil para integración actual. Cardmodal.8125pxlinebox, keyboardfísico/Stripe/SDK/restomatriz siguenpendientes; sinCM/push/schema/deploy.
+
+
+### Loop452 — regresión móvil integrada en ejecución, 3/10/2026
+
+Fuenteexacta426f8743292ba673880c4c09a8ceb6f143917981;224Dartlib/test root/scratch0diferencias yconjuntosidénticos sinextras f2e96d. flutter test --no-pub full iniciado trascommit451, handle78989 confirmadoACTIVO985fee, logexterno Temp/dopmi-full-mobile-loop452.log; observado+48 a32s, noresultadofinal atribuido. No editarproducción ni reiniciarporobservacióntimeout; retomar mismohandle. Analyzer451clean26.3s ybackend587/436 vigentes; full562/443 sigue último completo hasta terminal452. SinCM/push/deploy.
