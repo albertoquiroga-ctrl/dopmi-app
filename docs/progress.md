@@ -2426,3 +2426,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; CSSonb-in450/cubic(
 ### Loop499 — Nuevo compacto Mis casos, 3/10/2026
 
 CSS Sourcecompact34/padding8x12/radio14 y referencia histórica inspeccionados, sin Source runtime actual. Nuevo pasa de visible48 a34 y conserva padded48 con desplazamiento adaptable200.14060exit0,32/32,11s con6capturas; Ahem visible corregido con Inter explícita,91480exit0,1/6capturas,4s normal200 inspeccionados. Analyzer5176exit0clean48.6s antes sólo fontFamily. Fuente 6746ccd7a1f0f7a656c3dcdb4d272e84128ca20a. Full601493 anterior a cambio499 no gate vigente completo. README/PNG499; próximo geometría runtime/hitarea y gate integrado. Sin backend/SQL/push/Codemagic/físico.
+
+### Loop500/501 — geometría actual y gate integrado, 3/10/2026
+
+Recupera entrada500 no escrita por OSError22OneDrive sin pérdida de ledger. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb; runtimeEdge377x852 Nuevo91.21875x34/x269.78125y20/radio14/Inter14w500. Test63919exit0,2/2,1s normal200 comprueba superficie y target≥48/toque inferior abrePublicar. Fuente8270386d3b531907d4618ebd4358ebd221a88146. Full16280exit0,607/607,3m54s; analyzer72747exit0sinincidencias; config14208exit0,16/16.229Dart raíz/scratch/hash iguales antes/después. Supersede601493. README/hash500/currentreview actualizados. Remotoba9f897/e4f4e858 reconsultado sin push. No backend/SQL/Codemagic/aceptación física o visual global; continúa contrastefamilias/StripeSDK.

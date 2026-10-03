@@ -1,4 +1,10 @@
-# Corte vigente — loop494, 3/10/2026
+# Corte vigente — loop501, 3/10/2026
+
+Fuente8270386d3b531907d4618ebd4358ebd221a88146: full607/607,3m54s,16280exit0; analyzer72747exit0sinincidencias; config16/16.229Dart raíz/scratch coinciden y no cambiaron durante ejecución. Incluye entrada493, filtros495, regreso496, curvas497/498, Nuevo499 y hitarea500. Supersede601493.
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb; runtime500 confirmó Nuevo91.21875x34/top20/radio14. Capturador401492 precede movimiento493 y botón499; no401aceptaciones. ADB494vacío; gestos físicos/StripeSDK/contraste completo siguen pendientes. Sin push/Codemagic hasta objetivo completo.
+
+# Corte anterior — loop494, 3/10/2026
 
 Producción c57974a77c25745a5af0436ac8ea950727c088c9: full601/601,3m37s,6893exit0; analyzer90804clean183.8s;228Dart iguales raíz/scratch sin cambios durante ejecución. Entrada de tarjetas corregida contra Source493: salida280/entrada250 cubic(.22,1,.36,1). Loop494 agrega dos pruebas de tarjeta de apoyo normal/reduced y gesto interrumpido:44/44 con community,10343exit0. Son posteriores al full601, no603full.
 
