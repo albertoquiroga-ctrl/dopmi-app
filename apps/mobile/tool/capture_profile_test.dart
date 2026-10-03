@@ -936,6 +936,10 @@ void main() {
       ('public-profile-editor', '/rescuer/profile/edit'),
       ('public-profile-editor-large', '/rescuer/profile/edit'),
       ('public-profile-editor-keyboard-large', '/rescuer/profile/edit'),
+      ('guardian-history', '/guardian/history'),
+      ('guardian-history-large', '/guardian/history'),
+      ('guardian-history-empty', '/guardian/history'),
+      ('guardian-history-empty-large', '/guardian/history'),
       ('payment-history', '/payments'),
       ('payment-history-large', '/payments'),
       ('payment-history-empty', '/payments'),
@@ -1129,10 +1133,13 @@ void main() {
       }
       final guardian =
           (spec.$1.startsWith('payment-history') ||
-              spec.$1.startsWith('guardian-billing'))
+              spec.$1.startsWith('guardian-billing') ||
+              spec.$1.startsWith('guardian-history'))
           ? HistoryCaptureGuardian(
               empty:
                   spec.$1.endsWith('-empty') ||
+                  (spec.$1.startsWith('guardian-history') &&
+                      spec.$1.contains('-empty')) ||
                   spec.$1.contains('inactive') ||
                   spec.$1.contains('enrollment'),
             )
