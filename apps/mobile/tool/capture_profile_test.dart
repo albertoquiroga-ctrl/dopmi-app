@@ -2972,6 +2972,17 @@ void main() {
         );
         await tester.pumpAndSettle();
       }
+      if (spec.$1 == 'publish-review-social-large') {
+        await Scrollable.ensureVisible(
+          tester.element(
+            find.byKey(
+              const ValueKey('publication-review-trait-social_children'),
+            ),
+          ),
+          alignment: 1,
+        );
+        await tester.pumpAndSettle();
+      }
       if (spec.$1.startsWith('publish-health')) {
         await Scrollable.ensureVisible(
           tester.element(find.text('Salud')),

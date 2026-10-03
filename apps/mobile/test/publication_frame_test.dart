@@ -98,6 +98,30 @@ void main() {
         await tester.pumpAndSettle();
         expect(tester.widget<PublicationTraitCheck>(summary).value, value);
         expect(repo.savedPayload?['vaccinated'], value);
+        final social = find.byKey(
+          const ValueKey('publication-review-trait-social_children'),
+        );
+        await Scrollable.ensureVisible(tester.element(social), alignment: 1);
+        await tester.pumpAndSettle();
+        final label = find.descendant(
+          of: social,
+          matching: find.text('Social con niñas y niños'),
+        );
+        final viewport = tester.getRect(find.byType(Scrollable).first);
+        final labelRect = tester.getRect(label);
+        expect(labelRect.top, greaterThanOrEqualTo(viewport.top));
+        expect(labelRect.bottom, lessThanOrEqualTo(viewport.bottom));
+        final socialValue = repo.savedPayload?['social_children'];
+        expect(tester.widget<PublicationTraitCheck>(social).value, socialValue);
+        final socialBox = find.descendant(
+          of: social,
+          matching: find.byType(Checkbox),
+        );
+        expect(tester.widget<Checkbox>(socialBox).onChanged, isNull);
+        await tester.tap(socialBox);
+        await tester.pumpAndSettle();
+        expect(tester.widget<PublicationTraitCheck>(social).value, socialValue);
+        expect(repo.savedPayload?['social_children'], socialValue);
         final back = find.byKey(const ValueKey('publication-header-back'));
         await tester.scrollUntilVisible(
           back,
