@@ -1,3 +1,7 @@
+# Corte vigente — loop452 corrección
+
+Full426f874:563/1fallo saltoAnimatedContainer al reconstruir Settings. Estructuraestablecorregida;20 targetpasan12s y4movimientoextendidaspasan;analyzer28.7s limpio. Deberepetirsefullcódigo nuevo; no564verde aún. ADBvacío,SDK/Stripe/device/restomatriz abiertos. Codemagic sólo objetivo completo.
+
 # Corte vigente — loop452 en ejecución
 
 Fullflutter ACTIVO78989 sobre426f8743292ba673880c4c09a8ceb6f143917981/log Temp/dopmi-full-mobile-loop452.log;224Dartroot/scratchidénticos ysinextras. Retomarhandle antesotraspruebas/edicionesapp, no greenfinal aún.451compactIGy8tests/aprobados/analyzerclean26.3s vigente. Objetivo global/SDK/Stripe/device pendiente; Codemagic sólo completo.

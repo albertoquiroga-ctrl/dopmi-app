@@ -86,6 +86,16 @@ void main() {
         await tester.pump(const Duration(milliseconds: 90));
         expect(x(), 13);
       }
+      await tester.pumpWidget(card(false));
+      if (reduced) {
+        expect(x(), 0);
+      } else {
+        expect(x(), 13);
+        await tester.pump(const Duration(milliseconds: 90));
+        expect(x(), closeTo(13 * (1 - Curves.ease.transform(.5)), .01));
+        await tester.pump(const Duration(milliseconds: 90));
+        expect(x(), 0);
+      }
       expect(tester.takeException(), isNull);
     });
   }

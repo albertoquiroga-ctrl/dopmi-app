@@ -311,15 +311,19 @@ class RescuerDonorModeCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          if (settings) const SizedBox(width: 32, height: 19) else target,
+          SizedBox(width: settings ? 32 : 48, height: settings ? 19 : 48),
         ],
       ),
     );
-    if (!settings) return card;
     return Stack(
       children: [
         card,
-        Positioned(right: 9, top: 0, bottom: 0, child: Center(child: target)),
+        Positioned(
+          right: settings ? 9 : 17,
+          top: 0,
+          bottom: 0,
+          child: Center(child: target),
+        ),
       ],
     );
   }
