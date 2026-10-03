@@ -273,6 +273,7 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
         insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         child: ConstrainedBox(
+          key: const ValueKey('help-support-card'),
           constraints: const BoxConstraints(maxWidth: 361),
           child: Stack(
             children: [
@@ -309,6 +310,15 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                       ),
                       const SizedBox(height: 12),
                       FilledButton(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: yellow,
+                          foregroundColor: const Color(0xff0d0d0d),
+                          textStyle: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                         onPressed: () => Navigator.of(context).pop(),
                         child: const Text('Entendido'),
                       ),
@@ -326,7 +336,7 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                           decoration: const InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
                               horizontal: 14,
-                              vertical: 10,
+                              vertical: 10.5,
                             ),
                           ),
                           initialValue: topic,
@@ -377,6 +387,10 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                             enabled: !busy,
                             decoration: const InputDecoration(
                               hintText: 'Ej. Rocky, Luna…',
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 13,
+                              ),
                             ),
                           ),
                         ],
@@ -409,6 +423,8 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                       OutlinedButton(
                         style: OutlinedButton.styleFrom(
                           foregroundColor: ink,
+                          backgroundColor: Colors.white,
+                          side: const BorderSide(color: Color(0xffe6e2dd)),
                           minimumSize: const Size(0, 48),
                           padding: const EdgeInsets.symmetric(
                             horizontal: 18,
@@ -458,6 +474,8 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                       const SizedBox(height: 12),
                       FilledButton(
                         style: FilledButton.styleFrom(
+                          backgroundColor: yellow,
+                          foregroundColor: const Color(0xff0d0d0d),
                           padding: const EdgeInsets.symmetric(
                             horizontal: 18,
                             vertical: 12,
@@ -523,11 +541,23 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
               ),
               Positioned(
                 top: 0,
-                right: 0,
+                right: 5.28125,
                 child: IconButton(
                   tooltip: 'Cerrar',
                   onPressed: busy ? null : () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.close, size: 20, color: muted),
+                  icon: const ExcludeSemantics(
+                    child: Text(
+                      '×',
+                      textScaler: TextScaler.noScaling,
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 22,
+                        height: 1,
+                        fontWeight: FontWeight.w400,
+                        color: muted,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],

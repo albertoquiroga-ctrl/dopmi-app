@@ -921,6 +921,8 @@ void main() {
       ('help-center-adoption-large', '/help'),
       ('help-center-support', '/help'),
       ('help-center-support-large', '/help'),
+      ('help-center-support-rescuer', '/help'),
+      ('help-center-support-rescuer-large', '/help'),
       ('help-center-support-photo', '/help'),
       ('help-center-support-photo-large', '/help'),
       ('help-center-support-received', '/help'),
@@ -1288,6 +1290,7 @@ void main() {
           spec.$1.startsWith('rescuer-profile') ||
           spec.$1.startsWith('public-profile-editor') ||
           spec.$1.startsWith('rescuer-settings') ||
+          spec.$1.startsWith('help-center-support-rescuer') ||
           spec.$1.startsWith('case-publication') ||
           spec.$1.startsWith('publish-') ||
           spec.$1.startsWith('verification-') ||
@@ -1623,6 +1626,40 @@ void main() {
         await tester.pumpAndSettle();
         expect(next.hitTestable(), findsOneWidget);
         expect(find.text('Recibimos tu mensaje.'), findsNothing);
+        if (!large && !photoState && !receiptState) {
+          expect(
+            tester.getSize(find.byType(DropdownButtonFormField<int>)).height,
+            closeTo(45, .1),
+          );
+          expect(
+            tester.getSize(find.byType(TextField).first).height,
+            closeTo(44, .1),
+          );
+          expect(
+            tester.getSize(find.byType(TextField).last).height,
+            closeTo(96, .1),
+          );
+          final card = tester.getRect(
+            find.byKey(const ValueKey('help-support-card')),
+          );
+          expect(card.height, closeTo(505.59375, .5));
+          expect(
+            tester.getCenter(find.byTooltip('Cerrar')).dx,
+            closeTo(331.71875, .1),
+          );
+          expect(
+            tester.getCenter(find.byTooltip('Cerrar')).dy - card.top,
+            closeTo(24, .1),
+          );
+          expect(
+            tester
+                .widget<FilledButton>(next)
+                .style!
+                .backgroundColor!
+                .resolve({}),
+            const Color(0xfff7cb2d),
+          );
+        }
         if (photoState) {
           final attach = find.widgetWithText(
             OutlinedButton,

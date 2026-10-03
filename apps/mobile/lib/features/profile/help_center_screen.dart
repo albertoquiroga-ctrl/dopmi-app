@@ -430,6 +430,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                   const SizedBox(height: 12),
                   FilledButton(
                     style: FilledButton.styleFrom(
+                      backgroundColor: yellow,
                       minimumSize: const Size.fromHeight(44),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 18,

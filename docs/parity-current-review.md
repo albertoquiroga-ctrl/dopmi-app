@@ -1,4 +1,8 @@
-# Corte vigente — loop459
+# Corte vigente — loop460
+
+Soporte medidoSource select45/input44/textarea96;Native coincide,closeInter22center331.71875/hit48,primariosyellow ambosmodos.11tests pasan9s,analyzer42.4sclean;10fixturesnormal/200. CardNative506/Source505.594 porlineceil, noigualdadglobal. Próximo focusoutline3offset2/keyboard/selector. Full564/452previo453–460,SDKStripe/device/matrizglobal pendientes;Codemagic sólofinal.
+
+# Corte anterior — loop459
 
 Soporte ahoraabre0ms/warmbarrier48 segúnSource;helperreal yfixturescompartenruta.11testspasan12s,analyzer35.5sclean.4testsgestos idleinside/outside/back/× ypendingnodismiss/noDuplicate1RPC+receipt. Capturasnormal/200inspeccionadas. Próximo visualmodalSourcepadding/inputs/close/buttons. Full564/452previo453–459; matrizglobal/SDKStripe/device sigueabierta, Codemagic sólofinal.
 
