@@ -265,7 +265,11 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(right: 24),
+                      padding: EdgeInsets.only(
+                        right: MediaQuery.textScalerOf(context).scale(22) > 22
+                            ? 0
+                            : 24,
+                      ),
                       child: Text(
                         received
                             ? 'Recibimos tu mensaje.'

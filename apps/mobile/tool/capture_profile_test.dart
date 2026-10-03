@@ -14,6 +14,8 @@ import 'package:dopmi_mobile/features/profile/rescuer_settings_verification.dart
 import 'package:dopmi_mobile/features/profile/rescuer_logout_row.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_access.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_repository.dart';
+import 'package:dopmi_mobile/features/profile/help_support_dialog.dart';
+import 'package:dopmi_mobile/features/profile/support_repository.dart';
 
 import '../test/rescuer_profile_test.dart' show FakeRescuerProfile;
 
@@ -825,6 +827,10 @@ void main() {
       ('help-center-adoption-large', '/help'),
       ('help-center-support', '/help'),
       ('help-center-support-large', '/help'),
+      ('help-center-support-photo', '/help'),
+      ('help-center-support-photo-large', '/help'),
+      ('help-center-support-received', '/help'),
+      ('help-center-support-received-large', '/help'),
       ('help-center-rules', '/help'),
       ('help-center-rules-large', '/help'),
       ('public-profile-editor', '/rescuer/profile/edit'),
@@ -1413,6 +1419,33 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(support);
         await tester.pumpAndSettle();
+        final photoState = spec.$1.contains('-photo');
+        final receiptState = spec.$1.contains('-received');
+        if (photoState || receiptState) {
+          await tester.tap(find.byTooltip('Cerrar'));
+          await tester.pumpAndSettle();
+          final photo = await tester.runAsync(
+            () => File('tool/fixtures/milo.png').readAsBytes(),
+          );
+          unawaited(
+            showDialog<void>(
+              context: tester.element(support),
+              builder: (_) => HelpSupportDialog(
+                topics: const ['Cómo funcionan los apoyos'],
+                initialTopic: 0,
+                pickImage: () async => photo,
+                repository: SupportRepository(
+                  (_, params) async => {
+                    'request_id': params['target_request'],
+                    'status': 'received',
+                  },
+                  upload: (id, _) async => 'fixture/$id/photo.jpg',
+                ),
+              ),
+            ),
+          );
+          await tester.pumpAndSettle();
+        }
         final next = find.widgetWithText(FilledButton, 'Enviar mensaje');
         expect(tester.widget<FilledButton>(next).onPressed, isNull);
         expect(find.text('Continuar en correo'), findsNothing);
@@ -1426,6 +1459,37 @@ void main() {
         await tester.pumpAndSettle();
         expect(next.hitTestable(), findsOneWidget);
         expect(find.text('Recibimos tu mensaje.'), findsNothing);
+        if (photoState) {
+          final attach = find.widgetWithText(
+            OutlinedButton,
+            'Adjuntar imagen (opcional)',
+          );
+          await tester.ensureVisible(attach);
+          await tester.pumpAndSettle();
+          await tester.tap(attach);
+          await tester.runAsync(() async {
+            await Future<void>.delayed(const Duration(milliseconds: 500));
+          });
+          await tester.pumpAndSettle();
+          expect(find.text('Cambiar imagen'), findsOneWidget);
+          expect(find.byType(Image), findsOneWidget);
+          await tester.runAsync(
+            () => precacheImage(
+              tester.widget<Image>(find.byType(Image)).image,
+              tester.element(find.byType(Image)),
+            ),
+          );
+          await tester.pumpAndSettle();
+          await tester.ensureVisible(next);
+          await tester.pumpAndSettle();
+        }
+        if (receiptState) {
+          await tester.tap(next);
+          await tester.pumpAndSettle();
+          expect(find.text('Recibimos tu mensaje.'), findsOneWidget);
+          expect(find.text('Entendido'), findsOneWidget);
+          expect(find.text('Enviar mensaje'), findsNothing);
+        }
         expect(tester.takeException(), isNull);
       }
       if (spec.$1.startsWith('help-center-rules')) {

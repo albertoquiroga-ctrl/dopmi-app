@@ -2586,3 +2586,20 @@ implementadas. No aceptación visual completa ni dispositivo; deben contrastarse
 familias restantes y reproducir estados de adjunto/recepción antes de cierre.
 Tab20 cerrada, viewport restablecido y servidor5188 detenido de forma explícita.
 Sin nuevos Codemagic. Cambios concurrentes preservados.
+
+# Loop304 — vista previa y acuse normal/grande de soporte
+
+Referencia remota a3c969cd9103fd46dc5cd886999912526ce75efb vigente reconsultada.
+Capturador añade cuatro estados: photo/received normal y200%,289estados34URLs.
+Abre mismo diálogo productivo sobre Ayuda con dependencias sintéticas explícitas;
+no galería Android, Storage ni recibo real. Inicialmente imagen blanca porque
+captura precedía decodificación: se añade precacheImage real del proveedor montado,
+repetición inspeccionada muestra Milo correctamente. Acuse200% partía Recibimos
+por reserva lateral24; texto ampliado usa todo ancho, cierre queda arriba con
+target48 y título ya conserva palabra completa. Sin reducir escala tipográfica.
+Cinco tests finales (cuatro widgets + captura seis estados) aprobados8s;
+Analyze limpio7.0s, fotos/acuse grande inspeccionados. Current-review actualizado.
+Pendiente diferencia foto: Quitar imagen añade fila no existente Source; resolver
+sin introducir estados ficticios en siguiente comparación. Falta fuente efectiva
+Source confirmada (Google import), recepción/carga remotas autenticadas y dispositivo.
+Sin nuevos Codemagic; objetivo completo no acreditado.

@@ -17,6 +17,12 @@ panel conectado, adjuntos pendientes. Loop291 despliega/verifica RPC y permisos
 en DEV; no acredita recorrido Auth/REST autenticado ni recepción instalada.
 Loop294 conecta bandeja local administrativa bajo Moderación→Soporte;
 publicación del panel y adjuntos siguen pendientes.
+Loops295–304 superseden el pendiente de implementación de adjuntos: bucket y
+RPC de enlace privado aplicados/verificados en DEV20261003000209; selector,
+preparación JPEG, preview, retry y bandeja firmada implementados. No acreditan
+carga autenticada Storage, panel publicado ni selección Android. Loop303 compara
+Ayuda/formulario con Source renderizado377×852; loop304 incorpora fotos y acuse
+normal/200%. Retención/account-deletion y contraste completo restante pendientes.
 Loops277–284 ajustan tarjeta, campos, encabezado, cancelar, teclado y errores del editor público;
 contraste completo, cámara/gestos y aceptación instalada siguen pendientes.
 Este corte no es un conteo final de pantallas aceptadas.
@@ -47,7 +53,9 @@ sin evidencia. Capturas normal/large en `design-reviews/parity-loop260`.
 Datos Connect/verificación/revisión reales conservados. CI432 aún ejecutándose;
 esto no acredita aceptación en Samsung ni paridad completa.
 
-`apps/mobile/tool/capture_profile_test.dart` contiene **285 estados en 34 URLs**:
+`apps/mobile/tool/capture_profile_test.dart` contiene **289 estados en 34 URLs**:
+Loop304 añade cuatro estados de soporte: imagen seleccionada y recibo privado,
+normal/200%; dependencias sintéticas del capturador, sin servidor/dispositivo.
 256 recontados en loop259, dos estados de evidencia pendiente añadidos261 y
 dos de bienvenida Guardian263 y dos de fallo Guardian264. Ambos resultados
 dependen del servidor y mismo intento; reintento exige autorización nueva.
