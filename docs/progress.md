@@ -2289,3 +2289,10 @@ Base4f30e12/Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. Contri
 Fuente exacta0b40f0c3e094cc1dd4560ed613a2ae635e7cfdf9;227Dart lib/test root/scratch conjuntos+SHA256 normalizandoEOL idénticos antes/después,0differences. flutter test --no-pub full591/591 pasa3m12s,handle62464 terminalexit0/c5438c, Temp/dopmi-full-mobile-loop471.log. Supersede full579/462 e incluye466/468/470 y nuevas pruebas. Analyzer470 limpio30.8s antes últimos ajustes sólo de test/scroll; full compila/ejecuta finales. Producción no cambió durante gate.
 
 Source localHEAD a3c969cd9103fd46dc5cd886999912526ce75efb y App.tsx/styles.css unmodified. Refs remotas Dopmi ba9f897f3fa418e952b98e4c604cffe468a8aa95/design-foundation e4f4e8585612389e7193310c7fdfe137b61c7762; PR6 GitHubMCP open/draft/unmerged/mergeable mismohead/base. gh no disponiblePATH, sinlecturaCLI atribuida. Auditoría de rutas actualizada con467–470, mantienefamilias/global/StripeSDK/device pendientes; siguiente cuenta/consent/privacy/Connect/archivo privado. Noaceptación visual global por591widgettests;sinCM/push/basechange.
+
+
+### Loop472 — cuenta/consentimiento/privacidad, captura directa, 3/10/2026
+
+Base297a512/producción0b40f0c3e094cc1dd4560ed613a2ae635e7cfdf9/full591; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado.9fixtures normal200/contenido final200 tres rutas settings/account, consent, account-privacy. Primer consentimientofixtureyaaceptado volviócorrectamentehome; se corrigiófixtureterms/privacy null/adultfalse yseexigeURIexacta. Capturas finales realesreemplazan inicialesincorrectas. Final67159 exit0,1test/9capturas5s; analyzer89506clean45.3s antesfixture/URIassert, finalcompila.
+
+Opcionesnormal/grande/contenido yconsent/priva normal revisados docs/design-reviews/parity-loop472. TítuloCuenta yprivacidad se trunca200; próximoencabezadocompactoadaptable conservandofilas/nav. Consent/priva marcosgenéricos pendientesextensiones sinSourceURLliteral. Términos sí incluyeresumen/enlaceAvisoexternal, no enlace roto atribuibleporlabel. No eliminación/aceptación real ni cambiosproducción/Codemagic/push.

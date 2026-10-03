@@ -1110,6 +1110,15 @@ void main() {
         'managed-updates-editor-error-large',
         '/rescue-cases/case-one/updates/update-draft',
       ),
+      ('account-access-options', '/settings/account'),
+      ('account-access-options-large', '/settings/account'),
+      ('account-access-options-content-large', '/settings/account'),
+      ('account-access-consent', '/consent'),
+      ('account-access-consent-large', '/consent'),
+      ('account-access-consent-content-large', '/consent'),
+      ('account-access-privacy', '/account-privacy'),
+      ('account-access-privacy-large', '/account-privacy'),
+      ('account-access-privacy-content-large', '/account-privacy'),
       ('my-adoptions', '/my-adoptions'),
       ('my-adoptions-large', '/my-adoptions'),
       ('my-adoptions-empty', '/my-adoptions'),
@@ -1193,6 +1202,20 @@ void main() {
       final repo = FakeIdentityRepository()
         ..user = const Identity('one', 'fixture@example.test', verified: true);
       await repo.saveProfile(name: 'Ana', phone: '', city: 'Monterrey, NL');
+      if (spec.$1.startsWith('account-access-consent')) {
+        repo.profile = const Profile(
+          id: 'one',
+          name: 'Ana',
+          phone: '',
+          city: 'Monterrey, NL',
+          mode: 'donor',
+          intent: 'adopt',
+          status: 'active',
+          termsVersion: null,
+          privacyVersion: null,
+          adultConfirmed: false,
+        );
+      }
       if (spec.$1.startsWith('rescuer-profile-reference')) {
         // Synthetic account from the public mockup; never production identity.
         repo.user = const Identity(
@@ -1394,6 +1417,7 @@ void main() {
         };
       }
       if (spec.$1.startsWith('owned-case-detail') ||
+          spec.$1.startsWith('account-access-options') ||
           spec.$1.startsWith('managed-updates') ||
           spec.$1.startsWith('owned-cases') ||
           spec.$1.startsWith('rescuer-home') ||
@@ -3221,6 +3245,22 @@ void main() {
           } else if (!spec.$1.endsWith('-large')) {
             expect(target, findsOneWidget);
           }
+        }
+        if (spec.$1.startsWith('account-access')) {
+          expect(container.read(routerProvider).state.uri.path, spec.$2);
+        }
+        if (spec.$1.startsWith('account-access') &&
+            spec.$1.contains('content')) {
+          final label = spec.$1.contains('options')
+              ? 'Configurar pagos con Stripe'
+              : spec.$1.contains('consent')
+              ? 'Privacidad y eliminación de cuenta'
+              : 'Eliminar mi cuenta';
+          final target = find.text(label);
+          await tester.scrollUntilVisible(target, 200);
+          await tester.ensureVisible(target);
+          await tester.pumpAndSettle();
+          expect(target.hitTestable(), findsOneWidget);
         }
         TestGesture? helpHold;
         if (spec.$1.startsWith('help-center-topic-held')) {
