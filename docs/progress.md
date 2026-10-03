@@ -2490,3 +2490,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/runtimeInformaciónb
 ### Loop515 — símbolos de opciones y campos requeridos, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/Appinspeccionado/runtime514previo.6875515 añade required y leading en sexo/especie adoptante con Material16/SVGspecies20 ya presentes en casos, preservesenums/lock/datos. Unicodeinicialsincaracteres descartado;PNGfinalnormalinspeccionadocorrecto.1533exit0,8/8,5s con2fixtures.62670finalanalyzerencurso;59005previo noanalysisfinal. README/PNG515;full608509anterior513–515. Identidadpixel/emojiAndroid/global/StripeSDKpendientes. Sinpush/Codemagic.
+
+### Loop515 — análisis final terminal
+
+62670exit0 sin incidencias sobre6875515; log515-final-analyze. Supersede anotación en curso515. Sin cambios adicionales.
