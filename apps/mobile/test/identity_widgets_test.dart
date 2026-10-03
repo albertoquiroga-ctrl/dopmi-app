@@ -7,6 +7,7 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/auth_screens.dart';
 import 'package:dopmi_mobile/features/identity/auth_ui.dart';
+import 'package:dopmi_mobile/features/identity/privacy_notice_screen.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -185,7 +186,8 @@ void main() {
       );
       expect(repo.signupCount, 0);
       await tap(tester, 'Aviso de Privacidad');
-      expect(find.byType(TermsScreen), findsOneWidget);
+      expect(find.byType(PrivacyNoticeScreen), findsOneWidget);
+      expect(find.byType(TermsScreen), findsNothing);
       await tester.tap(find.text('Entendido'));
       await tester.pumpAndSettle();
       expect(tester.widget<AuthConsentRow>(row).value, isFalse);
@@ -208,8 +210,8 @@ void main() {
       find.byType(TextFormField).at(1),
       'ana@example.test',
     );
-    await tap(tester, 'Términos y Condiciones');
-    expect(find.byType(TermsScreen), findsOneWidget);
+    await tap(tester, 'Aviso de Privacidad');
+    expect(find.byType(PrivacyNoticeScreen), findsOneWidget);
     await tester.drag(find.byType(Scrollable).first, const Offset(0, -450));
     await tester.pumpAndSettle();
     expect(find.text('Entendido').hitTestable(), findsOneWidget);

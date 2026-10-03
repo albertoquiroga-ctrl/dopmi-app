@@ -117,6 +117,7 @@ class IdentityController extends ChangeNotifier {
         '/transparency',
         '/publish',
         '/terms',
+        '/privacy-notice',
         '/saved',
         '/impact',
         '/my-adoptions',

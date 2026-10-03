@@ -285,7 +285,7 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                           ? null
                           : (value) => setState(() => consent = value),
                       onOpenTerms: () => context.push('/terms'),
-                      onOpenPrivacy: () => context.push('/terms'),
+                      onOpenPrivacy: () => context.push('/privacy-notice'),
                     ),
                   ],
                   if (login)

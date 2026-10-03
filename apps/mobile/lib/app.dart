@@ -14,6 +14,7 @@ import 'core/measurement.dart';
 import 'features/identity/experience_controller.dart';
 import 'features/identity/experience_landing.dart';
 import 'features/identity/auth_screens.dart';
+import 'features/identity/privacy_notice_screen.dart';
 import 'features/identity/identity_controller.dart';
 import 'features/identity/identity_repository.dart';
 import 'features/identity/onboarding_screen.dart';
@@ -72,6 +73,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         final consentExempt =
             desired == '/consent' ||
             desired == '/terms' ||
+            desired == '/privacy-notice' ||
             desired == '/account-privacy' ||
             desired == '/guardian' ||
             desired == '/guardian/history';
@@ -438,6 +440,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => AuthErrorScreen(identity: identity),
       ),
       GoRoute(path: '/terms', builder: (_, _) => const TermsScreen()),
+      GoRoute(
+        path: '/privacy-notice',
+        builder: (_, _) => const PrivacyNoticeScreen(),
+      ),
     ],
     errorBuilder: (context, _) => PageFrame(
       children: [
@@ -502,6 +508,7 @@ class DopmiApp extends ConsumerWidget {
           final exempt =
               path == '/consent' ||
               path == '/terms' ||
+              path == '/privacy-notice' ||
               path == '/account-privacy' ||
               path == '/guardian' ||
               path == '/guardian/history';

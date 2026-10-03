@@ -21,18 +21,21 @@ void main() {
   test('requires a verified identity for the profile and blocks unauthenticated recovery', () async {
     await controller.initialize();
     expect(controller.redirect('/profile'), '/welcome');
+    expect(controller.redirect('/privacy-notice'), isNull);
     expect(controller.redirect('/settings/account'), '/welcome');
     expect(controller.redirect('/reset-password'), '/welcome');
     repository.emit(
       const IdentityEvent(Identity('one', 'ana@example.test', verified: false)),
     );
     expect(controller.redirect('/profile'), '/welcome');
+    expect(controller.redirect('/privacy-notice'), isNull);
     expect(controller.redirect('/settings/account'), '/welcome');
     repository.emit(
       const IdentityEvent(Identity('one', 'ana@example.test', verified: true)),
     );
     expect(controller.redirect('/login'), '/adoptions');
     expect(controller.redirect('/about'), isNull);
+    expect(controller.redirect('/privacy-notice'), isNull);
     expect(controller.redirect('/settings/account'), isNull);
     expect(controller.redirect('/transparency'), isNull);
   });

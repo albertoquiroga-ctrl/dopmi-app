@@ -846,6 +846,8 @@ void main() {
       ('basic-info-saved-large', '/basic-info'),
       ('legal-terms', '/terms'),
       ('legal-terms-large', '/terms'),
+      ('legal-privacy', '/privacy-notice'),
+      ('legal-privacy-large', '/privacy-notice'),
       ('help-center', '/help'),
       ('help-center-large', '/help'),
       ('help-center-adoption-large', '/help'),
