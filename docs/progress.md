@@ -2502,3 +2502,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb runtimeEdge377x852 medido: nombre
 ### Loop516 — análisis final terminal
 
 71787exit0 sin incidencias sobre4e5240e; log516-final-analyze. Supersede anotación pendiente516. Sin cambio adicional.
+
+### Loop517 — título de revisión y gate completo en curso, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/AppheaderTitleinspeccionado.4571644 títuloRevisatucasoenstep2;44173exit0,8/8,5s con2fixtures,normalPNGinspeccionado.230Dart/cuatroSVG raíz-scratch idénticos/hashantes. Full65835/analyzer45360 corriendo, sinresultadoatribuido todavía. Logs517/README/hash/PNG517. ADBvacío;noaceptaciónfísico/global/StripeSDK. Sinbackend/SQL/push/Codemagic. Full608509pre513–517hastaresultadonuevo.
