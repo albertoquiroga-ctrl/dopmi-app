@@ -54,12 +54,14 @@ class CaseInformation extends StatelessWidget {
             style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 16,
-              height: 1.2,
+              height: 1.25,
               color: Color(0xff151423),
             ),
             decoration: InputDecoration(
               isDense: true,
-              constraints: const BoxConstraints(minHeight: 36),
+              constraints: BoxConstraints(
+                minHeight: field.key == 'story' ? 78 : 38,
+              ),
               counterText: '',
               hintText: field.key == 'pet_name'
                   ? 'Opcional'

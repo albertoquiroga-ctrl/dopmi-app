@@ -1,3 +1,9 @@
+# Corte vigente — loop415, 3/10/2026
+
+Información del caso comparada con Source renderizado: inputs38/textarea78 medidos en HTML; cliente ajusta constraints y lineHeight.11 tests/capture pasan, analyzer limpio73.5s. Falta medir rectángulos Flutter y comparar necesidades/revisión con estado idéntico. Objetivo global/configSDK/device pendientes; Codemagic únicamente objetivo completo.
+
+## Corte414 anterior
+
 # Corte vigente — loop414, 3/10/2026
 
 17 pruebas y captura de publicación de casos pasan sobreb30fee9; se revisaron imágenes actuales de información y revisión. Sin cambio de producción. Próximo Source renderizado de etapas donation con datos equivalentes, para comparación visual fuerte. Servicios/dispositivo/matriz global no aceptados. Codemagic sólo objetivo completo.

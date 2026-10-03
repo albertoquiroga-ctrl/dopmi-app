@@ -1,0 +1,23 @@
+{
+  "source": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "viewport": [
+    377,
+    852
+  ],
+  "fonts_ready": true,
+  "inter_available": true,
+  "heading": {
+    "font": 18,
+    "line": 28,
+    "weight": 600,
+    "y": 121
+  },
+  "inputs": {
+    "font": 16,
+    "height": 38,
+    "name_y": 190,
+    "age_y": 466
+  },
+  "textarea_height": 78,
+  "fixture_difference": "Source hint/name blank and no sex/species selected; app Mora/dog/unknown. Extra real fields preserved; not pixel-equivalent state."
+}
