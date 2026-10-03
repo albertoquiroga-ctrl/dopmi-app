@@ -2410,3 +2410,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Dos pruebas nuevas 
 ### Loop495 — apertura y descarte de filtros, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge377x852 diálogo345x586/x16y133/radio24/sin animaciones; selección Hembra cerrada fuera/reabierta no persistida. Cliente ya coincide; nueva prueba primerpump/routeanimation1, Atrás y fuera descartan sin query. Gate53912exit0,5/5,5s, fuente b91ff21f1510f8bc47b0054d2056ff1dfa8bb0a5 sólo tests. Full601493 sobre producciónc57974a vigente; tres tests494/495 posteriores no604full. Sourceprobe/README495; navegador/Vite cerrados. Sin backend/SQL/push/Codemagic/aceptación física.
+
+### Loop496 — regreso por pestaña sin repetir entrada, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, sin runtime nuevo. Prueba avanza a segunda adopción/Favoritos/Adoptar y conserva misma instancia Motion con traslado0 primerpump y125ms. Valida continuidad móvil establecida, no atribuye índice React persistente. Primer82346exit1 sólo SemanticsHandle al terminar; dispose explícito corregido. Gate25863exit0,21/21,5s, fuente 6e45b396b414c858c588377a6ab589ec80ffd793 sólo tests. Full601493 producciónc57974a vigente, no605full. README496; sin backend/SQL/push/Codemagic, físico/StripeSDK/global pendientes.

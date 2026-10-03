@@ -1,0 +1,5 @@
+# Loop496 — regreso sin repetir entrada
+
+Nueva prueba avanza a la segunda adopción, cambia por la barra real a Favoritos y regresa a Adoptar. El primer pump conserva la misma instancia de estado DiscoveryCardMotion y su traslado0; a125ms permanece0. Esta prueba cubre el riesgo introducido al añadir posición inicial493. Conserva los navegadores por pestaña ya establecidos; no afirma que el prototipo React mantenga su índice al remontarse.
+
+Gate25863exit0,21/21,5s: discovery_motion_test.dart + design_navigation_test.dart. Fuente 6e45b396b414c858c588377a6ab589ec80ffd793. Primer intento82346exit1 pasó las comprobaciones de movimiento pero dejó SemanticsHandle activo; corregido dispose explícito antes del fin, sin quitar assertions. SourceSHA a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, sin nuevo runtimeSource. No producción/backend/SQL/push/Codemagic. Full601493 sobre c57974a sigue vigente para producción, cuatro tests posteriores no605full. Aceptación física y contraste global continúan pendientes.
