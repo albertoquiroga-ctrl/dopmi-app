@@ -2450,3 +2450,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado CSSwallet146 ySVGori
 ### Loop506 — resumen Source ejecutado y full608 vigente, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; Edge377x852/rescuer/fontsready146/radio28/padding20/wallet20x20/x36y112.1875 comprobados, no saldosfake. Browserclose77803os10060 luego31728exit0cerrado;Vite36110interrumpido esperado. Full49826exit0,608/608,3m49s fuente c1e18561e4717c5dacd13eaf3437b07630bb8170;230Dart/SVGwallet raíz-scratchhashiguales antes/después. Incluye503/504/505; supersede607500. Analyzer505clean36.1s misma producción anterior sóloprecargaSVGcapturador, no nuevaejecución506. README/hash/probe/currentreview. Sinbackend/SQL/push/Codemagic, global/físico/StripeSDKpendientes.
+
+### Loop507 — pendientes mensaje icono/contador reales, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, código/CSSpendingActions inspeccionado sin nuevo runtime. icon-chat-yellow.svg copiado exacto, unreadbadge amarillo reemplazaflecha; Rowintrinsiccentraextremo/iconarriba. No conteo3 ni conversaciónsinrespuesta simulados. Gate53044exit0,27/27,8s con12capturas; analyzer20509exit0clean37.6s. PNGnormal200 inspeccionados, pendientes200 fuera viewport noaceptadosporimagen. Fuente 3df438102d102af9d1b3706b225fc13e95f58112. Full608506 anteriorproducción507,integradoactualpendiente. README/PNG507;sinbackend/SQL/push/Codemagic/físico/global.
