@@ -773,6 +773,7 @@ void main() {
         'icon-heart',
         'icon-bell',
         'icon-wallet',
+        'icon-chat-yellow',
         'icon-doc',
         'icon-help',
         'icon-logout',

@@ -293,6 +293,8 @@ class _RescuerDashboard extends StatelessWidget {
             subtitle: '$unread sin leer',
             cta: 'Ir a mensajes',
             icon: Icons.chat_bubble_outline,
+            iconAsset: 'icon-chat-yellow.svg',
+            badge: unread,
             message: true,
             onPressed: () => context.go('/messages'),
           ),
@@ -402,12 +404,14 @@ class RescuerPendingCard extends StatelessWidget {
     required this.onPressed,
     this.contextText,
     this.iconAsset,
+    this.badge,
     this.message = false,
     this.correction = false,
   });
   final String title, subtitle, cta;
   final String? contextText;
   final String? iconAsset;
+  final int? badge;
   final IconData icon;
   final VoidCallback onPressed;
   final bool message, correction;
@@ -435,73 +439,105 @@ class RescuerPendingCard extends StatelessWidget {
         onTap: onPressed,
         child: Padding(
           padding: const EdgeInsets.all(13),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 2),
-                child: iconAsset == null
-                    ? Icon(icon, size: 20, color: tone)
-                    : ExcludeSemantics(
-                        child: SvgPicture.asset(
-                          'assets/profile/$iconAsset',
-                          width: 20,
-                          height: 20,
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    widthFactor: 1,
+                    child: iconAsset == null
+                        ? Icon(icon, size: 20, color: tone)
+                        : ExcludeSemantics(
+                            child: SvgPicture.asset(
+                              'assets/profile/$iconAsset',
+                              width: 20,
+                              height: 20,
+                            ),
+                          ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          height: 1.4,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xff151423),
                         ),
                       ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        height: 1.4,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xff151423),
-                      ),
-                    ),
-                    Text(
-                      subtitle,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        height: 1.35,
-                        color: Color(0xff4f4e5c),
-                      ),
-                    ),
-                    if (contextText != null) ...[
                       Text(
-                        contextText!,
+                        subtitle,
                         style: const TextStyle(
                           fontSize: 12,
                           height: 1.35,
                           color: Color(0xff4f4e5c),
                         ),
                       ),
+                      if (contextText != null) ...[
+                        Text(
+                          contextText!,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            height: 1.35,
+                            color: Color(0xff4f4e5c),
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 4),
+                      Text(
+                        cta,
+                        style: TextStyle(
+                          fontSize: 12,
+                          height: 1.4,
+                          fontWeight: FontWeight.w500,
+                          color: tone,
+                        ),
+                      ),
                     ],
-                    const SizedBox(height: 4),
-                    Text(
-                      cta,
-                      style: TextStyle(
-                        fontSize: 12,
-                        height: 1.4,
-                        fontWeight: FontWeight.w500,
-                        color: tone,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                if (badge != null)
+                  Center(
+                    widthFactor: 1,
+                    child: Container(
+                      constraints: const BoxConstraints(minWidth: 26),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 9,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xfff7cb2d),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Text(
+                        '$badge',
+                        style: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 12,
+                          height: 16 / 12,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xff0d0d0d),
+                        ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              const Icon(
-                Icons.chevron_right,
-                size: 20,
-                color: Color(0xff4f4e5c),
-              ),
-            ],
+                  )
+                else
+                  const Icon(
+                    Icons.chevron_right,
+                    size: 20,
+                    color: Color(0xff4f4e5c),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
