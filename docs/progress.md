@@ -2522,3 +2522,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb runtimeEdge377x852reviewinspeccio
 ### Loop520 — encabezados de revisión compactos y target48, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/CSSinspeccionado/runtime519previo.4c31cac heading20/16normalStack/touch64x48/textEditar17/14;largeRowancho84a200. Testreviewlinks toca bottom-2≥48/abre edición/conservadata/submittedocultaacciones.33127exit0,8/8,6s final2fixtures,normal/largePNGinspeccionados Editarcompleto.9937analyzerexit0clean. README/PNG520. Full609517anterior519/520;Salud/Social/global/físico/StripeSDKpendientes. Sinbackend/SQL/push/Codemagic.
+
+### Loop521 — tarjetasSalud/Social con estados reales, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/AppCSSinspeccionado/runtime519previo. b42cd9f summaryTraitCard/Checkreadonly títuloinside/padding17/label17/helper15/indicadortri preserveunknown ycaretexto. Test320/200true/false/nullguardado→reviewreadonlysinmutación→back;91537exit1headerlazy,testscrolluntilvisiblefix;38849exit0,8/8,7s con2fixtures;2515analyzerexit0clean25s. NormalPNGSaludinspeccionado;Socialfuera viewportnoaceptado,alineacióncasillapendiente. README/PNG521;full609517anterior519–521. Sinbackend/SQL/push/Codemagic/físico/global.
