@@ -408,6 +408,13 @@ class ContributionCapturePayments extends FakePayments {
   };
 }
 
+class WaitingContributionCapturePayments extends ContributionCapturePayments {
+  final response = Completer<Json>();
+  @override
+  Future<Json> checkout(String expense, int cents, String key) async =>
+      response.future;
+}
+
 class HistoryCaptureGuardian extends FakeGuardian {
   HistoryCaptureGuardian({this.empty = false});
   final bool empty;
@@ -797,6 +804,14 @@ void main() {
         'contribution-review-large',
         '/contribute/Cirugía?case=case-one&amount_cents=10000',
       ),
+      (
+        'contribution-waiting',
+        '/contribute/Cirugía?case=case-one&amount_cents=10000',
+      ),
+      (
+        'contribution-waiting-large',
+        '/contribute/Cirugía?case=case-one&amount_cents=10000',
+      ),
       ('guardian-billing-amount', '/guardian'),
       ('guardian-billing-amount-large', '/guardian'),
       ('guardian-billing-cancel', '/guardian'),
@@ -1007,6 +1022,7 @@ void main() {
         continue;
       }
       captureCount++;
+      final waitingPayment = WaitingContributionCapturePayments();
       // Synthetic preferences belong only to this flutter_test capturer.
       // ignore: invalid_use_of_visible_for_testing_member
       SharedPreferences.setMockInitialValues({});
@@ -1292,6 +1308,8 @@ void main() {
                           .replaceFirst('contribution-result-', '')
                           .replaceFirst('-large', ''),
                     )
+                  : spec.$1.startsWith('contribution-waiting')
+                  ? waitingPayment
                   : ContributionCapturePayments(),
             ),
           if (spec.$1.startsWith('owned-case-detail'))
@@ -1893,6 +1911,16 @@ void main() {
         await tester.ensureVisible(find.text('Confirmar en Stripe'));
         await tester.tap(find.text('Confirmar en Stripe'));
         await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('contribution-waiting')) {
+        await tester.ensureVisible(find.text('Confirmar en Stripe'));
+        await tester.tap(find.text('Confirmar en Stripe'));
+        await tester.pump(const Duration(milliseconds: 300));
+        await Scrollable.ensureVisible(
+          tester.element(find.text('Confirmar en Stripe')),
+          alignment: .35,
+        );
+        await tester.pump(const Duration(milliseconds: 250));
       }
       if (spec.$1.startsWith('adoption-support')) {
         for (var i = 0; i < 2; i++) {
@@ -2679,6 +2707,10 @@ void main() {
       }
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
+      if (spec.$1.startsWith('contribution-waiting')) {
+        waitingPayment.response.completeError(Exception('fixture complete'));
+        await tester.pump();
+      }
       tester.view.resetViewInsets();
       container.dispose();
       await repo.changes.close();

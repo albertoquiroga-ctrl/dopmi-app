@@ -38,6 +38,7 @@ class _ContributeState extends ConsumerState<ContributeScreen>
   final amount = TextEditingController(text: '50');
   bool busy = true, locked = false, reviewing = false;
   String? error, attemptKey;
+  String? checkoutLabel;
   Json? outcome;
   String? publicCaseId, publicCaseName;
   @override
@@ -152,6 +153,7 @@ class _ContributeState extends ConsumerState<ContributeScreen>
   }
 
   Future<void> pay() async {
+    if (busy) return;
     final cents = parsePesos(amount.text);
     if (cents == null || cents < 1000 || cents > 1000000) {
       setState(
@@ -162,6 +164,9 @@ class _ContributeState extends ConsumerState<ContributeScreen>
     setState(() {
       busy = true;
       error = null;
+      checkoutLabel = locked
+          ? 'Continuar mi aportación'
+          : 'Confirmar en Stripe';
     });
     try {
       attemptKey ??= const Uuid().v4();
@@ -185,7 +190,12 @@ class _ContributeState extends ConsumerState<ContributeScreen>
     } catch (cause) {
       if (mounted) setState(() => error = paymentError(cause));
     } finally {
-      if (mounted) setState(() => busy = false);
+      if (mounted) {
+        setState(() {
+          busy = false;
+          checkoutLabel = null;
+        });
+      }
     }
   }
 
@@ -403,11 +413,12 @@ class _ContributeState extends ConsumerState<ContributeScreen>
                   if (error != null) Notice(error!, isError: true),
                   if (outcome == null)
                     ContributionButton(
-                      reviewing || locked
-                          ? (locked
-                                ? 'Continuar mi aportación'
-                                : 'Confirmar en Stripe')
-                          : 'Revisar aportación',
+                      checkoutLabel ??
+                          (reviewing || locked
+                              ? (locked
+                                    ? 'Continuar mi aportación'
+                                    : 'Confirmar en Stripe')
+                              : 'Revisar aportación'),
                       busy: busy,
                       onPressed: locked
                           ? pay

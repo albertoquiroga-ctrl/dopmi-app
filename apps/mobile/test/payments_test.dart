@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
@@ -66,6 +68,15 @@ class FakePayments extends PaymentRepository {
   Future<void> openStripe(String url) async {}
 }
 
+class WaitingCheckoutPayments extends FakePayments {
+  final response = Completer<Json>();
+  @override
+  Future<Json> checkout(String expense, int cents, String key) async {
+    calls.add(key);
+    return response.future;
+  }
+}
+
 class ResultPayments extends FakePayments {
   ResultPayments(this.status) {
     this.fail = false;
@@ -131,6 +142,66 @@ Future<void> tapButton(WidgetTester tester, String label) async {
 }
 
 void main() {
+  testWidgets(
+    'enlarged checkout retains its target while pending and avoids a second attempt',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      tester.view.physicalSize = const Size(320, 640);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final identity = FakeIdentityRepository()
+        ..user = const Identity('one', 'fixture@example.test', verified: true);
+      final payments = WaitingCheckoutPayments();
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          paymentRepositoryProvider.overrideWithValue(payments),
+          routerInitialLocationProvider.overrideWithValue(
+            '/contribute/expense-one?amount_cents=10025',
+          ),
+        ],
+      );
+      addTearDown(() async {
+        container.dispose();
+        await identity.changes.close();
+      });
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const DopmiApp(),
+        ),
+      );
+      await pumpUntil(tester, find.text('Resumen'));
+      final button = find.widgetWithText(FilledButton, 'Confirmar en Stripe');
+      await tester.ensureVisible(button);
+      await tester.pumpAndSettle();
+      final bounds = tester.getRect(button);
+      await tester.tap(button);
+      await tester.tap(button);
+      await tester.pump();
+      expect(payments.calls, hasLength(1));
+      final pending = find.widgetWithText(FilledButton, 'Confirmar en Stripe');
+      expect(tester.getSize(pending), bounds.size);
+      expect(tester.widget<FilledButton>(pending).onPressed, isNull);
+      await tester.ensureVisible(pending);
+      await tester.pump();
+      await tester.tapAt(tester.getRect(pending).center);
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(payments.calls, hasLength(1));
+      expect(find.text('¡Eres mi héroe, choca esas huellitas!'), findsNothing);
+      payments.response.completeError(Exception('lost connection'));
+      await tester.pumpAndSettle();
+      expect(find.text('¡Eres mi héroe, choca esas huellitas!'), findsNothing);
+      expect(find.text('Continuar mi aportación'), findsOneWidget);
+      expect(payments.calls, hasLength(1));
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   test(
     'payment errors distinguish account permissions from Stripe configuration',
     () {

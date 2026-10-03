@@ -298,13 +298,25 @@ class ContributionButton extends StatelessWidget {
         ),
       ),
     );
-    final content = busy
-        ? const SizedBox(
-            width: 22,
-            height: 22,
-            child: CircularProgressIndicator(strokeWidth: 2, color: ink),
-          )
-        : Text(label, textAlign: TextAlign.center);
+    final content = Stack(
+      alignment: Alignment.center,
+      children: [
+        Opacity(
+          opacity: busy ? 0 : 1,
+          child: Text(label, textAlign: TextAlign.center),
+        ),
+        if (busy)
+          Semantics(
+            label: 'En proceso',
+            liveRegion: true,
+            child: const SizedBox(
+              width: 22,
+              height: 22,
+              child: CircularProgressIndicator(strokeWidth: 2, color: ink),
+            ),
+          ),
+      ],
+    );
     return secondary
         ? OutlinedButton(
             style: style,
