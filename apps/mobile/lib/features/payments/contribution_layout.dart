@@ -23,14 +23,17 @@ class ContributionFrame extends StatelessWidget {
     required this.back,
     required this.child,
     this.rescuer = false,
+    this.bottomNavigationBar,
   });
   final String title;
   final VoidCallback? back;
   final Widget child;
   final bool rescuer;
+  final Widget? bottomNavigationBar;
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: cream,
+    bottomNavigationBar: bottomNavigationBar,
     appBar: AppBar(
       backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,

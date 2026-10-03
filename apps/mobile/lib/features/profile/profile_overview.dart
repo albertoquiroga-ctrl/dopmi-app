@@ -20,6 +20,7 @@ import '../identity/experience_controller.dart';
 import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
 import '../payments/guardian_repository.dart';
+import '../payments/contribution_layout.dart';
 import '../payments/payment_repository.dart';
 
 final profilePaymentHistoryProvider =
@@ -1614,80 +1615,85 @@ class _SettingsHeading extends StatelessWidget {
 class RescuerAccountOptionsScreen extends ConsumerWidget {
   const RescuerAccountOptionsScreen({super.key});
   @override
-  Widget build(BuildContext context, WidgetRef ref) => ProfileFrame(
+  Widget build(BuildContext context, WidgetRef ref) => ContributionFrame(
     title: 'Cuenta y privacidad',
-    back: true,
-    showNotifications: false,
-    children: [
-      const ProfileRow(
-        title: 'Verificación',
-        icon: Icons.shield_outlined,
-        path: '/rescue/new?kind=verification',
-      ),
-      const ProfileRow(
-        title: 'Editar perfil público',
-        icon: Icons.edit_outlined,
-        path: '/rescuer/profile/edit',
-      ),
-      if (ref.watch(identityControllerProvider).identity != null)
-        ProfileRow(
-          title: 'Ver mi perfil público',
-          icon: Icons.public,
-          path: '/people/${ref.watch(identityControllerProvider).identity!.id}',
-        ),
-      const ProfileRow(
-        title: 'Mis publicaciones de adopción',
-        icon: Icons.home_outlined,
-        path: '/my-adoptions',
-      ),
-      const ProfileRow(
-        title: 'Información básica',
-        subtitle: 'Edita tu perfil y datos personales',
-        icon: Icons.person_outline,
-        path: '/basic-info',
-      ),
-      if (ref.watch(guardianEnabledProvider)) ...[
+    rescuer: true,
+    back: () => context.canPop() ? context.pop() : context.go('/profile'),
+    bottomNavigationBar: const CommunityNav(4),
+    child: ListView(
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+      children: [
         const ProfileRow(
-          title: 'Métodos de pago',
-          subtitle: 'Administra tus tarjetas y métodos de pago',
-          icon: Icons.credit_card,
-          path: '/settings/payment-methods',
+          title: 'Verificación',
+          icon: Icons.shield_outlined,
+          path: '/rescue/new?kind=verification',
         ),
         const ProfileRow(
-          title: 'Suscripción y pagos',
-          subtitle: 'Consulta tu suscripción, pagos y facturación',
-          icon: Icons.receipt_long_outlined,
-          path: '/guardian',
+          title: 'Editar perfil público',
+          icon: Icons.edit_outlined,
+          path: '/rescuer/profile/edit',
+        ),
+        if (ref.watch(identityControllerProvider).identity != null)
+          ProfileRow(
+            title: 'Ver mi perfil público',
+            icon: Icons.public,
+            path:
+                '/people/${ref.watch(identityControllerProvider).identity!.id}',
+          ),
+        const ProfileRow(
+          title: 'Mis publicaciones de adopción',
+          icon: Icons.home_outlined,
+          path: '/my-adoptions',
+        ),
+        const ProfileRow(
+          title: 'Información básica',
+          subtitle: 'Edita tu perfil y datos personales',
+          icon: Icons.person_outline,
+          path: '/basic-info',
+        ),
+        if (ref.watch(guardianEnabledProvider)) ...[
+          const ProfileRow(
+            title: 'Métodos de pago',
+            subtitle: 'Administra tus tarjetas y métodos de pago',
+            icon: Icons.credit_card,
+            path: '/settings/payment-methods',
+          ),
+          const ProfileRow(
+            title: 'Suscripción y pagos',
+            subtitle: 'Consulta tu suscripción, pagos y facturación',
+            icon: Icons.receipt_long_outlined,
+            path: '/guardian',
+          ),
+        ],
+        const ProfileRow(
+          title: 'Historial de aportaciones',
+          icon: Icons.history,
+          path: '/payments',
+        ),
+        const ProfileRow(
+          title: 'Términos y privacidad',
+          icon: Icons.description_outlined,
+          path: '/terms',
+        ),
+        const ProfileRow(
+          title: 'Privacidad y eliminación',
+          subtitle: 'Medición, accesos vinculados y eliminación de cuenta',
+          icon: Icons.privacy_tip_outlined,
+          path: '/account-privacy',
+        ),
+        const ProfileRow(
+          title: 'Configurar pagos con Stripe',
+          icon: Icons.account_balance_outlined,
+          path: '/connect',
+        ),
+        Center(
+          child: Text(
+            'Versión ${ref.watch(configProvider).versionLabel}',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
         ),
       ],
-      const ProfileRow(
-        title: 'Historial de aportaciones',
-        icon: Icons.history,
-        path: '/payments',
-      ),
-      const ProfileRow(
-        title: 'Términos y privacidad',
-        icon: Icons.description_outlined,
-        path: '/terms',
-      ),
-      const ProfileRow(
-        title: 'Privacidad y eliminación',
-        subtitle: 'Medición, accesos vinculados y eliminación de cuenta',
-        icon: Icons.privacy_tip_outlined,
-        path: '/account-privacy',
-      ),
-      const ProfileRow(
-        title: 'Configurar pagos con Stripe',
-        icon: Icons.account_balance_outlined,
-        path: '/connect',
-      ),
-      Center(
-        child: Text(
-          'Versión ${ref.watch(configProvider).versionLabel}',
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-      ),
-    ],
+    ),
   );
 }
 

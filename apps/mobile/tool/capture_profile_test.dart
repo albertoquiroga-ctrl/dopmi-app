@@ -1473,7 +1473,8 @@ void main() {
           if (spec.$1.startsWith('public-profile-cases'))
             rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           if (spec.$1.startsWith('rescuer-profile') ||
-              spec.$1.startsWith('rescuer-settings'))
+              spec.$1.startsWith('rescuer-settings') ||
+              spec.$1.startsWith('account-access-options'))
             rescueRepositoryProvider.overrideWithValue(
               spec.$1.startsWith('rescuer-profile-reference')
                   ? RescuerReferenceCaptureRescue()
@@ -2446,6 +2447,30 @@ void main() {
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),
         );
+        if (spec.$1 == 'account-access-options' ||
+            spec.$1 == 'account-access-options-large') {
+          final privacy = find.text('Privacidad y eliminación');
+          await tester.scrollUntilVisible(privacy, 200);
+          await tester.ensureVisible(privacy);
+          expect(privacy.hitTestable(), findsOneWidget);
+          await tester.tap(privacy);
+          await tester.pumpAndSettle();
+          expect(
+            container.read(routerProvider).state.uri.path,
+            '/account-privacy',
+          );
+          await tester.tap(find.byTooltip('Volver'));
+          await tester.pumpAndSettle();
+          expect(
+            container.read(routerProvider).state.uri.path,
+            '/settings/account',
+          );
+          expect(find.byTooltip('Regresar').hitTestable(), findsOneWidget);
+          await tester.tap(find.byTooltip('Regresar'));
+          await tester.pumpAndSettle();
+          expect(container.read(routerProvider).state.uri.path, '/profile');
+          expect(repo.profile.mode, 'rescuer');
+        }
         await gesture.cancel();
         await tester.pumpAndSettle();
       }

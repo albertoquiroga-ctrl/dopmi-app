@@ -1,0 +1,9 @@
+# Loop473 — encabezado de cuenta y privacidad
+
+Base611569f; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. /settings/account es extensión real sin contraparte Source literal. TopBar compacto Source guía título18, divisor y SVG; se reutiliza ContributionFrame rescuer en vez de ProfileFrame genérico. Encabezado al200 permite dos líneas sin elipsis; contenido padding16/20/16/32. Todas las filas y barra de navegación se mantienen. ContributionFrame añade bottomNavigationBar opcional, null por defecto; detalles financieros siguen sin barra.
+
+42/42 dirigidas (profile_experience/rescuer_settings_details/GuardianHistory/capturador9estados),10s, handle75793 terminalexit0/ c2ec79; log dopmi-loop473-mobile.log. Analyzer37081 exit0 limpio44.7s. Capturador en opciones normal/200 abre privacidad, regresa a opciones y usa botón nuevo para fallback perfil; URI reales y modo rescuer comprobados. FakeRescue evita accesos reales al visitar perfil de prueba. No eliminación ni vinculación ejecutada.
+
+Normal/grande/contenido final inspeccionados y before conservado. Truncamiento de cabecera resuelto; filas largas al200 todavía pueden partir palabras en el marco genérico ProfileRow. No confundir título completo con aceptación visual global. Source CSS TopBar padding16, slot44 y botón40 sitúan centro del back en36; componente ContributionFrame padding16/leading60 sitúa objetivo nativo en38: diferencia de2px candidata para siguiente contraste del componente común. No se atribuye medición browser nueva.
+
+Full591 de471 corresponde0b40f0c3e094cc1dd4560ed613a2ae635e7cfdf9 anterior a este cambio; no full actual atribuido. Próximo consentimiento/privacidad y precisión del encabezado común, luego Connect/archivo privado y matriz global Source/runtime/gestos. Sin Codemagic/push ni aceptación instalada.
