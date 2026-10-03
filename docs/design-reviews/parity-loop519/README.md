@@ -1,0 +1,5 @@
+# Loop519 — resumen de publicación, 3/10/2026
+
+Referenciaa3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. RuntimeEdge377x852 selector/adopción/foto/sexoHembra/especiePerro/edad24meses/historia → revisión, captura y métricas inspeccionadas. Datos ficticios de Source no enviados a backend. TarjetaSource345x214/4filas,padding16+borde1; etiquetas15px y valores24px, gap8. Native conserva6filas/ubicación/enumsreales: no reducir para imitar su número ni copiar Lista para adopción Sí como aprobación.
+
+5c67401: elimina Revisa antes de enviar extra, Sourcecomienza conFotos; labels15/12 antes18.6px ypadding17reservaoutline. Valores24/gap8/radio20 conservados.35358exit0,8/8,6s sietepruebas+capturador2fixtures. NormalPNG posterior inspeccionado: tarjeta compacta sin ocultar Porconfirmar. Capturador desplazaInformaciónbásica,no acreditaFotos inicial por esa captura. SourceFoto visto; headerEditar aún requiere contraste de altura/target. Salud/Socialreales trivalentes preservados, no inferirfalse.98456analyzer encurso. Full609517 anterior519. Sinpush/Codemagic/físico/global/StripeSDK.
