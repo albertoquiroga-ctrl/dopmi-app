@@ -157,6 +157,55 @@ void main() {
       },
     );
   }
+  for (final reduced in [false, true]) {
+    testWidgets('support entry and interrupted gesture; reduced=$reduced', (
+      tester,
+    ) async {
+      tester.platformDispatcher.accessibilityFeaturesTestValue =
+          FakeAccessibilityFeatures(disableAnimations: reduced);
+      addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+      final repo = FakeCommunity()
+        ..supportItems = [
+          SupportOpportunity({
+            'case_id': 'case-one',
+            'expense_id': 'expense-one',
+            'pet_name': 'Choco',
+            'expense_title': 'Tratamiento',
+            'reimbursable_cents': 10000,
+            'funded_cents': 2500,
+          }),
+        ];
+      await open(tester, repository: repo);
+      await tester.tap(find.byTooltip('Pasar'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Pasar'));
+      await tester.pump();
+      if (!reduced) await tester.pump(const Duration(milliseconds: 280));
+      await tester.pump();
+      final incoming = find.byKey(
+        const ValueKey('discovery-motion-support-expense-one'),
+      );
+      Transform rendered() => tester.widget<Transform>(
+        find.descendant(of: incoming, matching: find.byType(Transform)).first,
+      );
+      expect(rendered().transform.storage[12], reduced ? 0 : -420);
+      if (!reduced) await tester.pump(const Duration(milliseconds: 125));
+      final localDelta = 30 * rendered().transform.storage[0];
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.text('Choco')),
+      );
+      await gesture.moveBy(const Offset(30, 0));
+      await tester.pump();
+      expect(rendered().transform.storage[12], closeTo(localDelta, .001));
+      await gesture.cancel();
+      await tester.pumpAndSettle();
+      expect(rendered().transform.storage[12], 0);
+      expect(repo.post.saved, false);
+      expect(find.text(r'$25 de $100'), findsOneWidget);
+      expect(find.text('Apoya con sus necesidades'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+  }
   testWidgets('small screen large text keeps species and actions reachable', (
     tester,
   ) async {
