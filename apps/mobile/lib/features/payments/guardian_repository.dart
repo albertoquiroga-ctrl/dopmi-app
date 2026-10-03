@@ -86,7 +86,13 @@ class GuardianRepository {
       final result = await client.functions.invoke(
         'guardian-client',
         body: {
-          'action': intent['kind'],
+          'action':
+              intent['kind'] == 'method' && intent['selected_method_id'] != null
+              ? 'default_method'
+              : intent['kind'],
+          if (intent['kind'] == 'method' &&
+              intent['selected_method_id'] != null)
+            'payment_method_id': intent['selected_method_id'],
           'key': intent['key'],
           if (intent['kind'] == 'checkout') 'gross_cents': intent['cents'],
           if (intent['kind'] == 'method') 'revision': intent['revision'],

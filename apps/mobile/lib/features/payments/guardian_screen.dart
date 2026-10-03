@@ -333,9 +333,20 @@ class _GuardianState extends ConsumerState<GuardianScreen>
     bool cancel = false,
     bool method = false,
     bool withdraw = false,
+    GuardianPaymentCard? selectedCard,
   }) async {
     if (busy || confirming || !fresh || !current) return;
     if (!cancel && !method && !withdraw && checkoutInReview) return;
+    if (selectedCard != null &&
+        (!method ||
+            intent != null ||
+            plan?['status'] != 'active' ||
+            data?['method_change_available'] != true ||
+            !(cards ?? []).any(
+              (card) => card.id == selectedCard.id && !card.isDefault,
+            ))) {
+      return;
+    }
     if (cancel || method || withdraw) {
       setState(() => confirming = true);
       final agreed = cancel
@@ -347,14 +358,18 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   withdraw
                       ? '¿Retirar el cambio de monto?'
                       : method
-                      ? '¿Actualizar tu medio de pago?'
+                      ? selectedCard == null
+                            ? '¿Actualizar tu medio de pago?'
+                            : '¿Usar esta tarjeta como predeterminada?'
                       : '¿Cancelar tu plan Guardián?',
                 ),
                 content: Text(
                   withdraw
                       ? 'Mantendrás el importe anterior de tu plan: ${pesos(plan!['gross_cents'] as int)} al mes. Lo retiraremos si aún no comenzó a aplicarse; los próximos ciclos podrán continuar con el importe anterior. Esta acción no cancela tu plan.'
                       : method
-                      ? 'Autorizo guardar y usar el nuevo medio en Stripe para los próximos ciclos de Guardián, con el monto y las condiciones vigentes. Stripe puede solicitar autenticación bancaria. Este cambio no cobra ni recupera ciclos omitidos.'
+                      ? selectedCard == null
+                            ? 'Autorizo guardar y usar el nuevo medio en Stripe para los próximos ciclos de Guardián, con el monto y las condiciones vigentes. Stripe puede solicitar autenticación bancaria. Este cambio no cobra ni recupera ciclos omitidos.'
+                            : 'Autorizo usar ${selectedCard.brandLabel} •••• ${selectedCard.last4} como medio predeterminado para los próximos ciclos de Guardián, con el monto y las condiciones vigentes. Este cambio no cobra ni recupera ciclos omitidos.'
                       : 'Detendremos los ciclos futuros. Un pago ya iniciado puede terminar de procesarse. Los pagos anteriores conservan su historial y no se devuelven automáticamente.',
                 ),
                 actions: [
@@ -431,6 +446,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   'key': const Uuid().v4(),
                   'cents': cents,
                   'revision': plan?['revision'],
+                  if (selectedCard != null)
+                    'selected_method_id': selectedCard.id,
                 };
       if (intent == null && !cancel && !withdraw) {
         next['consent_version'] = guardianConsent;
@@ -579,7 +596,18 @@ class _GuardianState extends ConsumerState<GuardianScreen>
             if (enabled && cards != null && cards!.isNotEmpty)
               for (var i = 0; i < cards!.length; i++) ...[
                 if (i > 0) const SizedBox(height: 12),
-                GuardianPaymentCardRow(card: cards![i]),
+                GuardianPaymentCardRow(
+                  card: cards![i],
+                  showMakeDefault: verified && status == 'active',
+                  onMakeDefault:
+                      busy ||
+                          confirming ||
+                          !fresh ||
+                          intent != null ||
+                          data?['method_change_available'] != true
+                      ? null
+                      : () => submit(method: true, selectedCard: cards![i]),
+                ),
               ],
             if (cards == null || cards!.isEmpty)
               Container(
@@ -627,7 +655,9 @@ class _GuardianState extends ConsumerState<GuardianScreen>
               Notice(paymentIssueMessage!),
             if (error != null) Notice(error!),
             if (message != null) Notice(message!),
-            if (enabled && methodSetup != null)
+            if (enabled &&
+                methodSetup != null &&
+                message != guardianMethodLabels[methodSetup!['status']])
               Notice(
                 guardianMethodLabels[methodSetup!['status']] ??
                     'Medio de pago en revisión.',
@@ -658,7 +688,9 @@ class _GuardianState extends ConsumerState<GuardianScreen>
               ),
             if (enabled && intent?['kind'] == 'method')
               ActionButton(
-                'Continuar actualización en Stripe',
+                intent?['selected_method_id'] == null
+                    ? 'Continuar actualización en Stripe'
+                    : 'Reintentar cambio de tarjeta',
                 busy: busy,
                 onPressed: canSubmit ? () => submit() : null,
               ),

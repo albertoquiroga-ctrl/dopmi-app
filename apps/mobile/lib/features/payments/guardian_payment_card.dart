@@ -47,63 +47,106 @@ class GuardianPaymentCard {
 }
 
 class GuardianPaymentCardRow extends StatelessWidget {
-  const GuardianPaymentCardRow({super.key, required this.card});
+  const GuardianPaymentCardRow({
+    super.key,
+    required this.card,
+    this.showMakeDefault = false,
+    this.onMakeDefault,
+  });
+  final bool showMakeDefault;
+  final VoidCallback? onMakeDefault;
   final GuardianPaymentCard card;
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(14),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      border: Border.all(color: const Color(0xffe6e2dd)),
-      borderRadius: BorderRadius.circular(18),
-    ),
-    child: Row(
-      children: [
-        Container(
-          width: 40,
-          height: 40,
-          decoration: const BoxDecoration(
-            color: Color(0xffefede8),
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: SvgPicture.asset(
-              'assets/profile/icon-card.svg',
-              width: 18,
-              height: 18,
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${card.brandLabel} •••• ${card.last4}',
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: ink,
-                ),
+  Widget build(BuildContext context) {
+    final action = !card.isDefault && showMakeDefault
+        ? TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: ink,
+              padding: EdgeInsets.zero,
+              minimumSize: const Size(44, 44),
+              textStyle: const TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
               ),
-              if (card.isDefault)
-                const Text(
-                  'Predeterminada',
-                  style: TextStyle(fontSize: 12, color: Color(0xff554e48)),
+            ),
+            onPressed: onMakeDefault,
+            child: const Text(
+              'Hacer predeterminada',
+              textAlign: TextAlign.right,
+            ),
+          )
+        : null;
+    final large = MediaQuery.textScalerOf(context).scale(12) > 18;
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: const Color(0xffe6e2dd)),
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: const BoxDecoration(
+                  color: Color(0xffefede8),
+                  shape: BoxShape.circle,
                 ),
-              if (card.wallet != null)
-                Text(
-                  card.wallet == 'apple_pay' ? 'Apple Pay' : 'Google Pay',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Color(0xff554e48),
+                child: Center(
+                  child: SvgPicture.asset(
+                    'assets/profile/icon-card.svg',
+                    width: 18,
+                    height: 18,
                   ),
                 ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${card.brandLabel} •••• ${card.last4}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: ink,
+                      ),
+                    ),
+                    if (card.isDefault)
+                      const Text(
+                        'Predeterminada',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Color(0xff554e48),
+                        ),
+                      ),
+                    if (card.wallet != null)
+                      Text(
+                        card.wallet == 'apple_pay' ? 'Apple Pay' : 'Google Pay',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xff554e48),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              if (action != null && !large) ...[
+                const SizedBox(width: 8),
+                SizedBox(width: 92, child: action),
+              ],
             ],
           ),
-        ),
-      ],
-    ),
-  );
+          if (action != null && large)
+            Align(alignment: Alignment.centerRight, child: action),
+        ],
+      ),
+    );
+  }
 }

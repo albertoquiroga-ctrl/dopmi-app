@@ -25,7 +25,7 @@ class FakeGuardian extends GuardianRepository {
         ),
       );
   List<GuardianPaymentCard> cards = [];
-  bool failCards = false;
+  bool failCards = false, applySelected = false;
   @override
   Future<List<GuardianPaymentCard>> paymentMethods() async {
     if (failCards) throw Exception('fixture');
@@ -85,6 +85,23 @@ class FakeGuardian extends GuardianRepository {
           'status': 'pending',
         },
       };
+      if (intent['selected_method_id'] != null) {
+        if (applySelected) {
+          cards = [
+            for (final card in cards)
+              GuardianPaymentCard(
+                id: card.id,
+                brand: card.brand,
+                last4: card.last4,
+                wallet: card.wallet,
+                isDefault: card.id == intent['selected_method_id'],
+              ),
+          ];
+          value['method_setup']['status'] = 'applied';
+          value['method_change_available'] = true;
+        }
+        return {'status': applySelected ? 'applied' : 'pending'};
+      }
       return {
         'status': 'pending',
         'checkout_url': 'https://checkout.stripe.com/setup',
@@ -714,6 +731,62 @@ void main() {
         findsNothing,
       );
       expect(repo.calls, isEmpty);
+    },
+  );
+  testWidgets(
+    'saved default selection requires consent and retries original card and key',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final repo = FakeGuardian()
+        ..fail = true
+        ..cards = [
+          const GuardianPaymentCard(
+            id: 'pm_old',
+            brand: 'visa',
+            last4: '4242',
+            isDefault: true,
+          ),
+          const GuardianPaymentCard(
+            id: 'pm_selected',
+            brand: 'mastercard',
+            last4: '5556',
+            isDefault: false,
+          ),
+        ]
+        ..value = {
+          'plan': activePlan(),
+          'activation': null,
+          'method_change_available': true,
+        };
+      await start(tester, repo, methods: true);
+      await tester.tap(find.text('Hacer predeterminada'));
+      await tester.pumpAndSettle();
+      expect(repo.calls, isEmpty);
+      expect(
+        find.textContaining('Autorizo usar Mastercard •••• 5556'),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Autorizar y continuar'));
+      await tester.pumpAndSettle();
+      expect(repo.calls.single['selected_method_id'], 'pm_selected');
+      expect(repo.cards.first.isDefault, true);
+      expect(repo.opened, 0);
+      repo.fail = false;
+      repo.applySelected = true;
+      await tapButton(tester, 'Reintentar cambio de tarjeta');
+      await tester.pumpAndSettle();
+      expect(repo.calls.length, 2);
+      expect(repo.calls.first, repo.calls.last);
+      expect(repo.opened, 0);
+      expect(repo.cards.last.isDefault, true);
+      expect(repo.cards.first.isDefault, false);
+      expect(
+        find.textContaining(
+          'Medio de pago actualizado para los próximos ciclos.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Predeterminada'), findsOneWidget);
     },
   );
   testWidgets(
