@@ -9,6 +9,7 @@ import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../identity/identity_controller.dart';
 import 'rescuer_profile_repository.dart';
+import 'rescuer_social_dialog.dart';
 
 class RescuerSettingsDetails extends ConsumerWidget {
   const RescuerSettingsDetails({super.key});
@@ -50,6 +51,25 @@ class RescuerSettingsDetails extends ConsumerWidget {
                 icon: item.$3,
                 path: '/rescuer/profile/edit',
                 onReturn: refresh,
+                onEdit: data == null
+                    ? null
+                    : () async {
+                        final saved = await editRescuerSocial(
+                          context,
+                          data,
+                          item.$2,
+                        );
+                        if (context.mounted && saved == true) {
+                          refresh();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Guardamos tu borrador. Los cambios pasan por revisión.',
+                              ),
+                            ),
+                          );
+                        }
+                      },
                 editLabel: 'Editar ${item.$1}',
               ),
             ],
@@ -94,10 +114,12 @@ class SettingsDataRow extends StatelessWidget {
     required this.editLabel,
     this.icon,
     this.onReturn,
+    this.onEdit,
   });
   final String label, value, path, editLabel;
   final String? icon;
   final VoidCallback? onReturn;
+  final Future<void> Function()? onEdit;
   @override
   Widget build(BuildContext context) => Stack(
     children: [
@@ -175,6 +197,10 @@ class SettingsDataRow extends StatelessWidget {
           child: SettingsEditButton(
             label: editLabel,
             onPressed: () async {
+              if (onEdit != null) {
+                await onEdit!();
+                return;
+              }
               await context.push(path);
               if (context.mounted) onReturn?.call();
             },

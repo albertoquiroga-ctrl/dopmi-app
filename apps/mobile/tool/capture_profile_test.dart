@@ -15,6 +15,7 @@ import 'package:dopmi_mobile/features/profile/rescuer_logout_row.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_access.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_repository.dart';
 import 'package:dopmi_mobile/features/profile/help_support_dialog.dart';
+import 'package:dopmi_mobile/features/profile/rescuer_social_dialog.dart';
 import 'package:dopmi_mobile/features/profile/support_repository.dart';
 
 import '../test/rescuer_profile_test.dart' show FakeRescuerProfile;
@@ -970,6 +971,9 @@ void main() {
       ('rescuer-settings-mode-focus', '/settings'),
       ('rescuer-settings-edit-focus', '/settings'),
       ('rescuer-settings-large', '/settings'),
+      ('rescuer-settings-social-dialog', '/settings'),
+      ('rescuer-settings-social-dialog-large', '/settings'),
+      ('rescuer-settings-social-dialog-facebook', '/settings'),
       ('rescuer-profile-large', '/profile'),
       ('public-profile', '/people/owner'),
       ('public-profile-large', '/people/owner'),
@@ -1336,7 +1340,7 @@ void main() {
           if (spec.$1.startsWith('rescuer-settings') ||
               spec.$1.startsWith('public-profile-editor'))
             rescuerProfileRepositoryProvider.overrideWithValue(
-              FakeRescuerProfile()..value['owner_id'] = 'one',
+              SettingsSocialCaptureProfile()..value['owner_id'] = 'one',
             ),
           if (spec.$1.startsWith('case-publication'))
             rescueRepositoryProvider.overrideWithValue(
@@ -2822,6 +2826,19 @@ void main() {
             expect(card.height, closeTo([70.0, 82.0, 82.0][i], .1));
           }
         }
+        if (spec.$1.startsWith('rescuer-settings-social-dialog')) {
+          final network = spec.$1.endsWith('-facebook')
+              ? 'Facebook'
+              : 'Instagram';
+          final edit = find.byTooltip('Editar $network');
+          await Scrollable.ensureVisible(tester.element(edit), alignment: .35);
+          await tester.pumpAndSettle();
+          await tester.tap(edit);
+          await tester.pumpAndSettle();
+          expect(find.byType(RescuerSocialDialog), findsOneWidget);
+          expect(find.text('Editar $network'), findsOneWidget);
+          expect(tester.takeException(), isNull);
+        }
         if (spec.$1.startsWith('profile-settings-footer')) {
           await tester.scrollUntilVisible(
             find.text('Cerrar sesión'),
@@ -2962,4 +2979,9 @@ void main() {
     debugNetworkImageHttpClientProvider = null;
     debugDisableShadows = true;
   });
+}
+
+class SettingsSocialCaptureProfile extends FakeRescuerProfile {
+  @override
+  String? get userId => 'one';
 }
