@@ -618,3 +618,12 @@ Base2f944e9; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Guard
 Preflight DEVohqxranynackjignryep: latest20261003130559, helper433 md5exacto5a9e2efc5850b565baf355354c548716, activationhelperausente y2anchorsRPC. Aplicada una vez local20261003131000 porMCP como remota20261003131548/canceled_wallet_collection_guard. Postflight ambos prosrcmd5 coincidenlocal probado587: collection939ccd4012f6a0d977d788ce2bb79a2c; activationf59fc9925e6e5b045df51b29892626d6. DosguardasactivationRPCactualizadas; serviceexecute true/browserfalse, helpers anon/authfalse. SQL yprivilegios reales verificados, no prueba nuevaAuthREST/Stripe positive ni nueva fixtureSQL remota de ciclo completo atribuida. No replay/repair/rename/dbpush.
 
 UIservidor estadosdeconciliación implementados/SQLdesplegado, no cerraraceptación financiera/visualglobal con estaspruebas. Checkout429/redisplay431 overlayspendientes, StripeMCP pide reauth. Continúa objetivo completo/nativo/dispositivo yCM sólocandidatofinal, sinpush/dinero real.
+
+
+### Loop438 — checkout con customer privado desplegado, 3/10/2026
+
+Base0e22658; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. paymentsDEV ACTIVE10 tenía3archivos; comparacióncontra local: entrypointidéntico, runtime sólolookupCustomerRPC, payments sólo callback/validacióncus/test ycustomercheckout. Guardado backup externo Temp/dopmi-loop438-payments-before.json. RPC owner realexistente serviceexecute=true/browserfalse confirmado; no nuevoesquema. Deno payments check y10checkouttests pass101.689ms72451/2b1e83 sobrecódigo actual antesdeploy; gatebackend587/436 antecede sólomobile437, móduloscheckoutidénticos.
+
+Deploy MCP payments10→11 ACTIVE, bundlehash731b3beb46c005137e25633c388a48bc5e9cd2d535d06dfb7f636676d6e1b56b. Preserva3files yverify_jwtfalseprevio, AuthgetUser/token/emailconfirmado guardasentrypointintactas. GetEdgepostflight0mismatch/0extra normalizandoCRLF vs fuenteslocalesprobadas. HTTP real GET405 method_not_allowed yPOSTsinAuth401 sign_in_required (3ea42d). No Stripewrite/ownerfixturecheckout/redisplayselecciónreal niaceptacióndevice atribuidos. Dinero test-onlysinflagsnuevos.
+
+Checkout429 ya remoto; redisplay431 aún requiereoverlaysworker/webhook/client ypostflight. StripeMCP reauthsiguependiente. Laspruebasdeboundary no sustituyen checkoutautenticado ni selecciónreal/SDK; objectiveglobalvisual/motion/device continúa. SinCodemagic/push.
