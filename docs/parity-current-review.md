@@ -1,3 +1,11 @@
+# Corte vigente — loop375, 3/10/2026
+
+Acciones de tarjeta sinGuardían: base local saved-card-method con13tests nuevos; backend516/51627.23s aprobado, Deno módulo válido. Aún faltan SQL/RLS/locks bidireccionales/endpoint/worker/UI/aceptación. No confundir serviciofakecheckpoint con operación desplegada.
+
+Alta Auth+Checkouttest371 confirmada y limpia; retorno10DEV372 sólo HTTP/copia verificados, browser MIME bloquea textplain y no prueba teléfono. Cliente373 refreshgesto y374 spacingSource/enlaces;50guardian/analyze25.9s/capturasnormal200%. Billeteras reales/uso tarjeta enapoyo/composiciónSource y matrizglobal de pantallas/animaciones/gestos siguen pendientes. Fullmobile504/359 anterior; Codemagic únicamente candidato final.
+
+## Corte372 anterior
+
 # Corte vigente — loops371–372, 3/10/2026
 
 Alta independiente: Auth sintético+Checkout hosted Stripe test real confirmado por SQL/endpoint/reader, replay estable, tarjeta4242 sin default y cero cargos/facturas/suscripciones; fixture completamente limpio. Retorno10DEV verificado por cuerpo y smoke21, añade instrucción Métodos. Browsercontrolado rechaza texto plano incluso local sin sandbox, HTML equivalente con sandbox funciona; no causa exacta ni aceptación visual instalada demostrada, protecciones intactas.

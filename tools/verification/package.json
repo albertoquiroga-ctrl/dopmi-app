@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test --test-concurrency=1 identity.test.mjs apple-credentials.test.mjs payments.test.mjs guardian.test.mjs guardian-method-list.test.mjs guardian-preflight.test.mjs guardian-response-loss-proxy.test.mjs guardian-refund-loss-fetch.test.mjs guardian-change-loss-fetch.test.mjs legacy.test.mjs legacy-edge.test.mjs support-request.test.mjs"
+    "test": "node --test --test-concurrency=1 identity.test.mjs apple-credentials.test.mjs payments.test.mjs guardian.test.mjs guardian-method-list.test.mjs saved-card-method.test.mjs guardian-preflight.test.mjs guardian-response-loss-proxy.test.mjs guardian-refund-loss-fetch.test.mjs guardian-change-loss-fetch.test.mjs legacy.test.mjs legacy-edge.test.mjs support-request.test.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.3.14",
