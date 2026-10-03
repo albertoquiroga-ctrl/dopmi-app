@@ -2698,3 +2698,22 @@ completo439/439 aprobado31.45s. Media3/3 aprobadas, PNG→JPEG/PDFdenegado inclu
 accountAvatar. Analyze limpio38.3s, diff-check limpio. Sin foto real/carga/SQL remoto.
 Faltan repositorio/control foto y composición en Información básica, despliegue
 SQL/Edge y recorrido autenticado. No Codemagic nuevo; objetivo global pendiente.
+
+# Loop310 — repositorio móvil de foto privada de cuenta
+
+Referencia remota a3c969cd9103fd46dc5cd886999912526ce75efb sin cambios.
+AccountPhotoRepository.supabase conecta MediaStoreaccountAvatar, getter/save RPC
+nuevas y signedURL10min. Cada operación captura/revalida dueño; ruta exige UUID
+propio en ambos segmentos y archivoUUIDv4.jpg. Lectura ajena/malformada o respuesta
+pendiente tras cambio de cuenta se rechaza. Guardado perdido reconcilia misma ruta
+por GET, sin volver a cargar ni repetir POST; rechazo SQL/respuesta inválida no
+se reinterpretan como éxito. Sin fallback fake en producción.
+
+Tres pruebas nuevas cubren pérdida-respuesta/pathigual, ausencia de recibo/error
+42501, ruta ajena y cambio de sesión pendiente. Con media6/6 aprobadas. Analyze
+primer intento dos llaves faltantes (repo/test), corregidas y final limpio9.5s.
+Diff-check propio limpio; chequeo global observó blankEOF en progress concurrente,
+no se modifica archivo del titular. Sin capturas nuevas/control foto aún: siguiente
+bloque tarjeta/selector/preview y persistencia en BasicInfo. Migración foto309 aún
+sin desplegar y Edge cleanup sin redesplegar; no carga remota/dispositivo verificados.
+No Codemagic nuevo; objetivo global activo.
