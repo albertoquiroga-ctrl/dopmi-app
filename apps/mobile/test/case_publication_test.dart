@@ -201,7 +201,14 @@ void main() {
       final edit = find.byKey(const ValueKey('case-review-edit-Necesidades'));
       await tester.ensureVisible(edit);
       await tester.pumpAndSettle();
-      await tester.tap(edit);
+      expect(tester.getSize(edit).height, 20);
+      Focus.of(
+        tester.element(
+          find.descendant(of: edit, matching: find.text('Editar')),
+        ),
+      ).requestFocus();
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
       final remove = find.text('Eliminar');
       await tester.ensureVisible(remove);

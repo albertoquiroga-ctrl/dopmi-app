@@ -42,8 +42,14 @@ class CaseReview extends StatelessWidget {
           style: TextButton.styleFrom(
             foregroundColor: const Color(0xff7c3aed),
             padding: EdgeInsets.zero,
-            minimumSize: const Size(48, 48),
-            textStyle: const TextStyle(fontFamily: 'Inter', fontSize: 14),
+            minimumSize: const Size(48, 20),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            textStyle: const TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 14,
+              height: 17 / 14,
+              fontWeight: FontWeight.w400,
+            ),
           ),
           child: Semantics(
             label: 'Editar $title',
