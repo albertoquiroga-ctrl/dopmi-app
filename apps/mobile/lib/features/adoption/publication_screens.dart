@@ -319,7 +319,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
           label,
           style: const TextStyle(
             fontSize: 14,
-            height: 1.55,
+            height: 17 / 14,
             fontWeight: FontWeight.w500,
             color: Color(0xff151423),
           ),
@@ -336,7 +336,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
             style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 16,
-              height: 1.55,
+              height: 20 / 16,
               color: Color(0xff151423),
             ),
             keyboardType: key == 'age_months'
@@ -387,7 +387,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
             'Si aún no tiene nombre, puedes dejarlo vacío.',
             style: TextStyle(
               fontSize: 12,
-              height: 1.55,
+              height: 15 / 12,
               color: Color(0xff616174),
             ),
           ),
@@ -533,7 +533,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                     color: Color(0xff151423),
                   ),
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 16),
                 field('pet_name', 'Nombre de la mascota', 80),
                 publicationChoice('sex', 'Sexo', {
                   'male': 'Macho',
@@ -548,7 +548,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                   'story',
                   'Su historia y el hogar que necesita',
                   4000,
-                  lines: 5,
+                  lines: 3,
                 ),
                 PublicationTraitCard(
                   title: 'Salud',
