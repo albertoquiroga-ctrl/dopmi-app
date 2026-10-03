@@ -2546,3 +2546,7 @@ Full90121exit0,609/609,3m46s; analyzer79611exit0 limpio222.6s fuente17e59ee.230D
 ### Loop526 — capturas403 actuales y base de gastos, 3/10/2026
 
 Capturador58342exit0,1test/403fixtures únicas,3m05s;403PNG frescos/hashes/source230DartcuatroSVG unchanged respecto17e59ee/full609524. Manifest525/runREADME/currentreview actualizados,supersede401511,no403aceptaciones. Sourcea3 runtimeEdge377x852 EvidenceRockyVet dialog345x598.984375/radio28/drop295x148/icon28 inspeccionado conNativeexpense-evidencefresco525. OriginalUploadSVG/frame presentes; colores/lineheightEvidenceCard quedanparaajuste, no copiarcashback/Coins/video niDisponiblefundedsimulado. README/PNG/metrics526. Sin producción/backend/SQL/push/Codemagic/físico/global/StripeSDK.
+
+### Loop527 — colores/tipografía EvidenceCard contra computedStyle, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultada/runtimeEdge377x852:ink151423/muted4f4e5c (corrigeinfer616174526),helper12/16/label14alto17/hint12alto15/gap6/max240/drop148/radio24/icon28.41f53af EvidenceCard actualizaestilos/Columnmincentrada/nooverlay mantienecallbacks12files5MBprivado/public roles.91835exit0,13/13,6s con2fixtures;90487analyzerexit0clean67.8s. Normal3controlesPNGinspeccionado,largeparcialnoaceptacióntotal. Source-metrics/PNGREADME527 ycorreccióndoc526. Full609524/403525pre527. Sinbackend/SQL/push/Codemagic/físico/global/StripeSDK.
