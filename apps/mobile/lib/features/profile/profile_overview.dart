@@ -1421,40 +1421,48 @@ class SettingsScreen extends ConsumerWidget {
     return ProfileFrame(
       title: 'Configuración',
       back: true,
-      showNotifications:
-          ref.watch(experienceProvider).value != AccountExperience.rescuer,
+      showNotifications: false,
+      rescuerSettings: true,
       children: [
-        const ProfileRow(
+        const RescuerNavigationRow(
           title: 'Información básica',
           subtitle: 'Edita tu perfil y datos personales',
-          icon: Icons.person_outline,
+          icon: 'icon-user',
           path: '/basic-info',
         ),
         if (ref.watch(guardianEnabledProvider)) ...[
-          const ProfileRow(
+          const SizedBox(height: 12),
+          const RescuerNavigationRow(
             title: 'Método de pago de Guardián',
             subtitle: 'Consulta o cambia tu tarjeta',
-            icon: Icons.credit_card,
+            icon: 'icon-card',
             path: '/guardian',
           ),
-          const ProfileRow(
+          const SizedBox(height: 12),
+          const RescuerNavigationRow(
             title: 'Suscripción y pagos',
             subtitle: 'Administra tu apoyo mensual',
-            icon: Icons.receipt_long_outlined,
+            icon: 'icon-billing',
             path: '/guardian',
           ),
         ],
+        const SizedBox(height: 24),
+        const _SettingsHeading('Ayuda'),
+        const SizedBox(height: 12),
+        const RescuerNavigationRow(
+          title: 'Centro de ayuda',
+          icon: 'icon-help',
+          path: '/help',
+        ),
+        const SizedBox(height: 24),
+        const _SettingsHeading('Cuenta'),
+        const SizedBox(height: 12),
         const ProfileRow(
           title: 'Historial de aportaciones',
           icon: Icons.history,
           path: '/payments',
         ),
         const SavedRescuersRow(),
-        const ProfileRow(
-          title: 'Centro de ayuda',
-          icon: Icons.help_outline,
-          path: '/help',
-        ),
         const ProfileRow(
           title: 'Términos y privacidad',
           icon: Icons.description_outlined,
@@ -1476,6 +1484,25 @@ class SettingsScreen extends ConsumerWidget {
       ],
     );
   }
+}
+
+class _SettingsHeading extends StatelessWidget {
+  const _SettingsHeading(this.title);
+  final String title;
+  @override
+  Widget build(BuildContext context) => Semantics(
+    header: true,
+    child: Text(
+      title,
+      style: const TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 18,
+        fontWeight: FontWeight.w700,
+        height: 1.2,
+        color: Color(0xff151423),
+      ),
+    ),
+  );
 }
 
 class RescuerAccountOptionsScreen extends ConsumerWidget {
