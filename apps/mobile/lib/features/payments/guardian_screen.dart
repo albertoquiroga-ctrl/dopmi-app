@@ -17,6 +17,10 @@ import 'guardian_payment_card.dart';
 import 'payment_methods_feedback.dart';
 import 'saved_card_confirmation.dart';
 import 'payment_method_border.dart';
+import 'native_wallet_buttons.dart';
+import 'native_wallet_sdk.dart';
+import 'native_wallet_repository.dart';
+import 'native_wallet_intent_store.dart';
 import 'contribution_layout.dart';
 import 'guardian_membership_card.dart';
 import 'guardian_cancel_dialog.dart';
@@ -51,6 +55,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   Json? savedCardIntent, savedCardStatus;
   String? pendingSavedFeedback, savedCardError;
   bool savedCardFresh = false;
+  Json? walletIntent, walletStatus;
+  String? walletProvider, walletError;
   Json? independentIntent, independentStatus;
   bool independentFresh = false;
   String? independentError;
@@ -332,6 +338,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
           ref.read(identityControllerProvider).identity?.verified == true) {
         await loadSavedCard(prefs, restore: restore);
         await loadIndependentMethod(prefs, restore: restore);
+        await loadWallet(prefs);
         if (!current) return;
         cardsError = null;
         cards = null;
@@ -344,6 +351,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
           confirmMethodsFeedback();
           await confirmSavedFeedback(prefs);
           await confirmIndependentMethod(prefs);
+          await finishWallet(prefs);
         } catch (_) {
           if (current) cardsError = 'No se pudieron consultar tus tarjetas. Actualiza el estado para reintentar.';
         }
@@ -352,6 +360,121 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       if (current) error = guardianError(cause);
     } finally {
       if (current) setState(() => busy = false);
+    }
+  }
+
+  Future<void> loadWallet(SharedPreferences prefs) async {
+    final sdk = ref.read(nativeWalletSdkProvider);
+    if (sdk.provider == null) return;
+    walletError = null;
+    try {
+      walletIntent = NativeWalletIntentStore(prefs, owner).read();
+      final state = await ref.read(nativeWalletRepositoryProvider).state();
+      if (!current) return;
+      walletStatus = state;
+      if (walletIntent == null &&
+          state != null &&
+          ['pending', 'attention'].contains(state['status'])) {
+        walletIntent = await NativeWalletIntentStore(prefs, owner).reserve({
+          'key': state['key'],
+          'wallet_type': state['wallet_type'],
+          'consent_version': savedCardConsent,
+        });
+      }
+      final available = await sdk.available();
+      if (current) walletProvider = available ? sdk.provider : null;
+    } catch (_) {
+      if (current) {
+        walletError =
+            'No pudimos consultar tu billetera. Conservamos tu solicitud.';
+      }
+    }
+  }
+
+  Future<void> finishWallet(SharedPreferences prefs) async {
+    if (!current ||
+        walletIntent == null ||
+        walletStatus == null ||
+        walletStatus!['key'] != walletIntent!['key'] ||
+        walletStatus!['wallet_type'] != walletIntent!['wallet_type']) {
+      return;
+    }
+    final status = walletStatus!['status'];
+    if (status == 'saved' &&
+        (cardsError != null ||
+            cards == null ||
+            !cards!.any((card) => card.id == walletStatus!['card_id']))) {
+      return;
+    }
+    if (!['saved', 'expired'].contains(status)) return;
+    await NativeWalletIntentStore(prefs, owner).finish(walletStatus!);
+    if (!current) return;
+    walletIntent = null;
+    if (status == 'saved') {
+      methodsFeedbackKey = walletStatus!['key'];
+      if (shownMethodsFeedback.add(methodsFeedbackKey!)) {
+        feedbackIsRemoval = false;
+        methodsFeedback = walletStatus!['wallet_type'] == 'apple_pay'
+            ? 'Apple Pay vinculado'
+            : 'Google Pay vinculado';
+      }
+    }
+  }
+
+  Future<void> addWallet(String provider) async {
+    if (!current ||
+        busy ||
+        confirming ||
+        !fresh ||
+        ref.read(identityControllerProvider).identity?.verified != true ||
+        intent != null ||
+        savedCardIntent != null ||
+        independentIntent != null) {
+      return;
+    }
+    if (walletIntent == null) {
+      setState(() => confirming = true);
+      final agreed = await confirmSavedCard(context);
+      if (!current) return;
+      setState(() => confirming = false);
+      if (!agreed) return;
+    }
+    setState(() {
+      busy = true;
+      walletError = null;
+    });
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (!current) return;
+      walletIntent = await NativeWalletIntentStore(prefs, owner).reserve(
+        walletIntent ??
+            {
+              'key': const Uuid().v4(),
+              'wallet_type': provider,
+              'consent_version': savedCardConsent,
+            },
+      );
+      if (!current) return;
+      final repo = ref.read(nativeWalletRepositoryProvider);
+      final receipt = await repo.submit(walletIntent!);
+      if (!current) return;
+      final secret = receipt['setup_client_secret'];
+      if (secret is String) {
+        await ref
+            .read(nativeWalletSdkProvider)
+            .authorize(walletIntent!['wallet_type'], secret);
+        if (!current) return;
+        walletStatus = await repo.submit(walletIntent!);
+      } else {
+        walletStatus = receipt;
+      }
+    } catch (_) {
+      if (current) walletError = 'La autorización no se confirmó. Puedes retomar la misma solicitud.';
+    } finally {
+      if (current) {
+        setState(() => busy = false);
+        await load();
+      }
     }
   }
 
@@ -1171,6 +1294,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                               !independentFresh ||
                               intent != null ||
                               savedCardIntent != null ||
+                              walletIntent != null ||
                               independentIntent != null
                           ? null
                           : addSavedCard,
@@ -1181,6 +1305,44 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                       ),
                       label: const Text('Agregar tarjeta'),
                     ),
+                  if (ref.read(nativeWalletSdkProvider).provider != null) ...[
+                    const SizedBox(height: 24),
+                    const Text(
+                      'Billeteras digitales',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: ink,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    NativeWalletButtons(
+                      availableProvider: walletProvider,
+                      onPressed:
+                          busy ||
+                              confirming ||
+                              !verified ||
+                              !fresh ||
+                              intent != null ||
+                              savedCardIntent != null ||
+                              independentIntent != null
+                          ? null
+                          : addWallet,
+                    ),
+                    if (walletError != null)
+                      Notice(walletError!, isError: true),
+                    if (walletIntent != null)
+                      ActionButton(
+                        'Continuar autorización',
+                        busy: busy,
+                        onPressed:
+                            busy ||
+                                confirming ||
+                                walletStatus?['status'] == 'attention'
+                            ? null
+                            : () => addWallet(walletIntent!['wallet_type']),
+                      ),
+                  ],
                   if (independentError != null)
                     Notice(independentError!, isError: true),
                   if (independentIntent != null)

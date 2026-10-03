@@ -1,3 +1,9 @@
+# Corte vigente — loop393, 3/10/2026
+
+Sección billeteras conectada a ownerintent/SDK/consentimiento y serverreceipt+freshlist.67tests regresión pasan y analyzer limpio7.6s; NO recorridos específicos nueva pantalla ni capturas aún. Próximo pruebas nativasUI/guards/cancel/identity/lostreply/lista y visual. Config real/compilación/device pendientes. Objetivo global activo, Codemagic sólo final.
+
+## Corte392 anterior
+
 # Corte vigente — loop392, 3/10/2026
 
 Componente botoneswallets con assets/medidasSource y sólo provider soportado habilitado.2widgettests text100/200 pasan y analyzer limpio6.3s. Falta inserciónpantalla, consentimiento, flujoowner/reanudación/receipt+freshlist, capturas y prueba nativa real. No paridad global completada; Codemagic sólo final.
