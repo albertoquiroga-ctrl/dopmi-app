@@ -1,3 +1,11 @@
+# Corte vigente — loop381, 3/10/2026
+
+Regresión móvil completa **538/538 en3:35**, código b03d3a2ff9af2df7608dd8a301ae94957a2b1154; analyze limpio199.3s yconfig12/12.220archivos tracked lib/test/tool coinciden scratch. Corrección sólo test de recuperación: espera operación real, conserva validación propietario/estado y lectura de archivo. Incluye cliente380 de tarjetas independientes.324estados/37URLs, sin capturas nuevas381.
+
+Faltan aceptación Auth+Stripe remota de default/remove independientes, wallets reales/uso tarjeta en apoyo, cuentas Guardian canceladas y cierre de matriz global visual/motion/gestos/instalación. No aceptaciónIrlanda ni CI/build/device atribuida. Fuentea3c969c sin cambios; dinero test-only. Codemagic únicamente al completar objetivo global.
+
+## Corte380 anterior
+
 # Corte vigente — loop380, 3/10/2026
 
 Cliente de tarjetas sin registro Guardian conectado: consentimiento, clave persistida por propietario, recuperación y lista fresca antes de confirmar default/remove. Gate64/64, analyze limpio y4capturas normal/200% revisadas;324estados/37URLs. ServidorDEV worker26/webhook26/client19 y migración75406 de378. Falta aceptación Auth+Stripe real de estas dos acciones; no dispositivo.
