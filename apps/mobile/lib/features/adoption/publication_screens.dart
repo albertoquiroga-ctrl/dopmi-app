@@ -528,6 +528,33 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                   'cat': 'Gato',
                 }),
                 field('age_months', 'Edad aproximada en meses', 3),
+                field(
+                  'story',
+                  'Su historia y el hogar que necesita',
+                  4000,
+                  lines: 5,
+                ),
+                PublicationTraitCard(
+                  title: 'Salud',
+                  children: [
+                    trait('vaccinated', 'Vacunado'),
+                    trait('sterilized', 'Esterilizado'),
+                    field(
+                      'special_care',
+                      'Cuidados especiales (opcional)',
+                      1000,
+                      lines: 3,
+                    ),
+                  ],
+                ),
+                PublicationTraitCard(
+                  title: 'Social',
+                  children: [
+                    trait('social_dogs', 'Social con perros'),
+                    trait('social_cats', 'Social con gatos'),
+                    trait('social_children', 'Social con niñas y niños'),
+                  ],
+                ),
                 choice('size', 'Tamaño', {
                   'small': 'Pequeño',
                   'medium': 'Mediano',
@@ -569,33 +596,6 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                 field('breed', 'Raza o mestizo (opcional)', 80),
                 field('city', 'Ciudad', 100),
                 field('region', 'Estado', 100),
-                field(
-                  'story',
-                  'Su historia y el hogar que necesita',
-                  4000,
-                  lines: 5,
-                ),
-                PublicationTraitCard(
-                  title: 'Salud',
-                  children: [
-                    trait('vaccinated', 'Vacunado'),
-                    trait('sterilized', 'Esterilizado'),
-                    field(
-                      'special_care',
-                      'Cuidados especiales (opcional)',
-                      1000,
-                      lines: 3,
-                    ),
-                  ],
-                ),
-                PublicationTraitCard(
-                  title: 'Social',
-                  children: [
-                    trait('social_dogs', 'Social con perros'),
-                    trait('social_cats', 'Social con gatos'),
-                    trait('social_children', 'Social con niñas y niños'),
-                  ],
-                ),
                 const SizedBox(height: 8),
                 Text(
                   'Tu presentación pública',
