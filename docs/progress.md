@@ -2494,3 +2494,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/Appinspeccionado/run
 ### Loop515 — análisis final terminal
 
 62670exit0 sin incidencias sobre6875515; log515-final-analyze. Supersede anotación en curso515. Sin cambios adicionales.
+
+### Loop516 — altura de campos contra runtime, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb runtimeEdge377x852 medido: nombre345x38/y190,textarea345x78,etiqueta17,h228. babb22a lineheights20/16,17/14,15/12/gaptítulo16/historia3 conservando4000;4e5240e paddingvertical9reservaoutlineinterior.83014exit0,18/18,11s final,2fixtures normalPNGinspeccionado.71787finalanalysisencurso,55264prepadding noanalysisfinal. Source-metrics/PNG/README516. Full608509anterior513–516;datosreales/counter/selección diferentes noaceptaciónpixelglobal. Sinbackend/SQL/push/Codemagic/físico.
