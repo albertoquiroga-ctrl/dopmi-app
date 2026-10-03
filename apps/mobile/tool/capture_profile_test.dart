@@ -916,6 +916,8 @@ void main() {
       ('legal-privacy-large', '/privacy-notice'),
       ('help-center', '/help'),
       ('help-center-large', '/help'),
+      ('help-center-topic-held', '/help'),
+      ('help-center-topic-held-large', '/help'),
       ('help-center-footer', '/help'),
       ('help-center-footer-large', '/help'),
       ('help-center-adoption-large', '/help'),
@@ -3090,9 +3092,53 @@ void main() {
             await tester.pumpAndSettle();
           }
         }
+        TestGesture? helpHold;
+        if (spec.$1.startsWith('help-center-topic-held')) {
+          final topic = find.widgetWithText(
+            OutlinedButton,
+            'Cómo funcionan los apoyos',
+          );
+          await tester.ensureVisible(topic);
+          await tester.pumpAndSettle();
+          expect(topic.hitTestable(), findsOneWidget);
+          helpHold = await tester.startGesture(tester.getCenter(topic));
+          await tester.pump(const Duration(milliseconds: 150));
+          await tester.pump();
+          final ink = tester.widget<InkWell>(
+            find.descendant(of: topic, matching: find.byType(InkWell)).first,
+          );
+          expect(ink.statesController!.value, contains(WidgetState.pressed));
+        }
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),
         );
+        if (helpHold != null) {
+          await helpHold.cancel();
+          await tester.pumpAndSettle();
+          expect(container.read(routerProvider).state.uri.path, '/help');
+          final topic = find.widgetWithText(
+            OutlinedButton,
+            'Cómo funcionan los apoyos',
+          );
+          expect(
+            tester
+                .widget<OutlinedButton>(topic)
+                .style!
+                .backgroundColor!
+                .resolve({}),
+            Colors.white,
+          );
+          await tester.tap(topic);
+          await tester.pumpAndSettle();
+          expect(
+            tester
+                .widget<OutlinedButton>(topic)
+                .style!
+                .backgroundColor!
+                .resolve({}),
+            const Color(0xfffff8e0),
+          );
+        }
         if (spec.$1.contains('social-dialog-keyboard')) {
           await tester.tap(find.text('Cancelar'));
           await tester.pumpAndSettle();

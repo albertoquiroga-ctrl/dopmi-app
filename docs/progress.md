@@ -2241,3 +2241,9 @@ ADB devices-l otra vezlista vacía97785d; no instalación/gestosfísicos verific
 Base693fb9b, producción2bba0c25345e701d8b76e2933ae5969db989218d sinchanges. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; Appselector onChange sólotema yenvío IDs. Doschecks nuevos normal377x852/200320x640: menú outside/back cierranlista noHelpSupportDialog, conservanmensaje/caso0RPC; selecciónGuardián conservaambos ysubmitpayloadguardian/message/case_name correctos1RPC+recibo. Todos8ruta pasan2s33021exit0;analyzer40313clean23.2s. Repositoriofixture/rutanativaFlutter no selectorAndroidfísico ni aceptación visual SourceOS.
 
 Full579/462sobreproducciónactual siguevigente;doschecks nuevos posteriores noatribuir581full. ADBvacío previo462/StripeSDKglobalpendientes. Próxima diferencia interacciónSourceCSS: Helpbotones no:active/splash; nativeMaterialripple/overlaydefaults posible, capturarpressheldSource/native antes modificar scoped. Nohoverrecrear. SinCM/push.
+
+### Loop464 — held/cancel/tap en chips HelpCenter, 3/10/2026
+
+Base84dfaaf; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. CSSchip blanco sinactive/hover;isactiveposteriorselection. Capturador2fixturesheldnormal/200: startGesture150+frame,InkWellstatescontrollerpressed comprobado antesPNG, cancelblanco/rutaHelp, tapcompletofff8e0. Baseline59917exit0 yheld66505exit0;imagenprimerconsultaanteshandleterminalfaltaba,seesperómismohandle norestart. Comparación cropnormal20..210/195..223 con458:0changedpixels/4335whiteambos;hipótesisvisualripple noconfirmada,nocambiarproducción por suposición.
+
+Final75330exit0 capturador1test/2fixtures2s;analyzer37819clean28.1s. Normal/grandeinspeccionados docs/design-reviews/parity-loop464 conbefore/final. NoSourcepressruntime niAndroid/todointervaloanimación aprobado. Full579/462 vigente producción2bba0c2sinchanges;Fuentehelper/capturador posterior463/464nofull581. Matrizglobal/StripeSDK/device pendientes;sinCM/push.
