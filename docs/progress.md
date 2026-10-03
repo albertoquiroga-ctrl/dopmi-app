@@ -2414,3 +2414,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge377x852 diálog
 ### Loop496 — regreso por pestaña sin repetir entrada, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, sin runtime nuevo. Prueba avanza a segunda adopción/Favoritos/Adoptar y conserva misma instancia Motion con traslado0 primerpump y125ms. Valida continuidad móvil establecida, no atribuye índice React persistente. Primer82346exit1 sólo SemanticsHandle al terminar; dispose explícito corregido. Gate25863exit0,21/21,5s, fuente 6e45b396b414c858c588377a6ab589ec80ffd793 sólo tests. Full601493 producciónc57974a vigente, no605full. README496; sin backend/SQL/push/Codemagic, físico/StripeSDK/global pendientes.
+
+### Loop497 — indicador de Perfil renderizado al presionar, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge377x852/rescuer/profile down real matriz0.98/timing120ease delay0; sombra hover excluida. Prueba existente fortalecida primerpump/ScaleTransition final120 normal200; cancelación/totales/destinos preservados. Gate88104exit0,4/4,1s, fuente a52bc936853546f737e0327caeefa74d23a20d0c sólo tests, sin fallo previo ni cambio producción. Full601493 vigente. JSON/README497, navegador/Vitecerrados. Sin backend/SQL/push/Codemagic; físico/StripeSDK/global pendientes.
