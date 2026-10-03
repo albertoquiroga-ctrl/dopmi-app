@@ -896,6 +896,9 @@ void main() {
       ('public-profile-metrics-stats-large', '/people/owner'),
       ('public-profile-adoptions', '/people/owner'),
       ('public-profile-adoptions-large', '/people/owner'),
+      ('public-profile-report-reference', '/people/owner'),
+      ('public-profile-report-reference-large', '/people/owner'),
+      ('public-profile-report-reference-keyboard-large', '/people/owner'),
       ('public-profile-cases', '/people/owner'),
       ('public-profile-cases-large', '/people/owner'),
       ('profile-overview', '/profile'),
@@ -1561,7 +1564,9 @@ void main() {
         await tester.pumpAndSettle();
         final save = find.widgetWithText(FilledButton, 'Guardar borrador');
         await tester.scrollUntilVisible(
-          save, 200, scrollable: find.byType(Scrollable).first,
+          save,
+          200,
+          scrollable: find.byType(Scrollable).first,
         );
         await tester.ensureVisible(save);
         await tester.pumpAndSettle();
@@ -1606,6 +1611,34 @@ void main() {
           tester.getBottomRight(find.byTooltip('Enviar mensaje')).dy,
           lessThanOrEqualTo(tester.view.physicalSize.height - 300),
         );
+      }
+      if (spec.$1.startsWith('public-profile-report-reference')) {
+        final report = find.byTooltip('Reportar');
+        if (report.hitTestable().evaluate().isEmpty) {
+          await Scrollable.ensureVisible(
+            tester.element(report),
+            alignment: .35,
+          );
+        }
+        await tester.pumpAndSettle();
+        expect(report.hitTestable(), findsOneWidget);
+        await tester.tap(report);
+        await tester.pumpAndSettle();
+        expect(find.text('Reportar rescatista'), findsOneWidget);
+        if (spec.$1.contains('keyboard')) {
+          tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+          await tester.enterText(
+            find.byType(TextField),
+            'Información del perfil incorrecta',
+          );
+          await tester.pumpAndSettle();
+          final send = find.widgetWithText(FilledButton, 'Enviar reporte');
+          await tester.ensureVisible(send);
+          await tester.pumpAndSettle();
+          expect(send.hitTestable(), findsOneWidget);
+          expect(tester.getBottomRight(send).dy, lessThanOrEqualTo(340));
+        }
+        expect(tester.takeException(), isNull);
       }
       if (spec.$1.startsWith('public-profile-adoptions')) {
         await Scrollable.ensureVisible(
@@ -2571,11 +2604,13 @@ void main() {
         }
         if (spec.$1.startsWith('profile-settings-footer')) {
           await tester.scrollUntilVisible(
-            find.text('Cerrar sesión'), 250,
+            find.text('Cerrar sesión'),
+            250,
             scrollable: find.byType(Scrollable).first,
           );
           await Scrollable.ensureVisible(
-            tester.element(find.text('Cerrar sesión')), alignment: .7,
+            tester.element(find.text('Cerrar sesión')),
+            alignment: .7,
           );
           await tester.pumpAndSettle();
         }

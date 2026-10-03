@@ -16,6 +16,7 @@ void main() {
         tester.view.devicePixelRatio = 1;
         addTearDown(tester.view.resetPhysicalSize);
         addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.view.resetViewInsets);
         (String, String)? result;
         var returned = false;
         await tester.pumpWidget(
@@ -67,19 +68,33 @@ void main() {
           '  Información incorrecta  ',
         );
         await tester.pump();
+        tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+        await tester.pumpAndSettle();
         await tester.ensureVisible(find.text('Enviar reporte'));
         await tester.pumpAndSettle();
+        expect(
+          tester
+              .getBottomRight(
+                find.widgetWithText(FilledButton, 'Enviar reporte'),
+              )
+              .dy,
+          lessThanOrEqualTo((large ? 640 : 852) - 300),
+        );
         await tester.tap(find.text('Enviar reporte'));
         await tester.pumpAndSettle();
         expect(result, ('other', 'Información incorrecta'));
         expect(returned, true);
-        for (final cancel in ['Cancelar', 'Cerrar', 'back']) {
+        tester.view.resetViewInsets();
+        await tester.pumpAndSettle();
+        for (final cancel in ['Cancelar', 'Cerrar', 'back', 'barrier']) {
           returned = false;
           result = null;
           await tester.tap(find.text('Abrir'));
           await tester.pumpAndSettle();
           if (cancel == 'back') {
             await tester.binding.handlePopRoute();
+          } else if (cancel == 'barrier') {
+            await tester.tapAt(const Offset(4, 4));
           } else if (cancel == 'Cerrar') {
             await tester.tap(find.byTooltip('Cerrar'));
           } else {
