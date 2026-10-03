@@ -1,0 +1,5 @@
+# Loop520 — encabezados compactos, toque conservado, 3/10/2026
+
+Referenciaa3c969cd9103fd46dc5cd886999912526ce75efb reconsultada; CSSpublish-review-head/edit inspeccionado, runtime519 previo. NativeTextButton imponía48px al header y textline24.8; ahora heading20/16, normalStack mantiene header compacto/gap12 y botón64x48 dentro del section, antes del primer contenido de tarjeta. TextoEditar17/14 alineado con título. Su target48 alcanza parte superior vacía del card, no invade el primer dato. Sin overlay/splash añadido. Textoampliado usaRow con títuloadaptable y botónanchoescalado; primera variante64partíaEditar, corregido84a200. Fuente4c31cac.
+
+Pruebaexistente reviewlinks fortalece toque en bottom-2 del TextButton≥48, conserva authoreddata al editar y ocultación durante submitted.48131exit0,8/8,7s primera variante;33127exit0,8/8,6s final con2fixtures;9937analyzerexit0 limpio. PNGnormal/ampliadofinales inspeccionados: heading compacto y Editar completo200%. No aceptación física ni nuevaSource runtime520. Full609517 anterior519/520. Salud/Sociallayout y contrasteglobal pendientes. Sinbackend/SQL/push/Codemagic.
