@@ -1775,3 +1775,12 @@ Base562c0a5; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada si
 Full móvil558/558 pasa4m09s40186/657b8d; log Temp/dopmi-full-mobile-loop407.log. Analyzer limpio184.6s96733/4aeb06; format y diffcheck limpios. Ambos sobre base más este cambio común y ajustes405/406. Capturador COMPLETO sin filtro iniciado20132, log Temp/dopmi-full-capture-loop407.log; todavía sin resultado terminal. Retomar el mismo handle, no atribuir generación completa ni comparación visual por prueba funcional. No nuevo Source runtime, Android instalado ni aceptación global.
 
 Próximo: recuperar resultado20132, inspeccionar capturas actuales por familias y compararlas con Source. ConfigSDKreal, matriz de estados/gestos y comprobación instalada siguen pendientes. Sin Codemagic/push: publicación únicamente al completar el objetivo íntegro.
+
+
+### Loop408 — espera verificable de imagen en el capturador, 3/10/2026
+
+Base9c6bb8b; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Capturador completo20132 falló exit1/911011 en1m27s: pumpAndSettle timeout línea1600 después de adjuntar foto a soporte. 176PNG nuevas antes del fallo, no colección completa. chooseImage real usa compute(prepareMedia); capturador sólo cedía500ms reales y luego intentaba estabilizar spinner mientras isolate aún pendiente. No defecto de app demostrado por ese timeout.
+
+Tool ahora cede tiempo real en pasos50ms/pump hasta observar Cambiar imagen, máximo200pasos, y exige esa señal antes de settle/precache/captura. No desactiva spinner, no simula preparación ni relaja asserts de imagen. Filtrado help-center-support pasa80489/99e4d2 en11s, resultado terminal39ba2f; incluye normal/large, imagen realfixture y recepción. PNGphoto normal/200 copiadas y revisadas en parity-loop408; formulario/imagen/Enviar alcanzables, captura200 desplazada al final. Analyzer limpio39.0s27456/56fa49, format limpio. App no modificada408.
+
+Reintento completo26793 confirmado activo/e26137, log Temp/dopmi-full-capture-loop408.log. Retomar mismo handle; no afirmar colección/aceptación completa hasta resultado e inspección. Full558/analyzer407 prueban temaactual; capturas parciales no aceptación global ni dispositivo. Próximo resultado y revisión por familias. SinCM/push, Codemagic únicamenteobjetivo completo.

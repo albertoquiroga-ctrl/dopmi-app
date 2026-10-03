@@ -1594,9 +1594,19 @@ void main() {
           await tester.ensureVisible(attach);
           await tester.pumpAndSettle();
           await tester.tap(attach);
-          await tester.runAsync(() async {
-            await Future<void>.delayed(const Duration(milliseconds: 500));
-          });
+          // Image preparation runs in a real isolate. Keep servicing real time
+          // until it finishes instead of settling an animated loading state.
+          for (
+            var attempt = 0;
+            attempt < 200 && find.text('Cambiar imagen').evaluate().isEmpty;
+            attempt++
+          ) {
+            await tester.runAsync(() async {
+              await Future<void>.delayed(const Duration(milliseconds: 50));
+            });
+            await tester.pump();
+          }
+          expect(find.text('Cambiar imagen'), findsOneWidget);
           await tester.pumpAndSettle();
           expect(find.text('Cambiar imagen'), findsOneWidget);
           expect(find.byType(Image), findsOneWidget);

@@ -1,3 +1,9 @@
+# Corte vigente — loop408, 3/10/2026
+
+Capturador20132 falló al esperar preparación de adjunto; tool ahora espera señal Cambiar imagen con límite real. Filtro soporte pasa/PNGnormal200 revisadas, analyzer limpio39s. Reintento COMPLETO26793 ACTIVO/log Temp/dopmi-full-capture-loop408.log: retomar para resultado e inspección, no afirmar colección completa. Tema407 tiene full558 aprobado; configSDKreal/dispositivo/matrizglobal siguen pendientes. Codemagic sóloobjetivo completo.
+
+## Corte407 anterior
+
 # Corte vigente — loop407, 3/10/2026
 
 El tema común fija el espaciado normal de Inter para cuerpos, etiquetas y títulos secundarios, preservando overrides. Full558/558 pasa4m09s y analyzer limpio184.6s. Capturador completo20132 ACTIVO, log Temp/dopmi-full-capture-loop407.log: retomar para resultado e inspección. Sin aceptación visual global/dispositivo; configuración SDK real y matriz final pendientes. Codemagic sólo objetivo completo.
