@@ -1,3 +1,7 @@
+# Corte vigente — loop429
+
+Checkout puntual local asocia customer sólo lookupprivado+Stripe testvalidado.7nuevos casos yfull564 pasan; Deno checkfinal aprobado tras corregiraridad. NO deploy ni seleccióncard acreditada. Próximo respuesta perdida/vínculo cambiante/redisplayconsentido→preflightDEV/testreal. Paridadglobal/configSDK/device abiertos, Codemagic sóloobjetivo completo.
+
 # Corte vigente — loop428
 
 Prioridad funcional: checkout puntual sincustomer no reutiliza métodos guardados. Lookup privado owner_server ya existe/coherente; implementar integración servidor convalidaciónStripe/idempotencia/redisplay sinnuevo consentimiento simulado.6baselinebackend pasan, no fix/deploy aún. Resto matriz/nativeSDK/config/device pendientes, Codemagic sóloobjetivo completo.

@@ -41,7 +41,11 @@ export function runtime() {
       Deno.env.get('STRIPE_SECRET_KEY'),
   );
   const returnUrl = `${url}/functions/v1/payment-return`;
-  const service = paymentService({ rpc, stripe, returnUrl });
+  const service = paymentService({ rpc, stripe, returnUrl, lookupCustomer: async (actor: string) => {
+    const result = await db.rpc('dopmi_saved_card_owner_server', { target_actor: actor });
+    if (result.error) throw new PaymentError('saved_card_customer_unavailable', 503);
+    return result.data;
+  } });
   async function actor(req: Request) {
     const token = req.headers.get('Authorization')?.match(/^Bearer (.+)$/i)?.[1];
     if (!token) throw new PaymentError('sign_in_required', 401);
