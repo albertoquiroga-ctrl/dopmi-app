@@ -199,7 +199,7 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              Text(
+                              _SocialLineText(
                                 'Editar $network',
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
@@ -292,7 +292,7 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
                                 ],
                               ),
                               const SizedBox(height: 8),
-                              Text(
+                              _SocialLineText(
                                 instagram ? 'Usa el @ de tu cuenta pública.' : 'Usa el enlace https de tu página o perfil.',
                                 style: const TextStyle(
                                   fontFamily: 'Inter',
@@ -379,14 +379,26 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
                           ),
                         ),
                         Positioned(
-                          right: 4,
+                          right: 5.28125,
                           top: 0,
                           child: IconButton(
                             tooltip: 'Cerrar',
                             onPressed: busy
                                 ? null
                                 : () => Navigator.pop(context),
-                            icon: const Icon(Icons.close, size: 22),
+                            icon: const ExcludeSemantics(
+                              child: Text(
+                                '×',
+                                textScaler: TextScaler.noScaling,
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 22,
+                                  height: 1,
+                                  fontWeight: FontWeight.w400,
+                                  color: Color(0xff4f4e5c),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -400,4 +412,40 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
       ),
     );
   }
+}
+
+/// Keep CSS line boxes fractional while allowing the native glyphs to paint fully.
+class _SocialLineText extends StatelessWidget {
+  const _SocialLineText(
+    this.text, {
+    required this.style,
+    this.textAlign = TextAlign.start,
+  });
+  final String text;
+  final TextStyle style;
+  final TextAlign textAlign;
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final resolved = DefaultTextStyle.of(context).style.merge(style);
+      final scaler = MediaQuery.textScalerOf(context);
+      final painter = TextPainter(
+        text: TextSpan(text: text, style: resolved),
+        textAlign: textAlign,
+        textDirection: Directionality.of(context),
+        textScaler: scaler,
+      )..layout(maxWidth: constraints.maxWidth);
+      final lines = painter.computeLineMetrics().length;
+      painter.dispose();
+      return SizedBox(
+        height: lines * scaler.scale(resolved.fontSize!) * resolved.height!,
+        child: OverflowBox(
+          alignment: Alignment.topCenter,
+          minHeight: 0,
+          maxHeight: double.infinity,
+          child: Text(text, style: resolved, textAlign: textAlign),
+        ),
+      );
+    },
+  );
 }

@@ -1,3 +1,7 @@
+# Corte vigente — loop453
+
+Modalcard292.2/y279.9 ycentro×331.71875/303.9 dentro.1px deSource449; linebox.8125resuelta layout.8 targetpasan9s, analyzerfinalclean45.5s,200/keyboardcancel0writes. Full564/452 previo453. Matrizglobal/device/Stripe/SDK abiertos;Codemagic sólo objetivo completo.
+
 # Corte vigente — loop452 full aprobado
 
 564/5643m47s sobreaea2e21b7936ed5f2cc65728f223c4d4ec043409, handle5996exit0;224Dartroot/scratch idénticos. Resuelto salto deanimaciónState/reducedmotion/180ms ambasdirecciones. Analyzer28.7s limpio. Matrizglobal/lineboxes/device/Stripe/SDK continúanabiertos; ADBvacío. NoCM/push; sóloobjetivo completo.

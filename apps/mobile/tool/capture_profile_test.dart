@@ -2860,8 +2860,16 @@ void main() {
             final card = tester.getRect(
               find.byKey(const ValueKey('rescuer-social-card')),
             );
-            expect(card.top, closeTo(279.90625, .5));
-            expect(card.height, closeTo(292.1875, 1));
+            expect(card.top, closeTo(279.90625, .1));
+            expect(
+              tester.getCenter(find.byTooltip('Cerrar')).dx,
+              closeTo(331.71875, .1),
+            );
+            expect(
+              tester.getCenter(find.byTooltip('Cerrar')).dy,
+              closeTo(303.90625, .1),
+            );
+            expect(card.height, closeTo(292.1875, .1));
             expect(
               tester
                   .getSize(find.byKey(const ValueKey('rescuer-social-input')))
