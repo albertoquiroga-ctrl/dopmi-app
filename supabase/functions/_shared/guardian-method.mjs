@@ -32,6 +32,55 @@ export function guardianMethodService({ stripe, rpc, returnUrl, logger = console
   const address = new URL(returnUrl);
   if (address.protocol !== 'https:' || address.username || address.password || address.search || address.hash)
     fail('guardian_return_url_invalid');
+  async function removeSaved(job, checkpoint) {
+    const methodId = job.selected_method_id;
+    if (!/^pm_[A-Za-z0-9]+$/.test(methodId ?? '') || methodId === job.current_method_id)
+      fail('guardian_method_in_use');
+    const method = await stripe.paymentMethods.retrieve(methodId);
+    const detached = method?.customer == null && job.mutation_requested_at && job.payment_method_id === methodId;
+    if (method?.id !== methodId || method.livemode !== false || method.type !== 'card' ||
+        (!detached && id(method.customer) !== job.customer_id)) fail('guardian_method_owner_mismatch');
+    await checkpoint('verified_saved', { payment_method_id: methodId });
+    const sub = await stripe.subscriptions.retrieve(job.subscription_id);
+    subscriptionMatches(sub, job);
+    const customer = await stripe.customers.retrieve(job.customer_id);
+    if (customer?.id !== job.customer_id || customer.deleted || customer.livemode !== false)
+      fail('guardian_method_owner_mismatch');
+    let inUse = id(sub.default_payment_method) === methodId || id(customer.invoice_settings?.default_payment_method) === methodId;
+    const subscriptions = await stripe.subscriptions.list({ customer: job.customer_id, status: 'all', limit: 100 });
+    if (!Array.isArray(subscriptions?.data) || subscriptions.has_more !== false) fail('guardian_method_usage_unconfirmed');
+    for (const item of subscriptions.data) {
+      if (!/^sub_[A-Za-z0-9]+$/.test(item.id ?? '') || item.livemode !== false || id(item.customer) !== job.customer_id ||
+          !['incomplete', 'incomplete_expired', 'trialing', 'active', 'past_due', 'canceled', 'unpaid', 'paused'].includes(item.status))
+        fail('guardian_method_usage_unconfirmed');
+      if (item.status !== 'canceled' && id(item.default_payment_method) === methodId) inUse = true;
+    }
+    for (const status of ['draft', 'open']) {
+      const invoices = await stripe.invoices.list({ customer: job.customer_id, status, limit: 100 });
+      if (!Array.isArray(invoices?.data) || invoices.has_more !== false) fail('guardian_method_usage_unconfirmed');
+      for (const invoice of invoices.data) {
+        if (!/^in_[A-Za-z0-9]+$/.test(invoice.id ?? '') || invoice.livemode !== false || id(invoice.customer) !== job.customer_id || invoice.status !== status)
+          fail('guardian_method_usage_unconfirmed');
+        if (id(invoice.default_payment_method) === methodId) inUse = true;
+      }
+    }
+    if (inUse) {
+      if (job.mutation_requested_at) fail('guardian_method_in_use');
+      return checkpoint('refused_removal');
+    }
+    await checkpoint('snapshot', { billing_anchor: sub.billing_cycle_anchor });
+    if (!detached) {
+      if (!await checkpoint('write_update')) return rpc('get', { job_id: job.id });
+      await stripe.paymentMethods.detach(methodId, {}, { idempotencyKey: `guardian-method-remove:${job.id}` });
+    }
+    const afterMethod = await stripe.paymentMethods.retrieve(methodId);
+    const after = await stripe.subscriptions.retrieve(job.subscription_id);
+    subscriptionMatches(after, job);
+    if (afterMethod?.id !== methodId || afterMethod.livemode !== false || afterMethod.customer != null ||
+        id(after.default_payment_method) !== id(sub.default_payment_method) || calendar(after) !== calendar(sub))
+      fail('guardian_method_removal_unconfirmed');
+    return checkpoint('removed', { payment_method_id: methodId });
+  }
   async function run(jobId) {
     let job = await rpc('get', { job_id: jobId });
     if (!pending(job)) return job;
@@ -41,7 +90,7 @@ export function guardianMethodService({ stripe, rpc, returnUrl, logger = console
     const checkpoint = async (op, data = {}) => {
       const value = await rpc(op, { job_id: jobId, lease: claimed.lease, ...data });
       if (value) job = value;
-      if (value && !pending(value) && !['applied', 'expired', 'expire_saved', 'failed'].includes(op)) fail('guardian_method_superseded');
+      if (value && !pending(value) && !['applied', 'expired', 'expire_saved', 'failed', 'removed', 'refused_removal'].includes(op)) fail('guardian_method_superseded');
       return value;
     };
     try {
@@ -49,6 +98,7 @@ export function guardianMethodService({ stripe, rpc, returnUrl, logger = console
       if (job.selected_method_id) {
         if (!job.mutation_requested_at && Date.parse(job.expires_at) <= Date.now())
           return await checkpoint('expire_saved');
+        if (job.remove_saved) return await removeSaved(job, checkpoint);
         methodId = job.selected_method_id;
       } else {
         if (!job.session_id) {
@@ -105,7 +155,8 @@ export function guardianMethodService({ stripe, rpc, returnUrl, logger = console
   async function checkout(donor, input) {
     const prepared = await rpc('prepare', { donor_id: donor, key: input.key, revision: input.revision,
       consent: input.consent, consent_version: input.consent_version, return_url: returnUrl,
-      ...(input.selected_method_id ? { selected_method_id: input.selected_method_id } : {}) });
+      ...(input.selected_method_id ? { selected_method_id: input.selected_method_id } : {}),
+      ...(typeof input.remove_saved === 'boolean' ? { remove_saved: input.remove_saved } : {}) });
     const job = await run(prepared.id);
     let url = null;
     if (pending(job) && job.session_id && job.plan_status === 'active' && !job.cancellation_requested_at) {

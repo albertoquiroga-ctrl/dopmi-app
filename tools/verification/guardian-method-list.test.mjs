@@ -95,5 +95,22 @@ test('saved-default endpoint requires explicit consent and server-derived actor'
   assert.equal(calls.length,0);
   assert.equal((await handler(request(body))).status,200);
   assert.deepEqual(calls,[{actor:'owner',input:{key:body.key,revision:2,consent:true,
-    consent_version:body.consent_version,selected_method_id:'pm_selected'}}]);
+    consent_version:body.consent_version,selected_method_id:'pm_selected',remove_saved:false}}]);
+});
+
+
+test('remove endpoint requires consent, opaque target and derives owner',async()=>{
+  const calls=[];
+  const handler=guardianClientHandler({enabled:()=>true,
+    authenticate:async()=>({id:'owner',email_confirmed_at:'fixture'}),
+    removeMethod:async(actor,input)=>{calls.push({actor,input});return {status:'pending'};}});
+  const body={action:'remove_method',key:'77000000-0000-4000-8000-000000000001',revision:2,
+    consent:true,consent_version:'guardian-2026-09-24',payment_method_id:'pm_selected'};
+  for(const invalid of [{...body,consent:false},{...body,customer_id:'cus_peer'},
+    {...body,payment_method_id:'bad'},{...body,remove_saved:false}])
+    assert.equal((await handler(request(invalid))).status,400);
+  assert.equal(calls.length,0);
+  assert.equal((await handler(request(body))).status,200);
+  assert.deepEqual(calls,[{actor:'owner',input:{key:body.key,revision:2,consent:true,
+    consent_version:body.consent_version,selected_method_id:'pm_selected',remove_saved:true}}]);
 });

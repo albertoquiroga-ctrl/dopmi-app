@@ -3739,3 +3739,127 @@ test('server-retained saved selection resumes after local target information is 
   assert.equal(f.methodCalls.filter(c=>c.kind==='update').length,1);
   await rejected(()=>f.prepare({selected_method_id:'pm_another'}),/Clave ya utilizada/);
 });
+
+
+async function removalFixture() {
+  const f=await methodFixture();
+  const card={id:'pm_unused',customer:'cus_initial',livemode:false,type:'card'};
+  const retrieve=f.stripe.paymentMethods.retrieve;
+  f.stripe.paymentMethods.retrieve=async id=>id===card.id?structuredClone(card):retrieve(id);
+  f.stripe.customers={retrieve:async id=>({id,livemode:false,invoice_settings:{default_payment_method:null}})};
+  f.stripe.subscriptions.list=async()=>({data:[...f.subscriptions.values()].map(s=>structuredClone(s)),has_more:false});
+  f.stripe.invoices.list=async()=>({data:[],has_more:false});
+  const detachCalls=[];
+  f.stripe.paymentMethods.detach=async(...args)=>{detachCalls.push(args);card.customer=null;return structuredClone(card);};
+  return {...f,card,detachCalls,removeInput:{...methodInput,selected_method_id:card.id,remove_saved:true}};
+}
+
+test('removal rejects current default in PostgreSQL without creating a job',async()=>{
+ const f=await removalFixture();
+ await rejected(()=>f.prepare({selected_method_id:'pm_initial',remove_saved:true}),/tarjeta activa/);
+ assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_method_jobs')).rows[0].n,0);
+ assert.equal(f.detachCalls.length,0);
+});
+
+test('removal detaches only spare card, keeps billing default and excludes collection until confirmed',async()=>{
+ const f=await removalFixture();
+ const original=[...f.subscriptions.values()][0].default_payment_method;
+ const job=await f.prepare({selected_method_id:f.card.id,remove_saved:true});
+ assert.deepEqual(await collectionRpc('sources',{}),[]);
+ assert.equal((await f.methodService().run(job.id)).status,'applied');
+ assert.equal(f.detachCalls.length,1);
+ assert.deepEqual(f.detachCalls[0],[f.card.id,{}, {idempotencyKey:`guardian-method-remove:${job.id}`}]);
+ assert.equal([...f.subscriptions.values()][0].default_payment_method,original);
+ assert.equal((await collectionRpc('source',{subscription_id:'sub_schedule1'})).payment_method_id,'pm_initial');
+ assert.equal(f.methodCalls.filter(c=>c.kind==='update'||c.kind==='create').length,0);
+ await role(donor);const state=(await db.query('select public.dopmi_guardian_state() v')).rows[0].v;await db.exec('reset role');
+ assert.equal(state.method_setup.action,'remove');
+ assert.equal(state.method_setup.selected_method_id,undefined);
+ assert.equal(state.method_setup.reason,null);
+ assert.equal((await f.methodService().checkout(donor,f.removeInput)).status,'applied');
+ assert.equal(f.detachCalls.length,1);
+});
+
+test('lost detach reply recovers detached original target without another write',async()=>{
+ const f=await removalFixture();const detach=f.stripe.paymentMethods.detach;
+ f.stripe.paymentMethods.detach=async(...args)=>{await detach(...args);throw Error('lost detach');};
+ await assert.rejects(f.methodService().checkout(donor,f.removeInput),/lost detach/);
+ assert.equal(f.card.customer,null);
+ assert.equal((await f.methodService().checkout(donor,methodInput)).status,'applied');
+ assert.equal(f.detachCalls.length,1);
+ await rejected(()=>f.prepare({selected_method_id:f.card.id,remove_saved:false}),/Clave ya utilizada/);
+});
+
+test('foreign removal target never reaches Stripe detach',async()=>{
+ const f=await removalFixture();f.card.customer='cus_peer';
+ await assert.rejects(f.methodService().checkout(donor,f.removeInput),{code:'guardian_method_owner_mismatch'});
+ assert.equal(f.detachCalls.length,0);
+});
+
+for(const kind of ['customer','subscription','invoice']) test(`removal refuses card in use by ${kind} and releases job`,async()=>{
+ const f=await removalFixture();
+ if(kind==='customer')f.stripe.customers.retrieve=async id=>({id,livemode:false,invoice_settings:{default_payment_method:f.card.id}});
+ if(kind==='subscription')f.stripe.subscriptions.list=async()=>({has_more:false,data:[{id:'sub_other',customer:'cus_initial',livemode:false,status:'active',default_payment_method:f.card.id}]});
+ if(kind==='invoice')f.stripe.invoices.list=async({status})=>({has_more:false,data:status==='open'?[{id:'in_pending',customer:'cus_initial',livemode:false,status,default_payment_method:f.card.id}]:[]});
+ assert.equal((await f.methodService().checkout(donor,f.removeInput)).status,'superseded');
+ assert.equal(f.detachCalls.length,0);
+ await role(donor);const state=(await db.query('select public.dopmi_guardian_state() v')).rows[0].v;await db.exec('reset role');
+ assert.equal(state.method_setup.reason,'in_use');
+ assert.equal(state.method_change_available,true);
+});
+
+test('incomplete usage inventory never authorizes detach',async()=>{
+ const f=await removalFixture();f.stripe.subscriptions.list=async()=>({data:[],has_more:true});
+ await assert.rejects(f.methodService().checkout(donor,f.removeInput),{code:'guardian_method_usage_unconfirmed'});
+ assert.equal(f.detachCalls.length,0);
+});
+
+test('removal expiry during usage reads cannot start detach',async()=>{
+ const f=await removalFixture();const list=f.stripe.subscriptions.list;
+ f.stripe.subscriptions.list=async(...args)=>{
+  await db.query("update private.dopmi_guardian_method_jobs set expires_at=now()-interval '1 minute'");
+  return list(...args);
+ };
+ assert.equal((await f.methodService().checkout(donor,f.removeInput)).status,'expired');
+ assert.equal(f.detachCalls.length,0);
+});
+
+
+test('cancellation during removal checks prevents the detach write',async()=>{
+ const f=await removalFixture();const list=f.stripe.subscriptions.list;
+ f.stripe.subscriptions.list=async(...args)=>{
+  await role(donor);
+  await db.query("select public.dopmi_guardian_request('cancel',$1,1,null,null)",[crypto.randomUUID()]);
+  await db.exec('reset role');
+  return list(...args);
+ };
+ await assert.rejects(f.methodService().checkout(donor,f.removeInput),{code:'guardian_method_superseded'});
+ assert.equal(f.detachCalls.length,0);
+});
+
+test('unattached card without prior owner verification cannot be treated as recovered removal',async()=>{
+ const f=await removalFixture();f.card.customer=null;
+ await assert.rejects(f.methodService().checkout(donor,f.removeInput),{code:'guardian_method_owner_mismatch'});
+ assert.equal(f.detachCalls.length,0);
+});
+
+test('removal checkpoint cannot mark a detach before a write or change the billing default',async()=>{
+ const f=await removalFixture();const j=await f.prepare({selected_method_id:f.card.id,remove_saved:true});
+ const claim=await methodRpc('claim',{job_id:j.id});
+ const input={job_id:j.id,lease:claim.lease,payment_method_id:f.card.id};
+ await methodRpc('verified_saved',input);
+ await rejected(()=>methodRpc('removed',input),/Eliminación no confirmada/);
+ await rejected(()=>methodRpc('applied',input),/Operación incompatible/);
+ assert.equal(await collectionRpc('source',{subscription_id:'sub_schedule1'}),null);
+ assert.equal((await activationRpc('get',{cycle_id:f.cycleId})).payment_method_id,'pm_initial');
+ assert.equal((await db.query('select payment_method_id from private.dopmi_guardian_subscriptions')).rows[0].payment_method_id,null);
+ assert.equal(f.detachCalls.length,0);
+});
+
+
+for(const data of [[{customer:'cus_initial',livemode:false,status:'active'}],
+ [{id:'sub_unknown',customer:'cus_initial',livemode:false,status:'unknown'}]]) test('malformed subscription usage does not authorize removal '+JSON.stringify(data),async()=>{
+ const f=await removalFixture();f.stripe.subscriptions.list=async()=>({data,has_more:false});
+ await assert.rejects(f.methodService().checkout(donor,f.removeInput),{code:'guardian_method_usage_unconfirmed'});
+ assert.equal(f.detachCalls.length,0);
+});
