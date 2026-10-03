@@ -63,7 +63,7 @@ class _PublicProfileAdoptionCardState
   Widget build(BuildContext context) {
     final post = widget.post;
     final isSaved = saved ?? post.saved;
-    return DecoratedBox(
+    return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
@@ -204,7 +204,7 @@ class _PublicProfileAdoptionCardState
                           style: FilledButton.styleFrom(
                             backgroundColor: yellow,
                             foregroundColor: ink,
-                            minimumSize: const Size(0, 44),
+                            minimumSize: const Size(double.infinity, 44),
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 18,
