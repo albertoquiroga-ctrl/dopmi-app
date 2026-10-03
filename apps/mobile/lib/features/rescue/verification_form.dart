@@ -47,7 +47,8 @@ class VerificationFormFrame extends StatelessWidget {
                         style: const TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 18,
-                          height: 1.55,
+                          height: 1.25,
+                          letterSpacing: -.36,
                           fontWeight: FontWeight.w700,
                           color: Color(0xff151423),
                         ),
