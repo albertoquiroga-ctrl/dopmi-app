@@ -1417,6 +1417,7 @@ class SettingsScreen extends ConsumerWidget {
           const RescuerSettingsVerification(),
           const RescuerSettingsModeSwitch(),
           const RescuerNavigationRow(
+            standardSettings: true,
             title: 'Centro de ayuda',
             icon: 'icon-help',
             path: '/help',
@@ -1437,6 +1438,7 @@ class SettingsScreen extends ConsumerWidget {
       rescuerSettings: true,
       children: [
         const RescuerNavigationRow(
+          standardSettings: true,
           title: 'Información básica',
           subtitle: 'Edita tu perfil y datos personales',
           icon: 'icon-user',
@@ -1445,6 +1447,7 @@ class SettingsScreen extends ConsumerWidget {
         if (ref.watch(guardianEnabledProvider)) ...[
           const SizedBox(height: 12),
           const RescuerNavigationRow(
+            standardSettings: true,
             title: 'Métodos de pago',
             subtitle: 'Administra tus tarjetas y métodos de pago',
             icon: 'icon-card',
@@ -1452,6 +1455,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           const RescuerNavigationRow(
+            standardSettings: true,
             title: 'Suscripción y pagos',
             subtitle: 'Consulta tu suscripción, pagos y facturación',
             icon: 'icon-billing',
@@ -1462,6 +1466,7 @@ class SettingsScreen extends ConsumerWidget {
         const _SettingsHeading('Ayuda'),
         const SizedBox(height: 12),
         const RescuerNavigationRow(
+          standardSettings: true,
           title: 'Centro de ayuda',
           icon: 'icon-help',
           path: '/help',
@@ -1472,6 +1477,7 @@ class SettingsScreen extends ConsumerWidget {
         const DonorSettingsModeSwitch(),
         const SizedBox(height: 12),
         const RescuerNavigationRow(
+          standardSettings: true,
           title: 'Historial de aportaciones',
           icon: 'icon-billing',
           path: '/payments',
@@ -1480,12 +1486,14 @@ class SettingsScreen extends ConsumerWidget {
         const SavedRescuersRow(referenceStyle: true),
         const SizedBox(height: 12),
         const RescuerNavigationRow(
+          standardSettings: true,
           title: 'Términos y privacidad',
           icon: 'icon-billing',
           path: '/terms',
         ),
         const SizedBox(height: 12),
         const RescuerNavigationRow(
+          standardSettings: true,
           title: 'Privacidad y eliminación',
           subtitle: 'Medición, accesos vinculados y eliminación de cuenta',
           icon: 'icon-shield',
@@ -1550,6 +1558,7 @@ class _DonorSettingsModeSwitchState
     children: [
       if (error != null) Notice(error!, isError: true),
       RescuerNavigationRow(
+        standardSettings: true,
         key: const ValueKey('donor-settings-mode-switch'),
         title: 'Cambiar tipo de cuenta',
         subtitle: 'Ir a cuenta Rescatista',

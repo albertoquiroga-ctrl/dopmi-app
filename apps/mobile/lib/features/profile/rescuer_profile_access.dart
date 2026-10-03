@@ -67,10 +67,12 @@ class RescuerNavigationRow extends StatefulWidget {
     this.onPressed,
     this.enabled = true,
     this.count,
+    this.standardSettings = false,
   });
   final String title, subtitle, icon, path;
   final VoidCallback? onPressed;
   final bool enabled;
+  final bool standardSettings;
   final int? count;
   @override
   State<RescuerNavigationRow> createState() => _RescuerNavigationRowState();
@@ -104,7 +106,11 @@ class _RescuerNavigationRowState extends State<RescuerNavigationRow> {
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(
-            color: hovered ? const Color(0xffd8d2ca) : const Color(0xffe3e4ed),
+            color: hovered
+                ? const Color(0xffd8d2ca)
+                : widget.standardSettings
+                ? const Color(0xffe6e2dd)
+                : const Color(0xffe3e4ed),
           ),
           borderRadius: BorderRadius.circular(20),
         ),
@@ -164,25 +170,29 @@ class _RescuerNavigationRowState extends State<RescuerNavigationRow> {
                         children: [
                           Text(
                             widget.title,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              height: 1.2,
+                              height: widget.standardSettings ? 1.25 : 1.2,
                               letterSpacing: 0,
-                              color: Color(0xff151423),
+                              color: widget.standardSettings
+                                  ? const Color(0xff15110d)
+                                  : const Color(0xff151423),
                             ),
                           ),
                           if (widget.subtitle.isNotEmpty) ...[
                             const SizedBox(height: 2),
                             Text(
                               widget.subtitle,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontFamily: 'Inter',
                                 fontSize: 12,
-                                height: 1.4,
+                                height: widget.standardSettings ? 1.25 : 1.4,
                                 letterSpacing: 0,
-                                color: Color(0xff4f4e5c),
+                                color: widget.standardSettings
+                                    ? const Color(0xff554e48)
+                                    : const Color(0xff4f4e5c),
                               ),
                             ),
                           ],
@@ -193,10 +203,12 @@ class _RescuerNavigationRowState extends State<RescuerNavigationRow> {
                       const SizedBox(width: 8),
                       Text(
                         '${widget.count}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 12,
-                          color: Color(0xff4f4e5c),
+                          color: widget.standardSettings
+                              ? const Color(0xff554e48)
+                              : const Color(0xff4f4e5c),
                         ),
                       ),
                     ],

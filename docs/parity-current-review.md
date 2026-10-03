@@ -1,3 +1,7 @@
+# Corte vigente — loop445
+
+Filas donor Configuración igualan Source444 en y88/170/264 y alturas70/82/82, con paleta común scoped.19 pruebas pasan6s; capture con asserts geométricos pasa3s; analyzer producción limpio20.9s. Composición rescuer, encabezado/píxeles y aceptación física pendientes. Codemagic sólo objetivo completo.
+
 # Corte vigente — loop444
 
 Configuración: etiquetas pago/suscripción actualizadas ambos modos y encabezados donor18/1.3/15110d medidos Source.19 pruebas pasan7s; analyzer limpio55.9s. Composición/row/paleta rescuer y aceptación física continúan pendientes. Full562/443 previo444. Codemagic sólo objetivo completo.

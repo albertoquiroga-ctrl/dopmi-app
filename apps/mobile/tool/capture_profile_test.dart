@@ -2800,6 +2800,14 @@ void main() {
             }
           }
         }
+        if (spec.$1 == 'profile-settings') {
+          final rows = find.byType(RescuerNavigationRow);
+          for (var i = 0; i < 3; i++) {
+            final card = tester.getRect(rows.at(i));
+            expect(card.top, closeTo([88.0, 170.0, 264.0][i], .1));
+            expect(card.height, closeTo([70.0, 82.0, 82.0][i], .1));
+          }
+        }
         if (spec.$1.startsWith('profile-settings-footer')) {
           await tester.scrollUntilVisible(
             find.text('Cerrar sesión'),
