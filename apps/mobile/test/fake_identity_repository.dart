@@ -10,6 +10,8 @@ class FakeIdentityRepository implements IdentityRepository {
   bool pending = false;
   bool failSave = false;
   bool failLoad = false;
+  AccountNames? accountNames;
+  int accountNameLoads = 0;
   int signupCount = 0, passwordUpdates = 0, loads = 0, consentCount = 0;
   String? signupIntent;
   Profile profile = const Profile(
@@ -114,6 +116,30 @@ class FakeIdentityRepository implements IdentityRepository {
       privacyVersion: profile.privacyVersion,
       adultConfirmed: profile.adultConfirmed,
     );
+  }
+
+  @override
+  Future<AccountNames> loadAccountNames() async {
+    accountNameLoads++;
+    if (failLoad) throw StateError('network_unavailable');
+    final value = profileResult != null ? await profileResult! : profile;
+    return accountNames ?? AccountNames(value.name, '', saved: false);
+  }
+
+  @override
+  Future<Profile> saveAccountNames({
+    required String firstName,
+    required String lastName,
+    required String phone,
+    required String city,
+  }) async {
+    final result = await saveProfile(
+      name: '${firstName.trim()} ${lastName.trim()}'.trim(),
+      phone: phone.trim(),
+      city: city.trim(),
+    );
+    accountNames = AccountNames(firstName.trim(), lastName.trim(), saved: true);
+    return result;
   }
 
   @override

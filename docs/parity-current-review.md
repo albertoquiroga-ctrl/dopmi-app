@@ -28,6 +28,11 @@ contraste completo, cámara/gestos y aceptación instalada siguen pendientes.
 Este corte no es un conteo final de pantallas aceptadas.
 Loops270/271 ajustan encabezado y formulario real de Información básica;
 foto, apellidos separados, cambio de correo y medición exacta siguen pendientes.
+Loops306–307 implementan contrato SQL local privado y campos de nombre/apellido
+explícitos en Información básica. Móvil guarda por RPC nueva y preserva borradores
+tras fallo; captura normal/grande/teclado y 38 pruebas cliente aprobadas. Migración
+todavía sin desplegar: no es aceptación de persistencia remota. Foto personal,
+cambio de email confirmado y composición completa de esta ruta siguen pendientes.
 Codemagic intermedio autorizado por el titular: build `6ac02cc4554e6c4660850bf2`,
 workflow `android-guardian-internal`, SHA `2c36339a6961755e7b0a37e189f8c1fa9b791e17`.
 GET confirmó `finished`; análisis, pruebas, bundle firmado y publicación success.

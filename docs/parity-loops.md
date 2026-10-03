@@ -2641,3 +2641,26 @@ incorrecta (Cuenta no disponible vs guard Cuenta activa y confirmada requerida):
 ajustada prueba, no guarda. Dirigida aprobada2.3s, gate437/437 aprobado27.4s.
 Faltan RPC remotas, servicio/UI móvil, foto privada y cambio email confirmado;
 no simulaciones ni nuevo Codemagic. Objetivo completo sigue pendiente.
+
+# Loop307 — campos reales de nombre y apellido en móvil
+
+Referencia remota a3c969cd9103fd46dc5cd886999912526ce75efb sin cambios.
+IdentityRepository incluye AccountNames/load/save por RPC privada nueva; payload
+first/last/phone/city trim, dueño/sesión comparados tras respuesta y profile.id
+verificado. BasicInfo carga campos explícitos, valida suma80 y conserva todo el
+borrador/error/retry; nombre compuesto existente permanece íntegro hasta edición.
+Fakes centralizados sólo en tests actualizados; no fallback simulado en producción.
+
+38 pruebas identidad/widgets/experiencia iniciales aprobadas9s y capturador de
+BasicInfo normal/grande/teclado aprobado3s. Revisión detectó riesgo de regresión:
+getter privado rechaza suspensión; pantalla ahora conserva perfil leído como
+readonly sin llamar getter privado. Prueba adicional verifica cuenta suspendida,
+0cargas de partes y guardar deshabilitado. Repetición final39/39 aprobada8s.
+Analyze primero dos avisos de llaves: corregidos; final limpio7.5s, diff-check sin
+errores. Current-review actualizado. Nombre/apellido en captura normal inspeccionados.
+
+RPC todavía no aplicada remotamente; no persistencia Auth/REST ni dispositivo
+acreditados. Siguiente bloque despliegue DEV verificado y foto privada/confirmación
+email/composición pendiente. Atajos históricos todavía presentes abajo: retirarlos
+de esta composición preservando accesos Perfil/Configuración al cerrar familia.
+No dinero real ni nuevo Codemagic; cambios concurrentes intactos.

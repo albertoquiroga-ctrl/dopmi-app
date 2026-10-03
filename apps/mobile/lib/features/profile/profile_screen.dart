@@ -18,6 +18,7 @@ class BasicInfoScreen extends ConsumerStatefulWidget {
 class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
   final form = GlobalKey<FormState>();
   final name = TextEditingController(),
+      lastName = TextEditingController(),
       phone = TextEditingController(),
       city = TextEditingController();
   Profile? profile;
@@ -33,6 +34,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
   @override
   void dispose() {
     name.dispose();
+    lastName.dispose();
     phone.dispose();
     city.dispose();
     super.dispose();
@@ -45,11 +47,15 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
     });
     try {
       final result = await ref.read(identityRepositoryProvider).loadProfile();
+      final names = result.status == 'active'
+          ? await ref.read(identityRepositoryProvider).loadAccountNames()
+          : AccountNames(result.name, '', saved: false);
       if (mounted) {
         ref.read(experienceProvider).applyProfile(result);
         setState(() {
           profile = result;
-          name.text = result.name;
+          name.text = names.firstName;
+          lastName.text = names.lastName;
           phone.text = result.phone;
           city.text = result.city;
           mode = result.mode;
@@ -83,7 +89,12 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
     await perform(() async {
       final result = await ref
           .read(identityRepositoryProvider)
-          .saveProfile(name: name.text, phone: phone.text, city: city.text);
+          .saveAccountNames(
+            firstName: name.text,
+            lastName: lastName.text,
+            phone: phone.text,
+            city: city.text,
+          );
       if (mounted) {
         ref.read(experienceProvider).applyProfile(result);
         setState(() {
@@ -168,6 +179,24 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
                         decoration: const InputDecoration(counterText: ''),
                         validator: (value) => (value ?? '').trim().isEmpty
                             ? 'Escribe tu nombre.'
+                            : null,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _BasicInfoField(
+                      label: 'Apellido',
+                      child: TextFormField(
+                        controller: lastName,
+                        enabled: !suspended && !busy,
+                        maxLength: 80,
+                        textCapitalization: TextCapitalization.words,
+                        decoration: const InputDecoration(counterText: ''),
+                        validator: (_) =>
+                            '${name.text.trim()} ${lastName.text.trim()}'
+                                    .trim()
+                                    .length >
+                                80
+                            ? 'El nombre y apellido deben sumar hasta 80 caracteres.'
                             : null,
                       ),
                     ),

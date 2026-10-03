@@ -25,6 +25,17 @@ class IdentityEvent {
   final bool recovery, signedOut;
 }
 
+class AccountNames {
+  const AccountNames(this.firstName, this.lastName, {required this.saved});
+  final String firstName, lastName;
+  final bool saved;
+  factory AccountNames.fromJson(Map<String, dynamic> json) => AccountNames(
+    json['first_name'] as String,
+    json['last_name'] as String,
+    saved: json['name_parts_saved'] as bool,
+  );
+}
+
 class Profile {
   const Profile({
     required this.id,
@@ -79,6 +90,13 @@ abstract class IdentityRepository {
   Future<void> oauth(String provider);
   Future<void> linkProvider(String provider);
   Future<Profile> loadProfile();
+  Future<AccountNames> loadAccountNames();
+  Future<Profile> saveAccountNames({
+    required String firstName,
+    required String lastName,
+    required String phone,
+    required String city,
+  });
   Future<Profile> setExperience(String mode);
   Future<Profile> saveProfile({
     required String name,
@@ -325,6 +343,45 @@ class SupabaseIdentityRepository implements IdentityRepository {
         .select()
         .single();
     return Profile.fromJson(result);
+  }
+
+  @override
+  Future<AccountNames> loadAccountNames() async {
+    final owner = client.auth.currentUser?.id;
+    if (owner == null) throw StateError('profile_owner_changed');
+    final result = await client.rpc('dopmi_my_account_names');
+    if (client.auth.currentUser?.id != owner) {
+      throw StateError('profile_owner_changed');
+    }
+    return AccountNames.fromJson(Map<String, dynamic>.from(result as Map));
+  }
+
+  @override
+  Future<Profile> saveAccountNames({
+    required String firstName,
+    required String lastName,
+    required String phone,
+    required String city,
+  }) async {
+    final owner = client.auth.currentUser?.id;
+    if (owner == null) throw StateError('profile_owner_changed');
+    final result = await client.rpc(
+      'dopmi_save_account_names',
+      params: {
+        'payload': {
+          'first_name': firstName.trim(),
+          'last_name': lastName.trim(),
+          'phone': phone.trim(),
+          'city': city.trim(),
+        },
+      },
+    );
+    if (client.auth.currentUser?.id != owner) {
+      throw StateError('profile_owner_changed');
+    }
+    final profile = Profile.fromJson(Map<String, dynamic>.from(result as Map));
+    if (profile.id != owner) throw StateError('profile_owner_changed');
+    return profile;
   }
 
   @override

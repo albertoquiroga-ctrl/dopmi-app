@@ -244,6 +244,47 @@ void main() {
     expect(find.text('Ana editada'), findsNothing);
   });
   testWidgets(
+    'suspended basic info stays read-only without querying guarded private name parts',
+    (tester) async {
+      final repo = FakeIdentityRepository()
+        ..user = const Identity('one', 'ana@example.test', verified: true)
+        ..profile = const Profile(
+          id: 'one',
+          name: 'Ana María López',
+          phone: '',
+          city: '',
+          mode: 'donor',
+          intent: 'adopt',
+          status: 'suspended',
+          termsVersion: currentTermsVersion,
+          privacyVersion: currentPrivacyVersion,
+          adultConfirmed: true,
+        );
+      await start(tester, repo);
+      expect(find.textContaining('Tu cuenta está suspendida'), findsOneWidget);
+      expect(repo.accountNameLoads, 0);
+      expect(
+        tester
+            .widget<TextFormField>(find.byType(TextFormField).first)
+            .controller!
+            .text,
+        'Ana María López',
+      );
+      expect(
+        tester.widget<TextFormField>(find.byType(TextFormField).first).enabled,
+        isFalse,
+      );
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.widgetWithText(FilledButton, 'Guardar cambios'),
+            )
+            .onPressed,
+        isNull,
+      );
+    },
+  );
+  testWidgets(
     'basic info preserves all edits through the large keyboard and retry',
     (tester) async {
       final repo = FakeIdentityRepository()
@@ -258,7 +299,8 @@ void main() {
       await tester.pumpAndSettle();
       final fields = find.byType(TextFormField);
       final values = [
-        'Ana María López',
+        'Ana María',
+        'López García',
         '5512345678',
         'Ciudad de México, CDMX',
       ];
@@ -287,9 +329,11 @@ void main() {
       expect(tester.getBottomRight(save).dy, lessThanOrEqualTo(340));
       await tester.tap(save);
       await tester.pumpAndSettle();
-      expect(repo.profile.name, values[0]);
-      expect(repo.profile.phone, values[1]);
-      expect(repo.profile.city, values[2]);
+      expect(repo.profile.name, '${values[0]} ${values[1]}');
+      expect(repo.accountNames!.firstName, values[0]);
+      expect(repo.accountNames!.lastName, values[1]);
+      expect(repo.profile.phone, values[2]);
+      expect(repo.profile.city, values[3]);
       expect(repo.user!.email, 'ana@example.test');
       expect(tester.takeException(), isNull);
     },
