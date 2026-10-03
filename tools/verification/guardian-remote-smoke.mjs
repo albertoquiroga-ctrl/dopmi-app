@@ -38,6 +38,8 @@ await probe('/functions/v1/payment-return', { method: 'GET', status: 200, inspec
   assert.equal(response.headers.get('x-content-type-options'), 'nosniff');
   const text = await response.text();
   assert.ok(text.includes('Cuenta > Mi plan Guardián'));
+  assert.ok(text.includes('Perfil > Métodos de pago'));
+  assert.ok(text.includes('Guardar una tarjeta no genera un cobro ni activa Guardián'));
   assert.ok(text.includes('Esta pantalla no confirma un pago'));
   assert.ok(text.includes('No inicies otro pago'));
   assert.ok(!/<[a-z!]/i.test(text), 'Return instructions must be readable without HTML rendering');

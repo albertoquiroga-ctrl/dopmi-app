@@ -1,3 +1,11 @@
+# Corte vigente — loops371–372, 3/10/2026
+
+Alta independiente: Auth sintético+Checkout hosted Stripe test real confirmado por SQL/endpoint/reader, replay estable, tarjeta4242 sin default y cero cargos/facturas/suscripciones; fixture completamente limpio. Retorno10DEV verificado por cuerpo y smoke21, añade instrucción Métodos. Browsercontrolado rechaza texto plano incluso local sin sandbox, HTML equivalente con sandbox funciona; no causa exacta ni aceptación visual instalada demostrada, protecciones intactas.
+
+Default/remove sinGuardian, billeteras, apoyo puntual con tarjetas, composiciónSource y matriz completa de pantallas/animaciones/gestos siguen pendientes. Móvil504/359 antecede cambios posteriores;58dirigidas370/analyze y backend503/368 tienen alcance separado. Codemagic sólo candidato final. Objetivo no completo.
+
+## Corte370 anterior
+
 # Corte vigente — loop370, 3/10/2026
 
 Fuente Irlanda a3c969c sin cambios; servidoraltaindependiente369 DEV migraciones65211/65233 y cliente18/worker25/webhook25 verificados (21smoke/overlays0dif). Cliente370 agrega consentimiento/keyownerpersistida/retorno/listafresh antes de éxito,58dirigidas11s/analyze limpio19.1s/capturas4normal200%,320estados/37URLs. AuthCheckoutpositivo/Stripe real de este alta y revisióninstalada siguen pendientes. Default/remove sinGuardian y apoyo puntual usando cardguardada aún abiertos; billeteras ausentes y enlacesauxiliares fuera de composiciónSource requieren cierre.
