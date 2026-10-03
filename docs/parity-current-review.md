@@ -1,4 +1,10 @@
-# Corte vigente — loop501, 3/10/2026
+# Corte vigente — loop506, 3/10/2026
+
+Fuentec1e18561e4717c5dacd13eaf3437b07630bb8170: full608/608,3m49s,49826exit0.230Dart y SVGwallet coinciden raíz/scratch y hashes sin cambios durante ejecución. Incluye503/504 y degradado/SVG505. Analyzer505clean36.1s misma producción antes únicamente de precargaSVG del capturador; config16/16 de501 sin cambio de configuración. Supersede607500.
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb runtime506 confirmó146/radio28/padding20/icon20; guardado en source-wallet.json. Capturador401492 anterior493/499/505; no401aceptaciones. Falta contraste global/Android físico/StripeSDK. Sin push/Codemagic hasta objetivo completo.
+
+# Corte anterior — loop501, 3/10/2026
 
 Fuente8270386d3b531907d4618ebd4358ebd221a88146: full607/607,3m54s,16280exit0; analyzer72747exit0sinincidencias; config16/16.229Dart raíz/scratch coinciden y no cambiaron durante ejecución. Incluye entrada493, filtros495, regreso496, curvas497/498, Nuevo499 y hitarea500. Supersede601493.
 
