@@ -1,3 +1,11 @@
+# Estado vigente — loop362
+
+Lectura propietaria y selección predeterminada están desplegadas en DEV (351–357); cliente353/358 y recuperación360 implementados. Servicio selección real en fixture cero361 confirmó calendario y recuperación sin segundo update, sin Auth/SQL integrados. Eliminación segura implementada en servidor local20db360:475pruebas backend aprobadas22.44s, Deno limpio, aún sin migración/Edge remotos ni icono cliente. No interpretar el inventario350 siguiente como estado actual.
+
+Pendientes: despliegue de eliminación en todos sus consumidores, trash Source/confirmación/reintento/200% con respuesta real; alta independiente para no suscritos y guardado sin cambiar el medio activo; capacidades reales de billeteras; aceptación autenticada/instalada. Dinero test-only, sin legado/CM/push intermedios.
+
+## Auditoría histórica350
+
 # Métodos de pago: brecha real, loop350
 
 Referencia irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb.
