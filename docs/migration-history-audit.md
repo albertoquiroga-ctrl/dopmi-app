@@ -241,3 +241,23 @@ Nueva RPC pública dopmi_rescuer_public_metrics(uuid): nueve totales, guardada p
 
 Reproducción completa tools/verification npm test428/428 exit0 (25.8s), prueba nueva con neto9200, historial publicado/archivado, borrador excluido, vinculación y revocación por suspensión. Prueba remota con SET LOCAL ROLE anon: perfil público devuelve9claves agregadas, sin claves privadas; perfil inexistente devuelveNULL. Grants anon/authenticated comprobados. No acepta dispositivo, UI o cobros reales; PROD no se tocó.
 
+
+## 2/10/2026 — adjuntos privados de soporte (loop300)
+
+Migración local20261002234156_private_support_media.sql aplicada una vez por MCP
+al DEVohqxranynackjignryep como20261003000209/private_support_media. Preflight
+verificó último antecedente20261002233059, ausencia de bucket/columna/helper,
+RLS Storage activo y guards actor/admin con mismos MD5b9044d4aaca74210a2f32273f2d894a2/
+cff9cb1931895a7d0c04a8c0743ac7a7. No db push, replay, repair ni renombrado.
+
+Cuatro cuerpos SQL remotos comparados normalizando espacios con archivo local:
+coinciden. SECURITY DEFINER/search_path vacío en los cuatro; RPCs de solicitud
+anonEXECUTE=false/authenticated=true. Helper público anonEXECUTE=true requerido
+por política restrictiva y devuelvefalse sin actor, comprobado con ruta sintética.
+Bucket privado5MB/JPEG y siete políticas select/insert/delete restrictivas y
+update siempre denegado verificadas. Submit y bandeja rechazan42501 sin actor
+por ejecución remota en rollback; no se crearon solicitudes/objetos reales.
+
+SQL local tenía gate completo436/436 aprobado loop296. Esta verificación remota
+no equivale a Auth/REST/Storage real ni selección Android; falta ese recorrido.
+PROD no consultado/modificado, no dinero real, legado no tocado ni Codemagic.

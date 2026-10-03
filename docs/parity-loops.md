@@ -2525,3 +2525,15 @@ Una prueba nueva verifica fallo inicial y reintento firmado sin exponer ruta com
 URL pública. Admin27/27 pruebas aprobadas28.51s y build TypeScript/Vite aprobado.
 No publicación del panel/Storage real ni aceptación visual remota; soporte media
 sigue pendiente de despliegue preflight. No nuevo Codemagic.
+
+# Loop300 — adjuntos de soporte desplegados en DEV
+
+Referencia a3c969cd9103fd46dc5cd886999912526ce75efb vigente loop299/300.
+Preflight y aplicación única migration20261003000209/private_support_media en
+DEV: cuerpos cuatro funciones coinciden con SQL local, bucket privado5MB/JPEG,
+siete políticas y ACL verificadas. Prueba SQL remota sin actor rechaza RPCs y
+helper niega ruta sintética; transacción rollback sin datos nuevos. Historial
+correspondencia local20261002234156 documentado, sin reparar/replay/rename.
+No verifica carga Storage/AuthREST/dispositivo/panel publicado. Siguiente cierre
+real: recorrido autenticado de adjunto y retención de objetos; después retomar
+familias visuales pendientes. No Codemagic nuevo hasta objetivo completo.
