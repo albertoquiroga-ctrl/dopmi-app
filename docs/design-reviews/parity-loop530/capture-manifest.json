@@ -1,0 +1,102 @@
+{
+  "commit": "037754f1f81070aa021e9781329a7cb8540af93e",
+  "source": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "fixtures": [
+    {
+      "name": "expense-dialog-large.png",
+      "sha256": "1ae68d1f63fd0b18e6d37d58d19a8d4ca7291b33a4b4c2aa86baa2f811785c82",
+      "mtime": 1791071159.503231
+    },
+    {
+      "name": "expense-dialog.png",
+      "sha256": "c75897956886f4e13042686d786ca1d191b65e50d19cef6870f4e37f04285ae7",
+      "mtime": 1791071159.1073973
+    },
+    {
+      "name": "expense-evidence-large.png",
+      "sha256": "2a02a93b3fb8ae8304b3bb299f76f4de6d7a29546d3cf94e3e90e1adfe041005",
+      "mtime": 1791071160.3691056
+    },
+    {
+      "name": "expense-evidence.png",
+      "sha256": "6ec6a69fea9238899131ee4dea96d9e9f6b96645664821d8c9777f4b719c766d",
+      "mtime": 1791071159.9292364
+    },
+    {
+      "name": "expense-information-large.png",
+      "sha256": "5231717781d179904b8986a7587c8977eef4215a7a9f0425561cb8b946e59577",
+      "mtime": 1791071161.4043157
+    },
+    {
+      "name": "expense-information.png",
+      "sha256": "9b92d21312bdcc2c83238ac7cd600af06cbedb303c04e76e651a8b1959755458",
+      "mtime": 1791071160.89929
+    },
+    {
+      "name": "expense-private-large.png",
+      "sha256": "764315e8aaa019c4bc1310b85d648ac7b531f28afcde151b749d6216e3a712f2",
+      "mtime": 1791071162.4609685
+    },
+    {
+      "name": "expense-private.png",
+      "sha256": "781eb905a4a068a633d89482a5a0aabc1409c6e4eaf10570ff4fcc7309ce32ba",
+      "mtime": 1791071161.9439657
+    },
+    {
+      "name": "expense-record-large.png",
+      "sha256": "659773094bc561f633ea19b57e2f16e7afbe793f00ee5ab1d673658bfcf0b846",
+      "mtime": 1791071156.3683848
+    },
+    {
+      "name": "expense-record.png",
+      "sha256": "519b57da569345f0235223b419ac61496e76b5a178783af9c2c44ff17042878f",
+      "mtime": 1791071155.9053848
+    },
+    {
+      "name": "expense-review-large.png",
+      "sha256": "f8d01553290d3d598ebb534d2f4a4a9b0ca29872ef8199c375b3ca9bcabfb7d8",
+      "mtime": 1791071157.588631
+    },
+    {
+      "name": "expense-review-private-large.png",
+      "sha256": "ac1486e3fff4c1fd19f8d509c6ccae8b5570fc5a0360d8ab2e1098029af1d817",
+      "mtime": 1791071158.690683
+    },
+    {
+      "name": "expense-review-private.png",
+      "sha256": "a608d96c62bca90d712938b09861ded30ab737d51fc6dd37e3fd040b7b30ae8f",
+      "mtime": 1791071158.1482573
+    },
+    {
+      "name": "expense-review.png",
+      "sha256": "2944050d8d4ee006d366d8346c63406debe2766dc93c48c0e3249c6b7faa6999",
+      "mtime": 1791071157.0153856
+    },
+    {
+      "name": "expense-submitted-footer-large.png",
+      "sha256": "7e942da6c99310f151b051962862a06a7ad93b6d611c42ea5d773503deed99d0",
+      "mtime": 1791071155.4693296
+    },
+    {
+      "name": "expense-submitted-large.png",
+      "sha256": "4ed23b61df06fe17ef91e3969231e2aecfc0ccd6f682a815294bdb255e5f1e1b",
+      "mtime": 1791071154.7512507
+    },
+    {
+      "name": "expense-submitted.png",
+      "sha256": "d19dd45b6be1c5d8436d74c220f09dec2b81e75d907f03694eb0023b3f3db58e",
+      "mtime": 1791071153.8992481
+    }
+  ],
+  "test": {
+    "session": 8171,
+    "exit": 0,
+    "passed": 13,
+    "seconds": 12
+  },
+  "analyze": {
+    "session": 72340,
+    "exit": 0,
+    "seconds": 31.5
+  }
+}
