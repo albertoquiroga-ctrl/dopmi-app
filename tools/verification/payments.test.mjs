@@ -6,6 +6,7 @@ import { createHmac } from 'node:crypto';
 import { verifySignature, requireTestKey, paymentService, stripeApi } from '../../supabase/functions/_shared/payments.mjs';
 import { savedCardService, savedCardConsentVersion } from '../../supabase/functions/_shared/saved-card.mjs';
 import { savedCardMethodService } from '../../supabase/functions/_shared/saved-card-method.mjs';
+import { registerNativeWalletSqlCases } from './native-wallet-sql-cases.mjs';
 
 let db;
 const donor = '70000000-0000-4000-8000-000000000001';
@@ -4185,3 +4186,5 @@ for (const action of ['default','remove']) {
   assert.equal((await db.query('select count(*)::int n from dopmi_donations')).rows[0].n,0);
  });
 }
+
+registerNativeWalletSqlCases({getDb:()=>db,donor,other,staff,key,role,rejected,savedCardRpc,savedCardInput,savedCardReturn,savedCardFixture,independentMethod,activationRpc,guardianConsentVersion,methodFixture});

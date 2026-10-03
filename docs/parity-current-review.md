@@ -1,3 +1,11 @@
+# Corte vigente — loop384, 3/10/2026
+
+SQL local de billeteras preparado: wallet/provider inmutables, SetupIntent único, permiso service_role/ownreceipt, separación Checkout/nativo, lease liberado rechazado, native_ready revalida identidad/customer/deadline/conflictos y guards bidireccionales Guardian.11casos nuevos PostgreSQL incluyen2integraciones SQL+Stripefake; backend549/54925.75s. NO migración/endpoint/worker/app desplegados ni billetera real acreditada. Sigue integración y preflight remoto antesde aplicar90000una vez.
+
+Dockerdaemon no disponible; no pgTAPnuevo. ConfigPK/MerchantID pendiente, servidor independiente sigue. Móvil538/381 y324capturas/37URLs sin nuevas. Default/remove AuthStripe382/altaCheckout371 separados; siguenwallets/uso tarjeta en apoyo/Guardian cancelado/matrizglobal visual-motion-gestos-instalación. Fuentea3c969c/dinero test-only; Codemagic sólo al terminar todo.
+
+## Corte383 anterior
+
 # Corte vigente — loop383, 3/10/2026
 
 Base de billeteras nativas sin cobro preparada, aún no integrada: SetupIntent propietario/provider real, idempotencia, primera billetera/customer compartido, vencimiento/carrera y secret condicionado a autorización SQL futura.12tests nuevos; backend538/53822.37s y Deno módulo válido. SQL/native_ready/endpoint/runtime/móvil/dispositivo pendientes, no billetera real acreditada. Config MerchantID/PK test preguntada sin credenciales; continuar servidor mientras se aclara.
