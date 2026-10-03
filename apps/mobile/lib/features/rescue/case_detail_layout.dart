@@ -241,6 +241,7 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                               overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
                                                 fontFamily: 'Inter',
+                                                letterSpacing: 0,
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.w600,
                                                 color: ink,
@@ -256,6 +257,7 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                               rescuer.characters.first,
                                               style: const TextStyle(
                                                 fontFamily: 'Inter',
+                                                letterSpacing: 0,
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w700,
                                               ),
@@ -316,6 +318,7 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                       record.title,
                                       style: const TextStyle(
                                         fontFamily: 'Inter',
+                                        letterSpacing: -.56,
                                         fontSize: 28,
                                         fontWeight: FontWeight.w700,
                                         height: 1.15,
@@ -339,6 +342,7 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                               location,
                                               style: const TextStyle(
                                                 fontFamily: 'Inter',
+                                                letterSpacing: 0,
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.w600,
                                                 color: Color(0xff6b5000),
@@ -361,6 +365,7 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                             'Rescatista verificado',
                                             style: TextStyle(
                                               fontFamily: 'Inter',
+                                              letterSpacing: 0,
                                               fontSize: 12,
                                               fontWeight: FontWeight.w500,
                                               color: muted,
@@ -458,6 +463,7 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                       category,
                                       style: const TextStyle(
                                         fontFamily: 'Inter',
+                                        letterSpacing: 0,
                                         fontSize: 13,
                                         fontWeight: FontWeight.w600,
                                         height: 1.1,
@@ -473,6 +479,7 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                             'Mi historia',
                             style: TextStyle(
                               fontFamily: 'Inter',
+                              letterSpacing: 0,
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
                               height: 1.3,
@@ -487,6 +494,7 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                 as String,
                             style: const TextStyle(
                               fontFamily: 'Inter',
+                              letterSpacing: 0,
                               fontSize: 14,
                               height: 1.55,
                               color: muted,
@@ -497,6 +505,7 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                             'Ayúdame a recuperar:',
                             style: TextStyle(
                               fontFamily: 'Inter',
+                              letterSpacing: 0,
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
                               height: 1.3,
@@ -556,6 +565,7 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                 padding: EdgeInsets.zero,
                                 textStyle: const TextStyle(
                                   fontFamily: 'Inter',
+                                  letterSpacing: 0,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -624,6 +634,7 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                       shape: const StadiumBorder(),
                       textStyle: const TextStyle(
                         fontFamily: 'Inter',
+                        letterSpacing: 0,
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                       ),
@@ -695,6 +706,7 @@ class _CaseFundingStat extends StatelessWidget {
                   _amount(cents),
                   style: const TextStyle(
                     fontFamily: 'Inter',
+                    letterSpacing: 0,
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     height: 1.1,
@@ -705,6 +717,7 @@ class _CaseFundingStat extends StatelessWidget {
                   label,
                   style: const TextStyle(
                     fontFamily: 'Inter',
+                    letterSpacing: 0,
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
                     color: muted,

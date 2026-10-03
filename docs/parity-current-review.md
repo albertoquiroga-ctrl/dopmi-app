@@ -1,3 +1,9 @@
+# Corte vigente — loop405, 3/10/2026
+
+Sourcecaso renderizadoEdge377x852 actual/fonts.ready ymedidasCSS; Fluttercase fija letterSpacing0/título-.56. Capturasnuevas Source/top/200 revisadas, capturadorcase-detail pasa/analyzer limpio46.5s. No identidadpixelglobal/Source200 nuevo/device; configSDKreal/matrizglobal/finalacceptance siguen pendientes. Full558404 antecede sólocambioespaciado. Codemagic únicamenteobjetivo completo.
+
+## Corte404 anterior
+
 # Corte vigente — loop404, 3/10/2026
 
 Fullmobile558/558 sobre65ffc3145b40a71f794e2aef1e673fbbc64da390 pasa3m59s;223Dart lib/test scratchnormalizados idénticos. Analyzer403 mismo código limpio. Regresión técnica no aceptaciónvisualglobal/Androidinstalado; configSDKreal/matrizglobal/device/finalgates siguen pendientes. Codemagic sóloobjetivo completo. Próximo comparaciónrenderizada por familias frenteSource vigente, sin rehacer flujos aceptados.
