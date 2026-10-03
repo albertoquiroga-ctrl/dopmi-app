@@ -10,13 +10,16 @@ export function guardianMethodListService({ stripe, lookup }) {
     const link = await lookup(actor);
     if (!link) return { items: [] };
     if (!/^cus_[A-Za-z0-9]+$/.test(link.customer_id ?? '') ||
-        !/^sub_[A-Za-z0-9]+$/.test(link.subscription_id ?? '')) fail();
+        (link.subscription_id != null && !/^sub_[A-Za-z0-9]+$/.test(link.subscription_id))) fail();
     const customer = await stripe.customers.retrieve(link.customer_id);
     if (customer?.id !== link.customer_id || customer.deleted === true || customer.livemode !== false) fail();
-    const subscription = await stripe.subscriptions.retrieve(link.subscription_id);
-    if (subscription?.id !== link.subscription_id || subscription.livemode !== false ||
-        id(subscription.customer) !== link.customer_id) fail();
-    const defaultId = id(subscription.default_payment_method);
+    let defaultId = id(customer.invoice_settings?.default_payment_method);
+    if (link.subscription_id) {
+      const subscription = await stripe.subscriptions.retrieve(link.subscription_id);
+      if (subscription?.id !== link.subscription_id || subscription.livemode !== false ||
+          id(subscription.customer) !== link.customer_id) fail();
+      defaultId = id(subscription.default_payment_method);
+    }
     const items = [], seen = new Set();
     let cursor;
     for (let page = 0; page < 5; page++) {

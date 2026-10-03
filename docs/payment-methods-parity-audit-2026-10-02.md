@@ -1,3 +1,9 @@
+# Estado vigente — loop368, 3/10/2026
+
+Servidor local de alta independiente ahora incluye endpointallowlist, lookup de cliente nonsuscrito, reader real y runtime/cron/webhook. AltaGuardian comparte customer guardado y serializa solicitudes para evitar duplicar cliente.503/503 backend24.41s y Deno3entrypoints limpios. Migraciones70000/71000 y Edge NO desplegados aún; UIAgregar y aceptación Auth/Stripe real pendientes. Default/eliminación para cuentas sinGuardian todavía no implementados; billeteras y matrizglobal abiertas.
+
+## Corte367 anterior
+
 # Estado vigente — loop367, 3/10/2026
 
 Eliminación real aislada Stripe365 confirmada sin segundo detach/cobros y cleanup completo; Auth/SQL integrados siguen pendientes. Feedback366 implementado, confirmado por lista nueva y sin replay/histórico; toast2600ms, eliminación sin popup visual, anuncio accesible.44dirigidas y capturas/analyze documentados; commit29d37df.

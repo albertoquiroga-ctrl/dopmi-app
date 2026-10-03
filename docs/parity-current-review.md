@@ -1,3 +1,11 @@
+# Corte vigente — loop368, 3/10/2026
+
+Referencia Irlanda a3c969c sin cambios. Feedback366 commit29d37df y basealta367 f8ac9c2; integración368 local, no publicada. Último gatebackend503/50324.41s handle89380exit0, Deno3entrypoints limpio. Tarjetas: listado/default/eliminaciónGuardian desplegados hasta363; fixtureStripezero default361/remove365 y feedback366 con lista confirmada. Altaindependiente local endpoint/customercompartido/reader/worker/webhook requiere migraciones y EdgeDEV, cliente visual y aceptaciónreal. Default/remove sinGuardian y billeteras pendientes. No confundir base local con función instalada.
+
+Capturador316estados/37URLs al366; regresión móvil integral504/359 antecede360–368 y necesita gatefinal. Matriz de todas las familias, revisión runtime/gestos, soporteAuthadjunto/adminpositivo, correo confirmado, galeríaAndroid, reportecasoremoto y candidato instalado siguen abiertas. Ninguna aceptaciónIrlanda nueva. Codemagic/push sólo candidatofinal; objetivo completo conservado.
+
+## Corte359 anterior
+
 # Corte vigente — loop359, 2/10/2026
 
 Referencia remota a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada358. Código probado `0c4dbee7296f1606b13d88892866e858b84c662b`: **504/504 pruebas móviles aprobadas en3:45**, flutter test, handle2617 terminal exit0. Los210 archivos tracked lib/test coinciden con scratch normalizandoCRLF. Sin modificaciones durante el gate. Supersede494/342 y cubre cliente343–358, incluido listado real y selección predeterminada. Analyze limpio358; backend460/356 y despliegue357 conservan evidencia independiente. No CI nuevo, aceptación instalada ni mutación Stripe real autenticada acreditados por este gate.

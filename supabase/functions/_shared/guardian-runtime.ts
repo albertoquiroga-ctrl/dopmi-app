@@ -7,6 +7,7 @@ import { guardianScheduleService } from './guardian-schedule.mjs';
 import { guardianChangeService } from './guardian-changes.mjs';
 import { guardianMethodService } from './guardian-method.mjs';
 import { guardianMethodListService } from './guardian-method-list.mjs';
+import { savedCardService } from './saved-card.mjs';
 import { guardianRefundService } from './guardian-refunds.mjs';
 import { PaymentError, requireTestKey } from './payments.mjs';
 
@@ -63,11 +64,15 @@ export function guardianRuntime() {
     }, returnUrl: `${Deno.env.get('SUPABASE_URL')!}/functions/v1/payment-return`,
   });
   const methods = guardianMethodListService({ stripe, lookup: async (actor: string) => {
-    const result = await db.rpc('dopmi_guardian_method_owner_server', { target_actor: actor });
+    const result = await db.rpc('dopmi_saved_card_owner_server', { target_actor: actor });
     if (result.error) throw new PaymentError('guardian_methods_unavailable', 503);
     return result.data;
   } });
-  return { ...service, initial, schedule, collection, changes, method, methods, refunds,
+  const savedCard = savedCardService({ stripe,
+    rpc: (operation: string, data: unknown) => call('dopmi_saved_card_server', operation, data),
+    returnUrl: `${Deno.env.get('SUPABASE_URL')!}/functions/v1/payment-return`,
+  });
+  return { ...service, initial, schedule, collection, changes, method, methods, refunds, savedCard,
     async reconcile() {
       const activation = await initial.reconcile();
       const returns = Deno.env.get('DOPMI_GUARDIAN_REFUNDS_ENABLED') === 'true'
@@ -76,15 +81,17 @@ export function guardianRuntime() {
         ? await changes.reconcile() : { applied: 0, failed: 0 };
       const methods = Deno.env.get('DOPMI_GUARDIAN_CHANGES_ENABLED') === 'true'
         ? await method.reconcile() : { applied: 0, failed: 0 };
+      const savedCards = Deno.env.get('DOPMI_GUARDIAN_CHANGES_ENABLED') === 'true'
+        ? await savedCard.reconcile() : { saved: 0, failed: 0 };
       const monthly = Deno.env.get('DOPMI_GUARDIAN_COLLECTION_ENABLED') === 'true'
         ? await collection.reconcile() : { processed: 0, failed: 0 };
       const result = await service.reconcile();
       const calendar = Deno.env.get('DOPMI_GUARDIAN_SCHEDULE_ENABLED') === 'true'
         ? await schedule.reconcile() : { ready: 0, failed: 0 };
       return { ...result, initial_reconciled: activation.reconciled, schedules_ready: calendar.ready, monthly_processed: monthly.processed,
-        changes_applied: management.applied, methods_applied: methods.applied,
+        changes_applied: management.applied, methods_applied: methods.applied, cards_saved: savedCards.saved,
         refunds_reconciled: returns.reconciled,
-        failed: result.failed + activation.failed + calendar.failed + monthly.failed + management.failed + methods.failed + returns.failed };
+        failed: result.failed + activation.failed + calendar.failed + monthly.failed + management.failed + methods.failed + savedCards.failed + returns.failed };
     },
   };
 }

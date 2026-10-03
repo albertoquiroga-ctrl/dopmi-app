@@ -1473,3 +1473,6 @@ Loops365–366, 3/10/2026: Stripe test detach real una sola llamada con respuest
 
 
 Loop367, 3/10/2026: base local de alta de tarjeta independiente (sin cobro/cambioGuardian) en migración70000 y saved-card.mjs.19casos nuevos SQLPGlite/servicio; gatebackend494/49426.50s handle62271exit0, Node/Deno limpios. PreflightDEVlatest55326/tablasnuevasausentes; NO migración/deploy/Stripe real/CM/push. Pendiente conectar cliente compartido con altaGuardian para evitar doblecustomer, lectura nonsuscritos, endpoint/runtime/webhook/worker y UI/aceptaciónreal. No es función completa aún ni cierre de objetivo. Referencia a3c969c sin cambios; detalle parity-loops367.
+
+
+Loop368, 3/10/2026: integración LOCAL de alta independiente en endpoint/runtime/worker/webhook/reader nonsuscrito; migration71000 comparte/snapshotcustomer con nuevaaltaGuardian y bloquea dos altas simultáneas.503/503backend24.41s handle89380exit0 y Deno3entrypoints7.45s limpios. No migration70000/71000 ni EdgeDEV nuevos todavía; UI/capturas/fixtureAuthStripe y default/remove nonsuscrito/billeteras/matrizglobal pendientes. NoCM/push/goalcomplete. Siguiente preflight remoto/overlays; no interpretar gatelocal como publicación/aceptación instalada.

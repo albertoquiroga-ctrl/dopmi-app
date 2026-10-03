@@ -13,6 +13,7 @@ Deno.serve(guardianClientHandler({
   checkout: (actor: string, input: unknown) => guardianRuntime().initial.checkout(actor, input),
   defaultMethod: (actor: string, input: unknown) => guardianRuntime().method.checkout(actor, input),
   removeMethod: (actor: string, input: unknown) => guardianRuntime().method.checkout(actor, input),
+  addCard: (actor: string, input: unknown) => guardianRuntime().savedCard.checkout(actor, input),
   methods: (actor: string) => guardianRuntime().methods(actor),
   method: (actor: string, input: unknown) => guardianRuntime().method.checkout(actor, input),
 }));

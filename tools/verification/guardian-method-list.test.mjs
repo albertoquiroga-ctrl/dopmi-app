@@ -114,3 +114,25 @@ test('remove endpoint requires consent, opaque target and derives owner',async()
   assert.deepEqual(calls,[{actor:'owner',input:{key:body.key,revision:2,consent:true,
     consent_version:body.consent_version,selected_method_id:'pm_selected',remove_saved:true}}]);
 });
+
+
+test('saved cards without subscription require only confirmed customer and return its actual default',async()=>{
+  const f=fixture();f.state.link.subscription_id=null;
+  f.state.customer.invoice_settings={default_payment_method:'pm_one'};
+  assert.equal((await f.read('owner')).items[0].default,true);
+  assert.equal(f.calls.some(c=>c[0]==='subscription'),false);
+});
+
+test('independent add-card endpoint allows explicit saving consent only and derives its owner',async()=>{
+  const calls=[];
+  const handler=guardianClientHandler({enabled:()=>true,
+    authenticate:async()=>({id:'owner',email_confirmed_at:'fixture'}),
+    addCard:async(actor,input)=>{calls.push({actor,input});return{status:'pending'};}});
+  const body={action:'add_card',key:'77000000-0000-4000-8000-000000000001',consent:true,consent_version:'saved-cards-2026-10-03'};
+  for(const patch of [{consent:false},{consent_version:'guardian-2026-09-24'},{key:'bad'},
+    {customer_id:'cus_peer'},{owner_id:'peer'},{return_url:'https://evil.test'},{revision:1}])
+    assert.equal((await handler(request({...body,...patch}))).status,400);
+  assert.equal(calls.length,0);
+  assert.equal((await handler(request(body))).status,200);
+  assert.deepEqual(calls,[{actor:'owner',input:{key:body.key,consent:true,consent_version:body.consent_version}}]);
+});

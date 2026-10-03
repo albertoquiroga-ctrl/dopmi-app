@@ -4025,3 +4025,64 @@ test('new expired intent avoids provider writes and old uncertain creation stops
   assert.equal((await f.service().run(retry.id)).status,'attention');assert.equal(f.calls.length,0);
   await rejected(()=>f.prepare({key:'72000000-0000-4000-8000-000000000098'}),/pendiente/);
 });
+
+
+test('saved-card customer survives future Guardian activation without another customer or changed retry',async()=>{
+  const cards=savedCardFixture();await cards.service().checkout(donor,savedCardInput);cards.complete();await cards.service().checkout(donor,savedCardInput);
+  const f=initialFixture();f.stripe.customers={retrieve:async id=>({id,livemode:false})};
+  const create=f.stripe.checkout.sessions.create;
+  f.stripe.checkout.sessions.create=async(fields,options)=>{
+    await create(fields,options);
+    const session=[...f.sessions.values()][0];session.customer=fields.customer;
+    return structuredClone(session);
+  };
+  const result=await f.initial.checkout(donor,initialInput);
+  const activation=await activationRpc('get',{cycle_id:result.cycle_id});
+  assert.equal(activation.saved_customer_id,'cus_savedCard');
+  assert.equal(f.creations[0].fields.customer,'cus_savedCard');
+  assert.equal(f.creations[0].fields.customer_creation,undefined);
+  assert.deepEqual(await f.initial.checkout(donor,initialInput),result);
+  Object.assign(f.intent,{customer:'cus_savedCard'});f.charge.customer='cus_savedCard';f.paid();
+  assert.ok(await f.initial.reconcileSession('cs_test_initial1'));
+  assert.equal((await activationRpc('get',{cycle_id:result.cycle_id})).customer_id,'cus_savedCard');
+});
+
+test('pending card setup prevents Guardian reservation and pending Guardian prevents a second customer',async()=>{
+  const f=savedCardFixture();await f.prepare();
+  await rejected(()=>activationPrepare(),/Termina el alta de tarjeta/);
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_cycles')).rows[0].n,0);
+  await db.query("update private.dopmi_saved_card_jobs set status='expired'");
+  await activationPrepare();
+  await rejected(()=>f.prepare({key:'72000000-0000-4000-8000-000000000099'}),/Alta Guardián pendiente/);
+  assert.equal(f.calls.length,0);
+});
+
+test('activation customer snapshot cannot drift if the general wallet record later changes',async()=>{
+  await db.query("insert into private.dopmi_saved_card_customers(owner_id,stripe_customer_id) values($1,'cus_snapshot')",[donor]);
+  const a=await activationPrepare();assert.equal(a.saved_customer_id,'cus_snapshot');
+  await db.query("update private.dopmi_saved_card_customers set stripe_customer_id='cus_changed'");
+  assert.equal((await activationPrepare()).saved_customer_id,'cus_snapshot');
+  assert.equal((await activationRpc('claim_checkout',{cycle_id:a.cycle_id})).saved_customer_id,'cus_snapshot');
+});
+
+for(const [name,customer] of [['live',{livemode:true}],['deleted',{deleted:true}],['foreign',{id:'cus_peer'}]])
+  test(`saved customer Guardian Checkout rejects ${name} customer before any new write`,async()=>{
+    await db.query("insert into private.dopmi_saved_card_customers(owner_id,stripe_customer_id) values($1,'cus_savedCard')",[donor]);
+    const f=initialFixture();f.stripe.customers={retrieve:async()=>({id:'cus_savedCard',livemode:false,...customer})};
+    await assert.rejects(f.initial.checkout(donor,initialInput),{code:'guardian_checkout_customer_mismatch'});
+    assert.equal(f.creations.length,0);
+  });
+
+test('general saved-card owner lookup is private, confirmed and coherent with Guardian linkage',async()=>{
+  const lookup=async actor=>(await db.query('select dopmi_saved_card_owner_server($1) value',[actor])).rows[0].value;
+  assert.equal(await lookup(donor),null);
+  const f=savedCardFixture();await f.service().checkout(donor,savedCardInput);
+  assert.deepEqual(await lookup(donor),{customer_id:'cus_savedCard',subscription_id:null});
+  assert.equal(await lookup(other),null);
+  for(const actor of [donor,other,staff]){await role(actor);await rejected(()=>lookup(donor),/permission denied/);}
+  await db.exec('reset role');
+  await db.query("insert into private.dopmi_guardian_subscriptions(donor_id,stripe_customer_id,stripe_subscription_id,stripe_price_id,gross_cents,initial_payment_intent_id,initial_charge_id) values($1,'cus_savedCard','sub_savedCard','price_savedCard',5000,'pi_savedCard','ch_savedCard')",[donor]);
+  assert.deepEqual(await lookup(donor),{customer_id:'cus_savedCard',subscription_id:'sub_savedCard'});
+  await db.query("update private.dopmi_guardian_subscriptions set stripe_customer_id='cus_different'");
+  await rejected(()=>lookup(donor),/Clientes de tarjeta en revisión/);
+});
