@@ -2592,6 +2592,24 @@ void main() {
           alignment: .15,
         );
         await tester.pumpAndSettle();
+        final metrics = <String, Object>{};
+        for (final entry in {
+          'composer': find.byType(TextField),
+          'send': find.byTooltip('Enviar mensaje'),
+        }.entries) {
+          expect(entry.value, findsOneWidget);
+          final rect = tester.getRect(entry.value);
+          metrics[entry.key] = {
+            'x': rect.left,
+            'y': rect.top,
+            'width': rect.width,
+            'height': rect.height,
+          };
+        }
+        await tester.runAsync(
+          () => File('${out.path}/${spec.$1}-metrics.json')
+              .writeAsString(jsonEncode(metrics)),
+        );
       }
       if (spec.$1 == 'adoption-end') {
         await tester.tap(find.byTooltip('Pasar'));
