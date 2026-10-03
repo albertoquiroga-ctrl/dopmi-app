@@ -6,6 +6,7 @@ import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
+import 'package:dopmi_mobile/features/rescue/public_expense_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
@@ -782,7 +783,12 @@ void main() {
             w.properties.label == 'Ocultar evidencia de Cirugía',
       ),
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
+    final expenseChevron = find.descendant(
+      of: find.byType(PublicExpenseCard).first,
+      matching: find.byType(RotatedBox),
+    );
+    expect(tester.widget<RotatedBox>(expenseChevron).quarterTurns, 1);
     expect(find.byTooltip('Aportar a Cirugía'), findsOneWidget);
     expect(find.text('No hay evidencia pública disponible.'), findsNothing);
     await tester.tap(
@@ -792,6 +798,7 @@ void main() {
       ),
     );
     await tester.pump();
+    expect(tester.widget<RotatedBox>(expenseChevron).quarterTurns, 3);
     expect(find.text('No hay evidencia pública disponible.'), findsOneWidget);
     expect(
       find.byWidgetPredicate(
