@@ -383,3 +383,6 @@ Loop435 supersede local-only433: 20261003110000_canceled_guardian_saved_methods 
 
 
 Loop436 local20261003131000_canceled_wallet_collection_guard no desplegada: reemplazahelper433 con guardcollectioninflight y nuevaactivationhelper/parcheexacto2guards. PGlite587 aprobado; preflight remotos latest130559/helperprevia/2activationanchors antes apply. No timestampremotoasignado ni replay/rename/repair.
+
+
+Loop437 supersede local-only436: local20261003131000_canceled_wallet_collection_guard aplicadaDEV porMCP como20261003131548/canceled_wallet_collection_guard. Preflight latest130559/helpermd5previoexacto/2activationanchors. Postflight helpercollection md5 939ccd4012f6a0d977d788ce2bb79a2c yactivation f59fc9925e6e5b045df51b29892626d6 coincidenfuentes587; RPC2guards ypermisosprivadospreservados. No replay/rename/repair/dbpush ni aceptaciónStripe/device atribuida.

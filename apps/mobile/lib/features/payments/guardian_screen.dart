@@ -76,7 +76,11 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   bool get current =>
       mounted && ref.read(identityControllerProvider).identity?.id == owner;
   Json? get plan => data?['plan'] is Map ? Json.from(data!['plan']) : null;
-  bool get independentWallet => plan == null || plan?['status'] == 'canceled';
+  bool get walletCollectionPending =>
+      plan?['status'] == 'canceled' && plan?['payment_in_flight'] == true;
+  bool get independentWallet =>
+      plan == null ||
+      (plan?['status'] == 'canceled' && !walletCollectionPending);
   Json? get activation =>
       data?['activation'] is Map ? Json.from(data!['activation']) : null;
   Json? get methodSetup =>
@@ -1179,6 +1183,10 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                     ),
                   ),
                   const SizedBox(height: 10),
+                  if (enabled && walletCollectionPending)
+                    const Notice(
+                      'Hay un apoyo pendiente de confirmación. Podrás cambiar o eliminar tarjetas cuando termine.',
+                    ),
                   if (enabled && cardsError != null) Notice(cardsError!),
                   if (enabled && cards != null && cards!.isNotEmpty)
                     for (var i = 0; i < cards!.length; i++) ...[

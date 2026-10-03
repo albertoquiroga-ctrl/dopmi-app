@@ -766,6 +766,48 @@ void main() {
     },
   );
 
+  testWidgets(
+    'canceled wallet waits for collection confirmation before restoring actions',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final repo = FakeGuardian()
+        ..value = {
+          'plan': {
+            ...activePlan(),
+            'status': 'canceled',
+            'payment_in_flight': true,
+          },
+          'activation': null,
+        }
+        ..cards = [
+          const GuardianPaymentCard(
+            id: 'pm_target',
+            brand: 'visa',
+            last4: '4242',
+            isDefault: false,
+          ),
+        ];
+      await start(tester, repo, methods: true);
+      expect(find.text('Hacer predeterminada'), findsNothing);
+      expect(find.byTooltip('Eliminar tarjeta'), findsNothing);
+      expect(
+        find.textContaining('Hay un apoyo pendiente de confirmación.'),
+        findsOneWidget,
+      );
+      expect(find.text('Visa •••• 4242'), findsOneWidget);
+      repo.value['plan']['payment_in_flight'] = false;
+      await tester.tap(find.text('Actualizar estado'));
+      await tester.pumpAndSettle();
+      expect(find.text('Hacer predeterminada'), findsOneWidget);
+      expect(find.byTooltip('Eliminar tarjeta'), findsOneWidget);
+      expect(
+        find.textContaining('Hay un apoyo pendiente de confirmación.'),
+        findsNothing,
+      );
+      expect(repo.calls, isEmpty);
+    },
+  );
+
   for (final (action, canceled) in [
     ('default', false),
     ('remove', false),
