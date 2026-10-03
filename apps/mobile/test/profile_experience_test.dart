@@ -14,6 +14,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
+import 'fake_account_photo_repository.dart';
+
+import 'package:dopmi_mobile/features/profile/account_photo_repository.dart';
 
 void main() {
   for (final large in [false, true]) {
@@ -35,6 +38,9 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           identityRepositoryProvider.overrideWithValue(identity),
+          accountPhotoRepositoryProvider.overrideWithValue(
+            emptyAccountPhotoRepository(identity),
+          ),
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
           rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           routerInitialLocationProvider.overrideWithValue('/profile'),
@@ -82,6 +88,9 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         identityRepositoryProvider.overrideWithValue(identity),
+        accountPhotoRepositoryProvider.overrideWithValue(
+          emptyAccountPhotoRepository(identity),
+        ),
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         rescueRepositoryProvider.overrideWithValue(FakeRescue()),
         routerInitialLocationProvider.overrideWithValue('/settings'),
@@ -126,6 +135,9 @@ void main() {
           final container = ProviderContainer(
             overrides: [
               identityRepositoryProvider.overrideWithValue(identity),
+              accountPhotoRepositoryProvider.overrideWithValue(
+                emptyAccountPhotoRepository(identity),
+              ),
               communityRepositoryProvider.overrideWithValue(FakeCommunity()),
               rescueRepositoryProvider.overrideWithValue(FakeRescue()),
               routerInitialLocationProvider.overrideWithValue(path),
@@ -261,6 +273,9 @@ void main() {
         final container = ProviderContainer(
           overrides: [
             identityRepositoryProvider.overrideWithValue(identity),
+            accountPhotoRepositoryProvider.overrideWithValue(
+              emptyAccountPhotoRepository(identity),
+            ),
             communityRepositoryProvider.overrideWithValue(FakeCommunity()),
             routerInitialLocationProvider.overrideWithValue('/profile'),
           ],
@@ -345,6 +360,9 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         identityRepositoryProvider.overrideWithValue(identity),
+        accountPhotoRepositoryProvider.overrideWithValue(
+          emptyAccountPhotoRepository(identity),
+        ),
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         routerInitialLocationProvider.overrideWithValue('/basic-info'),
       ],

@@ -14,6 +14,9 @@ import 'package:supabase_flutter/supabase_flutter.dart' show AuthException;
 
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
+import 'fake_account_photo_repository.dart';
+
+import 'package:dopmi_mobile/features/profile/account_photo_repository.dart';
 
 void main() {
   Future<ProviderContainer> start(
@@ -30,6 +33,9 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         identityRepositoryProvider.overrideWithValue(repo),
+        accountPhotoRepositoryProvider.overrideWithValue(
+          emptyAccountPhotoRepository(repo),
+        ),
         if (config != null) configProvider.overrideWithValue(config),
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         routerInitialLocationProvider.overrideWithValue(

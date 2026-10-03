@@ -2717,3 +2717,21 @@ no se modifica archivo del titular. Sin capturas nuevas/control foto aún: sigui
 bloque tarjeta/selector/preview y persistencia en BasicInfo. Migración foto309 aún
 sin desplegar y Edge cleanup sin redesplegar; no carga remota/dispositivo verificados.
 No Codemagic nuevo; objetivo global activo.
+
+# Loop311 — tarjeta y selección privada en Información básica
+
+Referencia a3c969cd9103fd46dc5cd886999912526ce75efb vigente. Tarjeta de foto
+con inicial, selector de galería, preparación JPEG y preview local. Upload y
+RPC de enlace ocurren al Guardar; conserva ruta pendiente para retry sin otro
+upload. Descarta selección si cambia la sesión durante la galería/preparación.
+Carga privada al abrir/reanudar con error y retry explícitos; sin fallback fake
+en producción. Fixtures aisladas para widget tests y capturador.
+
+36/36 pruebas identity/widgets/profile-experience/account-photo aprobadas.
+Analyze inicial cuatro llaves faltantes, corregidas; final limpio5.5s.
+Captura basic-info tres estados regenerada, prueba1/1 aprobada3s; inspección
+normal sin overflow. No acredita selector nativo, persistencia Auth/REST ni
+paridad total: faltan pruebas específicas del flujo UI foto, comparación final,
+despliegue foto309/cleanup y email real. Shortcuts adicionales aún pendientes.
+No Codemagic: próximo envío sólo al completar/verificar objetivo por instrucción
+más reciente del usuario. Objetivo global activo.

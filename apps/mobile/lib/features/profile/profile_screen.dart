@@ -1,13 +1,31 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/measurement.dart';
 import '../../core/ui.dart';
+import '../../core/media/media_store.dart';
+import 'account_photo_card.dart';
+import 'account_photo_repository.dart';
 import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
 import '../identity/experience_controller.dart';
+
+final accountPhotoPickerProvider = Provider<Future<Uint8List?> Function()>(
+  (ref) => () async {
+    final picked = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 90,
+      requestFullMetadata: false,
+    );
+    return picked?.readAsBytes();
+  },
+);
 
 class BasicInfoScreen extends ConsumerStatefulWidget {
   const BasicInfoScreen({super.key});
@@ -15,7 +33,8 @@ class BasicInfoScreen extends ConsumerStatefulWidget {
   ConsumerState<BasicInfoScreen> createState() => _BasicInfoScreenState();
 }
 
-class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
+class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
+    with WidgetsBindingObserver {
   final form = GlobalKey<FormState>();
   final name = TextEditingController(),
       lastName = TextEditingController(),
@@ -25,19 +44,84 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
   bool loading = true, busy = false;
   String mode = 'donor';
   String? error, message;
+  Uint8List? photoBytes;
+  String? photoUrl, photoPath, pendingPhotoPath, photoError;
+  bool photoLoading = false, photoDirty = false;
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     load();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     name.dispose();
     lastName.dispose();
     phone.dispose();
     city.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed &&
+        profile?.status == 'active' &&
+        !busy &&
+        !photoDirty) {
+      unawaited(loadPhoto());
+    }
+  }
+
+  Future<void> loadPhoto() async {
+    if (photoLoading || profile?.status != 'active') return;
+    setState(() {
+      photoLoading = true;
+      photoError = null;
+    });
+    try {
+      final repo = ref.read(accountPhotoRepositoryProvider);
+      final path = await repo.loadPath();
+      final url = path == null ? null : await repo.signedUrl(path);
+      if (!mounted ||
+          ref.read(identityRepositoryProvider).current?.id != profile?.id) {
+        return;
+      }
+      setState(() {
+        photoPath = path;
+        photoUrl = url;
+        if (!photoDirty) photoBytes = null;
+      });
+    } catch (_) {
+      if (mounted) {
+        setState(() => photoError = 'No pudimos cargar tu foto de perfil.');
+      }
+    } finally {
+      if (mounted) setState(() => photoLoading = false);
+    }
+  }
+
+  Future<void> choosePhoto() async {
+    final actor = profile?.id;
+    await perform(() async {
+      final bytes = await ref.read(accountPhotoPickerProvider)();
+      if (bytes == null || !mounted) return;
+      final prepared = await compute(prepareMedia, (
+        MediaPurpose.accountAvatar,
+        bytes,
+      ));
+      if (!mounted ||
+          actor == null ||
+          ref.read(identityRepositoryProvider).current?.id != actor) {
+        return;
+      }
+      setState(() {
+        photoBytes = prepared.bytes;
+        photoDirty = true;
+        pendingPhotoPath = null;
+      });
+    });
   }
 
   Future<void> load() async {
@@ -60,6 +144,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
           city.text = result.city;
           mode = result.mode;
         });
+        if (result.status == 'active') unawaited(loadPhoto());
       }
     } catch (cause) {
       if (mounted) setState(() => error = identityError(cause));
@@ -95,6 +180,21 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
             phone: phone.text,
             city: city.text,
           );
+      if (photoDirty) {
+        if (ref.read(identityRepositoryProvider).current?.id != result.id) {
+          throw StateError('profile_owner_changed');
+        }
+        final photos = ref.read(accountPhotoRepositoryProvider);
+        pendingPhotoPath ??= await photos.uploadPhoto(photoBytes!);
+        await photos.savePath(pendingPhotoPath);
+        if (!mounted ||
+            ref.read(identityRepositoryProvider).current?.id != result.id) {
+          return;
+        }
+        photoPath = pendingPhotoPath;
+        pendingPhotoPath = null;
+        photoDirty = false;
+      }
       if (mounted) {
         ref.read(experienceProvider).applyProfile(result);
         setState(() {
@@ -170,10 +270,35 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    AccountPhotoCard(
+                      name: name.text,
+                      bytes: photoBytes,
+                      url: photoUrl,
+                      onEdit:
+                          suspended ||
+                              busy ||
+                              photoLoading ||
+                              photoError != null
+                          ? null
+                          : choosePhoto,
+                    ),
+                    if (photoLoading)
+                      const LinearProgressIndicator(
+                        semanticsLabel: 'Cargando foto de perfil',
+                      ),
+                    if (photoError != null) ...[
+                      Notice(photoError!, isError: true),
+                      TextButton(
+                        onPressed: busy ? null : loadPhoto,
+                        child: const Text('Volver a cargar foto'),
+                      ),
+                    ],
+                    const SizedBox(height: 16),
                     _BasicInfoField(
                       label: 'Nombre',
                       child: TextFormField(
                         controller: name,
+                        onChanged: (_) => setState(() {}),
                         enabled: !suspended && !busy,
                         maxLength: 80,
                         decoration: const InputDecoration(counterText: ''),

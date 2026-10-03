@@ -41,6 +41,10 @@ import 'package:flutter_test/flutter_test.dart';
 import '../test/community_test.dart'
     show FakeCommunity, SavedRescuerCommunity, PagedSavedCommunity;
 import '../test/fake_identity_repository.dart';
+import '../test/fake_account_photo_repository.dart';
+
+import 'package:dopmi_mobile/features/profile/account_photo_repository.dart';
+
 import '../test/rescue_test.dart' show FakeRescue, FakeCaseUpdates;
 import '../test/rescuer_pending_evidence_test.dart' show PendingEvidenceRescue;
 import '../test/case_publication_test.dart' show DraftCaseRescue;
@@ -1174,6 +1178,9 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           identityRepositoryProvider.overrideWithValue(repo),
+          accountPhotoRepositoryProvider.overrideWithValue(
+            emptyAccountPhotoRepository(repo),
+          ),
           communityRepositoryProvider.overrideWithValue(community),
           if (spec.$1.startsWith('public-profile-cases'))
             rescueRepositoryProvider.overrideWithValue(FakeRescue()),
