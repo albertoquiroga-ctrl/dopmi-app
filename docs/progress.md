@@ -2418,3 +2418,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, sin runtime nuevo. 
 ### Loop497 — indicador de Perfil renderizado al presionar, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge377x852/rescuer/profile down real matriz0.98/timing120ease delay0; sombra hover excluida. Prueba existente fortalecida primerpump/ScaleTransition final120 normal200; cancelación/totales/destinos preservados. Gate88104exit0,4/4,1s, fuente a52bc936853546f737e0327caeefa74d23a20d0c sólo tests, sin fallo previo ni cambio producción. Full601493 vigente. JSON/README497, navegador/Vitecerrados. Sin backend/SQL/push/Codemagic; físico/StripeSDK/global pendientes.
+
+### Loop498 — curva exacta de introducción, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; CSSonb-in450/cubic(.22,1,.36,1)/opacity0→1/Y10→0 ykeys por slide inspeccionados, sin runtime nuevo. Prueba existente fortalece midpoint225 opacidad/desplazamiento exactos sin quitarinicio/final; gate97218exit0,18/18,5s con navegación/intenciones/texto200/reduced. Fuente 4e14d63b20b6806ebc4327f096d871101c420e3d sólo test. README498; full601493 producciónc57974a vigente. No aceptación global/física, backend/SQL/push/Codemagic.
