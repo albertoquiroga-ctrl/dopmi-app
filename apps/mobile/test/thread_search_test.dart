@@ -103,8 +103,16 @@ void main() {
         await tester.testTextInput.receiveAction(TextInputAction.search);
         await tester.pumpAndSettle();
         expect(repo.queries.last, 'Luna');
+        await tester.scrollUntilVisible(
+          find.text('Mensaje de Luna'),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
         expect(find.text('Mensaje de Luna'), findsOneWidget);
         expect(find.text('Mensaje de Milo'), findsNothing);
+        await tester.ensureVisible(find.byTooltip('Limpiar búsqueda'));
+        await tester.pumpAndSettle();
         await tester.tap(find.byTooltip('Limpiar búsqueda'));
         await tester.pumpAndSettle();
         expect(repo.queries.last, '');
@@ -128,7 +136,7 @@ void main() {
         await tester.pumpAndSettle();
         await tester.scrollUntilVisible(
           find.byTooltip('Cerrar b\u00fasqueda'),
-          -200,
+          200,
           scrollable: find.byType(Scrollable).first,
         );
         await tester.ensureVisible(find.byTooltip('Cerrar b\u00fasqueda'));
