@@ -94,24 +94,31 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
                 ],
               ),
             ),
-            SizedBox(height: allFavorites ? 12 : 22),
+            SizedBox(height: allFavorites ? 12 : 20),
             if (!allFavorites)
-              const Text(
-                'Mis match',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
-                  color: ink,
+              Container(
+                constraints: const BoxConstraints(minHeight: 46),
+                padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
+                alignment: Alignment.centerLeft,
+                child: const Text(
+                  'Mis match',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 28,
+                    height: 1.1,
+                    letterSpacing: 0,
+                    fontWeight: FontWeight.w700,
+                    color: ink,
+                  ),
                 ),
               ),
-            if (!allFavorites) const SizedBox(height: 24),
+            if (!allFavorites) const SizedBox(height: 12),
             MatchFavorites(
               key: const ValueKey('match-favorites'),
               all: allFavorites,
               showAll: showFavorites,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 12),
             if (!allFavorites) ...[
               Row(
                 children: [

@@ -223,27 +223,61 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
             Row(
               children: [
                 const Expanded(
-                  child: Text(
-                    'Mis favoritos',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: ink,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 12),
+                    child: Text(
+                      'Mis favoritos',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 16,
+                        height: 1.3,
+                        fontWeight: FontWeight.w700,
+                        color: ink,
+                      ),
                     ),
                   ),
                 ),
                 if (result.total > 0)
-                  TextButton(
-                    onPressed: () async {
-                      widget.showAll?.call(true);
-                    },
-                    style: TextButton.styleFrom(foregroundColor: ink),
-                    child: const Text('Ver más'),
+                  SizedBox(
+                    width: 80,
+                    height:
+                        MediaQuery.textScalerOf(context).scale(16) * 1.3 + 12,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          top:
+                              (MediaQuery.textScalerOf(context).scale(16) *
+                                      1.3 +
+                                  12 -
+                                  44) /
+                              2,
+                          height: 44,
+                          child: TextButton(
+                            onPressed: () async {
+                              widget.showAll?.call(true);
+                            },
+                            style: TextButton.styleFrom(
+                              foregroundColor: ink,
+                              padding: EdgeInsets.zero,
+                              textStyle: const TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 14,
+                                height: 1.2,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            child: const Text('Ver más'),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
               ],
             ),
-          const SizedBox(height: 12),
+          if (widget.all) const SizedBox(height: 12),
           if (error != null) Notice(error!, isError: true),
           if (items.isEmpty)
             const MatchFavoritesEmpty()
@@ -263,7 +297,7 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
             )
           else
             SizedBox(
-              height: side + 8,
+              height: side + 4,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: items.length,
