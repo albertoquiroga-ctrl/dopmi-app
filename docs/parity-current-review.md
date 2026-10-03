@@ -1,54 +1,20 @@
-# Corte de evidencia de paridad — 2/10/2026
+# Corte de evidencia de paridad — 2/10/2026, loop342
 
-Referencia: `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
-Auditoría vigente loop265: [rutas y pendientes concretos](parity-route-audit-2026-10-02.md).
-Loop266 sustituye composición genérica de Guardados y añade seis capturas;
-Loop267 añade rescatistas con métricas públicas y prueba de retiro concurrente;
-Loop268 verifica paginación larga a 320px/texto200%; falta integración instalada.
-Source no permite sembrar
-rescatistas guardados por UI: contraste poblado usa componente/CSS, no browser.
-Información básica, Ayuda y Editor público siguen pendientes concretos.
-Loops273–276 implementan temas/FAQ/bloques y formulario para preparar correo;
-envío interno, acuse y adjuntos continúan pendientes. El endpoint legado
-support-message-send está retirado y no se reutiliza.
-Loops286–288 añaden contrato y migración local privada/idempotente con lectura
-administrativa auditada. Loop290 conecta formulario al repositorio RPC; aún sin
-panel conectado, adjuntos pendientes. Loop291 despliega/verifica RPC y permisos
-en DEV; no acredita recorrido Auth/REST autenticado ni recepción instalada.
-Loop294 conecta bandeja local administrativa bajo Moderación→Soporte;
-publicación del panel y adjuntos siguen pendientes.
-Loops295–304 superseden el pendiente de implementación de adjuntos: bucket y
-RPC de enlace privado aplicados/verificados en DEV20261003000209; selector,
-preparación JPEG, preview, retry y bandeja firmada implementados. No acreditan
-carga autenticada Storage, panel publicado ni selección Android. Loop303 compara
-Ayuda/formulario con Source renderizado377×852; loop304 incorpora fotos y acuse
-normal/200%. Retención/account-deletion y contraste completo restante pendientes.
-Loops277–284 ajustan tarjeta, campos, encabezado, cancelar, teclado y errores del editor público;
-contraste completo, cámara/gestos y aceptación instalada siguen pendientes.
-Este corte no es un conteo final de pantallas aceptadas.
-Loops270/271 ajustan encabezado y formulario real de Información básica;
-foto, apellidos separados, cambio de correo y medición exacta siguen pendientes.
-Loops306–307 implementan contrato SQL local privado y campos de nombre/apellido
-explícitos en Información básica. Móvil guarda por RPC nueva y preserva borradores
-tras fallo; captura normal/grande/teclado y 38 pruebas cliente aprobadas. Migración
-todavía sin desplegar: no es aceptación de persistencia remota. Foto personal,
-cambio de email confirmado y composición completa de esta ruta siguen pendientes.
-Codemagic intermedio autorizado por el titular: build `6ac02cc4554e6c4660850bf2`,
-workflow `android-guardian-internal`, SHA `2c36339a6961755e7b0a37e189f8c1fa9b791e17`.
-GET confirmó `finished`; análisis, pruebas, bundle firmado y publicación success.
-Log Publishing confirma2.3.3(286), com.mycompany.dopmi, trackinternal;
-consulta posterior del track retorna completed. Instalación/aceptación pendientes.
-Cambios de Información básica270–272 no están en ese candidato2c36339.
-CI442 de ae57 concluyó con una expectativa antigua de textos de Guardados;
-corregida en 2c36339 y suite perfil aprobada13. No acreditar gate integral442.
-Corte integral aprobado: `3374c507004cd2de7a693de87658e85cc445c0f8`,
-run37067524998 #440 completed/success, verificado en loop267.
-Incluye mazo257, teclado258, galería/selector259, regresión260 e Inicio261.
-Incluye campo/regreso/carrusel Guardian262 y resultados263/264; precede Guardados266/267.
-Este inventario organiza revisión pendiente y evidencia técnica; no acredita
-aceptación global ni instalada. Entradas históricas debajo están fechadas.
+Referencia vigente `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`, reconsultada342. Último código/pruebas `dff4386efa7151476491f00fd9f1e57287ea98aa`.
 
-## Capturas reproducibles actuales
+**Regresión móvil completa:494/494 aprobadas3:44**, flutter test --no-pub, handle35990 terminalexit0. Comparación de207archivos tracked lib/test con scratch normalizandoCRLF:0diferencias. Supersede481/336 y cubre337–341. Analyze limpio55s/341. No CI nuevo de esteSHA, Auth/Storage ni teléfono acreditados por esas pruebas.
+
+Los cuatro grupos genéricos encontrados265 ya tienen presentación implementada: Guardados266–268, Información básica306–318, Ayuda273–305 y Editor público324–327. Editor327, Ayuda303, Información básica317, historia329, Impacto332–334 y Reporte335–336 tienen contraste runtime documentado; no llamarlos pendientes de implementación por entradas históricas inferiores. Términos339 y Aviso340 tienen marco propio; registro vuelve sin aceptar ni perder correo. Motion341 añade regresos reales/app/router y pasos con entrada450ms; no hover requerido.
+
+Evidencia real DEV: nombres/foto privados318 y reportes publicación/perfil338 usan Auth/REST/Storage y limpieza comprobada. Soporte con adjunto usa contrato/bucket/RPC/panel implementados, pero aceptación autenticada completa y vista administrativa positiva aún requieren comprobación. Cambio de correo confirmado, galería Android, reporte de caso remoto y recorrido instalado actual no se declaran aceptados. No sustituir reglas ni respuestas reales por fixtures.
+
+Inventario de captura recontado342: **305 estados en36URLs** del capturador de perfil, separado del capturador de acceso/componentes. No son305pantallas aceptadas ni36pantallas faltantes. [Auditoría de rutas265](parity-route-audit-2026-10-02.md) conserva alcance global; [movimiento341](parity-motion-audit-2026-10-02.md) distingue contratos vigentes y evidencia. Las familias restantes deben cruzarse con runtime/acciones/regreso/scroll/errores; no reducir cierre a estos grupos ni a tests verdes.
+
+Codemagic sólo candidato final, por última instrucción del titular. Preservar workflow android-guardian-internal/identidad/firma y verificar publicación Play separadamente; build histórico286 publicado no contiene correcciones actuales ni prueba instalación. Dinero permanece test-only. Objetivo sigue activo.
+
+## Evidencia histórica de capturas y cortes (supersedida por el corte superior)
+
+### Capturas del corte304
 
 Actualización loop260: recorrido Perfil rescatista → Configuración → regreso
 contrastado en mockup ejecutado y router productivo. Regreso conserva posición,
