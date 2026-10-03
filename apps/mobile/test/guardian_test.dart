@@ -742,13 +742,47 @@ void main() {
     expect(find.text('Aún no tienes tarjetas guardadas.'), findsOneWidget);
   });
 
-  for (final action in ['default', 'remove']) {
+  testWidgets(
+    'requested cancellation does not unlock independent card actions',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final repo = FakeGuardian()
+        ..value = {
+          'plan': {...activePlan(), 'status': 'cancel_requested'},
+          'activation': null,
+        }
+        ..cards = [
+          const GuardianPaymentCard(
+            id: 'pm_target',
+            brand: 'visa',
+            last4: '4242',
+            isDefault: false,
+          ),
+        ];
+      await start(tester, repo, methods: true);
+      expect(find.text('Hacer predeterminada'), findsNothing);
+      expect(find.byTooltip('Eliminar tarjeta'), findsNothing);
+      expect(repo.calls, isEmpty);
+    },
+  );
+
+  for (final (action, canceled) in [
+    ('default', false),
+    ('remove', false),
+    ('default', true),
+    ('remove', true),
+  ]) {
     testWidgets(
-      'independent $action keeps target until server and fresh cards agree',
+      'independent $action canceled=$canceled keeps target until server and fresh cards agree',
       (tester) async {
         SharedPreferences.setMockInitialValues({});
         final repo = FakeGuardian()
           ..fail = true
+          ..value = {
+            'plan': canceled ? {...activePlan(), 'status': 'canceled'} : null,
+            'activation': null,
+            'method_change_available': false,
+          }
           ..cards = [
             const GuardianPaymentCard(
               id: 'pm_old',
@@ -830,6 +864,7 @@ void main() {
           );
         }
         expect(repo.calls, hasLength(2));
+        if (canceled) expect(repo.value['plan']['status'], 'canceled');
         final prefs = await SharedPreferences.getInstance();
         expect(prefs.getString('dopmi-saved-card-method:one:intent'), null);
         await tester.pump(const Duration(seconds: 3));

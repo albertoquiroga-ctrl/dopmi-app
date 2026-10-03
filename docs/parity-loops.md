@@ -3753,3 +3753,12 @@ Base73205b7; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Migra
 Nueve pruebasSQL nuevas: default/remove con cancelaciónconserva registry; reactivación/lease/customer tras snapshot impiden write ymutation_requested_at sigue null; reconciliationattention inicial bloquea prepare; request/methodtardíos bloquean write; helper noaccesibleparaowner/ajeno/adminbrowser. npmtest completo primero577/57724.590s5895/cf5366; tresnegativos añadidos, final580/58024.388s13733/74aba1, logexterno Temp/dopmi-loop433-backend-final.log. diffcheck limpio.
 
 Local sólo: migración no aplicadaDEV, UI aún requiereplan==null y nohabilita canceled; no declarar brecha completa. Próximo conectar UI/RPCavailability y testsFlutter, preflightdefinitionremota antes aplicarlocal patch; StripeMCP pendiente reautenticación. Dinero test-only/goalglobalvisualSDKdevice abierto, sinCM/push.
+
+
+### Loop434 — acciones móviles de billetera tras Guardián cancelado, 3/10/2026
+
+Baseaba1230; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. GuardianScreen centraliza independentWallet: plan ausente o statuscanceled del state servidor; statuscancel_requested nohabilita acciones. Tarjetasconservan componentes visuales, predeterminar/eliminar de canceled usan saved_card_method sin revision/Guardianmutation; callback yretry permiten canceled, active continúa rutapropia. Identity/freshness/consent/busy/intentpersistido y prueba receipt+cards anteséxito preservadas. SQL433 permaneceautoridadfinal y bloquea pending/lease/incoherencia; UI no concede autorización.
+
+Dos recorridosWidget completos adicionales canceled(default/remove) ejercitan autorización, lostresponse, persistkey+target, mismo retry, receipt+cards frescas ycleanup sin cambiar estado canceled. Testcancel_requested comprueba ausencia de botones ywrites. Guardian suite58/58 pasa10s78164/e38cae en scratch sincronizado (dosarchivos propios); analyzer65845/c5a7a9 sinissues48.4s. Format/diffchecklimpios; logs externos Temp/dopmi-loop434-mobile.log y dopmi-loop434-analyze.log. No fullmóvilnuevo/captura/sourcepixel/device atribuidos.
+
+Código local; migración433/deploycheckout/redisplay y Stripe auténtico siguen pendientes. No changeschema remoto, no dinero real/CM/push. Siguiente preflightRPCremoto y overlayconpostflight, validar estadoscancelados en backendreal y métodos guardados conStripe test trasreautenticación. Scopeglobalvisual/motion/native sigueabierto.

@@ -76,6 +76,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   bool get current =>
       mounted && ref.read(identityControllerProvider).identity?.id == owner;
   Json? get plan => data?['plan'] is Map ? Json.from(data!['plan']) : null;
+  bool get independentWallet => plan == null || plan?['status'] == 'canceled';
   Json? get activation =>
       data?['activation'] is Map ? Json.from(data!['activation']) : null;
   Json? get methodSetup =>
@@ -682,7 +683,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         !fresh ||
         !independentFresh ||
         walletIntent != null ||
-        plan != null ||
+        !independentWallet ||
         !ref.read(guardianEnabledProvider) ||
         ref.read(identityControllerProvider).identity?.verified != true ||
         intent != null ||
@@ -1188,12 +1189,12 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                             walletIntent == null &&
                             verified &&
                             (status == 'active' ||
-                                (plan == null && independentFresh)),
+                                (independentWallet && independentFresh)),
                         showRemove:
                             walletIntent == null &&
                             verified &&
                             (status == 'active' ||
-                                (plan == null && independentFresh)),
+                                (independentWallet && independentFresh)),
                         onRemove:
                             busy ||
                                 confirming ||
@@ -1201,10 +1202,10 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                                 intent != null ||
                                 savedCardIntent != null ||
                                 independentIntent != null ||
-                                (plan != null &&
+                                (!independentWallet &&
                                     data?['method_change_available'] != true)
                             ? null
-                            : () => plan == null
+                            : () => independentWallet
                                   ? changeIndependentMethod(
                                       card: cards![i],
                                       remove: true,
@@ -1221,10 +1222,10 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                                 intent != null ||
                                 savedCardIntent != null ||
                                 independentIntent != null ||
-                                (plan != null &&
+                                (!independentWallet &&
                                     data?['method_change_available'] != true)
                             ? null
-                            : () => plan == null
+                            : () => independentWallet
                                   ? changeIndependentMethod(card: cards![i])
                                   : submit(
                                       method: true,
