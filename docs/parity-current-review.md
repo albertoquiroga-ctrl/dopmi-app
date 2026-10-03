@@ -1,3 +1,9 @@
+# Corte vigente — loop398, 3/10/2026
+
+Bottomreview200 capturado/revisado, aviso entero/Actualizarestado alcanzable;4captures pasan/analyzer limpio78.2s.329states/37URLs inventario. Codemagic GETapp verificado sólometadatos:9keys/3groups sinvariableswallet enrespuesta, team-level pendiente. Nativebuild43721 ACTIVOlogTemp dopmi-native-build-loop397-retry.log, aúnnoresultado. Retomarhandle; config/compilación/device/matrizglobal pendientes. Codemagic sólofinal.
+
+## Corte397 anterior
+
 # Corte vigente — loop397, 3/10/2026
 
 5screen tests pasan incluyendo signout/respuestatardía sinSDK; analyzer limpio61.7s. Nativebuildprimerfalló sinpluginsmetadata en scratch; regenerados19plugins inclStripe yreintentoACTIVOsession43721/logTemp dopmi-native-build-loop397-retry.log. No compilación verificada; retomarhandleantesdenuevaacción. Capturas396/objetivoglobal/config/device/matriz siguen pendientes; Codemagic sólo final.

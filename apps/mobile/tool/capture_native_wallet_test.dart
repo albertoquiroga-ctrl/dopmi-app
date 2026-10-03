@@ -106,21 +106,39 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(tester.takeException(), null);
-        await tester.runAsync(() async {
-          final img =
-              await (boundary.currentContext!.findRenderObject()!
-                      as RenderRepaintBoundary)
-                  .toImage(pixelRatio: 1);
-          final data = await img.toByteData(format: ui.ImageByteFormat.png);
-          final dir = Directory(
-            'C:/Users/betoq/AppData/Local/Temp/dopmi-native-wallet-396',
+        Future<void> capture(String suffix) async {
+          await tester.runAsync(() async {
+            final img =
+                await (boundary.currentContext!.findRenderObject()!
+                        as RenderRepaintBoundary)
+                    .toImage(pixelRatio: 1);
+            final data = await img.toByteData(format: ui.ImageByteFormat.png);
+            final dir = Directory(
+              'C:/Users/betoq/AppData/Local/Temp/dopmi-native-wallet-396',
+            );
+            await dir.create(recursive: true);
+            await File(
+              '${dir.path}/wallets-${large ? 'large' : 'normal'}-${review ? 'review' : 'ready'}$suffix.png',
+            ).writeAsBytes(data!.buffer.asUint8List());
+            img.dispose();
+          });
+        }
+
+        await capture('');
+        if (large && review) {
+          await tester.scrollUntilVisible(
+            find.text('Actualizar estado'),
+            240,
+            scrollable: find.byType(Scrollable).first,
           );
-          await dir.create(recursive: true);
-          await File(
-            '${dir.path}/wallets-${large ? 'large' : 'normal'}-${review ? 'review' : 'ready'}.png',
-          ).writeAsBytes(data!.buffer.asUint8List());
-          img.dispose();
-        });
+          await tester.pumpAndSettle();
+          expect(tester.takeException(), null);
+          expect(
+            tester.getRect(find.text('Actualizar estado')).bottom,
+            lessThanOrEqualTo(852),
+          );
+          await capture('-bottom');
+        }
       });
     }
   }
