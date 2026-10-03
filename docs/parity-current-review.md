@@ -1,3 +1,9 @@
+# Corte vigente — loop390, 3/10/2026
+
+Buildconfig nativo preparado: sólo Guardian+opción explícita+pk_test, merchant validado y standard apagado sin valores.16tests config pasan. Variables reales/certificado/entitlement no acreditados. SDK389 listo como adapter, UI/intentrecovery/compilación nativa/dispositivo pendientes. Objetivo global activo; Codemagic sólo final.
+
+## Corte389 anterior
+
 # Corte vigente — loop389, 3/10/2026
 
 Adapter NativeWalletSdk con disponibilidad real y SetupIntent test-only preparado.7tests concallbacks pasan, analyzer limpio12.2s. NO SDK/device real ni compilación comprobados. Configbuild/entitlements/UI/intentrecovery y aceptación pendientes, PK/MerchantID sinrespuesta. Servidor386 desplegado. Objetivo global activo/Codemagic sólo final.

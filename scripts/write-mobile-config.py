@@ -60,6 +60,22 @@ def build_config(env, guardian_test=False, measurement_test=False):
         result[name] = value
     if result["ENABLE_GOOGLE_AUTH"] == "true" and not result["GOOGLE_SERVER_CLIENT_ID"]:
         raise ValueError("Google authentication requires GOOGLE_SERVER_CLIENT_ID.")
+    native = env.get("ENABLE_NATIVE_WALLETS_TEST", "false").strip().lower() or "false"
+    if native not in ("true", "false"):
+        raise ValueError("ENABLE_NATIVE_WALLETS_TEST must be true or false.")
+    enabled = guardian_test and native == "true"
+    result["ENABLE_NATIVE_WALLETS_TEST"] = str(enabled).lower()
+    result["STRIPE_PUBLISHABLE_KEY_TEST"] = ""
+    result["APPLE_PAY_MERCHANT_ID"] = ""
+    if enabled:
+        stripe_key = env.get("STRIPE_PUBLISHABLE_KEY_TEST", "").strip()
+        merchant = env.get("APPLE_PAY_MERCHANT_ID", "").strip()
+        if not re.fullmatch(r"pk_test_[A-Za-z0-9]+", stripe_key):
+            raise ValueError("Native wallets require a Stripe test publishable key.")
+        if merchant and not re.fullmatch(r"merchant\.[A-Za-z0-9.-]+", merchant):
+            raise ValueError("APPLE_PAY_MERCHANT_ID must be an Apple merchant identifier.")
+        result["STRIPE_PUBLISHABLE_KEY_TEST"] = stripe_key
+        result["APPLE_PAY_MERCHANT_ID"] = merchant
     return result
 
 

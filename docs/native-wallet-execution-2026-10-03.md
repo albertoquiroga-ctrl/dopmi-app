@@ -1,4 +1,4 @@
-# Billeteras nativas — contrato y avance389
+# Billeteras nativas — contrato y avance390
 
 Referencia irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb. Alcance: sección Billeteras digitales y autorización real sin cobro desde Métodos de pago. Se preservan los colores/medidas Source, sujeto a disponibilidad móvil real; no se copia el toast de vinculación simulada.
 
@@ -23,3 +23,6 @@ No cambiar identidad com.mycompany.dopmi/firma, guardas test-only ni flujos Guar
 
 
 Adapter389: NativeWalletSdk sólo pk_test/ENABLE_NATIVE_WALLETS_TEST, AndroidGoogle/iOSApple conMerchantID y no web. Disponibilidad SDK real antesde autorizar, Googletest/existingPaymentMethodRequired, confirmPlatformPaySetupIntent sin PI. ResultadoSDK noesreceipt.7tests adapters/repositorio con callbacks sustitutos pasan; NO prueba nativa real. Config build/entitlement y cliente visual/reanudación siguen pendientes. Apple resumen0.00 para guardar sin cargo, aceptación real aún requerida; no presenta mensualidad ni autorización Guardian. Referencias: docs.page/flutter-stripe/flutter_stripe/apple_pay y google_pay; API local14.1.0 confirma SetupIntent y tiposparams.
+
+
+Configuración390: write-mobile-config transfiere ENABLE_NATIVE_WALLETS_TEST=true únicamente con --guardian-test y variabletrue. Requiere STRIPE_PUBLISHABLE_KEY_TEST=pk_test; APPLE_PAY_MERCHANT_ID opcional para Android y necesario para ofertaApple en adapter. Sólo nombres/metadatos aquí, ningún valor real.16tests config pasan; feature no habilitada ni variables remotas configuradas. Identificar configuración existente antes de añadir MerchantID/entitlement/certificado.
