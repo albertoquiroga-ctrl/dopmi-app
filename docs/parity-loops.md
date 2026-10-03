@@ -3825,3 +3825,12 @@ Base4b39a07; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge4
 SuiteGuardian+feedback+capture63/63 pasa12s32896/c08cb3; analyzer1456/9052aa limpio46.7s antecede sólo ajuste finalletterSpacing0 yanchomedido. Nuevoassertcapturerheight70 inicial falla actual75 enfilaconacción porwrap3líneas; corregidospacing ywidth92.328125. Recheckcapturerfinal28771/de316c pasa1test/5estados4s incluyendo altura70ambasfilasnormal, acciones/Notice/scroll200 y0writes. Format/diffchecklimpios; JSONSource yPNGnormal/200/footerfinales inspeccionados. Sinfuenteigual/igualdadpixelglobal: SourceMastercard1881 vsfixture5556, badgeModo prueba excluido; walletsSource simuladas no se copiancomoSDKdisponible.
 
 Sourcefirstcardy121.39 vsFluttercapturayaprox125: encabezado/separaciónvertical continúa mediciónpendiente; no declarar pantallaidéntica porrowheight. Browsercerrado60e9d8; Vite97946CtrlCexit1esperado9329d4. Artefactos docs/design-reviews/parity-loop441. NoStripe/device/fullmobilerun/CM/push nuevos; próximoheadingy layoutglobal yaceptaciónfuncional/nativa.
+
+
+### Loop442 — posición vertical del título Métodos, 3/10/2026
+
+Base726eb6c; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. CSS h2line1.3/settingsheading18 ycontentpadding20/list-stackgap10 explicanposiciónfirstcard121.390625 medida441. Flutterheading heredaba1.55; fijado1.3. Assertgeométrico inicial observa121.0 (diferencia.390625 porredondeoText). ConstrainedBoxminHeight23.4 (=18×1.3) preserva fracción sinaltura máxima/recorte200. Primera compilaciónconconstConstrainedBox incorrecta falla; corregido constenconstraints/child, no se atribuyeverde a fallos.
+
+FinalGuardian+capturer60/60pasa11s99586/b40248: ambasfilas70px, top121.4/201.4 dentro.1px deSource121.390625/201.390625 a377×852; cinquefixturesincluyennormal/200/waiting/footer, assertionsmessage/actions/0writes. Analyzer74704/b6ca0c limpio32.8s código final; format/diffchecklimpios. PNGnormalfinal inspeccionado y5artefactosparity-loop442 guardados; SourcePNG/metricsvigentes441 sirvenreferencia deSHAidéntico.
+
+Posiciónvertical438/441 pendiente resueltaen esta geometría377; no pixeligualdadglobal/múltiplesanchos ni NativeSDK/wallets/fingerdevice aceptados. Sourcewalletsimulada/fixture55xx difieren intencionalmente de datoreal; no inventar disponibilidadnativa. Continúa matrizglobal/gestos/Stripeautenticado ydevice; noCM/push/schema/flags nuevos.

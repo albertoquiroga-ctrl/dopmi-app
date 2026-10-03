@@ -1174,12 +1174,16 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
                 children: [
-                  const Text(
-                    'Tarjetas guardadas',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: ink,
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 23.4),
+                    child: const Text(
+                      'Tarjetas guardadas',
+                      style: TextStyle(
+                        fontSize: 18,
+                        height: 1.3,
+                        fontWeight: FontWeight.w700,
+                        color: ink,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 10),

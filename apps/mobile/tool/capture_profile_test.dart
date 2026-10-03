@@ -2884,6 +2884,10 @@ void main() {
           if (!large) {
             final rows = find.byType(GuardianPaymentCardRow);
             expect(rows, findsNWidgets(2));
+            if (!waiting) {
+              expect(tester.getTopLeft(rows.at(0)).dy, closeTo(121.390625, .1));
+              expect(tester.getTopLeft(rows.at(1)).dy, closeTo(201.390625, .1));
+            }
             for (var i = 0; i < 2; i++) {
               expect(
                 tester.getSize(rows.at(i)).height,
