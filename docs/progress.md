@@ -1905,3 +1905,10 @@ Base8baaa39dc9a9ef7dd6268f1ba61ca6c844564e45; Source a3c969cd9103fd46dc5cd886999
 Se inicia regresión móvil completa sobre ese SHA, log externo C:/Users/betoq/AppData/Local/Temp/dopmi-full-mobile-loop423.log. Handle90488 confirmado vivo mediante write_stdin62d0ba; NO resultado terminal todavía. Retomar MISMO handle/log en siguiente turno, no lanzar otro Flutter test hasta terminal. No afirmar full558/greenactual. Analyzer420 precede sólo ediciones de prueba y ledger posteriores; verificar alcance final al cerrar suite.
 
 Mientras teléfono no visible, continuar familias/validaciones independientes. ConfigSDKreal/matrizglobal/acceptance física siguen pendientes; Codemagic sólo objetivo completo, sin push/build.
+
+
+### Loop424 — regresión integral cerrada y siguiente familia, 3/10/2026
+
+Suite móvil completa iniciada423 termina90488/9c5da9 exit0:558/558 en3m59s sobre8baaa39dc9a9ef7dd6268f1ba61ca6c844564e45. Log externo C:/Users/betoq/AppData/Local/Temp/dopmi-full-mobile-loop423.log.223Dart lib/test root/scratch idénticos verificados423; commits423/424 sólo ledger. No reinicio ni tests concurrentes. Esto acredita regresión técnica actual, no identidadvisualglobal/runtimeSDK/Play ni aceptacióninstalada.
+
+Referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. Siguiente familiaNotificationListSource y notification_tile/frame cliente leídos: borde/sombraunread, chips40, gap12 ycard24 ya corresponden. Title14/500 ytime12 usan normalSource vs1.2Flutter: medir render antes de ajustar. ClickSource marca leída y navega, app debe preservar navegación autorizada real y no copiar destinos simulados. Próximo comparar Source renderizado con fixtures equivalentes/read yKinds, no dar pantallaaceptada por lecture. ADB último423 vacío; no nuevasaccionesfisicas niCodemagic/push.
