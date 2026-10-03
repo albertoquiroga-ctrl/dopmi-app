@@ -4,6 +4,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { PGlite } from '@electric-sql/pglite';
 import { createHmac } from 'node:crypto';
 import { verifySignature, requireTestKey, paymentService, stripeApi } from '../../supabase/functions/_shared/payments.mjs';
+import { savedCardService, savedCardConsentVersion } from '../../supabase/functions/_shared/saved-card.mjs';
 
 let db;
 const donor = '70000000-0000-4000-8000-000000000001';
@@ -3862,4 +3863,165 @@ for(const data of [[{customer:'cus_initial',livemode:false,status:'active'}],
  const f=await removalFixture();f.stripe.subscriptions.list=async()=>({data,has_more:false});
  await assert.rejects(f.methodService().checkout(donor,f.removeInput),{code:'guardian_method_usage_unconfirmed'});
  assert.equal(f.detachCalls.length,0);
+});
+
+
+const savedCardRpc = async (operation,data={}) => (await db.query(
+  'select public.dopmi_saved_card_server($1,$2::jsonb) value',[operation,JSON.stringify(data)])).rows[0].value;
+const savedCardInput={key,consent:true,consent_version:savedCardConsentVersion};
+const savedCardReturn='https://fixture.supabase.co/functions/v1/payment-return';
+function savedCardFixture() {
+  const calls=[],customers=new Map(),sessions=new Map();
+  const state={loseCustomer:false,loseSession:false};
+  const setup={id:'seti_savedCard',status:'succeeded',livemode:false,usage:'off_session',payment_method:'pm_savedCard'};
+  const card={id:'pm_savedCard',livemode:false,type:'card'};
+  const stripe={
+    customers:{create:async(fields,options)=>{
+      calls.push({kind:'customer',fields:structuredClone(fields),options});
+      if(!customers.has(options.idempotencyKey))customers.set(options.idempotencyKey,{id:'cus_savedCard',livemode:false});
+      if(state.loseCustomer){state.loseCustomer=false;throw Error('lost customer response');}
+      return structuredClone(customers.get(options.idempotencyKey));
+    },retrieve:async id=>({id,livemode:false})},
+    checkout:{sessions:{create:async(fields,options)=>{
+      calls.push({kind:'session',fields:structuredClone(fields),options});
+      if(!sessions.has(options.idempotencyKey))sessions.set(options.idempotencyKey,
+        {...fields,id:'cs_test_savedCard',livemode:false,status:'open',url:'https://checkout.stripe.com/setup',setup_intent:null});
+      if(state.loseSession){state.loseSession=false;throw Error('lost session response');}
+      return structuredClone(sessions.get(options.idempotencyKey));
+    },retrieve:async()=>structuredClone([...sessions.values()][0])}},
+    setupIntents:{retrieve:async()=>structuredClone(setup)},
+    paymentMethods:{retrieve:async()=>structuredClone(card)},
+    events:{retrieve:async()=>({livemode:false,type:'checkout.session.completed',data:{object:{id:'cs_test_savedCard',customer:'cus_forged',status:'complete'}}})},
+  };
+  const service=(rpc=savedCardRpc)=>savedCardService({stripe,rpc,returnUrl:savedCardReturn});
+  const prepare=(patch={})=>savedCardRpc('prepare',{owner_id:donor,...savedCardInput,return_url:savedCardReturn,...patch});
+  const complete=()=>{
+    const session=[...sessions.values()][0];Object.assign(session,{status:'complete',setup_intent:setup.id});
+    Object.assign(setup,{customer:session.customer,metadata:structuredClone(session.metadata)});
+    card.customer=session.customer;
+  };
+  return {service,prepare,complete,calls,customers,sessions,state,setup,card,stripe};
+}
+
+test('independent card setup saves for a non-subscriber without creating money or a Guardian plan',async()=>{
+  const f=savedCardFixture();
+  const pending=await f.service().checkout(donor,savedCardInput);
+  assert.deepEqual(Object.keys(pending).sort(),['card_id','checkout_url','key','status']);
+  assert.equal(pending.status,'pending');assert.equal(pending.card_id,null);
+  assert.match(pending.checkout_url,/checkout.stripe.com/);
+  const fields=f.calls.find(c=>c.kind==='session').fields;
+  assert.equal(fields.mode,'setup');assert.equal(fields.currency,'mxn');
+  for(const forbidden of ['payment_intent_data','line_items','subscription_data','payment_method_types'])assert.equal(fields[forbidden],undefined);
+  assert.equal(f.customers.size,1);assert.equal(f.sessions.size,1);
+  f.complete();const result=await f.service().checkout(donor,savedCardInput);
+  assert.equal(result.status,'saved');assert.equal(result.card_id,'pm_savedCard');assert.equal(result.checkout_url,null);
+  assert.equal(f.calls.length,2);
+  for(const table of ['dopmi_guardian_subscriptions','dopmi_guardian_activations','dopmi_guardian_cycles','dopmi_guardian_collection_jobs'])
+    assert.equal((await db.query(`select count(*)::int n from private.${table}`)).rows[0].n,0);
+  await role(donor);
+  const receipt=(await db.query('select dopmi_saved_card_state() value')).rows[0].value;
+  assert.deepEqual(receipt,{key,status:'saved',card_id:'pm_savedCard'});
+  for(const actor of [other,staff]){await role(actor);assert.equal((await db.query('select dopmi_saved_card_state() value')).rows[0].value,null);}
+});
+
+test('independent saving reuses Guardian customer and leaves billing/calendar/evidence untouched',async()=>{
+  await methodFixture();
+  const before=(await db.query('select to_jsonb(s) value from private.dopmi_guardian_subscriptions s')).rows[0].value;
+  const f=savedCardFixture();await f.service().checkout(donor,savedCardInput);f.complete();
+  assert.equal((await f.service().checkout(donor,savedCardInput)).status,'saved');
+  assert.equal(f.calls.some(c=>c.kind==='customer'),false);
+  assert.equal(f.calls.find(c=>c.kind==='session').fields.customer,'cus_initial');
+  assert.deepEqual((await db.query('select to_jsonb(s) value from private.dopmi_guardian_subscriptions s')).rows[0].value,before);
+});
+
+for(const kind of ['Customer','Session'])test(`accepted ${kind.toLowerCase()} response loss reuses stable provider key and SQL receipt`,async()=>{
+  const f=savedCardFixture();f.state[`lose${kind}`]=true;
+  await assert.rejects(f.service().checkout(donor,savedCardInput),/lost .* response/);
+  const first=await f.prepare();assert.equal(first.status,'pending');assert.equal(first.lease_until,null);
+  assert.match((await f.service().checkout(donor,savedCardInput)).checkout_url,/checkout.stripe.com/);
+  const repeated=f.calls.filter(c=>c.kind===kind.toLowerCase());
+  assert.equal(repeated.length,2);assert.deepEqual(repeated[0],repeated[1]);
+  assert.equal(f.customers.size,1);assert.equal(f.sessions.size,1);
+  assert.equal((await f.prepare()).id,first.id);
+});
+
+test('saving requires real active/confirmed owner, explicit consent and immutable receipt',async()=>{
+  const f=savedCardFixture();
+  for(const patch of [{consent:false},{consent_version:'old'},{return_url:'https://evil.test/return'}])
+    await rejected(()=>f.prepare(patch),/Autorización/);
+  const job=await f.prepare();assert.equal((await f.prepare()).id,job.id);
+  await rejected(()=>f.prepare({return_url:'https://other.supabase.co/functions/v1/payment-return'}),/solicitud cambió/);
+  await rejected(()=>f.prepare({key:'72000000-0000-4000-8000-000000000099'}),/pendiente/);
+  await db.query('update auth.users set email_confirmed_at=null where id=$1',[donor]);
+  await rejected(()=>f.prepare(),/Cuenta no disponible/);
+  assert.equal(await savedCardRpc('claim',{id:job.id}),null);
+  await db.query('update auth.users set email_confirmed_at=now() where id=$1',[donor]);
+  await db.query("update profiles set account_status='suspended' where id=$1",[donor]);
+  await rejected(()=>f.prepare(),/Cuenta no disponible/);
+  assert.equal(await savedCardRpc('claim',{id:job.id}),null);
+  assert.equal(f.calls.length,0);
+});
+
+test('card setup private jobs and processor mutation RPC deny every browser role including staff',async()=>{
+  const f=savedCardFixture();await f.prepare();
+  for(const [actor,name] of [[donor,'authenticated'],[other,'authenticated'],[staff,'authenticated'],['','anon']]){
+    await role(actor,name);
+    await rejected(()=>f.prepare(),/permission denied/);
+    for(const table of ['dopmi_saved_card_jobs','dopmi_saved_card_customers'])
+      await rejected(()=>db.query(`select * from private.${table}`),/permission denied/);
+  }
+  await rejected(()=>db.query('select dopmi_saved_card_state()'),/permission denied/);
+  await db.exec('reset role');await role('','service_role');assert.equal((await f.prepare()).status,'pending');
+});
+
+test('card setup exclusive lease rejects stale provider checkpoints',async()=>{
+  const f=savedCardFixture();const job=await f.prepare();const lease=await savedCardRpc('claim',{id:job.id});
+  assert.equal(await savedCardRpc('claim',{id:job.id}),null);
+  await rejected(()=>savedCardRpc('customer',{id:job.id,lease:job.id,customer_id:'cus_savedCard'}),/vencido/);
+  await savedCardRpc('customer',{id:job.id,lease:lease.lease,customer_id:'cus_savedCard'});
+  await rejected(()=>savedCardRpc('customer',{id:job.id,lease:lease.lease,customer_id:'cus_changed'}),/inválido/);
+  await savedCardRpc('session',{id:job.id,lease:lease.lease,session_id:'cs_test_savedCard'});
+  await rejected(()=>savedCardRpc('saved',{id:job.id,lease:lease.lease,session_id:'cs_test_forged',setup_intent_id:'seti_savedCard',payment_method_id:'pm_savedCard'}),/no coincide/);
+  await db.query("update private.dopmi_saved_card_jobs set lease_until=now()-interval '1 second' where id=$1",[job.id]);
+  await rejected(()=>savedCardRpc('saved',{id:job.id,lease:lease.lease,session_id:'cs_test_savedCard',setup_intent_id:'seti_savedCard',payment_method_id:'pm_savedCard'}),/vencido/);
+});
+
+for(const [name,change,code] of [
+  ['foreign session',f=>{[...f.sessions.values()][0].customer='cus_peer';},'saved_card_session_mismatch'],
+  ['live session',f=>{[...f.sessions.values()][0].livemode=true;},'saved_card_session_mismatch'],
+  ['payment session',f=>{[...f.sessions.values()][0].mode='payment';},'saved_card_session_mismatch'],
+  ['foreign setup',f=>{f.setup.customer='cus_peer';},'saved_card_setup_mismatch'],
+  ['live setup',f=>{f.setup.livemode=true;},'saved_card_setup_mismatch'],
+  ['altered consent',f=>{f.setup.metadata.consent_version='old';},'saved_card_setup_mismatch'],
+  ['foreign card',f=>{f.card.customer='cus_peer';},'saved_card_method_mismatch'],
+  ['live card',f=>{f.card.livemode=true;},'saved_card_method_mismatch'],
+  ['non-card method',f=>{f.card.type='us_bank_account';},'saved_card_method_mismatch'],
+])test(`independent saving rejects ${name} and never claims success`,async()=>{
+  const f=savedCardFixture();await f.service().checkout(donor,savedCardInput);f.complete();change(f);
+  await assert.rejects(f.service().checkout(donor,savedCardInput),{code});assert.equal((await f.prepare()).status,'pending');
+});
+
+test('setup pending authentication remains pending; expired session is never saved',async()=>{
+  const f=savedCardFixture();await f.service().checkout(donor,savedCardInput);f.complete();f.setup.status='requires_action';
+  assert.equal((await f.service().checkout(donor,savedCardInput)).status,'pending');
+  [...f.sessions.values()][0].status='expired';
+  assert.equal((await f.service().checkout(donor,savedCardInput)).status,'expired');
+  assert.equal((await f.prepare()).payment_method_id,null);
+});
+
+test('independent setup webhook re-reads persisted session instead of forged completion payload',async()=>{
+  const f=savedCardFixture();await f.service().checkout(donor,savedCardInput);
+  assert.deepEqual(await f.service().handleWebhook('evt_setup'),{received:true,saved_card:true});
+  assert.equal((await f.prepare()).status,'pending');
+  f.complete();assert.equal((await f.service().reconcile()).saved,1);assert.equal((await f.prepare()).status,'saved');
+});
+
+test('new expired intent avoids provider writes and old uncertain creation stops before idempotency expiry',async()=>{
+  const f=savedCardFixture();const job=await f.prepare();
+  await db.query("update private.dopmi_saved_card_jobs set expires_at=now()+interval '20 minutes' where id=$1",[job.id]);
+  assert.equal((await f.service().run(job.id)).status,'expired');assert.equal(f.calls.length,0);
+  const retry=await f.prepare({key:'72000000-0000-4000-8000-000000000099'});
+  await db.query("update private.dopmi_saved_card_jobs set attempts=1,first_attempt_at=now()-interval '24 hours' where id=$1",[retry.id]);
+  assert.equal((await f.service().run(retry.id)).status,'attention');assert.equal(f.calls.length,0);
+  await rejected(()=>f.prepare({key:'72000000-0000-4000-8000-000000000098'}),/pendiente/);
 });

@@ -1,3 +1,11 @@
+# Estado vigente — loop367, 3/10/2026
+
+Eliminación real aislada Stripe365 confirmada sin segundo detach/cobros y cleanup completo; Auth/SQL integrados siguen pendientes. Feedback366 implementado, confirmado por lista nueva y sin replay/histórico; toast2600ms, eliminación sin popup visual, anuncio accesible.44dirigidas y capturas/analyze documentados; commit29d37df.
+
+Alta independiente: base local de registro/jobs SQL y saved-card.mjs,494/494 backend26.50s con19casos nuevos SQL/servicio. Aún NO desplegada/cableada: identidad de customer coherente con futura altaGuardian, endpoint/lista nonsuscritos/runtime/worker/webhook/UI y aceptación real pendientes. No presentar el botón como terminado. Billeteras reales y matrizglobal/aceptación permanecen abiertas. Codemagic únicamente final.
+
+## Corte363–364 anterior
+
 # Estado vigente — loops363–364, 3/10/2026
 
 Eliminación desplegada en DEV: migraciónremota20261003055326/local60000, worker24/webhook24/cliente17ACTIVE y bundles0diferencias. Cliente8b7798a conecta trash real, confirmación, estado propietario y reintento sin desaparición optimista.42 pruebas dirigidas y analyze limpio;4capturas revisadas normal/200%,314estados/37URLs. Sourcefeedbacktoast2600ms aún pendiente; estado actualNotice no equivale paridad completa. La prueba Stripe aislada real de eliminación y Auth integración siguen pendientes. Alta independiente/billeteras tampoco se completaron. Codemagic sólo candidato final.

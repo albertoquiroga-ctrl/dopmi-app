@@ -1470,3 +1470,6 @@ Loops363–364, 3/10/2026: eliminación disponible en DEV(guardian-client17/paym
 
 
 Loops365–366, 3/10/2026: Stripe test detach real una sola llamada con respuesta perdida, default/calendario intactos y limpieza comprobada (b2706d1); checkpoints locales, no integración Auth/SQL atribuida. Feedback Source inmediato2600ms sólo tras lista confirmada, sin replay/histórico;44dirigidas8s/analyze limpio/capturas2nuevas,316/37 inventario. Véase parity-loop366. Full504 anterior requiere gate final. SinCodemagic/push: preferencia del titular candidato único al completar objetivo. Altaindependiente/billeteras/matrizglobal/aceptación siguen abiertas.
+
+
+Loop367, 3/10/2026: base local de alta de tarjeta independiente (sin cobro/cambioGuardian) en migración70000 y saved-card.mjs.19casos nuevos SQLPGlite/servicio; gatebackend494/49426.50s handle62271exit0, Node/Deno limpios. PreflightDEVlatest55326/tablasnuevasausentes; NO migración/deploy/Stripe real/CM/push. Pendiente conectar cliente compartido con altaGuardian para evitar doblecustomer, lectura nonsuscritos, endpoint/runtime/webhook/worker y UI/aceptaciónreal. No es función completa aún ni cierre de objetivo. Referencia a3c969c sin cambios; detalle parity-loops367.
