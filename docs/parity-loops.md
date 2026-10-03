@@ -3182,3 +3182,10 @@ Servicio sólo cardtest/owner; consulta default de cliente, suscripciones y fact
 Gate finaltools/verification475/47522.44s(handle34511exit0), todas migracionesPGlite. Deno3entrypoints limpio(finalcacheexit0;primero7.52s). PreflightremotoDEV sólolectura:latest20261003051924/remove_columnfalse/service_execute true/authfalse/fragmentsprepare-proyección presentes. No migración niEdge desplegados, Stripe realremove niUI aún. Primer comandoappendtests usóruta relativa rootdesdeverification y no escribió;gate461sinnewtests. Corregido rootappend,470pass; luego473/472failure test asumió source disponible bajolease, evidencia correctanull, cambiado test a bloqueo+defaultimmutable;473pass antesvalidators nuevos.475 finalverde supersede.
 
 Sin dinero real/PROD/CM/push. Antes nuevo cliente: aplicar migración tras comparar cuerpo completo y actualizarworker/webhook/clientoverlay, luego conectartrashSource/confirmación/retry/200%; probarfixtureStripezero remove sin cobros. Alta independiente/billeteras/matrizglobal siguenpendientes; noGoalcomplete.
+
+
+### Loop363 — eliminación desplegada en todos los consumidoresDEV
+
+Preflightreal:latest51924/remove_savedausente/cincooldpatches presentes; módulos métodos idénticos cliente/worker/webhook. Migraciónlocal60000remota55326audit. Verificadoscolumn/removed/refused/action yACLanon-authfalse-servicetrue. OrdenSQL→worker24→webhook24→cliente17; overlayspreservan14/13/12 otrosarchivos yJWTfalse/autenticaciónprevios. GetEdge15/14/15 archivos coincide0mismatches,ACTIVE.
+
+Smoke18/18pasó5.61s sin secretosusuarios/Stripewrite. Gate475/Deno362alcanceprevio. No eliminaciónStripeauténtica ni clienteUI aún; siguienteconectartrash/confirmación/estadoacción/reintento/200% yfixturecero. SinCM/push/PROD/flags/cobros. Objetivoactivo.

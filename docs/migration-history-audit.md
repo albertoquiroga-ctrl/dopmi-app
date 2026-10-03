@@ -340,3 +340,10 @@ Gate460/46028.54s356, Deno check tresentrypoints limpio7.82s357 y smoke remoto
 18/18pass6.02s: rechazo anónimo cliente/worker/RPC, webhook sin firma400,
 return200. No authmutación real/defaultStripe/UI/cron/dispositivo acreditados.
 Sin cambiosflags/usuarios/Stripewrite/producción/Codemagic/push.
+
+
+## Loop363 — eliminación de método guardado, 2/10/2026
+
+Local20261003060000_guardian_saved_method_removal.sql aplicada una vez por MCP en DEVohqxranynackjignryep como20261003055326/guardian_saved_method_removal. Antes:latest51924/columnaausente y cinco fragmentos del cuerpo real presentes; módulos guardian-method iguales en los tres consumidores. Después:remove_saved existe, guardsremoved/refused y proyecciónaction presentes; EXECUTEanon/authfalse/service_roletrue. Sin repair/rename/replay/dbpush/PROD.
+
+Overlays mínimos:payment-worker23→24 ystripe-webhook23→24 sólo guardian-method;guardian-client16→17 index/client/method. Otros14/13/12 archivos preservados, verify_jwtfalse previo y guardsAuth/worker-secret/webhooksignature intactos. GetEdge posterior comparó15/14/15 archivos normalizandoCRLF,0mismatches, todosACTIVE. Gate475/362 yDeno limpio; smoke18/18real5.61s (cliente/worker/RPCrechazan anónimo, webhook400sin firma, return200). No Stripe removereal/Authmutación/cron/teléfono ni cambiosflags. NoCM/push.
