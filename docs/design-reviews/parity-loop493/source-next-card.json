@@ -1,0 +1,434 @@
+{
+  "reference_sha": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "viewport": [
+    377,
+    852
+  ],
+  "input": "real browser pointer via mouse; not physical Android",
+  "events": [
+    {
+      "property": "opacity",
+      "style": "translateX(-420px) rotate(-18deg)",
+      "timing": [
+        {
+          "delay": 0,
+          "direction": "normal",
+          "duration": 280,
+          "easing": "ease",
+          "endDelay": 0,
+          "fill": "backwards",
+          "iterationStart": 0,
+          "iterations": 1
+        },
+        {
+          "delay": 0,
+          "direction": "normal",
+          "duration": 280,
+          "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+          "endDelay": 0,
+          "fill": "backwards",
+          "iterationStart": 0,
+          "iterations": 1
+        }
+      ]
+    },
+    {
+      "property": "transform",
+      "style": "translateX(-420px) rotate(-18deg)",
+      "timing": [
+        {
+          "delay": 0,
+          "direction": "normal",
+          "duration": 280,
+          "easing": "ease",
+          "endDelay": 0,
+          "fill": "backwards",
+          "iterationStart": 0,
+          "iterations": 1
+        },
+        {
+          "delay": 0,
+          "direction": "normal",
+          "duration": 280,
+          "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+          "endDelay": 0,
+          "fill": "backwards",
+          "iterationStart": 0,
+          "iterations": 1
+        }
+      ]
+    },
+    {
+      "property": "transform",
+      "style": "translateX(0px) rotate(0deg)",
+      "timing": [
+        {
+          "delay": 0,
+          "direction": "normal",
+          "duration": 250,
+          "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+          "endDelay": 0,
+          "fill": "backwards",
+          "iterationStart": 0,
+          "iterations": 1
+        }
+      ]
+    }
+  ],
+  "samples": [
+    {
+      "t": 5.800000071525574,
+      "title": "Rocky",
+      "x": 0,
+      "opacity": 1
+    },
+    {
+      "t": 13.800000071525574,
+      "title": "Rocky",
+      "x": -65.4593,
+      "opacity": 0.986556
+    },
+    {
+      "t": 105.40000009536743,
+      "title": "Rocky",
+      "x": -371.77,
+      "opacity": 0.601932
+    },
+    {
+      "t": 113.10000002384186,
+      "title": "Rocky",
+      "x": -382.55,
+      "opacity": 0.565871
+    },
+    {
+      "t": 123,
+      "title": "Rocky",
+      "x": -391.191,
+      "opacity": 0.533659
+    },
+    {
+      "t": 133.40000009536743,
+      "title": "Rocky",
+      "x": -398.078,
+      "opacity": 0.505021
+    },
+    {
+      "t": 143.30000007152557,
+      "title": "Rocky",
+      "x": -403.391,
+      "opacity": 0.480359
+    },
+    {
+      "t": 153.30000007152557,
+      "title": "Rocky",
+      "x": -407.601,
+      "opacity": 0.458508
+    },
+    {
+      "t": 163.10000002384186,
+      "title": "Rocky",
+      "x": -410.877,
+      "opacity": 0.439407
+    },
+    {
+      "t": 173.40000009536743,
+      "title": "Rocky",
+      "x": -413.429,
+      "opacity": 0.422615
+    },
+    {
+      "t": 183.30000007152557,
+      "title": "Rocky",
+      "x": -415.354,
+      "opacity": 0.408216
+    },
+    {
+      "t": 193.40000009536743,
+      "title": "Rocky",
+      "x": -416.804,
+      "opacity": 0.395815
+    },
+    {
+      "t": 203.30000007152557,
+      "title": "Rocky",
+      "x": -417.867,
+      "opacity": 0.385325
+    },
+    {
+      "t": 213.20000004768372,
+      "title": "Rocky",
+      "x": -418.643,
+      "opacity": 0.376373
+    },
+    {
+      "t": 223.20000004768372,
+      "title": "Rocky",
+      "x": -419.19,
+      "opacity": 0.368865
+    },
+    {
+      "t": 233.20000004768372,
+      "title": "Rocky",
+      "x": -419.552,
+      "opacity": 0.362825
+    },
+    {
+      "t": 243.10000002384186,
+      "title": "Rocky",
+      "x": -419.779,
+      "opacity": 0.358061
+    },
+    {
+      "t": 253.30000007152557,
+      "title": "Rocky",
+      "x": -419.91,
+      "opacity": 0.354478
+    },
+    {
+      "t": 263.2000000476837,
+      "title": "Rocky",
+      "x": -419.974,
+      "opacity": 0.35199
+    },
+    {
+      "t": 273.10000002384186,
+      "title": "Rocky",
+      "x": -419.996,
+      "opacity": 0.350521
+    },
+    {
+      "t": 282.60000002384186,
+      "title": "Rocky",
+      "x": -420,
+      "opacity": 0.350007
+    },
+    {
+      "t": 294.5,
+      "title": "Toby",
+      "x": -420,
+      "opacity": 1
+    },
+    {
+      "t": 302.40000009536743,
+      "title": "Toby",
+      "x": -352.856,
+      "opacity": 1
+    },
+    {
+      "t": 311.60000002384186,
+      "title": "Toby",
+      "x": -287.112,
+      "opacity": 1
+    },
+    {
+      "t": 321.7000000476837,
+      "title": "Toby",
+      "x": -229.209,
+      "opacity": 1
+    },
+    {
+      "t": 343.5,
+      "title": "Toby",
+      "x": -141.408,
+      "opacity": 1
+    },
+    {
+      "t": 351.40000009536743,
+      "title": "Toby",
+      "x": -109.367,
+      "opacity": 1
+    },
+    {
+      "t": 361.3000000715256,
+      "title": "Toby",
+      "x": -83.5468,
+      "opacity": 1
+    },
+    {
+      "t": 370.3000000715256,
+      "title": "Toby",
+      "x": -65.3649,
+      "opacity": 1
+    },
+    {
+      "t": 380.3000000715256,
+      "title": "Toby",
+      "x": -49.462,
+      "opacity": 1
+    },
+    {
+      "t": 390.40000009536743,
+      "title": "Toby",
+      "x": -37.1602,
+      "opacity": 1
+    },
+    {
+      "t": 399.40000009536743,
+      "title": "Toby",
+      "x": -28.5193,
+      "opacity": 1
+    },
+    {
+      "t": 408.5,
+      "title": "Toby",
+      "x": -21.5721,
+      "opacity": 1
+    },
+    {
+      "t": 418.60000002384186,
+      "title": "Toby",
+      "x": -15.7341,
+      "opacity": 1
+    },
+    {
+      "t": 427.60000002384186,
+      "title": "Toby",
+      "x": -11.6488,
+      "opacity": 1
+    },
+    {
+      "t": 436.90000009536743,
+      "title": "Toby",
+      "x": -8.45891,
+      "opacity": 1
+    },
+    {
+      "t": 446.8000000715256,
+      "title": "Toby",
+      "x": -5.86268,
+      "opacity": 1
+    },
+    {
+      "t": 456.8000000715256,
+      "title": "Toby",
+      "x": -3.91434,
+      "opacity": 1
+    },
+    {
+      "t": 465.90000009536743,
+      "title": "Toby",
+      "x": -2.63194,
+      "opacity": 1
+    },
+    {
+      "t": 475.60000002384186,
+      "title": "Toby",
+      "x": -1.67413,
+      "opacity": 1
+    },
+    {
+      "t": 485.60000002384186,
+      "title": "Toby",
+      "x": -0.971507,
+      "opacity": 1
+    },
+    {
+      "t": 494.2000000476837,
+      "title": "Toby",
+      "x": -0.547804,
+      "opacity": 1
+    },
+    {
+      "t": 504.10000002384186,
+      "title": "Toby",
+      "x": -0.261802,
+      "opacity": 1
+    },
+    {
+      "t": 514.1000000238419,
+      "title": "Toby",
+      "x": -0.101259,
+      "opacity": 1
+    },
+    {
+      "t": 523.7000000476837,
+      "title": "Toby",
+      "x": -0.0275464,
+      "opacity": 1
+    },
+    {
+      "t": 532.7000000476837,
+      "title": "Toby",
+      "x": -0.00370256,
+      "opacity": 1
+    },
+    {
+      "t": 542.7000000476837,
+      "title": "Toby",
+      "x": 0,
+      "opacity": 1
+    },
+    {
+      "t": 552.5,
+      "title": "Toby",
+      "x": 0,
+      "opacity": 1
+    },
+    {
+      "t": 562.4000000953674,
+      "title": "Toby",
+      "x": 0,
+      "opacity": 1
+    },
+    {
+      "t": 571.5,
+      "title": "Toby",
+      "x": 0,
+      "opacity": 1
+    },
+    {
+      "t": 580.6000000238419,
+      "title": "Toby",
+      "x": 0,
+      "opacity": 1
+    },
+    {
+      "t": 589.7000000476837,
+      "title": "Toby",
+      "x": 0,
+      "opacity": 1
+    },
+    {
+      "t": 599,
+      "title": "Toby",
+      "x": 0,
+      "opacity": 1
+    },
+    {
+      "t": 608.2000000476837,
+      "title": "Toby",
+      "x": 0,
+      "opacity": 1
+    },
+    {
+      "t": 618.3000000715256,
+      "title": "Toby",
+      "x": 0,
+      "opacity": 1
+    },
+    {
+      "t": 627.3000000715256,
+      "title": "Toby",
+      "x": 0,
+      "opacity": 1
+    },
+    {
+      "t": 636.4000000953674,
+      "title": "Toby",
+      "x": 0,
+      "opacity": 1
+    },
+    {
+      "t": 645.8000000715256,
+      "title": "Toby",
+      "x": 0,
+      "opacity": 1
+    },
+    {
+      "t": 655.5,
+      "title": "Toby",
+      "x": 0,
+      "opacity": 1
+    }
+  ]
+}
