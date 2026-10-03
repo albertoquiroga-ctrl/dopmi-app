@@ -2664,3 +2664,15 @@ acreditados. Siguiente bloque despliegue DEV verificado y foto privada/confirmac
 email/composición pendiente. Atajos históricos todavía presentes abajo: retirarlos
 de esta composición preservando accesos Perfil/Configuración al cerrar familia.
 No dinero real ni nuevo Codemagic; cambios concurrentes intactos.
+
+# Loop308 — nombre/apellido desplegados en DEV
+
+Referencia remota a3c969cd9103fd46dc5cd886999912526ce75efb sin cambios.
+Preflight actual y aplicación única20261003003548/private_account_name_parts.
+Verifica tres cuerpos iguales al archivo, ACL, RLS y trigger. Prueba SQL remota
+sin actor rechaza ambos endpoints en rollback sin editar nombres/cuentas reales.
+Registro de correspondencia local/remota en migration-history-audit; no reparar
+historial. App ya tiene métodos/formulario de307; falta recorrido autenticado y
+foto privada/email/composición completas. No producción/legado/dinero/Play nuevo.
+Siguiente bloque listo foto de cuenta propia, distinta del avatar público moderado.
+Codemagic se reserva para objetivo completo según titular.

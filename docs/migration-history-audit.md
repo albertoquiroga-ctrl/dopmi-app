@@ -261,3 +261,17 @@ por ejecución remota en rollback; no se crearon solicitudes/objetos reales.
 SQL local tenía gate completo436/436 aprobado loop296. Esta verificación remota
 no equivale a Auth/REST/Storage real ni selección Android; falta ese recorrido.
 PROD no consultado/modificado, no dinero real, legado no tocado ni Codemagic.
+
+## 2/10/2026 — partes explícitas del nombre privado (loop308)
+
+Local20261003002324_private_account_name_parts.sql aplicado una vez por MCP al
+DEVohqxranynackjignryep como20261003003548/private_account_name_parts. Preflight
+historial20261003000209 confirmado, tabla/RPC ausentes y require_actorMD5
+b9044d4aaca74210a2f32273f2d894a2 intacto. No repair/dbpush/replay/rename.
+Tres cuerpos remotos (getter/save/trigger) coinciden normalizados con SQL local.
+SECURITY DEFINER/search_path vacío en tres; públicos EXECUTE anonfalse/authtrue,
+helper privado anony/authfalse. RLS de tabla true, SELECT anon/authfalse y trigger
+AFTER UPDATE OF display_name verificados. Ejecución remota rollback comprueba
+getter/save rechazados sin identidad; ninguna cuenta/nombre real editado.
+Gate local437/437 loop306 y cliente39/39 loop307. No Auth/REST/dispositivo ni
+persistencia de nombre real acreditados. Producción y legado sin cambios.
