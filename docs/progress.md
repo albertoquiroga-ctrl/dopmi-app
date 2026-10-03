@@ -2550,3 +2550,7 @@ Capturador58342exit0,1test/403fixtures únicas,3m05s;403PNG frescos/hashes/sourc
 ### Loop527 — colores/tipografía EvidenceCard contra computedStyle, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultada/runtimeEdge377x852:ink151423/muted4f4e5c (corrigeinfer616174526),helper12/16/label14alto17/hint12alto15/gap6/max240/drop148/radio24/icon28.41f53af EvidenceCard actualizaestilos/Columnmincentrada/nooverlay mantienecallbacks12files5MBprivado/public roles.91835exit0,13/13,6s con2fixtures;90487analyzerexit0clean67.8s. Normal3controlesPNGinspeccionado,largeparcialnoaceptacióntotal. Source-metrics/PNGREADME527 ycorreccióndoc526. Full609524/403525pre527. Sinbackend/SQL/push/Codemagic/físico/global/StripeSDK.
+
+## 2026-10-03 — Loop 528: paleta de campos y resumen de gastos
+
+Producción 37c5ecbb10c532494ad51c159ea1ac19a0974bb7. ExpenseField, ExpenseReview y ExpenseFrame usan ink151423/muted4f4e5c de rescuer-theme; evidencia Source527 y remote irlanda/apoyar-detalle-perfil a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Cambio exclusivamente de colores; importes, privacidad, controles y persistencia intactos. Test91880 terminal exit0:13/13,15s (12 pruebas de campos/archivos + capturador); 17 PNG expense-* generados. Analyzer31685 terminal exit0 sin problemas,50.8s. Captura information inspeccionada; capturas adicionales archivadas sin afirmar aceptación visual completa. Full609524 y capturador403525 preceden527–528. Objetivo global y dispositivo pendientes; sin push ni Codemagic, por instrucción final-only del usuario.
