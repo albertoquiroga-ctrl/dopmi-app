@@ -16,6 +16,8 @@ const removableBuckets = [
   'dopmi-adoption-photos',
   'dopmi-case-update-media',
   'dopmi-rescuer-profile-media',
+  'dopmi-account-profile-media',
+  'dopmi-support-media',
 ] as const;
 
 async function removePrivateMedia(

@@ -2676,3 +2676,25 @@ historial. App ya tiene métodos/formulario de307; falta recorrido autenticado y
 foto privada/email/composición completas. No producción/legado/dinero/Play nuevo.
 Siguiente bloque listo foto de cuenta propia, distinta del avatar público moderado.
 Codemagic se reserva para objetivo completo según titular.
+
+# Loop309 — contrato y Storage local para foto privada de cuenta
+
+Referencia remota a3c969cd9103fd46dc5cd886999912526ce75efb sin cambios. Preflight
+DEV history20261003003548, bucket/tabla/RPC nuevos ausentes y guard actor intacto.
+CLI crea20261003003833_private_account_photo.sql, aún sin despliegue: tabla privada
+ownercascade, bucket privado5MB/JPEG, getter/save dueño, enlace sólo objeto real
+con metadata válida, guardar serializa profilelock y revalida actor. RLS limita
+lectura a dueño activo; personal admin no accede a foto ajena. Foto vigente no
+puede modificarse/borrarse; desvinculada permite cleanup por dueño. Restricciones
+cubren políticas ajenas, UPDATE siempre denegado. Avatar público moderado/legado
+sin cambios. Nuevo propósito MediaPurpose.accountAvatar reutiliza normalización.
+Account-deletion añade ambos buckets nuevos a cleanup local; Edge no redesplegado.
+
+Dos pruebas SQL nuevas: enlace existente/ajeno/retry/metadata inválida/suspensión
+anon y RLS real select/insert/delete/update dueño/tercero/staff. Primer fallo fixture
+carecía USAGE storage (Supabase sí lo concede): grant sólo local transaccional
+reproduce entorno, no cambia permisos remotos. Repetición2/2 aprobada2.5s, gate
+completo439/439 aprobado31.45s. Media3/3 aprobadas, PNG→JPEG/PDFdenegado incluye
+accountAvatar. Analyze limpio38.3s, diff-check limpio. Sin foto real/carga/SQL remoto.
+Faltan repositorio/control foto y composición en Información básica, despliegue
+SQL/Edge y recorrido autenticado. No Codemagic nuevo; objetivo global pendiente.

@@ -20,6 +20,7 @@ void main() {
         MediaPurpose.adoptionPhoto,
         MediaPurpose.rescuePhoto,
         MediaPurpose.supportAttachment,
+        MediaPurpose.accountAvatar,
       ]) {
         final result = prepareMedia((purpose, bytes));
         expect(result.contentType, 'image/jpeg');

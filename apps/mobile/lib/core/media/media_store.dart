@@ -15,6 +15,7 @@ enum MediaPurpose {
   caseUpdatePhoto,
   rescuerAvatar,
   supportAttachment,
+  accountAvatar,
 }
 
 extension MediaPolicy on MediaPurpose {
@@ -23,6 +24,7 @@ extension MediaPolicy on MediaPurpose {
     MediaPurpose.caseUpdatePhoto => 'dopmi-case-update-media',
     MediaPurpose.rescuerAvatar => 'dopmi-rescuer-profile-media',
     MediaPurpose.supportAttachment => 'dopmi-support-media',
+    MediaPurpose.accountAvatar => 'dopmi-account-profile-media',
     _ => 'dopmi-rescue-evidence',
   };
   bool get isDocument => this == MediaPurpose.rescueDocument;

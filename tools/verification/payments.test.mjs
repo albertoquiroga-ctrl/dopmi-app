@@ -13,6 +13,70 @@ const other = '70000000-0000-4000-8000-000000000004';
 const expense = '71000000-0000-4000-8000-000000000003';
 const key = '72000000-0000-4000-8000-000000000001';
 
+test('account photo storage RLS protects current objects and permits cleanup only for the owner',async()=>{
+  const path=`${donor}/${donor}/73000000-0000-4000-8000-000000000001.jpg`;
+  // Mirror Supabase Storage role grants; authorization must come from actual RLS.
+  await db.exec('grant usage on schema storage to authenticated,anon');
+  await db.exec('grant select,insert,update,delete on storage.objects to authenticated,anon');
+  await role(donor);
+  await db.query("insert into storage.objects(bucket_id,name,metadata) values('dopmi-account-profile-media',$1,'{\"mimetype\":\"image/jpeg\",\"size\":1024}')",[path]);
+  await db.query('select dopmi_save_account_photo($1)',[path]);
+  assert.equal((await db.query('select name from storage.objects where name=$1',[path])).rows.length,1);
+  assert.equal((await db.query('delete from storage.objects where name=$1 returning name',[path])).rows.length,0);
+  assert.equal((await db.query('update storage.objects set metadata=null where name=$1 returning name',[path])).rows.length,0);
+  for(const actor of [other,staff]) {
+    await role(actor);
+    assert.equal((await db.query('select name from storage.objects where name=$1',[path])).rows.length,0);
+    await rejected(()=>db.query("insert into storage.objects(bucket_id,name) values('dopmi-account-profile-media',$1)",[path]),/row-level security/);
+    assert.equal((await db.query('delete from storage.objects where name=$1 returning name',[path])).rows.length,0);
+  }
+  await role('', 'anon');
+  assert.equal((await db.query('select name from storage.objects where name=$1',[path])).rows.length,0);
+  await role(donor);
+  await db.query('select dopmi_save_account_photo(null)');
+  assert.equal((await db.query('delete from storage.objects where name=$1 returning name',[path])).rows.length,1);
+});
+
+test('account photo links only a real owned JPEG and never exposes it to other accounts or staff',async()=>{
+  const path=`${donor}/${donor}/73000000-0000-4000-8000-000000000001.jpg`;
+  const save=async(value)=>(await db.query('select dopmi_save_account_photo($1) value',[value])).rows[0].value;
+  const get=async()=>(await db.query('select dopmi_my_account_photo() value')).rows[0].value;
+  await role(donor);
+  assert.equal(await get(),null);
+  await rejected(()=>save(path),/Foto de cuenta inválida/);
+  await db.exec('reset role');
+  await db.query("insert into storage.objects(bucket_id,name,metadata) values('dopmi-account-profile-media',$1,'{\"mimetype\":\"image/jpeg\",\"size\":1024}')",[path]);
+  await role(donor);
+  await rejected(()=>save(path.replaceAll(donor,other)),/Foto de cuenta inválida/);
+  assert.equal((await save(path)).photo_path,path);
+  assert.equal((await get()).photo_path,path);
+  assert.equal((await save(path)).photo_path,path);
+  assert.equal((await db.query('select dopmi_account_photo_file_access($1,true) allowed',[path])).rows[0].allowed,false);
+  await rejected(()=>db.query('select * from private.dopmi_account_photos'),/permission denied/);
+  for(const actor of [other,staff]) {
+    await role(actor);
+    assert.equal(await get(),null);
+    assert.equal((await db.query('select dopmi_account_photo_file_access($1) allowed',[path])).rows[0].allowed,false);
+    await rejected(()=>save(path),/Foto de cuenta inválida/);
+  }
+  await role(donor);
+  assert.equal(await save(null),null);
+  assert.equal(await get(),null);
+  assert.equal((await db.query('select dopmi_account_photo_file_access($1,true) allowed',[path])).rows[0].allowed,true);
+  await db.exec('reset role');
+  await db.query("update storage.objects set metadata='{\"mimetype\":\"image/jpeg\",\"size\":\"not-a-number\"}' where name=$1",[path]);
+  await role(donor);
+  await rejected(()=>save(path),/Foto de cuenta inválida/);
+  await db.exec('reset role');
+  await db.query("update profiles set account_status='suspended' where id=$1",[donor]);
+  await role(donor);
+  assert.equal((await db.query('select dopmi_account_photo_file_access($1) allowed',[path])).rows[0].allowed,false);
+  await rejected(()=>get(),/Cuenta activa y confirmada requerida/);
+  await role('', 'anon');
+  assert.equal((await db.query('select dopmi_account_photo_file_access($1) allowed',[path])).rows[0].allowed,false);
+  await rejected(()=>get(),/permission denied/);
+});
+
 test('account name parts are explicit, private, compatible with legacy edits and cannot grant privileges',async()=>{
   await db.query('update profiles set display_name=$1 where id=$2',['María del Carmen Pérez',donor]);
   await role(donor);
