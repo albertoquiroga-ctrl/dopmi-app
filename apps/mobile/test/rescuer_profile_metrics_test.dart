@@ -60,12 +60,19 @@ void main() {
         expect(tester.getSize(cards.first).height, 84);
       }
       final gesture = await tester.startGesture(tester.getCenter(cards.first));
-      await tester.pump(const Duration(milliseconds: 150));
+      await tester.pump();
       final animation = find.descendant(
         of: cards.first,
         matching: find.byType(AnimatedScale),
       );
       expect(tester.widget<AnimatedScale>(animation).scale, .98);
+      await tester.pump(const Duration(milliseconds: 120));
+      expect(
+        tester.widget<ScaleTransition>(
+          find.descendant(of: animation, matching: find.byType(ScaleTransition)),
+        ).scale.value,
+        closeTo(.98, .0001),
+      );
       await gesture.cancel();
       await tester.pumpAndSettle();
       expect(cases, 0);
