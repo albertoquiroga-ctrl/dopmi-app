@@ -356,7 +356,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
               fillColor: Colors.white,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,
-                vertical: 8,
+                vertical: 9,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
