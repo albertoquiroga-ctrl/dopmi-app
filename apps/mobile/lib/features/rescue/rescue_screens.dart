@@ -256,10 +256,11 @@ class _RescuerDashboard extends StatelessWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             if (pending.isNotEmpty || unread > 0)
-              const Icon(
-                Icons.error_outline,
-                size: 20,
-                color: Color(0xff151423),
+              SvgPicture.asset(
+                'assets/profile/icon-alert-circle.svg',
+                width: 20,
+                height: 20,
+                excludeFromSemantics: true,
               ),
             const Text(
               'Acciones pendientes',
@@ -353,10 +354,13 @@ class _RescuerDashboard extends StatelessWidget {
                       shape: BoxShape.circle,
                       color: Color(0x1a2dc08e),
                     ),
-                    child: const Icon(
-                      Icons.south_west,
-                      size: 20,
-                      color: Color(0xff0b7a5d),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        'assets/profile/icon-donation-in.svg',
+                        width: 20,
+                        height: 20,
+                        excludeFromSemantics: true,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
