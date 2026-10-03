@@ -1,3 +1,13 @@
+# Corte vigente — loop359, 2/10/2026
+
+Referencia remota a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada358. Código probado `0c4dbee7296f1606b13d88892866e858b84c662b`: **504/504 pruebas móviles aprobadas en3:45**, flutter test, handle2617 terminal exit0. Los210 archivos tracked lib/test coinciden con scratch normalizandoCRLF. Sin modificaciones durante el gate. Supersede494/342 y cubre cliente343–358, incluido listado real y selección predeterminada. Analyze limpio358; backend460/356 y despliegue357 conservan evidencia independiente. No CI nuevo, aceptación instalada ni mutación Stripe real autenticada acreditados por este gate.
+
+Capturas actuales312estados/37URLs. Métodos de pago tiene lectura propietaria real y cambio de tarjeta predeterminada con autorización/reintento; faltan eliminación segura, agregar tarjeta independiente y billeteras reales. Soporte autenticado con adjunto/vista administrativa positiva, correo confirmado, galería Android, reporte de caso remoto y revisión instalada actual siguen sin aceptación completa. El objetivo mantiene alcance de todas las familias, animaciones y gestos móviles; no hover ni simulaciones financieras.
+
+Codemagic y push sólo candidato final, conforme a la última instrucción del titular. No publicación intermedia por este gate.
+
+## Corte previo342 y evidencia histórica
+
 # Corte de evidencia de paridad — 2/10/2026, loop342
 
 Referencia vigente `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`, reconsultada342. Último código/pruebas `dff4386efa7151476491f00fd9f1e57287ea98aa`.
