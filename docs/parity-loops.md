@@ -2735,3 +2735,23 @@ paridad total: faltan pruebas específicas del flujo UI foto, comparación final
 despliegue foto309/cleanup y email real. Shortcuts adicionales aún pendientes.
 No Codemagic: próximo envío sólo al completar/verificar objetivo por instrucción
 más reciente del usuario. Objetivo global activo.
+
+# Loop312 — formulario sin accesos extra y aceptación de retry foto
+
+Referencia remota irlanda/apoyar-detalle-perfil reconsultada:
+a3c969cd9103fd46dc5cd886999912526ce75efb. BasicInfo termina al guardar igual
+al componente de referencia; retira shortcuts/logout/términos duplicados.
+Accesos preservados en Perfil/Configuración; regresión de logout ahora vuelve
+a Configuración desde Información básica.
+
+Nueva prueba de UI conecta picker→JPEG→preview→guardar: no upload antes de
+Guardar, fallo conserva foto/nombre sin acuse, retry usa misma ruta/upload una
+vez y acuse exige RPC válido; cancelación conserva preview y cambio de dueño
+durante picker descarta selección pendiente. Primer intento fixture sin import
+provider corregido; segundo tap fuera viewport de test corregido con viewport
+377×852 y unfocus/pump. Pruebas finales21/21 y extensión1/1 aprobadas.
+Analyze limpio29s. Capturas basic-info/large/keyboard-large regeneradas,
+capturador1/1 aprobado4s; normal inspeccionada sin accesos extra ni overflow.
+No acredita cambio de correo (aún readonly), backend foto remoto, galería nativa
+ni paridad global. Siguiente desplegar/verificar schema foto309 y cleanup,
+recorrido autenticado y correo. No Codemagic hasta completar objetivo.

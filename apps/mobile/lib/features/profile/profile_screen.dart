@@ -394,39 +394,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
-              for (final shortcut in const [
-                ('Guardados', '/saved', Icons.favorite_border),
-                ('Mis mensajes', '/messages', Icons.chat_bubble_outline),
-                ('Mis publicaciones', '/my-adoptions', Icons.pets_outlined),
-                (
-                  'Rescatistas guardados',
-                  '/saved?kind=rescuer',
-                  Icons.bookmark_border,
-                ),
-                ('Mi impacto', '/impact', Icons.auto_stories_outlined),
-                ('Configuración', '/settings', Icons.settings_outlined),
-              ])
-                ListTile(
-                  leading: Icon(shortcut.$3),
-                  title: Text(shortcut.$1),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.push(shortcut.$2),
-                ),
             ],
-            const SizedBox(height: 20),
-            OutlinedButton(
-              onPressed: busy
-                  ? null
-                  : () => perform(
-                      () => ref.read(identityControllerProvider).logout(),
-                    ),
-              child: const Text('Cerrar sesión'),
-            ),
-            TextButton(
-              onPressed: () => context.push('/terms'),
-              child: const Text('Términos y privacidad'),
-            ),
           ],
         ),
       ),

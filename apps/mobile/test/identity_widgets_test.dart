@@ -245,6 +245,8 @@ void main() {
     await tap(tester, 'Guardar cambios');
     expect(repo.profile.name, 'Ana editada');
     expect(find.text('Guardamos los cambios de tu perfil.'), findsOneWidget);
+    await tester.tap(find.byTooltip('Volver'));
+    await tester.pumpAndSettle();
     await tap(tester, 'Cerrar sesión');
     expect(find.text('Bienvenido a DopMi'), findsOneWidget);
     expect(find.text('Ana editada'), findsNothing);
