@@ -2466,3 +2466,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, códigoAssetIconale
 ### Loop510 — gate actual608 y análisis terminal, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado;ADBvacío. Full87957exit0,608/608,3m54s; analyzer46356exit0clean205.7s exacto 9e76c84fb1cc66e1dcf1c0c7ae6d770dc054c63c.230Dart/cuatroSVG raíz-scratch/hashsinchanges antes/después. Supersede608506, incluye507/508/509. README/hash509/currentreviewactualizados. Próxima pasada401actual por cambios493/499/505/507/509 posteriores492; no401aceptaciones ni reabrirfinancieroH5yaaceptado. Sinbackend/SQL/push/Codemagic/físico/global.
+
+## 3/10/2026 — Paridad loop511, capturas completas actuales
+
+Capturador81489 exit0,2m57s:401fixtures únicas regeneradas,401PNG frescos/hashes registrados.230Dart y cuatroSVG idénticos raíz/scratch al gate509 sobre9e76c84fb1cc66e1dcf1c0c7ae6d770dc054c63c;full608/analyzer509 siguen vigentes. Inspección directa de owned-cases y rescuer-home-actions-large; no aceptación visual atribuida a401estados. Referenciaa3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. docs/design-reviews/parity-loop511. Objetivo activo, contraste global/Android físico/StripeSDK pendientes. Se conserva instrucción del titular: Codemagic sólo al completar, sin avances intermedios.

@@ -1,4 +1,10 @@
-# Corte vigente — loop510, 3/10/2026
+# Corte vigente — loop511, 3/10/2026
+
+Pasada completa81489 exit0, 1test/401 fixtures,2m57s.401 PNG frescos con hashes;230Dart/cuatroSVG iguales raíz/scratch y sin cambios respecto al gate509. Evidencia en parity-loop511/capture-manifest.json. Producción9e76c84fb1cc66e1dcf1c0c7ae6d770dc054c63c mantiene full608/608 y analyzer limpio509. Capturas511 sustituyen492; no401aceptaciones visuales.
+
+Referenciaa3c969cd9103fd46dc5cd886999912526ce75efb. Inspección directa de Mis casos y pendientes200% actuales. Contraste global/Android físico/StripeSDK siguen pendientes. Codemagic únicamente al completar objetivo; sin push intermedio.
+
+# Corte anterior — loop510, 3/10/2026
 
 Fuente9e76c84fb1cc66e1dcf1c0c7ae6d770dc054c63c: full608/608,3m54s,87957exit0; analyzer46356exit0clean205.7s.230Dart/cuatroSVG idénticos raíz/scratch y hashes sin cambios durante ejecución. Incluye pendientes507/toque508/iconos509; supersede full608506.
 
