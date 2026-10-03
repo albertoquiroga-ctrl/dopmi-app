@@ -357,3 +357,8 @@ DEVohqxranynackjignryep: local20261003070000_saved_card_setup→remote2026100306
 ## Loop376 local, not deployed
 
 20261003080000_saved_card_methods is local only; no remote timestamp assigned. PostgreSQL/PGlite full gate522/52222.95s passed. Before remote application compare deployed definitions and last history; do not repair, replay or rename timestamps.
+
+
+## Loop378 — saved-card methods deployed in DEV
+
+Local20261003080000_saved_card_methods→remote20261003075406/saved_card_methods. Preflight latest65233/tableabsent/two patch anchors present; applied once by MCP. RLS/ACL/ownerstate and both setup/activation guards verified. Worker26/webhook26/client19 ACTIVE,18/17/17files match intended overlays. Smoke23/23real7.84s. No repair/replay/rename/dbpush/PROD or authenticated positive/device acceptance. Supersedes loop376 local-only status above.

@@ -1,3 +1,11 @@
+# Corte vigente — loop378, 3/10/2026
+
+Acciones de tarjeta sinGuardian desplegadas DEV: local80000/remota75406, RLS/ACL/guards comprobados, worker26/webhook26/client19ACTIVE y bundles18/17/17sin diferencias. Smoke23/23real7.84s; backend526/377 yDeno3entrypoints con alcance local. Aún falta cliente/consent/key/recuperación/listafresh y aceptaciónAuthStripe real de estasacciones; no dispositivo.
+
+Billeteras reales/uso tarjeta en apoyo/composiciónSource y matrizglobal de pantallas/animaciones/gestos/aceptacióninstalada siguen abiertas. Fuentea3c969c sin cambios, fullmobile504/359 anterior. Codemagic únicamente al terminar objetivo completo, dinero test-only.
+
+## Corte377 anterior
+
 # Corte vigente — loop377, 3/10/2026
 
 Acciones de tarjeta sinGuardian integradas localmente: RPCSQL80000/RLS/locks bidireccionales/servicioStripe/endpointallowlist/worker. Backend526/52626s yDeno3entrypoints limpio6.39s. Dos casos SQL+Stripefake prueban respuestaaceptadaperdida/default-remove/replaywrite1; NO AuthStripe remoto positivo ni UI, ni migración desplegada. Sigue preflight/deploy/cableadomóvil/aceptación.

@@ -120,3 +120,12 @@ Previo376 progreso89c9e0e. Referencia a3c969cd9103fd46dc5cd886999912526ce75efb r
 Dos pruebas nuevas integran servicio con RPCPostgreSQL/PGlite real y Stripefake: default/remove aceptados conrespuesta perdida, pendingpersistido, lease liberada, recuperarporlectura y replay sin segunda escritura. ConfirmaciónSQLexacttarget y receiptminimizado; customerbalance0 y cero filasdonación/activación. Otrasdos HTTP cubren allowlist/consent/card/op y cuenta no confirmada sinwrite. Full526/52626.00s75727/exit0; Deno tres entrypoints limpio6.39s192b57 despuésmaperrorprepare. No aceptaciónStripe/Authreal deestasacciones, ni UI nueva.
 
 Migraciónlocal80000 y overlays aún NO desplegados. Próximo preflightfuncionesdefiniciones/historialremoto y aplicar80000una vez, preservarbundlesremotos/flags y verificarRPC/Edge, después accionesmóvil nonsuscrito/default/remove/capturas/fixtureAuthStripe. Sin schema/flags/cuentas/Stripewrite/PROD/CM/push; dinero test-only y objetivo global conservado.
+
+
+### Loop378 — acciones independientes desplegadas en DEV, 3/10/2026
+
+Previo377 progreso3ffc721 (backend526/52626s/Deno3entrypoints6.39s). Referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. PreflightDEVohqxranynackjignryep latest20261003065233/tablemethodausente, fragmentossetup/activationpresentes. Bundlesworker25/webhook25/client18 recuperados, archivosareemplazar coincidenbase89c9e0e normalizandoCRLF. Migraciónlocal20261003080000_saved_card_methods aplicadauna vez como remote20261003075406/saved_card_methods. Post RLStrue/serveranon-authfalse/service_roletrue/stateauthtrue/anonfalse/guardssetupactivationtrue. No repair/replay/rename/dbpush/PROD.
+
+Overlay mínimo yordenworker→webhook→client: worker25→26 runtime reemplazado+saved-card-method nuevo/16otrosconservados/18archivos; webhook25→26 mismo/15otrosconservados/17; client18→19 runtime+handler+indexreemplazados/módulonuevo/13otrosconservados/17. TodosACTIVE verify_jwtfalse previo conservado, autenticacióngetUser/worker-secret/firmadewebhook sigue enentrypointspreservados. GetEdge posterior18/17/17 coincideoverlay0mismatches/0extras. No publicarotroscambiosajenos.
+
+Smokeampliado dosRPC nuevos23/23real7.84s41ac01/exit0: cliente401/worker401/webhook400sinfirma,return200 yserver/stateanónimos401/42501 explícito. No RPCmissing. No Authpositivo/Stripewrite/reconcilepositivo/device acreditados. No flags/cuentas/dinero/CM/push/goalcomplete. Siguecableadoclientepropietario/consent/key/retry/listaconfirmada/accionesnonsuscrito/capturas/fixtureAuthStripe y restoobjetivoglobal.
