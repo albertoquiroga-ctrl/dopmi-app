@@ -2,7 +2,7 @@
 
 Fuente17e59ee: full90121exit0,609/609,3m46s; analyzer79611exit0 limpio222.6s.230Dart/cuatroSVG raíz-scratch iguales y hashes sin cambios antes/después,manifest524. Incluye519–523 y corrección deexpectativa524; supersede608aprobadas/1fallo523 y609517.
 
-Inventario403522; nueva pasada completa525 iniciada, todavía sin resultados. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambio. Contrasteglobal/Androidfísico/StripeSDK pendientes; capturas noaceptaciones. Sinpush/Codemagic hastaobjetivocompleto.
+Inventario403522; pasada completa525 terminal58342exit0,1test/403fixtures,3m05s,403PNG frescos/hashes/fuente sin cambios respecto524. Supersede401511; no403aceptaciones. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambio. Contrasteglobal/Androidfísico/StripeSDK pendientes; capturas noaceptaciones. Sinpush/Codemagic hastaobjetivocompleto.
 
 # Corte anterior — loop524, 3/10/2026
 

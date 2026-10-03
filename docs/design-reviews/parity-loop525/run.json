@@ -1,10 +1,11 @@
 {
   "capture_handle": 58342,
-  "status": "running",
+  "status": "terminal exit0;403fresh",
   "expected_fixtures": 403,
   "inventory": "../parity-loop522/route-inventory.json",
   "source_manifest": "../parity-loop524/mobile-consistency.json",
   "log": "C:/Users/betoq/AppData/Local/Temp/dopmi-loop525-all-captures.log",
   "reference_sha": "a3c969cd9103fd46dc5cd886999912526ce75efb",
-  "limitation": "Captured fixtures are not visual acceptance"
+  "limitation": "Captured fixtures are not visual acceptance",
+  "duration": "3m05s"
 }

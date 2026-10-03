@@ -2542,3 +2542,7 @@ Full56544exit1,608aprobadas/1fallo,3m38s; analyzer48063exit0 limpio183.1s sobreb
 ### Loop525 — gate actual609 aprobado y capturas403 en curso, 3/10/2026
 
 Full90121exit0,609/609,3m46s; analyzer79611exit0 limpio222.6s fuente17e59ee.230Dart/cuatroSVG raíz/scratch/hashsinchanges antes/despuéscomprobados. Supersede523608/1fallo y609517, incluye519–523 +literal524. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado sin cambio. ManifestREADME524/currentreviewactualizados. Capturadorcompleto403525 iniciado después delgate,noresultadoatribuido aún,log525-all-captures. Sinbackend/SQL/push/Codemagic/físico/global/StripeSDK.
+
+### Loop526 — capturas403 actuales y base de gastos, 3/10/2026
+
+Capturador58342exit0,1test/403fixtures únicas,3m05s;403PNG frescos/hashes/source230DartcuatroSVG unchanged respecto17e59ee/full609524. Manifest525/runREADME/currentreview actualizados,supersede401511,no403aceptaciones. Sourcea3 runtimeEdge377x852 EvidenceRockyVet dialog345x598.984375/radio28/drop295x148/icon28 inspeccionado conNativeexpense-evidencefresco525. OriginalUploadSVG/frame presentes; colores/lineheightEvidenceCard quedanparaajuste, no copiarcashback/Coins/video niDisponiblefundedsimulado. README/PNG/metrics526. Sin producción/backend/SQL/push/Codemagic/físico/global/StripeSDK.
