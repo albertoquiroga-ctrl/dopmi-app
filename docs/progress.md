@@ -2442,3 +2442,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; Edge377x852/case/ro
 ### Loop504 — carrusel Apoyar y regreso real, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. CSSrail overflowauto/gap16/sinsnap inspeccionado, no nuevo runtimeSource. Nueva pruebaDopmiApp8casos fake drag280noabre/offset>0,tapCaso4URIcorrecto/backmismaposition/offset/hitTestable.62652exit0,1/1,2s; fuente b7474d2801a55ee3f0a46cc40ec74150d9540f48 testformato posterior sin lógica. README504, full607500 producción vigente anterioratest. Sin backend/SQL/push/Codemagic/físico/globalacceptance.
+
+### Loop505 — resumen rescatista gradiente/activo de marca, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado CSSwallet146 ySVGoriginal. CssLinearGradient146 reemplazadiagonalalignment, walletSVG20decorativo sustituyeMaterial y singular1casoactivo. Saldos/revisión reales preservados, no bolsillofake.80661exit0,27/27,7s antesprecargaSVG/iconoausente;16672exit1assetbundleobsoleto;archivo1556bytespresente,mtimepubspecscratch refrescado sincontenidocambiado.70874exit0,1/12fixtures,7s PNGicono visibleinspeccionado. Analyzer94451exit0clean36.1s antes sóloprecargacapturador. Fuente 7c656986ceb0381e1f25f4ba507675eca8e95469. Full607500 anteriorproducción505;integradoactualpendiente. Sinbackend/SQL/push/Codemagic/físico/global.
