@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' show PointerDeviceKind;
 
 import 'package:flutter/services.dart';
@@ -23,15 +24,134 @@ class SettingsSocialProfile extends FakeRescuerProfile {
   String? get userId => 'one';
   bool failSave = false;
   int attempts = 0;
+  Future<void>? saveGate;
   @override
   Future<Json> save(Json payload, {int? version}) async {
     attempts++;
     if (failSave) throw StateError('version_conflict');
+    final gate = saveGate;
+    if (gate != null) await gate;
     return super.save(payload, version: version);
   }
 }
 
+Future<ProviderContainer> mountSocialGestureTest(
+  WidgetTester tester,
+  SettingsSocialProfile profile,
+) async {
+  final identity = FakeIdentityRepository()
+    ..user = const Identity('one', 'fixture@example.test', verified: true);
+  final container = ProviderContainer(
+    overrides: [
+      identityRepositoryProvider.overrideWithValue(identity),
+      rescuerProfileRepositoryProvider.overrideWithValue(profile),
+    ],
+  );
+  addTearDown(() async {
+    container.dispose();
+    await identity.changes.close();
+  });
+  await tester.pumpWidget(
+    UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        home: Builder(
+          builder: (context) => Scaffold(
+            body: TextButton(
+              onPressed: () =>
+                  editRescuerSocial(context, profile.value, 'instagram_url'),
+              child: const Text('Abrir'),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('Abrir'));
+  await tester.pumpAndSettle();
+  return container;
+}
+
 void main() {
+  for (final action in ['outside', 'back', 'close']) {
+    testWidgets(
+      'social modal preserves inside taps and dismisses without writes: $action',
+      (tester) async {
+        final profile = SettingsSocialProfile()..value['owner_id'] = 'one';
+        await mountSocialGestureTest(tester, profile);
+        await tester.tap(find.text('Editar Instagram'));
+        await tester.pumpAndSettle();
+        expect(find.byType(RescuerSocialDialog), findsOneWidget);
+        if (action == 'outside') {
+          await tester.tapAt(const Offset(8, 8));
+        } else if (action == 'back') {
+          await tester.binding.handlePopRoute();
+        } else {
+          await tester.tap(find.byTooltip('Cerrar'));
+        }
+        await tester.pumpAndSettle();
+        expect(find.byType(RescuerSocialDialog), findsNothing);
+        expect(profile.attempts, 0);
+        expect(profile.saves, 0);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+  for (final logout in [false, true]) {
+    testWidgets(
+      'social pending write blocks duplicate taps and dismissal; logout=$logout',
+      (tester) async {
+        final gate = Completer<void>();
+        final profile = SettingsSocialProfile()
+          ..value['owner_id'] = 'one'
+          ..saveGate = gate.future;
+        final container = await mountSocialGestureTest(tester, profile);
+        await tester.enterText(
+          find.byKey(const ValueKey('rescuer-social-input')),
+          '@refugio_test',
+        );
+        await tester.pump();
+        await tester.tap(find.text('Guardar'));
+        await tester.pump();
+        expect(profile.attempts, 1);
+        expect(
+          tester.widget<FilledButton>(find.byType(FilledButton)).onPressed,
+          isNull,
+        );
+        await tester.tap(find.byType(FilledButton));
+        await tester.tapAt(const Offset(8, 8));
+        await tester.binding.handlePopRoute();
+        await tester.tap(find.byTooltip('Cerrar'));
+        await tester.pumpAndSettle();
+        expect(find.byType(RescuerSocialDialog), findsOneWidget);
+        expect(profile.attempts, 1);
+        expect(profile.saves, 0);
+        if (logout) {
+          await container.read(identityControllerProvider).logout();
+          await tester.pumpAndSettle();
+          expect(find.byType(TextField), findsNothing);
+          expect(find.text('La sesión cambió'), findsOneWidget);
+        }
+        gate.complete();
+        await tester.pumpAndSettle();
+        expect(profile.attempts, 1);
+        expect(profile.saves, 1);
+        if (logout) {
+          expect(find.text('La sesión cambió'), findsOneWidget);
+          expect(find.byType(TextField), findsNothing);
+        } else {
+          expect(find.byType(RescuerSocialDialog), findsNothing);
+          expect(
+            profile.value['instagram_url'],
+            'https://www.instagram.com/refugio_test',
+          );
+        }
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   test(
     'compact Instagram presentation keeps non-profile and foreign URLs visible',
     () {

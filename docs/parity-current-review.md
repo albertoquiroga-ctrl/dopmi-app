@@ -1,3 +1,7 @@
+# Corte vigente — loop454
+
+12 pruebasgestosmodal pasan4s:inside/fuera/back/×, pendingno duplicates/cierre ylogoutnoPrivateUI. Analyzerclean22.6s. Producción453sin cambios;full564/452previo453/454. Próximo NAVSettings:Source tabsnone vsCommunityNavfallbackPerfilactivo, confirmarrender ycorregirscoped. SDK/Stripe/device/globalpendientes;Codemagic sólo objetivo completo.
+
 # Corte vigente — loop453
 
 Modalcard292.2/y279.9 ycentro×331.71875/303.9 dentro.1px deSource449; linebox.8125resuelta layout.8 targetpasan9s, analyzerfinalclean45.5s,200/keyboardcancel0writes. Full564/452 previo453. Matrizglobal/device/Stripe/SDK abiertos;Codemagic sólo objetivo completo.

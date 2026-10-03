@@ -3941,3 +3941,12 @@ Base3e1e150; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado fdc585
 Cierre reemplazaMaterialIcon porInter×22/w400/color4f4e5c/NoScaling; área48/IconButton/tooltipCerrar conservadas. right5.28125 derivaSource buttonwidth26.5625/right16 para mismo centro331.71875 y303.90625, asserts dentro.1. Primer8/8pasa9s53823; final8/8pasa9s34924exit0 conposiciónaltura exactas yclosecentro nuevosasserts. Capturer8fixtures conserva normal/valid/200/Facebook/keyboard320normal/200/fila normal200; keyboardCancelar pointer0writes ynoexceptions siguenpassing. PNGvalidfinal/200keyboard inspeccionadas;8artefactosguardados. Analyzer79944 clean45.5s final;format/diffchecklimpios.
 
 Full564/452 correspondeaea2e21 anteriora453, no fullactualatribuir; último cambio estrecho tiene8targetfinal. No teléfono/Stripe/NativeSDK/config/schema/CM/push nuevo. Nativecaret/underlayfuentesreales difierenSourcefixture, no igualdadglobal de pantalla ni aceptación física. Siguiente continuar familias/gestos abiertos de matriz; no repetirgatefullsin nuevas razones.
+
+
+### Loop454 — gestos de cierre y escritura pendiente del diálogo, 3/10/2026
+
+Baseb52f538; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado ca617f. SourcecardstopPropagation/backdropclose y× yaimplementados; agregadas pruebascomportamiento realwidget, sin cambiosproducción. Nuevafakegate controlaRPCpendiente paraprobarinterleavings yduplicados, no simulaaceptaciónremota.
+
+12/12pasa4s89758exit0: toque dentro mantieneModal; fuera/back deFlutterBinding/× cierra0attempt/0save. Pendiente: botónsave disabled, intentosrepetidos/barrier/back/close no cierran yproducen1attempt/0savehastarespuesta. Alcompletar1save cierra; logoutduranteawait ocultaTextField yrespuesta tardía no reapareceenotra sesión, elwriteoriginalpuedeterminar (no afirmar cancelaciónservidor). TestsURL/owner/retry/guardados previos siguenpassing. Analyzer5910clean22.6s ydiffchecklimpio. SinAndroidfísico/Sourcebrowser nuevo ni fullactual (564/452 previo453/454).
+
+Siguiente diferenciaNAV concreta identificada lecturaSource158: BottomNav activa sólo item.path prefix; /rescuer/settings y/settings no coincidenPerfil. ClienteCommunityNavfallback /profile mantienePerfilactivo, visibleSource446nonevsNative453purple. Medir/confirmarSource ycorregir estado seleccionado sóloenSettings sinperdernavegadores/gestos/datos reales. Objetivoglobal/SDK/Stripe/device siguenabiertos, noCM/push/deploy.
