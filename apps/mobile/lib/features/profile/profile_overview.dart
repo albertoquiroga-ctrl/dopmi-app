@@ -1055,10 +1055,12 @@ class ProfileFrame extends StatelessWidget {
     this.rescuerOverview = false,
     this.showNotifications = true,
     this.rescuerSettings = false,
+    this.standardSettings = false,
   });
   final String title;
   final List<Widget> children;
   final bool back, rescuerOverview, showNotifications, rescuerSettings;
+  final bool standardSettings;
   @override
   Widget build(BuildContext context) => Scaffold(
     extendBodyBehindAppBar: rescuerSettings,
@@ -1085,7 +1087,13 @@ class ProfileFrame extends StatelessWidget {
                 : null,
             leadingWidth: rescuerSettings ? 62 : null,
             shape: rescuerSettings
-                ? const Border(bottom: BorderSide(color: Color(0xffe3e4ed)))
+                ? Border(
+                    bottom: BorderSide(
+                      color: standardSettings
+                          ? const Color(0xffe6e2dd)
+                          : const Color(0xffe3e4ed),
+                    ),
+                  )
                 : null,
             leading: back
                 ? Padding(
@@ -1108,13 +1116,15 @@ class ProfileFrame extends StatelessWidget {
             title: Text(
               title,
               style: rescuerSettings
-                  ? const TextStyle(
+                  ? TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                       height: 1.25,
                       letterSpacing: -.36,
-                      color: Color(0xff151423),
+                      color: standardSettings
+                          ? const Color(0xff15110d)
+                          : const Color(0xff151423),
                     )
                   : Theme.of(context).textTheme.titleLarge,
             ),
@@ -1443,6 +1453,7 @@ class SettingsScreen extends ConsumerWidget {
       back: true,
       showNotifications: false,
       rescuerSettings: true,
+      standardSettings: true,
       children: [
         const RescuerNavigationRow(
           standardSettings: true,

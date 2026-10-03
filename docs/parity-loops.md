@@ -3959,3 +3959,9 @@ Base5da686e; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado553350.
 Testsnuevossemánticaambosmodos compruebanno selectedtrue dentroDopmiBottomBar, toquePerfil→/profile→sóloPerfilselected preservanombre/modo. Primera invocación18pasan/1fallocargatest/navigation_test inexistente: localizadoarchivo realdesign_navigation_test, nocambioapp parafallotool. Final27/27pasa12s89806exit0 (profile_experience/design_navigation/capture15rescuerstates). Analyzer11575clean24.4s final. Capture donor57594 1test/4statespasa3s; primerPNGnormalheadervacío detectadovisualmenteaunqueassertspasan, descartadoparaevidencia. Repeticiónsinchanges64280exit0 pasa4s yPNGnormalheadercompletoinspeccionado; no defectoApp atribuido ni renderingfísicoverificado. SóloPNGfinalesrevisadasguardadas8artefactos.
 
 Full564/452 antecede453–455, targetsgreennofullactualglobal. RestoSettingschild (/settings/payment-methods/Sourcebilling/basicinfo) yheaderdonorwarm deben revisar suFooter/estilosporroute, sin cambiar globalfallback antes comparar. Semántica/rutas testwidget noAndroidreal. SDK/Stripe/device/restomatriz permanecenabiertos;sinCM/push/deploy.
+
+### Loop456 — paleta del encabezado donor, 3/10/2026
+
+Base707a27e; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. ProfileFrame standardSettings sólo mainSettingsdonor: título15110d/divisore6e2dd segúnCSS fuente; rescuer permanece151423/e3e4ed. Back.svg ya15110d como AssetIconSource. DetallesBasicInfo/PaymentMethods/BillingSource sinBottomNav, cliente también sinbarra; no cambiofallbackglobal.
+
+18/18 pruebas perfil+capturador pasan8s92306exit0; analyzer4320exit0 limpio28.4s. CuatroPNG widgets normal/200%; normalygrande inspeccionadas, evidencia docs/design-reviews/parity-loop456. Diferencias datos/accesos reales/badge no copiadascomo simulación. Diffcheck limpio. Full564/452 antecede453–456. Objetivoglobal/StripeSDK/device pendientes;sinCodemagic/push.
