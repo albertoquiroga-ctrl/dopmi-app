@@ -22,7 +22,7 @@ class ExpenseField extends StatelessWidget {
     const style = TextStyle(
       fontFamily: 'Inter',
       fontSize: 14,
-      height: 1.4,
+      height: 17 / 14,
       color: Color(0xff151423),
     );
     final decoration = InputDecoration(
@@ -58,7 +58,9 @@ class ExpenseField extends StatelessWidget {
                     enabled: enabled,
                     maxLength: field.max,
                     maxLines: field.lines,
-                    style: style,
+                    style: field.lines > 1
+                        ? style.copyWith(height: 1.4)
+                        : style,
                     keyboardType: field.key == 'amount_cents'
                         ? const TextInputType.numberWithOptions(decimal: true)
                         : field.lines > 1
