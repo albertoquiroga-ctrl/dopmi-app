@@ -2621,3 +2621,23 @@ Siguiente bloque: almacenamiento privado/nombre-apellido explícitos y confirmac
 real de cambio de email, luego composición/recorridos. No inferir apellido de nombres
 compuestos existentes ni mostrar éxito simulado. Codemagic final sigue reservado
 para cierre completo. Cambios locales del titular preservados.
+
+# Loop306 — contrato privado de nombre y apellido explícitos
+
+Referencia a3c969cd9103fd46dc5cd886999912526ce75efb vigente. Preflight DEV confirmó
+history20261003000209, profilesRLS activo, guard actorMD5 sin cambios y ausencia
+de tabla/RPC nuevas. CLI2.118 migration new crea20261003002324_private_account_name_parts.
+No despliegue aún. Tabla privada sin grants, getter dueño vía require_actor,
+save valida exclusivamente first/last/phone/city y mantiene modo/status/intención.
+Fallback retorna nombre existente completo y apellido vacío sin adivinar división.
+Trigger sólo cuando cambia display_name desde cliente anterior retira partes
+obsoletas; teléfono solo no altera división explícita. Perfil público moderado no
+se modifica y firmas existentes permanecen.
+
+Prueba SQL real nombres compuestos/trim, legitimidad actor, propietario ajeno,
+admin sin acceso ajeno, tabla directa negada, payload privilegios/límites,
+compatibilidad antigua y suspensión/anon. Primer fallo sólo expectativa de texto
+incorrecta (Cuenta no disponible vs guard Cuenta activa y confirmada requerida):
+ajustada prueba, no guarda. Dirigida aprobada2.3s, gate437/437 aprobado27.4s.
+Faltan RPC remotas, servicio/UI móvil, foto privada y cambio email confirmado;
+no simulaciones ni nuevo Codemagic. Objetivo completo sigue pendiente.
