@@ -29,7 +29,7 @@ class CaseReview extends StatelessWidget {
           style: const TextStyle(
             fontFamily: 'Inter',
             fontSize: 16,
-            height: 1.55,
+            height: 1.25,
             fontWeight: FontWeight.w500,
             color: Color(0xff151423),
           ),
@@ -72,7 +72,7 @@ class CaseReview extends StatelessWidget {
               style: const TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 12,
-                height: 1.55,
+                height: 1.25,
                 color: Color(0xff616174),
               ),
             ),

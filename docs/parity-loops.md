@@ -3632,3 +3632,10 @@ Base3da71c4; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. CaseN
 ### Loop418 — espacio estable para iconos de necesidades, 3/10/2026
 
 Base04d8eb1; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Captura35208/a21a4f pasa11s y revela glifos faltantes (renderer fixture sin fuente emoji), con slot reducido a ancho de fallback. Se fija SizedBox36x36 alrededor del texto Unicode para preservar distribución aun sin fuente. No se atribuye identidad/color nativo ni resolución del fallback Android. Capturas final normal/200 guardadas; normal inspeccionada conserva posiciones de copy, glyph faltante todavía visible y aceptación pendiente.11/11 case_publication+capture pasan11s68230/70ce00; analyzer28817/35cb15 limpio39.3s, format aprobado. Source review CSS consultado: heading16/500, cardvalue16/24/500 coinciden con constantes actuales; faltan comparación renderizada/estado equivalente. Próximo revisión actual y comprobación de fuente nativa autorizada; matrizglobal/configSDK/device pendientes. Sin Codemagic/push.
+
+
+### Loop419 — tipografía del resumen de revisión, 3/10/2026
+
+Base7351bae; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. Source ejecutado Edge419 a377x852, fixture donation/verified/Mora, pasos fotos→información→necesidades→revisión y fonts.ready. DOM medido: heading20, botónEditar17, photo110, labels15. CaseReview corrige heading16/20 y etiquetas12/15, antes1.55. Valores16/24/500 ya coinciden. No se cambia envío real a revisión ni se copia publicación simulada; campos reales adicionales preservados. Source/edit target17 frenteFlutter48 aún expande filas y resta fidelidad, pendiente resolver gesto/visual; fuentes/foto/enumfixtures difieren, sinpixelidentity.
+
+11/11 case_publication+capture review pasan12s62461/bdede3; analyzer95186/814d69 limpio65.9s. PNGSource yFlutter normal/200 guardados, normalFlutter inspeccionada. Browser419 cerrado848e1b; Vite5871 CtrlCexit1 esperado. Próximo resolver composición/touch áreaEditar y comparar servicios/estado reales; objetivo global/configSDK/device siguen pendientes. SinCodemagic/push.
