@@ -141,6 +141,34 @@ class ReportCaptureCommunity extends PublicProfileCaptureCommunity {
   }
 }
 
+class ManagedUpdatesCaptureRepository extends FakeCaseUpdates {
+  ManagedUpdatesCaptureRepository({required this.empty, required this.fail});
+  final bool empty, fail;
+  @override
+  Future<List<CaseUpdate>> mine(String caseId) async {
+    if (fail) throw Exception('fixture unavailable');
+    if (empty) return [];
+    return [
+      for (final status in [
+        'draft',
+        'submitted',
+        'changes_requested',
+        'approved',
+      ])
+        CaseUpdate({
+          'id': 'update-$status',
+          'case_id': caseId,
+          'body': status == 'draft'
+              ? ''
+              : 'Luna recibió atención veterinaria y continúa su recuperación.',
+          'status': status,
+          'version': 1,
+          'photos': <String>[],
+        }),
+    ];
+  }
+}
+
 class OwnedHistoryCaptureUpdates extends FakeCaseUpdates {
   @override
   Future<List<CaseUpdate>> publicFor(String caseId) async => [
@@ -1055,6 +1083,33 @@ void main() {
       ('transparency-criteria', '/transparency'),
       ('publish-choice', '/publish'),
       ('publish-choice-large', '/publish'),
+      ('managed-updates', '/rescue-cases/case-one/updates'),
+      ('managed-updates-large', '/rescue-cases/case-one/updates'),
+      ('managed-updates-empty', '/rescue-cases/case-one/updates'),
+      ('managed-updates-empty-large', '/rescue-cases/case-one/updates'),
+      ('managed-updates-error', '/rescue-cases/case-one/updates'),
+      ('managed-updates-error-large', '/rescue-cases/case-one/updates'),
+      ('managed-updates-editor-new', '/rescue-cases/case-one/updates/new'),
+      (
+        'managed-updates-editor-new-large',
+        '/rescue-cases/case-one/updates/new',
+      ),
+      (
+        'managed-updates-editor-draft',
+        '/rescue-cases/case-one/updates/update-changes_requested',
+      ),
+      (
+        'managed-updates-editor-draft-large',
+        '/rescue-cases/case-one/updates/update-changes_requested',
+      ),
+      (
+        'managed-updates-editor-error',
+        '/rescue-cases/case-one/updates/update-draft',
+      ),
+      (
+        'managed-updates-editor-error-large',
+        '/rescue-cases/case-one/updates/update-draft',
+      ),
       ('my-adoptions', '/my-adoptions'),
       ('my-adoptions-large', '/my-adoptions'),
       ('my-adoptions-empty', '/my-adoptions'),
@@ -1339,6 +1394,7 @@ void main() {
         };
       }
       if (spec.$1.startsWith('owned-case-detail') ||
+          spec.$1.startsWith('managed-updates') ||
           spec.$1.startsWith('owned-cases') ||
           spec.$1.startsWith('rescuer-home') ||
           spec.$1.startsWith('rescuer-profile') ||
@@ -1507,6 +1563,13 @@ void main() {
                   : spec.$1.startsWith('support-home-error')
                   ? FailedSupportCaptureRescue()
                   : SupportCaptureRescue(),
+            ),
+          if (spec.$1.startsWith('managed-updates'))
+            caseUpdateRepositoryProvider.overrideWithValue(
+              ManagedUpdatesCaptureRepository(
+                empty: spec.$1.contains('empty'),
+                fail: spec.$1.contains('error'),
+              ),
             ),
           guardianEnabledProvider.overrideWithValue(true),
           guardianRepositoryProvider.overrideWithValue(guardian),
