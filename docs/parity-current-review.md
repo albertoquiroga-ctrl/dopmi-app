@@ -1,3 +1,11 @@
+# Corte vigente — loop383, 3/10/2026
+
+Base de billeteras nativas sin cobro preparada, aún no integrada: SetupIntent propietario/provider real, idempotencia, primera billetera/customer compartido, vencimiento/carrera y secret condicionado a autorización SQL futura.12tests nuevos; backend538/53822.37s y Deno módulo válido. SQL/native_ready/endpoint/runtime/móvil/dispositivo pendientes, no billetera real acreditada. Config MerchantID/PK test preguntada sin credenciales; continuar servidor mientras se aclara.
+
+Default/remove Auth+Stripe382 y alta Checkout371 conservan evidencia remota independiente. Móvil538/381,324capturas/37URLs. Continúan wallets/uso tarjeta en apoyo/Guardian cancelado/matriz global visual-motion-gestos-instalación. Fuentea3c969c, dinero test-only, CM sólo al completar todo.
+
+## Corte382 anterior
+
 # Corte vigente — loop382, 3/10/2026
 
 Default/remove independientes acreditados con Auth+endpoint+SQL+Stripe test reales: applied/removed, lista fresca/default confirmado, replay estable, intento1 por operación, consentimiento/privado/destino cambiado rechazados, cero cargos/facturas/suscripciones. Fixture completamente retirada y credenciales eliminadas del journal. Preparación SDK de tarjetas/wallet explícita, no aceptación hostedCheckout ni dispositivo. Alta hostedCheckout371 tiene evidencia separada.
