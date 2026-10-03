@@ -708,6 +708,23 @@ void main() {
     expect(repo.calls, isEmpty);
   });
 
+  testWidgets('pull refresh reloads a short empty card list without a write', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final repo = FakeGuardian();
+    await start(tester, repo, methods: true);
+    tester.view.physicalSize = const Size(390, 852);
+    await tester.pumpAndSettle();
+    final before = repo.reads;
+    await tester.drag(find.byType(ListView), const Offset(0, 400));
+    await tester.pumpAndSettle();
+    expect(repo.reads, before + 1);
+    expect(repo.calls, isEmpty);
+    expect(repo.opened, 0);
+    expect(find.text('Aún no tienes tarjetas guardadas.'), findsOneWidget);
+  });
+
   for (final large in [false, true]) {
     testWidgets(
       'add card needs explicit saving consent without activating Guardian: large=$large',

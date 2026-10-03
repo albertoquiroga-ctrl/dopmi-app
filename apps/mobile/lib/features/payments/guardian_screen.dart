@@ -856,169 +856,178 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         back: () => context.canPop() ? context.pop() : context.go('/settings'),
         child: Stack(
           children: [
-            ListView(
-              padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
-              children: [
-                const Text(
-                  'Tarjetas guardadas',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: ink,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                if (enabled && cardsError != null) Notice(cardsError!),
-                if (enabled && cards != null && cards!.isNotEmpty)
-                  for (var i = 0; i < cards!.length; i++) ...[
-                    if (i > 0) const SizedBox(height: 12),
-                    GuardianPaymentCardRow(
-                      card: cards![i],
-                      showMakeDefault: verified && status == 'active',
-                      showRemove: verified && status == 'active',
-                      onRemove:
-                          busy ||
-                              confirming ||
-                              !fresh ||
-                              intent != null ||
-                              savedCardIntent != null ||
-                              data?['method_change_available'] != true
-                          ? null
-                          : () => submit(
-                              method: true,
-                              selectedCard: cards![i],
-                              removeCard: true,
-                            ),
-                      onMakeDefault:
-                          busy ||
-                              confirming ||
-                              !fresh ||
-                              intent != null ||
-                              savedCardIntent != null ||
-                              data?['method_change_available'] != true
-                          ? null
-                          : () => submit(method: true, selectedCard: cards![i]),
-                    ),
-                  ],
-                if (cards == null || cards!.isEmpty)
-                  Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: const Color(0xffe6e2dd)),
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: const BoxDecoration(
-                            color: Color(0xffefede8),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                            child: SvgPicture.asset(
-                              'assets/profile/icon-card.svg',
-                              width: 18,
-                              height: 18,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            !enabled
-                                ? 'Guardián no está disponible en esta versión.'
-                                : error != null && !fresh
-                                ? 'No se pudo confirmar tu medio de pago.'
-                                : busy && data == null
-                                ? 'Consultando tus tarjetas…'
-                                : 'Aún no tienes tarjetas guardadas.',
-                          ),
-                        ),
-                      ],
+            RefreshIndicator(
+              color: ink,
+              backgroundColor: Colors.white,
+              onRefresh: () async {
+                if (!busy && !confirming && current) await load();
+              },
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
+                children: [
+                  const Text(
+                    'Tarjetas guardadas',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: ink,
                     ),
                   ),
-                if (enabled && paymentIssueMessage != null)
-                  Notice(paymentIssueMessage!),
-                if (error != null) Notice(error!),
-                if (message != null) Notice(message!),
-                if (enabled &&
-                    methodSetup != null &&
-                    methodsNotice != null &&
-                    message != methodsNotice)
-                  Notice(methodsNotice ?? 'Medio de pago en revisión.'),
-                const SizedBox(height: 12),
-                if (enabled)
-                  OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: ink,
-                      minimumSize: const Size.fromHeight(56),
-                      side: const BorderSide(color: Color(0xffd5cfc6)),
-                      textStyle: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                  const SizedBox(height: 12),
+                  if (enabled && cardsError != null) Notice(cardsError!),
+                  if (enabled && cards != null && cards!.isNotEmpty)
+                    for (var i = 0; i < cards!.length; i++) ...[
+                      if (i > 0) const SizedBox(height: 12),
+                      GuardianPaymentCardRow(
+                        card: cards![i],
+                        showMakeDefault: verified && status == 'active',
+                        showRemove: verified && status == 'active',
+                        onRemove:
+                            busy ||
+                                confirming ||
+                                !fresh ||
+                                intent != null ||
+                                savedCardIntent != null ||
+                                data?['method_change_available'] != true
+                            ? null
+                            : () => submit(
+                                method: true,
+                                selectedCard: cards![i],
+                                removeCard: true,
+                              ),
+                        onMakeDefault:
+                            busy ||
+                                confirming ||
+                                !fresh ||
+                                intent != null ||
+                                savedCardIntent != null ||
+                                data?['method_change_available'] != true
+                            ? null
+                            : () =>
+                                  submit(method: true, selectedCard: cards![i]),
                       ),
-                      shape: const PaymentMethodBorder(),
+                    ],
+                  if (cards == null || cards!.isEmpty)
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: const Color(0xffe6e2dd)),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: const BoxDecoration(
+                              color: Color(0xffefede8),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: SvgPicture.asset(
+                                'assets/profile/icon-card.svg',
+                                width: 18,
+                                height: 18,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              !enabled
+                                  ? 'Guardián no está disponible en esta versión.'
+                                  : error != null && !fresh
+                                  ? 'No se pudo confirmar tu medio de pago.'
+                                  : busy && data == null
+                                  ? 'Consultando tus tarjetas…'
+                                  : 'Aún no tienes tarjetas guardadas.',
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    onPressed:
-                        busy ||
-                            confirming ||
-                            !fresh ||
-                            !verified ||
-                            !savedCardFresh ||
-                            intent != null ||
-                            savedCardIntent != null
-                        ? null
-                        : addSavedCard,
-                    icon: SvgPicture.asset(
-                      'assets/profile/icon-plus.svg',
-                      width: 18,
-                      height: 18,
+                  if (enabled && paymentIssueMessage != null)
+                    Notice(paymentIssueMessage!),
+                  if (error != null) Notice(error!),
+                  if (message != null) Notice(message!),
+                  if (enabled &&
+                      methodSetup != null &&
+                      methodsNotice != null &&
+                      message != methodsNotice)
+                    Notice(methodsNotice ?? 'Medio de pago en revisión.'),
+                  const SizedBox(height: 12),
+                  if (enabled)
+                    OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: ink,
+                        minimumSize: const Size.fromHeight(56),
+                        side: const BorderSide(color: Color(0xffd5cfc6)),
+                        textStyle: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        shape: const PaymentMethodBorder(),
+                      ),
+                      onPressed:
+                          busy ||
+                              confirming ||
+                              !fresh ||
+                              !verified ||
+                              !savedCardFresh ||
+                              intent != null ||
+                              savedCardIntent != null
+                          ? null
+                          : addSavedCard,
+                      icon: SvgPicture.asset(
+                        'assets/profile/icon-plus.svg',
+                        width: 18,
+                        height: 18,
+                      ),
+                      label: const Text('Agregar tarjeta'),
                     ),
-                    label: const Text('Agregar tarjeta'),
-                  ),
-                if (savedCardError != null)
-                  Notice(savedCardError!, isError: true),
-                if (savedCardIntent != null &&
-                    savedCardStatus?['status'] == 'attention')
-                  const Notice(
-                    'El alta de tu tarjeta requiere revisión. Conservamos tu solicitud.',
-                  ),
-                if (savedCardIntent != null &&
-                    savedCardStatus?['status'] != 'attention')
-                  ActionButton(
-                    'Reintentar alta de tarjeta',
-                    busy: busy,
-                    onPressed:
-                        busy ||
-                            confirming ||
-                            !fresh ||
-                            !verified ||
-                            intent != null
-                        ? null
-                        : addSavedCard,
-                  ),
-                if (enabled && intent?['kind'] == 'method')
-                  ActionButton(
-                    methodRetryLabel,
-                    busy: busy,
-                    onPressed: canSubmit ? () => submit() : null,
-                  ),
-                TextButton(
-                  style: TextButton.styleFrom(foregroundColor: ink),
-                  onPressed: busy || confirming ? null : () => load(),
-                  child: const Text('Actualizar estado'),
-                ),
-                if (enabled)
+                  if (savedCardError != null)
+                    Notice(savedCardError!, isError: true),
+                  if (savedCardIntent != null &&
+                      savedCardStatus?['status'] == 'attention')
+                    const Notice(
+                      'El alta de tu tarjeta requiere revisión. Conservamos tu solicitud.',
+                    ),
+                  if (savedCardIntent != null &&
+                      savedCardStatus?['status'] != 'attention')
+                    ActionButton(
+                      'Reintentar alta de tarjeta',
+                      busy: busy,
+                      onPressed:
+                          busy ||
+                              confirming ||
+                              !fresh ||
+                              !verified ||
+                              intent != null
+                          ? null
+                          : addSavedCard,
+                    ),
+                  if (enabled && intent?['kind'] == 'method')
+                    ActionButton(
+                      methodRetryLabel,
+                      busy: busy,
+                      onPressed: canSubmit ? () => submit() : null,
+                    ),
                   TextButton(
                     style: TextButton.styleFrom(foregroundColor: ink),
-                    onPressed: () => context.push('/guardian'),
-                    child: const Text('Ver mi suscripción de Guardián'),
+                    onPressed: busy || confirming ? null : () => load(),
+                    child: const Text('Actualizar estado'),
                   ),
-              ],
+                  if (enabled)
+                    TextButton(
+                      style: TextButton.styleFrom(foregroundColor: ink),
+                      onPressed: () => context.push('/guardian'),
+                      child: const Text('Ver mi suscripción de Guardián'),
+                    ),
+                ],
+              ),
             ),
             if (methodsFeedback != null)
               Positioned(
