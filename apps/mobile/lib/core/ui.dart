@@ -65,9 +65,28 @@ ThemeData dopmiTheme({bool rescuer = false}) {
         fontSize: 19,
         fontWeight: FontWeight.w700,
         color: ink,
+        letterSpacing: 0,
       ),
-      bodyLarge: TextStyle(fontSize: 16, height: 1.5, color: ink),
-      bodyMedium: TextStyle(fontSize: 14, height: 1.5, color: muted),
+      // Inter in the reference uses normal spacing. Explicit values prevent
+      // Material's tracking from leaking into custom production text styles.
+      titleMedium: TextStyle(letterSpacing: 0),
+      titleSmall: TextStyle(letterSpacing: 0),
+      bodyLarge: TextStyle(
+        fontSize: 16,
+        height: 1.5,
+        color: ink,
+        letterSpacing: 0,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 14,
+        height: 1.5,
+        color: muted,
+        letterSpacing: 0,
+      ),
+      bodySmall: TextStyle(letterSpacing: 0),
+      labelLarge: TextStyle(letterSpacing: 0),
+      labelMedium: TextStyle(letterSpacing: 0),
+      labelSmall: TextStyle(letterSpacing: 0),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,

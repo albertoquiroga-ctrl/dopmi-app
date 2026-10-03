@@ -1,3 +1,9 @@
+# Corte vigente — loop407, 3/10/2026
+
+El tema común fija el espaciado normal de Inter para cuerpos, etiquetas y títulos secundarios, preservando overrides. Full558/558 pasa4m09s y analyzer limpio184.6s. Capturador completo20132 ACTIVO, log Temp/dopmi-full-capture-loop407.log: retomar para resultado e inspección. Sin aceptación visual global/dispositivo; configuración SDK real y matriz final pendientes. Codemagic sólo objetivo completo.
+
+## Corte406 anterior
+
 # Corte vigente — loop406, 3/10/2026
 
 AdoptionDetail espaciado0/título-.56 yalturas de línea medidasSourceRocky; capturasSource/Flutter normal200 comparadas, capturepasa/analyzer final limpio43.5s. Datosfixtureequivalentes salvo favoritoestado. NoSource200/pixelidentity/global/device; configSDKreal/matrizglobal/finalacceptancependientes. Codemagic sóloobjetivo completo.
