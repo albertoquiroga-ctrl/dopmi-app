@@ -1,3 +1,9 @@
+# Corte vigente — loop391, 3/10/2026
+
+Store de intento nativo por cuenta preparado: sólo key/provider/consent, replayestable y no descartar por cancelaciónSDK/receiptajeno.10tests pasan, analyzer limpio26.4s. Falta UI/guardidentidad/listafresca, compilación y aceptación real. ConfigPK/MerchantID pendiente. Objetivo global activo; Codemagic sólo final.
+
+## Corte390 anterior
+
 # Corte vigente — loop390, 3/10/2026
 
 Buildconfig nativo preparado: sólo Guardian+opción explícita+pk_test, merchant validado y standard apagado sin valores.16tests config pasan. Variables reales/certificado/entitlement no acreditados. SDK389 listo como adapter, UI/intentrecovery/compilación nativa/dispositivo pendientes. Objetivo global activo; Codemagic sólo final.
