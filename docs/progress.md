@@ -2275,3 +2275,10 @@ Primer const Semantics inválido corregido, captura título al200 partía palabr
 ### Loop469 — captura administración/editor de avances, 3/10/2026
 
 Base8bdb7c4; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado.12fixtures reales de rutas administración/editor con listado draft/submitted/changes_requested/approved, vacío/error y editor nuevo/correcciones/error, normal200. Capturador87475 exit0,1test/12capturas6s; analyzer13933 exit0 limpio26.3s. Lista/editornormal yerror200 revisados docs/design-reviews/parity-loop469. Source no tiene editoravances independiente; EditCaseModal distinto. Marco genérico domina200; siguiente detallecompacto con funciones privadas preservadas. Inspección restore/save sugiere readerror permite saveupdate=null creando nuevo en vezrecuperación: probar/bloquear/reintentar siguiente, no inferir RPC aceptada. Sinproducción/Codemagic/push.
+
+
+### Loop470 — marco y recuperación de avances, 3/10/2026
+
+Base4f30e12/Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. ContributionFrame opt-in rescuer conserva defaults; administración/editor compactos18/divisor e3e4ed/SVG/padding16-20-16-32, cards margen sólobottom8, chevron sóloeditable. Editor bloquea campo/fotos/save/submit si restorefalla o submitted/approved, reintenta cargando mismo id/version, descarta late afterdispose; nuevo permitido. SQL/repo/ownership sinchanges. ListView onDrag dismiss keyboard.
+
+8/8 editor final18418 exit0/3s, log dopmi-loop470-editor-gesture-final2.log; normal200recuperaciónmisma versión7, readonly2estados, nuevo, late ydragconinsets400sinwrite.19otros (history12/publichistory6/capture1 con12PNG) pasaron conjunto42048 donde2nuevos tests fallaron scroll; no27suite única. Analyzer19717clean30.8s antes últimos cambios sólotests. Correcciones test importprovider, selectorScrollViewvsTextField, finderlastlazy ysimulaciónkeyboard/finderdespuésscroll. Producción noforzadaporfallostest. PNG470/before inspecciónnormal/editor/error200. Extensión sinSourceeditorliteral. Full579 anterior2bba0c2 no prueba producción nueva; próxima regresión completa acumulada. SinCM/push/aceptación física;objetivo activo.

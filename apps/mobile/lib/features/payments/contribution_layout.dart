@@ -22,10 +22,12 @@ class ContributionFrame extends StatelessWidget {
     required this.title,
     required this.back,
     required this.child,
+    this.rescuer = false,
   });
   final String title;
   final VoidCallback? back;
   final Widget child;
+  final bool rescuer;
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: cream,
@@ -39,9 +41,13 @@ class ContributionFrame extends StatelessWidget {
           : 67,
       leadingWidth: 60,
       centerTitle: true,
-      bottom: const PreferredSize(
+      bottom: PreferredSize(
         preferredSize: Size.fromHeight(1),
-        child: Divider(height: 1, thickness: 1, color: Color(0xffe6e2dd)),
+        child: Divider(
+          height: 1,
+          thickness: 1,
+          color: rescuer ? const Color(0xffe3e4ed) : const Color(0xffe6e2dd),
+        ),
       ),
       leading: Padding(
         padding: const EdgeInsets.only(left: 16),
@@ -52,7 +58,10 @@ class ContributionFrame extends StatelessWidget {
             'assets/profile/back.svg',
             width: 20,
             height: 20,
-            colorFilter: const ColorFilter.mode(ink, BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(
+              rescuer ? const Color(0xff151423) : ink,
+              BlendMode.srcIn,
+            ),
           ),
         ),
       ),
@@ -62,10 +71,10 @@ class ContributionFrame extends StatelessWidget {
               title,
               maxLines: MediaQuery.textScalerOf(context).scale(18) > 25 ? 3 : 1,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: ink,
+                color: rescuer ? const Color(0xff151423) : ink,
               ),
             ),
     ),
