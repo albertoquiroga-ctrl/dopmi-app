@@ -973,6 +973,8 @@ void main() {
       ('rescuer-settings-large', '/settings'),
       ('rescuer-settings-social-dialog', '/settings'),
       ('rescuer-settings-social-dialog-valid', '/settings'),
+      ('rescuer-settings-social-values', '/settings'),
+      ('rescuer-settings-social-values-large', '/settings'),
       ('rescuer-settings-social-dialog-large', '/settings'),
       ('rescuer-settings-social-dialog-facebook', '/settings'),
       ('rescuer-settings-social-dialog-keyboard', '/settings'),
@@ -1346,7 +1348,8 @@ void main() {
               SettingsSocialCaptureProfile()
                 ..value['owner_id'] = 'one'
                 ..value['instagram_url'] =
-                    spec.$1 == 'rescuer-settings-social-dialog-valid'
+                    (spec.$1 == 'rescuer-settings-social-dialog-valid' ||
+                        spec.$1.startsWith('rescuer-settings-social-values'))
                     ? 'https://www.instagram.com/maria.rescata'
                     : '',
             ),
@@ -2832,6 +2835,15 @@ void main() {
             final card = tester.getRect(rows.at(i));
             expect(card.top, closeTo([88.0, 170.0, 264.0][i], .1));
             expect(card.height, closeTo([70.0, 82.0, 82.0][i], .1));
+          }
+        }
+        if (spec.$1.startsWith('rescuer-settings-social-values')) {
+          final row = find.byType(SettingsDataRow).first;
+          await Scrollable.ensureVisible(tester.element(row), alignment: .35);
+          await tester.pumpAndSettle();
+          expect(find.text('@maria.rescata'), findsOneWidget);
+          if (!spec.$1.endsWith('-large')) {
+            expect(tester.getSize(row).height, closeTo(70, .1));
           }
         }
         if (spec.$1.startsWith('rescuer-settings-social-dialog')) {

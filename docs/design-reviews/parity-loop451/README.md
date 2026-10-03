@@ -1,0 +1,7 @@
+### Loop451 — usuario compacto de Instagram conservando enlace real, 3/10/2026
+
+Base9b1f8b5; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, SourceRescuerSettings muestra@usuario. Nuevo rescuerSocialDisplayValue extrae usuario sólo HTTPSinstagram.com/www.instagram.com sinuserInfo/puerto ysegmentoperfil permitido; Facebook/publicaciones/URLajena se mantienenliterales. Settingsfila yeditor usan presentacióncomún, persistencia sigueURLcompleta deRPCnormalizado. Sin datos deFacebookinventados ni nombrepúblico asumido.
+
+Final8/8pasa7s19898exit0 incluyendo widgetcancel/save/owner/retry/logout ycapturer8fixtures (modal6 yfila normal/200). Fixture@Maria rescata produceInstagramrow70px assertactivo377; normalfila inspeccionada. Saveassert conserva URL https://www.instagram.com/updated_profile yotroscampos/version/borrador. Unit testhostimpostor/userinfo/rutapublicación/Facebook noenmascarados. Capturasguardadasparity-loop451; Source446/449 vigentes. DatosbancariosStripe/reviewhint yFacebooksinagregar sonrealfixture, no igualdadglobaldecontenido.
+
+Analyzerinicial2info curlyenhelper; trascorregir detecta1info curlyencapturer: corregido. Final18345clean26.3s; cambiossóllaves desde8pass sin comportamientoalterado. Comparación224Dartlib/test root/scratch0diferencias bd978c. Full562/443 antecedemodal/menú444–451; siguiente fullregresiónmóvil para integración actual. Cardmodal.8125pxlinebox, keyboardfísico/Stripe/SDK/restomatriz siguenpendientes; sinCM/push/schema/deploy.

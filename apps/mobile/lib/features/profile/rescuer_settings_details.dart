@@ -47,7 +47,10 @@ class RescuerSettingsDetails extends ConsumerWidget {
                 label: item.$1,
                 value: (data?[item.$2] as String? ?? '').trim().isEmpty
                     ? 'Sin agregar'
-                    : data![item.$2] as String,
+                    : rescuerSocialDisplayValue(
+                        item.$2,
+                        data![item.$2] as String,
+                      ),
                 icon: item.$3,
                 path: '/rescuer/profile/edit',
                 onReturn: refresh,

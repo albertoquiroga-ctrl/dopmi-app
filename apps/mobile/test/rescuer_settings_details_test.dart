@@ -32,6 +32,33 @@ class SettingsSocialProfile extends FakeRescuerProfile {
 }
 
 void main() {
+  test(
+    'compact Instagram presentation keeps non-profile and foreign URLs visible',
+    () {
+      expect(
+        rescuerSocialDisplayValue(
+          'instagram_url',
+          'https://www.instagram.com/maria.rescata/',
+        ),
+        '@maria.rescata',
+      );
+      for (final url in [
+        'https://instagram.com.ejemplo.test/maria',
+        'https://www.instagram.com/p/publicacion',
+        'https://maria@instagram.com/maria',
+      ]) {
+        expect(rescuerSocialDisplayValue('instagram_url', url), url);
+      }
+      expect(
+        rescuerSocialDisplayValue(
+          'facebook_url',
+          'https://www.facebook.com/refugio',
+        ),
+        'https://www.facebook.com/refugio',
+      );
+    },
+  );
+
   testWidgets(
     'social dialog validates links, retries safely, and hides an expired session',
     (tester) async {
@@ -200,7 +227,7 @@ void main() {
         await identity.setExperience('rescuer');
         final profile = SettingsSocialProfile()
           ..value['owner_id'] = mismatch ? 'other' : 'one'
-          ..value['instagram_url'] = 'https://www.instagram.com/own-profile';
+          ..value['instagram_url'] = 'https://www.instagram.com/own_profile';
         final container = ProviderContainer(
           overrides: [
             identityRepositoryProvider.overrideWithValue(identity),
@@ -223,19 +250,13 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.byTooltip('Notificaciones'), findsNothing);
         if (mismatch) {
-          expect(
-            find.text('https://www.instagram.com/own-profile'),
-            findsNothing,
-          );
+          expect(find.text('@own_profile'), findsNothing);
           profile.value['owner_id'] = 'one';
           await tester.ensureVisible(find.text('Volver a intentar'));
           await tester.tap(find.text('Volver a intentar'));
           await tester.pumpAndSettle();
         }
-        expect(
-          find.text('https://www.instagram.com/own-profile'),
-          findsOneWidget,
-        );
+        expect(find.text('@own_profile'), findsOneWidget);
         await Scrollable.ensureVisible(
           tester.element(find.byTooltip('Editar Instagram')),
           alignment: .35,
@@ -246,7 +267,7 @@ void main() {
         expect(find.byType(RescuerSocialDialog), findsOneWidget);
         expect(
           tester.widget<TextField>(find.byType(TextField)).controller?.text,
-          '@own-profile',
+          '@own_profile',
         );
         await tester.tap(find.text('Cancelar'));
         await tester.pumpAndSettle();
@@ -262,10 +283,7 @@ void main() {
         await tester.pumpAndSettle();
         expect(profile.saves, 1);
         expect(find.byType(RescuerSocialDialog), findsNothing);
-        expect(
-          find.text('https://www.instagram.com/updated_profile'),
-          findsOneWidget,
-        );
+        expect(find.text('@updated_profile'), findsOneWidget);
         expect(profile.saves, 1);
         expect(profile.value['display_name'], 'Refugio Luna');
         expect(profile.value['bio'], 'Rescate responsable.');

@@ -6,6 +6,25 @@ import '../adoption/community_repository.dart';
 import '../identity/identity_controller.dart';
 import 'rescuer_profile_repository.dart';
 
+String rescuerSocialDisplayValue(String field, String value) {
+  final trimmed = value.trim();
+  if (field != 'instagram_url') return trimmed;
+  final uri = Uri.tryParse(trimmed);
+  if (uri == null ||
+      uri.scheme != 'https' ||
+      !['instagram.com', 'www.instagram.com'].contains(uri.host) ||
+      uri.userInfo.isNotEmpty ||
+      uri.hasPort) {
+    return trimmed;
+  }
+  final segments = uri.pathSegments.where((part) => part.isNotEmpty).toList();
+  if (segments.length != 1 ||
+      !RegExp(r'^[A-Za-z0-9._]{1,30}$').hasMatch(segments.single)) {
+    return trimmed;
+  }
+  return '@${segments.single}';
+}
+
 Future<bool?> editRescuerSocial(
   BuildContext context,
   Json profile,
@@ -41,14 +60,10 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
   final inputFocus = FocusNode();
   bool busy = false;
   String? error;
-  String initialValue() {
-    final value = widget.profile[widget.field] as String? ?? '';
-    final uri = Uri.tryParse(value);
-    if (instagram && uri != null && uri.pathSegments.length == 1) {
-      return '@${uri.pathSegments.first}';
-    }
-    return value;
-  }
+  String initialValue() => rescuerSocialDisplayValue(
+    widget.field,
+    widget.profile[widget.field] as String? ?? '',
+  );
 
   String? normalized() {
     final value = input.text.trim();

@@ -1,3 +1,7 @@
+# Corte vigente — loop451
+
+Instagramcompacto@usuario sóloURLperfilpropia; persistenciaURLconservada.8 pruebas pasan7s, fila70assert/capturanormal200. Analyzerfinal limpio26.3s;224Dartroot/scratch0diferencias. Próximo fullmobile actualizado (562/443 previo444–451). Linebox.8125/SDK/Stripe/device/restomatriz pendientes. Codemagic sólo objetivo completo.
+
 # Corte vigente — loop450
 
 Modalpaleta/barrier/disabledopacity corregidos.7 pruebas pasan6s, analyzer producción limpio30.7s.6fixtures incluyenvalidSource-equivalente ykeyboard320normal/200;Cancelar pointercierra0writes. Tecladosimulado, noAndroidreal. Pendiente representaciónhandlefila/lineboxes.8125/restomatriz. Codemagic sólo objetivo completo.
