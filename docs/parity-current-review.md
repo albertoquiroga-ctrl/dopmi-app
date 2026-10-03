@@ -1,3 +1,7 @@
+# Corte vigente — loop418
+
+Slotemoji36x36 evita cambio de distribución por fuente ausente.11tests/capture pasan/analyzer limpio39.3s. Rendererfixture muestra glifos faltantes; Android no verificado. Próximo revisión equivalente y fuente nativa; objetivo global continúa. Codemagic sólo objetivo completo.
+
 # Corte vigente — loop417
 
 Necesidades usa emojis Source;10 tests pasan/analyzer limpio35.5s. Captura final/medidas horizontales y renderizado Android pendientes. Seguir revisión equivalente/matriz global. Codemagic sólo objetivo completo.

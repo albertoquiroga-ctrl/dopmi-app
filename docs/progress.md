@@ -1859,3 +1859,8 @@ Source Edge sesión416 en377x852, fixture versión15 donation/verified con petNa
 ### Loop417 — símbolos nativos en necesidades, 3/10/2026
 
 Base3da71c4; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. CaseNeeds reemplaza SVGs fijos por los mismos símbolos Unicode del Source (comida, medicina, veterinario), font30/36 y peso400. ExcludeSemantics conserva etiqueta accesible de la tarjeta.10/10 case_publication pasan9s89335/b241e2; analyzer63884/113cbe limpio35.5s. Format aprobado. Renderizado/color y ancho del emoji dependen del sistema: captura final y Android aún pendientes, no paridad nativa acreditada. Próximo medir tarjetas/capturar cambio y continuar revisión equivalente. Sin Codemagic/push; objetivo global abierto.
+
+
+### Loop418 — espacio estable para iconos de necesidades, 3/10/2026
+
+Base04d8eb1; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Captura35208/a21a4f pasa11s y revela glifos faltantes (renderer fixture sin fuente emoji), con slot reducido a ancho de fallback. Se fija SizedBox36x36 alrededor del texto Unicode para preservar distribución aun sin fuente. No se atribuye identidad/color nativo ni resolución del fallback Android. Capturas final normal/200 guardadas; normal inspeccionada conserva posiciones de copy, glyph faltante todavía visible y aceptación pendiente.11/11 case_publication+capture pasan11s68230/70ce00; analyzer28817/35cb15 limpio39.3s, format aprobado. Source review CSS consultado: heading16/500, cardvalue16/24/500 coinciden con constantes actuales; faltan comparación renderizada/estado equivalente. Próximo revisión actual y comprobación de fuente nativa autorizada; matrizglobal/configSDK/device pendientes. Sin Codemagic/push.

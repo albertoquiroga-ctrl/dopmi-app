@@ -88,16 +88,20 @@ class CaseNeeds extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ExcludeSemantics(
-                child: Text(
-                  const {
-                    'food': '🥣',
-                    'medicine': '💊',
-                    'veterinary': '🩺',
-                  }[type]!,
-                  style: const TextStyle(
-                    fontSize: 30,
-                    height: 1.2,
-                    fontWeight: FontWeight.w400,
+                child: SizedBox(
+                  width: 36,
+                  height: 36,
+                  child: Text(
+                    const {
+                      'food': '🥣',
+                      'medicine': '💊',
+                      'veterinary': '🩺',
+                    }[type]!,
+                    style: const TextStyle(
+                      fontSize: 30,
+                      height: 1.2,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                 ),
               ),
