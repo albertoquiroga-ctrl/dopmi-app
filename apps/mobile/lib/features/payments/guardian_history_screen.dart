@@ -8,6 +8,7 @@ import '../adoption/community_ui.dart';
 import '../identity/identity_controller.dart';
 import '../rescue/rescue_repository.dart';
 import 'guardian_repository.dart';
+import 'contribution_layout.dart';
 import 'payment_history_row.dart';
 
 String _date(Object? value) {
@@ -192,44 +193,60 @@ class _HistoryState extends ConsumerState<_GuardianHistory> {
     if (ref.watch(identityControllerProvider).identity?.id != owner) {
       return const SizedBox.shrink();
     }
-    return CommunityFrame(
-      children: [
-        const Heading(
-          'Historial de ciclos',
-          'Consulta tus aportaciones, asignaciones y devoluciones.',
-          eyebrow: 'GUARDIÁN · PRUEBA',
-        ),
-        if (!enabled) const Notice('Guardián todavía no está disponible.'),
-        if (enabled) ...[
-          const Notice(
-            'Una transferencia al rescatista no confirma un depósito en su banco. Los ciclos omitidos no acumulan deuda.',
-          ),
-          TextButton(
-            onPressed: busy ? null : () => load(),
-            child: const Text('Actualizar historial'),
-          ),
-          if (busy) const LinearProgressIndicator(),
-          if (!busy && error == null && items.isEmpty)
-            const Notice('Todavía no tienes ciclos registrados.'),
-          for (final item in items)
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: GuardianCycleReceipt(owner: owner, item: item),
-              ),
+    return ContributionFrame(
+      title: 'Historial de ciclos',
+      back: () => context.canPop() ? context.pop() : context.go('/guardian'),
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+        children: [
+          const Text(
+            'GUARDIÁN · PRUEBA',
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: purple,
             ),
-          if (error != null) Notice(error!, isError: true),
-          if (cursor != null)
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Consulta tus aportaciones, asignaciones y devoluciones.',
+            style: TextStyle(fontSize: 14, height: 1.45, color: muted),
+          ),
+          const SizedBox(height: 20),
+          if (!enabled) const Notice('Guardián todavía no está disponible.'),
+          if (enabled) ...[
+            const Notice(
+              'Una transferencia al rescatista no confirma un depósito en su banco. Los ciclos omitidos no acumulan deuda.',
+            ),
             TextButton(
-              onPressed: busy ? null : () => load(more: true),
-              child: Text(
-                error == null
-                    ? 'Ver ciclos anteriores'
-                    : 'Reintentar ciclos anteriores',
-              ),
+              onPressed: busy ? null : () => load(),
+              child: const Text('Actualizar historial'),
             ),
+            if (busy) const LinearProgressIndicator(),
+            if (!busy && error == null && items.isEmpty)
+              const Notice('Todavía no tienes ciclos registrados.'),
+            for (final item in items)
+              Card(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: GuardianCycleReceipt(owner: owner, item: item),
+                ),
+              ),
+            if (error != null) Notice(error!, isError: true),
+            if (cursor != null)
+              TextButton(
+                onPressed: busy ? null : () => load(more: true),
+                child: Text(
+                  error == null
+                      ? 'Ver ciclos anteriores'
+                      : 'Reintentar ciclos anteriores',
+                ),
+              ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }

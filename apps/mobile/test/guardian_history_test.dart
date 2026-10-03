@@ -130,6 +130,37 @@ void main() {
     expect(repo.cursors, isEmpty);
     expect(find.text('Guardián todavía no está disponible.'), findsOneWidget);
   });
+
+  for (final pushed in [false, true]) {
+    testWidgets(
+      'compact cycle history returns to its origin or Guardian without a financial write: $pushed',
+      (tester) async {
+        final repo = HistoryRepo();
+        await start(tester, repo, pushed: pushed);
+        await tester.pumpAndSettle();
+        tester.view.physicalSize = const Size(320, 640);
+        tester.platformDispatcher.textScaleFactorTestValue = 2;
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        await tester.pumpAndSettle();
+        final back = find.byTooltip('Regresar');
+        expect(back.hitTestable(), findsOneWidget);
+        await tester.tap(back);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        final container = ProviderScope.containerOf(
+          tester.element(find.byType(DopmiApp)),
+          listen: false,
+        );
+        expect(
+          container.read(routerProvider).state.uri.path,
+          pushed ? '/profile' : '/guardian',
+        );
+        expect(repo.calls, isEmpty);
+        expect(repo.cursors, hasLength(1));
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
   testWidgets(
     'history paginates and retries the same failed cursor without losing confirmed items',
     (tester) async {
