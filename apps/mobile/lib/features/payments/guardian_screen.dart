@@ -864,7 +864,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
               },
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
+                padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
                 children: [
                   const Text(
                     'Tarjetas guardadas',
@@ -874,11 +874,11 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                       color: ink,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   if (enabled && cardsError != null) Notice(cardsError!),
                   if (enabled && cards != null && cards!.isNotEmpty)
                     for (var i = 0; i < cards!.length; i++) ...[
-                      if (i > 0) const SizedBox(height: 12),
+                      if (i > 0) const SizedBox(height: 10),
                       GuardianPaymentCardRow(
                         card: cards![i],
                         showMakeDefault: verified && status == 'active',
@@ -957,7 +957,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                       methodsNotice != null &&
                       message != methodsNotice)
                     Notice(methodsNotice ?? 'Medio de pago en revisión.'),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   if (enabled)
                     OutlinedButton.icon(
                       style: OutlinedButton.styleFrom(
@@ -1020,12 +1020,6 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                     onPressed: busy || confirming ? null : () => load(),
                     child: const Text('Actualizar estado'),
                   ),
-                  if (enabled)
-                    TextButton(
-                      style: TextButton.styleFrom(foregroundColor: ink),
-                      onPressed: () => context.push('/guardian'),
-                      child: const Text('Ver mi suscripción de Guardián'),
-                    ),
                 ],
               ),
             ),
