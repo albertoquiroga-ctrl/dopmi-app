@@ -2566,3 +2566,7 @@ Producción 037754f1f81070aa021e9781329a7cb8540af93e. ExpenseFrame separa contro
 ## 2026-10-03 — Loop 531: regresión integrada actual
 
 Fuente 5799915dd2e8d1bb524d3076779080791ede69f5, producción037754f. Full54358 terminal exit0:609/609,3m48s; analyzer83628 terminal exit0 limpio217.7s.230Dart/cuatroSVG raíz-scratch iguales antes/después y sin cambios durante gate; manifest531. Incluye estilos de gastos527–530. Source remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. ADB531 vacío. Capturador completo403525 precede527–530, complementado por17capturas de gastos530; no pasada completa nueva ni aceptación visual global. Sigue contraste de familias/gestos físicos/StripeSDK. Sin push ni Codemagic.
+
+## 2026-10-03 — Loop 532: encabezado de verificación
+
+Producción 3b4557f5838af8f84a38e7430d4159fd8545283b. VerificationFormFrame: título18/22.5 y tracking-.36, de h1 global1.25/-.02em + topbar font18 Source styles38/107, antes18/27.9. Source App4117 usa TopBar en formulario; remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Conserva área de regreso, privacidad y moderación real; no reproduce verificación/redes/banco simulados. Test57834 terminal exit0:5/5,10s (cuatro recorridos + capturador ochofixturesverification-*); analyzer68698 terminal exit0 limpio46.3s. Captura320/200 inspeccionada: título completo en dos líneas y regreso visible, no aceptación física/global. Full609531 precede este estilo; capturas completas403525 preceden527–532. Sin push/Codemagic.
