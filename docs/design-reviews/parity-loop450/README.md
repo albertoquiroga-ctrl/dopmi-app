@@ -1,0 +1,7 @@
+### Loop450 — paleta modal y cancelación con teclado, 3/10/2026
+
+Base93a76eb; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. ReferenciaDOM/PNG449 siguevigente; CSSmodalbarrier rgba15110d.48/disabledopacity.5 ylabel/input151423. Cliente explicita coloreslabel/input, barrierwarm exactalpha.48 yOpacidad.5 sobrebuttonenteropurple/fbfbff (antes doscoloresalpha distintos); semántica ydisabledonPressed se conservan. No nuevohover.
+
+Capturer añade validfixture @maria.rescata para mismo contenidoSource449, Guardarenabledassert, ademáskeyboard320 normal/200. Afirmacioneskeyboard compruebanCancel encimaheight−320 trasScroll.ensureVisible yScrollViewpresente; postcapturatoquepointer real delwidget enCancelar cierraModal yFake.saves0. Framekeyboard simulaInsets únicamente: no teclado Android real ni dispositivo aceptado.200inspection muestra contenido superior desplazado peroaccionesaccesibles. ValidPNG inspeccionado: card/botones/focusytexto comparables, underlay difiereporbackendURL/stripe/verification yscroll, no igualdadpixelglobal.
+
+Inicial7/7 pasa7s51391; final7/7pasa6s13512exit0 con6fixturesModal(normal/valid/200/Facebook/keyboard/keyboard200). Analyzer31361 limpio30.7s producciónfinal, luego sólotests/capture añadidos. Capturegeom449 sigueactiva44/36/48/cardtolerancia1; diferencia.8125lineboxes no resuelta450. No cambiosSDK/schema/backend/Stripe/CM/push. Próximo mostrarhandlederivadodeURLenSettings conservandoURLreal ycomparargeometríaredes, lineboxes/keyboardfísico/restomatriz.

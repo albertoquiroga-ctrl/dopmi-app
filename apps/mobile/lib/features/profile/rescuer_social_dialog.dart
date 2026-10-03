@@ -14,7 +14,7 @@ Future<bool?> editRescuerSocial(
   context: context,
   barrierDismissible: true,
   barrierLabel: 'Cerrar edición de red social',
-  barrierColor: const Color(0x7a151423),
+  barrierColor: const Color(0xff15110d).withValues(alpha: .48),
   transitionDuration: Duration.zero,
   pageBuilder: (context, _, _) =>
       RescuerSocialDialog(profile: profile, field: field),
@@ -203,6 +203,7 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
                                 style: const TextStyle(
                                   fontFamily: 'Inter',
                                   fontSize: 14,
+                                  color: Color(0xff151423),
                                   height: 17 / 14,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -226,6 +227,7 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
                                     style: const TextStyle(
                                       fontFamily: 'Inter',
                                       fontSize: 14,
+                                      color: Color(0xff151423),
                                       height: 18 / 14,
                                     ),
                                     decoration: InputDecoration(
@@ -294,39 +296,45 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
                                 ),
                               ],
                               const SizedBox(height: 12),
-                              FilledButton(
-                                onPressed:
+                              Opacity(
+                                opacity:
                                     !busy && allowed && normalized() != null
-                                    ? save
-                                    : null,
-                                style: FilledButton.styleFrom(
-                                  backgroundColor: const Color(0xff7841f2),
-                                  foregroundColor: const Color(0xfffbfbff),
-                                  disabledBackgroundColor: const Color(
-                                    0x807841f2,
+                                    ? 1
+                                    : .5,
+                                child: FilledButton(
+                                  onPressed:
+                                      !busy && allowed && normalized() != null
+                                      ? save
+                                      : null,
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: const Color(0xff7841f2),
+                                    foregroundColor: const Color(0xfffbfbff),
+                                    disabledBackgroundColor: const Color(
+                                      0xff7841f2,
+                                    ),
+                                    disabledForegroundColor: const Color(
+                                      0xfffbfbff,
+                                    ),
+                                    minimumSize: const Size(0, 36),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    textStyle: const TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 14,
+                                      height: 20 / 14,
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: 0,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
                                   ),
-                                  disabledForegroundColor: const Color(
-                                    0x80fbfbff,
-                                  ),
-                                  minimumSize: const Size(0, 36),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 8,
-                                  ),
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  textStyle: const TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: 14,
-                                    height: 20 / 14,
-                                    fontWeight: FontWeight.w500,
-                                    letterSpacing: 0,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
+                                  child: Text(busy ? 'Guardando…' : 'Guardar'),
                                 ),
-                                child: Text(busy ? 'Guardando…' : 'Guardar'),
                               ),
                               const SizedBox(height: 12),
                               OutlinedButton(

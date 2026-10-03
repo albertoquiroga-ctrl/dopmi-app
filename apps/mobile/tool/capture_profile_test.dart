@@ -972,8 +972,11 @@ void main() {
       ('rescuer-settings-edit-focus', '/settings'),
       ('rescuer-settings-large', '/settings'),
       ('rescuer-settings-social-dialog', '/settings'),
+      ('rescuer-settings-social-dialog-valid', '/settings'),
       ('rescuer-settings-social-dialog-large', '/settings'),
       ('rescuer-settings-social-dialog-facebook', '/settings'),
+      ('rescuer-settings-social-dialog-keyboard', '/settings'),
+      ('rescuer-settings-social-dialog-keyboard-large', '/settings'),
       ('rescuer-profile-large', '/profile'),
       ('public-profile', '/people/owner'),
       ('public-profile-large', '/people/owner'),
@@ -1340,7 +1343,12 @@ void main() {
           if (spec.$1.startsWith('rescuer-settings') ||
               spec.$1.startsWith('public-profile-editor'))
             rescuerProfileRepositoryProvider.overrideWithValue(
-              SettingsSocialCaptureProfile()..value['owner_id'] = 'one',
+              SettingsSocialCaptureProfile()
+                ..value['owner_id'] = 'one'
+                ..value['instagram_url'] =
+                    spec.$1 == 'rescuer-settings-social-dialog-valid'
+                    ? 'https://www.instagram.com/maria.rescata'
+                    : '',
             ),
           if (spec.$1.startsWith('case-publication'))
             rescueRepositoryProvider.overrideWithValue(
@@ -2858,6 +2866,31 @@ void main() {
             );
           }
           expect(find.text('Editar $network'), findsOneWidget);
+          if (spec.$1.endsWith('-valid')) {
+            expect(
+              tester.widget<FilledButton>(find.byType(FilledButton)).onPressed,
+              isNotNull,
+            );
+          }
+          if (spec.$1.contains('social-dialog-keyboard')) {
+            tester.view.viewInsets = const FakeViewPadding(bottom: 320);
+            await tester.pumpAndSettle();
+            final cancel = find.text('Cancelar');
+            final scroll = find.descendant(
+              of: find.byType(RescuerSocialDialog),
+              matching: find.byType(SingleChildScrollView),
+            );
+            await Scrollable.ensureVisible(
+              tester.element(cancel),
+              alignment: .8,
+            );
+            await tester.pumpAndSettle();
+            expect(
+              tester.getRect(cancel).bottom,
+              lessThanOrEqualTo(tester.view.physicalSize.height - 320),
+            );
+            expect(scroll, findsOneWidget);
+          }
           expect(tester.takeException(), isNull);
         }
         if (spec.$1.startsWith('profile-settings-footer')) {
@@ -2981,6 +3014,17 @@ void main() {
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),
         );
+        if (spec.$1.contains('social-dialog-keyboard')) {
+          await tester.tap(find.text('Cancelar'));
+          await tester.pumpAndSettle();
+          expect(find.byType(RescuerSocialDialog), findsNothing);
+          expect(
+            (container.read(
+              rescuerProfileRepositoryProvider,
+            ) as SettingsSocialCaptureProfile).saves,
+            0,
+          );
+        }
       }
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
