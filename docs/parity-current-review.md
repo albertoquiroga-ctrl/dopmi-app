@@ -1,4 +1,23 @@
-# Corte vigente — loop465
+# Corte vigente — loop491, 3/10/2026
+
+Producción `a8eb5a7fd375f020411a68c749f7edf69ff11423`: full599/599,
+3m29s, handle74849 exit0. Los228Dart lib/test coinciden raíz/scratch y no
+cambiaron durante la ejecución; hashes en parity-loop491/mobile-consistency.json.
+Incluye visor privado480/481, perfil público483/485, filas ampliadas486,
+Mis match488/490, regreso489 y etiqueta de búsqueda491. Configpython16/16.
+Analyzer491 sin incidencias sobre92473d8 (antes del ajuste exclusivo del test).
+La primera pasada598/1 falló: búsqueda200 necesitaba localizar resultado y
+cierre mediante scroll; ambas escalas dirigidas2/2 y repetición599/599 verdes.
+
+Referencia `a3c969cd9103fd46dc5cd886999912526ce75efb`, rama Irlanda. Inventario
+401fixtures únicas/44paths/38patrones capturados no equivale a aceptación.
+Pasada completa del capturador401485 precede486–491. Siguiente comprobación
+lista: volver a recorrer los401estados con producción actual y continuar el
+cruce de familias con Source ejecutado, sin repetir sólo pruebas estrechas.
+ADB490vacío; siguen faltando candidato instalado/gestos físicos y recorrido
+Stripe nativo TEST con credenciales. No push/Codemagic hasta objetivo completo.
+
+# Corte anterior — loop465
 
 Auditoríaactual55Source/51Flutter,349fixtures/34URLsinquery;no cuentaaceptación/faltantes. GuardianHistory4capturasdirectas,11tests5s/analyzer35.7sclean. Próximoframehistorialcoherentefinancialpreservando recibosprivados, luego capturarmisadopciones/updates. Producción2bba0c2sinchanges/full579/462vigente. Matrizglobal/StripeSDK/device abierto; Codemagic sólofinal.
 
