@@ -1,0 +1,34 @@
+[
+  {
+    "color": "rgb(21, 17, 13)",
+    "font": "18px",
+    "line": "23.4px",
+    "rect": {
+      "bottom": 393.390625,
+      "height": 23.390625,
+      "left": 16,
+      "right": 361,
+      "top": 370,
+      "width": 345,
+      "x": 16,
+      "y": 370
+    },
+    "text": "Ayuda"
+  },
+  {
+    "color": "rgb(21, 17, 13)",
+    "font": "18px",
+    "line": "23.4px",
+    "rect": {
+      "bottom": 522.78125,
+      "height": 23.390625,
+      "left": 16,
+      "right": 361,
+      "top": 499.390625,
+      "width": 345,
+      "x": 16,
+      "y": 499.390625
+    },
+    "text": "Cuenta"
+  }
+]

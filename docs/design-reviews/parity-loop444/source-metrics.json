@@ -1,0 +1,189 @@
+[
+  {
+    "children": [
+      {
+        "color": "rgb(21, 17, 13)",
+        "font": "16px",
+        "line": "normal",
+        "text": "Información básica",
+        "weight": "500"
+      },
+      {
+        "color": "rgb(85, 78, 72)",
+        "font": "12px",
+        "line": "normal",
+        "text": "Edita tu perfil y datos personales",
+        "weight": "400"
+      }
+    ],
+    "color": "rgb(21, 17, 13)",
+    "font": "16px",
+    "height": "normal",
+    "rect": {
+      "bottom": 158,
+      "height": 70,
+      "left": 16,
+      "right": 361,
+      "top": 88,
+      "width": 345,
+      "x": 16,
+      "y": 88
+    },
+    "text": "Información básicaEdita tu perfil y datos personales"
+  },
+  {
+    "children": [
+      {
+        "color": "rgb(21, 17, 13)",
+        "font": "16px",
+        "line": "normal",
+        "text": "Métodos de pago",
+        "weight": "500"
+      },
+      {
+        "color": "rgb(85, 78, 72)",
+        "font": "12px",
+        "line": "normal",
+        "text": "Administra tus tarjetas y métodos de pago",
+        "weight": "400"
+      }
+    ],
+    "color": "rgb(21, 17, 13)",
+    "font": "16px",
+    "height": "normal",
+    "rect": {
+      "bottom": 252,
+      "height": 82,
+      "left": 16,
+      "right": 361,
+      "top": 170,
+      "width": 345,
+      "x": 16,
+      "y": 170
+    },
+    "text": "Métodos de pagoAdministra tus tarjetas y métodos de pago"
+  },
+  {
+    "children": [
+      {
+        "color": "rgb(21, 17, 13)",
+        "font": "16px",
+        "line": "normal",
+        "text": "Suscripción y pagos",
+        "weight": "500"
+      },
+      {
+        "color": "rgb(85, 78, 72)",
+        "font": "12px",
+        "line": "normal",
+        "text": "Consulta tu suscripción, pagos y facturación",
+        "weight": "400"
+      }
+    ],
+    "color": "rgb(21, 17, 13)",
+    "font": "16px",
+    "height": "normal",
+    "rect": {
+      "bottom": 346,
+      "height": 82,
+      "left": 16,
+      "right": 361,
+      "top": 264,
+      "width": 345,
+      "x": 16,
+      "y": 264
+    },
+    "text": "Suscripción y pagosConsulta tu suscripción, pagos y facturación"
+  },
+  {
+    "children": [],
+    "color": "rgb(21, 17, 13)",
+    "font": "18px",
+    "height": "23.4px",
+    "rect": {
+      "bottom": 393.390625,
+      "height": 23.390625,
+      "left": 16,
+      "right": 361,
+      "top": 370,
+      "width": 345,
+      "x": 16,
+      "y": 370
+    },
+    "text": "Ayuda"
+  },
+  {
+    "children": [
+      {
+        "color": "rgb(21, 17, 13)",
+        "font": "16px",
+        "line": "normal",
+        "text": "Centro de ayuda",
+        "weight": "500"
+      }
+    ],
+    "color": "rgb(21, 17, 13)",
+    "font": "16px",
+    "height": "normal",
+    "rect": {
+      "bottom": 475.390625,
+      "height": 70,
+      "left": 16,
+      "right": 361,
+      "top": 405.390625,
+      "width": 345,
+      "x": 16,
+      "y": 405.390625
+    },
+    "text": "Centro de ayuda"
+  },
+  {
+    "children": [],
+    "color": "rgb(21, 17, 13)",
+    "font": "18px",
+    "height": "23.4px",
+    "rect": {
+      "bottom": 522.78125,
+      "height": 23.390625,
+      "left": 16,
+      "right": 361,
+      "top": 499.390625,
+      "width": 345,
+      "x": 16,
+      "y": 499.390625
+    },
+    "text": "Cuenta"
+  },
+  {
+    "children": [
+      {
+        "color": "rgb(21, 17, 13)",
+        "font": "16px",
+        "line": "normal",
+        "text": "Cambiar tipo de cuenta",
+        "weight": "500"
+      },
+      {
+        "color": "rgb(85, 78, 72)",
+        "font": "12px",
+        "line": "normal",
+        "text": "Ir a cuenta Rescatista",
+        "weight": "400"
+      }
+    ],
+    "color": "rgb(21, 17, 13)",
+    "font": "16px",
+    "height": "normal",
+    "rect": {
+      "bottom": 604.78125,
+      "height": 70,
+      "left": 16,
+      "right": 361,
+      "top": 534.78125,
+      "width": 345,
+      "x": 16,
+      "y": 534.78125
+    },
+    "text": "Cambiar tipo de cuentaIr a cuenta Rescatista"
+  }
+]

@@ -1445,15 +1445,15 @@ class SettingsScreen extends ConsumerWidget {
         if (ref.watch(guardianEnabledProvider)) ...[
           const SizedBox(height: 12),
           const RescuerNavigationRow(
-            title: 'Método de pago de Guardián',
-            subtitle: 'Consulta o cambia tu tarjeta',
+            title: 'Métodos de pago',
+            subtitle: 'Administra tus tarjetas y métodos de pago',
             icon: 'icon-card',
             path: '/settings/payment-methods',
           ),
           const SizedBox(height: 12),
           const RescuerNavigationRow(
             title: 'Suscripción y pagos',
-            subtitle: 'Administra tu apoyo mensual',
+            subtitle: 'Consulta tu suscripción, pagos y facturación',
             icon: 'icon-billing',
             path: '/guardian',
           ),
@@ -1577,8 +1577,8 @@ class _SettingsHeading extends StatelessWidget {
         fontFamily: 'Inter',
         fontSize: 18,
         fontWeight: FontWeight.w700,
-        height: 1.2,
-        color: Color(0xff151423),
+        height: 1.3,
+        color: Color(0xff15110d),
       ),
     ),
   );
@@ -1621,14 +1621,14 @@ class RescuerAccountOptionsScreen extends ConsumerWidget {
       ),
       if (ref.watch(guardianEnabledProvider)) ...[
         const ProfileRow(
-          title: 'Método de pago de Guardián',
-          subtitle: 'Consulta o cambia tu tarjeta',
+          title: 'Métodos de pago',
+          subtitle: 'Administra tus tarjetas y métodos de pago',
           icon: Icons.credit_card,
           path: '/settings/payment-methods',
         ),
         const ProfileRow(
           title: 'Suscripción y pagos',
-          subtitle: 'Administra tu apoyo mensual',
+          subtitle: 'Consulta tu suscripción, pagos y facturación',
           icon: Icons.receipt_long_outlined,
           path: '/guardian',
         ),

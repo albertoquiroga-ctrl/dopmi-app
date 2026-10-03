@@ -1,3 +1,7 @@
+# Corte vigente — loop444
+
+Configuración: etiquetas pago/suscripción actualizadas ambos modos y encabezados donor18/1.3/15110d medidos Source.19 pruebas pasan7s; analyzer limpio55.9s. Composición/row/paleta rescuer y aceptación física continúan pendientes. Full562/443 previo444. Codemagic sólo objetivo completo.
+
 # Corte vigente — loop443
 
 Full móvil562/562 aprobado3m13s sobre bcbb520aa883ee819332916e3c389c67e6ce29cf;223Dartroot/scratch iguales. Analyzer442final limpio, backend587/436 vigente. Checkoutpayments11/redisplayworker28+webhook28+client21 desplegadosDEV ycomparados; no selecciónStripe real comprobada. Métodosframes70/y121.4–201.4 medidos377; no paridadglobal. AndroidADBvacío yStripeMCP pide reauth. Próximo Configuración donor/rescuer: _SettingsHeading1.2 vsSourceh2line1.3, medirrender antescorregir. Codemagic sóloobjetivo completo.
