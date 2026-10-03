@@ -2406,3 +2406,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge377x852/puntero
 ### Loop494 — tarjeta de apoyo durante entrada, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Dos pruebas nuevas normal/reduced verifican llegada de oportunidad de apoyo, gesto durante entrada, delta local, cancelación, monto real y CTA. Gate10343exit0,44/44,11s. Fuente 22aa0da0375630f097b340abf3d20834b38491fa sólo tests; producciónc57974a/full601493 vigente, no603full. ADBvacío. README494/currentreviewactualizados; sin backend/SQL/push/Codemagic. Pendiente contraste global y teléfono/StripeSDK.
+
+### Loop495 — apertura y descarte de filtros, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge377x852 diálogo345x586/x16y133/radio24/sin animaciones; selección Hembra cerrada fuera/reabierta no persistida. Cliente ya coincide; nueva prueba primerpump/routeanimation1, Atrás y fuera descartan sin query. Gate53912exit0,5/5,5s, fuente b91ff21f1510f8bc47b0054d2056ff1dfa8bb0a5 sólo tests. Full601493 sobre producciónc57974a vigente; tres tests494/495 posteriores no604full. Sourceprobe/README495; navegador/Vite cerrados. Sin backend/SQL/push/Codemagic/aceptación física.

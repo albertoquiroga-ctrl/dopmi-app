@@ -1,0 +1,21 @@
+{
+  "reference": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "viewport": [
+    377,
+    852
+  ],
+  "selector": ".adoption-filter-dialog",
+  "radius": "24px",
+  "rect": {
+    "x": 16,
+    "y": 133,
+    "width": 345,
+    "height": 586
+  },
+  "animationsAtInsertion": [],
+  "outsideDismissThenReopen": {
+    "femaleSelected": false,
+    "dialogAnimations": 0
+  },
+  "input": "browser mouse pointer, not physical Android"
+}
