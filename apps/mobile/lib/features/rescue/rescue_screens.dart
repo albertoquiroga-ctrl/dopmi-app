@@ -2578,10 +2578,24 @@ class RescueFileScreen extends ConsumerStatefulWidget {
 }
 
 class _RescueFileState extends ConsumerState<RescueFileScreen> {
-  late Future<String> url = ref
-      .read(rescueRepositoryProvider)
-      .fileUrl(widget.path);
+  late Future<String> url = fileUrl();
   String? error;
+  Future<String> fileUrl() {
+    final request = Future<String>.sync(
+      () => ref.read(rescueRepositoryProvider).fileUrl(widget.path),
+    );
+    request.ignore();
+    return request;
+  }
+
+  void reload() {
+    final request = fileUrl();
+    setState(() {
+      url = request;
+      error = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) => CommunityFrame(
     children: [
@@ -2591,6 +2605,7 @@ class _RescueFileState extends ConsumerState<RescueFileScreen> {
       ),
       if (error != null) Notice(error!, isError: true),
       FutureBuilder<String>(
+        key: ValueKey(url),
         future: url,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -2630,12 +2645,7 @@ class _RescueFileState extends ConsumerState<RescueFileScreen> {
           );
         },
       ),
-      TextButton(
-        onPressed: () => setState(
-          () => url = ref.read(rescueRepositoryProvider).fileUrl(widget.path),
-        ),
-        child: const Text('Recargar archivo'),
-      ),
+      TextButton(onPressed: reload, child: const Text('Recargar archivo')),
     ],
   );
 }

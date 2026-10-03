@@ -457,6 +457,35 @@ class CaseCaptureRescue extends SupportCaptureRescue {
       ], 5);
 }
 
+class PrivateFileCaptureRescue extends FakeRescue {
+  PrivateFileCaptureRescue({required this.pdf, required this.readFails});
+  final bool pdf, readFails;
+  final requestedPaths = <String>[];
+  String get path => 'one/verification-id/fixture.${pdf ? 'pdf' : 'png'}';
+  @override
+  Future<Json> detail(String id) async {
+    final result = await super.detail(id);
+    return {
+      ...result,
+      'record': {
+        ...Json.from(result['record']),
+        'owner_id': 'one',
+        'files': [
+          {'path': path, 'role': 'identity', 'name': 'Archivo de prueba'},
+        ],
+      },
+    };
+  }
+
+  @override
+  Future<String> fileUrl(String requestedPath) async {
+    requestedPaths.add(requestedPath);
+    if (requestedPath != path) throw StateError('Unexpected private path');
+    if (readFails) throw Exception('fixture unavailable');
+    return 'https://fixture.invalid/private-document.${pdf ? 'pdf' : 'png'}';
+  }
+}
+
 class ConnectCapturePayments extends FakePayments {
   ConnectCapturePayments({required this.ready, required this.readFails});
   final bool ready, readFails;
@@ -767,6 +796,7 @@ void main() {
     var captureCount = 0;
     var expectedAccountNavigation = 0, actualAccountNavigation = 0;
     var expectedConnectNavigation = 0, actualConnectNavigation = 0;
+    var expectedPrivateFileNavigation = 0, actualPrivateFileNavigation = 0;
     for (final spec in [
       ('adoption-swipe', '/adoptions'),
       ('adoption-large', '/adoptions'),
@@ -1137,6 +1167,15 @@ void main() {
         '/rescue-cases/case-one/updates/update-draft',
       ),
       ('account-access-options', '/settings/account'),
+      ('private-file-image', '/rescue/verification-id'),
+      ('private-file-image-large', '/rescue/verification-id'),
+      ('private-file-image-content-large', '/rescue/verification-id'),
+      ('private-file-pdf', '/rescue/verification-id'),
+      ('private-file-pdf-large', '/rescue/verification-id'),
+      ('private-file-pdf-content-large', '/rescue/verification-id'),
+      ('private-file-error', '/rescue/verification-id'),
+      ('private-file-error-large', '/rescue/verification-id'),
+      ('private-file-error-content-large', '/rescue/verification-id'),
       ('connect-account-ready', '/connect'),
       ('connect-account-ready-large', '/connect'),
       ('connect-account-ready-content-large', '/connect'),
@@ -1230,6 +1269,7 @@ void main() {
         continue;
       }
       captureCount++;
+      if (spec.$1.startsWith('private-file')) expectedPrivateFileNavigation++;
       if (spec.$1.startsWith('connect-account') &&
           !spec.$1.contains('content')) {
         expectedConnectNavigation++;
@@ -1239,6 +1279,10 @@ void main() {
         expectedAccountNavigation++;
       }
       final waitingPayment = WaitingContributionCapturePayments();
+      final privateFile = PrivateFileCaptureRescue(
+        pdf: spec.$1.contains('-pdf'),
+        readFails: spec.$1.startsWith('private-file-error'),
+      );
       // Synthetic preferences belong only to this flutter_test capturer.
       // ignore: invalid_use_of_visible_for_testing_member
       SharedPreferences.setMockInitialValues({});
@@ -1460,6 +1504,7 @@ void main() {
         };
       }
       if (spec.$1.startsWith('owned-case-detail') ||
+          spec.$1.startsWith('private-file') ||
           spec.$1.startsWith('connect-account') ||
           spec.$1.startsWith('account-access-options') ||
           spec.$1.startsWith('managed-updates') ||
@@ -1516,6 +1561,8 @@ void main() {
           communityRepositoryProvider.overrideWithValue(community),
           if (spec.$1.startsWith('public-profile-cases'))
             rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+          if (spec.$1.startsWith('private-file'))
+            rescueRepositoryProvider.overrideWithValue(privateFile),
           if (spec.$1.startsWith('rescuer-profile') ||
               spec.$1.startsWith('rescuer-settings') ||
               spec.$1.startsWith('connect-account') ||
@@ -1756,6 +1803,44 @@ void main() {
       }
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      if (spec.$1.startsWith('private-file')) {
+        final openFile = find.text('Ver archivo 1');
+        await tester.scrollUntilVisible(
+          openFile,
+          250,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.ensureVisible(openFile);
+        await tester.pumpAndSettle();
+        expect(openFile.hitTestable(), findsOneWidget);
+        await tester.tap(openFile);
+        for (var phase = 0; phase < 3; phase++) {
+          await tester.pump(const Duration(seconds: 1));
+          await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 100)),
+          );
+        }
+        await tester.pumpAndSettle();
+        expect(container.read(routerProvider).state.uri.path, '/rescue-file');
+        expect(privateFile.requestedPaths, [privateFile.path]);
+        if (spec.$1.contains('content')) {
+          final reload = find.text('Recargar archivo');
+          await tester.scrollUntilVisible(
+            reload,
+            200,
+            scrollable: find.byType(Scrollable).first,
+          );
+          await tester.ensureVisible(reload);
+          await tester.pumpAndSettle();
+          expect(reload.hitTestable(), findsOneWidget);
+          await tester.tap(reload);
+          await tester.pumpAndSettle();
+          expect(privateFile.requestedPaths, [
+            privateFile.path,
+            privateFile.path,
+          ]);
+        }
+      }
       if (spec.$1.startsWith('saved-pagination')) {
         await tester.ensureVisible(find.byTooltip('Página siguiente'));
         await tester.pumpAndSettle();
@@ -3352,6 +3437,14 @@ void main() {
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),
         );
+        if (spec.$1.startsWith('private-file')) {
+          expect(find.byTooltip('Volver').hitTestable(), findsOneWidget);
+          await tester.tap(find.byTooltip('Volver'));
+          await tester.pumpAndSettle();
+          expect(container.read(routerProvider).state.uri.path, spec.$2);
+          expect(privateFile.saveCalls, 0);
+          actualPrivateFileNavigation++;
+        }
         if (spec.$1.startsWith('connect-account') &&
             !spec.$1.contains('content')) {
           expect(find.byTooltip('Regresar').hitTestable(), findsOneWidget);
@@ -3457,6 +3550,11 @@ void main() {
       expectedConnectNavigation,
       reason:
           'Every selected Connect navigation fixture must execute its checks',
+    );
+    expect(
+      actualPrivateFileNavigation,
+      expectedPrivateFileNavigation,
+      reason: 'Every selected private file fixture must return to its request',
     );
     expect(
       captureCount,
