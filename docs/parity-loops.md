@@ -2889,3 +2889,9 @@ Userapi.ts/test siguen sinstaging ni cambios. Configuración12/12 aprobada.
 Actualizada parity-current-review con evidencia311–318 y límites fuentes,
 Auth/REST/dispositivo/alcancecompleto. No claiming gate completo móvil verde:
 falta repetir fullsuite tras correcciones en próximo corte. No Codemagic.
+
+# Loop320 — regresión móvil completa del corte corregido
+
+flutter test --no-pub en el scratch sincronizado con af249a900fffd9f501ba54dda089a022c745100a: 470/470 aprobadas, 2:59, exit0. Se retomó la misma sesión96114; no se reinició ni modificó código durante la ejecución. Incluye la recuperación del acceso a rescatistas guardados y el regreso nativo del editor corregidos319.
+Referencia remota Irlanda confirmada a3c969cd9103fd46dc5cd886999912526ce75efb. Admin27/27, build y configuración12/12 del loop319 siguen vigentes; backend439/439 del313 sin cambios posteriores de SQL.
+La aprobación técnica no equivale a paridad global ni aceptación en dispositivo. Objetivo continúa activo. Instrucción vigente del titular: siguiente Codemagic únicamente al completar el objetivo; no build ni push en este corte.
