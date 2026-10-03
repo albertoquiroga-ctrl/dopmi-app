@@ -820,6 +820,11 @@ void main() {
       ('payment-methods-inactive', '/settings/payment-methods'),
       ('payment-methods-cards', '/settings/payment-methods'),
       ('payment-methods-cards-large', '/settings/payment-methods'),
+      ('payment-methods-cards-default-toast', '/settings/payment-methods'),
+      (
+        'payment-methods-cards-default-toast-large',
+        '/settings/payment-methods',
+      ),
       ('payment-methods-cards-remove-confirm', '/settings/payment-methods'),
       (
         'payment-methods-cards-remove-confirm-large',
@@ -1092,6 +1097,7 @@ void main() {
         };
       }
       if (spec.$1.startsWith('payment-methods-cards')) {
+        guardian.applySelected = spec.$1.contains('default-toast');
         guardian.cards = [
           const GuardianPaymentCard(
             id: 'pm_one',
@@ -2168,6 +2174,23 @@ void main() {
         await gesture.moveBy(const Offset(65, 0));
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 180));
+        if (spec.$1.startsWith('payment-methods-cards-default-toast')) {
+          await tester.scrollUntilVisible(
+            find.text('Hacer predeterminada'),
+            180,
+          );
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('Hacer predeterminada'));
+          await tester.pumpAndSettle();
+          await tester.ensureVisible(find.text('Autorizar y continuar'));
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('Autorizar y continuar'));
+          await tester.pumpAndSettle();
+          expect(
+            find.text('Método predeterminado actualizado'),
+            findsOneWidget,
+          );
+        }
         if (spec.$1.startsWith('payment-methods-cards-remove-confirm')) {
           await tester.ensureVisible(find.byTooltip('Eliminar tarjeta'));
           await tester.pumpAndSettle();
@@ -2744,6 +2767,23 @@ void main() {
             alignment: .7,
           );
           await tester.pumpAndSettle();
+        }
+        if (spec.$1.startsWith('payment-methods-cards-default-toast')) {
+          await tester.scrollUntilVisible(
+            find.text('Hacer predeterminada'),
+            180,
+          );
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('Hacer predeterminada'));
+          await tester.pumpAndSettle();
+          await tester.ensureVisible(find.text('Autorizar y continuar'));
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('Autorizar y continuar'));
+          await tester.pumpAndSettle();
+          expect(
+            find.text('Método predeterminado actualizado'),
+            findsOneWidget,
+          );
         }
         if (spec.$1.startsWith('payment-methods-cards-remove-confirm')) {
           await tester.ensureVisible(find.byTooltip('Eliminar tarjeta'));

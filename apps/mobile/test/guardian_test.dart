@@ -86,6 +86,7 @@ class FakeGuardian extends GuardianRepository {
           'key': intent['key'],
           'revision': intent['revision'],
           'status': 'pending',
+          'action': intent['selected_method_id'] != null ? 'default' : 'setup',
         },
       };
       if (intent['remove_saved'] == true) {
@@ -800,15 +801,94 @@ void main() {
       expect(repo.opened, 0);
       expect(repo.cards.last.isDefault, true);
       expect(repo.cards.first.isDefault, false);
-      expect(
-        find.textContaining(
-          'Medio de pago actualizado para los próximos ciclos.',
-        ),
-        findsOneWidget,
-      );
+      expect(find.text('Método predeterminado actualizado'), findsOneWidget);
       expect(find.text('Predeterminada'), findsOneWidget);
     },
   );
+  testWidgets(
+    'default feedback waits for card confirmation and never replays',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final repo = FakeGuardian()
+        ..applySelected = true
+        ..cards = [
+          const GuardianPaymentCard(
+            id: 'pm_old',
+            brand: 'visa',
+            last4: '4242',
+            isDefault: true,
+          ),
+          const GuardianPaymentCard(
+            id: 'pm_selected',
+            brand: 'mastercard',
+            last4: '5556',
+            isDefault: false,
+          ),
+        ]
+        ..value = {
+          'plan': activePlan(),
+          'activation': null,
+          'method_change_available': true,
+        };
+      await start(tester, repo, methods: true);
+      await tester.tap(find.text('Hacer predeterminada'));
+      await tester.pumpAndSettle();
+      repo.failCards = true;
+      await tester.tap(find.text('Autorizar y continuar'));
+      await tester.pumpAndSettle();
+      expect(repo.cards.last.isDefault, true);
+      expect(find.text('Método predeterminado actualizado'), findsNothing);
+      expect(
+        find.textContaining('No se pudieron consultar tus tarjetas.'),
+        findsOneWidget,
+      );
+      repo.failCards = false;
+      await tester.ensureVisible(find.text('Actualizar estado'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Actualizar estado'));
+      await tester.pumpAndSettle();
+      expect(find.text('Método predeterminado actualizado'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 3));
+      expect(find.text('Método predeterminado actualizado'), findsNothing);
+      await tester.ensureVisible(find.text('Actualizar estado'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Actualizar estado'));
+      await tester.pumpAndSettle();
+      expect(find.text('Método predeterminado actualizado'), findsNothing);
+      expect(repo.calls, hasLength(1));
+    },
+  );
+  for (final action in ['default', 'remove']) {
+    testWidgets('historical applied $action does not announce fresh success', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({});
+      final repo = FakeGuardian()
+        ..cards = [
+          const GuardianPaymentCard(
+            id: 'pm_old',
+            brand: 'visa',
+            last4: '4242',
+            isDefault: true,
+          ),
+        ]
+        ..value = {
+          'plan': activePlan(),
+          'activation': null,
+          'method_change_available': true,
+          'method_setup': {
+            'key': 'historical-key',
+            'revision': 1,
+            'status': 'applied',
+            'action': action,
+          },
+        };
+      await start(tester, repo, methods: true);
+      expect(find.text('Método predeterminado actualizado'), findsNothing);
+      expect(find.text('Tarjeta eliminada.'), findsNothing);
+      expect(repo.calls, isEmpty);
+    });
+  }
   for (final large in [false, true]) {
     testWidgets(
       'card removal confirms, retains uncertain row and retries one target: large=$large',
@@ -879,9 +959,16 @@ void main() {
         expect(repo.opened, 0);
         expect(repo.cards, hasLength(1));
         expect(repo.cards.single.isDefault, true);
-        await tester.scrollUntilVisible(find.text('Tarjeta eliminada.'), -180);
-        await tester.pumpAndSettle();
-        expect(find.text('Tarjeta eliminada.'), findsOneWidget);
+        expect(find.text('Tarjeta eliminada.'), findsNothing);
+        expect(
+          find.byWidgetPredicate(
+            (widget) =>
+                widget is Semantics &&
+                widget.properties.liveRegion == true &&
+                widget.properties.label == 'Tarjeta eliminada.',
+          ),
+          findsOneWidget,
+        );
         expect(find.textContaining('Medio de pago actualizado'), findsNothing);
         expect(tester.takeException(), isNull);
       },

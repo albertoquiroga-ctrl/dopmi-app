@@ -14,6 +14,7 @@ import '../identity/identity_controller.dart';
 import '../rescue/rescue_repository.dart';
 import 'guardian_repository.dart';
 import 'guardian_payment_card.dart';
+import 'payment_methods_feedback.dart';
 import 'payment_method_border.dart';
 import 'contribution_layout.dart';
 import 'guardian_membership_card.dart';
@@ -45,6 +46,10 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   Json? data, intent;
   List<GuardianPaymentCard>? cards;
   String? cardsError;
+  Json? pendingMethodsFeedback;
+  String? methodsFeedback, methodsFeedbackKey;
+  bool feedbackIsRemoval = false;
+  final shownMethodsFeedback = <String>{};
   bool busy = true, consent = false, fresh = false, confirming = false;
   String? error, message;
   String? confirmedActivationKey;
@@ -60,6 +65,45 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       data?['activation'] is Map ? Json.from(data!['activation']) : null;
   Json? get methodSetup =>
       data?['method_setup'] is Map ? Json.from(data!['method_setup']) : null;
+  String? get methodsNotice =>
+      methodSetup?['status'] == 'applied' &&
+          ['default', 'remove'].contains(methodSetup?['action'])
+      ? null
+      : guardianMethodNotice(methodSetup);
+
+  void confirmMethodsFeedback() {
+    final pending = pendingMethodsFeedback, setup = methodSetup;
+    if (pending == null || setup == null) return;
+    if (setup['key'] != pending['key'] ||
+        ['expired', 'superseded'].contains(setup['status'])) {
+      pendingMethodsFeedback = null;
+      return;
+    }
+    if (setup['status'] != 'applied' ||
+        cards == null ||
+        cardsError != null ||
+        plan?['status'] != 'active' ||
+        !['default', 'remove'].contains(setup['action'])) {
+      return;
+    }
+    final removed = setup['action'] == 'remove',
+        target = pending['selected_method_id'];
+    if (target != null &&
+        (removed
+            ? cards!.any((card) => card.id == target)
+            : !cards!.any((card) => card.id == target && card.isDefault))) {
+      return;
+    }
+    final key = setup['key'];
+    pendingMethodsFeedback = null;
+    if (key is! String || !shownMethodsFeedback.add(key)) return;
+    methodsFeedbackKey = key;
+    feedbackIsRemoval = removed;
+    methodsFeedback = removed
+        ? 'Tarjeta eliminada.'
+        : 'Método predeterminado actualizado';
+  }
+
   String get methodRetryLabel => intent?['remove_saved'] == true
       ? 'Reintentar eliminación'
       : intent?['selected_method_id'] == null
@@ -165,6 +209,9 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         }
       }
       if (!current) return;
+      if (widget.paymentMethodsOnly && intent?['kind'] == 'method') {
+        pendingMethodsFeedback = Json.from(intent!);
+      }
       final result = await ref.read(guardianRepositoryProvider).state();
       if (!current) return;
       data = result;
@@ -281,6 +328,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
               .paymentMethods();
           if (!current) return;
           cards = result;
+          confirmMethodsFeedback();
         } catch (_) {
           if (current) cardsError = 'No se pudieron consultar tus tarjetas. Actualiza el estado para reintentar.';
         }
@@ -542,7 +590,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         await repo.openCheckout(result['checkout_url'] as String);
       } else {
         message = next['kind'] == 'method'
-            ? next['remove_saved'] == true
+            ? next['remove_saved'] == true || next['selected_method_id'] != null
                   ? null
                   : guardianMethodLabels[result['status']] ??
                         'Actualización en revisión.'
@@ -650,141 +698,157 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       return ContributionFrame(
         title: 'Métodos de pago',
         back: () => context.canPop() ? context.pop() : context.go('/settings'),
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
+        child: Stack(
           children: [
-            const Text(
-              'Tarjetas guardadas',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: ink,
-              ),
-            ),
-            const SizedBox(height: 12),
-            if (enabled && cardsError != null) Notice(cardsError!),
-            if (enabled && cards != null && cards!.isNotEmpty)
-              for (var i = 0; i < cards!.length; i++) ...[
-                if (i > 0) const SizedBox(height: 12),
-                GuardianPaymentCardRow(
-                  card: cards![i],
-                  showMakeDefault: verified && status == 'active',
-                  showRemove: verified && status == 'active',
-                  onRemove:
-                      busy ||
-                          confirming ||
-                          !fresh ||
-                          intent != null ||
-                          data?['method_change_available'] != true
-                      ? null
-                      : () => submit(
-                          method: true,
-                          selectedCard: cards![i],
-                          removeCard: true,
-                        ),
-                  onMakeDefault:
-                      busy ||
-                          confirming ||
-                          !fresh ||
-                          intent != null ||
-                          data?['method_change_available'] != true
-                      ? null
-                      : () => submit(method: true, selectedCard: cards![i]),
+            ListView(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
+              children: [
+                const Text(
+                  'Tarjetas guardadas',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: ink,
+                  ),
                 ),
-              ],
-            if (cards == null || cards!.isEmpty)
-              Container(
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: const Color(0xffe6e2dd)),
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: const BoxDecoration(
-                        color: Color(0xffefede8),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: SvgPicture.asset(
-                          'assets/profile/icon-card.svg',
-                          width: 18,
-                          height: 18,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        !enabled
-                            ? 'Guardián no está disponible en esta versión.'
-                            : error != null && !fresh
-                            ? 'No se pudo confirmar tu medio de pago.'
-                            : busy && data == null
-                            ? 'Consultando tu suscripción…'
-                            : status == 'active'
-                            ? 'Gestionado en Stripe'
-                            : 'No tienes una suscripción activa de Guardián.',
-                      ),
+                const SizedBox(height: 12),
+                if (enabled && cardsError != null) Notice(cardsError!),
+                if (enabled && cards != null && cards!.isNotEmpty)
+                  for (var i = 0; i < cards!.length; i++) ...[
+                    if (i > 0) const SizedBox(height: 12),
+                    GuardianPaymentCardRow(
+                      card: cards![i],
+                      showMakeDefault: verified && status == 'active',
+                      showRemove: verified && status == 'active',
+                      onRemove:
+                          busy ||
+                              confirming ||
+                              !fresh ||
+                              intent != null ||
+                              data?['method_change_available'] != true
+                          ? null
+                          : () => submit(
+                              method: true,
+                              selectedCard: cards![i],
+                              removeCard: true,
+                            ),
+                      onMakeDefault:
+                          busy ||
+                              confirming ||
+                              !fresh ||
+                              intent != null ||
+                              data?['method_change_available'] != true
+                          ? null
+                          : () => submit(method: true, selectedCard: cards![i]),
                     ),
                   ],
-                ),
-              ),
-            if (enabled && paymentIssueMessage != null)
-              Notice(paymentIssueMessage!),
-            if (error != null) Notice(error!),
-            if (message != null) Notice(message!),
-            if (enabled &&
-                methodSetup != null &&
-                message != guardianMethodNotice(methodSetup))
-              Notice(
-                guardianMethodNotice(methodSetup) ??
-                    'Medio de pago en revisión.',
-              ),
-            const SizedBox(height: 12),
-            if (enabled &&
-                verified &&
-                status == 'active' &&
-                data?['method_change_available'] == true &&
-                intent == null)
-              OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: ink,
-                  minimumSize: const Size.fromHeight(56),
-                  side: const BorderSide(color: Color(0xffd5cfc6)),
-                  textStyle: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+                if (cards == null || cards!.isEmpty)
+                  Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: const Color(0xffe6e2dd)),
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: const BoxDecoration(
+                            color: Color(0xffefede8),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: SvgPicture.asset(
+                              'assets/profile/icon-card.svg',
+                              width: 18,
+                              height: 18,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            !enabled
+                                ? 'Guardián no está disponible en esta versión.'
+                                : error != null && !fresh
+                                ? 'No se pudo confirmar tu medio de pago.'
+                                : busy && data == null
+                                ? 'Consultando tu suscripción…'
+                                : status == 'active'
+                                ? 'Gestionado en Stripe'
+                                : 'No tienes una suscripción activa de Guardián.',
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  shape: const PaymentMethodBorder(),
+                if (enabled && paymentIssueMessage != null)
+                  Notice(paymentIssueMessage!),
+                if (error != null) Notice(error!),
+                if (message != null) Notice(message!),
+                if (enabled &&
+                    methodSetup != null &&
+                    methodsNotice != null &&
+                    message != methodsNotice)
+                  Notice(methodsNotice ?? 'Medio de pago en revisión.'),
+                const SizedBox(height: 12),
+                if (enabled &&
+                    verified &&
+                    status == 'active' &&
+                    data?['method_change_available'] == true &&
+                    intent == null)
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: ink,
+                      minimumSize: const Size.fromHeight(56),
+                      side: const BorderSide(color: Color(0xffd5cfc6)),
+                      textStyle: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      shape: const PaymentMethodBorder(),
+                    ),
+                    onPressed: busy || confirming || !fresh
+                        ? null
+                        : () => submit(method: true),
+                    icon: const Icon(Icons.add, size: 18),
+                    label: const Text('Actualizar medio de pago'),
+                  ),
+                if (enabled && intent?['kind'] == 'method')
+                  ActionButton(
+                    methodRetryLabel,
+                    busy: busy,
+                    onPressed: canSubmit ? () => submit() : null,
+                  ),
+                TextButton(
+                  style: TextButton.styleFrom(foregroundColor: ink),
+                  onPressed: busy || confirming ? null : () => load(),
+                  child: const Text('Actualizar estado'),
                 ),
-                onPressed: busy || confirming || !fresh
-                    ? null
-                    : () => submit(method: true),
-                icon: const Icon(Icons.add, size: 18),
-                label: const Text('Actualizar medio de pago'),
-              ),
-            if (enabled && intent?['kind'] == 'method')
-              ActionButton(
-                methodRetryLabel,
-                busy: busy,
-                onPressed: canSubmit ? () => submit() : null,
-              ),
-            TextButton(
-              style: TextButton.styleFrom(foregroundColor: ink),
-              onPressed: busy || confirming ? null : () => load(),
-              child: const Text('Actualizar estado'),
+                if (enabled)
+                  TextButton(
+                    style: TextButton.styleFrom(foregroundColor: ink),
+                    onPressed: () => context.push('/guardian'),
+                    child: const Text('Ver mi suscripción de Guardián'),
+                  ),
+              ],
             ),
-            if (enabled)
-              TextButton(
-                style: TextButton.styleFrom(foregroundColor: ink),
-                onPressed: () => context.push('/guardian'),
-                child: const Text('Ver mi suscripción de Guardián'),
+            if (methodsFeedback != null)
+              Positioned(
+                left: 16,
+                right: 16,
+                bottom: 24,
+                child: PaymentMethodsFeedback(
+                  key: ValueKey(methodsFeedbackKey),
+                  message: methodsFeedback!,
+                  visible: !feedbackIsRemoval,
+                  onDone: () {
+                    if (current) setState(() => methodsFeedback = null);
+                  },
+                ),
               ),
           ],
         ),
