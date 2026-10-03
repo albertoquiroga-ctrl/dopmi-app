@@ -819,6 +819,17 @@ void main() {
       ('payment-methods-large', '/settings/payment-methods'),
       ('payment-methods-inactive', '/settings/payment-methods'),
       ('payment-methods-cards', '/settings/payment-methods'),
+      ('payment-methods-cards-canceled', '/settings/payment-methods'),
+      ('payment-methods-cards-canceled-large', '/settings/payment-methods'),
+      ('payment-methods-cards-canceled-waiting', '/settings/payment-methods'),
+      (
+        'payment-methods-cards-canceled-waiting-large',
+        '/settings/payment-methods',
+      ),
+      (
+        'payment-methods-cards-canceled-waiting-footer-large',
+        '/settings/payment-methods',
+      ),
       (
         'payment-methods-cards-independent-default-confirm',
         '/settings/payment-methods',
@@ -1118,6 +1129,17 @@ void main() {
         };
       }
       if (spec.$1.startsWith('payment-methods-cards')) {
+        if (spec.$1.contains('canceled')) {
+          guardian.value = {
+            'plan': {
+              ...activePlan(),
+              'status': 'canceled',
+              'payment_in_flight': spec.$1.contains('waiting'),
+            },
+            'activation': null,
+            'method_change_available': false,
+          };
+        }
         if (spec.$1.contains('independent')) {
           guardian.value = {'plan': null, 'activation': null};
         }
@@ -2856,6 +2878,30 @@ void main() {
           await tester.tap(find.byTooltip('Eliminar tarjeta'));
           await tester.pumpAndSettle();
           expect(find.text('¿Eliminar esta tarjeta?'), findsOneWidget);
+        }
+        if (spec.$1.startsWith('payment-methods-cards-canceled')) {
+          final waiting = spec.$1.contains('waiting');
+          expect(
+            find.text('Hacer predeterminada'),
+            waiting ? findsNothing : findsOneWidget,
+          );
+          expect(
+            find.byTooltip('Eliminar tarjeta'),
+            waiting ? findsNothing : findsOneWidget,
+          );
+          expect(
+            find.textContaining('Hay un apoyo pendiente de confirmación.'),
+            waiting ? findsOneWidget : findsNothing,
+          );
+          expect(guardian.calls, isEmpty);
+          if (spec.$1.contains('footer')) {
+            await tester.scrollUntilVisible(
+              find.text('Actualizar estado'),
+              220,
+            );
+            await tester.ensureVisible(find.text('Actualizar estado'));
+            await tester.pumpAndSettle();
+          }
         }
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),
