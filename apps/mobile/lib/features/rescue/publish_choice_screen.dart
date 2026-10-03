@@ -315,27 +315,14 @@ class _PublishTypeCardState extends State<PublishTypeCard> {
                       ),
                       if (widget.verification) ...[
                         const SizedBox(height: 9),
-                        const Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.warning_amber_rounded,
-                              size: 14,
-                              color: Color(0xffc2410c),
-                            ),
-                            SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                'Requiere verificación',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  height: 16 / 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xffc2410c),
-                                ),
-                              ),
-                            ),
-                          ],
+                        const Text(
+                          '⚠️ Requiere verificación',
+                          style: TextStyle(
+                            fontSize: 12,
+                            height: 16 / 12,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xffc2410c),
+                          ),
                         ),
                       ],
                     ],

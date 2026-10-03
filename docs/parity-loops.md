@@ -3572,3 +3572,10 @@ Base5f2dc56; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada si
 7/7targeted publish_choice+captureprefijopublish-choice pasan89007/ed96b1 en7s: estadosverificación/rutas/bloqueotardío ycapturasnormal200. Analyzer limpio47.0s94617/ff6a0d, diffcheck limpio. PNGequivalentesSource/Flutter normal200 ysource-colors.json guardadas/revisadas parity-loop410. SourcebadgeModo prueba no se copia; avisoUnicode⚠️ Source vsIconwarningamber cliente permanece diferencia visible pendiente de revisar, no declarar selectoridéntico ni familiaPublish cerrada. Source200nuevo/nohardware noacreditados.
 
 Browser410 cerrado bcd8ae; Vite97298 CtrlCexit1esperado. Full558407+captercompleto408 antecedencambioschat409/paleta410, dirigidosactuales cubrenal alcance. Próximo aviso/intakeverificación y formulariosPublicación, manteniendoobjetivoglobal/configSDKreal/device/finalacceptance. SinCM/push, Codemagic sóloobjetivo completo.
+
+
+### Loop411 — símbolo de verificación como texto de referencia, 3/10/2026
+
+Base7d67901; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. SourceApp usa span literal ⚠️ Requiere verificación. Selector reemplaza IconMaterial warning_amber+gap+Text por el mismo textoUnicode inline con12/16 ycolorc2410c; preserva señal ypaleta real, sin cambiar autorización/estado ni copiar simulación. ParentcardSemantics ya describe verificación, ExcludeSemantics no duplica lectura.
+
+7/7publishChoice+capture pasan42243/097a81 en4s, incluye destinos según estado, errores, lateverification y320/200+cancel. Analyzer limpio32.1s77976/f90118, diffchecklimpio. PNGnormal/200 actualizadas enparity-loop411; normal inspeccionada: glyphwarningmonocromático enrendererFlutterfixture, noequivalenciapixelconemojiamarilloEdge410. EltextoSource coincide; forma/colorEmoji dependenfallbacknativo y requieren revisión instalada, no declarar paridadglyph aceptada ni selector/familiaPublish completos. SinSDK/device/CM/push nuevos, configSDKreal/matrizglobal/finalacceptancependientes. Próximo intake/formulariosverificación/publicación y revisión nativa pendiente; Codemagic sóloobjetivo completo.

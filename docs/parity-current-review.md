@@ -1,3 +1,9 @@
+# Corte vigente — loop411, 3/10/2026
+
+AvisoPublish usa textoUnicodeSource;7tests/capture pasan/analyzer limpio32.1s. GlyphFlutterfixturemonocromático vsEdgeemojiamarillo: revisiónnativa pendiente, no paridadvisualtotalaceptada. Selectorpaleta410 preservada. Intake/formulariosverificación/publicación ymatrizglobal/configSDKreal/device/finalacceptancependientes. Codemagic sóloobjetivo completo.
+
+## Corte410 anterior
+
 # Corte vigente — loop410, 3/10/2026
 
 SelectorPublish usa paletaSource rescatista151423/4f4e5c/e3e4ed; comparaciónrenderizada normal/captura200 revisadas.7targeted con captura pasan/analyzer limpio47s. AvisoUnicodeSource vsIconcliente sigue diferencia por revisar; no familiaPublish cerrada. ConfigSDKreal/matrizglobal/device/finalacceptancependientes, Codemagic sóloobjetivo completo.
