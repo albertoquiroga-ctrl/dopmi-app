@@ -1,5 +1,7 @@
 import { PaymentError } from './payments.mjs';
 
+export const savedCardMethodConsentVersion = 'saved-card-methods-2026-10-03';
+
 const id = value => typeof value === 'string' ? value : value?.id;
 const fail = code => { throw new PaymentError(code, 503); };
 const active = job => job?.status === 'pending';
@@ -111,5 +113,21 @@ export function savedCardMethodService({ stripe, rpc }) {
       await rpc('release', { id: jobId, lease: claimed.lease });
     }
   }
-  return { run };
+  async function submit(actor, input) {
+    const prepared = await rpc('prepare', { owner_id: actor, key: input.key,
+      action: input.action, selected_method_id: input.selected_method_id,
+      consent: input.consent, consent_version: input.consent_version });
+    const result = await run(prepared.id);
+    return { key: result.request_key, action: result.action, status: result.status,
+      card_id: result.selected_method_id };
+  }
+  async function reconcile() {
+    let applied = 0, failed = 0;
+    for (const candidate of await rpc('candidates', {})) {
+      try { if (['applied', 'removed'].includes((await run(candidate.id)).status)) applied++; }
+      catch { failed++; }
+    }
+    return { applied, failed };
+  }
+  return { run, submit, reconcile };
 }

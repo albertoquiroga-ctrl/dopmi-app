@@ -5,6 +5,7 @@ import { PGlite } from '@electric-sql/pglite';
 import { createHmac } from 'node:crypto';
 import { verifySignature, requireTestKey, paymentService, stripeApi } from '../../supabase/functions/_shared/payments.mjs';
 import { savedCardService, savedCardConsentVersion } from '../../supabase/functions/_shared/saved-card.mjs';
+import { savedCardMethodService } from '../../supabase/functions/_shared/saved-card-method.mjs';
 
 let db;
 const donor = '70000000-0000-4000-8000-000000000001';
@@ -4155,3 +4156,32 @@ test('independent method SQL checks account confirmation again before mutation',
  assert.equal((await independentMethod('get',{id:j.id})).mutation_requested_at,null);
  await role(donor); await rejected(()=>db.query('select dopmi_saved_card_method_state()'),/Cuenta no disponible/);
 });
+
+for (const action of ['default','remove']) {
+ test(`independent method service SQL recovers lost ${action} response without another write`,async()=>{
+  await db.query("insert into private.dopmi_saved_card_customers(owner_id,stripe_customer_id) values($1,'cus_independent')",[donor]);
+  const customer={id:'cus_independent',livemode:false,invoice_settings:{default_payment_method:'pm_old'},balance:0};
+  const card={id:'pm_independent',type:'card',livemode:false,customer:'cus_independent'};
+  const calls=[];let lose=true;
+  const mutate=async(kind,fields,options)=>{
+   calls.push({kind,fields,options});
+   if(kind==='default') customer.invoice_settings.default_payment_method=fields.invoice_settings.default_payment_method;
+   else card.customer=null;
+   if(lose){lose=false;throw Error('accepted response lost');}
+  };
+  const page=async()=>({data:[],has_more:false});
+  const stripe={customers:{retrieve:async()=>structuredClone(customer),update:async(_id,fields,options)=>mutate('default',fields,options)},
+   paymentMethods:{retrieve:async()=>structuredClone(card),detach:async(_id,fields,options)=>mutate('remove',fields,options)},
+   subscriptions:{list:page},invoices:{list:page},paymentIntents:{list:page}};
+  const service=savedCardMethodService({stripe,rpc:independentMethod});
+  const input={key,action,selected_method_id:'pm_independent',consent:true,consent_version:'saved-card-methods-2026-10-03'};
+  await assert.rejects(service.submit(donor,input),/accepted response lost/);
+  const receipt=await service.submit(donor,input);
+  assert.deepEqual(receipt,{key,action,status:action==='default'?'applied':'removed',card_id:'pm_independent'});
+  assert.deepEqual(await service.submit(donor,input),receipt);assert.equal(calls.length,1);
+  assert.deepEqual(calls[0].fields,action==='default'?{invoice_settings:{default_payment_method:'pm_independent'}}:{});
+  assert.equal(customer.balance,0);
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_activations')).rows[0].n,0);
+  assert.equal((await db.query('select count(*)::int n from dopmi_donations')).rows[0].n,0);
+ });
+}

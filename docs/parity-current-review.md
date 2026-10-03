@@ -1,3 +1,11 @@
+# Corte vigente — loop377, 3/10/2026
+
+Acciones de tarjeta sinGuardian integradas localmente: RPCSQL80000/RLS/locks bidireccionales/servicioStripe/endpointallowlist/worker. Backend526/52626s yDeno3entrypoints limpio6.39s. Dos casos SQL+Stripefake prueban respuestaaceptadaperdida/default-remove/replaywrite1; NO AuthStripe remoto positivo ni UI, ni migración desplegada. Sigue preflight/deploy/cableadomóvil/aceptación.
+
+Billeteras reales/uso tarjeta en apoyo y composiciónSource pendientes, además matriz completa de pantallas/animaciones/gestos/runtime/aceptacióninstalada. Fuentea3c969c sin cambios. Móvil504/359 anterior;50guardian374/analyze25.9s/capturasnormales200% alcance separado. CM sólo candidato final y dinero test-only.
+
+## Corte375 anterior
+
 # Corte vigente — loop375, 3/10/2026
 
 Acciones de tarjeta sinGuardían: base local saved-card-method con13tests nuevos; backend516/51627.23s aprobado, Deno módulo válido. Aún faltan SQL/RLS/locks bidireccionales/endpoint/worker/UI/aceptación. No confundir serviciofakecheckpoint con operación desplegada.

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { savedCardMethodService } from '../../supabase/functions/_shared/saved-card-method.mjs';
+import { guardianClientHandler } from '../../supabase/functions/_shared/guardian-client.mjs';
 
 function fixture(action = 'default') {
   let job = { id: 'job', status: 'pending', action, customer_id: 'cus_owner', selected_method_id: 'pm_target',
@@ -97,4 +98,32 @@ test('removal waits when an open invoice has no explicit method', async () => {
   const f = fixture('remove');
   f.pages.invoices.push({ id: 'in_unresolved', status: 'open', customer: 'cus_owner', livemode: false, default_payment_method: null });
   assert.equal((await f.service.run('job')).status, 'refused'); assert.equal(f.writes.length, 0);
+});
+test('independent method HTTP uses confirmed actor and a strict allowlist', async () => {
+  const calls = [];
+  const handler = guardianClientHandler({ enabled: () => true,
+    authenticate: async () => ({ id: 'owner', email_confirmed_at: 'now' }),
+    savedCardMethod: async (actor, data) => { calls.push({ actor, data }); return { status: 'pending' }; },
+  });
+  const input = { action: 'saved_card_default', key: '70000000-0000-4000-8000-000000000001',
+    consent: true, consent_version: 'saved-card-methods-2026-10-03', payment_method_id: 'pm_target' };
+  const call = data => handler(new Request('https://fixture.invalid', { method: 'POST',
+    headers: { Authorization: 'Bearer fixture' }, body: JSON.stringify(data) }));
+  for (const patch of [{ owner_id: 'peer' }, { customer_id: 'cus_peer' }, { revision: 1 },
+    { consent: false }, { consent_version: 'guardian-2026-09-24' }, { payment_method_id: 'bad' }]) {
+    assert.equal((await call({ ...input, ...patch })).status, 400);
+  }
+  assert.equal(calls.length, 0);
+  assert.equal((await call(input)).status, 200);
+  assert.deepEqual(calls[0], { actor: 'owner', data: { key: input.key, consent: true,
+    consent_version: input.consent_version, action: 'default', selected_method_id: 'pm_target' } });
+  assert.equal((await call({ ...input, action: 'saved_card_remove' })).status, 200);
+  assert.equal(calls[1].data.action, 'remove');
+});
+test('independent method HTTP never writes for an unconfirmed account', async () => {
+  const handler = guardianClientHandler({ enabled: () => true, authenticate: async () => ({ id: 'owner' }),
+    savedCardMethod: async () => { assert.fail('not authorized'); } });
+  const response = await handler(new Request('https://fixture.invalid', { method: 'POST',
+    headers: { Authorization: 'Bearer fixture' }, body: '{}' }));
+  assert.equal(response.status, 401);
 });
