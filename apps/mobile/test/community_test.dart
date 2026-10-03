@@ -622,6 +622,56 @@ void main() {
       expect(find.text('Sí, contactar rescatista'), findsNothing);
     },
   );
+  testWidgets('system back from a chat preserves the match list scroll', (
+    tester,
+  ) async {
+    final repo = FakeCommunity()
+      ..threadItems = List.generate(
+        20,
+        (index) => {
+          'id': 'thread-$index',
+          'pet_name': 'Mascota $index',
+          'participant_name': 'Rescatista',
+          'last_message': 'Vista $index',
+          'unread_count': 0,
+          'status': 'active',
+        },
+      );
+    final container = await start(tester, repo, '/messages');
+    await tester.scrollUntilVisible(
+      find.text('Vista 12'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await Scrollable.ensureVisible(
+      tester.element(find.text('Vista 12')),
+      alignment: .3,
+    );
+    await tester.pumpAndSettle();
+    final position = tester
+        .state<ScrollableState>(find.byType(Scrollable).first)
+        .position;
+    final offset = position.pixels;
+    expect(offset, greaterThan(0));
+    await tester.tap(find.text('Vista 12'));
+    await tester.pumpAndSettle();
+    expect(
+      container.read(routerProvider).state.uri.path,
+      '/messages/thread-12',
+    );
+    await tester.enterText(find.byType(TextField), 'Borrador sin enviar');
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(container.read(routerProvider).state.uri.path, '/messages');
+    final restored = tester
+        .state<ScrollableState>(find.byType(Scrollable).first)
+        .position;
+    expect(identical(restored, position), isTrue);
+    expect(restored.pixels, offset);
+    expect(find.text('Vista 12').hitTestable(), findsOneWidget);
+    expect(repo.sentIds, isEmpty);
+    expect(tester.takeException(), isNull);
+  });
   testWidgets('match rows show real unread counts and closed status', (
     tester,
   ) async {
