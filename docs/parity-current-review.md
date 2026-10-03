@@ -11,9 +11,12 @@ cierre mediante scroll; ambas escalas dirigidas2/2 y repetición599/599 verdes.
 
 Referencia `a3c969cd9103fd46dc5cd886999912526ce75efb`, rama Irlanda. Inventario
 401fixtures únicas/44paths/38patrones capturados no equivale a aceptación.
-Pasada completa del capturador401485 precede486–491. Siguiente comprobación
-lista: volver a recorrer los401estados con producción actual y continuar el
-cruce de familias con Source ejecutado, sin repetir sólo pruebas estrechas.
+Pasada completa del capturador492:401estados,1test,2m58s,71984exit0;
+401PNG frescos y228Dart sin cambios respecto al full491. Manifest492 confirma
+archivos/hashes, no401aceptaciones visuales. Notificaciones y pagos actuales
+contrastados con Source histórico del mismoSHA, sin regresión nueva detectada.
+Siguiente comparación: Adoptar/Apoyar principales y navegación, luego matriz
+de gestos contra Source ejecutado; no repetir full sin cambios o duda nueva.
 ADB490vacío; siguen faltando candidato instalado/gestos físicos y recorrido
 Stripe nativo TEST con credenciales. No push/Codemagic hasta objetivo completo.
 
