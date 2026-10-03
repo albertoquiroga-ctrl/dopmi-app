@@ -916,6 +916,8 @@ void main() {
       ('legal-privacy-large', '/privacy-notice'),
       ('help-center', '/help'),
       ('help-center-large', '/help'),
+      ('help-center-footer', '/help'),
+      ('help-center-footer-large', '/help'),
       ('help-center-adoption-large', '/help'),
       ('help-center-support', '/help'),
       ('help-center-support-large', '/help'),
@@ -1688,6 +1690,18 @@ void main() {
           findsNothing,
         );
         expect(find.textContaining('gastos ya pagados'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      }
+      if (spec.$1.startsWith('help-center-footer')) {
+        final footer = find.widgetWithText(TextButton, 'Aviso de privacidad');
+        await tester.scrollUntilVisible(
+          footer,
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await Scrollable.ensureVisible(tester.element(footer), alignment: 1);
+        await tester.pumpAndSettle();
+        expect(footer.hitTestable(), findsOneWidget);
         expect(tester.takeException(), isNull);
       }
       if (spec.$1 == 'help-center-adoption-large') {

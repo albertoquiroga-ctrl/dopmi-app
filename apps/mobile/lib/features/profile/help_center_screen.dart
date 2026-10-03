@@ -258,15 +258,19 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
             color: ink,
           ),
         ),
-        leading: IconButton(
-          tooltip: 'Volver',
-          onPressed: () => context.canPop()
-              ? context.pop()
-              : context.go(rescuer ? '/rescuer/settings' : '/profile'),
-          icon: SvgPicture.asset(
-            'assets/profile/back.svg',
-            width: 20,
-            height: 20,
+        leadingWidth: 60,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12),
+          child: IconButton(
+            tooltip: 'Volver',
+            onPressed: () => context.canPop()
+                ? context.pop()
+                : context.go(rescuer ? '/rescuer/settings' : '/profile'),
+            icon: SvgPicture.asset(
+              'assets/profile/back.svg',
+              width: 20,
+              height: 20,
+            ),
           ),
         ),
         bottom: const PreferredSize(
@@ -449,26 +453,43 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
               ),
             ),
             const SizedBox(height: 22),
-            Wrap(
-              alignment: WrapAlignment.center,
-              spacing: 8,
-              children: [
-                TextButton(
-                  style: _footerStyle,
-                  onPressed: () => context.push('/about'),
-                  child: const Text('Sobre nosotros'),
-                ),
-                TextButton(
-                  style: _footerStyle,
-                  onPressed: () => context.push('/terms'),
-                  child: const Text('Términos y Condiciones'),
-                ),
-                TextButton(
-                  style: _footerStyle,
-                  onPressed: () => context.push('/account-privacy'),
-                  child: const Text('Aviso de privacidad'),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8,
+                runSpacing: 6,
+                children: [
+                  TextButton(
+                    style: _footerStyle,
+                    onPressed: () => context.push('/about'),
+                    child: const Text('Sobre nosotros'),
+                  ),
+                  const ExcludeSemantics(
+                    child: Text(
+                      '·',
+                      style: TextStyle(fontSize: 12, color: muted),
+                    ),
+                  ),
+                  TextButton(
+                    style: _footerStyle,
+                    onPressed: () => context.push('/terms'),
+                    child: const Text('Términos y Condiciones'),
+                  ),
+                  const ExcludeSemantics(
+                    child: Text(
+                      '·',
+                      style: TextStyle(fontSize: 12, color: muted),
+                    ),
+                  ),
+                  TextButton(
+                    style: _footerStyle,
+                    onPressed: () => context.push('/privacy-notice'),
+                    child: const Text('Aviso de privacidad'),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

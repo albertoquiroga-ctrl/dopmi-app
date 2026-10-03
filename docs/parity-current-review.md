@@ -1,4 +1,8 @@
-# Corte vigente — loop457
+# Corte vigente — loop458
+
+Help footer Aviso ahoraabre/privacy-notice, noadministración/eliminación. Puntos/gaps/padding ybackcenter36 ajustados.2tests nuevos pasan2s ambosmodos200%;5soporte/capturador pasan, analyzer36.5sclean antes sóloarreglostest.13fixtures,4PNG revisadas. Full564/452precede453–458. Objetivoglobal/StripeSDK/device permaneceabierto;Codemagic sólofinal.
+
+# Corte anterior — loop457
 
 HelpCenter tarjeta soporte: título1.3/sombra/botón44px16w600 segúnSourceDOM.11tests pasan20s,analyzer50.7s limpio;Source yclientnormal/200 revisados. Próximo footer puntos/espaciado ychips. Full564/452 previo453–457. Objetivoglobal/StripeSDK/device sigueabierto;Codemagic sólo final.
 

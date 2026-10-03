@@ -3971,3 +3971,9 @@ Base707a27e; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Profi
 Base44562f9; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. /help usaHelpCenterScreen, noHelpScreenantiguo. SourceDOM377fontsready botón44/font16; tarjetaheading16/1.3/shadow0-8-22/.05. Clienteajustado botón44/font16/w600/padding11x18/ink0d0d0d +heading1.3+sombra aproximadaBlurRadius22. Repo/envíoreal/actions intactos.
 
 PrimerFlutterroot noPubspec fallóprevio carga; retry scratch11/11pasa20s72566exit0;analyzer8072 limpio50.7s. Capturador11fixturesno11pantallasaceptadas;4PNGguardadas normal/200/modal. SourcePNG/DOMyclientnormal/large inspeccionados docs/design-reviews/parity-loop457. Full564/452 previo453–457; backend587/436 sin cambios. FooterSource puntosseparadores/espaciado y métricaschips siguencomparaciónpendiente, nomarcaigualdadglobal. Browserclosed/ViteCtrlCexit1esperado;sinCM/push/device.
+
+### Loop458 — enlaces legales y footer HelpCenter, 3/10/2026
+
+Base4a0c7cc; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; Source457render/DOM+App6550 vigentes. AvisoprivacidadHelp erróneo abría/account-privacy, corregido/privacy-notice legalexistente; accióneliminarcuenta mantieneadministración. Puntos·ExcludeSemantics, runSpacing6/paddingtop4 ybackcenter36/target48 segúnSource;nohover.
+
+Primer test/analyzer importfaltante corregido; segunda5pass/2fail por tocar chipfuera viewport200% centro713>640. Tests ahora scroll/hittestprimertoque yscrollinverso alregresar. Rechecknuevo2/2pasa2s61220exit0; soporteycapturador5pasaron52421 pese2fallostestnuevo, producciónsinchangesposteriores. Analyzer10440clean36.5s previo sólo fixes tests. Tresenlacesabout/terms/privacy-notice ambosmodos a200%, vuelvencontemaseleccionado. Capturador13fixtures/4PNGconservados normal/grandefooter inspeccionados docs/design-reviews/parity-loop458. Full564/452previo453–458; noaceptacióninstalada/global niCM/push.
