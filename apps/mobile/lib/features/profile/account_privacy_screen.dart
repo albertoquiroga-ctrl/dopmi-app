@@ -8,6 +8,8 @@ import '../../core/measurement.dart';
 import '../../core/ui.dart';
 import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
+import '../identity/experience_controller.dart';
+import '../payments/contribution_layout.dart';
 
 class AccountPrivacyScreen extends ConsumerStatefulWidget {
   const AccountPrivacyScreen({super.key});
@@ -130,116 +132,130 @@ class _AccountPrivacyScreenState extends ConsumerState<AccountPrivacyScreen> {
     final measurement = ref.watch(measurementControllerProvider);
     final config = ref.watch(configProvider);
     final linked = ref.read(identityRepositoryProvider).linkedProviders;
-    return PageFrame(
-      back: true,
-      children: [
-        const Heading(
-          'Privacidad y cuenta',
-          'Controla la medición, tus accesos vinculados y la eliminación de tu cuenta.',
-          eyebrow: 'CONFIGURACIÓN',
-        ),
-        if (error != null) Notice(error!, isError: true),
-        if (message != null) Notice(message!),
-        TextButton(
-          onPressed: () => context.push('/terms'),
-          child: const Text('Términos y aviso de privacidad'),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          'Privacidad de medición',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: const Text('Analítica de uso'),
-          subtitle: const Text(
-            'Comparte navegación y conversiones básicas. No incluye mensajes, documentos, ubicación, correo ni datos financieros.',
-          ),
-          value: measurement?.analyticsEnabled ?? false,
-          onChanged: measurement == null || measurement.loading
-              ? null
-              : measurement.setAnalytics,
-        ),
-        if (config.measurementTestEnabled &&
-            measurement?.lastAnalyticsEvent != null) ...[
-          const SizedBox(height: 4),
-          Notice(
-            measurement!.lastAnalyticsResult == 'aceptado_por_sdk'
-                ? 'Prueba interna: Firebase aceptó ${measurement.lastAnalyticsEvent}.'
-                : measurement.lastAnalyticsResult ==
-                      'omitido_sin_consentimiento'
-                ? 'Prueba interna: ${measurement.lastAnalyticsEvent} no se envió porque la analítica estaba apagada.'
-                : 'Prueba interna: Firebase rechazó ${measurement.lastAnalyticsEvent} (${measurement.lastAnalyticsResult}).',
-            isError: measurement.lastAnalyticsResult != 'aceptado_por_sdk',
-          ),
-        ],
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: const Text('Diagnóstico de errores'),
-          subtitle: const Text(
-            'Envía fallos técnicos para ayudarnos a corregir la app. Puedes desactivarlo en cualquier momento.',
-          ),
-          value: measurement?.diagnosticsEnabled ?? false,
-          onChanged: measurement == null || measurement.loading
-              ? null
-              : measurement.setDiagnostics,
-        ),
-        if (config.measurementTestEnabled &&
-            measurement?.diagnosticsEnabled == true)
-          OutlinedButton.icon(
-            onPressed: busy
-                ? null
-                : () => perform(() async {
-                    await measurement!.diagnosticTest();
-                    if (mounted) {
-                      setState(
-                        () => message =
-                            'Enviamos el diagnóstico interno de prueba.',
-                      );
-                    }
-                  }),
-            icon: const Icon(Icons.bug_report_outlined),
-            label: const Text('Enviar diagnóstico de prueba'),
-          ),
-        if ((config.googleEnabled && !linked.contains('google')) ||
-            (config.appleNativeAvailable && !linked.contains('apple'))) ...[
-          const SizedBox(height: 18),
+    final rescuer =
+        ref.watch(experienceProvider).value == AccountExperience.rescuer;
+    return ContributionFrame(
+      title: 'Privacidad y cuenta',
+      rescuer: rescuer,
+      back: () => context.canPop() ? context.pop() : context.go('/profile'),
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+        children: [
           Text(
-            'Accesos vinculados',
+            'Controla la medición, tus accesos vinculados y la eliminación de tu cuenta.',
+            style: TextStyle(
+              fontSize: 14,
+              height: 1.45,
+              color: rescuer ? const Color(0xff4f4e5c) : muted,
+            ),
+          ),
+          const SizedBox(height: 20),
+          if (error != null) Notice(error!, isError: true),
+          if (message != null) Notice(message!),
+          TextButton(
+            onPressed: () => context.push('/terms'),
+            child: const Text('Términos y aviso de privacidad'),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Privacidad de medición',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text('Analítica de uso'),
+            subtitle: const Text(
+              'Comparte navegación y conversiones básicas. No incluye mensajes, documentos, ubicación, correo ni datos financieros.',
+            ),
+            value: measurement?.analyticsEnabled ?? false,
+            onChanged: measurement == null || measurement.loading
+                ? null
+                : measurement.setAnalytics,
+          ),
+          if (config.measurementTestEnabled &&
+              measurement?.lastAnalyticsEvent != null) ...[
+            const SizedBox(height: 4),
+            Notice(
+              measurement!.lastAnalyticsResult == 'aceptado_por_sdk'
+                  ? 'Prueba interna: Firebase aceptó ${measurement.lastAnalyticsEvent}.'
+                  : measurement.lastAnalyticsResult ==
+                        'omitido_sin_consentimiento'
+                  ? 'Prueba interna: ${measurement.lastAnalyticsEvent} no se envió porque la analítica estaba apagada.'
+                  : 'Prueba interna: Firebase rechazó ${measurement.lastAnalyticsEvent} (${measurement.lastAnalyticsResult}).',
+              isError: measurement.lastAnalyticsResult != 'aceptado_por_sdk',
+            ),
+          ],
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text('Diagnóstico de errores'),
+            subtitle: const Text(
+              'Envía fallos técnicos para ayudarnos a corregir la app. Puedes desactivarlo en cualquier momento.',
+            ),
+            value: measurement?.diagnosticsEnabled ?? false,
+            onChanged: measurement == null || measurement.loading
+                ? null
+                : measurement.setDiagnostics,
+          ),
+          if (config.measurementTestEnabled &&
+              measurement?.diagnosticsEnabled == true)
+            OutlinedButton.icon(
+              onPressed: busy
+                  ? null
+                  : () => perform(() async {
+                      await measurement!.diagnosticTest();
+                      if (mounted) {
+                        setState(
+                          () => message =
+                              'Enviamos el diagnóstico interno de prueba.',
+                        );
+                      }
+                    }),
+              icon: const Icon(Icons.bug_report_outlined),
+              label: const Text('Enviar diagnóstico de prueba'),
+            ),
+          if ((config.googleEnabled && !linked.contains('google')) ||
+              (config.appleNativeAvailable && !linked.contains('apple'))) ...[
+            const SizedBox(height: 18),
+            Text(
+              'Accesos vinculados',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const Text(
+              'Vincula un proveedor sólo desde esta sesión. Dopmi no combina cuentas por parecido de correo.',
+            ),
+            if (config.googleEnabled && !linked.contains('google'))
+              OutlinedButton(
+                onPressed: busy
+                    ? null
+                    : () => perform(() => repoLink(ref, 'google')),
+                child: const Text('Vincular Google'),
+              ),
+            if (config.appleNativeAvailable && !linked.contains('apple'))
+              OutlinedButton(
+                onPressed: busy
+                    ? null
+                    : () => perform(() => repoLink(ref, 'apple')),
+                child: const Text('Vincular Apple'),
+              ),
+          ],
+          const SizedBox(height: 28),
+          Text(
+            'Eliminar cuenta',
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const Text(
-            'Vincula un proveedor sólo desde esta sesión. Dopmi no combina cuentas por parecido de correo.',
+            'Puedes iniciar la eliminación desde la app. Este proceso no elimina tu cuenta externa de Google o Apple.',
           ),
-          if (config.googleEnabled && !linked.contains('google'))
-            OutlinedButton(
-              onPressed: busy
-                  ? null
-                  : () => perform(() => repoLink(ref, 'google')),
-              child: const Text('Vincular Google'),
+          TextButton(
+            onPressed: busy ? null : deleteAccount,
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
             ),
-          if (config.appleNativeAvailable && !linked.contains('apple'))
-            OutlinedButton(
-              onPressed: busy
-                  ? null
-                  : () => perform(() => repoLink(ref, 'apple')),
-              child: const Text('Vincular Apple'),
-            ),
+            child: const Text('Eliminar mi cuenta'),
+          ),
+          if (busy) const LinearProgressIndicator(semanticsLabel: 'Procesando'),
         ],
-        const SizedBox(height: 28),
-        Text('Eliminar cuenta', style: Theme.of(context).textTheme.titleLarge),
-        const Text(
-          'Puedes iniciar la eliminación desde la app. Este proceso no elimina tu cuenta externa de Google o Apple.',
-        ),
-        TextButton(
-          onPressed: busy ? null : deleteAccount,
-          style: TextButton.styleFrom(
-            foregroundColor: Theme.of(context).colorScheme.error,
-          ),
-          child: const Text('Eliminar mi cuenta'),
-        ),
-        if (busy) const LinearProgressIndicator(semanticsLabel: 'Procesando'),
-      ],
+      ),
     );
   }
 }

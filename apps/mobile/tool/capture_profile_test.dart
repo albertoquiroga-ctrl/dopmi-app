@@ -741,6 +741,7 @@ void main() {
         FixturePhotoClient(fixturePhoto!);
     addTearDown(() => debugNetworkImageHttpClientProvider = null);
     var captureCount = 0;
+    var expectedAccountNavigation = 0, actualAccountNavigation = 0;
     for (final spec in [
       ('adoption-swipe', '/adoptions'),
       ('adoption-large', '/adoptions'),
@@ -1195,6 +1196,10 @@ void main() {
         continue;
       }
       captureCount++;
+      if (spec.$1 == 'account-access-options' ||
+          spec.$1 == 'account-access-options-large') {
+        expectedAccountNavigation++;
+      }
       final waitingPayment = WaitingContributionCapturePayments();
       // Synthetic preferences belong only to this flutter_test capturer.
       // ignore: invalid_use_of_visible_for_testing_member
@@ -2447,30 +2452,6 @@ void main() {
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),
         );
-        if (spec.$1 == 'account-access-options' ||
-            spec.$1 == 'account-access-options-large') {
-          final privacy = find.text('Privacidad y eliminación');
-          await tester.scrollUntilVisible(privacy, 200);
-          await tester.ensureVisible(privacy);
-          expect(privacy.hitTestable(), findsOneWidget);
-          await tester.tap(privacy);
-          await tester.pumpAndSettle();
-          expect(
-            container.read(routerProvider).state.uri.path,
-            '/account-privacy',
-          );
-          await tester.tap(find.byTooltip('Volver'));
-          await tester.pumpAndSettle();
-          expect(
-            container.read(routerProvider).state.uri.path,
-            '/settings/account',
-          );
-          expect(find.byTooltip('Regresar').hitTestable(), findsOneWidget);
-          await tester.tap(find.byTooltip('Regresar'));
-          await tester.pumpAndSettle();
-          expect(container.read(routerProvider).state.uri.path, '/profile');
-          expect(repo.profile.mode, 'rescuer');
-        }
         await gesture.cancel();
         await tester.pumpAndSettle();
       }
@@ -3307,6 +3288,32 @@ void main() {
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),
         );
+        if (spec.$1 == 'account-access-options' ||
+            spec.$1 == 'account-access-options-large') {
+          final privacy = find.text('Privacidad y eliminación');
+          await tester.scrollUntilVisible(privacy, 200);
+          await tester.ensureVisible(privacy);
+          await tester.pumpAndSettle();
+          expect(privacy.hitTestable(), findsOneWidget);
+          await tester.tap(privacy);
+          await tester.pumpAndSettle();
+          expect(
+            container.read(routerProvider).state.uri.path,
+            '/account-privacy',
+          );
+          await tester.tap(find.byTooltip('Regresar'));
+          await tester.pumpAndSettle();
+          expect(
+            container.read(routerProvider).state.uri.path,
+            '/settings/account',
+          );
+          expect(find.byTooltip('Regresar').hitTestable(), findsOneWidget);
+          await tester.tap(find.byTooltip('Regresar'));
+          await tester.pumpAndSettle();
+          expect(container.read(routerProvider).state.uri.path, '/profile');
+          expect(repo.profile.mode, 'rescuer');
+          actualAccountNavigation++;
+        }
         if (spec.$1 == 'my-adoptions' || spec.$1 == 'my-adoptions-large') {
           final back = find.byTooltip('Regresar');
           expect(back.hitTestable(), findsOneWidget);
@@ -3363,6 +3370,12 @@ void main() {
       container.dispose();
       await repo.changes.close();
     }
+    expect(
+      actualAccountNavigation,
+      expectedAccountNavigation,
+      reason:
+          'Every selected account navigation fixture must execute its checks',
+    );
     expect(
       captureCount,
       greaterThan(0),
