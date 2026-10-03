@@ -65,6 +65,7 @@ class ChatMessageBubble extends ConsumerWidget {
                           style: TextStyle(
                             fontFamily: 'Inter',
                             fontSize: 10,
+                            height: 1.2,
                             color: mine && rescuer
                                 ? Colors.white70
                                 : (mine ? muted : const Color(0xff777289)),

@@ -1,3 +1,9 @@
+# Corte vigente — loop409, 3/10/2026
+
+Capturador completo408 aprobado2m35s. Chat comparado conSource real ydatos iguales: hora12px ycomposer46px explícitos;33targeted con captura pasan/analyzerfinal limpio26.4s. Capturas donor/rescuer/keyboard200 revisadas, sinaceptaciónhardware/global niSource200nuevo. Full558407 antecede sólocambiochat409. ConfigSDKreal/matrizglobal/device/finalgates pendientes; Codemagic únicamenteobjetivo completo.
+
+## Corte408 anterior
+
 # Corte vigente — loop408, 3/10/2026
 
 Capturador20132 falló al esperar preparación de adjunto; tool ahora espera señal Cambiar imagen con límite real. Filtro soporte pasa/PNGnormal200 revisadas, analyzer limpio39s. Reintento COMPLETO26793 ACTIVO/log Temp/dopmi-full-capture-loop408.log: retomar para resultado e inspección, no afirmar colección completa. Tema407 tiene full558 aprobado; configSDKreal/dispositivo/matrizglobal siguen pendientes. Codemagic sóloobjetivo completo.

@@ -624,16 +624,23 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                                 style: TextStyle(
                                   fontFamily: 'Inter',
                                   fontSize: 16,
-                                  height: 1.2,
+                                  height: 1.25,
                                   letterSpacing: 0,
                                   color: textInk,
                                 ),
                                 decoration: InputDecoration(
                                   hintText: 'Escribe un mensaje...',
+                                  constraints: BoxConstraints(
+                                    minHeight:
+                                        MediaQuery.textScalerOf(context)
+                                                .scale(16) *
+                                            1.25 +
+                                        26,
+                                  ),
                                   hintStyle: TextStyle(
                                     color: textMuted,
                                     fontSize: 16,
-                                    height: 1.2,
+                                    height: 1.25,
                                     letterSpacing: 0,
                                   ),
                                   counterText: '',
@@ -664,7 +671,7 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                                 width: 40,
                                 height:
                                     MediaQuery.textScalerOf(context).scale(16) *
-                                        1.2 +
+                                        1.25 +
                                     26,
                                 child: IconButton(
                                   tooltip: pendingId == null
