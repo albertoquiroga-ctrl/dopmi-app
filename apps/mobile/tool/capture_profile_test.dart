@@ -844,6 +844,8 @@ void main() {
       ('basic-info-keyboard-large', '/basic-info'),
       ('basic-info-saved', '/basic-info'),
       ('basic-info-saved-large', '/basic-info'),
+      ('legal-terms', '/terms'),
+      ('legal-terms-large', '/terms'),
       ('help-center', '/help'),
       ('help-center-large', '/help'),
       ('help-center-adoption-large', '/help'),

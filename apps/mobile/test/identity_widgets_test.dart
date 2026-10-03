@@ -186,13 +186,48 @@ void main() {
       expect(repo.signupCount, 0);
       await tap(tester, 'Aviso de Privacidad');
       expect(find.byType(TermsScreen), findsOneWidget);
-      await tester.tap(find.byTooltip('Volver'));
+      await tester.tap(find.text('Entendido'));
       await tester.pumpAndSettle();
       expect(tester.widget<AuthConsentRow>(row).value, isFalse);
       expect(repo.signupCount, 0);
     } finally {
       semantics.dispose();
     }
+  });
+
+  testWidgets('enlarged legal reading returns to the unchanged signup draft', (
+    tester,
+  ) async {
+    final repo = FakeIdentityRepository();
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await start(tester, repo, initialLocation: '/signup?intent=rescue');
+    tester.view.physicalSize = const Size(320, 640);
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byType(TextFormField).at(1),
+      'ana@example.test',
+    );
+    await tap(tester, 'Términos y Condiciones');
+    expect(find.byType(TermsScreen), findsOneWidget);
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, -450));
+    await tester.pumpAndSettle();
+    expect(find.text('Entendido').hitTestable(), findsOneWidget);
+    await tester.tap(find.text('Entendido'));
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<AuthConsentRow>(find.byType(AuthConsentRow)).value,
+      isFalse,
+    );
+    expect(
+      tester
+          .widget<TextFormField>(find.byType(TextFormField).at(1))
+          .controller!
+          .text,
+      'ana@example.test',
+    );
+    expect(repo.signupCount, 0);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets(

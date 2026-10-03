@@ -225,3 +225,5 @@ Loop337: Reportar ahora espera UUID válido antes de cerrar, conserva motivo y p
 
 
 Loop338 añade evidencia real Auth/REST DEV de Reportar publicación/perfil: dos sesiones sintéticas, UUIDpersistido/retryidempotente/aislamiento deactor, lectura directa/bandeja noadmin/anon rechazadas y validación servidor. SQL4reportes privados con motivo recortado; logout y limpieza finalusuarios/perfiles/reportes/publicación/identidades/sesiones0 comprobados. Sin cambio de esquema ni app. No acredita caso reportado, bandeja admin positiva ni dispositivo; objetivo global continúa. Script reproducible con configuración temporal no incluida enGit.
+
+Loop339: Términos tiene marco LegalDoc, tarjetas reales y Entendido fijo; volver conserva draft y consentimiento sin aceptación automática.22tests identidad y analyze limpio;303estados/35URLs, capturas normal/200% revisadas. Aviso de Privacidad separado aún pendiente (signup reutiliza /terms); no contenido legal inventado ni revisión instalada atribuida. Regresión481/336 antecede337/339. Objetivo completo sigue activo; Codemagic únicamente al completarlo y verificarlo.

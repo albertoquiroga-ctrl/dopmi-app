@@ -11,6 +11,7 @@ import '../../core/measurement.dart';
 import 'identity_controller.dart';
 import 'identity_repository.dart';
 import 'auth_ui.dart';
+import 'legal_document_frame.dart';
 
 enum AuthFormMode { login, signup, forgot, reset }
 
@@ -533,49 +534,52 @@ class _ConfirmationScreenState extends ConsumerState<ConfirmationScreen> {
 class TermsScreen extends StatelessWidget {
   const TermsScreen({super.key});
   @override
-  Widget build(BuildContext context) => PageFrame(
+  Widget build(BuildContext context) => LegalDocumentFrame(
+    title: 'Términos y Condiciones',
+    lead: 'Revisa las condiciones de uso de Dopmi antes de crear tu cuenta.',
     children: [
-      const Heading(
-        'Términos y privacidad',
-        'Dopmi · Versión del 28 de septiembre de 2026',
-      ),
-      const Text(
+      const LegalDocumentSection(
+        'Términos de uso',
         'Dopmi es un servicio para personas mayores de 18 años que facilita adopciones, comunicación con rescatistas y aportaciones de prueba sujetas a revisión y disponibilidad.',
       ),
-      const SizedBox(height: 20),
-      const Text(
+      const LegalDocumentSection(
         'Uso responsable',
-        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
-      ),
-      const SizedBox(height: 8),
-      const Text(
         'Debes proporcionar información veraz, respetar la privacidad de otras personas y usar los canales de reporte y moderación. Una publicación o aportación puede quedar en revisión, requerir correcciones o retirarse.',
       ),
-      const SizedBox(height: 20),
-      const Text(
+      const LegalDocumentSection(
         'Privacidad y pagos',
-        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
-      ),
-      const SizedBox(height: 8),
-      const Text(
         'Tratamos los datos necesarios para operar tu cuenta, publicaciones, mensajes, moderación y pagos. Los datos de tarjeta se capturan con Stripe. No mostramos públicamente tu domicilio exacto, teléfono, correo, documentos o conversaciones privadas.',
       ),
-      const SizedBox(height: 20),
-      const Text(
+      LegalDocumentSection(
         'Cuenta y soporte',
-        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
-      ),
-      const SizedBox(height: 8),
-      const Text(
         'Puedes solicitar la eliminación de tu cuenta desde Configuración. Conservaremos únicamente la evidencia necesaria para atender pagos, disputas y obligaciones legales. Para ayuda escribe a soporte@dopmi.org.',
-      ),
-      const SizedBox(height: 24),
-      ActionButton(
-        'Abrir Aviso de privacidad',
-        onPressed: () => launchUrl(
-          Uri.parse('https://dopmi.org/privacy-policy'),
-          mode: LaunchMode.externalApplication,
+        footer: TextButton(
+          onPressed: () async {
+            try {
+              if (!await launchUrl(
+                Uri.parse('https://dopmi.org/privacy-policy'),
+                mode: LaunchMode.externalApplication,
+              )) {
+                throw const FormatException();
+              }
+            } catch (_) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'No pudimos abrir el aviso. Intenta de nuevo.',
+                    ),
+                  ),
+                );
+              }
+            }
+          },
+          child: const Text('Abrir Aviso de privacidad'),
         ),
+      ),
+      const Text(
+        'Dopmi · Versión del 28 de septiembre de 2026',
+        style: TextStyle(fontSize: 12, height: 1.5, color: muted),
       ),
     ],
   );
