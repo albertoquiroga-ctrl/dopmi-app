@@ -1,0 +1,5 @@
+# Loop499 — Nuevo compacto en Mis casos
+
+Comparación con referencia histórica h8-complete/reference-rescuer-cases.png y CSS actual purple-button.compact: mínimo34/padding8x12/radio14/font14. El cliente usaba mínimo48/padding por defecto. Ahora reserva target padded48 y desplaza la superficie compacta hacia el inicio del encabezado; al200 no desplaza cuando el contenido supera48. Inter explícita evita fuente de prueba Ahem. Textos, montos y acciones siguen siendo los datos reales de la fixture, no los estados simulados de Source. Sin nueva captura runtime Source en este loop; se requiere contraste actual de geometría y comprobación de hitarea.
+
+14060exit0,32/32,11s: rescate/detalle/capturador6fixtures antes de añadir fontFamily. Primeras capturas mostraron bloques Ahem y encabezado200 cortado; se corrigió Inter y91480exit0,1capturador/6fixtures,4s. PNG normal200 finales inspeccionados. Analyzer5176exit0clean48.6s anterior al ajuste exclusivo fontFamily. Fuente 6746ccd7a1f0f7a656c3dcdb4d272e84128ca20a. Full601493 precede este cambio, no gate completo actual. Sin backend/SQL/push/Codemagic; objetivo global pendiente.

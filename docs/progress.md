@@ -2422,3 +2422,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge377x852/rescuer
 ### Loop498 — curva exacta de introducción, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; CSSonb-in450/cubic(.22,1,.36,1)/opacity0→1/Y10→0 ykeys por slide inspeccionados, sin runtime nuevo. Prueba existente fortalece midpoint225 opacidad/desplazamiento exactos sin quitarinicio/final; gate97218exit0,18/18,5s con navegación/intenciones/texto200/reduced. Fuente 4e14d63b20b6806ebc4327f096d871101c420e3d sólo test. README498; full601493 producciónc57974a vigente. No aceptación global/física, backend/SQL/push/Codemagic.
+
+### Loop499 — Nuevo compacto Mis casos, 3/10/2026
+
+CSS Sourcecompact34/padding8x12/radio14 y referencia histórica inspeccionados, sin Source runtime actual. Nuevo pasa de visible48 a34 y conserva padded48 con desplazamiento adaptable200.14060exit0,32/32,11s con6capturas; Ahem visible corregido con Inter explícita,91480exit0,1/6capturas,4s normal200 inspeccionados. Analyzer5176exit0clean48.6s antes sólo fontFamily. Fuente 6746ccd7a1f0f7a656c3dcdb4d272e84128ca20a. Full601493 anterior a cambio499 no gate vigente completo. README/PNG499; próximo geometría runtime/hitarea y gate integrado. Sin backend/SQL/push/Codemagic/físico.
