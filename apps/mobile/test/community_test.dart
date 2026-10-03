@@ -198,7 +198,7 @@ class FakeCommunity implements CommunityRepository {
     String details,
   ) async {
     reported = {'type': type, 'id': id, 'reason': reason, 'details': details};
-    return 'report-one';
+    return '119314cd-95b2-4c92-b7dd-5a9d820871d9';
   }
 
   @override

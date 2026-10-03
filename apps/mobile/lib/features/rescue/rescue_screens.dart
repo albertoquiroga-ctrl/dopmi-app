@@ -2681,23 +2681,25 @@ class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
   }
 
   Future<void> reportCase(RescueRecord record) async {
+    if (busy) return;
     final repo = ref.read(communityRepositoryProvider);
     if (repo.userId == null) {
       context.push('/login');
       return;
     }
-    final result = await showContentReportSheet(
-      context,
-      title: 'Reportar caso',
-    );
-    if (result == null || !mounted) return;
     setState(() {
       busy = true;
       error = null;
     });
     try {
-      await repo.report('case', record.id, result.$1, result.$2);
-      if (mounted) {
+      final sent = await reportPublicContent(
+        context,
+        repo,
+        type: 'case',
+        id: record.id,
+        title: 'Reportar caso',
+      );
+      if (sent && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Recibimos tu reporte para revisión.')),
         );

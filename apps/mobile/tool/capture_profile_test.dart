@@ -92,6 +92,22 @@ class PublicProfileCaptureCommunity extends FakeCommunity {
   };
 }
 
+class ReportCaptureCommunity extends PublicProfileCaptureCommunity {
+  ReportCaptureCommunity({required this.wait}) : super(reference: true);
+  final bool wait;
+  final pending = Completer<String>();
+  @override
+  Future<String> report(
+    String type,
+    String id,
+    String reason,
+    String details,
+  ) async {
+    if (wait) return pending.future;
+    throw Exception('fixture network unavailable');
+  }
+}
+
 class OwnedHistoryCaptureUpdates extends FakeCaseUpdates {
   @override
   Future<List<CaseUpdate>> publicFor(String caseId) async => [
@@ -896,6 +912,10 @@ void main() {
       ('public-profile-metrics-stats-large', '/people/owner'),
       ('public-profile-adoptions', '/people/owner'),
       ('public-profile-adoptions-large', '/people/owner'),
+      ('public-profile-report-reference-error', '/people/owner'),
+      ('public-profile-report-reference-error-large', '/people/owner'),
+      ('public-profile-report-reference-sending', '/people/owner'),
+      ('public-profile-report-reference-sending-large', '/people/owner'),
       ('public-profile-report-reference', '/people/owner'),
       ('public-profile-report-reference-large', '/people/owner'),
       ('public-profile-report-reference-keyboard-large', '/people/owner'),
@@ -1086,6 +1106,9 @@ void main() {
                         spec.$1.startsWith('publish-review') ||
                         spec.$1.startsWith('publish-health'))))
           ? DetailCaptureCommunity()
+          : spec.$1.startsWith('public-profile-report-reference') &&
+                (spec.$1.contains('error') || spec.$1.contains('sending'))
+          ? ReportCaptureCommunity(wait: spec.$1.contains('sending'))
           : spec.$1.startsWith('public-profile')
           ? PublicProfileCaptureCommunity(
               reference: spec.$1.contains('-reference'),
@@ -1637,6 +1660,38 @@ void main() {
           await tester.pumpAndSettle();
           expect(send.hitTestable(), findsOneWidget);
           expect(tester.getBottomRight(send).dy, lessThanOrEqualTo(340));
+        }
+        if (spec.$1.contains('error') || spec.$1.contains('sending')) {
+          await tester.enterText(
+            find.byType(TextField),
+            'Información del perfil incorrecta',
+          );
+          final send = find.descendant(
+            of: find.byType(Dialog),
+            matching: find.byType(FilledButton),
+          );
+          await tester.ensureVisible(send);
+          await tester.pumpAndSettle();
+          await tester.tap(send);
+          if (spec.$1.contains('sending')) {
+            await tester.pump(const Duration(milliseconds: 300));
+            expect(find.byType(CircularProgressIndicator), findsOneWidget);
+            expect(tester.widget<FilledButton>(send).onPressed, isNull);
+          } else {
+            await tester.pumpAndSettle();
+            expect(
+              find.text(
+                'No pudimos completar la solicitud. Comprueba tu conexión y vuelve a intentar.',
+              ),
+              findsOneWidget,
+            );
+            expect(
+              tester.widget<TextField>(find.byType(TextField)).controller!.text,
+              'Información del perfil incorrecta',
+            );
+            await tester.ensureVisible(send);
+            await tester.pumpAndSettle();
+          }
         }
         expect(tester.takeException(), isNull);
       }

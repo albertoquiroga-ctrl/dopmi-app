@@ -4,8 +4,242 @@ import 'package:dopmi_mobile/features/community/content_actions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:dopmi_mobile/core/ui.dart';
+import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+
+import 'community_test.dart' show FakeCommunity;
+
+class ReceiptReportCommunity extends FakeCommunity {
+  String? actor = 'one';
+  final requests = <Json>[];
+  final pending = <Completer<String>>[];
+  @override
+  String? get userId => actor;
+  @override
+  Future<String> report(String type, String id, String reason, String details) {
+    requests.add({
+      'type': type,
+      'id': id,
+      'reason': reason,
+      'details': details,
+    });
+    final response = Completer<String>();
+    pending.add(response);
+    return response.future;
+  }
+}
+
+Future<void> reportHarness(
+  WidgetTester tester,
+  ReceiptReportCommunity repo,
+  List<bool> results, {
+  bool large = false,
+}) async {
+  tester.view.physicalSize = large
+      ? const Size(320, 640)
+      : const Size(377, 852);
+  tester.view.devicePixelRatio = 1;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+  addTearDown(tester.view.resetViewInsets);
+  await tester.pumpWidget(
+    MaterialApp(
+      theme: dopmiTheme(),
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context)
+            .copyWith(textScaler: TextScaler.linear(large ? 2 : 1)),
+        child: child!,
+      ),
+      home: Scaffold(
+        body: Builder(
+          builder: (context) => TextButton(
+            onPressed: () async {
+              results.add(
+                await reportPublicContent(
+                  context,
+                  repo,
+                  type: 'rescuer',
+                  id: 'person-one',
+                  title: 'Reportar rescatista',
+                ),
+              );
+            },
+            child: const Text('Abrir'),
+          ),
+        ),
+      ),
+    ),
+  );
+  await tester.tap(find.text('Abrir'));
+  await tester.pumpAndSettle();
+}
+
+Finder reportSend() => find.descendant(
+  of: find.byType(Dialog),
+  matching: find.byType(FilledButton),
+);
+Future<void> sendReport(WidgetTester tester) async {
+  await tester.ensureVisible(reportSend());
+  await tester.pumpAndSettle();
+  await tester.tap(reportSend());
+  await tester.pump();
+}
 
 void main() {
+  const receipt = '119314cd-95b2-4c92-b7dd-5a9d820871d9';
+  for (final large in [false, true]) {
+    testWidgets(
+      'report waits for a receipt and preserves motive on retry large=$large',
+      (tester) async {
+        final repo = ReceiptReportCommunity();
+        final results = <bool>[];
+        await reportHarness(tester, repo, results, large: large);
+        await tester.enterText(
+          find.byType(TextField),
+          '  Información incorrecta  ',
+        );
+        tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(reportSend());
+        await tester.pumpAndSettle();
+        final sendSize = tester.getSize(reportSend());
+        await sendReport(tester);
+        expect(tester.getSize(reportSend()), sendSize);
+        expect(repo.requests, [
+          {
+            'type': 'rescuer',
+            'id': 'person-one',
+            'reason': 'other',
+            'details': 'Información incorrecta',
+          },
+        ]);
+        expect(results, isEmpty);
+        await tester.tap(reportSend());
+        await tester.pump();
+        expect(repo.requests.length, 1);
+        expect(
+          tester
+              .widget<OutlinedButton>(
+                find.descendant(
+                  of: find.byType(Dialog),
+                  matching: find.byType(OutlinedButton),
+                ),
+              )
+              .onPressed,
+          isNull,
+        );
+        await tester.binding.handlePopRoute();
+        await tester.pump();
+        await tester.tapAt(const Offset(4, 4));
+        await tester.pump();
+        expect(find.byType(Dialog), findsOneWidget);
+        repo.pending.single.completeError(
+          Exception('private transport diagnostic'),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          find.text(
+            'No pudimos completar la solicitud. Comprueba tu conexión y vuelve a intentar.',
+          ),
+          findsOneWidget,
+        );
+        expect(
+          tester.widget<TextField>(find.byType(TextField)).controller!.text,
+          '  Información incorrecta  ',
+        );
+        expect(
+          find.textContaining('private transport diagnostic'),
+          findsNothing,
+        );
+        expect(results, isEmpty);
+        await sendReport(tester);
+        expect(repo.requests.length, 2);
+        expect(repo.requests[1], repo.requests[0]);
+        expect(
+          tester.getBottomRight(reportSend()).dy,
+          lessThanOrEqualTo((large ? 640 : 852) - 300),
+        );
+        repo.pending.last.complete(receipt);
+        await tester.pumpAndSettle();
+        expect(find.byType(Dialog), findsNothing);
+        expect(results, [true]);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+  testWidgets(
+    'report rejects a malformed receipt and only closes after confirmed retry',
+    (tester) async {
+      final repo = ReceiptReportCommunity();
+      final results = <bool>[];
+      await reportHarness(tester, repo, results);
+      await tester.enterText(find.byType(TextField), 'Motivo privado');
+      await sendReport(tester);
+      repo.pending.single.complete('');
+      await tester.pumpAndSettle();
+      expect(
+        find.text('No pudimos confirmar el reporte. Intenta de nuevo.'),
+        findsOneWidget,
+      );
+      expect(results, isEmpty);
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).controller!.text,
+        'Motivo privado',
+      );
+      await sendReport(tester);
+      repo.pending.last.complete(receipt);
+      await tester.pumpAndSettle();
+      expect(results, [true]);
+    },
+  );
+  for (final phase in ['before', 'receipt', 'failure']) {
+    final beforeRequest = phase == 'before';
+    testWidgets(
+      'changed reporter clears private draft and ignores response phase=$phase',
+      (tester) async {
+        final repo = ReceiptReportCommunity();
+        final results = <bool>[];
+        await reportHarness(tester, repo, results);
+        await tester.enterText(
+          find.byType(TextField),
+          'Motivo de la cuenta anterior',
+        );
+        if (beforeRequest) repo.actor = 'other';
+        await sendReport(tester);
+        if (!beforeRequest) {
+          repo.actor = 'other';
+          if (phase == 'failure') {
+            repo.pending.single.completeError(
+              Exception('private transport diagnostic'),
+            );
+          } else {
+            repo.pending.single.complete(receipt);
+          }
+        }
+        await tester.pumpAndSettle();
+        expect(repo.requests.length, beforeRequest ? 0 : 1);
+        expect(results, isEmpty);
+        expect(
+          find.text(
+            'Tu sesión cambió. Cierra este reporte y vuelve a abrirlo.',
+          ),
+          findsOneWidget,
+        );
+        expect(
+          tester.widget<TextField>(find.byType(TextField)).controller!.text,
+          isEmpty,
+        );
+        expect(tester.widget<FilledButton>(reportSend()).onPressed, isNull);
+        await tester.ensureVisible(find.text('Cancelar'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Cancelar'));
+        await tester.pumpAndSettle();
+        expect(results, [false]);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   for (final large in [false, true]) {
     testWidgets(
       'report requires a motive and cancels without a submission large=$large',

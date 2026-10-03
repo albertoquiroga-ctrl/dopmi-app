@@ -399,14 +399,15 @@ class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
   }
 
   Future<void> report(CommunityRepository repo, Adoption post) async {
-    final result = await showContentReportSheet(
-      context,
-      title: 'Reportar publicación',
-    );
-    if (result == null || !mounted) return;
     await perform(() async {
-      await repo.report('adoption', post.id, result.$1, result.$2);
-      if (mounted) {
+      final sent = await reportPublicContent(
+        context,
+        repo,
+        type: 'adoption',
+        id: post.id,
+        title: 'Reportar publicación',
+      );
+      if (sent && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Recibimos tu reporte para revisión.')),
         );
@@ -526,20 +527,21 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
   }
 
   Future<void> reportProfile() async {
-    final result = await showContentReportSheet(
-      context,
-      title: 'Reportar rescatista',
-    );
-    if (result == null || !mounted) return;
+    if (busy) return;
+    final repo = ref.read(communityRepositoryProvider);
     setState(() {
       busy = true;
       error = null;
     });
     try {
-      await ref
-          .read(communityRepositoryProvider)
-          .report('rescuer', widget.id, result.$1, result.$2);
-      if (mounted) {
+      final sent = await reportPublicContent(
+        context,
+        repo,
+        type: 'rescuer',
+        id: widget.id,
+        title: 'Reportar rescatista',
+      );
+      if (sent && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Recibimos tu reporte para revisión.')),
         );
