@@ -23,7 +23,7 @@ class ExpenseField extends StatelessWidget {
       fontFamily: 'Inter',
       fontSize: 14,
       height: 1.4,
-      color: Color(0xff15110d),
+      color: Color(0xff151423),
     );
     final decoration = InputDecoration(
       filled: true,
