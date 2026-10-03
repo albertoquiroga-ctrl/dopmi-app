@@ -1,4 +1,10 @@
-# Corte vigente — loop491, 3/10/2026
+# Corte vigente — loop494, 3/10/2026
+
+Producción c57974a77c25745a5af0436ac8ea950727c088c9: full601/601,3m37s,6893exit0; analyzer90804clean183.8s;228Dart iguales raíz/scratch sin cambios durante ejecución. Entrada de tarjetas corregida contra Source493: salida280/entrada250 cubic(.22,1,.36,1). Loop494 agrega dos pruebas de tarjeta de apoyo normal/reduced y gesto interrumpido:44/44 con community,10343exit0. Son posteriores al full601, no603full.
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Pasada401492 precede cambio de animación493; no401aceptaciones. ADB494 vacío; gestos físicos/StripeSDK/contraste global por familias siguen pendientes. No push/Codemagic hasta objetivo completo.
+
+# Corte anterior — loop491, 3/10/2026
 
 Producción `a8eb5a7fd375f020411a68c749f7edf69ff11423`: full599/599,
 3m29s, handle74849 exit0. Los228Dart lib/test coinciden raíz/scratch y no

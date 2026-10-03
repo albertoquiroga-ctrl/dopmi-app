@@ -2402,3 +2402,7 @@ Base2f10ee1docs/produccióna8eb5a7fd375f020411a68c749f7edf69ff11423; Sourcea3c96
 ### Loop493 — entrada de tarjetas contra Source, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge377x852/puntero demuestra salida280 y siguiente entrada250 cubic(.22,1,.36,1), opacidad1; probe filtrado source-next-card.json. Cliente antes entraba instantaneo; adopcion/apoyo comparten entrada ±420/±18, reduced inmediato y arrastre directo. Tests9/9 handle2337exit0; expectativa delta local corregida por rotacion sin ampliar tolerancia. Full6893exit0,601/601,3m37s; analyzer90804exit0clean183.8s; fuente c57974a77c25745a5af0436ac8ea950727c088c9,228Dartroot/scratch iguales y hashes sin cambios. PNG SourceAdoptar/Apoyar comparados; ubicacion real preservada/fotosfixture distintas. Supersede599491. No backend/SQL/push/Codemagic; gestos fisicos/StripeSDK/paridad global pendientes.
+
+### Loop494 — tarjeta de apoyo durante entrada, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Dos pruebas nuevas normal/reduced verifican llegada de oportunidad de apoyo, gesto durante entrada, delta local, cancelación, monto real y CTA. Gate10343exit0,44/44,11s. Fuente 22aa0da0375630f097b340abf3d20834b38491fa sólo tests; producciónc57974a/full601493 vigente, no603full. ADBvacío. README494/currentreviewactualizados; sin backend/SQL/push/Codemagic. Pendiente contraste global y teléfono/StripeSDK.
