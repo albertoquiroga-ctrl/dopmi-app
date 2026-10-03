@@ -1456,3 +1456,8 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
   con un candidato conjunto que integre el parche de consentimiento y los
   cambios finales de Irlanda. Este avance no acepta visual/iOS pendientes, no
   publica las tiendas y no autoriza dinero real.
+
+
+Continuidad360–361, 2/10/2026: recuperación de cambios de tarjeta muestra «Continuar actualización» si sólo conoce la solicitud del servidor; no adivina tarjeta ni promete Checkout.35pruebas dirigidas aprobadas7s y analyze limpio31.9s sobre cambios4ad75e4. Full504/5043:45 sobre0c4dbee precede360;210archivos probados coincidentes. Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada360.
+
+Fixture Stripe361c real cero, servicio Guardian de producción con adaptador de checkpoints local explícito: Mastercard predeterminada confirmada, calendario idéntico, respuesta aceptada perdida y recuperada sin segunda actualización (calls1), cargos/PaymentIntents0, limpieza verificada. No equivale a Auth/SQL/worker integrado ni revisión instalada. Commit0e487e3; primerfixture361 rechazópause_collection encreate y quedólimpio, corregido preparando pausa enupdate. Eliminar/alta independiente/billeteras y matrizglobal/aceptación siguen pendientes. Sin Codemagic/push; único candidato final según titular. Objetivo activo.
