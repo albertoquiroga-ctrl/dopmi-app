@@ -8,12 +8,15 @@ class DiscoveryCardMotion extends ImplicitlyAnimatedWidget {
     super.key,
     required this.translation,
     required this.angleDegrees,
+    this.initialTranslation,
+    this.initialAngleDegrees,
     required super.duration,
     required this.child,
   }) : super(curve: const Cubic(.22, 1, .36, 1));
 
   final double translation;
   final double angleDegrees;
+  final double? initialTranslation, initialAngleDegrees;
   final Widget child;
 
   @override
@@ -25,6 +28,28 @@ class _DiscoveryCardMotionState
     extends AnimatedWidgetBaseState<DiscoveryCardMotion> {
   Tween<double>? _translation;
   Tween<double>? _angle;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialTranslation != null && widget.duration != Duration.zero) {
+      _translation = Tween<double>(
+        begin: widget.initialTranslation!,
+        end: widget.translation,
+      );
+      _angle = Tween<double>(
+        begin: widget.initialAngleDegrees ?? widget.angleDegrees,
+        end: widget.angleDegrees,
+      );
+      controller.forward();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant DiscoveryCardMotion oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.duration == Duration.zero) controller.value = 1;
+  }
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
@@ -44,8 +69,21 @@ class _DiscoveryCardMotionState
   Widget build(BuildContext context) => Transform(
     alignment: Alignment.center,
     transform: Matrix4.identity()
-      ..translateByDouble(_translation!.evaluate(animation), 0, 0, 1)
-      ..rotateZ(_angle!.evaluate(animation) * math.pi / 180),
+      ..translateByDouble(
+        widget.duration == Duration.zero
+            ? widget.translation
+            : _translation!.evaluate(animation),
+        0,
+        0,
+        1,
+      )
+      ..rotateZ(
+        (widget.duration == Duration.zero
+                ? widget.angleDegrees
+                : _angle!.evaluate(animation)) *
+            math.pi /
+            180,
+      ),
     child: widget.child,
   );
 }

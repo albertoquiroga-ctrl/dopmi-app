@@ -93,6 +93,29 @@ void main() {
       await tester.pump(const Duration(milliseconds: 140));
       expect(find.text('Luna'), findsOneWidget);
       expect(find.text('Milo'), findsNothing);
+      await tester.pump(const Duration(milliseconds: 140));
+      final incoming = find.byKey(const ValueKey('discovery-motion-next'));
+      await tester.pump();
+      final incomingTransform = find
+          .descendant(of: incoming, matching: find.byType(Transform))
+          .first;
+      expect(
+        tester.widget<Transform>(incomingTransform).transform.storage[12],
+        -420,
+      );
+      expect(
+        tester.widget<DiscoveryCardMotion>(incoming).duration,
+        const Duration(milliseconds: 250),
+      );
+      await tester.pump(const Duration(milliseconds: 125));
+      final midpoint = tester.widget<Transform>(incomingTransform).transform;
+      expect(midpoint.storage[12], greaterThan(-420));
+      expect(midpoint.storage[12], lessThan(0));
+      await tester.pump(const Duration(milliseconds: 125));
+      expect(
+        tester.widget<Transform>(incomingTransform).transform.storage[12],
+        0,
+      );
       await tester.pumpAndSettle();
       expect(find.text('Milo'), findsOneWidget);
       final next = tester.widget<DiscoveryCardMotion>(
@@ -102,6 +125,38 @@ void main() {
     },
   );
 
+  for (final right in [false, true]) {
+    testWidgets(
+      'incoming card follows a new gesture immediately; right=$right',
+      (tester) async {
+        final repo = await open(tester);
+        await tester.tap(find.byTooltip(right ? 'Me gusta' : 'Pasar'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 280));
+        await tester.pump();
+        final incoming = find.byKey(const ValueKey('discovery-motion-next'));
+        Transform rendered() => tester.widget<Transform>(
+          find.descendant(of: incoming, matching: find.byType(Transform)).first,
+        );
+        expect(rendered().transform.storage[12], right ? 420 : -420);
+        await tester.pump(const Duration(milliseconds: 125));
+        // Pointer deltas are converted into the rotated card's coordinates.
+        final localDelta = 30 * rendered().transform.storage[0];
+        final gesture = await tester.startGesture(
+          tester.getCenter(find.text('Milo')),
+        );
+        await gesture.moveBy(const Offset(30, 0));
+        await tester.pump();
+        expect(rendered().transform.storage[12], closeTo(localDelta, .001));
+        await gesture.cancel();
+        await tester.pumpAndSettle();
+        expect(rendered().transform.storage[12], 0);
+        expect(repo.post.saved, right);
+        expect(find.text('Milo'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
   testWidgets('small screen large text keeps species and actions reachable', (
     tester,
   ) async {

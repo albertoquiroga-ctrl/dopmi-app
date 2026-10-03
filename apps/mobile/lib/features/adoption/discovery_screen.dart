@@ -40,6 +40,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   double dragX = 0;
   bool dragging = false;
   int exiting = 0;
+  int entryDirection = 0;
   bool loading = true, acting = false, exhausted = false;
   bool allSpeciesEmpty = false;
   String? error;
@@ -100,6 +101,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
         dragX = 0;
         dragging = false;
         exiting = 0;
+        entryDirection = 0;
       }
     });
     try {
@@ -156,6 +158,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
       if (!mounted) return;
       setState(() {
         index++;
+        entryDirection = exiting;
         dragX = 0;
         exiting = 0;
       });
@@ -422,6 +425,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                     : null,
                 child: _SwipeCard(
                   current,
+                  entryDirection: entryDirection,
                   dragX: dragX,
                   dragging: dragging,
                   exiting: exiting,
@@ -461,6 +465,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                     : 128,
                 child: _SupportCard(
                   current as SupportOpportunity,
+                  entryDirection: entryDirection,
                   busy: acting,
                   dragX: dragX,
                   dragging: dragging,
@@ -567,6 +572,7 @@ class _SupportCard extends StatelessWidget {
     required this.dragX,
     required this.dragging,
     required this.exiting,
+    required this.entryDirection,
     required this.onDrag,
     required this.onStart,
     required this.onCancel,
@@ -577,7 +583,7 @@ class _SupportCard extends StatelessWidget {
   final SupportOpportunity item;
   final bool busy, dragging;
   final double dragX;
-  final int exiting;
+  final int exiting, entryDirection;
   final ValueChanged<double> onDrag;
   final VoidCallback onStart, onCancel, onEnd, pass, open;
   String amount(int cents) =>
@@ -585,6 +591,8 @@ class _SupportCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => DiscoveryCardMotion(
     key: ValueKey('discovery-motion-support-${item.expenseId}'),
+    initialTranslation: entryDirection == 0 ? null : entryDirection * 420.0,
+    initialAngleDegrees: entryDirection * 18.0,
     duration: MediaQuery.disableAnimationsOf(context) || dragging
         ? Duration.zero
         : Duration(milliseconds: exiting == 0 ? 250 : 280),
@@ -807,6 +815,7 @@ class _SwipeCard extends StatelessWidget {
     required this.dragX,
     required this.dragging,
     required this.exiting,
+    required this.entryDirection,
     required this.busy,
     required this.onDrag,
     required this.onStart,
@@ -820,13 +829,15 @@ class _SwipeCard extends StatelessWidget {
   final Adoption post;
   final double dragX;
   final bool dragging;
-  final int exiting;
+  final int exiting, entryDirection;
   final bool busy;
   final ValueChanged<double> onDrag;
   final VoidCallback onStart, onCancel, onEnd, pass, like, contact, open;
   @override
   Widget build(BuildContext context) => DiscoveryCardMotion(
     key: ValueKey('discovery-motion-${post.id}'),
+    initialTranslation: entryDirection == 0 ? null : entryDirection * 420.0,
+    initialAngleDegrees: entryDirection * 18.0,
     duration: MediaQuery.disableAnimationsOf(context) || dragging
         ? Duration.zero
         : Duration(milliseconds: exiting == 0 ? 250 : 280),
