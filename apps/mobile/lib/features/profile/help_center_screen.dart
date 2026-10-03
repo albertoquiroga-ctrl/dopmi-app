@@ -400,6 +400,13 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                 color: Colors.white,
                 border: Border.all(color: const Color(0xffe6e2dd)),
                 borderRadius: BorderRadius.circular(18),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x0d15110d),
+                    offset: Offset(0, 8),
+                    blurRadius: 22,
+                  ),
+                ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -408,6 +415,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                     '¿No encontraste lo que buscabas?',
                     style: TextStyle(
                       fontSize: 16,
+                      height: 1.3,
                       fontWeight: FontWeight.w700,
                       color: ink,
                     ),
@@ -419,6 +427,21 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                   ),
                   const SizedBox(height: 12),
                   FilledButton(
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size.fromHeight(44),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 11,
+                      ),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      foregroundColor: const Color(0xff0d0d0d),
+                      textStyle: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 16,
+                        height: 1.2,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     onPressed: contact,
                     child: const Text('Contactar a soporte'),
                   ),

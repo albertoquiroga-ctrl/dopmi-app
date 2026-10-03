@@ -1,4 +1,8 @@
-# Corte vigente — loop456
+# Corte vigente — loop457
+
+HelpCenter tarjeta soporte: título1.3/sombra/botón44px16w600 segúnSourceDOM.11tests pasan20s,analyzer50.7s limpio;Source yclientnormal/200 revisados. Próximo footer puntos/espaciado ychips. Full564/452 previo453–457. Objetivoglobal/StripeSDK/device sigueabierto;Codemagic sólo final.
+
+# Corte anterior — loop456
 
 Encabezado donor15110d/divisore6e2dd coincideSourceCSS; rescuer conserva paleta.18 pruebas dirigidas pasan8s;analyzer limpio28.4s. Capturas normal/200 inspeccionadas. PantallasSettingschild fuente/cliente sinFooter, no pendiente de barra seleccionado. Full564/452 previo453–456; SDK/Stripe/device y matrizglobal siguen abiertos. Codemagic sólo objetivo completo.
 

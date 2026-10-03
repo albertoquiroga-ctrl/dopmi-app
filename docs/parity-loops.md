@@ -3965,3 +3965,9 @@ Full564/452 antecede453–455, targetsgreennofullactualglobal. RestoSettingschil
 Base707a27e; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. ProfileFrame standardSettings sólo mainSettingsdonor: título15110d/divisore6e2dd segúnCSS fuente; rescuer permanece151423/e3e4ed. Back.svg ya15110d como AssetIconSource. DetallesBasicInfo/PaymentMethods/BillingSource sinBottomNav, cliente también sinbarra; no cambiofallbackglobal.
 
 18/18 pruebas perfil+capturador pasan8s92306exit0; analyzer4320exit0 limpio28.4s. CuatroPNG widgets normal/200%; normalygrande inspeccionadas, evidencia docs/design-reviews/parity-loop456. Diferencias datos/accesos reales/badge no copiadascomo simulación. Diffcheck limpio. Full564/452 antecede453–456. Objetivoglobal/StripeSDK/device pendientes;sinCodemagic/push.
+
+### Loop457 — tarjeta de soporte HelpCenter, 3/10/2026
+
+Base44562f9; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. /help usaHelpCenterScreen, noHelpScreenantiguo. SourceDOM377fontsready botón44/font16; tarjetaheading16/1.3/shadow0-8-22/.05. Clienteajustado botón44/font16/w600/padding11x18/ink0d0d0d +heading1.3+sombra aproximadaBlurRadius22. Repo/envíoreal/actions intactos.
+
+PrimerFlutterroot noPubspec fallóprevio carga; retry scratch11/11pasa20s72566exit0;analyzer8072 limpio50.7s. Capturador11fixturesno11pantallasaceptadas;4PNGguardadas normal/200/modal. SourcePNG/DOMyclientnormal/large inspeccionados docs/design-reviews/parity-loop457. Full564/452 previo453–457; backend587/436 sin cambios. FooterSource puntosseparadores/espaciado y métricaschips siguencomparaciónpendiente, nomarcaigualdadglobal. Browserclosed/ViteCtrlCexit1esperado;sinCM/push/device.
