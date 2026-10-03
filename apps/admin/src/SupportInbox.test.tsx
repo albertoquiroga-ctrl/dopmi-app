@@ -4,6 +4,16 @@ import SupportInbox from './SupportInbox';
 import type {AdminApi} from './api';
 import type {SupportPage} from './supportApi';
 describe('Support inbox',()=>{
+  it('loads a private attachment and renews its signed URL after an image failure',async()=>{
+    const item={request_id:'photo',owner_id:'owner',topic:'account',case_name:'',message:'Foto del problema',display_name:'Ana',email:null,created_at:'2026-10-02',attachment_path:'owner/request/photo.jpg'};
+    const sign=vi.fn().mockRejectedValueOnce(new Error('unavailable')).mockResolvedValueOnce('https://example.test/signed-photo');
+    render(<SupportInbox api={{listSupportRequests:vi.fn().mockResolvedValue({total:1,items:[item]}),supportAttachmentUrl:sign} as unknown as AdminApi}/>);
+    expect(await screen.findByRole('alert')).toHaveTextContent('No pudimos cargar');
+    screen.getByRole('button',{name:'Reintentar imagen'}).click();
+    expect(await screen.findByRole('img',{name:'Imagen adjunta a la solicitud'})).toHaveAttribute('src','https://example.test/signed-photo');
+    expect(sign).toHaveBeenCalledTimes(2);
+    expect(sign).toHaveBeenCalledWith(item.attachment_path);
+  });
   it('renders authored content as text and supplies a response link without claiming a reply was sent',async()=>{
     const list=vi.fn().mockResolvedValue({total:1,items:[{request_id:'one',owner_id:'owner',topic:'guardian',case_name:'Luna',message:'<script>privado</script>',display_name:'Ana',email:'ana@example.test',created_at:'2026-10-02T10:00:00Z'}]});
     render(<SupportInbox api={{listSupportRequests:list} as unknown as AdminApi}/>);

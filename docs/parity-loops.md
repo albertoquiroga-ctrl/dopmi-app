@@ -2514,3 +2514,14 @@ Primer comando test se lanzó desde raíz sin pubspec; corregido al scratch móv
 Sin Storage/galería reales verificados: support_media sigue local, falta panel
 con imagen y despliegue autorizado/recorrido autenticado. No nuevo Codemagic;
 por instrucción del titular, siguiente envío sólo tras completar objetivo.
+
+# Loop299 — imagen privada en la bandeja de soporte
+
+Referencia remota2/10/2026:a3c969cd9103fd46dc5cd886999912526ce75efb.
+Panel solicita URL firmada60s de dopmi-support-media bajo sesión vigente y
+muestra imagen sólo de la ruta recibida por RPC autorizada. Fallos conservan
+solicitud y permiten renovar URL; efectos descartan respuestas tras desmontaje.
+Una prueba nueva verifica fallo inicial y reintento firmado sin exponer ruta como
+URL pública. Admin27/27 pruebas aprobadas28.51s y build TypeScript/Vite aprobado.
+No publicación del panel/Storage real ni aceptación visual remota; soporte media
+sigue pendiente de despliegue preflight. No nuevo Codemagic.

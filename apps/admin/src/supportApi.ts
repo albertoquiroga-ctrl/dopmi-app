@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-export type SupportRequest = { request_id:string;owner_id:string;topic:string;case_name:string;message:string;created_at:string;display_name:string;email:string|null };
+export type SupportRequest = { request_id:string;owner_id:string;topic:string;case_name:string;message:string;created_at:string;display_name:string;email:string|null;attachment_path?:string|null };
 export type SupportPage = { total:number;items:SupportRequest[] };
 export function supportRequests(client:SupabaseClient) {
   return async (page:number):Promise<SupportPage> => {

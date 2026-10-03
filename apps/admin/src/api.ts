@@ -46,6 +46,7 @@ export type RescuerPublicProfile = { owner_id:string; display_name:string; bio:s
 export const adoptionStatus: Record<string, string> = { submitted: 'En revisión', published: 'Publicadas', changes_requested: 'Con correcciones', rejected: 'No aprobadas', adopted: 'Adopciones realizadas', archived: 'Retiradas', draft: 'Borradores' };
 export type AdminApi = {
   listSupportRequests?: (page: number) => Promise<SupportPage>;
+  supportAttachmentUrl?: (path: string) => Promise<string>;
   session: () => Promise<boolean>;
   watch: (onChange: () => void) => () => void;
   login: (email: string, password: string) => Promise<void>;
@@ -74,6 +75,7 @@ export type AdminApi = {
 export function createAdminApi(client: SupabaseClient): AdminApi {
   return {
     listSupportRequests: supportRequests(client),
+    async supportAttachmentUrl(path) { const {data,error}=await client.storage.from('dopmi-support-media').createSignedUrl(path,60); if(error) throw error; return data.signedUrl; },
     async listRescue(kind, status, page) { const {data,error}=await client.rpc('dopmi_admin_rescue',{kind_filter:kind,status_filter:status,page_number:page}); if(error) throw error; return data; },
     async rescueDetail(id) { const {data,error}=await client.rpc('dopmi_rescue_detail',{record_id:id}); if(error) throw error; return data; },
     async reviewRescue(record, decision) { const {data,error}=await client.rpc('dopmi_review_rescue',{record_id:record.id,expected_version:record.version,...decision}); if(error) throw error; return data; },
