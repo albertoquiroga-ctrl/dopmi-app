@@ -2562,3 +2562,7 @@ Producción 23515073c62ef71a8a91d273665a61bab89acf46. ExpenseField usa 14/17 par
 ## 2026-10-03 — Loop 530: controles del diálogo de gastos
 
 Producción 037754f1f81070aa021e9781329a7cb8540af93e. ExpenseFrame separa controles del padding24 del contenido, con inset4 y área48; desplazamiento visual vertical4 para back20 y2 para close16 corresponde a unlock-back/close top14+padding4, manteniendo targets móviles. El contenido conserva padding24 y header48. Source CSS7739–7786 actual y remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. No hover ni cambios a callbacks/privacidad/dinero. Test8171 terminal exit0:13/13,12s; capturador17 expense-*; analyzer72340 terminal exit0 limpio31.5s. Dialog normal y submitted normal inspeccionados; large archivado sin afirmar aceptación. Full609524/capturador403525 anteriores a527–530; objetivo global, gestos físicos y aceptación instalada pendientes. Sin push/Codemagic.
+
+## 2026-10-03 — Loop 531: regresión integrada actual
+
+Fuente 5799915dd2e8d1bb524d3076779080791ede69f5, producción037754f. Full54358 terminal exit0:609/609,3m48s; analyzer83628 terminal exit0 limpio217.7s.230Dart/cuatroSVG raíz-scratch iguales antes/después y sin cambios durante gate; manifest531. Incluye estilos de gastos527–530. Source remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. ADB531 vacío. Capturador completo403525 precede527–530, complementado por17capturas de gastos530; no pasada completa nueva ni aceptación visual global. Sigue contraste de familias/gestos físicos/StripeSDK. Sin push ni Codemagic.

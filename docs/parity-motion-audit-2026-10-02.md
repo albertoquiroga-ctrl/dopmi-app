@@ -1,4 +1,12 @@
-# Corte vigente de movimiento — loop502, 3/10/2026
+# Corte vigente — loop531, 3/10/2026
+
+## 2026-10-03 — Loop 531: regresión integrada actual
+
+Fuente 5799915dd2e8d1bb524d3076779080791ede69f5, producción037754f. Full54358 terminal exit0:609/609,3m48s; analyzer83628 terminal exit0 limpio217.7s.230Dart/cuatroSVG raíz-scratch iguales antes/después y sin cambios durante gate; manifest531. Incluye estilos de gastos527–530. Source remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. ADB531 vacío. Capturador completo403525 precede527–530, complementado por17capturas de gastos530; no pasada completa nueva ni aceptación visual global. Sigue contraste de familias/gestos físicos/StripeSDK. Sin push ni Codemagic.
+
+La expansión de gasto público quedó comprobada en Source y ruta real en503 (primer frame, sin animación); carrusel SUPPORT504 comprueba arrastre y conservación del offset al regresar. El siguiente trabajo listo indicado en502 queda supersedido. Estas pruebas no acreditan dedo físico.
+
+# Corte anterior de movimiento — loop502, 3/10/2026
 
 Cliente verificado `8270386d3b531907d4618ebd4358ebd221a88146`, full607/607 y análisis sin incidencias en loops500/501. Referencia `a3c969cd9103fd46dc5cd886999912526ce75efb`. Este corte supersede las cifras inferiores; no afirma paridad global ni aceptación instalada.
 
