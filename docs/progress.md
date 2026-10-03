@@ -2229,3 +2229,9 @@ Base57abd9d;Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Referen
 Target5427:13pass/2fail por dragcentrocampo contralímitekeyboardstillvisible. Cambiogestotestmargin+downscroll, noregresiónproducción para forzarpass; finalruta6/6 pasa2s49757exit0.4dialog+4modecontrols+capturador12fixtures(support10prev+2keyboard),1test pasóoriginal.15casosúnicoscubiertosseparados no15suitetotalgreen. Analyzer10595clean36.5s antes sólofixgesturetest. Nuevosnormal/200 muestranoutlineexactRect,sendaboveinset300,dragdismissTestTextInput,retaintext+1RPC+receipt.5PNGconservadasnormal/large/keyboard/keyboardlarge/rescuer inspecciónnormal/keyboard200 docs/design-reviews/parity-loop461. viewInsets no teclado físico niSourcefocusruntime; CSSsourceevidenciaactual.
 
 Full564/452antes453–461; siguiente fullgateactual porcomponentcore optin;objetivomatrizglobal/StripeSDK/device abiertos. SinCM/push.
+
+### Loop462 — regresión móvil integrada actual, 3/10/2026
+
+Fuente exacta2bba0c25345e701d8b76e2933ae5969db989218d incluye453–461;226Dart lib/test root/scratch mismo conjunto+contenidoSHA256 normalizandoEOL,0differences antes/después. Sin cambiosproducción duranteejecución. flutter test --no-pub scratchfull579/579 pasa3m43s;handle11575terminalexit0/27c854, logTemp/dopmi-full-mobile-loop462.log. Supersede full564/452 anteriorAEA2E21 para códigoactual. Analyzer461 limpio36.5s fuenteactual, sólofixgestotestposterior; backend587/436 vigentesinbackendchanges.
+
+ADB devices-l otra vezlista vacía97785d; no instalación/gestosfísicos verificados. Fullgate noaceptación visual/completionglobal niStripeactual. LecturaConsent no nuevoerrorprivacy: enlace Privacidad y eliminación de cuenta intencionalmente/account-privacy, noAvisolegal;no alterar como si fuerafooterHelp. Objetivoactualpermaneceparidad todaspantallas/gestos reales; próximaSourcefocusruntime/selector/estados de ayuda yrestomatriz. SinCodemagic/push.

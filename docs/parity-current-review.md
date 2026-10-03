@@ -1,4 +1,8 @@
-# Corte vigente — loop461
+# Corte vigente — loop462
+
+Full móvil579/579 pasa3m43s fuente2bba0c25345e701d8b76e2933ae5969db989218d;11575exit0.226Dart root/scratch contenido normalizadoEOLigual antes/después. Incluye453–461, supersede564/452. Analyzer461clean36.5s;backend587/436 sinchanges. ADBvacío,visual/phone/StripeSDK/matrizglobal aúnnoaceptados;próximoSourcefocusruntime/selector yestadosayuda. Codemagic únicamenteobjetivocompleto.
+
+# Corte anterior — loop461
 
 Inputs soporteoutline3/offset2/touchoptin;defaultcomponente unchanged. Ruta6/6pasa2s,4dialog+4mode+1captureprevpasaron;15únicoschecksseparados. Analyzer36.5sclean. viewInsets300/scroll/dragdismiss/1RPC verificadoswidgetnormal/200, no tecladofísico.12fixtures/5PNG. Próximo fullintegrado fuenteactual porcorechange;full564/452 anterior453–461. Matrizglobal/StripeSDK/device sigueabierta, Codemagic sólofinal.
 
