@@ -234,19 +234,24 @@ class ImpactCaseCard extends StatelessWidget {
         'Conoce el caso $name en Dopmi. ${publicContentLink(PublicContent.rescueCase, item['case_id'] as String)}',
       ),
       style: OutlinedButton.styleFrom(
-        minimumSize: const Size(0, 40),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        minimumSize: const Size(0, 34),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         shape: const StadiumBorder(),
         side: const BorderSide(color: Color(0xffe6e2dd)),
         foregroundColor: ink,
         textStyle: const TextStyle(
           fontFamily: 'Inter',
-          fontSize: 12,
+          fontSize: 14,
           height: 1.2,
           fontWeight: FontWeight.w600,
         ),
       ),
-      icon: const Icon(Icons.share_outlined, size: 14),
+      icon: SvgPicture.asset(
+        'assets/profile/icon-share.svg',
+        width: 14,
+        height: 14,
+        colorFilter: const ColorFilter.mode(ink, BlendMode.srcIn),
+      ),
       label: const Text('Compartir'),
     );
     return Container(
