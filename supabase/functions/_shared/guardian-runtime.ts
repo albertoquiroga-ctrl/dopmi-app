@@ -9,6 +9,7 @@ import { guardianMethodService } from './guardian-method.mjs';
 import { guardianMethodListService } from './guardian-method-list.mjs';
 import { savedCardService } from './saved-card.mjs';
 import { savedCardMethodService } from './saved-card-method.mjs';
+import { nativeSavedWalletService } from './native-saved-wallet.mjs';
 import { guardianRefundService } from './guardian-refunds.mjs';
 import { PaymentError, requireTestKey } from './payments.mjs';
 
@@ -87,7 +88,21 @@ export function guardianRuntime() {
       return result.data;
     },
   });
-  return { ...service, initial, schedule, collection, changes, method, methods, refunds, savedCard, savedCardMethod,
+  const savedWallet = nativeSavedWalletService({ stripe,
+    rpc: async (operation: string, data: unknown) => {
+      const result = await db.rpc('dopmi_saved_wallet_server', { operation, data });
+      if (result.error) {
+        if (operation === 'prepare') {
+          const code = { '40001': 'saved_wallet_changed', '22023': 'saved_wallet_invalid',
+            '55000': 'saved_wallet_busy', '42501': 'saved_wallet_account_unavailable' }[result.error.code];
+          if (code) throw new PaymentError(code, 409);
+        }
+        throw new PaymentError('guardian_database_unavailable', 503);
+      }
+      return result.data;
+    }, returnUrl: `${Deno.env.get('SUPABASE_URL')!}/functions/v1/payment-return`,
+  });
+  return { ...service, initial, schedule, collection, changes, method, methods, refunds, savedCard, savedCardMethod, savedWallet,
     async reconcile() {
       const activation = await initial.reconcile();
       const returns = Deno.env.get('DOPMI_GUARDIAN_REFUNDS_ENABLED') === 'true'
@@ -100,6 +115,10 @@ export function guardianRuntime() {
         ? await savedCard.reconcile() : { saved: 0, failed: 0 };
       const savedMethods = Deno.env.get('DOPMI_GUARDIAN_CHANGES_ENABLED') === 'true'
         ? await savedCardMethod.reconcile() : { applied: 0, failed: 0 };
+      // Continue reconciliation of previously authorized jobs even when new
+      // native-wallet requests are disabled; a SetupIntent must not be stranded.
+      const savedWallets = Deno.env.get('DOPMI_GUARDIAN_CHANGES_ENABLED') === 'true'
+        ? await savedWallet.reconcile() : { saved: 0, failed: 0 };
       const monthly = Deno.env.get('DOPMI_GUARDIAN_COLLECTION_ENABLED') === 'true'
         ? await collection.reconcile() : { processed: 0, failed: 0 };
       const result = await service.reconcile();
@@ -108,8 +127,9 @@ export function guardianRuntime() {
       return { ...result, initial_reconciled: activation.reconciled, schedules_ready: calendar.ready, monthly_processed: monthly.processed,
         changes_applied: management.applied, methods_applied: methods.applied, cards_saved: savedCards.saved,
         saved_methods_applied: savedMethods.applied,
+        wallets_saved: savedWallets.saved,
         refunds_reconciled: returns.reconciled,
-        failed: result.failed + activation.failed + calendar.failed + monthly.failed + management.failed + methods.failed + savedCards.failed + savedMethods.failed + returns.failed };
+        failed: result.failed + activation.failed + calendar.failed + monthly.failed + management.failed + methods.failed + savedCards.failed + savedMethods.failed + savedWallets.failed + returns.failed };
     },
   };
 }

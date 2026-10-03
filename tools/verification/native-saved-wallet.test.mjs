@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { nativeSavedWalletService } from '../../supabase/functions/_shared/native-saved-wallet.mjs';
 import { savedCardConsentVersion } from '../../supabase/functions/_shared/saved-card.mjs';
+import { guardianClientHandler, nativeWalletEnabled } from '../../supabase/functions/_shared/guardian-client.mjs';
 
 function fixture(wallet = 'google_pay') {
   const job = { id: 'job', request_key: 'key', status: 'pending', wallet_type: wallet,
@@ -17,6 +18,14 @@ function fixture(wallet = 'google_pay') {
     customer: { id: 'cus_owner', livemode: false, invoice_settings: { default_payment_method: 'pm_old' } },
     async rpc(op, data) {
       f.operations.push(op);
+      if (op === 'prepare') {
+        f.prepared = structuredClone(data);
+        Object.assign(job, { owner_id: data.owner_id, request_key: data.key, wallet_type: data.wallet_type });
+        return { ...job, ...(f.foreign ? { owner_id: 'foreign' } : {}) };
+      }
+      if (op === 'candidates') return f.queue ?? [];
+      if (op === 'lookup_setup') return data.setup_intent_id === setup.id ? structuredClone(job) : null;
+      if (op === 'get' && data.id === 'failed') throw Error('fixture database unavailable');
       if (op === 'get') return structuredClone(job);
       if (op === 'claim') return f.leased ? structuredClone(job) : null;
       if (op === 'native_ready') return f.leased ? structuredClone(job) : null;
@@ -51,8 +60,9 @@ function fixture(wallet = 'google_pay') {
       },
     },
     paymentMethods: { retrieve: async () => structuredClone(method) },
+    events: { retrieve: async () => structuredClone(f.event) },
   };
-  f.service = nativeSavedWalletService({ stripe, rpc: f.rpc });
+  f.service = nativeSavedWalletService({ stripe, rpc: f.rpc, returnUrl: 'https://fixture.supabase.co/functions/v1/payment-return' });
   return f;
 }
 
@@ -149,4 +159,87 @@ test('expired first wallet cannot create even a customer', async () => {
   const f = fixture(); f.job.customer_id = null; f.job.expires_at = '2020-01-01T00:00:00Z';
   assert.equal((await f.service.run('job')).status, 'expired');
   assert.equal(f.calls.length, 0);
+});
+
+const requestKey = '618f892b-dce5-4d55-9f1a-687897bdb94e';
+const walletInput = wallet_type => ({ key: requestKey, consent: true, consent_version: savedCardConsentVersion, wallet_type });
+for (const wallet of ['apple_pay', 'google_pay']) {
+  test(`${wallet}: authenticated HTTP reserves its owner and exposes only a minimal no-store receipt`, async () => {
+    const f = fixture(wallet);
+    const handler = guardianClientHandler({ enabled: () => true, walletEnabled: () => true,
+      authenticate: async token => { assert.equal(token, 'fixture-owner'); return { id: 'owner', email_confirmed_at: 'confirmed' }; },
+      addWallet: (actor, input) => f.service.submit(actor, input) });
+    const response = await handler(new Request('https://fixture.test', { method: 'POST',
+      headers: { Authorization: 'Bearer fixture-owner' }, body: JSON.stringify({ action: 'add_wallet', ...walletInput(wallet) }) }));
+    assert.equal(response.status, 200); assert.equal(response.headers.get('Cache-Control'), 'no-store');
+    assert.deepEqual(await response.json(), { key: requestKey, wallet_type: wallet, status: 'pending',
+      card_id: null, setup_client_secret: 'seti_wallet_secret_fixture' });
+    assert.deepEqual(f.prepared, { owner_id: 'owner', ...walletInput(wallet),
+      return_url: 'https://fixture.supabase.co/functions/v1/payment-return' });
+    assert.equal(f.calls.length, 1); assert.equal(f.calls[0].operation, 'create');
+  });
+}
+test('native request flag defaults off without disabling ordinary saved cards', async () => {
+  assert.equal(nativeWalletEnabled(() => undefined), false);
+  assert.equal(nativeWalletEnabled(() => 'false'), false);
+  assert.equal(nativeWalletEnabled(() => 'true'), true);
+  let wallets = 0, cards = 0;
+  const handler = guardianClientHandler({ enabled: () => true,
+    authenticate: async () => ({ id: 'owner', email_confirmed_at: 'confirmed' }),
+    addWallet: async () => { wallets++; }, addCard: async () => { cards++; return { status: 'pending' }; } });
+  const call = body => handler(new Request('https://fixture.test', { method: 'POST',
+    headers: { Authorization: 'Bearer owner' }, body: JSON.stringify(body) }));
+  assert.equal((await call({ action: 'add_wallet', ...walletInput('google_pay') })).status, 503);
+  const { wallet_type, ...cardInput } = walletInput('google_pay');
+  assert.equal((await call({ action: 'add_card', ...cardInput })).status, 200);
+  assert.equal(wallets, 0); assert.equal(cards, 1);
+});
+test('native HTTP rejects identity, financial, SetupIntent and consent injection before reservation', async () => {
+  const f = fixture();
+  const handler = guardianClientHandler({ enabled: () => true, walletEnabled: () => true,
+    authenticate: async () => ({ id: 'owner', email_confirmed_at: 'confirmed' }),
+    addWallet: (actor, input) => f.service.submit(actor, input) });
+  for (const patch of [{ owner_id: 'foreign' }, { customer_id: 'cus_other' }, { job_id: 'job' },
+    { setup_intent_id: 'seti_other' }, { setup_client_secret: 'secret_fixture' }, { gross_cents: 1 },
+    { return_url: 'https://foreign.test' }, { status: 'saved' }, { consent: false },
+    { consent_version: 'guardian-2026-09-24' }, { wallet_type: 'card' }]) {
+    const response = await handler(new Request('https://fixture.test', { method: 'POST',
+      headers: { Authorization: 'Bearer owner' }, body: JSON.stringify({ action: 'add_wallet', ...walletInput('google_pay'), ...patch }) }));
+    assert.equal(response.status, 400);
+  }
+  assert.equal(f.operations.length, 0); assert.equal(f.calls.length, 0);
+});
+test('native unconfirmed and anonymous HTTP callers cannot reserve a wallet', async () => {
+  let calls = 0;
+  const handler = guardianClientHandler({ enabled: () => true, walletEnabled: () => true,
+    authenticate: async () => ({ id: 'owner', email_confirmed_at: null }), addWallet: async () => { calls++; } });
+  for (const headers of [{}, { Authorization: 'Bearer unconfirmed' }]) {
+    const response = await handler(new Request('https://fixture.test', { method: 'POST', headers,
+      body: JSON.stringify({ action: 'add_wallet', ...walletInput('google_pay') }) }));
+    assert.equal(response.status, 401);
+  }
+  assert.equal(calls, 0);
+});
+test('native submission refuses a prepared job belonging to another actor before Stripe access', async () => {
+  const f = fixture(); f.foreign = true;
+  await assert.rejects(f.service.submit('owner', walletInput('google_pay')), /saved_wallet_job_invalid/);
+  assert.equal(f.calls.length, 0);
+});
+test('native worker continues other jobs after a failed candidate without generating SDK receipts', async () => {
+  const f = fixture(); f.job.setup_intent_id = f.setup.id; f.setup.status = 'succeeded';
+  f.queue = [{ id: 'failed' }, { id: 'job' }];
+  assert.deepEqual(await f.service.reconcile(), { saved: 1, failed: 1 });
+  assert.equal(f.calls.length, 0); assert.ok(!f.operations.includes('native_ready'));
+});
+test('native webhook fetches the provider event and fresh setup instead of trusting event completion', async () => {
+  const f = fixture(); f.job.setup_intent_id = f.setup.id;
+  f.event = { livemode: false, type: 'setup_intent.succeeded', data: { object: { id: f.setup.id, status: 'succeeded' } } };
+  assert.deepEqual(await f.service.handleWebhook('evt_fixture'), { received: true, saved_wallet: true });
+  assert.equal(f.job.status, 'pending');
+  f.setup.status = 'succeeded';
+  await f.service.handleWebhook('evt_fixture'); assert.equal(f.job.status, 'saved');
+  const foreign = fixture(); foreign.event = { livemode: false, type: 'setup_intent.succeeded', data: { object: { id: 'seti_foreign' } } };
+  assert.equal(await foreign.service.handleWebhook('evt_foreign'), null); assert.equal(foreign.calls.length, 0);
+  foreign.event.livemode = true;
+  await assert.rejects(foreign.service.handleWebhook('evt_foreign'), /saved_wallet_event_invalid/);
 });

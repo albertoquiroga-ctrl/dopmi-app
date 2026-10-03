@@ -8,8 +8,8 @@ const fail = code => { throw new PaymentError(code, 503); };
 // Native wallet saving is a SetupIntent, never a payment or Guardian activation.
 // The SQL adapter must reserve the owner/customer/provider under the existing
 // saved-card lock, retain an immutable SetupIntent, and enforce the lease.
-// This foundation is not exposed until those SQL and authenticated adapters exist.
-export function nativeSavedWalletService({ stripe, rpc }) {
+// Client calls must reserve the authenticated owner; a caller cannot supply a job ID.
+export function nativeSavedWalletService({ stripe, rpc, returnUrl }) {
   function matches(setup, job) {
     if (setup?.id !== job.setup_intent_id || setup.livemode !== false ||
         id(setup.customer) !== job.customer_id || setup.usage !== 'off_session' ||
@@ -120,5 +120,33 @@ export function nativeSavedWalletService({ stripe, rpc }) {
       card_id: job.status === 'saved' ? job.payment_method_id : null,
       setup_client_secret: secret };
   }
-  return { run, receipt };
+  async function submit(actor, input) {
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(input.key ?? '') ||
+        input.consent !== true || input.consent_version !== savedCardConsentVersion || !providers.includes(input.wallet_type))
+      throw new PaymentError('saved_wallet_consent_required', 400);
+    const prepared = await rpc('prepare', { owner_id: actor, key: input.key, wallet_type: input.wallet_type,
+      consent: true, consent_version: savedCardConsentVersion, return_url: returnUrl });
+    if (prepared?.owner_id !== actor || prepared.request_key !== input.key || prepared.wallet_type !== input.wallet_type)
+      fail('saved_wallet_job_invalid');
+    return receipt(prepared.id);
+  }
+  async function reconcile() {
+    let saved = 0, failed = 0;
+    for (const candidate of await rpc('candidates', {})) {
+      try { if ((await run(candidate.id)).status === 'saved') saved++; }
+      catch { failed++; }
+    }
+    return { saved, failed };
+  }
+  async function handleWebhook(eventId) {
+    if (!/^evt_[A-Za-z0-9]+$/.test(eventId ?? '')) fail('saved_wallet_event_invalid');
+    const event = await stripe.events.retrieve(eventId);
+    if (event.livemode !== false) fail('saved_wallet_event_invalid');
+    if (!['setup_intent.succeeded', 'setup_intent.canceled', 'setup_intent.setup_failed'].includes(event.type)) return null;
+    const job = await rpc('lookup_setup', { setup_intent_id: event.data?.object?.id });
+    if (!job) return null;
+    await run(job.id);
+    return { received: true, saved_wallet: true };
+  }
+  return { run, receipt, submit, reconcile, handleWebhook };
 }

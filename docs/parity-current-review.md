@@ -1,3 +1,9 @@
+# Corte vigente — loop385, 3/10/2026
+
+Endpoint autenticado add_wallet y conciliación worker/webhook integrados localmente; bandera separada por defecto apagada, owner derivado y prueba Stripe fresca. Tests dirigidos20/20; backend557/55725.9189576s; tres entrypoints Deno válidos. No despliegue ni billetera nativa real acreditados. Próximo preflight remoto90000 y bundles; después SDK/capacidades/config y aceptación móvil. Config PK/MerchantID pendiente. Codemagic sólo al completar el objetivo global.
+
+## Corte384 anterior
+
 # Corte vigente — loop384, 3/10/2026
 
 SQL local de billeteras preparado: wallet/provider inmutables, SetupIntent único, permiso service_role/ownreceipt, separación Checkout/nativo, lease liberado rechazado, native_ready revalida identidad/customer/deadline/conflictos y guards bidireccionales Guardian.11casos nuevos PostgreSQL incluyen2integraciones SQL+Stripefake; backend549/54925.75s. NO migración/endpoint/worker/app desplegados ni billetera real acreditada. Sigue integración y preflight remoto antesde aplicar90000una vez.

@@ -1,8 +1,8 @@
-# Billeteras nativas — contrato y avance383
+# Billeteras nativas — contrato y avance385
 
 Referencia irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb. Alcance: sección Billeteras digitales y autorización real sin cobro desde Métodos de pago. Se preservan los colores/medidas Source, sujeto a disponibilidad móvil real; no se copia el toast de vinculación simulada.
 
-La base portable native-saved-wallet.mjs tiene12tests factory/Deno check. SQL local90000 y11casos PostgreSQL adicionales están preparados: backend549/54925.75s. NO está expuesta, desplegada ni conectada a móvil. Endpoint/runtime/worker y preflight/despliegue aún pendientes; configPK/MerchantID no acreditada.
+La base portable y endpoint tienen20tests factory/API; SQL local90000 tiene11casos PostgreSQL adicionales. Backend557/55725.9189576s y Deno check de tres entrypoints pasan. Endpoint/runtime/worker/webhook integrados localmente con bandera de solicitudes nativas apagada por defecto. NO desplegada ni conectada a móvil; preflight/despliegue pendientes y config PK/MerchantID no acreditada.
 
 Implementación siguiente:
 

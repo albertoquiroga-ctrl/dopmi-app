@@ -1,9 +1,10 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.57.4';
 import { guardianRuntime } from '../_shared/guardian-runtime.ts';
-import { guardianClientEnabled, guardianClientHandler } from '../_shared/guardian-client.mjs';
+import { guardianClientEnabled, guardianClientHandler, nativeWalletEnabled } from '../_shared/guardian-client.mjs';
 
 Deno.serve(guardianClientHandler({
   enabled: () => guardianClientEnabled((name: string) => Deno.env.get(name)),
+  walletEnabled: () => nativeWalletEnabled((name: string) => Deno.env.get(name)),
   authenticate: async (token: string) => {
     const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
       { auth: { persistSession: false } });
@@ -14,6 +15,7 @@ Deno.serve(guardianClientHandler({
   defaultMethod: (actor: string, input: unknown) => guardianRuntime().method.checkout(actor, input),
   removeMethod: (actor: string, input: unknown) => guardianRuntime().method.checkout(actor, input),
   addCard: (actor: string, input: unknown) => guardianRuntime().savedCard.checkout(actor, input),
+  addWallet: (actor: string, input: unknown) => guardianRuntime().savedWallet.submit(actor, input),
   savedCardMethod: (actor: string, input: unknown) => guardianRuntime().savedCardMethod.submit(actor, input),
   methods: (actor: string) => guardianRuntime().methods(actor),
   method: (actor: string, input: unknown) => guardianRuntime().method.checkout(actor, input),

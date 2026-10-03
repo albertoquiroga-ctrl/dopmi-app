@@ -4,6 +4,7 @@ import { GuardianBillingError } from './guardian-billing.mjs';
 export const guardianClientFlags = ['DOPMI_GUARDIAN_CHECKOUT_ENABLED', 'DOPMI_GUARDIAN_WORKER_ENABLED',
   'DOPMI_GUARDIAN_SCHEDULE_ENABLED', 'DOPMI_GUARDIAN_COLLECTION_ENABLED', 'DOPMI_GUARDIAN_CHANGES_ENABLED', 'DOPMI_GUARDIAN_REFUNDS_ENABLED'];
 export const guardianClientEnabled = env => guardianClientFlags.every(flag => env(flag) === 'true');
+export const nativeWalletEnabled = env => env('DOPMI_NATIVE_WALLETS_ENABLED') === 'true';
 const headers = { 'Content-Type': 'application/json', 'Cache-Control': 'no-store',
   'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, apikey, content-type, x-client-info',
   'Access-Control-Allow-Methods': 'POST, OPTIONS' };
@@ -12,7 +13,8 @@ const reply = (body, status = 200) => new Response(JSON.stringify(body), { statu
 // Authenticate on the server and pass an explicit allowlist. Caller-supplied
 // donor IDs, return URLs and status fields never reach checkout. A saved-method
 // selection accepts only its opaque ID; the service verifies its customer ownership.
-export function guardianClientHandler({ enabled, authenticate, checkout, method, methods, defaultMethod, removeMethod, addCard, savedCardMethod }) {
+export function guardianClientHandler({ enabled, authenticate, checkout, method, methods, defaultMethod, removeMethod, addCard, savedCardMethod,
+  walletEnabled = () => false, addWallet }) {
   return async req => {
     if (req.method === 'OPTIONS') return new Response(null, { headers });
     if (req.method !== 'POST') return reply({ error: 'method_not_allowed' }, 405);
@@ -25,6 +27,16 @@ export function guardianClientHandler({ enabled, authenticate, checkout, method,
       const text = await req.text();
       if (text.length > 4096) return reply({ error: 'invalid_request' }, 400);
       let input; try { input = JSON.parse(text); } catch { return reply({ error: 'invalid_request' }, 400); }
+      if (input?.action === 'add_wallet') {
+        if (!walletEnabled()) return reply({ error: 'saved_wallet_disabled' }, 503);
+        if (Object.keys(input).some(key => !['action','key','consent','consent_version','wallet_type'].includes(key)) ||
+            typeof addWallet !== 'function' || input.consent !== true || input.consent_version !== 'saved-cards-2026-10-03' ||
+            !['apple_pay','google_pay'].includes(input.wallet_type) ||
+            !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(input.key ?? ''))
+          return reply({ error: 'invalid_request' }, 400);
+        return reply(await addWallet(actor.id, { key: input.key, consent: true,
+          consent_version: input.consent_version, wallet_type: input.wallet_type }));
+      }
       if (['saved_card_default', 'saved_card_remove'].includes(input?.action)) {
         if (Object.keys(input).some(key => !['action','key','consent','consent_version','payment_method_id'].includes(key)) ||
             typeof savedCardMethod !== 'function' || input.consent !== true || input.consent_version !== 'saved-card-methods-2026-10-03' ||

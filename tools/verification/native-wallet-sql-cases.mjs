@@ -140,13 +140,15 @@ export function registerNativeWalletSqlCases(f) {
         type: 'card', card: { wallet: { type: wallet } } }) },
     };
     const service = nativeSavedWalletService({ stripe, rpc: native });
-    await assert.rejects(service.receipt(j.id), /lost setup response/);
-    const pending = await service.receipt(j.id);
+    const submission = { key, consent: true, consent_version: savedCardConsentVersion, wallet_type: wallet };
+    const ownedService = nativeSavedWalletService({ stripe, rpc: native, returnUrl: savedCardReturn });
+    await assert.rejects(ownedService.submit(donor, submission), /lost setup response/);
+    const pending = await ownedService.submit(donor, submission);
     assert.equal(pending.status, 'pending'); assert.equal(pending.setup_client_secret, 'seti_native_secret_fixture');
     const attempts = calls.filter(x => x.kind === 'setup'); assert.deepEqual(attempts[0], attempts[1]);
     assert.equal(calls.filter(x => x.kind === 'customer').length, 1);
     setup.status = 'succeeded';
-    const done = await service.receipt(j.id);
+    const done = await ownedService.submit(donor, submission);
     assert.equal(done.status, 'saved'); assert.equal(done.card_id, 'pm_native'); assert.equal(done.setup_client_secret, null);
     assert.deepEqual(await service.receipt(j.id), done); assert.equal(calls.length, 3);
     for (const table of ['dopmi_guardian_subscriptions', 'dopmi_guardian_activations', 'dopmi_guardian_cycles'])
