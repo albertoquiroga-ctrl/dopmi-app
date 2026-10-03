@@ -1926,3 +1926,10 @@ Basee8019e3; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. S
 Basebe308fa; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge426 /notifications377x852, fixture local15 con mismo títuloPatricia/horaAyer/bodyvacío/kindmessage/unread. fonts.ready y DOM: card74/y88, chipx33/y105. Cliente Padding16 enDecoratedBox no reservaba borderCSS1; cambiado17 para dimensiones/offset equivalentes. Fuente/capturas normal Source yFlutter inspeccionadas: tarjeta corresponde, badgeModo prueba excluido; no identidadpixel/global atribuida.
 
 10/10 notifications+capture pasan5s64705/aff286→0ad20c, analyzer49164/b4c3b1 limpio49s. Normal/200/read ySource/métricas guardadasparity-loop426. Browser cerrado1b0acd; Vite63620 CtrlCexit1 esperado. Semántica/read/destinos reales preservados. Próximo histórico real de pagos y restantes estados/matriz, sin repetir sólo prueba de tarjeta; SDK/device/finalacceptance pendientes. SinCodemagic/push.
+
+
+### Loop427 — texto del historial real, 3/10/2026
+
+Base0334e5f; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge427 /history377x852 inicialmenteempty, fixture15 emptyStatesfalse habilita historialSource. DOM fonts.ready mide date15/title17/method15/amount16/pill20 (14texto+6padding). PaymentHistoryRow fija esas alturas, mantiene expand/evidence/ownership y estados reales. Source simula suscripción yVisa4242: no copiados, fixturesnoequivalentes ni pixelidentity atribuidos.
+
+8/8 row/screen/capture pasan28s53213/c728a6: montos reales200, evidenciafaltante noinventada, ciclosconfirmados vsomitidos/processing, filtrosrecibidos/ownership tardío. Analyzer13904/fce181 limpio49.7s. Format aprobado; PNGnormal/200/empty ySourceguardados, normalFlutter inspeccionada. Browser cerrado5fdb2a; Vite4619 CtrlCexit1esperado. Próximo revisión actual de familias restantes con matriz ygestos/configSDK/device; dinero continúa test-only. SinCodemagic/push.

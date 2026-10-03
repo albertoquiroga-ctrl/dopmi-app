@@ -58,7 +58,7 @@ class _PaymentHistoryRowState extends State<PaymentHistoryRow> {
       date == null ? '—' : '${date.day} ${months[date.month - 1]}',
       style: const TextStyle(
         fontSize: 12,
-        height: 1.2,
+        height: 15 / 12,
         fontWeight: FontWeight.w600,
         color: muted,
       ),
@@ -73,7 +73,7 @@ class _PaymentHistoryRowState extends State<PaymentHistoryRow> {
           overflow: large ? null : TextOverflow.ellipsis,
           style: const TextStyle(
             fontSize: 14,
-            height: 1.2,
+            height: 17 / 14,
             fontWeight: FontWeight.w700,
             color: ink,
           ),
@@ -82,7 +82,7 @@ class _PaymentHistoryRowState extends State<PaymentHistoryRow> {
         Text(
           widget.methodLabel ??
               (d['processor'] == 'stripe' ? 'Stripe' : 'Método no disponible'),
-          style: const TextStyle(fontSize: 12, height: 1.2, color: muted),
+          style: const TextStyle(fontSize: 12, height: 15 / 12, color: muted),
         ),
       ],
     );
@@ -97,7 +97,7 @@ class _PaymentHistoryRowState extends State<PaymentHistoryRow> {
                   : 'Importe no disponible'),
           style: const TextStyle(
             fontSize: 13,
-            height: 1.2,
+            height: 16 / 13,
             fontWeight: FontWeight.w700,
             color: Color(0xff6b5000),
           ),
@@ -113,7 +113,7 @@ class _PaymentHistoryRowState extends State<PaymentHistoryRow> {
             label,
             style: const TextStyle(
               fontSize: 11,
-              height: 1.2,
+              height: 14 / 11,
               fontWeight: FontWeight.w500,
               color: ink,
             ),

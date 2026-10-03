@@ -1,3 +1,7 @@
+# Corte vigente — loop427
+
+Historial alturas date15/title17/method15/amount16/pill14 corregidas conformeSource.8tests/capture pasan/analyzer49.7s limpio. Sin copiar suscripciones/tarjetas simuladas, fixturesnoequivalentes. Global/configSDK/device pendientes; Codemagic sóloobjetivo completo.
+
 # Corte vigente — loop426
 
 Notificación equivalenteSource/Flutter comparada: borderinset17 reproducecard74 ychipx33/y105.10tests/capture pasan/analyzer limpio49s. Próximo historialreal/restomatriz; SDK/device/global siguenpendientes. Codemagic sóloobjetivo completo.
