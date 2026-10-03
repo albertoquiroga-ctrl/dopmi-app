@@ -212,3 +212,5 @@ editor renderizado siguen pendientes. Inventario265 conserva alcance total,
 no interpretar estos cuatro grupos como único cierre necesario. Capturas291/34;
 no son conteo de pantallas aceptadas. Codemagic siguiente sólo al completar y
 verificar objetivo, por última instrucción del titular.
+
+Loops321–326: Configuración donante ahora usa encabezado y filas Source, incluye cambio real de experiencia confirmado antes de navegación y extensiones de historial/guardados/privacidad. Capturas294/34 (normal/grande/pie). Editor público blanco/fields/button alineados por inspección CSS; picker permanece local hasta guardar, retry reutiliza ruta y Cancelar descarta preview. Contraste runtime completo/editor y galería/Storage en dispositivo todavía no aceptados. Regresión completa470 del320 antecede estos cambios; no atribuir cobertura completa al corte actual.

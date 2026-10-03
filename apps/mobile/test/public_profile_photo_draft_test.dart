@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:go_router/go_router.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_repository.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_edit_screen.dart';
@@ -12,6 +14,9 @@ import 'package:dopmi_mobile/features/profile/rescuer_profile_edit_screen.dart';
 import 'rescuer_profile_test.dart' show FakeRescuerProfile;
 
 class PhotoDraftRepo extends FakeRescuerProfile {
+  String? owner = 'owner-one';
+  @override
+  String? get userId => owner;
   int uploads = 0;
   bool reject = true;
   @override
@@ -78,4 +83,91 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  testWidgets(
+    'cancel after selecting public photo discards preview without persistence',
+    (tester) async {
+      final repo = PhotoDraftRepo();
+      final bytes = base64Decode(
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aD1sAAAAASUVORK5CYII=',
+      );
+      final router = GoRouter(
+        initialLocation: '/edit',
+        routes: [
+          GoRoute(
+            path: '/edit',
+            builder: (_, _) => const RescuerPublicProfileEditScreen(),
+          ),
+          GoRoute(
+            path: '/rescuer/profile',
+            builder: (_, _) => const Scaffold(body: Text('Perfil destino')),
+          ),
+        ],
+      );
+      addTearDown(router.dispose);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            rescuerProfileRepositoryProvider.overrideWithValue(repo),
+            publicProfilePhotoPickerProvider.overrideWithValue(
+              () async => XFile.fromData(bytes, name: 'photo.png'),
+            ),
+          ],
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('public-profile-photo')));
+      await tester.pumpAndSettle();
+      final cancel = find.widgetWithText(OutlinedButton, 'Cancelar');
+      await tester.scrollUntilVisible(
+        cancel,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(cancel);
+      await tester.pumpAndSettle();
+      expect(find.text('Perfil destino'), findsOneWidget);
+      expect(repo.uploads, 0);
+      expect(repo.saves, 0);
+      router.go('/edit');
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<CircleAvatar>(find.byType(CircleAvatar)).backgroundImage,
+        isNull,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets('public photo response from previous owner is discarded', (
+    tester,
+  ) async {
+    final repo = PhotoDraftRepo();
+    final selection = Completer<XFile?>();
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          rescuerProfileRepositoryProvider.overrideWithValue(repo),
+          publicProfilePhotoPickerProvider.overrideWithValue(
+            () => selection.future,
+          ),
+        ],
+        child: const MaterialApp(home: RescuerPublicProfileEditScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('public-profile-photo')));
+    await tester.pump();
+    repo.owner = 'other-owner';
+    selection.complete(
+      XFile.fromData(Uint8List.fromList([1]), name: 'ignored.png'),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<CircleAvatar>(find.byType(CircleAvatar)).backgroundImage,
+      isNull,
+    );
+    expect(repo.uploads, 0);
+    expect(repo.saves, 0);
+    expect(tester.takeException(), isNull);
+  });
 }
