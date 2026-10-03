@@ -36,6 +36,8 @@ export function savedCardService({ stripe, rpc, returnUrl }) {
       return job;
     };
     try {
+      if (job.consent_version !== savedCardConsentVersion || !job.consent_at)
+        fail('saved_card_consent_required');
       if (!job.customer_id) {
         const customer = await stripe.customers.create({},
           { idempotencyKey: `dopmi-saved-card-customer:${job.wallet_id}` });
@@ -73,6 +75,16 @@ export function savedCardService({ stripe, rpc, returnUrl }) {
       const method = await stripe.paymentMethods.retrieve(methodId);
       if (method?.id !== methodId || method.livemode !== false || id(method.customer) !== job.customer_id ||
           method.type !== 'card') fail('saved_card_method_mismatch');
+      // The independently recorded consent permits use in future authorized
+      // contributions. Setup alone can leave Checkout redisplay unspecified.
+      if (method.allow_redisplay !== 'always') {
+        await stripe.paymentMethods.update(methodId, { allow_redisplay: 'always' },
+          { idempotencyKey: `dopmi-saved-card-redisplay:${job.id}` });
+        const saved = await stripe.paymentMethods.retrieve(methodId);
+        if (saved?.id !== methodId || saved.livemode !== false || id(saved.customer) !== job.customer_id ||
+            saved.type !== 'card' || saved.allow_redisplay !== 'always')
+          fail('saved_card_redisplay_unconfirmed');
+      }
       return await checkpoint('saved', { session_id: session.id, setup_intent_id: setupId, payment_method_id: methodId });
     } finally {
       await rpc('release', { id: jobId, lease });

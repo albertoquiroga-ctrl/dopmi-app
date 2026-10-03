@@ -3892,7 +3892,10 @@ function savedCardFixture() {
       return structuredClone(sessions.get(options.idempotencyKey));
     },retrieve:async()=>structuredClone([...sessions.values()][0])}},
     setupIntents:{retrieve:async()=>structuredClone(setup)},
-    paymentMethods:{retrieve:async()=>structuredClone(card)},
+    paymentMethods:{retrieve:async()=>structuredClone(card),update:async(id,fields,options)=>{
+      assert.equal(id,card.id);calls.push({kind:'redisplay',fields:structuredClone(fields),options});
+      Object.assign(card,fields);return structuredClone(card);
+    }},
     events:{retrieve:async()=>({livemode:false,type:'checkout.session.completed',data:{object:{id:'cs_test_savedCard',customer:'cus_forged',status:'complete'}}})},
   };
   const service=(rpc=savedCardRpc)=>savedCardService({stripe,rpc,returnUrl:savedCardReturn});
@@ -3917,7 +3920,9 @@ test('independent card setup saves for a non-subscriber without creating money o
   assert.equal(f.customers.size,1);assert.equal(f.sessions.size,1);
   f.complete();const result=await f.service().checkout(donor,savedCardInput);
   assert.equal(result.status,'saved');assert.equal(result.card_id,'pm_savedCard');assert.equal(result.checkout_url,null);
-  assert.equal(f.calls.length,2);
+  assert.equal(f.calls.length,3);
+  assert.equal(f.card.allow_redisplay,'always');
+  assert.deepEqual(f.calls.find(c=>c.kind==='redisplay').fields,{allow_redisplay:'always'});
   for(const table of ['dopmi_guardian_subscriptions','dopmi_guardian_activations','dopmi_guardian_cycles','dopmi_guardian_collection_jobs'])
     assert.equal((await db.query(`select count(*)::int n from private.${table}`)).rows[0].n,0);
   await role(donor);
@@ -4001,6 +4006,47 @@ for(const [name,change,code] of [
 ])test(`independent saving rejects ${name} and never claims success`,async()=>{
   const f=savedCardFixture();await f.service().checkout(donor,savedCardInput);f.complete();change(f);
   await assert.rejects(f.service().checkout(donor,savedCardInput),{code});assert.equal((await f.prepare()).status,'pending');
+  assert.equal(f.calls.some(c=>c.kind==='redisplay'),false);
+});
+
+test('redisplay response loss recovers from provider state before reporting saved',async()=>{
+  const f=savedCardFixture();await f.service().checkout(donor,savedCardInput);f.complete();
+  const update=f.stripe.paymentMethods.update;
+  f.stripe.paymentMethods.update=async(...args)=>{await update(...args);throw Error('lost redisplay response');};
+  await assert.rejects(f.service().checkout(donor,savedCardInput),/lost redisplay response/);
+  assert.equal((await f.prepare()).status,'pending');
+  assert.equal((await f.service().checkout(donor,savedCardInput)).status,'saved');
+  assert.equal(f.calls.filter(c=>c.kind==='redisplay').length,1);
+});
+
+test('unconfirmed redisplay update cannot create a saved receipt',async()=>{
+  const f=savedCardFixture();await f.service().checkout(donor,savedCardInput);f.complete();
+  f.stripe.paymentMethods.update=async()=>({...f.card,allow_redisplay:'always'});
+  await assert.rejects(f.service().checkout(donor,savedCardInput),{code:'saved_card_redisplay_unconfirmed'});
+  assert.equal((await f.prepare()).status,'pending');
+  assert.equal((await f.prepare()).payment_method_id,null);
+});
+
+test('persisted consent must precede every independent card provider write',async()=>{
+  const f=savedCardFixture();
+  const rpc=async(operation,data)=>{
+    const job=await savedCardRpc(operation,data);
+    return operation==='claim' ? {...job,consent_at:null} : job;
+  };
+  await assert.rejects(f.service(rpc).checkout(donor,savedCardInput),{code:'saved_card_consent_required'});
+  assert.equal(f.calls.length,0);
+  const job=await f.prepare();assert.equal(job.status,'pending');assert.equal(job.lease_until,null);
+});
+
+test('fresh owner verification after redisplay write precedes saved receipt',async()=>{
+  const f=savedCardFixture();await f.service().checkout(donor,savedCardInput);f.complete();
+  const update=f.stripe.paymentMethods.update;
+  f.stripe.paymentMethods.update=async(...args)=>{
+    const result=await update(...args);f.card.customer='cus_peer';return result;
+  };
+  await assert.rejects(f.service().checkout(donor,savedCardInput),{code:'saved_card_redisplay_unconfirmed'});
+  assert.equal((await f.prepare()).status,'pending');
+  assert.equal((await f.prepare()).payment_method_id,null);
 });
 
 test('setup pending authentication remains pending; expired session is never saved',async()=>{
