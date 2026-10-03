@@ -157,6 +157,35 @@ void main() {
       },
     );
   }
+  testWidgets('returning from favorites preserves the card without replaying entry', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await open(tester);
+    await tester.tap(find.byTooltip('Pasar'));
+    await tester.pumpAndSettle();
+    final card = find.byKey(const ValueKey('discovery-motion-next'));
+    final originalState = tester.state(card);
+    await tester.tap(find.bySemanticsLabel('Favoritos'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Adoptar'));
+    await tester.pump();
+    expect(tester.state(card), same(originalState));
+    expect(find.text('Milo'), findsOneWidget);
+    final transform = tester.widget<Transform>(
+      find.descendant(of: card, matching: find.byType(Transform)).first,
+    );
+    expect(transform.transform.storage[12], 0);
+    await tester.pump(const Duration(milliseconds: 125));
+    expect(
+      tester.widget<Transform>(
+        find.descendant(of: card, matching: find.byType(Transform)).first,
+      ).transform.storage[12],
+      0,
+    );
+    expect(tester.takeException(), isNull);
+    semantics.dispose();
+  });
   for (final reduced in [false, true]) {
     testWidgets('support entry and interrupted gesture; reduced=$reduced', (
       tester,
