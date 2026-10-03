@@ -1,4 +1,7 @@
 import 'package:file_selector/file_selector.dart';
+
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../../core/content_links.dart';
@@ -2919,11 +2922,38 @@ class OwnedCasesHeading extends StatelessWidget {
       ),
       if (total != 0) ...[
         const SizedBox(width: 12),
-        FilledButton.icon(
-          onPressed: () => context.go('/publish'),
-          icon: const Icon(Icons.add_circle_outline, size: 16),
-          label: const Text('Nuevo'),
-          style: FilledButton.styleFrom(minimumSize: const Size(0, 48)),
+        Transform.translate(
+          offset: Offset(
+            0,
+            -math.max(
+                  0,
+                  48 -
+                      math.max(
+                        34,
+                        MediaQuery.textScalerOf(context).scale(14) * 1.2 + 16,
+                      ),
+                ) /
+                2,
+          ),
+          child: FilledButton.icon(
+            onPressed: () => context.go('/publish'),
+            icon: const Icon(Icons.add_circle_outline, size: 16),
+            label: const Text('Nuevo'),
+            style: FilledButton.styleFrom(
+              minimumSize: const Size(0, 34),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              tapTargetSize: MaterialTapTargetSize.padded,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              textStyle: const TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 14,
+                height: 1.2,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
         ),
       ],
     ],
