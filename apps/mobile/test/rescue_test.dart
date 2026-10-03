@@ -7,6 +7,7 @@ import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 import 'package:dopmi_mobile/features/rescue/public_expense_card.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
@@ -847,6 +848,17 @@ void main() {
     expect(find.text('Nina'), findsOneWidget);
     expect(find.text('2 sin leer'), findsOneWidget);
     expect(find.text('Actividad reciente'), findsOneWidget);
+    final messages = find.byWidgetPredicate(
+      (w) => w is RescuerPendingCard && w.message,
+    );
+    final badge = find.descendant(of: messages, matching: find.text('2'));
+    expect(badge, findsOneWidget);
+    await tester.ensureVisible(badge);
+    await tester.pumpAndSettle();
+    await tester.tap(badge);
+    await tester.pumpAndSettle();
+    expect(container.read(routerProvider).state.uri.path, '/messages');
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('my cases exposes status-specific actions and feedback', (
