@@ -386,7 +386,12 @@ void main() {
 
     expect(find.text('Términos y privacidad'), findsOneWidget);
     expect(find.text('Aviso de desarrollo'), findsNothing);
-    await tap(tester, 'Información básica');
+    final basicInfo = find.text('Información básica');
+    await Scrollable.ensureVisible(tester.element(basicInfo), alignment: .35);
+    await tester.pumpAndSettle();
+    expect(basicInfo.hitTestable(), findsOneWidget);
+    await tester.tap(basicInfo);
+    await tester.pumpAndSettle();
     expect(find.text('Ciudad / estado'), findsOneWidget);
     expect(find.text('Correo electrónico'), findsOneWidget);
     expect(tester.takeException(), isNull);
