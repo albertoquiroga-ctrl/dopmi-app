@@ -3,22 +3,26 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import Stripe from 'stripe';
+import { guardianMethodService } from '../../supabase/functions/_shared/guardian-method.mjs';
 import { guardianMethodListService } from '../../supabase/functions/_shared/guardian-method-list.mjs';
 
 // An isolated zero-price test subscription cannot create a payable renewal.
 // No Dopmi registry, financial jobs, human customer, or real card is involved.
 assert.equal(process.argv[2], '--execute-test-fixture');
 const label = process.argv[3]?.replace(/^--fixture-label=/, '') ?? '355';
-assert.ok(process.argv.length <= 4 && /^[a-z0-9-]{1,20}$/.test(label));
+const selectDefault = process.argv[4] === '--select-default';
+assert.ok(process.argv.length <= 5 && /^[a-z0-9-]{1,20}$/.test(label));
+if (process.argv[4]) assert.ok(selectDefault);
 if (process.argv[3]) assert.ok(process.argv[3].startsWith('--fixture-label='));
 const journalPath = join(process.env.LOCALAPPDATA, 'Temp', `dopmi-method-stripe-${label}.json`);
 let state;
 try { state = JSON.parse(await readFile(journalPath, 'utf8')); }
 catch (error) {
   if (error.code !== 'ENOENT') throw error;
-  state = { run: randomUUID(), createdAt: Date.now(), cards: [] };
+  state = { run: randomUUID(), createdAt: Date.now(), cards: [], selectDefault };
   await writeFile(journalPath, JSON.stringify(state), { flag: 'wx' });
 }
+assert.equal(state.selectDefault === true, selectDefault, 'Fixture mode must remain stable');
 assert.match(state.run, /^[0-9a-f-]{36}$/);
 assert.ok(Date.now() - state.createdAt < 23 * 3600000, 'Outside mutation retry window');
 const save = () => writeFile(journalPath, JSON.stringify(state, null, 2));
@@ -66,8 +70,20 @@ try {
     if (!state.subscription) {
       state.subscription = (await stripe.subscriptions.create({ customer: state.customer,
         items: [{ price: state.price }], default_payment_method: state.cards[0].id,
-        collection_method: 'send_invoice', days_until_due: 1, metadata }, option('subscription'))).id;
+        collection_method: 'send_invoice', days_until_due: 1, metadata,
+        ...(selectDefault ? { automatic_tax: { enabled: false } } : {}) }, option('subscription'))).id;
       await save();
+    }
+    if (selectDefault) {
+      stage = 'pause-zero-subscription';
+      const sub = await stripe.subscriptions.retrieve(state.subscription);
+      assert.equal(sub.livemode, false);
+      assert.equal(sub.metadata.dopmi_method_read_acceptance, state.run);
+      assert.equal(sub.items.data[0].price.unit_amount, 0);
+      if (sub.pause_collection?.behavior !== 'keep_as_draft') {
+        await stripe.subscriptions.update(sub.id,
+          { pause_collection: { behavior: 'keep_as_draft' }, proration_behavior: 'none' }, option('pause'));
+      }
     }
     const read = guardianMethodListService({ stripe, lookup: async actor => {
       assert.equal(actor, state.run);
@@ -77,9 +93,83 @@ try {
     const list = await read(state.run);
     assert.equal(list.items.length, 2);
     assert.equal(list.items.filter(card => card.default).length, 1);
-    assert.equal(list.items.find(card => card.default).id, state.cards[0].id);
+    assert.ok([state.cards[0].id, ...(selectDefault && state.methodJob ? [state.cards[1].id] : [])].includes(list.items.find(card => card.default).id));
     assert.deepEqual(list.items.map(card => card.brand).sort(), ['mastercard', 'visa']);
     assert.ok(list.items.every(card => Object.keys(card).length === 7));
+    if (selectDefault) {
+      stage = 'select-default';
+      const before = await stripe.subscriptions.retrieve(state.subscription);
+      assert.equal(before.metadata.dopmi_method_read_acceptance, state.run);
+      assert.equal(before.livemode, false);
+      assert.equal(before.items.data[0].price.unit_amount, 0);
+      const calendar = sub => [sub.billing_cycle_anchor, sub.items.data[0].current_period_start,
+        sub.items.data[0].current_period_end, sub.latest_invoice];
+      state.calendar ??= calendar(before);
+      state.methodJob ??= {
+        id: randomUUID(), status: 'pending', selected_method_id: state.cards[1].id,
+        current_method_id: state.cards[0].id, customer_id: state.customer,
+        subscription_id: state.subscription, price_id: state.price,
+        plan_status: 'active', lease: randomUUID(),
+        expires_at: new Date(state.createdAt + 35 * 60000).toISOString(),
+      };
+      await save();
+      // Local checkpoint adapter is deliberate: this verifies real Stripe SDK
+      // behavior of the production service, not database locks or Auth routing.
+      const rpc = async (operation, data) => {
+        assert.equal(data.job_id, state.methodJob.id);
+        if (operation === 'get' || operation === 'claim' || operation === 'release') return { ...state.methodJob };
+        if (operation === 'verified_saved') {
+          assert.equal(data.payment_method_id, state.cards[1].id);
+          state.methodJob.payment_method_id = data.payment_method_id;
+        } else if (operation === 'snapshot') state.methodJob.billing_anchor = data.billing_anchor;
+        else if (operation === 'write_update') state.methodJob.mutation_requested_at ??= new Date().toISOString();
+        else if (operation === 'applied') {
+          assert.equal(data.payment_method_id, state.cards[1].id);
+          state.methodJob.status = 'applied';
+        } else if (operation === 'failed') state.methodJob.error_code = data.error_code;
+        else throw new Error('Unexpected checkpoint');
+        await save();
+        return { ...state.methodJob };
+      };
+      const observedStripe = {
+        paymentMethods: stripe.paymentMethods,
+        subscriptions: {
+          retrieve: stripe.subscriptions.retrieve.bind(stripe.subscriptions),
+          update: async (...args) => {
+            assert.equal(args[0], state.subscription);
+            assert.deepEqual(args[1], { default_payment_method: state.cards[1].id, proration_behavior: 'none' });
+            state.selectionUpdateCalls = (state.selectionUpdateCalls ?? 0) + 1;
+            await save();
+            const result = await stripe.subscriptions.update(...args);
+            if (!state.acceptedResponseLost) {
+              state.acceptedResponseLost = true;
+              await save();
+              throw new Error('Synthetic response loss after real accepted update');
+            }
+            return result;
+          },
+        },
+      };
+      const service = guardianMethodService({ stripe: observedStripe, rpc,
+        returnUrl: 'https://example.invalid/guardian-return', logger: { log() {} } });
+      if (!state.acceptedResponseLost) {
+        await assert.rejects(service.run(state.methodJob.id), /Synthetic response loss/);
+        assert.equal(state.methodJob.status, 'pending');
+        assert.equal((await stripe.subscriptions.retrieve(state.subscription)).default_payment_method, state.cards[1].id);
+      }
+      assert.equal((await service.run(state.methodJob.id)).status, 'applied');
+      assert.equal(state.acceptedResponseLost, true);
+      assert.equal(state.selectionUpdateCalls, 1);
+      const after = await stripe.subscriptions.retrieve(state.subscription);
+      assert.equal(after.default_payment_method, state.cards[1].id);
+      assert.deepEqual(calendar(after), state.calendar);
+      assert.equal((await service.run(state.methodJob.id)).status, 'applied');
+      const selected = await read(state.run);
+      assert.equal(selected.items.filter(card => card.default).length, 1);
+      assert.equal(selected.items.find(card => card.default).id, state.cards[1].id);
+      state.defaultSelectionVerified = true;
+      await save();
+    }
     const invoices = await stripe.invoices.list({ customer: state.customer, limit: 100 });
     assert.equal(invoices.has_more, false);
     assert.ok(invoices.data.every(invoice => invoice.amount_due === 0 && invoice.amount_paid === 0));
@@ -129,7 +219,7 @@ try {
         assert.equal((await stripe.products.retrieve(product.id)).active, false);
       }
       state.cleaned = true; await save();
-      console.log(JSON.stringify({ completed: state.verified === true, cleaned: true, cards: state.cards.length }));
+      console.log(JSON.stringify({ completed: state.verified === true, cleaned: true, cards: state.cards.length, defaultSelectionVerified: state.defaultSelectionVerified === true }));
     } catch (error) {
       console.log(JSON.stringify({ completed: false, cleaned: false, stage,
         type: error.type ?? error.name, code: error.code ?? null }));
