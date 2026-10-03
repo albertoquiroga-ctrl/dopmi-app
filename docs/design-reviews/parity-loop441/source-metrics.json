@@ -1,0 +1,51 @@
+[
+  {
+    "gap": "12px",
+    "height": 70,
+    "padding": "14px",
+    "text": [
+      {
+        "font": "16px",
+        "height": 20,
+        "line": "normal",
+        "text": "Visa •••• 4242",
+        "weight": "700"
+      },
+      {
+        "font": "12px",
+        "height": 15,
+        "line": "normal",
+        "text": "Predeterminada",
+        "weight": "400"
+      }
+    ]
+  },
+  {
+    "gap": "12px",
+    "height": 70,
+    "padding": "14px",
+    "text": [
+      {
+        "font": "16px",
+        "height": 40,
+        "line": "normal",
+        "text": "Mastercard •••• 1881",
+        "weight": "700"
+      },
+      {
+        "font": "12px",
+        "height": 30,
+        "line": "normal",
+        "text": "Hacer predeterminada",
+        "weight": "600"
+      },
+      {
+        "font": "16px",
+        "height": 40,
+        "line": "normal",
+        "text": "",
+        "weight": "400"
+      }
+    ]
+  }
+]

@@ -2881,6 +2881,17 @@ void main() {
         }
         if (spec.$1.startsWith('payment-methods-cards-canceled')) {
           final waiting = spec.$1.contains('waiting');
+          if (!large) {
+            final rows = find.byType(GuardianPaymentCardRow);
+            expect(rows, findsNWidgets(2));
+            for (var i = 0; i < 2; i++) {
+              expect(
+                tester.getSize(rows.at(i)).height,
+                70,
+                reason: 'Source card-row $i measured 70px at 377px width',
+              );
+            }
+          }
           expect(
             find.text('Hacer predeterminada'),
             waiting ? findsNothing : findsOneWidget,

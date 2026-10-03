@@ -65,11 +65,14 @@ class GuardianPaymentCardRow extends StatelessWidget {
             style: TextButton.styleFrom(
               foregroundColor: const Color(0xff554e48),
               padding: EdgeInsets.zero,
-              minimumSize: const Size(44, 44),
+              minimumSize: const Size(40, 40),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               textStyle: const TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 12,
-                fontWeight: FontWeight.w500,
+                height: 1.25,
+                letterSpacing: 0,
+                fontWeight: FontWeight.w600,
               ),
             ),
             onPressed: onMakeDefault,
@@ -83,7 +86,10 @@ class GuardianPaymentCardRow extends StatelessWidget {
         ? IconButton(
             tooltip: 'Eliminar tarjeta',
             onPressed: onRemove,
-            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+            constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+            style: const ButtonStyle(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
             padding: EdgeInsets.zero,
             icon: SvgPicture.asset(
               'assets/profile/icon-trash.svg',
@@ -132,24 +138,29 @@ class GuardianPaymentCardRow extends StatelessWidget {
                     Text(
                       '${card.brandLabel} •••• ${card.last4}',
                       style: const TextStyle(
-                        fontSize: 14,
+                        fontSize: 16,
+                        height: 1.25,
                         fontWeight: FontWeight.w700,
                         color: ink,
                       ),
                     ),
+                    if (card.isDefault) const SizedBox(height: 2),
                     if (card.isDefault)
                       const Text(
                         'Predeterminada',
                         style: TextStyle(
                           fontSize: 12,
+                          height: 1.25,
                           color: Color(0xff554e48),
                         ),
                       ),
+                    if (card.wallet != null) const SizedBox(height: 2),
                     if (card.wallet != null)
                       Text(
                         card.wallet == 'apple_pay' ? 'Apple Pay' : 'Google Pay',
                         style: const TextStyle(
                           fontSize: 12,
+                          height: 1.25,
                           color: Color(0xff554e48),
                         ),
                       ),
@@ -158,7 +169,7 @@ class GuardianPaymentCardRow extends StatelessWidget {
               ),
               if (action != null && !large) ...[
                 const SizedBox(width: 8),
-                SizedBox(width: 92, child: action),
+                SizedBox(width: 92.328125, child: action),
               ],
               if (remove != null && !large) ...[
                 const SizedBox(width: 12),
