@@ -1,3 +1,9 @@
+# Corte vigente — loop399, 3/10/2026
+
+Nativebuild43721 falló Java17/Kotlin21; ajuste rootGradle sólo Stripe a JVM17 preserva validación.16config pasan. Reintento corregido40473 ACTIVO/logTemp dopmi-native-build-loop399-fixed.log: retomarhandle antes de nueva acción, compilación aún no verificada. Config real/SDK/device/matriz global pendientes, Codemagic sólo final.
+
+## Corte398 anterior
+
 # Corte vigente — loop398, 3/10/2026
 
 Bottomreview200 capturado/revisado, aviso entero/Actualizarestado alcanzable;4captures pasan/analyzer limpio78.2s.329states/37URLs inventario. Codemagic GETapp verificado sólometadatos:9keys/3groups sinvariableswallet enrespuesta, team-level pendiente. Nativebuild43721 ACTIVOlogTemp dopmi-native-build-loop397-retry.log, aúnnoresultado. Retomarhandle; config/compilación/device/matrizglobal pendientes. Codemagic sólofinal.
