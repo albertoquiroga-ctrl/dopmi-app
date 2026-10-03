@@ -3062,3 +3062,30 @@ Turno343 progresoe1f4d32. Referencia remota a3c969cd9103fd46dc5cd886999912526ce7
 Archivos observados descargadosTEMP, versiones igualeslocales. FontTools4.62.1 existeglobal; Brotli faltanteglobal/empaquetado, instaladoPyPI1.2.0 sóloTemp/packages. CorpusInter400230Unicode0difavance/contorno; Fraunces600opsz28WONK0SOFT0 222Unicode0difavance,3diminutasdifcontorno en33/95/161 (max0.103710/2000units≈0.001452px28), no reemplazofuentes. Revisados fontFamilyFraunces/displayFont convariacionescontextuales. Resultado/acotación/fuentesoficiales en docs/design-reviews/parity-loop344/README.md yfont-outline-sample.json. No fonts/depsapp/Source/userfilecapture-access.mjs modificado. Tabcerrado/ViteCtrlC esperadoexit1, no override deviewport establecido344.
 
 No código app ni captura nueva;307/36 siguen343. Full494/342 antecede343 y pagos12/343 cubren cambioúltimo, no nuevo full. Movimiento/gestosSource aún requierencomparación completa/instalada; la prueba de fuente ayuda a retirar incertidumbre, no goalcomplete. Sin CM/push.
+
+
+### Loop345 — métodos de pago, implementación en verificación
+
+Ruta /settings/payment-methods dedicada desde Configuración, reutilizando GuardianScreen y su controlador financiero existente. Marco/header y tarjeta siguen composición Source PaymentMethods; datos actuales sólo acreditan suscripción/status/gestión Stripe, no brand/last4 ni billeteras. No tarjetas inventadas ni acciones simuladas. Guarda las salidas de activación para la ruta Guardian completa. Guardian24/24 aprobadas9s en scratch con los tres archivos nuevos copiados. Diff check limpio. Faltan pruebas específicas de nueva ruta, capturas normales/200%, y analyze móvil correcto antes de cerrar/commit. Analyze iniciado accidentalmente desde raíz, handle16798: recuperar resultado; no atribuir analyze móvil hasta verificarlo. No CM/push. Cambios propios aún sin commit en app.dart, guardian_screen.dart, profile_overview.dart.
+
+
+### Loop346 — ruta de métodos verificada técnicamente
+
+Dos pruebas específicas nuevas con DopmiApp: actualización requiere autorización, respuesta incierta conserva la misma intención/key al reintentar y no anuncia método actualizado; ruta inactiva no ofrece activación y Regresar vuelve a Configuración sin mutaciones. Guardian26/26 aprobadas7s handle97261 exit0, después de corregir selector de test que esperaba FilledButton en acción OutlinedButton. Analyze móvil scratch limpio24.8s handle94009 exit0. Analyze anterior desde raíz16798 terminó con dependencia share_plus ausente del entorno raíz; no defecto atribuido al cambio ni gate móvil válido. Referencia remota consultada346 permanece a3c969cd9103fd46dc5cd886999912526ce75efb. No capturas nuevas ni cierre visual: siguiente comprobar320/200%, pending/flags/errores y explicaciones de incidencias bancarias en pantalla dedicada. Cambios propios siguen sin commit para completar este único loop; no CM/push. Capturador no existe en root apps/mobile/test: localizar en scratch antes de abrirlo.
+
+
+### Loop347 — captura y estados bancarios, verificación continúa
+
+Capturador localizado scratch/tool/capture_profile_test.dart; agregados tres estados payment-methods normal/large/inactive (no versionado, herramienta scratch previa). Captura16965 exit0, large examinada: no overflow, detectado morado Material; corregido foreground ink en acciones. Icono tarjeta reemplazado por asset Source. Mensaje de payment_issue unificado getter reutilizado en ambas pantallas; error de lectura no afirma ausencia de plan. Nuevos tests disabled sin reads/writes y320/200% explicación de ciclo omitido. Primera suite37574:27pass/1fallo de ensureVisible sobre hijo ListView aún no construido; corregido a scrollUntilVisible. Edición de colores produjo style duplicado, corregido antes del relanzamiento. Suite completa activa (recuperar handle siguiente output); no resultado final atribuido. Pendiente capturas actualizadas/analyze/commit. No CM/push.
+
+
+### Loop348 — resultados finales y diferencias explícitas
+
+Retomado20281 terminalexit0: Guardian28/28 aprobadas8s. Capture67430 exit0, tres capturas normal/320200%/inactiva examinadas después de foreground ink y SVG: sin overflow, no tarjetas/wallets inventadas. Capturador root real es apps/mobile/tool (sí tracked); incorporadas6líneas propias desde scratch. Supersede supuesto de347 herramienta no versionada. Analyze53498 terminó info curly_braces getter; corregido sólo bloque, analyze nuevo activo (recuperar handle). Sigue sin cierre/commit hasta gate limpio. Diferencias explícitas Source: acción tiene borde sólido en vez de dashed; no inventar brand/last4/default ni billeteras Source simuladas, requieren implementación/datos reales para alcance completo. No afirmar paridad completa ni device. Nuevo total310estados/37URLs debe recontarse antes de publicar. Sin CM/push.
+
+
+### Loop349 — borde discontinuo y tipografía
+
+Retomado94263 analyze limpio12.3s. PaymentMethodBorder pinta perímetro r18/1px#d5cfc6 dashed; copia/escala conserva clase. Analyze48957 limpio28.9s y Guardian25154 terminal28/28pass7s. Captura86538 aprobada, inspección detectó Ahem al sobreescribir textStyle sin fontFamily; corregido explicitInter14w500 y nueva captura activa (recuperar handle). No cerrar ni commit sin examinar resultado corregido. Referencia remota a3c969c confirmada. Conteo inicial regex sin whitespace omitió tuplas multiline:301/36 inválido como total; nuevo conteo salida actual debe registrar. Scope real cards/wallets aún pendiente, no inventar datos. Sin CM/push.
+
+Loop349 cierre técnico: captura66900 terminalexit0 tres estados3s; large examinada con Inter legible, borde discontinuo y acción completa. Recuento de tuplas con whitespace310estados/37URLs, no aceptación de310pantallas. Guardian28tests/analyze previos sólo preceden corrección fontFamily declarativa. Pantalla dedicada reutiliza mismos estados/idempotencia/permisos sin API nueva. Paridad completa de métodos no declarada: tarjetas/datos/default/remover/wallets Source todavía requieren alcance real. Próximo auditar integración Stripe existente y definir implementación desde evidencia, mantener guardas test.

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,6 +13,7 @@ import '../adoption/community_repository.dart';
 import '../identity/identity_controller.dart';
 import '../rescue/rescue_repository.dart';
 import 'guardian_repository.dart';
+import 'payment_method_border.dart';
 import 'contribution_layout.dart';
 import 'guardian_membership_card.dart';
 import 'guardian_cancel_dialog.dart';
@@ -23,7 +25,12 @@ import 'guardian_activation_success.dart';
 import 'guardian_activation_failure.dart';
 
 class GuardianScreen extends ConsumerStatefulWidget {
-  const GuardianScreen({super.key, this.initialEnrollment = false});
+  const GuardianScreen({
+    super.key,
+    this.initialEnrollment = false,
+    this.paymentMethodsOnly = false,
+  });
+  final bool paymentMethodsOnly;
   final bool initialEnrollment;
   @override
   ConsumerState<GuardianScreen> createState() => _GuardianState();
@@ -52,6 +59,20 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       data?['method_setup'] is Map ? Json.from(data!['method_setup']) : null;
   bool get checkoutInReview =>
       intent?['kind'] == 'checkout' && activation?['status'] == 'attention';
+  String? get paymentIssueMessage {
+    final issue = data?['payment_issue'];
+    if (issue is! Map ||
+        ![
+          'authentication_required',
+          'payment_failed',
+        ].contains(issue['reason'])) {
+      return null;
+    }
+    return issue['status'] == 'skipped'
+        ? 'El último ciclo se omitió por rechazo o autenticación bancaria pendiente. No se volverá a cobrar ese ciclo. Puedes actualizar y autenticar tu medio para los próximos.'
+        : 'Un pago necesita revisión bancaria y sigue en conciliación. Espera su resultado antes de cambiar el medio de pago.';
+  }
+
   Future<void> trackOnce(String name, Object? attempt) async {
     if (attempt is! String || attempt.isEmpty) return;
     final prefs = await SharedPreferences.getInstance();
@@ -450,7 +471,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   @override
   Widget build(BuildContext context) {
     final enabled = ref.watch(guardianEnabledProvider);
-    if (enabled &&
+    if (!widget.paymentMethodsOnly &&
+        enabled &&
         current &&
         fresh &&
         !busy &&
@@ -468,7 +490,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         onReturn: () => context.go('/rescue-cases'),
       );
     }
-    if (enabled &&
+    if (!widget.paymentMethodsOnly &&
+        enabled &&
         current &&
         fresh &&
         !busy &&
@@ -519,6 +542,113 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         fresh &&
         !checkoutInReview &&
         (intent != null || (verified && consent && (canStart || canChange)));
+    if (widget.paymentMethodsOnly) {
+      return ContributionFrame(
+        title: 'Métodos de pago',
+        back: () => context.canPop() ? context.pop() : context.go('/settings'),
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
+          children: [
+            const Text(
+              'Medio de pago de Guardián',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: const Color(0xffe6e2dd)),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: const BoxDecoration(
+                      color: Color(0xffefede8),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        'assets/profile/icon-card.svg',
+                        width: 18,
+                        height: 18,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      !enabled
+                          ? 'Guardián no está disponible en esta versión.'
+                          : error != null && !fresh
+                          ? 'No se pudo confirmar tu medio de pago.'
+                          : busy && data == null
+                          ? 'Consultando tu suscripción…'
+                          : status == 'active'
+                          ? 'Gestionado en Stripe'
+                          : 'No tienes una suscripción activa de Guardián.',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (enabled && paymentIssueMessage != null)
+              Notice(paymentIssueMessage!),
+            if (error != null) Notice(error!),
+            if (message != null) Notice(message!),
+            if (enabled && methodSetup != null)
+              Notice(
+                guardianMethodLabels[methodSetup!['status']] ??
+                    'Medio de pago en revisión.',
+              ),
+            const SizedBox(height: 12),
+            if (enabled &&
+                verified &&
+                status == 'active' &&
+                data?['method_change_available'] == true &&
+                intent == null)
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: ink,
+                  minimumSize: const Size.fromHeight(56),
+                  side: const BorderSide(color: Color(0xffd5cfc6)),
+                  textStyle: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  shape: const PaymentMethodBorder(),
+                ),
+                onPressed: busy || confirming || !fresh
+                    ? null
+                    : () => submit(method: true),
+                icon: const Icon(Icons.add, size: 18),
+                label: const Text('Actualizar medio de pago'),
+              ),
+            if (enabled && intent?['kind'] == 'method')
+              ActionButton(
+                'Continuar actualización en Stripe',
+                busy: busy,
+                onPressed: canSubmit ? () => submit() : null,
+              ),
+            TextButton(
+              style: TextButton.styleFrom(foregroundColor: ink),
+              onPressed: busy || confirming ? null : () => load(),
+              child: const Text('Actualizar estado'),
+            ),
+            if (enabled)
+              TextButton(
+                style: TextButton.styleFrom(foregroundColor: ink),
+                onPressed: () => context.push('/guardian'),
+                child: const Text('Ver mi suscripción de Guardián'),
+              ),
+          ],
+        ),
+      );
+    }
     final showForm =
         !['method', 'withdraw_amount'].contains(intent?['kind']) &&
         !checkoutInReview &&
@@ -697,16 +827,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   guardianMethodLabels[methodSetup!['status']] ??
                       'Medio de pago en revisión.',
                 ),
-              if (data?['payment_issue'] is Map &&
-                  [
-                    'authentication_required',
-                    'payment_failed',
-                  ].contains(data!['payment_issue']['reason']))
-                Notice(
-                  data!['payment_issue']['status'] == 'skipped'
-                      ? 'El último ciclo se omitió por rechazo o autenticación bancaria pendiente. No se volverá a cobrar ese ciclo. Puedes actualizar y autenticar tu medio para los próximos.'
-                      : 'Un pago necesita revisión bancaria y sigue en conciliación. Espera su resultado antes de cambiar el medio de pago.',
-                ),
+              if (paymentIssueMessage != null) Notice(paymentIssueMessage!),
               if (verified &&
                   status == 'active' &&
                   data?['method_change_available'] == true &&

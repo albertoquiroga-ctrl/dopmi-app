@@ -627,7 +627,11 @@ class DonorProfileView extends ConsumerWidget {
             title: 'Pagos y suscripciones',
             items: [
               if (ref.watch(guardianEnabledProvider)) ...[
-                ('Métodos de pago', Icons.credit_card, '/guardian'),
+                (
+                  'Métodos de pago',
+                  Icons.credit_card,
+                  '/settings/payment-methods',
+                ),
                 (
                   'Suscripción y pagos',
                   Icons.receipt_long_outlined,
@@ -1444,7 +1448,7 @@ class SettingsScreen extends ConsumerWidget {
             title: 'Método de pago de Guardián',
             subtitle: 'Consulta o cambia tu tarjeta',
             icon: 'icon-card',
-            path: '/guardian',
+            path: '/settings/payment-methods',
           ),
           const SizedBox(height: 12),
           const RescuerNavigationRow(
@@ -1620,7 +1624,7 @@ class RescuerAccountOptionsScreen extends ConsumerWidget {
           title: 'Método de pago de Guardián',
           subtitle: 'Consulta o cambia tu tarjeta',
           icon: Icons.credit_card,
-          path: '/guardian',
+          path: '/settings/payment-methods',
         ),
         const ProfileRow(
           title: 'Suscripción y pagos',

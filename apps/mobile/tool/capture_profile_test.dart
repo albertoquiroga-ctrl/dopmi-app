@@ -812,6 +812,9 @@ void main() {
         'contribution-waiting-large',
         '/contribute/Cirugía?case=case-one&amount_cents=10000',
       ),
+      ('payment-methods', '/settings/payment-methods'),
+      ('payment-methods-large', '/settings/payment-methods'),
+      ('payment-methods-inactive', '/settings/payment-methods'),
       ('guardian-billing-amount', '/guardian'),
       ('guardian-billing-amount-large', '/guardian'),
       ('guardian-billing-cancel', '/guardian'),
@@ -1070,6 +1073,14 @@ void main() {
                   spec.$1.contains('enrollment'),
             )
           : FakeGuardian();
+      if (spec.$1.startsWith('payment-methods') &&
+          !spec.$1.contains('inactive')) {
+        guardian.value = {
+          'plan': activePlan(),
+          'activation': null,
+          'method_change_available': true,
+        };
+      }
       if (spec.$1.startsWith('guardian-activation-')) {
         // Synthetic checkout is scoped to this flutter_test capturer.
         // ignore: invalid_use_of_visible_for_testing_member

@@ -220,6 +220,13 @@ final routerProvider = Provider<GoRouter>((ref) {
             MyAdoptionsScreen(key: ValueKey(identity.identity?.id)),
       ),
       GoRoute(
+        path: '/settings/payment-methods',
+        builder: (_, _) => GuardianScreen(
+          key: ValueKey(identity.identity?.id),
+          paymentMethodsOnly: true,
+        ),
+      ),
+      GoRoute(
         path: '/guardian/history',
         builder: (_, _) =>
             GuardianHistoryScreen(key: ValueKey(identity.identity?.id)),

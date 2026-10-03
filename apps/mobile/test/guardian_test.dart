@@ -132,6 +132,7 @@ void main() {
     bool enabled = true,
     String owner = 'one',
     bool verified = true,
+    bool methods = false,
   }) async {
     tester.view.physicalSize = const Size(390, 2400);
     tester.view.devicePixelRatio = 1;
@@ -145,7 +146,9 @@ void main() {
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         guardianRepositoryProvider.overrideWithValue(repo),
         guardianEnabledProvider.overrideWithValue(enabled),
-        routerInitialLocationProvider.overrideWithValue('/guardian'),
+        routerInitialLocationProvider.overrideWithValue(
+          methods ? '/settings/payment-methods' : '/guardian',
+        ),
       ],
     );
     addTearDown(() async {
@@ -155,7 +158,10 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(container: container, child: const DopmiApp()),
     );
-    await pumpUntil(tester, find.text('Suscripción Dopmi'));
+    await pumpUntil(
+      tester,
+      find.text(methods ? 'Métodos de pago' : 'Suscripción Dopmi'),
+    );
     await tester.pumpAndSettle();
     if (enabled && find.text('Suscribirme').evaluate().isNotEmpty) {
       await tester.tap(find.text('Suscribirme'));
@@ -549,6 +555,97 @@ void main() {
       expect(find.text('Cancelar suscripción'), findsNothing);
     });
   }
+  testWidgets(
+    'dedicated methods route confirms and retries the same Stripe intent',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final repo = FakeGuardian()
+        ..fail = true
+        ..value = {
+          'plan': activePlan(),
+          'activation': null,
+          'method_change_available': true,
+        };
+      await start(tester, repo, methods: true);
+      expect(find.text('Gestionado en Stripe'), findsOneWidget);
+      expect(find.text('Suscripción Dopmi'), findsNothing);
+      await tester.ensureVisible(find.text('Actualizar medio de pago'));
+      await tester.tap(find.text('Actualizar medio de pago'));
+      await tester.pumpAndSettle();
+      expect(repo.calls, isEmpty);
+      await tester.tap(find.text('Autorizar y continuar'));
+      await tester.pumpAndSettle();
+      expect(repo.calls.single['kind'], 'method');
+      repo.fail = false;
+      await tapButton(tester, 'Continuar actualización en Stripe');
+      await tester.pumpAndSettle();
+      expect(repo.calls.length, 2);
+      expect(repo.calls.first, repo.calls.last);
+      expect(repo.opened, 1);
+      expect(find.textContaining('Medio de pago actualizado'), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets('inactive methods route cannot activate or invent stored cards', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final repo = FakeGuardian();
+    await start(tester, repo, methods: true);
+    expect(
+      find.text('No tienes una suscripción activa de Guardián.'),
+      findsOneWidget,
+    );
+    expect(find.text('Actualizar medio de pago'), findsNothing);
+    expect(find.text('Suscribirme'), findsNothing);
+    expect(repo.calls, isEmpty);
+    await tester.tap(find.byTooltip('Regresar'));
+    await tester.pumpAndSettle();
+    expect(find.text('Configuración'), findsWidgets);
+    expect(repo.calls, isEmpty);
+  });
+  testWidgets(
+    'methods screen at 200 percent preserves omitted-cycle explanation',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final repo = FakeGuardian()
+        ..value = {
+          'plan': activePlan(),
+          'activation': null,
+          'method_change_available': true,
+          'payment_issue': {
+            'reason': 'authentication_required',
+            'status': 'skipped',
+          },
+        };
+      await start(tester, repo, methods: true);
+      tester.view.physicalSize = const Size(320, 640);
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      await tester.pumpAndSettle();
+      final explanation = find.textContaining(
+        'No se volverá a cobrar ese ciclo',
+      );
+      await tester.scrollUntilVisible(explanation, 180);
+      expect(explanation, findsOneWidget);
+      await tester.scrollUntilVisible(find.text('Actualizar medio de pago'), 180);
+      expect(tester.takeException(), isNull);
+      expect(repo.calls, isEmpty);
+    },
+  );
+  testWidgets('disabled methods route performs no financial reads or writes', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final repo = FakeGuardian();
+    await start(tester, repo, methods: true, enabled: false);
+    expect(
+      find.text('Guardián no está disponible en esta versión.'),
+      findsOneWidget,
+    );
+    expect(repo.reads, 0);
+    expect(repo.calls, isEmpty);
+  });
   testWidgets(
     'method change needs explicit consent and uncertain replies reuse one key',
     (tester) async {
