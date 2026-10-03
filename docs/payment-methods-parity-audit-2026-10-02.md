@@ -1,3 +1,9 @@
+# Estado vigente — loops363–364, 3/10/2026
+
+Eliminación desplegada en DEV: migraciónremota20261003055326/local60000, worker24/webhook24/cliente17ACTIVE y bundles0diferencias. Cliente8b7798a conecta trash real, confirmación, estado propietario y reintento sin desaparición optimista.42 pruebas dirigidas y analyze limpio;4capturas revisadas normal/200%,314estados/37URLs. Sourcefeedbacktoast2600ms aún pendiente; estado actualNotice no equivale paridad completa. La prueba Stripe aislada real de eliminación y Auth integración siguen pendientes. Alta independiente/billeteras tampoco se completaron. Codemagic sólo candidato final.
+
+## Corte362 anterior
+
 # Estado vigente — loop362
 
 Lectura propietaria y selección predeterminada están desplegadas en DEV (351–357); cliente353/358 y recuperación360 implementados. Servicio selección real en fixture cero361 confirmó calendario y recuperación sin segundo update, sin Auth/SQL integrados. Eliminación segura implementada en servidor local20db360:475pruebas backend aprobadas22.44s, Deno limpio, aún sin migración/Edge remotos ni icono cliente. No interpretar el inventario350 siguiente como estado actual.
