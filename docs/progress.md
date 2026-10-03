@@ -2482,3 +2482,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/runtimeEdge377x852 i
 ### Loop513 — resultado terminal del análisis
 
 Analyzer38969 exit0, sin incidencias sobre88d7ffb; duración exacta en log513-analyze. Supersede la anotación pendiente513 anterior. Sin cambio adicional ni full nuevo.
+
+### Loop514 — formulario en orden de referencia y fotos200%, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/runtimeInformaciónbásica inspeccionado. d340113 reordenaHistoria/Salud/Social antes de tamaño/personalidad/raza/ubicación, conservados todos. Testpickerescala1/2,320x640,scroll/hitTestable/cancelación/draftprivado.24960exit0,7/7antesorden;87605exit0,8/8,8sposteriorcon2capturas.56471analyzerexit0clean. Nativeinformaciónnormalinspeccionadahistoriadespuésedad; iconografía/espaciado/camposreales noaceptadosglobalmente. README/PNG514. Full608509anterior513/514. Sinbackend/SQL/push/Codemagic/físico;objetivoactivo.
