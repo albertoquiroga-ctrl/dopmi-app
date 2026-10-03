@@ -1,3 +1,7 @@
+# Corte vigente — loop428
+
+Prioridad funcional: checkout puntual sincustomer no reutiliza métodos guardados. Lookup privado owner_server ya existe/coherente; implementar integración servidor convalidaciónStripe/idempotencia/redisplay sinnuevo consentimiento simulado.6baselinebackend pasan, no fix/deploy aún. Resto matriz/nativeSDK/config/device pendientes, Codemagic sóloobjetivo completo.
+
 # Corte vigente — loop427
 
 Historial alturas date15/title17/method15/amount16/pill14 corregidas conformeSource.8tests/capture pasan/analyzer49.7s limpio. Sin copiar suscripciones/tarjetas simuladas, fixturesnoequivalentes. Global/configSDK/device pendientes; Codemagic sóloobjetivo completo.
