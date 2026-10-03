@@ -44,6 +44,7 @@ android {
 
     buildTypes {
         release {
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             // Codemagic injects the upload keystore only inside its disposable build machine.
             // Local release builds remain debug-signed and must never be uploaded to Google Play.
             signingConfig = if (!codemagicKeystorePath.isNullOrBlank()) {

@@ -1,3 +1,9 @@
+# Corte vigente — loop388, 3/10/2026
+
+SDK flutter_stripe14.1.0 incorporado y requisitos Android preparados; identity/firma preservadas.12tests repositorios/config12 y analyzer limpio42.7s. Compilación nativa y compatibilidad Kotlin/Compose no comprobadas. SDK sin inicialización/UI/availability; PK/MerchantID pendiente. Siguiente adapter/config, compilación y visual/reanudación/aceptación real. Objetivo global activo; Codemagic sólo final.
+
+## Corte387 anterior
+
 # Corte vigente — loop387, 3/10/2026
 
 Contrato móvil NativeWalletRepository preparado: key/provider estables, receipt mínimo sinsecret y SDKsecret sólo transitorio pendiente.3tests pasan; Flutter analyze limpio49.3s. NO SDK/capacidades/UI/reanudación o billetera real acreditados. Próximo integración nativa y visual; PK/MerchantID pendiente. Servidor386 desplegado, objetivo global activo y Codemagic sólo final.
