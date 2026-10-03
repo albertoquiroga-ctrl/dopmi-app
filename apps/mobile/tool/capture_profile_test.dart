@@ -2564,6 +2564,18 @@ void main() {
       if (spec.$1.startsWith('case-publication-information')) {
         await tester.tap(find.text('Continuar'));
         await tester.pumpAndSettle();
+        if (spec.$1 == 'case-publication-information') {
+          final fields = <String, Object?>{};
+          for (final key in ['pet_name', 'age', 'story']) {
+            final target = find.byKey(ValueKey('case-field-$key'));
+            final rect = tester.getRect(target);
+            fields[key] = {'width': rect.width, 'height': rect.height};
+          }
+          await tester.runAsync(() async {
+            await File('${out.path}/case-information-metrics.json')
+                .writeAsString(jsonEncode(fields));
+          });
+        }
       }
       if (spec.$1.startsWith('expense-review')) {
         for (var i = 0; i < 2; i++) {

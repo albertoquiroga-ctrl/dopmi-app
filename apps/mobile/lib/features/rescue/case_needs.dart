@@ -45,8 +45,18 @@ class CaseNeeds extends StatelessWidget {
         ),
         child: const Padding(
           padding: EdgeInsets.all(16),
-          child: Text(
-            'Nota: Las necesidades son opcionales. Puedes publicar el caso aunque aún no agregues apoyo económico.',
+          child: Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: 'Nota:',
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
+                TextSpan(
+                  text: ' Las necesidades son opcionales. Puedes publicar el caso aunque aún no agregues apoyo económico.',
+                ),
+              ],
+            ),
             style: TextStyle(
               fontFamily: 'Inter',
               fontSize: 14,
@@ -81,7 +91,7 @@ class CaseNeeds extends StatelessWidget {
               ExcludeSemantics(
                 child: SvgPicture.asset(
                   'assets/profile/need-$type.svg',
-                  width: 30,
+                  width: 36,
                   height: 36,
                 ),
               ),
@@ -113,6 +123,7 @@ class CaseNeeds extends StatelessWidget {
                         fontFamily: 'Inter',
                         fontSize: 14,
                         height: 20 / 14,
+                        fontWeight: FontWeight.w400,
                         color: Color(0xff616174),
                       ),
                     ),
@@ -122,7 +133,7 @@ class CaseNeeds extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
       ],
       if (items.isNotEmpty) ...[
         const Text(

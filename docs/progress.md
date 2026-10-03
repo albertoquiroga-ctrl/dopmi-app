@@ -1845,3 +1845,12 @@ Basee786ca8; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. S
 CaseInformation fija lineHeight20/16 y constraints38 (78 historia), antes19.2/36. Títulos ya600/28 correctos. Captura Flutter normal final revisada, grandes generadas; medición del rectángulo real Flutter aún pendiente, no afirmar 38px medidos sólo por constraint.11/11 case_publication_test+capture prefijo case-publication-information pasan8s25165/840958→4ac999, analyzer61469/ff4dc3→c10ba6 limpio73.5s. Logs externos dopmi-loop415-tests.log/dopmi-loop415-analyze.log. Format/diffcheck limpio. PNGnormal/200 y métricas en parity-loop415.
 
 Browser415 cerrado51049/32f6a9; Vite3172 CtrlCexit1esperado. Próximo medir rectángulos Flutter y revisar necesidades/revisión con fixtures realmente equivalentes; sin aceptación visual global/servicios/dispositivo. Codemagic sóloobjetivo completo, sin push/build.
+
+
+### Loop416 — medidas Flutter confirmadas y tarjetas de necesidades, 3/10/2026
+
+Baseb1591a6; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Capturador registra rectángulos reales de información: nombre345x38, edad345x38 e historia345x78; coincide con medidas Source415, no sólo constraints. Capturador information87848/8caf38→f264ba pasa6s; JSON guardado. Tool agrega salida métricas para siguientes comparaciones sin alterar datos/servicios.
+
+Source Edge sesión416 en377x852, fixture versión15 donation/verified con petName Mora, navegación fotos→información→necesidades ejecutada. DOM fonts.ready: nota94/14/20/padding16, tarjetas98/padding16/gap12, título16/24/600, copy14/20/400. Source normal y Flutter normal comparados: copy cliente heredaba peso500 de OutlinedButton. CaseNeeds fija400, notaRichText preserva frase real y destaca Nota700, icon slot36 y separación vertical16. CopyFood real se conserva porque catálogo simulado no existe; necesidad/cuidados privada también. SVGs siguen diferentes del emoji Source y queda por revisar primitive nativa/medidas horizontales; no identidadpixel ni familia cerrada.
+
+11/11 case_publication+capture needs pasan12s78452/8d714d→8f02b1, analyzer54296/e22b97→d99164 limpio68.3s. Logs externos dopmi-loop416-tests.log/dopmi-loop416-analyze.log. Format/diffchecklimpio. Capturas needsnormal/200 generadas y normal inspeccionada; Source/métricas guardadas enparity-loop416. Browser cerrado372751; Vite79142 CtrlCexit1esperado. Próximo revisión con datos equivalentes e iconos/espaciado horizontal de necesidades, además de matrizglobal/configSDK/device pendientes. SinCodemagic/push.

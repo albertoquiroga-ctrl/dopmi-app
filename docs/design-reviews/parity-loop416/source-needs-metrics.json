@@ -1,0 +1,29 @@
+{
+  "viewport": [
+    377,
+    852
+  ],
+  "source": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "note": {
+    "height": 94,
+    "font": 14,
+    "line": 20,
+    "padding": 16
+  },
+  "cards": {
+    "height": 98,
+    "padding": 16,
+    "gap": 12,
+    "title_font": 16,
+    "title_line": 24,
+    "title_weight": 600,
+    "copy_font": 14,
+    "copy_line": 20,
+    "copy_weight": 400
+  },
+  "known_differences": [
+    "Source uses platform emoji; app packaged SVGs retain different glyph shape",
+    "Real food intake differs from simulated Source catalog",
+    "Private need/care field remains in real app"
+  ]
+}

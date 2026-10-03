@@ -1,3 +1,9 @@
+# Corte vigente — loop416, 3/10/2026
+
+Rectángulos Flutter38/38/78 confirmados. Necesidades comparadas con Source renderizado: copy400, Nota700 y separación corregidos.11tests/capture pasan, analyzer limpio68.3s. Pendientes iconos/horizontal y revisión equivalente, matrizglobal/configSDK/device. Codemagic sóloobjetivo completo.
+
+## Corte415 anterior
+
 # Corte vigente — loop415, 3/10/2026
 
 Información del caso comparada con Source renderizado: inputs38/textarea78 medidos en HTML; cliente ajusta constraints y lineHeight.11 tests/capture pasan, analyzer limpio73.5s. Falta medir rectángulos Flutter y comparar necesidades/revisión con estado idéntico. Objetivo global/configSDK/device pendientes; Codemagic únicamente objetivo completo.
