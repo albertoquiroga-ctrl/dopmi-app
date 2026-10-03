@@ -2438,3 +2438,7 @@ Auditorías route/motion tenían gates históricos592479/481341 como encabezado.
 ### Loop503 — expansión/cierre de gasto público primerframe, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; Edge377x852/case/rocky clickreal cierra/abre y MutationObserverdetailsfalse/true/chevron90/270/sinanimaciones. Ruta DopmiApp apoyo→caso prueba primerpump cierre/apertura, RotatedBox1/3 y evidencia pública ausente real sin copiarfakeSource. Gate63057exit0,26/26,6s, fuente 85c5ec7a526423246842d21d0bb4bc229e12d1db sólo test. JSON/README503; browser/Vitecerrados. Full607500 vigente para producción, sinbackend/SQL/push/Codemagic/físico/global.
+
+### Loop504 — carrusel Apoyar y regreso real, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. CSSrail overflowauto/gap16/sinsnap inspeccionado, no nuevo runtimeSource. Nueva pruebaDopmiApp8casos fake drag280noabre/offset>0,tapCaso4URIcorrecto/backmismaposition/offset/hitTestable.62652exit0,1/1,2s; fuente b7474d2801a55ee3f0a46cc40ec74150d9540f48 testformato posterior sin lógica. README504, full607500 producción vigente anterioratest. Sin backend/SQL/push/Codemagic/físico/globalacceptance.
