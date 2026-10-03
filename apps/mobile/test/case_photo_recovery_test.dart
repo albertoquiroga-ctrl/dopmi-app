@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/adoption/photo_recovery.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+import 'package:dopmi_mobile/core/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -147,10 +148,12 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.runAsync(() async {
-        await tester.tap(find.text('Recuperar foto y retomar borrador'));
-        await Future<void>.delayed(const Duration(milliseconds: 100));
-      });
+      // Await the actual async recovery, including real file I/O, rather than
+      // assuming that a fixed wall-clock delay finished it under suite load.
+      final recover =
+          tester.widget<ActionButton>(find.byType(ActionButton)).onPressed!
+              as Future<void> Function();
+      await tester.runAsync(recover);
       await tester.pumpAndSettle();
       final own = scenario.$1 == 'one';
       expect(repo.uploads, own && scenario.$2 == 'draft' ? 1 : 0);
