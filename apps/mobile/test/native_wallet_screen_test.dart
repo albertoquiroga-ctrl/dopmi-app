@@ -167,4 +167,35 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Google Pay vinculado'), findsNothing);
   });
+  testWidgets(
+    'attention restores one intent and disables native authorization',
+    (tester) async {
+      const key = '00000000-0000-4000-8000-000000000001';
+      final wallet = FakeWallet()
+        ..receipt = {
+          'key': key,
+          'wallet_type': 'google_pay',
+          'status': 'attention',
+          'card_id': null,
+        };
+      await start(tester, FakeGuardian(), wallet);
+      expect(
+        find.text(
+          'La autorización de tu billetera requiere revisión. Conservamos tu solicitud.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Continuar autorización'), findsNothing);
+      final google = tester.widget<OutlinedButton>(
+        find.widgetWithText(OutlinedButton, 'Google Pay'),
+      );
+      expect(google.onPressed, null);
+      expect(wallet.calls, isEmpty);
+      final prefs = await SharedPreferences.getInstance();
+      expect(
+        jsonDecode(prefs.getString('dopmi-native-wallet:one:intent')!)['key'],
+        key,
+      );
+    },
+  );
 }

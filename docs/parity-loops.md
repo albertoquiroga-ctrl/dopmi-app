@@ -3446,3 +3446,10 @@ Base9e1c86a; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada si
 Base80c0194; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. GuardsUI walletIntent bloquean default/remove independientes y agregar tarjeta; rows noofrecen default/remove con walletpendiente. Tres pruebas específicas native_wallet_screen_test con app/router/identity/store reales y repositorios/SDK sustitutos: consentantesHTTP, cancelaciónhojanativa/respuestaperdida conserva mismo key/provider trasreintento sinreconsent, nofakeéxito y Agregar disabled; ownerreceipt saved sincard enlista conserva intent/noaviso, freshmatchingcard retiraintent/avisa unavez y refreshnohistoryreplay.
 
 3/3screen tests pasan88796/f7edcd, analyzer limpio6.8s66763/ba115f. NoSDK real/StripeAuth real/dispositivo ni capturasnuevas; no atribuir nativeacceptance a callbacksfake. Continúan ownerchange/mismatch/attention/SDKsuccess/listfail/200capturas/regresiónglobal/compilaciónnativa/configreal. Objetivo global activo, dinero test-only, Codemagic sólo final.
+
+
+### Loop395 — estado de revisión nativa visible y bloqueado, 3/10/2026
+
+Base998c0db; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. attention restaura intento remoto y muestra aviso explícito, sinContinuar; botonesSDK y handler bloqueados anteattention/errorconsulta. Nuevo test descubrió callbackGoogleactivo visualmente peseaguardiahandler; parche deindentación noaplicado inicialmente y testfalló, corregido conapply_patchexacto.
+
+4/4screen tests final89299/0b42c1 pasan, analyzer limpio28.8s39736/316e60. Mantiene consent/cancel/lostreply/freshlistfeedback. Noefectoremoto/Stripe/CM/push/device/capturas/compilación nuevos. Pendientes ownerchange/casos adicionales/capturas/nativeacceptance/configPK/MerchantID ymatrizglobalparidad. Objetivo global activo; Codemagic únicamente al terminar.

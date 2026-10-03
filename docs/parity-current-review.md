@@ -1,3 +1,9 @@
+# Corte vigente — loop395, 3/10/2026
+
+attention muestra revisión y bloquea botón/handler, noContinuar.4screen tests pasan/analyzer limpio28.8s. Sigue ownerchange/casos/capturas/nativecompile/config/device ymatrizglobal. Objetivo global activo/Codemagic sólo final.
+
+## Corte394 anterior
+
 # Corte vigente — loop394, 3/10/2026
 
 Tres recorridos UI nativa pasan con repositorios/SDKfake: consent/cancel/lostreply/stablekey/freshcard/feedbackonce y guards tarjeta. Analyzer limpio6.8s. Faltan ownerchange/attention/otroscasos, capturas, compilación y aceptaciónSDK real/config/dispositivo. Objetivo global activo; Codemagic sólo final.

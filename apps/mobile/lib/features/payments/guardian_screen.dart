@@ -429,7 +429,9 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         ref.read(identityControllerProvider).identity?.verified != true ||
         intent != null ||
         savedCardIntent != null ||
-        independentIntent != null) {
+        independentIntent != null ||
+        walletStatus?['status'] == 'attention' ||
+        walletError != null) {
       return;
     }
     if (walletIntent == null) {
@@ -1329,13 +1331,21 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                               !fresh ||
                               intent != null ||
                               savedCardIntent != null ||
-                              independentIntent != null
+                              independentIntent != null ||
+                              walletStatus?['status'] == 'attention' ||
+                              walletError != null
                           ? null
                           : addWallet,
                     ),
                     if (walletError != null)
                       Notice(walletError!, isError: true),
-                    if (walletIntent != null)
+                    if (walletIntent != null &&
+                        walletStatus?['status'] == 'attention')
+                      const Notice(
+                        'La autorización de tu billetera requiere revisión. Conservamos tu solicitud.',
+                      ),
+                    if (walletIntent != null &&
+                        walletStatus?['status'] != 'attention')
                       ActionButton(
                         'Continuar autorización',
                         busy: busy,
