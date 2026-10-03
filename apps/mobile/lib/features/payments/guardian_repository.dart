@@ -162,7 +162,7 @@ bool guardianMethodRejected(Object error) =>
     ].contains((error.details as Map)['error']);
 
 const guardianMethodLabels = {
-  'pending': 'Actualización pendiente: continúa en Stripe para guardar y autenticar tu medio de pago.',
+  'pending': 'Actualización pendiente: retoma la misma solicitud para confirmar tu medio de pago.',
   'attention':
       'El cambio de medio de pago está en revisión. Conservamos tu solicitud.',
   'applied': 'Medio de pago actualizado para los próximos ciclos. No se realizó un cobro por este cambio.',

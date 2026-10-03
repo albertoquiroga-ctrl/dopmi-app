@@ -603,7 +603,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(repo.calls.single['kind'], 'method');
       repo.fail = false;
-      await tapButton(tester, 'Continuar actualización en Stripe');
+      await tapButton(tester, 'Continuar actualización');
       await tester.pumpAndSettle();
       expect(repo.calls.length, 2);
       expect(repo.calls.first, repo.calls.last);
@@ -812,7 +812,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(repo.calls.single['kind'], 'method');
       repo.fail = false;
-      await tapButton(tester, 'Continuar actualización en Stripe');
+      await tapButton(tester, 'Continuar actualización');
       await tester.pumpAndSettle();
       expect(repo.calls.length, 2);
       expect(repo.calls.first, repo.calls.last);
@@ -821,6 +821,37 @@ void main() {
       expect(find.textContaining('Medio de pago actualizado'), findsNothing);
     },
   );
+  for (final methods in [false, true]) {
+    testWidgets(
+      'lost local method target resumes server request without promising Stripe: methods=$methods',
+      (tester) async {
+        final repo = FakeGuardian()
+          ..fail = true
+          ..value = {
+            'plan': activePlan(),
+            'activation': null,
+            'method_setup': {
+              'key': '77000000-0000-4000-8000-000000000001',
+              'revision': 1,
+              'status': 'pending',
+            },
+          };
+        await start(tester, repo, methods: methods);
+        expect(find.textContaining('continúa en Stripe'), findsNothing);
+        expect(find.text('Continuar actualización en Stripe'), findsNothing);
+        await tapButton(tester, 'Continuar actualización');
+        await tester.pumpAndSettle();
+        await tapButton(tester, 'Continuar actualización');
+        await tester.pumpAndSettle();
+        expect(repo.calls, hasLength(2));
+        expect(repo.calls.first, repo.calls.last);
+        expect(repo.calls.first['key'], '77000000-0000-4000-8000-000000000001');
+        expect(repo.calls.first.containsKey('selected_method_id'), false);
+        expect(repo.opened, 0);
+        expect(find.textContaining('Medio de pago actualizado'), findsNothing);
+      },
+    );
+  }
   testWidgets(
     'method setup recovers from server and only a confirmed state releases the attempt',
     (tester) async {
@@ -835,7 +866,7 @@ void main() {
           },
         };
       await start(tester, repo);
-      await tapButton(tester, 'Continuar actualización en Stripe');
+      await tapButton(tester, 'Continuar actualización');
       await tester.pumpAndSettle();
       expect(repo.calls.single['key'], '77000000-0000-4000-8000-000000000001');
       repo.value['method_setup']['status'] = 'applied';
@@ -843,7 +874,7 @@ void main() {
       await tester.tap(find.text('Actualizar estado'));
       await tester.pumpAndSettle();
       expect(find.textContaining('Medio de pago actualizado'), findsOneWidget);
-      expect(find.text('Continuar actualización en Stripe'), findsNothing);
+      expect(find.text('Continuar actualización'), findsNothing);
     },
   );
   testWidgets(

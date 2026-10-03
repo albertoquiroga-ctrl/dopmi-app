@@ -3155,3 +3155,10 @@ Guardian 31/31 pass (handle68170, exit0); analyze limpio27.1s(handle36448). Capt
 ### Loop359 — regresión móvil completa tras métodos reales
 
 flutter test desde scratch:504/504 aprobadas3:45, handle2617 terminalexit0, código0c4dbee7296f1606b13d88892866e858b84c662b.210archivos trackedlib/test comparadosCRLFnormalizado0mismatches; no edits durantegate. Supersede494/342 y cubre343–358; no extrapolación a Stripe/DEV/CI/Play/teléfono. Actualizado corte current-review con pendientes concretos sin confundir conteo de capturas con pantallas aceptadas. Referenciaa3c969c reconsultada358. Sin Codemagic/push. Próximo loop: cerrar ambigüedad de reintento recuperado (objetivo guardado sólo servidor) y continuar acciones reales pendientes de métodos, luego matriz global/aceptación. Goal activo, sin reducción de alcance.
+
+
+### Loop360 — recuperación sin promesa falsa de Checkout
+
+Referencia remota a3c969cd9103fd46dc5cd886999912526ce75efb confirmada. El estado público conserva key/revision/status, no el ID seleccionado; el servidor ya recupera su objetivo privado. Cliente ahora muestra «Continuar actualización» cuando no tiene objetivo local y mantiene «Reintentar cambio de tarjeta» cuando sí lo conserva, en métodos y Guardian. Aviso pendiente neutro describe la misma solicitud sin prometer abrir Stripe. No campos financieros públicos nuevos ni cambios al servidor.
+
+Dos pruebas integradas de pérdida de datos locales (ambas rutas) comprueban replaykey idéntica, sin selected_method_id adivinado, sin abrir Stripe ante resultado incierto ni éxito falso.35/35 dirigidas7s(handle7820exit0), analyze limpio31.9s(handle78196exit0). Full504/359 precede esta corrección; no se atribuye al código360. Sin CM/push. Próxima evidencia: mutación real de default sólo en fixture Stripe aislado cero, luego acciones pendientes sin simulaciones.

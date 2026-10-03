@@ -689,7 +689,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
             if (enabled && intent?['kind'] == 'method')
               ActionButton(
                 intent?['selected_method_id'] == null
-                    ? 'Continuar actualización en Stripe'
+                    ? 'Continuar actualización'
                     : 'Reintentar cambio de tarjeta',
                 busy: busy,
                 onPressed: canSubmit ? () => submit() : null,
@@ -920,7 +920,9 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                 ),
               if (intent?['kind'] == 'method')
                 ActionButton(
-                  'Continuar actualización en Stripe',
+                  intent?['selected_method_id'] == null
+                      ? 'Continuar actualización'
+                      : 'Reintentar cambio de tarjeta',
                   busy: busy,
                   onPressed: canSubmit ? () => submit() : null,
                 ),
