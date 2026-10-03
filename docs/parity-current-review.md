@@ -1,3 +1,9 @@
+# Corte vigente — loop414, 3/10/2026
+
+17 pruebas y captura de publicación de casos pasan sobreb30fee9; se revisaron imágenes actuales de información y revisión. Sin cambio de producción. Próximo Source renderizado de etapas donation con datos equivalentes, para comparación visual fuerte. Servicios/dispositivo/matriz global no aceptados. Codemagic sólo objetivo completo.
+
+## Corte413 anterior
+
 # Corte vigente — loop413, 3/10/2026
 
 Introducción de verificación comparada con Source renderizado: títulos, iconos, alturas y margen corregidos.2 pruebas/capture pasan; analyzer limpio37.3s. Navegación/cierre/documentos reales accesibles con200. No aceptación global ni teléfono; siguen otras familias, animaciones/gestos y configuración SDK. Codemagic únicamente objetivo completo.
