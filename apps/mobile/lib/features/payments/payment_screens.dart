@@ -721,63 +721,87 @@ class _ConnectState extends ConsumerState<ConnectScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => CommunityFrame(
-    children: [
-      const Heading(
-        'Tu cuenta de cobro.',
-        'Configura tus datos bancarios directamente en Stripe.',
-        eyebrow: 'STRIPE CONNECT · PRUEBA',
-      ),
-      const Notice(
-        'Primero necesitas la verificación de rescatista aprobada por Dopmi. Completar el formulario de Stripe no garantiza que tu cuenta ya pueda recibir transferencias.',
-      ),
-      LiveSection<Json>(
-        errorMessage: paymentError,
-        load: () =>
-            ref.read(paymentRepositoryProvider).action('connect_status'),
-        builder: (data, refresh) => Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (data['verified'] == false)
-              const Notice(
-                'Tu verificación de rescatista está pendiente. Puedes consultar tu historial, pero no iniciar nuevos cobros.',
-              ),
-            Text(
-              data['ready'] == true
-                  ? 'Cuenta habilitada para recibir aportaciones de prueba'
-                  : 'Tu cuenta todavía necesita completar su configuración',
-            ),
-            Text(
-              'Transferencias: ${data['transfers_enabled'] == true ? 'habilitadas' : 'pendientes'}',
-            ),
-            Text(
-              'Depósitos: ${data['payouts_enabled'] == true ? 'habilitados' : 'pendientes'}',
-            ),
-            TextButton(
-              onPressed: refresh,
-              child: const Text('Actualizar estado'),
-            ),
-            const Text('Últimos depósitos de tu cuenta Stripe'),
-            const Text(
-              'Pueden agrupar varias transferencias. No corresponden necesariamente a una sola aportación.',
-            ),
-            for (final p in data['payouts'] as List? ?? [])
-              ListTile(
-                title: Text(
-                  '${pesos(p['amount'] as int)} ${p['currency'].toString().toUpperCase()}',
-                ),
-                subtitle: Text(switch (p['status']) {
-                  'paid' => 'Depositado según Stripe',
-                  'failed' => 'Depósito fallido',
-                  'canceled' => 'Depósito cancelado',
-                  _ => 'Depósito en proceso',
-                }),
-              ),
-          ],
+  Widget build(BuildContext context) => ContributionFrame(
+    title: 'Tu cuenta de cobro',
+    rescuer: true,
+    back: () =>
+        context.canPop() ? context.pop() : context.go('/settings/account'),
+    child: ListView(
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+      children: [
+        const Text(
+          'STRIPE CONNECT · PRUEBA',
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            color: purple,
+          ),
         ),
-      ),
-      if (error != null) Notice(error!, isError: true),
-      ActionButton('Completar datos en Stripe', busy: busy, onPressed: onboard),
-    ],
+        const SizedBox(height: 8),
+        const Text(
+          'Configura tus datos bancarios directamente en Stripe.',
+          style: TextStyle(
+            fontSize: 14,
+            height: 1.45,
+            color: Color(0xff4f4e5c),
+          ),
+        ),
+        const SizedBox(height: 20),
+        const Notice(
+          'Primero necesitas la verificación de rescatista aprobada por Dopmi. Completar el formulario de Stripe no garantiza que tu cuenta ya pueda recibir transferencias.',
+        ),
+        LiveSection<Json>(
+          errorMessage: paymentError,
+          load: () =>
+              ref.read(paymentRepositoryProvider).action('connect_status'),
+          builder: (data, refresh) => Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (data['verified'] == false)
+                const Notice(
+                  'Tu verificación de rescatista está pendiente. Puedes consultar tu historial, pero no iniciar nuevos cobros.',
+                ),
+              Text(
+                data['ready'] == true
+                    ? 'Cuenta habilitada para recibir aportaciones de prueba'
+                    : 'Tu cuenta todavía necesita completar su configuración',
+              ),
+              Text(
+                'Transferencias: ${data['transfers_enabled'] == true ? 'habilitadas' : 'pendientes'}',
+              ),
+              Text(
+                'Depósitos: ${data['payouts_enabled'] == true ? 'habilitados' : 'pendientes'}',
+              ),
+              TextButton(
+                onPressed: refresh,
+                child: const Text('Actualizar estado'),
+              ),
+              const Text('Últimos depósitos de tu cuenta Stripe'),
+              const Text(
+                'Pueden agrupar varias transferencias. No corresponden necesariamente a una sola aportación.',
+              ),
+              for (final p in data['payouts'] as List? ?? [])
+                ListTile(
+                  title: Text(
+                    '${pesos(p['amount'] as int).replaceFirst(' MXN', '')} ${p['currency'].toString().toUpperCase()}',
+                  ),
+                  subtitle: Text(switch (p['status']) {
+                    'paid' => 'Depositado según Stripe',
+                    'failed' => 'Depósito fallido',
+                    'canceled' => 'Depósito cancelado',
+                    _ => 'Depósito en proceso',
+                  }),
+                ),
+            ],
+          ),
+        ),
+        if (error != null) Notice(error!, isError: true),
+        ActionButton(
+          'Completar datos en Stripe',
+          busy: busy,
+          onPressed: onboard,
+        ),
+      ],
+    ),
   );
 }

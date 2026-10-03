@@ -766,6 +766,7 @@ void main() {
     addTearDown(() => debugNetworkImageHttpClientProvider = null);
     var captureCount = 0;
     var expectedAccountNavigation = 0, actualAccountNavigation = 0;
+    var expectedConnectNavigation = 0, actualConnectNavigation = 0;
     for (final spec in [
       ('adoption-swipe', '/adoptions'),
       ('adoption-large', '/adoptions'),
@@ -1229,6 +1230,10 @@ void main() {
         continue;
       }
       captureCount++;
+      if (spec.$1.startsWith('connect-account') &&
+          !spec.$1.contains('content')) {
+        expectedConnectNavigation++;
+      }
       if (spec.$1 == 'account-access-options' ||
           spec.$1 == 'account-access-options-large') {
         expectedAccountNavigation++;
@@ -1513,6 +1518,7 @@ void main() {
             rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           if (spec.$1.startsWith('rescuer-profile') ||
               spec.$1.startsWith('rescuer-settings') ||
+              spec.$1.startsWith('connect-account') ||
               spec.$1.startsWith('account-access-options'))
             rescueRepositoryProvider.overrideWithValue(
               spec.$1.startsWith('rescuer-profile-reference')
@@ -3297,6 +3303,10 @@ void main() {
             spec.$1.startsWith('connect-account')) {
           expect(container.read(routerProvider).state.uri.path, spec.$2);
         }
+        if (spec.$1 == 'connect-account-ready') {
+          expect(find.text(r'$4,314.00 MXN'), findsOneWidget);
+          expect(find.text(r'$980.00 MXN'), findsOneWidget);
+        }
         if (spec.$1.startsWith('connect-account') &&
             spec.$1.contains('content')) {
           final target = find.text('Completar datos en Stripe');
@@ -3304,6 +3314,10 @@ void main() {
           await tester.ensureVisible(target);
           await tester.pumpAndSettle();
           expect(target.hitTestable(), findsOneWidget);
+          if (spec.$1.contains('ready')) {
+            expect(find.text(r'$4,314.00 MXN'), findsOneWidget);
+            expect(find.text(r'$980.00 MXN'), findsOneWidget);
+          }
         }
         if (spec.$1.startsWith('account-access') &&
             spec.$1.contains('content')) {
@@ -3338,6 +3352,18 @@ void main() {
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),
         );
+        if (spec.$1.startsWith('connect-account') &&
+            !spec.$1.contains('content')) {
+          expect(find.byTooltip('Regresar').hitTestable(), findsOneWidget);
+          await tester.tap(find.byTooltip('Regresar'));
+          await tester.pumpAndSettle();
+          expect(
+            container.read(routerProvider).state.uri.path,
+            '/settings/account',
+          );
+          expect(repo.profile.mode, 'rescuer');
+          actualConnectNavigation++;
+        }
         if (spec.$1 == 'account-access-options' ||
             spec.$1 == 'account-access-options-large') {
           final privacy = find.text('Privacidad y eliminación');
@@ -3425,6 +3451,12 @@ void main() {
       expectedAccountNavigation,
       reason:
           'Every selected account navigation fixture must execute its checks',
+    );
+    expect(
+      actualConnectNavigation,
+      expectedConnectNavigation,
+      reason:
+          'Every selected Connect navigation fixture must execute its checks',
     );
     expect(
       captureCount,
