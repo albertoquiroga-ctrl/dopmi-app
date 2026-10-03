@@ -447,11 +447,11 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
         ? null
         : (value) => setState(() => choices[key] = value),
   );
-  String reviewTrait(String key) => choices[key] == true
-      ? 'Sí'
-      : choices[key] == false
-      ? 'No'
-      : 'Por confirmar';
+  Widget reviewTrait(String key, String label) => PublicationTraitCheck(
+    key: ValueKey('publication-review-trait-$key'),
+    label: label,
+    value: choices[key] as bool?,
+  );
   Widget publicationFooter() {
     if (loading || (post == null && widget.id != 'new')) {
       return const SizedBox.shrink();
@@ -751,34 +751,39 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                _ReviewSection(
+                PublicationTraitCard(
                   title: 'Salud',
-                  child: _ReviewCard(
-                    rows: [
-                      ('Vacunado', reviewTrait('vaccinated')),
-                      ('Esterilizado', reviewTrait('sterilized')),
-                      (
-                        'Cuidados especiales',
+                  children: [
+                    reviewTrait('vaccinated', 'Vacunado'),
+                    reviewTrait('sterilized', 'Esterilizado'),
+                    PublicationTraitCheck(
+                      label: 'Requiere cuidados especiales',
+                      value: fields['special_care']!.text.trim().isEmpty
+                          ? null
+                          : true,
+                    ),
+                    if (fields['special_care']!.text.trim().isNotEmpty)
+                      Text(
                         fields['special_care']!.text.trim(),
+                        style: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 14,
+                          height: 20 / 14,
+                          color: Color(0xff151423),
+                        ),
                       ),
-                    ],
-                  ),
+                  ],
                 ),
-                const SizedBox(height: 24),
-                _ReviewSection(
+                const SizedBox(height: 8),
+                PublicationTraitCard(
                   title: 'Social',
-                  child: _ReviewCard(
-                    rows: [
-                      ('Convive con perros', reviewTrait('social_dogs')),
-                      ('Convive con gatos', reviewTrait('social_cats')),
-                      (
-                        'Convive con niñas y niños',
-                        reviewTrait('social_children'),
-                      ),
-                    ],
-                  ),
+                  children: [
+                    reviewTrait('social_dogs', 'Social con perros'),
+                    reviewTrait('social_cats', 'Social con gatos'),
+                    reviewTrait('social_children', 'Social con niñas y niños'),
+                  ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 8),
                 const Notice(
                   'Al enviar, el equipo revisará fotos, información y privacidad antes de publicar.',
                 ),

@@ -651,7 +651,7 @@ class PublicationTraitCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(17),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -661,7 +661,7 @@ class PublicationTraitCard extends StatelessWidget {
                 title,
                 style: const TextStyle(
                   fontSize: 16,
-                  height: 1.55,
+                  height: 20 / 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff151423),
                 ),
@@ -705,7 +705,7 @@ class PublicationTraitCheck extends StatelessWidget {
         children: [
           SizedBox(
             width: 24,
-            height: 24,
+            height: 17,
             child: Align(
               alignment: Alignment.centerLeft,
               child: Transform.scale(
@@ -718,6 +718,9 @@ class PublicationTraitCheck extends StatelessWidget {
                   visualDensity: VisualDensity.compact,
                   activeColor: const Color(0xff7841f2),
                   checkColor: Colors.white,
+                  fillColor: WidgetStatePropertyAll(
+                    value == false ? Colors.white : const Color(0xff7841f2),
+                  ),
                   side: const BorderSide(color: Color(0xffe3e4ed)),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
@@ -734,7 +737,7 @@ class PublicationTraitCheck extends StatelessWidget {
                   label,
                   style: const TextStyle(
                     fontSize: 14,
-                    height: 1.55,
+                    height: 17 / 14,
                     color: Color(0xff151423),
                   ),
                 ),
@@ -743,7 +746,7 @@ class PublicationTraitCheck extends StatelessWidget {
                     'Por confirmar',
                     style: TextStyle(
                       fontSize: 12,
-                      height: 1.55,
+                      height: 15 / 12,
                       color: Color(0xff616174),
                     ),
                   ),

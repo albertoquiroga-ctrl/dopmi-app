@@ -81,6 +81,32 @@ void main() {
         await tester.tap(find.text('Guardar borrador'));
         await tester.pumpAndSettle();
         expect(repo.savedPayload?['vaccinated'], value);
+        await tester.tap(find.text('Continuar'));
+        await tester.pumpAndSettle();
+        final summary = find.byKey(
+          const ValueKey('publication-review-trait-vaccinated'),
+        );
+        await tester.ensureVisible(summary);
+        await tester.pumpAndSettle();
+        expect(tester.widget<PublicationTraitCheck>(summary).value, value);
+        final readOnlyBox = find.descendant(
+          of: summary,
+          matching: find.byType(Checkbox),
+        );
+        expect(tester.widget<Checkbox>(readOnlyBox).onChanged, isNull);
+        await tester.tap(readOnlyBox);
+        await tester.pumpAndSettle();
+        expect(tester.widget<PublicationTraitCheck>(summary).value, value);
+        expect(repo.savedPayload?['vaccinated'], value);
+        final back = find.byKey(const ValueKey('publication-header-back'));
+        await tester.scrollUntilVisible(
+          back,
+          -300,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(back);
+        await tester.pumpAndSettle();
         expect(tester.takeException(), isNull);
       }
     },
