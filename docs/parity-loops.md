@@ -4075,3 +4075,7 @@ Final57841 exit0,27/27,15s (authsheet/consent/identity/capturador3), dopmi-loop4
 ### Loop476 — regreso compartido medido, 3/10/2026
 
 Baseaa46a62; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge377x852/settings fonts loaded: TopBar377x68, back40x40 x16/y13.5, icon20 centro36/33.5; título Inter70018/22.5 centro188.5/33.5. ContributionFrame padding16→12 conserva leading60 y aumenta hitarea44→48, centra SVGx36. Final45405 exit0,1capturador/2estados2s, normal200 revisados. Primer comando raíz sinpubspec no ejecutó tests; cwd corregido. Sin nuevo test redundante para ajuste2px; análisis pendiente siguientegate. Browser cerrado/Vite59600 detenido; no push/Codemagic. Próximo Connect/archivo privado y matriz de gestos global.
+
+### Loop477 — cuenta de cobro, captura directa, 3/10/2026
+
+Base52eebe5; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado.9fixtures /connect habilitada/pendiente/error normal200/contenido200, URI exacta y CTA alcanzable/hittest; fixture sólo autoriza lectura sintética connect_status. Final49761 exit0,1test/9estados dopmi-loop477-capture-final.log. Analyzer55578 clean42.7s antes tresfixtures/URI/hittest finales, cubre producción475/476. Capturas inspeccionadas, marco logo/Heading genérico pendientecompacto; no SourceURL literal independiente. Sin backend real/Stripe/onboarding/depósitos/push/Codemagic. Siguiente ConnectFrame y archivo privado/matriz global.

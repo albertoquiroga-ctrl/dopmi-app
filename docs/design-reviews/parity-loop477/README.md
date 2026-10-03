@@ -1,0 +1,5 @@
+# Loop477 — cuenta de cobro, línea base directa
+
+Base52eebe5; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Nueve capturas reales de /connect: habilitada con depósitos, pendiente y error, normal/200/contenido200. Fixture sólo permite connect_status; cualquier acción distinta falla para impedir atribución de onboarding real. Experiencia rescatista y URI exacta comprobada; CTA final alcanzable y hitTestable al200.
+
+Final49761 exit0,1test/nueve estados, dopmi-loop477-capture-final.log. Analyzer55578 exit0 limpio42.7s antes añadir sólo tres estados de desplazamiento y URI/hittest; compilación final incluye esos cambios. Ready/error normal y pending200/content200 inspeccionados. Marco genérico con logo/HeadingFraunces todavía distinto del lenguaje TopBar compacto: siguiente ajuste conserva estado/depósitos/reintento/onboarding real. Extensión no tiene URL Source literal. No RPC remoto, cuenta/depósito real, push ni Codemagic; fuentes sintéticas aisladas. El análisis cubre también producción475/476, no nuevo full.

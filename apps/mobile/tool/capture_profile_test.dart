@@ -457,6 +457,30 @@ class CaseCaptureRescue extends SupportCaptureRescue {
       ], 5);
 }
 
+class ConnectCapturePayments extends FakePayments {
+  ConnectCapturePayments({required this.ready, required this.readFails});
+  final bool ready, readFails;
+  @override
+  Future<Json> action(String action, [Json payload = const {}]) async {
+    if (action != 'connect_status') {
+      throw StateError('The capturer only reads Connect status');
+    }
+    if (readFails) throw Exception('fixture unavailable');
+    return {
+      'verified': ready,
+      'ready': ready,
+      'transfers_enabled': ready,
+      'payouts_enabled': ready,
+      'payouts': ready
+          ? [
+              {'amount': 431400, 'currency': 'mxn', 'status': 'paid'},
+              {'amount': 98000, 'currency': 'mxn', 'status': 'pending'},
+            ]
+          : [],
+    };
+  }
+}
+
 class ContributionCapturePayments extends FakePayments {
   @override
   Future<Json> funding(String expense) async => {
@@ -1112,6 +1136,15 @@ void main() {
         '/rescue-cases/case-one/updates/update-draft',
       ),
       ('account-access-options', '/settings/account'),
+      ('connect-account-ready', '/connect'),
+      ('connect-account-ready-large', '/connect'),
+      ('connect-account-ready-content-large', '/connect'),
+      ('connect-account-pending', '/connect'),
+      ('connect-account-pending-large', '/connect'),
+      ('connect-account-pending-content-large', '/connect'),
+      ('connect-account-error', '/connect'),
+      ('connect-account-error-large', '/connect'),
+      ('connect-account-error-content-large', '/connect'),
       ('account-access-options-large', '/settings/account'),
       ('account-access-options-content-large', '/settings/account'),
       ('account-access-consent', '/consent'),
@@ -1422,6 +1455,7 @@ void main() {
         };
       }
       if (spec.$1.startsWith('owned-case-detail') ||
+          spec.$1.startsWith('connect-account') ||
           spec.$1.startsWith('account-access-options') ||
           spec.$1.startsWith('managed-updates') ||
           spec.$1.startsWith('owned-cases') ||
@@ -1548,6 +1582,13 @@ void main() {
           if (spec.$1.startsWith('payment-history'))
             paymentRepositoryProvider.overrideWithValue(
               HistoryCapturePayments(empty: spec.$1.endsWith('-empty')),
+            ),
+          if (spec.$1.startsWith('connect-account'))
+            paymentRepositoryProvider.overrideWithValue(
+              ConnectCapturePayments(
+                ready: spec.$1.contains('ready'),
+                readFails: spec.$1.contains('error'),
+              ),
             ),
           if (spec.$1.startsWith('contribution'))
             paymentRepositoryProvider.overrideWithValue(
@@ -3252,8 +3293,17 @@ void main() {
             expect(target, findsOneWidget);
           }
         }
-        if (spec.$1.startsWith('account-access')) {
+        if (spec.$1.startsWith('account-access') ||
+            spec.$1.startsWith('connect-account')) {
           expect(container.read(routerProvider).state.uri.path, spec.$2);
+        }
+        if (spec.$1.startsWith('connect-account') &&
+            spec.$1.contains('content')) {
+          final target = find.text('Completar datos en Stripe');
+          await tester.scrollUntilVisible(target, 250);
+          await tester.ensureVisible(target);
+          await tester.pumpAndSettle();
+          expect(target.hitTestable(), findsOneWidget);
         }
         if (spec.$1.startsWith('account-access') &&
             spec.$1.contains('content')) {
