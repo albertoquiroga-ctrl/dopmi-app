@@ -2458,3 +2458,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, código/CSSpendingA
 ### Loop508 — pendientes200 y toque real de contador, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado sinruntime. PNGactions/evidencelarge507 ya desplazados a pendientes inspeccionados: título/CTA/counter completos, segundaevidenciafuera noaceptadacompleta. No nuevacaptura508. Pruebaexistentehome mantienefinanciero/pendientes/actividad y añade toque scopedbadge2→/messages.39516exit0,26/26,6s fuente 77633dd6b1cc18c46c0331c0c6ead054718b2755 sólo test/producción3df4381unchanged. README/PNG508, full608506 anterior507 integradoactualpendiente. Sinbackend/SQL/push/Codemagic/físico/global.
+
+### Loop509 — símbolos pendientes/actividad y gate en curso, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, códigoAssetIconalertcircle20/donationin20 inspeccionado. Assets existentes bytesexactosSource; reemplaza Materialalertblack/flecha genérica, decorativos.77565exit0,27/27,8s con12capturas,PNGhomeactual inspeccionado. Fuente 9e76c84fb1cc66e1dcf1c0c7ae6d770dc054c63c. Full87957/analyzer46356 iniciados no resultados terminales todavía;logs509,230Dart/cuatroSVG root-scratchiguales. README/hash/PNG509. Full608506 anterior507/509 no gateactualcompleto. Sinbackend/SQL/push/Codemagic/físico/global.
