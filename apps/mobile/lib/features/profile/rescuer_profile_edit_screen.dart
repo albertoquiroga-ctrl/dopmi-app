@@ -172,8 +172,10 @@ class _RescuerPublicProfileEditState
     ].contains(status);
     final large = MediaQuery.textScalerOf(context).scale(18) > 25;
     return Scaffold(
-      backgroundColor: cream,
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
         centerTitle: true,
         toolbarHeight: large
             ? MediaQuery.textScalerOf(context).scale(18) * 2.6 + 16
@@ -201,7 +203,7 @@ class _RescuerPublicProfileEditState
         ),
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(1),
-          child: Divider(height: 1, color: Color(0xffe6e2dd)),
+          child: Divider(height: 1, color: Color(0xffe3e4ed)),
         ),
       ),
       body: SafeArea(
@@ -212,6 +214,7 @@ class _RescuerPublicProfileEditState
           children: [
             const Text(
               'Tu nombre público, foto, descripción, ciudad y enlaces serán visibles después de la revisión. No mostramos domicilio, teléfono ni correo.',
+              style: TextStyle(fontSize: 14, height: 1.2, color: ink),
             ),
             const SizedBox(height: 16),
             if (loading) const LinearProgressIndicator(),
@@ -227,7 +230,7 @@ class _RescuerPublicProfileEditState
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
-                  side: const BorderSide(color: Color(0xffe6e2dd)),
+                  side: const BorderSide(color: Color(0xffe3e4ed)),
                 ),
                 child: InkWell(
                   key: const ValueKey('public-profile-photo'),
@@ -303,14 +306,19 @@ class _RescuerPublicProfileEditState
                                 'Foto de perfil',
                                 style: TextStyle(
                                   fontSize: 16,
+                                  height: 1.2,
                                   fontWeight: FontWeight.w700,
                                   color: ink,
                                 ),
                               ),
-                              SizedBox(height: 4),
+                              SizedBox(height: 2),
                               Text(
                                 'Cambia tu foto de perfil',
-                                style: TextStyle(fontSize: 12, color: muted),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  height: 1.2,
+                                  color: muted,
+                                ),
                               ),
                             ],
                           ),
@@ -325,11 +333,11 @@ class _RescuerPublicProfileEditState
               const SizedBox(height: 12),
               for (final item in [
                 ('Nombre', name, 1),
-                ('Descripción', bio, 5),
                 ('Ciudad', city, 1),
                 ('Estado', region, 1),
                 ('Instagram (https://)', instagram, 1),
                 ('Facebook (https://)', facebook, 1),
+                ('Descripción', bio, 5),
               ]) ...[
                 Semantics(
                   label: item.$1,
@@ -350,6 +358,7 @@ class _RescuerPublicProfileEditState
                         style: const TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 16,
+                          height: 1.2,
                           fontWeight: FontWeight.w400,
                           color: Color(0xff151423),
                         ),
@@ -368,6 +377,7 @@ class _RescuerPublicProfileEditState
                             ? TextInputType.url
                             : null,
                         decoration: InputDecoration(
+                          isDense: true,
                           hintText: item.$2 == name
                               ? 'Tu nombre o el de tu refugio'
                               : item.$2 == bio
@@ -407,13 +417,18 @@ class _RescuerPublicProfileEditState
                   style: FilledButton.styleFrom(
                     backgroundColor: purple,
                     foregroundColor: const Color(0xfffbfbff),
+                    minimumSize: const Size(0, 48),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 12,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
                     textStyle: const TextStyle(
                       fontFamily: 'Inter',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   onPressed: busy ? null : save,

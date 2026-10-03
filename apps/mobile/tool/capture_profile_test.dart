@@ -1560,6 +1560,9 @@ void main() {
         await tester.enterText(facebook, 'https://facebook.com/refugio');
         await tester.pumpAndSettle();
         final save = find.widgetWithText(FilledButton, 'Guardar borrador');
+        await tester.scrollUntilVisible(
+          save, 200, scrollable: find.byType(Scrollable).first,
+        );
         await tester.ensureVisible(save);
         await tester.pumpAndSettle();
         expect(save.hitTestable(), findsOneWidget);
