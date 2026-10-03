@@ -49,6 +49,8 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
   String? photoUrl, photoPath, pendingPhotoPath, photoError;
   bool photoLoading = false, photoDirty = false;
   String? pendingEmail;
+  Timer? savedTimer;
+  bool showSaved = false;
   @override
   void initState() {
     super.initState();
@@ -58,6 +60,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
 
   @override
   void dispose() {
+    savedTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     name.dispose();
     lastName.dispose();
@@ -160,7 +163,9 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
 
   Future<void> perform(Future<void> Function() action) async {
     if (busy) return;
+    savedTimer?.cancel();
     setState(() {
+      showSaved = false;
       busy = true;
       error = null;
       message = null;
@@ -218,10 +223,14 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
         ref.read(experienceProvider).applyProfile(result);
         setState(() {
           profile = result;
-          message = pendingEmail == null
-              ? 'Guardamos los cambios de tu perfil.'
-              : 'Guardamos tu perfil. Revisa los correos de confirmación para completar el cambio de correo electrónico.';
+          showSaved = pendingEmail == null;
+          message = pendingEmail == null ? null : 'Guardamos tu perfil. Revisa los correos de confirmación para completar el cambio de correo electrónico.';
         });
+        if (showSaved) {
+          savedTimer = Timer(const Duration(milliseconds: 2600), () {
+            if (mounted) setState(() => showSaved = false);
+          });
+        }
       }
     });
   }
@@ -266,166 +275,221 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
       ),
       body: SafeArea(
         top: false,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+        child: Stack(
           children: [
-            if (loading)
-              const Center(
-                child: CircularProgressIndicator(
-                  semanticsLabel: 'Cargando perfil',
-                ),
-              ),
-            if (!loading && profile == null) ...[
-              Notice(error ?? 'No pudimos cargar tu perfil.', isError: true),
-              ActionButton('Volver a intentar', onPressed: load),
-            ],
-            if (!loading && profile != null) ...[
-              if (suspended)
-                const Notice(
-                  'Tu cuenta está suspendida. Contacta al equipo Dopmi para revisar tu acceso.',
-                  isError: true,
-                ),
-              Form(
-                key: form,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    AccountPhotoCard(
-                      name: name.text,
-                      bytes: photoBytes,
-                      url: photoUrl,
-                      onEdit:
-                          suspended ||
-                              busy ||
-                              photoLoading ||
-                              photoError != null
-                          ? null
-                          : choosePhoto,
+            ListView(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+              children: [
+                if (loading)
+                  const Center(
+                    child: CircularProgressIndicator(
+                      semanticsLabel: 'Cargando perfil',
                     ),
-                    if (photoLoading)
-                      const LinearProgressIndicator(
-                        semanticsLabel: 'Cargando foto de perfil',
-                      ),
-                    if (photoError != null) ...[
-                      Notice(photoError!, isError: true),
-                      TextButton(
-                        onPressed: busy ? null : loadPhoto,
-                        child: const Text('Volver a cargar foto'),
-                      ),
-                    ],
-                    const SizedBox(height: 16),
-                    _BasicInfoField(
-                      label: 'Nombre',
-                      child: TextFormField(
-                        controller: name,
-                        onChanged: (_) => setState(() {}),
-                        enabled: !suspended && !busy,
-                        maxLength: 80,
-                        decoration: const InputDecoration(counterText: ''),
-                        validator: (value) => (value ?? '').trim().isEmpty
-                            ? 'Escribe tu nombre.'
-                            : null,
-                      ),
+                  ),
+                if (!loading && profile == null) ...[
+                  Notice(
+                    error ?? 'No pudimos cargar tu perfil.',
+                    isError: true,
+                  ),
+                  ActionButton('Volver a intentar', onPressed: load),
+                ],
+                if (!loading && profile != null) ...[
+                  if (suspended)
+                    const Notice(
+                      'Tu cuenta está suspendida. Contacta al equipo Dopmi para revisar tu acceso.',
+                      isError: true,
                     ),
-                    const SizedBox(height: 16),
-                    _BasicInfoField(
-                      label: 'Apellido',
-                      child: TextFormField(
-                        controller: lastName,
-                        enabled: !suspended && !busy,
-                        maxLength: 80,
-                        textCapitalization: TextCapitalization.words,
-                        decoration: const InputDecoration(counterText: ''),
-                        validator: (_) =>
-                            '${name.text.trim()} ${lastName.text.trim()}'
-                                    .trim()
-                                    .length >
-                                80
-                            ? 'El nombre y apellido deben sumar hasta 80 caracteres.'
-                            : null,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    _BasicInfoField(
-                      label: 'Correo electrónico',
-                      child: TextFormField(
-                        controller: email,
-                        enabled: !suspended && !busy,
-                        keyboardType: TextInputType.emailAddress,
-                        autocorrect: false,
-                        maxLength: 254,
-                        decoration: const InputDecoration(counterText: ''),
-                        validator: (value) =>
-                            RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$')
-                                .hasMatch((value ?? '').trim())
-                            ? null
-                            : 'Escribe un correo electrónico válido.',
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    _BasicInfoField(
-                      label: 'Teléfono',
-                      child: TextFormField(
-                        controller: phone,
-                        enabled: !suspended && !busy,
-                        maxLength: 24,
-                        keyboardType: TextInputType.phone,
-                        decoration: const InputDecoration(counterText: ''),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    _BasicInfoField(
-                      label: 'Ciudad / estado',
-                      child: TextFormField(
-                        controller: city,
-                        enabled: !suspended && !busy,
-                        maxLength: 100,
-                        textCapitalization: TextCapitalization.words,
-                        decoration: const InputDecoration(counterText: ''),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    if (error != null) Notice(error!, isError: true),
-                    if (message != null) Notice(message!),
-                    ConstrainedBox(
-                      constraints: const BoxConstraints(minHeight: 48),
-                      child: FilledButton(
-                        style: FilledButton.styleFrom(
-                          textStyle: const TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            height: 1.2,
+                  Form(
+                    key: form,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        AccountPhotoCard(
+                          name: name.text,
+                          bytes: photoBytes,
+                          url: photoUrl,
+                          onEdit:
+                              suspended ||
+                                  busy ||
+                                  photoLoading ||
+                                  photoError != null
+                              ? null
+                              : choosePhoto,
+                        ),
+                        if (photoLoading)
+                          const LinearProgressIndicator(
+                            semanticsLabel: 'Cargando foto de perfil',
                           ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 18,
-                            vertical: 12,
+                        if (photoError != null) ...[
+                          Notice(photoError!, isError: true),
+                          TextButton(
+                            onPressed: busy ? null : loadPhoto,
+                            child: const Text('Volver a cargar foto'),
+                          ),
+                        ],
+                        const SizedBox(height: 16),
+                        _BasicInfoField(
+                          label: 'Nombre',
+                          child: TextFormField(
+                            controller: name,
+                            onChanged: (_) => setState(() {}),
+                            enabled: !suspended && !busy,
+                            maxLength: 80,
+                            decoration: const InputDecoration(counterText: ''),
+                            validator: (value) => (value ?? '').trim().isEmpty
+                                ? 'Escribe tu nombre.'
+                                : null,
                           ),
                         ),
-                        onPressed: suspended || busy ? null : save,
-                        child: busy
-                            ? Semantics(
-                                label: 'Procesando',
-                                child: const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                ),
-                              )
-                            : const Text('Guardar cambios'),
-                      ),
+                        const SizedBox(height: 16),
+                        _BasicInfoField(
+                          label: 'Apellido',
+                          child: TextFormField(
+                            controller: lastName,
+                            enabled: !suspended && !busy,
+                            maxLength: 80,
+                            textCapitalization: TextCapitalization.words,
+                            decoration: const InputDecoration(counterText: ''),
+                            validator: (_) =>
+                                '${name.text.trim()} ${lastName.text.trim()}'
+                                        .trim()
+                                        .length >
+                                    80
+                                ? 'El nombre y apellido deben sumar hasta 80 caracteres.'
+                                : null,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        _BasicInfoField(
+                          label: 'Correo electrónico',
+                          child: TextFormField(
+                            controller: email,
+                            enabled: !suspended && !busy,
+                            keyboardType: TextInputType.emailAddress,
+                            autocorrect: false,
+                            maxLength: 254,
+                            decoration: const InputDecoration(counterText: ''),
+                            validator: (value) =>
+                                RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$')
+                                    .hasMatch((value ?? '').trim())
+                                ? null
+                                : 'Escribe un correo electrónico válido.',
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        _BasicInfoField(
+                          label: 'Teléfono',
+                          child: TextFormField(
+                            controller: phone,
+                            enabled: !suspended && !busy,
+                            maxLength: 24,
+                            keyboardType: TextInputType.phone,
+                            decoration: const InputDecoration(counterText: ''),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        _BasicInfoField(
+                          label: 'Ciudad / estado',
+                          child: TextFormField(
+                            controller: city,
+                            enabled: !suspended && !busy,
+                            maxLength: 100,
+                            textCapitalization: TextCapitalization.words,
+                            decoration: const InputDecoration(counterText: ''),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        if (error != null) Notice(error!, isError: true),
+                        if (message != null) Notice(message!),
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(minHeight: 48),
+                          child: FilledButton(
+                            style: FilledButton.styleFrom(
+                              textStyle: const TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                height: 1.2,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 18,
+                                vertical: 12,
+                              ),
+                            ),
+                            onPressed: suspended || busy ? null : save,
+                            child: busy
+                                ? Semantics(
+                                    label: 'Procesando',
+                                    child: const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    ),
+                                  )
+                                : const Text('Guardar cambios'),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
+              ],
+            ),
+            if (showSaved)
+              const Positioned(
+                left: 16,
+                right: 16,
+                bottom: 24,
+                child: _BasicInfoSavedToast(),
               ),
-            ],
           ],
         ),
       ),
     );
   }
+}
+
+class _BasicInfoSavedToast extends StatelessWidget {
+  const _BasicInfoSavedToast();
+  @override
+  Widget build(BuildContext context) => Semantics(
+    liveRegion: true,
+    child: Container(
+      constraints: const BoxConstraints(minHeight: 48),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: const Color(0xffe6e2dd)),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x2415110d),
+            offset: Offset(0, 12),
+            blurRadius: 32,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          SvgPicture.asset('assets/profile/check.svg', width: 16, height: 16),
+          const SizedBox(width: 10),
+          const Expanded(
+            child: Text(
+              'Cambios guardados',
+              style: TextStyle(
+                color: ink,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                height: 1.3,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 class _BasicInfoField extends StatelessWidget {

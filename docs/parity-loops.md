@@ -2802,3 +2802,20 @@ PKCE (cinco fallos antes de HTTP); añadida MemoryPkceStorage, manteniendo PKCE.
 Final7+21widgets=28/28 aprobadas28s; analyze limpio36.6s. No cambios visuales,
 correos externos ni Auth/REST remoto acreditados. Next: recorrido autenticado
 foto/correo y cierre visual Información básica. No Codemagic, objetivo activo.
+
+# Loop316 — aviso de guardado de Información básica
+
+Referencia irlanda/apoyar-detalle-perfil remota a3c969cd9103fd46dc5cd886999912526ce75efb
+sin cambio. Source Toast usa check16, márgeneslaterales16/bottom24/min48,
+padding12×16/radio16/line/shadow y2600ms. Sustituido éxito inline permanente por
+aviso flotante «Cambios guardados» con esa composición y duración; cancelación
+al comenzar operación/dispose. Mensaje de confirmación pendiente de correo
+permanece explícito, no se simula éxito confirmado. liveRegion accesible.
+
+Regresión verifica ausencia de Notice inline tras éxito y retiro2600ms; photo
+retry conserva acuse nuevo. Widgets22/22 aprobadas8s. Capturador añade saved y
+saved-large y regenera5estados BasicInfo,1/1 aprobada4s; inspeccionados normal y
+large, sin overflow. Total291estados34URLs, no aceptación general. Analyze limpio
+29.9s; diffcheck propio limpio. Contraste actual con CSS/JS, no nuevo runtime
+browser. Sigue pendiente Auth/REST, selección instalada y comparación completa
+de ruta con referencia renderizada. No Codemagic, objetivo global activo.

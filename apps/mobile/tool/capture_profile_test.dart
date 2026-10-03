@@ -826,6 +826,8 @@ void main() {
       ('basic-info', '/basic-info'),
       ('basic-info-large', '/basic-info'),
       ('basic-info-keyboard-large', '/basic-info'),
+      ('basic-info-saved', '/basic-info'),
+      ('basic-info-saved-large', '/basic-info'),
       ('help-center', '/help'),
       ('help-center-large', '/help'),
       ('help-center-adoption-large', '/help'),
@@ -1563,6 +1565,14 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.text('Guardamos tu borrador.'), findsOneWidget);
         expect(tester.takeException(), isNull);
+      }
+      if (spec.$1.startsWith('basic-info-saved')) {
+        final save = find.widgetWithText(FilledButton, 'Guardar cambios');
+        await tester.ensureVisible(save);
+        await tester.pumpAndSettle();
+        await tester.tap(save);
+        await tester.pumpAndSettle();
+        expect(find.text('Cambios guardados'), findsOneWidget);
       }
       if (spec.$1.startsWith('basic-info-keyboard')) {
         tester.view.viewInsets = const FakeViewPadding(bottom: 300);

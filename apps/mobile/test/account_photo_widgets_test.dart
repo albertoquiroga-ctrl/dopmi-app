@@ -74,7 +74,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(save);
       await tester.pumpAndSettle();
-      expect(find.text('Guardamos los cambios de tu perfil.'), findsNothing);
+      expect(find.text('Cambios guardados'), findsNothing);
       expect(find.text('Ana editada'), findsOneWidget);
       expect(find.byType(Image), findsOneWidget);
       await tester.ensureVisible(save);
@@ -84,7 +84,7 @@ void main() {
       expect(uploads, 1);
       expect(saves, 2);
       expect(paths.first, paths.last);
-      expect(find.text('Guardamos los cambios de tu perfil.'), findsOneWidget);
+      expect(find.text('Cambios guardados'), findsOneWidget);
       final savedPreview = tester.widget<Image>(find.byType(Image)).image;
       pick = () async => null;
       await tester.ensureVisible(find.byTooltip('Editar foto de perfil'));

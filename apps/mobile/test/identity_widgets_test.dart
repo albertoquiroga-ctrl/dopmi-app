@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/config.dart';
+import 'package:dopmi_mobile/core/ui.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/auth_screens.dart';
@@ -244,7 +245,10 @@ void main() {
     repo.failSave = false;
     await tap(tester, 'Guardar cambios');
     expect(repo.profile.name, 'Ana editada');
-    expect(find.text('Guardamos los cambios de tu perfil.'), findsOneWidget);
+    expect(find.text('Cambios guardados'), findsOneWidget);
+    expect(find.byType(Notice), findsNothing);
+    await tester.pump(const Duration(milliseconds: 2600));
+    expect(find.text('Cambios guardados'), findsNothing);
     await tester.tap(find.byTooltip('Volver'));
     await tester.pumpAndSettle();
     await tap(tester, 'Cerrar sesión');
@@ -360,7 +364,7 @@ void main() {
       );
       await tap(tester, 'Guardar cambios');
       expect(find.text('nueva@example.test'), findsOneWidget);
-      expect(find.text('Guardamos los cambios de tu perfil.'), findsNothing);
+      expect(find.text('Cambios guardados'), findsNothing);
       repo.failEmailChange = false;
       await tap(tester, 'Guardar cambios');
       expect(repo.requestedEmail, 'nueva@example.test');
