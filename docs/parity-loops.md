@@ -2755,3 +2755,15 @@ capturador1/1 aprobado4s; normal inspeccionada sin accesos extra ni overflow.
 No acredita cambio de correo (aún readonly), backend foto remoto, galería nativa
 ni paridad global. Siguiente desplegar/verificar schema foto309 y cleanup,
 recorrido autenticado y correo. No Codemagic hasta completar objetivo.
+
+# Loop313 — persistencia de foto privada aplicada en DEV
+
+Migración foto309 aplicada y verificada en DEV como20261003010703. Historial y
+hash actor previo comprobados, tres cuerpos/grants/tablaRLS/bucket/políticas
+comparados; rollback remoto comprueba rechazo sin actor. Ver migration-history-
+audit para correspondencia, sin repair/replay. Account-deletion redesplegada
+con cleanup de nuevos buckets; corrección tipoSupabaseClient pasa Deno check,
+backend439/43927.84s. Versión6 ACTIVE/JWTtrue y archivos remotos iguales a local.
+No operación real de borrado, cargaAuth/REST, selectorAndroid ni aceptación
+visual global. No Codemagic. Referencia a3c969 sin cambio del loop312; próxima
+comprobación para implementación de correo. Objetivo global continúa activo.

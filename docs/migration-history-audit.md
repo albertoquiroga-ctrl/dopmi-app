@@ -275,3 +275,23 @@ AFTER UPDATE OF display_name verificados. Ejecución remota rollback comprueba
 getter/save rechazados sin identidad; ninguna cuenta/nombre real editado.
 Gate local437/437 loop306 y cliente39/39 loop307. No Auth/REST/dispositivo ni
 persistencia de nombre real acreditados. Producción y legado sin cambios.
+
+## 2/10/2026 — foto privada de cuenta y cleanup (loop313)
+
+Local20261003003833_private_account_photo.sql aplicada una vez por MCP a
+DEVohqxranynackjignryep como20261003010703/private_account_photo. Preflight
+confirmó antecedente20261003003548, ausencia de tabla/RPC/bucket, StorageRLStrue
+y require_actorMD5b9044d4aaca74210a2f32273f2d894a2. Sin dbpush/repair/replay/rename.
+Tres cuerpos SQL remotos coinciden normalizados con local; SECURITY DEFINER y
+search_path vacío. Getter/save EXECUTE anonfalse/authtrue; helperanontrue pero
+false sin actor. TablaRLStrue/directSELECTanon/authfalse, bucketprivado5MBJPEG
+y siete políticas de lectura/insert/delete/update verificadas. DO en rollback
+comprueba helperfalse y getter/save42501 sin identidad, sin fixture persistida.
+
+account-deletion versión4 previa comparada con local: sólo dos buckets nuevos,
+dependencias Apple idénticas. Desplegada5 para ambos; Deno check encontró tipo
+ReturnType/createClient incompatible, corregido a SupabaseClient explícito y
+check aprobado --node-modules-dir=none. Backend439/439 aprobado27.84s antes de
+actualizar6. Versión6 ACTIVE/verify_jwttrue y tres archivos leídos de servidor
+coinciden normalizados con local. No eliminación real ni Auth/REST/Storage ni
+selección instalada acreditadas; PROD/legado/dinero real sin cambios.

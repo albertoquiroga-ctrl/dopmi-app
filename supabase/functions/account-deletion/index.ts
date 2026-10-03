@@ -1,4 +1,4 @@
-import { createClient } from 'npm:@supabase/supabase-js@2.57.4';
+import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2.57.4';
 import { appleRuntime } from '../_shared/apple-runtime.ts';
 
 const headers = {
@@ -21,7 +21,7 @@ const removableBuckets = [
 ] as const;
 
 async function removePrivateMedia(
-  db: ReturnType<typeof createClient>,
+  db: SupabaseClient,
   owner: string,
 ) {
   for (const bucket of removableBuckets) {
