@@ -1,4 +1,3 @@
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 
 import '../adoption/community_repository.dart';
@@ -89,10 +88,17 @@ class CaseNeeds extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ExcludeSemantics(
-                child: SvgPicture.asset(
-                  'assets/profile/need-$type.svg',
-                  width: 36,
-                  height: 36,
+                child: Text(
+                  const {
+                    'food': '🥣',
+                    'medicine': '💊',
+                    'veterinary': '🩺',
+                  }[type]!,
+                  style: const TextStyle(
+                    fontSize: 30,
+                    height: 1.2,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ),
               const SizedBox(width: 12),

@@ -1,3 +1,7 @@
+# Corte vigente — loop417
+
+Necesidades usa emojis Source;10 tests pasan/analyzer limpio35.5s. Captura final/medidas horizontales y renderizado Android pendientes. Seguir revisión equivalente/matriz global. Codemagic sólo objetivo completo.
+
 # Corte vigente — loop416, 3/10/2026
 
 Rectángulos Flutter38/38/78 confirmados. Necesidades comparadas con Source renderizado: copy400, Nota700 y separación corregidos.11tests/capture pasan, analyzer limpio68.3s. Pendientes iconos/horizontal y revisión equivalente, matrizglobal/configSDK/device. Codemagic sóloobjetivo completo.
