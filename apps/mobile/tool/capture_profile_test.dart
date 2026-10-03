@@ -1239,6 +1239,8 @@ void main() {
       ('publish-information-large', '/my-adoptions/post'),
       ('publish-review', '/my-adoptions/post'),
       ('publish-review-large', '/my-adoptions/post'),
+      ('publish-review-social', '/my-adoptions/post'),
+      ('publish-review-social-large', '/my-adoptions/post'),
       ('publish-health', '/my-adoptions/post'),
       ('publish-health-large', '/my-adoptions/post'),
       ('expense-submitted', '/rescue/expense-one'),
@@ -2609,8 +2611,9 @@ void main() {
           };
         }
         await tester.runAsync(
-          () => File('${out.path}/${spec.$1}-metrics.json')
-              .writeAsString(jsonEncode(metrics)),
+          () =>
+              File('${out.path}/${spec.$1}-metrics.json')
+                  .writeAsString(jsonEncode(metrics)),
         );
       }
       if (spec.$1 == 'adoption-end') {
@@ -2958,6 +2961,13 @@ void main() {
         await tester.pumpAndSettle();
         await Scrollable.ensureVisible(
           tester.element(find.text('Información básica')),
+          alignment: 0,
+        );
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('publish-review-social')) {
+        await Scrollable.ensureVisible(
+          tester.element(find.text('Social')),
           alignment: 0,
         );
         await tester.pumpAndSettle();

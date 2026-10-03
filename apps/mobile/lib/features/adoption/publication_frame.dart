@@ -708,22 +708,25 @@ class PublicationTraitCheck extends StatelessWidget {
             height: 17,
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Transform.scale(
-                scale: 16 / 18,
-                child: Checkbox(
-                  value: value,
-                  tristate: true,
-                  onChanged: onChanged == null ? null : (_) => advance(),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  visualDensity: VisualDensity.compact,
-                  activeColor: const Color(0xff7841f2),
-                  checkColor: Colors.white,
-                  fillColor: WidgetStatePropertyAll(
-                    value == false ? Colors.white : const Color(0xff7841f2),
-                  ),
-                  side: const BorderSide(color: Color(0xffe3e4ed)),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
+              child: Transform.translate(
+                offset: const Offset(-4, 0),
+                child: Transform.scale(
+                  scale: 16 / 18,
+                  child: Checkbox(
+                    value: value,
+                    tristate: true,
+                    onChanged: onChanged == null ? null : (_) => advance(),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                    activeColor: const Color(0xff7841f2),
+                    checkColor: Colors.white,
+                    fillColor: WidgetStatePropertyAll(
+                      value == false ? Colors.white : const Color(0xff7841f2),
+                    ),
+                    side: const BorderSide(color: Color(0xffe3e4ed)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                   ),
                 ),
               ),
