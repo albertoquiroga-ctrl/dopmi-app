@@ -176,12 +176,28 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
                       ),
                       if (showSearch) ...[
                         const SizedBox(height: 12),
+                        if (MediaQuery.textScalerOf(context).scale(16) >
+                            24) ...[
+                          const Text(
+                            'Buscar por mascota o persona',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 16,
+                              height: 1.3,
+                              color: ink,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                        ],
                         TextField(
                           focusNode: searchFocus,
                           controller: search,
                           textInputAction: TextInputAction.search,
                           decoration: InputDecoration(
-                            labelText: 'Buscar por mascota o persona',
+                            labelText:
+                                MediaQuery.textScalerOf(context).scale(16) > 24
+                                ? 'Buscar'
+                                : 'Buscar por mascota o persona',
                             labelStyle: const TextStyle(color: muted),
                             floatingLabelStyle: const TextStyle(color: ink),
                             prefixIcon: const Icon(Icons.search),
