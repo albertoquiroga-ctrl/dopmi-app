@@ -222,3 +222,6 @@ Regresión completa final336: flutter test --no-pub, handle56026, terminalexit0,
 
 
 Loop337: Reportar ahora espera UUID válido antes de cerrar, conserva motivo y permite retry al fallar; cambio de actor descarta motivo/respuesta incluso si termina en error. Reportes desde tres rutas reales aprobados con fake repositorios,45pruebas dirigidas;7capturas Report/301estados34URLs. Normal idéntica por hash a336. No aceptación AuthREST nueva/instalada ni nueva regresión global atribuida:481/7defead antecede337. Sigue matriz completa y próximo CM únicamente candidato final.
+
+
+Loop338 añade evidencia real Auth/REST DEV de Reportar publicación/perfil: dos sesiones sintéticas, UUIDpersistido/retryidempotente/aislamiento deactor, lectura directa/bandeja noadmin/anon rechazadas y validación servidor. SQL4reportes privados con motivo recortado; logout y limpieza finalusuarios/perfiles/reportes/publicación/identidades/sesiones0 comprobados. Sin cambio de esquema ni app. No acredita caso reportado, bandeja admin positiva ni dispositivo; objetivo global continúa. Script reproducible con configuración temporal no incluida enGit.
