@@ -1,0 +1,79 @@
+[
+  {
+    "selector": ".topbar",
+    "x": 0,
+    "y": 0,
+    "width": 377,
+    "height": 68
+  },
+  {
+    "selector": ".public-profile",
+    "x": 16,
+    "y": 88,
+    "width": 345,
+    "height": 283.1875
+  },
+  {
+    "selector": ".avatar.xl",
+    "x": 140.5,
+    "y": 104,
+    "width": 96,
+    "height": 96
+  },
+  {
+    "selector": ".public-profile h1",
+    "x": 124.53125,
+    "y": 218,
+    "width": 127.921875,
+    "height": 32.5
+  },
+  {
+    "selector": ".public-city",
+    "x": 130.609375,
+    "y": 256.5,
+    "width": 115.765625,
+    "height": 21.6875
+  },
+  {
+    "selector": ".public-count",
+    "x": 123.921875,
+    "y": 284.1875,
+    "width": 129.15625,
+    "height": 17
+  },
+  {
+    "selector": ".public-bio",
+    "x": 16,
+    "y": 313.1875,
+    "width": 345,
+    "height": 42
+  },
+  {
+    "selector": ".settings-heading.first",
+    "x": 16,
+    "y": 371.1875,
+    "width": 345,
+    "height": 23.390625
+  },
+  {
+    "selector": ".social-links button",
+    "x": 16,
+    "y": 406.578125,
+    "width": 140.546875,
+    "height": 42
+  },
+  {
+    "selector": ".profile-tabs",
+    "x": 16,
+    "y": 464.578125,
+    "width": 345,
+    "height": 40
+  },
+  {
+    "selector": ".profile-tabs button",
+    "x": 16,
+    "y": 464.578125,
+    "width": 64.140625,
+    "height": 39
+  }
+]

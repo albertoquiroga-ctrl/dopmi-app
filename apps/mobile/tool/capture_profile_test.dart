@@ -28,6 +28,7 @@ import 'fixture_photo_client.dart';
 
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/features/adoption/public_profile_layout.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/profile/profile_overview.dart';
@@ -3387,6 +3388,40 @@ void main() {
         if (spec.$1.startsWith('account-access') ||
             spec.$1.startsWith('connect-account')) {
           expect(container.read(routerProvider).state.uri.path, spec.$2);
+        }
+        if (spec.$1 == 'public-profile-reference') {
+          final identity = tester.widget<PublicProfileIdentity>(
+            find.byType(PublicProfileIdentity),
+          );
+          final targets = <String, Finder>{
+            'identity': find.byType(PublicProfileIdentity),
+            'avatar': find.byWidget(identity.avatar),
+            'name': find.text(identity.name),
+            'city': find.text(identity.city),
+            'count': find.text('${identity.caseCount} casos publicados'),
+            'bio': find.text(identity.bio),
+            'socialHeading': find.text('Redes sociales'),
+            'instagram': find.widgetWithText(OutlinedButton, 'Instagram'),
+            'facebook': find.widgetWithText(OutlinedButton, 'Facebook'),
+            'tabs': find.byType(PublicProfileTabs),
+            'activityTab': find.widgetWithText(TextButton, 'Actividad'),
+          };
+          final metrics = <String, Object>{};
+          for (final entry in targets.entries) {
+            expect(entry.value, findsOneWidget);
+            final rect = tester.getRect(entry.value);
+            metrics[entry.key] = {
+              'x': rect.left,
+              'y': rect.top,
+              'width': rect.width,
+              'height': rect.height,
+            };
+          }
+          await tester.runAsync(
+            () =>
+                File('${out.path}/${spec.$1}-metrics.json')
+                    .writeAsString(jsonEncode(metrics)),
+          );
         }
         if (spec.$1 == 'connect-account-ready') {
           expect(find.text(r'$4,314.00 MXN'), findsOneWidget);

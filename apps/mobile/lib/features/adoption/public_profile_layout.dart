@@ -282,8 +282,8 @@ class PublicProfileSocials extends StatelessWidget {
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 18,
-                      vertical: 11,
+                      horizontal: 19,
+                      vertical: 11.5,
                     ),
                     backgroundColor: Colors.white,
                     foregroundColor: ink,
@@ -343,7 +343,7 @@ class PublicProfileTabs extends StatelessWidget {
           textStyle: TextStyle(
             fontFamily: 'Inter',
             fontSize: 14,
-            height: 1.171428571,
+            height: 1.2,
             fontWeight: selected == index ? FontWeight.w600 : FontWeight.w400,
           ),
         ),
@@ -354,7 +354,7 @@ class PublicProfileTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 16),
-    child: DecoratedBox(
+    child: Container(
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: Color(0xffe6e2dd))),
       ),
@@ -381,7 +381,7 @@ class PublicProfileTabs extends StatelessWidget {
                   textStyle: const TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 14,
-                    height: 1.171428571,
+                    height: 1.2,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
