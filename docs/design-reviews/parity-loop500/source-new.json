@@ -1,0 +1,17 @@
+{
+  "reference": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "route": "/rescuer/cases",
+  "viewport": [
+    377,
+    852
+  ],
+  "rect": {
+    "x": 269.78125,
+    "y": 20,
+    "width": 91.21875,
+    "height": 34
+  },
+  "radius": 14,
+  "padding": "8px 12px",
+  "font": "500 14px Inter"
+}
