@@ -16,6 +16,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'community_test.dart' show FakeCommunity;
+import 'rescue_test.dart' show FakeRescue, FakeCaseUpdates;
+import 'payments_test.dart' show FakePayments;
+
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+import 'package:dopmi_mobile/features/rescue/public_expense_card.dart';
+import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
+import 'package:dopmi_mobile/features/payments/payment_repository.dart';
+
 import 'fake_identity_repository.dart';
 import 'guardian_test.dart' show FakeGuardian, activePlan;
 import 'profile_guardian_test.dart' show ProfileGuardian;
@@ -291,4 +299,72 @@ void main() {
     expect(tester.getTopLeft(name), before);
     expect(tester.takeException(), isNull);
   });
+  for (final large in [false, true]) {
+    testWidgets(
+      'impact opens full case and native back restores cents: $large',
+      (tester) async {
+        tester.view.physicalSize = large
+            ? const Size(320, 640)
+            : const Size(377, 852);
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        final identity = FakeIdentityRepository()
+          ..user = const Identity(
+            'one',
+            'fixture@example.test',
+            verified: true,
+          );
+        final repo = ImpactCommunity()
+          ..items = [
+            {...contributionCase, 'case_id': 'case-one'},
+          ];
+        final payments = FakePayments();
+        final container = ProviderContainer(
+          overrides: [
+            identityRepositoryProvider.overrideWithValue(identity),
+            communityRepositoryProvider.overrideWithValue(repo),
+            rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+            caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
+            paymentRepositoryProvider.overrideWithValue(payments),
+            guardianEnabledProvider.overrideWithValue(false),
+            routerInitialLocationProvider.overrideWithValue('/impact'),
+          ],
+        );
+        addTearDown(() async {
+          container.dispose();
+          await identity.changes.close();
+        });
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: const DopmiApp(),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final name = find.text('Caso aprobado');
+        await tester.ensureVisible(name);
+        await tester.pumpAndSettle();
+        final before = tester.getTopLeft(name);
+        await tester.tap(name);
+        await tester.pumpAndSettle();
+        expect(
+          container.read(routerProvider).state.uri.path,
+          '/rescue-cases/case-one',
+        );
+        expect(find.textContaining('Choco'), findsWidgets);
+        expect(find.byType(PublicExpenseCard), findsOneWidget);
+        expect(payments.calls, isEmpty);
+        await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+        expect(container.read(routerProvider).state.uri.path, '/impact');
+        expect(find.text(r'$75.25 MXN'), findsOneWidget);
+        expect(tester.getTopLeft(name), before);
+        expect(payments.calls, isEmpty);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
 }
