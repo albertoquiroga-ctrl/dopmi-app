@@ -167,7 +167,9 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
                                             fontFamily: 'Inter',
+                                            letterSpacing: 0,
                                             fontSize: 13,
+                                            height: 1.55,
                                             fontWeight: FontWeight.w600,
                                             color: ink,
                                           ),
@@ -187,6 +189,7 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                                                     .first,
                                           style: const TextStyle(
                                             fontFamily: 'Inter',
+                                            letterSpacing: 0,
                                             fontSize: 12,
                                             fontWeight: FontWeight.w700,
                                           ),
@@ -263,6 +266,7 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                                     post.name,
                                     style: const TextStyle(
                                       fontFamily: 'Inter',
+                                      letterSpacing: -.56,
                                       fontSize: 28,
                                       height: 1.15,
                                       fontWeight: FontWeight.w700,
@@ -284,7 +288,9 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                                               .join(', '),
                                           style: const TextStyle(
                                             fontFamily: 'Inter',
+                                            letterSpacing: 0,
                                             fontSize: 13,
+                                            height: 1.55,
                                             fontWeight: FontWeight.w600,
                                             color: Color(0xff6b5000),
                                           ),
@@ -317,7 +323,9 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                                                     'Rescatista verificado',
                                                     style: TextStyle(
                                                       fontFamily: 'Inter',
+                                                      letterSpacing: 0,
                                                       fontSize: 12,
+                                                      height: 1.55,
                                                       fontWeight:
                                                           FontWeight.w500,
                                                       color: muted,
@@ -411,8 +419,9 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
                                             fontFamily: 'Inter',
+                                            letterSpacing: 0,
                                             fontSize: 15,
-                                            height: 18.4 / 15,
+                                            height: 19 / 15,
                                             fontWeight: FontWeight.w700,
                                             color: ink,
                                           ),
@@ -422,8 +431,9 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                                           stat.$2,
                                           style: const TextStyle(
                                             fontFamily: 'Inter',
+                                            letterSpacing: 0,
                                             fontSize: 12,
-                                            height: 15.2 / 12,
+                                            height: 15 / 12,
                                             color: muted,
                                           ),
                                         ),
@@ -439,6 +449,7 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                           'Su historia',
                           style: TextStyle(
                             fontFamily: 'Inter',
+                            letterSpacing: 0,
                             fontSize: 18,
                             height: 1.3,
                             fontWeight: FontWeight.w700,
@@ -450,6 +461,7 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                           post.text('story'),
                           style: const TextStyle(
                             fontFamily: 'Inter',
+                            letterSpacing: 0,
                             fontSize: 14,
                             height: 1.55,
                             color: muted,
@@ -461,6 +473,7 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                             'Cuidados especiales',
                             style: TextStyle(
                               fontFamily: 'Inter',
+                              letterSpacing: 0,
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
                               color: ink,
@@ -471,6 +484,7 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                             post.text('special_care'),
                             style: const TextStyle(
                               fontFamily: 'Inter',
+                              letterSpacing: 0,
                               fontSize: 14,
                               height: 1.55,
                               color: muted,
@@ -489,6 +503,7 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                               padding: EdgeInsets.zero,
                               textStyle: const TextStyle(
                                 fontFamily: 'Inter',
+                                letterSpacing: 0,
                                 fontSize: 13,
                                 height: 1.4,
                                 fontWeight: FontWeight.w600,
@@ -597,6 +612,7 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                         ),
                         textStyle: const TextStyle(
                           fontFamily: 'Inter',
+                          letterSpacing: 0,
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                         ),

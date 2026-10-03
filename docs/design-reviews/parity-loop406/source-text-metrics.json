@@ -1,0 +1,13 @@
+{
+  "font": "700 28px / 32.2px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+  "interReady": true,
+  "letterSpacing": "-0.56px",
+  "title": "Rocky",
+  "observed_metrics": {
+    "location_line_height": "20.15px",
+    "verified_line_height": "18.6px",
+    "stat_height": 68,
+    "stat_value_height": 19,
+    "stat_label_height": 15
+  }
+}

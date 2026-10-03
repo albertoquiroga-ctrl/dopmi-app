@@ -1,3 +1,9 @@
+# Corte vigente — loop406, 3/10/2026
+
+AdoptionDetail espaciado0/título-.56 yalturas de línea medidasSourceRocky; capturasSource/Flutter normal200 comparadas, capturepasa/analyzer final limpio43.5s. Datosfixtureequivalentes salvo favoritoestado. NoSource200/pixelidentity/global/device; configSDKreal/matrizglobal/finalacceptancependientes. Codemagic sóloobjetivo completo.
+
+## Corte405 anterior
+
 # Corte vigente — loop405, 3/10/2026
 
 Sourcecaso renderizadoEdge377x852 actual/fonts.ready ymedidasCSS; Fluttercase fija letterSpacing0/título-.56. Capturasnuevas Source/top/200 revisadas, capturadorcase-detail pasa/analyzer limpio46.5s. No identidadpixelglobal/Source200 nuevo/device; configSDKreal/matrizglobal/finalacceptance siguen pendientes. Full558404 antecede sólocambioespaciado. Codemagic únicamenteobjetivo completo.
