@@ -548,3 +548,10 @@ Loop344: Network+CSSCDP confirman Inter/Fraunces custom efectivas en Source, no 
 ### Actualización354 — métodos de pago
 
 Ruta dedicada/settings/payment-methods con tarjetasdelecturareal en15489a1;30testsGuardian/analyzelimpio y312estados/37URLs(5methods) con normal/200% contrastadas. ReaderDEV352 Edge15/migración20261003045529,453testsbackend351. AuthREST354 verificalista vacía cuenta fixture/noregistry yboundary400/403/logout/limpiezacero. No atribuirfixturecardsStripe ni completarGuardar/Predeterminar/Eliminar/wallets: esbrechafinancieraexplicit350, no pantallaidéntica lograda. Goalcompletoactivo, CMúnicamentefinal.
+
+
+### Loop430 — recuperación de checkout puntual, 3/10/2026
+
+Base80fd89e; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado sin cambio. Fixture checkout ahora conserva created_at como SQL real y simula caché idempotente del proveedor con rechazo de parámetros distintos. Tres pruebas nuevas cubren respuesta Stripe perdida, checkpoint SQL fallido después de crear sesión, y cambio de vínculo customer tras fallo: misma clave/cuerpo en reintento compatible, una sesión lógica, reuso persistido; cambio de cuerpo rechazado sin generar otra clave, recuperación al restaurar vínculo.
+
+10/10 checkout-customer pasan149ms, handlecaa99c exit0. Es evidencia de contrato con proveedor simulado, no respuesta perdida realStripe ni despliegue. No producción modificada en este loop; full564/429 antecede estos tests. Continúa redisplay con consentimiento explícito, preflightDEV y recorrido auténtico; objetivo global pendiente, Codemagic sólo al completarlo.
