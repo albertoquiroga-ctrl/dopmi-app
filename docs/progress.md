@@ -2534,3 +2534,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/CSSgap8check16/runti
 ### Loop523 — Socialchildren200% alcanzable y gate integrado en curso, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado sinruntime nuevo. bb3cd91 test/capturer,productionc92bc24unchanged:320/200ensureVisibletercerafila rectlabeldentroScrollable/readonly/touchesnoconservedata,backscroll.17353exit0,8/8,6s con2fixtures; PNGlargeúltimafilacompletainspeccionado,complementa522. Inventario403522unchanged.230Dart/cuatroSVG/capturerraízscratchigualesantes. Full56544/analyzer48063encurso,noresultadoterminalatribuido. README/hash/PNG523/currentreviewactualizados;full609517pre519–522. Sinbackend/SQL/push/Codemagic/físico/global/StripeSDK.
+
+### Loop524 — fallo de expectativa antigua corregido y repetición, 3/10/2026
+
+Full56544exit1,608aprobadas/1fallo,3m38s; analyzer48063exit0 limpio183.1s sobrebb3cd91. Único fallo community_testliteralRevisaantesdeenviar removido519 conformeSource.17e59ee cambia aRevisatucaso, preserva assertsguardadofallo/authoredMora/reintento/draft/noexception,productionc92bc24unchanged.1189exit0,1/1,2s dirigido.230Dart/cuatroSVG raíz/scratch iguales/hashantes;full90121/analyzer79611encurso logs524, noresultadoatribuido. README523terminal/524/currentreviewactualizados;Sourcea3reconsultado523. Sinbackend/SQL/push/Codemagic/físico/global/StripeSDK.

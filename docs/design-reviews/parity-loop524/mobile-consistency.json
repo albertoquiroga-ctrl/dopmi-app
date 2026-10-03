@@ -1,5 +1,5 @@
 {
-  "commit": "bb3cd914e53b783cf65224b3129a5be019ac7ecd",
+  "commit": "17e59ee9e756ad98504eb6f591a003c5eb703d26",
   "dart_files": 230,
   "hashes": {
     "lib/app.dart": "49ddca3fc7e0f5d650204194e65a5423b7ce34ee2326f02925fa24a8a069c977",
@@ -139,7 +139,7 @@
     "test/case_photo_recovery_test.dart": "b733b9bfcca19c48b4a58ef0508a33a5c7e1fc3d609c37ffa96693126b3e127c",
     "test/case_publication_test.dart": "47d1a9283113e818fc2b5492d1be0b9c0f8aea1b807bf913b572e1cdccd9283b",
     "test/case_update_editor_test.dart": "d7fed6e3d3afe0a0e4c20697e068d38373ab84738f5c37f7364815b0455e805c",
-    "test/community_test.dart": "e75746b2f1e0d8063fcc1caadd44d3462380315b52f80df906cf2e26e3fe88eb",
+    "test/community_test.dart": "2633b561f4fa405299ad023147126f44e0bf4f351af58550251e75c39c5c1971",
     "test/content_actions_test.dart": "07f27dc4a86f26993af88ac173e6251cd2ac8e5453fb041c01f07989b5d33fa3",
     "test/content_links_test.dart": "cf9d237a251cae6dfc721f2c90d29d6342a19bb0cca0c59cad5eba07250ed057",
     "test/content_report_flow_test.dart": "c09e6f125a3ef10e94091fce6565b2c998d6306571f24ecddff22ef2159f33f4",
@@ -237,10 +237,7 @@
     "assets/profile/icon-alert-circle.svg": "03c22a3ec9471112d0c3f3458d80858ce758f9a57a8cc0cc28348326bb1afcbf",
     "assets/profile/icon-donation-in.svg": "864f1e2028fd65b9d1ce5accfcefd4cd0f4e69ef96898e2d7b049b299371b199"
   },
-  "capturer_root_scratch_identical": true,
-  "status": "full608 passed/1 failed exit1: obsolete review heading assertion; analyzer clean",
-  "full_handle": 56544,
-  "analyzer_handle": 48063,
-  "full_duration": "3m38s",
-  "analyzer_seconds": 183.1
+  "status": "running repeated gate; root/scratch identical before execution",
+  "full_handle": 90121,
+  "analyzer_handle": 79611
 }
