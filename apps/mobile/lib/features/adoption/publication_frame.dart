@@ -401,7 +401,8 @@ class _PhotoAction extends StatelessWidget {
       minimumSize: const Size(0, 36),
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       splashFactory: NoSplash.splashFactory,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      // CSS includes the one-pixel outline outside its 12px content padding.
+      padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
       side: const BorderSide(color: Color(0xffe3e4ed)),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
     ).copyWith(overlayColor: const WidgetStatePropertyAll(Colors.transparent)),
