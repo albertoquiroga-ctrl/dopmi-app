@@ -1,0 +1,2569 @@
+{
+  "reference_sha": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "production_base": "ce65628da765ec9cd48753ff2c6a0196a4526e89",
+  "source_route_patterns": [
+    "/",
+    "/choose-account",
+    "/choose-intent",
+    "/intro",
+    "/onboarding/donor",
+    "/onboarding/rescuer",
+    "/welcome/donor",
+    "/welcome/rescuer",
+    "/login/donor",
+    "/login/rescuer",
+    "/signup/donor",
+    "/signup/rescuer",
+    "/forgot-password",
+    "/terms/:mode",
+    "/privacy/:mode",
+    "/terms",
+    "/privacy",
+    "/adoption",
+    "/adoption/:petId",
+    "/donate",
+    "/case/:caseId",
+    "/donate/:caseId/:needId",
+    "/donation-success/:caseId",
+    "/payment-error/:caseId/:needId",
+    "/impact",
+    "/impact/support",
+    "/impact/success",
+    "/impact/error",
+    "/messages",
+    "/messages/:threadId",
+    "/notifications",
+    "/history",
+    "/profile",
+    "/saved",
+    "/saved-rescuers",
+    "/settings",
+    "/settings/basic-info",
+    "/settings/payment-methods",
+    "/settings/billing",
+    "/help",
+    "/about",
+    "/transparency",
+    "/rescuer-profile/:caseId",
+    "/rescuer",
+    "/rescuer/verification",
+    "/rescuer/cases",
+    "/rescuer/cases/:caseId",
+    "/rescuer/publish",
+    "/rescuer/evidence/:caseId/:needId",
+    "/rescuer/food/:caseId/:needId",
+    "/rescuer/messages",
+    "/rescuer/profile",
+    "/rescuer/profile/edit",
+    "/rescuer/settings",
+    "*"
+  ],
+  "native_route_patterns": [
+    "/home",
+    "/basic-info",
+    "/adoptions",
+    "/rescue-cases",
+    "/profile",
+    "/rescuer",
+    "/my-cases",
+    "/publish",
+    "/messages",
+    "/settings",
+    "/settings/account",
+    "/consent",
+    "/account-privacy",
+    "/rescuer/profile/edit",
+    "/help",
+    "/about",
+    "/transparency",
+    "/my-adoptions",
+    "/settings/payment-methods",
+    "/guardian/history",
+    "/guardian",
+    "/payments",
+    "/connect",
+    "/contribute/:id",
+    "/rescue/:id",
+    "/rescue-file",
+    "/rescue-cases/:id",
+    "/rescue-cases/:id/updates",
+    "/rescue-cases/:id/updates/:updateId",
+    "/saved",
+    "/impact/guardian",
+    "/impact",
+    "/adoptions/:id",
+    "/people/:id",
+    "/my-adoptions/:id",
+    "/messages/:id",
+    "/notifications",
+    "/loading",
+    "/welcome",
+    "/onboarding",
+    "/start",
+    "/signup",
+    "/login",
+    "/forgot",
+    "/reset-password",
+    "/confirm",
+    "/confirm-recovery",
+    "/auth/callback",
+    "/auth-error",
+    "/terms",
+    "/privacy-notice"
+  ],
+  "fixture_count": 401,
+  "captured_route_patterns": [
+    "/about",
+    "/account-privacy",
+    "/adoptions",
+    "/adoptions/:id",
+    "/basic-info",
+    "/connect",
+    "/consent",
+    "/contribute/:id",
+    "/guardian",
+    "/guardian/history",
+    "/help",
+    "/impact",
+    "/impact/guardian",
+    "/messages",
+    "/messages/:id",
+    "/my-adoptions",
+    "/my-adoptions/:id",
+    "/my-cases",
+    "/notifications",
+    "/payments",
+    "/people/:id",
+    "/privacy-notice",
+    "/profile",
+    "/publish",
+    "/rescue-cases",
+    "/rescue-cases/:id",
+    "/rescue-cases/:id/updates",
+    "/rescue-cases/:id/updates/:updateId",
+    "/rescue-file",
+    "/rescue/:id",
+    "/rescuer",
+    "/rescuer/profile/edit",
+    "/saved",
+    "/settings",
+    "/settings/account",
+    "/settings/payment-methods",
+    "/terms",
+    "/transparency"
+  ],
+  "fixtures": [
+    {
+      "name": "adoption-swipe",
+      "initial_uri": "/adoptions",
+      "captured_path": "/adoptions",
+      "route_pattern": "/adoptions"
+    },
+    {
+      "name": "adoption-large",
+      "initial_uri": "/adoptions",
+      "captured_path": "/adoptions",
+      "route_pattern": "/adoptions"
+    },
+    {
+      "name": "adoption-drag",
+      "initial_uri": "/adoptions",
+      "captured_path": "/adoptions",
+      "route_pattern": "/adoptions"
+    },
+    {
+      "name": "adoption-filters",
+      "initial_uri": "/adoptions",
+      "captured_path": "/adoptions",
+      "route_pattern": "/adoptions"
+    },
+    {
+      "name": "adoption-filters-large",
+      "initial_uri": "/adoptions",
+      "captured_path": "/adoptions",
+      "route_pattern": "/adoptions"
+    },
+    {
+      "name": "adoption-contact",
+      "initial_uri": "/adoptions",
+      "captured_path": "/adoptions",
+      "route_pattern": "/adoptions"
+    },
+    {
+      "name": "adoption-contact-large",
+      "initial_uri": "/adoptions",
+      "captured_path": "/adoptions",
+      "route_pattern": "/adoptions"
+    },
+    {
+      "name": "adoption-detail",
+      "initial_uri": "/adoptions/post",
+      "captured_path": "/adoptions/post",
+      "route_pattern": "/adoptions/:id"
+    },
+    {
+      "name": "adoption-detail-large",
+      "initial_uri": "/adoptions/post",
+      "captured_path": "/adoptions/post",
+      "route_pattern": "/adoptions/:id"
+    },
+    {
+      "name": "adoption-empty",
+      "initial_uri": "/adoptions",
+      "captured_path": "/adoptions",
+      "route_pattern": "/adoptions"
+    },
+    {
+      "name": "adoption-empty-large",
+      "initial_uri": "/adoptions",
+      "captured_path": "/adoptions",
+      "route_pattern": "/adoptions"
+    },
+    {
+      "name": "adoption-empty-wide-large",
+      "initial_uri": "/adoptions",
+      "captured_path": "/adoptions",
+      "route_pattern": "/adoptions"
+    },
+    {
+      "name": "adoption-end",
+      "initial_uri": "/adoptions",
+      "captured_path": "/adoptions",
+      "route_pattern": "/adoptions"
+    },
+    {
+      "name": "match-threads",
+      "initial_uri": "/messages",
+      "captured_path": "/messages",
+      "route_pattern": "/messages"
+    },
+    {
+      "name": "match-threads-large",
+      "initial_uri": "/messages",
+      "captured_path": "/messages",
+      "route_pattern": "/messages"
+    },
+    {
+      "name": "match-all",
+      "initial_uri": "/messages",
+      "captured_path": "/messages",
+      "route_pattern": "/messages"
+    },
+    {
+      "name": "match-all-large",
+      "initial_uri": "/messages",
+      "captured_path": "/messages",
+      "route_pattern": "/messages"
+    },
+    {
+      "name": "match-empty",
+      "initial_uri": "/messages",
+      "captured_path": "/messages",
+      "route_pattern": "/messages"
+    },
+    {
+      "name": "match-empty-large",
+      "initial_uri": "/messages",
+      "captured_path": "/messages",
+      "route_pattern": "/messages"
+    },
+    {
+      "name": "chat-bubbles",
+      "initial_uri": "/messages/thread-one",
+      "captured_path": "/messages/thread-one",
+      "route_pattern": "/messages/:id"
+    },
+    {
+      "name": "chat-bubbles-large",
+      "initial_uri": "/messages/thread-one",
+      "captured_path": "/messages/thread-one",
+      "route_pattern": "/messages/:id"
+    },
+    {
+      "name": "chat-bubbles-rescuer",
+      "initial_uri": "/messages/thread-one",
+      "captured_path": "/messages/thread-one",
+      "route_pattern": "/messages/:id"
+    },
+    {
+      "name": "chat-detail-focus",
+      "initial_uri": "/messages/thread-one",
+      "captured_path": "/messages/thread-one",
+      "route_pattern": "/messages/:id"
+    },
+    {
+      "name": "chat-detail-focus-large",
+      "initial_uri": "/messages/thread-one",
+      "captured_path": "/messages/thread-one",
+      "route_pattern": "/messages/:id"
+    },
+    {
+      "name": "chat-keyboard",
+      "initial_uri": "/messages/thread-one",
+      "captured_path": "/messages/thread-one",
+      "route_pattern": "/messages/:id"
+    },
+    {
+      "name": "chat-keyboard-large",
+      "initial_uri": "/messages/thread-one",
+      "captured_path": "/messages/thread-one",
+      "route_pattern": "/messages/:id"
+    },
+    {
+      "name": "rescuer-home-unverified",
+      "initial_uri": "/rescuer",
+      "captured_path": "/rescuer",
+      "route_pattern": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-unverified-large",
+      "initial_uri": "/rescuer",
+      "captured_path": "/rescuer",
+      "route_pattern": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-review",
+      "initial_uri": "/rescuer",
+      "captured_path": "/rescuer",
+      "route_pattern": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-review-large",
+      "initial_uri": "/rescuer",
+      "captured_path": "/rescuer",
+      "route_pattern": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-empty",
+      "initial_uri": "/rescuer",
+      "captured_path": "/rescuer",
+      "route_pattern": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-empty-large",
+      "initial_uri": "/rescuer",
+      "captured_path": "/rescuer",
+      "route_pattern": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-actions",
+      "initial_uri": "/rescuer",
+      "captured_path": "/rescuer",
+      "route_pattern": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-actions-large",
+      "initial_uri": "/rescuer",
+      "captured_path": "/rescuer",
+      "route_pattern": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-evidence",
+      "initial_uri": "/rescuer",
+      "captured_path": "/rescuer",
+      "route_pattern": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-evidence-large",
+      "initial_uri": "/rescuer",
+      "captured_path": "/rescuer",
+      "route_pattern": "/rescuer"
+    },
+    {
+      "name": "owned-case-detail",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "owned-case-detail-back-focus",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "owned-case-detail-dot-focus",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "owned-case-detail-dot-focus-large",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "owned-case-detail-back-focus-large",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "owned-case-detail-large",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "owned-case-detail-story",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "owned-case-detail-story-large",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "owned-case-detail-history-empty",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "owned-case-detail-history-empty-large",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "owned-case-detail-bottom",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "owned-case-detail-bottom-large",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "owned-case-detail-closed",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "owned-case-detail-closed-large",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "owned-cases",
+      "initial_uri": "/my-cases",
+      "captured_path": "/my-cases",
+      "route_pattern": "/my-cases"
+    },
+    {
+      "name": "owned-cases-large",
+      "initial_uri": "/my-cases",
+      "captured_path": "/my-cases",
+      "route_pattern": "/my-cases"
+    },
+    {
+      "name": "owned-cases-empty",
+      "initial_uri": "/my-cases",
+      "captured_path": "/my-cases",
+      "route_pattern": "/my-cases"
+    },
+    {
+      "name": "owned-cases-empty-large",
+      "initial_uri": "/my-cases",
+      "captured_path": "/my-cases",
+      "route_pattern": "/my-cases"
+    },
+    {
+      "name": "owned-cases-correction",
+      "initial_uri": "/my-cases",
+      "captured_path": "/my-cases",
+      "route_pattern": "/my-cases"
+    },
+    {
+      "name": "owned-cases-correction-large",
+      "initial_uri": "/my-cases",
+      "captured_path": "/my-cases",
+      "route_pattern": "/my-cases"
+    },
+    {
+      "name": "rescuer-home",
+      "initial_uri": "/rescuer",
+      "captured_path": "/rescuer",
+      "route_pattern": "/rescuer"
+    },
+    {
+      "name": "rescuer-home-large",
+      "initial_uri": "/rescuer",
+      "captured_path": "/rescuer",
+      "route_pattern": "/rescuer"
+    },
+    {
+      "name": "support-home",
+      "initial_uri": "/rescue-cases",
+      "captured_path": "/rescue-cases",
+      "route_pattern": "/rescue-cases"
+    },
+    {
+      "name": "notifications-reference",
+      "initial_uri": "/notifications",
+      "captured_path": "/notifications",
+      "route_pattern": "/notifications"
+    },
+    {
+      "name": "notifications-reference-large",
+      "initial_uri": "/notifications",
+      "captured_path": "/notifications",
+      "route_pattern": "/notifications"
+    },
+    {
+      "name": "notifications-reference-read",
+      "initial_uri": "/notifications",
+      "captured_path": "/notifications",
+      "route_pattern": "/notifications"
+    },
+    {
+      "name": "notifications-reference-kinds",
+      "initial_uri": "/notifications",
+      "captured_path": "/notifications",
+      "route_pattern": "/notifications"
+    },
+    {
+      "name": "notifications-reference-kinds-large",
+      "initial_uri": "/notifications",
+      "captured_path": "/notifications",
+      "route_pattern": "/notifications"
+    },
+    {
+      "name": "notifications-reference-header-focus",
+      "initial_uri": "/notifications",
+      "captured_path": "/notifications",
+      "route_pattern": "/notifications"
+    },
+    {
+      "name": "notifications-reference-header-focus-large",
+      "initial_uri": "/notifications",
+      "captured_path": "/notifications",
+      "route_pattern": "/notifications"
+    },
+    {
+      "name": "support-home-large",
+      "initial_uri": "/rescue-cases",
+      "captured_path": "/rescue-cases",
+      "route_pattern": "/rescue-cases"
+    },
+    {
+      "name": "support-home-empty",
+      "initial_uri": "/rescue-cases",
+      "captured_path": "/rescue-cases",
+      "route_pattern": "/rescue-cases"
+    },
+    {
+      "name": "support-home-empty-large",
+      "initial_uri": "/rescue-cases",
+      "captured_path": "/rescue-cases",
+      "route_pattern": "/rescue-cases"
+    },
+    {
+      "name": "support-home-error",
+      "initial_uri": "/rescue-cases",
+      "captured_path": "/rescue-cases",
+      "route_pattern": "/rescue-cases"
+    },
+    {
+      "name": "support-home-error-large",
+      "initial_uri": "/rescue-cases",
+      "captured_path": "/rescue-cases",
+      "route_pattern": "/rescue-cases"
+    },
+    {
+      "name": "support-home-error-retry",
+      "initial_uri": "/rescue-cases",
+      "captured_path": "/rescue-cases",
+      "route_pattern": "/rescue-cases"
+    },
+    {
+      "name": "support-home-error-retry-large",
+      "initial_uri": "/rescue-cases",
+      "captured_path": "/rescue-cases",
+      "route_pattern": "/rescue-cases"
+    },
+    {
+      "name": "support-home-notification-focus",
+      "initial_uri": "/rescue-cases",
+      "captured_path": "/rescue-cases",
+      "route_pattern": "/rescue-cases"
+    },
+    {
+      "name": "support-home-notification-focus-large",
+      "initial_uri": "/rescue-cases",
+      "captured_path": "/rescue-cases",
+      "route_pattern": "/rescue-cases"
+    },
+    {
+      "name": "support-home-notification-badge",
+      "initial_uri": "/rescue-cases",
+      "captured_path": "/rescue-cases",
+      "route_pattern": "/rescue-cases"
+    },
+    {
+      "name": "support-home-notification-badge-large",
+      "initial_uri": "/rescue-cases",
+      "captured_path": "/rescue-cases",
+      "route_pattern": "/rescue-cases"
+    },
+    {
+      "name": "support-home-case-focus",
+      "initial_uri": "/rescue-cases",
+      "captured_path": "/rescue-cases",
+      "route_pattern": "/rescue-cases"
+    },
+    {
+      "name": "support-home-case-focus-large",
+      "initial_uri": "/rescue-cases",
+      "captured_path": "/rescue-cases",
+      "route_pattern": "/rescue-cases"
+    },
+    {
+      "name": "support-home-guardian-card-focus",
+      "initial_uri": "/rescue-cases",
+      "captured_path": "/rescue-cases",
+      "route_pattern": "/rescue-cases"
+    },
+    {
+      "name": "support-home-guardian-card-focus-large",
+      "initial_uri": "/rescue-cases",
+      "captured_path": "/rescue-cases",
+      "route_pattern": "/rescue-cases"
+    },
+    {
+      "name": "support-home-guardian-dock-focus",
+      "initial_uri": "/rescue-cases",
+      "captured_path": "/rescue-cases",
+      "route_pattern": "/rescue-cases"
+    },
+    {
+      "name": "support-home-guardian-dock-focus-large",
+      "initial_uri": "/rescue-cases",
+      "captured_path": "/rescue-cases",
+      "route_pattern": "/rescue-cases"
+    },
+    {
+      "name": "case-detail",
+      "initial_uri": "/rescue-cases/case-one",
+      "captured_path": "/rescue-cases/case-one",
+      "route_pattern": "/rescue-cases/:id"
+    },
+    {
+      "name": "case-detail-photo-focus",
+      "initial_uri": "/rescue-cases/case-one",
+      "captured_path": "/rescue-cases/case-one",
+      "route_pattern": "/rescue-cases/:id"
+    },
+    {
+      "name": "case-detail-photo-focus-large",
+      "initial_uri": "/rescue-cases/case-one",
+      "captured_path": "/rescue-cases/case-one",
+      "route_pattern": "/rescue-cases/:id"
+    },
+    {
+      "name": "case-detail-story",
+      "initial_uri": "/rescue-cases/case-one",
+      "captured_path": "/rescue-cases/case-one",
+      "route_pattern": "/rescue-cases/:id"
+    },
+    {
+      "name": "case-detail-story-large",
+      "initial_uri": "/rescue-cases/case-one",
+      "captured_path": "/rescue-cases/case-one",
+      "route_pattern": "/rescue-cases/:id"
+    },
+    {
+      "name": "case-detail-gallery",
+      "initial_uri": "/rescue-cases/case-one",
+      "captured_path": "/rescue-cases/case-one",
+      "route_pattern": "/rescue-cases/:id"
+    },
+    {
+      "name": "case-detail-gallery-large",
+      "initial_uri": "/rescue-cases/case-one",
+      "captured_path": "/rescue-cases/case-one",
+      "route_pattern": "/rescue-cases/:id"
+    },
+    {
+      "name": "case-detail-amount",
+      "initial_uri": "/rescue-cases/case-one",
+      "captured_path": "/rescue-cases/case-one",
+      "route_pattern": "/rescue-cases/:id"
+    },
+    {
+      "name": "case-detail-amount-large",
+      "initial_uri": "/rescue-cases/case-one",
+      "captured_path": "/rescue-cases/case-one",
+      "route_pattern": "/rescue-cases/:id"
+    },
+    {
+      "name": "case-detail-planned",
+      "initial_uri": "/rescue-cases/case-one",
+      "captured_path": "/rescue-cases/case-one",
+      "route_pattern": "/rescue-cases/:id"
+    },
+    {
+      "name": "case-detail-planned-large",
+      "initial_uri": "/rescue-cases/case-one",
+      "captured_path": "/rescue-cases/case-one",
+      "route_pattern": "/rescue-cases/:id"
+    },
+    {
+      "name": "contribution-result-confirmed",
+      "initial_uri": "/contribute/Cirugía?case=case-one&amount_cents=10000",
+      "captured_path": "/contribute/Cirugía",
+      "route_pattern": "/contribute/:id"
+    },
+    {
+      "name": "contribution-result-confirmed-large",
+      "initial_uri": "/contribute/Cirugía?case=case-one&amount_cents=10000",
+      "captured_path": "/contribute/Cirugía",
+      "route_pattern": "/contribute/:id"
+    },
+    {
+      "name": "contribution-result-pending",
+      "initial_uri": "/contribute/Cirugía?case=case-one&amount_cents=10000",
+      "captured_path": "/contribute/Cirugía",
+      "route_pattern": "/contribute/:id"
+    },
+    {
+      "name": "contribution-result-canceled",
+      "initial_uri": "/contribute/Cirugía?case=case-one&amount_cents=10000",
+      "captured_path": "/contribute/Cirugía",
+      "route_pattern": "/contribute/:id"
+    },
+    {
+      "name": "contribution-result-refunded",
+      "initial_uri": "/contribute/Cirugía?case=case-one&amount_cents=10000",
+      "captured_path": "/contribute/Cirugía",
+      "route_pattern": "/contribute/:id"
+    },
+    {
+      "name": "contribution-review",
+      "initial_uri": "/contribute/Cirugía?case=case-one&amount_cents=10000",
+      "captured_path": "/contribute/Cirugía",
+      "route_pattern": "/contribute/:id"
+    },
+    {
+      "name": "contribution-review-large",
+      "initial_uri": "/contribute/Cirugía?case=case-one&amount_cents=10000",
+      "captured_path": "/contribute/Cirugía",
+      "route_pattern": "/contribute/:id"
+    },
+    {
+      "name": "contribution-waiting",
+      "initial_uri": "/contribute/Cirugía?case=case-one&amount_cents=10000",
+      "captured_path": "/contribute/Cirugía",
+      "route_pattern": "/contribute/:id"
+    },
+    {
+      "name": "contribution-waiting-large",
+      "initial_uri": "/contribute/Cirugía?case=case-one&amount_cents=10000",
+      "captured_path": "/contribute/Cirugía",
+      "route_pattern": "/contribute/:id"
+    },
+    {
+      "name": "payment-methods",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-large",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-inactive",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards-canceled",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards-canceled-large",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards-canceled-waiting",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards-canceled-waiting-large",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards-canceled-waiting-footer-large",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards-independent-default-confirm",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards-independent-default-confirm-large",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards-independent-remove-confirm",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards-independent-remove-confirm-large",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards-add-confirm",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards-add-confirm-large",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards-added-toast",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards-added-toast-large",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards-large",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards-default-toast",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards-default-toast-large",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards-remove-confirm",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "payment-methods-cards-remove-confirm-large",
+      "initial_uri": "/settings/payment-methods",
+      "captured_path": "/settings/payment-methods",
+      "route_pattern": "/settings/payment-methods"
+    },
+    {
+      "name": "guardian-billing-amount",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "guardian-billing-amount-large",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "guardian-billing-cancel",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "guardian-billing-cancel-large",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "guardian-billing-history-large",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "guardian-billing-receipt",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "guardian-billing-inactive",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "guardian-billing-inactive-large",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "impact-feed",
+      "initial_uri": "/impact?history=1",
+      "captured_path": "/impact",
+      "route_pattern": "/impact"
+    },
+    {
+      "name": "impact-feed-large",
+      "initial_uri": "/impact?history=1",
+      "captured_path": "/impact",
+      "route_pattern": "/impact"
+    },
+    {
+      "name": "impact-feed-empty",
+      "initial_uri": "/impact?history=1",
+      "captured_path": "/impact",
+      "route_pattern": "/impact"
+    },
+    {
+      "name": "impact-feed-empty-large",
+      "initial_uri": "/impact?history=1",
+      "captured_path": "/impact",
+      "route_pattern": "/impact"
+    },
+    {
+      "name": "impact-entry",
+      "initial_uri": "/impact",
+      "captured_path": "/impact",
+      "route_pattern": "/impact"
+    },
+    {
+      "name": "impact-entry-large",
+      "initial_uri": "/impact",
+      "captured_path": "/impact",
+      "route_pattern": "/impact"
+    },
+    {
+      "name": "guardian-promotion",
+      "initial_uri": "/impact/guardian",
+      "captured_path": "/impact/guardian",
+      "route_pattern": "/impact/guardian"
+    },
+    {
+      "name": "guardian-promotion-large",
+      "initial_uri": "/impact/guardian",
+      "captured_path": "/impact/guardian",
+      "route_pattern": "/impact/guardian"
+    },
+    {
+      "name": "guardian-promotion-controls-large",
+      "initial_uri": "/impact/guardian",
+      "captured_path": "/impact/guardian",
+      "route_pattern": "/impact/guardian"
+    },
+    {
+      "name": "guardian-promotion-join-large",
+      "initial_uri": "/impact/guardian",
+      "captured_path": "/impact/guardian",
+      "route_pattern": "/impact/guardian"
+    },
+    {
+      "name": "guardian-promotion-second",
+      "initial_uri": "/impact/guardian",
+      "captured_path": "/impact/guardian",
+      "route_pattern": "/impact/guardian"
+    },
+    {
+      "name": "guardian-promotion-reports",
+      "initial_uri": "/impact/guardian",
+      "captured_path": "/impact/guardian",
+      "route_pattern": "/impact/guardian"
+    },
+    {
+      "name": "guardian-billing-enrollment",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "guardian-billing-enrollment-large",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "guardian-billing-enrollment-custom",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "guardian-billing-enrollment-custom-large",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "guardian-billing-enrollment-confirmation",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "guardian-billing-enrollment-confirmation-large",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "guardian-billing-active",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "guardian-billing-active-large",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "guardian-activation-success",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "guardian-activation-success-large",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "guardian-activation-failed",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "guardian-activation-failed-large",
+      "initial_uri": "/guardian",
+      "captured_path": "/guardian",
+      "route_pattern": "/guardian"
+    },
+    {
+      "name": "saved-adoptions",
+      "initial_uri": "/saved",
+      "captured_path": "/saved",
+      "route_pattern": "/saved"
+    },
+    {
+      "name": "saved-adoptions-large",
+      "initial_uri": "/saved",
+      "captured_path": "/saved",
+      "route_pattern": "/saved"
+    },
+    {
+      "name": "saved-adoptions-empty",
+      "initial_uri": "/saved",
+      "captured_path": "/saved",
+      "route_pattern": "/saved"
+    },
+    {
+      "name": "saved-adoptions-empty-large",
+      "initial_uri": "/saved",
+      "captured_path": "/saved",
+      "route_pattern": "/saved"
+    },
+    {
+      "name": "saved-rescuers-empty",
+      "initial_uri": "/saved?kind=rescuer",
+      "captured_path": "/saved",
+      "route_pattern": "/saved"
+    },
+    {
+      "name": "saved-rescuers-empty-large",
+      "initial_uri": "/saved?kind=rescuer",
+      "captured_path": "/saved",
+      "route_pattern": "/saved"
+    },
+    {
+      "name": "saved-rescuers",
+      "initial_uri": "/saved?kind=rescuer",
+      "captured_path": "/saved",
+      "route_pattern": "/saved"
+    },
+    {
+      "name": "saved-rescuers-large",
+      "initial_uri": "/saved?kind=rescuer",
+      "captured_path": "/saved",
+      "route_pattern": "/saved"
+    },
+    {
+      "name": "saved-pagination-large",
+      "initial_uri": "/saved",
+      "captured_path": "/saved",
+      "route_pattern": "/saved"
+    },
+    {
+      "name": "saved-pagination-second-large",
+      "initial_uri": "/saved",
+      "captured_path": "/saved",
+      "route_pattern": "/saved"
+    },
+    {
+      "name": "basic-info",
+      "initial_uri": "/basic-info",
+      "captured_path": "/basic-info",
+      "route_pattern": "/basic-info"
+    },
+    {
+      "name": "basic-info-large",
+      "initial_uri": "/basic-info",
+      "captured_path": "/basic-info",
+      "route_pattern": "/basic-info"
+    },
+    {
+      "name": "basic-info-keyboard-large",
+      "initial_uri": "/basic-info",
+      "captured_path": "/basic-info",
+      "route_pattern": "/basic-info"
+    },
+    {
+      "name": "basic-info-saved",
+      "initial_uri": "/basic-info",
+      "captured_path": "/basic-info",
+      "route_pattern": "/basic-info"
+    },
+    {
+      "name": "basic-info-saved-large",
+      "initial_uri": "/basic-info",
+      "captured_path": "/basic-info",
+      "route_pattern": "/basic-info"
+    },
+    {
+      "name": "legal-terms",
+      "initial_uri": "/terms",
+      "captured_path": "/terms",
+      "route_pattern": "/terms"
+    },
+    {
+      "name": "legal-terms-large",
+      "initial_uri": "/terms",
+      "captured_path": "/terms",
+      "route_pattern": "/terms"
+    },
+    {
+      "name": "legal-privacy",
+      "initial_uri": "/privacy-notice",
+      "captured_path": "/privacy-notice",
+      "route_pattern": "/privacy-notice"
+    },
+    {
+      "name": "legal-privacy-large",
+      "initial_uri": "/privacy-notice",
+      "captured_path": "/privacy-notice",
+      "route_pattern": "/privacy-notice"
+    },
+    {
+      "name": "help-center",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "help-center-large",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "help-center-topic-held",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "help-center-topic-held-large",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "help-center-footer",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "help-center-footer-large",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "help-center-adoption-large",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "help-center-support",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "help-center-support-large",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "help-center-support-keyboard",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "help-center-support-keyboard-large",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "help-center-support-rescuer",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "help-center-support-rescuer-large",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "help-center-support-photo",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "help-center-support-photo-large",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "help-center-support-received",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "help-center-support-received-large",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "help-center-rules",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "help-center-rules-large",
+      "initial_uri": "/help",
+      "captured_path": "/help",
+      "route_pattern": "/help"
+    },
+    {
+      "name": "public-profile-editor",
+      "initial_uri": "/rescuer/profile/edit",
+      "captured_path": "/rescuer/profile/edit",
+      "route_pattern": "/rescuer/profile/edit"
+    },
+    {
+      "name": "public-profile-editor-large",
+      "initial_uri": "/rescuer/profile/edit",
+      "captured_path": "/rescuer/profile/edit",
+      "route_pattern": "/rescuer/profile/edit"
+    },
+    {
+      "name": "public-profile-editor-keyboard-large",
+      "initial_uri": "/rescuer/profile/edit",
+      "captured_path": "/rescuer/profile/edit",
+      "route_pattern": "/rescuer/profile/edit"
+    },
+    {
+      "name": "guardian-history",
+      "initial_uri": "/guardian/history",
+      "captured_path": "/guardian/history",
+      "route_pattern": "/guardian/history"
+    },
+    {
+      "name": "guardian-history-large",
+      "initial_uri": "/guardian/history",
+      "captured_path": "/guardian/history",
+      "route_pattern": "/guardian/history"
+    },
+    {
+      "name": "guardian-history-empty",
+      "initial_uri": "/guardian/history",
+      "captured_path": "/guardian/history",
+      "route_pattern": "/guardian/history"
+    },
+    {
+      "name": "guardian-history-empty-large",
+      "initial_uri": "/guardian/history",
+      "captured_path": "/guardian/history",
+      "route_pattern": "/guardian/history"
+    },
+    {
+      "name": "payment-history",
+      "initial_uri": "/payments",
+      "captured_path": "/payments",
+      "route_pattern": "/payments"
+    },
+    {
+      "name": "payment-history-large",
+      "initial_uri": "/payments",
+      "captured_path": "/payments",
+      "route_pattern": "/payments"
+    },
+    {
+      "name": "payment-history-empty",
+      "initial_uri": "/payments",
+      "captured_path": "/payments",
+      "route_pattern": "/payments"
+    },
+    {
+      "name": "contribution-amount",
+      "initial_uri": "/contribute/Cirugía?case=case-one",
+      "captured_path": "/contribute/Cirugía",
+      "route_pattern": "/contribute/:id"
+    },
+    {
+      "name": "contribution-amount-large",
+      "initial_uri": "/contribute/Cirugía?case=case-one",
+      "captured_path": "/contribute/Cirugía",
+      "route_pattern": "/contribute/:id"
+    },
+    {
+      "name": "case-detail-large",
+      "initial_uri": "/rescue-cases/case-one",
+      "captured_path": "/rescue-cases/case-one",
+      "route_pattern": "/rescue-cases/:id"
+    },
+    {
+      "name": "case-detail-expenses",
+      "initial_uri": "/rescue-cases/case-one",
+      "captured_path": "/rescue-cases/case-one",
+      "route_pattern": "/rescue-cases/:id"
+    },
+    {
+      "name": "case-detail-expenses-large",
+      "initial_uri": "/rescue-cases/case-one",
+      "captured_path": "/rescue-cases/case-one",
+      "route_pattern": "/rescue-cases/:id"
+    },
+    {
+      "name": "rescuer-messages",
+      "initial_uri": "/messages",
+      "captured_path": "/messages",
+      "route_pattern": "/messages"
+    },
+    {
+      "name": "rescuer-messages-large",
+      "initial_uri": "/messages",
+      "captured_path": "/messages",
+      "route_pattern": "/messages"
+    },
+    {
+      "name": "rescuer-messages-empty",
+      "initial_uri": "/messages",
+      "captured_path": "/messages",
+      "route_pattern": "/messages"
+    },
+    {
+      "name": "rescuer-messages-empty-large",
+      "initial_uri": "/messages",
+      "captured_path": "/messages",
+      "route_pattern": "/messages"
+    },
+    {
+      "name": "match-threads-photo-search",
+      "initial_uri": "/messages",
+      "captured_path": "/messages",
+      "route_pattern": "/messages"
+    },
+    {
+      "name": "match-threads-photo-search-large",
+      "initial_uri": "/messages",
+      "captured_path": "/messages",
+      "route_pattern": "/messages"
+    },
+    {
+      "name": "match-threads-photo-focus",
+      "initial_uri": "/messages",
+      "captured_path": "/messages",
+      "route_pattern": "/messages"
+    },
+    {
+      "name": "match-threads-photo-focus-large",
+      "initial_uri": "/messages",
+      "captured_path": "/messages",
+      "route_pattern": "/messages"
+    },
+    {
+      "name": "match-threads-focus",
+      "initial_uri": "/messages",
+      "captured_path": "/messages",
+      "route_pattern": "/messages"
+    },
+    {
+      "name": "match-threads-focus-large",
+      "initial_uri": "/messages",
+      "captured_path": "/messages",
+      "route_pattern": "/messages"
+    },
+    {
+      "name": "match-home",
+      "initial_uri": "/messages",
+      "captured_path": "/messages",
+      "route_pattern": "/messages"
+    },
+    {
+      "name": "match-home-large",
+      "initial_uri": "/messages",
+      "captured_path": "/messages",
+      "route_pattern": "/messages"
+    },
+    {
+      "name": "adoption-support",
+      "initial_uri": "/adoptions",
+      "captured_path": "/adoptions",
+      "route_pattern": "/adoptions"
+    },
+    {
+      "name": "adoption-support-large",
+      "initial_uri": "/adoptions",
+      "captured_path": "/adoptions",
+      "route_pattern": "/adoptions"
+    },
+    {
+      "name": "rescuer-profile",
+      "initial_uri": "/profile",
+      "captured_path": "/profile",
+      "route_pattern": "/profile"
+    },
+    {
+      "name": "rescuer-profile-home-link-focus",
+      "initial_uri": "/profile",
+      "captured_path": "/profile",
+      "route_pattern": "/profile"
+    },
+    {
+      "name": "rescuer-profile-row-focus",
+      "initial_uri": "/profile",
+      "captured_path": "/profile",
+      "route_pattern": "/profile"
+    },
+    {
+      "name": "rescuer-profile-row-focus-large",
+      "initial_uri": "/profile",
+      "captured_path": "/profile",
+      "route_pattern": "/profile"
+    },
+    {
+      "name": "rescuer-profile-reference",
+      "initial_uri": "/profile",
+      "captured_path": "/profile",
+      "route_pattern": "/profile"
+    },
+    {
+      "name": "rescuer-profile-reference-wide",
+      "initial_uri": "/profile",
+      "captured_path": "/profile",
+      "route_pattern": "/profile"
+    },
+    {
+      "name": "rescuer-profile-reference-focus",
+      "initial_uri": "/profile",
+      "captured_path": "/profile",
+      "route_pattern": "/profile"
+    },
+    {
+      "name": "rescuer-profile-reference-activity-focus",
+      "initial_uri": "/profile",
+      "captured_path": "/profile",
+      "route_pattern": "/profile"
+    },
+    {
+      "name": "rescuer-profile-reference-metric-focus",
+      "initial_uri": "/profile",
+      "captured_path": "/profile",
+      "route_pattern": "/profile"
+    },
+    {
+      "name": "rescuer-profile-reference-transfer-focus",
+      "initial_uri": "/profile",
+      "captured_path": "/profile",
+      "route_pattern": "/profile"
+    },
+    {
+      "name": "rescuer-profile-reference-transfer-focus-large",
+      "initial_uri": "/profile",
+      "captured_path": "/profile",
+      "route_pattern": "/profile"
+    },
+    {
+      "name": "rescuer-profile-reference-large",
+      "initial_uri": "/profile",
+      "captured_path": "/profile",
+      "route_pattern": "/profile"
+    },
+    {
+      "name": "rescuer-settings",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "rescuer-settings-scroll-blur",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "rescuer-settings-footer",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "rescuer-settings-logout-focus",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "rescuer-settings-mode-focus",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "rescuer-settings-edit-focus",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "rescuer-settings-large",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "rescuer-settings-social-dialog",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "rescuer-settings-social-dialog-valid",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "rescuer-settings-social-values",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "rescuer-settings-social-values-large",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "rescuer-settings-social-dialog-large",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "rescuer-settings-social-dialog-facebook",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "rescuer-settings-social-dialog-keyboard",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "rescuer-settings-social-dialog-keyboard-large",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "rescuer-profile-large",
+      "initial_uri": "/profile",
+      "captured_path": "/profile",
+      "route_pattern": "/profile"
+    },
+    {
+      "name": "public-profile",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-large",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-reference",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-reference-large",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-state-loading",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-state-loading-large",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-state-error",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-state-error-large",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-state-unavailable",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-state-unavailable-large",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-metrics",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-metrics-large",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-metrics-stats",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-metrics-stats-large",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-adoptions",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-adoptions-large",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-report-reference-error",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-report-reference-error-large",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-report-reference-sending",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-report-reference-sending-large",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-report-reference",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-report-reference-large",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-report-reference-keyboard-large",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-cases",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "public-profile-cases-large",
+      "initial_uri": "/people/owner",
+      "captured_path": "/people/owner",
+      "route_pattern": "/people/:id"
+    },
+    {
+      "name": "profile-overview",
+      "initial_uri": "/profile",
+      "captured_path": "/profile",
+      "route_pattern": "/profile"
+    },
+    {
+      "name": "profile-overview-active",
+      "initial_uri": "/profile",
+      "captured_path": "/profile",
+      "route_pattern": "/profile"
+    },
+    {
+      "name": "profile-overview-large",
+      "initial_uri": "/profile",
+      "captured_path": "/profile",
+      "route_pattern": "/profile"
+    },
+    {
+      "name": "profile-mode-dialog",
+      "initial_uri": "/profile",
+      "captured_path": "/profile",
+      "route_pattern": "/profile"
+    },
+    {
+      "name": "profile-settings",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "profile-settings-large",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "profile-settings-footer",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "profile-settings-footer-large",
+      "initial_uri": "/settings",
+      "captured_path": "/settings",
+      "route_pattern": "/settings"
+    },
+    {
+      "name": "profile-support",
+      "initial_uri": "/profile",
+      "captured_path": "/profile",
+      "route_pattern": "/profile"
+    },
+    {
+      "name": "about",
+      "initial_uri": "/about",
+      "captured_path": "/about",
+      "route_pattern": "/about"
+    },
+    {
+      "name": "about-large",
+      "initial_uri": "/about",
+      "captured_path": "/about",
+      "route_pattern": "/about"
+    },
+    {
+      "name": "transparency",
+      "initial_uri": "/transparency",
+      "captured_path": "/transparency",
+      "route_pattern": "/transparency"
+    },
+    {
+      "name": "transparency-criteria",
+      "initial_uri": "/transparency",
+      "captured_path": "/transparency",
+      "route_pattern": "/transparency"
+    },
+    {
+      "name": "publish-choice",
+      "initial_uri": "/publish",
+      "captured_path": "/publish",
+      "route_pattern": "/publish"
+    },
+    {
+      "name": "publish-choice-large",
+      "initial_uri": "/publish",
+      "captured_path": "/publish",
+      "route_pattern": "/publish"
+    },
+    {
+      "name": "managed-updates",
+      "initial_uri": "/rescue-cases/case-one/updates",
+      "captured_path": "/rescue-cases/case-one/updates",
+      "route_pattern": "/rescue-cases/:id/updates"
+    },
+    {
+      "name": "managed-updates-large",
+      "initial_uri": "/rescue-cases/case-one/updates",
+      "captured_path": "/rescue-cases/case-one/updates",
+      "route_pattern": "/rescue-cases/:id/updates"
+    },
+    {
+      "name": "managed-updates-empty",
+      "initial_uri": "/rescue-cases/case-one/updates",
+      "captured_path": "/rescue-cases/case-one/updates",
+      "route_pattern": "/rescue-cases/:id/updates"
+    },
+    {
+      "name": "managed-updates-empty-large",
+      "initial_uri": "/rescue-cases/case-one/updates",
+      "captured_path": "/rescue-cases/case-one/updates",
+      "route_pattern": "/rescue-cases/:id/updates"
+    },
+    {
+      "name": "managed-updates-error",
+      "initial_uri": "/rescue-cases/case-one/updates",
+      "captured_path": "/rescue-cases/case-one/updates",
+      "route_pattern": "/rescue-cases/:id/updates"
+    },
+    {
+      "name": "managed-updates-error-large",
+      "initial_uri": "/rescue-cases/case-one/updates",
+      "captured_path": "/rescue-cases/case-one/updates",
+      "route_pattern": "/rescue-cases/:id/updates"
+    },
+    {
+      "name": "managed-updates-editor-new",
+      "initial_uri": "/rescue-cases/case-one/updates/new",
+      "captured_path": "/rescue-cases/case-one/updates/new",
+      "route_pattern": "/rescue-cases/:id/updates/:updateId"
+    },
+    {
+      "name": "managed-updates-editor-new-large",
+      "initial_uri": "/rescue-cases/case-one/updates/new",
+      "captured_path": "/rescue-cases/case-one/updates/new",
+      "route_pattern": "/rescue-cases/:id/updates/:updateId"
+    },
+    {
+      "name": "managed-updates-editor-draft",
+      "initial_uri": "/rescue-cases/case-one/updates/update-changes_requested",
+      "captured_path": "/rescue-cases/case-one/updates/update-changes_requested",
+      "route_pattern": "/rescue-cases/:id/updates/:updateId"
+    },
+    {
+      "name": "managed-updates-editor-draft-large",
+      "initial_uri": "/rescue-cases/case-one/updates/update-changes_requested",
+      "captured_path": "/rescue-cases/case-one/updates/update-changes_requested",
+      "route_pattern": "/rescue-cases/:id/updates/:updateId"
+    },
+    {
+      "name": "managed-updates-editor-error",
+      "initial_uri": "/rescue-cases/case-one/updates/update-draft",
+      "captured_path": "/rescue-cases/case-one/updates/update-draft",
+      "route_pattern": "/rescue-cases/:id/updates/:updateId"
+    },
+    {
+      "name": "managed-updates-editor-error-large",
+      "initial_uri": "/rescue-cases/case-one/updates/update-draft",
+      "captured_path": "/rescue-cases/case-one/updates/update-draft",
+      "route_pattern": "/rescue-cases/:id/updates/:updateId"
+    },
+    {
+      "name": "account-access-options",
+      "initial_uri": "/settings/account",
+      "captured_path": "/settings/account",
+      "route_pattern": "/settings/account"
+    },
+    {
+      "name": "private-file-image",
+      "initial_uri": "/rescue/verification-id",
+      "captured_path": "/rescue-file",
+      "route_pattern": "/rescue-file"
+    },
+    {
+      "name": "private-file-image-large",
+      "initial_uri": "/rescue/verification-id",
+      "captured_path": "/rescue-file",
+      "route_pattern": "/rescue-file"
+    },
+    {
+      "name": "private-file-image-content-large",
+      "initial_uri": "/rescue/verification-id",
+      "captured_path": "/rescue-file",
+      "route_pattern": "/rescue-file"
+    },
+    {
+      "name": "private-file-pdf",
+      "initial_uri": "/rescue/verification-id",
+      "captured_path": "/rescue-file",
+      "route_pattern": "/rescue-file"
+    },
+    {
+      "name": "private-file-pdf-large",
+      "initial_uri": "/rescue/verification-id",
+      "captured_path": "/rescue-file",
+      "route_pattern": "/rescue-file"
+    },
+    {
+      "name": "private-file-pdf-content-large",
+      "initial_uri": "/rescue/verification-id",
+      "captured_path": "/rescue-file",
+      "route_pattern": "/rescue-file"
+    },
+    {
+      "name": "private-file-error",
+      "initial_uri": "/rescue/verification-id",
+      "captured_path": "/rescue-file",
+      "route_pattern": "/rescue-file"
+    },
+    {
+      "name": "private-file-error-large",
+      "initial_uri": "/rescue/verification-id",
+      "captured_path": "/rescue-file",
+      "route_pattern": "/rescue-file"
+    },
+    {
+      "name": "private-file-error-content-large",
+      "initial_uri": "/rescue/verification-id",
+      "captured_path": "/rescue-file",
+      "route_pattern": "/rescue-file"
+    },
+    {
+      "name": "connect-account-ready",
+      "initial_uri": "/connect",
+      "captured_path": "/connect",
+      "route_pattern": "/connect"
+    },
+    {
+      "name": "connect-account-ready-large",
+      "initial_uri": "/connect",
+      "captured_path": "/connect",
+      "route_pattern": "/connect"
+    },
+    {
+      "name": "connect-account-ready-content-large",
+      "initial_uri": "/connect",
+      "captured_path": "/connect",
+      "route_pattern": "/connect"
+    },
+    {
+      "name": "connect-account-pending",
+      "initial_uri": "/connect",
+      "captured_path": "/connect",
+      "route_pattern": "/connect"
+    },
+    {
+      "name": "connect-account-pending-large",
+      "initial_uri": "/connect",
+      "captured_path": "/connect",
+      "route_pattern": "/connect"
+    },
+    {
+      "name": "connect-account-pending-content-large",
+      "initial_uri": "/connect",
+      "captured_path": "/connect",
+      "route_pattern": "/connect"
+    },
+    {
+      "name": "connect-account-error",
+      "initial_uri": "/connect",
+      "captured_path": "/connect",
+      "route_pattern": "/connect"
+    },
+    {
+      "name": "connect-account-error-large",
+      "initial_uri": "/connect",
+      "captured_path": "/connect",
+      "route_pattern": "/connect"
+    },
+    {
+      "name": "connect-account-error-content-large",
+      "initial_uri": "/connect",
+      "captured_path": "/connect",
+      "route_pattern": "/connect"
+    },
+    {
+      "name": "account-access-options-large",
+      "initial_uri": "/settings/account",
+      "captured_path": "/settings/account",
+      "route_pattern": "/settings/account"
+    },
+    {
+      "name": "account-access-options-content-large",
+      "initial_uri": "/settings/account",
+      "captured_path": "/settings/account",
+      "route_pattern": "/settings/account"
+    },
+    {
+      "name": "account-access-consent",
+      "initial_uri": "/consent",
+      "captured_path": "/consent",
+      "route_pattern": "/consent"
+    },
+    {
+      "name": "account-access-consent-large",
+      "initial_uri": "/consent",
+      "captured_path": "/consent",
+      "route_pattern": "/consent"
+    },
+    {
+      "name": "account-access-consent-content-large",
+      "initial_uri": "/consent",
+      "captured_path": "/consent",
+      "route_pattern": "/consent"
+    },
+    {
+      "name": "account-access-privacy",
+      "initial_uri": "/account-privacy",
+      "captured_path": "/account-privacy",
+      "route_pattern": "/account-privacy"
+    },
+    {
+      "name": "account-access-privacy-large",
+      "initial_uri": "/account-privacy",
+      "captured_path": "/account-privacy",
+      "route_pattern": "/account-privacy"
+    },
+    {
+      "name": "account-access-privacy-content-large",
+      "initial_uri": "/account-privacy",
+      "captured_path": "/account-privacy",
+      "route_pattern": "/account-privacy"
+    },
+    {
+      "name": "my-adoptions",
+      "initial_uri": "/my-adoptions",
+      "captured_path": "/my-adoptions",
+      "route_pattern": "/my-adoptions"
+    },
+    {
+      "name": "my-adoptions-large",
+      "initial_uri": "/my-adoptions",
+      "captured_path": "/my-adoptions",
+      "route_pattern": "/my-adoptions"
+    },
+    {
+      "name": "my-adoptions-empty",
+      "initial_uri": "/my-adoptions",
+      "captured_path": "/my-adoptions",
+      "route_pattern": "/my-adoptions"
+    },
+    {
+      "name": "my-adoptions-empty-large",
+      "initial_uri": "/my-adoptions",
+      "captured_path": "/my-adoptions",
+      "route_pattern": "/my-adoptions"
+    },
+    {
+      "name": "my-adoptions-error",
+      "initial_uri": "/my-adoptions",
+      "captured_path": "/my-adoptions",
+      "route_pattern": "/my-adoptions"
+    },
+    {
+      "name": "my-adoptions-error-large",
+      "initial_uri": "/my-adoptions",
+      "captured_path": "/my-adoptions",
+      "route_pattern": "/my-adoptions"
+    },
+    {
+      "name": "my-adoptions-content-large",
+      "initial_uri": "/my-adoptions",
+      "captured_path": "/my-adoptions",
+      "route_pattern": "/my-adoptions"
+    },
+    {
+      "name": "my-adoptions-empty-content-large",
+      "initial_uri": "/my-adoptions",
+      "captured_path": "/my-adoptions",
+      "route_pattern": "/my-adoptions"
+    },
+    {
+      "name": "my-adoptions-error-content-large",
+      "initial_uri": "/my-adoptions",
+      "captured_path": "/my-adoptions",
+      "route_pattern": "/my-adoptions"
+    },
+    {
+      "name": "publish-photos",
+      "initial_uri": "/my-adoptions/new",
+      "captured_path": "/my-adoptions/new",
+      "route_pattern": "/my-adoptions/:id"
+    },
+    {
+      "name": "publish-photos-large",
+      "initial_uri": "/my-adoptions/new",
+      "captured_path": "/my-adoptions/new",
+      "route_pattern": "/my-adoptions/:id"
+    },
+    {
+      "name": "publish-photo-grid",
+      "initial_uri": "/my-adoptions/post",
+      "captured_path": "/my-adoptions/post",
+      "route_pattern": "/my-adoptions/:id"
+    },
+    {
+      "name": "publish-photo-grid-large",
+      "initial_uri": "/my-adoptions/post",
+      "captured_path": "/my-adoptions/post",
+      "route_pattern": "/my-adoptions/:id"
+    },
+    {
+      "name": "publish-information",
+      "initial_uri": "/my-adoptions/post",
+      "captured_path": "/my-adoptions/post",
+      "route_pattern": "/my-adoptions/:id"
+    },
+    {
+      "name": "publish-information-large",
+      "initial_uri": "/my-adoptions/post",
+      "captured_path": "/my-adoptions/post",
+      "route_pattern": "/my-adoptions/:id"
+    },
+    {
+      "name": "publish-review",
+      "initial_uri": "/my-adoptions/post",
+      "captured_path": "/my-adoptions/post",
+      "route_pattern": "/my-adoptions/:id"
+    },
+    {
+      "name": "publish-review-large",
+      "initial_uri": "/my-adoptions/post",
+      "captured_path": "/my-adoptions/post",
+      "route_pattern": "/my-adoptions/:id"
+    },
+    {
+      "name": "publish-health",
+      "initial_uri": "/my-adoptions/post",
+      "captured_path": "/my-adoptions/post",
+      "route_pattern": "/my-adoptions/:id"
+    },
+    {
+      "name": "publish-health-large",
+      "initial_uri": "/my-adoptions/post",
+      "captured_path": "/my-adoptions/post",
+      "route_pattern": "/my-adoptions/:id"
+    },
+    {
+      "name": "expense-submitted",
+      "initial_uri": "/rescue/expense-one",
+      "captured_path": "/rescue/expense-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "expense-submitted-large",
+      "initial_uri": "/rescue/expense-one",
+      "captured_path": "/rescue/expense-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "expense-submitted-footer-large",
+      "initial_uri": "/rescue/expense-one",
+      "captured_path": "/rescue/expense-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication",
+      "initial_uri": "/rescue/new?kind=case",
+      "captured_path": "/rescue/new",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-header-focus",
+      "initial_uri": "/rescue/new?kind=case",
+      "captured_path": "/rescue/new",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-header-focus-large",
+      "initial_uri": "/rescue/new?kind=case",
+      "captured_path": "/rescue/new",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-large",
+      "initial_uri": "/rescue/new?kind=case",
+      "captured_path": "/rescue/new",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-information-nameless",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-information-nameless-large",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-review-nameless",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-review-nameless-large",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-needs-list",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-needs-list-large",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-review-list",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-review-list-large",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-needs-medicine",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-needs-medicine-large",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-needs-food",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-needs-food-large",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-needs-veterinary",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-needs-veterinary-large",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-needs",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-needs-large",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-review",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-review-large",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-information",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-information-large",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-grid",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "case-publication-grid-large",
+      "initial_uri": "/rescue/case-one",
+      "captured_path": "/rescue/case-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "expense-record",
+      "initial_uri": "/rescue/expense-one",
+      "captured_path": "/rescue/expense-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "expense-record-large",
+      "initial_uri": "/rescue/expense-one",
+      "captured_path": "/rescue/expense-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "expense-review",
+      "initial_uri": "/rescue/expense-one",
+      "captured_path": "/rescue/expense-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "expense-review-large",
+      "initial_uri": "/rescue/expense-one",
+      "captured_path": "/rescue/expense-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "expense-review-private",
+      "initial_uri": "/rescue/expense-one",
+      "captured_path": "/rescue/expense-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "expense-review-private-large",
+      "initial_uri": "/rescue/expense-one",
+      "captured_path": "/rescue/expense-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "expense-dialog",
+      "initial_uri": "/rescue/expense-one",
+      "captured_path": "/rescue/expense-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "expense-dialog-large",
+      "initial_uri": "/rescue/expense-one",
+      "captured_path": "/rescue/expense-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "expense-evidence",
+      "initial_uri": "/rescue/expense-one",
+      "captured_path": "/rescue/expense-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "expense-evidence-large",
+      "initial_uri": "/rescue/expense-one",
+      "captured_path": "/rescue/expense-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "expense-information",
+      "initial_uri": "/rescue/expense-one",
+      "captured_path": "/rescue/expense-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "expense-information-large",
+      "initial_uri": "/rescue/expense-one",
+      "captured_path": "/rescue/expense-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "expense-private",
+      "initial_uri": "/rescue/expense-one",
+      "captured_path": "/rescue/expense-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "expense-private-large",
+      "initial_uri": "/rescue/expense-one",
+      "captured_path": "/rescue/expense-one",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "verification-intro",
+      "initial_uri": "/rescue/new?kind=verification",
+      "captured_path": "/rescue/new",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "verification-intro-large",
+      "initial_uri": "/rescue/new?kind=verification",
+      "captured_path": "/rescue/new",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "verification-form",
+      "initial_uri": "/rescue/new?kind=verification",
+      "captured_path": "/rescue/new",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "verification-form-large",
+      "initial_uri": "/rescue/new?kind=verification",
+      "captured_path": "/rescue/new",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "verification-approved",
+      "initial_uri": "/rescue/verification-id",
+      "captured_path": "/rescue/verification-id",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "verification-approved-large",
+      "initial_uri": "/rescue/verification-id",
+      "captured_path": "/rescue/verification-id",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "verification-review",
+      "initial_uri": "/rescue/verification-id",
+      "captured_path": "/rescue/verification-id",
+      "route_pattern": "/rescue/:id"
+    },
+    {
+      "name": "verification-review-large",
+      "initial_uri": "/rescue/verification-id",
+      "captured_path": "/rescue/verification-id",
+      "route_pattern": "/rescue/:id"
+    }
+  ],
+  "method": "Literal spec tuples including multiline, restricted to for spec block. Private-file fixtures open the file from their initial request; captured_path reflects runtime assertions. Resolve sole relative updateId child. Pattern counts include aliases/redirects, not missing screens or visual acceptance. Auth capturer remains separate. Two repeated identical amount fixtures removed; 401 unique spec entries remain. Literal captured paths and normalized route patterns are different counts.",
+  "captured_literal_path_count": 44,
+  "removed_duplicate_names": [
+    "case-detail-amount",
+    "case-detail-amount-large"
+  ]
+}

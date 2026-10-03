@@ -126,6 +126,26 @@ class PublicProfileCaptureCommunity extends FakeCommunity {
   };
 }
 
+class PublicProfileStateCaptureCommunity extends PublicProfileCaptureCommunity {
+  PublicProfileStateCaptureCommunity(this.state) : super(reference: true);
+  String state;
+  final requestedProfiles = <String>[];
+  final pending = Completer<Json?>();
+  Future<void> finishLoading() async {
+    state = 'ready';
+    pending.complete(await super.publicProfile('owner'));
+  }
+
+  @override
+  Future<Json?> publicProfile(String id) async {
+    requestedProfiles.add(id);
+    if (state == 'loading') return pending.future;
+    if (state == 'error') throw Exception('fixture unavailable');
+    if (state == 'unavailable') return null;
+    return super.publicProfile(id);
+  }
+}
+
 class ReportCaptureCommunity extends PublicProfileCaptureCommunity {
   ReportCaptureCommunity({required this.wait}) : super(reference: true);
   final bool wait;
@@ -795,9 +815,11 @@ void main() {
         FixturePhotoClient(fixturePhoto!);
     addTearDown(() => debugNetworkImageHttpClientProvider = null);
     var captureCount = 0;
+    final capturedNames = <String>{};
     var expectedAccountNavigation = 0, actualAccountNavigation = 0;
     var expectedConnectNavigation = 0, actualConnectNavigation = 0;
     var expectedPrivateFileNavigation = 0, actualPrivateFileNavigation = 0;
+    var expectedPublicRecovery = 0, actualPublicRecovery = 0;
     for (final spec in [
       ('adoption-swipe', '/adoptions'),
       ('adoption-large', '/adoptions'),
@@ -1061,8 +1083,6 @@ void main() {
       ('contribution-amount-large', '/contribute/Cirugía?case=case-one'),
       ('case-detail-large', '/rescue-cases/case-one'),
       ('case-detail-expenses', '/rescue-cases/case-one'),
-      ('case-detail-amount', '/rescue-cases/case-one'),
-      ('case-detail-amount-large', '/rescue-cases/case-one'),
       ('case-detail-expenses-large', '/rescue-cases/case-one'),
       ('rescuer-messages', '/messages'),
       ('rescuer-messages-large', '/messages'),
@@ -1110,6 +1130,12 @@ void main() {
       ('public-profile-large', '/people/owner'),
       ('public-profile-reference', '/people/owner'),
       ('public-profile-reference-large', '/people/owner'),
+      ('public-profile-state-loading', '/people/owner'),
+      ('public-profile-state-loading-large', '/people/owner'),
+      ('public-profile-state-error', '/people/owner'),
+      ('public-profile-state-error-large', '/people/owner'),
+      ('public-profile-state-unavailable', '/people/owner'),
+      ('public-profile-state-unavailable-large', '/people/owner'),
       ('public-profile-metrics', '/people/owner'),
       ('public-profile-metrics-large', '/people/owner'),
       ('public-profile-metrics-stats', '/people/owner'),
@@ -1269,7 +1295,16 @@ void main() {
       if (captureFilter.isNotEmpty && !spec.$1.startsWith(captureFilter)) {
         continue;
       }
+      expect(
+        capturedNames.add(spec.$1),
+        true,
+        reason: 'Fixture names must not overwrite another captured state',
+      );
       captureCount++;
+      if (spec.$1.startsWith('public-profile-state-loading') ||
+          spec.$1.startsWith('public-profile-state-error')) {
+        expectedPublicRecovery++;
+      }
       if (spec.$1.startsWith('private-file')) expectedPrivateFileNavigation++;
       if (spec.$1.startsWith('connect-account') &&
           !spec.$1.contains('content')) {
@@ -1448,6 +1483,12 @@ void main() {
                         spec.$1.startsWith('publish-review') ||
                         spec.$1.startsWith('publish-health'))))
           ? DetailCaptureCommunity()
+          : spec.$1.startsWith('public-profile-state')
+          ? PublicProfileStateCaptureCommunity(
+              spec.$1
+                  .replaceFirst('public-profile-state-', '')
+                  .replaceFirst('-large', ''),
+            )
           : spec.$1.startsWith('public-profile-report-reference') &&
                 (spec.$1.contains('error') || spec.$1.contains('sending'))
           ? ReportCaptureCommunity(wait: spec.$1.contains('sending'))
@@ -1802,7 +1843,11 @@ void main() {
           () => Future<void>.delayed(const Duration(milliseconds: 100)),
         );
       }
-      await tester.pumpAndSettle();
+      if (spec.$1.startsWith('public-profile-state-loading')) {
+        await tester.pump();
+      } else {
+        await tester.pumpAndSettle();
+      }
       expect(tester.takeException(), isNull);
       if (spec.$1.startsWith('private-file')) {
         final openFile = find.text('Ver archivo 1');
@@ -3423,6 +3468,25 @@ void main() {
                     .writeAsString(jsonEncode(metrics)),
           );
         }
+        if (spec.$1.startsWith('public-profile-state')) {
+          expect(container.read(routerProvider).state.uri.path, spec.$2);
+          final fixture = community as PublicProfileStateCaptureCommunity;
+          expect(fixture.requestedProfiles, ['owner']);
+          expect(find.byType(PublicProfileIdentity), findsNothing);
+          if (fixture.state == 'loading') {
+            expect(find.byType(CircularProgressIndicator), findsOneWidget);
+          } else if (fixture.state == 'error') {
+            expect(
+              find.text('Volver a intentar').hitTestable(),
+              findsOneWidget,
+            );
+          } else {
+            expect(
+              find.text('Este perfil público no está disponible.'),
+              findsOneWidget,
+            );
+          }
+        }
         if (spec.$1 == 'connect-account-ready') {
           expect(find.text(r'$4,314.00 MXN'), findsOneWidget);
           expect(find.text(r'$980.00 MXN'), findsOneWidget);
@@ -3472,6 +3536,26 @@ void main() {
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),
         );
+        if (spec.$1.startsWith('public-profile-state-loading') ||
+            spec.$1.startsWith('public-profile-state-error')) {
+          final fixture = community as PublicProfileStateCaptureCommunity;
+          final loading = fixture.state == 'loading';
+          if (loading) {
+            await fixture.finishLoading();
+          } else {
+            fixture.state = 'ready';
+            await tester.tap(find.text('Volver a intentar'));
+          }
+          await tester.pumpAndSettle();
+          expect(find.byType(PublicProfileIdentity), findsOneWidget);
+          expect(find.text('María R.'), findsOneWidget);
+          expect(
+            fixture.requestedProfiles,
+            loading ? ['owner'] : ['owner', 'owner'],
+          );
+          expect(container.read(routerProvider).state.uri.path, spec.$2);
+          actualPublicRecovery++;
+        }
         if (spec.$1.startsWith('private-file')) {
           expect(find.byTooltip('Regresar').hitTestable(), findsOneWidget);
           await tester.tap(find.byTooltip('Regresar'));
@@ -3590,6 +3674,11 @@ void main() {
       actualPrivateFileNavigation,
       expectedPrivateFileNavigation,
       reason: 'Every selected private file fixture must return to its request',
+    );
+    expect(
+      actualPublicRecovery,
+      expectedPublicRecovery,
+      reason: 'Every selected loading or failed public profile must recover',
     );
     expect(
       captureCount,
