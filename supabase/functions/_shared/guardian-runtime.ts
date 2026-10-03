@@ -6,6 +6,7 @@ import { guardianCollectionService } from './guardian-collection.mjs';
 import { guardianScheduleService } from './guardian-schedule.mjs';
 import { guardianChangeService } from './guardian-changes.mjs';
 import { guardianMethodService } from './guardian-method.mjs';
+import { guardianMethodListService } from './guardian-method-list.mjs';
 import { guardianRefundService } from './guardian-refunds.mjs';
 import { PaymentError, requireTestKey } from './payments.mjs';
 
@@ -61,7 +62,12 @@ export function guardianRuntime() {
       return result.data;
     }, returnUrl: `${Deno.env.get('SUPABASE_URL')!}/functions/v1/payment-return`,
   });
-  return { ...service, initial, schedule, collection, changes, method, refunds,
+  const methods = guardianMethodListService({ stripe, lookup: async (actor: string) => {
+    const result = await db.rpc('dopmi_guardian_method_owner_server', { target_actor: actor });
+    if (result.error) throw new PaymentError('guardian_methods_unavailable', 503);
+    return result.data;
+  } });
+  return { ...service, initial, schedule, collection, changes, method, methods, refunds,
     async reconcile() {
       const activation = await initial.reconcile();
       const returns = Deno.env.get('DOPMI_GUARDIAN_REFUNDS_ENABLED') === 'true'

@@ -3094,3 +3094,10 @@ Loop349 cierre técnico: captura66900 terminalexit0 tres estados3s; large examin
 ### Loop350 — auditoría financiera de la brecha de métodos
 
 Inspección exacta producción Stripe/RPC y documentación oficial en payment-methods-parity-audit-2026-10-02.md: no lista server/owner lookup por actor, aportaciones puntuales sin customer reusable, Guardian setup existente ya seguro. Próxima unidad lectura privada minimizada del cliente Guardian existente, antes de nuevas mutaciones/cartera no suscrita. No reusar legacy ni inventar vinculación wallets. Evidencia cambia siguiente acción de mero estilo a integración real. Sin API/schema remoto, claves, dinero, CM/push. Objetivo completo activo.
+
+
+### Loop351 — lectura privada real de métodos, implementación local
+
+Nuevo guardian-method-list.mjs y operación methods en guardian-client: Authconfirmado+flags actuales, rechaza parámetros financieros delcaller, lookupservice-only PostgreSQL obtiene customer/subscription desde actor activo/confirmado. Verifica customer/sub/card testmode y ownership, pagina hasta500sinpublicarparciales, minimiza camposid/brand/last4/expiry/wallet/default confirmado; sin billing_details/fingerprint/secrets. No muta Stripe ni factura ni cancela. RuntimeGuardian22.6/APIactual preservado. Migración local20261003000100_guardian_payment_method_read.sql todavía no remota; historial pendiente antesdeploy.
+
+13tests módulo/endpoint aprobadas168ms, pruebaSQL nueva valida servicio/owner/noregistry/suspensión/emailnoconfirmado/ACLanon-authdenied. Gate npmtesttools/verification453/453aprobadas29.46s handle28915exit0 con todasmigracionesPGlite; Deno check guardian-client/index.ts node-modules-dirnone handle59658exit0. Primer intento test-name-pattern sóloúltimatest fallóPGliteclosed enhook; gate completo posterior supera y pruebaSQLpasa11ms, no atribuirprimerfallocomopass. Diffchecklimpio. Sin deploy/APIStripe real/AuthRESTnueva/clienteUI conectado/dinero/CM/push. Siguiente preflight remoto migración/cuerpos/ACL y deployDEV, luego lectura real autenticada y listatarjetas Source. Goalcompletoactivo.

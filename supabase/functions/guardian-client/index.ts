@@ -11,5 +11,6 @@ Deno.serve(guardianClientHandler({
     return error ? null : data.user;
   },
   checkout: (actor: string, input: unknown) => guardianRuntime().initial.checkout(actor, input),
+  methods: (actor: string) => guardianRuntime().methods(actor),
   method: (actor: string, input: unknown) => guardianRuntime().method.checkout(actor, input),
 }));

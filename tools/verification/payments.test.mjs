@@ -3639,3 +3639,30 @@ test('rescuer mixed recent activity keeps a deterministic six-item limit',async(
   const rows=await activity();assert.equal(rows.length,6);assert.equal(rows[0].source,'guardian');
   assert.deepEqual(await activity(),rows);
 });
+
+
+test('method inventory linkage is server-only and requires a confirmed active owner', async () => {
+  await db.query(`insert into private.dopmi_guardian_subscriptions
+    (donor_id,stripe_customer_id,stripe_subscription_id,stripe_price_id,gross_cents,initial_payment_intent_id,initial_charge_id)
+    values($1,'cus_inventory','sub_inventory','price_inventory',5000,'pi_inventory','ch_inventory')`, [donor]);
+  await db.exec('set local role service_role');
+  assert.deepEqual((await db.query('select dopmi_guardian_method_owner_server($1) as value',[donor])).rows[0].value,
+    {customer_id:'cus_inventory',subscription_id:'sub_inventory'});
+  assert.equal((await db.query('select dopmi_guardian_method_owner_server($1) as value',[other])).rows[0].value,null);
+  await rejected(()=>db.query('select dopmi_guardian_method_owner_server(null)'),/Cuenta no disponible/);
+  await db.exec('reset role');
+  await db.query("update profiles set account_status='suspended' where id=$1",[donor]);
+  await db.exec('set local role service_role');
+  await rejected(()=>db.query('select dopmi_guardian_method_owner_server($1)',[donor]),/Cuenta no disponible/);
+  await db.exec('reset role');
+  await db.query("update profiles set account_status='active' where id=$1",[donor]);
+  await db.query('update auth.users set email_confirmed_at=null where id=$1',[donor]);
+  await db.exec('set local role service_role');
+  await rejected(()=>db.query('select dopmi_guardian_method_owner_server($1)',[donor]),/Cuenta no disponible/);
+  await db.exec('reset role');
+  for (const name of ['authenticated','anon']) {
+    await role(other,name);
+    await rejected(()=>db.query('select dopmi_guardian_method_owner_server($1)',[donor]),/permission denied/);
+    await db.exec('reset role');
+  }
+});
