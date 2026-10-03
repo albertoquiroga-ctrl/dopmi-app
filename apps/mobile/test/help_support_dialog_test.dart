@@ -60,14 +60,7 @@ void main() {
     expect(uploads, 0);
     expect(find.byType(Image), findsOneWidget);
     expect(find.text('Cambiar imagen'), findsOneWidget);
-    expect(
-      tester
-          .widget<OutlinedButton>(
-            find.widgetWithText(OutlinedButton, 'Continuar en correo'),
-          )
-          .onPressed,
-      isNull,
-    );
+    expect(find.text('Continuar en correo'), findsNothing);
     final send = find.widgetWithText(FilledButton, 'Enviar mensaje');
     tester.widget<FilledButton>(send).onPressed!();
     await tester.pumpAndSettle();
@@ -178,6 +171,9 @@ void main() {
             body: HelpSupportDialog(
               topics: const ['Guardián', 'Mi cuenta'],
               initialTopic: 0,
+              repository: SupportRepository(
+                (_, _) async => throw StateError('offline'),
+              ),
               openMail: (uri) {
                 calls.add(uri);
                 return pending.future;
@@ -194,6 +190,13 @@ void main() {
       );
       await tester.pumpAndSettle();
       final next = find.widgetWithText(OutlinedButton, 'Continuar en correo');
+      expect(next, findsNothing);
+      tester
+          .widget<FilledButton>(
+            find.widgetWithText(FilledButton, 'Enviar mensaje'),
+          )
+          .onPressed!();
+      await tester.pumpAndSettle();
       final action = tester.widget<OutlinedButton>(next).onPressed!;
       action();
       action();

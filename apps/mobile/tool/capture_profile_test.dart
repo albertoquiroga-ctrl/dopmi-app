@@ -1413,14 +1413,15 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(support);
         await tester.pumpAndSettle();
-        final next = find.widgetWithText(OutlinedButton, 'Continuar en correo');
-        expect(tester.widget<OutlinedButton>(next).onPressed, isNull);
+        final next = find.widgetWithText(FilledButton, 'Enviar mensaje');
+        expect(tester.widget<FilledButton>(next).onPressed, isNull);
+        expect(find.text('Continuar en correo'), findsNothing);
         await tester.enterText(
           find.byType(TextField).last,
           'Necesito ayuda con mi cuenta.',
         );
         await tester.pumpAndSettle();
-        expect(tester.widget<OutlinedButton>(next).onPressed, isNotNull);
+        expect(tester.widget<FilledButton>(next).onPressed, isNotNull);
         await tester.ensureVisible(next);
         await tester.pumpAndSettle();
         expect(next.hitTestable(), findsOneWidget);

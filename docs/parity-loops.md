@@ -2537,3 +2537,21 @@ correspondencia local20261002234156 documentado, sin reparar/replay/rename.
 No verifica carga Storage/AuthREST/dispositivo/panel publicado. Siguiente cierre
 real: recorrido autenticado de adjunto y retención de objetos; después retomar
 familias visuales pendientes. No Codemagic nuevo hasta objetivo completo.
+
+# Loop301 — formulario de soporte fiel al estado normal Source
+
+Referencia remota a3c969cd9103fd46dc5cd886999912526ce75efb sin cambios.
+Source normal sólo termina con Enviar mensaje; alternativa correo introducida
+por app movida a recuperación tras fallo, no visible durante apertura/selección.
+Botón adjuntar Inter16/600, padding18x12/min48 y preview borde14/line restaurados.
+Prueba inicial detectó desaparición del fallback al iniciar handoff porque notice
+se limpia: corregido con estado explícito disponible tras fallo de recepción.
+Reejecución cuatro widgets y capturador normal/200% cinco tests aprobados10s;
+Analyze limpio39.5s. Captura normal inspeccionada: orden Source sin botón extra.
+Revisión de CSS detecta siguiente ajuste: cierre Source absoluto, actual Row48
+introduce altura en encabezado; comparar/corregir en siguiente loop visual.
+
+No credenciales Auth de prueba disponibles en almacén acceptance (sólo Stripe),
+recorrido Storage autenticado no verificado. No pedir secretos en chat; trabajo
+visual independiente continúa. Retención/account-deletion aún debe incluir nuevo
+bucket de soporte. No aceptación instalada/global ni nuevo Codemagic.

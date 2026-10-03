@@ -40,6 +40,7 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
   String? attachmentPath;
   String? notice;
   bool received = false;
+  bool mailFallbackAvailable = false;
   String? requestId, requestContent;
   static const topicIds = [
     'support_rules',
@@ -137,9 +138,10 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
       if (mounted) setState(() => received = true);
     } catch (_) {
       if (mounted) {
-        setState(
-          () => notice = 'No pudimos confirmar la recepción. Tu mensaje sigue aquí; vuelve a intentar.',
-        );
+        setState(() {
+          mailFallbackAvailable = true;
+          notice = 'No pudimos confirmar la recepción. Tu mensaje sigue aquí; vuelve a intentar.';
+        });
       }
     } finally {
       if (mounted) {
@@ -350,6 +352,19 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                     const SizedBox(height: 12),
                   ],
                   OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: ink,
+                      minimumSize: const Size(0, 48),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 12,
+                      ),
+                      textStyle: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     onPressed: busy ? null : chooseImage,
                     child: Text(
                       attachment == null
@@ -359,8 +374,12 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                   ),
                   if (attachment != null) ...[
                     const SizedBox(height: 12),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(14),
+                    Container(
+                      clipBehavior: Clip.antiAlias,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: const Color(0xffe6e2dd)),
+                      ),
                       child: Image.memory(
                         attachment!,
                         height: 140,
@@ -412,32 +431,34 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                           )
                         : const Text('Enviar mensaje'),
                   ),
-                  const SizedBox(height: 12),
-                  OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: ink,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 18,
-                        vertical: 12,
+                  if (mailFallbackAvailable && attachment == null) ...[
+                    const SizedBox(height: 12),
+                    OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: ink,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 12,
+                        ),
+                        minimumSize: const Size(0, 48),
+                        textStyle: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      minimumSize: const Size(0, 48),
-                      textStyle: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                      onPressed:
+                          busy ||
+                              message.text.trim().isEmpty ||
+                              attachment != null
+                          ? null
+                          : continueInMail,
+                      child: const Text(
+                        'Continuar en correo',
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                    onPressed:
-                        busy ||
-                            message.text.trim().isEmpty ||
-                            attachment != null
-                        ? null
-                        : continueInMail,
-                    child: const Text(
-                      'Continuar en correo',
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+                  ],
                 ],
               ],
             ),
