@@ -56,5 +56,14 @@ for (const rpc of ['state', 'plan', 'history']) {
     status: 401, inspect: async response => assert.equal((await response.json()).code, '42501'),
   });
 }
+for (const [rpc,body] of [
+  ['dopmi_saved_card_server',{operation:'get',data:{}}],
+  ['dopmi_saved_card_owner_server',{target_actor:null}],
+  ['dopmi_saved_card_state',{}],
+]) {
+  await probe(`/rest/v1/rpc/${rpc}`, {
+    body, status:401, inspect:async response=>assert.equal((await response.json()).code,'42501'),
+  });
+}
 console.log(`${passed} remote checks passed; checkout gate ${enabled ? 'enabled, requires sign-in' : 'closed'}.`);
 console.log('This does not verify Stripe key permissions, a signed webhook, payment, Cron or a device journey.');

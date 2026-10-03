@@ -1476,3 +1476,6 @@ Loop367, 3/10/2026: base local de alta de tarjeta independiente (sin cobro/cambi
 
 
 Loop368, 3/10/2026: integración LOCAL de alta independiente en endpoint/runtime/worker/webhook/reader nonsuscrito; migration71000 comparte/snapshotcustomer con nuevaaltaGuardian y bloquea dos altas simultáneas.503/503backend24.41s handle89380exit0 y Deno3entrypoints7.45s limpios. No migration70000/71000 ni EdgeDEV nuevos todavía; UI/capturas/fixtureAuthStripe y default/remove nonsuscrito/billeteras/matrizglobal pendientes. NoCM/push/goalcomplete. Siguiente preflight remoto/overlays; no interpretar gatelocal como publicación/aceptación instalada.
+
+
+Loop369, 3/10/2026: alta independiente DEV aplicada una vez, local70000/71000→remote65211/65233. Worker25/webhook25/cliente18ACTIVE, overlays17/16/16archivos0dif yguards/ACL/RLS verificadas;21smokeremoto5.77s b935fbexit0. No Authmutación/StripeCheckoutreal/UI/device aceptados aún; sinflags/PROD/CM/push. Siguiente UIAgregar/retorno yfixtureAuthStripe; generaldefault/remove/billeteras/matrizglobal pendientes. Evidencia parity-loops369/migration-history-audit. Objetivoactivo.

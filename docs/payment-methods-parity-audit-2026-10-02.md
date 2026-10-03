@@ -1,3 +1,9 @@
+# Estado vigente — loop369, 3/10/2026
+
+Alta independiente desplegada en DEV: local70000/71000→remote65211/65233; worker25/webhook25/cliente18ACTIVE y17/16/16archivos0mismatches. Guards/ACL/RLS comprobados,21smoke real5.77s. Endpoint/lista nonsuscrito ycustomercompartido en servidor; UIAgregar/retorno y AuthCheckoutreal todavía pendientes. No anunciar aceptación completa. Default/remove sinGuardian, billeteras y matrizglobal siguen abiertos. Codemagic únicamente final.
+
+## Corte368 anterior
+
 # Estado vigente — loop368, 3/10/2026
 
 Servidor local de alta independiente ahora incluye endpointallowlist, lookup de cliente nonsuscrito, reader real y runtime/cron/webhook. AltaGuardian comparte customer guardado y serializa solicitudes para evitar duplicar cliente.503/503 backend24.41s y Deno3entrypoints limpios. Migraciones70000/71000 y Edge NO desplegados aún; UIAgregar y aceptación Auth/Stripe real pendientes. Default/eliminación para cuentas sinGuardian todavía no implementados; billeteras y matrizglobal abiertas.

@@ -347,3 +347,8 @@ Sin cambiosflags/usuarios/Stripewrite/producción/Codemagic/push.
 Local20261003060000_guardian_saved_method_removal.sql aplicada una vez por MCP en DEVohqxranynackjignryep como20261003055326/guardian_saved_method_removal. Antes:latest51924/columnaausente y cinco fragmentos del cuerpo real presentes; módulos guardian-method iguales en los tres consumidores. Después:remove_saved existe, guardsremoved/refused y proyecciónaction presentes; EXECUTEanon/authfalse/service_roletrue. Sin repair/rename/replay/dbpush/PROD.
 
 Overlays mínimos:payment-worker23→24 ystripe-webhook23→24 sólo guardian-method;guardian-client16→17 index/client/method. Otros14/13/12 archivos preservados, verify_jwtfalse previo y guardsAuth/worker-secret/webhooksignature intactos. GetEdge posterior comparó15/14/15 archivos normalizandoCRLF,0mismatches, todosACTIVE. Gate475/362 yDeno limpio; smoke18/18real5.61s (cliente/worker/RPCrechazan anónimo, webhook400sin firma, return200). No Stripe removereal/Authmutación/cron/teléfono ni cambiosflags. NoCM/push.
+
+
+## Loop369 — alta independiente y cliente compartido, 3/10/2026
+
+DEVohqxranynackjignryep: local20261003070000_saved_card_setup→remote20261003065211/saved_card_setup; local20261003071000_saved_card_customer_coherence→remote20261003065233/saved_card_customer_coherence. Preflightlatest55326/tablas y snapshotausentes, cuatrofragmentos realesactivationpresentes; luego fragmentoguardsavedcardconfirmado antes71000. Aplicadas una vez porMCP; snapshot/locks/guards/RLS/ACL comprobados. Worker25/webhook25/client18ACTIVE, bundles17/16/16sin diferencias contraoverlay. Sin reparación/renombrado/replay/dbpush/PROD. SQL completo503local/368;21smokeremoto369sin tokensusuarios.
