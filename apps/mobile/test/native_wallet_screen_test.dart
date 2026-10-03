@@ -188,6 +188,20 @@ void main() {
         id: 'pm_fixture',
         brand: 'visa',
         last4: '4242',
+        wallet: 'apple_pay',
+        isDefault: false,
+      ),
+    ];
+    await tester.ensureVisible(find.text('Actualizar estado'));
+    await tester.tap(find.text('Actualizar estado'));
+    await tester.pumpAndSettle();
+    expect(prefs.getString('dopmi-native-wallet:one:intent'), isNotNull);
+    expect(find.text('Google Pay vinculado'), findsNothing);
+    cards.cards = [
+      const GuardianPaymentCard(
+        id: 'pm_fixture',
+        brand: 'visa',
+        last4: '4242',
         wallet: 'google_pay',
         isDefault: false,
       ),

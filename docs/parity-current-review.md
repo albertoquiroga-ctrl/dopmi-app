@@ -1,3 +1,9 @@
+# Corte vigente — loop401, 3/10/2026
+
+Android debug con Stripe compiló40473 exit0/556.2s, APK externo ficticio sin distribución/servicios; no candidato exactoHEAD por sincronizaciónscratch durantebuild. finishWallet valida id+wallet.type;16targeted pasan. Analyzer34524 limpio95.4s. Configreal/SDK/device/matrizglobal pendientes, Codemagic sóloobjetivo completo.
+
+## Corte400 anterior
+
 # Corte vigente — loop400, 3/10/2026
 
 6screen tests pasan con nuevo retornoSDKsustituto sin serverreceipt terminal: mismointent conservado/noéxitosupuesto. Analyzer97876 limpio147.3s; build40473 confirmadoactivo186dff, retomarhandle pararesultadoterminal, logTemp dopmi-native-build-loop399-fixed.log. No aceptaciónSDK/dispositivo/paridadglobal, configreal pendiente. Codemagic únicamenteobjetivocompleto.

@@ -403,7 +403,11 @@ class _GuardianState extends ConsumerState<GuardianScreen>
     if (status == 'saved' &&
         (cardsError != null ||
             cards == null ||
-            !cards!.any((card) => card.id == walletStatus!['card_id']))) {
+            !cards!.any(
+              (card) =>
+                  card.id == walletStatus!['card_id'] &&
+                  card.wallet == walletStatus!['wallet_type'],
+            ))) {
       return;
     }
     if (!['saved', 'expired'].contains(status)) return;
