@@ -2555,3 +2555,15 @@ No credenciales Auth de prueba disponibles en almacén acceptance (sólo Stripe)
 recorrido Storage autenticado no verificado. No pedir secretos en chat; trabajo
 visual independiente continúa. Retención/account-deletion aún debe incluir nuevo
 bucket de soporte. No aceptación instalada/global ni nuevo Codemagic.
+
+# Loop302 — cierre absoluto del diálogo de soporte
+
+Referencia remota a3c969cd9103fd46dc5cd886999912526ce75efb sin cambios.
+CSS Source .dialog-close posición absoluta top12/right16; encabezado no participa
+en altura del botón. Flutter cambia Row por texto con reserva24 y cierre en Stack
+sobre diálogo. Mantiene objetivo táctil48, tooltip, deshabilitado mientras ocupado
+y PopScope vigente. Ya no añade21.6px de altura normal al encabezado.
+Cuatro pruebas soporte y capturador normal/200% cinco tests aprobados4s; captura
+normal inspeccionada y Analyze limpio25.2s. No aceptación de teléfono ni comparación
+completa Source renderizado de Ayuda: continúa como siguiente comprobación.
+No Codemagic nuevo, cambios privados concurrentes preservados.

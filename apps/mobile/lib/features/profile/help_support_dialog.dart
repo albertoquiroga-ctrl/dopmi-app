@@ -251,17 +251,18 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 361),
-          child: SingleChildScrollView(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: const EdgeInsets.fromLTRB(20, 28, 20, 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                padding: const EdgeInsets.fromLTRB(20, 28, 20, 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Expanded(
+                    Padding(
+                      padding: const EdgeInsets.only(right: 24),
                       child: Text(
                         received
                             ? 'Recibimos tu mensaje.'
@@ -274,194 +275,199 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                         ),
                       ),
                     ),
-                    IconButton(
-                      tooltip: 'Cerrar',
-                      onPressed: busy
-                          ? null
-                          : () => Navigator.of(context).pop(),
-                      icon: const Icon(Icons.close, size: 20),
-                    ),
+                    const SizedBox(height: 12),
+                    if (received) ...[
+                      const Text(
+                        'Tu solicitud quedó registrada para el equipo de soporte. Podemos responder al correo de tu cuenta.',
+                      ),
+                      const SizedBox(height: 12),
+                      FilledButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('Entendido'),
+                      ),
+                    ] else ...[
+                      field(
+                        'Tema',
+                        DropdownButtonFormField<int>(
+                          initialValue: topic,
+                          itemHeight: null,
+                          isExpanded: true,
+                          items: [
+                            for (var i = 0; i < widget.topics.length; i++)
+                              DropdownMenuItem(
+                                value: i,
+                                child: Text(widget.topics[i], softWrap: true),
+                              ),
+                          ],
+                          selectedItemBuilder: (_) => widget.topics
+                              .map((item) => Text(item, softWrap: true))
+                              .toList(),
+                          onChanged: busy
+                              ? null
+                              : (value) =>
+                                    setState(() => topic = value ?? topic),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      field(
+                        'Caso relacionado (opcional)',
+                        TextField(
+                          controller: caseName,
+                          enabled: !busy,
+                          decoration: const InputDecoration(
+                            hintText: 'Ej. Rocky, Luna…',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      field(
+                        'Mensaje',
+                        TextField(
+                          controller: message,
+                          enabled: !busy,
+                          minLines: 4,
+                          maxLines: null,
+                          onChanged: (_) => setState(() {}),
+                          decoration: const InputDecoration(
+                            hintText: 'Cuéntanos qué necesitas',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      if (notice != null) ...[
+                        Semantics(
+                          liveRegion: true,
+                          child: Text(
+                            notice!,
+                            style: const TextStyle(fontSize: 14, color: muted),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                      OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: ink,
+                          minimumSize: const Size(0, 48),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 12,
+                          ),
+                          textStyle: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        onPressed: busy ? null : chooseImage,
+                        child: Text(
+                          attachment == null
+                              ? 'Adjuntar imagen (opcional)'
+                              : 'Cambiar imagen',
+                        ),
+                      ),
+                      if (attachment != null) ...[
+                        const SizedBox(height: 12),
+                        Container(
+                          clipBehavior: Clip.antiAlias,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: const Color(0xffe6e2dd)),
+                          ),
+                          child: Image.memory(
+                            attachment!,
+                            height: 140,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            semanticLabel: 'Adjunto seleccionado',
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: busy
+                              ? null
+                              : () => setState(() {
+                                  attachment = null;
+                                  attachmentPath = null;
+                                  attachmentRevision++;
+                                }),
+                          child: const Text('Quitar imagen'),
+                        ),
+                      ],
+                      const SizedBox(height: 12),
+                      FilledButton(
+                        style: FilledButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 12,
+                          ),
+                          minimumSize: const Size(0, 48),
+                          textStyle: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        onPressed: busy || message.text.trim().isEmpty
+                            ? null
+                            : send,
+                        child: busy
+                            ? Semantics(
+                                label: picking
+                                    ? 'Abriendo galería'
+                                    : sending
+                                    ? 'Enviando mensaje'
+                                    : 'Abriendo correo',
+                                child: const SizedBox(
+                                  width: 22,
+                                  height: 22,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              )
+                            : const Text('Enviar mensaje'),
+                      ),
+                      if (mailFallbackAvailable && attachment == null) ...[
+                        const SizedBox(height: 12),
+                        OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: ink,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 18,
+                              vertical: 12,
+                            ),
+                            minimumSize: const Size(0, 48),
+                            textStyle: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          onPressed:
+                              busy ||
+                                  message.text.trim().isEmpty ||
+                                  attachment != null
+                              ? null
+                              : continueInMail,
+                          child: const Text(
+                            'Continuar en correo',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ],
                   ],
                 ),
-                const SizedBox(height: 12),
-                if (received) ...[
-                  const Text(
-                    'Tu solicitud quedó registrada para el equipo de soporte. Podemos responder al correo de tu cuenta.',
-                  ),
-                  const SizedBox(height: 12),
-                  FilledButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Entendido'),
-                  ),
-                ] else ...[
-                  field(
-                    'Tema',
-                    DropdownButtonFormField<int>(
-                      initialValue: topic,
-                      itemHeight: null,
-                      isExpanded: true,
-                      items: [
-                        for (var i = 0; i < widget.topics.length; i++)
-                          DropdownMenuItem(
-                            value: i,
-                            child: Text(widget.topics[i], softWrap: true),
-                          ),
-                      ],
-                      selectedItemBuilder: (_) => widget.topics
-                          .map((item) => Text(item, softWrap: true))
-                          .toList(),
-                      onChanged: busy
-                          ? null
-                          : (value) => setState(() => topic = value ?? topic),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  field(
-                    'Caso relacionado (opcional)',
-                    TextField(
-                      controller: caseName,
-                      enabled: !busy,
-                      decoration: const InputDecoration(
-                        hintText: 'Ej. Rocky, Luna…',
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  field(
-                    'Mensaje',
-                    TextField(
-                      controller: message,
-                      enabled: !busy,
-                      minLines: 4,
-                      maxLines: null,
-                      onChanged: (_) => setState(() {}),
-                      decoration: const InputDecoration(
-                        hintText: 'Cuéntanos qué necesitas',
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  if (notice != null) ...[
-                    Semantics(
-                      liveRegion: true,
-                      child: Text(
-                        notice!,
-                        style: const TextStyle(fontSize: 14, color: muted),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                  ],
-                  OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: ink,
-                      minimumSize: const Size(0, 48),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 18,
-                        vertical: 12,
-                      ),
-                      textStyle: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    onPressed: busy ? null : chooseImage,
-                    child: Text(
-                      attachment == null
-                          ? 'Adjuntar imagen (opcional)'
-                          : 'Cambiar imagen',
-                    ),
-                  ),
-                  if (attachment != null) ...[
-                    const SizedBox(height: 12),
-                    Container(
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: const Color(0xffe6e2dd)),
-                      ),
-                      child: Image.memory(
-                        attachment!,
-                        height: 140,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        semanticLabel: 'Adjunto seleccionado',
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: busy
-                          ? null
-                          : () => setState(() {
-                              attachment = null;
-                              attachmentPath = null;
-                              attachmentRevision++;
-                            }),
-                      child: const Text('Quitar imagen'),
-                    ),
-                  ],
-                  const SizedBox(height: 12),
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 18,
-                        vertical: 12,
-                      ),
-                      minimumSize: const Size(0, 48),
-                      textStyle: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    onPressed: busy || message.text.trim().isEmpty
-                        ? null
-                        : send,
-                    child: busy
-                        ? Semantics(
-                            label: picking
-                                ? 'Abriendo galería'
-                                : sending
-                                ? 'Enviando mensaje'
-                                : 'Abriendo correo',
-                            child: const SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
-                          )
-                        : const Text('Enviar mensaje'),
-                  ),
-                  if (mailFallbackAvailable && attachment == null) ...[
-                    const SizedBox(height: 12),
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: ink,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 18,
-                          vertical: 12,
-                        ),
-                        minimumSize: const Size(0, 48),
-                        textStyle: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      onPressed:
-                          busy ||
-                              message.text.trim().isEmpty ||
-                              attachment != null
-                          ? null
-                          : continueInMail,
-                      child: const Text(
-                        'Continuar en correo',
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                ],
-              ],
-            ),
+              ),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: IconButton(
+                  tooltip: 'Cerrar',
+                  onPressed: busy ? null : () => Navigator.of(context).pop(),
+                  icon: const Icon(Icons.close, size: 20, color: muted),
+                ),
+              ),
+            ],
           ),
         ),
       ),
