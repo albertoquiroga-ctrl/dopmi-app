@@ -80,3 +80,20 @@ test('disabled and unconfirmed list requests never reach provider', async () => 
   assert.equal((await guardianClientHandler(deps)(request({ action: 'methods' }))).status, 401);
   assert.equal(calls, 0);
 });
+
+
+test('saved-default endpoint requires explicit consent and server-derived actor',async()=>{
+  const calls=[];
+  const handler=guardianClientHandler({enabled:()=>true,
+    authenticate:async()=>({id:'owner',email_confirmed_at:'fixture'}),
+    defaultMethod:async(actor,input)=>{calls.push({actor,input});return {status:'pending'};}});
+  const body={action:'default_method',key:'77000000-0000-4000-8000-000000000001',revision:2,
+    consent:true,consent_version:'guardian-2026-09-24',payment_method_id:'pm_selected'};
+  for(const invalid of [{...body,consent:false},{...body,payment_method_id:'bad'},
+    {...body,donor_id:'peer'},{...body,revision:-1}])
+    assert.equal((await handler(request(invalid))).status,400);
+  assert.equal(calls.length,0);
+  assert.equal((await handler(request(body))).status,200);
+  assert.deepEqual(calls,[{actor:'owner',input:{key:body.key,revision:2,consent:true,
+    consent_version:body.consent_version,selected_method_id:'pm_selected'}}]);
+});

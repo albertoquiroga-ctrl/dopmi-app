@@ -3666,3 +3666,76 @@ test('method inventory linkage is server-only and requires a confirmed active ow
     await db.exec('reset role');
   }
 });
+
+
+test('saved Guardian method reuses the guarded job without Checkout or calendar change', async () => {
+  const f = await methodFixture();
+  const retrieve = f.stripe.paymentMethods.retrieve;
+  f.stripe.paymentMethods.retrieve = async id => ({...await retrieve(id), type:'card'});
+  const input = {...methodInput,selected_method_id:'pm_newMethod'};
+  const result = await f.methodService().checkout(donor,input);
+  assert.equal(result.status,'applied');
+  assert.equal(f.methodCalls.filter(c=>c.kind==='create').length,0);
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update').length,1);
+  assert.equal((await db.query('select payment_method_id from private.dopmi_guardian_subscriptions')).rows[0].payment_method_id,'pm_newMethod');
+  assert.equal((await f.methodService().checkout(donor,input)).status,'applied');
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update').length,1);
+  await rejected(()=>f.prepare({selected_method_id:'pm_other'}),/Clave ya utilizada/);
+});
+
+test('saved Guardian selection rejects a foreign card before changing the subscription', async () => {
+  const f=await methodFixture();
+  f.stripe.paymentMethods.retrieve=async id=>({id,customer:'cus_peer',livemode:false,type:'card'});
+  await assert.rejects(f.methodService().checkout(donor,{...methodInput,selected_method_id:'pm_peer'}),{code:'guardian_method_owner_mismatch'});
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update'||c.kind==='create').length,0);
+});
+
+test('expired saved selection cannot begin a late subscription mutation',async()=>{
+  const f=await methodFixture();
+  const job=await f.prepare({selected_method_id:'pm_newMethod'});
+  await db.query("update private.dopmi_guardian_method_jobs set expires_at=now()-interval '1 minute' where id=$1",[job.id]);
+  assert.equal((await f.methodService().run(job.id)).status,'expired');
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update'||c.kind==='create').length,0);
+});
+
+
+test('saved method update lost response resumes one original job and confirms by rereading',async()=>{
+  const f=await methodFixture();
+  const retrieve=f.stripe.paymentMethods.retrieve;
+  f.stripe.paymentMethods.retrieve=async id=>({...await retrieve(id),type:'card'});
+  const update=f.stripe.subscriptions.update;
+  f.stripe.subscriptions.update=async(...args)=>{await update(...args);throw Error('lost response');};
+  const input={...methodInput,selected_method_id:'pm_newMethod'};
+  await assert.rejects(f.methodService().checkout(donor,input),/lost response/);
+  f.stripe.subscriptions.update=update;
+  assert.equal((await f.methodService().checkout(donor,input)).status,'applied');
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update').length,1);
+  assert.equal(f.methodCalls.filter(c=>c.kind==='create').length,0);
+});
+
+
+test('saved authorization expiring during provider reads cannot start the write',async()=>{
+  const f=await methodFixture();
+  const retrieve=f.stripe.paymentMethods.retrieve;
+  f.stripe.paymentMethods.retrieve=async id=>{
+    await db.query("update private.dopmi_guardian_method_jobs set expires_at=now()-interval '1 minute'");
+    return {...await retrieve(id),type:'card'};
+  };
+  const result=await f.methodService().checkout(donor,{...methodInput,selected_method_id:'pm_newMethod'});
+  assert.equal(result.status,'expired');
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update'||c.kind==='create').length,0);
+});
+
+
+test('server-retained saved selection resumes after local target information is lost',async()=>{
+  const f=await methodFixture();
+  const retrieve=f.stripe.paymentMethods.retrieve;
+  f.stripe.paymentMethods.retrieve=async id=>({...await retrieve(id),type:'card'});
+  const update=f.stripe.subscriptions.update;
+  f.stripe.subscriptions.update=async(...args)=>{await update(...args);throw Error('lost response');};
+  await assert.rejects(f.methodService().checkout(donor,{...methodInput,selected_method_id:'pm_newMethod'}),/lost response/);
+  f.stripe.subscriptions.update=update;
+  assert.equal((await f.methodService().checkout(donor,methodInput)).status,'applied');
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update').length,1);
+  await rejected(()=>f.prepare({selected_method_id:'pm_another'}),/Clave ya utilizada/);
+});
