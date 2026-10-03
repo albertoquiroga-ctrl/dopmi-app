@@ -1,4 +1,4 @@
-# Billeteras nativas — contrato y avance386
+# Billeteras nativas — contrato y avance389
 
 Referencia irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb. Alcance: sección Billeteras digitales y autorización real sin cobro desde Métodos de pago. Se preservan los colores/medidas Source, sujeto a disponibilidad móvil real; no se copia el toast de vinculación simulada.
 
@@ -17,6 +17,9 @@ Fuentes primarias consultadas3/10/2026:
 
 - [Stripe Google Pay Android](https://docs.stripe.com/google-pay?platform=android): disponibilidad ReadyCallback y presentForSetupIntent; producción requiere aprobación Google, no implica activar dinero.
 - [Stripe Apple Pay iOS](https://docs.stripe.com/apple-pay?platform=ios): MerchantID, certificado y capacidad, comprobación del dispositivo antes de ofrecer opción.
-- [Flutter Stripe del mantenedor,14.1.0](https://pub.dev/packages/flutter_stripe): publicación actual y requisitos Android/AppCompat/FlutterFragmentActivity, initPK. No paquete instalado todavía.
+- [Flutter Stripe del mantenedor,14.1.0](https://pub.dev/packages/flutter_stripe): publicación actual y requisitos Android/AppCompat/FlutterFragmentActivity, initPK. Paquete14.1.0 instalado en388, requisitos Android preparados; compilación nativa pendiente.
 
 No cambiar identidad com.mycompany.dopmi/firma, guardas test-only ni flujos Guardian aceptados. Wallets en aportación y tarjeta guardada en Checkout puntual siguen como trabajo separado dentro del objetivo original.
+
+
+Adapter389: NativeWalletSdk sólo pk_test/ENABLE_NATIVE_WALLETS_TEST, AndroidGoogle/iOSApple conMerchantID y no web. Disponibilidad SDK real antesde autorizar, Googletest/existingPaymentMethodRequired, confirmPlatformPaySetupIntent sin PI. ResultadoSDK noesreceipt.7tests adapters/repositorio con callbacks sustitutos pasan; NO prueba nativa real. Config build/entitlement y cliente visual/reanudación siguen pendientes. Apple resumen0.00 para guardar sin cargo, aceptación real aún requerida; no presenta mensualidad ni autorización Guardian. Referencias: docs.page/flutter-stripe/flutter_stripe/apple_pay y google_pay; API local14.1.0 confirma SetupIntent y tiposparams.

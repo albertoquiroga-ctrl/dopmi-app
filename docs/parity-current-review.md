@@ -1,3 +1,9 @@
+# Corte vigente — loop389, 3/10/2026
+
+Adapter NativeWalletSdk con disponibilidad real y SetupIntent test-only preparado.7tests concallbacks pasan, analyzer limpio12.2s. NO SDK/device real ni compilación comprobados. Configbuild/entitlements/UI/intentrecovery y aceptación pendientes, PK/MerchantID sinrespuesta. Servidor386 desplegado. Objetivo global activo/Codemagic sólo final.
+
+## Corte388 anterior
+
 # Corte vigente — loop388, 3/10/2026
 
 SDK flutter_stripe14.1.0 incorporado y requisitos Android preparados; identity/firma preservadas.12tests repositorios/config12 y analyzer limpio42.7s. Compilación nativa y compatibilidad Kotlin/Compose no comprobadas. SDK sin inicialización/UI/availability; PK/MerchantID pendiente. Siguiente adapter/config, compilación y visual/reanudación/aceptación real. Objetivo global activo; Codemagic sólo final.
