@@ -1,4 +1,10 @@
-# Corte vigente — loop511, 3/10/2026
+# Corte vigente — loop518, 3/10/2026
+
+Fuente4571644: full65835exit0,609/609,3m45s; analyzer45360exit0 limpio195.8s.230Dart/cuatroSVG iguales raíz/scratch y hashes sin cambios antes/después. Manifest517. Incluye publicación513–517 y prueba adicional de picker200%; supersede608509.
+
+Referenciaa3c969cd9103fd46dc5cd886999912526ce75efb reconsultada, App/styles sin cambios.401capturas completas511 más capturas dirigidas posteriores513/fotos,516/información,517/revisión;401fixtures no401aceptaciones. ADB517vacío. Contraste global/Android físico/StripeSDK pendientes. Sinpush/Codemagic hasta objetivo completo.
+
+# Corte anterior — loop511, 3/10/2026
 
 Pasada completa81489 exit0, 1test/401 fixtures,2m57s.401 PNG frescos con hashes;230Dart/cuatroSVG iguales raíz/scratch y sin cambios respecto al gate509. Evidencia en parity-loop511/capture-manifest.json. Producción9e76c84fb1cc66e1dcf1c0c7ae6d770dc054c63c mantiene full608/608 y analyzer limpio509. Capturas511 sustituyen492; no401aceptaciones visuales.
 

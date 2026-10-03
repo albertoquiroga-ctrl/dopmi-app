@@ -1,4 +1,10 @@
-# Corte vigente de cobertura — loop502, 3/10/2026
+# Corte vigente de cobertura — loop518, 3/10/2026
+
+Inventario484 sigue vigente:55patronesSource/51nativos/401fixtures, no número de pantallas aceptadas. Gate actual4571644:609/609,3m45s,65835exit0; analyzer45360exit0 limpio195.8s;230Dart/cuatroSVG hashes raíz/scratch iguales antes/después,manifest517. Supersede607500/608509.
+
+Desde502: expansión CASE503 verificada runtime sin animación; railSUPPORT504 gesto/regreso; RH505–509 degradado/iconos/contador real; capturas completas401511; PUBLISH512–517 selector/fotos/orden/datos/iconos/alturas/título revisión. No cierre automático de familias por gate. Capturas511 preceden513–517, complementadas por las dirigidas correspondientes. Queda revisión visual del resumen final y estados del formulario, contraste global y capacidades físicas/StripeSDK. Sinpush/Codemagic hastaobjetivocompleto; publicaciónPlay se verifica aparte.
+
+# Corte anterior de cobertura — loop502, 3/10/2026
 
 El inventario484 inferior sigue localizando rutas, no aceptaciones. Fuente actual del gate `8270386d3b531907d4618ebd4358ebd221a88146`:607/607,3m54s;229Dart iguales raíz/scratch antes/después, análisis limpio y configuración16/16. Supersede el gate592479 citado en el corte histórico.
 

@@ -2506,3 +2506,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb runtimeEdge377x852 medido: nombre
 ### Loop517 — título de revisión y gate completo en curso, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/AppheaderTitleinspeccionado.4571644 títuloRevisatucasoenstep2;44173exit0,8/8,5s con2fixtures,normalPNGinspeccionado.230Dart/cuatroSVG raíz-scratch idénticos/hashantes. Full65835/analyzer45360 corriendo, sinresultadoatribuido todavía. Logs517/README/hash/PNG517. ADBvacío;noaceptaciónfísico/global/StripeSDK. Sinbackend/SQL/push/Codemagic. Full608509pre513–517hastaresultadonuevo.
+
+### Loop518 — regresión integrada609 y corte actualizado, 3/10/2026
+
+Full65835exit0,609/609,3m45s; analyzer45360exit0 limpio195.8s,fuente4571644.230Dart/cuatroSVG raíz/scratch/hashsinchanges antes/despuésverificados. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/App/styleslimpios. Supersede608509, incluye513–517/picker200. ManifestREADME517/currentreview/routeauditactualizados. Capturas401511 anteriores513másdirigidas, no401aceptaciones. ADB517vacío; resumenfinal/global/físico/StripeSDK pendientes. Sinbackend/SQL/push/Codemagic.
