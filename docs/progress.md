@@ -2434,3 +2434,7 @@ Recupera entrada500 no escrita por OSError22OneDrive sin pérdida de ledger. Sou
 ### Loop502 — cobertura y movimiento vigentes, 3/10/2026
 
 Auditorías route/motion tenían gates históricos592479/481341 como encabezado. Reconciliadas con fuente8270386/full607500,229Dart, config16/análisis y pruebas493–500; contratos/límites separados por interacción. No vuelve a ejecutar tests sin cambio ni atribuye401aceptaciones. RuntimeSource de apoyo494/onboarding498 no inventado; regreso496 es continuidad móvil no índiceReact. Próxima acciónlista CASE expansión/cierre realSource+Flutter primerframe/evidencia/foco. Sin producción/backend/SQL/push/Codemagic; objetivo/físico/StripeSDK/global abiertos.
+
+### Loop503 — expansión/cierre de gasto público primerframe, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; Edge377x852/case/rocky clickreal cierra/abre y MutationObserverdetailsfalse/true/chevron90/270/sinanimaciones. Ruta DopmiApp apoyo→caso prueba primerpump cierre/apertura, RotatedBox1/3 y evidencia pública ausente real sin copiarfakeSource. Gate63057exit0,26/26,6s, fuente 85c5ec7a526423246842d21d0bb4bc229e12d1db sólo test. JSON/README503; browser/Vitecerrados. Full607500 vigente para producción, sinbackend/SQL/push/Codemagic/físico/global.

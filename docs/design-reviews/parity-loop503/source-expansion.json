@@ -1,0 +1,24 @@
+{
+  "reference": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "route": "/case/rocky",
+  "viewport": [
+    377,
+    852
+  ],
+  "input": "actual browser click on expanded Cirugia then click again",
+  "mutationSamples": [
+    {
+      "open": false,
+      "details": false,
+      "chevron": "matrix(0, 1, -1, 0, 0, 0)",
+      "animations": []
+    },
+    {
+      "open": true,
+      "details": true,
+      "chevron": "matrix(0, -1, 1, 0, 0, 0)",
+      "animations": []
+    }
+  ],
+  "physicalAndroid": false
+}
