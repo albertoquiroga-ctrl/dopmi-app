@@ -1896,3 +1896,12 @@ Baseeba6d59; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. S
 Suite42443/6754cf→9b4db2:35 pruebas ejecutadas pasan17s, pero comando exit1 por ruta mal nombrada adoption_detail_test.dart inexistente. Se corrigió sólo la invocación a adoption_detail_layout_test.dart;38111/986ee8:5/5 pasan2s. No se oculta primer error ni se afirma primer gate verde. Cobertura comprobada: modo sólo cambia tras éxito servidor y conserva origen/datos; cancelación/confirmación/back/barrier en modales, filtros descartan draft o aplican claves reales, galerías responden swipe/selección/reintento aprobado y reinician otroregistro sin perder refresh. Son widgets/fakes, sin dispositivo/backend ni visual global aprobados. Sin cambios de producción.
 
 Siguiente: verificar estado actual del acceso Android y resolver evidencia nativa de fuente/gestos; después gates del candidato final y demásfamilias pendientes. La revisión física no se sustituye por estas40 pruebas. Codemagic sólo objetivo completo, sin push/build.
+
+
+### Loop423 — acceso físico y regresión integral actual, 3/10/2026
+
+Base8baaa39dc9a9ef7dd6268f1ba61ca6c844564e45; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. ADB devices -l desde SDK externo devuelve lista vacía31c048: no Android conectado visible ahora. No instalación/captura/toque ni aceptación atribuida. Ledger235 conserva pregunta pendiente de autorización específicaADBUI; no se interpreta USB como respuesta ni se repite pregunta. Comparación223Dart lib/test workspace/scratch normalizadaCRLF confirma0diferencias.
+
+Se inicia regresión móvil completa sobre ese SHA, log externo C:/Users/betoq/AppData/Local/Temp/dopmi-full-mobile-loop423.log. Handle90488 confirmado vivo mediante write_stdin62d0ba; NO resultado terminal todavía. Retomar MISMO handle/log en siguiente turno, no lanzar otro Flutter test hasta terminal. No afirmar full558/greenactual. Analyzer420 precede sólo ediciones de prueba y ledger posteriores; verificar alcance final al cerrar suite.
+
+Mientras teléfono no visible, continuar familias/validaciones independientes. ConfigSDKreal/matrizglobal/acceptance física siguen pendientes; Codemagic sólo objetivo completo, sin push/build.

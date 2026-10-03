@@ -1,3 +1,7 @@
+# Corte vigente — loop423
+
+ADB lista vacía;223Dart root/scratch coinciden. Full mobile ACTIVO90488/log Temp/dopmi-full-mobile-loop423.log sobre8baaa39dc9a9ef7dd6268f1ba61ca6c844564e45. Retomarhandle antesotros tests, no greenatribuido. Objetivo global/configSDK/device abiertos. Codemagic sóloobjetivo completo.
+
 # Corte vigente — loop422
 
 35 pruebas de modales/modos/filtros/galería pasan; primer comandoexit1 por archivo inexistente. Invocacióncorrecta adoption_detail_layout_test suma5/5aprobadas. Cobertura40widgets, sin aceptaciónbackend/device/global. Siguiente revisar accesoAndroid/evidenciafuentesgestos y continuarfamilias. Codemagic sólo objetivo completo.
