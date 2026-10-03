@@ -2474,3 +2474,7 @@ Capturador81489 exit0,2m57s:401fixtures únicas regeneradas,401PNG frescos/hashe
 ### Loop512 — contraste real del selector de publicación, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; Edge377x852 /rescuer/publish inspeccionado con captura511. Fondo computado blanco sin imagen, aunque regla histórica define degradado: se conserva blanco. Tarjetas x24/ancho329/y298.203125 y417.59375; composición/iconos/navegación concordantes. Evidencia PNG/README512; emoji advertencia diferente por renderizador, no aceptación de formularios posteriores ni físico. Sin cambio producción/gates nuevos;608509 vigente. Sinpush/Codemagic hasta objetivo completo.
+
+### Loop513 — paridad del contorno en acciones de fotos, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/runtimeEdge377x852 inspeccionado. Botones CSS122.515625/179.203125x36 incluyen borde fuera del padding12; Flutterpadding13 reserva2px horizontales. Fuente88d7ffb.13786exit0,7/7,7s seispruebas+capturador2fixtures. NormalPNGinspeccionado;large muestra controlesfuera viewport,no aceptación atribuida. Analyzer38969 iniciado todavía pendiente. Full608509 anterior cambio. Evidencia513. Sinbackend/SQL/push/Codemagic/físico/global.
