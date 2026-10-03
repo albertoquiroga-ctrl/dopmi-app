@@ -64,8 +64,12 @@ class RescuerNavigationRow extends StatefulWidget {
     this.subtitle = '',
     required this.icon,
     required this.path,
+    this.onPressed,
+    this.enabled = true,
   });
   final String title, subtitle, icon, path;
+  final VoidCallback? onPressed;
+  final bool enabled;
   @override
   State<RescuerNavigationRow> createState() => _RescuerNavigationRowState();
 }
@@ -110,10 +114,14 @@ class _RescuerNavigationRowState extends State<RescuerNavigationRow> {
             child: InkWell(
               onHover: (value) => setState(() => hovered = value),
               onFocusChange: (value) => setState(() => focused = value),
-              onTap: () =>
-                  widget.path == '/my-cases' || widget.path == '/messages'
-                  ? context.go(widget.path)
-                  : context.push(widget.path),
+              onTap: !widget.enabled
+                  ? null
+                  : widget.onPressed ??
+                        () =>
+                            widget.path == '/my-cases' ||
+                                widget.path == '/messages'
+                            ? context.go(widget.path)
+                            : context.push(widget.path),
               splashFactory: NoSplash.splashFactory,
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,

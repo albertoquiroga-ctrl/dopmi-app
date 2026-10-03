@@ -903,6 +903,7 @@ void main() {
       ('profile-overview-large', '/profile'),
       ('profile-mode-dialog', '/profile'),
       ('profile-settings', '/settings'),
+      ('profile-settings-large', '/settings'),
       ('profile-support', '/profile'),
       ('about', '/about'),
       ('about-large', '/about'),

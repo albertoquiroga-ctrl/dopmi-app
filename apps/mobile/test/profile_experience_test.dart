@@ -198,6 +198,78 @@ void main() {
       );
     }
   }
+  for (final fail in [false, true]) {
+    for (final path in ['/settings']) {
+      testWidgets(
+        'donor settings switch enters rescuer only after server success: $fail $path',
+        (tester) async {
+          tester.view.physicalSize = const Size(320, 640);
+          tester.view.devicePixelRatio = 1;
+          tester.platformDispatcher.textScaleFactorTestValue = 2;
+          addTearDown(tester.view.resetPhysicalSize);
+          addTearDown(tester.view.resetDevicePixelRatio);
+          addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+          final identity = FakeIdentityRepository()
+            ..user = const Identity('one', 'ana@example.test', verified: true);
+          await identity.saveProfile(
+            name: 'Ana',
+            phone: '555',
+            city: 'Monterrey',
+          );
+          identity.failSave = fail;
+          final container = ProviderContainer(
+            overrides: [
+              identityRepositoryProvider.overrideWithValue(identity),
+              accountPhotoRepositoryProvider.overrideWithValue(
+                emptyAccountPhotoRepository(identity),
+              ),
+              communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+              rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+              routerInitialLocationProvider.overrideWithValue(path),
+            ],
+          );
+          addTearDown(() async {
+            container.dispose();
+            await identity.changes.close();
+          });
+          await tester.pumpWidget(
+            UncontrolledProviderScope(
+              container: container,
+              child: const DopmiApp(),
+            ),
+          );
+          await tester.pumpAndSettle();
+          final target = find.byKey(
+            const ValueKey('donor-settings-mode-switch'),
+          );
+          await tester.scrollUntilVisible(
+            target,
+            240,
+            scrollable: find.byType(Scrollable).first,
+          );
+          await tester.ensureVisible(target);
+          await tester.pumpAndSettle();
+          expect(find.text('Cambiar tipo de cuenta'), findsOneWidget);
+          expect(find.text('Ir a cuenta Rescatista'), findsOneWidget);
+          await tester.tap(target);
+          await tester.pumpAndSettle();
+          expect(identity.profile.mode, fail ? 'donor' : 'rescuer');
+          expect(identity.profile.name, 'Ana');
+          expect(
+            container.read(routerProvider).state.uri.path,
+            fail ? path : '/rescuer',
+          );
+          if (fail) {
+            expect(
+              find.byKey(const ValueKey('donor-settings-mode-switch')),
+              findsOneWidget,
+            );
+          }
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+  }
   for (final reduced in [false, true]) {
     testWidgets(
       'profile feature press cancels safely; reduced motion=$reduced',

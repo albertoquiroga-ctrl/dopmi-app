@@ -1457,6 +1457,8 @@ class SettingsScreen extends ConsumerWidget {
         const SizedBox(height: 24),
         const _SettingsHeading('Cuenta'),
         const SizedBox(height: 12),
+        const DonorSettingsModeSwitch(),
+        const SizedBox(height: 12),
         const ProfileRow(
           title: 'Historial de aportaciones',
           icon: Icons.history,
@@ -1484,6 +1486,66 @@ class SettingsScreen extends ConsumerWidget {
       ],
     );
   }
+}
+
+class DonorSettingsModeSwitch extends ConsumerStatefulWidget {
+  const DonorSettingsModeSwitch({super.key});
+  @override
+  ConsumerState<DonorSettingsModeSwitch> createState() =>
+      _DonorSettingsModeSwitchState();
+}
+
+class _DonorSettingsModeSwitchState
+    extends ConsumerState<DonorSettingsModeSwitch> {
+  bool busy = false;
+  String? error;
+  Future<void> changeMode() async {
+    if (busy) return;
+    final owner = ref.read(identityControllerProvider).identity?.id;
+    if (owner == null) return;
+    setState(() {
+      busy = true;
+      error = null;
+    });
+    try {
+      final next = await ref
+          .read(identityRepositoryProvider)
+          .setExperience('rescuer');
+      if (!mounted ||
+          ref.read(identityControllerProvider).identity?.id != owner) {
+        return;
+      }
+      ref.read(experienceProvider).applyProfile(next);
+      context.go('/rescuer');
+    } catch (cause) {
+      if (mounted &&
+          ref.read(identityControllerProvider).identity?.id == owner) {
+        setState(() => error = identityError(cause));
+      }
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      if (error != null) Notice(error!, isError: true),
+      RescuerNavigationRow(
+        key: const ValueKey('donor-settings-mode-switch'),
+        title: 'Cambiar tipo de cuenta',
+        subtitle: 'Ir a cuenta Rescatista',
+        icon: 'icon-shield',
+        path: '/rescuer',
+        onPressed: changeMode,
+        enabled:
+            !busy && ref.watch(experienceProvider).profile?.status == 'active',
+      ),
+      if (busy)
+        const LinearProgressIndicator(semanticsLabel: 'Cambiando experiencia'),
+    ],
+  );
 }
 
 class _SettingsHeading extends StatelessWidget {
