@@ -1,0 +1,5 @@
+# Loop515 — opciones de sexo/especie, 3/10/2026
+
+Referenciaa3c969cd9103fd46dc5cd886999912526ce75efb reconsultada; SourceApp inspeccionado y runtime514 previo: símbolos sexo/emoji especie y asteriscos requeridos. Nativeadopción carecía de ambos aunque PublicationChoiceRow ya admite leading/required. Producción6875515 añade marcadores e iconos decorativos manteniendo enums/selección/onChanged/bloqueo en revisión; reutiliza los mismos símbolos Material16 y SVGspecies20 del formulario de casos. No dependencia nueva.
+
+Primera variante Text Unicode generó glifos faltantes en el capturador; descartada antes del commit. Sustituida por iconos empaquetados existentes.1533exit0,8/8,5s final: sietepruebas+capturador2fixtures. PNGnormal final inspeccionado, símbolos visibles, sin cajas. VariantesMaterial/SVG no acreditan identidad pixel por pixel con emoji de plataforma del mockup; contraste físico pendiente.59005analysisprevariante no se atribuye a final;62670finalanalyzer en curso. Full608509 anterior513/514/515. SinruntimeSource nuevo515, no aceptación global/Android/StripeSDK. Sinpush/Codemagic.

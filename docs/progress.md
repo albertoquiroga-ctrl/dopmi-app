@@ -2486,3 +2486,7 @@ Analyzer38969 exit0, sin incidencias sobre88d7ffb; duración exacta en log513-an
 ### Loop514 — formulario en orden de referencia y fotos200%, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/runtimeInformaciónbásica inspeccionado. d340113 reordenaHistoria/Salud/Social antes de tamaño/personalidad/raza/ubicación, conservados todos. Testpickerescala1/2,320x640,scroll/hitTestable/cancelación/draftprivado.24960exit0,7/7antesorden;87605exit0,8/8,8sposteriorcon2capturas.56471analyzerexit0clean. Nativeinformaciónnormalinspeccionadahistoriadespuésedad; iconografía/espaciado/camposreales noaceptadosglobalmente. README/PNG514. Full608509anterior513/514. Sinbackend/SQL/push/Codemagic/físico;objetivoactivo.
+
+### Loop515 — símbolos de opciones y campos requeridos, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/Appinspeccionado/runtime514previo.6875515 añade required y leading en sexo/especie adoptante con Material16/SVGspecies20 ya presentes en casos, preservesenums/lock/datos. Unicodeinicialsincaracteres descartado;PNGfinalnormalinspeccionadocorrecto.1533exit0,8/8,5s con2fixtures.62670finalanalyzerencurso;59005previo noanalysisfinal. README/PNG515;full608509anterior513–515. Identidadpixel/emojiAndroid/global/StripeSDKpendientes. Sinpush/Codemagic.
