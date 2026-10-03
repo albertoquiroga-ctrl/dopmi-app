@@ -402,6 +402,22 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
   ) => PublicationChoiceRow(
     label: label,
     options: options,
+    required: key == 'sex' || key == 'species',
+    leading: switch (key) {
+      'sex' => const {
+        'male': Icon(Icons.male, size: 16),
+        'female': Icon(Icons.female, size: 16),
+      },
+      'species' => {
+        for (final species in ['dog', 'cat'])
+          species: SvgPicture.asset(
+            'assets/profile/species-$species.svg',
+            width: 20,
+            height: 20,
+          ),
+      },
+      _ => const {},
+    },
     value: choices[key] as String?,
     onChanged: busy || post?.status == 'submitted'
         ? null
