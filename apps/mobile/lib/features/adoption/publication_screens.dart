@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -24,13 +25,57 @@ class _MyAdoptionsState extends ConsumerState<MyAdoptionsScreen> {
   Widget build(BuildContext context) => CommunityFrame(
     index: 2,
     back: false,
+    showAppBar: false,
     children: [
       const PhotoRecoveryNotice(),
-      const Heading(
-        'Dale voz\na su historia.',
-        'Prepara una publicación y envíala al equipo Dopmi para su revisión.',
-        eyebrow: 'MIS PUBLICACIONES',
+      Builder(
+        builder: (context) {
+          final large = MediaQuery.textScalerOf(context).scale(24) > 32;
+          final back = IconButton(
+            tooltip: 'Regresar',
+            onPressed: () =>
+                context.canPop() ? context.pop() : context.go('/profile'),
+            icon: SvgPicture.asset(
+              'assets/profile/back.svg',
+              width: 20,
+              height: 20,
+            ),
+          );
+          final heading = Semantics(
+            header: true,
+            child: Text(
+              'Mis publicaciones',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: large ? 20 : 24,
+                height: 1.25,
+                letterSpacing: large ? -.4 : -.48,
+                fontWeight: FontWeight.w700,
+                color: ink,
+              ),
+            ),
+          );
+          return large
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [back, heading],
+                )
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    back,
+                    const SizedBox(width: 8),
+                    Expanded(child: heading),
+                  ],
+                );
+        },
       ),
+      const SizedBox(height: 6),
+      const Text(
+        'Prepara una publicación y envíala al equipo Dopmi para su revisión.',
+        style: TextStyle(fontSize: 12, height: 1.5, color: muted),
+      ),
+      const SizedBox(height: 20),
       ActionButton(
         'Publicar una adopción',
         sunny: true,

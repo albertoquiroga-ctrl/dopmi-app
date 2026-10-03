@@ -2263,3 +2263,10 @@ Producción c9bd74c; referencia a3c969cd9103fd46dc5cd886999912526ce75efb. Contri
 ### Loop467 — publicaciones propias, nueve estados de captura, 3/10/2026
 
 Base b9495d3/producción c9bd74c; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Fixture mine sólo capturador con borrador/revisión/correcciones/publicada, vacío/error. Nueve estados normal200+contenido desplazado200 verifican acceso al contenido/reintento. Final14330 exit0,1test/9capturas5s. Analyzer65499 limpio35.3s antes adición scroll/assert; final compila. Primera aserción sobre lazy fuera de viewport corregida desplazando sólo estados content. Normal/vacío200/contenido datoserror200 revisados. Source integra adopciones en Mis Casos, no /my-adoptions literal. Encabezado slogan Fraunces domina viewport; siguiente alinearlo con composición Inter de listado sin reconstruir lifecycle. Sin cambios producción/aceptación instalada/Codemagic/push.
+
+
+### Loop468 — cabecera de publicaciones propias alineada al listado, 3/10/2026
+
+Base fcc561b; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. MyAdoptionsScreen pasa de logo/slogan Fraunces a cabecera Inter24/1.25/-.48 e introducción12/1.5, SVG regreso origen o perfil. Al200 cabecera a ancho completo, base20 escala40 para conservar palabras completas; resto escalador intacto. Acciones, estados, propiedad, comentarios, paginación y refresh conservados. Capturador añade regreso perfil normal/200.
+
+Primer const Semantics inválido corregido, captura título al200 partía palabra y se corrigió composición antes cierre. Final77171 exit0,40/40 en14s community/publicationframe/personality/capture9estados; analyzer79129 exit0 limpio34.7s. PNG before/final docs/design-reviews/parity-loop468, normal/grande/error inspeccionados. Ruta extensión sin SourceURL literal; Source Mis Casos/CSS h1 guían composición, no aceptación equivalente total. ADB inventario vacío; full579 anterior2bba0c2 no prueba nueva producción. Próximo administración/editor avances. SinCM/push; objetivo sigue activo.

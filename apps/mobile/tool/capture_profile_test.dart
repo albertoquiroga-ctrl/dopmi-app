@@ -3179,6 +3179,13 @@ void main() {
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),
         );
+        if (spec.$1 == 'my-adoptions' || spec.$1 == 'my-adoptions-large') {
+          final back = find.byTooltip('Regresar');
+          expect(back.hitTestable(), findsOneWidget);
+          await tester.tap(back);
+          await tester.pumpAndSettle();
+          expect(container.read(routerProvider).state.uri.path, '/profile');
+        }
         if (helpHold != null) {
           await helpHold.cancel();
           await tester.pumpAndSettle();
