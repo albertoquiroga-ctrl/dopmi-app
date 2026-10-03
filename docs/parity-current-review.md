@@ -1,3 +1,11 @@
+# Corte vigente — loop382, 3/10/2026
+
+Default/remove independientes acreditados con Auth+endpoint+SQL+Stripe test reales: applied/removed, lista fresca/default confirmado, replay estable, intento1 por operación, consentimiento/privado/destino cambiado rechazados, cero cargos/facturas/suscripciones. Fixture completamente retirada y credenciales eliminadas del journal. Preparación SDK de tarjetas/wallet explícita, no aceptación hostedCheckout ni dispositivo. Alta hostedCheckout371 tiene evidencia separada.
+
+Móvil538/538 sobreb03d3a2/381, analyze limpio/config12;324capturas/37URLs sin nuevas382. Wallets reales/uso tarjeta en apoyo, cuentas Guardian canceladas y cierre de matriz global visual/motion/gestos/instalación siguen pendientes. Fuentea3c969c sin cambios, dinero test-only, sin CM/push; Codemagic únicamente al terminar objetivo global.
+
+## Corte381 anterior
+
 # Corte vigente — loop381, 3/10/2026
 
 Regresión móvil completa **538/538 en3:35**, código b03d3a2ff9af2df7608dd8a301ae94957a2b1154; analyze limpio199.3s yconfig12/12.220archivos tracked lib/test/tool coinciden scratch. Corrección sólo test de recuperación: espera operación real, conserva validación propietario/estado y lectura de archivo. Incluye cliente380 de tarjetas independientes.324estados/37URLs, sin capturas nuevas381.
