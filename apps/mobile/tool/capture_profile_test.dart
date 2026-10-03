@@ -1594,19 +1594,17 @@ void main() {
             () => File('tool/fixtures/milo.png').readAsBytes(),
           );
           unawaited(
-            showDialog<void>(
-              context: tester.element(support),
-              builder: (_) => HelpSupportDialog(
-                topics: const ['Cómo funcionan los apoyos'],
-                initialTopic: 0,
-                pickImage: () async => photo,
-                repository: SupportRepository(
-                  (_, params) async => {
-                    'request_id': params['target_request'],
-                    'status': 'received',
-                  },
-                  upload: (id, _) async => 'fixture/$id/photo.jpg',
-                ),
+            showHelpSupportDialog(
+              tester.element(support),
+              topics: const ['Cómo funcionan los apoyos'],
+              initialTopic: 0,
+              pickImage: () async => photo,
+              repository: SupportRepository(
+                (_, params) async => {
+                  'request_id': params['target_request'],
+                  'status': 'received',
+                },
+                upload: (id, _) async => 'fixture/$id/photo.jpg',
               ),
             ),
           );

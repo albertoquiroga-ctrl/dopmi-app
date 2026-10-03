@@ -10,6 +10,26 @@ import '../../core/ui.dart';
 import '../../core/media/media_store.dart';
 import 'support_repository.dart';
 
+Future<void> showHelpSupportDialog(
+  BuildContext context, {
+  required List<String> topics,
+  required int initialTopic,
+  SupportRepository? repository,
+  Future<Uint8List?> Function()? pickImage,
+}) => showGeneralDialog<void>(
+  context: context,
+  barrierDismissible: true,
+  barrierLabel: 'Cerrar contacto a soporte',
+  barrierColor: const Color(0xff15110d).withValues(alpha: .48),
+  transitionDuration: Duration.zero,
+  pageBuilder: (_, _, _) => HelpSupportDialog(
+    topics: topics,
+    initialTopic: initialTopic,
+    repository: repository,
+    pickImage: pickImage,
+  ),
+);
+
 class HelpSupportDialog extends StatefulWidget {
   const HelpSupportDialog({
     super.key,

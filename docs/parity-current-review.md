@@ -1,4 +1,8 @@
-# Corte vigente — loop458
+# Corte vigente — loop459
+
+Soporte ahoraabre0ms/warmbarrier48 segúnSource;helperreal yfixturescompartenruta.11testspasan12s,analyzer35.5sclean.4testsgestos idleinside/outside/back/× ypendingnodismiss/noDuplicate1RPC+receipt. Capturasnormal/200inspeccionadas. Próximo visualmodalSourcepadding/inputs/close/buttons. Full564/452previo453–459; matrizglobal/SDKStripe/device sigueabierta, Codemagic sólofinal.
+
+# Corte anterior — loop458
 
 Help footer Aviso ahoraabre/privacy-notice, noadministración/eliminación. Puntos/gaps/padding ybackcenter36 ajustados.2tests nuevos pasan2s ambosmodos200%;5soporte/capturador pasan, analyzer36.5sclean antes sóloarreglostest.13fixtures,4PNG revisadas. Full564/452precede453–458. Objetivoglobal/StripeSDK/device permaneceabierto;Codemagic sólofinal.
 

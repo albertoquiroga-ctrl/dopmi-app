@@ -181,12 +181,10 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
     super.dispose();
   }
 
-  Future<void> contact() => showDialog<void>(
-    context: context,
-    builder: (_) => HelpSupportDialog(
-      topics: _topics.map((item) => item.$1).toList(),
-      initialTopic: topic ?? 0,
-    ),
+  Future<void> contact() => showHelpSupportDialog(
+    context,
+    topics: _topics.map((item) => item.$1).toList(),
+    initialTopic: topic ?? 0,
   );
 
   @override
