@@ -4143,6 +4143,53 @@ async function independentMethodFixture(action='default') {
  await db.query("insert into private.dopmi_saved_card_customers(owner_id,stripe_customer_id) values($1,'cus_independent')",[donor]);
  return independentMethod('prepare',{owner_id:donor,key,consent:true,consent_version:'saved-card-methods-2026-10-03',action,selected_method_id:'pm_independent'});
 }
+
+async function canceledWalletGuardian() {
+ await db.query("insert into private.dopmi_guardian_subscriptions(donor_id,stripe_customer_id,stripe_subscription_id,stripe_price_id,gross_cents,initial_payment_intent_id,initial_charge_id,status,canceled_at) values($1,'cus_independent','sub_independent','price_independent',5000,'pi_independent','ch_independent','canceled',now())",[donor]);
+}
+
+for(const action of ['default','remove'])test(`confirmed canceled Guardian permits independent ${action} without altering its registry`,async()=>{
+ await canceledWalletGuardian();
+ const before=(await db.query('select to_jsonb(s) value from private.dopmi_guardian_subscriptions s')).rows[0].value;
+ const job=await independentMethodFixture(action);
+ const claim=await independentMethod('claim',{id:job.id});
+ await independentMethod('snapshot',{id:job.id,lease:claim.lease,default_method_id:'pm_previous'});
+ assert.ok(await independentMethod('write_mutation',{id:job.id,lease:claim.lease}));
+ assert.deepEqual((await db.query('select to_jsonb(s) value from private.dopmi_guardian_subscriptions s')).rows[0].value,before);
+});
+
+for(const change of ["status='active',canceled_at=null","change_lease_until=now()+interval '1 minute'","stripe_customer_id='cus_peer'"])
+test(`canceled wallet rechecks Guardian immediately before provider write: ${change}`,async()=>{
+ await canceledWalletGuardian();const job=await independentMethodFixture();
+ const claim=await independentMethod('claim',{id:job.id});
+ await independentMethod('snapshot',{id:job.id,lease:claim.lease,default_method_id:'pm_previous'});
+ await db.exec(`update private.dopmi_guardian_subscriptions set ${change}`);
+ assert.equal(await independentMethod('write_mutation',{id:job.id,lease:claim.lease}),null);
+ assert.equal((await independentMethod('get',{id:job.id})).mutation_requested_at,null);
+});
+
+test('pending Guardian method reconciliation still blocks a canceled independent wallet',async()=>{
+ await canceledWalletGuardian();
+ await db.query("insert into private.dopmi_guardian_method_jobs(donor_id,subscription_id,request_key,revision,consent_version,expires_at,return_url,status) values($1,'sub_independent',$2,1,'guardian-2026-09-24',now()+interval '1 hour','https://example.test/return','attention')",[donor,key]);
+  await assert.rejects(independentMethodFixture(),/Consulta tu medio/);
+});
+
+for(const kind of ['request','method'])test(`late Guardian ${kind} blocks independent wallet before the provider write`,async()=>{
+ await canceledWalletGuardian();const job=await independentMethodFixture();
+ const claim=await independentMethod('claim',{id:job.id});
+ await independentMethod('snapshot',{id:job.id,lease:claim.lease,default_method_id:'pm_previous'});
+ if(kind==='request')await db.query("insert into private.dopmi_guardian_requests(donor_id,subscription_id,request_key,kind,expected_revision,revision,previous_gross_cents) values($1,'sub_independent',$2,'cancel',0,1,5000)",[donor,key]);
+ else await db.query("insert into private.dopmi_guardian_method_jobs(donor_id,subscription_id,request_key,revision,consent_version,expires_at,return_url) values($1,'sub_independent',$2,1,'guardian-2026-09-24',now()+interval '1 hour','https://example.test/return')",[donor,key]);
+ assert.equal(await independentMethod('write_mutation',{id:job.id,lease:claim.lease}),null);
+ assert.equal((await independentMethod('get',{id:job.id})).mutation_requested_at,null);
+});
+
+test('canceled Guardian eligibility helper remains private to server authorization',async()=>{
+ for(const actor of [donor,other,staff]){
+  await role(actor);
+  await rejected(()=>db.query('select private.dopmi_guardian_blocks_saved_method($1)',[donor]),/permission denied/);
+ }
+});
 test('independent method SQL reserves immutable customer/target and denies browser writes',async()=>{
  const j=await independentMethodFixture();
  const input={owner_id:donor,key,consent:true,consent_version:'saved-card-methods-2026-10-03',action:'default',selected_method_id:'pm_independent'};
