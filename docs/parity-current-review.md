@@ -1,3 +1,9 @@
+# Corte vigente — loop403, 3/10/2026
+
+Galeríacasos conserva refresh y reinicia porrecord.id/cambiofotos;27suite rescue+galeríalifecycle pasan/analyzer limpio39.5s. Sourcea3c969c reconsultado. Sinaceptacióninstalada/global; configSDKreal/device/matrizglobal pendientes, Codemagic únicamenteobjetivo completo.
+
+## Corte402 anterior
+
 # Corte vigente — loop402, 3/10/2026
 
 GaleríaAdoptar reiniciaíndice/página porpost.id ademásdephotos;5detalle tests pasan/analyzer limpio28.6s. Sourcecheckout/remotoa3c969c confirmado: adopciónheroestático, casodots/thumbnailsinstantáneos; galería móvil real preservada. AndroidStripe compile401 aprobado sóloficticio/pre-candidato, configreal/SDK/device/matrizglobal pendientes. Codemagic sóloobjetivo completo.

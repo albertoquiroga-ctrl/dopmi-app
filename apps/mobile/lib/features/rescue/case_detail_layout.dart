@@ -52,8 +52,9 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
   @override
   void didUpdateWidget(CaseDetailLayout oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if ((oldWidget.record.publicData['photos'] as List? ?? []).join('|') !=
-        photos.join('|')) {
+    if (oldWidget.record.id != widget.record.id ||
+        (oldWidget.record.publicData['photos'] as List? ?? []).join('|') !=
+            photos.join('|')) {
       photoIndex = 0;
       if (photosController.hasClients) photosController.jumpToPage(0);
     }
