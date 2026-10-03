@@ -46,7 +46,7 @@ class NotificationTile extends StatelessWidget {
       style: const TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w500,
-        height: 1.2,
+        height: 17 / 14,
         letterSpacing: 0,
         color: ink,
       ),
@@ -57,7 +57,7 @@ class NotificationTile extends StatelessWidget {
         notificationTime(item['created_at'] as String),
         style: const TextStyle(
           fontSize: 12,
-          height: 1.2,
+          height: 15 / 12,
           letterSpacing: 0,
           color: muted,
         ),

@@ -1,3 +1,7 @@
+# Corte vigente — loop425
+
+Notificacionestitle17/time15 medidosSource ycorregidos;10tests/capture pasan/analyzer limpio82.5s. Fixturesnoequivalentes, falta comparaciónestado equivalente yphysical/global. Full558424 previoheight425. Codemagic sóloobjetivo completo.
+
 # Corte vigente — loop424
 
 Full558/558 aprobado3m59s sobre8baaa39dc9a9ef7dd6268f1ba61ca6c844564e45;90488 terminalexit0.223Dart idénticos. Próximo comparaciónrenderizada Notificaciones/read/kinds/destinos; no aceptaciónvisualglobal/device. SDK/config yrestomatriz siguenpendientes; Codemagic sóloobjetivo completo.
