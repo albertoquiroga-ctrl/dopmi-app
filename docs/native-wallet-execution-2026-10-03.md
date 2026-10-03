@@ -1,8 +1,8 @@
-# Billeteras nativas — contrato y avance385
+# Billeteras nativas — contrato y avance386
 
 Referencia irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb. Alcance: sección Billeteras digitales y autorización real sin cobro desde Métodos de pago. Se preservan los colores/medidas Source, sujeto a disponibilidad móvil real; no se copia el toast de vinculación simulada.
 
-La base portable y endpoint tienen20tests factory/API; SQL local90000 tiene11casos PostgreSQL adicionales. Backend557/55725.9189576s y Deno check de tres entrypoints pasan. Endpoint/runtime/worker/webhook integrados localmente con bandera de solicitudes nativas apagada por defecto. NO desplegada ni conectada a móvil; preflight/despliegue pendientes y config PK/MerchantID no acreditada.
+La base portable y endpoint tienen20tests factory/API; SQL local90000 tiene11casos PostgreSQL adicionales. Backend557/55725.9189576s y Deno check de tres entrypoints pasan. Endpoint/runtime/worker/webhook integrados localmente con bandera de solicitudes nativas apagada por defecto. Desplegada en DEV: local90000→remote20261003092721, worker27/webhook27/client20 ACTIVE, bundles sin diferencias y25smoke remoto pasan. NO conectada a móvil ni autorizada una billetera real; config PK/MerchantID no acreditada.
 
 Implementación siguiente:
 

@@ -64,6 +64,8 @@ for (const [rpc,body] of [
   ['dopmi_saved_card_state',{}],
   ['dopmi_saved_card_method_server',{operation:'get',data:{}}],
   ['dopmi_saved_card_method_state',{}],
+  ['dopmi_saved_wallet_server',{operation:'get',data:{}}],
+  ['dopmi_saved_wallet_state',{}],
 ]) {
   await probe(`/rest/v1/rpc/${rpc}`, {
     body, status:401, inspect:async response=>assert.equal((await response.json()).code,'42501'),

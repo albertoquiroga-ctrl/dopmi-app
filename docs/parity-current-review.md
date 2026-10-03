@@ -1,3 +1,9 @@
+# Corte vigente — loop386, 3/10/2026
+
+SQL nativo aplicado una vez en DEV como20261003092721; worker27/webhook27/client20 ACTIVE, bundles verificados0diferencias. Permisos privados/owner y25smoke remoto pasan. Sin flags nuevos ni autorización de billetera real; SDK/config/capacidades/cliente y aceptación móvil pendientes. Backend557/385; móvil538/381. Objetivo global activo, Codemagic únicamente al terminar.
+
+## Corte385 anterior
+
 # Corte vigente — loop385, 3/10/2026
 
 Endpoint autenticado add_wallet y conciliación worker/webhook integrados localmente; bandera separada por defecto apagada, owner derivado y prueba Stripe fresca. Tests dirigidos20/20; backend557/55725.9189576s; tres entrypoints Deno válidos. No despliegue ni billetera nativa real acreditados. Próximo preflight remoto90000 y bundles; después SDK/capacidades/config y aceptación móvil. Config PK/MerchantID pendiente. Codemagic sólo al completar el objetivo global.

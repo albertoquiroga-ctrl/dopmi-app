@@ -367,3 +367,10 @@ Local20261003080000_saved_card_methods→remote20261003075406/saved_card_methods
 ## Loop384 local, not deployed
 
 20261003090000_native_saved_wallet is local only; no remote timestamp assigned. PostgreSQL/PGlite full gate549/54925.75s passed. Before applying remotely, compare latest deployed history and shared RPC definitions/patch anchors, completion constraints, existing setup-id uniqueness and grants. Do not repair, rename, replay or db push. Worker/client integration precedes any native job creation.
+
+
+### Loop386 — billeteras nativas desplegadas en DEV, 3/10/2026
+
+Base9df629e. Preflight remoto ohqxranynackjignryep: latest75406/saved_card_methods, wallet_type/RPC nativos ausentes, cero grupos SetupIntent duplicados, constraint original compatible y13anchors exactos en tres definiciones reales. Local20261003090000_native_saved_wallet aplicado una vez por MCP como20261003092721/native_saved_wallet. Postflight confirma columna, índice único, RLS, separación receipt normal y guardia lease liberado; server anon/authfalse/service_roletrue, ownstate anonfalse/authtrue. Sin repair/rename/replay/dbpush/PROD.
+
+Overlays conservan bundles remotos: payment-worker26→27/19files, stripe-webhook26→27/18files, guardian-client19→20/18files ACTIVE. Sólo runtime/native-module y entrypoints afectados/clienthandler; resto de archivos preservados y verify_jwtfalse previo, AuthgetUser/worker-secret/firma intactos. GetEdge posterior:0mismatch/0extra normalizando CRLF en cada bundle. Smoke actualizado incluye dos RPC nativos;25/25real6.6366561s,061747exit0. Backend557/385 y Deno tresentrypoints previos cubren código idéntico. No flags/secrets/usuarios/Stripewrite/app/device/CM/push nuevos. No wallet real ni autorizaciónSDK acreditadas; configuración PK/MerchantID pendiente. Sigue cliente nativo y aceptación; objetivo global activo, Codemagic sólo final.
