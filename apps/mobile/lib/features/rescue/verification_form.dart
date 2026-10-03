@@ -20,7 +20,7 @@ class VerificationFormFrame extends StatelessWidget {
         children: [
           DecoratedBox(
             decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: Color(0xffe6e2dd))),
+              border: Border(bottom: BorderSide(color: Color(0xffe3e4ed))),
             ),
             child: ConstrainedBox(
               constraints: const BoxConstraints(minHeight: 68),
@@ -37,7 +37,7 @@ class VerificationFormFrame extends StatelessWidget {
                       icon: const Icon(
                         Icons.arrow_back,
                         size: 24,
-                        color: Color(0xff15110d),
+                        color: Color(0xff151423),
                       ),
                     ),
                     Expanded(
@@ -49,7 +49,7 @@ class VerificationFormFrame extends StatelessWidget {
                           fontSize: 18,
                           height: 1.55,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xff15110d),
+                          color: Color(0xff151423),
                         ),
                       ),
                     ),
@@ -90,7 +90,7 @@ class VerificationSectionTitle extends StatelessWidget {
           fontSize: 19,
           height: 1.3,
           fontWeight: FontWeight.w700,
-          color: Color(0xff15110d),
+          color: Color(0xff151423),
         ),
       ),
     ),

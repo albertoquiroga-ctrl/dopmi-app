@@ -1,3 +1,9 @@
+# Corte vigente — loop412, 3/10/2026
+
+Formulario de verificación usa paleta rescatista del Source; 31 comprobaciones pasan y analyzer limpio36.8s. Capturas normal/200 revisadas. Privacidad y revisión reales preservadas. No aceptación global ni instalada; siguen otras familias, animaciones/gestos y configuración SDK real. Codemagic sólo al completar el objetivo.
+
+## Corte411 anterior
+
 # Corte vigente — loop411, 3/10/2026
 
 AvisoPublish usa textoUnicodeSource;7tests/capture pasan/analyzer limpio32.1s. GlyphFlutterfixturemonocromático vsEdgeemojiamarillo: revisiónnativa pendiente, no paridadvisualtotalaceptada. Selectorpaleta410 preservada. Intake/formulariosverificación/publicación ymatrizglobal/configSDKreal/device/finalacceptancependientes. Codemagic sóloobjetivo completo.

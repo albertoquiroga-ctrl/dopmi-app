@@ -1459,7 +1459,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     );
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide(color: Color(0xffe6e2dd)),
+      borderSide: const BorderSide(color: Color(0xffe3e4ed)),
     );
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -1472,7 +1472,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
               fontSize: 12,
               height: 1.55,
               fontWeight: FontWeight.w600,
-              color: Color(0xff554e48),
+              color: Color(0xff4f4e5c),
             ),
           ),
           const SizedBox(height: 7),
@@ -1495,7 +1495,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                 style: const TextStyle(
                   fontSize: 16,
                   height: 1.55,
-                  color: Color(0xff15110d),
+                  color: Color(0xff151423),
                 ),
                 decoration: InputDecoration(
                   counterText: '',
@@ -1559,7 +1559,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     child: DecoratedBox(
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: const Color(0xffe6e2dd)),
+        border: Border.all(color: const Color(0xffe3e4ed)),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Padding(
@@ -1573,7 +1573,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                 fontSize: 14,
                 height: 1.55,
                 fontWeight: FontWeight.w600,
-                color: Color(0xff15110d),
+                color: Color(0xff151423),
               ),
             ),
             const SizedBox(height: 4),
@@ -1582,7 +1582,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
               style: TextStyle(
                 fontSize: 12,
                 height: 1.55,
-                color: Color(0xff554e48),
+                color: Color(0xff4f4e5c),
               ),
             ),
             for (final file in files.where((file) => file['role'] == role))
@@ -1749,7 +1749,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
           style: TextStyle(
             fontSize: 14,
             height: 1.55,
-            color: Color(0xff554e48),
+            color: Color(0xff4f4e5c),
           ),
         ),
         const SizedBox(height: 16),
@@ -1779,7 +1779,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
             style: TextStyle(
               fontSize: 12,
               height: 1.55,
-              color: Color(0xff554e48),
+              color: Color(0xff4f4e5c),
             ),
           ),
           const SizedBox(height: 16),
@@ -1793,7 +1793,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
             style: TextStyle(
               fontSize: 12,
               height: 1.55,
-              color: Color(0xff554e48),
+              color: Color(0xff4f4e5c),
             ),
           ),
           const SizedBox(height: 16),
@@ -1804,7 +1804,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
             style: TextStyle(
               fontSize: 12,
               height: 1.55,
-              color: Color(0xff554e48),
+              color: Color(0xff4f4e5c),
             ),
           ),
           const SizedBox(height: 16),
@@ -1819,7 +1819,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
             style: TextStyle(
               fontSize: 12,
               height: 1.55,
-              color: Color(0xff554e48),
+              color: Color(0xff4f4e5c),
             ),
           ),
           const SizedBox(height: 16),
@@ -1827,7 +1827,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
           verificationDocument('address'),
           DecoratedBox(
             decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xffe6e2dd)),
+              border: Border.all(color: const Color(0xffe3e4ed)),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Padding(
@@ -1840,7 +1840,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                     style: TextStyle(
                       fontSize: 14,
                       height: 1.55,
-                      color: Color(0xff554e48),
+                      color: Color(0xff4f4e5c),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -1859,7 +1859,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                     style: TextStyle(
                       fontSize: 12,
                       height: 1.55,
-                      color: Color(0xff554e48),
+                      color: Color(0xff4f4e5c),
                     ),
                   ),
                 ],
