@@ -2066,3 +2066,12 @@ Base726eb6c; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. CSS h
 FinalGuardian+capturer60/60pasa11s99586/b40248: ambasfilas70px, top121.4/201.4 dentro.1px deSource121.390625/201.390625 a377×852; cinquefixturesincluyennormal/200/waiting/footer, assertionsmessage/actions/0writes. Analyzer74704/b6ca0c limpio32.8s código final; format/diffchecklimpios. PNGnormalfinal inspeccionado y5artefactosparity-loop442 guardados; SourcePNG/metricsvigentes441 sirvenreferencia deSHAidéntico.
 
 Posiciónvertical438/441 pendiente resueltaen esta geometría377; no pixeligualdadglobal/múltiplesanchos ni NativeSDK/wallets/fingerdevice aceptados. Sourcewalletsimulada/fixture55xx difieren intencionalmente de datoreal; no inventar disponibilidadnativa. Continúa matrizglobal/gestos/Stripeautenticado ydevice; noCM/push/schema/flags nuevos.
+
+
+### Loop443 — regresión móvil integrada vigente, 3/10/2026
+
+Basebcbb520aa883ee819332916e3c389c67e6ce29cf; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Comparación223Dartlib/test root/scratch0diferencias trasnormalizarnewline. Sin cambios de app durante ejecución. flutter test --no-pub completo562/562pasa3m13s7254/16999dexit0; logexterno Temp/dopmi-full-mobile-loop443.log. Supersede full558/423–424 parafuentesmóvilesactuales, no UIdevice/Stripe/Play/visualglobal atribuidos. No repetirgate sin nuevos cambios oincertidumbre concreta.
+
+ADB read-onlyinventory29b85e vacío: no teléfono accesible ni comandosUI/envíoinstalación. Continúa requisitoAndroid físico/gestos, no confundir USBhistóricoconconexiónactual. Stripe reauthpendiente ySDKPK/MerchantID aún verificaciónefectiva. Últimoanalyze442final limpio32.8s, backend587/436 vigenteparaSQL/Savedcarddeploysinchangesposteriores.
+
+RevisiónSourceSettings3458: cambioexperiencia actualizaestado+navigate inmediatamente, no añadir transiciónglobal/hover de testpanel. Clienteactual _SettingsHeading(profile_overview1570) height1.2; Source settings-heading18 hereda h2line1.3. Próxima comparaciónrenderizada Configuración donor/rescuer debe medircomposición/paleta ycorregir diferencia, antes declararparidad. Fullgate verde es evidenciafuncional local, matrizglobal/estados/nativo/gestos permaneceabierta. SinCM/push.
