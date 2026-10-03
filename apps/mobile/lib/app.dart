@@ -553,6 +553,7 @@ class DopmiApp extends ConsumerWidget {
                   child: ConsentScreen(
                     key: ValueKey(currentIdentity!.id),
                     onTerms: () => router.go('/terms'),
+                    onPrivacyNotice: () => router.go('/privacy-notice'),
                     onPrivacy: () => router.go('/account-privacy'),
                   ),
                 ),

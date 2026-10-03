@@ -466,14 +466,27 @@ void main() {
         status: 'active',
         termsVersion: developmentTermsVersion,
       );
-    await start(tester, repo, initialLocation: '/adoptions');
-
+    final container = await start(tester, repo, initialLocation: '/adoptions');
     expect(find.text('Antes de continuar'), findsOneWidget);
     expect(find.bySemanticsLabel('Adoptar'), findsNothing);
-    await tap(
-      tester,
-      'Confirmo que tengo 18 años o más y acepto los términos y el aviso de privacidad.',
-    );
+    final row = find.byType(AuthConsentRow);
+    await tester.ensureVisible(row);
+    await tester.pumpAndSettle();
+    final bounds = tester.getRect(row);
+    await tester.tapAt(Offset(bounds.left + 9, bounds.top + 11));
+    await tester.pumpAndSettle();
+    expect(tester.widget<AuthConsentRow>(row).value, true);
+    await tap(tester, 'Términos y Condiciones');
+    expect(container.read(routerProvider).state.uri.path, '/terms');
+    await tester.tap(find.byTooltip('Volver'));
+    await tester.pumpAndSettle();
+    expect(tester.widget<AuthConsentRow>(row).value, true);
+    await tap(tester, 'Aviso de Privacidad');
+    expect(container.read(routerProvider).state.uri.path, '/privacy-notice');
+    await tester.tap(find.byTooltip('Volver'));
+    await tester.pumpAndSettle();
+    expect(tester.widget<AuthConsentRow>(row).value, true);
+    expect(repo.consentCount, 0);
     await tap(tester, 'Confirmar y continuar');
     expect(repo.consentCount, 1);
     expect(find.text('Antes de continuar'), findsNothing);

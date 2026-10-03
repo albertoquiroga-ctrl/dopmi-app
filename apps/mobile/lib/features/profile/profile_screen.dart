@@ -15,6 +15,7 @@ import 'account_photo_repository.dart';
 import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
 import '../identity/experience_controller.dart';
+import '../identity/auth_ui.dart';
 
 final accountPhotoPickerProvider = Provider<Future<Uint8List?> Function()>(
   (ref) => () async {
@@ -591,8 +592,13 @@ class _BasicInfoField extends StatelessWidget {
 }
 
 class ConsentScreen extends ConsumerStatefulWidget {
-  const ConsentScreen({super.key, this.onTerms, this.onPrivacy});
-  final VoidCallback? onTerms, onPrivacy;
+  const ConsentScreen({
+    super.key,
+    this.onTerms,
+    this.onPrivacy,
+    this.onPrivacyNotice,
+  });
+  final VoidCallback? onTerms, onPrivacy, onPrivacyNotice;
 
   @override
   ConsumerState<ConsentScreen> createState() => _ConsentScreenState();
@@ -644,54 +650,55 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => PageFrame(
+  Widget build(BuildContext context) => AuthFrame(
     back: false,
-    children: [
-      const Heading(
-        'Antes de continuar',
-        'Dopmi es exclusivamente para personas mayores de 18 años.',
-        eyebrow: 'TU CUENTA',
-      ),
-      if (loading) const Center(child: CircularProgressIndicator()),
-      if (!loading) ...[
-        const Notice(
-          'Revisa y acepta los términos y el aviso de privacidad vigentes para usar Dopmi.',
+    sheet: true,
+    intent: ref.watch(experienceProvider).profile?.intent ?? 'adopt',
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const AuthHeading(
+          'Antes de continuar',
+          'Dopmi es exclusivamente para personas mayores de 18 años.',
+          sheet: true,
+          largeTitleFontSize: 24,
         ),
-        TextButton(
-          onPressed: widget.onTerms ?? () => context.push('/terms'),
-          child: const Text('Leer términos y privacidad'),
-        ),
-        CheckboxListTile(
-          contentPadding: EdgeInsets.zero,
-          controlAffinity: ListTileControlAffinity.leading,
-          value: consent,
-          onChanged: busy
-              ? null
-              : (value) => setState(() => consent = value ?? false),
-          title: const Text(
-            'Confirmo que tengo 18 años o más y acepto los términos y el aviso de privacidad.',
+        if (loading) const Center(child: CircularProgressIndicator()),
+        if (!loading) ...[
+          const Notice(
+            'Revisa y acepta los términos y el aviso de privacidad vigentes para usar Dopmi.',
           ),
-        ),
-        if (error != null) Notice(error!, isError: true),
-        ActionButton(
-          'Confirmar y continuar',
-          busy: busy,
-          onPressed: consent ? accept : null,
-        ),
-        const SizedBox(height: 12),
-        OutlinedButton(
-          onPressed: busy
-              ? null
-              : () => ref.read(identityControllerProvider).logout(),
-          child: const Text('Cerrar sesión'),
-        ),
-        TextButton(
-          onPressed: widget.onPrivacy ?? () => context.push('/account-privacy'),
-          child: const Text('Privacidad y eliminación de cuenta'),
-        ),
+          const SizedBox(height: 12),
+          AuthConsentRow(
+            value: consent,
+            onChanged: busy ? null : (value) => setState(() => consent = value),
+            onOpenTerms: widget.onTerms ?? () => context.push('/terms'),
+            onOpenPrivacy:
+                widget.onPrivacyNotice ?? () => context.push('/privacy-notice'),
+          ),
+          const SizedBox(height: 16),
+          if (error != null) Notice(error!, isError: true),
+          ActionButton(
+            'Confirmar y continuar',
+            busy: busy,
+            onPressed: consent ? accept : null,
+          ),
+          const SizedBox(height: 12),
+          OutlinedButton(
+            onPressed: busy
+                ? null
+                : () => ref.read(identityControllerProvider).logout(),
+            child: const Text('Cerrar sesión'),
+          ),
+          TextButton(
+            onPressed:
+                widget.onPrivacy ?? () => context.push('/account-privacy'),
+            child: const Text('Privacidad y eliminación de cuenta'),
+          ),
+        ],
+        if (!loading && error != null)
+          TextButton(onPressed: load, child: const Text('Volver a intentar')),
       ],
-      if (!loading && error != null)
-        TextButton(onPressed: load, child: const Text('Volver a intentar')),
-    ],
+    ),
   );
 }

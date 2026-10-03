@@ -217,16 +217,23 @@ class AuthConsentRow extends StatelessWidget {
                       WidgetSpan(
                         alignment: PlaceholderAlignment.baseline,
                         baseline: TextBaseline.alphabetic,
-                        child: _legalLink(
-                          'Términos y Condiciones',
-                          onOpenTerms,
+                        child: MediaQuery.withNoTextScaling(
+                          child: _legalLink(
+                            'Términos y Condiciones',
+                            onOpenTerms,
+                          ),
                         ),
                       ),
                       const TextSpan(text: ' y el ', semanticsLabel: ''),
                       WidgetSpan(
                         alignment: PlaceholderAlignment.baseline,
                         baseline: TextBaseline.alphabetic,
-                        child: _legalLink('Aviso de Privacidad', onOpenPrivacy),
+                        child: MediaQuery.withNoTextScaling(
+                          child: _legalLink(
+                            'Aviso de Privacidad',
+                            onOpenPrivacy,
+                          ),
+                        ),
                       ),
                       const TextSpan(text: '.', semanticsLabel: ''),
                     ],
@@ -276,9 +283,11 @@ class AuthHeading extends StatelessWidget {
     this.description, {
     super.key,
     this.sheet = false,
+    this.largeTitleFontSize,
   });
   final String title, description;
   final bool sheet;
+  final double? largeTitleFontSize;
   @override
   Widget build(BuildContext context) => Column(
     children: [
@@ -298,6 +307,11 @@ class AuthHeading extends StatelessWidget {
                 ? Theme.of(context).textTheme.headlineMedium!.copyWith(
                     fontVariations: DopmiTokens.display28Variations,
                     letterSpacing: -.56,
+                    fontSize:
+                        largeTitleFontSize != null &&
+                            MediaQuery.textScalerOf(context).scale(28) > 40
+                        ? largeTitleFontSize
+                        : null,
                   )
                 : Theme.of(context).textTheme.headlineLarge,
           ),
