@@ -55,78 +55,95 @@ class ExpenseFrame extends StatelessWidget {
                       child: ListView(
                         key: const ValueKey('expense-form-body'),
                         shrinkWrap: true,
-                        padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                        padding: EdgeInsets.zero,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              if (confirmation)
-                                const SizedBox(width: 48)
-                              else
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                if (confirmation)
+                                  const SizedBox(width: 48)
+                                else
+                                  IconButton(
+                                    onPressed: onBack,
+                                    tooltip: step > 0
+                                        ? 'Paso anterior'
+                                        : 'Cerrar',
+                                    icon: Transform.translate(
+                                      offset: const Offset(0, 4),
+                                      child: SvgPicture.asset(
+                                        'assets/profile/back.svg',
+                                        width: 20,
+                                        height: 20,
+                                      ),
+                                    ),
+                                  ),
                                 IconButton(
-                                  onPressed: onBack,
-                                  tooltip: step > 0
-                                      ? 'Paso anterior'
-                                      : 'Cerrar',
-                                  icon: SvgPicture.asset(
-                                    'assets/profile/back.svg',
-                                    width: 20,
-                                    height: 20,
+                                  onPressed: onClose,
+                                  tooltip: 'Cerrar formulario',
+                                  icon: Transform.translate(
+                                    offset: const Offset(0, 2),
+                                    child: const Icon(
+                                      Icons.close,
+                                      size: 16,
+                                      color: Color(0xff4f4e5c),
+                                    ),
                                   ),
                                 ),
-                              IconButton(
-                                onPressed: onClose,
-                                tooltip: 'Cerrar formulario',
-                                icon: const Icon(
-                                  Icons.close,
-                                  size: 16,
-                                  color: Color(0xff4f4e5c),
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                          if (!confirmation) ...[
-                            Text(
-                              readOnly
-                                  ? 'Evidencia del gasto'
-                                  : 'Sube tu evidencia',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 18,
-                                height: 1.3,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: -.36,
-                                color: Color(0xff151423),
-                              ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                if (!confirmation) ...[
+                                  Text(
+                                    readOnly
+                                        ? 'Evidencia del gasto'
+                                        : 'Sube tu evidencia',
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 18,
+                                      height: 1.3,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: -.36,
+                                      color: Color(0xff151423),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  if (!readOnly)
+                                    Text(
+                                      'Paso ${step + 1} de 3',
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 12,
+                                        color: Color(0xff4f4e5c),
+                                      ),
+                                    ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    readOnly
+                                        ? 'Consulta los datos y comprobantes de tu solicitud.'
+                                        : 'Comparte los comprobantes de la necesidad cubierta. El equipo de Dopmi revisará el gasto antes de publicarlo y recibir aportaciones.',
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 14,
+                                      height: 20 / 14,
+                                      color: Color(0xff4f4e5c),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                ],
+                                ...children,
+                              ],
                             ),
-                            const SizedBox(height: 8),
-                            if (!readOnly)
-                              Text(
-                                'Paso ${step + 1} de 3',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 12,
-                                  color: Color(0xff4f4e5c),
-                                ),
-                              ),
-                            const SizedBox(height: 8),
-                            Text(
-                              readOnly
-                                  ? 'Consulta los datos y comprobantes de tu solicitud.'
-                                  : 'Comparte los comprobantes de la necesidad cubierta. El equipo de Dopmi revisará el gasto antes de publicarlo y recibir aportaciones.',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 14,
-                                height: 20 / 14,
-                                color: Color(0xff4f4e5c),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                          ],
-                          ...children,
+                          ),
                         ],
                       ),
                     ),
