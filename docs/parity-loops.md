@@ -2819,3 +2819,24 @@ large, sin overflow. Total291estados34URLs, no aceptación general. Analyze limp
 29.9s; diffcheck propio limpio. Contraste actual con CSS/JS, no nuevo runtime
 browser. Sigue pendiente Auth/REST, selección instalada y comparación completa
 de ruta con referencia renderizada. No Codemagic, objetivo global activo.
+
+# Loop317 — Información básica contra runtime Source
+
+Referencia a3c969cd9103fd46dc5cd886999912526ce75efb remota sin cambio. Vite5176
+session22768 + IABtab21viewport377×852; browserinnerWidth378 por redondeo
+observado. DOM: TopBar68/photoCard97.6 y88/input44/font12/weight600, gaps16,
+primary48/y612.6; strongfoto16w700/small12/gap2. Toast48/y780/font16w500.
+Fuentesdocument.fonts vacías: importGoogle no cargado, familiaCSS declaradaInter
+pero fallback efectivo; no afirmar igualdad de fuentes/píxeles por esa sesión.
+
+Corregidos campos native de16regular a12w600, labelgap8, isDense y min44;
+primera captura mostró borde38.4 aunque caja44 (InputDecorator min constraint
+no estira contenedor). Paddingvertical14.8 ajusta contenedor44; botónvertical12
+preservado tras corrección de reemplazo amplio. Foto strong16w700/small12/gap2.
+Capturas5regeneradas, normal inspeccionada; composición/buttony≈613 coincide
+con referencia salvo datos/font efectivo. Sin copiar Modo prueba, datos simulados
+ni hover. Browserviewport restaurado/tabcerrada/Vite terminado explícitamente.
+
+Final widgets+capturador23/23 aprobadas9s; analyze limpio7.3s. Capturas291/34 no
+son aceptación global. Persistencia Auth/REST/galeríaAndroid, reabrir datos y
+fuentesruntime comparables pendientes. No Codemagic, objetivo activo.

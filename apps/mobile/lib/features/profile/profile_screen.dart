@@ -335,7 +335,21 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
                             onChanged: (_) => setState(() {}),
                             enabled: !suspended && !busy,
                             maxLength: 80,
-                            decoration: const InputDecoration(counterText: ''),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              height: 1.2,
+                              color: ink,
+                            ),
+                            decoration: const InputDecoration(
+                              counterText: '',
+                              isDense: true,
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 14.8,
+                              ),
+                              constraints: BoxConstraints(minHeight: 44),
+                            ),
                             validator: (value) => (value ?? '').trim().isEmpty
                                 ? 'Escribe tu nombre.'
                                 : null,
@@ -349,7 +363,21 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
                             enabled: !suspended && !busy,
                             maxLength: 80,
                             textCapitalization: TextCapitalization.words,
-                            decoration: const InputDecoration(counterText: ''),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              height: 1.2,
+                              color: ink,
+                            ),
+                            decoration: const InputDecoration(
+                              counterText: '',
+                              isDense: true,
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 14.8,
+                              ),
+                              constraints: BoxConstraints(minHeight: 44),
+                            ),
                             validator: (_) =>
                                 '${name.text.trim()} ${lastName.text.trim()}'
                                         .trim()
@@ -368,7 +396,21 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
                             keyboardType: TextInputType.emailAddress,
                             autocorrect: false,
                             maxLength: 254,
-                            decoration: const InputDecoration(counterText: ''),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              height: 1.2,
+                              color: ink,
+                            ),
+                            decoration: const InputDecoration(
+                              counterText: '',
+                              isDense: true,
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 14.8,
+                              ),
+                              constraints: BoxConstraints(minHeight: 44),
+                            ),
                             validator: (value) =>
                                 RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$')
                                     .hasMatch((value ?? '').trim())
@@ -384,7 +426,21 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
                             enabled: !suspended && !busy,
                             maxLength: 24,
                             keyboardType: TextInputType.phone,
-                            decoration: const InputDecoration(counterText: ''),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              height: 1.2,
+                              color: ink,
+                            ),
+                            decoration: const InputDecoration(
+                              counterText: '',
+                              isDense: true,
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 14.8,
+                              ),
+                              constraints: BoxConstraints(minHeight: 44),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -395,7 +451,21 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
                             enabled: !suspended && !busy,
                             maxLength: 100,
                             textCapitalization: TextCapitalization.words,
-                            decoration: const InputDecoration(counterText: ''),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              height: 1.2,
+                              color: ink,
+                            ),
+                            decoration: const InputDecoration(
+                              counterText: '',
+                              isDense: true,
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 14.8,
+                              ),
+                              constraints: BoxConstraints(minHeight: 44),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -513,7 +583,7 @@ class _BasicInfoField extends StatelessWidget {
             letterSpacing: 0,
           ),
         ),
-        const SizedBox(height: 7),
+        const SizedBox(height: 8),
         child,
       ],
     ),

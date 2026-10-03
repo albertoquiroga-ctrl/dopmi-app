@@ -88,16 +88,16 @@ class AccountPhotoCard extends StatelessWidget {
         const Text(
           'Foto de perfil',
           style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
             color: ink,
-            height: 1.3,
+            height: 1.2,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 2),
         const Text(
           'Cambia tu foto de perfil',
-          style: TextStyle(fontSize: 13, color: muted, height: 1.3),
+          style: TextStyle(fontSize: 12, color: muted, height: 1.2),
         ),
       ],
     );
