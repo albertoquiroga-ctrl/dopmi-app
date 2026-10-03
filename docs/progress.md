@@ -2478,3 +2478,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; Edge377x852 /rescue
 ### Loop513 — paridad del contorno en acciones de fotos, 3/10/2026
 
 Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/runtimeEdge377x852 inspeccionado. Botones CSS122.515625/179.203125x36 incluyen borde fuera del padding12; Flutterpadding13 reserva2px horizontales. Fuente88d7ffb.13786exit0,7/7,7s seispruebas+capturador2fixtures. NormalPNGinspeccionado;large muestra controlesfuera viewport,no aceptación atribuida. Analyzer38969 iniciado todavía pendiente. Full608509 anterior cambio. Evidencia513. Sinbackend/SQL/push/Codemagic/físico/global.
+
+### Loop513 — resultado terminal del análisis
+
+Analyzer38969 exit0, sin incidencias sobre88d7ffb; duración exacta en log513-analyze. Supersede la anotación pendiente513 anterior. Sin cambio adicional ni full nuevo.
