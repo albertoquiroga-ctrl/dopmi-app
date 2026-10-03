@@ -2538,3 +2538,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado sinruntime nuevo. bb
 ### Loop524 — fallo de expectativa antigua corregido y repetición, 3/10/2026
 
 Full56544exit1,608aprobadas/1fallo,3m38s; analyzer48063exit0 limpio183.1s sobrebb3cd91. Único fallo community_testliteralRevisaantesdeenviar removido519 conformeSource.17e59ee cambia aRevisatucaso, preserva assertsguardadofallo/authoredMora/reintento/draft/noexception,productionc92bc24unchanged.1189exit0,1/1,2s dirigido.230Dart/cuatroSVG raíz/scratch iguales/hashantes;full90121/analyzer79611encurso logs524, noresultadoatribuido. README523terminal/524/currentreviewactualizados;Sourcea3reconsultado523. Sinbackend/SQL/push/Codemagic/físico/global/StripeSDK.
+
+### Loop525 — gate actual609 aprobado y capturas403 en curso, 3/10/2026
+
+Full90121exit0,609/609,3m46s; analyzer79611exit0 limpio222.6s fuente17e59ee.230Dart/cuatroSVG raíz/scratch/hashsinchanges antes/despuéscomprobados. Supersede523608/1fallo y609517, incluye519–523 +literal524. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado sin cambio. ManifestREADME524/currentreviewactualizados. Capturadorcompleto403525 iniciado después delgate,noresultadoatribuido aún,log525-all-captures. Sinbackend/SQL/push/Codemagic/físico/global/StripeSDK.

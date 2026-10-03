@@ -237,7 +237,9 @@
     "assets/profile/icon-alert-circle.svg": "03c22a3ec9471112d0c3f3458d80858ce758f9a57a8cc0cc28348326bb1afcbf",
     "assets/profile/icon-donation-in.svg": "864f1e2028fd65b9d1ce5accfcefd4cd0f4e69ef96898e2d7b049b299371b199"
   },
-  "status": "running repeated gate; root/scratch identical before execution",
+  "status": "full609/609 exit0; analyzer clean; hashes unchanged after execution",
   "full_handle": 90121,
-  "analyzer_handle": 79611
+  "analyzer_handle": 79611,
+  "full_duration": "3m46s",
+  "analyzer_seconds": 222.6
 }

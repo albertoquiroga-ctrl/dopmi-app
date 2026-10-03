@@ -1,4 +1,10 @@
-# Corte vigente — loop524, 3/10/2026
+# Corte vigente — loop525, 3/10/2026
+
+Fuente17e59ee: full90121exit0,609/609,3m46s; analyzer79611exit0 limpio222.6s.230Dart/cuatroSVG raíz-scratch iguales y hashes sin cambios antes/después,manifest524. Incluye519–523 y corrección deexpectativa524; supersede608aprobadas/1fallo523 y609517.
+
+Inventario403522; nueva pasada completa525 iniciada, todavía sin resultados. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambio. Contrasteglobal/Androidfísico/StripeSDK pendientes; capturas noaceptaciones. Sinpush/Codemagic hastaobjetivocompleto.
+
+# Corte anterior — loop524, 3/10/2026
 
 Full523terminal608aprobadas/1fallo,3m38s,56544exit1; analyzer48063exit0 limpio183.1s. Fallo único en literalheading antiguo decommunity_test.17e59ee corrige aRevisatucaso preservandoerror/reintento/draft/authoreddata.1189exit0,1/1,2s dirigido. Full90121/analyzer79611 en curso;230Dart/cuatroSVG iguales raíz/scratch antes,manifest524. Noresultadofullactualatribuido.
 
