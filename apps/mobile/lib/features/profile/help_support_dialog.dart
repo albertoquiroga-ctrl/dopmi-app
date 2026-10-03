@@ -423,16 +423,17 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                             semanticLabel: 'Adjunto seleccionado',
                           ),
                         ),
-                        TextButton(
-                          onPressed: busy
-                              ? null
-                              : () => setState(() {
-                                  attachment = null;
-                                  attachmentPath = null;
-                                  attachmentRevision++;
-                                }),
-                          child: const Text('Quitar imagen'),
-                        ),
+                        if (mailFallbackAvailable)
+                          TextButton(
+                            onPressed: busy
+                                ? null
+                                : () => setState(() {
+                                    attachment = null;
+                                    attachmentPath = null;
+                                    attachmentRevision++;
+                                  }),
+                            child: const Text('Quitar imagen'),
+                          ),
                       ],
                       const SizedBox(height: 12),
                       FilledButton(

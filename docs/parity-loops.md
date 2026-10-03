@@ -2603,3 +2603,21 @@ Pendiente diferencia foto: Quitar imagen añade fila no existente Source; resolv
 sin introducir estados ficticios en siguiente comparación. Falta fuente efectiva
 Source confirmada (Google import), recepción/carga remotas autenticadas y dispositivo.
 Sin nuevos Codemagic; objetivo completo no acreditado.
+
+# Loop305 — foto seleccionada sin fila extra
+
+Referencia remota a3c969cd9103fd46dc5cd886999912526ce75efb sin cambios.
+Source foto termina preview140 → gap12 → Enviar mensaje. Quitar imagen ya no
+introduce fila en estado normal; queda como recuperación tras fallo de envío,
+cuando permite retirar archivo y habilitar alternativa correo conservando texto.
+Cinco pruebas (cuatro widgets y captura seis estados) aprobadas14s, Analyze
+limpio31.0s; captura foto normal inspeccionada con orden Source. No upload real.
+
+Revisión siguiente familia Información básica confirma brecha funcional real:
+Source firstName/lastName/email/avatar, Profile actual sólo display_name/phone/city,
+correo de Auth read-only. Avatar rescatista es moderado/público y no debe reutilizarse
+como foto privada de cuenta; bucket legacy avatars archivado tampoco se restaura.
+Siguiente bloque: almacenamiento privado/nombre-apellido explícitos y confirmación
+real de cambio de email, luego composición/recorridos. No inferir apellido de nombres
+compuestos existentes ni mostrar éxito simulado. Codemagic final sigue reservado
+para cierre completo. Cambios locales del titular preservados.
