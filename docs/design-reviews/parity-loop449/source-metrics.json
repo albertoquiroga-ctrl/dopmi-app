@@ -1,0 +1,160 @@
+[
+  {
+    "rect": {
+      "bottom": 572.09375,
+      "height": 292.1875,
+      "left": 16,
+      "right": 361,
+      "top": 279.90625,
+      "width": 345,
+      "x": 16,
+      "y": 279.90625
+    },
+    "style": {
+      "background": "rgb(255, 255, 255)",
+      "border": "rgb(21, 20, 35)",
+      "color": "rgb(21, 20, 35)",
+      "font": "16px",
+      "line": "normal",
+      "opacity": "1",
+      "outline": "rgb(21, 20, 35) none 3px"
+    },
+    "text": "×Editar InstagramUsuario de InstagramUsa el @ de tu cuenta pública.GuardarCancelar"
+  },
+  {
+    "rect": {
+      "bottom": 315.90625,
+      "height": 24,
+      "left": 318.4375,
+      "right": 345,
+      "top": 291.90625,
+      "width": 26.5625,
+      "x": 318.4375,
+      "y": 291.90625
+    },
+    "style": {
+      "background": "rgba(0, 0, 0, 0)",
+      "border": "rgb(79, 78, 92)",
+      "color": "rgb(79, 78, 92)",
+      "font": "22px",
+      "line": "22px",
+      "opacity": "1",
+      "outline": "rgb(79, 78, 92) none 3px"
+    },
+    "text": "×",
+    "value": ""
+  },
+  {
+    "rect": {
+      "bottom": 332.5,
+      "height": 28.59375,
+      "left": 40,
+      "right": 337,
+      "top": 303.90625,
+      "width": 297,
+      "x": 40,
+      "y": 303.90625
+    },
+    "style": {
+      "background": "rgba(0, 0, 0, 0)",
+      "border": "rgb(21, 20, 35)",
+      "color": "rgb(21, 20, 35)",
+      "font": "22px",
+      "line": "28.6px",
+      "opacity": "1",
+      "outline": "rgb(21, 20, 35) none 3px"
+    },
+    "text": "Editar Instagram"
+  },
+  {
+    "rect": {
+      "bottom": 413.5,
+      "height": 44,
+      "left": 40,
+      "right": 337,
+      "top": 369.5,
+      "width": 297,
+      "x": 40,
+      "y": 369.5
+    },
+    "style": {
+      "background": "rgb(255, 255, 255)",
+      "border": "rgb(227, 228, 237)",
+      "color": "rgb(21, 20, 35)",
+      "font": "14px",
+      "line": "normal",
+      "opacity": "1",
+      "outline": "rgba(120, 65, 242, 0.3) solid 3px"
+    },
+    "text": "",
+    "value": "@maria.rescata"
+  },
+  {
+    "rect": {
+      "bottom": 440.09375,
+      "height": 18.59375,
+      "left": 40,
+      "right": 337,
+      "top": 421.5,
+      "width": 297,
+      "x": 40,
+      "y": 421.5
+    },
+    "style": {
+      "background": "rgba(0, 0, 0, 0)",
+      "border": "rgb(79, 78, 92)",
+      "color": "rgb(79, 78, 92)",
+      "font": "12px",
+      "line": "18.6px",
+      "opacity": "1",
+      "outline": "rgb(79, 78, 92) none 3px"
+    },
+    "text": "Usa el @ de tu cuenta pública."
+  },
+  {
+    "rect": {
+      "bottom": 488.09375,
+      "height": 36,
+      "left": 40,
+      "right": 337,
+      "top": 452.09375,
+      "width": 297,
+      "x": 40,
+      "y": 452.09375
+    },
+    "style": {
+      "background": "rgb(120, 65, 242)",
+      "border": "rgb(251, 251, 255)",
+      "color": "rgb(251, 251, 255)",
+      "font": "14px",
+      "line": "normal",
+      "opacity": "1",
+      "outline": "rgb(251, 251, 255) none 3px"
+    },
+    "text": "Guardar",
+    "value": ""
+  },
+  {
+    "rect": {
+      "bottom": 548.09375,
+      "height": 48,
+      "left": 40,
+      "right": 337,
+      "top": 500.09375,
+      "width": 297,
+      "x": 40,
+      "y": 500.09375
+    },
+    "style": {
+      "background": "rgb(255, 255, 255)",
+      "border": "rgb(227, 228, 237)",
+      "color": "rgb(21, 20, 35)",
+      "font": "16px",
+      "line": "normal",
+      "opacity": "1",
+      "outline": "rgb(21, 20, 35) none 3px"
+    },
+    "text": "Cancelar",
+    "value": ""
+  }
+]

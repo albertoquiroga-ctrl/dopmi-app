@@ -1,3 +1,7 @@
+# Corte vigente — loop449
+
+Modal social Source runtime medido: input44/guardar36/cancel48 corregidos yasserts pasan.7 pruebas pasan5s, analyzerfinal limpio37.1s. Contorno purple scoped/Cancelar pill. Diferencia totalcard.8125 ypaletaheredada/disabled equivalente pendientes; no igualdadpixel/device. Codemagic sólo objetivo completo.
+
 # Corte vigente — loop448
 
 Ediciónsocialabre modal porcampo y guarda borrador conversion/propiedad preservandootrosdatos; no cambia aprobación.24 pruebas pasan9s: enlaces/retry/logout/cancel/success yregresión. Analyzer producción limpio28s.3capturasmodal, pendiente comparaciónSource renderizada (foco/disabled/medidas),keyboard/device/restomatriz. Codemagic sólo objetivo completo.

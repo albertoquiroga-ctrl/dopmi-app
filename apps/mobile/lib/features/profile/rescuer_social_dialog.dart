@@ -38,6 +38,7 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
   bool get instagram => widget.field == 'instagram_url';
   String get network => instagram ? 'Instagram' : 'Facebook';
   late final input = TextEditingController(text: initialValue());
+  final inputFocus = FocusNode();
   bool busy = false;
   String? error;
   String initialValue() {
@@ -115,7 +116,16 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    inputFocus.addListener(() {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
   void dispose() {
+    inputFocus.dispose();
     input.dispose();
     super.dispose();
   }
@@ -141,6 +151,10 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
 
   Widget content(BuildContext context) {
     final allowed = owns(ref.watch(rescuerProfileRepositoryProvider));
+    final inputBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: const BorderSide(color: Color(0xffe3e4ed)),
+    );
     return PopScope(
       canPop: !busy,
       child: Padding(
@@ -157,6 +171,7 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
                   maxHeight: MediaQuery.sizeOf(context).height * .88,
                 ),
                 child: Material(
+                  key: const ValueKey('rescuer-social-card'),
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(24),
                   clipBehavior: Clip.antiAlias,
@@ -188,41 +203,76 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
                                 style: const TextStyle(
                                   fontFamily: 'Inter',
                                   fontSize: 14,
-                                  height: 1.25,
+                                  height: 17 / 14,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              TextField(
-                                key: const ValueKey('rescuer-social-input'),
-                                controller: input,
-                                autofocus: true,
-                                enabled: !busy && allowed,
-                                maxLength: 500,
-                                onChanged: (_) => setState(() {}),
-                                keyboardType: instagram
-                                    ? TextInputType.text
-                                    : TextInputType.url,
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 14,
-                                  height: 1.25,
-                                ),
-                                decoration: InputDecoration(
-                                  counterText: '',
-                                  hintText: instagram
-                                      ? '@tuusuario'
-                                      : 'https://www.facebook.com/tuperfil',
-                                  contentPadding: const EdgeInsets.all(12),
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(14),
-                                    borderSide: const BorderSide(
-                                      color: Color(0xffe3e4ed),
+                              Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  TextField(
+                                    key: const ValueKey('rescuer-social-input'),
+                                    controller: input,
+                                    focusNode: inputFocus,
+                                    cursorColor: const Color(0xff151423),
+                                    autofocus: true,
+                                    enabled: !busy && allowed,
+                                    maxLength: 500,
+                                    onChanged: (_) => setState(() {}),
+                                    keyboardType: instagram
+                                        ? TextInputType.text
+                                        : TextInputType.url,
+                                    style: const TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 14,
+                                      height: 18 / 14,
+                                    ),
+                                    decoration: InputDecoration(
+                                      counterText: '',
+                                      isDense: true,
+                                      enabledBorder: inputBorder,
+                                      focusedBorder: inputBorder,
+                                      disabledBorder: inputBorder,
+                                      hintText: instagram
+                                          ? '@tuusuario'
+                                          : 'https://www.facebook.com/tuperfil',
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 13,
+                                          ),
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(14),
+                                        borderSide: const BorderSide(
+                                          color: Color(0xffe3e4ed),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                  if (inputFocus.hasFocus)
+                                    Positioned(
+                                      left: -5,
+                                      right: -5,
+                                      top: -5,
+                                      bottom: -5,
+                                      child: IgnorePointer(
+                                        child: DecoratedBox(
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: const Color(0x4d7841f2),
+                                              width: 3,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              19,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
                               const SizedBox(height: 8),
                               Text(
@@ -251,8 +301,27 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
                                     : null,
                                 style: FilledButton.styleFrom(
                                   backgroundColor: const Color(0xff7841f2),
-                                  foregroundColor: Colors.white,
-                                  minimumSize: const Size(0, 48),
+                                  foregroundColor: const Color(0xfffbfbff),
+                                  disabledBackgroundColor: const Color(
+                                    0x807841f2,
+                                  ),
+                                  disabledForegroundColor: const Color(
+                                    0x80fbfbff,
+                                  ),
+                                  minimumSize: const Size(0, 36),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 8,
+                                  ),
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  textStyle: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 14,
+                                    height: 20 / 14,
+                                    fontWeight: FontWeight.w500,
+                                    letterSpacing: 0,
+                                  ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(14),
                                   ),
@@ -266,9 +335,16 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
                                     : () => Navigator.pop(context),
                                 style: OutlinedButton.styleFrom(
                                   minimumSize: const Size(0, 48),
+                                  textStyle: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 16,
+                                    height: 1.25,
+                                    fontWeight: FontWeight.w500,
+                                    letterSpacing: 0,
+                                  ),
                                   foregroundColor: const Color(0xff151423),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14),
+                                    borderRadius: BorderRadius.circular(99),
                                   ),
                                   side: const BorderSide(
                                     color: Color(0xffe3e4ed),

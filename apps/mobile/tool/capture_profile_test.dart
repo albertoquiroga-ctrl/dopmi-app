@@ -2836,6 +2836,27 @@ void main() {
           await tester.tap(edit);
           await tester.pumpAndSettle();
           expect(find.byType(RescuerSocialDialog), findsOneWidget);
+          if (spec.$1 == 'rescuer-settings-social-dialog') {
+            final card = tester.getRect(
+              find.byKey(const ValueKey('rescuer-social-card')),
+            );
+            expect(card.top, closeTo(279.90625, .5));
+            expect(card.height, closeTo(292.1875, 1));
+            expect(
+              tester
+                  .getSize(find.byKey(const ValueKey('rescuer-social-input')))
+                  .height,
+              closeTo(44, .1),
+            );
+            expect(
+              tester.getSize(find.byType(FilledButton)).height,
+              closeTo(36, .1),
+            );
+            expect(
+              tester.getSize(find.byType(OutlinedButton)).height,
+              closeTo(48, .1),
+            );
+          }
           expect(find.text('Editar $network'), findsOneWidget);
           expect(tester.takeException(), isNull);
         }
