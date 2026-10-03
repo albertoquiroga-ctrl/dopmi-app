@@ -2470,3 +2470,7 @@ Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado;ADBvacío. Full87957
 ## 3/10/2026 — Paridad loop511, capturas completas actuales
 
 Capturador81489 exit0,2m57s:401fixtures únicas regeneradas,401PNG frescos/hashes registrados.230Dart y cuatroSVG idénticos raíz/scratch al gate509 sobre9e76c84fb1cc66e1dcf1c0c7ae6d770dc054c63c;full608/analyzer509 siguen vigentes. Inspección directa de owned-cases y rescuer-home-actions-large; no aceptación visual atribuida a401estados. Referenciaa3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. docs/design-reviews/parity-loop511. Objetivo activo, contraste global/Android físico/StripeSDK pendientes. Se conserva instrucción del titular: Codemagic sólo al completar, sin avances intermedios.
+
+### Loop512 — contraste real del selector de publicación, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; Edge377x852 /rescuer/publish inspeccionado con captura511. Fondo computado blanco sin imagen, aunque regla histórica define degradado: se conserva blanco. Tarjetas x24/ancho329/y298.203125 y417.59375; composición/iconos/navegación concordantes. Evidencia PNG/README512; emoji advertencia diferente por renderizador, no aceptación de formularios posteriores ni físico. Sin cambio producción/gates nuevos;608509 vigente. Sinpush/Codemagic hasta objetivo completo.
