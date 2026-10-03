@@ -4129,3 +4129,7 @@ Base6db5ff3; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge37
 ### Loop489 — regreso de conversación con lista desplazada, 3/10/2026
 
 Base90731a6; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Nueva regresión DopmiApp/router real con20threads sintéticos: scroll→thread12 porfila→borrador→handlePopRoute; URI/messages/mismaScrollPosition/offsetexacto/fila12hitTestable/zeroenvíos. Gate4205exit0,1/1,2s. Sin producción cambiada, no dedo/Android/tecladonativo/aceptaciónglobal. READMEparity-loop489; búsqueda/filaChats488 y demásfamilias siguenpendientes. SinSQL/backend/push/Codemagic; full592479 no actualizado por1test.
+
+### Loop490 — fila Chats y búsqueda compacta, 3/10/2026
+
+Based91a6ee; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, DOM488 vigente sin nuevosruntimeSource. StackbloqueChats columna título16.1.3/margen12/searchPositioned48 eliminafila48+gap18, icono alineado sin reducirbutton. Query/foco/lista/paging/back preservados. Primer intento UTF8falló sineditar,63330verificóprevio no490; segundoanclajeifinteriorformatrejected, sóloarchivoownreconstruidoHEADycorregido. Gate20569exit0,34/34,16s (33community incluyeback489+capturador14) antesúnicoicontranslate; final60657exit0,1/14,8s. Analyzer96360exit0clean31.8s. PNGnormal/search200inspeccionados: etiqueta flotante200 truncada siguependiente, no globalacceptance. ADBvacío. SinSQL/backend/push/Codemagic. Full592479 precedeproducción; siguiente gateintegrado y familias sin reducir objetivo.
