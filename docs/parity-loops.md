@@ -2786,3 +2786,19 @@ fallo→retry→acuse pendiente→repetición y large/keyboard actualizada5campo
 OneDrive1224 una vez en test, reintento exitoso. No correo real enviado/recibido,
 no confirmación Auth/REST acreditada, pruebas de transporte reales simuladas y
 reconciliación respuesta perdida pendientes del siguiente loop. No Codemagic.
+
+# Loop315 — respuesta perdida en cambio de correo
+
+Referencia remota a3c969cd9103fd46dc5cd886999912526ce75efb revalidada.
+IdentityRepository ante AuthRetryableFetchException consulta Auth.getUser una
+vez y exige actor/email vigente o newEmail coincidentes. No repite PUT; rechazo
+Auth explícito no activa reconciliación. Ausencia de recibo conserva error
+original/stack, identidad ajena rechazada. Contrato/UI de confirmación intactos.
+
+Siete pruebas con SupabaseClient real y HTTP controlado cubren pending/confirmed
+tras respuesta perdida, ausencia,422sinGET, actorajeno, aceptaciónnewEmail sin
+reenviar al repetir y200sinacuse rechazado. Fixture inicial carecía almacenamiento
+PKCE (cinco fallos antes de HTTP); añadida MemoryPkceStorage, manteniendo PKCE.
+Final7+21widgets=28/28 aprobadas28s; analyze limpio36.6s. No cambios visuales,
+correos externos ni Auth/REST remoto acreditados. Next: recorrido autenticado
+foto/correo y cierre visual Información básica. No Codemagic, objetivo activo.

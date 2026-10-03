@@ -240,13 +240,31 @@ class SupabaseIdentityRepository implements IdentityRepository {
     if (current?.email.toLowerCase() == target.toLowerCase()) {
       return EmailChangeStatus.confirmed;
     }
-    if (client.auth.currentUser?.newEmail?.toLowerCase() == target.toLowerCase()) {
+    if (client.auth.currentUser?.newEmail?.toLowerCase() ==
+        target.toLowerCase()) {
       return EmailChangeStatus.pendingConfirmation;
     }
-    final response = await client.auth.updateUser(
-      UserAttributes(email: target),
-      emailRedirectTo: config.redirect,
-    );
+    UserResponse response;
+    try {
+      response = await client.auth.updateUser(
+        UserAttributes(email: target),
+        emailRedirectTo: config.redirect,
+      );
+    } on AuthRetryableFetchException catch (cause, stack) {
+      if (current?.id != actor) throw StateError('profile_owner_changed');
+      try {
+        response = await client.auth.getUser();
+      } catch (_) {
+        Error.throwWithStackTrace(cause, stack);
+      }
+      if (response.user?.id != actor || current?.id != actor) {
+        throw StateError('profile_owner_changed');
+      }
+      if (response.user?.email?.toLowerCase() != target.toLowerCase() &&
+          response.user?.newEmail?.toLowerCase() != target.toLowerCase()) {
+        Error.throwWithStackTrace(cause, stack);
+      }
+    }
     if (current?.id != actor || response.user?.id != actor) {
       throw StateError('profile_owner_changed');
     }
