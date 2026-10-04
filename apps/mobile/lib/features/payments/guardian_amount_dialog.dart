@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/ui.dart';
+import '../../core/dialog_close.dart';
 import '../rescue/rescue_repository.dart';
 import 'contribution_layout.dart';
 
@@ -275,22 +276,7 @@ class _GuardianAmountDialogState extends State<GuardianAmountDialog> {
                           ],
                         ),
                       ),
-                      Positioned(
-                        right: 8,
-                        top: 4,
-                        child: IconButton(
-                          tooltip: 'Cerrar',
-                          onPressed: () => Navigator.pop(context),
-                          icon: const Text(
-                            '×',
-                            style: TextStyle(
-                              fontSize: 22,
-                              height: 1,
-                              color: muted,
-                            ),
-                          ),
-                        ),
-                      ),
+                      DopmiDialogClose(onPressed: () => Navigator.pop(context)),
                     ],
                   ),
                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/ui.dart';
+import '../../core/dialog_close.dart';
 import 'contribution_layout.dart';
 
 Future<bool?> confirmGuardianCancellation(BuildContext context) =>
@@ -68,6 +69,9 @@ class GuardianCancelDialog extends StatelessWidget {
                         FilledButton(
                           onPressed: () => Navigator.pop(context, true),
                           style: FilledButton.styleFrom(
+                            splashFactory: NoSplash.splashFactory,
+                            overlayColor: Colors.transparent,
+                            animationDuration: Duration.zero,
                             backgroundColor: const Color(0xffd52f26),
                             foregroundColor: Colors.white,
                             minimumSize: const Size(0, 48),
@@ -96,17 +100,8 @@ class GuardianCancelDialog extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Positioned(
-                    right: 8,
-                    top: 4,
-                    child: IconButton(
-                      tooltip: 'Cerrar',
-                      onPressed: () => Navigator.pop(context, false),
-                      icon: const Text(
-                        '×',
-                        style: TextStyle(fontSize: 22, height: 1, color: muted),
-                      ),
-                    ),
+                  DopmiDialogClose(
+                    onPressed: () => Navigator.pop(context, false),
                   ),
                 ],
               ),
