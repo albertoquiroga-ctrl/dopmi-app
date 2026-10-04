@@ -1,0 +1,25 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart
+00:00 +0: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/account_photo_widgets_test.dart: private photo preview waits for save and retries the same upload
+00:02 +1: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/account_photo_widgets_test.dart: private photo preview waits for save and retries the same upload
+00:02 +2: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/account_photo_widgets_test.dart: private photo preview waits for save and retries the same upload
+00:03 +3: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: signup consent target and legal reading preserve draft
+00:03 +4: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: enlarged legal reading returns to the unchanged signup draft
+00:03 +5: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: onboarding passes the rescuer intent and registration requires consent
+00:04 +6: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: a failed profile update keeps edits so the user can retry
+00:05 +7: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: suspended basic info stays read-only without querying guarded private name parts
+00:05 +8: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: basic info preserves all edits through the large keyboard and retry
+00:05 +9: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: email request preserves draft on failure and requires confirmation
+00:06 +10: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: settings opens basic info without a rendering exception
+00:06 +11: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: privacy route exposes account deletion
+00:06 +12: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: an outdated social profile must accept age and current terms
+00:06 +13: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: restoring accepted consent never flashes the consent screen
+00:07 +14: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: profile load failure cannot bypass legal consent
+00:07 +15: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: signup exposes Google as an account creation method
+00:07 +16: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: form social icons dispatch one request and recover after provider failure
+00:07 +17: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: auth switch preserves rescuer intent and login input when returning
+00:07 +18: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: forgot link opens real recovery and back retains entered email
+00:08 +19: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: confirmation access follows Auth code without creating a session, email_not_confirmed
+00:08 +20: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: confirmation access follows Auth code without creating a session, invalid_credentials
+00:08 +21: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: a recovery link routes to reset without loading personal data
+00:08 +22: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: password recovery ends at login with a success message
+00:08 +23: All tests passed!

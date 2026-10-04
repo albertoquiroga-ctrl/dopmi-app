@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/measurement.dart';
+import '../../core/reference_focus_outline.dart';
 import '../../core/ui.dart';
 import '../../core/media/media_store.dart';
 import 'account_photo_card.dart';
@@ -602,14 +603,15 @@ class _BasicInfoField extends StatelessWidget {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(
-                      color: Color(0xff6b5000),
-                      width: 2,
-                    ),
+                    borderSide: const BorderSide(color: Color(0xffe6e2dd)),
                   ),
                 ),
           ),
-          child: child,
+          child: ReferenceFocusOutline(
+            radius: 14,
+            showForTouchFocus: true,
+            child: child,
+          ),
         ),
       ],
     ),
