@@ -65,6 +65,9 @@ class _ContributionAmountDialogState extends State<ContributionAmountDialog> {
           focus.unfocus();
         }),
         style: OutlinedButton.styleFrom(
+          splashFactory: NoSplash.splashFactory,
+          overlayColor: Colors.transparent,
+          animationDuration: Duration.zero,
           minimumSize: const Size(0, 56),
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
           foregroundColor: ink,
@@ -109,6 +112,7 @@ class _ContributionAmountDialogState extends State<ContributionAmountDialog> {
 
   Widget close(String label, String asset, double size) => IconButton(
     tooltip: label,
+    style: IconButton.styleFrom(overlayColor: Colors.transparent),
     onPressed: () => Navigator.pop(context),
     constraints: const BoxConstraints.tightFor(width: 36, height: 36),
     padding: EdgeInsets.zero,
@@ -300,6 +304,9 @@ class _ContributionAmountDialogState extends State<ContributionAmountDialog> {
                             ? () => Navigator.pop(context, cents)
                             : null,
                         style: FilledButton.styleFrom(
+                          splashFactory: NoSplash.splashFactory,
+                          overlayColor: Colors.transparent,
+                          animationDuration: Duration.zero,
                           backgroundColor: yellow,
                           foregroundColor: ink,
                           disabledBackgroundColor: yellow.withValues(alpha: .5),
