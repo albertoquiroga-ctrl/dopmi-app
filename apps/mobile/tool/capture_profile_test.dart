@@ -3063,7 +3063,9 @@ void main() {
       }
       if (spec.$1.startsWith('publish-health')) {
         await Scrollable.ensureVisible(
-          tester.element(find.text('Salud')),
+          tester.element(
+            find.text(large ? 'Requiere cuidados especiales' : 'Salud'),
+          ),
           alignment: 0,
         );
         await tester.pumpAndSettle();

@@ -51,6 +51,68 @@ Future<void> startPublication(
 }
 
 void main() {
+  for (final scale in [1.0, 2.0]) {
+    testWidgets(
+      'special care declaration reloads without invented details: scale=$scale',
+      (tester) async {
+        tester.view.physicalSize = const Size(377, 852);
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        final repo = PhotoDraftCommunity();
+        repo.post = Adoption({...repo.post.data, 'special_care': ''});
+        await startPublication(tester, repo, '/my-adoptions/${repo.post.id}');
+        await tester.tap(find.text('Continuar'));
+        await tester.pumpAndSettle();
+        final care = find.byKey(const ValueKey('publication-special-care'));
+        await tester.ensureVisible(care);
+        await tester.pumpAndSettle();
+        expect(tester.widget<PublicationTraitCheck>(care).value, isFalse);
+        await tester.tap(care);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Guardar borrador'));
+        await tester.pumpAndSettle();
+        expect(
+          repo.savedPayload?['special_care'],
+          'Requiere cuidados especiales',
+        );
+        final reload = find.text('Descartar cambios y cargar versión guardada');
+        await tester.ensureVisible(reload);
+        await tester.pumpAndSettle();
+        await tester.tap(reload);
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(care);
+        await tester.pumpAndSettle();
+        expect(tester.widget<PublicationTraitCheck>(care).value, isTrue);
+        expect(
+          find.byKey(const ValueKey('publication-field-special_care')),
+          findsNothing,
+        );
+        await tester.ensureVisible(find.text('Describir cuidados'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Describir cuidados'));
+        await tester.pumpAndSettle();
+        final description = find.byKey(
+          const ValueKey('publication-field-special_care'),
+        );
+        await tester.ensureVisible(description);
+        await tester.enterText(
+          description,
+          'Dieta indicada por su veterinario',
+        );
+        await tester.tap(find.text('Guardar borrador'));
+        await tester.pumpAndSettle();
+        expect(
+          repo.savedPayload?['special_care'],
+          'Dieta indicada por su veterinario',
+        );
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   testWidgets(
     'special care checkbox preserves an existing description across toggles',
     (tester) async {
