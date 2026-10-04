@@ -892,6 +892,7 @@ class _DonorFeatureState extends State<DonorFeature> {
           onTap: onPressed,
           onHighlightChanged: (value) => setState(() => pressed = value),
           splashFactory: NoSplash.splashFactory,
+          highlightColor: Colors.transparent,
           borderRadius: BorderRadius.circular(24),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
@@ -916,7 +917,14 @@ class _DonorFeatureState extends State<DonorFeature> {
                         style: TextStyle(
                           fontSize: 13,
                           height: 1.35,
-                          color: light ? muted : const Color(0xffc3c1c0),
+                          color: light
+                              ? muted
+                              : const Color.from(
+                                  alpha: .72,
+                                  red: 1,
+                                  green: 1,
+                                  blue: 1,
+                                ),
                         ),
                       ),
                     ],

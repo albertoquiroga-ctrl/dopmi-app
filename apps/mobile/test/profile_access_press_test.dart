@@ -77,4 +77,59 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  testWidgets(
+    'profile feature preserves dark surface while pressed and Source subtitle alpha',
+    (tester) async {
+      var calls = 0;
+      final key = GlobalKey();
+      await tester.pumpWidget(
+        RepaintBoundary(
+          key: key,
+          child: MaterialApp(
+            home: Scaffold(
+              body: DonorFeature(
+                title: 'Sé un Guardián',
+                subtitle: 'Apoyo mensual con reportes de impacto',
+                icon: Icons.star_border,
+                onPressed: () => calls++,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<Text>(find.text('Apoyo mensual con reportes de impacto'))
+            .style!
+            .color,
+        const Color.from(alpha: .72, red: 1, green: 1, blue: 1),
+      );
+      final rect = tester.getRect(find.byType(DonorFeature));
+      Future<List<int>?> sample() => tester.runAsync(() async {
+        final image =
+            await (key.currentContext!.findRenderObject()!
+                    as RenderRepaintBoundary)
+                .toImage(pixelRatio: 1);
+        final bytes = await image.toByteData(
+          format: ui.ImageByteFormat.rawRgba,
+        );
+        final offset =
+            (rect.center.dy.floor() * image.width + (rect.left + 12).floor()) *
+            4;
+        final color = bytes!.buffer.asUint8List().sublist(offset, offset + 4);
+        image.dispose();
+        return color;
+      });
+      expect(await sample(), [21, 17, 13, 255]);
+      final gesture = await tester.startGesture(rect.center);
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(await sample(), [21, 17, 13, 255]);
+      expect(calls, 0);
+      await gesture.up();
+      await tester.pumpAndSettle();
+      expect(calls, 1);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }
