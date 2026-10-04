@@ -3528,3 +3528,7 @@ Source rutasdonortrackadopter/rescuer recrean dots (runtime756), clienteadopt/re
 ### 2026-10-04 - Loop758: coleccion completa actual419
 
 Fuente714853a/produccion0328de6, capture21331 exit0:1/1 en3m13s.419fixturesunicas/47rutas parseadas yPNGposterioreslog/PIL/dimensiones/SHAvalidos;365 fuentesroot/scratchigualesduranteyhashesestablescierre. Supersede743/418 (FAQAdoptarnormalextra749); no419aceptaciones. Seisnormalvacios adoption/match/support/ownedcases/savedadoptions/impact inspeccionados sinnuevo defecto, acciones visibles; sinSourcecomparacionnueva/callbacknativo. Full756/803 misma produccion, test757fortalecido sinnewcount. Source a3c969c inicio/cierre. Auth/welcome otroscapturadores no incluidos. SinCodemagic/nativa/global/dineroreal. Ver docs/design-reviews/parity-loop758.
+
+### 2026-10-04 - Loop759: vacios con destinosSource ejecutados
+
+Source/adoption vacioIrApoyar→Descubrecasos, /savedIrAdoptar→adoption observados. SavedSource/Flutter758 inspeccionados misma composicion normal; medidasSource titulo19line24.7/buttonx44y451.84375w289h48. AdoptionCTA Sourcey336.265625 vsFlutter335: residual1.265625 pendingboundsparrafo/fontsready/cascada anteseditar. Gate95416 exit0:7/7 discoveryempty/supportgesture y63010 exit0:1/1 savedCTA200scroll/holdcancel/tap. No produccion/testsnew; full756/803/coleccion758vigentes. Source a3c969c inicio/cierre/browsercerrado. SinCodemagic/nativa/global/dineroreal. Ver docs/design-reviews/parity-loop759.
