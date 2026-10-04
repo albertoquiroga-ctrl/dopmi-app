@@ -169,6 +169,9 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
                                   ? null
                                   : () => context.go('/rescuer'),
                               style: TextButton.styleFrom(
+                                splashFactory: NoSplash.splashFactory,
+                                overlayColor: Colors.transparent,
+                                animationDuration: Duration.zero,
                                 foregroundColor: const Color(0xff4f4e5c),
                                 minimumSize: const Size(48, 48),
                                 padding: const EdgeInsets.symmetric(
