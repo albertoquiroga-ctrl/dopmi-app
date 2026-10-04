@@ -2545,7 +2545,11 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                                           (file['path']?.toString().trim() ??
                                                   '')
                                               .isNotEmpty,
-                                    ))
+                                    )) ||
+                                (step == 2 &&
+                                    controllers['description']!.text
+                                        .trim()
+                                        .isEmpty)
                             ? null
                             : () => run(() async {
                                 if (step < 3) {

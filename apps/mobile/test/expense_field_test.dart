@@ -12,11 +12,13 @@ import 'rescue_test.dart' show FakeRescue;
 
 class DraftExpenseRescue extends FakeRescue {
   DraftExpenseRescue({
+    this.initialDescription = 'Recibió su consulta veterinaria.',
     this.initialFiles = const [
       {'role': 'receipt', 'path': 'one/expense-one/receipt.pdf'},
     ],
   });
   final List<Json> initialFiles;
+  final String initialDescription;
   List<Json>? savedFiles;
   Json? publicSaved;
   @override
@@ -26,7 +28,11 @@ class DraftExpenseRescue extends FakeRescue {
       'owner_id': 'one',
       'status': 'draft',
       'private_data': {'amount_cents': 12345, 'vendor': 'Clínica'},
-      'public_data': {'title': 'Consulta', 'category': 'medicine'},
+      'public_data': {
+        'title': 'Consulta',
+        'category': 'medicine',
+        'description': initialDescription,
+      },
       'files': initialFiles,
     },
     'history': <Json>[],
@@ -97,6 +103,92 @@ void resumeExpense(WidgetTester tester) {
 }
 
 void main() {
+  for (final scale in [1.0, 2.0]) {
+    testWidgets(
+      'description requires content and incomplete save remains available at $scale',
+      (tester) async {
+        tester.view.physicalSize = const Size(320, 640);
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        final repo = DraftExpenseRescue(initialDescription: '   ');
+        await startPublication(
+          tester,
+          FakeCommunity(),
+          '/rescue/expense-one',
+          rescue: repo,
+        );
+        final scroll = find
+            .descendant(
+              of: find.byKey(const ValueKey('expense-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first;
+        Future<void> showAction(String text) async {
+          await tester.scrollUntilVisible(
+            find.text(text),
+            300,
+            maxScrolls: 100,
+            scrollable: scroll,
+          );
+          await tester.pumpAndSettle();
+        }
+
+        for (var i = 0; i < 2; i++) {
+          await showAction('Siguiente');
+          await tester.tap(find.text('Siguiente'));
+          await tester.pumpAndSettle();
+        }
+        FilledButton nextButton() => tester.widget<FilledButton>(
+          find.ancestor(
+            of: find.text('Siguiente'),
+            matching: find.byType(FilledButton),
+          ),
+        );
+        await showAction('Siguiente');
+        expect(nextButton().onPressed, isNull);
+        await tester.tap(find.text('Siguiente'));
+        await tester.pumpAndSettle();
+        expect(find.text('Revisa antes de enviar'), findsNothing);
+        final field = find.byKey(const ValueKey('expense-field-description'));
+        await tester.scrollUntilVisible(
+          field,
+          -300,
+          maxScrolls: 100,
+          scrollable: scroll,
+        );
+        await tester.pumpAndSettle();
+        await tester.enterText(field, 'Recibió su tratamiento.');
+        FocusManager.instance.primaryFocus?.unfocus();
+        tester.testTextInput.hide();
+        await tester.pumpAndSettle();
+        await showAction('Siguiente');
+        expect(nextButton().onPressed, isNotNull);
+        await tester.scrollUntilVisible(
+          field,
+          -300,
+          maxScrolls: 100,
+          scrollable: scroll,
+        );
+        await tester.pumpAndSettle();
+        await tester.enterText(field, '');
+        FocusManager.instance.primaryFocus?.unfocus();
+        tester.testTextInput.hide();
+        await tester.pumpAndSettle();
+        await showAction('Siguiente');
+        expect(nextButton().onPressed, isNull);
+        await showAction('Guardar progreso');
+        await tester.tap(find.text('Guardar progreso'));
+        await tester.pumpAndSettle();
+        expect(repo.publicSaved!['description'], '');
+        expect(repo.savedFiles, repo.initialFiles);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   for (final scale in [1.0, 2.0]) {
     testWidgets(
       'receipt step blocks advance but saves incomplete draft at $scale',

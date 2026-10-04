@@ -1,0 +1,5 @@
+# Validación de descripción
+
+## 2026-10-04 — Loop628: descripción requerida para avanzar
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Step2expense deshabilita Siguiente cuando description.trim vacío. Guardar progreso independiente; backend validación/aprobación intactos. Dos pruebas integradas normal200 navegan a descripción con espacios, tap no avanza, escribir habilita, borrar deshabilita, guardar persiste description vacía y conserva archivos. Fixture DraftExpenseRescue ahora permite initialDescription y defaulttexto de consulta para recorridos válidos; no datos simulados de producción. Gate63353terminalexit0,12/12en11s (11expense_field+capturadorfamiliaexpense); analyzer32584exit0sin incidencias25.3s. Familiaexpense regenerada, manifiesto17hashes guardado; normal información inspeccionada muestra descripción fixture real de prueba/ayuda, no captura de disabled. No Source runtime ni dispositivo/SDK nuevos. Full692618 anterior producciónvigente. Próximo: contraste de transición entrepasos contra Source, revisión visual ampliada de descripción y regresión global actual. Sin push/Codemagic hasta completar objetivo.
