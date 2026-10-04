@@ -3420,3 +3420,11 @@ Referencia inicio a3c969cd9103fd46dc5cd886999912526ce75efb; componente productiv
 Final68219 exit0,11/11 en3s: dos pruebas normal/reduced y payment_history_screen. A90ms desplazamiento normal13*Curves.ease(.5)=10.425899px, tolerancia.02; final13 tolerancia.001; reduced13 inmediato. Gesto cancelado conserva posición y callback0; tap llama una vez. Target48×48 medido. Verifica render Flutter, no teléfono físico.
 
 Inicial23162 falló por medir contenedor exterior, ambos deltas0; corregido finder al hijo visible. Analyzer66171 limpio24.4s anterior a ese cambio de finder. No código productivo cambiado. Objetivo activo, aceptación global pendiente y sin Codemagic. Anterior732 avanzó implementación del interruptor.
+
+### 2026-10-04 — Perfil público actual
+
+Referencia inicio/cierre a3c969cd9103fd46dc5cd886999912526ce75efb. Source /rescuer-profile/reference377×852/fonts ready usa fallback Diego F.: title125.125/218/126.75/32.5, spacing-.52. PublicProfileHero26/1.25/-.52 coincide en estilos. No cambio productivo justificado por estos datos.
+
+Test30954 exit0,9/9 en3s:layout/case/adoption/avatar recovery. Capture24139 exit0,1/1 en2s: public-profile-reference normal/large. Normal inspeccionada, fixture María R. con datos/foto distintos a Source; no igualdad visual total atribuida ni nueva aceptación de movimiento.
+
+Anterior733 verificó desplazamiento renderizado del interruptor. Objetivo activo; próxima comparación del perfil requiere identidad/datos equivalentes. Dinero test-only, sin Codemagic. No analyzer repetido sin cambio de código.
