@@ -184,6 +184,86 @@ void main() {
     }
   }
 
+  for (final large in [false, true]) {
+    for (final report in [false, true]) {
+      testWidgets(
+        'detail action pixels and callback on release: $large/$report',
+        (tester) async {
+          tester.view.physicalSize = large
+              ? const Size(320, 640)
+              : const Size(377, 852);
+          tester.view.devicePixelRatio = 1;
+          tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
+          addTearDown(tester.view.resetPhysicalSize);
+          addTearDown(tester.view.resetDevicePixelRatio);
+          addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+          final font = FontLoader('Inter')
+            ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
+          await tester.runAsync(font.load);
+          final key = GlobalKey();
+          var shares = 0, reports = 0;
+          final repo = FakeCommunity();
+          await tester.pumpWidget(
+            ProviderScope(
+              overrides: [communityRepositoryProvider.overrideWithValue(repo)],
+              child: RepaintBoundary(
+                key: key,
+                child: MaterialApp(
+                  home: Scaffold(
+                    body: AdoptionDetailLayout(
+                      post: repo.post,
+                      saved: false,
+                      busy: false,
+                      owner: false,
+                      favorite: () {},
+                      contact: () {},
+                      share: () => shares++,
+                      report: () => reports++,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+          await tester.pumpAndSettle();
+          final target = report
+              ? find.text('Reportar publicación')
+              : find.byTooltip('Compartir');
+          await tester.ensureVisible(target);
+          await tester.pumpAndSettle();
+          Future<List<int>?> pixels() => tester.runAsync(() async {
+            final image =
+                await (key.currentContext!.findRenderObject()!
+                        as RenderRepaintBoundary)
+                    .toImage(pixelRatio: 1);
+            final data = await image.toByteData(
+              format: ui.ImageByteFormat.rawRgba,
+            );
+            final bytes = data!.buffer.asUint8List().toList();
+            image.dispose();
+            return bytes;
+          });
+          final rect = tester.getRect(target);
+          final before = await pixels();
+          final held = await tester.startGesture(rect.center);
+          await tester.pump(const Duration(milliseconds: 200));
+          expect(await pixels(), before);
+          expect(tester.getRect(target), rect);
+          expect(shares + reports, 0);
+          await held.cancel();
+          await tester.pumpAndSettle();
+          expect(await pixels(), before);
+          expect(shares + reports, 0);
+          await tester.tap(target);
+          await tester.pumpAndSettle();
+          expect(shares, report ? 0 : 1);
+          expect(reports, report ? 1 : 0);
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+  }
+
   testWidgets(
     'saved detail favorite carries reference shadow and removes it on unsave',
     (tester) async {
