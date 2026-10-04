@@ -219,56 +219,70 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                     220,
                                   ),
                                 ),
-                                child: Material(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(999),
-                                  child: InkWell(
-                                    splashFactory: NoSplash.splashFactory,
-                                    overlayColor: const WidgetStatePropertyAll(
-                                      Colors.transparent,
-                                    ),
-                                    onTap: () => context.push('/people/$owner'),
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(999),
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                        12,
-                                        5,
-                                        6,
-                                        5,
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Color(0x1f15110d),
+                                        offset: Offset(0, 4),
+                                        blurRadius: 14,
                                       ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Flexible(
-                                            child: Text(
-                                              rescuer,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                fontFamily: 'Inter',
-                                                letterSpacing: 0,
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.w600,
-                                                color: ink,
+                                    ],
+                                  ),
+                                  child: Material(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(999),
+                                    child: InkWell(
+                                      splashFactory: NoSplash.splashFactory,
+                                      overlayColor:
+                                          const WidgetStatePropertyAll(
+                                            Colors.transparent,
+                                          ),
+                                      onTap: () =>
+                                          context.push('/people/$owner'),
+                                      borderRadius: BorderRadius.circular(999),
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                          12,
+                                          5,
+                                          6,
+                                          5,
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                rescuer,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontFamily: 'Inter',
+                                                  letterSpacing: 0,
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: ink,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          const SizedBox(width: 8),
-                                          CircleAvatar(
-                                            radius: 14,
-                                            backgroundColor: yellow,
-                                            foregroundColor: ink,
-                                            child: Text(
-                                              rescuer.characters.first,
-                                              style: const TextStyle(
-                                                fontFamily: 'Inter',
-                                                letterSpacing: 0,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w700,
+                                            const SizedBox(width: 8),
+                                            CircleAvatar(
+                                              radius: 14,
+                                              backgroundColor: yellow,
+                                              foregroundColor: ink,
+                                              child: Text(
+                                                rescuer.characters.first,
+                                                style: const TextStyle(
+                                                  fontFamily: 'Inter',
+                                                  letterSpacing: 0,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
