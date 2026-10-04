@@ -765,32 +765,13 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                             : fields['pet_name']!.text.trim(),
                       ),
                       (
-                        'Sexo',
-                        choices['sex'] == 'male'
-                            ? 'Macho'
-                            : choices['sex'] == 'female'
-                            ? 'Hembra'
-                            : 'Por confirmar',
-                      ),
-                      (
-                        'Especie',
-                        choices['species'] == 'dog'
-                            ? 'Perro'
-                            : choices['species'] == 'cat'
-                            ? 'Gato'
-                            : 'Por confirmar',
-                      ),
-                      (
                         'Edad',
                         '${publicationAgeMonths(fields['age_months']!.text) ?? 0} meses',
                       ),
                       ('Historia', fields['story']!.text.trim()),
                       (
-                        'Ubicación',
-                        [
-                          fields['city']!.text.trim(),
-                          fields['region']!.text.trim(),
-                        ].where((value) => value.isNotEmpty).join(', '),
+                        'Lista para adopción',
+                        post?.status == 'closed' ? 'No' : 'Sí',
                       ),
                     ],
                   ),
