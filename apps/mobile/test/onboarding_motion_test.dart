@@ -22,10 +22,7 @@ void main() {
     final progress = const Cubic(.22, 1, .36, 1).transform(.5);
     expect(tester.widget<Opacity>(opacity).opacity, closeTo(progress, .00001));
     // Edge, source a3c969c: paused onb-in at 225 of 450 milliseconds.
-    expect(
-      tester.widget<Opacity>(opacity).opacity,
-      closeTo(.961383, .0005),
-    );
+    expect(tester.widget<Opacity>(opacity).opacity, closeTo(.961383, .0005));
     expect(
       tester.getTopLeft(find.text('Contenido')).dy - (start - 10),
       closeTo(.386175, .005),

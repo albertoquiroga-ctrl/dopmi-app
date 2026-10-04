@@ -46,7 +46,10 @@ void main() {
       final button = find.widgetWithText(FilledButton, 'Nuevo');
       final target = tester.getRect(button);
       expect(target.height, greaterThanOrEqualTo(48));
-      final surface = find.descendant(of: button, matching: find.byType(Material));
+      final surface = find.descendant(
+        of: button,
+        matching: find.byType(Material),
+      );
       final visual = tester.getRect(surface);
       expect(visual.top, closeTo(20, .5));
       expect(visual.height, large ? greaterThan(48) : closeTo(34, .01));

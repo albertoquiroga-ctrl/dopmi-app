@@ -302,7 +302,10 @@ void main() {
           '  Información incorrecta  ',
         );
         await tester.pump();
-        final reportAction = find.widgetWithText(FilledButton, 'Enviar reporte');
+        final reportAction = find.widgetWithText(
+          FilledButton,
+          'Enviar reporte',
+        );
         await tester.ensureVisible(reportAction);
         await tester.pumpAndSettle();
         final actionRect = tester.getRect(reportAction);
@@ -335,7 +338,10 @@ void main() {
           if (cancel == 'back') {
             await tester.binding.handlePopRoute();
           } else if (cancel == 'barrier') {
-            await tester.enterText(find.byType(TextField), 'Borrador conservado');
+            await tester.enterText(
+              find.byType(TextField),
+              'Borrador conservado',
+            );
             await tester.tapAt(const Offset(4, 4));
             await tester.pumpAndSettle();
             expect(returned, false);

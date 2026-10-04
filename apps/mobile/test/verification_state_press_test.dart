@@ -11,10 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   for (final platform in [TargetPlatform.android, TargetPlatform.iOS]) {
     for (final scale in [1.0, 2.0]) {
-      for (final section in [
-        'Publicar un caso',
-        'Volver al inicio',
-      ]) {
+      for (final section in ['Publicar un caso', 'Volver al inicio']) {
         testWidgets(
           'Verification state actions preserve press and cancel safely: section=$section scale=$scale platform=$platform',
           (tester) async {

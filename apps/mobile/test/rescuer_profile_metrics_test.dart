@@ -68,9 +68,15 @@ void main() {
       expect(tester.widget<AnimatedScale>(animation).scale, .98);
       await tester.pump(const Duration(milliseconds: 120));
       expect(
-        tester.widget<ScaleTransition>(
-          find.descendant(of: animation, matching: find.byType(ScaleTransition)),
-        ).scale.value,
+        tester
+            .widget<ScaleTransition>(
+              find.descendant(
+                of: animation,
+                matching: find.byType(ScaleTransition),
+              ),
+            )
+            .scale
+            .value,
         closeTo(.98, .0001),
       );
       await gesture.cancel();
