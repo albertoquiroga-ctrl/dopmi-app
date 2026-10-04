@@ -214,6 +214,9 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
               if (primary(i) == main)
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(
+                    splashFactory: NoSplash.splashFactory,
+                    overlayColor: Colors.transparent,
+                    animationDuration: Duration.zero,
                     backgroundColor: topic == i
                         ? const Color(0xfffff8e0)
                         : Colors.white,
@@ -430,6 +433,9 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                   const SizedBox(height: 12),
                   FilledButton(
                     style: FilledButton.styleFrom(
+                      splashFactory: NoSplash.splashFactory,
+                      overlayColor: Colors.transparent,
+                      animationDuration: Duration.zero,
                       backgroundColor: yellow,
                       minimumSize: const Size.fromHeight(44),
                       padding: const EdgeInsets.symmetric(

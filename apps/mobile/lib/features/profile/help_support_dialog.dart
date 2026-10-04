@@ -483,6 +483,9 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                       const SizedBox(height: 12),
                       FilledButton(
                         style: FilledButton.styleFrom(
+                          splashFactory: NoSplash.splashFactory,
+                          overlayColor: Colors.transparent,
+                          animationDuration: Duration.zero,
                           backgroundColor: yellow,
                           foregroundColor: const Color(0xff0d0d0d),
                           padding: const EdgeInsets.symmetric(
@@ -553,6 +556,7 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                 right: 5.28125,
                 child: IconButton(
                   tooltip: 'Cerrar',
+                  style: IconButton.styleFrom(overlayColor: Colors.transparent),
                   onPressed: busy ? null : () => Navigator.of(context).pop(),
                   icon: const ExcludeSemantics(
                     child: Text(
