@@ -1,3 +1,9 @@
+# Corte vigente — loop572, 3/10/2026
+
+## 2026-10-03 — Loop572: regresión completa de acceso actualizado
+
+Fuente c4deabcd5536694ac9f014dd56bff620b873071d. Flutter test --no-pub, sesión54766 terminal exit0:633/633,3m53s. Los240 Dart de lib/test/tool coinciden raíz/scratch y conservan hashes al cierre; medición inicial tomada durante la ejecución, no antes de iniciarla. Analyzer571 limpio69.2s sobre la misma fuente. Incluye569–571, supersede full630564. Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto reconsultado sin cambios. Capturas407565 anteriores a estos cambios;27 dirigidas571 actuales. No paridad global, gestos físicos, signin real ni StripeSDK aceptados. Sin push/Codemagic hasta completar objetivo.
+
 # Corte vigente — loop565, 3/10/2026
 
 Capturador6598 terminalexit0,1test/407unique,3m02s:407PNG nuevos/formato/hashmanifest565.233Dart iguales raíz/scratch yhashessin cambios frente full630564/fuente135879c; analyzer563limpio26.9s.96assets revisados:licencia no renderizada temporal abreviada corregida sólo después del gate,95visuales byteidénticos durante; pubspec/lock iguales. Supersede407547. FuenteSourcea3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Dos capturas actuales inspeccionadas, no407aceptaciones. Sigue contraste visual/temporal porfamilias/teléfono/StripeSDK. Sinpush/Codemagic hastaobjetivocompleto.
