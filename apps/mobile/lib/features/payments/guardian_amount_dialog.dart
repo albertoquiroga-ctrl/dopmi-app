@@ -122,6 +122,10 @@ class _GuardianAmountDialogState extends State<GuardianAmountDialog> {
                                 button: true,
                                 selected: cents == value,
                                 child: InkWell(
+                                  splashFactory: NoSplash.splashFactory,
+                                  overlayColor: const WidgetStatePropertyAll(
+                                    Colors.transparent,
+                                  ),
                                   borderRadius: BorderRadius.circular(18),
                                   onTap: () => choose(value),
                                   child: Container(
@@ -205,7 +209,7 @@ class _GuardianAmountDialogState extends State<GuardianAmountDialog> {
                                                 : Colors.white,
                                             border: Border.all(
                                               color: cents == value
-                                                  ? yellow
+                                                  ? const Color(0xfff4c917)
                                                   : const Color(0xffd5cfc6),
                                             ),
                                           ),

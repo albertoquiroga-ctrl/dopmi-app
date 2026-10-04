@@ -72,7 +72,7 @@ class GuardianCancelDialog extends StatelessWidget {
                             splashFactory: NoSplash.splashFactory,
                             overlayColor: Colors.transparent,
                             animationDuration: Duration.zero,
-                            backgroundColor: const Color(0xffd52f26),
+                            backgroundColor: const Color(0xffe6362c),
                             foregroundColor: Colors.white,
                             minimumSize: const Size(0, 48),
                             padding: const EdgeInsets.symmetric(
