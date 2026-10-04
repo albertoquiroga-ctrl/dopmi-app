@@ -1,3 +1,5 @@
+> Corte vigente749: FAQ de ayuda corregida a16px conforme Source ejecutado;37/37 y analyze limpio, capturas normal/200% inspeccionadas. Full748/801 sobre5fc3822 antecede este ajuste; coleccion743/418 y365 fuentes identicas son la evidencia global previa. Samsung conectado con Play286; APK748 debug instalado en emulador, apertura manual pendiente. Ver [748](design-reviews/parity-loop748/README.md) y [749](design-reviews/parity-loop749/README.md). No aceptacion global/nativa ni Codemagic hasta completar objetivo.
+
 > Loop667: colección renovada414/47, PNGfresh/válidos, supersede651. [Evidencia](design-reviews/parity-loop667/README.md). RectfiltrosFuente666=Flutterexactos;Cerrar pendiente. No aceptación individual414/global/nativa.
 
 > Loop660: regresión global **766/766**, analyze limpio;352archivos idénticos antes/final. [Evidencia](design-reviews/parity-loop660/README.md). Supersede759650; colección414651 yAPK656 anteriores últimosparches, no aceptación visual/nativa global. Codemagic únicamente al objetivo completo.

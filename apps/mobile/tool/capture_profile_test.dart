@@ -1106,6 +1106,7 @@ void main() {
       ('help-center-topic-held-large', '/help'),
       ('help-center-footer', '/help'),
       ('help-center-footer-large', '/help'),
+      ('help-center-adoption', '/help'),
       ('help-center-adoption-large', '/help'),
       ('help-center-support', '/help'),
       ('help-center-support-large', '/help'),
@@ -2140,7 +2141,7 @@ void main() {
         expect(footer.hitTestable(), findsOneWidget);
         expect(tester.takeException(), isNull);
       }
-      if (spec.$1 == 'help-center-adoption-large') {
+      if (spec.$1.startsWith('help-center-adoption')) {
         final topic = find.widgetWithText(OutlinedButton, 'Adoptar');
         await tester.ensureVisible(topic);
         await tester.pumpAndSettle();

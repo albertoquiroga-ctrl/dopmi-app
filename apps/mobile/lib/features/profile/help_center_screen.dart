@@ -377,6 +377,8 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                                 child: Text(
                                   _topics[topic!].$3[i].$1,
                                   style: const TextStyle(
+                                    fontSize: 16,
+                                    height: 1.25,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
