@@ -1058,6 +1058,7 @@ void main() {
       ('saved-pagination-large', '/saved'),
       ('saved-pagination-second-large', '/saved'),
       ('basic-info', '/basic-info'),
+      ('basic-info-validation', '/basic-info'),
       ('basic-info-large', '/basic-info'),
       ('basic-info-keyboard-large', '/basic-info'),
       ('basic-info-saved', '/basic-info'),
@@ -2156,6 +2157,26 @@ void main() {
         await tester.tap(save);
         await tester.pumpAndSettle();
         expect(find.text('Cambios guardados'), findsOneWidget);
+      }
+      if (spec.$1 == 'basic-info-validation') {
+        await tester.enterText(find.byType(TextFormField).first, '');
+        await tester.enterText(
+          find.byType(TextFormField).at(2),
+          'correo inválido',
+        );
+        final save = find.widgetWithText(FilledButton, 'Guardar cambios');
+        await tester.ensureVisible(save);
+        await tester.tap(save);
+        await tester.pumpAndSettle();
+        expect(find.text('Escribe tu nombre.'), findsOneWidget);
+        expect(
+          find.text('Escribe un correo electrónico válido.'),
+          findsOneWidget,
+        );
+        expect(find.text('Cambios guardados'), findsNothing);
+        await tester.ensureVisible(find.byType(TextFormField).first);
+        await tester.tap(find.byType(TextFormField).first);
+        await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('basic-info-keyboard')) {
         tester.view.viewInsets = const FakeViewPadding(bottom: 300);
@@ -3822,6 +3843,22 @@ void main() {
             find.descendant(of: topic, matching: find.byType(InkWell)).first,
           );
           expect(ink.statesController!.value, contains(WidgetState.pressed));
+        }
+        if (spec.$1.startsWith('basic-info')) {
+          final fields = find.byType(TextFormField);
+          final geometry = <Map<String, double>>[
+            for (var i = 0; i < fields.evaluate().length; i++)
+              {
+                'x': tester.getRect(fields.at(i)).left,
+                'y': tester.getRect(fields.at(i)).top,
+                'width': tester.getRect(fields.at(i)).width,
+                'height': tester.getRect(fields.at(i)).height,
+              },
+          ];
+          await tester.runAsync(() async {
+            await File('${out.path}/${spec.$1}-geometry.json')
+                .writeAsString(jsonEncode(geometry));
+          });
         }
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),
