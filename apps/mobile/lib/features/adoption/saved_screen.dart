@@ -107,8 +107,8 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
         },
         style: const TextStyle(
           fontSize: 18,
-          height: 1.2,
-          letterSpacing: 0,
+          height: 1.25,
+          letterSpacing: -0.36,
           color: ink,
           fontWeight: FontWeight.w700,
         ),
@@ -117,14 +117,19 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
       toolbarHeight: MediaQuery.textScalerOf(context).scale(18) > 25
           ? MediaQuery.textScalerOf(context).scale(18) * 2.6 + 16
           : 67,
-      leading: IconButton(
-        tooltip: 'Regresar',
-        onPressed: () =>
-            context.canPop() ? context.pop() : context.go('/profile'),
-        icon: SvgPicture.asset(
-          'assets/profile/back.svg',
-          width: 20,
-          height: 20,
+      leadingWidth: 60,
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 12),
+        child: IconButton(
+          tooltip: 'Regresar',
+          style: IconButton.styleFrom(overlayColor: Colors.transparent),
+          onPressed: () =>
+              context.canPop() ? context.pop() : context.go('/profile'),
+          icon: SvgPicture.asset(
+            'assets/profile/back.svg',
+            width: 20,
+            height: 20,
+          ),
         ),
       ),
       bottom: const PreferredSize(
