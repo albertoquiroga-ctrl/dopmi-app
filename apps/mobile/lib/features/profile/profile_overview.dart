@@ -542,31 +542,43 @@ class DonorProfileView extends ConsumerWidget {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(18, 16, 18, 110),
         children: [
-          Row(
-            children: [
-              SvgPicture.asset(
-                'assets/profile/logo-paw.svg',
-                width: 40,
-                height: 40,
-                semanticsLabel: 'Dopmi',
-              ),
-              const Spacer(),
-              const DonorNotificationButton(),
-            ],
-          ),
-          const SizedBox(height: 28),
-          const Text(
-            'Mi perfil',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.w700,
-              color: ink,
-              height: 1.1,
+          SizedBox(
+            height: 42,
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  'assets/profile/logo-paw.svg',
+                  width: 40,
+                  height: 40,
+                  semanticsLabel: 'Dopmi',
+                ),
+                const Spacer(),
+                const DonorNotificationButton(),
+              ],
             ),
           ),
-          const SizedBox(height: 29),
+          const SizedBox(height: 28),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 40),
+              child: const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Mi perfil',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700,
+                    color: ink,
+                    height: 1.1,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
           Container(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.fromLTRB(16, 14, 14, 14),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(24),

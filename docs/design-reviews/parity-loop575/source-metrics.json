@@ -1,0 +1,83 @@
+[
+  {
+    "class": "profile-feature",
+    "rect": {
+      "height": 90.28125,
+      "width": 341,
+      "x": 18,
+      "y": 256
+    }
+  },
+  {
+    "class": "profile-access",
+    "rect": {
+      "height": 165.78125,
+      "width": 341,
+      "x": 18,
+      "y": 366.28125
+    }
+  },
+  {
+    "class": "profile-access-icon",
+    "rect": {
+      "height": 56,
+      "width": 56,
+      "x": 64,
+      "y": 427.671875
+    }
+  },
+  {
+    "class": "profile-access-icon",
+    "rect": {
+      "height": 56,
+      "width": 56,
+      "x": 188,
+      "y": 427.671875
+    }
+  },
+  {
+    "class": "profile-access",
+    "rect": {
+      "height": 180.171875,
+      "width": 341,
+      "x": 18,
+      "y": 552.0625
+    }
+  },
+  {
+    "class": "profile-access-icon",
+    "rect": {
+      "height": 56,
+      "width": 56,
+      "x": 54.828125,
+      "y": 613.453125
+    }
+  },
+  {
+    "class": "profile-access-icon",
+    "rect": {
+      "height": 56,
+      "width": 56,
+      "x": 160.484375,
+      "y": 613.453125
+    }
+  },
+  {
+    "class": "profile-access-icon",
+    "rect": {
+      "height": 56,
+      "width": 56,
+      "x": 266.15625,
+      "y": 613.453125
+    }
+  },
+  {
+    "class": "profile-feature profile-feature--mode",
+    "rect": {
+      "height": 107.828125,
+      "width": 341,
+      "x": 18,
+      "y": 752.234375
+    }
+  }
+]
