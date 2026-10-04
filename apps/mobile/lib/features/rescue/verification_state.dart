@@ -85,7 +85,7 @@ class VerificationStateScreen extends StatelessWidget {
               const SizedBox(height: 26.08),
               Text(
                 approved
-                    ? 'Tu solicitud fue aprobada. Puedes continuar con la publicación de tus casos.'
+                    ? 'Ya puedes publicar y administrar casos con donaciones.'
                     : 'El equipo revisará tus datos y documentos. Te avisaremos cuando responda.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -106,32 +106,55 @@ class VerificationStateScreen extends StatelessWidget {
               if (approved)
                 FilledButton(
                   onPressed: loading ? null : onPublish,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: const Color(0xff7841f2),
-                    foregroundColor: const Color(0xfffbfbff),
-                    textStyle: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 16,
-                      height: 19 / 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  style:
+                      FilledButton.styleFrom(
+                        minimumSize: const Size(0, 48),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 12,
+                        ),
+                        splashFactory: NoSplash.splashFactory,
+                        backgroundColor: const Color(0xff7841f2),
+                        foregroundColor: const Color(0xfffbfbff),
+                        textStyle: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 16,
+                          height: 20 / 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ).copyWith(
+                        overlayColor: const WidgetStatePropertyAll(
+                          Colors.transparent,
+                        ),
+                        animationDuration: Duration.zero,
+                      ),
                   child: const Text('Publicar un caso'),
                 )
               else
                 OutlinedButton(
                   onPressed: loading ? null : onHome,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xff15110d),
-                    side: const BorderSide(color: Color(0xffe6e2dd)),
-                    minimumSize: const Size(0, 48),
-                    textStyle: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 16,
-                      height: 19 / 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  style:
+                      OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 12,
+                        ),
+                        splashFactory: NoSplash.splashFactory,
+                        foregroundColor: const Color(0xff15110d),
+                        side: const BorderSide(color: Color(0xffe6e2dd)),
+                        minimumSize: const Size(0, 48),
+                        textStyle: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 16,
+                          height: 20 / 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ).copyWith(
+                        overlayColor: const WidgetStatePropertyAll(
+                          Colors.transparent,
+                        ),
+                        animationDuration: Duration.zero,
+                      ),
                   child: const Text('Volver al inicio'),
                 ),
             ],
