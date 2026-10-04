@@ -215,4 +215,54 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  for (final large in [false, true]) {
+    testWidgets(
+      'both private document upload controls remain reachable: $large',
+      (tester) async {
+        tester.view.physicalSize = const Size(320, 640);
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        final repo = StateVerificationRescue()..status = 'draft';
+        await startPublication(
+          tester,
+          FakeCommunity(),
+          '/rescue/verification-id',
+          rescue: repo,
+        );
+        for (final role in ['identity', 'address']) {
+          final button = find.byKey(ValueKey('verification-upload-$role'));
+          await tester.scrollUntilVisible(
+            button,
+            250,
+            maxScrolls: 30,
+            scrollable: find
+                .descendant(
+                  of: find.byKey(const ValueKey('verification-form-body')),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+          );
+          await tester.ensureVisible(button);
+          await tester.pumpAndSettle();
+          expect(button.hitTestable(), findsOneWidget);
+          expect(tester.widget<OutlinedButton>(button).onPressed, isNotNull);
+          expect(tester.getSize(button).height, greaterThanOrEqualTo(48));
+          final savesBefore = repo.saveCalls;
+          await tester.tap(button);
+          await tester.pumpAndSettle();
+          // A conflicting draft save must stop before opening the picker.
+          expect(repo.saveCalls, savesBefore + 1);
+          expect(repo.reads, 1);
+          expect(
+            find.byKey(const ValueKey('verification-form-body')),
+            findsOneWidget,
+          );
+          expect(tester.takeException(), isNull);
+        }
+      },
+    );
+  }
 }
