@@ -276,7 +276,7 @@ class PublicProfileSocials extends StatelessWidget {
             if (entry.$2.isNotEmpty)
               ReferenceFocusOutline(
                 radius: 999,
-                child: OutlinedButton.icon(
+                child: OutlinedButton(
                   onPressed: () => open(entry.$2),
                   style: OutlinedButton.styleFrom(
                     splashFactory: NoSplash.splashFactory,
@@ -299,12 +299,18 @@ class PublicProfileSocials extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  icon: SvgPicture.asset(
-                    'assets/profile/${entry.$3}.svg',
-                    width: 18,
-                    height: 18,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/profile/${entry.$3}.svg',
+                        width: 18,
+                        height: 18,
+                      ),
+                      const SizedBox(width: 8),
+                      Flexible(child: Text(entry.$1)),
+                    ],
                   ),
-                  label: Text(entry.$1),
                 ),
               ),
         ],
