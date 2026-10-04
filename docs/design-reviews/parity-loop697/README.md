@@ -1,0 +1,5 @@
+# Loop697 — Franja inferior de detalle
+
+## 2026-10-04 — Loop697: franja inferior contrastada con Source vivo
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Vite6395 y Edge dopmi-parity697 abrieron /adoption/luna; mockup presenta Rocky por su resolución de datos de prueba. Viewport377×852, document.fonts.ready antes medición: screen-scroll paddingBottom100/height852; pet-detail height752; barY671/height81/bottom752; CTAx84/y686/273×52/bottom738. Screenshot Source inspeccionado y hash registrado; modo prueba superpuesto en cabecera, no cliente de producción copiado. La regla .screen-shell:not(.rescuer-theme)> .screen-scroll tiene más especificidad y preserva100 aunque otra regla detalle indique0. Por eso no retirar SizedBox100 cliente. Test25522 terminal0,16/16 detalle en6s, incluida geometría exacta con inset0/24 y acción fija al desplazar. No producción editada ni igualdad imagen/datos total atribuida. Browser cerrado; Vite CtrlC terminal1 deliberado. Codemagic solo al objetivo completo; dinero live no autorizado.

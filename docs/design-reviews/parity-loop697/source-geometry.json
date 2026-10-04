@@ -1,0 +1,27 @@
+{
+  "viewport": [
+    377,
+    852
+  ],
+  "source_sha": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "screen_scroll": {
+    "height": 852,
+    "padding_bottom": 100
+  },
+  "pet_detail": {
+    "height": 752
+  },
+  "bar": {
+    "y": 671,
+    "height": 81,
+    "bottom": 752
+  },
+  "cta": {
+    "x": 84,
+    "y": 686,
+    "width": 273,
+    "height": 52,
+    "bottom": 738
+  },
+  "screenshot_sha256": "60d63b29272372a5cb604894d2b11261cddf101c90c8733eeae644514b90cc02"
+}
