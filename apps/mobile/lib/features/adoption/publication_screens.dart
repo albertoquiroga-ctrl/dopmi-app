@@ -381,6 +381,17 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                 : null,
           ),
         ),
+        if (key == 'age_months') ...[
+          const SizedBox(height: 8),
+          const Text(
+            'Puede ser aproximada.',
+            style: TextStyle(
+              fontSize: 12,
+              height: 15 / 12,
+              color: Color(0xff616174),
+            ),
+          ),
+        ],
         if (key == 'pet_name') ...[
           const SizedBox(height: 8),
           const Text(
@@ -546,7 +557,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                 field('age_months', 'Edad aproximada en meses', 3),
                 field(
                   'story',
-                  'Su historia y el hogar que necesita',
+                  'Historia de rescate',
                   4000,
                   lines: 3,
                 ),
