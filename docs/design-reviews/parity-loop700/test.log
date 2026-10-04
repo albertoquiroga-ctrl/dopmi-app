@@ -1,0 +1,13 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart
+00:00 +0: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notification_count_repository_test.dart: unread count uses exact server count beyond the first page
+00:00 +1: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notification_count_repository_test.dart: guest unread count does not request private notifications
+00:00 +2: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart: compact time exposes the precise date without opening the notice
+00:01 +3: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart: notification time uses actual elapsed time and calendar days
+00:01 +4: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart: notification header keyboard returns to its fallback profile
+00:02 +5: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart: notification icon follows its real kind: message
+00:02 +6: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart: notification icon follows its real kind: rescue
+00:02 +7: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart: notification icon follows its real kind: review
+00:02 +8: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart: notifications paginate both ways at 200 percent
+00:02 +9: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart: notification read failure retries before real destination; large=false
+00:02 +10: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart: notification read failure retries before real destination; large=true
+00:02 +11: All tests passed!
