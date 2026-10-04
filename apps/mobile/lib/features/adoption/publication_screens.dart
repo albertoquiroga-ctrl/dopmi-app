@@ -170,6 +170,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
   bool loading = false, busy = false;
   String? error, message;
   int loaded = 0, step = 0;
+  bool requiresSpecialCare = false, careEditorOpen = false;
   CommunityRepository get repo => ref.read(communityRepositoryProvider);
   @override
   void initState() {
@@ -204,6 +205,11 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
           for (final entry in fields.entries) {
             entry.value.text = '${result.data[entry.key] ?? ''}';
           }
+          requiresSpecialCare = fields['special_care']!.text.trim().isNotEmpty;
+          careEditorOpen =
+              requiresSpecialCare &&
+              fields['special_care']!.text.trim() !=
+                  'Requiere cuidados especiales';
           choices = {
             for (final key in [
               'species',
@@ -253,6 +259,11 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       if (widget.rescueCaseId != null || post?.data['rescue_case_id'] != null)
         'rescue_case_id': widget.rescueCaseId ?? post?.data['rescue_case_id'],
     };
+    payload['special_care'] = requiresSpecialCare
+        ? (fields['special_care']!.text.trim().isEmpty
+              ? 'Requiere cuidados especiales'
+              : fields['special_care']!.text.trim())
+        : '';
     final age = publicationAgeMonths(fields['age_months']!.text);
     if (age == null) {
       throw const FormatException(
@@ -568,12 +579,30 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                   children: [
                     trait('vaccinated', 'Vacunado'),
                     trait('sterilized', 'Esterilizado'),
-                    field(
-                      'special_care',
-                      'Cuidados especiales (opcional)',
-                      1000,
-                      lines: 3,
+                    PublicationTraitCheck(
+                      key: const ValueKey('publication-special-care'),
+                      label: 'Requiere cuidados especiales',
+                      value: requiresSpecialCare,
+                      onChanged: busy || post?.status == 'submitted'
+                          ? null
+                          : (_) => setState(
+                              () => requiresSpecialCare = !requiresSpecialCare,
+                            ),
                     ),
+                    if (requiresSpecialCare && !careEditorOpen)
+                      TextButton(
+                        onPressed: busy || post?.status == 'submitted'
+                            ? null
+                            : () => setState(() => careEditorOpen = true),
+                        child: const Text('Describir cuidados'),
+                      ),
+                    if (requiresSpecialCare && careEditorOpen)
+                      field(
+                        'special_care',
+                        'Cuidados especiales (opcional)',
+                        1000,
+                        lines: 3,
+                      ),
                   ],
                 ),
                 PublicationTraitCard(
@@ -774,11 +803,10 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                     reviewTrait('sterilized', 'Esterilizado'),
                     PublicationTraitCheck(
                       label: 'Requiere cuidados especiales',
-                      value: fields['special_care']!.text.trim().isEmpty
-                          ? null
-                          : true,
+                      value: requiresSpecialCare,
                     ),
-                    if (fields['special_care']!.text.trim().isNotEmpty)
+                    if (requiresSpecialCare &&
+                        fields['special_care']!.text.trim().isNotEmpty)
                       Text(
                         fields['special_care']!.text.trim(),
                         style: const TextStyle(

@@ -52,6 +52,37 @@ Future<void> startPublication(
 
 void main() {
   testWidgets(
+    'special care checkbox preserves an existing description across toggles',
+    (tester) async {
+      final repo = PhotoDraftCommunity();
+      repo.post = Adoption({
+        ...repo.post.data,
+        'special_care': 'Medicación por la mañana',
+      });
+      await startPublication(tester, repo, '/my-adoptions/${repo.post.id}');
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      final care = find.byKey(const ValueKey('publication-special-care'));
+      await tester.ensureVisible(care);
+      await tester.pumpAndSettle();
+      expect(tester.widget<PublicationTraitCheck>(care).value, isTrue);
+      await tester.tap(care);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Guardar borrador'));
+      await tester.pumpAndSettle();
+      expect(repo.savedPayload?['special_care'], '');
+      await tester.ensureVisible(care);
+      await tester.pumpAndSettle();
+      await tester.tap(care);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Guardar borrador'));
+      await tester.pumpAndSettle();
+      expect(repo.savedPayload?['special_care'], 'Medicación por la mañana');
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'age expression saves real months and invalid age preserves draft',
     (tester) async {
       final repo = PhotoDraftCommunity();
