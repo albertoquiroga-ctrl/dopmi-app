@@ -100,6 +100,10 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
                     Material(
                       color: const Color(0xffdddddd),
                       child: InkWell(
+                        splashFactory: NoSplash.splashFactory,
+                        overlayColor: const WidgetStatePropertyAll(
+                          Colors.transparent,
+                        ),
                         onTap: () async {
                           await context.push('/adoptions/${item.id}');
                           refresh();
@@ -149,6 +153,7 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
                           ),
                           padding: EdgeInsets.zero,
                           style: IconButton.styleFrom(
+                            overlayColor: Colors.transparent,
                             minimumSize: Size(
                               widget.all ? 30 : 34,
                               widget.all ? 30 : 34,
@@ -187,13 +192,21 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
               alignment: Alignment.centerLeft,
               child: IconButton(
                 tooltip: 'Volver a Mis match',
+                style: IconButton.styleFrom(overlayColor: Colors.transparent),
                 onPressed: () => widget.showAll?.call(false),
-                icon: const Icon(Icons.arrow_back),
+                icon: SvgPicture.asset(
+                  'assets/profile/back.svg',
+                  width: 22,
+                  height: 22,
+                ),
               ),
             ),
             TextButton(
               onPressed: () => setState(() => oldest = !oldest),
               style: TextButton.styleFrom(
+                splashFactory: NoSplash.splashFactory,
+                overlayColor: Colors.transparent,
+                animationDuration: Duration.zero,
                 foregroundColor: ink,
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.zero,
@@ -260,6 +273,9 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
                               widget.showAll?.call(true);
                             },
                             style: TextButton.styleFrom(
+                              splashFactory: NoSplash.splashFactory,
+                              overlayColor: Colors.transparent,
+                              animationDuration: Duration.zero,
                               foregroundColor: ink,
                               padding: EdgeInsets.zero,
                               textStyle: const TextStyle(

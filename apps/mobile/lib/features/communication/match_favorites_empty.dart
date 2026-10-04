@@ -12,8 +12,9 @@ class MatchFavoritesEmpty extends StatelessWidget {
     double angle,
     double top,
     double left,
-    double bottomOpacity,
-  ) => Positioned(
+    double bottomOpacity, {
+    double topOpacity = .1,
+  }) => Positioned(
     top: top,
     left: left,
     width: 78,
@@ -23,6 +24,7 @@ class MatchFavoritesEmpty extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: Colors.white, width: 3),
           boxShadow: const [
             BoxShadow(
               color: Color(0x1f15110d),
@@ -32,7 +34,7 @@ class MatchFavoritesEmpty extends StatelessWidget {
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(11),
           child: Stack(
             fit: StackFit.expand,
             children: [
@@ -43,16 +45,10 @@ class MatchFavoritesEmpty extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      const Color(0xff15110d).withValues(alpha: .1),
+                      const Color(0xff15110d).withValues(alpha: topOpacity),
                       const Color(0xff15110d).withValues(alpha: bottomOpacity),
                     ],
                   ),
-                ),
-              ),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 3),
-                  borderRadius: BorderRadius.circular(14),
                 ),
               ),
             ],
@@ -75,7 +71,14 @@ class MatchFavoritesEmpty extends StatelessWidget {
               children: [
                 photo('assets/onboarding/rocky.png', -12, 10, 8, .35),
                 photo('assets/onboarding/luna-card.png', 10, 14, 56, .35),
-                photo('assets/onboarding/toby.png', 0, 0, 34, .30),
+                photo(
+                  'assets/onboarding/toby.png',
+                  0,
+                  0,
+                  34,
+                  .30,
+                  topOpacity: .08,
+                ),
               ],
             ),
           ),
@@ -110,6 +113,9 @@ class MatchFavoritesEmpty extends StatelessWidget {
           child: FilledButton(
             onPressed: () => context.go('/adoptions'),
             style: FilledButton.styleFrom(
+              splashFactory: NoSplash.splashFactory,
+              overlayColor: Colors.transparent,
+              animationDuration: Duration.zero,
               backgroundColor: yellow,
               foregroundColor: ink,
               minimumSize: const Size(0, 48),
