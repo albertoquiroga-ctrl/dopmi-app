@@ -326,3 +326,116 @@ class VerificationDocumentCard extends StatelessWidget {
     );
   }
 }
+
+class VerificationFormActions extends StatelessWidget {
+  const VerificationFormActions({
+    super.key,
+    required this.onSubmit,
+    required this.onSaveLater,
+    this.busy = false,
+  });
+  final VoidCallback onSubmit, onSaveLater;
+  final bool busy;
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      const ghostStyle = TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 14,
+        height: 17 / 14,
+        fontWeight: FontWeight.w500,
+      );
+      final label =
+          TextPainter(
+            text: const TextSpan(
+              text: 'Guardar y continuar después',
+              style: ghostStyle,
+            ),
+            textDirection: Directionality.of(context),
+            textScaler: MediaQuery.textScalerOf(context),
+          )..layout(
+            maxWidth: (constraints.maxWidth - 14).clamp(1.0, double.infinity),
+          );
+      final surfaceHeight = (label.height + 6).clamp(36.0, double.infinity);
+      label.dispose();
+      final gap = 16 - ((48 - surfaceHeight) / 2).clamp(0.0, 6.0);
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          FilledButton(
+            key: const ValueKey('verification-submit'),
+            onPressed: busy ? null : onSubmit,
+            style:
+                FilledButton.styleFrom(
+                  backgroundColor: const Color(0xff7841f2),
+                  foregroundColor: const Color(0xfffbfbff),
+                  minimumSize: const Size.fromHeight(48),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 12,
+                  ),
+                  textStyle: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 16,
+                    height: 20 / 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  splashFactory: NoSplash.splashFactory,
+                ).copyWith(
+                  overlayColor: const WidgetStatePropertyAll(
+                    Colors.transparent,
+                  ),
+                  animationDuration: Duration.zero,
+                ),
+            child: busy
+                ? Semantics(
+                    label: 'Procesando',
+                    child: const SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  )
+                : const Text('Enviar a revisión'),
+          ),
+          // Preserve Source's visible gap while retaining the larger touch target.
+          SizedBox(height: gap),
+          OutlinedButton(
+            key: const ValueKey('verification-save-later'),
+            onPressed: busy ? null : onSaveLater,
+            style:
+                OutlinedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: const Color(0xff151423),
+                  side: const BorderSide(color: Color(0xffe3e4ed)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  minimumSize: const Size.fromHeight(36),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 7,
+                    vertical: 3,
+                  ),
+                  textStyle: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                    height: 17 / 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  splashFactory: NoSplash.splashFactory,
+                  tapTargetSize: MaterialTapTargetSize.padded,
+                  visualDensity: VisualDensity.standard,
+                ).copyWith(
+                  overlayColor: const WidgetStatePropertyAll(
+                    Colors.transparent,
+                  ),
+                  animationDuration: Duration.zero,
+                ),
+            child: const Text('Guardar y continuar después'),
+          ),
+        ],
+      );
+    },
+  );
+}

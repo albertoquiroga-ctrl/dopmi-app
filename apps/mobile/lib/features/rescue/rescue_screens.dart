@@ -1967,17 +1967,15 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
           const SizedBox(height: 16),
           if (error != null) Notice(error!, isError: true),
           if (message != null) Notice(message!),
-          if (editable) ...[
-            ActionButton(
-              'Enviar a revisión',
+          if (editable)
+            VerificationFormActions(
               busy: busy,
-              onPressed: () => run(() => transition('submit')),
+              onSubmit: () => run(() => transition('submit')),
+              onSaveLater: () => run(() async {
+                await save();
+                if (mounted) context.go('/rescuer');
+              }),
             ),
-            TextButton(
-              onPressed: busy ? null : () => run(save),
-              child: const Text('Guardar borrador'),
-            ),
-          ],
           if (record?.status == 'submitted')
             OutlinedButton(
               onPressed: busy ? null : () => run(() => transition('withdraw')),

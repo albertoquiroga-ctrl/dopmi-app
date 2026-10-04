@@ -1,3 +1,6 @@
+import 'package:dopmi_mobile/features/rescue/verification_form.dart';
+import 'package:go_router/go_router.dart';
+
 import 'dart:async';
 
 import 'package:dopmi_mobile/app.dart';
@@ -638,7 +641,7 @@ void main() {
     expect(find.text('Borrador · Versión 4'), findsOneWidget);
     repo.conflict = false;
     await tester.scrollUntilVisible(
-      find.text('Guardar borrador'),
+      find.text('Guardar y continuar después'),
       400,
       maxScrolls: 30,
       scrollable: find
@@ -649,7 +652,13 @@ void main() {
           .first,
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Guardar borrador'));
+    final router = GoRouter.of(
+      tester.element(find.byType(VerificationFormFrame)),
+    );
+    await tester.tap(find.text('Guardar y continuar después'));
+    await tester.pumpAndSettle();
+    expect(router.routeInformationProvider.value.uri.path, '/rescuer');
+    router.go('/rescue/verification-id');
     await tester.pumpAndSettle();
     repo.conflict = true;
     final phone = find.byKey(const ValueKey('verification-field-phone'));
@@ -668,7 +677,7 @@ void main() {
     await tester.enterText(phone, '8188888888');
     FocusManager.instance.primaryFocus?.unfocus();
     await tester.pump(const Duration(milliseconds: 50));
-    final save = find.text('Guardar borrador');
+    final save = find.text('Guardar y continuar después');
     await tester.scrollUntilVisible(
       save,
       300,
@@ -707,7 +716,7 @@ void main() {
     );
     repo.conflict = false;
     await tester.scrollUntilVisible(
-      find.text('Guardar borrador'),
+      find.text('Guardar y continuar después'),
       400,
       maxScrolls: 30,
       scrollable: find
@@ -718,10 +727,10 @@ void main() {
           .first,
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Guardar borrador'));
+    await tester.tap(find.text('Guardar y continuar después'));
     await tester.pumpAndSettle();
     expect(repo.saved?['phone'], '8188888888');
-    expect(find.text('Progreso del formulario'), findsOneWidget);
+    expect(router.routeInformationProvider.value.uri.path, '/rescuer');
     expect(tester.takeException(), null);
   });
 
