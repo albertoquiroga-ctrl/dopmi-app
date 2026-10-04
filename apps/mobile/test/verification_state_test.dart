@@ -61,7 +61,16 @@ void main() {
         expect(heading.left, 33);
         expect(heading.top, 37);
         expect(find.text('Incompleto'), findsOneWidget);
-        expect(find.text('1 de 11 requisitos capturados'), findsOneWidget);
+        final bar = tester.widget<LinearProgressIndicator>(
+          find.byType(LinearProgressIndicator),
+        );
+        expect(
+          bar.semanticsLabel,
+          'Progreso del formulario: 1 de 11 requisitos capturados',
+        );
+        final track = tester.getRect(find.byType(LinearProgressIndicator));
+        expect(track.top - tester.getRect(find.text('Incompleto')).bottom, 12);
+        expect(track.height, 8);
         expect(
           tester
               .widget<LinearProgressIndicator>(

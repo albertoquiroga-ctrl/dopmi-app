@@ -3315,8 +3315,12 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.text('Incompleto').hitTestable(), findsOneWidget);
         expect(
-          find.text('1 de 11 requisitos capturados').hitTestable(),
-          findsOneWidget,
+          tester
+              .widget<LinearProgressIndicator>(
+                find.byType(LinearProgressIndicator),
+              )
+              .semanticsLabel,
+          'Progreso del formulario: 1 de 11 requisitos capturados',
         );
         final bar = find.byType(LinearProgressIndicator);
         expect(

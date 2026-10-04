@@ -1,0 +1,47 @@
+[
+  {
+    "selector": ".progress-card",
+    "text": "Progreso del formularioIncompleto",
+    "rect": {
+      "x": 16,
+      "y": 1281.96875,
+      "width": 345,
+      "height": 71
+    },
+    "font": "16px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "padding": "16px",
+    "gap": "12px",
+    "border": "1px solid rgb(227, 228, 237)",
+    "color": "rgb(21, 20, 35)"
+  },
+  {
+    "selector": ".progress-head",
+    "text": "Progreso del formularioIncompleto",
+    "rect": {
+      "x": 33,
+      "y": 1298.96875,
+      "width": 311,
+      "height": 17
+    },
+    "font": "14px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "padding": "0px",
+    "gap": "12px",
+    "border": "0px none rgb(21, 20, 35)",
+    "color": "rgb(21, 20, 35)"
+  },
+  {
+    "selector": ".progress-track",
+    "text": "",
+    "rect": {
+      "x": 33,
+      "y": 1327.96875,
+      "width": 311,
+      "height": 8
+    },
+    "font": "16px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "padding": "0px",
+    "gap": "normal",
+    "border": "0px none rgb(21, 20, 35)",
+    "color": "rgb(21, 20, 35)"
+  }
+]

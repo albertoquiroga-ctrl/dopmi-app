@@ -168,16 +168,6 @@ class VerificationProgress extends StatelessWidget {
               ],
             ),
           const SizedBox(height: 12),
-          Text(
-            '$captured de $total requisitos capturados',
-            style: const TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 12,
-              height: 15 / 12,
-              color: Color(0xff4f4e5c),
-            ),
-          ),
-          const SizedBox(height: 12),
           LinearProgressIndicator(
             value: captured / total,
             minHeight: 8,
@@ -186,16 +176,6 @@ class VerificationProgress extends StatelessWidget {
             backgroundColor: const Color(0xffefede8),
             semanticsLabel:
                 'Progreso del formulario: $captured de $total requisitos capturados',
-          ),
-          const SizedBox(height: 12),
-          const Text(
-            'El equipo verificará la información y los documentos antes de aprobar.',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 12,
-              height: 1.55,
-              color: Color(0xff4f4e5c),
-            ),
           ),
         ],
       ),
