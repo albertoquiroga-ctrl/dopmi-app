@@ -294,6 +294,10 @@ class _ContentReportSheetState extends State<_ContentReportSheet> {
                         disabledForegroundColor: ink.withValues(alpha: .5),
                         foregroundColor: ink,
                         minimumSize: const Size.fromHeight(48),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 12,
+                        ),
                       ),
                       onPressed:
                           busy || sessionChanged || details.text.trim().isEmpty
@@ -309,6 +313,7 @@ class _ContentReportSheetState extends State<_ContentReportSheet> {
                               opacity: busy ? 0 : 1,
                               child: const Text(
                                 'Enviar reporte',
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,

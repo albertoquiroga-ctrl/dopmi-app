@@ -302,6 +302,13 @@ void main() {
           '  Información incorrecta  ',
         );
         await tester.pump();
+        final reportAction = find.widgetWithText(FilledButton, 'Enviar reporte');
+        await tester.ensureVisible(reportAction);
+        await tester.pumpAndSettle();
+        final actionRect = tester.getRect(reportAction);
+        final labelRect = tester.getRect(find.text('Enviar reporte'));
+        expect(labelRect.top, greaterThanOrEqualTo(actionRect.top + 11.9));
+        expect(labelRect.bottom, lessThanOrEqualTo(actionRect.bottom - 11.9));
         tester.view.viewInsets = const FakeViewPadding(bottom: 300);
         await tester.pumpAndSettle();
         await tester.ensureVisible(find.text('Enviar reporte'));

@@ -3508,3 +3508,7 @@ Source/help con fixturemilo local muestra preview305x140 incluyendo borde1/boxsi
 ### 2026-10-04 - Loop753: reporte conserva borrador al tocar fondo
 
 Source/publicMariaR ejecutado con mouse4,4 conserva reporte/borrador; Flutterbarriertrue lo cerraba. barrierDismissiblefalse alinea gesto, Cancelar/Cerrar/Back y guardaspendiente conservados. Testsnormal200 verifican borrador trasfondo y cancelacionexplicita. Gate53508 exit0:13/13 en3s/analyze limpio51.1s. Capture48959 exit0:7PNG previos a barrera/layoutinmutable;6normal200 inspeccionados. Acción error200 pegada al borde detectada, medicionpendiente; noaceptacionglobal. Source a3c969c inicio/cierre, browsercerrado. Full748/APK anteriores recientes; sinCodemagic/nativa/dineroreal. Ver docs/design-reviews/parity-loop753.
+
+### 2026-10-04 - Loop754: envio de reporte con margen ampliado
+
+Test74616 reproduce label200sinmargen (top335.6 vs minimo347.5), normalpasa. Paddingvertical12 yhorizontal18 +textocentrado enFilledButton corrigen sin reducirfuente, conserva spinner/guardas/borrador. Final92410 exit0:13/13; capture30312 exit0:1/1 en6s/sietePNG vigentes (orphan336excluido), error200finalinspeccionado; normalesempty/error/sending SHAidenticos743. Analyze30312 limpio6.6s. Source a3c969c inicio/cierre; CSS11padding+1borde, no Android200Source atribuido. Full748/APK anteriores recientes; objetivoactivo sinCodemagic/nativa/global/dineroreal. Ver docs/design-reviews/parity-loop754.
