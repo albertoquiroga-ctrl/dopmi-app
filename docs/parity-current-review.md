@@ -1,4 +1,10 @@
-# Corte vigente — loop546, 3/10/2026
+# Corte vigente — loop547, 3/10/2026
+
+## 2026-10-03 — Loop 547: pasada completa407capturas
+
+Capturador76923 terminalexit0,1test/407unique fixtures,3m00s.407PNG existen/frescos/formatoPNG/hashbytes conformeinventario541; manifest547.230Dart/cuatroSVG+capturer raíces-scratchiguales yhashessin cambios frentegate546 fuenteb7e988d82d7c9624a65a8778316e8f52d0be2dee. FuenteSourcea3c969cd9103fd46dc5cd886999912526ce75efbreconsultada. Supersede403525; incluyegastos527–530/verificación532–544/documentos/progreso541. Full611546 yanalysislimpio vigentes mismo código. **407capturasno407aceptacionesvisuales**; no nuevo contraste global/dedo/StripeSDK. ADB545vacío. Sinpush/Codemagic.
+
+# Corte anterior — loop546, 3/10/2026
 
 ## 2026-10-03 — Loop 546: regresión completa611
 
