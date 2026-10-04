@@ -431,17 +431,34 @@ class AccountStartScreen extends StatelessWidget {
                                       CrossAxisAlignment.stretch,
                                   children: [
                                     FilledButton(
-                                      style: FilledButton.styleFrom(
-                                        backgroundColor: ink,
-                                        foregroundColor: Colors.white,
-                                        minimumSize: const Size.fromHeight(52),
-                                        shape: const StadiumBorder(),
-                                        textStyle: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          fontFamily: 'Inter',
-                                        ),
-                                      ),
+                                      style:
+                                          FilledButton.styleFrom(
+                                            backgroundColor: ink,
+                                            splashFactory:
+                                                NoSplash.splashFactory,
+                                            foregroundColor: Colors.white,
+                                            minimumSize: const Size.fromHeight(
+                                              52,
+                                            ),
+                                            shape: const StadiumBorder(),
+                                            textStyle: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              fontFamily: 'Inter',
+                                            ),
+                                          ).copyWith(
+                                            overlayColor:
+                                                WidgetStateProperty.resolveWith<
+                                                  Color?
+                                                >(
+                                                  (states) =>
+                                                      states.contains(
+                                                        WidgetState.pressed,
+                                                      )
+                                                      ? Colors.transparent
+                                                      : null,
+                                                ),
+                                          ),
                                       onPressed: () => context.push(
                                         '/signup?intent=$intent',
                                       ),

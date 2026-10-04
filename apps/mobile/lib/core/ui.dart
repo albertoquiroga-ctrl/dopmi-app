@@ -135,6 +135,8 @@ class Brand extends StatelessWidget {
   Widget build(BuildContext context) => Image.asset(
     'assets/dopmi-wordmark.png',
     width: 108,
+    // Reserve the 512x171 asset ratio before decoding to avoid layout shifts.
+    height: 108 * 171 / 512,
     semanticLabel: 'Dopmi',
   );
 }

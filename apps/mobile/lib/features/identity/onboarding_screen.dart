@@ -550,21 +550,37 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               FilledButton(
-                                style: FilledButton.styleFrom(
-                                  backgroundColor: ink,
-                                  foregroundColor: Colors.white,
-                                  minimumSize: Size.fromHeight(buttonHeight),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 11,
-                                  ),
-                                  textStyle: const TextStyle(
-                                    fontFamily: DopmiTokens.bodyFont,
-                                    fontSize: 16,
-                                    height: 1.2,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
+                                style:
+                                    FilledButton.styleFrom(
+                                      backgroundColor: ink,
+                                      splashFactory: NoSplash.splashFactory,
+                                      foregroundColor: Colors.white,
+                                      minimumSize: Size.fromHeight(
+                                        buttonHeight,
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 11,
+                                      ),
+                                      textStyle: const TextStyle(
+                                        fontFamily: DopmiTokens.bodyFont,
+                                        fontSize: 16,
+                                        height: 1.2,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ).copyWith(
+                                      overlayColor:
+                                          WidgetStateProperty.resolveWith<
+                                            Color?
+                                          >(
+                                            (states) =>
+                                                states.contains(
+                                                  WidgetState.pressed,
+                                                )
+                                                ? Colors.transparent
+                                                : null,
+                                          ),
+                                    ),
                                 onPressed: () =>
                                     context.push('/onboarding?intent=$intent'),
                                 child: const Text('Continuar'),
