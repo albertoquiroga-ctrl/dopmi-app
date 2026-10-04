@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class VerificationFormFrame extends StatelessWidget {
   const VerificationFormFrame({
@@ -32,12 +33,18 @@ class VerificationFormFrame extends StatelessWidget {
                 child: Row(
                   children: [
                     IconButton(
+                      key: const ValueKey('verification-header-back'),
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
                       onPressed: onBack,
                       tooltip: 'Volver',
-                      icon: const Icon(
-                        Icons.arrow_back,
-                        size: 24,
-                        color: Color(0xff151423),
+                      icon: Transform.translate(
+                        offset: const Offset(-4, -.5),
+                        child: SvgPicture.asset(
+                          'assets/profile/back.svg',
+                          width: 20,
+                          height: 20,
+                        ),
                       ),
                     ),
                     Expanded(
