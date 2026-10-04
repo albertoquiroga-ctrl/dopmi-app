@@ -1,0 +1,18 @@
+[
+  {
+    "file": "start.png",
+    "sha256": "f522fa911d7618495ed1442e10f1af16464f463dd11df0329fb97f1275088a39"
+  },
+  {
+    "file": "catalog.png",
+    "sha256": "ab790b3ef876044b327ce7cedf51a822388008848df91605abf8f5f2cf4087c9"
+  },
+  {
+    "file": "detail.png",
+    "sha256": "175ed76c657247713d94a2377db6eb2dd10d3626552ebe3146f0170a4082cfff"
+  },
+  {
+    "file": "scroll.png",
+    "sha256": "487f7ef84ff6a103f7ed45636163b36599e386c392886c05950d12db4359d5fa"
+  }
+]
