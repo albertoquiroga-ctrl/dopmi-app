@@ -1,3 +1,5 @@
+> Loop657: guardar sin cuenta pide login y conserva mascota;23/23/analyze limpio. [Evidencia](design-reviews/parity-loop657/README.md). Defecto observado en APK656, reparación aún pendiente de repetir en Android; no cierre de paridad global.
+
 > Loop656: APK nuevo compilado/instalado, hash local=base.apk; descarte Rocky→Toby y arrastre corto conservando Toby repetidos desde binario. [Evidencia](design-reviews/parity-loop656/README.md). Supersede limitación APK655 para este gesto; no aceptación global/física ni temporización Source.
 
 > Loop655: descarte Rocky→Toby y arrastre corto conservando Toby observados en runtime Android después de hot restart. [Evidencia](design-reviews/parity-loop655/README.md). APK instalado todavía652; falta binario actualizado, contraste de temporización y demás recorridos. Codemagic sólo al objetivo completo.

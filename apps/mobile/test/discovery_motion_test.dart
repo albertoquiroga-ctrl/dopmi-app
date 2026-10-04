@@ -25,10 +25,21 @@ class PendingFavorite extends FakeCommunity {
   }
 }
 
+class GuestCommunity extends FakeCommunity {
+  @override
+  String? get userId => null;
+  int saves = 0;
+  @override
+  Future<void> favorite(String id, bool saved) async {
+    saves++;
+  }
+}
+
 void main() {
   Future<FakeCommunity> open(
     WidgetTester tester, {
     bool large = false,
+    bool guest = false,
     FakeCommunity? repository,
   }) async {
     tester.view.physicalSize = large
@@ -43,7 +54,9 @@ void main() {
       ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
     await tester.runAsync(font.load);
     final identity = FakeIdentityRepository()
-      ..user = const Identity('one', 'fixture@example.test', verified: true);
+      ..user = guest
+          ? null
+          : const Identity('one', 'fixture@example.test', verified: true);
     final repo = repository ?? FakeCommunity();
     repo.discoveryItems = [
       repo.post,
@@ -66,6 +79,28 @@ void main() {
     await tester.pumpAndSettle();
     return repo;
   }
+
+  testWidgets(
+    'guest save requests login without advancing or writing favorite',
+    (tester) async {
+      final repo = GuestCommunity();
+      await open(tester, repository: repo, guest: true);
+      await tester.drag(find.text('Luna'), const Offset(180, 0));
+      await tester.pumpAndSettle();
+      expect(repo.saves, 0);
+      expect(
+        find.text('No pudimos guardar a Luna. Intenta de nuevo.'),
+        findsNothing,
+      );
+      expect(find.text('Inicia sesión'), findsWidgets);
+      final context = tester.element(find.text('Inicia sesión').first);
+      Navigator.of(context).pop();
+      await tester.pumpAndSettle();
+      expect(find.text('Luna'), findsOneWidget);
+      expect(find.text('Milo'), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   for (final large in [false, true]) {
     for (final right in [false, true]) {

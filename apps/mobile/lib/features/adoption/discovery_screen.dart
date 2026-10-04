@@ -144,6 +144,16 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
     final items = deck;
     if (acting || index >= items.length) return;
     final card = items[index];
+    if (save &&
+        card is Adoption &&
+        ref.read(communityRepositoryProvider).userId == null) {
+      setState(() {
+        dragging = false;
+        dragX = 0;
+      });
+      await context.push('/login');
+      return;
+    }
     setState(() {
       acting = true;
       dragging = false;
