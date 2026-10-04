@@ -1612,6 +1612,12 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                   color: Color(0xff151423),
                 ),
                 decoration: InputDecoration(
+                  hintText: switch (key) {
+                    'legal_name' => 'Tu nombre completo',
+                    'phone' => '+52 123 456 7890',
+                    'experience' => '¿Cuánto tiempo llevas rescatando? ¿Cuántas mascotas has ayudado?',
+                    _ => null,
+                  },
                   counterText: '',
                   isDense: true,
                   filled: true,

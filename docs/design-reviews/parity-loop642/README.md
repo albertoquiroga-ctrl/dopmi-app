@@ -1,0 +1,5 @@
+# Ayudas de verificación
+
+## 2026-10-04 — Loop642: ayudas de campos de verificación
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. VerificationField agrega hint Source alegal_name Tu nombre completo/phone+521234567890/experiencepreguntas de tiempo ymascotas. No controllers/limits/options/privacidad/payload/SQL/validacióncambiados. CSSform-stack12w600/inputinherit respetados; paleta rescuer-theme vigente. Gate11530terminalexit0,9/9en8s (verification_state,introapp/router,capturador6PNGform/documentos/progreso), analyzer50684exit0sin incidencias38.6s. Normal formulario inspeccionado muestra3hints y datos privados/públicos separados;200imageninicial muestraencabezado ycomienzoidentidad, nohints200visiblesenprimerpantallazo. Otrascapturasfamiliaregeneradas no inspecciónindividual aquí. Sin runtimeSource nuevo/SDK/dispositivo/globalaceptación. Full705629 anteriorproducciónvigente;global410636 anterior638+. Próximo contraste etiquetas/requisitos de nombres/teléfono/experiencia ycaptura dirigida200 de inputs, luego documentos/progreso. Sin push/Codemagic hastaobjetivocompleto.
