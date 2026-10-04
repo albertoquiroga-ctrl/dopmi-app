@@ -1,3 +1,9 @@
+# Corte vigente — loop595, 4/10/2026 UTC
+
+## 2026-10-04 UTC — Loop595: regresión completa del historial
+
+Fuente b2ee195e1961398cc67cb7f94fe8a67a0b0fc73a, Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Fluttertest --no-pub90480 terminalexit0,651/651,3m22s.242Dart lib/test/tool raíz-scratch iguales/hashessin cambios antes/cierre;96assets byteigualesmedidos durante/cierre yhashesestables. Configpython16/16 sesión12548exit0. Analyzer594clean11.8s mismafuente vigente. Supersede full639586 e integra587–594. ADBvacío consultado595, no Androidfísico disponible.407capturasglobales565 anteriores a cambios; dirigidas594historialactuales, no651aceptaciones ni paridadglobal. Próximo contraste independiente MétodosdePago: GuardianPaymentCardRow TextButtonHacerpredeterminada/IconButtonEliminar heredan splash/overlay; Source inline-link/icon-button sólohover, sin active/táctil. Verificar presión real conservando foco y accionesfinancieras autorizadas. Sin cambiosproducción eneste gate. Sin push/Codemagic hasta objetivo completo.
+
 # Corte vigente — loop586, 3/10/2026
 
 ## 2026-10-03 — Loop586: regresión completa de Perfil y diálogo
