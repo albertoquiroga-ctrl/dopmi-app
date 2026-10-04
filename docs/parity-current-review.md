@@ -1,3 +1,5 @@
+> Loop656: APK nuevo compilado/instalado, hash local=base.apk; descarte Rocky→Toby y arrastre corto conservando Toby repetidos desde binario. [Evidencia](design-reviews/parity-loop656/README.md). Supersede limitación APK655 para este gesto; no aceptación global/física ni temporización Source.
+
 > Loop655: descarte Rocky→Toby y arrastre corto conservando Toby observados en runtime Android después de hot restart. [Evidencia](design-reviews/parity-loop655/README.md). APK instalado todavía652; falta binario actualizado, contraste de temporización y demás recorridos. Codemagic sólo al objetivo completo.
 
 > Defecto nativo y corrección loop654: swipe completo no avanzó en APK652. Pruebas reprodujeron pérdida de deltas (4×40→40); cliente ahora acumula por evento,33/33/analyze limpio. [Evidencia](design-reviews/parity-loop654/README.md). Falta aplicar y repetir en Android; APK653 instalado aún anterior al parche. No dar descubrimiento/gestos por aceptados.
