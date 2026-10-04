@@ -1,0 +1,42 @@
+[
+  {
+    "animations": 0,
+    "height": 749.75,
+    "maxScroll": 10,
+    "phase": "before",
+    "scroll": 10,
+    "step": "Paso 2 de 4"
+  },
+  {
+    "animations": 0,
+    "height": 717.984375,
+    "maxScroll": 0,
+    "phase": "frame0",
+    "scroll": 0,
+    "step": "Paso 1 de 4"
+  },
+  {
+    "animations": 0,
+    "height": 717.984375,
+    "maxScroll": 0,
+    "phase": "frame1",
+    "scroll": 0,
+    "step": "Paso 1 de 4"
+  },
+  {
+    "animations": 0,
+    "height": 717.984375,
+    "maxScroll": 0,
+    "phase": "frame2",
+    "scroll": 0,
+    "step": "Paso 1 de 4"
+  },
+  {
+    "animations": 0,
+    "height": 717.984375,
+    "maxScroll": 0,
+    "phase": "frame3",
+    "scroll": 0,
+    "step": "Paso 1 de 4"
+  }
+]
