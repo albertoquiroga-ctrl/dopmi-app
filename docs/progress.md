@@ -3472,3 +3472,7 @@ Fuente432ecb2, Source a3c969cd9103fd46dc5cd886999912526ce75efb inicio/cierre. 36
 ### 2026-10-04 - Loop744: revision de24 pantallas normales
 
 Ver docs/design-reviews/parity-loop744/README.md para nombres y limites. Inspeccion de24 primeros viewports actuales detecta el mismo inset de borde ausente en GuardianHistoryPreview. Padding1 aplicado; test billing verifica texto x93 conforme Source compartido. Test25395 exit0:16/16; capture67824 exit0:1/1 y analyzer limpio19.5s. Normal final inspeccionado; full743/795 antecede este cambio. No aceptacion global/estados grandes/nativa ni Codemagic. Source a3c969c inicio/cierre, dinero test-only.
+
+### 2026-10-04 - Loop745: palabras completas en Configuracion ampliada
+
+Inspeccion12 capturas200% detecta Informacio/n en fila estrecha. RescuerNavigationRow standardSettings ahora separa iconos/copia a texto grande/ancho<300, sin reducir fuente ni tocar layout normal. Gate67840 exit0:10/10, prueba con Inter/word boxes/cancel/enabled. Capture22462 exit0:cincoPNG actuales; normal identico a743 por SHA256 y grande final inspeccionado; analyzer limpio6.1s. Ver docs/design-reviews/parity-loop745. Source a3c969c inicio/cierre. Adaptacion accesible, no comparacion directa Source200%. Full743 antecede744/745. Objetivo activo, sin Codemagic/dinero real.

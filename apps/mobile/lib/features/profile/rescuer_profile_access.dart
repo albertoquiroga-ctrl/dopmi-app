@@ -80,6 +80,40 @@ class RescuerNavigationRow extends StatefulWidget {
 
 class _RescuerNavigationRowState extends State<RescuerNavigationRow> {
   bool hovered = false, focused = false;
+  Widget get copy => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Text(
+        widget.title,
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          height: widget.standardSettings ? 1.25 : 1.2,
+          letterSpacing: 0,
+          color: widget.standardSettings
+              ? const Color(0xff15110d)
+              : const Color(0xff151423),
+        ),
+      ),
+      if (widget.subtitle.isNotEmpty) ...[
+        const SizedBox(height: 2),
+        Text(
+          widget.subtitle,
+          style: TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 12,
+            height: widget.standardSettings ? 1.25 : 1.4,
+            letterSpacing: 0,
+            color: widget.standardSettings
+                ? const Color(0xff554e48)
+                : const Color(0xff4f4e5c),
+          ),
+        ),
+      ],
+    ],
+  );
   void updateHighlightMode(FocusHighlightMode mode) {
     if (mounted) setState(() {});
   }
@@ -140,87 +174,110 @@ class _RescuerNavigationRowState extends State<RescuerNavigationRow> {
                   horizontal: 16,
                   vertical: 14,
                 ),
-                child: Row(
-                  children: [
-                    ExcludeSemantics(
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        alignment: Alignment.center,
-                        decoration: const BoxDecoration(
-                          color: Color(0xfffff6d6),
-                          shape: BoxShape.circle,
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/profile/${widget.icon}.svg',
-                          width: 20,
-                          height: 20,
-                          colorFilter: const ColorFilter.mode(
-                            Color(0xff6b5000),
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    if (widget.standardSettings &&
+                        MediaQuery.textScalerOf(context).scale(16) > 25 &&
+                        constraints.maxWidth < 300) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            widget.title,
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              height: widget.standardSettings ? 1.25 : 1.2,
-                              letterSpacing: 0,
-                              color: widget.standardSettings
-                                  ? const Color(0xff15110d)
-                                  : const Color(0xff151423),
-                            ),
+                          Row(
+                            children: [
+                              ExcludeSemantics(
+                                child: Container(
+                                  width: 40,
+                                  height: 40,
+                                  alignment: Alignment.center,
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xfffff6d6),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: SvgPicture.asset(
+                                    'assets/profile/${widget.icon}.svg',
+                                    width: 20,
+                                    height: 20,
+                                    colorFilter: const ColorFilter.mode(
+                                      Color(0xff6b5000),
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const Spacer(),
+                              if (widget.count != null)
+                                Text(
+                                  '${widget.count}',
+                                  style: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 12,
+                                    color: Color(0xff554e48),
+                                  ),
+                                ),
+                              const SizedBox(width: 12),
+                              ExcludeSemantics(
+                                child: SvgPicture.asset(
+                                  'assets/profile/icon-chevron-right.svg',
+                                  width: 20,
+                                  height: 20,
+                                ),
+                              ),
+                            ],
                           ),
-                          if (widget.subtitle.isNotEmpty) ...[
-                            const SizedBox(height: 2),
-                            Text(
-                              widget.subtitle,
-                              style: TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 12,
-                                height: widget.standardSettings ? 1.25 : 1.4,
-                                letterSpacing: 0,
-                                color: widget.standardSettings
-                                    ? const Color(0xff554e48)
-                                    : const Color(0xff4f4e5c),
+                          const SizedBox(height: 12),
+                          copy,
+                        ],
+                      );
+                    }
+                    return Row(
+                      children: [
+                        ExcludeSemantics(
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            alignment: Alignment.center,
+                            decoration: const BoxDecoration(
+                              color: Color(0xfffff6d6),
+                              shape: BoxShape.circle,
+                            ),
+                            child: SvgPicture.asset(
+                              'assets/profile/${widget.icon}.svg',
+                              width: 20,
+                              height: 20,
+                              colorFilter: const ColorFilter.mode(
+                                Color(0xff6b5000),
+                                BlendMode.srcIn,
                               ),
                             ),
-                          ],
-                        ],
-                      ),
-                    ),
-                    if (widget.count != null) ...[
-                      const SizedBox(width: 8),
-                      Text(
-                        '${widget.count}',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 12,
-                          color: widget.standardSettings
-                              ? const Color(0xff554e48)
-                              : const Color(0xff4f4e5c),
+                          ),
                         ),
-                      ),
-                    ],
-                    const SizedBox(width: 12),
-                    ExcludeSemantics(
-                      child: SvgPicture.asset(
-                        'assets/profile/icon-chevron-right.svg',
-                        width: 20,
-                        height: 20,
-                      ),
-                    ),
-                  ],
+                        const SizedBox(width: 12),
+                        Expanded(child: copy),
+                        if (widget.count != null) ...[
+                          const SizedBox(width: 8),
+                          Text(
+                            '${widget.count}',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 12,
+                              color: widget.standardSettings
+                                  ? const Color(0xff554e48)
+                                  : const Color(0xff4f4e5c),
+                            ),
+                          ),
+                        ],
+                        const SizedBox(width: 12),
+                        ExcludeSemantics(
+                          child: SvgPicture.asset(
+                            'assets/profile/icon-chevron-right.svg',
+                            width: 20,
+                            height: 20,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),
