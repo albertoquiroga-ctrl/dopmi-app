@@ -150,6 +150,9 @@ class HelpCenterScreen extends ConsumerStatefulWidget {
 
 class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
   static final _footerStyle = TextButton.styleFrom(
+    splashFactory: NoSplash.splashFactory,
+    overlayColor: Colors.transparent,
+    animationDuration: Duration.zero,
     foregroundColor: muted,
     textStyle: const TextStyle(
       fontFamily: 'Inter',
@@ -264,6 +267,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
           padding: const EdgeInsets.only(left: 12),
           child: IconButton(
             tooltip: 'Volver',
+            style: IconButton.styleFrom(overlayColor: Colors.transparent),
             onPressed: () => context.canPop()
                 ? context.pop()
                 : context.go(rescuer ? '/rescuer/settings' : '/profile'),
@@ -354,6 +358,9 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                       children: [
                         TextButton(
                           style: TextButton.styleFrom(
+                            splashFactory: NoSplash.splashFactory,
+                            overlayColor: Colors.transparent,
+                            animationDuration: Duration.zero,
                             padding: const EdgeInsets.all(16),
                             foregroundColor: openFaq == i
                                 ? const Color(0xff6b5000)
@@ -372,7 +379,15 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                                 ),
                               ),
                               const SizedBox(width: 12),
-                              const Icon(Icons.chevron_right, size: 18),
+                              SvgPicture.asset(
+                                'assets/profile/icon-chevron-right.svg',
+                                width: 20,
+                                height: 20,
+                                colorFilter: const ColorFilter.mode(
+                                  muted,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -395,6 +410,11 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
               ],
               if (topic == 7)
                 OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    splashFactory: NoSplash.splashFactory,
+                    overlayColor: Colors.transparent,
+                    animationDuration: Duration.zero,
+                  ),
                   onPressed: () => context.push('/account-privacy'),
                   child: const Text('Eliminar mi cuenta'),
                 ),

@@ -3268,3 +3268,7 @@ Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. CSS help
 ## 2026-10-04 — Loop702: título del centro de ayuda
 
 Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Source /help 377×852 con Inter cargado: h1 hereda letter-spacing -.02em, computado -.48px. HelpCenter añade letterSpacing -.48 al título24; no cambios de lógica. Captura final43452 terminal0,1/1 en13s; help-center final y Source inspeccionados. Test57879 terminal0,14/14 en5s; analyze93417 terminal0 limpio41.7s. Diferencias pequeñas en métricas de chips/tarjeta todavía no cerradas; no atribuir igualdad global. Browser cerrado y Vite detenido. Sin Codemagic hasta objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop703: preguntas frecuentes y enlaces de ayuda
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. HelpCenter FAQ/enlaces legales/Eliminar mi cuenta NoSplash/overlay0/duración0; Volver overlay0. FAQ sustituye Material chevron18 por SVG Source idéntico hash,20px/muted independiente del título seleccionado. Navegación/toggle/contenido real preservados. Copia inicial scratch falló por cwd, primera prueba anterior SVG no atribuida; copia absoluta y gate34692 terminal0,14/14 en8s vigente. Analyze11685 terminal0 limpio39.7s. Capture40272 terminal0,1/1 en12s,19 PNG frescos válidos/hash; adoption-large inspeccionado muestra reflujo y chevron. Sin aceptación total/Android nuevo/presión RGBA específica. Codemagic solo cuando objetivo completo; dinero live no autorizado.
