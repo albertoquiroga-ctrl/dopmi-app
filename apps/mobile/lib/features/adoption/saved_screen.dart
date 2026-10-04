@@ -268,6 +268,9 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
             width: double.infinity,
             child: FilledButton(
               style: FilledButton.styleFrom(
+                splashFactory: NoSplash.splashFactory,
+                overlayColor: Colors.transparent,
+                animationDuration: Duration.zero,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 18,
                   vertical: 12,
