@@ -1292,6 +1292,8 @@ void main() {
       ('verification-form-large', '/rescue/new?kind=verification'),
       ('verification-form-documents', '/rescue/new?kind=verification'),
       ('verification-form-documents-large', '/rescue/new?kind=verification'),
+      ('verification-form-progress', '/rescue/new?kind=verification'),
+      ('verification-form-progress-large', '/rescue/new?kind=verification'),
       ('verification-approved', '/rescue/verification-id'),
       ('verification-approved-large', '/rescue/verification-id'),
       ('verification-review', '/rescue/verification-id'),
@@ -3156,6 +3158,32 @@ void main() {
         );
         await Scrollable.ensureVisible(tester.element(documents), alignment: 0);
         await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('verification-form-progress')) {
+        final heading = find.text('Progreso del formulario');
+        await tester.scrollUntilVisible(
+          heading,
+          250,
+          maxScrolls: 30,
+          scrollable: find
+              .descendant(
+                of: find.byKey(const ValueKey('verification-form-body')),
+                matching: find.byType(Scrollable),
+              )
+              .first,
+        );
+        await Scrollable.ensureVisible(tester.element(heading), alignment: 0);
+        await tester.pumpAndSettle();
+        expect(find.text('Incompleto').hitTestable(), findsOneWidget);
+        expect(
+          find.text('1 de 11 requisitos capturados').hitTestable(),
+          findsOneWidget,
+        );
+        final bar = find.byType(LinearProgressIndicator);
+        expect(
+          tester.widget<LinearProgressIndicator>(bar).value,
+          closeTo(1 / 11, .0001),
+        );
       }
       if (spec.$1.startsWith('case-publication-header-focus')) {
         final header = find.byKey(const ValueKey('publication-header-back'));
