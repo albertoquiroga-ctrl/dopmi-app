@@ -124,6 +124,30 @@ void main() {
     return repo;
   }
 
+  for (final bottomInset in [0.0, 24.0]) {
+    testWidgets(
+      'adoption actions match rendered reference bottom gap and stay fixed on scroll: $bottomInset',
+      (tester) async {
+        tester.view.padding = FakeViewPadding(bottom: bottomInset);
+        addTearDown(tester.view.resetPadding);
+        await open(tester);
+        final cta = find.widgetWithText(FilledButton, 'Quiero adoptar');
+        final before = tester.getRect(cta);
+        // Rendered Source406: shell rule specificity preserves bottom gap100.
+        // Bar padding14 and safe-area remain inside that reference boundary.
+        expect(before.bottom, 852 - bottomInset - 14 - 100);
+        expect(before.height, 52);
+        await tester.drag(
+          find.byType(SingleChildScrollView).first,
+          const Offset(0, -350),
+        );
+        await tester.pumpAndSettle();
+        expect(tester.getRect(cta), before);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   testWidgets(
     'detail carries server-calculated discovery distance without fabricating it',
     (tester) async {

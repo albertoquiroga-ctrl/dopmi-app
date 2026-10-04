@@ -2686,3 +2686,7 @@ Sustituye pendientes558: build debug android-x6495153 exit0/1112.1s, instalació
 ## 2026-10-03 — Loop559: ubicación del detalle de rescate
 
 Source Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb local/remoto revalidado. Corregido padding9x5 de etiqueta en OwnedCaseDetail: Container ya suma borde1; coincide con métrica runtime553 altura27/y294.5. Fixture CDMX comprueba dimensiones y origen título33/293. Test46230 exit0,6/6; analyzer99777 exit0 limpio50.4s. Gate inicial concurrente con emulador agotó memoria: analyzer26686 errorOOM/test73619 interrumpido; emulador propio cerrado y gates repetidos secuencialmente. Evidencia docs/design-reviews/parity-loop559. APK558 anterior al cambio, sin nueva aceptación nativa. Objetivo global pendiente; sin push/Codemagic.
+
+## 2026-10-03 — Loop560: posición de barra de adopción
+
+Native558 hueco100dp contrastado con Source406 del mismo SHA Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb local/remoto revalidado. Source muestra mismo hueco: mayor especificidad CSS conserva shellpadding100. Hipótesis provisional de retirar separador descartada, producción sin cambios560. Dos nuevas pruebas ruta real/DopmiApp verifican bottom852-inset-14-100,altura52 y posición fija tras scroll para inset0/24. Final6919 exit0,7/7; capturador71266 exit0/dosPNG finales; analyzer69665 exit0 limpio22.8s. Evidencia docs/design-reviews/parity-loop560. No paridad global/animaciones/gestos físicos aceptados; sin push/Codemagic.
