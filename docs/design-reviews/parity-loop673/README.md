@@ -1,0 +1,5 @@
+# Loop673 — Presión del encabezado
+
+## 2026-10-04 — Loop673: presión encabezado detalle porRGBA/navegación
+
+Producción6289ea4sin edición673; Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. CuatrotestsheaderBack/Rescuer×normal200 conInterreal/RepaintBoundary app, fotoemptytest (no sensibilidadsobreimagenreal), FullRGBAheld200ms/cancel exactos/rectstable, routerpermanece/adoptions/post held/cancel. TapreleaseBack→/adoptions;Rescuer→/people/owner. Primer3212exit1:10pass2fail, perfilesfallaronporfixtureDetailRepository.publicProfile sóloverified, typeNullasString; nofallodeproducciónatribuido. Testrepoahora extiendesuperpublicProfile sintéticocompleto+verifiedconfigurable, noRPC/realdata. Final41355exit0,12/12en4s, incluye8previosgallery/privatepaths/distance/badge/footer. Analyzer80150finalterminalexit0clean. No compararRGBAperfilSourceimagen/nativoheaderactual niSDK/globalaceptación. Capture2detail672 vigentesmisma producción; testsnuevosnoactualizanfull766660. Objetivocompleto/conjuntofamiliasabierto; sinpush/Codemagic hastaobjetivocompleto.

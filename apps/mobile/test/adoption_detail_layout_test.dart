@@ -1,9 +1,14 @@
+import 'dart:ui' as ui;
+
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/adoption/adoption_detail_layout.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -14,7 +19,10 @@ class DetailRepository extends FakeCommunity {
   bool verified = false;
   final signed = <String>[];
   @override
-  Future<Json?> publicProfile(String id) async => {'verified': verified};
+  Future<Json?> publicProfile(String id) async => {
+    ...?await super.publicProfile(id),
+    'verified': verified,
+  };
   @override
   Future<String> photoUrl(String path) async {
     signed.add(path);
@@ -91,6 +99,7 @@ void main() {
     bool verified = false,
     DetailRepository? repository,
     String initialLocation = '/adoptions/post',
+    GlobalKey? boundaryKey,
   }) async {
     tester.view.physicalSize = large
         ? const Size(320, 640)
@@ -118,10 +127,61 @@ void main() {
     );
     addTearDown(container.dispose);
     await tester.pumpWidget(
-      UncontrolledProviderScope(container: container, child: const DopmiApp()),
+      RepaintBoundary(
+        key: boundaryKey,
+        child: UncontrolledProviderScope(
+          container: container,
+          child: const DopmiApp(),
+        ),
+      ),
     );
     await tester.pumpAndSettle();
     return repo;
+  }
+
+  for (final large in [false, true]) {
+    for (final back in [false, true]) {
+      testWidgets('detail header press pixels and navigation: $large/$back', (
+        tester,
+      ) async {
+        final font = FontLoader('Inter')
+          ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
+        await tester.runAsync(font.load);
+        final key = GlobalKey();
+        await open(tester, large: large, boundaryKey: key);
+        final target = back
+            ? find.byTooltip('Volver')
+            : find.text('Refugio Luna');
+        final router = GoRouter.of(tester.element(target));
+        Future<List<int>?> pixels() => tester.runAsync(() async {
+          final image =
+              await (key.currentContext!.findRenderObject()!
+                      as RenderRepaintBoundary)
+                  .toImage(pixelRatio: 1);
+          final data = await image.toByteData(
+            format: ui.ImageByteFormat.rawRgba,
+          );
+          final bytes = data!.buffer.asUint8List().toList();
+          image.dispose();
+          return bytes;
+        });
+        final before = await pixels();
+        final rect = tester.getRect(target);
+        final held = await tester.startGesture(rect.center);
+        await tester.pump(const Duration(milliseconds: 200));
+        expect(await pixels(), before);
+        expect(tester.getRect(target), rect);
+        expect(router.state.uri.path, '/adoptions/post');
+        await held.cancel();
+        await tester.pumpAndSettle();
+        expect(await pixels(), before);
+        expect(router.state.uri.path, '/adoptions/post');
+        await tester.tap(target);
+        await tester.pumpAndSettle();
+        expect(router.state.uri.path, back ? '/adoptions' : '/people/owner');
+        expect(tester.takeException(), isNull);
+      });
+    }
   }
 
   testWidgets(

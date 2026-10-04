@@ -1,0 +1,66 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart
+00:00 +0: changing publication resets gallery even with shared photo paths
+00:01 +1: detail header press pixels and navigation: false/false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: null
+  Actual: _TypeError:<type 'Null' is not a subtype of type 'String' in type cast>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart:179:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart line 179
+The test description was:
+  detail header press pixels and navigation: false/false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:02 +1 -1: detail header press pixels and navigation: false/false [E]
+  Test failed. See exception logs above.
+  The test description was: detail header press pixels and navigation: false/false
+  
+00:02 +1 -1: detail header press pixels and navigation: false/true
+00:03 +2 -1: detail header press pixels and navigation: true/false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: null
+  Actual: _TypeError:<type 'Null' is not a subtype of type 'String' in type cast>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart:179:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart line 179
+The test description was:
+  detail header press pixels and navigation: true/false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:03 +2 -2: detail header press pixels and navigation: true/false [E]
+  Test failed. See exception logs above.
+  The test description was: detail header press pixels and navigation: true/false
+  
+00:03 +2 -2: detail header press pixels and navigation: true/true
+00:04 +3 -2: saved detail favorite carries reference shadow and removes it on unsave
+00:04 +4 -2: adoption actions match rendered reference bottom gap and stay fixed on scroll: 0.0
+00:04 +5 -2: adoption actions match rendered reference bottom gap and stay fixed on scroll: 24.0
+00:04 +6 -2: detail carries server-calculated discovery distance without fabricating it
+00:04 +7 -2: badge requires server verification and care remains accessible
+00:04 +8 -2: real gallery tracks swipes and retries only approved photo paths
+00:04 +9 -2: large text keeps contact and save fixed while content scrolls
+00:05 +10 -2: Some tests failed.
+
+Failing tests:
+  C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart: detail header press pixels and navigation: false/false
+  C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart: detail header press pixels and navigation: true/false
