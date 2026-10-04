@@ -723,6 +723,7 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                                       ? null
                                       : send,
                                   style: IconButton.styleFrom(
+                                    overlayColor: Colors.transparent,
                                     backgroundColor: accent,
                                     disabledBackgroundColor: accent.withValues(
                                       alpha: .45,
