@@ -787,6 +787,36 @@ void main() {
       expect(find.byKey(const ValueKey('match-sort')), findsNothing);
     },
   );
+  testWidgets('enlarged empty saved CTA scrolls, cancels and opens adoption', (
+    tester,
+  ) async {
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    final repo = FakeCommunity()..savedItems = [];
+    final container = await start(tester, repo, '/saved');
+    tester.view.physicalSize = const Size(320, 640);
+    await tester.pumpAndSettle();
+    final button = find.widgetWithText(FilledButton, 'Ir a Adoptar');
+    await tester.ensureVisible(button);
+    await tester.pumpAndSettle();
+    expect(button.hitTestable(), findsOneWidget);
+    final position = tester
+        .state<ScrollableState>(find.byType(Scrollable).first)
+        .position;
+    expect(position.pixels, greaterThan(0));
+    final offset = position.pixels;
+    final held = await tester.startGesture(tester.getCenter(button));
+    await tester.pump(const Duration(milliseconds: 150));
+    expect(container.read(routerProvider).state.uri.path, '/saved');
+    await held.cancel();
+    await tester.pumpAndSettle();
+    expect(container.read(routerProvider).state.uri.path, '/saved');
+    expect(position.pixels, offset);
+    await tester.tap(button);
+    await tester.pumpAndSettle();
+    expect(container.read(routerProvider).state.uri.path, '/adoptions');
+    expect(tester.takeException(), isNull);
+  });
   testWidgets('empty favorites explores the real adoption feed', (
     tester,
   ) async {
