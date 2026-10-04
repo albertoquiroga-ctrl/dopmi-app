@@ -1568,6 +1568,12 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     final field = rescueFields['verification']!.firstWhere(
       (item) => item.key == key,
     );
+    final label = switch (key) {
+      'legal_name' => 'Nombre completo *',
+      'phone' => 'Teléfono *',
+      'experience' => 'Cuéntanos sobre tu experiencia *',
+      _ => field.label,
+    };
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
       borderSide: const BorderSide(color: Color(0xffe3e4ed)),
@@ -1578,7 +1584,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            field.label,
+            label,
             style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 12,
@@ -1590,7 +1596,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
           const SizedBox(height: 7),
           if (field.options == null)
             Semantics(
-              label: field.label,
+              label: label,
               child: TextField(
                 key: ValueKey('verification-field-$key'),
                 controller: controllers[key],

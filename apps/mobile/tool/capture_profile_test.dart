@@ -1309,6 +1309,8 @@ void main() {
       ('verification-intro-footer-large', '/rescue/new?kind=verification'),
       ('verification-form', '/rescue/new?kind=verification'),
       ('verification-form-large', '/rescue/new?kind=verification'),
+      ('verification-form-inputs-large', '/rescue/new?kind=verification'),
+      ('verification-form-experience-large', '/rescue/new?kind=verification'),
       ('verification-form-documents', '/rescue/new?kind=verification'),
       ('verification-form-documents-large', '/rescue/new?kind=verification'),
       ('verification-form-progress', '/rescue/new?kind=verification'),
@@ -3255,6 +3257,29 @@ void main() {
         await Scrollable.ensureVisible(tester.element(next), alignment: .5);
         await tester.pumpAndSettle();
         await tester.tap(next);
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1 == 'verification-form-inputs-large' ||
+          spec.$1 == 'verification-form-experience-large') {
+        final target = find.byKey(
+          ValueKey(
+            spec.$1.contains('experience')
+                ? 'verification-field-experience'
+                : 'verification-field-legal_name',
+          ),
+        );
+        await tester.scrollUntilVisible(
+          target,
+          250,
+          maxScrolls: 100,
+          scrollable: find
+              .descendant(
+                of: find.byKey(const ValueKey('verification-form-body')),
+                matching: find.byType(Scrollable),
+              )
+              .first,
+        );
+        await Scrollable.ensureVisible(tester.element(target), alignment: .1);
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('verification-form-documents')) {

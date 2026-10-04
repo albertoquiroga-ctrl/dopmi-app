@@ -1,0 +1,5 @@
+# Etiquetas y campos ampliados
+
+## 2026-10-04 — Loop643: etiquetas requeridas y campos200
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. ContratoSQLlocal202609130006rescue required_privatelegal_name/phone/experience/social_url/identity_type leído sin remoto/migración. Tres etiquetasvisuales+Semantics ahora Nombre completo */Teléfono */Cuéntanos sobre tu experiencia * comoSource, sin cambiarrescueFields/controller/key/payload/guardas. Capturadorañadeinputs-large yexperience-large apuntando a campos reales;8PNGfamilia regenerados. Gate49120terminalexit0,9/9en7s verification_state/introapp/router/capturador; analyzer8973exit0sin incidencias26.1s. Dos nuevasimágenes200inspeccionadas: nombre/teléfonoenprimerestado yexperienciaenotro;placeholderpreguntas completo refluye4líneas, camposprivadossocialseparadossinrecortehorizontal. No Source runtime nuevo/SDK/dispositivo/globalaceptación. Full705629 anteriorproducciónvigente;global410636 anterior638+. Próximo documentos/progreso/actions delformulario versus Source, conservando realesarchivos/revisión y Connect. Sin push/Codemagic hastaobjetivocompleto.
