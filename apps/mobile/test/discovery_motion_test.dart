@@ -35,6 +35,15 @@ class GuestCommunity extends FakeCommunity {
   }
 }
 
+class FailedPhotoCommunity extends FakeCommunity {
+  int attempts = 0;
+  @override
+  Future<String> photoUrl(String path) async {
+    attempts++;
+    throw StateError('Synthetic photo unavailable');
+  }
+}
+
 void main() {
   Future<FakeCommunity> open(
     WidgetTester tester, {
@@ -101,6 +110,31 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  testWidgets('photo retry receives tap through decorative gradient', (
+    tester,
+  ) async {
+    WidgetController.hitTestWarningShouldBeFatal = true;
+    addTearDown(() => WidgetController.hitTestWarningShouldBeFatal = false);
+    final repo = FailedPhotoCommunity();
+    repo.post = Adoption({
+      ...repo.post.data,
+      'photos': ['fixture/missing'],
+    });
+    await open(tester, repository: repo);
+    final before = repo.attempts;
+    expect(before, greaterThan(0));
+    await tester.tap(
+      find.descendant(
+        of: find.byKey(const ValueKey('discovery-motion-post')),
+        matching: find.text('Cargar foto'),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(repo.attempts, greaterThan(before));
+    expect(find.text('Luna'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 
   for (final large in [false, true]) {
     for (final right in [false, true]) {

@@ -1,3 +1,5 @@
+> Loop659: soporte permite scrollvertical/descarte a LunaDemo observadoAndroid; gradientes bloqueaban Cargarfoto, corregido IgnorePointer ambos tipos. [Evidencia](design-reviews/parity-loop659/README.md):24/24/analyze limpio, retry nativo actualizado pendiente. Sin cierre global.
+
 > Loop658: guardar invitado abre login; Back conserva Rocky/Perros, observado en runtime Android actualizado. [Evidencia](design-reviews/parity-loop658/README.md). APK656 sigue anterior657; no aceptación global ni autenticación completa.
 
 > Loop657: guardar sin cuenta pide login y conserva mascota;23/23/analyze limpio. [Evidencia](design-reviews/parity-loop657/README.md). Defecto observado en APK656, reparación aún pendiente de repetir en Android; no cierre de paridad global.

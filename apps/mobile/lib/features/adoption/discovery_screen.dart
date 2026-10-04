@@ -663,19 +663,21 @@ class _SupportCard extends StatelessWidget {
                                     color: Color(0xffcfc9c0),
                                     child: Icon(Icons.pets, size: 80),
                                   ),
-                                const DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                        Colors.transparent,
-                                        Colors.transparent,
-                                        Color(0x8c15110d),
-                                        Color(0xe015110d),
-                                        Color(0xf015110d),
-                                      ],
-                                      stops: [0, .36, .63, .86, 1],
+                                const IgnorePointer(
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.transparent,
+                                          Colors.transparent,
+                                          Color(0x8c15110d),
+                                          Color(0xe015110d),
+                                          Color(0xf015110d),
+                                        ],
+                                        stops: [0, .36, .63, .86, 1],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -914,19 +916,21 @@ class _SwipeCard extends StatelessWidget {
                                 )
                               else
                                 AdoptionPhoto(post.photos.first),
-                              const DecoratedBox(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.transparent,
-                                      Colors.transparent,
-                                      Color(0x8c15110d),
-                                      Color(0xe015110d),
-                                      Color(0xf015110d),
-                                    ],
-                                    stops: [0, .36, .63, .86, 1],
+                              const IgnorePointer(
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.transparent,
+                                        Colors.transparent,
+                                        Color(0x8c15110d),
+                                        Color(0xe015110d),
+                                        Color(0xf015110d),
+                                      ],
+                                      stops: [0, .36, .63, .86, 1],
+                                    ),
                                   ),
                                 ),
                               ),

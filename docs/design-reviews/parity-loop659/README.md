@@ -1,0 +1,7 @@
+# Loop659 — Foto y gesto de apoyo
+
+## 2026-10-04 — Loop659: gesto soporte y recuperación de foto
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Runtime658/API35/PID2489: dos descartes desdeRocky→Toby→apoyo. Swipevertical3601100→360650/500ms desplaza lista sin descartar; fotoapoyo mostró Cargarfoto (causa archivo/red no diagnosticada, no atribuir resolución). Descarte600700→90700/500ms avanzaLunaDemo; capturaLuna inspeccionada. No guardar nuevascapturasapoyo porque no se comprobó naturaleza sintética del registro, evidenciaLunaDemo únicamente.
+
+Inspección detectó2DecoratedBoxgradient porencimaAdoptionPhoto que interceptan retry. Test nuevo usa FailedPhotoCommunity y foto sintética; primeros gates fallaron por mapaimmutable, campo photo envezphotos y finder ambiguo (tarjeta siguiente tambiénfoto). Gate99271 inicialmenteexit0con warningtapmissed y mayorattempts por navegaciónadetail: no aceptar falsoverde. Se elevó hitTestWarningShouldBeFatal y gate63948exit1/23pass1fail confirmó tapbloqueado porRenderDecoratedBox. Cliente envuelve ambosgradientesenIgnorePointer, apariencia/curvas/roles intactos. Final79604terminalexit0,24/24en6s sin tapmiss; analyzer36709exit0clean11.5s. Archivosformateadosscratch→raíz. No autenticación/backend/pagos ni foto remota reparada. Runtime658/APK656 preceden659: repetir retryAndroid pendiente. Full759650/global414651 anteriores654/657/659. Continuar contrasteSource/gestos/restofamilias; Codemagic únicamente al objetivocompleto.
