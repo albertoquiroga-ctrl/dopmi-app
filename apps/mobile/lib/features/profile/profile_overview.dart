@@ -693,7 +693,7 @@ class DonorProfileView extends ConsumerWidget {
             asset: 'icon-help.svg',
             onPressed: () => context.push('/help'),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
           DonorLogoutRow(
             onPressed: () async {
               try {
@@ -800,6 +800,8 @@ class DonorSupportRow extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(18),
         onTap: onPressed,
+        splashFactory: NoSplash.splashFactory,
+        highlightColor: Colors.transparent,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           child: Row(
