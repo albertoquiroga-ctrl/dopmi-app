@@ -483,27 +483,51 @@ class DonorModeDialog extends StatelessWidget {
                   ),
                 const SizedBox(height: 12),
                 FilledButton(
-                  style: FilledButton.styleFrom(
-                    backgroundColor: yellow,
-                    foregroundColor: ink,
-                    minimumSize: const Size.fromHeight(48),
-                    shape: const StadiumBorder(),
-                  ),
+                  style:
+                      FilledButton.styleFrom(
+                        backgroundColor: yellow,
+                        foregroundColor: const Color(0xff0d0d0d),
+                        splashFactory: NoSplash.splashFactory,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 11,
+                        ),
+                        textStyle: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        minimumSize: const Size.fromHeight(48),
+                        shape: const StadiumBorder(),
+                      ).copyWith(
+                        overlayColor: WidgetStateProperty.resolveWith<Color?>(
+                          (states) => states.contains(WidgetState.pressed)
+                              ? Colors.transparent
+                              : null,
+                        ),
+                      ),
                   onPressed: () => Navigator.pop(context, true),
                   child: const Text('Sí, cambiar a Rescatista'),
                 ),
                 const SizedBox(height: 8),
                 TextButton(
-                  style: TextButton.styleFrom(
-                    minimumSize: const Size.fromHeight(40),
-                    padding: EdgeInsets.zero,
-                    splashFactory: NoSplash.splashFactory,
-                    textStyle: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Inter',
-                    ),
-                  ),
+                  style:
+                      TextButton.styleFrom(
+                        minimumSize: const Size.fromHeight(40),
+                        padding: EdgeInsets.zero,
+                        splashFactory: NoSplash.splashFactory,
+                        textStyle: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Inter',
+                        ),
+                      ).copyWith(
+                        overlayColor: WidgetStateProperty.resolveWith<Color?>(
+                          (states) => states.contains(WidgetState.pressed)
+                              ? Colors.transparent
+                              : null,
+                        ),
+                      ),
                   onPressed: () => Navigator.pop(context, false),
                   child: const Text('Ahora no', style: TextStyle(color: muted)),
                 ),
