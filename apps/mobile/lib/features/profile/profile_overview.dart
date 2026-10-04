@@ -985,64 +985,77 @@ class DonorAccessGroup extends StatelessWidget {
             children: [
               for (final item in items) ...[
                 if (item != items.first) const SizedBox(width: 8),
-                Expanded(
-                  child: InkWell(
-                    onTap: () => context.push(item.$3),
-                    borderRadius: BorderRadius.circular(16),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 2,
-                        vertical: 4,
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 56,
-                            height: 56,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color(0xfff0eeea),
-                            ),
-                            child: Center(
-                              child: SvgPicture.asset(
-                                'assets/profile/${switch (item.$2) {
-                                  Icons.person_outline => 'icon-user.svg',
-                                  Icons.credit_card => 'icon-card.svg',
-                                  Icons.receipt_long_outlined => 'icon-billing.svg',
-                                  Icons.access_time => 'icon-clock.svg',
-                                  Icons.favorite_border => 'icon-heart.svg',
-                                  _ => 'icon-user.svg',
-                                }}',
-                                width: 22,
-                                height: 22,
-                                colorFilter: const ColorFilter.mode(
-                                  ink,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            item.$1,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xff5c5650),
-                              height: 1.2,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                Expanded(child: _DonorAccessItem(item: item)),
               ],
             ],
           ),
         ),
       ],
+    ),
+  );
+}
+
+class _DonorAccessItem extends StatefulWidget {
+  const _DonorAccessItem({required this.item});
+  final (String, IconData, String) item;
+  @override
+  State<_DonorAccessItem> createState() => _DonorAccessItemState();
+}
+
+class _DonorAccessItemState extends State<_DonorAccessItem> {
+  bool pressed = false;
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    child: InkWell(
+      onTap: () => context.push(widget.item.$3),
+      borderRadius: BorderRadius.circular(16),
+      splashFactory: NoSplash.splashFactory,
+      overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+      onHighlightChanged: (value) => setState(() => pressed = value),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+        child: Column(
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: pressed
+                    ? const Color(0xffe7e3dc)
+                    : const Color(0xfff0eeea),
+              ),
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/profile/${switch (widget.item.$2) {
+                    Icons.person_outline => 'icon-user.svg',
+                    Icons.credit_card => 'icon-card.svg',
+                    Icons.receipt_long_outlined => 'icon-billing.svg',
+                    Icons.access_time => 'icon-clock.svg',
+                    Icons.favorite_border => 'icon-heart.svg',
+                    _ => 'icon-user.svg',
+                  }}',
+                  width: 22,
+                  height: 22,
+                  colorFilter: const ColorFilter.mode(ink, BlendMode.srcIn),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              widget.item.$1,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Color(0xff5c5650),
+                height: 1.2,
+              ),
+            ),
+          ],
+        ),
+      ),
     ),
   );
 }
