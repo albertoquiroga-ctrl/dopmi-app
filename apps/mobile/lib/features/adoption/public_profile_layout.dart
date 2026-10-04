@@ -279,6 +279,9 @@ class PublicProfileSocials extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: () => open(entry.$2),
                   style: OutlinedButton.styleFrom(
+                    splashFactory: NoSplash.splashFactory,
+                    overlayColor: Colors.transparent,
+                    animationDuration: Duration.zero,
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     padding: const EdgeInsets.symmetric(
