@@ -1,9 +1,15 @@
 import 'package:dopmi_mobile/features/profile/rescuer_profile_hero.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  setUpAll(() async {
+    final font = FontLoader('Inter')
+      ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
+    await font.load();
+  });
   testWidgets(
     'edit keeps a 44px visible pill and a 48px target with keyboard focus',
     (tester) async {
@@ -70,6 +76,16 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(find.text('Rescatista con nombre extenso'), findsOneWidget);
+        final name = tester.renderObject<RenderParagraph>(
+          find.text('Rescatista con nombre extenso'),
+        );
+        expect(
+          name.getBoxesForSelection(
+            const TextSelection(baseOffset: 0, extentOffset: 10),
+          ),
+          hasLength(1),
+          reason: 'Rescatista must remain a complete word at 200 percent',
+        );
         expect(
           find.text('Verificado'),
           status == 'approved' ? findsOneWidget : findsNothing,

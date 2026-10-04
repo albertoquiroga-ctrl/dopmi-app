@@ -114,7 +114,13 @@ class VerificationIntroScreen extends StatelessWidget {
                   children: [
                     SingleChildScrollView(
                       child: Padding(
-                        padding: const EdgeInsets.all(24),
+                        padding: EdgeInsets.symmetric(
+                          horizontal:
+                              MediaQuery.textScalerOf(context).scale(22) > 32
+                              ? 16
+                              : 24,
+                          vertical: 24,
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -196,6 +202,15 @@ class VerificationIntroScreen extends StatelessWidget {
                                     splashFactory: NoSplash.splashFactory,
                                     animationDuration: Duration.zero,
                                     minimumSize: const Size(0, 44),
+                                    padding:
+                                        MediaQuery.textScalerOf(context)
+                                                .scale(14) >
+                                            21
+                                        ? const EdgeInsets.symmetric(
+                                            horizontal: 18,
+                                            vertical: 10,
+                                          )
+                                        : null,
                                     textStyle: const TextStyle(
                                       fontFamily: 'Inter',
                                       fontSize: 14,
@@ -221,6 +236,15 @@ class VerificationIntroScreen extends StatelessWidget {
                                     foregroundColor: ink,
                                     backgroundColor: Colors.white,
                                     minimumSize: const Size(0, 36),
+                                    padding:
+                                        MediaQuery.textScalerOf(context)
+                                                .scale(14) >
+                                            21
+                                        ? const EdgeInsets.symmetric(
+                                            horizontal: 18,
+                                            vertical: 10,
+                                          )
+                                        : null,
                                     side: const BorderSide(
                                       color: Color(0xffe6e2dd),
                                     ),

@@ -1068,8 +1068,14 @@ class _OwnedRescueCard extends ConsumerWidget {
                       backgroundColor: const Color(0xffede9fe),
                       foregroundColor: purple,
                       minimumSize: const Size(0, 48),
+                      padding: MediaQuery.textScalerOf(context).scale(14) > 21
+                          ? const EdgeInsets.symmetric(
+                              horizontal: 18,
+                              vertical: 12,
+                            )
+                          : null,
                     ),
-                    child: Text(action),
+                    child: Text(action, textAlign: TextAlign.center),
                   )
                 else
                   OutlinedButton.icon(
@@ -1078,10 +1084,16 @@ class _OwnedRescueCard extends ConsumerWidget {
                       refresh();
                     },
                     icon: const Icon(Icons.open_in_new, size: 16),
-                    label: Text(action),
+                    label: Text(action, textAlign: TextAlign.center),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: const Color(0xff151423),
                       minimumSize: const Size(0, 48),
+                      padding: MediaQuery.textScalerOf(context).scale(14) > 21
+                          ? const EdgeInsets.symmetric(
+                              horizontal: 18,
+                              vertical: 12,
+                            )
+                          : null,
                       side: const BorderSide(color: Color(0xffe3e4ed)),
                     ),
                   ),

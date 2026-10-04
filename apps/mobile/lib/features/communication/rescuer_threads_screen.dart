@@ -269,6 +269,151 @@ class _RescuerThreadRowState extends State<RescuerThreadRow> {
     final thread = widget.thread;
     final name = (thread['participant_name'] as String? ?? '').trim();
     final unread = (thread['unread_count'] as num? ?? 0).toInt();
+    final avatar = ExcludeSemantics(
+      child: Container(
+        width: 48,
+        height: 48,
+        alignment: Alignment.center,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0x337841f2), Color(0x33a478ff)],
+          ),
+        ),
+        child: Text(
+          name.isEmpty ? '?' : name.characters.first.toUpperCase(),
+          style: const TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 18,
+            height: 1.2,
+            letterSpacing: 0,
+            fontWeight: FontWeight.w700,
+            color: Color(0xff7841f2),
+          ),
+        ),
+      ),
+    );
+    final copy = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (MediaQuery.textScalerOf(context).scale(16) > 20)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name.isEmpty ? 'Participante' : name,
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16,
+                  height: 1.2,
+                  letterSpacing: 0,
+                  fontWeight: FontWeight.w600,
+                  color: _ink,
+                ),
+              ),
+              Text(
+                MatchThreadRow(
+                  thread,
+                  open: widget.open,
+                ).activity(DateTime.now()),
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 12,
+                  height: 15.2 / 12,
+                  letterSpacing: 0,
+                  color: _muted,
+                ),
+              ),
+            ],
+          )
+        else
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  name.isEmpty ? 'Participante' : name,
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 16,
+                    height: 1.2,
+                    letterSpacing: 0,
+                    fontWeight: FontWeight.w600,
+                    color: _ink,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                MatchThreadRow(
+                  thread,
+                  open: widget.open,
+                ).activity(DateTime.now()),
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 12,
+                  height: 15.2 / 12,
+                  letterSpacing: 0,
+                  color: _muted,
+                ),
+              ),
+            ],
+          ),
+        const SizedBox(height: 1),
+        Text(
+          'Sobre ${thread['pet_name'] ?? 'la mascota'}',
+          style: const TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 12,
+            height: 15.2 / 12,
+            letterSpacing: 0,
+            color: _muted,
+          ),
+        ),
+        const SizedBox(height: 1),
+        Text(
+          thread['status'] == 'closed'
+              ? 'Conversación cerrada'
+              : thread['last_message'] as String? ?? 'Inicia la conversación',
+          maxLines: MediaQuery.textScalerOf(context).scale(14) > 20 ? 3 : 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 14,
+            height: 1.55,
+            letterSpacing: 0,
+            color: _muted,
+          ),
+        ),
+      ],
+    );
+    final trailing = <Widget>[
+      if (unread > 0) ...[
+        const SizedBox(width: 12),
+        Semantics(
+          label: '$unread mensajes sin leer',
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+            decoration: BoxDecoration(
+              color: const Color(0xff7841f2),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Text(
+              '$unread',
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 12,
+                height: 15.2 / 12,
+                letterSpacing: 0,
+                fontWeight: FontWeight.w500,
+                color: Color(0xfffbfbff),
+              ),
+            ),
+          ),
+        ),
+      ],
+    ];
     return MouseRegion(
       onEnter: (_) => setState(() => hovered = true),
       onExit: (_) => setState(() => hovered = false),
@@ -287,164 +432,30 @@ class _RescuerThreadRowState extends State<RescuerThreadRow> {
                     ? null
                     : const Border(bottom: BorderSide(color: _line)),
               ),
-              child: Row(
-                children: [
-                  ExcludeSemantics(
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      alignment: Alignment.center,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [Color(0x337841f2), Color(0x33a478ff)],
-                        ),
-                      ),
-                      child: Text(
-                        name.isEmpty
-                            ? '?'
-                            : name.characters.first.toUpperCase(),
-                        style: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 18,
-                          height: 1.2,
-                          letterSpacing: 0,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xff7841f2),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final enlarged =
+                      MediaQuery.textScalerOf(context).scale(16) > 25 &&
+                      constraints.maxWidth < 360;
+                  if (enlarged) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        if (MediaQuery.textScalerOf(context).scale(16) > 20)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                name.isEmpty ? 'Participante' : name,
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 16,
-                                  height: 1.2,
-                                  letterSpacing: 0,
-                                  fontWeight: FontWeight.w600,
-                                  color: _ink,
-                                ),
-                              ),
-                              Text(
-                                MatchThreadRow(
-                                  thread,
-                                  open: widget.open,
-                                ).activity(DateTime.now()),
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 12,
-                                  height: 15.2 / 12,
-                                  letterSpacing: 0,
-                                  color: _muted,
-                                ),
-                              ),
-                            ],
-                          )
-                        else
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  name.isEmpty ? 'Participante' : name,
-                                  style: const TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: 16,
-                                    height: 1.2,
-                                    letterSpacing: 0,
-                                    fontWeight: FontWeight.w600,
-                                    color: _ink,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                MatchThreadRow(
-                                  thread,
-                                  open: widget.open,
-                                ).activity(DateTime.now()),
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 12,
-                                  height: 15.2 / 12,
-                                  letterSpacing: 0,
-                                  color: _muted,
-                                ),
-                              ),
-                            ],
-                          ),
-                        const SizedBox(height: 1),
-                        Text(
-                          'Sobre ${thread['pet_name'] ?? 'la mascota'}',
-                          style: const TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 12,
-                            height: 15.2 / 12,
-                            letterSpacing: 0,
-                            color: _muted,
-                          ),
-                        ),
-                        const SizedBox(height: 1),
-                        Text(
-                          thread['status'] == 'closed'
-                              ? 'Conversación cerrada'
-                              : thread['last_message'] as String? ??
-                                    'Inicia la conversación',
-                          maxLines:
-                              MediaQuery.textScalerOf(context).scale(14) > 20
-                              ? 3
-                              : 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 14,
-                            height: 1.55,
-                            letterSpacing: 0,
-                            color: _muted,
-                          ),
-                        ),
+                        Row(children: [avatar, const Spacer(), ...trailing]),
+                        const SizedBox(height: 12),
+                        copy,
                       ],
-                    ),
-                  ),
-                  if (unread > 0) ...[
-                    const SizedBox(width: 12),
-                    Semantics(
-                      label: '$unread mensajes sin leer',
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 9,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xff7841f2),
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: Text(
-                          '$unread',
-                          style: const TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 12,
-                            height: 15.2 / 12,
-                            letterSpacing: 0,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xfffbfbff),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
+                    );
+                  }
+                  return Row(
+                    children: [
+                      avatar,
+                      const SizedBox(width: 12),
+                      Expanded(child: copy),
+                      ...trailing,
+                    ],
+                  );
+                },
               ),
             ),
           ),

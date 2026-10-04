@@ -478,7 +478,10 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                       ),
                     ),
                     onPressed: contact,
-                    child: const Text('Contactar a soporte'),
+                    child: const Text(
+                      'Contactar a soporte',
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ],
               ),

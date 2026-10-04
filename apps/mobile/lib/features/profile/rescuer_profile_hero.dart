@@ -327,116 +327,116 @@ class _RescuerIdentityCardState extends State<RescuerIdentityCard> {
         letterSpacing: 0,
       ),
     );
-    final identity = Row(
-      children: [
-        Container(
-          width: 72,
-          height: 72,
-          alignment: Alignment.center,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Color(0x1415110d),
-                offset: Offset(0, 2),
-                blurRadius: 8,
-              ),
-            ],
+    final avatar = Container(
+      width: 72,
+      height: 72,
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x1415110d),
+            offset: Offset(0, 2),
+            blurRadius: 8,
           ),
-          child: ClipOval(
-            child: widget.avatarUrl == null
-                ? initial
-                : Image.network(
-                    widget.avatarUrl!,
-                    key: const ValueKey('rescuer-profile-avatar'),
-                    width: 72,
-                    height: 72,
-                    fit: BoxFit.cover,
-                    excludeFromSemantics: true,
-                    frameBuilder: (context, child, frame, synchronous) =>
-                        frame == null && !synchronous ? initial : child,
-                    errorBuilder: (context, error, stack) => initial,
-                  ),
+        ],
+      ),
+      child: ClipOval(
+        child: widget.avatarUrl == null
+            ? initial
+            : Image.network(
+                widget.avatarUrl!,
+                key: const ValueKey('rescuer-profile-avatar'),
+                width: 72,
+                height: 72,
+                fit: BoxFit.cover,
+                excludeFromSemantics: true,
+                frameBuilder: (context, child, frame, synchronous) =>
+                    frame == null && !synchronous ? initial : child,
+                errorBuilder: (context, error, stack) => initial,
+              ),
+      ),
+    );
+    final identityCopy = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          widget.name,
+          style: const TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 20,
+            height: 1.2,
+            letterSpacing: -.4,
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
           ),
         ),
-        const SizedBox(width: 14),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        const SizedBox(height: 4),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          decoration: BoxDecoration(
+            color: verified ? const Color(0x4722bd90) : const Color(0x38ffffff),
+            borderRadius: BorderRadius.circular(99),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                widget.name,
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 20,
-                  height: 1.2,
-                  letterSpacing: -.4,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
+              ExcludeSemantics(
+                child: SvgPicture.asset(
+                  'assets/profile/icon-shield.svg',
+                  width: 14,
+                  height: 14,
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
-              const SizedBox(height: 4),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: verified
-                      ? const Color(0x4722bd90)
-                      : const Color(0x38ffffff),
-                  borderRadius: BorderRadius.circular(99),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ExcludeSemantics(
-                      child: SvgPicture.asset(
-                        'assets/profile/icon-shield.svg',
-                        width: 14,
-                        height: 14,
-                        colorFilter: const ColorFilter.mode(
-                          Colors.white,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Flexible(
-                      child: Text(
-                        label,
-                        style: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 12,
-                          height: 15.2 / 12,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          letterSpacing: 0,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (widget.city.isNotEmpty) ...[
-                const SizedBox(height: 4),
-                Text(
-                  widget.city,
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  label,
                   style: const TextStyle(
                     fontFamily: 'Inter',
-                    fontSize: 13,
-                    height: 16 / 13,
-                    color: Color(0xebffffff),
+                    fontSize: 12,
+                    height: 15.2 / 12,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
                     letterSpacing: 0,
                   ),
                 ),
-              ],
+              ),
             ],
           ),
         ),
+        if (widget.city.isNotEmpty) ...[
+          const SizedBox(height: 4),
+          Text(
+            widget.city,
+            style: const TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 13,
+              height: 16 / 13,
+              color: Color(0xebffffff),
+              letterSpacing: 0,
+            ),
+          ),
+        ],
       ],
     );
+    final identity = MediaQuery.textScalerOf(context).scale(20) > 26
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [avatar, const SizedBox(height: 14), identityCopy],
+          )
+        : Row(
+            children: [
+              avatar,
+              const SizedBox(width: 14),
+              Expanded(child: identityCopy),
+            ],
+          );
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(

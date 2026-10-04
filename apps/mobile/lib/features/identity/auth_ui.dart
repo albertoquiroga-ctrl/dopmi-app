@@ -314,21 +314,55 @@ class AuthHeading extends StatelessWidget {
         ),
         child: Semantics(
           header: true,
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: sheet
-                ? Theme.of(context).textTheme.headlineMedium!.copyWith(
-                    fontVariations: DopmiTokens.display28Variations,
-                    height: 1.15,
-                    letterSpacing: -.56,
-                    fontSize:
-                        largeTitleFontSize != null &&
-                            MediaQuery.textScalerOf(context).scale(28) > 40
-                        ? largeTitleFontSize
-                        : null,
-                  )
-                : Theme.of(context).textTheme.headlineLarge,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              var style = sheet
+                  ? Theme.of(context).textTheme.headlineMedium!.copyWith(
+                      fontVariations: DopmiTokens.display28Variations,
+                      height: 1.15,
+                      letterSpacing: -.56,
+                      fontSize:
+                          largeTitleFontSize != null &&
+                              MediaQuery.textScalerOf(context).scale(28) > 40
+                          ? largeTitleFontSize
+                          : null,
+                    )
+                  : Theme.of(context).textTheme.headlineLarge!;
+              final scaler = MediaQuery.textScalerOf(context);
+              if (!sheet && scaler.scale(style.fontSize!) > style.fontSize!) {
+                // Keep enlarged headings readable without breaking a word into
+                // isolated letters. Body text retains the system text scale.
+                var widestWord = 0.0;
+                for (final word in title.split(RegExp(r'\s+'))) {
+                  final painter = TextPainter(
+                    text: TextSpan(text: word, style: style),
+                    textScaler: scaler,
+                    textDirection: Directionality.of(context),
+                  )..layout();
+                  if (painter.width > widestWord) widestWord = painter.width;
+                  painter.dispose();
+                }
+                if (widestWord > constraints.maxWidth) {
+                  final target =
+                      scaler.scale(style.fontSize!) *
+                      constraints.maxWidth /
+                      widestWord *
+                      .99;
+                  var low = 0.0;
+                  var high = style.fontSize!;
+                  for (var i = 0; i < 16; i++) {
+                    final middle = (low + high) / 2;
+                    if (scaler.scale(middle) <= target) {
+                      low = middle;
+                    } else {
+                      high = middle;
+                    }
+                  }
+                  style = style.copyWith(fontSize: low);
+                }
+              }
+              return Text(title, textAlign: TextAlign.center, style: style);
+            },
           ),
         ),
       ),

@@ -71,6 +71,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             profile?.privacyVersion == currentPrivacyVersion &&
             profile?.adultConfirmed == true;
         final consentExempt =
+            (identity.recovering && desired == '/reset-password') ||
             desired == '/consent' ||
             desired == '/terms' ||
             desired == '/privacy-notice' ||
@@ -491,7 +492,7 @@ class DopmiApp extends ConsumerWidget {
       Future.microtask(() => measurement.owner(identity?.id));
     }
     return ListenableBuilder(
-      listenable: experience,
+      listenable: Listenable.merge([experience, identityController]),
       builder: (context, _) => MaterialApp.router(
         title: 'Dopmi',
         debugShowCheckedModeBanner: false,
@@ -513,6 +514,7 @@ class DopmiApp extends ConsumerWidget {
               profile?.privacyVersion == currentPrivacyVersion &&
               profile?.adultConfirmed == true;
           final exempt =
+              (identityController.recovering && path == '/reset-password') ||
               path == '/consent' ||
               path == '/terms' ||
               path == '/privacy-notice' ||
@@ -521,8 +523,8 @@ class DopmiApp extends ConsumerWidget {
               path == '/guardian/history';
           final checkingConsent =
               currentIdentity?.verified == true &&
-              experience.loading &&
-              profile == null;
+              (identityController.loading ||
+                  (experience.loading && profile == null));
           if (checkingConsent && !exempt) {
             return Stack(
               children: [

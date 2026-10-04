@@ -141,9 +141,19 @@ class _GuardianAmountDialogState extends State<GuardianAmountDialog> {
                                       ),
                                       borderRadius: BorderRadius.circular(18),
                                     ),
-                                    child: Row(
+                                    child: Flex(
+                                      direction: large
+                                          ? Axis.vertical
+                                          : Axis.horizontal,
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: large
+                                          ? CrossAxisAlignment.start
+                                          : CrossAxisAlignment.center,
                                       children: [
-                                        Expanded(
+                                        Flexible(
+                                          fit: large
+                                              ? FlexFit.loose
+                                              : FlexFit.tight,
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -214,7 +224,10 @@ class _GuardianAmountDialogState extends State<GuardianAmountDialog> {
                                             ],
                                           ),
                                         ),
-                                        const SizedBox(width: 12),
+                                        SizedBox(
+                                          width: large ? 0 : 12,
+                                          height: large ? 8 : 0,
+                                        ),
                                         Container(
                                           width: 20,
                                           height: 20,

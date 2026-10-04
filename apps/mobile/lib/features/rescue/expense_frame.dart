@@ -195,7 +195,7 @@ class ExpenseActions extends StatelessWidget {
     final save = OutlinedButton(
       onPressed: onSave,
       style: style,
-      child: const Text('Guardar progreso'),
+      child: const Text('Guardar progreso', textAlign: TextAlign.center),
     );
     final next = FilledButton(
       onPressed: onNext,
@@ -207,7 +207,7 @@ class ExpenseActions extends StatelessWidget {
               : const Color(0xff7841f2),
         ),
       ),
-      child: Text(primaryLabel),
+      child: Text(primaryLabel, textAlign: TextAlign.center),
     );
     return Padding(
       padding: const EdgeInsets.only(top: 4),
@@ -287,6 +287,9 @@ class ExpenseSubmitted extends StatelessWidget {
           foregroundColor: Colors.white,
           backgroundColor: const Color(0xff7841f2),
           minimumSize: const Size(0, 36),
+          padding: MediaQuery.textScalerOf(context).scale(14) > 21
+              ? const EdgeInsets.symmetric(horizontal: 18, vertical: 10)
+              : null,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),

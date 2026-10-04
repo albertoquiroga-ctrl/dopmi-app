@@ -1,6 +1,8 @@
 import 'package:dopmi_mobile/features/rescue/verification_intro.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_screens.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
@@ -8,6 +10,11 @@ import 'community_test.dart' show FakeCommunity;
 import 'publication_frame_test.dart' show startPublication;
 
 void main() {
+  setUpAll(() async {
+    final font = FontLoader('Inter')
+      ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
+    await font.load();
+  });
   testWidgets(
     'verification introduction returns to its origin and continues to real private documents at 200 percent',
     (tester) async {
@@ -23,6 +30,18 @@ void main() {
         router.push<void>('/rescue/new?kind=verification').ignore();
         await tester.pumpAndSettle();
         expect(find.byType(VerificationIntroScreen), findsOneWidget);
+        const title = 'Verifícate para recibir donaciones';
+        final paragraph = tester.renderObject<RenderParagraph>(
+          find.text(title),
+        );
+        final start = title.indexOf('donaciones');
+        expect(
+          paragraph.getBoxesForSelection(
+            TextSelection(baseOffset: start, extentOffset: title.length),
+          ),
+          hasLength(1),
+          reason: 'Text enlargement must keep donaciones on one line',
+        );
         if (dismiss == 'Después') {
           final button = find.text('Después');
           await Scrollable.ensureVisible(tester.element(button), alignment: .5);
@@ -44,6 +63,14 @@ void main() {
         alignment: .5,
       );
       await tester.pumpAndSettle();
+      final button = find.ancestor(
+        of: continueButton,
+        matching: find.byType(FilledButton),
+      );
+      final labelRect = tester.getRect(continueButton);
+      final buttonRect = tester.getRect(button);
+      expect(labelRect.top, greaterThanOrEqualTo(buttonRect.top + 9.9));
+      expect(labelRect.bottom, lessThanOrEqualTo(buttonRect.bottom - 9.9));
       await tester.tap(continueButton);
       await tester.pumpAndSettle();
       expect(find.byType(VerificationIntroScreen), findsNothing);

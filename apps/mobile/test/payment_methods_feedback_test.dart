@@ -1,8 +1,15 @@
 import 'package:dopmi_mobile/features/payments/payment_methods_feedback.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  setUpAll(() async {
+    final font = FontLoader('Inter')
+      ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
+    await font.load();
+  });
   for (final large in [false, true]) {
     testWidgets(
       'feedback is immediate, overlays without overflow and expires at 2600ms: large=$large',
@@ -16,6 +23,7 @@ void main() {
         var shown = true, finished = 0;
         await tester.pumpWidget(
           MaterialApp(
+            theme: ThemeData(fontFamily: 'Inter'),
             home: MediaQuery(
               data: MediaQueryData(
                 size: large ? const Size(320, 640) : const Size(377, 852),
@@ -51,6 +59,16 @@ void main() {
         expect(rect.bottom, (large ? 640 : 852) - 24);
         expect(rect.height, greaterThanOrEqualTo(48));
         expect(find.text('Método predeterminado actualizado'), findsOneWidget);
+        final paragraph = tester.renderObject<RenderParagraph>(
+          find.text('Método predeterminado actualizado'),
+        );
+        expect(
+          paragraph.getBoxesForSelection(
+            const TextSelection(baseOffset: 7, extentOffset: 21),
+          ),
+          hasLength(1),
+          reason: 'El anuncio debe conservar predeterminado completo al 200%.',
+        );
         await tester.pump(const Duration(milliseconds: 2599));
         expect(finished, 0);
         await tester.pump(const Duration(milliseconds: 1));

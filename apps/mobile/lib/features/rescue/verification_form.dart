@@ -409,7 +409,10 @@ class VerificationFormActions extends StatelessWidget {
                   excluding: busy,
                   child: Opacity(
                     opacity: busy ? 0 : 1,
-                    child: const Text('Enviar a revisión'),
+                    child: const Text(
+                      'Enviar a revisión',
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
                 if (busy)
@@ -442,9 +445,11 @@ class VerificationFormActions extends StatelessWidget {
                     borderRadius: BorderRadius.circular(14),
                   ),
                   minimumSize: const Size.fromHeight(36),
-                  padding: const EdgeInsets.symmetric(
+                  padding: EdgeInsets.symmetric(
                     horizontal: 7,
-                    vertical: 3,
+                    vertical: MediaQuery.textScalerOf(context).scale(14) > 21
+                        ? 8
+                        : 3,
                   ),
                   textStyle: const TextStyle(
                     fontFamily: 'Inter',
@@ -461,7 +466,10 @@ class VerificationFormActions extends StatelessWidget {
                   ),
                   animationDuration: Duration.zero,
                 ),
-            child: const Text('Guardar y continuar después'),
+            child: const Text(
+              'Guardar y continuar después',
+              textAlign: TextAlign.center,
+            ),
           ),
         ],
       );

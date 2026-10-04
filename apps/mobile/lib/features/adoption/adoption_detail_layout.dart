@@ -658,6 +658,12 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                         backgroundColor: ink,
                         foregroundColor: Colors.white,
                         minimumSize: const Size(0, 52),
+                        padding: MediaQuery.textScalerOf(context).scale(16) > 25
+                            ? const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 12,
+                              )
+                            : null,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -672,6 +678,7 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                         widget.owner
                             ? 'Administrar mi publicación'
                             : 'Quiero adoptar',
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ),

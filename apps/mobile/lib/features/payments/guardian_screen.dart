@@ -966,6 +966,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                                 ? 'Eliminar tarjeta'
                                 : 'Autorizar y continuar'
                           : 'Confirmar cancelación',
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ],

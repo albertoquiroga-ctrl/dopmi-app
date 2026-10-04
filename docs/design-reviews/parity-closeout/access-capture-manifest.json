@@ -1,0 +1,218 @@
+[
+  {
+    "fixture": "access-welcome",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "62d05f7d943561dbc89a08dc73db46494c9d97eb20b4d513bc26e3ca9427f3f7"
+  },
+  {
+    "fixture": "access-welcome-large",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "e43406198d7103b78a941607dff3fccc679cca2206593d08a70cb99d0b2026b2"
+  },
+  {
+    "fixture": "access-onboarding",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "9c5fa66d94041dc94f361b98cd159d5617b9f0f2b18dd17cff618eb5161ec95c"
+  },
+  {
+    "fixture": "access-onboarding-large",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "b2adaf452b03de0d9f6a97534b8905cc2873fb7c3eb1c689319dc03f113a41b6"
+  },
+  {
+    "fixture": "access-start",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "c5feb2981401626f0224a419e9ae946adae230a4bd21344750e1ed60297d33fd"
+  },
+  {
+    "fixture": "access-start-large",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "cbe46540670407fc6e92e76d1954d7713811d36b0f5bb71cba23cb05d9e1b1bf"
+  },
+  {
+    "fixture": "access-login",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "af1769f0410449a174d29b74eb7e2d480c2675a7d474301b07b566d5019a2afc"
+  },
+  {
+    "fixture": "access-login-large",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "88c16099aefed183c02a4a0c9eabf7a36b74cc385f8c02c752400a890b6b5fd4"
+  },
+  {
+    "fixture": "access-login-google",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "021acf180a93719082a4587f85adddc27f663ddf8b1fc1816ab026f79bd330b7"
+  },
+  {
+    "fixture": "access-login-google-large",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "88c16099aefed183c02a4a0c9eabf7a36b74cc385f8c02c752400a890b6b5fd4"
+  },
+  {
+    "fixture": "access-signup",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "e597150527bba847eb05df0f0e44940ad0f182cc11db87d5e1293c0aa0644f9f"
+  },
+  {
+    "fixture": "access-signup-large",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "5cd0ae691127bbf91dde9110adae83a37da8e0b3a90bfdf513997f47e78a5f6b"
+  },
+  {
+    "fixture": "access-forgot",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "7277dac1ddbdb6ccf4e9d9c76be6ca8a27e20ce6044747b772556138192d58e1"
+  },
+  {
+    "fixture": "access-forgot-large",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "b4d522fd9d3bc34305968dd2be08a5d997be9cd0084961f8644957f0cbd53108"
+  },
+  {
+    "fixture": "access-reset",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "11bf2fb391dc91f3c0aa7ee3badaae8031f960b233f1ac4481f4fd3dc535068b"
+  },
+  {
+    "fixture": "access-reset-large",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "3c955b699922a186852dfc11ca780bb9060dc9d0402a2275ee7b04bef7c4c032"
+  },
+  {
+    "fixture": "access-confirm",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "23f55f4ec92088602e6f10bba63ba554e019aee4ea6e075d544349a67463bc31"
+  },
+  {
+    "fixture": "access-confirm-large",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "fdab25a8c4381ac462f4a825704b92c73d0b6f74665d7cdc233726f66f6f226c"
+  },
+  {
+    "fixture": "access-confirm-recovery",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "c604c92bb2ac5468ccf4862d1c68e67c156b83ff4f50a1da526737371258db32"
+  },
+  {
+    "fixture": "access-confirm-recovery-large",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "a8955980a9f74db39d41d03236df455e5f129e30e21063c01fab32351d5f3226"
+  },
+  {
+    "fixture": "access-login-footer-large",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "376a754bd771f46f1673eb97e8cf6535ba89056b32324adc96bd222fcc07e7d8"
+  },
+  {
+    "fixture": "access-login-google-footer-large",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "9453f93a79c29820119a10265d7b3caffdf13f233bae115f1c94b4440c3740d7"
+  },
+  {
+    "fixture": "access-signup-footer-large",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "8eb7b755987f896eb5df0f30988181b952e6e2a318b72aa9f5d5471ba2cc547a"
+  },
+  {
+    "fixture": "access-forgot-footer-large",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "46a8ec68f03a5a201e9b685bfb9b3d86096dd6a984950d9f8230597728517ad2"
+  },
+  {
+    "fixture": "access-reset-footer-large",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "1a29749c39db9be1ec996dc37b64d24f34b778f386b62a638b8a9259382bd577"
+  },
+  {
+    "fixture": "access-confirm-footer-large",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "09b096df9a47311badb00d95406a648bbdad05a1df85102f937441397be47f40"
+  },
+  {
+    "fixture": "access-confirm-recovery-footer-large",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "09b096df9a47311badb00d95406a648bbdad05a1df85102f937441397be47f40"
+  }
+]

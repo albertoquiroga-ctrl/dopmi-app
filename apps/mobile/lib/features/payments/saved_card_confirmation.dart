@@ -84,6 +84,10 @@ Future<bool> _confirm(
                 backgroundColor: remove ? const Color(0xffe52b21) : ink,
                 foregroundColor: Colors.white,
                 minimumSize: const Size(48, 48),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 12,
+                ),
                 shape: const StadiumBorder(),
                 textStyle: const TextStyle(
                   fontFamily: 'Inter',

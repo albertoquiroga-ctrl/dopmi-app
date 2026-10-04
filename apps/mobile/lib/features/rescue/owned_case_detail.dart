@@ -30,6 +30,9 @@ class OwnedCaseDetail extends StatelessWidget {
   final String? error;
   @override
   Widget build(BuildContext context) {
+    final actionPadding = MediaQuery.textScalerOf(context).scale(14) > 21
+        ? const EdgeInsets.symmetric(horizontal: 18, vertical: 12)
+        : null;
     final age = (record.publicData['age'] as String? ?? '').trim();
     final location = [
       record.publicData['city'],
@@ -184,22 +187,34 @@ class OwnedCaseDetail extends StatelessWidget {
                       const SizedBox(height: 16),
                       FilledButton.icon(
                         onPressed: busy ? null : onExpense,
+                        style: FilledButton.styleFrom(padding: actionPadding),
                         icon: const Icon(Icons.add, size: 18),
-                        label: const Text('Registrar gasto realizado'),
+                        label: const Text(
+                          'Registrar gasto realizado',
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ],
                     updates,
                     const SizedBox(height: 16),
                     OutlinedButton.icon(
                       onPressed: busy ? null : onUpdates,
+                      style: OutlinedButton.styleFrom(padding: actionPadding),
                       icon: const Icon(Icons.history, size: 16),
-                      label: const Text('Administrar avances'),
+                      label: const Text(
+                        'Administrar avances',
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     OutlinedButton.icon(
                       onPressed: busy ? null : onRecord,
+                      style: OutlinedButton.styleFrom(padding: actionPadding),
                       icon: const Icon(Icons.description_outlined, size: 16),
-                      label: const Text('Consultar expediente'),
+                      label: const Text(
+                        'Consultar expediente',
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     TextButton(
@@ -212,6 +227,7 @@ class OwnedCaseDetail extends StatelessWidget {
                         onPressed: busy ? null : onClose,
                         style: OutlinedButton.styleFrom(
                           foregroundColor: const Color(0xffb51224),
+                          padding: actionPadding,
                         ),
                         child: const Text('Cerrar caso'),
                       ),

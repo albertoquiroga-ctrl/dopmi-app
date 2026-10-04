@@ -453,6 +453,7 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                           attachment == null
                               ? 'Adjuntar imagen (opcional)'
                               : 'Cambiar imagen',
+                          textAlign: TextAlign.center,
                         ),
                       ),
                       if (attachment != null) ...[
@@ -520,7 +521,10 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                                   ),
                                 ),
                               )
-                            : const Text('Enviar mensaje'),
+                            : const Text(
+                                'Enviar mensaje',
+                                textAlign: TextAlign.center,
+                              ),
                       ),
                       if (mailFallbackAvailable && attachment == null) ...[
                         const SizedBox(height: 12),

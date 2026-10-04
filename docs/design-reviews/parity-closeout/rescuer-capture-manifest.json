@@ -1,0 +1,252 @@
+{
+  "review_date": "2026-10-04",
+  "source_head": "53716dc5669dd5b55eb690d1ca071b9902868e7e",
+  "changes": "uncommitted grouped parity closeout",
+  "reference_sha": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "capture_log": "C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/closeout-profile-captures.log",
+  "capture_directory": "C:\\Users\\betoq\\AppData\\Local\\Temp\\.tools\\design-review",
+  "records": [
+    {
+      "fixture": "owned-cases-correction",
+      "dimensions": [
+        377,
+        852
+      ],
+      "sha256": "6972784327f2f21a9e55bee63cb729963ce6ae4ddf69b8af4a142a1e54786a05",
+      "baseline758": "6972784327f2f21a9e55bee63cb729963ce6ae4ddf69b8af4a142a1e54786a05",
+      "same_as_758": true,
+      "mtime": "2026-10-04T13:05:59.185482"
+    },
+    {
+      "fixture": "owned-cases-correction-large",
+      "dimensions": [
+        320,
+        640
+      ],
+      "sha256": "d9b6e649adc60397692ee12e8e588aa7511543929d611b6e3ae90585dc5066fb",
+      "baseline758": "8d7a471acbb2a9337b556305e595bed1f3df7ad438ef555ca1e9a85733ea208d",
+      "same_as_758": false,
+      "mtime": "2026-10-04T13:05:59.680481"
+    },
+    {
+      "fixture": "owned-case-detail-bottom",
+      "dimensions": [
+        377,
+        852
+      ],
+      "sha256": "1dc01a52012007800fb114a5cf4b678bdb4ed3df2f1bbce26a0f7ab773204681",
+      "baseline758": "1dc01a52012007800fb114a5cf4b678bdb4ed3df2f1bbce26a0f7ab773204681",
+      "same_as_758": true,
+      "mtime": "2026-10-04T13:05:55.726265"
+    },
+    {
+      "fixture": "owned-case-detail-bottom-large",
+      "dimensions": [
+        320,
+        640
+      ],
+      "sha256": "13f35429155c88c37541b8de75b88066ac5f83549cc2ab185db78d269d32af9f",
+      "baseline758": "08da1b5af82a26abcd4eaccece2738b56c7c95c25a6bae51c94ba6267af48f30",
+      "same_as_758": false,
+      "mtime": "2026-10-04T13:05:56.164190"
+    },
+    {
+      "fixture": "rescuer-profile-reference",
+      "dimensions": [
+        377,
+        852
+      ],
+      "sha256": "a7791a72639f7d75cb05ba8cb75f3ad5a1fb59ba9e1156da77e9e318856c2ec6",
+      "baseline758": "a7791a72639f7d75cb05ba8cb75f3ad5a1fb59ba9e1156da77e9e318856c2ec6",
+      "same_as_758": true,
+      "mtime": "2026-10-04T13:07:17.994259"
+    },
+    {
+      "fixture": "rescuer-profile-reference-large",
+      "dimensions": [
+        320,
+        640
+      ],
+      "sha256": "9389310f842162e32d6f4e10113c80201927d28a43b6bc5c48c497d279e17e53",
+      "baseline758": "e40274e82d4753daa2bc58238b293f6ea6085879d6af8a3484e6ec9d0bf6f68c",
+      "same_as_758": false,
+      "mtime": "2026-10-04T13:07:21.464097"
+    },
+    {
+      "fixture": "verification-intro",
+      "dimensions": [
+        377,
+        852
+      ],
+      "sha256": "326220ef3779896db870718d85cf59f1aacf9af9bd5172d35139e6a3babd488e",
+      "baseline758": "326220ef3779896db870718d85cf59f1aacf9af9bd5172d35139e6a3babd488e",
+      "same_as_758": true,
+      "mtime": "2026-10-04T13:08:41.230370"
+    },
+    {
+      "fixture": "verification-intro-large",
+      "dimensions": [
+        320,
+        640
+      ],
+      "sha256": "eb8117676e1c5550c4ea9c0335fb66b6061b0471006da8eae002521d1651ffeb",
+      "baseline758": "bb9cece1673052769aeb328ece96c9a5b98f0f766b8739cae98f9ca64f0d9a37",
+      "same_as_758": false,
+      "mtime": "2026-10-04T13:08:41.675374"
+    },
+    {
+      "fixture": "verification-intro-footer",
+      "dimensions": [
+        377,
+        852
+      ],
+      "sha256": "527e0f9bdd0827edf3c648caf35e7eb7345e1066ce56d704c680043b28b9e734",
+      "baseline758": "527e0f9bdd0827edf3c648caf35e7eb7345e1066ce56d704c680043b28b9e734",
+      "same_as_758": true,
+      "mtime": "2026-10-04T13:08:42.113717"
+    },
+    {
+      "fixture": "verification-intro-footer-large",
+      "dimensions": [
+        320,
+        640
+      ],
+      "sha256": "ba67fa824e2e5bc3f3441904d2ceaae06e01c18b4f191b5957ad149082edbc47",
+      "baseline758": "7af626ea3d737250e9ef7526cb8f82648ddab49f86a4cb932bfeb898136e7d43",
+      "same_as_758": false,
+      "mtime": "2026-10-04T13:08:42.478469"
+    },
+    {
+      "fixture": "verification-form-progress",
+      "dimensions": [
+        377,
+        852
+      ],
+      "sha256": "2a907ea1ba5e9e14a87306c9a0d984363ac4bf70c327dfdf79df777952d8bf6a",
+      "baseline758": "2a907ea1ba5e9e14a87306c9a0d984363ac4bf70c327dfdf79df777952d8bf6a",
+      "same_as_758": true,
+      "mtime": "2026-10-04T13:08:45.712248"
+    },
+    {
+      "fixture": "verification-form-progress-large",
+      "dimensions": [
+        320,
+        640
+      ],
+      "sha256": "804b44fe951e77a79b49e6420f4ad540f63d909f3cb04ed2cfe1c88a54e1327f",
+      "baseline758": "2478d577a5f480041770e5aa3c449fd9c2948cc7a6edb25ef7a8831f47bfbb43",
+      "same_as_758": false,
+      "mtime": "2026-10-04T13:08:46.222793"
+    },
+    {
+      "fixture": "expense-review",
+      "dimensions": [
+        377,
+        852
+      ],
+      "sha256": "401a4b185a157cc355a3f8481cde629f75bb6b6fd67c116928268a6f0201e9ef",
+      "baseline758": "401a4b185a157cc355a3f8481cde629f75bb6b6fd67c116928268a6f0201e9ef",
+      "same_as_758": true,
+      "mtime": "2026-10-04T13:08:34.556420"
+    },
+    {
+      "fixture": "expense-review-large",
+      "dimensions": [
+        320,
+        640
+      ],
+      "sha256": "f72d459921fa9b72b303f19581c61466f36ca45e13e2d6900ec5627713f6ae4e",
+      "baseline758": "f8d01553290d3d598ebb534d2f4a4a9b0ca29872ef8199c375b3ca9bcabfb7d8",
+      "same_as_758": false,
+      "mtime": "2026-10-04T13:08:35.036590"
+    },
+    {
+      "fixture": "expense-description-footer-large",
+      "dimensions": [
+        320,
+        640
+      ],
+      "sha256": "45d44d7a06b4a1dd0800b0e34614f7ff7ce2ac7f8e0927b579a7a5994a44ae94",
+      "baseline758": "039196d5849be91d3cb9a2a0cf2aef3c65aae7e28d49a275ab111f654ea0ca61",
+      "same_as_758": false,
+      "mtime": "2026-10-04T13:08:39.876235"
+    },
+    {
+      "fixture": "expense-submitted",
+      "dimensions": [
+        377,
+        852
+      ],
+      "sha256": "d19dd45b6be1c5d8436d74c220f09dec2b81e75d907f03694eb0023b3f3db58e",
+      "baseline758": "d19dd45b6be1c5d8436d74c220f09dec2b81e75d907f03694eb0023b3f3db58e",
+      "same_as_758": true,
+      "mtime": "2026-10-04T13:08:19.204202"
+    },
+    {
+      "fixture": "expense-submitted-large",
+      "dimensions": [
+        320,
+        640
+      ],
+      "sha256": "4ed23b61df06fe17ef91e3969231e2aecfc0ccd6f682a815294bdb255e5f1e1b",
+      "baseline758": "4ed23b61df06fe17ef91e3969231e2aecfc0ccd6f682a815294bdb255e5f1e1b",
+      "same_as_758": true,
+      "mtime": "2026-10-04T13:08:19.703525"
+    },
+    {
+      "fixture": "expense-submitted-footer-large",
+      "dimensions": [
+        320,
+        640
+      ],
+      "sha256": "7faa757303603f83315860236ed4b0bc3f8fa543da292629c3b9890d14ba6b22",
+      "baseline758": "7e942da6c99310f151b051962862a06a7ad93b6d611c42ea5d773503deed99d0",
+      "same_as_758": false,
+      "mtime": "2026-10-04T13:08:20.204254"
+    },
+    {
+      "fixture": "case-publication-needs",
+      "dimensions": [
+        377,
+        852
+      ],
+      "sha256": "a9d5360dff18e0dae651f0439fb5ac910e9134a454ee588a7944c5dee6d94542",
+      "baseline758": "23597d34193c23805eb6ef4e860f197da105b9961a080743b298a35147ccfb21",
+      "same_as_758": false,
+      "mtime": "2026-10-04T13:08:29.973410"
+    },
+    {
+      "fixture": "case-publication-needs-large",
+      "dimensions": [
+        320,
+        640
+      ],
+      "sha256": "d8feee1287f2596c9c363f674b6e0f22915514c81c21008a61e068fc834daae5",
+      "baseline758": "d8feee1287f2596c9c363f674b6e0f22915514c81c21008a61e068fc834daae5",
+      "same_as_758": true,
+      "mtime": "2026-10-04T13:08:30.481981"
+    },
+    {
+      "fixture": "expense-review-private-large",
+      "dimensions": [
+        320,
+        640
+      ],
+      "sha256": "773d88f3ea64be34f5a566306def66830afffa158cd478e7e84bb4b85c413062",
+      "baseline758": "ac1486e3fff4c1fd19f8d509c6ccae8b5570fc5a0360d8ab2e1098029af1d817",
+      "same_as_758": false,
+      "mtime": "2026-10-04T13:08:36.032089"
+    },
+    {
+      "fixture": "case-publication-needs-list-large",
+      "dimensions": [
+        320,
+        640
+      ],
+      "sha256": "f618461cf5a53c77d27bee6a6a286f743fe570787237d881ea288ef7d10fb850",
+      "baseline758": "f618461cf5a53c77d27bee6a6a286f743fe570787237d881ea288ef7d10fb850",
+      "same_as_758": true,
+      "mtime": "2026-10-04T13:08:25.135723"
+    }
+  ]
+}

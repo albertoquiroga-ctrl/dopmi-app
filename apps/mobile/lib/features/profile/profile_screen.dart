@@ -508,7 +508,10 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
                                       ),
                                     ),
                                   )
-                                : const Text('Guardar cambios'),
+                                : const Text(
+                                    'Guardar cambios',
+                                    textAlign: TextAlign.center,
+                                  ),
                           ),
                         ),
                       ],

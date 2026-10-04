@@ -271,7 +271,51 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
                 ),
               ],
             ),
-          ] else
+          ] else if (MediaQuery.textScalerOf(context).scale(16) > 25)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 12),
+                  child: Text(
+                    'Mis favoritos',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 16,
+                      height: 1.3,
+                      fontWeight: FontWeight.w700,
+                      color: ink,
+                    ),
+                  ),
+                ),
+                if (result.total > 0)
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () => widget.showAll?.call(true),
+                      style: TextButton.styleFrom(
+                        splashFactory: NoSplash.splashFactory,
+                        overlayColor: Colors.transparent,
+                        animationDuration: Duration.zero,
+                        foregroundColor: ink,
+                        minimumSize: const Size(0, 48),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 8,
+                        ),
+                        textStyle: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 14,
+                          height: 1.2,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      child: const Text('Ver más', textAlign: TextAlign.center),
+                    ),
+                  ),
+              ],
+            )
+          else
             Row(
               children: [
                 const Expanded(

@@ -21,41 +21,59 @@ class ExpenseReview extends StatelessWidget {
   final ValueChanged<int> onOpen;
   final VoidCallback? onEditInformation, onEditPrivateInformation, onEditFiles;
 
-  Widget heading(String text, VoidCallback? onEdit) => Row(
-    children: [
-      Expanded(
-        child: Text(
-          text,
-          style: const TextStyle(
-            fontFamily: 'Inter',
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: Color(0xff151423),
-          ),
-        ),
+  Widget heading(BuildContext context, String text, VoidCallback? onEdit) {
+    final title = Text(
+      text,
+      style: const TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: Color(0xff151423),
       ),
-      if (onEdit != null)
-        Tooltip(
-          message: 'Editar $text',
-          child: TextButton(
-            onPressed: onEdit,
-            style:
-                TextButton.styleFrom(
-                  splashFactory: NoSplash.splashFactory,
-                  animationDuration: Duration.zero,
-                ).copyWith(
-                  overlayColor: const WidgetStatePropertyAll(
-                    Colors.transparent,
+    );
+    final edit = onEdit == null
+        ? null
+        : Tooltip(
+            message: 'Editar $text',
+            child: TextButton(
+              onPressed: onEdit,
+              style:
+                  TextButton.styleFrom(
+                    splashFactory: NoSplash.splashFactory,
+                    animationDuration: Duration.zero,
+                  ).copyWith(
+                    overlayColor: const WidgetStatePropertyAll(
+                      Colors.transparent,
+                    ),
                   ),
-                ),
-            child: const Text(
-              'Editar',
-              style: TextStyle(fontFamily: 'Inter', fontSize: 14),
+              child: const Text(
+                'Editar',
+                style: TextStyle(fontFamily: 'Inter', fontSize: 14),
+              ),
             ),
-          ),
-        ),
-    ],
-  );
+          );
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (edit != null &&
+            constraints.maxWidth < 300 &&
+            MediaQuery.textScalerOf(context).scale(14) > 21) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              title,
+              Align(alignment: Alignment.centerRight, child: edit),
+            ],
+          );
+        }
+        return Row(
+          children: [
+            Expanded(child: title),
+            ?edit,
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) => Column(
@@ -74,6 +92,7 @@ class ExpenseReview extends StatelessWidget {
       const SizedBox(height: 16),
       for (final private in [false, true]) ...[
         heading(
+          context,
           private
               ? 'Solo para revisión privada'
               : 'Información para publicación',
@@ -128,7 +147,7 @@ class ExpenseReview extends StatelessWidget {
         ),
         const SizedBox(height: 16),
       ],
-      heading('Comprobantes y fotos', onEditFiles),
+      heading(context, 'Comprobantes y fotos', onEditFiles),
       if (files.isEmpty)
         const Text(
           'Sin archivos adjuntos',

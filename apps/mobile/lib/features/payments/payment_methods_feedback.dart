@@ -58,7 +58,15 @@ class _PaymentMethodsFeedbackState extends State<PaymentMethodsFeedback> {
                 ),
               ],
             ),
-            child: Row(
+            child: Flex(
+              direction: MediaQuery.textScalerOf(context).scale(16) > 24
+                  ? Axis.vertical
+                  : Axis.horizontal,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment:
+                  MediaQuery.textScalerOf(context).scale(16) > 24
+                  ? CrossAxisAlignment.start
+                  : CrossAxisAlignment.center,
               children: [
                 SvgPicture.asset(
                   'assets/profile/check.svg',
@@ -66,8 +74,18 @@ class _PaymentMethodsFeedbackState extends State<PaymentMethodsFeedback> {
                   height: 16,
                   colorFilter: const ColorFilter.mode(ink, BlendMode.srcIn),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
+                SizedBox(
+                  width: MediaQuery.textScalerOf(context).scale(16) > 24
+                      ? 0
+                      : 10,
+                  height: MediaQuery.textScalerOf(context).scale(16) > 24
+                      ? 8
+                      : 0,
+                ),
+                Flexible(
+                  fit: MediaQuery.textScalerOf(context).scale(16) > 24
+                      ? FlexFit.loose
+                      : FlexFit.tight,
                   child: Text(
                     widget.message,
                     style: const TextStyle(

@@ -93,26 +93,54 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
     error = null;
   });
 
+  Widget _headerTitle() {
+    final title = Text(
+      maxLines: MediaQuery.textScalerOf(context).scale(18) > 25 ? 3 : 1,
+      textAlign: TextAlign.center,
+      switch (kind) {
+        SavedKind.adoption => 'Mis mascotas',
+        SavedKind.donation => 'Casos guardados',
+        SavedKind.rescuer => 'Rescatistas guardados',
+      },
+      style: const TextStyle(
+        fontSize: 18,
+        height: 1.25,
+        letterSpacing: -0.36,
+        color: ink,
+        fontWeight: FontWeight.w700,
+      ),
+    );
+    if (kind != SavedKind.rescuer) return title;
+    final icon = ExcludeSemantics(
+      child: SvgPicture.asset(
+        'assets/profile/icon-bookmark.svg',
+        key: const ValueKey('saved-rescuer-title-icon'),
+        width: 20,
+        height: 20,
+        colorFilter: const ColorFilter.mode(Color(0xff6b5000), BlendMode.srcIn),
+      ),
+    );
+    if (MediaQuery.textScalerOf(context).scale(18) > 25) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [icon, const SizedBox(height: 6), title],
+      );
+    }
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        icon,
+        const SizedBox(width: 8),
+        Flexible(child: title),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: cream,
     appBar: AppBar(
-      title: Text(
-        maxLines: MediaQuery.textScalerOf(context).scale(18) > 25 ? 3 : 1,
-        textAlign: TextAlign.center,
-        switch (kind) {
-          SavedKind.adoption => 'Mis mascotas',
-          SavedKind.donation => 'Casos guardados',
-          SavedKind.rescuer => 'Rescatistas guardados',
-        },
-        style: const TextStyle(
-          fontSize: 18,
-          height: 1.25,
-          letterSpacing: -0.36,
-          color: ink,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
+      title: _headerTitle(),
       centerTitle: true,
       toolbarHeight: MediaQuery.textScalerOf(context).scale(18) > 25
           ? MediaQuery.textScalerOf(context).scale(18) * 2.6 + 16
@@ -371,6 +399,137 @@ class _SavedCard extends StatelessWidget {
         ? Json.from(item.data['metrics'])
         : null;
     final publishedCases = metrics?['published_cases'];
+    final avatar = SizedBox(
+      width: adoption ? 70 : 40,
+      height: adoption ? 70 : 40,
+      child: adoption && photos.isNotEmpty
+          ? AdoptionPhoto(photos.first, height: 70, radius: 16)
+          : Container(
+              decoration: BoxDecoration(
+                color: const Color(0xfffff2b8),
+                borderRadius: BorderRadius.circular(adoption ? 16 : 40),
+              ),
+              alignment: Alignment.center,
+              child: item.available && !adoption
+                  ? Text(
+                      title.isEmpty ? '?' : title.characters.first,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xff6b5000),
+                      ),
+                    )
+                  : Icon(
+                      item.available
+                          ? Icons.pets_outlined
+                          : Icons.visibility_off_outlined,
+                      color: muted,
+                    ),
+            ),
+    );
+    final copy = InkWell(
+      splashFactory: adoption ? NoSplash.splashFactory : null,
+      overlayColor: adoption
+          ? const WidgetStatePropertyAll(Colors.transparent)
+          : null,
+      onTap: open,
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: adoption ? 6 : 0,
+          vertical: adoption ? 5 : 0,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      height: 1.2,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0,
+                      color: ink,
+                    ),
+                  ),
+                ),
+                if (item.available &&
+                    kind == SavedKind.rescuer &&
+                    item.data['verified'] == true)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 6),
+                    child: SvgPicture.asset(
+                      'assets/profile/icon-verified.svg',
+                      width: 14,
+                      height: 14,
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                if (item.available && kind == SavedKind.rescuer) ...[
+                  SvgPicture.asset(
+                    'assets/profile/location.svg',
+                    width: 12,
+                    height: 12,
+                    colorFilter: const ColorFilter.mode(muted, BlendMode.srcIn),
+                  ),
+                  const SizedBox(width: 4),
+                ],
+                Expanded(
+                  child: Text(
+                    detail,
+                    style: TextStyle(
+                      fontSize: adoption ? 11 : 12,
+                      height: 1.2,
+                      letterSpacing: 0,
+                      color: muted,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (publishedCases is int && publishedCases >= 0) ...[
+              const SizedBox(height: 4),
+              Text(
+                '$publishedCases casos publicados',
+                style: const TextStyle(
+                  fontSize: 12,
+                  height: 1.2,
+                  letterSpacing: 0,
+                  color: muted,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+    final removeButton = IconButton(
+      tooltip: 'Quitar de guardados',
+      style: adoption
+          ? IconButton.styleFrom(overlayColor: Colors.transparent)
+          : null,
+      onPressed: busy ? null : remove,
+      icon: adoption
+          ? Transform.translate(
+              offset: const Offset(4, 0),
+              child: SvgPicture.asset(
+                'assets/profile/icon-bookmark.svg',
+                colorFilter: const ColorFilter.mode(
+                  Color(0xff6b5000),
+                  BlendMode.srcIn,
+                ),
+                width: 20,
+                height: 20,
+              ),
+            )
+          : const Icon(Icons.close, size: 20),
+    );
     return Container(
       margin: EdgeInsets.only(bottom: adoption ? 0 : 10),
       padding: adoption
@@ -383,147 +542,31 @@ class _SavedCard extends StatelessWidget {
             ? const Border(bottom: BorderSide(color: Color(0xffe6e2dd)))
             : Border.all(color: const Color(0xffe6e2dd)),
       ),
-      child: Row(
-        children: [
-          SizedBox(
-            width: adoption ? 70 : 40,
-            height: adoption ? 70 : 40,
-            child: adoption && photos.isNotEmpty
-                ? AdoptionPhoto(photos.first, height: 70, radius: 16)
-                : Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xfffff2b8),
-                      borderRadius: BorderRadius.circular(adoption ? 16 : 40),
-                    ),
-                    alignment: Alignment.center,
-                    child: item.available && !adoption
-                        ? Text(
-                            title.isEmpty ? '?' : title.characters.first,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xff6b5000),
-                            ),
-                          )
-                        : Icon(
-                            item.available
-                                ? Icons.pets_outlined
-                                : Icons.visibility_off_outlined,
-                            color: muted,
-                          ),
-                  ),
-          ),
-          SizedBox(width: adoption ? 10 : 12),
-          Expanded(
-            child: InkWell(
-              splashFactory: adoption ? NoSplash.splashFactory : null,
-              overlayColor: adoption
-                  ? const WidgetStatePropertyAll(Colors.transparent)
-                  : null,
-              onTap: open,
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: adoption ? 6 : 0,
-                  vertical: adoption ? 5 : 0,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Flexible(
-                          child: Text(
-                            title,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              height: 1.2,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0,
-                              color: ink,
-                            ),
-                          ),
-                        ),
-                        if (item.available &&
-                            kind == SavedKind.rescuer &&
-                            item.data['verified'] == true)
-                          Padding(
-                            padding: const EdgeInsets.only(left: 6),
-                            child: SvgPicture.asset(
-                              'assets/profile/icon-verified.svg',
-                              width: 14,
-                              height: 14,
-                            ),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        if (item.available && kind == SavedKind.rescuer) ...[
-                          SvgPicture.asset(
-                            'assets/profile/location.svg',
-                            width: 12,
-                            height: 12,
-                            colorFilter: const ColorFilter.mode(
-                              muted,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                        ],
-                        Expanded(
-                          child: Text(
-                            detail,
-                            style: TextStyle(
-                              fontSize: adoption ? 11 : 12,
-                              height: 1.2,
-                              letterSpacing: 0,
-                              color: muted,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (publishedCases is int && publishedCases >= 0) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        '$publishedCases casos publicados',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          height: 1.2,
-                          letterSpacing: 0,
-                          color: muted,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ),
-          ),
-          if (adoption) const SizedBox(width: 2),
-          IconButton(
-            tooltip: 'Quitar de guardados',
-            style: adoption
-                ? IconButton.styleFrom(overlayColor: Colors.transparent)
-                : null,
-            onPressed: busy ? null : remove,
-            icon: adoption
-                ? Transform.translate(
-                    offset: const Offset(4, 0),
-                    child: SvgPicture.asset(
-                      'assets/profile/icon-bookmark.svg',
-                      colorFilter: const ColorFilter.mode(
-                        Color(0xff6b5000),
-                        BlendMode.srcIn,
-                      ),
-                      width: 20,
-                      height: 20,
-                    ),
-                  )
-                : const Icon(Icons.close, size: 20),
-          ),
-        ],
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final enlarged =
+              MediaQuery.textScalerOf(context).scale(16) > 25 &&
+              constraints.maxWidth < 360;
+          if (enlarged) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(children: [avatar, const Spacer(), removeButton]),
+                const SizedBox(height: 8),
+                copy,
+              ],
+            );
+          }
+          return Row(
+            children: [
+              avatar,
+              SizedBox(width: adoption ? 10 : 12),
+              Expanded(child: copy),
+              if (adoption) const SizedBox(width: 2),
+              removeButton,
+            ],
+          );
+        },
       ),
     );
   }

@@ -1096,13 +1096,15 @@ class _DonorFeatureState extends State<DonorFeature> {
                   width: 52,
                   height: 52,
                   decoration: BoxDecoration(
-                    color: yellow,
+                    color: light ? ink : yellow,
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: const [
+                    boxShadow: [
                       BoxShadow(
-                        color: Color(0x59f7cb2d),
+                        color: light
+                            ? const Color(0x3815110d)
+                            : const Color(0x59f7cb2d),
                         blurRadius: 16,
-                        offset: Offset(0, 6),
+                        offset: const Offset(0, 6),
                       ),
                     ],
                   ),
@@ -1115,7 +1117,10 @@ class _DonorFeatureState extends State<DonorFeature> {
                       }}',
                       width: 22,
                       height: 22,
-                      colorFilter: const ColorFilter.mode(ink, BlendMode.srcIn),
+                      colorFilter: ColorFilter.mode(
+                        light ? Colors.white : ink,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                 ),

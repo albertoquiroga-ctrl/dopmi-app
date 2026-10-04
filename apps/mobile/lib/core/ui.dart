@@ -253,7 +253,7 @@ class ActionButton extends StatelessWidget {
     required this.onPressed,
     this.busy = false,
     this.sunny = false,
-    this.textAlign,
+    this.textAlign = TextAlign.center,
   });
   final String label;
   final VoidCallback? onPressed;
@@ -261,8 +261,14 @@ class ActionButton extends StatelessWidget {
   final TextAlign? textAlign;
   @override
   Widget build(BuildContext context) => FilledButton(
-    style: sunny
-        ? FilledButton.styleFrom(backgroundColor: yellow, foregroundColor: ink)
+    style: sunny || MediaQuery.textScalerOf(context).scale(14) > 18
+        ? FilledButton.styleFrom(
+            backgroundColor: sunny ? yellow : null,
+            foregroundColor: sunny ? ink : null,
+            padding: MediaQuery.textScalerOf(context).scale(14) > 18
+                ? const EdgeInsets.symmetric(horizontal: 18, vertical: 12)
+                : null,
+          )
         : null,
     onPressed: busy ? null : onPressed,
     child: busy

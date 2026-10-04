@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/config.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
+import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,8 +46,19 @@ void main() {
         ('login-google', '/login'),
         ('signup', '/signup'),
         ('forgot', '/forgot'),
+        ('reset', '/reset-password'),
+        ('confirm', '/confirm'),
+        ('confirm-recovery', '/confirm-recovery'),
       ]) {
         final identity = FakeIdentityRepository();
+        if (route.$1 == 'reset') {
+          identity.user = const Identity(
+            'one',
+            'qa@example.test',
+            verified: true,
+          );
+          identity.pending = true;
+        }
         final container = ProviderContainer(
           overrides: [
             identityRepositoryProvider.overrideWithValue(identity),
@@ -136,10 +148,20 @@ void main() {
           );
         }
         if (large &&
-            ['login', 'login-google', 'signup', 'forgot'].contains(route.$1)) {
+            [
+              'login',
+              'login-google',
+              'signup',
+              'forgot',
+              'reset',
+              'confirm',
+              'confirm-recovery',
+            ].contains(route.$1)) {
           final label = switch (route.$1) {
             'login' || 'login-google' => 'Inicia sesión',
             'signup' => 'Crea una cuenta',
+            'reset' => 'Actualizar contraseña',
+            'confirm' || 'confirm-recovery' => 'Verificar código',
             _ => 'Enviar instrucciones',
           };
           final submit = find.widgetWithText(FilledButton, label);

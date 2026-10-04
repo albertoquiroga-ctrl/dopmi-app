@@ -1049,6 +1049,7 @@ void main() {
       ),
       ('guardian-billing-amount', '/guardian'),
       ('guardian-billing-amount-large', '/guardian'),
+      ('guardian-billing-amount-tile-large', '/guardian'),
       ('guardian-billing-cancel', '/guardian'),
       ('guardian-billing-cancel-large', '/guardian'),
       ('guardian-billing-history-large', '/guardian'),
@@ -1135,6 +1136,7 @@ void main() {
       ('case-detail-large', '/rescue-cases/case-one'),
       ('case-detail-expenses', '/rescue-cases/case-one'),
       ('case-detail-expenses-large', '/rescue-cases/case-one'),
+      ('case-detail-expenses-footer-large', '/rescue-cases/case-one'),
       ('rescuer-messages', '/messages'),
       ('rescuer-messages-large', '/messages'),
       ('rescuer-messages-empty', '/messages'),
@@ -2484,6 +2486,11 @@ void main() {
         await tester.tap(find.text('Cambiar cantidad'));
         await tester.pumpAndSettle();
         expect(find.text('Guardar nueva cantidad'), findsOneWidget);
+        if (spec.$1.contains('-tile-')) {
+          final tile = find.text('Aportación mensual').first;
+          await Scrollable.ensureVisible(tester.element(tile), alignment: .1);
+          await tester.pumpAndSettle();
+        }
       }
       if (spec.$1.startsWith('guardian-billing-cancel')) {
         await tester.ensureVisible(find.text('Cancelar suscripción'));
@@ -2569,18 +2576,29 @@ void main() {
         }
       }
       if (spec.$1.startsWith('case-detail-expenses')) {
-        final card = find.byWidgetPredicate(
-          (w) =>
-              w is Semantics &&
-              w.properties.label == 'Ocultar evidencia de Cirugía',
-        );
-        await tester.scrollUntilVisible(
-          card,
-          150,
-          scrollable: find.byType(Scrollable).first,
-        );
-        await Scrollable.ensureVisible(tester.element(card), alignment: .1);
-        await tester.pumpAndSettle();
+        if (spec.$1.contains('-footer-')) {
+          final title = find.text('Desparasitante');
+          await tester.scrollUntilVisible(
+            title,
+            150,
+            scrollable: find.byType(Scrollable).first,
+          );
+          await Scrollable.ensureVisible(tester.element(title), alignment: .1);
+          await tester.pumpAndSettle();
+        } else {
+          final card = find.byWidgetPredicate(
+            (w) =>
+                w is Semantics &&
+                w.properties.label == 'Ocultar evidencia de Cirugía',
+          );
+          await tester.scrollUntilVisible(
+            card,
+            150,
+            scrollable: find.byType(Scrollable).first,
+          );
+          await Scrollable.ensureVisible(tester.element(card), alignment: .1);
+          await tester.pumpAndSettle();
+        }
       }
       if (spec.$1.startsWith('notifications-reference-header-focus')) {
         await tester.sendKeyEvent(LogicalKeyboardKey.tab);

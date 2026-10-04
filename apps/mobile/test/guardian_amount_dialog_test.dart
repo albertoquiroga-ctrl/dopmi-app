@@ -1,8 +1,15 @@
 import 'package:dopmi_mobile/features/payments/guardian_amount_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  setUpAll(() async {
+    final font = FontLoader('Inter')
+      ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
+    await font.load();
+  });
   Future<void> start(
     WidgetTester tester, {
     ValueNotifier<bool>? identity,
@@ -131,6 +138,7 @@ void main() {
             ),
             child: child!,
           ),
+          theme: ThemeData(fontFamily: 'Inter'),
           home: Builder(
             builder: (context) => Scaffold(
               body: TextButton(
@@ -145,6 +153,17 @@ void main() {
       );
       await tester.tap(find.text('Abrir'));
       await tester.pumpAndSettle();
+      final tileTitle = find.text('Aportación mensual').first;
+      await tester.ensureVisible(tileTitle);
+      await tester.pumpAndSettle();
+      final paragraph = tester.renderObject<RenderParagraph>(tileTitle);
+      expect(
+        paragraph.getBoxesForSelection(
+          const TextSelection(baseOffset: 0, extentOffset: 10),
+        ),
+        hasLength(1),
+        reason: 'Aportación debe conservarse completa con texto ampliado.',
+      );
       await tester.ensureVisible(find.byType(TextField));
       await tester.enterText(find.byType(TextField), '200');
       await tester.pump();

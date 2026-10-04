@@ -180,7 +180,10 @@ class PublicProfileCaseCard extends ConsumerWidget {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          child: const Text('Ver caso'),
+                          child: const Text(
+                            'Ver caso',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                       if (expense != null) ...[

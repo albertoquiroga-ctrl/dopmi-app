@@ -485,26 +485,30 @@ class _ConfirmationScreenState extends ConsumerState<ConfirmationScreen> {
           key: form,
           child: Column(
             children: [
-              TextFormField(
-                controller: email,
-                decoration: const InputDecoration(
-                  labelText: 'Correo electrónico',
+              LabeledField(
+                'Correo electrónico',
+                child: TextFormField(
+                  controller: email,
+                  decoration: const InputDecoration(hintText: 'tu@email.com'),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: validateEmail,
                 ),
-                keyboardType: TextInputType.emailAddress,
-                validator: validateEmail,
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: code,
-                keyboardType: TextInputType.number,
-                autofillHints: const [AutofillHints.oneTimeCode],
-                decoration: const InputDecoration(
-                  labelText: 'Código del correo',
+              LabeledField(
+                'Código del correo',
+                child: TextFormField(
+                  controller: code,
+                  keyboardType: TextInputType.number,
+                  autofillHints: const [AutofillHints.oneTimeCode],
+                  decoration: const InputDecoration(
+                    hintText: 'Código de 6 a 10 dígitos',
+                  ),
+                  validator: (value) =>
+                      RegExp(r'^\d{6,10}$').hasMatch((value ?? '').trim())
+                      ? null
+                      : 'Escribe el código que recibiste.',
                 ),
-                validator: (value) =>
-                    RegExp(r'^\d{6,10}$').hasMatch((value ?? '').trim())
-                    ? null
-                    : 'Escribe el código que recibiste.',
               ),
             ],
           ),
@@ -515,6 +519,7 @@ class _ConfirmationScreenState extends ConsumerState<ConfirmationScreen> {
         ActionButton(
           'Verificar código',
           busy: busy,
+          textAlign: TextAlign.center,
           onPressed: () => perform(false),
         ),
         TextButton(
