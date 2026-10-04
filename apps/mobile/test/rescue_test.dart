@@ -1051,6 +1051,25 @@ void main() {
       final second = find.byKey(const ValueKey('public-case-photo-1'));
       expect(tester.getSize(first), const Size(11, 48));
       expect(tester.getSize(second), const Size(10, 48));
+      final firstDot = find.descendant(
+        of: first,
+        matching: find.byType(DecoratedBox),
+      );
+      final secondDot = find.descendant(
+        of: second,
+        matching: find.byType(DecoratedBox),
+      );
+      final firstRect = tester.getRect(firstDot);
+      final secondRect = tester.getRect(secondDot);
+      final heroRect = tester.getRect(find.byType(PageView));
+      expect(firstRect.size, const Size(8, 8));
+      expect(secondRect.size, const Size(7, 7));
+      expect(heroRect.bottom - firstRect.bottom, closeTo(28, .01));
+      expect(secondRect.left - firstRect.right, closeTo(6, .01));
+      expect(
+        (firstRect.left + secondRect.right) / 2,
+        closeTo(heroRect.center.dx, .01),
+      );
       final firstInk = tester.widget<InkWell>(first);
       expect(firstInk.onTap, isNotNull);
       final outline = find.descendant(
