@@ -1,0 +1,26 @@
+[
+  {
+    "fixture": "adoption-empty",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "af091a1b16fa525a12893978b30474d0c8c903d5844e6de9b5f050fd293dabac"
+  },
+  {
+    "fixture": "adoption-empty-large",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "f433120114d5794ae0d9b96a9fb938c0d495bfe3a463952b872f3495840f6a71"
+  },
+  {
+    "fixture": "adoption-empty-wide-large",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "6e822358ada1472103e3d649e2e9fe27bf1c629e032162b2ce63311cffbc44c9"
+  }
+]

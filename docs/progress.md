@@ -3532,3 +3532,7 @@ Fuente714853a/produccion0328de6, capture21331 exit0:1/1 en3m13s.419fixturesunica
 ### 2026-10-04 - Loop759: vacios con destinosSource ejecutados
 
 Source/adoption vacioIrApoyar→Descubrecasos, /savedIrAdoptar→adoption observados. SavedSource/Flutter758 inspeccionados misma composicion normal; medidasSource titulo19line24.7/buttonx44y451.84375w289h48. AdoptionCTA Sourcey336.265625 vsFlutter335: residual1.265625 pendingboundsparrafo/fontsready/cascada anteseditar. Gate95416 exit0:7/7 discoveryempty/supportgesture y63010 exit0:1/1 savedCTA200scroll/holdcancel/tap. No produccion/testsnew; full756/803/coleccion758vigentes. Source a3c969c inicio/cierre/browsercerrado. SinCodemagic/nativa/global/dineroreal. Ver docs/design-reviews/parity-loop759.
+
+### 2026-10-04 - Loop760: cajas fraccionarias de vacioAdoptar
+
+Sourcefontready377x852 confirma CTA336.265625/card277.265625; titulo62.375/parrafo60.890625. Flutterredondea62/60 inclusoforceStrut(probe71340), reservadesiredCSSporlinea sin escalarglifos. Gate78661 exit0:6/6; capture82478 exit0:1/1 en2s/3PNGnormal200wide200, normal/200inspeccionados; CTA336.3/card277.3 diferencia.034375, assertions.1 sustituyenCTA2. Analyze82478 limpio65.2s/diffcheckclean. Comentario reubicado despues/scratchsincronizado; probe temporal retirado. Source a3c969c inicio/cierre/browsercerrado. Full756/803/coleccion758 anteriores parche; no pixelglyphidentity/global/nativa/Codemagic/dineroreal. Ver docs/design-reviews/parity-loop760.

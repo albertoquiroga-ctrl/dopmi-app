@@ -47,19 +47,12 @@ class DiscoveryEmpty extends StatelessWidget {
                 child: SizedBox(
                   width:
                       264.961 * MediaQuery.textScalerOf(context).scale(14) / 14,
-                  child: Text(
+                  child: _EmptyCopy(
                     filtered
                         ? 'Prueba otros filtros o limpia la selección para ver más opciones.'
                         : global
                         ? 'Por ahora no hay mascotas en adopción. Vuelve pronto o apoya a quienes ya buscan ayuda.'
                         : 'Por ahora no hay ${species == 'dog' ? 'perros' : 'gatos'} en adopción. Prueba la otra categoría o vuelve pronto.',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 14,
-                      height: 1.45,
-                      color: muted,
-                    ),
                   ),
                 ),
               ),
@@ -315,6 +308,36 @@ class DiscoveryEnd extends StatelessWidget {
   );
 }
 
+/// Reserves fractional CSS line height without scaling native glyphs.
+class _EmptyCopy extends StatelessWidget {
+  const _EmptyCopy(this.text);
+  final String text;
+  static const style = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 14,
+    height: 1.45,
+    color: muted,
+  );
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (_, box) {
+      final scaler = MediaQuery.textScalerOf(context);
+      final measure = TextPainter(
+        text: TextSpan(text: text, style: style),
+        textDirection: Directionality.of(context),
+        textScaler: scaler,
+      )..layout(maxWidth: box.maxWidth);
+      final height =
+          measure.computeLineMetrics().length * scaler.scale(14) * 1.45;
+      measure.dispose();
+      return SizedBox(
+        height: height,
+        child: Text(text, textAlign: TextAlign.center, style: style),
+      );
+    },
+  );
+}
+
 /// HTML word-break:normal keeps long words intact even when they extend into
 /// the card padding. Flutter Text would otherwise split them mid-word.
 class _EmptyHeading extends StatelessWidget {
@@ -346,7 +369,7 @@ class _EmptyHeading extends StatelessWidget {
         textScaler: scaler,
       )..layout();
       final width = measure.width;
-      final height = measure.height;
+      final height = scaler.scale(26) * 1.2;
       measure.dispose();
       return LayoutBuilder(
         builder: (_, constraints) => SizedBox(

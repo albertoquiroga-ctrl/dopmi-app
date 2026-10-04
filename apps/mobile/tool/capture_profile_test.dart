@@ -2373,10 +2373,8 @@ void main() {
         );
         expect(card.top, closeTo(144, 1));
         expect(card.width, closeTo(320, 1));
-        expect(card.height, closeTo(276.9, 1));
-        // Source fractional line boxes vs Flutter whole-pixel line heights
-        // accumulate 1.1px here (measured title62 vs62.4, body60 vs60.9).
-        expect(action.top, closeTo(336.1, 2));
+        expect(card.height, closeTo(277.265625, .1));
+        expect(action.top, closeTo(336.265625, .1));
         expect(action.width, closeTo(270.4, 1));
       }
       if (spec.$1 == 'guardian-promotion-controls-large') {
