@@ -3328,3 +3328,11 @@ Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/ci
 - Chip rows move from y 191/235/279/357/401 to 192/236/280/359/403. Source rows 191.6875/235.6875/279.6875/358.28125/402.28125. Absolute differences improve from .6875 and 1.28125 to .3125 and .71875 respectively; fractional line-box rounding remains, so exact visual parity is not claimed.
 - Help navigation/dialog/route tests session 48637 exit 0: 14/14 (4s), including 2.0 text scale. Analyze session 98608 exit 0: clean (39.5s). Help captures session 65499 exit 0: 1/1 (13s), 19 valid PNGs hashed; large initial help screen visually inspected. Geometry archived in this review folder.
 - Previous loop714 made verified progress (commit `672e541`). Objective remains active; global visual, motion and device acceptance is incomplete. No Codemagic until objective completion.
+
+### 2026-10-04 — Parity loop 716: Current complete mobile regression
+
+- Prior loop715 made production progress (`dd5a338`). Current tested commit `dd5a338`; reference `irlanda/apoyar-detalle-perfil` revalidated at `a3c969cd9103fd46dc5cd886999912526ce75efb`.
+- All 361 files in lib/test/tool/assets plus pubspec.yaml/lock/analysis_options.yaml were byte-identical between repository and scratch before and after the gate. Manifest and complete Flutter test log archived in `docs/design-reviews/parity-loop716`.
+- `flutter test --no-pub`: terminal session 93735 exit 0, 787/787 passed in 3m41s. This supersedes loop709 full mobile regression for the current source. `python scripts/test_mobile_config.py`: exit 0, 16/16 passed. No production files edited during gate.
+- ADB currently lists only emulator-5554. No new installed APK, physical-phone acceptance, Codemagic or Play publication claimed. Existing collection has 415 fixtures, but neither this functional gate nor capture inventory proves global visual/motion parity.
+- Next visual work remains current-state comparisons across unaccepted route families and installed motion/gesture review. Keep goal active; send Codemagic only after complete objective, as requested.
