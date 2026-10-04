@@ -1,5 +1,6 @@
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/rescue/verification_state.dart';
+import 'package:dopmi_mobile/features/rescue/verification_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -38,6 +39,42 @@ void resumeVerification(WidgetTester tester) {
 }
 
 void main() {
+  for (final scale in [1.0, 2.0]) {
+    testWidgets(
+      'verification progress content reserves border once; scale=$scale',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: MediaQuery(
+                data: MediaQueryData(textScaler: TextScaler.linear(scale)),
+                child: const Padding(
+                  padding: EdgeInsets.fromLTRB(16, 20, 16, 0),
+                  child: VerificationProgress(captured: 1, total: 11),
+                ),
+              ),
+            ),
+          ),
+        );
+        // Source progress-card: outer16/20 + border1 + CSS padding16.
+        final heading = tester.getRect(find.text('Progreso del formulario'));
+        expect(heading.left, 33);
+        expect(heading.top, 37);
+        expect(find.text('Incompleto'), findsOneWidget);
+        expect(find.text('1 de 11 requisitos capturados'), findsOneWidget);
+        expect(
+          tester
+              .widget<LinearProgressIndicator>(
+                find.byType(LinearProgressIndicator),
+              )
+              .value,
+          1 / 11,
+        );
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   testWidgets(
     'review home action stays reachable at 200 percent and opens the real rescuer home',
     (tester) async {

@@ -144,7 +144,7 @@ class VerificationProgress extends StatelessWidget {
       ),
     );
     return Container(
-      padding: const EdgeInsets.all(17),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: const Color(0xffe3e4ed)),
