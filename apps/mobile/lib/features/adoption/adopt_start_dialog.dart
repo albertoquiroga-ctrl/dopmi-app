@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../core/ui.dart';
+import '../../core/dialog_close.dart';
 
 Future<bool?> confirmAdoptionContact(BuildContext context) => showDialog<bool>(
   context: context,
@@ -81,21 +82,16 @@ class AdoptStartDialog extends StatelessWidget {
               ],
             ),
           ),
-          Positioned(
-            top: 0,
-            right: 4,
-            child: IconButton(
-              tooltip: 'Cerrar',
-              icon: const Icon(Icons.close, size: 22, color: muted),
-              onPressed: () => Navigator.pop(context, false),
-            ),
-          ),
+          DopmiDialogClose(onPressed: () => Navigator.pop(context, false)),
         ],
       ),
     ),
   );
 
   ButtonStyle _buttonStyle(bool primary) => TextButton.styleFrom(
+    splashFactory: NoSplash.splashFactory,
+    overlayColor: Colors.transparent,
+    animationDuration: Duration.zero,
     minimumSize: const Size(0, 48),
     foregroundColor: ink,
     backgroundColor: primary ? yellow : Colors.white,

@@ -1,0 +1,46 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart
+00:00 +0: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: cancel and close never create a thread
+00:01 +1: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: cancel and close never create a thread
+00:01 +2: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: cancel and close never create a thread
+00:02 +3: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: cancel and close never create a thread
+00:02 +4: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: cancel and close never create a thread
+00:03 +5: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: filter geometry matches rendered reference at 377 by 852
+FILTER_GEOMETRY dialog=Rect.fromLTRB(16.0, 133.0, 361.0, 719.0) apply=Rect.fromLTRB(40.0, 595.0, 337.0, 639.0) clear=Rect.fromLTRB(40.0, 651.0, 337.0, 695.0)
+FILTER_GEOMETRY Filtros=Rect.fromLTRB(40.0, 157.0, 325.0, 175.0)
+FILTER_GEOMETRY Género=Rect.fromLTRB(40.0, 187.0, 337.0, 211.0)
+FILTER_GEOMETRY Tamaño=Rect.fromLTRB(40.0, 293.0, 337.0, 317.0)
+FILTER_GEOMETRY Personalidad=Rect.fromLTRB(40.0, 413.0, 337.0, 437.0)
+00:03 +6: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: guest save requests login without advancing or writing favorite
+00:03 +7: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: failed contact retains card and only success opens conversation
+00:03 +8: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: failed contact retains card and only success opens conversation
+00:04 +9: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: failed contact retains card and only success opens conversation
+00:04 +10: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: filter opens immediately and back or outside discards drafts
+00:04 +11: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: filter opens immediately and back or outside discards drafts
+00:04 +12: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: filter opens immediately and back or outside discards drafts
+00:04 +13: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: guest contact opens login before confirmation and preserves card
+00:04 +14: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: apply sends real keys and clear preserves species
+00:05 +15: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: burst pointer movement accumulates before redraw: false/false
+00:05 +16: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: large text dialog scrolls to apply and keeps close reachable
+00:05 +17: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: burst pointer movement accumulates before redraw: false/true
+00:05 +18: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: late filter response cannot replace the latest selected results
+00:05 +19: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: burst pointer movement accumulates before redraw: true/false
+00:05 +20: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: burst pointer movement accumulates before redraw: true/true
+00:05 +21: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: reference tap versus short drag boundary: -9.0 pixels
+00:06 +22: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: reference tap versus short drag boundary: -8.0 pixels
+00:06 +23: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: reference tap versus short drag boundary: -7.0 pixels
+00:06 +24: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: reference tap versus short drag boundary: 7.0 pixels
+00:06 +25: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: reference tap versus short drag boundary: 8.0 pixels
+00:06 +26: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: reference tap versus short drag boundary: 9.0 pixels
+00:06 +27: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: card follows finger immediately, threshold returns, cancel never saves, exit lasts 280ms
+00:07 +28: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: incoming card follows a new gesture immediately; right=false
+00:07 +29: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: incoming card follows a new gesture immediately; right=true
+00:07 +30: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: returning from favorites preserves the card without replaying entry
+00:07 +31: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: support entry and interrupted gesture; reduced=false
+00:08 +32: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: support entry and interrupted gesture; reduced=true
+00:08 +33: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: small screen large text keeps species and actions reachable
+00:08 +34: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: slow favorite does not delay next card and failure offers persistence retry
+00:08 +35: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: favorite confirmation shares the exit time instead of delaying it
+00:08 +36: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: reduced motion advances without a timed exit
+00:08 +37: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: a short drag returns on the CSS curve and a new drag interrupts it
+00:08 +38: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: exit frames interpolate CSS angle and translation independently
+00:09 +39: All tests passed!
