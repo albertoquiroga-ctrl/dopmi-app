@@ -514,6 +514,7 @@ class DonorModeDialog extends StatelessWidget {
                   style:
                       TextButton.styleFrom(
                         minimumSize: const Size.fromHeight(40),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         padding: EdgeInsets.zero,
                         splashFactory: NoSplash.splashFactory,
                         textStyle: const TextStyle(

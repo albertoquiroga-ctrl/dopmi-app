@@ -2692,6 +2692,38 @@ void main() {
         await tester.tap(target);
         await tester.pumpAndSettle();
         expect(find.byType(DonorModeDialog), findsOneWidget);
+        final body = tester.getRect(
+          find.descendant(
+            of: find.byType(DonorModeDialog),
+            matching: find.byType(SingleChildScrollView),
+          ),
+        );
+        final cancel = tester.getRect(
+          find.widgetWithText(TextButton, 'Ahora no'),
+        );
+        expect(
+          cancel.height,
+          40,
+          reason: 'Source text-link-button normal minimum height',
+        );
+        await tester.runAsync(
+          () => File('${out.path}/profile-mode-metrics.json').writeAsString(
+            jsonEncode({
+              'body': {
+                'x': body.left,
+                'y': body.top,
+                'width': body.width,
+                'height': body.height,
+              },
+              'cancel': {
+                'x': cancel.left,
+                'y': cancel.top,
+                'width': cancel.width,
+                'height': cancel.height,
+              },
+            }),
+          ),
+        );
       }
       if (spec.$1.startsWith('rescuer-home-actions') ||
           spec.$1.startsWith('rescuer-home-evidence') ||
