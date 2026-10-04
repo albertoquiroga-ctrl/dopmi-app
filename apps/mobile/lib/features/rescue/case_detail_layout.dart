@@ -194,6 +194,7 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                   tooltip: 'Volver',
                                   onPressed: back,
                                   style: IconButton.styleFrom(
+                                    overlayColor: Colors.transparent,
                                     backgroundColor: Colors.white.withValues(
                                       alpha: .72,
                                     ),
@@ -222,6 +223,10 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(999),
                                   child: InkWell(
+                                    splashFactory: NoSplash.splashFactory,
+                                    overlayColor: const WidgetStatePropertyAll(
+                                      Colors.transparent,
+                                    ),
                                     onTap: () => context.push('/people/$owner'),
                                     borderRadius: BorderRadius.circular(999),
                                     child: Padding(
@@ -539,6 +544,12 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                           button: true,
                                           label: 'Ver foto ${i + 1}',
                                           child: InkWell(
+                                            splashFactory:
+                                                NoSplash.splashFactory,
+                                            overlayColor:
+                                                const WidgetStatePropertyAll(
+                                                  Colors.transparent,
+                                                ),
                                             onTap: () => selectPhoto(i),
                                             borderRadius: BorderRadius.circular(
                                               18,
@@ -640,6 +651,9 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                             caseId: widget.record.id,
                           ),
                     style: FilledButton.styleFrom(
+                      splashFactory: NoSplash.splashFactory,
+                      overlayColor: Colors.transparent,
+                      animationDuration: Duration.zero,
                       backgroundColor: ink,
                       foregroundColor: Colors.white,
                       minimumSize: const Size(0, 52),

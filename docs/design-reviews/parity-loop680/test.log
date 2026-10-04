@@ -1,0 +1,28 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart
+00:00 +0: case photo renews signing on resume and stops after disposal
+00:00 +1: peso labels group thousands while preserving signed cent precision
+00:00 +2: photo retry shows pending request; compact=false
+00:00 +3: photo retry shows pending request; compact=true
+00:01 +4: case titles handle absent or blank names without changing authored data
+00:01 +5: owned case thumbnail retries a failed photo without overflow at large text
+00:01 +6: complete public case loads all approved pages and fails as a whole
+00:01 +7: money parsing preserves cent precision and rejects rounding or scientific notation
+00:01 +8: pending support catalog preserves home; large=false
+00:01 +9: support catalog failure preserves home and retries; large=false
+00:02 +10: pending support catalog preserves home; large=true
+00:02 +11: support catalog failure preserves home and retries; large=true
+00:02 +12: rescuer draft keeps private fields after a save conflict
+00:03 +13: support home and case detail use real progress and expenses
+00:03 +14: rescuer home labels real financial and pending states
+00:03 +15: my cases exposes status-specific actions and feedback
+00:04 +16: empty support Suscríbete ahora remains usable with large text and opens Guardian without activating it
+00:04 +17: empty support Apoya a casos urgentes remains usable with large text and opens Guardian without activating it
+00:04 +18: empty support keyboard-enter remains usable with large text and opens Guardian without activating it
+00:04 +19: empty support keyboard-space remains usable with large text and opens Guardian without activating it
+00:05 +20: closed public case keeps history and disables every contribution entry
+00:05 +21: public gallery dots support keyboard focus, selection and exact spacing
+00:05 +22: case photo retry preserves hero geometry and gallery supports swipe
+00:05 +23: public gallery thumbnail selects the hero photo; large=false
+00:05 +24: public gallery thumbnail selects the hero photo; large=true
+00:06 +25: public case exposes expenses beyond the first page without pagination controls
+00:06 +26: All tests passed!
