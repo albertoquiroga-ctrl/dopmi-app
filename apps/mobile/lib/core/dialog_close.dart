@@ -5,7 +5,7 @@ import 'ui.dart';
 /// Matches the shared prototype dialog close glyph while keeping a 48px target.
 class DopmiDialogClose extends StatelessWidget {
   const DopmiDialogClose({super.key, required this.onPressed});
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   @override
   Widget build(BuildContext context) => Positioned(
     top: 0,

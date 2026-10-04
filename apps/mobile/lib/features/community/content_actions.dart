@@ -3,6 +3,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/ui.dart';
+import '../../core/dialog_close.dart';
 import '../adoption/community_repository.dart';
 
 bool _sharing = false;
@@ -284,6 +285,9 @@ class _ContentReportSheetState extends State<_ContentReportSheet> {
                     const SizedBox(height: 12),
                     FilledButton(
                       style: FilledButton.styleFrom(
+                        splashFactory: NoSplash.splashFactory,
+                        overlayColor: Colors.transparent,
+                        animationDuration: Duration.zero,
                         backgroundColor: yellow,
                         disabledBackgroundColor: yellow.withValues(alpha: .5),
                         disabledForegroundColor: ink.withValues(alpha: .5),
@@ -326,6 +330,9 @@ class _ContentReportSheetState extends State<_ContentReportSheet> {
                     const SizedBox(height: 12),
                     OutlinedButton(
                       style: OutlinedButton.styleFrom(
+                        splashFactory: NoSplash.splashFactory,
+                        overlayColor: Colors.transparent,
+                        animationDuration: Duration.zero,
                         foregroundColor: ink,
                         minimumSize: const Size.fromHeight(48),
                         side: const BorderSide(color: Color(0xffe6e2dd)),
@@ -342,17 +349,8 @@ class _ContentReportSheetState extends State<_ContentReportSheet> {
                   ],
                 ),
               ),
-              Positioned(
-                right: 4,
-                top: 0,
-                child: IconButton(
-                  tooltip: 'Cerrar',
-                  onPressed: busy ? null : () => Navigator.pop(context),
-                  icon: const Text(
-                    '×',
-                    style: TextStyle(fontSize: 22, height: 1, color: muted),
-                  ),
-                ),
+              DopmiDialogClose(
+                onPressed: busy ? null : () => Navigator.pop(context),
               ),
             ],
           ),
