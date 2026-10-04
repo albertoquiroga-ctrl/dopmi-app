@@ -1305,6 +1305,8 @@ void main() {
       ('expense-private-large', '/rescue/expense-one'),
       ('verification-intro', '/rescue/new?kind=verification'),
       ('verification-intro-large', '/rescue/new?kind=verification'),
+      ('verification-intro-footer', '/rescue/new?kind=verification'),
+      ('verification-intro-footer-large', '/rescue/new?kind=verification'),
       ('verification-form', '/rescue/new?kind=verification'),
       ('verification-form-large', '/rescue/new?kind=verification'),
       ('verification-form-documents', '/rescue/new?kind=verification'),
@@ -3239,6 +3241,13 @@ void main() {
           scrollable: find.byType(Scrollable).first,
         );
         await Scrollable.ensureVisible(tester.element(note), alignment: 0);
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('verification-intro-footer')) {
+        final scroll = tester.state<ScrollableState>(
+          find.byType(Scrollable).first,
+        );
+        scroll.position.jumpTo(scroll.position.maxScrollExtent);
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('verification-form')) {
