@@ -1,0 +1,12 @@
+{
+  "source_commit": "39b11e1c29f9801aa3e7beb97b5da6df23c1c373",
+  "sha256": "47787295dcb7cbe8630e9b737cb78ceead12bdff086563d70dd587d75f14fa06",
+  "bytes": 212447398,
+  "package": "com.mycompany.dopmi",
+  "version_code": 2,
+  "version_name": "0.2.0",
+  "min_sdk": 24,
+  "target_sdk": 36,
+  "compile_sdk": 36,
+  "installed": false
+}
