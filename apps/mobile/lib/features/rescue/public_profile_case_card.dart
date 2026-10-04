@@ -161,6 +161,9 @@ class PublicProfileCaseCard extends ConsumerWidget {
                         child: FilledButton(
                           onPressed: () => context.push('/rescue-cases/$id'),
                           style: FilledButton.styleFrom(
+                            splashFactory: NoSplash.splashFactory,
+                            overlayColor: Colors.transparent,
+                            animationDuration: Duration.zero,
                             backgroundColor: yellow,
                             foregroundColor: ink,
                             minimumSize: const Size(0, 38),
@@ -193,6 +196,9 @@ class PublicProfileCaseCard extends ConsumerWidget {
                                   )
                                 : null,
                             style: OutlinedButton.styleFrom(
+                            splashFactory: NoSplash.splashFactory,
+                            overlayColor: Colors.transparent,
+                            animationDuration: Duration.zero,
                               side: const BorderSide(color: Color(0xffe6e2dd)),
                               minimumSize: const Size(0, 38),
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,

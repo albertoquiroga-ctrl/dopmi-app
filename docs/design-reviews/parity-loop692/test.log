@@ -1,0 +1,30 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_case_card_test.dart
+00:00 +0: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: case photo renews signing on resume and stops after disposal
+00:01 +1: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_case_card_test.dart: public case shows approved expense and opens real amount selector
+00:01 +2: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_case_card_test.dart: public case shows approved expense and opens real amount selector
+00:01 +3: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_case_card_test.dart: public case shows approved expense and opens real amount selector
+00:01 +4: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_case_card_test.dart: public case shows approved expense and opens real amount selector
+00:01 +5: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_case_card_test.dart: public case shows approved expense and opens real amount selector
+00:01 +6: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_case_card_test.dart: public case shows approved expense and opens real amount selector
+00:01 +7: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_case_card_test.dart: public case shows approved expense and opens real amount selector
+00:01 +8: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_case_card_test.dart: public case shows approved expense and opens real amount selector
+00:02 +9: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: pending support catalog preserves home; large=false
+00:02 +10: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: pending support catalog preserves home; large=false
+00:02 +11: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: support catalog failure preserves home and retries; large=false
+00:02 +12: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: pending support catalog preserves home; large=true
+00:02 +13: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: support catalog failure preserves home and retries; large=true
+00:02 +14: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: rescuer draft keeps private fields after a save conflict
+00:03 +15: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: support home and case detail use real progress and expenses
+00:04 +16: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: rescuer home labels real financial and pending states
+00:04 +17: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: my cases exposes status-specific actions and feedback
+00:04 +18: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: empty support Suscríbete ahora remains usable with large text and opens Guardian without activating it
+00:04 +19: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: empty support Apoya a casos urgentes remains usable with large text and opens Guardian without activating it
+00:05 +20: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: empty support keyboard-enter remains usable with large text and opens Guardian without activating it
+00:05 +21: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: empty support keyboard-space remains usable with large text and opens Guardian without activating it
+00:05 +22: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: closed public case keeps history and disables every contribution entry
+00:05 +23: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: public gallery dots support keyboard focus, selection and exact spacing
+00:05 +24: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: case photo retry preserves hero geometry and gallery supports swipe
+00:06 +25: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: public gallery thumbnail selects the hero photo; large=false
+00:06 +26: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: public gallery thumbnail selects the hero photo; large=true
+00:06 +27: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: public case exposes expenses beyond the first page without pagination controls
+00:06 +28: All tests passed!
