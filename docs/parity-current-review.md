@@ -1,3 +1,9 @@
+> Corte vigente loop650 (4/10/2026): fuente `bf810ef5e8e4c41d609d1404277516bf985e4d94`, referencia Irlanda `a3c969cd9103fd46dc5cd886999912526ce75efb`. Flutter **759/759**, analyze limpio, configuración **16/16**; 352 archivos raíz/scratch idénticos antes y después. Supersede los resultados globales antiguos de abajo. Ver [evidencia650](design-reviews/parity-loop650/README.md).
+>
+> Gastos641 corrige cascada real `.rescuer-theme`; revisión/presión/rutas634–635 verificadas. Verificación638–649 incluye intro, campos, documentos67/hit48, progreso71, acciones reales, espera sin salto y estados; cuenta con gates y capturas dirigidos. La colección global410636 es anterior a638+, y la lista actual tiene414fixtures. ADB650 vacío; sin aceptación instalada nueva. Siguiente: renovar colección global y contraste pendiente, y reconsiderar build/emulador local con RAM libre3GB al cierre. Codemagic únicamente al objetivo completo.
+>
+> El alcance sigue incluyendo NAV/AUTH/DISC/FILTER/PET/MATCH/SAVED/CHAT/PROFILE/SETTINGS/SUPPORT/CASE/STORY/PUBLIC/IMPACT/RH/RC/PUBLISH/VERIFY/EVIDENCE/RP/PAYMENT/GUARD/REPORT/LEGAL, sus animaciones/gestos y funciones reales. Tests y capturas no cierran la paridad global ni la aceptación nativa.
+
 > Corrección vigente loop641: evidencia/gastos heredan `.rescuer-theme` (`#151423`/`#4f4e5c`), confirmado en runtime. Conclusiones de paleta global de619/622/627/633 quedan supersedidas. La introducción de verificación usa paleta global fuera de ese padre. Gate64136/36/analyze limpio; full705629 yglobal410636 anteriores641.
 
 # Corte vigente — loop633, 4/10/2026
