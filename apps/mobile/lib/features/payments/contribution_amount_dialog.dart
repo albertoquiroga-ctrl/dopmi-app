@@ -57,54 +57,62 @@ class _ContributionAmountDialogState extends State<ContributionAmountDialog> {
         selected == cents && selectedRemaining == remaining && !focus.hasFocus;
     return Semantics(
       selected: active,
-      child: OutlinedButton(
-        onPressed: () => setState(() {
-          selected = cents;
-          selectedRemaining = remaining;
-          custom.clear();
-          focus.unfocus();
-        }),
-        style: OutlinedButton.styleFrom(
-          splashFactory: NoSplash.splashFactory,
-          overlayColor: Colors.transparent,
-          animationDuration: Duration.zero,
-          minimumSize: const Size(0, 56),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-          foregroundColor: ink,
-          backgroundColor: active ? const Color(0xfffff8d6) : Colors.white,
-          side: BorderSide(
-            color: active ? yellow : const Color(0xffe6e2dd),
-            width: active ? 2.5 : 1.5,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: active
+              ? const [BoxShadow(color: yellow, spreadRadius: 1)]
+              : null,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              money(cents),
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                height: 1.1,
-              ),
+        child: OutlinedButton(
+          onPressed: () => setState(() {
+            selected = cents;
+            selectedRemaining = remaining;
+            custom.clear();
+            focus.unfocus();
+          }),
+          style: OutlinedButton.styleFrom(
+            splashFactory: NoSplash.splashFactory,
+            overlayColor: Colors.transparent,
+            animationDuration: Duration.zero,
+            minimumSize: const Size(0, 56),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+            foregroundColor: ink,
+            backgroundColor: active ? const Color(0xfffff8d6) : Colors.white,
+            side: BorderSide(
+              color: active ? const Color(0xfff4c917) : const Color(0xffe6e2dd),
+              width: 1.5,
             ),
-            if (remaining) ...[
-              const SizedBox(height: 2),
-              const Text(
-                'Total faltante',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                  color: muted,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                money(cents),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
                   height: 1.1,
                 ),
               ),
+              if (remaining) ...[
+                const SizedBox(height: 2),
+                const Text(
+                  'Total faltante',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    color: muted,
+                    height: 1.1,
+                  ),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
