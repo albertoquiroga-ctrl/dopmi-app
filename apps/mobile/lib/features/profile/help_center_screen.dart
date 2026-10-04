@@ -259,6 +259,8 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
           'Centro de ayuda',
           style: TextStyle(
             fontSize: 18,
+            height: 1.25,
+            letterSpacing: -0.36,
             fontWeight: FontWeight.w700,
             color: ink,
           ),

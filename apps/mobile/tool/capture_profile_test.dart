@@ -3940,6 +3940,18 @@ void main() {
           });
         }
         if (spec.$1 == 'help-center') {
+          final title = tester.getRect(find.text('Centro de ayuda'));
+          await tester.runAsync(() async {
+            await File('${out.path}/help-center-header-geometry.json')
+                .writeAsString(
+                  jsonEncode({
+                    'x': title.left,
+                    'y': title.top,
+                    'width': title.width,
+                    'height': title.height,
+                  }),
+                );
+          });
           final buttons = find.byType(OutlinedButton);
           final geometry = [
             for (var i = 0; i < buttons.evaluate().length; i++)
