@@ -3536,3 +3536,7 @@ Source/adoption vacioIrApoyar→Descubrecasos, /savedIrAdoptar→adoption observ
 ### 2026-10-04 - Loop760: cajas fraccionarias de vacioAdoptar
 
 Sourcefontready377x852 confirma CTA336.265625/card277.265625; titulo62.375/parrafo60.890625. Flutterredondea62/60 inclusoforceStrut(probe71340), reservadesiredCSSporlinea sin escalarglifos. Gate78661 exit0:6/6; capture82478 exit0:1/1 en2s/3PNGnormal200wide200, normal/200inspeccionados; CTA336.3/card277.3 diferencia.034375, assertions.1 sustituyenCTA2. Analyze82478 limpio65.2s/diffcheckclean. Comentario reubicado despues/scratchsincronizado; probe temporal retirado. Source a3c969c inicio/cierre/browsercerrado. Full756/803/coleccion758 anteriores parche; no pixelglyphidentity/global/nativa/Codemagic/dineroreal. Ver docs/design-reviews/parity-loop760.
+
+### 2026-10-04 - Loop761: botones de acceso con texto ampliado
+
+AuthFrame paddingvertical12/horizontal24; ActionButton alineacionopcional usadaenformularios para doslineascentradas. Tests8414 exit0:27/27 en14s conassertsfortalecidasmargenes/centrado; capture14032 exit0:1/1 en3s/18PNGvalidas, forgotfooter200inspeccionada; analyze limpio41.2s. TituloRecupera partiendo palabra200 pendiente, no aceptacionglobal. Samsung R5CY51260VK device reconectado; Playintacto sin nuevo launch/install. Source a3c969c reconsultado. Full756/803 anteriorparches760/761; Codemagic diferidoobjetivocompleto, dinero test-only. Ver docs/design-reviews/parity-loop761.

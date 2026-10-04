@@ -70,6 +70,10 @@ class AuthFrame extends StatelessWidget {
                 disabledForegroundColor: sheet ? Colors.white : null,
                 splashFactory: NoSplash.splashFactory,
                 minimumSize: const Size.fromHeight(52),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
                 shape: const StadiumBorder(),
                 textStyle: const TextStyle(
                   fontFamily: 'Inter',

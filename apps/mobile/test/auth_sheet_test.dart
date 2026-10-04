@@ -123,6 +123,16 @@ void main() {
         await tester.ensureVisible(submit);
         await tester.pumpAndSettle();
         expect(tester.getRect(submit).overlaps(tester.getRect(sheet)), isTrue);
+        final label = find.descendant(of: submit, matching: find.byType(Text));
+        expect(tester.widget<Text>(label).textAlign, TextAlign.center);
+        expect(
+          tester.getRect(label).top - tester.getRect(submit).top,
+          greaterThanOrEqualTo(12),
+        );
+        expect(
+          tester.getRect(submit).bottom - tester.getRect(label).bottom,
+          greaterThanOrEqualTo(12),
+        );
         tester.view.viewInsets = const FakeViewPadding();
         await tester.pumpAndSettle();
         expect(

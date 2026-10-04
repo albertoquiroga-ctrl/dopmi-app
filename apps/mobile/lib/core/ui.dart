@@ -253,10 +253,12 @@ class ActionButton extends StatelessWidget {
     required this.onPressed,
     this.busy = false,
     this.sunny = false,
+    this.textAlign,
   });
   final String label;
   final VoidCallback? onPressed;
   final bool busy, sunny;
+  final TextAlign? textAlign;
   @override
   Widget build(BuildContext context) => FilledButton(
     style: sunny
@@ -272,7 +274,7 @@ class ActionButton extends StatelessWidget {
               child: CircularProgressIndicator(strokeWidth: 2),
             ),
           )
-        : Text(label),
+        : Text(label, textAlign: textAlign),
   );
 }
 

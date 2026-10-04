@@ -332,6 +332,7 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                       AuthFormMode.reset => 'Actualizar contraseña',
                     },
                     busy: busy,
+                    textAlign: TextAlign.center,
                     onPressed: signup && !consent ? null : submit,
                   ),
                   if ((login && needsEmailConfirmation) ||
