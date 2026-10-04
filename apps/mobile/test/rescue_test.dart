@@ -669,13 +669,20 @@ void main() {
     FocusManager.instance.primaryFocus?.unfocus();
     await tester.pump(const Duration(milliseconds: 50));
     final save = find.text('Guardar borrador');
-    for (var i = 0; i < 12; i++) {
-      if (save.evaluate().isNotEmpty) {
-        break;
-      }
-      await tester.drag(find.byType(Scrollable).first, const Offset(0, -260));
-      await tester.pump(const Duration(milliseconds: 50));
-    }
+    await tester.scrollUntilVisible(
+      save,
+      300,
+      maxScrolls: 30,
+      scrollable: find
+          .descendant(
+            of: find.byKey(const ValueKey('verification-form-body')),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await tester.ensureVisible(save);
+    await tester.pumpAndSettle();
+    expect(save.hitTestable(), findsOneWidget);
     expect(
       save,
       findsOneWidget,
