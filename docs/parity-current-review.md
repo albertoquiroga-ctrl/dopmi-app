@@ -1,3 +1,5 @@
+> Loop660: regresión global **766/766**, analyze limpio;352archivos idénticos antes/final. [Evidencia](design-reviews/parity-loop660/README.md). Supersede759650; colección414651 yAPK656 anteriores últimosparches, no aceptación visual/nativa global. Codemagic únicamente al objetivo completo.
+
 > Loop659: soporte permite scrollvertical/descarte a LunaDemo observadoAndroid; gradientes bloqueaban Cargarfoto, corregido IgnorePointer ambos tipos. [Evidencia](design-reviews/parity-loop659/README.md):24/24/analyze limpio, retry nativo actualizado pendiente. Sin cierre global.
 
 > Loop658: guardar invitado abre login; Back conserva Rocky/Perros, observado en runtime Android actualizado. [Evidencia](design-reviews/parity-loop658/README.md). APK656 sigue anterior657; no aceptación global ni autenticación completa.

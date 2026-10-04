@@ -1,0 +1,5 @@
+# Loop660 — Regresión cliente
+
+## 2026-10-04 — Loop660: regresión global posterior a gestos/fotos
+
+Fuenteproducción b1de479; única edición660 testsoporte. Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb vigente. Nueva prueba sintéticaFailedPhotoCommunity soporte case-one/expense-one/Choco: pasar2mascotas, fotoerror, tapCargarfoto con hitTestWarningfatal recibe toque/aumentasolicitud, permaneceChoco yApoyaconnecesidades sinabrircaso. Gate32111exit0,1/1en1s. Suitecompleta68831terminalexit0,766/766en3m34s, supersede759650 e incluye4burst654/guest657/phototap659/support660. Analyzer78959exit0clean25.7s. Manifiesto352archivosDart/assets raíz/scratch byteidénticos y hashes conservados al cierre; nofuenteeditada durantegate. Tests noequivalen766pantallasaceptadas. Colección414651 anterior654/657/659; nativoAPK656 anterior657/659, runtime658 anterior659. Pendiente contrasteSource global/SDK/recorridosprivados yúltimoparchefotoAndroid. No nuevascapturas/instalación/SQL/realuserdata/pagosremotos. Codemagic sóloalobjetivocompleto, dinero live noautorizado.

@@ -136,6 +136,43 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('support photo retry receives tap without opening case', (
+    tester,
+  ) async {
+    WidgetController.hitTestWarningShouldBeFatal = true;
+    addTearDown(() => WidgetController.hitTestWarningShouldBeFatal = false);
+    final repo = FailedPhotoCommunity()
+      ..supportItems = [
+        SupportOpportunity({
+          'case_id': 'case-one',
+          'expense_id': 'expense-one',
+          'pet_name': 'Choco',
+          'expense_title': 'Tratamiento',
+          'reimbursable_cents': 10000,
+          'funded_cents': 2500,
+          'photo': 'fixture/missing-support',
+        }),
+      ];
+    await open(tester, repository: repo);
+    for (var i = 0; i < 2; i++) {
+      await tester.tap(find.byTooltip('Pasar'));
+      await tester.pumpAndSettle();
+    }
+    final before = repo.attempts;
+    expect(before, greaterThan(0));
+    await tester.tap(
+      find.descendant(
+        of: find.byKey(const ValueKey('discovery-motion-support-expense-one')),
+        matching: find.text('Cargar foto'),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(repo.attempts, greaterThan(before));
+    expect(find.text('Choco'), findsOneWidget);
+    expect(find.text('Apoya con sus necesidades'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   for (final large in [false, true]) {
     for (final right in [false, true]) {
       testWidgets(
