@@ -228,7 +228,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                       color: topic == i ? yellow : const Color(0xffe6e2dd),
                     ),
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
+                      horizontal: 15,
                       vertical: 8,
                     ),
                     minimumSize: const Size(0, 36),

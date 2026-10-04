@@ -3862,6 +3862,14 @@ void main() {
             ),
           );
           final titleRect = tester.getRect(find.text('Información básica'));
+          final photoEditRect = tester.getRect(
+            find
+                .descendant(
+                  of: find.byTooltip('Editar foto de perfil'),
+                  matching: find.byType(Material),
+                )
+                .first,
+          );
           await tester.runAsync(() async {
             await File('${out.path}/${spec.$1}-geometry.json')
                 .writeAsString(jsonEncode(geometry));
@@ -3876,8 +3884,36 @@ void main() {
                     'titleCenterY': titleRect.center.dy,
                     'titleWidth': titleRect.width,
                     'titleHeight': titleRect.height,
+                    'photoEditX': photoEditRect.left,
+                    'photoEditY': photoEditRect.top,
+                    'photoEditWidth': photoEditRect.width,
+                    'photoEditHeight': photoEditRect.height,
                   }),
                 );
+          });
+        }
+        if (spec.$1 == 'help-center') {
+          final buttons = find.byType(OutlinedButton);
+          final geometry = [
+            for (var i = 0; i < buttons.evaluate().length; i++)
+              {
+                'label': tester
+                    .widget<Text>(
+                      find.descendant(
+                        of: buttons.at(i),
+                        matching: find.byType(Text),
+                      ),
+                    )
+                    .data,
+                'x': tester.getRect(buttons.at(i)).left,
+                'y': tester.getRect(buttons.at(i)).top,
+                'width': tester.getRect(buttons.at(i)).width,
+                'height': tester.getRect(buttons.at(i)).height,
+              },
+          ];
+          await tester.runAsync(() async {
+            await File('${out.path}/help-center-geometry.json')
+                .writeAsString(jsonEncode(geometry));
           });
         }
         await tester.runAsync(

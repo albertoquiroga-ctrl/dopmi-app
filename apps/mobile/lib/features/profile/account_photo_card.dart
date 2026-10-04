@@ -114,7 +114,7 @@ class AccountPhotoCard extends StatelessWidget {
           side: const BorderSide(color: Color(0xffe6e2dd)),
           shape: const StadiumBorder(),
           minimumSize: const Size(0, 40),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
           textStyle: const TextStyle(
             fontFamily: 'Inter',
             fontSize: 13,
