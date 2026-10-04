@@ -1708,11 +1708,11 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          evidenceRoles[role]!,
+          '${evidenceRoles[role]} *',
           style: const TextStyle(
             fontFamily: 'Inter',
             fontSize: 16,
-            height: 19 / 16,
+            height: 20 / 16,
             fontWeight: FontWeight.w700,
             color: Color(0xff151423),
           ),
