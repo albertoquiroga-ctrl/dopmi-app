@@ -1,0 +1,11 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_press_test.dart
+00:00 +0: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_press_test.dart: contact confirmation press and cancel: Todavía no/false
+00:01 +1: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: cancel and close never create a thread
+00:01 +2: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: cancel and close never create a thread
+00:02 +3: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_press_test.dart: contact confirmation press and cancel: Cerrar/false
+00:02 +4: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: failed contact retains card and only success opens conversation
+00:02 +5: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: failed contact retains card and only success opens conversation
+00:02 +6: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_press_test.dart: contact confirmation press and cancel: Sí, contactar rescatista/true
+00:02 +7: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: large text scrolls to confirmation with close always reachable
+00:03 +8: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: large text scrolls to confirmation with close always reachable
+00:03 +9: All tests passed!
