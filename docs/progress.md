@@ -2666,3 +2666,7 @@ Source local/remoto `a3c969cd9103fd46dc5cd886999912526ce75efb`. Fechas visibles 
 ## 2026-10-03 — Paridad loop 556: borde de progreso de verificación
 
 Source local/remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. ContainerProgress padding16+borde1 automático; supersede17manual540. Documents DecoratedBox+Padding15correcto, preservado. Auditoría dirigida de17/21/15 enperfil/rescate sinotroincrementosimilar. Dospruebasnormales/200 contrastanorigen33/37/estadoIncompleto/ratio1de11.37003exit0 15/15,11s/analyzer42081exit0limpio27s.SeisPNGregenerados,progressnormal/ampliadoinspeccionadossinaceptacióndebordesuperiorfueraViewport.232Dartinclcapturerraíz-scratchiguales. Evidencia docs/design-reviews/parity-loop556. Full621pendiente,611546/407547anteriores. Sinpush/Codemagic/físico/global.
+
+## 2026-10-03 — Loop 557: regresión completa621
+
+Fuente d435f33,232Dart inclcapturer raíz-scratch iguales antes de lanzamiento/durante/final y hashes sin cambios.72124terminalexit0 621/621,3m48s; analyzer42081 de556 limpio27s misma fuente. Supersede full611546, no aceptación global/visual por testcount. Source a3c969cd9103fd46dc5cd886999912526ce75efb revalidado556.407capturas547 precede548–556;20casos555/6verificación556dirigidas posteriores. ADB557vacío; emulator.exe y AVD Dopmi_API_35 comprobados (-list-avds), aúnsinarranqueinstalacióngestos. Evidencia docs/design-reviews/parity-loop557, cortes vigentes actualizados. Sinpush/Codemagic.
