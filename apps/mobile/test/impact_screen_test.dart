@@ -70,6 +70,7 @@ void main() {
       overrides: [
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(repo),
+        rescueRepositoryProvider.overrideWithValue(FakeRescue()),
         guardianEnabledProvider.overrideWithValue(guardian != null),
         if (guardian != null)
           guardianRepositoryProvider.overrideWithValue(guardian),
@@ -95,6 +96,19 @@ void main() {
     }
     return identity;
   }
+
+  testWidgets('Impact attribution comes from the current public case owner', (
+    tester,
+  ) async {
+    final repo = ImpactCommunity()
+      ..items = [
+        {...contributionCase, 'case_id': 'case-one'},
+      ];
+    await start(tester, repo);
+    await tester.pumpAndSettle();
+    expect(find.text('Por Refugio Luna'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets(
     'Inactive entry shows promotion and keeps real history reachable',
@@ -264,6 +278,7 @@ void main() {
         overrides: [
           identityRepositoryProvider.overrideWithValue(identity),
           communityRepositoryProvider.overrideWithValue(repo),
+          rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           guardianEnabledProvider.overrideWithValue(false),
         ],
         child: MaterialApp.router(routerConfig: router),

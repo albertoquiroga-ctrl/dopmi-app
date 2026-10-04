@@ -46,6 +46,31 @@ class ImpactEntryScreen extends ConsumerWidget {
 
 class ImpactScreen extends ConsumerWidget {
   const ImpactScreen({super.key});
+  Future<List<Json>> loadImpact(WidgetRef ref) async {
+    final items = await ref.read(communityRepositoryProvider).personalImpact();
+    return Future.wait(
+      items.map((item) async {
+        String? author;
+        try {
+          final caseId = item['case_id'] as String;
+          final catalog = await ref
+              .read(rescueRepositoryProvider)
+              .completeCaseCatalog(caseId);
+          final records = catalog.items.where(
+            (record) => record.id == caseId && record.kind == 'case',
+          );
+          if (records.isNotEmpty) {
+            final name = records.first.data['rescuer_name'] as String?;
+            if (name != null && name.trim().isNotEmpty) author = name.trim();
+          }
+        } catch (_) {
+          // Optional public attribution never hides authorized financial history.
+        }
+        return {...item, 'public_author': author};
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
     backgroundColor: Colors.white,
@@ -89,8 +114,7 @@ class ImpactScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             LiveSection<List<Json>>(
-              load: () =>
-                  ref.read(communityRepositoryProvider).personalImpact(),
+              load: () => loadImpact(ref),
               errorMessage: (_) =>
                   'No pudimos consultar tus avances. Vuelve a intentarlo.',
               builder: (items, _) => Column(
@@ -348,13 +372,29 @@ class ImpactCaseCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    localDate(update['published_at'] as String? ?? ''),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      height: 1.4,
-                      color: muted,
-                    ),
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    spacing: 12,
+                    runSpacing: 4,
+                    children: [
+                      if (item['public_author'] is String)
+                        Text(
+                          'Por ${item['public_author']}',
+                          style: const TextStyle(
+                            fontSize: 40 / 3,
+                            height: 1.2,
+                            color: muted,
+                          ),
+                        ),
+                      Text(
+                        localDate(update['published_at'] as String? ?? ''),
+                        style: const TextStyle(
+                          fontSize: 40 / 3,
+                          height: 1.2,
+                          color: muted,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 12),
                 ],
