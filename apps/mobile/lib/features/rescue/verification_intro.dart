@@ -189,32 +189,56 @@ class VerificationIntroScreen extends StatelessWidget {
                             const SizedBox(height: 16),
                             FilledButton(
                               onPressed: onContinue,
-                              style: FilledButton.styleFrom(
-                                backgroundColor: purple,
-                                foregroundColor: Colors.white,
-                                minimumSize: const Size(0, 44),
-                                textStyle: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                shape: const StadiumBorder(),
-                              ),
+                              style:
+                                  FilledButton.styleFrom(
+                                    backgroundColor: purple,
+                                    foregroundColor: const Color(0xfffbfbff),
+                                    splashFactory: NoSplash.splashFactory,
+                                    animationDuration: Duration.zero,
+                                    minimumSize: const Size(0, 44),
+                                    textStyle: const TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    shape: const StadiumBorder(),
+                                  ).copyWith(
+                                    overlayColor: const WidgetStatePropertyAll(
+                                      Colors.transparent,
+                                    ),
+                                  ),
                               child: const Text(
                                 'Continuar a verificación',
                                 textAlign: TextAlign.center,
                               ),
                             ),
                             const SizedBox(height: 16),
-                            TextButton(
+                            OutlinedButton(
                               onPressed: onLater,
-                              style: TextButton.styleFrom(
-                                foregroundColor: muted,
-                                textStyle: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 14,
-                                ),
-                              ),
+                              style:
+                                  OutlinedButton.styleFrom(
+                                    foregroundColor: ink,
+                                    backgroundColor: Colors.white,
+                                    minimumSize: const Size(0, 36),
+                                    side: const BorderSide(
+                                      color: Color(0xffe6e2dd),
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                    splashFactory: NoSplash.splashFactory,
+                                    animationDuration: Duration.zero,
+                                    textStyle: const TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 14,
+                                      height: 17 / 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ).copyWith(
+                                    overlayColor: const WidgetStatePropertyAll(
+                                      Colors.transparent,
+                                    ),
+                                  ),
                               child: const Text('Después'),
                             ),
                           ],
@@ -227,6 +251,14 @@ class VerificationIntroScreen extends StatelessWidget {
                       child: IconButton(
                         onPressed: onLater,
                         tooltip: 'Cerrar',
+                        style:
+                            IconButton.styleFrom(
+                              splashFactory: NoSplash.splashFactory,
+                            ).copyWith(
+                              overlayColor: const WidgetStatePropertyAll(
+                                Colors.transparent,
+                              ),
+                            ),
                         icon: const Icon(Icons.close, size: 22, color: muted),
                       ),
                     ),
