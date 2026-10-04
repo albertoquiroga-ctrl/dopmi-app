@@ -1,0 +1,14 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart
+00:00 +0: changing publication resets gallery even with shared photo paths
+00:01 +1: detail header press pixels and navigation: false/false
+00:02 +2: detail header press pixels and navigation: false/true
+00:02 +3: detail header press pixels and navigation: true/false
+00:03 +4: detail header press pixels and navigation: true/true
+00:03 +5: saved detail favorite carries reference shadow and removes it on unsave
+00:03 +6: adoption actions match rendered reference bottom gap and stay fixed on scroll: 0.0
+00:03 +7: adoption actions match rendered reference bottom gap and stay fixed on scroll: 24.0
+00:04 +8: detail carries server-calculated discovery distance without fabricating it
+00:04 +9: badge requires server verification and care remains accessible
+00:04 +10: real gallery tracks swipes and retries only approved photo paths
+00:04 +11: large text keeps contact and save fixed while content scrolls
+00:04 +12: All tests passed!

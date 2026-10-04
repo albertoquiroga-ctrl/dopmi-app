@@ -362,6 +362,7 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                               tooltip: 'Compartir',
                               onPressed: widget.share,
                               style: IconButton.styleFrom(
+                                overlayColor: Colors.transparent,
                                 minimumSize: const Size(42, 42),
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 maximumSize: const Size(42, 42),
@@ -511,9 +512,12 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                         const SizedBox(height: 20),
                         Align(
                           alignment: Alignment.centerLeft,
-                          child: TextButton.icon(
+                          child: TextButton(
                             onPressed: widget.busy ? null : widget.report,
                             style: TextButton.styleFrom(
+                              splashFactory: NoSplash.splashFactory,
+                              overlayColor: Colors.transparent,
+                              animationDuration: Duration.zero,
                               foregroundColor: muted,
                               minimumSize: Size.zero,
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -526,8 +530,16 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            icon: svg('icon-alert-circle', 16),
-                            label: const Text('Reportar publicación'),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                svg('icon-alert-circle', 16),
+                                const SizedBox(width: 6),
+                                const Flexible(
+                                  child: Text('Reportar publicación'),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         const SizedBox(height: 40),
