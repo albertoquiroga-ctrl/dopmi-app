@@ -110,6 +110,18 @@ void main() {
         );
         final button = find.byKey(const ValueKey('rescuer-profile-edit'));
         final gesture = await tester.startGesture(tester.getCenter(button));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 60));
+        final renderedScale = tester.widget<ScaleTransition>(
+          find.descendant(
+            of: find.byType(AnimatedScale),
+            matching: find.byType(ScaleTransition),
+          ),
+        );
+        expect(
+          renderedScale.scale.value,
+          closeTo(reduced ? .97 : 1 - .03 * Curves.ease.transform(.5), .0001),
+        );
         await tester.pump(const Duration(milliseconds: 150));
         final scale = tester.widget<AnimatedScale>(find.byType(AnimatedScale));
         expect(scale.scale, .97);
