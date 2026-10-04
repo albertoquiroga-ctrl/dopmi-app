@@ -1,0 +1,5 @@
+# Destinos de edición y datos conservados
+
+## 2026-10-04 — Loop635: destinos de edición desde review
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Sólo tests. Dos pruebas integradas app/router normal200 recorren receipt→evidencia/privados→públicos→review; EditarInformación abre2 (vendor ausente), modifica description real, regresa3; EditarComprobantes abre0; vuelve atravesando pasos a3. Payload mantiene descriptioncorregida, vendorClínica/12345céntimos privados y receipt/proof/public conpaths originales. Payloadpúblico sinvendor/importe. Gate59712terminalexit0,15/15en7s; analyzerexit0sin incidencias5.9s. Evidencia635supersede pendiente destinosapp634; no filepicker/actualbackend/gestosfísicos ni todosestadosaceptados. Sin producción nueva; full705629 anterior633/634 y no incluye nuevaspruebas632/634/635. Próximo renovar captura global actual trasfamilias600–635 y contrastar discrepancias pendientes por ruta, conservando ámbito completo. Sin push/Codemagic hasta completar objetivo.

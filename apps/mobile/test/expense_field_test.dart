@@ -129,6 +129,110 @@ void resumeExpense(WidgetTester tester) {
 void main() {
   for (final scale in [1.0, 2.0]) {
     testWidgets(
+      'review edits public description and receipt without losing private data at $scale',
+      (tester) async {
+        tester.view.physicalSize = const Size(320, 640);
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        final files = <Json>[
+          {'role': 'receipt', 'path': 'one/expense-one/receipt.pdf'},
+          {'role': 'proof', 'path': 'one/expense-one/proof.pdf'},
+          {'role': 'public', 'path': 'one/expense-one/photo.jpg'},
+        ];
+        final repo = DraftExpenseRescue(initialFiles: files);
+        await startPublication(
+          tester,
+          FakeCommunity(),
+          '/rescue/expense-one',
+          rescue: repo,
+        );
+        final scroll = find
+            .descendant(
+              of: find.byKey(const ValueKey('expense-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first;
+        Future<void> show(Finder target) async {
+          tester.state<ScrollableState>(scroll).position.jumpTo(0);
+          await tester.pumpAndSettle();
+          await tester.scrollUntilVisible(
+            target,
+            300,
+            maxScrolls: 100,
+            scrollable: scroll,
+          );
+          await tester.pumpAndSettle();
+        }
+
+        Future<void> advance() async {
+          await show(find.text('Siguiente'));
+          await tester.tap(find.text('Siguiente'));
+          await tester.pumpAndSettle();
+        }
+
+        for (var i = 0; i < 3; i++) {
+          await advance();
+        }
+        final editPublic = find.byTooltip(
+          'Editar Información para publicación',
+        );
+        await show(editPublic);
+        await tester.tap(editPublic);
+        await tester.pumpAndSettle();
+        expect(tester.widget<ExpenseFrame>(find.byType(ExpenseFrame)).step, 2);
+        expect(
+          find.byKey(const ValueKey('expense-field-vendor')),
+          findsNothing,
+        );
+        final description = find.byKey(
+          const ValueKey('expense-field-description'),
+        );
+        await show(description);
+        await tester.enterText(
+          description,
+          'Consulta y tratamiento completados.',
+        );
+        FocusManager.instance.primaryFocus?.unfocus();
+        tester.testTextInput.hide();
+        await tester.pumpAndSettle();
+        await advance();
+        expect(tester.widget<ExpenseFrame>(find.byType(ExpenseFrame)).step, 3);
+        expect(
+          repo.publicSaved!['description'],
+          'Consulta y tratamiento completados.',
+        );
+        expect(repo.saved!['vendor'], 'Clínica');
+        expect(repo.saved!['amount_cents'], '12345');
+        final editFiles = find.byTooltip('Editar Comprobantes y fotos');
+        await show(editFiles);
+        await tester.tap(editFiles);
+        await tester.pumpAndSettle();
+        expect(tester.widget<ExpenseFrame>(find.byType(ExpenseFrame)).step, 0);
+        await show(find.text('Comprobante del gasto'));
+        expect(find.text('Comprobante del gasto'), findsOneWidget);
+        for (var i = 0; i < 3; i++) {
+          await advance();
+        }
+        expect(tester.widget<ExpenseFrame>(find.byType(ExpenseFrame)).step, 3);
+        expect(repo.savedFiles, files);
+        expect(
+          repo.publicSaved!['description'],
+          'Consulta y tratamiento completados.',
+        );
+        expect(repo.publicSaved!.containsKey('vendor'), isFalse);
+        expect(repo.publicSaved!.containsKey('amount_cents'), isFalse);
+        expect(repo.saved!['vendor'], 'Clínica');
+        expect(repo.saved!['amount_cents'], '12345');
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
+  for (final scale in [1.0, 2.0]) {
+    testWidgets(
       'expense changes step immediately after save response at $scale',
       (tester) async {
         tester.view.physicalSize = const Size(320, 640);
