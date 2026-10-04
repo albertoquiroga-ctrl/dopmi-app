@@ -1939,47 +1939,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
           const SizedBox(height: 16),
           verificationDocument('identity'),
           verificationDocument('address'),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xffe3e4ed)),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Text(
-                    'Progreso del formulario',
-                    style: TextStyle(
-                      fontSize: 14,
-                      height: 1.55,
-                      color: Color(0xff4f4e5c),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text('$captured de $total requisitos capturados'),
-                  const SizedBox(height: 12),
-                  LinearProgressIndicator(
-                    value: captured / total,
-                    minHeight: 8,
-                    borderRadius: BorderRadius.circular(99),
-                    color: const Color(0xff7841f2),
-                    backgroundColor: const Color(0xffefede8),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'El equipo verificará la información y los documentos antes de aprobar.',
-                    style: TextStyle(
-                      fontSize: 12,
-                      height: 1.55,
-                      color: Color(0xff4f4e5c),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          VerificationProgress(captured: captured, total: total),
           const SizedBox(height: 16),
           if (error != null) Notice(error!, isError: true),
           if (message != null) Notice(message!),
