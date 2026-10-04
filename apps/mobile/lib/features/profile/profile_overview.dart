@@ -615,15 +615,22 @@ class DonorProfileView extends ConsumerWidget {
                         profile.name,
                         style: const TextStyle(
                           fontSize: 16,
+                          height: 1.25,
                           fontWeight: FontWeight.w700,
                           color: ink,
                         ),
                       ),
-                      if (profile.city.isNotEmpty)
+                      if (profile.city.isNotEmpty) ...[
+                        const SizedBox(height: 2),
                         Text(
                           profile.city,
-                          style: const TextStyle(fontSize: 13, color: muted),
+                          style: const TextStyle(
+                            fontSize: 13,
+                            height: 1.3,
+                            color: muted,
+                          ),
                         ),
+                      ],
                     ],
                   ),
                 ),
