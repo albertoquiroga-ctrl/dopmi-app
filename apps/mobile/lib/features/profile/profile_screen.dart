@@ -254,21 +254,25 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
           textAlign: TextAlign.center,
           style: const TextStyle(
             fontSize: 18,
-            height: 1.2,
-            letterSpacing: 0,
+            height: 1.25,
+            letterSpacing: -0.36,
             color: ink,
             fontWeight: FontWeight.w700,
           ),
         ),
-        leading: IconButton(
-          tooltip: 'Volver',
-          style: IconButton.styleFrom(overlayColor: Colors.transparent),
-          onPressed: () =>
-              context.canPop() ? context.pop() : context.go('/settings'),
-          icon: SvgPicture.asset(
-            'assets/profile/back.svg',
-            width: 20,
-            height: 20,
+        leadingWidth: 60,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12),
+          child: IconButton(
+            tooltip: 'Volver',
+            style: IconButton.styleFrom(overlayColor: Colors.transparent),
+            onPressed: () =>
+                context.canPop() ? context.pop() : context.go('/settings'),
+            icon: SvgPicture.asset(
+              'assets/profile/back.svg',
+              width: 20,
+              height: 20,
+            ),
           ),
         ),
         bottom: const PreferredSize(

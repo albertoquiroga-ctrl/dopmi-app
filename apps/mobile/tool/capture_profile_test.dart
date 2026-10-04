@@ -3855,9 +3855,29 @@ void main() {
                 'height': tester.getRect(fields.at(i)).height,
               },
           ];
+          final backRect = tester.getRect(
+            find.descendant(
+              of: find.byTooltip('Volver'),
+              matching: find.byType(SvgPicture),
+            ),
+          );
+          final titleRect = tester.getRect(find.text('Información básica'));
           await tester.runAsync(() async {
             await File('${out.path}/${spec.$1}-geometry.json')
                 .writeAsString(jsonEncode(geometry));
+            await File('${out.path}/${spec.$1}-header-geometry.json')
+                .writeAsString(
+                  jsonEncode({
+                    'backCenterX': backRect.center.dx,
+                    'backCenterY': backRect.center.dy,
+                    'backWidth': backRect.width,
+                    'backHeight': backRect.height,
+                    'titleCenterX': titleRect.center.dx,
+                    'titleCenterY': titleRect.center.dy,
+                    'titleWidth': titleRect.width,
+                    'titleHeight': titleRect.height,
+                  }),
+                );
           });
         }
         await tester.runAsync(

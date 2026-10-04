@@ -1,0 +1,26 @@
+[
+  {
+    "file": "basic-info-keyboard-large.png",
+    "sha256": "478bac93bc75fcdd1bbaed6476b8be112246224a8154f90342a588eb6e235ac0"
+  },
+  {
+    "file": "basic-info-large.png",
+    "sha256": "e47f59d32eaaec9bfd6268f6bbd5a43383020a37565db30a188d9610ab2807f9"
+  },
+  {
+    "file": "basic-info-saved-large.png",
+    "sha256": "b395c0fd8c0a629af65b2f9c73114485a2e5048e5e37aecb13b1e471986db8c1"
+  },
+  {
+    "file": "basic-info-saved.png",
+    "sha256": "ab55b703913ccbd45356df051363940c108e6f42543a2238c926b0fab17fb3cc"
+  },
+  {
+    "file": "basic-info-validation.png",
+    "sha256": "44b48fb9cc9d534795224519dd70abcbcf91c8dfc196afe0410a2ace123b27dd"
+  },
+  {
+    "file": "basic-info.png",
+    "sha256": "d0324cdbe3ea2bdf87957f3ffab11e16bc853f87363c75fa64b65e51c8a7a2d0"
+  }
+]
