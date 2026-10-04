@@ -49,6 +49,16 @@ class PendingHistoryCase extends FakeRescue {
   }
 }
 
+class UnavailableHistoryCase extends FakeRescue {
+  UnavailableHistoryCase({required this.fail});
+  final bool fail;
+  @override
+  Future<RescueRecord?> publicCaseRecordForExpense(String expenseId) async {
+    if (fail) throw StateError('Catalog unavailable');
+    return null;
+  }
+}
+
 void main() {
   Future<FakeIdentityRepository> start(
     WidgetTester tester,
@@ -228,6 +238,28 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  for (final fail in [false, true]) {
+    testWidgets(
+      'Public name unavailable keeps the real payment and receipt; error=$fail',
+      (tester) async {
+        await start(
+          tester,
+          HistoryRepo(),
+          HistoryPayments(),
+          enabled: false,
+          rescue: UnavailableHistoryCase(fail: fail),
+        );
+        expect(find.text('Medicamentos'), findsOneWidget);
+        expect(find.text('Choco - Medicamentos'), findsNothing);
+        expect(find.text(r'$75.25'), findsOneWidget);
+        await tester.tap(find.text(r'$75.25'));
+        await tester.pump();
+        expect(find.text(r'Importe: $75.25 MXN'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
 
   testWidgets('Disabled Guardian makes no cycle reads', (tester) async {
     final guardian = HistoryRepo();

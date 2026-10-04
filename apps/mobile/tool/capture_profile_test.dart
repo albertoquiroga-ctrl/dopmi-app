@@ -579,6 +579,7 @@ class HistoryCapturePayments extends FakePayments {
           ...fixture.items[i],
           'id': 'fixture-payment-$i',
           'expense_id': i == 0 ? 'expense-one' : 'fixture-expense-$i',
+          if (i == 0) 'expense_title': 'Comida',
           'created_at': '2026-04-${29 - i * 4}T12:00:00Z',
           'processor': 'stripe',
           'transfer_status': 'pending',
@@ -3649,6 +3650,22 @@ void main() {
           await tester.ensureVisible(target);
           await tester.pumpAndSettle();
           expect(target.hitTestable(), findsOneWidget);
+        }
+        if (spec.$1.startsWith('payment-history')) {
+          if (spec.$1.endsWith('-empty')) {
+            expect(
+              find.text('Aún no hay movimientos en tu historial.'),
+              findsOneWidget,
+            );
+          } else {
+            final title = find.text('Choco - Comida');
+            expect(title, findsOneWidget);
+            if (large) {
+              await tester.ensureVisible(title);
+              await tester.pumpAndSettle();
+              expect(title.hitTestable(), findsOneWidget);
+            }
+          }
         }
         TestGesture? helpHold;
         if (spec.$1.startsWith('help-center-topic-held')) {

@@ -1,0 +1,5 @@
+# Historial sin nombre público y estado vacío
+
+## 2026-10-04 UTC — Loop594: catálogo ausente y estado vacío del historial
+
+Fecha local México3oct23:52, UTC4oct05:52; entrada593 rotulada4oct corresponde UTC. Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Dos pruebasintegradas verifican catálogo devuelve null o lanzaerror: mantieneconceptoMedicamentos/importe75.25 y reciboexpandible sin inventarcaso. Capturador usa conceptoComida para primerexpense-one/Choco; assert título presente o vacío antesguardar,200 desplazadoal título visible en vezde sólofilas iniciales. Sourceempty p14/1.55/muted vsnativo estiloheredado: explicita estilo sólomensaje vacío. Sin cambiosfinanzas/backend/SQL. Gate51606 terminalexit0,20/20,4s, analyzer97057exit0limpio11.8s. Gatesantesestilo9668exit0,20/20,5s y21035clean17.1s. TresPNG finalesguardadas, normal/200previasmismofilas inspeccionadas y emptyfinalinspeccionada; no Source runtime nuevo ni igualdadglobal/aceptacióninstalada. Próximo gatecompleto integra591–594 (full639586anterior), luego seguir contraste rutas/estados pendientes; no repetir pruebadirigida sin cambios. Sin push/Codemagic hasta objetivo completo.
