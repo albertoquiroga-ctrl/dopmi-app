@@ -866,163 +866,186 @@ class _OwnedRescueCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              key: ValueKey('owned-case-open-${record.id}'),
+              onTap: record.status == 'submitted'
+                  ? null
+                  : () async {
+                      await context.push('/rescue/${record.id}');
+                      refresh();
+                    },
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(19),
+              ),
+              splashFactory: NoSplash.splashFactory,
+              highlightColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    if (record.kind == 'case')
-                      SizedBox(
-                        width: 76,
-                        height: 76,
-                        child:
-                            (record.publicData['photos'] as List? ?? [])
-                                .whereType<String>()
-                                .isNotEmpty
-                            ? RescuePublicPhoto(
-                                (record.publicData['photos'] as List)
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (record.kind == 'case')
+                          SizedBox(
+                            width: 76,
+                            height: 76,
+                            child:
+                                (record.publicData['photos'] as List? ?? [])
                                     .whereType<String>()
-                                    .first,
-                                height: 76,
-                                radius: 14,
-                                compact: true,
-                              )
-                            : Container(
-                                decoration: BoxDecoration(
-                                  color: const Color(0xfff0eff8),
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                                child: const Icon(
-                                  Icons.pets_outlined,
-                                  color: purple,
-                                  size: 28,
-                                ),
-                              ),
-                      )
-                    else
-                      CircleAvatar(
-                        backgroundColor: const Color(0xffeee7fc),
-                        child: Icon(
-                          needsAction ? Icons.edit_note : Icons.pets_outlined,
-                          color: purple,
-                        ),
-                      ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _OwnedCaseHeading(record: record),
-                          if (record.data['urgent'] == true) ...[
-                            const SizedBox(height: 6),
-                            const Text(
-                              'Urgente',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xffb51224),
-                              ),
-                            ),
-                          ],
-                          if (record.kind == 'case' &&
-                              record.status != 'submitted' &&
-                              (record.publicData['age'] as String? ?? '')
-                                  .trim()
-                                  .isNotEmpty) ...[
-                            const SizedBox(height: 6),
-                            Text(
-                              record.publicData['age'] as String,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                height: 1.55,
-                                color: Color(0xff4f4e5c),
-                              ),
-                            ),
-                          ],
-                          if (record.status == 'submitted') ...[
-                            const SizedBox(height: 6),
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: const Color(0xffeff6ff),
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: const Text(
-                                'Tu caso está en revisión por el equipo Dopmi.',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  height: 16 / 12,
-                                  color: Color(0xff193cb8),
-                                ),
-                              ),
-                            ),
-                          ],
-                          if (record.kind == 'case' &&
-                              record.status == 'approved' &&
-                              record.targetCents > 0) ...[
-                            const SizedBox(height: 8),
-                            Wrap(
-                              alignment: WrapAlignment.spaceBetween,
-                              spacing: 8,
-                              runSpacing: 4,
-                              children: [
-                                const Text(
-                                  'Asignación a gastos',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    height: 1.4,
-                                    color: Color(0xff4f4e5c),
+                                    .isNotEmpty
+                                ? RescuePublicPhoto(
+                                    (record.publicData['photos'] as List)
+                                        .whereType<String>()
+                                        .first,
+                                    height: 76,
+                                    radius: 14,
+                                    compact: true,
+                                  )
+                                : Container(
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xfff0eff8),
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                    child: const Icon(
+                                      Icons.pets_outlined,
+                                      color: purple,
+                                      size: 28,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  '${((record.fundedCents / record.targetCents).clamp(0, 1) * 100).round()}%',
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    height: 1.4,
+                          )
+                        else
+                          CircleAvatar(
+                            backgroundColor: const Color(0xffeee7fc),
+                            child: Icon(
+                              needsAction
+                                  ? Icons.edit_note
+                                  : Icons.pets_outlined,
+                              color: purple,
+                            ),
+                          ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _OwnedCaseHeading(record: record),
+                              if (record.data['urgent'] == true) ...[
+                                const SizedBox(height: 6),
+                                const Text(
+                                  'Urgente',
+                                  style: TextStyle(
+                                    fontSize: 11,
                                     fontWeight: FontWeight.w600,
-                                    color: Color(0xff151423),
+                                    color: Color(0xffb51224),
                                   ),
                                 ),
                               ],
-                            ),
-                            const SizedBox(height: 6),
-                            LinearProgressIndicator(
-                              value: (record.fundedCents / record.targetCents)
-                                  .clamp(0, 1),
-                              minHeight: 8,
-                              borderRadius: BorderRadius.circular(99),
-                              color: purple,
-                              backgroundColor: const Color(0xffefede8),
-                              semanticsLabel: 'Progreso de gastos aprobados',
-                              semanticsValue:
-                                  '${((record.fundedCents / record.targetCents).clamp(0, 1) * 100).round()}%',
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              'Asignado: ${pesos(record.fundedCents)}',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                height: 1.35,
-                                color: Color(0xff4f4e5c),
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
+                              if (record.kind == 'case' &&
+                                  record.status != 'submitted' &&
+                                  (record.publicData['age'] as String? ?? '')
+                                      .trim()
+                                      .isNotEmpty) ...[
+                                const SizedBox(height: 6),
+                                Text(
+                                  record.publicData['age'] as String,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    height: 1.55,
+                                    color: Color(0xff4f4e5c),
+                                  ),
+                                ),
+                              ],
+                              if (record.status == 'submitted') ...[
+                                const SizedBox(height: 6),
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xffeff6ff),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: const Text(
+                                    'Tu caso está en revisión por el equipo Dopmi.',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      height: 16 / 12,
+                                      color: Color(0xff193cb8),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              if (record.kind == 'case' &&
+                                  record.status == 'approved' &&
+                                  record.targetCents > 0) ...[
+                                const SizedBox(height: 8),
+                                Wrap(
+                                  alignment: WrapAlignment.spaceBetween,
+                                  spacing: 8,
+                                  runSpacing: 4,
+                                  children: [
+                                    const Text(
+                                      'Asignación a gastos',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        height: 1.4,
+                                        color: Color(0xff4f4e5c),
+                                      ),
+                                    ),
+                                    Text(
+                                      '${((record.fundedCents / record.targetCents).clamp(0, 1) * 100).round()}%',
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        height: 1.4,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xff151423),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 6),
+                                LinearProgressIndicator(
+                                  value:
+                                      (record.fundedCents / record.targetCents)
+                                          .clamp(0, 1),
+                                  minHeight: 8,
+                                  borderRadius: BorderRadius.circular(99),
+                                  color: purple,
+                                  backgroundColor: const Color(0xffefede8),
+                                  semanticsLabel:
+                                      'Progreso de gastos aprobados',
+                                  semanticsValue:
+                                      '${((record.fundedCents / record.targetCents).clamp(0, 1) * 100).round()}%',
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  'Asignado: ${pesos(record.fundedCents)}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    height: 1.35,
+                                    color: Color(0xff4f4e5c),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
+                    if ((record.data['feedback'] as String? ?? '')
+                        .isNotEmpty) ...[
+                      const SizedBox(height: 10),
+                      Notice(
+                        record.data['feedback'] as String,
+                        isError: needsAction,
+                      ),
+                    ],
                   ],
                 ),
-                if ((record.data['feedback'] as String? ?? '').isNotEmpty) ...[
-                  const SizedBox(height: 10),
-                  Notice(
-                    record.data['feedback'] as String,
-                    isError: needsAction,
-                  ),
-                ],
-              ],
+              ),
             ),
           ),
           Container(
