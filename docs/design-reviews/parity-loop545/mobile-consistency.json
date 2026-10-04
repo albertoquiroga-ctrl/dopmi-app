@@ -237,5 +237,28 @@
     "assets/profile/icon-donation-in.svg": "864f1e2028fd65b9d1ce5accfcefd4cd0f4e69ef96898e2d7b049b299371b199"
   },
   "dart_files": 230,
-  "status": "running"
+  "status": "failed",
+  "test": {
+    "session": 14884,
+    "exit": 1,
+    "passed": 610,
+    "failed": 1,
+    "seconds": 225
+  },
+  "analyze": {
+    "session": 8555,
+    "exit": 0,
+    "seconds": 202.2
+  },
+  "post_terminal_repair_files": [
+    "apps/mobile/test/rescue_test.dart",
+    "C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart"
+  ],
+  "targeted_repair": {
+    "session": 89635,
+    "exit": 0,
+    "passed": 1,
+    "seconds": 2,
+    "commit": "c66230a"
+  }
 }
