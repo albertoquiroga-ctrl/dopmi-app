@@ -1,0 +1,78 @@
+{
+  "commit": "7e1a04376c76434f9da31aacc24130154aa0f1b6",
+  "source": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "fixtures": [
+    {
+      "name": "verification-approved-large.png",
+      "sha256": "1504ee6a988cea0080af174f5611138977fe63b9fe3724160b4a6e76d403f8c8",
+      "mtime": 1791071970.4203835
+    },
+    {
+      "name": "verification-approved.png",
+      "sha256": "ccdcb041022841e2e7a4f77d3d484f440db3a095be275720e47f71bad9303348",
+      "mtime": 1791071969.9263804
+    },
+    {
+      "name": "verification-files.png",
+      "sha256": "bd38bafd165ba6925905b18b7e065900e2f495ac41194c033bc6e12cebbcc2a1",
+      "mtime": 1790906325.7905571
+    },
+    {
+      "name": "verification-form-large.png",
+      "sha256": "8c96b39ef0188c5d460f0dcdc5a52054d2224037dc86a169c858b2d9a3d52375",
+      "mtime": 1791071969.3983853
+    },
+    {
+      "name": "verification-form.png",
+      "sha256": "ccd3c0063274444d4cb12efd25fb88e9baa3d16d3a7bdfb7170f979a4bf301bc",
+      "mtime": 1791071968.8702815
+    },
+    {
+      "name": "verification-intro-large.png",
+      "sha256": "bb9cece1673052769aeb328ece96c9a5b98f0f766b8739cae98f9ca64f0d9a37",
+      "mtime": 1791071968.0642836
+    },
+    {
+      "name": "verification-intro.png",
+      "sha256": "326220ef3779896db870718d85cf59f1aacf9af9bd5172d35139e6a3babd488e",
+      "mtime": 1791071967.562287
+    },
+    {
+      "name": "verification-review-large.png",
+      "sha256": "34fa917624868faad14566d0a1fc3eee07b2a054e385d7024da21dfc81edcce0",
+      "mtime": 1791071971.4074447
+    },
+    {
+      "name": "verification-review.png",
+      "sha256": "198507325208b3a2817e948dc5e2e3d6e305b2a08269d81bdd99e65607daa6e7",
+      "mtime": 1791071970.9234426
+    }
+  ],
+  "test": {
+    "session": 33193,
+    "exit": 0,
+    "passed": 31,
+    "seconds": 9
+  },
+  "analyze": {
+    "session": 26465,
+    "exit": 0,
+    "seconds": 25
+  },
+  "visible_borders": {
+    "x": 188,
+    "color": "e3e4ed",
+    "name_rows": [
+      273,
+      316
+    ],
+    "phone_rows": [
+      355,
+      398
+    ],
+    "experience_rows": [
+      486,
+      597
+    ]
+  }
+}
