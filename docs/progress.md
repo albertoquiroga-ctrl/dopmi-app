@@ -3367,3 +3367,11 @@ Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/ci
 - Fresh Source `/saved` 377×852/fonts ready: Mis mascotas title rect129.75/22.25/117.484375/22.5, letterSpacing-.36; back image26/23.5/20/20 center36/33.5. Client title previously height1.2/spacing0, default leading56 centers back28. Set title height1.25/spacing-.36 and leading60/padding12, maintaining48px target. Transparent back overlay follows Source touch styling, excluding hover as requested.
 - Community test55438 exit0:34/34 in18s (saved pagination/removal/public rescuer access included). Analyze65610 exit0 clean46.1s. Capture21738 exit0:1/1 in6s; 10 saved PNGs verified/hashed; normal adoption view inspected. No final numeric client title telemetry added, so exact text geometry is unproven. Real kind menu retained.
 - Goal active, global visual/motion/device acceptance remains incomplete. No Codemagic, no live money.
+
+### 2026-10-04 — Parity loop 721: Saved adoption row touch feedback
+
+- Prior loop720 changed production headers and verified community/captures. Reference branch revalidated start/end `a3c969cd9103fd46dc5cd886999912526ce75efb`.
+- Inspected Source App.tsx saved-row markup and styles.css4527–4530:70px image/radius16, gap10, border bottom, transparent name button, icon-button with hover only. Source has no touch active/ripple rule for these controls.
+- Scoped adoption-row InkWell to NoSplash/transparent overlay and removal IconButton to transparent overlay. Preserve unavailable-content route guard, pending-removal disabling, backend mutation and failure handling. Geometry and rescuer/case presentation unchanged.
+- Community25603 exit0:34/34 in13s, including saved pagination, pending removal and rescuer access. Analyze67359 exit0 clean57.6s. No new screenshots or held-render proof captured in this loop; current normal layout evidence is loop720. Full row geometry/data-equivalent visual acceptance remains pending.
+- Goal active, no Codemagic before complete objective. Money test-only.

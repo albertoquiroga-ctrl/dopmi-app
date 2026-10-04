@@ -413,6 +413,10 @@ class _SavedCard extends StatelessWidget {
           SizedBox(width: adoption ? 10 : 12),
           Expanded(
             child: InkWell(
+              splashFactory: adoption ? NoSplash.splashFactory : null,
+              overlayColor: adoption
+                  ? const WidgetStatePropertyAll(Colors.transparent)
+                  : null,
               onTap: open,
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: adoption ? 8 : 0),
@@ -493,6 +497,9 @@ class _SavedCard extends StatelessWidget {
           ),
           IconButton(
             tooltip: 'Quitar de guardados',
+            style: adoption
+                ? IconButton.styleFrom(overlayColor: Colors.transparent)
+                : null,
             onPressed: busy ? null : remove,
             icon: adoption
                 ? SvgPicture.asset(
