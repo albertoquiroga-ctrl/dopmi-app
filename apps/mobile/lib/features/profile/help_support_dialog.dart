@@ -312,6 +312,9 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                       const SizedBox(height: 12),
                       FilledButton(
                         style: FilledButton.styleFrom(
+                          splashFactory: NoSplash.splashFactory,
+                          overlayColor: Colors.transparent,
+                          animationDuration: Duration.zero,
                           backgroundColor: yellow,
                           foregroundColor: const Color(0xff0d0d0d),
                           textStyle: const TextStyle(

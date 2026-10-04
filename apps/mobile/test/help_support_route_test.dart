@@ -79,7 +79,17 @@ void main() {
       pending.complete({'request_id': requestIds.single, 'status': 'received'});
       await tester.pumpAndSettle();
       expect(find.text('Recibimos tu mensaje.'), findsOneWidget);
-      await tester.tap(find.byTooltip('Cerrar'));
+      final understood = find.widgetWithText(FilledButton, 'Entendido');
+      final before = tester.getRect(understood);
+      final held = await tester.startGesture(tester.getCenter(understood));
+      await tester.pump(const Duration(milliseconds: 150));
+      expect(tester.getRect(understood), before);
+      expect(find.byType(HelpSupportDialog), findsOneWidget);
+      expect(requestIds, hasLength(1));
+      await held.cancel();
+      await tester.pumpAndSettle();
+      expect(find.byType(HelpSupportDialog), findsOneWidget);
+      await tester.tap(understood);
       await tester.pumpAndSettle();
       expect(find.byType(HelpSupportDialog), findsNothing);
       expect(requestIds, hasLength(1));

@@ -1,0 +1,18 @@
+[
+  {
+    "fixture": "help-center-support-received",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "e9c7c5a824e01500c25c9f8a2b74d2d7a9c20dbe7fb07b4ee4da036c2eaf70bf"
+  },
+  {
+    "fixture": "help-center-support-received-large",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "508eecdb76970376afb06e5d112632c988b2b0768ed07d6bde799ea75a307ddc"
+  }
+]

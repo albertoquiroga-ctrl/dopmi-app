@@ -3496,3 +3496,7 @@ Source/help runtime377x852 confirma FAQInter700/16px, lineas20px y apertura sint
 ### 2026-10-04 - Loop750: gestos de preguntas de ayuda
 
 Source/help ejecutado confirma una respuesta abierta, segunda sustituye, retocar cierra y tema seleccionado vuelve al hint. Dos tests nuevos normal/200% verifican mantener150ms/cancelar sin abrir, tap inmediato, sustitucion/cierre y topicreset en rutaFlutter real. Fallos iniciales de localizacion lazy corregidos con scroll direccionado y hint visible, sin quitarasserts. Final80623 exit0:4/4 en4s; produccion sin cambios. Full748/801 anterior749/750, no803 global atribuido. Source a3c969c inicio/cierre. Browser propio cerrado; APK/nativa/global pendientes. Sin Codemagic/dinero real. Ver docs/design-reviews/parity-loop750.
+
+### 2026-10-04 - Loop751: accion Entendido en soporte
+
+Source/help recibido ejecutado: Entendido amarillo/48px/transition0/transformnone. Cliente recibido neutraliza ripple/overlay/animacionMaterial como formulario, sin alterar servidor ni promesas de respuesta. Testpendiente existente ahora mantiene150ms/cancela sin cerrar, tapcierra y requestsigue1. Gate87185 exit0:12/12; capture80208 exit0:1/1 en3s/dosPNG normal200 inspeccionados/hash; analyze80208 limpio42.2s y diffchecksinerror. Source a3c969c inicio/cierre. Emulador sin Dopmi en primerplano, manualpending. Full748/801 y APK748 anteriores749/751; sinCodemagic/global/nativa/dineroreal. Ver docs/design-reviews/parity-loop751.
