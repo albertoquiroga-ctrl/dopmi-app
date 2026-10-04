@@ -3524,3 +3524,7 @@ Fuente0328de654d1033d670cae2a08000ef7e54bb00bf, full74392 exit0:803/803 en4m29s;
 ### 2026-10-04 - Loop757: indicadores primerframe de rutas reales
 
 Source rutasdonortrackadopter/rescuer recrean dots (runtime756), clienteadopt/rescue keyentrada los incluye. Dosasserts existentes route_motion miden16/32 RenderBox (visual8/24+margen8) primerpump, conservaentrada450/Back. Final19934 exit0:5/5 en2s, tambienlegalprivatedraft yreemplazoBackAndroid/iOS. Donate generico adicional sin terceraSource equivalente, no copy simulado ni paridadliteral atribuida. No produccion ni tests nuevos; full756/803 misma produccion, anteriorassertsfortalecidas. Source a3c969c verificado. SinCodemagic/nativa/global/dineroreal. Ver docs/design-reviews/parity-loop757.
+
+### 2026-10-04 - Loop758: coleccion completa actual419
+
+Fuente714853a/produccion0328de6, capture21331 exit0:1/1 en3m13s.419fixturesunicas/47rutas parseadas yPNGposterioreslog/PIL/dimensiones/SHAvalidos;365 fuentesroot/scratchigualesduranteyhashesestablescierre. Supersede743/418 (FAQAdoptarnormalextra749); no419aceptaciones. Seisnormalvacios adoption/match/support/ownedcases/savedadoptions/impact inspeccionados sinnuevo defecto, acciones visibles; sinSourcecomparacionnueva/callbacknativo. Full756/803 misma produccion, test757fortalecido sinnewcount. Source a3c969c inicio/cierre. Auth/welcome otroscapturadores no incluidos. SinCodemagic/nativa/global/dineroreal. Ver docs/design-reviews/parity-loop758.

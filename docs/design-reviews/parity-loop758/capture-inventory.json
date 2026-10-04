@@ -1,0 +1,1678 @@
+[
+  {
+    "fixture": "adoption-swipe",
+    "route": "/adoptions"
+  },
+  {
+    "fixture": "adoption-large",
+    "route": "/adoptions"
+  },
+  {
+    "fixture": "adoption-drag",
+    "route": "/adoptions"
+  },
+  {
+    "fixture": "adoption-filters",
+    "route": "/adoptions"
+  },
+  {
+    "fixture": "adoption-filters-large",
+    "route": "/adoptions"
+  },
+  {
+    "fixture": "adoption-contact",
+    "route": "/adoptions"
+  },
+  {
+    "fixture": "adoption-contact-large",
+    "route": "/adoptions"
+  },
+  {
+    "fixture": "adoption-detail",
+    "route": "/adoptions/post"
+  },
+  {
+    "fixture": "adoption-detail-large",
+    "route": "/adoptions/post"
+  },
+  {
+    "fixture": "adoption-empty",
+    "route": "/adoptions"
+  },
+  {
+    "fixture": "adoption-empty-large",
+    "route": "/adoptions"
+  },
+  {
+    "fixture": "adoption-empty-wide-large",
+    "route": "/adoptions"
+  },
+  {
+    "fixture": "adoption-end",
+    "route": "/adoptions"
+  },
+  {
+    "fixture": "match-threads",
+    "route": "/messages"
+  },
+  {
+    "fixture": "match-threads-large",
+    "route": "/messages"
+  },
+  {
+    "fixture": "match-all",
+    "route": "/messages"
+  },
+  {
+    "fixture": "match-all-large",
+    "route": "/messages"
+  },
+  {
+    "fixture": "match-empty",
+    "route": "/messages"
+  },
+  {
+    "fixture": "match-empty-large",
+    "route": "/messages"
+  },
+  {
+    "fixture": "chat-bubbles",
+    "route": "/messages/thread-one"
+  },
+  {
+    "fixture": "chat-bubbles-large",
+    "route": "/messages/thread-one"
+  },
+  {
+    "fixture": "chat-bubbles-rescuer",
+    "route": "/messages/thread-one"
+  },
+  {
+    "fixture": "chat-detail-focus",
+    "route": "/messages/thread-one"
+  },
+  {
+    "fixture": "chat-detail-focus-large",
+    "route": "/messages/thread-one"
+  },
+  {
+    "fixture": "chat-keyboard",
+    "route": "/messages/thread-one"
+  },
+  {
+    "fixture": "chat-keyboard-large",
+    "route": "/messages/thread-one"
+  },
+  {
+    "fixture": "rescuer-home-unverified",
+    "route": "/rescuer"
+  },
+  {
+    "fixture": "rescuer-home-unverified-large",
+    "route": "/rescuer"
+  },
+  {
+    "fixture": "rescuer-home-review",
+    "route": "/rescuer"
+  },
+  {
+    "fixture": "rescuer-home-review-large",
+    "route": "/rescuer"
+  },
+  {
+    "fixture": "rescuer-home-empty",
+    "route": "/rescuer"
+  },
+  {
+    "fixture": "rescuer-home-empty-large",
+    "route": "/rescuer"
+  },
+  {
+    "fixture": "rescuer-home-actions",
+    "route": "/rescuer"
+  },
+  {
+    "fixture": "rescuer-home-actions-large",
+    "route": "/rescuer"
+  },
+  {
+    "fixture": "rescuer-home-evidence",
+    "route": "/rescuer"
+  },
+  {
+    "fixture": "rescuer-home-evidence-large",
+    "route": "/rescuer"
+  },
+  {
+    "fixture": "owned-case-detail",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "owned-case-detail-back-focus",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "owned-case-detail-dot-focus",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "owned-case-detail-dot-focus-large",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "owned-case-detail-back-focus-large",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "owned-case-detail-large",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "owned-case-detail-story",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "owned-case-detail-story-large",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "owned-case-detail-history-empty",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "owned-case-detail-history-empty-large",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "owned-case-detail-bottom",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "owned-case-detail-bottom-large",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "owned-case-detail-closed",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "owned-case-detail-closed-large",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "owned-cases",
+    "route": "/my-cases"
+  },
+  {
+    "fixture": "owned-cases-large",
+    "route": "/my-cases"
+  },
+  {
+    "fixture": "owned-cases-empty",
+    "route": "/my-cases"
+  },
+  {
+    "fixture": "owned-cases-empty-large",
+    "route": "/my-cases"
+  },
+  {
+    "fixture": "owned-cases-correction",
+    "route": "/my-cases"
+  },
+  {
+    "fixture": "owned-cases-correction-large",
+    "route": "/my-cases"
+  },
+  {
+    "fixture": "rescuer-home",
+    "route": "/rescuer"
+  },
+  {
+    "fixture": "rescuer-home-large",
+    "route": "/rescuer"
+  },
+  {
+    "fixture": "support-home",
+    "route": "/rescue-cases"
+  },
+  {
+    "fixture": "notifications-reference",
+    "route": "/notifications"
+  },
+  {
+    "fixture": "notifications-source",
+    "route": "/notifications"
+  },
+  {
+    "fixture": "notifications-reference-large",
+    "route": "/notifications"
+  },
+  {
+    "fixture": "notifications-reference-read",
+    "route": "/notifications"
+  },
+  {
+    "fixture": "notifications-reference-kinds",
+    "route": "/notifications"
+  },
+  {
+    "fixture": "notifications-reference-kinds-large",
+    "route": "/notifications"
+  },
+  {
+    "fixture": "notifications-reference-header-focus",
+    "route": "/notifications"
+  },
+  {
+    "fixture": "notifications-reference-header-focus-large",
+    "route": "/notifications"
+  },
+  {
+    "fixture": "support-home-large",
+    "route": "/rescue-cases"
+  },
+  {
+    "fixture": "support-home-empty",
+    "route": "/rescue-cases"
+  },
+  {
+    "fixture": "support-home-empty-large",
+    "route": "/rescue-cases"
+  },
+  {
+    "fixture": "support-home-error",
+    "route": "/rescue-cases"
+  },
+  {
+    "fixture": "support-home-error-large",
+    "route": "/rescue-cases"
+  },
+  {
+    "fixture": "support-home-error-retry",
+    "route": "/rescue-cases"
+  },
+  {
+    "fixture": "support-home-error-retry-large",
+    "route": "/rescue-cases"
+  },
+  {
+    "fixture": "support-home-notification-focus",
+    "route": "/rescue-cases"
+  },
+  {
+    "fixture": "support-home-notification-focus-large",
+    "route": "/rescue-cases"
+  },
+  {
+    "fixture": "support-home-notification-badge",
+    "route": "/rescue-cases"
+  },
+  {
+    "fixture": "support-home-notification-badge-large",
+    "route": "/rescue-cases"
+  },
+  {
+    "fixture": "support-home-case-focus",
+    "route": "/rescue-cases"
+  },
+  {
+    "fixture": "support-home-case-focus-large",
+    "route": "/rescue-cases"
+  },
+  {
+    "fixture": "support-home-guardian-card-focus",
+    "route": "/rescue-cases"
+  },
+  {
+    "fixture": "support-home-guardian-card-focus-large",
+    "route": "/rescue-cases"
+  },
+  {
+    "fixture": "support-home-guardian-dock-focus",
+    "route": "/rescue-cases"
+  },
+  {
+    "fixture": "support-home-guardian-dock-focus-large",
+    "route": "/rescue-cases"
+  },
+  {
+    "fixture": "case-detail",
+    "route": "/rescue-cases/case-one"
+  },
+  {
+    "fixture": "case-detail-photo-focus",
+    "route": "/rescue-cases/case-one"
+  },
+  {
+    "fixture": "case-detail-photo-focus-large",
+    "route": "/rescue-cases/case-one"
+  },
+  {
+    "fixture": "case-detail-story",
+    "route": "/rescue-cases/case-one"
+  },
+  {
+    "fixture": "case-detail-story-large",
+    "route": "/rescue-cases/case-one"
+  },
+  {
+    "fixture": "case-detail-gallery",
+    "route": "/rescue-cases/case-one"
+  },
+  {
+    "fixture": "case-detail-gallery-large",
+    "route": "/rescue-cases/case-one"
+  },
+  {
+    "fixture": "case-detail-amount",
+    "route": "/rescue-cases/case-one"
+  },
+  {
+    "fixture": "case-detail-amount-large",
+    "route": "/rescue-cases/case-one"
+  },
+  {
+    "fixture": "case-detail-planned",
+    "route": "/rescue-cases/case-one"
+  },
+  {
+    "fixture": "case-detail-planned-large",
+    "route": "/rescue-cases/case-one"
+  },
+  {
+    "fixture": "contribution-result-confirmed",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000"
+  },
+  {
+    "fixture": "contribution-result-confirmed-large",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000"
+  },
+  {
+    "fixture": "contribution-result-pending",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000"
+  },
+  {
+    "fixture": "contribution-result-canceled",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000"
+  },
+  {
+    "fixture": "contribution-result-refunded",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000"
+  },
+  {
+    "fixture": "contribution-review",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000"
+  },
+  {
+    "fixture": "contribution-review-large",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000"
+  },
+  {
+    "fixture": "contribution-waiting",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000"
+  },
+  {
+    "fixture": "contribution-waiting-large",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000"
+  },
+  {
+    "fixture": "payment-methods",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-large",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-inactive",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards-canceled",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards-canceled-large",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards-canceled-waiting",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards-canceled-waiting-large",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards-canceled-waiting-footer-large",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards-independent-default-confirm",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards-independent-default-confirm-large",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards-independent-remove-confirm",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards-independent-remove-confirm-large",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards-add-confirm",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards-add-confirm-large",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards-added-toast",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards-added-toast-large",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards-large",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards-default-toast",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards-default-toast-large",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards-remove-confirm",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "payment-methods-cards-remove-confirm-large",
+    "route": "/settings/payment-methods"
+  },
+  {
+    "fixture": "guardian-billing-amount",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "guardian-billing-amount-large",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "guardian-billing-cancel",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "guardian-billing-cancel-large",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "guardian-billing-history-large",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "guardian-billing-receipt",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "guardian-billing-inactive",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "guardian-billing-inactive-large",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "impact-feed",
+    "route": "/impact?history=1"
+  },
+  {
+    "fixture": "impact-feed-large",
+    "route": "/impact?history=1"
+  },
+  {
+    "fixture": "impact-feed-empty",
+    "route": "/impact?history=1"
+  },
+  {
+    "fixture": "impact-feed-empty-large",
+    "route": "/impact?history=1"
+  },
+  {
+    "fixture": "impact-entry",
+    "route": "/impact"
+  },
+  {
+    "fixture": "impact-entry-large",
+    "route": "/impact"
+  },
+  {
+    "fixture": "guardian-promotion",
+    "route": "/impact/guardian"
+  },
+  {
+    "fixture": "guardian-promotion-large",
+    "route": "/impact/guardian"
+  },
+  {
+    "fixture": "guardian-promotion-controls-large",
+    "route": "/impact/guardian"
+  },
+  {
+    "fixture": "guardian-promotion-join-large",
+    "route": "/impact/guardian"
+  },
+  {
+    "fixture": "guardian-promotion-second",
+    "route": "/impact/guardian"
+  },
+  {
+    "fixture": "guardian-promotion-reports",
+    "route": "/impact/guardian"
+  },
+  {
+    "fixture": "guardian-billing-enrollment",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "guardian-billing-enrollment-large",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "guardian-billing-enrollment-custom",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "guardian-billing-enrollment-custom-large",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "guardian-billing-enrollment-confirmation",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "guardian-billing-enrollment-confirmation-large",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "guardian-billing-active",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "guardian-billing-active-large",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "guardian-activation-success",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "guardian-activation-success-large",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "guardian-activation-failed",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "guardian-activation-failed-large",
+    "route": "/guardian"
+  },
+  {
+    "fixture": "saved-adoptions",
+    "route": "/saved"
+  },
+  {
+    "fixture": "saved-adoptions-held",
+    "route": "/saved"
+  },
+  {
+    "fixture": "saved-adoptions-large",
+    "route": "/saved"
+  },
+  {
+    "fixture": "saved-adoptions-empty",
+    "route": "/saved"
+  },
+  {
+    "fixture": "saved-adoptions-empty-large",
+    "route": "/saved"
+  },
+  {
+    "fixture": "saved-rescuers-empty",
+    "route": "/saved?kind=rescuer"
+  },
+  {
+    "fixture": "saved-rescuers-empty-large",
+    "route": "/saved?kind=rescuer"
+  },
+  {
+    "fixture": "saved-rescuers",
+    "route": "/saved?kind=rescuer"
+  },
+  {
+    "fixture": "saved-rescuers-large",
+    "route": "/saved?kind=rescuer"
+  },
+  {
+    "fixture": "saved-pagination-large",
+    "route": "/saved"
+  },
+  {
+    "fixture": "saved-pagination-second-large",
+    "route": "/saved"
+  },
+  {
+    "fixture": "basic-info",
+    "route": "/basic-info"
+  },
+  {
+    "fixture": "basic-info-validation",
+    "route": "/basic-info"
+  },
+  {
+    "fixture": "basic-info-large",
+    "route": "/basic-info"
+  },
+  {
+    "fixture": "basic-info-keyboard-large",
+    "route": "/basic-info"
+  },
+  {
+    "fixture": "basic-info-saved",
+    "route": "/basic-info"
+  },
+  {
+    "fixture": "basic-info-saved-large",
+    "route": "/basic-info"
+  },
+  {
+    "fixture": "legal-terms",
+    "route": "/terms"
+  },
+  {
+    "fixture": "legal-terms-large",
+    "route": "/terms"
+  },
+  {
+    "fixture": "legal-privacy",
+    "route": "/privacy-notice"
+  },
+  {
+    "fixture": "legal-privacy-large",
+    "route": "/privacy-notice"
+  },
+  {
+    "fixture": "help-center",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-large",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-topic-held",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-topic-held-large",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-footer",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-footer-large",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-adoption",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-adoption-large",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-support",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-support-large",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-support-keyboard",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-support-keyboard-large",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-support-rescuer",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-support-rescuer-large",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-support-photo",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-support-photo-large",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-support-received",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-support-received-large",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-rules",
+    "route": "/help"
+  },
+  {
+    "fixture": "help-center-rules-large",
+    "route": "/help"
+  },
+  {
+    "fixture": "public-profile-editor",
+    "route": "/rescuer/profile/edit"
+  },
+  {
+    "fixture": "public-profile-editor-large",
+    "route": "/rescuer/profile/edit"
+  },
+  {
+    "fixture": "public-profile-editor-keyboard-large",
+    "route": "/rescuer/profile/edit"
+  },
+  {
+    "fixture": "guardian-history",
+    "route": "/guardian/history"
+  },
+  {
+    "fixture": "guardian-history-large",
+    "route": "/guardian/history"
+  },
+  {
+    "fixture": "guardian-history-empty",
+    "route": "/guardian/history"
+  },
+  {
+    "fixture": "guardian-history-empty-large",
+    "route": "/guardian/history"
+  },
+  {
+    "fixture": "payment-history",
+    "route": "/payments"
+  },
+  {
+    "fixture": "payment-history-large",
+    "route": "/payments"
+  },
+  {
+    "fixture": "payment-history-empty",
+    "route": "/payments"
+  },
+  {
+    "fixture": "contribution-amount",
+    "route": "/contribute/Cirug\u00eda?case=case-one"
+  },
+  {
+    "fixture": "contribution-amount-large",
+    "route": "/contribute/Cirug\u00eda?case=case-one"
+  },
+  {
+    "fixture": "case-detail-large",
+    "route": "/rescue-cases/case-one"
+  },
+  {
+    "fixture": "case-detail-expenses",
+    "route": "/rescue-cases/case-one"
+  },
+  {
+    "fixture": "case-detail-expenses-large",
+    "route": "/rescue-cases/case-one"
+  },
+  {
+    "fixture": "rescuer-messages",
+    "route": "/messages"
+  },
+  {
+    "fixture": "rescuer-messages-large",
+    "route": "/messages"
+  },
+  {
+    "fixture": "rescuer-messages-empty",
+    "route": "/messages"
+  },
+  {
+    "fixture": "rescuer-messages-empty-large",
+    "route": "/messages"
+  },
+  {
+    "fixture": "match-threads-photo-search",
+    "route": "/messages"
+  },
+  {
+    "fixture": "match-threads-photo-search-large",
+    "route": "/messages"
+  },
+  {
+    "fixture": "match-threads-photo-focus",
+    "route": "/messages"
+  },
+  {
+    "fixture": "match-threads-photo-focus-large",
+    "route": "/messages"
+  },
+  {
+    "fixture": "match-threads-focus",
+    "route": "/messages"
+  },
+  {
+    "fixture": "match-threads-focus-large",
+    "route": "/messages"
+  },
+  {
+    "fixture": "match-home",
+    "route": "/messages"
+  },
+  {
+    "fixture": "match-home-large",
+    "route": "/messages"
+  },
+  {
+    "fixture": "adoption-support",
+    "route": "/adoptions"
+  },
+  {
+    "fixture": "adoption-support-large",
+    "route": "/adoptions"
+  },
+  {
+    "fixture": "rescuer-profile",
+    "route": "/profile"
+  },
+  {
+    "fixture": "rescuer-profile-home-link-focus",
+    "route": "/profile"
+  },
+  {
+    "fixture": "rescuer-profile-row-focus",
+    "route": "/profile"
+  },
+  {
+    "fixture": "rescuer-profile-row-focus-large",
+    "route": "/profile"
+  },
+  {
+    "fixture": "rescuer-profile-reference",
+    "route": "/profile"
+  },
+  {
+    "fixture": "rescuer-profile-reference-wide",
+    "route": "/profile"
+  },
+  {
+    "fixture": "rescuer-profile-reference-focus",
+    "route": "/profile"
+  },
+  {
+    "fixture": "rescuer-profile-reference-activity-focus",
+    "route": "/profile"
+  },
+  {
+    "fixture": "rescuer-profile-reference-metric-focus",
+    "route": "/profile"
+  },
+  {
+    "fixture": "rescuer-profile-reference-transfer-focus",
+    "route": "/profile"
+  },
+  {
+    "fixture": "rescuer-profile-reference-transfer-focus-large",
+    "route": "/profile"
+  },
+  {
+    "fixture": "rescuer-profile-reference-large",
+    "route": "/profile"
+  },
+  {
+    "fixture": "rescuer-settings",
+    "route": "/settings"
+  },
+  {
+    "fixture": "rescuer-settings-scroll-blur",
+    "route": "/settings"
+  },
+  {
+    "fixture": "rescuer-settings-footer",
+    "route": "/settings"
+  },
+  {
+    "fixture": "rescuer-settings-logout-focus",
+    "route": "/settings"
+  },
+  {
+    "fixture": "rescuer-settings-mode-focus",
+    "route": "/settings"
+  },
+  {
+    "fixture": "rescuer-settings-edit-focus",
+    "route": "/settings"
+  },
+  {
+    "fixture": "rescuer-settings-large",
+    "route": "/settings"
+  },
+  {
+    "fixture": "rescuer-settings-social-dialog",
+    "route": "/settings"
+  },
+  {
+    "fixture": "rescuer-settings-social-dialog-valid",
+    "route": "/settings"
+  },
+  {
+    "fixture": "rescuer-settings-social-values",
+    "route": "/settings"
+  },
+  {
+    "fixture": "rescuer-settings-social-values-large",
+    "route": "/settings"
+  },
+  {
+    "fixture": "rescuer-settings-social-dialog-large",
+    "route": "/settings"
+  },
+  {
+    "fixture": "rescuer-settings-social-dialog-facebook",
+    "route": "/settings"
+  },
+  {
+    "fixture": "rescuer-settings-social-dialog-keyboard",
+    "route": "/settings"
+  },
+  {
+    "fixture": "rescuer-settings-social-dialog-keyboard-large",
+    "route": "/settings"
+  },
+  {
+    "fixture": "rescuer-profile-large",
+    "route": "/profile"
+  },
+  {
+    "fixture": "public-profile",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-large",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-reference",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-reference-large",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-state-loading",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-state-loading-large",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-state-error",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-state-error-large",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-state-unavailable",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-state-unavailable-large",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-metrics",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-metrics-large",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-metrics-stats",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-metrics-stats-large",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-adoptions",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-adoptions-large",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-report-reference-error",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-report-reference-error-large",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-report-reference-sending",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-report-reference-sending-large",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-report-reference",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-report-reference-large",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-report-reference-keyboard-large",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-cases",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "public-profile-cases-large",
+    "route": "/people/owner"
+  },
+  {
+    "fixture": "profile-overview",
+    "route": "/profile"
+  },
+  {
+    "fixture": "profile-overview-active",
+    "route": "/profile"
+  },
+  {
+    "fixture": "profile-overview-large",
+    "route": "/profile"
+  },
+  {
+    "fixture": "profile-mode-dialog",
+    "route": "/profile"
+  },
+  {
+    "fixture": "profile-settings",
+    "route": "/settings"
+  },
+  {
+    "fixture": "profile-settings-back-held",
+    "route": "/settings"
+  },
+  {
+    "fixture": "profile-settings-large",
+    "route": "/settings"
+  },
+  {
+    "fixture": "profile-settings-footer",
+    "route": "/settings"
+  },
+  {
+    "fixture": "profile-settings-footer-large",
+    "route": "/settings"
+  },
+  {
+    "fixture": "profile-support",
+    "route": "/profile"
+  },
+  {
+    "fixture": "about",
+    "route": "/about"
+  },
+  {
+    "fixture": "about-large",
+    "route": "/about"
+  },
+  {
+    "fixture": "transparency",
+    "route": "/transparency"
+  },
+  {
+    "fixture": "transparency-criteria",
+    "route": "/transparency"
+  },
+  {
+    "fixture": "publish-choice",
+    "route": "/publish"
+  },
+  {
+    "fixture": "publish-choice-large",
+    "route": "/publish"
+  },
+  {
+    "fixture": "managed-updates",
+    "route": "/rescue-cases/case-one/updates"
+  },
+  {
+    "fixture": "managed-updates-large",
+    "route": "/rescue-cases/case-one/updates"
+  },
+  {
+    "fixture": "managed-updates-empty",
+    "route": "/rescue-cases/case-one/updates"
+  },
+  {
+    "fixture": "managed-updates-empty-large",
+    "route": "/rescue-cases/case-one/updates"
+  },
+  {
+    "fixture": "managed-updates-error",
+    "route": "/rescue-cases/case-one/updates"
+  },
+  {
+    "fixture": "managed-updates-error-large",
+    "route": "/rescue-cases/case-one/updates"
+  },
+  {
+    "fixture": "managed-updates-editor-new",
+    "route": "/rescue-cases/case-one/updates/new"
+  },
+  {
+    "fixture": "managed-updates-editor-new-large",
+    "route": "/rescue-cases/case-one/updates/new"
+  },
+  {
+    "fixture": "managed-updates-editor-draft",
+    "route": "/rescue-cases/case-one/updates/update-changes_requested"
+  },
+  {
+    "fixture": "managed-updates-editor-draft-large",
+    "route": "/rescue-cases/case-one/updates/update-changes_requested"
+  },
+  {
+    "fixture": "managed-updates-editor-error",
+    "route": "/rescue-cases/case-one/updates/update-draft"
+  },
+  {
+    "fixture": "managed-updates-editor-error-large",
+    "route": "/rescue-cases/case-one/updates/update-draft"
+  },
+  {
+    "fixture": "account-access-options",
+    "route": "/settings/account"
+  },
+  {
+    "fixture": "private-file-image",
+    "route": "/rescue/verification-id"
+  },
+  {
+    "fixture": "private-file-image-large",
+    "route": "/rescue/verification-id"
+  },
+  {
+    "fixture": "private-file-image-content-large",
+    "route": "/rescue/verification-id"
+  },
+  {
+    "fixture": "private-file-pdf",
+    "route": "/rescue/verification-id"
+  },
+  {
+    "fixture": "private-file-pdf-large",
+    "route": "/rescue/verification-id"
+  },
+  {
+    "fixture": "private-file-pdf-content-large",
+    "route": "/rescue/verification-id"
+  },
+  {
+    "fixture": "private-file-error",
+    "route": "/rescue/verification-id"
+  },
+  {
+    "fixture": "private-file-error-large",
+    "route": "/rescue/verification-id"
+  },
+  {
+    "fixture": "private-file-error-content-large",
+    "route": "/rescue/verification-id"
+  },
+  {
+    "fixture": "connect-account-ready",
+    "route": "/connect"
+  },
+  {
+    "fixture": "connect-account-ready-large",
+    "route": "/connect"
+  },
+  {
+    "fixture": "connect-account-ready-content-large",
+    "route": "/connect"
+  },
+  {
+    "fixture": "connect-account-pending",
+    "route": "/connect"
+  },
+  {
+    "fixture": "connect-account-pending-large",
+    "route": "/connect"
+  },
+  {
+    "fixture": "connect-account-pending-content-large",
+    "route": "/connect"
+  },
+  {
+    "fixture": "connect-account-error",
+    "route": "/connect"
+  },
+  {
+    "fixture": "connect-account-error-large",
+    "route": "/connect"
+  },
+  {
+    "fixture": "connect-account-error-content-large",
+    "route": "/connect"
+  },
+  {
+    "fixture": "account-access-options-large",
+    "route": "/settings/account"
+  },
+  {
+    "fixture": "account-access-options-content-large",
+    "route": "/settings/account"
+  },
+  {
+    "fixture": "account-access-consent",
+    "route": "/consent"
+  },
+  {
+    "fixture": "account-access-consent-large",
+    "route": "/consent"
+  },
+  {
+    "fixture": "account-access-consent-content-large",
+    "route": "/consent"
+  },
+  {
+    "fixture": "account-access-privacy",
+    "route": "/account-privacy"
+  },
+  {
+    "fixture": "account-access-privacy-large",
+    "route": "/account-privacy"
+  },
+  {
+    "fixture": "account-access-privacy-content-large",
+    "route": "/account-privacy"
+  },
+  {
+    "fixture": "my-adoptions",
+    "route": "/my-adoptions"
+  },
+  {
+    "fixture": "my-adoptions-large",
+    "route": "/my-adoptions"
+  },
+  {
+    "fixture": "my-adoptions-empty",
+    "route": "/my-adoptions"
+  },
+  {
+    "fixture": "my-adoptions-empty-large",
+    "route": "/my-adoptions"
+  },
+  {
+    "fixture": "my-adoptions-error",
+    "route": "/my-adoptions"
+  },
+  {
+    "fixture": "my-adoptions-error-large",
+    "route": "/my-adoptions"
+  },
+  {
+    "fixture": "my-adoptions-content-large",
+    "route": "/my-adoptions"
+  },
+  {
+    "fixture": "my-adoptions-empty-content-large",
+    "route": "/my-adoptions"
+  },
+  {
+    "fixture": "my-adoptions-error-content-large",
+    "route": "/my-adoptions"
+  },
+  {
+    "fixture": "publish-photos",
+    "route": "/my-adoptions/new"
+  },
+  {
+    "fixture": "publish-photos-large",
+    "route": "/my-adoptions/new"
+  },
+  {
+    "fixture": "publish-photo-grid",
+    "route": "/my-adoptions/post"
+  },
+  {
+    "fixture": "publish-photo-grid-large",
+    "route": "/my-adoptions/post"
+  },
+  {
+    "fixture": "publish-information",
+    "route": "/my-adoptions/post"
+  },
+  {
+    "fixture": "publish-information-large",
+    "route": "/my-adoptions/post"
+  },
+  {
+    "fixture": "publish-review",
+    "route": "/my-adoptions/post"
+  },
+  {
+    "fixture": "publish-review-large",
+    "route": "/my-adoptions/post"
+  },
+  {
+    "fixture": "publish-review-social",
+    "route": "/my-adoptions/post"
+  },
+  {
+    "fixture": "publish-review-social-large",
+    "route": "/my-adoptions/post"
+  },
+  {
+    "fixture": "publish-health",
+    "route": "/my-adoptions/post"
+  },
+  {
+    "fixture": "publish-health-large",
+    "route": "/my-adoptions/post"
+  },
+  {
+    "fixture": "expense-submitted",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "expense-submitted-large",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "expense-submitted-footer-large",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "case-publication",
+    "route": "/rescue/new?kind=case"
+  },
+  {
+    "fixture": "case-publication-header-focus",
+    "route": "/rescue/new?kind=case"
+  },
+  {
+    "fixture": "case-publication-header-focus-large",
+    "route": "/rescue/new?kind=case"
+  },
+  {
+    "fixture": "case-publication-large",
+    "route": "/rescue/new?kind=case"
+  },
+  {
+    "fixture": "case-publication-information-nameless",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-information-nameless-large",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-review-nameless",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-review-nameless-large",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-needs-list",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-needs-list-large",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-review-list",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-review-list-large",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-needs-medicine",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-needs-medicine-large",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-needs-food",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-needs-food-large",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-needs-veterinary",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-needs-veterinary-large",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-needs",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-needs-large",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-review",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-review-large",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-information",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-information-large",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-grid",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "case-publication-grid-large",
+    "route": "/rescue/case-one"
+  },
+  {
+    "fixture": "expense-record",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "expense-record-large",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "expense-review",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "expense-review-large",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "expense-review-private",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "expense-review-private-large",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "expense-dialog",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "expense-dialog-large",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "expense-evidence",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "expense-evidence-large",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "expense-information",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "expense-information-large",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "expense-description",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "expense-description-large",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "expense-description-footer-large",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "expense-private",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "expense-private-large",
+    "route": "/rescue/expense-one"
+  },
+  {
+    "fixture": "verification-intro",
+    "route": "/rescue/new?kind=verification"
+  },
+  {
+    "fixture": "verification-intro-large",
+    "route": "/rescue/new?kind=verification"
+  },
+  {
+    "fixture": "verification-intro-footer",
+    "route": "/rescue/new?kind=verification"
+  },
+  {
+    "fixture": "verification-intro-footer-large",
+    "route": "/rescue/new?kind=verification"
+  },
+  {
+    "fixture": "verification-form",
+    "route": "/rescue/new?kind=verification"
+  },
+  {
+    "fixture": "verification-form-large",
+    "route": "/rescue/new?kind=verification"
+  },
+  {
+    "fixture": "verification-form-inputs-large",
+    "route": "/rescue/new?kind=verification"
+  },
+  {
+    "fixture": "verification-form-experience-large",
+    "route": "/rescue/new?kind=verification"
+  },
+  {
+    "fixture": "verification-form-documents",
+    "route": "/rescue/new?kind=verification"
+  },
+  {
+    "fixture": "verification-form-documents-large",
+    "route": "/rescue/new?kind=verification"
+  },
+  {
+    "fixture": "verification-form-progress",
+    "route": "/rescue/new?kind=verification"
+  },
+  {
+    "fixture": "verification-form-progress-large",
+    "route": "/rescue/new?kind=verification"
+  },
+  {
+    "fixture": "verification-approved",
+    "route": "/rescue/verification-id"
+  },
+  {
+    "fixture": "verification-approved-large",
+    "route": "/rescue/verification-id"
+  },
+  {
+    "fixture": "verification-review",
+    "route": "/rescue/verification-id"
+  },
+  {
+    "fixture": "verification-review-large",
+    "route": "/rescue/verification-id"
+  }
+]
