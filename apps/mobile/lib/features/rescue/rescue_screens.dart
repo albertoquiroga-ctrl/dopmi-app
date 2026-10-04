@@ -1281,7 +1281,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
         record = RescueRecord(Json.from(data['record']));
         history = (data['history'] as List).map((e) => Json.from(e)).toList();
         files = record!.files;
-        if (!record!.editable) step = 2;
+        if (!record!.editable) step = kind == 'expense' ? 3 : 2;
       }
       fields(record);
       dirty = false;
@@ -1889,6 +1889,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     if (kind != 'expense') return CommunityFrame(children: children);
     return ExpenseFrame(
       step: step,
+      totalSteps: 4,
       readOnly: !editable,
       onBack: busy
           ? null
@@ -2268,7 +2269,9 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                     const SizedBox(height: 20),
                   ],
                   for (final private in [false, true]) ...[
-                    if (step == 1 &&
+                    if ((kind == 'expense'
+                            ? step == (private ? 1 : 2)
+                            : step == 1) &&
                         kind != 'case' &&
                         rescueFields[kind]!.any(
                           (f) => f.private == private,
@@ -2429,7 +2432,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                           ),
                         ),
                   ],
-                  if (step == 2 && kind == 'expense')
+                  if (step == 3 && kind == 'expense')
                     ExpenseReview(
                       readOnly: !editable,
                       values: {
@@ -2440,6 +2443,9 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                       onOpen: (i) =>
                           context.push('/rescue-file', extra: files[i]['path']),
                       onEditInformation: editable && !busy
+                          ? () => setState(() => step = 2)
+                          : null,
+                      onEditPrivateInformation: editable && !busy
                           ? () => setState(() => step = 1)
                           : null,
                       onEditFiles: editable && !busy
@@ -2521,7 +2527,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                     if (message != null) Notice(message!),
                     if (kind == 'expense')
                       ExpenseActions(
-                        primaryLabel: step < 2
+                        primaryLabel: step < 3
                             ? 'Siguiente'
                             : 'Enviar a revisión',
                         onSave: busy
@@ -2542,7 +2548,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                                     ))
                             ? null
                             : () => run(() async {
-                                if (step < 2) {
+                                if (step < 3) {
                                   await save();
                                   if (mounted) setState(() => step++);
                                 } else {

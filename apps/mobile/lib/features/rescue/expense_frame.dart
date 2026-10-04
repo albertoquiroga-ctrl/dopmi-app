@@ -10,9 +10,10 @@ class ExpenseFrame extends StatelessWidget {
     required this.onClose,
     this.confirmation = false,
     this.readOnly = false,
+    this.totalSteps = 3,
   });
   final List<Widget> children;
-  final int step;
+  final int step, totalSteps;
   final bool confirmation, readOnly;
   final VoidCallback? onBack, onClose;
 
@@ -117,7 +118,7 @@ class ExpenseFrame extends StatelessWidget {
                                   const SizedBox(height: 8),
                                   if (!readOnly)
                                     Text(
-                                      'Paso ${step + 1} de 3',
+                                      'Paso ${step + 1} de $totalSteps',
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         fontFamily: 'Inter',

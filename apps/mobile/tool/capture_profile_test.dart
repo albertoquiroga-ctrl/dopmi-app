@@ -3118,7 +3118,7 @@ void main() {
         }
       }
       if (spec.$1.startsWith('expense-review')) {
-        for (var i = 0; i < 2; i++) {
+        for (var i = 0; i < 3; i++) {
           await tester.scrollUntilVisible(
             find.text('Siguiente'),
             300,
@@ -3149,8 +3149,8 @@ void main() {
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('expense-submitted')) {
-        for (var i = 0; i < 3; i++) {
-          final action = find.text(i < 2 ? 'Siguiente' : 'Enviar a revisión');
+        for (var i = 0; i < 4; i++) {
+          final action = find.text(i < 3 ? 'Siguiente' : 'Enviar a revisión');
           await tester.scrollUntilVisible(
             action,
             300,
@@ -3196,6 +3196,17 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(next);
         await tester.pumpAndSettle();
+        if (!spec.$1.startsWith('expense-private')) {
+          await tester.scrollUntilVisible(
+            next,
+            300,
+            maxScrolls: 100,
+            scrollable: find.byType(Scrollable).first,
+          );
+          await tester.pumpAndSettle();
+          await tester.tap(next);
+          await tester.pumpAndSettle();
+        }
         tester
             .state<ScrollableState>(find.byType(Scrollable).first)
             .position

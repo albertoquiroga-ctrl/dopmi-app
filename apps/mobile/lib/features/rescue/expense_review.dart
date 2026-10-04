@@ -11,6 +11,7 @@ class ExpenseReview extends StatelessWidget {
     required this.files,
     required this.onOpen,
     this.onEditInformation,
+    this.onEditPrivateInformation,
     this.onEditFiles,
     this.readOnly = false,
   });
@@ -18,7 +19,7 @@ class ExpenseReview extends StatelessWidget {
   final Map<String, String> values;
   final List<Json> files;
   final ValueChanged<int> onOpen;
-  final VoidCallback? onEditInformation, onEditFiles;
+  final VoidCallback? onEditInformation, onEditPrivateInformation, onEditFiles;
 
   Widget heading(String text, VoidCallback? onEdit) => Row(
     children: [
@@ -67,7 +68,7 @@ class ExpenseReview extends StatelessWidget {
           private
               ? 'Solo para revisión privada'
               : 'Información para publicación',
-          onEditInformation,
+          private ? onEditPrivateInformation : onEditInformation,
         ),
         const SizedBox(height: 8),
         Container(

@@ -316,7 +316,7 @@ void main() {
             matching: find.byType(Scrollable),
           )
           .first;
-      for (var i = 0; i < 2; i++) {
+      for (var i = 0; i < 3; i++) {
         final next = find.text('Siguiente');
         await tester.scrollUntilVisible(next, 300, scrollable: outer);
         await tester.pumpAndSettle();
@@ -374,6 +374,19 @@ void main() {
           .ignore();
       await tester.pumpAndSettle();
       final next = find.text('Siguiente');
+      await tester.scrollUntilVisible(
+        next,
+        300,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('expense-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(next);
+      await tester.pumpAndSettle();
       await tester.scrollUntilVisible(
         next,
         300,
@@ -548,6 +561,7 @@ void main() {
       }
 
       await tapNext();
+      expect(find.byKey(const ValueKey('expense-field-title')), findsNothing);
       final amount = find.byKey(const ValueKey('expense-field-amount_cents'));
       tester
           .state<ScrollableState>(
@@ -582,6 +596,34 @@ void main() {
       FocusManager.instance.primaryFocus?.unfocus();
       await tester.pumpAndSettle();
       await tapNext();
+      expect(
+        find.byKey(const ValueKey('expense-field-amount_cents')),
+        findsNothing,
+      );
+      final description = find.byKey(
+        const ValueKey('expense-field-description'),
+      );
+      await tester.scrollUntilVisible(
+        description,
+        -300,
+        maxScrolls: 100,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('expense-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+      await tester.enterText(description, 'Recibió su consulta y tratamiento.');
+      FocusManager.instance.primaryFocus?.unfocus();
+      tester.testTextInput.hide();
+      await tester.pumpAndSettle();
+      await tapNext();
+      expect(
+        repo.publicSaved!['description'],
+        'Recibió su consulta y tratamiento.',
+      );
       expect(repo.saved!['amount_cents'], '8709');
       expect(repo.saved!['vendor'], 'Clínica');
       expect(repo.publicSaved!.containsKey('amount_cents'), isFalse);
@@ -595,7 +637,7 @@ void main() {
             .data,
         '87.09',
       );
-      final edit = find.byTooltip('Editar Información para publicación');
+      final edit = find.byTooltip('Editar Solo para revisión privada');
       await tester.scrollUntilVisible(
         edit,
         -300,
