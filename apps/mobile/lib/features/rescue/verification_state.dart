@@ -46,10 +46,10 @@ class VerificationStateScreen extends StatelessWidget {
                     child: Center(
                       child: SvgPicture.asset(
                         'assets/profile/check.svg',
-                        width: 24,
-                        height: 24,
+                        width: 20,
+                        height: 20,
                         colorFilter: const ColorFilter.mode(
-                          Colors.white,
+                          Color(0xff151423),
                           BlendMode.srcIn,
                         ),
                       ),
@@ -77,7 +77,7 @@ class VerificationStateScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: approved ? 26.08 : 10),
               Text(
                 approved
                     ? 'Tu solicitud fue aprobada. Puedes continuar con la publicación de tus casos.'
@@ -91,7 +91,7 @@ class VerificationStateScreen extends StatelessWidget {
                       : const Color(0xff554e48),
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: approved ? 24 : 10),
               if (loading)
                 const Center(
                   child: CircularProgressIndicator(
@@ -103,10 +103,12 @@ class VerificationStateScreen extends StatelessWidget {
                   onPressed: loading ? null : onPublish,
                   style: FilledButton.styleFrom(
                     backgroundColor: const Color(0xff7841f2),
-                    foregroundColor: Colors.white,
+                    foregroundColor: const Color(0xfffbfbff),
                     textStyle: const TextStyle(
                       fontFamily: 'Inter',
-                      fontSize: 14,
+                      fontSize: 16,
+                      height: 19 / 16,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   child: const Text('Publicar un caso'),
@@ -116,24 +118,24 @@ class VerificationStateScreen extends StatelessWidget {
                   onPressed: loading ? null : onHome,
                   child: const Text('Volver al inicio'),
                 ),
-              const SizedBox(height: 10),
-              TextButton(
-                onPressed: loading ? null : onRecord,
-                child: const Text('Consultar expediente'),
-              ),
-              TextButton(
-                onPressed: loading ? null : onRefresh,
-                child: const Text('Recargar estado'),
-              ),
-              if (onWithdraw != null)
-                OutlinedButton(
-                  onPressed: loading ? null : onWithdraw,
-                  child: const Text('Retirar a borrador'),
-                ),
             ],
           ),
         ),
       ),
+      const SizedBox(height: 10),
+      TextButton(
+        onPressed: loading ? null : onRecord,
+        child: const Text('Consultar expediente'),
+      ),
+      TextButton(
+        onPressed: loading ? null : onRefresh,
+        child: const Text('Recargar estado'),
+      ),
+      if (onWithdraw != null)
+        OutlinedButton(
+          onPressed: loading ? null : onWithdraw,
+          child: const Text('Retirar a borrador'),
+        ),
     ],
   );
 }
