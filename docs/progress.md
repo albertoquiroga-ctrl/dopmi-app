@@ -3516,3 +3516,7 @@ Test74616 reproduce label200sinmargen (top335.6 vs minimo347.5), normalpasa. Pad
 ### 2026-10-04 - Loop755: historia aprobada y fecha
 
 Source/rescuer/cases/rocky ejecutado confirma media160/bodypadding14/borde#e3e4ed/text14line21.7/#4f4e5c, yfecha badge22/line14. Cliente date11*1.2+8=21.2 cambiaheight14/11 para22, sin tocarfecha real/calendariolocal/semantica ni copiar tags/importes/agradecimientosSource. Conocehistoria perfil navegaadetalle, no nuevo viewer. Gatefinal73656 exit0:9/9 en2s ownedhistory/publicadoptioncard; capture1/1 en3s/dosPNG normal200 inspeccionados/hash; analyze limpio64s/diffchecksinerror. Source a3c969c inicio/cierre, browsercerrado. Full748/APK anteriores recientes; sinCodemagic/nativa/global/dineroreal. Ver docs/design-reviews/parity-loop755.
+
+### 2026-10-04 - Loop756: regresion completa actual
+
+Fuente0328de654d1033d670cae2a08000ef7e54bb00bf, full74392 exit0:803/803 en4m29s; supersede748/801, integra749-755.365 archivosroot/scratch iguales durante23392 yhashesinalteradoscierre, no medicionantesgate atribuida. Source a3c969c inicio/cierre. Runtime/onboarding/donor trackadopter recrea dots por bodykeyslide; medicion175conrefsdesconectadas invalida, querynuevo8/24/coloresfinales/ceroanimaciones. Clienteadopt/rescue dots enkeyentrada; rama donate generica afuera requiere comprobar alcance real, no todos tracks aceptados. Browsercerrado. Coleccion743/418 anterior (419fixtures previstas), APK748anterior; manualemuladorpending. SinCodemagic/nativa/global/dineroreal. Ver docs/design-reviews/parity-loop756.
