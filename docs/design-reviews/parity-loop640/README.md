@@ -1,0 +1,5 @@
+# Separación visible de botones
+
+## 2026-10-04 — Loop640: separación visible del footer
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Sourceverify-intro gridgap16. Cliente mantenía SizedBox16 máspaddingtáctilMaterial: PNG639centrox188 filledúltimopixel701/bordeprimero726→24pxgap. Espacio lógico reducido8 sin cambiarhitareas/styles/callbacks. Capturafinal centrofilledúltimo709/borde726→16pxgapnormal, bordeDespués completo; medida píxelesPILlectura sin editarimagen. Gate60787terminalexit0,14/14en6s (12intropress+1introapp/router200+capturador2footerPNG); analyzer23036exit0sin incidencias29.6s. Normal final inspeccionada. Ampliada regenerada pero separación numérica200 no Source comparación aquí; pruebas200 presión/navegación sípasaron. Sin runtimeSource nuevo ni SDK/dispositivo. Full705629 anterior633/634/638/640;global410636 anterior638+. Próximo formularioverificación información/documentos/progreso frenteSource, conservarrolesyprivacidad. Sin push/Codemagic hastaobjetivocompleto.

@@ -212,7 +212,8 @@ class VerificationIntroScreen extends StatelessWidget {
                                 textAlign: TextAlign.center,
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            // Padded touch targets add 8 px between the visible surfaces.
+                            const SizedBox(height: 8),
                             OutlinedButton(
                               onPressed: onLater,
                               style:
