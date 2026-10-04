@@ -694,9 +694,7 @@ class DonorProfileView extends ConsumerWidget {
             onPressed: () => context.push('/help'),
           ),
           const SizedBox(height: 10),
-          DonorSupportRow(
-            asset: 'icon-logout.svg',
-            title: 'Cerrar sesión',
+          DonorLogoutRow(
             onPressed: () async {
               try {
                 await ref.read(identityControllerProvider).logout();
@@ -709,6 +707,66 @@ class DonorProfileView extends ConsumerWidget {
             },
           ),
         ],
+      ),
+    ),
+  );
+}
+
+class DonorLogoutRow extends StatelessWidget {
+  const DonorLogoutRow({super.key, required this.onPressed});
+  final VoidCallback onPressed;
+  @override
+  Widget build(BuildContext context) => Container(
+    constraints: const BoxConstraints(minHeight: 58),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      border: Border.all(color: const Color(0xffffd4d8)),
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(20),
+        splashFactory: NoSplash.splashFactory,
+        highlightColor: Colors.transparent,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              SvgPicture.asset(
+                'assets/profile/icon-logout.svg',
+                width: 20,
+                height: 20,
+                colorFilter: const ColorFilter.mode(
+                  Color(0xffd92d20),
+                  BlendMode.srcIn,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Text(
+                  'Cerrar sesión',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xffd92d20),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              SvgPicture.asset(
+                'assets/profile/icon-chevron-right.svg',
+                width: 20,
+                height: 20,
+                colorFilter: const ColorFilter.mode(
+                  Color(0xffd92d20),
+                  BlendMode.srcIn,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     ),
   );
