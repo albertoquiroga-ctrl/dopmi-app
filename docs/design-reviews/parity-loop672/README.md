@@ -1,0 +1,5 @@
+# Loop672 — Encabezado y sombra
+
+## 2026-10-04 — Loop672: sombra del acceso público rescatista
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. SourceCSSpet-detail-hero altura42vh/max340/min260/covercenter,back40/top16/left16/blur8white72%/dots28 coincidenreglascliente. CSSpet-detail-rescuer shadow0 4 14 rgba(21,17,13,.12) ausenteMaterialcliente. AñadidoDecoratedBoxradius99/BoxShadowoffset0,4/blur14/color0x1f15110d afueraMaterialwhite, preservaclipsize/callback/perfil. ColorFlutter cuantizado31/255≈.12157, noafirmar comparaciónpíxelexactaCSSblur. Gate5273exit0,8/8en2s:gallerypathsapproved/resetpost/carebadge/distancereal/footerfixed/text200. Capturador97029correctodefineadoption-detail exit0,1/1en2s,2PNGfresh/PILválidos inspeccionados normal200; pill/text/avatarvisible sinrecorteen2fixtures, content200scroll yfooter permanece. Analyzer97823exit0clean22.9s. No presiónRGBAhero/Sourceimagenmatching/deviceactual ni paridadglobal. Colección414667 anterior671–672, familia2detailactual; sinfullsuiteactualnuevo. SinSQL/realuserdata/pagos/live/push/Codemagic hastaobjetivocompleto.

@@ -144,63 +144,75 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                                 220,
                               ),
                             ),
-                            child: Material(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(99),
-                              child: InkWell(
-                                splashFactory: NoSplash.splashFactory,
-                                overlayColor: const WidgetStatePropertyAll(
-                                  Colors.transparent,
-                                ),
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(99),
-                                onTap: () =>
-                                    context.push('/people/${post.owner}'),
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                    12,
-                                    5,
-                                    6,
-                                    5,
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Color(0x1f15110d),
+                                    offset: Offset(0, 4),
+                                    blurRadius: 14,
                                   ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Flexible(
-                                        child: Text(
-                                          post.text('publisher_name'),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontFamily: 'Inter',
-                                            letterSpacing: 0,
-                                            fontSize: 13,
-                                            height: 1.55,
-                                            fontWeight: FontWeight.w600,
-                                            color: ink,
+                                ],
+                              ),
+                              child: Material(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(99),
+                                child: InkWell(
+                                  splashFactory: NoSplash.splashFactory,
+                                  overlayColor: const WidgetStatePropertyAll(
+                                    Colors.transparent,
+                                  ),
+                                  borderRadius: BorderRadius.circular(99),
+                                  onTap: () =>
+                                      context.push('/people/${post.owner}'),
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                      12,
+                                      5,
+                                      6,
+                                      5,
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            post.text('publisher_name'),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontFamily: 'Inter',
+                                              letterSpacing: 0,
+                                              fontSize: 13,
+                                              height: 1.55,
+                                              fontWeight: FontWeight.w600,
+                                              color: ink,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      CircleAvatar(
-                                        radius: 14,
-                                        backgroundColor: yellow,
-                                        foregroundColor: ink,
-                                        child: Text(
-                                          post.text('publisher_name').isEmpty
-                                              ? ''
-                                              : post
-                                                    .text('publisher_name')
-                                                    .characters
-                                                    .first,
-                                          style: const TextStyle(
-                                            fontFamily: 'Inter',
-                                            letterSpacing: 0,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w700,
+                                        const SizedBox(width: 8),
+                                        CircleAvatar(
+                                          radius: 14,
+                                          backgroundColor: yellow,
+                                          foregroundColor: ink,
+                                          child: Text(
+                                            post.text('publisher_name').isEmpty
+                                                ? ''
+                                                : post
+                                                      .text('publisher_name')
+                                                      .characters
+                                                      .first,
+                                            style: const TextStyle(
+                                              fontFamily: 'Inter',
+                                              letterSpacing: 0,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
