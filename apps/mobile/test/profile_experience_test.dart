@@ -20,6 +20,75 @@ import 'fake_account_photo_repository.dart';
 import 'package:dopmi_mobile/features/profile/account_photo_repository.dart';
 
 void main() {
+  for (final dismissal in ['outside', 'back', 'close', 'later']) {
+    testWidgets(
+      'real profile mode dialog appears immediately and cancels safely: $dismissal',
+      (tester) async {
+        final identity = FakeIdentityRepository()
+          ..user = const Identity(
+            'one',
+            'fixture@example.test',
+            verified: true,
+          );
+        final container = ProviderContainer(
+          overrides: [
+            identityRepositoryProvider.overrideWithValue(identity),
+            accountPhotoRepositoryProvider.overrideWithValue(
+              emptyAccountPhotoRepository(identity),
+            ),
+            communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+            rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+            routerInitialLocationProvider.overrideWithValue('/profile'),
+          ],
+        );
+        addTearDown(() async {
+          container.dispose();
+          await identity.changes.close();
+        });
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: const DopmiApp(),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final feature = find.text('Publica un caso de adopción');
+        await tester.scrollUntilVisible(
+          feature,
+          240,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.ensureVisible(feature);
+        await tester.pumpAndSettle();
+        await tester.tap(feature);
+        await tester.pump();
+        expect(find.byType(DonorModeDialog), findsOneWidget);
+        final route = ModalRoute.of(
+          tester.element(find.byType(DonorModeDialog)),
+        )!;
+        expect(route.animation!.status, AnimationStatus.completed);
+        expect(identity.profile.mode, 'donor');
+        switch (dismissal) {
+          case 'outside':
+            await tester.tapAt(const Offset(1, 1));
+          case 'back':
+            await tester.binding.handlePopRoute();
+          case 'close':
+            await tester.tap(find.byTooltip('Cerrar'));
+          case 'later':
+            await tester.ensureVisible(find.text('Ahora no'));
+            await tester.tap(find.text('Ahora no'));
+        }
+        await tester.pumpAndSettle();
+        expect(find.byType(DonorModeDialog), findsNothing);
+        expect(container.read(routerProvider).state.uri.path, '/profile');
+        expect(identity.profile.mode, 'donor');
+        expect(identity.profile.name, 'Ana');
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   for (final mode in ['donor', 'rescuer']) {
     testWidgets(
       'settings has no selected tab and profile tap opens its real root: $mode',
