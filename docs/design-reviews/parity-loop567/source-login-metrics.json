@@ -1,0 +1,101 @@
+[
+  {
+    "cls": "",
+    "h": 32.1875,
+    "tag": "H1",
+    "text": "Inicia sesión",
+    "w": 159.359375,
+    "x": 108.8125,
+    "y": 325.78125
+  },
+  {
+    "cls": "",
+    "h": 42,
+    "tag": "P",
+    "text": "Entra para seguir tus favoritos y retomar donde lo dejaste.",
+    "w": 282.625,
+    "x": 47.1875,
+    "y": 363.96875
+  },
+  {
+    "cls": "",
+    "h": 48,
+    "tag": "INPUT",
+    "text": "",
+    "w": 309,
+    "x": 34,
+    "y": 445.96875
+  },
+  {
+    "cls": "",
+    "h": 48,
+    "tag": "INPUT",
+    "text": "",
+    "w": 309,
+    "x": 34,
+    "y": 529.96875
+  },
+  {
+    "cls": "auth-text-link auth-text-link--end",
+    "h": 16,
+    "tag": "BUTTON",
+    "text": "Olvidé mi contraseña",
+    "w": 134.28125,
+    "x": 208.71875,
+    "y": 589.96875
+  },
+  {
+    "cls": "auth-gate-primary",
+    "h": 52,
+    "tag": "BUTTON",
+    "text": "Inicia sesión",
+    "w": 309,
+    "x": 34,
+    "y": 617.96875
+  },
+  {
+    "cls": "auth-gate-social-label",
+    "h": 16.890625,
+    "tag": "P",
+    "text": "Continuar con",
+    "w": 86.5,
+    "x": 145.25,
+    "y": 698.96875
+  },
+  {
+    "cls": "social-button icons",
+    "h": 52,
+    "tag": "BUTTON",
+    "text": "",
+    "w": 52,
+    "x": 127.5,
+    "y": 727.859375
+  },
+  {
+    "cls": "social-button icons",
+    "h": 52,
+    "tag": "BUTTON",
+    "text": "",
+    "w": 52,
+    "x": 197.5,
+    "y": 727.859375
+  },
+  {
+    "cls": "auth-gate-switch",
+    "h": 20.140625,
+    "tag": "P",
+    "text": "¿No tienes cuenta? Crear cuenta",
+    "w": 309,
+    "x": 34,
+    "y": 797.859375
+  },
+  {
+    "cls": "auth-text-link",
+    "h": 20.140625,
+    "tag": "BUTTON",
+    "text": "Crear cuenta",
+    "w": 82.34375,
+    "x": 207.796875,
+    "y": 797.859375
+  }
+]

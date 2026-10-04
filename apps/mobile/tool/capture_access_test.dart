@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/core/config.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -40,6 +41,7 @@ void main() {
         ('onboarding', '/onboarding?intent=adopt'),
         ('start', '/start?intent=adopt'),
         ('login', '/login'),
+        ('login-google', '/login'),
         ('signup', '/signup'),
         ('forgot', '/forgot'),
       ]) {
@@ -47,6 +49,14 @@ void main() {
         final container = ProviderContainer(
           overrides: [
             identityRepositoryProvider.overrideWithValue(identity),
+            configProvider.overrideWithValue(
+              AppConfig(
+                url: '',
+                key: '',
+                redirect: '',
+                googleEnabled: route.$1 == 'login-google',
+              ),
+            ),
             routerInitialLocationProvider.overrideWithValue(route.$2),
           ],
         );
@@ -72,9 +82,10 @@ void main() {
             '${out.path}/access-${route.$1}${large ? '-large' : ''}.png',
           ),
         );
-        if (large && ['login', 'signup', 'forgot'].contains(route.$1)) {
+        if (large &&
+            ['login', 'login-google', 'signup', 'forgot'].contains(route.$1)) {
           final label = switch (route.$1) {
-            'login' => 'Inicia sesión',
+            'login' || 'login-google' => 'Inicia sesión',
             'signup' => 'Crea una cuenta',
             _ => 'Enviar instrucciones',
           };
