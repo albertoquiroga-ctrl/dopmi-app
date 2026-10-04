@@ -1,0 +1,14 @@
+[
+  {
+    "name": "access-login-google",
+    "sha256": "021acf180a93719082a4587f85adddc27f663ddf8b1fc1816ab026f79bd330b7"
+  },
+  {
+    "name": "access-login-google-large",
+    "sha256": "88c16099aefed183c02a4a0c9eabf7a36b74cc385f8c02c752400a890b6b5fd4"
+  },
+  {
+    "name": "access-login-google-footer-large",
+    "sha256": "9d44b3c88a7e51a96c88ec2f9d7e95b1085df42f0eca100e9b18972260dcb179"
+  }
+]

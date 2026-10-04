@@ -1,0 +1,18 @@
+[
+  {
+    "file": "lib/features/identity/auth_screens.dart",
+    "sha256": "984d023d6e00865d5d0cd660415a9bae99e472cc409f81d80aabb0ef881cb62f"
+  },
+  {
+    "file": "lib/features/identity/auth_ui.dart",
+    "sha256": "c94cb910cc577035d0eb7c2a91e905e387971638b9e9a84a80d60f2c90abb308"
+  },
+  {
+    "file": "test/identity_widgets_test.dart",
+    "sha256": "b8ccb0b2237a0c1474bfe193dead4c837f76b555614ecaccc2295f804e03ebbe"
+  },
+  {
+    "file": "tool/capture_access_test.dart",
+    "sha256": "c84e09fa23955c1950165bbe5552e11f89c18e20f9a3d50d65ca52cc192eeac3"
+  }
+]

@@ -306,6 +306,7 @@ class AuthHeading extends StatelessWidget {
             style: sheet
                 ? Theme.of(context).textTheme.headlineMedium!.copyWith(
                     fontVariations: DopmiTokens.display28Variations,
+                    height: 1.15,
                     letterSpacing: -.56,
                     fontSize:
                         largeTitleFontSize != null &&
@@ -560,11 +561,11 @@ class AuthProviderIcons extends StatelessWidget {
   final Future<void> Function(String) onPick;
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(top: 16),
+    padding: const EdgeInsets.only(top: 16, bottom: 4),
     child: Column(
       children: [
         const Divider(height: 1, thickness: 1, color: DopmiTokens.line),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         const Text(
           'Continuar con',
           textAlign: TextAlign.center,

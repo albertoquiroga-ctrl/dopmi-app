@@ -626,7 +626,8 @@ void main() {
       await tester.enterText(email, 'ana@example.test');
       final forgot = find.widgetWithText(TextButton, 'Olvidé mi contraseña');
       await tester.ensureVisible(forgot);
-      expect(tester.getSize(forgot).height, greaterThanOrEqualTo(48));
+      // Source runtime567: recovery spans 12+16+12 pixels.
+      expect(tester.getSize(forgot).height, closeTo(40, .5));
       final passwordRect = tester.getRect(find.byType(TextFormField).last);
       final forgotRect = tester.getRect(forgot);
       final submitRect = tester.getRect(
@@ -634,7 +635,7 @@ void main() {
       );
       expect(forgotRect.top, closeTo(passwordRect.bottom, 0.5));
       expect(submitRect.top, closeTo(forgotRect.bottom, 0.5));
-      expect(submitRect.top - passwordRect.bottom, closeTo(48, 0.5));
+      expect(submitRect.top - passwordRect.bottom, closeTo(40, 0.5));
       await tester.tapAt(
         tester.getRect(forgot).bottomCenter - const Offset(0, 1),
       );

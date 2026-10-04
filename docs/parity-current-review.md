@@ -1,3 +1,7 @@
+# Corte vigente — loop569, 3/10/2026
+
+Acceso: recuperacióngap40/socialgap12+bottom4/heading1.15 alineanCTA617.85conSource567617.96875, inputsy445.85/529.85conservados; prueba coords.25px ytapborde/retornoemail. Gate64566exit0,27/27; capturador46929exit0/27PNG; analyzer60999limpio33.1s. Full630564/407capturas565 anteriores a este cambio; AUTH18capturas dirigidasactuales. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. No paridadglobal/animación/física ni signinreal aceptados. Sinpush/Codemagic hastaobjetivocompleto.
+
 # Corte vigente — loop565, 3/10/2026
 
 Capturador6598 terminalexit0,1test/407unique,3m02s:407PNG nuevos/formato/hashmanifest565.233Dart iguales raíz/scratch yhashessin cambios frente full630564/fuente135879c; analyzer563limpio26.9s.96assets revisados:licencia no renderizada temporal abreviada corregida sólo después del gate,95visuales byteidénticos durante; pubspec/lock iguales. Supersede407547. FuenteSourcea3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Dos capturas actuales inspeccionadas, no407aceptaciones. Sigue contraste visual/temporal porfamilias/teléfono/StripeSDK. Sinpush/Codemagic hastaobjetivocompleto.

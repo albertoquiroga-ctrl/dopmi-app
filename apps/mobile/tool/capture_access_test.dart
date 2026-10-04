@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/config.dart';
@@ -82,6 +83,58 @@ void main() {
             '${out.path}/access-${route.$1}${large ? '-large' : ''}.png',
           ),
         );
+        if (!large && route.$1 == 'login-google') {
+          final fields = find.byType(TextFormField);
+          final targets = {
+            'sheet': find.byKey(const ValueKey('auth-form-sheet')),
+            'title': find.text('Inicia sesión').first,
+            'email': find.descendant(
+              of: fields.first,
+              matching: find.byType(InputDecorator),
+            ),
+            'password': find.descendant(
+              of: fields.last,
+              matching: find.byType(InputDecorator),
+            ),
+            'forgot': find.widgetWithText(TextButton, 'Olvidé mi contraseña'),
+            'forgot_label': find.text('Olvidé mi contraseña'),
+            'submit': find.widgetWithText(FilledButton, 'Inicia sesión'),
+            'footer': find.byKey(const ValueKey('auth-switch-footer')),
+          };
+          // Source runtime567 at377x852 after fonts.ready.
+          expect(
+            tester.getRect(targets['email']!).top,
+            closeTo(445.96875, .25),
+          );
+          expect(
+            tester.getRect(targets['password']!).top,
+            closeTo(529.96875, .25),
+          );
+          expect(
+            tester.getRect(targets['submit']!).top,
+            closeTo(617.96875, .25),
+          );
+          expect(tester.getSize(targets['forgot']!).height, 40);
+          expect(
+            tester.getRect(targets['title']!).top,
+            closeTo(325.78125, .25),
+          );
+          final metrics = <String, dynamic>{};
+          for (final item in targets.entries) {
+            final rect = tester.getRect(item.value);
+            metrics[item.key] = {
+              'x': rect.left,
+              'y': rect.top,
+              'w': rect.width,
+              'h': rect.height,
+            };
+          }
+          await tester.runAsync(
+            () =>
+                File('${out.path}/access-login-google-metrics.json')
+                    .writeAsString(jsonEncode(metrics)),
+          );
+        }
         if (large &&
             ['login', 'login-google', 'signup', 'forgot'].contains(route.$1)) {
           final label = switch (route.$1) {

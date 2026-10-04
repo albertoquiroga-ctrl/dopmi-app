@@ -299,10 +299,10 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                                 extra: email.text.trim(),
                               ),
                         style: TextButton.styleFrom(
-                          // Keep the label 12px below the field while the full
-                          // 48px target stays between password and submit.
-                          padding: const EdgeInsets.only(bottom: 8),
-                          minimumSize: const Size(48, 48),
+                          // Source: 12px before and after the 16px label.
+                          // Enlarged text can increase the intrinsic height.
+                          padding: EdgeInsets.zero,
+                          minimumSize: const Size(48, 40),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           splashFactory: NoSplash.splashFactory,
                           overlayColor: Colors.transparent,

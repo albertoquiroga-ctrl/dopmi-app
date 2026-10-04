@@ -2722,3 +2722,7 @@ Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb local/remoto, SourceVite83987/E
 ## 2026-10-03 — Loop568: CTA bienvenida sin hover
 
 RuntimeSource Edge377x852 a3c969cd9103fd46dc5cd886999912526ce75efb:trasclickAdoptar cursor radioinicial queda sobre CTA posterior. Computedhovertrue/bg000;mousemove0/0 conserva selección yhoverfalse/bg15110d. Pixel80/745 Source567hover000/Source568nohover15110d/appcaptura56615110d. No discrepancia cromática móvil ni cambioproductivo. EvidenciaPNG/color-check568 y aclaración567; sólo CTAcolorverificado,no bienvenida/animacionesglobal. Recovery48vsSource40/CTA8px sigue pendiente. Browsercerrado/ViteCtrlCexit1esperado. Sin push/Codemagic.
+
+## 2026-10-03 — Loop569: corregir espaciado de acceso
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Medición inicial29027 confirma inputscorrectos/CTA+8. Corrige recovery40padding0, socialgap12+bottom4 yheading1.15: inputsy445.85/529.85intactos,CTA617.85vSource617.96875,title325.85v325.78125. Targetrecovery40normal/134ancho explícito, crece texto200; testbordeabre/regrésoconservaemail. Final64566exit0,27/27,8s; capturadorlegacy46929exit0/27PNG6s; analyzer60999exit0limpio33.1s. Capturas/métricas/docs569/sourcecheck4inputsigualesraíz-scratch; AUTH18actuales. Full630564 y407capturas565 anteriores, no gateactualglobal ni animaciones/físicoaceptados. Sin signinreal/SQL/push/Codemagic.
