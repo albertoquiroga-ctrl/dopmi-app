@@ -1,0 +1,5 @@
+# Foto de evidencia
+
+## 2026-10-04 — Loop624: foto de evidencia primero
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. SourcepetEvidence presenta foto de impacto antes de descripción. Expense step1 ahora muestra public antes de proof; título Foto de evidencia, acción Toca para subir foto y ayuda para donantes condicionada a aprobación. Conserva roles originales, índices originales, callback de archivos, proof privado requerido por servidor y formatos reales; videos post-MVP no simulados. Prueba integrada comprueba posición vertical public antes de proof y mantiene los archivos al avanzar/regresar. Gate6553terminalexit0,17/17en5s (9expense_field+8presión normal200 temaAndroid/iOS); analyzerexit0sin incidencias6.1s. Pruebas de presión componente real, no selector/dispositivo. Sin nueva captura o runtimeSource; no aceptación visual global por gate. Full692618 anterior619/621–624. Progresión sigue agrupando evidencia/datos y review en3etapas; separar descripción y datos privados sigue pendiente. Sin push/Codemagic hasta completar objetivo.

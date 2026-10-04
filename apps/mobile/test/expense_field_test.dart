@@ -167,7 +167,7 @@ void main() {
         rescue: repo,
       );
       expect(find.text('Comprobante del gasto'), findsOneWidget);
-      expect(find.text('Foto para publicación'), findsNothing);
+      expect(find.text('Foto de evidencia'), findsNothing);
       expect(find.text('Evidencia del gasto realizado'), findsNothing);
       final next = find.text('Siguiente');
       await tester.ensureVisible(next);
@@ -176,7 +176,13 @@ void main() {
       await tester.pumpAndSettle();
       expect(repo.savedFiles, files);
       expect(find.text('Comprobante del gasto'), findsNothing);
-      expect(find.text('Foto para publicación'), findsOneWidget);
+      expect(find.text('Foto de evidencia'), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('Foto de evidencia')).dy,
+        lessThan(
+          tester.getTopLeft(find.text('Evidencia del gasto realizado')).dy,
+        ),
+      );
       expect(find.text('Evidencia del gasto realizado'), findsOneWidget);
       tester
           .state<ScrollableState>(
@@ -196,7 +202,7 @@ void main() {
       await tester.tap(back);
       await tester.pumpAndSettle();
       expect(find.text('Comprobante del gasto'), findsOneWidget);
-      expect(find.text('Foto para publicación'), findsNothing);
+      expect(find.text('Foto de evidencia'), findsNothing);
       await tester.ensureVisible(next);
       await tester.pumpAndSettle();
       await tester.tap(next);

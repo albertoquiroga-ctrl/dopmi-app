@@ -1818,7 +1818,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   }
 
   Widget expenseEvidence(String role) => ExpenseEvidenceCard(
-    title: evidenceRoles[role]!,
+    title: role == 'public' ? 'Foto de evidencia' : evidenceRoles[role]!,
     public: role == 'public',
     fileIndexes: [
       for (var i = 0; i < files.length; i++)
@@ -2263,7 +2263,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                       onChanged: () => setState(() => dirty = true),
                     ),
                   if (step == 1 && kind == 'expense') ...[
-                    for (final role in ['proof', 'public'])
+                    for (final role in ['public', 'proof'])
                       expenseEvidence(role),
                     const SizedBox(height: 20),
                   ],

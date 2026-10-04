@@ -38,7 +38,7 @@ class ExpenseEvidenceCard extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           public
-              ? 'Las fotos se mostrarán después de la aprobación.'
+              ? 'Esta evidencia se mostrará a los donantes después de la aprobación.'
               : 'Archivo privado para revisión. No se muestra a los donantes.',
           style: const TextStyle(
             fontFamily: 'Inter',
@@ -111,7 +111,9 @@ class ExpenseEvidenceCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Adjuntar ${title.toLowerCase()}',
+                  public
+                      ? 'Toca para subir foto'
+                      : 'Adjuntar ${title.toLowerCase()}',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontFamily: 'Inter',
