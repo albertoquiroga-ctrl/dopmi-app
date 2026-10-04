@@ -2705,6 +2705,12 @@ void main() {
           find.widgetWithText(TextButton, 'Ahora no'),
         );
         expect(
+          body.height,
+          660.71875,
+          reason: 'Source mode dialog fractional line boxes',
+        );
+        expect(body.top, 95.640625);
+        expect(
           cancel.height,
           40,
           reason: 'Source text-link-button normal minimum height',

@@ -330,6 +330,40 @@ class RescuerDonorModeCard extends StatelessWidget {
   }
 }
 
+/// CSS line boxes use fractional heights; native glyphs can paint beyond them.
+class DonorModeLineText extends StatelessWidget {
+  const DonorModeLineText(this.text, {required this.style, super.key});
+  final String text;
+  final TextStyle style;
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final resolved = DefaultTextStyle.of(context).style.merge(style);
+      final scaler = MediaQuery.textScalerOf(context);
+      final painter = TextPainter(
+        text: TextSpan(text: text, style: resolved),
+        textDirection: Directionality.of(context),
+        textScaler: scaler,
+      )..layout(maxWidth: constraints.maxWidth);
+      final lines = painter.computeLineMetrics().length;
+      painter.dispose();
+      // Chromium reserves line boxes in 1/64 CSS-pixel layout units.
+      final lineHeight =
+          (scaler.scale(resolved.fontSize!) * resolved.height! * 64).floor() /
+          64;
+      return SizedBox(
+        height: lines * lineHeight,
+        child: OverflowBox(
+          alignment: Alignment.topLeft,
+          minHeight: 0,
+          maxHeight: double.infinity,
+          child: Text(text, style: resolved),
+        ),
+      );
+    },
+  );
+}
+
 class DonorModeDialog extends StatelessWidget {
   const DonorModeDialog({super.key});
 
@@ -354,7 +388,7 @@ class DonorModeDialog extends StatelessWidget {
               children: [
                 const Padding(
                   padding: EdgeInsets.only(right: 20),
-                  child: Text(
+                  child: DonorModeLineText(
                     '¿Activamos tu modo Rescatista?',
                     style: TextStyle(
                       fontSize: 22,
@@ -367,7 +401,7 @@ class DonorModeDialog extends StatelessWidget {
                 const SizedBox(height: 8),
                 const Padding(
                   padding: EdgeInsets.only(right: 20),
-                  child: Text(
+                  child: DonorModeLineText(
                     'Publica casos de mascotas con necesidad de un hogar.',
                     style: TextStyle(fontSize: 14, height: 1.45, color: muted),
                   ),
@@ -456,7 +490,7 @@ class DonorModeDialog extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                DonorModeLineText(
                                   step.$1,
                                   style: const TextStyle(
                                     fontSize: 14,
@@ -466,7 +500,7 @@ class DonorModeDialog extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(height: 2),
-                                Text(
+                                DonorModeLineText(
                                   step.$2,
                                   style: const TextStyle(
                                     fontSize: 12,
