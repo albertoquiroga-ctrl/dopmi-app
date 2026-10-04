@@ -39,6 +39,15 @@ class ExpenseReview extends StatelessWidget {
           message: 'Editar $text',
           child: TextButton(
             onPressed: onEdit,
+            style:
+                TextButton.styleFrom(
+                  splashFactory: NoSplash.splashFactory,
+                  animationDuration: Duration.zero,
+                ).copyWith(
+                  overlayColor: const WidgetStatePropertyAll(
+                    Colors.transparent,
+                  ),
+                ),
             child: const Text(
               'Editar',
               style: TextStyle(fontFamily: 'Inter', fontSize: 14),
