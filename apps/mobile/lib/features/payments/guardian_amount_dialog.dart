@@ -187,12 +187,28 @@ class _GuardianAmountDialogState extends State<GuardianAmountDialog> {
                                                 ],
                                               ),
                                               if (widget.currentCents == value)
-                                                const Text(
-                                                  'Actual',
-                                                  style: TextStyle(
-                                                    fontSize: 11,
-                                                    height: 1.2,
-                                                    color: muted,
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 8,
+                                                        vertical: 3,
+                                                      ),
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(
+                                                      0xffefede8,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          999,
+                                                        ),
+                                                  ),
+                                                  child: const Text(
+                                                    'Actual',
+                                                    style: TextStyle(
+                                                      fontSize: 11,
+                                                      height: 1.2,
+                                                      color: muted,
+                                                    ),
                                                   ),
                                                 ),
                                             ],
