@@ -228,6 +228,35 @@ class ImpactCaseCard extends StatelessWidget {
         ),
       ],
     );
+    final caseName = Semantics(
+      button: true,
+      excludeSemantics: true,
+      label: 'Ver caso $name',
+      onTap: openCase,
+      child: InkWell(
+        onTap: openCase,
+        child: Text(
+          name,
+          style: const TextStyle(
+            fontSize: 17,
+            height: 1.3,
+            fontWeight: FontWeight.w700,
+            color: ink,
+          ),
+        ),
+      ),
+    );
+    final badge = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+      decoration: BoxDecoration(
+        color: const Color(0xfff1eee8),
+        borderRadius: BorderRadius.circular(99),
+      ),
+      child: const Text(
+        'Apoyo asignado',
+        style: TextStyle(fontSize: 10, height: 1.2, color: ink),
+      ),
+    );
     final share = OutlinedButton(
       onPressed: () => shareContent(
         context,
@@ -287,45 +316,22 @@ class ImpactCaseCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Wrap(
-                  spacing: 10,
-                  runSpacing: 8,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    Semantics(
-                      button: true,
-                      excludeSemantics: true,
-                      label: 'Ver caso $name',
-                      onTap: openCase,
-                      child: InkWell(
-                        onTap: openCase,
-                        child: Text(
-                          name,
-                          style: const TextStyle(
-                            fontSize: 17,
-                            height: 1.3,
-                            fontWeight: FontWeight.w700,
-                            color: ink,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 9,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xfff1eee8),
-                        borderRadius: BorderRadius.circular(99),
-                      ),
-                      child: const Text(
-                        'Apoyo asignado',
-                        style: TextStyle(fontSize: 10, height: 1.2, color: ink),
-                      ),
-                    ),
-                  ],
-                ),
+                if (MediaQuery.textScalerOf(context).scale(17) > 25)
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    spacing: 10,
+                    runSpacing: 8,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [caseName, badge],
+                  )
+                else
+                  Row(
+                    children: [
+                      Expanded(child: caseName),
+                      const SizedBox(width: 10),
+                      badge,
+                    ],
+                  ),
                 const SizedBox(height: 8),
                 if (updates.isEmpty)
                   const Text(
