@@ -2222,7 +2222,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                             fontFamily: 'Inter',
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: Color(0xff15110d),
+                            color: Color(0xff151423),
                           ),
                         ),
                       )

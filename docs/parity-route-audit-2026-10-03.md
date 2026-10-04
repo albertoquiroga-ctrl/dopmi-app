@@ -1,3 +1,5 @@
+> Corrección vigente loop641: evidencia/gastos heredan `.rescuer-theme` (`#151423`/`#4f4e5c`), confirmado en runtime. Conclusiones de paleta global de619/622/627/633 quedan supersedidas. La introducción de verificación usa paleta global fuera de ese padre. Gate64136/36/analyze limpio; full705629 yglobal410636 anteriores641.
+
 # Corte vigente — loop633, 4/10/2026
 
 Referencia: `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`. Este corte supersede los pendientes contradictorios de cortes anteriores; no cierra la paridad global.
