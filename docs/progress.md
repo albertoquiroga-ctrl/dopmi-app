@@ -3468,3 +3468,7 @@ Ver docs/design-reviews/parity-loop742/README.md. Source a3c969c medido en runti
 ### 2026-10-04 - Loop743: regresion y coleccion global actual
 
 Fuente432ecb2, Source a3c969cd9103fd46dc5cd886999912526ce75efb inicio/cierre. 364 fuentes iguales root/scratch y sin cambios antes/despues. Full6298 exit0:795/795 en4m13s; config12842 exit0:16/16. Capture81992 exit0:1/1 en3m06s; 418 PNG actuales/47 rutas verificados PIL/hash/fecha/dimensiones. Ver docs/design-reviews/parity-loop743. Solo contacto normal inspeccionado/contrastado con Source en este loop; no aceptacion visual de los otros417. Supersede gate736/790 y coleccion709/415. ADB solo emulator5554, APK724 anterior. PR6 open/draft remotoe4f4e858 sobreba9f897 verificado API/refs. Sin push/Codemagic ni dinero real; paridad global/nativa sigue abierta.
+
+### 2026-10-04 - Loop744: revision de24 pantallas normales
+
+Ver docs/design-reviews/parity-loop744/README.md para nombres y limites. Inspeccion de24 primeros viewports actuales detecta el mismo inset de borde ausente en GuardianHistoryPreview. Padding1 aplicado; test billing verifica texto x93 conforme Source compartido. Test25395 exit0:16/16; capture67824 exit0:1/1 y analyzer limpio19.5s. Normal final inspeccionado; full743/795 antecede este cambio. No aceptacion global/estados grandes/nativa ni Codemagic. Source a3c969c inicio/cierre, dinero test-only.

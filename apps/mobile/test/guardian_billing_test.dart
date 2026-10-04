@@ -61,6 +61,7 @@ void main() {
         lessThan(tester.getTopLeft(find.text('Historial de pagos')).dy),
       );
       expect(find.text('Suscripción'), findsOneWidget);
+      expect(tester.getTopLeft(find.text('Suscripción')).dx, 93);
       expect(find.text('Pagado'), findsOneWidget);
       expect(find.text('Aún no hay pagos registrados.'), findsNothing);
       await tester.tap(find.text('Suscripción'));

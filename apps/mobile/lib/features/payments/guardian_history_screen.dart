@@ -75,22 +75,25 @@ class GuardianHistoryPreview extends ConsumerWidget {
                   side: const BorderSide(color: Color(0xffe6e2dd)),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Column(
-                  children: [
-                    for (var i = 0; i < items.length; i++) ...[
-                      if (i > 0)
-                        const Divider(
-                          height: 1,
-                          thickness: 1,
-                          color: Color(0xffe6e2dd),
+                child: Padding(
+                  padding: const EdgeInsets.all(1),
+                  child: Column(
+                    children: [
+                      for (var i = 0; i < items.length; i++) ...[
+                        if (i > 0)
+                          const Divider(
+                            height: 1,
+                            thickness: 1,
+                            color: Color(0xffe6e2dd),
+                          ),
+                        GuardianHistoryEntry(
+                          key: ValueKey('$owner:${items[i]['id']}'),
+                          owner: owner,
+                          item: items[i],
                         ),
-                      GuardianHistoryEntry(
-                        key: ValueKey('$owner:${items[i]['id']}'),
-                        owner: owner,
-                        item: items[i],
-                      ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
             if (data['next_cursor'] != null)
