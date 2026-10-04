@@ -1,3 +1,9 @@
+# Corte vigente — loop618, 4/10/2026
+
+## 2026-10-04 — Loop618: regresión integrada de Publicar y diálogo
+
+Fuente c89e4616b9d32dbfd1b982518e7cfd400abe9e4e; Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Fluttertest --no-pub79285 terminalexit0,692/692 en3m04s; supersede674606 e integra607–617, incluida edad/checkbox/descripciones/review/selección inmediata y altura fraccionaria del diálogo. Manifiesto antes del gate249Dart normalizados y96assets byteidénticos raíz/scratch; verificador71083exit0 conserva hashes hasta cierre, sin ediciones durante. Configpython16/16exit0. Analyzer617clean8.2s mismafuentevigente. ADBvacío consultado; AVD Dopmi_API_35 disponible, no arrancado: memoria libre265448KB de7708932KB durante gate, insuficiente para arranque fiable; no cerrar apps del usuario. Ninguna aceptación nativa nueva. Capturas407globales599anteriores600+, familiaPublicar615/review616 actuales estadofinal617, no paridad global por692tests. Sin cambios de producción en618. Próximo contraste independiente: flujo de comprobante/evidencia de gastos contra UnlockExpense vigente, preservando privacidad/aprobación/propiedad y revisando la capacidad nativa después del gate. Sin push/Codemagic hasta completar objetivo.
+
 # Corte vigente — loop606, 4/10/2026
 
 ## 2026-10-04 — Loop606: regresión móvil integrada
