@@ -7,6 +7,8 @@ import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -91,6 +93,45 @@ void main() {
   }
 
   for (final large in [false, true]) {
+    testWidgets(
+      'new update question stays complete before and after typing: $large',
+      (tester) async {
+        final font = FontLoader('Inter')
+          ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
+        await tester.runAsync(font.load);
+        final repo = EditorUpdates();
+        await start(
+          tester,
+          repo,
+          large: large,
+          path: '/rescue-cases/case-one/updates/new',
+        );
+        final field = find.byType(TextField);
+        await tester.ensureVisible(field);
+        await tester.pumpAndSettle();
+        void checkLabel() {
+          final label = find.text('¿Cómo sigue el rescate?').first;
+          final paragraph = tester.renderObject<RenderParagraph>(label);
+          expect(paragraph.didExceedMaxLines, isFalse);
+          expect(
+            tester.getRect(field).contains(tester.getRect(label).center),
+            isTrue,
+          );
+        }
+
+        checkLabel();
+        await tester.enterText(field, 'Luna terminó su tratamiento.');
+        await tester.pumpAndSettle();
+        checkLabel();
+        expect(
+          tester.widget<TextField>(field).controller!.text,
+          'Luna terminó su tratamiento.',
+        );
+        expect(repo.writes, isEmpty);
+        expect(tester.takeException(), isNull);
+      },
+    );
+
     testWidgets(
       'failed restore cannot create replacement; retry saves the original version: $large',
       (tester) async {

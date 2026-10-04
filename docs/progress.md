@@ -3476,3 +3476,7 @@ Ver docs/design-reviews/parity-loop744/README.md para nombres y limites. Inspecc
 ### 2026-10-04 - Loop745: palabras completas en Configuracion ampliada
 
 Inspeccion12 capturas200% detecta Informacio/n en fila estrecha. RescuerNavigationRow standardSettings ahora separa iconos/copia a texto grande/ancho<300, sin reducir fuente ni tocar layout normal. Gate67840 exit0:10/10, prueba con Inter/word boxes/cancel/enabled. Capture22462 exit0:cincoPNG actuales; normal identico a743 por SHA256 y grande final inspeccionado; analyzer limpio6.1s. Ver docs/design-reviews/parity-loop745. Source a3c969c inicio/cierre. Adaptacion accesible, no comparacion directa Source200%. Full743 antecede744/745. Objetivo activo, sin Codemagic/dinero real.
+
+### 2026-10-04 - Loop746: pregunta completa en editor de avances
+
+Inspeccion12 estados200% detecta etiqueta truncada en editor nuevo. InputDecoration.label ahora TextmaxLines3, conserva estilo/flotacion/controlador. Gate56694 exit0:10/10, dos pruebas nuevas con Inter verifican etiqueta completa y texto conservado/sin escritura automatica. Capture73865 exit0:dosPNG, normal identico a743/hash, grande inspeccionado; analyzer limpio32.3s. Ver docs/design-reviews/parity-loop746. Source a3c969c inicio/cierre; editor real adicional sin contraparte directa localizada. Full743 antecede744-746. Objetivo activo, sin Codemagic/dinero real.

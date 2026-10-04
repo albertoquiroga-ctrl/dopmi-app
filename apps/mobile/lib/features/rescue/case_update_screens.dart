@@ -250,7 +250,7 @@ class _CaseUpdateEditorState extends ConsumerState<CaseUpdateEditorScreen> {
             maxLines: 10,
             maxLength: 2000,
             decoration: const InputDecoration(
-              labelText: '¿Cómo sigue el rescate?',
+              label: Text('¿Cómo sigue el rescate?', maxLines: 3),
             ),
           ),
           OutlinedButton.icon(
