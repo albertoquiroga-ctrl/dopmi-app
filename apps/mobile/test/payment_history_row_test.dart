@@ -3,6 +3,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets('Case action and financial detail have separate tap targets', (
+    tester,
+  ) async {
+    var opens = 0;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PaymentHistoryRow(
+            payment: const {
+              'expense_title': 'Medicamentos',
+              'gross_cents': 7525,
+            },
+            onOpenCase: () => opens++,
+            details: const Text('Referencia real'),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('Medicamentos'));
+    await tester.pump();
+    expect(opens, 1);
+    expect(find.text('Referencia real'), findsNothing);
+    await tester.tap(find.text(r'$75.25'));
+    await tester.pump();
+    expect(opens, 1);
+    expect(find.text('Referencia real'), findsOneWidget);
+  });
+
   for (final scale in [1.0, 2.0]) {
     testWidgets('Actual amount and status remain readable at scale $scale', (
       tester,

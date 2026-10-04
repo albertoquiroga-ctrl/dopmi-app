@@ -504,6 +504,41 @@ class PaymentHistoryScreen extends ConsumerStatefulWidget {
 class _HistoryState extends ConsumerState<PaymentHistoryScreen> {
   int page = 1;
   bool received = false;
+  bool openingCase = false;
+
+  Future<void> openCase(String expenseId) async {
+    if (openingCase) return;
+    final owner = ref.read(identityControllerProvider).identity?.id;
+    openingCase = true;
+    try {
+      final caseId = await ref
+          .read(rescueRepositoryProvider)
+          .publicCaseForExpense(expenseId);
+      if (!mounted ||
+          ref.read(identityControllerProvider).identity?.id != owner) {
+        return;
+      }
+      if (caseId != null) {
+        context.push('/rescue-cases/$caseId');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Este caso ya no está disponible.')),
+        );
+      }
+    } catch (_) {
+      if (mounted &&
+          ref.read(identityControllerProvider).identity?.id == owner) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No pudimos abrir el caso. Inténtalo de nuevo.'),
+          ),
+        );
+      }
+    } finally {
+      openingCase = false;
+    }
+  }
+
   Future<PaymentHistoryData> loadHistory() async {
     final includeGuardian =
         ref.read(guardianEnabledProvider) && !received && page == 1;
@@ -597,6 +632,11 @@ class _HistoryState extends ConsumerState<PaymentHistoryScreen> {
                             PaymentHistoryRow(
                               key: ValueKey(d['id']),
                               payment: d,
+                              onOpenCase:
+                                  d['expense_id'] is String &&
+                                      (d['expense_id'] as String).isNotEmpty
+                                  ? () => openCase(d['expense_id'] as String)
+                                  : null,
                               details: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [

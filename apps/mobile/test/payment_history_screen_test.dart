@@ -115,7 +115,7 @@ void main() {
       expect(payments.receivedReads.last, isTrue);
       expect(guardian.cursors.length, 1);
       expect(find.text('Suscripción'), findsNothing);
-      await tester.tap(find.text('Medicamentos'));
+      await tester.tap(find.text(r'$75.25'));
       await tester.pumpAndSettle();
       expect(find.text('Continuar aportación'), findsNothing);
     },

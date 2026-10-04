@@ -11,9 +11,11 @@ class PaymentHistoryRow extends StatefulWidget {
     this.statusLabel,
     this.methodLabel,
     this.amountLabel,
+    this.onOpenCase,
   });
   final Map<String, dynamic> payment;
   final Widget details;
+  final VoidCallback? onOpenCase;
   final String? statusLabel, methodLabel, amountLabel;
   @override
   State<PaymentHistoryRow> createState() => _PaymentHistoryRowState();
@@ -92,7 +94,7 @@ class _PaymentHistoryRowState extends State<PaymentHistoryRow> {
         ),
       ],
     );
-    final amount = Column(
+    final amountContent = Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
@@ -127,14 +129,28 @@ class _PaymentHistoryRowState extends State<PaymentHistoryRow> {
         ),
       ],
     );
+    final amount = widget.onOpenCase == null
+        ? amountContent
+        : Semantics(
+            button: true,
+            label: 'Ver detalle del pago',
+            expanded: expanded,
+            child: InkWell(
+              onTap: () => setState(() => expanded = !expanded),
+              splashFactory: NoSplash.splashFactory,
+              highlightColor: Colors.transparent,
+              child: amountContent,
+            ),
+          );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Semantics(
           button: true,
-          expanded: expanded,
+          expanded: widget.onOpenCase == null ? expanded : null,
           child: InkWell(
-            onTap: () => setState(() => expanded = !expanded),
+            onTap:
+                widget.onOpenCase ?? () => setState(() => expanded = !expanded),
             splashFactory: NoSplash.splashFactory,
             highlightColor: Colors.transparent,
             child: ConstrainedBox(
