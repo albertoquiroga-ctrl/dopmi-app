@@ -896,7 +896,7 @@ void main() {
     expect(find.text('Choco'), findsOneWidget);
     expect(find.text('Administrar'), findsOneWidget);
     expect(find.text('Nina'), findsOneWidget);
-    expect(find.text('Necesita correcciones'), findsOneWidget);
+    expect(find.text('NECESITA CORRECCIONES'), findsOneWidget);
     expect(find.text('Aclara la ubicación aproximada.'), findsOneWidget);
     expect(find.text('Corregir publicación'), findsOneWidget);
   });

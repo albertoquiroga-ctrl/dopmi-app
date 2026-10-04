@@ -2642,3 +2642,7 @@ Producción 9034b0d65fb478f182c961adeca61693de6cc855. SourceEdge377x852/rescuer/
 ## 2026-10-03 — Paridad loop 550: tarjetas de Mis casos
 
 Fuente mockup `a3c969cd9103fd46dc5cd886999912526ce75efb`. Ajustados separación, reserva del borde, interlineado de título/edad y altura/fondo de progreso. Se preservan estados, asignación real y acciones privadas. Pruebas seleccionadas 34/34 (9125, exit 0); flutter analyze sin incidencias (62328, exit 0). Seis capturas generadas; normal y texto ampliado inspeccionadas directamente. Evidencia: docs/design-reviews/parity-loop550. No equivale a aceptación global ni física; 611/407 de loops 546/547 preceden este cambio. Codemagic solamente al terminar el objetivo, sin envíos intermedios.
+
+## 2026-10-03 — Paridad loop 551: estados de Mis casos
+
+Source local/remoto `a3c969cd9103fd46dc5cd886999912526ce75efb` revalidado. Indicadores con colores, mayúsculas, tamaño/peso y SVG de revisión originales; alineación central. Nota de revisión conserva estado real sin promesa de plazo, Ver envío y demás acciones permanecen. Etiqueta semántica natural. Inicial74600 33/1 fallo literal; expectativa corregida preservando aviso/acción. Final86403 terminalexit0 34/34, 8s; analyzer5850 terminalexit0 limpio19.3s. Seis capturas regeneradas, cuatro inspeccionadas (normal/ampliada y correcciones). Evidencia docs/design-reviews/parity-loop551. ADB vacío, gestos físicos pendientes; sin runtime web nuevo ni aceptación global. Full611/407 de546/547 precede cambio. Sin push/Codemagic hasta completar objetivo.

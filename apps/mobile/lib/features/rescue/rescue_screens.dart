@@ -928,6 +928,7 @@ class _OwnedRescueCard extends ConsumerWidget {
                             ),
                           ],
                           if (record.kind == 'case' &&
+                              record.status != 'submitted' &&
                               (record.publicData['age'] as String? ?? '')
                                   .trim()
                                   .isNotEmpty) ...[
@@ -938,6 +939,24 @@ class _OwnedRescueCard extends ConsumerWidget {
                                 fontSize: 13,
                                 height: 1.55,
                                 color: Color(0xff4f4e5c),
+                              ),
+                            ),
+                          ],
+                          if (record.status == 'submitted') ...[
+                            const SizedBox(height: 6),
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: const Color(0xffeff6ff),
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: const Text(
+                                'Tu caso está en revisión por el equipo Dopmi.',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  height: 16 / 12,
+                                  color: Color(0xff193cb8),
+                                ),
                               ),
                             ),
                           ],
@@ -1090,23 +1109,46 @@ class _OwnedCaseHeading extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: switch (record.status) {
-          'approved' => const Color(0xffdef6ee),
-          'submitted' => const Color(0xffeef5ff),
-          'changes_requested' || 'rejected' => const Color(0xfff7eeee),
-          _ => const Color(0xfff0eff8),
+          'approved' => const Color(0xffdcf7ed),
+          'submitted' => const Color(0xffdbeafe),
+          'changes_requested' || 'rejected' => const Color(0xffffe2e2),
+          'draft' || 'closed' => const Color(0xffece9e5),
+          _ => const Color(0xffefedf4),
         },
         borderRadius: BorderRadius.circular(99),
       ),
-      child: Text(
-        rescueStatuses[record.status] ?? record.status,
-        style: TextStyle(
-          fontSize: 10,
-          height: 1.3,
-          fontWeight: FontWeight.w600,
-          color: record.status == 'approved'
-              ? const Color(0xff176c55)
-              : const Color(0xff4f4e5c),
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (record.status == 'submitted') ...[
+            SvgPicture.asset(
+              'assets/profile/icon-info-blue.svg',
+              width: 9,
+              height: 9,
+              excludeFromSemantics: true,
+            ),
+            const SizedBox(width: 3),
+          ],
+          Flexible(
+            child: Text(
+              (rescueStatuses[record.status] ?? record.status).toUpperCase(),
+              semanticsLabel: rescueStatuses[record.status] ?? record.status,
+              style: TextStyle(
+                fontSize: 9,
+                height: 11 / 9,
+                fontWeight: FontWeight.w700,
+                color: switch (record.status) {
+                  'approved' => const Color(0xff08795b),
+                  'submitted' => const Color(0xff193cb8),
+                  'changes_requested' || 'rejected' => const Color(0xffb51224),
+                  'draft' => const Color(0xff6a615b),
+                  'closed' => const Color(0xff4f4e5c),
+                  _ => const Color(0xff625d70),
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
     if (MediaQuery.textScalerOf(context).scale(17) > 22 ||
@@ -1117,7 +1159,7 @@ class _OwnedCaseHeading extends StatelessWidget {
       );
     }
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(child: name),
         const SizedBox(width: 8),
