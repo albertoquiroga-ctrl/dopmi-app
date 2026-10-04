@@ -857,7 +857,7 @@ class _OwnedRescueCard extends ConsumerWidget {
       _ => 'Ver caso',
     };
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -867,7 +867,7 @@ class _OwnedRescueCard extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -936,7 +936,7 @@ class _OwnedRescueCard extends ConsumerWidget {
                               record.publicData['age'] as String,
                               style: const TextStyle(
                                 fontSize: 13,
-                                height: 1.4,
+                                height: 1.55,
                                 color: Color(0xff4f4e5c),
                               ),
                             ),
@@ -973,10 +973,10 @@ class _OwnedRescueCard extends ConsumerWidget {
                             LinearProgressIndicator(
                               value: (record.fundedCents / record.targetCents)
                                   .clamp(0, 1),
-                              minHeight: 6,
+                              minHeight: 8,
                               borderRadius: BorderRadius.circular(99),
                               color: purple,
-                              backgroundColor: const Color(0xffece9f2),
+                              backgroundColor: const Color(0xffefede8),
                               semanticsLabel: 'Progreso de gastos aprobados',
                               semanticsValue:
                                   '${((record.fundedCents / record.targetCents).clamp(0, 1) * 100).round()}%',
@@ -1081,7 +1081,7 @@ class _OwnedCaseHeading extends StatelessWidget {
       record.title.isEmpty ? 'Borrador sin título' : record.title,
       style: const TextStyle(
         fontSize: 17,
-        height: 1.3,
+        height: 20 / 17,
         fontWeight: FontWeight.w700,
         color: Color(0xff151423),
       ),
