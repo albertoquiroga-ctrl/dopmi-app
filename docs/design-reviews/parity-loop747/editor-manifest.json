@@ -1,0 +1,50 @@
+[
+  {
+    "name": "managed-updates-editor-draft-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "56f94a80d411198ca0572496e15f891b7869734ac74e634cbde419884a85d938"
+  },
+  {
+    "name": "managed-updates-editor-draft.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "0d6eb37b79cb03a677ac93cd4d1e8fbff69c0b1f3fcb857b32d194480ccc5733"
+  },
+  {
+    "name": "managed-updates-editor-error-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "722ba4e8a6f7c6ff18717f745b55e6bd6eff7716c03c181ea8a78114784fe843"
+  },
+  {
+    "name": "managed-updates-editor-error.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "0eda3f9eec36d6459a95008bc2c6bedac0b3b7fc45133a5c15229b955772dc09"
+  },
+  {
+    "name": "managed-updates-editor-new-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "101ec94169f2713eeea9d9af7c56d0345d72e2c8297e66dd6bad2dd611658058"
+  },
+  {
+    "name": "managed-updates-editor-new.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "d8115324a194154cca3d0c7b9e311ea7c0d59e3731324a48b6b8032cbd542e69"
+  }
+]

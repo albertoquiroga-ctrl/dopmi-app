@@ -3480,3 +3480,7 @@ Inspeccion12 capturas200% detecta Informacio/n en fila estrecha. RescuerNavigati
 ### 2026-10-04 - Loop746: pregunta completa en editor de avances
 
 Inspeccion12 estados200% detecta etiqueta truncada en editor nuevo. InputDecoration.label ahora TextmaxLines3, conserva estilo/flotacion/controlador. Gate56694 exit0:10/10, dos pruebas nuevas con Inter verifican etiqueta completa y texto conservado/sin escritura automatica. Capture73865 exit0:dosPNG, normal identico a743/hash, grande inspeccionado; analyzer limpio32.3s. Ver docs/design-reviews/parity-loop746. Source a3c969c inicio/cierre; editor real adicional sin contraparte directa localizada. Full743 antecede744-746. Objetivo activo, sin Codemagic/dinero real.
+
+### 2026-10-04 - Loop747: rutas normales restantes y separacion de etiqueta
+
+Inspeccion25 vistas normales adicionales; indice50 representativas/47 rutas de capturador (incluye24 de744 y pagos742). No todos418 estados ni auth/Source exacto/native. Recaptura de editor revela etiqueta multilinea sobre primera linea a200%: prueba86025 falla con overlap13px. Paddingtop36 solo grande corrige; suite36738 exit0:10/10, captura64047 exit0:6 PNG, normalesnew/draft/error iguales a743 por SHA256; draftlarge inspeccionado y analyzer limpio8.3s. Ver docs/design-reviews/parity-loop747. Source a3c969c inicio/cierre. Objetivo activo; sin Codemagic ni dinero real.

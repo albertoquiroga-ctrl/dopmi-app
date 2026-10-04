@@ -123,6 +123,24 @@ void main() {
         await tester.enterText(field, 'Luna terminó su tratamiento.');
         await tester.pumpAndSettle();
         checkLabel();
+        final labelParagraph = tester.renderObject<RenderParagraph>(
+          find.text('¿Cómo sigue el rescate?').first,
+        );
+        final labelBounds = MatrixUtils.transformRect(
+          labelParagraph.getTransformTo(null),
+          labelParagraph.paintBounds,
+        );
+        final editor = tester
+            .state<EditableTextState>(find.byType(EditableText))
+            .renderEditable;
+        final firstLine = editor
+            .localToGlobal(
+              editor
+                  .getLocalRectForCaret(const TextPosition(offset: 0))
+                  .topLeft,
+            )
+            .dy;
+        expect(labelBounds.bottom, lessThanOrEqualTo(firstLine));
         expect(
           tester.widget<TextField>(field).controller!.text,
           'Luna terminó su tratamiento.',

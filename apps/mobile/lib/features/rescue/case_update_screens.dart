@@ -249,8 +249,11 @@ class _CaseUpdateEditorState extends ConsumerState<CaseUpdateEditorScreen> {
             minLines: 5,
             maxLines: 10,
             maxLength: 2000,
-            decoration: const InputDecoration(
-              label: Text('¿Cómo sigue el rescate?', maxLines: 3),
+            decoration: InputDecoration(
+              contentPadding: MediaQuery.textScalerOf(context).scale(16) > 25
+                  ? const EdgeInsets.fromLTRB(16, 36, 16, 16)
+                  : null,
+              label: const Text('¿Cómo sigue el rescate?', maxLines: 3),
             ),
           ),
           OutlinedButton.icon(
