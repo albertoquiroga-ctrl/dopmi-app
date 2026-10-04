@@ -51,7 +51,11 @@ void main() {
     final record = RescueRecord({
       'id': 'case-one',
       'status': 'approved',
-      'public_data': {'pet_name': 'Choco', 'story': 'Historia real'},
+      'public_data': {
+        'pet_name': 'Choco',
+        'story': 'Historia real',
+        'city': 'CDMX',
+      },
     });
     final identity = FakeIdentityRepository();
     addTearDown(identity.changes.close);
@@ -88,6 +92,12 @@ void main() {
     expect(title.left, 33);
     expect(title.top, 293);
     expect(tester.getRect(find.text('Historia real')).left, 33);
+    // Source runtime553: location pill height27, padding5x9 + border1.
+    final location = find
+        .ancestor(of: find.text('CDMX'), matching: find.byType(Container))
+        .first;
+    expect(tester.getSize(location).height, 27);
+    expect(tester.getRect(location).top, 294.5);
     expect(tester.takeException(), isNull);
   });
 

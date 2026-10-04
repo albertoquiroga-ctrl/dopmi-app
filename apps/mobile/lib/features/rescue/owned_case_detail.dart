@@ -52,7 +52,7 @@ class OwnedCaseDetail extends StatelessWidget {
     final locationTag = Tooltip(
       message: location,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(99),
           border: Border.all(color: const Color(0xffe3e4ed)),
