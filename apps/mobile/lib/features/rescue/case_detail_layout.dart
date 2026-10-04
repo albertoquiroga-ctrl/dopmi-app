@@ -385,6 +385,7 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                   tooltip: 'Compartir',
                                   onPressed: widget.share,
                                   style: IconButton.styleFrom(
+                                    overlayColor: Colors.transparent,
                                     side: const BorderSide(
                                       color: Color(0xffe6e2dd),
                                       width: 1.5,
@@ -558,9 +559,14 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                           const SizedBox(height: 20),
                           Align(
                             alignment: Alignment.centerLeft,
-                            child: TextButton.icon(
+                            child: TextButton(
                               onPressed: widget.busy ? null : widget.report,
                               style: TextButton.styleFrom(
+                                splashFactory: NoSplash.splashFactory,
+                                overlayColor: Colors.transparent,
+                                animationDuration: Duration.zero,
+                                minimumSize: Size.zero,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 foregroundColor: muted,
                                 padding: EdgeInsets.zero,
                                 textStyle: const TextStyle(
@@ -570,8 +576,14 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              icon: svg('icon-alert-circle', 16, color: muted),
-                              label: const Text('Reportar'),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  svg('icon-alert-circle', 16, color: muted),
+                                  const SizedBox(width: 6),
+                                  const Flexible(child: Text('Reportar')),
+                                ],
+                              ),
                             ),
                           ),
                           if (widget.error != null)
