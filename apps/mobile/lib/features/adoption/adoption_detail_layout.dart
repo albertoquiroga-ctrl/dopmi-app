@@ -580,22 +580,40 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                   Semantics(
                     button: true,
                     selected: widget.saved,
-                    child: IconButton(
-                      tooltip: widget.saved ? 'Guardada' : 'Guardar',
-                      onPressed: widget.busy ? null : widget.favorite,
-                      style: IconButton.styleFrom(
-                        minimumSize: const Size(52, 52),
-                        maximumSize: const Size(52, 52),
-                        backgroundColor: widget.saved ? yellow : Colors.white,
-                        foregroundColor: widget.saved
-                            ? ink
-                            : const Color(0xff6b5000),
-                        side: BorderSide(color: yellow, width: 2),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: widget.saved
+                            ? const [
+                                BoxShadow(
+                                  color: Color(0x59f7cb2d),
+                                  offset: Offset(0, 4),
+                                  blurRadius: 12,
+                                ),
+                              ]
+                            : null,
                       ),
-                      icon: SvgPicture.string(
-                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19.5 12.572 12 20l-7.5-7.428A5 5 0 1 1 12 6.006a5 5 0 1 1 7.5 6.566Z" fill="${widget.saved ? heartColor : 'none'}" stroke="$heartColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-                        width: widget.saved ? 23.32 : 22,
-                        height: widget.saved ? 23.32 : 22,
+                      child: IconButton(
+                        tooltip: widget.saved ? 'Guardada' : 'Guardar',
+                        onPressed: widget.busy ? null : widget.favorite,
+                        style: IconButton.styleFrom(
+                          minimumSize: const Size(52, 52),
+                          maximumSize: const Size(52, 52),
+                          backgroundColor: widget.saved ? yellow : Colors.white,
+                          foregroundColor: widget.saved
+                              ? ink
+                              : const Color(0xff6b5000),
+                          shape: const CircleBorder(),
+                          side: BorderSide(
+                            color: widget.saved ? Colors.transparent : yellow,
+                            width: 2,
+                          ),
+                        ),
+                        icon: SvgPicture.string(
+                          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19.5 12.572 12 20l-7.5-7.428A5 5 0 1 1 12 6.006a5 5 0 1 1 7.5 6.566Z" fill="${widget.saved ? heartColor : 'none'}" stroke="$heartColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                          width: widget.saved ? 23.32 : 22,
+                          height: widget.saved ? 23.32 : 22,
+                        ),
                       ),
                     ),
                   ),

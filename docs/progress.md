@@ -2690,3 +2690,7 @@ Source Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb local/remoto revalidado.
 ## 2026-10-03 — Loop560: posición de barra de adopción
 
 Native558 hueco100dp contrastado con Source406 del mismo SHA Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb local/remoto revalidado. Source muestra mismo hueco: mayor especificidad CSS conserva shellpadding100. Hipótesis provisional de retirar separador descartada, producción sin cambios560. Dos nuevas pruebas ruta real/DopmiApp verifican bottom852-inset-14-100,altura52 y posición fija tras scroll para inset0/24. Final6919 exit0,7/7; capturador71266 exit0/dosPNG finales; analyzer69665 exit0 limpio22.8s. Evidencia docs/design-reviews/parity-loop560. No paridad global/animaciones/gestos físicos aceptados; sin push/Codemagic.
+
+## 2026-10-03 — Loop561: favorito seleccionado de adopción
+
+Source Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Sombra CSS0/4/12 rgba247/203/45/.35 y borde transparente del estado seleccionado faltaban en cliente; añadidos con círculo52, escala de icono existente preservada. Flujo real/callback/repositorio/error sin modificaciones. Nueva prueba guarda/quita favorito y verifica sombra; primer51822 40/1 falló por fixturefalse asumido saved, corregido a interacción real. Final50142 exit0,41/41 incluyendo reversión ante error. Capturador89049 exit0/dosPNG normal200 inspeccionados; analyzer71166 exit0 limpio22.8s. Evidencia docs/design-reviews/parity-loop561. No runtime Source seleccionado nuevo ni animaciones/gestos físicos/global aceptados. Sin push/Codemagic.

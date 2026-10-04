@@ -124,6 +124,40 @@ void main() {
     return repo;
   }
 
+  testWidgets(
+    'saved detail favorite carries reference shadow and removes it on unsave',
+    (tester) async {
+      await open(tester);
+      BoxDecoration decoration(String tooltip) {
+        final button = find.byTooltip(tooltip);
+        return tester
+                .widget<DecoratedBox>(
+                  find
+                      .ancestor(of: button, matching: find.byType(DecoratedBox))
+                      .first,
+                )
+                .decoration
+            as BoxDecoration;
+      }
+
+      expect(decoration('Guardar').boxShadow, isNull);
+      await tester.tap(find.byTooltip('Guardar'));
+      await tester.pumpAndSettle();
+      // Server-backed favorite state uses .pet-detail-save.is-on treatment.
+      expect(decoration('Guardada').boxShadow, const [
+        BoxShadow(
+          color: Color(0x59f7cb2d),
+          offset: Offset(0, 4),
+          blurRadius: 12,
+        ),
+      ]);
+      await tester.tap(find.byTooltip('Guardada'));
+      await tester.pumpAndSettle();
+      expect(decoration('Guardar').boxShadow, isNull);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   for (final bottomInset in [0.0, 24.0]) {
     testWidgets(
       'adoption actions match rendered reference bottom gap and stay fixed on scroll: $bottomInset',
