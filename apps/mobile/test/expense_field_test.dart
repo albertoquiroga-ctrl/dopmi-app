@@ -94,6 +94,61 @@ void resumeExpense(WidgetTester tester) {
 
 void main() {
   testWidgets(
+    'receipt and later evidence stay separate and retain files on back',
+    (tester) async {
+      final files = <Json>[
+        {'role': 'receipt', 'path': 'one/expense-one/receipt.pdf'},
+        {'role': 'proof', 'path': 'one/expense-one/proof.pdf'},
+        {'role': 'public', 'path': 'one/expense-one/photo.jpg'},
+      ];
+      final repo = DraftExpenseRescue(initialFiles: files);
+      await startPublication(
+        tester,
+        FakeCommunity(),
+        '/rescue/expense-one',
+        rescue: repo,
+      );
+      expect(find.text('Comprobante del gasto'), findsOneWidget);
+      expect(find.text('Foto para publicación'), findsNothing);
+      expect(find.text('Evidencia del gasto realizado'), findsNothing);
+      final next = find.text('Siguiente');
+      await tester.ensureVisible(next);
+      await tester.pumpAndSettle();
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+      expect(repo.savedFiles, files);
+      expect(find.text('Comprobante del gasto'), findsNothing);
+      expect(find.text('Foto para publicación'), findsOneWidget);
+      expect(find.text('Evidencia del gasto realizado'), findsOneWidget);
+      tester
+          .state<ScrollableState>(
+            find
+                .descendant(
+                  of: find.byKey(const ValueKey('expense-form-body')),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+          )
+          .position
+          .jumpTo(0);
+      await tester.pumpAndSettle();
+      final back = find.byTooltip('Paso anterior');
+      await tester.ensureVisible(back);
+      await tester.pumpAndSettle();
+      await tester.tap(back);
+      await tester.pumpAndSettle();
+      expect(find.text('Comprobante del gasto'), findsOneWidget);
+      expect(find.text('Foto para publicación'), findsNothing);
+      await tester.ensureVisible(next);
+      await tester.pumpAndSettle();
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+      expect(repo.savedFiles, files);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'expense resume discards stale record data on failure and reads corrections from the server',
     (tester) async {
       final repo = SubmittedExpenseRescue()..remoteStatus = 'submitted';

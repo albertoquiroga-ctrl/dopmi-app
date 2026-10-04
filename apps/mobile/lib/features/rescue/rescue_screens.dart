@@ -1817,6 +1817,25 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     });
   }
 
+  Widget expenseEvidence(String role) => ExpenseEvidenceCard(
+    title: evidenceRoles[role]!,
+    public: role == 'public',
+    fileIndexes: [
+      for (var i = 0; i < files.length; i++)
+        if (files[i]['role'] == role) i,
+    ],
+    onOpen: (i) => context.push('/rescue-file', extra: files[i]['path']),
+    onRemove: editable && !busy
+        ? (i) => setState(() {
+            files.removeAt(i);
+            dirty = true;
+          })
+        : null,
+    onAttach: editable && !busy && files.length < 12
+        ? () => run(() => attach(role))
+        : null,
+  );
+
   Widget editorFrame({required List<Widget> children}) {
     if (kind == 'case' && editable) {
       return PublicationFrame(
@@ -2243,6 +2262,11 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                       enabled: editable && !busy,
                       onChanged: () => setState(() => dirty = true),
                     ),
+                  if (step == 1 && kind == 'expense') ...[
+                    for (final role in ['proof', 'public'])
+                      expenseEvidence(role),
+                    const SizedBox(height: 20),
+                  ],
                   for (final private in [false, true]) ...[
                     if (step == 1 &&
                         kind != 'case' &&
@@ -2338,29 +2362,9 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                             ? ['identity', 'address']
                             : kind == 'case'
                             ? ['public']
-                            : ['receipt', 'proof', 'public'])
+                            : ['receipt'])
                       if (kind == 'expense')
-                        ExpenseEvidenceCard(
-                          title: evidenceRoles[role]!,
-                          public: role == 'public',
-                          fileIndexes: [
-                            for (var i = 0; i < files.length; i++)
-                              if (files[i]['role'] == role) i,
-                          ],
-                          onOpen: (i) => context.push(
-                            '/rescue-file',
-                            extra: files[i]['path'],
-                          ),
-                          onRemove: editable && !busy
-                              ? (i) => setState(() {
-                                  files.removeAt(i);
-                                  dirty = true;
-                                })
-                              : null,
-                          onAttach: editable && !busy && files.length < 12
-                              ? () => run(() => attach(role))
-                              : null,
-                        )
+                        expenseEvidence(role)
                       else
                         Card(
                           color: Colors.white,
