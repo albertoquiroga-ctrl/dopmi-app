@@ -3456,3 +3456,7 @@ Test38705 exit0,19/19 en7s:expense_frame_controls cuatro variantes y expense_fie
 ### 2026-10-04 - Loop740: publicacion y lectura tactil
 
 Ver docs/design-reviews/parity-loop740/README.md y manifest.json. Referencia a3c969cd9103fd46dc5cd886999912526ce75efb; fuente e737732. Captura70518 exit0:14 PNG actuales, solo fotos normal y revision grande inspeccionadas. Suite50259 exit0:30/30, analyzer59385 limpio. Nueva prueba tactil permite leer inicio/final del aviso a320x640/texto200% con envio accesible. Sin cambio productivo ni aceptacion nativa/global. Loop739 e737732 corrigio tinta de Cancelar, seis pruebas aprobadas. Codemagic diferido hasta objetivo completo.
+
+### 2026-10-04 - Loop741: frames intermedios Source y Flutter
+
+Ver docs/design-reviews/parity-loop741/README.md. Source a3c969c revalidado; fuente4f49d80. Gate52055 exit0,55/55 de movimiento/gestos. Runtime Edge onboarding450ms: opacity0.961383/Y0.386175px a225ms. Test Flutter compara valores medidos independientes; final onboarding9/9 exit0. Sin cambio productivo ni aceptacion nativa/global. Codemagic espera cierre del objetivo.
