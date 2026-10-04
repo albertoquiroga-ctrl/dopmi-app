@@ -505,14 +505,17 @@ class _SavedCard extends StatelessWidget {
                 : null,
             onPressed: busy ? null : remove,
             icon: adoption
-                ? SvgPicture.asset(
-                    'assets/profile/icon-bookmark.svg',
-                    colorFilter: const ColorFilter.mode(
-                      Color(0xff6b5000),
-                      BlendMode.srcIn,
+                ? Transform.translate(
+                    offset: const Offset(4, 0),
+                    child: SvgPicture.asset(
+                      'assets/profile/icon-bookmark.svg',
+                      colorFilter: const ColorFilter.mode(
+                        Color(0xff6b5000),
+                        BlendMode.srcIn,
+                      ),
+                      width: 20,
+                      height: 20,
                     ),
-                    width: 20,
-                    height: 20,
                   )
                 : const Icon(Icons.close, size: 20),
           ),

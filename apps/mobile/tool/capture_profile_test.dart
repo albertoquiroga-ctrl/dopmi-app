@@ -3830,6 +3830,24 @@ void main() {
           );
         }
         TestGesture? savedHold;
+        if (spec.$1 == 'saved-adoptions') {
+          final remove = find.byTooltip('Quitar de guardados').first;
+          final icon = tester.getRect(
+            find.descendant(of: remove, matching: find.byType(SvgPicture)),
+          );
+          final name = tester.getRect(find.text('Luna'));
+          await tester.runAsync(() async {
+            await File('${out.path}/saved-adoptions-row-geometry.json')
+                .writeAsString(
+                  jsonEncode({
+                    'iconCenterX': icon.center.dx,
+                    'iconCenterY': icon.center.dy,
+                    'nameX': name.left,
+                    'nameY': name.top,
+                  }),
+                );
+          });
+        }
         if (spec.$1 == 'saved-adoptions-held') {
           final row = find
               .ancestor(of: find.text('Luna'), matching: find.byType(InkWell))
