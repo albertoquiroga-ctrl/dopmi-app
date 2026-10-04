@@ -65,12 +65,15 @@ class VerificationStateScreen extends StatelessWidget {
                       ? 'Cuenta verificada'
                       : 'Estamos revisando tu información',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 24,
                     height: 1.25,
+                    letterSpacing: -.48,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xff15110d),
+                    color: approved
+                        ? const Color(0xff151423)
+                        : const Color(0xff15110d),
                   ),
                 ),
               ),
@@ -80,10 +83,12 @@ class VerificationStateScreen extends StatelessWidget {
                     ? 'Tu solicitud fue aprobada. Puedes continuar con la publicación de tus casos.'
                     : 'El equipo revisará tus datos y documentos. Te avisaremos cuando responda.',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   height: 1.55,
-                  color: Color(0xff554e48),
+                  color: approved
+                      ? const Color(0xff4f4e5c)
+                      : const Color(0xff554e48),
                 ),
               ),
               const SizedBox(height: 10),
