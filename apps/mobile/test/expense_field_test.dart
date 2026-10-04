@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+import 'package:dopmi_mobile/features/rescue/expense_frame.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -60,6 +61,29 @@ class DraftExpenseRescue extends FakeRescue {
   }
 }
 
+class DelayedExpenseRescue extends DraftExpenseRescue {
+  final response = Completer<void>();
+  @override
+  Future<RescueRecord> save(
+    String kind,
+    Json publicData,
+    Json privateData,
+    List<Json> files, {
+    RescueRecord? record,
+    String? parent,
+  }) async {
+    await response.future;
+    return super.save(
+      kind,
+      publicData,
+      privateData,
+      files,
+      record: record,
+      parent: parent,
+    );
+  }
+}
+
 class SubmittedExpenseRescue extends DraftExpenseRescue {
   bool failSubmit = false, failDetail = false;
   int detailReads = 0;
@@ -103,6 +127,71 @@ void resumeExpense(WidgetTester tester) {
 }
 
 void main() {
+  for (final scale in [1.0, 2.0]) {
+    testWidgets(
+      'expense changes step immediately after save response at $scale',
+      (tester) async {
+        tester.view.physicalSize = const Size(320, 640);
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        final repo = DelayedExpenseRescue();
+        await startPublication(
+          tester,
+          FakeCommunity(),
+          '/rescue/expense-one',
+          rescue: repo,
+        );
+        final body = find.byKey(const ValueKey('expense-form-body'));
+        final scroll = find
+            .descendant(of: body, matching: find.byType(Scrollable))
+            .first;
+        final next = find.text('Siguiente');
+        await tester.scrollUntilVisible(
+          next,
+          300,
+          maxScrolls: 100,
+          scrollable: scroll,
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(next);
+        await tester.pump(const Duration(milliseconds: 200));
+        expect(tester.widget<ExpenseFrame>(find.byType(ExpenseFrame)).step, 0);
+        expect(repo.savedFiles, isNull);
+        expect(
+          tester
+              .widget<FilledButton>(
+                find.ancestor(of: next, matching: find.byType(FilledButton)),
+              )
+              .onPressed,
+          isNull,
+        );
+        repo.response.complete();
+        await tester.pump();
+        expect(tester.widget<ExpenseFrame>(find.byType(ExpenseFrame)).step, 1);
+        expect(repo.savedFiles, repo.initialFiles);
+        final firstRect = tester.getRect(body);
+        await tester.pump(const Duration(milliseconds: 16));
+        expect(tester.getRect(body), firstRect);
+        await tester.pumpAndSettle();
+        expect(tester.getRect(body), firstRect);
+        tester.state<ScrollableState>(scroll).position.jumpTo(0);
+        await tester.pumpAndSettle();
+        final back = find.byTooltip('Paso anterior');
+        await tester.ensureVisible(back);
+        await tester.pumpAndSettle();
+        await tester.tap(back);
+        await tester.pump();
+        expect(tester.widget<ExpenseFrame>(find.byType(ExpenseFrame)).step, 0);
+        await tester.pumpAndSettle();
+        expect(repo.savedFiles, repo.initialFiles);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   for (final scale in [1.0, 2.0]) {
     testWidgets(
       'description requires content and incomplete save remains available at $scale',
