@@ -204,6 +204,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
           title,
           style: const TextStyle(
             fontSize: 12,
+            height: 1.55,
             fontWeight: FontWeight.w600,
             color: muted,
           ),
