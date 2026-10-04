@@ -164,6 +164,54 @@ void main() {
       await tester.pumpAndSettle();
       expect(repo.reads, 1);
       expect(tester.widget<TextField>(phone).controller!.text, '8188888888');
+      final experience = find.byKey(
+        const ValueKey('verification-field-experience'),
+      );
+      await tester.scrollUntilVisible(
+        experience,
+        200,
+        maxScrolls: 20,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('verification-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+      const authored =
+          'He acompañado rescates y recuperación de mascotas. '
+          'Conservo los comprobantes y coordino sus consultas veterinarias.';
+      await tester.enterText(experience, authored);
+      await tester.pumpAndSettle();
+      final decoration = find.descendant(
+        of: experience,
+        matching: find.byType(InputDecorator),
+      );
+      expect(tester.getSize(decoration).height, greaterThanOrEqualTo(112));
+      resumeVerification(tester);
+      await tester.pumpAndSettle();
+      expect(repo.reads, 1);
+      expect(tester.widget<TextField>(experience).controller!.text, authored);
+      await tester.tap(find.byTooltip('Volver'));
+      await tester.pumpAndSettle();
+      expect(find.text('Hay cambios sin guardar'), findsOneWidget);
+      await tester.tap(find.text('Seguir editando'));
+      await tester.pumpAndSettle();
+      expect(tester.widget<TextField>(experience).controller!.text, authored);
+      await tester.scrollUntilVisible(
+        phone,
+        -200,
+        maxScrolls: 20,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('verification-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+      expect(tester.widget<TextField>(phone).controller!.text, '8188888888');
       expect(tester.takeException(), isNull);
     },
   );

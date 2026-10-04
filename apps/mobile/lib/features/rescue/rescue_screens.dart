@@ -1479,6 +1479,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     return await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
+            scrollable: true,
             title: const Text('Hay cambios sin guardar'),
             content: const Text(
               'Guarda el borrador antes de salir para conservarlos.',
