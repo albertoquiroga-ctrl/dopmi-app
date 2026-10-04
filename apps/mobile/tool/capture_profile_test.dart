@@ -3939,6 +3939,34 @@ void main() {
                 .writeAsString(jsonEncode(geometry));
           });
         }
+        if (spec.$1 == 'profile-settings') {
+          final back = tester.getRect(
+            find.descendant(
+              of: find.byTooltip('Regresar'),
+              matching: find.byType(SvgPicture),
+            ),
+          );
+          final target = tester.getRect(
+            find
+                .ancestor(
+                  of: find.byTooltip('Regresar'),
+                  matching: find.byType(IconButton),
+                )
+                .first,
+          );
+          expect(target.shortestSide, greaterThanOrEqualTo(48));
+          await tester.runAsync(() async {
+            await File('${out.path}/profile-settings-header-geometry.json')
+                .writeAsString(
+                  jsonEncode({
+                    'centerX': back.center.dx,
+                    'centerY': back.center.dy,
+                    'targetWidth': target.width,
+                    'targetHeight': target.height,
+                  }),
+                );
+          });
+        }
         if (spec.$1 == 'help-center') {
           final title = tester.getRect(find.text('Centro de ayuda'));
           await tester.runAsync(() async {

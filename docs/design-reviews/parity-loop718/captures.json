@@ -1,0 +1,34 @@
+[
+  {
+    "file": "profile-settings-footer-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "411b862399512f3ffb76042f9237355dcd60a5616182a9800e2eb9e35aa9065a"
+  },
+  {
+    "file": "profile-settings-footer.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "ade47b463a72b2cc33b1748b74692108c36a733200b27095346f840570b35dd0"
+  },
+  {
+    "file": "profile-settings-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "d5e9ef82ca9598bce728b3baf9759f7d26d0bcec69d9e717bea7a288b16aaf87"
+  },
+  {
+    "file": "profile-settings.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "a9bd24a037d4eda6ec11bf716fa1fd5ea72870baaa1544fbe4eb1716f6e5feed"
+  }
+]

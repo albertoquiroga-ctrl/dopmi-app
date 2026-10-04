@@ -1280,7 +1280,7 @@ class ProfileFrame extends StatelessWidget {
                     ),
                   )
                 : null,
-            leadingWidth: rescuerSettings ? 62 : null,
+            leadingWidth: rescuerSettings ? (standardSettings ? 60 : 62) : null,
             shape: rescuerSettings
                 ? Border(
                     bottom: BorderSide(
@@ -1292,7 +1292,9 @@ class ProfileFrame extends StatelessWidget {
                 : null,
             leading: back
                 ? Padding(
-                    padding: EdgeInsets.only(left: rescuerSettings ? 14 : 0),
+                    padding: EdgeInsets.only(
+                      left: rescuerSettings ? (standardSettings ? 12 : 14) : 0,
+                    ),
                     child: IconButton(
                       tooltip: 'Regresar',
                       icon: rescuerSettings
