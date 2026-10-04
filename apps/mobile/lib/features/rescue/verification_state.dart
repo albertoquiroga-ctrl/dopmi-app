@@ -21,6 +21,7 @@ class VerificationStateScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => VerificationFormFrame(
     title: approved ? 'Verificación' : 'Verificación en revisión',
+    rescuer: approved,
     onBack: loading ? null : onBack,
     bodyPadding: approved
         ? EdgeInsets.zero

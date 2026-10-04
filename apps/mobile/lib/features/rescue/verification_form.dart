@@ -7,10 +7,12 @@ class VerificationFormFrame extends StatelessWidget {
     required this.children,
     this.onBack,
     this.title = 'Formulario de verificación',
+    this.rescuer = true,
     this.bodyPadding = const EdgeInsets.fromLTRB(16, 20, 16, 32),
   });
   final List<Widget> children;
   final String title;
+  final bool rescuer;
   final EdgeInsets bodyPadding;
   final VoidCallback? onBack;
   @override
@@ -20,8 +22,14 @@ class VerificationFormFrame extends StatelessWidget {
       child: Column(
         children: [
           DecoratedBox(
-            decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: Color(0xffe3e4ed))),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: rescuer
+                      ? const Color(0xffe3e4ed)
+                      : const Color(0xffe6e2dd),
+                ),
+              ),
             ),
             child: ConstrainedBox(
               constraints: const BoxConstraints(minHeight: 68),
@@ -51,13 +59,15 @@ class VerificationFormFrame extends StatelessWidget {
                       child: Text(
                         title,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 18,
                           height: 1.25,
                           letterSpacing: -.36,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xff151423),
+                          color: rescuer
+                              ? const Color(0xff151423)
+                              : const Color(0xff15110d),
                         ),
                       ),
                     ),
