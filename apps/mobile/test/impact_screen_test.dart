@@ -42,6 +42,23 @@ class ImpactCommunity extends FakeCommunity {
   }
 }
 
+class UnavailableImpactAuthor extends FakeRescue {
+  UnavailableImpactAuthor(this.fail);
+  final bool fail;
+  @override
+  Future<DataPage<RescueRecord>> completeCaseCatalog(String caseId) async {
+    if (fail) throw StateError('Public catalog unavailable');
+    return const DataPage([], 0);
+  }
+}
+
+class DelayedImpactAuthor extends FakeRescue {
+  final reply = Completer<DataPage<RescueRecord>>();
+  @override
+  Future<DataPage<RescueRecord>> completeCaseCatalog(String caseId) =>
+      reply.future;
+}
+
 const contributionCase = {
   'case_id': 'approved-case',
   'allocated_cents': 7525,
@@ -57,6 +74,7 @@ void main() {
     ImpactCommunity repo, {
     double scale = 1,
     FakeGuardian? guardian,
+    RescueRepository? rescue,
   }) async {
     tester.view.physicalSize = const Size(320, 640);
     tester.view.devicePixelRatio = 1;
@@ -70,7 +88,7 @@ void main() {
       overrides: [
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(repo),
-        rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+        rescueRepositoryProvider.overrideWithValue(rescue ?? FakeRescue()),
         guardianEnabledProvider.overrideWithValue(guardian != null),
         if (guardian != null)
           guardianRepositoryProvider.overrideWithValue(guardian),
@@ -109,6 +127,72 @@ void main() {
     expect(find.text('Por Refugio Luna'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  for (final fail in [false, true]) {
+    testWidgets(
+      'Unavailable attribution preserves approved advance and amount: fail=$fail',
+      (tester) async {
+        await start(
+          tester,
+          ImpactCommunity()
+            ..items = [
+              {...contributionCase, 'case_id': 'case-one'},
+            ],
+          rescue: UnavailableImpactAuthor(fail),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('Avance publicado'), findsOneWidget);
+        expect(find.text(r'$75.25 MXN'), findsOneWidget);
+        expect(find.text('Por Refugio Luna'), findsNothing);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
+  testWidgets(
+    'A late public author cannot restore the previous account impact',
+    (tester) async {
+      final rescue = DelayedImpactAuthor();
+      final repo = ImpactCommunity()
+        ..items = [
+          {...contributionCase, 'case_id': 'case-one'},
+        ];
+      final identity = await start(tester, repo, rescue: rescue);
+      expect(find.text('Por Refugio Luna'), findsNothing);
+      repo.items = [];
+      identity.profile = const Profile(
+        id: 'two',
+        name: 'Segunda cuenta',
+        phone: '',
+        city: '',
+        mode: 'donor',
+        intent: 'adopt',
+        status: 'active',
+        termsVersion: currentTermsVersion,
+        privacyVersion: currentPrivacyVersion,
+        adultConfirmed: true,
+      );
+      identity.emit(
+        const IdentityEvent(
+          Identity('two', 'two@example.test', verified: true),
+        ),
+      );
+      await tester.pumpAndSettle();
+      GoRouter.of(tester.element(find.byType(Scaffold).first)).go('/impact');
+      await tester.pumpAndSettle();
+      expect(repo.reads, greaterThan(1));
+      rescue.reply.complete(DataPage([rescue.caseRecord], 1));
+      await tester.pumpAndSettle();
+      expect(find.text('Por Refugio Luna'), findsNothing);
+      expect(find.text('Avance publicado'), findsNothing);
+      expect(find.text(r'$75.25 MXN'), findsNothing);
+      expect(
+        find.text('Aquí verás las mascotas que hayas apoyado'),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('Long press on publication age reveals the exact local date', (
     tester,
