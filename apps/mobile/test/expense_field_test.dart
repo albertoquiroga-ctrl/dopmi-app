@@ -11,7 +11,11 @@ import 'publication_frame_test.dart' show startPublication;
 import 'rescue_test.dart' show FakeRescue;
 
 class DraftExpenseRescue extends FakeRescue {
-  DraftExpenseRescue({this.initialFiles = const []});
+  DraftExpenseRescue({
+    this.initialFiles = const [
+      {'role': 'receipt', 'path': 'one/expense-one/receipt.pdf'},
+    ],
+  });
   final List<Json> initialFiles;
   List<Json>? savedFiles;
   Json? publicSaved;
@@ -93,6 +97,60 @@ void resumeExpense(WidgetTester tester) {
 }
 
 void main() {
+  for (final scale in [1.0, 2.0]) {
+    testWidgets(
+      'receipt step blocks advance but saves incomplete draft at $scale',
+      (tester) async {
+        tester.view.physicalSize = const Size(320, 640);
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        final repo = DraftExpenseRescue(
+          initialFiles: const [
+            {'role': 'public', 'path': 'one/expense-one/photo.jpg'},
+            {'role': 'receipt', 'path': ''},
+          ],
+        );
+        await startPublication(
+          tester,
+          FakeCommunity(),
+          '/rescue/expense-one',
+          rescue: repo,
+        );
+        final scroll = find
+            .descendant(
+              of: find.byKey(const ValueKey('expense-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first;
+        final next = find.text('Siguiente');
+        await tester.scrollUntilVisible(next, 300, scrollable: scroll);
+        await tester.pumpAndSettle();
+        expect(
+          tester
+              .widget<FilledButton>(
+                find.ancestor(of: next, matching: find.byType(FilledButton)),
+              )
+              .onPressed,
+          isNull,
+        );
+        await tester.tap(next);
+        await tester.pumpAndSettle();
+        expect(repo.savedFiles, isNull);
+        expect(find.text('Enviar a revisión'), findsNothing);
+        final save = find.text('Guardar progreso');
+        await tester.ensureVisible(save);
+        await tester.pumpAndSettle();
+        await tester.tap(save);
+        await tester.pumpAndSettle();
+        expect(repo.savedFiles, repo.initialFiles);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   testWidgets(
     'receipt and later evidence stay separate and retain files on back',
     (tester) async {
@@ -429,7 +487,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(remove);
       await tester.pumpAndSettle();
-      final next = find.text('Siguiente');
+      final next = find.text('Guardar progreso');
       await tester.scrollUntilVisible(
         next,
         300,

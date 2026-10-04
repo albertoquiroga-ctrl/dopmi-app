@@ -2530,7 +2530,16 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                                 await save();
                                 if (mounted) await closeExpenseEditor();
                               }),
-                        onNext: busy
+                        onNext:
+                            busy ||
+                                (step == 0 &&
+                                    !files.any(
+                                      (file) =>
+                                          file['role'] == 'receipt' &&
+                                          (file['path']?.toString().trim() ??
+                                                  '')
+                                              .isNotEmpty,
+                                    ))
                             ? null
                             : () => run(() async {
                                 if (step < 2) {
