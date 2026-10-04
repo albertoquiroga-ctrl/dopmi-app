@@ -1,0 +1,3 @@
+## 2026-10-03 — Loop 546: regresión completa611
+
+Fuente b7e988d82d7c9624a65a8778316e8f52d0be2dee,producción48820c3,testrepairc66230a. Full94132 terminalexit0,611/611,3m23s; analyzer98423terminalexit0limpio184.3s.230Dart/cuatroSVG igualesraíz-scratchantes/después,hashessin cambios. Manifest546supersede610pass/1fail545 yfull609531. Incluye532–544 ydospruebas539. Source remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Inventario407541;capturadorcompleto403525anterior,dirigidasposterioresno407pasadafullniaceptaciones. ADB545vacío,físico/StripeSDK/contrasteglobal pendientes. Sinpush/Codemagic.
