@@ -1,3 +1,18 @@
+# Corte vigente — loop633, 4/10/2026
+
+Referencia: `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`. Este corte supersede los pendientes contradictorios de cortes anteriores; no cierra la paridad global.
+
+| Alcance | Evidencia vigente y pendiente |
+| --- | --- |
+| Regresión | Full705/705 loop629 sobre d561fac; 16configuración. Producción633 posterior: gate dirigido14/14 y analyze limpio6.9s. |
+| Perfil/Publicar/Impacto/Pagos | Geometría del diálogo609 corregida; Publicar615–617 e Impacto600–605 cuentan con evidencia dirigida. Falta cierre visual de todos los estados y aceptación instalada. |
+| Gastos/evidencia | Recibo requerido623; foto primero624; descripción separada626/presentación627/requerida628; capturas200630; transición Source631/cliente632; paleta review633. Guardado/roles/privacidad conservados. Falta contraste completo de estados, presión de editar/acciones y capacidades nativas. |
+| Cobertura visual global | 407capturas599 anteriores600+. Capturas de familias recientes no sustituyen nueva pasada global ni equivalen a pantallas aceptadas. Todas las familias NAV/AUTH/DISC/FILTER/PET/MATCH/SAVED/CHAT/PROFILE/SETTINGS/SUPPORT/CASE/STORY/PUBLIC/IMPACT/RH/RC/PUBLISH/VERIFY/EVIDENCE/RP/PAYMENT/GUARD/REPORT/LEGAL siguen dentro del alcance. |
+| Aceptación nativa | ADB vacío629. Selector/fotos/teclado/share/gestos físicos/suspensión/red y SDKs reales de prueba requieren evidencia instalada actual. No copiar simulaciones o hover. |
+| Entrega | Codemagic android-guardian-internal al completar objetivo; publicar Play se verifica por separado. Sin dinero live autorizado. |
+
+Siguiente tarea concreta: presión de acciones de revisión del gasto y enlaces Editar con callbacks reales; después renovar matriz visual global y contrastar discrepancias restantes.
+
 # Corte vigente — loop618, 4/10/2026
 
 ## 2026-10-04 — Loop618: regresión integrada de Publicar y diálogo
