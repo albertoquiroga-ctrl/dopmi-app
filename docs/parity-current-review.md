@@ -1,3 +1,5 @@
+> Loop658: guardar invitado abre login; Back conserva Rocky/Perros, observado en runtime Android actualizado. [Evidencia](design-reviews/parity-loop658/README.md). APK656 sigue anterior657; no aceptación global ni autenticación completa.
+
 > Loop657: guardar sin cuenta pide login y conserva mascota;23/23/analyze limpio. [Evidencia](design-reviews/parity-loop657/README.md). Defecto observado en APK656, reparación aún pendiente de repetir en Android; no cierre de paridad global.
 
 > Loop656: APK nuevo compilado/instalado, hash local=base.apk; descarte Rocky→Toby y arrastre corto conservando Toby repetidos desde binario. [Evidencia](design-reviews/parity-loop656/README.md). Supersede limitación APK655 para este gesto; no aceptación global/física ni temporización Source.
