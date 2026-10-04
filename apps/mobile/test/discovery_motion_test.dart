@@ -67,6 +67,28 @@ void main() {
     return repo;
   }
 
+  for (final distance in [-9.0, -8.0, -7.0, 7.0, 8.0, 9.0]) {
+    testWidgets('reference tap versus short drag boundary: $distance pixels', (
+      tester,
+    ) async {
+      final repo = await open(tester);
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.text('Luna')),
+      );
+      await gesture.moveBy(Offset(distance, 0));
+      await tester.pump();
+      await gesture.up();
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Quiero adoptar'),
+        distance.abs() < 8 ? findsOneWidget : findsNothing,
+      );
+      expect(repo.post.saved, false);
+      expect(find.text('Milo'), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
   testWidgets(
     'card follows finger immediately, threshold returns, cancel never saves, exit lasts 280ms',
     (tester) async {

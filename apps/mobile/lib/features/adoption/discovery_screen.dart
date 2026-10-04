@@ -19,6 +19,7 @@ import 'location_service.dart';
 import 'discovery_filters.dart';
 import 'discovery_empty.dart';
 import 'discovery_card_motion.dart';
+import 'discovery_drag_surface.dart';
 
 double discoveryMediaHeight(BuildContext context) => math.max(
   (MediaQuery.sizeOf(context).height - 220).clamp(340, 560) - 128,
@@ -589,7 +590,7 @@ class _SupportCard extends StatelessWidget {
   String amount(int cents) =>
       (cents / 100).toStringAsFixed(cents % 100 == 0 ? 0 : 2);
   @override
-  Widget build(BuildContext context) => GestureDetector(
+  Widget build(BuildContext context) => DiscoveryDragSurface(
     dragStartBehavior: DragStartBehavior.down,
     onHorizontalDragStart: busy ? null : (_) => onStart(),
     onHorizontalDragUpdate: busy
@@ -834,7 +835,7 @@ class _SwipeCard extends StatelessWidget {
   final ValueChanged<double> onDrag;
   final VoidCallback onStart, onCancel, onEnd, pass, like, contact, open;
   @override
-  Widget build(BuildContext context) => GestureDetector(
+  Widget build(BuildContext context) => DiscoveryDragSurface(
     dragStartBehavior: DragStartBehavior.down,
     onHorizontalDragStart: busy ? null : (_) => onStart(),
     onHorizontalDragUpdate: busy

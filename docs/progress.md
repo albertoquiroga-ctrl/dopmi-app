@@ -2698,3 +2698,7 @@ Source Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Sombr
 ## 2026-10-03 — Loop562: gesto horizontal de tarjetas
 
 Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Source usa clientX-startX; cliente bajo Transform convertía desplazamiento a coordenada rotada. GestureDetector fuera de DiscoveryCardMotion en adopción y apoyo:30px de dedo producen30px durante entrada izquierda/derecha, sin cambio a curvas/duración/umbrales ni persistencia. Primer21712 44/1 falló apoyo aún interno; corregido también. Final3755 exit0,45/45,analyzer7172 exit0 limpio14.5s. Evidencia/manifiesto raíz-scratch docs/design-reviews/parity-loop562. No nuevo contraste temporal runtime Source ni dedo/dispositivo físico/global aceptados. Sin push/Codemagic.
+
+## 2026-10-03 — Loop563: toque versus arrastre corto
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Source detalle sólo absdelta<8; recognizerFluttergeneral podía abrir con8/9. DiscoveryDragSurface/HorizontalDragGestureRecognizer específico acepta absdistanciaglobal>=8 en adopción/apoyo, sin cambiosglobales/hover. Seis nuevas pruebas±7/±8/±9 verifican apertura sólo7 y ninguna escritura/avance. Gate82952 exit0,51/51,12s. Analyzer86078 importinnecesario; retirado dart:ui ya reexportado, final59811 exit0 limpio26.9s. Manifiesto/evidencia563 y cortevigente actualizado; full557 anterior559–563 no gateactualcompleto. Sin aceptación física/temporalSource/global ni push/Codemagic.
