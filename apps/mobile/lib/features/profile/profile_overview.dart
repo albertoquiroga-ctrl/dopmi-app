@@ -535,11 +535,30 @@ class DonorModeDialog extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: 4,
+            // Source: right16 plus the 26.5625px button's half width.
+            right: 5.28125,
             top: 0,
             child: IconButton(
               tooltip: 'Cerrar',
-              icon: const Icon(Icons.close, size: 22, color: muted),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              icon: const Text(
+                '×',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 22,
+                  height: 1,
+                  color: muted,
+                ),
+                strutStyle: StrutStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 22,
+                  height: 1,
+                  forceStrutHeight: true,
+                ),
+              ),
               onPressed: () => Navigator.pop(context, false),
             ),
           ),

@@ -1,0 +1,18 @@
+{
+  "close": {
+    "height": 24,
+    "width": 26.5625,
+    "x": 318.4375,
+    "y": 107.640625
+  },
+  "dialog": {
+    "height": 660.71875,
+    "width": 345,
+    "x": 16,
+    "y": 95.640625
+  },
+  "font": "22px / 22px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+  "fontFamily": "Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+  "line": "22px",
+  "padding": "1px 6px"
+}
