@@ -1,0 +1,19 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart
+00:00 +0: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: cancel and close never create a thread
+00:02 +1: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: cancel and close never create a thread
+00:02 +2: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart: changing publication resets gallery even with shared photo paths
+00:02 +3: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_press_test.dart: contact confirmation press and cancel: Sí, contactar rescatista/false
+00:02 +4: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart: saved detail favorite carries reference shadow and removes it on unsave
+00:03 +5: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart: saved detail favorite carries reference shadow and removes it on unsave
+00:03 +6: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: failed contact retains card and only success opens conversation
+00:03 +7: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_press_test.dart: contact confirmation press and cancel: Todavía no/true
+00:03 +8: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_press_test.dart: contact confirmation press and cancel: Todavía no/true
+00:03 +9: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: large text scrolls to confirmation with close always reachable
+00:03 +10: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: large text scrolls to confirmation with close always reachable
+00:03 +11: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_press_test.dart: contact confirmation press and cancel: Sí, contactar rescatista/true
+00:03 +12: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart: detail carries server-calculated discovery distance without fabricating it
+00:04 +13: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_press_test.dart: contact confirmation press and cancel: Cerrar/true
+00:04 +14: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart: badge requires server verification and care remains accessible
+00:04 +15: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart: real gallery tracks swipes and retries only approved photo paths
+00:04 +16: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart: large text keeps contact and save fixed while content scrolls
+00:04 +17: All tests passed!

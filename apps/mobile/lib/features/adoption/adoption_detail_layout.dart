@@ -120,6 +120,7 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                                 tooltip: 'Volver',
                                 onPressed: back,
                                 style: IconButton.styleFrom(
+                                  overlayColor: Colors.transparent,
                                   backgroundColor: Colors.white.withValues(
                                     alpha: .72,
                                   ),
@@ -147,6 +148,10 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(99),
                               child: InkWell(
+                                splashFactory: NoSplash.splashFactory,
+                                overlayColor: const WidgetStatePropertyAll(
+                                  Colors.transparent,
+                                ),
                                 borderRadius: BorderRadius.circular(99),
                                 onTap: () =>
                                     context.push('/people/${post.owner}'),
