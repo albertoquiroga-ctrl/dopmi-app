@@ -1,3 +1,5 @@
+import 'publication_age.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -172,7 +174,6 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
   @override
   void initState() {
     super.initState();
-    fields['age_months']!.text = '0';
     if (widget.id != 'new') load();
   }
 
@@ -252,7 +253,13 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       if (widget.rescueCaseId != null || post?.data['rescue_case_id'] != null)
         'rescue_case_id': widget.rescueCaseId ?? post?.data['rescue_case_id'],
     };
-    payload['age_months'] = int.tryParse(fields['age_months']!.text) ?? 0;
+    final age = publicationAgeMonths(fields['age_months']!.text);
+    if (age == null) {
+      throw const FormatException(
+        'Escribe una edad válida en meses o años, hasta 30 años.',
+      );
+    }
+    payload['age_months'] = age;
     final result = await repo.save(
       payload,
       id: post?.id,
@@ -339,15 +346,15 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
               height: 20 / 16,
               color: Color(0xff151423),
             ),
-            keyboardType: key == 'age_months'
-                ? TextInputType.number
-                : lines > 1
+            keyboardType: lines > 1
                 ? TextInputType.multiline
                 : TextInputType.text,
             decoration: InputDecoration(
               isDense: true,
               hintText: key == 'pet_name'
                   ? 'Opcional'
+                  : key == 'age_months'
+                  ? 'ej. 3 meses'
                   : key == 'story'
                   ? 'Cuenta cómo la encontraste.'
                   : null,
@@ -373,9 +380,9 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
             ),
             validator: key == 'age_months'
                 ? (value) {
-                    final months = int.tryParse(value ?? '');
+                    final months = publicationAgeMonths(value ?? '');
                     return months == null || months < 0 || months > 360
-                        ? 'Escribe de 0 a 360 meses.'
+                        ? 'Escribe una edad válida en meses o años, hasta 30 años.'
                         : null;
                   }
                 : null,
@@ -554,13 +561,8 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                   'dog': 'Perro',
                   'cat': 'Gato',
                 }),
-                field('age_months', 'Edad aproximada en meses', 3),
-                field(
-                  'story',
-                  'Historia de rescate',
-                  4000,
-                  lines: 3,
-                ),
+                field('age_months', 'Edad', 40),
+                field('story', 'Historia de rescate', 4000, lines: 3),
                 PublicationTraitCard(
                   title: 'Salud',
                   children: [
@@ -749,7 +751,10 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                             ? 'Gato'
                             : 'Por confirmar',
                       ),
-                      ('Edad', '${fields['age_months']!.text.trim()} meses'),
+                      (
+                        'Edad',
+                        '${publicationAgeMonths(fields['age_months']!.text) ?? 0} meses',
+                      ),
                       ('Historia', fields['story']!.text.trim()),
                       (
                         'Ubicación',

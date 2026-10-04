@@ -52,6 +52,31 @@ Future<void> startPublication(
 
 void main() {
   testWidgets(
+    'age expression saves real months and invalid age preserves draft',
+    (tester) async {
+      final repo = PhotoDraftCommunity();
+      await startPublication(tester, repo, '/my-adoptions/${repo.post.id}');
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
+      final age = find.byKey(const ValueKey('publication-field-age_months'));
+      await tester.ensureVisible(age);
+      await tester.enterText(age, '1 año y 6 meses');
+      await tester.tap(find.text('Guardar borrador'));
+      await tester.pumpAndSettle();
+      expect(repo.savedPayload?['age_months'], 18);
+      await tester.enterText(age, 'edad desconocida');
+      await tester.tap(find.text('Guardar borrador'));
+      await tester.pumpAndSettle();
+      expect(repo.savedPayload?['age_months'], 18);
+      expect(
+        tester.widget<TextFormField>(age).controller!.text,
+        'edad desconocida',
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'health checkbox preserves yes no and unknown in the real draft',
     (tester) async {
       tester.view.physicalSize = const Size(320, 640);
