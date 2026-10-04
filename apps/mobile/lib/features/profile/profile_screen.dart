@@ -589,7 +589,28 @@ class _BasicInfoField extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 7),
-        child,
+        Theme(
+          data: Theme.of(context).copyWith(
+            inputDecorationTheme: Theme.of(context).inputDecorationTheme
+                .copyWith(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: Color(0xffe6e2dd)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(
+                      color: Color(0xff6b5000),
+                      width: 2,
+                    ),
+                  ),
+                ),
+          ),
+          child: child,
+        ),
       ],
     ),
   );
