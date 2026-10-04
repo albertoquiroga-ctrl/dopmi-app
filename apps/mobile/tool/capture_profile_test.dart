@@ -1298,6 +1298,9 @@ void main() {
       ('expense-evidence-large', '/rescue/expense-one'),
       ('expense-information', '/rescue/expense-one'),
       ('expense-information-large', '/rescue/expense-one'),
+      ('expense-description', '/rescue/expense-one'),
+      ('expense-description-large', '/rescue/expense-one'),
+      ('expense-description-footer-large', '/rescue/expense-one'),
       ('expense-private', '/rescue/expense-one'),
       ('expense-private-large', '/rescue/expense-one'),
       ('verification-intro', '/rescue/new?kind=verification'),
@@ -3214,6 +3217,8 @@ void main() {
         await tester.pumpAndSettle();
         final target = spec.$1.startsWith('expense-private')
             ? find.text('Importe pagado en pesos MXN')
+            : spec.$1.startsWith('expense-description')
+            ? find.text('Describe la evidencia')
             : find.text('Información para publicación');
         await tester.scrollUntilVisible(
           target,
@@ -3221,6 +3226,19 @@ void main() {
           scrollable: find.byType(Scrollable).first,
         );
         await Scrollable.ensureVisible(tester.element(target), alignment: .1);
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1 == 'expense-description-footer-large') {
+        final note = find.text(
+          'El reembolso requiere evidencia revisada y aprobada por Dopmi.',
+        );
+        await tester.scrollUntilVisible(
+          note,
+          300,
+          maxScrolls: 100,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await Scrollable.ensureVisible(tester.element(note), alignment: 0);
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('verification-form')) {
