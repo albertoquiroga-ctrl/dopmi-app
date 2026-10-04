@@ -101,6 +101,7 @@ Future<(String, String)?> showContentReportSheet(
   Future<void> Function(String reason, String details)? onSubmit,
 }) => showDialog<(String, String)>(
   context: context,
+  barrierDismissible: false,
   barrierColor: const Color(0x7a15110d),
   animationStyle: AnimationStyle.noAnimation,
   builder: (_) => _ContentReportSheet(title: title, onSubmit: onSubmit),

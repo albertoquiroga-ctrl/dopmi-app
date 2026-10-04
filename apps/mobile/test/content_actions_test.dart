@@ -328,7 +328,18 @@ void main() {
           if (cancel == 'back') {
             await tester.binding.handlePopRoute();
           } else if (cancel == 'barrier') {
+            await tester.enterText(find.byType(TextField), 'Borrador conservado');
             await tester.tapAt(const Offset(4, 4));
+            await tester.pumpAndSettle();
+            expect(returned, false);
+            expect(find.byType(Dialog), findsOneWidget);
+            expect(
+              tester.widget<TextField>(find.byType(TextField)).controller!.text,
+              'Borrador conservado',
+            );
+            await tester.ensureVisible(find.text('Cancelar'));
+            await tester.pumpAndSettle();
+            await tester.tap(find.text('Cancelar'));
           } else if (cancel == 'Cerrar') {
             await tester.tap(find.byTooltip('Cerrar'));
           } else {

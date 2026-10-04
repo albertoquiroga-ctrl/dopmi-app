@@ -3504,3 +3504,7 @@ Source/help recibido ejecutado: Entendido amarillo/48px/transition0/transformnon
 ### 2026-10-04 - Loop752: borde y altura del adjunto de soporte
 
 Source/help con fixturemilo local muestra preview305x140 incluyendo borde1/boxsizingborderbox/cover. Prueba43022 exit1 reproduce142cliente frente140; height140 pasa al contenedor exterior conservando imagen/borde/radio/cover. Final69263 exit0:12/12, reintento conserva uploadID/ruta. Capture8182 exit0:1/1 en5s/dosPNG inspeccionados normal200/hash; analyze8182 limpio42.5s/diffchecksinerror. Source a3c969c inicio/cierre. No tests nuevos, Source envio simulado no servicio verificado. Full748 yAPK anteriores749/751/752; nativa/global siguenabiertas. SinCodemagic/dineroreal. Ver docs/design-reviews/parity-loop752.
+
+### 2026-10-04 - Loop753: reporte conserva borrador al tocar fondo
+
+Source/publicMariaR ejecutado con mouse4,4 conserva reporte/borrador; Flutterbarriertrue lo cerraba. barrierDismissiblefalse alinea gesto, Cancelar/Cerrar/Back y guardaspendiente conservados. Testsnormal200 verifican borrador trasfondo y cancelacionexplicita. Gate53508 exit0:13/13 en3s/analyze limpio51.1s. Capture48959 exit0:7PNG previos a barrera/layoutinmutable;6normal200 inspeccionados. Acción error200 pegada al borde detectada, medicionpendiente; noaceptacionglobal. Source a3c969c inicio/cierre, browsercerrado. Full748/APK anteriores recientes; sinCodemagic/nativa/dineroreal. Ver docs/design-reviews/parity-loop753.
