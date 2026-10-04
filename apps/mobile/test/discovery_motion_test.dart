@@ -67,6 +67,33 @@ void main() {
     return repo;
   }
 
+  for (final large in [false, true]) {
+    for (final right in [false, true]) {
+      testWidgets(
+        'burst pointer movement accumulates before redraw: $large/$right',
+        (tester) async {
+          final repo = await open(tester, large: large);
+          final gesture = await tester.startGesture(
+            tester.getCenter(find.text('Luna')),
+          );
+          for (var step = 0; step < 4; step++) {
+            await gesture.moveBy(Offset(right ? 40 : -40, 0));
+          }
+          await tester.pump();
+          final motion = tester.widget<DiscoveryCardMotion>(
+            find.byKey(const ValueKey('discovery-motion-post')),
+          );
+          expect(motion.translation, closeTo(right ? 160 : -160, .001));
+          await gesture.up();
+          await tester.pumpAndSettle();
+          expect(find.text('Milo'), findsOneWidget);
+          expect(repo.post.saved, right);
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+  }
+
   for (final distance in [-9.0, -8.0, -7.0, 7.0, 8.0, 9.0]) {
     testWidgets('reference tap versus short drag boundary: $distance pixels', (
       tester,

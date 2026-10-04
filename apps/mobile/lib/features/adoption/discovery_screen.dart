@@ -431,7 +431,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                   dragging: dragging,
                   exiting: exiting,
                   busy: acting,
-                  onDrag: (value) => setState(() => dragX = value),
+                  onDragDelta: (value) => setState(() => dragX += value),
                   onStart: () => setState(() => dragging = true),
                   onCancel: () => setState(() {
                     dragging = false;
@@ -471,7 +471,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                   dragX: dragX,
                   dragging: dragging,
                   exiting: exiting,
-                  onDrag: (value) => setState(() => dragX = value),
+                  onDragDelta: (value) => setState(() => dragX += value),
                   onStart: () => setState(() => dragging = true),
                   onCancel: () => setState(() {
                     dragging = false;
@@ -574,7 +574,7 @@ class _SupportCard extends StatelessWidget {
     required this.dragging,
     required this.exiting,
     required this.entryDirection,
-    required this.onDrag,
+    required this.onDragDelta,
     required this.onStart,
     required this.onCancel,
     required this.onEnd,
@@ -585,7 +585,7 @@ class _SupportCard extends StatelessWidget {
   final bool busy, dragging;
   final double dragX;
   final int exiting, entryDirection;
-  final ValueChanged<double> onDrag;
+  final ValueChanged<double> onDragDelta;
   final VoidCallback onStart, onCancel, onEnd, pass, open;
   String amount(int cents) =>
       (cents / 100).toStringAsFixed(cents % 100 == 0 ? 0 : 2);
@@ -595,7 +595,7 @@ class _SupportCard extends StatelessWidget {
     onHorizontalDragStart: busy ? null : (_) => onStart(),
     onHorizontalDragUpdate: busy
         ? null
-        : (event) => onDrag(dragX + event.delta.dx),
+        : (event) => onDragDelta(event.delta.dx),
     onHorizontalDragEnd: busy ? null : (_) => onEnd(),
     onHorizontalDragCancel: busy ? null : onCancel,
     child: DiscoveryCardMotion(
@@ -818,7 +818,7 @@ class _SwipeCard extends StatelessWidget {
     required this.exiting,
     required this.entryDirection,
     required this.busy,
-    required this.onDrag,
+    required this.onDragDelta,
     required this.onStart,
     required this.onCancel,
     required this.onEnd,
@@ -832,7 +832,7 @@ class _SwipeCard extends StatelessWidget {
   final bool dragging;
   final int exiting, entryDirection;
   final bool busy;
-  final ValueChanged<double> onDrag;
+  final ValueChanged<double> onDragDelta;
   final VoidCallback onStart, onCancel, onEnd, pass, like, contact, open;
   @override
   Widget build(BuildContext context) => DiscoveryDragSurface(
@@ -840,7 +840,7 @@ class _SwipeCard extends StatelessWidget {
     onHorizontalDragStart: busy ? null : (_) => onStart(),
     onHorizontalDragUpdate: busy
         ? null
-        : (event) => onDrag(dragX + event.delta.dx),
+        : (event) => onDragDelta(event.delta.dx),
     onHorizontalDragEnd: busy ? null : (_) => onEnd(),
     onHorizontalDragCancel: busy ? null : onCancel,
     child: DiscoveryCardMotion(
