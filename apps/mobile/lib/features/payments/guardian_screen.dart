@@ -1297,17 +1297,25 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   const SizedBox(height: 10),
                   if (enabled)
                     OutlinedButton.icon(
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: ink,
-                        minimumSize: const Size.fromHeight(56),
-                        side: const BorderSide(color: Color(0xffd5cfc6)),
-                        textStyle: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        shape: const PaymentMethodBorder(),
-                      ),
+                      style:
+                          OutlinedButton.styleFrom(
+                            foregroundColor: ink,
+                            minimumSize: const Size.fromHeight(56),
+                            side: const BorderSide(color: Color(0xffd5cfc6)),
+                            textStyle: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            shape: const PaymentMethodBorder(),
+                            splashFactory: NoSplash.splashFactory,
+                          ).copyWith(
+                            overlayColor: WidgetStateProperty.resolveWith(
+                              (states) => states.contains(WidgetState.pressed)
+                                  ? Colors.transparent
+                                  : null,
+                            ),
+                          ),
                       onPressed:
                           busy ||
                               confirming ||

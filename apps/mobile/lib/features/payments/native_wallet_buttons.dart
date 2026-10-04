@@ -23,21 +23,31 @@ class NativeWalletButtons extends StatelessWidget {
     onPressed: availableProvider == provider && onPressed != null
         ? () => onPressed!(provider)
         : null,
-    style: OutlinedButton.styleFrom(
-      minimumSize: const Size(0, 56),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-      backgroundColor: Colors.white,
-      foregroundColor: const Color(0xff15110d),
-      disabledBackgroundColor: Colors.white,
-      disabledForegroundColor: const Color(0xff68635c),
-      side: const BorderSide(color: Color(0xffe6e2dd)),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-      textStyle: const TextStyle(
-        fontFamily: 'Inter',
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-      ),
-    ),
+    style:
+        OutlinedButton.styleFrom(
+          splashFactory: NoSplash.splashFactory,
+          minimumSize: const Size(0, 56),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+          backgroundColor: Colors.white,
+          foregroundColor: const Color(0xff15110d),
+          disabledBackgroundColor: Colors.white,
+          disabledForegroundColor: const Color(0xff68635c),
+          side: const BorderSide(color: Color(0xffe6e2dd)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+          textStyle: const TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ).copyWith(
+          overlayColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.pressed)
+                ? Colors.transparent
+                : null,
+          ),
+        ),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
