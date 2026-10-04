@@ -638,95 +638,106 @@ class _HistoryState extends ConsumerState<PaymentHistoryScreen> {
                       side: const BorderSide(color: Color(0xffe6e2dd)),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Column(
-                      children: [
-                        for (var i = 0; i < data.cycles.length; i++) ...[
-                          if (i > 0)
-                            const Divider(height: 1, color: Color(0xffe6e2dd)),
-                          GuardianHistoryEntry(
-                            key: ValueKey('guardian:${data.cycles[i]['id']}'),
-                            item: data.cycles[i],
-                            owner: ref
-                                .read(identityControllerProvider)
-                                .identity!
-                                .id,
-                          ),
-                        ],
-                        if (data.cycles.isNotEmpty &&
-                            data.donations.items.isNotEmpty)
-                          const Divider(height: 1, color: Color(0xffe6e2dd)),
-                        for (
-                          var i = 0;
-                          i < data.donations.items.length;
-                          i++
-                        ) ...[
-                          if (i > 0)
-                            const Divider(height: 1, color: Color(0xffe6e2dd)),
-                          for (final d in [data.donations.items[i]])
-                            PaymentHistoryRow(
-                              key: ValueKey(d['id']),
-                              payment: d,
-                              caseName: data.caseNames[d['expense_id']],
-                              onOpenCase:
-                                  d['expense_id'] is String &&
-                                      (d['expense_id'] as String).isNotEmpty
-                                  ? () => openCase(d['expense_id'] as String)
-                                  : null,
-                              details: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    d['expense_title'] as String,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleLarge,
-                                  ),
-                                  Text(
-                                    'Importe: ${pesos(d['gross_cents'] as int)}',
-                                  ),
-                                  Text(
-                                    paymentLabels[d['payment_status']] ??
-                                        'Estado en revisión',
-                                  ),
-                                  Text(
-                                    transferLabels[d['transfer_status']] ??
-                                        'Transferencia en revisión',
-                                  ),
-                                  if (d['processed_at'] != null) ...[
-                                    Text(
-                                      'Comisión Dopmi: ${pesos(d['platform_fee_cents'] as int)}',
-                                    ),
-                                    Text(
-                                      'Costos de Stripe: ${pesos(d['stripe_fee_cents'] as int)}',
-                                    ),
-                                    Text(
-                                      'Neto para el rescatista: ${pesos(d['allocated_cents'] as int)}',
-                                    ),
-                                    if ((d['refund_cents'] as int) > 0)
-                                      Text(
-                                        '${d['refund_status'] == 'refunded' ? 'Devuelto' : 'Devolución en proceso'}: ${pesos(d['refund_cents'] as int)}',
-                                      ),
-                                  ],
-                                  if (!received &&
-                                      d['payment_status'] == 'pending')
-                                    TextButton(
-                                      onPressed: () => context.push(
-                                        '/contribute/${d['expense_id']}',
-                                        extra: d,
-                                      ),
-                                      child: const Text('Continuar aportación'),
-                                    ),
-                                  Text(
-                                    'Referencia: ${d['id']}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall,
-                                  ),
-                                ],
+                    child: Padding(
+                      padding: const EdgeInsets.all(1),
+                      child: Column(
+                        children: [
+                          for (var i = 0; i < data.cycles.length; i++) ...[
+                            if (i > 0)
+                              const Divider(
+                                height: 1,
+                                color: Color(0xffe6e2dd),
                               ),
+                            GuardianHistoryEntry(
+                              key: ValueKey('guardian:${data.cycles[i]['id']}'),
+                              item: data.cycles[i],
+                              owner: ref
+                                  .read(identityControllerProvider)
+                                  .identity!
+                                  .id,
                             ),
+                          ],
+                          if (data.cycles.isNotEmpty &&
+                              data.donations.items.isNotEmpty)
+                            const Divider(height: 1, color: Color(0xffe6e2dd)),
+                          for (
+                            var i = 0;
+                            i < data.donations.items.length;
+                            i++
+                          ) ...[
+                            if (i > 0)
+                              const Divider(
+                                height: 1,
+                                color: Color(0xffe6e2dd),
+                              ),
+                            for (final d in [data.donations.items[i]])
+                              PaymentHistoryRow(
+                                key: ValueKey(d['id']),
+                                payment: d,
+                                caseName: data.caseNames[d['expense_id']],
+                                onOpenCase:
+                                    d['expense_id'] is String &&
+                                        (d['expense_id'] as String).isNotEmpty
+                                    ? () => openCase(d['expense_id'] as String)
+                                    : null,
+                                details: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      d['expense_title'] as String,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge,
+                                    ),
+                                    Text(
+                                      'Importe: ${pesos(d['gross_cents'] as int)}',
+                                    ),
+                                    Text(
+                                      paymentLabels[d['payment_status']] ??
+                                          'Estado en revisión',
+                                    ),
+                                    Text(
+                                      transferLabels[d['transfer_status']] ??
+                                          'Transferencia en revisión',
+                                    ),
+                                    if (d['processed_at'] != null) ...[
+                                      Text(
+                                        'Comisión Dopmi: ${pesos(d['platform_fee_cents'] as int)}',
+                                      ),
+                                      Text(
+                                        'Costos de Stripe: ${pesos(d['stripe_fee_cents'] as int)}',
+                                      ),
+                                      Text(
+                                        'Neto para el rescatista: ${pesos(d['allocated_cents'] as int)}',
+                                      ),
+                                      if ((d['refund_cents'] as int) > 0)
+                                        Text(
+                                          '${d['refund_status'] == 'refunded' ? 'Devuelto' : 'Devolución en proceso'}: ${pesos(d['refund_cents'] as int)}',
+                                        ),
+                                    ],
+                                    if (!received &&
+                                        d['payment_status'] == 'pending')
+                                      TextButton(
+                                        onPressed: () => context.push(
+                                          '/contribute/${d['expense_id']}',
+                                          extra: d,
+                                        ),
+                                        child: const Text(
+                                          'Continuar aportación',
+                                        ),
+                                      ),
+                                    Text(
+                                      'Referencia: ${d['id']}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
                 if (data.guardian?['next_cursor'] != null)

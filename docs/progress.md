@@ -3460,3 +3460,7 @@ Ver docs/design-reviews/parity-loop740/README.md y manifest.json. Referencia a3c
 ### 2026-10-04 - Loop741: frames intermedios Source y Flutter
 
 Ver docs/design-reviews/parity-loop741/README.md. Source a3c969c revalidado; fuente4f49d80. Gate52055 exit0,55/55 de movimiento/gestos. Runtime Edge onboarding450ms: opacity0.961383/Y0.386175px a225ms. Test Flutter compara valores medidos independientes; final onboarding9/9 exit0. Sin cambio productivo ni aceptacion nativa/global. Codemagic espera cierre del objetivo.
+
+### 2026-10-04 - Loop742: historial alineado al borde
+
+Ver docs/design-reviews/parity-loop742/README.md. Source a3c969c medido en runtime: fila x17/ancho343, cuerpo x93. Padding1 dentro de Material corrige cuerpo previo92. Suite87275 exit0:27/27; final72716 exit0:9/9 verifica x93. Capture32940 exit0 y analyzer limpio19.5s. Solo normal final inspeccionado; sin aceptacion global/nativa ni Codemagic.

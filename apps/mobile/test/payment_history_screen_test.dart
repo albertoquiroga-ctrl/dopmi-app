@@ -107,6 +107,9 @@ void main() {
       final payments = HistoryPayments();
       await start(tester, guardian, payments);
       expect(find.text('Suscripción'), findsOneWidget);
+      // Runtime Source /history: outer border16 + inset1 + padding14
+      // + date column52 + gap10 puts the body at x93.
+      expect(tester.getTopLeft(find.text('Suscripción')).dx, 93);
       expect(find.text('Pagado'), findsOneWidget);
       expect(find.text(r'$75.25'), findsOneWidget);
       expect(
