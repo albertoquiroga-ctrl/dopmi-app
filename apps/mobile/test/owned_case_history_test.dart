@@ -61,6 +61,37 @@ class PendingStoryHistory extends StoryFixture {
 }
 
 void main() {
+  test(
+    'story date follows local calendar days and preserves future/invalid dates',
+    () {
+      final now = DateTime(2026, 10, 3, 0, 1);
+      expect(
+        caseStoryDateLabel(DateTime(2026, 10, 3).toIso8601String(), now: now),
+        'Hoy',
+      );
+      expect(
+        caseStoryDateLabel(
+          DateTime(2026, 10, 2, 23, 59).toIso8601String(),
+          now: now,
+        ),
+        'Hace 1 día',
+      );
+      expect(
+        caseStoryDateLabel(
+          DateTime(2026, 9, 30, 23, 59).toIso8601String(),
+          now: now,
+        ),
+        'Hace 3 días',
+      );
+      expect(
+        caseStoryDateLabel(DateTime(2026, 10, 4).toIso8601String(), now: now),
+        '4/10/2026 00:00',
+      );
+      expect(caseStoryDateLabel('invalid', now: now), '');
+      expect(caseStoryDateLabel('', now: now), '');
+    },
+  );
+
   testWidgets(
     'history heading stays visible through pending, error and retry',
     (tester) async {

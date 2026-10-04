@@ -15,6 +15,7 @@ import 'package:dopmi_mobile/features/rescue/owned_case_detail.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -40,6 +41,56 @@ class OwnerDetailRescue extends PhotoPublicCaseRescue {
 }
 
 void main() {
+  testWidgets('owned summary matches measured reference content origin', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(377, 852);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final record = RescueRecord({
+      'id': 'case-one',
+      'status': 'approved',
+      'public_data': {'pet_name': 'Choco', 'story': 'Historia real'},
+    });
+    final identity = FakeIdentityRepository();
+    addTearDown(identity.changes.close);
+    final router = GoRouter(
+      initialLocation: '/rescue/case-one',
+      routes: [
+        GoRoute(
+          path: '/rescue/:id',
+          builder: (_, _) => OwnedCaseDetail(
+            record: record,
+            needs: const SizedBox(),
+            updates: const SizedBox(),
+            busy: false,
+            onBack: () {},
+            onRecord: () {},
+            onRefresh: () {},
+            onExpense: () {},
+            onUpdates: () {},
+            onClose: () {},
+          ),
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [identityRepositoryProvider.overrideWithValue(identity)],
+        child: MaterialApp.router(routerConfig: router),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final title = tester.getRect(find.text('Choco'));
+    // Source runtime553: summary x16/y276, content x33/y293.
+    expect(title.left, 33);
+    expect(title.top, 293);
+    expect(tester.getRect(find.text('Historia real')).left, 33);
+    expect(tester.takeException(), isNull);
+  });
+
   for (final key in [LogicalKeyboardKey.enter, LogicalKeyboardKey.space]) {
     testWidgets('owner back opens real callback with ${key.keyLabel}', (
       tester,

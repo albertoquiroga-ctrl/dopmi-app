@@ -883,7 +883,7 @@ class _OwnedRescueCard extends ConsumerWidget {
               highlightColor: Colors.transparent,
               hoverColor: Colors.transparent,
               child: Padding(
-                padding: const EdgeInsets.all(15),
+                padding: const EdgeInsets.all(14),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [

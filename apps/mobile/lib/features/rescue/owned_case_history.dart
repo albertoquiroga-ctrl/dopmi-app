@@ -5,6 +5,19 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../adoption/community_ui.dart';
 import 'case_update_repository.dart';
 
+String caseStoryDateLabel(String value, {DateTime? now}) {
+  final published = DateTime.tryParse(value)?.toLocal();
+  if (published == null) return '';
+  final today = (now ?? DateTime.now()).toLocal();
+  // Calendar days avoid a daylight-saving hour changing the visible day count.
+  final days = DateTime.utc(today.year, today.month, today.day)
+      .difference(DateTime.utc(published.year, published.month, published.day))
+      .inDays;
+  if (days < 0) return localDate(value);
+  if (days == 0) return 'Hoy';
+  return days == 1 ? 'Hace 1 día' : 'Hace $days días';
+}
+
 class OwnedCaseHistory extends ConsumerWidget {
   const OwnedCaseHistory(this.caseId, {super.key});
   final String caseId;
@@ -57,7 +70,9 @@ class OwnedCaseStory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final date = localDate(update.publishedAt ?? '');
+    final published = update.publishedAt ?? '';
+    final date = caseStoryDateLabel(published);
+    final absoluteDate = localDate(published);
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -83,7 +98,7 @@ class OwnedCaseStory extends StatelessWidget {
                     right: 10,
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: _StoryDate(date),
+                      child: _StoryDate(date, absoluteDate: absoluteDate),
                     ),
                   ),
               ],
@@ -111,7 +126,10 @@ class OwnedCaseStory extends StatelessWidget {
                               right: 10,
                               child: Align(
                                 alignment: Alignment.centerLeft,
-                                child: _StoryDate(date),
+                                child: _StoryDate(
+                                  date,
+                                  absoluteDate: absoluteDate,
+                                ),
                               ),
                             ),
                         ],
@@ -126,7 +144,7 @@ class OwnedCaseStory extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (update.photos.isEmpty && date.isNotEmpty) ...[
-                  _StoryDate(date),
+                  _StoryDate(date, absoluteDate: absoluteDate),
                   const SizedBox(height: 10),
                 ],
                 Text(
@@ -149,8 +167,8 @@ class OwnedCaseStory extends StatelessWidget {
 }
 
 class _StoryDate extends StatelessWidget {
-  const _StoryDate(this.date);
-  final String date;
+  const _StoryDate(this.date, {required this.absoluteDate});
+  final String date, absoluteDate;
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -176,6 +194,7 @@ class _StoryDate extends StatelessWidget {
         Flexible(
           child: Text(
             date,
+            semanticsLabel: '$date. Publicado el $absoluteDate',
             style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 11,
