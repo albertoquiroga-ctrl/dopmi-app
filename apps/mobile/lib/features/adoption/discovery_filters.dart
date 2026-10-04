@@ -88,7 +88,7 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
       child: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24, 24, 24, 22),
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
@@ -107,7 +107,7 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 heading('Género'),
                 const SizedBox(height: 12),
                 Container(
@@ -239,13 +239,13 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                     );
                   },
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 28),
                 FilledButton(
                   style: FilledButton.styleFrom(
                     splashFactory: NoSplash.splashFactory,
                     overlayColor: Colors.transparent,
                     animationDuration: Duration.zero,
-                    minimumSize: const Size(0, 42),
+                    minimumSize: const Size(0, 44),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     backgroundColor: yellow,
                     foregroundColor: ink,
@@ -272,7 +272,7 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                     splashFactory: NoSplash.splashFactory,
                     overlayColor: Colors.transparent,
                     animationDuration: Duration.zero,
-                    minimumSize: const Size(0, 42),
+                    minimumSize: const Size(0, 44),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     foregroundColor: ink,
                     side: const BorderSide(color: Color(0xffe6e2dd)),
