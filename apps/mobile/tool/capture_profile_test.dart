@@ -1173,6 +1173,7 @@ void main() {
       ('profile-overview-large', '/profile'),
       ('profile-mode-dialog', '/profile'),
       ('profile-settings', '/settings'),
+      ('profile-settings-back-held', '/settings'),
       ('profile-settings-large', '/settings'),
       ('profile-settings-footer', '/settings'),
       ('profile-settings-footer-large', '/settings'),
@@ -3827,6 +3828,22 @@ void main() {
                 ),
           );
         }
+        TestGesture? settingsHold;
+        if (spec.$1 == 'profile-settings-back-held') {
+          final back = find.byTooltip('Regresar');
+          settingsHold = await tester.startGesture(tester.getCenter(back));
+          await tester.pump(const Duration(milliseconds: 150));
+          final ink = tester.widget<InkWell>(
+            find
+                .descendant(
+                  of: find.byType(IconButton).first,
+                  matching: find.byType(InkWell),
+                )
+                .first,
+          );
+          expect(ink.statesController!.value, contains(WidgetState.pressed));
+          expect(container.read(routerProvider).state.uri.path, '/settings');
+        }
         TestGesture? helpHold;
         if (spec.$1.startsWith('help-center-topic-held')) {
           final topic = find.widgetWithText(
@@ -4078,6 +4095,11 @@ void main() {
           await tester.tap(back);
           await tester.pumpAndSettle();
           expect(container.read(routerProvider).state.uri.path, '/profile');
+        }
+        if (settingsHold != null) {
+          await settingsHold.cancel();
+          await tester.pumpAndSettle();
+          expect(container.read(routerProvider).state.uri.path, '/settings');
         }
         if (helpHold != null) {
           await helpHold.cancel();

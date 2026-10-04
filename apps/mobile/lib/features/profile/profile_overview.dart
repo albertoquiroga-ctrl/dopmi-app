@@ -1297,6 +1297,11 @@ class ProfileFrame extends StatelessWidget {
                     ),
                     child: IconButton(
                       tooltip: 'Regresar',
+                      style: standardSettings
+                          ? IconButton.styleFrom(
+                              overlayColor: Colors.transparent,
+                            )
+                          : null,
                       icon: rescuerSettings
                           ? SvgPicture.asset(
                               'assets/profile/back.svg',
