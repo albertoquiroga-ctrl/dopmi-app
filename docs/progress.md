@@ -3492,3 +3492,7 @@ Inspeccionadas9 capturas con viewInsets sinteticos, sin defecto nuevo observado;
 ### 2026-10-04 - Loop749: tipografia de preguntas de ayuda
 
 Source/help runtime377x852 confirma FAQInter700/16px, lineas20px y apertura sintransicion/rotacion. Text de pregunta Flutter heredaba tamanoMaterial menor; fija16/1.25, sin cambiar respuestas ni reglas reales. Final9919 exit0:37/37, analyze33502 limpio65.9s; recaptura15258 exit0 normal/grande, ambas inspeccionadas. Primera9429 corrio fuente anterior por copia relativa fallida, no valida parche. Se anadefixture normaladoption:419 previstas, coleccion743/418 anterior; full748/801 y APK748 anteriores a este ajuste. Source a3c969c inicio/cierre. Emulador sin Dopmi en primerplano, apertura manual pendiente; sin Codemagic/nativa/global/dinero real. Ver docs/design-reviews/parity-loop749.
+
+### 2026-10-04 - Loop750: gestos de preguntas de ayuda
+
+Source/help ejecutado confirma una respuesta abierta, segunda sustituye, retocar cierra y tema seleccionado vuelve al hint. Dos tests nuevos normal/200% verifican mantener150ms/cancelar sin abrir, tap inmediato, sustitucion/cierre y topicreset en rutaFlutter real. Fallos iniciales de localizacion lazy corregidos con scroll direccionado y hint visible, sin quitarasserts. Final80623 exit0:4/4 en4s; produccion sin cambios. Full748/801 anterior749/750, no803 global atribuido. Source a3c969c inicio/cierre. Browser propio cerrado; APK/nativa/global pendientes. Sin Codemagic/dinero real. Ver docs/design-reviews/parity-loop750.
