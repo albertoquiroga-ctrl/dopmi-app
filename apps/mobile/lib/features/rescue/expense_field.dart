@@ -23,7 +23,7 @@ class ExpenseField extends StatelessWidget {
       fontFamily: 'Inter',
       fontSize: 14,
       height: 17 / 14,
-      color: Color(0xff151423),
+      color: Color(0xff15110d),
     );
     final decoration = InputDecoration(
       filled: true,
@@ -47,7 +47,22 @@ class ExpenseField extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(field.label, style: style.copyWith(fontWeight: FontWeight.w500)),
+          Text(
+            field.key == 'description' ? 'Describe la evidencia' : field.label,
+            style: style.copyWith(fontWeight: FontWeight.w500),
+          ),
+          if (field.key == 'description') ...[
+            const SizedBox(height: 6),
+            const Text(
+              'Esta información será pública para donantes y para la comunidad después de la aprobación.',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 12,
+                height: 16 / 12,
+                color: Color(0xff554e48),
+              ),
+            ),
+          ],
           const SizedBox(height: 6),
           Semantics(
             label: field.label,
@@ -66,7 +81,14 @@ class ExpenseField extends StatelessWidget {
                         : field.lines > 1
                         ? TextInputType.multiline
                         : TextInputType.text,
-                    decoration: decoration,
+                    decoration: field.key == 'description'
+                        ? decoration.copyWith(
+                            hintText: 'Ej.: La mascota recibió el apoyo gracias a quienes la ayudaron.',
+                            hintStyle: style.copyWith(
+                              color: const Color(0xff554e48),
+                            ),
+                          )
+                        : decoration,
                     onChanged: (_) => onChanged(),
                   )
                 : DropdownButtonFormField<String>(
@@ -96,6 +118,18 @@ class ExpenseField extends StatelessWidget {
                         : null,
                   ),
           ),
+          if (field.key == 'description') ...[
+            const SizedBox(height: 6),
+            const Text(
+              'El reembolso requiere evidencia revisada y aprobada por Dopmi.',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 12,
+                height: 16 / 12,
+                color: Color(0xff554e48),
+              ),
+            ),
+          ],
         ],
       ),
     );
