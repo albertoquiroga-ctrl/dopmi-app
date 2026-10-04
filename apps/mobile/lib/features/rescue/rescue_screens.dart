@@ -1515,6 +1515,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
           Text(
             field.label,
             style: const TextStyle(
+              fontFamily: 'Inter',
               fontSize: 12,
               height: 15 / 12,
               fontWeight: FontWeight.w600,
@@ -1539,6 +1540,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                     ? TextInputType.multiline
                     : TextInputType.text,
                 style: const TextStyle(
+                  fontFamily: 'Inter',
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                   height: 15 / 12,
@@ -1589,6 +1591,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                   : null,
               isExpanded: true,
               style: const TextStyle(
+                fontFamily: 'Inter',
                 fontSize: 12,
                 height: 15 / 12,
                 fontWeight: FontWeight.w600,
@@ -1623,6 +1626,73 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     );
   }
 
+  Widget documentHeader(String role) {
+    final summary = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          evidenceRoles[role]!,
+          style: const TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 16,
+            height: 19 / 16,
+            fontWeight: FontWeight.w700,
+            color: Color(0xff151423),
+          ),
+        ),
+        const SizedBox(height: 2),
+        const Text(
+          'Privado · Solo para revisión del equipo',
+          style: TextStyle(
+            fontSize: 12,
+            height: 15 / 12,
+            color: Color(0xff4f4e5c),
+          ),
+        ),
+      ],
+    );
+    if (!editable) return summary;
+    final upload = Semantics(
+      label: 'Adjuntar ${evidenceRoles[role]!.toLowerCase()}',
+      child: OutlinedButton(
+        key: ValueKey('verification-upload-$role'),
+        onPressed: busy || files.length >= 12
+            ? null
+            : () => run(() => attach(role)),
+        style:
+            OutlinedButton.styleFrom(
+              foregroundColor: const Color(0xff151423),
+              side: const BorderSide(color: Color(0xffe3e4ed)),
+              minimumSize: const Size(0, 34),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              textStyle: const TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 14,
+                height: 17 / 14,
+                fontWeight: FontWeight.w600,
+              ),
+              splashFactory: NoSplash.splashFactory,
+            ).copyWith(
+              overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+            ),
+        child: const Text('Subir'),
+      ),
+    );
+    if (MediaQuery.textScalerOf(context).scale(14) > 21) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [summary, const SizedBox(height: 12), upload],
+      );
+    }
+    return Row(
+      children: [
+        Expanded(child: summary),
+        const SizedBox(width: 12),
+        upload,
+      ],
+    );
+  }
+
   Widget verificationDocument(String role) => Padding(
     padding: const EdgeInsets.only(bottom: 16),
     child: DecoratedBox(
@@ -1636,24 +1706,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              evidenceRoles[role]!,
-              style: const TextStyle(
-                fontSize: 16,
-                height: 19 / 16,
-                fontWeight: FontWeight.w700,
-                color: Color(0xff151423),
-              ),
-            ),
-            const SizedBox(height: 2),
-            const Text(
-              'Privado · Solo para revisión del equipo',
-              style: TextStyle(
-                fontSize: 12,
-                height: 15 / 12,
-                color: Color(0xff4f4e5c),
-              ),
-            ),
+            documentHeader(role),
             for (final file in files.where((file) => file['role'] == role))
               Row(
                 children: [
@@ -1677,14 +1730,6 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                             }),
                     ),
                 ],
-              ),
-            if (editable)
-              OutlinedButton.icon(
-                onPressed: busy || files.length >= 12
-                    ? null
-                    : () => run(() => attach(role)),
-                icon: const Icon(Icons.upload_file_outlined),
-                label: Text('Adjuntar ${evidenceRoles[role]!.toLowerCase()}'),
               ),
           ],
         ),
