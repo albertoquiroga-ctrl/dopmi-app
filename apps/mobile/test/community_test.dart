@@ -622,6 +622,27 @@ void main() {
       expect(find.text('Sí, contactar rescatista'), findsNothing);
     },
   );
+  testWidgets('match rail drag scrolls without opening a pet or contact', (
+    tester,
+  ) async {
+    final repo = PagedMatchCommunity();
+    final container = await start(tester, repo, '/messages');
+    final rail = find.byWidgetPredicate(
+      (widget) =>
+          widget is Scrollable && widget.axisDirection == AxisDirection.right,
+    );
+    expect(rail, findsOneWidget);
+    final position = tester.state<ScrollableState>(rail).position;
+    await tester.drag(rail, const Offset(-220, 0));
+    await tester.pumpAndSettle();
+    expect(position.pixels, greaterThan(0));
+    expect(container.read(routerProvider).state.uri.path, '/messages');
+    expect(find.text('Sí, contactar rescatista'), findsNothing);
+    expect(find.text('Chats'), findsOneWidget);
+    final list = tester.widget<ListView>(find.byType(ListView).first);
+    expect(list.padding, const EdgeInsets.fromLTRB(18, 16, 18, 188));
+    expect(tester.takeException(), isNull);
+  });
   testWidgets('system back from a chat preserves the match list scroll', (
     tester,
   ) async {

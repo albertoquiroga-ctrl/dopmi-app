@@ -113,7 +113,7 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
         bottom: false,
         child: ListView(
           controller: scroll,
-          padding: const EdgeInsets.fromLTRB(18, 16, 18, 110),
+          padding: const EdgeInsets.fromLTRB(18, 16, 18, 188),
           children: [
             SizedBox(
               height: 42,
