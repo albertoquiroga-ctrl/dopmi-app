@@ -67,6 +67,9 @@ class ExpenseFrame extends StatelessWidget {
                                   const SizedBox(width: 48)
                                 else
                                   IconButton(
+                                    style: IconButton.styleFrom(
+                                      overlayColor: Colors.transparent,
+                                    ),
                                     onPressed: onBack,
                                     tooltip: step > 0
                                         ? 'Paso anterior'
@@ -81,6 +84,9 @@ class ExpenseFrame extends StatelessWidget {
                                     ),
                                   ),
                                 IconButton(
+                                  style: IconButton.styleFrom(
+                                    overlayColor: Colors.transparent,
+                                  ),
                                   onPressed: onClose,
                                   tooltip: 'Cerrar formulario',
                                   icon: Transform.translate(
