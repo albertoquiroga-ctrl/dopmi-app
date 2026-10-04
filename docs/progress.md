@@ -3512,3 +3512,7 @@ Source/publicMariaR ejecutado con mouse4,4 conserva reporte/borrador; Flutterbar
 ### 2026-10-04 - Loop754: envio de reporte con margen ampliado
 
 Test74616 reproduce label200sinmargen (top335.6 vs minimo347.5), normalpasa. Paddingvertical12 yhorizontal18 +textocentrado enFilledButton corrigen sin reducirfuente, conserva spinner/guardas/borrador. Final92410 exit0:13/13; capture30312 exit0:1/1 en6s/sietePNG vigentes (orphan336excluido), error200finalinspeccionado; normalesempty/error/sending SHAidenticos743. Analyze30312 limpio6.6s. Source a3c969c inicio/cierre; CSS11padding+1borde, no Android200Source atribuido. Full748/APK anteriores recientes; objetivoactivo sinCodemagic/nativa/global/dineroreal. Ver docs/design-reviews/parity-loop754.
+
+### 2026-10-04 - Loop755: historia aprobada y fecha
+
+Source/rescuer/cases/rocky ejecutado confirma media160/bodypadding14/borde#e3e4ed/text14line21.7/#4f4e5c, yfecha badge22/line14. Cliente date11*1.2+8=21.2 cambiaheight14/11 para22, sin tocarfecha real/calendariolocal/semantica ni copiar tags/importes/agradecimientosSource. Conocehistoria perfil navegaadetalle, no nuevo viewer. Gatefinal73656 exit0:9/9 en2s ownedhistory/publicadoptioncard; capture1/1 en3s/dosPNG normal200 inspeccionados/hash; analyze limpio64s/diffchecksinerror. Source a3c969c inicio/cierre, browsercerrado. Full748/APK anteriores recientes; sinCodemagic/nativa/global/dineroreal. Ver docs/design-reviews/parity-loop755.

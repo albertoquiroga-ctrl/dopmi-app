@@ -1,0 +1,18 @@
+[
+  {
+    "fixture": "owned-case-detail-story",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "263bd240ef820fb81ad0f7c61053b4c688ea7b3c8c5a421959b16f888d4dae4b"
+  },
+  {
+    "fixture": "owned-case-detail-story-large",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "d6b211d95824148df662ebfd563ee067b193f59244c99ce77810b685052d0f25"
+  }
+]

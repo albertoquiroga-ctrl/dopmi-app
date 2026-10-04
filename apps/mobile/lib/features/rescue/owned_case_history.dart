@@ -198,7 +198,7 @@ class _StoryDate extends StatelessWidget {
             style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 11,
-              height: 1.2,
+              height: 14 / 11,
               letterSpacing: 0,
               fontWeight: FontWeight.w600,
               color: Color(0xff151423),
