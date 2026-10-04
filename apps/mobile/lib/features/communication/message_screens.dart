@@ -518,6 +518,7 @@ class _ThreadState extends ConsumerState<ThreadScreen>
           automaticallyImplyLeading: false,
           leading: IconButton(
             tooltip: 'Volver',
+            style: IconButton.styleFrom(overlayColor: Colors.transparent),
             onPressed: () =>
                 context.canPop() ? context.pop() : context.go('/messages'),
             icon: SvgPicture.asset(

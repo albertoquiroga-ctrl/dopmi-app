@@ -1,0 +1,35 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart
+00:00 +0: conversation history pages and ignores an obsolete page error
+00:02 +1: receipt failure keeps history and resume recovers with draft
+00:02 +2: chat detail keyboard navigation keeps the unsent draft
+00:03 +3: conversation composer palette and keyboard; rescuer=false
+00:03 +4: conversation composer palette and keyboard; rescuer=true
+00:03 +5: catalog opens approved detail and persists a favorite at narrow width
+00:03 +6: match favorite contact can be cancelled without starting a thread
+00:03 +7: system back from a chat preserves the match list scroll
+00:04 +8: match rows show real unread counts and closed status
+00:04 +9: all match favorites load beyond first page and sort the complete list
+00:04 +10: system back from full favorites returns to match instead of leaving the app
+00:05 +11: empty favorites explores the real adoption feed
+00:05 +12: chat composer remains above the keyboard and empty send is disabled
+00:05 +13: failed detail favorite rolls the optimistic state back
+00:05 +14: contact asks for confirmation before opening the thread
+00:05 +15: saved rescuer uses approved public metrics and never enriches withdrawn content
+00:05 +16: saved rescuer read failure never fabricates public metrics
+00:05 +17: saved removal is single flight and an old category failure cannot replace the new list
+00:06 +18: saved list reaches its second page and returns with large text
+00:06 +19: saved experience separates adoption and donation
+00:06 +20: failed saved removal keeps the item and remains retryable
+00:06 +21: public rescuer can be saved and reported with server acknowledgement
+00:07 +22: personal impact only renders allocated cases and updates
+00:07 +23: swipe buttons pass and persist likes without double actions
+00:07 +24: swipe contact records analytics only after the thread exists
+00:07 +25: an eligible support card appears after two adoptions
+00:08 +26: short drag returns and long drag passes the current card
+00:08 +27: failed like remains retryable while the deck advances
+00:08 +28: the deck fetches the next page without duplicating cards
+00:08 +29: failed draft save preserves authored content and can be retried
+00:09 +30: case-linked adoption keeps an independent moderated draft
+00:09 +31: ambiguous message response retries with same id and removes private data on logout
+00:09 +32: photo processing strips location and description while bounding dimensions
+00:10 +33: All tests passed!

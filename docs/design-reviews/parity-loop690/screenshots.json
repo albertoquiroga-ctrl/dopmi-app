@@ -1,0 +1,30 @@
+[
+  {
+    "file": "chat-bubbles-large.png",
+    "sha256": "e78a27773fe26405749198a1b5e54ccebafcfaac2bca5488e5e80b0c13555e2b"
+  },
+  {
+    "file": "chat-bubbles-rescuer.png",
+    "sha256": "54ee4b844706349d819c80ed518be6717990ff6ee0b17db94b606ca8c0c1e4a9"
+  },
+  {
+    "file": "chat-bubbles.png",
+    "sha256": "63d38e82b20d34be97d49680535243ed14699e4460cd4b5bc98be0c3417ef319"
+  },
+  {
+    "file": "chat-detail-focus-large.png",
+    "sha256": "f833fab6c71799d0d5d98e1c6a72357242d2f127f1ee4b915042a0ef9cd018d4"
+  },
+  {
+    "file": "chat-detail-focus.png",
+    "sha256": "1e719e923632859b798c5dfa9102577f985b6ec4317a54d2f6349e8d85da5157"
+  },
+  {
+    "file": "chat-keyboard-large.png",
+    "sha256": "e0d6c5ff3608dda229bf41fce12686621e8e2862c34fbc820ca921681de8861e"
+  },
+  {
+    "file": "chat-keyboard.png",
+    "sha256": "3635da48225d222e626a20c1b8e6cf7875c135819bae3fcdc544c972d4220209"
+  }
+]
