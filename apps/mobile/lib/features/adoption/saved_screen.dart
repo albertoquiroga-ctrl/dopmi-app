@@ -422,7 +422,10 @@ class _SavedCard extends StatelessWidget {
                   : null,
               onTap: open,
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: adoption ? 8 : 0),
+                padding: EdgeInsets.symmetric(
+                  horizontal: adoption ? 6 : 0,
+                  vertical: adoption ? 5 : 0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -498,6 +501,7 @@ class _SavedCard extends StatelessWidget {
               ),
             ),
           ),
+          if (adoption) const SizedBox(width: 2),
           IconButton(
             tooltip: 'Quitar de guardados',
             style: adoption

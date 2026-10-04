@@ -3396,3 +3396,11 @@ Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/ci
 - Source377×852/fonts ready, local mock empty toggle off and Rocky liked: saved row16/144.59375/345/95; name button96/171.59375/215/40; remove40px button321/171.59375;20px icon331/181.59375 center341/191.59375.
 - New client telemetry confirms before icon center337/191, name96/173. Translate only adoption remove SVG+4px horizontally; target and behavior remain intact. Final geometry center341/191, name96/173. Horizontal equality proven, vertical difference .59375px and text/button linebox differences still pending. Different photo/name fixture prevents full visual-equivalence claim.
 - Capturebefore17460 exit0,1/1 in6s; final33635 exit0,1/1 in6s, normal final inspected. Analyzer9224 exit0 clean38.7s. No new behavioral test run for glyph-only adjustment; existing community35 pass723 predates this change. Installed Android724 predates new adjustment. No native acceptance or Codemagic; goal active.
+
+### 2026-10-04 — Parity loop 727: Saved row text inset
+
+- Prior726 made measured glyph correction. Reference revalidated start/end a3c969cd9103fd46dc5cd886999912526ce75efb.
+- Source fresh377×852/font-ready/nonempty local mock: name strong16/w700/normal linebox20, x102/y172.59375; detail11/w400/normal linebox14 x102/y196.59375. Name button UA padding1px6px, gap4. Prior client name x96, so previous button-level x96 did not prove visible text alignment.
+- Apply adoption name padding horizontal6 and vertical5 (maintains48 normal target from20+4+14+10). Add2px spacer before48px removal target so name allocation matches Source215px while keeping larger removal target. Existing glyph shift+4 preserved. Final telemetry nameX102, iconCenterX341 exact; nameY173/iconCenterY191 retain vertical fractional differences .40625/.59375. Target48 is layout-derived here, not separately measured by tool. No font metrics changed.
+- Community58585 exit0:35/35 in10s. Analyze50918 exit0 clean33.9s. Saved capture12211 exit0:1/1 in6s, final geometry archived. No final image visually inspected this loop, no full acceptance inferred from telemetry. Installed724 predates726/727.
+- Goal active; no Codemagic until complete objective, money remains test-only.
