@@ -1,0 +1,26 @@
+[
+  {
+    "file": "apps/mobile/lib/features/payments/payment_repository.dart",
+    "sha256_normalized": "c51c7c26db2c5612abc0ea0e2ee4d2b3f20abc51fc41a7df871b3a89dbeca68a"
+  },
+  {
+    "file": "apps/mobile/lib/features/payments/payment_screens.dart",
+    "sha256_normalized": "5b910f83b09009f95f632e2fd1b96a452f34eb199fca499e9296d2e38e4dcfc8"
+  },
+  {
+    "file": "apps/mobile/lib/features/rescue/rescue_repository.dart",
+    "sha256_normalized": "d415f7c2ce58767ca4930119ef18926b5ee56e0d058f58ec88e1fdea09624e57"
+  },
+  {
+    "file": "supabase/migrations/20260927035600_public_case_guardian_progress.sql",
+    "sha256_normalized": "406cdd34f4c50e5405ab3e126da8c38e564e628d0db48e063be34fd8d14d48ed"
+  },
+  {
+    "file": "supabase/migrations/202609130006_rescue.sql",
+    "sha256_normalized": "15bf7ab7f1c1d319218dd0c9f1a4c2ad5581bd1f1470fcbe3ba4251e01bb9929"
+  },
+  {
+    "file": "supabase/migrations/202609130007_donations.sql",
+    "sha256_normalized": "c651f6449c880f61abeee3dc42d6c203da5d175246a8e3c17bd5b56e5b132a95"
+  }
+]
