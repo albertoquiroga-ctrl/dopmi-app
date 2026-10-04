@@ -99,7 +99,13 @@ void main() {
       expect(find.text(r'$75.25'), findsOneWidget);
       expect(
         tester.getTopLeft(find.text('Suscripción')).dy,
-        lessThan(tester.getTopLeft(find.text('Medicamentos')).dy),
+        lessThan(
+          tester
+              .getTopLeft(
+                find.textContaining('Medicamentos', findRichText: true),
+              )
+              .dy,
+        ),
       );
       expect(guardian.allocationCursors, isEmpty);
       await tester.tap(find.text('Suscripción'));
@@ -145,7 +151,9 @@ void main() {
       await tester.tap(find.text(r'$75.25'));
       await tester.pumpAndSettle();
       expect(find.text(r'Importe: $75.25 MXN'), findsOneWidget);
-      await tester.tap(find.text('Medicamentos').first);
+      await tester.tap(
+        find.textContaining('Medicamentos', findRichText: true).first,
+      );
       await tester.pumpAndSettle();
       final container = ProviderScope.containerOf(
         tester.element(find.byType(DopmiApp)),
@@ -174,9 +182,9 @@ void main() {
       enabled: false,
       rescue: rescue,
     );
-    await tester.tap(find.text('Medicamentos'));
+    await tester.tap(find.textContaining('Medicamentos', findRichText: true));
     await tester.pump();
-    await tester.tap(find.text('Medicamentos'));
+    await tester.tap(find.textContaining('Medicamentos', findRichText: true));
     await tester.pump();
     expect(rescue.opens, 1);
     identity.emit(
@@ -205,7 +213,7 @@ void main() {
         enabled: false,
         rescue: rescue,
       );
-      await tester.tap(find.text('Medicamentos'));
+      await tester.tap(find.textContaining('Medicamentos', findRichText: true));
       await tester.pump();
       rescue.reply.complete(null);
       await tester.pumpAndSettle();

@@ -12,10 +12,14 @@ class PaymentHistoryRow extends StatefulWidget {
     this.methodLabel,
     this.amountLabel,
     this.onOpenCase,
+    this.caseName,
+    this.titleWeight = FontWeight.w700,
   });
   final Map<String, dynamic> payment;
   final Widget details;
   final VoidCallback? onOpenCase;
+  final String? caseName;
+  final FontWeight titleWeight;
   final String? statusLabel, methodLabel, amountLabel;
   @override
   State<PaymentHistoryRow> createState() => _PaymentHistoryRowState();
@@ -75,14 +79,28 @@ class _PaymentHistoryRowState extends State<PaymentHistoryRow> {
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          d['expense_title']?.toString() ?? 'Aportación',
+        Text.rich(
+          TextSpan(
+            children: [
+              if (widget.caseName != null) ...[
+                TextSpan(
+                  text: widget.caseName,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+                TextSpan(
+                  text: " - ${d['expense_title'] ?? 'Aportación'}",
+                  style: const TextStyle(fontWeight: FontWeight.w400),
+                ),
+              ] else
+                TextSpan(text: d['expense_title']?.toString() ?? 'Aportación'),
+            ],
+          ),
           maxLines: large ? null : 1,
           overflow: large ? null : TextOverflow.ellipsis,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             height: 17 / 14,
-            fontWeight: FontWeight.w700,
+            fontWeight: widget.titleWeight,
             color: ink,
           ),
         ),

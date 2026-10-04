@@ -280,6 +280,7 @@ class GuardianHistoryEntry extends StatelessWidget {
       _ => 'review',
     };
     return PaymentHistoryRow(
+      titleWeight: FontWeight.w600,
       payment: {
         'created_at': item['period_start'] ?? item['created_at'],
         'expense_title': item['kind'] == 'initial'

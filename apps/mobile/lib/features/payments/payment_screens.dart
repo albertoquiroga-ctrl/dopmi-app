@@ -487,7 +487,12 @@ class _ContributeState extends ConsumerState<ContributeScreen>
 }
 
 class PaymentHistoryData {
-  const PaymentHistoryData(this.donations, this.guardian);
+  const PaymentHistoryData(
+    this.donations,
+    this.guardian, [
+    this.caseNames = const {},
+  ]);
+  final Map<String, String> caseNames;
   final DataPage<Json> donations;
   final Json? guardian;
   List<Json> get cycles => (guardian?['items'] as List? ?? [])
@@ -550,9 +555,32 @@ class _HistoryState extends ConsumerState<PaymentHistoryScreen> {
       paymentRepo.history(page, received: received),
       if (guardianRepo != null) guardianRepo.history(),
     ]);
+    final donations = results.first as DataPage<Json>;
+    final caseNames = <String, String>{};
+    final expenses = donations.items
+        .map((d) => d['expense_id'])
+        .whereType<String>()
+        .where((id) => id.isNotEmpty)
+        .toSet();
+    await Future.wait(
+      expenses.map((expenseId) async {
+        try {
+          final record = await ref
+              .read(rescueRepositoryProvider)
+              .publicCaseRecordForExpense(expenseId);
+          final name = record?.publicData['pet_name'] as String?;
+          if (name != null && name.trim().isNotEmpty) {
+            caseNames[expenseId] = name;
+          }
+        } catch (_) {
+          // Public catalog availability never hides private financial evidence.
+        }
+      }),
+    );
     return PaymentHistoryData(
-      results.first as DataPage<Json>,
+      donations,
       results.length > 1 ? results[1] as Json : null,
+      caseNames,
     );
   }
 
@@ -632,6 +660,7 @@ class _HistoryState extends ConsumerState<PaymentHistoryScreen> {
                             PaymentHistoryRow(
                               key: ValueKey(d['id']),
                               payment: d,
+                              caseName: data.caseNames[d['expense_id']],
                               onOpenCase:
                                   d['expense_id'] is String &&
                                       (d['expense_id'] as String).isNotEmpty

@@ -32,6 +32,34 @@ void main() {
   });
 
   for (final scale in [1.0, 2.0]) {
+    testWidgets(
+      'Public case name and actual concept remain readable at scale $scale',
+      (tester) async {
+        await tester.binding.setSurfaceSize(const Size(377, 852));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        await tester.pumpWidget(
+          MaterialApp(
+            home: MediaQuery(
+              data: MediaQueryData(textScaler: TextScaler.linear(scale)),
+              child: const Scaffold(
+                body: PaymentHistoryRow(
+                  caseName: 'Choco',
+                  payment: {
+                    'expense_title': 'Medicamentos',
+                    'gross_cents': 7525,
+                  },
+                  details: SizedBox(),
+                ),
+              ),
+            ),
+          ),
+        );
+        expect(find.text('Choco - Medicamentos'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+  for (final scale in [1.0, 2.0]) {
     testWidgets('Actual amount and status remain readable at scale $scale', (
       tester,
     ) async {

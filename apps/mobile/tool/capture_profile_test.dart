@@ -578,7 +578,7 @@ class HistoryCapturePayments extends FakePayments {
         {
           ...fixture.items[i],
           'id': 'fixture-payment-$i',
-          'expense_id': 'fixture-expense-$i',
+          'expense_id': i == 0 ? 'expense-one' : 'fixture-expense-$i',
           'created_at': '2026-04-${29 - i * 4}T12:00:00Z',
           'processor': 'stripe',
           'transfer_status': 'pending',
@@ -1617,6 +1617,8 @@ void main() {
       }
       final container = ProviderContainer(
         overrides: [
+          if (spec.$1.startsWith('payment-history'))
+            rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           identityRepositoryProvider.overrideWithValue(repo),
           accountPhotoRepositoryProvider.overrideWithValue(
             emptyAccountPhotoRepository(repo),

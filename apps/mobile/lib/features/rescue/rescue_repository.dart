@@ -148,7 +148,10 @@ class RescueRepository {
 
   /// Resolve only through the public catalog; private payment evidence is not
   /// authorization to expose a withdrawn case.
-  Future<String?> publicCaseForExpense(String expenseId) async {
+  Future<String?> publicCaseForExpense(String expenseId) async =>
+      (await publicCaseRecordForExpense(expenseId))?.id;
+
+  Future<RescueRecord?> publicCaseRecordForExpense(String expenseId) async {
     final expensePage = await catalog(1, caseId: expenseId);
     final expenses = expensePage.items.where(
       (record) => record.id == expenseId && record.kind == 'expense',
@@ -166,7 +169,11 @@ class RescueRepository {
           record.kind == 'expense' &&
           record.parent == parent,
     );
-    return hasCase && hasExpense ? parent : null;
+    return hasCase && hasExpense
+        ? snapshot.items.firstWhere(
+            (record) => record.id == parent && record.kind == 'case',
+          )
+        : null;
   }
 
   /// Load the complete approved case snapshot before exposing contribution choices.
