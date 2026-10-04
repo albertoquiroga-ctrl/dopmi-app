@@ -52,6 +52,12 @@ void main() {
         await tester.tap(find.widgetWithText(FilledButton, 'Continuar'));
         await tester.pump();
         expect(find.text(second), findsOneWidget);
+        final dots = find.byType(AnimatedContainer);
+        expect(dots, findsNWidgets(2));
+        // Each dot includes 4px outer margin on either side. The new step
+        // recreates the dots, so their final widths exist at the first frame.
+        expect(tester.getSize(dots.at(0)).width, 16);
+        expect(tester.getSize(dots.at(1)).width, 32);
         final entrance = find.descendant(
           of: find.byType(OnboardingEntrance),
           matching: find.byType(Opacity),

@@ -3520,3 +3520,7 @@ Source/rescuer/cases/rocky ejecutado confirma media160/bodypadding14/borde#e3e4e
 ### 2026-10-04 - Loop756: regresion completa actual
 
 Fuente0328de654d1033d670cae2a08000ef7e54bb00bf, full74392 exit0:803/803 en4m29s; supersede748/801, integra749-755.365 archivosroot/scratch iguales durante23392 yhashesinalteradoscierre, no medicionantesgate atribuida. Source a3c969c inicio/cierre. Runtime/onboarding/donor trackadopter recrea dots por bodykeyslide; medicion175conrefsdesconectadas invalida, querynuevo8/24/coloresfinales/ceroanimaciones. Clienteadopt/rescue dots enkeyentrada; rama donate generica afuera requiere comprobar alcance real, no todos tracks aceptados. Browsercerrado. Coleccion743/418 anterior (419fixtures previstas), APK748anterior; manualemuladorpending. SinCodemagic/nativa/global/dineroreal. Ver docs/design-reviews/parity-loop756.
+
+### 2026-10-04 - Loop757: indicadores primerframe de rutas reales
+
+Source rutasdonortrackadopter/rescuer recrean dots (runtime756), clienteadopt/rescue keyentrada los incluye. Dosasserts existentes route_motion miden16/32 RenderBox (visual8/24+margen8) primerpump, conservaentrada450/Back. Final19934 exit0:5/5 en2s, tambienlegalprivatedraft yreemplazoBackAndroid/iOS. Donate generico adicional sin terceraSource equivalente, no copy simulado ni paridadliteral atribuida. No produccion ni tests nuevos; full756/803 misma produccion, anteriorassertsfortalecidas. Source a3c969c verificado. SinCodemagic/nativa/global/dineroreal. Ver docs/design-reviews/parity-loop757.
