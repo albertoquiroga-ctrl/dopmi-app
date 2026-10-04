@@ -3892,6 +3892,53 @@ void main() {
                 );
           });
         }
+        if (spec.$1 == 'match-all') {
+          List<double> coordinates(Rect rect) => [
+            rect.left,
+            rect.top,
+            rect.width,
+            rect.height,
+          ];
+          final grid = find.byType(GridView);
+          final back = tester.getRect(
+            find.descendant(
+              of: find.byTooltip('Volver a Mis match'),
+              matching: find.byType(SvgPicture),
+            ),
+          );
+          final target = tester.getRect(
+            find.byKey(const ValueKey('match-sort')),
+          );
+          expect(target.height, greaterThanOrEqualTo(48));
+          final backTarget = tester.getRect(
+            find
+                .ancestor(
+                  of: find.byTooltip('Volver a Mis match'),
+                  matching: find.byType(IconButton),
+                )
+                .first,
+          );
+          expect(backTarget.shortestSide, greaterThanOrEqualTo(48));
+          final geometry = {
+            'back': coordinates(back),
+            'backTarget': coordinates(backTarget),
+            'sortLabel': coordinates(tester.getRect(find.text('Ordenar'))),
+            'sortValue': coordinates(
+              tester.getRect(find.text('Más recientes')),
+            ),
+            'sortTarget': coordinates(target),
+            'grid': coordinates(tester.getRect(grid)),
+            'firstCard': coordinates(
+              tester.getRect(
+                find.descendant(of: grid, matching: find.byType(Stack)).first,
+              ),
+            ),
+          };
+          await tester.runAsync(() async {
+            await File('${out.path}/match-all-geometry.json')
+                .writeAsString(jsonEncode(geometry));
+          });
+        }
         if (spec.$1 == 'help-center') {
           final buttons = find.byType(OutlinedButton);
           final geometry = [

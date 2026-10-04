@@ -706,25 +706,49 @@ void main() {
   testWidgets(
     'all match favorites load beyond first page and sort the complete list',
     (tester) async {
-      final repo = PagedMatchCommunity();
-      await start(tester, repo, '/messages');
-      await tester.tap(find.text('Ver más'));
-      await tester.pumpAndSettle();
-      expect(repo.pages, contains(2));
-      expect(find.text('Chats'), findsNothing);
-      await tester.tap(find.text('Ordenar Más recientes'));
-      await tester.pumpAndSettle();
-      expect(find.text('Ordenar Más antiguos'), findsOneWidget);
-      expect(
-        tester.getTopLeft(find.text('Mascota 20')).dy,
-        lessThan(tester.getTopLeft(find.text('Mascota 0')).dy),
-      );
-      await tester.tap(find.byTooltip('Volver a Mis match'));
-      await tester.pumpAndSettle();
-      expect(find.text('Chats'), findsOneWidget);
-      await tester.tap(find.text('Ver más'));
-      await tester.pumpAndSettle();
-      expect(find.text('Ordenar Más antiguos'), findsOneWidget);
+      final semantics = tester.ensureSemantics();
+      try {
+        final repo = PagedMatchCommunity();
+        await start(tester, repo, '/messages');
+        await tester.tap(find.text('Ver más'));
+        await tester.pumpAndSettle();
+        expect(repo.pages, contains(2));
+        expect(find.text('Chats'), findsNothing);
+        expect(
+          tester
+              .getSize(
+                find
+                    .ancestor(
+                      of: find.byTooltip('Volver a Mis match'),
+                      matching: find.byType(IconButton),
+                    )
+                    .first,
+              )
+              .shortestSide,
+          greaterThanOrEqualTo(48),
+        );
+        expect(
+          tester.getSize(find.byKey(const ValueKey('match-sort'))).height,
+          greaterThanOrEqualTo(48),
+        );
+        expect(find.bySemanticsLabel('Ordenar Más recientes'), findsOneWidget);
+        await tester.tap(find.byKey(const ValueKey('match-sort')));
+        await tester.pumpAndSettle();
+        expect(find.text('Más antiguos'), findsOneWidget);
+        expect(find.bySemanticsLabel('Ordenar Más antiguos'), findsOneWidget);
+        expect(
+          tester.getTopLeft(find.text('Mascota 20')).dy,
+          lessThan(tester.getTopLeft(find.text('Mascota 0')).dy),
+        );
+        await tester.tap(find.byTooltip('Volver a Mis match'));
+        await tester.pumpAndSettle();
+        expect(find.text('Chats'), findsOneWidget);
+        await tester.tap(find.text('Ver más'));
+        await tester.pumpAndSettle();
+        expect(find.text('Más antiguos'), findsOneWidget);
+      } finally {
+        semantics.dispose();
+      }
     },
   );
   testWidgets(
@@ -739,7 +763,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Mis match'), findsOneWidget);
       expect(find.text('Chats'), findsOneWidget);
-      expect(find.text('Ordenar Más recientes'), findsNothing);
+      expect(find.byKey(const ValueKey('match-sort')), findsNothing);
     },
   );
   testWidgets('empty favorites explores the real adoption feed', (

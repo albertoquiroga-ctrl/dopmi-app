@@ -80,7 +80,7 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
         return SizedBox(
           width: side,
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 4),
+            padding: EdgeInsets.only(bottom: widget.all ? 0 : 4),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
@@ -194,43 +194,82 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
                 tooltip: 'Volver a Mis match',
                 style: IconButton.styleFrom(overlayColor: Colors.transparent),
                 onPressed: () => widget.showAll?.call(false),
-                icon: SvgPicture.asset(
-                  'assets/profile/back.svg',
-                  width: 22,
-                  height: 22,
+                icon: Transform.translate(
+                  offset: const Offset(-4, -4),
+                  child: SvgPicture.asset(
+                    'assets/profile/back.svg',
+                    width: 22,
+                    height: 22,
+                  ),
                 ),
               ),
             ),
-            TextButton(
-              onPressed: () => setState(() => oldest = !oldest),
-              style: TextButton.styleFrom(
-                splashFactory: NoSplash.splashFactory,
-                overlayColor: Colors.transparent,
-                animationDuration: Duration.zero,
-                foregroundColor: ink,
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.zero,
-                textStyle: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    const TextSpan(text: 'Ordenar '),
-                    TextSpan(
-                      text: oldest ? 'Más antiguos' : 'Más recientes',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: muted,
-                      ),
+            const SizedBox(height: 6),
+            Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 2, bottom: 26),
+                  child: ExcludeSemantics(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final labels = [
+                          const Text(
+                            'Ordenar',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 16,
+                              height: 1.25,
+                              letterSpacing: 0,
+                              fontWeight: FontWeight.w700,
+                              color: ink,
+                            ),
+                          ),
+                          Text(
+                            oldest ? 'Más antiguos' : 'Más recientes',
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 12,
+                              height: 1.25,
+                              letterSpacing: 0,
+                              fontWeight: FontWeight.w500,
+                              color: muted,
+                            ),
+                          ),
+                        ];
+                        return MediaQuery.textScalerOf(context).scale(16) > 24
+                            ? Wrap(spacing: 8, runSpacing: 4, children: labels)
+                            : Row(
+                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                textBaseline: TextBaseline.alphabetic,
+                                children: [
+                                  labels.first,
+                                  const SizedBox(width: 8),
+                                  labels.last,
+                                ],
+                              );
+                      },
                     ),
-                  ],
+                  ),
                 ),
-              ),
+                Positioned.fill(
+                  child: TextButton(
+                    key: const ValueKey('match-sort'),
+                    onPressed: () => setState(() => oldest = !oldest),
+                    style: TextButton.styleFrom(
+                      splashFactory: NoSplash.splashFactory,
+                      overlayColor: Colors.transparent,
+                      animationDuration: Duration.zero,
+                      minimumSize: const Size.fromHeight(48),
+                      padding: EdgeInsets.zero,
+                    ),
+                    child: Semantics(
+                      label:
+                          'Ordenar ${oldest ? 'Más antiguos' : 'Más recientes'}',
+                      child: const SizedBox.shrink(),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ] else
             Row(
@@ -293,13 +332,13 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
                   ),
               ],
             ),
-          if (widget.all) const SizedBox(height: 12),
           if (error != null) Notice(error!, isError: true),
           if (items.isEmpty)
             const MatchFavoritesEmpty()
           else if (widget.all)
             GridView.builder(
               shrinkWrap: true,
+              padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: MediaQuery.textScalerOf(context).scale(13) > 20
