@@ -530,7 +530,10 @@ class _HistoryState extends ConsumerState<PaymentHistoryScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text('Consulta todo tu historial de pagos.'),
+          const Text(
+            'Consulta todo tu historial de pagos.',
+            style: TextStyle(fontSize: 14, height: 1.55, color: muted),
+          ),
           const SizedBox(height: 26),
           LiveSection<PaymentHistoryData>(
             key: ValueKey(
