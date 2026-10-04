@@ -3264,3 +3264,7 @@ Fuente aa5a41c/producción8c55e18; referencia Irlanda a3c969cd9103fd46dc5cd88699
 ## 2026-10-04 — Loop701: controles de ayuda y soporte
 
 Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. CSS help-topic-chip y help-support-card primary sin active; Source dialog primario plano. HelpCenter temas/contacto NoSplash/overlay0/duración0; HelpSupportDialog Enviar mensaje mismo estilo y cierre IconButton overlay0. Geometría del cierre específico preservada; no sustituirlo por otro sin medir contexto. Adjuntos, tema, envío/errores/espera y correo sin cambios. Gate36663 terminal0,14/14 en4s help_navigation_test/help_support_dialog_test/help_support_route_test; analyze60844 terminal0 limpio29.9s. No nuevo envío externo, captura/presión RGBA, runtimeAndroid ni aceptación global. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop702: título del centro de ayuda
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Source /help 377×852 con Inter cargado: h1 hereda letter-spacing -.02em, computado -.48px. HelpCenter añade letterSpacing -.48 al título24; no cambios de lógica. Captura final43452 terminal0,1/1 en13s; help-center final y Source inspeccionados. Test57879 terminal0,14/14 en5s; analyze93417 terminal0 limpio41.7s. Diferencias pequeñas en métricas de chips/tarjeta todavía no cerradas; no atribuir igualdad global. Browser cerrado y Vite detenido. Sin Codemagic hasta objetivo completo; dinero live no autorizado.

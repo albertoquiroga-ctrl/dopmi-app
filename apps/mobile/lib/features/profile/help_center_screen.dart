@@ -289,6 +289,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
               style: TextStyle(
                 fontSize: 24,
                 height: 1.2,
+                letterSpacing: -0.48,
                 fontWeight: FontWeight.w700,
                 color: ink,
               ),
