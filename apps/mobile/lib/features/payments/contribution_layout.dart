@@ -284,6 +284,9 @@ class ContributionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = ButtonStyle(
+      splashFactory: NoSplash.splashFactory,
+      overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+      animationDuration: Duration.zero,
       minimumSize: const WidgetStatePropertyAll(Size(0, 48)),
       padding: const WidgetStatePropertyAll(
         EdgeInsets.symmetric(horizontal: 18, vertical: 11),
