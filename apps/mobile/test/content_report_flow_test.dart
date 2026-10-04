@@ -102,6 +102,14 @@ void main() {
           'reason': 'other',
           'details': 'Motivo para revisión privada',
         });
+        expect(tester.widget<FilledButton>(send).onPressed, isNull);
+        final cancel = find.widgetWithText(OutlinedButton, 'Cancelar');
+        expect(tester.widget<OutlinedButton>(cancel).onPressed, isNull);
+        final close = find.descendant(
+          of: find.byTooltip('Cerrar'),
+          matching: find.byType(TextButton),
+        );
+        expect(tester.widget<TextButton>(close).onPressed, isNull);
         expect(find.text('Recibimos tu reporte para revisión.'), findsNothing);
         repo.pending.single.completeError(
           Exception('fixture network unavailable'),

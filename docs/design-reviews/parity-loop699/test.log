@@ -1,0 +1,5 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_report_flow_test.dart
+00:00 +0: actual rescuer report retains motive on failure and only acknowledges server receipt
+00:02 +1: actual adoption report retains motive on failure and only acknowledges server receipt
+00:03 +2: actual case report retains motive on failure and only acknowledges server receipt
+00:03 +3: All tests passed!
