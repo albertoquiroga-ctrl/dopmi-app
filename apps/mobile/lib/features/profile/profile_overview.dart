@@ -365,29 +365,35 @@ class DonorModeDialog extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'Publica casos de mascotas con necesidad de un hogar.',
-                  style: TextStyle(fontSize: 14, height: 1.45, color: muted),
+                const Padding(
+                  padding: EdgeInsets.only(right: 20),
+                  child: Text(
+                    'Publica casos de mascotas con necesidad de un hogar.',
+                    style: TextStyle(fontSize: 14, height: 1.45, color: muted),
+                  ),
                 ),
                 const SizedBox(height: 8),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xfffff3cc),
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                    child: const Text(
-                      'Tu perfil de Adoptante se queda intacto.',
-                      style: TextStyle(
-                        fontSize: 12,
-                        height: 1.3,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xff6b5000),
+                Padding(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xfffff3cc),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: const Text(
+                        'Tu perfil de Adoptante se queda intacto.',
+                        style: TextStyle(
+                          fontSize: 12,
+                          height: 1.3,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xff6b5000),
+                        ),
                       ),
                     ),
                   ),
@@ -488,6 +494,16 @@ class DonorModeDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 TextButton(
+                  style: TextButton.styleFrom(
+                    minimumSize: const Size.fromHeight(40),
+                    padding: EdgeInsets.zero,
+                    splashFactory: NoSplash.splashFactory,
+                    textStyle: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Inter',
+                    ),
+                  ),
                   onPressed: () => Navigator.pop(context, false),
                   child: const Text('Ahora no', style: TextStyle(color: muted)),
                 ),
