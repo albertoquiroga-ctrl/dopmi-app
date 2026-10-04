@@ -172,6 +172,7 @@ class _PublicProfileAdoptionCardState
                             : 'Guardar mascota',
                         onPressed: busy ? null : toggle,
                         style: IconButton.styleFrom(
+                          overlayColor: Colors.transparent,
                           backgroundColor: isSaved ? yellow : Colors.white,
                           side: const BorderSide(color: Color(0xffe6e2dd)),
                           shape: const CircleBorder(),
@@ -202,6 +203,9 @@ class _PublicProfileAdoptionCardState
                         child: FilledButton(
                           onPressed: widget.open,
                           style: FilledButton.styleFrom(
+                            splashFactory: NoSplash.splashFactory,
+                            overlayColor: Colors.transparent,
+                            animationDuration: Duration.zero,
                             backgroundColor: yellow,
                             foregroundColor: ink,
                             minimumSize: const Size(double.infinity, 44),
