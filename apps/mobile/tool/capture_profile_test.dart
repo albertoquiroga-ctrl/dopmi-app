@@ -3689,6 +3689,28 @@ void main() {
           );
           expect(add.hitTestable(), findsOneWidget);
         }
+        if (spec.$1 == 'impact-feed' || spec.$1 == 'impact-feed-large') {
+          final share = find.widgetWithText(OutlinedButton, 'Compartir');
+          await tester.ensureVisible(share);
+          await tester.pumpAndSettle();
+          expect(share.hitTestable(), findsOneWidget);
+          final rect = tester.getRect(share);
+          final surface = tester.getRect(
+            find.descendant(of: share, matching: find.byType(Material)).first,
+          );
+          await tester.runAsync(
+            () => File('${out.path}/${spec.$1}-share-metrics.json')
+                .writeAsString(
+                  jsonEncode({
+                    'x': rect.left,
+                    'y': rect.top,
+                    'width': rect.width,
+                    'height': rect.height,
+                    'surfaceHeight': surface.height,
+                  }),
+                ),
+          );
+        }
         TestGesture? helpHold;
         if (spec.$1.startsWith('help-center-topic-held')) {
           final topic = find.widgetWithText(

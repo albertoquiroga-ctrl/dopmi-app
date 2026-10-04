@@ -235,14 +235,14 @@ class ImpactCaseCard extends StatelessWidget {
       ),
       style: OutlinedButton.styleFrom(
         minimumSize: const Size(0, 34),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 9),
         shape: const StadiumBorder(),
         side: const BorderSide(color: Color(0xffe6e2dd)),
         foregroundColor: ink,
         textStyle: const TextStyle(
           fontFamily: 'Inter',
           fontSize: 14,
-          height: 1.2,
+          height: 17 / 14,
           fontWeight: FontWeight.w600,
         ),
       ),
