@@ -106,6 +106,9 @@ class AccountPhotoCard extends StatelessWidget {
       child: OutlinedButton(
         onPressed: onEdit,
         style: OutlinedButton.styleFrom(
+          splashFactory: NoSplash.splashFactory,
+          overlayColor: Colors.transparent,
+          animationDuration: Duration.zero,
           foregroundColor: ink,
           backgroundColor: Colors.white,
           side: const BorderSide(color: Color(0xffe6e2dd)),

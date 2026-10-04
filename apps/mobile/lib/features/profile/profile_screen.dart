@@ -261,6 +261,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
         ),
         leading: IconButton(
           tooltip: 'Volver',
+          style: IconButton.styleFrom(overlayColor: Colors.transparent),
           onPressed: () =>
               context.canPop() ? context.pop() : context.go('/settings'),
           icon: SvgPicture.asset(
@@ -476,6 +477,9 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
                           constraints: const BoxConstraints(minHeight: 48),
                           child: FilledButton(
                             style: FilledButton.styleFrom(
+                              splashFactory: NoSplash.splashFactory,
+                              overlayColor: Colors.transparent,
+                              animationDuration: Duration.zero,
                               textStyle: const TextStyle(
                                 fontFamily: 'Inter',
                                 fontSize: 16,
@@ -584,7 +588,7 @@ class _BasicInfoField extends StatelessWidget {
             letterSpacing: 0,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 7),
         child,
       ],
     ),
