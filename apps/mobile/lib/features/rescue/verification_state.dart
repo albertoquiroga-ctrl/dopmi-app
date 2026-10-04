@@ -20,9 +20,13 @@ class VerificationStateScreen extends StatelessWidget {
   final VoidCallback? onPublish, onWithdraw;
   @override
   Widget build(BuildContext context) => VerificationFormFrame(
-    title: 'Verificación',
+    title: approved ? 'Verificación' : 'Verificación en revisión',
     onBack: loading ? null : onBack,
-    bodyPadding: EdgeInsets.zero,
+    bodyPadding: approved
+        ? EdgeInsets.zero
+        : MediaQuery.textScalerOf(context).scale(24) > 32
+        ? const EdgeInsets.fromLTRB(0, 20, 0, 32)
+        : const EdgeInsets.fromLTRB(16, 20, 16, 32),
     children: [
       ConstrainedBox(
         constraints: const BoxConstraints(minHeight: 520),
@@ -77,7 +81,7 @@ class VerificationStateScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: approved ? 26.08 : 10),
+              const SizedBox(height: 26.08),
               Text(
                 approved
                     ? 'Tu solicitud fue aprobada. Puedes continuar con la publicación de tus casos.'
@@ -91,7 +95,7 @@ class VerificationStateScreen extends StatelessWidget {
                       : const Color(0xff554e48),
                 ),
               ),
-              SizedBox(height: approved ? 24 : 10),
+              const SizedBox(height: 24),
               if (loading)
                 const Center(
                   child: CircularProgressIndicator(
@@ -116,6 +120,17 @@ class VerificationStateScreen extends StatelessWidget {
               else
                 OutlinedButton(
                   onPressed: loading ? null : onHome,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xff15110d),
+                    side: const BorderSide(color: Color(0xffe6e2dd)),
+                    minimumSize: const Size(0, 48),
+                    textStyle: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 16,
+                      height: 19 / 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   child: const Text('Volver al inicio'),
                 ),
             ],
