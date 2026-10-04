@@ -6,6 +6,7 @@ import 'package:dopmi_mobile/features/adoption/discovery_filters.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -79,6 +80,37 @@ void main() {
     matching: find.text(text),
   );
 
+  testWidgets('filter geometry matches rendered reference at 377 by 852', (
+    tester,
+  ) async {
+    final font = FontLoader('Inter')
+      ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
+    await tester.runAsync(font.load);
+    await open(tester);
+    final surface = find
+        .descendant(of: find.byType(Dialog), matching: find.byType(Material))
+        .first;
+    final dialog = tester.getRect(surface);
+    final apply = tester.getRect(
+      find.widgetWithText(FilledButton, 'Aplicar filtros'),
+    );
+    final clear = tester.getRect(
+      find.widgetWithText(OutlinedButton, 'Limpiar filtros'),
+    );
+    debugPrint('FILTER_GEOMETRY dialog=$dialog apply=$apply clear=$clear');
+    for (final name in ['Filtros', 'Género', 'Tamaño', 'Personalidad']) {
+      debugPrint('FILTER_GEOMETRY $name=${tester.getRect(label(name))}');
+    }
+    expect(dialog.width, 345);
+    expect(dialog.height, 586);
+    expect(dialog.top, 133);
+    expect(apply.height, 44);
+    expect(clear.height, 44);
+    expect(apply.top, 595);
+    expect(clear.top, 651);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('cancel discards filter drafts without a server query', (
     tester,
   ) async {
@@ -120,7 +152,9 @@ void main() {
     await tester.tap(find.byTooltip('Filtros'));
     await tester.pump();
     final option = tester.widget<FilterOption>(
-      find.ancestor(of: label('Hembra'), matching: find.byType(FilterOption)).first,
+      find
+          .ancestor(of: label('Hembra'), matching: find.byType(FilterOption))
+          .first,
     );
     expect(option.selected, false);
     expect(tester.takeException(), isNull);
