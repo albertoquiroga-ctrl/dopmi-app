@@ -3464,3 +3464,7 @@ Ver docs/design-reviews/parity-loop741/README.md. Source a3c969c revalidado; fue
 ### 2026-10-04 - Loop742: historial alineado al borde
 
 Ver docs/design-reviews/parity-loop742/README.md. Source a3c969c medido en runtime: fila x17/ancho343, cuerpo x93. Padding1 dentro de Material corrige cuerpo previo92. Suite87275 exit0:27/27; final72716 exit0:9/9 verifica x93. Capture32940 exit0 y analyzer limpio19.5s. Solo normal final inspeccionado; sin aceptacion global/nativa ni Codemagic.
+
+### 2026-10-04 - Loop743: regresion y coleccion global actual
+
+Fuente432ecb2, Source a3c969cd9103fd46dc5cd886999912526ce75efb inicio/cierre. 364 fuentes iguales root/scratch y sin cambios antes/despues. Full6298 exit0:795/795 en4m13s; config12842 exit0:16/16. Capture81992 exit0:1/1 en3m06s; 418 PNG actuales/47 rutas verificados PIL/hash/fecha/dimensiones. Ver docs/design-reviews/parity-loop743. Solo contacto normal inspeccionado/contrastado con Source en este loop; no aceptacion visual de los otros417. Supersede gate736/790 y coleccion709/415. ADB solo emulator5554, APK724 anterior. PR6 open/draft remotoe4f4e858 sobreba9f897 verificado API/refs. Sin push/Codemagic ni dinero real; paridad global/nativa sigue abierta.
