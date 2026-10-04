@@ -173,6 +173,22 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets(
+    'guest contact opens login before confirmation and preserves card',
+    (tester) async {
+      await open(tester, repository: GuestCommunity(), guest: true);
+      await tester.tap(find.byTooltip('Contactar'));
+      await tester.pumpAndSettle();
+      expect(find.text('Inicia sesión'), findsWidgets);
+      expect(find.text('Sí, contactar rescatista'), findsNothing);
+      Navigator.of(tester.element(find.text('Inicia sesión').first)).pop();
+      await tester.pumpAndSettle();
+      expect(find.text('Luna'), findsOneWidget);
+      expect(find.text('Milo'), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   for (final large in [false, true]) {
     for (final right in [false, true]) {
       testWidgets(

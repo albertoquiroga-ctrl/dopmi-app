@@ -193,6 +193,10 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
 
   Future<void> contact(Adoption card) async {
     if (acting) return;
+    if (ref.read(communityRepositoryProvider).userId == null) {
+      await context.push('/login');
+      return;
+    }
     final confirm = await confirmAdoptionContact(context);
     if (confirm != true || !mounted) return;
     setState(() => acting = true);
