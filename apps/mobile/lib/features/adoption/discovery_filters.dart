@@ -176,6 +176,10 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                             child: Tooltip(
                               message: item.$2,
                               child: InkWell(
+                                splashFactory: NoSplash.splashFactory,
+                                overlayColor: const WidgetStatePropertyAll(
+                                  Colors.transparent,
+                                ),
                                 borderRadius: BorderRadius.circular(14),
                                 onTap: () => setState(
                                   () => size = size == item.$1 ? null : item.$1,
@@ -238,6 +242,9 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                 const SizedBox(height: 32),
                 FilledButton(
                   style: FilledButton.styleFrom(
+                    splashFactory: NoSplash.splashFactory,
+                    overlayColor: Colors.transparent,
+                    animationDuration: Duration.zero,
                     minimumSize: const Size(0, 42),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     backgroundColor: yellow,
@@ -262,6 +269,9 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                 const SizedBox(height: 12),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(
+                    splashFactory: NoSplash.splashFactory,
+                    overlayColor: Colors.transparent,
+                    animationDuration: Duration.zero,
                     minimumSize: const Size(0, 42),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     foregroundColor: ink,
@@ -287,6 +297,7 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
             right: 0,
             child: IconButton(
               tooltip: 'Cerrar',
+              style: IconButton.styleFrom(overlayColor: Colors.transparent),
               onPressed: () => context.pop(),
               icon: const Icon(Icons.close, size: 22, color: muted),
             ),
@@ -319,6 +330,9 @@ class FilterOption extends StatelessWidget {
     selected: selected,
     child: TextButton(
       style: TextButton.styleFrom(
+        splashFactory: NoSplash.splashFactory,
+        overlayColor: Colors.transparent,
+        animationDuration: Duration.zero,
         minimumSize: Size(0, outlined ? 34 : 40),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         padding: EdgeInsets.symmetric(

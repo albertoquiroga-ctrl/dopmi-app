@@ -1,0 +1,33 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart
+00:00 +0: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: cancel discards filter drafts without a server query
+00:02 +1: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: guest save requests login without advancing or writing favorite
+00:02 +2: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: photo retry receives tap through decorative gradient
+00:03 +3: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: filter opens immediately and back or outside discards drafts
+00:03 +4: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: support photo retry receives tap without opening case
+00:03 +5: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: apply sends real keys and clear preserves species
+00:03 +6: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: guest contact opens login before confirmation and preserves card
+00:03 +7: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: large text dialog scrolls to apply and keeps close reachable
+00:04 +8: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: burst pointer movement accumulates before redraw: false/false
+00:04 +9: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: late filter response cannot replace the latest selected results
+00:04 +10: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: late filter response cannot replace the latest selected results
+00:04 +11: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: burst pointer movement accumulates before redraw: true/false
+00:04 +12: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: burst pointer movement accumulates before redraw: true/true
+00:04 +13: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: reference tap versus short drag boundary: -9.0 pixels
+00:05 +14: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: reference tap versus short drag boundary: -8.0 pixels
+00:05 +15: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: reference tap versus short drag boundary: -7.0 pixels
+00:05 +16: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: reference tap versus short drag boundary: 7.0 pixels
+00:05 +17: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: reference tap versus short drag boundary: 8.0 pixels
+00:05 +18: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: reference tap versus short drag boundary: 9.0 pixels
+00:05 +19: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: card follows finger immediately, threshold returns, cancel never saves, exit lasts 280ms
+00:06 +20: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: incoming card follows a new gesture immediately; right=false
+00:06 +21: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: incoming card follows a new gesture immediately; right=true
+00:06 +22: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: returning from favorites preserves the card without replaying entry
+00:06 +23: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: support entry and interrupted gesture; reduced=false
+00:06 +24: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: support entry and interrupted gesture; reduced=true
+00:07 +25: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: small screen large text keeps species and actions reachable
+00:07 +26: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: slow favorite does not delay next card and failure offers persistence retry
+00:07 +27: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: favorite confirmation shares the exit time instead of delaying it
+00:07 +28: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: reduced motion advances without a timed exit
+00:07 +29: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: a short drag returns on the CSS curve and a new drag interrupts it
+00:07 +30: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: exit frames interpolate CSS angle and translation independently
+00:08 +31: All tests passed!
