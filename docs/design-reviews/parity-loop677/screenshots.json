@@ -1,0 +1,18 @@
+[
+  {
+    "file": "open-detail.png",
+    "sha256": "47a5affc67a33e3640d0208d9015920e619b36b912708484be33aa6bd4e9d616"
+  },
+  {
+    "file": "share.png",
+    "sha256": "b57fbbde1e8bf8a8885930051faf662a1c67d38d2889167fd5f48c535ce91a08"
+  },
+  {
+    "file": "return.png",
+    "sha256": "66024352fbd0c7e3bd7709a85b12a3401c5df472b67ed271501fcdae62a42e24"
+  },
+  {
+    "file": "share-again.png",
+    "sha256": "b57fbbde1e8bf8a8885930051faf662a1c67d38d2889167fd5f48c535ce91a08"
+  }
+]
