@@ -54,6 +54,12 @@ class _PaymentHistoryRowState extends State<PaymentHistoryRow> {
       'pending' => const Color(0xfff7cb2d),
       _ => const Color(0xffe8e4de),
     };
+    final foreground = switch (d['payment_status']) {
+      'confirmed' => const Color(0xff071a13),
+      'pending' => const Color(0xff0d0d0d),
+      'canceled' => const Color(0xff5c5650),
+      _ => ink,
+    };
     final dateView = Text(
       date == null ? '—' : '${date.day} ${months[date.month - 1]}',
       style: const TextStyle(
@@ -111,11 +117,11 @@ class _PaymentHistoryRowState extends State<PaymentHistoryRow> {
           ),
           child: Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
               height: 14 / 11,
               fontWeight: FontWeight.w500,
-              color: ink,
+              color: foreground,
             ),
           ),
         ),
