@@ -8,11 +8,12 @@ class VerificationFormFrame extends StatelessWidget {
     this.onBack,
     this.title = 'Formulario de verificación',
     this.rescuer = true,
+    this.processing = false,
     this.bodyPadding = const EdgeInsets.fromLTRB(16, 20, 16, 32),
   });
   final List<Widget> children;
   final String title;
-  final bool rescuer;
+  final bool rescuer, processing;
   final EdgeInsets bodyPadding;
   final VoidCallback? onBack;
   @override
@@ -21,65 +22,78 @@ class VerificationFormFrame extends StatelessWidget {
     body: SafeArea(
       child: Column(
         children: [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: rescuer
-                      ? const Color(0xffe3e4ed)
-                      : const Color(0xffe6e2dd),
+          Stack(
+            children: [
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: rescuer
+                          ? const Color(0xffe3e4ed)
+                          : const Color(0xffe6e2dd),
+                    ),
+                  ),
+                ),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 68),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          key: const ValueKey('verification-header-back'),
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onPressed: onBack,
+                          tooltip: 'Volver',
+                          icon: Transform.translate(
+                            offset: const Offset(-4, -.5),
+                            child: SvgPicture.asset(
+                              'assets/profile/back.svg',
+                              width: 20,
+                              height: 20,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            title,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 18,
+                              height: 1.25,
+                              letterSpacing: -.36,
+                              fontWeight: FontWeight.w700,
+                              color: rescuer
+                                  ? const Color(0xff151423)
+                                  : const Color(0xff15110d),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.textScalerOf(context).scale(18) > 24
+                              ? 0
+                              : 48,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 68),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
+              if (processing)
+                const Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: LinearProgressIndicator(
+                    semanticsLabel: 'Guardando o subiendo archivos',
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    IconButton(
-                      key: const ValueKey('verification-header-back'),
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      onPressed: onBack,
-                      tooltip: 'Volver',
-                      icon: Transform.translate(
-                        offset: const Offset(-4, -.5),
-                        child: SvgPicture.asset(
-                          'assets/profile/back.svg',
-                          width: 20,
-                          height: 20,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        title,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 18,
-                          height: 1.25,
-                          letterSpacing: -.36,
-                          fontWeight: FontWeight.w700,
-                          color: rescuer
-                              ? const Color(0xff151423)
-                              : const Color(0xff15110d),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.textScalerOf(context).scale(18) > 24
-                          ? 0
-                          : 48,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            ],
           ),
           Expanded(
             child: ListView(
@@ -388,16 +402,31 @@ class VerificationFormActions extends StatelessWidget {
                   ),
                   animationDuration: Duration.zero,
                 ),
-            child: busy
-                ? Semantics(
-                    label: 'Procesando',
-                    child: const SizedBox(
-                      width: 22,
-                      height: 22,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                ExcludeSemantics(
+                  excluding: busy,
+                  child: Opacity(
+                    opacity: busy ? 0 : 1,
+                    child: const Text('Enviar a revisión'),
+                  ),
+                ),
+                if (busy)
+                  Positioned.fill(
+                    child: Center(
+                      child: Semantics(
+                        label: 'Procesando',
+                        child: const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
                     ),
-                  )
-                : const Text('Enviar a revisión'),
+                  ),
+              ],
+            ),
           ),
           // Preserve Source's visible gap while retaining the larger touch target.
           SizedBox(height: gap),

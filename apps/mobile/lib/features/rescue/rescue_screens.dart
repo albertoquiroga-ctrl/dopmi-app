@@ -1866,6 +1866,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
             )
             .length;
     return VerificationFormFrame(
+      processing: busy,
       onBack: busy
           ? null
           : () async {
@@ -1906,10 +1907,6 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
           if (!editable)
             const Notice(
               'Los datos enviados están protegidos. Puedes consultar el estado actualizado al recargar.',
-            ),
-          if (busy)
-            const LinearProgressIndicator(
-              semanticsLabel: 'Guardando o subiendo archivos',
             ),
           const VerificationSectionTitle('Información básica'),
           const Text(
