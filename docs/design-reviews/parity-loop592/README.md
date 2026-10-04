@@ -1,0 +1,5 @@
+# Navegación del historial
+
+## 2026-10-03 — Loop592: navegación integrada historial/caso
+
+Fuente producción7d0bd7b, Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Tres pruebas nuevas con DopmiApp/router reales y repositorios fixture: toque abre /rescue-cases/case-one y muestraChoco, pop conserva historial y evidencia expandida; dos toques durante consulta generanuna apertura, cambioidentidad descarta respuesta tardía; caso público ausente muestra aviso sin abandonarhistorial y mantiene acceso importe/evidencia. Sin cambios producción/backend. Gate36426 terminalexit0,15/15,5s; primera77213exit0,14/14 antes agregarcasoausente. Analyzer83506exit1 tresprefer_adjacent_string_concatenation corregidos sólo unificando literalesidénticos; finalcomando798f10 terminalexit0 limpio4.8s. No prueba física ni animación raster ni paridadglobal. Próxima diferenciaSource: título fila puntual combina nombre realcaso negrita700 y concepto regular400; nativo aún sóloexpense_title700; suscripciónSource600 vsnativo700. Requiere datos públicos reales sin rellenar nombres inventados ni ampliarRLS. Sin push/Codemagic hasta objetivo completo.

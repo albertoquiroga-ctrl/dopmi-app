@@ -10,6 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
+
+import 'rescue_test.dart' show FakeRescue, FakeCaseUpdates;
+
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
 import 'guardian_history_test.dart' show HistoryRepo, cycle;
@@ -34,12 +39,23 @@ class HistoryPayments extends FakePayments {
   }
 }
 
+class PendingHistoryCase extends FakeRescue {
+  final reply = Completer<String?>();
+  int opens = 0;
+  @override
+  Future<String?> publicCaseForExpense(String expenseId) {
+    opens++;
+    return reply.future;
+  }
+}
+
 void main() {
   Future<FakeIdentityRepository> start(
     WidgetTester tester,
     HistoryRepo guardian,
     HistoryPayments payments, {
     bool enabled = true,
+    RescueRepository? rescue,
   }) async {
     tester.view.physicalSize = const Size(900, 1600);
     tester.view.devicePixelRatio = 1;
@@ -52,6 +68,8 @@ void main() {
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         paymentRepositoryProvider.overrideWithValue(payments),
+        rescueRepositoryProvider.overrideWithValue(rescue ?? FakeRescue()),
+        caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
         guardianRepositoryProvider.overrideWithValue(guardian),
         guardianEnabledProvider.overrideWithValue(enabled),
         routerInitialLocationProvider.overrideWithValue('/payments'),
@@ -120,6 +138,89 @@ void main() {
       expect(find.text('Continuar aportación'), findsNothing);
     },
   );
+  testWidgets(
+    'History opens the public parent and back retains financial details',
+    (tester) async {
+      await start(tester, HistoryRepo(), HistoryPayments(), enabled: false);
+      await tester.tap(find.text(r'$75.25'));
+      await tester.pumpAndSettle();
+      expect(find.text(r'Importe: $75.25 MXN'), findsOneWidget);
+      await tester.tap(find.text('Medicamentos').first);
+      await tester.pumpAndSettle();
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(DopmiApp)),
+      );
+      expect(
+        container.read(routerProvider).state.uri.path,
+        '/rescue-cases/case-one',
+      );
+      expect(find.text('Choco'), findsWidgets);
+      container.read(routerProvider).pop();
+      await tester.pumpAndSettle();
+      expect(container.read(routerProvider).state.uri.path, '/payments');
+      expect(find.text(r'Importe: $75.25 MXN'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('Late case result after identity change cannot navigate', (
+    tester,
+  ) async {
+    final rescue = PendingHistoryCase();
+    final identity = await start(
+      tester,
+      HistoryRepo(),
+      HistoryPayments(),
+      enabled: false,
+      rescue: rescue,
+    );
+    await tester.tap(find.text('Medicamentos'));
+    await tester.pump();
+    await tester.tap(find.text('Medicamentos'));
+    await tester.pump();
+    expect(rescue.opens, 1);
+    identity.emit(
+      const IdentityEvent(Identity('two', 'two@example.test', verified: true)),
+    );
+    await tester.pumpAndSettle();
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(DopmiApp)),
+    );
+    final routeBefore = container.read(routerProvider).state.uri;
+    rescue.reply.complete('case-one');
+    await tester.pumpAndSettle();
+    expect(container.read(routerProvider).state.uri, routeBefore);
+    expect(find.text('Choco'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'Unavailable public case retains access to private payment evidence',
+    (tester) async {
+      final rescue = PendingHistoryCase();
+      await start(
+        tester,
+        HistoryRepo(),
+        HistoryPayments(),
+        enabled: false,
+        rescue: rescue,
+      );
+      await tester.tap(find.text('Medicamentos'));
+      await tester.pump();
+      rescue.reply.complete(null);
+      await tester.pumpAndSettle();
+      expect(find.text('Este caso ya no está disponible.'), findsOneWidget);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(DopmiApp)),
+      );
+      expect(container.read(routerProvider).state.uri.path, '/payments');
+      await tester.tap(find.text(r'$75.25'));
+      await tester.pump();
+      expect(find.text(r'Importe: $75.25 MXN'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('Disabled Guardian makes no cycle reads', (tester) async {
     final guardian = HistoryRepo();
     await start(tester, guardian, HistoryPayments(), enabled: false);
