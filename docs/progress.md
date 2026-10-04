@@ -2710,3 +2710,7 @@ Fuente135879c178d1cd89befb2cd38220b6c86b0a44a7,233Dart iguales raíz/scratch ant
 ## 2026-10-03 — Loop565:407capturas actuales
 
 Capturador6598 terminalexit0,1test/407unique,3m02s.407PNG nuevos/formato/hash verificados enmanifest565. Fuente135879c mismofull630564;233Dart iguales raíz/scratch antes temprano ydespués/sin cambios.96assetsauditados:95visuales byteidénticos durante; NOTO-EMOJI-LICENSE.txt temporal574bytes vsraíz11934 alineado sólo tras finalizar, todos96iguales al cierre. Pubspec/lockiguales. FuenteSourcea3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Supersede407547. Detallecaso/progresoverificación actuales inspeccionados, no407aceptaciones ni contrasteglobal/temporal/físico. Próximo contraste porfamilias, sin push/Codemagic.
+
+## 2026-10-03 — Loop566: cobertura bienvenida/acceso
+
+407fixtures565 no incluían AUTH/bienvenida. Existingcapture_design3508 exit0,27PNG nuevos/5s. Nuevo capture_access_test abre6rutas reales×normal/320texto200+3footers:15PNG nuevos/hash/firma y capturador raíz-scratch iguales. Final28526 exit0,1test/15fixtures2s, analyzer45478 exit0 limpio17.3s. Primer intento sombras56200 falló invariantecapturador; reset explícito antescierre corregido, no falloapp. Welcome/login normal ylogin/signupfooters200 inspeccionados: campos/CTA/consentimiento alcanzables. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado; sin runtimeSource nuevo/comparacióncompleta. Sólo tool/evidencia, full630564 vigenteproducción. Docs/design-reviews/parity-loop566, sin push/Codemagic ni aceptaciónglobal.

@@ -1,0 +1,14 @@
+[
+  {
+    "file": "tool/capture_access_test.dart",
+    "sha256": "928129d12dc1318ac213ad360f035436940915b3907e964b9ed35ec3befe8c21"
+  },
+  {
+    "file": "tool/capture_design_test.dart",
+    "sha256": "e5d701109573622e36f85473b44377dce77ab19ade354ce06f96b1a63a663166"
+  },
+  {
+    "file": "tool/design_gallery.dart",
+    "sha256": "3c932395a2500a5b19f581e30d1a00cb59989035adc907ea4a6b9bb99627ce1a"
+  }
+]
