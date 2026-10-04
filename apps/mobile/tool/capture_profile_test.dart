@@ -1,3 +1,5 @@
+import 'package:dopmi_mobile/features/communication/notification_tile.dart';
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -654,6 +656,35 @@ class RescuerReferenceCaptureRescue extends FakeRescue {
   };
 }
 
+class NotificationSourceCaptureCommunity extends NotificationCommunity {
+  @override
+  Future<DataPage<Json>> notifications(int page) async {
+    final now = DateTime.now();
+    return DataPage([
+      for (var i = 0; i < 3; i++)
+        {
+          'id': 'source-notice-$i',
+          'kind': ['message', 'rescue', 'review'][i],
+          'title': [
+            'Nuevo mensaje de Rescatista',
+            'Actualización del caso',
+            'Nueva mascota en adopción',
+          ][i],
+          'body': [
+            'María te respondió sobre el caso de Luna.',
+            'El rescatista subió nueva evidencia del apoyo recibido.',
+            'Hay una nueva mascota cerca de tu zona.',
+          ][i],
+          'created_at': now
+              .subtract(i == 0 ? const Duration(minutes: 5) : Duration(days: i))
+              .toUtc()
+              .toIso8601String(),
+          'read_at': i == 2 ? now.toUtc().toIso8601String() : null,
+        },
+    ], 3);
+  }
+}
+
 class NotificationCountCaptureCommunity extends FakeCommunity {
   @override
   Future<int> unreadNotificationCount() async => 3;
@@ -897,6 +928,7 @@ void main() {
       ('rescuer-home-large', '/rescuer'),
       ('support-home', '/rescue-cases'),
       ('notifications-reference', '/notifications'),
+      ('notifications-source', '/notifications'),
       ('notifications-reference-large', '/notifications'),
       ('notifications-reference-read', '/notifications'),
       ('notifications-reference-kinds', '/notifications'),
@@ -1491,6 +1523,8 @@ void main() {
           ? SavedRescuerCommunity()
           : spec.$1.startsWith('saved-adoptions-empty')
           ? (FakeCommunity()..savedItems = [])
+          : spec.$1 == 'notifications-source'
+          ? NotificationSourceCaptureCommunity()
           : spec.$1.startsWith('notifications-reference-kinds')
           ? NotificationKindsCaptureCommunity()
           : spec.$1.startsWith('support-home-notification-badge')
@@ -3830,6 +3864,26 @@ void main() {
           );
         }
         TestGesture? savedHold;
+        if (spec.$1 == 'notifications-source') {
+          final cards = find.byType(NotificationTile);
+          final geometry = [
+            for (var i = 0; i < 3; i++)
+              tester.getRect(
+                find
+                    .descendant(of: cards.at(i), matching: find.byType(InkWell))
+                    .first,
+              ),
+          ];
+          await tester.runAsync(() async {
+            await File('${out.path}/notifications-source-geometry.json')
+                .writeAsString(
+                  jsonEncode([
+                    for (final rect in geometry)
+                      [rect.left, rect.top, rect.width, rect.height],
+                  ]),
+                );
+          });
+        }
         if (spec.$1 == 'saved-adoptions') {
           final remove = find.byTooltip('Quitar de guardados').first;
           final icon = tester.getRect(
