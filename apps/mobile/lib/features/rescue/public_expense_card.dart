@@ -243,6 +243,7 @@ class _PublicExpenseCardState extends State<PublicExpenseCard> {
                               )
                             : null,
                         style: IconButton.styleFrom(
+                          overlayColor: Colors.transparent,
                           backgroundColor: yellow,
                           disabledBackgroundColor: yellow.withValues(
                             alpha: .55,
