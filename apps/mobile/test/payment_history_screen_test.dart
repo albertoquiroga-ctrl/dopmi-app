@@ -1,3 +1,5 @@
+import 'package:dopmi_mobile/core/reference_switch.dart';
+
 import 'dart:async';
 
 import 'package:dopmi_mobile/app.dart';
@@ -144,7 +146,8 @@ void main() {
       expect(find.text('Sin cargo'), findsOneWidget);
       expect(find.text('Pagado'), findsNothing);
       expect(find.text('Importe autorizado'), findsNWidgets(2));
-      await tester.tap(find.byType(Switch));
+      expect(tester.getSize(find.byType(ReferenceSwitch)), const Size(48, 48));
+      await tester.tap(find.byType(ReferenceSwitch));
       await tester.pumpAndSettle();
       expect(payments.receivedReads.last, isTrue);
       expect(guardian.cursors.length, 1);

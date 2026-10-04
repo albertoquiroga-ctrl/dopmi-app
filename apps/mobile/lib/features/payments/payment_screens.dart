@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../core/ui.dart';
+import '../../core/reference_switch.dart';
 import '../../core/measurement.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
@@ -746,13 +747,22 @@ class _HistoryState extends ConsumerState<PaymentHistoryScreen> {
               ],
             ),
           ),
-          SwitchListTile(
-            title: const Text('Ver aportaciones recibidas'),
-            value: received,
-            onChanged: (value) => setState(() {
-              received = value;
-              page = 1;
-            }),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: Row(
+              children: [
+                const Expanded(child: Text('Ver aportaciones recibidas')),
+                const SizedBox(width: 12),
+                ReferenceSwitch(
+                  value: received,
+                  label: 'Ver aportaciones recibidas',
+                  onChanged: (value) => setState(() {
+                    received = value;
+                    page = 1;
+                  }),
+                ),
+              ],
+            ),
           ),
           if (ref.watch(guardianEnabledProvider))
             TextButton(
