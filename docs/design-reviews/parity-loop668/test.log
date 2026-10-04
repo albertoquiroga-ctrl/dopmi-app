@@ -1,0 +1,17 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart
+00:00 +0: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filter_press_test.dart: filter option holds pixels and cancels safely: 1.0/false
+00:00 +1: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: filter geometry matches rendered reference at 377 by 852
+00:00 +2: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: filter geometry matches rendered reference at 377 by 852
+00:01 +3: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: filter geometry matches rendered reference at 377 by 852
+00:01 +4: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: filter geometry matches rendered reference at 377 by 852
+FILTER_GEOMETRY dialog=Rect.fromLTRB(16.0, 133.0, 361.0, 719.0) apply=Rect.fromLTRB(40.0, 595.0, 337.0, 639.0) clear=Rect.fromLTRB(40.0, 651.0, 337.0, 695.0)
+FILTER_GEOMETRY Filtros=Rect.fromLTRB(40.0, 157.0, 325.0, 175.0)
+FILTER_GEOMETRY Género=Rect.fromLTRB(40.0, 187.0, 337.0, 211.0)
+FILTER_GEOMETRY Tamaño=Rect.fromLTRB(40.0, 293.0, 337.0, 317.0)
+FILTER_GEOMETRY Personalidad=Rect.fromLTRB(40.0, 413.0, 337.0, 437.0)
+00:02 +5: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: cancel discards filter drafts without a server query
+00:02 +6: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: filter opens immediately and back or outside discards drafts
+00:02 +7: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: apply sends real keys and clear preserves species
+00:03 +8: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: large text dialog scrolls to apply and keeps close reachable
+00:03 +9: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: late filter response cannot replace the latest selected results
+00:03 +10: All tests passed!

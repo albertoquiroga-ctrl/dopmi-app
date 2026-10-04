@@ -294,12 +294,30 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
           ),
           Positioned(
             top: 0,
-            right: 0,
-            child: IconButton(
-              tooltip: 'Cerrar',
-              style: IconButton.styleFrom(overlayColor: Colors.transparent),
-              onPressed: () => context.pop(),
-              icon: const Icon(Icons.close, size: 22, color: muted),
+            right: 16,
+            child: Tooltip(
+              message: 'Cerrar',
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  minimumSize: const Size(48, 48),
+                  fixedSize: const Size(48, 48),
+                  padding: const EdgeInsets.only(right: 6),
+                  alignment: Alignment.centerRight,
+                  splashFactory: NoSplash.splashFactory,
+                  overlayColor: Colors.transparent,
+                  animationDuration: Duration.zero,
+                  foregroundColor: muted,
+                  textStyle: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 22,
+                    height: 1,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 0,
+                  ),
+                ),
+                onPressed: () => context.pop(),
+                child: const ExcludeSemantics(child: Text('×')),
+              ),
             ),
           ),
         ],

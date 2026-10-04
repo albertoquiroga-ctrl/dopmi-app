@@ -101,6 +101,12 @@ void main() {
     for (final name in ['Filtros', 'Género', 'Tamaño', 'Personalidad']) {
       debugPrint('FILTER_GEOMETRY $name=${tester.getRect(label(name))}');
     }
+    final closeGlyph = tester.getRect(label('×'));
+    expect(closeGlyph.right, closeTo(339, .05));
+    expect(closeGlyph.center.dy, 157);
+    final closeTarget = tester.getRect(find.byTooltip('Cerrar'));
+    expect(closeTarget.width, 48);
+    expect(closeTarget.height, 48);
     expect(dialog.width, 345);
     expect(dialog.height, 586);
     expect(dialog.top, 133);
