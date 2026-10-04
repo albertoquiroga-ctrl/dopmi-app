@@ -1,3 +1,7 @@
+# Corte vigente — loop565, 3/10/2026
+
+Capturador6598 terminalexit0,1test/407unique,3m02s:407PNG nuevos/formato/hashmanifest565.233Dart iguales raíz/scratch yhashessin cambios frente full630564/fuente135879c; analyzer563limpio26.9s.96assets revisados:licencia no renderizada temporal abreviada corregida sólo después del gate,95visuales byteidénticos durante; pubspec/lock iguales. Supersede407547. FuenteSourcea3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Dos capturas actuales inspeccionadas, no407aceptaciones. Sigue contraste visual/temporal porfamilias/teléfono/StripeSDK. Sinpush/Codemagic hastaobjetivocompleto.
+
 # Corte vigente — loop564, 3/10/2026
 
 Fuente135879c178d1cd89befb2cd38220b6c86b0a44a7: full91070 terminalexit0,630/630,3m53s.233Dart iguales raíz/scratch/hashmanifest564 antes/durante/después. Analyzer59811 de563 limpio26.9s mismo código. Incluye559–563, supersede full621557.407fixtures547 anterior548–563; dirigida561 detalle. Native558 APKd435f33 anterior559–563; ADB564vacío. Contraste visual/temporal global, teléfono/dedos yStripeSDK pendientes. Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Próxima pasada independiente: capturas completas actuales y comparación por familias. Sinpush/Codemagic hasta objetivo completo.

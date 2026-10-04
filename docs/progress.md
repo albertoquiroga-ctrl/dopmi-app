@@ -2706,3 +2706,7 @@ Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Source detal
 ## 2026-10-03 — Loop564: regresión completa630
 
 Fuente135879c178d1cd89befb2cd38220b6c86b0a44a7,233Dart iguales raíz/scratch antes/durante/después y hashes sin cambios; manifiesto564. Full91070 terminalexit0,630/630,3m53s. Analyzer59811 de563 limpio26.9s mismo código; supersede full621557 y verifica integración559–563. Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. ADB vacío. Capturas407547 anteriores548–563, siguiente trabajo independiente regeneración/contraste por familias. Ninguna aceptación global/visual/animaciones/física derivada de pruebas. Sin push/Codemagic.
+
+## 2026-10-03 — Loop565:407capturas actuales
+
+Capturador6598 terminalexit0,1test/407unique,3m02s.407PNG nuevos/formato/hash verificados enmanifest565. Fuente135879c mismofull630564;233Dart iguales raíz/scratch antes temprano ydespués/sin cambios.96assetsauditados:95visuales byteidénticos durante; NOTO-EMOJI-LICENSE.txt temporal574bytes vsraíz11934 alineado sólo tras finalizar, todos96iguales al cierre. Pubspec/lockiguales. FuenteSourcea3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Supersede407547. Detallecaso/progresoverificación actuales inspeccionados, no407aceptaciones ni contrasteglobal/temporal/físico. Próximo contraste porfamilias, sin push/Codemagic.
