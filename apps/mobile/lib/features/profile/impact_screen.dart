@@ -228,7 +228,7 @@ class ImpactCaseCard extends StatelessWidget {
         ),
       ],
     );
-    final share = OutlinedButton.icon(
+    final share = OutlinedButton(
       onPressed: () => shareContent(
         context,
         'Conoce el caso $name en Dopmi. ${publicContentLink(PublicContent.rescueCase, item['case_id'] as String)}',
@@ -246,13 +246,19 @@ class ImpactCaseCard extends StatelessWidget {
           fontWeight: FontWeight.w600,
         ),
       ),
-      icon: SvgPicture.asset(
-        'assets/profile/icon-share.svg',
-        width: 14,
-        height: 14,
-        colorFilter: const ColorFilter.mode(ink, BlendMode.srcIn),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 6,
+        children: [
+          SvgPicture.asset(
+            'assets/profile/icon-share.svg',
+            width: 14,
+            height: 14,
+            colorFilter: const ColorFilter.mode(ink, BlendMode.srcIn),
+          ),
+          const Flexible(child: Text('Compartir')),
+        ],
       ),
-      label: const Text('Compartir'),
     );
     return Container(
       decoration: BoxDecoration(
