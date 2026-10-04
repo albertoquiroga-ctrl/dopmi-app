@@ -51,6 +51,49 @@ Future<void> startPublication(
 }
 
 void main() {
+  testWidgets('review reaches its final privacy notice by touch at 200%', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    final repo = PhotoDraftCommunity();
+    await startPublication(tester, repo, '/my-adoptions/${repo.post.id}');
+    await tester.tap(find.text('Continuar'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Continuar'));
+    await tester.pumpAndSettle();
+    final scroll = find.byType(Scrollable).first;
+    final viewport = tester.getRect(scroll);
+    final submit = find.text('Enviar a revisión');
+    final footerRect = tester.getRect(submit);
+    final notice = find.text(
+      'Al enviar, el equipo revisará fotos, información y privacidad antes de publicar.',
+    );
+    var sawStart = false;
+    var sawEnd = false;
+    for (var i = 0; i < 100; i++) {
+      final rect = tester.getRect(notice);
+      sawStart |= rect.top >= viewport.top && rect.top < viewport.bottom;
+      sawEnd |= rect.bottom > viewport.top && rect.bottom <= viewport.bottom;
+      if (sawStart && sawEnd) break;
+      await tester.timedDragFrom(
+        viewport.center,
+        const Offset(0, -80),
+        const Duration(milliseconds: 400),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.getRect(submit), footerRect);
+    }
+    expect(sawStart, isTrue);
+    expect(sawEnd, isTrue);
+    expect(submit.hitTestable(), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   for (final scale in [1.0, 2.0]) {
     testWidgets(
       'special care declaration reloads without invented details: scale=$scale',

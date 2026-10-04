@@ -3452,3 +3452,7 @@ Referencia inicial a3c969cd9103fd46dc5cd886999912526ce75efb. Anterior737 ajustó
 Gesto150ms/cancel en atrás y cierre conserva rect y callbacks0. Enabled tap invoca atrás1/cierre1; tap fuera invoca cierre2. Locked callbacks null: atrás/cierre/fondo no ejecutan acciones. No excepciones/overflow. El test mide comportamiento widget, no teléfono físico ni igualdad de píxeles durante presión.
 
 Test38705 exit0,19/19 en7s:expense_frame_controls cuatro variantes y expense_field. Analyzer85886 exit0 limpio20.5s. No código productivo cambiado, no nueva captura. Full736/790 predates estas cuatro pruebas y737. Objetivo activo, dinero test-only, sin Codemagic hasta terminar.
+
+### 2026-10-04 - Loop740: publicacion y lectura tactil
+
+Ver docs/design-reviews/parity-loop740/README.md y manifest.json. Referencia a3c969cd9103fd46dc5cd886999912526ce75efb; fuente e737732. Captura70518 exit0:14 PNG actuales, solo fotos normal y revision grande inspeccionadas. Suite50259 exit0:30/30, analyzer59385 limpio. Nueva prueba tactil permite leer inicio/final del aviso a320x640/texto200% con envio accesible. Sin cambio productivo ni aceptacion nativa/global. Loop739 e737732 corrigio tinta de Cancelar, seis pruebas aprobadas. Codemagic diferido hasta objetivo completo.
