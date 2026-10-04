@@ -1,0 +1,5 @@
+# Loop570 — Presión del botón de acceso
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. CSSauth-gate-primary sólohover, no estadoactive/ripple; íconos sociales/back nativos yaNoSplash/highlighttransparente. AuthFrameFilledButtonTheme heredaba defaultMaterialoverlay/splash. AhoraNoSplash yresolveroverlaypressedtransparente; otros estados retornannull para conservar tratamiento de foco por defecto, sin copiarhover. Cambio específicoAuthFrame, no tema global.
+
+Nueva prueba AuthFrame/ActionButton real con RepaintBoundary: pixelinteriorcolorRGBA21/17/13/255 antesydurante200msdepresión; callback0durante/1alrelease. Evita validar sólo parámetros declarados del estilo. Comparaciónpixel es Flutter, no nuevo runtimeSource touch ni teléfono. Gate33172exit0,27/27,9s, incluyeidentity/consent/keyboard200/recuperación. Analyzer17194exit0limpio25.6s. Dos archivos iguales raíz/scratch; sincapturasestáticasredundantes. Full630564 anterior569/570 yparidadglobalpendiente. Sin signinremoto/push/Codemagic.

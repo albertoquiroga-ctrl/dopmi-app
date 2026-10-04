@@ -1,0 +1,10 @@
+[
+  {
+    "file": "lib/features/identity/auth_ui.dart",
+    "sha256": "c6d2f0c6364f3bd4f1d0395292f5105e87c3d2b44801a6b12605c514dd491c90"
+  },
+  {
+    "file": "test/auth_sheet_test.dart",
+    "sha256": "8b3287f3579d1198e0483f097ae422a8589c25be016f2b7cfe4764d344ea2cb0"
+  }
+]

@@ -62,19 +62,29 @@ class AuthFrame extends StatelessWidget {
           onPrimary: Colors.white,
         ),
         filledButtonTheme: FilledButtonThemeData(
-          style: FilledButton.styleFrom(
-            backgroundColor: ink,
-            foregroundColor: Colors.white,
-            disabledBackgroundColor: sheet ? const Color(0xffcfc8bf) : null,
-            disabledForegroundColor: sheet ? Colors.white : null,
-            minimumSize: const Size.fromHeight(52),
-            shape: const StadiumBorder(),
-            textStyle: const TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          style:
+              FilledButton.styleFrom(
+                backgroundColor: ink,
+                foregroundColor: Colors.white,
+                disabledBackgroundColor: sheet ? const Color(0xffcfc8bf) : null,
+                disabledForegroundColor: sheet ? Colors.white : null,
+                splashFactory: NoSplash.splashFactory,
+                minimumSize: const Size.fromHeight(52),
+                shape: const StadiumBorder(),
+                textStyle: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ).copyWith(
+                overlayColor: WidgetStateProperty.resolveWith<Color?>((states) {
+                  // Source has hover styling, but no pressed overlay or ripple.
+                  // Null preserves the default keyboard focus treatment.
+                  return states.contains(WidgetState.pressed)
+                      ? Colors.transparent
+                      : null;
+                }),
+              ),
         ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(foregroundColor: ink),

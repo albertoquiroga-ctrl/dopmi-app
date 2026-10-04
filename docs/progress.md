@@ -2726,3 +2726,7 @@ RuntimeSource Edge377x852 a3c969cd9103fd46dc5cd886999912526ce75efb:trasclickAdop
 ## 2026-10-03 — Loop569: corregir espaciado de acceso
 
 Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Medición inicial29027 confirma inputscorrectos/CTA+8. Corrige recovery40padding0, socialgap12+bottom4 yheading1.15: inputsy445.85/529.85intactos,CTA617.85vSource617.96875,title325.85v325.78125. Targetrecovery40normal/134ancho explícito, crece texto200; testbordeabre/regrésoconservaemail. Final64566exit0,27/27,8s; capturadorlegacy46929exit0/27PNG6s; analyzer60999exit0limpio33.1s. Capturas/métricas/docs569/sourcecheck4inputsigualesraíz-scratch; AUTH18actuales. Full630564 y407capturas565 anteriores, no gateactualglobal ni animaciones/físicoaceptados. Sin signinreal/SQL/push/Codemagic.
+
+## 2026-10-03 — Loop570: presión del botón de acceso
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Sourceauth-gate-primary sólotienehover; AuthFrameFilledButtonTheme heredabaMaterialripple/overlaypresionado. NoSplash/resolverpressedtransparente específicosAuthFrame, fallbacknullconservafoco de otrosestados. PruebaPixelAuthFrame/ActionButton real:21/17/13/255antesydurantepresión200ms,callback0antesup/1alrelease. Gate33172exit0,27/27,9s;analyzer17194exit0limpio25.6s. Dosinputsraíz-scratchiguales manifiesto570. No nuevo touchruntimeSource/teléfono/aceptaciónglobal;full630564 anterior569/570. Sin push/Codemagic.
