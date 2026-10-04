@@ -1048,6 +1048,7 @@ void main() {
       ('guardian-activation-failed', '/guardian'),
       ('guardian-activation-failed-large', '/guardian'),
       ('saved-adoptions', '/saved'),
+      ('saved-adoptions-held', '/saved'),
       ('saved-adoptions-large', '/saved'),
       ('saved-adoptions-empty', '/saved'),
       ('saved-adoptions-empty-large', '/saved'),
@@ -3828,6 +3829,16 @@ void main() {
                 ),
           );
         }
+        TestGesture? savedHold;
+        if (spec.$1 == 'saved-adoptions-held') {
+          final row = find
+              .ancestor(of: find.text('Luna'), matching: find.byType(InkWell))
+              .first;
+          savedHold = await tester.startGesture(tester.getCenter(row));
+          await tester.pump(const Duration(milliseconds: 150));
+          expect(row.hitTestable(), findsOneWidget);
+          expect(container.read(routerProvider).state.uri.path, '/saved');
+        }
         TestGesture? settingsHold;
         if (spec.$1 == 'profile-settings-back-held') {
           final back = find.byTooltip('Regresar');
@@ -4095,6 +4106,11 @@ void main() {
           await tester.tap(back);
           await tester.pumpAndSettle();
           expect(container.read(routerProvider).state.uri.path, '/profile');
+        }
+        if (savedHold != null) {
+          await savedHold.cancel();
+          await tester.pumpAndSettle();
+          expect(container.read(routerProvider).state.uri.path, '/saved');
         }
         if (settingsHold != null) {
           await settingsHold.cancel();
