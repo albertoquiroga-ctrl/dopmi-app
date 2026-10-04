@@ -1290,6 +1290,8 @@ void main() {
       ('verification-intro-large', '/rescue/new?kind=verification'),
       ('verification-form', '/rescue/new?kind=verification'),
       ('verification-form-large', '/rescue/new?kind=verification'),
+      ('verification-form-documents', '/rescue/new?kind=verification'),
+      ('verification-form-documents-large', '/rescue/new?kind=verification'),
       ('verification-approved', '/rescue/verification-id'),
       ('verification-approved-large', '/rescue/verification-id'),
       ('verification-review', '/rescue/verification-id'),
@@ -3137,6 +3139,22 @@ void main() {
         await Scrollable.ensureVisible(tester.element(next), alignment: .5);
         await tester.pumpAndSettle();
         await tester.tap(next);
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('verification-form-documents')) {
+        final documents = find.text('Documentos');
+        await tester.scrollUntilVisible(
+          documents,
+          250,
+          maxScrolls: 30,
+          scrollable: find
+              .descendant(
+                of: find.byKey(const ValueKey('verification-form-body')),
+                matching: find.byType(Scrollable),
+              )
+              .first,
+        );
+        await Scrollable.ensureVisible(tester.element(documents), alignment: 0);
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('case-publication-header-focus')) {
