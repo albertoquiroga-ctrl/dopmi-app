@@ -626,6 +626,7 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                         tooltip: widget.saved ? 'Guardada' : 'Guardar',
                         onPressed: widget.busy ? null : widget.favorite,
                         style: IconButton.styleFrom(
+                          overlayColor: Colors.transparent,
                           minimumSize: const Size(52, 52),
                           maximumSize: const Size(52, 52),
                           backgroundColor: widget.saved ? yellow : Colors.white,
@@ -651,6 +652,9 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                     child: FilledButton(
                       onPressed: widget.busy ? null : widget.contact,
                       style: FilledButton.styleFrom(
+                        splashFactory: NoSplash.splashFactory,
+                        overlayColor: Colors.transparent,
+                        animationDuration: Duration.zero,
                         backgroundColor: ink,
                         foregroundColor: Colors.white,
                         minimumSize: const Size(0, 52),
