@@ -3484,3 +3484,7 @@ Inspeccion12 estados200% detecta etiqueta truncada en editor nuevo. InputDecorat
 ### 2026-10-04 - Loop747: rutas normales restantes y separacion de etiqueta
 
 Inspeccion25 vistas normales adicionales; indice50 representativas/47 rutas de capturador (incluye24 de744 y pagos742). No todos418 estados ni auth/Source exacto/native. Recaptura de editor revela etiqueta multilinea sobre primera linea a200%: prueba86025 falla con overlap13px. Paddingtop36 solo grande corrige; suite36738 exit0:10/10, captura64047 exit0:6 PNG, normalesnew/draft/error iguales a743 por SHA256; draftlarge inspeccionado y analyzer limpio8.3s. Ver docs/design-reviews/parity-loop747. Source a3c969c inicio/cierre. Objetivo activo; sin Codemagic ni dinero real.
+
+### 2026-10-04 - Loop748: teclado, APK local y gate completo
+
+Inspeccionadas9 capturas con viewInsets sinteticos, sin defecto nuevo observado; no teclado nativo. Suite81595 exit0:82/82. APK debug16795 exit0 sobre5fc3822; instalado en emulador30258 exit0/Success, version0.2.0/build2 confirmada. Samsung SM-S938B reconectado: Play2.3.3/build286, certificado distinto de debug; app/datos del telefono intactos. Apertura manual solicitada por rechazo automatico previo de lanzamientoADB sin motivo especifico; no nativa aceptada. Full85630 exit0:801/801 en4m54s;365 archivos root/scratch iguales11270 exit0. Supersede full743/795, no su coleccion visual. Source a3c969c inicio/cierre, refs remotas e4f4e858/ba9f897. Ver docs/design-reviews/parity-loop748. Objetivo activo, sin Codemagic/push/dinero real.
