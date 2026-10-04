@@ -1,0 +1,17 @@
+[
+  {
+    "file": "pubspec.yaml",
+    "sha256": "bca7022d7978ef3ffd5336ed1454aac58eb48c0030b0bdf021fe07f5be7f822f",
+    "scratch_equal": true
+  },
+  {
+    "file": "pubspec.lock",
+    "sha256": "57ee1376c22681302976ef615863c7b6de17446014aa2edcb0662bdc389c8304",
+    "scratch_equal": true
+  },
+  {
+    "file": "analysis_options.yaml",
+    "sha256": "1f229aabbb10b67e0a4b18a772d8436d36fc0a7eec46ab567c6918549ec442bd",
+    "scratch_equal": true
+  }
+]

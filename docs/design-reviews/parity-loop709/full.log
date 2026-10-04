@@ -1,0 +1,793 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/access_press_test.dart
+00:00 +0: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/account_photo_repository_test.dart: lost save response reads the same private path without uploading or posting again
+00:00 +1: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/account_photo_repository_test.dart: missing receipt and SQL rejection never claim the photo was saved
+00:00 +2: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/account_photo_repository_test.dart: foreign paths and a session switch discard pending private results
+00:11 +3: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/account_photo_widgets_test.dart: private photo preview waits for save and retries the same upload
+00:15 +4: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/account_photo_widgets_test.dart: private photo preview waits for save and retries the same upload
+00:15 +5: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/account_photo_widgets_test.dart: private photo preview waits for save and retries the same upload
+00:15 +6: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/account_photo_widgets_test.dart: private photo preview waits for save and retries the same upload
+00:15 +7: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/account_photo_widgets_test.dart: private photo preview waits for save and retries the same upload
+00:15 +8: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/account_photo_widgets_test.dart: private photo preview waits for save and retries the same upload
+00:16 +9: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/account_photo_widgets_test.dart: private photo preview waits for save and retries the same upload
+00:16 +10: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/account_photo_widgets_test.dart: private photo preview waits for save and retries the same upload
+00:16 +11: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/account_photo_widgets_test.dart: private photo preview waits for save and retries the same upload
+00:16 +12: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/account_photo_widgets_test.dart: private photo preview waits for save and retries the same upload
+00:17 +13: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: cancel and close never create a thread
+00:17 +14: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart: detail header press pixels and navigation: false/false
+00:17 +15: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart: detail header press pixels and navigation: false/false
+00:17 +16: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart: detail header press pixels and navigation: false/false
+00:17 +17: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: failed contact retains card and only success opens conversation
+00:18 +18: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adopt_start_dialog_test.dart: failed contact retains card and only success opens conversation
+00:18 +19: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart: detail header press pixels and navigation: false/true
+00:19 +20: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart: detail header press pixels and navigation: false/true
+00:19 +21: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart: detail header press pixels and navigation: false/true
+00:19 +22: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/auth_consent_test.dart: inline privacy link matches independently scaled text at 200 percent
+00:19 +23: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/auth_consent_test.dart: inline privacy link matches independently scaled text at 200 percent
+00:20 +24: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart: detail header press pixels and navigation: true/true
+00:20 +25: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/auth_consent_test.dart: consent keyboard visits row and each legal action once
+00:20 +26: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart: detail action pixels and callback on release: false/false
+00:21 +27: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/auth_sheet_test.dart: access primary keeps reference color while held and acts once on release
+00:21 +28: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/auth_sheet_test.dart: access primary keeps reference color while held and acts once on release
+00:22 +29: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/auth_sheet_test.dart: access primary keeps reference color while held and acts once on release
+00:22 +30: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/adoption_detail_layout_test.dart: detail action pixels and callback on release: true/true
+00:22 +31: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/auth_sheet_test.dart: auth sheet scrolls with keyboard and 200% text without losing input, AuthFormMode.login
+00:22 +32: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/auth_sheet_test.dart: auth sheet scrolls with keyboard and 200% text without losing input, AuthFormMode.login
+00:23 +33: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_gallery_lifecycle_test.dart: case gallery preserves refresh and resets on another case or photos
+00:23 +34: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_gallery_lifecycle_test.dart: case gallery preserves refresh and resets on another case or photos
+00:23 +35: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_gallery_lifecycle_test.dart: case gallery preserves refresh and resets on another case or photos
+00:23 +36: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_gallery_lifecycle_test.dart: case gallery preserves refresh and resets on another case or photos
+00:23 +37: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_gallery_lifecycle_test.dart: case gallery preserves refresh and resets on another case or photos
+00:23 +38: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_gallery_lifecycle_test.dart: case gallery preserves refresh and resets on another case or photos
+00:24 +39: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_gallery_lifecycle_test.dart: case gallery preserves refresh and resets on another case or photos
+00:24 +40: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_gallery_lifecycle_test.dart: case gallery preserves refresh and resets on another case or photos
+00:24 +41: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_need_dialog_test.dart: medicine validates exact cents and remains usable at enlarged text
+00:26 +42: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_need_dialog_test.dart: veterinary validates exact cents and remains usable at enlarged text
+00:26 +43: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_need_row_test.dart: need rows wrap authored details and preserve removal at 200%
+00:26 +44: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_need_row_test.dart: need rows wrap authored details and preserve removal at 200%
+00:26 +45: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_need_row_test.dart: need rows wrap authored details and preserve removal at 200%
+00:26 +46: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_need_row_test.dart: need rows wrap authored details and preserve removal at 200%
+00:27 +47: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_need_row_test.dart: need rows wrap authored details and preserve removal at 200%
+00:27 +48: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_photo_recovery_test.dart: native lost selection from another actor is never consumed for the current draft
+00:28 +49: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_photo_recovery_test.dart: case recovery checks owner and editable state: (one, draft)
+00:29 +50: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_photo_recovery_test.dart: case recovery checks owner and editable state: (two, draft)
+00:29 +51: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_photo_recovery_test.dart: case recovery checks owner and editable state: (one, submitted)
+00:30 +52: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_publication_test.dart: case submission returns to owned cases only on confirmation reject=false
+00:33 +53: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_update_editor_test.dart: failed restore cannot create replacement; retry saves the original version: false
+00:33 +54: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_update_editor_test.dart: failed restore cannot create replacement; retry saves the original version: false
+00:34 +55: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: conversation history pages and ignores an obsolete page error
+00:35 +56: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: conversation history pages and ignores an obsolete page error
+00:35 +57: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: conversation history pages and ignores an obsolete page error
+00:36 +58: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: conversation history pages and ignores an obsolete page error
+00:36 +59: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: conversation history pages and ignores an obsolete page error
+00:36 +60: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: conversation history pages and ignores an obsolete page error
+00:36 +61: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: conversation history pages and ignores an obsolete page error
+00:36 +62: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: conversation history pages and ignores an obsolete page error
+00:36 +63: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: conversation history pages and ignores an obsolete page error
+00:37 +64: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: conversation history pages and ignores an obsolete page error
+00:37 +65: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: conversation history pages and ignores an obsolete page error
+00:38 +66: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: conversation history pages and ignores an obsolete page error
+00:38 +67: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_publication_test.dart: case information keeps real enum values and authored text through the large keyboard
+00:38 +68: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_publication_test.dart: case information keeps real enum values and authored text through the large keyboard
+00:38 +69: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_publication_test.dart: case information keeps real enum values and authored text through the large keyboard
+00:38 +70: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: chat detail keyboard navigation keeps the unsent draft
+00:38 +71: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: chat detail keyboard navigation keeps the unsent draft
+00:39 +72: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: chat detail keyboard navigation keeps the unsent draft
+00:39 +73: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: chat detail keyboard navigation keeps the unsent draft
+00:39 +74: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: chat detail keyboard navigation keeps the unsent draft
+00:39 +75: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: chat detail keyboard navigation keeps the unsent draft
+00:39 +76: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: chat detail keyboard navigation keeps the unsent draft
+00:39 +77: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: chat detail keyboard navigation keeps the unsent draft
+00:39 +78: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_actions_test.dart: report requires a motive and cancels without a submission large=false
+00:39 +79: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_publication_test.dart: case continuation saves the real draft and back preserves its data at large text
+00:40 +80: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/case_publication_test.dart: case continuation saves the real draft and back preserves its data at large text
+00:40 +81: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: conversation composer palette and keyboard; rescuer=false
+00:40 +82: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_actions_test.dart: report requires a motive and cancels without a submission large=true
+00:40 +83: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_links_test.dart: public link routes through actual app, cold=true
+00:40 +84: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_links_test.dart: public link routes through actual app, cold=true
+00:40 +85: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_links_test.dart: public link routes through actual app, cold=true
+00:40 +86: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_links_test.dart: public link routes through actual app, cold=true
+00:41 +87: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_links_test.dart: public link routes through actual app, cold=true
+00:41 +88: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_links_test.dart: public link routes through actual app, cold=true
+00:42 +89: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_links_test.dart: public link routes through actual app, cold=true
+00:42 +90: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_links_test.dart: public link routes through actual app, cold=true
+00:42 +91: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_links_test.dart: public link routes through actual app, cold=true
+00:42 +92: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_links_test.dart: public link routes through actual app, cold=true
+00:42 +93: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_links_test.dart: public link routes through actual app, cold=true
+00:43 +94: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/contribution_amount_dialog_test.dart: amount selector returns exact cents and dismisses without charging
+00:43 +95: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_report_flow_test.dart: actual rescuer report retains motive on failure and only acknowledges server receipt
+00:44 +96: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_report_flow_test.dart: actual rescuer report retains motive on failure and only acknowledges server receipt
+00:44 +97: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_report_flow_test.dart: actual rescuer report retains motive on failure and only acknowledges server receipt
+00:44 +98: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_report_flow_test.dart: actual rescuer report retains motive on failure and only acknowledges server receipt
+00:44 +99: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_report_flow_test.dart: actual rescuer report retains motive on failure and only acknowledges server receipt
+00:44 +100: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_report_flow_test.dart: actual rescuer report retains motive on failure and only acknowledges server receipt
+00:44 +101: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_report_flow_test.dart: actual rescuer report retains motive on failure and only acknowledges server receipt
+00:45 +102: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_report_flow_test.dart: actual rescuer report retains motive on failure and only acknowledges server receipt
+00:45 +103: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_report_flow_test.dart: actual rescuer report retains motive on failure and only acknowledges server receipt
+00:45 +104: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_report_flow_test.dart: actual rescuer report retains motive on failure and only acknowledges server receipt
+00:45 +105: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_report_flow_test.dart: actual rescuer report retains motive on failure and only acknowledges server receipt
+00:45 +106: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_report_flow_test.dart: actual rescuer report retains motive on failure and only acknowledges server receipt
+00:46 +107: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/content_report_flow_test.dart: actual rescuer report retains motive on failure and only acknowledges server receipt
+00:46 +108: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/design_navigation_test.dart: restoring a rescuer opens their home without changing permissions
+00:46 +109: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/design_navigation_test.dart: restoring a rescuer opens their home without changing permissions
+00:46 +110: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/design_navigation_test.dart: restoring a rescuer opens their home without changing permissions
+00:47 +111: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/design_navigation_test.dart: restoring a rescuer opens their home without changing permissions
+00:47 +112: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/design_navigation_test.dart: restoring a rescuer opens their home without changing permissions
+00:48 +113: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/design_navigation_test.dart: restoring a rescuer opens their home without changing permissions
+00:48 +114: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/design_navigation_test.dart: restoring a rescuer opens their home without changing permissions
+00:48 +115: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/design_navigation_test.dart: restoring a rescuer opens their home without changing permissions
+00:48 +116: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/design_navigation_test.dart: restoring a rescuer opens their home without changing permissions
+00:49 +117: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: filter geometry matches rendered reference at 377 by 852
+00:49 +118: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: filter geometry matches rendered reference at 377 by 852
+00:49 +119: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: filter geometry matches rendered reference at 377 by 852
+FILTER_GEOMETRY dialog=Rect.fromLTRB(16.0, 133.0, 361.0, 719.0) apply=Rect.fromLTRB(40.0, 595.0, 337.0, 639.0) clear=Rect.fromLTRB(40.0, 651.0, 337.0, 695.0)
+FILTER_GEOMETRY Filtros=Rect.fromLTRB(40.0, 157.0, 325.0, 175.0)
+FILTER_GEOMETRY Género=Rect.fromLTRB(40.0, 187.0, 337.0, 211.0)
+FILTER_GEOMETRY Tamaño=Rect.fromLTRB(40.0, 293.0, 337.0, 317.0)
+FILTER_GEOMETRY Personalidad=Rect.fromLTRB(40.0, 413.0, 337.0, 437.0)
+00:50 +120: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_empty_test.dart: empty heading scales its reference width at 1.0
+00:50 +121: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_empty_test.dart: empty heading scales its reference width at 1.0
+00:50 +122: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_empty_test.dart: empty heading scales its reference width at 1.0
+00:50 +123: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_empty_test.dart: empty heading scales its reference width at 1.0
+00:50 +124: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_empty_test.dart: empty heading scales its reference width at 1.0
+00:51 +125: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: filter opens immediately and back or outside discards drafts
+00:51 +126: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filters_test.dart: filter opens immediately and back or outside discards drafts
+00:51 +127: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: failed draft save preserves authored content and can be retried
+00:51 +128: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/design_navigation_test.dart: onboarding donate preserves intent and back navigation with large text
+00:52 +129: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_empty_test.dart: small enlarged empty view scrolls to real support
+00:52 +130: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_empty_test.dart: small enlarged empty view scrolls to real support
+00:52 +131: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_empty_test.dart: small enlarged empty view scrolls to real support
+00:52 +132: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_empty_test.dart: small enlarged empty view scrolls to real support
+00:53 +133: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_empty_test.dart: small enlarged empty view scrolls to real support
+00:53 +134: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filter_press_test.dart: filter option holds pixels and cancels safely: 1.0/false
+00:53 +135: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_filter_press_test.dart: filter option holds pixels and cancels safely: 1.0/false
+00:53 +136: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: photo processing strips location and description while bounding dimensions
+00:53 +137: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/community_test.dart: photo processing strips location and description while bounding dimensions
+00:53 +138: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: guest save requests login without advancing or writing favorite
+00:53 +139: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: guest save requests login without advancing or writing favorite
+00:53 +140: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: guest save requests login without advancing or writing favorite
+00:53 +141: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: guest save requests login without advancing or writing favorite
+00:53 +142: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: guest save requests login without advancing or writing favorite
+00:54 +143: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: guest save requests login without advancing or writing favorite
+00:54 +144: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: guest save requests login without advancing or writing favorite
+00:54 +145: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: guest save requests login without advancing or writing favorite
+00:54 +146: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: guest save requests login without advancing or writing favorite
+00:55 +147: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: guest save requests login without advancing or writing favorite
+00:55 +148: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: guest save requests login without advancing or writing favorite
+00:55 +149: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: guest save requests login without advancing or writing favorite
+00:55 +150: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: photo retry receives tap through decorative gradient
+00:56 +151: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/donor_notification_button_test.dart: notification count refreshes, hides errors and rejects another actor
+00:56 +152: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/donor_notification_button_test.dart: notification count refreshes, hides errors and rejects another actor
+00:56 +153: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/donor_notification_button_test.dart: notification count refreshes, hides errors and rejects another actor
+00:57 +154: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: burst pointer movement accumulates before redraw: false/false
+00:57 +155: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/donor_notification_button_test.dart: notification keyboard focus opens the notification route
+00:57 +156: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/email_change_repository_test.dart: email transport pending never repeats the update
+00:57 +157: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: burst pointer movement accumulates before redraw: false/true
+00:57 +158: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: burst pointer movement accumulates before redraw: false/true
+00:57 +159: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: burst pointer movement accumulates before redraw: false/true
+00:57 +160: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: burst pointer movement accumulates before redraw: false/true
+00:57 +161: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: burst pointer movement accumulates before redraw: false/true
+00:57 +162: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/email_change_repository_test.dart: email transport accepted_pending never repeats the update
+00:57 +163: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: burst pointer movement accumulates before redraw: true/false
+00:57 +164: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: burst pointer movement accumulates before redraw: true/false
+00:57 +165: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: burst pointer movement accumulates before redraw: true/true
+00:58 +166: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: burst pointer movement accumulates before redraw: true/true
+00:58 +167: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: burst pointer movement accumulates before redraw: true/true
+00:58 +168: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: reference tap versus short drag boundary: -9.0 pixels
+00:58 +169: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: reference tap versus short drag boundary: -8.0 pixels
+00:58 +170: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: reference tap versus short drag boundary: -7.0 pixels
+00:59 +171: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: reference tap versus short drag boundary: 7.0 pixels
+00:59 +172: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_attachment_press_test.dart: Evidence attachment preserves press and cancels safely: public=false scale=1.0 platform=TargetPlatform.android
+00:59 +173: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_attachment_press_test.dart: Evidence attachment preserves press and cancels safely: public=false scale=1.0 platform=TargetPlatform.android
+00:59 +174: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_attachment_press_test.dart: Evidence attachment preserves press and cancels safely: public=false scale=1.0 platform=TargetPlatform.android
+01:00 +175: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_attachment_press_test.dart: Evidence attachment preserves press and cancels safely: public=false scale=1.0 platform=TargetPlatform.android
+01:00 +176: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_attachment_press_test.dart: Evidence attachment preserves press and cancels safely: public=false scale=1.0 platform=TargetPlatform.android
+01:00 +177: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: incoming card follows a new gesture immediately; right=true
+01:00 +178: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: incoming card follows a new gesture immediately; right=true
+01:00 +179: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_attachment_press_test.dart: Evidence attachment preserves press and cancels safely: public=false scale=2.0 platform=TargetPlatform.android
+01:00 +180: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: returning from favorites preserves the card without replaying entry
+01:01 +181: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: returning from favorites preserves the card without replaying entry
+01:01 +182: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: returning from favorites preserves the card without replaying entry
+01:01 +183: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_attachment_press_test.dart: Evidence attachment preserves press and cancels safely: public=true scale=1.0 platform=TargetPlatform.iOS
+01:01 +184: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: support entry and interrupted gesture; reduced=false
+01:01 +185: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: support entry and interrupted gesture; reduced=false
+01:01 +186: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: support entry and interrupted gesture; reduced=false
+01:01 +187: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: review edits public description and receipt without losing private data at 1.0
+01:01 +188: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: review edits public description and receipt without losing private data at 1.0
+01:02 +189: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: review edits public description and receipt without losing private data at 1.0
+01:02 +190: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: review edits public description and receipt without losing private data at 1.0
+01:02 +191: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: review edits public description and receipt without losing private data at 1.0
+01:03 +192: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: review edits public description and receipt without losing private data at 1.0
+01:03 +193: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: review edits public description and receipt without losing private data at 1.0
+01:03 +194: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: review edits public description and receipt without losing private data at 1.0
+01:04 +195: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_review_press_test.dart: Expense review edit preserves press and cancels safely: section=Información para publicación scale=1.0 platform=TargetPlatform.android
+01:04 +196: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: review edits public description and receipt without losing private data at 2.0
+01:05 +197: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: review edits public description and receipt without losing private data at 2.0
+01:05 +198: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: review edits public description and receipt without losing private data at 2.0
+01:05 +199: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: review edits public description and receipt without losing private data at 2.0
+01:05 +200: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: review edits public description and receipt without losing private data at 2.0
+01:05 +201: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_review_press_test.dart: Expense review edit preserves press and cancels safely: section=Comprobantes y fotos scale=2.0 platform=TargetPlatform.android
+01:05 +202: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: expense changes step immediately after save response at 1.0
+01:05 +203: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: expense changes step immediately after save response at 1.0
+01:05 +204: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_review_press_test.dart: Expense review edit preserves press and cancels safely: section=Solo para revisión privada scale=1.0 platform=TargetPlatform.iOS
+01:06 +205: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: expense changes step immediately after save response at 2.0
+01:06 +206: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: expense changes step immediately after save response at 2.0
+01:06 +207: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: expense changes step immediately after save response at 2.0
+01:06 +208: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_review_press_test.dart: Expense review edit preserves press and cancels safely: section=Solo para revisión privada scale=2.0 platform=TargetPlatform.iOS
+01:06 +209: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: description requires content and incomplete save remains available at 1.0
+01:06 +210: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: description requires content and incomplete save remains available at 1.0
+01:07 +211: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_dialog_test.dart: Changing amount revokes consent, preserves cents and disables unchanged or invalid amounts
+01:07 +212: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_dialog_test.dart: Changing amount revokes consent, preserves cents and disables unchanged or invalid amounts
+01:08 +213: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_dialog_test.dart: Changing amount revokes consent, preserves cents and disables unchanged or invalid amounts
+01:08 +214: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: receipt step blocks advance but saves incomplete draft at 2.0
+01:08 +215: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_dialog_test.dart: Actor change clears current amount and authorization before confirmation
+01:08 +216: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: receipt and later evidence stay separate and retain files on back
+01:08 +217: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: receipt and later evidence stay separate and retain files on back
+01:08 +218: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_dialog_test.dart: Large text and keyboard preserve reachable authorization and confirmation
+01:09 +219: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_dialog_test.dart: Large text and keyboard preserve reachable authorization and confirmation
+01:09 +220: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_focus_test.dart: Custom amount focus and preset return at scale 1.0
+01:09 +221: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_focus_test.dart: Custom amount focus and preset return at scale 1.0
+01:10 +222: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_focus_test.dart: Custom amount focus and preset return at scale 1.0
+01:10 +223: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: expense close keeps an unsaved draft and save progress persists before leaving
+01:10 +224: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/expense_field_test.dart: expense close keeps an unsaved draft and save progress persists before leaving
+01:10 +225: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_billing_test.dart: Billing places management before actual payments and preserves confirmed financial details
+01:11 +226: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_billing_test.dart: Billing places management before actual payments and preserves confirmed financial details
+01:12 +227: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_billing_test.dart: Billing places management before actual payments and preserves confirmed financial details
+01:12 +228: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_cancel_dialog_test.dart: Cancellation dialog returns consent only for explicit confirmation: Cerrar
+01:12 +229: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_billing_test.dart: History errors preserve the active plan and never claim an empty history
+01:12 +230: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_cancel_dialog_test.dart: Cancellation dialog returns consent only for explicit confirmation: Mantener suscripción
+01:12 +231: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_billing_test.dart: Late billing history belongs only to the account that requested it
+01:13 +232: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_billing_test.dart: Late billing history belongs only to the account that requested it
+01:13 +233: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_billing_test.dart: Late billing history belongs only to the account that requested it
+01:13 +234: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_cancel_dialog_test.dart: Large text retains full explanation and both actions through scroll
+01:13 +235: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_amount_test.dart: Enrollment presets and personalized cents remain accurate at scale 1.0
+01:13 +236: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_amount_test.dart: Enrollment presets and personalized cents remain accurate at scale 1.0
+01:14 +237: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_amount_test.dart: Enrollment presets and personalized cents remain accurate at scale 2.0
+01:14 +238: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_confirmation_test.dart: Consent remains explicit and reachable at scale 1.0
+01:14 +239: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_confirmation_test.dart: Consent remains explicit and reachable at scale 1.0
+01:15 +240: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_confirmation_test.dart: Consent remains explicit and reachable at scale 2.0
+01:15 +241: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: Matching server activation welcomes its owner without another charge
+01:17 +242: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_history_test.dart: history route is disabled by default without financial reads
+01:17 +243: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_history_test.dart: history route is disabled by default without financial reads
+01:17 +244: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_history_test.dart: history route is disabled by default without financial reads
+01:18 +245: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_history_test.dart: history route is disabled by default without financial reads
+01:18 +246: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_history_test.dart: history route is disabled by default without financial reads
+01:18 +247: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: Activation refunded never claims matching active membership
+01:18 +248: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_history_test.dart: compact cycle history returns to its origin or Guardian without a financial write: false
+01:18 +249: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_history_test.dart: compact cycle history returns to its origin or Guardian without a financial write: false
+01:18 +250: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_membership_card_test.dart: Billing evidence stays legible at scale 1.0 without a fictitious card or date
+01:18 +251: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_membership_card_test.dart: Billing evidence stays legible at scale 1.0 without a fictitious card or date
+01:19 +252: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_membership_card_test.dart: Billing evidence stays legible at scale 1.0 without a fictitious card or date
+01:19 +253: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_membership_card_test.dart: Billing evidence stays legible at scale 1.0 without a fictitious card or date
+01:19 +254: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_history_test.dart: compact cycle history returns to its origin or Guardian without a financial write: true
+01:19 +255: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_method_repository_test.dart: independent default HTTP preserves intent and minimizes receipt
+01:19 +256: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_method_repository_test.dart: independent default HTTP preserves intent and minimizes receipt
+01:19 +257: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_method_repository_test.dart: independent default HTTP preserves intent and minimizes receipt
+01:19 +258: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: Promotion opens fresh enrollment without a payment
+01:19 +259: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: Promotion opens fresh enrollment without a payment
+01:19 +260: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: Promotion opens fresh enrollment without a payment
+01:19 +261: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: Promotion opens fresh enrollment without a payment
+01:19 +262: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: Promotion opens fresh enrollment without a payment
+01:19 +263: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: Promotion opens fresh enrollment without a payment
+01:19 +264: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: Promotion opens fresh enrollment without a payment
+01:19 +265: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: Promotion opens fresh enrollment without a payment
+01:19 +266: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: Promotion opens fresh enrollment without a payment
+01:19 +267: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: Promotion opens fresh enrollment without a payment
+01:20 +268: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_history_test.dart: allocation details load on demand and retry without claiming bank deposit
+01:20 +269: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: System back returns fresh enrollment to its promotion origin
+01:20 +270: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: System back returns fresh enrollment to its promotion origin
+01:20 +271: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: System back returns fresh enrollment to its promotion origin
+01:20 +272: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_history_test.dart: switching accounts removes already displayed financial details
+01:21 +273: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_history_test.dart: switching accounts removes already displayed financial details
+01:21 +274: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: System back keeps an in-flight capacity check recoverable
+01:21 +275: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: System back keeps an in-flight capacity check recoverable
+01:21 +276: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_history_test.dart: confirmed refund does not claim its transfers were reversed yet
+01:21 +277: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: Promotion never offers a second enrollment when server returns an active plan
+01:21 +278: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: Promotion never offers a second enrollment when server returns an active plan
+01:21 +279: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_history_test.dart: completed reversal retains the original allocation in history
+01:21 +280: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_enrollment_test.dart: Subscribe opens authorization without payment; only explicit Stripe confirmation starts checkout
+01:22 +281: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_promotion_test.dart: two-panel selection uses distance instead of a fixed 300ms
+01:22 +282: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_promotion_test.dart: two-panel selection uses distance instead of a fixed 300ms
+01:22 +283: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_promotion_test.dart: two-panel selection uses distance instead of a fixed 300ms
+01:22 +284: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_promotion_test.dart: two-panel selection uses distance instead of a fixed 300ms
+01:22 +285: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_promotion_test.dart: Guardian carousel swipes and dots remain usable at scale 1.0, reduced motion false
+01:23 +286: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_promotion_test.dart: Guardian carousel swipes and dots remain usable at scale 2.0, reduced motion false
+01:23 +287: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_promotion_test.dart: Guardian carousel swipes and dots remain usable at scale 1.0, reduced motion true
+01:23 +288: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_promotion_test.dart: Guardian carousel swipes and dots remain usable at scale 2.0, reduced motion true
+01:23 +289: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_test.dart: review blocks a retained Checkout but preserves its reference
+01:25 +290: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_navigation_test.dart: help footer opens legal pages and returns without losing topic: donor
+01:26 +291: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_navigation_test.dart: help footer opens legal pages and returns without losing topic: donor
+01:26 +292: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_navigation_test.dart: help footer opens legal pages and returns without losing topic: donor
+01:26 +293: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_navigation_test.dart: help footer opens legal pages and returns without losing topic: donor
+01:27 +294: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_navigation_test.dart: help footer opens legal pages and returns without losing topic: donor
+01:27 +295: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_navigation_test.dart: help footer opens legal pages and returns without losing topic: donor
+01:28 +296: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_navigation_test.dart: help footer opens legal pages and returns without losing topic: donor
+01:28 +297: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_dialog_test.dart: photo preview is local and retry reuses its uploaded path
+01:28 +298: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_dialog_test.dart: photo preview is local and retry reuses its uploaded path
+01:29 +299: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_dialog_test.dart: photo preview is local and retry reuses its uploaded path
+01:29 +300: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_dialog_test.dart: photo preview is local and retry reuses its uploaded path
+01:29 +301: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_dialog_test.dart: photo preview is local and retry reuses its uploaded path
+01:29 +302: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_dialog_test.dart: photo preview is local and retry reuses its uploaded path
+01:29 +303: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_dialog_test.dart: photo preview is local and retry reuses its uploaded path
+01:29 +304: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_dialog_test.dart: photo preview is local and retry reuses its uploaded path
+01:29 +305: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_dialog_test.dart: photo preview is local and retry reuses its uploaded path
+01:29 +306: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_dialog_test.dart: photo preview is local and retry reuses its uploaded path
+01:29 +307: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_dialog_test.dart: photo preview is local and retry reuses its uploaded path
+01:29 +308: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_dialog_test.dart: photo preview is local and retry reuses its uploaded path
+01:29 +309: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_dialog_test.dart: photo preview is local and retry reuses its uploaded path
+01:29 +310: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_route_test.dart: support opens immediately and closes by outside without sending
+01:29 +311: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_route_test.dart: support opens immediately and closes by outside without sending
+01:30 +312: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_route_test.dart: support opens immediately and closes by outside without sending
+01:30 +313: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_route_test.dart: support opens immediately and closes by outside without sending
+01:30 +314: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_test.dart: activation cancellation retries original key at pending
+01:30 +315: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_test.dart: activation cancellation retries original key at pending
+01:30 +316: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_dialog_test.dart: internal submission preserves draft and stable retry key at text scale 2.0
+01:30 +317: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_dialog_test.dart: internal submission preserves draft and stable retry key at text scale 2.0
+01:30 +318: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_test.dart: activation cancellation retries original key at funded_pending_schedule
+01:30 +319: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_route_test.dart: pending support blocks dismissal and duplicate send until receipt
+01:31 +320: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_route_test.dart: pending support blocks dismissal and duplicate send until receipt
+01:31 +321: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_test.dart: dedicated methods route independently saves and retries the same card intent
+01:31 +322: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: reference auth /login retains private password fields
+01:31 +323: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: reference auth /login retains private password fields
+01:31 +324: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: reference auth /login retains private password fields
+01:32 +325: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: reference auth /login retains private password fields
+01:32 +326: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: reference auth /login retains private password fields
+01:32 +327: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: reference auth /login retains private password fields
+01:32 +328: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: reference auth /login retains private password fields
+01:32 +329: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: reference auth /login retains private password fields
+01:32 +330: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: reference auth /login retains private password fields
+01:32 +331: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: reference auth /login retains private password fields
+01:32 +332: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: reference auth /login retains private password fields
+01:33 +333: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: reference auth /login retains private password fields
+01:33 +334: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_route_test.dart: topic menu dismissal preserves dialog and selection sends the correct topic at 2.0
+01:33 +335: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/help_support_route_test.dart: topic menu dismissal preserves dialog and selection sends the correct topic at 2.0
+01:33 +336: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: reference auth /signup retains private password fields
+01:33 +337: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: reference auth /signup retains private password fields
+01:33 +338: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_test.dart: independent default canceled=true keeps target until server and fresh cards agree
+01:34 +339: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: signup consent target and legal reading preserve draft
+01:34 +340: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: signup consent target and legal reading preserve draft
+01:34 +341: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: signup consent target and legal reading preserve draft
+01:34 +342: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: signup consent target and legal reading preserve draft
+01:34 +343: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: signup consent target and legal reading preserve draft
+01:34 +344: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Impact attribution comes from the current public case owner
+01:34 +345: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Impact attribution comes from the current public case owner
+01:35 +346: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Impact attribution comes from the current public case owner
+01:35 +347: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Impact attribution comes from the current public case owner
+01:35 +348: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Impact attribution comes from the current public case owner
+01:35 +349: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Impact attribution comes from the current public case owner
+01:36 +350: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Impact attribution comes from the current public case owner
+01:36 +351: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Impact attribution comes from the current public case owner
+01:36 +352: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Impact attribution comes from the current public case owner
+01:36 +353: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Impact attribution comes from the current public case owner
+01:36 +354: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Impact attribution comes from the current public case owner
+01:36 +355: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Impact attribution comes from the current public case owner
+01:36 +356: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Impact attribution comes from the current public case owner
+01:36 +357: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Impact attribution comes from the current public case owner
+01:36 +358: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Impact attribution comes from the current public case owner
+01:36 +359: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Impact attribution comes from the current public case owner
+01:36 +360: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Impact attribution comes from the current public case owner
+01:37 +361: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: a failed profile update keeps edits so the user can retry
+01:37 +362: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: a failed profile update keeps edits so the user can retry
+01:37 +363: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Unavailable attribution preserves approved advance and amount: fail=false
+01:37 +364: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_test.dart: card removal confirms, retains uncertain row and retries one target: large=true
+01:37 +365: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: suspended basic info stays read-only without querying guarded private name parts
+01:37 +366: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_screen_test.dart: Unavailable attribution preserves approved advance and amount: fail=true
+01:37 +367: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:37 +368: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:38 +369: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:38 +370: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:38 +371: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:38 +372: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:38 +373: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:38 +374: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:38 +375: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:38 +376: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:38 +377: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:38 +378: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:39 +379: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:39 +380: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:39 +381: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:39 +382: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:39 +383: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:39 +384: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:39 +385: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:39 +386: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:39 +387: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:39 +388: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:39 +389: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:39 +390: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:39 +391: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:39 +392: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:40 +393: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:40 +394: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:40 +395: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:40 +396: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:40 +397: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:40 +398: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:41 +399: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.android
+01:41 +400: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: form social icons dispatch one request and recover after provider failure
+01:41 +401: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: form social icons dispatch one request and recover after provider failure
+01:41 +402: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/impact_share_press_test.dart: Impact share keeps its surface stable and activates on release: scale=1.0 platform=TargetPlatform.iOS
+01:41 +403: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: auth switch preserves rescuer intent and login input when returning
+01:41 +404: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: auth switch preserves rescuer intent and login input when returning
+01:41 +405: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: forgot link opens real recovery and back retains entered email
+01:42 +406: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: confirmation access follows Auth code without creating a session, email_not_confirmed
+01:42 +407: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: confirmation access follows Auth code without creating a session, invalid_credentials
+01:42 +408: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: a recovery link routes to reset without loading personal data
+01:42 +409: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: password recovery ends at login with a success message
+01:43 +410: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: password recovery ends at login with a success message
+01:43 +411: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: password recovery ends at login with a success message
+01:43 +412: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: password recovery ends at login with a success message
+01:43 +413: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: password recovery ends at login with a success message
+01:43 +414: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: password recovery ends at login with a success message
+01:43 +415: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: password recovery ends at login with a success message
+01:43 +416: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: password recovery ends at login with a success message
+01:43 +417: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/identity_widgets_test.dart: password recovery ends at login with a success message
+01:43 +418: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/media_test.dart: photo policies share normalization and never accept a PDF as a photo
+01:43 +419: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/media_test.dart: photo policies share normalization and never accept a PDF as a photo
+01:43 +420: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/media_test.dart: documents retain bytes but require PDF signature and the evidence size limit
+01:44 +421: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_identity_test.dart: unknown and disabled providers never launch authentication
+01:44 +422: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_identity_test.dart: cancelled native login creates no session and blocks double taps
+01:44 +423: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_identity_test.dart: Google native login forwards both provider tokens
+01:45 +424: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_wallet_buttons_test.dart: wallets at text scale 1.0 only activate available provider
+01:46 +425: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_wallet_buttons_test.dart: wallets at text scale 2.0 only activate available provider
+01:46 +426: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_wallet_intent_store_test.dart: owner recovery keeps stable minimal intent without SDK secrets
+01:46 +427: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_wallet_intent_store_test.dart: sheet cancellation and late or foreign receipts retain pending intent
+01:46 +428: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_wallet_intent_store_test.dart: corrupted saved intent is not silently replaced with a new authorization
+01:46 +429: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/match_thread_row_test.dart: thread thumbnail retries signing within its circular target and renders a decoded photo
+01:47 +430: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/match_thread_row_test.dart: thread thumbnail retries signing within its circular target and renders a decoded photo
+01:47 +431: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/match_thread_row_test.dart: thread thumbnail retries signing within its circular target and renders a decoded photo
+01:47 +432: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/match_thread_row_test.dart: thread thumbnail retries signing within its circular target and renders a decoded photo
+01:47 +433: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/information_screens_test.dart: about pushes transparency and back restores about; direct back has a fallback
+01:48 +434: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/information_screens_test.dart: about pushes transparency and back restores about; direct back has a fallback
+01:48 +435: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/information_screens_test.dart: about pushes transparency and back restores about; direct back has a fallback
+01:48 +436: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_wallet_screen_test.dart: wallet native cancel retains same intent and blocks card changes
+01:48 +437: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_wallet_screen_test.dart: wallet native cancel retains same intent and blocks card changes
+01:49 +438: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_wallet_screen_test.dart: wallet native cancel retains same intent and blocks card changes
+01:50 +439: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_wallet_screen_test.dart: wallet lost response retains same intent and blocks card changes
+01:50 +440: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_wallet_screen_test.dart: native return waits for server confirmation with the same intent
+01:50 +441: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_wallet_screen_test.dart: native return waits for server confirmation with the same intent
+01:50 +442: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_wallet_screen_test.dart: native return waits for server confirmation with the same intent
+01:50 +443: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_wallet_screen_test.dart: native return waits for server confirmation with the same intent
+01:50 +444: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_wallet_screen_test.dart: native return waits for server confirmation with the same intent
+01:51 +445: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_wallet_screen_test.dart: saved wallet waits for fresh matching card and announces once
+01:51 +446: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_wallet_screen_test.dart: attention restores one intent and disables native authorization
+01:51 +447: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/native_wallet_screen_test.dart: sign-out while wallet reply is in flight prevents SDK and keeps owner intent
+01:51 +448: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart: compact time exposes the precise date without opening the notice
+01:52 +449: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart: compact time exposes the precise date without opening the notice
+01:52 +450: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart: compact time exposes the precise date without opening the notice
+01:52 +451: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart: notification time uses actual elapsed time and calendar days
+01:52 +452: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart: notification header keyboard returns to its fallback profile
+01:53 +453: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart: notification icon follows its real kind: message
+01:53 +454: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart: notification icon follows its real kind: rescue
+01:53 +455: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart: notification icon follows its real kind: review
+01:53 +456: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/notifications_test.dart: notifications paginate both ways at 200 percent
+01:53 +457: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/onboarding_motion_test.dart: Onboarding entrance moves ten pixels and fades over 450ms
+01:53 +458: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/onboarding_motion_test.dart: Onboarding entrance moves ten pixels and fades over 450ms
+01:53 +459: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/onboarding_motion_test.dart: Onboarding entrance moves ten pixels and fades over 450ms
+01:54 +460: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/onboarding_motion_test.dart: Welcome summary follows delayed motion, reduced=false
+01:54 +461: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/onboarding_motion_test.dart: Welcome summary follows delayed motion, reduced=true
+01:54 +462: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/onboarding_motion_test.dart: Welcome footer uses its own delays, reduced=false
+01:54 +463: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/onboarding_motion_test.dart: Welcome footer uses its own delays, reduced=true
+01:54 +464: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/onboarding_motion_test.dart: Welcome selection enters and Continue preserves intent, reduced=false
+01:54 +465: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/onboarding_motion_test.dart: Welcome selection enters and Continue preserves intent, reduced=true
+01:54 +466: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/onboarding_motion_test.dart: Welcome offers the current two choices with fixed orbs and animated fill
+01:55 +467: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/onboarding_motion_test.dart: Reduced motion shows onboarding immediately
+01:55 +468: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_cases_heading_test.dart: compact new case retains a full touch target; large=false
+01:56 +469: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_cases_heading_test.dart: compact new case retains a full touch target; large=true
+01:58 +470: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_case_card_gesture_test.dart: case card scroll does not open; tap loads owned draft; large=false
+01:59 +471: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_case_card_gesture_test.dart: case card scroll does not open; tap loads owned draft; large=false
+01:59 +472: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_case_card_gesture_test.dart: case card scroll does not open; tap loads owned draft; large=false
+01:59 +473: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_case_card_gesture_test.dart: case card scroll does not open; tap loads owned draft; large=false
+02:00 +474: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_case_card_gesture_test.dart: case card scroll does not open; tap loads owned draft; large=false
+02:00 +475: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_case_history_test.dart: history heading stays visible through pending, error and retry
+02:00 +476: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_case_history_test.dart: history heading stays visible through pending, error and retry
+02:00 +477: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_case_history_test.dart: history heading stays visible through pending, error and retry
+02:01 +478: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_case_history_test.dart: history heading stays visible through pending, error and retry
+02:01 +479: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_expense_card_test.dart: funding error retries and a reversal replaces server amounts
+02:01 +480: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_expense_card_test.dart: funding error retries and a reversal replaces server amounts
+02:01 +481: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_expense_card_test.dart: funding error retries and a reversal replaces server amounts
+02:01 +482: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_expense_card_test.dart: funding error retries and a reversal replaces server amounts
+02:01 +483: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_expense_card_test.dart: funding error retries and a reversal replaces server amounts
+02:01 +484: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_expense_card_test.dart: funding error retries and a reversal replaces server amounts
+02:01 +485: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_expense_card_test.dart: funding error retries and a reversal replaces server amounts
+02:01 +486: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_expense_card_test.dart: funding error retries and a reversal replaces server amounts
+02:02 +487: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_expense_card_test.dart: funding error retries and a reversal replaces server amounts
+02:02 +488: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_expense_card_test.dart: funding error retries and a reversal replaces server amounts
+02:03 +489: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/owned_expense_card_test.dart: funding error retries and a reversal replaces server amounts
+02:03 +490: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/password_field_test.dart: default password visibility toggles without losing input
+02:03 +491: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/password_field_test.dart: default password visibility toggles without losing input
+02:03 +492: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/password_field_test.dart: default password visibility toggles without losing input
+02:05 +493: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/password_field_test.dart: default password visibility toggles without losing input
+02:05 +494: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/password_field_test.dart: default password visibility toggles without losing input
+02:05 +495: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/password_field_test.dart: default password visibility toggles without losing input
+02:05 +496: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/password_field_test.dart: default password visibility toggles without losing input
+02:06 +497: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/password_field_test.dart: default password visibility toggles without losing input
+02:06 +498: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_card_press_test.dart: Card action has no touch overlay and activates on release: remove=true scale=1.0 platform=TargetPlatform.iOS
+02:06 +499: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_card_press_test.dart: Card action has no touch overlay and activates on release: remove=false scale=2.0 platform=TargetPlatform.iOS
+02:06 +500: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_card_press_test.dart: Card action has no touch overlay and activates on release: remove=true scale=2.0 platform=TargetPlatform.iOS
+02:06 +501: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_case_resolution_test.dart: Resolves the public parent rather than using the expense as a case ID
+02:06 +502: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_case_resolution_test.dart: Withdrawn parent discards the previous public expense
+02:06 +503: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_case_resolution_test.dart: Missing expense in the current parent snapshot cannot navigate
+02:06 +504: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_case_resolution_test.dart: Wrong record kind cannot be treated as an expense
+02:07 +505: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_history_row_test.dart: Case action and financial detail have separate tap targets
+02:08 +506: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_history_row_test.dart: Public case name and actual concept remain readable at scale 1.0
+02:08 +507: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_history_row_test.dart: Public case name and actual concept remain readable at scale 2.0
+02:08 +508: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_history_row_test.dart: Actual amount and status remain readable at scale 1.0
+02:08 +509: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_history_row_test.dart: Actual amount and status remain readable at scale 2.0
+02:08 +510: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_history_row_test.dart: Missing evidence does not invent an amount or payment method
+02:08 +511: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_history_screen_test.dart: Combined history shows confirmed cycles before actual punctual payments and loads allocations only on demand
+02:10 +512: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_history_screen_test.dart: Combined history shows confirmed cycles before actual punctual payments and loads allocations only on demand
+02:10 +513: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_history_screen_test.dart: Combined history shows confirmed cycles before actual punctual payments and loads allocations only on demand
+02:10 +514: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_history_screen_test.dart: Combined history shows confirmed cycles before actual punctual payments and loads allocations only on demand
+02:10 +515: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_history_screen_test.dart: Combined history shows confirmed cycles before actual punctual payments and loads allocations only on demand
+02:10 +516: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_history_screen_test.dart: Combined history shows confirmed cycles before actual punctual payments and loads allocations only on demand
+02:10 +517: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_history_screen_test.dart: Combined history shows confirmed cycles before actual punctual payments and loads allocations only on demand
+02:10 +518: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_history_screen_test.dart: Combined history shows confirmed cycles before actual punctual payments and loads allocations only on demand
+02:10 +519: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: enlarged checkout retains its target while pending and avoids a second attempt
+02:11 +520: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: enlarged checkout retains its target while pending and avoids a second attempt
+02:11 +521: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_access_press_test.dart: profile access changes only its circle while held and opens on release
+02:11 +522: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_access_press_test.dart: profile access changes only its circle while held and opens on release
+02:11 +523: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_access_press_test.dart: profile access changes only its circle while held and opens on release
+02:11 +524: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_access_press_test.dart: profile access changes only its circle while held and opens on release
+02:11 +525: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: seed review only shows a public case matching the expense: case-one
+02:12 +526: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: seed review only shows a public case matching the expense: case-one
+02:12 +527: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: seed review only shows a public case matching the expense: case-one
+02:12 +528: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_history_screen_test.dart: Unavailable public case retains access to private payment evidence
+02:12 +529: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: seed review only shows a public case matching the expense: different-case
+02:12 +530: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_history_screen_test.dart: Public name unavailable keeps the real payment and receipt; error=false
+02:12 +531: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: result follows server evidence and limits actions: confirmed
+02:12 +532: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payment_history_screen_test.dart: Public name unavailable keeps the real payment and receipt; error=true
+02:12 +533: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: result follows server evidence and limits actions: pending
+02:12 +534: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: result follows server evidence and limits actions: pending
+02:12 +535: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: real profile mode dialog appears immediately and cancels safely: outside
+02:12 +536: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: real profile mode dialog appears immediately and cancels safely: outside
+02:13 +537: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: real profile mode dialog appears immediately and cancels safely: outside
+02:13 +538: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: real profile mode dialog appears immediately and cancels safely: outside
+02:13 +539: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: real profile mode dialog appears immediately and cancels safely: outside
+02:13 +540: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: real profile mode dialog appears immediately and cancels safely: outside
+02:13 +541: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: real profile mode dialog appears immediately and cancels safely: outside
+02:14 +542: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: real profile mode dialog appears immediately and cancels safely: back
+02:14 +543: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: real profile mode dialog appears immediately and cancels safely: close
+02:14 +544: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: real profile mode dialog appears immediately and cancels safely: later
+02:15 +545: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_guardian_test.dart: unknown Guardian state cannot claim an inactive membership; retry recovers
+02:15 +546: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_guardian_test.dart: unknown Guardian state cannot claim an inactive membership; retry recovers
+02:16 +547: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_guardian_test.dart: unknown Guardian state cannot claim an inactive membership; retry recovers
+02:16 +548: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: profile settings return preserves the real profile: false
+02:16 +549: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: profile settings return preserves the real profile: false
+02:16 +550: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: profile settings return preserves the real profile: false
+02:16 +551: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: profile settings return preserves the real profile: false
+02:16 +552: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_guardian_test.dart: rescuer confirmation is scrollable at 320px and 200% text
+02:16 +553: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: profile settings return preserves the real profile: true
+02:17 +554: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_choice_press_test.dart: Publication choice preserves press and cancels safely: selected=false scale=1.0 platform=TargetPlatform.android
+02:17 +555: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_choice_press_test.dart: Publication choice preserves press and cancels safely: selected=false scale=1.0 platform=TargetPlatform.android
+02:17 +556: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: rescuer source switch returns to donor only after server success: false /profile
+02:18 +557: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: rescuer source switch returns to donor only after server success: false /profile
+02:18 +558: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_choice_press_test.dart: Publication choice preserves press and cancels safely: selected=false scale=2.0 platform=TargetPlatform.android
+02:18 +559: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: rescuer source switch returns to donor only after server success: false /settings
+02:18 +560: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: rescuer source switch returns to donor only after server success: false /settings
+02:18 +561: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: rescuer source switch returns to donor only after server success: false /settings
+02:19 +562: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_choice_press_test.dart: Publication choice preserves press and cancels safely: selected=true scale=1.0 platform=TargetPlatform.iOS
+02:19 +563: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: rescuer source switch returns to donor only after server success: true /profile
+02:19 +564: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_choice_press_test.dart: Publication choice preserves press and cancels safely: selected=false scale=2.0 platform=TargetPlatform.iOS
+02:19 +565: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: rescuer source switch returns to donor only after server success: true /settings
+02:19 +566: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_choice_press_test.dart: Publication choice preserves press and cancels safely: selected=true scale=2.0 platform=TargetPlatform.iOS
+02:19 +567: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: donor settings switch enters rescuer only after server success: false /settings
+02:19 +568: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: donor settings switch enters rescuer only after server success: true /settings
+02:20 +569: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: profile feature press cancels safely; reduced motion=false
+02:20 +570: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: profile feature press cancels safely; reduced motion=true
+02:20 +571: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/profile_experience_test.dart: dedicated experience change preserves personal data; failure=false
+02:20 +572: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_personality_test.dart: publication preserves old traits and saves selected new traits
+02:21 +573: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_personality_test.dart: publication preserves old traits and saves selected new traits
+02:21 +574: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_personality_test.dart: publication preserves old traits and saves selected new traits
+02:22 +575: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_personality_test.dart: publication preserves old traits and saves selected new traits
+02:23 +576: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_personality_test.dart: publication preserves old traits and saves selected new traits
+02:23 +577: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: special care declaration reloads without invented details: scale=1.0
+02:23 +578: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: special care declaration reloads without invented details: scale=1.0
+02:25 +579: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: special care declaration reloads without invented details: scale=1.0
+02:27 +580: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: special care declaration reloads without invented details: scale=1.0
+02:27 +581: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: special care declaration reloads without invented details: scale=1.0
+02:27 +582: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: special care declaration reloads without invented details: scale=1.0
+02:27 +583: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: special care declaration reloads without invented details: scale=1.0
+02:27 +584: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: special care declaration reloads without invented details: scale=1.0
+02:27 +585: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: special care declaration reloads without invented details: scale=1.0
+02:29 +586: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_metrics_test.dart: public metrics preserve real cents and unknown counts at scale 1.0
+02:30 +587: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: special care declaration reloads without invented details: scale=2.0
+02:30 +588: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: special care declaration reloads without invented details: scale=2.0
+02:30 +589: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: special care checkbox preserves an existing description across toggles
+02:31 +590: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: special care checkbox preserves an existing description across toggles
+02:31 +591: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: special care checkbox preserves an existing description across toggles
+02:31 +592: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_photo_draft_test.dart: public photo selection stays local until save and retry reuses upload
+02:31 +593: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_photo_draft_test.dart: public photo selection stays local until save and retry reuses upload
+02:33 +594: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: health checkbox preserves yes no and unknown in the real draft
+02:33 +595: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: health checkbox preserves yes no and unknown in the real draft
+02:33 +596: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publish_choice_test.dart: receive routes through actual verification: approved
+02:33 +597: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publish_choice_test.dart: receive routes through actual verification: approved
+02:34 +598: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: review links preserve authored data and expose no editing when submitted
+02:34 +599: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publish_choice_test.dart: receive routes through actual verification: not_started
+02:34 +600: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: publication choices persist real enums and are locked during review
+02:35 +601: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publication_frame_test.dart: publication choices persist real enums and are locked during review
+02:35 +602: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_logout_test.dart: logout shows keyboard focus and Enter starts only one request
+02:35 +603: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_logout_test.dart: logout shows keyboard focus and Enter starts only one request
+02:35 +604: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_logout_test.dart: logout shows keyboard focus and Enter starts only one request
+02:36 +605: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publish_choice_test.dart: publication choice reflows at 320px and 200% and cancel reaches real home
+02:36 +606: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publish_choice_test.dart: publication choice reflows at 320px and 200% and cancel reaches real home
+02:36 +607: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/publish_choice_test.dart: publication choice reflows at 320px and 200% and cancel reaches real home
+02:36 +608: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_logout_test.dart: rescuer configuration logs out only on service success: false
+02:36 +609: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_logout_test.dart: rescuer configuration logs out only on service success: false
+02:36 +610: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_logout_test.dart: rescuer configuration logs out only on service success: false
+02:36 +611: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_logout_test.dart: rescuer configuration logs out only on service success: false
+02:39 +612: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_logout_test.dart: rescuer configuration logs out only on service success: true
+02:40 +613: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_access_test.dart: navigation hover is immediate and keyboard focus opens help
+02:41 +614: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_access_test.dart: profile access dispatches /settings at 320px and 200%
+02:41 +615: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_mode_control_test.dart: mode control focuses its track and keeps the full touch target: false
+02:41 +616: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_mode_control_test.dart: mode control focuses its track and keeps the full touch target: false
+02:41 +617: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_mode_control_test.dart: mode control focuses its track and keeps the full touch target: false
+02:41 +618: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_mode_control_test.dart: mode control focuses its track and keeps the full touch target: false
+02:42 +619: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_access_test.dart: rescuer configuration keeps public profile publications and Connect destinations
+02:42 +620: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_access_test.dart: rescuer configuration keeps public profile publications and Connect destinations
+02:42 +621: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_access_test.dart: rescuer configuration keeps public profile publications and Connect destinations
+02:42 +622: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_access_test.dart: rescuer configuration keeps public profile publications and Connect destinations
+02:43 +623: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_activity_test.dart: settled Guardian activity displays net and opens its actual expense
+02:48 +624: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_pending_evidence_test.dart: pending evidence opens its draft and returns without saving: false
+02:49 +625: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_pending_evidence_test.dart: pending evidence opens its draft and returns without saving: false
+02:49 +626: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_pending_evidence_test.dart: pending evidence opens its draft and returns without saving: false
+02:49 +627: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_pending_evidence_test.dart: pending evidence opens its draft and returns without saving: false
+02:49 +628: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_pending_evidence_test.dart: pending evidence opens its draft and returns without saving: false
+02:50 +629: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_pending_evidence_test.dart: pending evidence opens its draft and returns without saving: false
+02:50 +630: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_pending_evidence_test.dart: pending evidence opens its draft and returns without saving: false
+02:50 +631: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_pending_evidence_test.dart: pending evidence opens its draft and returns without saving: false
+02:50 +632: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_pending_evidence_test.dart: pending evidence opens its draft and returns without saving: false
+02:50 +633: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_pending_evidence_test.dart: pending evidence opens its draft and returns without saving: false
+02:50 +634: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_pending_evidence_test.dart: pending evidence opens its draft and returns without saving: false
+02:50 +635: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_pending_evidence_test.dart: pending evidence opens its draft and returns without saving: false
+02:50 +636: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_pending_evidence_test.dart: pending evidence opens its draft and returns without saving: false
+02:50 +637: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_pending_evidence_test.dart: pending evidence opens its draft and returns without saving: false
+02:51 +638: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_pending_evidence_test.dart: pending evidence opens its draft and returns without saving: false
+02:51 +639: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_pending_evidence_test.dart: pending evidence opens its draft and returns without saving: false
+02:51 +640: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_published_test.dart: owner contacts come from the current account and disappear on logout
+02:52 +641: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_published_test.dart: owner contacts come from the current account and disappear on logout
+02:52 +642: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_refresh_test.dart: profile retains identity but discards approval and money on error then retries server status
+02:53 +643: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_test.dart: photo picker prevents duplicate taps and retains draft on cancellation and failure
+02:53 +644: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_test.dart: photo picker prevents duplicate taps and retains draft on cancellation and failure
+02:53 +645: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_test.dart: photo picker prevents duplicate taps and retains draft on cancellation and failure
+02:53 +646: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_test.dart: photo picker prevents duplicate taps and retains draft on cancellation and failure
+02:53 +647: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_test.dart: photo picker prevents duplicate taps and retains draft on cancellation and failure
+02:54 +648: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_test.dart: photo picker prevents duplicate taps and retains draft on cancellation and failure
+02:54 +649: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_test.dart: photo picker prevents duplicate taps and retains draft on cancellation and failure
+02:54 +650: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_test.dart: photo picker prevents duplicate taps and retains draft on cancellation and failure
+02:54 +651: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_test.dart: photo picker prevents duplicate taps and retains draft on cancellation and failure
+02:54 +652: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_test.dart: photo picker prevents duplicate taps and retains draft on cancellation and failure
+02:54 +653: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_test.dart: photo picker prevents duplicate taps and retains draft on cancellation and failure
+02:54 +654: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_settings_details_test.dart: social pending write blocks duplicate taps and dismissal; logout=false
+02:54 +655: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_settings_details_test.dart: social pending write blocks duplicate taps and dismissal; logout=false
+02:54 +656: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_settings_details_test.dart: social pending write blocks duplicate taps and dismissal; logout=false
+02:55 +657: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_test.dart: corrige, guarda y envía el perfil público sin datos privados
+02:55 +658: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_test.dart: corrige, guarda y envía el perfil público sin datos privados
+02:55 +659: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_profile_test.dart: corrige, guarda y envía el perfil público sin datos privados
+02:55 +660: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_threads_test.dart: rescuer inbox retries a failed request without presenting a false empty state
+02:55 +661: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_threads_test.dart: rescuer inbox retries a failed request without presenting a false empty state
+02:56 +662: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_threads_test.dart: rescuer inbox retries a failed request without presenting a false empty state
+02:56 +663: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_threads_test.dart: rescuer inbox retries a failed request without presenting a false empty state
+02:56 +664: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_threads_test.dart: rescuer inbox retries a failed request without presenting a false empty state
+02:57 +665: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_threads_test.dart: rescuer inbox retries a failed request without presenting a false empty state
+02:57 +666: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_threads_test.dart: rescuer inbox retries a failed request without presenting a false empty state
+02:57 +667: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_threads_test.dart: rescuer inbox retries a failed request without presenting a false empty state
+02:57 +668: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_settings_details_test.dart: settings private social owner validation and real editor refresh: false
+02:57 +669: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_settings_details_test.dart: settings private social owner validation and real editor refresh: false
+02:57 +670: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_settings_details_test.dart: settings private social owner validation and real editor refresh: false
+02:58 +671: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_threads_test.dart: rescuer empty inbox opens actual publication; large=false
+02:58 +672: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_verification_card_test.dart: profile verification opens the real destination: approved
+02:58 +673: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_verification_card_test.dart: profile verification opens the real destination: approved
+02:58 +674: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_verification_card_test.dart: profile verification opens the real destination: approved
+02:58 +675: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_verification_card_test.dart: profile verification opens the real destination: approved
+02:59 +676: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_verification_card_test.dart: profile verification opens the real destination: approved
+02:59 +677: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescuer_verification_card_test.dart: profile verification opens the real destination: approved
+02:59 +678: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_file_test.dart: reload hides prior private image while access is pending: false
+03:00 +679: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_file_test.dart: reload hides prior private image while access is pending: false
+03:00 +680: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_file_test.dart: reload hides prior private image while access is pending: false
+03:00 +681: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_file_test.dart: reload hides prior private image while access is pending: false
+03:00 +682: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_file_test.dart: reload hides prior private image while access is pending: false
+03:00 +683: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_file_test.dart: reload hides prior private image while access is pending: false
+03:00 +684: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_file_test.dart: reload hides prior private image while access is pending: false
+03:00 +685: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_file_test.dart: reload hides prior private image while access is pending: false
+03:00 +686: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_file_test.dart: reload hides prior private image while access is pending: false
+03:01 +687: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_file_test.dart: reload hides prior private image while access is pending: false
+03:01 +688: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_file_test.dart: reload hides prior private image while access is pending: false
+03:01 +689: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/route_motion_test.dart: actual adopt introduction system back restores the previous slide and its entrance
+03:01 +690: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/route_motion_test.dart: actual adopt introduction system back restores the previous slide and its entrance
+03:01 +691: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/route_motion_test.dart: actual adopt introduction system back restores the previous slide and its entrance
+03:01 +692: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/route_motion_test.dart: actual adopt introduction system back restores the previous slide and its entrance
+03:01 +693: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/route_motion_test.dart: actual adopt introduction system back restores the previous slide and its entrance
+03:01 +694: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/route_motion_test.dart: actual adopt introduction system back restores the previous slide and its entrance
+03:02 +695: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/route_motion_test.dart: actual adopt introduction system back restores the previous slide and its entrance
+03:02 +696: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/route_motion_test.dart: actual adopt introduction system back restores the previous slide and its entrance
+03:02 +697: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/route_motion_test.dart: actual adopt introduction system back restores the previous slide and its entrance
+03:02 +698: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/support_case_ring_test.dart: Guardian support focus shape; card=false large=false
+03:02 +699: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/support_case_ring_test.dart: Guardian support focus shape; card=false large=false
+03:03 +700: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/support_case_ring_test.dart: Guardian support focus shape; card=false large=false
+03:03 +701: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: rescuer draft keeps private fields after a save conflict
+03:03 +702: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: rescuer draft keeps private fields after a save conflict
+03:04 +703: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: rescuer draft keeps private fields after a save conflict
+03:04 +704: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: rescuer draft keeps private fields after a save conflict
+03:04 +705: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: rescuer draft keeps private fields after a save conflict
+03:04 +706: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: rescuer draft keeps private fields after a save conflict
+03:04 +707: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: rescuer draft keeps private fields after a save conflict
+03:04 +708: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: rescuer draft keeps private fields after a save conflict
+03:04 +709: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: rescuer draft keeps private fields after a save conflict
+03:04 +710: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/support_rail_gesture_test.dart: horizontal case drag does not open a case and back retains rail
+03:04 +711: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/support_rail_gesture_test.dart: horizontal case drag does not open a case and back retains rail
+03:05 +712: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/support_rail_gesture_test.dart: horizontal case drag does not open a case and back retains rail
+03:05 +713: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/support_rail_gesture_test.dart: horizontal case drag does not open a case and back retains rail
+03:05 +714: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/support_rail_gesture_test.dart: horizontal case drag does not open a case and back retains rail
+03:05 +715: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/support_rail_gesture_test.dart: horizontal case drag does not open a case and back retains rail
+03:05 +716: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/support_rail_gesture_test.dart: horizontal case drag does not open a case and back retains rail
+03:05 +717: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/support_rail_gesture_test.dart: horizontal case drag does not open a case and back retains rail
+03:05 +718: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/support_rail_gesture_test.dart: horizontal case drag does not open a case and back retains rail
+03:05 +719: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/support_rail_gesture_test.dart: horizontal case drag does not open a case and back retains rail
+03:06 +720: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/support_rail_gesture_test.dart: horizontal case drag does not open a case and back retains rail
+03:06 +721: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: empty support Apoya a casos urgentes remains usable with large text and opens Guardian without activating it
+03:06 +722: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: empty support keyboard-enter remains usable with large text and opens Guardian without activating it
+03:06 +723: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: empty support keyboard-space remains usable with large text and opens Guardian without activating it
+03:07 +724: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/rescue_test.dart: closed public case keeps history and disables every contribution entry
+03:07 +725: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/thread_search_test.dart: opening, clearing and closing thread search preserves the actual query flow; large=false
+03:07 +726: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/thread_search_test.dart: opening, clearing and closing thread search preserves the actual query flow; large=false
+03:07 +727: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/thread_search_test.dart: opening, clearing and closing thread search preserves the actual query flow; large=false
+03:08 +728: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/thread_search_test.dart: opening, clearing and closing thread search preserves the actual query flow; large=false
+03:08 +729: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/thread_search_test.dart: opening, clearing and closing thread search preserves the actual query flow; large=false
+03:08 +730: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/thread_search_test.dart: opening, clearing and closing thread search preserves the actual query flow; large=false
+03:09 +731: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/thread_search_test.dart: opening, clearing and closing thread search preserves the actual query flow; large=true
+03:10 +732: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_actions_press_test.dart: Verification actions preserve press and cancel safely: section=Enviar a revisión scale=1.0 platform=TargetPlatform.android
+03:11 +733: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_actions_press_test.dart: Verification actions preserve press and cancel safely: section=Guardar y continuar después scale=1.0 platform=TargetPlatform.android
+03:11 +734: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_actions_press_test.dart: Verification actions preserve press and cancel safely: section=Enviar a revisión scale=2.0 platform=TargetPlatform.android
+03:11 +735: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_actions_press_test.dart: Verification actions preserve press and cancel safely: section=Guardar y continuar después scale=2.0 platform=TargetPlatform.android
+03:11 +736: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_actions_press_test.dart: Verification actions preserve press and cancel safely: section=Enviar a revisión scale=1.0 platform=TargetPlatform.iOS
+03:11 +737: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_actions_press_test.dart: Verification actions preserve press and cancel safely: section=Guardar y continuar después scale=1.0 platform=TargetPlatform.iOS
+03:11 +738: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_actions_press_test.dart: Verification actions preserve press and cancel safely: section=Enviar a revisión scale=2.0 platform=TargetPlatform.iOS
+03:11 +739: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_actions_press_test.dart: Verification actions preserve press and cancel safely: section=Guardar y continuar después scale=2.0 platform=TargetPlatform.iOS
+03:12 +740: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_document_test.dart: document geometry and extended upload target: Identificación oficial/1.0
+03:13 +741: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_document_test.dart: document geometry and extended upload target: Comprobante de domicilio/1.0
+03:13 +742: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_document_test.dart: document geometry and extended upload target: Identificación oficial/2.0
+03:13 +743: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_document_test.dart: document geometry and extended upload target: Comprobante de domicilio/2.0
+03:13 +744: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_intro_press_test.dart: Verification intro preserves press and cancels safely: section=Continuar a verificación scale=1.0 platform=TargetPlatform.android
+03:14 +745: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_intro_press_test.dart: Verification intro preserves press and cancels safely: section=Después scale=1.0 platform=TargetPlatform.android
+03:14 +746: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_intro_press_test.dart: Verification intro preserves press and cancels safely: section=Cerrar scale=1.0 platform=TargetPlatform.android
+03:14 +747: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_intro_press_test.dart: Verification intro preserves press and cancels safely: section=Continuar a verificación scale=2.0 platform=TargetPlatform.android
+03:14 +748: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_intro_press_test.dart: Verification intro preserves press and cancels safely: section=Después scale=2.0 platform=TargetPlatform.android
+03:14 +749: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_intro_press_test.dart: Verification intro preserves press and cancels safely: section=Cerrar scale=2.0 platform=TargetPlatform.android
+03:15 +750: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_intro_press_test.dart: Verification intro preserves press and cancels safely: section=Continuar a verificación scale=1.0 platform=TargetPlatform.iOS
+03:15 +751: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_intro_press_test.dart: Verification intro preserves press and cancels safely: section=Después scale=1.0 platform=TargetPlatform.iOS
+03:15 +752: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_intro_press_test.dart: Verification intro preserves press and cancels safely: section=Cerrar scale=1.0 platform=TargetPlatform.iOS
+03:15 +753: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_intro_press_test.dart: Verification intro preserves press and cancels safely: section=Continuar a verificación scale=2.0 platform=TargetPlatform.iOS
+03:15 +754: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_intro_test.dart: verification introduction returns to its origin and continues to real private documents at 200 percent
+03:15 +755: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_intro_test.dart: verification introduction returns to its origin and continues to real private documents at 200 percent
+03:15 +756: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_intro_test.dart: verification introduction returns to its origin and continues to real private documents at 200 percent
+03:17 +757: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_state_press_test.dart: Verification state actions preserve press and cancel safely: section=Publicar un caso scale=1.0 platform=TargetPlatform.android
+03:18 +758: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_state_press_test.dart: Verification state actions preserve press and cancel safely: section=Volver al inicio scale=1.0 platform=TargetPlatform.android
+03:18 +759: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_state_press_test.dart: Verification state actions preserve press and cancel safely: section=Publicar un caso scale=2.0 platform=TargetPlatform.android
+03:18 +760: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_state_press_test.dart: Verification state actions preserve press and cancel safely: section=Volver al inicio scale=2.0 platform=TargetPlatform.android
+03:19 +761: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_state_press_test.dart: Verification state actions preserve press and cancel safely: section=Publicar un caso scale=1.0 platform=TargetPlatform.iOS
+03:19 +762: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_state_press_test.dart: Verification state actions preserve press and cancel safely: section=Volver al inicio scale=1.0 platform=TargetPlatform.iOS
+03:19 +763: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_state_press_test.dart: Verification state actions preserve press and cancel safely: section=Publicar un caso scale=2.0 platform=TargetPlatform.iOS
+03:19 +764: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_state_test.dart: verification progress content reserves border once; scale=1.0
+03:19 +765: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_state_test.dart: verification progress content reserves border once; scale=1.0
+03:19 +766: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_state_test.dart: verification progress content reserves border once; scale=2.0
+03:20 +767: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_state_test.dart: review home action stays reachable at 200 percent and opens the real rescuer home
+03:21 +768: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/1.0
+03:21 +769: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/1.0
+03:22 +770: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/1.0
+03:22 +771: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_state_test.dart: both private document upload controls remain reachable: false
+03:23 +772: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/wallet_press_test.dart: Wallet has no touch overlay and activates on release: provider=apple_pay scale=1.0 platform=TargetPlatform.android
+03:23 +773: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/wallet_press_test.dart: Wallet has no touch overlay and activates on release: provider=apple_pay scale=1.0 platform=TargetPlatform.android
+03:23 +774: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/wallet_press_test.dart: Wallet has no touch overlay and activates on release: provider=apple_pay scale=1.0 platform=TargetPlatform.android
+03:23 +775: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: failed-save/1.0
+03:23 +776: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: failed-save/1.0
+03:24 +777: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: failed-save/1.0
+03:24 +778: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: failed-save/1.0
+03:24 +779: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/wallet_press_test.dart: Wallet has no touch overlay and activates on release: provider=apple_pay scale=1.0 platform=TargetPlatform.iOS
+03:24 +780: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/2.0
+03:24 +781: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/2.0
+03:24 +782: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/2.0
+03:24 +783: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/2.0
+03:24 +784: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: submit/2.0
+03:25 +785: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: failed-save/2.0
+03:25 +786: All tests passed!
