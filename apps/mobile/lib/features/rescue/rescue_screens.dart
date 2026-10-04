@@ -1544,17 +1544,30 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                   color: Color(0xff151423),
                 ),
                 decoration: InputDecoration(
-                  constraints: BoxConstraints(
-                    minHeight: field.lines > 1 ? 112 : 44,
-                  ),
                   counterText: '',
                   isDense: true,
                   filled: true,
                   fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 12,
-                  ),
+                  contentPadding: field.lines > 1
+                      ? EdgeInsets.fromLTRB(
+                          14,
+                          12,
+                          14,
+                          (112 -
+                                  MediaQuery.textScalerOf(context).scale(15) *
+                                      field.lines -
+                                  12)
+                              .clamp(12.0, double.infinity),
+                        )
+                      : EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical:
+                              ((44 -
+                                          MediaQuery.textScalerOf(context)
+                                              .scale(15)) /
+                                      2)
+                                  .clamp(12.0, double.infinity),
+                        ),
                   border: border,
                   enabledBorder: border,
                   focusedBorder: OutlineInputBorder(
