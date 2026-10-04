@@ -574,6 +574,7 @@ class PublicationChoiceRow extends StatelessWidget {
                         ? null
                         : () => onChanged!(entry.key),
                     style: OutlinedButton.styleFrom(
+                      animationDuration: Duration.zero,
                       minimumSize: const Size(0, 46),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8,
