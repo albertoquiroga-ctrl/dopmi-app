@@ -253,6 +253,17 @@ void main() {
             findsOneWidget,
           );
           expect(tester.getSize(target), const Size(32, 19));
+          // Source profile switch is off; settings switch is on. Navigation
+          // replaces the screen rather than toggling this thumb in place.
+          final thumb = find.descendant(
+            of: target,
+            matching: find.byType(Transform),
+          );
+          expect(thumb, findsOneWidget);
+          expect(
+            tester.widget<Transform>(thumb).transform.entry(0, 3),
+            path == '/settings' ? 13 : 0,
+          );
           final touch = find.ancestor(
             of: target,
             matching: find.byType(InkWell),
