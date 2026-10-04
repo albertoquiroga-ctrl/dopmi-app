@@ -1703,114 +1703,41 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     );
   }
 
-  Widget documentHeader(String role) {
-    final summary = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '${evidenceRoles[role]} *',
-          style: const TextStyle(
-            fontFamily: 'Inter',
-            fontSize: 16,
-            height: 20 / 16,
-            fontWeight: FontWeight.w700,
-            color: Color(0xff151423),
-          ),
-        ),
-        const SizedBox(height: 2),
-        const Text(
-          'Privado · Solo para revisión del equipo',
-          style: TextStyle(
-            fontSize: 12,
-            height: 15 / 12,
-            color: Color(0xff4f4e5c),
-          ),
-        ),
-      ],
-    );
-    if (!editable) return summary;
-    final upload = Semantics(
-      label: 'Adjuntar ${evidenceRoles[role]!.toLowerCase()}',
-      child: OutlinedButton(
-        key: ValueKey('verification-upload-$role'),
-        onPressed: busy || files.length >= 12
-            ? null
-            : () => run(() => attach(role)),
-        style:
-            OutlinedButton.styleFrom(
-              foregroundColor: const Color(0xff151423),
-              side: const BorderSide(color: Color(0xffe3e4ed)),
-              minimumSize: const Size(0, 34),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              textStyle: const TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 14,
-                height: 17 / 14,
-                fontWeight: FontWeight.w600,
-              ),
-              splashFactory: NoSplash.splashFactory,
-            ).copyWith(
-              overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-            ),
-        child: const Text('Subir'),
-      ),
-    );
-    if (MediaQuery.textScalerOf(context).scale(14) > 21) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [summary, const SizedBox(height: 12), upload],
-      );
-    }
-    return Row(
-      children: [
-        Expanded(child: summary),
-        const SizedBox(width: 12),
-        upload,
-      ],
-    );
-  }
-
   Widget verificationDocument(String role) => Padding(
     padding: const EdgeInsets.only(bottom: 16),
-    child: DecoratedBox(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xffe3e4ed)),
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            documentHeader(role),
-            for (final file in files.where((file) => file['role'] == role))
-              Row(
-                children: [
-                  Expanded(
-                    child: TextButton.icon(
-                      icon: const Icon(Icons.description_outlined),
-                      label: Text('Ver archivo ${files.indexOf(file) + 1}'),
-                      onPressed: () =>
-                          context.push('/rescue-file', extra: file['path']),
-                    ),
-                  ),
-                  if (editable)
-                    IconButton(
-                      tooltip: 'Quitar archivo ${files.indexOf(file) + 1}',
-                      icon: const Icon(Icons.close),
-                      onPressed: busy
-                          ? null
-                          : () => setState(() {
-                              files.remove(file);
-                              dirty = true;
-                            }),
-                    ),
-                ],
+    child: VerificationDocumentCard(
+      role: role,
+      title: evidenceRoles[role]!,
+      showUpload: editable,
+      onUpload: busy || files.length >= 12
+          ? null
+          : () => run(() => attach(role)),
+      attachments: [
+        for (final file in files.where((file) => file['role'] == role))
+          Row(
+            children: [
+              Expanded(
+                child: TextButton.icon(
+                  icon: const Icon(Icons.description_outlined),
+                  label: Text('Ver archivo ${files.indexOf(file) + 1}'),
+                  onPressed: () =>
+                      context.push('/rescue-file', extra: file['path']),
+                ),
               ),
-          ],
-        ),
-      ),
+              if (editable)
+                IconButton(
+                  tooltip: 'Quitar archivo ${files.indexOf(file) + 1}',
+                  icon: const Icon(Icons.close),
+                  onPressed: busy
+                      ? null
+                      : () => setState(() {
+                          files.remove(file);
+                          dirty = true;
+                        }),
+                ),
+            ],
+          ),
+      ],
     ),
   );
 

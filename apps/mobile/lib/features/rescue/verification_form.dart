@@ -182,3 +182,147 @@ class VerificationProgress extends StatelessWidget {
     );
   }
 }
+
+class VerificationDocumentCard extends StatelessWidget {
+  const VerificationDocumentCard({
+    super.key,
+    required this.role,
+    required this.title,
+    this.onUpload,
+    this.showUpload = true,
+    this.attachments = const [],
+  });
+  final String role, title;
+  final VoidCallback? onUpload;
+  final bool showUpload;
+  final List<Widget> attachments;
+
+  static const titleStyle = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 16,
+    height: 20 / 16,
+    fontWeight: FontWeight.w700,
+    color: Color(0xff151423),
+  );
+  static const subtitleStyle = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 12,
+    height: 15 / 12,
+    color: Color(0xff4f4e5c),
+  );
+  static const uploadStyle = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 14,
+    height: 17 / 14,
+    fontWeight: FontWeight.w600,
+  );
+  static const subtitle = 'Privado · Solo para revisión del equipo';
+
+  @override
+  Widget build(BuildContext context) {
+    final scaler = MediaQuery.textScalerOf(context);
+    final stacked = scaler.scale(14) > 21;
+    final summary = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('$title *', style: titleStyle),
+        const SizedBox(height: 2),
+        const Text(subtitle, style: subtitleStyle),
+      ],
+    );
+    final upload = Semantics(
+      label: 'Adjuntar ${title.toLowerCase()}',
+      child: OutlinedButton(
+        key: ValueKey('verification-upload-$role'),
+        onPressed: onUpload,
+        style:
+            OutlinedButton.styleFrom(
+              foregroundColor: const Color(0xff151423),
+              side: const BorderSide(color: Color(0xffe3e4ed)),
+              minimumSize: const Size(0, 35),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              textStyle: uploadStyle,
+              splashFactory: NoSplash.splashFactory,
+              tapTargetSize: MaterialTapTargetSize.padded,
+              visualDensity: VisualDensity.standard,
+            ).copyWith(
+              overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+              animationDuration: Duration.zero,
+            ),
+        child: const Text('Subir'),
+      ),
+    );
+    return DecoratedBox(
+      key: ValueKey('verification-document-$role'),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: const Color(0xffe3e4ed)),
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          double textHeight(String text, TextStyle style, double width) {
+            final painter = TextPainter(
+              text: TextSpan(text: text, style: style),
+              textDirection: Directionality.of(context),
+              textScaler: scaler,
+            )..layout(maxWidth: width);
+            final height = painter.height;
+            painter.dispose();
+            return height;
+          }
+
+          var verticalPadding = 15.0;
+          if (showUpload && !stacked) {
+            final label = TextPainter(
+              text: const TextSpan(text: 'Subir', style: uploadStyle),
+              textDirection: Directionality.of(context),
+              textScaler: scaler,
+            )..layout();
+            final summaryWidth =
+                (constraints.maxWidth - 30 - 12 - label.width - 28).clamp(
+                  1.0,
+                  double.infinity,
+                );
+            label.dispose();
+            final summaryHeight =
+                textHeight('$title *', titleStyle, summaryWidth) +
+                2 +
+                textHeight(subtitle, subtitleStyle, summaryWidth);
+            // Source has 15 px of visible inset. Center the 48 px touch target
+            // inside that space instead of adding its padding to the card height.
+            verticalPadding = 15 - ((48 - summaryHeight) / 2).clamp(0.0, 15.0);
+          }
+          return Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 15,
+              vertical: verticalPadding,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (!showUpload)
+                  summary
+                else if (stacked)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [summary, const SizedBox(height: 12), upload],
+                  )
+                else
+                  Row(
+                    children: [
+                      Expanded(child: summary),
+                      const SizedBox(width: 12),
+                      upload,
+                    ],
+                  ),
+                ...attachments,
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
