@@ -59,6 +59,11 @@ void main() {
     expect(picks, 1);
     expect(uploads, 0);
     expect(find.byType(Image), findsOneWidget);
+    final preview = find.ancestor(
+      of: find.byType(Image),
+      matching: find.byType(Container),
+    ).first;
+    expect(tester.getSize(preview).height, 140);
     expect(find.text('Cambiar imagen'), findsOneWidget);
     expect(find.text('Continuar en correo'), findsNothing);
     final send = find.widgetWithText(FilledButton, 'Enviar mensaje');

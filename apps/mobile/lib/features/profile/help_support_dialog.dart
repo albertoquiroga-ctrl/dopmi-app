@@ -458,6 +458,7 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                       if (attachment != null) ...[
                         const SizedBox(height: 12),
                         Container(
+                          height: 140,
                           clipBehavior: Clip.antiAlias,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(14),
@@ -465,7 +466,6 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                           ),
                           child: Image.memory(
                             attachment!,
-                            height: 140,
                             width: double.infinity,
                             fit: BoxFit.cover,
                             semanticLabel: 'Adjunto seleccionado',

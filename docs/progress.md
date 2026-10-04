@@ -3500,3 +3500,7 @@ Source/help ejecutado confirma una respuesta abierta, segunda sustituye, retocar
 ### 2026-10-04 - Loop751: accion Entendido en soporte
 
 Source/help recibido ejecutado: Entendido amarillo/48px/transition0/transformnone. Cliente recibido neutraliza ripple/overlay/animacionMaterial como formulario, sin alterar servidor ni promesas de respuesta. Testpendiente existente ahora mantiene150ms/cancela sin cerrar, tapcierra y requestsigue1. Gate87185 exit0:12/12; capture80208 exit0:1/1 en3s/dosPNG normal200 inspeccionados/hash; analyze80208 limpio42.2s y diffchecksinerror. Source a3c969c inicio/cierre. Emulador sin Dopmi en primerplano, manualpending. Full748/801 y APK748 anteriores749/751; sinCodemagic/global/nativa/dineroreal. Ver docs/design-reviews/parity-loop751.
+
+### 2026-10-04 - Loop752: borde y altura del adjunto de soporte
+
+Source/help con fixturemilo local muestra preview305x140 incluyendo borde1/boxsizingborderbox/cover. Prueba43022 exit1 reproduce142cliente frente140; height140 pasa al contenedor exterior conservando imagen/borde/radio/cover. Final69263 exit0:12/12, reintento conserva uploadID/ruta. Capture8182 exit0:1/1 en5s/dosPNG inspeccionados normal200/hash; analyze8182 limpio42.5s/diffchecksinerror. Source a3c969c inicio/cierre. No tests nuevos, Source envio simulado no servicio verificado. Full748 yAPK anteriores749/751/752; nativa/global siguenabiertas. SinCodemagic/dineroreal. Ver docs/design-reviews/parity-loop752.

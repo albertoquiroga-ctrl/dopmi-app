@@ -1,0 +1,18 @@
+[
+  {
+    "fixture": "help-center-support-photo",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "2e58a9d3551318bcdca8d0dee9141acbf16d062cd73d0d31b8d424300a74a219"
+  },
+  {
+    "fixture": "help-center-support-photo-large",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "2025ae622ea378183aa48916c9802288f560b0794287e3aac5bee7f340e980c7"
+  }
+]
