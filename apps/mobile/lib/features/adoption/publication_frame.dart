@@ -597,7 +597,7 @@ class PublicationChoiceRow extends StatelessWidget {
                       textStyle: const TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 14,
-                        height: 1.55,
+                        height: 17 / 14,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
