@@ -1,0 +1,5 @@
+# Loop562 — Arrastre en coordenadas de pantalla
+
+Source Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. App.tsx onPointerMove usa clientX-startX; aun rotado,delta horizontal es pantalla. Cliente GestureDetector bajo DiscoveryCardMotion aplicaba delta local rotado (pruebas anteriores aceptaban30*cosángulo). Detector movido fuera de Transform para tarjetas adopción/apoyo; delta horizontal ahora30px exactos en pruebas durante entrada. Curva cubic(.22,1,.36,1),280salida/250regreso,420px/18grados,opacidad.35 permanecen. No efecto hover añadido.
+
+Primer21712:44pass/1fail en tarjeta apoyo, todavía detector interno; extendida misma corrección y expectativa de pantalla a apoyo. Final3755 exit0,45/45,12s aprox; incluye derecha/izquierda, apoyo normal/reduced motion, cancelación, retorno desde favoritos, persistencia lenta/fallida yaccionesduplicadas. Sin screenshots nuevos: cambio de hit testing/coordenadas, no estado estático. Analyzer7172 exit0, limpio14.5s. Falta comprobación de dedos en teléfono y comparación temporal runtime Source; no aceptación global. Sin push/Codemagic.

@@ -140,14 +140,13 @@ void main() {
         );
         expect(rendered().transform.storage[12], right ? 420 : -420);
         await tester.pump(const Duration(milliseconds: 125));
-        // Pointer deltas are converted into the rotated card's coordinates.
-        final localDelta = 30 * rendered().transform.storage[0];
+        // Source clientX uses screen coordinates even while the card rotates.
         final gesture = await tester.startGesture(
           tester.getCenter(find.text('Milo')),
         );
         await gesture.moveBy(const Offset(30, 0));
         await tester.pump();
-        expect(rendered().transform.storage[12], closeTo(localDelta, .001));
+        expect(rendered().transform.storage[12], closeTo(30, .001));
         await gesture.cancel();
         await tester.pumpAndSettle();
         expect(rendered().transform.storage[12], 0);
@@ -157,42 +156,48 @@ void main() {
       },
     );
   }
-  testWidgets('returning from favorites preserves the card without replaying entry', (
-    tester,
-  ) async {
-    final semantics = tester.ensureSemantics();
-    await open(tester);
-    await tester.tap(find.byTooltip('Pasar'));
-    await tester.pumpAndSettle();
-    final card = find.byKey(const ValueKey('discovery-motion-next'));
-    final originalState = tester.state(card);
-    await tester.tap(find.bySemanticsLabel('Favoritos'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.bySemanticsLabel('Adoptar'));
-    await tester.pump();
-    expect(tester.state(card), same(originalState));
-    expect(find.text('Milo'), findsOneWidget);
-    final transform = tester.widget<Transform>(
-      find.descendant(of: card, matching: find.byType(Transform)).first,
-    );
-    expect(transform.transform.storage[12], 0);
-    await tester.pump(const Duration(milliseconds: 125));
-    expect(
-      tester.widget<Transform>(
+  testWidgets(
+    'returning from favorites preserves the card without replaying entry',
+    (tester) async {
+      final semantics = tester.ensureSemantics();
+      await open(tester);
+      await tester.tap(find.byTooltip('Pasar'));
+      await tester.pumpAndSettle();
+      final card = find.byKey(const ValueKey('discovery-motion-next'));
+      final originalState = tester.state(card);
+      await tester.tap(find.bySemanticsLabel('Favoritos'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.bySemanticsLabel('Adoptar'));
+      await tester.pump();
+      expect(tester.state(card), same(originalState));
+      expect(find.text('Milo'), findsOneWidget);
+      final transform = tester.widget<Transform>(
         find.descendant(of: card, matching: find.byType(Transform)).first,
-      ).transform.storage[12],
-      0,
-    );
-    expect(tester.takeException(), isNull);
-    semantics.dispose();
-  });
+      );
+      expect(transform.transform.storage[12], 0);
+      await tester.pump(const Duration(milliseconds: 125));
+      expect(
+        tester
+            .widget<Transform>(
+              find.descendant(of: card, matching: find.byType(Transform)).first,
+            )
+            .transform
+            .storage[12],
+        0,
+      );
+      expect(tester.takeException(), isNull);
+      semantics.dispose();
+    },
+  );
   for (final reduced in [false, true]) {
     testWidgets('support entry and interrupted gesture; reduced=$reduced', (
       tester,
     ) async {
       tester.platformDispatcher.accessibilityFeaturesTestValue =
           FakeAccessibilityFeatures(disableAnimations: reduced);
-      addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+      addTearDown(
+        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+      );
       final repo = FakeCommunity()
         ..supportItems = [
           SupportOpportunity({
@@ -219,13 +224,13 @@ void main() {
       );
       expect(rendered().transform.storage[12], reduced ? 0 : -420);
       if (!reduced) await tester.pump(const Duration(milliseconds: 125));
-      final localDelta = 30 * rendered().transform.storage[0];
+      // Support uses the same Source screen-coordinate gesture.
       final gesture = await tester.startGesture(
         tester.getCenter(find.text('Choco')),
       );
       await gesture.moveBy(const Offset(30, 0));
       await tester.pump();
-      expect(rendered().transform.storage[12], closeTo(localDelta, .001));
+      expect(rendered().transform.storage[12], closeTo(30, .001));
       await gesture.cancel();
       await tester.pumpAndSettle();
       expect(rendered().transform.storage[12], 0);

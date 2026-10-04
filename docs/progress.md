@@ -2694,3 +2694,7 @@ Native558 hueco100dp contrastado con Source406 del mismo SHA Irlanda a3c969cd910
 ## 2026-10-03 — Loop561: favorito seleccionado de adopción
 
 Source Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Sombra CSS0/4/12 rgba247/203/45/.35 y borde transparente del estado seleccionado faltaban en cliente; añadidos con círculo52, escala de icono existente preservada. Flujo real/callback/repositorio/error sin modificaciones. Nueva prueba guarda/quita favorito y verifica sombra; primer51822 40/1 falló por fixturefalse asumido saved, corregido a interacción real. Final50142 exit0,41/41 incluyendo reversión ante error. Capturador89049 exit0/dosPNG normal200 inspeccionados; analyzer71166 exit0 limpio22.8s. Evidencia docs/design-reviews/parity-loop561. No runtime Source seleccionado nuevo ni animaciones/gestos físicos/global aceptados. Sin push/Codemagic.
+
+## 2026-10-03 — Loop562: gesto horizontal de tarjetas
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Source usa clientX-startX; cliente bajo Transform convertía desplazamiento a coordenada rotada. GestureDetector fuera de DiscoveryCardMotion en adopción y apoyo:30px de dedo producen30px durante entrada izquierda/derecha, sin cambio a curvas/duración/umbrales ni persistencia. Primer21712 44/1 falló apoyo aún interno; corregido también. Final3755 exit0,45/45,analyzer7172 exit0 limpio14.5s. Evidencia/manifiesto raíz-scratch docs/design-reviews/parity-loop562. No nuevo contraste temporal runtime Source ni dedo/dispositivo físico/global aceptados. Sin push/Codemagic.

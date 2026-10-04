@@ -589,29 +589,29 @@ class _SupportCard extends StatelessWidget {
   String amount(int cents) =>
       (cents / 100).toStringAsFixed(cents % 100 == 0 ? 0 : 2);
   @override
-  Widget build(BuildContext context) => DiscoveryCardMotion(
-    key: ValueKey('discovery-motion-support-${item.expenseId}'),
-    initialTranslation: entryDirection == 0 ? null : entryDirection * 420.0,
-    initialAngleDegrees: entryDirection * 18.0,
-    duration: MediaQuery.disableAnimationsOf(context) || dragging
-        ? Duration.zero
-        : Duration(milliseconds: exiting == 0 ? 250 : 280),
-    translation: exiting == 0 ? dragX : exiting * 420,
-    angleDegrees: exiting == 0 ? dragX / 28 : exiting * 18,
-    child: AnimatedOpacity(
-      opacity: exiting == 0 ? 1 : .35,
-      duration: MediaQuery.disableAnimationsOf(context)
+  Widget build(BuildContext context) => GestureDetector(
+    dragStartBehavior: DragStartBehavior.down,
+    onHorizontalDragStart: busy ? null : (_) => onStart(),
+    onHorizontalDragUpdate: busy
+        ? null
+        : (event) => onDrag(dragX + event.delta.dx),
+    onHorizontalDragEnd: busy ? null : (_) => onEnd(),
+    onHorizontalDragCancel: busy ? null : onCancel,
+    child: DiscoveryCardMotion(
+      key: ValueKey('discovery-motion-support-${item.expenseId}'),
+      initialTranslation: entryDirection == 0 ? null : entryDirection * 420.0,
+      initialAngleDegrees: entryDirection * 18.0,
+      duration: MediaQuery.disableAnimationsOf(context) || dragging
           ? Duration.zero
-          : const Duration(milliseconds: 280),
-      curve: Curves.ease,
-      child: GestureDetector(
-        dragStartBehavior: DragStartBehavior.down,
-        onHorizontalDragStart: busy ? null : (_) => onStart(),
-        onHorizontalDragUpdate: busy
-            ? null
-            : (event) => onDrag(dragX + event.delta.dx),
-        onHorizontalDragEnd: busy ? null : (_) => onEnd(),
-        onHorizontalDragCancel: busy ? null : onCancel,
+          : Duration(milliseconds: exiting == 0 ? 250 : 280),
+      translation: exiting == 0 ? dragX : exiting * 420,
+      angleDegrees: exiting == 0 ? dragX / 28 : exiting * 18,
+      child: AnimatedOpacity(
+        opacity: exiting == 0 ? 1 : .35,
+        duration: MediaQuery.disableAnimationsOf(context)
+            ? Duration.zero
+            : const Duration(milliseconds: 280),
+        curve: Curves.ease,
         child: Semantics(
           customSemanticsActions: {
             const CustomSemanticsAction(label: 'Seguir descubriendo'): pass,
@@ -834,29 +834,29 @@ class _SwipeCard extends StatelessWidget {
   final ValueChanged<double> onDrag;
   final VoidCallback onStart, onCancel, onEnd, pass, like, contact, open;
   @override
-  Widget build(BuildContext context) => DiscoveryCardMotion(
-    key: ValueKey('discovery-motion-${post.id}'),
-    initialTranslation: entryDirection == 0 ? null : entryDirection * 420.0,
-    initialAngleDegrees: entryDirection * 18.0,
-    duration: MediaQuery.disableAnimationsOf(context) || dragging
-        ? Duration.zero
-        : Duration(milliseconds: exiting == 0 ? 250 : 280),
-    translation: exiting == 0 ? dragX : exiting * 420,
-    angleDegrees: exiting == 0 ? dragX / 28 : exiting * 18,
-    child: AnimatedOpacity(
-      opacity: exiting == 0 ? 1 : .35,
-      duration: MediaQuery.disableAnimationsOf(context)
+  Widget build(BuildContext context) => GestureDetector(
+    dragStartBehavior: DragStartBehavior.down,
+    onHorizontalDragStart: busy ? null : (_) => onStart(),
+    onHorizontalDragUpdate: busy
+        ? null
+        : (event) => onDrag(dragX + event.delta.dx),
+    onHorizontalDragEnd: busy ? null : (_) => onEnd(),
+    onHorizontalDragCancel: busy ? null : onCancel,
+    child: DiscoveryCardMotion(
+      key: ValueKey('discovery-motion-${post.id}'),
+      initialTranslation: entryDirection == 0 ? null : entryDirection * 420.0,
+      initialAngleDegrees: entryDirection * 18.0,
+      duration: MediaQuery.disableAnimationsOf(context) || dragging
           ? Duration.zero
-          : const Duration(milliseconds: 280),
-      curve: Curves.ease,
-      child: GestureDetector(
-        dragStartBehavior: DragStartBehavior.down,
-        onHorizontalDragStart: busy ? null : (_) => onStart(),
-        onHorizontalDragUpdate: busy
-            ? null
-            : (event) => onDrag(dragX + event.delta.dx),
-        onHorizontalDragEnd: busy ? null : (_) => onEnd(),
-        onHorizontalDragCancel: busy ? null : onCancel,
+          : Duration(milliseconds: exiting == 0 ? 250 : 280),
+      translation: exiting == 0 ? dragX : exiting * 420,
+      angleDegrees: exiting == 0 ? dragX / 28 : exiting * 18,
+      child: AnimatedOpacity(
+        opacity: exiting == 0 ? 1 : .35,
+        duration: MediaQuery.disableAnimationsOf(context)
+            ? Duration.zero
+            : const Duration(milliseconds: 280),
+        curve: Curves.ease,
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
