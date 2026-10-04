@@ -3404,3 +3404,11 @@ Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/ci
 - Apply adoption name padding horizontal6 and vertical5 (maintains48 normal target from20+4+14+10). Add2px spacer before48px removal target so name allocation matches Source215px while keeping larger removal target. Existing glyph shift+4 preserved. Final telemetry nameX102, iconCenterX341 exact; nameY173/iconCenterY191 retain vertical fractional differences .40625/.59375. Target48 is layout-derived here, not separately measured by tool. No font metrics changed.
 - Community58585 exit0:35/35 in10s. Analyze50918 exit0 clean33.9s. Saved capture12211 exit0:1/1 in6s, final geometry archived. No final image visually inspected this loop, no full acceptance inferred from telemetry. Installed724 predates726/727.
 - Goal active; no Codemagic until complete objective, money remains test-only.
+
+### 2026-10-04 — Historial: encabezado compartido
+
+Referencia inicio/cierre a3c969cd9103fd46dc5cd886999912526ce75efb. Source /history377×852/fonts ready Mi historial line22.5/spacing-.36. ContributionFrame compartido carecía de height/spacing explícitos; se establece1.25/-.36 a18px y overlay transparente en regreso, conservando callback nullable y colores rescatista.
+
+Test76457 exit0,30/30 en4s: payment_history_screen/row/payments/payment_methods_feedback. Analyzer4212 exit0 limpio31.9s. Capture89307 exit0,1/1 en3s: payment-history prefix. Estado vacío final inspeccionado. No telemetría numérica de título final ni aceptación del conjunto de todos los usos de ContributionFrame. Funciones/estados financieros reales preservados; no se iguala una simulación financiera.
+
+Anterior729 produjo fixture con textos equivalentes y evidencia de diferencias. Objetivo activo; aceptación visual/moción/nativa global pendiente. Sin Codemagic ni dinero real. Android instalado724 es anterior a este cambio.

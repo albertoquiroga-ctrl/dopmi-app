@@ -56,6 +56,7 @@ class ContributionFrame extends StatelessWidget {
         padding: const EdgeInsets.only(left: 12),
         child: IconButton(
           tooltip: 'Regresar',
+          style: IconButton.styleFrom(overlayColor: Colors.transparent),
           onPressed: back,
           icon: SvgPicture.asset(
             'assets/profile/back.svg',
@@ -76,6 +77,8 @@ class ContributionFrame extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 18,
+                height: 1.25,
+                letterSpacing: -0.36,
                 fontWeight: FontWeight.w700,
                 color: rescuer ? const Color(0xff151423) : ink,
               ),
