@@ -1629,28 +1629,28 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: const Color(0xffe3e4ed)),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
               evidenceRoles[role]!,
               style: const TextStyle(
-                fontSize: 14,
-                height: 1.55,
-                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                height: 19 / 16,
+                fontWeight: FontWeight.w700,
                 color: Color(0xff151423),
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             const Text(
               'Privado · Solo para revisión del equipo',
               style: TextStyle(
                 fontSize: 12,
-                height: 1.55,
+                height: 15 / 12,
                 color: Color(0xff4f4e5c),
               ),
             ),
