@@ -48,17 +48,17 @@ class OwnedExpenseSummary extends StatelessWidget {
   final RescueRecord record;
   final Json? funding;
   final VoidCallback onOpen;
-  static const ink = Color(0xff15110d);
-  static const muted = Color(0xff554e48);
+  static const ink = Color(0xff151423);
+  static const muted = Color(0xff4f4e5c);
 
   @override
   Widget build(BuildContext context) {
     final category = record.publicData['category'];
     final (symbol, label) = switch (category) {
-      'veterinary' => (Icons.medical_services_outlined, 'Atención veterinaria'),
-      'medicine' => (Icons.medication_outlined, 'Medicamentos'),
-      'food' => (Icons.restaurant_outlined, 'Comida'),
-      _ => (Icons.auto_awesome_outlined, 'Otro gasto'),
+      'veterinary' => ('🩺', 'Atención veterinaria'),
+      'medicine' => ('💊', 'Medicamentos'),
+      'food' => ('🥣', 'Comida'),
+      _ => ('✨', 'Otro gasto'),
     };
     final target = funding?['reimbursable_cents'] as int? ?? 0;
     final funded = funding?['funded_cents'] as int? ?? 0;
@@ -79,7 +79,7 @@ class OwnedExpenseSummary extends StatelessWidget {
           record.title,
           style: const TextStyle(
             fontSize: 16,
-            height: 1.4,
+            height: 19 / 16,
             fontWeight: FontWeight.w700,
             color: ink,
           ),
@@ -89,7 +89,7 @@ class OwnedExpenseSummary extends StatelessWidget {
           label.toUpperCase(),
           style: const TextStyle(
             fontSize: 9,
-            height: 1.4,
+            height: 11 / 9,
             letterSpacing: .72,
             color: muted,
           ),
@@ -106,7 +106,7 @@ class OwnedExpenseSummary extends StatelessWidget {
               'Urgente',
               style: TextStyle(
                 fontSize: 11,
-                height: 1.4,
+                height: 13 / 11,
                 color: Colors.white,
                 fontWeight: FontWeight.w700,
               ),
@@ -118,18 +118,18 @@ class OwnedExpenseSummary extends StatelessWidget {
       pesos(target),
       style: const TextStyle(
         fontSize: 16,
-        height: 1.4,
+        height: 19 / 16,
         fontWeight: FontWeight.w700,
         color: ink,
       ),
     );
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(17),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xffe6e2dd)),
+        border: Border.all(color: const Color(0xffe3e4ed)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -146,7 +146,18 @@ class OwnedExpenseSummary extends StatelessWidget {
                     color: const Color(0xfff0eff8),
                     borderRadius: BorderRadius.circular(18),
                   ),
-                  child: Icon(symbol, size: 22, color: purple),
+                  child: Text(
+                    symbol,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      height: 1,
+                      fontFamilyFallback: [
+                        'Noto Color Emoji',
+                        'Apple Color Emoji',
+                        'Segoe UI Emoji',
+                      ],
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(width: 10),
@@ -192,7 +203,7 @@ class OwnedExpenseSummary extends StatelessWidget {
             const SizedBox(height: 10),
             LinearProgressIndicator(
               value: ratio,
-              minHeight: 7,
+              minHeight: 8,
               borderRadius: BorderRadius.circular(99),
               color: purple,
               backgroundColor: const Color(0x2e7c3aed),
@@ -216,10 +227,20 @@ class OwnedExpenseSummary extends StatelessWidget {
           FilledButton(
             onPressed: onOpen,
             style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xffeee7fc),
+              backgroundColor: const Color(0xffede9fe),
               foregroundColor: purple,
-              minimumSize: const Size(0, 48),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              minimumSize: const Size(0, 36),
+              tapTargetSize: MaterialTapTargetSize.padded,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              textStyle: const TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 14,
+                height: 17 / 14,
+                fontWeight: FontWeight.w500,
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             ),
             child: Text(action, textAlign: TextAlign.center),
           ),

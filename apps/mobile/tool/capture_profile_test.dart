@@ -744,6 +744,19 @@ void main() {
         );
       await tester.runAsync(loader.load);
     }
+    // Match the reference browser's installed emoji font on Windows captures.
+    // Mobile production uses the platform emoji fallback; no system font is bundled.
+    if (Platform.isWindows) {
+      final emoji = File(
+        '${Platform.environment['SystemRoot'] ?? 'C:/Windows'}/Fonts/seguiemj.ttf',
+      );
+      if (emoji.existsSync()) {
+        final loader = FontLoader(
+          'Segoe UI Emoji',
+        )..addFont(Future.value(ByteData.sublistView(emoji.readAsBytesSync())));
+        await tester.runAsync(loader.load);
+      }
+    }
     final out = Directory('../../.tools/design-review');
     for (final path in [
       for (final name in [
