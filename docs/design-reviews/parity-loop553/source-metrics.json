@@ -1,0 +1,58 @@
+[
+  {
+    "border": "rgb(227, 228, 237)",
+    "cls": "info-card case-summary-card",
+    "color": "rgb(21, 20, 35)",
+    "font": "16px",
+    "gap": "8px",
+    "height": 137.0625,
+    "line": "normal",
+    "padding": "16px",
+    "tag": "ARTICLE",
+    "width": 345,
+    "x": 16,
+    "y": 276
+  },
+  {
+    "border": "rgb(21, 20, 35)",
+    "cls": "",
+    "color": "rgb(21, 20, 35)",
+    "font": "24px",
+    "gap": "normal",
+    "height": 30,
+    "line": "30px",
+    "padding": "0px",
+    "tag": "H1",
+    "width": 162.6875,
+    "x": 33,
+    "y": 293
+  },
+  {
+    "border": "rgb(227, 228, 237)",
+    "cls": "distance-pill",
+    "color": "rgb(79, 78, 92)",
+    "font": "12px",
+    "gap": "4px",
+    "height": 27,
+    "line": "normal",
+    "padding": "5px 9px",
+    "tag": "SPAN",
+    "width": 72.140625,
+    "x": 271.859375,
+    "y": 294.5
+  },
+  {
+    "border": "rgb(21, 20, 35)",
+    "cls": "",
+    "color": "rgb(21, 20, 35)",
+    "font": "14px",
+    "gap": "normal",
+    "height": 65.0625,
+    "line": "21.7px",
+    "padding": "0px",
+    "tag": "P",
+    "width": 311,
+    "x": 33,
+    "y": 331
+  }
+]

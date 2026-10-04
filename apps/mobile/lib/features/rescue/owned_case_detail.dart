@@ -43,7 +43,7 @@ class OwnedCaseDetail extends StatelessWidget {
         height: 1.25,
         letterSpacing: -.48,
         fontWeight: FontWeight.w700,
-        color: Color(0xff15110d),
+        color: Color(0xff151423),
       ),
     );
     final city = record.publicData['city'] is String
@@ -52,10 +52,10 @@ class OwnedCaseDetail extends StatelessWidget {
     final locationTag = Tooltip(
       message: location,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(99),
-          border: Border.all(color: const Color(0xffe6e2dd)),
+          border: Border.all(color: const Color(0xffe3e4ed)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -65,7 +65,7 @@ class OwnedCaseDetail extends StatelessWidget {
               width: 12,
               height: 12,
               colorFilter: const ColorFilter.mode(
-                Color(0xff554e48),
+                Color(0xff4f4e5c),
                 BlendMode.srcIn,
               ),
             ),
@@ -77,8 +77,8 @@ class OwnedCaseDetail extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontSize: 12,
-                  height: 1.4,
-                  color: Color(0xff554e48),
+                  height: 15 / 12,
+                  color: Color(0xff4f4e5c),
                 ),
               ),
             ),
@@ -101,11 +101,11 @@ class OwnedCaseDetail extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(17),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: const Color(0xffe6e2dd)),
+                        border: Border.all(color: const Color(0xffe3e4ed)),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,7 +122,7 @@ class OwnedCaseDetail extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Expanded(child: title),
-                                const SizedBox(width: 8),
+                                const SizedBox(width: 12),
                                 ConstrainedBox(
                                   constraints: const BoxConstraints(
                                     maxWidth: 120,
@@ -136,8 +136,8 @@ class OwnedCaseDetail extends StatelessWidget {
                             record.publicData['story'] as String? ?? '',
                             style: const TextStyle(
                               fontSize: 14,
-                              height: 1.5,
-                              color: Color(0xff15110d),
+                              height: 1.55,
+                              color: Color(0xff151423),
                             ),
                           ),
                           if (record.status == 'closed')
@@ -148,7 +148,7 @@ class OwnedCaseDetail extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 12,
                                 height: 1.4,
-                                color: Color(0xff554e48),
+                                color: Color(0xff4f4e5c),
                               ),
                             ),
                         ],
@@ -174,11 +174,11 @@ class OwnedCaseDetail extends StatelessWidget {
                         fontFamily: 'Inter',
                         fontSize: 19,
                         height: 1.3,
-                        color: Color(0xff15110d),
+                        color: Color(0xff151423),
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 31.77),
                     needs,
                     if (record.status != 'closed') ...[
                       const SizedBox(height: 16),
