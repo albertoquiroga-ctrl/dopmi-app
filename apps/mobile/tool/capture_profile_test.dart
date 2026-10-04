@@ -2718,6 +2718,26 @@ void main() {
                 'width': body.width,
                 'height': body.height,
               },
+              'textBlocks': [
+                for (final element
+                    in find
+                        .descendant(
+                          of: find.byType(DonorModeDialog),
+                          matching: find.byType(Text),
+                        )
+                        .evaluate())
+                  {
+                    'text': (element.widget as Text).data,
+                    'x': tester.getRect(find.byWidget(element.widget)).left,
+                    'y': tester.getRect(find.byWidget(element.widget)).top,
+                    'width': tester
+                        .getRect(find.byWidget(element.widget))
+                        .width,
+                    'height': tester
+                        .getRect(find.byWidget(element.widget))
+                        .height,
+                  },
+              ],
               'cancel': {
                 'x': cancel.left,
                 'y': cancel.top,
