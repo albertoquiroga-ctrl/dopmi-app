@@ -135,6 +135,8 @@ class _PaymentHistoryRowState extends State<PaymentHistoryRow> {
           expanded: expanded,
           child: InkWell(
             onTap: () => setState(() => expanded = !expanded),
+            splashFactory: NoSplash.splashFactory,
+            highlightColor: Colors.transparent,
             child: ConstrainedBox(
               constraints: const BoxConstraints(minHeight: 64),
               child: Padding(
