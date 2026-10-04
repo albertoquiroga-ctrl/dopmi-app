@@ -1,0 +1,5 @@
+# Capturas globales actuales
+
+## 2026-10-04 — Loop636: capturas globales actuales
+
+Fuente9f559a648d9e69fec1b1d0c89a23548b9daa2dca; Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Capturadorcompleto65072terminalexit0,1/1en3m00s.410fixturesúnicas/47rutas extraídas de lista real;410PNGexistentesmásnuevosqueinicio/decodificaciónPILválida/hashes/dimensiones guardados. Fuente251Dart+96assets raíz/scratch iguales antes;347hashesfuenteconservados al cierre sin ediciones durantegate. Esta colección supersede407599 para estado cliente actual, no410pantallasaceptadas ni comparaciónSourcecompleta. Full705629 anterior633/634, focused25/25634 y15/15635. Sin producciónnueva ni nuevoSDK/device. No inspección visual individual410 en este gate. PNG locales enTemp/.tools/design-review; manifiesto versionado, no410imágenescommitinnecesario. Próximo contraste por familias sobre capturas actuales y Source, empezando ruta de evidencia/revisión restante y estados de verificación. Sin push/Codemagic hasta completar objetivo.
