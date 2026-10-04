@@ -15,6 +15,29 @@ import '../payments/guardian_promotion_screen.dart';
 import '../rescue/rescue_public_photo.dart';
 import '../rescue/rescue_repository.dart';
 
+String impactElapsed(String? timestamp, {DateTime? now}) {
+  final date = DateTime.tryParse(timestamp ?? '');
+  if (date == null) return 'Fecha no disponible';
+  final elapsed = (now ?? DateTime.now()).difference(date);
+  if (elapsed.isNegative) return localDate(timestamp!);
+  if (elapsed.inMinutes == 0) return 'Hace un momento';
+  if (elapsed.inHours == 0) {
+    return elapsed.inMinutes == 1
+        ? 'Hace 1 minuto'
+        : 'Hace ${elapsed.inMinutes} minutos';
+  }
+  if (elapsed.inDays == 0) {
+    return elapsed.inHours == 1
+        ? 'Hace 1 hora'
+        : 'Hace ${elapsed.inHours} horas';
+  }
+  if (elapsed.inDays < 7) {
+    return elapsed.inDays == 1 ? 'Hace 1 día' : 'Hace ${elapsed.inDays} días';
+  }
+  final weeks = elapsed.inDays ~/ 7;
+  return weeks == 1 ? 'Hace 1 semana' : 'Hace $weeks semanas';
+}
+
 /// Membership decides the entry, while history remains reachable for former
 /// Guardians and people who only made punctual contributions.
 class ImpactEntryScreen extends ConsumerWidget {
@@ -386,12 +409,17 @@ class ImpactCaseCard extends StatelessWidget {
                             color: muted,
                           ),
                         ),
-                      Text(
-                        localDate(update['published_at'] as String? ?? ''),
-                        style: const TextStyle(
-                          fontSize: 40 / 3,
-                          height: 1.2,
-                          color: muted,
+                      Tooltip(
+                        message: localDate(
+                          update['published_at'] as String? ?? '',
+                        ),
+                        child: Text(
+                          impactElapsed(update['published_at'] as String?),
+                          style: const TextStyle(
+                            fontSize: 40 / 3,
+                            height: 1.2,
+                            color: muted,
+                          ),
                         ),
                       ),
                     ],

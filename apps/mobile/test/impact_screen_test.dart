@@ -110,6 +110,25 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('Long press on publication age reveals the exact local date', (
+    tester,
+  ) async {
+    await start(tester, ImpactCommunity()..items = [contributionCase]);
+    await tester.pumpAndSettle();
+    final date = find.byWidgetPredicate(
+      (widget) =>
+          widget is Tooltip &&
+          (widget.message?.startsWith('30/9/2026') ?? false),
+    );
+    expect(date, findsOneWidget);
+    final exact = tester.widget<Tooltip>(date).message!;
+    await tester.ensureVisible(date);
+    await tester.longPress(date);
+    await tester.pumpAndSettle();
+    expect(find.text(exact), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets(
     'Inactive entry shows promotion and keeps real history reachable',
     (tester) async {
