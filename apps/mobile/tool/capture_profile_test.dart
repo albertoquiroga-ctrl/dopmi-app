@@ -3171,7 +3171,7 @@ void main() {
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('expense-evidence')) {
-        final target = find.text('Documentos y evidencia');
+        final target = find.text('Comprobante del gasto');
         await tester.scrollUntilVisible(
           target,
           300,

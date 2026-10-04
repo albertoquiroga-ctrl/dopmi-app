@@ -2350,13 +2350,15 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                   ],
                   if (step == 0 && kind == 'case') casePhotos(),
                   if (step == 0 && kind != 'case') ...[
-                    Text(
-                      'Documentos y evidencia',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const Text(
-                      'Hasta 12 archivos de 5 MB. JPG, PNG, WebP o PDF; para publicar, solo fotos.',
-                    ),
+                    if (kind != 'expense') ...[
+                      Text(
+                        'Documentos y evidencia',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const Text(
+                        'Hasta 12 archivos de 5 MB. JPG, PNG, WebP o PDF; para publicar, solo fotos.',
+                      ),
+                    ],
                     for (final role
                         in kind == 'verification'
                             ? ['identity', 'address']
