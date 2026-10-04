@@ -2718,3 +2718,7 @@ Capturador6598 terminalexit0,1test/407unique,3m02s.407PNG nuevos/formato/hash ve
 ## 2026-10-03 — Loop567: contrasteSource bienvenida/acceso
 
 Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb local/remoto, SourceVite83987/Edge377x852 fonts.ready: bienvenida inicial/seleccionada contrastadas con566; posicionesSourceprompt231.1875/h447.625/radios686.8125 coinciden contratos previos. LoginSourceApple/Google: fixture566socialoff no equivalía config. Añadido login-google normal200/footer200 usando flagrealGoogle/FakeIdentityRepository sin signinremoto. Gate48178 exit0,1test/18PNG3s, analyzer28700 limpio28.7s; tool raíz-scratchigual. CTA nativo8px másabajo por forgot48vsSource40; pendiente resolución visual/táctil, no loginidéntico. Evidencia docs/design-reviews/parity-loop567. Browsercerrado/ViteCtrlCexit1esperado. Sin cambiosprod/push/Codemagic ni paridadglobal.
+
+## 2026-10-03 — Loop568: CTA bienvenida sin hover
+
+RuntimeSource Edge377x852 a3c969cd9103fd46dc5cd886999912526ce75efb:trasclickAdoptar cursor radioinicial queda sobre CTA posterior. Computedhovertrue/bg000;mousemove0/0 conserva selección yhoverfalse/bg15110d. Pixel80/745 Source567hover000/Source568nohover15110d/appcaptura56615110d. No discrepancia cromática móvil ni cambioproductivo. EvidenciaPNG/color-check568 y aclaración567; sólo CTAcolorverificado,no bienvenida/animacionesglobal. Recovery48vsSource40/CTA8px sigue pendiente. Browsercerrado/ViteCtrlCexit1esperado. Sin push/Codemagic.
