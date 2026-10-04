@@ -3667,6 +3667,28 @@ void main() {
             }
           }
         }
+        if (spec.$1 == 'payment-methods-cards') {
+          final add = find.widgetWithText(OutlinedButton, 'Agregar tarjeta');
+          expect(add.hitTestable(), findsOneWidget);
+          final rect = tester.getRect(add);
+          await tester.runAsync(
+            () =>
+                saveCapture(key, '${out.path}/payment-methods-add-before.png'),
+          );
+          final held = await tester.startGesture(rect.center);
+          await tester.pump(const Duration(milliseconds: 200));
+          expect(tester.getRect(add), rect);
+          await tester.runAsync(
+            () => saveCapture(key, '${out.path}/payment-methods-add-held.png'),
+          );
+          await held.cancel();
+          await tester.pumpAndSettle();
+          expect(
+            container.read(routerProvider).state.uri.path,
+            '/settings/payment-methods',
+          );
+          expect(add.hitTestable(), findsOneWidget);
+        }
         TestGesture? helpHold;
         if (spec.$1.startsWith('help-center-topic-held')) {
           final topic = find.widgetWithText(
