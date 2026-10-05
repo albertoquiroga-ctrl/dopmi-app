@@ -1,5 +1,4 @@
 import 'dart:ui' show PointerDeviceKind;
-import 'dart:async';
 import 'dart:io';
 
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
@@ -7,11 +6,13 @@ import 'package:dopmi_mobile/features/communication/match_thread_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
+import 'package:dopmi_mobile/core/media/photo_runtime.dart';
+import 'package:dopmi_mobile/core/media/photo_store.dart';
+import 'package:dopmi_mobile/features/adoption/community_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'community_test.dart' show FakeCommunity;
-import '../tool/fixture_photo_client.dart';
 
 class ThumbnailCommunity extends FakeCommunity {
   ThumbnailCommunity() {
@@ -35,9 +36,22 @@ void main() {
     'thread thumbnail retries signing within its circular target and renders a decoded photo',
     (tester) async {
       final repo = ThumbnailCommunity();
+      final bytes = (await tester.runAsync(
+        () => File('tool/fixtures/rocky.png').readAsBytes(),
+      ))!;
+      final runtime = (await tester.runAsync(
+        () async => PhotoRuntime(
+          store: MemoryPhotoStore(),
+          download: (_, _) async => bytes,
+        ),
+      ))!;
+      addTearDown(runtime.dispose);
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [communityRepositoryProvider.overrideWithValue(repo)],
+          overrides: [
+            communityRepositoryProvider.overrideWithValue(repo),
+            photoRuntimeProvider.overrideWithValue(runtime),
+          ],
           child: MaterialApp(
             home: Scaffold(
               body: MatchThreadRow({
@@ -56,36 +70,14 @@ void main() {
       expect(tester.getSize(retry), const Size(48, 48));
       expect(tester.takeException(), isNull);
 
-      final bytes = await tester.runAsync(
-        () => File('tool/fixtures/rocky.png').readAsBytes(),
-      );
-      final previous = debugNetworkImageHttpClientProvider;
-      PaintingBinding.instance.imageCache.clear();
-      debugNetworkImageHttpClientProvider = () => FixturePhotoClient(bytes!);
-      addTearDown(() {
-        debugNetworkImageHttpClientProvider = previous;
-        PaintingBinding.instance.imageCache.clear();
-        PaintingBinding.instance.imageCache.clearLiveImages();
-      });
-      await tester.runAsync(() async {
-        final ready = Completer<void>();
-        final stream = const NetworkImage('https://example.test/thread-photo')
-            .resolve(ImageConfiguration.empty);
-        final listener = ImageStreamListener(
-          (info, synchronous) => ready.complete(),
-          onError: (Object error, StackTrace? stack) =>
-              ready.completeError(error, stack),
-        );
-        stream.addListener(listener);
-        try {
-          await ready.future.timeout(const Duration(seconds: 10));
-        } finally {
-          stream.removeListener(listener);
-        }
-      });
-      debugNetworkImageHttpClientProvider = previous;
       repo.fail = false;
-      await tester.tap(retry);
+      await tester.runAsync(() async {
+        await tester.tap(retry);
+        await runtime.load(
+          adoptionPhotoSource(repo, 'approved/photo.png'),
+          width: 256,
+        );
+      });
       await tester.pumpAndSettle();
       final raw = find.byType(RawImage);
       expect(raw, findsOneWidget);

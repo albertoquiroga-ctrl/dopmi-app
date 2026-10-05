@@ -2949,6 +2949,24 @@ class RescueFileScreen extends ConsumerStatefulWidget {
 }
 
 class _RescueFileState extends ConsumerState<RescueFileScreen> {
+  PhotoRef get photoSource {
+    final path = widget.path;
+    return PhotoRef(
+      path: path,
+      purpose: MediaPurpose.rescuePhoto,
+      persistence: PhotoPersistence.memory,
+      sign: () => ref.read(rescueRepositoryProvider).fileUrl(path),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (!widget.path.endsWith('.pdf')) {
+      ref.read(photoRuntimeProvider).invalidate(photoSource).ignore();
+    }
+  }
+
   late Future<String>? url = widget.path.endsWith('.pdf') ? fileUrl() : null;
   int photoCycle = 0;
   String? error;
@@ -2961,6 +2979,9 @@ class _RescueFileState extends ConsumerState<RescueFileScreen> {
   }
 
   void reload() {
+    if (!widget.path.endsWith('.pdf')) {
+      ref.read(photoRuntimeProvider).invalidate(photoSource).ignore();
+    }
     final request = widget.path.endsWith('.pdf') ? fileUrl() : null;
     setState(() {
       url = request;
@@ -2990,19 +3011,23 @@ class _RescueFileState extends ConsumerState<RescueFileScreen> {
         if (!widget.path.endsWith('.pdf'))
           RemotePhoto(
             key: ValueKey(photoCycle),
-            source: PhotoRef(
-              path: widget.path,
-              purpose: MediaPurpose.rescuePhoto,
-              persistence: PhotoPersistence.memory,
-              sign: () =>
-                  ref.read(rescueRepositoryProvider).fileUrl(widget.path),
-            ),
+            source: photoSource,
             fit: BoxFit.contain,
             loading: const Center(child: CircularProgressIndicator()),
             unavailable: (retry) => TextButton.icon(
               onPressed: retry,
               icon: const Icon(Icons.refresh),
               label: const Text('Reintentar foto'),
+            ),
+            failureBuilder: (cause, retry) => Column(
+              children: [
+                Notice(rescueError(cause), isError: true),
+                TextButton.icon(
+                  onPressed: retry,
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Reintentar foto'),
+                ),
+              ],
             ),
           )
         else

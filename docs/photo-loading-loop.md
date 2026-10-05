@@ -93,3 +93,18 @@ suspensiÃ³n, reapertura y red en Samsung instalado. Al corte local sÃ³lo estÃ¡ c
 
 SHA final, CI, publicaciÃ³n y evidencia instalada se registran en `docs/progress.md`
 y `docs/backlog.md` sin sobrescribir el trabajo local anterior del titular.
+
+### Gate integrado y corrección posterior
+
+Candidato inicial `a85d180618a1b6db2b8ed36ba41bf7952b005169`, CI37366058216:
+web/administración/configuración/PostgreSQL/concurrencia aprobados. Flutter analizó sin
+errores;859 pruebas aprobadas y6 fallaron en expectativas anteriores de NetworkImage
+y espera del reintento. La comprobación de archivo privado además detectó que Recargar
+debía renovar autorización aunque quedaran píxeles en memoria: ahora invalida su
+entrada al abrir/recargar, oculta el frame previo y conserva el aviso seguro de error.
+La batería afectada posterior aprobó29 pruebas con JPEG realmente decodificado.
+La auditoría acotada ya cerró sus dos pasadas; esto corrige el gate, no abre otra ronda.
+
+`photo-candidate.yml` permite recomprobar sólo móvil mediante workflow_dispatch,
+conservando el gate de administración/backend anterior. Incluye análisis, pruebas
+afectadas, capturas y compilaciones Android/iOS sobre el nuevo SHA.

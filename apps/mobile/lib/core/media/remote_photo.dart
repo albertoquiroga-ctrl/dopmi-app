@@ -13,6 +13,7 @@ class RemotePhoto extends ConsumerStatefulWidget {
     required this.source,
     required this.loading,
     required this.unavailable,
+    this.failureBuilder,
     this.height,
     this.width,
     this.fit = BoxFit.cover,
@@ -22,6 +23,7 @@ class RemotePhoto extends ConsumerStatefulWidget {
   final PhotoRef source;
   final Widget loading;
   final Widget Function(VoidCallback retry) unavailable;
+  final Widget Function(Object error, VoidCallback retry)? failureBuilder;
   final double? height, width;
   final BoxFit fit;
   final String? semanticLabel;
@@ -141,7 +143,10 @@ class _RemotePhotoState extends ConsumerState<RemotePhoto>
 
   @override
   Widget build(BuildContext context) {
-    if (failure != null) return widget.unavailable(retry);
+    if (failure != null) {
+      return widget.failureBuilder?.call(failure!, retry) ??
+          widget.unavailable(retry);
+    }
     if (frame == null) return widget.loading;
     final current = generation;
     return Image(
@@ -153,7 +158,8 @@ class _RemotePhotoState extends ConsumerState<RemotePhoto>
       excludeFromSemantics: widget.excludeFromSemantics,
       errorBuilder: (_, error, _) {
         if (generation == current) failure = error;
-        return widget.unavailable(retry);
+        return widget.failureBuilder?.call(error, retry) ??
+            widget.unavailable(retry);
       },
     );
   }

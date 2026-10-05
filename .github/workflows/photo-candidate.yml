@@ -1,0 +1,74 @@
+name: Dopmi photo candidate affected checks
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: dopmi-photo-${{ github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  flutter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: microsoft
+          java-version: 21
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.4'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+        working-directory: apps/mobile
+      - name: Write compile-only Firebase placeholders
+        run: python3 scripts/write-ci-firebase-config.py
+      - name: Check Dart formatting and show the exact diff
+        run: |
+          dart format lib test test_backend
+          git diff --exit-code -- lib test test_backend
+        working-directory: apps/mobile
+      - run: flutter analyze && flutter test test/photo_runtime_test.dart test/photo_recovery_widget_test.dart test/photo_transport_test.dart test/match_thread_row_test.dart test/rescue_file_test.dart test/public_profile_avatar_recovery_test.dart test/rescuer_profile_published_test.dart test/adoption_photo_recovery_test.dart test/case_photo_recovery_test.dart test/account_photo_widgets_test.dart
+        working-directory: apps/mobile
+      - name: Capture actual Flutter components and access screens
+        run: flutter test tool/capture_design_test.dart
+        working-directory: apps/mobile
+      - name: Capture actual profile, cases, messages and state screens
+        env:
+          CAPTURE_FILTER: adoption-swipe,adoption-large,adoption-drag,adoption-filters,adoption-contact,adoption-detail,adoption-end,support-home,profile-overview,basic-info,publish-,case-publication,owned-cases,rescuer-messages,rescuer-notifications,rescuer-help,chat-bubbles-rescuer
+        run: flutter test tool/capture_profile_test.dart --dart-define=CAPTURE_FILTER="$CAPTURE_FILTER"
+        working-directory: apps/mobile
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dopmi-design-review
+          path: .tools/design-review/*.png
+          include-hidden-files: true
+          if-no-files-found: error
+      - name: Android development build (no production credentials)
+        run: flutter build apk --debug --dart-define-from-file=config.example.json
+        working-directory: apps/mobile
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dopmi-android-development
+          path: apps/mobile/build/app/outputs/flutter-apk/app-debug.apk
+  ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.4'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+        working-directory: apps/mobile
+      - name: Write compile-only Firebase placeholders
+        run: python3 scripts/write-ci-firebase-config.py
+      - name: iOS simulator compilation (device signing is separate)
+        run: flutter build ios --simulator --no-codesign --dart-define-from-file=config.example.json --dart-define=ENABLE_GUARDIAN_TEST=true
+        working-directory: apps/mobile

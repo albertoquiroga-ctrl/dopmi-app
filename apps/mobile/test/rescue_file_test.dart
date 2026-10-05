@@ -1,4 +1,10 @@
 import 'dart:async';
+import 'dart:io';
+
+import 'package:dopmi_mobile/core/media/photo_runtime.dart';
+import 'package:dopmi_mobile/core/media/photo_store.dart';
+import 'package:dopmi_mobile/core/media/media_store.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:dopmi_mobile/core/ui.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
@@ -20,11 +26,18 @@ class PrivateFileRepo extends FakeRescue {
   }
 }
 
+PhotoRef source(PrivateFileRepo repo) => PhotoRef(
+  path: 'one/request/file.png',
+  purpose: MediaPurpose.rescuePhoto,
+  sign: () => repo.fileUrl('one/request/file.png'),
+);
+
 void main() {
   for (final large in [false, true]) {
     Future<void> mount(
       WidgetTester tester,
       PrivateFileRepo repo, {
+      PhotoRuntime? runtime,
       String path = 'one/request/file.png',
     }) async {
       tester.view.physicalSize = const Size(320, 640);
@@ -33,12 +46,26 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [rescueRepositoryProvider.overrideWithValue(repo)],
-          child: MaterialApp(theme: dopmiTheme(), home: RescueFileScreen(path)),
-        ),
-      );
+      await tester.runAsync(() async {
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              rescueRepositoryProvider.overrideWithValue(repo),
+              if (runtime != null)
+                photoRuntimeProvider.overrideWithValue(runtime),
+            ],
+            child: MaterialApp(
+              theme: dopmiTheme(),
+              home: RescueFileScreen(path),
+            ),
+          ),
+        );
+        if (runtime != null && repo.read == null) {
+          try {
+            await runtime.load(source(repo), width: 384);
+          } catch (_) {}
+        }
+      });
       await tester.pumpAndSettle();
       final reload = find.text('Recargar archivo');
       await tester.scrollUntilVisible(
@@ -67,9 +94,19 @@ void main() {
       'reload hides prior private image while access is pending: $large',
       (tester) async {
         final repo = PrivateFileRepo();
-        await mount(tester, repo);
+        final bytes = (await tester.runAsync(
+          () => File('tool/fixtures/rocky.png').readAsBytes(),
+        ))!;
+        final runtime = (await tester.runAsync(
+          () async => PhotoRuntime(
+            store: MemoryPhotoStore(),
+            download: (_, _) async => bytes,
+          ),
+        ))!;
+        addTearDown(runtime.dispose);
+        await mount(tester, repo, runtime: runtime);
         final image = find.byWidgetPredicate(
-          (widget) => widget is Image && widget.image is NetworkImage,
+          (widget) => widget is RawImage && widget.image != null,
         );
         expect(image, findsOneWidget);
         final pending = Completer<String>();
@@ -79,10 +116,19 @@ void main() {
         expect(image, findsNothing);
         expect(find.byType(CircularProgressIndicator), findsOneWidget);
         expect(tester.takeException(), isNull);
-        pending.completeError(const FormatException('Acceso revocado.'));
+        pending.completeError(
+          const StorageException('Acceso revocado.', statusCode: '403'),
+        );
         await tester.pumpAndSettle();
         expect(image, findsNothing);
-        expect(find.text('Acceso revocado.'), findsOneWidget);
+        expect(
+          find.text(
+            rescueError(
+              const StorageException('Acceso revocado.', statusCode: '403'),
+            ),
+          ),
+          findsOneWidget,
+        );
         expect(tester.takeException(), isNull);
       },
     );
@@ -91,21 +137,35 @@ void main() {
       'synchronous read failure can retry with a new signed URL: $large',
       (tester) async {
         final repo = PrivateFileRepo()
-          ..read = () => throw const FormatException('No disponible.');
-        await mount(tester, repo);
-        expect(find.text('No disponible.'), findsOneWidget);
-        repo.read = () => Future.value('https://fixture.invalid/fresh.png');
-        await reload(tester);
-        await tester.pumpAndSettle();
-        final image = tester.widget<Image>(
-          find.byWidgetPredicate(
-            (widget) => widget is Image && widget.image is NetworkImage,
+          ..read = () =>
+              throw const StorageException('No disponible.', statusCode: '403');
+        final bytes = (await tester.runAsync(
+          () => File('tool/fixtures/rocky.png').readAsBytes(),
+        ))!;
+        final runtime = (await tester.runAsync(
+          () async => PhotoRuntime(
+            store: MemoryPhotoStore(),
+            download: (_, _) async => bytes,
           ),
-        );
+        ))!;
+        addTearDown(runtime.dispose);
+        await mount(tester, repo, runtime: runtime);
         expect(
-          (image.image as NetworkImage).url,
-          'https://fixture.invalid/fresh.png',
+          find.text(
+            rescueError(
+              const StorageException('No disponible.', statusCode: '403'),
+            ),
+          ),
+          findsOneWidget,
         );
+        repo.read = () => Future.value('https://fixture.invalid/fresh.png');
+        await tester.runAsync(() async {
+          await reload(tester);
+          await runtime.load(source(repo), width: 384);
+        });
+        await tester.pumpAndSettle();
+        expect(tester.widget<RawImage>(find.byType(RawImage)).image, isNotNull);
+        expect(runtime.metrics.downloads, 1);
         expect(repo.paths, ['one/request/file.png', 'one/request/file.png']);
         expect(tester.takeException(), isNull);
       },

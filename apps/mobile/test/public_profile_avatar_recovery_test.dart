@@ -58,22 +58,28 @@ void main() {
       UncontrolledProviderScope(container: container, child: const DopmiApp()),
     );
     await tester.pumpAndSettle();
-    expect(avatar.paths, ['owner/approved-avatar.jpg']);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
+    expect(avatar.paths.length, 2);
     expect(find.text('R'), findsOneWidget);
     await tester.tap(find.byTooltip('Reintentar foto de perfil'));
     await tester.pumpAndSettle();
-    expect(avatar.paths.length, 2);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
+    expect(avatar.paths.length, 4);
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     await tester.pumpAndSettle();
-    expect(avatar.paths.length, 3);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
+    expect(avatar.paths.length, 6);
     expect(avatar.paths.toSet(), {'owner/approved-avatar.jpg'});
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     await tester.pump();
-    expect(avatar.paths.length, 3);
+    expect(avatar.paths.length, 6);
     expect(tester.takeException(), isNull);
   });
 }
