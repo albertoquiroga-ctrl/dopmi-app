@@ -416,7 +416,11 @@ class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
   }
 
   Future<void> contact(CommunityRepository repo, Adoption post) async {
-    final confirmed = await confirmAdoptionContact(context);
+    final confirmed = await confirmAdoptionContact(
+      context,
+      petName: post.name,
+      rescuerName: post.text('publisher_name'),
+    );
     if (confirmed != true || !mounted) return;
     await perform(() async {
       final id = await repo.startThread(post.id);

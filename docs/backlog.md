@@ -176,3 +176,12 @@ a H12 porque requiere Supabase Pro; debe cerrarse antes del lanzamiento público
 - [ ] Comprobación de artefactos/publicación por build y monitoreo de producción.
 
 Los monitores de Codex requieren equipo/conexiones disponibles; no reemplazan Cron ni observabilidad del servidor.
+
+## 2026-10-04 — Actualización889 autorizada, supersede el aplazamiento anterior
+
+Implementar REF-01–19 del tablero parity-current-review.md hasta889c096,
+desde8785f66/Play290. Funciones completas con contratos aditivos mínimos;
+saludo sólo al confirmar el primer contacto, transaccional y sin duplicados.
+Tres subagentes/frentes exclusivos y un integrador/cola Flutter. Commits nuevos
+posteriores al corte quedan para otra entrega. Codemagic únicamente candidato
+final; cierre requiere regresión y Android instalado. Dinero exclusivamente test.

@@ -24,13 +24,13 @@ void main() {
                       child: SizedBox(
                         width: 300,
                         child: FilterOption(
-                          label: outlined ? 'Esperanzado' : 'Hembra',
+                          label: outlined ? 'Dormilón' : 'Hembra',
                           selected: false,
                           fill: outlined
-                              ? personalityColors['esperanzado']!
+                              ? personalityColors['dormilon']!
                               : Colors.white,
                           foreground: const Color(0xff15110d),
-                          fontSize: outlined ? 11 : 14,
+                          fontSize: outlined ? 12 : 14,
                           outlined: outlined,
                           onPressed: () => calls++,
                         ),

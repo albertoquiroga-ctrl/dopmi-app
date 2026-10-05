@@ -367,6 +367,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
+        path: '/my-conversations',
+        builder: (_, _) =>
+            ThreadsScreen(personal: true, key: ValueKey(identity.identity?.id)),
+      ),
+      GoRoute(
         path: '/notifications',
         builder: (_, _) =>
             NotificationsScreen(key: ValueKey(identity.identity?.id)),

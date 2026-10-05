@@ -3554,3 +3554,22 @@ Regresion integral requerida sobre SHA candidato en CI milestone-1.yml; sin full
 Candidato visual789c898, formato completo c54444c; chequeo de formato263archivos/cero cambios. CI37228120713 sobrec54444c: identidad/adopcion/rescates/comunidad y web/admin/PostgreSQL/Guardian concurrente aprobados; Flutter se detuvo en analyzer por if multilínea sinllaves introducido alformatear publication_age, antes de ejecutar regresion completa. Llaves equivalentes añadidas; analyzer local limpio65.7s y edades2/2 aprobadas, sin cambio de validacion ni UI. Nuevo SHA de esta reparacion requiere gate CI final; no se declara full aprobada.
 
 APK debug de c54444c compilado94492 exit0 en154.6s,450archivos tracked coinciden aplicando normalizacionCRLF de Git. SHA256 C6DC3BC63512A18F0F1DFFFF4B21AA663D89D723498A36E27FE912CA128F0A1E. Install89255 exit0/Success en emulador; com.mycompany.dopmi version0.2.0/build2, update19:27:28UTC verificados. Codigo visual/acciones iguales al candidato posterior de solo llaves; no telefono modificado. Apertura manual y SamsungUSB solicitados por falta de lanzamiento autorizado tras rechazo automatico previo amstart sin motivo. API Codemagic read verificada; sin nuevo build o publicacion.
+
+### 4/10/2026 — actualización autorizada al corte Irlanda 889c096, integración
+
+Objetivo nuevo activo desde app8785f66/Play290, 19 grupos, tres subagentes y una
+cola Flutter. Backend local594/594, configuración16/16 y admin moderación12/12
+pasaron. Segunda pasada compartida móvil50/50 pasó; la primera pasada agrupada
+147pass/19fallos incluyó desbordes, ruta faltante y fixtures de wizard anterior.
+Se corrigen juntos; no se acredita cierre visual por escribir la implementación.
+La migración aditiva está desplegada en DEV, preflight y postflight de cuerpos y
+permisos en migration-history-audit.md. Docker local no disponible: prueba de
+concurrencia real PostgreSQL agregada al gate CI y todavía pendiente. Samsung y
+emulador detectados; sin nuevo APK/Codemagic/Play ni aceptación instalada todavía.
+
+
+## 5 de octubre de 2026 — actualización889, inspección por lotes
+
+Backend integral local595/595 y configuración16/16 aprobados. Analyze limpio en scratch. Capturador existente aprobó tandas afectadas de Adoptar, Apoyar, Perfil/Información básica, Rescatista, Publicación, seis fotos/Mis casos/caso; CAPTURE_FILTER en CI se pasa por dart-define (antes el entorno no alimentaba String.fromEnvironment). Se sustituyeron sólo expectativas de título y validación ya cambiadas, sin ajustar UI a métricas históricas. Source permanece pin889c096. Nueve conjuntos perceptibles concretos detectados: dos Adoptar (corregidos/21 pruebas aprobadas), uno inbox (corregido), seis Publicación (en corrección agrupada). Se centra el texto nuevo envuelto tras recaptura; no crea nuevo expediente. Dos cuentas QA REST y seis archivos sintéticos en emulador listos para nativo; todavía no APK nuevo ni aceptación instalada. PR6 abierto/draft, refs8785f66/ba9f897 verificadas. Sin Codemagic por avance. Gate SHA final/PostgreSQL concurrencia/Storage real, nativo y Play/Samsung pendientes.
+
+19→0 grupos pendientes de desarrollo tras cierre de las cuatro fichas. Publicación: header fijo también al200%, hero32vh, aviso alcanzable con Inter real y9/9 pruebas; capturas finales aprobadas. Regresión inicial824pass/21fallos por fixtures/textos previos; corrección dirigida113/113 y notificaciones9/9. Concurrencia CI exige observación pg_blocking_pids antes delCOMMIT, no una pausa temporizada; setup transaccional/cleanup exacto. DEVfixture marcada sintética: dosAuth reales, seisJPG privados físicamente leídos por owner; adoptante6/6 denegado enborrador y6/6 leído tras aprobación sintética de una fila. No aprobación humana/admin atribuida; primercontacto aún0, reservado a CTA nativo. Cleanup exacto en manifest privado tras pasada Samsung. SHA/gate final, APK/nativo/Codemagic/Play/Samsung pendientes.

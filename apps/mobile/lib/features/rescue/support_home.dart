@@ -64,7 +64,7 @@ class SupportHomePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 const Text(
-                  'Descubre casos',
+                  'Ayudar se siente bien',
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 28,
@@ -106,7 +106,7 @@ class SupportHomePage extends StatelessWidget {
                   ),
                 const SizedBox(height: 28),
                 const Text(
-                  'Sé un Guardián',
+                  'Apoya a casos urgentes',
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 24,
@@ -375,7 +375,7 @@ class GuardianSupportCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Apoya a casos urgentes',
+                          'Sé un Guardián',
                           style: TextStyle(
                             fontFamily: 'Inter',
                             fontSize: 24,

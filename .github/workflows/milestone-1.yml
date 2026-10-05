@@ -6,13 +6,15 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: dopmi-${{ github.ref }}
+  group: dopmi-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 jobs:
   web-and-database:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Validate mobile build configuration
         run: python3 scripts/test_mobile_config.py
       - uses: actions/setup-node@v4
@@ -34,10 +36,14 @@ jobs:
         run: tools/verification/node_modules/.bin/supabase test db
       - name: Guardian concurrent reservations against PostgreSQL
         run: node tools/verification/guardian-concurrency.mjs
+      - name: Adoption contact concurrent devices and lost response
+        run: node tools/verification/adoption-contact-concurrency.mjs
   flutter:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-java@v4
         with:
           distribution: microsoft
@@ -62,7 +68,9 @@ jobs:
         run: flutter test tool/capture_design_test.dart
         working-directory: apps/mobile
       - name: Capture actual profile, cases, messages and state screens
-        run: flutter test tool/capture_profile_test.dart
+        env:
+          CAPTURE_FILTER: adoption-swipe,adoption-large,adoption-drag,adoption-filters,adoption-contact,adoption-detail,adoption-end,support-home,profile-overview,basic-info,publish-,case-publication,owned-cases,rescuer-messages,rescuer-notifications,rescuer-help,chat-bubbles-rescuer
+        run: flutter test tool/capture_profile_test.dart --dart-define=CAPTURE_FILTER="$CAPTURE_FILTER"
         working-directory: apps/mobile
       - uses: actions/upload-artifact@v4
         with:
@@ -81,6 +89,8 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.47.4'
@@ -98,6 +108,8 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-node@v4
         with:
           node-version: 24

@@ -99,6 +99,13 @@ class RescueRepository {
   Future<Json> detail(String id) async => Json.from(
     await client.rpc('dopmi_rescue_detail', params: {'record_id': id}),
   );
+  Future<void> removeDraftExpense(String id, int version) async {
+    await client.rpc(
+      'dopmi_remove_draft_expense',
+      params: {'record_id': id, 'expected_version': version},
+    );
+  }
+
   Future<RescueRecord> save(
     String kind,
     Json publicData,

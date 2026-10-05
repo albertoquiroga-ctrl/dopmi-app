@@ -122,6 +122,7 @@ class IdentityController extends ChangeNotifier {
         '/impact',
         '/my-adoptions',
         '/messages',
+        '/my-conversations',
         '/notifications',
         '/rescuer',
         '/my-cases',
@@ -164,6 +165,7 @@ class IdentityController extends ChangeNotifier {
         path == '/impact' ||
         path.startsWith('/my-adoptions') ||
         path.startsWith('/messages') ||
+        path.startsWith('/my-conversations') ||
         path == '/notifications' ||
         path == '/reset-password' ||
         path == '/loading' ||

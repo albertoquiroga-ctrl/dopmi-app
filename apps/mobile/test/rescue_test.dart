@@ -534,7 +534,7 @@ void main() {
       );
       await tester.pump(const Duration(milliseconds: 100));
       expect(repo.catalogCalls, 1);
-      expect(find.text('Descubre casos'), findsOneWidget);
+      expect(find.text('Ayudar se siente bien'), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
       expect(
         find.byWidgetPredicate(
@@ -563,7 +563,7 @@ void main() {
           path: '/rescue-cases',
           large: large,
         );
-        expect(find.text('Descubre casos'), findsOneWidget);
+        expect(find.text('Ayudar se siente bien'), findsOneWidget);
         expect(find.textContaining('No pudimos completar'), findsOneWidget);
         expect(
           find.byWidgetPredicate(
@@ -591,12 +591,12 @@ void main() {
         await tester.pumpAndSettle();
         expect(repo.catalogCalls, 2);
         await tester.scrollUntilVisible(
-          find.text('Descubre casos'),
+          find.text('Ayudar se siente bien'),
           -150,
           scrollable: find.byType(Scrollable).first,
         );
         await tester.pumpAndSettle();
-        expect(find.text('Descubre casos'), findsOneWidget);
+        expect(find.text('Ayudar se siente bien'), findsOneWidget);
         expect(find.text('Choco'), findsOneWidget);
         expect(find.textContaining('No pudimos completar'), findsNothing);
         expect(find.text('Volver a intentar'), findsNothing);
@@ -761,10 +761,10 @@ void main() {
       UncontrolledProviderScope(container: container, child: const DopmiApp()),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Descubre casos'), findsOneWidget);
+    expect(find.text('Ayudar se siente bien'), findsOneWidget);
     // Source CSS h1 letter-spacing:0; paragraph inherits normal (0).
     for (final copy in [
-      'Descubre casos',
+      'Ayudar se siente bien',
       'Con cada aporte mensual ayudarás a cubrir necesidades reales de mascotas que buscan un hogar.',
     ]) {
       expect(
@@ -911,7 +911,7 @@ void main() {
   });
   for (final entry in [
     'Suscríbete ahora',
-    'Apoya a casos urgentes',
+    'Sé un Guardián',
     'keyboard-enter',
     'keyboard-space',
   ]) {
@@ -964,9 +964,7 @@ void main() {
           ),
           findsOneWidget,
         );
-        final label = entry.startsWith('keyboard-')
-            ? 'Apoya a casos urgentes'
-            : entry;
+        final label = entry.startsWith('keyboard-') ? 'Sé un Guardián' : entry;
         await tester.scrollUntilVisible(
           find.text(label),
           200,
@@ -989,7 +987,7 @@ void main() {
           final data = tester.getSemantics(card).getSemanticsData();
           expect(data.flagsCollection.isButton, isTrue);
           expect(data.hasAction(SemanticsAction.tap), isTrue);
-          expect(data.label, contains('Apoya a casos urgentes'));
+          expect(data.label, contains('Sé un Guardián'));
           if (entry.startsWith('keyboard-')) {
             final gesture = find
                 .descendant(of: card, matching: find.byType(GestureDetector))

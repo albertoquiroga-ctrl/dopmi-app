@@ -67,6 +67,11 @@ const rescueFields = <String, List<RescueField>>{
       },
     ),
     RescueField('age', 'Edad aproximada'),
+    RescueField(
+      'size',
+      'Tamaño',
+      options: {'small': 'Pequeño', 'medium': 'Mediano', 'large': 'Grande'},
+    ),
     RescueField('story', 'Historia de rescate', lines: 4, max: 4000),
     RescueField('city', 'Ciudad'),
     RescueField('state', 'Estado'),

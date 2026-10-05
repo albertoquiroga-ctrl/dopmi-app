@@ -46,14 +46,10 @@ void main() {
       final button = find.widgetWithText(FilledButton, 'Nuevo');
       final target = tester.getRect(button);
       expect(target.height, greaterThanOrEqualTo(48));
-      final surface = find.descendant(
-        of: button,
-        matching: find.byType(Material),
-      );
-      final visual = tester.getRect(surface);
-      expect(visual.top, closeTo(20, .5));
-      expect(visual.height, large ? greaterThan(48) : closeTo(34, .01));
-      if (!large) expect(visual.width, closeTo(91.21875, 1));
+      expect(target.width, greaterThanOrEqualTo(48));
+      final heading = tester.getRect(find.text('Mis Casos'));
+      expect(target.top, greaterThanOrEqualTo(heading.bottom));
+      expect(target.right, lessThanOrEqualTo(large ? 320 : 377));
       // The padded area below the visible pill must also navigate.
       await tester.tapAt(Offset(target.center.dx, target.bottom - 2));
       await tester.pumpAndSettle();

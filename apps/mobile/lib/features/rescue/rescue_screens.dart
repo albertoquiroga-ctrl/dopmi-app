@@ -1,7 +1,5 @@
 import 'package:file_selector/file_selector.dart';
 
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 
 import '../../core/content_links.dart';
@@ -16,6 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show PostgrestException;
 
 import '../../core/ui.dart';
+import '../../core/donor_notification_button.dart';
 import '../../core/measurement.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
@@ -34,6 +33,7 @@ import 'expense_review.dart';
 import 'case_information.dart';
 import 'case_review.dart';
 import 'case_needs.dart';
+import 'case_publication_need_editor.dart';
 import 'case_need_row.dart';
 import 'case_update_screens.dart';
 import 'rescue_repository.dart';
@@ -596,7 +596,7 @@ class RescuerPendingEmpty extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           cases
-              ? 'Tus borradores y casos aparecerán aquí para que puedas darles seguimiento.'
+              ? 'Cuando publiques una mascota para adopción o donaciones, tus casos aparecerán aquí para que puedas darles seguimiento.'
               : 'Los borradores, correcciones, mensajes y evidencias aparecerán aquí.',
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -1231,6 +1231,9 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   final caseInformationKey = GlobalKey(debugLabel: 'case-information');
   final caseNeedsKey = GlobalKey(debugLabel: 'case-needs');
   List<Json> needItems = [];
+  List<RescueRecord> expenseDrafts = [];
+  String? previewRescuerName;
+  bool previewRescuerVerified = false;
   String? error, message;
   String get kind => record?.kind ?? widget.kind;
   bool get editable => record?.editable ?? true;
@@ -1296,6 +1299,11 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
         if (!record!.editable) step = kind == 'expense' ? 3 : 2;
       }
       fields(record);
+      if (kind == 'case') {
+        if (record != null) await reloadExpenseDrafts();
+        await loadPreviewActor();
+      }
+      if (!mounted) return;
       dirty = false;
       error = null;
       loadFailed = false;
@@ -1370,7 +1378,150 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     });
   }
 
-  Future<void> pickCasePhoto(ImageSource source) async {
+  bool get caseProfileComplete =>
+      files.any(
+        (f) => f['role'] == 'public' && (f['path'] as String? ?? '').isNotEmpty,
+      ) &&
+      [
+        'pet_name',
+        'species',
+        'sex',
+        'size',
+        'age',
+        'story',
+        'city',
+        'state',
+      ].every((key) => controllers[key]?.text.trim().isNotEmpty == true);
+
+  Future<void> loadPreviewActor() async {
+    final community = ref.read(communityRepositoryProvider);
+    final actor = community.userId;
+    if (actor == null) return;
+    try {
+      final profile = await community.publicProfile(actor);
+      if (!mounted || community.userId != actor) return;
+      previewRescuerName = profile?['name'] as String?;
+      previewRescuerVerified = profile?['verified'] == true;
+      if (previewRescuerName?.trim().isNotEmpty == true) return;
+    } catch (_) {
+      // A private preview can still use its owner's real identity when no public snapshot exists.
+    }
+    try {
+      final own = await ref.read(identityRepositoryProvider).loadProfile();
+      if (mounted && own.id == actor && community.userId == actor) {
+        previewRescuerName = own.name;
+      }
+    } catch (_) {
+      previewRescuerName = record?.data['rescuer_name'] as String?;
+    }
+  }
+
+  Future<void> reloadExpenseDrafts() async {
+    if (record == null) return;
+    final found = <RescueRecord>[];
+    var page = 1;
+    while (true) {
+      final result = await repository.mine('expense', page, parent: record!.id);
+      if (!mounted) return;
+      found.addAll(
+        result.items.where(
+          (item) =>
+              item.kind == 'expense' && item.data['parent_id'] == record!.id,
+        ),
+      );
+      if (result.items.isEmpty || page * 20 >= result.total) break;
+      page++;
+    }
+    expenseDrafts = found;
+  }
+
+  Future<void> editCaseExpense(String type, [RescueRecord? expense]) async {
+    await save();
+    if (!mounted) return;
+    setState(() => busy = false);
+    if (expense != null && !expense.editable) {
+      await context.push('/rescue/${expense.id}');
+    } else {
+      await showDialog<RescueRecord>(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => CasePublicationNeedEditor(
+          caseId: record!.id,
+          type: type,
+          record: expense,
+        ),
+      );
+    }
+    if (!mounted) return;
+    setState(() => busy = true);
+    await reloadExpenseDrafts();
+    if (mounted) setState(() {});
+  }
+
+  Future<void> removeCaseExpense(RescueRecord expense) async {
+    setState(() => busy = false);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('¿Eliminar este gasto?'),
+        content: const Text(
+          'Se eliminará el borrador privado del gasto. Los archivos que ya subiste no se borrarán.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    setState(() => busy = true);
+    await repository.removeDraftExpense(expense.id, expense.version);
+    if (!mounted) return;
+    await reloadExpenseDrafts();
+    if (mounted) setState(() {});
+  }
+
+  Future<void> chooseMainCasePhoto() async {
+    final source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_camera_outlined),
+              title: const Text('Tomar foto'),
+              onTap: () => Navigator.pop(context, ImageSource.camera),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined),
+              title: const Text('Elegir de la galería'),
+              onTap: () => Navigator.pop(context, ImageSource.gallery),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (source != null && mounted) {
+      await run(() => pickCasePhoto(source, replaceMain: true));
+    }
+  }
+
+  Future<void> pickCasePhoto(
+    ImageSource source, {
+    bool replaceMain = false,
+  }) async {
+    if (!replaceMain &&
+        files.where((file) => file['role'] == 'public').length >= 6) {
+      return;
+    }
+
     final actor = ref.read(communityRepositoryProvider).userId;
     if (actor == null) throw const FormatException('Vuelve a iniciar sesión.');
     await save();
@@ -1408,10 +1559,12 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     );
     if (!mounted) return;
     setState(() {
-      files = [
-        ...files,
-        {'role': 'public', 'path': path},
-      ];
+      final main = files.indexWhere((file) => file['role'] == 'public');
+      if (replaceMain && main >= 0) {
+        files[main] = {'role': 'public', 'path': path};
+      } else {
+        files.add({'role': 'public', 'path': path});
+      }
       dirty = true;
     });
     await save();
@@ -1421,7 +1574,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
       const Text(
-        'Sube fotos de la mascota',
+        'Complementa sus fotos',
         style: TextStyle(
           fontFamily: 'Inter',
           fontSize: 18,
@@ -1432,10 +1585,17 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
       ),
       const SizedBox(height: 16),
       PublicationPhotoPicker(
-        onCamera: editable && !busy && files.length < 12
+        supplementary: true,
+        onCamera:
+            editable &&
+                !busy &&
+                files.where((f) => f['role'] == 'public').length < 6
             ? () => run(() => pickCasePhoto(ImageSource.camera))
             : null,
-        onGallery: editable && !busy && files.length < 12
+        onGallery:
+            editable &&
+                !busy &&
+                files.where((f) => f['role'] == 'public').length < 6
             ? () => run(() => pickCasePhoto(ImageSource.gallery))
             : null,
       ),
@@ -1445,8 +1605,10 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
         runSpacing: 12,
         children: [
           for (var i = 0; i < files.length; i++)
-            if (files[i]['role'] == 'public')
+            if (files[i]['role'] == 'public' &&
+                i != files.indexWhere((f) => f['role'] == 'public'))
               PublicationPhotoThumbnail(
+                size: 110,
                 photo: Semantics(
                   button: true,
                   label: 'Ver foto ${i + 1}',
@@ -1457,7 +1619,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                         context.push('/rescue-file', extra: files[i]['path']),
                     child: RescuePublicPhoto(
                       files[i]['path'] as String,
-                      height: 167,
+                      height: 110,
                       radius: 0,
                       compact: true,
                     ),
@@ -1545,6 +1707,29 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
         result.kind == 'case' &&
         result.status == 'submitted') {
       dirty = false;
+      setState(() => busy = false);
+      await showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          icon: const Icon(
+            Icons.check_circle_outline,
+            color: Color(0xff7841f2),
+            size: 48,
+          ),
+          title: const Text('Enviado a revisión'),
+          content: const Text(
+            'El equipo revisará tu caso antes de publicarlo. Tus gastos siguen como borradores privados y podrás enviarlos a revisión cuando el caso esté aprobado.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Entendido'),
+            ),
+          ],
+        ),
+      );
+      if (!mounted) return;
       context.go('/my-cases');
       return;
     }
@@ -1790,9 +1975,13 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   Widget editorFrame({required List<Widget> children}) {
     if (kind == 'case' && editable) {
       return PublicationFrame(
-        title: step == 3 ? 'Revisa tu caso' : 'Publicar caso',
+        title: step == 0
+            ? '¿A quién estás apoyando?'
+            : step == 1
+            ? 'Cuéntanos'
+            : 'Valida tu caso',
         step: step,
-        totalSteps: 4,
+        totalSteps: 3,
         onBack: busy
             ? null
             : () {
@@ -1803,25 +1992,14 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                 }
               },
         footer: PublicationFooter(
-          label: step == 3
-              ? 'Enviar a revisión'
-              : step == 2
-              ? 'Continuar a revisión'
-              : 'Continuar',
+          label: step == 2 ? 'Enviar a revisión' : 'Continuar',
           busy: busy || loading,
           compact: MediaQuery.viewInsetsOf(context).bottom > 0,
           onSave: loadFailed ? null : () => run(save),
-          onContinue:
-              loadFailed ||
-                  (step == 0 &&
-                      !files.any(
-                        (f) =>
-                            f['role'] == 'public' &&
-                            (f['path'] as String? ?? '').isNotEmpty,
-                      ))
+          onContinue: loadFailed || (step == 0 && !caseProfileComplete)
               ? null
               : () => run(() async {
-                  if (step < 3) {
+                  if (step < 2) {
                     await save();
                     if (mounted) {
                       setState(() {
@@ -2110,9 +2288,17 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
       );
     }
     return PopScope(
-      canPop: !dirty || !editable,
+      canPop:
+          !busy &&
+          (!(kind == 'case' && editable && step > 0)) &&
+          (!dirty || !editable),
       onPopInvokedWithResult: (didPop, result) async {
-        if (!didPop && await confirmLeave() && context.mounted) {
+        if (didPop || busy) return;
+        if (kind == 'case' && editable && step > 0) {
+          setState(() => step--);
+          return;
+        }
+        if (await confirmLeave() && context.mounted) {
           setState(() => dirty = false);
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (context.mounted) context.pop();
@@ -2202,13 +2388,44 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                     const LinearProgressIndicator(
                       semanticsLabel: 'Guardando o subiendo archivos',
                     ),
-                  if (step == 1 && kind == 'case')
+                  if (kind == 'case' &&
+                      ((editable && step == 0) ||
+                          (!editable && step == 1))) ...[
+                    if (editable) ...[
+                      const Text(
+                        'Perfil',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 18,
+                          height: 28 / 18,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xff151423),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      PublicationMainPhoto(
+                        photo: files.any((f) => f['role'] == 'public')
+                            ? RescuePublicPhoto(
+                                files.firstWhere(
+                                      (f) => f['role'] == 'public',
+                                    )['path']
+                                    as String,
+                                height: 120,
+                                radius: 60,
+                                compact: true,
+                              )
+                            : null,
+                        onPick: busy ? null : chooseMainCasePhoto,
+                      ),
+                    ],
                     CaseInformation(
+                      showTitle: !editable,
                       key: caseInformationKey,
                       controllers: controllers,
                       enabled: editable && !busy,
                       onChanged: () => setState(() => dirty = true),
                     ),
+                  ],
                   if (step == 1 && kind == 'expense') ...[
                     for (final role in ['public', 'proof'])
                       expenseEvidence(role),
@@ -2297,7 +2514,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                           ),
                     ],
                   ],
-                  if (step == 0 && kind == 'case') casePhotos(),
+
                   if (step == 0 && kind != 'case') ...[
                     if (kind != 'expense') ...[
                       Text(
@@ -2398,20 +2615,61 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                           ? () => setState(() => step = 0)
                           : null,
                     ),
-                  if (step == 2 && kind == 'case' && editable)
-                    CaseNeeds(
-                      key: caseNeedsKey,
-                      items: needItems,
-                      onItemsChanged: (items) => setState(() {
-                        needItems = items;
-                        dirty = true;
-                      }),
-                      controller: controllers['need']!,
+                  if (step == 1 && kind == 'case' && editable) ...[
+                    CaseDraftNeeds(
+                      expenses: expenseDrafts,
                       enabled: !busy,
-                      onChanged: () => setState(() => dirty = true),
+                      onAdd: (type) => run(() => editCaseExpense(type)),
+                      onEdit: (expense) => run(
+                        () => editCaseExpense(
+                          expense.publicData['category'] as String? ??
+                              'veterinary',
+                          expense,
+                        ),
+                      ),
+                      onRemove: (expense) =>
+                          run(() => removeCaseExpense(expense)),
                     ),
-                  if (step == 3 && kind == 'case' && editable)
+                    const SizedBox(height: 24),
+                    ExpansionTile(
+                      key: const PageStorageKey(
+                        'case-publication-additional-photos',
+                      ),
+                      tilePadding: EdgeInsets.zero,
+                      title: const Text(
+                        'Fotos adicionales (opcional)',
+                        style: TextStyle(fontFamily: 'Inter', fontSize: 16),
+                      ),
+                      children: [casePhotos()],
+                    ),
+                    const SizedBox(height: 12),
+                    ExpansionTile(
+                      key: const PageStorageKey(
+                        'case-publication-planned-needs',
+                      ),
+                      title: const Text('Cuidados y necesidades previstas'),
+                      children: [
+                        CaseNeeds(
+                          key: caseNeedsKey,
+                          items: needItems,
+                          onItemsChanged: (items) => setState(() {
+                            needItems = items;
+                            dirty = true;
+                          }),
+                          controller: controllers['need']!,
+                          enabled: !busy,
+                          onChanged: () => setState(() => dirty = true),
+                        ),
+                      ],
+                    ),
+                  ],
+                  if (step == 2 && kind == 'case' && editable)
                     CaseReview(
+                      preview: true,
+                      ownerId: ref.read(communityRepositoryProvider).userId,
+                      rescuerName: previewRescuerName,
+                      rescuerVerified: previewRescuerVerified,
+                      expenseDrafts: expenseDrafts,
                       items: needItems,
                       values: {
                         for (final entry in controllers.entries)
@@ -2425,8 +2683,8 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                           : () => setState(() => step = 0),
                       onEditInformation: busy
                           ? null
-                          : () => setState(() => step = 1),
-                      onEditNeeds: busy ? null : () => setState(() => step = 2),
+                          : () => setState(() => step = 0),
+                      onEditNeeds: busy ? null : () => setState(() => step = 1),
                     ),
                   if (step == 2 &&
                       kind != 'expense' &&
@@ -2992,76 +3250,60 @@ class OwnedCasesHeading extends StatelessWidget {
   const OwnedCasesHeading({super.key, this.total});
   final int? total;
   @override
-  Widget build(BuildContext context) => Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Mis casos',
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 24,
-                height: 1.25,
-                letterSpacing: -.48,
-                fontWeight: FontWeight.w700,
-                color: Color(0xff151423),
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
+      const Text(
+        'Mis Casos',
+        style: TextStyle(
+          fontSize: 28,
+          height: 1.1,
+          fontWeight: FontWeight.w700,
+          color: Color(0xff151423),
+        ),
+      ),
+      const SizedBox(height: 18),
+      Row(
+        children: [
+          Expanded(
+            child: Text(
               total == null
-                  ? 'Da seguimiento a tus casos'
+                  ? 'Da seguimiento a tus mascotas'
                   : total == 0
-                  ? 'Aún no tienes casos'
-                  : '$total ${total == 1 ? 'caso' : 'casos'} a tu cuidado',
+                  ? 'Aún no tienes mascotas publicadas'
+                  : '$total ${total == 1 ? 'mascota' : 'mascotas'} a tu cuidado',
               style: const TextStyle(
-                fontSize: 12,
+                fontSize: 13,
                 height: 1.5,
                 color: Color(0xff4f4e5c),
               ),
             ),
-          ],
-        ),
-      ),
-      if (total != 0) ...[
-        const SizedBox(width: 12),
-        Transform.translate(
-          offset: Offset(
-            0,
-            -math.max(
-                  0,
-                  48 -
-                      math.max(
-                        34,
-                        MediaQuery.textScalerOf(context).scale(14) * 1.2 + 16,
-                      ),
-                ) /
-                2,
           ),
-          child: FilledButton.icon(
-            onPressed: () => context.go('/publish'),
-            icon: const Icon(Icons.add_circle_outline, size: 16),
-            label: const Text('Nuevo'),
-            style: FilledButton.styleFrom(
-              minimumSize: const Size(0, 34),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              tapTargetSize: MaterialTapTargetSize.padded,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
-              ),
-              textStyle: const TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 14,
-                height: 1.2,
-                fontWeight: FontWeight.w500,
+          if (total != 0) ...[
+            const SizedBox(width: 12),
+            FilledButton.icon(
+              onPressed: () => context.go('/publish'),
+              icon: const Icon(Icons.add_circle_outline, size: 16),
+              label: const Text('Nuevo'),
+              style: FilledButton.styleFrom(
+                minimumSize: const Size(0, 36),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                textStyle: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-          ),
-        ),
-      ],
+          ],
+        ],
+      ),
     ],
   );
 }
@@ -3069,10 +3311,28 @@ class OwnedCasesHeading extends StatelessWidget {
 class MyRescueCasesScreen extends StatelessWidget {
   const MyRescueCasesScreen({super.key});
   @override
-  Widget build(BuildContext context) => const CommunityFrame(
+  Widget build(BuildContext context) => CommunityFrame(
     index: 2,
     back: false,
     showAppBar: false,
-    children: [RescueList(kind: 'case', showCaseHeader: true)],
+    children: [
+      SizedBox(
+        height: 42,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SvgPicture.asset(
+              'assets/profile/logo-paw.svg',
+              width: 40,
+              height: 40,
+              semanticsLabel: 'Dopmi',
+            ),
+            const DonorNotificationButton(rescuer: true),
+          ],
+        ),
+      ),
+      const SizedBox(height: 20),
+      const RescueList(kind: 'case', showCaseHeader: true),
+    ],
   );
 }

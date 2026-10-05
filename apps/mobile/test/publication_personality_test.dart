@@ -8,8 +8,78 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'community_test.dart' show PhotoDraftCommunity;
 import 'fake_identity_repository.dart';
+import 'publication_frame_test.dart' show startPublication, tapPublication;
 
 void main() {
+  testWidgets(
+    'new personality choices cap at three without clearing legacy traits',
+    (tester) async {
+      final repo = PhotoDraftCommunity();
+      await startPublication(tester, repo, '/my-adoptions/post');
+      await tapPublication(tester, find.text('Continuar'));
+      expect(
+        find.byKey(const ValueKey('publication-personality-dormilon')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('publication-personality-protector')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('publication-personality-obediente')),
+        findsOneWidget,
+      );
+      for (final key in ['alegre', 'nervioso', 'dormilon']) {
+        await tapPublication(
+          tester,
+          find.byKey(ValueKey('publication-personality-$key')),
+        );
+      }
+      final fourth = find.byKey(
+        const ValueKey('publication-personality-protector'),
+      );
+      expect(tester.widget<OutlinedButton>(fourth).onPressed, isNull);
+      await tapPublication(tester, find.text('Guardar borrador'));
+      expect(repo.savedPayload?['personality'], [
+        'alegre',
+        'nervioso',
+        'dormilon',
+      ]);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'historical four traits survive save and can be deliberately removed',
+    (tester) async {
+      final repo = PhotoDraftCommunity();
+      repo.post = Adoption({
+        ...repo.post.data,
+        'personality': ['calm', 'active', 'sociable', 'independent'],
+      });
+      await startPublication(tester, repo, '/my-adoptions/post');
+      await tapPublication(tester, find.text('Continuar'));
+      await tapPublication(tester, find.text('Guardar borrador'));
+      expect(repo.savedPayload?['personality'], [
+        'calm',
+        'active',
+        'sociable',
+        'independent',
+      ]);
+      await tapPublication(
+        tester,
+        find.byKey(const ValueKey('publication-personality-active')),
+      );
+      await tapPublication(tester, find.text('Guardar borrador'));
+      expect(repo.savedPayload?['personality'], [
+        'calm',
+        'sociable',
+        'independent',
+      ]);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets(
     'publication preserves old traits and saves selected new traits',
     (tester) async {

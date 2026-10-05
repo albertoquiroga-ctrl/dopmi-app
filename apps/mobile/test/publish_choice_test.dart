@@ -100,6 +100,10 @@ void main() {
       await tester.ensureVisible(find.byType(PublishTypeCard).last);
       await tester.tap(find.byType(PublishTypeCard).last);
       await tester.pumpAndSettle();
+      expect(rescue.dashboardCalls, 0);
+      await tester.ensureVisible(find.text('Continuar'));
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
       final route = GoRouterState.of(
         tester.element(find.byType(RescueEditorScreen)),
       ).uri.toString();
@@ -124,6 +128,10 @@ void main() {
       await tester.ensureVisible(find.byType(PublishTypeCard).last);
       await tester.tap(find.byType(PublishTypeCard).last);
       await tester.pumpAndSettle();
+      expect(rescue.dashboardCalls, 0);
+      await tester.ensureVisible(find.text('Continuar'));
+      await tester.tap(find.text('Continuar'));
+      await tester.pumpAndSettle();
       expect(
         find.text('No pudimos consultar tu verificación.'),
         findsOneWidget,
@@ -135,6 +143,9 @@ void main() {
       expect(rescue.mineCalls, 0);
       await tester.ensureVisible(find.byType(PublishTypeCard).first);
       await tester.tap(find.byType(PublishTypeCard).first);
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Continuar'));
+      await tester.tap(find.text('Continuar'));
       await tester.pumpAndSettle();
       expect(
         GoRouterState.of(tester.element(find.byType(PublicationScreen)))
@@ -159,6 +170,10 @@ void main() {
         tester,
         PublishRoutingRescue('approved'),
       );
+      await tester.ensureVisible(find.byType(PublishTypeCard).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(PublishTypeCard).first);
+      await tester.pumpAndSettle();
       await tester.ensureVisible(find.text('Cancelar'));
       await tester.tap(find.text('Cancelar'));
       await tester.pumpAndSettle();
@@ -177,6 +192,9 @@ void main() {
     final container = await publishApp(tester, rescue);
     await tester.ensureVisible(find.byType(PublishTypeCard).last);
     await tester.tap(find.byType(PublishTypeCard).last);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Continuar'));
+    await tester.tap(find.text('Continuar'));
     await tester.pump();
     container.read(routerProvider).go('/my-cases');
     await tester.pumpAndSettle();

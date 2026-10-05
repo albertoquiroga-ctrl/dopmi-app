@@ -300,16 +300,16 @@ void main() {
 
   for (final bottomInset in [0.0, 24.0]) {
     testWidgets(
-      'adoption actions match rendered reference bottom gap and stay fixed on scroll: $bottomInset',
+      'adoption actions sit above the native safe area and stay fixed on scroll: $bottomInset',
       (tester) async {
         tester.view.padding = FakeViewPadding(bottom: bottomInset);
         addTearDown(tester.view.resetPadding);
         await open(tester);
-        final cta = find.widgetWithText(FilledButton, 'Quiero adoptar');
+        final cta = find.widgetWithText(FilledButton, 'Quiero saber más');
         final before = tester.getRect(cta);
-        // Rendered Source406: shell rule specificity preserves bottom gap100.
-        // Bar padding14 and safe-area remain inside that reference boundary.
-        expect(before.bottom, 852 - bottomInset - 14 - 100);
+        // Source889 fixes shell specificity: the bar reaches the viewport edge
+        // and keeps padding14 plus the native bottom safe area.
+        expect(before.bottom, 852 - bottomInset - 14);
         expect(before.height, 52);
         await tester.drag(
           find.byType(SingleChildScrollView).first,
@@ -330,8 +330,8 @@ void main() {
       await open(tester, repository: repository, initialLocation: '/adoptions');
       await tester.tap(find.text('Luna'));
       await tester.pumpAndSettle();
-      expect(find.text('3.4 km'), findsOneWidget);
-      expect(find.text('Quiero adoptar'), findsOneWidget);
+      expect(find.textContaining('3.4 km'), findsOneWidget);
+      expect(find.text('Quiero saber más'), findsOneWidget);
     },
   );
 
@@ -363,7 +363,112 @@ void main() {
       await tester.drag(find.byType(PageView), const Offset(-300, 0));
       await tester.pumpAndSettle();
       expect(find.bySemanticsLabel('Foto 2 de 2'), findsOneWidget);
+      await tester.tap(find.bySemanticsLabel('Ver foto 1'));
+      await tester.pumpAndSettle();
+      expect(find.bySemanticsLabel('Foto 1 de 2'), findsOneWidget);
       expect(repo.signed.toSet(), {'approved/one', 'approved/two'});
+      semantics.dispose();
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('a single approved photo has no carousel controls', (
+    tester,
+  ) async {
+    final repo = DetailRepository();
+    final container = ProviderContainer(
+      overrides: [communityRepositoryProvider.overrideWithValue(repo)],
+    );
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          home: Scaffold(
+            body: AdoptionDetailLayout(
+              post: Adoption({
+                ...repo.post.data,
+                'photos': ['approved/one'],
+              }),
+              saved: false,
+              busy: false,
+              owner: false,
+              favorite: () {},
+              contact: () {},
+              share: () {},
+              report: () {},
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final semantics = tester.ensureSemantics();
+    expect(find.bySemanticsLabel(RegExp(r'^Ver foto ')), findsNothing);
+    expect(find.byType(PageView), findsOneWidget);
+    expect(repo.signed.toSet(), {'approved/one'});
+    semantics.dispose();
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'preview exposes real traits and gallery with no outgoing actions',
+    (tester) async {
+      tester.view.physicalSize = const Size(377, 852);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final semantics = tester.ensureSemantics();
+      final repo = DetailRepository();
+      final container = ProviderContainer(
+        overrides: [communityRepositoryProvider.overrideWithValue(repo)],
+      );
+      addTearDown(container.dispose);
+      var calls = 0;
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            home: Scaffold(
+              body: AdoptionDetailLayout(
+                preview: true,
+                post: Adoption({
+                  ...repo.post.data,
+                  'photos': ['approved/one', 'approved/two'],
+                  'age_band': 'adult',
+                  'personality': ['playful', 'affectionate'],
+                  'coexistence': ['apartment', 'first_time'],
+                  'vaccinated': true,
+                  'sterilized': false,
+                }),
+                saved: false,
+                busy: false,
+                owner: false,
+                favorite: () => calls++,
+                contact: () => calls++,
+                share: () => calls++,
+                report: () => calls++,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Adulto'), findsOneWidget);
+      expect(find.text('Juguetón'), findsOneWidget);
+      expect(find.text('Cariñoso'), findsOneWidget);
+      expect(find.text('Ideal para departamento'), findsOneWidget);
+      expect(find.text('Ideal para primerizos'), findsOneWidget);
+      expect(find.text('Vacunado'), findsOneWidget);
+      expect(find.text('Esterilizado'), findsNothing);
+      expect(find.text('Quiero saber más'), findsNothing);
+      expect(find.byTooltip('Volver'), findsNothing);
+      expect(find.byTooltip('Guardar'), findsNothing);
+      expect(find.byTooltip('Compartir'), findsNothing);
+      await tester.drag(find.byType(PageView), const Offset(-300, 0));
+      await tester.pumpAndSettle();
+      expect(find.bySemanticsLabel('Foto 2 de 2'), findsOneWidget);
+      expect(calls, 0);
       semantics.dispose();
       expect(tester.takeException(), isNull);
     },
@@ -374,16 +479,16 @@ void main() {
   ) async {
     await open(tester, large: true);
     expect(
-      tester.getRect(find.text('Quiero adoptar')).bottom,
+      tester.getRect(find.text('Quiero saber más')).bottom,
       lessThanOrEqualTo(640),
     );
     expect(
       tester.getRect(find.byTooltip('Guardar')).bottom,
       lessThanOrEqualTo(640),
     );
-    await tester.tap(find.text('Quiero adoptar'));
+    await tester.tap(find.text('Quiero saber más'));
     await tester.pumpAndSettle();
-    expect(find.text('¿Iniciamos el proceso?'), findsOneWidget);
+    expect(find.text('Conectar con Luna'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

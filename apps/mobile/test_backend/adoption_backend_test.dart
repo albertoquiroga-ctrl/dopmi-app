@@ -280,8 +280,29 @@ void main() {
       await reader.report('adoption', post.id, 'incorrect', 'Revisar datos H9'),
       reportId,
     );
-    final thread = await reader.startThread(post.id);
+    final contacts = await Future.wait([
+      reader.startThread(post.id),
+      reader.startThread(post.id),
+    ]);
+    final thread = contacts.first;
+    expect(contacts.last, thread);
     expect(await reader.startThread(post.id), thread);
+    final intro = await author.messages(thread);
+    expect(intro, hasLength(1));
+    expect(intro.single['body'], contains('¡Hola!'));
+    expect(intro.single['body'], contains(post.name));
+    expect((await author.thread(thread))['participant_name'], isNotEmpty);
+    await expectLater(
+      stranger.thread(thread),
+      throwsA(isA<PostgrestException>()),
+    );
+    final inbox = await author.rescuerInbox(1);
+    expect(inbox.items.single['thread_count'], 1);
+    expect(inbox.items.single['unread_count'], 1);
+    expect(
+      (await author.rescuerGroupThreads(post.id, 1)).items.single['id'],
+      thread,
+    );
 
     var updates = 0;
     final cancel = author.watch(['dopmi_notifications'], () {
@@ -310,12 +331,12 @@ void main() {
       () async => updates > initialUpdates,
       diagnostics: () => 'Notification after subscription: $realtimeEvents',
     );
-    expect((await author.messages(thread)).length, 1);
+    expect((await author.messages(thread)).length, 2);
     expect(
       (await author.notifications(1)).items
           .where((n) => n['kind'] == 'message')
           .length,
-      1,
+      2,
     );
     await expectLater(
       stranger.messages(thread),

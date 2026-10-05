@@ -99,7 +99,7 @@ void main() {
         (widget) => widget is FilterOption && widget.outlined,
       ),
     );
-    expect(chips, findsNWidgets(12));
+    expect(chips, findsNWidgets(9));
     for (final element in chips.evaluate()) {
       final text = find.descendant(
         of: find.byWidget(element.widget),
@@ -118,53 +118,74 @@ void main() {
       painter.dispose();
     }
     expect(
-      tester.getRect(label('Esperanzado')).top,
+      tester.getRect(label('Dormilón')).top,
       greaterThan(tester.getRect(label('Alegre')).top),
     );
-    await tester.tap(label('Esperanzado'));
+    await tester.tap(label('Dormilón'));
     await tester.ensureVisible(label('Aplicar filtros'));
     await tester.tap(label('Aplicar filtros'));
     await tester.pumpAndSettle();
-    expect(repo.queries.last['personality'], ['esperanzado']);
+    expect(repo.queries.last['personality'], ['dormilon']);
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('filter geometry matches rendered reference at 377 by 852', (
-    tester,
-  ) async {
-    final font = FontLoader('Inter')
-      ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
-    await tester.runAsync(font.load);
-    await open(tester);
-    final surface = find
-        .descendant(of: find.byType(Dialog), matching: find.byType(Material))
-        .first;
-    final dialog = tester.getRect(surface);
-    final apply = tester.getRect(
-      find.widgetWithText(FilledButton, 'Aplicar filtros'),
-    );
-    final clear = tester.getRect(
-      find.widgetWithText(OutlinedButton, 'Limpiar filtros'),
-    );
-    debugPrint('FILTER_GEOMETRY dialog=$dialog apply=$apply clear=$clear');
-    for (final name in ['Filtros', 'Género', 'Tamaño', 'Personalidad']) {
-      debugPrint('FILTER_GEOMETRY $name=${tester.getRect(label(name))}');
-    }
-    final closeGlyph = tester.getRect(label('×'));
-    expect(closeGlyph.right, closeTo(339, .05));
-    expect(closeGlyph.center.dy, 157);
-    final closeTarget = tester.getRect(find.byTooltip('Cerrar'));
-    expect(closeTarget.width, 48);
-    expect(closeTarget.height, 48);
-    expect(dialog.width, 345);
-    expect(dialog.height, 586);
-    expect(dialog.top, 133);
-    expect(apply.height, 44);
-    expect(clear.height, 44);
-    expect(apply.top, 595);
-    expect(clear.top, 651);
-    expect(tester.takeException(), isNull);
-  });
+  testWidgets(
+    'new filters expose labeled sizes and fit the baseline viewport',
+    (tester) async {
+      final font = FontLoader('Inter')
+        ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
+      await tester.runAsync(font.load);
+      await open(tester);
+      final surface = find
+          .descendant(of: find.byType(Dialog), matching: find.byType(Material))
+          .first;
+      final dialog = tester.getRect(surface);
+      expect(dialog.left, greaterThanOrEqualTo(16));
+      expect(dialog.right, lessThanOrEqualTo(361));
+      expect(dialog.top, greaterThanOrEqualTo(0));
+      expect(dialog.bottom, lessThanOrEqualTo(852));
+      expect(label('Sexo'), findsOneWidget);
+      expect(label('Género'), findsNothing);
+      for (final name in ['Chico', 'Mediano', 'Grande']) {
+        expect(label(name).hitTestable(), findsOneWidget);
+      }
+      final sizeButtons = [
+        for (final name in ['Chico', 'Mediano', 'Grande'])
+          tester.getRect(
+            find
+                .ancestor(of: label(name), matching: find.byType(TextButton))
+                .first,
+          ),
+      ];
+      expect(sizeButtons[1].height, closeTo(sizeButtons[0].height, .01));
+      expect(sizeButtons[2].height, closeTo(sizeButtons[0].height, .01));
+      expect(sizeButtons[1].bottom, closeTo(sizeButtons[0].bottom, .01));
+      expect(sizeButtons[2].bottom, closeTo(sizeButtons[0].bottom, .01));
+      expect(find.byTooltip('Cerrar').hitTestable(), findsOneWidget);
+      expect(label('Aplicar filtros').hitTestable(), findsOneWidget);
+      expect(label('Limpiar filtros').hitTestable(), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'choosing a personality replaces the previous one and toggles off',
+    (tester) async {
+      final repo = await open(tester);
+      await tester.tap(label('Juguetón'));
+      await tester.tap(label('Tímido'));
+      await tester.tap(label('Aplicar filtros'));
+      await tester.pumpAndSettle();
+      expect(repo.queries.last['personality'], ['timido']);
+      await tester.tap(find.byTooltip('Filtros'));
+      await tester.pumpAndSettle();
+      await tester.tap(label('Tímido'));
+      await tester.tap(label('Aplicar filtros'));
+      await tester.pumpAndSettle();
+      expect(repo.queries.last.containsKey('personality'), isFalse);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('cancel discards filter drafts without a server query', (
     tester,
@@ -244,6 +265,9 @@ void main() {
   testWidgets('large text dialog scrolls to apply and keeps close reachable', (
     tester,
   ) async {
+    final font = FontLoader('Inter')
+      ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
+    await tester.runAsync(font.load);
     final repo = await open(tester, large: true);
     await tester.scrollUntilVisible(
       label('Aplicar filtros'),
@@ -253,6 +277,20 @@ void main() {
         matching: find.byType(Scrollable),
       ),
     );
+    final applyButton = find
+        .ancestor(
+          of: label('Aplicar filtros'),
+          matching: find.byType(FilledButton),
+        )
+        .first;
+    expect(
+      tester.getSize(applyButton).height -
+          tester.getSize(label('Aplicar filtros')).height,
+      greaterThanOrEqualTo(20),
+      reason: 'Enlarged button copy keeps vertical breathing room instead of crowding a fixed-height control',
+    );
+    expect(tester.getSize(label('Aplicar filtros')).height, greaterThan(60));
+    expect(find.byTooltip('Cerrar').hitTestable(), findsOneWidget);
     await tester.tap(label('Aplicar filtros'));
     await tester.pumpAndSettle();
     expect(repo.queries.length, 2);

@@ -2,6 +2,8 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/communication/message_screens.dart';
 import 'package:dopmi_mobile/features/communication/notification_frame.dart';
 import 'package:dopmi_mobile/features/communication/notification_tile.dart';
+import 'package:dopmi_mobile/features/identity/identity_controller.dart';
+import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -10,6 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 import 'community_test.dart' show FakeCommunity;
+import 'fake_identity_repository.dart';
 
 class NotificationCommunity extends FakeCommunity {
   bool fail = true;
@@ -58,6 +61,13 @@ class PagedNotifications extends NotificationCommunity {
 }
 
 void main() {
+  FakeIdentityRepository signedInDonor() {
+    final identity = FakeIdentityRepository()
+      ..user = const Identity('one', 'fixture@example.test', verified: true);
+    addTearDown(() async => identity.changes.close());
+    return identity;
+  }
+
   testWidgets(
     'compact time exposes the precise date without opening the notice',
     (tester) async {
@@ -177,6 +187,7 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
     final repo = PagedNotifications();
+    final identity = signedInDonor();
     final router = GoRouter(
       initialLocation: '/notifications',
       routes: [
@@ -189,7 +200,10 @@ void main() {
     addTearDown(router.dispose);
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [communityRepositoryProvider.overrideWithValue(repo)],
+        overrides: [
+          communityRepositoryProvider.overrideWithValue(repo),
+          identityRepositoryProvider.overrideWithValue(identity),
+        ],
         child: MaterialApp.router(routerConfig: router),
       ),
     );
@@ -231,6 +245,7 @@ void main() {
         addTearDown(tester.view.resetDevicePixelRatio);
         addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
         final repo = NotificationCommunity();
+        final identity = signedInDonor();
         final destinations = <String>[];
         final router = GoRouter(
           initialLocation: '/notifications',
@@ -256,7 +271,10 @@ void main() {
         addTearDown(router.dispose);
         await tester.pumpWidget(
           ProviderScope(
-            overrides: [communityRepositoryProvider.overrideWithValue(repo)],
+            overrides: [
+              communityRepositoryProvider.overrideWithValue(repo),
+              identityRepositoryProvider.overrideWithValue(identity),
+            ],
             child: MaterialApp.router(routerConfig: router),
           ),
         );

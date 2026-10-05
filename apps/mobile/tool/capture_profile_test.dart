@@ -1,4 +1,5 @@
 import 'package:dopmi_mobile/features/communication/notification_tile.dart';
+import 'package:dopmi_mobile/features/adoption/publication_frame.dart';
 
 import 'dart:async';
 import 'dart:convert';
@@ -6,7 +7,6 @@ import 'dart:convert';
 import '../test/notifications_test.dart' show NotificationCommunity;
 
 import 'package:dopmi_mobile/features/communication/match_thread_row.dart';
-import 'package:dopmi_mobile/core/reference_focus_outline.dart';
 import 'package:dopmi_mobile/features/rescue/support_home.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_activity.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_metrics.dart';
@@ -51,7 +51,8 @@ import 'package:dopmi_mobile/features/profile/account_photo_repository.dart';
 
 import '../test/rescue_test.dart' show FakeRescue, FakeCaseUpdates;
 import '../test/rescuer_pending_evidence_test.dart' show PendingEvidenceRescue;
-import '../test/case_publication_test.dart' show DraftCaseRescue;
+import '../test/case_publication_test.dart'
+    show DraftCaseRescue, expenseFixture;
 import '../test/expense_field_test.dart'
     show DraftExpenseRescue, SubmittedExpenseRescue;
 import '../test/payments_test.dart' show FakePayments;
@@ -215,40 +216,57 @@ class OwnedHistoryCaptureUpdates extends FakeCaseUpdates {
       'https://fixture.example.test/story/$path.png';
 }
 
+class PublicationCaptureCommunity extends DetailCaptureCommunity {
+  @override
+  Future<Json?> publicProfile(String id) async => {
+    'id': id,
+    'name': 'María Rescatista',
+    'verified': true,
+  };
+}
+
 class CasePublicationCaptureRescue extends DraftCaseRescue {
-  CasePublicationCaptureRescue({this.withNeeds = false, this.nameless = false});
-  final bool withNeeds, nameless;
+  CasePublicationCaptureRescue({
+    this.withNeeds = false,
+    this.nameless = false,
+    this.withGrid = false,
+  }) {
+    if (withNeeds) {
+      expenses = [
+        RescueRecord({
+          ...expenseFixture().data,
+          'id': 'expense-vet',
+          'public_data': {
+            'title': 'Consulta veterinaria',
+            'category': 'veterinary',
+            'description': 'Consulta y diagnóstico',
+            'round_label': '',
+          },
+          'private_data': {
+            ...expenseFixture().privateData,
+            'amount_cents': '25000',
+          },
+        }),
+      ];
+    }
+  }
+  final bool withNeeds, nameless, withGrid;
   @override
   Future<Json> detail(String id) async {
     final data = await super.detail(id);
-    if (withNeeds || nameless) {
-      final record = Json.from(data['record'] as Map);
-      record['public_data'] = {
-        ...Json.from(record['public_data'] as Map),
-        if (nameless) 'pet_name': '',
-        if (withNeeds)
-          'need_items': [
-            {
-              'id': '11111111-1111-4111-8111-111111111111',
-              'type': 'medicine',
-              'title': 'Medicina prescrita',
-              'amount_cents': 12345,
-              'detail': 'Tratamiento indicado para su recuperación.',
-              'urgent': true,
-            },
-            {
-              'id': '22222222-2222-4222-8222-222222222222',
-              'type': 'veterinary',
-              'title': 'Consulta veterinaria',
-              'amount_cents': 70000,
-              'detail': '',
-              'urgent': false,
-            },
-          ],
-      };
-      return {...data, 'record': record};
+    final record = Json.from(data['record'] as Map);
+    record['public_data'] = {
+      ...Json.from(record['public_data'] as Map),
+      'sex': 'female',
+      if (nameless) 'pet_name': '',
+    };
+    if (withGrid) {
+      record['files'] = [
+        for (var i = 0; i < 6; i++)
+          {'role': 'public', 'path': 'one/case-one/photo-$i.jpg'},
+      ];
     }
-    return data;
+    return {...data, 'record': record};
   }
 
   @override
@@ -718,12 +736,29 @@ class DetailCaptureCommunity extends FakeCommunity {
   Future<Json?> publicProfile(String id) async => {'verified': true};
 }
 
+// Source889's four distinct publications use three existing public image
+// assets. This client remains scoped to adoption capture fixtures only.
+class AdoptionReferencePhotoClient extends FixturePhotoClient {
+  AdoptionReferencePhotoClient(this.photos) : super(photos['rocky.png']!);
+  final Map<String, Uint8List> photos;
+  @override
+  Future<HttpClientRequest> getUrl(Uri url) =>
+      FixturePhotoClient(photos[url.pathSegments.last] ?? bytes).getUrl(url);
+}
+
+class RescuerInboxCaptureCommunity extends DetailCaptureCommunity {
+  @override
+  Future<int> unreadNotificationCount() async => 2;
+}
+
 class ChatHeaderCaptureCommunity extends DetailCaptureCommunity {
+  ChatHeaderCaptureCommunity({this.participant = 'Patricia V.'});
+  final String participant;
   @override
   Future<Json> thread(String id) async => {
     'id': id,
     'pet_name': 'Luna',
-    'participant_name': 'Patricia V.',
+    'participant_name': participant,
     'post_id': 'post',
     'status': 'active',
   };
@@ -858,6 +893,14 @@ void main() {
     final fixturePhoto = await tester.runAsync(
       () => File('tool/fixtures/rocky.png').readAsBytes(),
     );
+    final adoptionReferencePhotos = await tester.runAsync(
+      () async => <String, Uint8List>{
+        'rocky.png': fixturePhoto!,
+        'toby.png': await File('assets/onboarding/toby.png').readAsBytes(),
+        'luna-card.png': await File('assets/onboarding/luna-card.png')
+            .readAsBytes(),
+      },
+    );
     debugNetworkImageHttpClientProvider = () =>
         FixturePhotoClient(fixturePhoto!);
     addTearDown(() => debugNetworkImageHttpClientProvider = null);
@@ -877,6 +920,9 @@ void main() {
       ('adoption-contact-large', '/adoptions'),
       ('adoption-detail', '/adoptions/post'),
       ('adoption-detail-large', '/adoptions/post'),
+      ('adoption-detail-bottom', '/adoptions/post'),
+      ('adoption-detail-contact', '/adoptions/post'),
+      ('adoption-detail-contact-large', '/adoptions/post'),
       ('adoption-empty', '/adoptions'),
       ('adoption-empty-large', '/adoptions'),
       ('adoption-empty-wide-large', '/adoptions'),
@@ -1218,8 +1264,16 @@ void main() {
       ('about-large', '/about'),
       ('transparency', '/transparency'),
       ('transparency-criteria', '/transparency'),
+      ('rescuer-notifications', '/notifications'),
+      ('rescuer-notifications-large', '/notifications'),
+      ('rescuer-help', '/help'),
+      ('rescuer-help-large', '/help'),
       ('publish-choice', '/publish'),
       ('publish-choice-large', '/publish'),
+      ('publish-choice-adoption', '/publish'),
+      ('publish-choice-adoption-large', '/publish'),
+      ('publish-choice-donation', '/publish'),
+      ('publish-choice-donation-large', '/publish'),
       ('managed-updates', '/rescue-cases/case-one/updates'),
       ('managed-updates-large', '/rescue-cases/case-one/updates'),
       ('managed-updates-empty', '/rescue-cases/case-one/updates'),
@@ -1295,6 +1349,9 @@ void main() {
       ('publish-review-social-large', '/my-adoptions/post'),
       ('publish-health', '/my-adoptions/post'),
       ('publish-health-large', '/my-adoptions/post'),
+      ('publish-personality', '/my-adoptions/post'),
+      ('publish-coexistence', '/my-adoptions/post'),
+      ('publish-preview-gallery', '/my-adoptions/post'),
       ('expense-submitted', '/rescue/expense-one'),
       ('expense-submitted-large', '/rescue/expense-one'),
       ('expense-submitted-footer-large', '/rescue/expense-one'),
@@ -1304,8 +1361,6 @@ void main() {
       ('case-publication-large', '/rescue/new?kind=case'),
       ('case-publication-information-nameless', '/rescue/case-one'),
       ('case-publication-information-nameless-large', '/rescue/case-one'),
-      ('case-publication-review-nameless', '/rescue/case-one'),
-      ('case-publication-review-nameless-large', '/rescue/case-one'),
       ('case-publication-needs-list', '/rescue/case-one'),
       ('case-publication-needs-list-large', '/rescue/case-one'),
       ('case-publication-review-list', '/rescue/case-one'),
@@ -1324,6 +1379,7 @@ void main() {
       ('case-publication-information-large', '/rescue/case-one'),
       ('case-publication-grid', '/rescue/case-one'),
       ('case-publication-grid-large', '/rescue/case-one'),
+      ('case-publication-preview-gallery', '/rescue/case-one'),
       ('expense-record', '/rescue/expense-one'),
       ('expense-record-large', '/rescue/expense-one'),
       ('expense-review', '/rescue/expense-one'),
@@ -1359,7 +1415,12 @@ void main() {
       ('verification-review-large', '/rescue/verification-id'),
     ]) {
       const captureFilter = String.fromEnvironment('CAPTURE_FILTER');
-      if (captureFilter.isNotEmpty && !spec.$1.startsWith(captureFilter)) {
+      final prefixes = captureFilter
+          .split(',')
+          .map((value) => value.trim())
+          .where((value) => value.isNotEmpty);
+      if (prefixes.isNotEmpty &&
+          !prefixes.any((value) => spec.$1.startsWith(value))) {
         continue;
       }
       expect(
@@ -1392,6 +1453,16 @@ void main() {
       final repo = FakeIdentityRepository()
         ..user = const Identity('one', 'fixture@example.test', verified: true);
       await repo.saveProfile(name: 'Ana', phone: '', city: 'Monterrey, NL');
+      if (spec.$1.startsWith('profile-overview') ||
+          spec.$1.startsWith('basic-info')) {
+        repo.user = const Identity('one', 'ana@example.test', verified: true);
+        await repo.saveAccountNames(
+          firstName: 'Ana',
+          lastName: 'García',
+          phone: '+52 55 0000 0000',
+          city: 'Monterrey, NL',
+        );
+      }
       if (spec.$1.startsWith('account-access-consent')) {
         repo.profile = const Profile(
           id: 'one',
@@ -1419,16 +1490,22 @@ void main() {
           city: 'Ciudad de México, CDMX',
         );
       }
+      final sourceAdoptionReference =
+          spec.$1.startsWith('adoption-') &&
+          !spec.$1.startsWith('adoption-empty') &&
+          !spec.$1.startsWith('adoption-support');
       final large = spec.$1.endsWith('-large');
       tester.view.physicalSize = large && spec.$1 != 'adoption-empty-wide-large'
           ? const Size(320, 640)
-          : (spec.$1 == 'rescuer-profile-reference-wide' ||
-                spec.$1.startsWith('rescuer-messages'))
+          : spec.$1 == 'rescuer-profile-reference-wide'
           ? const Size(384, 852)
           : const Size(377, 852);
       tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-      if (spec.$1.startsWith('adoption-support')) {
+      if (sourceAdoptionReference || spec.$1.startsWith('rescuer-messages')) {
+        debugNetworkImageHttpClientProvider = () =>
+            AdoptionReferencePhotoClient(adoptionReferencePhotos!);
+      } else if (spec.$1.startsWith('adoption-support')) {
         final milo = await tester.runAsync(
           () => File('tool/fixtures/milo.png').readAsBytes(),
         );
@@ -1515,7 +1592,13 @@ void main() {
           },
         };
       }
-      final community = spec.$1.startsWith('my-adoptions')
+      final community = spec.$1.startsWith('case-publication')
+          ? PublicationCaptureCommunity()
+          : spec.$1.startsWith('rescuer-messages')
+          ? RescuerInboxCaptureCommunity()
+          : spec.$1 == 'chat-bubbles-rescuer'
+          ? ChatHeaderCaptureCommunity(participant: 'Ana P.')
+          : spec.$1.startsWith('my-adoptions')
           ? MyAdoptionsCaptureCommunity(
               empty: spec.$1.contains('empty'),
               fail: spec.$1.contains('error'),
@@ -1526,7 +1609,8 @@ void main() {
           ? SavedRescuerCommunity()
           : spec.$1.startsWith('saved-adoptions-empty')
           ? (FakeCommunity()..savedItems = [])
-          : spec.$1 == 'notifications-source'
+          : spec.$1 == 'notifications-source' ||
+                spec.$1.startsWith('rescuer-notifications')
           ? NotificationSourceCaptureCommunity()
           : spec.$1.startsWith('notifications-reference-kinds')
           ? NotificationKindsCaptureCommunity()
@@ -1541,16 +1625,16 @@ void main() {
           ? ChatHeaderCaptureCommunity()
           : spec.$1.startsWith('impact-feed')
           ? ImpactCaptureCommunity(spec.$1.contains('empty'))
-          : (spec.$1 == 'adoption-swipe' ||
-                spec.$1 == 'adoption-large' ||
-                spec.$1.startsWith('adoption-detail') ||
-                spec.$1 == 'adoption-end' ||
+          : (sourceAdoptionReference ||
                 spec.$1.startsWith('adoption-support') ||
                 spec.$1.startsWith('match-threads-photo') ||
                 (spec.$1.startsWith('publish-photo-grid') ||
                     (spec.$1.startsWith('publish-information') ||
                         spec.$1.startsWith('publish-review') ||
-                        spec.$1.startsWith('publish-health'))))
+                        spec.$1.startsWith('publish-health') ||
+                        spec.$1.startsWith('publish-personality') ||
+                        spec.$1.startsWith('publish-coexistence') ||
+                        spec.$1.startsWith('publish-preview-gallery'))))
           ? DetailCaptureCommunity()
           : spec.$1.startsWith('public-profile-state')
           ? PublicProfileStateCaptureCommunity(
@@ -1570,35 +1654,82 @@ void main() {
       if ((spec.$1.startsWith('publish-photo-grid') ||
           (spec.$1.startsWith('publish-information') ||
               spec.$1.startsWith('publish-review') ||
-              spec.$1.startsWith('publish-health')))) {
+              spec.$1.startsWith('publish-health') ||
+              spec.$1.startsWith('publish-personality') ||
+              spec.$1.startsWith('publish-coexistence') ||
+              spec.$1.startsWith('publish-preview-gallery')))) {
         community.post = Adoption({
           ...community.post.data,
           'status': 'draft',
-          'photos': ['fixture/one', 'fixture/two'],
+          'photos': ['fixture/one', 'fixture/two', 'fixture/three'],
+          'publisher_name': 'María Rescatista',
+          'age_band': 'adult',
+          'personality': ['alegre', 'affectionate', 'obediente'],
+          'coexistence': ['children', 'pets', 'apartment'],
+          'vaccinated': true,
+          'sterilized': true,
         });
       }
-      if ((spec.$1 == 'adoption-swipe' ||
-          spec.$1 == 'adoption-large' ||
-          spec.$1.startsWith('adoption-detail') ||
-          spec.$1 == 'adoption-end')) {
+      if (sourceAdoptionReference) {
+        // Public Source889 sample data only, never an installed account.
         community.post = Adoption({
           ...community.post.data,
           'pet_name': 'Rocky',
           'publisher_name': 'Patricia V.',
           'sex': 'male',
           'size': 'large',
+          'age_band': 'adult',
           'region': 'MX',
           'distance_km': 3.4,
           'story': 'Rescatado de la calle el mes pasado. Muy amistoso y listo para encontrar hogar.',
-          'photos': ['fixture/one', 'fixture/two', 'fixture/three'],
-          'saved': true,
+          'photos': ['fixture/rocky.png'],
+          'personality': ['alegre', 'playful'],
+          'coexistence': ['children', 'pets', 'yard'],
+          'vaccinated': true,
+          'sterilized': true,
+          'special_care': '',
+          'saved': false,
         });
-      }
-      if (spec.$1 == 'adoption-drag') {
-        // The actual deck includes a second card beneath a drag.
         community.discoveryItems = [
           community.post,
-          Adoption({...community.post.data, 'id': 'next', 'pet_name': 'Milo'}),
+          Adoption({
+            ...community.post.data,
+            'id': 'toby',
+            'pet_name': 'Toby',
+            'sex': 'male',
+            'size': 'medium',
+            'publisher_name': 'Diego F.',
+            'city': 'Querétaro',
+            'photos': ['fixture/toby.png'],
+            'personality': ['tranquilo', 'affectionate'],
+            'coexistence': ['children', 'pets', 'apartment', 'first_time'],
+            'sterilized': false,
+            'story': 'Entregado por su familia. Sano, tranquilo y listo para adopción.',
+          }),
+          Adoption({
+            ...community.post.data,
+            'id': 'canela',
+            'pet_name': 'Canela',
+            'sex': 'female',
+            'size': 'small',
+            'age_band': 'puppy',
+            'publisher_name': 'María R.',
+            'photos': ['fixture/luna-card.png'],
+            'coexistence': ['children', 'pets', 'apartment'],
+            'sterilized': false,
+            'story': 'Cachorra juguetona, ya vacunada y lista para crecer con una familia paciente.',
+          }),
+          Adoption({
+            ...community.post.data,
+            'id': 'bruno',
+            'pet_name': 'Bruno',
+            'age_band': 'senior',
+            'publisher_name': 'Diego F.',
+            'city': 'Apodaca',
+            'personality': ['tranquilo', 'obediente'],
+            'coexistence': ['children', 'yard', 'experienced'],
+            'story': 'Tranquilo y noble. Ideal para casa con patio y paseos diarios.',
+          }),
         ];
       }
       if (spec.$1 == 'profile-overview-active' ||
@@ -1625,6 +1756,8 @@ void main() {
           spec.$1.startsWith('public-profile-editor') ||
           spec.$1.startsWith('rescuer-settings') ||
           spec.$1.startsWith('help-center-support-rescuer') ||
+          spec.$1.startsWith('rescuer-notifications') ||
+          spec.$1.startsWith('rescuer-help') ||
           spec.$1.startsWith('case-publication') ||
           spec.$1.startsWith('publish-') ||
           spec.$1.startsWith('verification-') ||
@@ -1638,18 +1771,31 @@ void main() {
             : [
                 {
                   'id': 'thread-one',
-                  'participant_name': 'Ana Patricia Hernandez',
-                  'updated_at': '2025-09-30T18:30:00Z',
+                  'participant_name': 'Ana P.',
                   'pet_name': 'Luna',
-                  'last_message': 'Perfecto. Nos vemos el fin de semana.',
-                  'unread_count': 3,
+                  'last_message': 'Perfecto. ¿Cuándo podrías visitarla?',
+                  'photo_path': 'fixture/luna-card.png',
+                  'photo': 'https://fixture.invalid/luna-card.png',
+                  'unread_count': 1,
+                  'status': 'active',
+                },
+                {
+                  'id': 'thread-luna-two',
+                  'participant_name': 'Sofía L.',
+                  'pet_name': 'Luna',
+                  'photo_path': 'fixture/luna-card.png',
+                  'photo': 'https://fixture.invalid/luna-card.png',
+                  'last_message': '¿Sigue disponible para visitas?',
+                  'unread_count': 0,
                   'status': 'active',
                 },
                 {
                   'id': 'thread-two',
                   'participant_name': 'Carlos M.',
                   'pet_name': 'Rocky',
-                  'last_message': 'Puedo visitarlo este fin de semana?',
+                  'last_message': '¿Puedo visitarlo este fin de semana?',
+                  'photo_path': 'fixture/rocky.png',
+                  'photo': 'https://fixture.invalid/rocky.png',
                   'unread_count': 0,
                   'status': 'active',
                 },
@@ -1701,8 +1847,12 @@ void main() {
           if (spec.$1.startsWith('case-publication'))
             rescueRepositoryProvider.overrideWithValue(
               CasePublicationCaptureRescue(
-                withNeeds: spec.$1.contains('-list'),
+                withNeeds:
+                    spec.$1.contains('-list') ||
+                    spec.$1.startsWith('case-publication-review'),
                 nameless: spec.$1.contains('-nameless'),
+                withGrid:
+                    spec.$1.contains('-grid') || spec.$1.contains('-gallery'),
               ),
             ),
           if (spec.$1.startsWith('expense-'))
@@ -2199,15 +2349,17 @@ void main() {
       }
       if (spec.$1 == 'basic-info-validation') {
         await tester.enterText(find.byType(TextFormField).first, '');
+        await tester.pump();
+        final save = find.widgetWithText(FilledButton, 'Guardar cambios');
+        expect(tester.widget<FilledButton>(save).onPressed, isNull);
+        await tester.enterText(find.byType(TextFormField).first, 'Ana');
         await tester.enterText(
           find.byType(TextFormField).at(2),
           'correo inválido',
         );
-        final save = find.widgetWithText(FilledButton, 'Guardar cambios');
         await tester.ensureVisible(save);
         await tester.tap(save);
         await tester.pumpAndSettle();
-        expect(find.text('Escribe tu nombre.'), findsOneWidget);
         expect(
           find.text('Escribe un correo electrónico válido.'),
           findsOneWidget,
@@ -2348,7 +2500,7 @@ void main() {
       }
       if (spec.$1 == 'support-home-empty') {
         expect(
-          tester.getTopLeft(find.text('Sé un Guardián')).dy,
+          tester.getTopLeft(find.text('Apoya a casos urgentes').first).dy,
           closeTo(136.8, 1),
         );
         expect(
@@ -2718,8 +2870,44 @@ void main() {
         );
       }
       if (spec.$1 == 'adoption-end') {
-        await tester.tap(find.byTooltip('Pasar'));
-        await tester.pumpAndSettle();
+        expect(community.discoveryItems!.length, 4);
+        expect(
+          community.discoveryItems!.map((post) => post.id).toSet().length,
+          4,
+        );
+        for (var i = 0; i < 4; i++) {
+          await tester.tap(find.byTooltip('Pasar'));
+          await tester.pumpAndSettle();
+        }
+        expect(
+          find.text('Nuestra manada llegó hasta aquí por ahora'),
+          findsOneWidget,
+        );
+        final title = find.text('Nuestra manada llegó hasta aquí por ahora');
+        final card = tester.getRect(
+          find.ancestor(of: title, matching: find.byType(DecoratedBox)).first,
+        );
+        await tester.runAsync(
+          () => File('${out.path}/adoption-end-source889-metrics.json')
+              .writeAsString(
+                jsonEncode({
+                  'source_sha': '889c096ade9479b348530db7ba169f023b472ab9',
+                  'publications': ['Rocky', 'Toby', 'Canela', 'Bruno'],
+                  'photos': [
+                    'rocky.png',
+                    'toby.png',
+                    'luna-card.png',
+                    'rocky.png',
+                  ],
+                  'card': {
+                    'x': card.left,
+                    'y': card.top,
+                    'width': card.width,
+                    'height': card.height,
+                  },
+                }),
+              ),
+        );
       }
       if (spec.$1.startsWith('adoption-contact')) {
         await Scrollable.ensureVisible(
@@ -2733,20 +2921,106 @@ void main() {
       if (spec.$1.startsWith('adoption-filters')) {
         await tester.tap(find.byTooltip('Filtros'));
         await tester.pumpAndSettle();
-        if (spec.$1 == 'adoption-filters') {
-          await tester.tap(
+        for (final label in const [
+          'Alegre',
+          'Juguetón',
+          'Tranquilo',
+          'Nervioso',
+          'Dormilón',
+          'Protector',
+          'Obediente',
+          'Cariñoso',
+          'Tímido',
+        ]) {
+          expect(
             find.descendant(
               of: find.byType(Dialog),
-              matching: find.text('Hembra'),
+              matching: find.text(label),
             ),
+            findsOneWidget,
           );
-          await tester.tap(find.byTooltip('Mediano'));
+        }
+        if (large) {
+          await tester.ensureVisible(find.text('Limpiar filtros'));
           await tester.pumpAndSettle();
         }
+        final dialog = tester.getRect(
+          find
+              .descendant(
+                of: find.byType(Dialog),
+                matching: find.byType(Material),
+              )
+              .first,
+        );
+        await tester.runAsync(
+          () => File('${out.path}/${spec.$1}-source889-metrics.json')
+              .writeAsString(
+                jsonEncode({
+                  'source_sha': '889c096ade9479b348530db7ba169f023b472ab9',
+                  'personality_count': 9,
+                  'dialog': {
+                    'x': dialog.left,
+                    'y': dialog.top,
+                    'width': dialog.width,
+                    'height': dialog.height,
+                  },
+                }),
+              ),
+        );
+      }
+      if (spec.$1.startsWith('adoption-detail')) {
+        for (final label in const [
+          'Rocky',
+          'Adulto',
+          'Alegre',
+          'Juguetón',
+          'Social con niños',
+          'Social con otras mascotas',
+          'Necesita patio',
+          'Vacunado',
+          'Esterilizado',
+        ]) {
+          expect(find.text(label), findsOneWidget);
+        }
+        final cta = find.widgetWithText(FilledButton, 'Quiero saber más');
+        expect(cta, findsOneWidget);
+        final ctaRect = tester.getRect(cta);
+        expect(ctaRect.bottom, (large ? 640 : 852) - 14);
+        if (spec.$1 == 'adoption-detail-bottom' ||
+            spec.$1.startsWith('adoption-detail-contact')) {
+          await tester.ensureVisible(find.text('Reportar publicación'));
+          await tester.pumpAndSettle();
+        }
+        if (spec.$1.startsWith('adoption-detail-contact')) {
+          await tester.tap(cta);
+          await tester.pumpAndSettle();
+          expect(find.text('Conectar con Rocky'), findsOneWidget);
+          if (large) {
+            await tester.ensureVisible(find.text('Sí, contactar rescatista'));
+            await tester.pumpAndSettle();
+          }
+        }
+        await tester.runAsync(
+          () =>
+              File('${out.path}/${spec.$1}-source889-metrics.json')
+                  .writeAsString(
+                    jsonEncode({
+                      'source_sha': '889c096ade9479b348530db7ba169f023b472ab9',
+                      'fixture': 'rocky/male/large/adult/alegre+playful/children+pets+yard',
+                      'photo_count': community.post.photos.length,
+                      'contact': {
+                        'x': ctaRect.left,
+                        'y': ctaRect.top,
+                        'width': ctaRect.width,
+                        'height': ctaRect.height,
+                      },
+                    }),
+                  ),
+        );
       }
       if (spec.$1 == 'adoption-drag') {
         final gesture = await tester.startGesture(
-          tester.getCenter(find.text('Luna')),
+          tester.getCenter(find.text('Rocky')),
         );
         await gesture.moveBy(const Offset(65, 0));
         await tester.pump();
@@ -3102,64 +3376,70 @@ void main() {
         );
         await tester.pumpAndSettle();
       }
-      if ((spec.$1.startsWith('publish-information') ||
-          spec.$1.startsWith('publish-review') ||
-          spec.$1.startsWith('publish-health'))) {
+      Future<void> publicationNext() async {
+        await tester.ensureVisible(find.text('Continuar'));
+        await tester.pumpAndSettle();
         await tester.tap(find.text('Continuar'));
         await tester.pumpAndSettle();
-        if (large) {
-          await Scrollable.ensureVisible(
-            tester.element(find.text('Sexo')),
-            alignment: 0,
-          );
-          await tester.pumpAndSettle();
-        }
       }
-      if (spec.$1.startsWith('publish-review')) {
-        await tester.tap(find.text('Continuar'));
-        await tester.pumpAndSettle();
-        await Scrollable.ensureVisible(
-          tester.element(find.text('Información básica')),
-          alignment: 0,
+
+      if (spec.$1.startsWith('publish-choice-adoption') ||
+          spec.$1.startsWith('publish-choice-donation')) {
+        final orb = find.text(
+          spec.$1.contains('-adoption') ? 'Dar en adopción' : 'Recibir Apoyo',
         );
+        await tester.ensureVisible(orb);
         await tester.pumpAndSettle();
+        await tester.tap(orb);
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('publish-photo-grid') ||
+          spec.$1.startsWith('publish-review') ||
+          spec.$1.startsWith('publish-health') ||
+          spec.$1.startsWith('publish-personality') ||
+          spec.$1.startsWith('publish-coexistence') ||
+          spec.$1.startsWith('publish-preview-gallery')) {
+        await publicationNext();
+      }
+      if (spec.$1.startsWith('publish-review') ||
+          spec.$1.startsWith('publish-preview-gallery')) {
+        await publicationNext();
       }
       if (spec.$1.startsWith('publish-review-social')) {
         await Scrollable.ensureVisible(
-          tester.element(find.text('Social')),
-          alignment: 0,
-        );
-        await tester.pumpAndSettle();
-      }
-      if (spec.$1 == 'publish-review-social-large') {
-        await Scrollable.ensureVisible(
-          tester.element(
-            find.byKey(
-              const ValueKey('publication-review-trait-social_children'),
-            ),
-          ),
-          alignment: 1,
+          tester.element(find.text('Convivencia y hogar')),
+          alignment: .1,
         );
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('publish-health')) {
         await Scrollable.ensureVisible(
-          tester.element(
-            find.text(large ? 'Requiere cuidados especiales' : 'Salud'),
-          ),
-          alignment: 0,
+          tester.element(find.text('Salud').first),
+          alignment: .1,
         );
         await tester.pumpAndSettle();
       }
-      if (spec.$1.startsWith('case-publication-needs')) {
-        for (var i = 0; i < 2; i++) {
-          await tester.tap(find.text('Continuar'));
-          await tester.pumpAndSettle();
-        }
+      if (spec.$1.startsWith('publish-personality')) {
+        await Scrollable.ensureVisible(
+          tester.element(find.text('Personalidad')),
+          alignment: .1,
+        );
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('publish-coexistence')) {
+        await Scrollable.ensureVisible(
+          tester.element(find.text('Convivencia y hogar')),
+          alignment: .1,
+        );
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('case-publication-needs') ||
+          spec.$1.startsWith('case-publication-grid')) {
+        await publicationNext();
       }
       for (final entry in {
         'medicine': 'Medicina',
-        'food': 'Comida',
+        'food': 'Alimento',
         'veterinary': 'Veterinario',
       }.entries) {
         if (spec.$1.startsWith('case-publication-needs-${entry.key}')) {
@@ -3170,33 +3450,63 @@ void main() {
           await tester.pumpAndSettle();
         }
       }
-      if (spec.$1.startsWith('case-publication-review')) {
-        for (var i = 0; i < 3; i++) {
-          await tester.tap(
-            find.text(i == 2 ? 'Continuar a revisión' : 'Continuar'),
-          );
+      if (spec.$1.startsWith('case-publication-review') ||
+          spec.$1.startsWith('case-publication-preview-gallery')) {
+        for (var i = 0; i < 2; i++) {
+          await publicationNext();
+        }
+      }
+      if (spec.$1.startsWith('case-publication-needs-list')) {
+        await tester.ensureVisible(find.text('Consulta veterinaria'));
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('case-publication-grid')) {
+        final extraPhotos = find.text('Fotos adicionales (opcional)');
+        await tester.ensureVisible(extraPhotos);
+        await tester.pumpAndSettle();
+        await tester.tap(extraPhotos);
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text('Complementa sus fotos'));
+        await tester.pumpAndSettle();
+      }
+      if (large &&
+          (spec.$1.startsWith('publish-review') ||
+              spec.$1.startsWith('case-publication-review'))) {
+        final frame = find.byType(PublicationPreviewFrame);
+        await tester.ensureVisible(frame);
+        await tester.pumpAndSettle();
+        final petName = find.descendant(
+          of: frame,
+          matching: find.text(spec.$1.startsWith('publish-') ? 'Luna' : 'Mora'),
+        );
+        await Scrollable.ensureVisible(tester.element(petName), alignment: .15);
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.startsWith('publish-preview-gallery') ||
+          spec.$1.startsWith('case-publication-preview-gallery')) {
+        final dot = find.bySemanticsLabel(RegExp(r'^Foto 2 de '));
+        final handle = tester.ensureSemantics();
+        await tester.pump();
+        final available = dot.evaluate().isNotEmpty;
+        if (available) {
+          await tester.ensureVisible(dot);
+          await tester.pumpAndSettle();
+          await tester.tap(dot);
           await tester.pumpAndSettle();
         }
+        handle.dispose();
       }
-      if (spec.$1.contains('-list')) {
-        await tester.ensureVisible(find.text('Medicina prescrita'));
-        await tester.pumpAndSettle();
-      }
-      if (spec.$1.startsWith('case-publication-information')) {
-        await tester.tap(find.text('Continuar'));
-        await tester.pumpAndSettle();
-        if (spec.$1 == 'case-publication-information') {
-          final fields = <String, Object?>{};
-          for (final key in ['pet_name', 'age', 'story']) {
-            final target = find.byKey(ValueKey('case-field-$key'));
-            final rect = tester.getRect(target);
-            fields[key] = {'width': rect.width, 'height': rect.height};
-          }
-          await tester.runAsync(() async {
-            await File('${out.path}/case-information-metrics.json')
-                .writeAsString(jsonEncode(fields));
-          });
+      if (spec.$1 == 'case-publication-information') {
+        final fields = <String, Object?>{};
+        for (final key in ['pet_name', 'story']) {
+          final target = find.byKey(ValueKey('case-field-$key'));
+          final rect = tester.getRect(target);
+          fields[key] = {'width': rect.width, 'height': rect.height};
         }
+        await tester.runAsync(() async {
+          await File('${out.path}/case-information-metrics.json')
+              .writeAsString(jsonEncode(fields));
+        });
       }
       if (spec.$1.startsWith('expense-review')) {
         for (var i = 0; i < 3; i++) {
@@ -3403,23 +3713,12 @@ void main() {
         );
       }
       if (spec.$1.startsWith('case-publication-header-focus')) {
-        final header = find.byKey(const ValueKey('publication-header-back'));
-        final focusScope = find.ancestor(
-          of: header,
-          matching: find.byType(ReferenceFocusOutline),
-        );
-        final outline = find.descendant(
-          of: focusScope,
-          matching: find.byKey(const ValueKey('reference-keyboard-outline')),
-        );
-        for (var i = 0; i < 12 && outline.evaluate().isEmpty; i++) {
-          await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-          await tester.pump();
-        }
-        expect(outline, findsOneWidget);
-        await Scrollable.ensureVisible(tester.element(header), alignment: .1);
+        final name = find.byKey(const ValueKey('case-field-pet_name'));
+        await tester.ensureVisible(name);
         await tester.pumpAndSettle();
-        expect(tester.getRect(outline), tester.getRect(header).inflate(5));
+        await tester.tap(name);
+        await tester.pumpAndSettle();
+        expect(tester.testTextInput.isVisible, isTrue);
       }
       if (spec.$1 != 'adoption-drag') {
         if (spec.$1 == 'rescuer-settings') {

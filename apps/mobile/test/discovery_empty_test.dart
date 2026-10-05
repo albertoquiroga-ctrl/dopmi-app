@@ -1,6 +1,7 @@
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_screens.dart';
 import 'package:dopmi_mobile/features/adoption/discovery_empty.dart';
+import 'package:dopmi_mobile/features/adoption/community_ui.dart';
 import 'package:dopmi_mobile/core/ui.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
@@ -167,6 +168,57 @@ void main() {
     expect(find.text('Ir a Apoyar'), findsOneWidget);
     expect(find.text('Ver gatos'), findsNothing);
   });
+  testWidgets(
+    'end mosaic uses one photo per unique publication without filler',
+    (tester) async {
+      final repo = FakeCommunity();
+      repo.discoveryItems = [
+        Adoption({
+          ...repo.post.data,
+          'photos': ['approved/one', 'approved/extra'],
+        }),
+        Adoption({
+          ...repo.post.data,
+          'id': 'second',
+          'photos': ['approved/two'],
+        }),
+      ];
+      final identity = FakeIdentityRepository()
+        ..user = const Identity('one', 'fixture@example.test', verified: true);
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(repo),
+          routerInitialLocationProvider.overrideWithValue('/adoptions'),
+        ],
+      );
+      addTearDown(container.dispose);
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const DopmiApp(),
+        ),
+      );
+      await tester.pumpAndSettle();
+      for (var index = 0; index < 2; index++) {
+        await tester.ensureVisible(find.byTooltip('Pasar'));
+        await tester.tap(find.byTooltip('Pasar'));
+        await tester.pumpAndSettle();
+      }
+      final photos = find.descendant(
+        of: find.byType(DiscoveryEnd),
+        matching: find.byType(AdoptionPhoto),
+      );
+      expect(photos, findsNWidgets(2));
+      expect(
+        photos.evaluate().map(
+          (element) => (element.widget as AdoptionPhoto).path,
+        ),
+        ['approved/one', 'approved/two'],
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets(
     'empty filtered search clears keys and preserves chosen species',
     (tester) async {

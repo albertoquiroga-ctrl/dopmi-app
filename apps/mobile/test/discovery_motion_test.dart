@@ -229,7 +229,7 @@ void main() {
       await gesture.up();
       await tester.pumpAndSettle();
       expect(
-        find.text('Quiero adoptar'),
+        find.text('Quiero saber más'),
         distance.abs() < 8 ? findsOneWidget : findsNothing,
       );
       expect(repo.post.saved, false);

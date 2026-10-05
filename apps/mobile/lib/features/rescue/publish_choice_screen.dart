@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/donor_notification_button.dart';
 import '../adoption/community_ui.dart';
 import 'rescue_repository.dart';
 
@@ -56,156 +57,315 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
     }
   }
 
+  String? selected;
+
+  Future<void> continueChoice() async {
+    if (busy || selected == null) return;
+    if (selected == 'adoption') {
+      await context.push('/my-adoptions/new');
+    } else {
+      await receive();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // The reference cancel control occupies 16px padding plus a 1.2 line.
-    // Keep its 48px touch target without moving the visible centered content.
-    final cancelCompensation =
-        (48 - (MediaQuery.textScalerOf(context).scale(14) * 1.2 + 16)).clamp(
-          0.0,
-          48.0,
-        ) /
-        2;
+    final chosen = selected != null;
+    final motion = MediaQuery.disableAnimationsOf(context);
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: const CommunityNav(3, selectedPath: '/publish'),
       body: SafeArea(
         bottom: false,
         child: LayoutBuilder(
-          builder: (context, viewport) => DecoratedBox(
-            decoration: const BoxDecoration(color: Colors.white),
-            child: SingleChildScrollView(
+          builder: (context, viewport) {
+            return SingleChildScrollView(
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: viewport.maxHeight),
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    24,
-                    48 + cancelCompensation,
-                    24,
-                    32,
-                  ),
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 330),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 6),
-                            child: Column(
-                              children: [
-                                Text(
-                                  '¿Qué quieres publicar?',
-                                  textAlign: TextAlign.center,
+                  padding: const EdgeInsets.fromLTRB(18, 16, 18, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(
+                        height: 42,
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/profile/logo-paw.svg',
+                              width: 40,
+                              height: 40,
+                              semanticsLabel: 'Dopmi',
+                            ),
+                            const Spacer(),
+                            const DonorNotificationButton(rescuer: true),
+                          ],
+                        ),
+                      ),
+                      AnimatedPadding(
+                        duration: motion
+                            ? Duration.zero
+                            : const Duration(milliseconds: 450),
+                        curve: const Cubic(.22, 1, .36, 1),
+                        padding: EdgeInsets.only(
+                          top: chosen
+                              ? 20
+                              : MediaQuery.textScalerOf(context).scale(14) > 20
+                              ? 32
+                              : viewport.maxHeight * .315,
+                        ),
+                        child: Container(
+                          constraints: BoxConstraints(
+                            minHeight: chosen ? 46 : 0,
+                          ),
+                          padding: chosen
+                              ? const EdgeInsets.fromLTRB(2, 2, 2, 4)
+                              : EdgeInsets.zero,
+                          alignment: chosen
+                              ? Alignment.centerLeft
+                              : Alignment.center,
+                          child: Text(
+                            '¿Qué quieres publicar?',
+                            textAlign: chosen
+                                ? TextAlign.left
+                                : TextAlign.center,
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 28,
+                              height: 1.1,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xff15110d),
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (!chosen)
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(18, 10, 18, 0),
+                          child: Text(
+                            'Selecciona el tipo de publicación que deseas crear',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 14,
+                              height: 1.5,
+                              color: Color(0xff8a837c),
+                            ),
+                          ),
+                        ),
+                      SizedBox(height: chosen ? 40 : 28),
+                      Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 280),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: PublishTypeCard(
+                                  title: 'Dar en adopción',
+                                  subtitle: 'Publica una mascota que esté lista para encontrar un hogar',
+                                  asset: 'assets/profile/publish-adopter.svg',
+                                  colors: const [
+                                    Color(0xff7841f2),
+                                    Color(0xff7841f2),
+                                  ],
+                                  selected: selected == 'adoption',
+                                  onPressed: busy
+                                      ? null
+                                      : () => setState(
+                                          () => selected = 'adoption',
+                                        ),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: PublishTypeCard(
+                                  title: 'Recibir Apoyo',
+                                  subtitle: 'Crea un caso para apoyarte a solventar los gastos que ya hayas cubierto recientemente de una mascota.',
+                                  asset: 'assets/profile/tab-donate.svg',
+                                  colors: const [
+                                    Color(0xff7841f2),
+                                    Color(0xff7841f2),
+                                  ],
+                                  selected: selected == 'donation',
+                                  verification: true,
+                                  onPressed: busy
+                                      ? null
+                                      : () => setState(
+                                          () => selected = 'donation',
+                                        ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      AnimatedSize(
+                        duration: motion
+                            ? Duration.zero
+                            : const Duration(milliseconds: 500),
+                        curve: const Cubic(.22, 1, .36, 1),
+                        child: chosen
+                            ? SizedBox(
+                                height:
+                                    MediaQuery.textScalerOf(context).scale(14) >
+                                        20
+                                    ? null
+                                    : 244,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    12,
+                                    28,
+                                    12,
+                                    16,
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        selected == 'adoption'
+                                            ? 'Dar en adopción'
+                                            : 'Recibir Apoyo',
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 28,
+                                          height: 1.1,
+                                          fontWeight: FontWeight.w700,
+                                          color: Color(0xff15110d),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Text(
+                                        selected == 'adoption'
+                                            ? 'Publica una mascota que esté lista para encontrar un hogar'
+                                            : 'Crea un caso para apoyarte a solventar los gastos que ya hayas cubierto recientemente de una mascota.',
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          height: 1.5,
+                                          color: Color(0xff8a837c),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+                      if (error != null) Notice(error!, isError: true),
+                      if (chosen)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              const SizedBox(height: 8),
+                              TextButton(
+                                onPressed: () => showDialog<void>(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text('Revisión del caso'),
+                                    content: const Text(
+                                      'Dopmi revisará los textos, fotos y privacidad antes de publicar. Los gastos requieren comprobantes y aprobación independiente.',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: const Text('Entendido'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                style: TextButton.styleFrom(
+                                  foregroundColor: const Color(0xff7841f2),
+                                  minimumSize: Size.zero,
+                                  padding: EdgeInsets.zero,
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                ),
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        'DopMi revisará el caso antes de publicar',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 12,
+                                          height: 1.35,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 6),
+                                    Icon(Icons.info_outline, size: 14),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 18),
+                              FilledButton(
+                                onPressed: busy ? null : continueChoice,
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: const Color(0xff15110d),
+                                  foregroundColor: Colors.white,
+                                  minimumSize: const Size(0, 52),
+                                  shape: const StadiumBorder(),
+                                  textStyle: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                child: busy
+                                    ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          semanticsLabel:
+                                              'Consultando tu verificación',
+                                        ),
+                                      )
+                                    : const Text('Continuar'),
+                              ),
+                              TextButton(
+                                onPressed: busy
+                                    ? null
+                                    : () => context.go('/rescuer'),
+                                style: TextButton.styleFrom(
+                                  minimumSize: const Size(0, 41),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
+                                  ),
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                ),
+                                child: const Text(
+                                  'Cancelar',
                                   style: TextStyle(
                                     fontFamily: 'Inter',
-                                    fontSize: 28,
-                                    height: 1.15,
-                                    letterSpacing: -.56,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xff151423),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                SizedBox(height: 8),
-                                Text(
-                                  'Selecciona el tipo de publicación que deseas crear',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    height: 1.5,
-                                    color: Color(0xff4f4e5c),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 32),
-                          PublishTypeCard(
-                            title: 'Dar en adopción',
-                            subtitle: 'Publica una mascota que esté lista para encontrar un hogar',
-                            asset: 'assets/profile/publish-adopter.svg',
-                            colors: const [
-                              Color(0xff00bc7d),
-                              Color(0xff00bba7),
+                              ),
                             ],
-                            onPressed: busy
-                                ? null
-                                : () => context.push('/my-adoptions/new'),
                           ),
-                          const SizedBox(height: 16),
-                          PublishTypeCard(
-                            title: 'Recibir donaciones',
-                            subtitle: 'Crea un caso de donación para cubrir necesidades de una mascota',
-                            asset: 'assets/profile/publish-donor.svg',
-                            colors: const [
-                              Color(0xff9810fa),
-                              Color(0xff8200db),
-                            ],
-                            verification: true,
-                            onPressed: busy ? null : receive,
-                          ),
-                          if (busy) ...[
-                            const SizedBox(height: 16),
-                            const Center(
-                              child: SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  semanticsLabel: 'Consultando tu verificación',
-                                ),
-                              ),
-                            ),
-                          ],
-                          if (error != null) ...[
-                            const SizedBox(height: 16),
-                            Notice(error!, isError: true),
-                          ],
-                          SizedBox(height: 32 - cancelCompensation),
-                          Center(
-                            child: TextButton(
-                              onPressed: busy
-                                  ? null
-                                  : () => context.go('/rescuer'),
-                              style: TextButton.styleFrom(
-                                splashFactory: NoSplash.splashFactory,
-                                overlayColor: Colors.transparent,
-                                animationDuration: Duration.zero,
-                                foregroundColor: const Color(0xff4f4e5c),
-                                minimumSize: const Size(48, 48),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 8,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                              ),
-                              child: const Text(
-                                'Cancelar',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                        ),
+                    ],
                   ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
   }
 }
 
-class PublishTypeCard extends StatefulWidget {
+class PublishTypeCard extends StatelessWidget {
   const PublishTypeCard({
     super.key,
     required this.title,
@@ -214,127 +374,67 @@ class PublishTypeCard extends StatefulWidget {
     required this.colors,
     required this.onPressed,
     this.verification = false,
+    this.selected = false,
   });
   final String title, subtitle, asset;
   final List<Color> colors;
   final VoidCallback? onPressed;
-  final bool verification;
-  @override
-  State<PublishTypeCard> createState() => _PublishTypeCardState();
-}
-
-class _PublishTypeCardState extends State<PublishTypeCard> {
-  bool hover = false, focused = false;
+  final bool verification, selected;
   @override
   Widget build(BuildContext context) => Semantics(
     button: true,
-    enabled: widget.onPressed != null,
-    label:
-        '${widget.title}. ${widget.subtitle}${widget.verification ? '. Requiere verificación' : ''}',
-    onTap: widget.onPressed,
-    child: FocusableActionDetector(
-      enabled: widget.onPressed != null,
-      onShowHoverHighlight: (value) => setState(() => hover = value),
-      onShowFocusHighlight: (value) => setState(() => focused = value),
-      actions: {
-        ActivateIntent: CallbackAction<ActivateIntent>(
-          onInvoke: (_) {
-            widget.onPressed?.call();
-            return null;
-          },
-        ),
-      },
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: widget.onPressed,
-        child: ExcludeSemantics(
-          child: AnimatedContainer(
+    selected: selected,
+    enabled: onPressed != null,
+    label: title,
+    child: InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(46),
+      splashFactory: NoSplash.splashFactory,
+      child: Column(
+        children: [
+          AnimatedContainer(
             duration: MediaQuery.disableAnimationsOf(context)
                 ? Duration.zero
-                : const Duration(milliseconds: 180),
-            curve: Curves.ease,
-            transform: Matrix4.translationValues(0, hover ? -1 : 0, 0),
-            padding: const EdgeInsets.fromLTRB(18, 18, 14, 18),
+                : const Duration(milliseconds: 250),
+            width: 92,
+            height: 92,
+            alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(22),
+              shape: BoxShape.circle,
+              color: selected ? const Color(0xfff3eeff) : Colors.white,
               border: Border.all(
-                color: hover
-                    ? const Color(0xffd8d2ca)
-                    : const Color(0xffe3e4ed),
+                color: const Color(0xff7841f2),
+                width: selected ? 2 : 1.5,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: hover
-                      ? const Color(0x1a15110d)
-                      : const Color(0x0f15110d),
-                  offset: Offset(0, hover ? 12 : 8),
-                  blurRadius: hover ? 28 : 22,
-                ),
-                if (focused)
-                  const BoxShadow(color: Color(0x477841f2), spreadRadius: 3),
-              ],
             ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 56,
-                  height: 56,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: widget.colors,
-                    ),
-                  ),
-                  child: SvgPicture.asset(widget.asset, width: 28, height: 28),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.title,
-                        style: const TextStyle(
-                          fontSize: 17,
-                          height: 1.2,
-                          letterSpacing: -.34,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xff151423),
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        widget.subtitle,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          height: 20 / 14,
-                          color: Color(0xff4f4e5c),
-                        ),
-                      ),
-                      if (widget.verification) ...[
-                        const SizedBox(height: 9),
-                        const Text(
-                          '⚠️ Requiere verificación',
-                          style: TextStyle(
-                            fontSize: 12,
-                            height: 16 / 12,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xffc2410c),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              ],
+            child: SvgPicture.asset(
+              asset,
+              width: 32,
+              height: 32,
+              colorFilter: const ColorFilter.mode(
+                Color(0xff15110d),
+                BlendMode.srcIn,
+              ),
             ),
           ),
-        ),
+          const SizedBox(height: 10),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 80),
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 12,
+                height: 1.3,
+                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                color: selected
+                    ? const Color(0xff15110d)
+                    : const Color(0xff8a837c),
+              ),
+            ),
+          ),
+        ],
       ),
     ),
   );

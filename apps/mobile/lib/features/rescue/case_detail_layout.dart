@@ -24,12 +24,15 @@ class CaseDetailLayout extends StatefulWidget {
     required this.report,
     this.updates,
     this.error,
+    this.preview = false,
+    this.requestedAmountCents,
   });
   final RescueRecord record;
   final List<RescueRecord> expenses;
   final Widget needs;
   final Widget? updates;
-  final bool saved, busy;
+  final bool saved, busy, preview;
+  final int? requestedAmountCents;
   final VoidCallback favorite, share, report;
   final String? error;
   @override
@@ -120,8 +123,17 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
     final record = widget.record;
     final photoPaths = photos;
     final heroHeight = MediaQuery.sizeOf(context).height * .42;
-    final height = heroHeight.clamp(260.0, 340.0);
+    final height = widget.preview
+        ? (MediaQuery.sizeOf(context).height * .32).clamp(180.0, 240.0)
+        : heroHeight.clamp(260.0, 340.0);
+    final previewAccent = widget.preview
+        ? const Color(0xff7c3aed)
+        : const Color(0xff6b5000);
     final rescuer = record.data['rescuer_name'] as String? ?? '';
+    final rescuerParts = rescuer.trim().split(RegExp(r'\s+'));
+    final displayRescuer = widget.preview && rescuerParts.length > 1
+        ? '${rescuerParts.first} ${rescuerParts.last.characters.first}.'
+        : rescuer;
     final owner = record.data['owner_id'] as String?;
     final location = [
       record.publicData['city'],
@@ -184,30 +196,34 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                 radius: 0,
                               ),
                             ),
-                          Positioned(
-                            top: 16,
-                            left: 16,
-                            child: ClipOval(
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                                child: IconButton(
-                                  tooltip: 'Volver',
-                                  onPressed: back,
-                                  style: IconButton.styleFrom(
-                                    overlayColor: Colors.transparent,
-                                    backgroundColor: Colors.white.withValues(
-                                      alpha: .72,
-                                    ),
-                                    minimumSize: const Size(40, 40),
-                                    maximumSize: const Size(40, 40),
-                                    tapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
+                          if (!widget.preview)
+                            Positioned(
+                              top: 16,
+                              left: 16,
+                              child: ClipOval(
+                                child: BackdropFilter(
+                                  filter: ImageFilter.blur(
+                                    sigmaX: 8,
+                                    sigmaY: 8,
                                   ),
-                                  icon: svg('back', 20, color: ink),
+                                  child: IconButton(
+                                    tooltip: 'Volver',
+                                    onPressed: back,
+                                    style: IconButton.styleFrom(
+                                      overlayColor: Colors.transparent,
+                                      backgroundColor: Colors.white.withValues(
+                                        alpha: .72,
+                                      ),
+                                      minimumSize: const Size(40, 40),
+                                      maximumSize: const Size(40, 40),
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                    ),
+                                    icon: svg('back', 20, color: ink),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
                           if (owner != null && rescuer.isNotEmpty)
                             Positioned(
                               top: 16,
@@ -239,8 +255,10 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                           const WidgetStatePropertyAll(
                                             Colors.transparent,
                                           ),
-                                      onTap: () =>
-                                          context.push('/people/$owner'),
+                                      onTap: widget.preview
+                                          ? null
+                                          : () =>
+                                                context.push('/people/$owner'),
                                       borderRadius: BorderRadius.circular(999),
                                       child: Padding(
                                         padding: const EdgeInsets.fromLTRB(
@@ -254,7 +272,7 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                           children: [
                                             Flexible(
                                               child: Text(
-                                                rescuer,
+                                                displayRescuer,
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
@@ -269,8 +287,12 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                             const SizedBox(width: 8),
                                             CircleAvatar(
                                               radius: 14,
-                                              backgroundColor: yellow,
-                                              foregroundColor: ink,
+                                              backgroundColor: widget.preview
+                                                  ? const Color(0xff7c3aed)
+                                                  : yellow,
+                                              foregroundColor: widget.preview
+                                                  ? Colors.white
+                                                  : ink,
                                               child: Text(
                                                 rescuer.characters.first,
                                                 style: const TextStyle(
@@ -353,18 +375,18 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                           svg(
                                             'location',
                                             14,
-                                            color: const Color(0xff6b5000),
+                                            color: previewAccent,
                                           ),
                                           const SizedBox(width: 6),
                                           Expanded(
                                             child: Text(
                                               location,
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 fontFamily: 'Inter',
                                                 letterSpacing: 0,
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.w600,
-                                                color: Color(0xff6b5000),
+                                                color: previewAccent,
                                               ),
                                             ),
                                           ),
@@ -379,9 +401,13 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                       children: [
                                         svg('icon-verified', 16),
                                         const SizedBox(width: 6),
-                                        const Expanded(
+                                        Expanded(
                                           child: Text(
-                                            'Rescatista verificado',
+                                            widget.preview &&
+                                                    record.data['rescuer_verified'] !=
+                                                        true
+                                                ? 'Vista previa'
+                                                : 'Rescatista verificado',
                                             style: TextStyle(
                                               fontFamily: 'Inter',
                                               letterSpacing: 0,
@@ -402,7 +428,9 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                 height: 42,
                                 child: IconButton(
                                   tooltip: 'Compartir',
-                                  onPressed: widget.share,
+                                  onPressed: widget.preview
+                                      ? null
+                                      : widget.share,
                                   style: IconButton.styleFrom(
                                     overlayColor: Colors.transparent,
                                     side: const BorderSide(
@@ -426,8 +454,10 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                                   received: true,
                                 ),
                                 _CaseFundingStat(
-                                  'Objetivo',
-                                  record.targetCents,
+                                  widget.preview ? 'Solicitado' : 'Objetivo',
+                                  widget.preview
+                                      ? widget.requestedAmountCents ?? 0
+                                      : record.targetCents,
                                   received: false,
                                 ),
                               ];
@@ -585,7 +615,9 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: TextButton(
-                              onPressed: widget.busy ? null : widget.report,
+                              onPressed: widget.preview || widget.busy
+                                  ? null
+                                  : widget.report,
                               style: TextButton.styleFrom(
                                 splashFactory: NoSplash.splashFactory,
                                 overlayColor: Colors.transparent,
@@ -613,17 +645,18 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                           ),
                           if (widget.error != null)
                             Notice(widget.error!, isError: true),
-                          OutlinedButton.icon(
-                            onPressed: widget.busy ? null : widget.favorite,
-                            icon: Icon(
-                              widget.saved
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
+                          if (!widget.preview)
+                            OutlinedButton.icon(
+                              onPressed: widget.busy ? null : widget.favorite,
+                              icon: Icon(
+                                widget.saved
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                              ),
+                              label: Text(
+                                widget.saved ? 'Caso guardado' : 'Guardar caso',
+                              ),
                             ),
-                            label: Text(
-                              widget.saved ? 'Caso guardado' : 'Guardar caso',
-                            ),
-                          ),
                           if (widget.updates != null) widget.updates!,
                         ],
                       ),
@@ -633,61 +666,62 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
               ),
             ),
           ),
-          Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              border: Border(top: BorderSide(color: Color(0xffe6e2dd))),
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0x0f15110d),
-                  offset: Offset(0, -8),
-                  blurRadius: 24,
-                ),
-              ],
-            ),
-            child: SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 14,
-                ),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    onPressed: widget.busy || eligible.isEmpty
-                        ? null
-                        : () => chooseContribution(
-                            context,
-                            eligible.first.id,
-                            eligible.first.targetCents -
-                                eligible.first.fundedCents,
-                            caseId: widget.record.id,
-                          ),
-                    style: FilledButton.styleFrom(
-                      splashFactory: NoSplash.splashFactory,
-                      overlayColor: Colors.transparent,
-                      animationDuration: Duration.zero,
-                      backgroundColor: ink,
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size(0, 52),
-                      shape: const StadiumBorder(),
-                      textStyle: const TextStyle(
-                        fontFamily: 'Inter',
-                        letterSpacing: 0,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
+          if (!widget.preview)
+            Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                border: Border(top: BorderSide(color: Color(0xffe6e2dd))),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0x0f15110d),
+                    offset: Offset(0, -8),
+                    blurRadius: 24,
+                  ),
+                ],
+              ),
+              child: SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 14,
+                  ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      onPressed: widget.busy || eligible.isEmpty
+                          ? null
+                          : () => chooseContribution(
+                              context,
+                              eligible.first.id,
+                              eligible.first.targetCents -
+                                  eligible.first.fundedCents,
+                              caseId: widget.record.id,
+                            ),
+                      style: FilledButton.styleFrom(
+                        splashFactory: NoSplash.splashFactory,
+                        overlayColor: Colors.transparent,
+                        animationDuration: Duration.zero,
+                        backgroundColor: ink,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(0, 52),
+                        shape: const StadiumBorder(),
+                        textStyle: const TextStyle(
+                          fontFamily: 'Inter',
+                          letterSpacing: 0,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      eligible.isEmpty ? 'Sin gastos disponibles' : 'Donar',
+                      child: Text(
+                        eligible.isEmpty ? 'Sin gastos disponibles' : 'Donar',
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 100),
+          if (!widget.preview) const SizedBox(height: 100),
         ],
       ),
     );

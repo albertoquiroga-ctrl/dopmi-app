@@ -95,7 +95,10 @@ class _PhotoRecoveryState extends ConsumerState<PhotoRecoveryNotice> {
                     }
                     if (lost.files.isNotEmpty &&
                         record.editable &&
-                        record.files.length < 12) {
+                        record.files
+                                .where((file) => file['role'] == 'public')
+                                .length <
+                            6) {
                       final bytes = await lost.files.first.readAsBytes();
                       if (bytes.length > 5242880) {
                         throw const FormatException(
@@ -136,7 +139,7 @@ class _PhotoRecoveryState extends ConsumerState<PhotoRecoveryNotice> {
                     );
                   }
                   if (lost.files.isNotEmpty &&
-                      post.photos.length < 5 &&
+                      post.photos.length < 6 &&
                       [
                         'draft',
                         'changes_requested',

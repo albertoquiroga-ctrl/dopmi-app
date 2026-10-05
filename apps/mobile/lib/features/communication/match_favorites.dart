@@ -39,7 +39,11 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
   String? error;
   Future<void> contact(SavedEntry item) async {
     if (busy) return;
-    final accepted = await confirmAdoptionContact(context);
+    final accepted = await confirmAdoptionContact(
+      context,
+      petName: item.publicData['pet_name'] as String?,
+      rescuerName: item.publicData['publisher_name'] as String?,
+    );
     if (accepted != true || !mounted || busy) return;
     setState(() {
       busy = true;

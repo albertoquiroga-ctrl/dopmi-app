@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../core/media/media_store.dart';
+import 'adoption_traits.dart';
 export '../../core/media/prepare_photo.dart' show preparePhoto;
 
 typedef Json = Map<String, dynamic>;
@@ -31,6 +32,9 @@ class Adoption {
   int get version => data['version'] as int? ?? 0;
   List<String> get photos => List<String>.from(data['photos'] as List? ?? []);
   bool get saved => data['saved'] == true;
+  String get displayAge => ageBandLabels[text('age_band')] ?? age;
+  List<String> get coexistence =>
+      List<String>.from(data['coexistence'] as List? ?? const []);
   String get age {
     final months = data['age_months'] as int? ?? 0;
     if (months == 0) return 'Menos de un mes';
@@ -94,6 +98,13 @@ abstract class CommunityRepository {
   Future<String> uploadPhoto(String postId, Uint8List bytes);
   Future<String> photoUrl(String path);
   Future<String> startThread(String postId);
+  Future<DataPage<Json>> rescuerInbox(int page, {bool history = false}) =>
+      Future.error(UnsupportedError('Inbox no disponible'));
+  Future<DataPage<Json>> rescuerGroupThreads(
+    String groupId,
+    int page, {
+    bool history = false,
+  }) => Future.error(UnsupportedError('Grupo no disponible'));
   Future<DataPage<Json>> threads(int page, {String search = ''});
   Future<Json> thread(String id);
   Future<List<Json>> messages(String threadId, {Json? before});
@@ -278,7 +289,36 @@ class SupabaseCommunityRepository implements CommunityRepository {
       MediaStore(client).signedUrl(path, MediaPurpose.adoptionPhoto);
   @override
   Future<String> startThread(String postId) async =>
-      await rpc('dopmi_start_thread', {'post_id': postId}) as String;
+      await rpc('dopmi_start_adoption_contact', {'post_id': postId}) as String;
+  @override
+  Future<DataPage<Json>> rescuerInbox(int page, {bool history = false}) async {
+    final result = await rpc('dopmi_rescuer_inbox', {
+      'page_number': page,
+      'history': history,
+    });
+    return DataPage(
+      (result['items'] as List).map((e) => Json.from(e)).toList(),
+      result['total'] as int,
+    );
+  }
+
+  @override
+  Future<DataPage<Json>> rescuerGroupThreads(
+    String groupId,
+    int page, {
+    bool history = false,
+  }) async {
+    final result = await rpc('dopmi_rescuer_group_threads', {
+      'group_id': groupId,
+      'page_number': page,
+      'history': history,
+    });
+    return DataPage(
+      (result['items'] as List).map((e) => Json.from(e)).toList(),
+      result['total'] as int,
+    );
+  }
+
   @override
   Future<DataPage<Json>> threads(int page, {String search = ''}) async {
     final result = await rpc('dopmi_match_threads', {
@@ -292,8 +332,8 @@ class SupabaseCommunityRepository implements CommunityRepository {
   }
 
   @override
-  Future<Json> thread(String id) =>
-      client.from('dopmi_threads').select().eq('id', id).single();
+  Future<Json> thread(String id) async =>
+      Json.from(await rpc('dopmi_thread_detail', {'thread_id': id}));
   @override
   Future<List<Json>> messages(String threadId, {Json? before}) async =>
       (await rpc('dopmi_thread_messages', {

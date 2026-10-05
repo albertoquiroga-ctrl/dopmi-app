@@ -28,9 +28,15 @@ String notificationTime(String value, {DateTime? now}) {
 }
 
 class NotificationTile extends StatelessWidget {
-  const NotificationTile(this.item, {super.key, required this.onTap});
+  const NotificationTile(
+    this.item, {
+    super.key,
+    required this.onTap,
+    this.rescuer = false,
+  });
   final Json item;
   final VoidCallback? onTap;
+  final bool rescuer;
 
   @override
   Widget build(BuildContext context) {
@@ -43,23 +49,23 @@ class NotificationTile extends StatelessWidget {
     final large = MediaQuery.textScalerOf(context).scale(14) > 20;
     final title = Text(
       item['title'] as String,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w500,
         height: 17 / 14,
         letterSpacing: 0,
-        color: ink,
+        color: rescuer ? const Color(0xff151423) : ink,
       ),
     );
     final time = Tooltip(
       message: localDate(item['created_at'] as String),
       child: Text(
         notificationTime(item['created_at'] as String),
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 12,
           height: 15 / 12,
           letterSpacing: 0,
-          color: muted,
+          color: rescuer ? const Color(0xff4f4e5c) : muted,
         ),
       ),
     );
@@ -78,6 +84,8 @@ class NotificationTile extends StatelessWidget {
               border: Border.all(
                 color: unread
                     ? const Color(0xfff3d45d)
+                    : rescuer
+                    ? const Color(0xffe3e4ed)
                     : const Color(0xffe6e2dd),
               ),
               boxShadow: unread
@@ -144,11 +152,13 @@ class NotificationTile extends StatelessWidget {
                               const SizedBox(height: 2),
                               Text(
                                 item['body'] as String,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 12,
                                   height: 1.6,
                                   letterSpacing: 0,
-                                  color: muted,
+                                  color: rescuer
+                                      ? const Color(0xff4f4e5c)
+                                      : muted,
                                 ),
                               ),
                             ],

@@ -386,3 +386,27 @@ Loop436 local20261003131000_canceled_wallet_collection_guard no desplegada: reem
 
 
 Loop437 supersede local-only436: local20261003131000_canceled_wallet_collection_guard aplicadaDEV porMCP como20261003131548/canceled_wallet_collection_guard. Preflight latest130559/helpermd5previoexacto/2activationanchors. Postflight helpercollection md5 939ccd4012f6a0d977d788ce2bb79a2c yactivation f59fc9925e6e5b045df51b29892626d6 coincidenfuentes587; RPC2guards ypermisosprivadospreservados. No replay/rename/repair/dbpush ni aceptaciónStripe/device atribuida.
+
+## Actualización Irlanda 889 — 4/10/2026 México
+
+Local `20261005044111_adoption_update889.sql` → DEV
+`20261005051550/adoption_update889`, proyecto `ohqxranynackjignryep`.
+Preflight: última migración `20261003131548/canceled_wallet_collection_guard`;
+seis cuerpos actuales comparados con sus últimas fuentes locales, todos iguales
+normalizando espacios. Restricciones previas: personalidad18/fotos5; age_band y
+coexistence ausentes; nuevos RPC inexistentes. Permisos previos conservados.
+Aplicada una vez mediante MCP, sin dbpush, replay, repair ni renombrado.
+Postflight: nueve cuerpos desplegados iguales al SQL local, helpers privados sin
+EXECUTE anon/authenticated y seis RPC nuevos/actualizados sólo authenticated;
+discovery conserva lectura pública. No cambios financieros ni flags de dinero.
+Backend local594/594 y prueba dirigida adicional de rechazo de gasto aprobado
+pasaron. Concurrencia PostgreSQL y recorridos positivos DEV/nativos pendientes;
+la aplicación de SQL no acredita esos recorridos.
+
+Actualización dependiente mínima del mismo lote889: local20261005051804_case_size889
+→ DEV20261005052137/case_size889. Campo case.public_data.size opcional explícito,
+validado small/medium/large; payload legacy sin size conserva valor guardado.
+Preflight helpercase_fields y save_rescue iguales a sus fuentes anteriores;
+postflight ambos cuerpos iguales y ACL privada/cliente conservada. Prueba dirigida
+local de persistencia/cliente anterior/enum/aislamiento pasó. Aplicación única,
+sin inferir edad/tamaño, cambiar revisión/finanzas, replay/repair/dbpush.

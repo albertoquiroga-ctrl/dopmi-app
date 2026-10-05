@@ -252,6 +252,51 @@ class FakeCommunity implements CommunityRepository {
       DataPage(threadItems, threadItems.length);
 
   @override
+  Future<DataPage<Json>> rescuerInbox(int page, {bool history = false}) async {
+    final groups = <String, Json>{};
+    for (final thread in threadItems.where(
+      (t) => (t['status'] == 'closed') == history,
+    )) {
+      final id =
+          '${thread['case_id'] ?? thread['post_id'] ?? thread['pet_name']}';
+      final group = groups.putIfAbsent(
+        id,
+        () => <String, dynamic>{
+          'id': id,
+          'pet_name': thread['pet_name'],
+          'photo_path': thread['photo_path'],
+          'photo': thread['photo'],
+          'threads': <Json>[],
+          'thread_count': 0,
+          'unread_count': 0,
+        },
+      );
+      (group['threads'] as List<Json>).add(thread);
+      group['thread_count'] = (group['thread_count'] as int) + 1;
+      group['unread_count'] =
+          (group['unread_count'] as int) +
+          ((thread['unread_count'] as int?) ?? 0);
+    }
+    return DataPage(groups.values.toList(), groups.length);
+  }
+
+  @override
+  Future<DataPage<Json>> rescuerGroupThreads(
+    String groupId,
+    int page, {
+    bool history = false,
+  }) async {
+    final items = threadItems
+        .where(
+          (t) =>
+              '${t['case_id'] ?? t['post_id'] ?? t['pet_name']}' == groupId &&
+              (t['status'] == 'closed') == history,
+        )
+        .toList();
+    return DataPage(items, items.length);
+  }
+
+  @override
   Future<Adoption> save(Json payload, {String? id, int? version}) async {
     savedPayload = payload;
     if (failSave) throw Exception('offline');
@@ -545,7 +590,7 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     expect(repo.openedPosts, ['post']);
-    expect(find.text('Quiero adoptar'), findsOneWidget);
+    expect(find.text('Quiero saber más'), findsOneWidget);
     await tester.tap(find.byTooltip('Volver'));
     await tester.pumpAndSettle();
     expect(
@@ -887,8 +932,8 @@ void main() {
   ) async {
     final repo = FakeCommunity();
     await start(tester, repo, '/adoptions/post');
-    await tap(tester, 'Quiero adoptar');
-    expect(find.text('¿Iniciamos el proceso?'), findsOneWidget);
+    await tap(tester, 'Quiero saber más');
+    expect(find.text('Conectar con Luna'), findsOneWidget);
     await tester.tap(find.text('Sí, contactar rescatista'));
     await tester.pumpAndSettle();
     expect(find.text('Luna'), findsOneWidget);
@@ -1238,7 +1283,6 @@ void main() {
     (tester) async {
       final repo = PhotoDraftCommunity();
       await start(tester, repo, '/my-adoptions/${repo.post.id}');
-      await tap(tester, 'Continuar');
       await tester.enterText(
         find.byKey(const ValueKey('publication-field-pet_name')),
         'Mora',
@@ -1256,7 +1300,8 @@ void main() {
       await tap(tester, 'Continuar');
       expect(repo.post.name, 'Mora');
       expect(repo.post.status, 'draft');
-      expect(find.text('Revisa tu caso'), findsOneWidget);
+      await tap(tester, 'Continuar');
+      expect(find.text('Valida tu caso'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
@@ -1274,7 +1319,7 @@ void main() {
     await tap(tester, 'Guardar borrador');
     expect(repo.savedPayload?['rescue_case_id'], 'case-one');
     expect(repo.post.status, 'draft');
-    expect(find.text('Sube fotos de la mascota'), findsOneWidget);
+    expect(find.text('Empecemos...'), findsOneWidget);
     expect(
       tester
           .widget<FilledButton>(find.widgetWithText(FilledButton, 'Continuar'))

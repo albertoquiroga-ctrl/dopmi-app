@@ -298,6 +298,13 @@ void main() {
         if (rescuer) {
           final bar = tester.getRect(find.byType(DopmiBottomBar));
           for (final destination in rescuerDestinations) {
+            final button = find.bySemanticsLabel(destination.label);
+            if (destination.path == '/publish') {
+              expect(tester.getSize(button), const Size(58, 58));
+              await tester.tap(button);
+              expect(selected, destination.path);
+              continue;
+            }
             final label = find.text(destination.label);
             final paragraph = tester.renderObject<RenderParagraph>(label);
             expect(paragraph.didExceedMaxLines, isFalse);
@@ -313,7 +320,12 @@ void main() {
             final bounds = tester.getRect(label);
             expect(bar.contains(bounds.topLeft), isTrue);
             expect(bar.contains(bounds.bottomRight), isTrue);
-            final button = find.bySemanticsLabel(destination.label);
+            expect(
+              tester
+                  .getRect(button)
+                  .overlaps(tester.getRect(find.bySemanticsLabel('Publicar'))),
+              isFalse,
+            );
             expect(tester.getSize(button).width, greaterThanOrEqualTo(48));
             expect(tester.getSize(button).height, greaterThanOrEqualTo(48));
             await tester.tap(button);

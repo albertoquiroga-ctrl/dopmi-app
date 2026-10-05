@@ -93,8 +93,8 @@ void main() {
     'enlarged adoption CTA centers both lines with readable margins',
     (tester) async {
       await open(tester, FakeCommunity(), '/adoptions/post');
-      final label = find.text('Quiero adoptar');
-      final action = find.widgetWithText(FilledButton, 'Quiero adoptar');
+      final label = find.text('Quiero saber más');
+      final action = find.widgetWithText(FilledButton, 'Quiero saber más');
       final button = tester.getRect(action);
       final labelRect = tester.getRect(label);
       expect(labelRect.top, greaterThanOrEqualTo(button.top + 11.9));
@@ -102,7 +102,7 @@ void main() {
       final paragraph = tester.renderObject<RenderParagraph>(label);
       for (final selection in const [
         TextSelection(baseOffset: 0, extentOffset: 6),
-        TextSelection(baseOffset: 7, extentOffset: 14),
+        TextSelection(baseOffset: 7, extentOffset: 16),
       ]) {
         final boxes = paragraph.getBoxesForSelection(selection);
         expect(boxes, hasLength(1));
@@ -113,7 +113,7 @@ void main() {
       }
       await tester.tap(action);
       await tester.pumpAndSettle();
-      expect(find.text('¿Iniciamos el proceso?'), findsOneWidget);
+      expect(find.text('Conectar con Luna'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
@@ -157,8 +157,16 @@ void main() {
       rescuer: true,
     );
     expectWholeWord(tester, 'Ana Patricia Hernandez', 'Hernandez');
-    expect(find.text('3'), findsOneWidget);
     final row = find.byType(RescuerThreadRow).first;
+    final unread = find.descendant(of: row, matching: find.text('3'));
+    expect(unread, findsOneWidget);
+    final unreadSemantics = find
+        .ancestor(of: unread, matching: find.byType(Semantics))
+        .first;
+    expect(
+      tester.widget<Semantics>(unreadSemantics).properties.label,
+      '3 mensajes sin leer',
+    );
     await tester.ensureVisible(row);
     await tester.pumpAndSettle();
     await tester.tap(row);

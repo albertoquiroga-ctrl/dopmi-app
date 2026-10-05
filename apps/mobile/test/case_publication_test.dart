@@ -1,20 +1,27 @@
-import 'package:dopmi_mobile/core/reference_focus_outline.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/adoption/publication_frame.dart';
+import 'package:dopmi_mobile/features/adoption/photo_recovery.dart';
+import 'package:dopmi_mobile/features/rescue/case_detail_layout.dart';
+import 'package:dopmi_mobile/features/rescue/case_publication_need_editor.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:dopmi_mobile/features/adoption/photo_recovery.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'community_test.dart' show FakeCommunity;
-import 'publication_frame_test.dart' show startPublication;
+import 'publication_frame_test.dart' show startPublication, tapPublication;
 import 'rescue_test.dart' show FakeRescue;
 
 class DraftCaseRescue extends FakeRescue {
   Json? publicSaved;
+  List<RescueRecord> expenses = [];
+  List<Json> privateSaves = [];
+  final removed = <String>[];
+  bool reject = false, rejectRemove = false;
+  int submits = 0;
+  RescueRecord? submitted;
   @override
   Future<Json> detail(String id) async => {
     'record': {
@@ -23,13 +30,36 @@ class DraftCaseRescue extends FakeRescue {
       'status': 'draft',
       'public_data':
           publicSaved ??
-          {'pet_name': 'Mora', 'species': 'dog', 'sex': 'unknown'},
+          {
+            'pet_name': 'Mora',
+            'species': 'dog',
+            'sex': 'unknown',
+            'size': 'medium',
+            'age': 'Adulto',
+            'story': 'Rescatada bajo la lluvia, ahora necesita recuperarse.',
+            'city': 'Monterrey',
+            'state': 'Nuevo León',
+            'need': 'Cuidados y seguimiento',
+          },
       'files': <Json>[
         {'role': 'public', 'path': 'one/case-one/photo.jpg'},
       ],
     },
     'history': <Json>[],
   };
+  @override
+  Future<DataPage<RescueRecord>> mine(
+    String kind,
+    int page, {
+    String? parent,
+  }) async {
+    if (kind == 'expense') return DataPage(expenses, expenses.length);
+    return DataPage(
+      submitted == null ? [] : [submitted!],
+      submitted == null ? 0 : 1,
+    );
+  }
+
   @override
   Future<RescueRecord> save(
     String kind,
@@ -40,26 +70,34 @@ class DraftCaseRescue extends FakeRescue {
     String? parent,
   }) async {
     saveCalls++;
-    publicSaved = publicData;
-    return RescueRecord({
-      ...record!.data,
+    final result = RescueRecord({
+      ...?record?.data,
+      'id': record?.id ?? '$kind-new',
+      'kind': kind,
+      'owner_id': 'one',
+      'status': 'draft',
+      'parent_id': parent ?? record?.parent,
       'public_data': publicData,
       'private_data': privateData,
       'files': files,
-      'version': record.version + 1,
+      'version': (record?.version ?? 0) + 1,
     });
+    if (kind == 'case') {
+      publicSaved = publicData;
+    } else {
+      privateSaves.add(privateData);
+      expenses = [...expenses.where((item) => item.id != result.id), result];
+    }
+    return result;
   }
-}
 
-class SubmittingCaseRescue extends DraftCaseRescue {
-  SubmittingCaseRescue(this.reject);
-  final bool reject;
-  int submits = 0;
-  RescueRecord? submitted;
   @override
   Future<RescueRecord> transition(RescueRecord record, String action) async {
+    expect(record.kind, 'case');
     submits++;
-    if (reject) throw const FormatException('No se pudo enviar. Reintenta.');
+    if (reject) {
+      throw const FormatException('No se pudo enviar. Reintenta.');
+    }
     submitted = RescueRecord({
       ...record.data,
       'status': 'submitted',
@@ -69,169 +107,120 @@ class SubmittingCaseRescue extends DraftCaseRescue {
   }
 
   @override
-  Future<DataPage<RescueRecord>> mine(
-    String kind,
-    int page, {
-    String? parent,
-  }) async => DataPage(
-    submitted == null ? <RescueRecord>[] : [submitted!],
-    submitted == null ? 0 : 1,
-  );
+  Future<void> removeDraftExpense(String id, int version) async {
+    if (rejectRemove) {
+      throw const FormatException(
+        'El gasto cambió. Recarga antes de eliminar.',
+      );
+    }
+    expect(version, expenses.singleWhere((item) => item.id == id).version);
+    removed.add(id);
+    expenses.removeWhere((item) => item.id == id);
+  }
 }
+
+RescueRecord expenseFixture({String status = 'draft'}) => RescueRecord({
+  'id': 'expense-draft',
+  'kind': 'expense',
+  'owner_id': 'one',
+  'parent_id': 'case-one',
+  'status': status,
+  'version': 2,
+  'approved_at': status == 'approved' ? '2026-09-01' : null,
+  'public_data': {
+    'title': 'Medicina prescrita',
+    'category': 'medicine',
+    'description': 'Tratamiento indicado por la veterinaria',
+    'round_label': '',
+  },
+  'private_data': {
+    'amount_cents': '12345',
+    'paid_on': '2026-09-01',
+    'vendor': 'Veterinaria Luna',
+    'receipt_reference': 'A-42',
+    'urgency_reason': '',
+  },
+  'files': <Json>[
+    {'role': 'receipt', 'path': 'one/expense-draft/receipt.pdf'},
+    {'role': 'proof', 'path': 'one/expense-draft/proof.pdf'},
+  ],
+});
 
 void main() {
   for (final reject in [false, true]) {
-    testWidgets(
-      'case submission returns to owned cases only on confirmation reject=$reject',
-      (tester) async {
-        final rescue = SubmittingCaseRescue(reject);
-        await startPublication(
-          tester,
-          FakeCommunity(),
-          '/rescue/case-one',
-          rescue: rescue,
-        );
-        final name = find.byKey(const ValueKey('case-field-pet_name'));
-        await tester.tap(find.text('Continuar'));
+    testWidgets('only actual case submission confirms success reject=$reject', (
+      tester,
+    ) async {
+      final repo = DraftCaseRescue()..reject = reject;
+      await startPublication(
+        tester,
+        FakeCommunity(),
+        '/rescue/case-one',
+        rescue: repo,
+      );
+      await tapPublication(tester, find.text('Continuar'));
+      await tapPublication(tester, find.text('Continuar'));
+      expect(
+        tester.widget<CaseDetailLayout>(find.byType(CaseDetailLayout)).preview,
+        isTrue,
+      );
+      expect(find.text('Guardar caso'), findsNothing);
+      expect(find.byTooltip('Volver').first, findsOneWidget);
+      await tapPublication(tester, find.text('Enviar a revisión'));
+      expect(repo.submits, 1);
+      if (reject) {
+        expect(find.text('Enviado a revisión'), findsNothing);
+        expect(find.textContaining('No se pudo enviar'), findsOneWidget);
+      } else {
+        expect(find.text('Enviado a revisión'), findsOneWidget);
+        await tester.tap(find.text('Entendido'));
         await tester.pumpAndSettle();
-        await tester.enterText(name, '');
-        await tester.tap(find.text('Continuar'));
-        await tester.pumpAndSettle();
-        await tester.enterText(
-          find.byKey(const ValueKey('case-field-need')),
-          'Cuidados del borrador',
-        );
-        await tester.tap(find.text('Continuar a revisión'));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Enviar a revisión'));
-        await tester.pumpAndSettle();
-        expect(rescue.submits, 1);
         final context = tester.element(find.byType(Scaffold).first);
         expect(
           GoRouter.of(context).routeInformationProvider.value.uri.path,
-          reject ? '/rescue/case-one' : '/my-cases',
+          '/my-cases',
         );
-        expect(rescue.publicSaved!['pet_name'], '');
-        expect(rescue.publicSaved!['need'], 'Cuidados del borrador');
-        if (reject) {
-          expect(find.text('Enviar a revisión'), findsOneWidget);
-          expect(find.textContaining('No se pudo enviar'), findsOneWidget);
-        } else {
-          expect(find.text('Enviar a revisión'), findsNothing);
-          expect(rescue.submitted!.status, 'submitted');
-        }
-        expect(tester.takeException(), isNull);
-      },
-    );
+        expect(repo.submitted!.status, 'submitted');
+      }
+      expect(repo.publicSaved!['pet_name'], 'Mora');
+      expect(tester.takeException(), isNull);
+    });
   }
+
   testWidgets(
-    'medicine needs cancel, save, reopen and remove through the actual draft',
+    'paid expense edit persists only private child evidence and metadata',
     (tester) async {
-      final repo = DraftCaseRescue();
+      final repo = DraftCaseRescue()..expenses = [expenseFixture()];
       await startPublication(
         tester,
         FakeCommunity(),
         '/rescue/case-one',
         rescue: repo,
       );
-      for (var i = 0; i < 2; i++) {
-        await tester.tap(
-          find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
-        );
-        await tester.pumpAndSettle();
-      }
-      await tester.tap(find.text('Medicina'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byTooltip('Cerrar'));
-      await tester.pumpAndSettle();
-      expect(find.text('Necesidades agregadas'), findsNothing);
-      await tester.tap(find.text('Medicina'));
-      await tester.pumpAndSettle();
-      for (final pair in [
-        ('title', 'Medicina prescrita'),
-        ('amount', '123.45'),
-        ('detail', 'Seguimiento indicado'),
-      ]) {
-        final field = find.byKey(ValueKey('case-field-${pair.$1}'));
-        await tester.ensureVisible(field);
-        await tester.pumpAndSettle();
-        await tester.enterText(field, pair.$2);
-      }
+      await tapPublication(tester, find.text('Continuar'));
+      await tapPublication(tester, find.text('Medicina prescrita'));
+      expect(find.byType(CasePublicationNeedEditor), findsOneWidget);
+      final amount = find.byKey(const ValueKey('publication-need-amount'));
+      await tester.ensureVisible(amount);
+      await tester.enterText(amount, '250.50');
       FocusManager.instance.primaryFocus?.unfocus();
-      tester.testTextInput.hide();
-      await tester.pumpAndSettle();
-      final add = find.text('Guardar medicina');
-      await tester.ensureVisible(add);
-      await tester.pumpAndSettle();
-      await tester.tap(add);
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Guardar borrador'));
-      await tester.pumpAndSettle();
-      final saved = List<Json>.from(repo.publicSaved!['need_items'] as List);
-      expect(saved.single['title'], 'Medicina prescrita');
-      expect(saved.single['amount_cents'], 12345);
-      expect(saved.single['type'], 'medicine');
-      expect(saved.single['urgent'], false);
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pumpAndSettle();
-      await startPublication(
-        tester,
-        FakeCommunity(),
-        '/rescue/case-one',
-        rescue: repo,
-      );
-      for (var i = 0; i < 2; i++) {
-        await tester.tap(
-          find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
-        );
-        await tester.pumpAndSettle();
-      }
-      final restored = find.text('Medicina prescrita');
-      await tester.ensureVisible(restored);
-      await tester.pumpAndSettle();
-      expect(restored, findsOneWidget);
-      await tester.tap(
-        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
-      );
-      await tester.pumpAndSettle();
-      final review = find.text('Medicina prescrita');
-      await tester.ensureVisible(review);
-      await tester.pumpAndSettle();
-      expect(review, findsOneWidget);
-      final edit = find.byKey(const ValueKey('case-review-edit-Necesidades'));
-      await tester.ensureVisible(edit);
-      await tester.pumpAndSettle();
-      expect(tester.getSize(edit).height, 20);
-      Focus.of(
-        tester.element(
-          find.descendant(of: edit, matching: find.text('Editar')),
-        ),
-      ).requestFocus();
-      await tester.pump();
-      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-      await tester.pumpAndSettle();
-      final remove = find.text('Eliminar');
-      await tester.ensureVisible(remove);
-      await tester.pumpAndSettle();
-      await tester.tap(remove);
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Guardar borrador'));
-      await tester.pumpAndSettle();
-      expect(repo.publicSaved!['need_items'], isEmpty);
+      await tapPublication(tester, find.text('Guardar medicina'));
+      expect(repo.expenses.single.privateData['amount_cents'], '25050');
+      expect(repo.expenses.single.parent, 'case-one');
+      expect(repo.expenses.single.files.length, 2);
+      expect(repo.publicSaved!.containsKey('receipt_reference'), isFalse);
+      expect(repo.publicSaved!.toString(), isNot(contains('receipt.pdf')));
+      expect(repo.submits, 0);
+      await tapPublication(tester, find.text('Continuar'));
+      expect(repo.expenses.single.status, 'draft');
+      expect(repo.submits, 0);
       expect(tester.takeException(), isNull);
     },
   );
 
-  testWidgets('case needs keeps focus at large text and saves before review', (
+  testWidgets('a new expense cannot save without both actual evidence roles', (
     tester,
   ) async {
-    tester.view.physicalSize = const Size(320, 640);
-    tester.view.devicePixelRatio = 1;
-    tester.platformDispatcher.textScaleFactorTestValue = 2;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-    addTearDown(tester.view.resetViewInsets);
-    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
     final repo = DraftCaseRescue();
     await startPublication(
       tester,
@@ -239,345 +228,174 @@ void main() {
       '/rescue/case-one',
       rescue: repo,
     );
-    for (var i = 0; i < 2; i++) {
-      await tester.tap(
-        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
-      );
-      await tester.pumpAndSettle();
-    }
-    expect(
-      tester
-          .widget<PublicationStepper>(find.byType(PublicationStepper))
-          .totalSteps,
-      4,
-    );
-    final need = find.byKey(const ValueKey('case-field-need'));
-    await tester.scrollUntilVisible(
-      need,
-      150,
-      scrollable: find.descendant(
-        of: find.byKey(const PageStorageKey('publication-body')),
-        matching: find.byType(Scrollable),
-      ),
-    );
-    await tester.pumpAndSettle();
-    await tester.enterText(need, 'Comida y seguimiento');
-    tester.view.viewInsets = const FakeViewPadding(bottom: 240);
-    await tester.pumpAndSettle();
-    expect(
-      tester
-          .widget<EditableText>(
-            find.descendant(of: need, matching: find.byType(EditableText)),
-          )
-          .focusNode
-          .hasFocus,
-      isTrue,
-    );
-    expect(tester.testTextInput.isVisible, isTrue);
-    expect(
-      tester.widget<TextField>(need).controller!.text,
-      'Comida y seguimiento',
-    );
-    tester.view.resetViewInsets();
-    tester.testTextInput.hide();
-    FocusManager.instance.primaryFocus?.unfocus();
-    await tester.pumpAndSettle();
-    await tester.tap(find.textContaining(RegExp(r'^Continuar( a revisión)?$')));
-    await tester.pumpAndSettle();
-    expect(repo.publicSaved!['need'], 'Comida y seguimiento');
-    expect(find.text('Registrar gasto realizado'), findsNothing);
-    expect(find.text('Recargar estado'), findsNothing);
-    expect(find.text('Borrador guardado.'), findsNothing);
-    expect(find.text('Enviar a revisión'), findsOneWidget);
+    await tapPublication(tester, find.text('Continuar'));
+    await tapPublication(tester, find.text('Medicina'));
+    final save = find.widgetWithText(FilledButton, 'Guardar medicina');
+    expect(tester.widget<FilledButton>(save).onPressed, isNull);
+    await tapPublication(tester, find.byTooltip('Cerrar'));
+    expect(repo.expenses, isEmpty);
+    expect(repo.privateSaves, isEmpty);
     expect(tester.takeException(), isNull);
   });
 
+  for (final reject in [false, true]) {
+    testWidgets(
+      'expense removal requires confirmation and server response reject=$reject',
+      (tester) async {
+        final repo = DraftCaseRescue()
+          ..expenses = [expenseFixture()]
+          ..rejectRemove = reject;
+        await startPublication(
+          tester,
+          FakeCommunity(),
+          '/rescue/case-one',
+          rescue: repo,
+        );
+        await tapPublication(tester, find.text('Continuar'));
+        final remove = find.byKey(
+          const ValueKey('case-remove-expense-expense-draft'),
+        );
+        await tapPublication(tester, remove);
+        await tester.tap(find.text('Cancelar'));
+        await tester.pumpAndSettle();
+        expect(repo.removed, isEmpty);
+        expect(repo.expenses.length, 1);
+        await tapPublication(tester, remove);
+        await tester.tap(find.widgetWithText(TextButton, 'Eliminar').last);
+        await tester.pumpAndSettle();
+        expect(repo.expenses.length, reject ? 1 : 0);
+        expect(repo.removed.length, reject ? 0 : 1);
+        if (reject) {
+          expect(find.textContaining('El gasto cambió'), findsOneWidget);
+        }
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   testWidgets(
-    'case review displays saved data and editing preserves the draft',
+    'reviewed expense remains visible without destructive draft control',
     (tester) async {
-      final repo = DraftCaseRescue();
+      final repo = DraftCaseRescue()
+        ..expenses = [expenseFixture(status: 'approved')];
       await startPublication(
         tester,
         FakeCommunity(),
         '/rescue/case-one',
         rescue: repo,
       );
-      await tester.tap(
-        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
-      );
-      await tester.pumpAndSettle();
-      final story = find.byKey(const ValueKey('case-field-story'));
-      await tester.ensureVisible(story);
-      await tester.pumpAndSettle();
-      await tester.enterText(story, 'Rescatada bajo la lluvia');
-      FocusManager.instance.primaryFocus?.unfocus();
-      tester.testTextInput.hide();
-      await tester.pumpAndSettle();
-      await tester.tap(
-        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
-      );
-      await tester.pumpAndSettle();
-      final need = find.byKey(const ValueKey('case-field-need'));
-      expect(need, findsOneWidget);
-      await tester.enterText(need, 'Seguimiento veterinario');
-      FocusManager.instance.primaryFocus?.unfocus();
-      tester.testTextInput.hide();
-      await tester.pumpAndSettle();
-      await tester.tap(
-        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
-      );
-      await tester.pumpAndSettle();
-      expect(repo.publicSaved!['need'], 'Seguimiento veterinario');
-      expect(repo.publicSaved!['story'], 'Rescatada bajo la lluvia');
-      expect(find.text('Revisa tu caso'), findsOneWidget);
+      await tapPublication(tester, find.text('Continuar'));
+      expect(find.text('Medicina prescrita'), findsOneWidget);
       expect(
-        tester.getSize(find.byType(PublicationPhotoThumbnail)),
-        const Size(110, 110),
+        find.byKey(const ValueKey('case-remove-expense-expense-draft')),
+        findsNothing,
       );
-      final review = find.text('Rescatada bajo la lluvia');
-      await tester.ensureVisible(review);
-      await tester.pumpAndSettle();
-      expect(review, findsOneWidget);
-      final edit = find.byKey(
-        const ValueKey('case-review-edit-Información básica'),
-      );
-      await tester.ensureVisible(edit);
-      await tester.pumpAndSettle();
-      await tester.tap(edit);
-      await tester.pumpAndSettle();
-      expect(
-        tester.widget<TextField>(story).controller!.text,
-        'Rescatada bajo la lluvia',
-      );
-      await tester.tap(
-        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
-      );
-      await tester.pumpAndSettle();
-      expect(
-        tester.widget<TextField>(need).controller!.text,
-        'Seguimiento veterinario',
-      );
-      await tester.tap(
-        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
-      );
-      await tester.pumpAndSettle();
-      final editNeeds = find.byKey(
-        const ValueKey('case-review-edit-Necesidades'),
-      );
-      await tester.ensureVisible(editNeeds);
-      await tester.pumpAndSettle();
-      await tester.tap(editNeeds);
-      await tester.pumpAndSettle();
-      expect(
-        tester.widget<TextField>(need).controller!.text,
-        'Seguimiento veterinario',
-      );
-      await tester.tap(
-        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
-      );
-      await tester.pumpAndSettle();
-      final photos = find.byKey(const ValueKey('case-review-edit-Fotos'));
-      await tester.ensureVisible(photos);
-      await tester.pumpAndSettle();
-      await tester.tap(photos);
-      await tester.pumpAndSettle();
-      expect(find.byType(PublicationPhotoPicker), findsOneWidget);
-      expect(repo.publicSaved!['story'], 'Rescatada bajo la lluvia');
+      expect(repo.removed, isEmpty);
       expect(tester.takeException(), isNull);
     },
   );
 
-  testWidgets(
-    'case information keeps real enum values and authored text through the large keyboard',
-    (tester) async {
-      tester.view.physicalSize = const Size(320, 640);
-      tester.view.devicePixelRatio = 1;
-      tester.platformDispatcher.textScaleFactorTestValue = 2;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-      final repo = DraftCaseRescue();
-      await startPublication(
-        tester,
-        FakeCommunity(),
-        '/rescue/case-one',
-        rescue: repo,
-      );
-      await tester.tap(
-        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
-      );
-      await tester.pumpAndSettle();
-      final name = find.byKey(const ValueKey('case-field-pet_name'));
-      await tester.ensureVisible(name);
-      await tester.pumpAndSettle();
-      await tester.enterText(name, 'Mora corregida');
-      tester.view.viewInsets = const FakeViewPadding(bottom: 240);
-      await tester.pumpAndSettle();
-      expect(tester.widget<TextField>(name).controller!.text, 'Mora corregida');
-      expect(tester.testTextInput.isVisible, isTrue);
-      expect(
-        tester
-            .widget<EditableText>(
-              find.descendant(of: name, matching: find.byType(EditableText)),
-            )
-            .focusNode
-            .hasFocus,
-        isTrue,
-      );
-      expect(find.text('Guardar borrador'), findsNothing);
-      tester.view.resetViewInsets();
-      tester.testTextInput.hide();
-      FocusManager.instance.primaryFocus?.unfocus();
-      await tester.pumpAndSettle();
-      for (final label in ['Hembra', 'Gato', 'Por determinar']) {
-        final choice = find.text(label);
-        await tester.ensureVisible(choice);
-        await tester.pumpAndSettle();
-        await tester.tap(choice);
-        await tester.pumpAndSettle();
-      }
-      await tester.tap(
-        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
-      );
-      await tester.pumpAndSettle();
-      expect(repo.publicSaved!['pet_name'], 'Mora corregida');
-      expect(repo.publicSaved!['sex'], 'unknown');
-      expect(repo.publicSaved!['species'], 'cat');
-      expect(tester.takeException(), isNull);
-    },
-  );
-  testWidgets('tapping a case photo opens the existing private file route', (
+  testWidgets('case Back traverses steps and keeps already saved form values', (
     tester,
   ) async {
+    final repo = DraftCaseRescue();
     await startPublication(
       tester,
       FakeCommunity(),
       '/rescue/case-one',
-      rescue: DraftCaseRescue(),
+      rescue: repo,
     );
-    final thumbnail = find.byType(PublicationPhotoThumbnail);
-    await tester.ensureVisible(thumbnail);
+    final name = find.byKey(const ValueKey('case-field-pet_name'));
+    await tester.ensureVisible(name);
+    await tester.enterText(name, 'Mora corregida');
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tapPublication(tester, find.text('Continuar'));
+    await tapPublication(tester, find.text('Continuar'));
+    await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
-    await tester.tapAt(tester.getTopLeft(thumbnail) + const Offset(20, 20));
+    expect(find.text('¿En qué necesitaron apoyo?').first, findsOneWidget);
+    await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
-    final scaffold = find.byType(Scaffold).last;
-    expect(GoRouterState.of(tester.element(scaffold)).uri.path, '/rescue-file');
+    expect(tester.widget<TextField>(name).controller!.text, 'Mora corregida');
+    expect(repo.publicSaved!['pet_name'], 'Mora corregida');
     expect(tester.takeException(), isNull);
   });
-  testWidgets(
-    'case camera and gallery save first and cancellation never adds a photo',
-    (tester) async {
-      final repo = DraftCaseRescue();
-      final sources = <int>[];
-      const channel = MethodChannel('plugins.flutter.io/image_picker');
-      final messenger =
-          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
-      messenger.setMockMethodCallHandler(channel, (call) async {
-        if (call.method != 'pickImage') return null;
-        final args = Map<String, dynamic>.from(call.arguments as Map);
-        sources.add(args['source'] as int);
-        expect(args['maxWidth'], 1600);
-        expect(args['maxHeight'], 1600);
-        expect(args['requestFullMetadata'], isFalse);
-        expect(repo.saveCalls, sources.length);
-        final preferences = await SharedPreferences.getInstance();
-        expect(
-          preferences.getString(pendingPhotoKey('one')),
-          'rescue:case-one',
+
+  for (final scale in [1.0, 2.0]) {
+    testWidgets(
+      'case native picker cancellation keeps private draft at scale $scale',
+      (tester) async {
+        tester.view.physicalSize = const Size(320, 640);
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        final repo = DraftCaseRescue();
+        final sources = <int>[];
+        const channel = MethodChannel('plugins.flutter.io/image_picker');
+        final messenger =
+            TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+        messenger.setMockMethodCallHandler(channel, (call) async {
+          if (call.method != 'pickImage') return null;
+          final args = Map<String, dynamic>.from(call.arguments as Map);
+          sources.add(args['source'] as int);
+          expect(args['requestFullMetadata'], isFalse);
+          expect(repo.publicSaved, isNotNull);
+          expect(
+            (await SharedPreferences.getInstance()).getString(
+              pendingPhotoKey('one'),
+            ),
+            'rescue:case-one',
+          );
+          return null;
+        });
+        addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+        await startPublication(
+          tester,
+          FakeCommunity(),
+          '/rescue/case-one',
+          rescue: repo,
         );
-        return null;
-      });
-      addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
-      await startPublication(
-        tester,
-        FakeCommunity(),
-        '/rescue/case-one',
-        rescue: repo,
-      );
-      for (final label in ['Tomar foto', 'Subir desde galería']) {
-        await tester.ensureVisible(find.text(label));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text(label));
-        await tester.pumpAndSettle();
-      }
-      expect(sources, [0, 1]);
-      expect(find.byType(PublicationPhotoThumbnail), findsOneWidget);
-      expect(
-        (await SharedPreferences.getInstance()).getString(
-          pendingPhotoKey('one'),
-        ),
-        isNull,
-      );
-      expect(tester.takeException(), isNull);
-    },
-  );
-  testWidgets('a new case cannot continue without a real public photo', (
-    tester,
-  ) async {
-    await startPublication(
-      tester,
-      FakeCommunity(),
-      '/rescue/new?kind=case',
-      rescue: DraftCaseRescue(),
+        for (final label in ['Tomar foto', 'Elegir de la galería']) {
+          await tapPublication(
+            tester,
+            find.byTooltip('Editar foto de la mascota'),
+          );
+          await tapPublication(tester, find.text(label));
+        }
+        expect(sources, [0, 1]);
+        expect(
+          (await SharedPreferences.getInstance()).getString(
+            pendingPhotoKey('one'),
+          ),
+          isNull,
+        );
+        expect(
+          tester
+              .widget<PublicationFooter>(find.byType(PublicationFooter))
+              .onContinue,
+          isNotNull,
+        );
+        expect(tester.takeException(), isNull);
+      },
     );
-    expect(find.text('Publicar caso'), findsOneWidget);
-    final footer = tester.widget<PublicationFooter>(
-      find.byType(PublicationFooter),
-    );
-    expect(footer.onContinue, isNull);
-    expect(footer.onSave, isNotNull);
-    expect(tester.takeException(), isNull);
-  });
+  }
+
   testWidgets(
-    'case continuation saves the real draft and back preserves its data at large text',
+    'a new case cannot continue without a principal photo and required profile',
     (tester) async {
-      tester.view.physicalSize = const Size(320, 640);
-      tester.view.devicePixelRatio = 1;
-      tester.platformDispatcher.textScaleFactorTestValue = 2;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-      final repo = DraftCaseRescue();
       await startPublication(
         tester,
         FakeCommunity(),
-        '/rescue/case-one',
-        rescue: repo,
+        '/rescue/new?kind=case',
+        rescue: DraftCaseRescue(),
       );
-      await tester.tap(
-        find.textContaining(RegExp(r'^Continuar( a revisión)?$')),
+      final footer = tester.widget<PublicationFooter>(
+        find.byType(PublicationFooter),
       );
-      await tester.pumpAndSettle();
-      expect(repo.publicSaved!['pet_name'], 'Mora');
-      expect(repo.publicSaved!['sex'], 'unknown');
-
-      final header = find.byKey(const ValueKey('publication-header-back'));
-      await tester.ensureVisible(header);
-      await tester.pumpAndSettle();
-      final focusScope = find.ancestor(
-        of: header,
-        matching: find.byType(ReferenceFocusOutline),
-      );
-      final outline = find.descendant(
-        of: focusScope,
-        matching: find.byKey(const ValueKey('reference-keyboard-outline')),
-      );
-      for (var i = 0; i < 30 && outline.evaluate().isEmpty; i++) {
-        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-        await tester.pumpAndSettle();
-      }
-      expect(outline, findsOneWidget);
-      expect(repo.publicSaved!['pet_name'], 'Mora');
-      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-
-      await tester.pumpAndSettle();
-      expect(find.text('Publicar caso'), findsOneWidget);
-      expect(
-        tester
-            .widget<PublicationFooter>(find.byType(PublicationFooter))
-            .onContinue,
-        isNotNull,
-      );
+      expect(footer.onContinue, isNull);
+      expect(footer.onSave, isNotNull);
       expect(tester.takeException(), isNull);
     },
   );

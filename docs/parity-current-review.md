@@ -1,5 +1,34 @@
 # Cierre de paridad — tablero vigente
 
+## Actualización autorizada 889c096 — 4 de octubre de 2026
+
+El titular autorizó implementar el plan por lotes, funciones completas y saludo
+al confirmar. Corte fijo `irlanda/apoyar-detalle-perfil@889c096ade9479b348530db7ba169f023b472ab9`,
+desde app `8785f6674c676ac6eb55fa716a75e0cb21d01388` / Play290.
+Los commits posteriores se registrarán sin ampliar esta entrega.
+**0 grupos abiertos / 19 cerrados en desarrollo**; aceptación final instalada pendiente. El conteo inicial era19/0; las25 familias/26 defectos
+del corte anterior permanecen cerrados y se reutiliza su evidencia vigente.
+Esta entrada supersede el aplazamiento REF-01–18 registrado abajo.
+
+| Frente / dueño | IDs exclusivos | Estado vigente |
+| --- | --- | --- |
+| Adoptar / subagente | REF-01–05,19 | Cerrado en desarrollo: contraste Source/Flutter y46/46 +21/21 aprobados; nativo pendiente |
+| Rescatista / subagente | REF-09,12,13 | Cerrado en desarrollo: contraste Source/Flutter,50/50 +9/9, DEV42/42; nativo pendiente |
+| Publicación / subagente | REF-11,14–18 | Cerrado en desarrollo: Source/Flutter normal/200,113/113 +9/9 y recaptura aprobados; nativo pendiente |
+| Compartidos / integrador | REF-06–08,10 y contratos comunes | Cerrado en desarrollo: visual/50/50, backend595/595, admin35/35/build; DEV42checks; nativo/gate final pendientes |
+
+5/10: inspección sobre PNG actuales completada en los tres frentes; nueve conjuntos concretos de ajustes perceptibles encontrados (dos Adoptar, uno inbox, seis Publicación). Adoptar corregido/21 dirigidos aprobados e inbox corregido; recaptura en curso. Publicación corrige los seis juntos. Backend integral local595/595, configuración16/16 y analyze limpio. Todos los frentes cerrados en desarrollo tras recapturas/pruebas:19→0; no confundir estos nueve defectos con19 grupos funcionales. La puerta nativa/instalada/final sigue pendiente.
+
+REF-19 agrega CTA «Quiero saber más», diálogo con nombre real y saludo
+transaccional al confirmar; no al renderizar/reabrir ni en historial existente.
+Una cola Flutter del integrador, sin builds por avance. Capturador existente
+con CAPTURE_FILTER, sólo estados afectados; cierre perceptual100%/115%/200%.
+Próximos cierres exigen UI/gestos/operaciones reales, no sólo código escrito.
+Pendientes nativos: galería multifoto, contacto con dos participantes, Back/teclado,
+FAB/inbox y publicación con conservación de borrador. Entrega: SHA final/gate,
+Codemagic android-guardian-internal, Play y Samsung comprobados por separado.
+No cambios de dinero, moderación o privilegios por modo; recibos privados.
+
 Actualizado: 4 de octubre de 2026. Base `53716dc`; referencia
 `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
 

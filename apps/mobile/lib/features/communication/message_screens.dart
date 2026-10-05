@@ -20,7 +20,8 @@ import '../adoption/community_ui.dart';
 import '../identity/experience_controller.dart';
 
 class ThreadsScreen extends ConsumerStatefulWidget {
-  const ThreadsScreen({super.key});
+  const ThreadsScreen({super.key, this.personal = false});
+  final bool personal;
   @override
   ConsumerState<ThreadsScreen> createState() => _ThreadsState();
 }
@@ -58,7 +59,8 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
     final experience = ref.watch(experienceProvider);
     return ListenableBuilder(
       listenable: experience,
-      builder: (context, _) => experience.value == AccountExperience.rescuer
+      builder: (context, _) =>
+          !widget.personal && experience.value == AccountExperience.rescuer
           ? const RescuerThreadsScreen()
           : donor(context),
     );
@@ -108,7 +110,10 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
     child: Scaffold(
       extendBody: true,
       backgroundColor: Colors.white,
-      bottomNavigationBar: const CommunityNav(3),
+      bottomNavigationBar: CommunityNav(
+        3,
+        selectedPath: widget.personal ? '/messages' : null,
+      ),
       body: SafeArea(
         bottom: false,
         child: ListView(
@@ -572,8 +577,19 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                       2,
                 ),
                 child: TextButton(
-                  onPressed: () =>
-                      context.push('/adoptions/${thread!['post_id']}'),
+                  onPressed: () {
+                    final owned =
+                        rescuer &&
+                        thread?['owner_id'] ==
+                            ref.read(communityRepositoryProvider).userId;
+                    var path = '/adoptions/${thread!['post_id']}';
+                    if (owned) {
+                      path = thread!['case_id'] != null
+                          ? '/rescue/${thread!['case_id']}'
+                          : '/my-adoptions/${thread!['post_id']}';
+                    }
+                    context.push(path);
+                  },
                   style: TextButton.styleFrom(
                     foregroundColor: textInk,
                     overlayColor: Colors.transparent,
@@ -795,6 +811,7 @@ class _NotificationsState extends ConsumerState<NotificationsScreen> {
   bool busy = false;
   @override
   Widget build(BuildContext context) => NotificationFrame(
+    rescuer: ref.watch(experienceProvider).value == AccountExperience.rescuer,
     children: [
       if (error != null) Notice(error!, isError: true),
       LiveSection<DataPage<Json>>(
@@ -811,6 +828,9 @@ class _NotificationsState extends ConsumerState<NotificationsScreen> {
             for (final item in result.items)
               NotificationTile(
                 item,
+                rescuer:
+                    ref.watch(experienceProvider).value ==
+                    AccountExperience.rescuer,
                 onTap: busy
                     ? null
                     : () async {

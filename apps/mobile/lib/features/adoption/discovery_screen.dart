@@ -197,7 +197,11 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
       await context.push('/login');
       return;
     }
-    final confirm = await confirmAdoptionContact(context);
+    final confirm = await confirmAdoptionContact(
+      context,
+      petName: card.name,
+      rescuerName: card.text('publisher_name'),
+    );
     if (confirm != true || !mounted) return;
     setState(() => acting = true);
     try {
@@ -290,44 +294,40 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(18, 16, 18, 110),
           children: [
-            Row(
-              children: [
-                SvgPicture.asset(
-                  'assets/profile/logo-paw.svg',
-                  width: 40,
-                  height: 40,
-                  semanticsLabel: 'Dopmi',
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: TextButton(
-                    onPressed: acting ? null : openLocation,
-                    style: TextButton.styleFrom(
-                      alignment: Alignment.centerLeft,
-                      foregroundColor: ink,
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.location_on_outlined, size: 14),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            filters['city'] as String? ?? 'Elegir ubicación',
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              height: 1.2,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0,
-                            ),
+            SizedBox(
+              height: 42,
+              child: Row(
+                children: [
+                  Tooltip(
+                    message: 'Elegir ubicación',
+                    child: TextButton(
+                      onPressed: acting ? null : openLocation,
+                      style: TextButton.styleFrom(
+                        alignment: Alignment.centerLeft,
+                        foregroundColor: ink,
+                        padding: EdgeInsets.zero,
+                        overlayColor: Colors.transparent,
+                        splashFactory: NoSplash.splashFactory,
+                      ),
+                      child: Semantics(
+                        label: filters['city'] == null
+                            ? 'Dopmi. Elegir ubicación'
+                            : 'Dopmi. Ubicación: ${filters['city']}. Cambiar ubicación',
+                        child: ExcludeSemantics(
+                          child: Image.asset(
+                            'assets/dopmi-wordmark.png',
+                            width: 108,
+                            height: 36,
+                            fit: BoxFit.contain,
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-                const DonorNotificationButton(),
-              ],
+                  const Spacer(),
+                  const DonorNotificationButton(),
+                ],
+              ),
             ),
             const SizedBox(height: 10),
             Row(
@@ -431,7 +431,20 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                     )
                   : DiscoveryEnd(
                       restart: () => load(reset: true),
-                      photos: cards.expand((post) => post.photos).toList(),
+                      minimumHeight:
+                          MediaQuery.textScalerOf(context).scale(28) > 40
+                          ? 0
+                          : math.max(
+                              0.0,
+                              MediaQuery.sizeOf(context).height -
+                                  MediaQuery.paddingOf(context).vertical -
+                                  240,
+                            ),
+                      photos: cards
+                          .where((post) => post.photos.isNotEmpty)
+                          .take(4)
+                          .map((post) => post.photos.first)
+                          .toList(),
                     )
             else if (current is Adoption)
               DiscoveryStack(

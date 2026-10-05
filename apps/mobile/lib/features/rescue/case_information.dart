@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../adoption/publication_frame.dart';
 import 'rescue_fields.dart';
@@ -10,9 +9,10 @@ class CaseInformation extends StatelessWidget {
     required this.controllers,
     required this.enabled,
     required this.onChanged,
+    this.showTitle = true,
   });
   final Map<String, TextEditingController> controllers;
-  final bool enabled;
+  final bool enabled, showTitle;
   final VoidCallback onChanged;
 
   void choose(String key, String value) {
@@ -26,7 +26,11 @@ class CaseInformation extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          field.key == 'age' ? 'Edad' : field.label,
+          field.key == 'pet_name'
+              ? 'Nombre de la mascota *'
+              : field.key == 'age'
+              ? 'Edad *'
+              : field.label,
           style: const TextStyle(
             fontFamily: 'Inter',
             fontSize: 14,
@@ -37,7 +41,11 @@ class CaseInformation extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Semantics(
-          label: field.key == 'age' ? 'Edad' : field.label,
+          label: field.key == 'pet_name'
+              ? 'Nombre de la mascota *'
+              : field.key == 'age'
+              ? 'Edad *'
+              : field.label,
           child: TextField(
             key: ValueKey('case-field-${field.key}'),
             controller: controllers[field.key],
@@ -64,11 +72,11 @@ class CaseInformation extends StatelessWidget {
               ),
               counterText: '',
               hintText: field.key == 'pet_name'
-                  ? 'Opcional'
+                  ? 'Ej. Luna'
                   : field.key == 'age'
                   ? 'ej. 3 meses'
                   : field.key == 'story'
-                  ? 'Cuenta cómo la encontraste.'
+                  ? 'Cuéntanos cómo llegó a ti. Danos una descripción de él/ella.'
                   : null,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,
@@ -90,17 +98,7 @@ class CaseInformation extends StatelessWidget {
             onChanged: (_) => onChanged(),
           ),
         ),
-        if (['pet_name', 'age'].contains(field.key)) const SizedBox(height: 8),
-        if (field.key == 'pet_name')
-          const Text(
-            'Si aún no tiene nombre, puedes dejarlo vacío.',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 12,
-              height: 1.2,
-              color: Color(0xff616174),
-            ),
-          ),
+        if (field.key == 'age') const SizedBox(height: 8),
         if (field.key == 'age')
           const Text(
             'Puede ser aproximada.',
@@ -119,18 +117,31 @@ class CaseInformation extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      const Text(
-        'Información básica',
-        style: TextStyle(
-          fontFamily: 'Inter',
-          fontSize: 18,
-          height: 28 / 18,
-          fontWeight: FontWeight.w600,
-          color: Color(0xff151423),
+      if (showTitle) ...[
+        const Text(
+          'Perfil',
+          style: TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 18,
+            height: 28 / 18,
+            fontWeight: FontWeight.w600,
+            color: Color(0xff151423),
+          ),
         ),
-      ),
-      const SizedBox(height: 16),
+        const SizedBox(height: 16),
+      ],
       field(rescueFields['case']!.first),
+      PublicationChoiceRow(
+        label: 'Especie',
+        required: true,
+        leading: {
+          for (final species in ['dog', 'cat'])
+            species: PublicationPetIcon(species),
+        },
+        options: const {'dog': 'Perro', 'cat': 'Gato'},
+        value: controllers['species']!.text,
+        onChanged: enabled ? (value) => choose('species', value) : null,
+      ),
       PublicationChoiceRow(
         label: 'Sexo',
         required: true,
@@ -142,44 +153,79 @@ class CaseInformation extends StatelessWidget {
         value: controllers['sex']!.text,
         onChanged: enabled ? (value) => choose('sex', value) : null,
       ),
-      Semantics(
-        selected: controllers['sex']!.text == 'unknown',
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: TextButton.icon(
-            onPressed: enabled ? () => choose('sex', 'unknown') : null,
-            icon: Icon(
-              controllers['sex']!.text == 'unknown'
-                  ? Icons.check
-                  : Icons.help_outline,
-              size: 16,
-            ),
-            label: const Text(
-              'Por determinar',
-              style: TextStyle(fontFamily: 'Inter', fontSize: 14),
+      if (controllers['sex']!.text == 'unknown')
+        Semantics(
+          selected: controllers['sex']!.text == 'unknown',
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: enabled ? () => choose('sex', 'unknown') : null,
+              icon: Icon(
+                controllers['sex']!.text == 'unknown'
+                    ? Icons.check
+                    : Icons.help_outline,
+                size: 16,
+              ),
+              label: const Text(
+                'Por determinar',
+                style: TextStyle(fontFamily: 'Inter', fontSize: 14),
+              ),
             ),
           ),
         ),
-      ),
-      const SizedBox(height: 16),
       PublicationChoiceRow(
-        label: 'Especie',
+        label: 'Tamaño',
         required: true,
+        verticalIcons: true,
         leading: {
-          for (final species in ['dog', 'cat'])
-            species: SvgPicture.asset(
-              'assets/profile/species-$species.svg',
-              width: 20,
-              height: 20,
-            ),
+          for (final item in const {
+            'small': 14.0,
+            'medium': 22.0,
+            'large': 30.0,
+          }.entries)
+            item.key: PublicationPetIcon('dog', size: item.value),
         },
-        options: const {'dog': 'Perro', 'cat': 'Gato'},
-        value: controllers['species']!.text,
-        onChanged: enabled ? (value) => choose('species', value) : null,
+        options: const {
+          'small': 'Chico',
+          'medium': 'Mediano',
+          'large': 'Grande',
+        },
+        value: controllers['size']?.text,
+        onChanged: enabled ? (value) => choose('size', value) : null,
+      ),
+      PublicationChoiceRow(
+        label: 'Edad',
+        required: true,
+        options: const {
+          'Cachorro': 'Cachorro',
+          'Adulto': 'Adulto',
+          'Senior': 'Senior',
+        },
+        value: controllers['age']!.text,
+        onChanged: enabled ? (value) => choose('age', value) : null,
+      ),
+      if (controllers['age']!.text.isNotEmpty &&
+          !['Cachorro', 'Adulto', 'Senior'].contains(controllers['age']!.text))
+        field(rescueFields['case']!.firstWhere((field) => field.key == 'age')),
+      const SizedBox(height: 16),
+      const Text(
+        'Su Historia',
+        style: TextStyle(
+          fontSize: 18,
+          height: 1.5,
+          fontWeight: FontWeight.w600,
+        ),
       ),
       const SizedBox(height: 16),
       for (final entry in rescueFields['case']!.where(
-        (f) => !['pet_name', 'sex', 'species', 'need'].contains(f.key),
+        (f) => ![
+          'pet_name',
+          'sex',
+          'species',
+          'size',
+          'age',
+          'need',
+        ].contains(f.key),
       ))
         field(entry),
       const Text(

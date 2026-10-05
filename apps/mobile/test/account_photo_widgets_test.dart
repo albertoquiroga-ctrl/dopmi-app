@@ -22,7 +22,8 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
       final identity = FakeIdentityRepository()
-        ..user = const Identity('one', 'ana@example.test', verified: true);
+        ..user = const Identity('one', 'ana@example.test', verified: true)
+        ..accountNames = const AccountNames('Ana', 'García', saved: true);
       addTearDown(identity.changes.close);
       var uploads = 0, saves = 0;
       Future<Uint8List?> Function() pick = () async =>

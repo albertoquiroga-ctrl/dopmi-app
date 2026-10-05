@@ -1,5 +1,3 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -100,61 +98,117 @@ class DopmiBottomBar extends StatelessWidget {
         ),
       );
     }
-    return SafeArea(
-      top: false,
-      child: ClipRect(
-        child: BackdropFilter(
-          filter: ui.ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: DecoratedBox(
-            decoration: const BoxDecoration(
-              color: Color(0xf7ffffff),
-              border: Border(top: BorderSide(color: Color(0xffe3e4ed))),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final safe = MediaQuery.paddingOf(context).bottom;
+        final textScaler = MediaQuery.textScalerOf(context);
+        final items = destinations.where((d) => d.path != '/publish').toList();
+        var minimum = 48.0;
+        for (final d in items) {
+          final painter = TextPainter(
+            text: TextSpan(
+              text: d.label,
+              style: DefaultTextStyle.of(context).style.copyWith(
+                fontSize: 9,
+                height: 1.2,
+                fontWeight: FontWeight.w700,
+              ),
             ),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                // Keep the reference's five columns when every label fits. Larger
-                // system text gets more room without splitting destination names.
-                var minimumWidth = 48.0;
-                for (final destination in destinations) {
-                  final painter = TextPainter(
-                    text: TextSpan(
-                      text: destination.label,
-                      style: DefaultTextStyle.of(context).style.copyWith(
-                        fontSize: 9,
-                        height: 1.2,
-                        fontWeight: FontWeight.w700,
+            textScaler: textScaler,
+            textDirection: Directionality.of(context),
+          )..layout();
+          if (painter.width + 8 > minimum) minimum = painter.width + 8;
+          painter.dispose();
+        }
+        final regular = constraints.maxWidth / 5 >= minimum;
+        final columns = (constraints.maxWidth / minimum).floor().clamp(1, 4);
+        final rows = regular ? 1 : (items.length / columns).ceil();
+        final surfaceHeight =
+            78.0 + (rows - 1) * 52 + safe + (regular ? 0 : 29);
+        final publish = destinations.firstWhere((d) => d.path == '/publish');
+        return SizedBox(
+          height: surfaceHeight + 19,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned.fill(
+                top: 19,
+                child: CustomPaint(painter: const _RescuerNavigationSurface()),
+              ),
+              Positioned(
+                left: 4,
+                right: 4,
+                bottom: safe + 8,
+                child: regular
+                    ? Row(
+                        children: [
+                          for (final d in destinations)
+                            Expanded(
+                              child: d.path == '/publish'
+                                  ? const SizedBox(width: 58, height: 52)
+                                  : _NavigationItem(
+                                      destination: d,
+                                      selected: selectedPath == d.path,
+                                      rescuer: true,
+                                      onPressed: () => onSelected(d),
+                                    ),
+                            ),
+                        ],
+                      )
+                    : Wrap(
+                        alignment: WrapAlignment.center,
+                        children: [
+                          for (final d in items)
+                            SizedBox(
+                              width: (constraints.maxWidth - 8) / columns,
+                              child: _NavigationItem(
+                                destination: d,
+                                selected: selectedPath == d.path,
+                                rescuer: true,
+                                onPressed: () => onSelected(d),
+                              ),
+                            ),
+                        ],
                       ),
-                    ),
-                    textDirection: Directionality.of(context),
-                    textScaler: MediaQuery.textScalerOf(context),
-                  )..layout();
-                  final width = painter.width + 8;
-                  if (width > minimumWidth) minimumWidth = width;
-                  painter.dispose();
-                }
-                final columns = (constraints.maxWidth / minimumWidth)
-                    .floor()
-                    .clamp(1, destinations.length);
-                return Wrap(
-                  alignment: WrapAlignment.center,
-                  children: [
-                    for (final destination in destinations)
-                      SizedBox(
-                        width: constraints.maxWidth / columns,
-                        child: _NavigationItem(
-                          destination: destination,
-                          selected: selectedPath == destination.path,
-                          rescuer: true,
-                          onPressed: () => onSelected(destination),
+              ),
+              Positioned(
+                top: 0,
+                left: (constraints.maxWidth - 58) / 2,
+                child: Semantics(
+                  button: true,
+                  selected: selectedPath == '/publish',
+                  label: 'Publicar',
+                  child: Material(
+                    color: DopmiTokens.purple,
+                    shape: const CircleBorder(),
+                    elevation: 8,
+                    shadowColor: const Color(0x617c3aed),
+                    child: InkWell(
+                      onTap: () => onSelected(publish),
+                      customBorder: const CircleBorder(),
+                      child: SizedBox(
+                        width: 58,
+                        height: 58,
+                        child: Center(
+                          child: SvgPicture.asset(
+                            'assets/navigation/${publish.asset}',
+                            width: 26,
+                            height: 26,
+                            colorFilter: const ColorFilter.mode(
+                              Colors.white,
+                              BlendMode.srcIn,
+                            ),
+                          ),
                         ),
                       ),
-                  ],
-                );
-              },
-            ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -172,7 +226,7 @@ class _NavigationItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = selected && rescuer
-        ? DopmiTokens.purple
+        ? const Color(0xff151423)
         : selected
         ? DopmiTokens.ink
         : rescuer
@@ -191,7 +245,7 @@ class _NavigationItem extends StatelessWidget {
           highlightColor: rescuer ? Colors.transparent : null,
           hoverColor: rescuer ? Colors.transparent : null,
           child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: rescuer ? 56 : 48),
+            constraints: BoxConstraints(minHeight: rescuer ? 52 : 48),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -222,7 +276,10 @@ class _NavigationItem extends StatelessWidget {
                             destination.path == '/messages'
                         ? 20
                         : 22,
-                    colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                    colorFilter: ColorFilter.mode(
+                      rescuer && !selected ? const Color(0xff8a8799) : color,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
                 if (rescuer) ...[
@@ -236,7 +293,7 @@ class _NavigationItem extends StatelessWidget {
                       fontSize: 9,
                       height: 1.2,
                       color: color,
-                      fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                     ),
                   ),
                 ],
@@ -247,4 +304,27 @@ class _NavigationItem extends StatelessWidget {
       ),
     );
   }
+}
+
+class _RescuerNavigationSurface extends CustomPainter {
+  const _RescuerNavigationSurface();
+  @override
+  void paint(Canvas canvas, Size size) {
+    final surface = Path()
+      ..addRRect(
+        RRect.fromRectAndCorners(
+          Offset.zero & size,
+          topLeft: const Radius.circular(28),
+          topRight: const Radius.circular(28),
+        ),
+      );
+    final notch = Path()
+      ..addOval(Rect.fromCircle(center: Offset(size.width / 2, 0), radius: 36));
+    final path = Path.combine(PathOperation.difference, surface, notch);
+    canvas.drawShadow(path, const Color(0x1415110d), 8, false);
+    canvas.drawPath(path, Paint()..color = Colors.white);
+  }
+
+  @override
+  bool shouldRepaint(_RescuerNavigationSurface oldDelegate) => false;
 }

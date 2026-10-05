@@ -1,9 +1,5 @@
-import '../../core/reference_focus_outline.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-import 'community_ui.dart';
 
 class PublicationFrame extends StatelessWidget {
   const PublicationFrame({
@@ -31,26 +27,23 @@ class PublicationFrame extends StatelessWidget {
     );
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: keyboard
-          ? null
-          : const CommunityNav(3, selectedPath: '/publish'),
       body: SafeArea(
-        bottom: false,
+        bottom: true,
         child: LayoutBuilder(
           builder: (context, constraints) {
             final scrollHeader = keyboard || constraints.maxHeight < 500;
             return Column(
               children: [
-                if (!scrollHeader) header,
+                scrollHeader ? const SizedBox.shrink() : header,
                 Expanded(
                   child: ListView(
                     key: const PageStorageKey('publication-body'),
                     padding: EdgeInsets.zero,
                     children: [
-                      // Short viewports and large navigation need the same
-                      // scrolling header as an open keyboard. Keep the footer
-                      // reachable and the keyed Form's authored text intact.
-                      if (scrollHeader) header,
+                      // The Source header stays fixed with large text. Only a
+                      // keyboard or short viewport needs it to scroll, keeping
+                      // the footer and the keyed Form's authored text intact.
+                      scrollHeader ? header : const SizedBox.shrink(),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
                         child: Column(
@@ -83,67 +76,53 @@ class _PublicationHeader extends StatelessWidget {
   final VoidCallback? onBack;
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+    padding: const EdgeInsets.fromLTRB(18, 16, 18, 12),
     decoration: const BoxDecoration(
       border: Border(bottom: BorderSide(color: Color(0xffe3e4ed))),
     ),
     child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Semantics(
-          button: true,
-          label: 'Volver',
-          enabled: onBack != null,
-          child: ReferenceFocusOutline(
-            radius: 0,
-            child: TextButton(
+        Align(
+          alignment: Alignment.centerLeft,
+          child: SizedBox(
+            width: 48,
+            height: 32,
+            child: IconButton(
               key: const ValueKey('publication-header-back'),
+              tooltip: 'Volver',
               onPressed: onBack,
-              style:
-                  TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    minimumSize: Size.zero,
-                    splashFactory: NoSplash.splashFactory,
-                  ).copyWith(
-                    overlayColor: const WidgetStatePropertyAll(
-                      Colors.transparent,
-                    ),
-                  ),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 48),
-                child: Row(
-                  children: [
-                    ExcludeSemantics(
-                      child: SvgPicture.asset(
-                        'assets/profile/back.svg',
-                        width: 24,
-                        height: 24,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Semantics(
-                        header: true,
-                        child: Text(
-                          title,
-                          style: const TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 24,
-                            height: 32 / 24,
-                            letterSpacing: -.48,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xff151423),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+              padding: EdgeInsets.zero,
+              alignment: Alignment.centerLeft,
+              icon: SvgPicture.asset(
+                'assets/profile/back.svg',
+                width: 24,
+                height: 24,
               ),
             ),
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 10),
         PublicationStepper(step: step, totalSteps: totalSteps),
+        const SizedBox(height: 18),
+        Container(
+          constraints: const BoxConstraints(minHeight: 46),
+          padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
+          alignment: Alignment.centerLeft,
+          child: Semantics(
+            header: true,
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 28,
+                height: 1.1,
+                fontWeight: FontWeight.w700,
+                color: Color(0xff15110d),
+              ),
+            ),
+          ),
+        ),
       ],
     ),
   );
@@ -163,43 +142,18 @@ class PublicationStepper extends StatelessWidget {
       child: Row(
         children: [
           for (var index = 0; index < totalSteps; index++) ...[
-            Container(
-              width: 32,
-              height: 32,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: index <= step
-                    ? const Color(0xff7c3aed)
-                    : const Color(0xfff0eff8),
-                shape: BoxShape.circle,
-              ),
-              child: index < step
-                  ? const Icon(Icons.check, size: 18, color: Colors.white)
-                  : Text(
-                      '${index + 1}',
-                      style: TextStyle(
-                        fontSize: 14,
-                        height: 1,
-                        fontWeight: FontWeight.w700,
-                        color: index <= step
-                            ? Colors.white
-                            : const Color(0xff616174),
-                      ),
-                    ),
-            ),
-            if (index < totalSteps - 1)
-              Expanded(
-                child: Container(
-                  height: 2,
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: BoxDecoration(
-                    color: index < step
-                        ? const Color(0xff7c3aed)
-                        : const Color(0xfff0eff8),
-                    borderRadius: BorderRadius.circular(99),
-                  ),
+            if (index > 0) const SizedBox(width: 6),
+            Expanded(
+              child: Container(
+                height: 4,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(99),
+                  color: index <= step
+                      ? const Color(0xff7841f2)
+                      : const Color(0xffe6e2dd),
                 ),
               ),
+            ),
           ],
         ],
       ),
@@ -323,8 +277,10 @@ class PublicationPhotoPicker extends StatelessWidget {
     super.key,
     required this.onCamera,
     required this.onGallery,
+    this.supplementary = false,
   });
   final VoidCallback? onCamera, onGallery;
+  final bool supplementary;
   @override
   Widget build(BuildContext context) => CustomPaint(
     painter: const _PhotoBorder(),
@@ -338,8 +294,8 @@ class PublicationPhotoPicker extends StatelessWidget {
             height: 48,
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Añade fotos de la mascota',
+          Text(
+            supplementary ? 'Agrega otra foto' : 'Añade fotos de la mascota',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
@@ -349,8 +305,10 @@ class PublicationPhotoPicker extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          const Text(
-            'Puedes subir una o varias fotos.',
+          Text(
+            supplementary
+                ? 'Hasta cinco fotos adicionales.'
+                : 'Puedes subir una o varias fotos.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 12,
@@ -443,15 +401,17 @@ class PublicationPhotoThumbnail extends StatelessWidget {
     required this.photo,
     required this.principal,
     this.onRemove,
+    this.size = 167,
   });
+  final double size;
   final Widget photo;
   final bool principal;
   final VoidCallback? onRemove;
 
   @override
   Widget build(BuildContext context) => SizedBox(
-    width: 167,
-    height: 167,
+    width: size,
+    height: size,
     child: ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: DecoratedBox(
@@ -528,10 +488,11 @@ class PublicationChoiceRow extends StatelessWidget {
     this.onChanged,
     this.leading = const {},
     this.required = false,
+    this.verticalIcons = false,
   });
   final String label;
   final Map<String, Widget> leading;
-  final bool required;
+  final bool required, verticalIcons;
   final Map<String, String> options;
   final String? value;
   final ValueChanged<String>? onChanged;
@@ -575,11 +536,20 @@ class PublicationChoiceRow extends StatelessWidget {
                         : () => onChanged!(entry.key),
                     style: OutlinedButton.styleFrom(
                       animationDuration: Duration.zero,
-                      minimumSize: const Size(0, 46),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 10,
+                      minimumSize: Size(
+                        0,
+                        verticalIcons
+                            ? 56
+                            : options.length == 3
+                            ? 44
+                            : 46,
                       ),
+                      padding: verticalIcons
+                          ? const EdgeInsets.fromLTRB(4, 8, 4, 6)
+                          : const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 10,
+                            ),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       foregroundColor: value == entry.key
                           ? const Color(0xff7c3aed)
@@ -602,16 +572,26 @@ class PublicationChoiceRow extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    child: Wrap(
-                      alignment: WrapAlignment.center,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      spacing: 8,
-                      children: [
-                        if (leading[entry.key] != null)
-                          ExcludeSemantics(child: leading[entry.key]!),
-                        Text(entry.value, textAlign: TextAlign.center),
-                      ],
-                    ),
+                    child: verticalIcons
+                        ? Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (leading[entry.key] != null)
+                                ExcludeSemantics(child: leading[entry.key]!),
+                              const SizedBox(height: 4),
+                              Text(entry.value, textAlign: TextAlign.center),
+                            ],
+                          )
+                        : Wrap(
+                            alignment: WrapAlignment.center,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            spacing: 8,
+                            children: [
+                              if (leading[entry.key] != null)
+                                ExcludeSemantics(child: leading[entry.key]!),
+                              Text(entry.value, textAlign: TextAlign.center),
+                            ],
+                          ),
                   ),
                 ),
               ),
@@ -760,5 +740,172 @@ class PublicationTraitCheck extends StatelessWidget {
         ],
       ),
     ),
+  );
+}
+
+class PublicationMainPhoto extends StatelessWidget {
+  const PublicationMainPhoto({super.key, this.photo, required this.onPick});
+  final Widget? photo;
+  final VoidCallback? onPick;
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      const Text.rich(
+        TextSpan(
+          text: 'Foto de la mascota ',
+          children: [
+            TextSpan(
+              text: '*',
+              style: TextStyle(color: Color(0xffe62c2c)),
+            ),
+          ],
+        ),
+        style: TextStyle(
+          fontSize: 14,
+          height: 1.2,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      const SizedBox(height: 8),
+      const Text(
+        'Será la foto principal que lo representará.',
+        style: TextStyle(fontSize: 12, height: 1.35, color: Color(0xff8a837c)),
+      ),
+      const SizedBox(height: 8),
+      Center(
+        child: SizedBox(
+          width: 120,
+          height: 120,
+          child: Stack(
+            children: [
+              Semantics(
+                button: true,
+                label: photo == null
+                    ? 'Subir foto de la mascota, obligatoria'
+                    : 'Cambiar foto de la mascota',
+                child: InkWell(
+                  onTap: onPick,
+                  customBorder: const CircleBorder(),
+                  child: ClipOval(
+                    child: Container(
+                      width: 120,
+                      height: 120,
+                      color: const Color(0xfff3f2f8),
+                      child:
+                          photo ??
+                          Center(
+                            child: SvgPicture.asset(
+                              'assets/profile/notif-pet.svg',
+                              width: 36,
+                              height: 36,
+                              colorFilter: const ColorFilter.mode(
+                                Color(0xff8a8799),
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                          ),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                right: 2,
+                bottom: 2,
+                child: IconButton(
+                  tooltip: 'Editar foto de la mascota',
+                  onPressed: onPick,
+                  style: IconButton.styleFrom(
+                    backgroundColor: const Color(0xff7841f2),
+                    foregroundColor: Colors.white,
+                    side: const BorderSide(color: Colors.white, width: 3),
+                    shape: const CircleBorder(),
+                    minimumSize: const Size(36, 36),
+                    maximumSize: const Size(36, 36),
+                    padding: EdgeInsets.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  icon: const Icon(Icons.edit_outlined, size: 16),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      const SizedBox(height: 16),
+    ],
+  );
+}
+
+class PublicationPreviewFrame extends StatelessWidget {
+  const PublicationPreviewFrame({super.key, required this.child});
+  final Widget child;
+  @override
+  Widget build(BuildContext context) => Container(
+    height: (MediaQuery.sizeOf(context).height - 220).clamp(240.0, 640.0),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(28),
+      border: Border.all(color: const Color(0xffeceaf3)),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0x1915110d),
+          blurRadius: 28,
+          offset: Offset(0, 10),
+        ),
+      ],
+    ),
+    clipBehavior: Clip.antiAlias,
+    child: child,
+  );
+}
+
+class PublicationPetIcon extends StatelessWidget {
+  const PublicationPetIcon(this.species, {super.key, this.size = 20});
+  final String species;
+  final double size;
+  @override
+  Widget build(BuildContext context) => SvgPicture.asset(
+    species == 'cat'
+        ? 'assets/profile/publish-species-cat.svg'
+        : 'assets/profile/notif-pet.svg',
+    width: size,
+    height: size,
+    colorFilter: ColorFilter.mode(
+      DefaultTextStyle.of(context).style.color ?? const Color(0xff151423),
+      BlendMode.srcIn,
+    ),
+  );
+}
+
+class PublicationPreviewIntro extends StatelessWidget {
+  const PublicationPreviewIntro(this.copy, {super.key});
+  final String copy;
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      const Text(
+        'Vista previa de la publicación',
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 16,
+          height: 1.5,
+          fontWeight: FontWeight.w500,
+          color: Color(0xff151423),
+        ),
+      ),
+      const SizedBox(height: 12),
+      Text(
+        copy,
+        style: const TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 13,
+          height: 1.45,
+          color: Color(0xff616174),
+        ),
+      ),
+      const SizedBox(height: 12),
+    ],
   );
 }

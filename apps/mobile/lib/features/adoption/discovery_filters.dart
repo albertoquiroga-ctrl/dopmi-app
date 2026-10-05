@@ -7,45 +7,9 @@ import 'package:go_router/go_router.dart';
 import '../../core/ui.dart';
 import '../../core/dialog_close.dart';
 import 'community_repository.dart';
-
-const personalityLabels = <String, String>{
-  'alegre': 'Alegre',
-  'feliz': 'Feliz',
-  'esperanzado': 'Esperanzado',
-  'emocionado': 'Emocionado',
-  'triste': 'Triste',
-  'enojado': 'Enojado',
-  'ansioso': 'Ansioso',
-  'tranquilo': 'Tranquilo',
-  'contento': 'Contento',
-  'satisfecho': 'Satisfecho',
-  'solo': 'Solo',
-  'nervioso': 'Nervioso',
-};
-
-const personalityColors = <String, Color>{
-  'alegre': Color(0xfff7f4ef),
-  'feliz': Color(0xfff7efb8),
-  'esperanzado': Color(0xffd8efc4),
-  'emocionado': Color(0xfff6d0dc),
-  'triste': Color(0xffd7dceb),
-  'enojado': Color(0xfff5d0b8),
-  'ansioso': Color(0xffe8dcc8),
-  'tranquilo': Color(0xffcfe4f5),
-  'contento': Color(0xffcfeee0),
-  'satisfecho': Color(0xffddd0f0),
-  'solo': Color(0xffc9d7f2),
-  'nervioso': Color(0xffe8efb8),
-};
-
-const legacyPersonalityLabels = <String, String>{
-  'affectionate': 'Cariñoso',
-  'playful': 'Juguetón',
-  'calm': 'Tranquilo',
-  'active': 'Activo',
-  'sociable': 'Sociable',
-  'independent': 'Independiente',
-};
+import 'adoption_traits.dart';
+export 'adoption_traits.dart'
+    show personalityLabels, personalityColors, legacyPersonalityLabels;
 
 const discoveryFilterSvg =
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M4 7h16" stroke="#15110d" stroke-width="1.8" stroke-linecap="round"/><circle cx="16.5" cy="7" r="2.25" fill="#15110d"/><path d="M4 17h16" stroke="#15110d" stroke-width="1.8" stroke-linecap="round"/><circle cx="7.5" cy="17" r="2.25" fill="#15110d"/></svg>';
@@ -60,9 +24,11 @@ class DiscoveryFilters extends StatefulWidget {
 class _DiscoveryFiltersState extends State<DiscoveryFilters> {
   late String? sex = widget.current['sex'] as String?;
   late String? size = widget.current['size'] as String?;
-  late Set<String> traits = Set<String>.from(
-    widget.current['personality'] as List? ?? const [],
-  );
+  late Set<String> traits = (widget.current['personality'] as List? ?? const [])
+      .whereType<String>()
+      .where(personalityLabels.containsKey)
+      .take(1)
+      .toSet();
   Widget heading(String text) => Text(
     text,
     style: const TextStyle(
@@ -109,7 +75,7 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                heading('Género'),
+                heading('Sexo'),
                 const SizedBox(height: 12),
                 Container(
                   padding: const EdgeInsets.all(4),
@@ -156,44 +122,87 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                 const SizedBox(height: 20),
                 heading('Tamaño'),
                 const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                LayoutBuilder(
+                  builder: (context, box) => Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
                     children: [
                       for (final item in const [
-                        ('small', 'Chico', 30.0),
-                        ('medium', 'Mediano', 40.0),
-                        ('large', 'Grande', 52.0),
+                        ('small', 'Chico', 14.0),
+                        ('medium', 'Mediano', 22.0),
+                        ('large', 'Grande', 30.0),
                       ])
-                        Expanded(
+                        SizedBox(
+                          width: MediaQuery.textScalerOf(context).scale(13) > 20
+                              ? box.maxWidth
+                              : (box.maxWidth - 16) / 3,
                           child: Semantics(
                             button: true,
                             selected: size == item.$1,
                             label: item.$2,
                             child: Tooltip(
                               message: item.$2,
-                              child: InkWell(
-                                splashFactory: NoSplash.splashFactory,
-                                overlayColor: const WidgetStatePropertyAll(
-                                  Colors.transparent,
-                                ),
-                                borderRadius: BorderRadius.circular(14),
-                                onTap: () => setState(
+                              child: TextButton(
+                                onPressed: () => setState(
                                   () => size = size == item.$1 ? null : item.$1,
                                 ),
-                                child: SizedBox(
-                                  height: 56,
-                                  child: Center(
-                                    child: SvgPicture.string(
-                                      sizeDogSvg(size == item.$1),
-                                      width: item.$3,
-                                      height: item.$3 * .78,
-                                    ),
+                                style: TextButton.styleFrom(
+                                  backgroundColor: size == item.$1
+                                      ? const Color(0x147c3aed)
+                                      : Colors.white,
+                                  foregroundColor: size == item.$1
+                                      ? const Color(0xff7c3aed)
+                                      : const Color(0xff151423),
+                                  padding: const EdgeInsets.fromLTRB(
+                                    4,
+                                    8,
+                                    4,
+                                    6,
                                   ),
+                                  minimumSize: const Size(0, 66),
+                                  visualDensity: VisualDensity.standard,
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  splashFactory: NoSplash.splashFactory,
+                                  overlayColor: Colors.transparent,
+                                  animationDuration: Duration.zero,
+                                  side: BorderSide(
+                                    color: size == item.$1
+                                        ? const Color(0xff7c3aed)
+                                        : const Color(0xffe3e4ed),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  textStyle: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.15,
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      height: 30,
+                                      child: Center(
+                                        child: SvgPicture.asset(
+                                          'assets/profile/notif-pet.svg',
+                                          width: item.$3,
+                                          height: item.$3,
+                                          colorFilter: ColorFilter.mode(
+                                            size == item.$1
+                                                ? const Color(0xff7c3aed)
+                                                : const Color(0xff151423),
+                                            BlendMode.srcIn,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(item.$2, textAlign: TextAlign.center),
+                                  ],
                                 ),
                               ),
                             ),
@@ -208,37 +217,27 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                 LayoutBuilder(
                   builder: (context, constraints) {
                     final textScaler = MediaQuery.textScalerOf(context);
-                    var columns = textScaler.scale(11) > 20
-                        ? 1
-                        : textScaler.scale(11) > 15
-                        ? 2
-                        : 4;
-                    var widestLabel = 0.0;
-                    for (final label in personalityLabels.values) {
+                    final widths = <String, double>{};
+                    for (final item in personalityLabels.entries) {
                       final painter = TextPainter(
                         text: TextSpan(
-                          text: label,
+                          text: item.value,
                           style: const TextStyle(
                             fontFamily: 'Inter',
-                            fontSize: 11,
+                            fontSize: 12,
                             height: 1.15,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                             letterSpacing: 0,
                           ),
                         ),
                         textDirection: Directionality.of(context),
                         textScaler: textScaler,
                       )..layout();
-                      if (painter.width > widestLabel) {
-                        widestLabel = painter.width;
-                      }
+                      widths[item.key] = math.min(
+                        constraints.maxWidth,
+                        painter.width.ceilToDouble() + 26,
+                      );
                       painter.dispose();
-                    }
-                    while (textScaler.scale(11) > 11 &&
-                        columns > 1 &&
-                        (constraints.maxWidth - (columns - 1) * 8) / columns <
-                            widestLabel) {
-                      columns ~/= 2;
                     }
                     return Wrap(
                       spacing: 8,
@@ -246,20 +245,23 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                       children: [
                         for (final item in personalityLabels.entries)
                           SizedBox(
-                            width:
-                                (constraints.maxWidth - (columns - 1) * 8) /
-                                columns,
+                            width: widths[item.key],
                             child: FilterOption(
                               label: item.value,
                               selected: traits.contains(item.key),
                               fill: personalityColors[item.key]!,
-                              foreground: ink,
-                              fontSize: 11,
+                              foreground: traits.contains(item.key)
+                                  ? const Color(0xff4c1d95)
+                                  : personalityTextColors[item.key]!,
+                              border: traits.contains(item.key)
+                                  ? const Color(0xff7c3aed)
+                                  : personalityBorderColors[item.key]!,
+                              fontSize: 12,
                               outlined: true,
                               onPressed: () => setState(() {
-                                traits.contains(item.key)
-                                    ? traits.remove(item.key)
-                                    : traits.add(item.key);
+                                final selected = traits.contains(item.key);
+                                traits.clear();
+                                if (!selected) traits.add(item.key);
                               }),
                             ),
                           ),
@@ -274,12 +276,18 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                     overlayColor: Colors.transparent,
                     animationDuration: Duration.zero,
                     minimumSize: const Size(0, 44),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 11,
+                    ),
+                    visualDensity: VisualDensity.standard,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     backgroundColor: yellow,
                     foregroundColor: ink,
                     textStyle: const TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 16,
+                      height: 1.25,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0,
                     ),
@@ -292,7 +300,10 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                     if (size != null) 'size': size,
                     if (traits.isNotEmpty) 'personality': traits.toList(),
                   }),
-                  child: const Text('Aplicar filtros'),
+                  child: const Text(
+                    'Aplicar filtros',
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 OutlinedButton(
@@ -301,12 +312,18 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                     overlayColor: Colors.transparent,
                     animationDuration: Duration.zero,
                     minimumSize: const Size(0, 44),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 11,
+                    ),
+                    visualDensity: VisualDensity.standard,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     foregroundColor: ink,
                     side: const BorderSide(color: Color(0xffe6e2dd)),
                     textStyle: const TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 16,
+                      height: 1.25,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0,
                     ),
@@ -315,7 +332,10 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                     ),
                   ),
                   onPressed: () => context.pop(<String, dynamic>{}),
-                  child: const Text('Limpiar filtros'),
+                  child: const Text(
+                    'Limpiar filtros',
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ],
             ),
@@ -337,10 +357,12 @@ class FilterOption extends StatelessWidget {
     required this.fontSize,
     required this.onPressed,
     this.outlined = false,
+    this.border,
   });
   final String label;
   final bool selected, outlined;
   final Color fill, foreground;
+  final Color? border;
   final double fontSize;
   final VoidCallback onPressed;
   @override
@@ -361,15 +383,15 @@ class FilterOption extends StatelessWidget {
         backgroundColor: fill,
         foregroundColor: foreground,
         side: BorderSide(
-          width: 1.5,
-          color: outlined && selected ? ink : Colors.transparent,
+          width: outlined && selected ? 2 : 1,
+          color: border ?? (outlined && selected ? ink : Colors.transparent),
         ),
         shape: const StadiumBorder(),
         textStyle: TextStyle(
           fontFamily: 'Inter',
           fontSize: fontSize,
           height: 1.15,
-          fontWeight: FontWeight.w600,
+          fontWeight: outlined ? FontWeight.w500 : FontWeight.w600,
           letterSpacing: 0,
         ),
       ),

@@ -3,6 +3,7 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -60,6 +61,9 @@ void main() {
 
   testWidgets('cancel and close never create a thread', (tester) async {
     final repository = await open(tester);
+    expect(find.text('Conectar con Luna'), findsOneWidget);
+    expect(find.textContaining('la persona rescatista'), findsOneWidget);
+    expect(find.textContaining('se enviará un saludo inicial'), findsOneWidget);
     await tester.tap(find.text('Todavía no'));
     await tester.pumpAndSettle();
     expect(repository.starts, 0);
@@ -105,6 +109,9 @@ void main() {
   testWidgets(
     'large text scrolls to confirmation with close always reachable',
     (tester) async {
+      final font = FontLoader('Inter')
+        ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
+      await tester.runAsync(font.load);
       final repository = await open(tester, large: true);
       expect(
         tester.getRect(find.byTooltip('Cerrar')).top,
@@ -119,6 +126,22 @@ void main() {
         alignment: .5,
       );
       await tester.pumpAndSettle();
+      for (final label in ['Todavía no', 'Sí, contactar rescatista']) {
+        final text = find.text(label);
+        final button = find
+            .ancestor(
+              of: text,
+              matching: label == 'Todavía no'
+                  ? find.byType(OutlinedButton)
+                  : find.byType(FilledButton),
+            )
+            .first;
+        expect(
+          tester.getSize(button).height - tester.getSize(text).height,
+          greaterThanOrEqualTo(20),
+          reason: 'Enlarged copy keeps space above and below both actions',
+        );
+      }
       await tester.tap(find.text('Sí, contactar rescatista'));
       await tester.pumpAndSettle();
       expect(repository.starts, 1);

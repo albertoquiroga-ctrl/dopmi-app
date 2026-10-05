@@ -268,6 +268,7 @@ void main() {
   ) async {
     final repo = FakeIdentityRepository()
       ..user = const Identity('one', 'ana@example.test', verified: true)
+      ..accountNames = const AccountNames('Ana', 'López', saved: true)
       ..failSave = true;
     await start(tester, repo);
     await tester.enterText(find.byType(TextFormField).first, 'Ana editada');
@@ -281,7 +282,7 @@ void main() {
     );
     repo.failSave = false;
     await tap(tester, 'Guardar cambios');
-    expect(repo.profile.name, 'Ana editada');
+    expect(repo.profile.name, 'Ana editada López');
     expect(find.text('Cambios guardados'), findsOneWidget);
     expect(find.byType(Notice), findsNothing);
     await tester.pump(const Duration(milliseconds: 2600));
@@ -393,6 +394,7 @@ void main() {
     (tester) async {
       final repo = FakeIdentityRepository()
         ..user = const Identity('one', 'ana@example.test', verified: true)
+        ..accountNames = const AccountNames('Ana', 'López', saved: true)
         ..failEmailChange = true;
       await start(tester, repo);
       await tester.enterText(
@@ -430,8 +432,25 @@ void main() {
     await tester.tap(basicInfo);
     await tester.pumpAndSettle();
     expect(find.text('Ciudad / estado'), findsOneWidget);
-    expect(find.text('Correo electrónico'), findsOneWidget);
+    expect(find.text('Correo electrónico *'), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('basic info requires the three visible mandatory fields', (
+    tester,
+  ) async {
+    final repo = FakeIdentityRepository()
+      ..user = const Identity('one', 'ana@example.test', verified: true);
+    await start(tester, repo);
+    final save = find.widgetWithText(FilledButton, 'Guardar cambios');
+    expect(tester.widget<FilledButton>(save).onPressed, isNull);
+    await tester.enterText(find.byType(TextFormField).at(1), 'López');
+    await tester.pump();
+    expect(tester.widget<FilledButton>(save).onPressed, isNotNull);
+    await tester.enterText(find.byType(TextFormField).at(2), '');
+    await tester.pump();
+    expect(tester.widget<FilledButton>(save).onPressed, isNull);
+    expect(repo.accountNames, isNull);
   });
 
   testWidgets('privacy route exposes account deletion', (tester) async {

@@ -728,19 +728,24 @@ class DonorProfileView extends ConsumerWidget {
                     ],
                   ),
                 ),
+                IconButton(
+                  tooltip: 'Editar información básica',
+                  onPressed: () => context.push('/basic-info'),
+                  icon: SvgPicture.asset(
+                    'assets/profile/icon-edit.svg',
+                    width: 18,
+                    height: 18,
+                  ),
+                  style: IconButton.styleFrom(
+                    backgroundColor: const Color(0xfff3f0ea),
+                    overlayColor: Colors.transparent,
+                  ),
+                ),
               ],
             ),
           ),
           const SizedBox(height: 20),
           if (ref.watch(guardianEnabledProvider)) const DonorGuardianFeature(),
-          const SizedBox(height: 20),
-          const DonorAccessGroup(
-            title: 'Preferencias',
-            items: [
-              ('Mi cuenta', Icons.person_outline, '/basic-info'),
-              ('Mis mascotas', Icons.favorite_border, '/messages'),
-            ],
-          ),
           const SizedBox(height: 20),
           DonorAccessGroup(
             title: 'Pagos y suscripciones',
@@ -788,6 +793,13 @@ class DonorProfileView extends ConsumerWidget {
             onPressed: () => context.push('/help'),
           ),
           const SizedBox(height: 20),
+          const SizedBox(height: 12),
+          ProfileRow(
+            title: 'Mis mascotas',
+            icon: Icons.favorite_border,
+            path: '/messages',
+          ),
+          const SizedBox(height: 12),
           DonorLogoutRow(
             onPressed: () async {
               try {

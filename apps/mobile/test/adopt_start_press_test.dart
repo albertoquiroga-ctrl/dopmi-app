@@ -34,7 +34,11 @@ void main() {
                 builder: (context) => Scaffold(
                   body: TextButton(
                     onPressed: () async {
-                      result = await confirmAdoptionContact(context);
+                      result = await confirmAdoptionContact(
+                        context,
+                        petName: 'Luna',
+                        rescuerName: 'Refugio Luna',
+                      );
                       completed = true;
                     },
                     child: const Text('Open'),

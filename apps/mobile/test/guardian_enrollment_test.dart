@@ -267,7 +267,7 @@ void main() {
     await start(tester, repo, location: '/guardian?enroll=1');
     await tester.tap(find.byTooltip('Regresar'));
     await tester.pumpAndSettle();
-    expect(find.text('Descubre casos'), findsOneWidget);
+    expect(find.text('Ayudar se siente bien'), findsOneWidget);
     expect(repo.calls, isEmpty);
     expect(repo.opened, 0);
   });
@@ -292,7 +292,7 @@ void main() {
     expect(repo.opened, 0);
     await tester.tap(find.byTooltip('Regresar'));
     await tester.pumpAndSettle();
-    expect(find.text('Descubre casos'), findsOneWidget);
+    expect(find.text('Ayudar se siente bien'), findsOneWidget);
   });
   testWidgets(
     'Promotion never offers a second enrollment when server returns an active plan',

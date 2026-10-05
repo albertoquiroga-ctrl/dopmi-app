@@ -53,6 +53,10 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
   String? pendingEmail;
   Timer? savedTimer;
   bool showSaved = false;
+  bool get requiredFieldsComplete =>
+      name.text.trim().isNotEmpty &&
+      lastName.text.trim().isNotEmpty &&
+      email.text.trim().isNotEmpty;
   @override
   void initState() {
     super.initState();
@@ -336,7 +340,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
                         ],
                         const SizedBox(height: 16),
                         _BasicInfoField(
-                          label: 'Nombre',
+                          label: 'Nombre *',
                           child: TextFormField(
                             controller: name,
                             onChanged: (_) => setState(() {}),
@@ -364,9 +368,10 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
                         ),
                         const SizedBox(height: 16),
                         _BasicInfoField(
-                          label: 'Apellido',
+                          label: 'Apellido *',
                           child: TextFormField(
                             controller: lastName,
+                            onChanged: (_) => setState(() {}),
                             enabled: !suspended && !busy,
                             maxLength: 80,
                             textCapitalization: TextCapitalization.words,
@@ -385,20 +390,22 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
                               ),
                               constraints: BoxConstraints(minHeight: 44),
                             ),
-                            validator: (_) =>
-                                '${name.text.trim()} ${lastName.text.trim()}'
-                                        .trim()
-                                        .length >
-                                    80
+                            validator: (_) => lastName.text.trim().isEmpty
+                                ? 'Escribe tu apellido.'
+                                : '${name.text.trim()} ${lastName.text.trim()}'
+                                          .trim()
+                                          .length >
+                                      80
                                 ? 'El nombre y apellido deben sumar hasta 80 caracteres.'
                                 : null,
                           ),
                         ),
                         const SizedBox(height: 16),
                         _BasicInfoField(
-                          label: 'Correo electrónico',
+                          label: 'Correo electrónico *',
                           child: TextFormField(
                             controller: email,
+                            onChanged: (_) => setState(() {}),
                             enabled: !suspended && !busy,
                             keyboardType: TextInputType.emailAddress,
                             autocorrect: false,
@@ -496,7 +503,10 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
                                 vertical: 12,
                               ),
                             ),
-                            onPressed: suspended || busy ? null : save,
+                            onPressed:
+                                suspended || busy || !requiredFieldsComplete
+                                ? null
+                                : save,
                             child: busy
                                 ? Semantics(
                                     label: 'Procesando',
