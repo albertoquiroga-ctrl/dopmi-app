@@ -94,17 +94,40 @@ suspensión, reapertura y red en Samsung instalado. Al corte local sólo está c
 SHA final, CI, publicación y evidencia instalada se registran en `docs/progress.md`
 y `docs/backlog.md` sin sobrescribir el trabajo local anterior del titular.
 
-### Gate integrado y correcci�n posterior
+### Gate integrado y corrección posterior
 
 Candidato inicial `a85d180618a1b6db2b8ed36ba41bf7952b005169`, CI37366058216:
-web/administraci�n/configuraci�n/PostgreSQL/concurrencia aprobados. Flutter analiz� sin
+web/administración/configuración/PostgreSQL/concurrencia aprobados. Flutter analizó sin
 errores;859 pruebas aprobadas y6 fallaron en expectativas anteriores de NetworkImage
-y espera del reintento. La comprobaci�n de archivo privado adem�s detect� que Recargar
-deb�a renovar autorizaci�n aunque quedaran p�xeles en memoria: ahora invalida su
+y espera del reintento. La comprobación de archivo privado además detectó que Recargar
+debía renovar autorización aunque quedaran píxeles en memoria: ahora invalida su
 entrada al abrir/recargar, oculta el frame previo y conserva el aviso seguro de error.
-La bater�a afectada posterior aprob�29 pruebas con JPEG realmente decodificado.
-La auditor�a acotada ya cerr� sus dos pasadas; esto corrige el gate, no abre otra ronda.
+La batería afectada posterior aprobó29 pruebas con JPEG realmente decodificado.
+La auditoría acotada ya cerró sus dos pasadas; esto corrige el gate, no abre otra ronda.
 
-`milestone-1.yml`, scope `photo`, permite recomprobar s�lo m�vil mediante workflow_dispatch,
-conservando el gate de administraci�n/backend anterior. Incluye an�lisis, pruebas
+`milestone-1.yml`, scope `photo`, permite recomprobar sólo móvil mediante workflow_dispatch,
+conservando el gate de administración/PostgreSQL anterior. El backend de identidad/adopción aún pendiente se ejecuta aparte. Incluye análisis, pruebas
 afectadas, capturas y compilaciones Android/iOS sobre el nuevo SHA.
+
+### Causa nueva encontrada en recorrido instalado
+
+La APK de emulador069640a cargó las adopciones sintéticas y persistió sus bytes,
+pero una tarjeta de apoyo intercalada quedó con Cargar foto. Se confirmó en SQL
+que las2 portadas de apoyo están en dopmi-rescue-evidence y0 en adopciones.
+El consumidor anterior usaba AdoptionPhoto/firma de adopciones para esas rutas.
+Se corrigen juntos precarga y presentación usando rescuePhotoSource, conservando
+el componente, geometría y controles. Una prueba decodificada impide volver a
+firmar una portada de rescate como adopción; batería movimiento/origen27/27.
+No se repiten rondas de auditoría ni se atribuye la falla a compresión.
+
+Codemagic6ac403c59f62f266cdb32d1f fue cancelado antes de publicar (API canceled,
+Publishing sin ejecutar); no constituye candidato distribuido. El próximo build
+se solicita sólo tras comprobar este origen en el emulador. Una única publicación
+final sigue siendo el objetivo. CI37367773448 aprobó análisis/pruebas/capturas e
+iOS de069640a; no cubre por sí solo esta corrección posterior.
+
+APK aislada actualizada: imagen de apoyo realmente visible donde antes aparecía
+Cargar foto; captura privada support-fixed.png. Se mantuvieron las fotos sintéticas
+previas al cerrar/reabrir.37/37 comunidad/fotos y27/27 movimiento/origen aprobados;
+flutter analyze sin problemas. Falta completar la pasada de diez tarjetas/galería/red
+y Samsung con candidato Play, sin atribuirle al emulador aceptación física.

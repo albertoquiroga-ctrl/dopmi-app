@@ -209,8 +209,10 @@ class AdoptionPhoto extends ConsumerWidget {
     super.key,
     this.height = 240,
     this.radius = 20,
+    this.source,
   });
   final String path;
+  final PhotoRef? source;
   final double height;
   final double radius;
   @override
@@ -219,7 +221,7 @@ class AdoptionPhoto extends ConsumerWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(radius),
       child: RemotePhoto(
-        source: adoptionPhotoSource(repository, path),
+        source: source ?? adoptionPhotoSource(repository, path),
         height: height,
         width: double.infinity,
         semanticLabel: 'Foto de la publicación',

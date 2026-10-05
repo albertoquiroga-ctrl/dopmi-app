@@ -17,6 +17,8 @@ import '../../core/design_tokens.dart';
 import 'adopt_start_dialog.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
+import '../rescue/rescue_repository.dart';
+import '../rescue/rescue_public_photo.dart';
 import 'location_service.dart';
 import 'discovery_filters.dart';
 import 'discovery_empty.dart';
@@ -293,7 +295,13 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
       final path = item is Adoption
           ? (item.photos.isEmpty ? '' : item.photos.first)
           : (item as SupportOpportunity).text('photo');
-      if (path.isNotEmpty) upcoming.add(adoptionPhotoSource(repository, path));
+      if (path.isNotEmpty) {
+        upcoming.add(
+          item is Adoption
+              ? adoptionPhotoSource(repository, path)
+              : rescuePhotoSource(ref.read(rescueRepositoryProvider), path),
+        );
+      }
     }
     return PhotoPrefetch(
       sources: upcoming,
@@ -689,7 +697,16 @@ class _SupportCard extends StatelessWidget {
                               fit: StackFit.expand,
                               children: [
                                 if (item.text('photo').isNotEmpty)
-                                  AdoptionPhoto(item.text('photo'), radius: 0)
+                                  Consumer(
+                                    builder: (context, ref, _) => AdoptionPhoto(
+                                      item.text('photo'),
+                                      radius: 0,
+                                      source: rescuePhotoSource(
+                                        ref.read(rescueRepositoryProvider),
+                                        item.text('photo'),
+                                      ),
+                                    ),
+                                  )
                                 else
                                   const ColoredBox(
                                     color: Color(0xffcfc9c0),

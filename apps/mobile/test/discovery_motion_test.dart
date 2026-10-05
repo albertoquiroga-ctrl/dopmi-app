@@ -13,6 +13,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
+import 'rescue_test.dart' show FakeRescue;
+
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 
 class PendingFavorite extends FakeCommunity {
   final result = Completer<void>();
@@ -35,6 +38,15 @@ class GuestCommunity extends FakeCommunity {
   }
 }
 
+class FailedSupportPhoto extends FakeRescue {
+  int attempts = 0;
+  @override
+  Future<String> fileUrl(String path) async {
+    attempts++;
+    throw StateError('Synthetic rescue photo unavailable');
+  }
+}
+
 class FailedPhotoCommunity extends FakeCommunity {
   int attempts = 0;
   @override
@@ -50,6 +62,7 @@ void main() {
     bool large = false,
     bool guest = false,
     FakeCommunity? repository,
+    RescueRepository? rescue,
   }) async {
     tester.view.physicalSize = large
         ? const Size(320, 640)
@@ -75,6 +88,7 @@ void main() {
       overrides: [
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(repo),
+        if (rescue != null) rescueRepositoryProvider.overrideWithValue(rescue),
         routerInitialLocationProvider.overrideWithValue('/adoptions'),
       ],
     );
@@ -153,12 +167,13 @@ void main() {
           'photo': 'fixture/missing-support',
         }),
       ];
-    await open(tester, repository: repo);
+    final rescue = FailedSupportPhoto();
+    await open(tester, repository: repo, rescue: rescue);
     for (var i = 0; i < 2; i++) {
       await tester.tap(find.byTooltip('Pasar'));
       await tester.pumpAndSettle();
     }
-    final before = repo.attempts;
+    final before = rescue.attempts;
     expect(before, greaterThan(0));
     await tester.tap(
       find.descendant(
@@ -167,7 +182,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(repo.attempts, greaterThan(before));
+    expect(rescue.attempts, greaterThan(before));
     expect(find.text('Choco'), findsOneWidget);
     expect(find.text('Apoya con sus necesidades'), findsOneWidget);
     expect(tester.takeException(), isNull);

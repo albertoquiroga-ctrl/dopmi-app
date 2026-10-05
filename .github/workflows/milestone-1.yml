@@ -5,10 +5,10 @@ on:
   workflow_dispatch:
     inputs:
       scope:
-        description: Checks to run; photo reuses the unchanged backend gate
+        description: Checks to run; photo reuses the web/database gate and completes backend
         default: full
         type: choice
-        options: [full, photo]
+        options: [full, photo, mobile]
 permissions:
   contents: read
 concurrency:
@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   web-and-database:
-    if: ${{ inputs.scope != 'photo' }}
+    if: ${{ inputs.scope != 'photo' && inputs.scope != 'mobile' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -74,8 +74,8 @@ jobs:
           CHECK_SCOPE: ${{ inputs.scope || 'full' }}
         run: |
           flutter analyze
-          if [ "$CHECK_SCOPE" = photo ]; then
-            flutter test test/photo_runtime_test.dart test/photo_recovery_widget_test.dart test/photo_transport_test.dart test/match_thread_row_test.dart test/rescue_file_test.dart test/public_profile_avatar_recovery_test.dart test/rescuer_profile_published_test.dart test/adoption_photo_recovery_test.dart test/case_photo_recovery_test.dart test/account_photo_widgets_test.dart
+          if [ "$CHECK_SCOPE" != full ]; then
+            flutter test test/photo_runtime_test.dart test/photo_recovery_widget_test.dart test/photo_transport_test.dart test/match_thread_row_test.dart test/rescue_file_test.dart test/public_profile_avatar_recovery_test.dart test/rescuer_profile_published_test.dart test/adoption_photo_recovery_test.dart test/case_photo_recovery_test.dart test/account_photo_widgets_test.dart test/discovery_support_photo_test.dart test/discovery_motion_test.dart test/community_test.dart
           else
             flutter test
           fi
@@ -120,7 +120,7 @@ jobs:
         run: flutter build ios --simulator --no-codesign --dart-define-from-file=config.example.json --dart-define=ENABLE_GUARDIAN_TEST=true
         working-directory: apps/mobile
   identity-and-adoption-backend:
-    if: ${{ inputs.scope != 'photo' }}
+    if: ${{ inputs.scope != 'mobile' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
