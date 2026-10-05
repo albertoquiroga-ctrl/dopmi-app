@@ -6,16 +6,16 @@ El titular autorizó implementar el plan por lotes, funciones completas y saludo
 al confirmar. Corte fijo `irlanda/apoyar-detalle-perfil@889c096ade9479b348530db7ba169f023b472ab9`,
 desde app `8785f6674c676ac6eb55fa716a75e0cb21d01388` / Play290.
 Los commits posteriores se registrarán sin ampliar esta entrega.
-**0 grupos abiertos / 19 cerrados en desarrollo**; aceptación final instalada pendiente. El conteo inicial era19/0; las25 familias/26 defectos
+**0 grupos abiertos / 19 cerrados y comprobados en Samsung291**; aceptación instalada completa. El conteo inicial era19/0; las25 familias/26 defectos
 del corte anterior permanecen cerrados y se reutiliza su evidencia vigente.
 Esta entrada supersede el aplazamiento REF-01–18 registrado abajo.
 
 | Frente / dueño | IDs exclusivos | Estado vigente |
 | --- | --- | --- |
-| Adoptar / subagente | REF-01–05,19 | Cerrado en desarrollo: contraste Source/Flutter y46/46 +21/21 aprobados; nativo pendiente |
-| Rescatista / subagente | REF-09,12,13 | Cerrado en desarrollo: contraste Source/Flutter,50/50 +9/9, DEV42/42; nativo pendiente |
-| Publicación / subagente | REF-11,14–18 | Cerrado en desarrollo: Source/Flutter normal/200,113/113 +9/9 y recaptura aprobados; nativo pendiente |
-| Compartidos / integrador | REF-06–08,10 y contratos comunes | Cerrado en desarrollo: visual/50/50, backend595/595, admin35/35/build; DEV42checks; nativo/gate final pendientes |
+| Adoptar / subagente | REF-01–05,19 | Cerrado en desarrollo: contraste Source/Flutter y46/46 +21/21 aprobados; nativo emulador y Samsung291 aprobados |
+| Rescatista / subagente | REF-09,12,13 | Cerrado en desarrollo: contraste Source/Flutter,50/50 +9/9, DEV42/42; nativo emulador y Samsung291 aprobados |
+| Publicación / subagente | REF-11,14–18 | Cerrado en desarrollo: Source/Flutter normal/200,113/113 +9/9 y recaptura aprobados; nativo emulador y Samsung291 aprobados |
+| Compartidos / integrador | REF-06–08,10 y contratos comunes | Cerrado en desarrollo: visual/50/50, backend595/595, admin35/35/build; DEV42checks; nativo y gate final aprobados |
 
 5/10: inspección sobre PNG actuales completada en los tres frentes; nueve conjuntos concretos de ajustes perceptibles encontrados (dos Adoptar, uno inbox, seis Publicación). Adoptar corregido/21 dirigidos aprobados e inbox corregido; recaptura en curso. Publicación corrige los seis juntos. Backend integral local595/595, configuración16/16 y analyze limpio. Todos los frentes cerrados en desarrollo tras recapturas/pruebas:19→0; no confundir estos nueve defectos con19 grupos funcionales. La puerta nativa/instalada/final sigue pendiente.
 
@@ -28,6 +28,14 @@ Pendientes nativos: galería multifoto, contacto con dos participantes, Back/tec
 FAB/inbox y publicación con conservación de borrador. Entrega: SHA final/gate,
 Codemagic android-guardian-internal, Play y Samsung comprobados por separado.
 No cambios de dinero, moderación o privilegios por modo; recibos privados.
+
+5/10, puerta de entrega: **19→0 grupos abiertos; 0 defectos perceptibles conocidos tras la corrección nativa del cambio de paso**. Candidato7401468/gate37274003442 aprobó los cuatro jobs (incluye PostgreSQL concurrente real); emulador con dos actores controlados verificó galería de seis, filtros, compartir/cancelar, contacto0→1 y reintentos1, inbox/teclado/respuesta, adopción submitted privada. Caso con gasto pagado privado/recibo/evidencia y recuperación tras interrupción comprobados; envío muestra caso en revisión y conserva gasto como borrador. El defecto nuevo de offset entre pasos fue corregido en candidato51cc7c150abb20adc0fc70ecaafe5ebe202817c5:10/10 pruebas dirigidas y repetición nativa de Continuar/Back aprobadas, APK corregido instalado sólo en emulador. Pendientes: gate integral37278538360 sobre51cc7c1, Codemagic/Play, versión instalada y recorridos Samsung, limpieza de fixtures sintéticas. No acredita aún cierre instalado.
+
+Gate final actualizado:37278538360 /51cc7c150abb20adc0fc70ecaafe5ebe202817c5 completado con cuatro jobsSUCCESS y846 pruebas móviles. La pasada nativa corregida aprobó Back/Continuar, conservación del borrador tras interrupción, revisión real y privacidad de caso/gasto. Codemagic6ac3570f3a34cf7c3070ed0f es la única solicitud de entrega; AAB firmado2.3.3(291), archivo de identificación51cc7c1/Guardian test:true y Playinternal/completed/291 comprobados por separado. Actualización/apertura Samsung solicitada al titular; todavía instalado290. Pendientes restantes: ocho recorridos esenciales Samsung con versión291 verificada y limpieza exacta de fixtures. No reabrir lotes ni repetir gates aprobados sin cambio o defecto demostrado.
+
+Cierre5/10: **19/19, cero defectos perceptibles conocidos y cero comprobaciones pendientes del corte889**. Samsung291/115% confirmado y ocho recorridos modificados aprobados; evidencia específica en ficha compartida. Cleanup exacto15 objetos/dos Auth QA completado después del preflight, postflight cero; cuenta y perfil Samsung conservados. Dinero test. El candidato publicado sigue51cc7c1; este registro sólo documenta entrega. Esta entrada supersede todos los pendientes anteriores del corte889.
+
+## Corte anterior entregado — evidencia reutilizable
 
 Actualizado: 4 de octubre de 2026. Base `53716dc`; referencia
 `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.

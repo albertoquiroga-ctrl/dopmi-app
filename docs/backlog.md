@@ -185,3 +185,12 @@ saludo sólo al confirmar el primer contacto, transaccional y sin duplicados.
 Tres subagentes/frentes exclusivos y un integrador/cola Flutter. Commits nuevos
 posteriores al corte quedan para otra entrega. Codemagic únicamente candidato
 final; cierre requiere regresión y Android instalado. Dinero exclusivamente test.
+
+Estado5/10 del corte889:19/19 grupos implementados y cerrados en desarrollo,
+candidato51cc7c1 con gate integral37278538360 aprobado (846 tests móviles,
+backend/SQL/integración y compilaciones). Nativo emulador aprobado después de
+corregir el offset entre pasos. Codemagic6ac3570f3a34cf7c3070ed0f entregó
+2.3.3(291), Play internal/completed comprobado; Guardián permanece en test.
+- [x] Comprobar291 instalada y ocho recorridos modificados en Samsung al115%.
+- [x] Limpiar sólo las dos identidades y15 objetos sintéticos del manifest QA889; postflight cero y participante Samsung conservado.
+Los commits Source posteriores a889c096 y los pendientes H12 siguen separados.

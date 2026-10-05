@@ -153,6 +153,104 @@ de Storage, pues se perdería la autorización del owner para retirarlos.
 - No se ejecutó Flutter, dispositivo ni publicación desde el subagente.
   Esta ficha **no acredita aceptación instalada**.
 
+La cola principal verificó el gate CI del SHA exacto
+`7401468268c69b46c82390d8c1c3d4f9323900e3`, run `37274003442`: cuatro
+jobs en `SUCCESS`, incluida la prueba de contacto con conexiones PostgreSQL
+concurrentes. Es evidencia CI del candidato; no sustituye la pasada nativa.
+
+Preparación nativa con las dos cuentas QA existentes: el principal verificó
+en emulador login real del adoptante, punto de galería6 → Foto6 y swipe de
+regreso → Foto5. Después abrió el diálogo de contacto y eligió **Todavía no**.
+La consulta DEV posterior, acotada a publicación y ambos actores exactos,
+confirmó **0 conversaciones, 0 mensajes y 0 notificaciones**. El subagente
+espera la confirmación del primer CTA nativo antes de consultar su resultado
+y ejecutar los dos reintentos REST del mismo contacto. No se retiraron
+fixtures ni se ejecutó contacto durante el preflight o tras la cancelación.
+
+El principal confirmó después **Sí, contactar rescatista** en el emulador;
+el chat abrió con mascota, rescatista y Ver detalle. La consulta DEV real
+posterior confirmó **1 conversación, 1 saludo y 1 notificación al owner**
+(una no leída). Los dos reintentos Auth/REST del mismo adoptante devolvieron
+200 y el mismo ID de conversación. El postflight permaneció exactamente
+**1 conversación, 1 mensaje/saludo y 1 notificación**; no se usó la RPC de
+envío para fabricar mensajes adicionales. IDs y pruebas de contacto están
+sólo en el manifest privado de la fixture. Esto acredita contacto iniciado
+en emulador y persistencia real; aceptación Samsung continúa pendiente.
+
+El owner respondió después **Respuesta nativa QA889** desde el emulador.
+Inventario DEV de sólo lectura: dos mensajes en el hilo, cero no leídos para
+el owner y ese texto como último mensaje. En el nuevo borrador creado por
+el picker/formulario nativo persistieron Monterrey / Nuevo Leon,
+hembra / adulta / mediana y **seis fotos, seis objetos Storage existentes**.
+Al realizar el inventario seguía `draft`, versión14; no se publicó ni aprobó
+ese segundo registro. La primera adopción sintética publicada permanece.
+
+El manifiesto privado de cleanup incorpora las dos adopciones, la
+verificación sintética, sus doce objetos Storage exactos, el hilo, IDs de
+ambos mensajes y notificaciones. No había casos, avances ni perfiles
+Rescatista adicionales del owner QA. El inventario es una instantánea y
+debe refrescarse antes de cleanup si la pasada nativa crea más datos; no
+autoriza retirar las fixtures antes de la comprobación Samsung.
+
+El principal completó después la vista previa nativa del segundo registro:
+swipe → Foto2/6; Alegre, Tranquilo y Cariñoso seleccionados; Nervioso como
+cuarto rasgo rechazado por el límite3. **Enviar a revisión** mostró el
+diálogo de envío. La comprobación DEV posterior confirmó `submitted`,
+versión17, `published_at` nulo, cero revisiones y cero conversaciones para
+esa segunda adopción. Persistieron categoría `adult`, convivencia
+`children/apartment` y personalidad `alegre/tranquilo/affectionate`; el
+cuarto rasgo no está guardado.
+
+Sus seis rutas propias corresponden a seis objetos físicos. Auth/REST del
+owner leyó **6/6 archivos JPG**, decodificados correctamente; el adoptante
+recibió detalle público nulo y **6/6 solicitudes de fotos denegadas**. No
+se publicó automáticamente ni se sembró una aprobación. La primera fixture
+publicada y su conversación se conservaron para Samsung. Estado, versión,
+campos, seis rutas y evidencia de aislamiento se añadieron al manifiesto
+privado de cleanup; no se retiró ningún archivo o registro.
+
+Pasada nativa final del candidato
+`51cc7c150abb20adc0fc70ecaafe5ebe202817c5`: el principal comprobó
+APK compilado y prueba dirigida Back/Continue **10/10** tras la corrección.
+El caso nativo conservó datos después de force-stop y actualización del
+APK. Back desde paso2 desplazado volvió al inicio de paso1 conservando el
+nombre; Continue llevó al inicio de Necesidades y luego de la vista previa.
+Enviar el caso mostró la confirmación de revisión y explicó que los gastos
+siguen como borradores privados hasta la aprobación del caso.
+
+Postflight DEV actual: **caso `submitted` v11 / gasto hijo `draft` v6**,
+sin aprobación ni snapshot aprobado. Persistieron $250.00 MXN como
+`amount_cents=25000`, fecha2026-10-05, proveedor y referencia sintéticos
+exactos de QA. Una foto pertenece al caso; comprobante y evidencia (roles
+`receipt/proof`) pertenecen exclusivamente al gasto hijo. El padre tiene
+cero campos privados y cero archivos de gasto; el valor reembolsable sigue
+en cero. No se sembró aprobación ni se ejecutó operación financiera.
+
+Auth/REST real del owner leyó ambos registros y los **3/3 archivos físicos**,
+decodificados correctamente. La otra cuenta QA, ajena al caso/gasto, vio
+**0 filas mediante RLS, 2/2 detalles denegados y 3/3 archivos denegados**.
+El manifiesto privado contiene los IDs y paths exactos de todas las
+fixtures actuales: tres adopciones (incluido el borrador vacío de la prueba
+de cámara con0 fotos/0 objetos), verificación/caso/gasto y quince objetos
+Storage. La publicación inicial sigue publicada. Las fixtures se conservan
+para Samsung; el inventario no autoriza cleanup. La comprobación instalada
+de Samsung/Play queda a cargo del principal.
+
+Cleanup posterior a Samsung preparado, **sin ejecutar**: script y handoff
+ignorados en `.tools/update889-native`. Guardas fijan proyecto DEV, los dos
+UUID/correos QA, tres adopciones, tres expedientes y quince paths completos.
+Se retiran primero los estados submitted y se archivan las adopciones para
+permitir el DELETE real de Storage; después se retira el gasto por su RPC,
+se revocan sólo las sesiones QA y se ejecuta una transacción MCP acotada a
+registros/identidades sintéticos. La publicación inicial sigue disponible
+hasta finalizar Samsung. No se prepara borrado por prefijo ni DELETE SQL de
+Storage. Los hilos de la publicación QA se retiran por sus FK; sus otros
+participantes no son targets de Auth. Parseo Node y fase plan correctos,
+cero requests remotos de esa fase. Preflight MCP adicional de sólo lectura
+confirmó el allowlist2/3/3/15 y las dos entidades no aprobadas con valor
+reembolsable cero; debe repetirse después de Samsung. Las fases destructivas
+y sus postflights aún no se han ejecutado ni autorizado mediante recibo.
+
 ## Contraste perceptual de Source889
 
 5/10/2026 México: Source aislado fijado en 889, con Inter/Fraunces locales,
@@ -198,3 +296,32 @@ imperceptibles o por contenido distinto de los fixtures.
 Se reutilizan las pruebas de las ocho mecánicas compartidas y los recorridos
 intactos de la entrega290. Hover se excluye de la aceptación; no se añaden
 simulaciones, mensajes automáticos al entrar ni cambios financieros.
+
+Entrega instalada y limpieza 5/10: el coordinador comprobó Samsung
+2.3.3 (291) y ocho recorridos físicos sobre el candidato
+`51cc7c150abb20adc0fc70ecaafe5ebe202817c5`, después del gate
+37278538360 (cuatro jobs aprobados, 846 pruebas móviles), Codemagic
+6ac3570f3a34cf7c3070ed0f y publicación Play interno comprobada por separado.
+El regreso a modo donante quedó restaurado; el formulario transitorio
+del teléfono no creó registros remotos. Reabrir el contacto QA conservó
+un único saludo. Esta entrada cierra los pendientes nativos e instalados
+de la ficha; no amplía la referencia fija 889c096.
+
+Después de esa revisión se ejecutó la limpieza DEV autorizada: preflight
+exacto Auth2/adopciones3/expedientes3/objetos15, sin reembolsables ni
+aprobación financiera. Las RPC del dueño retiraron los envíos y archivaron
+las publicaciones; Storage API eliminó los 15 archivos exactos, después se
+retiró el gasto borrador y se revocaron ambas sesiones QA. La transacción
+acotada eliminó las tres publicaciones, caso, verificación sintética y dos
+Auth. H10 conserva correctamente el perfil como sujeto contable al retirar
+Auth; por ello se comprobaron las 30 dependencias del perfil, todas en cero
+salvo dos consentimientos sintéticos, y se retiraron únicamente esos dos
+consentimientos y los dos perfiles QA huérfanos. No hubo cambios de esquema,
+reglas o datos financieros.
+
+Postflight MCP final: Auth0, perfiles0, consentimientos0, publicaciones0,
+expedientes0, hilos0, mensajes0, notificaciones0, historial0 y Storage0.
+La cuenta participante real del Samsung conservó Auth1/perfil1. Después de
+comprobar esos ceros se eliminaron únicamente los archivos privados locales
+`owner.json` y `adopter.json`; la evidencia de conteos queda en el manifiesto
+privado de limpieza. Hover sigue excluido y dinero continúa en prueba.
