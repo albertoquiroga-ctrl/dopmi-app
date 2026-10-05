@@ -131,3 +131,29 @@ Cargar foto; captura privada support-fixed.png. Se mantuvieron las fotos sintét
 previas al cerrar/reabrir.37/37 comunidad/fotos y27/27 movimiento/origen aprobados;
 flutter analyze sin problemas. Falta completar la pasada de diez tarjetas/galería/red
 y Samsung con candidato Play, sin atribuirle al emulador aceptación física.
+
+### Entrega interna verificada
+
+Candidato786ed33063be4cfa07e02a13d3d84d79d2a7327d, Codemagic6ac408a773bd44aa241585a3:
+análisis,866 pruebas, AAB firmado y publicación aprobados. Build-info descargado
+confirma2.3.3(293), Guardian test true. Consulta google-play tracks get posterior
+confirma com.mycompany.dopmi/internal completed, versionCode293; publicación comprobada
+aparte de compilación. SHA256 informado por Google del AAB:
+5d085a21f1151801503da841d641c5441ddabad56f8704b9de09a822b5371691.
+
+Emulador:141 fuentes lib comparadas con786ed33, cero diferencias (normalizando
+saltos de línea). Diez tarjetas, galería, reapertura, pérdida de red y recuperación
+de Foto3de3 al reanudar verificadas con JPEG decodificado, sin error/spinner final.
+Caché instalada conserva14 archivos y expiración absoluta entre procesos.
+
+CI37370051631 aprobó Flutter, capturas, APK e iOS. Backend no obtuvo runner hosted
+en el primer intento; rerun sólo ese job, attempt2, sin repetir gates aprobados.
+Web/admin/configuración/PG/concurrencia aprobados en37366058216 permanecen aplicables.
+Samsung instalado293 y limpieza exacta de fixtures quedan pendientes de aceptación;
+no se declara objetivo completo ni medición perceptible Samsung desde emulador.
+
+CI37370051631 attempt2 completó backend identidad/adopción/rescates/comunidad
+aprobado, job111971136578. Gate compuesto íntegro aprobado conservando web/PG
+original sin cambios. El único pendiente de aceptación es Samsung instalado293
+y la limpieza final de fixtures tras su pasada. No hay un problema de código abierto
+de los hallazgos revisados ni otra ronda general en curso.
