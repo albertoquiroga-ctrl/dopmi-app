@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+
+import '../../core/media/media_store.dart';
+import '../../core/media/photo_runtime.dart';
+import '../../core/media/remote_photo.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -210,92 +215,38 @@ class _StoryDate extends StatelessWidget {
   );
 }
 
-class OwnedStoryPhoto extends ConsumerStatefulWidget {
+class OwnedStoryPhoto extends ConsumerWidget {
   const OwnedStoryPhoto(this.path, {super.key});
   final String path;
   @override
-  ConsumerState<OwnedStoryPhoto> createState() => _OwnedStoryPhotoState();
-}
-
-class _OwnedStoryPhotoState extends ConsumerState<OwnedStoryPhoto>
-    with WidgetsBindingObserver {
-  late Future<String> url = request();
-  Future<String> request() {
-    final result = Future<String>.sync(
-      () => ref.read(caseUpdateRepositoryProvider).photoUrl(widget.path),
-    );
-    result.ignore();
-    return result;
-  }
-
-  void reload() => setState(() {
-    url = request();
-  });
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void didUpdateWidget(OwnedStoryPhoto oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.path != widget.path) url = request();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) reload();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  Widget unavailable() => Center(
-    child: TextButton.icon(
-      onPressed: reload,
-      icon: const Icon(Icons.refresh, size: 18),
-      label: const Text('Reintentar foto'),
-      style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
-    ),
-  );
-  @override
-  Widget build(BuildContext context) => SizedBox(
+  Widget build(BuildContext context, WidgetRef ref) => SizedBox(
     height: 160,
     width: double.infinity,
     child: ColoredBox(
       color: const Color(0xffeeeeee),
-      child: FutureBuilder<String>(
-        key: ObjectKey(url),
-        future: url,
-        builder: (context, result) {
-          if (result.hasError) return unavailable();
-          if (!result.hasData) {
-            return const Center(
-              child: CircularProgressIndicator(
-                semanticsLabel: 'Cargando foto del avance',
-              ),
-            );
-          }
-          return Image.network(
-            result.data!,
-            height: 160,
-            width: double.infinity,
-            fit: BoxFit.cover,
-            semanticLabel: 'Foto aprobada del avance',
-            loadingBuilder: (context, image, progress) => progress == null
-                ? image
-                : const Center(
-                    child: CircularProgressIndicator(
-                      semanticsLabel: 'Cargando foto del avance',
-                    ),
-                  ),
-            errorBuilder: (context, error, stack) => unavailable(),
-          );
-        },
+      child: RemotePhoto(
+        source: PhotoRef(
+          path: path,
+          purpose: MediaPurpose.caseUpdatePhoto,
+          persistence: PhotoPersistence.ordinary,
+          sign: () => ref.read(caseUpdateRepositoryProvider).photoUrl(path),
+        ),
+        height: 160,
+        width: double.infinity,
+        semanticLabel: 'Foto aprobada del avance',
+        loading: const Center(
+          child: CircularProgressIndicator(
+            semanticsLabel: 'Cargando foto del avance',
+          ),
+        ),
+        unavailable: (retry) => Center(
+          child: TextButton.icon(
+            onPressed: retry,
+            icon: const Icon(Icons.refresh, size: 18),
+            label: const Text('Reintentar foto'),
+            style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+          ),
+        ),
       ),
     ),
   );

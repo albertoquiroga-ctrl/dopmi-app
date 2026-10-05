@@ -6,6 +6,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
 import '../../core/navigation.dart';
+import '../../core/media/media_store.dart';
+import '../../core/media/photo_runtime.dart';
+import '../../core/media/remote_photo.dart';
 import '../identity/experience_controller.dart';
 import 'community_repository.dart';
 
@@ -200,7 +203,7 @@ class _LiveSectionState<T> extends ConsumerState<LiveSection<T>>
   }
 }
 
-class AdoptionPhoto extends ConsumerStatefulWidget {
+class AdoptionPhoto extends ConsumerWidget {
   const AdoptionPhoto(
     this.path, {
     super.key,
@@ -211,60 +214,29 @@ class AdoptionPhoto extends ConsumerStatefulWidget {
   final double height;
   final double radius;
   @override
-  ConsumerState<AdoptionPhoto> createState() => _AdoptionPhotoState();
-}
-
-class _AdoptionPhotoState extends ConsumerState<AdoptionPhoto> {
-  late Future<String> url = _photoUrl();
-  var automaticRetries = 0;
-  var retryScheduled = false;
-
-  Future<String> _photoUrl() {
-    final request = Future<String>.sync(
-      () => ref.read(communityRepositoryProvider).photoUrl(widget.path),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final repository = ref.read(communityRepositoryProvider);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(radius),
+      child: RemotePhoto(
+        source: adoptionPhotoSource(repository, path),
+        height: height,
+        width: double.infinity,
+        semanticLabel: 'Foto de la publicación',
+        loading: SizedBox(
+          height: height,
+          child: const Center(
+            child: CircularProgressIndicator(semanticsLabel: 'Cargando foto'),
+          ),
+        ),
+        unavailable: unavailable,
+      ),
     );
-    // A retry begins in a post-frame callback. Observe its failure immediately;
-    // FutureBuilder attaches on the next frame and still displays that error.
-    request.ignore();
-    return request;
   }
 
-  void reload({bool automatic = false}) {
-    if (automatic) {
-      if (automaticRetries >= 1) return;
-      automaticRetries += 1;
-    } else {
-      automaticRetries = 0;
-    }
-    retryScheduled = false;
-    setState(() {
-      url = _photoUrl();
-    });
-  }
-
-  void scheduleAutomaticRetry() {
-    if (automaticRetries >= 1 || retryScheduled) return;
-    retryScheduled = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      reload(automatic: true);
-    });
-  }
-
-  @override
-  void didUpdateWidget(AdoptionPhoto oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.path != widget.path) {
-      automaticRetries = 0;
-      retryScheduled = false;
-      url = _photoUrl();
-    }
-  }
-
-  Widget unavailable({bool retryAutomatically = false}) {
-    if (retryAutomatically) scheduleAutomaticRetry();
+  Widget unavailable(VoidCallback reload) {
     return Container(
-      height: widget.height,
+      height: height,
       color: const Color(0xffeee7fc),
       child: Center(
         child: LayoutBuilder(
@@ -272,7 +244,7 @@ class _AdoptionPhotoState extends ConsumerState<AdoptionPhoto> {
               constraints.maxWidth < 120 || constraints.maxHeight < 80
               ? IconButton(
                   tooltip: 'Cargar foto',
-                  onPressed: () => reload(),
+                  onPressed: reload,
                   padding: EdgeInsets.zero,
                   style: IconButton.styleFrom(
                     minimumSize: const Size(48, 48),
@@ -281,7 +253,7 @@ class _AdoptionPhotoState extends ConsumerState<AdoptionPhoto> {
                   icon: const Icon(Icons.refresh),
                 )
               : TextButton.icon(
-                  onPressed: () => reload(),
+                  onPressed: reload,
                   icon: const Icon(Icons.refresh),
                   label: const Text('Cargar foto'),
                 ),
@@ -289,37 +261,15 @@ class _AdoptionPhotoState extends ConsumerState<AdoptionPhoto> {
       ),
     );
   }
-
-  @override
-  Widget build(BuildContext context) => ClipRRect(
-    borderRadius: BorderRadius.circular(widget.radius),
-    child: FutureBuilder<String>(
-      key: ObjectKey(url),
-      future: url,
-      builder: (_, snapshot) {
-        if (snapshot.hasError) {
-          return unavailable(retryAutomatically: true);
-        }
-        if (!snapshot.hasData) {
-          return SizedBox(
-            height: widget.height,
-            child: const Center(
-              child: CircularProgressIndicator(semanticsLabel: 'Cargando foto'),
-            ),
-          );
-        }
-        return Image.network(
-          snapshot.data!,
-          height: widget.height,
-          width: double.infinity,
-          fit: BoxFit.cover,
-          semanticLabel: 'Foto de la publicación',
-          errorBuilder: (_, _, _) => unavailable(retryAutomatically: true),
-        );
-      },
-    ),
-  );
 }
+
+PhotoRef adoptionPhotoSource(CommunityRepository repository, String path) =>
+    PhotoRef(
+      path: path,
+      purpose: MediaPurpose.adoptionPhoto,
+      persistence: PhotoPersistence.ordinary,
+      sign: () => repository.photoUrl(path),
+    );
 
 class PageControls extends StatelessWidget {
   const PageControls({

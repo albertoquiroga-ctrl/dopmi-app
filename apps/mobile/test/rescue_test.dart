@@ -332,20 +332,24 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(rescue.photoRequests, 1);
-    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
-    await tester.pump();
-    expect(rescue.photoRequests, 1);
-    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump(const Duration(seconds: 1));
     await tester.pumpAndSettle();
     expect(rescue.photoRequests, 2);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    await tester.pump();
+    expect(rescue.photoRequests, 2);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
+    expect(rescue.photoRequests, 4);
     expect(find.text('Reintentar foto'), findsOneWidget);
     expect(tester.getSize(find.byType(RescuePublicPhoto)).height, 220);
     await tester.pumpWidget(const SizedBox.shrink());
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     await tester.pump();
-    expect(rescue.photoRequests, 2);
+    expect(rescue.photoRequests, 4);
     expect(tester.takeException(), isNull);
   });
   test(
@@ -375,12 +379,15 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump(const Duration(seconds: 10));
+      await tester.pumpAndSettle();
       final retry = compact
           ? find.byTooltip('Foto no disponible. Reintentar foto')
           : find.text('Reintentar foto');
       await tester.tap(retry);
       await tester.pump();
-      expect(rescue.photoRequests, 2);
+      expect(rescue.photoRequests, 3);
       expect(retry, findsNothing);
       expect(tester.getSize(find.byType(RescuePublicPhoto)).height, 220);
       if (compact) {
@@ -389,6 +396,8 @@ void main() {
         expect(find.text('Cargando foto…'), findsOneWidget);
       }
       rescue.pending.completeError(StateError('offline again'));
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
       await tester.pumpAndSettle();
       expect(retry, findsOneWidget);
       expect(tester.takeException(), isNull);
@@ -442,14 +451,14 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
-      expect(rescue.photoRequests, 1);
+      expect(rescue.photoRequests, 2);
       expect(
         tester.getSize(find.byType(RescuePublicPhoto)),
         const Size(76, 76),
       );
       await tester.tap(find.byTooltip('Foto no disponible. Reintentar foto'));
       await tester.pumpAndSettle();
-      expect(rescue.photoRequests, 2);
+      expect(rescue.photoRequests, 4);
       expect(tester.takeException(), isNull);
     },
   );
@@ -1131,6 +1140,8 @@ void main() {
     (tester) async {
       final repo = PhotoPublicCaseRescue();
       await startPublicCase(tester, repo);
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
       final firstPhoto = find.byType(RescuePublicPhoto).first;
       final before = tester.getSize(firstPhoto);
       final requests = repo.photoRequests;
@@ -1138,7 +1149,9 @@ void main() {
         find.descendant(of: firstPhoto, matching: find.text('Reintentar foto')),
       );
       await tester.pumpAndSettle();
-      expect(repo.photoRequests, requests + 1);
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+      expect(repo.photoRequests, requests + 2);
       expect(tester.getSize(firstPhoto), before);
       await tester.drag(find.byType(PageView), const Offset(-260, 0));
       await tester.pumpAndSettle();
@@ -1189,6 +1202,8 @@ void main() {
     (tester) async {
       final repo = PagedPublicCaseRescue();
       await startPublicCase(tester, repo);
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
       expect(repo.calls, [1, 2]);
       expect(find.text('Gasto 22'), findsOneWidget);
       await tester.ensureVisible(find.text('Gasto 22'));

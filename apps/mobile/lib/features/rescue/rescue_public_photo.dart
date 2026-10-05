@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/media/media_store.dart';
+import '../../core/media/photo_runtime.dart';
+import '../../core/media/remote_photo.dart';
 import 'rescue_repository.dart';
 
-class RescuePublicPhoto extends ConsumerStatefulWidget {
+PhotoRef rescuePhotoSource(RescueRepository repository, String path) =>
+    PhotoRef(
+      path: path,
+      purpose: MediaPurpose.rescuePhoto,
+      persistence: PhotoPersistence.ordinary,
+      sign: () => repository.fileUrl(path),
+    );
+
+class RescuePublicPhoto extends ConsumerWidget {
   const RescuePublicPhoto(
     this.path, {
     super.key,
@@ -14,110 +25,61 @@ class RescuePublicPhoto extends ConsumerStatefulWidget {
   final String path;
   final double height, radius;
   final bool compact;
-  @override
-  ConsumerState<RescuePublicPhoto> createState() => _RescuePublicPhotoState();
-}
 
-class _RescuePublicPhotoState extends ConsumerState<RescuePublicPhoto>
-    with WidgetsBindingObserver {
-  late Future<String> url = _load();
-  Future<String> _load() {
-    final result = Future<String>.sync(
-      () => ref.read(rescueRepositoryProvider).fileUrl(widget.path),
-    );
-    result.ignore();
-    return result;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      setState(() {
-        url = _load();
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didUpdateWidget(RescuePublicPhoto oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.path != widget.path) url = _load();
-  }
-
-  Widget unavailable() => widget.compact
+  Widget unavailable(VoidCallback retry) => compact
       ? SizedBox(
-          height: widget.height,
+          height: height,
           child: Center(
             child: IconButton(
               tooltip: 'Foto no disponible. Reintentar foto',
-              onPressed: () => setState(() {
-                url = _load();
-              }),
+              onPressed: retry,
               icon: const Icon(Icons.refresh),
             ),
           ),
         )
       : SizedBox(
-          height: widget.height,
+          height: height,
           child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text('Foto no disponible'),
                 TextButton(
-                  onPressed: () => setState(() {
-                    url = _load();
-                  }),
+                  onPressed: retry,
                   child: const Text('Reintentar foto'),
                 ),
               ],
             ),
           ),
         );
+
   @override
-  Widget build(BuildContext context) => ClipRRect(
-    borderRadius: BorderRadius.circular(widget.radius),
-    child: SizedBox(
-      height: widget.height,
-      width: double.infinity,
-      child: FutureBuilder<String>(
-        key: ObjectKey(url),
-        future: url,
-        builder: (_, snapshot) => snapshot.hasData
-            ? Image.network(
-                snapshot.data!,
-                height: widget.height,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => unavailable(),
-              )
-            : snapshot.hasError
-            ? unavailable()
-            : widget.compact
-            ? const Center(
-                child: SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    semanticsLabel: 'Cargando foto',
+  Widget build(BuildContext context, WidgetRef ref) {
+    final repository = ref.read(rescueRepositoryProvider);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(radius),
+      child: SizedBox(
+        height: height,
+        width: double.infinity,
+        child: RemotePhoto(
+          source: rescuePhotoSource(repository, path),
+          height: height,
+          width: double.infinity,
+          loading: compact
+              ? const Center(
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      semanticsLabel: 'Cargando foto',
+                    ),
                   ),
-                ),
-              )
-            : const Center(child: Text('Cargando foto…')),
+                )
+              : const Center(child: Text('Cargando foto…')),
+          unavailable: unavailable,
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

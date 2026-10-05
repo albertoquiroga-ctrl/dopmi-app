@@ -9,6 +9,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/measurement.dart';
+import '../../core/media/photo_prefetch.dart';
+import '../../core/media/photo_runtime.dart';
 import '../../core/donor_notification_button.dart';
 import '../../core/ui.dart';
 import '../../core/design_tokens.dart';
@@ -285,240 +287,253 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   Widget build(BuildContext context) {
     final items = deck;
     final current = index < items.length ? items[index] : null;
-    return Scaffold(
-      extendBody: true,
-      backgroundColor: Colors.white,
-      bottomNavigationBar: const CommunityNav(0),
-      body: SafeArea(
-        bottom: false,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(18, 16, 18, 110),
-          children: [
-            SizedBox(
-              height: 42,
-              child: Row(
-                children: [
-                  Tooltip(
-                    message: 'Elegir ubicación',
-                    child: TextButton(
-                      onPressed: acting ? null : openLocation,
-                      style: TextButton.styleFrom(
-                        alignment: Alignment.centerLeft,
-                        foregroundColor: ink,
-                        padding: EdgeInsets.zero,
-                        overlayColor: Colors.transparent,
-                        splashFactory: NoSplash.splashFactory,
-                      ),
-                      child: Semantics(
-                        label: filters['city'] == null
-                            ? 'Dopmi. Elegir ubicación'
-                            : 'Dopmi. Ubicación: ${filters['city']}. Cambiar ubicación',
-                        child: ExcludeSemantics(
-                          child: Image.asset(
-                            'assets/dopmi-wordmark.png',
-                            width: 108,
-                            height: 36,
-                            fit: BoxFit.contain,
+    final repository = ref.read(communityRepositoryProvider);
+    final upcoming = <PhotoRef>[];
+    for (final item in items.skip(index + 1).take(2)) {
+      final path = item is Adoption
+          ? (item.photos.isEmpty ? '' : item.photos.first)
+          : (item as SupportOpportunity).text('photo');
+      if (path.isNotEmpty) upcoming.add(adoptionPhotoSource(repository, path));
+    }
+    return PhotoPrefetch(
+      sources: upcoming,
+      child: Scaffold(
+        extendBody: true,
+        backgroundColor: Colors.white,
+        bottomNavigationBar: const CommunityNav(0),
+        body: SafeArea(
+          bottom: false,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(18, 16, 18, 110),
+            children: [
+              SizedBox(
+                height: 42,
+                child: Row(
+                  children: [
+                    Tooltip(
+                      message: 'Elegir ubicación',
+                      child: TextButton(
+                        onPressed: acting ? null : openLocation,
+                        style: TextButton.styleFrom(
+                          alignment: Alignment.centerLeft,
+                          foregroundColor: ink,
+                          padding: EdgeInsets.zero,
+                          overlayColor: Colors.transparent,
+                          splashFactory: NoSplash.splashFactory,
+                        ),
+                        child: Semantics(
+                          label: filters['city'] == null
+                              ? 'Dopmi. Elegir ubicación'
+                              : 'Dopmi. Ubicación: ${filters['city']}. Cambiar ubicación',
+                          child: ExcludeSemantics(
+                            child: Image.asset(
+                              'assets/dopmi-wordmark.png',
+                              width: 108,
+                              height: 36,
+                              fit: BoxFit.contain,
+                            ),
                           ),
                         ),
                       ),
                     ),
+                    const Spacer(),
+                    const DonorNotificationButton(),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: Wrap(
+                      spacing: 18,
+                      children: [
+                        for (final species in const [
+                          ('dog', 'Perros'),
+                          ('cat', 'Gatos'),
+                        ])
+                          TextButton(
+                            onPressed: acting
+                                ? null
+                                : () => chooseSpecies(species.$1),
+                            style: TextButton.styleFrom(
+                              minimumSize: const Size(0, 48),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 2,
+                              ),
+                              foregroundColor: filters['species'] == species.$1
+                                  ? ink
+                                  : const Color(0xff9a9289),
+                              textStyle: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: filters['species'] == species.$1
+                                    ? 28
+                                    : 22,
+                                fontWeight: filters['species'] == species.$1
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
+                                letterSpacing: 0,
+                              ),
+                            ),
+                            child: Text(species.$2),
+                          ),
+                      ],
+                    ),
                   ),
-                  const Spacer(),
-                  const DonorNotificationButton(),
+                  const SizedBox(width: 10),
+                  IconButton(
+                    tooltip: 'Filtros',
+                    onPressed: acting ? null : openFilters,
+                    icon: SvgPicture.string(
+                      discoveryFilterSvg,
+                      width: 22,
+                      height: 22,
+                      colorFilter: ColorFilter.mode(
+                        filters.keys.any(
+                              (key) =>
+                                  ['sex', 'size', 'personality'].contains(key),
+                            )
+                            ? ink
+                            : const Color(0xff9a9289),
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: Wrap(
-                    spacing: 18,
-                    children: [
-                      for (final species in const [
-                        ('dog', 'Perros'),
-                        ('cat', 'Gatos'),
-                      ])
-                        TextButton(
-                          onPressed: acting
-                              ? null
-                              : () => chooseSpecies(species.$1),
-                          style: TextButton.styleFrom(
-                            minimumSize: const Size(0, 48),
-                            padding: const EdgeInsets.symmetric(horizontal: 2),
-                            foregroundColor: filters['species'] == species.$1
-                                ? ink
-                                : const Color(0xff9a9289),
-                            textStyle: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: filters['species'] == species.$1
-                                  ? 28
-                                  : 22,
-                              fontWeight: filters['species'] == species.$1
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
-                              letterSpacing: 0,
-                            ),
-                          ),
-                          child: Text(species.$2),
-                        ),
-                    ],
-                  ),
+              SizedBox(height: current == null && !loading ? 14 : 36),
+              for (final failed in failedFavorites.values) ...[
+                Notice(
+                  'No pudimos guardar a ${failed.name}. Intenta de nuevo.',
+                  isError: true,
                 ),
-                const SizedBox(width: 10),
-                IconButton(
-                  tooltip: 'Filtros',
-                  onPressed: acting ? null : openFilters,
-                  icon: SvgPicture.string(
-                    discoveryFilterSvg,
-                    width: 22,
-                    height: 22,
-                    colorFilter: ColorFilter.mode(
-                      filters.keys.any(
-                            (key) =>
-                                ['sex', 'size', 'personality'].contains(key),
-                          )
-                          ? ink
-                          : const Color(0xff9a9289),
-                      BlendMode.srcIn,
-                    ),
-                  ),
+                TextButton(
+                  onPressed: pendingFavorites.contains(failed.id)
+                      ? null
+                      : () => persistFavorite(failed),
+                  child: const Text('Volver a intentar'),
                 ),
               ],
-            ),
-            SizedBox(height: current == null && !loading ? 14 : 36),
-            for (final failed in failedFavorites.values) ...[
-              Notice(
-                'No pudimos guardar a ${failed.name}. Intenta de nuevo.',
-                isError: true,
-              ),
-              TextButton(
-                onPressed: pendingFavorites.contains(failed.id)
-                    ? null
-                    : () => persistFavorite(failed),
-                child: const Text('Volver a intentar'),
-              ),
-            ],
-            if (error != null) ...[
-              Notice(error!, isError: true),
-              TextButton(
-                onPressed: () => load(reset: cards.isEmpty),
-                child: const Text('Volver a intentar'),
-              ),
-            ],
-            if (loading && cards.isEmpty)
-              const SizedBox(
-                height: 420,
-                child: Center(child: CircularProgressIndicator()),
-              )
-            else if (current == null)
-              cards.isEmpty
-                  ? DiscoveryEmpty(
-                      filtered: filters.keys.any((key) => key != 'species'),
-                      global: allSpeciesEmpty,
-                      species: filters['species'] as String,
-                      clear: () {
-                        filters.removeWhere((key, _) => key != 'species');
-                        load(reset: true);
-                      },
-                      switchSpecies: () {
-                        filters['species'] = filters['species'] == 'dog'
-                            ? 'cat'
-                            : 'dog';
-                        load(reset: true);
-                      },
-                    )
-                  : DiscoveryEnd(
-                      restart: () => load(reset: true),
-                      minimumHeight:
-                          MediaQuery.textScalerOf(context).scale(28) > 40
-                          ? 0
-                          : math.max(
-                              0.0,
-                              MediaQuery.sizeOf(context).height -
-                                  MediaQuery.paddingOf(context).vertical -
-                                  240,
-                            ),
-                      photos: cards
-                          .where((post) => post.photos.isNotEmpty)
-                          .take(4)
-                          .map((post) => post.photos.first)
-                          .toList(),
-                    )
-            else if (current is Adoption)
-              DiscoveryStack(
-                next: index + 1 < items.length && items[index + 1] is Adoption
-                    ? items[index + 1] as Adoption
-                    : null,
-                child: _SwipeCard(
-                  current,
-                  entryDirection: entryDirection,
-                  dragX: dragX,
-                  dragging: dragging,
-                  exiting: exiting,
-                  busy: acting,
-                  onDragDelta: (value) => setState(() => dragX += value),
-                  onStart: () => setState(() => dragging = true),
-                  onCancel: () => setState(() {
-                    dragging = false;
-                    dragX = 0;
-                  }),
-                  onEnd: () {
-                    if (dragX.abs() <= 110) {
-                      setState(() {
-                        dragging = false;
-                        dragX = 0;
-                      });
-                    } else {
-                      advance(save: dragX > 0);
-                    }
-                  },
-                  pass: () => advance(save: false),
-                  like: () => advance(save: true),
-                  contact: () => contact(current),
-                  open: () async {
-                    await context.push(
-                      '/adoptions/${current.id}',
-                      extra: current.data['distance_km'],
-                    );
-                    if (mounted) await refreshCard(current.id);
-                  },
+              if (error != null) ...[
+                Notice(error!, isError: true),
+                TextButton(
+                  onPressed: () => load(reset: cards.isEmpty),
+                  child: const Text('Volver a intentar'),
                 ),
-              )
-            else
-              DiscoveryStack(
-                footerHeight: MediaQuery.textScalerOf(context).scale(16) > 22
-                    ? 256
-                    : 128,
-                child: _SupportCard(
-                  current as SupportOpportunity,
-                  entryDirection: entryDirection,
-                  busy: acting,
-                  dragX: dragX,
-                  dragging: dragging,
-                  exiting: exiting,
-                  onDragDelta: (value) => setState(() => dragX += value),
-                  onStart: () => setState(() => dragging = true),
-                  onCancel: () => setState(() {
-                    dragging = false;
-                    dragX = 0;
-                  }),
-                  onEnd: () {
-                    if (dragX.abs() <= 110) {
-                      setState(() {
-                        dragging = false;
-                        dragX = 0;
-                      });
-                    } else {
-                      advance(save: false, direction: dragX > 0 ? 1 : -1);
-                    }
-                  },
-                  pass: () => advance(save: false),
-                  open: () => context.push('/rescue-cases/${current.id}'),
+              ],
+              if (loading && cards.isEmpty)
+                const SizedBox(
+                  height: 420,
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              else if (current == null)
+                cards.isEmpty
+                    ? DiscoveryEmpty(
+                        filtered: filters.keys.any((key) => key != 'species'),
+                        global: allSpeciesEmpty,
+                        species: filters['species'] as String,
+                        clear: () {
+                          filters.removeWhere((key, _) => key != 'species');
+                          load(reset: true);
+                        },
+                        switchSpecies: () {
+                          filters['species'] = filters['species'] == 'dog'
+                              ? 'cat'
+                              : 'dog';
+                          load(reset: true);
+                        },
+                      )
+                    : DiscoveryEnd(
+                        restart: () => load(reset: true),
+                        minimumHeight:
+                            MediaQuery.textScalerOf(context).scale(28) > 40
+                            ? 0
+                            : math.max(
+                                0.0,
+                                MediaQuery.sizeOf(context).height -
+                                    MediaQuery.paddingOf(context).vertical -
+                                    240,
+                              ),
+                        photos: cards
+                            .where((post) => post.photos.isNotEmpty)
+                            .take(4)
+                            .map((post) => post.photos.first)
+                            .toList(),
+                      )
+              else if (current is Adoption)
+                DiscoveryStack(
+                  next: index + 1 < items.length && items[index + 1] is Adoption
+                      ? items[index + 1] as Adoption
+                      : null,
+                  child: _SwipeCard(
+                    current,
+                    entryDirection: entryDirection,
+                    dragX: dragX,
+                    dragging: dragging,
+                    exiting: exiting,
+                    busy: acting,
+                    onDragDelta: (value) => setState(() => dragX += value),
+                    onStart: () => setState(() => dragging = true),
+                    onCancel: () => setState(() {
+                      dragging = false;
+                      dragX = 0;
+                    }),
+                    onEnd: () {
+                      if (dragX.abs() <= 110) {
+                        setState(() {
+                          dragging = false;
+                          dragX = 0;
+                        });
+                      } else {
+                        advance(save: dragX > 0);
+                      }
+                    },
+                    pass: () => advance(save: false),
+                    like: () => advance(save: true),
+                    contact: () => contact(current),
+                    open: () async {
+                      await context.push(
+                        '/adoptions/${current.id}',
+                        extra: current.data['distance_km'],
+                      );
+                      if (mounted) await refreshCard(current.id);
+                    },
+                  ),
+                )
+              else
+                DiscoveryStack(
+                  footerHeight: MediaQuery.textScalerOf(context).scale(16) > 22
+                      ? 256
+                      : 128,
+                  child: _SupportCard(
+                    current as SupportOpportunity,
+                    entryDirection: entryDirection,
+                    busy: acting,
+                    dragX: dragX,
+                    dragging: dragging,
+                    exiting: exiting,
+                    onDragDelta: (value) => setState(() => dragX += value),
+                    onStart: () => setState(() => dragging = true),
+                    onCancel: () => setState(() {
+                      dragging = false;
+                      dragX = 0;
+                    }),
+                    onEnd: () {
+                      if (dragX.abs() <= 110) {
+                        setState(() {
+                          dragging = false;
+                          dragX = 0;
+                        });
+                      } else {
+                        advance(save: false, direction: dragX > 0 ? 1 : -1);
+                      }
+                    },
+                    pass: () => advance(save: false),
+                    open: () => context.push('/rescue-cases/${current.id}'),
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );

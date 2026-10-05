@@ -11,6 +11,7 @@ import '../../core/measurement.dart';
 import '../../core/reference_input_border.dart';
 import '../../core/ui.dart';
 import '../../core/media/media_store.dart';
+import '../../core/media/photo_runtime.dart';
 import 'account_photo_card.dart';
 import 'account_photo_repository.dart';
 import '../identity/identity_controller.dart';
@@ -95,14 +96,13 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
     try {
       final repo = ref.read(accountPhotoRepositoryProvider);
       final path = await repo.loadPath();
-      final url = path == null ? null : await repo.signedUrl(path);
       if (!mounted ||
           ref.read(identityRepositoryProvider).current?.id != profile?.id) {
         return;
       }
       setState(() {
-        photoPath = path;
-        photoUrl = url;
+        replacePhotoPath(path);
+        photoUrl = null;
         if (!photoDirty) photoBytes = null;
       });
     } catch (_) {
@@ -112,6 +112,26 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
     } finally {
       if (mounted) setState(() => photoLoading = false);
     }
+  }
+
+  void replacePhotoPath(String? path) {
+    final previous = photoPath;
+    if (previous != null && previous != path) {
+      ref
+          .read(photoRuntimeProvider)
+          .invalidate(
+            PhotoRef(
+              path: previous,
+              purpose: MediaPurpose.accountAvatar,
+              persistence: PhotoPersistence.ordinary,
+              sign: () =>
+                  ref.read(accountPhotoRepositoryProvider).signedUrl(previous),
+            ),
+            removeDisk: true,
+          )
+          .ignore();
+    }
+    photoPath = path;
   }
 
   Future<void> choosePhoto() async {
@@ -207,7 +227,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
             ref.read(identityRepositoryProvider).current?.id != result.id) {
           return;
         }
-        photoPath = pendingPhotoPath;
+        replacePhotoPath(pendingPhotoPath);
         pendingPhotoPath = null;
         photoDirty = false;
       }
@@ -243,6 +263,7 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
 
   @override
   Widget build(BuildContext context) {
+    final visiblePhotoPath = photoPath;
     final suspended = profile?.status == 'suspended';
     final large = MediaQuery.textScalerOf(context).scale(18) > 25;
     return Scaffold(
@@ -319,6 +340,16 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
                           name: name.text,
                           bytes: photoBytes,
                           url: photoUrl,
+                          source: visiblePhotoPath == null
+                              ? null
+                              : PhotoRef(
+                                  path: visiblePhotoPath,
+                                  purpose: MediaPurpose.accountAvatar,
+                                  persistence: PhotoPersistence.ordinary,
+                                  sign: () => ref
+                                      .read(accountPhotoRepositoryProvider)
+                                      .signedUrl(visiblePhotoPath),
+                                ),
                           onEdit:
                               suspended ||
                                   busy ||

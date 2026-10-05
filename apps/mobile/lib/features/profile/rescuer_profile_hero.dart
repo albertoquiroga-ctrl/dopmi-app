@@ -1,4 +1,7 @@
 import '../../core/reference_focus_outline.dart';
+import '../../core/media/media_store.dart';
+import '../../core/media/photo_runtime.dart';
+import '../../core/media/remote_photo.dart';
 
 import '../../core/css_linear_gradient.dart';
 
@@ -52,22 +55,10 @@ class RescuerProfileHero extends ConsumerWidget {
           publicFailed = true;
         }
       }
-      String? avatarUrl;
-      var avatarFailed = false;
       final avatarPath = published?['avatar_path'] as String?;
-      if (avatarPath != null && avatarPath.isNotEmpty) {
-        try {
-          avatarUrl = await ref
-              .read(rescuerProfileRepositoryProvider)
-              .avatarUrl(avatarPath);
-        } catch (_) {
-          avatarFailed = true;
-        }
-      }
       return {
         ...data,
-        'avatar_url': avatarUrl,
-        'avatar_failed': avatarFailed,
+        'avatar_path': avatarPath,
         'published_profile': published,
         'published_profile_failed': publicFailed,
       };
@@ -99,7 +90,16 @@ class RescuerProfileHero extends ConsumerWidget {
                       .where((value) => value.isNotEmpty)
                       .join(', '),
             status: data['verification_status'] as String?,
-            avatarUrl: data['avatar_url'] as String?,
+            avatarSource: (data['avatar_path'] as String? ?? '').isEmpty
+                ? null
+                : PhotoRef(
+                    path: data['avatar_path'] as String,
+                    purpose: MediaPurpose.rescuerAvatar,
+                    persistence: PhotoPersistence.ordinary,
+                    sign: () => ref
+                        .read(rescuerProfileRepositoryProvider)
+                        .avatarUrl(data['avatar_path'] as String),
+                  ),
             onEdit: () async {
               await context.push('/rescuer/profile/edit');
               if (context.mounted) refresh();
@@ -212,7 +212,7 @@ class RescuerProfileHero extends ConsumerWidget {
   );
 }
 
-class RescuerIdentityCard extends StatefulWidget {
+class RescuerIdentityCard extends ConsumerStatefulWidget {
   const RescuerIdentityCard({
     super.key,
     required this.name,
@@ -220,16 +220,31 @@ class RescuerIdentityCard extends StatefulWidget {
     required this.status,
     required this.onEdit,
     this.avatarUrl,
+    this.avatarSource,
   });
   final String name, city;
   final String? status;
   final String? avatarUrl;
+  final PhotoRef? avatarSource;
   final VoidCallback onEdit;
   @override
-  State<RescuerIdentityCard> createState() => _RescuerIdentityCardState();
+  ConsumerState<RescuerIdentityCard> createState() =>
+      _RescuerIdentityCardState();
 }
 
-class _RescuerIdentityCardState extends State<RescuerIdentityCard> {
+class _RescuerIdentityCardState extends ConsumerState<RescuerIdentityCard> {
+  @override
+  void didUpdateWidget(RescuerIdentityCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.avatarSource != null &&
+        oldWidget.avatarSource?.identity != widget.avatarSource?.identity) {
+      ref
+          .read(photoRuntimeProvider)
+          .invalidate(oldWidget.avatarSource!, removeDisk: true)
+          .ignore();
+    }
+  }
+
   final states = WidgetStatesController();
   bool pressed = false;
   @override
@@ -343,7 +358,20 @@ class _RescuerIdentityCardState extends State<RescuerIdentityCard> {
         ],
       ),
       child: ClipOval(
-        child: widget.avatarUrl == null
+        child: widget.avatarSource != null
+            ? RemotePhoto(
+                source: widget.avatarSource!,
+                key: const ValueKey('rescuer-profile-avatar'),
+                width: 72,
+                height: 72,
+                excludeFromSemantics: true,
+                loading: initial,
+                unavailable: (retry) => Tooltip(
+                  message: 'Reintentar foto de perfil',
+                  child: InkWell(onTap: retry, child: initial),
+                ),
+              )
+            : widget.avatarUrl == null
             ? initial
             : Image.network(
                 widget.avatarUrl!,

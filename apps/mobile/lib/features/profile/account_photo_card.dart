@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/ui.dart';
+import '../../core/media/photo_runtime.dart';
+import '../../core/media/remote_photo.dart';
 
 class AccountPhotoCard extends StatelessWidget {
   const AccountPhotoCard({
@@ -11,11 +13,13 @@ class AccountPhotoCard extends StatelessWidget {
     required this.name,
     this.bytes,
     this.url,
+    this.source,
     this.onEdit,
   });
   final String name;
   final Uint8List? bytes;
   final String? url;
+  final PhotoRef? source;
   final VoidCallback? onEdit;
 
   @override
@@ -48,6 +52,18 @@ class AccountPhotoCard extends StatelessWidget {
                         bytes!,
                         fit: BoxFit.cover,
                         excludeFromSemantics: true,
+                      )
+                    : source != null
+                    ? RemotePhoto(
+                        source: source!,
+                        width: 64,
+                        height: 64,
+                        excludeFromSemantics: true,
+                        loading: fallback,
+                        unavailable: (retry) => Tooltip(
+                          message: 'Reintentar foto de perfil',
+                          child: InkWell(onTap: retry, child: fallback),
+                        ),
                       )
                     : url != null
                     ? Image.network(

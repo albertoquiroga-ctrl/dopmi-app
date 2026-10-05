@@ -7,12 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/media/photo_prefetch.dart';
+import '../../core/media/photo_runtime.dart';
 import '../../core/design_tokens.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
 import 'adoption_traits.dart';
 
-class AdoptionDetailLayout extends StatefulWidget {
+class AdoptionDetailLayout extends ConsumerStatefulWidget {
   const AdoptionDetailLayout({
     super.key,
     required this.post,
@@ -31,10 +33,11 @@ class AdoptionDetailLayout extends StatefulWidget {
   final VoidCallback favorite, contact, share, report;
   final String? error;
   @override
-  State<AdoptionDetailLayout> createState() => _AdoptionDetailLayoutState();
+  ConsumerState<AdoptionDetailLayout> createState() =>
+      _AdoptionDetailLayoutState();
 }
 
-class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
+class _AdoptionDetailLayoutState extends ConsumerState<AdoptionDetailLayout> {
   int galleryIndex = 0;
   final galleryController = PageController(keepPage: false);
   @override
@@ -46,6 +49,19 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
   @override
   void didUpdateWidget(AdoptionDetailLayout oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.post.id == widget.post.id) {
+      for (final path in oldWidget.post.photos.where(
+        (path) => !widget.post.photos.contains(path),
+      )) {
+        ref
+            .read(photoRuntimeProvider)
+            .invalidate(
+              adoptionPhotoSource(ref.read(communityRepositoryProvider), path),
+              removeDisk: true,
+            )
+            .ignore();
+      }
+    }
     if (oldWidget.post.id != widget.post.id ||
         oldWidget.post.photos.join('|') != widget.post.photos.join('|')) {
       galleryIndex = 0;
@@ -110,18 +126,27 @@ class _AdoptionDetailLayoutState extends State<AdoptionDetailLayout> {
                             ),
                           )
                         else
-                          PageView.builder(
-                            controller: galleryController,
-                            key: ValueKey(
-                              '${post.id}:${post.photos.join('|')}',
-                            ),
-                            itemCount: post.photos.length,
-                            onPageChanged: (value) =>
-                                setState(() => galleryIndex = value),
-                            itemBuilder: (_, index) => AdoptionPhoto(
-                              post.photos[index],
-                              height: heroHeight,
-                              radius: 0,
+                          PhotoPrefetch(
+                            sources: [
+                              if (galleryIndex + 1 < post.photos.length)
+                                adoptionPhotoSource(
+                                  ref.read(communityRepositoryProvider),
+                                  post.photos[galleryIndex + 1],
+                                ),
+                            ],
+                            child: PageView.builder(
+                              controller: galleryController,
+                              key: ValueKey(
+                                '${post.id}:${post.photos.join('|')}',
+                              ),
+                              itemCount: post.photos.length,
+                              onPageChanged: (value) =>
+                                  setState(() => galleryIndex = value),
+                              itemBuilder: (_, index) => AdoptionPhoto(
+                                post.photos[index],
+                                height: heroHeight,
+                                radius: 0,
+                              ),
                             ),
                           ),
                         if (!widget.preview)

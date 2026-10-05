@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/media/media_store.dart';
+import '../../core/media/photo_runtime.dart';
+import '../../core/media/remote_photo.dart';
 import '../../core/content_links.dart';
 import '../../core/measurement.dart';
 import '../community/content_actions.dart';
@@ -501,6 +504,42 @@ class PublicProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
+  String? lastAvatarPath;
+  @override
+  void didUpdateWidget(PublicProfileScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.id != widget.id) lastAvatarPath = null;
+  }
+
+  Future<Json?> loadPublicProfile() async {
+    final requestedId = widget.id;
+    final profile = await ref
+        .read(communityRepositoryProvider)
+        .publicProfile(requestedId);
+    if (mounted && widget.id == requestedId) {
+      final path = profile?['avatar_path'] as String?;
+      final previous = lastAvatarPath;
+      if (previous != null && previous != path) {
+        ref
+            .read(photoRuntimeProvider)
+            .invalidate(
+              PhotoRef(
+                path: previous,
+                purpose: MediaPurpose.rescuerAvatar,
+                persistence: PhotoPersistence.ordinary,
+                sign: () => ref
+                    .read(rescuerProfileRepositoryProvider)
+                    .avatarUrl(previous),
+              ),
+              removeDisk: true,
+            )
+            .ignore();
+      }
+      lastAvatarPath = path;
+    }
+    return profile;
+  }
+
   bool busy = false;
   bool? savedOverride;
   int tab = 0;
@@ -568,8 +607,7 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
       'Conoce este perfil en Dopmi. ${publicContentLink(PublicContent.profile, widget.id)}',
     ),
     child: LiveSection<Json?>(
-      load: () =>
-          ref.read(communityRepositoryProvider).publicProfile(widget.id),
+      load: loadPublicProfile,
       builder: (profile, refresh) {
         if (profile == null) {
           return const Notice('Este perfil público no está disponible.');
@@ -743,99 +781,53 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
   );
 }
 
-class _PublicRescuerAvatar extends ConsumerStatefulWidget {
+class _PublicRescuerAvatar extends ConsumerWidget {
   const _PublicRescuerAvatar(this.path, this.name);
   final String? path;
   final String name;
   @override
-  ConsumerState<_PublicRescuerAvatar> createState() =>
-      _PublicRescuerAvatarState();
-}
-
-class _PublicRescuerAvatarState extends ConsumerState<_PublicRescuerAvatar>
-    with WidgetsBindingObserver {
-  Future<String>? signedUrl;
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    renew();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed && mounted) setState(renew);
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didUpdateWidget(covariant _PublicRescuerAvatar oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.path != widget.path) renew();
-  }
-
-  void renew() {
-    signedUrl = widget.path == null || widget.path!.isEmpty
-        ? null
-        : Future<String>.sync(
-            () => ref
-                .read(rescuerProfileRepositoryProvider)
-                .avatarUrl(widget.path!),
-          );
-    signedUrl?.ignore();
-  }
-
-  Widget get unavailable => Tooltip(
-    message: 'Reintentar foto de perfil',
-    child: Semantics(
-      button: true,
-      label: 'Reintentar foto de perfil',
-      child: InkWell(onTap: () => setState(renew), child: fallback),
-    ),
-  );
-
-  Widget get fallback => Center(
-    child: Text(
-      widget.name.trim().isEmpty
-          ? '?'
-          : widget.name.trim().characters.first.toUpperCase(),
-      style: const TextStyle(
-        fontSize: 34,
-        fontWeight: FontWeight.w800,
-        color: Color(0xff6b5000),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final fallback = Center(
+      child: Text(
+        name.trim().isEmpty ? '?' : name.trim().characters.first.toUpperCase(),
+        style: const TextStyle(
+          fontSize: 34,
+          fontWeight: FontWeight.w800,
+          color: Color(0xff6b5000),
+        ),
       ),
-    ),
-  );
-  @override
-  Widget build(BuildContext context) => ClipOval(
-    child: SizedBox(
-      width: 96,
-      height: 96,
-      child: ColoredBox(
-        color: const Color(0xfffff2b8),
-        child: signedUrl == null
-            ? fallback
-            : FutureBuilder<String>(
-                key: ObjectKey(signedUrl),
-                future: signedUrl,
-                builder: (_, result) => result.hasData
-                    ? Image.network(
-                        result.data!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, error, stack) => unavailable,
-                        loadingBuilder: (_, child, progress) =>
-                            progress == null ? child : fallback,
-                      )
-                    : result.hasError
-                    ? unavailable
-                    : fallback,
-              ),
+    );
+    return ClipOval(
+      child: SizedBox(
+        width: 96,
+        height: 96,
+        child: ColoredBox(
+          color: const Color(0xfffff2b8),
+          child: path == null || path!.isEmpty
+              ? fallback
+              : RemotePhoto(
+                  source: PhotoRef(
+                    path: path!,
+                    purpose: MediaPurpose.rescuerAvatar,
+                    persistence: PhotoPersistence.ordinary,
+                    sign: () => ref
+                        .read(rescuerProfileRepositoryProvider)
+                        .avatarUrl(path!),
+                  ),
+                  width: 96,
+                  height: 96,
+                  loading: fallback,
+                  unavailable: (retry) => Tooltip(
+                    message: 'Reintentar foto de perfil',
+                    child: Semantics(
+                      button: true,
+                      label: 'Reintentar foto de perfil',
+                      child: InkWell(onTap: retry, child: fallback),
+                    ),
+                  ),
+                ),
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

@@ -2,16 +2,19 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/media/photo_prefetch.dart';
+import '../../core/media/photo_runtime.dart';
 import '../../core/reference_focus_outline.dart';
 import '../payments/contribution_amount_dialog.dart';
 import 'rescue_repository.dart';
 import 'rescue_public_photo.dart';
 
-class CaseDetailLayout extends StatefulWidget {
+class CaseDetailLayout extends ConsumerStatefulWidget {
   const CaseDetailLayout({
     super.key,
     required this.record,
@@ -36,10 +39,10 @@ class CaseDetailLayout extends StatefulWidget {
   final VoidCallback favorite, share, report;
   final String? error;
   @override
-  State<CaseDetailLayout> createState() => _CaseDetailLayoutState();
+  ConsumerState<CaseDetailLayout> createState() => _CaseDetailLayoutState();
 }
 
-class _CaseDetailLayoutState extends State<CaseDetailLayout> {
+class _CaseDetailLayoutState extends ConsumerState<CaseDetailLayout> {
   final photosController = PageController();
   int photoIndex = 0;
   List<String> get photos =>
@@ -55,6 +58,20 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
   @override
   void didUpdateWidget(CaseDetailLayout oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.record.id == widget.record.id) {
+      final previous =
+          (oldWidget.record.publicData['photos'] as List? ?? const [])
+              .whereType<String>();
+      for (final path in previous.where((path) => !photos.contains(path))) {
+        ref
+            .read(photoRuntimeProvider)
+            .invalidate(
+              rescuePhotoSource(ref.read(rescueRepositoryProvider), path),
+              removeDisk: true,
+            )
+            .ignore();
+      }
+    }
     if (oldWidget.record.id != widget.record.id ||
         (oldWidget.record.publicData['photos'] as List? ?? []).join('|') !=
             photos.join('|')) {
@@ -184,16 +201,25 @@ class _CaseDetailLayoutState extends State<CaseDetailLayout> {
                               ),
                             )
                           else
-                            PageView.builder(
-                              controller: photosController,
-                              itemCount: photoPaths.length,
-                              onPageChanged: (index) =>
-                                  setState(() => photoIndex = index),
-                              itemBuilder: (_, index) => RescuePublicPhoto(
-                                photoPaths[index],
-                                key: ValueKey(photoPaths[index]),
-                                height: height,
-                                radius: 0,
+                            PhotoPrefetch(
+                              sources: [
+                                if (photoIndex + 1 < photoPaths.length)
+                                  rescuePhotoSource(
+                                    ref.read(rescueRepositoryProvider),
+                                    photoPaths[photoIndex + 1],
+                                  ),
+                              ],
+                              child: PageView.builder(
+                                controller: photosController,
+                                itemCount: photoPaths.length,
+                                onPageChanged: (index) =>
+                                    setState(() => photoIndex = index),
+                                itemBuilder: (_, index) => RescuePublicPhoto(
+                                  photoPaths[index],
+                                  key: ValueKey(photoPaths[index]),
+                                  height: height,
+                                  radius: 0,
+                                ),
                               ),
                             ),
                           if (!widget.preview)

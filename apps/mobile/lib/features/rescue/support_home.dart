@@ -8,9 +8,11 @@ import 'package:go_router/go_router.dart';
 import '../../core/donor_notification_button.dart';
 import '../../core/ui.dart';
 import '../../core/reference_focus_outline.dart';
+import '../../core/media/remote_photo.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import 'rescue_repository.dart';
+import 'rescue_public_photo.dart';
 
 class SupportHomePage extends StatelessWidget {
   const SupportHomePage({
@@ -203,26 +205,27 @@ class SupportCaseRing extends ConsumerWidget {
                                   color: Color(0xffefe8dc),
                                   child: Icon(Icons.pets_outlined),
                                 )
-                              : FutureBuilder<String>(
-                                  future: ref
-                                      .read(rescueRepositoryProvider)
-                                      .fileUrl(photos.first as String),
-                                  builder: (_, snapshot) => snapshot.hasData
-                                      ? Image.network(
-                                          snapshot.data!,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (_, _, _) =>
-                                              const ColoredBox(
-                                                color: Color(0xffefe8dc),
-                                                child: Icon(
-                                                  Icons.pets_outlined,
-                                                ),
-                                              ),
-                                        )
-                                      : const ColoredBox(
-                                          color: Color(0xffefe8dc),
-                                          child: Icon(Icons.pets_outlined),
-                                        ),
+                              : RemotePhoto(
+                                  source: rescuePhotoSource(
+                                    ref.read(rescueRepositoryProvider),
+                                    photos.first as String,
+                                  ),
+                                  width: 58,
+                                  height: 58,
+                                  loading: const ColoredBox(
+                                    color: Color(0xffefe8dc),
+                                    child: Icon(Icons.pets_outlined),
+                                  ),
+                                  unavailable: (retry) => Tooltip(
+                                    message: 'Reintentar foto del caso',
+                                    child: InkWell(
+                                      onTap: retry,
+                                      child: const ColoredBox(
+                                        color: Color(0xffefe8dc),
+                                        child: Icon(Icons.refresh),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                         ),
                       ),

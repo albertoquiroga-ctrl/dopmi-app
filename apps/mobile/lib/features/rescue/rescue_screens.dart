@@ -14,6 +14,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show PostgrestException;
 
 import '../../core/ui.dart';
+import '../../core/media/media_store.dart';
+import '../../core/media/photo_runtime.dart';
+import '../../core/media/remote_photo.dart';
 import '../../core/donor_notification_button.dart';
 import '../../core/measurement.dart';
 import '../adoption/community_repository.dart';
@@ -2946,7 +2949,8 @@ class RescueFileScreen extends ConsumerStatefulWidget {
 }
 
 class _RescueFileState extends ConsumerState<RescueFileScreen> {
-  late Future<String> url = fileUrl();
+  late Future<String>? url = widget.path.endsWith('.pdf') ? fileUrl() : null;
+  int photoCycle = 0;
   String? error;
   Future<String> fileUrl() {
     final request = Future<String>.sync(
@@ -2957,9 +2961,10 @@ class _RescueFileState extends ConsumerState<RescueFileScreen> {
   }
 
   void reload() {
-    final request = fileUrl();
+    final request = widget.path.endsWith('.pdf') ? fileUrl() : null;
     setState(() {
       url = request;
+      photoCycle++;
       error = null;
     });
   }
@@ -2982,47 +2987,59 @@ class _RescueFileState extends ConsumerState<RescueFileScreen> {
         ),
         const SizedBox(height: 20),
         if (error != null) Notice(error!, isError: true),
-        FutureBuilder<String>(
-          key: ValueKey(url),
-          future: url,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Notice(rescueError(snapshot.error!), isError: true);
-            }
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (widget.path.endsWith('.pdf')) {
-              return ActionButton(
-                'Abrir PDF',
-                onPressed: () async {
-                  try {
-                    final fresh = await ref
-                        .read(rescueRepositoryProvider)
-                        .fileUrl(widget.path);
-                    if (!mounted) return;
-                    if (!await launchUrl(
-                      Uri.parse(fresh),
-                      mode: LaunchMode.externalApplication,
-                    )) {
-                      throw const FormatException('No pudimos abrir el PDF.');
+        if (!widget.path.endsWith('.pdf'))
+          RemotePhoto(
+            key: ValueKey(photoCycle),
+            source: PhotoRef(
+              path: widget.path,
+              purpose: MediaPurpose.rescuePhoto,
+              persistence: PhotoPersistence.memory,
+              sign: () =>
+                  ref.read(rescueRepositoryProvider).fileUrl(widget.path),
+            ),
+            fit: BoxFit.contain,
+            loading: const Center(child: CircularProgressIndicator()),
+            unavailable: (retry) => TextButton.icon(
+              onPressed: retry,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Reintentar foto'),
+            ),
+          )
+        else
+          FutureBuilder<String>(
+            key: ValueKey(url),
+            future: url,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Notice(rescueError(snapshot.error!), isError: true);
+              }
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (widget.path.endsWith('.pdf')) {
+                return ActionButton(
+                  'Abrir PDF',
+                  onPressed: () async {
+                    try {
+                      final fresh = await ref
+                          .read(rescueRepositoryProvider)
+                          .fileUrl(widget.path);
+                      if (!mounted) return;
+                      if (!await launchUrl(
+                        Uri.parse(fresh),
+                        mode: LaunchMode.externalApplication,
+                      )) {
+                        throw const FormatException('No pudimos abrir el PDF.');
+                      }
+                    } catch (cause) {
+                      if (mounted) setState(() => error = rescueError(cause));
                     }
-                  } catch (cause) {
-                    if (mounted) setState(() => error = rescueError(cause));
-                  }
-                },
-              );
-            }
-            return Image.network(
-              snapshot.data!,
-              fit: BoxFit.contain,
-              errorBuilder: (_, _, _) => const Notice(
-                'No pudimos cargar la imagen. Recarga el archivo.',
-                isError: true,
-              ),
-            );
-          },
-        ),
+                  },
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
         TextButton(onPressed: reload, child: const Text('Recargar archivo')),
       ],
     ),

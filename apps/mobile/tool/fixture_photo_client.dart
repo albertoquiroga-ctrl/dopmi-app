@@ -10,6 +10,8 @@ class FixturePhotoClient implements HttpClient {
   @override
   Future<HttpClientRequest> getUrl(Uri url) async => _Request(bytes);
   @override
+  void close({bool force = false}) {}
+  @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 

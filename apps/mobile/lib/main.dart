@@ -14,6 +14,8 @@ import 'core/storage.dart';
 import 'core/measurement.dart';
 import 'core/ui.dart';
 import 'core/content_links.dart';
+import 'core/media/photo_runtime.dart';
+import 'core/media/photo_store_factory.dart';
 import 'features/identity/identity_controller.dart';
 import 'features/identity/identity_repository.dart';
 
@@ -93,6 +95,26 @@ class _BootstrapState extends State<Bootstrap> {
                 measurementControllerProvider.overrideWith(
                   (ref) => snapshot.data!.measurement,
                 ),
+                photoRuntimeProvider.overrideWith((ref) {
+                  final identity = ref.watch(identityControllerProvider);
+                  final runtime = PhotoRuntime(
+                    store: createPhotoStore(),
+                    environment: Uri.parse(config.url).host,
+                    actor: identity.identity?.id ?? 'anonymous',
+                    ready: false,
+                  );
+                  void synchronize() => runtime.scope(
+                    identity.identity?.id ?? 'anonymous',
+                    ready: !identity.loading && identity.error == null,
+                  );
+                  identity.addListener(synchronize);
+                  synchronize();
+                  ref.onDispose(() {
+                    identity.removeListener(synchronize);
+                    runtime.dispose();
+                  });
+                  return runtime;
+                }),
               ],
               child: const ContentLinkListener(child: DopmiApp()),
             );

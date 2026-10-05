@@ -141,7 +141,7 @@ void main() {
     expect(find.text('Reintentar foto'), findsOneWidget);
     await tester.tap(find.text('Reintentar foto'));
     await tester.pump();
-    expect(updates.photoCalls, 2);
+    expect(updates.photoCalls, 3);
     expect(find.text('Reintentar foto'), findsNothing);
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
     expect(tester.getSize(find.byType(OwnedStoryPhoto)).height, 160);
@@ -176,7 +176,7 @@ void main() {
       expect(tester.getSize(find.byType(OwnedStoryPhoto)).height, 160);
       await tester.tap(find.text('Reintentar foto'));
       await tester.pumpAndSettle();
-      expect(updates.photoCalls, 2);
+      expect(updates.photoCalls, 4);
       expect(tester.getSize(find.byType(OwnedStoryPhoto)).height, 160);
       expect(tester.takeException(), isNull);
     },
@@ -204,7 +204,7 @@ void main() {
       expect(tester.getSize(find.byType(OwnedStoryPhoto)).height, 160);
       await tester.tap(find.text('Reintentar foto'));
       await tester.pumpAndSettle();
-      expect(updates.photoCalls, 2);
+      expect(updates.photoCalls, 4);
       expect(tester.getSize(find.byType(OwnedStoryPhoto)).height, 160);
       expect(tester.takeException(), isNull);
       updates.fail = true;

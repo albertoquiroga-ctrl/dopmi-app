@@ -7,6 +7,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/media/media_store.dart';
+import '../../core/media/photo_runtime.dart';
+import '../../core/media/remote_photo.dart';
 import '../adoption/community_repository.dart';
 import 'rescuer_profile_repository.dart';
 
@@ -39,7 +42,7 @@ class _RescuerPublicProfileEditState
   Uint8List? avatarBytes;
   String? pendingAvatarPath;
   bool avatarDirty = false;
-  String? avatarUrl, error;
+  String? avatarPath, error;
   bool loading = true, busy = false, loadFailed = false;
 
   @override
@@ -75,12 +78,7 @@ class _RescuerPublicProfileEditState
       region.text = value?['region'] as String? ?? '';
       instagram.text = value?['instagram_url'] as String? ?? '';
       facebook.text = value?['facebook_url'] as String? ?? '';
-      final path = value?['avatar_path'] as String?;
-      if (path != null && path.isNotEmpty) {
-        avatarUrl = await ref
-            .read(rescuerProfileRepositoryProvider)
-            .avatarUrl(path);
-      }
+      replaceAvatarPath(value?['avatar_path'] as String?);
     } catch (cause) {
       loadFailed = true;
       error = communityError(cause);
@@ -89,6 +87,39 @@ class _RescuerPublicProfileEditState
     }
   }
 
+  void replaceAvatarPath(String? path) {
+    final previous = avatarPath;
+    if (previous != null && previous != path) {
+      ref
+          .read(photoRuntimeProvider)
+          .invalidate(
+            PhotoRef(
+              path: previous,
+              purpose: MediaPurpose.rescuerAvatar,
+              persistence: PhotoPersistence.ordinary,
+              sign: () => ref
+                  .read(rescuerProfileRepositoryProvider)
+                  .avatarUrl(previous),
+            ),
+            removeDisk: true,
+          )
+          .ignore();
+    }
+    avatarPath = path;
+  }
+
+  Widget avatarFallback() => Center(
+    child: name.text.trim().isEmpty
+        ? const Icon(Icons.person_outline, color: purple)
+        : Text(
+            name.text.trim().characters.first.toUpperCase(),
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+              color: purple,
+            ),
+          ),
+  );
   Json payload({String? avatarPath}) => {
     'display_name': name.text.trim(),
     'bio': bio.text.trim(),
@@ -122,6 +153,7 @@ class _RescuerPublicProfileEditState
       );
       if (!mounted || repo.userId != owner) return false;
       profile = saved;
+      replaceAvatarPath(saved['avatar_path'] as String?);
       avatarDirty = false;
       pendingAvatarPath = null;
       if (mounted && announce) {
@@ -196,6 +228,7 @@ class _RescuerPublicProfileEditState
 
   @override
   Widget build(BuildContext context) {
+    final visibleAvatarPath = avatarPath;
     final status = profile?['status'] as String? ?? 'draft';
     final editable = [
       'draft',
@@ -281,27 +314,37 @@ class _RescuerPublicProfileEditState
                               foregroundColor: purple,
                               backgroundImage: avatarBytes != null
                                   ? MemoryImage(avatarBytes!)
-                                  : avatarUrl == null
-                                  ? null
-                                  : NetworkImage(avatarUrl!),
-                              child: avatarBytes == null && avatarUrl == null
-                                  ? name.text.trim().isEmpty
-                                        ? const Icon(
-                                            Icons.person_outline,
-                                            color: purple,
-                                          )
-                                        : Text(
-                                            name.text
-                                                .trim()
-                                                .characters
-                                                .first
-                                                .toUpperCase(),
-                                            style: const TextStyle(
-                                              fontSize: 22,
-                                              fontWeight: FontWeight.w800,
-                                            ),
-                                          )
                                   : null,
+                              child: avatarBytes != null
+                                  ? null
+                                  : visibleAvatarPath == null ||
+                                        visibleAvatarPath.isEmpty
+                                  ? avatarFallback()
+                                  : ClipOval(
+                                      child: RemotePhoto(
+                                        source: PhotoRef(
+                                          path: visibleAvatarPath,
+                                          purpose: MediaPurpose.rescuerAvatar,
+                                          persistence:
+                                              PhotoPersistence.ordinary,
+                                          sign: () => ref
+                                              .read(
+                                                rescuerProfileRepositoryProvider,
+                                              )
+                                              .avatarUrl(visibleAvatarPath),
+                                        ),
+                                        width: 64,
+                                        height: 64,
+                                        loading: avatarFallback(),
+                                        unavailable: (retry) => Tooltip(
+                                          message: 'Reintentar foto de perfil',
+                                          child: InkWell(
+                                            onTap: retry,
+                                            child: avatarFallback(),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                             ),
                             Positioned(
                               right: -2,
