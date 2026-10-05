@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class PublicationFrame extends StatelessWidget {
+class PublicationFrame extends StatefulWidget {
   const PublicationFrame({
     super.key,
     required this.title,
@@ -17,7 +17,26 @@ class PublicationFrame extends StatelessWidget {
   final Widget footer;
   final VoidCallback? onBack;
   @override
+  State<PublicationFrame> createState() => _PublicationFrameState();
+}
+
+class _PublicationFrameState extends State<PublicationFrame> {
+  final bodyController = ScrollController(keepScrollOffset: false);
+
+  @override
+  void dispose() {
+    bodyController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final title = widget.title;
+    final step = widget.step;
+    final totalSteps = widget.totalSteps;
+    final children = widget.children;
+    final footer = widget.footer;
+    final onBack = widget.onBack;
     final keyboard = MediaQuery.viewInsetsOf(context).bottom > 0;
     final header = _PublicationHeader(
       title: title,
@@ -37,7 +56,11 @@ class PublicationFrame extends StatelessWidget {
                 scrollHeader ? const SizedBox.shrink() : header,
                 Expanded(
                   child: ListView(
-                    key: const PageStorageKey('publication-body'),
+                    // Each step gets a fresh viewport at offset zero. Keep its
+                    // identity while typing so keyboard rebuilds retain scroll
+                    // and the keyed Form, instead of resetting a focused field.
+                    key: PageStorageKey('publication-body-$step'),
+                    controller: bodyController,
                     padding: EdgeInsets.zero,
                     children: [
                       // The Source header stays fixed with large text. Only a

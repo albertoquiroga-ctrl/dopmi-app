@@ -161,6 +161,62 @@ void main() {
   }
 
   testWidgets(
+    'publication steps start at the top while keyboard rebuilds keep the current place',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 640);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetViewInsets);
+      final font = FontLoader('Inter')
+        ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
+      await tester.runAsync(font.load);
+      final repo = PhotoDraftCommunity();
+      await startPublication(tester, repo, '/my-adoptions/post');
+      final region = find.byKey(const ValueKey('publication-field-region'));
+      await tester.ensureVisible(region);
+      await tester.pumpAndSettle();
+      expect(find.text('Perfil').hitTestable(), findsNothing);
+      await tester.enterText(region, 'Nuevo León corregido');
+      tester.view.viewInsets = const FakeViewPadding(bottom: 180);
+      await tester.pumpAndSettle();
+      expect(find.text('Perfil').hitTestable(), findsNothing);
+      expect(
+        tester.widget<TextFormField>(region).controller!.text,
+        'Nuevo León corregido',
+      );
+      FocusManager.instance.primaryFocus?.unfocus();
+      tester.view.resetViewInsets();
+      await tester.pumpAndSettle();
+      await tapPublication(tester, find.text('Continuar'));
+      expect(
+        tester.widget<PublicationFrame>(find.byType(PublicationFrame)).step,
+        1,
+      );
+      expect(find.text('Complementa sus fotos').hitTestable(), findsOneWidget);
+      final breed = find.byKey(const ValueKey('publication-field-breed'));
+      await tester.ensureVisible(breed);
+      await tester.pumpAndSettle();
+      expect(find.text('Complementa sus fotos').hitTestable(), findsNothing);
+      await tapPublication(
+        tester,
+        find.byKey(const ValueKey('publication-header-back')),
+      );
+      expect(
+        tester.widget<PublicationFrame>(find.byType(PublicationFrame)).step,
+        0,
+      );
+      expect(find.text('Perfil').hitTestable(), findsOneWidget);
+      expect(
+        tester.widget<TextFormField>(region).controller!.text,
+        'Nuevo León corregido',
+      );
+      expect(repo.savedPayload?['region'], 'Nuevo León corregido');
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'special care can be toggled without losing the existing description',
     (tester) async {
       final repo = PhotoDraftCommunity();
