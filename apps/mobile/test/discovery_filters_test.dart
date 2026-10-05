@@ -43,12 +43,14 @@ void main() {
     WidgetTester tester, {
     bool large = false,
     FilterQueries? repository,
+    Size? viewport,
+    double? textScale,
   }) async {
-    tester.view.physicalSize = large
-        ? const Size(320, 640)
-        : const Size(377, 852);
+    tester.view.physicalSize =
+        viewport ?? (large ? const Size(320, 640) : const Size(377, 852));
     tester.view.devicePixelRatio = 1;
-    tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
+    tester.platformDispatcher.textScaleFactorTestValue =
+        textScale ?? (large ? 2 : 1);
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
@@ -79,6 +81,53 @@ void main() {
     of: find.byType(DiscoveryFilters),
     matching: find.text(text),
   );
+
+  testWidgets('Samsung enlarged text fits every personality inside its chip', (
+    tester,
+  ) async {
+    final font = FontLoader('Inter')
+      ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
+    await tester.runAsync(font.load);
+    final repo = await open(
+      tester,
+      viewport: const Size(411.43, 891.43),
+      textScale: 1.15,
+    );
+    final chips = find.descendant(
+      of: find.byType(DiscoveryFilters),
+      matching: find.byWidgetPredicate(
+        (widget) => widget is FilterOption && widget.outlined,
+      ),
+    );
+    expect(chips, findsNWidgets(12));
+    for (final element in chips.evaluate()) {
+      final text = find.descendant(
+        of: find.byWidget(element.widget),
+        matching: find.byType(Text),
+      );
+      final render = tester.renderObject<RenderBox>(text);
+      final painter = TextPainter(
+        text: TextSpan(
+          text: (element.widget as FilterOption).label,
+          style: DefaultTextStyle.of(tester.element(text)).style,
+        ),
+        textDirection: TextDirection.ltr,
+        textScaler: const TextScaler.linear(1.15),
+      )..layout();
+      expect(painter.width, lessThanOrEqualTo(render.size.width + .01));
+      painter.dispose();
+    }
+    expect(
+      tester.getRect(label('Esperanzado')).top,
+      greaterThan(tester.getRect(label('Alegre')).top),
+    );
+    await tester.tap(label('Esperanzado'));
+    await tester.ensureVisible(label('Aplicar filtros'));
+    await tester.tap(label('Aplicar filtros'));
+    await tester.pumpAndSettle();
+    expect(repo.queries.last['personality'], ['esperanzado']);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets('filter geometry matches rendered reference at 377 by 852', (
     tester,

@@ -207,12 +207,39 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                 const SizedBox(height: 12),
                 LayoutBuilder(
                   builder: (context, constraints) {
-                    final columns =
-                        MediaQuery.textScalerOf(context).scale(11) > 20
+                    final textScaler = MediaQuery.textScalerOf(context);
+                    var columns = textScaler.scale(11) > 20
                         ? 1
-                        : MediaQuery.textScalerOf(context).scale(11) > 15
+                        : textScaler.scale(11) > 15
                         ? 2
                         : 4;
+                    var widestLabel = 0.0;
+                    for (final label in personalityLabels.values) {
+                      final painter = TextPainter(
+                        text: TextSpan(
+                          text: label,
+                          style: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 11,
+                            height: 1.15,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0,
+                          ),
+                        ),
+                        textDirection: Directionality.of(context),
+                        textScaler: textScaler,
+                      )..layout();
+                      if (painter.width > widestLabel) {
+                        widestLabel = painter.width;
+                      }
+                      painter.dispose();
+                    }
+                    while (textScaler.scale(11) > 11 &&
+                        columns > 1 &&
+                        (constraints.maxWidth - (columns - 1) * 8) / columns <
+                            widestLabel) {
+                      columns ~/= 2;
+                    }
                     return Wrap(
                       spacing: 8,
                       runSpacing: 8,

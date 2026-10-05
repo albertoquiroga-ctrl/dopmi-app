@@ -98,7 +98,7 @@ void main() {
             builder: (_, _) => const RescuerPublicProfileEditScreen(),
           ),
           GoRoute(
-            path: '/rescuer/profile',
+            path: '/profile',
             builder: (_, _) => const Scaffold(body: Text('Perfil destino')),
           ),
         ],

@@ -251,7 +251,7 @@ void main() {
     final router = GoRouter.of(tester.element(cancel));
     await tester.tap(cancel);
     await tester.pumpAndSettle();
-    expect(router.routeInformationProvider.value.uri.path, '/rescuer/profile');
+    expect(router.routeInformationProvider.value.uri.path, '/profile');
     expect(repo.saves, 1);
     expect(repo.value['status'], 'submitted');
   });

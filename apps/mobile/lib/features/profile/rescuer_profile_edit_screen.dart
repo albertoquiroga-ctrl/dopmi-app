@@ -186,6 +186,14 @@ class _RescuerPublicProfileEditState
     }
   }
 
+  void leaveEditor() {
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go('/profile');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final status = profile?['status'] as String? ?? 'draft';
@@ -195,7 +203,7 @@ class _RescuerPublicProfileEditState
       'rejected',
     ].contains(status);
     final large = MediaQuery.textScalerOf(context).scale(18) > 25;
-    return Scaffold(
+    final screen = Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -218,7 +226,7 @@ class _RescuerPublicProfileEditState
         ),
         leading: IconButton(
           tooltip: 'Volver',
-          onPressed: () => context.go('/rescuer/profile'),
+          onPressed: leaveEditor,
           icon: SvgPicture.asset(
             'assets/profile/back.svg',
             width: 20,
@@ -489,12 +497,20 @@ class _RescuerPublicProfileEditState
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              onPressed: busy ? null : () => context.go('/rescuer/profile'),
+              onPressed: busy ? null : leaveEditor,
               child: const Text('Cancelar'),
             ),
           ],
         ),
       ),
+    );
+    final router = GoRouter.maybeOf(context);
+    return PopScope(
+      canPop: router?.canPop() ?? true,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && router != null) leaveEditor();
+      },
+      child: screen,
     );
   }
 }
