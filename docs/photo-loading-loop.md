@@ -105,6 +105,6 @@ entrada al abrir/recargar, oculta el frame previo y conserva el aviso seguro de 
 La batería afectada posterior aprobó29 pruebas con JPEG realmente decodificado.
 La auditoría acotada ya cerró sus dos pasadas; esto corrige el gate, no abre otra ronda.
 
-`photo-candidate.yml` permite recomprobar sólo móvil mediante workflow_dispatch,
+`milestone-1.yml`, scope `photo`, permite recomprobar sólo móvil mediante workflow_dispatch,
 conservando el gate de administración/backend anterior. Incluye análisis, pruebas
 afectadas, capturas y compilaciones Android/iOS sobre el nuevo SHA.
