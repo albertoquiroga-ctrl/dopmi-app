@@ -194,3 +194,7 @@ corregir el offset entre pasos. Codemagic6ac3570f3a34cf7c3070ed0f entregó
 - [x] Comprobar291 instalada y ocho recorridos modificados en Samsung al115%.
 - [x] Limpiar sólo las dos identidades y15 objetos sintéticos del manifest QA889; postflight cero y participante Samsung conservado.
 Los commits Source posteriores a889c096 y los pendientes H12 siguen separados.
+
+### 2026-10-05 — Swipe cerrado en Samsung y Play 295
+
+Supera el pendiente del candidato fcc2ce7: único release interno 2.3.3 (295), source 7cf8202; Play completed confirmado y Samsung actualizado desde tienda. Diez avances efectivos sobre catálogo repetido; videos 293/295 comparados por cuadros intermedios, transiciones mixtas centradas y foto/texto unidos. Codemagic 877 tests; gate móvil 37406799890/41c5a37 y checks iOS/web/backend 37405575748 acreditados. Auditoría cerrada sin pendientes; dos correcciones sólo de verificación. Ver docs/swipe-stack-delivery.md. No hay otro loop de swipe abierto.
