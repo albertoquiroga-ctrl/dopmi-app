@@ -124,7 +124,8 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     expect(container.read(routerProvider).state.uri.path, '/rescuer');
-    expect(find.text('Acciones pendientes'), findsOneWidget);
+    expect(find.byType(RescueHomeScreen), findsOneWidget);
+    expect(find.text('Hola, Ana'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

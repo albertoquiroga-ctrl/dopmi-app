@@ -3653,3 +3653,25 @@ el registro intacto. Sin replay/repair/PROD. Suite Cases14/14 pasó tras cambiar
 contrato; prueba adicional de fallo/cancelación y APK actualizado en ejecución.
 Aún faltan cierre Apoyar nativo, gate del SHA final, Codemagic/Play, Samsung y
 limpieza exacta; ninguna de esas puertas se acredita por capturas o compilación.
+
+
+### 6/10/2026 — bccd candidato y gate por bloques
+
+`f362eb41a18e295e71e7c75eae8ca5506c80965c` publicado en rama de continuación.
+Gate474/run37480248797: web/admin/config/backend/PostgreSQL/concurrencia e
+integración aprobados. Móvil analyze/format aprobados,909 pruebas pasaron y4
+fallaron por fixtures heredadas de Inicio (proveedor no reemplazado, texto y
+Scrollable retirados). Corrección limitada a tres tests;29/29 dirigidos pasan.
+Código productivo, SQL y configuración no cambian. Repetir sólo scope mobile
+sobre el siguiente SHA; se conserva evidencia de bloques intactos del gate474.
+
+APK final de código f362eb4 instalado y sha256 de base.apk coincide con
+02e33c895e1af2061ac38fcaf9d7fad2925a3e8b8bdcbc6f5d2dec9f7dfa8954. Cierre de
+apoyo cancelado dejó v5 intacta; confirmado produjo closed/v6 mediante nuevaRPC,
+sin cambiar los dos gastos draft privados. Home mostró0evidencias/0apoyoactivo,
+Sin responder0 tras respuesta única. Autor sin acción Editar en apoyo aprobado.
+Build QA debug no acredita Play296 ni instalación Samsung. Native fixtures
+continúan4actores/22adopciones/5rescues/8objetos. Adopción principal repuesta en
+revisión por RPC y publicada v15 para galería/aceptación instalada; una llamada
+con firma incorrecta dioPGRST202 y fue reconciliada como rechazo sin revisión
+antes de usar feedback real. No retry incierto ni fondos. Limpieza aún pendiente.

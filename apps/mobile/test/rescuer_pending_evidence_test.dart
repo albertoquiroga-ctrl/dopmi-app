@@ -84,16 +84,19 @@ void main() {
         );
         await tester.pumpAndSettle();
         final selector = find.text('Recibiendo apoyo').first;
+        final homeScroll = find
+            .descendant(
+              of: find.byType(ListView).first,
+              matching: find.byType(Scrollable),
+            )
+            .first;
+        await tester.scrollUntilVisible(selector, 160, scrollable: homeScroll);
         await tester.ensureVisible(selector);
         await tester.pumpAndSettle();
         await tester.tap(selector);
         await tester.pumpAndSettle();
-        final action = find.text('Choco · Consulta · Incompleta');
-        await tester.scrollUntilVisible(
-          action,
-          240,
-          scrollable: find.byType(Scrollable).first,
-        );
+        final action = find.text('Choco · Consulta · Evidencia pendiente');
+        await tester.scrollUntilVisible(action, 240, scrollable: homeScroll);
         await tester.ensureVisible(action);
         await tester.pumpAndSettle();
         expect(find.text('Continuar evidencia'), findsNothing);
@@ -117,7 +120,7 @@ void main() {
         await tester.scrollUntilVisible(
           notifications,
           -240,
-          scrollable: find.byType(Scrollable).first,
+          scrollable: homeScroll,
         );
         await tester.ensureVisible(notifications);
         await tester.pumpAndSettle();

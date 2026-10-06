@@ -509,6 +509,7 @@ void main() {
               emptyAccountPhotoRepository(identity),
             ),
             communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+            rescueRepositoryProvider.overrideWithValue(FakeRescue()),
             routerInitialLocationProvider.overrideWithValue('/profile'),
           ],
         );
