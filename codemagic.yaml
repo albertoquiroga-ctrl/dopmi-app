@@ -297,7 +297,7 @@ workflows:
 
       - name: Set up iOS code signing
         script: |
-          xcode-project use-profiles --custom-export-options='{"testFlightInternalTestingOnly": true}'
+          xcode-project use-profiles --custom-export-options='{"testFlightInternalTestingOnly": false}'
 
       - name: Build signed IPA
         script: |
@@ -324,7 +324,7 @@ workflows:
           sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
           Path('build/guardian-build-info.txt').write_text(
               f"Commit: {sha}\nVersion: {os.environ['RELEASE_NAME']} ({sys.argv[1]})\n"
-              "Guardian test: true\nDistribution: TestFlight internal\n")
+              "Guardian test: true\nDistribution: TestFlight (external eligible)\n")
           PYINFO
 
     artifacts:
@@ -335,6 +335,6 @@ workflows:
     publishing:
       app_store_connect:
         auth: integration
-        # Upload for internal testers; do not request external beta review.
+        # Upload an external-eligible build; beta review is handled in App Store Connect.
         submit_to_testflight: false
         submit_to_app_store: false
