@@ -201,8 +201,8 @@ void main() {
       );
       await tester.pumpAndSettle();
       for (var index = 0; index < 2; index++) {
-        await tester.ensureVisible(find.byTooltip('Pasar'));
-        await tester.tap(find.byTooltip('Pasar'));
+        await tester.ensureVisible(find.byTooltip('Pasar').hitTestable());
+        await tester.tap(find.byTooltip('Pasar').hitTestable());
         await tester.pumpAndSettle();
       }
       final photos = find.descendant(
