@@ -2667,10 +2667,10 @@ void main() {
       if (spec.$1.startsWith('adoption-support')) {
         for (var i = 0; i < 2; i++) {
           await Scrollable.ensureVisible(
-            tester.element(find.byTooltip('Pasar')),
+            tester.element(find.byTooltip('Pasar').last),
           );
           await tester.pumpAndSettle();
-          await tester.tap(find.byTooltip('Pasar'));
+          await tester.tap(find.byTooltip('Pasar').hitTestable());
           await tester.pumpAndSettle();
         }
       }
@@ -2876,7 +2876,7 @@ void main() {
           4,
         );
         for (var i = 0; i < 4; i++) {
-          await tester.tap(find.byTooltip('Pasar'));
+          await tester.tap(find.byTooltip('Pasar').hitTestable());
           await tester.pumpAndSettle();
         }
         expect(
@@ -2911,11 +2911,11 @@ void main() {
       }
       if (spec.$1.startsWith('adoption-contact')) {
         await Scrollable.ensureVisible(
-          tester.element(find.byTooltip('Contactar')),
+          tester.element(find.byTooltip('Contactar').last),
           alignment: .25,
         );
         await tester.pumpAndSettle();
-        await tester.tap(find.byTooltip('Contactar'));
+        await tester.tap(find.byTooltip('Contactar').hitTestable());
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('adoption-filters')) {
