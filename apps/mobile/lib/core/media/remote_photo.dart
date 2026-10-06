@@ -20,6 +20,7 @@ class RemotePhoto extends ConsumerStatefulWidget {
     this.semanticLabel,
     this.excludeFromSemantics = false,
     this.preview = false,
+    this.onDisplayed,
   });
   final PhotoRef source;
   final Widget loading;
@@ -32,6 +33,7 @@ class RemotePhoto extends ConsumerStatefulWidget {
 
   /// Observes the bounded prefetch without loading, retrying, or promoting it.
   final bool preview;
+  final VoidCallback? onDisplayed;
   @override
   ConsumerState<RemotePhoto> createState() => _RemotePhotoState();
 }
@@ -218,6 +220,33 @@ class _RemotePhotoState extends ConsumerState<RemotePhoto>
     final current = generation;
     return Image(
       image: frame!.provider,
+      frameBuilder: (context, child, decodedFrame, synchronous) {
+        if ((decodedFrame != null || synchronous) &&
+            !widget.preview &&
+            active &&
+            widget.onDisplayed != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            final lifecycle = WidgetsBinding.instance.lifecycleState;
+            final box = context.findRenderObject();
+            final viewport = Offset.zero & MediaQuery.sizeOf(context);
+            final visible =
+                box is RenderBox &&
+                box.hasSize &&
+                box.attached &&
+                (box.localToGlobal(Offset.zero) & box.size).overlaps(viewport);
+            if (mounted &&
+                generation == current &&
+                !widget.preview &&
+                active &&
+                visible &&
+                (lifecycle == null || lifecycle == AppLifecycleState.resumed)) {
+              widget.onDisplayed?.call();
+            }
+          });
+        }
+        return child;
+      },
       height: widget.height,
       width: widget.width,
       fit: widget.fit,

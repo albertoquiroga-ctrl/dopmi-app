@@ -19,6 +19,7 @@ Widget view(
   PhotoRef request, {
   required bool preview,
   List<PhotoRef>? upcoming,
+  VoidCallback? onDisplayed,
 }) => ProviderScope(
   overrides: [photoRuntimeProvider.overrideWithValue(runtime)],
   child: MaterialApp(
@@ -33,6 +34,7 @@ Widget view(
         key: photoKey,
         source: request,
         preview: preview,
+        onDisplayed: onDisplayed,
         width: 128,
         height: 160,
         loading: const Text('Cargando'),
@@ -44,6 +46,31 @@ Widget view(
 );
 
 void main() {
+  testWidgets(
+    'display callback excludes prefetch and decoded background preview',
+    (tester) async {
+      final runtime = await realRuntime(
+        tester,
+        MemoryPhotoStore(),
+        download: (_, _) async => photograph,
+      );
+      addTearDown(runtime.dispose);
+      final request = source();
+      await tester.runAsync(() => runtime.load(request, width: 128));
+      var displayed = 0;
+      await tester.pumpWidget(
+        view(runtime, request, preview: true, onDisplayed: () => displayed++),
+      );
+      await tester.pump();
+      expect(displayed, 0);
+      await tester.pumpWidget(
+        view(runtime, request, preview: false, onDisplayed: () => displayed++),
+      );
+      await tester.pump();
+      expect(displayed, greaterThan(0));
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
   testWidgets('readyFrame follows authorization, scope and invalidation', (
     tester,
   ) async {

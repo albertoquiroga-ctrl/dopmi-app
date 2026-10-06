@@ -12,9 +12,11 @@ class PublicExpenseCard extends StatefulWidget {
     super.key,
     required this.canContribute,
     this.initiallyOpen = false,
+    this.showContributeAction = true,
   });
   final RescueRecord record;
   final bool canContribute, initiallyOpen;
+  final bool showContributeAction;
   @override
   State<PublicExpenseCard> createState() => _PublicExpenseCardState();
 }
@@ -55,7 +57,7 @@ class _PublicExpenseCardState extends State<PublicExpenseCard> {
     final enabled = widget.canContribute && remaining > 0;
     final large = MediaQuery.textScalerOf(context).scale(12) > 17;
     final amount1 = Text(
-      '${_amount(record.fundedCents)} donados',
+      '${_amount(record.fundedCents)} recibidos',
       style: const TextStyle(
         fontFamily: 'Inter',
         fontSize: 12,
@@ -236,14 +238,16 @@ class _PublicExpenseCardState extends State<PublicExpenseCard> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           summary,
-                          SizedBox(height: 48, child: contribution),
+                          if (widget.showContributeAction)
+                            SizedBox(height: 48, child: contribution),
                         ],
                       )
                     : Row(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Expanded(child: summary),
-                          SizedBox(width: 48, child: contribution),
+                          if (widget.showContributeAction)
+                            SizedBox(width: 48, child: contribution),
                         ],
                       ),
               ),

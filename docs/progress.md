@@ -3590,3 +3590,39 @@ Limpieza exacta DEV después del preflight actual:15 archivos retirados por Stor
 - Play comprobado por consulta separada: internal/completed/295. Samsung SM-S938B R5CY51260VK actualizado desde Play; ADB confirma 295. Diez avances efectivos, repitiendo catálogo disponible en 4+4+2; tres cruces adopción/adopción, adopción/apoyo y apoyo/adopción. Corto vuelve; largo/rápido avanzan una vez. Video anterior 293 frente a final 295 revisado por cuadros intermedios: siguiente completa y centrada, foto/texto unidos, salida continua sin regreso lateral. Reanudación conserva registro; Perros→Gatos→Perros recupera feed. Sesión preservada; sin favoritos, contactos, pagos ni fixtures remotos de QA.
 - Gate recompuesto: 37405575748 acredita web/admin/configuración/PG/permisos/concurrencia/backend y job iOS recuperado 112085464286 aprobado; 37406799890 sobre 41c5a37e0f84fc0b432747b992d4950552663a50 acredita análisis móvil, 121 pruebas afectadas, dos capturas y APK. El run inicial conserva el fallo histórico de selector; no se presenta como un full run verde. Runtime idéntico entre fcc2ce7, 7cf8202 y 41c5a37; cambios posteriores sólo de verificación.
 - Irlanda 889c096ade9479b348530db7ba169f023b472ab9 verificada nuevamente. Evidencia: docs/swipe-stack-delivery.md; videos/contactos privados en .tools/photo-loop, fuera de Git. Se conservan salida 280 ms y retorno 250 ms; desaparece entrada lateral adicional de 250 ms, sin afirmar benchmark de red/FPS. Loop cerrado, sin hallazgos pendientes.
+
+### 6/10/2026 — actualización bccd040, cierre de lotes en desarrollo
+
+Corte fijo bccd040d3a4b1c391bc6ab9eeccc479198868a7f, app base
+ed4b788bd4117eb8949bb633483e94d8d4b36010/Play295.22/22 grupos cerrados
+en desarrollo tras inspección única y como máximo dos correcciones agrupadas.
+Inicio11dirigidos/11estados, inbox13dirigidos/7estados, Mis casos13propios+16
+gestos/encabezado/desglose/reflow/16estados. Recaptura selectiva35471 validó
+Inter, textarea, título modal y aviso después del RPC; un pump inicial corrigió
+el instante del harness, sin cambiar temporizador ni simular confirmación.
+Las fixtures Source/Flutter son sintéticas; hover/diferencias imperceptibles
+excluidos. Caché de fotos y swipe295 conservados.
+
+Backend:10nuevos SQL dirigidos aprobados y Auth/REST7/7grupos reales DEV:
+21borradores20+1, dos personas únicas concurrentes/reintentadas con consentimiento,
+dosUUID participantes privados/lectura distinta de respuesta, cierre con PT409,
+reactivación mismoID/6fotos/campos privada hasta nueva revisión, archivo/bloqueo,
+cursor/ack idempotente y rechazo de cursor ajeno. No creó fondos. Tres migrations
+aplicadas una vez; remoto auditado en migration-history-audit, sin replay/repair.
+Inventario privado exacto4actores/22adopciones/3records/7Storage y siete tablas
+delta: preflight rollback aprobó ausencia financiera y coincidencia completa;
+START global se conservará. No se ejecutó limpieza antes de aceptación instalada.
+
+Pendiente auditoría independiente del delta, analyze final, gate SHA candidato,
+APK/nativo emulador, Codemagic android-guardian-internal/Play/Samsung y limpieza
+exacta. ADB sólo detectaemulator5554; conexiónSamsung ya solicitada sin bloquear
+trabajo independiente. No atribuir aceptación instalada a capturas ni gate.
+
+Auditoría readonly independiente: dos hallazgos demostrados (nombres de tablas
+realtime y estado de transferencia sólo semántico) corregidos. Dos nuevas
+pruebas dirigidas85129 aprobaron refresco antes del poll y cuatro estados
+visibles al200%, sin declarar depósito; recaptura sólo pagos aprobada. Source
+confirma que Back conserva selección de filtros, por lo que se retiró ese
+supuesto hallazgo. Analyze limpio75852 y13Mis casos actuales aprobados; gate
+final comprobará el delta restante. APK previo9021compiló en283.3s antes de
+estas dos correcciones y no se instaló; preparar nuevo APK actual para nativo.

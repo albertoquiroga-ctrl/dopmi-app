@@ -1,3 +1,13 @@
+import 'package:dopmi_mobile/features/adoption/community_ui.dart'
+    show adoptionPhotoSource;
+import 'package:dopmi_mobile/features/rescue/rescue_public_photo.dart';
+import 'package:dopmi_mobile/core/media/photo_store.dart';
+import 'package:dopmi_mobile/core/media/photo_runtime.dart';
+
+import 'bccd_home_fixtures.dart';
+import 'bccd_cases_fixtures.dart';
+import 'bccd_messages_fixtures.dart';
+
 import 'package:dopmi_mobile/features/communication/notification_tile.dart';
 import 'package:dopmi_mobile/features/adoption/publication_frame.dart';
 
@@ -896,6 +906,13 @@ void main() {
     final adoptionReferencePhotos = await tester.runAsync(
       () async => <String, Uint8List>{
         'rocky.png': fixturePhoto!,
+        'nina-card.png': await File('assets/onboarding/nina-card.png')
+            .readAsBytes(),
+        'milo-card.png': await File('tool/fixtures/milo-card.png')
+            .readAsBytes(),
+        'publish-sample-pet.jpg': await File(
+          'tool/fixtures/publish-sample-pet.jpg',
+        ).readAsBytes(),
         'toby.png': await File('assets/onboarding/toby.png').readAsBytes(),
         'luna-card.png': await File('assets/onboarding/luna-card.png')
             .readAsBytes(),
@@ -911,6 +928,40 @@ void main() {
     var expectedPrivateFileNavigation = 0, actualPrivateFileNavigation = 0;
     var expectedPublicRecovery = 0, actualPublicRecovery = 0;
     for (final spec in [
+      ('bccd-home-adoption', '/rescuer'),
+      ('bccd-home-evidence', '/rescuer'),
+      ('bccd-home-summary-adoption', '/rescuer'),
+      ('bccd-home-summary-support', '/rescuer'),
+      ('bccd-home-payments', '/rescuer'),
+      ('bccd-home-payments-lower', '/rescuer'),
+      ('bccd-home-empty', '/rescuer'),
+      ('bccd-home-unverified-empty', '/rescuer'),
+      ('bccd-home-review', '/rescuer'),
+      ('bccd-home-adoption-large', '/rescuer'),
+      ('bccd-home-adoption-samsung', '/rescuer'),
+      ('bccd-cases-adoption', '/my-cases?program=adoption'),
+      ('bccd-cases-adoption-active', '/my-cases?program=adoption'),
+      ('bccd-cases-adoption-close', '/my-cases?program=adoption'),
+      ('bccd-cases-adoption-close-other', '/my-cases?program=adoption'),
+      ('bccd-cases-adoption-archive', '/my-cases?program=adoption'),
+      ('bccd-cases-reactivate', '/my-cases?program=adoption'),
+      ('bccd-cases-discard', '/my-cases?program=adoption'),
+      ('bccd-cases-support-active', '/my-cases?program=support'),
+      ('bccd-cases-support-breakdown', '/my-cases?program=support'),
+      ('bccd-cases-support-close', '/my-cases?program=support'),
+      ('bccd-cases-support-archive', '/my-cases?program=support'),
+      ('bccd-cases-filters', '/my-cases?program=adoption'),
+      ('bccd-cases-adoption-large', '/my-cases?program=adoption'),
+      ('bccd-cases-filters-large', '/my-cases?program=adoption'),
+      ('bccd-cases-support-completed', '/my-cases?program=support'),
+      ('bccd-cases-adoption-samsung', '/my-cases?program=adoption'),
+      ('bccd-messages-all', '/messages'),
+      ('bccd-messages-pet', '/messages'),
+      ('bccd-messages-pet-unread', '/messages'),
+      ('bccd-messages-unread-empty', '/messages'),
+      ('bccd-messages-all-large', '/messages'),
+      ('bccd-messages-empty', '/messages'),
+      ('bccd-messages-all-samsung', '/messages'),
       ('adoption-swipe', '/adoptions'),
       ('adoption-large', '/adoptions'),
       ('adoption-drag', '/adoptions'),
@@ -1477,6 +1528,13 @@ void main() {
           adultConfirmed: false,
         );
       }
+      if (spec.$1.startsWith('bccd-')) {
+        await repo.saveProfile(
+          name: 'María',
+          phone: '',
+          city: 'Ciudad de México',
+        );
+      }
       if (spec.$1.startsWith('rescuer-profile-reference')) {
         // Synthetic account from the public mockup; never production identity.
         repo.user = const Identity(
@@ -1500,9 +1558,15 @@ void main() {
           : spec.$1 == 'rescuer-profile-reference-wide'
           ? const Size(384, 852)
           : const Size(377, 852);
-      tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
+      tester.platformDispatcher.textScaleFactorTestValue = large
+          ? 2
+          : spec.$1.endsWith('-samsung')
+          ? 1.15
+          : 1;
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-      if (sourceAdoptionReference || spec.$1.startsWith('rescuer-messages')) {
+      if (sourceAdoptionReference ||
+          spec.$1.startsWith('rescuer-messages') ||
+          spec.$1.startsWith('bccd-')) {
         debugNetworkImageHttpClientProvider = () =>
             AdoptionReferencePhotoClient(adoptionReferencePhotos!);
       } else if (spec.$1.startsWith('adoption-support')) {
@@ -1592,7 +1656,36 @@ void main() {
           },
         };
       }
-      final community = spec.$1.startsWith('case-publication')
+      final bccdCases = BccdCasesCaptureRepository(
+        state: spec.$1.contains('support-archive')
+            ? 'support-archive'
+            : spec.$1.contains('support')
+            ? 'support'
+            : spec.$1.contains('archive') || spec.$1.contains('reactivate')
+            ? 'archive'
+            : 'adoptions',
+      );
+      final bccdHome = BccdHomeCaptureRescue(
+        state: spec.$1.contains('unverified')
+            ? 'unverified'
+            : spec.$1.contains('empty')
+            ? 'empty'
+            : spec.$1.endsWith('review')
+            ? 'review'
+            : spec.$1.contains('evidence') ||
+                  spec.$1.contains('summary') ||
+                  spec.$1.contains('payments')
+            ? 'evidence'
+            : 'adoption',
+        paymentsAcknowledged: large || spec.$1.endsWith('review'),
+      );
+      final community = spec.$1.startsWith('bccd-cases')
+          ? BccdCasesCaptureCommunity(bccdCases)
+          : spec.$1.startsWith('bccd-')
+          ? BccdMessagesCaptureCommunity(
+              empty: spec.$1 == 'bccd-messages-empty',
+            )
+          : spec.$1.startsWith('case-publication')
           ? PublicationCaptureCommunity()
           : spec.$1.startsWith('rescuer-messages')
           ? RescuerInboxCaptureCommunity()
@@ -1745,7 +1838,8 @@ void main() {
           'activation': null,
         };
       }
-      if (spec.$1.startsWith('owned-case-detail') ||
+      if (spec.$1.startsWith('bccd-') ||
+          spec.$1.startsWith('owned-case-detail') ||
           spec.$1.startsWith('private-file') ||
           spec.$1.startsWith('connect-account') ||
           spec.$1.startsWith('account-access-options') ||
@@ -1814,6 +1908,24 @@ void main() {
           if (spec.$1.startsWith('payment-history'))
             rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           identityRepositoryProvider.overrideWithValue(repo),
+          if (spec.$1.startsWith('bccd-'))
+            photoRuntimeProvider.overrideWith((ref) {
+              final runtime = PhotoRuntime(
+                store: MemoryPhotoStore(),
+                attemptTimeout: const Duration(hours: 1),
+                actor: 'one',
+                download: (url, _) async =>
+                    adoptionReferencePhotos![url.pathSegments.last]!,
+              );
+              ref.onDispose(runtime.dispose);
+              return runtime;
+            }),
+          if (spec.$1.startsWith('bccd-home'))
+            rescueRepositoryProvider.overrideWithValue(bccdHome),
+          if (spec.$1.startsWith('bccd-cases'))
+            rescueRepositoryProvider.overrideWithValue(bccdCases),
+          if (spec.$1.startsWith('bccd-messages'))
+            rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           accountPhotoRepositoryProvider.overrideWithValue(
             emptyAccountPhotoRepository(repo),
           ),
@@ -1966,6 +2078,25 @@ void main() {
           routerInitialLocationProvider.overrideWithValue(spec.$2),
         ],
       );
+      if (spec.$1.startsWith('bccd-home-payments')) {
+        final runtime = container.read(photoRuntimeProvider);
+        for (final row in bccdHome.home['recent_activity'] as List) {
+          final path = row['photo'] as String;
+          await tester.runAsync(
+            () => runtime.load(rescuePhotoSource(bccdHome, path), width: 384),
+          );
+        }
+      }
+      if (spec.$1.startsWith('bccd-cases')) {
+        final runtime = container.read(photoRuntimeProvider);
+        for (final item in bccdCases.items) {
+          final path = item['cover_path'] as String;
+          final source = item['program'] == 'support'
+              ? rescuePhotoSource(bccdCases, path)
+              : adoptionPhotoSource(community, path);
+          await tester.runAsync(() => runtime.load(source, width: 384));
+        }
+      }
       final key = GlobalKey();
       if (spec.$1.startsWith('adoption-support')) {
         community.discoveryItems = [
@@ -4418,6 +4549,142 @@ void main() {
             await File('${out.path}/help-center-geometry.json')
                 .writeAsString(jsonEncode(geometry));
           });
+        }
+        if (spec.$1.startsWith('bccd-home') &&
+            (spec.$1.contains('evidence') ||
+                spec.$1.contains('summary') ||
+                spec.$1.contains('payments'))) {
+          await tester.tap(find.text('Recibiendo apoyo'));
+          await tester.pumpAndSettle();
+          final label = spec.$1.contains('summary-adoption')
+              ? 'Adopción'
+              : spec.$1.contains('summary-support')
+              ? 'Apoyo'
+              : spec.$1.contains('payments')
+              ? 'Pagos'
+              : null;
+          if (label != null) {
+            await tester.tap(find.text(label));
+            await tester.pumpAndSettle();
+          }
+          if (spec.$1.endsWith('lower')) {
+            await tester.drag(
+              find.byType(Scrollable).first,
+              const Offset(0, -300),
+            );
+            await tester.pumpAndSettle();
+          }
+        }
+        if (spec.$1.startsWith('bccd-cases')) {
+          final name = spec.$1;
+          final scrollable = find
+              .descendant(
+                of: find.byKey(const ValueKey('owned-cases-scroll')),
+                matching: find.byType(Scrollable),
+              )
+              .first;
+          Future<void> show(Finder finder) async {
+            if (finder.evaluate().isEmpty) {
+              await tester.scrollUntilVisible(
+                finder,
+                180,
+                scrollable: scrollable,
+              );
+            }
+            await tester.ensureVisible(finder);
+            await tester.pumpAndSettle();
+          }
+
+          Future<void> tapIcon(String label, {String? card}) async {
+            final f = card == null
+                ? find.byTooltip(label)
+                : find
+                      .descendant(
+                        of: find.byKey(ValueKey(card)),
+                        matching: find.byTooltip(label),
+                      )
+                      .first;
+            await show(f);
+            await tester.tap(f);
+            if (label == 'Archivar caso completado') {
+              await tester.pump();
+              await tester.pump(const Duration(milliseconds: 300));
+              expect(find.text('Caso finalizado'), findsOneWidget);
+            } else {
+              await tester.pumpAndSettle();
+            }
+          }
+
+          if (name.contains('archive') || name.endsWith('reactivate')) {
+            await tapIcon('Ver archivo');
+          }
+          if (name.contains('active')) {
+            await show(
+              find.byKey(
+                ValueKey(
+                  name.contains('support') ? 'support/nina' : 'adoption/luna',
+                ),
+              ),
+            );
+          }
+          if (name.contains('filters')) {
+            await tester.tap(find.text('Filtrar'));
+            await tester.pumpAndSettle();
+          }
+          if (name == 'bccd-cases-support-close') {
+            await tapIcon('Ver desglose', card: 'support/milo');
+          }
+          if (name.contains('close')) {
+            await tapIcon(
+              'Cerrar caso',
+              card: name.contains('support') ? 'support/milo' : 'adoption/luna',
+            );
+          }
+          if (name.endsWith('close-other')) {
+            await tester.tap(find.byKey(const ValueKey('owned-close-reason')));
+            await tester.pumpAndSettle();
+            await tester.tap(find.text('Otro motivo').last);
+            await tester.pumpAndSettle();
+          }
+          if (name.endsWith('reactivate')) {
+            await tapIcon(
+              'Reactivar caso',
+              card: 'adoption/bruno-adopt-cerrado',
+            );
+          }
+          if (name.endsWith('discard')) {
+            await tapIcon('Archivar borrador', card: 'adoption/max-rejected');
+          }
+          if (name.endsWith('breakdown')) {
+            await tapIcon('Ver desglose', card: 'support/milo');
+          }
+          if (name.endsWith('completed')) {
+            await tapIcon('Archivar caso completado', card: 'support/nina');
+          }
+        }
+        if (spec.$1.startsWith('bccd-messages')) {
+          if (spec.$1.contains('pet') || spec.$1.contains('unread-empty')) {
+            await tester.tap(
+              find.byKey(
+                ValueKey(
+                  'rescuer-pet-${spec.$1.contains('unread-empty') ? bccdMessagesRockyGroupId : bccdMessagesLunaGroupId}',
+                ),
+              ),
+            );
+            await tester.pumpAndSettle();
+          }
+          if (spec.$1.contains('unread')) {
+            await tester.tap(
+              find.byKey(const ValueKey('rescuer-unread-filter')),
+            );
+            await tester.pumpAndSettle();
+          }
+        }
+        if (spec.$1.startsWith('bccd-')) {
+          await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 150)),
+          );
+          await tester.pump();
         }
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),

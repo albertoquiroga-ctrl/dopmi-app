@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -22,15 +23,218 @@ class RescuerThreadsScreen extends ConsumerStatefulWidget {
   ConsumerState<RescuerThreadsScreen> createState() => _RescuerThreadsState();
 }
 
-class _RescuerThreadsState extends ConsumerState<RescuerThreadsScreen> {
-  int page = 1;
-  bool history = false;
-  final collapsed = <String>{};
+class _RescuerThreadsState extends ConsumerState<RescuerThreadsScreen>
+    with WidgetsBindingObserver {
+  int page = 1, petPages = 1, petTotal = 0, petGeneration = 0;
+  bool history = false,
+      unreadOnly = false,
+      petsLoading = true,
+      petsBusy = false;
+  String? petFilter, petError;
+  List<Json> pets = [];
+  final scroll = ScrollController();
+  final rail = ScrollController();
+  VoidCallback? cancel;
+  Timer? timer;
+  int activePage = 1;
+  String? activePet;
+  bool activeUnread = false;
+  double activeOffset = 0;
+  double? pendingOffset;
 
-  void showHistory(bool value) => setState(() {
-    history = value;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    loadPets();
+    cancel = ref.read(communityRepositoryProvider).watch(const [
+      'dopmi_threads',
+      'dopmi_messages',
+      'dopmi_notifications',
+      'dopmi_adoptions',
+      'dopmi_rescue_records',
+    ], () => loadPets());
+    timer = Timer.periodic(const Duration(seconds: 30), (_) => loadPets());
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) loadPets();
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      timer?.cancel();
+    } else if (state == AppLifecycleState.resumed) {
+      timer?.cancel();
+      timer = Timer.periodic(const Duration(seconds: 30), (_) => loadPets());
+    }
+  }
+
+  @override
+  void dispose() {
+    petGeneration++;
+    timer?.cancel();
+    cancel?.call();
+    scroll.dispose();
+    rail.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  Future<void> loadPets({bool more = false}) async {
+    if (more && petsBusy) return;
+    final current = ++petGeneration;
+    final requestedHistory = history;
+    final selected = petFilter;
+    final targetPages = more ? petPages + 1 : petPages;
+    setState(() {
+      petsBusy = true;
+      petError = null;
+    });
+    try {
+      final repo = ref.read(communityRepositoryProvider);
+      final entries = <Json>[];
+      var total = 0, loadedPages = 0;
+      // Reload the previously visible selector pages. If its selected case moved
+      // to a later page, locate it before deciding that it became unavailable.
+      for (
+        var n = 1;
+        n <= targetPages ||
+            (selected != null &&
+                entries.every((e) => e['id'] != selected) &&
+                entries.length < total);
+        n++
+      ) {
+        final result = await repo.rescuerInbox(n, history: requestedHistory);
+        if (!mounted || current != petGeneration) return;
+        total = result.total;
+        final ids = entries.map((e) => e['id']).toSet();
+        entries.addAll(result.items.where((e) => ids.add(e['id'])));
+        loadedPages = n;
+        if (n * 20 >= total || result.items.isEmpty) break;
+      }
+      if (!mounted || current != petGeneration) return;
+      setState(() {
+        pets = entries;
+        petTotal = total;
+        petPages = loadedPages;
+        petsLoading = false;
+        petsBusy = false;
+        petError = null;
+        if (petFilter != null && pets.every((e) => e['id'] != petFilter)) {
+          petFilter = null;
+          page = 1;
+        }
+      });
+    } catch (cause) {
+      if (mounted && current == petGeneration) {
+        setState(() {
+          pets = [];
+          petsLoading = false;
+          petsBusy = false;
+          petError = communityError(cause);
+        });
+      }
+    }
+  }
+
+  void filterPet(String? value) => setState(() {
+    petFilter = value;
     page = 1;
   });
+
+  void showHistory(bool value) {
+    if (value == history) return;
+    setState(() {
+      if (value) {
+        activePage = page;
+        activePet = petFilter;
+        activeUnread = unreadOnly;
+        activeOffset = scroll.hasClients ? scroll.offset : 0;
+        page = 1;
+        petFilter = null;
+        unreadOnly = false;
+        pendingOffset = 0;
+      } else {
+        page = activePage;
+        petFilter = activePet;
+        unreadOnly = activeUnread;
+        pendingOffset = activeOffset;
+      }
+      history = value;
+      pets = [];
+      petPages = 1;
+      petsLoading = true;
+    });
+    loadPets();
+  }
+
+  void restoreOffset() {
+    if (pendingOffset == null || petsLoading || petError != null) return;
+    final target = pendingOffset!;
+    pendingOffset = null;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && scroll.hasClients) {
+        scroll.jumpTo(target.clamp(0.0, scroll.position.maxScrollExtent));
+      }
+    });
+  }
+
+  Widget petSelector(BuildContext context) {
+    if (petsLoading) return const Center(child: CircularProgressIndicator());
+    if (petError != null) {
+      return Column(
+        children: [
+          Notice(petError!, isError: true),
+          TextButton(
+            onPressed: () => loadPets(),
+            child: const Text('Volver a intentar'),
+          ),
+        ],
+      );
+    }
+    return SingleChildScrollView(
+      key: const ValueKey('rescuer-pet-rail'),
+      controller: rail,
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.only(top: 4, bottom: 8),
+      clipBehavior: Clip.none,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          RescuerPetFilter(
+            name: 'Todos',
+            selected: petFilter == null,
+            onTap: () => filterPet(null),
+          ),
+          for (final pet in pets) ...[
+            const SizedBox(width: 10),
+            RescuerPetFilter(
+              key: ValueKey('rescuer-pet-${pet['id']}'),
+              name: pet['pet_name'] as String? ?? 'Mascota',
+              photo: pet['photo'] as String? ?? '',
+              unread: (pet['unread_count'] as num? ?? 0).toInt(),
+              selected: petFilter == pet['id'],
+              onTap: () => filterPet(pet['id'] as String),
+            ),
+          ],
+          if (pets.length < petTotal) ...[
+            const SizedBox(width: 10),
+            SizedBox(
+              width: 100,
+              child: TextButton(
+                key: const ValueKey('rescuer-pets-more'),
+                onPressed: petsBusy ? null : () => loadPets(more: true),
+                child: Text(
+                  petsBusy ? 'Cargando…' : 'Ver más mascotas',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) => PopScope(
@@ -45,6 +249,7 @@ class _RescuerThreadsState extends ConsumerState<RescuerThreadsScreen> {
         bottom: false,
         child: ListView(
           key: const PageStorageKey('rescuer-inbox-scroll'),
+          controller: scroll,
           padding: const EdgeInsets.fromLTRB(18, 16, 18, 88),
           children: [
             SizedBox(
@@ -83,8 +288,72 @@ class _RescuerThreadsState extends ConsumerState<RescuerThreadsScreen> {
               ),
             ),
             const SizedBox(height: 12),
+            petSelector(context),
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 12,
+                runSpacing: 8,
+                children: [
+                  Semantics(
+                    header: true,
+                    child: const Text(
+                      'Chats',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 22,
+                        height: 1.15,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -.44,
+                        color: _ink,
+                      ),
+                    ),
+                  ),
+                  Semantics(
+                    button: true,
+                    selected: unreadOnly,
+                    child: ReferenceFocusOutline(
+                      radius: 4,
+                      child: InkWell(
+                        key: const ValueKey('rescuer-unread-filter'),
+                        onTap: () => setState(() {
+                          unreadOnly = !unreadOnly;
+                          page = 1;
+                        }),
+                        overlayColor: const WidgetStatePropertyAll(
+                          Colors.transparent,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Text(
+                            unreadOnly ? 'Mostrar todos' : 'Sin leer',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 14,
+                              height: 1.2,
+                              fontWeight: FontWeight.w600,
+                              color: unreadOnly
+                                  ? const Color(0xff7841f2)
+                                  : _muted,
+                              decoration: unreadOnly
+                                  ? TextDecoration.underline
+                                  : null,
+                              decorationColor: const Color(0xff7841f2),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
             LiveSection<DataPage<Json>>(
-              key: ValueKey('$history:$page'),
+              key: ValueKey('threads:$history:$page:$petFilter:$unreadOnly'),
               tables: const [
                 'dopmi_threads',
                 'dopmi_messages',
@@ -94,59 +363,88 @@ class _RescuerThreadsState extends ConsumerState<RescuerThreadsScreen> {
               ],
               load: () => ref
                   .read(communityRepositoryProvider)
-                  .rescuerInbox(page, history: history),
-              builder: (result, refresh) => Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (result.items.isEmpty)
-                    history
-                        ? const Text(
-                            'Aún no tienes conversaciones en tu historial.',
-                            style: TextStyle(
-                              fontSize: 14,
-                              height: 1.45,
-                              color: _muted,
-                            ),
-                          )
-                        : RescuerMessagesEmpty(
-                            onPublish: () => context.go('/my-cases'),
-                          )
-                  else
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        for (var i = 0; i < result.items.length; i++)
-                          Padding(
-                            padding: EdgeInsets.only(
-                              bottom: i == result.items.length - 1 ? 0 : 14,
-                            ),
-                            child: RescuerInboxGroup(
-                              result.items[i],
-                              key: ValueKey(
-                                '$history:${result.items[i]['id']}',
-                              ),
-                              history: history,
-                              expanded: !collapsed.contains(
-                                '$history:${result.items[i]['id']}',
-                              ),
-                              toggle: () => setState(() {
-                                final key = '$history:${result.items[i]['id']}';
-                                if (!collapsed.add(key)) collapsed.remove(key);
-                              }),
-                              refresh: refresh,
-                            ),
+                  .rescuerThreads(
+                    page,
+                    groupId: petFilter,
+                    unreadOnly: unreadOnly,
+                    history: history,
+                  ),
+              builder: (result, refresh) {
+                restoreOffset();
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      key: const ValueKey('rescuer-chats-panel'),
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      clipBehavior: Clip.antiAlias,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: const Color(0xffebe8f3)),
+                        borderRadius: BorderRadius.circular(22),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0x0f7841f2),
+                            offset: Offset(0, 2),
+                            blurRadius: 14,
                           ),
-                      ],
+                        ],
+                      ),
+                      child: result.items.isEmpty
+                          ? Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                16,
+                                12,
+                                16,
+                                16,
+                              ),
+                              child: Text(
+                                unreadOnly
+                                    ? 'No tienes mensajes sin leer.'
+                                    : history
+                                    ? 'Aún no tienes conversaciones en tu historial.'
+                                    : 'Aún no tienes mensajes',
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 14,
+                                  height: 1.45,
+                                  color: _muted,
+                                ),
+                              ),
+                            )
+                          : Column(
+                              children: [
+                                for (var i = 0; i < result.items.length; i++)
+                                  RescuerThreadRow(
+                                    result.items[i],
+                                    flat: true,
+                                    key: ValueKey(
+                                      'rescuer-thread-${result.items[i]['id']}',
+                                    ),
+                                    last: i == result.items.length - 1,
+                                    open: () async {
+                                      await context.push(
+                                        '/messages/${result.items[i]['id']}',
+                                      );
+                                      if (mounted) {
+                                        refresh();
+                                        loadPets();
+                                      }
+                                    },
+                                  ),
+                              ],
+                            ),
                     ),
-                  if (result.total > 20)
-                    PageControls(
-                      page: page,
-                      total: result.total,
-                      size: 20,
-                      change: (value) => setState(() => page = value),
-                    ),
-                ],
-              ),
+                    if (result.total > 20)
+                      PageControls(
+                        page: page,
+                        total: result.total,
+                        size: 20,
+                        change: (value) => setState(() => page = value),
+                      ),
+                  ],
+                );
+              },
             ),
             const SizedBox(height: 16),
             Wrap(
@@ -170,6 +468,169 @@ class _RescuerThreadsState extends ConsumerState<RescuerThreadsScreen> {
       ),
     ),
   );
+}
+
+class RescuerPetFilter extends StatelessWidget {
+  const RescuerPetFilter({
+    super.key,
+    required this.name,
+    required this.selected,
+    required this.onTap,
+    this.photo = '',
+    this.unread = 0,
+  });
+  final String name, photo;
+  final bool selected;
+  final int unread;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final large = MediaQuery.textScalerOf(context).scale(13) > 18;
+    final painter = TextPainter(
+      text: TextSpan(
+        text: name,
+        style: const TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 13,
+          height: 1.2,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+      textScaler: MediaQuery.textScalerOf(context),
+    )..layout();
+    final width = large ? (painter.width + 18).clamp(78.0, 180.0) : 78.0;
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: '$name${unread > 0 ? ', $unread mensajes sin leer' : ''}',
+      child: ReferenceFocusOutline(
+        radius: 20,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(20),
+            overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+            child: Container(
+              width: width,
+              padding: const EdgeInsets.fromLTRB(8, 10, 8, 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(
+                  color: selected
+                      ? const Color(0x597841f2)
+                      : const Color(0xffe6e2dd),
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: selected
+                        ? const Color(0x247841f2)
+                        : const Color(0x0f15110d),
+                    offset: Offset(0, selected ? 8 : 2),
+                    blurRadius: selected ? 22 : 12,
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ExcludeSemantics(
+                    child: SizedBox(
+                      width: 52,
+                      height: 52,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          if (photo.isNotEmpty)
+                            AdoptionPhoto(photo, height: 52, radius: 99)
+                          else
+                            Container(
+                              width: 52,
+                              height: 52,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color(0xffefe8ff),
+                                    Color(0xfff7f4ff),
+                                  ],
+                                ),
+                              ),
+                              alignment: Alignment.center,
+                              child: SvgPicture.asset(
+                                'assets/profile/icon-messages.svg',
+                                width: 22,
+                                height: 22,
+                                colorFilter: const ColorFilter.mode(
+                                  Color(0xff7841f2),
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                          if (unread > 0)
+                            Positioned(
+                              top: -2,
+                              right: -2,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 5,
+                                ),
+                                constraints: const BoxConstraints(
+                                  minWidth: 18,
+                                  minHeight: 18,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xff7841f2),
+                                  borderRadius: BorderRadius.circular(99),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.white,
+                                      spreadRadius: 2,
+                                    ),
+                                  ],
+                                ),
+                                child: Text(
+                                  unread > 9 ? '9+' : '$unread',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 11,
+                                    height: 18 / 11,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    name,
+                    textAlign: TextAlign.center,
+                    maxLines: large ? 2 : 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 13,
+                      height: 1.2,
+                      fontWeight: FontWeight.w600,
+                      color: _ink,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 /// The group header counts are supplied by PostgreSQL, independently of the
@@ -534,18 +995,212 @@ class RescuerThreadRow extends StatefulWidget {
     super.key,
     required this.open,
     required this.last,
+    this.flat = false,
   });
   final Json thread;
   final VoidCallback open;
-  final bool last;
+  final bool last, flat;
   @override
   State<RescuerThreadRow> createState() => _RescuerThreadRowState();
 }
 
 class _RescuerThreadRowState extends State<RescuerThreadRow> {
   bool hovered = false;
+  Widget flatRow(BuildContext context) {
+    final thread = widget.thread;
+    final pet = (thread['pet_name'] as String? ?? 'Mascota').trim();
+    final person = (thread['participant_name'] as String? ?? 'Participante')
+        .trim();
+    final photo = thread['photo'] as String? ?? '';
+    final unread = (thread['unread_count'] as num? ?? 0).toInt();
+    final large = MediaQuery.textScalerOf(context).scale(15) > 21;
+    final avatar = ExcludeSemantics(
+      child: SizedBox(
+        width: 52,
+        height: 52,
+        child: photo.isEmpty
+            ? Container(
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(0xffefe8ff),
+                ),
+                child: Text(
+                  person.isEmpty ? '?' : person.characters.first.toUpperCase(),
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xff7841f2),
+                  ),
+                ),
+              )
+            : AdoptionPhoto(photo, height: 52, radius: 99),
+      ),
+    );
+    final time = Text(
+      MatchThreadRow(thread, open: widget.open).activity(DateTime.now()),
+      style: const TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 12,
+        height: 1.3,
+        fontWeight: FontWeight.w500,
+        color: Color(0xff9a9289),
+      ),
+    );
+    final badge = unread == 0
+        ? const SizedBox.shrink()
+        : Semantics(
+            label: '$unread mensajes sin leer',
+            child: Container(
+              constraints: const BoxConstraints(minWidth: 22, minHeight: 22),
+              padding: const EdgeInsets.symmetric(horizontal: 7),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: const Color(0xff7841f2),
+                borderRadius: BorderRadius.circular(99),
+              ),
+              child: Text(
+                '$unread',
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 12,
+                  height: 22 / 12,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          );
+    final title = Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(
+            text: pet,
+            style: const TextStyle(fontWeight: FontWeight.w700, color: _ink),
+          ),
+          const TextSpan(
+            text: ' · ',
+            style: TextStyle(color: Color(0xff9a9289)),
+          ),
+          TextSpan(
+            text: person,
+            style: const TextStyle(
+              fontWeight: FontWeight.w500,
+              color: Color(0xff4a4560),
+            ),
+          ),
+        ],
+      ),
+      maxLines: large ? null : 1,
+      overflow: large ? TextOverflow.visible : TextOverflow.ellipsis,
+      style: const TextStyle(fontFamily: 'Inter', fontSize: 15, height: 1.3),
+    );
+    final preview = Text(
+      thread['status'] == 'closed'
+          ? 'Conversación cerrada'
+          : thread['last_message'] as String? ?? 'Inicia la conversación',
+      maxLines: large ? 3 : 1,
+      overflow: TextOverflow.ellipsis,
+      style: const TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 14,
+        height: 1.35,
+        color: _muted,
+      ),
+    );
+    return Semantics(
+      button: true,
+      label: '$pet, $person',
+      child: ReferenceFocusOutline(
+        radius: 0,
+        child: Material(
+          color: Colors.white,
+          child: InkWell(
+            onTap: widget.open,
+            splashFactory: NoSplash.splashFactory,
+            overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+            child: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 14, 14, 14),
+                  child: large
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Row(
+                              children: [
+                                avatar,
+                                const SizedBox(width: 12),
+                                Expanded(child: time),
+                                if (unread > 0) ...[
+                                  const SizedBox(width: 8),
+                                  badge,
+                                ],
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            title,
+                            const SizedBox(height: 4),
+                            preview,
+                          ],
+                        )
+                      : Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            avatar,
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(child: title),
+                                      const SizedBox(width: 8),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 2),
+                                        child: time,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
+                                  preview,
+                                ],
+                              ),
+                            ),
+                            if (unread > 0) ...[
+                              const SizedBox(width: 12),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: badge,
+                              ),
+                            ],
+                          ],
+                        ),
+                ),
+                if (!widget.last)
+                  const Positioned(
+                    left: 72,
+                    right: 14,
+                    bottom: 0,
+                    child: SizedBox(
+                      height: 1,
+                      child: ColoredBox(color: Color(0xffebe8f3)),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (widget.flat) return flatRow(context);
     final thread = widget.thread;
     final name = (thread['participant_name'] as String? ?? '').trim();
     final unread = (thread['unread_count'] as num? ?? 0).toInt();

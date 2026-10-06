@@ -48,6 +48,28 @@ class DiagnosticsSpy implements ErrorDiagnostics {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  test('adoption measurement syncs explicit consent without adding Firebase events', () async {
+    SharedPreferences.setMockInitialValues({});
+    final analytics = AnalyticsSpy();
+    final sync = <bool>[];
+    final controller = MeasurementController(
+      await SharedPreferences.getInstance(),
+      'test',
+      analytics,
+      DiagnosticsSpy(),
+      adoptionConsent: (enabled) async => sync.add(enabled),
+    );
+    await controller.owner('alice');
+    await controller.consentReady;
+    await controller.setAnalytics(true);
+    await controller.consentReady;
+    await controller.setAnalytics(false);
+    await controller.consentReady;
+    expect(sync, [false, true, false]);
+    expect(analytics.events, isEmpty);
+    controller.dispose();
+  });
+
   test(
     'measurement is disabled initially and sends no accumulated events',
     () async {

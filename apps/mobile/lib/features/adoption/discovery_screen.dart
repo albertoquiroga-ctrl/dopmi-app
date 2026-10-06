@@ -78,6 +78,39 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   String? error;
   final pendingFavorites = <String>{};
   final failedFavorites = <String, Adoption>{};
+  final reportedViews = <String>{};
+
+  Future<void> reportFrontView(Adoption post) async {
+    final items = deck;
+    final front =
+        outgoingSnapshot ?? (index < items.length ? items[index] : null);
+    if (front is! Adoption || front.id != post.id) return;
+    final measurement = ref.read(measurementControllerProvider);
+    final repository = ref.read(communityRepositoryProvider);
+    final actor = repository.userId;
+    if (actor == null ||
+        actor == post.data['owner_id'] ||
+        measurement == null ||
+        measurement.ownerId != actor ||
+        !measurement.analyticsEnabled ||
+        exiting != 0) {
+      return;
+    }
+    final key = '$actor:${post.id}';
+    if (!reportedViews.add(key)) return;
+    await measurement.consentReady;
+    if (!mounted ||
+        measurement.ownerId != actor ||
+        !measurement.analyticsEnabled) {
+      reportedViews.remove(key);
+      return;
+    }
+    try {
+      await repository.recordAdoptionView(post.id, consent: true);
+    } catch (_) {
+      reportedViews.remove(key);
+    }
+  }
 
   Future<void> persistFavorite(Adoption card) async {
     if (!mounted || !pendingFavorites.add(card.id)) return;
@@ -259,6 +292,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
     if (item is Adoption) {
       return _SwipeCard(
         item,
+        onDisplayed: preview ? null : () => unawaited(reportFrontView(item)),
         preview: preview,
         dragX: preview ? 0 : dragX,
         dragging: !preview && dragging,
@@ -949,6 +983,7 @@ class _SwipeCard extends StatelessWidget {
     required this.preview,
     required this.exitTranslation,
     this.onMotionEnd,
+    this.onDisplayed,
     required this.busy,
     required this.onDragDelta,
     required this.onStart,
@@ -966,6 +1001,7 @@ class _SwipeCard extends StatelessWidget {
   final bool preview;
   final double exitTranslation;
   final VoidCallback? onMotionEnd;
+  final VoidCallback? onDisplayed;
   final bool busy;
   final ValueChanged<double> onDragDelta;
   final VoidCallback onStart, onCancel, onEnd, pass, like, contact, open;
@@ -1034,6 +1070,7 @@ class _SwipeCard extends StatelessWidget {
                               AdoptionPhoto(
                                 post.photos.first,
                                 preview: preview,
+                                onDisplayed: onDisplayed,
                               ),
                             const IgnorePointer(
                               child: DecoratedBox(

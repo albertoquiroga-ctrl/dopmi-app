@@ -1,5 +1,36 @@
 # Auditoría del historial de migraciones
 
+6/10, followup de conflicto bccd: el REST dirigido reprodujo timeout con versión vencida; PostgREST14 reintenta indefinidamente un40001 manual (troubleshooting oficial Supabase). Preflight contrastó las dos definiciones nuevas y el historial remoto20261006041524. Local20261006044300_rescuer_version_conflict.sql cambia exclusivamente el error de versión vencida de close_adoption/archive_support_case aPT409; diez casos SQL del delta aprobados antes del despliegue. Aplicada una vez enDEV como20261006044234/rescuer_version_conflict. Postflight: ambas usanPT409, sin40001, definer/ACLauthenticated=true/anon=false conservados. No replay/repair, APIs anteriores ni producción modificados.
+
+## Actualización Rescatista bccd — preflight 5/10/2026 México
+
+Local `20261006035705_rescuer_update_bccd.sql`, DEV `ohqxranynackjignryep`.
+Preflight:65 antecedentes remotos, último `20261005052137/case_size889`;
+nueva tabla de vistas y dashboardV2 ausentes. Siete cuerpos existentes comparados
+contra PostgreSQL local reconstruido con todas las migraciones previas (incluidos
+los patches de funciones): coincidencia completa. PostgreSQL remoto17.6.
+Backend local598/598 más10 pruebas nuevas dirigidas aprobadas. Docker local
+no disponible; concurrencia y PostgreSQL real se comprobarán en el gate final.
+SQL aditivo; conserva APIs295, autorización, revisión y reglas financieras.
+Aplicada una vez mediante MCP como `20261006041254/rescuer_update_bccd`.
+Postflight:12 cuerpos nuevos coinciden con PostgreSQL reconstruido localmente;
+nueve RPC sólo authenticated y tres helpers privados sin EXECUTE cliente.
+Siete tablas privadas con RLS y SELECT anon/authenticated revocado; cero vistas y
+cero consentimientos al activarse, sin reconstrucción histórica. Sin replay,
+repair, renombrado, dbpush ni despliegue a producción. Flujos autenticados DEV,
+concurrencia y aceptación instalada siguen pendientes.
+
+Asesores: RLS privado sin políticas33→40 y RPC autenticadas87→96 corresponden a
+las siete tablas RPC-only y nueve operaciones autorizadas. No se añaden RPC anon.
+Se corrigió el único FK nuevo sin índice, owner de support_archives, con una
+migración aditiva posterior `20261006041500_rescuer_archive_owner_index.sql`;
+preflight índice ausente, aplicación única, postflight definición owner_id
+comprobada. Los avisos históricos permanecen fuera del alcance de esta entrega.
+Referencias: [tablas privadas](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy),
+[RPC autorizadas](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable),
+[índices FK](https://supabase.com/docs/guides/database/database-linter?lint=0001_unindexed_foreign_keys).
+
+
 ## Soporte privado — 2/10/2026, loop291
 
 Local `20261002231534_private_support_requests.sql` → DEV

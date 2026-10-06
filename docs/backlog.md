@@ -198,3 +198,11 @@ Los commits Source posteriores a889c096 y los pendientes H12 siguen separados.
 ### 2026-10-05 — Swipe cerrado en Samsung y Play 295
 
 Supera el pendiente del candidato fcc2ce7: único release interno 2.3.3 (295), source 7cf8202; Play completed confirmado y Samsung actualizado desde tienda. Diez avances efectivos sobre catálogo repetido; videos 293/295 comparados por cuadros intermedios, transiciones mixtas centradas y foto/texto unidos. Codemagic 877 tests; gate móvil 37406799890/41c5a37 y checks iOS/web/backend 37405575748 acreditados. Auditoría cerrada sin pendientes; dos correcciones sólo de verificación. Ver docs/swipe-stack-delivery.md. No hay otro loop de swipe abierto.
+
+## 2026-10-06 — Actualización bccd040 autorizada
+
+22/22 grupos cerrados en desarrollo; referencia congelada bccd040 y base
+ed4b788/Play295. Tablero vigente parity-current-review y cuatro fichasupdatebccd.
+Pendientes de entrega: auditoría delta, gate SHA final, nativo emulador,
+CodemagicGuardianInternal/Play/Samsung y limpieza exacta. Conservar fotos/swipe295,
+privacidad, revisión y edición de apoyo aprobado bloqueada; dinero test.

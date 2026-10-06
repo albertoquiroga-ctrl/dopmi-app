@@ -252,6 +252,35 @@ class FakeCommunity implements CommunityRepository {
       DataPage(threadItems, threadItems.length);
 
   @override
+  Future<void> recordAdoptionView(
+    String postId, {
+    required bool consent,
+  }) async {}
+
+  @override
+  Future<DataPage<Json>> rescuerThreads(
+    int page, {
+    String? groupId,
+    bool unreadOnly = false,
+    bool history = false,
+  }) async {
+    final items = threadItems
+        .where(
+          (t) =>
+              (t['status'] == 'closed') == history &&
+              (groupId == null ||
+                  '${t['group_id'] ?? t['case_id'] ?? t['post_id'] ?? t['pet_name']}' ==
+                      groupId) &&
+              (!unreadOnly || ((t['unread_count'] as int?) ?? 0) > 0),
+        )
+        .toList();
+    return DataPage(
+      items.skip((page - 1) * 20).take(20).toList(),
+      items.length,
+    );
+  }
+
+  @override
   Future<DataPage<Json>> rescuerInbox(int page, {bool history = false}) async {
     final groups = <String, Json>{};
     for (final thread in threadItems.where(

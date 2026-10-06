@@ -47,6 +47,12 @@ class _BootstrapState extends State<Bootstrap> {
       Uri.parse(config.url).host,
       FirebaseProductAnalytics(FirebaseAnalytics.instance),
       FirebaseErrorDiagnostics(FirebaseCrashlytics.instance),
+      adoptionConsent: (consent) async {
+        await Supabase.instance.client.rpc(
+          'dopmi_set_adoption_measurement',
+          params: {'consent': consent},
+        );
+      },
     );
     await measurement.owner(null);
     {

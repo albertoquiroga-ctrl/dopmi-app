@@ -60,7 +60,9 @@ void main() {
   }
 
   void expectWholeWord(WidgetTester tester, String title, String word) {
-    final paragraph = tester.renderObject<RenderParagraph>(find.text(title));
+    final paragraph = tester.renderObject<RenderParagraph>(
+      find.text(title, findRichText: true),
+    );
     final start = title.indexOf(word);
     expect(start, greaterThanOrEqualTo(0));
     expect(
@@ -156,7 +158,13 @@ void main() {
       '/messages',
       rescuer: true,
     );
-    expectWholeWord(tester, 'Ana Patricia Hernandez', 'Hernandez');
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('rescuer-chats-panel')),
+      160,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    expectWholeWord(tester, 'Luna · Ana Patricia Hernandez', 'Hernandez');
     final row = find.byType(RescuerThreadRow).first;
     final unread = find.descendant(of: row, matching: find.text('3'));
     expect(unread, findsOneWidget);

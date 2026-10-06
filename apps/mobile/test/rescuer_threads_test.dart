@@ -14,10 +14,19 @@ import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
 import 'rescue_test.dart' show FakeRescue;
 
-Json inboxThread(String id, {int unread = 0, bool closed = false}) => {
+Json inboxThread(
+  String id, {
+  int unread = 0,
+  bool closed = false,
+  String group = 'one',
+  String name = 'Luna',
+  String person = 'Ana',
+}) => {
   'id': id,
-  'participant_name': 'Ana',
-  'pet_name': 'Luna',
+  'group_id': group,
+  'participant_name': person,
+  'pet_name': name,
+  'photo': '',
   'updated_at': '2026-10-04T18:30:00Z',
   'last_message': 'Mensaje $id',
   'unread_count': unread,
@@ -42,31 +51,76 @@ Json inboxGroup(
 };
 
 class InboxCommunity extends FakeCommunity {
-  List<Json> groups = [], historical = [];
+  List<Json> groups = [], historical = [], members = [], oldMembers = [];
   final inboxRequests = <(int, bool)>[];
-  final groupRequests = <(String, int, bool)>[];
-  DataPage<Json> nextThreads = const DataPage([], 0);
+  final flatRequests = <(int, String?, bool, bool)>[];
+  final watchers = <VoidCallback>[];
+  bool failPets = false, failThreads = false, markRead = false;
+  int? failPage;
   Completer<DataPage<Json>>? pendingThreads;
-  bool failInbox = false, failMore = false;
-  int? groupTotal;
+  String? pendingGroup;
+
   @override
   Future<DataPage<Json>> rescuerInbox(int page, {bool history = false}) async {
     inboxRequests.add((page, history));
-    if (failInbox) throw const FormatException('Offline fixture');
+    if (failPets) throw const FormatException('Offline selector');
     final items = history ? historical : groups;
-    return DataPage(items, groupTotal ?? items.length);
+    return DataPage(
+      items.skip((page - 1) * 20).take(20).toList(),
+      items.length,
+    );
   }
 
   @override
-  Future<DataPage<Json>> rescuerGroupThreads(
-    String groupId,
+  Future<DataPage<Json>> rescuerThreads(
     int page, {
+    String? groupId,
+    bool unreadOnly = false,
     bool history = false,
   }) async {
-    groupRequests.add((groupId, page, history));
-    if (pendingThreads != null) return pendingThreads!.future;
-    if (failMore) throw const FormatException('Offline page');
-    return nextThreads;
+    flatRequests.add((page, groupId, unreadOnly, history));
+    if (pendingThreads != null && groupId == pendingGroup) {
+      return pendingThreads!.future;
+    }
+    if (failThreads || failPage == page) {
+      throw const FormatException('Offline chats');
+    }
+    final items = (history ? oldMembers : members)
+        .where(
+          (e) =>
+              (groupId == null || e['group_id'] == groupId) &&
+              (!unreadOnly || (e['unread_count'] as int) > 0),
+        )
+        .toList();
+    return DataPage(
+      items.skip((page - 1) * 20).take(20).toList(),
+      items.length,
+    );
+  }
+
+  @override
+  VoidCallback watch(List<String> tables, VoidCallback refresh) {
+    watchers.add(refresh);
+    return () => watchers.remove(refresh);
+  }
+
+  void changed() {
+    for (final refresh in List<VoidCallback>.from(watchers)) {
+      refresh();
+    }
+  }
+
+  @override
+  Future<void> readThread(String id) async {
+    if (!markRead) return;
+    for (final row in members.where((e) => e['id'] == id)) {
+      row['unread_count'] = 0;
+    }
+    for (final group in groups) {
+      group['unread_count'] = members
+          .where((e) => e['group_id'] == group['id'])
+          .fold<int>(0, (sum, e) => sum + (e['unread_count'] as int));
+    }
   }
 }
 
@@ -78,7 +132,7 @@ void main() {
   }) async {
     tester.view.physicalSize = scale > 1
         ? const Size(320, 640)
-        : const Size(384, 852);
+        : const Size(377, 852);
     tester.view.devicePixelRatio = 1;
     tester.platformDispatcher.textScaleFactorTestValue = scale;
     addTearDown(tester.view.resetPhysicalSize);
@@ -116,232 +170,320 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('failed inbox retries without inventing an empty result', (
-    tester,
-  ) async {
-    final repo = InboxCommunity()
-      ..failInbox = true
-      ..groups = [
-        inboxGroup('one', [inboxThread('thread-one')]),
-      ];
-    await start(tester, repo);
-    expect(find.textContaining('No tienes casos'), findsNothing);
-    expect(find.byType(RescuerInboxGroup), findsNothing);
-    final before = repo.inboxRequests.length;
-    repo.failInbox = false;
-    await tester.tap(find.text('Volver a intentar'));
-    await tester.pumpAndSettle();
-    expect(repo.inboxRequests.length, greaterThan(before));
-    expect(find.text('Mensaje thread-one'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
+  Finder pet(String id) => find.byKey(ValueKey('rescuer-pet-$id'));
+  Finder row(String id) => find.byKey(ValueKey('rescuer-thread-$id'));
+  final unreadFilter = find.byKey(const ValueKey('rescuer-unread-filter'));
 
   for (final scale in [1.0, 2.0]) {
-    testWidgets('empty owner inbox opens actual cases at scale $scale', (
-      tester,
-    ) async {
-      final container = await start(tester, InboxCommunity(), scale: scale);
-      expect(find.byType(RescuerThreadsScreen), findsOneWidget);
-      expect(find.text('Mis match'), findsNothing);
-      expect(
-        find.textContaining('No tienes casos en adopción abiertos'),
-        findsOneWidget,
-      );
-      final action = find.widgetWithText(FilledButton, 'Ver mis casos');
-      await reveal(tester, action);
-      await tester.tap(action);
-      await tester.pumpAndSettle();
-      expect(container.read(routerProvider).state.uri.path, '/my-cases');
-      expect(tester.takeException(), isNull);
-    });
     testWidgets(
-      'server counts, zero-chat groups and cancel/toggle at scale $scale',
+      'pet and unread filters combine with complete badge counts at $scale',
       (tester) async {
         final repo = InboxCommunity()
           ..groups = [
-            inboxGroup(
-              'one',
-              [inboxThread('thread-one', unread: 3)],
-              count: 21,
-              unread: 27,
-            ),
+            inboxGroup('one', [], unread: 27),
             inboxGroup('two', [], name: 'Milo'),
+          ]
+          ..members = [
+            inboxThread('ana', unread: 3),
+            inboxThread('sofia', person: 'Sofía'),
+            inboxThread('carlos', group: 'two', name: 'Milo', person: 'Carlos'),
           ];
         await start(tester, repo, scale: scale);
-        expect(find.text('21 chats abiertos'), findsOneWidget);
         expect(find.text('9+'), findsOneWidget);
-        expect(find.text('Mensaje thread-one'), findsOneWidget);
-        await reveal(tester, find.text('Sin chats abiertos'));
-        expect(
-          find.text('Aún no hay mensajes para este caso.'),
-          findsOneWidget,
-        );
-        final header = find.byKey(const ValueKey('rescuer-group-one'));
-        await tester.ensureVisible(header);
+        await reveal(tester, find.byKey(const ValueKey('rescuer-chats-panel')));
+        expect(find.byType(RescuerInboxGroup), findsNothing);
+        expect(find.byType(RescuerThreadRow), findsNWidgets(3));
+        await tester.drag(find.byType(Scrollable).first, const Offset(0, 650));
         await tester.pumpAndSettle();
-        final hold = await tester.startGesture(tester.getCenter(header));
+        await tester.ensureVisible(pet('one'));
+        await tester.tap(pet('one'));
+        await tester.pumpAndSettle();
+        await reveal(tester, find.byKey(const ValueKey('rescuer-chats-panel')));
+        expect(repo.flatRequests.last, (1, 'one', false, false));
+        expect(row('sofia'), findsOneWidget);
+        expect(row('carlos'), findsNothing);
+        await tester.drag(find.byType(Scrollable).first, const Offset(0, 650));
+        await tester.pumpAndSettle();
+        await reveal(tester, unreadFilter);
+        await tester.tap(unreadFilter);
+        await tester.pumpAndSettle();
+        expect(repo.flatRequests.last, (1, 'one', true, false));
+        expect(find.text('Mostrar todos'), findsOneWidget);
+        expect(row('ana'), findsOneWidget);
+        expect(row('sofia'), findsNothing);
+        await tester.drag(find.byType(Scrollable).first, const Offset(0, 650));
+        await tester.pumpAndSettle();
+        expect(find.text('9+'), findsOneWidget);
+        await tester.ensureVisible(pet('two'));
+        await tester.tap(pet('two'));
+        await tester.pumpAndSettle();
+        await reveal(tester, find.byKey(const ValueKey('rescuer-chats-panel')));
+        expect(repo.flatRequests.last, (1, 'two', true, false));
+        expect(find.text('No tienes mensajes sin leer.'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+    testWidgets(
+      'empty inbox and horizontal drag preserve touch selection at $scale',
+      (tester) async {
+        final repo = InboxCommunity()
+          ..groups = List.generate(
+            8,
+            (i) => inboxGroup('pet-$i', [], name: 'Mascota $i'),
+          );
+        await start(tester, repo, scale: scale);
+        await reveal(tester, find.byKey(const ValueKey('rescuer-chats-panel')));
+        expect(find.text('Aún no tienes mensajes'), findsOneWidget);
+        expect(find.text('No tienes casos en adopción abiertos'), findsNothing);
+        final before = repo.flatRequests.length;
+        await tester.drag(find.byType(Scrollable).first, const Offset(0, 650));
+        await tester.pumpAndSettle();
+        final rail = find.byKey(const ValueKey('rescuer-pet-rail'));
+        await tester.ensureVisible(rail);
+        await tester.drag(rail, const Offset(-230, 0));
+        await tester.pumpAndSettle();
+        expect(repo.flatRequests.length, before);
+        await tester.ensureVisible(pet('pet-4'));
+        await tester.pumpAndSettle();
+        final hold = await tester.startGesture(tester.getCenter(pet('pet-4')));
         await tester.pump(const Duration(milliseconds: 150));
         await hold.cancel();
-        await tester.pump();
-        expect(find.text('Mensaje thread-one'), findsOneWidget);
-        await tester.tap(header);
-        await tester.pump(const Duration(milliseconds: 100));
-        expect(find.text('Mensaje thread-one'), findsNothing);
-        final rotation = tester.widget<AnimatedRotation>(
-          find.byKey(const ValueKey('rescuer-group-chevron-one')),
-        );
-        expect(rotation.duration, const Duration(milliseconds: 200));
-        expect(rotation.turns, 0);
         await tester.pumpAndSettle();
+        expect(repo.flatRequests.length, before);
+        await tester.tap(pet('pet-4'));
+        await tester.pumpAndSettle();
+        expect(repo.flatRequests.last, (1, 'pet-4', false, false));
         expect(tester.takeException(), isNull);
       },
     );
   }
 
   testWidgets(
-    'group page retry preserves page and deduplicates conversation IDs',
+    'read failure retries and never fabricates an empty conversation list',
     (tester) async {
       final repo = InboxCommunity()
-        ..groups = [
-          inboxGroup('one', [inboxThread('thread-one')], count: 3),
-        ]
-        ..failMore = true
-        ..nextThreads = DataPage([
-          inboxThread('thread-one'),
-          inboxThread('thread-two'),
-          inboxThread('thread-three'),
-        ], 3);
+        ..failThreads = true
+        ..groups = [inboxGroup('one', [])]
+        ..members = [inboxThread('ana')];
       await start(tester, repo);
-      final more = find.byKey(const ValueKey('rescuer-group-more-one'));
-      await reveal(tester, more);
-      await tester.tap(more);
+      expect(find.text('Aún no tienes mensajes'), findsNothing);
+      repo.failThreads = false;
+      await tester.tap(find.text('Volver a intentar'));
       await tester.pumpAndSettle();
-      expect(repo.groupRequests, [('one', 2, false)]);
-      expect(find.text('Volver a intentar'), findsOneWidget);
-      repo.failMore = false;
-      await tester.tap(more);
+      expect(row('ana'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'flat pagination uses server totals and changing either filter resets page',
+    (tester) async {
+      final repo = InboxCommunity()
+        ..groups = [inboxGroup('one', [])]
+        ..members = List.generate(
+          23,
+          (i) => inboxThread('thread-$i', unread: 1),
+        );
+      await start(tester, repo);
+      final next = find.byTooltip('Página siguiente');
+      await reveal(tester, next);
+      await tester.tap(next);
       await tester.pumpAndSettle();
-      expect(repo.groupRequests, [('one', 2, false), ('one', 2, false)]);
-      expect(find.text('Mensaje thread-one'), findsOneWidget);
+      expect(repo.flatRequests.last, (2, null, false, false));
       expect(find.byType(RescuerThreadRow), findsNWidgets(3));
-      expect(find.text('3 chats abiertos'), findsOneWidget);
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, 650));
+      await tester.pumpAndSettle();
+      await reveal(tester, unreadFilter);
+      await tester.tap(unreadFilter);
+      await tester.pumpAndSettle();
+      expect(repo.flatRequests.last, (1, null, true, false));
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, 650));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(pet('one'));
+      await tester.tap(pet('one'));
+      await tester.pumpAndSettle();
+      expect(repo.flatRequests.last, (1, 'one', true, false));
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'selector loads more than twenty pets without flattening group chats',
+    (tester) async {
+      final repo = InboxCommunity()
+        ..groups = List.generate(
+          25,
+          (i) => inboxGroup('pet-$i', [
+            inboxThread('nested-fake-$i'),
+          ], name: 'Mascota $i'),
+        );
+      await start(tester, repo);
+      expect(find.byType(RescuerThreadRow), findsNothing);
+      final more = find.byKey(const ValueKey('rescuer-pets-more'));
+      await tester.ensureVisible(more);
+      await tester.pumpAndSettle();
+      await tester.tap(more);
+      await tester.pumpAndSettle();
+      expect(repo.inboxRequests.last, (2, false));
+      await tester.ensureVisible(pet('pet-24'));
+      await tester.tap(pet('pet-24'));
+      await tester.pumpAndSettle();
+      expect(repo.flatRequests.last, (1, 'pet-24', false, false));
       expect(more, findsNothing);
       expect(tester.takeException(), isNull);
     },
   );
 
-  testWidgets('collapsed groups survive actual chat return and refresh', (
+  testWidgets('late query cannot enter a different pet selection', (
     tester,
   ) async {
     final repo = InboxCommunity()
-      ..groups = [
-        inboxGroup('one', [inboxThread('thread-one')]),
-        inboxGroup('two', [inboxThread('thread-two')], name: 'Milo'),
-      ];
-    final container = await start(tester, repo);
-    await tester.tap(find.byKey(const ValueKey('rescuer-group-two')));
+      ..groups = [inboxGroup('one', []), inboxGroup('two', [], name: 'Milo')]
+      ..members = [inboxThread('milo', group: 'two', name: 'Milo')];
+    await start(tester, repo);
+    repo.pendingGroup = 'one';
+    repo.pendingThreads = Completer<DataPage<Json>>();
+    await tester.tap(pet('one'));
+    await tester.pump();
+    await tester.tap(pet('two'));
     await tester.pumpAndSettle();
-    await tester.tap(find.byType(RescuerThreadRow).first);
+    repo.pendingThreads!.complete(DataPage([inboxThread('late-private')], 1));
     await tester.pumpAndSettle();
-    expect(
-      container.read(routerProvider).state.uri.path,
-      '/messages/thread-one',
-    );
-    await tester.tap(find.byTooltip('Volver'));
-    await tester.pumpAndSettle();
-    expect(container.read(routerProvider).state.uri.path, '/messages');
-    expect(find.text('Mensaje thread-two'), findsNothing);
-    expect(find.text('Mensaje thread-one'), findsOneWidget);
-    expect(repo.inboxRequests.length, greaterThan(1));
+    expect(row('late-private'), findsNothing);
+    expect(row('milo'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
   testWidgets(
-    'history remains reachable and Android Back restores active groups',
+    'removed selection resets to all only after an authorized selector refresh',
     (tester) async {
       final repo = InboxCommunity()
-        ..historical = [
-          inboxGroup('one', [
-            inboxThread('old-thread', closed: true),
-          ], name: 'Luna retirada'),
+        ..groups = [inboxGroup('one', []), inboxGroup('two', [], name: 'Milo')]
+        ..members = [inboxThread('milo', group: 'two', name: 'Milo')];
+      await start(tester, repo);
+      await tester.tap(pet('one'));
+      await tester.pumpAndSettle();
+      repo.groups.removeAt(0);
+      repo.changed();
+      await tester.pumpAndSettle();
+      expect(repo.flatRequests.last, (1, null, false, false));
+      expect(row('milo'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'history remains reachable and system Back restores active filters',
+    (tester) async {
+      final repo = InboxCommunity()
+        ..groups = [inboxGroup('one', [], unread: 1)]
+        ..members = [inboxThread('ana', unread: 1)]
+        ..historical = [inboxGroup('old', [], name: 'Luna retirada')]
+        ..oldMembers = [
+          inboxThread(
+            'old-thread',
+            group: 'old',
+            name: 'Luna retirada',
+            closed: true,
+          ),
         ];
       final container = await start(tester, repo);
+      await tester.tap(pet('one'));
+      await tester.pumpAndSettle();
+      await tester.tap(unreadFilter);
+      await tester.pumpAndSettle();
       final history = find.widgetWithText(TextButton, 'Historial de mensajes');
       await reveal(tester, history);
       await tester.tap(history);
       await tester.pumpAndSettle();
-      expect(repo.inboxRequests.last, (1, true));
-      expect(find.text('Luna retirada'), findsOneWidget);
+      expect(repo.flatRequests.last, (1, null, false, true));
       expect(find.text('Conversación cerrada'), findsOneWidget);
-      expect(find.text('Mensaje old-thread'), findsNothing);
       await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
       expect(container.read(routerProvider).state.uri.path, '/messages');
-      expect(repo.inboxRequests.last, (1, false));
+      expect(repo.flatRequests.last, (1, 'one', true, false));
       expect(tester.takeException(), isNull);
     },
   );
 
   testWidgets(
-    'late group response cannot enter a different history selection',
+    'two adopters open distinct real thread IDs; reading refreshes active unread filter',
     (tester) async {
       final repo = InboxCommunity()
-        ..groups = [
-          inboxGroup('one', [inboxThread('thread-one')], count: 2),
-        ]
-        ..pendingThreads = Completer<DataPage<Json>>();
-      await start(tester, repo);
-      final more = find.byKey(const ValueKey('rescuer-group-more-one'));
-      await reveal(tester, more);
-      await tester.tap(more);
-      await tester.pump();
-      final history = find.widgetWithText(TextButton, 'Historial de mensajes');
-      await reveal(tester, history);
-      await tester.tap(history);
+        ..markRead = true
+        ..groups = [inboxGroup('one', [], unread: 2)]
+        ..members = [
+          inboxThread('ana', unread: 1),
+          inboxThread('sofia', unread: 1, person: 'Sofía'),
+        ];
+      final container = await start(tester, repo);
+      await tester.tap(pet('one'));
       await tester.pumpAndSettle();
-      repo.pendingThreads!.complete(DataPage([inboxThread('late-private')], 2));
+      await tester.tap(unreadFilter);
       await tester.pumpAndSettle();
-      expect(find.text('Mensaje late-private'), findsNothing);
-      expect(
-        find.text('Aún no tienes conversaciones en tu historial.'),
-        findsOneWidget,
-      );
+      await tester.tap(row('sofia'));
+      await tester.pumpAndSettle();
+      expect(container.read(routerProvider).state.uri.path, '/messages/sofia');
+      await tester.tap(find.byTooltip('Volver'));
+      await tester.pumpAndSettle();
+      expect(repo.flatRequests.last, (1, 'one', true, false));
+      expect(row('sofia'), findsNothing);
+      expect(row('ana'), findsOneWidget);
+      await tester.tap(row('ana'));
+      await tester.pumpAndSettle();
+      expect(container.read(routerProvider).state.uri.path, '/messages/ana');
+      await tester.tap(find.byTooltip('Volver'));
+      await tester.pumpAndSettle();
+      expect(find.text('No tienes mensajes sin leer.'), findsOneWidget);
+      expect(repo.sentIds, isEmpty);
       expect(tester.takeException(), isNull);
     },
   );
 
-  testWidgets('group paging uses the full server total', (tester) async {
+  testWidgets('chat return preserves selector and list scroll', (tester) async {
     final repo = InboxCommunity()
-      ..groupTotal = 21
-      ..groups = [inboxGroup('one', [])];
-    await start(tester, repo);
-    final next = find.byTooltip('Página siguiente');
-    await reveal(tester, next);
-    await tester.tap(next);
+      ..groups = [inboxGroup('one', [])]
+      ..members = List.generate(12, (i) => inboxThread('thread-$i'));
+    final container = await start(tester, repo);
+    await tester.tap(pet('one'));
     await tester.pumpAndSettle();
-    expect(repo.inboxRequests.last, (2, false));
+    await reveal(tester, row('thread-9'));
+    final offset = tester
+        .state<ScrollableState>(find.byType(Scrollable).first)
+        .position
+        .pixels;
+    expect(offset, greaterThan(0));
+    await tester.tap(row('thread-9'));
+    await tester.pumpAndSettle();
+    expect(container.read(routerProvider).state.uri.path, '/messages/thread-9');
+    await tester.tap(find.byTooltip('Volver'));
+    await tester.pumpAndSettle();
+    expect(repo.flatRequests.last, (1, 'one', false, false));
+    expect(
+      tester
+          .state<ScrollableState>(find.byType(Scrollable).first)
+          .position
+          .pixels,
+      closeTo(offset, 1),
+    );
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets(
-    'personal conversations route preserves the experience and sends nothing',
-    (tester) async {
-      final repo = InboxCommunity();
-      final container = await start(tester, repo);
-      final action = find.widgetWithText(TextButton, 'Mis conversaciones');
-      await reveal(tester, action);
-      await tester.tap(action);
-      await tester.pumpAndSettle();
-      expect(
-        container.read(routerProvider).state.uri.path,
-        '/my-conversations',
-      );
-      expect(find.byType(RescuerThreadsScreen), findsNothing);
-      expect(repo.sentIds, isEmpty);
-      await tester.binding.handlePopRoute();
-      await tester.pumpAndSettle();
-      expect(find.byType(RescuerThreadsScreen), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    },
-  );
+  testWidgets('personal conversations keeps experience and sends nothing', (
+    tester,
+  ) async {
+    final repo = InboxCommunity();
+    final container = await start(tester, repo);
+    final action = find.widgetWithText(TextButton, 'Mis conversaciones');
+    await reveal(tester, action);
+    await tester.tap(action);
+    await tester.pumpAndSettle();
+    expect(container.read(routerProvider).state.uri.path, '/my-conversations');
+    expect(find.byType(RescuerThreadsScreen), findsNothing);
+    expect(repo.sentIds, isEmpty);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.byType(RescuerThreadsScreen), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }

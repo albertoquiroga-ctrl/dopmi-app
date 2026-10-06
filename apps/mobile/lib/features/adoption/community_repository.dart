@@ -45,7 +45,8 @@ class Adoption {
 }
 
 class DataPage<T> {
-  const DataPage(this.items, this.total);
+  const DataPage(this.items, this.total, {this.cursor});
+  final String? cursor;
   final List<T> items;
   final int total;
 }
@@ -100,6 +101,14 @@ abstract class CommunityRepository {
   Future<String> startThread(String postId);
   Future<DataPage<Json>> rescuerInbox(int page, {bool history = false}) =>
       Future.error(UnsupportedError('Inbox no disponible'));
+  Future<DataPage<Json>> rescuerThreads(
+    int page, {
+    String? groupId,
+    bool unreadOnly = false,
+    bool history = false,
+  }) => Future.error(UnsupportedError('Conversaciones no disponibles'));
+  Future<void> recordAdoptionView(String postId, {required bool consent}) =>
+      Future.value();
   Future<DataPage<Json>> rescuerGroupThreads(
     String groupId,
     int page, {
@@ -290,6 +299,37 @@ class SupabaseCommunityRepository implements CommunityRepository {
   @override
   Future<String> startThread(String postId) async =>
       await rpc('dopmi_start_adoption_contact', {'post_id': postId}) as String;
+  @override
+  Future<void> recordAdoptionView(
+    String postId, {
+    required bool consent,
+  }) async {
+    if (!consent) return;
+    await rpc('dopmi_record_adoption_view', {
+      'post_id': postId,
+      'consent': consent,
+    });
+  }
+
+  @override
+  Future<DataPage<Json>> rescuerThreads(
+    int page, {
+    String? groupId,
+    bool unreadOnly = false,
+    bool history = false,
+  }) async {
+    final result = await rpc('dopmi_rescuer_threads_page', {
+      'page_number': page,
+      'group_id': groupId,
+      'unread_only': unreadOnly,
+      'history': history,
+    });
+    return DataPage(
+      (result['items'] as List).map((item) => Json.from(item)).toList(),
+      result['total'] as int,
+    );
+  }
+
   @override
   Future<DataPage<Json>> rescuerInbox(int page, {bool history = false}) async {
     final result = await rpc('dopmi_rescuer_inbox', {

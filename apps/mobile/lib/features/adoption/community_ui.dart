@@ -211,10 +211,12 @@ class AdoptionPhoto extends ConsumerWidget {
     this.radius = 20,
     this.source,
     this.preview = false,
+    this.onDisplayed,
   });
   final String path;
   final PhotoRef? source;
   final bool preview;
+  final VoidCallback? onDisplayed;
   final double height;
   final double radius;
   @override
@@ -224,6 +226,7 @@ class AdoptionPhoto extends ConsumerWidget {
       borderRadius: BorderRadius.circular(radius),
       child: RemotePhoto(
         preview: preview,
+        onDisplayed: onDisplayed,
         source: source ?? adoptionPhotoSource(repository, path),
         height: height,
         width: double.infinity,

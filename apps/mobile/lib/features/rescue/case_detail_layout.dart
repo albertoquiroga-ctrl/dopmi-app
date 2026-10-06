@@ -12,6 +12,7 @@ import '../../core/media/photo_runtime.dart';
 import '../../core/reference_focus_outline.dart';
 import '../payments/contribution_amount_dialog.dart';
 import 'rescue_repository.dart';
+import 'need_order.dart';
 import 'rescue_public_photo.dart';
 
 class CaseDetailLayout extends ConsumerStatefulWidget {
@@ -156,7 +157,7 @@ class _CaseDetailLayoutState extends ConsumerState<CaseDetailLayout> {
       record.publicData['city'],
       record.publicData['state'],
     ].whereType<String>().where((s) => s.isNotEmpty).join(', ');
-    final categories = widget.expenses
+    final categories = orderedNeeds(widget.expenses)
         .map(
           (e) => categoryLabel(
             (e.publicData['category'] ?? e.publicData['type'] ?? '').toString(),
@@ -165,7 +166,7 @@ class _CaseDetailLayoutState extends ConsumerState<CaseDetailLayout> {
         .where((s) => s.isNotEmpty)
         .toSet()
         .toList();
-    final eligible = widget.expenses
+    final eligible = orderedNeeds(widget.expenses)
         .where(
           (e) =>
               record.status == 'approved' &&

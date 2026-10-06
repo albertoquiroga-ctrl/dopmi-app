@@ -6,6 +6,7 @@ import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/media/photo_runtime.dart';
 import 'package:dopmi_mobile/core/media/photo_store.dart';
 import 'package:dopmi_mobile/core/media/remote_photo.dart';
+import 'package:dopmi_mobile/core/measurement.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/adoption/community_ui.dart';
 import 'package:dopmi_mobile/features/adoption/discovery_card_motion.dart';
@@ -25,6 +26,15 @@ import 'rescue_test.dart' show FakeRescue;
 
 class CardPhotoCommunity extends FakeCommunity {
   final signed = <String>[];
+  final recordedViews = <String>[];
+  @override
+  Future<void> recordAdoptionView(
+    String postId, {
+    required bool consent,
+  }) async {
+    if (consent) recordedViews.add(postId);
+  }
+
   @override
   Future<String> photoUrl(String path) async {
     signed.add(path);
@@ -104,6 +114,7 @@ Future<CardFixture> openCards(
   bool reduced = false,
   Size size = const Size(377, 852),
   double textScale = 1,
+  MeasurementController? measurement,
 }) async {
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
@@ -196,6 +207,8 @@ Future<CardFixture> openCards(
         communityRepositoryProvider.overrideWithValue(repo),
         rescueRepositoryProvider.overrideWithValue(rescue),
         photoRuntimeProvider.overrideWithValue(runtime),
+        if (measurement != null)
+          measurementControllerProvider.overrideWith((ref) => measurement),
         routerInitialLocationProvider.overrideWithValue('/adoptions'),
       ],
       child: const DopmiApp(),

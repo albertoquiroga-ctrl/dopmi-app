@@ -10,7 +10,6 @@ import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 import 'package:dopmi_mobile/features/rescue/public_expense_card.dart';
-import 'package:dopmi_mobile/features/rescue/rescue_screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
@@ -72,6 +71,77 @@ class FakeRescue extends RescueRepository {
     'urgent': true,
     'public_data': {'title': 'Cirugía', 'photos': <String>[]},
   });
+  @override
+  Future<Json> dashboardV2() async {
+    final legacy = await dashboard();
+    return {
+      ...legacy,
+      'adoption_counts': {
+        'active': 0,
+        'draft': 0,
+        'review': 0,
+        'corrections': 0,
+      },
+      'support_counts': legacy['case_counts'],
+      'adoption_metrics': {'unique_viewers': 0, 'pets_saved': 0},
+      'unanswered_conversations': 2,
+      'pending_evidence': <Json>[],
+      'payments_unseen_count': 1,
+      'recent_activity': ((legacy['recent_activity'] as List?) ?? [])
+          .map(
+            (value) => <String, dynamic>{
+              ...Json.from(value as Map),
+              'id': 'individual:fixture',
+              'case_id': 'case-one',
+              'pet_name': 'Choco',
+              'net_cents': value['allocated_cents'],
+              'occurred_at': '2026-10-05T12:00:00Z',
+              'source': value['source'] ?? 'individual',
+            },
+          )
+          .toList(),
+    };
+  }
+
+  @override
+  Future<Json> ownedCases(
+    int page, {
+    String program = 'adoption',
+    List<String> statuses = const [],
+    bool archived = false,
+  }) async {
+    final records = program == 'support'
+        ? (await mine('case', 1)).items
+        : <RescueRecord>[];
+    final filtered = records.where((record) {
+      final category = switch (record.status) {
+        'approved' => 'active',
+        'submitted' => 'review',
+        'draft' => 'draft',
+        _ => 'corrections',
+      };
+      return (record.status == 'closed') == archived &&
+          (statuses.isEmpty || statuses.contains(category));
+    }).toList();
+    return {
+      'total': filtered.length,
+      'total_owned': records.length,
+      'items': filtered
+          .skip((page - 1) * 20)
+          .take(20)
+          .map(
+            (record) => <String, dynamic>{
+              ...record.data,
+              'program': program,
+              'record': record.data,
+              'pet_name': record.title,
+              'need_types': <String>[],
+            },
+          )
+          .toList(),
+    };
+  }
+
   @override
   Future<Json> dashboard() async => {
     'verification_status': 'approved',
@@ -862,25 +932,12 @@ void main() {
       UncontrolledProviderScope(container: container, child: const DopmiApp()),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Resumen comprobado'), findsOneWidget);
-    expect(find.text('\$92.00'), findsOneWidget);
-    expect(
-      tester.widget<Text>(find.text('\$92.00')).semanticsLabel,
-      '\$92.00 MXN',
-    );
-    expect(find.text('Transferido'), findsOneWidget);
-    expect(find.text('En revisión'), findsOneWidget);
-    expect(find.text('Nina'), findsOneWidget);
-    expect(find.text('2 sin leer'), findsOneWidget);
-    expect(find.text('Actividad reciente'), findsOneWidget);
-    final messages = find.byWidgetPredicate(
-      (w) => w is RescuerPendingCard && w.message,
-    );
-    final badge = find.descendant(of: messages, matching: find.text('2'));
-    expect(badge, findsOneWidget);
-    await tester.ensureVisible(badge);
+    expect(find.text('Mis pendientes'), findsOneWidget);
+    expect(find.text('Mis pendientes para avanzar'), findsNothing);
+    final messages = find.text('Mensajes').last;
+    await tester.ensureVisible(messages);
     await tester.pumpAndSettle();
-    await tester.tap(badge);
+    await tester.tap(messages);
     await tester.pumpAndSettle();
     expect(container.read(routerProvider).state.uri.path, '/messages');
     expect(tester.takeException(), isNull);
@@ -900,7 +957,9 @@ void main() {
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         rescueRepositoryProvider.overrideWithValue(FakeRescue()),
-        routerInitialLocationProvider.overrideWithValue('/my-cases'),
+        routerInitialLocationProvider.overrideWithValue(
+          '/my-cases?program=support',
+        ),
       ],
     );
     addTearDown(() async {
@@ -912,11 +971,17 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text('Choco'), findsOneWidget);
-    expect(find.text('Administrar'), findsOneWidget);
+    expect(find.byTooltip('Editar publicación'), findsNothing);
     expect(find.text('Nina'), findsOneWidget);
-    expect(find.text('NECESITA CORRECCIONES'), findsOneWidget);
-    expect(find.text('Aclara la ubicación aproximada.'), findsOneWidget);
-    expect(find.text('Corregir publicación'), findsOneWidget);
+    expect(find.text('En proceso'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('owned-case-open-case-one')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('owned-case-open-case-correction')),
+      findsOneWidget,
+    );
   });
   for (final entry in [
     'Suscríbete ahora',

@@ -160,8 +160,12 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/my-cases',
-                builder: (_, _) =>
-                    MyRescueCasesScreen(key: ValueKey(identity.identity?.id)),
+                builder: (_, state) => MyRescueCasesScreen(
+                  key: ValueKey(identity.identity?.id),
+                  initialProgram:
+                      state.uri.queryParameters['program'] ?? 'adoption',
+                  initialStatus: state.uri.queryParameters['status'],
+                ),
               ),
             ],
           ),
@@ -208,6 +212,15 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => RescuerPublicProfileEditScreen(
           key: ValueKey(identity.identity?.id),
         ),
+      ),
+      GoRoute(
+        path: '/rescuer/received-payments',
+        builder: (_, _) =>
+            RescuerReceivedPaymentsScreen(key: ValueKey(identity.identity?.id)),
+      ),
+      GoRoute(
+        path: '/rescuer/photo-tips',
+        builder: (_, _) => const RescuerPhotoTipsScreen(),
       ),
       GoRoute(path: '/help', builder: (_, _) => const HelpCenterScreen()),
       GoRoute(path: '/about', builder: (_, _) => const AboutScreen()),

@@ -85,8 +85,26 @@ class MeasurementController extends ChangeNotifier {
     this.preferences,
     this.namespace,
     this.analytics,
-    this.diagnostics,
-  );
+    this.diagnostics, {
+    this.adoptionConsent,
+  });
+  final Future<void> Function(bool)? adoptionConsent;
+  Future<void> _consentSync = Future.value();
+  String? get ownerId => _owner;
+  Future<void> get consentReady => _consentSync;
+
+  void _syncConsent() {
+    final callback = adoptionConsent;
+    if (_owner == null || callback == null) return;
+    final enabled = analyticsEnabled;
+    final expectedOwner = _owner;
+    _consentSync = _consentSync
+        .then((_) async {
+          if (_owner == expectedOwner) await callback(enabled);
+        })
+        .catchError((Object _) {});
+  }
+
   final SharedPreferences preferences;
   final String namespace;
   final ProductAnalytics analytics;
@@ -124,6 +142,7 @@ class MeasurementController extends ChangeNotifier {
     }
     if (diagnosticsEnabled) _installErrorHandler();
     loading = false;
+    _syncConsent();
     notifyListeners();
   }
 
@@ -132,6 +151,7 @@ class MeasurementController extends ChangeNotifier {
     await analytics.enabled(value);
     await preferences.setBool(key('analytics'), value);
     analyticsEnabled = value;
+    _syncConsent();
     if (!value) {
       lastAnalyticsEvent = null;
       lastAnalyticsResult = null;

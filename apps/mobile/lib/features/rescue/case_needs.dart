@@ -7,6 +7,7 @@ import 'case_need_row.dart';
 import 'case_information.dart';
 import 'rescue_fields.dart';
 import 'rescue_repository.dart';
+import 'need_order.dart';
 
 class CaseNeeds extends StatelessWidget {
   const CaseNeeds({
@@ -68,7 +69,7 @@ class CaseNeeds extends StatelessWidget {
         ),
       ),
       const SizedBox(height: 16),
-      for (final type in ['food', 'medicine', 'veterinary']) ...[
+      for (final type in ['veterinary', 'medicine', 'food']) ...[
         OutlinedButton(
           onPressed: !enabled || items.length >= 20
               ? null
@@ -150,7 +151,7 @@ class CaseNeeds extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        for (final item in items)
+        for (final item in orderedNeedItems(items))
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: CaseNeedRow(
@@ -279,7 +280,7 @@ class CaseDraftNeeds extends StatelessWidget {
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 12),
-        for (final expense in expenses)
+        for (final expense in orderedNeeds(expenses))
           Container(
             margin: const EdgeInsets.only(bottom: 12),
             decoration: BoxDecoration(

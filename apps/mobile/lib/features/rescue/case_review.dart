@@ -6,6 +6,7 @@ import 'rescue_public_photo.dart';
 import 'case_need_row.dart';
 import 'case_detail_layout.dart';
 import 'rescue_repository.dart';
+import 'need_order.dart';
 
 class CaseReview extends StatelessWidget {
   const CaseReview({
@@ -153,7 +154,7 @@ class CaseReview extends StatelessWidget {
                 needs: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    for (final expense in expenseDrafts)
+                    for (final expense in orderedNeeds(expenseDrafts))
                       Padding(
                         padding: const EdgeInsets.only(bottom: 12),
                         child: CaseNeedRow(
@@ -175,7 +176,7 @@ class CaseReview extends StatelessWidget {
                           },
                         ),
                       ),
-                    for (final item in items)
+                    for (final item in orderedNeedItems(items))
                       Padding(
                         padding: const EdgeInsets.only(bottom: 12),
                         child: CaseNeedRow(item: item),
@@ -280,7 +281,7 @@ class CaseReview extends StatelessWidget {
             const SizedBox(height: 24),
             heading('Necesidades', onEditNeeds),
             const SizedBox(height: 12),
-            for (final item in items) ...[
+            for (final item in orderedNeedItems(items)) ...[
               CaseNeedRow(item: item),
               const SizedBox(height: 8),
             ],

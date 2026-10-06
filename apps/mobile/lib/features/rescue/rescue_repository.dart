@@ -66,6 +66,73 @@ class RescueRepository {
   final SupabaseClient client;
   Future<Json> dashboard() async =>
       Json.from(await client.rpc('dopmi_rescuer_dashboard'));
+  Future<Json> dashboardV2() async =>
+      Json.from(await client.rpc('dopmi_rescuer_dashboard_v2'));
+  Future<Json> ownedCases(
+    int page, {
+    String program = 'adoption',
+    List<String> statuses = const [],
+    bool archived = false,
+  }) async => Json.from(
+    await client.rpc(
+      'dopmi_owned_cases',
+      params: {
+        'page_number': page,
+        'program': program,
+        'statuses': statuses,
+        'archived': archived,
+      },
+    ),
+  );
+  Future<DataPage<Json>> receivedActivity(int page) async {
+    final result = Json.from(
+      await client.rpc('dopmi_rescuer_activity', params: {'page_number': page}),
+    );
+    return DataPage(
+      (result['items'] as List).map((item) => Json.from(item)).toList(),
+      result['total'] as int,
+      cursor: result['presented_cursor'] as String?,
+    );
+  }
+
+  Future<void> acknowledgePayments(String cursor) async {
+    await client.rpc(
+      'dopmi_acknowledge_rescuer_payments',
+      params: {'presented_cursor': cursor},
+    );
+  }
+
+  Future<void> closeAdoption(
+    String id,
+    int version,
+    String reason, {
+    bool? dopmiSupport,
+    String description = '',
+  }) async {
+    await client.rpc(
+      'dopmi_close_adoption',
+      params: {
+        'post_id': id,
+        'expected_version': version,
+        'reason': reason,
+        'dopmi_support': dopmiSupport,
+        'description': description,
+      },
+    );
+  }
+
+  Future<void> archiveSupport(String id, int version) async {
+    await client.rpc(
+      'dopmi_archive_support_case',
+      params: {'record_id': id, 'expected_version': version},
+    );
+  }
+
+  Future<Adoption> reactivateAdoption(Adoption post) async {
+    return SupabaseCommunityRepository(client)
+        .save(Json.from(post.data), id: post.id, version: post.version);
+  }
+
   Future<DataPage<RescueRecord>> mine(
     String kind,
     int page, {
@@ -248,7 +315,8 @@ String pesos(int cents) {
 }
 
 String rescueError(Object error) {
-  if (error is PostgrestException && ['22023', '40001'].contains(error.code)) {
+  if (error is PostgrestException &&
+      ['22023', '40001', 'PT409'].contains(error.code)) {
     return error.message;
   }
   return communityError(error);
