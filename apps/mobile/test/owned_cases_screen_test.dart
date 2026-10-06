@@ -150,6 +150,10 @@ class OwnedCasesRepository extends FakeRescue {
   }
 
   @override
+  Future<RescueRecord> closeSupportCase(RescueRecord record) =>
+      transition(record, 'close');
+
+  @override
   Future<RescueRecord> transition(RescueRecord record, String action) async {
     transitioned.add('${record.id}:$action');
     await accept();
@@ -445,6 +449,31 @@ void main() {
       );
       expect(rescue.transitioned, ['Milo:close']);
       expect(rescue.queries.last['archived'], true);
+    },
+  );
+
+  testWidgets(
+    'support closure failure never confirms success and remains cancellable',
+    (tester) async {
+      final rescue = OwnedCasesRepository([
+        ownedItem('Milo', program: 'support', status: 'approved', funded: 2500),
+      ])..fail = true;
+      await mount(tester, rescue, program: 'support');
+      await tapVisible(tester, find.byTooltip('Cerrar caso'));
+      await tapVisible(
+        tester,
+        find.byKey(const ValueKey('owned-close-remaining')),
+      );
+      await tapVisible(
+        tester,
+        find.widgetWithText(FilledButton, 'Confirmar cierre'),
+      );
+      expect(find.text('Caso finalizado'), findsNothing);
+      expect(rescue.queries.last['archived'], false);
+      expect(find.text('Cancelar'), findsOneWidget);
+      await tapVisible(tester, find.text('Cancelar'));
+      expect(find.text('Confirmar cierre'), findsNothing);
+      expect(rescue.items.single['status'], 'approved');
     },
   );
 

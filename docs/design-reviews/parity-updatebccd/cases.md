@@ -143,3 +143,10 @@ inicial para procesar la respuesta antes de avanzar300ms, sin cambiar producto,
 temporizador ni simular confirmación. Fotos archivadas decodificadas verificadas.
 Los otros estados de la pasada1010 siguen vigentes. Ocho grupos cerrados en
 desarrollo; pendientes auditoría del delta, gate/nativo/instalado y cleanup.
+
+
+Native dirigido: cierre/reactivación adopción conserva ID/campos/seis fotos;
+picker cancelado, teclado, borrador recuperado tras force-stop y Back2→1.
+Cierre Apoyar usa RPC aditiva que conserva guardas y devuelvePT409 para versión
+vencida (REST sin escrituras verificado). Prueba SQL dirigida y Cases14/14 pasan;
+comprobación APK del wrapper, gate, Play y Samsung siguen pendientes.

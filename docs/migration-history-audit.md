@@ -441,3 +441,15 @@ Preflight helpercase_fields y save_rescue iguales a sus fuentes anteriores;
 postflight ambos cuerpos iguales y ACL privada/cliente conservada. Prueba dirigida
 local de persistencia/cliente anterior/enum/aislamiento pasó. Aplicación única,
 sin inferir edad/tamaño, cambiar revisión/finanzas, replay/repair/dbpush.
+
+
+### bccd cierre Apoyar aditivo, 6/10/2026
+
+Local20261006142000_support_close_version_conflict→remote20261006142458.
+Preflight DEV ohqxranynackjignryep latest06044234, wrapperausente y definición
+real de dopmi_transition_rescue idéntica a migración heredada130006;40001 por
+versión es de aplicación. Wrapper delega cierre existente y captura únicamente
+serialization_failure→PT409. SQL local dirigido aprobado; aplicación MCP una
+vez, postflight definer/search_pathvacío/authtrue/anonfalse. REST409 sin cambios
+1304ms verificado. RPC295 y guardas financieras no modificadas; sin repair,
+rename, replay, dbpush o PROD.

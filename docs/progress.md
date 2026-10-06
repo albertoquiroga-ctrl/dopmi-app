@@ -3626,3 +3626,30 @@ confirma que Back conserva selección de filtros, por lo que se retiró ese
 supuesto hallazgo. Analyze limpio75852 y13Mis casos actuales aprobados; gate
 final comprobará el delta restante. APK previo9021compiló en283.3s antes de
 estas dos correcciones y no se instaló; preparar nuevo APK actual para nativo.
+
+
+### 6/10/2026 — bccd, pasada nativa y conflicto puntual de cierre
+
+Candidato local inicial `0e76948`: 22/22 grupos cerrados en desarrollo. APK debug
+Android instalado por ADB con hash verificado; no equivale a build Play295.
+Emulador: carruseles horizontal/vertical independientes, dos chats de una mascota,
+selector paginado de22 publicaciones y filtros. Leer mantuvo una conversación sin
+responder; enviar una respuesta real la redujo a cero, con un único mensaje.
+Cierre de adopción v8→v9 y reactivación v10 conservaron mismo ID, seis fotos y
+campos. Cancelación del picker conservó fotos; borrador guardado v12 sobrevivió
+force-stop y reapertura; Back del paso2 volvió al1. Fixtures sintéticas controladas,
+sin moderación humana ni operaciones financieras; inventario actual4 actores,
+22 adopciones,5 registros de rescate y8 objetos privados. Limpieza aún pendiente.
+
+Auditoría específica confirmó que el nuevo cierre Apoyar llamaba la RPC heredada
+que emite40001 en versión vencida. Se agregó `dopmi_close_support_case` y se usó
+sólo en el nuevo diálogo: delega a todas las guardas existentes y traduce40001 a
+PT409. API295 intacta. PostgreSQL/PGlite dirigido pasó autorización, versión sin
+escrituras/auditoría, bloqueo por gasto en revisión y conservación de hijo/historial.
+DEV preflight contrastó función heredada e historial; aplicación única de
+local20261006142000→remota20261006142458/support_close_version_conflict.
+Postflight authenticatedtrue/anonfalse; REST real devolvióPT409 en1304ms y dejó
+el registro intacto. Sin replay/repair/PROD. Suite Cases14/14 pasó tras cambiar
+contrato; prueba adicional de fallo/cancelación y APK actualizado en ejecución.
+Aún faltan cierre Apoyar nativo, gate del SHA final, Codemagic/Play, Samsung y
+limpieza exacta; ninguna de esas puertas se acredita por capturas o compilación.

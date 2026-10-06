@@ -209,6 +209,18 @@ class RescueRepository {
           ),
         ),
       );
+  Future<RescueRecord> closeSupportCase(RescueRecord record) async =>
+      RescueRecord(
+        Json.from(
+          await client.rpc(
+            'dopmi_close_support_case',
+            params: {
+              'record_id': record.id,
+              'expected_version': record.version,
+            },
+          ),
+        ),
+      );
   Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async {
     final result = await client.rpc(
       'dopmi_rescue_public',

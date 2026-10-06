@@ -319,4 +319,23 @@ export function registerRescuerUpdateSqlCases(getDb,{donor,rescuer,other}) {
     assert.ok(!(await value(db,'select dopmi_rescuer_dashboard_v2()as value')).pending_evidence.some(e=>e.expense_id===record.id));
   });
 
+  test('bccd support closure returns PT409 without writes and preserves authorization review and financial history',async()=>{
+    const db=getDb(); await actor(db,rescuer);
+    await rejected(db,'select dopmi_close_support_case($1,999)',[supportCase],'PT409');
+    await db.exec('reset role');
+    assert.equal((await db.query('select version from dopmi_rescue_records where id=$1',[supportCase])).rows[0].version,1);
+    assert.equal((await db.query('select count(*)::int n from private.dopmi_rescue_history where record_id=$1',[supportCase])).rows[0].n,0);
+    await actor(db,other);await rejected(db,'select dopmi_close_support_case($1,1)',[supportCase],'42501');
+    await db.exec('reset role');await db.query("update dopmi_rescue_records set status='submitted'where id=$1",[expense]);
+    await actor(db,rescuer);await rejected(db,'select dopmi_close_support_case($1,1)',[supportCase]);
+    await db.exec('reset role');await db.query("update dopmi_rescue_records set status='approved'where id=$1",[expense]);
+    const before=(await db.query('select to_jsonb(r) value from dopmi_rescue_records r where id=$1',[expense])).rows[0].value;
+    await actor(db,rescuer); const result=await value(db,'select dopmi_close_support_case($1,1)as value',[supportCase]);
+    assert.equal(result.status,'closed');assert.equal(result.version,2);
+    await db.exec('reset role');
+    assert.deepEqual((await db.query('select to_jsonb(r)value from dopmi_rescue_records r where id=$1',[expense])).rows[0].value,before);
+    assert.equal((await db.query("select count(*)::int n from private.dopmi_rescue_history where record_id=$1 and action='close'",[supportCase])).rows[0].n,1);
+    await actor(db,'');await db.exec('reset role;set local role anon');await rejected(db,'select dopmi_close_support_case($1,1)',[supportCase],'42501');
+  });
+
 }

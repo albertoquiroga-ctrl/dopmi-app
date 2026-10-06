@@ -1282,7 +1282,7 @@ class _CaseOperationDialogState extends ConsumerState<_CaseOperationDialog> {
             description: reason == 'other' ? description.text.trim() : '',
           );
         case _CaseOperation.closeSupport:
-          await repository.transition(RescueRecord(record), 'close');
+          await repository.closeSupportCase(RescueRecord(record));
         case _CaseOperation.archive:
           if (item['program'] == 'support') {
             await repository.archiveSupport(id, version);
