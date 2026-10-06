@@ -8,6 +8,10 @@
   <false/>
   <key>NSLocationWhenInUseUsageDescription</key>
   <string>Dopmi usa tu ubicación aproximada sólo cuando eliges buscar mascotas cercanas.</string>
+  <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+  <string>Dopmi usa tu ubicación aproximada sólo cuando eliges buscar mascotas cercanas mientras usas la app.</string>
+  <key>NSCameraUsageDescription</key>
+  <string>Dopmi usa la cámara cuando eliges tomar fotos de mascotas para tus publicaciones de adopción o casos de rescate.</string>
   <key>NSPhotoLibraryUsageDescription</key>
   <string>Elige fotos de la mascota para su publicación de adopción en Dopmi.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
