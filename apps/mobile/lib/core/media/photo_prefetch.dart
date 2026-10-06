@@ -46,11 +46,14 @@ class _PhotoPrefetchState extends ConsumerState<PhotoPrefetch> {
         : 'inactive';
     if (next == window) return;
     window = next;
-    runtime.cancelPrefetch(this);
     final current = ++revision;
-    if (!active || widget.sources.isEmpty) return;
+    if (!active) {
+      runtime.cancelPrefetch(this);
+      return;
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted && current == revision) {
+        // Descendants promote the new visible card before its old window ends.
         runtime.prefetch(this, widget.sources, width: width);
       }
     });

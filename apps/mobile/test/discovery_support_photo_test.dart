@@ -103,9 +103,9 @@ void main() {
           width: 384,
         ),
       );
-      await tester.tap(find.byTooltip('Pasar'));
+      await tester.tap(find.byTooltip('Pasar').hitTestable());
       await tester.pumpAndSettle();
-      await tester.tap(find.byTooltip('Pasar'));
+      await tester.tap(find.byTooltip('Pasar').hitTestable());
       await tester.pumpAndSettle();
       expect(find.text('DEMO'), findsOneWidget);
       final cover = find.byWidgetPredicate(

@@ -120,7 +120,7 @@ void main() {
       Navigator.of(context).pop();
       await tester.pumpAndSettle();
       expect(find.text('Luna'), findsOneWidget);
-      expect(find.text('Milo'), findsNothing);
+      expect(find.text('Milo').hitTestable(), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );
@@ -170,7 +170,7 @@ void main() {
     final rescue = FailedSupportPhoto();
     await open(tester, repository: repo, rescue: rescue);
     for (var i = 0; i < 2; i++) {
-      await tester.tap(find.byTooltip('Pasar'));
+      await tester.tap(find.byTooltip('Pasar').hitTestable());
       await tester.pumpAndSettle();
     }
     final before = rescue.attempts;
@@ -192,14 +192,14 @@ void main() {
     'guest contact opens login before confirmation and preserves card',
     (tester) async {
       await open(tester, repository: GuestCommunity(), guest: true);
-      await tester.tap(find.byTooltip('Contactar'));
+      await tester.tap(find.byTooltip('Contactar').hitTestable());
       await tester.pumpAndSettle();
       expect(find.text('Inicia sesión'), findsWidgets);
       expect(find.text('Sí, contactar rescatista'), findsNothing);
       Navigator.of(tester.element(find.text('Inicia sesión').first)).pop();
       await tester.pumpAndSettle();
       expect(find.text('Luna'), findsOneWidget);
-      expect(find.text('Milo'), findsNothing);
+      expect(find.text('Milo').hitTestable(), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );
@@ -223,7 +223,7 @@ void main() {
           expect(motion.translation, closeTo(right ? 160 : -160, .001));
           await gesture.up();
           await tester.pumpAndSettle();
-          expect(find.text('Milo'), findsOneWidget);
+          expect(find.text('Milo').hitTestable(), findsOneWidget);
           expect(repo.post.saved, right);
           expect(tester.takeException(), isNull);
         },
@@ -248,7 +248,7 @@ void main() {
         distance.abs() < 8 ? findsOneWidget : findsNothing,
       );
       expect(repo.post.saved, false);
-      expect(find.text('Milo'), findsNothing);
+      expect(find.text('Milo').hitTestable(), findsNothing);
       expect(tester.takeException(), isNull);
     });
   }
@@ -274,36 +274,30 @@ void main() {
       await tester.drag(find.text('Luna'), const Offset(-105, 0));
       await tester.pumpAndSettle();
       expect(find.text('Luna'), findsOneWidget);
-      await tester.tap(find.byTooltip('Pasar'));
+      await tester.tap(find.byTooltip('Pasar').hitTestable());
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 140));
       expect(find.text('Luna'), findsOneWidget);
-      expect(find.text('Milo'), findsNothing);
+      expect(find.text('Milo').hitTestable(), findsNothing);
       await tester.pump(const Duration(milliseconds: 140));
       final incoming = find.byKey(const ValueKey('discovery-motion-next'));
       await tester.pump();
       final incomingTransform = find
           .descendant(of: incoming, matching: find.byType(Transform))
           .first;
+      // The complete next card is already centered underneath the outgoing
+      // card; promoting it must never replay a lateral entrance.
       expect(
         tester.widget<Transform>(incomingTransform).transform.storage[12],
-        -420,
+        0,
       );
-      expect(
-        tester.widget<DiscoveryCardMotion>(incoming).duration,
-        const Duration(milliseconds: 250),
-      );
-      await tester.pump(const Duration(milliseconds: 125));
-      final midpoint = tester.widget<Transform>(incomingTransform).transform;
-      expect(midpoint.storage[12], greaterThan(-420));
-      expect(midpoint.storage[12], lessThan(0));
       await tester.pump(const Duration(milliseconds: 125));
       expect(
         tester.widget<Transform>(incomingTransform).transform.storage[12],
         0,
       );
       await tester.pumpAndSettle();
-      expect(find.text('Milo'), findsOneWidget);
+      expect(find.text('Milo').hitTestable(), findsOneWidget);
       final next = tester.widget<DiscoveryCardMotion>(
         find.byKey(const ValueKey('discovery-motion-next')),
       );
@@ -316,19 +310,22 @@ void main() {
       'incoming card follows a new gesture immediately; right=$right',
       (tester) async {
         final repo = await open(tester);
-        await tester.tap(find.byTooltip(right ? 'Me gusta' : 'Pasar'));
+        await tester.tap(
+          find.byTooltip(right ? 'Me gusta' : 'Pasar').hitTestable(),
+        );
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 280));
+        await tester.pump(const Duration(milliseconds: 1));
         await tester.pump();
         final incoming = find.byKey(const ValueKey('discovery-motion-next'));
         Transform rendered() => tester.widget<Transform>(
           find.descendant(of: incoming, matching: find.byType(Transform)).first,
         );
-        expect(rendered().transform.storage[12], right ? 420 : -420);
+        expect(rendered().transform.storage[12], 0);
         await tester.pump(const Duration(milliseconds: 125));
         // Source clientX uses screen coordinates even while the card rotates.
         final gesture = await tester.startGesture(
-          tester.getCenter(find.text('Milo')),
+          tester.getCenter(find.text('Milo').hitTestable()),
         );
         await gesture.moveBy(const Offset(30, 0));
         await tester.pump();
@@ -337,7 +334,7 @@ void main() {
         await tester.pumpAndSettle();
         expect(rendered().transform.storage[12], 0);
         expect(repo.post.saved, right);
-        expect(find.text('Milo'), findsOneWidget);
+        expect(find.text('Milo').hitTestable(), findsOneWidget);
         expect(tester.takeException(), isNull);
       },
     );
@@ -347,7 +344,7 @@ void main() {
     (tester) async {
       final semantics = tester.ensureSemantics();
       await open(tester);
-      await tester.tap(find.byTooltip('Pasar'));
+      await tester.tap(find.byTooltip('Pasar').hitTestable());
       await tester.pumpAndSettle();
       final card = find.byKey(const ValueKey('discovery-motion-next'));
       final originalState = tester.state(card);
@@ -356,7 +353,7 @@ void main() {
       await tester.tap(find.bySemanticsLabel('Adoptar'));
       await tester.pump();
       expect(tester.state(card), same(originalState));
-      expect(find.text('Milo'), findsOneWidget);
+      expect(find.text('Milo').hitTestable(), findsOneWidget);
       final transform = tester.widget<Transform>(
         find.descendant(of: card, matching: find.byType(Transform)).first,
       );
@@ -396,11 +393,14 @@ void main() {
           }),
         ];
       await open(tester, repository: repo);
-      await tester.tap(find.byTooltip('Pasar'));
+      await tester.tap(find.byTooltip('Pasar').hitTestable());
       await tester.pumpAndSettle();
-      await tester.tap(find.byTooltip('Pasar'));
+      await tester.tap(find.byTooltip('Pasar').hitTestable());
       await tester.pump();
-      if (!reduced) await tester.pump(const Duration(milliseconds: 280));
+      if (!reduced) {
+        await tester.pump(const Duration(milliseconds: 280));
+        await tester.pump(const Duration(milliseconds: 1));
+      }
       await tester.pump();
       final incoming = find.byKey(
         const ValueKey('discovery-motion-support-expense-one'),
@@ -408,7 +408,7 @@ void main() {
       Transform rendered() => tester.widget<Transform>(
         find.descendant(of: incoming, matching: find.byType(Transform)).first,
       );
-      expect(rendered().transform.storage[12], reduced ? 0 : -420);
+      expect(rendered().transform.storage[12], 0);
       if (!reduced) await tester.pump(const Duration(milliseconds: 125));
       // Support uses the same Source screen-coordinate gesture.
       final gesture = await tester.startGesture(
@@ -430,37 +430,43 @@ void main() {
     tester,
   ) async {
     await open(tester, large: true);
-    await tester.scrollUntilVisible(find.byTooltip('Pasar'), 200);
+    await tester.scrollUntilVisible(find.byTooltip('Pasar').hitTestable(), 200);
     await Scrollable.ensureVisible(
-      tester.element(find.byTooltip('Pasar')),
+      tester.element(find.byTooltip('Pasar').hitTestable()),
       alignment: .25,
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.byTooltip('Pasar'));
+    await tester.tap(find.byTooltip('Pasar').hitTestable());
     await tester.pumpAndSettle();
-    expect(find.text('Milo'), findsOneWidget);
+    expect(find.text('Milo').hitTestable(), findsOneWidget);
   });
   testWidgets(
     'slow favorite does not delay next card and failure offers persistence retry',
     (tester) async {
       final repo = PendingFavorite();
       await open(tester, repository: repo);
-      await tester.tap(find.byTooltip('Me gusta'));
+      final likePosition = tester.getCenter(
+        find.byTooltip('Me gusta').hitTestable(),
+      );
+      final passPosition = tester.getCenter(
+        find.byTooltip('Pasar').hitTestable(),
+      );
+      await tester.tap(find.byTooltip('Me gusta').hitTestable());
       await tester.pump();
       final pendingMotion = tester.widget<DiscoveryCardMotion>(
         find.byKey(const ValueKey('discovery-motion-post')),
       );
-      expect(pendingMotion.translation, 420);
+      expect(pendingMotion.translation, greaterThan(0));
       expect(pendingMotion.duration, const Duration(milliseconds: 280));
-      await tester.tap(find.byTooltip('Me gusta'));
-      await tester.tap(find.byTooltip('Pasar'));
+      await tester.tapAt(likePosition);
+      await tester.tapAt(passPosition);
       await tester.pump(const Duration(milliseconds: 400));
       expect(repo.saves, 1);
-      expect(find.text('Milo'), findsOneWidget);
+      expect(find.text('Milo').hitTestable(), findsOneWidget);
       expect(repo.post.saved, false);
       repo.result.completeError(Exception('offline'));
       await tester.pumpAndSettle();
-      expect(find.text('Milo'), findsOneWidget);
+      expect(find.text('Milo').hitTestable(), findsOneWidget);
       expect(
         find.text('No pudimos guardar a Luna. Intenta de nuevo.'),
         findsOneWidget,
@@ -479,7 +485,7 @@ void main() {
         find.text('No pudimos guardar a Luna. Intenta de nuevo.'),
         findsNothing,
       );
-      expect(find.text('Milo'), findsOneWidget);
+      expect(find.text('Milo').hitTestable(), findsOneWidget);
     },
   );
   testWidgets(
@@ -487,17 +493,19 @@ void main() {
     (tester) async {
       final repo = PendingFavorite();
       await open(tester, repository: repo);
-      await tester.tap(find.byTooltip('Me gusta'));
+      await tester.tap(find.byTooltip('Me gusta').hitTestable());
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 140));
-      expect(find.text('Milo'), findsNothing);
+      expect(find.text('Milo').hitTestable(), findsNothing);
       repo.result.complete();
       await tester.pump();
       expect(repo.post.saved, true);
-      expect(find.text('Milo'), findsNothing);
+      expect(find.text('Milo').hitTestable(), findsNothing);
       await tester.pump(const Duration(milliseconds: 140));
+      // Flutter marks a simulation done strictly after its nominal duration.
+      await tester.pump(const Duration(milliseconds: 1));
       await tester.pump();
-      expect(find.text('Milo'), findsOneWidget);
+      expect(find.text('Milo').hitTestable(), findsOneWidget);
       expect(repo.saves, 1);
     },
   );
@@ -506,9 +514,9 @@ void main() {
         const FakeAccessibilityFeatures(disableAnimations: true);
     addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
     await open(tester);
-    await tester.tap(find.byTooltip('Pasar'));
+    await tester.tap(find.byTooltip('Pasar').hitTestable());
     await tester.pump();
-    expect(find.text('Milo'), findsOneWidget);
+    expect(find.text('Milo').hitTestable(), findsOneWidget);
     expect(find.text('Luna'), findsNothing);
   });
 
@@ -561,8 +569,14 @@ void main() {
     'exit frames interpolate CSS angle and translation independently',
     (tester) async {
       await open(tester);
-      await tester.tap(find.byTooltip('Pasar'));
+      await tester.tap(find.byTooltip('Pasar').hitTestable());
       await tester.pump();
+      final destination = tester
+          .widget<DiscoveryCardMotion>(
+            find.byKey(const ValueKey('discovery-motion-post')),
+          )
+          .translation;
+
       for (final elapsed in [70, 140, 210]) {
         await tester.pump(const Duration(milliseconds: 70));
         final progress = const Cubic(.22, 1, .36, 1).transform(elapsed / 280);
@@ -575,7 +589,7 @@ void main() {
               .first,
         );
         final matrix = rendered.transform;
-        expect(matrix.storage[12], closeTo(-420 * progress, .001));
+        expect(matrix.storage[12], closeTo(destination * progress, .001));
         expect(
           math.atan2(matrix.storage[1], matrix.storage[0]) * 180 / math.pi,
           closeTo(-18 * progress, .00001),
@@ -583,7 +597,7 @@ void main() {
         expect(matrix.determinant(), closeTo(1, .00001));
       }
       await tester.pumpAndSettle();
-      expect(find.text('Milo'), findsOneWidget);
+      expect(find.text('Milo').hitTestable(), findsOneWidget);
     },
   );
 }

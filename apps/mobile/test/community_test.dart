@@ -1127,7 +1127,7 @@ void main() {
     final repo = FakeCommunity();
     await start(tester, repo, '/adoptions');
     expect(find.text('Luna'), findsOneWidget);
-    await tester.tap(find.byTooltip('Me gusta'));
+    await tester.tap(find.byTooltip('Me gusta').hitTestable());
     await tester.pumpAndSettle();
     expect(repo.post.saved, true);
     expect(
@@ -1182,9 +1182,9 @@ void main() {
       }),
     ];
     await start(tester, repo, '/adoptions');
-    await tester.tap(find.byTooltip('Pasar'));
+    await tester.tap(find.byTooltip('Pasar').hitTestable());
     await tester.pumpAndSettle();
-    await tester.tap(find.byTooltip('Pasar'));
+    await tester.tap(find.byTooltip('Pasar').hitTestable());
     await tester.pumpAndSettle();
     expect(find.text('Choco'), findsOneWidget);
     final semantics = tester.ensureSemantics();
@@ -1237,7 +1237,7 @@ void main() {
       Adoption({...repo.post.data, 'id': 'second', 'pet_name': 'Milo'}),
     ];
     await start(tester, repo, '/adoptions');
-    await tester.tap(find.byTooltip('Me gusta'));
+    await tester.tap(find.byTooltip('Me gusta').hitTestable());
     await tester.pumpAndSettle();
     expect(find.text('Milo'), findsOneWidget);
     expect(
@@ -1271,10 +1271,10 @@ void main() {
       ],
     };
     await start(tester, repo, '/adoptions');
-    await tester.tap(find.byTooltip('Pasar'));
+    await tester.tap(find.byTooltip('Pasar').hitTestable());
     await tester.pumpAndSettle();
     expect(find.text('Milo'), findsOneWidget);
-    await tester.tap(find.byTooltip('Pasar'));
+    await tester.tap(find.byTooltip('Pasar').hitTestable());
     await tester.pumpAndSettle();
     expect(find.text('Nina'), findsOneWidget);
   });

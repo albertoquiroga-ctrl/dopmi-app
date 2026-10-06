@@ -130,6 +130,8 @@ class PhotoRuntime extends ChangeNotifier {
   final DateTime Function() _now;
   final Duration attemptTimeout, retryDelay;
   final metrics = PhotoMetrics();
+  final _frameUpdates = ChangeNotifier();
+  Listenable get frameUpdates => _frameUpdates;
   final _leases = <String, _Lease>{};
   final _pixels = <String, _Pixels>{};
   final _jobs = <String, _Job>{};
@@ -168,6 +170,27 @@ class PhotoRuntime extends ChangeNotifier {
   bool expired(PhotoFrame frame) =>
       !frame.validUntil.isAfter(_now().add(const Duration(seconds: 30)));
 
+  /// Reads only authorized, already decoded memory. It starts no request.
+  PhotoFrame? readyFrame(PhotoRef ref, {int width = 0}) {
+    if (_disposed || !_ready || !_scopePrepared) return null;
+    final identity = key(ref);
+    final lease = _leases[identity];
+    final pixels = _pixels[identity];
+    if (lease == null ||
+        !lease.until.isAfter(_now().add(const Duration(seconds: 30))) ||
+        pixels == null ||
+        !pixels.decodedWidths.contains(width)) {
+      return null;
+    }
+    final provider = pixels.providers[width];
+    if (provider == null) return null;
+    return PhotoFrame(
+      provider,
+      lease.until,
+      _lastOrigins[identity] ?? PhotoOrigin.memory,
+    );
+  }
+
   void scope(String actor, {required bool ready}) {
     if (_disposed) return;
     final changed = actor != _actor;
@@ -189,6 +212,7 @@ class PhotoRuntime extends ChangeNotifier {
     _ready = ready;
     if (ready && !_restored.isCompleted) _restored.complete();
     notifyListeners();
+    _frameUpdates.notifyListeners();
     _pumpPrefetch();
   }
 
@@ -241,6 +265,7 @@ class PhotoRuntime extends ChangeNotifier {
     _check(job);
     final lease = _leases[identity];
     if (lease == null) throw const PhotoCancelled();
+    _frameUpdates.notifyListeners();
     return PhotoFrame(
       provider,
       lease.until,
@@ -301,6 +326,8 @@ class PhotoRuntime extends ChangeNotifier {
         if (metrics.decodedMilliseconds.length > 100) {
           metrics.decodedMilliseconds.removeAt(0);
         }
+        _check(job);
+        _frameUpdates.notifyListeners();
         return result;
       } catch (error) {
         if (error is PhotoCancelled ||
@@ -317,6 +344,7 @@ class PhotoRuntime extends ChangeNotifier {
         _leases.remove(identity);
         final badPixels = _pixels.remove(identity);
         if (badPixels != null) unawaited(badPixels.evict());
+        _frameUpdates.notifyListeners();
         if (denied || missing || error is FormatException) {
           unawaited(_removeDisk(identity));
         }
@@ -490,6 +518,7 @@ class PhotoRuntime extends ChangeNotifier {
     _leases.remove(identity);
     final pixels = _pixels.remove(identity);
     _lastOrigins.remove(identity);
+    if (!_disposed) _frameUpdates.notifyListeners();
     if (pixels != null) await pixels.evict();
     if (removeDisk) await _removeDisk(identity);
   }
@@ -552,6 +581,7 @@ class PhotoRuntime extends ChangeNotifier {
     }
     _pixels.clear();
     unawaited(store.close());
+    _frameUpdates.dispose();
     super.dispose();
   }
 }

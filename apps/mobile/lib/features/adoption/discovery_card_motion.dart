@@ -8,15 +8,13 @@ class DiscoveryCardMotion extends ImplicitlyAnimatedWidget {
     super.key,
     required this.translation,
     required this.angleDegrees,
-    this.initialTranslation,
-    this.initialAngleDegrees,
     required super.duration,
+    super.onEnd,
     required this.child,
   }) : super(curve: const Cubic(.22, 1, .36, 1));
 
   final double translation;
   final double angleDegrees;
-  final double? initialTranslation, initialAngleDegrees;
   final Widget child;
 
   @override
@@ -28,22 +26,6 @@ class _DiscoveryCardMotionState
     extends AnimatedWidgetBaseState<DiscoveryCardMotion> {
   Tween<double>? _translation;
   Tween<double>? _angle;
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.initialTranslation != null && widget.duration != Duration.zero) {
-      _translation = Tween<double>(
-        begin: widget.initialTranslation!,
-        end: widget.translation,
-      );
-      _angle = Tween<double>(
-        begin: widget.initialAngleDegrees ?? widget.angleDegrees,
-        end: widget.angleDegrees,
-      );
-      controller.forward();
-    }
-  }
 
   @override
   void didUpdateWidget(covariant DiscoveryCardMotion oldWidget) {

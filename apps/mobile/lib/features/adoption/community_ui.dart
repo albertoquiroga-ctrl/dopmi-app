@@ -210,9 +210,11 @@ class AdoptionPhoto extends ConsumerWidget {
     this.height = 240,
     this.radius = 20,
     this.source,
+    this.preview = false,
   });
   final String path;
   final PhotoRef? source;
+  final bool preview;
   final double height;
   final double radius;
   @override
@@ -221,16 +223,24 @@ class AdoptionPhoto extends ConsumerWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(radius),
       child: RemotePhoto(
+        preview: preview,
         source: source ?? adoptionPhotoSource(repository, path),
         height: height,
         width: double.infinity,
         semanticLabel: 'Foto de la publicación',
-        loading: SizedBox(
-          height: height,
-          child: const Center(
-            child: CircularProgressIndicator(semanticsLabel: 'Cargando foto'),
-          ),
-        ),
+        loading: preview
+            ? const ColoredBox(
+                color: Color(0xffeeeae5),
+                child: Icon(Icons.pets, size: 80),
+              )
+            : SizedBox(
+                height: height,
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    semanticsLabel: 'Cargando foto',
+                  ),
+                ),
+              ),
         unavailable: unavailable,
       ),
     );

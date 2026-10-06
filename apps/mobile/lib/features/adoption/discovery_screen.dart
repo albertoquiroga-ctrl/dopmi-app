@@ -30,6 +30,30 @@ double discoveryMediaHeight(BuildContext context) => math.max(
   MediaQuery.textScalerOf(context).scale(200),
 );
 
+String cardIdentity(Object item) => item is Adoption
+    ? 'adoption:${item.id}'
+    : 'support:${(item as SupportOpportunity).expenseId}';
+
+double discoveryExitTranslation({
+  required Size cardSize,
+  required double viewportWidth,
+  required double centerX,
+  required double dragX,
+  required int direction,
+}) {
+  const radians = 18 * math.pi / 180;
+  final rotatedHalfWidth =
+      (cardSize.width * math.cos(radians) +
+          cardSize.height * math.sin(radians)) /
+      2;
+  final edgeDistance = direction > 0 ? viewportWidth - centerX : centerX;
+  final distance = math.max(
+    edgeDistance + rotatedHalfWidth + 16,
+    dragX.abs() + 16,
+  );
+  return direction * distance;
+}
+
 class DiscoveryScreen extends ConsumerStatefulWidget {
   const DiscoveryScreen({super.key});
   @override
@@ -45,7 +69,10 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   double dragX = 0;
   bool dragging = false;
   int exiting = 0;
-  int entryDirection = 0;
+  final deckKey = GlobalKey();
+  int transitionSerial = 0;
+  Object? outgoingSnapshot, nextSnapshot;
+  double exitTranslation = 0;
   bool loading = true, acting = false, exhausted = false;
   bool allSpeciesEmpty = false;
   String? error;
@@ -106,7 +133,10 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
         dragX = 0;
         dragging = false;
         exiting = 0;
-        entryDirection = 0;
+        transitionSerial++;
+        outgoingSnapshot = null;
+        nextSnapshot = null;
+        acting = false;
       }
     });
     try {
@@ -158,41 +188,129 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
       await context.push('/login');
       return;
     }
+    final box = deckKey.currentContext?.findRenderObject() as RenderBox?;
+    final size =
+        box?.size ??
+        Size(
+          MediaQuery.sizeOf(context).width - 36,
+          discoveryMediaHeight(context) + 128,
+        );
+    final center =
+        box?.localToGlobal(Offset(size.width / 2, 0)).dx ??
+        MediaQuery.sizeOf(context).width / 2;
+    final side = direction ?? (save ? 1 : -1);
     setState(() {
       acting = true;
       dragging = false;
-      exiting = direction ?? (save ? 1 : -1);
+      exiting = side;
+      transitionSerial++;
+      outgoingSnapshot = card;
+      nextSnapshot = index + 1 < items.length ? items[index + 1] : null;
+      exitTranslation = discoveryExitTranslation(
+        cardSize: Size(size.width, size.height - 16),
+        viewportWidth: MediaQuery.sizeOf(context).width,
+        centerX: center,
+        dragX: dragX,
+        direction: side,
+      );
     });
-    try {
-      if (card is Adoption && save && !card.saved) {
-        unawaited(persistFavorite(card));
-      }
-      if (!MediaQuery.disableAnimationsOf(context)) {
-        await Future<void>.delayed(const Duration(milliseconds: 280));
-      }
-      if (!mounted) return;
-      setState(() {
-        index++;
-        entryDirection = exiting;
-        dragX = 0;
-        exiting = 0;
-      });
-      if (!exhausted && deck.length - index <= 2) {
-        page++;
-        await load(reset: false);
-      }
-    } catch (cause) {
-      if (mounted) {
-        setState(() {
-          error = communityError(cause);
-          dragX = 0;
-          dragging = false;
-          exiting = 0;
-        });
-      }
-    } finally {
-      if (mounted) setState(() => acting = false);
+    if (card is Adoption && save && !card.saved) {
+      unawaited(persistFavorite(card));
     }
+    if (MediaQuery.disableAnimationsOf(context)) {
+      finishExit(transitionSerial, cardIdentity(card));
+    }
+  }
+
+  void finishExit(int serial, String identity) {
+    if (!mounted ||
+        serial != transitionSerial ||
+        exiting == 0 ||
+        outgoingSnapshot == null ||
+        cardIdentity(outgoingSnapshot!) != identity) {
+      return;
+    }
+    setState(() {
+      index++;
+      dragX = 0;
+      exiting = 0;
+      outgoingSnapshot = null;
+      nextSnapshot = null;
+      acting = false;
+    });
+    if (!loading && !exhausted && deck.length - index <= 2) {
+      page++;
+      unawaited(load(reset: false));
+    }
+  }
+
+  void cancelDrag() => setState(() {
+    dragging = false;
+    dragX = 0;
+  });
+
+  Widget cardBody(Object item, {required bool preview}) {
+    final serial = transitionSerial;
+    final identity = cardIdentity(item);
+    final busy = acting || preview;
+    final onMotionEnd = !preview && exiting != 0
+        ? () => finishExit(serial, identity)
+        : null;
+    if (item is Adoption) {
+      return _SwipeCard(
+        item,
+        preview: preview,
+        dragX: preview ? 0 : dragX,
+        dragging: !preview && dragging,
+        exiting: preview ? 0 : exiting,
+        exitTranslation: exitTranslation,
+        onMotionEnd: onMotionEnd,
+        busy: busy,
+        onDragDelta: (value) => setState(() => dragX += value),
+        onStart: () => setState(() => dragging = true),
+        onCancel: cancelDrag,
+        onEnd: () {
+          if (dragX.abs() <= 110) {
+            cancelDrag();
+          } else {
+            advance(save: dragX > 0);
+          }
+        },
+        pass: () => advance(save: false),
+        like: () => advance(save: true),
+        contact: () => contact(item),
+        open: () async {
+          await context.push(
+            '/adoptions/${item.id}',
+            extra: item.data['distance_km'],
+          );
+          if (mounted) await refreshCard(item.id);
+        },
+      );
+    }
+    final opportunity = item as SupportOpportunity;
+    return _SupportCard(
+      opportunity,
+      preview: preview,
+      busy: busy,
+      dragX: preview ? 0 : dragX,
+      dragging: !preview && dragging,
+      exiting: preview ? 0 : exiting,
+      exitTranslation: exitTranslation,
+      onMotionEnd: onMotionEnd,
+      onDragDelta: (value) => setState(() => dragX += value),
+      onStart: () => setState(() => dragging = true),
+      onCancel: cancelDrag,
+      onEnd: () {
+        if (dragX.abs() <= 110) {
+          cancelDrag();
+        } else {
+          advance(save: false, direction: dragX > 0 ? 1 : -1);
+        }
+      },
+      pass: () => advance(save: false),
+      open: () => context.push('/rescue-cases/${opportunity.id}'),
+    );
   }
 
   Future<void> contact(Adoption card) async {
@@ -288,7 +406,11 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   @override
   Widget build(BuildContext context) {
     final items = deck;
-    final current = index < items.length ? items[index] : null;
+    final current =
+        outgoingSnapshot ?? (index < items.length ? items[index] : null);
+    final next = outgoingSnapshot != null
+        ? nextSnapshot
+        : (index + 1 < items.length ? items[index + 1] : null);
     final repository = ref.read(communityRepositoryProvider);
     final upcoming = <PhotoRef>[];
     for (final item in items.skip(index + 1).take(2)) {
@@ -429,7 +551,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                   child: const Text('Volver a intentar'),
                 ),
               ],
-              if (loading && cards.isEmpty)
+              if (loading && current == null)
                 const SizedBox(
                   height: 420,
                   child: Center(child: CircularProgressIndicator()),
@@ -468,77 +590,19 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                             .map((post) => post.photos.first)
                             .toList(),
                       )
-              else if (current is Adoption)
-                DiscoveryStack(
-                  next: index + 1 < items.length && items[index + 1] is Adoption
-                      ? items[index + 1] as Adoption
-                      : null,
-                  child: _SwipeCard(
-                    current,
-                    entryDirection: entryDirection,
-                    dragX: dragX,
-                    dragging: dragging,
-                    exiting: exiting,
-                    busy: acting,
-                    onDragDelta: (value) => setState(() => dragX += value),
-                    onStart: () => setState(() => dragging = true),
-                    onCancel: () => setState(() {
-                      dragging = false;
-                      dragX = 0;
-                    }),
-                    onEnd: () {
-                      if (dragX.abs() <= 110) {
-                        setState(() {
-                          dragging = false;
-                          dragX = 0;
-                        });
-                      } else {
-                        advance(save: dragX > 0);
-                      }
-                    },
-                    pass: () => advance(save: false),
-                    like: () => advance(save: true),
-                    contact: () => contact(current),
-                    open: () async {
-                      await context.push(
-                        '/adoptions/${current.id}',
-                        extra: current.data['distance_km'],
-                      );
-                      if (mounted) await refreshCard(current.id);
-                    },
-                  ),
-                )
               else
                 DiscoveryStack(
-                  footerHeight: MediaQuery.textScalerOf(context).scale(16) > 22
+                  key: deckKey,
+                  currentIdentity: cardIdentity(current),
+                  nextIdentity: next == null ? null : cardIdentity(next),
+                  footerHeight:
+                      (current is SupportOpportunity ||
+                              next is SupportOpportunity) &&
+                          MediaQuery.textScalerOf(context).scale(16) > 22
                       ? 256
                       : 128,
-                  child: _SupportCard(
-                    current as SupportOpportunity,
-                    entryDirection: entryDirection,
-                    busy: acting,
-                    dragX: dragX,
-                    dragging: dragging,
-                    exiting: exiting,
-                    onDragDelta: (value) => setState(() => dragX += value),
-                    onStart: () => setState(() => dragging = true),
-                    onCancel: () => setState(() {
-                      dragging = false;
-                      dragX = 0;
-                    }),
-                    onEnd: () {
-                      if (dragX.abs() <= 110) {
-                        setState(() {
-                          dragging = false;
-                          dragX = 0;
-                        });
-                      } else {
-                        advance(save: false, direction: dragX > 0 ? 1 : -1);
-                      }
-                    },
-                    pass: () => advance(save: false),
-                    open: () => context.push('/rescue-cases/${current.id}'),
-                  ),
+                  next: next == null ? null : cardBody(next, preview: true),
+                  child: cardBody(current, preview: false),
                 ),
             ],
           ),
@@ -553,10 +617,14 @@ class DiscoveryStack extends StatelessWidget {
     super.key,
     required this.child,
     this.next,
+    required this.currentIdentity,
+    this.nextIdentity,
     this.footerHeight = 128,
   });
   final Widget child;
-  final Adoption? next;
+  final Widget? next;
+  final String currentIdentity;
+  final String? nextIdentity;
   final double footerHeight;
   @override
   Widget build(BuildContext context) => SizedBox(
@@ -588,29 +656,33 @@ class DiscoveryStack extends StatelessWidget {
           ),
         if (next != null)
           Positioned(
+            key: ValueKey('discovery-layer-$nextIdentity'),
             top: 0,
             left: 0,
             right: 0,
             bottom: 16,
-            child: ExcludeSemantics(
-              child: IgnorePointer(
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 100),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(32),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(22),
-                    child: next!.photos.isEmpty
-                        ? const ColoredBox(color: Color(0xffcfc9c0))
-                        : AdoptionPhoto(next!.photos.first),
-                  ),
-                ),
+            child: ExcludeFocus(
+              excluding: true,
+              child: ExcludeSemantics(
+                excluding: true,
+                child: IgnorePointer(ignoring: true, child: next!),
               ),
             ),
           ),
-        Positioned(top: 0, left: 0, right: 0, bottom: 16, child: child),
+        Positioned(
+          key: ValueKey('discovery-layer-$currentIdentity'),
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 16,
+          child: ExcludeFocus(
+            excluding: false,
+            child: ExcludeSemantics(
+              excluding: false,
+              child: IgnorePointer(ignoring: false, child: child),
+            ),
+          ),
+        ),
       ],
     ),
   );
@@ -623,7 +695,9 @@ class _SupportCard extends StatelessWidget {
     required this.dragX,
     required this.dragging,
     required this.exiting,
-    required this.entryDirection,
+    required this.preview,
+    required this.exitTranslation,
+    this.onMotionEnd,
     required this.onDragDelta,
     required this.onStart,
     required this.onCancel,
@@ -634,7 +708,10 @@ class _SupportCard extends StatelessWidget {
   final SupportOpportunity item;
   final bool busy, dragging;
   final double dragX;
-  final int exiting, entryDirection;
+  final int exiting;
+  final bool preview;
+  final double exitTranslation;
+  final VoidCallback? onMotionEnd;
   final ValueChanged<double> onDragDelta;
   final VoidCallback onStart, onCancel, onEnd, pass, open;
   String amount(int cents) =>
@@ -650,301 +727,32 @@ class _SupportCard extends StatelessWidget {
     onHorizontalDragCancel: busy ? null : onCancel,
     child: DiscoveryCardMotion(
       key: ValueKey('discovery-motion-support-${item.expenseId}'),
-      initialTranslation: entryDirection == 0 ? null : entryDirection * 420.0,
-      initialAngleDegrees: entryDirection * 18.0,
+      onEnd: onMotionEnd,
       duration: MediaQuery.disableAnimationsOf(context) || dragging
           ? Duration.zero
           : Duration(milliseconds: exiting == 0 ? 250 : 280),
-      translation: exiting == 0 ? dragX : exiting * 420,
+      translation: exiting == 0 ? dragX : exitTranslation,
       angleDegrees: exiting == 0 ? dragX / 28 : exiting * 18,
-      child: AnimatedOpacity(
-        opacity: exiting == 0 ? 1 : .35,
-        duration: MediaQuery.disableAnimationsOf(context)
-            ? Duration.zero
-            : const Duration(milliseconds: 280),
-        curve: Curves.ease,
-        child: Semantics(
-          customSemanticsActions: {
-            const CustomSemanticsAction(label: 'Seguir descubriendo'): pass,
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              color: yellow,
-              borderRadius: BorderRadius.circular(32),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x2415110d),
-                  blurRadius: 32,
-                  offset: Offset(0, 16),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(32),
-              child: Material(
-                color: yellow,
-                child: Column(
-                  children: [
-                    InkWell(
-                      onTap: busy ? null : open,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(22),
-                          child: SizedBox(
-                            height: discoveryMediaHeight(context),
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                if (item.text('photo').isNotEmpty)
-                                  Consumer(
-                                    builder: (context, ref, _) => AdoptionPhoto(
-                                      item.text('photo'),
-                                      radius: 0,
-                                      source: rescuePhotoSource(
-                                        ref.read(rescueRepositoryProvider),
-                                        item.text('photo'),
-                                      ),
-                                    ),
-                                  )
-                                else
-                                  const ColoredBox(
-                                    color: Color(0xffcfc9c0),
-                                    child: Icon(Icons.pets, size: 80),
-                                  ),
-                                const IgnorePointer(
-                                  child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: [
-                                          Colors.transparent,
-                                          Colors.transparent,
-                                          Color(0x8c15110d),
-                                          Color(0xe015110d),
-                                          Color(0xf015110d),
-                                        ],
-                                        stops: [0, .36, .63, .86, 1],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  left: 16,
-                                  right: 16,
-                                  bottom: 14,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        item.name,
-                                        style: const TextStyle(
-                                          fontFamily: 'Fraunces',
-                                          fontSize: 28,
-                                          fontVariations:
-                                              DopmiTokens.display28Variations,
-                                          height: 1.1,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        item.text('expense_title'),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontFamily: 'Inter',
-                                          fontSize: 13,
-                                          height: 1.45,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      Semantics(
-                                        label:
-                                            '${item.reimbursable == 0 ? 0 : (item.funded / item.reimbursable * 100).round()} % cubierto',
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            999,
-                                          ),
-                                          child: LinearProgressIndicator(
-                                            value: item.reimbursable == 0
-                                                ? 0
-                                                : (item.funded /
-                                                          item.reimbursable)
-                                                      .clamp(0, 1)
-                                                      .toDouble(),
-                                            minHeight: 6,
-                                            color: yellow,
-                                            backgroundColor: const Color(
-                                              0x47ffffff,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        '\$${amount(item.funded)} de \$${amount(item.reimbursable)}',
-                                        style: const TextStyle(
-                                          fontFamily: 'Inter',
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(22, 16, 22, 20),
-                        child: InkWell(
-                          onTap: busy ? null : open,
-                          child: Flex(
-                            direction:
-                                MediaQuery.textScalerOf(context).scale(16) > 22
-                                ? Axis.vertical
-                                : Axis.horizontal,
-                            children: [
-                              const Expanded(
-                                child: Text(
-                                  'Apoya con sus necesidades',
-                                  style: TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: 16,
-                                    height: 1.25,
-                                    fontWeight: FontWeight.w700,
-                                    color: ink,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Container(
-                                width: 64,
-                                height: 64,
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Color(0x1f1c160c),
-                                      blurRadius: 16,
-                                      offset: Offset(0, 6),
-                                    ),
-                                  ],
-                                ),
-                                child: Center(
-                                  child: SvgPicture.asset(
-                                    'assets/navigation/tab-donate.svg',
-                                    width: 26,
-                                    height: 26,
-                                    colorFilter: const ColorFilter.mode(
-                                      ink,
-                                      BlendMode.srcIn,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
-class _SwipeCard extends StatelessWidget {
-  const _SwipeCard(
-    this.post, {
-    required this.dragX,
-    required this.dragging,
-    required this.exiting,
-    required this.entryDirection,
-    required this.busy,
-    required this.onDragDelta,
-    required this.onStart,
-    required this.onCancel,
-    required this.onEnd,
-    required this.pass,
-    required this.like,
-    required this.contact,
-    required this.open,
-  });
-  final Adoption post;
-  final double dragX;
-  final bool dragging;
-  final int exiting, entryDirection;
-  final bool busy;
-  final ValueChanged<double> onDragDelta;
-  final VoidCallback onStart, onCancel, onEnd, pass, like, contact, open;
-  @override
-  Widget build(BuildContext context) => DiscoveryDragSurface(
-    dragStartBehavior: DragStartBehavior.down,
-    onHorizontalDragStart: busy ? null : (_) => onStart(),
-    onHorizontalDragUpdate: busy
-        ? null
-        : (event) => onDragDelta(event.delta.dx),
-    onHorizontalDragEnd: busy ? null : (_) => onEnd(),
-    onHorizontalDragCancel: busy ? null : onCancel,
-    child: DiscoveryCardMotion(
-      key: ValueKey('discovery-motion-${post.id}'),
-      initialTranslation: entryDirection == 0 ? null : entryDirection * 420.0,
-      initialAngleDegrees: entryDirection * 18.0,
-      duration: MediaQuery.disableAnimationsOf(context) || dragging
-          ? Duration.zero
-          : Duration(milliseconds: exiting == 0 ? 250 : 280),
-      translation: exiting == 0 ? dragX : exiting * 420,
-      angleDegrees: exiting == 0 ? dragX / 28 : exiting * 18,
-      child: AnimatedOpacity(
-        opacity: exiting == 0 ? 1 : .35,
-        duration: MediaQuery.disableAnimationsOf(context)
-            ? Duration.zero
-            : const Duration(milliseconds: 280),
-        curve: Curves.ease,
+      child: Semantics(
+        customSemanticsActions: {
+          const CustomSemanticsAction(label: 'Seguir descubriendo'): pass,
+        },
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: yellow,
             borderRadius: BorderRadius.circular(32),
             boxShadow: const [
-              BoxShadow(
-                color: Color(0x0f15110d),
-                blurRadius: 8,
-                offset: Offset(0, 2),
-              ),
               BoxShadow(
                 color: Color(0x2415110d),
                 blurRadius: 32,
                 offset: Offset(0, 16),
-              ),
-              BoxShadow(
-                color: Color(0x1f15110d),
-                blurRadius: 56,
-                offset: Offset(0, 28),
               ),
             ],
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(32),
             child: Material(
-              color: Colors.white,
+              color: yellow,
               child: Column(
                 children: [
                   InkWell(
@@ -958,13 +766,23 @@ class _SwipeCard extends StatelessWidget {
                           child: Stack(
                             fit: StackFit.expand,
                             children: [
-                              if (post.photos.isEmpty)
-                                const ColoredBox(
-                                  color: Color(0xffeeeae5),
-                                  child: Icon(Icons.pets, size: 80),
+                              if (item.text('photo').isNotEmpty)
+                                Consumer(
+                                  builder: (context, ref, _) => AdoptionPhoto(
+                                    item.text('photo'),
+                                    preview: preview,
+                                    radius: 0,
+                                    source: rescuePhotoSource(
+                                      ref.read(rescueRepositoryProvider),
+                                      item.text('photo'),
+                                    ),
+                                  ),
                                 )
                               else
-                                AdoptionPhoto(post.photos.first),
+                                const ColoredBox(
+                                  color: Color(0xffcfc9c0),
+                                  child: Icon(Icons.pets, size: 80),
+                                ),
                               const IgnorePointer(
                                 child: DecoratedBox(
                                   decoration: BoxDecoration(
@@ -991,7 +809,7 @@ class _SwipeCard extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      post.name,
+                                      item.name,
                                       style: const TextStyle(
                                         fontFamily: 'Fraunces',
                                         fontSize: 28,
@@ -1000,99 +818,53 @@ class _SwipeCard extends StatelessWidget {
                                         height: 1.1,
                                         fontWeight: FontWeight.w600,
                                         color: Colors.white,
-                                        letterSpacing: 0,
                                       ),
                                     ),
                                     const SizedBox(height: 6),
-                                    Row(
-                                      children: [
-                                        SvgPicture.asset(
-                                          'assets/profile/location.svg',
-                                          width: 12,
-                                          height: 12,
-                                          colorFilter: const ColorFilter.mode(
-                                            Colors.white,
-                                            BlendMode.srcIn,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Expanded(
-                                          child: Text(
-                                            '${post.text('city')}, ${post.text('region')}',
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              height: 1.55,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
-                                              letterSpacing: 0,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 6),
                                     Text(
-                                      post.text('story'),
+                                      item.text('expense_title'),
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
+                                        fontFamily: 'Inter',
                                         fontSize: 13,
                                         height: 1.45,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.white,
-                                        letterSpacing: 0,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Semantics(
+                                      label:
+                                          '${item.reimbursable == 0 ? 0 : (item.funded / item.reimbursable * 100).round()} % cubierto',
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(
+                                          999,
+                                        ),
+                                        child: LinearProgressIndicator(
+                                          value: item.reimbursable == 0
+                                              ? 0
+                                              : (item.funded /
+                                                        item.reimbursable)
+                                                    .clamp(0, 1)
+                                                    .toDouble(),
+                                          minHeight: 6,
+                                          color: yellow,
+                                          backgroundColor: const Color(
+                                            0x47ffffff,
+                                          ),
+                                        ),
                                       ),
                                     ),
                                     const SizedBox(height: 8),
-                                    Wrap(
-                                      spacing: 6,
-                                      children:
-                                          [
-                                                post.text('sex') == 'female'
-                                                    ? 'Hembra'
-                                                    : 'Macho',
-                                                {
-                                                      'small': 'Chico',
-                                                      'medium': 'Mediano',
-                                                      'large': 'Grande',
-                                                    }[post.text('size')] ??
-                                                    '',
-                                              ]
-                                              .map(
-                                                (label) => Container(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 10,
-                                                        vertical: 6,
-                                                      ),
-                                                  decoration: BoxDecoration(
-                                                    color: const Color(
-                                                      0x7315110d,
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          999,
-                                                        ),
-                                                    border: Border.all(
-                                                      color: const Color(
-                                                        0x2effffff,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  child: Text(
-                                                    label,
-                                                    style: const TextStyle(
-                                                      fontSize: 11,
-                                                      height: 1.2,
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      color: Colors.white,
-                                                      letterSpacing: 0,
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                              .toList(),
+                                    Text(
+                                      '\$${amount(item.funded)} de \$${amount(item.reimbursable)}',
+                                      style: const TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -1103,37 +875,333 @@ class _SwipeCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        DiscoveryControl(
-                          label: 'Pasar',
-                          icon: Icons.close,
-                          hot: dragX < -12 || exiting < 0,
-                          pass: true,
-                          onPressed: busy ? null : pass,
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(22, 16, 22, 20),
+                      child: InkWell(
+                        onTap: busy ? null : open,
+                        child: Flex(
+                          direction:
+                              MediaQuery.textScalerOf(context).scale(16) > 22
+                              ? Axis.vertical
+                              : Axis.horizontal,
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                'Apoya con sus necesidades',
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 16,
+                                  height: 1.25,
+                                  fontWeight: FontWeight.w700,
+                                  color: ink,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Container(
+                              width: 64,
+                              height: 64,
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0x1f1c160c),
+                                    blurRadius: 16,
+                                    offset: Offset(0, 6),
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: SvgPicture.asset(
+                                  'assets/navigation/tab-donate.svg',
+                                  width: 26,
+                                  height: 26,
+                                  colorFilter: const ColorFilter.mode(
+                                    ink,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 18),
-                        DiscoveryControl(
-                          label: 'Contactar',
-                          icon: Icons.chat_bubble_outline,
-                          message: true,
-                          onPressed: busy ? null : contact,
-                        ),
-                        const SizedBox(width: 18),
-                        DiscoveryControl(
-                          label: 'Me gusta',
-                          icon: Icons.favorite_border,
-                          hot: dragX > 12 || exiting > 0,
-                          onPressed: busy ? null : like,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ],
               ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+class _SwipeCard extends StatelessWidget {
+  const _SwipeCard(
+    this.post, {
+    required this.dragX,
+    required this.dragging,
+    required this.exiting,
+    required this.preview,
+    required this.exitTranslation,
+    this.onMotionEnd,
+    required this.busy,
+    required this.onDragDelta,
+    required this.onStart,
+    required this.onCancel,
+    required this.onEnd,
+    required this.pass,
+    required this.like,
+    required this.contact,
+    required this.open,
+  });
+  final Adoption post;
+  final double dragX;
+  final bool dragging;
+  final int exiting;
+  final bool preview;
+  final double exitTranslation;
+  final VoidCallback? onMotionEnd;
+  final bool busy;
+  final ValueChanged<double> onDragDelta;
+  final VoidCallback onStart, onCancel, onEnd, pass, like, contact, open;
+  @override
+  Widget build(BuildContext context) => DiscoveryDragSurface(
+    dragStartBehavior: DragStartBehavior.down,
+    onHorizontalDragStart: busy ? null : (_) => onStart(),
+    onHorizontalDragUpdate: busy
+        ? null
+        : (event) => onDragDelta(event.delta.dx),
+    onHorizontalDragEnd: busy ? null : (_) => onEnd(),
+    onHorizontalDragCancel: busy ? null : onCancel,
+    child: DiscoveryCardMotion(
+      key: ValueKey('discovery-motion-${post.id}'),
+      onEnd: onMotionEnd,
+      duration: MediaQuery.disableAnimationsOf(context) || dragging
+          ? Duration.zero
+          : Duration(milliseconds: exiting == 0 ? 250 : 280),
+      translation: exiting == 0 ? dragX : exitTranslation,
+      angleDegrees: exiting == 0 ? dragX / 28 : exiting * 18,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(32),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x0f15110d),
+              blurRadius: 8,
+              offset: Offset(0, 2),
+            ),
+            BoxShadow(
+              color: Color(0x2415110d),
+              blurRadius: 32,
+              offset: Offset(0, 16),
+            ),
+            BoxShadow(
+              color: Color(0x1f15110d),
+              blurRadius: 56,
+              offset: Offset(0, 28),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(32),
+          child: Material(
+            color: Colors.white,
+            child: Column(
+              children: [
+                InkWell(
+                  onTap: busy ? null : open,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(22),
+                      child: SizedBox(
+                        height: discoveryMediaHeight(context),
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            if (post.photos.isEmpty)
+                              const ColoredBox(
+                                color: Color(0xffeeeae5),
+                                child: Icon(Icons.pets, size: 80),
+                              )
+                            else
+                              AdoptionPhoto(
+                                post.photos.first,
+                                preview: preview,
+                              ),
+                            const IgnorePointer(
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Colors.transparent,
+                                      Colors.transparent,
+                                      Color(0x8c15110d),
+                                      Color(0xe015110d),
+                                      Color(0xf015110d),
+                                    ],
+                                    stops: [0, .36, .63, .86, 1],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              left: 16,
+                              right: 16,
+                              bottom: 14,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    post.name,
+                                    style: const TextStyle(
+                                      fontFamily: 'Fraunces',
+                                      fontSize: 28,
+                                      fontVariations:
+                                          DopmiTokens.display28Variations,
+                                      height: 1.1,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                      letterSpacing: 0,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/profile/location.svg',
+                                        width: 12,
+                                        height: 12,
+                                        colorFilter: const ColorFilter.mode(
+                                          Colors.white,
+                                          BlendMode.srcIn,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Expanded(
+                                        child: Text(
+                                          '${post.text('city')}, ${post.text('region')}',
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            height: 1.55,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
+                                            letterSpacing: 0,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    post.text('story'),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      height: 1.45,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white,
+                                      letterSpacing: 0,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Wrap(
+                                    spacing: 6,
+                                    children:
+                                        [
+                                              post.text('sex') == 'female'
+                                                  ? 'Hembra'
+                                                  : 'Macho',
+                                              {
+                                                    'small': 'Chico',
+                                                    'medium': 'Mediano',
+                                                    'large': 'Grande',
+                                                  }[post.text('size')] ??
+                                                  '',
+                                            ]
+                                            .map(
+                                              (label) => Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 10,
+                                                      vertical: 6,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  color: const Color(
+                                                    0x7315110d,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                        999,
+                                                      ),
+                                                  border: Border.all(
+                                                    color: const Color(
+                                                      0x2effffff,
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                  label,
+                                                  style: const TextStyle(
+                                                    fontSize: 11,
+                                                    height: 1.2,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Colors.white,
+                                                    letterSpacing: 0,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      DiscoveryControl(
+                        label: 'Pasar',
+                        icon: Icons.close,
+                        hot: dragX < -12 || exiting < 0,
+                        pass: true,
+                        onPressed: busy ? null : pass,
+                      ),
+                      const SizedBox(width: 18),
+                      DiscoveryControl(
+                        label: 'Contactar',
+                        icon: Icons.chat_bubble_outline,
+                        message: true,
+                        onPressed: busy ? null : contact,
+                      ),
+                      const SizedBox(width: 18),
+                      DiscoveryControl(
+                        label: 'Me gusta',
+                        icon: Icons.favorite_border,
+                        hot: dragX > 12 || exiting > 0,
+                        onPressed: busy ? null : like,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),
