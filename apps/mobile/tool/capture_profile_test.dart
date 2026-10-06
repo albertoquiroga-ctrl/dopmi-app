@@ -3495,6 +3495,10 @@ void main() {
         );
         await tester.pumpAndSettle();
       }
+      if (spec.$1.startsWith('owned-cases') && !spec.$1.contains('empty')) {
+        await tester.tap(find.text('Apoyo'));
+        await tester.pumpAndSettle();
+      }
       if (spec.$1.startsWith('owned-cases-correction')) {
         await tester.scrollUntilVisible(
           find.text('Caso de Milo'),

@@ -10,16 +10,16 @@ aceptación instalada ni entrega final. Fotos/cache/swipe295 se conservan.
 
 | Lote | Grupos | Estado / evidencia |
 | --- | ---: | --- |
-| Inicio Rescatista | 8 | Cerrado en desarrollo: primera pasada agrupada3defectos,11/11dirigidos y recaptura normal/115/200 aprobada; nativo pendiente |
-| Mis casos | 8 | Cerrado en desarrollo:16 estados y recaptura selectiva de modal/fuente/aviso aprobados;13 propios y16 gestos/encabezado/desglose/reflow; nativo pendiente |
-| Mensajes | 4 | Cerrado en desarrollo:7 capturas, dirigidos normales/200%, Auth/REST privado y dos UUID comprobados; nativo pendiente |
-| Compartidos | 2 | Cerrados en desarrollo: orden estable/copy y desglose sin aportación comprobados; puertas comunes pendientes |
+| Inicio Rescatista | 8 | Cerrado en desarrollo: primera pasada agrupada3defectos,11/11dirigidos y recaptura normal/115/200 aprobada; emulador aprobado; Samsung pendiente |
+| Mis casos | 8 | Cerrado en desarrollo:16 estados y recaptura selectiva de modal/fuente/aviso aprobados;13 propios y16 gestos/encabezado/desglose/reflow; emulador aprobado; Samsung pendiente |
+| Mensajes | 4 | Cerrado en desarrollo:7 capturas, dirigidos normales/200%, Auth/REST privado y dos UUID comprobados; emulador aprobado; Samsung pendiente |
+| Compartidos | 2 | Cerrados en desarrollo: orden estable/copy y desglose sin aportación comprobados; emulador aprobado; entrega pendiente |
 
 Backend local598/598 y10 nuevas dirigidas aprobadas: conteos completos25, vistas
 consentidas, inbox/privacidad, cierres/reactivación/archivo, pagos/reversiones/ack
 exacto y progreso con campos/Storage real. DEV aplicado,12 cuerpos y permisos
-comprobados; detalles en migration-history-audit. Auth/REST7/7grupos y vistas concurrentes comprobados. Pendientes: auditoría
-del delta, gate SHA final, emulador, Codemagic/Play/Samsung y limpieza exacta.
+comprobados; detalles en migration-history-audit. Auth/REST7/7grupos y vistas concurrentes comprobados. Auditoría del delta y21 comprobaciones nativas de emulador completadas.
+Pendientes: gate móvil del SHA final, Codemagic/Play/Samsung y limpieza exacta.
 Máximo dos pasadas agrupadas de corrección por lote; defectos persistentes tendrán
 reproducción y prueba específica. Cada lote se cerrará con operaciones reales.
 
@@ -27,6 +27,9 @@ reproducción y prueba específica. Cada lote se cerrará con operaciones reales
 6/10, comprobación dirigida: Inicio9/9, Mis casos13/13 y ambas pruebas inbox200% aprobadas después de revelar cada control antes del gesto. Visualizaciones, reflujo y pruebas existentes afectadas aprobadas en la ronda dirigida (68 aprobadas antes de corregir las dos de inbox). Auth/REST DEV: cuatro actores sintéticos,21borradores paginados20+1, dos personas únicas bajo concurrencia/reintentos/consentimiento, dos conversaciones privadas y lectura independiente de respuesta comprobados. Cierre/reactivación todavía pendientes por interrupción del runner después del checkpoint de chats; conservar fixture y diagnosticar sólo ese tramo. Capturas bccd afectadas en generación; no acredita cierre visual ni instalado.
 
 6/10, Auth/REST DEV completado:7 grupos de checks aprobados,21drafts/20+1,2personas únicas concurrentes/reintentadas,2UUID privados, lectura frente a respuesta, cierre y respuesta explícita, mismoID/6fotos/campos hasta nueva revisión, archivo/bloqueo de caso en revisión, cursor vacío y reconocimiento idempotente/rechazo de cursor ajeno. Dinero no creado. El timeout de40001 se corrigió en dos RPC nuevas aPT409 (remoto20261006044234), con diez SQL revalidados y postflight ACL. La conexión Node posteriormente falló en lecturas; puente HTTP de sistema comprobado y parsing JSON en Node permitió continuar sólo los3bloques pendientes, sin repetir4aprobados. Prueba privada rest-acceptance-proof.json; no acredita nativo ni gate final.
+
+
+6/10, puerta vigente:22/22 desarrollo y21 checks nativos aprobados, cero defectos de producto conocidos. Gate474/f362: backend606/606, PostgreSQL, concurrencia, integración e iOS aprobados; cuatro fallos de fixtures móviles corregidos con29/29 dirigidos. Gate475/057:122 checks de fotos/swipe aprobados, captura heredada de Mis casos buscaba el programa anterior. Se corrige navegación del capturador y scope mobile ejecutará toda la suite; seis capturas dirigidas pasan. Sólo repetir móvil; código productivo, SQL y configuración intactos. Samsung aún no conectado; no acredita entrega instalada.
 
 ## Actualización autorizada 889c096 — 4 de octubre de 2026
 
