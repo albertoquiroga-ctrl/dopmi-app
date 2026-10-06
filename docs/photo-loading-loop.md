@@ -157,3 +157,17 @@ aprobado, job111971136578. Gate compuesto íntegro aprobado conservando web/PG
 original sin cambios. El único pendiente de aceptación es Samsung instalado293
 y la limpieza final de fixtures tras su pasada. No hay un problema de código abierto
 de los hallazgos revisados ni otra ronda general en curso.
+
+## 2026-10-05 — Fotos: aceptación Samsung y limpieza concluidas
+
+Samsung SM-S938B, Android 16: paquete com.mycompany.dopmi, versión 2.3.3 (293), instalador com.android.vending comprobados por ADB. Corresponde al único candidato publicado 786ed33063be4cfa07e02a13d3d84d79d2a7327d / Codemagic 6ac408a773bd44aa241585a3. Sin nueva compilación, publicación ni cambios de código.
+
+Pasada física: diez swipes consecutivos mostraron portadas decodificadas, incluidas dos tarjetas de apoyo; ninguna captura estable mostró error o carga. Cada captura se obtuvo después de 700 ms de espera más la ejecución ADB: evidencia de fluidez visible, no una medición exacta de tiempo hasta imagen. Galería de tres fotos, suspensión/reanudación conservando la tercera y reapertura del proceso aprobadas. La reapertura sin Wi-Fi ni datos mostró el error recuperable del control de acceso; tras restaurar ambos y usar «Volver a intentar», recuperó sesión y portadas sin aceptar términos ni cerrar sesión. Ambas preferencias quedaron en 1, como antes de la prueba.
+
+Fallo instalado de foto: una referencia sintética controlada todavía sin archivo mostró «Cargar foto» en la tercera posición. Después de subir el JPEG autorizado y volver de segundo plano, la misma tercera foto se decodificó y desapareció el error. El harness usó exclusivamente su publicación sintética y las políticas existentes de subida (borrador); no modificó RLS ni esquema. Evidencia privada: samsung-photo-fault.png, samsung-photo-recovered.png, samsung-swipe-contact-sheet.png y capturas de galería/reapertura en .tools/photo-loop. Estas capturas no se publican porque algunas portadas existentes contienen información de usuarios.
+
+El benchmark antes/después permanece controlado y separado de Samsung: transición mediana 346 ms sin precarga frente a menos de 1 ms con precarga, autorización nueva y cero descargas de cuerpo al recrear servicio con archivos válidos. No se atribuyen esos milisegundos ni un contador HTTP al dispositivo físico. Gate compuesto y auditoría independiente previamente aprobados, dos pasadas de corrección cerradas; no se repiten checks sin cambio material.
+
+Limpieza DEV verificada después de la pasada: 10 publicaciones archivadas mediante RPC del propietario y eliminadas con guardas de inventario; 13 objetos retirados mediante API Storage (12 originales y uno de recuperación); una verificación exclusivamente sintética, dos Auth, dos perfiles y dos consentimientos eliminados. Lectura remota final: Auth, perfiles, publicaciones, rescates, Storage y consentimientos restantes = 0. Preflight comprobó ausencia de conversaciones y registros financieros de esos actores; no se tocaron cuentas, pagos ni casos ajenos. No se borraron datos locales de la app ni se sustituyó la firma Play.
+
+Referencia Irlanda vigente consultada: irlanda/apoyar-detalle-perfil@889c096ade9479b348530db7ba169f023b472ab9. CI final 37370051631 attempt2 (móvil/iOS/backend) y gate sin cambios 37366058216 (web/admin/configuración/PG/concurrencia); 866 pruebas Flutter completas en Codemagic. Play internal 293 completed verificado por separado y ahora también instalación física comprobada. Objetivo del loop concluido.
