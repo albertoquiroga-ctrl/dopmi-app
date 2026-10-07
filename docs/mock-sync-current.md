@@ -1,5 +1,15 @@
 # Checkpoint de sincronización — 6 de octubre de 2026
 
+## Reanudación vigente — 7/10/2026
+
+«Continúa» renueva el tramo de 90 minutos desde 13:34:10Z; cierre 14:54:10Z,
+parada 15:04:10Z. Contadores se conservan, CM0/2. CI37574438050/48bac1b:
+analyze +931 tests, backend/integración/iOS aprobados. Fallo nuevo en captura:
+coordenadas heredadas de Apoyar vacío, antes del marco de título46px de9ced.
+Corrección focalizada en capture_profile_test.dart; captura normal/200% aprobada 1/1.
+Gate no aprobado aún; no CM iniciado. Referencia9ced permanece fija.
+El cierre por presupuesto inferior es histórico, supersedido por esta reanudación.
+
 ## Entrega activa 9ced070 — MVP_CONTINUO autorizado
 
 Plan completo aprobado en [parity-current-review.md](parity-current-review.md),

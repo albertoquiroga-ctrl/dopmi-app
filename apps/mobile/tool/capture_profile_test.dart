@@ -2667,13 +2667,15 @@ void main() {
         expect(price.top, closeTo(729.6, 1));
       }
       if (spec.$1 == 'support-home-empty') {
+        // Frozen 9ced070 chrome: 16 + 42 + 20 + 46 + 24 = 148.
+        // The 46px title frame replaces the former 30.8px text-only row.
         expect(
           tester.getTopLeft(find.text('Apoya a casos urgentes').first).dy,
-          closeTo(136.8, 1),
+          closeTo(148, 1),
         );
         expect(
           tester.getTopLeft(find.byType(GuardianSupportCard)).dy,
-          closeTo(252.55, 1),
+          closeTo(263.75, 1),
         );
         expect(
           tester

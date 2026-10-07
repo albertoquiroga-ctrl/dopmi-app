@@ -228,6 +228,22 @@ Corrección en GitHub `48bac1b3e8b3843a3b36114485469b0702f0aed0`;
 [CI 37574438050](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37574438050)
 pending al corte 05:03Z. Consultar ese run al renovar presupuesto; no relanzar.
 
+## 7/10/2026 — reanudación autorizada del candidato 9ced070
+
+El titular indica «Continúa» después del cierre por presupuesto: nuevo tramo
+90 minutos desde 13:34:10Z, cierre 14:54:10Z y parada 15:04:10Z. Conserva
+contadores: CM 0/2, tercera pasada L2 autorizada ya aplicada; no reiniciar causas.
+CI 37574438050 en 48bac1b concluyó: analyze y 931 tests móviles aprobados,
+web/backend/permisos/concurrencia/integración e iOS aprobados. Capturas de acceso
+aprobadas; captura de Perfil/Apoyar falló por dos coordenadas anteriores al
+marco de título 46px del corte congelado. Diagnóstico específico: top 136.8→148,
+card 252.55→263.75; tolerancias y altura conservadas. Primera corrección de esta
+causa nueva, sólo capture_profile_test.dart. Captura dirigida support-home-empty normal/200% aprobada 1/1; gate móvil pendiente.
+Ref UX remota continúa 9ced070; app local/remoto 5e86880, PR6 abierto/borrador.
+No cambios productivos/SQL/config ni datos; dinero test. Gate y CM/Play pendientes.
+Cambios ajenos conservados; QA instalada/visual permanece posterior.
+
+
 ## Actualización bccd040 — 5 de octubre de 2026 (vigente)
 
 Corte fijo `bccd040d3a4b1c391bc6ab9eeccc479198868a7f`; base app
