@@ -213,6 +213,17 @@ CM 0/2, sin build/versionCode nuevos ni publicación. QA instalada pendiente.
 Consumo ~38/90 min; presupuesto no agotado, contadores no se reinician.
 Objetivo pausado al cierre autorizado; agentes terminados y sin procesos propios.
 
+## Continuación autorizada — 7/10 05:01Z
+
+«Adelante» autoriza tercera pasada sin renovar 90 min globales. Propuesta
+aplicada directamente: fila lazy de logout tras scroll; controles de evidencia
+centrados + hitTestable. git apply falló por formato y no aplicó cambios;
+la ejecución anterior sin patch no acredita la corrección. Formato aprobado.
+Corrección limitada a tres archivos test, sin producto/SQL/config nuevos.
+Consolidar commit/push para gate remoto. Cierre al límite 05:03:46Z: verificación
+y CM/Play pendientes; PRESUPUESTO_AGOTADO. Requiere presupuesto renovado para
+seguir CI y publicación; conservar contadores CM0/2 y tercera pasada consumida.
+
 ## Actualización bccd040 — 5 de octubre de 2026 (vigente)
 
 Corte fijo `bccd040d3a4b1c391bc6ab9eeccc479198868a7f`; base app

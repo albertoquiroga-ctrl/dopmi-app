@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'dart:async';
 
 import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/core/navigation.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
@@ -940,6 +941,7 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     final identity = FakeIdentityRepository()
       ..user = const Identity('one', 'ana@example.test', verified: true);
+    await identity.setExperience('rescuer');
     final container = ProviderContainer(
       overrides: [
         identityRepositoryProvider.overrideWithValue(identity),
@@ -958,10 +960,18 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Mis pendientes'), findsOneWidget);
     expect(find.text('Mis pendientes para avanzar'), findsNothing);
-    final messages = find.text('Mensajes').last;
+    final messages = find.byKey(const ValueKey('home-quick-messages'));
     await tester.ensureVisible(messages);
     await tester.pumpAndSettle();
     await tester.tap(messages);
+    await tester.pumpAndSettle();
+    expect(container.read(routerProvider).state.uri.path, '/rescuer');
+    expect(find.text('Mensajes recientes'), findsOneWidget);
+    final inbox = find.descendant(
+      of: find.byType(DopmiBottomBar),
+      matching: find.text('Mensajes'),
+    );
+    await tester.tap(inbox);
     await tester.pumpAndSettle();
     expect(container.read(routerProvider).state.uri.path, '/messages');
     expect(tester.takeException(), isNull);

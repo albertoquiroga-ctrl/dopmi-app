@@ -17,7 +17,10 @@ L2: 29/32 local; tres fixtures/visibilidad pendientes. Límite dos pasadas
 consumido, propuesta privada no aplicada y nueva autorización requerida.
 Estado BLOQUEADO; objetivo pausado al cierre, sin CM/build/versionCode nuevo.
 Tres archivos test de corrección locales sin commit; producto en GitHub 4f02755.
-Consumo ~38/90 min, no renovar. Gate consolidado aún pendiente.
+Consumo ~38/90 min, no renovar. Continuación 05:01Z: titular autoriza tercera pasada sin renovar tiempo.
+Corrección aplicada/formateada; verificación remota pendiente al límite
+05:03:46Z. Cierre PRESUPUESTO_AGOTADO, sin CM; renovar presupuesto para CI/Play.
+Gate consolidado aún pendiente.
 Play y aceptación aún pendientes. Presupuesto 90 min desde 03:33:46Z;
 cierre 04:53:46Z, parada 05:03:46Z. Cambios ajenos conservados.
 Detalles y estado vivo: mock-sync-current y único tablero parity-current-review.

@@ -11,7 +11,7 @@ No absorber pushes nuevos ni reabrir bccd cerrado 22/22.
 Base app `0484f8075c893497c10f6291553071eab7b4e5bf`; rama
 `codex/design-foundation`, PR #6 abierto/borrador. Producto en GitHub:
 `4f0275552647f322f3a2dfb9382e3d79c8929949`. Sin merge ni force-push.
-Tres archivos de corrección de pruebas heredadas aún locales, sin commit:
+Tres archivos propios de corrección se consolidan en esta continuación:
 rescue_test, rescuer_logout_test y rescuer_pending_evidence_test.
 Cambios ajenos excluidos; documentación de cierre se versiona por separado.
 
@@ -22,7 +22,7 @@ No heartbeat, loop ni autorrelanzamiento. Comandos largos: PID propio, timeout
 real y terminación del árbol propio; una sola cola Flutter.
 
 L0 protocolo/plan guardados antes de código. L1 contratos/SQL/compartidos y
-L2 ocho grupos implementados. Estado final de este tramo: **BLOQUEADO**.
+L2 ocho grupos implementados. Estado de cierre: **PRESUPUESTO_AGOTADO**, verificación remota pendiente.
 Gate obligatorio pendiente; candidato todavía no publicable. Implementación,
 comprobación, publicación y aceptación son estados separados.
 Inicio: grid/períodos/paneles/consejos; Perfil/redes; chrome/Apoyar/fin Adoptar.
@@ -46,7 +46,10 @@ Flutter: analyze aprobado; cinco tests heredados fallaron por rutas retiradas
 (logout en Settings, CTA anterior de evidencia y quick Mensajes). Corregir
 sólo esos tres archivos conservando controles y aserciones: intento 2 local
 29/32 aprobado. Tres fallos restantes de fixture/visibilidad, sin defecto
-de producto demostrado. No tercera pasada autorizada; no más reintentos.
+de producto demostrado. Titular autorizó tercera pasada mediante «Adelante» a las 05:01Z.
+Corrección aplicada a fila lazy/logout y centrado de controles al 200%.
+Patch automático no aplicó por formato; reemplazo directo, formato aprobado.
+Comprobación local anterior inició sin patch y no acredita la corrección.
 Push duplicado 37569192608 cancelado por concurrencia normal.
 
 DEV `ohqxranynackjignryep`: preflight 03:48Z, latest 20261006142458; cuerpo
@@ -70,13 +73,14 @@ Supabase comprobados; Docker local detenido, PG/integración se ejecutaron en CI
 
 Cambios ajenos conservados: baseline e initial-dirty.patch privados en
 `.tools/update9ced/`; no publicar admin 42501, historia de docs ni no rastreados.
-Parada por límite de corrección del titular, no presupuesto agotado.
+Tercera pasada autorizada sin renovar presupuesto; queda cierre hasta
+05:03:46Z. Verificación de corrección y publicación no completadas en ese plazo.
 Diagnóstico: logout comprueba fila lazy antes del scroll (dos casos); evidencia
-al 200% toca control fuera del área visible (un caso). Propuesta no aplicada
+al 200% toca control fuera del área visible (un caso). Propuesta aplicada
 `.tools/update9ced/proposed-extra-pass.patch`: mover assert después del scroll
 y centrar controles + hitTestable. No debilitar privacidad, logout ni no-save.
-Siguiente exacto, tras autorización de una pasada adicional: aplicar propuesta
-→ probar esos tres archivos → commit/push propios → gate obligatorio → CM/Play.
+Siguiente exacto con presupuesto renovado: comprobar CI del commit de
+corrección; resolver sólo lo fallido; si gate aprobado, CM/Play autorizados.
 No reiniciar tiempo/contadores. Objetivo se pausa efectivamente, sin loop.
 No procesos propios ni builds remotos activos; agentes terminados.
 
