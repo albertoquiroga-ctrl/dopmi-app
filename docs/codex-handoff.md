@@ -1,5 +1,24 @@
 # Dopmi — continuidad de ChatGPT Work a Codex
 
+## Arranque vigente — 6/10/2026
+
+Leer primero [checkpoint corto](mock-sync-current.md) y
+[protocolo estable](mock-sync-workflow.md). El corte bccd040 está cerrado22/22:
+Android296 publicado/comprobado en Samsung, gates aprobados y cleanup exacto
+cero. No reiniciar suites, builds ni loops cerrados. Referencia viva9ced070
+observada en Git, delta no inspeccionado ni autorizado para implementación.
+Rama codex/design-foundation, PR6 abierto/borrador; verificar HEAD/remoto y
+preservar dirty tree. El checkpoint distingue candidato publicado, commits
+documentales/iOS posteriores, evidencia técnica, reportes y lo no comprobado.
+Próxima acción: atender el nuevo encargo; si autoriza nuevo corte, fijar SHA e
+inventariar sólo su delta con el método por lotes. Leer product-decisions/backlog
+y últimas entradas progress según el frente; pendientes antiguos no reabren bccd.
+
+## Historial de continuidad (referencia, fuera del resumen de arranque)
+
+Las secciones siguientes se conservan íntegras. Sus pendientes antiguos quedan
+supersedidos por el checkpoint y las entradas fechadas posteriores aplicables.
+
 ## Continuidad H12 — cierre operativo de H11, 30/9/2026
 
 El titular autorizó concluir H11 con la evidencia autónoma disponible en

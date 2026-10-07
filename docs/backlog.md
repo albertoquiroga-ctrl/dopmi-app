@@ -206,3 +206,8 @@ ed4b788/Play295. Tablero vigente parity-current-review y cuatro fichasupdatebccd
 Pendientes de entrega: auditoría delta, gate SHA final, nativo emulador,
 CodemagicGuardianInternal/Play/Samsung y limpieza exacta. Conservar fotos/swipe295,
 privacidad, revisión y edición de apoyo aprobado bloqueada; dinero test.
+
+
+## 2026-10-06 — checkpoint de sincronización vigente
+
+Corte bccd040 cerrado22/22, Android296/Samsung y cleanup cero comprobados; supersede los pendientes de entrega bccd anteriores. No hay lote de paridad activo. Referencia viva9ced070 observada por Git, delta aún no inspeccionado ni implementado. Siguiente: esperar encargo y congelar su alcance antes de inventariar. Leer [mock-sync-current.md](mock-sync-current.md) y [mock-sync-workflow.md](mock-sync-workflow.md); no reiniciar gates/fixtures cerradas.
