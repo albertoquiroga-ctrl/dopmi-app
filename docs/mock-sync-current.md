@@ -1,103 +1,66 @@
-# Checkpoint de sincronización — 6 de octubre de 2026
+# Checkpoint de sincronización — 7 de octubre de 2026
 
-## Reanudación vigente — 7/10/2026
+## Entrega activa 9ced070 — MVP_CONTINUO
 
-«Continúa» renueva el tramo de 90 minutos desde 13:34:10Z; cierre 14:54:10Z,
-parada 15:04:10Z. Contadores se conservan, CM0/2. CI37574438050/48bac1b:
-analyze +931 tests, backend/integración/iOS aprobados. Fallo nuevo en captura:
-coordenadas heredadas de Apoyar vacío, antes del marco de título46px de9ced.
-Corrección focalizada en capture_profile_test.dart; captura normal/200% aprobada 1/1.
-Gate no aprobado aún; no CM iniciado. Referencia9ced permanece fija.
-El cierre por presupuesto inferior es histórico, supersedido por esta reanudación.
+Plan completo aprobado y único tablero: [parity-current-review.md](parity-current-review.md).
+Ocho grupos UX01–07 y UX09 implementados; UX08 Croquetas excluido por tienda.
+UX congelado `9ced07094635c076d35589647fff26371d8bc791`, rama
+`irlanda/apoyar-detalle-perfil`, delta bccd040→9ced de1 commit/6 archivos.
+Ref viva reconsultada 13:36Z: sin cambios. No absorber pushes ni reabrir bccd.
 
-## Entrega activa 9ced070 — MVP_CONTINUO autorizado
+App `codex/design-foundation`, PR6 abierto/borrador, base0484f807.
+Producto4f02755; corrección de tests48bac1b; candidato vigente
+`3bd67b6f4d0eeedc7dec2721bc8e7495c046c0c7` (sólo captura y docs desde48bac1b).
+Cambios ajenos preservados/excluidos; sin merge ni force-push.
 
-Plan completo aprobado en [parity-current-review.md](parity-current-review.md),
-único tablero. Ocho grupos incluidos UX01–07 y UX09; UX08 Croquetas excluido
-por tienda. Objetivo UX congelado `9ced07094635c076d35589647fff26371d8bc791`
-en `irlanda/apoyar-detalle-perfil`, delta desde bccd040 (1 commit / 6 archivos).
-No absorber pushes nuevos ni reabrir bccd cerrado 22/22.
+## Tiempo, límites y siguiente acción
 
-Base app `0484f8075c893497c10f6291553071eab7b4e5bf`; rama
-`codex/design-foundation`, PR #6 abierto/borrador. Producto base en GitHub `4f02755`; corrección publicada:
-`48bac1b3e8b3843a3b36114485469b0702f0aed0`. Sin merge ni force-push.
-Tres archivos propios de corrección se consolidan en esta continuación:
-rescue_test, rescuer_logout_test y rescuer_pending_evidence_test.
-Cambios ajenos excluidos; documentación de cierre se versiona por separado.
+El tramo inicial90min 03:33:46Z→05:03:46Z terminó sin publicación.
+«Adelante» autorizó tercera pasada L2 sin renovar ese tramo: aplicada48bac1b.
+«Continúa» renueva90min el7/10 desde13:34:10Z; cierre14:54:10Z,
+parada15:04:10Z. Conserva contadores: L2 dos pasadas + tercera autorizada;
+causa nueva de captura1/2; CM0/2. Agentes anteriores terminados.
+Una cola Flutter, timeout/PID propios. Sin Goal nuevo, heartbeat o loop.
 
-Inicio `2026-10-07T03:33:46Z` (6/10 21:33:46 México). Presupuesto 90 minutos
-globales; cierre 04:53:46Z, parada 05:03:46Z. Consumo ~38 minutos al corte
-04:12Z; no renovar. Goal activo del titular, pausa autorizada al cierre seguro.
-No heartbeat, loop ni autorrelanzamiento. Comandos largos: PID propio, timeout
-real y terminación del árbol propio; una sola cola Flutter.
+Estado **GATE_APROBADO / LISTO_PARA_CM**. CI37629942682 completed/success
+13:52:09Z, capturas y APK cargados. Antes de publicar: checkpoint documental,
+HEAD/remoto coincidentes y un solo CM android-guardian-internal; verificar
+SHA/AAB/Publishing/internal/versionCode.
+API CM y repositorio verificados por lectura13:38Z. No CM iniciado.
+Compilación, publicación y aceptación instalada son estados separados.
 
-L0 protocolo/plan guardados antes de código. L1 contratos/SQL/compartidos y
-L2 ocho grupos implementados. Estado de cierre: **PRESUPUESTO_AGOTADO**, verificación remota pendiente.
-Gate obligatorio pendiente; candidato todavía no publicable. Implementación,
-comprobación, publicación y aceptación son estados separados.
-Inicio: grid/períodos/paneles/consejos; Perfil/redes; chrome/Apoyar/fin Adoptar.
-Cobertura de vistas diaria consentida nueva, sin backfill. México define
-ventanas; favoritos vigentes, snapshots actuales y recaudo neto asignado.
-Propiedad y permisos en PostgreSQL; conservar Guardian/Connect/evidencia.
-Dinero exclusivamente test; sin flags/Edge/destructivos/datos existentes.
+## Evidencia y diagnóstico acotado
 
-Tres agentes reutilizados, sin recursión ni Flutter/publicación. L2 segunda
-pasada agrupada 2/2 consumida. Primera: siete fallos de fixtures/visibilidad,
-corregidos y 37/37 afectados aprobados. Analyze inicial sin incidencias
-(170.9s); configuración 16/16. Backend nuevo 6/6 PGlite; fallo inicial Date
-del fixture corregido en segundo intento. No repetir causas sin evidencia.
-Logs privados `.tools/update9ced/`, fuera de GitHub; no son enlaces públicos.
+CI full37574438050 en48bac1b: analyze y931 tests móviles aprobados;
+web/admin/config/backend/permisos/concurrencia/integración e iOS aprobados.
+Capturas de acceso aprobadas; Perfil/Apoyar falló en coordenada heredada136.8.
+Marco46px del UX9ced exige top148, card263.75. Corrección sólo herramienta,
+tolerancias/altura intactas. Captura focalizada normal/200% aprobada1/1.
+[CI móvil37629942682](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37629942682)
+en3bd67b6; reutilizar gates full aprobados porque lib/SQL/admin/config intactos.
+Analyze,931 tests,ambas suites de capturas,APK y artifacts aprobados.
+Gate consolidado aprobado con reutilización acotada de backend/iOS.
+Artifacts11486735135(design) y11486476793(APK), no expirados.
 
-[CI full 37569196187](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37569196187)
-en 4f02755: web/admin/config/backend 612/612, pgTAP 294/294 (37 nuevos),
-concurrencia e integración Auth/Storage/Realtime 4/4 aprobados; iOS aprobado.
-DTO/RPC por PostgREST con datos no vacíos y aislamiento comprobado en loopback.
-Flutter: analyze aprobado; cinco tests heredados fallaron por rutas retiradas
-(logout en Settings, CTA anterior de evidencia y quick Mensajes). Corregir
-sólo esos tres archivos conservando controles y aserciones: intento 2 local
-29/32 aprobado. Tres fallos restantes de fixture/visibilidad, sin defecto
-de producto demostrado. Titular autorizó tercera pasada mediante «Adelante» a las 05:01Z.
-Corrección aplicada a fila lazy/logout y centrado de controles al 200%.
-Patch automático no aplicó por formato; reemplazo directo, formato aprobado.
-Comprobación local anterior inició sin patch y no acredita la corrección.
-Push duplicado 37569192608 cancelado por concurrencia normal.
+CI previo37569196187/4f02755: backend612/612, pgTAP294/294(37 nuevos),
+integración real4/4 e iOS aprobados. PostgREST DTO/RPC con datos/aislamiento
+comprobados en loopback. Historial de fixtures y correcciones en tablero/progress.
+Logs locales privados .tools/update9ced, no enlaces públicos.
 
-DEV `ohqxranynackjignryep`: preflight 03:48Z, latest 20261006142458; cuerpo
-y ACL del registro anterior coincidentes, nuevas tablas/RPC ausentes.
-Local `20261007033748_rescuer_funnel_9ced` aplicado una vez como remoto
-`20261007034858`. Postflight 03:49Z: ambas tablas privadas con RLS, sin
-SELECT cliente; RPC anon=false/auth=true; helper privado execute=false.
-Cobertura diaria desde `2026-10-07T03:48:58.342396Z`, inicio histórico intacto.
-[auditoría de migraciones](migration-history-audit.md); no repair/replay/db push.
-DEV E2E con usuario remoto e instalación no se atribuyen a SQL ni CI.
+DEV ohqxranynackjignryep: migración local20261007033748 aplicada una vez
+como remota20261007034858. Pre/postflight cuerpo/ACL/RLS comprobados.
+Tabla diaria privada sin SELECT cliente; RPC anon=false/auth=true;
+helper privado execute=false. Cobertura desde2026-10-07T03:48:58.342396Z.
+México define ventanas; sin backfill, fechas históricas preservadas.
+[migration-history-audit.md](migration-history-audit.md): no repair/replay/db push.
+Sin cambios Edge/flags/datos anteriores; dinero exclusivamente test.
+No atribuir DEV E2E remoto o dispositivo a SQL/CI.
 
-CM 0/2 builds. Workflow vigente `android-guardian-internal`, paquete
-`com.mycompany.dopmi`, firma y flags test existentes, configuración sin cambios.
-No iniciar CM mientras falle el gate; verificar SHA, AAB,
-Publishing, internal y versionCode por separado. No relanzar build en cola.
-
-QA posterior preparada en tablero: instalación Play/ADB Samsung, comparación
-visual exhaustiva/gestos/escala, auditoría del delta/ciberseguridad y medición
-de rendimiento. No ejecutada ni aceptada. Flutter 3.47.4 y accesos GitHub/CM/
-Supabase comprobados; Docker local detenido, PG/integración se ejecutaron en CI.
-
-Cambios ajenos conservados: baseline e initial-dirty.patch privados en
-`.tools/update9ced/`; no publicar admin 42501, historia de docs ni no rastreados.
-Tercera pasada autorizada sin renovar presupuesto; queda cierre hasta
-05:03:46Z. Verificación de corrección y publicación no completadas en ese plazo.
-Diagnóstico: logout comprueba fila lazy antes del scroll (dos casos); evidencia
-al 200% toca control fuera del área visible (un caso). Propuesta aplicada
-`.tools/update9ced/proposed-extra-pass.patch`: mover assert después del scroll
-y centrar controles + hitTestable. No debilitar privacidad, logout ni no-save.
-Siguiente exacto con presupuesto renovado: comprobar CI del commit de
-corrección; resolver sólo lo fallido; si gate aprobado, CM/Play autorizados.
-No reiniciar tiempo/contadores. Objetivo se pausa efectivamente, sin loop.
-Sin procesos propios; agentes terminados. CI remoto activo:
-[37574438050](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37574438050),
-en 48bac1b, pending al corte 05:03Z. No CM iniciado.
-
-Leer [protocolo estable](mock-sync-workflow.md) antes de ejecutar.
-Este checkpoint supersede pendientes antiguos; historial en progress y tablero.
+QA posterior: instalación Play/Samsung, revisión visual exhaustiva/gestos/escala,
+auditoría independiente del delta/seguridad y rendimiento. No ejecutada ni aceptada.
+Paquete com.mycompany.dopmi, firma dopmi_upload_2026 y Guardian test conservados.
+Leer [protocolo estable](mock-sync-workflow.md) antes de continuar.
+Este checkpoint supersede pendientes históricos inferiores.
 
 ## Entrega cerrada bccd040 — referencia histórica
 

@@ -244,6 +244,18 @@ No cambios productivos/SQL/config ni datos; dinero test. Gate y CM/Play pendient
 Cambios ajenos conservados; QA instalada/visual permanece posterior.
 
 
+### Gate consolidado aprobado — 13:52Z
+
+CI móvil37629942682 en3bd67b6 completed/success13:52:09Z: formato,
+analyze,931 tests,ambas suites de capturas,APK y artifacts aprobados.
+Artifacts11486735135 design y11486476793 APK comprobados, no expirados.
+Backend/admin/SQL/config/integración e iOS full37574438050/48bac1b se
+reutilizan tras diff vacío de producto/SQL/admin/config desde ese SHA.
+Corrección de captura1/2 concluida; CM0/2. Próxima operación autorizada:
+primer android-guardian-internal sobre HEAD documental publicado, producto
+idéntico a3bd67b6. Registrar buildId/SHA y comprobar AAB/Publishing/Play
+por separado. Play Console previo: internal activo296 disponible para testers.
+
 ## Actualización bccd040 — 5 de octubre de 2026 (vigente)
 
 Corte fijo `bccd040d3a4b1c391bc6ab9eeccc479198868a7f`; base app
