@@ -19,14 +19,24 @@ El tramo inicial90min 03:33:46Z→05:03:46Z terminó sin publicación.
 «Adelante» autorizó tercera pasada L2 sin renovar ese tramo: aplicada48bac1b.
 «Continúa» renueva90min el7/10 desde13:34:10Z; cierre14:54:10Z,
 parada15:04:10Z. Conserva contadores: L2 dos pasadas + tercera autorizada;
-causa nueva de captura1/2; CM0/2. Agentes anteriores terminados.
+causa nueva de captura1/2; CM1/2. Agentes anteriores terminados.
 Una cola Flutter, timeout/PID propios. Sin Goal nuevo, heartbeat o loop.
 
-Estado **GATE_APROBADO / LISTO_PARA_CM**. CI37629942682 completed/success
+Estado **IMPLEMENTACION_LISTA_PENDIENTE_BUILD** (AAB firmado).
+Parada segura14:10Z por espera externa sin tareas independientes, autorizada
+por el plan; objetivo pausado. Consumo~36/90min del tramo renovado; no agotado.
+CM siguequeued tras~16min, sin started_at. API/UI coinciden, cuota disponible;
+activos sólo este candidato. Causa de la cola no informada. Sin procesos propios,
+loop ni heartbeat. Próxima consulta: mismo buildId; luego AAB/versionCode,
+Publishing y Play Console internal. No relanzar ni repetir gates aprobados. CI37629942682 completed/success
 13:52:09Z, capturas y APK cargados. Antes de publicar: checkpoint documental,
 HEAD/remoto coincidentes y un solo CM android-guardian-internal; verificar
 SHA/AAB/Publishing/internal/versionCode.
-API CM y repositorio verificados por lectura13:38Z. No CM iniciado.
+API CM y repositorio verificados por lectura13:38Z. Primer build enviado
+13:53:24Z, buildId6ac64ed33849eef3b33de2d7, workflowandroid-guardian-internal.
+Fuente1a904d57804be10c6e0c185f8929166c2ec109aa: sólo checkpoint adicional
+sobre candidato3bd67b6; commit.hash remoto coincidente. Consultar ese mismo
+buildId, sin relanzar por cola. Play interno previo296 disponible para testers.
 Compilación, publicación y aceptación instalada son estados separados.
 
 ## Evidencia y diagnóstico acotado

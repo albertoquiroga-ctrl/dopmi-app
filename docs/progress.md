@@ -2,6 +2,39 @@
 
 ## 7/10/2026 — reanudación autorizada del candidato 9ced070
 
+### Parada segura por espera externa — 14:10Z
+
+Estado IMPLEMENTACION_LISTA_PENDIENTE_BUILD (firmado). Código y gate móvil
+completo aprobados; APK debug comprobado en CI, AAB firmado/publicación nuevos
+no verificados. Codemagic6ac64ed33849eef3b33de2d7 sigue queued, sin started_at,
+sobre1a904d57804be10c6e0c185f8929166c2ec109aa. CM1/2; no otro envío.
+Diagnóstico acotado: API y UI coinciden, cuota disponible229/500 consumidos,
+consulta de activos devuelve únicamente este candidato. Estado público del
+proveedor operativo, sin causa de cola informada. Play interno sigue296.
+Sin tareas independientes pendientes; pausa explícita autorizada por el plan,
+sin loop/heartbeat ni polling indefinido. Consumo nuevo tramo~36/90min;
+no PRESUPUESTO_AGOTADO. Límite del tramo sigue15:04:10Z, no renovar solo.
+Siguiente exacto: consultar el mismo buildId, confirmar source/AAB/versionCode,
+Publishing y disponibilidad de esa versión en Play Console internal. Si continúa
+en cola, preservar ID/contador; no repetir CI aprobado ni iniciar otro build.
+QA instalada/visual/auditoría/rendimiento preparada, aún no ejecutada. No hay
+procesos Flutter propios ni agentes activos. Configuración codemagic.yaml
+intacta, android-guardian-internal/com.mycompany.dopmi/firma existente/test.
+Fuente funcional4f02755; tests48bac1b; captura3bd67b6; build1a904d5.
+Evidencia propia en GitHub; logs/diario privados .tools/update9ced no publicados.
+
+
+
+### Codemagic candidato1/2 enviado — 13:53Z
+
+Build6ac64ed33849eef3b33de2d7, android-guardian-internal, rama continuación,
+fuente1a904d57804be10c6e0c185f8929166c2ec109aa. HEAD/remoto verificados
+antes de POST; diario privado anti-duplicado. APIcommit.hash coincidente;
+queued al corte13:54Z. Fuente sólo agrega checkpoint al3bd67b6 aprobado.
+AAB/Publishing/Play/versionCode pendientes; no atribuir instalación/aceptación.
+
+
+
 ### Gate consolidado aprobado — 13:52Z
 
 CI móvil37629942682 en3bd67b6 completed/success13:52:09Z: formato,
