@@ -5,7 +5,7 @@
 Corte fijo `bccd040d3a4b1c391bc6ab9eeccc479198868a7f`; base app
 `ed4b788bd4117eb8949bb633483e94d8d4b36010`, Play2.3.3(295).
 Esta sección supersede los pendientes históricos de entregas anteriores.
-**0 grupos abiertos / 22 cerrados en desarrollo**. Auditoría del delta comprobó y cerró dos defectos puntuales: suscripciones de Mis casos y estado visible de transferencias (2/2dirigidos y recaptura afectada). Samsung2.3.3(296)/115% comprobado; entrega instalada aprobada. Limpieza final pendiente de un archivo protegido. Fotos/cache/swipe295 se conservan.
+**0 grupos abiertos / 22 cerrados en desarrollo**. Auditoría del delta comprobó y cerró dos defectos puntuales: suscripciones de Mis casos y estado visible de transferencias (2/2dirigidos y recaptura afectada). Samsung2.3.3(296)/115% comprobado; entrega instalada aprobada. Limpieza exacta aprobada; entrega completa22/22. Fotos/cache/swipe295 se conservan.
 
 | Lote | Grupos | Estado / evidencia |
 | --- | ---: | --- |
@@ -37,6 +37,9 @@ reproducción y prueba específica. Cada lote se cerrará con operaciones reales
 6/10, entrega instalada: Codemagic6ac512ac762af530b028e23f finished; AAB firmado2.3.3(296), publicación internal/completed y consulta independiente de track296 aprobados. Samsung SM-S938B/Android16 confirma296 y font1.15; Inicio/carrusel, casos/filtros/Archivo, inbox/selección/Sin leer/Historial/refresh/regreso, teclado y FAB/cancelación aprobados. Galería6fotos/swipe/punto6 decodificados; swipe corto conservaRocky y largo avanzaToby, sin Like/contacto. Modo Adoptante restaurado y borradores/mensajes propios sin escrituras. Cierre/reactivación real y estados financieros conservan la prueba controlada del emulador, no se atribuyen a casos ausentes en la cuenta Samsung.
 
 Puerta restante única: cleanup exacto.22adopciones retiradas,7/8objetos eliminados por Storage API. La evidencia del único caso QA aprobado/cerrado está protegida correctamente para su autor; falta eliminación administrativa del path exacto antes de la transacción de4Auth/22posts/5rescues y postflight cero. No modificar estados, permisos ni reglas para saltar esta protección.22/22 grupos; cero defectos perceptibles conocidos; ninguna nueva build necesaria.
+
+
+Cierre6/10: **22/22 grupos, cero defectos perceptibles conocidos y cero puertas pendientes del corte bccd040**. Storage administrativo retiró el último archivo QA y los marcadores vacíos creados por dashboard. Transacción exacta4Auth/22posts/5rescues completada; postflight19conteos QA cero, measurement_start1/preservedtrue/changed0. No se alteraron permisos, estados de casos para facilitar borrado ni dinero. PublicaciónAndroidf380/296, gate y Samsung permanecen aprobados. Este cierre supersede todas las notas históricas de pendientes de esta sección; actualizaciones posteriores del mockup siguen fuera.
 
 ## Actualización autorizada 889c096 — 4 de octubre de 2026
 
