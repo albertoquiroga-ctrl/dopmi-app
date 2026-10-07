@@ -3675,3 +3675,26 @@ continúan4actores/22adopciones/5rescues/8objetos. Adopción principal repuesta 
 revisión por RPC y publicada v15 para galería/aceptación instalada; una llamada
 con firma incorrecta dioPGRST202 y fue reconciliada como rechazo sin revisión
 antes de usar feedback real. No retry incierto ni fondos. Limpieza aún pendiente.
+
+
+### 6/10/2026 — bccd gate final aprobado y solicitud única de entrega
+
+Candidato f3808f1a7ecd3e0cfb773434c840fa56b3251dae. Gate móvil476/run37485195797 aprobó913 tests, analyze/format,127 capturas, APK y artefactos. Los tres bloques web/backend/PostgreSQL/concurrencia, integración e iOS del gate474/f362 se conservan: comparación exacta confirma sólo siete archivos de tests/capturador/workflow/documentación distintos; producto, SQL, admin y configuración iguales. No se afirma ejecución de esos tres jobs sobre f380.
+
+Capturador heredado de Mis casos ahora selecciona Apoyo antes de capturar sus fixtures; seis dirigidas y el filtro completo de CI pasan localmente. Scope mobile ejecuta toda la suite; photo conserva su subconjunto. Ningún ajuste de producto ni nueva auditoría global.21 checks nativos aprobados; cierre/reactivación, apoyo cerrado sin modificar gastos, inbox/lectura/respuesta, galería seis y swipe comprobados.
+
+Codemagic solicitado una vez:6ac512ac762af530b028e23f, android-guardian-internal, rama codex/design-foundation; GET confirmó SHA exacto f380 y queued. Compilación firmada, Play, Samsung y limpieza siguen pendientes; no confundir queued con publicación. Inventario fresco preparado4Auth/22adopciones/5rescues/8Storage y0financiero. No se ejecutó retiro ni borrado antes de aceptación instalada.
+
+### 6/10/2026 — bccd dependencia externa de entrega
+
+Tres turnos consecutivos comprobaron la misma solicitud6ac512ac762af530b028e23f en queued, sin startedAt ni acciones iniciadas; primera solicitud15:24:28UTC, último control15:55UTC. Cuenta153/500 minutos usados; cola general sin otros builds activos. Samsung ausente de ADB en las tres comprobaciones, sóloemulator5554. No falta trabajo independiente de implementación/pruebas:22grupos, gate476/913, bloques474 equivalentes y21checks nativos completos. Para terminar falta asignación y compilación Codemagic, Play, actualización/conexión Samsung y limpieza después de aceptación instalada.
+
+Mensaje a soporte preparado en ruta privada, autorización explícita pendiente; no enviado. Se conserva la solicitud existente y el candidato f380 congelado. Estado de objetivo bloqueado por dependencia externa/instalación requerida; no acredita entrega ni reduce el alcance. Reanudar al cambiar el estado externo o al autorizar la consulta de soporte; comprobar de nuevo el mismo buildId antes de actuar.
+
+
+
+### 6/10/2026 — bccd Samsung296 aprobado; cleanup administrativo pendiente
+
+Codemagic6ac512ac762af530b028e23f finished y AAB firmado2.3.3(296); Publishing y consulta posterior internal/completed296 verificados por separado. SamsungSM-S938B/Android16 instalado296, font1.15: Inicio/carrusel, casos/filtros/Archivo, inbox/Sinleer/Historial/refresh/chatBack/selección, teclado, FABtipo/cancelación y galería6/swipe/puntos aprobados. Swipe corto85px conservaRocky; largo740px avanzaToby. Modo Adoptante restaurado, sesión y borradores personales conservados; sin mensajes enviados.21checks controlados anteriores acreditan cierre/reactivación y recuperación de borrador; no se atribuyen esos estados ausentes a la cuenta física.22/22grupos y cero defectos perceptibles conocidos.
+
+Preflight exacto4Auth/22posts/5rescues/8Storage/0financiero y siete snapshots privados aprobado;22posts archivados por RPC,7objetos eliminados y reconciliados. Storage rechazó correctamente borrar la evidencia del único caso QA aprobado/cerrado; falta eliminación administrativa del único path exacto, sin modificar estados ni guardas, antes de transacción y postflight cero. Titular habilitará acceso administrativo; no solicitar claves en chat. Gate913/476 y bloques474 equivalentes preservados; no nuevo gate/build por documentación. Los cambios iOS ajenos3a03788/428896d y demás cambios del usuario se preservan.

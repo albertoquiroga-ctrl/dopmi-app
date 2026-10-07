@@ -5,15 +5,14 @@
 Corte fijo `bccd040d3a4b1c391bc6ab9eeccc479198868a7f`; base app
 `ed4b788bd4117eb8949bb633483e94d8d4b36010`, Play2.3.3(295).
 Esta sección supersede los pendientes históricos de entregas anteriores.
-**0 grupos abiertos / 22 cerrados en desarrollo**. Auditoría del delta comprobó y cerró dos defectos puntuales: suscripciones de Mis casos y estado visible de transferencias (2/2dirigidos y recaptura afectada). No acredita
-aceptación instalada ni entrega final. Fotos/cache/swipe295 se conservan.
+**0 grupos abiertos / 22 cerrados en desarrollo**. Auditoría del delta comprobó y cerró dos defectos puntuales: suscripciones de Mis casos y estado visible de transferencias (2/2dirigidos y recaptura afectada). Samsung2.3.3(296)/115% comprobado; entrega instalada aprobada. Limpieza final pendiente de un archivo protegido. Fotos/cache/swipe295 se conservan.
 
 | Lote | Grupos | Estado / evidencia |
 | --- | ---: | --- |
-| Inicio Rescatista | 8 | Cerrado en desarrollo: primera pasada agrupada3defectos,11/11dirigidos y recaptura normal/115/200 aprobada; emulador aprobado; Samsung pendiente |
-| Mis casos | 8 | Cerrado en desarrollo:16 estados y recaptura selectiva de modal/fuente/aviso aprobados;13 propios y16 gestos/encabezado/desglose/reflow; emulador aprobado; Samsung pendiente |
-| Mensajes | 4 | Cerrado en desarrollo:7 capturas, dirigidos normales/200%, Auth/REST privado y dos UUID comprobados; emulador aprobado; Samsung pendiente |
-| Compartidos | 2 | Cerrados en desarrollo: orden estable/copy y desglose sin aportación comprobados; emulador aprobado; entrega pendiente |
+| Inicio Rescatista | 8 | Cerrado en desarrollo: primera pasada agrupada3defectos,11/11dirigidos y recaptura normal/115/200 aprobada; emulador aprobado; Samsung296 aprobado |
+| Mis casos | 8 | Cerrado en desarrollo:16 estados y recaptura selectiva de modal/fuente/aviso aprobados;13 propios y16 gestos/encabezado/desglose/reflow; emulador aprobado; Samsung296 aprobado |
+| Mensajes | 4 | Cerrado en desarrollo:7 capturas, dirigidos normales/200%, Auth/REST privado y dos UUID comprobados; emulador aprobado; Samsung296 aprobado |
+| Compartidos | 2 | Cerrados en desarrollo: orden estable/copy y desglose sin aportación comprobados; emulador aprobado; Play296/Samsung aprobados |
 
 Backend local598/598 y10 nuevas dirigidas aprobadas: conteos completos25, vistas
 consentidas, inbox/privacidad, cierres/reactivación/archivo, pagos/reversiones/ack
@@ -30,6 +29,14 @@ reproducción y prueba específica. Cada lote se cerrará con operaciones reales
 
 
 6/10, puerta vigente:22/22 desarrollo y21 checks nativos aprobados, cero defectos de producto conocidos. Gate474/f362: backend606/606, PostgreSQL, concurrencia, integración e iOS aprobados; cuatro fallos de fixtures móviles corregidos con29/29 dirigidos. Gate475/057:122 checks de fotos/swipe aprobados, captura heredada de Mis casos buscaba el programa anterior. Se corrige navegación del capturador y scope mobile ejecutará toda la suite; seis capturas dirigidas pasan. Sólo repetir móvil; código productivo, SQL y configuración intactos. Samsung aún no conectado; no acredita entrega instalada.
+
+
+6/10, gate final aprobado: f3808f1 /run37485195797 pasó913 tests, analyze/format, capturas y APK. Backend606/606, PostgreSQL/concurrencia, integración e iOS aprobados en474/f362 se reutilizan con equivalencia exacta del producto. Codemagic6ac512ac762af530b028e23f solicitado una vez con android-guardian-internal y SHA f380 confirmado; estado queued, sin compilación ni Play acreditados. Puertas restantes: Codemagic/Play, Samsung y cleanup exacto;22 grupos y21 checks nativos completos.
+
+
+6/10, entrega instalada: Codemagic6ac512ac762af530b028e23f finished; AAB firmado2.3.3(296), publicación internal/completed y consulta independiente de track296 aprobados. Samsung SM-S938B/Android16 confirma296 y font1.15; Inicio/carrusel, casos/filtros/Archivo, inbox/selección/Sin leer/Historial/refresh/regreso, teclado y FAB/cancelación aprobados. Galería6fotos/swipe/punto6 decodificados; swipe corto conservaRocky y largo avanzaToby, sin Like/contacto. Modo Adoptante restaurado y borradores/mensajes propios sin escrituras. Cierre/reactivación real y estados financieros conservan la prueba controlada del emulador, no se atribuyen a casos ausentes en la cuenta Samsung.
+
+Puerta restante única: cleanup exacto.22adopciones retiradas,7/8objetos eliminados por Storage API. La evidencia del único caso QA aprobado/cerrado está protegida correctamente para su autor; falta eliminación administrativa del path exacto antes de la transacción de4Auth/22posts/5rescues y postflight cero. No modificar estados, permisos ni reglas para saltar esta protección.22/22 grupos; cero defectos perceptibles conocidos; ninguna nueva build necesaria.
 
 ## Actualización autorizada 889c096 — 4 de octubre de 2026
 

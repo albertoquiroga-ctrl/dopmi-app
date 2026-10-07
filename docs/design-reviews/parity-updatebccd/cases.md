@@ -150,3 +150,8 @@ picker cancelado, teclado, borrador recuperado tras force-stop y Back2→1.
 Cierre Apoyar usa RPC aditiva que conserva guardas y devuelvePT409 para versión
 vencida (REST sin escrituras verificado). Prueba SQL dirigida y Cases14/14 pasan;
 comprobación APK del wrapper, gate, Play y Samsung siguen pendientes.
+
+
+## Entrega instalada6/10
+
+Candidato Androidf3808f1 publicado una sola vez por Codemagic6ac512ac762af530b028e23f; Playinternal/completed296 comprobado aparte. Samsung2.3.3(296)/Android16/115% aprobado: Inicio/carruseles, casos/filtros/Archivo, inbox/selección/Sin leer/Historial/Back/refresh, teclado, FAB/cancelación, galería6 y swipe corto/largo. Sesión y modo Adoptante conservados; no se escribieron borradores ni mensajes personales. Cierres/reactivación se acreditan por21checks controlados del emulador. Gate móvil476/f380913tests y bloques equivalentes474/f362 aprobados. Cero defectos perceptibles conocidos. Sólo cleanup administrativo del único archivo QA cerrado pendiente; detalle vigente en tablero.
