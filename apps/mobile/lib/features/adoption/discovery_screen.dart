@@ -9,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/measurement.dart';
+import '../../core/adoption_view_day.dart';
 import '../../core/media/photo_prefetch.dart';
 import '../../core/media/photo_runtime.dart';
 import '../../core/donor_notification_button.dart';
@@ -96,7 +97,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
         exiting != 0) {
       return;
     }
-    final key = '$actor:${post.id}';
+    final key = '$actor:${post.id}:${adoptionViewDay(DateTime.now())}';
     if (!reportedViews.add(key)) return;
     await measurement.consentReady;
     if (!mounted ||

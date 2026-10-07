@@ -336,7 +336,7 @@ void main() {
   );
   for (final mismatch in [false, true]) {
     testWidgets(
-      'settings private social owner validation and real editor refresh: $mismatch',
+      'profile private social owner validation and real editor refresh: $mismatch',
       (tester) async {
         final identity = FakeIdentityRepository()
           ..user = const Identity(
@@ -354,7 +354,7 @@ void main() {
             communityRepositoryProvider.overrideWithValue(FakeCommunity()),
             rescueRepositoryProvider.overrideWithValue(FakeRescue()),
             rescuerProfileRepositoryProvider.overrideWithValue(profile),
-            routerInitialLocationProvider.overrideWithValue('/settings'),
+            routerInitialLocationProvider.overrideWithValue('/profile'),
           ],
         );
         addTearDown(() async {
@@ -368,11 +368,16 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
-        expect(find.byTooltip('Notificaciones'), findsNothing);
+        expect(find.byTooltip('Notificaciones'), findsOneWidget);
         if (mismatch) {
           expect(find.text('@own_profile'), findsNothing);
           profile.value['owner_id'] = 'one';
-          await tester.ensureVisible(find.text('Volver a intentar'));
+          await Scrollable.ensureVisible(
+            tester.element(find.text('Volver a intentar')),
+            alignment: .3,
+          );
+          await tester.pumpAndSettle();
+          expect(find.text('Volver a intentar').hitTestable(), findsOneWidget);
           await tester.tap(find.text('Volver a intentar'));
           await tester.pumpAndSettle();
         }

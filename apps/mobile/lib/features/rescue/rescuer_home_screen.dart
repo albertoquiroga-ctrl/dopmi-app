@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/css_linear_gradient.dart';
+import '../../core/adoption_view_day.dart';
 import '../../core/donor_notification_button.dart';
 import '../../core/reference_focus_outline.dart';
 import '../../core/ui.dart';
@@ -15,6 +16,7 @@ import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
 import 'rescue_public_photo.dart';
 import 'rescue_repository.dart';
+import 'rescuer_funnel.dart';
 
 class RescueHomeScreen extends ConsumerWidget {
   const RescueHomeScreen({super.key});
@@ -50,7 +52,7 @@ class RescueHomeScreen extends ConsumerWidget {
                       padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
                       child: RescuerGreeting(key: ValueKey('greeting-$actor')),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 4),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 2),
                       child: LiveSection<Json>(
@@ -217,7 +219,7 @@ class RescuerVerificationCard extends StatelessWidget {
   );
 }
 
-/// The home selectors reveal summaries; the carousel itself is informational.
+/// Home summaries preserve the real records and never simulate funnel data.
 class RescuerHomeDashboard extends ConsumerStatefulWidget {
   const RescuerHomeDashboard({
     super.key,
@@ -235,7 +237,8 @@ class RescuerHomeDashboard extends ConsumerStatefulWidget {
 }
 
 class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
-  String pendingProgram = 'adoption', activityView = 'none';
+  String pendingProgram = 'support', activityView = 'none';
+  String period = 'month';
   String? queuedCursor, failedCursor;
   final acknowledged = <String>{};
   bool acknowledging = false;
@@ -297,10 +300,6 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
   }
 
   void _select(String selection) {
-    if (selection == 'messages') {
-      context.go('/messages');
-      return;
-    }
     setState(() => activityView = selection);
     _presentPayments();
   }
@@ -308,6 +307,8 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
   bool get empty =>
       _homeCountsEmpty(counts('adoption')) &&
       _homeCountsEmpty(counts('support')) &&
+      !counts('adoption').values.whereType<num>().any((value) => value > 0) &&
+      !counts('support').values.whereType<num>().any((value) => value > 0) &&
       evidence.isEmpty &&
       widget.data['unanswered_conversations'] == 0 &&
       widget.data['payments_unseen_count'] == 0 &&
@@ -320,37 +321,70 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (verification != 'approved') ...[
-          RescuerVerificationCard(
-            status: verification,
-            onPressed: () async {
-              await context.push('/rescue/new?kind=verification');
-              if (mounted) widget.refresh();
-            },
-          ),
-          const SizedBox(height: 20),
-        ],
-        if (empty)
-          const _HomeEmpty()
-        else ...[
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                _programTab('adoption', 'En adopción'),
-                const SizedBox(width: 20),
-                _programTab('support', 'Recibiendo apoyo'),
-              ],
+        _HomeVerificationStatus(status: verification),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _programTab('adoption', 'En adopción'),
+                    const SizedBox(width: 20),
+                    _programTab('support', 'Recibiendo apoyo'),
+                  ],
+                ),
+              ),
             ),
-          ),
-          const SizedBox(height: 14),
-          _HomeCarousel(
-            key: ValueKey(pendingProgram),
-            cards: pendingProgram == 'adoption'
-                ? _adoptionCards()
-                : _supportCards(),
-          ),
-        ],
+            IconButton(
+              key: const ValueKey('home-period-filter'),
+              tooltip: 'Filtrar pendientes',
+              color: period == 'month' ? ink : purple,
+              onPressed: _filterPeriod,
+              icon: const Icon(Icons.tune_rounded, size: 22),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        LiveSection<RescuerFunnelMetrics>(
+          key: ValueKey('home-funnel-${widget.actor}-$period'),
+          tables: const [
+            'dopmi_rescue_records',
+            'dopmi_adoptions',
+            'dopmi_favorites',
+            'dopmi_messages',
+            'dopmi_donations',
+          ],
+          load: () async {
+            final result = await ref
+                .read(rescueRepositoryProvider)
+                .funnel(period);
+            if (ref.read(identityControllerProvider).identity?.id !=
+                widget.actor) {
+              throw StateError('identity_changed');
+            }
+            return result;
+          },
+          builder: (metrics, _) {
+            final hasResults = [
+              metrics.views,
+              metrics.favorites,
+              metrics.messages,
+              metrics.adoptions,
+              metrics.donors,
+              metrics.activeCases,
+              metrics.completedCases,
+              metrics.raisedCents,
+            ].any((value) => value > 0);
+            return empty && !hasResults
+                ? const _HomeEmpty()
+                : _HomeFunnelGrid(
+                    metrics: metrics,
+                    adoption: pendingProgram == 'adoption',
+                  );
+          },
+        ),
         const SizedBox(height: 20),
         _HomeQuickAccess(
           selected: activityView,
@@ -368,15 +402,13 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
             title: switch (activityView) {
               'adoption' => 'Resumen de adopción',
               'support' => 'Resumen de apoyo',
+              'messages' => 'Mensajes recientes',
               _ => 'Actividad reciente',
             },
-            onSeeAll: activityView == 'payments'
-                ? () async {
-                    await context.push('/rescuer/received-payments');
-                    if (mounted) widget.refresh();
-                  }
-                : null,
-            children: activityView == 'payments'
+            onSeeAll: () => context.go('/profile'),
+            children: activityView == 'messages'
+                ? [_HomeRecentMessages(actor: widget.actor)]
+                : activityView == 'payments'
                 ? [
                     if (activity.isEmpty)
                       const Padding(
@@ -442,67 +474,20 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
     ),
   );
 
-  List<_HomeCardData> _adoptionCards() {
-    final metrics = Json.from(widget.data['adoption_metrics'] as Map? ?? {});
-    final viewers = _homeCount(metrics['unique_viewers']);
-    final saved = _homeCount(metrics['pets_saved']);
-    final unanswered = _homeCount(widget.data['unanswered_conversations']);
-    final started = DateTime.tryParse(
-      '${metrics['tracking_started_at'] ?? ''}',
+  Future<void> _filterPeriod() async {
+    final selected = await showDialog<String>(
+      context: context,
+      builder: (_) => _HomePeriodDialog(
+        period: period,
+        onChanged: (value) {
+          if (mounted) setState(() => period = value);
+        },
+      ),
     );
-    return [
-      _HomeCardData(
-        kind: 'Adoptar',
-        count: viewers,
-        copy: viewers == 1
-            ? 'persona vio tus mascotas en Adoptar'
-            : 'personas vieron tus mascotas en Adoptar',
-        note: started == null
-            ? null
-            : 'Seguimiento desde ${started.day}/${started.month}/${started.year}',
-        color: Colors.white,
-      ),
-      _HomeCardData(
-        kind: 'Mis match',
-        count: saved,
-        copy: saved == 1
-            ? 'mascota pasó a Mis match desde Adoptar'
-            : 'mascotas pasaron a Mis match desde Adoptar',
-        color: const Color(0xffe8f2ff),
-      ),
-      _HomeCardData(
-        kind: 'Mensajes',
-        count: unanswered,
-        copy: unanswered == 1
-            ? 'conversación sin responder'
-            : 'conversaciones sin responder',
-        color: const Color(0xffefe8ff),
-      ),
-    ];
+    if (mounted && selected != null && selected != period) {
+      setState(() => period = selected);
+    }
   }
-
-  List<_HomeCardData> _supportCards() => [
-    for (var index = 0; index < evidence.length; index++)
-      if (evidence[index]['status'] != 'approved')
-        _HomeCardData(
-          kind: 'Evidencia',
-          copy: [
-            evidence[index]['pet_name'],
-            evidence[index]['expense_title'],
-            evidence[index]['status'] == 'draft'
-                ? evidence[index]['urgent'] == true
-                      ? 'Incompleta'
-                      : 'Evidencia pendiente'
-                : 'Requiere correcciones',
-          ].whereType<String>().where((part) => part.isNotEmpty).join(' · '),
-          badge: evidence[index]['urgent'] == true ? 'Urgente' : 'Pendiente',
-          urgent: evidence[index]['urgent'] == true,
-          progress: _homeCount(evidence[index]['progress_percent']),
-          color: index.isEven
-              ? const Color(0xffefe8ff)
-              : const Color(0xffe8f2ff),
-        ),
-  ];
 }
 
 const _homeStatuses = ['active', 'review', 'draft', 'corrections'];
@@ -519,310 +504,349 @@ int? _homePendingCount(Json counts) {
   return values.fold<int>(0, (sum, value) => sum + value!);
 }
 
-class _HomeCardData {
-  const _HomeCardData({
-    required this.kind,
-    required this.copy,
-    required this.color,
-    this.count,
-    this.note,
-    this.badge,
-    this.urgent = false,
-    this.progress,
-  });
-  final String kind, copy;
-  final Color color;
-  final int? count, progress;
-  final String? note, badge;
-  final bool urgent;
-  bool get metric => badge == null;
-}
-
-class _HomeCarousel extends StatelessWidget {
-  const _HomeCarousel({super.key, required this.cards});
-  final List<_HomeCardData> cards;
+class _HomeVerificationStatus extends StatelessWidget {
+  const _HomeVerificationStatus({required this.status});
+  final String status;
 
   @override
   Widget build(BuildContext context) {
-    if (cards.isEmpty) {
-      return Container(
-        constraints: const BoxConstraints(minHeight: 168),
-        alignment: Alignment.center,
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: const Color(0xffefe8ff),
-          borderRadius: BorderRadius.circular(22),
+    final approved = status == 'approved';
+    final label = approved ? 'Rescatista verificado' : 'Completar mi perfil';
+    final content = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (approved)
+          SvgPicture.asset(
+            'assets/profile/icon-verified-purple.svg',
+            width: 16,
+            height: 16,
+            excludeFromSemantics: true,
+          )
+        else
+          const Icon(Icons.shield_outlined, color: purple, size: 16),
+        const SizedBox(width: 6),
+        Flexible(
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12,
+              height: 1.3,
+              fontWeight: FontWeight.w600,
+              color: purple,
+            ),
+          ),
         ),
-        child: const Text('No tienes evidencias pendientes.'),
-      );
-    }
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final scale = MediaQuery.textScalerOf(context);
-        final large = scale.scale(12) > 18;
-        final widths = cards.map((card) {
-          final longest = card.kind
-              .split(' ')
-              .map((word) {
-                final painter = TextPainter(
-                  text: TextSpan(
-                    text: word,
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
+      ],
+    );
+    return approved
+        ? Semantics(liveRegion: true, child: content)
+        : Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton(
+              key: const ValueKey('home-complete-profile'),
+              onPressed: () => context.go('/profile'),
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                alignment: Alignment.centerLeft,
+                minimumSize: const Size(0, 32),
+              ),
+              child: content,
+            ),
+          );
+  }
+}
+
+class _HomePeriodDialog extends StatefulWidget {
+  const _HomePeriodDialog({required this.period, required this.onChanged});
+  final String period;
+  final ValueChanged<String> onChanged;
+  @override
+  State<_HomePeriodDialog> createState() => _HomePeriodDialogState();
+}
+
+class _HomePeriodDialogState extends State<_HomePeriodDialog> {
+  late String selected = widget.period;
+  @override
+  Widget build(BuildContext context) => Dialog(
+    insetPadding: const EdgeInsets.all(20),
+    backgroundColor: Colors.white,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+    child: ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 340),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                const Expanded(child: Text('Filtrar', style: _homeHeading)),
+                IconButton(
+                  tooltip: 'Cerrar',
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(Icons.close),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const Text('Período', style: _homeHeading),
+            const SizedBox(height: 8),
+            RadioGroup<String>(
+              groupValue: selected,
+              onChanged: (value) {
+                if (value == null) return;
+                setState(() => selected = value);
+                widget.onChanged(value);
+              },
+              child: Column(
+                children: [
+                  for (final option in const [
+                    ('yesterday', 'Ayer'),
+                    ('week', 'Esta semana'),
+                    ('month', 'Este mes'),
+                  ])
+                    RadioListTile<String>(
+                      key: ValueKey('home-period-${option.$1}'),
+                      title: Text(option.$2),
+                      value: option.$1,
+                      activeColor: purple,
+                      contentPadding: EdgeInsets.zero,
                     ),
-                  ),
-                  textScaler: scale,
-                  textDirection: Directionality.of(context),
-                )..layout();
-                return painter.width;
-              })
-              .reduce(math.max);
-          return math
-              .max(
-                large
-                    ? math.max(224, constraints.maxWidth * .8)
-                    : (constraints.maxWidth - 28) / 2.28,
-                longest + 104,
-              )
-              .toDouble();
-        }).toList();
-        final offsets = <double>[0];
-        for (var index = 0; index < widths.length - 1; index++) {
-          offsets.add(offsets.last + widths[index] + 14);
-        }
-        return SingleChildScrollView(
-          key: const ValueKey('home-carousel'),
-          scrollDirection: Axis.horizontal,
-          physics: _HomeSnapPhysics(offsets),
-          padding: const EdgeInsets.fromLTRB(2, 4, 2, 10),
-          child: IntrinsicHeight(
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(selected),
+              child: const Text('Listo'),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+class _HomeFunnelGrid extends StatelessWidget {
+  const _HomeFunnelGrid({required this.metrics, required this.adoption});
+  final RescuerFunnelMetrics metrics;
+  final bool adoption;
+
+  @override
+  Widget build(BuildContext context) {
+    final trackingDay = DateTime.parse(
+      adoptionViewDay(metrics.viewTrackingStartedAt),
+    );
+    final entries = adoption
+        ? [
+            (
+              'views',
+              '${metrics.views}',
+              'Vistas',
+              'Personas vieron tus mascotas',
+            ),
+            (
+              'favorites',
+              '${metrics.favorites}',
+              'Favoritos',
+              'Guardaron tus mascotas',
+            ),
+            (
+              'messages',
+              '${metrics.messages}',
+              'Mensajes',
+              'Escribieron por adopción',
+            ),
+            (
+              'adoptions',
+              '${metrics.adoptions}',
+              'Adopciones',
+              'Mascotas adoptadas',
+            ),
+          ]
+        : [
+            (
+              'donors',
+              '${metrics.donors}',
+              'Donantes',
+              'Personas donaron a tus mascotas',
+            ),
+            (
+              'active',
+              '${metrics.activeCases}',
+              'Activos',
+              'Casos recibiendo apoyo',
+            ),
+            (
+              'completed',
+              '${metrics.completedCases}',
+              'Completados',
+              'Casos que lograron la meta',
+            ),
+            (
+              'raised',
+              pesos(metrics.raisedCents).replaceAll(' MXN', ''),
+              'Recaudado',
+              'Total en tus casos de apoyo',
+            ),
+          ];
+    const surfaces = [
+      Color(0xfff5f0ff),
+      Color(0xfffff4eb),
+      Color(0xffeef5ff),
+      Color(0xffecfdf3),
+    ];
+    const tones = [
+      Color(0xff6d28d9),
+      Color(0xffea580c),
+      Color(0xff2563eb),
+      Color(0xff16a34a),
+    ];
+    return Column(
+      key: ValueKey('home-funnel-${adoption ? 'adoption' : 'support'}'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var row = 0; row < 2; row++) ...[
+          if (row > 0) const SizedBox(height: 8),
+          IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                for (var index = 0; index < cards.length; index++) ...[
-                  if (index > 0) const SizedBox(width: 14),
-                  SizedBox(
-                    width: widths[index],
-                    child: _HomeCard(data: cards[index], large: large),
+                for (var column = 0; column < 2; column++) ...[
+                  if (column > 0) const SizedBox(width: 8),
+                  Expanded(
+                    child: _HomeFunnelCard(
+                      entry: entries[row * 2 + column],
+                      surface: surfaces[row * 2 + column],
+                      tone: tones[row * 2 + column],
+                    ),
                   ),
                 ],
               ],
             ),
           ),
-        );
-      },
+        ],
+        const SizedBox(height: 6),
+        Text(
+          adoption
+              ? 'Favoritos vigentes del período. Vistas desde ${trackingDay.day}/${trackingDay.month}/${trackingDay.year}.'
+              : 'Activos y completados al momento. Recaudado es apoyo neto asignado.',
+          style: const TextStyle(fontSize: 10, color: Color(0xff5c5650)),
+        ),
+      ],
     );
   }
 }
 
-class _HomeSnapPhysics extends ClampingScrollPhysics {
-  const _HomeSnapPhysics(this.offsets, {super.parent});
-  final List<double> offsets;
-
-  @override
-  _HomeSnapPhysics applyTo(ScrollPhysics? ancestor) =>
-      _HomeSnapPhysics(offsets, parent: buildParent(ancestor));
-
-  @override
-  Simulation? createBallisticSimulation(
-    ScrollMetrics position,
-    double velocity,
-  ) {
-    if ((position.pixels <= position.minScrollExtent && velocity <= 0) ||
-        (position.pixels >= position.maxScrollExtent && velocity >= 0)) {
-      return super.createBallisticSimulation(position, velocity);
-    }
-    final stops =
-        offsets
-            .map(
-              (offset) => offset
-                  .clamp(position.minScrollExtent, position.maxScrollExtent)
-                  .toDouble(),
-            )
-            .toSet()
-            .toList()
-          ..sort();
-    final projected = position.pixels + velocity * .12;
-    var target = stops.reduce(
-      (a, b) => (a - projected).abs() <= (b - projected).abs() ? a : b,
-    );
-    if (velocity.abs() > toleranceFor(position).velocity &&
-        (target - position.pixels).abs() < .5) {
-      final next = stops
-          .where((stop) => velocity > 0 ? stop > target : stop < target)
-          .toList();
-      if (next.isNotEmpty) target = velocity > 0 ? next.first : next.last;
-    }
-    if ((target - position.pixels).abs() < .5) return null;
-    return ScrollSpringSimulation(
-      spring,
-      position.pixels,
-      target,
-      velocity,
-      tolerance: toleranceFor(position),
-    );
-  }
-}
-
-class _HomeCard extends StatelessWidget {
-  const _HomeCard({required this.data, required this.large});
-  final _HomeCardData data;
-  final bool large;
-
+class _HomeFunnelCard extends StatelessWidget {
+  const _HomeFunnelCard({
+    required this.entry,
+    required this.surface,
+    required this.tone,
+  });
+  final (String, String, String, String) entry;
+  final Color surface, tone;
   @override
   Widget build(BuildContext context) => Semantics(
-    label: data.note,
+    label: '${entry.$3}: ${entry.$2}. ${entry.$4}',
+    excludeSemantics: true,
     child: Container(
-      constraints: const BoxConstraints(minHeight: 168),
+      key: ValueKey('home-metric-${entry.$1}'),
+      constraints: const BoxConstraints(minHeight: 92),
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 8),
       decoration: BoxDecoration(
-        color: data.color,
-        borderRadius: BorderRadius.circular(22),
+        color: surface,
+        borderRadius: BorderRadius.circular(16),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x0f15110d),
-            blurRadius: 24,
-            offset: Offset(0, 8),
+            color: Color(0x0d15110d),
+            blurRadius: 18,
+            offset: Offset(0, 6),
           ),
         ],
       ),
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
-      child: Stack(
-        clipBehavior: Clip.none,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: EdgeInsets.only(right: large ? 0 : 72),
+              Expanded(
                 child: Text(
-                  data.kind,
+                  entry.$2,
                   style: const TextStyle(
-                    fontSize: 12,
-                    height: 1.2,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xff8a837c),
-                  ),
-                ),
-              ),
-              if (large && data.badge != null) ...[
-                const SizedBox(height: 6),
-                Align(alignment: Alignment.centerLeft, child: _badge()),
-              ],
-              if (data.metric) ...[
-                const SizedBox(height: 10),
-                Text(
-                  '${data.count ?? '—'}',
-                  style: const TextStyle(
-                    fontSize: 40,
+                    fontSize: 22,
                     height: 1,
                     fontWeight: FontWeight.w800,
-                    letterSpacing: -1.6,
+                    letterSpacing: -.66,
                     color: Color(0xff151423),
                   ),
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  data.copy,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    height: 1.35,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xff5c574f),
+              ),
+              if (MediaQuery.textScalerOf(context).scale(22) <= 28)
+                ExcludeSemantics(
+                  child: CustomPaint(
+                    size: const Size(40, 28),
+                    painter: _FunnelDecoration(tone),
                   ),
                 ),
-              ] else ...[
-                const SizedBox(height: 6),
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight:
-                        MediaQuery.textScalerOf(context).scale(17) * 3.75,
-                  ),
-                  child: Text(
-                    data.copy,
-                    maxLines: large ? null : 3,
-                    overflow: large ? null : TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 17,
-                      height: 1.25,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: -.34,
-                      color: Color(0xff151423),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    const Expanded(
-                      child: Text(
-                        'Avance',
-                        style: TextStyle(
-                          fontSize: 12,
-                          height: 1.2,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xff8a837c),
-                        ),
-                      ),
-                    ),
-                    Text(
-                      data.progress == null ? '—' : '${data.progress}%',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        height: 1.2,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xff8a837c),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Semantics(
-                  label: data.progress == null
-                      ? 'Avance no disponible'
-                      : 'Formulario completado al ${data.progress} por ciento',
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(99),
-                    child: LinearProgressIndicator(
-                      value: data.progress == null
-                          ? 0
-                          : data.progress!.clamp(0, 100) / 100,
-                      minHeight: 5,
-                      backgroundColor: const Color(0x14151423),
-                      color: const Color(0xff151423),
-                    ),
-                  ),
-                ),
-              ],
             ],
           ),
-          if (!large && data.badge != null)
-            Positioned(top: -2, right: -2, child: _badge()),
+          const SizedBox(height: 4),
+          Text(
+            entry.$3,
+            style: const TextStyle(
+              fontSize: 12,
+              height: 1.2,
+              fontWeight: FontWeight.w700,
+              color: Color(0xff5c5650),
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            entry.$4,
+            style: const TextStyle(
+              fontSize: 10,
+              height: 1.15,
+              fontWeight: FontWeight.w500,
+              color: Color(0xff554e48),
+            ),
+          ),
         ],
       ),
     ),
   );
+}
 
-  Widget _badge() => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-    decoration: BoxDecoration(
-      color: const Color(0x8cffffff),
-      borderRadius: BorderRadius.circular(99),
-      border: Border.all(
-        color: data.urgent ? const Color(0xfff5b5ad) : const Color(0xffd9d3ca),
-      ),
-    ),
-    child: Text(
-      data.badge!,
-      style: TextStyle(
-        fontSize: 11,
-        height: 1.2,
-        fontWeight: FontWeight.w600,
-        color: data.urgent ? const Color(0xffc41c2e) : const Color(0xff5c574f),
-      ),
-    ),
-  );
+/// A fixed brand ornament, with no data or claim of a measured trend.
+class _FunnelDecoration extends CustomPainter {
+  const _FunnelDecoration(this.color);
+  final Color color;
+  @override
+  void paint(Canvas canvas, Size size) {
+    final line = Path()
+      ..moveTo(0, 18)
+      ..quadraticBezierTo(9, 10, 18, 14)
+      ..quadraticBezierTo(27, 18, 36, 10);
+    final area = Path.from(line)
+      ..lineTo(36, 26)
+      ..lineTo(0, 26)
+      ..close();
+    canvas.drawPath(area, Paint()..color = color.withValues(alpha: .18));
+    canvas.drawPath(
+      line,
+      Paint()
+        ..color = color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2
+        ..strokeCap = StrokeCap.round,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_FunnelDecoration oldDelegate) =>
+      oldDelegate.color != color;
 }
 
 class _HomeQuickAccess extends StatelessWidget {
@@ -835,8 +859,8 @@ class _HomeQuickAccess extends StatelessWidget {
   final Map<String, int?> counts;
   final ValueChanged<String> onSelected;
   static const actions = [
-    ('adoption', 'Adopción', 'rtab-cases.svg'),
-    ('support', 'Apoyo', 'rtab-cases.svg'),
+    ('adoption', 'Adopción', 'rtab-home.svg'),
+    ('support', 'Apoyo', 'tab-donate.svg'),
     ('messages', 'Mensajes', 'icon-messages.svg'),
     ('payments', 'Pagos', 'icon-billing.svg'),
   ];
@@ -1079,6 +1103,103 @@ class _HomeActivityPanel extends StatelessWidget {
   );
 }
 
+class _HomeRecentMessages extends ConsumerWidget {
+  const _HomeRecentMessages({required this.actor});
+  final String? actor;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => LiveSection<List<Json>>(
+    key: ValueKey('home-messages-$actor'),
+    tables: const ['dopmi_messages', 'dopmi_conversations'],
+    load: () async {
+      final result = await ref
+          .read(communityRepositoryProvider)
+          .rescuerThreads(1);
+      if (ref.read(identityControllerProvider).identity?.id != actor) {
+        throw StateError('identity_changed');
+      }
+      final threads = result.items
+          .where((item) => item['status'] != 'closed')
+          .toList();
+      threads.sort((a, b) {
+        final aUnread = (_homeCount(a['unread_count']) ?? 0) > 0;
+        final bUnread = (_homeCount(b['unread_count']) ?? 0) > 0;
+        if (aUnread != bUnread) return aUnread ? -1 : 1;
+        final recent = '${b['updated_at'] ?? ''}'.compareTo(
+          '${a['updated_at'] ?? ''}',
+        );
+        return recent != 0 ? recent : '${a['id']}'.compareTo('${b['id']}');
+      });
+      return threads;
+    },
+    builder: (threads, _) => Column(
+      children: [
+        if (threads.isEmpty)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: Text('Aún no tienes mensajes recientes.'),
+          ),
+        for (var index = 0; index < threads.length; index++)
+          _HomeMessageRow(
+            item: threads[index],
+            last: index == threads.length - 1,
+          ),
+      ],
+    ),
+  );
+}
+
+class _HomeMessageRow extends StatelessWidget {
+  const _HomeMessageRow({required this.item, required this.last});
+  final Json item;
+  final bool last;
+  @override
+  Widget build(BuildContext context) {
+    final threadId = item['id'] as String?;
+    final unread = _homeCount(item['unread_count']) ?? 0;
+    final occurred = DateTime.tryParse('${item['updated_at'] ?? ''}');
+    final photo = item['photo'] as String? ?? '';
+    return ReferenceFocusOutline(
+      radius: 12,
+      child: InkWell(
+        key: ValueKey('home-message-$threadId'),
+        onTap: threadId == null || threadId.isEmpty
+            ? null
+            : () => context.push('/messages/${Uri.encodeComponent(threadId)}'),
+        borderRadius: BorderRadius.circular(12),
+        child: _HomeActivityRow(
+          last: last,
+          icon: SizedBox(
+            width: 44,
+            height: 44,
+            child: photo.isNotEmpty
+                ? AdoptionPhoto(photo, height: 44, radius: 99)
+                : Container(
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.chat_bubble_outline,
+                      color: purple,
+                      size: 20,
+                    ),
+                  ),
+          ),
+          title:
+              '${item['pet_name'] ?? 'Mascota'} · ${item['participant_name'] ?? 'Adoptante'}',
+          subtitle: item['last_message'] as String? ?? 'Inicia la conversación',
+          trailing: unread > 0
+              ? '$unread'
+              : occurred == null
+              ? ''
+              : _homeRelativeDate(occurred),
+        ),
+      ),
+    );
+  }
+}
+
 class _HomeSummaryRow extends StatelessWidget {
   const _HomeSummaryRow({
     required this.program,
@@ -1310,7 +1431,10 @@ class _HomePhotoTipsState extends State<_HomePhotoTips> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => context.push('/rescuer/photo-tips'),
+          onTap: () => showDialog<void>(
+            context: context,
+            builder: (_) => const _HomePhotoTipsDialog(),
+          ),
           onHighlightChanged: (value) => setState(() => pressed = value),
           splashFactory: NoSplash.splashFactory,
           overlayColor: const WidgetStatePropertyAll(Colors.transparent),
@@ -1380,6 +1504,107 @@ class _HomePhotoTipsState extends State<_HomePhotoTips> {
   );
 }
 
+const _homePhotoTips = [
+  (
+    'Luz natural',
+    'Fotografía cerca de una ventana o al aire libre. Evita contraluz y flash directo que tapen los ojos.',
+  ),
+  (
+    'Rostro y cuerpo visibles',
+    'Incluye al menos una foto donde se vea bien la cara y otra con el cuerpo completo.',
+  ),
+  (
+    'Fondo simple',
+    'Busca un lugar ordenado. Un fondo limpio ayuda a que la mascota sea el foco.',
+  ),
+  (
+    'Varios ángulos',
+    'Sube 2 o 3 fotos distintas: de frente, de perfil y una mostrando su personalidad.',
+  ),
+  (
+    'Sin filtros fuertes',
+    'Usa colores reales y buena nitidez. Así los adoptantes saben qué esperar al conocerla.',
+  ),
+];
+
+class _HomePhotoTipsDialog extends StatelessWidget {
+  const _HomePhotoTipsDialog();
+  @override
+  Widget build(BuildContext context) => Dialog(
+    backgroundColor: Colors.white,
+    insetPadding: const EdgeInsets.all(20),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+    child: ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 340),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                tooltip: 'Cerrar',
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.close),
+              ),
+            ),
+            const Text('Tips para mejores fotos', style: _homeHeading),
+            const SizedBox(height: 8),
+            const Text(
+              'Sigue estas recomendaciones para que tus casos destaquen en Adoptar y reciban más vistas.',
+              style: TextStyle(
+                fontSize: 14,
+                height: 1.45,
+                color: Color(0xff554e48),
+              ),
+            ),
+            const SizedBox(height: 16),
+            for (final tip in _homePhotoTips) ...[
+              Container(
+                padding: const EdgeInsets.only(left: 14),
+                decoration: const BoxDecoration(
+                  border: Border(
+                    left: BorderSide(color: Color(0xffc4b5fd), width: 3),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      tip.$1,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        height: 1.3,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      tip.$2,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        height: 1.4,
+                        color: Color(0xff554e48),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 14),
+            ],
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Entendido'),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 class _HomeEmpty extends StatelessWidget {
   const _HomeEmpty();
   @override
@@ -1408,7 +1633,7 @@ class _HomeEmpty extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         const Text(
-          'No tienes pendientes',
+          '¿Empezamos?',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 18,
@@ -1420,7 +1645,7 @@ class _HomeEmpty extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         const Text(
-          'Cuando publiques casos, recibas mensajes o tengas evidencias por subir, aparecerán aquí.',
+          'Aún no tienes casos de adopción o de apoyo publicados.',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 14,

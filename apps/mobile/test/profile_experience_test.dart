@@ -200,7 +200,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      final access = find.text('Configuración');
+      final access = find.text('Cuenta verificada');
       await tester.scrollUntilVisible(
         access,
         240,
@@ -225,6 +225,10 @@ void main() {
   testWidgets('rescuer settings scrolls behind its fixed translucent header', (
     tester,
   ) async {
+    tester.view.physicalSize = const Size(320, 480);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
     final identity = FakeIdentityRepository()
       ..user = const Identity('one', 'ana@example.test', verified: true);
     await identity.setExperience('rescuer');
@@ -297,7 +301,15 @@ void main() {
             ),
           );
           await tester.pumpAndSettle();
-          final target = find.byKey(const ValueKey('rescuer-donor-switch'));
+          if (path == '/settings') {
+            expect(
+              find.byKey(const ValueKey('rescuer-donor-switch')),
+              findsNothing,
+            );
+            container.read(routerProvider).go('/profile');
+            await tester.pumpAndSettle();
+          }
+          final target = find.byKey(const ValueKey('rescuer-adoptant-banner'));
           await tester.scrollUntilVisible(
             target,
             240,
@@ -305,51 +317,29 @@ void main() {
           );
           await tester.ensureVisible(target);
           await tester.pumpAndSettle();
+          expect(find.text('Consulta los casos en adopción'), findsOneWidget);
           expect(
             find.text(
-              path == '/settings'
-                  ? 'Cambiar a usuario donante'
-                  : 'Modo donante',
+              'Cambia tu perfil a modo Adoptante. Siempre podrás regresar a la navegación como Rescatista.',
             ),
             findsOneWidget,
           );
-          expect(
-            find.text(
-              path == '/settings'
-                  ? 'Cambia tu experiencia en la app'
-                  : 'Adopta, apoya y sigue impacto',
-            ),
-            findsOneWidget,
-          );
-          expect(tester.getSize(target), const Size(32, 19));
-          // Source profile switch is off; settings switch is on. Navigation
-          // replaces the screen rather than toggling this thumb in place.
-          final thumb = find.descendant(
-            of: target,
-            matching: find.byType(Transform),
-          );
-          expect(thumb, findsOneWidget);
-          expect(
-            tester.widget<Transform>(thumb).transform.entry(0, 3),
-            path == '/settings' ? 13 : 0,
-          );
-          final touch = find.ancestor(
-            of: target,
-            matching: find.byType(InkWell),
-          );
-          expect(tester.getSize(touch), const Size(48, 48));
-          // Tap beyond the visible 32px track, inside the 48px touch target.
-          await tester.tapAt(tester.getCenter(target) + const Offset(20, 0));
+          final gesture = await tester.startGesture(tester.getCenter(target));
+          await tester.pump(const Duration(milliseconds: 150));
+          await gesture.cancel();
+          await tester.pumpAndSettle();
+          expect(identity.profile.mode, 'rescuer');
+          await tester.tap(target);
           await tester.pumpAndSettle();
           expect(identity.profile.mode, fail ? 'rescuer' : 'donor');
           expect(identity.profile.name, 'Ana');
           expect(
             container.read(routerProvider).state.uri.path,
-            fail ? path : '/adoptions',
+            fail ? '/profile' : '/adoptions',
           );
           if (fail) {
             expect(
-              find.byKey(const ValueKey('rescuer-donor-switch')),
+              find.byKey(const ValueKey('rescuer-adoptant-banner')),
               findsOneWidget,
             );
           }

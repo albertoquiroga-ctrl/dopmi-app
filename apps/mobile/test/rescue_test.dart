@@ -8,6 +8,7 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+import 'package:dopmi_mobile/features/rescue/rescuer_funnel.dart';
 import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 import 'package:dopmi_mobile/features/rescue/public_expense_card.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,29 @@ class FakeRescue extends RescueRepository {
         ),
       );
   Json? saved;
+  @override
+  Future<RescuerFunnelMetrics> funnel(String period) async {
+    final data = await dashboardV2();
+    final counts = Json.from(data['support_counts'] as Map);
+    final financial = Json.from(data['financial'] as Map);
+    final at = DateTime.utc(2026, 10, 6, 12);
+    return RescuerFunnelMetrics(
+      period: period,
+      periodStart: DateTime.utc(2026, 10),
+      periodEnd: at,
+      asOf: at,
+      viewTrackingStartedAt: DateTime.utc(2026, 10),
+      views: 0,
+      favorites: 0,
+      messages: 0,
+      adoptions: 0,
+      donors: 0,
+      activeCases: (counts['active'] as num?)?.toInt() ?? 0,
+      completedCases: 0,
+      raisedCents: (financial['assigned_cents'] as num?)?.toInt() ?? 0,
+    );
+  }
+
   bool conflict = true;
   int saveCalls = 0;
   final caseRecord = RescueRecord({

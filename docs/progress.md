@@ -1,5 +1,22 @@
 # Dopmi — registro de avance
 
+## 6/10/2026 — entrega 9ced070, MVP_CONTINUO (en ejecución)
+
+Plan completo autorizado y guardado en parity-current-review; base app
+0484f807, referencia UX congelada 9ced07094635c076d35589647fff26371d8bc791.
+L0 protocolo registrado antes de código. L1: RPC owner-only tipado, métricas
+por período de México, vistas diarias consentidas sin historia inventada.
+Backend focalizado 6/6 aprobado; primer intento de fixture Date corregido
+en segundo intento. Migración DEV aplicada una vez como 20261007034858;
+postflight ACL/RLS/cobertura comprobado (migration-history-audit).
+L2: ocho grupos integrados por tres agentes. Analyze inicial sin incidencias;
+configuración 16/16. Primera pasada Flutter 81/88; fixtures y visibilidad
+corregidos, segunda pasada afectada 37/37. Gate consolidado aún pendiente.
+Play y aceptación aún pendientes. Presupuesto 90 min desde 03:33:46Z;
+cierre 04:53:46Z, parada 05:03:46Z. Cambios ajenos conservados.
+Detalles y estado vivo: mock-sync-current y único tablero parity-current-review.
+
+
 ## H10 proveedores y producción — 28 de septiembre de 2026
 
 - Google/Apple habilitados en Supabase test; redirecciones OAuth comprobadas y

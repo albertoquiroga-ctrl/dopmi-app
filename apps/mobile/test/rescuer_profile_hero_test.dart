@@ -86,10 +86,7 @@ void main() {
           hasLength(1),
           reason: 'Rescatista must remain a complete word at 200 percent',
         );
-        expect(
-          find.text('Verificado'),
-          status == 'approved' ? findsOneWidget : findsNothing,
-        );
+        expect(find.text('Verificado'), findsNothing);
         expect(
           find.text('Editar'),
           status == 'approved' ? findsOneWidget : findsNothing,

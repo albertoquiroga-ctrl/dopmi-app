@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/media/media_store.dart';
 
 import '../adoption/community_repository.dart';
+import 'rescuer_funnel.dart';
 
 const rescueBucket = 'dopmi-rescue-evidence';
 const rescueStatuses = {
@@ -68,6 +69,12 @@ class RescueRepository {
       Json.from(await client.rpc('dopmi_rescuer_dashboard'));
   Future<Json> dashboardV2() async =>
       Json.from(await client.rpc('dopmi_rescuer_dashboard_v2'));
+  Future<RescuerFunnelMetrics> funnel(String period) async =>
+      RescuerFunnelMetrics.fromJson(
+        Json.from(
+          await client.rpc('dopmi_rescuer_funnel', params: {'period': period}),
+        ),
+      );
   Future<Json> ownedCases(
     int page, {
     String program = 'adoption',

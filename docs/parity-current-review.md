@@ -1,5 +1,160 @@
 # Cierre de paridad — tablero vigente
 
+## Plan aprobado: 9ced070 / MVP_CONTINUO — 6/10/2026
+
+El titular autorizó entregar todo el delta esencial hasta obtener un candidato
+Android publicado en Google Play Internal Testing, pendiente de QA.
+Base de la app: `0484f8075c893497c10f6291553071eab7b4e5bf`, rama
+`codex/design-foundation`, PR #6. Base del mockup:
+`bccd040d3a4b1c391bc6ab9eeccc479198868a7f`; objetivo congelado:
+`9ced07094635c076d35589647fff26371d8bc791`. El delta contiene un commit y seis
+archivos. Los pushes posteriores corresponden a otra entrega. El corte bccd
+permanece cerrado, 22/22; no se reabre.
+
+La ejecución comenzó el 7/10 a las 03:33:46Z. Presupuesto global: 90 minutos;
+cierre desde las 04:53:46Z y parada a las 05:03:46Z.
+
+### Inventario único de la entrega
+
+Origen común: `src/App.tsx` y `src/styles.css` del mockup. Los destinos
+productivos están en `apps/mobile/lib`. La columna de estado conserva el
+inventario al aprobar el plan; el avance actual se registra al final.
+
+| ID | Origen → destino | Función, diseño e interacción esenciales; mínimo terminado | Dependencia / estado al aprobar |
+| --- | --- | --- | --- |
+| UX01 | Chrome y CSS → marcos compartidos, Apoyar, favoritos, perfiles, casos e inbox | Marca, notificaciones, títulos y espacios reconocibles, incluidos efectos indirectos de CSS; controles accesibles sin recortes | Tokens y componentes compartidos; pendiente |
+| UX02 | RescuerHome → rescue/rescuer_home_screen.dart | Saludo y estado reales; Completar mi perfil → Perfil; Apoyo inicial; vacío con Publicar; históricos visibles aunque no haya activos | Identidad y casos; pendiente |
+| UX03 | Embudos y filtro → Inicio, repositorio y RPC | Cuadrícula 2×2: vistas, favoritos, mensajes y adopciones; donantes, activos, completados y recaudado. Períodos reales; modal con X, fondo, Listo y Back; mes inicial, colores y jerarquía | SQL aditivo; pendiente |
+| UX04 | Paneles de actividad y mensajes → Inicio | Cuatro selecciones locales; mensajes recientes abren el UUID real; Ver todo → Perfil; preview sin marcar respuesta ni pagos; datos propios | RPC de threads existente; pendiente |
+| UX05 | PhotoTipsDialog → Inicio | Cinco consejos completos y desplazables; X, fondo, Entendido y Back; sin navegación ni escrituras | Modal existente; pendiente |
+| UX06 | Perfil → profile_overview, hero y accesos | Chrome, hero y estado; retirar métricas anteriores; edición, cambio persistido a Adoptante, Sobre Nosotros, Ayuda y logout; banco y configuración accesibles | UX01 y servicios; pendiente |
+| UX07 | Sociales y configuración → sección reutilizable | Redes en Perfil verificado; HTTPS, propiedad, versión y borrador moderado; cancelar o fallar no muestra éxito; conservar Connect, cuenta y privacidad | UX06 y repositorio; pendiente |
+| UX08 | CroquetasCard y SVG → ningún destino | Excluir tienda, descuento del 5% y enlace sin destino por decisión vigente | Excluido del producto |
+| UX09 | Final de AdoptionHome → adoption/discovery_empty.dart | Texto nuevo y retirada del tip sustituido; conservar acciones, swipe y fotos | Sin backend; pendiente |
+
+### Contratos y decisiones cerradas
+
+- RPC autenticada `dopmi_rescuer_funnel(period)`, con `yesterday`, `week` y
+  `month`; valor inicial `month`. Solo el propietario, resuelto mediante
+  `private.dopmi_require_actor()`, accede a ocho agregados y sus límites
+  temporales, `as_of` y comienzo de la cobertura diaria. Modelo Flutter tipado.
+- Zona `America/Mexico_City`: ayer es el día anterior; semana desde el lunes;
+  mes desde el día 1 hasta ahora.
+- Vistas: personas únicas por mascota dentro de la ventana y agregados propios.
+  Tabla diaria privada con unicidad `(post_id, actor_id, day)`; consentimiento,
+  tarjeta frontal efectivamente mostrada y exclusión de autor y precarga.
+  Ampliar el registro existente sin cambiar su firma ni medición histórica;
+  deduplicar en cliente por jornada. El inicio diario queda separado del
+  singleton histórico, sin backfill ni revisitas inventadas.
+- Favoritos: vigentes y creados en la ventana; indicar esa condición, sin
+  inventar historial de favoritos retirados.
+- Mensajes: adoptantes distintos por publicación que escribieron en la ventana.
+  Leer no equivale a responder.
+- Adopciones: estado adoptado y último cierre `adopted` en la ventana; excluir
+  cierres `other` y publicaciones reactivadas.
+- Donantes: personas distintas entre aportaciones individuales y Guardián,
+  confirmadas y con neto positivo.
+- Recaudado: neto asignado vigente de operaciones en la ventana, descontando
+  reversiones y devoluciones; no equivale a saldo ni depósito bancario.
+  Activos y completados son una foto del estado actual; completado requiere
+  una meta moderada positiva cubierta. Excluir borradores.
+- Curvas SVG decorativas, sin series ni tendencias simuladas. Mantener
+  `dashboardV2`, contratos legacy, negocio, finanzas y dinero solo test.
+  Los errores permiten reintentar; no se muestran cifras ficticias.
+
+### Lotes y agentes
+
+L0 guarda plan, protocolo y checkpoint antes del código. L1 prepara SQL,
+modelo, repositorios y componentes compartidos. L2 implementa los ocho grupos
+incluidos, en tres frentes exclusivos. L3 consolida gate, DEV y Codemagic.
+
+Subagentes: Inicio (UX02–05, Home y pruebas); Perfil (UX06–07, hero, redes,
+configuración y pruebas); Adoptante/Apoyar (ajustes exclusivos de UX01/09 y
+pruebas). El integrador controla router, DTO, repositorios, SQL, componentes
+compartidos, registro de vistas, documentación, commits, pushes y remotos.
+Asignar propietarios antes de editar. Los agentes no ejecutan Flutter,
+publican ni delegan recursivamente. Una sola cola Flutter.
+
+Los lotes no son autorizaciones ni paradas. Máximo dos pasadas de corrección
+por lote, dos intentos por causa, tres agentes simultáneos y seis invocaciones
+nuevas por tramo. Hasta dos builds Codemagic en total. Los contadores persisten.
+
+### Gate, DEV, publicación y QA
+
+Pruebas dirigidas: períodos, deduplicación, consentimiento y exclusión del autor;
+propiedad, acceso anónimo y cuenta suspendida; adopted, other y reactivación;
+donantes entre orígenes y neto tras reversión; filtros, vacíos, UUID, Back y
+diálogos; redes con cancelación, error, versión y snapshot; modo y logout.
+
+Gate consolidado: `milestone-1.yml`, scope `full`; configuración, web, admin,
+backend, PostgreSQL real, concurrencia, Flutter analyze, tests, capturas, APK,
+iOS e integración Auth/Storage/Realtime. No repetir suites por lote; repetir
+solo la evidencia invalidada por cambios.
+
+DEV `ohqxranynackjignryep`: una migración aditiva, con preflight del historial
+y cuerpos SQL, aplicación única y postflight de estructura, definiciones y ACL.
+No replay, repair, rename ni db push; tampoco workers financieros, flags,
+Edge Functions, dinero live, cambios destructivos ni alteraciones de datos
+existentes. SQL o CI no acreditan un flujo remoto completo con usuario Auth.
+
+Commits y pushes propios autorizados, sin force ni merge; cambios locales
+ajenos conservados. `android-guardian-internal` publica automáticamente en
+internal: la autorización cubre compilación y publicación. Conservar paquete
+`com.mycompany.dopmi`, firma, Guardián test y configuración de medición.
+Comprobar SHA, AAB, compilación, Publishing, track y versionCode por separado.
+
+QA posterior: auditoría del delta y ciberseguridad, comparación exhaustiva,
+regresión adicional, emulador, Play instalado y aceptación por ADB, además de
+optimizaciones. No se ejecutan ahora.
+
+### Parada y definición de entrega
+
+Comandos largos con PID propio y deadline real; esperas de hasta 60 segundos
+y terminación del árbol propio al vencer. Yield no equivale a timeout.
+No crear Goal, heartbeat ni loop nuevos. El objetivo activo del titular se
+pausa bajo su autorización al agotar el presupuesto o llegar a una parada
+segura; interrumpir agentes. Un build en cola conserva el mismo buildId y no
+se relanza. Registrar la consulta exacta de pipelines activos y terminar el
+seguimiento si no queda trabajo independiente. No renovar los 90 minutos.
+
+Entrega completa: ocho grupos, gate aprobado, DEV verificado y publicación
+internal identificada; aceptación de QA pendiente. Si falta una puerta,
+registrar avance parcial y no declarar la entrega completada. Estados finales:
+`IMPLEMENTACION_LISTA_PENDIENTE_BUILD`, `CANDIDATO_MVP_PENDIENTE_QA`,
+`PUBLICADO_INTERNAL_PENDIENTE_QA`, `BLOQUEADO` o `PRESUPUESTO_AGOTADO`, según
+la evidencia.
+
+### Avance actual de 9ced070
+
+L0 y L1 implementados; L2 integrado. Flutter analyze inicial aprobado: cero
+incidencias en 170.9 segundos. Primera pasada dirigida: 81/88 pruebas.
+Siete fallos: cinco fixtures de identidad, un reintento fuera del área visible
+y una pestaña fuera del área visible con texto al 200%. Fixtures y capturador
+corregidos; el test Home centra la pestaña y exige que reciba el toque.
+Segunda pasada aprobada: 37/37 en cinco archivos afectados (incluye nueva
+prueba de fecha México). Los cambios posteriores
+se validan en la evidencia correspondiente; no se acredita aún el gate
+consolidado, la publicación ni la aceptación. Configuración: 16/16 aprobadas.
+
+Backend: 6/6 comprobaciones focalizadas aprobadas en PGlite local. El primer
+intento falló por una comparación Date del fixture; se corrigió y el segundo
+aprobó. No repetir esa causa. Esto no sustituye pgTAP real en CI. Añadido contrato Dart/Auth/PostgREST al
+suite local de adopción del pipeline; aún pendiente de ejecución en CI.
+
+Preflight DEV verificado el 7/10 a las 03:48Z: último historial anterior
+`20261006142458`; cuerpo y permisos del registro existente coinciden con SQL
+canónico, sin tablas diarias ni RPC nuevos antes de aplicar.
+La migración local `20261007033748` se desplegó una vez como
+`20261007034858` en remoto. Postflight a las 03:49Z: tabla diaria en `private`
+con RLS; RPC pública con ejecución `anon=false` y `authenticated=true`;
+helper privado sin ejecución directa (`false`). El comienzo de la
+cobertura diaria es `2026-10-07T03:48:58Z`, sin modificar el inicio histórico.
+
+Codemagic: 0/2 builds. Tres agentes reutilizados, sin nuevas invocaciones ni
+recursión. Presupuesto consumido: aproximadamente 22 minutos. Siguiente:
+terminar las comprobaciones Flutter pendientes, consolidar el gate completo
+en CI y después solicitar el candidato único a Codemagic/Play.
+
 ## Actualización bccd040 — 5 de octubre de 2026 (vigente)
 
 Corte fijo `bccd040d3a4b1c391bc6ab9eeccc479198868a7f`; base app

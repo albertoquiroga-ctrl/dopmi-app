@@ -103,8 +103,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           );
         }
         return ProfileFrame(
-          title: rescuer ? 'Mi perfil' : 'Perfil',
-          rescuerOverview: rescuer,
+          title: 'Mi perfil',
+          rescuerOverview: true,
           children: [
             if (profile == null && error == null)
               const Center(child: CircularProgressIndicator()),
@@ -116,96 +116,68 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
             ],
             if (profile != null) ...[
-              if (rescuer)
-                RescuerProfileHero(
-                  profile!,
-                  contactEmail: account.identity?.id == profile!.id
-                      ? account.identity?.email
-                      : null,
-                  contactPhone: account.identity?.id == profile!.id
-                      ? profile!.phone
-                      : null,
-                )
-              else
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: rescuer ? const Color(0xfff3eefc) : yellow,
-                    borderRadius: BorderRadius.circular(26),
-                  ),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.white,
-                        foregroundColor: ink,
-                        radius: 28,
-                        child: Text(
-                          profile!.name.isEmpty
-                              ? '?'
-                              : profile!.name.characters.first.toUpperCase(),
-                        ),
-                      ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              profile!.name,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            if (rescuer)
-                              const Text('Tu espacio de rescatista')
-                            else
-                              const GuardianMembership(),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              const SizedBox(height: 20),
-              if (rescuer) ...[
-                const RescuerProfileAccess(),
-              ] else ...[
-                Text(
-                  'Registro de donaciones',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 12),
-                const ProfileDonationLog(),
-                const SizedBox(height: 12),
-                OutlinedButton(
-                  onPressed: () => context.push('/payments'),
-                  child: const Text('Ver más'),
-                ),
-                const SizedBox(height: 20),
-                const SavedPetsRow(),
-                const SavedRescuersRow(),
-                ProfileRow(
-                  title: 'Mi impacto',
-                  subtitle: 'Avances de casos que apoyaste',
-                  icon: Icons.auto_stories_outlined,
-                  path: '/impact',
-                ),
-              ],
-              if (!rescuer)
-                ProfileRow(
-                  title: 'Configuración',
-                  icon: Icons.settings_outlined,
-                  path: '/settings',
-                ),
-              const SizedBox(height: 20),
+              RescuerProfileHero(
+                profile!,
+                contactEmail: account.identity?.id == profile!.id
+                    ? account.identity?.email
+                    : null,
+                contactPhone: account.identity?.id == profile!.id
+                    ? profile!.phone
+                    : null,
+              ),
+              const SizedBox(height: 12),
               if (error != null) Notice(error!, isError: true),
-              RescuerDonorModeCard(
+              Semantics(
+                label: 'Cambiar a modo Adoptante',
                 enabled: !busy && profile!.status == 'active',
-                onPressed: () => switchMode(false),
+                child: DonorFeature(
+                  key: const ValueKey('rescuer-adoptant-banner'),
+                  title: 'Consulta los casos en adopción',
+                  subtitle: 'Cambia tu perfil a modo Adoptante. Siempre podrás regresar a la navegación como Rescatista.',
+                  icon: Icons.home_outlined,
+                  light: true,
+                  rescuer: true,
+                  onPressed: busy || profile!.status != 'active'
+                      ? null
+                      : () => switchMode(false),
+                ),
               ),
               if (busy)
                 const LinearProgressIndicator(
                   semanticsLabel: 'Cambiando experiencia',
                 ),
             ],
+            const SizedBox(height: 12),
+            DonorSupportRow(
+              title: 'Sobre Nosotros',
+              asset: 'icon-doc.svg',
+              onPressed: () => context.push('/about'),
+            ),
+            const SizedBox(height: 10),
+            DonorSupportRow(
+              title: 'Centro de ayuda',
+              asset: 'icon-help.svg',
+              onPressed: () => context.push('/help'),
+            ),
+            const SizedBox(height: 12),
+            TextButton(
+              onPressed: () => context.push('/settings'),
+              child: const Text('Cuenta y privacidad'),
+            ),
+            const SizedBox(height: 12),
+            DonorLogoutRow(
+              onPressed: () async {
+                try {
+                  await ref.read(identityControllerProvider).logout();
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(identityError(e))));
+                  }
+                }
+              },
+            ),
           ],
         );
       },
@@ -651,7 +623,7 @@ class DonorProfileView extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: 28),
+          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
             child: ConstrainedBox(
@@ -670,7 +642,7 @@ class DonorProfileView extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
           Container(
             padding: const EdgeInsets.fromLTRB(16, 14, 14, 14),
             decoration: BoxDecoration(
@@ -744,9 +716,9 @@ class DonorProfileView extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
           if (ref.watch(guardianEnabledProvider)) const DonorGuardianFeature(),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
           DonorAccessGroup(
             title: 'Pagos y suscripciones',
             items: [
@@ -765,7 +737,7 @@ class DonorProfileView extends ConsumerWidget {
               ('Mi historial', Icons.access_time, '/payments'),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
           DonorFeature(
             title: 'Publica un caso de adopción',
             subtitle: 'Cambia tu perfil a modo Rescatista. Siempre podrás regresar a la navegación como Adoptante.',
@@ -780,7 +752,7 @@ class DonorProfileView extends ConsumerWidget {
               semanticsLabel: 'Cambiando experiencia',
             ),
           if (error != null) Notice(error!, isError: true),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
           DonorSupportRow(
             title: 'Sobre Nosotros',
             asset: 'icon-doc.svg',
@@ -792,7 +764,7 @@ class DonorProfileView extends ConsumerWidget {
             asset: 'icon-help.svg',
             onPressed: () => context.push('/help'),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
           const SizedBox(height: 12),
           ProfileRow(
             title: 'Mis mascotas',
@@ -1024,11 +996,12 @@ class DonorFeature extends StatefulWidget {
     required this.icon,
     required this.onPressed,
     this.light = false,
+    this.rescuer = false,
   });
   final String title, subtitle;
   final IconData icon;
   final VoidCallback? onPressed;
-  final bool light;
+  final bool light, rescuer;
   @override
   State<DonorFeature> createState() => _DonorFeatureState();
 }
@@ -1052,14 +1025,22 @@ class _DonorFeatureState extends State<DonorFeature> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: light ? const Color(0x1415110d) : const Color(0x4715110d),
-            blurRadius: 32,
-            offset: const Offset(0, 12),
+            color: widget.rescuer
+                ? const Color(0x1f7841f2)
+                : light
+                ? const Color(0x1415110d)
+                : const Color(0x4715110d),
+            blurRadius: widget.rescuer ? 24 : 32,
+            offset: Offset(0, widget.rescuer ? 8 : 12),
           ),
         ],
       ),
       child: Material(
-        color: light ? const Color(0xfffff8e0) : const Color(0xff15110d),
+        color: widget.rescuer
+            ? const Color(0xffefe8ff)
+            : light
+            ? const Color(0xfffff8e0)
+            : const Color(0xff15110d),
         borderRadius: BorderRadius.circular(24),
         child: InkWell(
           onTap: onPressed,
@@ -1081,7 +1062,11 @@ class _DonorFeatureState extends State<DonorFeature> {
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                           height: 1.2,
-                          color: light ? ink : Colors.white,
+                          color: widget.rescuer
+                              ? const Color(0xff3b1a8c)
+                              : light
+                              ? ink
+                              : Colors.white,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -1090,7 +1075,9 @@ class _DonorFeatureState extends State<DonorFeature> {
                         style: TextStyle(
                           fontSize: 13,
                           height: 1.35,
-                          color: light
+                          color: widget.rescuer
+                              ? const Color(0xff5c4f7a)
+                              : light
                               ? muted
                               : const Color.from(
                                   alpha: .72,
@@ -1125,6 +1112,7 @@ class _DonorFeatureState extends State<DonorFeature> {
                       'assets/profile/${switch (icon) {
                         Icons.star_border => 'icon-star.svg',
                         Icons.shield_outlined => 'icon-shield.svg',
+                        Icons.home_outlined => 'rtab-home.svg',
                         _ => 'rtab-publish.svg',
                       }}',
                       width: 22,
@@ -1364,7 +1352,7 @@ class ProfileFrame extends StatelessWidget {
       top: rescuerOverview,
       child: ListView(
         padding: rescuerOverview
-            ? const EdgeInsets.fromLTRB(16, 20, 16, 88)
+            ? const EdgeInsets.fromLTRB(18, 16, 18, 110)
             : rescuerSettings
             ? EdgeInsets.fromLTRB(
                 16,
@@ -1375,21 +1363,45 @@ class ProfileFrame extends StatelessWidget {
             : const EdgeInsets.fromLTRB(16, 14, 16, 28),
         children: [
           if (rescuerOverview) ...[
-            Semantics(
-              header: true,
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 24,
-                  height: 1.25,
-                  letterSpacing: -.48,
-                  fontWeight: FontWeight.w700,
-                  color: ink,
+            SizedBox(
+              height: 42,
+              child: Row(
+                children: [
+                  SvgPicture.asset(
+                    'assets/profile/logo-paw.svg',
+                    width: 40,
+                    height: 40,
+                    semanticsLabel: 'Dopmi',
+                  ),
+                  const Spacer(),
+                  const DonorNotificationButton(),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 40),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Semantics(
+                    header: true,
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 28,
+                        height: 1.1,
+                        fontWeight: FontWeight.w700,
+                        color: ink,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 12),
           ],
           ...children,
         ],
@@ -1669,14 +1681,6 @@ class SettingsScreen extends ConsumerWidget {
         rescuerSettings: true,
         children: [
           const RescuerSettingsVerification(),
-          const RescuerSettingsModeSwitch(),
-          const RescuerNavigationRow(
-            title: 'Centro de ayuda',
-            icon: 'icon-help',
-            path: '/help',
-          ),
-          const SizedBox(height: 10),
-          RescuerLogoutRow(onLogout: logout),
           TextButton(
             onPressed: () => context.push('/settings/account'),
             child: const Text('Cuenta y privacidad'),

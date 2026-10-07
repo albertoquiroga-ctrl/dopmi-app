@@ -9,6 +9,7 @@ import { savedCardMethodService } from '../../supabase/functions/_shared/saved-c
 import { registerNativeWalletSqlCases } from './native-wallet-sql-cases.mjs';
 import { registerAdoptionUpdateSqlCases } from './adoption-update889-sql-cases.mjs';
 import { registerRescuerUpdateSqlCases } from './rescuer-updatebccd-sql-cases.mjs';
+import { registerRescuerFunnelSqlCases } from './rescuer-funnel9ced-sql-cases.mjs';
 
 let db;
 const donor = '70000000-0000-4000-8000-000000000001';
@@ -238,6 +239,7 @@ beforeEach(async () => db.exec('begin'));
 afterEach(async () => db.exec('rollback'));
 registerAdoptionUpdateSqlCases(() => db, { donor, rescuer, other });
 registerRescuerUpdateSqlCases(() => db, { donor, rescuer, other });
+registerRescuerFunnelSqlCases(() => db, { donor, rescuer, other });
 const rpc = async (operation,data) => {
   if (operation === 'refund_begin' || operation === 'refund_finish') return (await db.query('select public.dopmi_refund_adjustment($1,$2::jsonb) as value',[operation === 'refund_begin' ? 'begin' : 'finish',JSON.stringify(data)])).rows[0].value;
   if (operation === 'finish_job') return (await db.query('select public.dopmi_payment_job_finish($1::jsonb) as value',[JSON.stringify(data)])).rows[0].value;

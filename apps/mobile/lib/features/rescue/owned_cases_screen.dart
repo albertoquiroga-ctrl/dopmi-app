@@ -21,16 +21,8 @@ class OwnedCasesHeading extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      const Text(
-        'Mis Casos',
-        style: TextStyle(
-          fontSize: 28,
-          height: 1.1,
-          fontWeight: FontWeight.w700,
-          color: Color(0xff151423),
-        ),
-      ),
-      const SizedBox(height: 18),
+      const _OwnedCasesTitle(),
+      const SizedBox(height: 12),
       Row(
         children: [
           Expanded(
@@ -73,6 +65,31 @@ class OwnedCasesHeading extends StatelessWidget {
         ],
       ),
     ],
+  );
+}
+
+class _OwnedCasesTitle extends StatelessWidget {
+  const _OwnedCasesTitle();
+
+  @override
+  Widget build(BuildContext context) => Container(
+    constraints: const BoxConstraints(minHeight: 46),
+    padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
+    alignment: Alignment.centerLeft,
+    child: Semantics(
+      header: true,
+      child: const Text(
+        'Mis Casos',
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 28,
+          height: 1.1,
+          letterSpacing: 0,
+          fontWeight: FontWeight.w700,
+          color: Color(0xff151423),
+        ),
+      ),
+    ),
   );
 }
 
@@ -281,29 +298,24 @@ class _MyRescueCasesScreenState extends ConsumerState<MyRescueCasesScreen> {
               controller: scroll,
               padding: const EdgeInsets.fromLTRB(18, 16, 18, 32),
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SvgPicture.asset(
-                      'assets/profile/logo-paw.svg',
-                      width: 40,
-                      height: 40,
-                      semanticsLabel: 'Dopmi',
-                    ),
-                    const DonorNotificationButton(rescuer: true),
-                  ],
-                ),
-                const SizedBox(height: 14),
-                const Text(
-                  'Mis Casos',
-                  style: TextStyle(
-                    fontSize: 28,
-                    height: 1.1,
-                    fontWeight: FontWeight.w700,
-                    color: ink,
+                SizedBox(
+                  height: 42,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/profile/logo-paw.svg',
+                        width: 40,
+                        height: 40,
+                        semanticsLabel: 'Dopmi',
+                      ),
+                      const DonorNotificationButton(rescuer: true),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 19),
+                const SizedBox(height: 20),
+                const _OwnedCasesTitle(),
+                const SizedBox(height: 12),
                 Container(
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(

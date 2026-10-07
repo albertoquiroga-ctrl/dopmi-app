@@ -5,7 +5,50 @@ El checkpoint contiene el estado vigente; [parity-current-review.md](parity-curr
 es el único tablero del lote. [progress.md](progress.md) conserva el historial,
 no una lista de tareas para reejecutar. Las entradas nuevas superseden pendientes antiguos.
 
-## Decisiones que se conservan
+## Perfil vigente: MVP_CONTINUO (aprobado 6/10/2026)
+
+La decisión del titular sustituye las puertas históricas de QA durante la fase
+MVP. Entregar todo el delta esencial congelado con funciones reales, conservando
+diseño, navegación y gestos esenciales. El gate consolidado obligatorio debe
+aprobar; el candidato queda pendiente de QA. Los lotes organizan el trabajo:
+no son nuevas autorizaciones ni paradas. Mantener negocio, seguridad y pipeline.
+
+Inventariar una vez la entrega completa e implementar lotes consecutivos, con
+comprobaciones focalizadas cuando aporten valor. No exigir suites completas,
+capturas por cambio, auditoría independiente ni QA del lote anterior para
+avanzar. Auditoría profunda y del delta, comparación visual exhaustiva,
+regresión adicional, emulador y aceptación instalada permanecen como
+**fase de QA posterior**. Las suites y capturas exigidas por CI/Codemagic
+siguen siendo obligatorias.
+
+Esta ejecución dispone de 90 minutos globales de tiempo real, incluidos
+subagentes y esperas. Desde el minuto 80, dedicar el tiempo al checkpoint y
+cierre. Hasta tres subagentes simultáneos y seis invocaciones nuevas por tramo,
+sin recursión y con archivos de propiedad exclusiva. El integrador controla
+contratos, router, repositorios, SQL, compartidos y la única cola Flutter.
+Máximo dos pasadas de corrección por lote y dos intentos por causa; conservar
+los contadores entre lotes y sesiones. Dos rondas sin progreso verificable
+requieren diagnóstico y trabajo independiente. Hasta dos builds Codemagic:
+candidato consolidado y corrección justificada; nunca por lote ni por estar
+en cola. No renovar el presupuesto sin autorización explícita.
+
+Guardar el plan aprobado antes del código. Actualizar un checkpoint corto tras
+cada lote y antes de operaciones externas, separando implementación,
+comprobación, publicación y aceptación. Registrar QA y pulido pendientes,
+tiempo, agentes, builds, causas, evidencia y siguiente acción. No crear otro
+protocolo, backlog ni tablero. Conservar cambios locales ajenos y versionar
+solo los propios. No reutilizar fixtures ni helpers de entregas consumidas.
+
+Parada efectiva: comandos largos con PID propio y timeout real limitado al
+tiempo restante; esperas de hasta 60 segundos y terminación del árbol propio
+al vencer. Yield no equivale a timeout. Interrumpir agentes al cierre y no
+crear Goal, heartbeat ni loop autorreanudable para esta cadena. Si existe un
+objetivo persistente, pausarlo bajo la autorización de parada del titular al
+agotar el tiempo o quedar sin trabajo independiente. Registrar trabajos
+remotos activos y siguiente consulta, sin polling indefinido. No atribuir al
+cliente un supervisor global que no expone.
+
+## Invariantes conservadas
 
 - Corregir diferencias **perceptibles**, animaciones y gestos móviles. Aceptar
   diferencias imperceptibles del renderizador. Hover excluido. Español mexicano,
@@ -45,7 +88,8 @@ no una lista de tareas para reejecutar. Las entradas nuevas superseden pendiente
 4. Contratos aditivos primero; inspección paralela, luego implementación agrupada.
    Una ficha por lote enlazada desde tablero. Informar N→M grupos, defectos
    demostrados y pruebas/nativo pendientes.
-5. Pruebas dirigidas y recaptura sólo afectada. Comparación Source/Flutter con
+5. En MVP, pruebas dirigidas sólo cuando aporten valor; recaptura afectada si es
+   necesaria. En QA posterior, comparación Source/Flutter con
    fuentes cargadas, dimensiones y datos iguales; normal, Samsung115% y320px/200%.
    Diff de imágenes localiza problemas; decisión de cierre perceptual.
 6. Máximo **dos pasadas agrupadas** de corrección. Un fallo persistente exige
@@ -54,12 +98,13 @@ no una lista de tareas para reejecutar. Las entradas nuevas superseden pendiente
 7. Reutilizar mecánicas ya aprobadas (navegación, entrada, swipe, carrusel,
    galería, horizontal, toque frente a scroll, switches). Añadir cobertura sólo
    de comportamiento nuevo, persistencia, aislamiento/concurrencia y negativos.
-8. Una auditoría independiente **del delta**; una regresión integral del candidato
-   final. Repetir únicamente bloque afectado tras fallo/cambio. Documentación
-   sola no reinicia gates. Nunca cerrar sólo con capturas.
-9. Emulador controlado antes de publicar; inventario/limpieza exacta de fixtures
-   preparados desde su creación. Codemagic una vez por candidato aprobado;
-   compilar, publicar Play y comprobar Samsung son tres puertas separadas.
+8. Gate obligatorio agrupado del candidato MVP; repetir sólo bloque invalidado
+   tras fallo/cambio. Auditoría independiente y regresión integral adicional son
+   QA posterior. Documentación sola no reinicia gates; capturas no prueban funciones.
+9. Emulador y Samsung son QA posterior, salvo necesidad concreta de implementación.
+   Fixtures nuevos se inventarían desde su creación; nunca consumir los cerrados.
+   Codemagic sólo candidato consolidado aprobado (o corrección justificada);
+   compilar, publicar Play y comprobar Samsung son puertas separadas.
 
 ## Comandos y herramientas comprobados (no ejecutarlos automáticamente)
 

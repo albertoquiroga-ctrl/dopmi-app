@@ -14,7 +14,7 @@ import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../identity/identity_repository.dart';
 import '../rescue/rescue_repository.dart';
-import 'rescuer_profile_metrics.dart';
+import 'rescuer_social_section.dart';
 import 'rescuer_profile_repository.dart';
 import 'rescuer_profile_activity.dart';
 import 'rescuer_verification_card.dart';
@@ -105,13 +105,7 @@ class RescuerProfileHero extends ConsumerWidget {
               if (context.mounted) refresh();
             },
           ),
-          const SizedBox(height: 18),
-          RescuerProfileMetrics(
-            data: data,
-            onCases: () => context.go('/my-cases'),
-            onTransfers: () => context.go('/rescuer'),
-          ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 12),
           RescuerVerificationCard(
             status: data['verification_status'] as String?,
             onPressed: () => context.push(
@@ -127,7 +121,7 @@ class RescuerProfileHero extends ConsumerWidget {
             ),
           ],
           if (data['published_profile_failed'] == true) ...[
-            const SizedBox(height: 18),
+            const SizedBox(height: 12),
             const Text('No pudimos consultar tu perfil público.'),
             TextButton(
               onPressed: refresh,
@@ -135,7 +129,7 @@ class RescuerProfileHero extends ConsumerWidget {
             ),
           ],
           if ((published?['bio'] as String? ?? '').trim().isNotEmpty) ...[
-            const SizedBox(height: 18),
+            const SizedBox(height: 12),
             Container(
               key: const ValueKey('rescuer-profile-about'),
               padding: const EdgeInsets.all(16),
@@ -190,7 +184,11 @@ class RescuerProfileHero extends ConsumerWidget {
               ),
             ),
           ],
-          const SizedBox(height: 18),
+          if (data['verification_status'] == 'approved') ...[
+            const SizedBox(height: 12),
+            const RescuerSocialSection(),
+          ],
+          const SizedBox(height: 12),
           RescuerProfileActivity(
             data: data,
             onHome: () => context.go('/rescuer'),
@@ -400,44 +398,48 @@ class _RescuerIdentityCardState extends ConsumerState<RescuerIdentityCard> {
             color: Colors.white,
           ),
         ),
-        const SizedBox(height: 4),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          decoration: BoxDecoration(
-            color: verified ? const Color(0x4722bd90) : const Color(0x38ffffff),
-            borderRadius: BorderRadius.circular(99),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ExcludeSemantics(
-                child: SvgPicture.asset(
-                  'assets/profile/icon-shield.svg',
-                  width: 14,
-                  height: 14,
-                  colorFilter: const ColorFilter.mode(
-                    Colors.white,
-                    BlendMode.srcIn,
+        if (!verified) ...[
+          const SizedBox(height: 4),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: verified
+                  ? const Color(0x4722bd90)
+                  : const Color(0x38ffffff),
+              borderRadius: BorderRadius.circular(99),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ExcludeSemantics(
+                  child: SvgPicture.asset(
+                    'assets/profile/icon-shield.svg',
+                    width: 14,
+                    height: 14,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 6),
-              Flexible(
-                child: Text(
-                  label,
-                  style: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 12,
-                    height: 15.2 / 12,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    letterSpacing: 0,
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    label,
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 12,
+                      height: 15.2 / 12,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                      letterSpacing: 0,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+        ],
         if (widget.city.isNotEmpty) ...[
           const SizedBox(height: 4),
           Text(
@@ -490,7 +492,7 @@ class _RescuerIdentityCardState extends ConsumerState<RescuerIdentityCard> {
           final action = edit;
           if (wide) {
             return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(child: identity),
                 if (verified) ...[const SizedBox(width: 12), action],

@@ -1,15 +1,89 @@
 # Checkpoint de sincronización — 6 de octubre de 2026
 
+## Entrega activa 9ced070 — MVP_CONTINUO autorizado
+
+Inicio: **2026-10-07T03:33:46Z** (6/10, 21:33:46 en México).
+Presupuesto global: 90 minutos; cierre desde las 04:53:46Z y parada a las
+05:03:46Z. No se renueva por lote. El plan aprobado está guardado en
+[parity-current-review.md](parity-current-review.md), único tablero.
+
+App base `0484f8075c893497c10f6291553071eab7b4e5bf`, rama
+`codex/design-foundation`; PR #6 abierto y borrador, remoto coincidente.
+Mockup `irlanda/apoyar-detalle-perfil`, objetivo congelado
+**9ced07094635c076d35589647fff26371d8bc791**, desde bccd040: un commit y seis
+archivos. Los pushes posteriores quedan fuera de esta entrega.
+
+Inventario de nueve grupos: UX01 chrome; UX02 Inicio y estados; UX03 métricas
+y período; UX04 paneles y mensajes; UX05 consejos; UX06 Perfil; UX07 redes y
+configuración; UX08 Croquetas, excluido por tienda; UX09 final de Adoptar.
+Ocho grupos incluidos. L0: protocolo y plan; L1: contratos, SQL y compartidos;
+L2: pantallas; L3: gate, DEV y Play.
+
+L0 y L1 implementados; L2 integrado y en revisión focalizada. Los ocho grupos
+están implementados. Flutter analyze inicial aprobado: cero incidencias en
+170.9 segundos. Primera pasada dirigida: 81/88; corregidos siete fallos de
+fixtures/visibilidad. Segunda pasada: 37/37 en cinco archivos afectados,
+incluida nueva prueba de fecha México. Gate, publicación y aceptación pendientes.
+QA profundo, visual, nativo e instalado corresponde a la fase posterior.
+
+Decisiones: actividad real por período en `America/Mexico_City`; registro
+diario consentido, sin historia inventada. DEV aditivo, CI y Play interno
+autorizados. Sin Edge Functions, cambios de flags financieros, dinero live,
+fixtures anteriores, limpieza global ni merge.
+
+Tres agentes reutilizados, sin nuevas invocaciones. Sus tres frentes están
+implementados; integración focalizada de capturadores y pgTAP en curso.
+No ejecutan Flutter, publican ni delegan recursivamente. El integrador posee
+router, contratos, repositorios, SQL, compartidos y la única cola Flutter.
+Codemagic: 0/2 builds.
+
+Consumo del presupuesto: aproximadamente 22 minutos. La primera pasada Flutter
+detectó siete fallos: cinco fixtures de identidad, un reintento fuera del área
+visible y una pestaña fuera del área visible con texto al 200%. Los fixtures
+y el capturador se corrigieron; el test Home centra la pestaña y comprueba
+que recibe el toque antes de tocarla. Segunda pasada limitada a cuatro
+archivos afectados, pendiente. Configuración: 16/16 comprobaciones aprobadas.
+No se atribuye todavía aprobación al candidato consolidado.
+
+Backend 9ced: 6/6 comprobaciones aprobadas en PGlite local. Comparación Date
+del fixture corregida en el segundo intento; no fue un defecto SQL ni se
+consumió un fixture remoto. Evidencia privada local:
+`.tools/update9ced/backend-2.stdout.log`; no está disponible en GitHub.
+
+Acceso comprobado: GitHub, lectura Codemagic y catálogo Supabase DEV.
+Flutter 3.47.4; ADB Samsung y emulador presentes, sin atribuir aceptación.
+Docker detenido: PostgreSQL e integración completos mediante el gate de CI.
+Goal activo creado por el titular; autorización explícita de pausa al cierre
+seguro, sin autorrelanzamiento.
+
+Cambios locales ajenos preservados. Baseline privada:
+`.tools/update9ced/baseline` e `initial-dirty.patch`, fuera de GitHub.
+Admin 42501, documentos y archivos no rastreados ajenos no son este encargo.
+L1 incorpora migración `20261007033748_rescuer_funnel_9ced`, DTO tipado y
+deduplicación diaria cliente. L2 cubre Inicio, Perfil/redes, Apoyar y final de
+Adoptar.
+
+DEV: preflight el 7/10 a las 03:48Z, último historial anterior
+`20261006142458`; registro existente y permisos coincidentes con SQL canónico.
+La migración local `20261007033748` se aplicó una vez como
+`20261007034858` remota. Postflight a las 03:49Z: tabla diaria privada con
+RLS; RPC con `anon=false` y `authenticated=true`; helper privado sin ejecución
+directa (`false`). Comienzo diario `2026-10-07T03:48:58Z`, sin cambiar el
+inicio histórico. SQL no acredita un recorrido completo remoto con usuario.
+
+Siguiente: terminar análisis y pruebas Flutter, consolidar gate completo en
+CI y solicitar el candidato a Codemagic; comprobar compilación, publicación
+y versión en Play por separado. La historia inferior no reabre bccd.
+
 Leer [protocolo estable](mock-sync-workflow.md) antes de ejecutar.
 Este checkpoint supersede pendientes antiguos de bccd en backlog/tablero/handoff.
 El historial completo permanece en progress y fichas; no reiniciar esos loops.
 
 ## Estado y siguiente acción
 
-**Sin lote de paridad activo. bccd cerrado22/22**, cero defectos perceptibles
-conocidos, entrega Android y cleanup completos. Próximo paso: esperar encargo
-del titular; si autoriza nuevo corte, inventariar una sola vez el delta desde
-bccd hacia el SHA que se congele. No implementar automáticamente el branch vivo.
+**bccd cerrado22/22**, cero defectos perceptibles conocidos, entrega Android y
+cleanup completos. La entrega activa y siguiente acción están en la sección
+superior9ced070; no implementar pushes posteriores al SHA congelado.
 
 Referencia aceptada: `irlanda/apoyar-detalle-perfil@bccd040d3a4b1c391bc6ab9eeccc479198868a7f`
 del repo `albertoquiroga-ctrl/dopmi-functional-mockup`.

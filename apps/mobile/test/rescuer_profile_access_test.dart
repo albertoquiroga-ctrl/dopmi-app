@@ -213,6 +213,10 @@ void main() {
       }
       await tester.tap(find.byTooltip('Regresar'));
       await tester.pumpAndSettle();
+      expect(find.text('Centro de ayuda'), findsNothing);
+      expect(find.text('Cerrar sesión'), findsNothing);
+      container.read(routerProvider).go('/profile');
+      await tester.pumpAndSettle();
       final help = find.text('Centro de ayuda');
       await tester.scrollUntilVisible(
         help,

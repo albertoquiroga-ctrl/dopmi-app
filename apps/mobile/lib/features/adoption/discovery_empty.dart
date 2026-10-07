@@ -229,7 +229,7 @@ class DiscoveryEnd extends StatelessWidget {
                         ),
                         const SizedBox(height: 12),
                         const Text(
-                          '¡No te desanimes! nuestro feed se actualiza constantemente.',
+                          'Todos los días hay historias nuevas esperando a alguien como tú.',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontFamily: 'Inter',
@@ -239,17 +239,6 @@ class DiscoveryEnd extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 12),
-                        const Text(
-                          'Tip: Ajusta los filtros para descubrir más historias.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 12,
-                            height: 1.4,
-                            color: muted,
-                          ),
-                        ),
-                        const SizedBox(height: 18),
                         FilledButton(
                           onPressed: () => context.go('/messages'),
                           style: FilledButton.styleFrom(

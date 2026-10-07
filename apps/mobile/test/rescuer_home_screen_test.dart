@@ -6,6 +6,7 @@ import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/rescue/rescuer_home_screen.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+import 'package:dopmi_mobile/features/rescue/rescuer_funnel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -96,9 +97,31 @@ class HomeRescue extends FakeRescue {
   @override
   Future<Json> dashboardV2() async {
     if (failLoad) throw StateError('network_unavailable');
-    if (responses.isNotEmpty) return await responses.removeAt(0);
+    if (responses.isNotEmpty) home = await responses.removeAt(0);
     return Map.of(home);
   }
+
+  @override
+  Future<RescuerFunnelMetrics> funnel(String period) async =>
+      RescuerFunnelMetrics.fromJson({
+        'period': period,
+        'period_start': '2026-10-01T06:00:00Z',
+        'period_end': '2026-11-01T06:00:00Z',
+        'as_of': '2026-10-07T03:00:00Z',
+        'view_tracking_started_at': '2026-10-05T00:00:00Z',
+        'adoption': {
+          'views': home['adoption_metrics']['unique_viewers'],
+          'favorites': 3,
+          'messages': 12,
+          'adoptions': 2,
+        },
+        'support': {
+          'donors': 7,
+          'active': 2,
+          'completed': 1,
+          'raised_cents': 1500,
+        },
+      });
 
   @override
   Future<DataPage<Json>> receivedActivity(int page) async {
@@ -122,6 +145,7 @@ Future<(GoRouter, FakeIdentityRepository)> pumpHome(
   double? textScale,
   String initial = '/rescuer',
   bool settle = true,
+  CommunityRepository? community,
 }) async {
   tester.view.physicalSize = large
       ? const Size(320, 640)
@@ -159,6 +183,10 @@ Future<(GoRouter, FakeIdentityRepository)> pumpHome(
           path: path,
           builder: (_, state) => Scaffold(body: Text(state.uri.toString())),
         ),
+      GoRoute(
+        path: '/messages/:id',
+        builder: (_, state) => Scaffold(body: Text(state.uri.toString())),
+      ),
     ],
   );
   addTearDown(router.dispose);
@@ -167,7 +195,9 @@ Future<(GoRouter, FakeIdentityRepository)> pumpHome(
     ProviderScope(
       overrides: [
         identityRepositoryProvider.overrideWithValue(identity),
-        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+        communityRepositoryProvider.overrideWithValue(
+          community ?? FakeCommunity(),
+        ),
         rescueRepositoryProvider.overrideWithValue(rescue),
       ],
       child: MaterialApp.router(
@@ -243,25 +273,32 @@ void main() {
   );
   for (final large in [false, true]) {
     testWidgets(
-      'home carousel and selectors preserve gestures and readable text: $large',
+      'home grids and selectors preserve summaries and readable text: $large',
       (tester) async {
         final (router, _) = await pumpHome(tester, HomeRescue(), large: large);
         expect(find.text('Hola, Ana'), findsOneWidget);
-        expect(find.text('73'), findsOneWidget);
+        expect(find.text('Donantes'), findsOneWidget);
         expect(find.text('9+'), findsOneWidget);
         expect(find.text('Tu panel de rescate'), findsNothing);
         expect(find.text('Resumen comprobado'), findsNothing);
         expect(find.text('Continuar evidencia'), findsNothing);
-        final carousel = find.byKey(const ValueKey('home-carousel'));
-        await show(tester, carousel);
-        await tester.drag(carousel, const Offset(-180, 0));
+        await show(tester, find.text('En adopción'));
+        await tester.tap(find.text('En adopción'));
         await tester.pumpAndSettle();
+        expect(find.text('73'), findsOneWidget);
+        expect(find.text('Adopciones'), findsOneWidget);
+        expect(find.byKey(const ValueKey('home-carousel')), findsNothing);
         expect(router.state.uri.path, '/rescuer');
-        await show(tester, find.text('Recibiendo apoyo'));
-        await tester.tap(find.text('Recibiendo apoyo'));
+        final supportTab = find.text('Recibiendo apoyo');
+        await Scrollable.ensureVisible(
+          tester.element(supportTab),
+          alignment: .5,
+        );
         await tester.pumpAndSettle();
-        expect(find.text('Rocky · Veterinario · Incompleta'), findsOneWidget);
-        expect(find.text('30%'), findsOneWidget);
+        expect(supportTab.hitTestable(), findsOneWidget);
+        await tester.tap(supportTab);
+        await tester.pumpAndSettle();
+        expect(find.text('Recaudado'), findsOneWidget);
         await show(tester, find.text('Apoyo'));
         await tester.tap(find.text('Apoyo'));
         await tester.pumpAndSettle();
@@ -313,8 +350,8 @@ void main() {
       await show(tester, find.text('Ver todo'));
       await tester.tap(find.text('Ver todo'));
       await tester.pumpAndSettle();
-      expect(router.state.uri.path, '/rescuer/received-payments');
-      expect(rescue.acknowledgements.last, 'page-one-presented');
+      expect(router.state.uri.path, '/profile');
+      expect(rescue.acknowledgements.last, 'home-presented-cursor');
       expect(tester.takeException(), isNull);
     },
   );
@@ -351,11 +388,13 @@ void main() {
   ) async {
     final rescue = HomeRescue()..failLoad = true;
     await pumpHome(tester, rescue);
-    expect(find.text('No tienes pendientes'), findsNothing);
+    expect(find.text('¿Empezamos?'), findsNothing);
     expect(find.text('73'), findsNothing);
     expect(find.text('Volver a intentar'), findsOneWidget);
     rescue.failLoad = false;
     await tester.tap(find.text('Volver a intentar'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('En adopción'));
     await tester.pumpAndSettle();
     expect(find.text('73'), findsOneWidget);
     expect(rescue.acknowledgements, isEmpty);
@@ -367,7 +406,7 @@ void main() {
       final rescue = HomeRescue()
         ..home = homeFixture(verification: 'submitted');
       final (router, _) = await pumpHome(tester, rescue);
-      expect(find.text('Verificación en proceso'), findsOneWidget);
+      expect(find.text('Completar mi perfil'), findsOneWidget);
       expect(find.text('Simular verificación'), findsNothing);
       await show(tester, find.text('Adopción'));
       await tester.tap(find.text('Adopción'));
@@ -383,16 +422,17 @@ void main() {
     },
   );
 
-  testWidgets('Tips has a real destination and returns to the same home', (
+  testWidgets('Tips opens a five-tip modal and returns to the same home', (
     tester,
   ) async {
     final (router, _) = await pumpHome(tester, HomeRescue(), large: true);
     await show(tester, find.text('Tips para mejores fotos'));
     await tester.tap(find.text('Tips para mejores fotos'));
     await tester.pumpAndSettle();
-    expect(router.state.uri.path, '/rescuer/photo-tips');
-    expect(find.text('Usa luz natural'), findsOneWidget);
-    await tester.tap(find.byTooltip('Volver'));
+    expect(router.state.uri.path, '/rescuer');
+    expect(find.text('Luz natural'), findsOneWidget);
+    expect(find.text('Sin filtros fuertes'), findsOneWidget);
+    await tester.tap(find.byTooltip('Cerrar'));
     await tester.pumpAndSettle();
     expect(router.state.uri.path, '/rescuer');
     expect(tester.takeException(), isNull);
@@ -410,6 +450,8 @@ void main() {
         Identity('two', 'other@example.test', verified: true),
       ),
     );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('En adopción'));
     await tester.pumpAndSettle();
     pending.complete(homeFixture(views: 73));
     await tester.pumpAndSettle();
@@ -477,7 +519,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('draft evidence uses its real urgent or pending presentation', (
+  testWidgets('support grid replaces evidence cards without changing drafts', (
     tester,
   ) async {
     final rescue = HomeRescue();
@@ -486,10 +528,11 @@ void main() {
     await show(tester, find.text('Recibiendo apoyo'));
     await tester.tap(find.text('Recibiendo apoyo'));
     await tester.pumpAndSettle();
-    expect(find.text('Rocky · Veterinario · Incompleta'), findsOneWidget);
-    expect(find.text('Milo · Medicina · Evidencia pendiente'), findsOneWidget);
-    expect(find.text('30%'), findsOneWidget);
-    expect(find.text('55%'), findsOneWidget);
+    expect(find.text('Donantes'), findsOneWidget);
+    expect(find.text('Recaudado'), findsOneWidget);
+    expect(rescue.home['pending_evidence'][0]['progress_percent'], 30);
+    expect(rescue.home['pending_evidence'][1]['progress_percent'], 55);
+    expect(rescue.home['pending_evidence'][1]['status'], 'draft');
     expect(find.text('Continuar evidencia'), findsNothing);
   });
 }

@@ -43,7 +43,22 @@ class PublishedCommunity extends FakeCommunity {
   }
 }
 
-class PublishedAvatar extends FakeRescuerProfile {
+class PublishedOwnerProfile extends FakeRescuerProfile {
+  PublishedOwnerProfile() {
+    value['owner_id'] = 'one';
+  }
+  @override
+  String? get userId => 'one';
+}
+
+FakeIdentityRepository publishedOwnerIdentity() {
+  final identity = FakeIdentityRepository()
+    ..user = const Identity('one', 'owner@example.test', verified: true);
+  addTearDown(() => identity.changes.close());
+  return identity;
+}
+
+class PublishedAvatar extends PublishedOwnerProfile {
   bool fail = true;
   final paths = <String>[];
   @override
@@ -76,6 +91,9 @@ void main() {
           identityRepositoryProvider.overrideWithValue(identity),
           communityRepositoryProvider.overrideWithValue(community),
           rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+          rescuerProfileRepositoryProvider.overrideWithValue(
+            PublishedOwnerProfile(),
+          ),
           routerInitialLocationProvider.overrideWithValue('/profile'),
         ],
       );
@@ -128,8 +146,10 @@ void main() {
     addTearDown(runtime.dispose);
     final community = PublishedCommunity()..avatarPath = 'one/approved.jpg';
     final avatar = PublishedAvatar();
+    final identity = publishedOwnerIdentity();
     final container = ProviderContainer(
       overrides: [
+        identityRepositoryProvider.overrideWithValue(identity),
         photoRuntimeProvider.overrideWithValue(runtime),
         communityRepositoryProvider.overrideWithValue(community),
         rescueRepositoryProvider.overrideWithValue(FakeRescue()),
@@ -143,7 +163,7 @@ void main() {
         child: MaterialApp(
           home: Scaffold(
             body: SingleChildScrollView(
-              child: RescuerProfileHero(FakeIdentityRepository().profile),
+              child: RescuerProfileHero(identity.profile),
             ),
           ),
         ),
@@ -151,7 +171,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text('Nombre público aprobado'), findsOneWidget);
-    expect(find.text('Verificado'), findsOneWidget);
+    expect(find.text('Cuenta verificada'), findsOneWidget);
     await tester.pump(const Duration(seconds: 1));
     await tester.pumpAndSettle();
     expect(find.byTooltip('Reintentar foto de perfil'), findsOneWidget);
@@ -199,16 +219,21 @@ void main() {
     'withdrawal removes public identity and biography without reading private draft fields',
     (tester) async {
       final community = PublishedCommunity();
+      final identity = publishedOwnerIdentity();
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            identityRepositoryProvider.overrideWithValue(identity),
             communityRepositoryProvider.overrideWithValue(community),
             rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+            rescuerProfileRepositoryProvider.overrideWithValue(
+              PublishedOwnerProfile(),
+            ),
           ],
           child: MaterialApp(
             home: Scaffold(
               body: SingleChildScrollView(
-                child: RescuerProfileHero(FakeIdentityRepository().profile),
+                child: RescuerProfileHero(identity.profile),
               ),
             ),
           ),
@@ -238,23 +263,28 @@ void main() {
         final community = PublishedCommunity()
           ..wrongOwner = mismatch
           ..fail = !mismatch;
+        final identity = publishedOwnerIdentity();
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
+              identityRepositoryProvider.overrideWithValue(identity),
               communityRepositoryProvider.overrideWithValue(community),
               rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+              rescuerProfileRepositoryProvider.overrideWithValue(
+                PublishedOwnerProfile(),
+              ),
             ],
             child: MaterialApp(
               home: Scaffold(
                 body: SingleChildScrollView(
-                  child: RescuerProfileHero(FakeIdentityRepository().profile),
+                  child: RescuerProfileHero(identity.profile),
                 ),
               ),
             ),
           ),
         );
         await tester.pumpAndSettle();
-        expect(find.text('Verificado'), findsOneWidget);
+        expect(find.text('Cuenta verificada'), findsOneWidget);
         expect(find.text('Ana'), findsOneWidget);
         expect(find.text('Nombre ajeno'), findsNothing);
         expect(find.text('Descripción aprobada.'), findsNothing);

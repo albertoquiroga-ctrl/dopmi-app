@@ -65,19 +65,27 @@ class SupportHomePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                const Text(
-                  'Ayudar se siente bien',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0,
-                    height: 1.1,
-                    color: ink,
+                Container(
+                  constraints: const BoxConstraints(minHeight: 46),
+                  padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
+                  alignment: Alignment.centerLeft,
+                  child: Semantics(
+                    header: true,
+                    child: const Text(
+                      'Ayudar se siente bien',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 28,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0,
+                        height: 1.1,
+                        color: ink,
+                      ),
+                    ),
                   ),
                 ),
                 if (eligible.isNotEmpty || status != null)
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
                 if (error != null) Notice(error!, isError: true),
                 if (status != null)
                   status!
@@ -106,7 +114,7 @@ class SupportHomePage extends StatelessWidget {
                     size: 20,
                     change: changePage,
                   ),
-                const SizedBox(height: 28),
+                SizedBox(height: eligible.isEmpty && status == null ? 24 : 12),
                 const Text(
                   'Apoya a casos urgentes',
                   style: TextStyle(

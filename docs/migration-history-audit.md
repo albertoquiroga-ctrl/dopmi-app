@@ -453,3 +453,20 @@ serialization_failure→PT409. SQL local dirigido aprobado; aplicación MCP una
 vez, postflight definer/search_pathvacío/authtrue/anonfalse. REST409 sin cambios
 1304ms verificado. RPC295 y guardas financieras no modificadas; sin repair,
 rename, replay, dbpush o PROD.
+
+
+## 9ced070 — embudos reales desplegados en DEV, 6/10/2026
+
+Migración local `20261007033748_rescuer_funnel_9ced.sql` aplicada una vez
+por MCP en DEV `ohqxranynackjignryep`, registrada remotamente como
+`20261007034858 / rescuer_funnel_9ced`. Preflight: última versión
+`20261006142458`, cuerpo de `dopmi_record_adoption_view` igual al canónico
+anterior; permisos anon=false / authenticated=true y nuevas tablas/RPC ausentes.
+
+Postflight 7/10 03:49Z: RLS en ambas tablas privadas; cliente sin SELECT
+y sin EXECUTE del helper temporal. Nuevo RPC anon=false / authenticated=true;
+registro existente incluye escritura diaria conservando consentimiento y autor.
+Inicio real de cobertura diaria: `2026-10-07T03:48:58.342396Z`, sin backfill.
+MD5 del nuevo RPC: `525753f85f1bff0ad1dca000678b977a`. PGlite focalizado 6/6
+aprobado; PostgreSQL real y recorrido cliente siguen pendientes de gate/QA.
+No repair, replay, rename, db push, cambios de flags, Edge ni dinero live.

@@ -23,7 +23,7 @@ import 'package:dopmi_mobile/features/profile/rescuer_profile_metrics.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_verification_card.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_settings_details.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_settings_verification.dart';
-import 'package:dopmi_mobile/features/profile/rescuer_logout_row.dart';
+import 'package:dopmi_mobile/features/profile/rescuer_social_section.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_access.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_repository.dart';
 import 'package:dopmi_mobile/features/profile/help_support_dialog.dart';
@@ -799,6 +799,39 @@ class ImpactCaptureCommunity extends DetailCaptureCommunity {
         ];
 }
 
+bool captureTargetHasFocus(Finder target) {
+  final focused = FocusManager.instance.primaryFocus?.context;
+  if (focused == null) return false;
+  final targets = target.evaluate().toSet();
+  if (targets.contains(focused)) return true;
+  var found = false;
+  (focused as Element).visitAncestorElements((element) {
+    if (targets.contains(element)) {
+      found = true;
+      return false;
+    }
+    return true;
+  });
+  return found;
+}
+
+Future<void> focusProfileCaptureTarget(
+  WidgetTester tester,
+  Finder target,
+) async {
+  expect(target, findsOneWidget);
+  for (var i = 0; i < 32 && !captureTargetHasFocus(target); i++) {
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pump();
+  }
+  expect(captureTargetHasFocus(target), isTrue);
+  await Scrollable.ensureVisible(tester.element(target), alignment: .4);
+  await tester.pumpAndSettle();
+  expect(target.hitTestable(), findsOneWidget);
+  expect(tester.getSize(target).width, greaterThanOrEqualTo(48));
+  expect(tester.getSize(target).height, greaterThanOrEqualTo(48));
+}
+
 void main() {
   testWidgets('capture actual profile/settings/publication screens', (
     tester,
@@ -1263,18 +1296,19 @@ void main() {
       ('rescuer-settings', '/settings'),
       ('rescuer-settings-scroll-blur', '/settings'),
       ('rescuer-settings-footer', '/settings'),
-      ('rescuer-settings-logout-focus', '/settings'),
-      ('rescuer-settings-mode-focus', '/settings'),
-      ('rescuer-settings-edit-focus', '/settings'),
+      // Retain capture names; these controls moved to the owner profile in 9ced.
+      ('rescuer-settings-logout-focus', '/profile'),
+      ('rescuer-settings-mode-focus', '/profile'),
+      ('rescuer-settings-edit-focus', '/profile'),
       ('rescuer-settings-large', '/settings'),
-      ('rescuer-settings-social-dialog', '/settings'),
-      ('rescuer-settings-social-dialog-valid', '/settings'),
-      ('rescuer-settings-social-values', '/settings'),
-      ('rescuer-settings-social-values-large', '/settings'),
-      ('rescuer-settings-social-dialog-large', '/settings'),
-      ('rescuer-settings-social-dialog-facebook', '/settings'),
-      ('rescuer-settings-social-dialog-keyboard', '/settings'),
-      ('rescuer-settings-social-dialog-keyboard-large', '/settings'),
+      ('rescuer-settings-social-dialog', '/profile'),
+      ('rescuer-settings-social-dialog-valid', '/profile'),
+      ('rescuer-settings-social-values', '/profile'),
+      ('rescuer-settings-social-values-large', '/profile'),
+      ('rescuer-settings-social-dialog-large', '/profile'),
+      ('rescuer-settings-social-dialog-facebook', '/profile'),
+      ('rescuer-settings-social-dialog-keyboard', '/profile'),
+      ('rescuer-settings-social-dialog-keyboard-large', '/profile'),
       ('rescuer-profile-large', '/profile'),
       ('public-profile', '/people/owner'),
       ('public-profile-large', '/people/owner'),
@@ -1557,6 +1591,8 @@ void main() {
           ? const Size(320, 640)
           : spec.$1 == 'rescuer-profile-reference-wide'
           ? const Size(384, 852)
+          : spec.$1 == 'rescuer-settings-scroll-blur'
+          ? const Size(320, 480)
           : const Size(377, 852);
       tester.platformDispatcher.textScaleFactorTestValue = large
           ? 2
@@ -1945,7 +1981,8 @@ void main() {
                   ? ActivityRowsCaptureRescue()
                   : FakeRescue(),
             ),
-          if (spec.$1.startsWith('rescuer-settings') ||
+          if (spec.$1.startsWith('rescuer-profile') ||
+              spec.$1.startsWith('rescuer-settings') ||
               spec.$1.startsWith('public-profile-editor'))
             rescuerProfileRepositoryProvider.overrideWithValue(
               SettingsSocialCaptureProfile()
@@ -3251,32 +3288,28 @@ void main() {
       }
       if (spec.$1.contains('reference-metric-focus') ||
           spec.$1.contains('reference-transfer-focus')) {
-        final metric = find
-            .byType(RescuerProfileMetric)
-            .at(spec.$1.contains('transfer') ? 2 : 0);
-        final outline = find.descendant(
-          of: metric,
-          matching: find.byKey(const ValueKey('reference-keyboard-outline')),
-        );
-        for (var i = 0; i < 10 && outline.evaluate().isEmpty; i++) {
-          await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-          await tester.pump();
+        // The old metric cards were retired in 9ced. Exercise their live
+        // replacements: verification and the account/privacy entry point.
+        expect(find.byType(RescuerProfileMetric), findsNothing);
+        final target = spec.$1.contains('transfer')
+            ? find.widgetWithText(TextButton, 'Cuenta y privacidad')
+            : find.byType(RescuerVerificationCard);
+        await focusProfileCaptureTarget(tester, target);
+        if (!spec.$1.contains('transfer')) {
+          final outline = find.descendant(
+            of: target,
+            matching: find.byKey(const ValueKey('reference-keyboard-outline')),
+          );
+          expect(outline, findsOneWidget);
+          expect(tester.getRect(outline), tester.getRect(target).inflate(5));
+          expect(tester.getRect(outline).left, greaterThanOrEqualTo(0));
+          expect(
+            tester.getRect(outline).right,
+            lessThanOrEqualTo(
+              tester.view.physicalSize.width / tester.view.devicePixelRatio,
+            ),
+          );
         }
-        expect(outline, findsOneWidget);
-        await Scrollable.ensureVisible(tester.element(metric), alignment: .4);
-        await tester.pumpAndSettle();
-        final cardRect = tester.getRect(metric);
-        final focusRect = tester.getRect(outline);
-        expect(focusRect, cardRect.inflate(5));
-        expect(cardRect.width, greaterThanOrEqualTo(48));
-        expect(cardRect.height, greaterThanOrEqualTo(84));
-        expect(focusRect.left, greaterThanOrEqualTo(0));
-        expect(
-          focusRect.right,
-          lessThanOrEqualTo(
-            tester.view.physicalSize.width / tester.view.devicePixelRatio,
-          ),
-        );
       }
       if (spec.$1 == 'rescuer-profile-reference-activity-focus') {
         final activity = find.byType(RescuerProfileActivity);
@@ -3380,8 +3413,10 @@ void main() {
         expect(tester.getSize(outline).height, 54);
       }
       if (spec.$1 == 'rescuer-profile-reference-focus') {
-        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-        await tester.pump();
+        await focusProfileCaptureTarget(
+          tester,
+          find.byKey(const ValueKey('rescuer-profile-edit')),
+        );
         final outline = find.descendant(
           of: find.byType(RescuerIdentityCard),
           matching: find.byKey(const ValueKey('reference-keyboard-outline')),
@@ -3392,18 +3427,21 @@ void main() {
       if (spec.$1 == 'rescuer-profile-reference' ||
           spec.$1 == 'rescuer-profile-reference-wide') {
         final hero = tester.getRect(find.byType(RescuerIdentityCard));
-        expect(hero.top, closeTo(74, 1));
-        expect(hero.height, closeTo(147.2, 1));
+        expect(hero.top, closeTo(136, 1));
+        expect(hero.height, closeTo(120, 1));
         final verification = tester.getRect(
           find.byType(RescuerVerificationCard),
         );
-        expect(verification.top, closeTo(341.2, 1));
+        expect(verification.top - hero.bottom, closeTo(12, 1));
         expect(verification.height, closeTo(80.4, 1));
         final about = tester.getRect(
           find.byKey(const ValueKey('rescuer-profile-about')),
         );
-        expect(about.top, closeTo(439.6, 1));
+        expect(about.top - verification.bottom, closeTo(12, 1));
         expect(about.height, closeTo(202.7, 1));
+        expect(find.byType(RescuerProfileMetric), findsNothing);
+        expect(find.text('Verificado'), findsNothing);
+        expect(find.byType(RescuerSocialSection), findsOneWidget);
         expect(
           tester.getSize(find.text('Ciudad de México, CDMX')).height,
           closeTo(32, 1),
@@ -3412,11 +3450,13 @@ void main() {
       if (spec.$1 == 'rescuer-profile') {
         final heading = tester.getRect(find.text('Mi perfil'));
         final hero = tester.getRect(find.byType(RescuerIdentityCard));
-        expect(heading.top, closeTo(20, 1));
-        expect(heading.height, closeTo(30, 1));
-        expect(hero.top, closeTo(74, 1));
-        expect(hero.left, closeTo(16, 1));
-        expect(hero.width, closeTo(345, 1));
+        expect(heading.top, closeTo(84.6, 1));
+        expect(heading.height, closeTo(30.8, 1));
+        expect(hero.top, closeTo(136, 1));
+        expect(hero.left, closeTo(18, 1));
+        expect(hero.width, closeTo(341, 1));
+        expect(find.byTooltip('Notificaciones'), findsOneWidget);
+        expect(find.byType(RescuerProfileMetric), findsNothing);
       }
       if (spec.$1.startsWith('owned-case-detail-story')) {
         await Scrollable.ensureVisible(
@@ -3857,20 +3897,11 @@ void main() {
       }
       if (spec.$1 != 'adoption-drag') {
         if (spec.$1 == 'rescuer-settings') {
-          final modeCard = find.byType(RescuerDonorModeCard);
-          final track = find.byKey(const ValueKey('rescuer-donor-switch'));
-          expect(tester.getSize(modeCard).height, closeTo(71, .1));
-          expect(tester.getSize(track), const Size(32, 19));
-          expect(
-            tester.getRect(modeCard).right - tester.getRect(track).right,
-            closeTo(17, .1),
-          );
-          final touch = find.ancestor(
-            of: track,
-            matching: find.byType(InkWell),
-          );
-          expect(tester.getSize(touch), const Size(48, 48));
-          expect(tester.getCenter(touch), tester.getCenter(track));
+          expect(find.byType(RescuerDonorModeCard), findsNothing);
+          expect(find.byType(RescuerSocialSection), findsNothing);
+          expect(find.text('Cerrar sesión'), findsNothing);
+          expect(find.text('Centro de ayuda'), findsNothing);
+          expect(find.text('Cuenta y privacidad'), findsOneWidget);
           expect(
             tester.getTopLeft(find.text('Estado de verificación')).dy,
             closeTo(88, 1),
@@ -3887,11 +3918,16 @@ void main() {
             tester.getCenter(find.byTooltip('Regresar')).dx,
             closeTo(38, 1),
           );
-          final social = tester.getRect(find.byType(SettingsDataRow).first);
-          final editor = tester.getRect(find.byTooltip('Editar Instagram'));
-          expect(social.height, closeTo(70, 1));
+          final banking = find.byType(SettingsDataRow).first;
+          expect(tester.widget<SettingsDataRow>(banking).path, '/connect');
+          expect(find.text('Configurar pagos con Stripe'), findsOneWidget);
+          final row = tester.getRect(banking);
+          final editor = tester.getRect(
+            find.byTooltip('Gestionar datos bancarios en Stripe'),
+          );
+          expect(row.height, greaterThanOrEqualTo(64));
           expect(editor.size, const Size(48, 48));
-          expect(editor.center.dx, closeTo(social.right - 35, 1));
+          expect(editor.center.dx, closeTo(row.right - 35, 1));
         }
         if (spec.$1 == 'rescuer-settings-scroll-blur') {
           final headerRect = tester.getRect(find.byType(AppBar));
@@ -3903,50 +3939,51 @@ void main() {
             lessThan(headerRect.bottom),
           );
         }
-        if (spec.$1 == 'rescuer-settings-footer' ||
-            spec.$1 == 'rescuer-settings-logout-focus' ||
-            spec.$1 == 'rescuer-settings-mode-focus' ||
-            spec.$1 == 'rescuer-settings-edit-focus') {
-          await tester.scrollUntilVisible(
-            find.text('Cerrar sesión'),
-            250,
-            scrollable: find.byType(Scrollable).first,
+        if (spec.$1 == 'rescuer-settings-footer') {
+          final account = find.widgetWithText(
+            TextButton,
+            'Cuenta y privacidad',
           );
           await Scrollable.ensureVisible(
-            tester.element(find.text('Cerrar sesión')),
+            tester.element(account),
             alignment: .7,
           );
           await tester.pumpAndSettle();
-          final helpBottom = tester
-              .getBottomLeft(find.byType(RescuerNavigationRow))
-              .dy;
-          final logoutTop = tester.getTopLeft(find.byType(RescuerLogoutRow)).dy;
-          expect(logoutTop - helpBottom, closeTo(10, 1));
-          if (spec.$1.endsWith('-focus')) {
-            final focusTarget = spec.$1 == 'rescuer-settings-mode-focus'
-                ? find.byType(RescuerDonorModeCard)
-                : spec.$1 == 'rescuer-settings-edit-focus'
-                ? find.byTooltip('Editar Instagram')
-                : find.byType(RescuerLogoutRow);
+          expect(account.hitTestable(), findsOneWidget);
+          expect(find.text('Cerrar sesión'), findsNothing);
+          expect(find.byType(RescuerSocialSection), findsNothing);
+        }
+        if (spec.$1 == 'rescuer-settings-logout-focus' ||
+            spec.$1 == 'rescuer-settings-mode-focus' ||
+            spec.$1 == 'rescuer-settings-edit-focus') {
+          final focusTarget = spec.$1 == 'rescuer-settings-mode-focus'
+              ? find.byKey(const ValueKey('rescuer-adoptant-banner'))
+              : spec.$1 == 'rescuer-settings-edit-focus'
+              ? find.byTooltip('Editar Instagram')
+              : find.byType(DonorLogoutRow);
+          await focusProfileCaptureTarget(tester, focusTarget);
+          expect(find.byType(RescuerSocialSection), findsOneWidget);
+          expect(find.byType(RescuerDonorModeCard), findsNothing);
+          if (spec.$1 == 'rescuer-settings-edit-focus') {
             final outline = find.descendant(
               of: focusTarget,
               matching: find.byKey(
                 const ValueKey('reference-keyboard-outline'),
               ),
             );
-            for (var i = 0; i < 20 && outline.evaluate().isEmpty; i++) {
-              await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-              await tester.pump();
-            }
             expect(outline, findsOneWidget);
-            if (spec.$1 == 'rescuer-settings-edit-focus') {
-              await Scrollable.ensureVisible(
-                tester.element(focusTarget),
-                alignment: .4,
-              );
-              await tester.pumpAndSettle();
-              expect(tester.getSize(outline), const Size(50, 50));
-            }
+            expect(tester.getSize(outline), const Size(50, 50));
+          }
+          if (spec.$1 == 'rescuer-settings-logout-focus') {
+            final account = find.widgetWithText(
+              TextButton,
+              'Cuenta y privacidad',
+            );
+            final logout = find.byType(DonorLogoutRow);
+            expect(
+              tester.getRect(logout).top - tester.getRect(account).bottom,
+              closeTo(12, 1),
+            );
           }
         }
         if (spec.$1 == 'profile-settings') {
@@ -3958,7 +3995,13 @@ void main() {
           }
         }
         if (spec.$1.startsWith('rescuer-settings-social-values')) {
-          final row = find.byType(SettingsDataRow).first;
+          final row = find
+              .descendant(
+                of: find.byType(RescuerSocialSection),
+                matching: find.byType(SettingsDataRow),
+              )
+              .first;
+          expect(container.read(routerProvider).state.uri.path, '/profile');
           await Scrollable.ensureVisible(tester.element(row), alignment: .35);
           await tester.pumpAndSettle();
           expect(find.text('@maria.rescata'), findsOneWidget);
@@ -3976,6 +4019,10 @@ void main() {
           await tester.tap(edit);
           await tester.pumpAndSettle();
           expect(find.byType(RescuerSocialDialog), findsOneWidget);
+          final dialogSave = find.descendant(
+            of: find.byType(RescuerSocialDialog),
+            matching: find.byType(FilledButton),
+          );
           if (spec.$1 == 'rescuer-settings-social-dialog') {
             final card = tester.getRect(
               find.byKey(const ValueKey('rescuer-social-card')),
@@ -3996,10 +4043,7 @@ void main() {
                   .height,
               closeTo(44, .1),
             );
-            expect(
-              tester.getSize(find.byType(FilledButton)).height,
-              closeTo(36, .1),
-            );
+            expect(tester.getSize(dialogSave).height, closeTo(36, .1));
             expect(
               tester.getSize(find.byType(OutlinedButton)).height,
               closeTo(48, .1),
@@ -4008,7 +4052,7 @@ void main() {
           expect(find.text('Editar $network'), findsOneWidget);
           if (spec.$1.endsWith('-valid')) {
             expect(
-              tester.widget<FilledButton>(find.byType(FilledButton)).onPressed,
+              tester.widget<FilledButton>(dialogSave).onPressed,
               isNotNull,
             );
           }
@@ -4693,6 +4737,88 @@ void main() {
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),
         );
+        if (spec.$1.contains('rescuer-profile-reference-metric-focus')) {
+          await tester.tap(find.byType(RescuerVerificationCard));
+          await tester.pumpAndSettle();
+          expect(container.read(routerProvider).state.uri.path, '/settings');
+          expect(find.text('Cuenta verificada'), findsOneWidget);
+          expect(repo.profile.mode, 'rescuer');
+        }
+        if (spec.$1.contains('rescuer-profile-reference-transfer-focus') ||
+            spec.$1 == 'rescuer-settings-footer') {
+          await tester.tap(
+            find.widgetWithText(TextButton, 'Cuenta y privacidad'),
+          );
+          await tester.pumpAndSettle();
+          if (spec.$1.contains('reference-transfer-focus')) {
+            expect(container.read(routerProvider).state.uri.path, '/settings');
+            final account = find.widgetWithText(
+              TextButton,
+              'Cuenta y privacidad',
+            );
+            await tester.ensureVisible(account);
+            await tester.pumpAndSettle();
+            await tester.tap(account);
+            await tester.pumpAndSettle();
+          }
+          expect(
+            container.read(routerProvider).state.uri.path,
+            '/settings/account',
+          );
+          final privacy = find.text('Privacidad y eliminación');
+          await tester.ensureVisible(privacy);
+          await tester.pumpAndSettle();
+          await tester.tap(privacy);
+          await tester.pumpAndSettle();
+          expect(
+            container.read(routerProvider).state.uri.path,
+            '/account-privacy',
+          );
+          expect(repo.profile.mode, 'rescuer');
+          expect(repo.profile.id, 'one');
+        }
+        if (spec.$1 == 'rescuer-settings-mode-focus') {
+          await tester.tap(
+            find.byKey(const ValueKey('rescuer-adoptant-banner')),
+          );
+          await tester.pumpAndSettle();
+          expect(repo.profile.mode, 'donor');
+          expect(repo.profile.id, 'one');
+          expect(container.read(routerProvider).state.uri.path, '/adoptions');
+        }
+        if (spec.$1 == 'rescuer-settings-logout-focus') {
+          await tester.tap(find.byType(DonorLogoutRow));
+          await tester.pumpAndSettle();
+          expect(repo.current, isNull);
+          expect(container.read(identityControllerProvider).identity, isNull);
+        }
+        if (spec.$1 == 'rescuer-settings-social-dialog-valid') {
+          final social = container.read(
+            rescuerProfileRepositoryProvider,
+          ) as SettingsSocialCaptureProfile;
+          expect(social.value['owner_id'], 'one');
+          expect(social.value['version'], 3);
+          final save = find.descendant(
+            of: find.byType(RescuerSocialDialog),
+            matching: find.byType(FilledButton),
+          );
+          await tester.tap(save);
+          await tester.pumpAndSettle();
+          expect(find.byType(RescuerSocialDialog), findsNothing);
+          expect(social.saves, 1);
+          expect(social.value['version'], 4);
+          expect(social.value['status'], 'draft');
+          expect(
+            social.value['instagram_url'],
+            'https://www.instagram.com/maria.rescata',
+          );
+          expect(social.value['owner_id'], 'one');
+          expect(
+            find.textContaining('Los cambios pasan por revisión.'),
+            findsOneWidget,
+          );
+          expect(repo.profile.mode, 'rescuer');
+        }
         if (spec.$1.startsWith('public-profile-state-loading') ||
             spec.$1.startsWith('public-profile-state-error')) {
           final fixture = community as PublicProfileStateCaptureCommunity;

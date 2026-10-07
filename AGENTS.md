@@ -1,5 +1,7 @@
 # Dopmi
 
+- Perfil vigente **MVP_CONTINUO**, aprobado el 6/10/2026: seguir `docs/mock-sync-workflow.md` y el plan/corte de `docs/parity-current-review.md`. Los lotes encadenan ejecución dentro del presupuesto global; no requieren nueva autorización. Auditoría profunda, comparación exhaustiva, emulador y aceptación instalada son QA posterior, no puertas del candidato MVP. Conservar decisiones de negocio, permisos y gates obligatorios del pipeline.
+
 - For mockup synchronization, read `docs/mock-sync-current.md` (short current checkpoint) and `docs/mock-sync-workflow.md` (stable protocol) immediately after `docs/codex-handoff.md`. They supersede historical pending parity items. Freeze one authorized reference SHA per delivery; later pushes require a new scoped inventory, not silent expansion. Preserve the finite batch/subagent method, a single Flutter queue, and already-approved gates. Do not reopen the completed bccd040 delivery or rerun consumed QA fixtures.
 
 - Read `docs/codex-handoff.md` first. H7 is merged in `codex/Dopmi` at `ba9f897`; H8 continues on `codex/design-foundation`. Read `docs/design-foundation.md` for visual work and `docs/legacy-retirement.md` before remote schema work; legacy is already archived. Verify the PR and current remote refs before selecting a base. Preserve local user changes.

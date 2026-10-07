@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -291,6 +292,32 @@ void main() {
     expect(intro, hasLength(1));
     expect(intro.single['body'], contains('¡Hola!'));
     expect(intro.single['body'], contains(post.name));
+    // Verify the production Dart contract through Auth/PostgREST on the
+    // disposable loopback backend, including daily retry deduplication.
+    await adopter.rpc(
+      'dopmi_set_adoption_measurement',
+      params: {'consent': true},
+    );
+    await reader.recordAdoptionView(post.id, consent: true);
+    await reader.recordAdoptionView(post.id, consent: true);
+    final ownerFunnel = RescueRepository(owner);
+    for (final period in ['week', 'month']) {
+      final metrics = await ownerFunnel.funnel(period);
+      expect(metrics.period, period);
+      expect(metrics.views, 1);
+      expect(metrics.favorites, 1);
+      expect(metrics.messages, 1);
+      expect(metrics.adoptions, 0);
+      expect(metrics.asOf.isBefore(metrics.periodStart), false);
+    }
+    final yesterday = await ownerFunnel.funnel('yesterday');
+    expect(yesterday.views, 0);
+    expect(yesterday.messages, 0);
+    expect((await RescueRepository(outsider).funnel('month')).views, 0);
+    await expectLater(
+      RescueRepository(client()).funnel('month'),
+      throwsA(isA<PostgrestException>()),
+    );
     expect((await author.thread(thread))['participant_name'], isNotEmpty);
     await expectLater(
       stranger.thread(thread),
