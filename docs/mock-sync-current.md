@@ -9,8 +9,8 @@ en `irlanda/apoyar-detalle-perfil`, delta desde bccd040 (1 commit / 6 archivos).
 No absorber pushes nuevos ni reabrir bccd cerrado 22/22.
 
 Base app `0484f8075c893497c10f6291553071eab7b4e5bf`; rama
-`codex/design-foundation`, PR #6 abierto/borrador. Producto en GitHub:
-`4f0275552647f322f3a2dfb9382e3d79c8929949`. Sin merge ni force-push.
+`codex/design-foundation`, PR #6 abierto/borrador. Producto base en GitHub `4f02755`; corrección publicada:
+`48bac1b3e8b3843a3b36114485469b0702f0aed0`. Sin merge ni force-push.
 Tres archivos propios de corrección se consolidan en esta continuación:
 rescue_test, rescuer_logout_test y rescuer_pending_evidence_test.
 Cambios ajenos excluidos; documentación de cierre se versiona por separado.
@@ -82,7 +82,9 @@ y centrar controles + hitTestable. No debilitar privacidad, logout ni no-save.
 Siguiente exacto con presupuesto renovado: comprobar CI del commit de
 corrección; resolver sólo lo fallido; si gate aprobado, CM/Play autorizados.
 No reiniciar tiempo/contadores. Objetivo se pausa efectivamente, sin loop.
-No procesos propios ni builds remotos activos; agentes terminados.
+Sin procesos propios; agentes terminados. CI remoto activo:
+[37574438050](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37574438050),
+en 48bac1b, pending al corte 05:03Z. No CM iniciado.
 
 Leer [protocolo estable](mock-sync-workflow.md) antes de ejecutar.
 Este checkpoint supersede pendientes antiguos; historial en progress y tablero.

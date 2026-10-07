@@ -224,6 +224,10 @@ Consolidar commit/push para gate remoto. Cierre al límite 05:03:46Z: verificaci
 y CM/Play pendientes; PRESUPUESTO_AGOTADO. Requiere presupuesto renovado para
 seguir CI y publicación; conservar contadores CM0/2 y tercera pasada consumida.
 
+Corrección en GitHub `48bac1b3e8b3843a3b36114485469b0702f0aed0`;
+[CI 37574438050](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37574438050)
+pending al corte 05:03Z. Consultar ese run al renovar presupuesto; no relanzar.
+
 ## Actualización bccd040 — 5 de octubre de 2026 (vigente)
 
 Corte fijo `bccd040d3a4b1c391bc6ab9eeccc479198868a7f`; base app
