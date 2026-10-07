@@ -11,7 +11,13 @@ en segundo intento. Migración DEV aplicada una vez como 20261007034858;
 postflight ACL/RLS/cobertura comprobado (migration-history-audit).
 L2: ocho grupos integrados por tres agentes. Analyze inicial sin incidencias;
 configuración 16/16. Primera pasada Flutter 81/88; fixtures y visibilidad
-corregidos, segunda pasada afectada 37/37. Gate consolidado aún pendiente.
+corregidos, segunda pasada afectada 37/37. CI 37569196187 en 4f02755: backend 612/612, pgTAP 294/294, integración
+4/4 e iOS aprobados. Flutter falló cinco tests heredados. Segunda/final pasada
+L2: 29/32 local; tres fixtures/visibilidad pendientes. Límite dos pasadas
+consumido, propuesta privada no aplicada y nueva autorización requerida.
+Estado BLOQUEADO; objetivo pausado al cierre, sin CM/build/versionCode nuevo.
+Tres archivos test de corrección locales sin commit; producto en GitHub 4f02755.
+Consumo ~38/90 min, no renovar. Gate consolidado aún pendiente.
 Play y aceptación aún pendientes. Presupuesto 90 min desde 03:33:46Z;
 cierre 04:53:46Z, parada 05:03:46Z. Cambios ajenos conservados.
 Detalles y estado vivo: mock-sync-current y único tablero parity-current-review.

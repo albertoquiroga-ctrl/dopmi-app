@@ -155,6 +155,64 @@ recursión. Presupuesto consumido: aproximadamente 22 minutos. Siguiente:
 terminar las comprobaciones Flutter pendientes, consolidar el gate completo
 en CI y después solicitar el candidato único a Codemagic/Play.
 
+
+Producto consolidado y push: `4f0275552647f322f3a2dfb9382e3d79c8929949`.
+Gate full [37569196187](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37569196187)
+en curso; duplicado push 37569192608 cancelado por concurrencia del pipeline.
+No gates desactivados, cambios ajenos publicados ni CM iniciado.
+
+### QA posterior preparada (sin ejecutar en esta entrega MVP)
+
+- Instalar la versión publicada desde Play y verificar package/versionCode con
+  ADB en el Samsung real; luego recorrer Inicio, Perfil, redes, Apoyar y Adoptar.
+- Comparar el SHA congelado: grid, modal de período, cinco consejos, paneles y
+  navegación, escala normal/115%/320px al 200%, Back y cierre por fondo.
+- Comprobar períodos con actividad real DEV consentida nueva: no autor/precarga,
+  repetición diaria, cambio de jornada México, favoritos retirados y chat leído
+  frente a respuesta. No reutilizar cuentas ni fixtures bccd consumidos.
+- Revisar redes con cancelación, URL inválida, conflicto de versión y retiro
+  público; corroborar que sólo el borrador propio cambia y requiere moderación.
+- Auditoría posterior del delta: permisos del nuevo RPC/tablas, aislamiento de
+  agregados y revisión de retención/consentimiento diario. Dinero sólo test.
+- Optimización posterior: medir consultas por período y refrescos del Inicio
+  antes de proponer índices/caché; pulido de espaciado/ornamentos después de
+  aceptación funcional, sin alterar los gestos esenciales.
+
+
+Gate parcial comprobado en 4f02755: web/admin/config y backend 612/612;
+PostgreSQL pgTAP 294/294 (37 nuevos), concurrencia Guardian/contacto y
+Auth/Storage/Realtime 4/4 aprobados. Nuevo contrato tipado por PostgREST
+con vistas/favoritos/contactos reales e aislamiento aprobado en loopback.
+Flutter completo/capturas/Android e iOS aún en curso; no atribuir QA instalada.
+
+
+CI 37569196187: Flutter falló cinco casos heredados. Segunda pasada agrupada
+L2 (2/2): test logout debe entrar a Perfil, test evidencia debe usar acceso
+real vigente y quick Mensajes debe abrir panel local antes del inbox. No
+se eliminan controles ni aserciones. Producto/SQL/config iguales a 4f02755;
+cambian exclusivamente rutas y fixtures de pruebas. Comprobación pendiente.
+
+### Cierre del tramo — BLOQUEADO, 7/10 04:12Z
+
+Dos pasadas agrupadas de L2 consumidas. Segunda comprobación local de tres
+archivos: 29/32; tres fallos restantes. Logout busca DonorLogoutRow antes de
+desplazar ListView y construir su hijo lazy (dos casos). Evidencia al 200%
+no centra el control antes del toque (un caso). No producto roto demostrado,
+pero el gate obligatorio no se considera aprobado y no se inicia Codemagic.
+
+Propuesta concreta no aplicada, privada: .tools/update9ced/proposed-extra-pass.patch.
+Mueve el assert de logout después del scroll y centra selector/quick Apoyar
+con ensureVisible alignment .5 + hitTestable, preservando todos los asserts
+de identidad, URL, no guardado y cero transiciones automáticas. Requiere
+autorizar una pasada adicional: no efectuar una tercera por iniciativa propia.
+
+Producto en GitHub 4f02755; tres tests de corrección locales sin commit.
+DEV desplegado 20261007034858; backend/PG/integración/iOS aprobados en CI
+37569196187. Android/capturas quedaron sin ejecutar tras fallo Flutter.
+CM 0/2, sin build/versionCode nuevos ni publicación. QA instalada pendiente.
+Consumo ~38/90 min; presupuesto no agotado, contadores no se reinician.
+Objetivo pausado al cierre autorizado; agentes terminados y sin procesos propios.
+
 ## Actualización bccd040 — 5 de octubre de 2026 (vigente)
 
 Corte fijo `bccd040d3a4b1c391bc6ab9eeccc479198868a7f`; base app
