@@ -1,5 +1,25 @@
 # Dopmi — registro de avance
 
+## 7/10/2026 — Corrección301 publicada; actualización Samsung pendiente
+
+Codemagic6ac70dd3fd5fe9df9e910455 terminó03:47:44Z8/10 con success en AAB y
+Publishing. Source281fc378abd9de8b9118419b53e51813c7e411a1,934tests y analyze
+aprobados. AAB2.3.3(301),86,280,975bytes. Build2/2 consumido, sin relanzamiento.
+Play Console consultado directamente: release148, canal Internal activo,
+Available to internal testers y enlace de bundle para301. Producción intacta.
+Samsung mantiene300; fichaPlay consultada dos veces después de publicación
+sólo ofrece Abrir. No atribuir QA instalada301 ni reinstalar/borrar datos.
+Siguiente: propagación Play, actualizar conservando sesión y QA sólo delta.
+
+## 7/10/2026 — Gate exacto del candidato281fc37 aprobado en CM
+
+Build6ac70dd3fd5fe9df9e910455: Static analysis success03:31:39Z y Unit and
+widget tests success03:39:38Z8/10. Log consultado directamente:934 All tests
+passed. AAB firmado en curso desde03:39:38Z; no publicación atribuida todavía.
+Samsung conectado, escala original1.15, ficha Play preparada, aún300.
+Reconsulta de rama mock al cierre falló por conexión GitHub; conservar9ced
+congelado y no afirmar una consulta viva nueva exitosa. Última exitosa sin cambio.
+
 ## 7/10/2026 — Corrección Codemagic2/2 enviada
 
 Candidato281fc378abd9de8b9118419b53e51813c7e411a1 publicado en rama

@@ -40,9 +40,18 @@ aprobado completo, source9708a7575ebbf19ec8ebe2a4262bbd18f3e44aff.
 Ajuste final de backdrop/elevación/altura88%:5checks46914 aprobados, analyze60233
 sin incidencias; reutilizar suites intactas y compilar SHA final en CM2/2.
 CM2/2 enviado03:28:22Z8/10, build6ac70dd3fd5fe9df9e910455; queued comprobado,
-source281fc378abd9de8b9118419b53e51813c7e411a1. Siguiente: pipeline/Publishing,
+source281fc378abd9de8b9118419b53e51813c7e411a1. Analyze y934tests aprobados
+en CM exacto; AAB en curso. Siguiente: Publishing,
 Play y QA sólo delta instalada. No relanzar ni ampliar inventario.
 Play/Samsung300 aún anterior. No repetir QA anterior.
+
+## Candidato corregido301 publicado — 7/10/2026
+
+CM6ac70dd3fd5fe9df9e910455/source281fc37 finished03:47:44Z8/10; analyze,
+934tests, AAB y Publishing success. AAB2.3.3(301). Play Console: release148,
+Internal activo, disponible para testers, bundle301 comprobado. CM2/2 cerrado.
+Samsung aún300; ficha Play ofrece Abrir después de dos consultas. Esperar
+propagación sin reinstalar ni borrar datos; QA instalada301 todavía pendiente.
 
 ## Tiempo, límites y siguiente acción
 
