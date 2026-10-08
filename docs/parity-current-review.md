@@ -1,5 +1,24 @@
 # Cierre de paridad — tablero vigente
 
+## 7/10/2026 — Gate91aa8cf aprobado; control nativo de período preservado
+
+CI37718107631/job113119217981 terminó success: formato, analyze, suite móvil,
+dos capturadores y APK aprobados. Artifact11525041878 de capturas no expirado.
+CM todavía1/2, ninguna corrección publicada. Antes del build final, preservado
+RadioGroup nativo bajo el selector cuadrado: semántica, flechas y foco visibles
+sin cambiar geometría, período ni callbacks. InkWell sigue con área48px.
+La primera prueba auxiliar de Tab falló también en control anterior y no prueba
+regresión: descartada como evidencia. Prueba corregida con foco explícito en el
+radio seleccionado99491 aprobada1/1 en2s: flechaArriba cambia mes→semana y
+consulta el agregado real. Guardada como rescuer_home_period_keyboard_test.dart.
+
+Capturas200%67577 y7testsdelta aprobados9/9 en11s; imágenes examinadas.
+Primer intento2902 de tips capturó fondo por tap antes del scroll asentado;
+corregido pumpAndSettle y assertion Dialog. Repetición71979 aprobada2/2 en3s.
+No atribuir fondo como diálogo validado. Evidencia normal previa y texto grande
+actual conservadas. Gate91 corresponde al producto previo; nuevo control
+nativo requiere actualizar sólo gate móvil, reutilizando backend/iOS intactos.
+
 ## 7/10/2026 — Gate móvil consolidado del delta en curso
 
 Rama/remoto/PR6 verificados: codex/design-foundation91aa8cf34e82ce119ec47115e9426b0142b8dbf7;

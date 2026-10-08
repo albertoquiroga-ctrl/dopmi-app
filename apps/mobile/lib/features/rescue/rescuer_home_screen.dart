@@ -609,61 +609,96 @@ class _HomePeriodDialogState extends State<_HomePeriodDialog> {
                 const SizedBox(height: 8),
                 const Text('Período', style: _homeHeading),
                 const SizedBox(height: 8),
-                for (final option in const [
-                  ('yesterday', 'Ayer'),
-                  ('week', 'Esta semana'),
-                  ('month', 'Este mes'),
-                ])
-                  Semantics(
-                    checked: selected == option.$1,
-                    inMutuallyExclusiveGroup: true,
-                    child: InkWell(
-                      key: ValueKey('home-period-${option.$1}'),
-                      onTap: () {
-                        setState(() => selected = option.$1);
-                        widget.onChanged(option.$1);
-                      },
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(minHeight: 48),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 16,
-                              height: 16,
-                              decoration: BoxDecoration(
-                                color: selected == option.$1
-                                    ? purple
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(4),
-                                border: Border.all(
-                                  color: selected == option.$1
-                                      ? purple
-                                      : const Color(0xffe3e4ed),
+                RadioGroup<String>(
+                  groupValue: selected,
+                  onChanged: (value) {
+                    if (value == null) return;
+                    setState(() => selected = value);
+                    widget.onChanged(value);
+                  },
+                  child: Column(
+                    children: [
+                      for (final option in const [
+                        ('yesterday', 'Ayer'),
+                        ('week', 'Esta semana'),
+                        ('month', 'Este mes'),
+                      ])
+                        MergeSemantics(
+                          child: ReferenceFocusOutline(
+                            radius: 8,
+                            child: InkWell(
+                              key: ValueKey('home-period-${option.$1}'),
+                              canRequestFocus: false,
+                              onTap: () {
+                                setState(() => selected = option.$1);
+                                widget.onChanged(option.$1);
+                              },
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  minHeight: 48,
+                                ),
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 16,
+                                      height: 48,
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          Opacity(
+                                            opacity: 0,
+                                            alwaysIncludeSemantics: true,
+                                            child: Radio<String>(
+                                              value: option.$1,
+                                            ),
+                                          ),
+                                          IgnorePointer(
+                                            child: Container(
+                                              width: 16,
+                                              height: 16,
+                                              decoration: BoxDecoration(
+                                                color: selected == option.$1
+                                                    ? purple
+                                                    : Colors.transparent,
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
+                                                border: Border.all(
+                                                  color: selected == option.$1
+                                                      ? purple
+                                                      : const Color(0xffe3e4ed),
+                                                ),
+                                              ),
+                                              child: selected == option.$1
+                                                  ? const Icon(
+                                                      Icons.check,
+                                                      size: 12,
+                                                      color: Colors.white,
+                                                    )
+                                                  : null,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        option.$2,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          height: 1.3,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              child: selected == option.$1
-                                  ? const Icon(
-                                      Icons.check,
-                                      size: 12,
-                                      color: Colors.white,
-                                    )
-                                  : null,
                             ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                option.$2,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  height: 1.3,
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
+                    ],
                   ),
+                ),
                 const SizedBox(height: 16),
                 FilledButton(
                   onPressed: () => Navigator.of(context).pop(selected),
