@@ -1,5 +1,20 @@
 # Dopmi — registro de avance
 
+## 7/10/2026 — Criterio de eficiencia confirmado; QA física acotada
+
+Titular exige sólo diferencias perceptibles, sin microajustes ni ingeniería
+innecesaria. Reutilizar evidencia aprobada; repetir únicamente lo invalidado
+por un cambio/falla nueva. Autoriza subagentes de eficiencia si aportan valor.
+Una revisión delegada sólo lectura confirmó: resta abrir/cerrar/desplazar los
+diálogos de301 instalada; no repetir Flutter/CI/CM/backend/iOS/capturas anteriores.
+Un intento instalado volvió a mostrar protección contra toques accidentales.
+Detenidas pulsaciones repetitivas; no nuevo defecto de producto demostrado.
+Cancelado modal de cambio de modo: Perfil Adoptante restaurado, font_scale1.15
+comprobada; sesión intacta, sin activar Rescatista ni pagos/mensajes.
+No cambios de código, suites ni builds en esta continuación. Source9ced
+congelado y push4369 fuera de alcance. Siguiente acción única: teléfono con
+pantalla arriba/sensor descubierto, QA focalizada restante y cierre documental.
+
 ## 7/10/2026 — Samsung actualizado301; bloqueo físico durante QA
 
 ADB dumpsys confirmó com.mycompany.dopmi2.3.3(301), installercom.android.vending.

@@ -1,5 +1,17 @@
 # Checkpoint de sincronización — 7 de octubre de 2026
 
+## Estado vigente — eficiencia y QA focalizada301
+
+Delta congelada9ced implementada/comparada;301 publicada e instalada desde Play.
+934tests/analyze en candidato exacto281fc37 aprobados; CM2/2 cerrado.
+Continuación del titular: sólo diferencias perceptibles, sin microajustes ni
+repetición de evidencia intacta. Revisión delegada acotada confirma este corte.
+Resta QA instalada de filtro/tips (abrir, cerrar, scroll), sin nueva suite/build.
+Protección física del Samsung reapareció en un intento: parar pulsaciones
+repetitivas hasta pantalla arriba/sensor descubierto. Perfil Adoptante y
+escala1.15 restaurados/comprobados; ninguna escritura de contenido/pago/mensaje.
+No absorber4369 posterior. Los estados300 inferiores son historial supersedido.
+
 ## Entrega activa 9ced070 — MVP_CONTINUO
 
 Plan completo aprobado y único tablero: [parity-current-review.md](parity-current-review.md).
