@@ -27,7 +27,12 @@ Producto corregido2a1c2a2 en GitHub; recaptura normal/115%/320×640200%
 aprobada e inspeccionada. Suite99637 aprobada55/55: captura, introducción,
 rutas, swipe y filtros. Source9ced ejecutado y estilo de entrada450ms/curva
 confirmado; recuperación Source es explícitamente simulada, conservar real.
-Siguiente: PET/galería/contacto cancelado y PUBLISH/borradores. Play300 anterior a
+PET/PUBLISH:60 comprobaciones locales aprobadas (42+18), galería, preview,
+borradores y controles. Samsung300 confirmó contacto cancelado desde mazo y
+detalle, Back conserva publicación; sin mensajes ni escritura de borradores.
+Falta galería múltiple nativa/contraste de más estados y fixtures nuevos.
+Siguiente: PUBLIC/RP/sociales y preparación de estados propios de QA.
+Última consulta GitHub443 falló por conexión; revalidar remotos al continuar. Play300 anterior a
 esta corrección. Una cola Flutter; sigue auditoría por familia/estado/movimiento.
 Objetivo integral activo; candidato publicado y aceptación global separados.
 

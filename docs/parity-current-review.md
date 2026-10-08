@@ -106,6 +106,42 @@ perfil verificado, backend nuevo consentido, gates agrupados y QA del candidato
 corregido instalado. Siguiente: galería PET/contacto cancelado y formularios
 PUBLISH en estados de borrador, con contraparteSource y límites privados.
 
+## 7/10/2026 — QA integral PET/PUBLISH: galería y contacto cancelado
+
+Fuente productiva2a1c2a2, documental a369282. Sesión85988 exit0,42/42 en42s:
+case_gallery_lifecycle, photo_preview, case_publication, publication_frame,
+publication_choice_press, publication_age y publication_personality. Sesión
+83821 exit0,18/18 en13s: adoption_detail_layout. Repositorios sintéticos locales;
+no acreditar envío/aprobación remoto ni picker del teléfono por estos tests.
+
+Cobertura inspeccionada: galería mantiene página al refrescar y reinicia ante
+otra entidad/fotos; swipe/puntos/semántica se sincronizan; sólo paths aprobados,
+una foto sin controles; preview sin acciones externas; barra fija/área segura
+y scroll200%. Publicación cubre respuesta real del repositorio antes del éxito,
+rechazo, Back conserva valores, cancelar picker, seis fotos, tres rasgos nuevos
+sin borrar históricos, edad/convivencia independientes y cuidado persistido.
+
+Samsung instalado300: Contactar abre Conectar con la mascota actual. Todavía no
+regresa a la misma tarjeta. Foto abre detalle; Quiero saber más abre el mismo
+diálogo; AndroidBack vuelve al detalle y luego al mismo mazo. Sin confirmar
+contacto ni enviar mensaje; favorito existente y sesión preservados. Capturas
+privadas pet-contact-dialog y XMLpet-* en .tools/update9ced/device-qa.
+La publicación observada tiene una foto: no prueba carrusel múltiple nativo.
+
+Source9ced AdoptStartDialog conserva título, dos acciones y cierre por fondo;
+Flutter mantiene noAnimation y aviso adicional del saludo transaccional.
+«La persona rescatista» evita inferir género desde nombre. Son diferencias de
+negocio aprobadas, no defecto visual que deba eliminarse. Sin defecto nuevo
+demostrado en este tramo. PET/PUBLISH no cerrados integralmente: falta contraste
+visual vigente de estados múltiples y ejecución nativa de escritura con fixture
+nuevo propio. Cuenta del titular en revisión y borradores fuera de fixtures.
+
+Consulta remota GitHub falló por conexión443; no indica cambio de ref ni pérdida
+del commit. Registrar lectura pendiente sin repetir gates por conectividad.
+Siguiente: revisar evidencias PUBLIC/RP/sociales y preparar los estados faltantes
+con fixtures nuevos separados; conservar pendiente publicación de la corrección
+2a1c2a2 y gates consolidados al terminar diferencias demostradas.
+
 ## Plan aprobado: 9ced070 / MVP_CONTINUO — 6/10/2026
 
 El titular autorizó entregar todo el delta esencial hasta obtener un candidato
