@@ -1,5 +1,17 @@
 # Dopmi — registro de avance
 
+## 7/10/2026 — Samsung actualizado301; bloqueo físico durante QA
+
+ADB dumpsys confirmó com.mycompany.dopmi2.3.3(301), installercom.android.vending.
+Actualización desde Play conserva sesión: Adoptar abre Rocky Demo y Perfil
+con identidad existente. No pagos/mensajes/escrituras de contenido.
+Teléfono activa protección contra toques accidentales tras las pulsaciones;
+solicitado colocarlo pantalla arriba/sensor descubierto. QA delta final no
+atribuida mientras persista este bloqueo físico. Escala sigue1.15.
+Rama mock reconsultada exitosamente:4369d22da2a86c02a0d263b8b2214401430fa826.
+Push posterior separado: esta entrega conserva congelado9ced070, sin absorber
+nuevo código ni iniciar inventario posterior silenciosamente.
+
 ## 7/10/2026 — Corrección301 publicada; actualización Samsung pendiente
 
 Codemagic6ac70dd3fd5fe9df9e910455 terminó03:47:44Z8/10 con success en AAB y

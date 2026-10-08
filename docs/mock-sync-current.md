@@ -50,8 +50,10 @@ Play/Samsung300 aún anterior. No repetir QA anterior.
 CM6ac70dd3fd5fe9df9e910455/source281fc37 finished03:47:44Z8/10; analyze,
 934tests, AAB y Publishing success. AAB2.3.3(301). Play Console: release148,
 Internal activo, disponible para testers, bundle301 comprobado. CM2/2 cerrado.
-Samsung aún300; ficha Play ofrece Abrir después de dos consultas. Esperar
-propagación sin reinstalar ni borrar datos; QA instalada301 todavía pendiente.
+Samsung actualizado301 desde Play, sesión conservada. Protección contra
+toques accidentales bloquea QA final; solicitado pantalla arriba/sensor libre.
+QA delta instalada pendiente. Rama mock viva ahora4369d22 (push posterior),
+fuera del inventario congelado9ced. No ampliar esta entrega.
 
 ## Tiempo, límites y siguiente acción
 
