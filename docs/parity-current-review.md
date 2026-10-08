@@ -1,5 +1,19 @@
 # Cierre de paridad — tablero vigente
 
+## 7/10/2026 — Gate móvil consolidado del delta en curso
+
+Rama/remoto/PR6 verificados: codex/design-foundation91aa8cf34e82ce119ec47115e9426b0142b8dbf7;
+PR abierto/borrador, baseba9f897. Mock remoto9ced07094635c076d35589647fff26371d8bc791
+sin cambios. Gate obligatorio scope mobile despachado HTTP204 y comprobado
+in_progress: https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37718107631
+Job113119217981 aprobó setup/dependencias/formato; análisis/tests en curso.
+No atribuir resultado final ni APK. Reutilizar gates full backend/iOS anteriores
+por ausencia de cambios allí. CM sigue1/2: no lanzar corrección antes del gate.
+SamsungR5CY51260VK conectado; paquetecom.mycompany.dopmi2.3.3(300) comprobado.
+No instalada corrección. Servidor propio1254 detenido, viewport restaurado;
+ninguna cola Flutter local activa. Siguiente: resultadoCI, correcciónCM2/2,
+verificar publicaciónPlay por separado y actualización/QA sólo delta instalada.
+
 ## 7/10/2026 — Delta9ced: herramienta y paneles focalizados
 
 Captura83459 falló al buscar Acciones pendientes, título retirado por la delta.

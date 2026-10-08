@@ -32,8 +32,10 @@ Paneles/actividad:5capturas aprobadas85397; ancla del capturador actualizada
 a Mis pendientes. Comparación esencial cerrada, con excepciones accesibles y
 notas de negocio preservadas. Siguiente: gate móvil y candidato corregido2/2.
 No nueva aceptación anterior requerida, ni alteración de cuenta del titular.
-Estado: delta implementado/publicado300, corrección propia comprobada en GitHub,
-comparación visual focalizada y candidato corregido pendientes.
+Estado: comparación esencial delta cerrada y correcciones en91aa8cf;
+[gate móvil37718107631](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37718107631)
+en curso, aún sin resultado final. CM1/2; siguiente build corregido tras gate.
+Play/Samsung300 aún anterior. No repetir QA anterior.
 
 ## Tiempo, límites y siguiente acción
 
