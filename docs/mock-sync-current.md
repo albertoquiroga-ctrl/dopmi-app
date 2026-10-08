@@ -31,8 +31,11 @@ PET/PUBLISH:60 comprobaciones locales aprobadas (42+18), galería, preview,
 borradores y controles. Samsung300 confirmó contacto cancelado desde mazo y
 detalle, Back conserva publicación; sin mensajes ni escritura de borradores.
 Falta galería múltiple nativa/contraste de más estados y fixtures nuevos.
-Siguiente: PUBLIC/RP/sociales y preparación de estados propios de QA.
-Última consulta GitHub443 falló por conexión; revalidar remotos al continuar. Play300 anterior a
+PUBLIC/RP:47 pruebas locales aprobadas; edición moderada, URL/error/versión,
+cancelación, aislamiento y fotos privadas. Samsung300 abrió perfil público y
+sus tres pestañas, Back restauró detalle/mazo; perfil demo vacío, no acredita
+estado verificado. Remotos revalidados, conexión443 restaurada.
+Siguiente: MATCH/SAVED/CHAT, notificaciones/impacto y estados propios de QA. Play300 anterior a
 esta corrección. Una cola Flutter; sigue auditoría por familia/estado/movimiento.
 Objetivo integral activo; candidato publicado y aceptación global separados.
 

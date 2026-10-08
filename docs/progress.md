@@ -1,5 +1,41 @@
 # Dopmi — registro de avance
 
+## 7/10/2026 — QA integral PUBLIC/RP: perfil y redes moderadas
+
+Fuente productiva2a1c2a2; base documental8d99610. HEAD remoto app coincidente
+y referencia9ced070 sin cambios, conectividad restaurada. Sesión30611 exit0,
+35/35 en27s en ocho suites (rescuer_profile_9ced, account_social,
+public_profile_layout, rescuer_profile_refresh, rescuer_profile_edit_navigation,
+rescuer_profile_access, public_profile_repository, public_profile_photo_draft).
+Account_social cubre OAuth de acceso, no edición de redes del perfil; distinguir
+su alcance. Suite específica rescuer_settings_details14301 exit0,12/12 en8s.
+
+Cobertura de redes inspeccionada: URLhost inválido impide guardar; error de
+versión conserva diálogo y no muestra éxito; reintento y guardado moderado
+versionado; doble toque bloqueado mientras escribe; cerrar/fondo/Back sin
+escribir; logout/cambio de sesión retira edición. Guardar Instagram conserva
+campos y produce draft/version4, no publicación automática. Perfil9ced mueve
+redes a Perfil aprobado y conserva Connect en Configuración. Foto pública
+permanece local hasta guardar y reintento reutiliza upload. Repositorios de
+pruebas sintéticos; no atribuir revisión remota ni OAuth instalado a esta suite.
+
+Samsung300: mascota→responsable abrió perfil público. Actividad, En adopción
+y Casos mostraron sus respectivos vacíos; Back volvió al detalle y luego a la
+misma tarjeta. Sin guardar rescatista, reportar, compartir ni enviar mensaje.
+Evidencia XMLpublic-* y PNGpublic-native privada. Perfil observado es demo no
+verificado: no acredita portfolio aprobado/no vacío ni redes verificadas. RPC
+Flutter solicita primero perfil moderado y fallback básico; métricas verificadas
+revocadas invalidan resultado, cubierto por public_profile_repository.
+No modificar verificación del titular para fabricar un estado de QA.
+
+Resultado:47 pruebas locales aprobadas y navegación nativa pública comprobada;
+ningún defecto nuevo demostrado. PUBLIC/RP siguen pendientes de contraste
+visual vigente de todos sus estados y flujo remoto con fixtures nuevos propios.
+No cambios productivos ni nuevo build. Siguiente grupo: MATCH/SAVED/CHAT,
+notificaciones y actividad/impacto, conservando privacidad y sin enviar mensajes
+a usuarios; completar inventario de estados pendientes antes del gate consolidado.
+
+
 ## 7/10/2026 — QA integral PET/PUBLISH: galería y contacto cancelado
 
 Fuente productiva2a1c2a2, documental a369282. Sesión85988 exit0,42/42 en42s:
