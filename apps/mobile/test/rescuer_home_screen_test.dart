@@ -519,6 +519,23 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('normal funnel cards preserve the source 92 pixel geometry', (
+    tester,
+  ) async {
+    final fonts = FontLoader('Inter')
+      ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
+    await fonts.load();
+    await pumpHome(tester, HomeRescue());
+    final card = find.byKey(const ValueKey('home-metric-donors'));
+    expect(tester.getSize(card).height, closeTo(92, .01));
+    final label = find.descendant(of: card, matching: find.text('Donantes'));
+    expect(
+      tester.getTopLeft(label).dy - tester.getTopLeft(card).dy,
+      closeTo(51, .01),
+    );
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('program tabs reveal full support label by drag at 200 percent', (
     tester,
   ) async {

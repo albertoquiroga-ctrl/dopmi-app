@@ -1,5 +1,26 @@
 # Dopmi — registro de avance
 
+## 7/10/2026 — Delta9ced: geometría de las tarjetas de Inicio
+
+Contraste Source9ced ejecutado Chrome377×852 /rescuer: tarjetas medidas92px,
+padding10/10/8, ornamento48×32 y copy a51.05px del borde superior. CSS confirma
+rejilla192px/2filas/gap8 y descripción en una línea con ellipsis. Flutter dejaba
+la descripción envolver, alargando las tarjetas normales. Corregida geometría:
+ornamento48×32, espacio9 antes del título y hint de una línea para escala normal;
+texto ampliado conserva crecimiento/lectura y semántica completa.
+No alterar datos netos, moderación ni eliminar la nota de alcance de métricas.
+
+Suite afectada82786 exit0,14/14 en6s, incluyendo92px/copy51px y320/200%.
+Recaptura final62004 exit0,3/3 en3s normal/115%/320200%; normal inspeccionada.
+Sombras reales activadas; capturador auxiliar restauró debugDisableShadows
+antes del invariant final tras un fallo exclusivo de herramienta63414.
+Imágenes actualizadas en design-reviews/parity-integral9ced. No publicación
+nueva: Play300 anterior a estas correcciones. Analyzer focal87633 exit0, sin incidencias en50.4s.
+Viewport restaurado y servidor propio10972 detenido; teléfono intacto.
+Siguiente: comparación visual de Perfil/redes, modal período/tips y encabezados/
+final del mismo delta; no reabrir familias anteriores.
+
+
 ## 7/10/2026 — Corte de QA acotado por el titular: sólo delta9ced
 
 El titular aclara: «Solo tienes que asegurarte de que la delta se vea igual,

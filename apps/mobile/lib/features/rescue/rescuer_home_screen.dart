@@ -799,13 +799,15 @@ class _HomeFunnelCard extends StatelessWidget {
               if (MediaQuery.textScalerOf(context).scale(22) <= 28)
                 ExcludeSemantics(
                   child: CustomPaint(
-                    size: const Size(40, 28),
+                    size: const Size(48, 32),
                     painter: _FunnelDecoration(tone),
                   ),
                 ),
             ],
           ),
-          const SizedBox(height: 4),
+          SizedBox(
+            height: MediaQuery.textScalerOf(context).scale(22) <= 28 ? 9 : 4,
+          ),
           Text(
             entry.$3,
             style: const TextStyle(
@@ -818,6 +820,12 @@ class _HomeFunnelCard extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             entry.$4,
+            maxLines: MediaQuery.textScalerOf(context).scale(22) <= 28
+                ? 1
+                : null,
+            overflow: MediaQuery.textScalerOf(context).scale(22) <= 28
+                ? TextOverflow.ellipsis
+                : TextOverflow.visible,
             style: const TextStyle(
               fontSize: 10,
               height: 1.15,

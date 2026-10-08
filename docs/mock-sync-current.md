@@ -21,7 +21,10 @@ Sólo UX01–07/09; tiendaUX08 excluida. No repetir pruebas/fixtures intactas ni
 reabrir entregas cerradas. Source9ced congelado. Cambios previos preservados.
 Corrección propia2a1c2a2 de pestañas320/200% validada:13tests, analyze limpio,
 recapturas normal/115%/200%; todavía no incorporada a Play300.
-Siguiente: comparación Source/Flutter del delta (Inicio, métricas/período/tips/
+Nueva comparación Source377×852 detectó tarjetas alargadas: corregidas92px,
+hint de una línea y ornamento48×32;14tests y3recapturas aprobadas. Analyzer87633
+aprobado sin incidencias. La escala ampliada conserva texto completo.
+Siguiente: comparación Source/Flutter del resto del delta (Inicio, métricas/período/tips/
 actividad, Perfil/redes, encabezados de Apoyar y final de Adoptar), resolver
 sólo diferencias demostradas y ejecutar gates afectados/candidato consolidado.
 No nueva aceptación anterior requerida, ni alteración de cuenta del titular.
