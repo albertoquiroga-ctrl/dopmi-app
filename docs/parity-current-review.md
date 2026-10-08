@@ -1,5 +1,21 @@
 # Cierre de paridad — tablero vigente
 
+## 7/10/2026 — Delta9ced: herramienta y paneles focalizados
+
+Captura83459 falló al buscar Acciones pendientes, título retirado por la delta.
+Corregido ancla a Mis pendientes, sin relajar assertions ni tolerancias.
+Repetición85397 aprobada1/1 en9s con5estados exactos: resúmenes adopción/apoyo,
+pagos, acciones y actividad Perfil. Capturas inspeccionadas; panel gris,
+jerarquía y selección corresponden al mock, con datos reales/variables y nota
+obligatoria de neto/foto actual. Perfil sin movimiento conserva estado útil.
+Las capturas no verifican escrituras remotas nuevas ni aceptan dinero real.
+
+Correcciones producto1074874 yPerfilba5afc1; source9ced congelado. Conservar
+excepciones accesibles (área táctil48) y negocio (nota métrica, moderación).
+Comparación visual esencial del delta cerrada, gate móvil y build corregido2/2
+pendientes. No aceptación atribuida a Irlanda. Nota documental: normalizado
+sólo el bloque propio tras error de codificación Windows; histórico preservado.
+
 ## 7/10/2026 — Delta9ced: período, tips y final de Adoptar
 
 Source9ced Chrome377×852 comparado con capturas Flutter aisladas. Período y tips

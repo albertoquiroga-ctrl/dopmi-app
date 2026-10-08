@@ -3283,7 +3283,7 @@ void main() {
           spec.$1.startsWith('rescuer-home-evidence') ||
           spec.$1.startsWith('rescuer-home-empty')) {
         await Scrollable.ensureVisible(
-          tester.element(find.text('Acciones pendientes')),
+          tester.element(find.text('Mis pendientes')),
           alignment: 0,
         );
         await tester.pumpAndSettle();

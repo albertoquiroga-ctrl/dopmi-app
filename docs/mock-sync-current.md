@@ -28,9 +28,9 @@ Perfil/redes comparados: margen12px y Cancelar morado600/borde corregidos;
 4capturas normal/200% aprobadas97400. Correcciones aún fuera de Play300.
 Período/tips corregidos22px/cierre/espacios;23tests aprobados, analyze limpio.
 Final Adoptar y encabezado Apoyar comparados; posiciones coherentes.
-Siguiente: comparación puntual de paneles/actividad del delta (Inicio, métricas/período/tips/
-actividad, Perfil/redes, encabezados de Apoyar y final de Adoptar), resolver
-sólo diferencias demostradas y ejecutar gates afectados/candidato consolidado.
+Paneles/actividad:5capturas aprobadas85397; ancla del capturador actualizada
+a Mis pendientes. Comparación esencial cerrada, con excepciones accesibles y
+notas de negocio preservadas. Siguiente: gate móvil y candidato corregido2/2.
 No nueva aceptación anterior requerida, ni alteración de cuenta del titular.
 Estado: delta implementado/publicado300, corrección propia comprobada en GitHub,
 comparación visual focalizada y candidato corregido pendientes.

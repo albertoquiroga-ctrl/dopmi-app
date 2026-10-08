@@ -1,46 +1,41 @@
 # Dopmi — registro de avance
 
+## 7/10/2026 — Delta9ced: herramienta y paneles focalizados
+
+Captura83459 falló al buscar Acciones pendientes, título retirado por la delta.
+Corregido ancla a Mis pendientes, sin relajar assertions ni tolerancias.
+Repetición85397 aprobada1/1 en9s con5estados exactos: resúmenes adopción/apoyo,
+pagos, acciones y actividad Perfil. Capturas inspeccionadas; panel gris,
+jerarquía y selección corresponden al mock, con datos reales/variables y nota
+obligatoria de neto/foto actual. Perfil sin movimiento conserva estado útil.
+Las capturas no verifican escrituras remotas nuevas ni aceptan dinero real.
+
+Correcciones producto1074874 yPerfilba5afc1; source9ced congelado. Conservar
+excepciones accesibles (área táctil48) y negocio (nota métrica, moderación).
+Comparación visual esencial del delta cerrada, gate móvil y build corregido2/2
+pendientes. No aceptación atribuida a Irlanda. Nota documental: normalizado
+sólo el bloque propio tras error de codificación Windows; histórico preservado.
+
 ## 7/10/2026 — Delta9ced: período, tips y final de Adoptar
 
-
-
 Source9ced Chrome377×852 comparado con capturas Flutter aisladas. Período y tips
-
 usaban título16 y X en flujo, frente a22/700 y cierre superpuesto del mock.
-
 Corregidos ambos; tips además recupera gaps12/32/32 de la rejilla CSS. Captura
-
 final de tips coincide perceptualmente (~624 frente628px, renderizador).
-
 Período recupera ancho346px, título centrado, selector cuadrado16px y Listo
-
 visual36px/radio14. Selección única y callbacks reales preservados. Conservar
-
 áreas táctiles48px: el modal queda más alto que Source, excepción accesible
-
 establecida en design-foundation; no confundir esa altura con igualdad píxel.
-
 Suite78459 aprobada23/23 en15s: Home14, delta9ced7 y2capturas auxiliares.
-
 Analyzer37996 aprobado3archivos/sin incidencias7.5s. Capturador inicial tomó
-
 sólo la ruta; corregido RepaintBoundary externo exclusivamente en copiaTemp.
 
-
-
 Final de Adoptar: Source ejecutado hasta agotar catálogo, incluyendo tarjetas
-
 intercaladas; captura69534 aprobada1/1 con2estados exactos. Texto nuevo, retiro
-
 del tip y acciones coinciden; diferencia de posición~3px imperceptible.
-
 Encabezado Apoyar Ayudar se siente bien conserva tipografía/posición deSource;
-
 sin reauditar Guardian ni otras pantallas aceptadas. Falta revisión puntual de
-
 paneles/actividad y gate móvil consolidado antes del build corregido2/2.
-
-
 
 ## 7/10/2026 — Delta9ced: Perfil y redes comparados
 
