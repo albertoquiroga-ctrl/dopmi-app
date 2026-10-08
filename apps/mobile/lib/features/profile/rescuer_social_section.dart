@@ -14,6 +14,7 @@ class RescuerSocialSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
+      const SizedBox(height: 12),
       const SettingsSectionHeading('Redes sociales'),
       const SizedBox(height: 10),
       LiveSection<Json?>(

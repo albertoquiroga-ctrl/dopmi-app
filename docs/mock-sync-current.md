@@ -24,6 +24,8 @@ recapturas normal/115%/200%; todavía no incorporada a Play300.
 Nueva comparación Source377×852 detectó tarjetas alargadas: corregidas92px,
 hint de una línea y ornamento48×32;14tests y3recapturas aprobadas. Analyzer87633
 aprobado sin incidencias. La escala ampliada conserva texto completo.
+Perfil/redes comparados: margen12px y Cancelar morado600/borde corregidos;
+4capturas normal/200% aprobadas97400. Correcciones aún fuera de Play300.
 Siguiente: comparación Source/Flutter del resto del delta (Inicio, métricas/período/tips/
 actividad, Perfil/redes, encabezados de Apoyar y final de Adoptar), resolver
 sólo diferencias demostradas y ejecutar gates afectados/candidato consolidado.

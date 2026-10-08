@@ -362,15 +362,15 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
                                     fontFamily: 'Inter',
                                     fontSize: 16,
                                     height: 1.25,
-                                    fontWeight: FontWeight.w500,
+                                    fontWeight: FontWeight.w600,
                                     letterSpacing: 0,
                                   ),
-                                  foregroundColor: const Color(0xff151423),
+                                  foregroundColor: const Color(0xff7841f2),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(99),
                                   ),
                                   side: const BorderSide(
-                                    color: Color(0xffe3e4ed),
+                                    color: Color(0xffc4b5fd),
                                   ),
                                 ),
                                 child: const Text('Cancelar'),

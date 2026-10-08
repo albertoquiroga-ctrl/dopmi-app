@@ -1,5 +1,21 @@
 # Cierre de paridad — tablero vigente
 
+## 7/10/2026 — Delta9ced: Perfil y redes comparados
+
+Source9ced ejecutado Chrome377×852: Perfil conserva hero, estado, Sobre ti,
+redes y actividad sin las métricas retiradas. Comparación de captura Flutter
+normal detectó separación12px menor antes de Redes sociales; añadido el margen
+superior12px de settings-heading. Diálogo Instagram coincide en caja, título,
+campo y botones. Cancelar difería: Source color#7841f2/peso600/borde#c4b5fd;
+ajustados sólo estos estilos. Datos, moderación y escritura intactos.
+Capturador aislado con selección exacta de4 estados: Perfil normal/200% y
+Instagram válido/200%. Ejecución97400 aprobada1/1 en8s; imágenes inspeccionadas,
+texto ampliado legible y sin excepciones. Primer comando desde raíz no ejecutó
+Flutter por falta de pubspec; repetido correctamente en copiaTemp, sin tocar build.
+Evidencia sintética en design-reviews/parity-integral9ced. Play300 no contiene
+las correcciones. Pendientes período/tips/actividad, encabezados Apoyar y final
+Adoptar, gate móvil consolidado y candidato corregido. No reabrir paridad previa.
+
 ## 7/10/2026 — Delta9ced: geometría de las tarjetas de Inicio
 
 Contraste Source9ced ejecutado Chrome377×852 /rescuer: tarjetas medidas92px,
