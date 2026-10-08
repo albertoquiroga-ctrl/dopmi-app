@@ -39,6 +39,12 @@ observados; sin patrones fatales/overflow en el buffer reciente del proceso.
 Restaurados escala115%, Adoptante y pantalla inicial; sesión y borradores
 conservados. Sin mensajes enviados, pagos iniciados ni formularios guardados.
 
+Continuación QA Samsung300: filtros de Adoptar aprobados para sexo Hembra,
+reapertura, cancelación con Back y limpieza; Perros/Gatos cargaron catálogo
+y fotos. Restaurados filtros y especie originales. No comprobadas todas las
+combinaciones tamaño/personalidad ni persistencia tras reinicio. Evidencia en
+el tablero; sin mensajes, pagos ni cambios productivos.
+
 QA posterior restante: cuenta verificada/sociales, métricas no vacías y escritura
 real, revisión exhaustiva/seguridad/rendimiento y aceptación de Irlanda. La
 cuenta usada permanece en revisión; este recorrido no equivale a aceptación

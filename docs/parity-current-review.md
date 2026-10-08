@@ -311,6 +311,21 @@ vacías, escritura real ni transacciones. Auditoría exhaustiva, rendimiento y
 aceptación de Irlanda siguen pendientes; no atribuirles esta QA focalizada.
 No cambios productivos ni nuevos gates; se reutiliza CI37629942682/3bd67b6.
 
+## 7/10/2026 — QA Samsung300: filtros de Adoptar
+
+Continuación solicitada por el titular. En la sesión actual de Android300 se
+abrió Filtros, se aplicó Hembra y el catálogo mostró una publicación hembra.
+Reapertura visual confirmó Hembra seleccionada. Se eligió Macho sin aplicar:
+Back descartó el cambio y conservó el resultado anterior. Limpiar filtros
+cerró el modal y recuperó el catálogo inicial. Perros→Gatos cargó una publicación
+de gato y su foto; se restauró Perros y la pantalla inicial. Sin contacto,
+favoritos nuevos, mensajes, formularios guardados ni pagos. Evidencia privada
+adoption-filters-* y adoption-cats-* en .tools/update9ced/device-qa.
+
+Resultado: recorrido básico de sexo, aplicar/cancelar/limpiar y especie aprobado.
+No acredita combinaciones de tamaño/personalidad, persistencia tras reinicio
+ni todos los estados vacíos/error. Sin código productivo nuevo ni gates repetidos.
+
 ## Actualización bccd040 — 5 de octubre de 2026 (vigente)
 
 Corte fijo `bccd040d3a4b1c391bc6ab9eeccc479198868a7f`; base app
