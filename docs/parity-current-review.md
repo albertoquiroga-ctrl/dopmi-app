@@ -67,6 +67,45 @@ Siguiente: resolver resultado de la misma sesión24052; luego validar geometría
 y movimiento actual de AUTH/FILTER/PET contra Source9ced, y completar matriz
 por requisito/estado en este tablero. El objetivo integral permanece activo.
 
+## 7/10/2026 — QA integral: recaptura RH y movimiento AUTH/DISC/FILTER
+
+Fuente productiva2a1c2a2, documental5a9f667; remoto app y Source9ced comprobados
+sin cambio. Captura final y cinco suites dirigidas en sesión99637: exit0,
+55/55 en31s. Incluye tres capturas, onboarding_motion, route_motion,
+discovery_motion, discovery_filters y discovery_filter_press. Es evidencia
+local con repositorios sintéticos, no escritura remota ni aceptación nativa.
+
+Capturas inspeccionadas de Inicio Rescatista normal377×852,115% y320×640/200%:
+[normal](design-reviews/parity-integral9ced/home-normal.png),
+[115%](design-reviews/parity-integral9ced/home-samsung.png),
+[320/200%](design-reviews/parity-integral9ced/home-narrow-large.png).
+Etiqueta completa tras arrastre a200%, envuelta en dos líneas; tamaños normales
+conservan una línea. Capturas finales cargaron wordmark/MaterialIcons. Primer
+capturador auxiliar quedó esperando toImage fuera de runAsync: detenido y
+corregido sólo en Temp; no fallo del producto ni fixture antiguo reconsumido.
+
+Mock ejecutado desde checkout congelado9ced en servidor propio5174, no desde
+el servidor previo5173 de otro checkout. Chrome377×852: Adoptar→introducción,
+Continuar→paso2 y Atrás→paso1 comprobados. Estilo computado onb-gate-body:
+450ms cubic-bezier(.22,1,.36,1); CSS9ced confirma opacity0→1/translateY10→0.
+La definición no cambia desde a3c969 para este bloque. Flutter usa450ms/misma
+curva y10px; pruebas actuales verifican frames intermedios y reduced motion.
+No atribuir nuevo cronometraje físico a esta lectura de estilo.
+
+AUTH recuperación: mock muestra ESTADO SIMULADO, sin frame aprobado y envío
+simulado. Se preserva recuperación real; diferencia de negocio documentada,
+no copiar simulación ni exigir igualdad literal de esa pantalla provisional.
+No se ingresaron credenciales ni se enviaron formularios. Viewport restaurado
+y servidor propio detenido; teléfono intacto en esta continuación.
+
+Avance por requisitos: RH recaptura de la corrección aprobada; AUTH introducción
+movimiento/rutas comprobados; DISC swipe y FILTER selección/cancelación/error
+cubiertos por las suites dirigidas. No cierran familias completas: faltan
+contrastes actuales de otros estados, galerías PET/publicación y flujos de
+perfil verificado, backend nuevo consentido, gates agrupados y QA del candidato
+corregido instalado. Siguiente: galería PET/contacto cancelado y formularios
+PUBLISH en estados de borrador, con contraparteSource y límites privados.
+
 ## Plan aprobado: 9ced070 / MVP_CONTINUO — 6/10/2026
 
 El titular autorizó entregar todo el delta esencial hasta obtener un candidato

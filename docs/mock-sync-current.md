@@ -23,7 +23,11 @@ horizontal a200% revela la etiqueta completa: recorte previo reclasificado,
 no defecto demostrado. La prueba aislada24052 detectó defecto sólo a320/200%; corrección local
 acota ancho de pestañas y permite envolver texto. Nueva prueba97495 aprobada1/1.
 Suite Home90403 aprobada13/13; analyzer3617 aprobado sin incidencias.
-Producto corregido2a1c2a2 en GitHub; recaptura afectada siguiente. Play300 anterior a
+Producto corregido2a1c2a2 en GitHub; recaptura normal/115%/320×640200%
+aprobada e inspeccionada. Suite99637 aprobada55/55: captura, introducción,
+rutas, swipe y filtros. Source9ced ejecutado y estilo de entrada450ms/curva
+confirmado; recuperación Source es explícitamente simulada, conservar real.
+Siguiente: PET/galería/contacto cancelado y PUBLISH/borradores. Play300 anterior a
 esta corrección. Una cola Flutter; sigue auditoría por familia/estado/movimiento.
 Objetivo integral activo; candidato publicado y aceptación global separados.
 
