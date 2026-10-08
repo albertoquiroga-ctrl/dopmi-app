@@ -1,5 +1,17 @@
 # Dopmi — registro de avance
 
+## 8/10/2026 — Cierre documental autónomo
+
+Perfil ENTREGA_CONTINUA_EFICIENTE_VERIFICADA sin presupuestos/renovaciones.
+Estado PUBLICADO_INTERNAL_PENDIENTE_QA_FINAL; código281fc37, Play/Samsung301,
+934tests aprobadas. Commit documental no genera candidato. [Checkpoint](mock-sync-current.md)
+y [ficha canónica de cierre](parity-current-review.md) separan estados, cortes por
+grupo, revisiones/evidencia/límites y siguiente acción: retomar QA final de9ced.
+No aprobación de Irlanda ni auditoría profunda atribuida. Mock4369 no inventariado.
+Sólo documentación propia, sin repetir gates ni iniciar nuevo trabajo; dirty tree
+ajeno/privados preservados. El remoto del commit de cierre se comprueba después
+del push; identificarlo por asunto docs: close Dopmi handoff without new candidate.
+
 ## 8/10/2026 — Delta9ced cerrada; QA instalada301 completada
 
 SamsungR5CY51260VK volvió a conectar y respondió sin protección física.

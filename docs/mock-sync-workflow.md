@@ -5,48 +5,43 @@ El checkpoint contiene el estado vigente; [parity-current-review.md](parity-curr
 es el único tablero del lote. [progress.md](progress.md) conserva el historial,
 no una lista de tareas para reejecutar. Las entradas nuevas superseden pendientes antiguos.
 
-## Perfil vigente: MVP_CONTINUO (aprobado 6/10/2026)
+## Perfil vigente: ENTREGA_CONTINUA_EFICIENTE_VERIFICADA (8/10/2026)
 
-La decisión del titular sustituye las puertas históricas de QA durante la fase
-MVP. Entregar todo el delta esencial congelado con funciones reales, conservando
-diseño, navegación y gestos esenciales. El gate consolidado obligatorio debe
-aprobar; el candidato queda pendiente de QA. Los lotes organizan el trabajo:
-no son nuevas autorizaciones ni paradas. Mantener negocio, seguridad y pipeline.
+Decisión expresa del titular: ejecución continua sin presupuestos, cuotas ni
+renovaciones. Supersede límites temporales/contadores históricos y el perfil
+MVP_CONTINUO; conserva decisiones de negocio, autorización y gates obligatorios.
+Los lotes organizan el trabajo; no requieren renovar autorización de lo ya
+aprobado. Un cierre documental no autoriza funcionalidades ni nuevas referencias.
 
-Inventariar una vez la entrega completa e implementar lotes consecutivos, con
-comprobaciones focalizadas cuando aporten valor. No exigir suites completas,
-capturas por cambio, auditoría independiente ni QA del lote anterior para
-avanzar. Auditoría profunda y del delta, comparación visual exhaustiva,
-regresión adicional, emulador y aceptación instalada permanecen como
-**fase de QA posterior**. Las suites y capturas exigidas por CI/Codemagic
-siguen siendo obligatorias.
+Congelar un SHA autorizado, inventariar una vez grupos funcionales y avanzar
+con una cola Flutter. Corregir diferencias perceptibles, gestos y estados reales;
+no microajustes imperceptibles ni ingeniería innecesaria. Reutilizar evidencia
+válida y repetir sólo bloques invalidados por un cambio/fallo nuevo. CI/Codemagic
+siguen ejecutando sus gates obligatorios. Documentación sola no reinicia pruebas.
 
-Esta ejecución dispone de 90 minutos globales de tiempo real, incluidos
-subagentes y esperas. Desde el minuto 80, dedicar el tiempo al checkpoint y
-cierre. Hasta tres subagentes simultáneos y seis invocaciones nuevas por tramo,
-sin recursión y con archivos de propiedad exclusiva. El integrador controla
-contratos, router, repositorios, SQL, compartidos y la única cola Flutter.
-Máximo dos pasadas de corrección por lote y dos intentos por causa; conservar
-los contadores entre lotes y sesiones. Dos rondas sin progreso verificable
-requieren diagnóstico y trabajo independiente. Hasta dos builds Codemagic:
-candidato consolidado y corrección justificada; nunca por lote ni por estar
-en cola. No renovar el presupuesto sin autorización explícita.
+Revisión de eficiencia, UI, UX, código y seguridad debe quedar explícita con
+su alcance, evidencia, hallazgos y límites. Una suite verde no sustituye revisión
+visual ni aprobación humana. No atribuir auditoría independiente o aceptación
+sin evidencia. QA posterior acordada sigue pendiente hasta ejecutarse/aceptarse;
+no convertir requisitos obligatorios en mejoras opcionales al cerrar.
 
-Guardar el plan aprobado antes del código. Actualizar un checkpoint corto tras
-cada lote y antes de operaciones externas, separando implementación,
-comprobación, publicación y aceptación. Registrar QA y pulido pendientes,
-tiempo, agentes, builds, causas, evidencia y siguiente acción. No crear otro
-protocolo, backlog ni tablero. Conservar cambios locales ajenos y versionar
-solo los propios. No reutilizar fixtures ni helpers de entregas consumidas.
+Ante falta de progreso: diagnosticar la causa y cambiar de estrategia; no
+repetir auditorías globales ni polling de terminales. Subagentes sólo si están
+autorizados y aportan una revisión concreta, con propiedad y sin colas Flutter
+paralelas. Builds sólo para candidato aprobado o corrección justificada; una
+espera/timeout nunca justifica duplicarlos. Verificar el mismo handle vivo.
 
-Parada efectiva: comandos largos con PID propio y timeout real limitado al
-tiempo restante; esperas de hasta 60 segundos y terminación del árbol propio
-al vencer. Yield no equivale a timeout. Interrumpir agentes al cierre y no
-crear Goal, heartbeat ni loop autorreanudable para esta cadena. Si existe un
-objetivo persistente, pausarlo bajo la autorización de parada del titular al
-agotar el tiempo o quedar sin trabajo independiente. Registrar trabajos
-remotos activos y siguiente consulta, sin polling indefinido. No atribuir al
-cliente un supervisor global que no expone.
+Separar implementado, verificado técnicamente, publicado, probado en dispositivo
+y aprobado por titular/diseñadora. Cerrar integralmente sólo cuando todos los
+criterios obligatorios estén probados; si falta evidencia/permisos/dispositivo,
+cerrar el chat con entrega pendiente y acción exacta, conservando último corte
+implementado/verificado por grupo. QA posterior no equivale a aprobación.
+
+Checkpoint corto para continuidad, tablero único para matriz de evidencia,
+progress como ledger con enlaces; no replicar historial en handoff/checkpoint.
+Conservar cambios ajenos y privados. Registrar SHA de producto y documentación
+por separado, jobs externos y pruebas aún pertinentes. Commits documentales
+con [skip ci], push y comprobación remota. No publicar secretos, datos o builds.
 
 ## Invariantes conservadas
 
@@ -80,7 +75,7 @@ cliente un supervisor global que no expone.
    limpieza global ni apropiarse de cambios de otro trabajo.
 2. Inventariar **grupos funcionales**, no cada margen. Una inspección completa
    por lote: parte inferior, vacíos/errores, gestos y datos equivalentes.
-3. Máximo tres subagentes más integrador, cuando el encargo lo autorice.
+3. Subagentes acotados, cuando el encargo lo autorice y aporten valor.
    Propietarios exclusivos por archivo/prueba antes de editar. Extraer archivos
    compartidos primero si hace falta. Integrador controla router, DTO/RPC,
    repositorios, SQL y componentes compartidos. Agentes no ejecutan Flutter,
@@ -92,7 +87,7 @@ cliente un supervisor global que no expone.
    necesaria. En QA posterior, comparación Source/Flutter con
    fuentes cargadas, dimensiones y datos iguales; normal, Samsung115% y320px/200%.
    Diff de imágenes localiza problemas; decisión de cierre perceptual.
-6. Máximo **dos pasadas agrupadas** de corrección. Un fallo persistente exige
+6. Correcciones agrupadas sobre defectos demostrados. Un fallo persistente exige
    reproducción y diagnóstico específico, nunca otra auditoría global. Reabrir
    lote cerrado sólo por defecto nuevo demostrado/dependencia modificada.
 7. Reutilizar mecánicas ya aprobadas (navegación, entrada, swipe, carrusel,

@@ -1,5 +1,140 @@
 # Cierre de paridad — tablero vigente
 
+## Cierre canónico8/10/2026 — PUBLICADO_INTERNAL_PENDIENTE_QA_FINAL
+
+Esta ficha supersede estados CERRADO/integrales y pendientes intermedios de
+9ced inferiores. La implementación/cierre técnico MVP está satisfecho; la
+aceptación final permanece pendiente. Titular autorizó el alcance delta y
+aceptó la paridad anterior de otro hilo, **no aprobó humanamente301/Irlanda**.
+Leer [checkpoint](mock-sync-current.md) para arranque y
+[protocolo](mock-sync-workflow.md) para ENTREGA_CONTINUA_EFICIENTE_VERIFICADA,
+sin presupuestos/renovaciones. Este cierre sólo documenta evidencia existente.
+
+### Identidad de entrega y código
+
+Mock objetivo `9ced07094635c076d35589647fff26371d8bc791`, rama
+irlanda/apoyar-detalle-perfil; precedente bccd040 aceptado. Producto final
+`281fc378abd9de8b9118419b53e51813c7e411a1` incluye backend4f0275552647f322f3a2dfb9382e3d79c8929949.
+Último corte implementado/verificado visualmente9ced,8grupos; UX08 tienda excluido.
+HEAD pre-cierre73743f8c5d28ba6ef16eb1758ffcf3b5bc9d2492/remoto iguales; diff281→HEAD
+sólo docs/mock-sync-current,parity-current-review,progress. Este commit documental
+no será otro candidato ni contiene configuración/build nuevos.
+PR6 abierto/borrador/sin merge, baseba9f897f3fa418e952b98e4c604cffe468a8aa95.
+Posterior observado4369d22da2a86c02a0d263b8b2214401430fa826 no inventariado,
+no implementado: no consultado/absorbido en este cierre.
+
+### Matriz de corte y evidencia por grupo
+
+Todos los grupos incluidos se implementaron contra9ced y están en producto281.
+La columna dispositivo conserva la versión realmente recorrida, sin extrapolar.
+
+| Grupo | Última evidencia técnica/visual aplicable | Dispositivo y límites | Aprobación humana |
+|---|---|---|---|
+| UX01 chrome/CSS/Apoyar | Source9ced377×852, captura support-home-empty; capturadores CI9708. Ajustes comunes en281 | Apoyar/favoritos/encabezados en300; Inicio/Perfil parcial301. No recorrido301 de cada efecto CSS | No registrada para delta |
+| UX02 Inicio | Tarjetas92px/hint/ornamento48×32 en d05c057;14tests82786,3capturas62004 y CI9708 | Inicio301 con cuenta en revisión y métricas vacías; datos no vacíos cubiertos sintéticamente | No registrada |
+| UX03 embudos/período | Backend4f02755; radio nativo9708a75,99491 teclado; pintura281,5checks46914; capturas normal/200% | Filtro301, mes/Listo/cierre y estilo inspeccionados. Agregados/aislamiento en PostgreSQL CI, no Auth DEV E2E nuevo | No registrada |
+| UX04 paneles | Cinco estados85397 y capturadores CI9708; UUID/preview en suite exacta281 | Paneles300;301 mostró Mis pendientes, sin enviar mensajes/registrar pagos | No registrada |
+| UX05 tips | Título/cierre1074874, pintura281; capturas46914 normal/200%, scroll y Entendido aprobados |301 abre, cinco consejos y Entendido visibles/cierra; viewport1.15 no requirió scroll. No nueva prueba física200% | No registrada |
+| UX06 Perfil | margen/hero/actividad ba5afc1 y97400 normal/200%, gates | Perfil parcial301/cambio persistido Rescatista→Adoptante; demás accesos recorridos300 | No registrada |
+| UX07 redes/config | ba5afc1/97400 diálogo normal/200%, moderación/cancelación/error/versionado en suite | Cuenta Samsung sigue en revisión; redes de cuenta verificada sólo fixture sintético. Sin escritura/aprobación remota atribuida | No registrada |
+| UX08 Croquetas | Excluido por decisión tienda | No destino/producto | Exclusión decidida por titular |
+| UX09 finalAdoptar | texto/retirada tip4f02755, Source agotado y captura69534, CI9708 | Final/swipe/fotos en300;301 restaurado Adoptar/Rocky Demo, no catálogo agotado otra vez | No registrada |
+
+### Pruebas, backend, configuración y publicación
+
+- Gate full [37574438050](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37574438050),
+  fuente48bac1b: mobile931/admin/web/config/backend/PostgreSQL real/concurrencia/
+  Auth-Storage-Realtime/iOS aprobados; bloque de captura falló por ancla vieja,
+  corregido con capturas/gates móviles posteriores. No presentar runfull entero
+  como todo-verde; reutilizar sólo sus bloques aprobados intactos.
+- [37720236365](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37720236365),
+  fuente9708a7575ebbf19ec8ebe2a4262bbd18f3e44aff, job113125973662:
+  formato/analyze/suite/ambos capturadores/APK success. Backend/iOS skipped aquí,
+  reutilizados de full; no nuevo resultado suyo. Pintura281 posterior comprobada
+  local5checks46914/analyze60233 y pipeline exacto siguiente.
+- [Codemagic6ac70dd3fd5fe9df9e910455/index41](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ac70dd3fd5fe9df9e910455):
+  fuente281fc37, analyze y934tests success; AAB success03:46:34Z8/10 y
+  Publishing success03:47:44Z. AAB2.3.3(301),86,280,975bytes. Log final934
+  All tests passed leído directamente; snapshot API terminal conservado privado.
+  Workflow android-guardian-internal, com.mycompany.dopmi, firma dopmi_upload_2026.
+  Configuración canónica codemagic.yaml sin cambios en esta entrega de cierre;
+  último cambio3a037887b2ea4a3072613a8e62a3c37319445faf. Guardián/measurement test;
+  flags servidor independientes, dinero real no autorizado.
+- Play Console: Internal activo/release148/bundle301 Available to internal testers,
+  consultado separado de compilación. SamsungR5CY51260VK/SM-S938B/Android16:
+  dumpsys confirma2.3.3(301), installercom.android.vending; prueba final8/10.
+  Restaurados Adoptante/Adoptar/Rocky Demo/font1.15 y sesión. Sin pagos/mensajes
+  ni formularios guardados. No nueva aceptación iOS/TestFlight de este candidato.
+- DEVohqxranynackjignryep: local20261007033748_rescuer_funnel_9ced.sql/remoto
+  20261007034858 aplicado una vez. RLS, cliente sin SELECT, RPCanon=false/auth=true,
+  helperexecute=false y cuerpo/ACL comprobados. Cobertura03:48:58.342396Z7/10,
+  sin backfill. [Auditoría de migraciones](migration-history-audit.md) conserva
+  MD5 y pre/postflight; PostgreSQL del gate posterior supersede su pendiente
+  histórico. Esto **no acredita E2E remoto completo con Auth**. No flags/Edge nuevos.
+
+### Revisiones, hallazgos y excepciones
+
+- **Eficiencia:** una revisión delegada sólo lectura8/10 confirmó no repetir
+  suites/capturas/builds intactos; sólo faltaban diálogos301. Resueltos. Sin
+  subagentes/correcciones/auditorías adicionales durante este cierre.
+- **UI:** comparación perceptual Source9ced/Flutter hecha; corregidos pestañas
+  estrechas, tarjetas alargadas, margen de redes, Cancelar y títulos/backdrop/
+  altura de diálogos. Capturas normales/200% versionadas; no igualdad píxel.
+- **UX:** datos/acciones reales, radio nativo/teclado, cierres y acceso a consejos
+  comprobados. QA300 más recorrido focal301 según tabla; no redefinir como
+  aceptación exhaustiva de todos los estados/gestos sobre301.
+- **Código:** analyze/suites exactas281 y contratos/backend aprobados. No evidencia
+  de revisión independiente final de todo el delta; no llamarla auditada.
+- **Seguridad:** RLS/ACL/ownership/aislamiento/negativos cubiertos por SQL y gates;
+  consentimiento/deduplicación probados. No auditoría profunda/ciberseguridad final.
+- Excepciones establecidas: área táctil48px conserva modal período más alto;
+  nota obligatoria de neto/foto actual, HTTPS y moderación preservan negocio aunque
+  Source simule otros textos. Tienda/fondo/bonos/cashback excluidos. Diferencias
+  imperceptibles de renderizador (~3px) no generan trabajo. Son decisiones de
+  accesibilidad/negocio, no una firma humana de aceptación visual301.
+
+### Evidencia accesible, fallos y siguiente acción
+
+Capturas sintéticas disponibles en Git:
+[directorio](https://github.com/albertoquiroga-ctrl/dopmi-app/tree/281fc378abd9de8b9118419b53e51813c7e411a1/docs/design-reviews/parity-integral9ced)
+(13PNG). Runs/CM/PR requieren acceso a cuentas/repositorios. No afirmar vigencia
+actual de artifacts sin consulta; PNG versionados son recuperables sin esos artifacts.
+Capturas Samsung resumed-period/resumed-tips-open, XML, diariosCM y logs .tools
+son **privados locales ignorados**, no disponibles en GitHub ni trasladados.
+No se publican capturas con datos de la cuenta. Si otra máquina necesita evidencia
+instalada, coordinar acceso al teléfono/capturas originales sin inventar disponibilidad.
+
+Estrategias fallidas y causas: capturar RepaintBoundary de ruta omitía modal
+(solución harness externo); tips recibió tap antes de scroll asentado (ensureVisible,
+pumpAndSettle, assertionDialog); anclas viejas136.8/Acciones pendientes fallaron
+por delta46px/Mis pendientes (corregir fixture, no tolerancias); Tab auxiliar
+fallaba también en control nativo anterior (descartar diagnóstico y probar foco
+explícito+flecha); build raíz Windows bloqueado (scratch equivalente sin borrar
+builds); Python relativo/cp1252 dañaba escritura (rutas absolutas/write_bytesUTF8);
+protección física Samsung interrumpía taps (no loop, sensor libre; luego resuelto).
+
+Herramientas fiables: protocolo incluye Flutter/ADB/CI/Codemagic y comandos.
+Helpers .tools/update9ced son privados de esta máquina, no scripts públicos.
+CAPTURE_FILTER es dart-define/prefijo; scratch debe copiar candidato exacto.
+CI/CM anteriores terminales; no jobs propios pendientes ni servidor de referencia
+activo. No relanzar diariosCM; ni fixtures bccd consumidas, SQL replay o cleanup.
+
+Trabajo local ajeno/no publicado preservado: apps/admin/src/api.ts y api.test.ts;
+EOL community/content_actions.dart, profile/help_support_dialog.dart,
+profile/rescuer_settings_verification.dart, guardian_history_test.dart,
+payment_history_screen_test.dart; docs/backlog/design-parity/product-decisions y
+sectores históricos parity-current-review/progress. Untracked .codex-remote-attachments,
+build-locked, deno.lock, legal/operations/payment-ux, pycache/validate_operations,
+tmp-h11-device; no apropiarse ni limpiar. gitstatus es la autoridad en el siguiente chat.
+
+**RETOMAR ESTA ENTREGA**, no planear/implementar un nuevo delta en este cierre.
+Primero presentar301/capturas a titular/Irlanda y registrar aprobación o defectos
+perceptibles. Mantener QA final de código/seguridad/recorrido remoto pendiente,
+con alcance/fixture/acceso acordados; no alterar verificación real para habilitar
+redes. Sólo cerrar integralmente tras evidencia obligatoria/aceptación explícita.
+Si QA produce un defecto, invalidar y repetir sólo evidencia afectada.4369 necesita
+un encargo/inventario nuevo; este chat no lo inicia.
+
 ## 8/10/2026 — Delta9ced cerrada; QA instalada301 completada
 
 SamsungR5CY51260VK volvió a conectar y respondió sin protección física.

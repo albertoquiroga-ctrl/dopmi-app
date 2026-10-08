@@ -1,18 +1,19 @@
 # Dopmi — continuidad de ChatGPT Work a Codex
 
-## Arranque vigente — 6/10/2026
+## Arranque vigente — cierre8/10/2026
 
-Leer primero [checkpoint corto](mock-sync-current.md) y
-[protocolo estable](mock-sync-workflow.md). El corte bccd040 está cerrado22/22:
-Android296 publicado/comprobado en Samsung, gates aprobados y cleanup exacto
-cero. No reiniciar suites, builds ni loops cerrados. Referencia viva9ced070
-observada en Git, delta no inspeccionado ni autorizado para implementación.
-Rama codex/design-foundation, PR6 abierto/borrador; verificar HEAD/remoto y
-preservar dirty tree. El checkpoint distingue candidato publicado, commits
-documentales/iOS posteriores, evidencia técnica, reportes y lo no comprobado.
-Próxima acción: atender el nuevo encargo; si autoriza nuevo corte, fijar SHA e
-inventariar sólo su delta con el método por lotes. Leer product-decisions/backlog
-y últimas entradas progress según el frente; pendientes antiguos no reabren bccd.
+Leer [checkpoint](mock-sync-current.md) y luego
+[protocolo](mock-sync-workflow.md). Perfil ENTREGA_CONTINUA_EFICIENTE_VERIFICADA:
+sin presupuestos ni renovaciones; corregir diferencias perceptibles y reutilizar
+evidencia válida. El [tablero](parity-current-review.md) es la fuente del detalle.
+
+Estado PUBLICADO_INTERNAL_PENDIENTE_QA_FINAL: delta9ced implementada/comparada,
+candidato281fc37/Play301, QA instalada focalizada completada. Documentación
+posterior no genera candidato. No atribuir aprobación de Irlanda ni auditoría
+profunda. La próxima conversación debe **retomar esta entrega para QA final**,
+según acción exacta del checkpoint; no empezar4369 posterior/no inventariado.
+Preservar dirty tree/privados; no repetir gates, builds, fixtures o familias
+anteriores aceptadas. Dinero test; sin merge ni activación productiva.
 
 ## Historial de continuidad (referencia, fuera del resumen de arranque)
 

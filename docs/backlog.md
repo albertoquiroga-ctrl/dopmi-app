@@ -1,5 +1,12 @@
 # Dopmi — entregas
 
+> Corte vigente8/10/2026: [checkpoint](mock-sync-current.md) y
+> [tablero único](parity-current-review.md). Delta9ced implementada/gates y
+> QA instalada focalizada301 verificadas; aceptación final pendiente. Próximo
+> chat: RETOMAR entrega9ced para revisión titular/Irlanda y QA final con evidencia,
+> sin repetir verificaciones válidas.4369 posterior no inventariado. Perfil
+> ENTREGA_CONTINUA_EFICIENTE_VERIFICADA; no presupuestos/renovaciones.
+
 > Decisión vigente 27/9/2026: el titular admite las pantallas actuales para continuar; la fidelidad visual queda aplazada, sin aceptación atribuida a Irlanda. H9 autorizado: aceptación integrada y correcciones, con revisión final agrupada en Internal Testing. Ver [H9](h9-acceptance.md). Esta decisión supersede los bloqueos visuales históricos inferiores.
 
 Cada tarea se completa con código, prueba de aceptación y evidencia en `progress.md`.
