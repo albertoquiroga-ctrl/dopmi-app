@@ -34,7 +34,10 @@ notas de negocio preservadas. Siguiente: gate móvil y candidato corregido2/2.
 No nueva aceptación anterior requerida, ni alteración de cuenta del titular.
 Estado: comparación esencial delta cerrada y correcciones en91aa8cf;
 [gate móvil37718107631](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37718107631)
-en curso, aún sin resultado final. CM1/2; siguiente build corregido tras gate.
+aprobado completo. RadioGroup nativo preservado en9708a75, teclado1/1 y
+200%9/9 aprobados. [Gate final37720236365](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37720236365)
+comprobado en curso, source9708a7575ebbf19ec8ebe2a4262bbd18f3e44aff.
+CM1/2; ninguna corrección publicada. Siguiente: resultado final y build2/2.
 Play/Samsung300 aún anterior. No repetir QA anterior.
 
 ## Tiempo, límites y siguiente acción
