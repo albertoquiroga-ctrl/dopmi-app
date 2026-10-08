@@ -1,16 +1,17 @@
 # Checkpoint de sincronización — 7 de octubre de 2026
 
-## Estado vigente — eficiencia y QA focalizada301
+## Estado vigente — delta9ced CERRADA (8/10/2026)
 
-Delta congelada9ced implementada/comparada;301 publicada e instalada desde Play.
-934tests/analyze en candidato exacto281fc37 aprobados; CM2/2 cerrado.
-Continuación del titular: sólo diferencias perceptibles, sin microajustes ni
-repetición de evidencia intacta. Revisión delegada acotada confirma este corte.
-Resta QA instalada de filtro/tips (abrir, cerrar, scroll), sin nueva suite/build.
-Protección física del Samsung reapareció en un intento: parar pulsaciones
-repetitivas hasta pantalla arriba/sensor descubierto. Perfil Adoptante y
-escala1.15 restaurados/comprobados; ninguna escritura de contenido/pago/mensaje.
-No absorber4369 posterior. Los estados300 inferiores son historial supersedido.
+Delta bccd040→9ced implementada/comparada y301 publicada/instalada desde Play.
+Gate37720236365 aprobado; CM281fc37 analyze/934tests/AAB/Publishing success.
+QA pendiente instalada completada: filtro abre/cierra con Listo; tips muestra
+cinco consejos y Entendido, que cierra correctamente. Capturas examinadas.
+Restaurados Adoptante, Adoptar/Rocky Demo y escala1.15. Sesión conservada;
+sin pagos/mensajes/escrituras de contenido. Cuenta en revisión: redes verificadas
+comprobadas con fixture sintético, no aprobación/escritura real atribuida.
+No suites/builds nuevos. Excepciones accesibles/negocio documentadas se mantienen.
+Mock4369 posterior fuera del corte; nuevo inventario separado si se solicita.
+Los estados pendientes/300 inferiores son historial supersedido.
 
 ## Entrega activa 9ced070 — MVP_CONTINUO
 

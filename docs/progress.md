@@ -1,5 +1,40 @@
 # Dopmi — registro de avance
 
+## 8/10/2026 — Delta9ced cerrada; QA instalada301 completada
+
+SamsungR5CY51260VK volvió a conectar y respondió sin protección física.
+com.mycompany.dopmi2.3.3(301), installercom.android.vending comprobados.
+Modo Rescatista temporal: filtro abierto, mes seleccionado conservado y cierre
+con Listo correcto. Captura resumed-period.png examinada: título, selector,
+backdrop y botón corresponden al candidato comparado. Tips abierto: cinco
+consejos completos y Entendido visibles sin recortes a escala original1.15;
+captura resumed-tips-open.png examinada. Entendido cierra y vuelve a Inicio.
+No hizo falta desplazar el modal en este viewport; scroll200% conserva evidencia
+sintética46914 aprobada, sin repetirla. No afirmar nueva prueba física200%.
+Restaurados Adoptante, ruta Adoptar/Rocky Demo y escala1.15 (ADB comprobado).
+Sesión conservada; sin pagos, mensajes ni cambios de publicaciones/verificación.
+Capturas instaladas privadas en .tools/update9ced/device-qa; no datos de cuenta
+en Git. Sin cambios de código, suites ni builds adicionales.
+
+Auditoría de cierre del alcance vigente:
+- UX01 chrome/Apoyar y UX09 finalAdoptar: comparación Source9ced y capturas69534,
+  más CI de capturas37720236365; paridad anterior aceptada por el titular.
+- UX02/03 Inicio/tarjetas/filtro: geometría82786, capturas62004, teclado99491,
+  ajustevisual46914 y filtro instalado301 comprobado ahora.
+- UX04 paneles: cinco estados85397 y CI capturadores aprobado.
+- UX05 tips: capturas46914 normal/200% y apertura/contenido/cierre301 ahora.
+- UX06/07 Perfil/redes: cuatro capturas97400 normal/200%, suite934/934 exacta;
+  cuenta instalada en revisión: redes verificadas se comprobaron en fixture
+  sintético, sin atribuir aprobación ni escritura remota de esa cuenta.
+- UX08 tienda excluida. Excepciones de área táctil48px y notas de negocio
+  conservadas y documentadas; no exigir igualdad píxel ni microajustes.
+- Gate móvil37720236365 aprobado; CM exacto281fc37 analyze934tests/AAB/Publishing
+  aprobado, Play301 disponible e instalado. Backend/iOS intactos reutilizados.
+
+CERRADO delta bccd040→9ced autorizado. Mock4369 posterior fuera de alcance;
+requiere inventario separado. QA profunda/Irlanda/postMVP no se reabre en este
+encargo. Dinero test, permisos y cambios ajenos preservados; PR6 sin merge.
+
 ## 7/10/2026 — Criterio de eficiencia confirmado; QA física acotada
 
 Titular exige sólo diferencias perceptibles, sin microajustes ni ingeniería
