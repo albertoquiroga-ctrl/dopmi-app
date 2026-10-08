@@ -13,31 +13,20 @@ Producto4f02755; corrección de tests48bac1b; candidato vigente
 `3bd67b6f4d0eeedc7dec2721bc8e7495c046c0c7` (sólo captura y docs desde48bac1b).
 Cambios ajenos preservados/excluidos; sin merge ni force-push.
 
-## Objetivo integral autorizado — 7/10/2026
+## Alcance vigente: igualdad visual del delta9ced — 7/10/2026
 
-El nuevo objetivo exige paridad completa de pantallas, gestos y animaciones,
-testeos y etapas; no queda cumplido por el candidato MVP publicado. Ref viva
-9ced070 verificada, appbase bfe16a8 y PR6 abierto/borrador. Plan y auditoría en
-el mismo tablero; no absorbe pushes ni reinicia fixtures cerrados. QA del gesto
-horizontal a200% revela la etiqueta completa: recorte previo reclasificado,
-no defecto demostrado. La prueba aislada24052 detectó defecto sólo a320/200%; corrección local
-acota ancho de pestañas y permite envolver texto. Nueva prueba97495 aprobada1/1.
-Suite Home90403 aprobada13/13; analyzer3617 aprobado sin incidencias.
-Producto corregido2a1c2a2 en GitHub; recaptura normal/115%/320×640200%
-aprobada e inspeccionada. Suite99637 aprobada55/55: captura, introducción,
-rutas, swipe y filtros. Source9ced ejecutado y estilo de entrada450ms/curva
-confirmado; recuperación Source es explícitamente simulada, conservar real.
-PET/PUBLISH:60 comprobaciones locales aprobadas (42+18), galería, preview,
-borradores y controles. Samsung300 confirmó contacto cancelado desde mazo y
-detalle, Back conserva publicación; sin mensajes ni escritura de borradores.
-Falta galería múltiple nativa/contraste de más estados y fixtures nuevos.
-PUBLIC/RP:47 pruebas locales aprobadas; edición moderada, URL/error/versión,
-cancelación, aislamiento y fotos privadas. Samsung300 abrió perfil público y
-sus tres pestañas, Back restauró detalle/mazo; perfil demo vacío, no acredita
-estado verificado. Remotos revalidados, conexión443 restaurada.
-Siguiente: MATCH/SAVED/CHAT, notificaciones/impacto y estados propios de QA. Play300 anterior a
-esta corrección. Una cola Flutter; sigue auditoría por familia/estado/movimiento.
-Objetivo integral activo; candidato publicado y aceptación global separados.
+El titular acepta la paridad anterior comprobada en otro hilo y limita este
+encargo a que el delta bccd040→9ced se vea igual. Supersede auditoría25familias.
+Sólo UX01–07/09; tiendaUX08 excluida. No repetir pruebas/fixtures intactas ni
+reabrir entregas cerradas. Source9ced congelado. Cambios previos preservados.
+Corrección propia2a1c2a2 de pestañas320/200% validada:13tests, analyze limpio,
+recapturas normal/115%/200%; todavía no incorporada a Play300.
+Siguiente: comparación Source/Flutter del delta (Inicio, métricas/período/tips/
+actividad, Perfil/redes, encabezados de Apoyar y final de Adoptar), resolver
+sólo diferencias demostradas y ejecutar gates afectados/candidato consolidado.
+No nueva aceptación anterior requerida, ni alteración de cuenta del titular.
+Estado: delta implementado/publicado300, corrección propia comprobada en GitHub,
+comparación visual focalizada y candidato corregido pendientes.
 
 ## Tiempo, límites y siguiente acción
 

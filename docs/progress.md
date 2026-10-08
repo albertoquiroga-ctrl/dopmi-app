@@ -1,5 +1,31 @@
 # Dopmi — registro de avance
 
+## 7/10/2026 — Corte de QA acotado por el titular: sólo delta9ced
+
+El titular aclara: «Solo tienes que asegurarte de que la delta se vea igual,
+lo anterior ya fue asegurado por otro hilo de conversacion contigo».
+Esta decisión supersede la auditoría integral de25 familias iniciada arriba.
+No reabrir paridad anterior ni exigir nuevos tests/fixtures de AUTH, PET,
+MATCH/SAVED/CHAT, Guardian u otras familias intactas. Referencia congelada:
+bccd040→9ced07094635c076d35589647fff26371d8bc791, ocho grupos UX01–07/09;
+UX08 excluido. La igualdad del delta es visual/interacciones afectadas, con
+negocio/moderación reales preservados. Capturas/QA previas de lo anterior se
+aceptan como base por instrucción directa del titular.
+
+Conservar corrección2a1c2a2 de pestañas de Inicio a320/200%, con13tests/analyze
+y recaptura aprobados. Falta comparar los estados visuales del delta con
+Source9ced (Inicio/métricas/modal/tips/actividad, Perfil/redes, encabezados y
+final de Adoptar), luego sólo gates afectados y candidato corregido consolidado.
+No fabricar verificación del titular ni pedir QA anterior como puerta.
+
+La suite de notificaciones/impacto que ya estaba ejecutada41601 dio35aprobadas
+y1fallo de imagen ausente en copiaTemp. Copiada la imagen estática requerida;
+fallo aislado8596 aprobado1/1. No código producto cambiado; estos resultados
+son evidencia incidental y no abren otro lote. Samsung volvió a Adoptar en
+misma sesión sin enviar mensajes ni modificar favoritos. Sin cola Flutter
+activa. Siguiente exacto: comparación visual focalizada del delta congelado.
+
+
 ## 7/10/2026 — QA integral PUBLIC/RP: perfil y redes moderadas
 
 Fuente productiva2a1c2a2; base documental8d99610. HEAD remoto app coincidente
