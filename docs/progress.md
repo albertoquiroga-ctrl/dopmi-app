@@ -1,5 +1,15 @@
 # Dopmi — registro de avance
 
+## 7/10/2026 — Corrección Codemagic2/2 enviada
+
+Candidato281fc378abd9de8b9118419b53e51813c7e411a1 publicado en rama
+codex/design-foundation. Build6ac70dd3fd5fe9df9e910455 enviado03:28:22Z8/10
+(7/10 México), workflow android-guardian-internal. API comprobó queued y
+commit exacto. https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ac70dd3fd5fe9df9e910455
+Es el build corregido2/2; no relanzar ni modificar candidato durante ejecución.
+Pipeline ejecuta analyze y flutter test sobre SHA exacto antes de AAB/Publishing.
+Samsung siguePlay2.3.3(300). Publicación y QA delta aún pendientes.
+
 ## 7/10/2026 — Delta visual cerrada; gate móvil aprobado
 
 Gate móvil37720236365/job113125973662 en9708a7575ebbf19ec8ebe2a4262bbd18f3e44aff
