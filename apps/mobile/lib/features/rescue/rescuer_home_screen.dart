@@ -568,6 +568,14 @@ class _HomeVerificationStatus extends StatelessWidget {
   }
 }
 
+const _homeDialogHeading = TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 22,
+  height: 1.3,
+  fontWeight: FontWeight.w700,
+  color: Color(0xff151423),
+);
+
 class _HomePeriodDialog extends StatefulWidget {
   const _HomePeriodDialog({required this.period, required this.onChanged});
   final String period;
@@ -580,61 +588,106 @@ class _HomePeriodDialogState extends State<_HomePeriodDialog> {
   late String selected = widget.period;
   @override
   Widget build(BuildContext context) => Dialog(
-    insetPadding: const EdgeInsets.all(20),
+    insetPadding: const EdgeInsets.all(16),
     backgroundColor: Colors.white,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
     child: ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 340),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
+      constraints: const BoxConstraints(maxWidth: 400),
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                const Expanded(child: Text('Filtrar', style: _homeHeading)),
-                IconButton(
-                  tooltip: 'Cerrar',
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.close),
+                const Text(
+                  'Filtrar',
+                  textAlign: TextAlign.center,
+                  style: _homeDialogHeading,
+                ),
+                const SizedBox(height: 8),
+                const Text('Período', style: _homeHeading),
+                const SizedBox(height: 8),
+                for (final option in const [
+                  ('yesterday', 'Ayer'),
+                  ('week', 'Esta semana'),
+                  ('month', 'Este mes'),
+                ])
+                  Semantics(
+                    checked: selected == option.$1,
+                    inMutuallyExclusiveGroup: true,
+                    child: InkWell(
+                      key: ValueKey('home-period-${option.$1}'),
+                      onTap: () {
+                        setState(() => selected = option.$1);
+                        widget.onChanged(option.$1);
+                      },
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(minHeight: 48),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 16,
+                              height: 16,
+                              decoration: BoxDecoration(
+                                color: selected == option.$1
+                                    ? purple
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(
+                                  color: selected == option.$1
+                                      ? purple
+                                      : const Color(0xffe3e4ed),
+                                ),
+                              ),
+                              child: selected == option.$1
+                                  ? const Icon(
+                                      Icons.check,
+                                      size: 12,
+                                      color: Colors.white,
+                                    )
+                                  : null,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                option.$2,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  height: 1.3,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 16),
+                FilledButton(
+                  onPressed: () => Navigator.of(context).pop(selected),
+                  style: FilledButton.styleFrom(
+                    minimumSize: const Size(0, 36),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: const Text('Listo'),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            const Text('Período', style: _homeHeading),
-            const SizedBox(height: 8),
-            RadioGroup<String>(
-              groupValue: selected,
-              onChanged: (value) {
-                if (value == null) return;
-                setState(() => selected = value);
-                widget.onChanged(value);
-              },
-              child: Column(
-                children: [
-                  for (final option in const [
-                    ('yesterday', 'Ayer'),
-                    ('week', 'Esta semana'),
-                    ('month', 'Este mes'),
-                  ])
-                    RadioListTile<String>(
-                      key: ValueKey('home-period-${option.$1}'),
-                      title: Text(option.$2),
-                      value: option.$1,
-                      activeColor: purple,
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                ],
-              ),
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: IconButton(
+              tooltip: 'Cerrar',
+              onPressed: () => Navigator.of(context).pop(),
+              icon: const Icon(Icons.close, size: 18),
             ),
-            const SizedBox(height: 16),
-            FilledButton(
-              onPressed: () => Navigator.of(context).pop(selected),
-              child: const Text('Listo'),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     ),
   );
@@ -1556,70 +1609,79 @@ class _HomePhotoTipsDialog extends StatelessWidget {
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
     child: ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 340),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Align(
-              alignment: Alignment.centerRight,
-              child: IconButton(
-                tooltip: 'Cerrar',
-                onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.close),
-              ),
-            ),
-            const Text('Tips para mejores fotos', style: _homeHeading),
-            const SizedBox(height: 8),
-            const Text(
-              'Sigue estas recomendaciones para que tus casos destaquen en Adoptar y reciban más vistas.',
-              style: TextStyle(
-                fontSize: 14,
-                height: 1.45,
-                color: Color(0xff554e48),
-              ),
-            ),
-            const SizedBox(height: 16),
-            for (final tip in _homePhotoTips) ...[
-              Container(
-                padding: const EdgeInsets.only(left: 14),
-                decoration: const BoxDecoration(
-                  border: Border(
-                    left: BorderSide(color: Color(0xffc4b5fd), width: 3),
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'Tips para mejores fotos',
+                  style: _homeDialogHeading,
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Sigue estas recomendaciones para que tus casos destaquen en Adoptar y reciban más vistas.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    height: 1.45,
+                    color: Color(0xff554e48),
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      tip.$1,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        height: 1.3,
-                        fontWeight: FontWeight.w700,
+                const SizedBox(height: 32),
+                for (final tip in _homePhotoTips) ...[
+                  Container(
+                    padding: const EdgeInsets.only(left: 14),
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        left: BorderSide(color: Color(0xffc4b5fd), width: 3),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      tip.$2,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        height: 1.4,
-                        color: Color(0xff554e48),
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          tip.$1,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            height: 1.3,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          tip.$2,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            height: 1.4,
+                            color: Color(0xff554e48),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
+                  const SizedBox(height: 14),
+                ],
+                const SizedBox(height: 18),
+                FilledButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Entendido'),
                 ),
-              ),
-              const SizedBox(height: 14),
-            ],
-            FilledButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Entendido'),
+              ],
             ),
-          ],
-        ),
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: IconButton(
+              tooltip: 'Cerrar',
+              onPressed: () => Navigator.of(context).pop(),
+              icon: const Icon(Icons.close, size: 18),
+            ),
+          ),
+        ],
       ),
     ),
   );
