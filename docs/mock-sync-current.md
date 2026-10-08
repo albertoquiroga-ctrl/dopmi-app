@@ -22,7 +22,8 @@ el mismo tablero; no absorbe pushes ni reinicia fixtures cerrados. QA del gesto
 horizontal a200% revela la etiqueta completa: recorte previo reclasificado,
 no defecto demostrado. La prueba aislada24052 detectó defecto sólo a320/200%; corrección local
 acota ancho de pestañas y permite envolver texto. Nueva prueba97495 aprobada1/1.
-Suite Home90403 aprobada13/13; analyzer3617 y captura siguientes. Play300 anterior a
+Suite Home90403 aprobada13/13; analyzer3617 aprobado sin incidencias.
+Producto corregido2a1c2a2 en GitHub; recaptura afectada siguiente. Play300 anterior a
 esta corrección. Una cola Flutter; sigue auditoría por familia/estado/movimiento.
 Objetivo integral activo; candidato publicado y aceptación global separados.
 

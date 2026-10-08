@@ -41,8 +41,7 @@ no extrapolar ese resultado a320. Se acota cada pestaña al ancho disponible
 para permitir salto de línea cuando el texto ampliado no cabe, manteniendo
 scroll horizontal y dimensiones naturales a escala normal. Sin cambios de
 negocio/repositorio/RPC. Prueba nueva sesión97495 exit0,1/1, tras la corrección.
-Suite completa rescuer_home_screen90403 exit0,13/13 aprobadas. Analyzer
-en sesión3617; capturas afectadas siguientes. La versión Play300 conserva el código anterior.
+Suite completa rescuer_home_screen90403 exit0,13/13 aprobadas. Analyzer3617 exit0, sin incidencias en123.8s. Capturas afectadas siguientes. La versión Play300 conserva el código anterior.
 No aceptación instalada de esta corrección ni cierre global de paridad.
 
 ### Auditoría inicial y gesto de pestañas — 7/10/2026
