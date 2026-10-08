@@ -26,7 +26,9 @@ hint de una línea y ornamento48×32;14tests y3recapturas aprobadas. Analyzer876
 aprobado sin incidencias. La escala ampliada conserva texto completo.
 Perfil/redes comparados: margen12px y Cancelar morado600/borde corregidos;
 4capturas normal/200% aprobadas97400. Correcciones aún fuera de Play300.
-Siguiente: comparación Source/Flutter del resto del delta (Inicio, métricas/período/tips/
+Período/tips corregidos22px/cierre/espacios;23tests aprobados, analyze limpio.
+Final Adoptar y encabezado Apoyar comparados; posiciones coherentes.
+Siguiente: comparación puntual de paneles/actividad del delta (Inicio, métricas/período/tips/
 actividad, Perfil/redes, encabezados de Apoyar y final de Adoptar), resolver
 sólo diferencias demostradas y ejecutar gates afectados/candidato consolidado.
 No nueva aceptación anterior requerida, ni alteración de cuenta del titular.
