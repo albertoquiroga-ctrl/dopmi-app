@@ -489,6 +489,8 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
   Future<void> _filterPeriod() async {
     final selected = await showDialog<String>(
       context: context,
+      barrierColor: const Color(0xff15110d).withValues(alpha: .48),
+      barrierLabel: 'Cerrar filtro de período',
       builder: (_) => _HomePeriodDialog(
         period: period,
         onChanged: (value) {
@@ -590,9 +592,13 @@ class _HomePeriodDialogState extends State<_HomePeriodDialog> {
   Widget build(BuildContext context) => Dialog(
     insetPadding: const EdgeInsets.all(16),
     backgroundColor: Colors.white,
+    elevation: 0,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
     child: ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 400),
+      constraints: BoxConstraints(
+        maxWidth: 400,
+        maxHeight: MediaQuery.sizeOf(context).height * .88,
+      ),
       child: Stack(
         children: [
           SingleChildScrollView(
@@ -1541,6 +1547,8 @@ class _HomePhotoTipsState extends State<_HomePhotoTips> {
         child: InkWell(
           onTap: () => showDialog<void>(
             context: context,
+            barrierColor: const Color(0xff15110d).withValues(alpha: .48),
+            barrierLabel: 'Cerrar consejos para fotos',
             builder: (_) => const _HomePhotoTipsDialog(),
           ),
           onHighlightChanged: (value) => setState(() => pressed = value),
@@ -1640,10 +1648,14 @@ class _HomePhotoTipsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Dialog(
     backgroundColor: Colors.white,
+    elevation: 0,
     insetPadding: const EdgeInsets.all(20),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
     child: ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 340),
+      constraints: BoxConstraints(
+        maxWidth: 340,
+        maxHeight: MediaQuery.sizeOf(context).height * .88,
+      ),
       child: Stack(
         children: [
           SingleChildScrollView(

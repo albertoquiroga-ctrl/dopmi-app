@@ -36,7 +36,9 @@ Estado: comparación esencial delta cerrada y correcciones en91aa8cf;
 [gate móvil37718107631](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37718107631)
 aprobado completo. RadioGroup nativo preservado en9708a75, teclado1/1 y
 200%9/9 aprobados. [Gate final37720236365](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37720236365)
-comprobado en curso, source9708a7575ebbf19ec8ebe2a4262bbd18f3e44aff.
+aprobado completo, source9708a7575ebbf19ec8ebe2a4262bbd18f3e44aff.
+Ajuste final de backdrop/elevación/altura88%:5checks46914 aprobados, analyze60233
+sin incidencias; reutilizar suites intactas y compilar SHA final en CM2/2.
 CM1/2; ninguna corrección publicada. Siguiente: resultado final y build2/2.
 Play/Samsung300 aún anterior. No repetir QA anterior.
 

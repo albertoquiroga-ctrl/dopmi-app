@@ -1,5 +1,20 @@
 # Dopmi — registro de avance
 
+## 7/10/2026 — Delta visual cerrada; gate móvil aprobado
+
+Gate móvil37720236365/job113125973662 en9708a7575ebbf19ec8ebe2a4262bbd18f3e44aff
+comprobado completed/success: formato, analyze, suite, ambas capturas y APK.
+Backend/iOS reutilizados del gate full37574438050 por código intacto.
+Último ajuste sólo de pintura/altura: backdrop rgba(21,17,13,.48), elevación0
+máximo88% del viewport en filtro y tips, según CSS9ced congelado.
+Cinco checks focalizados46914 aprobados (teclado, dos capturas normales y dos
+200%); tips permite desplazar hasta Entendido y cerrar. Imágenes examinadas.
+Analyze60233 sin incidencias en16.4s. La CI9708 precede este ajuste visual;
+se reutilizan sus suites intactas con estas comprobaciones nuevas, y se exige
+compilación/publicación del SHA final en Codemagic. No atribuirle CI del nuevoSHA.
+CM permanece1/2; siguiente candidato corregido2/2, Play y QA sólo delta Samsung.
+La paridad anterior permanece aceptada por el titular; sin ampliar inventario.
+
 ## 7/10/2026 — Gate91aa8cf aprobado; control nativo de período preservado
 
 CI37718107631/job113119217981 terminó success: formato, analyze, suite móvil,
