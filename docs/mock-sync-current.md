@@ -22,22 +22,27 @@ parada15:04:10Z. Conserva contadores: L2 dos pasadas + tercera autorizada;
 causa nueva de captura1/2; CM1/2. Agentes anteriores terminados.
 Una cola Flutter, timeout/PID propios. Sin Goal nuevo, heartbeat o loop.
 
-Estado **IMPLEMENTACION_LISTA_PENDIENTE_BUILD** (AAB firmado).
-Parada segura14:10Z por espera externa sin tareas independientes, autorizada
-por el plan; objetivo pausado. Consumo~36/90min del tramo renovado; no agotado.
-CM siguequeued tras~16min, sin started_at. API/UI coinciden, cuota disponible;
-activos sólo este candidato. Causa de la cola no informada. Sin procesos propios,
-loop ni heartbeat. Próxima consulta: mismo buildId; luego AAB/versionCode,
-Publishing y Play Console internal. No relanzar ni repetir gates aprobados. CI37629942682 completed/success
-13:52:09Z, capturas y APK cargados. Antes de publicar: checkpoint documental,
-HEAD/remoto coincidentes y un solo CM android-guardian-internal; verificar
-SHA/AAB/Publishing/internal/versionCode.
-API CM y repositorio verificados por lectura13:38Z. Primer build enviado
-13:53:24Z, buildId6ac64ed33849eef3b33de2d7, workflowandroid-guardian-internal.
-Fuente1a904d57804be10c6e0c185f8929166c2ec109aa: sólo checkpoint adicional
-sobre candidato3bd67b6; commit.hash remoto coincidente. Consultar ese mismo
-buildId, sin relanzar por cola. Play interno previo296 disponible para testers.
-Compilación, publicación y aceptación instalada son estados separados.
+Estado **PUBLICADO_INTERNAL_PENDIENTE_QA**. La espera externa terminó:
+Codemagic `6ac64ed33849eef3b33de2d7`, fuente
+`1a904d57804be10c6e0c185f8929166c2ec109aa`, terminó success el7/10
+14:43:50Z. AAB firmado 2.3.3(300), 86,283,474 bytes; Publishing success.
+Play Console consultado directamente: Internal Testing activo, release2.3.3,
+versionCode300, «Available to internal testers». CM1/2; sin relanzamiento.
+
+El titular autorizó QA instalada al conectar su teléfono. Samsung SM-S938B,
+Android16: paquete com.mycompany.dopmi, 2.3.3(300), instalado desde Play.
+QA focalizada completada: Inicio/filtros/paneles/tips, Perfil/cambio de modo,
+Ayuda/cuenta, Apoyar/detalle, Adoptar/swipe/fotos/final/favoritos y reanudación.
+Escala115% y200% recorridas; hallazgo menor: «Recibiendo apoyo» se acorta
+visualmente a200%, aunque mantiene semántica y funcionamiento. Sin cierres
+observados; sin patrones fatales/overflow en el buffer reciente del proceso.
+Restaurados escala115%, Adoptante y pantalla inicial; sesión y borradores
+conservados. Sin mensajes enviados, pagos iniciados ni formularios guardados.
+
+QA posterior restante: cuenta verificada/sociales, métricas no vacías y escritura
+real, revisión exhaustiva/seguridad/rendimiento y aceptación de Irlanda. La
+cuenta usada permanece en revisión; este recorrido no equivale a aceptación
+integral. No repetir gates aprobados ni fixtures consumidos.
 
 ## Evidencia y diagnóstico acotado
 
@@ -66,8 +71,8 @@ México define ventanas; sin backfill, fechas históricas preservadas.
 Sin cambios Edge/flags/datos anteriores; dinero exclusivamente test.
 No atribuir DEV E2E remoto o dispositivo a SQL/CI.
 
-QA posterior: instalación Play/Samsung, revisión visual exhaustiva/gestos/escala,
-auditoría independiente del delta/seguridad y rendimiento. No ejecutada ni aceptada.
+Instalación Play/Samsung y QA focalizada comprobadas; límites y hallazgo menor
+registrados arriba y en el tablero. La QA exhaustiva permanece pendiente.
 Paquete com.mycompany.dopmi, firma dopmi_upload_2026 y Guardian test conservados.
 Leer [protocolo estable](mock-sync-workflow.md) antes de continuar.
 Este checkpoint supersede pendientes históricos inferiores.

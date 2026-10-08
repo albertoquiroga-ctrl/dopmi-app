@@ -1,5 +1,32 @@
 # Dopmi — registro de avance
 
+## 7/10/2026 — Android300 instalado: QA focalizada en Samsung
+
+Codemagic6ac64ed33849eef3b33de2d7, fuente1a904d57804be10c6e0c185f8929166c2ec109aa,
+terminó success14:43:50Z: análisis/tests/build y Publishing aprobados. AAB
+2.3.3(300),86,283,474bytes. Play Console comprobado directamente: Internal
+Testing activo, release2.3.3, código300 disponible para testers. CM1/2;
+sin segundo build. Estado PUBLICADO_INTERNAL_PENDIENTE_QA.
+
+Por solicitud del titular se probó su Samsung SM-S938B/Android16 con300
+instalado por Play: Inicio, selección semanal persistida, paneles vacíos,
+Ver todo→Perfil, cinco tips, Perfil, cambio de modo, Ayuda/contacto cancelado,
+Sobre Nosotros, cuenta/privacidad, Apoyar/detalle y Adoptar con fotos/swipe,
+final nuevo, favoritos y reinicio del descubrimiento. Reanudación tras bloqueo
+de pantalla conservó sesión y ruta. Escala115%/200%: contenido esencial
+legible; hallazgo menor pendiente, selector «Recibiendo apoyo» recorta su
+texto visible a200%, con semántica completa y control operativo. Sin cierres
+observados ni patrones fatal/RenderFlex overflow en buffer reciente del proceso.
+
+Restaurados115%, Adoptante y pantalla inicial. Borradores conservados; sin
+mensajes enviados, checkout iniciado, logout ni cambios de formularios. Evidencia
+XML/PNG privada en .tools/update9ced/device-qa, excluida del repositorio.
+Cuenta en revisión: no se verificaron estado aprobado/sociales, métricas no
+vacías, escritura real ni transacciones. Auditoría exhaustiva, rendimiento y
+aceptación de Irlanda siguen pendientes; no atribuirles esta QA focalizada.
+No cambios productivos ni nuevos gates; se reutiliza CI37629942682/3bd67b6.
+
+
 ## 7/10/2026 — reanudación autorizada del candidato 9ced070
 
 ### Parada segura por espera externa — 14:10Z
