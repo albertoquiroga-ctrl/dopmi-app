@@ -13,6 +13,19 @@ Producto4f02755; corrección de tests48bac1b; candidato vigente
 `3bd67b6f4d0eeedc7dec2721bc8e7495c046c0c7` (sólo captura y docs desde48bac1b).
 Cambios ajenos preservados/excluidos; sin merge ni force-push.
 
+## Objetivo integral autorizado — 7/10/2026
+
+El nuevo objetivo exige paridad completa de pantallas, gestos y animaciones,
+testeos y etapas; no queda cumplido por el candidato MVP publicado. Ref viva
+9ced070 verificada, appbase bfe16a8 y PR6 abierto/borrador. Plan y auditoría en
+el mismo tablero; no absorbe pushes ni reinicia fixtures cerrados. QA del gesto
+horizontal a200% revela la etiqueta completa: recorte previo reclasificado,
+no defecto demostrado. La prueba aislada24052 detectó defecto sólo a320/200%; corrección local
+acota ancho de pestañas y permite envolver texto. Nueva prueba97495 aprobada1/1.
+Suite Home90403 aprobada13/13; analyzer3617 y captura siguientes. Play300 anterior a
+esta corrección. Una cola Flutter; sigue auditoría por familia/estado/movimiento.
+Objetivo integral activo; candidato publicado y aceptación global separados.
+
 ## Tiempo, límites y siguiente acción
 
 El tramo inicial90min 03:33:46Z→05:03:46Z terminó sin publicación.

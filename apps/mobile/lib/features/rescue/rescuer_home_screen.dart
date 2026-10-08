@@ -326,14 +326,26 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
         Row(
           children: [
             Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    _programTab('adoption', 'En adopción'),
-                    const SizedBox(width: 20),
-                    _programTab('support', 'Recibiendo apoyo'),
-                  ],
+              child: LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: constraints.maxWidth,
+                        ),
+                        child: _programTab('adoption', 'En adopción'),
+                      ),
+                      const SizedBox(width: 20),
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: constraints.maxWidth,
+                        ),
+                        child: _programTab('support', 'Recibiendo apoyo'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

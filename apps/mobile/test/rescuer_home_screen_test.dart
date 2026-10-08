@@ -519,6 +519,30 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('program tabs reveal full support label by drag at 200 percent', (
+    tester,
+  ) async {
+    final fonts = FontLoader('Inter')
+      ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
+    await fonts.load();
+    await pumpHome(tester, HomeRescue(), large: true);
+    final support = find.text('Recibiendo apoyo');
+    final scroller = find
+        .ancestor(of: support, matching: find.byType(SingleChildScrollView))
+        .first;
+    await tester.drag(scroller, const Offset(-400, 0));
+    await tester.pumpAndSettle();
+    final labelRect = tester.getRect(support);
+    final viewportRect = tester.getRect(scroller);
+    expect(labelRect.left, greaterThanOrEqualTo(viewportRect.left - .5));
+    expect(labelRect.right, lessThanOrEqualTo(viewportRect.right + .5));
+    await tester.tap(support);
+    await tester.pumpAndSettle();
+    expect(find.text('Donantes'), findsOneWidget);
+    expect(find.text('Recaudado'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('support grid replaces evidence cards without changing drafts', (
     tester,
   ) async {

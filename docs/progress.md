@@ -1,5 +1,73 @@
 # Dopmi — registro de avance
 
+## Paridad integral — objetivo autorizado 7/10/2026
+
+El titular solicita completar pantallas, gestos, animaciones y todas las etapas
+de comprobación. Este objetivo amplía la QA posterior de la entrega MVP cerrada;
+no se considera logrado con publicación ni recorridos parciales. Base app
+bfe16a8e97ff121e5c2f4248158f770693c64a01, rama codex/design-foundation;
+referencia remota comprobada e inmovilizada en
+9ced07094635c076d35589647fff26371d8bc791. No absorber pushes posteriores.
+Cambios ajenos conservados. Sin nuevo presupuesto inferido del tramo MVP cerrado.
+
+Criterios de cierre: las 25 familias de design-parity (NAV, AUTH, DISC, FILTER,
+PET, MATCH, SAVED, CHAT, PROFILE, SETTINGS, SUPPORT, CASE, STORY, PUBLIC,
+IMPACT, RH, RC, PUBLISH, VERIFY, EVIDENCE, RP, PAYMENT, GUARD, REPORT, LEGAL)
+requieren evidencia vigente de composición/estados, interacción, movimiento y
+operación real aplicable. Reutilizar evidencia intacta documentada; inspeccionar
+su alcance antes de atribuir igualdad. Comparar contra referencia congelada en
+normal, Samsung115% y320/200%, incluyendo teclado, Back, modal, scroll,
+arrastres, entradas y movimiento reducido cuando aplique. Las diferencias de
+negocio aprobadas (no simulaciones/tienda/dinero live) prevalecen sobre el mock.
+
+Orden: auditar evidencia por familia en este tablero; resolver diferencias
+comprobadas por grupos; pruebas dirigidas y recaptura afectada; gates agrupados
+del candidato; publicación consolidada si hay cambios; QA instalada y cierre
+por requisito. Una cola Flutter. No reejecutar fixtures bccd consumidos ni
+suprimir guardas. Aceptación de Irlanda no se atribuye a comprobación del agente.
+Flujos con estado/datos no disponibles siguen pendientes mientras se prepara
+QA con fixtures nuevos autorizados; no convertir la cuenta del titular en fixture.
+
+Primer punto: el supuesto recorte de Recibiendo apoyo corresponde a una fila
+horizontalmente desplazable también en CSS9ced (rh-pending-tabs overflow-x:auto).
+Verificar gesto y acceso completo a200% antes de clasificarlo como defecto.
+
+
+### Diferencia RH estrecho/200% — corrección comprobada
+
+La prueba nueva falló antes de corregir: etiqueta izquierda−9.106 frente al
+viewport20 en320/200%. El Samsung de mayor ancho permite verla completa;
+no extrapolar ese resultado a320. Se acota cada pestaña al ancho disponible
+para permitir salto de línea cuando el texto ampliado no cabe, manteniendo
+scroll horizontal y dimensiones naturales a escala normal. Sin cambios de
+negocio/repositorio/RPC. Prueba nueva sesión97495 exit0,1/1, tras la corrección.
+Suite completa rescuer_home_screen90403 exit0,13/13 aprobadas. Analyzer
+en sesión3617; capturas afectadas siguientes. La versión Play300 conserva el código anterior.
+No aceptación instalada de esta corrección ni cierre global de paridad.
+
+### Auditoría inicial y gesto de pestañas — 7/10/2026
+
+PR6 abierto/borrador confirmado, head bfe16a8/base ba9f897; remoto9ced sin
+cambios. Colección758 declara419 estados/47rutas sobre a3c969 y limita su
+alcance; movimiento741 cubre55 comprobaciones de ocho mecánicas y un frame
+Source de onboarding. Fichas889/bccd y candidato9ced deben enlazar esos
+contrastes para cada familia; ninguna cifra acredita por sí sola la paridad
+integral. AUTH761 ya advertía comparación pendiente de título ampliado.
+
+Samsung300 a200%: arrastre dentro de la fila de programas reveló por completo
+Recibiendo apoyo. CSS9ced rh-pending-tabs también exige overflow-x:auto;
+la observación previa de recorte se reclasifica como contenido desplazable,
+sin defecto demostrado. Imagen privada integral-tabs-large-drag inspeccionada.
+Restaurados escala1.15, Adoptante y ruta inicial. Nueva prueba de gesto a320/200%
+añadida; ejecución local inicial bloqueada por build/unit_test_assets del
+checkout. No borrar: segunda ejecución aislada en Temp con394 archivos
+lib/test/assets byteidénticos, sesión24052 en compilación; resultado pendiente.
+No cambios productivos, publicación ni fixtures remotos en este tramo.
+
+Siguiente: resolver resultado de la misma sesión24052; luego validar geometría
+y movimiento actual de AUTH/FILTER/PET contra Source9ced, y completar matriz
+por requisito/estado en este tablero. El objetivo integral permanece activo.
+
 ## 7/10/2026 — QA Samsung300: filtros de Adoptar
 
 Continuación solicitada por el titular. En la sesión actual de Android300 se
