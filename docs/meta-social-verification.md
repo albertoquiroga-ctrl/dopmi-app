@@ -258,3 +258,16 @@ sobre f71c444), overrideXcode26.5/M2/android-guardian-internal. API confirma ini
 17:22:22 México/preparing; workaround salió de cola. No duplicar ni repetir CI.
 Journal/status privados .tools/meta-social/cm-entryfix-{submit.json,status.ps1}.
 Publicación, versionCode y QA real todavía pendientes; DEV sigue false.
+
+2026-10-09 — Play311 instalado y OAuth Instagram llega a consentimiento real.
+CM6ac9772639c0d173f3b4330a finished17:46:45 México, fuente943dc1c; Publishing
++tracks get internal/completed/versionCode311. AAB SHA256
+c380904954f4e5d109b7c09cefa7d7f1fe4db4225e8a349cadfc7fcf65acca97.
+Samsung confirma com.mycompany.dopmi2.3.3(311), installer com.android.vending.
+Perfil real→Verificar mis redes sociales→Redes sociales aprobado en dispositivo.
+Flag DEV true guardado/comprobado para QA; Actualizar estado habilitó proveedores.
+Conectar Instagram profesional crea un intento pending (consulta agregada sin PII)
+y abre Chrome oficial con consentimiento Dopmi Verificación Social-IG. Scope básico
+obligatorio perfil/multimedia; producto consulta sólo identidad. Titular debe pulsar
+Permitir personalmente; solicitud pendiente. No consentimiento ni proof atribuidos.
+No repetir start mientras intento vigente. Captura privada instagram-consent-play311.png.
