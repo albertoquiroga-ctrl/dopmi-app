@@ -1,9 +1,23 @@
 # Checkpoint Dopmi — dde1bb9, 9/10/2026
 
-Estado **PLAY303_VERIFICADA_CORRECCION_SMS846_EN_COLA_TESTFLIGHT304_DISPONIBLE**.
+Estado **PLAY308_PUBLICADA_PENDIENTE_ADB_Y_QA_SMS_REAL**.
 Entrega integral incompleta. Este checkpoint sustituye esperas históricas;
 [progress.md](progress.md) conserva el ledger, [parity-current-review.md](parity-current-review.md)
 el tablero único y [mock-sync-workflow.md](mock-sync-workflow.md) el protocolo.
+
+## Estado vigente — continuación9/10
+
+CM6ac945b4a02ae85db266e20e/fuente84687bb terminó20:09:27Z con todos pasos
+success. AAB2.3.3(308); build-info exacto/Guardiantrue/internal comprobado.
+Play Console: Internal activo, release151/bundle308 disponible a testers.
+No nuevo build/CI: reutilizar FULLCI37967904270 y QA303 equivalente.
+Teléfono conectado físicamente pero ADBoffline/sinserial; solicitado desbloqueo/
+autorizaciónUSB. No instalación/QA308 acreditada todavía. Titular confirma que
+NO probó SMSincorrecto/reenvío: se conserva teléfono personal confirmado;
+solicitado otro número controlado/no vinculado para prueba real directa en app.
+Último producto remoto846; HEAD8123bfd documental, no candidato nuevo.
+Detalles de evidencia en última entrada del tablero/progress; estados de cola
+inferiores quedan supersedidos por resultado terminal308. No repollar canceled.
 
 ## Alcance y preservación
 
@@ -103,3 +117,29 @@ el tablero único y [mock-sync-workflow.md](mock-sync-workflow.md) el protocolo.
 3. Resolver evidencia factual SMSwrong/resend con respuesta humana o nueva fixture autorizada.
 4. Regenerar/revisar/stage selectivo docs propios y push tras fetch del candidato;
    auditar alcance completo antes de ENTREGA_VERIFICADA_EN_DISPOSITIVO. No declarar cierre por CI.
+
+
+### 2026-10-09 — Espera externa Android846
+
+Tres turnos consecutivos revalidaron el mismo CM6ac92cb06d3df14ff7705612 queued/sin inicio ni artifacts. Trabajo independiente completado; entrega bloqueada hasta avance externo o respuesta factual SMSwrong/resend pendiente. No cancelar/reiniciar ni inferir fallo terminal; polling detenido. Commit documental propio8123bfd local, remoto846 conservado hasta fetch. TestFlight304 disponible al equipo y teléfono personal confirmado. Retomar mismo handle; publicar/verificar Play/instalar/revalidar delta y cierre Git aún pendientes. No ENTREGA_VERIFICADA_EN_DISPOSITIVO.
+
+
+**Nuevo build solicitado por titular9/10:** anterior6ac92cb06d3df14ff7705612 confirmado canceled18:42:32UTC/sin inicio. Nuevo6ac936950aa4713b7ce0013c enviado18:46:47UTC/misma fuente846/FULLCI aprobado/android-guardian-internal; API posterior queued. Helpers .tools/dde1/candidate-84687bb-retry-20261009. Continuar con este handle; anterior terminal no repollar. No publicación/instalación nueva acreditada.
+
+**Diagnóstico vigente de cola:** consola autenticada sin otros builds activos; Billing personal gratuito343/500 minutos macOS; #46 es número de build, no posición. Mac mini M2 queued sin inicio en API. Capacidad del proveedor es hipótesis, no causa confirmada; estado público operativo. No duplicar builds/comprar concurrencia. Primer turno de espera verificada después del diagnóstico; pendiente avance de6ac936950aa4713b7ce0013c y respuesta SMSwrong/resend. Cierre sigue sin acreditar.
+
+**Bloqueo externo vigente del reintento846:** tres turnos consecutivos tras diagnóstico verificaron por API el mismo handle6ac936950aa4713b7ce0013c queued, started/finished null, sin artifacts ni pasos iniciados. No hay otro trabajo independiente ejecutable que sustituya publicación/instalación/QA del candidato; SMSwrong/resend sigue pendiente de evidencia factual. Se detiene polling y no se cancela/duplica. Reanudar ante avance externo o intervención del titular. Entrega no completada; alcance frozen y gates conservados.
+
+### 2026-10-09 — Ticket Codemagic21219 enviado por autorización expresa
+Titular autorizó enviar soporte tras diagnóstico. Formulario autenticado confirmó Issue #21219 / Your request form has been received y copia al correo de cuenta. Incluye build6ac936950aa4713b7ce0013c, workflow/fuente/hora/M2 y diagnóstico de cuota/concurrencia; solicita causa y ayuda para arrancar, sin suscripción/concurrencia de pago. Sin credenciales ni adjuntos privados. Evidencia privada .tools/dde1/codemagic-ticket-21219.png. Esperar respuesta por correo; publicación/QA siguen pendientes, no cierre.
+
+### 2026-10-09 — Soporte confirma causa de cola, ticket21219
+Respuesta directa visible de David Trdic: pico de carga en el pool de máquinas para la versión Xcode utilizada; están agregando máquinas y esperan inicio pronto. Alternativa sugerida: otra versión Xcode en configuración. Esto confirma capacidad del proveedor, no defecto app/cuota. No se respondió ni cambió configuración en esta consulta de estado del titular. Evaluar workaround con compatibilidad/gates antes de nuevo candidato; no inferir inicio del existente por respuesta.
+
+
+### 2026-10-09 — Workaround autorizado Xcode26.5
+Usuario solicita intentar sugerencia ticket21219. Se conserva fuente846 y FULLCI37967904270; override API environment.softwareVersions.xcode=26.5 sólo android-guardian-internal/M2, sin alterar YAML/firma/guards. Reemplazar anterior únicamente si sigue queued; preparar journal antes de POST; comprobar resultado nuevo.
+
+
+Nuevo CM6ac945b4a02ae85db266e20e enviado19:51:17UTC; API confirma dynamicConfig.environment.softwareVersions.xcode=26.5, instanceType mac_mini_m2, fuente846, inicialmente queued. Anterior6ac936950aa4713b7ce0013c cancelado y confirmado terminal antes del reemplazo. Helpers .tools/dde1/candidate-84687bb-xcode265-20261009. Próxima consulta exclusivamente nuevo handle; no afirmar workaround resuelto hasta inicio/Publishing/Play.
+

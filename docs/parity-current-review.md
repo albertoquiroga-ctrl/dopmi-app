@@ -1,3 +1,27 @@
+### 2026-10-09 — Android846 publicado308; conexión física/SMS negativos pendientes
+
+Continuación expresa del titular sobre dde1bb9 más QA9ced. Consulta del mismo
+CM6ac945b4a02ae85db266e20e: finished20:09:27Z9/10, todos pasos success,
+source84687bb873760b806be93b5645c7c930bb1af0a1. AAB2.3.3(308). Build-info
+descargado y comprobado: commit846,308,Guardian testtrue/GooglePlayinternal.
+Play Console consultado separado: Internal activo, release151 disponible para
+testers internos, bundle308. Workaround autorizado Xcode26.5 sí arrancó/finalizó;
+no más builds ni repetición FULLCI37967904270/evidencia303 equivalente.
+Titular confirma que NO probó código incorrecto ni reenviar: cobertura real
+pendiente, no atribuirla a verificación correcta anterior. Solicitado otro número
+controlado/no vinculado, ingreso directo en app; teléfono personal confirmado
+se conserva, sin repetir desvinculación QA ni cambiar Auth para facilitar prueba.
+Titular conectó Samsung: Windows ADB Interface OK; adb inicialmente vacío y
+tras un reinicio acotado del servidor muestra no serial/offline. Solicitado
+USB debugging/desbloqueo; versión308 aún NO instalada/probada por este hilo.
+Artefacto descarga sin auth dio401; request autenticado sólo a codemagic.io
+permitió recuperar ZIPbuild-info, sin exponer token ni reenviarlo a redirects.
+Evidencia privada .tools/dde1/candidate-84687bb-xcode265-20261009; no en GitHub.
+Siguiente: conexiónADBautorizada, actualizar308 desdePlay, confirmar fuente/origen/
+sesión y revalidar deltaSMS; SMSincorrecto/reenvío con acceso legítimo pendiente.
+Entrega integral abierta; sin aceptación humana/instalada nueva atribuida.
+
+
 **Corte vigente 9/10 — teléfono personal confirmado, corrección SMS en CI:** servidor DEV confirma un único vínculo telefónico confirmado fuera de QA tras desvinculación específica autorizada; cuentas/datos conservados. Historial personal no vacío/detalle200 y revisión independiente cerrados; historias303/200 revisadas. Corrección84687bb publicada en rama: 19 pruebas dirigidas y analyze aprobados/revisión independiente código-seguridad; FULLCI37967904270 activo, todavía sin nuevo Android instalado. iOS6ac912b5a252e7188db7d6f6 building/fuente508 descargada; TestFlight pendiente. Falta evidencia factual de código incorrecto/reenvío, gate/publicación/instalación de la corrección y cierre Git. Entrega integral abierta. Esta ficha supersede estados históricos inferiores.
 
 **Vigente9/10 — Play303 instalada:** titular actualizóPlay; dumpsys303/vending yviewerexactoconservado. Historiasfoto/texto, updetalle/downcierre/XBack, holdrelease ambas superficies, lifecycle/end acreditados y revisiónindependiente. Accionestexto200completadas/restauraciónexacta, revisiónencurso. AndroidCMfinished/allstepssuccess; iOSmismoIDqueued. Pendienteshistorialpersonal200, SMSinvalid/resend factual y TestFlight; entrega no cerrada.

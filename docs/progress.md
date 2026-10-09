@@ -4561,3 +4561,54 @@ Run37967904270 para84687bb873760b806be93b5645c7c930bb1af0a1 success: cuatro jobs
 ### 2026-10-09 — TestFlight304 disponible al equipo
 
 App Store Connect confirma carga2.3.3(304) Finalizado y grupo DopMi Inner Team asignado. Dentro del grupo existente:5 testers/15 compilaciones; dos filas ya muestran Instalada2.3.3(304) en9oct, prueba directa de disponibilidad al equipo. Sin invitar testers/cambiar roles/grupos ni publicación App Store. No atribuir aceptación funcional/visual iOS por instalación. Fuente5080090 según mismo build Codemagic. Android8466ac92cb06d3df14ff7705612 aún queued. Revisión independiente UI/UX del copy SMS846 adecuada para publicar, sin defecto material; presentación instalada aún pendiente.
+
+
+### 2026-10-09 — Espera externa Android846
+
+Tres turnos consecutivos revalidaron el mismo CM6ac92cb06d3df14ff7705612 queued/sin inicio ni artifacts. Trabajo independiente completado; entrega bloqueada hasta avance externo o respuesta factual SMSwrong/resend pendiente. No cancelar/reiniciar ni inferir fallo terminal; polling detenido. Commit documental propio8123bfd local, remoto846 conservado hasta fetch. TestFlight304 disponible al equipo y teléfono personal confirmado. Retomar mismo handle; publicar/verificar Play/instalar/revalidar delta y cierre Git aún pendientes. No ENTREGA_VERIFICADA_EN_DISPOSITIVO.
+
+
+### 2026-10-09 — Nuevo build Android solicitado
+
+Titular solicita nuevo build. API confirma anterior6ac92cb06d3df14ff7705612 canceled18:42:32UTC, sin inicio/artifacts; no job duplicado activo por ese handle. Nuevo envío del mismo producto84687bb con gate FULLCI37967904270 aprobado; remoto verificado846 y único delta HEADlocal8123bfd documental. android-guardian-internal/Play interno, sin producción ni cambios de firma. Registro privado separado conserva intento cancelado y nuevo outcome.
+
+### 2026-10-09 — Diagnóstico de cola Codemagic solicitado por el usuario
+- Consola autenticada: build Android #46 `6ac936950aa4713b7ce0013c`, fuente `84687bb873760b806be93b5645c7c930bb1af0a1`, permanece queued en Mac mini M2 sin iniciar pasos. El número 46 es el número de build, no una posición de cola.
+- Vista Builds de la cuenta, sin filtros: ningún otro build activo; iOS #17 está finished y Android #44/#45 canceled. Billing muestra cuenta personal gratuita, 343/500 minutos macOS, sin suscripción ni transacciones. No hay evidencia de cuota agotada ni de concurrencia ocupada.
+- Estado público de Codemagic operativo. FAQ oficial reconoce colas por disponibilidad/tráfico/hardware y recomienda soporte ante demoras prolongadas. Hipótesis principal: espera por capacidad del proveedor; causa interna no expuesta, no confirmada por soporte.
+- Se conserva el build existente. No se compró concurrencia ni se habilitó facturación ni se enviaron mensajes a soporte. Cancelar/recrear ya no aportó evidencia de solución; no repetir sin causa nueva.
+
+**Bloqueo externo vigente del reintento846:** tres turnos consecutivos tras diagnóstico verificaron por API el mismo handle6ac936950aa4713b7ce0013c queued, started/finished null, sin artifacts ni pasos iniciados. No hay otro trabajo independiente ejecutable que sustituya publicación/instalación/QA del candidato; SMSwrong/resend sigue pendiente de evidencia factual. Se detiene polling y no se cancela/duplica. Reanudar ante avance externo o intervención del titular. Entrega no completada; alcance frozen y gates conservados.
+
+### 2026-10-09 — Ticket Codemagic21219 enviado por autorización expresa
+Titular autorizó enviar soporte tras diagnóstico. Formulario autenticado confirmó Issue #21219 / Your request form has been received y copia al correo de cuenta. Incluye build6ac936950aa4713b7ce0013c, workflow/fuente/hora/M2 y diagnóstico de cuota/concurrencia; solicita causa y ayuda para arrancar, sin suscripción/concurrencia de pago. Sin credenciales ni adjuntos privados. Evidencia privada .tools/dde1/codemagic-ticket-21219.png. Esperar respuesta por correo; publicación/QA siguen pendientes, no cierre.
+
+### 2026-10-09 — Soporte confirma causa de cola, ticket21219
+Respuesta directa visible de David Trdic: pico de carga en el pool de máquinas para la versión Xcode utilizada; están agregando máquinas y esperan inicio pronto. Alternativa sugerida: otra versión Xcode en configuración. Esto confirma capacidad del proveedor, no defecto app/cuota. No se respondió ni cambió configuración en esta consulta de estado del titular. Evaluar workaround con compatibilidad/gates antes de nuevo candidato; no inferir inicio del existente por respuesta.
+
+Nuevo CM6ac945b4a02ae85db266e20e enviado19:51:17UTC; API confirma dynamicConfig.environment.softwareVersions.xcode=26.5, instanceType mac_mini_m2, fuente846, inicialmente queued. Anterior6ac936950aa4713b7ce0013c cancelado y confirmado terminal antes del reemplazo. Helpers .tools/dde1/candidate-84687bb-xcode265-20261009. Próxima consulta exclusivamente nuevo handle; no afirmar workaround resuelto hasta inicio/Publishing/Play.
+
+
+
+### 2026-10-09 — Android846 publicado308; conexión física/SMS negativos pendientes
+
+Continuación expresa del titular sobre dde1bb9 más QA9ced. Consulta del mismo
+CM6ac945b4a02ae85db266e20e: finished20:09:27Z9/10, todos pasos success,
+source84687bb873760b806be93b5645c7c930bb1af0a1. AAB2.3.3(308). Build-info
+descargado y comprobado: commit846,308,Guardian testtrue/GooglePlayinternal.
+Play Console consultado separado: Internal activo, release151 disponible para
+testers internos, bundle308. Workaround autorizado Xcode26.5 sí arrancó/finalizó;
+no más builds ni repetición FULLCI37967904270/evidencia303 equivalente.
+Titular confirma que NO probó código incorrecto ni reenviar: cobertura real
+pendiente, no atribuirla a verificación correcta anterior. Solicitado otro número
+controlado/no vinculado, ingreso directo en app; teléfono personal confirmado
+se conserva, sin repetir desvinculación QA ni cambiar Auth para facilitar prueba.
+Titular conectó Samsung: Windows ADB Interface OK; adb inicialmente vacío y
+tras un reinicio acotado del servidor muestra no serial/offline. Solicitado
+USB debugging/desbloqueo; versión308 aún NO instalada/probada por este hilo.
+Artefacto descarga sin auth dio401; request autenticado sólo a codemagic.io
+permitió recuperar ZIPbuild-info, sin exponer token ni reenviarlo a redirects.
+Evidencia privada .tools/dde1/candidate-84687bb-xcode265-20261009; no en GitHub.
+Siguiente: conexiónADBautorizada, actualizar308 desdePlay, confirmar fuente/origen/
+sesión y revalidar deltaSMS; SMSincorrecto/reenvío con acceso legítimo pendiente.
+Entrega integral abierta; sin aceptación humana/instalada nueva atribuida.
