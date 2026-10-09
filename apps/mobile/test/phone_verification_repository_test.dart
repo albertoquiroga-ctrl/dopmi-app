@@ -41,6 +41,79 @@ void main() {
   const other = 'dd010000-0000-4000-8000-000000000011';
   const phone = '+525512345678';
 
+  for (final entry in {
+    'phone_exists': 'Este número ya está vinculado a otra cuenta. Usa otro número o entra a la cuenta donde lo vinculaste.',
+    'otp_expired': 'El código venció o es incorrecto. Solicita uno nuevo y vuelve a intentar.',
+    'over_sms_send_rate_limit':
+        'Hubo demasiados intentos. Espera unos minutos y vuelve a intentar.',
+    'over_request_rate_limit':
+        'Hubo demasiados intentos. Espera unos minutos y vuelve a intentar.',
+  }.entries) {
+    test(
+      'SMS transport preserves safe code ${entry.key} for phone UI',
+      () async {
+        final transport = MockClient(
+          (_) async => http.Response(
+            jsonEncode({
+              (entry.key == 'otp_expired' ? 'error_code' : 'code'): entry.key,
+              'msg': '<html>private-provider-message phone OTP metadata</html>',
+            }),
+            entry.key.contains('rate_limit') ? 429 : 422,
+          ),
+        );
+        final client = SupabaseClient(
+          'https://qa.example.test',
+          'qa-key',
+          authOptions: const AuthClientOptions(autoRefreshToken: false),
+          httpClient: transport,
+        );
+        addTearDown(client.dispose);
+        await restore(client, actor);
+        final repo = SupabasePhoneVerificationRepository(
+          client,
+          authUrl: 'https://qa.example.test/auth/v1',
+          httpClient: transport,
+        );
+        addTearDown(repo.dispose);
+        Object? failure;
+        try {
+          await repo.requestPhoneCode(phone);
+        } catch (error) {
+          failure = error;
+        }
+        expect(failure, isA<AuthException>());
+        expect(phoneVerificationError(failure!), entry.value);
+        expect(
+          (failure as AuthException).message,
+          isNot(contains('private-provider')),
+        );
+        expect(repo.verifiedPhone, isNull);
+        expect(client.auth.currentUser?.id, actor);
+      },
+    );
+  }
+  test(
+    'phone errors never display unrecognized provider or arbitrary local text',
+    () {
+      for (final failure in <Object>[
+        const AuthException('private-provider-message', code: 'unknown_code'),
+        StateError('private-provider-message'),
+        Exception('private-provider-message'),
+      ]) {
+        expect(
+          phoneVerificationError(failure),
+          'No pudimos verificar el teléfono. Vuelve a intentar.',
+        );
+      }
+      expect(
+        phoneVerificationError(
+          StateError('La sesión cambió. Vuelve a solicitar el código.'),
+        ),
+        'La sesión cambió. Vuelve a solicitar el código.',
+      );
+    },
+  );
+
   test('phone change/resend/verify retains UUID and confirms via authoritative getUser', () async {
     final requests = <http.Request>[];
     final transport = MockClient((request) async {

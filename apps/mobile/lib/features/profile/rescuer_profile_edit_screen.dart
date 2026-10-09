@@ -817,7 +817,7 @@ class _PhoneVerificationState extends ConsumerState<_PhoneVerification> {
         }
       });
     } catch (cause) {
-      if (mounted) setState(() => error = communityError(cause));
+      if (mounted) setState(() => error = phoneVerificationError(cause));
     } finally {
       if (mounted) setState(() => busy = false);
     }

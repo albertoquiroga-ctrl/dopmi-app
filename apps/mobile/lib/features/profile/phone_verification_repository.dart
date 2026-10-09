@@ -16,6 +16,35 @@ final phoneVerificationRepositoryProvider =
       return repository;
     });
 
+/// Phone UI only: never render provider messages, phone numbers or OTPs.
+String phoneVerificationError(Object error) {
+  if (error is AuthException) {
+    switch (error.code) {
+      case 'phone_exists':
+        return 'Este número ya está vinculado a otra cuenta. Usa otro número o entra a la cuenta donde lo vinculaste.';
+      case 'otp_expired':
+        return 'El código venció o es incorrecto. Solicita uno nuevo y vuelve a intentar.';
+      case 'over_sms_send_rate_limit':
+      case 'over_request_rate_limit':
+        return 'Hubo demasiados intentos. Espera unos minutos y vuelve a intentar.';
+    }
+  }
+  if (error is StateError) {
+    const safeMessages = {
+      'Inicia sesión para verificar tu teléfono.',
+      'La sesión cambió. Vuelve a solicitar el código.',
+      'La solicitud cambió. Usa el código más reciente.',
+      'Solicita un código para este teléfono.',
+      'La confirmación del teléfono todavía está pendiente.',
+    };
+    if (safeMessages.contains(error.message)) return error.message;
+  }
+  if (error is ArgumentError) {
+    return 'Revisa el número con código de país y el código recibido por SMS.';
+  }
+  return 'No pudimos verificar el teléfono. Vuelve a intentar.';
+}
+
 abstract class PhoneVerificationRepository {
   String? get verifiedPhone;
   Future<void> requestPhoneCode(String e164);
