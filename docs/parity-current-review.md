@@ -1,37 +1,92 @@
+**Vigente9/10 — Play303 instalada:** titular actualizóPlay; dumpsys303/vending yviewerexactoconservado. Historiasfoto/texto, updetalle/downcierre/XBack, holdrelease ambas superficies, lifecycle/end acreditados y revisiónindependiente. Accionestexto200completadas/restauraciónexacta, revisiónencurso. AndroidCMfinished/allstepssuccess; iOSmismoIDqueued. Pendienteshistorialpersonal200, SMSinvalid/resend factual y TestFlight; entrega no cerrada.
+
+**Actualización vigente9/10 — Android303 y Completar:** AAB2.3.3(303) generado; build-info confirma5080090/Guardian true/internal. Paso Publishing success; Play del teléfono todavía Abrir, sin actualización ofrecida. iOS6ac912b5a252e7188db7d6f6 queued. Viewer exacto confirmado tras login manual; Inicio→Completar→Información básica/Borrador→Back→Inicio acreditado en302 y revisión independiente directa sin defecto material, sin escrituras/SMS. Esta entrada supersede esperas de login/Completar y estados queued Android inferiores. Aceptación instalada508 pendiente.
+
 # Cierre de paridad — tablero vigente
 
+
+**QA física200%302 parcial:** perfil privado/header/contactos/footer y editor/consentimiento/acciones alcanzables; bio con teclado. Scroll ocultó teclado antes de footer. Escala1.15/density420 restauradas exactamente, sin escritura. Tabs públicos/notificaciones/pagos/historias200% siguen pendientes.
+
+**QA Inicio302 adicional:** En adopción inicial, período Ayer/Listo/reabrir y semana/X/reabrir (cambio inmediato idéntico al frozen), Este mes restaurado; resumen→borrador QA→editor→Back sin escritura; tips abrir/Back. Codemagic cola exacta43, cuota291/500 y ningún otro build activo visible; no reenviar. Completar perfil no verificado sigue pendiente.
+
+**QA adicional302: Guardar borrador y reabrir editor acreditados.** Perfil sintético version20/draft; marcador de bio persistió en UI y SQL, snapshot aprobado intacto y sin marcador. No repetir submit/review/revoke. SMS real resuelto; nuevo build5080090 continúa en cola.
+
+**Actualización vigente 9/10: SMS real verificado en el mismo usuario QA**, confirmado por titular y SQL Auth (UUID/correo conservados, teléfono confirmado, sin cambio pendiente). Twilio Primary Profile Approved y Phone DEV habilitado; secretos, número personal y OTP fuera de Git. Codemagic `6ac903950e26cbb7565d916f` continúa queued para `5080090`; FULL CI verde. QA nativa restante y aceptación final siguen pendientes. Esta actualización supersede pendientes SMS/identidad anteriores.
 ## 8/10/2026 — Ejecución aprobada dde1bb9 + QA pendiente9ced
 
-Estado **EN_IMPLEMENTACION_Y_QA**. Esta ficha supersede el alcance cerrado9ced
+Estado **PLAY302_QA_NATIVA_CORRECCION5080090_EN_CODEMAGIC_SMS_VERIFICADO**. Esta ficha supersede el alcance cerrado9ced
 inferior: el titular aprobó el plan completo y eligió incluir también dde1bb9.
 Mock fijo `dde1bb9d01e5f4c427424bffed99bf1c3ed1beca`; app base producto
 `281fc378abd9de8b9118419b53e51813c7e411a1`; inicio rama/HEAD/remoto
 `codex/design-foundation@b4ac415732207b435da840318a953129afaffe9d`.
-PR6 abierto/borrador; Play301 anterior, no candidato del delta nuevo.
+PR6 abierto/borrador; candidato propio `7e1a94c2344463ed0f7a56a7e3c9b8bf6c9f957e` publicado. Play302 del candidato7e1a94c publicado e instalado desdePlay; QA completa aún pendiente.
+
+Actualización vigente 9/10: login manual QA resuelto. Corrección propia de gestos
+de historias `5080090ae87e78e472d5904b67b50c2645a5c261` publicada en rama;
+FULL CI37946992790 cuatrojobs/todossteps success. Codemagic nuevo
+`6ac903950e26cbb7565d916f`, android-guardian-internal, envío único15:09:10Z,
+última consulta API queued; no inferir versión/publicación/instalación nueva.
+302 acredita editor/preview privado/tabs; nombre editado sólo en memoria y Back
+sin guardar con SQL que confirma snapshot intacto; chat picker/cancelar/enviar
+con teclado/persistencia, inbox activo/histórico y evento propio/lectura; footer,
+cambio de modo, historial vacío y necesidad expandida. Inventario QA actual:
+dos mensajes/cuatroobjetos/dos read_at; sin cambios financieros/Connect/cohorte.
+Auto real de historias acreditado en302 aislando temporalmente PhoneLink:
+primera→segunda→Apoyar, settings exactos restaurados y revisión independiente.
+El modo accesible puede detener auto por diseño; no modificar temporizador.
+Gestos sobre texto corregidos aún requieren binario nuevo. SMS real resuelto:
+Primary Profile Approved, remitente activo, providerPhone DEV habilitado y
+phoneChange confirmado en mismo UUID/correo, sin contacto público automático.
+Zoom multitáctil nativo302 acreditado y revisado independientemente: ampliar,
+pan, reducir y X al mismo hilo, sin nuevos envíos. Texto200 físico perfil/editor,
+tres tabs públicos/cuerpos/filtros scroll, notificaciones e historial vacío
+acreditados; restauración exacta. Historial con movimientos/detalle200 sigue
+pendiente, al igual que acciones historias del binario corregido.
+
+### Aceptación restante de5080090 — revisión independiente9/10
+
+1. **Build-info y Publishing303 acreditados:** SHA5080090, internal completed por consulta del publisher. Pendiente versión303 instalada desdePlay, sesión/config conservadas.
+2. **Acreditado303 y revisión independiente:** tapsfoto siguiente/anterior; swipetexto arriba detalle/Back y abajo cierre, X/AndroidBack, holdrelease texto/foto, background/foreground y finApoyar. Pausaaccesible intencional; no afirmar duración exacta ni progreso preciso.
+3. **Acreditado302 y revisión independiente:** foto QA existente pinch ampliar/reducir, pan ampliado y X al mismo hilo. No repetir writer.
+4. Texto200% físico: editor/footer, tabs públicos, notificaciones/pagos/historias con acciones alcanzables; restauración exacta fontscale1.15/density420. No sustituir por capturas locales.
+5. **Acreditado302 y revisión independiente:** Inicio Enadopción, períodos/Listo/X, paneles/tips y viewer sin identidad aprobada→Completar→Información básica/Borrador→Back, sin guardar/publicar.
+6. **Acreditado302 y revisión independiente:** snapshot público real, tres tabs/cuerpos, filtros/tarjetas, contactos aprobados visibles sin Authphone, detalle/Back conserva contexto.
+7. **Acreditado302:** writer nativo Guardar/recargar, SQL version20/draft y snapshot intacto; revisión independiente. No repetir submit/review/revoke. Preview/Back descartado ya acreditado.
+8. SMS real: remitente y providerDEV, solicitar/recibir/verificar phoneChange mismoUUID; espera/reenvío y código inválido sin confirmación. Sin OTP/secretos en logs/chat ni confirmación simulada.
+9. Historial no vacío y detalle read-only autorizado: reutilizar302 donde equivalente porque5080090 sólo cambia historias; no crear pagos/cohorte para llenar UI.
+
+Reutilizar302 picker/cancelar/enviar+teclado/persistencia, inbox activo/histórico,
+evento propio/read_at, footer/modo/historial vacío/necesidad expandida/preview
+descartado; muestra de navegación compartida en nuevo build, sin repetir writes.
+Clip recortado idéntico al SVG frozen: imperfección heredada operable, no nuevo
+defecto de paridad ni cambio de asset autorizado por este cierre.
 
 | Grupo | Alcance | Implementación | Verificación/publicación/dispositivo |
 |---|---|---|---|
-| N01 | Chrome/Mis match/avatar/composición | Implementado en árbol (Chrome) | Avatar/SMS/nav dirigidos aprobados; visual pendiente |
+| N01 | Chrome/Mis match/avatar/composición | Implementado en árbol (Chrome) | Avatar/nav dirigidos y capturas reales normal115/320200 revisadas; SMS real/instalado pendientes |
 | N02 | Inicio En adopción y Completar→editor | Implementado (Chrome) | Inicio/Back aprobados; antigua regresión ajustada al tab explícito |
 | N03 | Perfil privado y accesos | Implementado/revisado | UI normal115 y accesibilidad200 dirigidas; instalado pendiente |
-| N04 | Editor/contactos/OTP/feedback/revisión | SQL/editor/admin implementados | SQL+editor/admin aprobados; SMS real pendiente |
-| N05 | Perfil público/resumen/tabs/grid/filtros | Implementado/revisado | SQL/tests y capturas normal115/200, taps/reveal ambas direcciones; AuthDEV/instalado pendientes |
-| N06 | Historial individual+Guardián enviado/recibido | Implementado y revisado independientemente | PGlite505/505, PostgreSQL real6/6 rollback, UI13/13 y reviewvisual normal115200; RPCDEV desplegada, AuthDEV/dispositivo pendientes |
-| N07 | Notificaciones reales/tonos/thumb/destinos | Implementado, cohorte privada vacía | 18 casos SQL agrupados, revisión independiente 2 defectos cerrados; AuthDEV pendiente |
-| N08 | Foto privada en chat | Implementado (Chrome/integrador) | SQL/concurrencia PG1/1, UI y StorageHTTP1/1 locales; visual normal115200 revisada, DEV/zoom/picker/dispositivo pendientes |
-| N09 | Historias fotos y carrusel Guardián | Implementado y corregido (Apoyar) | Temporal13/13; capturas nuevas ejecutándose, independencia visual pendiente |
-| N10 | Necesidades inicialmente colapsadas | Implementado (Apoyar) | Test dirigido aprobado; captura colapsado/expandido en ejecución |
-| N11 | Publicar/inbox casos activos/privacidad | Implementado (Chrome) | Selector SQL/UI dirigidos aprobados; aceptación final instalada pendiente |
+| N04 | Editor/contactos/OTP/feedback/revisión | SQL/editor/admin implementados | SQL+editor/admin y AuthDEV snapshot/consent/review/revoke aprobados; SMS real pendiente |
+| N05 | Perfil público/resumen/tabs/grid/filtros | Implementado/revisado | SQL/tests y capturas normal115/200 revisadas; AuthDEV snapshot/revoke/reenable acreditado, instalado pendiente |
+| N06 | Historial individual+Guardián enviado/recibido | Implementado y revisado independientemente | PGlite505/505, PostgreSQL real6/6 rollback, UI13/13 y reviewvisual normal115200; RPCDEV y ocho consultas AuthDEV de historial vacío acreditadas; historial no vacío/dispositivo pendientes |
+| N07 | Notificaciones reales/tonos/thumb/destinos | Implementado, cohorte privada vacía | 18 casos SQL y revisión independiente, AuthDEV37/37 + audit real de review/chat/read/ownership; eventos financieros nuevos no ejecutados |
+| N08 | Foto privada en chat | Implementado (Chrome/integrador) | SQL/concurrencia PG1/1, UI/Storage locales; visual normal115200 revisada, AuthDEV32/32 +audit1objeto/mensaje/notificación; zoom/picker/dispositivo pendientes |
+| N09 | Historias fotos y carrusel Guardián | Implementado y corregido (Apoyar) | Temporal13/13; capturas y revisión independiente normal115/320200 cerradas; gestos instalados pendientes |
+| N10 | Necesidades inicialmente colapsadas | Implementado (Apoyar) | Tests y captura colapsado/expandido revisados; instalado pendiente |
+| N11 | Publicar/inbox casos activos/privacidad | Implementado (Chrome) | Selector SQL/UI y AuthDEV ownership/activos/historia aprobados; aceptación instalada pendiente |
 
 Decisiones: contactos completos como mock en campos públicos dedicados,
 consentimiento expreso y moderación, sin autofill privado ni consentimiento
 heredado. Re-review sólo versión pública; identidad/Connect intactos. SMS real
-Twilio+Supabase (Phone hoydeshabilitado, proveedor/costo aúnpor autorizar).
+Twilio+Supabase DEV habilitado y SMS real verificado en mismo QA; configuración/costo autorizados. Trust Hub Approved y remitente activo. No repetir vinculación ya confirmada.
 Titular autoriza excepción cambio temporal cuenta QA; login/restauración manual,
 sin clear data ni escrituras personales. Tienda/video/Meta/fondo/bonos/cashback
 excluidos; dinero test y firma/identidad com.mycompany.dopmi conservados.
 
 ### Evidencia vigente del corte UI y DEV (8/10)
+
+Actualización: CI FULL PR37881037435 del candidato7e1a94c: cuatrojobs y todossteps success (Flutter993, backend632, admin38, PostgreSQL295, Auth backend5, capturas y Android/iOS). Codemagic6ac868c2db0c8ad19691cef6 terminado, Publishing success y build-info7e1a94c/302. Play302 instalado/installerVending confirmado; sesión preservada e historial existente/detalle read-only observados, revisión independiente y loginmanualQA/SMS pendientes. AuthDEV resume29/29 y auditoría exacta root cerrados. Dos fotos Storage nuevas y dos reviews RPC reales preparadas con edición legítima a draft; rechazo previo AccessDenied preservado, objetos0 reconciliados antes del recovery. No aceptación instalada/humana/SMS. La evidencia nueva supersede los pendientes intermedios de abajo; checkpoint enlaza detalle.
+
 
 Backend consolidado632/632; admin39/39+build, config16/16, PostgreSQL295/295,
 SQLdelta18/18, pagoPG6/6 rollback y PGlite505/505. Fuente móvil450files
@@ -1111,3 +1166,15 @@ agrupada y pruebas dirigidas. Una cola Flutter central. Un estado verificado
 se reabre por cambios en su componente/dependencia/referencia o defecto
 comprobado. Datos, archivos privados y snapshots aprobados conservan sus reglas.
 Codemagic se ejecuta al finalizar el candidato, no por avance.
+
+## Adición de evidencia instalada — 9/10, perfil público302
+
+Snapshot público real sin marcador del borrador ni teléfono Auth; tabs Resumen/Adopción/Apoyo, filtro Macho vacío esperado según SQL owner, limpiar y tarjeta activa→Back acreditados. A200% real: header/tabs activadas/toolbar adopción; configuración restaurada exactamente. No cubre todo cuerpo/filtros200%. Evidencia y límites en última entrada de progress.md; revisión independiente pendiente. Codemagic5080090 sigue queued, no nueva instalación atribuida.
+
+## Adición física200% — 9/10
+
+Acreditados en302: cuerpo Adopción público/grid/footer; modal Filtros abrir/scroll/Back con Aplicar/Limpiar alcanzables; notificaciones tres filas y Back sin leer eventos nuevos; historial QA vacío y Back. Restauración exacta fuente1.15/density420 en los tres bloques. Revisión independiente público17PNG sin defecto material; notificaciones/historial en revisión. Permanecen cuerpos Resumen/Apoyo, historial no vacío/detalle200 y acciones historias corregidas en nuevo candidato. Ver ledger para alcance preciso; no generalizar aceptación total.
+
+## Adición 9/10 — cuerpos públicos200 y zoom nativo302
+
+Resumen/Apoyo200 recorridos hasta footer; revisión independiente sin defecto material visible y restauración exacta. Zoom chat físico resuelto: foto QA existente, pinch dos punteros amplía/reduce, pan desplaza, X devuelve al mismo hilo con dos mensajes, sin nuevo envío. Evidencia privada/journal y método en ledger; revisión independiente zoom pendiente. No repetir picker/envío consumidos. Historias corregidas aún esperan candidato508 desde Play.

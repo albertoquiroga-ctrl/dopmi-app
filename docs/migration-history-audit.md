@@ -9,13 +9,15 @@ nuevos ausentes. Backend632/632, pgTAP295/295 y delta18/18; pagos505/505 PGlite 
 PostgreSQL real6/6 rollback. Aplicadas una vez por MCP, exclusivamente DEV
 `ohqxranynackjignryep`, sin replay/repair/rename/dbpush/producción.
 
-| Fuente local | Registro DEV | SHA256 SQL |
-|---|---|---|
-| 20261009000716_rescuer_inbox_active_selector_dde1.sql | 20261009030600 | 431ad1ad39344a0ecba60b012c5be12f08c47246df5bf32a53d9e5d614df0d71 |
-| 20261009000910_rescuer_public_contacts_dde1.sql | 20261009030606 | 08e6c11ac2a8f37bb0d3d4bf43c991c8109545e553d006aada6a237d2d10a515 |
-| 20261009001315_unified_payment_activity_dde1.sql | 20261009030608 | 7ab8a0b649213d0f4e0789844d09c59939092720c1b22887935ed1dd52f1048c |
-| 20261009001935_private_chat_photos_dde1.sql | 20261009030613 | ee79b9dc14b9189c9ba7e745a5aca051f4fc96834840491063f1589a398194ce |
-| 20261009002443_notification_events_dde1_retimestamp.sql | 20261009030615 | bff196bae039f73043900ad8bcbac07bc19517b07bff92428c7f3ef55f093495 |
+| Fuente local | Registro DEV | SHA256 archivo al aplicar | SHA256 blob candidato7e1a94c |
+|---|---|---|---|
+| 20261009000716_rescuer_inbox_active_selector_dde1.sql | 20261009030600 | 431ad1ad39344a0ecba60b012c5be12f08c47246df5bf32a53d9e5d614df0d71 | db0456ff709d65b49baa76d2a54fae1a596a4debbe21cc2145a73b1efde03f75 |
+| 20261009000910_rescuer_public_contacts_dde1.sql | 20261009030606 | 4e33eaac5fb5a73bed23da8e82ba0c7ff280c92dc2f9c395e8c397732bb5bf7b | 659943bec669ba7468c9644fbadf0b7e64aec3c41e107c5b9f5869fcffdd3ec9 |
+| 20261009001315_unified_payment_activity_dde1.sql | 20261009030608 | 7ab8a0b649213d0f4e0789844d09c59939092720c1b22887935ed1dd52f1048c | e091a507fcddae9ad4cb16b0a7f0056575755fb88a9088ed6e6b12fef18aa2a4 |
+| 20261009001935_private_chat_photos_dde1.sql | 20261009030613 | ee79b9dc14b9189c9ba7e745a5aca051f4fc96834840491063f1589a398194ce | ee79b9dc14b9189c9ba7e745a5aca051f4fc96834840491063f1589a398194ce |
+| 20261009002443_notification_events_dde1_retimestamp.sql | 20261009030615 | bff196bae039f73043900ad8bcbac07bc19517b07bff92428c7f3ef55f093495 | 317b1a89d441e6289f5663f7ea5a24908feb1d5495103541b38f96ec1c879ccb |
+
+Hashes separados deliberadamente: archivos locales al aplicar preservaban CRLF salvo chat; Git guarda LF. Comparación normalizada LF coincide5/5 con el candidato. Contactos quitó solamente una línea vacía final antes del commit (hash local actual08e6c11…, al aplicar4e33eaa…); cuerpos SQL/semántica desplegada intactos, sin replay ni repair.
 
 Postflight:22/22 cuerpos coinciden con SQL fuente; todos SECURITY DEFINER y
 search_path vacío. Helpers privados sin EXECUTE anon/auth; RPC públicas sólo auth
