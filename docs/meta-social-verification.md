@@ -142,3 +142,19 @@ presentarlo como resuelto ni desplegar limpieza global. Con gate y configuració
 real válidos, candidato android-guardian-internal, publicación y QA en teléfono.
 La QA SMS incorrecto/reenvío de Play308 sigue pendiente con Irlanda.
 **Entrega pendiente: retomar este encargo, sin iniciar otro delta.**
+
+### Configuración autorizada en curso
+
+El titular autorizó expresamente permiso mínimo, callbacks y secretos sólo en DEV.
+instagram_business_basic añadido, estado «Listo para prueba». Callback OAuth DEV
+y URLs Instagram deauthorize/delete guardados; consola confirmó guardado correcto.
+La URL de ejemplo que genera Meta incluye scopes amplios por defecto: no copiarla;
+el servidor construye su URL únicamente con instagram_business_basic.
+Meta exige reautenticación personal para mostrar secreto Instagram: pendiente del
+titular, ningún secreto transferido todavía. Facebook conserva configuración previa.
+
+CI37991530876 detectó auth.sessions ausente en el bootstrap PGlite antiguo de
+payments/legacy que aplica todas las migraciones. Corrección exclusiva de fixture
+añade tabla de sesión con FK/owner/not_after; no cambia producto ni migración.
+Suite tools/verification completa ejecutada una vez:638/638 PASS, cero omitidas.
+El commit de fixture requiere nuevo gate automático; no repetir checks locales válidos.
