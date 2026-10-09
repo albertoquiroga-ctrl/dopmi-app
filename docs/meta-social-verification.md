@@ -195,3 +195,13 @@ de tester. Cuenta concreta/captura se mantienen privadas en
 Primer envío no guardó selección; seleccionar explícitamente la coincidencia exacta
 del desplegable resolvió el formulario. No reenviar invitación ya pendiente ni
 conceder rol Desarrollador/Administrador para probar. OAuth aún no verificado.
+
+Aceptación de tester comprobada en Chrome del Samsung: «Autorizado por ti el
+9 de octubre de 2026». El titular pulsó Aceptar personalmente. En Instagram nativo
+no aparece la pestaña de invitaciones: ruta fiable Configuración → buscar «sitios»
+→ Permisos de apps y sitios web → Apps y sitios web sólo muestra tres estados.
+Usar en navegador https://www.instagram.com/accounts/manage_access/ con sesión de
+la cuenta controlada → Invitaciones de prueba. ADB usado con autorización explícita
+para navegar; no capturar contraseñas ni códigos. Captura privada
+.tools/meta-social/instagram-tester-accepted.png, no disponible en GitHub.
+Esto acredita rol de tester, no OAuth de Dopmi ni aceptación del producto.
