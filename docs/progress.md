@@ -4517,3 +4517,47 @@ Revisión independiente directa303: sieteestados de gestos/rutas sin defectosmat
 Play303 texto200real completó swipeup desde nombre→detalle/Back→Apoyar, swipedowntexto→Apoyar, tapfoto→chocotorro yX→Apoyar. Script/journal story303-text200-actions y ochoPNGqa303-text200. Font2 confirmada; restauraciónexacta1.15/density420. Revisiónindependientependiente. Se detieneADB nuevamente para loginpersonal ya solicitado; no nuevaspreguntas/loginsecrets. iOS reconsulta trastransient10054 respondequeued mismoID, sin reinicio.
 
 Revisión independiente directa finalhistorias200303: ochoPNG/script/journal respaldan updetalle/Back, downclose, phototapnext yX. Modal legible/nombre/CTA/importewrapped/Xseparada; detalle reordenaestadísticas/Donarcompleto. Sin defectomaterial; no medidatáctilmínima/cuerpoinferior/pagosinferidos. Preparacióncierreselectivo: previews privados separan únicamente dosinserciones propiasdeprogress (cabecera+append) y merge3way limpio deparity; backlog/productdecisions/admin no tienen delta propio desdepostcandidatebaseline. Árbol/indexsinmutar, no commit/push mientrasiOSnofetchfuente.
+
+
+### 2026-10-09 — Espera externa efectiva, objetivo incompleto
+
+Tras completar trabajo independiente, tresauditorías consecutivas mantienen falta de loginpersonal/confirmaciónSMSinvalid-resend y mismo iOSbuildqueued revalidadoAPI. Agente bloqueado sin declarar terminado; Codemagic permanece vivo, no cancelado/reiniciado. Pollingdetenido. Documentospropiosrevisados encommitlocalf4faaff, árbol usuario preservado/indexvacío; push pendiente fetchiOS. Retomar con intervención/estadoexterno nuevo.
+
+
+### 2026-10-09 — Personal restaurada: SMSphone_exists reproducido e historial200 cerrado
+
+Titular vuelve cuenta personal y autoriza reproducir falloVincular en teléfono. Play303personal confirmadaUI; pulsarVincular muestra falsoerrorgenéricoconexión. LogsAuthDEV422/phone_exists en misma ventana. Comparación unidireccional de valorUI con teléfonoQAowner confirma mismonúmero previamenteverificado; no número/correo/OTPcopiadosaGit. No nuevoSMSni cambioAuthconfirmado. Se pide autorizaciónespecífica para retirar exclusivamente vínculoQAenDEV antes de verificarpersonal; pendiente, no ejecutado. No movervínculo bajo autorización genérica ni borrarusuarios.
+
+CorrecciónlocaldeerroresSMSporcódigo preparada enrepository/editor/test, revisiónindependientecódigo/seguridad sinhallazgos; mensajesfijos/norawproviderdata, actor/UUID/guardasconservados. Pruebasdirigidasen colaRoot, sin claimpassing aún. warm451filesSHA2203b2ed3710114d21a2eb9183c30420d6bfd892f760872e57092d300dfe5d0e. Historialpersonalapoyos303 muestra unmovimientoexistente Sinpagoconfirmado: físico200/listaexpand/detalle/scroll/AndroidBack→Perfil, revisiónindependientedirecta cuatroPNG sin defectomaterial; referenciaenvuelta/Vercasocompleto. No activarVerCaso/pagosni crearcohorte. Fuente2confirmada/restauraciónexacta1.15/density420. PerfilmodoAdoptante trasrecorrido; semánticarecibidoRescatista vacío esdistinta deapoyosAdoptante, no inventardatos.
+
+FixSMSlocal 84687bb873760b806be93b5645c7c930bb1af0a1: tresarchivospropioscommitselectivo; 19/19pruebasdirigidas teléfonorepository+navegacióneditor exit0, flutteranalyze Noissues/138.3s exit0 sobrewarmbyteequivalente451files. Revisiónindependientecódigo/seguridadsinhallazgos, mensajesfijos/norawprovider. NoinstaladoniFULLCI/nopush aún; remoto508 paraiOSqueued conservado. Faltaautorización específica quitarvínculoQAenDEV antes de enviarSMSapersonal.
+
+
+### 2026-10-09 — Desvinculación telefónica QA autorizada
+
+El usuario autorizó expresamente retirar exclusivamente el vínculo telefónico de la cuenta QA en DEV para verificar su cuenta personal. Operación atómica con precondiciones de actor QA, huella del teléfono y acceso por correo: retirada una identidad phone, limpiados teléfono/confirmación/cambio pendiente y metadatos telefónicos; conservada identidad email y contraseña. Consulta posterior confirmó teléfono nulo, cero identidades phone y una identidad email. Sin eliminación de cuentas, perfiles ni datos de negocio; producción intacta. La cuenta personal aún debe solicitar y confirmar su propio SMS; no se declara verificada. Evidencia de consultas y capturas permanece privada.
+
+
+### 2026-10-09 — Corrección SMS publicada en rama y CI iniciado
+
+Codemagic iOS6ac912b5a252e7188db7d6f6 arrancó17:32:57UTC; API confirma building/fuente5080090, Fetching app sources y análisis success, pruebas pendientes. Con fuente ya descargada se hizo push normal de commits propios f4faaff y84687bb a codex/design-foundation, preservando dirty tree. GitHub confirma FULLCI para84687bb873760b806be93b5645c7c930bb1af0a1:37967898152(push)/37967904270(PR), aún sin resultado terminal; concurrencia del workflow puede sustituir uno. No nuevo build Android hasta gate aprobado, no declaración de TestFlight publicado. gh no está en PATH; consulta de runs realizada mediante conector GitHub existente.
+
+
+### 2026-10-09 — Teléfono personal confirmado
+
+Titular informa ingreso personal y verificación completa. Consulta Auth DEV de sólo lectura por huella privada confirma exactamente una cuenta con ese teléfono, phone_confirmed_at presente, distinta del owner QA y ajena a correos de fixtures QA. No se registra teléfono/correo/código. Vínculo personal acreditado; no repetir ni quitar vínculo confirmado. Se consulta únicamente si el titular ejercitó rechazo de código incorrecto y reenvío durante el proceso, aún sin atribuir esa evidencia. CI37967904270 continúa en cuatro jobs activos; iOS mantiene mismo handle.
+
+
+### 2026-10-09 — Observación externa: Codemagic inaccesible temporalmente
+
+Tras dos timeouts de lectura API, estrategia cambiada a navegador Chrome existente: navegación enfocada al mismo build iOS6ac912b5a252e7188db7d6f6 devuelve ERR_CONNECTION_RESET. No hay evidencia terminal, no cancelar/reiniciar. Último estado verificado building con fuentes508 descargadas y análisis aprobado. CI37967904270 confirma backend, web/base de datos e iOS success; Flutter activo capturando pantallas reales. Delta documental propio revisado independientemente sin hallazgos materiales; commit posterior al fetch del próximo candidato Android para conservar SHA exacto del gate.
+
+
+### 2026-10-09 — FULLCI846 aprobado y candidato Android enviado
+
+Run37967904270 para84687bb873760b806be93b5645c7c930bb1af0a1 success: cuatro jobs y todos sus steps success comprobados mediante API GitHub. Envío único Codemagic6ac92cb06d3df14ff7705612/android-guardian-internal18:04:34UTC; API posterior queued/fuente846 confirmada, sin artifacts todavía. No atribuir publicación o instalación. iOS304 fuente508 recibida por Apple y Procesando en UI. No modificar HEAD/remoto hasta fetch del nuevo candidato Android, para preservar fuente exacta del gate.
+
+
+### 2026-10-09 — TestFlight304 disponible al equipo
+
+App Store Connect confirma carga2.3.3(304) Finalizado y grupo DopMi Inner Team asignado. Dentro del grupo existente:5 testers/15 compilaciones; dos filas ya muestran Instalada2.3.3(304) en9oct, prueba directa de disponibilidad al equipo. Sin invitar testers/cambiar roles/grupos ni publicación App Store. No atribuir aceptación funcional/visual iOS por instalación. Fuente5080090 según mismo build Codemagic. Android8466ac92cb06d3df14ff7705612 aún queued. Revisión independiente UI/UX del copy SMS846 adecuada para publicar, sin defecto material; presentación instalada aún pendiente.
