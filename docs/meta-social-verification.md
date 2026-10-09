@@ -224,3 +224,26 @@ nuevo handle. No cambiar YAML ni repetir CI válido. No acredita aún arranque o
 Incidencia transitoria de red después de cancelar: reconciliada con GET
 api.codemagic.io/builds/{id}, que confirmó cancelación; POST nuevo realizado una vez.
 Journal privado .tools/meta-social/cm-xcode265-submit.json, no disponible en GitHub.
+
+2026-10-09 — candidato310 publicado e instalado desde Play, acceso social fallido.
+Codemagic6ac96931a20af0c26fabf6c0 terminó16:43:54 México con todos los pasos
+success. Publishing confirma internal/completed/versionCode310/2.3.3 y posterior
+tracks get coincide. AAB SHA256
+11e12a44ccaf9b12bdbfc9d75e1eaa17b9a441379dcbc245a21d1cec22dfa486.
+Samsung ADB comprueba com.mycompany.dopmi2.3.3(310), installer com.android.vending;
+sesión conservada. Fuente75e79f1, producto a941815. No aceptación humana global.
+QA nueva encontró un defecto material: RescuerSocialSection quedó sin referencias
+tras cambios previos del perfil; el botón existía sólo en widget sin montaje.
+Revisión anterior de pantalla aislada no cubrió navegación desde perfil real.
+Corrección mínima en RescuerProfileHero: botón propietario autenticado abre
+SocialVerificationScreen; no cambia aprobación ni proyección pública/enlaces.
+Regresión nueva desde perfil real a320px, escalas1 y2, confirma acceso y una lectura
+list, cero start/escrituras.2/2 PASS. Suite social reutilizada5/5 PASS; primer comando
+auxiliar falló por copia relativa desde scratch (test nuevo ausente), corregido con
+ruta de copia desde raíz; no fallo productivo ni repetición de suites generales.
+Flag DEV se habilitó brevemente para QA y se restauró false al descubrir acceso
+faltante; digestfalse comprobado. Sin OAuth ni tokens/proofs nuevos. Cambio de modo
+Adoptante→Rescatista sólo para llegar al perfil; editor abandonado sin guardar.
+Capturas/journals .tools/meta-social privados/no disponibles en GitHub.
+Siguiente: gate de corrección, un nuevo Play con overrideXcode26.5 y QA OAuth real;
+no probar SMS ni repetir QA dde1 válida.310 acredita instalación, no verificación social.
