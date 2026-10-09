@@ -186,3 +186,12 @@ Próximo requisito externo: cuenta Instagram profesional controlada y aceptació
 de rol tester; solicitud al titular pendiente. No se concedieron roles ni se
 generaron tokens de usuario. Integración OAuth real y nuevo candidato Play pendientes.
 Gate exacto del fixture1efe72c: CI37993212803, automático; no repetir dispatch.
+
+Cuenta profesional controlada proporcionada por el titular e invitación autorizada
+como Evaluador de Instagram únicamente en app2033254194048655. Meta confirmó estado
+Pendiente; falta aceptación desde Instagram → Aplicaciones y sitios web → Invitaciones
+de tester. Cuenta concreta/captura se mantienen privadas en
+.tools/meta-social/instagram-tester-pending.png (no disponibles en GitHub).
+Primer envío no guardó selección; seleccionar explícitamente la coincidencia exacta
+del desplegable resolvió el formulario. No reenviar invitación ya pendiente ni
+conceder rol Desarrollador/Administrador para probar. OAuth aún no verificado.
