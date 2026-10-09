@@ -1213,3 +1213,12 @@ Acreditados en302: cuerpo Adopción público/grid/footer; modal Filtros abrir/sc
 ## Adición 9/10 — cuerpos públicos200 y zoom nativo302
 
 Resumen/Apoyo200 recorridos hasta footer; revisión independiente sin defecto material visible y restauración exacta. Zoom chat físico resuelto: foto QA existente, pinch dos punteros amplía/reduce, pan desplaza, X devuelve al mismo hilo con dos mensajes, sin nuevo envío. Evidencia privada/journal y método en ledger; revisión independiente zoom pendiente. No repetir picker/envío consumidos. Historias corregidas aún esperan candidato508 desde Play.
+
+
+## Encargo Meta separado — 9/10/2026
+
+Corte implementado a941815; último corte en dispositivo 84687bb / Play308.
+No hay nueva referencia de mockup ni paridad visual aprobada para Meta.
+Revisión UI/UX/código/seguridad, evidencia y pendientes se mantienen una sola vez
+en [meta-social-verification.md](meta-social-verification.md). La QA SMS pendiente
+del corte congelado dde1bb9 no queda satisfecha por estas pruebas.

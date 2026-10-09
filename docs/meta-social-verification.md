@@ -1,6 +1,7 @@
 # Vinculación social — encargo del 9/10/2026
 
-Estado: investigación y preparación de consola; no implementado ni publicado.
+Estado vigente: IMPLEMENTADO_DEV_DESACTIVADO_CONFIGURACION_META_PENDIENTE.
+El registro actualizado al final supersede la preparación histórica de consola.
 Este encargo nuevo no modifica la referencia congelada dde1bb9 ni acredita
 el pendiente SMS de Play308. No requiere repetir su QA válida.
 
@@ -66,3 +67,78 @@ Fuentes: consola Meta autenticada del titular y colección oficial de Meta
 La documentación directa de developers.facebook.com respondió429 durante esta
 consulta. Limitación profesional corroborada por la colección; permisos exactos
 y revisión siguen pendientes de inspección del producto nuevo.
+
+## Actualización vigente — 9/10/2026
+
+Fuente implementada y subida: a9418154a964a02043ecb4f03f0b8c98b88c5aa2,
+remoto codex/design-foundation comprobado. App creada tras autorización expresa y
+reautenticación del titular: Meta ID2033254194048655, Instagram Client ID1653707599767005,
+nombre Dopmi Verificación Social. No publicada. instagram_business_basic muestra
+«Añadir»: pendiente. Su alcance incluye perfil y multimedia; el servidor sólo
+consulta ID/usuario/tipo de cuenta. No solicitar mensajes/comentarios/publicación.
+No se revelaron/copiarion secretos ni se modificaron callbacks o roles.
+
+Cliente implementado: pantalla Redes sociales, navegador externo, comprobación
+explícita al volver, cancelación/desconexión; sin polling. Actor y sesión estables,
+URL de proveedor validada. Instagram personal conserva edición/revisión manual.
+Servidor: state con hash de un uso, caducidad10min, consumo atómico y sesión Dopmi;
+cinco inicios/10min, identidad social única, intercambio sólo servidor sin guardar
+tokens, callbacks firmados Meta, revocación y eliminación idempotentes. No modifica
+Auth identities/teléfono, snapshots públicos ni moderación.
+
+Revisión independiente de código/seguridad backend↔cliente: corregidos replay de
+revocación que podía retirar una reconexión y carrera antes de la primera prueba;
+en cliente, cambio de sesión y cancelación si falla apertura. Advisors DEV sólo
+INFO esperado para tablas RLS privadas sin policies, ACL anon/authenticated cerradas.
+No inferir autorización de metadata editable ni verificación de URLs manuales.
+
+UI/UX: captura sintética320px/texto200% con Inter revisada, título reducido a
+«Redes sociales» para evitar truncamiento; controles alcanzables con scroll.
+No acredita teléfono, nuevo mockup ni aprobación de Irlanda. Eficiencia: cola Flutter
+única/agente backend acotado/revisión cruzada, QA previa reutilizada, sin otro build.
+
+Evidencia técnica válida: seis pruebas backend con subcasos SQL/PGlite y Deno check
+de tres entrypoints; cuatro pruebas funcionales Flutter y doce de enlaces manuales;
+prueba final320px/200%; analyze sin observaciones; config móvil16/16. OneDrive bloqueó
+unit_test_assets: copia exacta Temp/dopmi-social-mobile-dskvruky, pub get offline,
+sin borrar trabajo ajeno. Exportación de captura se corrigió con runAsync y
+scrollUntilVisible para hijos perezosos. Captura privada .tools/meta-social/social-320-200.png,
+no disponible en GitHub. No repetir pruebas válidas por estos fallos de harness.
+
+CI automático [37991530876](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37991530876)
+en curso al registrar, fuente a941815; push37991525217 cancelado por concurrencia.
+Consultar conclusión antes de build, sin dispatch duplicado.
+
+Backend sólo DEV ohqxranynackjignryep: migración local20261009205039 aplicada una
+vez como remota20261009210425 (hash/mapeo en migration-history-audit.md). Cuatro tablas
+RLS sin SELECT anon/authenticated, cinco RPC sin EXECUTE anon/authenticated, cuerpos
+SQL comparados y cero filas. Funciones social-verification, social-verification-callback
+y social-verification-meta ACTIVE v1, verify_jwt=false con autorización propia.
+Postflight HTTP: list sin sesión401, callback con state no emitido400, delete
+Instagram sin configuración503. Sin tráfico de usuario/SMS. Producción intacta.
+No secretos Meta ni SOCIAL_VERIFICATION_ENABLED=true configurados por este encargo.
+
+| Criterio | Estado |
+|---|---|
+| Implementado | a941815, cliente/backend |
+| Verificado técnicamente | Dirigidas válidas; CI integral en curso |
+| Backend desplegado | DEV desactivado |
+| Meta | App creada; permisos/callbacks/secretos/revisión pendientes |
+| Play nuevo | Ningún build nuevo |
+| Dispositivo | Último84687bb / Play2.3.3(308), Samsung Vending; Meta no probado |
+| Aprobación humana | Decisión funcional/creación sí; aceptación del flujo no |
+
+Siguiente acción exacta: confirmar transferencia de secretos Facebook/Instagram al
+servidor Supabase DEV y alta sólo instagram_business_basic; registrar callback
+https://ohqxranynackjignryep.supabase.co/functions/v1/social-verification-callback
+conservando Firebase. Deauthorize/delete bajo /functions/v1/social-verification-meta/
+{facebook|instagram}/{deauthorize|delete}. La política de navegador exige confirmación
+por transmisión de credenciales/ampliación de acceso; nunca pedir secretos en chat.
+Después comprobar contrato real Graph v24.0 y OAuth con cuenta profesional controlada,
+consentimiento/cancelación/denegación/revocación y requisitos de revisión Meta.
+Antes de uso general resolver retención física: intentos/recibos tienen caducidad
+lógica pero no job de purga; tombstones se limpian en próximas revocaciones. No
+presentarlo como resuelto ni desplegar limpieza global. Con gate y configuración
+real válidos, candidato android-guardian-internal, publicación y QA en teléfono.
+La QA SMS incorrecto/reenvío de Play308 sigue pendiente con Irlanda.
+**Entrega pendiente: retomar este encargo, sin iniciar otro delta.**

@@ -154,3 +154,12 @@ Usuario solicita intentar sugerencia ticket21219. Se conserva fuente846 y FULLCI
 
 
 Nuevo CM6ac945b4a02ae85db266e20e enviado19:51:17UTC; API confirma dynamicConfig.environment.softwareVersions.xcode=26.5, instanceType mac_mini_m2, fuente846, inicialmente queued. Anterior6ac936950aa4713b7ce0013c cancelado y confirmado terminal antes del reemplazo. Helpers .tools/dde1/candidate-84687bb-xcode265-20261009. Próxima consulta exclusivamente nuevo handle; no afirmar workaround resuelto hasta inicio/Publishing/Play.
+
+
+## Encargo adicional autorizado — Meta, 9/10/2026
+
+Verificación social tiene corte implementado a941815 y estado independiente en
+[meta-social-verification.md](meta-social-verification.md). Backend DEV desplegado
+con activación cerrada; OAuth real, nuevo candidato Play y aceptación pendientes.
+El último candidato comprobado en teléfono sigue siendo 84687bb / Play308.
+La QA SMS pendiente de dde1bb9 permanece pendiente; no se amplió el mockup.

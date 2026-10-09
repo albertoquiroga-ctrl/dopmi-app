@@ -4635,3 +4635,15 @@ aceptación humana integral. Próxima acción: disponer de número controlado no
 ingresarlo directamente en308 y probar incorrecto→reenvío→confirmación real conservando
 cuenta personal. Retomar esta entrega; no iniciar otro delta. Documentación no cambia
 candidato. Preservados dirty ajenos/privados; sin cambios backend/configuración.
+
+
+## 2026-10-09 — Meta: fuente a941815, DEV desactivado
+
+Integración dedicada de verificación social implementada y publicada en la rama
+codex/design-foundation (remoto comprobado); no es un build Play. App Meta creada
+tras autorización expresa y reautenticación del titular. Pruebas dirigidas y
+postflight DEV válidos, sin reutilizar fixtures SMS consumidos. CI automático
+37991530876 en curso al registrar; push 37991525217 cancelado por concurrencia.
+Detalles, revisión, despliegue y acciones exactas:
+[meta-social-verification.md](meta-social-verification.md). No hay OAuth real,
+publicación Meta, nuevo teléfono verificado ni aprobación humana acreditados.

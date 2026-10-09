@@ -222,3 +222,13 @@ privacidad, revisión y edición de apoyo aprobado bloqueada; dinero test.
 ## 2026-10-06 — checkpoint de sincronización vigente
 
 Corte bccd040 cerrado22/22, Android296/Samsung y cleanup cero comprobados; supersede los pendientes de entrega bccd anteriores. No hay lote de paridad activo. Referencia viva9ced070 observada por Git, delta aún no inspeccionado ni implementado. Siguiente: esperar encargo y congelar su alcance antes de inventariar. Leer [mock-sync-current.md](mock-sync-current.md) y [mock-sync-workflow.md](mock-sync-workflow.md); no reiniciar gates/fixtures cerradas.
+
+
+## Encargo adicional Meta — 9/10/2026
+
+Autorizado por el titular: verificar Facebook y cuentas profesionales de Instagram
+desde la sesión Dopmi; Instagram personal conserva enlace/revisión manual.
+Implementado a941815, aún no entregado. Cola y evidencia únicas:
+[meta-social-verification.md](meta-social-verification.md). Configuración mínima
+Meta/secretos DEV, OAuth real, gate CI, candidato Play y teléfono pendientes.
+Conservar el pendiente SMS real de Play308; no repetir QA válida.

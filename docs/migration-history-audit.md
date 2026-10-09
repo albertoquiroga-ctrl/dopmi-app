@@ -504,3 +504,15 @@ Inicio real de cobertura diaria: `2026-10-07T03:48:58.342396Z`, sin backfill.
 MD5 del nuevo RPC: `525753f85f1bff0ad1dca000678b977a`. PGlite focalizado 6/6
 aprobado; PostgreSQL real y recorrido cliente siguen pendientes de gate/QA.
 No repair, replay, rename, db push, cambios de flags, Edge ni dinero live.
+
+
+## 2026-10-09 — Verificación social DEV
+
+Proyecto ohqxranynackjignryep. SQL local 20261009205039_social_verification.sql
+aplicado una vez vía MCP como social_verification; versión remota 20261009210425.
+SHA256 con LF: f6b68d0cec66600c806b0aac97000dfcd8c9ec0e9a3d43e7f7117fee67a222d8.
+Fuente a941815. La diferencia de timestamp es un mapeo documentado: no renombrar,
+reparar ni reaplicar. Postflight: cuatro tablas RLS, sin SELECT anon/authenticated,
+cinco RPC sin EXECUTE anon/authenticated, cuerpos comparados con SQL local y cero
+filas. Tres funciones Edge ACTIVE v1, activación funcional cerrada. Producción
+intacta. Evidencia y límites: [meta-social-verification.md](meta-social-verification.md).

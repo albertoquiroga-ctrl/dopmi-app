@@ -85,3 +85,15 @@ El prototipo React y la fuente funcional del ZIP son referencias de producto. Su
 - Las correcciones conservan datos y archivos. En revisión se puede retirar a borrador; una aprobación bloquea la edición del autor. El administrador puede solicitar nuevas correcciones y retirar la aprobación, dejando historial. Cerrar un caso bloquea nuevos gastos; primero deben resolverse sus solicitudes en revisión.
 - El seguimiento público expone exclusivamente una copia aprobada de textos/fotos marcados para publicar. Identificación, domicilio, teléfono, comprobantes y observaciones internas nunca forman parte de esa copia. La suspensión de la cuenta o pérdida de verificación oculta sus casos.
 - Los documentos admiten JPG/PNG/WebP y PDF de hasta 5 MB. Las fotos públicas se normalizan y eliminan metadatos. Los archivos aprobados no pueden sobrescribirse. El panel registra consultas y decisiones; las notificaciones son internas.
+
+
+## 9/10/2026 — Verificación social autorizada
+
+El titular solicita expresamente Facebook e Instagram como prueba de control
+desde una cuenta Dopmi existente, sin convertirlos en acceso a Dopmi. Autoriza
+crear la app Meta; creación confirmada tras reautenticación personal. Instagram
+personal mantiene enlace/revisión manual; OAuth sólo Empresa/Creador. Esta decisión
+habilita este encargo separado pese a la exclusión histórica de Meta del MVP.
+No acredita identidad legal, propiedad de URLs no devueltas por el proveedor,
+aprobación de perfiles ni aceptación humana del nuevo flujo. Estado y gates:
+[meta-social-verification.md](meta-social-verification.md).
