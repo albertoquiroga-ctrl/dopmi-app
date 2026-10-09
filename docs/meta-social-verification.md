@@ -251,3 +251,10 @@ Análisis dirigido posterior de corrección: cero observaciones. Producto correg
 f71c4440f261b10455eb38b9948fd3d68ef321ca subido/remoto comprobado;
 gate automático PR38001865589 pendiente al registro (push38001860198 sujeto a
 concurrencia habitual). No otro dispatch ni Codemagic hasta gate verde.
+
+2026-10-09 — gate de acceso corregido38001865589 SUCCESS/cuatro jobs f71c444.
+Codemagic6ac9772639c0d173f3b4330a enviado una vez, fuente943dc1c (sólo docs
+sobre f71c444), overrideXcode26.5/M2/android-guardian-internal. API confirma inicio
+17:22:22 México/preparing; workaround salió de cola. No duplicar ni repetir CI.
+Journal/status privados .tools/meta-social/cm-entryfix-{submit.json,status.ps1}.
+Publicación, versionCode y QA real todavía pendientes; DEV sigue false.
