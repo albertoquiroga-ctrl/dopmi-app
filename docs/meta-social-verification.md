@@ -271,3 +271,15 @@ y abre Chrome oficial con consentimiento Dopmi Verificación Social-IG. Scope b�
 obligatorio perfil/multimedia; producto consulta sólo identidad. Titular debe pulsar
 Permitir personalmente; solicitud pendiente. No consentimiento ni proof atribuidos.
 No repetir start mientras intento vigente. Captura privada instagram-consent-play311.png.
+
+2026-10-09 — Instagram OAuth real verificado en Play311.
+Titular pulsó Permitir personalmente. Callback oficial completado; retorno a Dopmi
+por Recientes y «Ya autoricé, comprobar» muestra Cuenta conectada y aviso de revisión
+pública conservado. SQL sin PII confirma intentoinstagram/verified, proof existente,
+same_owner=true y same_session=true. Contrato real de identidad profesional aprobado;
+no añadir método Auth/login ni guardar token. Captura privada instagram-connected-play311.png.
+Facebook iniciado una sola vez desde311: Chrome abre login oficial m.facebook.com.
+Titular debe ingresar directamente y avisar al consentimiento; contraseña/códigos
+fuera del chat/capturas. Facebook real, cancelación/revocación reales y gates de uso
+general siguen pendientes. FlagDEVtrue durante QA; no activación pública acreditada.
+Instagram exitoso no sustituye QA SMS ni aceptación humana integral.

@@ -176,3 +176,11 @@ un Codemagic android-guardian-internal con overrideXcode26.5 para f71c444 o docs
 equivalentes, publicación/actualización y OAuth real con consentimiento directo.
 Detalle/fuente de evidencia: [verificación social](meta-social-verification.md).
 QA SMSwrong/resend y aprobación humana anteriores continúan pendientes.
+
+## Meta — Instagram real aprobado técnicamente en Play311
+Producto social f71c444; candidato943dc1c/CM6ac9772639c0d173f3b4330a publicado
+internal2.3.3(311), instalado Samsung desde Play. Instagram consentimiento humano→
+callback→comprobación en app→proof mismo actor/sesión verificados. Facebook llega
+al login oficial y espera ingreso directo del titular. FlagDEVtrue durante esta QA.
+Fuente de verdad/evidencia/pendientes: [verificación social](meta-social-verification.md).
+No cierre integral ni aprobación humana global; conservar QA SMS pendiente.
