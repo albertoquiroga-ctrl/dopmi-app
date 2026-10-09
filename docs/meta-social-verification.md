@@ -168,3 +168,21 @@ confirmado por consola. No se escribió secreto en archivos/Git/chat/logs.
 Facebook solicita reautenticación independiente: secreto Facebook aún no transferido,
 callbacks Facebook aún pendientes. Conservar Firebase y las demás configuraciones.
 No copiar la URL de ejemplo generada por Meta con scopes amplios.
+
+Actualización posterior a reautenticación Facebook: SOCIAL_FACEBOOK_CLIENT_SECRET
+guardado en Edge Function Secrets del mismo DEV, comprobado por su registro en
+consola; secretos nunca escritos en archivos/Git/chat/logs. Callback OAuth DEV
+añadido junto al Firebase anterior y deauthorize Facebook guardado; confirmación
+«Se han guardado los cambios». HTTPS/modo estricto conservados. Activación false.
+Captura privada .tools/meta-social/facebook-dev-config.png, no disponible en GitHub.
+
+Eliminación Facebook conserva instrucciones anteriores de la app publicada:
+https://www.dopmi.app/comming-soon. No reemplazar silenciosamente por /facebook/delete,
+que elimina sólo evidencia social y no los datos del flujo anterior. La ruta nueva
+existe pero no está registrada en Meta Facebook. Resolver compatibilidad de ambas
+responsabilidades antes de uso general; no hay excepción aprobada a eliminación.
+Instagram sí tiene OAuth/deauthorize/delete nuevos registrados.
+Próximo requisito externo: cuenta Instagram profesional controlada y aceptación
+de rol tester; solicitud al titular pendiente. No se concedieron roles ni se
+generaron tokens de usuario. Integración OAuth real y nuevo candidato Play pendientes.
+Gate exacto del fixture1efe72c: CI37993212803, automático; no repetir dispatch.
