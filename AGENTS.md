@@ -1,6 +1,6 @@
 # Dopmi
 
-- Perfil vigente **MVP_CONTINUO**, aprobado el 6/10/2026: seguir `docs/mock-sync-workflow.md` y el plan/corte de `docs/parity-current-review.md`. Los lotes encadenan ejecución dentro del presupuesto global; no requieren nueva autorización. Auditoría profunda, comparación exhaustiva, emulador y aceptación instalada son QA posterior, no puertas del candidato MVP. Conservar decisiones de negocio, permisos y gates obligatorios del pipeline.
+- Perfil vigente **ENTREGA_CONTINUA_EFICIENTE_VERIFICADA**, aprobado el 8/10/2026: seguir `docs/mock-sync-workflow.md` y el corte de `docs/parity-current-review.md`. Referencia congelada `dde1bb9d01e5f4c427424bffed99bf1c3ed1beca`, incluyendo QA pendiente de 9ced. Ejecución continua sin presupuestos, cuotas ni renovaciones. UI/UX/código/ciberseguridad, integración real y validación final del candidato de Play en el teléfono son requisitos de esta entrega. Conservar decisiones de negocio, permisos, gates y cambios ajenos.
 
 - For mockup synchronization, read `docs/mock-sync-current.md` (short current checkpoint) and `docs/mock-sync-workflow.md` (stable protocol) immediately after `docs/codex-handoff.md`. They supersede historical pending parity items. Freeze one authorized reference SHA per delivery; later pushes require a new scoped inventory, not silent expansion. Preserve the finite batch/subagent method, a single Flutter queue, and already-approved gates. Do not reopen the completed bccd040 delivery or rerun consumed QA fixtures.
 

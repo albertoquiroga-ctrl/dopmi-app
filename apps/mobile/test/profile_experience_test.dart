@@ -200,7 +200,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      final access = find.text('Cuenta verificada');
+      final access = find.text('Cuenta y privacidad');
       await tester.scrollUntilVisible(
         access,
         240,

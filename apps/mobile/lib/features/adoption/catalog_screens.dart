@@ -10,15 +10,13 @@ import '../../core/content_links.dart';
 import '../../core/measurement.dart';
 import '../community/content_actions.dart';
 import '../profile/rescuer_profile_repository.dart';
-import '../rescue/public_profile_case_card.dart';
 import 'adopt_start_dialog.dart';
 import 'adoption_detail_layout.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
 import 'photo_recovery.dart';
 import 'public_profile_layout.dart';
-import 'public_profile_adoption_card.dart';
-import 'public_profile_metrics.dart';
+import 'public_profile_body.dart';
 
 class CatalogScreen extends ConsumerStatefulWidget {
   const CatalogScreen({super.key, this.saved = false, this.owner});
@@ -508,14 +506,22 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
   @override
   void didUpdateWidget(PublicProfileScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.id != widget.id) lastAvatarPath = null;
+    if (oldWidget.id != widget.id) {
+      lastAvatarPath = null;
+      savedOverride = null;
+      busy = false;
+      error = null;
+    }
   }
 
   Future<Json?> loadPublicProfile() async {
     final requestedId = widget.id;
-    final profile = await ref
-        .read(communityRepositoryProvider)
-        .publicProfile(requestedId);
+    final repo = ref.read(communityRepositoryProvider);
+    final actor = repo.userId;
+    final profile = await repo.publicProfile(requestedId);
+    if (!mounted || widget.id != requestedId || repo.userId != actor) {
+      return null;
+    }
     if (mounted && widget.id == requestedId) {
       final path = profile?['avatar_path'] as String?;
       final previous = lastAvatarPath;
@@ -542,10 +548,14 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
 
   bool busy = false;
   bool? savedOverride;
-  int tab = 0;
   String? error;
 
   Future<void> toggle(Json profile, VoidCallback refresh) async {
+    if (busy) return;
+    final repo = ref.read(communityRepositoryProvider);
+    final actor = repo.userId;
+    final id = widget.id;
+    bool current() => mounted && widget.id == id && repo.userId == actor;
     final previous = savedOverride ?? profile['saved'] == true;
     setState(() {
       busy = true;
@@ -553,25 +563,26 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
       savedOverride = !previous;
     });
     try {
-      await ref
-          .read(communityRepositoryProvider)
-          .favoriteRescuer(widget.id, !previous);
-      refresh();
+      await repo.favoriteRescuer(id, !previous);
+      if (current()) refresh();
     } catch (cause) {
-      if (mounted) {
+      if (current()) {
         setState(() {
           savedOverride = previous;
           error = communityError(cause);
         });
       }
     } finally {
-      if (mounted) setState(() => busy = false);
+      if (current()) setState(() => busy = false);
     }
   }
 
   Future<void> reportProfile() async {
     if (busy) return;
     final repo = ref.read(communityRepositoryProvider);
+    final actor = repo.userId;
+    final id = widget.id;
+    bool current() => mounted && widget.id == id && repo.userId == actor;
     setState(() {
       busy = true;
       error = null;
@@ -581,22 +592,24 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
         context,
         repo,
         type: 'rescuer',
-        id: widget.id,
+        id: id,
         title: 'Reportar rescatista',
       );
-      if (sent && mounted) {
+      if (sent && current() && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Recibimos tu reporte para revisión.')),
         );
       }
     } catch (cause) {
-      if (mounted) {
+      if (current()) {
         setState(() => error = communityError(cause));
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(error!)));
+        if (mounted) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(error!)));
+        }
       }
     } finally {
-      if (mounted) setState(() => busy = false);
+      if (current()) setState(() => busy = false);
     }
   }
 
@@ -607,108 +620,34 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
       'Conoce este perfil en Dopmi. ${publicContentLink(PublicContent.profile, widget.id)}',
     ),
     child: LiveSection<Json?>(
+      key: ValueKey(
+        '${widget.id}:${ref.read(communityRepositoryProvider).userId}',
+      ),
       load: loadPublicProfile,
       builder: (profile, refresh) {
         if (profile == null) {
           return const Notice('Este perfil público no está disponible.');
         }
         final saved = savedOverride ?? profile['saved'] == true;
-        final activity = (profile['activity'] as List? ?? [])
-            .map((value) => Json.from(value as Map))
-            .toList();
         final adoptions = (profile['adoptions'] as List? ?? [])
             .map((value) => Adoption(Json.from(value as Map)))
-            .toList();
-        final cases = (profile['cases'] as List? ?? [])
-            .map((value) => Json.from(value as Map))
             .toList();
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            PublicProfileIdentity(
+            PublicProfileBody(
+              key: ValueKey(
+                '${widget.id}:${ref.read(communityRepositoryProvider).userId}',
+              ),
+              profile: profile,
               avatar: _PublicRescuerAvatar(
                 profile['avatar_path'] as String?,
                 profile['name'] as String,
               ),
-              name: profile['name'] as String,
-              city: '${profile['city']}, ${profile['region']}',
-              bio: profile['bio'] as String,
-              caseCount: cases.length,
-              verified: profile['verified'] == true,
-            ),
-            if ((profile['instagram_url'] as String? ?? '').isNotEmpty ||
-                (profile['facebook_url'] as String? ?? '').isNotEmpty) ...[
-              PublicProfileSocials(
-                instagram: profile['instagram_url'] as String? ?? '',
-                facebook: profile['facebook_url'] as String? ?? '',
-                open: (url) => openPublicSocialUrl(context, url),
-              ),
-            ],
-
-            PublicProfileTabs(
-              selected: tab,
-              select: (value) => setState(() => tab = value),
               report:
                   busy || ref.read(communityRepositoryProvider).userId == null
                   ? null
                   : reportProfile,
-            ),
-            if (tab == 0) ...[
-              if (profile['metrics'] is Map) ...[
-                PublicProfileMetrics(
-                  name: profile['name'] as String,
-                  metrics: Json.from(profile['metrics'] as Map),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Avances publicados',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 12),
-              ],
-              if (activity.isEmpty)
-                const Notice('Todavía no hay avances públicos.')
-              else
-                for (final item in activity)
-                  Card(
-                    child: ListTile(
-                      title: Text(item['body'] as String? ?? 'Avance'),
-                      subtitle: Text(
-                        localDate(item['published_at'] as String? ?? ''),
-                      ),
-                      onTap: () =>
-                          context.push('/rescue-cases/${item['case_id']}'),
-                    ),
-                  ),
-            ] else if (tab == 1) ...[
-              if (adoptions.isEmpty)
-                const Notice('No hay mascotas disponibles en este momento.')
-              else
-                for (final post in adoptions)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: PublicProfileAdoptionCard(
-                      post,
-                      key: ValueKey(post.id),
-                      open: () => context.push('/adoptions/${post.id}'),
-                    ),
-                  ),
-            ] else ...[
-              if (cases.isEmpty)
-                const Notice('No hay casos públicos en este momento.')
-              else
-                for (final item in cases)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: PublicProfileCaseCard(
-                      item['id'] as String,
-                      key: ValueKey(item['id']),
-                    ),
-                  ),
-            ],
-            const SizedBox(height: 24),
-            Notice(
-              '${profile['adopted_count']} adopciones marcadas como realizadas por esta cuenta.',
             ),
             if (error != null) Notice(error!, isError: true),
             Row(
@@ -732,6 +671,13 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
                 onPressed: busy
                     ? null
                     : () async {
+                        final repo = ref.read(communityRepositoryProvider);
+                        final actor = repo.userId;
+                        final profileId = widget.id;
+                        bool current() =>
+                            mounted &&
+                            widget.id == profileId &&
+                            repo.userId == actor;
                         final confirmed = await showDialog<bool>(
                           context: context,
                           builder: (context) => AlertDialog(
@@ -751,24 +697,25 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
                             ],
                           ),
                         );
-                        if (confirmed != true || !mounted) return;
+                        if (confirmed != true || !current()) return;
                         setState(() => busy = true);
                         try {
-                          final thread = await ref
-                              .read(communityRepositoryProvider)
-                              .startThread(adoptions.first.id);
+                          final thread = await repo.startThread(
+                            adoptions.first.id,
+                          );
+                          if (!current()) return;
                           await ref
                               .read(measurementControllerProvider)
                               ?.event('contact_started');
-                          if (context.mounted) {
+                          if (current() && context.mounted) {
                             context.push('/messages/$thread');
                           }
                         } catch (cause) {
-                          if (mounted) {
+                          if (current()) {
                             setState(() => error = communityError(cause));
                           }
                         } finally {
-                          if (mounted) setState(() => busy = false);
+                          if (current()) setState(() => busy = false);
                         }
                       },
                 icon: const Icon(Icons.chat_bubble_outline),
@@ -799,8 +746,8 @@ class _PublicRescuerAvatar extends ConsumerWidget {
     );
     return ClipOval(
       child: SizedBox(
-        width: 96,
-        height: 96,
+        width: 88,
+        height: 88,
         child: ColoredBox(
           color: const Color(0xfffff2b8),
           child: path == null || path!.isEmpty
@@ -814,8 +761,8 @@ class _PublicRescuerAvatar extends ConsumerWidget {
                         .read(rescuerProfileRepositoryProvider)
                         .avatarUrl(path!),
                   ),
-                  width: 96,
-                  height: 96,
+                  width: 88,
+                  height: 88,
                   loading: fallback,
                   unavailable: (retry) => Tooltip(
                     message: 'Reintentar foto de perfil',

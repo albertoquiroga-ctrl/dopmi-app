@@ -10,6 +10,11 @@ import { registerNativeWalletSqlCases } from './native-wallet-sql-cases.mjs';
 import { registerAdoptionUpdateSqlCases } from './adoption-update889-sql-cases.mjs';
 import { registerRescuerUpdateSqlCases } from './rescuer-updatebccd-sql-cases.mjs';
 import { registerRescuerFunnelSqlCases } from './rescuer-funnel9ced-sql-cases.mjs';
+import { registerInboxSelectorSqlCases } from './inbox-selector-dde1-sql-cases.mjs';
+import { registerProfileContactsSqlCases } from './profile-contacts-dde1-sql-cases.mjs';
+import { registerChatPhotoSqlCases } from './chat-photos-dde1-sql-cases.mjs';
+import { registerPaymentActivitySqlCases } from './payment-activity-dde1-sql-cases.mjs';
+import { registerNotificationEventsSqlCases } from './notification-events-dde1-sql-cases.mjs';
 
 let db;
 const donor = '70000000-0000-4000-8000-000000000001';
@@ -217,12 +222,14 @@ before(async () => {
   db = new PGlite();
   await db.exec(`create role anon; create role authenticated; create role service_role;
     create schema auth; create schema storage;
-    create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb default '{}',email_confirmed_at timestamptz,last_sign_in_at timestamptz);
+    create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb default '{}',email_confirmed_at timestamptz,last_sign_in_at timestamptz,phone text,phone_confirmed_at timestamptz);
     create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
     grant usage on schema auth,public to anon,authenticated,service_role;
     create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
     create table storage.objects(id uuid default gen_random_uuid(),bucket_id text,name text,owner_id text,metadata jsonb);
-    alter table storage.objects enable row level security;`);
+    alter table storage.objects enable row level security;
+    grant usage on schema storage to authenticated;
+    grant select,insert,update,delete on storage.objects to authenticated;`);
   const path = new URL('../../supabase/migrations/',import.meta.url);
   for (const file of (await readdir(path)).filter(v => v.endsWith('.sql')).sort()) await db.exec(await readFile(new URL(file,path),'utf8'));
   await db.query(`insert into auth.users(id,email,email_confirmed_at,raw_user_meta_data)
@@ -240,6 +247,11 @@ afterEach(async () => db.exec('rollback'));
 registerAdoptionUpdateSqlCases(() => db, { donor, rescuer, other });
 registerRescuerUpdateSqlCases(() => db, { donor, rescuer, other });
 registerRescuerFunnelSqlCases(() => db, { donor, rescuer, other });
+registerInboxSelectorSqlCases(() => db, { donor, rescuer, other });
+registerProfileContactsSqlCases(() => db, { rescuer, staff, other });
+registerChatPhotoSqlCases(() => db, { donor, rescuer, other, staff });
+registerPaymentActivitySqlCases(() => db, { donor, rescuer, other, staff, expense });
+registerNotificationEventsSqlCases(() => db, { donor, rescuer, other, staff, expense });
 const rpc = async (operation,data) => {
   if (operation === 'refund_begin' || operation === 'refund_finish') return (await db.query('select public.dopmi_refund_adjustment($1,$2::jsonb) as value',[operation === 'refund_begin' ? 'begin' : 'finish',JSON.stringify(data)])).rows[0].value;
   if (operation === 'finish_job') return (await db.query('select public.dopmi_payment_job_finish($1::jsonb) as value',[JSON.stringify(data)])).rows[0].value;
@@ -1188,7 +1200,7 @@ test('public rescuer metrics include approved history, deduplicate linked pets a
   await role('', 'anon');
   const metrics=(await db.query('select public.dopmi_rescuer_public_metrics($1) v',[rescuer])).rows[0].v;
   assert.deepEqual(metrics,{published_cases:1,active_donation_cases:1,active_adoptions:1,published_donation_cases:1,
-    published_adoptions:2,funded_cents:9200,completed_needs:0,helped_pets:2,closed_cases:0});
+    published_adoptions:2,funded_cents:9200,completed_needs:0,helped_pets:2,closed_cases:0,received_support_pets:1});
   for(const sensitive of [donor,d.id,'ch_one','tr_fixture','pet_name','draft']) assert.equal(JSON.stringify(metrics).includes(sensitive),false);
   await db.exec('reset role');
   await db.query("update public.profiles set account_status='suspended' where id=$1",[rescuer]);

@@ -3,6 +3,7 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+import 'package:dopmi_mobile/features/rescue/support_home.dart';
 import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -60,9 +61,14 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      final rail = find.byWidgetPredicate(
-        (w) => w is Scrollable && w.axisDirection == AxisDirection.right,
-      );
+      final rail = find
+          .ancestor(
+            of: find.byType(SupportCaseRing).first,
+            matching: find.byWidgetPredicate(
+              (w) => w is Scrollable && w.axisDirection == AxisDirection.right,
+            ),
+          )
+          .first;
       final position = tester.state<ScrollableState>(rail).position;
       await tester.drag(rail, const Offset(-280, 0));
       await tester.pumpAndSettle();

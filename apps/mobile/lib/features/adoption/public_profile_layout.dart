@@ -3,9 +3,134 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/reference_focus_outline.dart';
 import '../../core/ui.dart';
+
+class PublicProfileContacts extends StatelessWidget {
+  const PublicProfileContacts({
+    super.key,
+    required this.email,
+    required this.phone,
+    required this.address,
+    required this.website,
+    this.interactive = true,
+  });
+  final String email, phone, address, website;
+  final bool interactive;
+  Future<void> open(BuildContext context, Uri uri) async {
+    try {
+      if (!await launchUrl(uri, mode: LaunchMode.externalApplication) &&
+          context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No pudimos abrir este contacto.')),
+        );
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No pudimos abrir este contacto.')),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final link = Uri.tryParse(website);
+    final items = [
+      if (email.isNotEmpty)
+        (
+          'assets/profile/icon-mail.svg',
+          'Correo',
+          email,
+          Uri(scheme: 'mailto', path: email),
+        ),
+      if (phone.isNotEmpty)
+        (
+          'assets/profile/icon-phone.svg',
+          'Teléfono',
+          phone,
+          Uri(scheme: 'tel', path: phone),
+        ),
+      if (address.isNotEmpty)
+        ('assets/profile/location.svg', 'Dirección', address, null),
+      if (website.isNotEmpty)
+        (
+          'assets/profile/globe.svg',
+          'Web',
+          website,
+          link != null &&
+                  link.scheme == 'https' &&
+                  link.host.isNotEmpty &&
+                  link.userInfo.isEmpty
+              ? link
+              : null,
+        ),
+    ];
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 16,
+        runSpacing: 12,
+        children: [
+          for (final item in items)
+            Tooltip(
+              message: '${item.$2}: ${item.$3}',
+              child: DecoratedBox(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0x1415110d),
+                      offset: Offset(0, 2),
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                child: IconButton(
+                  onPressed: !interactive
+                      ? null
+                      : item.$4 != null
+                      ? () => open(context, item.$4!)
+                      : () => showDialog<void>(
+                          context: context,
+                          builder: (dialogContext) => AlertDialog(
+                            title: Text(item.$2),
+                            content: SelectableText(item.$3),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(dialogContext).pop(),
+                                child: const Text('Cerrar'),
+                              ),
+                            ],
+                          ),
+                        ),
+                  style: IconButton.styleFrom(
+                    minimumSize: const Size(48, 48),
+                    maximumSize: const Size(48, 48),
+                  ),
+                  icon: SvgPicture.asset(
+                    item.$1,
+                    width: 20,
+                    height: 20,
+                    colorFilter: const ColorFilter.mode(
+                      Color(0xff5c574f),
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
 
 class PublicProfileFrame extends StatelessWidget {
   const PublicProfileFrame({
@@ -144,19 +269,21 @@ class PublicProfileIdentity extends StatelessWidget {
     required this.bio,
     required this.caseCount,
     required this.verified,
+    this.showCaseCount = false,
   });
   final Widget avatar;
   final String name, city, bio;
   final int caseCount;
   final bool verified;
+  final bool showCaseCount;
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 16),
+    padding: EdgeInsets.zero,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Center(child: avatar),
-        const SizedBox(height: 18),
+        const SizedBox(height: 14),
         Semantics(
           header: true,
           child: Wrap(
@@ -168,9 +295,9 @@ class PublicProfileIdentity extends StatelessWidget {
                 name,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontSize: 26,
-                  height: 1.25,
-                  letterSpacing: -.52,
+                  fontSize: 20,
+                  height: 1.2,
+                  letterSpacing: 0,
                   fontWeight: FontWeight.w700,
                   color: ink,
                 ),
@@ -202,8 +329,8 @@ class PublicProfileIdentity extends StatelessWidget {
                   city,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                    fontSize: 14,
-                    height: 1.55,
+                    fontSize: 13,
+                    height: 1.45,
                     letterSpacing: 0,
                     color: muted,
                   ),
@@ -213,25 +340,26 @@ class PublicProfileIdentity extends StatelessWidget {
           ),
         ],
         const SizedBox(height: 6),
-        Text(
-          '$caseCount casos publicados',
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 14,
-            height: 1.2,
-            letterSpacing: 0,
-            fontWeight: FontWeight.w700,
-            color: ink,
+        if (showCaseCount)
+          Text(
+            '$caseCount casos publicados',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 14,
+              height: 1.2,
+              letterSpacing: 0,
+              fontWeight: FontWeight.w700,
+              color: ink,
+            ),
           ),
-        ),
         if (bio.isNotEmpty) ...[
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Text(
             bio,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              fontSize: 14,
-              height: 1.5,
+              fontSize: 13,
+              height: 1.45,
               letterSpacing: 0,
               color: muted,
             ),
@@ -248,58 +376,51 @@ class PublicProfileSocials extends StatelessWidget {
     required this.instagram,
     required this.facebook,
     required this.open,
+    this.interactive = true,
   });
   final String instagram, facebook;
   final ValueChanged<String> open;
+  final bool interactive;
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      const Text(
-        'Redes sociales',
-        style: TextStyle(
-          fontSize: 18,
-          height: 1.3,
-          fontWeight: FontWeight.w700,
-          color: ink,
-        ),
-      ),
-      const SizedBox(height: 12),
-      Wrap(
-        spacing: 12,
-        runSpacing: 12,
-        children: [
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(top: 10),
+    child: LayoutBuilder(
+      builder: (context, box) {
+        final buttons = [
           for (final entry in [
             ('Instagram', instagram, 'icon-instagram'),
             ('Facebook', facebook, 'icon-facebook'),
           ])
             if (entry.$2.isNotEmpty)
-              ReferenceFocusOutline(
-                radius: 999,
-                child: OutlinedButton(
-                  onPressed: () => open(entry.$2),
-                  style: OutlinedButton.styleFrom(
-                    splashFactory: NoSplash.splashFactory,
-                    overlayColor: Colors.transparent,
-                    animationDuration: Duration.zero,
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 19,
-                      vertical: 11.5,
+              DecoratedBox(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(999)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0x0f15110d),
+                      offset: Offset(0, 2),
+                      blurRadius: 10,
                     ),
-                    backgroundColor: Colors.white,
+                  ],
+                ),
+                child: TextButton(
+                  onPressed: interactive ? () => open(entry.$2) : null,
+                  style: TextButton.styleFrom(
+                    minimumSize: const Size(0, 42),
                     foregroundColor: ink,
-                    side: const BorderSide(color: Color(0xffe6e2dd)),
-                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 10,
+                    ),
                     textStyle: const TextStyle(
                       fontFamily: 'Inter',
-                      fontSize: 16,
-                      height: 1.175,
-                      fontWeight: FontWeight.w500,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       SvgPicture.asset(
@@ -307,15 +428,36 @@ class PublicProfileSocials extends StatelessWidget {
                         width: 18,
                         height: 18,
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 6),
                       Flexible(child: Text(entry.$1)),
                     ],
                   ),
                 ),
               ),
-        ],
-      ),
-    ],
+        ];
+        if (MediaQuery.textScalerOf(context).scale(13) > 20 ||
+            box.maxWidth < 240) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (final button in buttons)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: button,
+                ),
+            ],
+          );
+        }
+        return Row(
+          children: [
+            for (var i = 0; i < buttons.length; i++) ...[
+              if (i > 0) const SizedBox(width: 10),
+              Expanded(child: buttons[i]),
+            ],
+          ],
+        );
+      },
+    ),
   );
 }
 
@@ -325,10 +467,12 @@ class PublicProfileTabs extends StatelessWidget {
     required this.selected,
     required this.select,
     required this.report,
+    this.showReport = true,
   });
   final int selected;
   final ValueChanged<int> select;
   final VoidCallback? report;
+  final bool showReport;
   Widget tab(int index, String label) => ReferenceFocusOutline(
     radius: 0,
     child: DecoratedBox(
@@ -336,7 +480,7 @@ class PublicProfileTabs extends StatelessWidget {
         border: Border(
           bottom: BorderSide(
             width: 2,
-            color: selected == index ? yellow : Colors.transparent,
+            color: selected == index ? ink : Colors.transparent,
           ),
         ),
       ),
@@ -346,96 +490,78 @@ class PublicProfileTabs extends StatelessWidget {
           splashFactory: NoSplash.splashFactory,
           overlayColor: Colors.transparent,
           minimumSize: Size.zero,
-          padding: const EdgeInsets.only(top: 10, bottom: 12),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          foregroundColor: selected == index ? const Color(0xff6b5000) : muted,
+          foregroundColor: selected == index ? ink : muted,
           textStyle: TextStyle(
             fontFamily: 'Inter',
-            fontSize: 14,
+            fontSize: 13,
             height: 1.2,
-            fontWeight: selected == index ? FontWeight.w600 : FontWeight.w400,
+            fontWeight: FontWeight.w600,
           ),
         ),
-        child: Text(label),
+        child: Text(label, maxLines: 1, softWrap: false),
       ),
     ),
   );
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 16),
-    child: Container(
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: Color(0xffe6e2dd))),
-      ),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final buttons = [
-            tab(0, 'Actividad'),
-            tab(1, 'En adopción'),
-            tab(2, 'Casos'),
-          ];
-          final reportButton = ReferenceFocusOutline(
-            radius: 0,
-            child: Tooltip(
-              message: 'Reportar',
-              child: TextButton(
-                onPressed: report,
-                style: TextButton.styleFrom(
-                  splashFactory: NoSplash.splashFactory,
-                  overlayColor: Colors.transparent,
-                  minimumSize: Size.zero,
-                  padding: const EdgeInsets.only(top: 10, bottom: 12),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  foregroundColor: muted,
-                  textStyle: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    height: 1.2,
-                    fontWeight: FontWeight.w500,
+    padding: const EdgeInsets.only(top: 20, bottom: 16),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        DecoratedBox(
+          decoration: const BoxDecoration(
+            border: Border(bottom: BorderSide(color: Color(0xffe6e2dd))),
+          ),
+          child: LayoutBuilder(
+            builder: (context, bounds) {
+              final labels = ['Resumen', 'Adopci\u00f3n', 'Apoyo'];
+              var minimumTabWidth = 0.0;
+              for (final label in labels) {
+                final painter = TextPainter(
+                  text: TextSpan(
+                    text: label,
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 13,
+                      height: 1.2,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  textDirection: Directionality.of(context),
+                  textScaler: MediaQuery.textScalerOf(context),
+                )..layout();
+                final measured = painter.width + 12;
+                if (measured > minimumTabWidth) minimumTabWidth = measured;
+                painter.dispose();
+              }
+              final requiredWidth = minimumTabWidth * 3;
+              final width = requiredWidth > bounds.maxWidth
+                  ? requiredWidth
+                  : bounds.maxWidth;
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SizedBox(
+                  width: width,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (var i = 0; i < labels.length; i++)
+                        Expanded(child: tab(i, labels[i])),
+                    ],
                   ),
                 ),
-                child: const Text('Reportar'),
-              ),
-            ),
-          );
-          final requiredWidth =
-              ['Actividad', 'En adopción', 'Casos', 'Reportar']
-                  .map((label) {
-                    final painter = TextPainter(
-                      text: TextSpan(
-                        text: label,
-                        style: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      textDirection: Directionality.of(context),
-                      textScaler: MediaQuery.textScalerOf(context),
-                    )..layout();
-                    final width = painter.width;
-                    painter.dispose();
-                    return width;
-                  })
-                  .fold<double>(48, (total, width) => total + width);
-          if (requiredWidth > constraints.maxWidth) {
-            return Wrap(spacing: 16, children: [...buttons, reportButton]);
-          }
-          return Row(
-            children: [
-              buttons[0],
-              const SizedBox(width: 16),
-              buttons[1],
-              const SizedBox(width: 16),
-              buttons[2],
-              const SizedBox(width: 16),
-              const Spacer(),
-              reportButton,
-              const Spacer(),
-            ],
-          );
-        },
-      ),
+              );
+            },
+          ),
+        ),
+        if (showReport)
+          ReferenceFocusOutline(
+            radius: 0,
+            child: TextButton(onPressed: report, child: const Text('Reportar')),
+          ),
+      ],
     ),
   );
 }

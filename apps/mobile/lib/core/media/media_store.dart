@@ -16,6 +16,7 @@ enum MediaPurpose {
   rescuerAvatar,
   supportAttachment,
   accountAvatar,
+  chatPhoto,
 }
 
 extension MediaPolicy on MediaPurpose {
@@ -25,6 +26,7 @@ extension MediaPolicy on MediaPurpose {
     MediaPurpose.rescuerAvatar => 'dopmi-rescuer-profile-media',
     MediaPurpose.supportAttachment => 'dopmi-support-media',
     MediaPurpose.accountAvatar => 'dopmi-account-profile-media',
+    MediaPurpose.chatPhoto => 'dopmi-chat-photos',
     _ => 'dopmi-rescue-evidence',
   };
   bool get isDocument => this == MediaPurpose.rescueDocument;
@@ -66,6 +68,55 @@ PreparedMedia prepareMedia((MediaPurpose, Uint8List) input) {
 class MediaStore {
   MediaStore(this.client);
   final SupabaseClient client;
+
+  Future<String> uploadChat(
+    String threadId,
+    String messageId,
+    Uint8List bytes,
+  ) async {
+    final owner = client.auth.currentUser?.id;
+    final uuid = RegExp(
+      r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+    );
+    if (owner == null ||
+        !uuid.hasMatch(threadId) ||
+        !uuid.hasMatch(messageId)) {
+      throw const FormatException('La conversación no está disponible.');
+    }
+    final prepared = await compute(prepareMedia, (
+      MediaPurpose.chatPhoto,
+      bytes,
+    ));
+    if (client.auth.currentUser?.id != owner) {
+      throw const FormatException(
+        'La sesión cambió. Vuelve a adjuntar la foto.',
+      );
+    }
+    final path = '$owner/$threadId/$messageId.jpg';
+    try {
+      await client.storage
+          .from(MediaPurpose.chatPhoto.bucket)
+          .uploadBinary(
+            path,
+            prepared.bytes,
+            fileOptions: const FileOptions(
+              contentType: 'image/jpeg',
+              cacheControl: '0',
+              upsert: false,
+            ),
+          );
+    } on StorageException catch (error) {
+      if (error.statusCode != '409') rethrow;
+      // A lost upload response can be retried with its stable ID. Never replace.
+      await signedUrl(path, MediaPurpose.chatPhoto);
+    }
+    if (client.auth.currentUser?.id != owner) {
+      throw const FormatException(
+        'La sesión cambió. Vuelve a adjuntar la foto.',
+      );
+    }
+    return path;
+  }
 
   Future<String> upload(
     String recordId,

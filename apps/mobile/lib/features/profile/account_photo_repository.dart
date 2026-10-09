@@ -1,15 +1,16 @@
-import 'dart:typed_data';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/media/media_store.dart';
 
-final accountPhotoRepositoryProvider = Provider<AccountPhotoRepository>(
-  (ref) => AccountPhotoRepository.supabase(),
-);
+final accountPhotoRepositoryProvider = Provider<AccountPhotoRepository>((ref) {
+  final repository = AccountPhotoRepository.supabase();
+  ref.onDispose(repository.dispose);
+  return repository;
+});
 
-class AccountPhotoRepository {
+class AccountPhotoRepository extends ChangeNotifier {
   AccountPhotoRepository({
     required this.owner,
     required this.rpc,
@@ -94,13 +95,17 @@ class AccountPhotoRepository {
       if (readPath(result, actor) != path) {
         throw StateError('invalid_account_photo');
       }
+      notifyListeners();
     } catch (error, stack) {
       if (error is PostgrestException || error is StateError) rethrow;
       checkOwner(actor);
       try {
         final result = await rpc('dopmi_my_account_photo', {});
         checkOwner(actor);
-        if (readPath(result, actor) == path) return;
+        if (readPath(result, actor) == path) {
+          notifyListeners();
+          return;
+        }
       } catch (_) {
         checkOwner(actor);
       }

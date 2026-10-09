@@ -1,3 +1,7 @@
+import 'package:dopmi_mobile/features/profile/phone_verification_repository.dart';
+
+import 'profile_test_identity.dart';
+
 import 'dart:async';
 import 'dart:ui' show PointerDeviceKind;
 
@@ -43,6 +47,7 @@ Future<ProviderContainer> mountSocialGestureTest(
     ..user = const Identity('one', 'fixture@example.test', verified: true);
   final container = ProviderContainer(
     overrides: [
+      phoneVerificationRepositoryProvider.overrideWithValue(EditorTestPhone()),
       identityRepositoryProvider.overrideWithValue(identity),
       rescuerProfileRepositoryProvider.overrideWithValue(profile),
     ],
@@ -187,6 +192,9 @@ void main() {
       final profile = SettingsSocialProfile()..value['owner_id'] = 'one';
       final container = ProviderContainer(
         overrides: [
+          phoneVerificationRepositoryProvider.overrideWithValue(
+            EditorTestPhone(),
+          ),
           identityRepositoryProvider.overrideWithValue(identity),
           rescuerProfileRepositoryProvider.overrideWithValue(profile),
         ],
@@ -350,6 +358,9 @@ void main() {
           ..value['instagram_url'] = 'https://www.instagram.com/own_profile';
         final container = ProviderContainer(
           overrides: [
+            phoneVerificationRepositoryProvider.overrideWithValue(
+              EditorTestPhone(),
+            ),
             identityRepositoryProvider.overrideWithValue(identity),
             communityRepositoryProvider.overrideWithValue(FakeCommunity()),
             rescueRepositoryProvider.overrideWithValue(FakeRescue()),
@@ -382,32 +393,68 @@ void main() {
           await tester.pumpAndSettle();
         }
         expect(find.text('@own_profile'), findsOneWidget);
-        await Scrollable.ensureVisible(
-          tester.element(find.byTooltip('Editar Instagram')),
-          alignment: .35,
+        final edit = find.byKey(const ValueKey('rescuer-profile-edit'));
+        await Scrollable.ensureVisible(tester.element(edit), alignment: .35);
+        await tester.pumpAndSettle();
+        await tester.tap(edit);
+        await tester.pumpAndSettle();
+        final instagram = find.byKey(
+          const ValueKey('public-profile-Instagram (https://)'),
         );
-        await tester.pumpAndSettle();
-        await tester.tap(find.byTooltip('Editar Instagram'));
-        await tester.pumpAndSettle();
-        expect(find.byType(RescuerSocialDialog), findsOneWidget);
+        await tester.scrollUntilVisible(
+          instagram,
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
         expect(
-          tester.widget<TextField>(find.byType(TextField)).controller?.text,
-          '@own_profile',
+          tester.widget<TextField>(instagram).controller?.text,
+          'https://www.instagram.com/own_profile',
         );
-        await tester.tap(find.text('Cancelar'));
+        final cancel = find.widgetWithText(OutlinedButton, 'Cancelar');
+        await tester.scrollUntilVisible(
+          cancel,
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await Scrollable.ensureVisible(tester.element(cancel), alignment: .5);
+        await tester.pumpAndSettle();
+        expect(cancel.hitTestable(), findsOneWidget);
+        await tester.tap(cancel);
         await tester.pumpAndSettle();
         expect(profile.saves, 0);
-        await tester.tap(find.byTooltip('Editar Instagram'));
-        await tester.pumpAndSettle();
-        await tester.enterText(
-          find.byKey(const ValueKey('rescuer-social-input')),
-          '@updated_profile',
+        await tester.scrollUntilVisible(
+          edit,
+          -180,
+          scrollable: find.byType(Scrollable).first,
         );
-        await tester.pump();
-        await tester.tap(find.text('Guardar'));
+        await Scrollable.ensureVisible(tester.element(edit), alignment: .35);
+        await tester.pumpAndSettle();
+        await tester.tap(edit);
+        await tester.pumpAndSettle();
+        await tester.scrollUntilVisible(
+          instagram,
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.enterText(
+          instagram,
+          'https://www.instagram.com/updated_profile',
+        );
+        FocusManager.instance.primaryFocus?.unfocus();
+        await tester.pumpAndSettle();
+        final save = find.text('Guardar borrador');
+        await tester.scrollUntilVisible(
+          save,
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.tap(save);
         await tester.pumpAndSettle();
         expect(profile.saves, 1);
-        expect(find.byType(RescuerSocialDialog), findsNothing);
+        final back = find.byTooltip('Volver');
+        expect(back.hitTestable(), findsOneWidget);
+        await tester.tap(back);
+        await tester.pumpAndSettle();
         expect(find.text('@updated_profile'), findsOneWidget);
         expect(profile.saves, 1);
         expect(profile.value['display_name'], 'Refugio Luna');

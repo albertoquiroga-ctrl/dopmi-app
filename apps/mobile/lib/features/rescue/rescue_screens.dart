@@ -2547,14 +2547,6 @@ class _PublicCaseDetail extends StatelessWidget {
             PublicExpenseCard(
               expenses[i],
               key: ValueKey(expenses[i].id),
-              initiallyOpen:
-                  i ==
-                  expenses.indexWhere(
-                    (e) =>
-                        record.status == 'approved' &&
-                        e.status == 'approved' &&
-                        e.targetCents > e.fundedCents,
-                  ),
               canContribute:
                   record.status == 'approved' &&
                   expenses[i].status == 'approved',

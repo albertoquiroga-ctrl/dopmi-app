@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { errorMessage, type AdminApi, type CaseUpdate, type ContentReport, type RescuerPublicProfile } from './api';
+import { errorMessage, validateProfileFieldFeedback, type AdminApi, type CaseUpdate, type ContentReport, type RescuerPublicProfile, type ProfileFeedbackField, type ProfileFieldFeedback } from './api';
 import SupportInbox from './SupportInbox';
 
 type Page<T> = { items: T[]; total: number };
@@ -75,9 +75,26 @@ function Updates({ api }: { api: AdminApi }) {
   const load = useCallback((page: number) => api.listCaseUpdates!('submitted', page), [api]);
   return <Queue load={load} empty="No hay historias esperando revisión." render={(item, refresh) => <UpdateReview key={`${item.id}:${item.version}`} item={item} api={api} refresh={refresh} />} />;
 }
+const profileFields: [ProfileFeedbackField, string][] = [
+  ['display_name', 'Nombre visible'], ['bio', 'Historia'], ['city', 'Ciudad'], ['region', 'Estado'],
+  ['instagram_url', 'Instagram'], ['facebook_url', 'Facebook'], ['avatar_path', 'Foto de perfil'],
+  ['public_email', 'Correo público'], ['public_phone', 'Teléfono público'],
+  ['public_address', 'Dirección pública'], ['website_url', 'Sitio web'], ['contact_consent', 'Consentimiento de contacto'],
+];
+function ProfileContacts({ item }: { item: Partial<RescuerPublicProfile> }) {
+  return <><p>Consentimiento para publicar contacto: {item.contact_consent === true ? 'Autorizado' : 'Sin consentimiento'}</p>
+    <dl>{profileFields.filter(([field]) => ['public_email', 'public_phone', 'public_address', 'website_url'].includes(field)).map(([field, label]) => <div key={field}><dt>{label}</dt><dd>{String(item[field] || 'Sin registrar')}</dd></div>)}</dl></>;
+}
 function ProfileReview({ item, api, refresh }: { item: RescuerPublicProfile; api: AdminApi; refresh: () => void }) {
   const [ready, setReady] = useState(!item.avatar_path);
-  return <><div><p>{item.city}, {item.region} · versión {item.version}</p><h2>{item.display_name}</h2><p>{item.bio}</p><p>{[item.instagram_url, item.facebook_url].filter(Boolean).join(' · ') || 'Sin enlaces públicos.'}</p><ReviewMedia paths={item.avatar_path ? [item.avatar_path] : []} resolve={api.profileAvatarUrl!} onReady={setReady} /></div><Decision publishLabel="Publicar perfil" ready={ready} decide={(decision, note) => api.reviewRescuerProfile!(item, decision, note)} refresh={refresh} /></>;
+  const [fieldFeedback, setFieldFeedback] = useState<ProfileFieldFeedback>(item.field_feedback || {});
+  return <><div><p>{item.city}, {item.region} · versión {item.version}</p><h2>{item.display_name}</h2><p>{item.bio}</p><p>{[item.instagram_url, item.facebook_url].filter(Boolean).join(' · ') || 'Sin enlaces públicos.'}</p>
+    <h3>Contacto enviado a revisión</h3><ProfileContacts item={item} />
+    <p>Publicación de contacto vigente: {item.contact_publication_enabled === true ? 'Habilitada' : 'Deshabilitada'}</p>
+    {item.approved_snapshot && <details><summary>Versión aprobada anterior</summary><p>{item.approved_snapshot.display_name}</p><p>{item.approved_snapshot.bio}</p><p>{[item.approved_snapshot.city, item.approved_snapshot.region].filter(Boolean).join(', ')}</p><p>{[item.approved_snapshot.instagram_url, item.approved_snapshot.facebook_url].filter(Boolean).join(' / ') || 'Sin enlaces sociales.'}</p><ProfileContacts item={item.approved_snapshot} /></details>}
+    <ReviewMedia paths={item.avatar_path ? [item.avatar_path] : []} resolve={api.profileAvatarUrl!} onReady={setReady} /></div>
+    <fieldset><legend>Comentarios por campo</legend>{profileFields.map(([field, label]) => <label key={field}>Corrección: {label}<textarea maxLength={500} value={fieldFeedback[field] || ''} onChange={e => setFieldFeedback(previous => ({ ...previous, [field]: e.target.value }))} /></label>)}</fieldset>
+    <Decision publishLabel="Publicar perfil" ready={ready} decide={(decision, note) => { const fields = Object.fromEntries(profileFields.map(([field]) => [field, (fieldFeedback[field] || '').trim()]).filter(([, value]) => value)) as ProfileFieldFeedback; validateProfileFieldFeedback(fields); return api.reviewRescuerProfile!(item, decision, note, fields); }} refresh={refresh} /></>;
 }
 function Profiles({ api }: { api: AdminApi }) {
   const load = useCallback(async (page: number) => { const data = await api.listRescuerProfiles!('submitted', page); return { ...data, items: data.items.map(item => ({ ...item, id: item.owner_id })) }; }, [api]);

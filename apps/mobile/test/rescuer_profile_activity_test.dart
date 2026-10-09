@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_screens.dart';
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
@@ -45,19 +46,57 @@ class GuardianActivityRescue extends FakeRescue {
       : super.detail(id);
 }
 
+// Retained component tests: the current profile no longer renders this activity section.
+// The harness checks its formatting and callbacks against real destination screens,
+// not the current /profile route or the payment history.
+GoRouter activityRouter(Json data) => GoRouter(
+  initialLocation: '/component-test',
+  routes: [
+    GoRoute(
+      path: '/component-test',
+      builder: (context, state) => Scaffold(
+        body: SingleChildScrollView(
+          child: RescuerProfileActivity(
+            data: data,
+            onHome: () => context.go('/rescuer'),
+            onExpense: (id) => context.go('/rescue/$id?kind=expense&record=1'),
+            onStart: () => context.go('/rescue/new?kind=case'),
+          ),
+        ),
+      ),
+    ),
+    GoRoute(
+      path: '/rescuer',
+      builder: (context, state) => const RescueHomeScreen(),
+    ),
+    GoRoute(
+      path: '/rescue/:id',
+      builder: (context, state) => RescueEditorScreen(
+        state.pathParameters['id']!,
+        kind: state.uri.queryParameters['kind'] ?? 'case',
+        showRecord: state.uri.queryParameters['record'] == '1',
+      ),
+    ),
+  ],
+);
+
 void main() {
   testWidgets(
-    'settled Guardian activity displays net and opens its actual expense',
+    'retained activity component displays settled net and opens the real expense screen',
     (tester) async {
       final identity = FakeIdentityRepository()
         ..user = const Identity('one', 'ana@example.test', verified: true);
       await identity.setExperience('rescuer');
+      final activityRoutes = activityRouter(
+        await GuardianActivityRescue().dashboard(),
+      );
+      addTearDown(activityRoutes.dispose);
       final container = ProviderContainer(
         overrides: [
           identityRepositoryProvider.overrideWithValue(identity),
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
           rescueRepositoryProvider.overrideWithValue(GuardianActivityRescue()),
-          routerInitialLocationProvider.overrideWithValue('/profile'),
+          routerProvider.overrideWithValue(activityRoutes),
         ],
       );
       addTearDown(() async {
@@ -86,48 +125,56 @@ void main() {
     },
   );
 
-  testWidgets('activity home link opens the actual rescuer home by keyboard', (
-    tester,
-  ) async {
-    final identity = FakeIdentityRepository()
-      ..user = const Identity('one', 'ana@example.test', verified: true);
-    await identity.setExperience('rescuer');
-    final container = ProviderContainer(
-      overrides: [
-        identityRepositoryProvider.overrideWithValue(identity),
-        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
-        rescueRepositoryProvider.overrideWithValue(FakeRescue()),
-        routerInitialLocationProvider.overrideWithValue('/profile'),
-      ],
-    );
-    addTearDown(() async {
-      container.dispose();
-      await identity.changes.close();
-    });
-    await tester.pumpWidget(
-      UncontrolledProviderScope(container: container, child: const DopmiApp()),
-    );
-    await tester.pumpAndSettle();
-    final link = find.byType(RescuerActivityHomeLink);
-    await tester.ensureVisible(link);
-    await tester.pumpAndSettle();
-    final outline = find.descendant(
-      of: link,
-      matching: find.byKey(const ValueKey('reference-keyboard-outline')),
-    );
-    for (var i = 0; i < 12 && outline.evaluate().isEmpty; i++) {
-      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+  testWidgets(
+    'retained activity component home callback opens real home by keyboard',
+    (tester) async {
+      final identity = FakeIdentityRepository()
+        ..user = const Identity('one', 'ana@example.test', verified: true);
+      await identity.setExperience('rescuer');
+      final activityRoutes = activityRouter(
+        await GuardianActivityRescue().dashboard(),
+      );
+      addTearDown(activityRoutes.dispose);
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+          routerProvider.overrideWithValue(activityRoutes),
+        ],
+      );
+      addTearDown(() async {
+        container.dispose();
+        await identity.changes.close();
+      });
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const DopmiApp(),
+        ),
+      );
       await tester.pumpAndSettle();
-    }
-    expect(outline, findsOneWidget);
-    expect(container.read(routerProvider).state.uri.path, '/profile');
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    await tester.pumpAndSettle();
-    expect(container.read(routerProvider).state.uri.path, '/rescuer');
-    expect(find.byType(RescueHomeScreen), findsOneWidget);
-    expect(find.text('Hola, Ana'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
+      final link = find.byType(RescuerActivityHomeLink);
+      await tester.ensureVisible(link);
+      await tester.pumpAndSettle();
+      final outline = find.descendant(
+        of: link,
+        matching: find.byKey(const ValueKey('reference-keyboard-outline')),
+      );
+      for (var i = 0; i < 12 && outline.evaluate().isEmpty; i++) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
+      }
+      expect(outline, findsOneWidget);
+      expect(container.read(routerProvider).state.uri.path, '/component-test');
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(container.read(routerProvider).state.uri.path, '/rescuer');
+      expect(find.byType(RescueHomeScreen), findsOneWidget);
+      expect(find.text('Hola, Ana'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   for (final large in [false, true]) {
     testWidgets(

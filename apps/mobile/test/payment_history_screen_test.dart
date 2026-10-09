@@ -1,298 +1,366 @@
-import 'package:dopmi_mobile/core/reference_switch.dart';
-
 import 'dart:async';
 
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
+import 'package:dopmi_mobile/features/payments/payment_activity_repository.dart';
+import 'package:dopmi_mobile/features/payments/payment_activity_screen.dart';
 import 'package:dopmi_mobile/features/payments/payment_repository.dart';
+import 'package:dopmi_mobile/features/payments/payment_screens.dart';
 import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
-import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
-
-import 'rescue_test.dart' show FakeRescue, FakeCaseUpdates;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
-import 'guardian_history_test.dart' show HistoryRepo, cycle;
 import 'payments_test.dart' show FakePayments;
+import 'rescue_test.dart' show FakeRescue, FakeCaseUpdates;
 
-class HistoryPayments extends FakePayments {
+Json donation({bool pending = false, bool public = true}) => {
+  'id': 'donation-one',
+  'kind': 'contribution',
+  'title': 'Medicamentos',
+  'created_at': '2026-10-08T12:00:00Z',
+  'amount_cents': 7525,
+  'gross_cents': 7525,
+  'payment_status': pending ? 'pending' : 'confirmed',
+  'status': pending ? 'processing' : 'assigned',
+  'assigned_cents': pending ? 0 : 7000,
+  'net_cents': 7000,
+  'processed_at': pending ? null : '2026-10-08T12:01:00Z',
+  'platform_fee_cents': 150,
+  'stripe_fee_cents': 375,
+  'expense_id': 'expense-one',
+  'idempotency_key': pending ? 'stable-checkout-key' : null,
+  'case_id': public ? 'case-one' : null,
+  'case_name': public ? 'Choco' : null,
+};
+Json cycle({bool skipped = false}) => {
+  'id': 'cycle-one',
+  'kind': 'guardian',
+  'title': 'Suscripción Guardián',
+  'allocation_count': skipped ? 0 : 1,
+  'created_at': '2026-10-08T12:02:00Z',
+  'amount_cents': skipped ? 0 : 2000,
+  'authorized_cents': 2000,
+  'status': skipped ? 'skipped' : 'assigned',
+  'processed_at': skipped ? null : '2026-10-08T12:02:00Z',
+  'assigned_cents': skipped ? 0 : 1860,
+};
+
+class RouteActivity extends PaymentActivityRepository {
+  RouteActivity(this.rows) : super(FakeRescue().client);
+  List<Json> rows;
   final receivedReads = <bool>[];
+  int allocationsReads = 0;
+  Completer<Json>? pending, pendingAllocations;
   @override
-  Future<DataPage<Json>> history(int page, {bool received = false}) async {
+  Future<Json> page({required bool received, Json? cursor}) async {
     receivedReads.add(received);
-    return const DataPage([
-      {
-        'id': 'punctual-one',
-        'expense_id': 'expense-one',
-        'expense_title': 'Medicamentos',
-        'gross_cents': 7525,
-        'processor': 'stripe',
-        'payment_status': 'pending',
-        'transfer_status': 'not_started',
-      },
-    ], 1);
+    final wait = pending;
+    pending = null;
+    return wait == null
+        ? {
+            'items': received
+                ? rows
+                      .map(
+                        (r) => <String, dynamic>{
+                          ...r,
+                          'amount_cents': r['assigned_cents'] ?? 0,
+                          'gross_cents': null,
+                          'idempotency_key': null,
+                          'platform_fee_cents': null,
+                          'stripe_fee_cents': null,
+                        },
+                      )
+                      .toList()
+                : rows,
+            'next_cursor': null,
+          }
+        : wait.future;
+  }
+
+  @override
+  Future<Json> allocations(
+    String cycle, {
+    required bool received,
+    String? afterExpense,
+  }) async {
+    allocationsReads++;
+    if (pendingAllocations != null) return pendingAllocations!.future;
+    if (rows.any((r) => r['id'] == cycle && r['status'] == 'skipped')) {
+      return {'items': <Json>[], 'next_cursor': null};
+    }
+    return {
+      'items': [
+        {
+          'expense_id': 'expense-one',
+          'title': 'Cirugía',
+          'allocated_cents': 1860,
+          'status': 'partial_reversal',
+          'reversed_cents': 200,
+          'remaining_cents': 1660,
+          'transferred_cents': 1660,
+        },
+      ],
+      'next_cursor': null,
+    };
   }
 }
 
-class PendingHistoryCase extends FakeRescue {
-  final reply = Completer<String?>();
-  int opens = 0;
+class UnavailableRouteCase extends FakeRescue {
   @override
-  Future<String?> publicCaseForExpense(String expenseId) {
-    opens++;
-    return reply.future;
-  }
-}
-
-class UnavailableHistoryCase extends FakeRescue {
-  UnavailableHistoryCase({required this.fail});
-  final bool fail;
-  @override
-  Future<RescueRecord?> publicCaseRecordForExpense(String expenseId) async {
-    if (fail) throw StateError('Catalog unavailable');
-    return null;
+  Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async {
+    if (caseId != null) throw StateError('Public case temporarily unavailable');
+    return super.catalog(page, caseId: caseId);
   }
 }
 
 void main() {
-  Future<FakeIdentityRepository> start(
+  Future<(ProviderContainer, FakeIdentityRepository, FakePayments)> mount(
     WidgetTester tester,
-    HistoryRepo guardian,
-    HistoryPayments payments, {
-    bool enabled = true,
+    RouteActivity repo, {
+    bool received = false,
+    bool guardian = true,
     RescueRepository? rescue,
   }) async {
     tester.view.physicalSize = const Size(900, 1600);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
+    SharedPreferences.setMockInitialValues({});
     final identity = FakeIdentityRepository()
-      ..user = const Identity('one', 'fixture@example.test', verified: true);
+      ..user = const Identity('one', 'synthetic@example.test', verified: true);
+    final payment = FakePayments();
     final container = ProviderContainer(
       overrides: [
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
-        paymentRepositoryProvider.overrideWithValue(payments),
+        paymentActivityRepositoryProvider.overrideWithValue(repo),
+        paymentRepositoryProvider.overrideWithValue(payment),
         rescueRepositoryProvider.overrideWithValue(rescue ?? FakeRescue()),
         caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
-        guardianRepositoryProvider.overrideWithValue(guardian),
-        guardianEnabledProvider.overrideWithValue(enabled),
-        routerInitialLocationProvider.overrideWithValue('/payments'),
+        guardianEnabledProvider.overrideWithValue(guardian),
+        routerInitialLocationProvider.overrideWithValue(
+          received ? '/rescuer/received-payments' : '/payments',
+        ),
       ],
     );
     addTearDown(() async {
       container.dispose();
       await identity.changes.close();
     });
+    final waiting = repo.pending != null;
     await tester.pumpWidget(
       UncontrolledProviderScope(container: container, child: const DopmiApp()),
     );
-    for (var i = 0; i < 12; i++) {
-      await tester.pump(const Duration(milliseconds: 100));
+    if (waiting) {
+      for (var i = 0; i < 12; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+    } else {
+      await tester.pumpAndSettle();
     }
-    return identity;
+    return (container, identity, payment);
   }
 
   testWidgets(
-    'Combined history shows confirmed cycles before actual punctual payments and loads allocations only on demand',
+    'actual payments route retains globally ordered ledger, lazy allocations, private receipt and Back',
     (tester) async {
-      final guardian = HistoryRepo();
-      final payments = HistoryPayments();
-      await start(tester, guardian, payments);
-      expect(find.text('Suscripción'), findsOneWidget);
-      // Runtime Source /history: outer border16 + inset1 + padding14
-      // + date column52 + gap10 puts the body at x93.
-      expect(tester.getTopLeft(find.text('Suscripción')).dx, 93);
-      expect(find.text('Pagado'), findsOneWidget);
-      expect(find.text(r'$75.25'), findsOneWidget);
+      final repo = RouteActivity([cycle(), donation()]);
+      final result = await mount(tester, repo);
+      expect(find.byType(PaymentActivityScreen), findsOneWidget);
       expect(
-        tester.getTopLeft(find.text('Suscripción')).dy,
-        lessThan(
-          tester
-              .getTopLeft(
-                find.textContaining('Medicamentos', findRichText: true),
-              )
-              .dy,
-        ),
+        tester.getTopLeft(find.text('Suscripción Guardián · 1 asignación')).dy,
+        lessThan(tester.getTopLeft(find.text('Medicamentos - Choco')).dy),
       );
-      expect(guardian.allocationCursors, isEmpty);
-      await tester.tap(find.text('Suscripción'));
+      expect(repo.allocationsReads, 0);
+      await tester.tap(find.text('Suscripción Guardián · 1 asignación'));
       await tester.pumpAndSettle();
-      expect(find.text('Neto asignado: \$43.14 MXN'), findsOneWidget);
-      await tester.tap(find.text('Ver asignaciones'));
+      expect(repo.allocationsReads, 1);
+      expect(find.textContaining('Cirugía ·'), findsOneWidget);
+      expect(find.text('Reversión parcial de transferencia'), findsOneWidget);
+      expect(find.text('Neto vigente: \$16.60 MXN'), findsOneWidget);
+      expect(find.text('Neto transferido: \$16.60 MXN'), findsOneWidget);
+      await tester.tap(find.text('Medicamentos - Choco'));
+      await tester.pump();
+      expect(find.text('Importe pagado: \$75.25 MXN'), findsOneWidget);
+      expect(find.text('Comisión Dopmi: \$1.50 MXN'), findsOneWidget);
+      expect(find.text('Costos de Stripe: \$3.75 MXN'), findsOneWidget);
+      expect(find.text('Neto para el rescatista: \$70 MXN'), findsOneWidget);
+      expect(find.text('Referencia: donation-one'), findsOneWidget);
+      await tester.tap(find.text('Ver caso'));
       await tester.pumpAndSettle();
-      expect(guardian.allocationCursors, [null]);
-      expect(guardian.calls, isEmpty);
-      expect(payments.calls, isEmpty);
-    },
-  );
-  testWidgets(
-    'Skipped and processing cycles never claim payment; received filter excludes personal cycles and payment resumption',
-    (tester) async {
-      final guardian = HistoryRepo()
-        ..read = (_) async => {
-          'items': [
-            cycle('skipped', 'skipped'),
-            cycle('pending', 'processing'),
-          ],
-          'next_cursor': null,
-        };
-      final payments = HistoryPayments();
-      await start(tester, guardian, payments);
-      expect(find.text('Sin cargo'), findsOneWidget);
-      expect(find.text('Pagado'), findsNothing);
-      expect(find.text('Importe autorizado'), findsNWidgets(2));
-      expect(tester.getSize(find.byType(ReferenceSwitch)), const Size(48, 48));
-      await tester.tap(find.byType(ReferenceSwitch));
-      await tester.pumpAndSettle();
-      expect(payments.receivedReads.last, isTrue);
-      expect(guardian.cursors.length, 1);
-      expect(find.text('Suscripción'), findsNothing);
-      await tester.tap(find.text(r'$75.25'));
-      await tester.pumpAndSettle();
-      expect(find.text('Continuar aportación'), findsNothing);
-    },
-  );
-  testWidgets(
-    'History opens the public parent and back retains financial details',
-    (tester) async {
-      await start(tester, HistoryRepo(), HistoryPayments(), enabled: false);
-      await tester.tap(find.text(r'$75.25'));
-      await tester.pumpAndSettle();
-      expect(find.text(r'Importe: $75.25 MXN'), findsOneWidget);
-      await tester.tap(
-        find.textContaining('Medicamentos', findRichText: true).first,
-      );
-      await tester.pumpAndSettle();
-      final container = ProviderScope.containerOf(
-        tester.element(find.byType(DopmiApp)),
-      );
       expect(
-        container.read(routerProvider).state.uri.path,
+        result.$1.read(routerProvider).state.uri.path,
         '/rescue-cases/case-one',
       );
-      expect(find.text('Choco'), findsWidgets);
-      container.read(routerProvider).pop();
+      result.$1.read(routerProvider).pop();
       await tester.pumpAndSettle();
-      expect(container.read(routerProvider).state.uri.path, '/payments');
-      expect(find.text(r'Importe: $75.25 MXN'), findsOneWidget);
-      expect(tester.takeException(), isNull);
+      expect(find.text('Importe pagado: \$75.25 MXN'), findsOneWidget);
     },
   );
-
-  testWidgets('Late case result after identity change cannot navigate', (
-    tester,
-  ) async {
-    final rescue = PendingHistoryCase();
-    final identity = await start(
-      tester,
-      HistoryRepo(),
-      HistoryPayments(),
-      enabled: false,
-      rescue: rescue,
-    );
-    await tester.tap(find.textContaining('Medicamentos', findRichText: true));
-    await tester.pump();
-    await tester.tap(find.textContaining('Medicamentos', findRichText: true));
-    await tester.pump();
-    expect(rescue.opens, 1);
-    identity.emit(
-      const IdentityEvent(Identity('two', 'two@example.test', verified: true)),
-    );
-    await tester.pumpAndSettle();
-    final container = ProviderScope.containerOf(
-      tester.element(find.byType(DopmiApp)),
-    );
-    final routeBefore = container.read(routerProvider).state.uri;
-    rescue.reply.complete('case-one');
-    await tester.pumpAndSettle();
-    expect(container.read(routerProvider).state.uri, routeBefore);
-    expect(find.text('Choco'), findsNothing);
-    expect(tester.takeException(), isNull);
-  });
-
   testWidgets(
-    'Unavailable public case retains access to private payment evidence',
+    'pending donor resumes exact intent and amount without claiming paid',
     (tester) async {
-      final rescue = PendingHistoryCase();
-      await start(
+      final result = await mount(
         tester,
-        HistoryRepo(),
-        HistoryPayments(),
-        enabled: false,
-        rescue: rescue,
+        RouteActivity([donation(pending: true)]),
       );
-      await tester.tap(find.textContaining('Medicamentos', findRichText: true));
+      await tester.tap(find.text('Medicamentos - Choco'));
       await tester.pump();
-      rescue.reply.complete(null);
+      expect(find.text('Importe solicitado: \$75.25 MXN'), findsOneWidget);
+      expect(find.textContaining('Importe pagado'), findsNothing);
+      expect(find.textContaining('Comisión Dopmi:'), findsNothing);
+      await tester.tap(find.text('Continuar aportación'));
       await tester.pumpAndSettle();
-      expect(find.text('Este caso ya no está disponible.'), findsOneWidget);
-      final container = ProviderScope.containerOf(
-        tester.element(find.byType(DopmiApp)),
+      expect(
+        result.$1.read(routerProvider).state.uri.path,
+        '/contribute/expense-one',
       );
-      expect(container.read(routerProvider).state.uri.path, '/payments');
-      await tester.tap(find.text(r'$75.25'));
-      await tester.pump();
-      expect(find.text(r'Importe: $75.25 MXN'), findsOneWidget);
-      expect(tester.takeException(), isNull);
+      final screen = tester.widget<ContributeScreen>(
+        find.byType(ContributeScreen),
+      );
+      expect(screen.attempt?['idempotency_key'], 'stable-checkout-key');
+      expect(screen.attempt?['gross_cents'], 7525);
+      expect(find.text('Continuar mi aportación'), findsOneWidget);
+      expect(result.$3.calls, isEmpty);
     },
   );
-
-  for (final fail in [false, true]) {
-    testWidgets(
-      'Public name unavailable keeps the real payment and receipt; error=$fail',
-      (tester) async {
-        await start(
-          tester,
-          HistoryRepo(),
-          HistoryPayments(),
-          enabled: false,
-          rescue: UnavailableHistoryCase(fail: fail),
-        );
-        expect(find.text('Medicamentos'), findsOneWidget);
-        expect(find.text('Choco - Medicamentos'), findsNothing);
-        expect(find.text(r'$75.25'), findsOneWidget);
-        await tester.tap(find.text(r'$75.25'));
-        await tester.pump();
-        expect(find.text(r'Importe: $75.25 MXN'), findsOneWidget);
-        expect(tester.takeException(), isNull);
-      },
-    );
-  }
-
-  testWidgets('Disabled Guardian makes no cycle reads', (tester) async {
-    final guardian = HistoryRepo();
-    await start(tester, guardian, HistoryPayments(), enabled: false);
-    expect(guardian.cursors, isEmpty);
-    expect(find.text(r'$75.25'), findsOneWidget);
-  });
-  testWidgets('Late combined history does not reveal the prior actor cycle', (
+  testWidgets(
+    'withdrawn public case keeps private financial evidence and never invents a destination',
+    (tester) async {
+      await mount(tester, RouteActivity([donation(public: false)]));
+      expect(find.text('Medicamentos'), findsOneWidget);
+      expect(find.textContaining('Choco'), findsNothing);
+      await tester.tap(find.text('Medicamentos'));
+      await tester.pump();
+      expect(find.text('Referencia: donation-one'), findsOneWidget);
+      expect(find.text('Importe pagado: \$75.25 MXN'), findsOneWidget);
+      expect(find.text('Ver caso'), findsNothing);
+    },
+  );
+  testWidgets(
+    'received route requests receiver ledger and never exposes donor fees or resumption',
+    (tester) async {
+      final repo = RouteActivity([donation()]);
+      await mount(tester, repo, received: true);
+      expect(repo.receivedReads, [true]);
+      await tester.tap(find.text('Medicamentos - Choco'));
+      await tester.pump();
+      expect(find.text('Neto asignado: \$70 MXN'), findsOneWidget);
+      expect(find.text('Continuar aportación'), findsNothing);
+      expect(find.textContaining('Comisión Dopmi:'), findsNothing);
+    },
+  );
+  testWidgets('skipped cycle never claims paid even with activation disabled', (
     tester,
   ) async {
-    final reply = Completer<Map<String, dynamic>>();
-    final guardian = HistoryRepo()..read = (_) => reply.future;
-    final identity = await start(tester, guardian, HistoryPayments());
-    guardian.read = (_) async => {
-      'items': <Map<String, dynamic>>[],
-      'next_cursor': null,
-    };
-    identity.emit(
-      const IdentityEvent(Identity('two', 'two@example.test', verified: true)),
+    await mount(
+      tester,
+      RouteActivity([cycle(skipped: true), donation()]),
+      guardian: false,
+    );
+    expect(find.text('Suscripción Guardián · 0 asignaciones'), findsOneWidget);
+    await tester.tap(find.text('Suscripción Guardián · 0 asignaciones'));
+    await tester.pumpAndSettle();
+    expect(find.text('Ciclo omitido sin cargo ni deuda'), findsOneWidget);
+    expect(find.textContaining('Importe pagado'), findsNothing);
+    expect(find.text('Importe autorizado: \$20 MXN'), findsOneWidget);
+    expect(find.text('Medicamentos - Choco'), findsOneWidget);
+  });
+  testWidgets(
+    'disabled Guardian activation keeps confirmed owned ledger readable',
+    (tester) async {
+      await mount(tester, RouteActivity([cycle()]), guardian: false);
+      await tester.tap(find.text('Suscripción Guardián · 1 asignación'));
+      await tester.pumpAndSettle();
+      expect(find.text('Importe pagado: \$20 MXN'), findsOneWidget);
+      expect(find.text('Referencia: cycle-one'), findsOneWidget);
+    },
+  );
+  testWidgets('late previous actor ledger is ignored after identity change', (
+    tester,
+  ) async {
+    final wait = Completer<Json>();
+    final repo = RouteActivity([])..pending = wait;
+    final result = await mount(tester, repo);
+    result.$2.emit(
+      const IdentityEvent(
+        Identity('two', 'other@example.test', verified: true),
+      ),
     );
     await tester.pump();
-    reply.complete({
-      'items': [cycle('old-owner', 'assigned')],
+    wait.complete({
+      'items': [donation()],
       'next_cursor': null,
     });
     await tester.pumpAndSettle();
-    expect(find.text('Suscripción'), findsNothing);
+    expect(find.textContaining('Medicamentos'), findsNothing);
+    expect(find.text('Referencia: donation-one'), findsNothing);
     expect(tester.takeException(), isNull);
   });
+  testWidgets(
+    'late prior owner allocations cannot expose details or case navigation',
+    (tester) async {
+      final wait = Completer<Json>();
+      final repo = RouteActivity([cycle()])..pendingAllocations = wait;
+      final result = await mount(tester, repo);
+      await tester.tap(find.text('Suscripción Guardián · 1 asignación'));
+      await tester.pump();
+      expect(repo.allocationsReads, 1);
+      repo.rows = [];
+      result.$2.emit(
+        const IdentityEvent(
+          Identity('two', 'other@example.test', verified: true),
+        ),
+      );
+      await tester.pump();
+      wait.complete({
+        'items': [
+          {
+            'expense_id': 'old-private',
+            'title': 'Anterior propietario',
+            'allocated_cents': 1860,
+            'status': 'assigned',
+            'case_id': 'case-one',
+          },
+        ],
+        'next_cursor': null,
+      });
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Anterior propietario'), findsNothing);
+      expect(find.text('Ver caso'), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
+    'public case loading failure preserves private receipt and Back',
+    (tester) async {
+      final result = await mount(
+        tester,
+        RouteActivity([donation()]),
+        rescue: UnavailableRouteCase(),
+      );
+      await tester.tap(find.text('Medicamentos - Choco'));
+      await tester.pump();
+      await tester.tap(find.text('Ver caso'));
+      await tester.pumpAndSettle();
+      expect(
+        result.$1.read(routerProvider).state.uri.path,
+        '/rescue-cases/case-one',
+      );
+      result.$1.read(routerProvider).pop();
+      await tester.pumpAndSettle();
+      expect(find.text('Referencia: donation-one'), findsOneWidget);
+      expect(find.text('Importe pagado: \$75.25 MXN'), findsOneWidget);
+      expect(find.text('Costos de Stripe: \$3.75 MXN'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

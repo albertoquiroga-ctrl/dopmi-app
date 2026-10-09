@@ -225,6 +225,7 @@ class FakeCommunity implements CommunityRepository {
     'cases': [
       {
         'id': 'case-one',
+        'status': 'approved',
         'public_data': {'pet_name': 'Choco'},
       },
     ],
@@ -1098,9 +1099,9 @@ void main() {
       await tester.tap(find.text('Guardar'));
       await tester.pumpAndSettle();
       expect(find.text('Guardado'), findsOneWidget);
-      await tester.ensureVisible(find.byTooltip('Reportar'));
+      await tester.ensureVisible(find.text('Reportar perfil'));
       await tester.pumpAndSettle();
-      await tester.tap(find.byTooltip('Reportar'));
+      await tester.tap(find.text('Reportar perfil'));
       await tester.pumpAndSettle();
       expect(
         tester
@@ -1123,9 +1124,14 @@ void main() {
       expect(find.text('Recibimos tu reporte para revisión.'), findsOneWidget);
       await tester.pump(const Duration(seconds: 4));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Casos'));
+      await tester.ensureVisible(find.text('Apoyo'));
       await tester.pumpAndSettle();
-      expect(find.text('Choco'), findsOneWidget);
+      await tester.tap(find.text('Apoyo'));
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('public-case-case-one')),
+        findsOneWidget,
+      );
       await tester.ensureVisible(find.text('Enviar mensaje'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Enviar mensaje'));

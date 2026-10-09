@@ -2,6 +2,8 @@ import 'features/rescue/publish_choice_screen.dart';
 import 'features/adoption/community_ui.dart';
 import 'features/payments/guardian_repository.dart';
 import 'features/payments/guardian_promotion_screen.dart';
+import 'features/payments/payment_activity_screen.dart';
+import 'features/communication/notification_activity_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -215,8 +217,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/rescuer/received-payments',
-        builder: (_, _) =>
-            RescuerReceivedPaymentsScreen(key: ValueKey(identity.identity?.id)),
+        builder: (_, _) => PaymentActivityScreen(
+          received: true,
+          key: ValueKey(identity.identity?.id),
+        ),
       ),
       GoRoute(
         path: '/rescuer/photo-tips',
@@ -255,7 +259,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/payments',
         builder: (_, _) =>
-            PaymentHistoryScreen(key: ValueKey(identity.identity?.id)),
+            PaymentActivityScreen(key: ValueKey(identity.identity?.id)),
       ),
       GoRoute(
         path: '/connect',
@@ -362,7 +366,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/people/:id',
-        builder: (_, state) => PublicProfileScreen(state.pathParameters['id']!),
+        builder: (_, state) => PublicProfileScreen(
+          state.pathParameters['id']!,
+          key: ValueKey('${identity.identity?.id}:${state.uri}'),
+        ),
       ),
       GoRoute(
         path: '/my-adoptions/:id',
@@ -387,7 +394,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/notifications',
         builder: (_, _) =>
-            NotificationsScreen(key: ValueKey(identity.identity?.id)),
+            NotificationActivityScreen(key: ValueKey(identity.identity?.id)),
       ),
       GoRoute(
         path: '/loading',

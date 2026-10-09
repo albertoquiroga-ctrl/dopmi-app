@@ -237,7 +237,7 @@ class RescuerHomeDashboard extends ConsumerStatefulWidget {
 }
 
 class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
-  String pendingProgram = 'support', activityView = 'none';
+  String pendingProgram = 'adoption', activityView = 'none';
   String period = 'month';
   String? queuedCursor, failedCursor;
   final acknowledged = <String>{};
@@ -558,7 +558,7 @@ class _HomeVerificationStatus extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: TextButton(
               key: const ValueKey('home-complete-profile'),
-              onPressed: () => context.go('/profile'),
+              onPressed: () => context.push('/rescuer/profile/edit'),
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
                 alignment: Alignment.centerLeft,

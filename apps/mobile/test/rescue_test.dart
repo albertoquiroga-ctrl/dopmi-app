@@ -897,6 +897,20 @@ void main() {
     expect(find.text('Urgente'), findsNothing);
     expect(find.text('Ayúdame a recuperar:'), findsOneWidget);
     expect(find.text('Cirugía'), findsWidgets);
+    expect(
+      find.byWidgetPredicate(
+        (w) =>
+            w is Semantics && w.properties.label == 'Ver evidencia de Cirugía',
+      ),
+      findsOneWidget,
+    );
+    await tester.tap(
+      find.byWidgetPredicate(
+        (w) =>
+            w is Semantics && w.properties.label == 'Ver evidencia de Cirugía',
+      ),
+    );
+    await tester.pump();
     await tester.tap(
       find.byWidgetPredicate(
         (w) =>

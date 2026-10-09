@@ -120,7 +120,8 @@ class _RescuerThreadsState extends ConsumerState<RescuerThreadsScreen>
         petsLoading = false;
         petsBusy = false;
         petError = null;
-        if (petFilter != null && pets.every((e) => e['id'] != petFilter)) {
+        if (petFilter != null &&
+            pets.every((e) => e['id'] != petFilter || !selectorVisible(e))) {
           petFilter = null;
           page = 1;
         }
@@ -179,6 +180,9 @@ class _RescuerThreadsState extends ConsumerState<RescuerThreadsScreen>
     });
   }
 
+  // Historical groups remain available; active chats are always accessible via Todos.
+  bool selectorVisible(Json pet) => history || pet['selector_active'] != false;
+
   Widget petSelector(BuildContext context) {
     if (petsLoading) return const Center(child: CircularProgressIndicator());
     if (petError != null) {
@@ -206,7 +210,7 @@ class _RescuerThreadsState extends ConsumerState<RescuerThreadsScreen>
             selected: petFilter == null,
             onTap: () => filterPet(null),
           ),
-          for (final pet in pets) ...[
+          for (final pet in pets.where(selectorVisible)) ...[
             const SizedBox(width: 10),
             RescuerPetFilter(
               key: ValueKey('rescuer-pet-${pet['id']}'),

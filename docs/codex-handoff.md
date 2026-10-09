@@ -1,19 +1,16 @@
 # Dopmi — continuidad de ChatGPT Work a Codex
 
-## Arranque vigente — cierre8/10/2026
+## Arranque vigente — ejecución aprobada dde1bb9, 8/10/2026
 
-Leer [checkpoint](mock-sync-current.md) y luego
-[protocolo](mock-sync-workflow.md). Perfil ENTREGA_CONTINUA_EFICIENTE_VERIFICADA:
-sin presupuestos ni renovaciones; corregir diferencias perceptibles y reutilizar
-evidencia válida. El [tablero](parity-current-review.md) es la fuente del detalle.
-
-Estado PUBLICADO_INTERNAL_PENDIENTE_QA_FINAL: delta9ced implementada/comparada,
-candidato281fc37/Play301, QA instalada focalizada completada. Documentación
-posterior no genera candidato. No atribuir aprobación de Irlanda ni auditoría
-profunda. La próxima conversación debe **retomar esta entrega para QA final**,
-según acción exacta del checkpoint; no empezar4369 posterior/no inventariado.
-Preservar dirty tree/privados; no repetir gates, builds, fixtures o familias
-anteriores aceptadas. Dinero test; sin merge ni activación productiva.
+Leer [checkpoint](mock-sync-current.md), [protocolo](mock-sync-workflow.md) y
+[tablero único](parity-current-review.md). Plan completo aprobado: N01–N11 hasta
+mock congelado dde1bb9 más QA pendiente9ced. Perfil continuo sin cuotas/renovaciones,
+cuatro lentes y verificación final de Play en el teléfono dentro de la entrega.
+Base producto281fc37/Play301; app codex/design-foundation HEADinicialb4ac415.
+Preservar dirty tree/privados; no reiniciar familias cerradas ni fixtures consumidas.
+Integrador única cola Flutter/ADB/contratos; agentes exclusivos por frente y
+revisión independiente. Dinero test, no merge/producción. SMS real depende de
+acceso Twilio y costo autorizado; avanzar lo independiente sin simular éxito.
 
 ## Historial de continuidad (referencia, fuera del resumen de arranque)
 

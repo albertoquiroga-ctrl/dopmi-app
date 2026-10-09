@@ -50,7 +50,7 @@ void main() {
   );
   for (final status in ['submitted', 'changes_requested', 'approved']) {
     testWidgets(
-      'rescuer identity reflows and edits only with approved status: $status',
+      'rescuer identity reflows and allows the public editor independently of identity review status: $status',
       (tester) async {
         tester.view.physicalSize = const Size(640, 1280);
         tester.view.devicePixelRatio = 2;
@@ -86,17 +86,22 @@ void main() {
           hasLength(1),
           reason: 'Rescatista must remain a complete word at 200 percent',
         );
-        expect(find.text('Verificado'), findsNothing);
         expect(
-          find.text('Editar'),
-          status == 'approved' ? findsOneWidget : findsNothing,
+          find.text('Verificado'),
+          findsNothing,
+          reason: 'Approval is shown by the separate verification card; the standalone hero has no duplicate status pill.',
         );
-        if (status == 'approved') {
-          await tester.ensureVisible(find.text('Editar'));
-          await tester.tap(find.text('Editar'));
-          await tester.pumpAndSettle();
-          expect(edits, 1);
-        }
+        expect(
+          tester
+              .widget<RescuerIdentityCard>(find.byType(RescuerIdentityCard))
+              .status,
+          status,
+        );
+        expect(find.text('Editar'), findsOneWidget);
+        await tester.ensureVisible(find.text('Editar'));
+        await tester.tap(find.text('Editar'));
+        await tester.pumpAndSettle();
+        expect(edits, 1);
         expect(tester.takeException(), isNull);
       },
     );

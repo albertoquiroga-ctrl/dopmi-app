@@ -1,3 +1,7 @@
+import 'package:dopmi_mobile/features/profile/phone_verification_repository.dart';
+
+import 'profile_test_identity.dart';
+
 import 'dart:async';
 
 import 'package:dopmi_mobile/app.dart';
@@ -17,6 +21,7 @@ import 'community_test.dart' show FakeCommunity;
 class FakeRescuerProfile implements RescuerProfileRepository {
   Json value = {
     'id': 'profile-one',
+    'owner_id': 'owner-one',
     'display_name': 'Refugio Luna',
     'bio': 'Rescate responsable.',
     'city': 'Monterrey',
@@ -101,6 +106,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            phoneVerificationRepositoryProvider.overrideWithValue(
+              EditorTestPhone(),
+            ),
             rescuerProfileRepositoryProvider.overrideWithValue(repo),
             identityRepositoryProvider.overrideWithValue(identity),
             communityRepositoryProvider.overrideWithValue(FakeCommunity()),
@@ -119,6 +127,13 @@ void main() {
       await tester.tap(find.text('Volver a intentar'));
       await tester.pumpAndSettle();
       final name = find.byKey(const ValueKey('public-profile-Nombre'));
+      await tester.scrollUntilVisible(
+        name,
+        160,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await Scrollable.ensureVisible(tester.element(name), alignment: .5);
+      await tester.pumpAndSettle();
       expect(tester.widget<TextField>(name).controller!.text, 'Refugio Luna');
       await tester.enterText(name, 'Borrador conservado');
       final editor = find.descendant(
@@ -130,7 +145,12 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.widget<EditableText>(editor).focusNode.hasFocus, isFalse);
       final photo = find.byKey(const ValueKey('public-profile-photo'));
-      await tester.ensureVisible(photo);
+      await tester.scrollUntilVisible(
+        photo,
+        -160,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await Scrollable.ensureVisible(tester.element(photo), alignment: .5);
       await tester.pumpAndSettle();
       final tap = tester.widget<InkWell>(photo).onTap!;
       tap();
@@ -148,10 +168,22 @@ void main() {
       await tester.pumpAndSettle();
       expect(calls, 2);
       expect(repo.saves, 0);
+      await tester.scrollUntilVisible(
+        name,
+        160,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(
         tester.widget<TextField>(name).controller!.text,
         'Borrador conservado',
       );
+      await tester.scrollUntilVisible(
+        photo,
+        -160,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await Scrollable.ensureVisible(tester.element(photo), alignment: .5);
+      await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
       expect(tester.widget<InkWell>(photo).onTap, isNotNull);
       selection = Completer<String?>();
@@ -191,6 +223,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          phoneVerificationRepositoryProvider.overrideWithValue(
+            EditorTestPhone(),
+          ),
           rescuerProfileRepositoryProvider.overrideWithValue(repo),
           identityRepositoryProvider.overrideWithValue(identity),
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
@@ -203,17 +238,38 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.textContaining('Aclara la ciudad.'), findsOneWidget);
-    expect(
-      find.textContaining('domicilio, teléfono ni correo'),
-      findsOneWidget,
+    expect(find.text('ana@example.test'), findsOneWidget);
+    final publicPhone = find.byKey(
+      const ValueKey('public-profile-Tel\u00e9fono p\u00fablico'),
     );
-    expect(find.text('Teléfono'), findsNothing);
-    expect(find.text('Correo'), findsNothing);
+    await tester.scrollUntilVisible(
+      publicPhone,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(tester.widget<TextField>(publicPhone).controller!.text, isEmpty);
+    expect(repo.value['public_email'], isNull);
+    expect(repo.value['public_phone'], isNull);
     final name = find.byKey(const ValueKey('public-profile-Nombre'));
-    await tester.ensureVisible(name);
+    await tester.scrollUntilVisible(
+      name,
+      -200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.enterText(name, 'Érika');
     await tester.pumpAndSettle();
-    expect(find.text('É'), findsOneWidget);
+    final photoCard = find.byKey(const ValueKey('public-profile-photo'));
+    await tester.scrollUntilVisible(
+      photoCard,
+      -160,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await Scrollable.ensureVisible(tester.element(photoCard), alignment: .5);
+    await tester.pumpAndSettle();
+    expect(
+      find.descendant(of: photoCard, matching: find.text('É')),
+      findsOneWidget,
+    );
     final city = find.byKey(const ValueKey('public-profile-Ciudad'));
     await tester.scrollUntilVisible(
       city,
@@ -238,16 +294,49 @@ void main() {
     expect(repo.value['display_name'], 'Érika');
     expect(repo.value['city'], 'San Pedro Garza García');
     expect(repo.value['status'], 'submitted');
-    expect(find.textContaining('Estado: En revisión'), findsOneWidget);
-    expect(find.text('Retirar de revisión'), findsOneWidget);
+    final submittedStatus = find.textContaining('Estado: En revisión');
+    await tester.scrollUntilVisible(
+      submittedStatus,
+      -200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await Scrollable.ensureVisible(
+      tester.element(submittedStatus),
+      alignment: .5,
+    );
+    await tester.pumpAndSettle();
+    expect(submittedStatus.hitTestable(), findsOneWidget);
+    final withdraw = find.text('Retirar de revisión');
+    await tester.scrollUntilVisible(
+      withdraw,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await Scrollable.ensureVisible(tester.element(withdraw), alignment: .5);
+    await tester.pumpAndSettle();
+    expect(withdraw.hitTestable(), findsOneWidget);
     final cancel = find.widgetWithText(OutlinedButton, 'Cancelar');
     await tester.scrollUntilVisible(
       cancel,
       200,
       scrollable: find.byType(Scrollable).first,
     );
-    await tester.ensureVisible(cancel);
+    final cancelContext = tester.element(cancel);
+    await Scrollable.of(cancelContext).position
+        .ensureVisible(cancelContext.findRenderObject()!, alignment: .5);
     await tester.pumpAndSettle();
+    final receipt = find.byType(SnackBar);
+    expect(receipt, findsOneWidget);
+    expect(find.text('Enviamos tu perfil a revisión.'), findsOneWidget);
+    expect(tester.getRect(receipt).overlaps(tester.getRect(cancel)), isTrue);
+    // The visible submission receipt temporarily covers the last list action.
+    await tester.pump(
+      tester.widget<SnackBar>(receipt).duration +
+          const Duration(milliseconds: 500),
+    );
+    await tester.pumpAndSettle();
+    expect(receipt, findsNothing);
+    expect(cancel.hitTestable(), findsOneWidget);
     final router = GoRouter.of(tester.element(cancel));
     await tester.tap(cancel);
     await tester.pumpAndSettle();

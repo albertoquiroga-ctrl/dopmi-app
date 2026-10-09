@@ -45,7 +45,7 @@ class PublishedCommunity extends FakeCommunity {
 
 class PublishedOwnerProfile extends FakeRescuerProfile {
   PublishedOwnerProfile() {
-    value['owner_id'] = 'one';
+    value = {'owner_id': 'one', 'status': 'published', 'version': 3};
   }
   @override
   String? get userId => 'one';
@@ -251,7 +251,11 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Nombre público aprobado'), findsNothing);
       expect(find.text('Descripción aprobada.'), findsNothing);
-      expect(find.text('Sobre ti'), findsNothing);
+      expect(find.text('Sobre ti'), findsOneWidget);
+      expect(
+        find.text('Cuenta qui\u00e9n eres y c\u00f3mo ayudas a las mascotas.'),
+        findsOneWidget,
+      );
       expect(find.text('Ana'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },

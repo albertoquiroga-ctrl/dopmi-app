@@ -4,7 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/reference_focus_outline.dart';
 import '../../core/ui.dart';
 import '../adoption/community_repository.dart';
-import '../adoption/community_ui.dart' show localDate;
+import '../adoption/community_ui.dart' show localDate, AdoptionPhoto;
+import '../rescue/rescue_public_photo.dart';
 
 String notificationTime(String value, {DateTime? now}) {
   final date = DateTime.tryParse(value)?.toLocal();
@@ -41,12 +42,29 @@ class NotificationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final unread = item['read_at'] == null;
-    final kind = item['kind'] == 'message'
+    final kind = item['kind'] == 'guardian'
+        ? 'pet'
+        : item['kind'] == 'contribution'
+        ? 'donation'
+        : item['kind'] == 'message'
         ? 'message'
         : item['rescue_id'] != null || item['kind'] == 'rescue'
         ? 'case'
         : 'pet';
     final large = MediaQuery.textScalerOf(context).scale(14) > 20;
+    final tone = item['tone'];
+    final photo = item['photo_path'] as String?;
+    final toneBackground = switch (tone) {
+      'positive' => const Color(0xffecfdf5),
+      'negative' => const Color(0xfffef2f2),
+      'pending' => const Color(0xfffffbeb),
+      _ =>
+        kind == 'message'
+            ? const Color(0xffeff6ff)
+            : kind == 'case'
+            ? const Color(0xfffaf5ff)
+            : const Color(0xfffefce8),
+    };
     final title = Text(
       item['title'] as String,
       style: TextStyle(
@@ -117,18 +135,31 @@ class NotificationTile extends StatelessWidget {
                         height: 40,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: kind == 'message'
-                              ? const Color(0xffeff6ff)
-                              : kind == 'case'
-                              ? const Color(0xfffaf5ff)
-                              : const Color(0xfffefce8),
+                          color: toneBackground,
                         ),
                         alignment: Alignment.center,
-                        child: SvgPicture.asset(
-                          'assets/profile/notif-$kind.svg',
-                          width: 20,
-                          height: 20,
-                        ),
+                        child: item['thumb_style'] == 'brand'
+                            ? SvgPicture.asset(
+                                'assets/profile/logo-paw.svg',
+                                width: 40,
+                                height: 40,
+                              )
+                            : photo != null && photo.isNotEmpty
+                            ? item['photo_purpose'] == 'rescue'
+                                  ? RescuePublicPhoto(
+                                      photo,
+                                      height: 40,
+                                      radius: 20,
+                                      compact: true,
+                                    )
+                                  : AdoptionPhoto(photo, height: 40, radius: 20)
+                            : SvgPicture.asset(
+                                kind == 'donation'
+                                    ? 'assets/navigation/tab-donate.svg'
+                                    : 'assets/profile/notif-$kind.svg',
+                                width: 20,
+                                height: 20,
+                              ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(

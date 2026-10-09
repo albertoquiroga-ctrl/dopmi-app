@@ -348,7 +348,7 @@ void main() {
       await tester.pumpAndSettle();
       final card = find.byKey(const ValueKey('discovery-motion-next'));
       final originalState = tester.state(card);
-      await tester.tap(find.bySemanticsLabel('Favoritos'));
+      await tester.tap(find.bySemanticsLabel('Mis match'));
       await tester.pumpAndSettle();
       await tester.tap(find.bySemanticsLabel('Adoptar'));
       await tester.pump();

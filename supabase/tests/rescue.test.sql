@@ -144,7 +144,8 @@ select is(jsonb_array_length(dopmi_public_case_updates('61000000-0000-4000-8000-
 select ok(dopmi_public_case_updates('61000000-0000-4000-8000-000000000002')::text !~ 'owner_id|review_feedback','public update omits moderation and owner identifiers');
 select is(jsonb_array_length(dopmi_rescuer_public('60000000-0000-4000-8000-000000000001')->'activity'),1,'public rescuer profile includes approved activity');
 select is(jsonb_array_length(dopmi_rescuer_public('60000000-0000-4000-8000-000000000001')->'cases'),1,'public rescuer profile includes approved cases');
-select ok(dopmi_rescuer_public('60000000-0000-4000-8000-000000000001')::text !~ 'legal_name|phone|private_data|review_feedback','public rescuer profile omits identity and moderation data');
+select ok(dopmi_rescuer_public('60000000-0000-4000-8000-000000000001')::text !~ '"legal_name"|"phone"|"private_data"|"review_feedback"','public rescuer profile omits identity and moderation data');
+select is(dopmi_rescuer_public('60000000-0000-4000-8000-000000000001')->>'public_phone','','unconsented dedicated public phone remains empty');
 select is(dopmi_case_update_file_access('60000000-0000-4000-8000-000000000001/'||current_setting('test.update')||'/62000000-0000-4000-8000-000000000006.jpg'),true,'approved update photo is public');
 reset role;
 set local role authenticated;

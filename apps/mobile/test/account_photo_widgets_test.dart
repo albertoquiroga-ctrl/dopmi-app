@@ -13,6 +13,23 @@ import 'package:image/image.dart' as img;
 
 import 'fake_identity_repository.dart';
 
+Future<void> waitForPhotoWork(WidgetTester tester) async {
+  final deadline = DateTime.now().add(const Duration(seconds: 30));
+  while (true) {
+    await tester.pump();
+    final busy = find.byType(CircularProgressIndicator).evaluate().isNotEmpty;
+    if (!busy) {
+      return;
+    }
+    if (DateTime.now().isAfter(deadline)) {
+      fail('Photo preparation did not complete within 30 seconds.');
+    }
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 20)),
+    );
+  }
+}
+
 void main() {
   testWidgets(
     'private photo preview waits for save and retries the same upload',
@@ -59,9 +76,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       await tester.tap(find.byTooltip('Editar foto de perfil'));
-      await tester.runAsync(() async {
-        await Future<void>.delayed(const Duration(milliseconds: 500));
-      });
+      await waitForPhotoWork(tester);
       await tester.pumpAndSettle();
       expect(find.byType(Image), findsOneWidget);
       expect(uploads, 0);
@@ -106,9 +121,7 @@ void main() {
       pending.complete(
         Uint8List.fromList(img.encodePng(img.Image(width: 12, height: 12))),
       );
-      await tester.runAsync(() async {
-        await Future<void>.delayed(const Duration(milliseconds: 500));
-      });
+      await waitForPhotoWork(tester);
       await tester.pumpAndSettle();
       expect(tester.widget<Image>(find.byType(Image)).image, savedPreview);
       expect(uploads, 1);

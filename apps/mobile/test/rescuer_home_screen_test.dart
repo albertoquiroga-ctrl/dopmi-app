@@ -175,6 +175,7 @@ Future<(GoRouter, FakeIdentityRepository)> pumpHome(
         '/my-cases',
         '/messages',
         '/profile',
+        '/rescuer/profile/edit',
         '/publish',
         '/notifications',
         '/rescue/new',
@@ -277,6 +278,9 @@ void main() {
       (tester) async {
         final (router, _) = await pumpHome(tester, HomeRescue(), large: large);
         expect(find.text('Hola, Ana'), findsOneWidget);
+        await show(tester, find.text('Recibiendo apoyo'));
+        await tester.tap(find.text('Recibiendo apoyo'));
+        await tester.pumpAndSettle();
         expect(find.text('Donantes'), findsOneWidget);
         expect(find.text('9+'), findsOneWidget);
         expect(find.text('Tu panel de rescate'), findsNothing);
@@ -526,6 +530,9 @@ void main() {
       ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
     await fonts.load();
     await pumpHome(tester, HomeRescue());
+    await show(tester, find.text('Recibiendo apoyo'));
+    await tester.tap(find.text('Recibiendo apoyo'));
+    await tester.pumpAndSettle();
     final card = find.byKey(const ValueKey('home-metric-donors'));
     expect(tester.getSize(card).height, closeTo(92, .01));
     final label = find.descendant(of: card, matching: find.text('Donantes'));

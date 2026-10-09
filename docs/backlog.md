@@ -1,5 +1,9 @@
 # Dopmi — entregas
 
+> Alcance aprobado8/10: ejecutar N01–N11 sobre mock congelado dde1bb9 y QA pendiente9ced
+> hasta candidato de Play verificado en teléfono. Tablero y checkpoint vigentes
+> prevalecen sobre pendientes históricos inferiores. SMS real espera acceso/costo.
+
 > Corte vigente8/10/2026: [checkpoint](mock-sync-current.md) y
 > [tablero único](parity-current-review.md). Delta9ced implementada/gates y
 > QA instalada focalizada301 verificadas; aceptación final pendiente. Próximo

@@ -1,5 +1,92 @@
 # Cierre de paridad — tablero vigente
 
+## 8/10/2026 — Ejecución aprobada dde1bb9 + QA pendiente9ced
+
+Estado **EN_IMPLEMENTACION_Y_QA**. Esta ficha supersede el alcance cerrado9ced
+inferior: el titular aprobó el plan completo y eligió incluir también dde1bb9.
+Mock fijo `dde1bb9d01e5f4c427424bffed99bf1c3ed1beca`; app base producto
+`281fc378abd9de8b9118419b53e51813c7e411a1`; inicio rama/HEAD/remoto
+`codex/design-foundation@b4ac415732207b435da840318a953129afaffe9d`.
+PR6 abierto/borrador; Play301 anterior, no candidato del delta nuevo.
+
+| Grupo | Alcance | Implementación | Verificación/publicación/dispositivo |
+|---|---|---|---|
+| N01 | Chrome/Mis match/avatar/composición | Implementado en árbol (Chrome) | Avatar/SMS/nav dirigidos aprobados; visual pendiente |
+| N02 | Inicio En adopción y Completar→editor | Implementado (Chrome) | Inicio/Back aprobados; antigua regresión ajustada al tab explícito |
+| N03 | Perfil privado y accesos | Implementado/revisado | UI normal115 y accesibilidad200 dirigidas; instalado pendiente |
+| N04 | Editor/contactos/OTP/feedback/revisión | SQL/editor/admin implementados | SQL+editor/admin aprobados; SMS real pendiente |
+| N05 | Perfil público/resumen/tabs/grid/filtros | Implementado/revisado | SQL/tests y capturas normal115/200, taps/reveal ambas direcciones; AuthDEV/instalado pendientes |
+| N06 | Historial individual+Guardián enviado/recibido | Implementado y revisado independientemente | PGlite505/505, PostgreSQL real6/6 rollback, UI13/13 y reviewvisual normal115200; RPCDEV desplegada, AuthDEV/dispositivo pendientes |
+| N07 | Notificaciones reales/tonos/thumb/destinos | Implementado, cohorte privada vacía | 18 casos SQL agrupados, revisión independiente 2 defectos cerrados; AuthDEV pendiente |
+| N08 | Foto privada en chat | Implementado (Chrome/integrador) | SQL/concurrencia PG1/1, UI y StorageHTTP1/1 locales; visual normal115200 revisada, DEV/zoom/picker/dispositivo pendientes |
+| N09 | Historias fotos y carrusel Guardián | Implementado y corregido (Apoyar) | Temporal13/13; capturas nuevas ejecutándose, independencia visual pendiente |
+| N10 | Necesidades inicialmente colapsadas | Implementado (Apoyar) | Test dirigido aprobado; captura colapsado/expandido en ejecución |
+| N11 | Publicar/inbox casos activos/privacidad | Implementado (Chrome) | Selector SQL/UI dirigidos aprobados; aceptación final instalada pendiente |
+
+Decisiones: contactos completos como mock en campos públicos dedicados,
+consentimiento expreso y moderación, sin autofill privado ni consentimiento
+heredado. Re-review sólo versión pública; identidad/Connect intactos. SMS real
+Twilio+Supabase (Phone hoydeshabilitado, proveedor/costo aúnpor autorizar).
+Titular autoriza excepción cambio temporal cuenta QA; login/restauración manual,
+sin clear data ni escrituras personales. Tienda/video/Meta/fondo/bonos/cashback
+excluidos; dinero test y firma/identidad com.mycompany.dopmi conservados.
+
+### Evidencia vigente del corte UI y DEV (8/10)
+
+Backend consolidado632/632; admin39/39+build, config16/16, PostgreSQL295/295,
+SQLdelta18/18, pagoPG6/6 rollback y PGlite505/505. Fuente móvil450files
+`df6219067e655546e0e736214401a609f4624a70c132e2ecb704f3b4a537c282`:
+pagos13/13, capturas1/1 normal115/320200 y analyze0issues71.8s.
+Regresión anterior984pass/2fixturefail corregidos con pruebas dirigidas;
+CI final completo exactSHA aún obligatorio. Revisión directa independiente UI:
+Apoyar perfil, Contratoschat, Chromepagos/notificaciones/reflow200; defectos
+cerrados, límites gestos/zoom/picker/instalado explícitos en checkpoint.
+DEV cinco aditivos aplicados una vez, 22/22 cuerpos/ACL/RLS/postflight correctos,
+cohorte/consumo0 y bucketprivadoJPEG5MiB0objetos, contactosconsent0. Mappings
+exactos en [historial](migration-history-audit.md). Flujos AuthDEV no inferidos.
+
+### Lotes, revisión y evidencia
+
+Contratos perfil/SMS, historial, notificaciones y chat antes de consumidores.
+Perfil N02–05, historial/notificaciones N06–07 y chat/Apoyar N08–10 se agrupan por
+preparación; integración N01/N11, revisión cruzada, gate y entrega instalada final.
+Integrador dueño SQL/DTO/repositorios/router, fixtures, única cola Flutter y ADB.
+Agentes exclusivos Chrome, Apoyar y revisión contratos; no runner/remoto/builds.
+Eficiencia revisada durante plan: reutilizar código/harness/evidencia equivalente,
+una cohorte nueva, revisión independiente de cada cambio sustantivo y una ventana
+final del teléfono. No revisar entero PR6 histórico ni reabrir bccd040.
+
+Matriz obligatoria: criterio/riesgo → implementación → prueba/observación → dueño/
+revisor → SHA/configuración/datos → evidencia/vigencia/estado. Cuatro lentes UI,
+UX, código y seguridad sobre cada superficie; sin impacto exige razón concreta.
+13PNG y gates anteriores sólo donde equivalentes; full37574438050 tuvo captura
+fallida (no todoverde), mobile37720236365 aprobó móvil y CM281/301 es antecedente.
+QA9ced todavía abierta: revisión independiente, AuthDEV embudos y evidencia
+instalada/temporal faltante, integrada al nuevo candidato; no autoaceptación.
+
+Evidencia nueva local (árbol sin commit, no candidato): backend npm630/630,
+pgTAP real295/295 en stack aislado dopmi-dde1, concurrencia chat1/1 ambosórdenes,
+admin37/37 con threads1worker y npm build, configuración16/16. Delta SQL18/18
+incluye finish real de devolución y consumo de eventos suprimidos por cohorte.
+Revisión Contratos cerró ambos defectos N07 en lectura; runner integrador prueba
+las correcciones. No atribuir recepción HTTP/DEV ni dispositivo por estos tests.
+Flutter grupo inicial58pass/9fail: fotos Guardian faltantes copiadas del SHA,
+fixture identidad/router/scroll/semantics corregidos; bloque afectado posterior
+perfil/Home13pass y discovery/carousel pasan. Stories13/13 después fix5200 y
+espera vinculada a posición. Analyze verde/consolidado móvil aún pendientes.
+Evidencia privada .tools/dde1/*-tests.log, hashes warm en warm-sync.json; fuente
+puede cambiar, registrar vigencia al cerrar. Capturas aisladas/diagnóstico actual
+no son aprobación visual. Sin migraciones DEV/builds/Play nuevos todavía.
+
+No pruebas, nuevas migraciones, builds ni QA nueva acreditados al arrancar.
+Antes de remoto: preflight historial/cuerpos SQL, sin replay/repair; inventario QA
+nuevo y limpio por IDs/paths con guardas, preservando evidencia financiera y ambos
+singleton de medición. Logs/capturas privadas fuera de Git.
+Cierre sólo ENTREGA_VERIFICADA_EN_DISPOSITIVO con alcance obligatorio completo,
+cuatro lentes/pruebas aprobadas y versión final de Play recorrida sin bloqueantes.
+Aprobación humana separada y sólo si recibida. Próxima acción: estabilizar contratos,
+implementar grupos independientes y verificar diffs/pruebas dirigidas por lote.
+
 ## Cierre canónico8/10/2026 — PUBLICADO_INTERNAL_PENDIENTE_QA_FINAL
 
 Esta ficha supersede estados CERRADO/integrales y pendientes intermedios de

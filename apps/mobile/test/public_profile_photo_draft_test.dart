@@ -1,3 +1,8 @@
+import 'package:dopmi_mobile/features/profile/phone_verification_repository.dart';
+import 'package:dopmi_mobile/features/identity/identity_controller.dart';
+
+import 'profile_test_identity.dart';
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
@@ -43,6 +48,10 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            phoneVerificationRepositoryProvider.overrideWithValue(
+              EditorTestPhone(),
+            ),
+            identityRepositoryProvider.overrideWithValue(editorTestIdentity()),
             rescuerProfileRepositoryProvider.overrideWithValue(repo),
             publicProfilePhotoPickerProvider.overrideWithValue(
               () async => XFile.fromData(bytes, name: 'photo.png'),
@@ -107,6 +116,10 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            phoneVerificationRepositoryProvider.overrideWithValue(
+              EditorTestPhone(),
+            ),
+            identityRepositoryProvider.overrideWithValue(editorTestIdentity()),
             rescuerProfileRepositoryProvider.overrideWithValue(repo),
             publicProfilePhotoPickerProvider.overrideWithValue(
               () async => XFile.fromData(bytes, name: 'photo.png'),
@@ -146,6 +159,10 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          phoneVerificationRepositoryProvider.overrideWithValue(
+            EditorTestPhone(),
+          ),
+          identityRepositoryProvider.overrideWithValue(editorTestIdentity()),
           rescuerProfileRepositoryProvider.overrideWithValue(repo),
           publicProfilePhotoPickerProvider.overrideWithValue(
             () => selection.future,

@@ -3,6 +3,7 @@ import 'dart:ui' show PointerDeviceKind;
 import 'package:dopmi_mobile/core/ui.dart';
 import 'package:dopmi_mobile/features/adoption/public_profile_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -130,8 +131,22 @@ void main() {
       expect(find.bySemanticsLabel('Rescatista verificado'), findsNothing);
       await tester.tap(find.text('Instagram'));
       expect(opened, 'https://instagram.com/refugio');
-      await tester.ensureVisible(find.text('Casos'));
-      await tester.tap(find.text('Casos'));
+      for (final label in ['Resumen', 'Adopci\u00f3n', 'Apoyo']) {
+        final finder = find.text(label);
+        await tester.ensureVisible(finder);
+        await tester.pumpAndSettle();
+        expect(finder.hitTestable(), findsOneWidget);
+        final paragraph = tester.renderObject<RenderParagraph>(finder);
+        expect(
+          paragraph.getBoxesForSelection(
+            TextSelection(baseOffset: 0, extentOffset: label.length),
+          ),
+          hasLength(1),
+          reason: '$label remains a complete word at scale $scale',
+        );
+      }
+      await tester.ensureVisible(find.text('Apoyo'));
+      await tester.tap(find.text('Apoyo'));
       expect(selected, 2);
       expect(tester.takeException(), isNull);
     });

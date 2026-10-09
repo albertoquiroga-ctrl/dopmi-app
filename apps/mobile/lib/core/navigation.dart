@@ -12,8 +12,8 @@ class DopmiDestination {
 
 const donorDestinations = [
   DopmiDestination('Adoptar', '/adoptions', 'rtab-home.svg', 0),
+  DopmiDestination('Mis match', '/messages', 'icon-heart.svg', 6),
   DopmiDestination('Apoyar', '/rescue-cases', 'tab-donate.svg', 1),
-  DopmiDestination('Favoritos', '/messages', 'icon-heart.svg', 6),
   DopmiDestination('Perfil', '/profile', 'tab-profile.svg', 2),
 ];
 const rescuerDestinations = [

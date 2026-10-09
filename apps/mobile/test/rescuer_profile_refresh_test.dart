@@ -69,14 +69,14 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('En revisión'), findsOneWidget);
       expect(find.text('Cuenta verificada'), findsNothing);
-      expect(find.text('Editar'), findsNothing);
+      expect(find.text('Editar'), findsOneWidget);
       repo.fail = true;
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
       await tester.pumpAndSettle();
       expect(find.text('Ana'), findsOneWidget);
       expect(find.text('Cuenta verificada'), findsNothing);
-      expect(find.text('Editar'), findsNothing);
+      expect(find.text('Editar'), findsOneWidget);
       expect(find.text(r'$50'), findsNothing);
       expect(find.text('Verificación no disponible'), findsOneWidget);
       expect(find.text('Volver a intentar'), findsOneWidget);
@@ -85,7 +85,7 @@ void main() {
       await tester.tap(find.text('Volver a intentar'));
       await tester.pumpAndSettle();
       expect(find.text('Sin verificar'), findsOneWidget);
-      expect(find.text('Editar'), findsNothing);
+      expect(find.text('Editar'), findsOneWidget);
       expect(repo.reads, 4);
       expect(tester.takeException(), isNull);
     },

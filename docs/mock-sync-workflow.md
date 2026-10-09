@@ -22,8 +22,9 @@ siguen ejecutando sus gates obligatorios. Documentación sola no reinicia prueba
 Revisión de eficiencia, UI, UX, código y seguridad debe quedar explícita con
 su alcance, evidencia, hallazgos y límites. Una suite verde no sustituye revisión
 visual ni aprobación humana. No atribuir auditoría independiente o aceptación
-sin evidencia. QA posterior acordada sigue pendiente hasta ejecutarse/aceptarse;
-no convertir requisitos obligatorios en mejoras opcionales al cerrar.
+sin evidencia. Las cuatro perspectivas, integración real y recorridos finales
+instalados forman parte de la entrega; no posponer QA ordinario ni convertir
+requisitos obligatorios en mejoras opcionales al cerrar.
 
 Ante falta de progreso: diagnosticar la causa y cambiar de estrategia; no
 repetir auditorías globales ni polling de terminales. Subagentes sólo si están
@@ -69,7 +70,7 @@ con [skip ci], push y comprobación remota. No publicar secretos, datos o builds
   Contacto nuevo envía un único saludo transaccional; hilo existente no reenvía.
   Preview usa renderizadores reales sin escrituras/acciones públicas.
 
-## Loop finito y agentes
+## Entrega por lotes y agentes
 
 1. Verificar HEAD, remoto, PR, dirty tree y acceso existente. No reset, `add .`,
    limpieza global ni apropiarse de cambios de otro trabajo.
@@ -83,23 +84,51 @@ con [skip ci], push y comprobación remota. No publicar secretos, datos o builds
 4. Contratos aditivos primero; inspección paralela, luego implementación agrupada.
    Una ficha por lote enlazada desde tablero. Informar N→M grupos, defectos
    demostrados y pruebas/nativo pendientes.
-5. En MVP, pruebas dirigidas sólo cuando aporten valor; recaptura afectada si es
-   necesaria. En QA posterior, comparación Source/Flutter con
-   fuentes cargadas, dimensiones y datos iguales; normal, Samsung115% y320px/200%.
-   Diff de imágenes localiza problemas; decisión de cierre perceptual.
+5. Durante cada lote: implementar, autorrevisar diff, ejecutar pruebas dirigidas
+   agrupadas y comparar UI/interacciones reales, corregir y registrar checkpoint.
+   Fuente congelada y Flutter con fuentes cargadas, dimensiones/datos equivalentes;
+   normal, Samsung115% y320px/200%. Capturas no acreditan movimiento: obtener
+   evidencia temporal de disparador, curva/duración, cancelación y resultado.
+   Diferencias perceptibles son defectos; el diff de imágenes sólo los localiza.
 6. Correcciones agrupadas sobre defectos demostrados. Un fallo persistente exige
    reproducción y diagnóstico específico, nunca otra auditoría global. Reabrir
    lote cerrado sólo por defecto nuevo demostrado/dependencia modificada.
 7. Reutilizar mecánicas ya aprobadas (navegación, entrada, swipe, carrusel,
    galería, horizontal, toque frente a scroll, switches). Añadir cobertura sólo
    de comportamiento nuevo, persistencia, aislamiento/concurrencia y negativos.
-8. Gate obligatorio agrupado del candidato MVP; repetir sólo bloque invalidado
-   tras fallo/cambio. Auditoría independiente y regresión integral adicional son
-   QA posterior. Documentación sola no reinicia gates; capturas no prueban funciones.
-9. Emulador y Samsung son QA posterior, salvo necesidad concreta de implementación.
-   Fixtures nuevos se inventarían desde su creación; nunca consumir los cerrados.
-   Codemagic sólo candidato consolidado aprobado (o corrección justificada);
-   compilar, publicar Play y comprobar Samsung son puertas separadas.
+8. Antes de publicar: revisión independiente integrada desde UI/UX/código/
+   ciberseguridad y regresión consolidada proporcional, junto con los gates
+   obligatorios del pipeline. Reutilizar sólo bloques equivalentes; una corrección
+   invalida evidencia afectada. No debilitar aserciones, aceptar goldens sin contraste
+   ni duplicar runners cuando CI equivalente ya acredita el criterio.
+9. Codemagic android-guardian-internal, publicación Play Internal, actualización
+   desde Play y recorridos del teléfono son puertas distintas de esta entrega.
+   Un binario nuevo requiere prueba de su versión instalada; emulador/APK local
+   complementan, no reemplazan. Fixtures nuevas con inventario exacto desde creación;
+   nunca consumir las cerradas ni borrar evidencia financiera para limpiar.
+10. Ante la misma firma de fallo sin información nueva: detener esa estrategia,
+    reducir reproducción y cambiar método según hipótesis/evidencia. Mantener el
+    mismo job/buildId ante demoras; una observación fallida no demuestra parada.
+    Completar trabajo independiente ante bloqueo, registrar espera y detener el
+    trabajo dependiente. Sólo intervención material/acceso/permiso realmente nuevo.
+
+## Autorización vigente del corte dde1bb9
+
+Plan completo aprobado el8/10: implementar N01–N11 y QA pendiente UX01–07/09.
+Commits/push propios en codex/design-foundation y PR6; sin merge/force-push.
+DEV no destructivo identificado en plan: perfil público/contactos moderados,
+feedback, historial unificado, notificaciones y adjuntos privados; preflight SQL/
+historial y postflight reales antes/después de cada migración aditiva.
+Contacto público requiere campos dedicados, consentimiento expreso y snapshot
+aprobado; retirar consentimiento oculta contactos inmediatamente. Cambios editan
+sólo nueva versión pública, no identidad/Connect. SMS real Twilio/Supabase:
+configuración y costo operativo esperan acceso/aprobación concreta; no simular OTP.
+Excepción acordada: titular cambia temporalmente a cuenta QA en Samsung y restaura
+su cuenta; sin clear data y sin automatizar credenciales/login. ADB no accede a
+Carpeta Segura por Knox: no intentar eludir esa protección.
+Una revisión de eficiencia ya realizada fija contratos antes de consumidores,
+cohorte compartida nueva y una ventana final del teléfono; reinvocarla sólo por
+bloqueo/dependencia/retrabajo demostrado. No mantener supervisor continuo.
 
 ## Comandos y herramientas comprobados (no ejecutarlos automáticamente)
 

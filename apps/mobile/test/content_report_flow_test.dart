@@ -18,7 +18,13 @@ import 'rescue_test.dart' show FakeRescue, FakeCaseUpdates;
 
 void main() {
   for (final spec in [
-    ('/people/owner', 'rescuer', 'owner', 'Reportar', 'Reportar rescatista'),
+    (
+      '/people/owner',
+      'rescuer',
+      'owner',
+      'Reportar perfil',
+      'Reportar rescatista',
+    ),
     (
       '/adoptions/post',
       'adoption',

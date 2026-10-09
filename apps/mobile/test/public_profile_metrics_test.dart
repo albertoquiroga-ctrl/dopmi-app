@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   for (final scale in [1.0, 2.0]) {
     testWidgets(
-      'public metrics preserve real cents and unknown counts at scale $scale',
+      'public metrics preserve four real public counts and unknown values at scale $scale',
       (tester) async {
         tester.view.physicalSize = const Size(320, 844);
         tester.view.devicePixelRatio = 1;
@@ -38,19 +38,24 @@ void main() {
             ),
           ),
         );
-        expect(find.text('\$99.01'), findsOneWidget);
-        expect(find.text('—'), findsNWidgets(5));
-        expect(find.text('Donaciones activas'), findsOneWidget);
-        expect(find.text('Neto asignado'), findsOneWidget);
+        expect(find.text('1'), findsOneWidget);
+        expect(find.text('2'), findsOneWidget);
+        expect(find.text('\$99.01'), findsNothing);
+        expect(find.text('—'), findsNWidgets(2));
+        expect(
+          find.text('Mascotas est\u00e1n recibiendo apoyo.'),
+          findsOneWidget,
+        );
+        expect(find.text('Mascotas recibieron apoyo.'), findsOneWidget);
         if (scale == 2) {
           final stats = find.byWidgetPredicate(
             (widget) =>
                 widget is Container &&
                 widget.decoration is BoxDecoration &&
                 (widget.decoration as BoxDecoration).borderRadius ==
-                    BorderRadius.circular(18),
+                    BorderRadius.circular(16),
           );
-          expect(stats, findsNWidgets(6));
+          expect(stats, findsNWidgets(4));
           for (final element in stats.evaluate()) {
             expect(tester.getSize(find.byWidget(element.widget)).width, 288);
           }

@@ -1,5 +1,37 @@
 # Auditoría del historial de migraciones
 
+## Entrega dde1 — aplicación DEV 8/10/2026 México
+
+Preflight: siete cuerpos existentes coinciden con últimas definiciones del repo
+anterior al delta, MD5 prosrc sin whitespace; definer/search_path vacío y ACL
+conservados. Último remoto20261007034858; columnas, siete RPC, bucket/cohorte/consumo
+nuevos ausentes. Backend632/632, pgTAP295/295 y delta18/18; pagos505/505 PGlite y
+PostgreSQL real6/6 rollback. Aplicadas una vez por MCP, exclusivamente DEV
+`ohqxranynackjignryep`, sin replay/repair/rename/dbpush/producción.
+
+| Fuente local | Registro DEV | SHA256 SQL |
+|---|---|---|
+| 20261009000716_rescuer_inbox_active_selector_dde1.sql | 20261009030600 | 431ad1ad39344a0ecba60b012c5be12f08c47246df5bf32a53d9e5d614df0d71 |
+| 20261009000910_rescuer_public_contacts_dde1.sql | 20261009030606 | 08e6c11ac2a8f37bb0d3d4bf43c991c8109545e553d006aada6a237d2d10a515 |
+| 20261009001315_unified_payment_activity_dde1.sql | 20261009030608 | 7ab8a0b649213d0f4e0789844d09c59939092720c1b22887935ed1dd52f1048c |
+| 20261009001935_private_chat_photos_dde1.sql | 20261009030613 | ee79b9dc14b9189c9ba7e745a5aca051f4fc96834840491063f1589a398194ce |
+| 20261009002443_notification_events_dde1_retimestamp.sql | 20261009030615 | bff196bae039f73043900ad8bcbac07bc19517b07bff92428c7f3ef55f093495 |
+
+Postflight:22/22 cuerpos coinciden con SQL fuente; todos SECURITY DEFINER y
+search_path vacío. Helpers privados sin EXECUTE anon/auth; RPC públicas sólo auth
+salvo proyecciones públicas ya previstas. Cohorte/consumo RLStrue, SELECT revocado
+anon/auth/service, ambas cero filas. Bucket chat privado/JPEG5MiB/cero objetos.
+Cero perfiles con consentimiento/publicación de contacto activados. No matrícula
+QA ni eventos históricos reconstruidos. HTTP DEV anónimo8/8 rechazos401/403 reales sin escrituras; AuthDEV y candidato
+instalado siguen pendientes, no inferidos de DDL ni checks de catálogo.
+
+Asesores post-DDL:44 tablas con [RLS sin políticas](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy),
+incluidas las dos tablas privadas RPC-only con SELECT revocado comprobado;
+105 [funciones definer autenticadas](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable),
+incluidas siete nuevas RPC con actor/ownership probados localmente. Son avisos
+esperados del modelo existente, no habilitación general de lectura. Ningún hallazgo
+anónimo nuevo ni FK nueva sin índice; avisos históricos quedan fuera de este delta.
+
 6/10, followup de conflicto bccd: el REST dirigido reprodujo timeout con versión vencida; PostgREST14 reintenta indefinidamente un40001 manual (troubleshooting oficial Supabase). Preflight contrastó las dos definiciones nuevas y el historial remoto20261006041524. Local20261006044300_rescuer_version_conflict.sql cambia exclusivamente el error de versión vencida de close_adoption/archive_support_case aPT409; diez casos SQL del delta aprobados antes del despliegue. Aplicada una vez enDEV como20261006044234/rescuer_version_conflict. Postflight: ambas usanPT409, sin40001, definer/ACLauthenticated=true/anon=false conservados. No replay/repair, APIs anteriores ni producción modificados.
 
 ## Actualización Rescatista bccd — preflight 5/10/2026 México

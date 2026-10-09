@@ -1,3 +1,7 @@
+import 'package:dopmi_mobile/features/profile/phone_verification_repository.dart';
+
+import 'profile_test_identity.dart';
+
 import 'dart:typed_data';
 
 import 'package:dopmi_mobile/app.dart';
@@ -64,6 +68,9 @@ void main() {
     final repository = NavigationProfile()..value['owner_id'] = 'owner-one';
     final container = ProviderContainer(
       overrides: [
+        phoneVerificationRepositoryProvider.overrideWithValue(
+          EditorTestPhone(),
+        ),
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         rescueRepositoryProvider.overrideWithValue(FakeRescue()),

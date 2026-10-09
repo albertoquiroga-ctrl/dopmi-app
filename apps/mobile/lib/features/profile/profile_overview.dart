@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/donor_notification_button.dart';
 import '../../core/ui.dart';
 import 'rescuer_profile_hero.dart';
+import 'account_profile_avatar.dart';
 import 'rescuer_profile_access.dart';
 import 'rescuer_logout_row.dart';
 import 'rescuer_settings_verification.dart';
@@ -658,20 +659,7 @@ class DonorProfileView extends ConsumerWidget {
             ),
             child: Row(
               children: [
-                CircleAvatar(
-                  radius: 28,
-                  backgroundColor: const Color(0xfff3f0ea),
-                  foregroundColor: ink,
-                  child: Text(
-                    profile.name.isEmpty
-                        ? '?'
-                        : profile.name.characters.first.toUpperCase(),
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
+                AccountProfileAvatar(name: profile.name),
                 const SizedBox(width: 14),
                 Expanded(
                   child: Column(

@@ -12,6 +12,9 @@ import '../../core/media/photo_runtime.dart';
 import '../../core/media/remote_photo.dart';
 import '../adoption/community_repository.dart';
 import 'rescuer_profile_repository.dart';
+import 'phone_verification_repository.dart';
+import 'rescuer_profile_preview.dart';
+import '../identity/identity_controller.dart';
 
 final publicProfilePhotoPickerProvider = Provider<Future<XFile?> Function()>((
   ref,
@@ -38,6 +41,11 @@ class _RescuerPublicProfileEditState
   final region = TextEditingController();
   final instagram = TextEditingController();
   final facebook = TextEditingController();
+  final publicEmail = TextEditingController();
+  final publicPhone = TextEditingController();
+  final address = TextEditingController();
+  final website = TextEditingController();
+  bool contactConsent = false;
   Json? profile;
   Uint8List? avatarBytes;
   String? pendingAvatarPath;
@@ -59,6 +67,10 @@ class _RescuerPublicProfileEditState
     region.dispose();
     instagram.dispose();
     facebook.dispose();
+    publicEmail.dispose();
+    publicPhone.dispose();
+    address.dispose();
+    website.dispose();
     super.dispose();
   }
 
@@ -69,8 +81,10 @@ class _RescuerPublicProfileEditState
       error = null;
     });
     try {
-      final value = await ref.read(rescuerProfileRepositoryProvider).load();
-      if (!mounted) return;
+      final repo = ref.read(rescuerProfileRepositoryProvider);
+      final owner = repo.userId;
+      final value = await repo.load();
+      if (!mounted || repo.userId != owner) return;
       profile = value;
       name.text = value?['display_name'] as String? ?? '';
       bio.text = value?['bio'] as String? ?? '';
@@ -78,6 +92,11 @@ class _RescuerPublicProfileEditState
       region.text = value?['region'] as String? ?? '';
       instagram.text = value?['instagram_url'] as String? ?? '';
       facebook.text = value?['facebook_url'] as String? ?? '';
+      publicEmail.text = value?['public_email'] as String? ?? '';
+      publicPhone.text = value?['public_phone'] as String? ?? '';
+      address.text = value?['public_address'] as String? ?? '';
+      website.text = value?['website_url'] as String? ?? '';
+      contactConsent = value?['contact_consent'] == true;
       replaceAvatarPath(value?['avatar_path'] as String?);
     } catch (cause) {
       loadFailed = true;
@@ -127,6 +146,11 @@ class _RescuerPublicProfileEditState
     'region': region.text.trim(),
     'instagram_url': instagram.text.trim(),
     'facebook_url': facebook.text.trim(),
+    'public_email': publicEmail.text.trim(),
+    'public_phone': publicPhone.text.trim(),
+    'public_address': address.text.trim(),
+    'website_url': website.text.trim(),
+    'contact_consent': contactConsent,
     'avatar_path': avatarPath ?? profile?['avatar_path'] ?? '',
   };
 
@@ -141,6 +165,13 @@ class _RescuerPublicProfileEditState
       final owner = repo.userId;
       if (owner == null) {
         throw StateError('Inicia sesión para guardar tu perfil.');
+      }
+      // Profile Storage requires an owned row. Create the draft during the
+      // explicit save before uploading the first selected avatar.
+      if (profile == null && avatarDirty && avatarBytes != null) {
+        final created = await repo.save(payload(avatarPath: ''), version: null);
+        if (!mounted || repo.userId != owner) return false;
+        profile = created;
       }
       if (avatarDirty && avatarBytes != null && pendingAvatarPath == null) {
         final path = await repo.uploadAvatar(avatarBytes!);
@@ -203,9 +234,12 @@ class _RescuerPublicProfileEditState
       error = null;
     });
     try {
-      profile = await ref
-          .read(rescuerProfileRepositoryProvider)
-          .transition(profile!['version'] as int, action);
+      final repo = ref.read(rescuerProfileRepositoryProvider);
+      final owner = repo.userId;
+      final next = await repo.transition(profile!['version'] as int, action);
+      if (!mounted || repo.userId != owner) return;
+      profile = next;
+      if (action == 'revoke_contacts') contactConsent = false;
       if (mounted && action == 'submit') {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Enviamos tu perfil a revisión.')),
@@ -234,6 +268,7 @@ class _RescuerPublicProfileEditState
       'draft',
       'changes_requested',
       'rejected',
+      'published',
     ].contains(status);
     final large = MediaQuery.textScalerOf(context).scale(18) > 25;
     final screen = Scaffold(
@@ -246,7 +281,7 @@ class _RescuerPublicProfileEditState
             ? MediaQuery.textScalerOf(context).scale(18) * 2.6 + 16
             : 67,
         title: Text(
-          'Editar perfil público',
+          'Información básica',
           maxLines: large ? 3 : 1,
           textAlign: TextAlign.center,
           style: const TextStyle(
@@ -278,7 +313,7 @@ class _RescuerPublicProfileEditState
           padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
           children: [
             const Text(
-              'Tu nombre público, foto, descripción, ciudad y enlaces serán visibles después de la revisión. No mostramos domicilio, teléfono ni correo.',
+              'Tus cambios públicos se revisan antes de publicarse. Tu identidad verificada se conserva. Elige por separado los contactos que quieres compartir.',
               style: TextStyle(fontSize: 14, height: 1.55, color: ink),
             ),
             const SizedBox(height: 16),
@@ -303,104 +338,164 @@ class _RescuerPublicProfileEditState
                   onTap: editable && !busy ? pickAvatar : null,
                   child: Padding(
                     padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        Stack(
-                          clipBehavior: Clip.none,
+                    child: LayoutBuilder(
+                      builder: (context, bounds) {
+                        final narrow =
+                            bounds.maxWidth < 280 ||
+                            MediaQuery.textScalerOf(context).scale(13) > 19;
+                        final edit = Tooltip(
+                          message: 'Editar foto de perfil',
+                          child: OutlinedButton(
+                            key: const ValueKey('public-profile-edit-photo'),
+                            onPressed: editable && !busy ? pickAvatar : null,
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: ink,
+                              backgroundColor: Colors.white,
+                              side: const BorderSide(color: Color(0xffe3e4ed)),
+                              shape: const StadiumBorder(),
+                              minimumSize: const Size(0, 40),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              textStyle: const TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/profile/icon-edit.svg',
+                                  width: 18,
+                                  height: 18,
+                                  colorFilter: const ColorFilter.mode(
+                                    ink,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                const Text('Editar'),
+                              ],
+                            ),
+                          ),
+                        );
+                        return Column(
                           children: [
-                            CircleAvatar(
-                              radius: 32,
-                              backgroundColor: const Color(0xffe9dfff),
-                              foregroundColor: purple,
-                              backgroundImage: avatarBytes != null
-                                  ? MemoryImage(avatarBytes!)
-                                  : null,
-                              child: avatarBytes != null
-                                  ? null
-                                  : visibleAvatarPath == null ||
-                                        visibleAvatarPath.isEmpty
-                                  ? avatarFallback()
-                                  : ClipOval(
-                                      child: RemotePhoto(
-                                        source: PhotoRef(
-                                          path: visibleAvatarPath,
-                                          purpose: MediaPurpose.rescuerAvatar,
-                                          persistence:
-                                              PhotoPersistence.ordinary,
-                                          sign: () => ref
-                                              .read(
-                                                rescuerProfileRepositoryProvider,
-                                              )
-                                              .avatarUrl(visibleAvatarPath),
+                            Row(
+                              children: [
+                                Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 32,
+                                      backgroundColor: const Color(0xffe9dfff),
+                                      foregroundColor: purple,
+                                      backgroundImage: avatarBytes != null
+                                          ? MemoryImage(avatarBytes!)
+                                          : null,
+                                      child: avatarBytes != null
+                                          ? null
+                                          : visibleAvatarPath == null ||
+                                                visibleAvatarPath.isEmpty
+                                          ? avatarFallback()
+                                          : ClipOval(
+                                              child: RemotePhoto(
+                                                source: PhotoRef(
+                                                  path: visibleAvatarPath,
+                                                  purpose: MediaPurpose
+                                                      .rescuerAvatar,
+                                                  persistence:
+                                                      PhotoPersistence.ordinary,
+                                                  sign: () => ref
+                                                      .read(
+                                                        rescuerProfileRepositoryProvider,
+                                                      )
+                                                      .avatarUrl(
+                                                        visibleAvatarPath,
+                                                      ),
+                                                ),
+                                                width: 64,
+                                                height: 64,
+                                                loading: avatarFallback(),
+                                                unavailable: (retry) => Tooltip(
+                                                  message: 'Reintentar foto de perfil',
+                                                  child: InkWell(
+                                                    onTap: retry,
+                                                    child: avatarFallback(),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                    ),
+                                    Positioned(
+                                      right: -2,
+                                      bottom: -2,
+                                      child: Container(
+                                        width: 22,
+                                        height: 22,
+                                        decoration: BoxDecoration(
+                                          color: purple,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            width: 2,
+                                          ),
                                         ),
-                                        width: 64,
-                                        height: 64,
-                                        loading: avatarFallback(),
-                                        unavailable: (retry) => Tooltip(
-                                          message: 'Reintentar foto de perfil',
-                                          child: InkWell(
-                                            onTap: retry,
-                                            child: avatarFallback(),
+                                        alignment: Alignment.center,
+                                        child: SvgPicture.asset(
+                                          'assets/profile/onb-camera.svg',
+                                          width: 12,
+                                          height: 12,
+                                          colorFilter: const ColorFilter.mode(
+                                            Colors.white,
+                                            BlendMode.srcIn,
                                           ),
                                         ),
                                       ),
                                     ),
+                                  ],
+                                ),
+                                const SizedBox(width: 16),
+                                const Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Foto de perfil',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          height: 1.2,
+                                          fontWeight: FontWeight.w700,
+                                          color: ink,
+                                        ),
+                                      ),
+                                      SizedBox(height: 2),
+                                      Text(
+                                        'Cambia tu foto de perfil',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          height: 1.2,
+                                          color: muted,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (!narrow) edit,
+                              ],
                             ),
-                            Positioned(
-                              right: -2,
-                              bottom: -2,
-                              child: Container(
-                                width: 22,
-                                height: 22,
-                                decoration: BoxDecoration(
-                                  color: purple,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 2,
-                                  ),
-                                ),
-                                alignment: Alignment.center,
-                                child: SvgPicture.asset(
-                                  'assets/profile/onb-camera.svg',
-                                  width: 12,
-                                  height: 12,
-                                  colorFilter: const ColorFilter.mode(
-                                    Colors.white,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
+                            if (narrow)
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: edit,
                               ),
-                            ),
                           ],
-                        ),
-                        const SizedBox(width: 16),
-                        const Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Foto de perfil',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  height: 1.2,
-                                  fontWeight: FontWeight.w700,
-                                  color: ink,
-                                ),
-                              ),
-                              SizedBox(height: 2),
-                              Text(
-                                'Cambia tu foto de perfil',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  height: 1.2,
-                                  color: muted,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -408,13 +503,29 @@ class _RescuerPublicProfileEditState
               const SizedBox(height: 16),
               _StatusCard(status, profile?['review_feedback'] as String? ?? ''),
               const SizedBox(height: 12),
+              TextFormField(
+                initialValue:
+                    ref.read(identityControllerProvider).identity?.email ?? '',
+                readOnly: true,
+                decoration: const InputDecoration(
+                  labelText: 'Correo de tu cuenta',
+                  helperText: 'El correo de identidad no se cambia aquí.',
+                ),
+              ),
+              const SizedBox(height: 16),
+              _PhoneVerification(enabled: editable && !busy),
+              const SizedBox(height: 16),
               for (final item in [
                 ('Nombre', name, 1),
                 ('Ciudad', city, 1),
                 ('Estado', region, 1),
+                ('Correo público', publicEmail, 1),
+                ('Teléfono público', publicPhone, 1),
+                ('Dirección pública', address, 1),
                 ('Instagram (https://)', instagram, 1),
                 ('Facebook (https://)', facebook, 1),
-                ('Descripción', bio, 5),
+                ('Página web (https://)', website, 1),
+                ('Sobre ti', bio, 5),
               ]) ...[
                 Semantics(
                   label: item.$1,
@@ -431,7 +542,11 @@ class _RescuerPublicProfileEditState
                       ),
                       const SizedBox(height: 8),
                       TextField(
-                        key: ValueKey('public-profile-${item.$1}'),
+                        key: ValueKey(
+                          item.$2 == bio
+                              ? 'public-profile-Descripción'
+                              : 'public-profile-${item.$1}',
+                        ),
                         style: const TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 16,
@@ -450,8 +565,14 @@ class _RescuerPublicProfileEditState
                         minLines: item.$3,
                         maxLines: item.$3 == 1 ? 1 : null,
                         keyboardType:
-                            item.$2 == instagram || item.$2 == facebook
+                            item.$2 == instagram ||
+                                item.$2 == facebook ||
+                                item.$2 == website
                             ? TextInputType.url
+                            : item.$2 == publicEmail
+                            ? TextInputType.emailAddress
+                            : item.$2 == publicPhone
+                            ? TextInputType.phone
                             : null,
                         decoration: InputDecoration(
                           isDense: true,
@@ -477,6 +598,26 @@ class _RescuerPublicProfileEditState
                               width: 2,
                             ),
                           ),
+                          errorText:
+                              (profile?['field_feedback']
+                                      as Map?)?[switch (item.$2) {
+                                    _ when item.$2 == name => 'display_name',
+                                    _ when item.$2 == bio => 'bio',
+                                    _ when item.$2 == publicEmail =>
+                                      'public_email',
+                                    _ when item.$2 == publicPhone =>
+                                      'public_phone',
+                                    _ when item.$2 == address =>
+                                      'public_address',
+                                    _ when item.$2 == website => 'website_url',
+                                    _ when item.$2 == instagram =>
+                                      'instagram_url',
+                                    _ when item.$2 == facebook =>
+                                      'facebook_url',
+                                    _ when item.$2 == city => 'city',
+                                    _ => 'region',
+                                  }]
+                                  as String?,
                         ),
                       ),
                     ],
@@ -484,6 +625,47 @@ class _RescuerPublicProfileEditState
                 ),
                 const SizedBox(height: 16),
               ],
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                value: contactConsent,
+                onChanged: editable && !busy
+                    ? (value) {
+                        if (value == false &&
+                            profile?['contact_consent'] == true) {
+                          transition('revoke_contacts');
+                        } else {
+                          setState(() => contactConsent = value ?? false);
+                        }
+                      }
+                    : status == 'submitted' && contactConsent && !busy
+                    ? (value) {
+                        if (value == false) transition('revoke_contacts');
+                      }
+                    : null,
+                controlAffinity: ListTileControlAffinity.leading,
+                title: const Text(
+                  'Quiero mostrar estos contactos en mi perfil público.',
+                ),
+                subtitle: const Text(
+                  'Correo, teléfono y dirección públicos se muestran sólo con tu consentimiento y aprobación. Puedes retirarlos durante la revisión; publicarlos de nuevo requiere aprobación.',
+                ),
+              ),
+              TextButton(
+                onPressed: busy
+                    ? null
+                    : () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => RescuerProfilePreview(
+                            ownerId: ref
+                                .read(rescuerProfileRepositoryProvider)
+                                .userId,
+                            payload: payload(avatarPath: avatarPath),
+                            avatarBytes: avatarBytes,
+                          ),
+                        ),
+                      ),
+                child: const Text('Ver vista previa >'),
+              ),
               if (error != null) Notice(error!, isError: true),
               if (busy)
                 const LinearProgressIndicator(
@@ -575,6 +757,135 @@ class _StatusCard extends StatelessWidget {
           ? 'Estado: ${labels[status] ?? status}'
           : 'Estado: ${labels[status] ?? status}. $feedback',
       isError: ['changes_requested', 'rejected'].contains(status),
+    );
+  }
+}
+
+class _PhoneVerification extends ConsumerStatefulWidget {
+  const _PhoneVerification({required this.enabled});
+  final bool enabled;
+  @override
+  ConsumerState<_PhoneVerification> createState() => _PhoneVerificationState();
+}
+
+class _PhoneVerificationState extends ConsumerState<_PhoneVerification> {
+  final number = TextEditingController();
+  final code = TextEditingController();
+  String? requestedNumber, confirmedNumber, error;
+  bool busy = false;
+  @override
+  void dispose() {
+    number.dispose();
+    code.dispose();
+    super.dispose();
+  }
+
+  Future<void> perform(String action) async {
+    if (busy || !widget.enabled) return;
+    final e164 = action == 'request' ? number.text.trim() : requestedNumber;
+    if (e164 == null || !RegExp(r'^\+[1-9][0-9]{7,14}$').hasMatch(e164)) {
+      setState(
+        () => error =
+            'Escribe tu número con código de país, por ejemplo +525512345678.',
+      );
+      return;
+    }
+    final owner = ref.read(rescuerProfileRepositoryProvider).userId;
+    setState(() {
+      busy = true;
+      error = null;
+    });
+    try {
+      final repo = ref.read(phoneVerificationRepositoryProvider);
+      if (action == 'verify') {
+        await repo.verifyPhoneCode(e164, code.text.trim());
+      } else if (action == 'resend') {
+        await repo.resendPhoneCode(e164);
+      } else {
+        await repo.requestPhoneCode(e164);
+      }
+      if (!mounted ||
+          owner != ref.read(rescuerProfileRepositoryProvider).userId) {
+        return;
+      }
+      setState(() {
+        if (action == 'verify') {
+          confirmedNumber = repo.verifiedPhone;
+          if (confirmedNumber == null) error = 'El número aún no está confirmado. Completa los códigos pendientes.';
+        } else {
+          requestedNumber = e164;
+        }
+      });
+    } catch (cause) {
+      if (mounted) setState(() => error = communityError(cause));
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final verified =
+        confirmedNumber ??
+        ref.read(phoneVerificationRepositoryProvider).verifiedPhone;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Text(
+          'Teléfono de tu cuenta',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+        if (verified != null) Text('Vinculado: $verified'),
+        const Text(
+          'Verifica tu número con un código por SMS. El contacto público se elige por separado.',
+          style: TextStyle(fontSize: 12, color: muted),
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          key: const ValueKey('profile-sms-phone'),
+          controller: number,
+          enabled: widget.enabled && !busy,
+          keyboardType: TextInputType.phone,
+          decoration: const InputDecoration(
+            labelText: 'Número con código de país',
+            hintText: '+525512345678',
+          ),
+        ),
+        TextButton(
+          onPressed: widget.enabled && !busy ? () => perform('request') : null,
+          child: Text(verified == null ? 'Vincular' : 'Cambiar número'),
+        ),
+        if (requestedNumber != null) ...[
+          Text('Enviamos el código a $requestedNumber'),
+          TextField(
+            key: const ValueKey('profile-sms-code'),
+            controller: code,
+            enabled: widget.enabled && !busy,
+            keyboardType: TextInputType.number,
+            autofillHints: const [AutofillHints.oneTimeCode],
+            decoration: const InputDecoration(labelText: 'Código por SMS'),
+          ),
+          Wrap(
+            spacing: 12,
+            children: [
+              TextButton(
+                onPressed: widget.enabled && !busy
+                    ? () => perform('verify')
+                    : null,
+                child: const Text('Confirmar código'),
+              ),
+              TextButton(
+                onPressed: widget.enabled && !busy
+                    ? () => perform('resend')
+                    : null,
+                child: const Text('Reenviar código'),
+              ),
+            ],
+          ),
+        ],
+        if (busy) const LinearProgressIndicator(),
+        if (error != null) Notice(error!, isError: true),
+      ],
     );
   }
 }

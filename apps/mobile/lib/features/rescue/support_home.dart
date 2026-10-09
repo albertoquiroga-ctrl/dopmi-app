@@ -13,6 +13,7 @@ import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import 'rescue_repository.dart';
 import 'rescue_public_photo.dart';
+import 'support_stories.dart';
 
 class SupportHomePage extends StatelessWidget {
   const SupportHomePage({
@@ -97,8 +98,10 @@ class SupportHomePage extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       itemCount: eligible.length,
                       separatorBuilder: (_, _) => const SizedBox(width: 16),
-                      itemBuilder: (_, index) =>
-                          SupportCaseRing(eligible[index]),
+                      itemBuilder: (_, index) => SupportCaseRing(
+                        eligible[index],
+                        queue: eligible.sublist(index),
+                      ),
                     ),
                   )
                 else
@@ -172,8 +175,9 @@ class SupportHomePage extends StatelessWidget {
 }
 
 class SupportCaseRing extends ConsumerWidget {
-  const SupportCaseRing(this.record, {super.key});
+  const SupportCaseRing(this.record, {super.key, this.queue});
   final RescueRecord record;
+  final List<RescueRecord>? queue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final photos = record.publicData['photos'] as List? ?? const [];
@@ -192,7 +196,22 @@ class SupportCaseRing extends ConsumerWidget {
           highlightColor: Colors.transparent,
           hoverColor: Colors.transparent,
           focusColor: Colors.transparent,
-          onTap: () => context.push('/rescue-cases/${record.id}'),
+          onTap: () async {
+            if (supportStoryPhotos(record).isEmpty) {
+              context.push('/rescue-cases/${record.id}');
+              return;
+            }
+            final detail = await Navigator.of(context, rootNavigator: true)
+                .push<String>(
+                  MaterialPageRoute(
+                    builder: (_) => SupportStories(records: queue ?? [record]),
+                    fullscreenDialog: true,
+                  ),
+                );
+            if (context.mounted && detail != null) {
+              context.push('/rescue-cases/$detail');
+            }
+          },
           borderRadius: BorderRadius.circular(16),
           child: SizedBox(
             width: math.max(84, MediaQuery.textScalerOf(context).scale(84)),
@@ -322,9 +341,15 @@ class _CaseProgress extends CustomPainter {
   bool shouldRepaint(_CaseProgress old) => old.value != value;
 }
 
-class GuardianSupportCard extends StatelessWidget {
+class GuardianSupportCard extends StatefulWidget {
   const GuardianSupportCard({super.key, required this.height});
   final double height;
+  @override
+  State<GuardianSupportCard> createState() => _GuardianSupportCardState();
+}
+
+class _GuardianSupportCardState extends State<GuardianSupportCard> {
+  int page = 0;
   @override
   Widget build(BuildContext context) => ReferenceFocusOutline(
     radius: 28,
@@ -355,94 +380,132 @@ class GuardianSupportCard extends StatelessWidget {
           child: ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
             child: SizedBox(
-              height: height,
+              height: widget.height,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  ExcludeSemantics(
-                    child: Image.asset(
-                      'assets/guardian/guardian-urgent.jpg',
-                      fit: BoxFit.cover,
-                    ),
+                  PageView(
+                    key: const ValueKey('guardian-support-carousel'),
+                    onPageChanged: (value) => setState(() => page = value),
+                    children: [
+                      for (final asset in const [
+                        'guardian-urgent.jpg',
+                        'guardian-luna.jpg',
+                        'guardian-milo.jpg',
+                      ])
+                        Semantics(
+                          label:
+                              'Guardián, imagen ${const ['guardian-urgent.jpg', 'guardian-luna.jpg', 'guardian-milo.jpg'].indexOf(asset) + 1} de 3',
+                          child: Image.asset(
+                            'assets/guardian/$asset',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                    ],
                   ),
-                  const DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color(0x8c15110d),
-                          Color(0x3815110d),
-                          Color(0x7315110d),
-                          Color(0xe015110d),
-                        ],
-                        stops: [0, .34, .58, 1],
+                  const IgnorePointer(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Color(0x8c15110d),
+                            Color(0x3815110d),
+                            Color(0x7315110d),
+                            Color(0xe015110d),
+                          ],
+                          stops: [0, .34, .58, 1],
+                        ),
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(18, 22, 18, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Sé un Guardián',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700,
-                            height: 1.2,
-                            letterSpacing: -.48,
-                            color: Colors.white,
-                            shadows: [
-                              Shadow(
-                                color: Color(0x59000000),
-                                offset: Offset(0, 1),
-                                blurRadius: 2,
+                  IgnorePointer(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(18, 22, 18, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Sé un Guardián',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 24,
+                              fontWeight: FontWeight.w700,
+                              height: 1.2,
+                              letterSpacing: -.48,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  color: Color(0x59000000),
+                                  offset: Offset(0, 1),
+                                  blurRadius: 2,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 14),
+                          _benefit(
+                            'Rescatistas y casos verificados',
+                            SvgPicture.asset(
+                              'assets/profile/icon-shield.svg',
+                              width: 14,
+                              height: 14,
+                              colorFilter: const ColorFilter.mode(
+                                yellow,
+                                BlendMode.srcIn,
                               ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 14),
-                        _benefit(
-                          'Rescatistas y casos verificados',
-                          SvgPicture.asset(
-                            'assets/profile/icon-shield.svg',
-                            width: 14,
-                            height: 14,
-                            colorFilter: const ColorFilter.mode(
-                              yellow,
-                              BlendMode.srcIn,
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 10),
-                        _benefit(
-                          'Sigue tu huella',
-                          SvgPicture.string(
-                            _impact,
-                            width: 14,
-                            height: 14,
-                            colorFilter: const ColorFilter.mode(
-                              yellow,
-                              BlendMode.srcIn,
+                          const SizedBox(height: 10),
+                          _benefit(
+                            'Sigue tu huella',
+                            SvgPicture.string(
+                              _impact,
+                              width: 14,
+                              height: 14,
+                              colorFilter: const ColorFilter.mode(
+                                yellow,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 10),
-                        _benefit(
-                          'Cancela cuando quieras',
-                          SvgPicture.string(
-                            _check,
-                            width: 14,
-                            height: 14,
-                            colorFilter: const ColorFilter.mode(
-                              yellow,
-                              BlendMode.srcIn,
+                          const SizedBox(height: 10),
+                          _benefit(
+                            'Cancela cuando quieras',
+                            SvgPicture.string(
+                              _check,
+                              width: 14,
+                              height: 14,
+                              colorFilter: const ColorFilter.mode(
+                                yellow,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    right: 18,
+                    bottom: 92,
+                    child: Semantics(
+                      label: 'Imagen ${page + 1} de 3',
+                      child: Row(
+                        children: [
+                          for (var i = 0; i < 3; i++)
+                            Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 3),
+                              width: 6,
+                              height: 6,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: i == page ? yellow : Colors.white54,
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                   if (MediaQuery.textScalerOf(context).scale(14) > 20)

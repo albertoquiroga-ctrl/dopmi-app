@@ -32,7 +32,7 @@ test('publishes a reviewed update and resolves a persisted report', async()=>{
   expect(await screen.findByText('Refugio Luna')).toBeInTheDocument();
   fireEvent.load(await screen.findByAltText('Fotografía para revisión 1'));
   await user.click(screen.getByRole('button',{name:'Publicar perfil'}));
-  expect(client.reviewRescuerProfile).toHaveBeenCalledWith(expect.objectContaining({owner_id:'owner-one'}),'published','');
+  expect(client.reviewRescuerProfile).toHaveBeenCalledWith(expect.objectContaining({owner_id:'owner-one'}),'published','',{});
   await user.click(screen.getByRole('button',{name:'Reportes'}));
   expect(await screen.findByText('Revisar')).toBeInTheDocument();
   await user.type(screen.getByLabelText('Resolución'),'Contenido revisado y atendido.');
@@ -76,4 +76,39 @@ test('failed decisions preserve notes and require an explicit resolution', async
   expect(screen.getByLabelText('Resolución')).toHaveValue('Se retiró la publicación después de revisar su evidencia.');
   await user.click(screen.getByRole('button', { name: 'Resolver' }));
   expect(client.resolveReport).toHaveBeenCalledTimes(2);
+});
+
+
+test('profile review displays dedicated contacts, consent and sends allowlisted corrections', async () => {
+  const client = api(); const user = userEvent.setup();
+  const base = (await client.listRescuerProfiles!('submitted', 1)).items[0];
+  client.listRescuerProfiles = vi.fn(async () => ({ total: 1, items: [{ ...base, avatar_path: '', public_email: 'visible@example.test', public_phone: '+525512345678', public_address: 'Centro', website_url: 'https://refugio.example.test', contact_consent: false, contact_publication_enabled: false, field_feedback: { public_email: 'Revisa este correo' }, approved_snapshot: { display_name: 'Nombre anterior', contact_consent: true } }] }));
+  render(<ModerationQueues api={client} />);
+  await user.click(screen.getByRole('button', { name: 'Perfiles' }));
+  expect(await screen.findByText('visible@example.test')).toBeInTheDocument();
+  expect(screen.getByText('+525512345678')).toBeInTheDocument();
+  expect(screen.getByText('Centro')).toBeInTheDocument();
+  expect(screen.getByText('https://refugio.example.test')).toBeInTheDocument();
+  expect(screen.getByText('Consentimiento para publicar contacto: Sin consentimiento')).toBeInTheDocument();
+  expect(screen.getByText('Nombre anterior')).toBeInTheDocument();
+  expect(screen.getByLabelText('Corrección: Correo público')).toHaveValue('Revisa este correo');
+  await user.type(screen.getByLabelText('Corrección: Teléfono público'), ' Confirma por SMS ');
+  await user.type(screen.getByLabelText('Observaciones de revisión'), 'Revisa los datos dedicados');
+  await user.click(screen.getByRole('button', { name: 'Pedir cambios' }));
+  expect(client.reviewRescuerProfile).toHaveBeenCalledWith(expect.objectContaining({ owner_id: 'owner-one', contact_consent: false }), 'changes_requested', 'Revisa los datos dedicados', { public_email: 'Revisa este correo', public_phone: 'Confirma por SMS' });
+});
+
+
+test('aggregate field corrections show the limit and preserve notes without reviewing', async () => {
+  const client = api(); const user = userEvent.setup();
+  const base = (await client.listRescuerProfiles!('submitted', 1)).items[0];
+  client.listRescuerProfiles = vi.fn(async () => ({ total: 1, items: [{ ...base, avatar_path: '', field_feedback: { display_name: 'x'.repeat(500), bio: 'x'.repeat(500), city: 'x'.repeat(500), region: 'x'.repeat(500), instagram_url: 'x'.repeat(500), facebook_url: 'x'.repeat(500), avatar_path: 'x'.repeat(500), public_email: 'x'.repeat(500), public_phone: 'x'.repeat(500), public_address: 'x'.repeat(500) } }] }));
+  render(<ModerationQueues api={client} />);
+  await user.click(screen.getByRole('button', { name: 'Perfiles' }));
+  await screen.findByText('Refugio Luna');
+  await user.type(screen.getByLabelText('Observaciones de revisi\u00f3n'), 'Revisa los datos');
+  await user.click(screen.getByRole('button', { name: 'Pedir cambios' }));
+  expect(await screen.findByRole('alert')).toHaveTextContent('5000');
+  expect(client.reviewRescuerProfile).not.toHaveBeenCalled();
+  expect(screen.getByLabelText('Correcci\u00f3n: Nombre visible')).toHaveValue('x'.repeat(500));
 });

@@ -140,7 +140,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.bySemanticsLabel('Favoritos'));
+    await tester.tap(find.bySemanticsLabel('Mis match'));
     await tester.pumpAndSettle();
     expect(container.read(routerProvider).state.uri.path, '/messages');
 
@@ -172,13 +172,18 @@ void main() {
       UncontrolledProviderScope(container: container, child: const DopmiApp()),
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.bySemanticsLabel('Favoritos'));
+    await tester.tap(find.bySemanticsLabel('Mis match'));
     await tester.pumpAndSettle();
     expect(container.read(routerProvider).state.uri.path, '/messages');
     expect(
-      tester.getSemantics(find.bySemanticsLabel('Favoritos')),
+      tester.getSemantics(
+        find.descendant(
+          of: find.byType(DopmiBottomBar),
+          matching: find.bySemanticsLabel('Mis match'),
+        ),
+      ),
       matchesSemantics(
-        label: 'Favoritos',
+        label: 'Mis match',
         isButton: true,
         isSelected: true,
         hasSelectedState: true,
@@ -285,7 +290,7 @@ void main() {
         expect(target, findsOneWidget);
         if (!rescuer) {
           expect(find.text('Apoyar'), findsNothing);
-          expect(find.bySemanticsLabel('Favoritos'), findsOneWidget);
+          expect(find.bySemanticsLabel('Mis match'), findsOneWidget);
           expect(tester.getSize(target), const Size(48, 48));
         }
         expect(

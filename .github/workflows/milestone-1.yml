@@ -149,6 +149,7 @@ jobs:
       - name: Identity, adoption, rescues and H8 community integration
         env:
           DOPMI_LOCAL_CONFIG: ${{ runner.temp }}/supabase-status.json
+          DOPMI_LOCAL_DB_CONTAINER: supabase_db_dopmi
         run: flutter test test_backend --reporter expanded --concurrency=1
         working-directory: apps/mobile
       - name: Stop disposable services

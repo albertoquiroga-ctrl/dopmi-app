@@ -100,7 +100,19 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
     final key = '$actor:${post.id}:${adoptionViewDay(DateTime.now())}';
     if (!reportedViews.add(key)) return;
     await measurement.consentReady;
-    if (!mounted ||
+    if (!mounted) {
+      reportedViews.remove(key);
+      return;
+    }
+    final currentItems = deck;
+    final currentFront =
+        outgoingSnapshot ??
+        (index < currentItems.length ? currentItems[index] : null);
+    if (repository.userId != actor ||
+        !identical(ref.read(communityRepositoryProvider), repository) ||
+        currentFront is! Adoption ||
+        currentFront.id != post.id ||
+        exiting != 0 ||
         measurement.ownerId != actor ||
         !measurement.analyticsEnabled) {
       reportedViews.remove(key);

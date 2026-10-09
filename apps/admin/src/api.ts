@@ -42,7 +42,14 @@ export type Contribution = {
 };
 export type ContentReport = { id:string; target_type:'adoption'|'case'|'rescuer'; target_id:string; reason:string; details:string; status:string; resolution:string; created_at:string; updated_at:string };
 export type CaseUpdate = { id:string; case_id:string; owner_id:string; body:string; photos:string[]; status:string; version:number; review_feedback:string; submitted_at:string|null; created_at:string };
-export type RescuerPublicProfile = { owner_id:string; display_name:string; bio:string; city:string; region:string; instagram_url:string; facebook_url:string; avatar_path:string; status:string; version:number; review_feedback:string; submitted_at:string|null; updated_at:string };
+export type ProfileFeedbackField = 'display_name' | 'bio' | 'city' | 'region' | 'instagram_url' | 'facebook_url' | 'avatar_path' | 'public_email' | 'public_phone' | 'public_address' | 'website_url' | 'contact_consent';
+export type ProfileFieldFeedback = Partial<Record<ProfileFeedbackField, string>>;
+export function validateProfileFieldFeedback(feedback: ProfileFieldFeedback): void {
+  // PostgreSQL jsonb::text inserts spaces after separators and counts Unicode characters.
+  const jsonText = '{' + Object.entries(feedback).map(([key, value]) => `${JSON.stringify(key)}: ${JSON.stringify(value)}`).join(', ') + '}';
+  if (Array.from(jsonText).length > 5000) throw Object.assign(new Error('Reduce los comentarios por campo a un total de 5000 caracteres.'), { code: 'profile_field_feedback_limit' });
+}
+export type RescuerPublicProfile = { owner_id:string; display_name:string; bio:string; city:string; region:string; instagram_url:string; facebook_url:string; avatar_path:string; status:string; version:number; review_feedback:string; submitted_at:string|null; updated_at:string; public_email?:string; public_phone?:string; public_address?:string; website_url?:string; contact_consent?:boolean; contact_publication_enabled?:boolean; field_feedback?:ProfileFieldFeedback; approved_snapshot?:Partial<RescuerPublicProfile> };
 export const adoptionStatus: Record<string, string> = { submitted: 'En revisión', published: 'Publicadas', changes_requested: 'Con correcciones', rejected: 'No aprobadas', adopted: 'Adopciones realizadas', archived: 'Retiradas', draft: 'Borradores' };
 export type AdminApi = {
   listSupportRequests?: (page: number) => Promise<SupportPage>;
@@ -68,7 +75,7 @@ export type AdminApi = {
   reviewCaseUpdate?: (update:CaseUpdate, decision:string, feedback:string) => Promise<CaseUpdate>;
   caseUpdatePhotoUrl?: (path:string) => Promise<string>;
   listRescuerProfiles?: (status:string, page:number) => Promise<{total:number;items:RescuerPublicProfile[]}>;
-  reviewRescuerProfile?: (profile:RescuerPublicProfile, decision:string, feedback:string) => Promise<RescuerPublicProfile>;
+  reviewRescuerProfile?: (profile:RescuerPublicProfile, decision:string, feedback:string, fieldFeedback?:ProfileFieldFeedback) => Promise<RescuerPublicProfile>;
   profileAvatarUrl?: (path:string) => Promise<string>;
 };
 
@@ -87,7 +94,7 @@ export function createAdminApi(client: SupabaseClient): AdminApi {
     async reviewCaseUpdate(update,decision,feedback) { const {data,error}=await client.rpc('dopmi_review_case_update',{update_id:update.id,expected_version:update.version,decision,feedback}); if(error) throw error; return data; },
     async caseUpdatePhotoUrl(path) { const {data,error}=await client.storage.from('dopmi-case-update-media').createSignedUrl(path,60); if(error) throw error; return data.signedUrl; },
     async listRescuerProfiles(status,page) { const {data,error}=await client.rpc('dopmi_admin_rescuer_profiles',{status_filter:status,page_number:page}); if(error) throw error; return data; },
-    async reviewRescuerProfile(profile,decision,feedback) { const {data,error}=await client.rpc('dopmi_review_rescuer_profile',{profile_owner:profile.owner_id,expected_version:profile.version,decision,feedback}); if(error) throw error; return data; },
+    async reviewRescuerProfile(profile,decision,feedback,fieldFeedback = {}) { validateProfileFieldFeedback(fieldFeedback); const {data,error}=await client.rpc('dopmi_review_rescuer_profile_v2',{profile_owner:profile.owner_id,expected_version:profile.version,decision,feedback,field_feedback:fieldFeedback}); if(error) throw error; return data; },
     async profileAvatarUrl(path) { const {data,error}=await client.storage.from('dopmi-rescuer-profile-media').createSignedUrl(path,60); if(error) throw error; return data.signedUrl; },
     async session() { const { data, error } = await client.auth.getSession(); if (error) throw error; return !!data.session; },
     watch(onChange) { const { data } = client.auth.onAuthStateChange(() => onChange()); return () => data.subscription.unsubscribe(); },
@@ -138,6 +145,7 @@ export function configuredApi(): AdminApi | null {
 
 export function errorMessage(error: unknown): string {
   const code = typeof error === 'object' && error !== null && 'code' in error ? String(error.code) : '';
+  if (code === 'profile_field_feedback_limit') return 'Reduce los comentarios por campo a un total de 5000 caracteres.';
   if (code === 'invalid_credentials') return 'Revisa tu correo y contraseña.';
   if (code === 'email_not_confirmed') return 'Confirma tu correo antes de iniciar sesión.';
   if (code === '42501') return 'Tu cuenta no tiene acceso administrativo. Vuelve a iniciar sesión o contacta al responsable.';

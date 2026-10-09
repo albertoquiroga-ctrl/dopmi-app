@@ -1,4 +1,101 @@
+## 2026-10-08 — dde1: Auth DEV reconciliado y continuación cerrada
+
+Root verificó por SQL que la primera vista del run QA nuevo persistió una vez tras el fallo local del journal. Ambos originales se conservaron; el runtime privado pasó a Temp. Resume ejecutó 29 comprobaciones autenticadas sin repetir la primera vista ni las mutaciones previas del perfil: deduplicación de vista, favorito real, retiro del consentimiento, aislamiento de propietario y rechazo de período inválido. La auditoría SQL posterior de los cuatro actores exactos pasó: identidad aprobada preservada, sin Connect, donaciones, Guardian, cohorte, consumo de eventos ni mensajes. El bloque anterior llegó a primera vista; no se inventa un conteo completo ni se confunde esta evidencia con SMS, historial financiero no vacío o aceptación instalada. Siguiente: candidato propio, CI FULL del SHA, Codemagic y Play, fixtures visuales nuevos y recorrido en teléfono. SMS real sigue pendiente de acceso/configuración.
+
 # Dopmi — registro de avance
+
+## 8/10/2026 — Corte visual cerrado, DEV aditivo y QA Auth en curso
+
+Pagos13/13, capturas integrales1/1 y revisión independiente normal115200 cerraron
+reflow de títulos/fechas/importes. ChromeN01/N02/N11 captura real router1/1;
+mensajesconphotos1/1 y Apoyarrutareal+selected1/1, analyze0issues79.4s sobre451files
+91e83405bd4fb43a40d51aa2fa0252941a0963893ec67b095d92966a5d500764.
+Root examinó navegación/Home/inbox; Chrome examinó15PNG soporte y3navbar nuevos,
+Contratoschat y Apoyarperfil, cuatro lentes con límites instalados explícitos.
+Admin sólohunks propios38/38+build, usuarioAPI/test conservados; backend632/632.
+
+DEV cinco aditivos aplicados una vez, postflight22/22 cuerpos/ACL/RLS correctos y
+cohorte/consumo0; HTTPanon8/8 rechazos. Mappings/SHA en migration-history-audit.md.
+AuthDEV4 cuentasNUEVAS/signup/token/getUser/legal reales mismoUUID; confirmación
+operador limitada a susIDs, no claimSMTP/SMS. Fixturesbackend nuevas exactIDs,
+sin fotos/mensajes/Connect/dinero/cohorte. Perfil/consent/review/revoke/inbox/history
+assertions alcanzaron bloque vistas. Atomicrenamejournal falló bajoOneDrive;
+fuentes/journals conservados, rootSQL acreditó1vista exacta y no se repite.
+Runtime privado copiado fueraOneDrive, continuación sólocontratosrestantes.
+
+PR6 draft/open y refs b4/ba9 revalidados por API/Git; todavía sin candidato nuevo.
+CI finalexactSHA/CM/Play/dispositivo/SMS siguen pendientes. No aceptación global.
+
+## 8/10/2026 — Capturas integrales y revisión independiente del corte UI
+
+FullFlutter55528 sobre0a24:984 aprobadas/2 fallidas9:58, analyze0issues98.3s;
+fixtures verificationcard owner incoherente corregidos con pruebas dirigidas.
+Chat/footer con Inter real9/9; Cancel2/2 tras esperar SnackBar real, sin producto.
+Capturador58209 sobre449files c5322d80f0c0c82931acbf084bab6988f48d33acffcbc50e9049032304a6f82f:
+1/1 aprobada39s normal/115/320200. Analyze posterior1info unnecessary_import
+chat_photo_dde1_test retirado. Backend consolidado632/63250.09s, runner76911exit0.
+PostgreSQL financiero real6/6 rollback y PGlite505/505 permanecen vigentes.
+
+Revisores examinaron imágenes nuevas directamente: Apoyar cerró preview lavender/
+labels privados normal115 y tabs sin palabras partidas200; Chrome cerró intro
+RichText historial/notificaciones normal115; Contratos cerró cuatro diferencias
+chat normal115200, caption inferior completo y compositor sin overflow. Límites:
+no acreditan zoom/picker/gestos/DEV ni aceptación instalada. Captura detectó defecto
+real de pagos320200: título/fecha en columna demasiado estrecha, palabras partidas;
+Apoyar corrige distribución responsive, revisión independiente posterior obligatoria.
+
+Titular desbloqueó teléfono: ADB comprobó device y showing=false; aún Play301,
+no candidato nuevo. DEV último20261007034858 sin aditivos nuevos. Checkpoint único
+contiene siguiente cola/acciones; final sólo con versión nueva desde Play y recorridos.
+
+## 8/10/2026 — Regresión completa dde1 y correcciones abiertas
+
+Fuente byte-equivalente acd122e0ac19f324987a7b83a9f0af794c0cb6d1fea2c66bbf916e4c6b6b7fe6;
+Flutter completo933 aprobadas/48 fallidas, runner3382 exit1,14:16. No gate ni
+candidato aprobado. Revisión independiente confirmó defecto chat ref trasdispose,
+affordance Editar foto faltante y omisiones reales del historial (copy pendiente,
+reanudación estable y comprobante privado). Otros fallos son harnesses/selectores
+anteriores; actualizar sin retirar privacidad/ownership/lifecycle/teclado/servidor.
+Correcciones exclusivas en curso con tres agentes, una sola cola Flutter y ADB.
+Samsung conectado/desbloqueado y Dopmi foreground comprobados. Remotos aún
+b4ac415/ba9f897; DEV último20261007034858/rescuer_funnel_9ced, sin aditivos nuevos.
+Logs privados y estado operativo en [checkpoint](mock-sync-current.md).
+
+## 8/10/2026 — Gates backend/admin y corrección temporal dde1
+
+Backend630/630, pgTAP PostgreSQL real295/295, concurrencia chat1/1 ambosórdenes,
+admin37/37+build y configuración16/16 aprobados. Entorno local aislado, sin nuevos
+candidatos ni operaciones DEV. SQLdelta18/18; revisión independiente cerró
+reversión receptora omitida y replay tras enrolamiento. UTF8 de etiquetas reparado.
+Stories13/13 incluye5200 exacto, background, hold/cancel,320200, avances lentos,
+reintento y volver mientras espera. Assets Guardian Luna/Milo copiados literalmente
+del SHA fijo. Capturas reales en ejecución/diagnóstico; no aprobación visual ni
+aceptación instalada nueva. Test backend Auth/Storage chat en preparación. SMS real
+sigue pendiente Twilio. [Tablero](parity-current-review.md) y checkpoint distinguen
+fuente/evidencia/vigencia. Dirty tree ajeno y stack previo preservados.
+
+## 8/10/2026 — Contratos dde1 y diagnóstico de integración
+
+Delta en árbol sin candidato nuevo. Grupo SQL16/16 aprobado; concurrencia chat
+1/1 en PostgreSQL real aislado: publicación/eliminación serializan ambos órdenes,
+fixtures propios limpiados, sin tocar stack previo. Prueba SQL no acredita HTTP
+Storage ni teléfono. Revisión independiente N07 detectó reversión receptor omitida
+y reemisión tras enrolamiento: corrección pendiente antes de DEV. Cohorte financiera
+privada default-off protege cliente301. Analyze2 avisos tras correcciones; regresión
+Flutter dirigida en ejecución. Samsung desbloqueado y appPlay301 foreground comprobados.
+SMS real sigue esperando configuración Twilio; no éxito simulado. Evidencia/estado
+operativo en [checkpoint](mock-sync-current.md), no commit/push/build remoto nuevos.
+
+## 8/10/2026 — Inicio ejecución autorizada dde1bb9
+
+Titular aprueba plan completo, N01–N11 y QA pendiente9ced. Mock congelado dde1bb9,
+base producto281fc37/Play301, rama codex/design-foundation HEADb4ac415. Dirty tree
+ajeno preservado con baseline privada; documentación activa actualizada para
+QA ordinario/cuatro lentes/Play/teléfono dentro de entrega, sin cuotas/renovaciones.
+Revisión eficiencia realizada en plan reutilizada. Delegados Chrome y Apoyar
+independientes; revisión contratos sólo lectura; integrador única cola Flutter,
+contratos y ADB. No gates/migraciones/builds/aceptación nuevos todavía.
+Detalle y acciones en [tablero](parity-current-review.md); checkpoint corto vigente.
 
 ## 8/10/2026 — Cierre documental autónomo
 

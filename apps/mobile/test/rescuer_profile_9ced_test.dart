@@ -1,3 +1,7 @@
+import 'package:dopmi_mobile/features/profile/phone_verification_repository.dart';
+
+import 'profile_test_identity.dart';
+
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/ui.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
@@ -6,7 +10,6 @@ import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/profile/profile_overview.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_metrics.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_repository.dart';
-import 'package:dopmi_mobile/features/profile/rescuer_social_dialog.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_social_section.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +52,7 @@ Future<ProviderContainer> mount9cedProfile(
   await identity.setExperience('rescuer');
   final container = ProviderContainer(
     overrides: [
+      phoneVerificationRepositoryProvider.overrideWithValue(EditorTestPhone()),
       identityRepositoryProvider.overrideWithValue(identity),
       communityRepositoryProvider.overrideWithValue(FakeCommunity()),
       rescueRepositoryProvider.overrideWithValue(Profile9cedDashboard(status)),
@@ -86,19 +90,30 @@ void main() {
     final profile = Profile9cedRepository();
     final container = await mount9cedProfile(tester, identity, profile);
     expect(find.byType(RescuerProfileMetrics), findsNothing);
-    expect(find.byType(RescuerSocialSection), findsOneWidget);
+    expect(find.byType(RescuerSocialSection), findsNothing);
     expect(find.text('Cuenta verificada'), findsOneWidget);
-    expect(find.text('Verificado'), findsNothing);
-    await reveal9ced(tester, find.byTooltip('Editar Instagram'));
-    await tester.tap(find.byTooltip('Editar Instagram'));
-    await tester.pumpAndSettle();
-    expect(find.byType(RescuerSocialDialog), findsOneWidget);
-    await tester.enterText(
-      find.byKey(const ValueKey('rescuer-social-input')),
-      '@updated_profile',
+    await reveal9ced(
+      tester,
+      find.byKey(const ValueKey('rescuer-profile-edit')),
     );
-    await tester.pump();
-    await tester.tap(find.text('Guardar'));
+    await tester.tap(find.byKey(const ValueKey('rescuer-profile-edit')));
+    await tester.pumpAndSettle();
+    expect(
+      container.read(routerProvider).state.uri.path,
+      '/rescuer/profile/edit',
+    );
+    final instagram = find.byKey(
+      const ValueKey('public-profile-Instagram (https://)'),
+    );
+    await reveal9ced(tester, instagram);
+    await tester.enterText(
+      instagram,
+      'https://www.instagram.com/updated_profile',
+    );
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    await reveal9ced(tester, find.text('Guardar borrador'));
+    await tester.tap(find.text('Guardar borrador'));
     await tester.pumpAndSettle();
     expect(
       profile.value['instagram_url'],
@@ -108,6 +123,10 @@ void main() {
     expect(profile.value['version'], 4);
     expect(profile.value['display_name'], 'Refugio Luna');
     expect(profile.saves, 1);
+    final back = find.byTooltip('Volver');
+    expect(back.hitTestable(), findsOneWidget);
+    await tester.tap(back);
+    await tester.pumpAndSettle();
     expect(find.text('@updated_profile'), findsOneWidget);
     expect(find.textContaining('vinculada'), findsNothing);
     await reveal9ced(tester, find.text('Cuenta y privacidad'));

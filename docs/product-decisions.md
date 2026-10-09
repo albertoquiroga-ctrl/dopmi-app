@@ -1,5 +1,22 @@
 # Dopmi — decisiones vigentes
 
+## Decisiones del titular — entrega dde1bb9, 8/10/2026
+
+- Incluye delta9ced→dde1bb9 y QA pendiente9ced; no pushes posteriores.
+- Contacto público completo (correo/teléfono/dirección/web): campos públicos
+  dedicados, consentimiento expreso inicialmente desactivado, moderación y
+  snapshot aprobado. No publicar automáticamente datos Auth/expediente privado.
+  Retirar consentimiento oculta inmediatamente contactos en proyección servidor.
+  Esta decisión supersede restricción histórica de sólo ciudad/chat para este corte.
+- SMS real Twilio+Supabase; confirmar teléfono con autoridad Auth y conservar UUID.
+  No PhoneVerified editable por cliente ni OTP simulado; acceso/costo pendiente.
+- Edición sensible reabre sólo versión pública, conserva identidad/Connect y
+  capacidades financieras; preview privado no guarda/publica automáticamente.
+- Excepción para QA final Samsung: titular inicia cuenta QA temporal y restaura
+  su cuenta original, sin clear data ni automatizar credenciales/login.
+- Tienda/videos/Meta/fondo/bonos/cashback/analítica avanzada siguen excluidos;
+  dinero sólo test, publicación sólo Play Internal y no merge.
+
 > Decisión vigente 27/9/2026: el titular admite las pantallas actuales para continuar; la fidelidad visual queda aplazada, sin aceptación atribuida a Irlanda. H9 autorizado: aceptación integrada y correcciones, con revisión final agrupada en Internal Testing. Ver [H9](h9-acceptance.md). Esta decisión supersede los bloqueos visuales históricos inferiores.
 
 ## Decisiones de lanzamiento — 25 de septiembre de 2026 (México)

@@ -122,12 +122,18 @@ void main() {
       trackingStartedAt: '2026-10-07T03:48:58Z',
     );
     await pumpHome(tester, rescue);
+    await tester.ensureVisible(find.text('Recibiendo apoyo'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Recibiendo apoyo'));
+    await tester.pumpAndSettle();
     expect(
       find.text(
         'Activos y completados al momento. Recaudado es apoyo neto asignado.',
       ),
       findsOneWidget,
     );
+    await tester.ensureVisible(find.text('En adopción'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('En adopción'));
     await tester.pumpAndSettle();
     expect(
@@ -139,11 +145,15 @@ void main() {
   });
 
   testWidgets(
-    'default support and period controls use exact server aggregates',
+    'explicit support and period controls use exact server aggregates',
     (tester) async {
       final rescue = PeriodHomeRescue();
       await pumpHome(tester, rescue);
       expect(rescue.periods, ['month']);
+      await tester.ensureVisible(find.text('Recibiendo apoyo'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Recibiendo apoyo'));
+      await tester.pumpAndSettle();
       expect(find.byKey(const ValueKey('home-funnel-support')), findsOneWidget);
       expect(find.text('Rescatista verificado'), findsOneWidget);
       expect(find.text('Donantes'), findsOneWidget);
@@ -157,6 +167,8 @@ void main() {
       expect(rescue.periods, ['month', 'yesterday']);
       expect(find.byKey(const ValueKey('home-metric-donors')), findsOneWidget);
       expect(find.text('7'), findsNothing);
+      await tester.ensureVisible(find.text('En adopción'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('En adopción'));
       await tester.pumpAndSettle();
       expect(find.text('9'), findsOneWidget);
@@ -191,8 +203,14 @@ void main() {
     };
     rescue.metrics['month'] = metricFixture('month', active: 0, adoptions: 3);
     await pumpHome(tester, rescue);
+    await tester.ensureVisible(find.text('Recibiendo apoyo'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Recibiendo apoyo'));
+    await tester.pumpAndSettle();
     expect(find.text('Recaudado'), findsOneWidget);
     expect(find.text('¿Empezamos?'), findsNothing);
+    await tester.ensureVisible(find.text('En adopción'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('En adopción'));
     await tester.pumpAndSettle();
     expect(find.text('Adopciones'), findsOneWidget);
@@ -210,7 +228,8 @@ void main() {
     rescue.failFunnel = false;
     await tester.tap(find.text('Volver a intentar'));
     await tester.pumpAndSettle();
-    expect(find.text('7'), findsOneWidget);
+    expect(find.text('73'), findsOneWidget);
+    expect(find.byKey(const ValueKey('home-funnel-adoption')), findsOneWidget);
     expect(rescue.periods, ['month', 'month']);
     expect(rescue.acknowledgements, isEmpty);
   });
@@ -231,7 +250,7 @@ void main() {
     old.complete(metricFixture('month', donors: 97));
     await tester.pumpAndSettle();
     expect(find.text('97'), findsNothing);
-    expect(find.byKey(const ValueKey('home-funnel-support')), findsOneWidget);
+    expect(find.byKey(const ValueKey('home-funnel-adoption')), findsOneWidget);
     expect(rescue.periods, ['month', 'week']);
     expect(tester.takeException(), isNull);
   });

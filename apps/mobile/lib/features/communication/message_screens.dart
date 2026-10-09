@@ -1,19 +1,23 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../core/donor_notification_button.dart';
 import '../../core/ui.dart';
+import '../../core/media/media_store.dart';
 import '../../core/reference_focus_outline.dart';
 import 'match_favorites.dart';
 import 'match_thread_row.dart';
 import 'notification_tile.dart';
 import 'notification_frame.dart';
 import 'chat_message_bubble.dart';
+import 'chat_photo_repository.dart';
 import 'rescuer_threads_screen.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
@@ -316,6 +320,14 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
   );
 }
 
+final chatPhotoPickerProvider = Provider<Future<XFile?> Function()>(
+  (ref) =>
+      () => ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        requestFullMetadata: false,
+      ),
+);
+
 class ThreadScreen extends ConsumerStatefulWidget {
   const ThreadScreen(this.id, {super.key});
   final String id;
@@ -329,6 +341,9 @@ class _ThreadState extends ConsumerState<ThreadScreen>
   List<Json> messages = [];
   Json? thread;
   String? error, pendingId, pendingBody;
+  Uint8List? photoBytes;
+  String? photoMessageId, attachmentPath;
+  int compositionGeneration = 0;
   bool loading = true,
       busy = false,
       olderBusy = false,
@@ -338,6 +353,23 @@ class _ThreadState extends ConsumerState<ThreadScreen>
   Timer? timer;
   VoidCallback? cancel;
   CommunityRepository get repo => ref.read(communityRepositoryProvider);
+
+  @override
+  void didUpdateWidget(ThreadScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.id != widget.id) {
+      compositionGeneration++;
+      composer.clear();
+      photoBytes = null;
+      photoMessageId = attachmentPath = pendingId = pendingBody = null;
+      messages = [];
+      thread = null;
+      loading = true;
+      busy = false;
+      refresh();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -345,19 +377,24 @@ class _ThreadState extends ConsumerState<ThreadScreen>
     refresh();
     cancel = repo.watch(['dopmi_messages', 'dopmi_threads'], refresh);
     timer = Timer.periodic(const Duration(seconds: 20), (_) {
-      if (foreground) refresh();
+      if (foreground) {
+        refresh();
+      }
     });
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     foreground = state == AppLifecycleState.resumed;
-    if (foreground) refresh();
+    if (foreground) {
+      refresh();
+    }
   }
 
   @override
   void dispose() {
     generation++;
+    compositionGeneration++;
     timer?.cancel();
     cancel?.call();
     composer.dispose();
@@ -367,10 +404,13 @@ class _ThreadState extends ConsumerState<ThreadScreen>
 
   Future<void> refresh() async {
     final current = ++generation;
+    final actor = repo.userId;
     try {
       final info = await repo.thread(widget.id);
       final recent = await repo.messages(widget.id);
-      if (!mounted || current != generation) return;
+      if (!mounted || current != generation || repo.userId != actor) {
+        return;
+      }
       setState(() {
         thread = info;
         final merged = {
@@ -386,7 +426,9 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                 ? (a['id'] as String).compareTo(b['id'] as String)
                 : date;
           });
-        if (loading || messages.length <= 40) hasOlder = recent.length == 40;
+        if (loading || messages.length <= 40) {
+          hasOlder = recent.length == 40;
+        }
         loading = false;
         error = null;
       });
@@ -414,7 +456,9 @@ class _ThreadState extends ConsumerState<ThreadScreen>
   }
 
   Future<void> older() async {
-    if (messages.isEmpty || olderBusy) return;
+    if (messages.isEmpty || olderBusy) {
+      return;
+    }
     setState(() => olderBusy = true);
     final current = generation;
     try {
@@ -434,37 +478,146 @@ class _ThreadState extends ConsumerState<ThreadScreen>
         setState(() => error = communityError(cause));
       }
     } finally {
-      if (mounted) setState(() => olderBusy = false);
+      if (mounted) {
+        setState(() => olderBusy = false);
+      }
     }
   }
 
   Future<void> send() async {
-    if (busy || composer.text.trim().isEmpty) return;
-    pendingId ??= const Uuid().v4();
+    if (busy ||
+        thread == null ||
+        thread!['status'] == 'closed' ||
+        (composer.text.trim().isEmpty && photoBytes == null)) {
+      return;
+    }
+    final currentRepo = repo;
+    final actor = currentRepo.userId;
+    final threadId = widget.id;
+    final current = compositionGeneration;
+    pendingId ??= photoMessageId ?? const Uuid().v4();
     pendingBody ??= composer.text.trim();
     setState(() {
       busy = true;
       error = null;
     });
     try {
-      await repo.sendMessage(widget.id, pendingId!, pendingBody!);
-      if (!mounted) return;
+      if (photoBytes != null) {
+        final photos = ref.read(chatPhotoRepositoryProvider);
+        if (photos.userId != actor) {
+          throw StateError('La sesión cambió. Vuelve a adjuntar la foto.');
+        }
+        if (attachmentPath == null) {
+          final path = await photos.upload(threadId, pendingId!, photoBytes!);
+          if (!mounted ||
+              current != compositionGeneration ||
+              currentRepo.userId != actor) {
+            if (currentRepo.userId == actor && photos.userId == actor) {
+              try {
+                await photos.discard(path);
+              } catch (_) {
+                /* Pending cleanup is best effort. */
+              }
+            }
+            return;
+          }
+          attachmentPath = path;
+        }
+        if (!mounted ||
+            current != compositionGeneration ||
+            currentRepo.userId != actor ||
+            photos.userId != actor) {
+          return;
+        }
+        await photos.send(threadId, pendingId!, pendingBody!, attachmentPath!);
+      } else {
+        await currentRepo.sendMessage(threadId, pendingId!, pendingBody!);
+      }
+      if (!mounted ||
+          current != compositionGeneration ||
+          currentRepo.userId != actor) {
+        return;
+      }
       setState(() {
         pendingId = null;
         pendingBody = null;
+        photoMessageId = attachmentPath = null;
+        photoBytes = null;
         composer.clear();
       });
       await refresh();
     } catch (cause) {
-      if (mounted) {
+      if (mounted &&
+          current == compositionGeneration &&
+          currentRepo.userId == actor) {
         setState(
           () => error =
               '${communityError(cause)} Tu mensaje está listo para reintentarse.',
         );
       }
     } finally {
-      if (mounted) setState(() => busy = false);
+      if (mounted &&
+          current == compositionGeneration &&
+          currentRepo.userId == actor) {
+        setState(() => busy = false);
+      }
     }
+  }
+
+  Future<void> pickPhoto() async {
+    if (busy || pendingId != null || thread?['status'] == 'closed') {
+      return;
+    }
+    final actor = repo.userId;
+    final current = ++compositionGeneration;
+    final id = const Uuid().v4();
+    setState(() {
+      busy = true;
+      error = null;
+    });
+    try {
+      final selected = await ref.read(chatPhotoPickerProvider)();
+      if (selected == null) {
+        return;
+      }
+      final bytes = await selected.readAsBytes();
+      if (!mounted ||
+          current != compositionGeneration ||
+          repo.userId != actor) {
+        return;
+      }
+      if (bytes.isEmpty || bytes.length > MediaPurpose.chatPhoto.inputLimit) {
+        throw const FormatException('Elige una foto de hasta 5 MB.');
+      }
+      setState(() {
+        photoBytes = bytes;
+        photoMessageId = id;
+        attachmentPath = null;
+      });
+    } catch (cause) {
+      if (mounted && current == compositionGeneration && repo.userId == actor) {
+        setState(() => error = communityError(cause));
+      }
+    } finally {
+      if (mounted && current == compositionGeneration && repo.userId == actor) {
+        setState(() => busy = false);
+      }
+    }
+  }
+
+  void clearComposition() {
+    if (busy) {
+      return;
+    }
+    final path = attachmentPath;
+    if (path != null) {
+      ref.read(chatPhotoRepositoryProvider).discard(path).ignore();
+    }
+    setState(() {
+      compositionGeneration++;
+      photoBytes = null;
+      photoMessageId = attachmentPath = pendingId = pendingBody = null;
+    });
   }
 
   Future<void> close() async {
@@ -505,7 +658,7 @@ class _ThreadState extends ConsumerState<ThreadScreen>
     builder: (context, _) {
       final rescuer =
           ref.read(experienceProvider).value == AccountExperience.rescuer;
-      final accent = rescuer ? const Color(0xffb995ff) : yellow;
+      final accent = rescuer ? const Color(0xff7841f2) : yellow;
       final foreground = rescuer ? Colors.white : ink;
       final textInk = rescuer ? const Color(0xff151423) : ink;
       final textMuted = rescuer ? const Color(0xff4f4e5c) : muted;
@@ -670,6 +823,34 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        if (photoBytes != null)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Image.memory(
+                                    photoBytes!,
+                                    key: const ValueKey('chat-photo-preview'),
+                                    width: 96,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, _, _) => const SizedBox(
+                                      width: 96,
+                                      height: 80,
+                                      child: Icon(Icons.broken_image_outlined),
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  tooltip: 'Quitar foto',
+                                  onPressed: busy ? null : clearComposition,
+                                  icon: const Icon(Icons.close),
+                                ),
+                              ],
+                            ),
+                          ),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
@@ -689,6 +870,7 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                                 ),
                                 decoration: InputDecoration(
                                   hintText: 'Escribe un mensaje...',
+                                  hintMaxLines: 1,
                                   constraints: BoxConstraints(
                                     minHeight:
                                         MediaQuery.textScalerOf(context)
@@ -724,6 +906,33 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                               ),
                             ),
                             const SizedBox(width: 8),
+                            IconButton(
+                              key: const ValueKey('chat-attach-photo'),
+                              constraints: const BoxConstraints.tightFor(
+                                width: 40,
+                                height: 40,
+                              ),
+                              padding: EdgeInsets.zero,
+                              style: IconButton.styleFrom(
+                                minimumSize: const Size(40, 40),
+                                maximumSize: const Size(40, 40),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              tooltip: 'Adjuntar foto',
+                              onPressed: busy || pendingId != null
+                                  ? null
+                                  : pickPhoto,
+                              icon: SvgPicture.asset(
+                                'assets/profile/paperclip.svg',
+                                width: 22,
+                                height: 22,
+                                colorFilter: ColorFilter.mode(
+                                  const Color(0xff5c574f),
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
                             ValueListenableBuilder<TextEditingValue>(
                               valueListenable: composer,
                               builder: (context, value, _) => SizedBox(
@@ -736,14 +945,17 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                                   tooltip: pendingId == null
                                       ? 'Enviar mensaje'
                                       : 'Reintentar envío',
-                                  onPressed: busy || value.text.trim().isEmpty
+                                  onPressed:
+                                      busy ||
+                                          (value.text.trim().isEmpty &&
+                                              photoBytes == null)
                                       ? null
                                       : send,
                                   style: IconButton.styleFrom(
                                     overlayColor: Colors.transparent,
                                     backgroundColor: accent,
                                     disabledBackgroundColor: accent.withValues(
-                                      alpha: .45,
+                                      alpha: .5,
                                     ),
                                     foregroundColor: foreground,
                                     shape: RoundedRectangleBorder(
@@ -780,10 +992,7 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                           ),
                           if (!busy)
                             TextButton(
-                              onPressed: () => setState(() {
-                                pendingId = null;
-                                pendingBody = null;
-                              }),
+                              onPressed: clearComposition,
                               child: const Text('Cancelar reintento y editar'),
                             ),
                         ],

@@ -29,6 +29,14 @@ class VerificationNavigationRescue extends FakeRescue {
   };
 }
 
+class VerificationOwnerProfile extends FakeRescuerProfile {
+  VerificationOwnerProfile() {
+    value['owner_id'] = 'one';
+  }
+  @override
+  String? get userId => 'one';
+}
+
 void main() {
   testWidgets(
     'verification keyboard focus highlights the card without activating it',
@@ -124,7 +132,7 @@ void main() {
             VerificationNavigationRescue(status),
           ),
           rescuerProfileRepositoryProvider.overrideWithValue(
-            FakeRescuerProfile()..value['owner_id'] = 'one',
+            VerificationOwnerProfile(),
           ),
           routerInitialLocationProvider.overrideWithValue('/profile'),
         ],
@@ -143,14 +151,34 @@ void main() {
       final label = status == 'approved'
           ? 'Cuenta verificada'
           : 'Verificación en proceso';
-      await tester.ensureVisible(find.text(label));
-      await tester.tap(find.text(label));
+      expect(find.text('El perfil no corresponde a tu cuenta.'), findsNothing);
+      final card = find.text(label);
+      await tester.scrollUntilVisible(
+        card,
+        160,
+        scrollable: find
+            .byWidgetPredicate(
+              (widget) =>
+                  widget is Scrollable &&
+                  widget.axisDirection == AxisDirection.down,
+            )
+            .first,
+      );
+      await Scrollable.ensureVisible(tester.element(card), alignment: .5);
+      await tester.pumpAndSettle();
+      expect(card.hitTestable(), findsOneWidget);
+      await tester.tap(card);
       await tester.pumpAndSettle();
       if (status == 'approved') {
         expect(container.read(routerProvider).state.uri.path, '/settings');
         expect(find.text('Configuración'), findsOneWidget);
         expect(find.byType(RescueEditorScreen), findsNothing);
       } else {
+        expect(container.read(routerProvider).state.uri.path, '/rescue/new');
+        expect(
+          container.read(routerProvider).state.uri.queryParameters['kind'],
+          'verification',
+        );
         expect(find.byType(RescueEditorScreen), findsOneWidget);
       }
       expect(tester.takeException(), isNull);
