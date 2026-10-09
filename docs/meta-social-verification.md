@@ -213,3 +213,14 @@ producto equivalente a941815. Codemagic6ac960211a4f58756e2f8efd enviado una sola
 workflow android-guardian-internal, índice48; inicialmente queued. No acredita aún
 compilación, publicación, instalación ni OAuth real. Consultar ese mismo job;
 no reenviar por espera. Tester aceptado; activación DEV sigue false hasta QA real.
+
+2026-10-09 — titular solicita repetir workaround por demanda del ticket21219.
+Anterior6ac960211a4f58756e2f8efd confirmado canceled/sin inicio antes de reemplazar.
+Nuevo6ac96931a20af0c26fabf6c0, android-guardian-internal/M2: API confirma
+Xcode26.5 mediante dynamicConfig.environment.softwareVersions.xcode y fuente
+75e79f1752e1b72f915bb0887d3ec8d915f6a9af. Sólo documentación difiere del candidato
+1879d7d; producto/gate1efe72c sin cambios. Inicialmente queued; consultar únicamente
+nuevo handle. No cambiar YAML ni repetir CI válido. No acredita aún arranque o Play.
+Incidencia transitoria de red después de cancelar: reconciliada con GET
+api.codemagic.io/builds/{id}, que confirmó cancelación; POST nuevo realizado una vez.
+Journal privado .tools/meta-social/cm-xcode265-submit.json, no disponible en GitHub.
