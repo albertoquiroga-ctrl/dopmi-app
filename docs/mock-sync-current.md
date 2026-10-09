@@ -163,3 +163,16 @@ Verificación social tiene corte implementado a941815 y estado independiente en
 con activación cerrada; OAuth real, nuevo candidato Play y aceptación pendientes.
 El último candidato comprobado en teléfono sigue siendo 84687bb / Play308.
 La QA SMS pendiente de dde1bb9 permanece pendiente; no se amplió el mockup.
+
+## Meta — QA Play310 y corrección de acceso, 9/10/2026
+Estado PUBLICADO_INSTALADO310_ACCESO_SOCIAL_CORREGIDO_PENDIENTE_CANDIDATO.
+CM6ac96931a20af0c26fabf6c0 publicó2.3.3(310), fuente75e79f1; Publishing y
+tracks get internal/completed confirmados. Samsung installer com.android.vending310.
+Último implementado social f71c4440f261b10455eb38b9948fd3d68ef321ca: conecta botón
+en perfil real, faltante en310. Navegación320px/100–200%2/2 y analyze limpios;
+CI38001865589 en curso, no reenviar. Último dispositivo310 no acredita OAuth.
+DEV flagfalse restaurado, sin autorización Meta nueva. Próxima exacta: gateverde,
+un Codemagic android-guardian-internal con overrideXcode26.5 para f71c444 o docs
+equivalentes, publicación/actualización y OAuth real con consentimiento directo.
+Detalle/fuente de evidencia: [verificación social](meta-social-verification.md).
+QA SMSwrong/resend y aprobación humana anteriores continúan pendientes.

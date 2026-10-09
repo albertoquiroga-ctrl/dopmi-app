@@ -247,3 +247,7 @@ Adoptante→Rescatista sólo para llegar al perfil; editor abandonado sin guarda
 Capturas/journals .tools/meta-social privados/no disponibles en GitHub.
 Siguiente: gate de corrección, un nuevo Play con overrideXcode26.5 y QA OAuth real;
 no probar SMS ni repetir QA dde1 válida.310 acredita instalación, no verificación social.
+Análisis dirigido posterior de corrección: cero observaciones. Producto corregido
+f71c4440f261b10455eb38b9948fd3d68ef321ca subido/remoto comprobado;
+gate automático PR38001865589 pendiente al registro (push38001860198 sujeto a
+concurrencia habitual). No otro dispatch ni Codemagic hasta gate verde.
