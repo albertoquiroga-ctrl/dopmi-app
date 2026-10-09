@@ -205,3 +205,11 @@ la cuenta controlada → Invitaciones de prueba. ADB usado con autorización exp
 para navegar; no capturar contraseñas ni códigos. Captura privada
 .tools/meta-social/instagram-tester-accepted.png, no disponible en GitHub.
 Esto acredita rol de tester, no OAuth de Dopmi ni aceptación del producto.
+
+Gate FULLCI37993212803 completado SUCCESS en sus cuatro jobs sobre1efe72c:
+web/base de datos, Flutter/Android, iOS e integración identidad/adopción. Se reutiliza
+para candidato1879d7d9793e5a2e42477d1618cb1396813d77c0: diferencia sólo documental,
+producto equivalente a941815. Codemagic6ac960211a4f58756e2f8efd enviado una sola vez,
+workflow android-guardian-internal, índice48; inicialmente queued. No acredita aún
+compilación, publicación, instalación ni OAuth real. Consultar ese mismo job;
+no reenviar por espera. Tester aceptado; activación DEV sigue false hasta QA real.
