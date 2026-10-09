@@ -1,23 +1,35 @@
 # Checkpoint Dopmi — dde1bb9, 9/10/2026
 
-Estado **PLAY308_PUBLICADA_PENDIENTE_ADB_Y_QA_SMS_REAL**.
-Entrega integral incompleta. Este checkpoint sustituye esperas históricas;
-[progress.md](progress.md) conserva el ledger, [parity-current-review.md](parity-current-review.md)
-el tablero único y [mock-sync-workflow.md](mock-sync-workflow.md) el protocolo.
+Estado **PLAY308_INSTALADA_QA_SMS_REAL_PENDIENTE**.
+Entrega integral incompleta. Este checkpoint es la fuente de estado vigente;
+[parity-current-review.md](parity-current-review.md) conserva el tablero y
+[progress.md](progress.md) la evidencia fechada. Estados históricos inferiores
+quedan supersedidos por este corte del 9/10/2026.
 
-## Estado vigente — continuación9/10
+## Estado vigente — teléfono 308
 
-CM6ac945b4a02ae85db266e20e/fuente84687bb terminó20:09:27Z con todos pasos
-success. AAB2.3.3(308); build-info exacto/Guardiantrue/internal comprobado.
-Play Console: Internal activo, release151/bundle308 disponible a testers.
-No nuevo build/CI: reutilizar FULLCI37967904270 y QA303 equivalente.
-Teléfono conectado físicamente pero ADBoffline/sinserial; solicitado desbloqueo/
-autorizaciónUSB. No instalación/QA308 acreditada todavía. Titular confirma que
-NO probó SMSincorrecto/reenvío: se conserva teléfono personal confirmado;
-solicitado otro número controlado/no vinculado para prueba real directa en app.
-Último producto remoto846; HEAD8123bfd documental, no candidato nuevo.
-Detalles de evidencia en última entrada del tablero/progress; estados de cola
-inferiores quedan supersedidos por resultado terminal308. No repollar canceled.
+- Referencia congelada dde1bb9d01e5f4c427424bffed99bf1c3ed1beca, incluye QA9ced.
+- Producto final84687bb873760b806be93b5645c7c930bb1af0a1. Documentación c4dd59c
+  y este cierre no crean otro candidato. Rama codex/design-foundation; PR6 borrador.
+- CM6ac945b4a02ae85db266e20e finalizado success; build-info fuente exacta,
+  Guardian true, Play internal, 2.3.3(308). Play release151/bundle308 publicada.
+- Samsung SM-S938B conectado por ADB: package com.mycompany.dopmi,
+  versionName2.3.3/versionCode308, installer com.android.vending comprobados.
+  Inicio→Perfil→Información básica abiertos en308; sesión personal y teléfono
+  vinculado conservados. Sin guardar cambios, desvincular teléfono ni enviar SMS.
+  Fuente1.15/density420 conservadas. Capturas privadas en .tools/dde1/device-qa/
+  play308-*. No disponibles en GitHub; no publicar datos personales.
+- Reutilizar FULLCI37967904270, 19 pruebas dirigidas y revisiones846 sin defecto
+  material, QA303/302 equivalente descrita abajo. Sin repetir suites/builds/flujos
+  consumidos. La navegación308 no acredita mensajes de error Auth reales.
+- Titular confirma NO haber probado código incorrecto/reenvío y NO disponer de
+  otro número controlado no vinculado. QA real SMS negativa/reenvío sigue pendiente;
+  no sustituirla por unit tests ni retirar el vínculo personal para forzarla.
+- Próxima acción exacta: cuando exista un número controlado no vinculado, ingresarlo
+  directamente en la app308, ejecutar código incorrecto y reenvío, comprobar mensajes
+  seguros y confirmación final en la misma cuenta; registrar evidencia privada.
+  Mantener aprobación humana UI/UX pendiente donde no esté expresamente acreditada.
+  La siguiente conversación debe RETOMAR ESTA ENTREGA, no planear nuevo delta.
 
 ## Alcance y preservación
 
@@ -62,7 +74,7 @@ inferiores quedan supersedidos por resultado terminal308. No repollar canceled.
   preservados. Sin eliminar usuarios/perfiles/datos. No repetir ni mover otro vínculo.
 - Titular verificó personalmente su cuenta; SQL Auth confirma un único teléfono confirmado
   fuera de QA. No imprimir número/correo/OTP. Personal restaurada, modoAdoptante tras historial.
-- Sigue pendiente respuesta factual si durante verificación probó código incorrecto y reenvío;
+- Titular confirma que no probó código incorrecto ni reenvío y no tiene otro número;
   no afirmar esa cobertura ni quitar teléfono personal para forzar prueba.
 
 ## QA instalada vigente303 y evidencia equivalente302
@@ -142,4 +154,3 @@ Usuario solicita intentar sugerencia ticket21219. Se conserva fuente846 y FULLCI
 
 
 Nuevo CM6ac945b4a02ae85db266e20e enviado19:51:17UTC; API confirma dynamicConfig.environment.softwareVersions.xcode=26.5, instanceType mac_mini_m2, fuente846, inicialmente queued. Anterior6ac936950aa4713b7ce0013c cancelado y confirmado terminal antes del reemplazo. Helpers .tools/dde1/candidate-84687bb-xcode265-20261009. Próxima consulta exclusivamente nuevo handle; no afirmar workaround resuelto hasta inicio/Publishing/Play.
-

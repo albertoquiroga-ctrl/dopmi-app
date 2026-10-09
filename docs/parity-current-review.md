@@ -1,3 +1,12 @@
+## Corte vigente 9/10: Play308 instalada, entrega pendiente
+
+Producto84687bb, referencia dde1bb9 +QA9ced. Play308/Vending comprobada por ADB;
+Inicio→Perfil→editor revisados sin cambios personales. FULLCI/revisiones846 y QA303
+se reutilizan. QA real SMS incorrecto/reenvío NO ejecutada: titular no tiene otro
+número. No hay excepción ni aceptación humana integral. Retomar esta entrega al
+contar con número controlado no vinculado; detalle/evidencia en
+[mock-sync-current.md](mock-sync-current.md) y última entrada de [progress.md](progress.md).
+
 ### 2026-10-09 — Android846 publicado308; conexión física/SMS negativos pendientes
 
 Continuación expresa del titular sobre dde1bb9 más QA9ced. Consulta del mismo

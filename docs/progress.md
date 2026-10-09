@@ -4612,3 +4612,26 @@ Evidencia privada .tools/dde1/candidate-84687bb-xcode265-20261009; no en GitHub.
 Siguiente: conexiónADBautorizada, actualizar308 desdePlay, confirmar fuente/origen/
 sesión y revalidar deltaSMS; SMSincorrecto/reenvío con acceso legítimo pendiente.
 Entrega integral abierta; sin aceptación humana/instalada nueva atribuida.
+
+
+## 2026-10-09 — Play308 en teléfono; SMS real pendiente
+
+Candidato84687bb873760b806be93b5645c7c930bb1af0a1, referencia dde1bb9 congelada
+con QA9ced. ADB recuperado tras autorización USB humana. Dumpsys Samsung SM-S938B
+confirma com.mycompany.dopmi 2.3.3/versionCode308, installer com.android.vending.
+Inicio, Perfil e Información básica abren correctamente; sesión personal y teléfono
+vinculado conservados. Sin guardar, desvincular ni enviar SMS; fuente1.15/density420
+sin cambios. Capturas play308-* en .tools/dde1/device-qa son privadas/ignoradas,
+no evidencia accesible en GitHub. No se acredita error Auth real con estas capturas.
+
+Revisión de eficiencia: reutilizados FULLCI37967904270,19 tests/analyze y revisión
+independiente UI/UX/código/seguridad846, más QA303/302 equivalente; ningún build,
+suite, fixture consumido ni revisión redundante. Sin corrección perceptible nueva.
+Implementado846, verificado técnicamente846, publicado308 y navegación instalada308
+quedan separados de QA integral instalada y aprobación del titular/diseñadora.
+Titular respondió que no probó SMS incorrecto/reenvío y no dispone de otro número.
+Estos casos obligatorios permanecen pendientes, sin excepción aprobada. No se atribuye
+aceptación humana integral. Próxima acción: disponer de número controlado no vinculado,
+ingresarlo directamente en308 y probar incorrecto→reenvío→confirmación real conservando
+cuenta personal. Retomar esta entrega; no iniciar otro delta. Documentación no cambia
+candidato. Preservados dirty ajenos/privados; sin cambios backend/configuración.
