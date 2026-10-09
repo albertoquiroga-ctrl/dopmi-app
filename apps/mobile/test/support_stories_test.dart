@@ -429,7 +429,9 @@ void main() {
       if (manual) {
         await tester.pump(const Duration(seconds: 6));
       } else {
-        final hold = await tester.startGesture(const Offset(180, 400));
+        final hold = await tester.startGesture(
+          tester.getCenter(find.text('One')),
+        );
         await tester.pump(const Duration(seconds: 6));
         await hold.up();
         await tester.pump();
@@ -446,7 +448,30 @@ void main() {
       await tapStorySide(tester, next: false);
       await tester.pump();
       expect(find.text('One'), findsOneWidget);
-      await tester.dragFrom(const Offset(180, 400), const Offset(0, -100));
+      // Bottom overlay must receive vertical gestures as well as the photo.
+      await tester.dragFrom(
+        tester.getCenter(find.text('One')),
+        const Offset(0, -100),
+      );
+      await tester.pumpAndSettle();
+      expect(detail, 'One');
+      expect(find.text('Open'), findsOneWidget);
+      // A downward gesture over overlay text dismisses without a detail route.
+      await tester.tap(find.text('Open'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.dragFrom(
+        tester.getCenter(find.text('One')),
+        const Offset(0, 100),
+      );
+      await tester.pumpAndSettle();
+      expect(detail, isNull);
+      expect(find.text('Open'), findsOneWidget);
+      // The caption remains a working link after moving the raw listener.
+      await tester.tap(find.text('Open'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.tap(find.text('Conoce su historia'));
       await tester.pumpAndSettle();
       expect(detail, 'One');
       expect(find.text('Open'), findsOneWidget);

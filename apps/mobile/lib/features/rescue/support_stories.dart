@@ -256,53 +256,54 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(22),
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Listener(
-                          onPointerDown: (event) {
-                            if (activePointer != null) return;
-                            activePointer = event.pointer;
-                            pointerStart = event.position;
-                            longHeld = false;
-                            holdTimer?.cancel();
-                            holdTimer = Timer(
-                              const Duration(milliseconds: 350),
-                              () => longHeld = true,
-                            );
-                            held = true;
-                            resume();
-                          },
-                          onPointerCancel: (event) {
-                            if (activePointer != event.pointer) return;
-                            activePointer = null;
-                            holdTimer?.cancel();
-                            pointerStart = null;
-                            held = false;
-                            resume();
-                          },
-                          onPointerUp: (event) {
-                            if (activePointer != event.pointer) return;
-                            activePointer = null;
-                            holdTimer?.cancel();
-                            final start = pointerStart;
-                            pointerStart = null;
-                            held = false;
-                            if (start != null) {
-                              final delta = event.position - start;
-                              if (delta.dy.abs() >= 72 &&
-                                  delta.dy.abs() > delta.dx.abs()) {
-                                if (delta.dy < 0) {
-                                  close(record.id);
-                                } else {
-                                  close();
-                                }
-                                return;
-                              }
+                    child: Listener(
+                      behavior: HitTestBehavior.opaque,
+                      onPointerDown: (event) {
+                        if (activePointer != null) return;
+                        activePointer = event.pointer;
+                        pointerStart = event.position;
+                        longHeld = false;
+                        holdTimer?.cancel();
+                        holdTimer = Timer(
+                          const Duration(milliseconds: 350),
+                          () => longHeld = true,
+                        );
+                        held = true;
+                        resume();
+                      },
+                      onPointerCancel: (event) {
+                        if (activePointer != event.pointer) return;
+                        activePointer = null;
+                        holdTimer?.cancel();
+                        pointerStart = null;
+                        held = false;
+                        resume();
+                      },
+                      onPointerUp: (event) {
+                        if (activePointer != event.pointer) return;
+                        activePointer = null;
+                        holdTimer?.cancel();
+                        final start = pointerStart;
+                        pointerStart = null;
+                        held = false;
+                        if (start != null) {
+                          final delta = event.position - start;
+                          if (delta.dy.abs() >= 72 &&
+                              delta.dy.abs() > delta.dx.abs()) {
+                            if (delta.dy < 0) {
+                              close(record.id);
+                            } else {
+                              close();
                             }
-                            resume();
-                          },
-                          child: LayoutBuilder(
+                            return;
+                          }
+                        }
+                        resume();
+                      },
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          LayoutBuilder(
                             builder: (surfaceContext, bounds) =>
                                 GestureDetector(
                                   behavior: HitTestBehavior.opaque,
@@ -326,183 +327,192 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                                   ),
                                 ),
                           ),
-                        ),
-                        const IgnorePointer(
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.transparent,
-                                  Color(0x730d0d0d),
-                                  Color(0xf70d0d0d),
-                                ],
-                                stops: [0.38, 0.7, 1],
+                          const IgnorePointer(
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.transparent,
+                                    Color(0x730d0d0d),
+                                    Color(0xf70d0d0d),
+                                  ],
+                                  stops: [0.38, 0.7, 1],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Positioned(
-                          top: 6,
-                          left: 6,
-                          right: 6,
-                          child: AnimatedBuilder(
-                            animation: progress,
-                            builder: (_, _) => Row(
-                              children: [
-                                for (var i = 0; i < photos.length; i++)
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 2,
-                                      ),
-                                      child: LinearProgressIndicator(
-                                        value: i < photoIndex
-                                            ? 1
-                                            : i == photoIndex
-                                            ? progress.value
-                                            : 0,
-                                        minHeight: 3,
-                                        color: Colors.white,
-                                        backgroundColor: Colors.white38,
+                          Positioned(
+                            top: 6,
+                            left: 6,
+                            right: 6,
+                            child: AnimatedBuilder(
+                              animation: progress,
+                              builder: (_, _) => Row(
+                                children: [
+                                  for (var i = 0; i < photos.length; i++)
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 2,
+                                        ),
+                                        child: LinearProgressIndicator(
+                                          value: i < photoIndex
+                                              ? 1
+                                              : i == photoIndex
+                                              ? progress.value
+                                              : 0,
+                                          minHeight: 3,
+                                          color: Colors.white,
+                                          backgroundColor: Colors.white38,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        Positioned(
-                          top: 14,
-                          right: 0,
-                          child: IconButton(
-                            tooltip: 'Cerrar historias',
-                            constraints: const BoxConstraints.tightFor(
-                              width: 36,
-                              height: 36,
+                          Positioned(
+                            top: 14,
+                            right: 0,
+                            child: IconButton(
+                              tooltip: 'Cerrar historias',
+                              constraints: const BoxConstraints.tightFor(
+                                width: 36,
+                                height: 36,
+                              ),
+                              padding: EdgeInsets.zero,
+                              style: IconButton.styleFrom(
+                                backgroundColor: const Color(0x730d0d0d),
+                                shape: const CircleBorder(),
+                              ),
+                              onPressed: close,
+                              icon: const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                              ),
                             ),
-                            padding: EdgeInsets.zero,
-                            style: IconButton.styleFrom(
-                              backgroundColor: const Color(0x730d0d0d),
-                              shape: const CircleBorder(),
-                            ),
-                            onPressed: close,
-                            icon: const Icon(Icons.close, color: Colors.white),
                           ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(18, 20, 18, 22),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  record.title,
-                                  style: const TextStyle(
-                                    fontSize: 34,
-                                    height: 1.05,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                if (currentUpdate != null)
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                18,
+                                20,
+                                18,
+                                22,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
                                   Text(
-                                    currentUpdate!.body,
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
+                                    record.title,
+                                    style: const TextStyle(
+                                      fontSize: 34,
+                                      height: 1.05,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  if (currentUpdate != null)
+                                    Text(
+                                      currentUpdate!.body,
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        height: 1.4,
+                                      ),
+                                    ),
+                                  if (loadingUpdates.contains(record.id))
+                                    const Text(
+                                      'Cargando avances…',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  if (failedUpdates.contains(record.id))
+                                    TextButton(
+                                      onPressed: () {
+                                        setState(() {});
+                                        loadUpdates();
+                                      },
+                                      child: const Text('Reintentar avances'),
+                                    ),
+                                  TextButton(
+                                    onPressed: () => close(record.id),
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        for (final type
+                                            in (needTypes[record.id] ??
+                                                const <String>{}))
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              right: 6,
+                                            ),
+                                            child: Semantics(
+                                              label: switch (type) {
+                                                'food' => 'Alimento',
+                                                'medicine' => 'Medicamentos',
+                                                'veterinary' => 'Veterinario',
+                                                _ => 'Otra necesidad',
+                                              },
+                                              child:
+                                                  [
+                                                    'food',
+                                                    'medicine',
+                                                    'veterinary',
+                                                  ].contains(type)
+                                                  ? SvgPicture.asset(
+                                                      'assets/profile/need-$type.svg',
+                                                      width: 22,
+                                                      height: 22,
+                                                      excludeFromSemantics:
+                                                          true,
+                                                    )
+                                                  : const Icon(
+                                                      Icons.pets_outlined,
+                                                      size: 22,
+                                                      color: Colors.white,
+                                                    ),
+                                            ),
+                                          ),
+                                        const Flexible(
+                                          child: Text('Conoce su historia'),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  LinearProgressIndicator(
+                                    value: record.targetCents <= 0
+                                        ? 0
+                                        : (record.fundedCents /
+                                                  record.targetCents)
+                                              .clamp(0.0, 1.0),
+                                    color: yellow,
+                                    backgroundColor: Colors.white24,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    '${pesos(record.fundedCents)} de ${pesos(record.targetCents)}',
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 14,
-                                      height: 1.4,
                                     ),
                                   ),
-                                if (loadingUpdates.contains(record.id))
-                                  const Text(
-                                    'Cargando avances…',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                if (failedUpdates.contains(record.id))
-                                  TextButton(
-                                    onPressed: () {
-                                      setState(() {});
-                                      loadUpdates();
-                                    },
-                                    child: const Text('Reintentar avances'),
-                                  ),
-                                TextButton(
-                                  onPressed: () => close(record.id),
-                                  style: TextButton.styleFrom(
-                                    foregroundColor: Colors.white,
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      for (final type
-                                          in (needTypes[record.id] ??
-                                              const <String>{}))
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            right: 6,
-                                          ),
-                                          child: Semantics(
-                                            label: switch (type) {
-                                              'food' => 'Alimento',
-                                              'medicine' => 'Medicamentos',
-                                              'veterinary' => 'Veterinario',
-                                              _ => 'Otra necesidad',
-                                            },
-                                            child:
-                                                [
-                                                  'food',
-                                                  'medicine',
-                                                  'veterinary',
-                                                ].contains(type)
-                                                ? SvgPicture.asset(
-                                                    'assets/profile/need-$type.svg',
-                                                    width: 22,
-                                                    height: 22,
-                                                    excludeFromSemantics: true,
-                                                  )
-                                                : const Icon(
-                                                    Icons.pets_outlined,
-                                                    size: 22,
-                                                    color: Colors.white,
-                                                  ),
-                                          ),
-                                        ),
-                                      const Flexible(
-                                        child: Text('Conoce su historia'),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                LinearProgressIndicator(
-                                  value: record.targetCents <= 0
-                                      ? 0
-                                      : (record.fundedCents /
-                                                record.targetCents)
-                                            .clamp(0.0, 1.0),
-                                  color: yellow,
-                                  backgroundColor: Colors.white24,
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  '${pesos(record.fundedCents)} de ${pesos(record.targetCents)}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
