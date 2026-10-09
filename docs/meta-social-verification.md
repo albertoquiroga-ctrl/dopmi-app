@@ -158,3 +158,13 @@ payments/legacy que aplica todas las migraciones. Corrección exclusiva de fixtu
 añade tabla de sesión con FK/owner/not_after; no cambia producto ni migración.
 Suite tools/verification completa ejecutada una vez:638/638 PASS, cero omitidas.
 El commit de fixture requiere nuevo gate automático; no repetir checks locales válidos.
+
+Último corte de repositorio1efe72cd69f0e3e44dfe30f42324879a5add6b9b, subido y
+remoto comprobado; producto sigue equivalente a941815 (sólo fixture/documentación).
+Tras reautenticación personal, secreto Instagram guardado exclusivamente en Edge
+Function Secrets DEV junto con SOCIAL_INSTAGRAM_CLIENT_ID, SOCIAL_FACEBOOK_CLIENT_ID,
+SOCIAL_VERIFICATION_CALLBACK_URL y SOCIAL_VERIFICATION_ENABLED=false; guardado
+confirmado por consola. No se escribió secreto en archivos/Git/chat/logs.
+Facebook solicita reautenticación independiente: secreto Facebook aún no transferido,
+callbacks Facebook aún pendientes. Conservar Firebase y las demás configuraciones.
+No copiar la URL de ejemplo generada por Meta con scopes amplios.
