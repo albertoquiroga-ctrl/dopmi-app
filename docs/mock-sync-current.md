@@ -184,3 +184,12 @@ callback→comprobación en app→proof mismo actor/sesión verificados. Faceboo
 al login oficial y espera ingreso directo del titular. FlagDEVtrue durante esta QA.
 Fuente de verdad/evidencia/pendientes: [verificación social](meta-social-verification.md).
 No cierre integral ni aprobación humana global; conservar QA SMS pendiente.
+
+## Meta — corte vigente 18:07, 9/10/2026
+PLAY311_OAUTH_INSTAGRAM_FACEBOOK_VERIFICADO_DEV_CERRADO. Ambos proveedores
+completaron consentimiento humano/callback/comprobación nativa y proof del mismo
+actor/sesión. Producto f71c444; candidato943dc1c/Play311 instalado desde Play.
+Flag DEVfalse al concluir QA; conexiones conservadas. Detalle único y gates
+obligatorios de revocación/eliminación/retención/Meta en
+[verificación social](meta-social-verification.md). No entrega general cerrada;
+QA SMS y aprobación humana anteriores siguen pendientes. Retomar entrega, no nuevo delta.

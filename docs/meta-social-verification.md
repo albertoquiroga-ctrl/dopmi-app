@@ -1,6 +1,7 @@
 # Vinculación social — encargo del 9/10/2026
 
-Estado vigente: IMPLEMENTADO_DEV_DESACTIVADO_CONFIGURACION_META_PENDIENTE.
+Estado vigente: PLAY311_OAUTH_INSTAGRAM_FACEBOOK_VERIFICADO_DEV_CERRADO.
+Éxito real de ambos proveedores; entrega general pendiente de gates indicados al final.
 El registro actualizado al final supersede la preparación histórica de consola.
 Este encargo nuevo no modifica la referencia congelada dde1bb9 ni acredita
 el pendiente SMS de Play308. No requiere repetir su QA válida.
@@ -293,3 +294,26 @@ Nuevo start una sola vez: sesión Facebook ya iniciada, muestra consentimiento
 «Continuar como…» para app existente DopMi. Titular debe pulsarlo personalmente;
 solicitud pendiente. No ampliar TTL ni repetir login/Instagram. Captura privada
 facebook-consent-play311.png; ninguna credencial capturada. DEVtrue durante QA.
+
+2026-10-09 18:07 México — Facebook e Instagram reales verificados en Play311.
+Titular pulsó Continuar personalmente en Facebook. Callback completado y en311
+«Ya autoricé, comprobar» muestra ambas cuentas conectadas; aviso de revisión pública
+conservado. SQL sin PII confirma intento Facebook nuevo verified y proof mismo
+owner/session; Instagram verified permanece. La consulta anterior al unir proofs
+por owner/provider también muestra proof actual junto al intento viejo denied:
+NO significa que el intento cancelado se verificó; su status sigue denied.
+Captura privada social-both-connected-play311.png; no disponible en GitHub.
+Flag DEV restaurado false al concluir QA, conserva proofs; no apertura general.
+Último implementado/verificado social f71c444, candidato943dc1c/Play311,
+backend social a941815 desplegadoDEVv1/migración20261009210425. Reutilizar CI38001865589
++pruebas dirigidas/seguridad vigentes; no otro build por documentación.
+Implementado, gate técnico, publicación e integración real exitosa de ambos
+proveedores acreditados. Consentimiento del titular acredita permiso OAuth, NO
+aprobación humana integral de UI/UX ni publicación general.
+Pendientes obligatorios antes de uso general: revocación/desconexión real y
+denegación en proveedor aún sin probar; compatibilidad eliminación Facebook con
+app anterior, retención/purga y Meta App Review/producción. No degradar a opcionales
+ni revocar ahora permisos de la app Facebook anterior sin alcance aprobado.
+QA SMSwrong/resend y aceptación humana de entrega dde1 siguen independientes.
+Siguiente exacto: retomar QA social pendiente con alcance seguro de revocación,
+resolver gates de uso general; conservar prueba exitosa311 y ambas conexiones.
