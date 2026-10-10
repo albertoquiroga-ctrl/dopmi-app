@@ -1,3 +1,18 @@
+## Tablero vigente — cierre 9/10/2026
+
+**Entrega pendiente; RETOMAR ESTA ENTREGA.** Esta entrada supersede estados históricos inferiores.
+Fuente de verdad: [checkpoint](mock-sync-current.md); evidencia social y límites de
+revisión eficiencia/UI/UX/código/seguridad: [registro social](meta-social-verification.md).
+
+| Frente | Implementado | Técnico / publicado / dispositivo | Pendiente obligatorio |
+|---|---|---|---|
+| dde1bb9 + QA9ced | 84687bb | CI37967904270; Play308; QA302/303/308 reutilizable | SMS incorrecto/reenvío real, aprobación humana donde no acreditada |
+| Meta social | f71c444; backend a941815 | CI38001865589; candidato943dc1c/Play311; ambos OAuth en Samsung, misma sesión | Desconexión/revocación/denegación proveedor, compatibilidad eliminación legado, retención/purga, requisitos Meta para uso general, aceptación UI/UX |
+
+DEV flagfalse; no entrega general aprobada ni excepciones para esos pendientes.
+Documentación posterior no altera candidato. Mock4369 no inventariado.
+No reiniciar QA válida ni trabajar pendientes durante el cierre.
+
 ## Corte vigente 9/10: Play308 instalada, entrega pendiente
 
 Producto84687bb, referencia dde1bb9 +QA9ced. Play308/Vending comprobada por ADB;

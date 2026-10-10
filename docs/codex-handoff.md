@@ -1,16 +1,17 @@
-# Dopmi — continuidad de ChatGPT Work a Codex
+# Dopmi — continuidad
 
-## Arranque vigente — ejecución aprobada dde1bb9, 8/10/2026
+## Arranque vigente — cierre 9/10/2026
 
-Leer [checkpoint](mock-sync-current.md), [protocolo](mock-sync-workflow.md) y
-[tablero único](parity-current-review.md). Plan completo aprobado: N01–N11 hasta
-mock congelado dde1bb9 más QA pendiente9ced. Perfil continuo sin cuotas/renovaciones,
-cuatro lentes y verificación final de Play en el teléfono dentro de la entrega.
-Base producto281fc37/Play301; app codex/design-foundation HEADinicialb4ac415.
-Preservar dirty tree/privados; no reiniciar familias cerradas ni fixtures consumidas.
-Integrador única cola Flutter/ADB/contratos; agentes exclusivos por frente y
-revisión independiente. Dinero test, no merge/producción. SMS real depende de
-acceso Twilio y costo autorizado; avanzar lo independiente sin simular éxito.
+Leer primero [checkpoint](mock-sync-current.md), después [protocolo](mock-sync-workflow.md)
+y [tablero](parity-current-review.md). ENTREGA_CONTINUA_EFICIENTE_VERIFICADA.
+**Chat cerrado; entrega pendiente. RETOMAR ESTA ENTREGA, no iniciar nuevo delta.**
+Mock congelado dde1bb9, QA9ced incluida. Último producto f71c444; candidato943dc1c,
+Play2.3.3(311) publicado e instalado; ambos OAuth sociales verificados en teléfono,
+DEV nuevamente cerrado. Paridad/SMS tiene evidencia anterior846/308 reutilizable.
+Pendientes exactos, límites de aceptación y evidencia en checkpoint y
+[registro social](meta-social-verification.md). No repetir verificaciones válidas.
+Preservar cambios ajenos/privados, firma, permisos y dinero test; no merge ni producción.
+Este cierre sólo documenta, no crea candidato ni autoriza trabajo adicional.
 
 ## Historial de continuidad (referencia, fuera del resumen de arranque)
 

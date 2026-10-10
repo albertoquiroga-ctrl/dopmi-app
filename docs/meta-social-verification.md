@@ -1,319 +1,124 @@
-# Vinculación social — encargo del 9/10/2026
+# Verificación social — registro consolidado al cierre, 9/10/2026
 
-Estado vigente: PLAY311_OAUTH_INSTAGRAM_FACEBOOK_VERIFICADO_DEV_CERRADO.
-Éxito real de ambos proveedores; entrega general pendiente de gates indicados al final.
-El registro actualizado al final supersede la preparación histórica de consola.
-Este encargo nuevo no modifica la referencia congelada dde1bb9 ni acredita
-el pendiente SMS de Play308. No requiere repetir su QA válida.
+**PLAY311_OAUTH_INSTAGRAM_FACEBOOK_VERIFICADO_DEV_CERRADO; entrega pendiente.**
+Estado global y siguiente conversación: [checkpoint](mock-sync-current.md).
+Este registro sustituye la preparación histórica de consola; no inventaría otro mock.
 
-## Decisión del titular
+## Decisión y configuración entregadas
 
-Facebook e Instagram se conectan desde una cuenta Dopmi ya autenticada para
-demostrar control de la cuenta social. No son métodos nuevos para acceder a
-Dopmi ni sustituyen su revisión de identidad/documentos o aprobación de perfil.
-Instagram personal mantiene enlace y revisión manual; OAuth se ofrece para
-cuentas profesionales (Empresa/Creador). Decisión respondida expresamente.
+Verificación social desde cuenta Dopmi autenticada, no acceso a Dopmi. Instagram
+personal: enlace y revisión manual; profesional Empresa/Creador: OAuth. La evidencia
+privada de control social no sustituye identidad legal ni moderación/snapshot público.
+Titular autorizó creación/configuración mínima DEV, aceptó tester y consentimientos
+directamente en Meta. No compartió contraseñas/códigos. No atribuir aprobación global.
 
-## Consola comprobada
+- Facebook existente DopMi1156849688851390, publicada. Flujo nuevo sólo public_profile;
+  aprobación antigua email preservada, no solicitada. Callback Firebase legado
+  https://dopmi-e3b6a.firebaseapp.com/__/auth/handler conservado.
+- Instagram app2033254194048655, cliente1653707599767005; sólo instagram_business_basic.
+  Meta agrupa perfil/multimedia, Dopmi consulta identidad user_id/username/account_type;
+  Graphv24, BUSINESS/MEDIA_CREATOR. Sin mensajes/comentarios/publicaciones/insights.
+- Callback ambos: https://ohqxranynackjignryep.supabase.co/functions/v1/social-verification-callback.
+  Deauth: /functions/v1/social-verification-meta/{facebook|instagram}/deauthorize.
+  Eliminación IG: /functions/v1/social-verification-meta/instagram/delete.
+- Facebook conserva instrucciones https://www.dopmi.app/comming-soon; compatibilidad de
+  eliminación con app legado sigue siendo gate, no reemplazar con borrado sólo social.
+- Supabase DEVohqxranynackjignryep exclusivamente. Secretos sólo Edge Function Secrets;
+  SOCIAL_VERIFICATION_ENABLED=false restaurado y comprobado al terminar QA.
+  Proyecto producción intacto. Etiqueta PRODUCTION del dashboard refiere tipo de rama.
+- Migración local20261009205039_social_verification.sql aplicada una vez como remota
+  20261009210425; SHA256 LF f6b68d0cec66600c806b0aac97000dfcd8c9ec0e9a3d43e7f7117fee67a222d8.
+  Mapeo en [auditoría histórica](migration-history-audit.md); no reparar/reaplicar.
+- social-verification, social-verification-callback, social-verification-meta ACTIVEv1,
+  fuentea941815. verify_jwt=false por callbacks públicos; operaciones privadas validan
+  getUser y session_id JWT; callbacks Meta validan HMAC.
 
-- App existente DopMi:1156849688851390, publicada, Facebook Login disponible.
-  public_profile/email muestran «Ya se puede publicar»; user_link no añadido.
-  Esto no prueba el nuevo flujo ni aprobación de permisos adicionales.
-- Redirección existente de Facebook a Firebase:
-  https://dopmi-e3b6a.firebaseapp.com/__/auth/handler. Conservarla y conservar
-  la integración anterior; no reenviar OAuth a ella para verificar en Supabase.
-- «Añadir casos de uso» de esa app sólo ofrece anuncios; Instagram no aparece.
-  La propia consola indica crear otra app para casos incompatibles.
-- Nueva alta preparada, NO creada: «Dopmi Verificación Social», porfolio DopMi
-  con verificación de empresa completada, caso «Administrar mensajes y contenido
-  en Instagram». Es el nombre general del producto: no autoriza solicitar lectura
-  de mensajes, publicaciones, comentarios, anuncios ni administración de contenido.
-- Resumen final exige aceptar Condiciones de plataforma/Políticas de Meta.
-  Crear está pendiente de confirmación expresa del titular. No se concedieron
-  permisos nuevos ni se cambiaron callbacks, roles, secretos o la app anterior.
+## Fuente, gates y publicación
 
-## Implementación prevista y requisitos de seguridad
+Producto sociala9418154a964a02043ecb4f03f0b8c98b88c5aa2; fixture1efe72cd69f0e3e44dfe30f42324879a5add6b9b;
+producto finalf71c4440f261b10455eb38b9948fd3d68ef321ca corrige entrada del perfil real.
+Candidato943dc1c773d87e85f97251db358b34902d7c5159 sólo añade docs a ese producto.
 
-1. Botones Conectar Facebook/Conectar Instagram profesional dentro del perfil.
-   Instagram personal conserva edición de enlace con etiqueta de revisión manual.
-2. OAuth dedicado a vinculación; no usar signInWithOAuth/linkIdentity para crear
-   una nueva vía de inicio de sesión en Dopmi. UUID y sesión Dopmi se conservan.
-3. Inicio autenticado en servidor, state aleatorio de un uso con caducidad y
-   vinculado al actor/proveedor/intento; callback HTTPS exacto. Cancelación y
-   cambio de sesión no vinculan nada. Consumo atómico evita replay y carreras.
-4. Servidor intercambia código y comprueba identidad/proveedor/aplicación.
-   El cliente no puede escribir una bandera «verificado». Secretos/tokens fuera
-   de app, URLs de retorno, logs y Git. Minimizar datos y retención de tokens.
-5. Guardar evidencia privada de proveedor/ID/fecha; impedir apropiación de una
-   cuenta ya vinculada a otro actor. No inferir propiedad de un enlace escrito
-   manualmente a partir de una autenticación que no devolvió ese enlace.
-6. La publicación del perfil sigue snapshot y moderación existentes. Revocación,
-   desconexión y eliminación de cuenta retiran la evidencia correspondiente.
-7. Permiso mínimo: perfil básico. Evaluar user_link sólo si Meta lo aprueba y
-   es necesario para certificar la URL de Facebook; no pedir email por defecto.
-   Instagram: comprobar instagram_business_basic en el producto nuevo antes
-   de configurar el flujo. Publicación/revisión de Meta separadas de QA propia.
+- [FULLCI38001865589](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/38001865589)
+  exactof71c444: cuatro jobs/todos pasos success, web/DB permisos y concurrencia,
+  Flutter/analyze/tests/capturas/Android debug, iOSsim, integración identidad/adopción.
+- Backend638/638, Deno tres entrypoints, seis pruebas backend nuevas; móvil cuatro
+  funcionales nuevas y doce sociales existentes, captura320px/200%, entrada real2/2,
+  analyze0 y configuración móvil16/16. Reutilizar resultados válidos, no repetir.
+- [CI37993212803](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37993212803)
+  verde después de fixture1efe72c; CI37991530876 falló por auth.sessions ausente en
+  PGlite, corregido sólo fixture, sin debilitar autorización. Push concurrentes no son candidatos.
+- Codemagic6ac9772639c0d173f3b4330a
+  identificador de job; consulta fiable API /builds/{id}. android-guardian-internal,
+  MacminiM2 overrideXcode26.5, fuente943dc1c, success. Inicio17:22:22.768 y fin17:46:45.914,
+  9/10 hora México. Publicación confirmada por Publishing y tracks get internal/completed311.
+  Dashboard/artifacts requieren acceso del titular; no son archivos públicos de GitHub.
+- com.mycompany.dopmi2.3.3(311), Guardiantrue/dinero test. AAB SHA256
+  c380904954f4e5d109b7c09cefa7d7f1fe4db4225e8a349cadfc7fcf65acca97.
+  Samsung SM-S938B/Android16 comprobado por ADB:311, installer com.android.vending.
 
-## Siguiente acción
+## Revisiones y evidencia vigente
 
-Confirmar el alta preparada que acepta condiciones de Meta; después revisar
-permisos reales del producto, preparar backend y callback de DEV y configurar
-su URI exacta. No activar credenciales ni callbacks sin endpoint comprobado.
-Verificar únicamente el nuevo flujo (éxito/cancelación/denegación, state caducado
-o repetido, cambio de sesión y conflicto de propiedad), después gate obligatorio
-y candidato instalado. No afirmar que configuración de consola implementa UI.
-
-Fuentes: consola Meta autenticada del titular y colección oficial de Meta
-[Instagram API](https://www.postman.com/meta/instagram/collection/6yqw8pt/instagram-api).
-La documentación directa de developers.facebook.com respondió429 durante esta
-consulta. Limitación profesional corroborada por la colección; permisos exactos
-y revisión siguen pendientes de inspección del producto nuevo.
-
-## Actualización vigente — 9/10/2026
-
-Fuente implementada y subida: a9418154a964a02043ecb4f03f0b8c98b88c5aa2,
-remoto codex/design-foundation comprobado. App creada tras autorización expresa y
-reautenticación del titular: Meta ID2033254194048655, Instagram Client ID1653707599767005,
-nombre Dopmi Verificación Social. No publicada. instagram_business_basic muestra
-«Añadir»: pendiente. Su alcance incluye perfil y multimedia; el servidor sólo
-consulta ID/usuario/tipo de cuenta. No solicitar mensajes/comentarios/publicación.
-No se revelaron/copiarion secretos ni se modificaron callbacks o roles.
-
-Cliente implementado: pantalla Redes sociales, navegador externo, comprobación
-explícita al volver, cancelación/desconexión; sin polling. Actor y sesión estables,
-URL de proveedor validada. Instagram personal conserva edición/revisión manual.
-Servidor: state con hash de un uso, caducidad10min, consumo atómico y sesión Dopmi;
-cinco inicios/10min, identidad social única, intercambio sólo servidor sin guardar
-tokens, callbacks firmados Meta, revocación y eliminación idempotentes. No modifica
-Auth identities/teléfono, snapshots públicos ni moderación.
-
-Revisión independiente de código/seguridad backend↔cliente: corregidos replay de
-revocación que podía retirar una reconexión y carrera antes de la primera prueba;
-en cliente, cambio de sesión y cancelación si falla apertura. Advisors DEV sólo
-INFO esperado para tablas RLS privadas sin policies, ACL anon/authenticated cerradas.
-No inferir autorización de metadata editable ni verificación de URLs manuales.
-
-UI/UX: captura sintética320px/texto200% con Inter revisada, título reducido a
-«Redes sociales» para evitar truncamiento; controles alcanzables con scroll.
-No acredita teléfono, nuevo mockup ni aprobación de Irlanda. Eficiencia: cola Flutter
-única/agente backend acotado/revisión cruzada, QA previa reutilizada, sin otro build.
-
-Evidencia técnica válida: seis pruebas backend con subcasos SQL/PGlite y Deno check
-de tres entrypoints; cuatro pruebas funcionales Flutter y doce de enlaces manuales;
-prueba final320px/200%; analyze sin observaciones; config móvil16/16. OneDrive bloqueó
-unit_test_assets: copia exacta Temp/dopmi-social-mobile-dskvruky, pub get offline,
-sin borrar trabajo ajeno. Exportación de captura se corrigió con runAsync y
-scrollUntilVisible para hijos perezosos. Captura privada .tools/meta-social/social-320-200.png,
-no disponible en GitHub. No repetir pruebas válidas por estos fallos de harness.
-
-CI automático [37991530876](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37991530876)
-en curso al registrar, fuente a941815; push37991525217 cancelado por concurrencia.
-Consultar conclusión antes de build, sin dispatch duplicado.
-
-Backend sólo DEV ohqxranynackjignryep: migración local20261009205039 aplicada una
-vez como remota20261009210425 (hash/mapeo en migration-history-audit.md). Cuatro tablas
-RLS sin SELECT anon/authenticated, cinco RPC sin EXECUTE anon/authenticated, cuerpos
-SQL comparados y cero filas. Funciones social-verification, social-verification-callback
-y social-verification-meta ACTIVE v1, verify_jwt=false con autorización propia.
-Postflight HTTP: list sin sesión401, callback con state no emitido400, delete
-Instagram sin configuración503. Sin tráfico de usuario/SMS. Producción intacta.
-No secretos Meta ni SOCIAL_VERIFICATION_ENABLED=true configurados por este encargo.
-
-| Criterio | Estado |
+| Revisión | Resultado y límite |
 |---|---|
-| Implementado | a941815, cliente/backend |
-| Verificado técnicamente | Dirigidas válidas; CI integral en curso |
-| Backend desplegado | DEV desactivado |
-| Meta | App creada; permisos/callbacks/secretos/revisión pendientes |
-| Play nuevo | Ningún build nuevo |
-| Dispositivo | Último84687bb / Play2.3.3(308), Samsung Vending; Meta no probado |
-| Aprobación humana | Decisión funcional/creación sí; aceptación del flujo no |
+| Eficiencia | Cola Flutter única, revisión cruzada acotada, reutilización de QA anterior. Sin retoques imperceptibles, polling OAuth ni builds duplicados simultáneos. Repeticiones sólo por fallo/corrección/candidato obligatorio. |
+| UI | Inter320px/texto200%, título Redes sociales sin recorte, controles alcanzables; estados de ambas conexiones vistos en311. No aceptación global de diseñadora. |
+| UX | Navegador externo y regreso explícito «Ya autoricé, comprobar»; personal/manual explicado; misma cuenta/sesión. Entrada real fallaba en310 y se corrigió en f71c444. |
+| Código | Perfil real RescuerProfileHero conectado; regresión entrada100/200%2/2. Gates fuente exacta verdes; no cambios en identidad Auth. |
+| Seguridad | Cuatro tablas privadas RLS y cinco RPC sin acceso anon/authenticated; cuerpos SQL comparados. State hash un uso/10min ligado actor/sesión/proveedor, límite5/10min, finish atómico/propiedad única. Replay de revocación y carrera primera prueba corregidos por revisión cruzada; mutex/tombstones. Tokens sólo servidor y descartados. Sin admin por metadata. Negativos reales restantes pendientes. |
 
-Siguiente acción exacta: confirmar transferencia de secretos Facebook/Instagram al
-servidor Supabase DEV y alta sólo instagram_business_basic; registrar callback
-https://ohqxranynackjignryep.supabase.co/functions/v1/social-verification-callback
-conservando Firebase. Deauthorize/delete bajo /functions/v1/social-verification-meta/
-{facebook|instagram}/{deauthorize|delete}. La política de navegador exige confirmación
-por transmisión de credenciales/ampliación de acceso; nunca pedir secretos en chat.
-Después comprobar contrato real Graph v24.0 y OAuth con cuenta profesional controlada,
-consentimiento/cancelación/denegación/revocación y requisitos de revisión Meta.
-Antes de uso general resolver retención física: intentos/recibos tienen caducidad
-lógica pero no job de purga; tombstones se limpian en próximas revocaciones. No
-presentarlo como resuelto ni desplegar limpieza global. Con gate y configuración
-real válidos, candidato android-guardian-internal, publicación y QA en teléfono.
-La QA SMS incorrecto/reenvío de Play308 sigue pendiente con Irlanda.
-**Entrega pendiente: retomar este encargo, sin iniciar otro delta.**
+En311: perfil real→Verificar mis redes sociales→Instagram consentimiento→callback→
+comprobar, prueba verificada; Facebook consentimiento→callback→comprobar, prueba
+verificada. SQL confirmó mismo propietario/sesión y nuevos intentos verificados;
+UI ambos conectados. Se preservaron UUID/acceso Dopmi y teléfono; sólo prueba social privada.
+Consentimientos pulsados por titular, no aceptación global de entrega.
 
-### Configuración autorizada en curso
+Primer intento Facebook caducó durante login humano (>10min): callback rechazó,
+sin prueba Facebook; cancelación en app dejó intento denied e Instagram conservado.
+Nuevo intento exitoso. Eso acredita expiración/cancelación local, **no denegación por
+proveedor ni desconexión/revocación real**. Prueba anterior denied no se reclasifica
+por existir prueba válida posterior. DEV cerrado después, conexiones conservadas.
 
-El titular autorizó expresamente permiso mínimo, callbacks y secretos sólo en DEV.
-instagram_business_basic añadido, estado «Listo para prueba». Callback OAuth DEV
-y URLs Instagram deauthorize/delete guardados; consola confirmó guardado correcto.
-La URL de ejemplo que genera Meta incluye scopes amplios por defecto: no copiarla;
-el servidor construye su URL únicamente con instagram_business_basic.
-Meta exige reautenticación personal para mostrar secreto Instagram: pendiente del
-titular, ningún secreto transferido todavía. Facebook conserva configuración previa.
+## Pendientes obligatorios, sin excepción aprobada
 
-CI37991530876 detectó auth.sessions ausente en el bootstrap PGlite antiguo de
-payments/legacy que aplica todas las migraciones. Corrección exclusiva de fixture
-añade tabla de sesión con FK/owner/not_after; no cambia producto ni migración.
-Suite tools/verification completa ejecutada una vez:638/638 PASS, cero omitidas.
-El commit de fixture requiere nuevo gate automático; no repetir checks locales válidos.
+1. QA real desconexión/revocación y denegación del proveedor, conservando cuenta Dopmi.
+2. Resolver eliminación Facebook compatible con integración legado antes de uso general.
+3. Retención/purga programada: no implementada; caducidad lógica de intentos/recibos y
+   limpieza de tombstones en revocación siguiente no sustituyen política ejecutada.
+4. Meta App Review/requisitos de publicación y acceso general; tester aceptado no lo acredita.
+5. Aprobación explícita UI/UX por titular/diseñadora donde siga ausente.
 
-Último corte de repositorio1efe72cd69f0e3e44dfe30f42324879a5add6b9b, subido y
-remoto comprobado; producto sigue equivalente a941815 (sólo fixture/documentación).
-Tras reautenticación personal, secreto Instagram guardado exclusivamente en Edge
-Function Secrets DEV junto con SOCIAL_INSTAGRAM_CLIENT_ID, SOCIAL_FACEBOOK_CLIENT_ID,
-SOCIAL_VERIFICATION_CALLBACK_URL y SOCIAL_VERIFICATION_ENABLED=false; guardado
-confirmado por consola. No se escribió secreto en archivos/Git/chat/logs.
-Facebook solicita reautenticación independiente: secreto Facebook aún no transferido,
-callbacks Facebook aún pendientes. Conservar Firebase y las demás configuraciones.
-No copiar la URL de ejemplo generada por Meta con scopes amplios.
+La QA SMS incorrecto/reenvío de dde1bb9 continúa pendiente por separado. No rebajar
+estos gates a mejoras opcionales. Si requieren corrección, validar efecto y candidato
+final de Play; no iniciar ese trabajo en este cierre.
 
-Actualización posterior a reautenticación Facebook: SOCIAL_FACEBOOK_CLIENT_SECRET
-guardado en Edge Function Secrets del mismo DEV, comprobado por su registro en
-consola; secretos nunca escritos en archivos/Git/chat/logs. Callback OAuth DEV
-añadido junto al Firebase anterior y deauthorize Facebook guardado; confirmación
-«Se han guardado los cambios». HTTPS/modo estricto conservados. Activación false.
-Captura privada .tools/meta-social/facebook-dev-config.png, no disponible en GitHub.
+## Continuidad práctica: fallos y herramientas fiables
 
-Eliminación Facebook conserva instrucciones anteriores de la app publicada:
-https://www.dopmi.app/comming-soon. No reemplazar silenciosamente por /facebook/delete,
-que elimina sólo evidencia social y no los datos del flujo anterior. La ruta nueva
-existe pero no está registrada en Meta Facebook. Resolver compatibilidad de ambas
-responsabilidades antes de uso general; no hay excepción aprobada a eliminación.
-Instagram sí tiene OAuth/deauthorize/delete nuevos registrados.
-Próximo requisito externo: cuenta Instagram profesional controlada y aceptación
-de rol tester; solicitud al titular pendiente. No se concedieron roles ni se
-generaron tokens de usuario. Integración OAuth real y nuevo candidato Play pendientes.
-Gate exacto del fixture1efe72c: CI37993212803, automático; no repetir dispatch.
+- OneDrive bloqueó unit_test_assets: copia exacta temporal fuera de OneDrive y pubget
+  offline. SDK Flutter C:/Users/betoq/dopmi-functional-mockup/.tools/flutter/bin/flutter.bat.
+  Captura requiere runAsync y scrollUntilVisible para hijos lazy; error de copia desde
+  cwd equivocado corregido copiando desde raíz, no era defecto del producto.
+- Widget aislado RescuerSocialSection no estaba montado en perfil real: detectado en
+  dispositivo310, f71c444 añade acceso en hero real y regresión. Revisar entrada real,
+  no inferir accesibilidad por pruebas de pantalla aislada.
+- Cola CM6ac960211a4f58756e2f8efd cancelada terminal antes de reemplazar. Ticket21219:
+  proveedor reportó demanda del pool; override API Xcode26.5 sin YAML/firma nuevos.
+  CM6ac96931a20af0c26fabf6c0 publicó310 (fuente75e79f1), reemplazado por311 tras corrección.
+  No jobs activos pendientes documentados. API https://api.codemagic.io/builds/{id}
+  reconcilió cancelación tras fallo de transporte; nunca duplicar POST por timeout.
+- Invitación IG no apareció en app nativa; Chrome oficial accounts/manage_access/,
+  Invitaciones de prueba funcionó; aceptación humana. Un am start VIEW fue rechazado
+  por revisión automática sin motivo detallado; no reintentado, se usaron toques visibles
+  ADB autorizados. Control nativo habitual no admite Android.
+- ADB C:/Users/betoq/dopmi-functional-mockup/.tools/android-sdk/platform-tools/adb.exe,
+  seleccionar dispositivo explícito (-s) por entrada fantasma offline. Esperar estado
+  estable con uiautomator antes de capturar; no repetir capturas de transición.
+- GitHub readAPI .tools/update9ced/github-read.py; Codemagic token CM_API_TOKEN en entorno
+  Windows del usuario, no imprimir. Helpers/journals .tools/meta-social/cm-entryfix-*
+  conservan envío y resultado privado. No volver a consultar suites verdes por cierre.
 
-Cuenta profesional controlada proporcionada por el titular e invitación autorizada
-como Evaluador de Instagram únicamente en app2033254194048655. Meta confirmó estado
-Pendiente; falta aceptación desde Instagram → Aplicaciones y sitios web → Invitaciones
-de tester. Cuenta concreta/captura se mantienen privadas en
-.tools/meta-social/instagram-tester-pending.png (no disponibles en GitHub).
-Primer envío no guardó selección; seleccionar explícitamente la coincidencia exacta
-del desplegable resolvió el formulario. No reenviar invitación ya pendiente ni
-conceder rol Desarrollador/Administrador para probar. OAuth aún no verificado.
-
-Aceptación de tester comprobada en Chrome del Samsung: «Autorizado por ti el
-9 de octubre de 2026». El titular pulsó Aceptar personalmente. En Instagram nativo
-no aparece la pestaña de invitaciones: ruta fiable Configuración → buscar «sitios»
-→ Permisos de apps y sitios web → Apps y sitios web sólo muestra tres estados.
-Usar en navegador https://www.instagram.com/accounts/manage_access/ con sesión de
-la cuenta controlada → Invitaciones de prueba. ADB usado con autorización explícita
-para navegar; no capturar contraseñas ni códigos. Captura privada
-.tools/meta-social/instagram-tester-accepted.png, no disponible en GitHub.
-Esto acredita rol de tester, no OAuth de Dopmi ni aceptación del producto.
-
-Gate FULLCI37993212803 completado SUCCESS en sus cuatro jobs sobre1efe72c:
-web/base de datos, Flutter/Android, iOS e integración identidad/adopción. Se reutiliza
-para candidato1879d7d9793e5a2e42477d1618cb1396813d77c0: diferencia sólo documental,
-producto equivalente a941815. Codemagic6ac960211a4f58756e2f8efd enviado una sola vez,
-workflow android-guardian-internal, índice48; inicialmente queued. No acredita aún
-compilación, publicación, instalación ni OAuth real. Consultar ese mismo job;
-no reenviar por espera. Tester aceptado; activación DEV sigue false hasta QA real.
-
-2026-10-09 — titular solicita repetir workaround por demanda del ticket21219.
-Anterior6ac960211a4f58756e2f8efd confirmado canceled/sin inicio antes de reemplazar.
-Nuevo6ac96931a20af0c26fabf6c0, android-guardian-internal/M2: API confirma
-Xcode26.5 mediante dynamicConfig.environment.softwareVersions.xcode y fuente
-75e79f1752e1b72f915bb0887d3ec8d915f6a9af. Sólo documentación difiere del candidato
-1879d7d; producto/gate1efe72c sin cambios. Inicialmente queued; consultar únicamente
-nuevo handle. No cambiar YAML ni repetir CI válido. No acredita aún arranque o Play.
-Incidencia transitoria de red después de cancelar: reconciliada con GET
-api.codemagic.io/builds/{id}, que confirmó cancelación; POST nuevo realizado una vez.
-Journal privado .tools/meta-social/cm-xcode265-submit.json, no disponible en GitHub.
-
-2026-10-09 — candidato310 publicado e instalado desde Play, acceso social fallido.
-Codemagic6ac96931a20af0c26fabf6c0 terminó16:43:54 México con todos los pasos
-success. Publishing confirma internal/completed/versionCode310/2.3.3 y posterior
-tracks get coincide. AAB SHA256
-11e12a44ccaf9b12bdbfc9d75e1eaa17b9a441379dcbc245a21d1cec22dfa486.
-Samsung ADB comprueba com.mycompany.dopmi2.3.3(310), installer com.android.vending;
-sesión conservada. Fuente75e79f1, producto a941815. No aceptación humana global.
-QA nueva encontró un defecto material: RescuerSocialSection quedó sin referencias
-tras cambios previos del perfil; el botón existía sólo en widget sin montaje.
-Revisión anterior de pantalla aislada no cubrió navegación desde perfil real.
-Corrección mínima en RescuerProfileHero: botón propietario autenticado abre
-SocialVerificationScreen; no cambia aprobación ni proyección pública/enlaces.
-Regresión nueva desde perfil real a320px, escalas1 y2, confirma acceso y una lectura
-list, cero start/escrituras.2/2 PASS. Suite social reutilizada5/5 PASS; primer comando
-auxiliar falló por copia relativa desde scratch (test nuevo ausente), corregido con
-ruta de copia desde raíz; no fallo productivo ni repetición de suites generales.
-Flag DEV se habilitó brevemente para QA y se restauró false al descubrir acceso
-faltante; digestfalse comprobado. Sin OAuth ni tokens/proofs nuevos. Cambio de modo
-Adoptante→Rescatista sólo para llegar al perfil; editor abandonado sin guardar.
-Capturas/journals .tools/meta-social privados/no disponibles en GitHub.
-Siguiente: gate de corrección, un nuevo Play con overrideXcode26.5 y QA OAuth real;
-no probar SMS ni repetir QA dde1 válida.310 acredita instalación, no verificación social.
-Análisis dirigido posterior de corrección: cero observaciones. Producto corregido
-f71c4440f261b10455eb38b9948fd3d68ef321ca subido/remoto comprobado;
-gate automático PR38001865589 pendiente al registro (push38001860198 sujeto a
-concurrencia habitual). No otro dispatch ni Codemagic hasta gate verde.
-
-2026-10-09 — gate de acceso corregido38001865589 SUCCESS/cuatro jobs f71c444.
-Codemagic6ac9772639c0d173f3b4330a enviado una vez, fuente943dc1c (sólo docs
-sobre f71c444), overrideXcode26.5/M2/android-guardian-internal. API confirma inicio
-17:22:22 México/preparing; workaround salió de cola. No duplicar ni repetir CI.
-Journal/status privados .tools/meta-social/cm-entryfix-{submit.json,status.ps1}.
-Publicación, versionCode y QA real todavía pendientes; DEV sigue false.
-
-2026-10-09 — Play311 instalado y OAuth Instagram llega a consentimiento real.
-CM6ac9772639c0d173f3b4330a finished17:46:45 México, fuente943dc1c; Publishing
-+tracks get internal/completed/versionCode311. AAB SHA256
-c380904954f4e5d109b7c09cefa7d7f1fe4db4225e8a349cadfc7fcf65acca97.
-Samsung confirma com.mycompany.dopmi2.3.3(311), installer com.android.vending.
-Perfil real→Verificar mis redes sociales→Redes sociales aprobado en dispositivo.
-Flag DEV true guardado/comprobado para QA; Actualizar estado habilitó proveedores.
-Conectar Instagram profesional crea un intento pending (consulta agregada sin PII)
-y abre Chrome oficial con consentimiento Dopmi Verificación Social-IG. Scope básico
-obligatorio perfil/multimedia; producto consulta sólo identidad. Titular debe pulsar
-Permitir personalmente; solicitud pendiente. No consentimiento ni proof atribuidos.
-No repetir start mientras intento vigente. Captura privada instagram-consent-play311.png.
-
-2026-10-09 — Instagram OAuth real verificado en Play311.
-Titular pulsó Permitir personalmente. Callback oficial completado; retorno a Dopmi
-por Recientes y «Ya autoricé, comprobar» muestra Cuenta conectada y aviso de revisión
-pública conservado. SQL sin PII confirma intentoinstagram/verified, proof existente,
-same_owner=true y same_session=true. Contrato real de identidad profesional aprobado;
-no añadir método Auth/login ni guardar token. Captura privada instagram-connected-play311.png.
-Facebook iniciado una sola vez desde311: Chrome abre login oficial m.facebook.com.
-Titular debe ingresar directamente y avisar al consentimiento; contraseña/códigos
-fuera del chat/capturas. Facebook real, cancelación/revocación reales y gates de uso
-general siguen pendientes. FlagDEVtrue durante QA; no activación pública acreditada.
-Instagram exitoso no sustituye QA SMS ni aceptación humana integral.
-
-2026-10-09 18:05 México — Facebook primer intento expiró durante login humano.
-Callback mostró Solicitud vencida o utilizada; SQL confirma pending/expiredtrue,
-sin proof Facebook. Cancelar este intento desde311 lo marcó denied, UI confirmó
-cancelación y conservó Instagram conectado. Esto verifica expiración segura y
-cancelación real en app, no denegación en proveedor ni revocación de proof.
-Nuevo start una sola vez: sesión Facebook ya iniciada, muestra consentimiento
-«Continuar como…» para app existente DopMi. Titular debe pulsarlo personalmente;
-solicitud pendiente. No ampliar TTL ni repetir login/Instagram. Captura privada
-facebook-consent-play311.png; ninguna credencial capturada. DEVtrue durante QA.
-
-2026-10-09 18:07 México — Facebook e Instagram reales verificados en Play311.
-Titular pulsó Continuar personalmente en Facebook. Callback completado y en311
-«Ya autoricé, comprobar» muestra ambas cuentas conectadas; aviso de revisión pública
-conservado. SQL sin PII confirma intento Facebook nuevo verified y proof mismo
-owner/session; Instagram verified permanece. La consulta anterior al unir proofs
-por owner/provider también muestra proof actual junto al intento viejo denied:
-NO significa que el intento cancelado se verificó; su status sigue denied.
-Captura privada social-both-connected-play311.png; no disponible en GitHub.
-Flag DEV restaurado false al concluir QA, conserva proofs; no apertura general.
-Último implementado/verificado social f71c444, candidato943dc1c/Play311,
-backend social a941815 desplegadoDEVv1/migración20261009210425. Reutilizar CI38001865589
-+pruebas dirigidas/seguridad vigentes; no otro build por documentación.
-Implementado, gate técnico, publicación e integración real exitosa de ambos
-proveedores acreditados. Consentimiento del titular acredita permiso OAuth, NO
-aprobación humana integral de UI/UX ni publicación general.
-Pendientes obligatorios antes de uso general: revocación/desconexión real y
-denegación en proveedor aún sin probar; compatibilidad eliminación Facebook con
-app anterior, retención/purga y Meta App Review/producción. No degradar a opcionales
-ni revocar ahora permisos de la app Facebook anterior sin alcance aprobado.
-QA SMSwrong/resend y aceptación humana de entrega dde1 siguen independientes.
-Siguiente exacto: retomar QA social pendiente con alcance seguro de revocación,
-resolver gates de uso general; conservar prueba exitosa311 y ambas conexiones.
+Capturas .tools/meta-social/social-both-connected-play311.png, instagram-connected,
+facebook-consent y dev-closed-after-social-success.png: privadas/ignoradas, sólo equipo
+local, **no disponibles en GitHub**. No publicar nombres de tester, números, secretos,
+tokens ni datos personales. Evidencia compartible: commits, CI y este registro.
+Cambios locales ajenos no publicados siguen excluidos; consultar Git antes de continuar.

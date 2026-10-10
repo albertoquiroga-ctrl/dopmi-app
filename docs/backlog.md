@@ -1,3 +1,14 @@
+## Cola vigente al cerrar — 9/10/2026
+
+RETOMAR ESTA ENTREGA según [checkpoint](mock-sync-current.md), no nuevo delta.
+1. Completar sólo los gates sociales pendientes del [registro social](meta-social-verification.md), conservando cuenta y activación DEV cerrada fuera de QA autorizada.
+2. QA SMS real incorrecto/reenvío con número controlado no vinculado; Irlanda propuesta, resultado no acreditado. No desvincular teléfono personal.
+3. Recabar aceptación humana UI/UX pendiente y cerrar sólo al satisfacer requisitos obligatorios.
+
+Play311 ya publicado/probado para éxito Instagram/Facebook; paridad846/308 conserva
+sus verificaciones válidas. Los pendientes históricos inferiores se interpretan con
+el checkpoint vigente. Este cierre no ejecuta la cola.
+
 # Dopmi — entregas
 
 > Alcance aprobado8/10: ejecutar N01–N11 sobre mock congelado dde1bb9 y QA pendiente9ced

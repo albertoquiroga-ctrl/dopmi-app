@@ -1,3 +1,14 @@
+## Decisión estable de cierre — 9/10/2026
+
+La autorización adicional Meta permite prueba de control social dentro de la sesión
+Dopmi existente, sin nuevo método de acceso: Instagram personal enlace/revisión manual;
+profesional OAuth, Facebook public_profile. Consentimiento OAuth no es aprobación
+humana global de UI/UX. DEV queda cerrado después de la QA real, sin habilitación general.
+No hay excepción aprobada para pendientes sociales/SMS o aceptación. Estado único:
+[checkpoint](mock-sync-current.md), contratos y gates en [registro social](meta-social-verification.md).
+Se conserva referencia dde1bb9; mock4369 no inventariado. Protocolo vigente suficiente;
+este cierre documental no crea candidato ni autoriza nuevas funciones/auditorías.
+
 # Dopmi — decisiones vigentes
 
 ## Decisiones del titular — entrega dde1bb9, 8/10/2026
