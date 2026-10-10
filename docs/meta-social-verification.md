@@ -283,3 +283,13 @@ Titular debe ingresar directamente y avisar al consentimiento; contraseña/códi
 fuera del chat/capturas. Facebook real, cancelación/revocación reales y gates de uso
 general siguen pendientes. FlagDEVtrue durante QA; no activación pública acreditada.
 Instagram exitoso no sustituye QA SMS ni aceptación humana integral.
+
+2026-10-09 18:05 México — Facebook primer intento expiró durante login humano.
+Callback mostró Solicitud vencida o utilizada; SQL confirma pending/expiredtrue,
+sin proof Facebook. Cancelar este intento desde311 lo marcó denied, UI confirmó
+cancelación y conservó Instagram conectado. Esto verifica expiración segura y
+cancelación real en app, no denegación en proveedor ni revocación de proof.
+Nuevo start una sola vez: sesión Facebook ya iniciada, muestra consentimiento
+«Continuar como…» para app existente DopMi. Titular debe pulsarlo personalmente;
+solicitud pendiente. No ampliar TTL ni repetir login/Instagram. Captura privada
+facebook-consent-play311.png; ninguna credencial capturada. DEVtrue durante QA.
