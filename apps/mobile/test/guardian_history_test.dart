@@ -80,6 +80,7 @@ void main() {
     HistoryRepo repo, {
     bool enabled = true,
     bool verified = true,
+    bool pushed = false,
   }) async {
     tester.view.physicalSize = const Size(390, 2400);
     tester.view.devicePixelRatio = 1;
@@ -93,7 +94,9 @@ void main() {
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         guardianRepositoryProvider.overrideWithValue(repo),
         guardianEnabledProvider.overrideWithValue(enabled),
-        routerInitialLocationProvider.overrideWithValue('/guardian/history'),
+        routerInitialLocationProvider.overrideWithValue(
+          pushed ? '/profile' : '/guardian/history',
+        ),
       ],
     );
     addTearDown(() async {
@@ -103,6 +106,10 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(container: container, child: const DopmiApp()),
     );
+    if (pushed) {
+      await tester.pumpAndSettle();
+      unawaited(container.read(routerProvider).push('/guardian/history'));
+    }
     await pumpUntil(tester, find.text('Historial de ciclos'));
     return identity;
   }
@@ -123,6 +130,37 @@ void main() {
     expect(repo.cursors, isEmpty);
     expect(find.text('Guardián todavía no está disponible.'), findsOneWidget);
   });
+
+  for (final pushed in [false, true]) {
+    testWidgets(
+      'compact cycle history returns to its origin or Guardian without a financial write: $pushed',
+      (tester) async {
+        final repo = HistoryRepo();
+        await start(tester, repo, pushed: pushed);
+        await tester.pumpAndSettle();
+        tester.view.physicalSize = const Size(320, 640);
+        tester.platformDispatcher.textScaleFactorTestValue = 2;
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        await tester.pumpAndSettle();
+        final back = find.byTooltip('Regresar');
+        expect(back.hitTestable(), findsOneWidget);
+        await tester.tap(back);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        final container = ProviderScope.containerOf(
+          tester.element(find.byType(DopmiApp)),
+          listen: false,
+        );
+        expect(
+          container.read(routerProvider).state.uri.path,
+          pushed ? '/profile' : '/guardian',
+        );
+        expect(repo.calls, isEmpty);
+        expect(repo.cursors, hasLength(1));
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
   testWidgets(
     'history paginates and retries the same failed cursor without losing confirmed items',
     (tester) async {
@@ -212,11 +250,23 @@ void main() {
     'switching accounts removes already displayed financial details',
     (tester) async {
       final repo = HistoryRepo();
-      final identity = await start(tester, repo);
+      final identity = await start(tester, repo, pushed: true);
       await tester.pumpAndSettle();
       await tap(tester, 'Ver asignaciones');
       expect(find.text('Medicamentos'), findsOneWidget);
       repo.read = (_) async => {'items': <Json>[], 'next_cursor': null};
+      identity.profile = const Profile(
+        id: 'two',
+        name: 'Dos',
+        phone: '',
+        city: '',
+        mode: 'donor',
+        intent: 'donate',
+        status: 'active',
+        termsVersion: currentTermsVersion,
+        privacyVersion: currentPrivacyVersion,
+        adultConfirmed: true,
+      );
       identity.emit(
         IdentityEvent(Identity('two', 'two@example.test', verified: true)),
       );

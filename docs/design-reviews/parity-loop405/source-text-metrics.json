@@ -1,0 +1,23 @@
+[
+  {
+    "fontSize": "28px",
+    "fontWeight": "700",
+    "letterSpacing": "-0.56px",
+    "lineHeight": "32.2px",
+    "selector": ".pet-detail-heading h1"
+  },
+  {
+    "fontSize": "13px",
+    "fontWeight": "600",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "selector": ".donate-case-tags span"
+  },
+  {
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "letterSpacing": "normal",
+    "lineHeight": "21.7px",
+    "selector": ".pet-detail-story p"
+  }
+]

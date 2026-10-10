@@ -1,14 +1,83 @@
-# Dopmi — continuidad de ChatGPT Work a Codex
+# Dopmi — continuidad
+
+## Arranque vigente — cierre 9/10/2026
+
+Leer primero [checkpoint](mock-sync-current.md), después [protocolo](mock-sync-workflow.md)
+y [tablero](parity-current-review.md). ENTREGA_CONTINUA_EFICIENTE_VERIFICADA.
+**Chat cerrado; entrega pendiente. RETOMAR ESTA ENTREGA, no iniciar nuevo delta.**
+Mock congelado dde1bb9, QA9ced incluida. Último producto f71c444; candidato943dc1c,
+Play2.3.3(311) publicado e instalado; ambos OAuth sociales verificados en teléfono,
+DEV nuevamente cerrado. Paridad/SMS tiene evidencia anterior846/308 reutilizable.
+Pendientes exactos, límites de aceptación y evidencia en checkpoint y
+[registro social](meta-social-verification.md). No repetir verificaciones válidas.
+Preservar cambios ajenos/privados, firma, permisos y dinero test; no merge ni producción.
+Este cierre sólo documenta, no crea candidato ni autoriza trabajo adicional.
+
+## Historial de continuidad (referencia, fuera del resumen de arranque)
+
+Las secciones siguientes se conservan íntegras. Sus pendientes antiguos quedan
+supersedidos por el checkpoint y las entradas fechadas posteriores aplicables.
+
+## Continuidad H12 — cierre operativo de H11, 30/9/2026
+
+El titular autorizó concluir H11 con la evidencia autónoma disponible en
+Android y trasladar al candidato final H12 la entrega real de correo, regresión
+iOS y revisión visual de Irlanda. Android 2.3.3 (283), fuente `94cb82e`, se
+actualizó desde Play interno en Samsung SM-S938B/Android 16, conservó sesión y
+cargó fotos tras suspensión. Red interrumpida recuperó la misma sesión mediante
+reintento; queda fricción media, sin defecto crítico/alto. Texto 1.30,
+orientación, etiquetas y TalkBack funcionaron; configuración del teléfono fue
+restaurada. H12 es el último hito antes del MVP: integrar cambios finales de
+Irlanda y `23fcfab`, publicar el mismo SHA nuevo en Play/TestFlight, repetir QA
+Android/iOS, correo real y revisión visual, y luego completar fichas/landing,
+operación y publicación gradual. Dinero real continúa sin autorización.
+
+Referencia Irlanda reconsultada sin cambios:
+`irlanda/apoyar-detalle-perfil@a246fa6f42ec517aae264d7fbd2358d647c4f840`.
+
+## Continuidad H10 — medición y correo, 28/9/2026
+
+Los cinco eventos mínimos quedaron conectados a resultados reales, sin payloads,
+con tolerancia a fallos de Firebase y deduplicación local de pagos. Diagnóstico
+interno protegido por build. Gate local aprobado: Flutter 90, backend 402, admin
+23, prototipo 4 y configuración 11; builds web aprobados. Resend/dopmi.org y el
+recorrido de respuesta a soporte están verificados. Falta candidato nuevo, pruebas
+Android/iPhone, Firebase, Apple Private Relay y revocación social real. Supabase
+Pro/protección de contraseñas filtradas se difiere a H12. Continuar en
+`codex/design-foundation`; no cerrar H10 por compilación.
+
+## Continuidad H10 — 28/9/2026
+
+Adición: servidor de credenciales Apple preparado, probado (400 Node/backend,
+254 PostgreSQL, Deno check) y desplegado test con flag apagado. RPC sólo servidor,
+cifrado AES-GCM y verificación JWT. Migración local20260928154523 remota20260928155742.
+No habilitar Apple antes de secretos/capacidades, conexión nativa y prueba real.
+Google continúa requiriendo reautenticación en Chrome. Ver progress/h10-execution.
+
+H10 autorizado, ejecución en `docs/h10-execution.md`. El titular considera H9
+suficientemente aceptado para avanzar; esto supersede el bloqueo de aceptación
+agrupada inferior sin atribuir nuevos recorridos instalados. Primer bloque:
+guardas de entorno y Google nativo cliente, flags apagados; Apple espera
+revocación servidor. Flutter analyze/84 tests y Python/10 aprobados. H10 sigue
+abierto: no hay eliminación, medición, correo ni producción completos.
+Conservar rama codex/design-foundation y PR6; verificar remotos al continuar.
+
+
+> Decisión vigente 27/9/2026: el titular admite las pantallas actuales para continuar; la fidelidad visual queda aplazada, sin aceptación atribuida a Irlanda. H9 autorizado: aceptación integrada y correcciones, con revisión final agrupada en Internal Testing. Ver [H9](h9-acceptance.md). Esta decisión supersede los bloqueos visuales históricos inferiores.
+
+## Continuidad H9 — 27/9/2026
+
+H9 implementado y comprobado técnicamente sobre 73c731f, CI36330974531 aprobado. Android 2.3.3 (259) publicado por Codemagic 6ab93b1e75e12724939f4af7 en Play internal/completed. Ver h9-acceptance.md y última entrada de progress.md. El titular admite pantallas actuales y aplaza fidelidad; falta su aceptación funcional agrupada, no repetir desarrollo H8/H9 ni atribuir aceptación visual a Irlanda. Tres migraciones H9 desplegadas y verificadas; correspondence en migration-history-audit.md. Continuación codex/design-foundation, PR6 abierto. Las secciones inferiores son históricas cuando contradigan este corte.
 
 ## Estado vigente — consolidación H6, 25 de septiembre de 2026 (México)
 
-Esta sección supersede las prioridades históricas siguientes. H5 está aceptado en test según `hito5-delivery.md`, con excepción de disputa explícita. El titular autorizó ejecutar `release-roadmap.md` (H6–H12). H6 integrado por PR #4, commit `99d3118ae69bc7c4c79200c28107bfb9cd2f26b1`, CI 36206671710 aprobado. Continuación H7 en `codex/legacy-boundary`; verificar refs/CI antes de elegir base. No reiniciar H5.
+Esta sección supersede las prioridades históricas siguientes. H5 está aceptado en test según `hito5-delivery.md`, con excepción de disputa explícita. El titular autorizó ejecutar `release-roadmap.md` (H6–H12). H6 integrado por PR #4, commit `99d3118ae69bc7c4c79200c28107bfb9cd2f26b1`, CI 36206671710 aprobado. H7 integrado por PR #5, merge `ba9f897f3fa418e952b98e4c604cffe468a8aa95`, CI 36208309068 aprobado. Continuación H8 en `codex/design-foundation`; verificar refs/CI antes de elegir base. No reiniciar H5.
 
 Referencia viva: `irlanda/apoyar-detalle-perfil`, SHA inicial `a246fa6f42ec517aae264d7fbd2358d647c4f840`. Ver `design-reference.json` y `design-parity.md`. Seguir nuevos commits al inicio/cierre de cada ciclo. Videos, Meta, push y analítica avanzada son post-MVP; tienda/fondo/bonos/cashback quedan fuera.
 
-Codemagic API verificada mediante variable local de usuario `CM_API_TOKEN` (nunca imprimir su valor). Android 2.3.3 (252), `0140fbd`, publicado desde `android-guardian-internal`; iOS 2.3.3 (241), `d74fe97`, es anterior. H11 exige el mismo candidato en Play interno y TestFlight.
+Codemagic API verificada mediante variable local de usuario `CM_API_TOKEN` (nunca imprimir su valor). Android H8 2.3.3 (253), `74fd92286b089a162cd1448e3835c34fc44bc4f8`, publicado desde `android-guardian-internal` por Codex a petición del titular; build `6ab783481453f4d0a7737de5`, canal Play `internal` comprobado `completed`. Irlanda revisa desde Internal Testing; instalación y aceptación visual pendientes; iOS 2.3.3 (241), `d74fe97`, es anterior. H11 exige el mismo candidato en Play interno y TestFlight.
 
-Siguiente: integrar H7 tras CI y continuar H8. Retiro remoto H7 aplicado por MCP; ver `legacy-retirement.md`, incluidos respaldo local y límites. No borrar legado ni modificar historial de migraciones a ciegas. Dinero real requiere autorización separada.
+Siguiente: implementar H8 completo según `h8-execution.md`, autorizado el 26/9/2026. Build 253 es parcial: faltan swipe, pantallas completas de ambos modos, perfiles, favoritos, historias y demás recorridos; no es sólo una revisión visual pendiente. H8 absorbe la paridad antes asignada a H9 y sus dependencias mínimas de backend. Componentes/acceso previos reutilizables en PR #6. H8 no está aceptado por Irlanda ni probado en dispositivo. Retiro remoto H7 ya aplicado; ver `legacy-retirement.md`. Dinero real requiere autorización separada.
 
 ## Registro histórico de traspaso
 

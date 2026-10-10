@@ -1,0 +1,53 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart
+00:00 +0: guest save requests login without advancing or writing favorite
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: at least one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "Iniciar sesión": []>
+   Which: means none were found but some were expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart:95:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart line 95
+The test description was:
+  guest save requests login without advancing or writing favorite
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:02 +0 -1: guest save requests login without advancing or writing favorite [E]
+  Test failed. See exception logs above.
+  The test description was: guest save requests login without advancing or writing favorite
+  
+00:02 +0 -1: burst pointer movement accumulates before redraw: false/false
+00:02 +1 -1: burst pointer movement accumulates before redraw: false/true
+00:02 +2 -1: burst pointer movement accumulates before redraw: true/false
+00:03 +3 -1: burst pointer movement accumulates before redraw: true/true
+00:03 +4 -1: reference tap versus short drag boundary: -9.0 pixels
+00:03 +5 -1: reference tap versus short drag boundary: -8.0 pixels
+00:03 +6 -1: reference tap versus short drag boundary: -7.0 pixels
+00:03 +7 -1: reference tap versus short drag boundary: 7.0 pixels
+00:04 +8 -1: reference tap versus short drag boundary: 8.0 pixels
+00:04 +9 -1: reference tap versus short drag boundary: 9.0 pixels
+00:04 +10 -1: card follows finger immediately, threshold returns, cancel never saves, exit lasts 280ms
+00:04 +11 -1: incoming card follows a new gesture immediately; right=false
+00:04 +12 -1: incoming card follows a new gesture immediately; right=true
+00:05 +13 -1: returning from favorites preserves the card without replaying entry
+00:05 +14 -1: support entry and interrupted gesture; reduced=false
+00:05 +15 -1: support entry and interrupted gesture; reduced=true
+00:05 +16 -1: small screen large text keeps species and actions reachable
+00:05 +17 -1: slow favorite does not delay next card and failure offers persistence retry
+00:06 +18 -1: favorite confirmation shares the exit time instead of delaying it
+00:06 +19 -1: reduced motion advances without a timed exit
+00:06 +20 -1: a short drag returns on the CSS curve and a new drag interrupts it
+00:06 +21 -1: exit frames interpolate CSS angle and translation independently
+00:06 +22 -1: Some tests failed.
+
+Failing tests:
+  C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/discovery_motion_test.dart: guest save requests login without advancing or writing favorite

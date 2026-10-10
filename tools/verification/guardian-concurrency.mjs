@@ -85,12 +85,14 @@ const balanced = query(`select private.dopmi_guardian_funded('${expense}'),
 assert.equal(balanced,'1900|60|0',`Settlement and Checkout overbooked expense: ${balanced}`);
 console.log('Guardian settlement vs individual Checkout: assigned 1900, reserved 60, capacity zero');
 
+// Activations use $60, above the current $50 minimum. Amount-change races
+// still request $50, a distinct valid price. Fees and nets scale together.
 // Two devices cannot open distinct initial Checkouts for one donor, even when
 // the expense has enough capacity for both requests.
 query(`insert into public.dopmi_rescue_records(id,owner_id,kind,status,approved_snapshot,parent_id,reimbursable_cents)
 values('74100000-0000-4000-8000-000000000004','${owner}','expense','approved','{"title":"Activation CI"}',
-'74100000-0000-4000-8000-000000000002',4000);`);
-const activationData = {donor_id:donorB,key:'74200000-0000-4000-8000-000000000004',gross_cents:2000,
+'74100000-0000-4000-8000-000000000002',12000);`);
+const activationData = {donor_id:donorB,key:'74200000-0000-4000-8000-000000000004',gross_cents:6000,
   consent:true,consent_version:'guardian-2026-09-24',return_url:'https://example.test/return'};
 let activationReady;
 const activationStarted = new Promise(resolve => { activationReady=resolve; });
@@ -124,7 +126,7 @@ query(`select public.dopmi_guardian_activation_server('save_checkout',jsonb_buil
 'cycle_id','${activationId}','lease','${activationLease}','session_id','cs_test_scheduleCI'));
 select public.dopmi_guardian_settlement_server('settle_initial',jsonb_build_object(
 'donor_id','${donorB}','checkout_session_id','cs_test_scheduleCI','customer_id','cus_scheduleCI','payment_method_id','pm_scheduleCI',
-'payment_intent_id','pi_scheduleCI','charge_id','ch_scheduleCI','gross_cents',2000,'platform_fee_cents',40,'stripe_fee_cents',60,'net_cents',1900));`);
+'payment_intent_id','pi_scheduleCI','charge_id','ch_scheduleCI','gross_cents',6000,'platform_fee_cents',120,'stripe_fee_cents',180,'net_cents',5700));`);
 const transferJob=JSON.parse(query(`select public.dopmi_guardian_settlement_server('claim','{"cycle_id":"${activationId}"}');`));
 query(`select public.dopmi_guardian_settlement_server('finish','${JSON.stringify({job_id:transferJob.id,lease:transferJob.lease,result_id:'tr_scheduleCI'})}');
 select public.dopmi_guardian_schedule_server('prepare',jsonb_build_object('cycle_id','${activationId}','charge_created',extract(epoch from now())::bigint));`);
@@ -146,8 +148,8 @@ for(const [operation,fields] of [['price',{price_id:'price_collectionCI'}],['sub
   query(`select public.dopmi_guardian_schedule_server('${operation}','${JSON.stringify({cycle_id:activationId,lease:scheduleLease,...fields})}');`);
 query(`insert into public.dopmi_rescue_records(id,owner_id,kind,status,approved_snapshot,parent_id,reimbursable_cents)
 values('74100000-0000-4000-8000-000000000005','${owner}','expense','approved','{"title":"Collection CI"}',
-'74100000-0000-4000-8000-000000000002',4000);`);
-const collectionData={verified_price_id:'price_collectionCI',verified_gross_cents:2000,invoice_id:'in_collectionCI',subscription_id:'sub_collectionCI',cycle_key:'74200000-0000-4000-8000-000000000006',
+'74100000-0000-4000-8000-000000000002',12000);`);
+const collectionData={verified_price_id:'price_collectionCI',verified_gross_cents:6000,invoice_id:'in_collectionCI',subscription_id:'sub_collectionCI',cycle_key:'74200000-0000-4000-8000-000000000006',
   period_start:Math.floor(Date.now()/1000)-1,period_end:Math.floor(Date.now()/1000)+30*86400,fresh:true};
 let collectionReady;
 const collectionStarted=new Promise(resolve=>{collectionReady=resolve;});
@@ -200,7 +202,7 @@ console.log('Guardian concurrent payment recovery: one recovery lease and one vo
 
 // Complete the disposable failed payment before preparing the next cycle.
 query(`select public.dopmi_guardian_recovery_server('voided','${JSON.stringify({...recoveryData,intent_id:'pi_recoveryCI',invoice_payment_id:'inpay_recoveryCI',
-  invoice_status:'void',intent_status:'canceled',invoice_payment_status:'canceled',amount_received:0,amount_capturable:0,amount_paid:0,amount_remaining:2000})}');`);
+  invoice_status:'void',intent_status:'canceled',invoice_payment_status:'canceled',amount_received:0,amount_capturable:0,amount_paid:0,amount_remaining:6000})}');`);
 const nextCycle={...collectionData,invoice_id:'in_ownerCI',cycle_key:'74200000-0000-4000-8000-000000000007',period_start:collectionData.period_start+1};
 query(`select public.dopmi_guardian_collection_server('prepare','${JSON.stringify(nextCycle)}');`);
 const ownerClaim=JSON.parse(query(`select public.dopmi_guardian_collection_server('claim','{"invoice_id":"in_ownerCI"}');`));
@@ -306,7 +308,7 @@ const setupInput={...activationData,donor_id:setupOwner,key:crypto.randomUUID()}
 const setup=JSON.parse(query(`select public.dopmi_guardian_activation_server('prepare','${JSON.stringify(setupInput)}');`));
 const setupClaim=JSON.parse(query(`select public.dopmi_guardian_activation_server('claim_checkout','{"cycle_id":"${setup.cycle_id}"}');`));
 query(`select public.dopmi_guardian_activation_server('save_checkout','${JSON.stringify({cycle_id:setup.cycle_id,lease:setupClaim.lease,session_id:'cs_test_stopCI'})}');
-select public.dopmi_guardian_settlement_server('settle_initial','${JSON.stringify({donor_id:setupOwner,checkout_session_id:'cs_test_stopCI',customer_id:'cus_stopCI',payment_method_id:'pm_stopCI',payment_intent_id:'pi_stopCI',charge_id:'ch_stopCI',gross_cents:2000,platform_fee_cents:40,stripe_fee_cents:60,net_cents:1900})}');`);
+select public.dopmi_guardian_settlement_server('settle_initial','${JSON.stringify({donor_id:setupOwner,checkout_session_id:'cs_test_stopCI',customer_id:'cus_stopCI',payment_method_id:'pm_stopCI',payment_intent_id:'pi_stopCI',charge_id:'ch_stopCI',gross_cents:6000,platform_fee_cents:120,stripe_fee_cents:180,net_cents:5700})}');`);
 const stopTransfer=JSON.parse(query(`select public.dopmi_guardian_settlement_server('claim','{"cycle_id":"${setup.cycle_id}"}');`));
 query(`select public.dopmi_guardian_settlement_server('finish','${JSON.stringify({job_id:stopTransfer.id,lease:stopTransfer.lease,result_id:'tr_stopCI'})}');
 select public.dopmi_guardian_schedule_server('prepare',jsonb_build_object('cycle_id','${setup.cycle_id}','charge_created',extract(epoch from now())::bigint));`);
@@ -336,7 +338,7 @@ const methodActivationInput={...activationData,donor_id:methodOwner,key:crypto.r
 const methodActivation=JSON.parse(query(`select public.dopmi_guardian_activation_server('prepare','${JSON.stringify(methodActivationInput)}');`));
 const methodActivationClaim=JSON.parse(query(`select public.dopmi_guardian_activation_server('claim_checkout','{"cycle_id":"${methodActivation.cycle_id}"}');`));
 query(`select public.dopmi_guardian_activation_server('save_checkout','${JSON.stringify({cycle_id:methodActivation.cycle_id,lease:methodActivationClaim.lease,session_id:'cs_test_methodInitialCI'})}');
-select public.dopmi_guardian_settlement_server('settle_initial','${JSON.stringify({donor_id:methodOwner,checkout_session_id:'cs_test_methodInitialCI',customer_id:'cus_methodCI',payment_method_id:'pm_methodOldCI',payment_intent_id:'pi_methodCI',charge_id:'ch_methodCI',gross_cents:2000,platform_fee_cents:40,stripe_fee_cents:60,net_cents:1900})}');`);
+select public.dopmi_guardian_settlement_server('settle_initial','${JSON.stringify({donor_id:methodOwner,checkout_session_id:'cs_test_methodInitialCI',customer_id:'cus_methodCI',payment_method_id:'pm_methodOldCI',payment_intent_id:'pi_methodCI',charge_id:'ch_methodCI',gross_cents:6000,platform_fee_cents:120,stripe_fee_cents:180,net_cents:5700})}');`);
 const methodTransfer=JSON.parse(query(`select public.dopmi_guardian_settlement_server('claim','{"cycle_id":"${methodActivation.cycle_id}"}');`));
 query(`select public.dopmi_guardian_settlement_server('finish','${JSON.stringify({job_id:methodTransfer.id,lease:methodTransfer.lease,result_id:'tr_methodCI'})}');
 select public.dopmi_guardian_schedule_server('prepare',jsonb_build_object('cycle_id','${methodActivation.cycle_id}','charge_created',extract(epoch from now())::bigint));`);
@@ -381,7 +383,7 @@ const boundaryActivationInput={...activationData,donor_id:boundaryOwner,key:cryp
 const boundaryActivation=JSON.parse(query(`select public.dopmi_guardian_activation_server('prepare','${JSON.stringify(boundaryActivationInput)}');`));
 const boundaryActivationClaim=JSON.parse(query(`select public.dopmi_guardian_activation_server('claim_checkout','{"cycle_id":"${boundaryActivation.cycle_id}"}');`));
 query(`select public.dopmi_guardian_activation_server('save_checkout','${JSON.stringify({cycle_id:boundaryActivation.cycle_id,lease:boundaryActivationClaim.lease,session_id:'cs_test_boundaryCI'})}');
-select public.dopmi_guardian_settlement_server('settle_initial','${JSON.stringify({donor_id:boundaryOwner,checkout_session_id:'cs_test_boundaryCI',customer_id:'cus_boundaryCI',payment_method_id:'pm_boundaryCI',payment_intent_id:'pi_boundaryCI',charge_id:'ch_boundaryCI',gross_cents:2000,platform_fee_cents:40,stripe_fee_cents:60,net_cents:1900})}');`);
+select public.dopmi_guardian_settlement_server('settle_initial','${JSON.stringify({donor_id:boundaryOwner,checkout_session_id:'cs_test_boundaryCI',customer_id:'cus_boundaryCI',payment_method_id:'pm_boundaryCI',payment_intent_id:'pi_boundaryCI',charge_id:'ch_boundaryCI',gross_cents:6000,platform_fee_cents:120,stripe_fee_cents:180,net_cents:5700})}');`);
 const boundaryTransfer=JSON.parse(query(`select public.dopmi_guardian_settlement_server('claim','{"cycle_id":"${boundaryActivation.cycle_id}"}');`));
 query(`select public.dopmi_guardian_settlement_server('finish','${JSON.stringify({job_id:boundaryTransfer.id,lease:boundaryTransfer.lease,result_id:'tr_boundaryCI'})}');
 select public.dopmi_guardian_schedule_server('prepare',jsonb_build_object('cycle_id','${boundaryActivation.cycle_id}','charge_created',extract(epoch from now())::bigint));`);
@@ -424,7 +426,7 @@ const boundaryApply=concurrentQuery(`begin;select public.dopmi_guardian_change_s
  subscription_id:'sub_boundaryCI',customer_id:'cus_boundaryCI',price_id:'price_boundaryChange2CI',item_id:'si_boundaryCI',
  effective_from:boundaryEnd,gross_cents:5000,verified_period_start:boundaryStart})}');select pg_sleep(2);commit;`,output=>{if(output.includes('"status": "applied"'))boundaryAppliedReady();});
 await Promise.race([boundaryAppliedStarted,boundaryApply.then(()=>{throw Error('Boundary confirmation did not report');})]);
-const staleBoundaryReservation=concurrentQuery(`select public.dopmi_guardian_collection_server('prepare','${JSON.stringify({invoice_id:'in_staleBoundaryCI',subscription_id:'sub_boundaryCI',cycle_key:crypto.randomUUID(),period_start:boundaryEnd,period_end:boundaryEnd+30*86400,fresh:true,verified_price_id:'price_boundaryCI',verified_gross_cents:2000})}');`);
+const staleBoundaryReservation=concurrentQuery(`select public.dopmi_guardian_collection_server('prepare','${JSON.stringify({invoice_id:'in_staleBoundaryCI',subscription_id:'sub_boundaryCI',cycle_key:crypto.randomUUID(),period_start:boundaryEnd,period_end:boundaryEnd+30*86400,fresh:true,verified_price_id:'price_boundaryCI',verified_gross_cents:6000})}');`);
 const boundaryResults=await Promise.allSettled([boundaryApply,staleBoundaryReservation]);assert.equal(boundaryResults[0].status,'fulfilled');assert.equal(boundaryResults[1].status,'rejected');assert.match(boundaryResults[1].reason.message,/factura no coincide/);
 assert.equal(query("select count(*) from private.dopmi_guardian_collection_jobs where invoice_id='in_staleBoundaryCI';"),'0');
 console.log('Guardian boundary price confirmation wins: stale invoice cannot reserve a different amount');
@@ -432,8 +434,8 @@ console.log('Guardian boundary price confirmation wins: stale invoice cannot res
 // Reconcile a synthetic, fully transferred initial payment. Two workers get
 // one refund lease; capacity readers share the same rescuer lock as finalization.
 const refundCycle=boundaryActivation.cycle_id;
-const refundObservation={cycle_id:refundCycle,charge_id:'ch_boundaryCI',payment_intent_id:'pi_boundaryCI',gross_cents:2000,
- confirmed_refund_cents:2000,refunds:[{id:'re_boundaryCI',amount:2000}],has_pending:false,disputed:false};
+const refundObservation={cycle_id:refundCycle,charge_id:'ch_boundaryCI',payment_intent_id:'pi_boundaryCI',gross_cents:6000,
+ confirmed_refund_cents:6000,refunds:[{id:'re_boundaryCI',amount:6000}],has_pending:false,disputed:false};
 query(`select public.dopmi_guardian_refund_server('observe','${JSON.stringify(refundObservation)}');`);
 let refundClaimReady;const refundClaimStarted=new Promise(resolve=>{refundClaimReady=resolve;});
 const refundClaimFirst=concurrentQuery(`begin;select public.dopmi_guardian_refund_server('claim','{"cycle_id":"${refundCycle}"}');select pg_sleep(2);commit;`,output=>{if(output.includes('"lease_until"'))refundClaimReady();});
@@ -443,12 +445,12 @@ const refundClaims=await Promise.all([refundClaimFirst,refundClaimSecond]);asser
 const refundState=JSON.parse(refundClaims[0]),refundLease=refundState.adjustment.lease;
 assert.equal(refundState.reversals.length,1);const refundPart=refundState.reversals[0];
 console.log('Guardian refund concurrency: one lease, no competing reversal authorization');
-query(`select public.dopmi_guardian_refund_server('confirmed','${JSON.stringify({cycle_id:refundCycle,lease:refundLease,expense_id:refundPart.expense_id,transfer_id:refundPart.transfer_id,amount_cents:1900,reversal_id:'trr_boundaryCI'})}');`);
+query(`select public.dopmi_guardian_refund_server('confirmed','${JSON.stringify({cycle_id:refundCycle,lease:refundLease,expense_id:refundPart.expense_id,transfer_id:refundPart.transfer_id,amount_cents:5700,reversal_id:'trr_boundaryCI'})}');`);
 const capacityBefore=Number(query(`select private.dopmi_guardian_reserved('${refundPart.expense_id}');`));
 let refundDoneReady;const refundDoneStarted=new Promise(resolve=>{refundDoneReady=resolve;});
 const refundDone=concurrentQuery(`begin;select public.dopmi_guardian_refund_server('complete','${JSON.stringify({cycle_id:refundCycle,lease:refundLease})}');select pg_sleep(2);commit;`,output=>{if(output.includes('"status": "completed"'))refundDoneReady();});
 await Promise.race([refundDoneStarted,refundDone.then(()=>{throw Error('Refund completion did not report');})]);
 const capacityAfter=concurrentQuery(`begin;select private.dopmi_rescue_lock('${owner}');select private.dopmi_guardian_reserved('${refundPart.expense_id}');commit;`);
-const refundFinish=await Promise.all([refundDone,capacityAfter]);assert.equal(Number(refundFinish[1]),capacityBefore-1900);
+const refundFinish=await Promise.all([refundDone,capacityAfter]);assert.equal(Number(refundFinish[1]),capacityBefore-5700);
 assert.equal(query(`select allocated_cents=0 and refund_cents=gross_cents and platform_loss_cents=stripe_fee_cents from private.dopmi_guardian_settlements where cycle_id='${refundCycle}';`),'t');
 console.log('Guardian refund completion: capacity releases atomically under the shared rescuer lock');

@@ -1,18 +1,27 @@
-name: Dopmi identity and adoption
+name: Dopmi integrated acceptance
 on:
   push:
   pull_request:
   workflow_dispatch:
+    inputs:
+      scope:
+        description: Checks to run; photo reuses the web/database gate and completes backend
+        default: full
+        type: choice
+        options: [full, photo, mobile]
 permissions:
   contents: read
 concurrency:
-  group: dopmi-${{ github.ref }}
+  group: dopmi-${{ github.head_ref || github.ref_name }}-${{ inputs.scope || 'full' }}
   cancel-in-progress: true
 jobs:
   web-and-database:
+    if: ${{ inputs.scope != 'photo' && inputs.scope != 'mobile' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Validate mobile build configuration
         run: python3 scripts/test_mobile_config.py
       - uses: actions/setup-node@v4
@@ -34,10 +43,14 @@ jobs:
         run: tools/verification/node_modules/.bin/supabase test db
       - name: Guardian concurrent reservations against PostgreSQL
         run: node tools/verification/guardian-concurrency.mjs
+      - name: Adoption contact concurrent devices and lost response
+        run: node tools/verification/adoption-contact-concurrency.mjs
   flutter:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-java@v4
         with:
           distribution: microsoft
@@ -49,13 +62,38 @@ jobs:
           cache: true
       - run: flutter pub get
         working-directory: apps/mobile
+      - name: Write compile-only Firebase placeholders
+        run: python3 scripts/write-ci-firebase-config.py
       - name: Check Dart formatting and show the exact diff
         run: |
           dart format lib test test_backend
           git diff --exit-code -- lib test test_backend
         working-directory: apps/mobile
-      - run: flutter analyze && flutter test
+      - name: Analyze and verify the selected scope
+        env:
+          CHECK_SCOPE: ${{ inputs.scope || 'full' }}
+        run: |
+          flutter analyze
+          if [ "$CHECK_SCOPE" = photo ]; then
+            flutter test test/photo_runtime_test.dart test/photo_preview_test.dart test/photo_recovery_widget_test.dart test/photo_transport_test.dart test/match_thread_row_test.dart test/rescue_file_test.dart test/public_profile_avatar_recovery_test.dart test/rescuer_profile_published_test.dart test/adoption_photo_recovery_test.dart test/case_photo_recovery_test.dart test/account_photo_widgets_test.dart test/discovery_support_photo_test.dart test/discovery_motion_test.dart test/discovery_stack_transition_test.dart test/discovery_empty_test.dart test/community_test.dart
+          else
+            flutter test
+          fi
         working-directory: apps/mobile
+      - name: Capture actual Flutter components and access screens
+        run: flutter test tool/capture_design_test.dart
+        working-directory: apps/mobile
+      - name: Capture actual profile, cases, messages and state screens
+        env:
+          CAPTURE_FILTER: adoption-swipe,adoption-large,adoption-drag,adoption-filters,adoption-contact,adoption-detail,adoption-end,support-home,profile-overview,basic-info,publish-,case-publication,owned-cases,rescuer-messages,rescuer-notifications,rescuer-help,chat-bubbles-rescuer
+        run: flutter test tool/capture_profile_test.dart --dart-define=CAPTURE_FILTER="$CAPTURE_FILTER"
+        working-directory: apps/mobile
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dopmi-design-review
+          path: .tools/design-review/*.png
+          include-hidden-files: true
+          if-no-files-found: error
       - name: Android development build (no production credentials)
         run: flutter build apk --debug --dart-define-from-file=config.example.json
         working-directory: apps/mobile
@@ -64,9 +102,12 @@ jobs:
           name: dopmi-android-development
           path: apps/mobile/build/app/outputs/flutter-apk/app-debug.apk
   ios:
+    if: ${{ inputs.scope != 'mobile' }}
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.47.4'
@@ -74,14 +115,19 @@ jobs:
           cache: true
       - run: flutter pub get
         working-directory: apps/mobile
+      - name: Write compile-only Firebase placeholders
+        run: python3 scripts/write-ci-firebase-config.py
       - name: iOS simulator compilation (device signing is separate)
         run: flutter build ios --simulator --no-codesign --dart-define-from-file=config.example.json --dart-define=ENABLE_GUARDIAN_TEST=true
         working-directory: apps/mobile
   identity-and-adoption-backend:
+    if: ${{ inputs.scope != 'mobile' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -100,9 +146,10 @@ jobs:
         run: tools/verification/node_modules/.bin/supabase status --output json > "$RUNNER_TEMP/supabase-status.json"
       - run: flutter pub get
         working-directory: apps/mobile
-      - name: Identity, adoption moderation, private photos and messaging
+      - name: Identity, adoption, rescues and H8 community integration
         env:
           DOPMI_LOCAL_CONFIG: ${{ runner.temp }}/supabase-status.json
+          DOPMI_LOCAL_DB_CONTAINER: supabase_db_dopmi
         run: flutter test test_backend --reporter expanded --concurrency=1
         working-directory: apps/mobile
       - name: Stop disposable services

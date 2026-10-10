@@ -3,17 +3,28 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show AuthException;
 
 import '../../core/ui.dart';
+import '../../core/measurement.dart';
 import 'identity_controller.dart';
 import 'identity_repository.dart';
+import 'auth_ui.dart';
+import 'legal_document_frame.dart';
 
 enum AuthFormMode { login, signup, forgot, reset }
 
 class AuthFormScreen extends ConsumerStatefulWidget {
-  const AuthFormScreen({super.key, required this.mode, this.intent = 'adopt'});
+  const AuthFormScreen({
+    super.key,
+    required this.mode,
+    this.intent = 'adopt',
+    this.initialEmail,
+  });
   final AuthFormMode mode;
   final String intent;
+  final String? initialEmail;
   @override
   ConsumerState<AuthFormScreen> createState() => _AuthFormScreenState();
 }
@@ -25,8 +36,14 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
       confirmation = TextEditingController(),
       name = TextEditingController(),
       phone = TextEditingController();
-  bool busy = false, consent = false;
+  bool busy = false, consent = false, needsEmailConfirmation = false;
   String? error;
+  @override
+  void initState() {
+    super.initState();
+    email.text = widget.initialEmail ?? '';
+  }
+
   @override
   void dispose() {
     for (final item in [email, password, confirmation, name, phone]) {
@@ -39,13 +56,14 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
     if (busy || !form.currentState!.validate()) return;
     if (widget.mode == AuthFormMode.signup && !consent) {
       setState(
-        () => error = 'Lee y acepta el aviso de desarrollo para continuar.',
+        () => error = 'Confirma que eres mayor de edad y acepta los términos y el aviso de privacidad.',
       );
       return;
     }
     setState(() {
       busy = true;
       error = null;
+      needsEmailConfirmation = false;
     });
     final repo = ref.read(identityRepositoryProvider);
     final navigation = GoRouter.of(context);
@@ -77,21 +95,35 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
           );
       }
     } catch (cause) {
-      if (mounted) setState(() => error = identityError(cause));
+      if (mounted) {
+        setState(() {
+          error = identityError(cause);
+          needsEmailConfirmation =
+              cause is AuthException && cause.code == 'email_not_confirmed';
+        });
+      }
     } finally {
       if (mounted) setState(() => busy = false);
     }
   }
 
   Future<void> social(String provider) async {
+    if (busy) return;
     setState(() {
       busy = true;
       error = null;
+      needsEmailConfirmation = false;
     });
     try {
       await ref.read(identityRepositoryProvider).oauth(provider);
     } catch (cause) {
-      if (mounted) setState(() => error = identityError(cause));
+      if (mounted) {
+        setState(() {
+          error = identityError(cause);
+          needsEmailConfirmation =
+              cause is AuthException && cause.code == 'email_not_confirmed';
+        });
+      }
     } finally {
       if (mounted) setState(() => busy = false);
     }
@@ -103,190 +135,254 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
         login = widget.mode == AuthFormMode.login,
         reset = widget.mode == AuthFormMode.reset;
     final config = ref.watch(configProvider);
+    final fieldLabel = login || signup
+        ? const TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 14,
+            height: 1.2,
+            letterSpacing: 0,
+            fontWeight: FontWeight.w600,
+            color: muted,
+          )
+        : null;
+    final fieldText = login || signup
+        ? const TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 13,
+            height: 1.2,
+            letterSpacing: 0,
+            fontWeight: FontWeight.w400,
+            color: ink,
+          )
+        : null;
+
     final title = switch (widget.mode) {
-      AuthFormMode.login => 'Qué bueno\nverte de nuevo.',
-      AuthFormMode.signup => 'Hagamos equipo.',
+      AuthFormMode.login => 'Inicia sesión',
+      AuthFormMode.signup => 'Crea tu cuenta',
       AuthFormMode.forgot => 'Recupera tu acceso.',
       AuthFormMode.reset => 'Una nueva\ncontraseña.',
     };
     final description = switch (widget.mode) {
-      AuthFormMode.login => 'Entra a tu comunidad Dopmi.',
-      AuthFormMode.signup => 'Tu primera huella en una comunidad que cuida.',
+      AuthFormMode.login =>
+        'Entra para seguir tus favoritos y retomar donde lo dejaste.',
+      AuthFormMode.signup =>
+        'Completa tus datos para guardar favoritos y contactar al rescatista.',
       AuthFormMode.forgot => 'Te enviaremos las instrucciones a tu correo.',
       AuthFormMode.reset => 'Elige una contraseña segura para volver a entrar.',
     };
-    return PageFrame(
+    return AuthFrame(
+      sheet: login || signup,
+      sheetBottomPadding: login || signup ? 0 : 18,
+      intent: widget.intent,
       back: !reset,
-      children: [
-        Heading(
-          title,
-          description,
-          eyebrow: signup ? 'CREA TU CUENTA' : 'TU CUENTA DOPMI',
-        ),
-        if (login && GoRouterState.of(context).extra is String)
-          Notice(GoRouterState.of(context).extra! as String),
-        AutofillGroup(
-          child: Form(
-            key: form,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (signup) ...[
-                  TextFormField(
-                    controller: name,
-                    textCapitalization: TextCapitalization.words,
-                    maxLength: 80,
-                    autofillHints: const [AutofillHints.name],
-                    decoration: const InputDecoration(labelText: 'Nombre'),
-                    validator: (value) => (value ?? '').trim().isEmpty
-                        ? 'Escribe tu nombre.'
-                        : null,
-                  ),
-                  const SizedBox(height: 16),
-                ],
-                if (!reset) ...[
-                  TextFormField(
-                    controller: email,
-                    keyboardType: TextInputType.emailAddress,
-                    autocorrect: false,
-                    autofillHints: const [AutofillHints.email],
-                    maxLength: 254,
-                    decoration: const InputDecoration(
-                      labelText: 'Correo electrónico',
-                      counterText: '',
-                    ),
-                    validator: validateEmail,
-                  ),
-                  const SizedBox(height: 16),
-                ],
-                if (signup) ...[
-                  TextFormField(
-                    controller: phone,
-                    keyboardType: TextInputType.phone,
-                    maxLength: 24,
-                    autofillHints: const [AutofillHints.telephoneNumber],
-                    decoration: const InputDecoration(
-                      labelText: 'Teléfono (opcional)',
-                      counterText: '',
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
-                if (login || signup || reset) ...[
-                  PasswordField(
-                    controller: password,
-                    newPassword: !login,
-                    validator: login
-                        ? (value) => (value ?? '').isEmpty
-                              ? 'Escribe tu contraseña.'
-                              : null
-                        : validatePassword,
-                  ),
-                  const SizedBox(height: 16),
-                ],
-                if (signup || reset) ...[
-                  PasswordField(
-                    controller: confirmation,
-                    label: 'Confirmar contraseña',
-                    newPassword: true,
-                    validator: (value) => value != password.text
-                        ? 'Las contraseñas no coinciden.'
-                        : null,
-                  ),
-                  const SizedBox(height: 16),
-                ],
-                if (signup) ...[
-                  CheckboxListTile(
-                    contentPadding: EdgeInsets.zero,
-                    controlAffinity: ListTileControlAffinity.leading,
-                    value: consent,
-                    onChanged: busy
-                        ? null
-                        : (value) => setState(() => consent = value ?? false),
-                    title: const Text(
-                      'Leí y acepto el aviso de desarrollo.',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () => context.push('/terms'),
-                    child: const Text('Leer aviso y uso de mis datos'),
-                  ),
-                ],
-                if (error != null) Notice(error!, isError: true),
-                const SizedBox(height: 8),
-                ActionButton(
-                  switch (widget.mode) {
-                    AuthFormMode.login => 'Iniciar sesión',
-                    AuthFormMode.signup => 'Crear cuenta',
-                    AuthFormMode.forgot => 'Enviar instrucciones',
-                    AuthFormMode.reset => 'Actualizar contraseña',
-                  },
-                  busy: busy,
-                  sunny: signup,
-                  onPressed: submit,
-                ),
-                if (login) ...[
-                  TextButton(
-                    onPressed: busy ? null : () => context.push('/forgot'),
-                    child: const Text('Olvidé mi contraseña'),
-                  ),
-                  TextButton(
-                    onPressed: busy
-                        ? null
-                        : () => context.push(
-                            '/confirm',
-                            extra: email.text.trim(),
-                          ),
-                    child: const Text('Necesito confirmar mi correo'),
-                  ),
-                  if (config.googleEnabled || config.appleEnabled)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                      child: Text(
-                        'También puedes entrar con',
-                        textAlign: TextAlign.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AuthHeading(title, description, sheet: login || signup),
+          if (login && GoRouterState.of(context).extra is String)
+            Notice(GoRouterState.of(context).extra! as String),
+          AutofillGroup(
+            child: Form(
+              key: form,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (signup) ...[
+                    LabeledField(
+                      'Nombre completo',
+                      labelStyle: fieldLabel,
+                      child: TextFormField(
+                        style: fieldText,
+                        controller: name,
+                        textCapitalization: TextCapitalization.words,
+                        maxLength: 80,
+                        autofillHints: const [AutofillHints.name],
+                        decoration: const InputDecoration(
+                          hintText: 'Tu nombre',
+                          counterText: '',
+                        ),
+                        validator: (value) => (value ?? '').trim().isEmpty
+                            ? 'Escribe tu nombre.'
+                            : null,
                       ),
                     ),
-                  if (config.googleEnabled)
-                    OutlinedButton(
-                      onPressed: busy ? null : () => social('google'),
-                      child: const Text('Continuar con Google'),
+                    SizedBox(height: login || signup ? 12 : 16),
+                  ],
+                  if (!reset) ...[
+                    LabeledField(
+                      'Correo electrónico',
+                      labelStyle: fieldLabel,
+                      child: TextFormField(
+                        style: fieldText,
+                        controller: email,
+                        keyboardType: TextInputType.emailAddress,
+                        autocorrect: false,
+                        autofillHints: const [AutofillHints.email],
+                        maxLength: 254,
+                        decoration: const InputDecoration(
+                          hintText: 'tu@email.com',
+                          counterText: '',
+                        ),
+                        validator: validateEmail,
+                      ),
                     ),
-                  if (config.appleEnabled) ...[
-                    const SizedBox(height: 12),
-                    OutlinedButton(
-                      onPressed: busy ? null : () => social('apple'),
-                      child: const Text('Continuar con Apple'),
+                    SizedBox(height: login || signup ? 12 : 16),
+                  ],
+                  if (signup) ...[
+                    LabeledField(
+                      'Teléfono (opcional)',
+                      labelStyle: fieldLabel,
+                      child: TextFormField(
+                        style: fieldText,
+                        controller: phone,
+                        keyboardType: TextInputType.phone,
+                        maxLength: 24,
+                        autofillHints: const [AutofillHints.telephoneNumber],
+                        decoration: const InputDecoration(
+                          hintText: '+52 123 456 7890',
+                          counterText: '',
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: login || signup ? 12 : 16),
+                  ],
+                  if (login || signup || reset) ...[
+                    PasswordField(
+                      showVisibilityToggle: !(login || signup),
+                      controller: password,
+                      style: fieldText,
+                      labelStyle: fieldLabel,
+                      labelAbove: true,
+                      newPassword: !login,
+                      validator: login
+                          ? (value) => (value ?? '').isEmpty
+                                ? 'Escribe tu contraseña.'
+                                : null
+                          : validatePassword,
+                    ),
+                    if (!login) SizedBox(height: signup ? 12 : 16),
+                  ],
+                  if (signup || reset) ...[
+                    PasswordField(
+                      showVisibilityToggle: !signup,
+                      controller: confirmation,
+                      style: fieldText,
+                      labelStyle: fieldLabel,
+                      hintText: signup ? 'Confirma tu contraseña' : null,
+                      labelAbove: true,
+                      label: 'Confirmar contraseña',
+                      newPassword: true,
+                      validator: (value) => value != password.text
+                          ? 'Las contraseñas no coinciden.'
+                          : null,
+                    ),
+                    SizedBox(height: login || signup ? 12 : 16),
+                  ],
+                  if (signup) ...[
+                    AuthConsentRow(
+                      value: consent,
+                      onChanged: busy
+                          ? null
+                          : (value) => setState(() => consent = value),
+                      onOpenTerms: () => context.push('/terms'),
+                      onOpenPrivacy: () => context.push('/privacy-notice'),
                     ),
                   ],
-                  TextButton(
-                    onPressed: () => context.push('/signup'),
-                    child: const Text('Soy nuevo · Crear una cuenta'),
+                  if (login)
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: busy
+                            ? null
+                            : () => context.push(
+                                '/forgot?intent=${widget.intent}',
+                                extra: email.text.trim(),
+                              ),
+                        style: TextButton.styleFrom(
+                          // Source: 12px before and after the 16px label.
+                          // Enlarged text can increase the intrinsic height.
+                          padding: EdgeInsets.zero,
+                          minimumSize: const Size(48, 40),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          splashFactory: NoSplash.splashFactory,
+                          overlayColor: Colors.transparent,
+                          textStyle: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 13,
+                            height: 1.2,
+                            letterSpacing: 0,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        child: const Text(
+                          'Olvidé mi contraseña',
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ),
+                  if (error != null) Notice(error!, isError: true),
+                  if (!login) const SizedBox(height: 8),
+                  ActionButton(
+                    switch (widget.mode) {
+                      AuthFormMode.login => 'Inicia sesión',
+                      AuthFormMode.signup => 'Crea una cuenta',
+                      AuthFormMode.forgot => 'Enviar instrucciones',
+                      AuthFormMode.reset => 'Actualizar contraseña',
+                    },
+                    busy: busy,
+                    textAlign: TextAlign.center,
+                    onPressed: signup && !consent ? null : submit,
                   ),
-                ],
-                if (reset)
-                  TextButton(
-                    onPressed: busy
-                        ? null
-                        : () async {
-                            try {
-                              await ref
-                                  .read(identityControllerProvider)
-                                  .logout();
-                            } catch (cause) {
-                              if (mounted) {
-                                setState(() => error = identityError(cause));
+                  if ((login && needsEmailConfirmation) ||
+                      widget.mode == AuthFormMode.forgot)
+                    TextButton(
+                      onPressed: busy
+                          ? null
+                          : () => context.push(
+                              '/confirm',
+                              extra: email.text.trim(),
+                            ),
+                      child: const Text('Necesito confirmar mi correo'),
+                    ),
+                  if ((login || signup) &&
+                      (config.googleEnabled || config.appleNativeAvailable))
+                    AuthProviderIcons(
+                      google: config.googleEnabled,
+                      apple: config.appleNativeAvailable,
+                      busy: busy,
+                      onPick: social,
+                    ),
+                  if (login || signup)
+                    AuthSwitchFooter(
+                      signup: signup,
+                      busy: busy,
+                      intent: widget.intent,
+                    ),
+                  if (reset)
+                    TextButton(
+                      onPressed: busy
+                          ? null
+                          : () async {
+                              try {
+                                await ref
+                                    .read(identityControllerProvider)
+                                    .logout();
+                              } catch (cause) {
+                                if (mounted) {
+                                  setState(() => error = identityError(cause));
+                                }
                               }
-                            }
-                          },
-                    child: const Text('Cancelar y cerrar sesión'),
-                  ),
-              ],
+                            },
+                      child: const Text('Cancelar y cerrar sesión'),
+                    ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -355,6 +451,11 @@ class _ConfirmationScreenState extends ConsumerState<ConfirmationScreen> {
           code.text,
           recovery: widget.recovery,
         );
+        if (!widget.recovery) {
+          final measurement = ref.read(measurementControllerProvider);
+          await measurement?.owner(repo.current?.id);
+          await measurement?.event('sign_up_completed');
+        }
       }
     } catch (cause) {
       if (mounted) setState(() => error = identityError(cause));
@@ -364,102 +465,127 @@ class _ConfirmationScreenState extends ConsumerState<ConfirmationScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => PageFrame(
-    children: [
-      const Icon(Icons.mark_email_unread_outlined, size: 76, color: purple),
-      const SizedBox(height: 28),
-      Heading(
-        'Revisa tu correo.',
-        widget.recovery
-            ? 'Si existe una cuenta con ese correo, recibirás instrucciones para recuperar el acceso.'
-            : 'Abre el enlace que te enviamos para confirmar tu cuenta.',
-        eyebrow: widget.recovery ? 'RECUPERA TU ACCESO' : 'UN PASO MÁS',
-      ),
-      const Text(
-        'Abre el enlace en este mismo dispositivo y navegador. Si tu correo incluye un código, también puedes ingresarlo aquí.',
-      ),
-      const SizedBox(height: 20),
-      Form(
-        key: form,
-        child: Column(
-          children: [
-            TextFormField(
-              controller: email,
-              decoration: const InputDecoration(
-                labelText: 'Correo electrónico',
+  Widget build(BuildContext context) => AuthFrame(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Icon(Icons.mark_email_unread_outlined, size: 76, color: purple),
+        const SizedBox(height: 28),
+        AuthHeading(
+          'Revisa tu correo.',
+          widget.recovery
+              ? 'Si existe una cuenta con ese correo, recibirás instrucciones para recuperar el acceso.'
+              : 'Abre el enlace que te enviamos para confirmar tu cuenta.',
+        ),
+        const Text(
+          'Abre el enlace en este mismo dispositivo y navegador. Si tu correo incluye un código, también puedes ingresarlo aquí.',
+        ),
+        const SizedBox(height: 20),
+        Form(
+          key: form,
+          child: Column(
+            children: [
+              LabeledField(
+                'Correo electrónico',
+                child: TextFormField(
+                  controller: email,
+                  decoration: const InputDecoration(hintText: 'tu@email.com'),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: validateEmail,
+                ),
               ),
-              keyboardType: TextInputType.emailAddress,
-              validator: validateEmail,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: code,
-              keyboardType: TextInputType.number,
-              autofillHints: const [AutofillHints.oneTimeCode],
-              decoration: const InputDecoration(labelText: 'Código del correo'),
-              validator: (value) =>
-                  RegExp(r'^\d{6,10}$').hasMatch((value ?? '').trim())
-                  ? null
-                  : 'Escribe el código que recibiste.',
-            ),
-          ],
+              const SizedBox(height: 16),
+              LabeledField(
+                'Código del correo',
+                child: TextFormField(
+                  controller: code,
+                  keyboardType: TextInputType.number,
+                  autofillHints: const [AutofillHints.oneTimeCode],
+                  decoration: const InputDecoration(
+                    hintText: 'Código de 6 a 10 dígitos',
+                  ),
+                  validator: (value) =>
+                      RegExp(r'^\d{6,10}$').hasMatch((value ?? '').trim())
+                      ? null
+                      : 'Escribe el código que recibiste.',
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      if (message != null) Notice(message!),
-      if (error != null) Notice(error!, isError: true),
-      const SizedBox(height: 24),
-      ActionButton(
-        'Verificar código',
-        busy: busy,
-        onPressed: () => perform(false),
-      ),
-      TextButton(
-        onPressed: busy || seconds > 0 ? null : () => perform(true),
-        child: Text(
-          seconds > 0 ? 'Reenviar en ${seconds}s' : 'Reenviar correo',
+        if (message != null) Notice(message!),
+        if (error != null) Notice(error!, isError: true),
+        const SizedBox(height: 24),
+        ActionButton(
+          'Verificar código',
+          busy: busy,
+          textAlign: TextAlign.center,
+          onPressed: () => perform(false),
         ),
-      ),
-      TextButton(
-        onPressed: () => context.go('/login'),
-        child: const Text('Volver a iniciar sesión'),
-      ),
-    ],
+        TextButton(
+          onPressed: busy || seconds > 0 ? null : () => perform(true),
+          child: Text(
+            seconds > 0 ? 'Reenviar en ${seconds}s' : 'Reenviar correo',
+          ),
+        ),
+        TextButton(
+          onPressed: () => context.go('/login'),
+          child: const Text('Volver a iniciar sesión'),
+        ),
+      ],
+    ),
   );
 }
 
 class TermsScreen extends StatelessWidget {
   const TermsScreen({super.key});
   @override
-  Widget build(BuildContext context) => const PageFrame(
+  Widget build(BuildContext context) => LegalDocumentFrame(
+    title: 'Términos y Condiciones',
+    lead: 'Revisa las condiciones de uso de Dopmi antes de crear tu cuenta.',
     children: [
-      Heading(
-        'Aviso de desarrollo',
-        'Dopmi · Versión del 13 de septiembre de 2026',
+      const LegalDocumentSection(
+        'Términos de uso',
+        'Dopmi es un servicio para personas mayores de 18 años que facilita adopciones, comunicación con rescatistas y aportaciones de prueba sujetas a revisión y disponibilidad.',
       ),
-      Text(
-        'Esta versión sirve para probar registro, acceso y perfiles. No está habilitada para recibir aportaciones ni tramitar adopciones.',
+      const LegalDocumentSection(
+        'Uso responsable',
+        'Debes proporcionar información veraz, respetar la privacidad de otras personas y usar los canales de reporte y moderación. Una publicación o aportación puede quedar en revisión, requerir correcciones o retirarse.',
       ),
-      SizedBox(height: 20),
-      Text(
-        'Datos de tu cuenta',
-        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
+      const LegalDocumentSection(
+        'Privacidad y pagos',
+        'Tratamos los datos necesarios para operar tu cuenta, publicaciones, mensajes, moderación y pagos. Los datos de tarjeta se capturan con Stripe. No mostramos públicamente tu domicilio exacto, teléfono, correo, documentos o conversaciones privadas.',
       ),
-      SizedBox(height: 8),
-      Text(
-        'Guardamos tu correo, nombre, preferencias y los datos opcionales de tu perfil en el proyecto de desarrollo de Dopmi. El equipo autorizado puede consultarlos para operar y probar el servicio. Tu perfil todavía no es público.',
+      LegalDocumentSection(
+        'Cuenta y soporte',
+        'Puedes solicitar la eliminación de tu cuenta desde Configuración. Conservaremos únicamente la evidencia necesaria para atender pagos, disputas y obligaciones legales. Para ayuda escribe a soporte@dopmi.org.',
+        footer: TextButton(
+          onPressed: () async {
+            try {
+              if (!await launchUrl(
+                Uri.parse('https://dopmi.org/privacy-policy'),
+                mode: LaunchMode.externalApplication,
+              )) {
+                throw const FormatException();
+              }
+            } catch (_) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'No pudimos abrir el aviso. Intenta de nuevo.',
+                    ),
+                  ),
+                );
+              }
+            }
+          },
+          child: const Text('Abrir Aviso de privacidad'),
+        ),
       ),
-      SizedBox(height: 20),
-      Text(
-        'Para las pruebas',
-        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
-      ),
-      SizedBox(height: 8),
-      Text(
-        'Usa datos de prueba. No agregues documentos de identidad, información bancaria ni comprobantes. Puedes editar tu perfil o cerrar sesión en cualquier momento.',
-      ),
-      SizedBox(height: 20),
-      Text(
-        'Antes del lanzamiento se publicarán los términos y el aviso de privacidad definitivos, con la identidad del responsable, contacto y mecanismos para ejercer tus derechos. Este aviso no los reemplaza.',
+      const Text(
+        'Dopmi · Versión del 28 de septiembre de 2026',
+        style: TextStyle(fontSize: 12, height: 1.5, color: muted),
       ),
     ],
   );

@@ -1,0 +1,18 @@
+[
+  {
+    "file": "mid.png",
+    "sha256": "e75665278a8a645075db04c89e36d937843d2b4583e45e05fd59dae25e39e5fb"
+  },
+  {
+    "file": "before-retry.png",
+    "sha256": "e21754e29eedeb9f35746ce7b0b772f7cf6a6bd6f88cc2ad323267aea08516af"
+  },
+  {
+    "file": "after-restart.png",
+    "sha256": "ed452e01c2d1c072fa0b8387e6b6e387bf2ced06036d2ee11dfa7aaf2a18946f"
+  },
+  {
+    "file": "short.png",
+    "sha256": "a28734afcb2f20eb31bcfffeda3581b99b8a740b5edd22f44017f3f5351d4d6c"
+  }
+]

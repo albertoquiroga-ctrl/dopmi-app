@@ -6,9 +6,24 @@ class FakeIdentityRepository implements IdentityRepository {
   final changes = StreamController<IdentityEvent>.broadcast(sync: true);
   Identity? user;
   Future<Identity?>? restoreResult;
+  Future<Profile>? profileResult;
   bool pending = false;
   bool failSave = false;
-  int signupCount = 0, passwordUpdates = 0, loads = 0;
+  bool failLoad = false;
+  bool failEmailChange = false;
+  String? requestedEmail;
+  int emailChangeRequests = 0;
+  @override
+  Future<EmailChangeStatus> changeEmail(String email) async {
+    emailChangeRequests++;
+    if (failEmailChange) throw StateError('email_change_failed');
+    requestedEmail = email.trim();
+    return EmailChangeStatus.pendingConfirmation;
+  }
+
+  AccountNames? accountNames;
+  int accountNameLoads = 0;
+  int signupCount = 0, passwordUpdates = 0, loads = 0, consentCount = 0;
   String? signupIntent;
   Profile profile = const Profile(
     id: 'one',
@@ -18,7 +33,9 @@ class FakeIdentityRepository implements IdentityRepository {
     mode: 'donor',
     intent: 'adopt',
     status: 'active',
-    termsVersion: developmentTermsVersion,
+    termsVersion: currentTermsVersion,
+    privacyVersion: currentPrivacyVersion,
+    adultConfirmed: true,
   );
   void emit(IdentityEvent event) {
     user = event.identity;
@@ -27,6 +44,8 @@ class FakeIdentityRepository implements IdentityRepository {
 
   @override
   Identity? get current => user;
+  @override
+  Set<String> get linkedProviders => const {'email'};
   @override
   Stream<IdentityEvent> get events => changes.stream;
   @override
@@ -84,9 +103,54 @@ class FakeIdentityRepository implements IdentityRepository {
   @override
   Future<void> oauth(String provider) async {}
   @override
+  Future<void> linkProvider(String provider) async {}
+  @override
   Future<Profile> loadProfile() async {
     loads++;
+    if (failLoad) throw StateError('network_unavailable');
+    if (profileResult != null) return profileResult!;
     return profile;
+  }
+
+  @override
+  Future<Profile> setExperience(String mode) async {
+    if (failSave) throw StateError('network_unavailable');
+    return profile = Profile(
+      id: profile.id,
+      name: profile.name,
+      phone: profile.phone,
+      city: profile.city,
+      mode: mode,
+      intent: profile.intent,
+      status: profile.status,
+      termsVersion: profile.termsVersion,
+      privacyVersion: profile.privacyVersion,
+      adultConfirmed: profile.adultConfirmed,
+    );
+  }
+
+  @override
+  Future<AccountNames> loadAccountNames() async {
+    accountNameLoads++;
+    if (failLoad) throw StateError('network_unavailable');
+    final value = profileResult != null ? await profileResult! : profile;
+    return accountNames ?? AccountNames(value.name, '', saved: false);
+  }
+
+  @override
+  Future<Profile> saveAccountNames({
+    required String firstName,
+    required String lastName,
+    required String phone,
+    required String city,
+  }) async {
+    final result = await saveProfile(
+      name: '${firstName.trim()} ${lastName.trim()}'.trim(),
+      phone: phone.trim(),
+      city: city.trim(),
+    );
+    accountNames = AccountNames(firstName.trim(), lastName.trim(), saved: true);
+    return result;
   }
 
   @override
@@ -94,21 +158,47 @@ class FakeIdentityRepository implements IdentityRepository {
     required String name,
     required String phone,
     required String city,
-    required String mode,
   }) async {
     if (failSave) throw StateError('network_unavailable');
     return profile = Profile(
-      id: 'one',
+      id: profile.id,
       name: name,
       phone: phone,
       city: city,
-      mode: mode,
+      mode: profile.mode,
       intent: profile.intent,
       status: profile.status,
       termsVersion: profile.termsVersion,
+      privacyVersion: profile.privacyVersion,
+      adultConfirmed: profile.adultConfirmed,
     );
   }
 
   @override
-  Future<void> acceptTerms() async {}
+  Future<void> acceptTerms() async {
+    consentCount++;
+    profile = Profile(
+      id: profile.id,
+      name: profile.name,
+      phone: profile.phone,
+      city: profile.city,
+      mode: profile.mode,
+      intent: profile.intent,
+      status: profile.status,
+      termsVersion: currentTermsVersion,
+      privacyVersion: currentPrivacyVersion,
+      adultConfirmed: true,
+    );
+  }
+
+  @override
+  Future<void> reauthenticate(String password) async {}
+
+  @override
+  Future<void> reauthenticateWithProvider(String provider) async {}
+
+  @override
+  Future<Map<String, dynamic>> requestAccountDeletion(
+    String requestKey,
+  ) async => {'status': 'completado'};
 }

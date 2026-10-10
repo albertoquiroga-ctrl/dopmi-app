@@ -1,0 +1,93 @@
+[
+  {
+    "color": "rgb(21, 17, 13)",
+    "font": "16px",
+    "h": 68,
+    "line": "normal",
+    "margin": "0px",
+    "padding": "8px 16px",
+    "selector": ".topbar",
+    "text": "Verificación en revisión",
+    "w": 377,
+    "x": 0,
+    "y": 0
+  },
+  {
+    "color": "rgb(114, 75, 0)",
+    "font": "10px",
+    "h": 52.34375,
+    "line": "13.5px",
+    "margin": "0px",
+    "padding": "10px 14px",
+    "selector": ".simulated-banner",
+    "text": "ESTADO SIMULADONo existe un frame aprobado en Figma · Requiere validación del equipo",
+    "w": 377,
+    "x": 0,
+    "y": 68
+  },
+  {
+    "color": "rgb(21, 17, 13)",
+    "font": "16px",
+    "h": 572,
+    "line": "normal",
+    "margin": "0px",
+    "padding": "20px 16px 32px",
+    "selector": ".content-pad",
+    "text": "Estamos revisando tu informaciónLa decisión se simula desde Modo prueba.Volver al inicio",
+    "w": 377,
+    "x": 0,
+    "y": 120.34375
+  },
+  {
+    "color": "rgb(21, 17, 13)",
+    "font": "16px",
+    "h": 520,
+    "line": "normal",
+    "margin": "0px",
+    "padding": "28px",
+    "selector": ".center-state",
+    "text": "Estamos revisando tu informaciónLa decisión se simula desde Modo prueba.Volver al inicio",
+    "w": 345,
+    "x": 16,
+    "y": 140.34375
+  },
+  {
+    "color": "rgb(21, 17, 13)",
+    "font": "24px",
+    "h": 60,
+    "line": "30px",
+    "margin": "0px 0px 16.08px",
+    "padding": "0px",
+    "selector": ".center-state h1",
+    "text": "Estamos revisando tu información",
+    "w": 289,
+    "x": 44,
+    "y": 310.453125
+  },
+  {
+    "color": "rgb(85, 78, 72)",
+    "font": "14px",
+    "h": 21.6875,
+    "line": "21.7px",
+    "margin": "0px 0px 14px",
+    "padding": "0px",
+    "selector": ".center-state p",
+    "text": "La decisión se simula desde Modo prueba.",
+    "w": 282.859375,
+    "x": 47.0625,
+    "y": 396.53125
+  },
+  {
+    "color": "rgb(21, 17, 13)",
+    "font": "16px",
+    "h": 48,
+    "line": "normal",
+    "margin": "0px",
+    "padding": "11px 18px",
+    "selector": ".center-state button",
+    "text": "Volver al inicio",
+    "w": 289,
+    "x": 44,
+    "y": 442.21875
+  }
+]

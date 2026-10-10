@@ -1,0 +1,9 @@
+# Loop756 — Regresión integrada de correcciones recientes
+
+2026-10-04. Fuente `0328de654d1033d670cae2a08000ef7e54bb00bf`, SourceIrlanda `a3c969cd9103fd46dc5cd886999912526ce75efb` verificada inicio.
+
+Full74392 terminó exit0:803/803 en4m29s, integra cambios749/751/752/753/754/755 y dos tests750, sin nuevas ediciones de producción durante el gate. Medición23392 tomada durante ejecución confirma365 archivos relevantes lib/test/tool/assets/pubspec/lock/análisis byteidénticos raíz/scratch; hashes en source-consistency.json. No es medición previa al inicio. Revalidación al cierre conserva todos los hashes de ambos árboles. Supersede full748/801 para pruebas unitarias/widgets, no sus límites nativos ni visuales.
+
+Revisión CSS Source y cliente: indicadores tienen width24/8, height8, curvaease, duración350, coloresyellow/#e5e0d8; cliente reduce duración a0 según preferencia. Runtime8748/73539 ejecutó /onboarding/donor (trackadopter). Al tocar Continuar, refs antiguas quedan desconectadas: no medición válida a175ms, no se atribuye ese fotograma. Query nuevo confirma width8/24, colores#e5e0d8/#f7cb2d y ceroanimaciones; Source body tiene keyslide.id y recrea los dots, evitando transiciónCSS en este recorrido. Flutter adopt/rescue colocan dots dentro de OnboardingEntrance con key por paso, misma recreación por código inspeccionado. Cliente rama donate genérica deja dots fuera de entrada: siguiente comprobar alcance real de esa rama frente rutasSource; no declarar todos tracks aceptados. Entrada450 contrastada741 no se repite. Browser propio cerrado ySource sin cambios al cierre.
+
+Colección743/418 anterior cambios recientes, fixtures actuales419 por normalFAQ749; no419 aceptación atribuida. APK748 anterior recientes; apertura manual emulador748 pendiente. Codemagic sólo al objetivo completo, dinero test-only.

@@ -1,0 +1,27 @@
+{
+  "commit": "46fc3e34f5ce6f03776d86852b3a27958eac8ce0",
+  "source": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "fixtures": [
+    {
+      "name": "verification-form-progress",
+      "sha256": "e68509186d9945e10bb112565332dc0198bccdd63228d9a63c5ba64351b4a093",
+      "mtime": 1791073190.8356855
+    },
+    {
+      "name": "verification-form-progress-large",
+      "sha256": "ec1b5695e326e90586a8bcc0c5ac5bafb0f20b509d76359e4e71cd068dabcc21",
+      "mtime": 1791073191.545415
+    }
+  ],
+  "test": {
+    "session": 95475,
+    "exit": 0,
+    "passed": 1,
+    "seconds": 3
+  },
+  "analyze": {
+    "session": 1411,
+    "exit": 0,
+    "seconds": 35.4
+  }
+}

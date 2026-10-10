@@ -1,0 +1,5 @@
+# Alineación del tipo de apoyo
+
+## 2026-10-04 — Loop602: etiqueta al extremo derecho de Impacto
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Sourceglobal.title-row justifyspace-between +impactgap10; nativeWrap dejabajada etiqueta juntoanombre. ImpactCaseCard extrae widgets mismosdatos/callbacks: normalRow Expandednombre/gap10/pill al extremo; textoampliadoWrap.spaceBetween preserva salto legible. No texto ni datosficticiosSource copiados. Gate58708terminalexit0,10/10,4s impact_screen_test/capturador4PNG; analyzer34565terminalexit0clean10.1s. Normalfinalinspeccionada etiquetaextremoderecho,guardada. Captura200 capturador actualmuestrafooterShare (por601), no nuevaimagenheading200 atribuida; tests existentes ampliadossin overflow, no aceptación física/global. Full651595anterior597+, global407599anterior600+. Próximo contraste: meta autor/fecha de tarjeta Impacto frenteSource; cliente muestra timestamp peroautor aprobado debe obtenerse de contrato público vigente antesañadirlo, sin nombres inventados ni exposiciónprivada/SQLinnecesario. Sin push/Codemagic hasta objetivo completo.

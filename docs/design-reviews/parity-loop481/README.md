@@ -1,0 +1,5 @@
+# Loop481 — visor privado compacto
+
+Base9b160f1; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. RescueFileScreen usa ContributionFrame rescatista título18 y ListView16/20/16/32, introducción14/1.45, regreso pop o perfil. Imagen/PDF/renovación/errores y privacidad de480 se conservan. No existe SourceURL de visor privado independiente; se aplica el lenguaje de encabezado compartido, no se atribuye equivalencia literal.
+
+58648 terminalexit0,7/7,12s: seis pruebas del visor y capturador9estados con nueve aperturas/regresos a solicitud sin save y tres recargas del mismo path. Analyzer16729 clean27.5s. PDFnormal/error200/imagecontenido200 finales inspeccionados y before480 preservados. LaunchMethodChannel en prueba simulado, no PDF nativo/Storage real/Android verificado. Full592479 anterior a480/481; pruebas dirigidas cubren cambios actuales, no nuevofull innecesario. Sin SQL/push/Codemagic. Siguiente contraste global Source de gestos y movimiento, manteniendo alcance de todas las familias.

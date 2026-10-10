@@ -1,0 +1,7 @@
+# Loop566 — Cobertura visual de bienvenida/acceso
+
+Los407fixtures565 no incluían bienvenida ni formularios de acceso. Capturador existente capture_design3508 exit0,1test/27PNG nuevos5s (manifest separado), incluye welcome/selected/login/signup/forgot/onboarding. Normal login/welcome inspeccionados. Source Irlanda remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. No nuevo runtimeSource aquí; métricas131 y contratos anteriores sólo referencia histórica.
+
+Nuevo tool/capture_access_test.dart abre seis rutas reales DopmiApp/router con FakeIdentityRepository anónimo: welcome,onboarding/startadopt,login/signup/forgot. Viewports377x852normal y320x640/text200;12PNG iniciales y3footer ampliados tras ensureVisible/submit.hitTestable. FontsInter/Fraunces/MaterialIcons reales, sombras activadas sólo para captura y restauradas antes de invariantes. No credenciales/datos reales ni envío/authremote.15PNG únicos nuevos/formato/hashmanifest y raíz-scratch tool iguales.
+
+23996/23636 iniciales pasaron; intento56200 con sombras falló invariante del capturador al restaurar demasiado tarde. Corregido reset antes del cierre (como capturadores existentes), sin cambio productivo. Final28526 exit0,1test/15fixtures2s. Footerlogin/signup200 inspeccionados: inputs/CTA/consentimiento accesibles por scroll, signup correctamente deshabilitado sin consentimiento. Analyzerfinal45478 exit0 limpio17.3s. Full630564 conserva vigencia productiva; sólo nuevo tool fuera de suite test. No15aceptacionesglobales ni comparación temporalSource/nativa. Sin push/Codemagic.

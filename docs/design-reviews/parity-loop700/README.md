@@ -1,0 +1,5 @@
+# Loop700 — Notificaciones
+
+## 2026-10-04 — Loop700: notificaciones actuales
+
+Fuente aa5a41c/producción8c55e18; referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. NotificationTile/Back ya tienen NoSplash/overlay/feedback plano; CSS notification-card6144 y chip6149 corresponden a radio24/icono40/gap12/borde no-leída/sombra. Sin edición producción ni tests700. Capture28126 terminal0,1/1 en4s,7 PNG notificaciones frescos/validación/hash; inspeccionados reference normal/kindslarge, iconos3 y reflujo200 visibles. No capturas de carga/error nuevas por este prefijo. Gate15882 terminal0,11/11 en2s notifications_test/notification_count_repository_test: conteo real más allá primera página, invitado sin lectura privada, paginación200, reintento de read failure antes destino. Analyzer699 previo vigente sin ediciones de fuentes. No igualdad global Source/presión RGBA nueva/Android físico ni backend nuevo atribuidos. Codemagic solo al objetivo completo; dinero live no autorizado.

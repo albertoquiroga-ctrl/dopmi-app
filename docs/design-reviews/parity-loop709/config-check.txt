@@ -1,0 +1,1 @@
+python scripts/test_mobile_config.py: 16 tests, OK, terminal exit0.

@@ -38,6 +38,8 @@ await probe('/functions/v1/payment-return', { method: 'GET', status: 200, inspec
   assert.equal(response.headers.get('x-content-type-options'), 'nosniff');
   const text = await response.text();
   assert.ok(text.includes('Cuenta > Mi plan Guardián'));
+  assert.ok(text.includes('Perfil > Métodos de pago'));
+  assert.ok(text.includes('Guardar una tarjeta no genera un cobro ni activa Guardián'));
   assert.ok(text.includes('Esta pantalla no confirma un pago'));
   assert.ok(text.includes('No inicies otro pago'));
   assert.ok(!/<[a-z!]/i.test(text), 'Return instructions must be readable without HTML rendering');
@@ -54,6 +56,19 @@ for (const rpc of ['activation', 'subscription', 'settlement', 'schedule', 'coll
 for (const rpc of ['state', 'plan', 'history']) {
   await probe(`/rest/v1/rpc/dopmi_guardian_${rpc}`, {
     status: 401, inspect: async response => assert.equal((await response.json()).code, '42501'),
+  });
+}
+for (const [rpc,body] of [
+  ['dopmi_saved_card_server',{operation:'get',data:{}}],
+  ['dopmi_saved_card_owner_server',{target_actor:null}],
+  ['dopmi_saved_card_state',{}],
+  ['dopmi_saved_card_method_server',{operation:'get',data:{}}],
+  ['dopmi_saved_card_method_state',{}],
+  ['dopmi_saved_wallet_server',{operation:'get',data:{}}],
+  ['dopmi_saved_wallet_state',{}],
+]) {
+  await probe(`/rest/v1/rpc/${rpc}`, {
+    body, status:401, inspect:async response=>assert.equal((await response.json()).code,'42501'),
   });
 }
 console.log(`${passed} remote checks passed; checkout gate ${enabled ? 'enabled, requires sign-in' : 'closed'}.`);

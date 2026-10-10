@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -267,8 +268,68 @@ void main() {
     await reader.favorite(post.id, true);
     expect((await reader.catalog({'saved': true}, 1)).items.single.id, post.id);
     expect((await stranger.catalog({'saved': true}, 1)).total, 0);
-    final thread = await reader.startThread(post.id);
+    expect((await reader.savedAdoptions(1)).items.single.id, post.id);
+    expect((await reader.detail(post.id))!.saved, true);
+    expect((await stranger.savedAdoptions(1)).total, 0);
+    final reportId = await reader.report(
+      'adoption',
+      post.id,
+      'incorrect',
+      'Revisar datos H9',
+    );
+    expect(
+      await reader.report('adoption', post.id, 'incorrect', 'Revisar datos H9'),
+      reportId,
+    );
+    final contacts = await Future.wait([
+      reader.startThread(post.id),
+      reader.startThread(post.id),
+    ]);
+    final thread = contacts.first;
+    expect(contacts.last, thread);
     expect(await reader.startThread(post.id), thread);
+    final intro = await author.messages(thread);
+    expect(intro, hasLength(1));
+    expect(intro.single['body'], contains('¡Hola!'));
+    expect(intro.single['body'], contains(post.name));
+    // Verify the production Dart contract through Auth/PostgREST on the
+    // disposable loopback backend, including daily retry deduplication.
+    await adopter.rpc(
+      'dopmi_set_adoption_measurement',
+      params: {'consent': true},
+    );
+    await reader.recordAdoptionView(post.id, consent: true);
+    await reader.recordAdoptionView(post.id, consent: true);
+    final ownerFunnel = RescueRepository(owner);
+    for (final period in ['week', 'month']) {
+      final metrics = await ownerFunnel.funnel(period);
+      expect(metrics.period, period);
+      expect(metrics.views, 1);
+      expect(metrics.favorites, 1);
+      expect(metrics.messages, 1);
+      expect(metrics.adoptions, 0);
+      expect(metrics.asOf.isBefore(metrics.periodStart), false);
+    }
+    final yesterday = await ownerFunnel.funnel('yesterday');
+    expect(yesterday.views, 0);
+    expect(yesterday.messages, 0);
+    expect((await RescueRepository(outsider).funnel('month')).views, 0);
+    await expectLater(
+      RescueRepository(client()).funnel('month'),
+      throwsA(isA<PostgrestException>()),
+    );
+    expect((await author.thread(thread))['participant_name'], isNotEmpty);
+    await expectLater(
+      stranger.thread(thread),
+      throwsA(isA<PostgrestException>()),
+    );
+    final inbox = await author.rescuerInbox(1);
+    expect(inbox.items.single['thread_count'], 1);
+    expect(inbox.items.single['unread_count'], 1);
+    expect(
+      (await author.rescuerGroupThreads(post.id, 1)).items.single['id'],
+      thread,
+    );
 
     var updates = 0;
     final cancel = author.watch(['dopmi_notifications'], () {
@@ -297,12 +358,12 @@ void main() {
       () async => updates > initialUpdates,
       diagnostics: () => 'Notification after subscription: $realtimeEvents',
     );
-    expect((await author.messages(thread)).length, 1);
+    expect((await author.messages(thread)).length, 2);
     expect(
       (await author.notifications(1)).items
           .where((n) => n['kind'] == 'message')
           .length,
-      1,
+      2,
     );
     await expectLater(
       stranger.messages(thread),
@@ -326,6 +387,7 @@ void main() {
     );
     await reader.favorite(post.id, false);
     expect((await reader.catalog({'saved': true}, 1)).total, 0);
+    await reader.favorite(post.id, true);
     post = await author.save(
       {
         ...payload,
@@ -341,5 +403,10 @@ void main() {
       throwsA(isA<StorageException>()),
     );
     expect((await author.own(post.id))!.name, 'Cambio pendiente');
+    final removed = (await reader.savedAdoptions(1)).items.single;
+    expect(removed.available, false);
+    expect(removed.publicData, isEmpty);
+    await reader.favorite(post.id, false);
+    expect((await reader.savedAdoptions(1)).total, 0);
   }, timeout: const Timeout(Duration(minutes: 3)));
 }

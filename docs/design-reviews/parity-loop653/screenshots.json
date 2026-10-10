@@ -1,0 +1,44 @@
+{
+  "launch": {
+    "size": [
+      720,
+      1520
+    ],
+    "sha256": "14a8ca0c88fa1889151e553a0c531634c2987c859dd2713311d1754871497a98"
+  },
+  "selected-final": {
+    "size": [
+      720,
+      1520
+    ],
+    "sha256": "072021c4e801ede7ccb06559fb309164561be817e779a35b90969cd8282798ac"
+  },
+  "footer": {
+    "size": [
+      720,
+      1520
+    ],
+    "sha256": "7f4dd11ecf005fc33421269acab20c26792b2f6189cb19f3e22d3b22743e4749"
+  },
+  "guest-final": {
+    "size": [
+      720,
+      1520
+    ],
+    "sha256": "7ea7b14afacbfc2d3a10e485da0dca0c38c70f0bb7600afc72aac08d645ee9c2"
+  },
+  "detail-final": {
+    "size": [
+      720,
+      1520
+    ],
+    "sha256": "5616126e837c55613666fa9489e2180463ab09fe5f4df79a37fb34cee147f428"
+  },
+  "return": {
+    "size": [
+      720,
+      1520
+    ],
+    "sha256": "251c16d0ee343044a95bdfd46b5c7fa9bf27199c7bcadfa6b0a42b338ee31138"
+  }
+}

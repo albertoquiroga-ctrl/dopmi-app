@@ -4,6 +4,17 @@ import { readFile, readdir } from 'node:fs/promises';
 import { PGlite } from '@electric-sql/pglite';
 import { createHmac } from 'node:crypto';
 import { verifySignature, requireTestKey, paymentService, stripeApi } from '../../supabase/functions/_shared/payments.mjs';
+import { savedCardService, savedCardConsentVersion } from '../../supabase/functions/_shared/saved-card.mjs';
+import { savedCardMethodService } from '../../supabase/functions/_shared/saved-card-method.mjs';
+import { registerNativeWalletSqlCases } from './native-wallet-sql-cases.mjs';
+import { registerAdoptionUpdateSqlCases } from './adoption-update889-sql-cases.mjs';
+import { registerRescuerUpdateSqlCases } from './rescuer-updatebccd-sql-cases.mjs';
+import { registerRescuerFunnelSqlCases } from './rescuer-funnel9ced-sql-cases.mjs';
+import { registerInboxSelectorSqlCases } from './inbox-selector-dde1-sql-cases.mjs';
+import { registerProfileContactsSqlCases } from './profile-contacts-dde1-sql-cases.mjs';
+import { registerChatPhotoSqlCases } from './chat-photos-dde1-sql-cases.mjs';
+import { registerPaymentActivitySqlCases } from './payment-activity-dde1-sql-cases.mjs';
+import { registerNotificationEventsSqlCases } from './notification-events-dde1-sql-cases.mjs';
 
 let db;
 const donor = '70000000-0000-4000-8000-000000000001';
@@ -12,16 +23,214 @@ const staff = '70000000-0000-4000-8000-000000000003';
 const other = '70000000-0000-4000-8000-000000000004';
 const expense = '71000000-0000-4000-8000-000000000003';
 const key = '72000000-0000-4000-8000-000000000001';
+
+test('account photo storage RLS protects current objects and permits cleanup only for the owner',async()=>{
+  const path=`${donor}/${donor}/73000000-0000-4000-8000-000000000001.jpg`;
+  // Mirror Supabase Storage role grants; authorization must come from actual RLS.
+  await db.exec('grant usage on schema storage to authenticated,anon');
+  await db.exec('grant select,insert,update,delete on storage.objects to authenticated,anon');
+  await role(donor);
+  await db.query("insert into storage.objects(bucket_id,name,metadata) values('dopmi-account-profile-media',$1,'{\"mimetype\":\"image/jpeg\",\"size\":1024}')",[path]);
+  await db.query('select dopmi_save_account_photo($1)',[path]);
+  assert.equal((await db.query('select name from storage.objects where name=$1',[path])).rows.length,1);
+  assert.equal((await db.query('delete from storage.objects where name=$1 returning name',[path])).rows.length,0);
+  assert.equal((await db.query('update storage.objects set metadata=null where name=$1 returning name',[path])).rows.length,0);
+  for(const actor of [other,staff]) {
+    await role(actor);
+    assert.equal((await db.query('select name from storage.objects where name=$1',[path])).rows.length,0);
+    await rejected(()=>db.query("insert into storage.objects(bucket_id,name) values('dopmi-account-profile-media',$1)",[path]),/row-level security/);
+    assert.equal((await db.query('delete from storage.objects where name=$1 returning name',[path])).rows.length,0);
+  }
+  await role('', 'anon');
+  assert.equal((await db.query('select name from storage.objects where name=$1',[path])).rows.length,0);
+  await role(donor);
+  await db.query('select dopmi_save_account_photo(null)');
+  assert.equal((await db.query('delete from storage.objects where name=$1 returning name',[path])).rows.length,1);
+});
+
+test('account photo links only a real owned JPEG and never exposes it to other accounts or staff',async()=>{
+  const path=`${donor}/${donor}/73000000-0000-4000-8000-000000000001.jpg`;
+  const save=async(value)=>(await db.query('select dopmi_save_account_photo($1) value',[value])).rows[0].value;
+  const get=async()=>(await db.query('select dopmi_my_account_photo() value')).rows[0].value;
+  await role(donor);
+  assert.equal(await get(),null);
+  await rejected(()=>save(path),/Foto de cuenta inválida/);
+  await db.exec('reset role');
+  await db.query("insert into storage.objects(bucket_id,name,metadata) values('dopmi-account-profile-media',$1,'{\"mimetype\":\"image/jpeg\",\"size\":1024}')",[path]);
+  await role(donor);
+  await rejected(()=>save(path.replaceAll(donor,other)),/Foto de cuenta inválida/);
+  assert.equal((await save(path)).photo_path,path);
+  assert.equal((await get()).photo_path,path);
+  assert.equal((await save(path)).photo_path,path);
+  assert.equal((await db.query('select dopmi_account_photo_file_access($1,true) allowed',[path])).rows[0].allowed,false);
+  await rejected(()=>db.query('select * from private.dopmi_account_photos'),/permission denied/);
+  for(const actor of [other,staff]) {
+    await role(actor);
+    assert.equal(await get(),null);
+    assert.equal((await db.query('select dopmi_account_photo_file_access($1) allowed',[path])).rows[0].allowed,false);
+    await rejected(()=>save(path),/Foto de cuenta inválida/);
+  }
+  await role(donor);
+  assert.equal(await save(null),null);
+  assert.equal(await get(),null);
+  assert.equal((await db.query('select dopmi_account_photo_file_access($1,true) allowed',[path])).rows[0].allowed,true);
+  await db.exec('reset role');
+  await db.query("update storage.objects set metadata='{\"mimetype\":\"image/jpeg\",\"size\":\"not-a-number\"}' where name=$1",[path]);
+  await role(donor);
+  await rejected(()=>save(path),/Foto de cuenta inválida/);
+  await db.exec('reset role');
+  await db.query("update profiles set account_status='suspended' where id=$1",[donor]);
+  await role(donor);
+  assert.equal((await db.query('select dopmi_account_photo_file_access($1) allowed',[path])).rows[0].allowed,false);
+  await rejected(()=>get(),/Cuenta activa y confirmada requerida/);
+  await role('', 'anon');
+  assert.equal((await db.query('select dopmi_account_photo_file_access($1) allowed',[path])).rows[0].allowed,false);
+  await rejected(()=>get(),/permission denied/);
+});
+
+test('account name parts are explicit, private, compatible with legacy edits and cannot grant privileges',async()=>{
+  await db.query('update profiles set display_name=$1 where id=$2',['María del Carmen Pérez',donor]);
+  await role(donor);
+  const names=async()=>(await db.query('select dopmi_my_account_names() value')).rows[0].value;
+  const save=async(payload)=>(await db.query('select dopmi_save_account_names($1::jsonb) value',[JSON.stringify(payload)])).rows[0].value;
+  assert.deepEqual(await names(),{first_name:'María del Carmen Pérez',last_name:'',name_parts_saved:false});
+  const payload={first_name:' María del Carmen ',last_name:' Pérez García ',phone:' 123 ',city:' Monterrey, NL '};
+  const profile=await save(payload);
+  assert.equal(profile.id,donor);
+  assert.equal(profile.display_name,'María del Carmen Pérez García');
+  assert.equal(profile.active_mode,'donor');
+  assert.equal(profile.account_status,'active');
+  assert.equal(profile.phone,'123');
+  assert.deepEqual(await names(),{first_name:'María del Carmen',last_name:'Pérez García',name_parts_saved:true});
+  await rejected(()=>save({...payload,owner_id:other}),/Datos de perfil inválidos/);
+  await rejected(()=>save({...payload,active_mode:'rescuer'}),/Datos de perfil inválidos/);
+  await rejected(()=>save({...payload,first_name:' '}),/Datos de perfil inválidos/);
+  await rejected(()=>save({...payload,first_name:'a'.repeat(80),last_name:'b'}),/Datos de perfil inválidos/);
+  await rejected(()=>db.query('select * from private.dopmi_account_name_parts'),/permission denied/);
+  await db.query('update profiles set phone=$1 where id=$2',['456',donor]);
+  assert.equal((await names()).name_parts_saved,true);
+  await db.query('update profiles set display_name=$1 where id=$2',['Nombre completo anterior',donor]);
+  assert.deepEqual(await names(),{first_name:'Nombre completo anterior',last_name:'',name_parts_saved:false});
+  await role(other);
+  assert.deepEqual(await names(),{first_name:'Prueba',last_name:'',name_parts_saved:false});
+  await role(staff);
+  assert.equal((await names()).first_name,'Prueba');
+  await db.exec('reset role');
+  await db.query("update profiles set account_status='suspended' where id=$1",[donor]);
+  await role(donor);
+  await rejected(()=>names(),/Cuenta activa y confirmada requerida/);
+  await rejected(()=>save(payload),/Cuenta activa y confirmada requerida/);
+  await role('', 'anon');
+  await rejected(()=>names(),/permission denied/);
+  await rejected(()=>save(payload),/permission denied/);
+});
+test('support receipt binds a real stored JPEG to its owner and request, and recovery includes the attachment',async()=>{
+  const path=`${donor}/${key}/73000000-0000-4000-8000-000000000001.jpg`;
+  const payload={topic:'account',case_name:'Luna',message:'Revisa esta imagen.',attachment_path:path};
+  const submit=async(value=payload)=>(await db.query('select dopmi_submit_support_request($1,$2::jsonb) value',[key,JSON.stringify(value)])).rows[0].value;
+  await role(donor);
+  await rejected(()=>submit(),/Adjunto inválido/);
+  await db.exec('reset role');
+  await db.query(`insert into storage.objects(bucket_id,name,metadata) values('dopmi-support-media',$1,'{"mimetype":"image/jpeg","size":100}')`,[path]);
+  await role(donor);
+  await rejected(()=>submit({...payload,attachment_path:path.replace(donor,other)}),/Adjunto inválido/);
+  await rejected(()=>submit({...payload,attachment_path:path.replace(key,'72000000-0000-4000-8000-000000000002')}),/Adjunto inválido/);
+  const receipt=await submit();assert.equal(receipt.status,'received');
+  assert.deepEqual(await submit(),receipt);
+  const recover=async(value)=>(await db.query('select dopmi_my_support_request($1,$2::jsonb) value',[key,JSON.stringify(value)])).rows[0].value;
+  assert.deepEqual(await recover(payload),receipt);
+  const {attachment_path:ignored,...without}=payload;
+  assert.equal(await recover(without),null);
+  await rejected(()=>submit(without),/solicitud cambió/);
+  await role(staff);
+  assert.equal((await db.query('select dopmi_admin_support_requests() value')).rows[0].value.items[0].attachment_path,path);
+});
+test('support media is private and only the owner can write before receipt; staff reads only linked attachments',async()=>{
+  const path=`${donor}/${key}/73000000-0000-4000-8000-000000000001.jpg`;
+  const access=async(write=false)=>(await db.query('select dopmi_support_file_access($1,$2) value',[path,write])).rows[0].value;
+  await role(donor);assert.equal(await access(true),true);assert.equal(await access(),true);
+  await role(other);assert.equal(await access(true),false);assert.equal(await access(),false);
+  await role(staff);assert.equal(await access(),false);assert.equal(await access(true),false);
+  await db.exec('reset role');
+  await db.query(`insert into private.dopmi_support_requests(owner_id,request_id,topic,message,attachment_path) values($1,$2,'account','Ayuda',$3)`,[donor,key,path]);
+  await role(staff);assert.equal(await access(),true);
+  await role(donor);assert.equal(await access(true),false);
+  await db.exec('reset role');
+  await db.query("update profiles set account_status='suspended' where id=$1",[donor]);
+  await role(donor);assert.equal(await access(),false);
+  await role('', 'anon');assert.equal(await access(),false);
+  await db.exec('reset role');
+  const bucket=(await db.query("select * from storage.buckets where id='dopmi-support-media'")).rows[0];
+  assert.equal(bucket.public,false);assert.equal(bucket.file_size_limit,5242880);
+  assert.deepEqual(bucket.allowed_mime_types,['image/jpeg']);
+});
+test('support is private, retries one durable receipt and rejects changed replay content', async () => {
+  await role(donor);
+  const body=JSON.stringify({topic:'guardian',case_name:'Luna',message:'Ayuda en México.'});
+  const submit=async(data=body)=>(await db.query('select dopmi_submit_support_request($1,$2::jsonb) value',[key,data])).rows[0].value;
+  const first=await submit(); assert.equal(first.status,'received');
+  assert.deepEqual(await submit(),first);
+  assert.equal((await db.query('select dopmi_my_support_request($1,$2::jsonb) value',[key,JSON.stringify({topic:'guardian',case_name:'Luna',message:'Changed'})])).rows[0].value,null);
+  assert.deepEqual((await db.query('select dopmi_my_support_request($1,$2::jsonb) value',[key,body])).rows[0].value,first);
+  assert.deepEqual((await db.query('select dopmi_my_support_request($1) value',[key])).rows[0].value,first);
+  await rejected(()=>submit(JSON.stringify({topic:'guardian',message:'Otra solicitud'})),/solicitud cambió/);
+  await role(other);
+  assert.equal((await db.query('select dopmi_my_support_request($1) value',[key])).rows[0].value,null);
+  await rejected(()=>db.query('select * from private.dopmi_support_requests'),/permission denied/);
+  await db.exec('reset role');
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_support_requests')).rows[0].n,1);
+});
+test('support administrative inbox requires real membership, is paginated and audited',async()=>{
+  await role(donor);
+  await db.query('select dopmi_submit_support_request($1,$2::jsonb)',[key,JSON.stringify({topic:'account',message:'Ayuda privada.'})]);
+  await rejected(()=>db.query('select dopmi_admin_support_requests()'),/administrativo/);
+  await db.exec('reset role');
+  await db.query(`update auth.users set raw_user_meta_data='{"role":"admin","is_admin":true}' where id=$1`,[donor]);
+  await role(donor);
+  await rejected(()=>db.query('select dopmi_admin_support_requests()'),/administrativo/);
+  await role(staff);
+  const first=(await db.query('select dopmi_admin_support_requests(1,1) value')).rows[0].value;
+  assert.equal(first.total,1);assert.equal(first.items[0].message,'Ayuda privada.');
+  assert.equal(first.items[0].owner_id,donor);
+  assert.equal(first.items[0].email,donor+'@example.test');
+  assert.deepEqual((await db.query('select dopmi_admin_support_requests(2,1) value')).rows[0].value.items,[]);
+  await rejected(()=>db.query('select dopmi_admin_support_requests(1,51)'),/Paginación/);
+  await db.exec('reset role');
+  assert.equal((await db.query("select count(*)::int n from private.admin_access_log where action='support.requests.list' and actor_id=$1",[staff])).rows[0].n,2);
+  await db.query('update private.admin_memberships set active=false where user_id=$1',[staff]);
+  await role(staff);
+  await rejected(()=>db.query('select dopmi_admin_support_requests()'),/administrativo/);
+});
+test('support requires active identity and enforces per-account rate without blocking stable retries',async()=>{
+  await role(donor);
+  const body=JSON.stringify({topic:'account',message:'Necesito ayuda.'});
+  for (const invalid of [{topic:'shop',message:'Ayuda'}, {topic:'account',message:'\n\t'},
+    {topic:'account',message:'Ayuda',owner_id:other}, {topic:'account',message:'a'.repeat(4001)}]) {
+    await rejected(()=>db.query('select dopmi_submit_support_request($1,$2::jsonb)',[key,JSON.stringify(invalid)]),/inválida/);
+  }
+  for(let n=1;n<=5;n++) await db.query('select dopmi_submit_support_request($1,$2::jsonb)',[`72000000-0000-4000-8000-${String(n).padStart(12,'0')}`,body]);
+  await db.query('select dopmi_submit_support_request($1,$2::jsonb)',[key,body]);
+  await rejected(()=>db.query('select dopmi_submit_support_request($1,$2::jsonb)',['72000000-0000-4000-8000-000000000006',body]),/Espera/);
+  await db.exec('reset role');
+  await db.query("update profiles set account_status='suspended' where id=$1",[donor]);
+  await role(donor);
+  await rejected(()=>db.query('select dopmi_my_support_request($1)',[key]),/activa/);
+  await db.exec('reset role; set local role anon');
+  await rejected(()=>db.query('select dopmi_my_support_request($1)',[key]),/permission denied/);
+});
 before(async () => {
   db = new PGlite();
   await db.exec(`create role anon; create role authenticated; create role service_role;
     create schema auth; create schema storage;
-    create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb default '{}',email_confirmed_at timestamptz,last_sign_in_at timestamptz);
+    create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb default '{}',email_confirmed_at timestamptz,last_sign_in_at timestamptz,phone text,phone_confirmed_at timestamptz);
+    create table auth.sessions(id uuid primary key,user_id uuid not null references auth.users(id) on delete cascade,not_after timestamptz);
     create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
     grant usage on schema auth,public to anon,authenticated,service_role;
     create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
     create table storage.objects(id uuid default gen_random_uuid(),bucket_id text,name text,owner_id text,metadata jsonb);
-    alter table storage.objects enable row level security;`);
+    alter table storage.objects enable row level security;
+    grant usage on schema storage to authenticated;
+    grant select,insert,update,delete on storage.objects to authenticated;`);
   const path = new URL('../../supabase/migrations/',import.meta.url);
   for (const file of (await readdir(path)).filter(v => v.endsWith('.sql')).sort()) await db.exec(await readFile(new URL(file,path),'utf8'));
   await db.query(`insert into auth.users(id,email,email_confirmed_at,raw_user_meta_data)
@@ -36,6 +245,14 @@ before(async () => {
 after(async () => db?.close());
 beforeEach(async () => db.exec('begin'));
 afterEach(async () => db.exec('rollback'));
+registerAdoptionUpdateSqlCases(() => db, { donor, rescuer, other });
+registerRescuerUpdateSqlCases(() => db, { donor, rescuer, other });
+registerRescuerFunnelSqlCases(() => db, { donor, rescuer, other });
+registerInboxSelectorSqlCases(() => db, { donor, rescuer, other });
+registerProfileContactsSqlCases(() => db, { rescuer, staff, other });
+registerChatPhotoSqlCases(() => db, { donor, rescuer, other, staff });
+registerPaymentActivitySqlCases(() => db, { donor, rescuer, other, staff, expense });
+registerNotificationEventsSqlCases(() => db, { donor, rescuer, other, staff, expense });
 const rpc = async (operation,data) => {
   if (operation === 'refund_begin' || operation === 'refund_finish') return (await db.query('select public.dopmi_refund_adjustment($1,$2::jsonb) as value',[operation === 'refund_begin' ? 'begin' : 'finish',JSON.stringify(data)])).rows[0].value;
   if (operation === 'finish_job') return (await db.query('select public.dopmi_payment_job_finish($1::jsonb) as value',[JSON.stringify(data)])).rows[0].value;
@@ -64,6 +281,197 @@ function stripeFixture(d, overrides={}) {
   }};
 }
 const serviceFor = (stripe, overrideRpc=rpc) => paymentService({rpc:overrideRpc,stripe,returnUrl:'https://example.test/return',logger:{}});
+test('personality preserves legacy data, supports new traits and removes edited posts from discovery', async () => {
+  const post='30000000-0000-4000-8000-000000000001';
+  await db.query("insert into dopmi_adoptions(id,owner_id,status,personality) values($1,$2,'published',array['calm','alegre'])",[post,rescuer]);
+  await db.exec('set local role anon');
+  for (const trait of ['calm','alegre']) {
+    const result=(await db.query('select dopmi_discovery($1::jsonb) as value',[JSON.stringify({personality:[trait]})])).rows[0].value;
+    assert.equal(result.total,1);
+    assert.deepEqual(result.items[0].personality,['calm','alegre']);
+  }
+  await db.exec('reset role');
+  await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[rescuer]);
+  await db.exec('set local role authenticated');
+  const preserved=(await db.query("select dopmi_save_adoption('{}',$1,1) as value",[post])).rows[0].value;
+  assert.deepEqual(preserved.personality,['calm','alegre']);
+  assert.equal(preserved.status,'draft');
+  const edited=(await db.query(`select dopmi_save_adoption('{"personality":["triste","tranquilo"]}',$1,2) as value`,[post])).rows[0].value;
+  assert.deepEqual(edited.personality,['triste','tranquilo']);
+  await db.exec('reset role; set local role anon');
+  assert.equal((await db.query(`select dopmi_discovery('{"personality":["triste"]}') as value`)).rows[0].value.total,0);
+  await db.exec('reset role; set local role authenticated');
+  const cleared=(await db.query(`select dopmi_save_adoption('{"personality":[]}',$1,3) as value`,[post])).rows[0].value;
+  assert.deepEqual(cleared.personality,[]);
+  await db.exec('reset role');
+});
+
+test('new personality reaches discovery only after owner submission and staff review', async () => {
+  await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[rescuer]);
+  await db.exec('set local role authenticated');
+  const payload={pet_name:'Luna',city:'Monterrey',region:'Nuevo León',publisher_name:'Refugio',
+    story:'Luna busca una familia que la acompañe.',personality:['esperanzado','nervioso']};
+  const saved=(await db.query('select dopmi_save_adoption($1::jsonb) as value',[JSON.stringify(payload)])).rows[0].value;
+  const photo=`${rescuer}/${saved.id}/40000000-0000-4000-8000-000000000001.jpg`;
+  await db.query('select dopmi_save_adoption($1::jsonb,$2,1)',[JSON.stringify({...payload,photos:[photo]}),saved.id]);
+  await db.exec('reset role');
+  await db.query("insert into storage.objects(bucket_id,name) values('dopmi-adoption-photos',$1)",[photo]);
+  await db.exec('set local role authenticated');
+  await db.query("select dopmi_transition_adoption($1,2,'submit')",[saved.id]);
+  await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[staff]);
+  await db.query("select dopmi_review_adoption($1,3,'published')",[saved.id]);
+  await db.exec('reset role; set local role anon');
+  const result=(await db.query(`select dopmi_discovery('{"personality":["esperanzado"]}') as value`)).rows[0].value;
+  assert.equal(result.total,1);
+  assert.deepEqual(result.items[0].personality,payload.personality);
+  await db.exec('reset role');
+});
+
+for (const traits of ['alegre', ['inventado'], Array(23).fill('alegre')]) {
+  test(`personality rejects unsupported shape, values or cardinality: ${JSON.stringify(traits)}`, async () => {
+    await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[rescuer]);
+    await db.exec('set local role authenticated');
+    await assert.rejects(db.query('select dopmi_save_adoption($1::jsonb)',[JSON.stringify({personality:traits})]),e=>e.code==='22023');
+  });
+}
+
+test('H10 legal consent is versioned and cannot be forged through profile updates', async () => {
+  await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[other]);
+  const accepted=(await db.query(`select public.dopmi_accept_legal('terms-2026-09-28','privacy-2026-09-28',true) as value`)).rows[0].value;
+  assert.equal(accepted.adult_confirmed,true);
+  const profile=(await db.query('select terms_version,privacy_version,adult_confirmed_at from public.profiles where id=$1',[other])).rows[0];
+  assert.equal(profile.terms_version,'terms-2026-09-28');
+  assert.equal(profile.privacy_version,'privacy-2026-09-28');
+  assert.ok(profile.adult_confirmed_at);
+  assert.equal((await db.query('select count(*)::int as n from private.dopmi_consents where owner_id=$1',[other])).rows[0].n,1);
+  await assert.rejects(db.query(`select public.dopmi_accept_legal('otro','privacy-2026-09-28',true)`),/inválida/);
+});
+test('H10 deletion blocks old sessions, is idempotent and leaves only an anonymous accounting subject', async () => {
+  const requestKey='79000000-0000-4000-8000-000000000001';
+  const post='79000000-0000-4000-8000-000000000002';
+  const thread='79000000-0000-4000-8000-000000000003';
+  await db.query(`insert into public.dopmi_adoptions(id,owner_id,pet_name,status) values($1,$2,'Luna','published')`,[post,other]);
+  await db.query(`insert into public.dopmi_threads(id,post_id,owner_id,adopter_id,pet_name) values($1,$2,$3,$4,'Luna')`,[thread,post,other,donor]);
+  await db.query(`insert into public.dopmi_messages(id,thread_id,sender_id,body) values
+    ('79000000-0000-4000-8000-000000000004',$1,$2,'Mensaje del propietario'),
+    ('79000000-0000-4000-8000-000000000005',$1,$3,'Mensaje del adoptante')`,[thread,other,donor]);
+  const input={owner_id:other,request_key:requestKey};
+  const request=(await db.query('select public.dopmi_account_deletion_server($1,$2::jsonb) as value',['request',JSON.stringify(input)])).rows[0].value;
+  assert.equal(request.status,'procesando');
+  await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[other]);
+  assert.equal((await db.query('select public.dopmi_actor_active() as value')).rows[0].value,false);
+  const replay=(await db.query('select public.dopmi_account_deletion_server($1,$2::jsonb) as value',['request',JSON.stringify(input)])).rows[0].value;
+  assert.equal(replay.status,'procesando');
+  const done=(await db.query('select public.dopmi_account_deletion_server($1,$2::jsonb) as value',['finalize',JSON.stringify({owner_id:other})])).rows[0].value;
+  assert.equal(done.status,'completado');
+  await db.query('delete from auth.users where id=$1',[other]);
+  const profile=(await db.query('select display_name,phone,city,account_status from public.profiles where id=$1',[other])).rows[0];
+  assert.deepEqual(profile,{display_name:'Cuenta eliminada',phone:'',city:'',account_status:'deleted'});
+  const messages=(await db.query('select sender_id,body from public.dopmi_messages where thread_id=$1 order by id',[thread])).rows;
+  assert.deepEqual(messages,[
+    {sender_id:other,body:'[Mensaje retirado por eliminación de cuenta]'},
+    {sender_id:donor,body:'Mensaje del adoptante'},
+  ]);
+  assert.equal((await db.query('select status,pet_name from public.dopmi_adoptions where id=$1',[post])).rows[0].status,'archived');
+});
+test('H10 deletion completes for an empty account without changing another profile', async () => {
+  const requestKey='79000000-0000-4000-8000-000000000011';
+  const donorBefore=(await db.query(
+    'select display_name,account_status from public.profiles where id=$1',
+    [donor],
+  )).rows[0];
+  const requested=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['request',JSON.stringify({owner_id:other,request_key:requestKey})],
+  )).rows[0].value;
+  assert.equal(requested.status,'procesando');
+  const completed=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['finalize',JSON.stringify({owner_id:other})],
+  )).rows[0].value;
+  assert.equal(completed.status,'completado');
+  assert.deepEqual((await db.query(
+    'select display_name,account_status from public.profiles where id=$1',
+    [donor],
+  )).rows[0],donorBefore);
+  assert.equal((await db.query(
+    'select count(*)::int as n from private.dopmi_account_deletions where owner_id<>$1',
+    [other],
+  )).rows[0].n,0);
+});
+test('H10 deletion keeps access blocked while a contribution remains pending', async () => {
+  const pending=await prepare({
+    actor:other,
+    key:'79000000-0000-4000-8000-000000000021',
+  });
+  const requested=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['request',JSON.stringify({
+      owner_id:other,
+      request_key:'79000000-0000-4000-8000-000000000022',
+    })],
+  )).rows[0].value;
+  assert.equal(requested.status,'procesando');
+  const attention=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['finalize',JSON.stringify({owner_id:other})],
+  )).rows[0].value;
+  assert.equal(attention.status,'requiere_atencion');
+  assert.equal(attention.attention_code,'operacion_financiera_pendiente');
+  await db.query(`select set_config('request.jwt.claim.sub',$1,true)`,[other]);
+  assert.equal((await db.query('select public.dopmi_actor_active() as value')).rows[0].value,false);
+  assert.equal((await db.query(
+    'select payment_status from public.dopmi_donations where id=$1',
+    [pending.id],
+  )).rows[0].payment_status,'pending');
+});
+test('H10 deletion requests Guardian cancellation and waits for its confirmation', async () => {
+  await db.query(
+    'select public.dopmi_guardian_subscription_server($1,$2::jsonb)',
+    ['register',JSON.stringify({
+      donor_id:other,
+      stripe_customer_id:'cus_H10Deletion',
+      stripe_subscription_id:'sub_H10Deletion',
+      stripe_price_id:'price_H10Deletion',
+      gross_cents:5000,
+      initial_payment_intent_id:'pi_H10Deletion',
+      initial_charge_id:'ch_H10Deletion',
+    })],
+  );
+  const requested=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['request',JSON.stringify({
+      owner_id:other,
+      request_key:'79000000-0000-4000-8000-000000000031',
+    })],
+  )).rows[0].value;
+  assert.equal(requested.status,'procesando');
+  const plan=(await db.query(
+    'select status,cancellation_requested_at from private.dopmi_guardian_subscriptions where donor_id=$1',
+    [other],
+  )).rows[0];
+  assert.equal(plan.status,'active');
+  assert.ok(plan.cancellation_requested_at);
+  assert.equal((await db.query(
+    "select count(*)::int as n from private.dopmi_guardian_requests where donor_id=$1 and kind='cancel' and status='pending'",
+    [other],
+  )).rows[0].n,1);
+  const attention=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['finalize',JSON.stringify({owner_id:other})],
+  )).rows[0].value;
+  assert.equal(attention.status,'requiere_atencion');
+  assert.equal(attention.attention_code,'operacion_financiera_pendiente');
+  await db.query(
+    'select public.dopmi_guardian_subscription_server($1,$2::jsonb)',
+    ['cancel',JSON.stringify({donor_id:other,stripe_subscription_id:'sub_H10Deletion'})],
+  );
+  const completed=(await db.query(
+    'select public.dopmi_account_deletion_server($1,$2::jsonb) as value',
+    ['finalize',JSON.stringify({owner_id:other})],
+  )).rows[0].value;
+  assert.equal(completed.status,'completado');
+});
 test('scheduled reconciliation finds pending checkouts without an ambiguous SQL alias',async () => {
   const d=await prepare();
   await rpc('checkout_save',{donation_id:d.id,session_id:'cs_pending',url:'https://example.test/checkout'});
@@ -781,6 +1189,24 @@ test('status and replay/lease RPCs remain service-only even for administrators',
     }
     await db.exec('reset role');
   }
+});
+
+test('public rescuer metrics include approved history, deduplicate linked pets and omit private payment data',async () => {
+  const d=await prepare(); await settle(d.id);
+  await db.exec('reset role');
+  await db.query(`insert into public.dopmi_adoptions(id,owner_id,status,published_at,rescue_case_id) values
+    ('30000000-0000-4000-8000-000000000091',$1,'published',now(),'71000000-0000-4000-8000-000000000002'),
+    ('30000000-0000-4000-8000-000000000092',$1,'archived',now(),null),
+    ('30000000-0000-4000-8000-000000000093',$1,'draft',null,null)`,[rescuer]);
+  await role('', 'anon');
+  const metrics=(await db.query('select public.dopmi_rescuer_public_metrics($1) v',[rescuer])).rows[0].v;
+  assert.deepEqual(metrics,{published_cases:1,active_donation_cases:1,active_adoptions:1,published_donation_cases:1,
+    published_adoptions:2,funded_cents:9200,completed_needs:0,helped_pets:2,closed_cases:0,received_support_pets:1});
+  for(const sensitive of [donor,d.id,'ch_one','tr_fixture','pet_name','draft']) assert.equal(JSON.stringify(metrics).includes(sensitive),false);
+  await db.exec('reset role');
+  await db.query("update public.profiles set account_status='suspended' where id=$1",[rescuer]);
+  await role('', 'anon');
+  assert.equal((await db.query('select public.dopmi_rescuer_public_metrics($1) v',[rescuer])).rows[0].v,null);
 });
 
 test('case totals distinguish assigned from transferred net and contain no private payment information',async () => {
@@ -2036,15 +2462,15 @@ test('Guardian amount application keeps pause and calendar, disables proration a
   await f.manager().run(requestId);assert.equal(f.changeCalls.length,2);
 });
 test('Guardian current-period invoice discovered after a price change retains its old authorized amount',async()=>{
-  const f=await changeFixture(),requestId=await f.request('amount',0,1000);await f.manager().run(requestId);
+  const f=await changeFixture(),requestId=await f.request('amount',0,6000);await f.manager().run(requestId);
   const current=await f.collector().run(f.invoice.id);assert.equal(current.status,'paid');assert.equal(current.gross_cents,5000);assert.equal(current.price_id,'price_schedule1');
   assert.equal((await guardianSettlement('get',{cycle_id:current.cycle_id})).allocated_cents,4314);
-  const next=await collectionRpc('prepare',{invoice_id:'in_nextPrice',subscription_id:f.subscription.id,cycle_key:nextRequestKey,verified_price_id:'price_change1',verified_gross_cents:1000,
+  const next=await collectionRpc('prepare',{invoice_id:'in_nextPrice',subscription_id:f.subscription.id,cycle_key:nextRequestKey,verified_price_id:'price_change1',verified_gross_cents:6000,
     period_start:f.item.current_period_end,period_end:f.item.current_period_end+30*86400,fresh:true});
-  assert.equal(next.gross_cents,1000);assert.equal(next.price_id,'price_change1');
+  assert.equal(next.gross_cents,6000);assert.equal(next.price_id,'price_change1');
 });
 test('Guardian an old bound invoice reconciles after its subscription changes price and is canceled',async()=>{
-  const f=await changeFixture();const old=await f.prepare();const requestId=await f.request('amount',0,1000);await f.manager().run(requestId);
+  const f=await changeFixture();const old=await f.prepare();const requestId=await f.request('amount',0,6000);await f.manager().run(requestId);
   const cancelId=await f.request('cancel',1,null,nextRequestKey);await f.manager().run(cancelId);
   await f.stripe.invoices.pay(f.invoice.id,{},{});
   const settled=await f.service().reconcileInvoice(f.invoice.id);assert.equal(settled.gross_cents,5000);assert.equal(settled.allocated_cents,4314);
@@ -2055,10 +2481,10 @@ test('Guardian paid invoice cannot substitute a different period for its stored 
   await assert.rejects(()=>f.service().reconcileInvoice(f.invoice.id),/snapshot_mismatch/);
 });
 test('Guardian successive amount changes before renewal retain history and choose the newest authorized price',async()=>{
-  const f=await changeFixture();await f.manager().run(await f.request('amount',0,1000));
-  await f.manager().run(await f.request('amount',1,2000,nextRequestKey));
+  const f=await changeFixture();await f.manager().run(await f.request('amount',0,6000));
+  await f.manager().run(await f.request('amount',1,7000,nextRequestKey));
   const source=await collectionRpc('source',{subscription_id:f.subscription.id,period_start:f.item.current_period_end});
-  assert.equal(source.gross_cents,2000);assert.equal(source.stripe_price_id,'price_change2');
+  assert.equal(source.gross_cents,7000);assert.equal(source.stripe_price_id,'price_change2');
   const old=await collectionRpc('source',{subscription_id:f.subscription.id,period_start:f.item.current_period_end-1});
   assert.equal(old.gross_cents,5000);assert.equal((await db.query('select count(*)::int as n from private.dopmi_guardian_prices')).rows[0].n,3);
 });
@@ -2640,7 +3066,7 @@ test('Guardian stale invoice source cannot reserve a newly changed amount after 
   const f=await changeFixture(),target=f.item.current_period_end;let raced=false;
   f.invoice.lines.data[0].period={start:target,end:target+30*86400};f.invoice.created=target;
   const wrapped=async(op,data)=>{const result=await collectionRpc(op,data);if(op==='source'&&!raced){
-    raced=true;await f.manager().run(await f.request('amount',0,1000));changeClock(f,target+1);
+    raced=true;await f.manager().run(await f.request('amount',0,6000));changeClock(f,target+1);
   }return result;};
   await rejected(()=>f.collector(wrapped).run(f.invoice.id),/factura no coincide/);
   assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_collection_jobs')).rows[0].n,0);
@@ -2937,3 +3363,976 @@ test('Guardian reversal age limit alone stops new writes and a partial refund ma
   await db.exec("update private.dopmi_guardian_reversals set first_attempt_at=now()-interval '24 hours'");
   f.stripe.transfers.createReversal=create;await assert.rejects(f.returns().reconcileCycle(f.cycle.id),/retry_limit/);assert.equal(f.writes.length,0);
 });
+
+
+test('personal impact combines settled Guardian net with punctual support and excludes other donors and reservations',async () => {
+  const cycle=await boundGuardian();
+  await role(donor,'authenticated');
+  const impact=async ()=>(await db.query('select public.dopmi_personal_impact() as value')).rows[0].value;
+  assert.deepEqual(await impact(),[]);
+  await db.exec('reset role');
+  await guardianSettlement('settle',guardianEvidence);
+  await role(donor,'authenticated');
+  let rows=await impact();
+  assert.equal(rows.length,1);
+  assert.equal(rows[0].allocated_cents,4314);
+  assert.equal(rows[0].public_data.pet_name,'Luna');
+  assert.deepEqual(Object.keys(rows[0]).sort(),['allocated_cents','case_id','last_supported_at','public_data','updates']);
+  await role(other,'authenticated');assert.deepEqual(await impact(),[]);
+  await role(staff,'authenticated');assert.deepEqual(await impact(),[]);
+  await db.exec('reset role');
+  const donation=await prepare({gross_cents:5000});
+  await settle(donation.id,{gross_cents:5000,stripe_fee_cents:500,charge_id:'ch_impact',payment_intent_id:'pi_impact'});
+  await role(donor,'authenticated');rows=await impact();
+  assert.equal(rows[0].allocated_cents,4314+4400);
+  await db.exec('reset role');
+  await db.query('update private.dopmi_guardian_allocations set reversed_cents=1000 where cycle_id=$1',[cycle.id]);
+  await role(donor,'authenticated');assert.equal((await impact())[0].allocated_cents,3314+4400);
+  await db.exec('reset role');
+  await db.query('update private.dopmi_guardian_allocations set reversed_cents=allocated_cents where cycle_id=$1',[cycle.id]);
+  await role(donor,'authenticated');assert.equal((await impact())[0].allocated_cents,4400);
+});
+
+test('personal impact hides withdrawn cases and rejects inactive and anonymous identities',async () => {
+  await boundGuardian();await guardianSettlement('settle',guardianEvidence);
+  await db.query("update public.dopmi_rescue_records set status='changes_requested' where kind='case'");
+  await role(donor,'authenticated');
+  assert.deepEqual((await db.query('select dopmi_personal_impact() as value')).rows[0].value,[]);
+  await db.exec('reset role');
+  await db.query("update profiles set account_status='suspended' where id=$1",[donor]);
+  await role(donor,'authenticated');
+  await rejected(()=>db.query('select dopmi_personal_impact()'),/Sesión activa requerida/);
+  await role('','anon');await rejected(()=>db.query('select dopmi_personal_impact()'),/permission denied/);
+});
+
+
+test('owned cases include confirmed punctual and Guardian net, not reservations or reversed allocations',async()=>{
+  const cycle=await boundGuardian();
+  const cases=async()=>(await db.query('select public.dopmi_my_cases() as value')).rows[0].value;
+  await role(rescuer);let result=await cases();
+  assert.equal(result.total,1);assert.equal(result.items[0].target_cents,12000);
+  assert.equal(result.items[0].funded_cents,0);assert.equal(result.items[0].transferred_cents,0);
+  await db.exec('reset role');await guardianSettlement('settle',guardianEvidence);
+  const donation=await prepare({gross_cents:5000});
+  await settle(donation.id,{gross_cents:5000,stripe_fee_cents:500,charge_id:'ch_owner',payment_intent_id:'pi_owner'});
+  await role(rescuer);result=await cases();assert.equal(result.items[0].funded_cents,4314+4400);
+  assert.equal(result.items[0].transferred_cents,0);
+  await db.exec('reset role');
+  await db.query("update private.dopmi_guardian_allocations set stripe_transfer_id='tr_owner',transferred_at=now(),reversed_cents=1000 where cycle_id=$1",[cycle.id]);
+  await role(rescuer);result=await cases();assert.equal(result.items[0].funded_cents,3314+4400);
+  assert.equal(result.items[0].transferred_cents,3314);
+  await db.exec('reset role');
+  await db.query('update private.dopmi_guardian_allocations set reversed_cents=allocated_cents where cycle_id=$1',[cycle.id]);
+  await role(rescuer);result=await cases();assert.equal(result.items[0].funded_cents,4400);
+  assert.equal(result.items[0].transferred_cents,0);
+});
+
+test('owned cases paginate every owner state and never grant staff or selected mode access to other private records',async()=>{
+  await db.query(`insert into public.dopmi_rescue_records(owner_id,kind,status,public_data,private_data,updated_at)
+    select $1,'case','draft','{"pet_name":"Borrador"}','{"fixture":"privado"}',now()+n*interval '1 second' from generate_series(1,22)n`,[rescuer]);
+  await db.query(`insert into public.dopmi_rescue_records(owner_id,kind,status,public_data,private_data)
+    values($1,'case','draft','{"pet_name":"Ajeno"}','{"fixture":"ajeno"}')`,[other]);
+  await role(rescuer);
+  const page=async n=>(await db.query('select public.dopmi_my_cases($1) as value',[n])).rows[0].value;
+  const first=await page(1),second=await page(2);
+  assert.equal(first.total,23);assert.equal(first.items.length,20);assert.equal(second.items.length,3);
+  assert.equal(new Set([...first.items,...second.items].map(v=>v.id)).size,23);
+  assert.ok(first.items.every(v=>v.owner_id===rescuer&&v.kind==='case'));
+  assert.equal(first.items[0].private_data.fixture,'privado');
+  assert.deepEqual((await page(3)).items,[]);
+  await role(staff);assert.deepEqual(await page(1),{total:0,items:[]});
+  await role(donor);assert.deepEqual(await page(1),{total:0,items:[]});
+  await role(other);const own=await page(1);assert.equal(own.total,1);assert.equal(own.items[0].private_data.fixture,'ajeno');
+});
+
+test('owned cases reject inactive or anonymous identities and invalid pages with restricted RPC privileges',async()=>{
+  const metadata=(await db.query(`select p.provolatile,p.prosecdef,p.proconfig,
+    has_function_privilege('anon',p.oid,'execute') as anon_execute,
+    has_function_privilege('authenticated',p.oid,'execute') as authenticated_execute,
+    md5(pg_get_functiondef(p.oid)) as definition_md5,
+    md5(pg_get_functiondef('public.dopmi_expense_funding(uuid)'::regprocedure)) as expense_funding_md5,
+    md5(pg_get_functiondef('public.dopmi_rescue_public(uuid,integer)'::regprocedure)) as public_cases_md5
+    from pg_proc p where p.oid='public.dopmi_my_cases(integer)'::regprocedure`)).rows[0];
+  assert.equal(metadata.provolatile,'s');assert.equal(metadata.prosecdef,true);
+  assert.deepEqual(metadata.proconfig,['search_path=""']);
+  assert.equal(metadata.anon_execute,false);assert.equal(metadata.authenticated_execute,true);
+  console.info('owned cases SQL verification',JSON.stringify(metadata));
+  await role(rescuer);await rejected(()=>db.query('select public.dopmi_my_cases(0)'),/Página inválida/);
+  await rejected(()=>db.query('select public.dopmi_my_cases(null)'),/Página inválida/);
+  await db.exec('reset role');await db.query("update profiles set account_status='suspended' where id=$1",[rescuer]);
+  await role(rescuer);await rejected(()=>db.query('select public.dopmi_my_cases()'),/Sesión activa requerida/);
+  await role('');await rejected(()=>db.query('select public.dopmi_my_cases()'),/Sesión activa requerida/);
+  await role('','anon');await rejected(()=>db.query('select public.dopmi_my_cases()'),/permission denied/);
+});
+
+
+test('planned case needs persist privately and do not create expenses or funding', async () => {
+  await db.query("select set_config('request.jwt.claim.sub',$1,true)",[rescuer]);
+  await db.exec('set local role authenticated');
+  const item={id:'84000000-0000-4000-8000-000000000001',type:'medicine',title:'Medicamento indicado',amount_cents:12345,detail:'Tratamiento prescrito',urgent:false};
+  const data={pet_name:'Luna',species:'dog',sex:'unknown',need:'Seguimiento',need_items:[item]};
+  const result=(await db.query("select public.dopmi_save_rescue('case',$1::jsonb,'{}','[]') as value",[JSON.stringify(data)])).rows[0].value;
+  assert.deepEqual(result.public_data.need_items,[item]);
+  assert.equal(result.status,'draft');
+  assert.equal(result.reimbursable_cents,0);
+  assert.equal(result.approved_snapshot,null);
+  await db.exec('reset role');
+  assert.equal((await db.query('select count(*)::int n from dopmi_rescue_records where parent_id=$1',[result.id])).rows[0].n,0);
+  await db.query("select set_config('request.jwt.claim.sub',$1,true)",[other]);
+  await db.exec('set local role authenticated');
+  await assert.rejects(db.query("select public.dopmi_save_rescue('case',$1::jsonb,'{}','[]',$2,$3)",[JSON.stringify(data),result.id,result.version]),e=>e.code==='42501');
+});
+
+test('planned needs reject malformed entries and invented financial state', async () => {
+  const item={id:'84000000-0000-4000-8000-000000000001',type:'food',title:'Alimento',amount_cents:12345,detail:'Una bolsa',urgent:false};
+  for (const items of [null,{},[item,item],[{...item,type:'cashback'}],[{...item,amount_cents:'12345'}],[{...item,amount_cents:1.5}],[{...item,amount_cents:0}],[{...item,urgent:'true'}],[{...item,funded_cents:500}],[{...item,title:''}]]) {
+    await db.exec('savepoint malformed_need');
+    await assert.rejects(db.query('select private.dopmi_case_fields($1::jsonb)',[JSON.stringify({need_items:items})]),e=>e.code==='22023');
+    await db.exec('rollback to savepoint malformed_need');
+  }
+  assert.deepEqual((await db.query('select private.dopmi_case_fields($1::jsonb) value',[JSON.stringify({need:'Cuidados existentes'})])).rows[0].value,{need:'Cuidados existentes'});
+});
+
+
+test('case submission accepts no planned financial needs while retaining photo and public information requirements', async () => {
+  const data={pet_name:'Luna',species:'dog',sex:'unknown',age:'3 años',story:'Rescatada con atención pendiente',city:'Monterrey',state:'Nuevo León',need_items:[]};
+  await db.query("select set_config('request.jwt.claim.sub',$1,true)",[rescuer]);
+  await db.exec('set local role authenticated');
+  let r=(await db.query("select dopmi_save_rescue('case',$1::jsonb,'{}','[]') value",[JSON.stringify(data)])).rows[0].value;
+  const path=`${rescuer}/${r.id}/85000000-0000-4000-8000-000000000001.jpg`;
+  await db.exec('reset role');
+  await db.query("insert into storage.objects(bucket_id,name,owner_id) values('dopmi-rescue-evidence',$1,$2)",[path,rescuer]);
+  await db.exec('set local role authenticated');
+  r=(await db.query("select dopmi_save_rescue('case',$1::jsonb,'{}',$2::jsonb,$3,$4) value",[JSON.stringify(data),JSON.stringify([{role:'public',path}]),r.id,r.version])).rows[0].value;
+  const submitted=(await db.query("select dopmi_transition_rescue($1,$2,'submit') value",[r.id,r.version])).rows[0].value;
+  assert.equal(submitted.status,'submitted');
+  assert.equal(submitted.reimbursable_cents,0);
+  assert.equal(submitted.approved_snapshot,null);
+});
+
+test('case submission accepts an empty pet name without approval or reimbursable funds', async () => {
+  const data={pet_name:'',species:'dog',sex:'unknown',age:'3 años',story:'Rescatada con atención pendiente',city:'Monterrey',state:'Nuevo León',need_items:[]};
+  await db.query("select set_config('request.jwt.claim.sub',$1,true)",[rescuer]);
+  await db.exec('set local role authenticated');
+  let r=(await db.query("select dopmi_save_rescue('case',$1::jsonb,'{}','[]') value",[JSON.stringify(data)])).rows[0].value;
+  const path=`${rescuer}/${r.id}/85000000-0000-4000-8000-000000000001.jpg`;
+  await db.exec('reset role');
+  await db.query("insert into storage.objects(bucket_id,name,owner_id) values('dopmi-rescue-evidence',$1,$2)",[path,rescuer]);
+  await db.exec('set local role authenticated');
+  r=(await db.query("select dopmi_save_rescue('case',$1::jsonb,'{}',$2::jsonb,$3,$4) value",[JSON.stringify(data),JSON.stringify([{role:'public',path}]),r.id,r.version])).rows[0].value;
+  const submitted=(await db.query("select dopmi_transition_rescue($1,$2,'submit') value",[r.id,r.version])).rows[0].value;
+  assert.equal(submitted.public_data.pet_name,'');
+  assert.equal(submitted.status,'submitted');
+  assert.equal(submitted.reimbursable_cents,0);
+  assert.equal(submitted.approved_snapshot,null);
+});
+
+test('public planned needs use only approved snapshot and never inflate real expense funding', async () => {
+  const caseId='71000000-0000-4000-8000-000000000002';
+  const approved={id:'11111111-1111-4111-8111-111111111111',type:'medicine',title:'Medicina revisada',amount_cents:77777,detail:'Tratamiento revisado',urgent:true};
+  const edited={...approved,title:'Texto privado no revisado',amount_cents:99999};
+  await db.query("update public.dopmi_rescue_records set public_data=$1::jsonb, approved_snapshot=$2::jsonb, private_data='{\"internal_note\":\"privado\"}' where id=$3",
+    [JSON.stringify({pet_name:'Borrador privado',need_items:[edited]}),JSON.stringify({pet_name:'Luna',need_items:[approved]}),caseId]);
+  await db.exec('set local role anon');
+  const page=(await db.query('select public.dopmi_rescue_public($1) value',[caseId])).rows[0].value;
+  const record=page.items.find(r=>r.kind==='case');
+  assert.deepEqual(record.public_data.need_items,[approved]);
+  assert.equal(record.public_data.pet_name,'Luna');
+  assert.equal(record.target_cents,12000);
+  assert.equal(record.funded_cents,0);
+  assert.equal(record.private_data,undefined);
+  assert.ok(!JSON.stringify(page).includes('Texto privado no revisado'));
+  await db.exec('reset role');
+  await db.query("update public.dopmi_rescue_records set status='draft',approved_snapshot=null where id=$1",[caseId]);
+  await db.exec('set local role anon');
+  const hidden=(await db.query('select public.dopmi_rescue_public($1) value',[caseId])).rows[0].value;
+  assert.ok(!hidden.items.some(r=>r.id===caseId));
+});
+
+test('new Guardian activation and owner amount requests require fifty pesos without any charge',async()=>{
+  await rejected(()=>activationPrepare({key:crypto.randomUUID(),gross_cents:4999}),/mínimo Guardián/);
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_activations')).rows[0].n,0);
+  await collectionFixture(); await role(donor);
+  await rejected(()=>ownerRequest('amount',0,4999),/mínimo Guardián/);
+  const accepted=await ownerRequest('amount',0,5001);
+  assert.equal(accepted.request.new_gross_cents,5001);
+  assert.equal(accepted.plan.gross_cents,5000);
+});
+
+// Reconstruct only the immediately prior minimum policy inside the test rollback.
+// Retain all subsequent ownership, dispute and cancellation protections.
+async function legacyGuardianAuthorization(signature, guard, authorize) {
+  const definition=(await db.query('select pg_get_functiondef($1::regprocedure) as value',[signature])).rows[0].value;
+  assert.equal(definition.split(guard).length,2);
+  await db.exec(definition.replace(guard,''));
+  try { return await authorize(); } finally { await db.exec('reset role'); await db.exec(definition); }
+}
+
+test('an already authorized Guardian activation below fifty retains its stable-key retry',async()=>{
+  const input={key:crypto.randomUUID(),gross_cents:1000};
+  const original=await legacyGuardianAuthorization('public.dopmi_guardian_activation_server(text,jsonb)',
+    " if gross<5000 then raise exception 'El mínimo Guardián es $50 MXN' using errcode='22023'; end if;",
+    ()=>activationPrepare(input));
+  assert.deepEqual(await activationPrepare(input),original);
+  await rejected(()=>activationPrepare({...input,key:crypto.randomUUID()}),/mínimo Guardián/);
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_activations')).rows[0].n,1);
+});
+
+test('an already authorized Guardian amount below fifty retains its owner retry and revision',async()=>{
+  await collectionFixture(); const legacyKey=crypto.randomUUID();
+  const original=await legacyGuardianAuthorization('public.dopmi_guardian_request(text,uuid,bigint,bigint,text)',
+    " if request_kind='amount' and new_gross_cents<5000 then raise exception 'El mínimo Guardián es $50 MXN' using errcode='22023'; end if;",
+    async()=>{await role(donor);return ownerRequest('amount',0,1000,legacyKey);});
+  await role(donor);
+  assert.deepEqual(await ownerRequest('amount',0,1000,legacyKey),original);
+  await rejected(()=>ownerRequest('amount',1,1000,crypto.randomUUID()),/mínimo Guardián/);
+  assert.equal((await ownerPlan()).revision,1);
+});
+
+
+test('rescuer dashboard includes settled Guardian net and excludes reservations and reversals',async()=>{
+  const cycle=await boundGuardian();
+  const dashboard=async()=>(await db.query('select public.dopmi_rescuer_dashboard() as value')).rows[0].value;
+  await role(rescuer);let result=await dashboard();
+  assert.deepEqual(result.financial,{assigned_cents:0,transferred_cents:0,in_review_cents:0});
+  await db.exec('reset role');await guardianSettlement('settle',guardianEvidence);
+  await role(rescuer);result=await dashboard();
+  assert.deepEqual(result.financial,{assigned_cents:4314,transferred_cents:0,in_review_cents:4314});
+  await role(other);result=await dashboard();
+  assert.deepEqual(result.financial,{assigned_cents:0,transferred_cents:0,in_review_cents:0});
+  await db.exec('reset role');
+  const donation=await prepare({gross_cents:5000});
+  await settle(donation.id,{gross_cents:5000,stripe_fee_cents:500,charge_id:'ch_dashboard',payment_intent_id:'pi_dashboard'});
+  await db.query("update private.dopmi_guardian_allocations set stripe_transfer_id='tr_dashboard',transferred_at=now(),reversed_cents=1000 where cycle_id=$1",[cycle.id]);
+  await role(rescuer);result=await dashboard();
+  assert.deepEqual(result.financial,{assigned_cents:7714,transferred_cents:3314,in_review_cents:4400});
+  await db.exec('reset role');
+  await db.query('update private.dopmi_guardian_allocations set reversed_cents=allocated_cents where cycle_id=$1',[cycle.id]);
+  await role(rescuer);result=await dashboard();
+  assert.deepEqual(result.financial,{assigned_cents:4400,transferred_cents:0,in_review_cents:4400});
+});
+
+test('rescuer dashboard remains private and rejects suspended actors',async()=>{
+  await role('','anon');await rejected(()=>db.query('select public.dopmi_rescuer_dashboard()'),/permission denied/);
+  await db.exec('reset role');
+  await db.query("update profiles set account_status='suspended' where id=$1",[rescuer]);
+  await role(rescuer);await rejected(()=>db.query('select public.dopmi_rescuer_dashboard()'),/Cuenta activa y confirmada requerida/);
+});
+
+
+test('rescuer recent activity includes only owned settled Guardian net with actual transfer status',async()=>{
+  const cycle=await boundGuardian();
+  const activity=async()=>(await db.query('select public.dopmi_rescuer_dashboard() as value')).rows[0].value.recent_activity;
+  await role(rescuer);assert.deepEqual(await activity(),[]);
+  await db.exec('reset role');await guardianSettlement('settle',guardianEvidence);
+  await role(rescuer);let rows=await activity();assert.equal(rows.length,1);
+  assert.equal(rows[0].source,'guardian');assert.equal(rows[0].expense_id,expense);
+  assert.equal(rows[0].expense_title,'Medicamentos');assert.equal(rows[0].allocated_cents,4314);
+  assert.equal(rows[0].transfer_status,'pending');
+  assert.deepEqual(Object.keys(rows[0]).sort(),['allocated_cents','created_at','expense_id','expense_title','source','transfer_status']);
+  await role(other);assert.deepEqual(await activity(),[]);
+  await db.exec('reset role');
+  await db.query("update private.dopmi_guardian_jobs set status='attention' where cycle_id=$1 and kind='transfer'",[cycle.id]);
+  await role(rescuer);rows=await activity();assert.equal(rows[0].transfer_status,'attention');
+  await db.exec('reset role');
+  await db.query("update private.dopmi_guardian_allocations set stripe_transfer_id='tr_activity',transferred_at=now(),reversed_cents=1000 where cycle_id=$1",[cycle.id]);
+  await role(rescuer);rows=await activity();assert.equal(rows[0].allocated_cents,3314);assert.equal(rows[0].transfer_status,'transferred');
+  await db.exec('reset role');
+  const donation=await prepare({gross_cents:5000});
+  await settle(donation.id,{gross_cents:5000,stripe_fee_cents:500,charge_id:'ch_activity',payment_intent_id:'pi_activity'});
+  await db.query("update private.dopmi_guardian_settlements set created_at=now()-interval '1 minute' where cycle_id=$1",[cycle.id]);
+  await role(rescuer);rows=await activity();
+  assert.deepEqual(rows.map(row=>row.source),['individual','guardian']);
+  assert.equal(rows[0].allocated_cents,4400);
+  await db.exec('reset role');
+  await db.query('update private.dopmi_guardian_allocations set reversed_cents=allocated_cents where cycle_id=$1',[cycle.id]);
+  await role(rescuer);rows=await activity();assert.equal(rows.length,1);assert.equal(rows[0].source,'individual');
+});
+
+
+test('rescuer mixed recent activity keeps a deterministic six-item limit',async()=>{
+  await boundGuardian();await guardianSettlement('settle',guardianEvidence);
+  for(let n=0;n<7;n++){
+    const d=await prepare({gross_cents:1000,key:`72000000-0000-4000-8000-${String(n+2).padStart(12,'0')}`});
+    await settle(d.id,{gross_cents:1000,stripe_fee_cents:100,charge_id:`ch_recent${n}`,payment_intent_id:`pi_recent${n}`});
+  }
+  await role(rescuer);
+  const activity=async()=>(await db.query('select public.dopmi_rescuer_dashboard() as value')).rows[0].value.recent_activity;
+  const rows=await activity();assert.equal(rows.length,6);assert.equal(rows[0].source,'guardian');
+  assert.deepEqual(await activity(),rows);
+});
+
+
+test('method inventory linkage is server-only and requires a confirmed active owner', async () => {
+  await db.query(`insert into private.dopmi_guardian_subscriptions
+    (donor_id,stripe_customer_id,stripe_subscription_id,stripe_price_id,gross_cents,initial_payment_intent_id,initial_charge_id)
+    values($1,'cus_inventory','sub_inventory','price_inventory',5000,'pi_inventory','ch_inventory')`, [donor]);
+  await db.exec('set local role service_role');
+  assert.deepEqual((await db.query('select dopmi_guardian_method_owner_server($1) as value',[donor])).rows[0].value,
+    {customer_id:'cus_inventory',subscription_id:'sub_inventory'});
+  assert.equal((await db.query('select dopmi_guardian_method_owner_server($1) as value',[other])).rows[0].value,null);
+  await rejected(()=>db.query('select dopmi_guardian_method_owner_server(null)'),/Cuenta no disponible/);
+  await db.exec('reset role');
+  await db.query("update profiles set account_status='suspended' where id=$1",[donor]);
+  await db.exec('set local role service_role');
+  await rejected(()=>db.query('select dopmi_guardian_method_owner_server($1)',[donor]),/Cuenta no disponible/);
+  await db.exec('reset role');
+  await db.query("update profiles set account_status='active' where id=$1",[donor]);
+  await db.query('update auth.users set email_confirmed_at=null where id=$1',[donor]);
+  await db.exec('set local role service_role');
+  await rejected(()=>db.query('select dopmi_guardian_method_owner_server($1)',[donor]),/Cuenta no disponible/);
+  await db.exec('reset role');
+  for (const name of ['authenticated','anon']) {
+    await role(other,name);
+    await rejected(()=>db.query('select dopmi_guardian_method_owner_server($1)',[donor]),/permission denied/);
+    await db.exec('reset role');
+  }
+});
+
+
+test('saved Guardian method reuses the guarded job without Checkout or calendar change', async () => {
+  const f = await methodFixture();
+  const retrieve = f.stripe.paymentMethods.retrieve;
+  f.stripe.paymentMethods.retrieve = async id => ({...await retrieve(id), type:'card'});
+  const input = {...methodInput,selected_method_id:'pm_newMethod'};
+  const result = await f.methodService().checkout(donor,input);
+  assert.equal(result.status,'applied');
+  assert.equal(f.methodCalls.filter(c=>c.kind==='create').length,0);
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update').length,1);
+  assert.equal((await db.query('select payment_method_id from private.dopmi_guardian_subscriptions')).rows[0].payment_method_id,'pm_newMethod');
+  assert.equal((await f.methodService().checkout(donor,input)).status,'applied');
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update').length,1);
+  await rejected(()=>f.prepare({selected_method_id:'pm_other'}),/Clave ya utilizada/);
+});
+
+test('saved Guardian selection rejects a foreign card before changing the subscription', async () => {
+  const f=await methodFixture();
+  f.stripe.paymentMethods.retrieve=async id=>({id,customer:'cus_peer',livemode:false,type:'card'});
+  await assert.rejects(f.methodService().checkout(donor,{...methodInput,selected_method_id:'pm_peer'}),{code:'guardian_method_owner_mismatch'});
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update'||c.kind==='create').length,0);
+});
+
+test('expired saved selection cannot begin a late subscription mutation',async()=>{
+  const f=await methodFixture();
+  const job=await f.prepare({selected_method_id:'pm_newMethod'});
+  await db.query("update private.dopmi_guardian_method_jobs set expires_at=now()-interval '1 minute' where id=$1",[job.id]);
+  assert.equal((await f.methodService().run(job.id)).status,'expired');
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update'||c.kind==='create').length,0);
+});
+
+
+test('saved method update lost response resumes one original job and confirms by rereading',async()=>{
+  const f=await methodFixture();
+  const retrieve=f.stripe.paymentMethods.retrieve;
+  f.stripe.paymentMethods.retrieve=async id=>({...await retrieve(id),type:'card'});
+  const update=f.stripe.subscriptions.update;
+  f.stripe.subscriptions.update=async(...args)=>{await update(...args);throw Error('lost response');};
+  const input={...methodInput,selected_method_id:'pm_newMethod'};
+  await assert.rejects(f.methodService().checkout(donor,input),/lost response/);
+  f.stripe.subscriptions.update=update;
+  assert.equal((await f.methodService().checkout(donor,input)).status,'applied');
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update').length,1);
+  assert.equal(f.methodCalls.filter(c=>c.kind==='create').length,0);
+});
+
+
+test('saved authorization expiring during provider reads cannot start the write',async()=>{
+  const f=await methodFixture();
+  const retrieve=f.stripe.paymentMethods.retrieve;
+  f.stripe.paymentMethods.retrieve=async id=>{
+    await db.query("update private.dopmi_guardian_method_jobs set expires_at=now()-interval '1 minute'");
+    return {...await retrieve(id),type:'card'};
+  };
+  const result=await f.methodService().checkout(donor,{...methodInput,selected_method_id:'pm_newMethod'});
+  assert.equal(result.status,'expired');
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update'||c.kind==='create').length,0);
+});
+
+
+test('server-retained saved selection resumes after local target information is lost',async()=>{
+  const f=await methodFixture();
+  const retrieve=f.stripe.paymentMethods.retrieve;
+  f.stripe.paymentMethods.retrieve=async id=>({...await retrieve(id),type:'card'});
+  const update=f.stripe.subscriptions.update;
+  f.stripe.subscriptions.update=async(...args)=>{await update(...args);throw Error('lost response');};
+  await assert.rejects(f.methodService().checkout(donor,{...methodInput,selected_method_id:'pm_newMethod'}),/lost response/);
+  f.stripe.subscriptions.update=update;
+  assert.equal((await f.methodService().checkout(donor,methodInput)).status,'applied');
+  assert.equal(f.methodCalls.filter(c=>c.kind==='update').length,1);
+  await rejected(()=>f.prepare({selected_method_id:'pm_another'}),/Clave ya utilizada/);
+});
+
+
+async function removalFixture() {
+  const f=await methodFixture();
+  const card={id:'pm_unused',customer:'cus_initial',livemode:false,type:'card'};
+  const retrieve=f.stripe.paymentMethods.retrieve;
+  f.stripe.paymentMethods.retrieve=async id=>id===card.id?structuredClone(card):retrieve(id);
+  f.stripe.customers={retrieve:async id=>({id,livemode:false,invoice_settings:{default_payment_method:null}})};
+  f.stripe.subscriptions.list=async()=>({data:[...f.subscriptions.values()].map(s=>structuredClone(s)),has_more:false});
+  f.stripe.invoices.list=async()=>({data:[],has_more:false});
+  const detachCalls=[];
+  f.stripe.paymentMethods.detach=async(...args)=>{detachCalls.push(args);card.customer=null;return structuredClone(card);};
+  return {...f,card,detachCalls,removeInput:{...methodInput,selected_method_id:card.id,remove_saved:true}};
+}
+
+test('removal rejects current default in PostgreSQL without creating a job',async()=>{
+ const f=await removalFixture();
+ await rejected(()=>f.prepare({selected_method_id:'pm_initial',remove_saved:true}),/tarjeta activa/);
+ assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_method_jobs')).rows[0].n,0);
+ assert.equal(f.detachCalls.length,0);
+});
+
+test('removal detaches only spare card, keeps billing default and excludes collection until confirmed',async()=>{
+ const f=await removalFixture();
+ const original=[...f.subscriptions.values()][0].default_payment_method;
+ const job=await f.prepare({selected_method_id:f.card.id,remove_saved:true});
+ assert.deepEqual(await collectionRpc('sources',{}),[]);
+ assert.equal((await f.methodService().run(job.id)).status,'applied');
+ assert.equal(f.detachCalls.length,1);
+ assert.deepEqual(f.detachCalls[0],[f.card.id,{}, {idempotencyKey:`guardian-method-remove:${job.id}`}]);
+ assert.equal([...f.subscriptions.values()][0].default_payment_method,original);
+ assert.equal((await collectionRpc('source',{subscription_id:'sub_schedule1'})).payment_method_id,'pm_initial');
+ assert.equal(f.methodCalls.filter(c=>c.kind==='update'||c.kind==='create').length,0);
+ await role(donor);const state=(await db.query('select public.dopmi_guardian_state() v')).rows[0].v;await db.exec('reset role');
+ assert.equal(state.method_setup.action,'remove');
+ assert.equal(state.method_setup.selected_method_id,undefined);
+ assert.equal(state.method_setup.reason,null);
+ assert.equal((await f.methodService().checkout(donor,f.removeInput)).status,'applied');
+ assert.equal(f.detachCalls.length,1);
+});
+
+test('lost detach reply recovers detached original target without another write',async()=>{
+ const f=await removalFixture();const detach=f.stripe.paymentMethods.detach;
+ f.stripe.paymentMethods.detach=async(...args)=>{await detach(...args);throw Error('lost detach');};
+ await assert.rejects(f.methodService().checkout(donor,f.removeInput),/lost detach/);
+ assert.equal(f.card.customer,null);
+ assert.equal((await f.methodService().checkout(donor,methodInput)).status,'applied');
+ assert.equal(f.detachCalls.length,1);
+ await rejected(()=>f.prepare({selected_method_id:f.card.id,remove_saved:false}),/Clave ya utilizada/);
+});
+
+test('foreign removal target never reaches Stripe detach',async()=>{
+ const f=await removalFixture();f.card.customer='cus_peer';
+ await assert.rejects(f.methodService().checkout(donor,f.removeInput),{code:'guardian_method_owner_mismatch'});
+ assert.equal(f.detachCalls.length,0);
+});
+
+for(const kind of ['customer','subscription','invoice']) test(`removal refuses card in use by ${kind} and releases job`,async()=>{
+ const f=await removalFixture();
+ if(kind==='customer')f.stripe.customers.retrieve=async id=>({id,livemode:false,invoice_settings:{default_payment_method:f.card.id}});
+ if(kind==='subscription')f.stripe.subscriptions.list=async()=>({has_more:false,data:[{id:'sub_other',customer:'cus_initial',livemode:false,status:'active',default_payment_method:f.card.id}]});
+ if(kind==='invoice')f.stripe.invoices.list=async({status})=>({has_more:false,data:status==='open'?[{id:'in_pending',customer:'cus_initial',livemode:false,status,default_payment_method:f.card.id}]:[]});
+ assert.equal((await f.methodService().checkout(donor,f.removeInput)).status,'superseded');
+ assert.equal(f.detachCalls.length,0);
+ await role(donor);const state=(await db.query('select public.dopmi_guardian_state() v')).rows[0].v;await db.exec('reset role');
+ assert.equal(state.method_setup.reason,'in_use');
+ assert.equal(state.method_change_available,true);
+});
+
+test('incomplete usage inventory never authorizes detach',async()=>{
+ const f=await removalFixture();f.stripe.subscriptions.list=async()=>({data:[],has_more:true});
+ await assert.rejects(f.methodService().checkout(donor,f.removeInput),{code:'guardian_method_usage_unconfirmed'});
+ assert.equal(f.detachCalls.length,0);
+});
+
+test('removal expiry during usage reads cannot start detach',async()=>{
+ const f=await removalFixture();const list=f.stripe.subscriptions.list;
+ f.stripe.subscriptions.list=async(...args)=>{
+  await db.query("update private.dopmi_guardian_method_jobs set expires_at=now()-interval '1 minute'");
+  return list(...args);
+ };
+ assert.equal((await f.methodService().checkout(donor,f.removeInput)).status,'expired');
+ assert.equal(f.detachCalls.length,0);
+});
+
+
+test('cancellation during removal checks prevents the detach write',async()=>{
+ const f=await removalFixture();const list=f.stripe.subscriptions.list;
+ f.stripe.subscriptions.list=async(...args)=>{
+  await role(donor);
+  await db.query("select public.dopmi_guardian_request('cancel',$1,1,null,null)",[crypto.randomUUID()]);
+  await db.exec('reset role');
+  return list(...args);
+ };
+ await assert.rejects(f.methodService().checkout(donor,f.removeInput),{code:'guardian_method_superseded'});
+ assert.equal(f.detachCalls.length,0);
+});
+
+test('unattached card without prior owner verification cannot be treated as recovered removal',async()=>{
+ const f=await removalFixture();f.card.customer=null;
+ await assert.rejects(f.methodService().checkout(donor,f.removeInput),{code:'guardian_method_owner_mismatch'});
+ assert.equal(f.detachCalls.length,0);
+});
+
+test('removal checkpoint cannot mark a detach before a write or change the billing default',async()=>{
+ const f=await removalFixture();const j=await f.prepare({selected_method_id:f.card.id,remove_saved:true});
+ const claim=await methodRpc('claim',{job_id:j.id});
+ const input={job_id:j.id,lease:claim.lease,payment_method_id:f.card.id};
+ await methodRpc('verified_saved',input);
+ await rejected(()=>methodRpc('removed',input),/Eliminación no confirmada/);
+ await rejected(()=>methodRpc('applied',input),/Operación incompatible/);
+ assert.equal(await collectionRpc('source',{subscription_id:'sub_schedule1'}),null);
+ assert.equal((await activationRpc('get',{cycle_id:f.cycleId})).payment_method_id,'pm_initial');
+ assert.equal((await db.query('select payment_method_id from private.dopmi_guardian_subscriptions')).rows[0].payment_method_id,null);
+ assert.equal(f.detachCalls.length,0);
+});
+
+
+for(const data of [[{customer:'cus_initial',livemode:false,status:'active'}],
+ [{id:'sub_unknown',customer:'cus_initial',livemode:false,status:'unknown'}]]) test('malformed subscription usage does not authorize removal '+JSON.stringify(data),async()=>{
+ const f=await removalFixture();f.stripe.subscriptions.list=async()=>({data,has_more:false});
+ await assert.rejects(f.methodService().checkout(donor,f.removeInput),{code:'guardian_method_usage_unconfirmed'});
+ assert.equal(f.detachCalls.length,0);
+});
+
+
+const savedCardRpc = async (operation,data={}) => (await db.query(
+  'select public.dopmi_saved_card_server($1,$2::jsonb) value',[operation,JSON.stringify(data)])).rows[0].value;
+const savedCardInput={key,consent:true,consent_version:savedCardConsentVersion};
+const savedCardReturn='https://fixture.supabase.co/functions/v1/payment-return';
+function savedCardFixture() {
+  const calls=[],customers=new Map(),sessions=new Map();
+  const state={loseCustomer:false,loseSession:false};
+  const setup={id:'seti_savedCard',status:'succeeded',livemode:false,usage:'off_session',payment_method:'pm_savedCard'};
+  const card={id:'pm_savedCard',livemode:false,type:'card'};
+  const stripe={
+    customers:{create:async(fields,options)=>{
+      calls.push({kind:'customer',fields:structuredClone(fields),options});
+      if(!customers.has(options.idempotencyKey))customers.set(options.idempotencyKey,{id:'cus_savedCard',livemode:false});
+      if(state.loseCustomer){state.loseCustomer=false;throw Error('lost customer response');}
+      return structuredClone(customers.get(options.idempotencyKey));
+    },retrieve:async id=>({id,livemode:false})},
+    checkout:{sessions:{create:async(fields,options)=>{
+      calls.push({kind:'session',fields:structuredClone(fields),options});
+      if(!sessions.has(options.idempotencyKey))sessions.set(options.idempotencyKey,
+        {...fields,id:'cs_test_savedCard',livemode:false,status:'open',url:'https://checkout.stripe.com/setup',setup_intent:null});
+      if(state.loseSession){state.loseSession=false;throw Error('lost session response');}
+      return structuredClone(sessions.get(options.idempotencyKey));
+    },retrieve:async()=>structuredClone([...sessions.values()][0])}},
+    setupIntents:{retrieve:async()=>structuredClone(setup)},
+    paymentMethods:{retrieve:async()=>structuredClone(card),update:async(id,fields,options)=>{
+      assert.equal(id,card.id);calls.push({kind:'redisplay',fields:structuredClone(fields),options});
+      Object.assign(card,fields);return structuredClone(card);
+    }},
+    events:{retrieve:async()=>({livemode:false,type:'checkout.session.completed',data:{object:{id:'cs_test_savedCard',customer:'cus_forged',status:'complete'}}})},
+  };
+  const service=(rpc=savedCardRpc)=>savedCardService({stripe,rpc,returnUrl:savedCardReturn});
+  const prepare=(patch={})=>savedCardRpc('prepare',{owner_id:donor,...savedCardInput,return_url:savedCardReturn,...patch});
+  const complete=()=>{
+    const session=[...sessions.values()][0];Object.assign(session,{status:'complete',setup_intent:setup.id});
+    Object.assign(setup,{customer:session.customer,metadata:structuredClone(session.metadata)});
+    card.customer=session.customer;
+  };
+  return {service,prepare,complete,calls,customers,sessions,state,setup,card,stripe};
+}
+
+test('independent card setup saves for a non-subscriber without creating money or a Guardian plan',async()=>{
+  const f=savedCardFixture();
+  const pending=await f.service().checkout(donor,savedCardInput);
+  assert.deepEqual(Object.keys(pending).sort(),['card_id','checkout_url','key','status']);
+  assert.equal(pending.status,'pending');assert.equal(pending.card_id,null);
+  assert.match(pending.checkout_url,/checkout.stripe.com/);
+  const fields=f.calls.find(c=>c.kind==='session').fields;
+  assert.equal(fields.mode,'setup');assert.equal(fields.currency,'mxn');
+  for(const forbidden of ['payment_intent_data','line_items','subscription_data','payment_method_types'])assert.equal(fields[forbidden],undefined);
+  assert.equal(f.customers.size,1);assert.equal(f.sessions.size,1);
+  f.complete();const result=await f.service().checkout(donor,savedCardInput);
+  assert.equal(result.status,'saved');assert.equal(result.card_id,'pm_savedCard');assert.equal(result.checkout_url,null);
+  assert.equal(f.calls.length,3);
+  assert.equal(f.card.allow_redisplay,'always');
+  assert.deepEqual(f.calls.find(c=>c.kind==='redisplay').fields,{allow_redisplay:'always'});
+  for(const table of ['dopmi_guardian_subscriptions','dopmi_guardian_activations','dopmi_guardian_cycles','dopmi_guardian_collection_jobs'])
+    assert.equal((await db.query(`select count(*)::int n from private.${table}`)).rows[0].n,0);
+  await role(donor);
+  const receipt=(await db.query('select dopmi_saved_card_state() value')).rows[0].value;
+  assert.deepEqual(receipt,{key,status:'saved',card_id:'pm_savedCard'});
+  for(const actor of [other,staff]){await role(actor);assert.equal((await db.query('select dopmi_saved_card_state() value')).rows[0].value,null);}
+});
+
+test('independent saving reuses Guardian customer and leaves billing/calendar/evidence untouched',async()=>{
+  await methodFixture();
+  const before=(await db.query('select to_jsonb(s) value from private.dopmi_guardian_subscriptions s')).rows[0].value;
+  const f=savedCardFixture();await f.service().checkout(donor,savedCardInput);f.complete();
+  assert.equal((await f.service().checkout(donor,savedCardInput)).status,'saved');
+  assert.equal(f.calls.some(c=>c.kind==='customer'),false);
+  assert.equal(f.calls.find(c=>c.kind==='session').fields.customer,'cus_initial');
+  assert.deepEqual((await db.query('select to_jsonb(s) value from private.dopmi_guardian_subscriptions s')).rows[0].value,before);
+});
+
+for(const kind of ['Customer','Session'])test(`accepted ${kind.toLowerCase()} response loss reuses stable provider key and SQL receipt`,async()=>{
+  const f=savedCardFixture();f.state[`lose${kind}`]=true;
+  await assert.rejects(f.service().checkout(donor,savedCardInput),/lost .* response/);
+  const first=await f.prepare();assert.equal(first.status,'pending');assert.equal(first.lease_until,null);
+  assert.match((await f.service().checkout(donor,savedCardInput)).checkout_url,/checkout.stripe.com/);
+  const repeated=f.calls.filter(c=>c.kind===kind.toLowerCase());
+  assert.equal(repeated.length,2);assert.deepEqual(repeated[0],repeated[1]);
+  assert.equal(f.customers.size,1);assert.equal(f.sessions.size,1);
+  assert.equal((await f.prepare()).id,first.id);
+});
+
+test('saving requires real active/confirmed owner, explicit consent and immutable receipt',async()=>{
+  const f=savedCardFixture();
+  for(const patch of [{consent:false},{consent_version:'old'},{return_url:'https://evil.test/return'}])
+    await rejected(()=>f.prepare(patch),/Autorización/);
+  const job=await f.prepare();assert.equal((await f.prepare()).id,job.id);
+  await rejected(()=>f.prepare({return_url:'https://other.supabase.co/functions/v1/payment-return'}),/solicitud cambió/);
+  await rejected(()=>f.prepare({key:'72000000-0000-4000-8000-000000000099'}),/pendiente/);
+  await db.query('update auth.users set email_confirmed_at=null where id=$1',[donor]);
+  await rejected(()=>f.prepare(),/Cuenta no disponible/);
+  assert.equal(await savedCardRpc('claim',{id:job.id}),null);
+  await db.query('update auth.users set email_confirmed_at=now() where id=$1',[donor]);
+  await db.query("update profiles set account_status='suspended' where id=$1",[donor]);
+  await rejected(()=>f.prepare(),/Cuenta no disponible/);
+  assert.equal(await savedCardRpc('claim',{id:job.id}),null);
+  assert.equal(f.calls.length,0);
+});
+
+test('card setup private jobs and processor mutation RPC deny every browser role including staff',async()=>{
+  const f=savedCardFixture();await f.prepare();
+  for(const [actor,name] of [[donor,'authenticated'],[other,'authenticated'],[staff,'authenticated'],['','anon']]){
+    await role(actor,name);
+    await rejected(()=>f.prepare(),/permission denied/);
+    for(const table of ['dopmi_saved_card_jobs','dopmi_saved_card_customers'])
+      await rejected(()=>db.query(`select * from private.${table}`),/permission denied/);
+  }
+  await rejected(()=>db.query('select dopmi_saved_card_state()'),/permission denied/);
+  await db.exec('reset role');await role('','service_role');assert.equal((await f.prepare()).status,'pending');
+});
+
+test('card setup exclusive lease rejects stale provider checkpoints',async()=>{
+  const f=savedCardFixture();const job=await f.prepare();const lease=await savedCardRpc('claim',{id:job.id});
+  assert.equal(await savedCardRpc('claim',{id:job.id}),null);
+  await rejected(()=>savedCardRpc('customer',{id:job.id,lease:job.id,customer_id:'cus_savedCard'}),/vencido/);
+  await savedCardRpc('customer',{id:job.id,lease:lease.lease,customer_id:'cus_savedCard'});
+  await rejected(()=>savedCardRpc('customer',{id:job.id,lease:lease.lease,customer_id:'cus_changed'}),/inválido/);
+  await savedCardRpc('session',{id:job.id,lease:lease.lease,session_id:'cs_test_savedCard'});
+  await rejected(()=>savedCardRpc('saved',{id:job.id,lease:lease.lease,session_id:'cs_test_forged',setup_intent_id:'seti_savedCard',payment_method_id:'pm_savedCard'}),/no coincide/);
+  await db.query("update private.dopmi_saved_card_jobs set lease_until=now()-interval '1 second' where id=$1",[job.id]);
+  await rejected(()=>savedCardRpc('saved',{id:job.id,lease:lease.lease,session_id:'cs_test_savedCard',setup_intent_id:'seti_savedCard',payment_method_id:'pm_savedCard'}),/vencido/);
+});
+
+for(const [name,change,code] of [
+  ['foreign session',f=>{[...f.sessions.values()][0].customer='cus_peer';},'saved_card_session_mismatch'],
+  ['live session',f=>{[...f.sessions.values()][0].livemode=true;},'saved_card_session_mismatch'],
+  ['payment session',f=>{[...f.sessions.values()][0].mode='payment';},'saved_card_session_mismatch'],
+  ['foreign setup',f=>{f.setup.customer='cus_peer';},'saved_card_setup_mismatch'],
+  ['live setup',f=>{f.setup.livemode=true;},'saved_card_setup_mismatch'],
+  ['altered consent',f=>{f.setup.metadata.consent_version='old';},'saved_card_setup_mismatch'],
+  ['foreign card',f=>{f.card.customer='cus_peer';},'saved_card_method_mismatch'],
+  ['live card',f=>{f.card.livemode=true;},'saved_card_method_mismatch'],
+  ['non-card method',f=>{f.card.type='us_bank_account';},'saved_card_method_mismatch'],
+])test(`independent saving rejects ${name} and never claims success`,async()=>{
+  const f=savedCardFixture();await f.service().checkout(donor,savedCardInput);f.complete();change(f);
+  await assert.rejects(f.service().checkout(donor,savedCardInput),{code});assert.equal((await f.prepare()).status,'pending');
+  assert.equal(f.calls.some(c=>c.kind==='redisplay'),false);
+});
+
+test('redisplay response loss recovers from provider state before reporting saved',async()=>{
+  const f=savedCardFixture();await f.service().checkout(donor,savedCardInput);f.complete();
+  const update=f.stripe.paymentMethods.update;
+  f.stripe.paymentMethods.update=async(...args)=>{await update(...args);throw Error('lost redisplay response');};
+  await assert.rejects(f.service().checkout(donor,savedCardInput),/lost redisplay response/);
+  assert.equal((await f.prepare()).status,'pending');
+  assert.equal((await f.service().checkout(donor,savedCardInput)).status,'saved');
+  assert.equal(f.calls.filter(c=>c.kind==='redisplay').length,1);
+});
+
+test('unconfirmed redisplay update cannot create a saved receipt',async()=>{
+  const f=savedCardFixture();await f.service().checkout(donor,savedCardInput);f.complete();
+  f.stripe.paymentMethods.update=async()=>({...f.card,allow_redisplay:'always'});
+  await assert.rejects(f.service().checkout(donor,savedCardInput),{code:'saved_card_redisplay_unconfirmed'});
+  assert.equal((await f.prepare()).status,'pending');
+  assert.equal((await f.prepare()).payment_method_id,null);
+});
+
+test('persisted consent must precede every independent card provider write',async()=>{
+  const f=savedCardFixture();
+  const rpc=async(operation,data)=>{
+    const job=await savedCardRpc(operation,data);
+    return operation==='claim' ? {...job,consent_at:null} : job;
+  };
+  await assert.rejects(f.service(rpc).checkout(donor,savedCardInput),{code:'saved_card_consent_required'});
+  assert.equal(f.calls.length,0);
+  const job=await f.prepare();assert.equal(job.status,'pending');assert.equal(job.lease_until,null);
+});
+
+test('fresh owner verification after redisplay write precedes saved receipt',async()=>{
+  const f=savedCardFixture();await f.service().checkout(donor,savedCardInput);f.complete();
+  const update=f.stripe.paymentMethods.update;
+  f.stripe.paymentMethods.update=async(...args)=>{
+    const result=await update(...args);f.card.customer='cus_peer';return result;
+  };
+  await assert.rejects(f.service().checkout(donor,savedCardInput),{code:'saved_card_redisplay_unconfirmed'});
+  assert.equal((await f.prepare()).status,'pending');
+  assert.equal((await f.prepare()).payment_method_id,null);
+});
+
+test('setup pending authentication remains pending; expired session is never saved',async()=>{
+  const f=savedCardFixture();await f.service().checkout(donor,savedCardInput);f.complete();f.setup.status='requires_action';
+  assert.equal((await f.service().checkout(donor,savedCardInput)).status,'pending');
+  [...f.sessions.values()][0].status='expired';
+  assert.equal((await f.service().checkout(donor,savedCardInput)).status,'expired');
+  assert.equal((await f.prepare()).payment_method_id,null);
+});
+
+test('independent setup webhook re-reads persisted session instead of forged completion payload',async()=>{
+  const f=savedCardFixture();await f.service().checkout(donor,savedCardInput);
+  assert.deepEqual(await f.service().handleWebhook('evt_setup'),{received:true,saved_card:true});
+  assert.equal((await f.prepare()).status,'pending');
+  f.complete();assert.equal((await f.service().reconcile()).saved,1);assert.equal((await f.prepare()).status,'saved');
+});
+
+test('new expired intent avoids provider writes and old uncertain creation stops before idempotency expiry',async()=>{
+  const f=savedCardFixture();const job=await f.prepare();
+  await db.query("update private.dopmi_saved_card_jobs set expires_at=now()+interval '20 minutes' where id=$1",[job.id]);
+  assert.equal((await f.service().run(job.id)).status,'expired');assert.equal(f.calls.length,0);
+  const retry=await f.prepare({key:'72000000-0000-4000-8000-000000000099'});
+  await db.query("update private.dopmi_saved_card_jobs set attempts=1,first_attempt_at=now()-interval '24 hours' where id=$1",[retry.id]);
+  assert.equal((await f.service().run(retry.id)).status,'attention');assert.equal(f.calls.length,0);
+  await rejected(()=>f.prepare({key:'72000000-0000-4000-8000-000000000098'}),/pendiente/);
+});
+
+
+test('saved-card customer survives future Guardian activation without another customer or changed retry',async()=>{
+  const cards=savedCardFixture();await cards.service().checkout(donor,savedCardInput);cards.complete();await cards.service().checkout(donor,savedCardInput);
+  const f=initialFixture();f.stripe.customers={retrieve:async id=>({id,livemode:false})};
+  const create=f.stripe.checkout.sessions.create;
+  f.stripe.checkout.sessions.create=async(fields,options)=>{
+    await create(fields,options);
+    const session=[...f.sessions.values()][0];session.customer=fields.customer;
+    return structuredClone(session);
+  };
+  const result=await f.initial.checkout(donor,initialInput);
+  const activation=await activationRpc('get',{cycle_id:result.cycle_id});
+  assert.equal(activation.saved_customer_id,'cus_savedCard');
+  assert.equal(f.creations[0].fields.customer,'cus_savedCard');
+  assert.equal(f.creations[0].fields.customer_creation,undefined);
+  assert.deepEqual(await f.initial.checkout(donor,initialInput),result);
+  Object.assign(f.intent,{customer:'cus_savedCard'});f.charge.customer='cus_savedCard';f.paid();
+  assert.ok(await f.initial.reconcileSession('cs_test_initial1'));
+  assert.equal((await activationRpc('get',{cycle_id:result.cycle_id})).customer_id,'cus_savedCard');
+});
+
+test('pending card setup prevents Guardian reservation and pending Guardian prevents a second customer',async()=>{
+  const f=savedCardFixture();await f.prepare();
+  await rejected(()=>activationPrepare(),/Termina el alta de tarjeta/);
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_cycles')).rows[0].n,0);
+  await db.query("update private.dopmi_saved_card_jobs set status='expired'");
+  await activationPrepare();
+  await rejected(()=>f.prepare({key:'72000000-0000-4000-8000-000000000099'}),/Alta Guardián pendiente/);
+  assert.equal(f.calls.length,0);
+});
+
+test('activation customer snapshot cannot drift if the general wallet record later changes',async()=>{
+  await db.query("insert into private.dopmi_saved_card_customers(owner_id,stripe_customer_id) values($1,'cus_snapshot')",[donor]);
+  const a=await activationPrepare();assert.equal(a.saved_customer_id,'cus_snapshot');
+  await db.query("update private.dopmi_saved_card_customers set stripe_customer_id='cus_changed'");
+  assert.equal((await activationPrepare()).saved_customer_id,'cus_snapshot');
+  assert.equal((await activationRpc('claim_checkout',{cycle_id:a.cycle_id})).saved_customer_id,'cus_snapshot');
+});
+
+for(const [name,customer] of [['live',{livemode:true}],['deleted',{deleted:true}],['foreign',{id:'cus_peer'}]])
+  test(`saved customer Guardian Checkout rejects ${name} customer before any new write`,async()=>{
+    await db.query("insert into private.dopmi_saved_card_customers(owner_id,stripe_customer_id) values($1,'cus_savedCard')",[donor]);
+    const f=initialFixture();f.stripe.customers={retrieve:async()=>({id:'cus_savedCard',livemode:false,...customer})};
+    await assert.rejects(f.initial.checkout(donor,initialInput),{code:'guardian_checkout_customer_mismatch'});
+    assert.equal(f.creations.length,0);
+  });
+
+test('general saved-card owner lookup is private, confirmed and coherent with Guardian linkage',async()=>{
+  const lookup=async actor=>(await db.query('select dopmi_saved_card_owner_server($1) value',[actor])).rows[0].value;
+  assert.equal(await lookup(donor),null);
+  const f=savedCardFixture();await f.service().checkout(donor,savedCardInput);
+  assert.deepEqual(await lookup(donor),{customer_id:'cus_savedCard',subscription_id:null});
+  assert.equal(await lookup(other),null);
+  for(const actor of [donor,other,staff]){await role(actor);await rejected(()=>lookup(donor),/permission denied/);}
+  await db.exec('reset role');
+  await db.query("insert into private.dopmi_guardian_subscriptions(donor_id,stripe_customer_id,stripe_subscription_id,stripe_price_id,gross_cents,initial_payment_intent_id,initial_charge_id) values($1,'cus_savedCard','sub_savedCard','price_savedCard',5000,'pi_savedCard','ch_savedCard')",[donor]);
+  assert.deepEqual(await lookup(donor),{customer_id:'cus_savedCard',subscription_id:'sub_savedCard'});
+  await db.query("update private.dopmi_guardian_subscriptions set stripe_customer_id='cus_different'");
+  await rejected(()=>lookup(donor),/Clientes de tarjeta en revisión/);
+});
+
+
+async function independentMethod(op,data={}) {
+ return (await db.query('select dopmi_saved_card_method_server($1,$2::jsonb) value',[op,JSON.stringify(data)])).rows[0].value;
+}
+async function independentMethodFixture(action='default') {
+ await db.query("insert into private.dopmi_saved_card_customers(owner_id,stripe_customer_id) values($1,'cus_independent')",[donor]);
+ return independentMethod('prepare',{owner_id:donor,key,consent:true,consent_version:'saved-card-methods-2026-10-03',action,selected_method_id:'pm_independent'});
+}
+
+async function canceledWalletGuardian() {
+ await db.query("insert into private.dopmi_guardian_subscriptions(donor_id,stripe_customer_id,stripe_subscription_id,stripe_price_id,gross_cents,initial_payment_intent_id,initial_charge_id,status,canceled_at) values($1,'cus_independent','sub_independent','price_independent',5000,'pi_independent','ch_independent','canceled',now())",[donor]);
+}
+
+for(const action of ['default','remove'])test(`confirmed canceled Guardian permits independent ${action} without altering its registry`,async()=>{
+ await canceledWalletGuardian();
+ const before=(await db.query('select to_jsonb(s) value from private.dopmi_guardian_subscriptions s')).rows[0].value;
+ const job=await independentMethodFixture(action);
+ const claim=await independentMethod('claim',{id:job.id});
+ await independentMethod('snapshot',{id:job.id,lease:claim.lease,default_method_id:'pm_previous'});
+ assert.ok(await independentMethod('write_mutation',{id:job.id,lease:claim.lease}));
+ assert.deepEqual((await db.query('select to_jsonb(s) value from private.dopmi_guardian_subscriptions s')).rows[0].value,before);
+});
+
+for(const change of ["status='active',canceled_at=null","change_lease_until=now()+interval '1 minute'","stripe_customer_id='cus_peer'"])
+test(`canceled wallet rechecks Guardian immediately before provider write: ${change}`,async()=>{
+ await canceledWalletGuardian();const job=await independentMethodFixture();
+ const claim=await independentMethod('claim',{id:job.id});
+ await independentMethod('snapshot',{id:job.id,lease:claim.lease,default_method_id:'pm_previous'});
+ await db.exec(`update private.dopmi_guardian_subscriptions set ${change}`);
+ assert.equal(await independentMethod('write_mutation',{id:job.id,lease:claim.lease}),null);
+ assert.equal((await independentMethod('get',{id:job.id})).mutation_requested_at,null);
+});
+
+test('pending Guardian method reconciliation still blocks a canceled independent wallet',async()=>{
+ await canceledWalletGuardian();
+ await db.query("insert into private.dopmi_guardian_method_jobs(donor_id,subscription_id,request_key,revision,consent_version,expires_at,return_url,status) values($1,'sub_independent',$2,1,'guardian-2026-09-24',now()+interval '1 hour','https://example.test/return','attention')",[donor,key]);
+  await assert.rejects(independentMethodFixture(),/Consulta tu medio/);
+});
+
+for(const kind of ['request','method'])test(`late Guardian ${kind} blocks independent wallet before the provider write`,async()=>{
+ await canceledWalletGuardian();const job=await independentMethodFixture();
+ const claim=await independentMethod('claim',{id:job.id});
+ await independentMethod('snapshot',{id:job.id,lease:claim.lease,default_method_id:'pm_previous'});
+ if(kind==='request')await db.query("insert into private.dopmi_guardian_requests(donor_id,subscription_id,request_key,kind,expected_revision,revision,previous_gross_cents) values($1,'sub_independent',$2,'cancel',0,1,5000)",[donor,key]);
+ else await db.query("insert into private.dopmi_guardian_method_jobs(donor_id,subscription_id,request_key,revision,consent_version,expires_at,return_url) values($1,'sub_independent',$2,1,'guardian-2026-09-24',now()+interval '1 hour','https://example.test/return')",[donor,key]);
+ assert.equal(await independentMethod('write_mutation',{id:job.id,lease:claim.lease}),null);
+ assert.equal((await independentMethod('get',{id:job.id})).mutation_requested_at,null);
+});
+
+test('canceled Guardian eligibility helper remains private to server authorization',async()=>{
+ for(const actor of [donor,other,staff]){
+  await role(actor);
+  await rejected(()=>db.query('select private.dopmi_guardian_blocks_saved_method($1)',[donor]),/permission denied/);
+ }
+});
+
+async function canceledCollectionWallet() {
+ const f=await collectionFixture();await f.prepare();
+ await db.query("update private.dopmi_guardian_subscriptions set status='canceled',canceled_at=now() where donor_id=$1",[donor]);
+ await db.exec("update private.dopmi_guardian_schedule_jobs set status='canceled',lease_until=null");
+ await db.query("insert into private.dopmi_saved_card_customers(owner_id,stripe_customer_id) values($1,'cus_initial')",[donor]);
+ return f;
+}
+const canceledMethodInput=()=>({owner_id:donor,key:crypto.randomUUID(),consent:true,consent_version:'saved-card-methods-2026-10-03',action:'default',selected_method_id:'pm_target'});
+
+for(const status of ['pending','attention','paid','skipped'])test(`canceled wallet respects requested collection ${status}`,async()=>{
+ const f=await canceledCollectionWallet();
+ await db.query('update private.dopmi_guardian_collection_jobs set pay_requested_at=now(),status=$1 where invoice_id=$2',[status,f.invoice.id]);
+ const before=(await db.query('select to_jsonb(j) value from private.dopmi_guardian_collection_jobs j')).rows[0].value;
+ if(['pending','attention'].includes(status))await rejected(()=>independentMethod('prepare',canceledMethodInput()),/Consulta tu medio/);
+ else assert.equal((await independentMethod('prepare',canceledMethodInput())).status,'pending');
+ assert.deepEqual((await db.query('select to_jsonb(j) value from private.dopmi_guardian_collection_jobs j')).rows[0].value,before);
+});
+
+test('collection requested after wallet snapshot blocks the independent provider write',async()=>{
+ const f=await canceledCollectionWallet();
+ const job=await independentMethod('prepare',canceledMethodInput());
+ const claim=await independentMethod('claim',{id:job.id});
+ await independentMethod('snapshot',{id:job.id,lease:claim.lease,default_method_id:'pm_previous'});
+ await db.query('update private.dopmi_guardian_collection_jobs set pay_requested_at=now() where invoice_id=$1',[f.invoice.id]);
+ assert.equal(await independentMethod('write_mutation',{id:job.id,lease:claim.lease}),null);
+ assert.equal((await independentMethod('get',{id:job.id})).mutation_requested_at,null);
+});
+
+for(const scenario of ['pending activation','unrelated settlement'])test(`canceled wallet cannot exempt ${scenario} as historical activation`,async()=>{
+ await canceledCollectionWallet();
+ if(scenario==='pending activation')await db.exec("update private.dopmi_guardian_activations set status='pending'");
+ else await db.exec("update private.dopmi_guardian_subscriptions set initial_payment_intent_id='pi_unrelated'");
+ await rejected(()=>independentMethod('prepare',canceledMethodInput()),/Consulta tu medio/);
+ assert.equal((await db.query('select count(*)::int n from private.dopmi_saved_card_method_jobs')).rows[0].n,0);
+});
+test('independent method SQL reserves immutable customer/target and denies browser writes',async()=>{
+ const j=await independentMethodFixture();
+ const input={owner_id:donor,key,consent:true,consent_version:'saved-card-methods-2026-10-03',action:'default',selected_method_id:'pm_independent'};
+ assert.equal((await independentMethod('prepare',input)).id,j.id);
+ await rejected(()=>independentMethod('prepare',{...input,selected_method_id:'pm_changed'}),/solicitud cambi/);
+ for(const actor of [donor,other,staff]) {
+  await role(actor);
+  await rejected(()=>independentMethod('get',{id:j.id}),/permission denied/);
+  await rejected(()=>db.query('select * from private.dopmi_saved_card_method_jobs'),/permission denied/);
+  const receipt=(await db.query('select dopmi_saved_card_method_state() value')).rows[0].value;
+  assert.deepEqual(receipt,actor===donor?{key,action:'default',status:'pending',card_id:'pm_independent'}:null);
+ }
+});
+test('independent method SQL requires lease, snapshot and matching proof before confirmation',async()=>{
+ const j=await independentMethodFixture('remove');
+ const c=await independentMethod('claim',{id:j.id});
+ assert.equal(await independentMethod('claim',{id:j.id}),null);
+ await rejected(()=>independentMethod('snapshot',{id:j.id,lease:key,default_method_id:'pm_old'}),/vencido/);
+ await rejected(()=>independentMethod('write_mutation',{id:j.id,lease:c.lease}),/no verificada/);
+ await independentMethod('snapshot',{id:j.id,lease:c.lease,default_method_id:'pm_old'});
+ await independentMethod('write_mutation',{id:j.id,lease:c.lease});
+ await rejected(()=>independentMethod('expired',{id:j.id,lease:c.lease}),/en revisi/);
+ await rejected(()=>independentMethod('removed',{id:j.id,lease:c.lease,payment_method_id:'pm_other'}),/no confirmada/);
+ const done=await independentMethod('removed',{id:j.id,lease:c.lease,payment_method_id:'pm_independent'});
+ assert.equal(done.status,'removed'); assert.equal(done.default_method_id,'pm_old');
+ await role(donor);
+ assert.deepEqual((await db.query('select dopmi_saved_card_method_state() value')).rows[0].value,{key,action:'remove',status:'removed',card_id:'pm_independent'});
+});
+test('independent method SQL expiry and response-loss safety window preserve uncertain intent',async()=>{
+ const j=await independentMethodFixture();
+ await db.query("update private.dopmi_saved_card_method_jobs set expires_at=now()-interval '1 hour' where id=$1",[j.id]);
+ assert.equal(await independentMethod('claim',{id:j.id}),null);
+ assert.equal((await independentMethod('get',{id:j.id})).status,'expired');
+ await db.query("update private.dopmi_saved_card_method_jobs set status='pending',snapshot_at=now(),mutation_requested_at=now()-interval '24 hours' where id=$1",[j.id]);
+ assert.equal(await independentMethod('claim',{id:j.id}),null);
+ assert.equal((await independentMethod('get',{id:j.id})).status,'attention');
+});
+test('independent method SQL pending request blocks another save and Guardian activation',async()=>{
+ await independentMethodFixture();
+ await rejected(()=>savedCardRpc('prepare',{owner_id:donor,key:'72000000-0000-4000-8000-000000000009',consent:true,consent_version:savedCardConsentVersion,return_url:savedCardReturn}),/Cambio de tarjeta pendiente/);
+ await rejected(()=>activationPrepare(),/cambio de tarjeta/);
+});
+
+test('independent method SQL respects setup and activation reservations in the reverse direction',async()=>{
+ await db.query("insert into private.dopmi_saved_card_customers(owner_id,stripe_customer_id) values($1,'cus_independent')",[donor]);
+ const input={owner_id:donor,key,consent:true,consent_version:'saved-card-methods-2026-10-03',action:'default',selected_method_id:'pm_independent'};
+ await savedCardRpc('prepare',{owner_id:donor,...savedCardInput,return_url:savedCardReturn});
+ await rejected(()=>independentMethod('prepare',input),/Solicitud de tarjeta pendiente/);
+ await db.query("update private.dopmi_saved_card_jobs set status='expired'");
+ await activationPrepare();
+ await rejected(()=>independentMethod('prepare',input),/medio de Guardi/);
+});
+test('independent method SQL checks account confirmation again before mutation',async()=>{
+ const j=await independentMethodFixture(); const c=await independentMethod('claim',{id:j.id});
+ await independentMethod('snapshot',{id:j.id,lease:c.lease,default_method_id:'pm_old'});
+ await db.query('update auth.users set email_confirmed_at=null where id=$1',[donor]);
+ assert.equal(await independentMethod('write_mutation',{id:j.id,lease:c.lease}),null);
+ assert.equal((await independentMethod('get',{id:j.id})).mutation_requested_at,null);
+ await role(donor); await rejected(()=>db.query('select dopmi_saved_card_method_state()'),/Cuenta no disponible/);
+});
+
+for (const action of ['default','remove']) {
+ test(`independent method service SQL recovers lost ${action} response without another write`,async()=>{
+  await db.query("insert into private.dopmi_saved_card_customers(owner_id,stripe_customer_id) values($1,'cus_independent')",[donor]);
+  const customer={id:'cus_independent',livemode:false,invoice_settings:{default_payment_method:'pm_old'},balance:0};
+  const card={id:'pm_independent',type:'card',livemode:false,customer:'cus_independent'};
+  const calls=[];let lose=true;
+  const mutate=async(kind,fields,options)=>{
+   calls.push({kind,fields,options});
+   if(kind==='default') customer.invoice_settings.default_payment_method=fields.invoice_settings.default_payment_method;
+   else card.customer=null;
+   if(lose){lose=false;throw Error('accepted response lost');}
+  };
+  const page=async()=>({data:[],has_more:false});
+  const stripe={customers:{retrieve:async()=>structuredClone(customer),update:async(_id,fields,options)=>mutate('default',fields,options)},
+   paymentMethods:{retrieve:async()=>structuredClone(card),detach:async(_id,fields,options)=>mutate('remove',fields,options)},
+   subscriptions:{list:page},invoices:{list:page},paymentIntents:{list:page}};
+  const service=savedCardMethodService({stripe,rpc:independentMethod});
+  const input={key,action,selected_method_id:'pm_independent',consent:true,consent_version:'saved-card-methods-2026-10-03'};
+  await assert.rejects(service.submit(donor,input),/accepted response lost/);
+  const receipt=await service.submit(donor,input);
+  assert.deepEqual(receipt,{key,action,status:action==='default'?'applied':'removed',card_id:'pm_independent'});
+  assert.deepEqual(await service.submit(donor,input),receipt);assert.equal(calls.length,1);
+  assert.deepEqual(calls[0].fields,action==='default'?{invoice_settings:{default_payment_method:'pm_independent'}}:{});
+  assert.equal(customer.balance,0);
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_activations')).rows[0].n,0);
+  assert.equal((await db.query('select count(*)::int n from dopmi_donations')).rows[0].n,0);
+ });
+}
+
+registerNativeWalletSqlCases({getDb:()=>db,donor,other,staff,key,role,rejected,savedCardRpc,savedCardInput,savedCardReturn,savedCardFixture,independentMethod,activationRpc,guardianConsentVersion,methodFixture});

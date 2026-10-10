@@ -5,6 +5,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 
 void main() {
+  test('private media links allow delayed loading but remain short-lived', () {
+    expect(mediaSignedUrlLifetimeSeconds, greaterThanOrEqualTo(5 * 60));
+    expect(mediaSignedUrlLifetimeSeconds, lessThanOrEqualTo(10 * 60));
+  });
+
   test(
     'photo policies share normalization and never accept a PDF as a photo',
     () {
@@ -14,6 +19,8 @@ void main() {
       for (final purpose in [
         MediaPurpose.adoptionPhoto,
         MediaPurpose.rescuePhoto,
+        MediaPurpose.supportAttachment,
+        MediaPurpose.accountAvatar,
       ]) {
         final result = prepareMedia((purpose, bytes));
         expect(result.contentType, 'image/jpeg');
@@ -29,6 +36,14 @@ void main() {
   );
 
   test('documents retain bytes but require PDF signature and the evidence size limit', () {
+    expect(MediaPurpose.supportAttachment.bucket, 'dopmi-support-media');
+    expect(
+      () => prepareMedia((
+        MediaPurpose.supportAttachment,
+        Uint8List(5 * 1024 * 1024 + 1),
+      )),
+      throwsFormatException,
+    );
     final pdf = Uint8List.fromList('%PDF-1.7\n%%EOF'.codeUnits);
     final result = prepareMedia((MediaPurpose.rescueDocument, pdf));
     expect(result.bytes, pdf);

@@ -1,0 +1,5 @@
+# Loop674 — Acciones del detalle
+
+## 2026-10-04 — Loop674: compartir/reportar detalle
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. SourceCSS6649share42/border1.5 y6698reportgap6/backgroundtransparent/noactive. Lecturainicialtruncada interpretóbordecliente1 equivocadamente; alvercompletoya1.5, primerpatchassertfalló sinarchivomodificado, gate57655exit0/12previos noatribuirparche. Correcciónreal:shareoverlaytransparent;ReportarTextButton.icon→TextButtonRow congap6,NoSplash/overlaytransparent/duration0, callbacks/disabledbusyintactos. Primeraedición73124exit1/9pass3fail porRowoverflowen200; FlexibleTexto resuelvereflow. Final57950exit0,12/12en4s incluyegallery/fixedfooter/headerspressnormal200/care/distance. Analyzer83524exit0clean29.1s final. Copyformattedscratch inicialmente destinorelativocwdwrong rechazado, repetidocopydesdeworkspacecorrecto antescommit, fuenteactualraízscratchigualarchivo. NoRGBAshare/reporttapnuevo/SDKShare/android674/Sourcepixelcomparisonglobal;capturasdetalle672 anteriores674. Full766660 antiguo. SinSQL/live/push/Codemagic hastaobjetivocompleto.

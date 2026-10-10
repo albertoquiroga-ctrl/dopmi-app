@@ -1,0 +1,32 @@
+.unlock-field {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  text-align: left;
+}
+.unlock-field em {
+  font-style: normal;
+  color: #c62828;
+}
+.unlock-field .unlock-input { font-weight: 400; }
+.unlock-section h3 {
+.unlock-input,
+.unlock-textarea {
+  width: 100%;
+  border: 1px solid #eaeaf3;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  padding: 10px 12px;
+}
+.unlock-input { min-height: 36px; }
+.unlock-textarea {
+  min-height: 96px;
+  resize: vertical;
+  line-height: 1.4;
+}
+.unlock-input::placeholder,
+.unlock-textarea::placeholder { color: var(--muted); }

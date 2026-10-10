@@ -1,0 +1,154 @@
+[
+  {
+    "file": "help-center-adoption-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "7a277537047ee25a5f4b8cf307338225e4615f8c785114a51c8779fa1a566437"
+  },
+  {
+    "file": "help-center-footer-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "9294ba290e074b2a5b2419487d3807e4b7c6c95189399db60aad9f742618152d"
+  },
+  {
+    "file": "help-center-footer.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "a3c8857a9222cfab0729d5b3925cced540996922f200138b864d6691b9e20810"
+  },
+  {
+    "file": "help-center-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "3f5d72b35d6274d68df07a375bb4a7a139d6264538ee654c89cab4385a32d1c6"
+  },
+  {
+    "file": "help-center-rules-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "44aa489e4ad6151aebbc081722d761a409acefdad3dae37f89f3c3c56d5c5176"
+  },
+  {
+    "file": "help-center-rules.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "48b4744c40a3f37841419e49b01dc1cee4f7ccb4556eefe4b796f7fe8938d57a"
+  },
+  {
+    "file": "help-center-support-keyboard-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "95ab4e59a70113bb16901b326c0a1e603c565c5d24864a1eef8dc6402a61cd26"
+  },
+  {
+    "file": "help-center-support-keyboard.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "36f17006be30abdcd0986a2efd00bd790041326288c5a53f75f5c08cb7709c7c"
+  },
+  {
+    "file": "help-center-support-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "13ab70c70701af520379d6e6aab30e9663b35eb25c9a29cd6905e64ac4e00670"
+  },
+  {
+    "file": "help-center-support-photo-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "acaa152c4d74653379fabe19e07a6938079611d3d06d45a53b5f0df464b70e13"
+  },
+  {
+    "file": "help-center-support-photo.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "1a95f8b58fa91d87b8e5c21e230ad3bcb2a6b801a949921367a53c3d42020281"
+  },
+  {
+    "file": "help-center-support-received-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "508eecdb76970376afb06e5d112632c988b2b0768ed07d6bde799ea75a307ddc"
+  },
+  {
+    "file": "help-center-support-received.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "e9c7c5a824e01500c25c9f8a2b74d2d7a9c20dbe7fb07b4ee4da036c2eaf70bf"
+  },
+  {
+    "file": "help-center-support-rescuer-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "13ab70c70701af520379d6e6aab30e9663b35eb25c9a29cd6905e64ac4e00670"
+  },
+  {
+    "file": "help-center-support-rescuer.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "79f83b46640ebc664319ff7f8b06f17f14733063ccd90c7a128261c880a18af1"
+  },
+  {
+    "file": "help-center-support.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "eb80fee7c49c8acfb99b9d0ecee47e00876893e49698d78383455e3f77539238"
+  },
+  {
+    "file": "help-center-topic-held-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "208fb00e6a165568b829da24cbe8e5efe0c95cd450fc5b7f223c5ee2edbb33e2"
+  },
+  {
+    "file": "help-center-topic-held.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "a3c8857a9222cfab0729d5b3925cced540996922f200138b864d6691b9e20810"
+  },
+  {
+    "file": "help-center.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "a3c8857a9222cfab0729d5b3925cced540996922f200138b864d6691b9e20810"
+  }
+]

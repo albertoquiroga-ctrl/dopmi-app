@@ -1,0 +1,23 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart
+00:00 +0: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/1.0
+00:01 +1: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/1.0
+00:01 +2: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/1.0
+00:01 +3: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/1.0
+00:01 +4: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/1.0
+00:01 +5: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/1.0
+00:02 +6: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/1.0
+00:02 +7: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/1.0
+00:02 +8: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/1.0
+00:02 +9: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/1.0
+00:02 +10: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/1.0
+00:03 +11: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/1.0
+00:03 +12: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_state_test.dart: verification resume reads the server and a failure removes stale approval
+00:04 +13: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: submit/1.0
+00:04 +14: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_state_test.dart: resume never overwrites an authored editable verification draft
+00:04 +15: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: failed-save/1.0
+00:04 +16: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_state_test.dart: both private document upload controls remain reachable: false
+00:05 +17: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: save/2.0
+00:05 +18: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_state_test.dart: both private document upload controls remain reachable: true
+00:05 +19: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: submit/2.0
+00:05 +20: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/verification_wait_test.dart: verification waits for real response: failed-save/2.0
+00:06 +21: All tests passed!

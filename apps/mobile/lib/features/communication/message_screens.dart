@@ -1,88 +1,332 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
+import 'package:image_picker/image_picker.dart';
 
+import '../../core/donor_notification_button.dart';
 import '../../core/ui.dart';
+import '../../core/media/media_store.dart';
+import '../../core/reference_focus_outline.dart';
+import 'match_favorites.dart';
+import 'match_thread_row.dart';
+import 'notification_tile.dart';
+import 'notification_frame.dart';
+import 'chat_message_bubble.dart';
+import 'chat_photo_repository.dart';
+import 'rescuer_threads_screen.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
+import '../identity/experience_controller.dart';
 
 class ThreadsScreen extends ConsumerStatefulWidget {
-  const ThreadsScreen({super.key});
+  const ThreadsScreen({super.key, this.personal = false});
+  final bool personal;
   @override
   ConsumerState<ThreadsScreen> createState() => _ThreadsState();
 }
 
 class _ThreadsState extends ConsumerState<ThreadsScreen> {
   int page = 1;
+  bool allFavorites = false;
+  bool showSearch = false;
+  String query = '';
+  final search = TextEditingController();
+  final searchFocus = FocusNode();
+  final scroll = ScrollController();
+  double homeOffset = 0;
+  void showFavorites(bool value) {
+    if (value && scroll.hasClients) homeOffset = scroll.offset;
+    setState(() => allFavorites = value);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !scroll.hasClients) return;
+      scroll.jumpTo(
+        (value ? 0.0 : homeOffset).clamp(0.0, scroll.position.maxScrollExtent),
+      );
+    });
+  }
+
   @override
-  Widget build(BuildContext context) => CommunityFrame(
-    index: 3,
-    back: false,
-    children: [
-      const Heading(
-        'Una conversación,\nun nuevo comienzo.',
-        'Ponte de acuerdo sobre sus necesidades, cuidados y el proceso de adopción.',
-        eyebrow: 'MENSAJES',
+  void dispose() {
+    search.dispose();
+    searchFocus.dispose();
+    scroll.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final experience = ref.watch(experienceProvider);
+    return ListenableBuilder(
+      listenable: experience,
+      builder: (context, _) =>
+          !widget.personal && experience.value == AccountExperience.rescuer
+          ? const RescuerThreadsScreen()
+          : donor(context),
+    );
+  }
+
+  Widget chatSearchButton(BuildContext context) => ReferenceFocusOutline(
+    radius: 99,
+    child: IconButton(
+      tooltip: showSearch ? 'Cerrar búsqueda' : 'Buscar conversaciones',
+      onPressed: () {
+        if (showSearch) FocusScope.of(context).unfocus();
+        setState(() {
+          showSearch = !showSearch;
+          if (!showSearch) {
+            search.clear();
+            query = '';
+            page = 1;
+          }
+        });
+        if (showSearch) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted && showSearch) {
+              searchFocus.requestFocus();
+            }
+          });
+        }
+      },
+      style: IconButton.styleFrom(
+        minimumSize: const Size(48, 48),
+        overlayColor: Colors.transparent,
       ),
-      LiveSection<DataPage<Json>>(
-        key: ValueKey(page),
-        tables: const [
-          'dopmi_threads',
-          'dopmi_messages',
-          'dopmi_notifications',
-        ],
-        load: () => ref.read(communityRepositoryProvider).threads(page),
-        builder: (result, refresh) => Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+      icon: Transform.translate(
+        offset: Offset(
+          0,
+          (MediaQuery.textScalerOf(context).scale(16) * 1.3 - 48) / 2,
+        ),
+        child: Icon(showSearch ? Icons.close : Icons.search, color: ink),
+      ),
+    ),
+  );
+
+  Widget donor(BuildContext context) => PopScope(
+    canPop: !allFavorites,
+    onPopInvokedWithResult: (didPop, result) {
+      if (!didPop && allFavorites) showFavorites(false);
+    },
+    child: Scaffold(
+      extendBody: true,
+      backgroundColor: Colors.white,
+      bottomNavigationBar: CommunityNav(
+        3,
+        selectedPath: widget.personal ? '/messages' : null,
+      ),
+      body: SafeArea(
+        bottom: false,
+        child: ListView(
+          controller: scroll,
+          padding: const EdgeInsets.fromLTRB(18, 16, 18, 188),
           children: [
-            if (result.items.isEmpty)
-              const Notice(
-                'Abre una publicación y toca “Quiero conocerle” para iniciar una conversación.',
+            SizedBox(
+              height: 42,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SvgPicture.asset(
+                    'assets/profile/logo-paw.svg',
+                    width: 40,
+                    height: 40,
+                    semanticsLabel: 'Dopmi',
+                  ),
+                  const DonorNotificationButton(),
+                ],
               ),
-            for (final thread in result.items)
-              Card(
-                color: Colors.white,
-                child: ListTile(
-                  contentPadding: const EdgeInsets.all(16),
-                  leading: Badge(
-                    isLabelVisible: (thread['unread_count'] as num) > 0,
-                    label: Text('${thread['unread_count']}'),
-                    child: const CircleAvatar(
-                      child: Icon(Icons.chat_bubble_outline),
-                    ),
+            ),
+            SizedBox(height: allFavorites ? 12 : 20),
+            if (!allFavorites)
+              Container(
+                constraints: const BoxConstraints(minHeight: 46),
+                padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
+                alignment: Alignment.centerLeft,
+                child: const Text(
+                  'Mis match',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 28,
+                    height: 1.1,
+                    letterSpacing: 0,
+                    fontWeight: FontWeight.w700,
+                    color: ink,
                   ),
-                  title: Text(
-                    '${thread['pet_name']} · ${thread['participant_name']}',
-                  ),
-                  subtitle: Text(
-                    thread['status'] == 'closed'
-                        ? 'Conversación cerrada'
-                        : thread['last_message'] as String? ??
-                              'Inicia la conversación',
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  onTap: () async {
-                    await context.push('/messages/${thread['id']}');
-                    refresh();
-                  },
                 ),
               ),
-            PageControls(
-              page: page,
-              total: result.total,
-              size: 20,
-              change: (value) => setState(() => page = value),
+            if (!allFavorites) const SizedBox(height: 12),
+            MatchFavorites(
+              key: const ValueKey('match-favorites'),
+              all: allFavorites,
+              showAll: showFavorites,
             ),
+            const SizedBox(height: 12),
+            if (!allFavorites) ...[
+              Stack(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(right: 48, bottom: 12),
+                        child: Text(
+                          'Chats',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 16,
+                            height: 1.3,
+                            fontWeight: FontWeight.w700,
+                            color: ink,
+                          ),
+                        ),
+                      ),
+                      if (showSearch) ...[
+                        const SizedBox(height: 12),
+                        if (MediaQuery.textScalerOf(context).scale(16) >
+                            24) ...[
+                          const Text(
+                            'Buscar por mascota o persona',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 16,
+                              height: 1.3,
+                              color: ink,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                        ],
+                        TextField(
+                          focusNode: searchFocus,
+                          controller: search,
+                          textInputAction: TextInputAction.search,
+                          decoration: InputDecoration(
+                            labelText:
+                                MediaQuery.textScalerOf(context).scale(16) > 24
+                                ? 'Buscar'
+                                : 'Buscar por mascota o persona',
+                            labelStyle: const TextStyle(color: muted),
+                            floatingLabelStyle: const TextStyle(color: ink),
+                            prefixIcon: const Icon(Icons.search),
+                            suffixIcon: query.isEmpty
+                                ? null
+                                : IconButton(
+                                    tooltip: 'Limpiar búsqueda',
+                                    onPressed: () => setState(() {
+                                      search.clear();
+                                      query = '';
+                                      page = 1;
+                                    }),
+                                    icon: const Icon(Icons.close),
+                                  ),
+                          ),
+                          onSubmitted: (value) => setState(() {
+                            query = value.trim();
+                            page = 1;
+                          }),
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                      LiveSection<DataPage<Json>>(
+                        key: ValueKey('$page:$query'),
+                        tables: const [
+                          'dopmi_threads',
+                          'dopmi_messages',
+                          'dopmi_notifications',
+                        ],
+                        load: () => ref
+                            .read(communityRepositoryProvider)
+                            .threads(page, search: query),
+                        builder: (result, refresh) => Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            if (result.items.isEmpty)
+                              Text(
+                                query.isEmpty
+                                    ? 'Aún no tienes chats. Ponte en contacto con el rescatista de tu compañero favorito.'
+                                    : 'No encontramos conversaciones con “$query”.',
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 14,
+                                  height: 1.45,
+                                  color: muted,
+                                ),
+                              ),
+                            if (result.items.isNotEmpty)
+                              Container(
+                                key: const ValueKey('match-thread-list'),
+                                clipBehavior: Clip.antiAlias,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    color: const Color(0xffe6e2dd),
+                                  ),
+                                  borderRadius: BorderRadius.circular(22),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Color(0x1415110d),
+                                      offset: Offset(0, 2),
+                                      blurRadius: 12,
+                                      spreadRadius: -2,
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  children: [
+                                    for (
+                                      var i = 0;
+                                      i < result.items.length;
+                                      i++
+                                    )
+                                      MatchThreadRow(
+                                        result.items[i],
+                                        last: i == result.items.length - 1,
+                                        open: () async {
+                                          await context.push(
+                                            '/messages/${result.items[i]['id']}',
+                                          );
+                                          refresh();
+                                        },
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            if (result.total > 20)
+                              PageControls(
+                                page: page,
+                                total: result.total,
+                                size: 20,
+                                change: (value) => setState(() => page = value),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: chatSearchButton(context),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
-    ],
+    ),
   );
 }
+
+final chatPhotoPickerProvider = Provider<Future<XFile?> Function()>(
+  (ref) =>
+      () => ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        requestFullMetadata: false,
+      ),
+);
 
 class ThreadScreen extends ConsumerStatefulWidget {
   const ThreadScreen(this.id, {super.key});
@@ -97,6 +341,9 @@ class _ThreadState extends ConsumerState<ThreadScreen>
   List<Json> messages = [];
   Json? thread;
   String? error, pendingId, pendingBody;
+  Uint8List? photoBytes;
+  String? photoMessageId, attachmentPath;
+  int compositionGeneration = 0;
   bool loading = true,
       busy = false,
       olderBusy = false,
@@ -106,6 +353,23 @@ class _ThreadState extends ConsumerState<ThreadScreen>
   Timer? timer;
   VoidCallback? cancel;
   CommunityRepository get repo => ref.read(communityRepositoryProvider);
+
+  @override
+  void didUpdateWidget(ThreadScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.id != widget.id) {
+      compositionGeneration++;
+      composer.clear();
+      photoBytes = null;
+      photoMessageId = attachmentPath = pendingId = pendingBody = null;
+      messages = [];
+      thread = null;
+      loading = true;
+      busy = false;
+      refresh();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -113,19 +377,24 @@ class _ThreadState extends ConsumerState<ThreadScreen>
     refresh();
     cancel = repo.watch(['dopmi_messages', 'dopmi_threads'], refresh);
     timer = Timer.periodic(const Duration(seconds: 20), (_) {
-      if (foreground) refresh();
+      if (foreground) {
+        refresh();
+      }
     });
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     foreground = state == AppLifecycleState.resumed;
-    if (foreground) refresh();
+    if (foreground) {
+      refresh();
+    }
   }
 
   @override
   void dispose() {
     generation++;
+    compositionGeneration++;
     timer?.cancel();
     cancel?.call();
     composer.dispose();
@@ -135,10 +404,13 @@ class _ThreadState extends ConsumerState<ThreadScreen>
 
   Future<void> refresh() async {
     final current = ++generation;
+    final actor = repo.userId;
     try {
       final info = await repo.thread(widget.id);
       final recent = await repo.messages(widget.id);
-      if (!mounted || current != generation) return;
+      if (!mounted || current != generation || repo.userId != actor) {
+        return;
+      }
       setState(() {
         thread = info;
         final merged = {
@@ -154,12 +426,12 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                 ? (a['id'] as String).compareTo(b['id'] as String)
                 : date;
           });
-        if (loading || messages.length <= 40) hasOlder = recent.length == 40;
+        if (loading || messages.length <= 40) {
+          hasOlder = recent.length == 40;
+        }
         loading = false;
         error = null;
       });
-      // Reading notifications is separate from receiving a message; a failed read can be retried.
-      await repo.readThread(widget.id);
     } catch (cause) {
       if (mounted && current == generation) {
         setState(() {
@@ -169,11 +441,24 @@ class _ThreadState extends ConsumerState<ThreadScreen>
           error = communityError(cause);
         });
       }
+      return;
+    }
+    // A receipt failure must not discard a successfully authorized history.
+    try {
+      await repo.readThread(widget.id);
+    } catch (_) {
+      if (mounted && current == generation) {
+        setState(
+          () => error = 'No pudimos marcar la conversación como leída. Volveremos a intentarlo.',
+        );
+      }
     }
   }
 
   Future<void> older() async {
-    if (messages.isEmpty || olderBusy) return;
+    if (messages.isEmpty || olderBusy) {
+      return;
+    }
     setState(() => olderBusy = true);
     final current = generation;
     try {
@@ -189,39 +474,150 @@ class _ThreadState extends ConsumerState<ThreadScreen>
         });
       }
     } catch (cause) {
-      if (mounted) setState(() => error = communityError(cause));
+      if (mounted && current == generation) {
+        setState(() => error = communityError(cause));
+      }
     } finally {
-      if (mounted) setState(() => olderBusy = false);
+      if (mounted) {
+        setState(() => olderBusy = false);
+      }
     }
   }
 
   Future<void> send() async {
-    if (busy || composer.text.trim().isEmpty) return;
-    pendingId ??= const Uuid().v4();
+    if (busy ||
+        thread == null ||
+        thread!['status'] == 'closed' ||
+        (composer.text.trim().isEmpty && photoBytes == null)) {
+      return;
+    }
+    final currentRepo = repo;
+    final actor = currentRepo.userId;
+    final threadId = widget.id;
+    final current = compositionGeneration;
+    pendingId ??= photoMessageId ?? const Uuid().v4();
     pendingBody ??= composer.text.trim();
     setState(() {
       busy = true;
       error = null;
     });
     try {
-      await repo.sendMessage(widget.id, pendingId!, pendingBody!);
-      if (!mounted) return;
+      if (photoBytes != null) {
+        final photos = ref.read(chatPhotoRepositoryProvider);
+        if (photos.userId != actor) {
+          throw StateError('La sesión cambió. Vuelve a adjuntar la foto.');
+        }
+        if (attachmentPath == null) {
+          final path = await photos.upload(threadId, pendingId!, photoBytes!);
+          if (!mounted ||
+              current != compositionGeneration ||
+              currentRepo.userId != actor) {
+            if (currentRepo.userId == actor && photos.userId == actor) {
+              try {
+                await photos.discard(path);
+              } catch (_) {
+                /* Pending cleanup is best effort. */
+              }
+            }
+            return;
+          }
+          attachmentPath = path;
+        }
+        if (!mounted ||
+            current != compositionGeneration ||
+            currentRepo.userId != actor ||
+            photos.userId != actor) {
+          return;
+        }
+        await photos.send(threadId, pendingId!, pendingBody!, attachmentPath!);
+      } else {
+        await currentRepo.sendMessage(threadId, pendingId!, pendingBody!);
+      }
+      if (!mounted ||
+          current != compositionGeneration ||
+          currentRepo.userId != actor) {
+        return;
+      }
       setState(() {
         pendingId = null;
         pendingBody = null;
+        photoMessageId = attachmentPath = null;
+        photoBytes = null;
         composer.clear();
       });
       await refresh();
     } catch (cause) {
-      if (mounted) {
+      if (mounted &&
+          current == compositionGeneration &&
+          currentRepo.userId == actor) {
         setState(
           () => error =
               '${communityError(cause)} Tu mensaje está listo para reintentarse.',
         );
       }
     } finally {
-      if (mounted) setState(() => busy = false);
+      if (mounted &&
+          current == compositionGeneration &&
+          currentRepo.userId == actor) {
+        setState(() => busy = false);
+      }
     }
+  }
+
+  Future<void> pickPhoto() async {
+    if (busy || pendingId != null || thread?['status'] == 'closed') {
+      return;
+    }
+    final actor = repo.userId;
+    final current = ++compositionGeneration;
+    final id = const Uuid().v4();
+    setState(() {
+      busy = true;
+      error = null;
+    });
+    try {
+      final selected = await ref.read(chatPhotoPickerProvider)();
+      if (selected == null) {
+        return;
+      }
+      final bytes = await selected.readAsBytes();
+      if (!mounted ||
+          current != compositionGeneration ||
+          repo.userId != actor) {
+        return;
+      }
+      if (bytes.isEmpty || bytes.length > MediaPurpose.chatPhoto.inputLimit) {
+        throw const FormatException('Elige una foto de hasta 5 MB.');
+      }
+      setState(() {
+        photoBytes = bytes;
+        photoMessageId = id;
+        attachmentPath = null;
+      });
+    } catch (cause) {
+      if (mounted && current == compositionGeneration && repo.userId == actor) {
+        setState(() => error = communityError(cause));
+      }
+    } finally {
+      if (mounted && current == compositionGeneration && repo.userId == actor) {
+        setState(() => busy = false);
+      }
+    }
+  }
+
+  void clearComposition() {
+    if (busy) {
+      return;
+    }
+    final path = attachmentPath;
+    if (path != null) {
+      ref.read(chatPhotoRepositoryProvider).discard(path).ignore();
+    }
+    setState(() {
+      compositionGeneration++;
+      photoBytes = null;
+      photoMessageId = attachmentPath = pendingId = pendingBody = null;
+    });
   }
 
   Future<void> close() async {
@@ -257,99 +653,358 @@ class _ThreadState extends ConsumerState<ThreadScreen>
   }
 
   @override
-  Widget build(BuildContext context) => CommunityFrame(
-    children: [
-      Heading(
-        thread == null ? 'Conversación' : 'Sobre ${thread!['pet_name']}',
-        'Solo tú y la otra persona pueden leer estos mensajes.',
-        eyebrow: 'ADOPCIÓN',
-      ),
-      if (loading) const Center(child: CircularProgressIndicator()),
-      if (error != null) Notice(error!, isError: true),
-      if (!loading && thread == null)
-        ActionButton('Volver a cargar', onPressed: refresh),
-      if (thread != null) ...[
-        if (hasOlder && messages.isNotEmpty)
-          TextButton(
-            onPressed: olderBusy ? null : older,
-            child: Text(olderBusy ? 'Cargando…' : 'Ver mensajes anteriores'),
+  Widget build(BuildContext context) => ListenableBuilder(
+    listenable: ref.watch(experienceProvider),
+    builder: (context, _) {
+      final rescuer =
+          ref.read(experienceProvider).value == AccountExperience.rescuer;
+      final accent = rescuer ? const Color(0xff7841f2) : yellow;
+      final foreground = rescuer ? Colors.white : ink;
+      final textInk = rescuer ? const Color(0xff151423) : ink;
+      final textMuted = rescuer ? const Color(0xff4f4e5c) : muted;
+      final line = rescuer ? const Color(0xffe3e4ed) : const Color(0xffe6e2dd);
+      return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          toolbarHeight: 70,
+          centerTitle: true,
+          leadingWidth: 60,
+          titleSpacing: 0,
+          surfaceTintColor: Colors.transparent,
+          shape: Border(bottom: BorderSide(color: line)),
+          backgroundColor: Colors.white,
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            tooltip: 'Volver',
+            style: IconButton.styleFrom(overlayColor: Colors.transparent),
+            onPressed: () =>
+                context.canPop() ? context.pop() : context.go('/messages'),
+            icon: SvgPicture.asset(
+              'assets/profile/back.svg',
+              width: 20,
+              height: 20,
+            ),
           ),
-        if (messages.isEmpty)
-          const Notice('Saluda y cuéntale por qué te interesa esta adopción.'),
-        for (final message in messages)
-          Align(
-            alignment: message['sender_id'] == repo.userId
-                ? Alignment.centerRight
-                : Alignment.centerLeft,
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.all(16),
-              constraints: const BoxConstraints(maxWidth: 370),
-              decoration: BoxDecoration(
-                color: message['sender_id'] == repo.userId
-                    ? const Color(0xffeee7fc)
-                    : Colors.white,
-                borderRadius: BorderRadius.circular(18),
+          title: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                thread?['pet_name'] as String? ?? 'Conversación',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  height: 1.25,
+                  letterSpacing: -.36,
+                  color: textInk,
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    message['sender_id'] == repo.userId
-                        ? 'Tú'
-                        : 'La otra persona',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: purple,
+              if ((thread?['participant_name'] as String? ?? '')
+                  .isNotEmpty) ...[
+                const SizedBox(height: 2),
+                Text(
+                  thread!['participant_name'] as String,
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    height: 1.2,
+                    letterSpacing: 0,
+                    color: textMuted,
+                  ),
+                ),
+              ],
+            ],
+          ),
+          actions: [
+            if (thread?['post_id'] != null)
+              ReferenceFocusOutline(
+                key: const ValueKey('chat-detail-link'),
+                radius: 0,
+                outlineInset: EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical:
+                      (48 - MediaQuery.textScalerOf(context).scale(12) * 1.2)
+                          .clamp(0, 48) /
+                      2,
+                ),
+                child: TextButton(
+                  onPressed: () {
+                    final owned =
+                        rescuer &&
+                        thread?['owner_id'] ==
+                            ref.read(communityRepositoryProvider).userId;
+                    var path = '/adoptions/${thread!['post_id']}';
+                    if (owned) {
+                      path = thread!['case_id'] != null
+                          ? '/rescue/${thread!['case_id']}'
+                          : '/my-adoptions/${thread!['post_id']}';
+                    }
+                    context.push(path);
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: textInk,
+                    overlayColor: Colors.transparent,
+                    splashFactory: NoSplash.splashFactory,
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    textStyle: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 12,
+                      height: 1.2,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0,
+                      decoration: TextDecoration.underline,
                     ),
                   ),
-                  SelectableText(
-                    message['body'] as String,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    localDate(message['created_at'] as String),
-                    style: Theme.of(context).textTheme.bodySmall,
+                  child: const Text('Ver detalle'),
+                ),
+              ),
+            if (thread != null && thread!['status'] != 'closed')
+              PopupMenuButton<String>(
+                tooltip: 'Opciones de conversación',
+                enabled: !busy,
+                onSelected: (_) => close(),
+                itemBuilder: (_) => [
+                  const PopupMenuItem(
+                    value: 'close',
+                    child: Text('Cerrar conversación'),
                   ),
                 ],
               ),
+          ],
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  if (loading) const Center(child: CircularProgressIndicator()),
+                  if (error != null) Notice(error!, isError: true),
+                  if (!loading && thread == null)
+                    ActionButton('Volver a cargar', onPressed: refresh),
+                  if (thread != null) ...[
+                    if (hasOlder && messages.isNotEmpty)
+                      TextButton(
+                        onPressed: olderBusy ? null : older,
+                        child: Text(
+                          olderBusy ? 'Cargando…' : 'Ver mensajes anteriores',
+                        ),
+                      ),
+                    if (messages.isEmpty)
+                      const Text(
+                        'Saluda y cuéntale por qué te interesa esta adopción.',
+                        style: TextStyle(color: muted),
+                      ),
+                    for (final message in messages)
+                      ChatMessageBubble(
+                        message,
+                        mine: message['sender_id'] == repo.userId,
+                      ),
+                    if (thread!['status'] == 'closed')
+                      const Notice(
+                        'Esta conversación está cerrada. Puedes consultar su historial.',
+                      ),
+                  ],
+                ],
+              ),
             ),
-          ),
-        if (thread!['status'] == 'closed')
-          const Notice(
-            'Esta conversación está cerrada. Puedes consultar su historial.',
-          )
-        else ...[
-          const SizedBox(height: 16),
-          TextField(
-            controller: composer,
-            minLines: 2,
-            maxLines: 5,
-            maxLength: 2000,
-            readOnly: busy || pendingId != null,
-            decoration: const InputDecoration(labelText: 'Tu mensaje'),
-          ),
-          ActionButton(
-            pendingId == null ? 'Enviar mensaje' : 'Reintentar envío',
-            busy: busy,
-            onPressed: send,
-          ),
-          if (pendingId != null && !busy)
-            TextButton(
-              onPressed: () => setState(() {
-                pendingId = null;
-                pendingBody = null;
-              }),
-              child: const Text('Cancelar reintento y editar'),
-            ),
-          TextButton(
-            onPressed: busy ? null : close,
-            child: const Text('Cerrar conversación'),
-          ),
-        ],
-      ],
-    ],
+            if (thread != null && thread!['status'] != 'closed')
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border(top: BorderSide(color: line)),
+                ),
+                child: SafeArea(
+                  top: false,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (photoBytes != null)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Image.memory(
+                                    photoBytes!,
+                                    key: const ValueKey('chat-photo-preview'),
+                                    width: 96,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, _, _) => const SizedBox(
+                                      width: 96,
+                                      height: 80,
+                                      child: Icon(Icons.broken_image_outlined),
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  tooltip: 'Quitar foto',
+                                  onPressed: busy ? null : clearComposition,
+                                  icon: const Icon(Icons.close),
+                                ),
+                              ],
+                            ),
+                          ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: composer,
+                                minLines: 1,
+                                maxLines: 5,
+                                maxLength: 2000,
+                                readOnly: busy || pendingId != null,
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 16,
+                                  height: 1.25,
+                                  letterSpacing: 0,
+                                  color: textInk,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: 'Escribe un mensaje...',
+                                  hintMaxLines: 1,
+                                  constraints: BoxConstraints(
+                                    minHeight:
+                                        MediaQuery.textScalerOf(context)
+                                                .scale(16) *
+                                            1.25 +
+                                        26,
+                                  ),
+                                  hintStyle: TextStyle(
+                                    color: textMuted,
+                                    fontSize: 16,
+                                    height: 1.25,
+                                    letterSpacing: 0,
+                                  ),
+                                  counterText: '',
+                                  isDense: true,
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                    vertical: 12,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                    borderSide: BorderSide(color: line),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                    borderSide: BorderSide(
+                                      color: rescuer ? purple : ink,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            IconButton(
+                              key: const ValueKey('chat-attach-photo'),
+                              constraints: const BoxConstraints.tightFor(
+                                width: 40,
+                                height: 40,
+                              ),
+                              padding: EdgeInsets.zero,
+                              style: IconButton.styleFrom(
+                                minimumSize: const Size(40, 40),
+                                maximumSize: const Size(40, 40),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              tooltip: 'Adjuntar foto',
+                              onPressed: busy || pendingId != null
+                                  ? null
+                                  : pickPhoto,
+                              icon: SvgPicture.asset(
+                                'assets/profile/paperclip.svg',
+                                width: 22,
+                                height: 22,
+                                colorFilter: ColorFilter.mode(
+                                  const Color(0xff5c574f),
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            ValueListenableBuilder<TextEditingValue>(
+                              valueListenable: composer,
+                              builder: (context, value, _) => SizedBox(
+                                width: 40,
+                                height:
+                                    MediaQuery.textScalerOf(context).scale(16) *
+                                        1.25 +
+                                    26,
+                                child: IconButton(
+                                  tooltip: pendingId == null
+                                      ? 'Enviar mensaje'
+                                      : 'Reintentar envío',
+                                  onPressed:
+                                      busy ||
+                                          (value.text.trim().isEmpty &&
+                                              photoBytes == null)
+                                      ? null
+                                      : send,
+                                  style: IconButton.styleFrom(
+                                    overlayColor: Colors.transparent,
+                                    backgroundColor: accent,
+                                    disabledBackgroundColor: accent.withValues(
+                                      alpha: .5,
+                                    ),
+                                    foregroundColor: foreground,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                  ),
+                                  icon: busy
+                                      ? const SizedBox(
+                                          width: 16,
+                                          height: 16,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                      : SvgPicture.string(
+                                          "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"15.9857\" height=\"15.9857\" viewBox=\"0 0 15.9857 15.9857\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><g id=\"Icon\" clip-path=\"url(#clip0_0_19)\"><path id=\"Vector\" d=\"M9.68201 14.4444C9.70731 14.5075 9.7513 14.5613 9.80808 14.5986C9.86485 14.636 9.93169 14.6551 9.99962 14.6533C10.0675 14.6516 10.1333 14.6291 10.1881 14.5889C10.2429 14.5487 10.2841 14.4927 10.3061 14.4284L14.6356 1.77308C14.6569 1.71406 14.661 1.65019 14.6473 1.58895C14.6336 1.5277 14.6028 1.47161 14.5585 1.42724C14.5141 1.38287 14.458 1.35205 14.3968 1.3384C14.3355 1.32474 14.2716 1.32881 14.2126 1.35013L1.55727 5.67959C1.493 5.70163 1.437 5.74281 1.3968 5.79759C1.3566 5.85238 1.33412 5.91815 1.33238 5.98608C1.33064 6.05402 1.34972 6.12085 1.38706 6.17763C1.42441 6.2344 1.47822 6.27839 1.54129 6.30369L6.82323 8.4218C6.99021 8.48865 7.14191 8.58862 7.26921 8.71569C7.3965 8.84276 7.49675 8.99428 7.5639 9.16114L9.68201 14.4444Z\" stroke=\"#FCFBFF\" stroke-width=\"1.33214\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path id=\"Vector_2\" d=\"M14.5563 1.43005L7.2695 8.7162\" stroke=\"#FCFBFF\" stroke-width=\"1.33214\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g><defs><clipPath id=\"clip0_0_19\"><rect width=\"15.9857\" height=\"15.9857\" fill=\"white\"/></clipPath></defs></svg>",
+                                          width: 16,
+                                          height: 16,
+                                          colorFilter: ColorFilter.mode(
+                                            foreground,
+                                            BlendMode.srcIn,
+                                          ),
+                                        ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (pendingId != null) ...[
+                          ActionButton(
+                            'Reintentar envío',
+                            busy: busy,
+                            onPressed: send,
+                          ),
+                          if (!busy)
+                            TextButton(
+                              onPressed: clearComposition,
+                              child: const Text('Cancelar reintento y editar'),
+                            ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      );
+    },
   );
 }
 
@@ -364,13 +1019,9 @@ class _NotificationsState extends ConsumerState<NotificationsScreen> {
   String? error;
   bool busy = false;
   @override
-  Widget build(BuildContext context) => CommunityFrame(
+  Widget build(BuildContext context) => NotificationFrame(
+    rescuer: ref.watch(experienceProvider).value == AccountExperience.rescuer,
     children: [
-      const Heading(
-        'Lo nuevo en Dopmi.',
-        'Respuestas del equipo y mensajes de la comunidad.',
-        eyebrow: 'NOTIFICACIONES',
-      ),
       if (error != null) Notice(error!, isError: true),
       LiveSection<DataPage<Json>>(
         key: ValueKey(page),
@@ -384,58 +1035,46 @@ class _NotificationsState extends ConsumerState<NotificationsScreen> {
                 'Cuando haya una respuesta o un mensaje, lo encontrarás aquí.',
               ),
             for (final item in result.items)
-              Card(
-                color: item['read_at'] == null
-                    ? const Color(0xffeee7fc)
-                    : Colors.white,
-                child: ListTile(
-                  contentPadding: const EdgeInsets.all(16),
-                  leading: Icon(
-                    item['kind'] == 'message'
-                        ? Icons.chat_bubble_outline
-                        : Icons.fact_check_outlined,
-                    color: purple,
-                  ),
-                  title: Text(item['title'] as String),
-                  subtitle: Text(
-                    '${item['read_at'] == null ? 'Sin leer · ' : ''}${localDate(item['created_at'] as String)}',
-                  ),
-                  onTap: busy
-                      ? null
-                      : () async {
-                          setState(() {
-                            busy = true;
-                            error = null;
-                          });
-                          try {
-                            await ref
-                                .read(communityRepositoryProvider)
-                                .readNotification(item['id'] as String);
-                            if (!context.mounted) return;
-                            await context.push(
-                              item['rescue_id'] != null
-                                  ? '/rescue/${item['rescue_id']}'
-                                  : item['thread_id'] == null
-                                  ? '/my-adoptions/${item['post_id']}'
-                                  : '/messages/${item['thread_id']}',
-                            );
-                            refresh();
-                          } catch (cause) {
-                            if (mounted) {
-                              setState(() => error = communityError(cause));
-                            }
-                          } finally {
-                            if (mounted) setState(() => busy = false);
+              NotificationTile(
+                item,
+                rescuer:
+                    ref.watch(experienceProvider).value ==
+                    AccountExperience.rescuer,
+                onTap: busy
+                    ? null
+                    : () async {
+                        setState(() {
+                          busy = true;
+                          error = null;
+                        });
+                        try {
+                          await ref
+                              .read(communityRepositoryProvider)
+                              .readNotification(item['id'] as String);
+                          if (!context.mounted) return;
+                          await context.push(
+                            item['rescue_id'] != null
+                                ? '/rescue/${item['rescue_id']}'
+                                : item['thread_id'] == null
+                                ? '/my-adoptions/${item['post_id']}'
+                                : '/messages/${item['thread_id']}',
+                          );
+                          refresh();
+                        } catch (cause) {
+                          if (mounted) {
+                            setState(() => error = communityError(cause));
                           }
-                        },
-                ),
+                        } finally {
+                          if (mounted) setState(() => busy = false);
+                        }
+                      },
               ),
-            PageControls(
-              page: page,
-              total: result.total,
-              size: 20,
-              change: (value) => setState(() => page = value),
-            ),
+            if (result.total > 20)
+              NotificationPagination(
+                page: page,
+                total: result.total,
+                change: (value) => setState(() => page = value),
+              ),
           ],
         ),
       ),

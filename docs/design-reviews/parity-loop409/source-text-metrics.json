@@ -1,0 +1,26 @@
+[
+  {
+    "font": "16px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "height": 76.375,
+    "padding": "10px 16px 8px",
+    "selector": ".bubble"
+  },
+  {
+    "font": "14px / 21.7px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "height": 43.375,
+    "padding": "0px",
+    "selector": ".bubble p"
+  },
+  {
+    "font": "10px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "height": 12,
+    "padding": "0px",
+    "selector": ".bubble span"
+  },
+  {
+    "font": "16px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "height": 46,
+    "padding": "12px 14px",
+    "selector": ".chat-compose input"
+  }
+]

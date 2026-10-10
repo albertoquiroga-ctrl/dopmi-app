@@ -1,0 +1,152 @@
+[
+  {
+    "file": "guardian-activation-failed-large.png",
+    "sha256": "0ff1a9e853effe6761707c9fd30178fa8fa4ff3de3059e74317e02a979177adb",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-activation-failed.png",
+    "sha256": "cf5606e49c7d2115ed70b6b8114feb8d1d48d8e998e756496932ee40b4701610",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-activation-success-large.png",
+    "sha256": "d815e5f5705b63f44bde14f58752cb58a788eae890040783f5019466f5e54b93",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-activation-success.png",
+    "sha256": "2bc4d7276283249b236cfc881f423e61aa3dcc6a83ee7ceba4dcafec631c244b",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-billing-active-large.png",
+    "sha256": "e2e401796cf9440155a4664ccbf65982b6e7f7d03c19e5896bca5dd54b2a1149",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-billing-active.png",
+    "sha256": "1f69e219445a4e95e9973a7d76b49b76e9ccff9444400dcbc3652bf27232be4f",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-billing-amount-large.png",
+    "sha256": "2b20d74c8fa0d1daef1b96d248d47ce595952330ca7de1b24851a666bab85f39",
+    "after_actual_badge_patch": true
+  },
+  {
+    "file": "guardian-billing-amount.png",
+    "sha256": "abd91283871ff3ad01aa820fd51a660482960d0f497a9b8039d25ee1953a1da8",
+    "after_actual_badge_patch": true
+  },
+  {
+    "file": "guardian-billing-cancel-large.png",
+    "sha256": "2f056b637bb045cbc98585c79ee4ddd86cfa83e71092a94f1e2770a5475ccc9c",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-billing-cancel.png",
+    "sha256": "46d77c5d8e555db429899006b381c4f7fe427027aafa64c2faa6eefc995f8e8b",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-billing-enrollment-confirmation-large.png",
+    "sha256": "cb9120fe4a7074706a0760da3095165596e4fc44c82cfacf39f321a60a2b45d7",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-billing-enrollment-confirmation.png",
+    "sha256": "8f731f9f31f44e69a301bc98f5efb026eff604ca99f15042c61c9d617d1d5796",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-billing-enrollment-custom-large.png",
+    "sha256": "dc240f86f4680b319b23c2d8f503960258813533f3dd82ee026b8402dd71eb06",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-billing-enrollment-custom.png",
+    "sha256": "ed91f323492d8e43e430cc6386b2d4804a218957934fa16d9e79661ef531ee20",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-billing-enrollment-large.png",
+    "sha256": "0899aafbaaecc0f11e64413656b22dd8ce046c845d4a8e61c03d3c9bac55bd1e",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-billing-enrollment.png",
+    "sha256": "1a2f0f3093b35310e870f8f64b46fc9d6265a93c4b18b7c50d63d3f19c94b9ef",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-billing-history-large.png",
+    "sha256": "f285de4635d6f0b81b97f25f1afe508d20b9a1744f1d7ecabfd3d7fcf7a210a2",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-billing-inactive-large.png",
+    "sha256": "187bb0dbdab2d49862ba1c01d49b32309dab47f0811bb18f7b6f4fdb615ae1d7",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-billing-inactive.png",
+    "sha256": "e1b1410d37c610cba467d0921e56320a0ad0d2e34ff3a961c23edc215377eb52",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-billing-receipt.png",
+    "sha256": "a4d986f9bb5f222a765b41ff6dd0584f576cfc92d3669e600650001d4440e41d",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-history-empty-large.png",
+    "sha256": "31cf6cea0ff8de1a908c8301d00924f06873165fedb08e7b78db6656b379304b",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-history-empty.png",
+    "sha256": "62495ef1b1f28fce36f28e12eb9b427ba402c7c403fa223b523517f85b0b35aa",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-history-large.png",
+    "sha256": "31cf6cea0ff8de1a908c8301d00924f06873165fedb08e7b78db6656b379304b",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-history.png",
+    "sha256": "302b5b463e8798487e75e2adbd279777efd7df007284eae3aed85571bfe38971",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-promotion-controls-large.png",
+    "sha256": "caeee01d0fc4ae0b031fd67829755e34e0adc425b6166cf181e81eb2623f3e7c",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-promotion-join-large.png",
+    "sha256": "d21a58240a4c37098829bdfc3a7f5ca8c3d92b546655431097f3d692e924e2bf",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-promotion-large.png",
+    "sha256": "4fc8a88c12278ada07ce2b483aed6b7eb198ae93d5558dc988c23e220eb7a985",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-promotion-reports.png",
+    "sha256": "3d60bb64a1500586d122844a0630f7d187918e971d5b6a9aa995d82319b2523d",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-promotion-second.png",
+    "sha256": "7b3b86c1f9c46748ecbf9387ed37c66881a7263d9640598b8dc4d5a61b6c1175",
+    "after_actual_badge_patch": false
+  },
+  {
+    "file": "guardian-promotion.png",
+    "sha256": "6dd89fe2aa2d66096a65f2d2e63edc5133f46419cdedc8dc66b6ec17127e67f3",
+    "after_actual_badge_patch": false
+  }
+]

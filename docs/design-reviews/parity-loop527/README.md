@@ -1,0 +1,5 @@
+# Loop527 — tipografía y colores de adjuntos
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultada/runtimeEdge377x852 EvidenceRockyVet. ComputedStyle:inkrgb21,20,35 (151423);mutedrgb79,78,92 (4f4e5c), no616174 inferido526. helperprivado12/16; dropgap6;label14alto17;hint12alto15/max240;drop295x148/radio24/padding28,16. source-metrics.txt conservaresultado. ColorSource rescuer-theme sobrescribevarsrootcálidas. 41f53af EvidenceCard cambia esos colores/lineheights/gaps/minColumncenter/hintmax240/nooverlay ni splash; title17,helper12/16,bodymin148/icon28/radio24 preservados. Data/private/public/filescallbackslímites reales intactos; noSourcefakecashback/Coins/video/10MB.
+
+91835exit0,13/13,6s:expense_field/rescue_file+capturador2fixtures.90487analyzerexit0clean67.8s. Native normalPNGinspeccionado3controlescompletos conpapelesprivados/fotopública. LargePNG muestra parte inicial delcomprobante, noaceptación detodosloscontrolesfuera viewport. Full609524 y403525 preceden527, no gate/capturadorfullactuales. Noacceptanceglobal/físico/StripeSDK. Sinbackend/SQL/push/Codemagic.

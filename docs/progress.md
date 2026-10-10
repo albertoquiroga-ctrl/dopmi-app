@@ -1,4 +1,953 @@
+## 2026-10-08 — dde1: Play302 instalado, QA parcial y espera de login/SMS
+
+Codemagic `6ac868c2db0c8ad19691cef6` finished04:26:10Z; signing/analyze/tests/bundle/Publishing success, publisheraction6ac868c6d7ee92181478d965. Build-info descargado confirma producto `7e1a94c2344463ed0f7a56a7e3c9b8bf6c9f957e`, versión2.3.3(302), Guardian testtrue/GooglePlayinternal. Play del teléfono mostró Actualizar, descarga observada; ADBpackageversion302/installercom.android.vending acredita instalación real, sin APKlocal/clear data. Apertura conservó sesión personal. Root recorrió sólo lecturas: perfil/nav4dest, historial existente no vacío, detalle expandido y Back. Capturas privadas; no datos personales transcritos aGit. Chrome examinó directamente tresPNGfísicos y fuente mock congelada: no defectos visibles accionables acotados a esasvistas/font1.15, sin claimscrollfinal/gestos/escrituras/chat.
+
+Cuenta sintética nueva preparada y archivo de login mínimo privado abierto queued enCodex; titular debe cambiar/restaurar sesión manualmente según decisión vigente. Pregunta de readiness pendiente. PhoneAuthDEV sigueexternal.phonefalse; configurarTwilio/autorizarSMSreal también pendiente. Todo independiente del acceso terminado; controlADB detenido para el login manual, sin pollingindefinido. Estado INSTALADO_PLAY302_QA_PARCIAL_ESPERANDO_LOGIN_QA_SMS. Objetivo incompleto: no ENTREGA_VERIFICADA_EN_DISPOSITIVO ni aceptación humana. Próximo: verificarQA/302 enUI al aviso y completar recorridos nativos N01–N11+QA9ced, revisiones/correcciones y cierre cuando cumpla criterios. Documentos posteriores propios siguen sin commit junto a hunks ajenos preservados; no otrodelta.
+
+## 2026-10-08 — dde1: candidato7e1a94c FULL CI verde y Codemagic enviado
+
+Commit propio `7e1a94c2344463ed0f7a56a7e3c9b8bf6c9f957e` push en `codex/design-foundation`, staging selectivo105archivos conservó cambios ajenos. [CI FULL37881037435](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37881037435) success: cuatrojobs y todossteps obligatorios, Flutter993/993 + doscapturadores1/1cadauno + analyze/formatting/Androiddebug, admin38/38+build, backend632/632, pgTAP295/295, backendAuth5/5 e iOSsimulator. Pushrun37881032789 cancelado por concurrencia PR, sin repetir gate. Codemagic build `6ac868c2db0c8ad19691cef6` enviado una vez04:08:38Z del9/10, workflowandroid-guardian-internal, commit7e1a94c confirmado y building. Publisher/versionCode/Playinstalación aún pendientes.
+
+QA AuthDEV adicional con los mismos cuatroactores nuevos: fotosadopción2objetosJPEG/2reviews RPC tras edición legítima draft; Storage rechazó intento sobrepublished, rootSQLreconcilió0objetos/version1 antes de recovery, journalconservado. Chatfoto32/32: uploadprivado, envíoUUIDestable+duplicado único, participantespermitidos/outside-adminnegados, unsent/inmutabilidad/upsertdeny. Notificaciones37/37 persistidas: tono/body/thumb/targets, ownviewer open1/read_at persistente y tresotrosactores42501. AuditoríasSQLposteriores exact2adopción+1chatobjeto/1mensaje/1notificación+1read_at y dinero/identity/cohort/consumptionintactos. DescargasAuth de los3objetos SHA256 iguales a fuente. Son fixture/contratos reales, no aceptación humana/picker/zoom/gestos instalados. FotoJPEGsintética nueva en directorioQA exacto del teléfono inventariadoprivado; escalaoriginal1.15/densidad420 conservadas. PhoneAuthDEVHTTP200external.phone=false; acceso/configuración/costoSMS pendiente de intervención, sin OTPsimulado. CuentaQAmanual preparada enarchivo privado sin publicarcredenciales. Cierre obligatorio de dispositivo sigue pendiente.
+
+## 2026-10-08 — dde1: Auth DEV reconciliado y continuación cerrada
+
+Root verificó por SQL que la primera vista del run QA nuevo persistió una vez tras el fallo local del journal. Ambos originales se conservaron; el runtime privado pasó a Temp. Resume ejecutó 29 comprobaciones autenticadas sin repetir la primera vista ni las mutaciones previas del perfil: deduplicación de vista, favorito real, retiro del consentimiento, aislamiento de propietario y rechazo de período inválido. La auditoría SQL posterior de los cuatro actores exactos pasó: identidad aprobada preservada, sin Connect, donaciones, Guardian, cohorte, consumo de eventos ni mensajes. El bloque anterior llegó a primera vista; no se inventa un conteo completo ni se confunde esta evidencia con SMS, historial financiero no vacío o aceptación instalada. Siguiente: candidato propio, CI FULL del SHA, Codemagic y Play, fixtures visuales nuevos y recorrido en teléfono. SMS real sigue pendiente de acceso/configuración.
+
 # Dopmi — registro de avance
+
+## 8/10/2026 — Corte visual cerrado, DEV aditivo y QA Auth en curso
+
+Pagos13/13, capturas integrales1/1 y revisión independiente normal115200 cerraron
+reflow de títulos/fechas/importes. ChromeN01/N02/N11 captura real router1/1;
+mensajesconphotos1/1 y Apoyarrutareal+selected1/1, analyze0issues79.4s sobre451files
+91e83405bd4fb43a40d51aa2fa0252941a0963893ec67b095d92966a5d500764.
+Root examinó navegación/Home/inbox; Chrome examinó15PNG soporte y3navbar nuevos,
+Contratoschat y Apoyarperfil, cuatro lentes con límites instalados explícitos.
+Admin sólohunks propios38/38+build, usuarioAPI/test conservados; backend632/632.
+
+DEV cinco aditivos aplicados una vez, postflight22/22 cuerpos/ACL/RLS correctos y
+cohorte/consumo0; HTTPanon8/8 rechazos. Mappings/SHA en migration-history-audit.md.
+AuthDEV4 cuentasNUEVAS/signup/token/getUser/legal reales mismoUUID; confirmación
+operador limitada a susIDs, no claimSMTP/SMS. Fixturesbackend nuevas exactIDs,
+sin fotos/mensajes/Connect/dinero/cohorte. Perfil/consent/review/revoke/inbox/history
+assertions alcanzaron bloque vistas. Atomicrenamejournal falló bajoOneDrive;
+fuentes/journals conservados, rootSQL acreditó1vista exacta y no se repite.
+Runtime privado copiado fueraOneDrive, continuación sólocontratosrestantes.
+
+PR6 draft/open y refs b4/ba9 revalidados por API/Git; todavía sin candidato nuevo.
+CI finalexactSHA/CM/Play/dispositivo/SMS siguen pendientes. No aceptación global.
+
+## 8/10/2026 — Capturas integrales y revisión independiente del corte UI
+
+FullFlutter55528 sobre0a24:984 aprobadas/2 fallidas9:58, analyze0issues98.3s;
+fixtures verificationcard owner incoherente corregidos con pruebas dirigidas.
+Chat/footer con Inter real9/9; Cancel2/2 tras esperar SnackBar real, sin producto.
+Capturador58209 sobre449files c5322d80f0c0c82931acbf084bab6988f48d33acffcbc50e9049032304a6f82f:
+1/1 aprobada39s normal/115/320200. Analyze posterior1info unnecessary_import
+chat_photo_dde1_test retirado. Backend consolidado632/63250.09s, runner76911exit0.
+PostgreSQL financiero real6/6 rollback y PGlite505/505 permanecen vigentes.
+
+Revisores examinaron imágenes nuevas directamente: Apoyar cerró preview lavender/
+labels privados normal115 y tabs sin palabras partidas200; Chrome cerró intro
+RichText historial/notificaciones normal115; Contratos cerró cuatro diferencias
+chat normal115200, caption inferior completo y compositor sin overflow. Límites:
+no acreditan zoom/picker/gestos/DEV ni aceptación instalada. Captura detectó defecto
+real de pagos320200: título/fecha en columna demasiado estrecha, palabras partidas;
+Apoyar corrige distribución responsive, revisión independiente posterior obligatoria.
+
+Titular desbloqueó teléfono: ADB comprobó device y showing=false; aún Play301,
+no candidato nuevo. DEV último20261007034858 sin aditivos nuevos. Checkpoint único
+contiene siguiente cola/acciones; final sólo con versión nueva desde Play y recorridos.
+
+## 8/10/2026 — Regresión completa dde1 y correcciones abiertas
+
+Fuente byte-equivalente acd122e0ac19f324987a7b83a9f0af794c0cb6d1fea2c66bbf916e4c6b6b7fe6;
+Flutter completo933 aprobadas/48 fallidas, runner3382 exit1,14:16. No gate ni
+candidato aprobado. Revisión independiente confirmó defecto chat ref trasdispose,
+affordance Editar foto faltante y omisiones reales del historial (copy pendiente,
+reanudación estable y comprobante privado). Otros fallos son harnesses/selectores
+anteriores; actualizar sin retirar privacidad/ownership/lifecycle/teclado/servidor.
+Correcciones exclusivas en curso con tres agentes, una sola cola Flutter y ADB.
+Samsung conectado/desbloqueado y Dopmi foreground comprobados. Remotos aún
+b4ac415/ba9f897; DEV último20261007034858/rescuer_funnel_9ced, sin aditivos nuevos.
+Logs privados y estado operativo en [checkpoint](mock-sync-current.md).
+
+## 8/10/2026 — Gates backend/admin y corrección temporal dde1
+
+Backend630/630, pgTAP PostgreSQL real295/295, concurrencia chat1/1 ambosórdenes,
+admin37/37+build y configuración16/16 aprobados. Entorno local aislado, sin nuevos
+candidatos ni operaciones DEV. SQLdelta18/18; revisión independiente cerró
+reversión receptora omitida y replay tras enrolamiento. UTF8 de etiquetas reparado.
+Stories13/13 incluye5200 exacto, background, hold/cancel,320200, avances lentos,
+reintento y volver mientras espera. Assets Guardian Luna/Milo copiados literalmente
+del SHA fijo. Capturas reales en ejecución/diagnóstico; no aprobación visual ni
+aceptación instalada nueva. Test backend Auth/Storage chat en preparación. SMS real
+sigue pendiente Twilio. [Tablero](parity-current-review.md) y checkpoint distinguen
+fuente/evidencia/vigencia. Dirty tree ajeno y stack previo preservados.
+
+## 8/10/2026 — Contratos dde1 y diagnóstico de integración
+
+Delta en árbol sin candidato nuevo. Grupo SQL16/16 aprobado; concurrencia chat
+1/1 en PostgreSQL real aislado: publicación/eliminación serializan ambos órdenes,
+fixtures propios limpiados, sin tocar stack previo. Prueba SQL no acredita HTTP
+Storage ni teléfono. Revisión independiente N07 detectó reversión receptor omitida
+y reemisión tras enrolamiento: corrección pendiente antes de DEV. Cohorte financiera
+privada default-off protege cliente301. Analyze2 avisos tras correcciones; regresión
+Flutter dirigida en ejecución. Samsung desbloqueado y appPlay301 foreground comprobados.
+SMS real sigue esperando configuración Twilio; no éxito simulado. Evidencia/estado
+operativo en [checkpoint](mock-sync-current.md), no commit/push/build remoto nuevos.
+
+## 8/10/2026 — Inicio ejecución autorizada dde1bb9
+
+Titular aprueba plan completo, N01–N11 y QA pendiente9ced. Mock congelado dde1bb9,
+base producto281fc37/Play301, rama codex/design-foundation HEADb4ac415. Dirty tree
+ajeno preservado con baseline privada; documentación activa actualizada para
+QA ordinario/cuatro lentes/Play/teléfono dentro de entrega, sin cuotas/renovaciones.
+Revisión eficiencia realizada en plan reutilizada. Delegados Chrome y Apoyar
+independientes; revisión contratos sólo lectura; integrador única cola Flutter,
+contratos y ADB. No gates/migraciones/builds/aceptación nuevos todavía.
+Detalle y acciones en [tablero](parity-current-review.md); checkpoint corto vigente.
+
+## 8/10/2026 — Cierre documental autónomo
+
+Perfil ENTREGA_CONTINUA_EFICIENTE_VERIFICADA sin presupuestos/renovaciones.
+Estado PUBLICADO_INTERNAL_PENDIENTE_QA_FINAL; código281fc37, Play/Samsung301,
+934tests aprobadas. Commit documental no genera candidato. [Checkpoint](mock-sync-current.md)
+y [ficha canónica de cierre](parity-current-review.md) separan estados, cortes por
+grupo, revisiones/evidencia/límites y siguiente acción: retomar QA final de9ced.
+No aprobación de Irlanda ni auditoría profunda atribuida. Mock4369 no inventariado.
+Sólo documentación propia, sin repetir gates ni iniciar nuevo trabajo; dirty tree
+ajeno/privados preservados. El remoto del commit de cierre se comprueba después
+del push; identificarlo por asunto docs: close Dopmi handoff without new candidate.
+
+## 8/10/2026 — Delta9ced cerrada; QA instalada301 completada
+
+SamsungR5CY51260VK volvió a conectar y respondió sin protección física.
+com.mycompany.dopmi2.3.3(301), installercom.android.vending comprobados.
+Modo Rescatista temporal: filtro abierto, mes seleccionado conservado y cierre
+con Listo correcto. Captura resumed-period.png examinada: título, selector,
+backdrop y botón corresponden al candidato comparado. Tips abierto: cinco
+consejos completos y Entendido visibles sin recortes a escala original1.15;
+captura resumed-tips-open.png examinada. Entendido cierra y vuelve a Inicio.
+No hizo falta desplazar el modal en este viewport; scroll200% conserva evidencia
+sintética46914 aprobada, sin repetirla. No afirmar nueva prueba física200%.
+Restaurados Adoptante, ruta Adoptar/Rocky Demo y escala1.15 (ADB comprobado).
+Sesión conservada; sin pagos, mensajes ni cambios de publicaciones/verificación.
+Capturas instaladas privadas en .tools/update9ced/device-qa; no datos de cuenta
+en Git. Sin cambios de código, suites ni builds adicionales.
+
+Auditoría de cierre del alcance vigente:
+- UX01 chrome/Apoyar y UX09 finalAdoptar: comparación Source9ced y capturas69534,
+  más CI de capturas37720236365; paridad anterior aceptada por el titular.
+- UX02/03 Inicio/tarjetas/filtro: geometría82786, capturas62004, teclado99491,
+  ajustevisual46914 y filtro instalado301 comprobado ahora.
+- UX04 paneles: cinco estados85397 y CI capturadores aprobado.
+- UX05 tips: capturas46914 normal/200% y apertura/contenido/cierre301 ahora.
+- UX06/07 Perfil/redes: cuatro capturas97400 normal/200%, suite934/934 exacta;
+  cuenta instalada en revisión: redes verificadas se comprobaron en fixture
+  sintético, sin atribuir aprobación ni escritura remota de esa cuenta.
+- UX08 tienda excluida. Excepciones de área táctil48px y notas de negocio
+  conservadas y documentadas; no exigir igualdad píxel ni microajustes.
+- Gate móvil37720236365 aprobado; CM exacto281fc37 analyze934tests/AAB/Publishing
+  aprobado, Play301 disponible e instalado. Backend/iOS intactos reutilizados.
+
+CERRADO delta bccd040→9ced autorizado. Mock4369 posterior fuera de alcance;
+requiere inventario separado. QA profunda/Irlanda/postMVP no se reabre en este
+encargo. Dinero test, permisos y cambios ajenos preservados; PR6 sin merge.
+
+## 7/10/2026 — Criterio de eficiencia confirmado; QA física acotada
+
+Titular exige sólo diferencias perceptibles, sin microajustes ni ingeniería
+innecesaria. Reutilizar evidencia aprobada; repetir únicamente lo invalidado
+por un cambio/falla nueva. Autoriza subagentes de eficiencia si aportan valor.
+Una revisión delegada sólo lectura confirmó: resta abrir/cerrar/desplazar los
+diálogos de301 instalada; no repetir Flutter/CI/CM/backend/iOS/capturas anteriores.
+Un intento instalado volvió a mostrar protección contra toques accidentales.
+Detenidas pulsaciones repetitivas; no nuevo defecto de producto demostrado.
+Cancelado modal de cambio de modo: Perfil Adoptante restaurado, font_scale1.15
+comprobada; sesión intacta, sin activar Rescatista ni pagos/mensajes.
+No cambios de código, suites ni builds en esta continuación. Source9ced
+congelado y push4369 fuera de alcance. Siguiente acción única: teléfono con
+pantalla arriba/sensor descubierto, QA focalizada restante y cierre documental.
+
+## 7/10/2026 — Samsung actualizado301; bloqueo físico durante QA
+
+ADB dumpsys confirmó com.mycompany.dopmi2.3.3(301), installercom.android.vending.
+Actualización desde Play conserva sesión: Adoptar abre Rocky Demo y Perfil
+con identidad existente. No pagos/mensajes/escrituras de contenido.
+Teléfono activa protección contra toques accidentales tras las pulsaciones;
+solicitado colocarlo pantalla arriba/sensor descubierto. QA delta final no
+atribuida mientras persista este bloqueo físico. Escala sigue1.15.
+Rama mock reconsultada exitosamente:4369d22da2a86c02a0d263b8b2214401430fa826.
+Push posterior separado: esta entrega conserva congelado9ced070, sin absorber
+nuevo código ni iniciar inventario posterior silenciosamente.
+
+## 7/10/2026 — Corrección301 publicada; actualización Samsung pendiente
+
+Codemagic6ac70dd3fd5fe9df9e910455 terminó03:47:44Z8/10 con success en AAB y
+Publishing. Source281fc378abd9de8b9118419b53e51813c7e411a1,934tests y analyze
+aprobados. AAB2.3.3(301),86,280,975bytes. Build2/2 consumido, sin relanzamiento.
+Play Console consultado directamente: release148, canal Internal activo,
+Available to internal testers y enlace de bundle para301. Producción intacta.
+Samsung mantiene300; fichaPlay consultada dos veces después de publicación
+sólo ofrece Abrir. No atribuir QA instalada301 ni reinstalar/borrar datos.
+Siguiente: propagación Play, actualizar conservando sesión y QA sólo delta.
+
+## 7/10/2026 — Gate exacto del candidato281fc37 aprobado en CM
+
+Build6ac70dd3fd5fe9df9e910455: Static analysis success03:31:39Z y Unit and
+widget tests success03:39:38Z8/10. Log consultado directamente:934 All tests
+passed. AAB firmado en curso desde03:39:38Z; no publicación atribuida todavía.
+Samsung conectado, escala original1.15, ficha Play preparada, aún300.
+Reconsulta de rama mock al cierre falló por conexión GitHub; conservar9ced
+congelado y no afirmar una consulta viva nueva exitosa. Última exitosa sin cambio.
+
+## 7/10/2026 — Corrección Codemagic2/2 enviada
+
+Candidato281fc378abd9de8b9118419b53e51813c7e411a1 publicado en rama
+codex/design-foundation. Build6ac70dd3fd5fe9df9e910455 enviado03:28:22Z8/10
+(7/10 México), workflow android-guardian-internal. API comprobó queued y
+commit exacto. https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ac70dd3fd5fe9df9e910455
+Es el build corregido2/2; no relanzar ni modificar candidato durante ejecución.
+Pipeline ejecuta analyze y flutter test sobre SHA exacto antes de AAB/Publishing.
+Samsung siguePlay2.3.3(300). Publicación y QA delta aún pendientes.
+
+## 7/10/2026 — Delta visual cerrada; gate móvil aprobado
+
+Gate móvil37720236365/job113125973662 en9708a7575ebbf19ec8ebe2a4262bbd18f3e44aff
+comprobado completed/success: formato, analyze, suite, ambas capturas y APK.
+Backend/iOS reutilizados del gate full37574438050 por código intacto.
+Último ajuste sólo de pintura/altura: backdrop rgba(21,17,13,.48), elevación0
+máximo88% del viewport en filtro y tips, según CSS9ced congelado.
+Cinco checks focalizados46914 aprobados (teclado, dos capturas normales y dos
+200%); tips permite desplazar hasta Entendido y cerrar. Imágenes examinadas.
+Analyze60233 sin incidencias en16.4s. La CI9708 precede este ajuste visual;
+se reutilizan sus suites intactas con estas comprobaciones nuevas, y se exige
+compilación/publicación del SHA final en Codemagic. No atribuirle CI del nuevoSHA.
+CM permanece1/2; siguiente candidato corregido2/2, Play y QA sólo delta Samsung.
+La paridad anterior permanece aceptada por el titular; sin ampliar inventario.
+
+## 7/10/2026 — Gate91aa8cf aprobado; control nativo de período preservado
+
+CI37718107631/job113119217981 terminó success: formato, analyze, suite móvil,
+dos capturadores y APK aprobados. Artifact11525041878 de capturas no expirado.
+CM todavía1/2, ninguna corrección publicada. Antes del build final, preservado
+RadioGroup nativo bajo el selector cuadrado: semántica, flechas y foco visibles
+sin cambiar geometría, período ni callbacks. InkWell sigue con área48px.
+La primera prueba auxiliar de Tab falló también en control anterior y no prueba
+regresión: descartada como evidencia. Prueba corregida con foco explícito en el
+radio seleccionado99491 aprobada1/1 en2s: flechaArriba cambia mes→semana y
+consulta el agregado real. Guardada como rescuer_home_period_keyboard_test.dart.
+
+Capturas200%67577 y7testsdelta aprobados9/9 en11s; imágenes examinadas.
+Primer intento2902 de tips capturó fondo por tap antes del scroll asentado;
+corregido pumpAndSettle y assertion Dialog. Repetición71979 aprobada2/2 en3s.
+No atribuir fondo como diálogo validado. Evidencia normal previa y texto grande
+actual conservadas. Gate91 corresponde al producto previo; nuevo control
+nativo requiere actualizar sólo gate móvil, reutilizando backend/iOS intactos.
+
+## 7/10/2026 — Gate móvil consolidado del delta en curso
+
+Rama/remoto/PR6 verificados: codex/design-foundation91aa8cf34e82ce119ec47115e9426b0142b8dbf7;
+PR abierto/borrador, baseba9f897. Mock remoto9ced07094635c076d35589647fff26371d8bc791
+sin cambios. Gate obligatorio scope mobile despachado HTTP204 y comprobado
+in_progress: https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37718107631
+Job113119217981 aprobó setup/dependencias/formato; análisis/tests en curso.
+No atribuir resultado final ni APK. Reutilizar gates full backend/iOS anteriores
+por ausencia de cambios allí. CM sigue1/2: no lanzar corrección antes del gate.
+SamsungR5CY51260VK conectado; paquetecom.mycompany.dopmi2.3.3(300) comprobado.
+No instalada corrección. Servidor propio1254 detenido, viewport restaurado;
+ninguna cola Flutter local activa. Siguiente: resultadoCI, correcciónCM2/2,
+verificar publicaciónPlay por separado y actualización/QA sólo delta instalada.
+
+## 7/10/2026 — Delta9ced: herramienta y paneles focalizados
+
+Captura83459 falló al buscar Acciones pendientes, título retirado por la delta.
+Corregido ancla a Mis pendientes, sin relajar assertions ni tolerancias.
+Repetición85397 aprobada1/1 en9s con5estados exactos: resúmenes adopción/apoyo,
+pagos, acciones y actividad Perfil. Capturas inspeccionadas; panel gris,
+jerarquía y selección corresponden al mock, con datos reales/variables y nota
+obligatoria de neto/foto actual. Perfil sin movimiento conserva estado útil.
+Las capturas no verifican escrituras remotas nuevas ni aceptan dinero real.
+
+Correcciones producto1074874 yPerfilba5afc1; source9ced congelado. Conservar
+excepciones accesibles (área táctil48) y negocio (nota métrica, moderación).
+Comparación visual esencial del delta cerrada, gate móvil y build corregido2/2
+pendientes. No aceptación atribuida a Irlanda. Nota documental: normalizado
+sólo el bloque propio tras error de codificación Windows; histórico preservado.
+
+## 7/10/2026 — Delta9ced: período, tips y final de Adoptar
+
+Source9ced Chrome377×852 comparado con capturas Flutter aisladas. Período y tips
+usaban título16 y X en flujo, frente a22/700 y cierre superpuesto del mock.
+Corregidos ambos; tips además recupera gaps12/32/32 de la rejilla CSS. Captura
+final de tips coincide perceptualmente (~624 frente628px, renderizador).
+Período recupera ancho346px, título centrado, selector cuadrado16px y Listo
+visual36px/radio14. Selección única y callbacks reales preservados. Conservar
+áreas táctiles48px: el modal queda más alto que Source, excepción accesible
+establecida en design-foundation; no confundir esa altura con igualdad píxel.
+Suite78459 aprobada23/23 en15s: Home14, delta9ced7 y2capturas auxiliares.
+Analyzer37996 aprobado3archivos/sin incidencias7.5s. Capturador inicial tomó
+sólo la ruta; corregido RepaintBoundary externo exclusivamente en copiaTemp.
+
+Final de Adoptar: Source ejecutado hasta agotar catálogo, incluyendo tarjetas
+intercaladas; captura69534 aprobada1/1 con2estados exactos. Texto nuevo, retiro
+del tip y acciones coinciden; diferencia de posición~3px imperceptible.
+Encabezado Apoyar Ayudar se siente bien conserva tipografía/posición deSource;
+sin reauditar Guardian ni otras pantallas aceptadas. Falta revisión puntual de
+paneles/actividad y gate móvil consolidado antes del build corregido2/2.
+
+## 7/10/2026 — Delta9ced: Perfil y redes comparados
+
+Source9ced ejecutado Chrome377×852: Perfil conserva hero, estado, Sobre ti,
+redes y actividad sin las métricas retiradas. Comparación de captura Flutter
+normal detectó separación12px menor antes de Redes sociales; añadido el margen
+superior12px de settings-heading. Diálogo Instagram coincide en caja, título,
+campo y botones. Cancelar difería: Source color#7841f2/peso600/borde#c4b5fd;
+ajustados sólo estos estilos. Datos, moderación y escritura intactos.
+Capturador aislado con selección exacta de4 estados: Perfil normal/200% y
+Instagram válido/200%. Ejecución97400 aprobada1/1 en8s; imágenes inspeccionadas,
+texto ampliado legible y sin excepciones. Primer comando desde raíz no ejecutó
+Flutter por falta de pubspec; repetido correctamente en copiaTemp, sin tocar build.
+Evidencia sintética en design-reviews/parity-integral9ced. Play300 no contiene
+las correcciones. Pendientes período/tips/actividad, encabezados Apoyar y final
+Adoptar, gate móvil consolidado y candidato corregido. No reabrir paridad previa.
+
+## 7/10/2026 — Delta9ced: geometría de las tarjetas de Inicio
+
+Contraste Source9ced ejecutado Chrome377×852 /rescuer: tarjetas medidas92px,
+padding10/10/8, ornamento48×32 y copy a51.05px del borde superior. CSS confirma
+rejilla192px/2filas/gap8 y descripción en una línea con ellipsis. Flutter dejaba
+la descripción envolver, alargando las tarjetas normales. Corregida geometría:
+ornamento48×32, espacio9 antes del título y hint de una línea para escala normal;
+texto ampliado conserva crecimiento/lectura y semántica completa.
+No alterar datos netos, moderación ni eliminar la nota de alcance de métricas.
+
+Suite afectada82786 exit0,14/14 en6s, incluyendo92px/copy51px y320/200%.
+Recaptura final62004 exit0,3/3 en3s normal/115%/320200%; normal inspeccionada.
+Sombras reales activadas; capturador auxiliar restauró debugDisableShadows
+antes del invariant final tras un fallo exclusivo de herramienta63414.
+Imágenes actualizadas en design-reviews/parity-integral9ced. No publicación
+nueva: Play300 anterior a estas correcciones. Analyzer focal87633 exit0, sin incidencias en50.4s.
+Viewport restaurado y servidor propio10972 detenido; teléfono intacto.
+Siguiente: comparación visual de Perfil/redes, modal período/tips y encabezados/
+final del mismo delta; no reabrir familias anteriores.
+
+
+## 7/10/2026 — Corte de QA acotado por el titular: sólo delta9ced
+
+El titular aclara: «Solo tienes que asegurarte de que la delta se vea igual,
+lo anterior ya fue asegurado por otro hilo de conversacion contigo».
+Esta decisión supersede la auditoría integral de25 familias iniciada arriba.
+No reabrir paridad anterior ni exigir nuevos tests/fixtures de AUTH, PET,
+MATCH/SAVED/CHAT, Guardian u otras familias intactas. Referencia congelada:
+bccd040→9ced07094635c076d35589647fff26371d8bc791, ocho grupos UX01–07/09;
+UX08 excluido. La igualdad del delta es visual/interacciones afectadas, con
+negocio/moderación reales preservados. Capturas/QA previas de lo anterior se
+aceptan como base por instrucción directa del titular.
+
+Conservar corrección2a1c2a2 de pestañas de Inicio a320/200%, con13tests/analyze
+y recaptura aprobados. Falta comparar los estados visuales del delta con
+Source9ced (Inicio/métricas/modal/tips/actividad, Perfil/redes, encabezados y
+final de Adoptar), luego sólo gates afectados y candidato corregido consolidado.
+No fabricar verificación del titular ni pedir QA anterior como puerta.
+
+La suite de notificaciones/impacto que ya estaba ejecutada41601 dio35aprobadas
+y1fallo de imagen ausente en copiaTemp. Copiada la imagen estática requerida;
+fallo aislado8596 aprobado1/1. No código producto cambiado; estos resultados
+son evidencia incidental y no abren otro lote. Samsung volvió a Adoptar en
+misma sesión sin enviar mensajes ni modificar favoritos. Sin cola Flutter
+activa. Siguiente exacto: comparación visual focalizada del delta congelado.
+
+
+## 7/10/2026 — QA integral PUBLIC/RP: perfil y redes moderadas
+
+Fuente productiva2a1c2a2; base documental8d99610. HEAD remoto app coincidente
+y referencia9ced070 sin cambios, conectividad restaurada. Sesión30611 exit0,
+35/35 en27s en ocho suites (rescuer_profile_9ced, account_social,
+public_profile_layout, rescuer_profile_refresh, rescuer_profile_edit_navigation,
+rescuer_profile_access, public_profile_repository, public_profile_photo_draft).
+Account_social cubre OAuth de acceso, no edición de redes del perfil; distinguir
+su alcance. Suite específica rescuer_settings_details14301 exit0,12/12 en8s.
+
+Cobertura de redes inspeccionada: URLhost inválido impide guardar; error de
+versión conserva diálogo y no muestra éxito; reintento y guardado moderado
+versionado; doble toque bloqueado mientras escribe; cerrar/fondo/Back sin
+escribir; logout/cambio de sesión retira edición. Guardar Instagram conserva
+campos y produce draft/version4, no publicación automática. Perfil9ced mueve
+redes a Perfil aprobado y conserva Connect en Configuración. Foto pública
+permanece local hasta guardar y reintento reutiliza upload. Repositorios de
+pruebas sintéticos; no atribuir revisión remota ni OAuth instalado a esta suite.
+
+Samsung300: mascota→responsable abrió perfil público. Actividad, En adopción
+y Casos mostraron sus respectivos vacíos; Back volvió al detalle y luego a la
+misma tarjeta. Sin guardar rescatista, reportar, compartir ni enviar mensaje.
+Evidencia XMLpublic-* y PNGpublic-native privada. Perfil observado es demo no
+verificado: no acredita portfolio aprobado/no vacío ni redes verificadas. RPC
+Flutter solicita primero perfil moderado y fallback básico; métricas verificadas
+revocadas invalidan resultado, cubierto por public_profile_repository.
+No modificar verificación del titular para fabricar un estado de QA.
+
+Resultado:47 pruebas locales aprobadas y navegación nativa pública comprobada;
+ningún defecto nuevo demostrado. PUBLIC/RP siguen pendientes de contraste
+visual vigente de todos sus estados y flujo remoto con fixtures nuevos propios.
+No cambios productivos ni nuevo build. Siguiente grupo: MATCH/SAVED/CHAT,
+notificaciones y actividad/impacto, conservando privacidad y sin enviar mensajes
+a usuarios; completar inventario de estados pendientes antes del gate consolidado.
+
+
+## 7/10/2026 — QA integral PET/PUBLISH: galería y contacto cancelado
+
+Fuente productiva2a1c2a2, documental a369282. Sesión85988 exit0,42/42 en42s:
+case_gallery_lifecycle, photo_preview, case_publication, publication_frame,
+publication_choice_press, publication_age y publication_personality. Sesión
+83821 exit0,18/18 en13s: adoption_detail_layout. Repositorios sintéticos locales;
+no acreditar envío/aprobación remoto ni picker del teléfono por estos tests.
+
+Cobertura inspeccionada: galería mantiene página al refrescar y reinicia ante
+otra entidad/fotos; swipe/puntos/semántica se sincronizan; sólo paths aprobados,
+una foto sin controles; preview sin acciones externas; barra fija/área segura
+y scroll200%. Publicación cubre respuesta real del repositorio antes del éxito,
+rechazo, Back conserva valores, cancelar picker, seis fotos, tres rasgos nuevos
+sin borrar históricos, edad/convivencia independientes y cuidado persistido.
+
+Samsung instalado300: Contactar abre Conectar con la mascota actual. Todavía no
+regresa a la misma tarjeta. Foto abre detalle; Quiero saber más abre el mismo
+diálogo; AndroidBack vuelve al detalle y luego al mismo mazo. Sin confirmar
+contacto ni enviar mensaje; favorito existente y sesión preservados. Capturas
+privadas pet-contact-dialog y XMLpet-* en .tools/update9ced/device-qa.
+La publicación observada tiene una foto: no prueba carrusel múltiple nativo.
+
+Source9ced AdoptStartDialog conserva título, dos acciones y cierre por fondo;
+Flutter mantiene noAnimation y aviso adicional del saludo transaccional.
+«La persona rescatista» evita inferir género desde nombre. Son diferencias de
+negocio aprobadas, no defecto visual que deba eliminarse. Sin defecto nuevo
+demostrado en este tramo. PET/PUBLISH no cerrados integralmente: falta contraste
+visual vigente de estados múltiples y ejecución nativa de escritura con fixture
+nuevo propio. Cuenta del titular en revisión y borradores fuera de fixtures.
+
+Consulta remota GitHub falló por conexión443; no indica cambio de ref ni pérdida
+del commit. Registrar lectura pendiente sin repetir gates por conectividad.
+Siguiente: revisar evidencias PUBLIC/RP/sociales y preparar los estados faltantes
+con fixtures nuevos separados; conservar pendiente publicación de la corrección
+2a1c2a2 y gates consolidados al terminar diferencias demostradas.
+
+
+## 7/10/2026 — QA integral: recaptura RH y movimiento AUTH/DISC/FILTER
+
+Fuente productiva2a1c2a2, documental5a9f667; remoto app y Source9ced comprobados
+sin cambio. Captura final y cinco suites dirigidas en sesión99637: exit0,
+55/55 en31s. Incluye tres capturas, onboarding_motion, route_motion,
+discovery_motion, discovery_filters y discovery_filter_press. Es evidencia
+local con repositorios sintéticos, no escritura remota ni aceptación nativa.
+
+Capturas inspeccionadas de Inicio Rescatista normal377×852,115% y320×640/200%:
+[normal](design-reviews/parity-integral9ced/home-normal.png),
+[115%](design-reviews/parity-integral9ced/home-samsung.png),
+[320/200%](design-reviews/parity-integral9ced/home-narrow-large.png).
+Etiqueta completa tras arrastre a200%, envuelta en dos líneas; tamaños normales
+conservan una línea. Capturas finales cargaron wordmark/MaterialIcons. Primer
+capturador auxiliar quedó esperando toImage fuera de runAsync: detenido y
+corregido sólo en Temp; no fallo del producto ni fixture antiguo reconsumido.
+
+Mock ejecutado desde checkout congelado9ced en servidor propio5174, no desde
+el servidor previo5173 de otro checkout. Chrome377×852: Adoptar→introducción,
+Continuar→paso2 y Atrás→paso1 comprobados. Estilo computado onb-gate-body:
+450ms cubic-bezier(.22,1,.36,1); CSS9ced confirma opacity0→1/translateY10→0.
+La definición no cambia desde a3c969 para este bloque. Flutter usa450ms/misma
+curva y10px; pruebas actuales verifican frames intermedios y reduced motion.
+No atribuir nuevo cronometraje físico a esta lectura de estilo.
+
+AUTH recuperación: mock muestra ESTADO SIMULADO, sin frame aprobado y envío
+simulado. Se preserva recuperación real; diferencia de negocio documentada,
+no copiar simulación ni exigir igualdad literal de esa pantalla provisional.
+No se ingresaron credenciales ni se enviaron formularios. Viewport restaurado
+y servidor propio detenido; teléfono intacto en esta continuación.
+
+Avance por requisitos: RH recaptura de la corrección aprobada; AUTH introducción
+movimiento/rutas comprobados; DISC swipe y FILTER selección/cancelación/error
+cubiertos por las suites dirigidas. No cierran familias completas: faltan
+contrastes actuales de otros estados, galerías PET/publicación y flujos de
+perfil verificado, backend nuevo consentido, gates agrupados y QA del candidato
+corregido instalado. Siguiente: galería PET/contacto cancelado y formularios
+PUBLISH en estados de borrador, con contraparteSource y límites privados.
+
+
+## Paridad integral — objetivo autorizado 7/10/2026
+
+El titular solicita completar pantallas, gestos, animaciones y todas las etapas
+de comprobación. Este objetivo amplía la QA posterior de la entrega MVP cerrada;
+no se considera logrado con publicación ni recorridos parciales. Base app
+bfe16a8e97ff121e5c2f4248158f770693c64a01, rama codex/design-foundation;
+referencia remota comprobada e inmovilizada en
+9ced07094635c076d35589647fff26371d8bc791. No absorber pushes posteriores.
+Cambios ajenos conservados. Sin nuevo presupuesto inferido del tramo MVP cerrado.
+
+Criterios de cierre: las 25 familias de design-parity (NAV, AUTH, DISC, FILTER,
+PET, MATCH, SAVED, CHAT, PROFILE, SETTINGS, SUPPORT, CASE, STORY, PUBLIC,
+IMPACT, RH, RC, PUBLISH, VERIFY, EVIDENCE, RP, PAYMENT, GUARD, REPORT, LEGAL)
+requieren evidencia vigente de composición/estados, interacción, movimiento y
+operación real aplicable. Reutilizar evidencia intacta documentada; inspeccionar
+su alcance antes de atribuir igualdad. Comparar contra referencia congelada en
+normal, Samsung115% y320/200%, incluyendo teclado, Back, modal, scroll,
+arrastres, entradas y movimiento reducido cuando aplique. Las diferencias de
+negocio aprobadas (no simulaciones/tienda/dinero live) prevalecen sobre el mock.
+
+Orden: auditar evidencia por familia en este tablero; resolver diferencias
+comprobadas por grupos; pruebas dirigidas y recaptura afectada; gates agrupados
+del candidato; publicación consolidada si hay cambios; QA instalada y cierre
+por requisito. Una cola Flutter. No reejecutar fixtures bccd consumidos ni
+suprimir guardas. Aceptación de Irlanda no se atribuye a comprobación del agente.
+Flujos con estado/datos no disponibles siguen pendientes mientras se prepara
+QA con fixtures nuevos autorizados; no convertir la cuenta del titular en fixture.
+
+Primer punto: el supuesto recorte de Recibiendo apoyo corresponde a una fila
+horizontalmente desplazable también en CSS9ced (rh-pending-tabs overflow-x:auto).
+Verificar gesto y acceso completo a200% antes de clasificarlo como defecto.
+
+
+### Diferencia RH estrecho/200% — corrección comprobada
+
+La prueba nueva falló antes de corregir: etiqueta izquierda−9.106 frente al
+viewport20 en320/200%. El Samsung de mayor ancho permite verla completa;
+no extrapolar ese resultado a320. Se acota cada pestaña al ancho disponible
+para permitir salto de línea cuando el texto ampliado no cabe, manteniendo
+scroll horizontal y dimensiones naturales a escala normal. Sin cambios de
+negocio/repositorio/RPC. Prueba nueva sesión97495 exit0,1/1, tras la corrección.
+Suite completa rescuer_home_screen90403 exit0,13/13 aprobadas. Analyzer3617 exit0, sin incidencias en123.8s. Capturas afectadas siguientes. La versión Play300 conserva el código anterior.
+No aceptación instalada de esta corrección ni cierre global de paridad.
+
+### Auditoría inicial y gesto de pestañas — 7/10/2026
+
+PR6 abierto/borrador confirmado, head bfe16a8/base ba9f897; remoto9ced sin
+cambios. Colección758 declara419 estados/47rutas sobre a3c969 y limita su
+alcance; movimiento741 cubre55 comprobaciones de ocho mecánicas y un frame
+Source de onboarding. Fichas889/bccd y candidato9ced deben enlazar esos
+contrastes para cada familia; ninguna cifra acredita por sí sola la paridad
+integral. AUTH761 ya advertía comparación pendiente de título ampliado.
+
+Samsung300 a200%: arrastre dentro de la fila de programas reveló por completo
+Recibiendo apoyo. CSS9ced rh-pending-tabs también exige overflow-x:auto;
+la observación previa de recorte se reclasifica como contenido desplazable,
+sin defecto demostrado. Imagen privada integral-tabs-large-drag inspeccionada.
+Restaurados escala1.15, Adoptante y ruta inicial. Nueva prueba de gesto a320/200%
+añadida; ejecución local inicial bloqueada por build/unit_test_assets del
+checkout. No borrar: segunda ejecución aislada en Temp con394 archivos
+lib/test/assets byteidénticos, sesión24052 en compilación; resultado pendiente.
+No cambios productivos, publicación ni fixtures remotos en este tramo.
+
+Siguiente: resolver resultado de la misma sesión24052; luego validar geometría
+y movimiento actual de AUTH/FILTER/PET contra Source9ced, y completar matriz
+por requisito/estado en este tablero. El objetivo integral permanece activo.
+
+## 7/10/2026 — QA Samsung300: filtros de Adoptar
+
+Continuación solicitada por el titular. En la sesión actual de Android300 se
+abrió Filtros, se aplicó Hembra y el catálogo mostró una publicación hembra.
+Reapertura visual confirmó Hembra seleccionada. Se eligió Macho sin aplicar:
+Back descartó el cambio y conservó el resultado anterior. Limpiar filtros
+cerró el modal y recuperó el catálogo inicial. Perros→Gatos cargó una publicación
+de gato y su foto; se restauró Perros y la pantalla inicial. Sin contacto,
+favoritos nuevos, mensajes, formularios guardados ni pagos. Evidencia privada
+adoption-filters-* y adoption-cats-* en .tools/update9ced/device-qa.
+
+Resultado: recorrido básico de sexo, aplicar/cancelar/limpiar y especie aprobado.
+No acredita combinaciones de tamaño/personalidad, persistencia tras reinicio
+ni todos los estados vacíos/error. Sin código productivo nuevo ni gates repetidos.
+
+
+## 7/10/2026 — Android300 instalado: QA focalizada en Samsung
+
+Codemagic6ac64ed33849eef3b33de2d7, fuente1a904d57804be10c6e0c185f8929166c2ec109aa,
+terminó success14:43:50Z: análisis/tests/build y Publishing aprobados. AAB
+2.3.3(300),86,283,474bytes. Play Console comprobado directamente: Internal
+Testing activo, release2.3.3, código300 disponible para testers. CM1/2;
+sin segundo build. Estado PUBLICADO_INTERNAL_PENDIENTE_QA.
+
+Por solicitud del titular se probó su Samsung SM-S938B/Android16 con300
+instalado por Play: Inicio, selección semanal persistida, paneles vacíos,
+Ver todo→Perfil, cinco tips, Perfil, cambio de modo, Ayuda/contacto cancelado,
+Sobre Nosotros, cuenta/privacidad, Apoyar/detalle y Adoptar con fotos/swipe,
+final nuevo, favoritos y reinicio del descubrimiento. Reanudación tras bloqueo
+de pantalla conservó sesión y ruta. Escala115%/200%: contenido esencial
+legible; hallazgo menor pendiente, selector «Recibiendo apoyo» recorta su
+texto visible a200%, con semántica completa y control operativo. Sin cierres
+observados ni patrones fatal/RenderFlex overflow en buffer reciente del proceso.
+
+Restaurados115%, Adoptante y pantalla inicial. Borradores conservados; sin
+mensajes enviados, checkout iniciado, logout ni cambios de formularios. Evidencia
+XML/PNG privada en .tools/update9ced/device-qa, excluida del repositorio.
+Cuenta en revisión: no se verificaron estado aprobado/sociales, métricas no
+vacías, escritura real ni transacciones. Auditoría exhaustiva, rendimiento y
+aceptación de Irlanda siguen pendientes; no atribuirles esta QA focalizada.
+No cambios productivos ni nuevos gates; se reutiliza CI37629942682/3bd67b6.
+
+
+## 7/10/2026 — reanudación autorizada del candidato 9ced070
+
+### Parada segura por espera externa — 14:10Z
+
+Estado IMPLEMENTACION_LISTA_PENDIENTE_BUILD (firmado). Código y gate móvil
+completo aprobados; APK debug comprobado en CI, AAB firmado/publicación nuevos
+no verificados. Codemagic6ac64ed33849eef3b33de2d7 sigue queued, sin started_at,
+sobre1a904d57804be10c6e0c185f8929166c2ec109aa. CM1/2; no otro envío.
+Diagnóstico acotado: API y UI coinciden, cuota disponible229/500 consumidos,
+consulta de activos devuelve únicamente este candidato. Estado público del
+proveedor operativo, sin causa de cola informada. Play interno sigue296.
+Sin tareas independientes pendientes; pausa explícita autorizada por el plan,
+sin loop/heartbeat ni polling indefinido. Consumo nuevo tramo~36/90min;
+no PRESUPUESTO_AGOTADO. Límite del tramo sigue15:04:10Z, no renovar solo.
+Siguiente exacto: consultar el mismo buildId, confirmar source/AAB/versionCode,
+Publishing y disponibilidad de esa versión en Play Console internal. Si continúa
+en cola, preservar ID/contador; no repetir CI aprobado ni iniciar otro build.
+QA instalada/visual/auditoría/rendimiento preparada, aún no ejecutada. No hay
+procesos Flutter propios ni agentes activos. Configuración codemagic.yaml
+intacta, android-guardian-internal/com.mycompany.dopmi/firma existente/test.
+Fuente funcional4f02755; tests48bac1b; captura3bd67b6; build1a904d5.
+Evidencia propia en GitHub; logs/diario privados .tools/update9ced no publicados.
+
+
+
+### Codemagic candidato1/2 enviado — 13:53Z
+
+Build6ac64ed33849eef3b33de2d7, android-guardian-internal, rama continuación,
+fuente1a904d57804be10c6e0c185f8929166c2ec109aa. HEAD/remoto verificados
+antes de POST; diario privado anti-duplicado. APIcommit.hash coincidente;
+queued al corte13:54Z. Fuente sólo agrega checkpoint al3bd67b6 aprobado.
+AAB/Publishing/Play/versionCode pendientes; no atribuir instalación/aceptación.
+
+
+
+### Gate consolidado aprobado — 13:52Z
+
+CI móvil37629942682 en3bd67b6 completed/success13:52:09Z: formato,
+analyze,931 tests,ambas suites de capturas,APK y artifacts aprobados.
+Artifacts11486735135 design y11486476793 APK comprobados, no expirados.
+Backend/admin/SQL/config/integración e iOS full37574438050/48bac1b se
+reutilizan tras diff vacío de producto/SQL/admin/config desde ese SHA.
+Corrección de captura1/2 concluida; CM0/2. Próxima operación autorizada:
+primer android-guardian-internal sobre HEAD documental publicado, producto
+idéntico a3bd67b6. Registrar buildId/SHA y comprobar AAB/Publishing/Play
+por separado. Play Console previo: internal activo296 disponible para testers.
+
+
+
+El titular indica «Continúa» después del cierre por presupuesto: nuevo tramo
+90 minutos desde 13:34:10Z, cierre 14:54:10Z y parada 15:04:10Z. Conserva
+contadores: CM 0/2, tercera pasada L2 autorizada ya aplicada; no reiniciar causas.
+CI 37574438050 en 48bac1b concluyó: analyze y 931 tests móviles aprobados,
+web/backend/permisos/concurrencia/integración e iOS aprobados. Capturas de acceso
+aprobadas; captura de Perfil/Apoyar falló por dos coordenadas anteriores al
+marco de título 46px del corte congelado. Diagnóstico específico: top 136.8→148,
+card 252.55→263.75; tolerancias y altura conservadas. Primera corrección de esta
+causa nueva, sólo capture_profile_test.dart. Captura dirigida support-home-empty normal/200% aprobada 1/1; gate móvil pendiente.
+Ref UX remota continúa 9ced070; app local/remoto 5e86880, PR6 abierto/borrador.
+No cambios productivos/SQL/config ni datos; dinero test. Gate y CM/Play pendientes.
+Cambios ajenos conservados; QA instalada/visual permanece posterior.
+
+
+## 6/10/2026 — entrega 9ced070, MVP_CONTINUO (en ejecución)
+
+Plan completo autorizado y guardado en parity-current-review; base app
+0484f807, referencia UX congelada 9ced07094635c076d35589647fff26371d8bc791.
+L0 protocolo registrado antes de código. L1: RPC owner-only tipado, métricas
+por período de México, vistas diarias consentidas sin historia inventada.
+Backend focalizado 6/6 aprobado; primer intento de fixture Date corregido
+en segundo intento. Migración DEV aplicada una vez como 20261007034858;
+postflight ACL/RLS/cobertura comprobado (migration-history-audit).
+L2: ocho grupos integrados por tres agentes. Analyze inicial sin incidencias;
+configuración 16/16. Primera pasada Flutter 81/88; fixtures y visibilidad
+corregidos, segunda pasada afectada 37/37. CI 37569196187 en 4f02755: backend 612/612, pgTAP 294/294, integración
+4/4 e iOS aprobados. Flutter falló cinco tests heredados. Segunda/final pasada
+L2: 29/32 local; tres fixtures/visibilidad pendientes. Límite dos pasadas
+consumido, propuesta privada no aplicada y nueva autorización requerida.
+Estado BLOQUEADO; objetivo pausado al cierre, sin CM/build/versionCode nuevo.
+Tres archivos test de corrección locales sin commit; producto en GitHub 4f02755.
+Consumo ~38/90 min, no renovar. Continuación 05:01Z: titular autoriza tercera pasada sin renovar tiempo.
+Corrección aplicada/formateada; verificación remota pendiente al límite
+05:03:46Z. Cierre PRESUPUESTO_AGOTADO, sin CM; renovar presupuesto para CI/Play.
+Gate consolidado aún pendiente.
+Play y aceptación aún pendientes. Presupuesto 90 min desde 03:33:46Z;
+cierre 04:53:46Z, parada 05:03:46Z. Cambios ajenos conservados.
+Detalles y estado vivo: mock-sync-current y único tablero parity-current-review.
+
+
+## H10 proveedores y producción — 28 de septiembre de 2026
+
+- Google/Apple habilitados en Supabase test; redirecciones OAuth comprobadas y
+  vinculación manual activa. Secretos fuera de Git. Codemagic tiene Firebase y
+  clientes sociales en grupos seguros, con ambos flags de aceptación activos.
+- `Dopmi Production` (`ysaoeuidcvgtlmphmeyb`, us-east-1, USD0/mes) creado con
+  esquema/funciones/buckets vigentes, sin usuarios ni datos demo. Registro y
+  proveedores sociales apagados; no existen secretos Stripe y el dinero real
+  sigue bloqueado.
+- CI del SHA `267646d` detectó configuración Firebase ausente en builds de
+  desarrollo, dos expectativas legales antiguas y una FK de revisión restrictiva.
+  Se prepararon placeholders no secretos sólo para CI, se actualizó la prueba y
+  se aplicó `h10_auth_reference_cleanup` en test/producción. PostgreSQL local
+  conserva 254 pruebas aprobadas; la instancia local tiene historial previo
+  desalineado y no se reparó ni reejecutó.
+- CI [36491606164](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36491606164)
+  aprobó los cuatro trabajos del SHA `c8894b4`. Android Codemagic
+  [6abae7c8c3323875fd396d2e](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abae7c8c3323875fd396d2e)
+  publicó 2.3.3 (260) a Play internal con estado `completed`. iOS
+  [6abae7c91b8a7fd2eacfde7b](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abae7c91b8a7fd2eacfde7b)
+  cargó 2.3.3 (261) a App Store Connect con `UPLOAD SUCCEEDED`; procesamiento y
+  disponibilidad TestFlight aún deben reconsultarse. Ambos usan el mismo SHA.
+
+## H10 política de privacidad publicada — 28 de septiembre de 2026
+
+- El titular confirmó que el aviso cubre exclusivamente la nueva app móvil.
+  Se publicó en https://dopmi.org/privacy-policy desde el repositorio
+  `albertoquiroga-ctrl/dopmi-landing-mockup`, commits `654b86d`, `e77237f` y
+  `aa9a355`. La URL anterior redirige permanentemente a la nueva.
+- La ruta devuelve HTTP 200 por HTTPS sin login y el contenido publicado
+  identifica Dopmi, responsable y domicilio autorizado; detalla categorías de
+  datos, finalidades, visibilidad, proveedores, transferencias, conservación,
+  seguridad, permisos, mayores de 18 años, ARCO y eliminación por soporte.
+- `npm run lint`, `npm run build` y `git diff --check` aprobaron. La página se
+  comprobó en navegador, con navegación semántica y sin overlay de error. El
+  footer de la landing ahora enlaza la política.
+- El conector Vercel quedó instalado, pero no tiene alcance API para el equipo
+  `dop-mi` (403). Vercel/GitHub publicaron correctamente y la respuesta pública
+  lleva encabezado `Server: Vercel`; el acceso API del equipo queda pendiente.
+- La página no sustituye la eliminación dentro de la app ni cierra H10.2. Aún
+  deben probarse el buzón `soporte@dopmi.org`, la solicitud/eliminación real y
+  la correspondencia con Seguridad de los datos de Google Play antes del cierre.
+
+## H10 accesos y cotización — 28 de septiembre de 2026
+
+- Titular completó sesiones Google Cloud, Apple Developer y GoDaddy; verificadas
+  por lectura en Chrome. App ID actual conserva Sign in with Apple habilitado
+  como primario. Falta Services ID de Dopmi y clave de autenticación.
+- Clave Apple KLYH2Y22TT registrada sólo para Sign in with Apple/Dopmi. `.p8`
+  guardado fuera del repo con ACL del usuario. Services ID
+  `com.mycompany.dopmi.auth` registrado con App ID `com.mycompany.dopmi`, host
+  Supabase test y callback `/auth/v1/callback` guardados y reconsultados.
+  Proveedor Supabase aún deshabilitado y sin prueba real.
+- El titular completó la compra del buzón Pro Light preparado: MXN263.88. El
+  producto aparece en Correo electrónico y Office; su panel de alta seguía
+  vacío, así que soporte@dopmi.org aún no se declara creado. Renovación indicada
+  para septiembre2027 por MXN479.88 sujeta a cambios.
+- CI36447795107 sobre d45a367 completed/success. Remotos conservan d45a367
+  en continuación y ba9f897 en principal. No se alteraron firmas ni pagos.
+- Pendientes: alta del buzón, secreto de cliente/proveedor Supabase y prueba OAuth
+  real; el resto del alcance H10 continúa abierto.
+
+## H10 servidor Apple — 28 de septiembre de 2026
+
+- Base67b4041 y CI36427673710 comprobados success (cuatro trabajos). Mockup
+  a246fa6 sin cambios. Google sigue en reautenticación; no se declaran nuevos accesos.
+- Preparado registro privado cifrado y servicio de revocación Apple. Firma,
+  issuer/audience/nonce/subject/exp verificados con pruebas JWT criptográficas.
+  Incluye pérdida de respuesta al guardar, aislamiento por propietario y
+  conservación de credencial ante fallo de revocación.
+- Migración20260928154523 → remoto20260928155742; función apple-credentials v1,
+  flag apagado, HTTP401 sin sesión/503 deshabilitado. RPC anon/authenticated
+  denegada, RLS activo, cero credenciales. No hay login/revocación Apple real aún.
+- Suite completa400 pruebas (nueve nuevas específicas) y Deno check aprobados. PostgreSQL
+  local254 aprobadas después de aplicar las tres correcciones H9 ausentes en
+  esa instancia; fallo inicial documentado, sin regresión remota ni cambios pagos.
+- Pendiente integración nativa con registro servidor, secretos/capacidades Apple,
+  cuentas OAuth, eliminación completa y demás H10. No se publicaron builds.
+
+
+## H10 iniciado — 28 de septiembre de 2026
+
+- Titular acepta H9 suficientemente para continuar; no se atribuye una nueva
+  prueba instalada. Plan autorizado en h10-execution.md; pantallas aplazadas.
+- PR6 abierto/draft, remoto ef9f009 y principal ba9f897 comprobados; mockup
+  a246fa6 sin cambios. Archivos locales ajenos preservados.
+- Guardas de configuración: entorno test explícito, rechazo de producción no
+  comisionada, endpoint registrado y correspondencia de ref en claves anon.
+  Las claves publishable opacas requieren comprobación remota independiente.
+- Google nativo Android/iOS implementado a nivel cliente, cancelación y doble
+  pulsación probadas mediante proveedor inyectable. Adaptador Apple preparado
+  con nonce criptográfico; activación nativa bloqueada hasta disponer de
+  revocación servidor. No se declara OAuth real comprobado ni habilitado.
+- Python: 10 pruebas; Flutter analyze sin incidencias y 84 pruebas aprobadas
+  desde copia de fuente fuera de OneDrive (el checkout bloquea unit_test_assets).
+- MCP Supabase lista únicamente proyecto test ACTIVE_HEALTHY. No se desplegaron
+  migraciones ni se creó producción. Apple Developer devolvió conexión reset;
+  GoDaddy pendiente de acceso. Se solicitó apertura de ambas sesiones en Chrome.
+- Pendientes H10: credenciales/callbacks y vinculación, revocación Apple,
+  eliminación completa, medición/consentimientos, correo/legal, producción y
+  entrega instalada. No cerrar H10 por este primer bloque.
+- Código 7b3e589 enviado a PR6; CI 36427481966 iniciado, resultado pendiente.
+  Google Cloud exige reautenticación del titular para consultar los clientes;
+  pestaña conservada. No se compraron servicios ni se publicaron builds H10.
+
+
+## H9 candidato publicado — 27 de septiembre de 2026
+
+- Código candidato `73c731fcdb4b99b4dd94bc40c15a0e272efb713c`, diseño de referencia `a246fa6`. [CI 36330974531](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36330974531): cuatro trabajos success, incluidos PostgreSQL/concurrencia, integración real ampliada, Flutter y compilaciones Android/iOS simulator.
+- [Codemagic 6ab93b1e75e12724939f4af7](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ab93b1e75e12724939f4af7): android-guardian-internal, firma/análisis/tests/AAB/Publishing success; commit exacto comprobado. Android **2.3.3 (259)**, com.mycompany.dopmi. Log de publicación y consulta posterior de Play: track internal, status completed, versionCode259.
+- Builds intermedios 6ab939ff78f056c20c4318d2 y 6ab93a8025013d476dd567db cancelados para distribuir únicamente el candidato corregido. El primer CI detectó codificación Windows-1252 en una prueba; normalizada a UTF-8.
+- Protección adicional del avatar aprobado: migración 20260927154814 → remoto 20260927154928. Intento de borrado desde propietario y lectura posterior comprobados mediante Storage real. Las tres migraciones son compatibles con el cliente instalado anterior.
+- Remoto: cinco adopciones/cinco casos públicos conservados. Se añadió un avance DEMO H9 ficticio a Choco · Recuperación demo mediante RPC de guardar/enviar/revisar, con procedencia sintética explícita en auditoría; consulta pública comprobada. No representa revisión humana ni gasto real, y no creó pagos.
+- Pruebas integradas finales: cuatro recorridos completos aprobados, analyze limpio. Cero cuentas temporales de aceptación; instancia dopmi-h9 eliminada y contenedores locales originales restaurados conservando sus volúmenes.
+- Asesores Supabase conservan avisos conocidos: tablas privadas sin políticas públicas, RPC SECURITY DEFINER intencionales y protección de contraseñas pendiente H10. No se ampliaron grants ni se declara auditoría de producción.
+- H9 técnico listo para revisión agrupada en docs/h9-acceptance.md. **Aceptación funcional instalada del titular pendiente; H9 no cerrado.** Fidelidad visual aplazada por decisión del titular; no se atribuye aprobación a Irlanda. H10/H11, dinero live y excepción H5 permanecen separados.
+- Este registro documental es posterior al SHA distribuido y no cambia la app.
+
+
+## H9 — integración y correcciones, 27 de septiembre de 2026
+
+- Autorizado H9 con aceptación final agrupada; el titular admite pantallas actuales y aplaza fidelidad visual. Matriz y guía en h9-acceptance.md. Rama codex/design-foundation preservada, PR6 abierto; Irlanda sigue a246fa6.
+- Corregidos: fotos no visibles al moderar avances, ausencia de paginación/reintento, aprobación de perfil con parámetro inexistente, notificación duplicada al aprobar una corrección y acceso público a medios tras perder visibilidad/verificación. Panel conserva notas ante error, evita doble envío y exige resolución escrita.
+- Integración real ampliada en adoption_backend y rescue_backend: favoritos aislados/tombstones, reportes idempotentes y resolución, avances con corrección/foto/revisión, perfil aprobado frente a edición privada, adopción vinculada y retirada de permisos de archivos. Cuentas y objetos temporales eliminados por teardown.
+- Local: 23 pruebas admin y build; 80 Flutter; 391 Node/backend financiero; 247 pgTAP; seis configuración móvil; concurrencia financiera aprobada. Flutter analyze limpio después de corregir estilo. La evidencia final de CI y dispositivo se registra por separado.
+- El Storage local anterior falló antes de subir por un índice incompatible (42P10). Se preservó su volumen y se levantó dopmi-h9 desechable desde cero; las cargas reales funcionan. OneDrive bloqueó unit_test_assets; Flutter se verificó desde copia de la misma fuente fuera de OneDrive. No se corrigió RLS para ocultar fallos de infraestructura.
+- Supabase MCP, Codemagic API y lectura de cuenta Stripe test comprobados. Smoke financiero remoto: 18 comprobaciones aprobadas; Cron existente activo. No se efectuaron nuevos cobros ni se reabrió la excepción de disputa de H5.
+- Migraciones H9 aplicadas por MCP, versiones 20260927154149 y 20260927154152, sin alterar firmas ni permisos existentes. Cuerpos remotos coinciden normalizando saltos de línea; correspondencia en migration-history-audit.md. Nuevas URLs firmadas de medios respetan visibilidad; las ya emitidas vencen a los 60 segundos.
+- Pendiente: CI por SHA, candidato Internal Testing, preparación instalada y revisión del titular. No se declara H9 cerrado ni aceptación visual de Irlanda.
+
+
+## H8 candidato corregido publicado — 26 de septiembre de 2026
+
+- Candidato de aplicación `ea5350e2cff28aeac29938512bd1206a122cd94e`, referencia Irlanda `a246fa6f42ec517aae264d7fbd2358d647c4f840`.
+- [CI 36294379013](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36294379013): los cuatro trabajos terminaron con `success`, incluidos formato, análisis, 80 pruebas Flutter, capturas, Android, iOS simulator, PostgreSQL/concurrencia financiera e integración real de identidad/adopción.
+- [Codemagic 6ab89b4db5c299cd1e6841cc](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ab89b4db5c299cd1e6841cc): workflow `android-guardian-internal`; configuración, firma, análisis, pruebas, AAB, Publishing y limpieza terminaron con `success`. Android **2.3.3 (256)**, paquete `com.mycompany.dopmi`, commit exacto comprobado.
+- El build previo `6ab89a9871afc738798a3077` se canceló durante instalación de SDK antes de compilar/publicar porque el primer CI detectó una diferencia de formato. No produjo una versión de tienda.
+- Google Play Internal Testing contiene el candidato corregido. H8 conserva V en No hasta que Irlanda/titular instalen 256, recorran la matriz y acepten o reporten diferencias. Dinero permanece en test; iOS de distribución sigue H11.
+- Esta entrada documental es posterior al SHA distribuido y no cambia la aplicación instalada.
+
+## H8 auditoría de cierre y correcciones de fidelidad — 26 de septiembre de 2026
+
+- La auditoría requisito por requisito detectó que la matriz seguía marcando rutas implementadas como parciales o inexistentes y que la evidencia HTML completa se detenía en acceso. `design-parity.md` ahora registra I/T/V vigentes y correspondencias reales; V continúa en No.
+- El HTML `a246fa6` se ejecutó localmente y se capturaron pantallas completas de Adoptar, Perfil, Apoyar, Inicio/Casos rescatista y detalle de caso. Las parejas HTML/Flutter quedaron versionadas en `docs/design-reviews/h8-complete`.
+- Perfil donante incorpora el acceso y contador de **Rescatistas guardados**; abre directamente `/saved?kind=rescuer`. La vista de guardados inicializa la pestaña solicitada sin duplicar repositorios ni exponer contenido retirado. Una prueba nueva cubre el recorrido.
+- Apoyar recupera la composición fotográfica y el CTA amarillo de Guardián con el asset vigente del mockup. El texto conserva las reglas reales: gastos pagados/aprobados, rescatistas verificados e impacto; no introduce fondo, bono o cashback. La suite detectó un overflow del hero a la altura inicial y se corrigió antes del cierre.
+- Verificación desde una copia exacta fuera de OneDrive: `flutter analyze` limpio, **80 pruebas Flutter**, dos pruebas de generación de capturas y seis pruebas de configuración móvil aprobadas. El checkout sincronizado retuvo temporalmente `build/unit_test_assets`; no se atribuyó a la aplicación y la misma fuente se comprobó fuera de esa carpeta.
+- Referencia Irlanda reconsultada al cierre: `a246fa6f42ec517aae264d7fbd2358d647c4f840`, sin cambios. Estas correcciones necesitan un nuevo candidato Internal Testing; build 254 no las contiene. Aceptación instalada sigue pendiente.
+
+## H8 candidato completo en Google Play Internal Testing — 26 de septiembre de 2026
+
+- Candidato de aplicación: `4ffc20fd0b07f51953175e148cfe82b37ecc369a`, referencia Irlanda `a246fa6f42ec517aae264d7fbd2358d647c4f840`. Este SHA reúne H8.0–H8.7; el cierre visual continúa sujeto a revisión instalada.
+- [CI 36292534700](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36292534700): `web-and-database`, `flutter`, `ios` e `identity-and-adoption-backend` terminaron con `success`. Incluye análisis/pruebas Flutter, capturas, PostgreSQL/backend, concurrencia financiera, Android e iOS simulator.
+- [Codemagic 6ab8927b80ac940ea0c3eaf8](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ab8927b80ac940ea0c3eaf8): workflow `android-guardian-internal`, rama `codex/design-foundation`, commit exacto comprobado. Configuración Guardian, firma, análisis, pruebas, AAB y acción separada de Publishing terminaron con `success`.
+- Android **2.3.3 (254)**, paquete `com.mycompany.dopmi`; artefacto firmado `app-release.aab`. El workflow publica en Google Play `internal` con `submit_as_draft: false`. Compilación y publicación quedaron verificadas por separado.
+- Irlanda puede actualizar desde Internal Testing y revisar Perfil, cambio de modo, ambos navbar, swipe, Mis match/guardados, Apoyar/historias, recorridos de rescatista, aportaciones y Guardián. H8 permanece abierto hasta registrar esa aceptación visual y cualquier corrección resultante. Dinero continúa exclusivamente en test; este candidato no incluye un TestFlight equivalente.
+- Esta entrada documental es posterior al SHA distribuido y no cambia la aplicación instalada.
+
+## H8.7 aportaciones y Guardián — 26 de septiembre de 2026
+
+- Aportar separa monto y revisión, usa cantidades sugeridas/personalizada y resume gasto e importe antes de abrir Checkout. Stripe sigue capturando el método; al regresar o reanudar la app se consulta el historial por la misma llave idempotente.
+- El resultado sólo se presenta con estado persistido: procesamiento bloquea otro intento; confirmado muestra neto asignado y transferencia; cancelado y devuelto se distinguen. Un fallo incierto conserva llave e importe para reintentar sin duplicar el pago.
+- Guardián adopta la composición visual del mockup para introducción y membresía activa, sustituyendo el fondo comunitario por gastos pagados/aprobados y capacidad real. Mantiene consentimiento, primer cobro al activar, meses omitidos sin deuda, cambio futuro de monto/tarjeta, cancelación, impacto e historial H5.
+- Capturas Flutter reales a 377 × 852: `contribution-amount.png`, `guardian-intro.png` y `guardian-active.png`. La inspección comprobó jerarquía, importes reales y ausencia de fondo/bonos/cashback. Pruebas dirigidas: 36 aprobadas; análisis limpio. Aceptación instalada continúa pendiente.
+
+## H8.6 perfil público moderado del rescatista — 26 de septiembre de 2026
+
+- Perfil propio separado del expediente de identidad: nombre público, avatar, descripción, ciudad/estado e Instagram/Facebook. Domicilio, teléfono, correo, documentos y datos bancarios no forman parte de esta superficie.
+- El dueño conserva borrador, correcciones, rechazo, envío y retiro. Una edición posterior no reemplaza la última instantánea pública aprobada; administración revisa y publica desde Moderación. La foto vive en un bucket privado y sólo se firma para el propietario o cuando aparece en la instantánea aprobada.
+- Flutter incorpora `/rescuer/profile/edit`, accesos separados para editar/ver perfil, ayuda y Stripe Connect. El perfil público usa avatar/enlaces aprobados y conserva Actividad, En adopción y Casos. Administración añade cola de perfiles con versión y decisión.
+- Migración local `20260927033610_moderated_rescuer_profiles.sql`, remota `20260927033251`. Remoto comprobado: tabla pública presente sin `SELECT` anónimo, auditoría en `private`, bucket no público y RPC administrativa sin ejecución anónima. El helper de política de Storage conserva ejecución anónima deliberada para evaluar avatares aprobados; retirar ese permiso rompió la prueba de lectura pública y se descartó localmente, sin aplicar una migración correctiva.
+- PostgreSQL local reproducido desde cero: 243 pruebas. Flutter: prueba nueva de corrección/guardado/envío y análisis limpio; administración: 19 pruebas y build aprobados. Aceptación visual instalada continúa pendiente.
+- La puerta financiera completa detectó que `public_case_progress` omitía las asignaciones de Guardián en los totales públicos. La migración local `20260927035600_public_case_guardian_progress.sql`, remota `20260927034007`, usa `dopmi_expense_funding` como fuente única para aportaciones individuales y Guardián. Las 338 regresiones financieras específicas aprobaron; remoto confirma que la RPC desplegada usa esa fuente sin referencia privada directa.
+
+## H8.6 vínculo caso–adopción y publicación por pasos — 26 de septiembre de 2026
+
+- Un caso aprobado del propietario puede crear o reabrir una única publicación de adopción vinculada. El vínculo no cambia el estado del caso ni publica la adopción: sus ciclos de borrador, envío y moderación siguen independientes.
+- La publicación de adopción usa **Fotos → Información → Revisión**. Cada avance guarda el borrador en servidor, conserva el vínculo y permite regresar; el resumen no declara publicación antes de la respuesta del servidor.
+- Migración local `20260927032540_case_adoption_link.sql`, remota `20260927031531`. Añade una FK aditiva/índice único parcial y conserva la firma de `dopmi_save_adoption`; build 253 sigue compatible. Remoto: columna presente, ejecución autenticada permitida y `anon` denegado.
+- PostgreSQL completo: 236 pruebas; cubre creación vinculada y rechazo de duplicado. Flutter: análisis limpio y 20 pruebas dirigidas, incluidos reintento de borrador por pasos y persistencia del UUID del caso. Falta captura/revisión instalada.
+- Verificación, caso y gasto usan ahora **Archivos → Información → Revisión**. Cada avance persiste el borrador, los estados enviados abren en resumen protegido y una operación de guardado/carga muestra progreso real. La prueba conserva campos privados tras un conflicto y completa el resumen al reintentar.
+- Capturas reales nuevas a 377 × 852: Inicio, Mis casos y primer paso de verificación. Se corrigió el botón de regreso indebido en Inicio y se comprobó la barra rescatista de cinco destinos. Falta aceptación instalada de Irlanda.
+
+## H8.6 Inicio del rescatista — 26 de septiembre de 2026
+
+- Inicio consume un resumen autenticado y muestra verificación real, casos activos, borradores/correcciones, mensajes sin leer y actividad reciente. Las acciones conducen al registro o conversación correspondiente; el vacío ofrece Publicar.
+- La tarjeta financiera ya no presenta un “saldo disponible”: separa montos **Asignado**, **Transferido** y **En revisión**, según estados persistidos. No afirma depósito bancario y no expone identidades de donantes ni referencias del procesador.
+- Migración local `20260927031520_rescuer_dashboard.sql`, remota `20260927030616`. La RPC requiere cuenta autenticada. Remoto comprobado con un rescatista de pruebas: un caso activo, un gasto borrador y montos cero reales. PostgreSQL completo: 234 pruebas; Flutter dirigido: cuatro pruebas aprobadas y análisis limpio.
+- Mis casos ya diferencia borrador, revisión, correcciones, publicado y cerrado; presenta feedback del equipo y acciones específicas. Un caso aprobado ofrece preparar una publicación de adopción separada, sin publicar mediante interruptor. La prueba a 390 px detectó y corrigió una restricción infinita en el encabezado.
+- H8.6 continúa con el vínculo persistente caso–adopción, formularios por pasos, verificación/evidencia y perfil/configuración propios. Aceptación visual instalada pendiente.
+
+## H8.5 Apoyar y detalle de caso — 26 de septiembre de 2026
+
+- Apoyar reproduce la estructura vigente de Irlanda: encabezado con Mis match/notificaciones, “Descubre casos”, carrusel de progreso circular, “Ver todos” y entrada destacada a Guardián. Sólo muestra casos con gastos aprobados y capacidad restante; el vacío conduce a Adoptar.
+- El detalle usa ubicación pública aproximada, responsable enlazado, recibido/objetivo, categorías, historia, gastos desplegables, galería pública, Guardar/Compartir/Reportar y avances moderados. Cada gasto aporta únicamente por el flujo real; la interfaz no anticipa éxito.
+- La migración local `20260927030310_public_case_progress.sql`, remota `20260927025431`, repone en la RPC pública los agregados de asignación/transferencia y añade el objetivo calculado exclusivamente con gastos públicos aprobados. No expone donantes ni identificadores de Stripe y conserva firma/build 253.
+- PostgreSQL: 232 pruebas aprobadas. Flutter: análisis limpio, suite completa de 75 pruebas y generación de capturas aprobadas. La inspección a 377 × 852 corrigió monto truncado, paginación innecesaria y ausencia de Mis match. Referencia reconsultada al cierre: `a246fa6f42ec517aae264d7fbd2358d647c4f840`, sin cambio. Aceptación instalada de Irlanda permanece pendiente.
+
+## H8.5 perfil público e impacto asignado — 26 de septiembre de 2026
+
+- El perfil público del rescatista ya obtiene un resumen único del servidor y separa **Actividad, En adopción y Casos**. Sólo agrega publicaciones y avances aprobados; conserva Guardar, Compartir, Reportar y el acceso a conversación sobre una publicación pública.
+- “Mi impacto” relaciona únicamente las aportaciones confirmadas y efectivamente asignadas de la persona autenticada con los avances públicos de esos casos. No devuelve identidades de otros donantes, datos de Stripe, documentos ni información privada del rescatista.
+- Migración local `20260927024050_public_rescuer_and_impact.sql`, remota `20260927024547`. Mantiene las RPC anteriores y el build 253 compatibles. En remoto se comprobó acceso anónimo al perfil público, denegación anónima de impacto y acceso autenticado sólo al impacto propio.
+- PostgreSQL local completo: 230 pruebas aprobadas. Flutter: análisis limpio y 23 pruebas dirigidas aprobadas, incluidos pestañas públicas, monto asignado/avances y cambio de experiencia. Falta la nueva composición de Apoyar, comparación visual instalada y aceptación de Irlanda; H8.5 continúa abierto.
+
+## H8.5 avances moderados de casos — 26 de septiembre de 2026
+
+- Los casos aprobados/cerrados admiten avances independientes con borrador recuperable, hasta seis fotos, envío, correcciones/rechazo y publicación administrativa. La edición no sustituye un snapshot público: un avance publicado se archiva o se complementa con otro registro.
+- Storage nuevo `dopmi-case-update-media`, privado y limitado a imágenes de 5 MB. Escritura sólo del propietario mientras el avance es editable; lectura pública únicamente de rutas incluidas en el snapshot aprobado. Flutter reutiliza la preparación central que elimina EXIF y acota dimensiones.
+- El detalle público muestra “Historia hasta ahora” en orden cronológico; el dueño entra a administrar avances, reanuda borradores y ve estados remotos. El panel añadió Moderación para avances y reportes persistentes.
+- Migración local `20260927022858_moderated_case_updates.sql`, remota `20260927023747`. Es aditiva y no altera RPC consumidas por el build 253. Remoto comprobado: tablas pública/privada, bucket privado, RPC autenticada y ausencia de SELECT crudo. El aviso de tabla privada sin política pública es intencional y coincide con las tablas de auditoría existentes.
+- PostgreSQL local reconstruido y cuatro suites: 224 pruebas aprobadas. Administración: 19 pruebas y build de producción aprobados, incluida la moderación de avance y resolución de reporte. Flutter: análisis limpio y suite completa de 73 pruebas aprobada. Falta aceptación visual y un build instalado; H8.5 continúa con Apoyar, perfil público completo e impacto.
+
+## H8.3 detalle, guardados y Mis match en desarrollo — 26 de septiembre de 2026
+
+- El detalle de adopción usa galería paginada, datos reales, historia, salud, convivencia, cuidados y responsable. Guardar es optimista y revierte ante fallo; compartir copia contenido identificable sin inventar un enlace; reportar persiste antes de confirmar; contactar exige confirmación y reutiliza el hilo idempotente existente.
+- Volver del detalle ya no reinicia el mazo: reconsulta sólo la tarjeta abierta y conserva posición/filtros. Si la publicación dejó de estar disponible, la retira sin exponer su nuevo borrador.
+- Mis match incorpora búsqueda real por mascota/persona, conversaciones y accesos a guardados. Guardados separa Adopción, Donación y Rescatistas, con conteos/vacíos y marcadores privados para contenido retirado; esos marcadores sólo incluyen UUID/disponibilidad y pueden eliminarse.
+- Migración local `20260927020621_community_saved_reports.sql`, remota `20260927021744`: favoritos UUID de casos/rescatistas, búsqueda de conversaciones, reportes persistentes y bandeja administrativa auditada. `20260927021820_community_table_boundaries.sql`, remota `20260927021850`, añade políticas restrictivas que documentan acceso exclusivamente por RPC. Las tablas no conceden lectura cruda a clientes.
+- PostgreSQL: 213 pruebas aprobadas desde la base local reproducida. Flutter: análisis sin incidencias y 72 pruebas aprobadas en secuencia; cubren rollback de favorito, confirmación de contacto, separación de guardados y reintento idempotente de mensajes. Remoto: objetos, ejecución autenticada y ausencia de lectura cruda comprobados. Los avisos nuevos de tablas sin políticas quedaron resueltos; permanecen avisos generales ya documentados y protección de contraseñas H10.
+- Casos y perfiles públicos ya tienen Guardar, Compartir y Reportar con el mismo acuse de servidor. La migración local `20260927022451_public_case_favorite_state.sql`, remota `20260927022716`, añade el estado privado `saved` a la respuesta pública sin revelar al usuario ni alterar la firma. PostgreSQL aumentó a 217 pruebas y comunidad Flutter a 13; la prueba detectó/corrigió un desbordamiento del selector de reporte a 390 px.
+- Referencia Irlanda reconsultada al cierre: `a246fa6f42ec517aae264d7fbd2358d647c4f840`, sin cambio. Este bloque no tiene aceptación visual instalada; H8.3 sigue abierto hasta generar evidencia visual y revisión en Internal Testing.
+
+## H8.2 descubrimiento funcional en desarrollo — 26 de septiembre de 2026
+
+- Adoptar ya usa un mazo con foto dominante, Perros/Gatos, Pasar, Contactar y Me gusta por gesto o botón. Me gusta persiste el favorito antes de avanzar; las acciones se bloquean mientras esperan al servidor. Incluye carga, error/reintento, fin del mazo, reinicio y acceso a filtros/favoritos.
+- Filtros funcionales de sexo, tamaño y personalidad; ubicación opcional con alternativa manual. El permiso se solicita sólo al pulsar “Usar mi ubicación aproximada”. El cliente redondea a dos decimales y el servidor devuelve únicamente distancia calculada, nunca coordenadas.
+- Migración `20260927013712_adoption_discovery.sql` aplicada por MCP como `20260927014731`. La RPC nueva mantiene `dopmi_catalog` y el build 253 compatibles. Cinco publicaciones demo aprobadas recibieron personalidad y ubicación aproximada ficticias para probar el mazo.
+- PostgreSQL local reconstruido desde cero: 198 pruebas aprobadas. Remoto: filtros de personalidad/radio y ausencia de coordenadas verificados. Flutter: análisis sin incidencias, 65 pruebas aprobadas. Captura inicial a 377 × 852 inspeccionada; se retiró el encabezado duplicado antes de la captura final.
+- Casos reales elegibles se intercalan una sola vez después de cada dos adopciones. La fuente sólo incluye casos aprobados con gasto aprobado, pagable y capacidad restante; el botón abre la aportación de prueba y no declara éxito. Migración local `20260927015519_adoption_support_cards.sql`, remota `20260927015643`; consulta remota devolvió dos oportunidades reales de prueba.
+- Pruebas ampliadas cubren arrastre corto/largo, botones equivalentes, fallo de favorito sin avanzar, paginación sin duplicados y tarjeta de apoyo después de dos adopciones; nueve pruebas de comunidad aprobadas y análisis limpio.
+- H8.2 queda implementado y comprobado técnicamente en local/remoto; falta el paquete instalado y aceptación visual, por lo que V permanece pendiente. Referencia Irlanda continúa en `a246fa6`.
+
+## H8.0 cerrado y Perfil/cambio de modo en ejecución — 26 de septiembre de 2026
+
+- H8.0 convertido en matriz concreta de pantallas, acciones, datos, prueba y estado separado I/T/V. Ninguna pantalla se declara aceptada por Irlanda.
+- Perfil deja de ser el formulario de datos: incorpora tarjeta de identidad, condición real de miembro/Guardián, historial real con carga/vacío/error, guardados, Configuración y cambio de experiencia dedicado. Información básica conserva su formulario en una ruta separada.
+- Cambiar de modo actualiza únicamente `profiles.active_mode`, no confiere verificación y abre el inicio correspondiente. El guardado de datos personales ya no puede pisar esa preferencia. Publicar rescatista abre el selector Adopción/Caso.
+- Capturas reales a 377 × 852 generadas para Perfil, Configuración y selector Publicar. La inspección confirma las barras distintas por experiencia y ausencia de cifras simuladas; la comparación/aceptación en Internal Testing sigue pendiente.
+- Verificación del bloque: `flutter analyze --no-pub` sin incidencias; pruebas dirigidas de navegación, historial y cambio de modo, 20 aprobadas; suite completa Flutter, 64 aprobadas. La suite completa detectó inicialmente que Perfil intentaba construir el repositorio de pagos sin Supabase inicializado en pruebas; se corrigió convirtiendo esa lectura en error asíncrono presentable y la repetición completa aprobó.
+- Referencia reconsultada: `irlanda/apoyar-detalle-perfil@a246fa6f42ec517aae264d7fbd2358d647c4f840`, sin cambio. Dinero permanece en test.
+
+## Contenido demo disponible — 26 de septiembre de 2026
+
+- Carga autorizada en Supabase de pruebas: cinco adopciones públicas con fotos y perfil ficticio, una en revisión, una con correcciones y tres casos demo (dos aprobados y uno cerrado). Inventario y límites en `demo-data.md`.
+- Verificado por API pública: catálogo, filtros, perfil y cinco fotos accesibles; dos fotos privadas bloqueadas. Casos visibles con cero nuevos montos reembolsables. Sin cambios de esquema, permisos, servicios o movimientos financieros.
+- Disponible para Internal Testing 2.3.3 (253) sin nuevo build. No se asignaron borradores a Irlanda sin confirmar su correo; revisión en dispositivo pendiente.
+
+## H8: publicado para revisión por Internal Testing — 26 de septiembre de 2026
+
+- A petición del titular, Codex inició por API `android-guardian-internal` sobre `codex/design-foundation`, SHA `74fd92286b089a162cd1448e3835c34fc44bc4f8`.
+- [Codemagic 6ab783481453f4d0a7737de5](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ab783481453f4d0a7737de5): finished; análisis, pruebas, compilación firmada y publicación success. Android **2.3.3 (253)**, paquete `com.mycompany.dopmi`.
+- Log de Publishing verificado: publicación en `internal` exitosa; consulta posterior `google-play tracks get` devuelve release `completed`, version code `253`. Firma y Guardián test conservados; dinero real sin activar.
+- Irlanda revisa exclusivamente desde Internal Testing. Instalación y aceptación visual pendientes; las capturas son complementarias. PR #6 continúa en borrador. iOS no se recompiló en esta entrega.
+- Este registro es documentación posterior al SHA distribuido, sin cambios de aplicación.
+
+## H8: CI final aprobado; aceptación visual pendiente — 25 de septiembre de 2026 (México)
+
+- Código `3d5c6e3aafb69d1724e98e01db6a8e5ddd27623d`, [CI 36211702329](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36211702329): los cuatro trabajos terminaron con success, consultados directamente. Incluye PostgreSQL/backend, integración real de identidad/adopción, análisis/pruebas Flutter, capturas y compilaciones Android/iOS simulator. Supersede el pendiente de CI de la entrada anterior.
+- [Artefacto de capturas 10895364071](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36211702329/artifacts/10895364071), `dopmi-design-review`, comprobado disponible. Capturas comparables permanentes y diferencias en `design-foundation.md`.
+- [PR #6](https://github.com/albertoquiroga-ctrl/dopmi-app/pull/6) permanece en borrador para revisión visual de Irlanda. No se recibió aceptación visual, no se fusionó H8 ni se inició H9. H6/H7 ya integrados. No se generó candidato Codemagic ni se activó dinero real. Este cierre documental no cambia el código validado.
+
+## H8: acceso adaptado y revisión visual preparada — 25 de septiembre de 2026 (México)
+
+- PR #6 en borrador: `codex/design-foundation`. Primer commit `f9f3fe3d9eeb63292dff81c72cf85eea3fa422da`, CI [36210411470](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36210411470), cuatro trabajos success comprobados. La ampliación de acceso posterior requiere su propio CI; no atribuirle ese resultado.
+- Incorporados dos pasos de onboarding para cada intención, entrada de cuenta, formularios y confirmación con marco visual común. Ilustraciones Flutter basadas en assets/estructura de Irlanda; copias económicas corregidas para gastos pagados y aprobados. Google/Apple conservan gates; legal de desarrollo sigue pendiente H10.
+- Verificación local ampliada: 61 pruebas Flutter + generación de capturas aprobadas; regresión de historial cubre entrada por `push` y cambio de propietario. Navegación, regreso e intención de registro comprobados a 320 × 640 con texto al 200 %. Entrada normal rescatista resuelta sin reemplazar enlaces explícitos. Análisis sin incidencias y cuatro recorridos reales de backend local aprobados. Capturas HTML/Flutter por ruta versionadas en `design-reviews/h8-access`, con diferencias y límites en `design-foundation.md`.
+- CI incorporará capturas de los componentes reales y acceso como artefacto `dopmi-design-review` vinculado al SHA. H8.1, H8.2 y H8.4 implementados; **H8.3 pendiente de revisión de Irlanda y ajustes visuales**. Se solicitó revisión al titular; no se recibió aceptación todavía. H8 no se cierra automáticamente. H9–H12 no están completados y no se activó dinero real.
+
+## H7 integrado; base visual H8 implementada — 25 de septiembre de 2026 (México)
+
+- H7 integrado mediante [PR #5](https://github.com/albertoquiroga-ctrl/dopmi-app/pull/5), head `08c72e2d44787ae16d59e0c57caadb41b306caa7`, merge `ba9f897f3fa418e952b98e4c604cffe468a8aa95`. CI [36208309068](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36208309068): cuatro trabajos success comprobados. Supersede el pendiente de integración anterior.
+- H8 en `codex/design-foundation`: fuentes locales con licencias, tokens/componentes, SVG y barras por experiencia; bienvenida con tres intenciones. Estado conservado entre pestañas y eliminado al cambiar de identidad. Recuperación y estados financieros existentes conservados. Referencia de Irlanda reconsultada: sigue `a246fa6`.
+- Pruebas locales: 57 Flutter + una generación de capturas; cuatro recorridos de backend real aprobados; análisis sin incidencias y seis pruebas de configuración móvil. Capturas a 377 × 852 y 320 × 640/texto 200 %, fuentes reales y sin datos personales; detalles en `design-foundation.md`.
+- H8 no está cerrado: pendiente portar onboarding/formularios y revisión visual de Irlanda. CI del PR de esta base pendiente al escribir esta entrada. No hay nuevo build firmado, aceptación móvil ni activación de dinero real. H9–H12 siguen pendientes.
 
 ## H6 integrado; H7 aplicado y verificado — 25 de septiembre de 2026 (México)
 
@@ -651,3 +1600,3067 @@ El siguiente alcance es H2: adopción y comunicación. No se inicia automáticam
 - `flutter analyze`: sin incidencias. `flutter test`: diez pruebas aprobadas en esta sesión.
 - Se añadió `scripts/emulate-android.ps1` para abrir el dispositivo e instalar el APK; `-Rebuild` recompila cuando cambian código/configuración. El comando y las instrucciones para iOS están en `docs/development.md`. La sintaxis PowerShell se comprobó; el arranque/instalación se ejecutó con ese script y las comprobaciones posteriores usaron ADB.
 - iOS interactivo queda pendiente por plataforma: esta sesión dispone de Windows, sin una Mac/Xcode conectada. El simulador oficial requiere macOS. Se conserva la evidencia previa de compilación iOS en CI; no se declara una ejecución interactiva de iOS nueva.
+## H10 — legal, eliminación y medición — 28 de septiembre de 2026
+
+- Migraciones H10 de términos/eliminación y conservación de contenido aplicadas
+  en Supabase test como `20260928211754` y `20260928212147`.
+- `account-deletion` v2 ACTIVE: bloqueo inmediato, revocación de Apple,
+  limpieza de medios prescindibles, cierre global de sesión, eliminación Auth y
+  finalización idempotente. Evidencia financiera y mensajes ajenos se conservan.
+- App: términos y privacidad vigentes, mayoría de edad, eliminación en
+  Configuración, vínculo explícito de identidades y medición opcional separada.
+- Firebase Android/iOS validado para `com.mycompany.dopmi`; configuraciones
+  fuera de Git y variables seguras creadas en Codemagic. Google/Apple siguen
+  apagados porque los proveedores Supabase están deshabilitados.
+- Web pública: `https://dopmi.org/privacy-policy`, `/terms` y
+  `/delete-account` responden HTTP 200.
+- Verificaciones: Flutter analyze y 86 pruebas; backend 402; administración 23
+  y build; configuración móvil 10. Pagos permanecen test-only.
+- Pendiente externo: guardar OAuth/manual linking, pruebas instaladas, correo
+  transaccional, aprobación del proyecto Supabase producción y builds conjuntos.
+- Resend comprobado en el equipo `enlacenest`: `dopmi.org` está verificado y se
+  creó una credencial dedicada de envío, limitada a ese dominio y almacenada
+  fuera del repositorio. El correo controlado de H10 salió desde
+  `soporte@dopmi.org`, incluyó versiones HTML y texto, y Resend registró los
+  eventos `Sent` y `Delivered` el 28 de septiembre de 2026. La recepción de una
+  respuesta también se comprobó en el buzón `soporte@dopmi.org`: llegó desde la
+  cuenta destinataria, conservó el asunto de la prueba y mostró el contenido
+  esperado. El recorrido transaccional de ida y vuelta queda verificado.
+- Medición H10 completada en código: los cinco eventos permitidos se emiten sólo
+  tras confirmación del repositorio/servidor, sin payloads, y Firebase no puede
+  interrumpir el resultado del producto. Los pagos evitan duplicados por intento.
+  Los builds internos pueden mostrar una acción fija de Crashlytics mediante
+  `ENABLE_MEASUREMENT_TEST`; los workflows estándar la excluyen.
+- Gate local del bloque: Flutter analyze y 90 pruebas desde copia temporal limpia;
+  backend 402; administración 23 y build; prototipo 4 y build; configuración
+  móvil 11. La ejecución Flutter inicial dentro de OneDrive falló al copiar una
+  caché ya existente y se repitió correctamente fuera de OneDrive.
+- La protección contra contraseñas filtradas se difiere a H12 por decisión del
+  titular, ya que requiere Supabase Pro. H10 continúa abierto por dispositivos,
+  Firebase, Private Relay y un candidato conjunto nuevo.
+- Candidato conjunto generado desde `3472c5b4ba5785ab9ab695f4a5d96a3e0befd4a3`.
+  Los CI 36501932519 y 36501928018 aprobaron los cuatro trabajos. Android
+  Codemagic `6abb04b63e1e341b2e6b97fb` publicó `2.3.3 (262)` y Play Console lo
+  muestra disponible para testers internos. iOS Codemagic
+  `6abb04b74427c92a169daabd` cargó `2.3.3 (263)` correctamente; App Store
+  Connect terminó de procesarlo. Queda completar su declaración de exportación
+  y asignarlo al grupo interno para volverlo instalable.
+  La hoja `docs/h10-device-acceptance.md` conserva los recorridos y resultados
+  pendientes sin documentar credenciales ni correos privados completos.
+- Apple Developer aceptó `dopmi.org` como fuente de Private Email Relay y mostró
+  SPF válido. App Store Connect guardó la declaración de exportación de iOS 263,
+  lo dejó listo para pruebas y disponible para `DopMi Inner Team`. Se observó una
+  instalación de 263 en iPhone 14 Pro Max / iOS 18.7.8. Falta comprobar correo al
+  alias privado y ejecutar los recorridos funcionales; no se documentó el alias
+  ni la identidad del tester.
+- La aceptación Android 262 encontró un bloqueo crítico en Configuración: al
+  abrir **Información básica** el dispositivo podía quedar en negro; además, la
+  opción de eliminación no era visible en la lista y aún aparecía **Aviso de
+  desarrollo**. Se separó la edición básica de la nueva pantalla **Privacidad y
+  eliminación**, se autorizó explícitamente su ruta autenticada, se reemplazó el
+  texto obsoleto por **Términos y privacidad** y se añadieron pruebas de ambas
+  rutas. Flutter aprobó 92 pruebas y análisis sin incidencias; Android 262/iOS
+  263 quedan superados para estos recorridos y requieren un candidato nuevo.
+- iOS declara `ITSAppUsesNonExemptEncryption = false`, coherente con la
+  declaración ya aceptada para 263, para evitar repetir la intervención manual
+  de exportación en candidatos que no incorporan cifrado no exento.
+- Candidato correctivo conjunto desde
+  `af8027a47ddd6c94caebdcc3b2672033baf2c29e`: CI 36510163492 aprobó sus cuatro
+  jobs. Codemagic Android `6abb1b18a7c0e10e9a05069e` generó y publicó
+  `2.3.3 (264)`; Play Console confirmó el código 264 disponible para testers
+  internos. Codemagic iOS `6abb1b1832bd8882759214f4` generó y cargó
+  `2.3.3 (265)`; App Store Connect lo muestra `En pruebas` y asignado a
+  `DopMi Inner Team`. Falta instalación y aceptación física de este candidato.
+- La prueba instalada de Android 264 completó la eliminación real y el posterior
+  acceso con Google. Supabase confirmó dos solicitudes `completado`, sin código
+  de atención. El acceso reutilizó otra identidad Dopmi previa vinculada al
+  proveedor; su perfil conservaba términos de desarrollo, sin versión de
+  privacidad ni confirmación 18+, y la app no lo bloqueó. Información básica
+  también continuó en negro.
+- Corrección posterior: el consentimiento 18+/términos/privacidad pasa a una
+  pantalla obligatoria global para cualquier perfil incompleto o desactualizado;
+  Guardián y eliminación conservan acceso para poder cancelar o cerrar la
+  cuenta. Google/Apple aparecen también como métodos en **Crear cuenta**. La
+  edición básica se movió a la ruta superior `/basic-info`, sin barra de pestañas,
+  y la restauración usa inmediatamente la sesión local mientras termina la
+  comprobación servidor, evitando la carrera que reemplazaba la ruta por una
+  pantalla vacía. Flutter aprobó 94 pruebas y análisis sin incidencias.
+- Candidato conjunto correctivo desde
+  `d3beba30c1d52206414a77657483789f0cc2d06d`: los CI 36514850944 y
+  36514848612 terminaron `success`. Codemagic Android
+  `6abb28b041594690c23be43c` publicó `2.3.3 (266)`; Play Console confirmó el
+  código 266 disponible en Internal Testing. Codemagic iOS
+  `6abb28b1483a70bbe6cb024e` cargó `2.3.3 (267)` correctamente; App Store
+  Connect terminó de procesarlo y lo muestra `En pruebas`, asignado a
+  `DopMi Inner Team`. El build y las tiendas no acreditan todavía la corrección
+  de Información básica ni la aceptación del consentimiento en un dispositivo.
+- La prueba instalada posterior no reprodujo el gate 18+ ni la entrada Google
+  en alta. Supabase confirmó que el perfil Google reciente seguía con términos
+  y privacidad nulos y sin `adult_confirmed_at`; por tanto, no se acepta como
+  consentimiento previo. Se añadió una segunda barrera en el árbol de widgets:
+  cualquier identidad verificada sin perfil legal vigente queda cubierta por
+  **Antes de continuar**, incluso si la carga del perfil falla. Términos,
+  eliminación y cancelación de Guardián conservan acceso. Configuración muestra
+  desde el siguiente candidato la versión/build compilados para eliminar dudas
+  sobre qué paquete está instalado. Flutter: análisis limpio y 95 pruebas;
+  configuración móvil: 11 pruebas. Requiere candidato y confirmación física.
+- Candidato de la segunda barrera desde
+  `419a56dd595ae412fe2ba423c8b97c1ac56ae414`: CI 36522764232 y
+  36522761588 aprobaron los cuatro trabajos. Codemagic Android
+  `6abb41991ed2d10dbfd22286` terminó con publicación exitosa; Play Console
+  confirmó `2.3.3 (268)` disponible en Internal Testing. Codemagic iOS
+  `6abb419aac4cd795b1d9af7c` terminó con publicación exitosa y el IPA firmado
+  confirma `2.3.3 (269)`, paquete `com.mycompany.dopmi`; queda comprobar su
+  procesamiento en TestFlight. La corrección funcional continúa pendiente de
+  prueba física.
+- Aceptación física Android 268 recibida del titular con capturas
+  `1000346255`, `1000346257`, `1000346259` y `1000346261`: Configuración muestra
+  la versión correcta, el perfil incompleto queda bloqueado por **Antes de
+  continuar**, la mayoría de edad y documentos vigentes requieren aceptación
+  explícita, e **Información básica** abre el perfil real sin pantalla negra.
+  Ambos defectos quedan solucionados y aceptados en Android. El acceso Google
+  desde alta, vinculación, Apple, medición y los demás recorridos H10 conservan
+  su aceptación independiente.
+
+# 29/9/2026 — H10, preparación de aceptación final
+
+- Supabase test, consultado por MCP sin exponer identificadores: 17 cuentas,
+  identidades `email: 16` y `google: 3`, una aceptación 18+/legal vigente, tres
+  eliminaciones `completado`, ninguna pendiente y cero credenciales Apple.
+- Firebase DebugView no mostró dispositivo de depuración ni eventos durante la
+  observación. Crashlytics Android continúa en **Add SDK**; ambos recorridos
+  requieren activar los consentimientos y la acción de diagnóstico desde el
+  build instalado. La actividad histórica de Firebase no se acepta como prueba.
+- `apps/admin`: 23 pruebas y build aprobados. `tools/verification`: 105 pruebas
+  aprobadas. `scripts/test_mobile_config.py`: 11 pruebas aprobadas. Flutter no
+  está disponible localmente; CI del SHA candidato conserva esa comprobación.
+- Se corrigió el backlog: Resend/SMTP y recepción-respuesta de soporte ya estaban
+  comprobados. Permanecen Apple/Google en dispositivo, Private Relay,
+  Analytics/Crashlytics y disponibilidad instalada de TestFlight 269.
+- Prueba física Android 268: Firebase detectó el SDK tras habilitar Diagnóstico,
+  registrar el error controlado y reiniciar Dopmi, pero no recibió el reporte.
+  Se añadió un despacho explícito de reportes pendientes únicamente después de
+  `recordError` consentido. `flutter analyze` quedó limpio, la prueba dirigida
+  aprobó 6 casos y la suite Flutter completa aprobó 95 pruebas. La corrección
+  queda pendiente de candidato instalado y recepción visible en Crashlytics.
+- Android de corrección: Codemagic `6abbc365a2cb55def9efff17`, SHA `5c505c2`,
+  versión **2.3.3 (270)**. Configuración, análisis, 95 pruebas, firma, AAB,
+  Publishing y limpieza aprobaron. Play Console lo mostró como disponible para
+  Internal Testing a las 08:08; el bundle anterior 268 quedó desactivado. iOS
+  `6abbc3656e8a9a4c7f26ae72` seguía en cola al registrar esta evidencia.
+- Android 270, aceptación física: la captura del titular confirmó Analítica
+  apagada, Diagnóstico activado y el aviso de envío. Firebase recibió un no fatal
+  `dopmi_diagnostics_test` con motivo `internal_acceptance_test`, 1 evento y 1
+  usuario. El envío consentido de Crashlytics queda aprobado; falta comprobar la
+  retirada del consentimiento. iOS inició y aprobó preparación, configuración,
+  análisis, 95 pruebas y firma; la generación del IPA seguía en curso.
+- La captura `1000346267` confirmó ambos controles apagados y la desaparición de
+  la acción de diagnóstico. Se reforzó la retirada con `deleteUnsentReports`
+  antes de activar, al apagar y al cambiar de cuenta, para impedir el envío
+  posterior de reportes generados sin consentimiento. `flutter analyze` limpio,
+  7 pruebas dirigidas y 96 pruebas Flutter completas aprobaron.
+- iOS Codemagic `6abbc3656e8a9a4c7f26ae72` generó y firmó el IPA 2.3.3 (271).
+  Publishing quedó `failed`: Apple emitió tres HTTP 500 al cerrar estados del
+  upload, aunque `altool` terminó con `UPLOAD SUCCEEDED` y delivery UUID. No se
+  declara TestFlight disponible hasta consultar App Store Connect; la sesión web
+  expiró y solicita nuevo acceso.
+- Decisión de arquitectura confirmada por el titular: Supabase concentra Auth,
+  base de datos, Storage y funciones; Firebase queda limitado a Analytics y
+  Crashlytics opcionales. Se añadió una comprobación reproducible que impide
+  introducir SDK de backend Firebase sin cambiar expresamente esta decisión.
+- Android 270: el titular ejecutó dos veces el resultado real de contacto sobre
+  Rocky Demo con Analítica activada. La conversación se creó/recuperó, pero GA4
+  Realtime no recibió `contact_started`; sólo mostró eventos heredados de
+  FlutterFlow. La aceptación de Analytics permanece abierta. Se corrigió la
+  integración para declarar explícitamente `analytics_storage` al activar,
+  mantener publicidad/personalización denegadas y reiniciar los datos locales
+  al retirar consentimiento o cambiar de identidad.
+- Candidato de corrección Analytics: [Codemagic
+  `6abbdec3af1a117ab3b161f5`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abbdec3af1a117ab3b161f5),
+  SHA `e772445e7446b42d49a8ab41163a30b42400b470`, Android **2.3.3
+  (272)**. Configuración Firebase, análisis, 96 pruebas, firma, AAB, Publishing y
+  limpieza terminaron `success`; la consulta posterior del track confirmó
+  `internal`, `completed`, código 272. Falta instalación y repetición del evento
+  real; publicación no equivale a aceptación en dispositivo.
+- Android 272 instalado y comprobado por captura; Analítica encendida. El
+  contacto nuevo con Toby funcionó, pero `contact_started` no apareció. La
+  investigación confirmó que Firebase enlaza la app ID Android vigente al
+  stream `5400821083`, con recepción reciente y configuración descargada
+  idéntica a la usada por Codemagic. La causa estaba en la app: el detalle sí
+  medía el contacto, pero el botón del mazo/swipe usado en aceptación y el
+  acceso equivalente desde el perfil público omitían el evento. Ambos quedan
+  instrumentados después de `startThread`, nunca antes del resultado real.
+- El primer gate de esta corrección (`6abbfa69b0dffe4b6f9e12a1`) detuvo la
+  publicación porque el nuevo test liberaba dos veces su controlador; no fue un
+  defecto productivo ni llegó a Play. Corregido el teardown, [Codemagic
+  `6abbfb850c4e011265ad1a16`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abbfb850c4e011265ad1a16)
+  aprobó análisis, 97 pruebas, firma, AAB, Publishing y limpieza sobre SHA
+  `554e66866d69e65f2e8473a9477398a003e3807c`. Google Play Internal Testing
+  confirmó `completed`, Android **2.3.3 (274)**. Falta aceptación instalada del
+  evento corregido.
+- Android 274 instalado: el titular confirmó por capturas el build, Analítica
+  encendida y la creación real de una conversación nueva con Milo desde el
+  mazo. GA4 Realtime todavía no mostró `contact_started`, aunque la app, el
+  stream y el nombre del evento están verificados. Para dejar de inferir el
+  comportamiento nativo, el candidato interno ahora muestra en Privacidad si
+  Firebase aceptó el evento, lo omitió sin consentimiento o devolvió un error;
+  conserva sólo ese resultado en memoria y no añade payloads.
+- [Codemagic `6abc0b9355f874ca95621932`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc0b9355f874ca95621932),
+  SHA `f1c0f7b63042122156536d626d5930cf296cc272`, aprobó configuración,
+  análisis, 97 pruebas, firma, AAB, Publishing y limpieza. Google Play Internal
+  Testing confirmó `completed`, Android **2.3.3 (275)**. Falta instalarlo,
+  crear un contacto real y leer la señal interna antes de volver a consultar
+  GA4.
+- Android 275 instalado y recorrido por el titular: Analítica permaneció
+  encendida, el contacto real con Nina creó/abrió la conversación y la señal
+  interna mostró **Firebase aceptó contact_started**. Queda comprobado que el
+  controlador consentido llamó al SDK sin payload y éste terminó sin error. La
+  consulta inmediata de GA4 Realtime mostró actividad vigente y 49 nombres de
+  eventos mezclados con telemetría antigua de FlutterFlow, pero no presentó el
+  nuevo evento entre los resultados visibles consultados. La recepción
+  procesada por GA4 permanece pendiente; no se repetirá otro cambio de código
+  sin evidencia de rechazo.
+- Se fijó el candidato Android 275 con el tag `codex-h10-android-275` y se lanzó
+  iOS desde el mismo SHA `f1c0f7b63042122156536d626d5930cf296cc272`.
+  [Codemagic `6abc16a31bed101ce54ac895`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc16a31bed101ce54ac895)
+  aprobó configuración, análisis, 97 pruebas, firma, IPA, Publishing y limpieza.
+  Apple aceptó **2.3.3 (276)** con `UPLOAD SUCCEEDED with no errors`. Falta
+  confirmar procesamiento/disponibilidad e instalarlo desde TestFlight; App
+  Store Connect solicitó una nueva sesión al intentar consultarlo.
+- Supabase test, por consulta agregada: 17 cuentas, identidades `email: 16` y
+  `google: 3`, una aceptación legal vigente completa, tres eliminaciones
+  `completado`, ninguna pendiente y cero credenciales Apple. Google/gate legal y
+  eliminación cuentan con evidencia real Android; Apple nativo, Private Relay
+  y revocación continúan pendientes de la identidad desechable en iPhone.
+- Renovada la sesión, App Store Connect confirmó la carga iOS 276 como
+  **Finalizado** y el build como **En pruebas** dentro de `DopMi Inner Team`.
+  Registraba tres invitaciones y cero instalaciones. El candidato conjunto ya
+  está disponible en ambas tiendas internas; falta instalación y aceptación en
+  iPhone, en particular Google, Apple nativo/Private Relay y revocación.
+- iOS/iPadOS 276 instalado desde TestFlight. Google y Apple cancelados
+  regresaron limpiamente. Apple nativo con Ocultar mi correo exigió el gate de
+  18 años/términos y conservó sesión tras reinicio. Resend marcó `delivered` y
+  el titular confirmó en su buzón la recuperación reenviada por Private Relay.
+  La eliminación posterior terminó HTTP 200: Apple aceptó la revocación; el
+  estado quedó `completado`, perfil `deleted`, sin atención pendiente, y las
+  consultas posteriores mostraron cero usuario Auth, identidad, sesión y
+  credencial Apple. No se documentaron alias, UUID, tokens ni IP. La adaptación
+  visual específica de iPad queda como diferencia no bloqueante de H10.
+- Google nativo en iPad falló primero con HTTP 400 por la comprobación de nonce.
+  Se activó `Skip nonce check` sólo para Google en Supabase test, como exige la
+  guía Flutter iOS; el mismo build entró después con HTTP 200, reutilizó el
+  perfil existente y conservó sesión tras reinicio. Auth advirtió que futuras
+  versiones exigirán también el access token. El cliente queda reforzado para
+  obtenerlo y enviarlo en acceso, vinculación y reautenticación; prueba unitaria
+  comprueba ambos tokens. Requiere gate y candidato nuevo.
+- Candidato final de la corrección Google fijado en el tag
+  `codex-h10-final-277`, SHA
+  `7e0a4b09ece6833c74afa44e2eb30e0651a6cff6`. La compuerta integrada
+  [36632568776](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36632568776)
+  aprobó sus cuatro trabajos. [Android Codemagic
+  `6abc2e07bb271484cec0e088`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc2e07bb271484cec0e088)
+  publicó **2.3.3 (277)** a Play `internal`; publicación y consulta posterior
+  marcaron `completed`. [iOS Codemagic
+  `6abc2e104ec1ec8d686c0180`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc2e104ec1ec8d686c0180)
+  cargó **2.3.3 (278)** a App Store Connect con `UPLOAD SUCCEEDED with no
+  errors`. Ambos usan el mismo SHA. Falta procesamiento/instalación de iOS 278,
+  instalación Android 277 y repetir Google con persistencia; Apple 276 conserva
+  su evidencia porque este cambio no alteró su token.
+- El titular instaló Android 277 e iOS/iPadOS 278 y confirmó en ambos Google
+  exitoso y sesión persistente tras reiniciar Dopmi. Supabase test registró dos
+  accesos Google HTTP 200 con `grant_type=id_token`; desapareció la advertencia
+  anterior por `access_token` ausente. Un ID token no traía `at_hash` y Auth
+  informó que el access token enviado no se utilizó en ese caso, sin error de
+  sesión. La corrección Google del candidato conjunto queda aceptada. El
+  titular confirmó que la vinculación conserva el mismo perfil. Apple queda
+  disponible únicamente en iOS/iPadOS por decisión de producto; Android usa
+  Google/correo y no mostrará Apple web. H10.1 queda aceptado.
+- Auditoría de H10.2 añadió casos de cuenta vacía, aislamiento entre titulares,
+  aportación pendiente y cancelación Guardián pendiente. Las operaciones
+  financieras mantienen la cuenta bloqueada en `requiere_atencion` hasta su
+  conciliación; el reintento finaliza después sin crear ni repetir movimientos.
+  También se corrigió el reintento parcial: si PostgreSQL ya marcó la solicitud
+  `completado` pero Auth no pudo retirar al usuario, el siguiente intento vuelve
+  a cerrar sesiones globales y borrar Auth. `anon` y `authenticated` no pueden
+  ejecutar la RPC servidor; sólo `service_role`. Las **405 pruebas backend** y
+  las **12 comprobaciones de configuración móvil** aprobaron en el commit
+  `21e2132e21ec0c9381107ead4c3c14f3e7b5c898`. La función
+  `account-deletion` **v4** quedó activa con JWT obligatorio únicamente en
+  Supabase test. La compuerta integrada
+  [36637906708](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36637906708)
+  aprobó sus cuatro trabajos: identidad/adopción, Flutter/Android,
+  web/PostgreSQL e iOS simulator. H10.2 queda cerrado con la eliminación real
+  previa en Android y Apple, más los escenarios automatizados de reintento,
+  operación pendiente y aislamiento.
+- H10.3: el reporte procesado de Firebase/GA4 hasta el 29/9 confirmó **3 eventos
+  `contact_started` de 2 usuarios**. La recepción real de Analytics queda
+  acreditada sin payloads; la interfaz sólo admite los cinco nombres permitidos
+  y rechaza cualquier parámetro. La auditoría añadió los errores asíncronos de
+  `PlatformDispatcher` a Crashlytics únicamente durante consentimiento, con
+  restauración inmediata del manejador al apagar, salir o cambiar de cuenta.
+  `flutter analyze` quedó limpio, aprobaron 99 pruebas Flutter, 405 backend y
+  12 controles de configuración. CI
+  [36639760146](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36639760146)
+  aprobó los cuatro trabajos del SHA
+  `d57aea8aef3fad2687b177d2f5ed3634c6672849`. Android Codemagic
+  [`6abc3da85177262fd0fa5730`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc3da85177262fd0fa5730)
+  publicó **2.3.3 (279)** en Internal Testing desde ese SHA; análisis, 99
+  pruebas, firma, AAB y Publishing aprobaron. iOS Codemagic
+  [`6abc3da82b57438d992a0231`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc3da82b57438d992a0231)
+  generó, firmó y publicó **2.3.3 (280)**; análisis, 99 pruebas, IPA, Publishing
+  y limpieza aprobaron sobre el mismo SHA. Google Play confirmó por separado
+  que el bundle **279** está disponible para testers internos y que 277 quedó
+  desactivado. App Store Connect terminó de procesar **280**, lo incorporó a
+  `DopMi Inner Team` y lo muestra **En pruebas** para tres testers internos.
+  Android 279 quedó instalado. Con Analítica y Diagnóstico apagados, un contacto
+  real mostró que `contact_started` fue omitido antes del SDK y la acción interna
+  de diagnóstico no apareció. La consulta posterior de GA4, ampliada hasta el
+  29/9, permaneció en **3 eventos de 2 usuarios**, sin incremento respecto de la
+  línea base. Las pruebas también acreditan borrado de reportes no enviados al
+  retirar, activar o cambiar de cuenta. H10.3 queda cerrado con consentimientos
+  independientes, apagados por defecto, recepción consentida y retirada real.
+- H10.4, auditoría de tiendas: la web pública añadió
+  `https://dopmi.org/support` y corrigió la ruta de eliminación dentro de la app
+  en el commit `bf8cd76` de `dopmi-landing-mockup`; ambas páginas responden 200
+  con el contenido nuevo. Google Play aún conserva una declaración Data Safety
+  de 2023 y Apple App Privacy siete tipos con usos antiguos, incluida publicidad
+  para correo, además de URLs obsoletas. Se preparó la matriz definitiva en
+  `docs/h10-store-privacy-declarations.md` y un CSV de Google para vista previa.
+  No se declara publicado: la importación/guardado externo requiere confirmación
+  del titular. App Store exige una versión nueva para cambiar URLs de
+  privacidad, soporte y marketing; los tipos de datos sí pueden corregirse de
+  inmediato.
+- El Centro de ayuda móvil añadió contacto operativo con
+  `soporte@dopmi.org`, advertencia contra el envío de credenciales/datos de
+  tarjeta y alternativa visible si el dispositivo no abre el cliente de correo.
+  `flutter analyze`, las 99 pruebas Flutter y los 12 controles de configuración
+  aprobaron. La revisión contra las definiciones oficiales de Google retiró del
+  CSV la compartición por proveedores/acciones iniciadas por el usuario y los
+  datos de tarjeta que Stripe Checkout recibe directamente; quedan 15 tipos,
+  cero publicidad/personalización y cero compartición declarada.
+- App Store App Privacy quedó publicada con 15 tipos, sin seguimiento y sin
+  publicidad/marketing. Nombre, correo, teléfono, dirección, ubicación
+  aproximada, mensajes, fotos, otro contenido, identificadores, compras,
+  interacción y diagnósticos se vinculan con la cuenta o instalación según la
+  definición de Apple. Se creó la ficha 2.3.3 **En preparación para el envío**,
+  con publicación manual, sin compilación y sin añadirla a revisión. En esa
+  versión se guardaron privacidad `/privacy-policy`, opciones de privacidad
+  `/delete-account`, soporte `/support` y marketing `/`; no implica lanzamiento
+  público. En Google Play se habilitó el acceso local de la extensión, se importó
+  el CSV y la vista previa confirmó 15 tipos recopilados, ninguno compartido,
+  cifrado en tránsito y las URLs vigentes de privacidad y eliminación. El
+  titular confirmó el guardado y Play Console respondió `Change saved`. En
+  Publishing overview figura exactamente un cambio no enviado: `Data safety —
+  Complete Data safety questionnaire`. Con autorización separada, se envió ese
+  único cambio; las comprobaciones automáticas terminaron sin incidencias y
+  Publishing overview muestra `Your changes are now in review`. El aviso de la
+  URL histórica permanece visible mientras Google resuelve la revisión.
+- El aviso de política de Google Play se inspeccionó por separado: identifica la
+  URL histórica `https://dopmi.org/pages/privacy-policy` como inválida y exige
+  guardar la corrección y enviarla a revisión. La pantalla vigente de Política
+  de privacidad ya muestra `https://dopmi.org/privacy-policy`; el botón Guardar
+  está deshabilitado allí porque esa corrección ya quedó registrada. El aviso no
+  se declarará resuelto hasta que Google procese el envío.
+- Decisión del titular: H10.4 se cierra con la declaración Data Safety enviada a
+  revisión y App Privacy ya publicada. Apple no permite enviar la ficha 2.3.3 a
+  revisión sin seleccionar una compilación; ese envío se aplaza hasta terminar
+  los demás pendientes y disponer del candidato final. También se reconsultará
+  entonces la resolución del aviso histórico de Google. Las URLs y textos ya
+  guardados se conservan; no se inició lanzamiento público.
+
+## H10.5 — aislamiento y candidato conjunto — 29 de septiembre de 2026
+
+- Supabase test `ohqxranynackjignryep` y producción `ysaoeuidcvgtlmphmeyb`
+  continúan separados y `ACTIVE_HEALTHY`. En producción se comprobaron cero
+  usuarios Auth, perfiles, donaciones, objetos Storage, secretos Vault y secretos
+  personalizados de Edge Functions. Los cuatro buckets existen vacíos y las
+  siete funciones actuales están desplegadas, pero sin secretos Stripe no pueden
+  procesar dinero real.
+- La configuración Auth de producción se inspeccionó directamente: altas,
+  vinculación manual y acceso anónimo están apagados; Google y Apple figuran
+  deshabilitados. Test conserva sus proveedores de aceptación. No se modificó
+  configuración remota durante esta auditoría.
+- Los advisories de seguridad de ambos proyectos coinciden: 27 tablas privadas
+  con RLS y sin políticas deliberadamente inaccesibles, 15 funciones
+  `SECURITY DEFINER` ejecutables por `anon` y 68 por `authenticated`, ya
+  cubiertas por los controles servidor/titular documentados. Test añade la
+  advertencia de protección de contraseñas filtradas, diferida a H12 por requerir
+  Supabase Pro. Referencias: [RLS sin políticas](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy),
+  [`anon` y SECURITY DEFINER](https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable)
+  y [`authenticated` y SECURITY DEFINER](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable).
+- Puertas locales: configuración móvil **12/12**, administración **23/23** y
+  build de producción, backend/PostgreSQL **405/405**. Flutter no está instalado
+  en este equipo; análisis y pruebas aprobaron dentro de los dos workflows
+  reproducibles de Codemagic.
+- El SHA `0a25ba81fc39192c772ca0bbe4453697fb9ca905` produjo ambos candidatos.
+  [Android Codemagic `6abc62eb0f583f5c4835b814`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc62eb0f583f5c4835b814)
+  aprobó configuración, Firebase, análisis, pruebas, firma, AAB y Publishing;
+  Google Play confirmó **2.3.3 (281)** disponible para testers internos y
+  desactivó 279. [iOS Codemagic `6abc62ec0f583f5c4835b816`](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc62ec0f583f5c4835b816)
+  aprobó configuración, Firebase, análisis, pruebas, firma, IPA y Publishing;
+  App Store Connect confirmó **2.3.3 (282)** `Finalizado`, **En pruebas** y
+  asignado a `DopMi Inner Team`.
+- H10.5 queda cerrado por publicación interna trazable y aislamiento comprobado.
+  La instalación/actualización de 281/282 y los recorridos integrales pertenecen
+  a H11. La revisión pública de la versión Apple y la reconsulta del aviso
+  histórico de Google continúan aplazadas hasta el candidato final.
+
+## Inicio H11 — 29 de septiembre de 2026
+
+- Se fijó la matriz de aceptación en `docs/h11-acceptance.md`. La referencia de
+  Irlanda continúa sin cambios en `a246fa6f42ec517aae264d7fbd2358d647c4f840`;
+  no hay una diferencia nueva que reabra H8.
+- H11.1 queda acreditado por Android 281 e iOS 282, ambos desde
+  `0a25ba81fc39192c772ca0bbe4453697fb9ca905` y disponibles en sus canales
+  internos. La instalación/actualización y los recorridos del build exacto aún
+  requieren los dispositivos del titular.
+- Se documentó una reversión de distribución segura: Android usa un rebuild del
+  último SHA bueno con número mayor; TestFlight retira el build del grupo y
+  reasigna o recompila con número mayor. El ensayo no altera 281/282, datos,
+  migraciones ni movimientos financieros. Falta ejecutar el ensayo de
+  comprobación y registrar revisión externa/cero defectos críticos o altos.
+- El ensayo de reversión terminó `ROLLBACK_REHEARSAL_OK`: Git puede reconstruir
+  `d57aea8aef3fad2687b177d2f5ed3634c6672849`; frente al candidato, el único
+  cambio de app es el acceso por correo del Centro de ayuda. Ese SHA conserva
+  workflows internos, identidad `com.mycompany.dopmi` y ausencia de envío a
+  App Store. No se retiró ningún build ni se publicó otro porque no existe un
+  defecto que amerite una reversión real. H11.4 queda cerrado.
+- El titular aportó la captura `1000346499.jpg`: Android abre Configuración y
+  muestra **Versión 2.3.3 (281)**. Queda acreditada la instalación del candidato
+  Android exacto. Aún faltan los recorridos funcionales del build y la
+  instalación de iOS/iPadOS 282; no se atribuye aceptación por la captura sola.
+- En Android 281, cerrar completamente y volver a abrir Dopmi conservó la sesión
+  sin pedir acceso ni repetir términos. Persistencia aprobada; el cierre de
+  sesión y reingreso se verifican por separado.
+- El titular aportó captura de iPadOS: Dopmi abierto desde TestFlight muestra
+  **Versión 2.3.3 (282)** en Configuración. Android 281 e iPadOS 282 quedan
+  instalados y corresponden al mismo SHA; la captura horizontal acredita que
+  las acciones principales son visibles, no todavía los recorridos funcionales.
+- Android 281 completó el recorrido de identidad: cerrar sesión regresó al
+  acceso, cancelar Google no creó sesión y un segundo intento entró con la misma
+  cuenta/perfil sin volver a pedir términos. Persistencia, cierre, cancelación y
+  reingreso Google quedan aprobados para el candidato exacto.
+- iPadOS 282 conservó la sesión después de cerrar completamente y volver a abrir
+  Dopmi, sin pedir acceso ni repetir términos. Persistencia aprobada; cierre de
+  sesión y accesos Google/Apple permanecen como pruebas separadas.
+- iPadOS 282 completó Apple nativo con una identidad nueva. Apple ofreció
+  compartir u ocultar el correo; el titular eligió Ocultar mi correo y Dopmi
+  exigió 18 años/términos antes de permitir acceso. Cerrar sesión retiró el
+  acceso; cancelar Apple no creó sesión; repetirlo entró correctamente y la
+  sesión persistió tras reiniciar. No se registró el alias privado. La creación
+  separada, con gate legal, confirma que no hubo fusión silenciosa por correo.
+- Google en iPadOS 282 también aprobó: cancelar dejó la app sin sesión; el nuevo
+  intento regresó al perfil Google existente sin repetir términos y la sesión
+  persistió al reiniciar. Identidad social queda aprobada en Android 281 e
+  iPadOS 282; Apple permanece exclusivo de iOS/iPadOS.
+- En ambos candidatos, el titular recorrió Adoptar, Apoyar, Perfil,
+  Configuración e Información básica sin pantalla negra, bloqueo ni pérdida de
+  sesión. Ayuda/FAQ y el botón de soporte funcionaron sin enviar correo; los
+  términos y la pantalla de privacidad/eliminación abrieron y regresaron
+  correctamente. No se inició eliminación.
+- Android 281 e iPadOS 282 aprobaron catálogo y comunicación: filtro
+  aplicar/limpiar, detalle, guardado/retirada, contacto, envío, reapertura y
+  cierre. El texto sintético `Prueba H11` persistió una sola vez al reabrir; no
+  hubo duplicado visible.
+- Publicar → Adopción aprobó el recorrido físico en ambos candidatos: foto no
+  personal, nombre sintético, salida/reinicio y recuperación del borrador sin
+  enviarlo. Android manejó rechazo inicial y concesión posterior del permiso;
+  iPadOS funcionó con acceso limitado a fotos.
+- Ambos candidatos aprobaron el smoke financiero sin movimientos nuevos:
+  Aportar hasta monto/resumen y regreso previo a Checkout; Método de pago,
+  Suscripción e Historial sin pantalla negra. No se cambió tarjeta, activó o
+  canceló un plan ni se generó un pago. Se reutiliza la evidencia económica H5,
+  pues el candidato sólo añadió el acceso de soporte y no cambió esos módulos.
+- Consentimientos aprobados en ambos candidatos: Analítica y Diagnóstico
+  persistieron al activarse, se retiraron por separado y permanecieron apagados
+  tras reiniciar. No se envió diagnóstico controlado nuevo; la recepción y cero
+  emisión posterior ya están acreditadas en H10.3 sobre el mismo código.
+- H11 detectó un fallo intermitente y multiplataforma al cargar fotos privadas
+  del catálogo: Android 281 e iPadOS 282 podían mostrar `Cargar foto`. El cliente
+  generaba URLs firmadas por sólo 60 segundos, insuficientes tras suspensión o
+  carga diferida. La corrección mantiene el bucket privado, amplía la URL a diez
+  minutos y renueva una sola vez automáticamente antes de dejar el control de
+  reintento manual. Se añadió una prueba que acota la vigencia entre cinco y
+  diez minutos. Quedan pendientes CI, candidatos conjuntos nuevos y repetición
+  del catálogo en ambos dispositivos; 281/282 ya no son finales.
+- Corrección de fotos publicada desde
+  `94cb82e2496e4943065d6464962a111fa719bedd`. GitHub CI
+  [36660362119](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36660362119)
+  y [36660356662](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/36660356662)
+  aprobaron los cuatro trabajos, incluido análisis, pruebas Flutter y builds de
+  desarrollo Android/iOS. Codemagic Android
+  [6abc771aec8422516e05ee18](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc771aec8422516e05ee18)
+  publicó **2.3.3 (283)**; Play confirmó `Available to internal testers`, bundle
+  283 activo y 281 desactivado. Codemagic iOS
+  [6abc7724e5d014fada0172c5](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6abc7724e5d014fada0172c5)
+  publicó **2.3.3 (284)**; App Store Connect confirmó `Finalizado`, `En pruebas`
+  y `DopMi Inner Team`. Falta instalar 283/284 y repetir carga/reintento de fotos
+  en ambos dispositivos antes de cerrar el defecto y H11.
+- Nuevo defecto H11 reproducido en código: una sesión con consentimiento vigente
+  podía mostrar `Antes de continuar` durante el intervalo entre Auth restaurado
+  y perfil cargado. El gate ahora distingue la consulta en curso y muestra
+  `Restaurando sesión`; si la consulta falla continúa bloqueando con el aviso,
+  por lo que no se debilita la protección de mayoría de edad. Se agregó una
+  prueba con carga deliberadamente demorada que prohíbe el destello. Por decisión
+  del titular, esta corrección se agrupa con los siguientes cambios y el QA
+  físico/visual final de Irlanda; no se pide otro recorrido manual completo.
+- Android 283 quedó instalado desde Play Internal Testing y verificado por ADB
+  en un Samsung SM-S938B con Android 16. Conservó la sesión durante la
+  actualización, mostró `Versión 2.3.3 (283)` y cargó la foto del catálogo tras
+  suspensión superior a 60 segundos. Una apertura en frío sin Wi-Fi ni datos
+  cerró de forma segura; tras restaurar la red, dos pulsaciones de reintento
+  recuperaron la misma sesión y la foto sin duplicados. La ausencia de
+  recuperación automática y la aparición temporal del consentimiento vigente
+  quedan como fricción media, no como pérdida de identidad. Texto ampliado
+  1.30, etiquetas semánticas y orientación horizontal conservaron las acciones
+  esenciales; se restauraron los ajustes del dispositivo. Falta TalkBack,
+  correo/retorno, iOS 284 y revisión visual externa para cerrar H11.2/H11.3.
+- TalkBack de Samsung se activó temporalmente sobre Android 283, conservando el
+  servicio de accesibilidad existente. El lector recorrió por foco controles
+  etiquetados y activó una ruta Guardián identificada como prueba; después se
+  restauró exactamente la configuración previa. Un callback inválido
+  controlado abrió el estado recuperable y el regreso conservó la sesión, sin
+  acreditar entrega desde correo.
+- Decisión del titular, 30/9: concluir H11 con toda la evidencia autónoma
+  disponible en Android y trasladar a H12 la entrega real de correo, regresión
+  iOS del candidato final y revisión visual de Irlanda. No quedan defectos
+  críticos/altos en lo ejecutado; la recuperación de red que requiere reintento
+  permanece como fricción media. H12 será el último hito previo al MVP e inicia
+  con un candidato conjunto que integre el parche de consentimiento y los
+  cambios finales de Irlanda. Este avance no acepta visual/iOS pendientes, no
+  publica las tiendas y no autoriza dinero real.
+
+
+Continuidad360–361, 2/10/2026: recuperación de cambios de tarjeta muestra «Continuar actualización» si sólo conoce la solicitud del servidor; no adivina tarjeta ni promete Checkout.35pruebas dirigidas aprobadas7s y analyze limpio31.9s sobre cambios4ad75e4. Full504/5043:45 sobre0c4dbee precede360;210archivos probados coincidentes. Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada360.
+
+Fixture Stripe361c real cero, servicio Guardian de producción con adaptador de checkpoints local explícito: Mastercard predeterminada confirmada, calendario idéntico, respuesta aceptada perdida y recuperada sin segunda actualización (calls1), cargos/PaymentIntents0, limpieza verificada. No equivale a Auth/SQL/worker integrado ni revisión instalada. Commit0e487e3; primerfixture361 rechazópause_collection encreate y quedólimpio, corregido preparando pausa enupdate. Eliminar/alta independiente/billeteras y matrizglobal/aceptación siguen pendientes. Sin Codemagic/push; único candidato final según titular. Objetivo activo.
+
+
+Loop362, servidor local20db360: eliminación de tarjeta no activa comparte trabajo/owner/revisión/lease/expiración/idempotencia de Guardian, consulta usos en Stripe y conserva default/calendario. Recupera detach aceptado con respuesta perdida sin segunda escritura; cancelar anteswrite bloquea detach.475/475 backend22.44s y Deno3entrypoints limpio. PreflightDEV confirmó migration51924 y columna remove_saved ausente; no deploy/Stripe realremove/UI/CM/push. Siguiente: comparar/aplicar migración y overlays de tres consumidores, conectartrash/confirmación/retry/200% yfixturezero. Progreso técnico, no cierre de paridad. Registro detallado en parity-loops.md.
+
+
+Loops363–364, 3/10/2026: eliminación disponible en DEV(guardian-client17/payment-worker24/stripe-webhook24), migraciónlocal60000/remota55326; overlays0dif y18smoke5.61s. Cliente8b7798a conecta SVGtrash Source, confirmación blanca/roja, intención duradera y recuperación incluso sin targetlocal.42dirigidas9s/analyze31.5s,HTTP4extra válido y4capturas3s inspeccionadas,314/37 inventario. Card sólo desaparece tras estado/lista propietario fresco; in_use no acusa éxito. Hallazgo200%overflow corregido; coloresMaterial corregidos tras captura. NoStripe réelremove/Authintegración/teléfono niCM/push acreditados. Próximo: fixtureStripezero de detach/perdidarespuesta, toastSource2600ms, altaindependiente/billeteras ymatrizglobal. Preservarobjetivo completo.
+
+
+Loops365–366, 3/10/2026: Stripe test detach real una sola llamada con respuesta perdida, default/calendario intactos y limpieza comprobada (b2706d1); checkpoints locales, no integración Auth/SQL atribuida. Feedback Source inmediato2600ms sólo tras lista confirmada, sin replay/histórico;44dirigidas8s/analyze limpio/capturas2nuevas,316/37 inventario. Véase parity-loop366. Full504 anterior requiere gate final. SinCodemagic/push: preferencia del titular candidato único al completar objetivo. Altaindependiente/billeteras/matrizglobal/aceptación siguen abiertas.
+
+
+Loop367, 3/10/2026: base local de alta de tarjeta independiente (sin cobro/cambioGuardian) en migración70000 y saved-card.mjs.19casos nuevos SQLPGlite/servicio; gatebackend494/49426.50s handle62271exit0, Node/Deno limpios. PreflightDEVlatest55326/tablasnuevasausentes; NO migración/deploy/Stripe real/CM/push. Pendiente conectar cliente compartido con altaGuardian para evitar doblecustomer, lectura nonsuscritos, endpoint/runtime/webhook/worker y UI/aceptaciónreal. No es función completa aún ni cierre de objetivo. Referencia a3c969c sin cambios; detalle parity-loops367.
+
+
+Loop368, 3/10/2026: integración LOCAL de alta independiente en endpoint/runtime/worker/webhook/reader nonsuscrito; migration71000 comparte/snapshotcustomer con nuevaaltaGuardian y bloquea dos altas simultáneas.503/503backend24.41s handle89380exit0 y Deno3entrypoints7.45s limpios. No migration70000/71000 ni EdgeDEV nuevos todavía; UI/capturas/fixtureAuthStripe y default/remove nonsuscrito/billeteras/matrizglobal pendientes. NoCM/push/goalcomplete. Siguiente preflight remoto/overlays; no interpretar gatelocal como publicación/aceptación instalada.
+
+
+Loop369, 3/10/2026: alta independiente DEV aplicada una vez, local70000/71000→remote65211/65233. Worker25/webhook25/cliente18ACTIVE, overlays17/16/16archivos0dif yguards/ACL/RLS verificadas;21smokeremoto5.77s b935fbexit0. No Authmutación/StripeCheckoutreal/UI/device aceptados aún; sinflags/PROD/CM/push. Siguiente UIAgregar/retorno yfixtureAuthStripe; generaldefault/remove/billeteras/matrizglobal pendientes. Evidencia parity-loops369/migration-history-audit. Objetivoactivo.
+
+
+Loop370, 3/10/2026: UIAgregar independiente (noactivar/cobrar/cambiardefault), key propia persistida/consentimiento y recuperación porowner; saved+cardlistaFresh anuncia y confirma, no historical/replay.58/58dirigidas11s40889exit0, analyze19.1s78738limpio,4capturas4s56682inspeccionadas normal200%,320/37. READMEparity-loop370 detalla límites. PR6MCPabiertodraft/refsunchanged; gh no disponible. Sin AuthCheckoutpositivo/Stripe real/device/CM/push ni objetivo completo. Siguen billeteras/composiciónauxiliar/default-remove sinGuardian/apoyopuntualsavedcard/matrizglobal; próximofixtureAuthStripe real.
+
+
+### Loop371 — Auth y Checkout reales para Agregar tarjeta, 3/10/2026
+
+Referencia remota a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Fixture desechable Auth confirmada en DEV y customer Stripe test, sin cuenta humana: login real, consent/allowlist inválidos400, RPC privado403/42501, lista vacía antes de alta, mismo key devuelve la misma sesión pendiente. Checkout hosted completado por UI con Visa sintética4242; SetupIntent succeeded/off_session, sesión setup/test sin payment_intent ni subscription. Endpoint real devuelve saved/card_id y ownstate coincide; methods una tarjeta4242, defaultfalse y siete campos minimizados. Replay saved idéntico. Gate acceptance verify exit0/b2c4f0 5.46s; charges/PaymentIntents/invoices/subscriptions0.
+
+Chrome volvió a payment-return pero mostró ERR_BLOCKED_BY_CLIENT; PNG checkout-return-blocked conserva evidencia. GET independiente200/textplain/no-store y CSP sandbox no demuestra retorno visible correcto ni identifica la causa. No se desactivaron protecciones/extensiones. Corregir/investigar retorno antes de cerrar recorrido; alta server integrada probada, no aceptación instalada.
+
+Limpieza Stripe verificada deletedtrue (cleanup exit0/869d9f), SQL propia protegida por UUID/email/job/key y ausencia de filas financieras: Auth/identidades/sesiones/refresh_tokens/jobs/wallet0. Profiles no cascada desde auth.users: se observó1 y eliminó explícitamente sólo UUID fixture; comprobación final0. Journal externo limpio, contraseña retirada; ningún secreto/captura con tarjeta real comprometido. No producción/flags/cobros/CM/push. Objetivo completo sigue pendiente: retorno, default/remove sin Guardian, billeteras, apoyos con tarjetas y matriz/aceptación global.
+
+
+### Loop372 — diagnóstico de representación y retorno de tarjetas, 3/10/2026
+
+Previo371 progreso e38a59c: Auth+Checkout Stripe test confirmado y fixture limpio. Referencia a3c969c reconsultada sin cambios. Reproducción local en Chrome controlado: text/plain CSPdefaultnone+sandbox bloqueado; mismo texto con sandbox allow-same-origin bloqueado; mismo texto sólo defaultnone también bloqueado. HTML con sandbox/defaultnone abre y muestra contenido. Esto contradice atribuir el fallo exclusivamente a sandbox; apunta a manejo de MIME en este entorno, sin identificar extensión/causa exacta ni demostrar defecto en Android. No se desactivaron protecciones, no se cambió CSP y no se afirmó retorno instalado aceptado. Tres servidores locales terminados por sus handles29963/35069/44564.
+
+Retorno agrega instrucciones reales Perfil > Métodos de pago, consultar el mismo intento y guardar sin cobro/activar Guardian. Supabase dominio estándar continúa text/plain, sin HTML/deep-link inventado ni confiar en parámetros. Deno check exit0/dbdf48 3.06s. Preflightpayment-return9ACTIVE únicoarchivo coincidefuente; deploy sólo éste en DEV a10ACTIVE, verify_jwtfalse previo conservado, cuerpo posterior coincide CRLFnormalizado. HTTPsmoke21/21 exit0/a9ab24 5.82s incluyendo copia nueva/CSP/no-store/nosniff. No schema/flags/Stripewrite/PROD/CM/push. Loop371 confirmaalta servidor, retorno visible en browsercontrolado queda limitado; aceptación teléfono y resto objetivo pendientes.
+
+
+### Loop373 — actualización por gesto en Métodos de pago, 3/10/2026
+
+Previo372 progresof654bbf: retorno10DEV y diagnósticoMIME. Referencia remota a3c969cd9103fd46dc5cd886999912526ce75efb sin cambios. Métodos agrega RefreshIndicator negro/blanco sobre listaAlwaysScrollable: permite consultar el estado propio deslizando incluso lista corta/vacía, bloquea lectura desde gesto mientras busy/confirming o identidad obsoleta. Reusa load existente, no crea Checkout/consent/key ni anuncia éxito optimista. Composición en reposo, confirmaciones y feedback permanecen; botónActualizar y enlaceGuardian extrasSource aún pendientes junto billeteras, default/remove sinGuardian y uso tarjeta en apoyo puntual. Es adaptación de actualización al teléfono, no prueba de un gestoidéntico del mockup web.
+
+Primer comando fue lanzado desde scratch con rutas relativas de repo incorrectas: format/copy fallaron, test viejo detenidohandle93736 y no computado. Sincronizados los dos archivos propios, test50 primero49pass/1fail porque drag400 bajo viewport artificial2400 no alcanzaba umbral;900 pasó50/50 10s handle96816/exit0. Prueba final usa390x852/drag400 y comprueba una lectura adicional, calls0/opened0/emptyreal; focused1/1 1s handle48447/exit0. Analyze limpio41.4s61658/exit0 sobre mismo códigoapp. No captura visual nueva/aceptacióndevice/fullnuevo, suite504/359 antecede373. Sin backend/schema/flags/Stripe/CM/push. Goal completo sigue abierto.
+
+
+### Loop374 — composición de tarjetas contra Source, 3/10/2026
+
+Previo373 progreso45de3ab. Referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada; CSS content-pad20/16/32 y list-stackgap10, PaymentMethods sin enlaceGuardianextra. Cliente ajusta heading/filas/Agregar a10 y paddinginferior32; elimina enlace secundario Guardian sólo en Métodos, acceso real Perfil > Suscripción y pagos conservado. Actualizar estado aún extraSource; billeteras/default-remove sinGuardian/apoyo cardguardada pendientes, no pantalla completa declarada.
+
+50/50guardian10s handle18944/exit0 despuésespacios antesquitarenlace. Capturador final filtro payment-methods-cards exit0/80981 6s; normal377x852 y320/text200% guardadasparity-loop374 y ambas inspeccionadas. Lista realwidget condatos sintéticos, íconos/acciones/consent/feedbackcapturados por filtro sinoverflow; no teléfono. Capturas muestran billeteras faltantes y Actualizar extra, no ocultar brechas. Analyze final limpio25.9s handle47417/exit0. Sin backend/flags/dinero/CM/push. Continúa objetivo completo.
+
+
+### Loop375 — base de acciones independientes de tarjeta, 3/10/2026
+
+Previo374 progreso030bb70. Referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. Nuevo saved-card-method.mjs local: jobserverpropio/claimlease/snapshot/writeauthorization/prooffresh/release, rechaza subscription_id para conservar flujoGuardian. Default actualiza sólo customer.invoice_settings.default_payment_method; remove desvincula únicamente cardtestpropia sin uso/default. Suscripciones activas bloquean default; facturasdraft/open y PaymentIntentsen curso bloqueanuso, factura con método heredado aún no resuelto bloquea eliminación. Listadospaginados/incoherentes fallan cerrado; live/foreign/noncard rechazan. No crea ni paga facturas/PaymentIntent/subscriptions ni Checkout. Key estable porjob; trasrespuesta aceptada perdida consulta propiedad/default/detach y no repite write.
+
+13tests nuevas adaptadorcheckpoint yStripefake: exactmutation, lostresponse/replay, owned/live/noncard, cancelanteswrite/expired, uso/sub/invoice/PI, incompletepage y rechazoGuardian. Primer12/12 dirigido6058bc antesguardinvoiceheredada; fullfinal516/51627.23s3050/exit0 incluye13 y todasmigracionesSQL previas. Deno check móduloexit0/22e0f1, no entrypointruntime nuevo porque aún no importado.
+
+Esta base NO está conectada/desplegada y no acredita acciones de cuentas sinGuardian enapp. Siguiente contratoPostgreSQL con registryowner/confirmed/RLS/ACL/sharedlock ambasdirecciones/intentstable/lease/expiry23h, endpoint allowlist/minimizedstate yreaderfresh, workerreconcile/UI/capturas/AuthStripeacceptance. Nada de dinero real/flags/migración/PROD/CM/push. Móvil full504/359 continúa anterior; objetivo global abierto.
+
+
+### Loop376 — reservas privadas SQL para acciones sin Guardián, 3/10/2026
+
+Previo375 progreso7696c1d. Referencia a3c969cd9103fd46dc5cd886999912526ce75efb sin cambios. Migración local20261003080000_saved_card_methods nueva: registrycustomer derivado delpropietario, jobsprivados RLS/ACL, key/action/targetimmutable y replay; consentexplicit versionada, owneractivo/emailconfirmada, no cliente browser. CualquierregistryGuardian usa flujoGuardian existente; altas/activacionespendientes bloquean reserva. Locksdopmi-saved-card compartidos y guards añadidos enambossentidos: savedsetup/activación no avanzan sobre methodpending/attention. Rate10/h, lease2min, snapshotanteswrite, autorizaciónjustoantesmutación, comprobaciónde cuenta nuevamente, targetproofexacto para applied/removed. Expiraciónsinwrite y ventana23h despuéswrite→attention, no repetir mutación incierta. Stateauthowner minimizado key/action/status/card_id, sincustomer/session/secret.
+
+Seis testsSQL nuevos: key/targetreplay/browserdenial/otherstaffstate; lease/snapshot/proof; expired/attention23h; methodbloquea setup/activation; reverseguards; confirmaciónrevocadaanteswrite. Toda migración cargada enPGlite. Primer comando ruta incorrecta no contó; filtroNode provocó PGliteclosed enbootstrap y no se usa como gate. Ejecucióncompleta425 primero424pass/1fail por helpersavedCardCall inexistente, corregido a savedCardRpc/activationPrepare. Gate520/52022.39s86352 con4casos; final522/52222.95s19548/exit0 incluyeseis nuevos. gitdiffcheck limpio. No stackDocker/pgTAPnuevo ni aceptaciónremote.
+
+NO aplicada remotamente/endpoint/worker/UI conectado. ServicioStripe375 tiene checkpointadapterfake; SQL376 aún necesita integrarse con servicio y pruebasrespuestaperdida desde RPCreal local, luego preflightdefinicionesremotas/deployautorizado/cliente y fixtureAuthStripe. No migración repair/replay/PROD/flags/CM/push/dinero. Objetivo global sigue abierto, dinero test-only.
+
+
+### Loop377 — integración SQL/Stripe/endpoint de acciones independientes, 3/10/2026
+
+Previo376 progreso89c9e0e. Referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. savedCardMethodService.submit preparaSQL owner/key/consent/action/target y run; devuelve sólo key/action/status/card_id, sincustomer/lease. Reconcile usa candidatesRPC25 y contabilizaapplied/removed/fail. Runtime importa módulo y RPC privado con erroresprepare409tipados; worker invoca sólo bajo flagchangesexistente y cuenta saved_methods_applied. Guardian-client añade acciones saved_card_default/remove, allowlistexactasinrevision/owner/customer, Authconfirmada y nueva consentversion; flujoGuardianaceptado conserva susacciones/revisión/consent. Entrycliente usa mismafunciónruntime testkey/API/flags.
+
+Dos pruebas nuevas integran servicio con RPCPostgreSQL/PGlite real y Stripefake: default/remove aceptados conrespuesta perdida, pendingpersistido, lease liberada, recuperarporlectura y replay sin segunda escritura. ConfirmaciónSQLexacttarget y receiptminimizado; customerbalance0 y cero filasdonación/activación. Otrasdos HTTP cubren allowlist/consent/card/op y cuenta no confirmada sinwrite. Full526/52626.00s75727/exit0; Deno tres entrypoints limpio6.39s192b57 despuésmaperrorprepare. No aceptaciónStripe/Authreal deestasacciones, ni UI nueva.
+
+Migraciónlocal80000 y overlays aún NO desplegados. Próximo preflightfuncionesdefiniciones/historialremoto y aplicar80000una vez, preservarbundlesremotos/flags y verificarRPC/Edge, después accionesmóvil nonsuscrito/default/remove/capturas/fixtureAuthStripe. Sin schema/flags/cuentas/Stripewrite/PROD/CM/push; dinero test-only y objetivo global conservado.
+
+
+### Loop378 — acciones independientes desplegadas en DEV, 3/10/2026
+
+Previo377 progreso3ffc721 (backend526/52626s/Deno3entrypoints6.39s). Referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. PreflightDEVohqxranynackjignryep latest20261003065233/tablemethodausente, fragmentossetup/activationpresentes. Bundlesworker25/webhook25/client18 recuperados, archivosareemplazar coincidenbase89c9e0e normalizandoCRLF. Migraciónlocal20261003080000_saved_card_methods aplicadauna vez como remote20261003075406/saved_card_methods. Post RLStrue/serveranon-authfalse/service_roletrue/stateauthtrue/anonfalse/guardssetupactivationtrue. No repair/replay/rename/dbpush/PROD.
+
+Overlay mínimo yordenworker→webhook→client: worker25→26 runtime reemplazado+saved-card-method nuevo/16otrosconservados/18archivos; webhook25→26 mismo/15otrosconservados/17; client18→19 runtime+handler+indexreemplazados/módulonuevo/13otrosconservados/17. TodosACTIVE verify_jwtfalse previo conservado, autenticacióngetUser/worker-secret/firmadewebhook sigue enentrypointspreservados. GetEdge posterior18/17/17 coincideoverlay0mismatches/0extras. No publicarotroscambiosajenos.
+
+Smokeampliado dosRPC nuevos23/23real7.84s41ac01/exit0: cliente401/worker401/webhook400sinfirma,return200 yserver/stateanónimos401/42501 explícito. No RPCmissing. No Authpositivo/Stripewrite/reconcilepositivo/device acreditados. No flags/cuentas/dinero/CM/push/goalcomplete. Siguecableadoclientepropietario/consent/key/retry/listaconfirmada/accionesnonsuscrito/capturas/fixtureAuthStripe y restoobjetivoglobal.
+
+
+### Loop379 — repositorio móvil de acciones sin Guardián, 3/10/2026
+
+Previo378 progresoaa9531d; servidorDEV RPC75406/client19/worker26/webhook26. Fuentea3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. GuardianRepository.savedCardMethodState consulta ownerRPC sin identificadorbrowser; receipt exigeUUID/actiondefault-remove/statuscompatible/pmopaque y conserva sólo key/action/status/card_id. submit saved_card_method usa accionesendpointnuevas/key/target/consentversion exacta, sinrevision/owner/customer; response200 ykey/action/cardmatching requeridos, no éxitooptimista. RutasGuardianprevias sincambios.
+
+Trespruebas nuevas HTTPdefault/remove y validaciónreceipt: AuthBearer, bodyallowlist, misma keyreplay, camposprivados descartados y RPCowner sinparams (JSONnull). Primer9test7pass/2fail por MockResponse sinrequestrequiredPostgrest, corregido; luego2expectations{}erróneas para RPCsinparams corregidas a null. Gatefinal59/59(9HTTP+50Guardian)21s96565/exit0, analyze limpio40.3s47892/exit0; scratch dosarchivos propios sincronizados. No fixtureAuthrealnuevo/captura/device/globalfullnuevo.
+
+Esta capa NO habilita todavía botonesnonsuscrito: siguiente loopstateowner/keypersistida/consent/confirmaciones/retry y lista fresh antesfeedback/pérdida de fila. Billeteras, apoyo puntual con tarjeta y matrizglobal siguenpendientes. Sin backend/schema/flags/dinero/CM/push; objetivoactivo.
+
+
+### Loop380 — acciones reales de tarjetas sin Guardián en el cliente, 3/10/2026
+
+Previo df7c276. Referencia irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada al cierre sin cambios. Ruta Métodos de pago sin registro Guardian habilita predeterminar/eliminar tarjeta no predeterminada mediante endpoint existente de loop378. Consentimiento explícito, UUID y destino conservados por propietario antes de enviar; mismo intento en reintento, recuperación del receipt propietario pendiente y bloqueo de nueva escritura si no se puede consultar el estado. Nunca elimina la fila ni anuncia éxito por respuesta optimista: exige receipt propio terminal y lista fresca compatible. Rutas Guardian aceptadas conservadas. Terminal histórico no repite feedback; rechazo/expiración libera intento con aviso.
+
+Gate final 64/64 (55 Guardian+9 HTTP), 11s, handle25127/exit0; analyze limpio29s handle88099/exit0. Pruebas nuevas default/remove con respuesta perdida y misma key, estado indisponible, recuperación servidor sin almacenamiento local y lista fallida sin éxito prematuro/repetición. Una invocación se lanzó por error desde root sin pubspec; otra nombró archivo HTTP inexistente (55 widgets pasaron pero gate exit1); corregidas, no se cuentan como aprobación. Analyze previo señaló9infos de llaves, corregidos, sin errores. Capturer cuatro estados/3s handle71941/exit0; normal377x852 y320/text200%, sin overflow. Inspección visual detectó palabra partida/título y acciones desalineadas en texto grande; título más corto y acciones centradas, recapturadas/revisadas. Inventario324 estados/37URLs.
+
+No aceptación Auth+Stripe real nueva de default/remove, ni dispositivo. Cuentas con registro Guardian cancelado no cubiertas por rama independiente; wallets reales, tarjeta en apoyo puntual, composición completa y matriz global siguen pendientes. Full móvil504/359 antecede estos cambios; siguiente gate regresión completa. Sin schema/backend/flags/dinero real/CM/push; Codemagic únicamente al completar objetivo global.
+
+
+### Loop381 — regresión móvil completa y sincronización de recuperación, 3/10/2026
+
+Código probado b03d3a2ff9af2df7608dd8a301ae94957a2b1154, que incluye cliente380/909ea45. Primer full:537 aprobadas/1 fallida en3:18 (99126), case_photo_recovery_test asumía lectura y recuperación terminadas tras100ms; pumpAndSettle agotado, archivo aún abierto al cleanup/router dispuesto antes de finalizar. Dos intentos de esperar listener de ruta/lectura dentro de runAsync agotaron10s por coordinación de zonas de flutter_test; descartados. Corrección final únicamente en test: espera Future real del callback de recuperación dentro de runAsync, conservando archivo real, validación owner/status y navegación. No cambia producción ni autorización. Gate dirigido4/4 en1s,26693/exit0.
+
+Full final538/538 en3:35, flutter test --no-pub --reporter compact,47954/exit0, log externo Temp/dopmi-full-mobile-loop381-final.log. Analyze limpio199.3s77273/exit0; configuración12/12 en0.090s78c4c6/exit0.220 archivos tracked lib/test/tool coinciden scratch normalizandoCRLF; pubspec/lock y assets coinciden salvo licencia NOTO-EMOJI-LICENSE EOL. Inventario recontado324estados/37URLs, no nuevas capturas381. Supersede full504/359 y cubre cambios360–380. Sin CI nuevo, no dispositivo/aceptaciónIrlanda/Stripe remoto nuevo por este gate.
+
+Backend526/377, Deno3entrypoints y smoke23/378 mantienen alcance independiente. Próximo: aceptación Auth+Stripe de default/remove independientes, capacidades reales de wallets/uso tarjeta en apoyo y cierre de matriz global visual/motion/gestos. No recomponer funcionalidades ya verificadas por historial viejo. Guardián cancelado no está cubierto por rama independiente. No push/CM/flags/dinero real; objetivo activo, Codemagic únicamente cuando el objetivo global esté completo.
+
+
+### Loop382 — default/remove autenticados contra DEV y Stripe test, 3/10/2026
+
+Base b92ffb2. Fuente irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Preflight DEV latest75406/private.dopmi_saved_card_method_jobs y trigger perfil presentes. Cuenta sintética confirmada3ab27777-7306-4bcb-aac6-369ff923ba27@example.invalid (prefijo parity-methods-382), creada con trigger normal/perfil activo, cero Guardian/wallet previo. Password aleatoria se regeneró tras fallo del parser local de respuesta MCP; no exposición ni otra cuenta. CLI saved-card-methods-acceptance.mjs nuevo, journal sólo Temp. Stripe customer test cus_VN8g7ldAdGhIMC con metadata fixture/owner, dos PM reales desde tokens test Visa/Mastercard y default inicial preparado por SDK; wallet privado se insertó como preparación explícita de fixture. NO se presenta esta preparación como alta hostedCheckout ni uso móvil.
+
+Auth real/login confirmado, lista propia2tarjetas/default inicial, consent false/version incorrecta/owner/customer/revision rechazados400, anónimo401, serverRPC403/42501, ownRPC inicialnull. Primer verify falló porque el script envió selected_method_id (campo interno) en lugar de payment_method_id (contrato HTTP), sin jobs ni mutación; corregido. Verify final98899/exit0: default key72133ffe-336d-40a7-8883-7a2cf4420992 applied, ownRPC idéntico y lista fresca/default Stripepm_1UMOOp2ZjyMOQ0uLyiCX8a8Y; replay idéntico y cambio de destino misma key409. Remove keyd6278f76-e967-46ed-8743-29f6e5970e25 removed sobrepm_1UMOOp2ZjyMOQ0uLMa2GtwCM, customer null/ausente de lista, default nuevo intacto y replay idéntico. SQL jobs3754e2ff-a04a-4e9e-a09d-e29a661137b0/3902e8b1-1c2b-46f0-a01f-e5542476ae27: attempts1 cada uno, snapshot/write_requested true, selected=confirmed target y lease_untilnull. No recibos terminales sembrados.
+
+Stripecharges/PaymentIntents/invoices/subscriptions0 antes y después. Cleanup customerdeleted comprobado; SQLtransacción limitada al id/email/customer de fixture y dos jobs terminales, sin registros Guardian. Post users/identities/sessions/refresh_tokens/profiles/wallet/jobs0. Journal cleaned/sqlCleaned/stripeCleaned true, password/publishable retirados. Script node--check aprobado. Ningún recurso humano/PROD/flag/esquema/dinero live/CM/push cambiado.
+
+Prueba remota positiva de operaciones independientes acreditada; no pérdida TCP real, dispositivo ni aceptación visual por estas llamadas. Regresión móvil538/381 permanece vigente porque no hay app nueva.324capturas/37URLs sin nuevas. Próximo wallets reales/uso tarjeta en apoyo/cuentas Guardian canceladas y matriz global de paridad/motion/gestos. Objetivo activo y Codemagic sólo al completar todo.
+
+
+### Loop383 — base de guardado nativo de billeteras, 3/10/2026
+
+Base0c6e806. Fuentea3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. PaymentMethodsSourcewallet-grid gap12, botones56/r18/blancos/borde/icon18/gap8, toast vinculado simulado. Cliente productivo no tiene flutter_stripe ni merchantIdentifier/configPK; no se copió simulación. Documentación primaria confirma GooglePayLauncher SetupIntent y ReadyCallback, Apple Pay nativo requiere MerchantID/certificado/capacidad/chequeo dispositivo; Checkout hosted tiene disponibilidad propia y no garantiza billetera elegida. Se pidió por pregunta asíncrona MerchantID/nombre de variable PK test existente en Codemagic, sin credenciales. No respuesta ni configuración acreditada, no bloquea SQL/servidor.
+
+Módulo nuevo native-saved-wallet.mjs, aún no expuesto/integrado: SetupIntentcard/off_session/test y metadatajob/provider/consent; primera billetera comparte keycustomer con alta de tarjeta existente, checkpoint durable antesde SDKsecret. Receipt mínimo, no clientsecret terminal/expirado; native_ready previsto revalida autorizaciónSQL al entregar secret. Sólo confirma PaymentMethod real con customer/test/card/wallet.type elegido exacto; nuncaPI/cargo/default/Guardian. Leasefinally, creación idempotente ante respuesta perdida; vencimiento cancela SetupIntent, resuelve carrera por estado fresco antesde marcar expired/saved. Operaciones futuras native_setup/native_saved/native_ready requieren contratoSQL real, no existen aún.
+
+12pruebas nuevas factory/Stripefakecubren ambosproviders/proof/replay/mismatch/owner/live/consent/lease/cancelrace/customerinicial. Primer npm526 no incluía módulo porque el script para package.json usó ruta root desde verification y falló; corregido y gate536 aprobado, después2tests/customer inicial añadidos justifican gatefinal538/53822.37s83615/exit0. Deno checkmódulo exit0/85e0e4. No pruebas de disponibilidad SDK ni Stripewalletreal remoto; no migración/Edge/app/flag/dinero/CM/push. Fullmobile538/381 independiente;324capturas/37URLs sin nuevas.
+
+Siguiente loop: SQL sobre jobs existentes wallet_type/native_setup/native_saved/native_ready, replay inmutable provider y cliente compartido, RLS/lease/locks/guards bidireccionales/ownerreceipt, pgtests antesde integración endpoint/runtime. Checkout normal y Guardian aceptados conservados. Ver native-wallet-execution-2026-10-03.md. Objetivo global activo, Codemagic únicamente final.
+
+
+### Loop384 — persistencia y permisos SQL de billeteras nativas, 3/10/2026
+
+Base6125101, referenciaa3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Migración local20261003090000_native_saved_wallet, NO desplegada: wallet_type nullable apple_pay/google_pay enjobs existentes, SetupIntent único, constraints distinguen sesión Checkout de nativo y exigen evidencia terminal. Replay provider inmutable, customer/key/consent/guards compartidos. RPCserver privado service_role solamente, ownerRPC mínimo/key/status/provider/card_id sinsecret y normalOwnerRPC filtra sólo Checkout. Queues separadas. native_setup sólo con customer y lease válidos/SetupIntent inmutable; native_saved exige SetupIntentpersistido+PM y lease; native_ready revalida cuenta activa/confirmada/proveedor reservado/customercoherente/deadline/sinlease y conflictos antesde autorizar exposición del secret en servidor.
+
+Sharedsaved-card transitions adquierenadvisoryowner antesdefilarow; claim conserva autorización nativa persistida trasdeadline para cancelación/confirmación frescas, sin inventarexpiración. Guardiánmethodprepare usa mismo lock y rechaza walletpendiente; wrapperwalletprepare/claim/ready rechazan methodGuardian pendiente, pruebas ambasdirecciones sin cambiarplan. Guardssetup/métodoindependiente/altaGuardian existentes cubren todoslosjobs nativos. Se corrigió guardia de lease compartida/nativa para rechazar explícitamente lease_untilnull trasrelease; test conservaUUIDliberado y demuestra escrituras rechazadas.
+
+11tests PostgreSQL/PGlite nuevos registrados desde native-wallet-sql-cases.mjs en payments.test.mjs: provider/replay/colas/owner/RLS/anon/staff/lease/setupmismatch/flows/deadline/confirmation/suspensión/customercoherence/SetupIntentcrossowner/guards y2integraciones SQL+Stripefake apple/google con acceptedsetupresponseloss/mismakey/customer1/replayterminal/ceroobligaciones. Gate final549/54925.75s64090/exit0. Gate547 anterior precede2tests finales; anteriores538 sincasos nuevos no se cuentan como cierre. Una ejecución filtrada produjo PGliteclosed y una adición porPython ruta equivocada desdeverification no añadiócasos; corregido y pruebas registradas/importadas explícitamente en gatefinal.
+
+Dockerdaemonreconsultado no disponible (namedpipeDockerDesktopLinuxEngineausente), no supabase testdb nuevo. No PG concurrente2conexiones ni migración/Edge/App/flags/Stripe real/device/CM/push nuevos. Backendportable538/383 + SQL11=549; fullmobile538/381 independiente,324capturas/37URLs sin nuevas. ConfigPKtest/MerchantID pregunta pendiente no se presume resuelta. Próximo integraciónendpoint/runtime/worker, preflightremoto/historial/constraints/definiciones antesdeaplicaruna vez; luego cliente/capacidades/aceptación real. Objetivo global activo, Codemagic únicamente final.
+
+
+### Loop385 — endpoint y conciliación de billeteras nativas, 3/10/2026
+
+Base75407c8; referencia irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. add_wallet autentica cuenta confirmada y deriva owner de Auth; allowlist key/provider/consent/version rechaza owner/customer/SetupIntent/secret/importe/returnURL del caller. Nueva bandera DOPMI_NATIVE_WALLETS_ENABLED apagada por defecto controla solicitudes nuevas. Factory submit valida reserva SQL contra actor/key/provider antes de Stripe. Runtime conecta RPC privado y URL del servidor, worker concilia candidatos y webhook firmado recupera evento y SetupIntent frescos. Conciliación continúa para autorizaciones existentes aunque se deshabiliten solicitudes nuevas, bajo las guardas Guardian existentes; no cargo/default/activación ni cambios de dinero real.
+
+Pruebas dirigidas20/20 y Deno check limpio en guardian-client, payment-worker y stripe-webhook. Backend completo557/55725.9189576s, sesión75053 exit0; log externo AppData/Local/Temp/dopmi-native-wallet-endpoint-loop385.log. Incluye11casos SQL y20factory/API; dos casos SQL usan submit real contra PGlite con Stripefake. Rechazo de identidad ajena/inyección/anon/no confirmado, bandera separada, worker sinsecret y webhook con prueba fresca. No migración/Edge/app remotos ni SDK/billetera/dispositivo verificados. Móvil538/381 permanece como evidencia independiente. Config PK/MerchantID pendiente; próximo preflight remoto y aplicación única de90000, después integración móvil. Objetivo global activo; Codemagic sólo al completarlo.
+
+
+### Loop386 — billeteras nativas desplegadas en DEV, 3/10/2026
+
+Base9df629e. Preflight remoto ohqxranynackjignryep: latest75406/saved_card_methods, wallet_type/RPC nativos ausentes, cero grupos SetupIntent duplicados, constraint original compatible y13anchors exactos en tres definiciones reales. Local20261003090000_native_saved_wallet aplicado una vez por MCP como20261003092721/native_saved_wallet. Postflight confirma columna, índice único, RLS, separación receipt normal y guardia lease liberado; server anon/authfalse/service_roletrue, ownstate anonfalse/authtrue. Sin repair/rename/replay/dbpush/PROD.
+
+Overlays conservan bundles remotos: payment-worker26→27/19files, stripe-webhook26→27/18files, guardian-client19→20/18files ACTIVE. Sólo runtime/native-module y entrypoints afectados/clienthandler; resto de archivos preservados y verify_jwtfalse previo, AuthgetUser/worker-secret/firma intactos. GetEdge posterior:0mismatch/0extra normalizando CRLF en cada bundle. Smoke actualizado incluye dos RPC nativos;25/25real6.6366561s,061747exit0. Backend557/385 y Deno tresentrypoints previos cubren código idéntico. No flags/secrets/usuarios/Stripewrite/app/device/CM/push nuevos. No wallet real ni autorizaciónSDK acreditadas; configuración PK/MerchantID pendiente. Sigue cliente nativo y aceptación; objetivo global activo, Codemagic sólo final.
+
+
+### Loop387 — contrato móvil de billeteras nativas, 3/10/2026
+
+Base824672d; referencia irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. NativeWalletRepository nuevo: ownerRPC mínimo y add_wallet con allowlist key/provider/consent/version; no owner/customer del caller. Rechaza proveedor/clave/consent incorrectos, receipt ajeno a key/provider, status/card incompatibles y secretos fuera de pending o de formato SetupIntent. nativeWalletReceipt descarta secretos/customer/campos adicionales; submit conserva secreto sólo en resultado transitorio para SDK futuro, aún sin persistencia/UI.
+
+3/3 tests HTTP/parser pasan para apple/google, replay misma clave/cuerpo/Authheader/ownerstate y rechazo outcomes inventados;27770exit0/c824c2+4cb4ad. Primer fixture omitía http.Response.request y PostgREST falló al analizar respuesta; corregido en mock, sin cambio producción. Flutter analyze limpio49.3s25473/29d3d5. Scratch contiene archivos finales formateados. No SDK, capacidades, consentimiento visual, intentstore o pantalla integrados; tampoco wallet real/dispositivo/CM/push. Config Android actual requiere FragmentActivity/AppCompat, PK/MerchantID aún pendiente. Próximo SDK/config nativa y cliente visual/reanudación, después aceptación real. Servidor386 ya desplegado, dinero test-only, objetivo global activo; Codemagic sólo final.
+
+
+### Loop388 — SDK nativo y requisitos Android, 3/10/2026
+
+Base6bd1f7d; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Fuente primaria https://pub.dev/packages/flutter_stripe reconsultada:14.1.0, FlutterFragmentActivity/AppCompat/proguard/iOS13. Paquete fijado14.1.0 y lock sólo cinco dependencias nuevas; Android activity cambia a FragmentActivity, temas normal/noche a AppCompat sinActionBar y reglas oficiales Proguard incluidas en release. Identity com.mycompany.dopmi y signing Codemagic preservadas. iOS deployment existente15 cumple mínimo; no inventar MerchantID/entitlement.
+
+Pubget scratch aprobado7.946s/c5ef05. Flutter analyze limpio42.7s77636/ced660;12/12 tests repository nativo+Guardian pasan71109/0f9bbf; configuración Python12/120.019s03f46a. No prueba de compilación Android/iOS ni plataforma instalada: plugin usa Kotlin/Compose2.4.10 y StripeAndroid23.17.1, por lo que compatibilidad real AGP9.1/Kotlin app2.4 debe verificarse antes de afirmar build listo. SDK aún no inicializado, sin UI/availability/confirmación ni cambios flags/secret/CM/push. Siguiente adapter test-only/config y compilación nativa, recuperación y sección visual, aceptación real. PK/MerchantID sigue pendiente. Objetivo global activo; Codemagic sólo final.
+
+
+### Loop389 — adapter de disponibilidad y autorización SDK, 3/10/2026
+
+Basec6e94c9; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. NativeWalletSdk provider habilitado sólo ENABLE_NATIVE_WALLETS_TEST+pk_test, AndroidGoogle/iOSApple conMerchantID válido/noWeb. Inicialización lazy compartida y reintentable ante error, disponibilidad real SDK antes de confirmar, Google testEnv/existingPaymentMethodRequired. Confirmación sólo confirmPlatformPaySetupIntent/MX/MXN, Apple guardar sincargo resumen0.00. Rechaza PIsecret/proveedor ajeno/no disponibilidad; no resultado guardado ni persistencia/secreto/logs. Callback seams permiten probar params exactos sin inventar SDK/device proof.
+
+7/7 adapter+repository tests pasan16173/ca1c80 (cuatro nuevos). Analyzer final limpio12.2s22364/d84701; anterior detectó un lint de llaves corregido sin cambio comportamiento. Fuente primaria SDK/docs.page AppleGoogle y API instalada14.1.0 reconsultadas. No SDK nativo ejecutado/compilación/device/Appleentitlement/configbuild/UI/intentrecovery nuevos; PK/MerchantID pendiente. AndroidSDK ruta conocida, Java noPATH observado, revisar runtime real antesdecompilar. Próximo configbuild/adapter UI y recuperación, compilación nativa y aceptación. Dinero test-only; objetivo global activo/Codemagic sólo final.
+
+
+### Loop390 — configuración del build de billeteras, 3/10/2026
+
+Base8f76256; Source irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. write-mobile-config añade ENABLE_NATIVE_WALLETS_TEST sólo cuando guardian_test explícito y envtrue; standard siemprefalse/sinvalorescopiados. Clave pública STRIPE_PUBLISHABLE_KEY_TEST sólo pk_test, rechaza secret/restricted/live/missing sin eco; MerchantID opcional Android pero validado si presente. Valores vacíos con featureoff, no copia credenciales ajenas. Ninguna bandera remota/envCodemagic ni workflows activados.
+
+Configuración16/160.035s5241b1exit0 (cuatro tests nuevos: gate workflow/flag, credenciales inválidas, metadatamerchant/normalización, featureoff sin copia). SDK389 usa exactamente esos dartdefines. No SDK/dispositivo/compilación nativa/UI nuevos. PK/MerchantID pregunta pendiente y certificado/entitlementApple no acreditados. Próximo sección visual/conservación intento y compilación, aceptación real separada. Objetivo global activo; Codemagic sólo final.
+
+
+### Loop391 — recuperación mínima del intento nativo por cuenta, 3/10/2026
+
+Based2b731d; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. NativeWalletIntentStore usa SharedPreferences con namespace propietario y allowlist key/provider/consentversion; nunca SDKsecret/customer/owner recibido. Replay conserva misma clave/proveedor y rechaza sustituir autorización pendiente; JSON corrupto no se borra para crear otra automáticamente. finish sólo acepta receipt terminal saved/expired coincidente, nunca cancelaciónSDK/pending/attention/otrokey/provider. Caller UI aún debe comprobar propia identidad y lista fresca antesde finalizar; no store como autorización SQL.
+
+10/10 targeted pasan85227/3dde27 (tres nuevosstore+SDK4+repository3); analyzer limpio26.4s55393/652edb. Scratch archivos finales formateados. UI aún no conectada; inspeccionado punto de inserción Métodosde pago trasAgregar/listavisual. No flujo instaladonativo/compilación/capacidadApple nuevos niCM/push. Config reales pendiente, dinero test-only. Próximo integración visual+consentimiento+guardbusy/identity/freshreceipt/lista y capturas/pruebas, compilación nativa y aceptación. Objetivo global activo; Codemagic sólo final.
+
+
+### Loop392 — botones visuales nativos de billeteras, 3/10/2026
+
+Base029abd7; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. NativeWalletButtons componente preparado con dos columnas/gap12/min56/r18/white/borderSource#e6e2dd/icon18/gap8/Inter14weight500. Iconos AppleGoogle copiados de Sourcepublicassets, proveedor soportado único activable y resto disabled real, sin fakevinculación/hover. Flexible permite texto200% sin overflow, altura crece. NO componente insertado ni flujoUI concluido aún.
+
+2/2 widgettests 320text100/200 pasan63591/d855b3; analyzer limpio6.3s759ea4. Prueban provider habilitado/sólo su callback/minheight/nooverflow, no pixelcaptura/gestoSDK/aceptación instalada. Próximo integrar sección/consent/owner-intent/serverreceipt+freshlist enGuardian pantalla y regresiones/capturas. ConfigPK/MerchantID/compilaciónnativa pendiente, dinero test-only; objetivo global activo y Codemagic sólo final.
+
+
+### Loop393 — sección nativa conectada en Métodos de pago, 3/10/2026
+
+Base9e1c86a; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. GuardianScreen carga ownerstate/store/SDKavailability cuando configurado; recupera pending/attention remoto sin nueva clave, botones Source y secciónBilleteras digitales. addWallet requiere current/verified/fresh/nootrosintentos, consentimiento confirmSavedCard antes de primera reserva, busy/confirming y ownerchecks despuésdecadaawait. Guardaintent antes de HTTP, abre SDK sólo con SetupIntentsecret y reconsulta server al retornar. load reconcilia ownreceipt y sólo retira saved al aparecer cardid en lista fresca o expired; éxito mínimotoast Apple/Google sin replayhistórico. Cancel/error conserva intent y botónContinuar, sin nueva autorización. AgregarTarjeta bloqueado walletIntent.
+
+67/67 targeted existentes Guardian55+native12 pasan9855/3ce4b5 en15s; cubren regresión Guardian y componentes/repositorio/SDK/store, NO nuevos recorridos completos de pantalla wallet. Analyzer final limpio7.6s89881/3e76fb; cuatro lintsllaves previos corregidos. Sección aún requiere pruebas específicas ownerchange/lostreply/nativecancel/freshlist/error/attention y capturas normal/200 antes de aceptar paridad. No SDK/dispositivo/compilaciónnativa/CM/push nuevos; configuración realPK/MerchantID pendiente. Próximo pruebas UI específicas y correcciones de guards/feedback, capturas y compilación/aceptación real. Objetivo global activo; Codemagic sólo final.
+
+
+### Loop394 — recorridos de billetera y guards en pantalla, 3/10/2026
+
+Base80c0194; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. GuardsUI walletIntent bloquean default/remove independientes y agregar tarjeta; rows noofrecen default/remove con walletpendiente. Tres pruebas específicas native_wallet_screen_test con app/router/identity/store reales y repositorios/SDK sustitutos: consentantesHTTP, cancelaciónhojanativa/respuestaperdida conserva mismo key/provider trasreintento sinreconsent, nofakeéxito y Agregar disabled; ownerreceipt saved sincard enlista conserva intent/noaviso, freshmatchingcard retiraintent/avisa unavez y refreshnohistoryreplay.
+
+3/3screen tests pasan88796/f7edcd, analyzer limpio6.8s66763/ba115f. NoSDK real/StripeAuth real/dispositivo ni capturasnuevas; no atribuir nativeacceptance a callbacksfake. Continúan ownerchange/mismatch/attention/SDKsuccess/listfail/200capturas/regresiónglobal/compilaciónnativa/configreal. Objetivo global activo, dinero test-only, Codemagic sólo final.
+
+
+### Loop395 — estado de revisión nativa visible y bloqueado, 3/10/2026
+
+Base998c0db; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. attention restaura intento remoto y muestra aviso explícito, sinContinuar; botonesSDK y handler bloqueados anteattention/errorconsulta. Nuevo test descubrió callbackGoogleactivo visualmente peseaguardiahandler; parche deindentación noaplicado inicialmente y testfalló, corregido conapply_patchexacto.
+
+4/4screen tests final89299/0b42c1 pasan, analyzer limpio28.8s39736/316e60. Mantiene consent/cancel/lostreply/freshlistfeedback. Noefectoremoto/Stripe/CM/push/device/capturas/compilación nuevos. Pendientes ownerchange/casos adicionales/capturas/nativeacceptance/configPK/MerchantID ymatrizglobalparidad. Objetivo global activo; Codemagic únicamente al terminar.
+
+
+### Loop396 — capturas nativas normal/200 y assets compartidos, 3/10/2026
+
+Base1beb95c; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. capture_native_wallet_test renderiza app/router Métodosdepago con fontsreales/SDKreposfake a377x852normal y320x852text200, ready/review. CuatroPNGs revisadas en docs/design-reviews/parity-loop396. Inicialmente SVG ausentes: warmupestricto detectó profileicons no empaquetados en assets de scratch; mismos assets yaexistían onboarding, hashesidénticos comprobados. Producción reutiliza onboarding y elimina dosduplicados añadidos392. WarmupSVG yfontsantescapture impiden atribuir screenshot incompleta alresultadofinal.
+
+4/4capturas finales38004/9782ee pasan, analyzer limpio27.1s86738/312134. Lints capturetool corregidos: visible_for_testing dentrotooltest anotado y llaves. Ready muestraGooglehabilitado/Appleinactivo; reviewambosdisabled/avisoreal. Text200 crece/wrap sinoverflow; review excede viewport y requiere scroll, no afirmar inspección delbottom ni accesibilidad instalada. No Sourcebrowsernuevo/pixelidentity niSDKnative/compilación/device. Capturas328/37URLs total sólo inventario, no328aceptadas. Continúan ownerchange/flujos/configPK/MerchantID/compilación/matrizglobal/finalacceptance; Codemagic sólo final.
+
+
+### Loop397 — identidad tardía y preflight de compilación nativa, 3/10/2026
+
+Base08e6686; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Nuevo testUI cierra sesión con respuestaWallet en vuelo y completa respuesta después: no abreSDK/avisofalso y conservaintent sólonamespaceowner.5/5screen tests28246/6aa101 pasan; analyzer limpio61.7s95893/971651.
+
+Build local scratch debug con configFirebaseCI ficticia/testflags/pk_test_fixture (sinserviciosreales, noinstalación/distribución) iniciósesión5720. Falló terminalexit1 tras296.9s: pluginregistrant16packagesausentes yAppCompatstylesnoencontrados. Scratch copióAndroid despuésdepubget y no tenía.flutter-plugins-dependencies; no falloStripe aislado demostrado. Pubgetposterior genera19plugins inclstripe_android; copiada.metadata realdelproyecto. Reintento43821 no: handlecorrecto43721 está confirmadoen ejecución d2c091; logexterno AppData/Local/Temp/dopmi-native-build-loop397-retry.log. Retomaresehandle, no reiniciarsólo porque nohayoutput. Primerlog dopmi-native-build-loop397.log conservaerrores. Compilación aún NO verificada; noAPK/device/CM/push nuevos. Objetivo global activo, Codemagic sólo final.
+
+
+### Loop398 — desplazamiento200 y configuración Codemagic sólolectura, 3/10/2026
+
+Baseb0daaec; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Capturetool añade scrollUntilVisible sobrelista lazy y captura bottomreview200; ensureVisible anteriorfalló porque widget fuera deviewportaún no construido, corregido prueba sinproducción.4/4captures45532/ff7863 pasan, bottomPNG docs/design-reviews/parity-loop398 revisado: aviso entero y Actualizarestado visibles, sinsobreflujo. Analyzer limpio78.2s44155/3d74f6. Inventario329states/37URLs, no aceptación global.
+
+Codemagic APIreadexistingtoken comprobada GETapp6ab062cf7e534c19e9884a3b appName dopmi-app. Sólo keys/grupos/metadatos impresos; ningúnvalor/secreto/config mutado ni build/remotepush. Appvariables9: SupabaseURL/publickey, AppleGoogleAuth, Playserviceaccount, FirebaseAndroid/iOS, GoogleServer/iOSclient; grupos dopmi_google_play/dopmi_supabase/dopmi_firebase. No STRIPE_PUBLISHABLE_KEY_TEST/APPLE_PAY_MERCHANT_ID/ENABLE_NATIVE_WALLETS_TEST en esta respuesta; team-level aún noinspeccionado, no asumir ausencia global. FuenteAPIprimaria https://docs.codemagic.io/rest-api/applications/ consultada.
+
+Nativebuild reintento43721 siguevivo18cfe8; log dopmi-native-build-loop397-retry.log yaassembleDebug/pluginsloaded, instala SDKPlatform34 y advierte KGPFirebasecompatfuture. Java563.98CPU confirmado, sinresultadoterminal. Mantener mismohandle, compilaciónnoverificada, noAPK/device/CMpublication. Continúa compilación/configteam/nativeacceptance ymatrizglobal; Codemagic sólofinal.
+
+
+### Loop399 — compatibilidad JVM de Stripe, 3/10/2026
+
+Base29b92a1; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Build43721 terminó exit1 tras634.5s: stripe_android Java17/Kotlin21. SDK14.1.0 sólo fija Kotlin17 cuando AGP<9; Flutter opta fuera de built-in Kotlin con AGP9, de modo que Kotlin usa JDK21. RootGradle configura únicamente tareas KotlinJvmCompile de stripe_android a JVM17, coincidiendo con compileOptions del proveedor; no modifica pubcache ni deshabilita validación. Fuente https://kotlinlang.org/docs/gradle-compiler-options.html.
+
+16/16config pasan0.031s, diffcheck limpio. Primer intento399 session65593 no recibió parche por Copy-Item relativo al cwd scratch incorrecto; copia absoluta posterior corregida, ese intento terminó mismoerror29s. Reintento corregido40473 activo, log externo Temp/dopmi-native-build-loop399-fixed.log. No atribuir compilación hasta resultado terminal, retomarhandle sin reiniciar sólo por falta de output. ConfigFirebase/PK ficticios sólo compilación, sin servicios/instalación/distribución. Localenv contiene sólo nombre STRIPE_SECRET_KEY_H4_TEST, ningunaPK localizada; no valor impreso. Objetivo global activo, Codemagic sólo final.
+
+
+### Loop400 — retorno nativo sin éxito supuesto, 3/10/2026
+
+Basefec01e7; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Nuevo testUI permite retorno exitoso del callbackSDK sustituto, mientras serverreceipt siguepending: confirma una invocaciónSDK, dosHTTP conintentidéntico, noaviso vinculado, continuación disponible y storepreservado.6/6screen tests pasan17515/d26c69 en1m42s; no SDK/Stripe/device real acreditado. Dartformat aplicado, scratch sincronizado; diffcheck limpio.
+
+Analyzer97876 final1a618f exit0, limpio147.3s. Build40473 aún confirmadoactivo1aa300/logTemp dopmi-native-build-loop399-fixed.log; supera salida anterior con compilaciónJavaAPIdeprecated sinresultadofinal. Retomaramboshandles, no reiniciar por observacióntimeout. Cambio399 no tiene compilaciónvalidada todavía. Próximos: resultadosanalyzer/build, despuésconfigreal ymatrizglobal/finalacceptance. SinCM/push/instalación, Codemagic sólo objetivo completo.
+
+
+### Loop401 — compilación Android y proveedor de la tarjeta, 3/10/2026
+
+Base6637729; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Build40473 terminó exit0/5dacc3, assembleDebug556.2s; confirma ajuste JVM17 de Stripe399 y requisitos Android nativos388. APK externo Temp/dopmi-parity-20260930/mobile/build/app/outputs/flutter-apk/app-debug.apk,212447336bytes/SHA256fc36309762a7b19b89df4ba32af45786e429f464e7c243505fd0727e1ea84e01. FirebaseCI/PK ficticios, sinserviciosreales/instalación/publicación. Scratch no es candidato exacto Git: prueba400 y cambio401 sincronizados mientras Gradle ejecutaba; no atribuir APK al HEAD final ni aceptación nativa/device/paridadglobal.
+
+finishWallet requiere freshcard.id Y wallet.type iguales alreceipt antesde quitarintent/avisovinculado. Prueba savedwallet añade listado con mismoid/providerApple incorrecto para solicitudGoogle: conservaintent/sinéxito, y luegoGooglecorrecto confirma una vez.16/16targeted screen/repo/SDK/store pasan43740/438063; format aplicado/diffcheck limpio. Analyzer34524 final5e691d exit0, limpio95.4s. No nuevosCM/push, únicamenteobjetivocompleto. Continúanconfigreal/SDK/device ymatrizglobal; no reducir objetivo a wallets.
+
+
+### Loop402 — reinicio de galería al cambiar mascota, 3/10/2026
+
+Basecd387f0; referencia remota y checkout a3c969cd9103fd46dc5cd886999912526ce75efb comprobados. Auditoría actual SourceApp1703 AdoptionDetail usa hero estático y dots decorativos; CaseDetail2081 cambiafoto instantáneo por dots/thumbnails, sin onTouch implementado. Galería productiva conserva swipe real y fotos aprobadas, no inventar CSSmotion/hover. Adoptar didUpdateWidget sólo reiniciaba porphotosjoin: con nueva publicación que compartepaths podía conservar índice/página anteriores. Ahora indexreset y PageViewkey incluyenpost.id, manteniendo estado al actualizar misma publicación y reiniciando al cambiar identidad de contenido.
+
+Nuevo testwidget conserva mismoState confirst→second/photosidénticas: dragprimer a foto2, cambiopublicación muestraFoto1 y scrollpixels0.5/5detalle pasan80724/aa42e0; analyzer limpio28.6s87991/fe7dc9, diffcheck limpio. Repositorio/fotos offline fake; no navegacióninstalada/SDK/servidor real ni aceptaciónvisualglobal atribuida. Source/app rutas/diseño revisados en alcancegalería, matrizglobal265 todavía requiere cierrefamilias. Lecturas inicialespaths inexistentes corregidas a .tools/design-reference/src/App.tsx con rg--hidden--no-ignore; snapshotcheckout confirmado, nocambioSource. Sin builds nuevos/CM/push, Codemagic sóloobjetivocompleto.
+
+
+### Loop403 — ciclo de galería pública de casos, 3/10/2026
+
+Base0ced199; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. CaseDetailLayout añade record.id a condición de reinicio: nuevo caso vuelve a primerafoto aunque compartepaths. Conserva PageController/índice al actualizar mismo caso sin cambiar fotos; cambiodefotosaprobadas sigue reiniciando a0. No cambia dot/thumbnailsinstantáneos Source ni inventa animación/hover.
+
+Nuevo case_gallery_lifecycle_test reutiliza mismoState/controller y photosfake: swipe→377px, refreshmismocaso→377, nuevocaso→0, swipe+shrinkfotos→0 sinexcepción.27/27suitecon rescue_test pasan48795/dbfc3b, incluye swipe/reintentos/geometry/dots/miniaturas normal200/renewresume/cierre/paginaciónprivacidad. Analyzer limpio39.5s47658/b3653f; format/diffchecklimpios. Sólo widgets/repositoriosfake, no runtimeSource niAndroidinstalado/aceptaciónvisualglobal. SinCM/push/buildnuevos; configSDKreal/dispositivo/cierrefamilias globales pendientes. Codemagic sóloobjetivo completo.
+
+
+### Loop404 — regresión móvil completa sobre código actual, 3/10/2026
+
+Base65ffc3145b40a71f794e2aef1e673fbbc64da390; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Fluttertest full558/558 pasan3m59s41550/1037f9; log externo Temp/dopmi-full-mobile-loop404.log. Comparación223archivosDart lib/test repo→scratch normalizandoCRLF sin diferencias82289/30536f, acredita alcance de código bajo prueba en lugar de asumir scratchactual. Último analyzer39.5s403 mismo código sin cambios404. No Dartproducción modificado en404.
+
+MensajesSource App2773: input+send, composer40px/gap8/padding16/colores diferenciados styles3807 y7714; cliente mantiene repositorio/idempotencia/estadosreales. community_test cubre colores donante/rescatista, viewInsets300 composer/Enviar visibles, borrador al abrirDetalle y regreso, respuestaambigua sameid+logout privado. Fullactual incluyetests, no sólo búsqueda como prueba. No tecladofísico Android/runtimeSource nuevo ni comparaciónpixelperfect/aceptaciónglobal. No inventar necesidad de rehacer mensajes por tener funcionalidades reales extra. Matriz265/globalfamilias/capturascomparadas/configSDKreal/device/final gates siguenpendientes. SinCM/push/buildnuevos; Codemagic sóloobjetivocompleto.
+
+
+### Loop405 — comparación renderizada y espaciado de texto en caso, 3/10/2026
+
+Base39723a0; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Capturas259 antiguas no justificaban retoque porfuentes; Source nuevo Edgeagent-browser CLI aislado dopmi-parity405/Vite5176 a377x852, fonts.ready+checkIntertrue ycomputed headingInter700. No CDPplatformfontsnuevo, no extender prueba344 a todoSource. Browsermetrics título28/32.2/letterSpacing-.56; tags13/600/normal y story14/21.7/normal. Fluttercase heredaba letterSpacingMaterial porque styles no lo fijaban; ajusteInter explícito0 y título-.56. No alterar tamaño/colores/flujo/privacidad ni añadirhover.
+
+Capturadoractual filtrado case-detail pasa1/1final54839/f5d70e11s (primero30332/a0392914s antescambio); renderiza todosstates conprefijocase-detail/fontsreales. Nuevas capturasSource/topFlutter/largeFlutter y source-text-metrics.json guardadas/revisadas en docs/design-reviews/parity-loop405. Topmejora anchoRocky/chips/texto frenteSource; SourcebadgeModo prueba no se copia. Large320x640text200 mantienefooterDonar yscroll, no comparaciónSource200nueva ni identidadpixelglobal. Analyzer limpio46.5s4802/777ca7; diffcheck limpio. Full558404 antecede sóloesteajustevisual, no repetirfullsinindiciofuncional.
+
+Skillvercel:agent-browser aplicada; npxCLI verificadoconhelp/Edgecustom, noCLIglobalenPATH; comandos eval inicialdevolviófunción{} sinmedición, corregidoIIFEantescaptura. Browsercerrado52645/679778; Vite47325 CtrlCexit1esperado. NoCM/push/SDK/deviceaceptación, configSDKreal/matrizglobalpendientes. Codemagic sóloobjetivocompleto.
+
+
+### Loop406 — tipografía y alto de líneas en detalle de adopción, 3/10/2026
+
+Base0cbacf5; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. SourceRocky /adoption/rocky Edgeagent-browser aislado406 a377x852, fonts.ready/Interchecktrue/computedInter700/28/32.2/-.56. ClienteAdoptionDetailLayout heredaba espaciadoMaterial: todosInterletterSpacing0/título-.56. MediciónSourceadicional location20.15/verified18.6, stats68/value19/label15; cliente fija altura1.55 ubicación/verificado y19/15,15/12 estadísticas, evitando diferenciaacumulada2px. Datos equivalentesRocky/Patricia/Macho/Grande/3.4km/story/fotofixture; favoritoappguardado vsSourcenoguardado difiere legítimamente porstate, no copiarcorazónvacío contra servidor.
+
+Capturasfinales normal377x852/large320x640200 ySource/metrics enparity-loop406 revisadas. Finalcaptureprefijoadoption-detail1/1pasa21803/4044874s; primera28327/5d0fd73s antesalturas. Analyzerprimero57.6s65447 limpioantesalturas; final43.5s34698/42da8f limpio sobrecambiofinal, diffcheck limpio. NoSource200nuevo/pixelidentity/deviceaceptación; footerQuieroadoptar accesible ytexto200wrap/scroll. Browser25583 ysesióncerrada691a2a; Vite7980 CtrlCexit1esperado. Skillagent-browser yaaplicada405. Full558404 antecedeajustesvisual405/406, nofullrepetidosinindiciofuncional. SinCM/push/configrealSDK, matrizglobal/device/finalacceptancependientes; Codemagic sóloobjetivo completo.
+
+
+### Loop407 — espaciado común de Inter, 3/10/2026
+
+Base562c0a5; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. El CSS raíz usa espaciado normal; cuerpos y etiquetas Flutter heredaban tracking positivo de Material. dopmiTheme ahora fija letterSpacing0 en bodyLarge/Medium/Small, labelLarge/Medium/Small y titleLarge/Medium/Small. Las medidas particulares explícitas de los componentes (por ejemplo h1-.56 y eyebrow) prevalecen; no cambia tamaño, color, alto de línea ni funciones. No generalizar que todos los títulos Source usan spacing0.
+
+Full móvil558/558 pasa4m09s40186/657b8d; log Temp/dopmi-full-mobile-loop407.log. Analyzer limpio184.6s96733/4aeb06; format y diffcheck limpios. Ambos sobre base más este cambio común y ajustes405/406. Capturador COMPLETO sin filtro iniciado20132, log Temp/dopmi-full-capture-loop407.log; todavía sin resultado terminal. Retomar el mismo handle, no atribuir generación completa ni comparación visual por prueba funcional. No nuevo Source runtime, Android instalado ni aceptación global.
+
+Próximo: recuperar resultado20132, inspeccionar capturas actuales por familias y compararlas con Source. ConfigSDKreal, matriz de estados/gestos y comprobación instalada siguen pendientes. Sin Codemagic/push: publicación únicamente al completar el objetivo íntegro.
+
+
+### Loop408 — espera verificable de imagen en el capturador, 3/10/2026
+
+Base9c6bb8b; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Capturador completo20132 falló exit1/911011 en1m27s: pumpAndSettle timeout línea1600 después de adjuntar foto a soporte. 176PNG nuevas antes del fallo, no colección completa. chooseImage real usa compute(prepareMedia); capturador sólo cedía500ms reales y luego intentaba estabilizar spinner mientras isolate aún pendiente. No defecto de app demostrado por ese timeout.
+
+Tool ahora cede tiempo real en pasos50ms/pump hasta observar Cambiar imagen, máximo200pasos, y exige esa señal antes de settle/precache/captura. No desactiva spinner, no simula preparación ni relaja asserts de imagen. Filtrado help-center-support pasa80489/99e4d2 en11s, resultado terminal39ba2f; incluye normal/large, imagen realfixture y recepción. PNGphoto normal/200 copiadas y revisadas en parity-loop408; formulario/imagen/Enviar alcanzables, captura200 desplazada al final. Analyzer limpio39.0s27456/56fa49, format limpio. App no modificada408.
+
+Reintento completo26793 confirmado activo/e26137, log Temp/dopmi-full-capture-loop408.log. Retomar mismo handle; no afirmar colección/aceptación completa hasta resultado e inspección. Full558/analyzer407 prueban temaactual; capturas parciales no aceptación global ni dispositivo. Próximo resultado y revisión por familias. SinCM/push, Codemagic únicamenteobjetivo completo.
+
+
+### Loop409 — capturador completo y medidas de conversación, 3/10/2026
+
+Base1924517; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Reintento completo26793 terminó exit0/9f4309,2m35s, log Temp/dopmi-full-capture-loop408.log; acredita ejecución del capturador sobre tema407 y corrección408, no aceptación de cada imagen ni servicios reales. Capturas actuales de mensajes se compararon con Source Edge377x852, fonts.ready/Interchecktrue. Dos mensajes sintéticos iguales a fixtures Flutter se sembraron sólo en localStorage Source. Primer intento version0 migró a mensajes base; detectado por screenshot/lectura y corregido a version15 vigente antes de comparación, sin modificar archivos Source.
+
+Browsermetrics .bubble76.375/p43.375/time12 y composerinput46. Cliente hora10 heredaba altura1.5→15 y acumulaba ~3px por burbuja; se fija1.2. Compositorfont16/hintheight1.25 y botón46; última captura detectó campo44 bottom-aligned por InputDecorator y se añadió minHeight46 escalable para alinear con botón/Source sin impedir multiline. Ajustes no cambian envío, selección de texto, fechas reales ni idempotencia. Header menú real y badgeModo prueba son diferencias funcionales conocidas, no copiarbadge.
+
+32/32community tests87745/be91df pasan14s antesconstraint; capturechat1/128131/20bc71 pasa6s. Final community+capturechat33/33 pasan98514/9d9b0e13s sobreconstraint; analyzerfinal21980/d85528 limpio26.4s (primero18837/40450d54.8s antecedeconstraint). PNGequivalentes Source yFlutter donor/rescuer/keyboard200 y metrics guardados/revisados parity-loop409. Normal muestra mejora burbuja/compositor, rescuer mantienepaleta ytextoselectable;200composer accesible coninset simulado. NoSource200nuevo/SDK/hardware/identidadpixelglobal. Full558407 antecede sólo ajustes409; captura completa408 antecede409, dirigidachat actual pasa.
+
+Browser409 cerrado9d1ab0; Vite24212 CtrlCexit1esperado. SinCM/push/configrealSDK, matrizglobal/dispositivo/finalacceptancependientes. Próximo revisar publicación/verificación y otrasfamilias con capturas actuales; Codemagic únicamenteobjetivo completo.
+
+
+### Loop410 — paleta de rescatista en selector de publicación, 3/10/2026
+
+Base5f2dc56; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Capturasactuales408 publish-choice normal/200 revisadas; Source nuevo Edgeagent-browser410 /rescuer/publish377x852, fonts.ready/Interchecktrue, DOM ycolorescomputed registrados. Composición/títulos/cards/cancel/navbar corresponden; diferencia concreta: clientehardcodeaba donorink15110d/muted554e48/linee6e2dd pero Source.rescuer-theme usa151423/4f4e5c/e3e4ed. Ajuste sóloesasconstantes en publish_choice_screen, sin tamaños/rutas/estado/permisos/hovernuevo. Sombras específicas ycoloresgradientes preservados.
+
+7/7targeted publish_choice+captureprefijopublish-choice pasan89007/ed96b1 en7s: estadosverificación/rutas/bloqueotardío ycapturasnormal200. Analyzer limpio47.0s94617/ff6a0d, diffcheck limpio. PNGequivalentesSource/Flutter normal200 ysource-colors.json guardadas/revisadas parity-loop410. SourcebadgeModo prueba no se copia; avisoUnicode⚠️ Source vsIconwarningamber cliente permanece diferencia visible pendiente de revisar, no declarar selectoridéntico ni familiaPublish cerrada. Source200nuevo/nohardware noacreditados.
+
+Browser410 cerrado bcd8ae; Vite97298 CtrlCexit1esperado. Full558407+captercompleto408 antecedencambioschat409/paleta410, dirigidosactuales cubrenal alcance. Próximo aviso/intakeverificación y formulariosPublicación, manteniendoobjetivoglobal/configSDKreal/device/finalacceptance. SinCM/push, Codemagic sóloobjetivo completo.
+
+
+### Loop411 — símbolo de verificación como texto de referencia, 3/10/2026
+
+Base7d67901; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. SourceApp usa span literal ⚠️ Requiere verificación. Selector reemplaza IconMaterial warning_amber+gap+Text por el mismo textoUnicode inline con12/16 ycolorc2410c; preserva señal ypaleta real, sin cambiar autorización/estado ni copiar simulación. ParentcardSemantics ya describe verificación, ExcludeSemantics no duplica lectura.
+
+7/7publishChoice+capture pasan42243/097a81 en4s, incluye destinos según estado, errores, lateverification y320/200+cancel. Analyzer limpio32.1s77976/f90118, diffchecklimpio. PNGnormal/200 actualizadas enparity-loop411; normal inspeccionada: glyphwarningmonocromático enrendererFlutterfixture, noequivalenciapixelconemojiamarilloEdge410. EltextoSource coincide; forma/colorEmoji dependenfallbacknativo y requieren revisión instalada, no declarar paridadglyph aceptada ni selector/familiaPublish completos. SinSDK/device/CM/push nuevos, configSDKreal/matrizglobal/finalacceptancependientes. Próximo intake/formulariosverificación/publicación y revisión nativa pendiente; Codemagic sóloobjetivo completo.
+
+
+### Loop412 — paleta de rescatista en el formulario de verificación, 3/10/2026
+
+Base03968d7; referencia irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. El formulario Source usa rescuer-theme, cuya paleta se midió en loop410. Se sustituyen los grises de donante por ink151423/muted4f4e5c/linee3e4ed en el marco, títulos, campos, documentos y progreso del formulario real. Los otros editores no cambian. Se preservan privacidad de identidad/teléfono, revisión real, perfil público aprobado y Connect; no se copian aprobación simulada, conexión Meta ni CLABE del mockup.
+
+31/31 comprobaciones pasan en11s: rescue_test, verification_state_test, verification_intro_test y capturador con CAPTURE_FILTER=verification. Reejecución observable86660/ad472a→caa089 tras pérdida del resultado anterior; no proceso Flutter test activo antes de ejecutarla. Log externo dopmi-loop412-tests.log. Analyzer26688/e1dc10→d79aa9 limpio36.8s, log externo dopmi-loop412-analyze.log. Dart format dos archivos sin cambios; diffcheck limpio. Capturas normal y200 actualizadas y revisadas en parity-loop412; el título se adapta a tres líneas con200. No nueva comparación Source renderizada del formulario ni aceptación física/global; el alcance verificado es la paleta y regresión dirigida.
+
+Objetivo global sigue abierto: comparación de otras familias, gestos/animaciones, configuración SDK real y aceptación instalada/final. Codemagic únicamente al completar el objetivo, reiterado por el titular; sin push ni build intermedio.
+
+
+### Loop413 — composición de la introducción de verificación, 3/10/2026
+
+Base665db78; referencia irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Source ejecutado en Edge agent-browser sesión413 a377x852, fonts.ready; fixture local versión15/unverified, sin editar referencia. DOM medido: h2 22/28.6/700, títulos y requisitos16/20/700, aviso14/17/700. Flutter corregido: heading1.3, títulos/tamaños/pesos/alturas medidos, margen20 tras copy, SVG check-circle de referencia, iconos negros en tarjetas y morado sólo en chip/checks. Paleta donor global del modal preservada: Source intro no tiene rescuer-theme. Texto de evidencia real sin videos ni aprobación simulada preservado. CSS del modal no declara animación; no se inventa una.
+
+Primera edición usó codificación predeterminada Windows y dañó acentos: prueba falló al no encontrar Después. Se restauró desde HEAD con UTF8 explícito y reaplicó el cambio. Resultado final75765/79bbfc→bc9528:2/2 pasan4s, incluye cerrar/Después/regreso a origen, continuar/documentos reales con200 y capturas. Analyzer final59578/47dbf6→0f81ad limpio37.3s. Dart format y diffcheck aprobados. Capturas Source normal y Flutter normal/200 revisadas/guardadas, métricas en source-metrics.json. Normal ya reproduce composición; copys difieren por alcance real, cierre Material conserva hit target accesible. Texto200 envuelve palabras largas y desplaza contenido; botones accesibles mediante scroll probado. Sin Source200 nuevo ni aceptación física/global.
+
+Browser413 cerrado58945/cb59ad; Vite36758 detenido CtrlCexit1 esperado. Objetivo completo sigue pendiente para otras familias/moción/gestos/configSDK/device; siguiente revisión de formularios y estados de publicación con Source vigente. Sin push ni Codemagic intermedio.
+
+
+### Loop414 — regresión actual del formulario y revisión de casos, 3/10/2026
+
+Baseb30fee9; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Source PublishFlow/ScreenShell rescuer, etapas/fotos/needs/revisión y CSS del picker consultados; PublicationFrame ya usa paleta rescatista. No cambio de producción en este loop.17/17 case_publication_test+publication_frame_test+capture CAPTURE_FILTER=case-publication pasan22s:43167/eb608e→6b1415, log externo dopmi-loop414-publication.log. Cobertura leída: envío confirmado vs rechazado, datos conservados al editar desde revisión, navegación de pasos, necesidades, foto privada y bloqueo sin foto real, footer/teclado y texto ampliado. Repositorios de prueba no acreditan servicios/dispositivo.
+
+Capturas actualizadas de toda familia case-publication generadas; información básica y revisión normal inspeccionadas/guardadas en parity-loop414. Footer y campos alcanzables; no afirmar identidad visual con Source porque este loop no renderizó sus etapas equivalentes. Siguiente: ejecutar Source donation etapas1/2 con fixture equivalente y comparar sus medidas/capturas con estas evidencias actuales; no repetir sólo análisis de colores. Analyzer413 limpio mismo código de producción. Matriz global, animaciones/gestos/config SDK y aceptación instalada continúan; sin Codemagic/push.
+
+
+### Loop415 — alturas de campos en información del caso, 3/10/2026
+
+Basee786ca8; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. Source ejecutado Edge sesión415 a377x852, fixture donation/verified versión15; ruta draft abre fotos y Continuar abre Información básica. fonts.ready/Interchecktrue y DOM: heading18/28/600, inputs38px, textarea78px. Screenshot Source guardada; fixture name quedó vacío y especies sin selección frente Mora/dog/unknown Flutter, así que no comparación pixel de estado idéntico. Source no incorpora Por determinar ni campos privados/operacionales reales; preservados.
+
+CaseInformation fija lineHeight20/16 y constraints38 (78 historia), antes19.2/36. Títulos ya600/28 correctos. Captura Flutter normal final revisada, grandes generadas; medición del rectángulo real Flutter aún pendiente, no afirmar 38px medidos sólo por constraint.11/11 case_publication_test+capture prefijo case-publication-information pasan8s25165/840958→4ac999, analyzer61469/ff4dc3→c10ba6 limpio73.5s. Logs externos dopmi-loop415-tests.log/dopmi-loop415-analyze.log. Format/diffcheck limpio. PNGnormal/200 y métricas en parity-loop415.
+
+Browser415 cerrado51049/32f6a9; Vite3172 CtrlCexit1esperado. Próximo medir rectángulos Flutter y revisar necesidades/revisión con fixtures realmente equivalentes; sin aceptación visual global/servicios/dispositivo. Codemagic sóloobjetivo completo, sin push/build.
+
+
+### Loop416 — medidas Flutter confirmadas y tarjetas de necesidades, 3/10/2026
+
+Baseb1591a6; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Capturador registra rectángulos reales de información: nombre345x38, edad345x38 e historia345x78; coincide con medidas Source415, no sólo constraints. Capturador information87848/8caf38→f264ba pasa6s; JSON guardado. Tool agrega salida métricas para siguientes comparaciones sin alterar datos/servicios.
+
+Source Edge sesión416 en377x852, fixture versión15 donation/verified con petName Mora, navegación fotos→información→necesidades ejecutada. DOM fonts.ready: nota94/14/20/padding16, tarjetas98/padding16/gap12, título16/24/600, copy14/20/400. Source normal y Flutter normal comparados: copy cliente heredaba peso500 de OutlinedButton. CaseNeeds fija400, notaRichText preserva frase real y destaca Nota700, icon slot36 y separación vertical16. CopyFood real se conserva porque catálogo simulado no existe; necesidad/cuidados privada también. SVGs siguen diferentes del emoji Source y queda por revisar primitive nativa/medidas horizontales; no identidadpixel ni familia cerrada.
+
+11/11 case_publication+capture needs pasan12s78452/8d714d→8f02b1, analyzer54296/e22b97→d99164 limpio68.3s. Logs externos dopmi-loop416-tests.log/dopmi-loop416-analyze.log. Format/diffchecklimpio. Capturas needsnormal/200 generadas y normal inspeccionada; Source/métricas guardadas enparity-loop416. Browser cerrado372751; Vite79142 CtrlCexit1esperado. Próximo revisión con datos equivalentes e iconos/espaciado horizontal de necesidades, además de matrizglobal/configSDK/device pendientes. SinCodemagic/push.
+
+
+### Loop417 — símbolos nativos en necesidades, 3/10/2026
+
+Base3da71c4; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. CaseNeeds reemplaza SVGs fijos por los mismos símbolos Unicode del Source (comida, medicina, veterinario), font30/36 y peso400. ExcludeSemantics conserva etiqueta accesible de la tarjeta.10/10 case_publication pasan9s89335/b241e2; analyzer63884/113cbe limpio35.5s. Format aprobado. Renderizado/color y ancho del emoji dependen del sistema: captura final y Android aún pendientes, no paridad nativa acreditada. Próximo medir tarjetas/capturar cambio y continuar revisión equivalente. Sin Codemagic/push; objetivo global abierto.
+
+
+### Loop418 — espacio estable para iconos de necesidades, 3/10/2026
+
+Base04d8eb1; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada sin cambios. Captura35208/a21a4f pasa11s y revela glifos faltantes (renderer fixture sin fuente emoji), con slot reducido a ancho de fallback. Se fija SizedBox36x36 alrededor del texto Unicode para preservar distribución aun sin fuente. No se atribuye identidad/color nativo ni resolución del fallback Android. Capturas final normal/200 guardadas; normal inspeccionada conserva posiciones de copy, glyph faltante todavía visible y aceptación pendiente.11/11 case_publication+capture pasan11s68230/70ce00; analyzer28817/35cb15 limpio39.3s, format aprobado. Source review CSS consultado: heading16/500, cardvalue16/24/500 coinciden con constantes actuales; faltan comparación renderizada/estado equivalente. Próximo revisión actual y comprobación de fuente nativa autorizada; matrizglobal/configSDK/device pendientes. Sin Codemagic/push.
+
+
+### Loop419 — tipografía del resumen de revisión, 3/10/2026
+
+Base7351bae; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. Source ejecutado Edge419 a377x852, fixture donation/verified/Mora, pasos fotos→información→necesidades→revisión y fonts.ready. DOM medido: heading20, botónEditar17, photo110, labels15. CaseReview corrige heading16/20 y etiquetas12/15, antes1.55. Valores16/24/500 ya coinciden. No se cambia envío real a revisión ni se copia publicación simulada; campos reales adicionales preservados. Source/edit target17 frenteFlutter48 aún expande filas y resta fidelidad, pendiente resolver gesto/visual; fuentes/foto/enumfixtures difieren, sinpixelidentity.
+
+11/11 case_publication+capture review pasan12s62461/bdede3; analyzer95186/814d69 limpio65.9s. PNGSource yFlutter normal/200 guardados, normalFlutter inspeccionada. Browser419 cerrado848e1b; Vite5871 CtrlCexit1 esperado. Próximo resolver composición/touch áreaEditar y comparar servicios/estado reales; objetivo global/configSDK/device siguen pendientes. SinCodemagic/push.
+
+
+### Loop420 — filas compactas y activación de Editar, 3/10/2026
+
+Basee196bd6; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. CaseReview reduce minimumHeight48→20 y tapTarget shrinkWrap para reproducir heading20 medidoSource419; textoEditar14/17/400 explícito. Ancho48, Semantics y callbacks existentes preservados; área táctil vertical es20, no afirmar target48 accesible. Text200 conserva adaptación de texto, práctica física pendiente.
+
+11/11 case_publication+capture review pasan10s26036/0afbe3. Analyzer91549/b6b44a limpio44.5s antes del cambio adicional sólo test. Test existente de revisión agrega medida real20 y activación Enter desde foco del Text; fotos/necesidades conservan taps y datos.10/10 finalcase_publication pasan7s23776/fe0eb3, sin excepciones. Format aprobado, capturas normal/200 guardadas y normal inspeccionada: foto alineada153 comoSource; campos reales adicionales extienden card, no ocultados. No equivalenciapixel/Androidaceptado. Próximo ampliar auditoría de publicación/adopción y animaciones/gestos; matrizglobal/configSDK/device pendientes. SinCodemagic/push.
+
+
+### Loop421 — auditoría de movimiento y navegación vigente, 3/10/2026
+
+Base540efe3; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. Se leyeron CSS y implementación/test de onboarding, descubrimiento, rutas y switch de perfil. Onb-in450ms/Cubic(.22,1,.36,1)/opacity0→1/translateY10→0 coinciden; dots350ms/ease, switch180ms/ease/13px también coinciden por lectura. DISC salida280ms y retorno250ms misma curva, umbral estricto110px, seguimiento inmediato. Source onPointerCancel llama onPointerUp y podría guardar; cliente cancel nunca guarda, preserva intención real y evita favorito por interrupción del sistema. No copiar efecto persistente simulado por cancel.
+
+21/21 onboarding_motion_test+discovery_motion_test+route_motion_test pasan4s39955/f3522f: interpolación a mitad/final, delays/reduced motion, retorno/interrupción/swipe/errores de persistencia, regreso inmediato Android/iOS y borrador de registro. Se inspeccionó cobertura antes de usar resultado: son widgets/repositorios falsos, no gestos físicos ni frame pacing real. Switch coincidencia sólo código, no timeline verificada en este loop. Sin cambios de producción ni aceptación global por este gate.
+
+Siguiente: ampliar matriz de movimiento a galerías, paneles/modales y cambio de modo; confirmar timelines y recorridos faltantes con runtime, manteniendo revisión nativa/SDK y candidato final pendientes. No hover requerido. SinCodemagic/push.
+
+
+### Loop422 — recorridos de modales, galerías y modo, 3/10/2026
+
+Baseeba6d59; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. Se inspeccionaron entradas reales: modos/adoptStart/report usan noAnimation; necesidades/montosGuardian/contribution transitionDuration0. Corresponden a overlaySource sin declaración CSS de transición. Confirmaciones sólo reales (cerrar conversación, recuperación/borrador, privacidad) y filtrocatálogo heredado conservan componentes nativos; no se les atribuye un equivalente Source.
+
+Suite42443/6754cf→9b4db2:35 pruebas ejecutadas pasan17s, pero comando exit1 por ruta mal nombrada adoption_detail_test.dart inexistente. Se corrigió sólo la invocación a adoption_detail_layout_test.dart;38111/986ee8:5/5 pasan2s. No se oculta primer error ni se afirma primer gate verde. Cobertura comprobada: modo sólo cambia tras éxito servidor y conserva origen/datos; cancelación/confirmación/back/barrier en modales, filtros descartan draft o aplican claves reales, galerías responden swipe/selección/reintento aprobado y reinician otroregistro sin perder refresh. Son widgets/fakes, sin dispositivo/backend ni visual global aprobados. Sin cambios de producción.
+
+Siguiente: verificar estado actual del acceso Android y resolver evidencia nativa de fuente/gestos; después gates del candidato final y demásfamilias pendientes. La revisión física no se sustituye por estas40 pruebas. Codemagic sólo objetivo completo, sin push/build.
+
+
+### Loop423 — acceso físico y regresión integral actual, 3/10/2026
+
+Base8baaa39dc9a9ef7dd6268f1ba61ca6c844564e45; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. ADB devices -l desde SDK externo devuelve lista vacía31c048: no Android conectado visible ahora. No instalación/captura/toque ni aceptación atribuida. Ledger235 conserva pregunta pendiente de autorización específicaADBUI; no se interpreta USB como respuesta ni se repite pregunta. Comparación223Dart lib/test workspace/scratch normalizadaCRLF confirma0diferencias.
+
+Se inicia regresión móvil completa sobre ese SHA, log externo C:/Users/betoq/AppData/Local/Temp/dopmi-full-mobile-loop423.log. Handle90488 confirmado vivo mediante write_stdin62d0ba; NO resultado terminal todavía. Retomar MISMO handle/log en siguiente turno, no lanzar otro Flutter test hasta terminal. No afirmar full558/greenactual. Analyzer420 precede sólo ediciones de prueba y ledger posteriores; verificar alcance final al cerrar suite.
+
+Mientras teléfono no visible, continuar familias/validaciones independientes. ConfigSDKreal/matrizglobal/acceptance física siguen pendientes; Codemagic sólo objetivo completo, sin push/build.
+
+
+### Loop424 — regresión integral cerrada y siguiente familia, 3/10/2026
+
+Suite móvil completa iniciada423 termina90488/9c5da9 exit0:558/558 en3m59s sobre8baaa39dc9a9ef7dd6268f1ba61ca6c844564e45. Log externo C:/Users/betoq/AppData/Local/Temp/dopmi-full-mobile-loop423.log.223Dart lib/test root/scratch idénticos verificados423; commits423/424 sólo ledger. No reinicio ni tests concurrentes. Esto acredita regresión técnica actual, no identidadvisualglobal/runtimeSDK/Play ni aceptacióninstalada.
+
+Referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. Siguiente familiaNotificationListSource y notification_tile/frame cliente leídos: borde/sombraunread, chips40, gap12 ycard24 ya corresponden. Title14/500 ytime12 usan normalSource vs1.2Flutter: medir render antes de ajustar. ClickSource marca leída y navega, app debe preservar navegación autorizada real y no copiar destinos simulados. Próximo comparar Source renderizado con fixtures equivalentes/read yKinds, no dar pantallaaceptada por lecture. ADB último423 vacío; no nuevasaccionesfisicas niCodemagic/push.
+
+
+### Loop425 — altura de texto en notificaciones, 3/10/2026
+
+Basee8019e3; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. Source Edge425 /notifications377x852/fonts.ready/DOM medido título14/17, hora12/15, cuerpo12/19.2; tarjetas/chips/bordes previos corresponden. Cliente fija height17/14 y15/12, antes1.2. Semántica leído/no leído y repositorio/destinos reales sin cambios. FixtureSource tres avisos conbody difiere Flutter uno sinbody: no comparaciónpixel de mismo estado.
+
+10/10 notifications_test+captureprefixnotifications pasan6s37527/8020a4→063889. Cobertura inspectada: fecha exacta accesible, header teclado/fallback, kindreal, paginación200, fallo/success lectura y destino. Analyzer85967/5bec6f limpio82.5s. CapturasSource/Flutter normal/200/read/kinds y métricas guardadas, normalFlutter inspeccionada. Browser cerrado2e3f9c; Vite67425 CtrlCexit1 esperado. Full558424 antecede sóloheight425; testsdirigidos cubrenalcance. Objetivo global/configSDK/device pendientes; siguiente comparación confixtureSource equivalente, resto de estados/history/matriz, sinCodemagic/push.
+
+
+### Loop426 — geometría de aviso equivalente, 3/10/2026
+
+Basebe308fa; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge426 /notifications377x852, fixture local15 con mismo títuloPatricia/horaAyer/bodyvacío/kindmessage/unread. fonts.ready y DOM: card74/y88, chipx33/y105. Cliente Padding16 enDecoratedBox no reservaba borderCSS1; cambiado17 para dimensiones/offset equivalentes. Fuente/capturas normal Source yFlutter inspeccionadas: tarjeta corresponde, badgeModo prueba excluido; no identidadpixel/global atribuida.
+
+10/10 notifications+capture pasan5s64705/aff286→0ad20c, analyzer49164/b4c3b1 limpio49s. Normal/200/read ySource/métricas guardadasparity-loop426. Browser cerrado1b0acd; Vite63620 CtrlCexit1 esperado. Semántica/read/destinos reales preservados. Próximo histórico real de pagos y restantes estados/matriz, sin repetir sólo prueba de tarjeta; SDK/device/finalacceptance pendientes. SinCodemagic/push.
+
+
+### Loop427 — texto del historial real, 3/10/2026
+
+Base0334e5f; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge427 /history377x852 inicialmenteempty, fixture15 emptyStatesfalse habilita historialSource. DOM fonts.ready mide date15/title17/method15/amount16/pill20 (14texto+6padding). PaymentHistoryRow fija esas alturas, mantiene expand/evidence/ownership y estados reales. Source simula suscripción yVisa4242: no copiados, fixturesnoequivalentes ni pixelidentity atribuidos.
+
+8/8 row/screen/capture pasan28s53213/c728a6: montos reales200, evidenciafaltante noinventada, ciclosconfirmados vsomitidos/processing, filtrosrecibidos/ownership tardío. Analyzer13904/fce181 limpio49.7s. Format aprobado; PNGnormal/200/empty ySourceguardados, normalFlutter inspeccionada. Browser cerrado5fdb2a; Vite4619 CtrlCexit1esperado. Próximo revisión actual de familias restantes con matriz ygestos/configSDK/device; dinero continúa test-only. SinCodemagic/push.
+
+
+### Loop428 — contrato funcional de métodos guardados en aportación puntual, 3/10/2026
+
+Basef52ff21; se cambia prioridad de refinamientos menores a brecha funcional real pendiente. Lectura payments.mjs.checkout85–107: sesión modepayment no tienecustomer; runtime.ts sólo ofreceRPCpayment_server, por tanto lista guardada no llega a checkout. No usar endpoints legado410. RPC privada dopmi_saved_card_owner_server(uuid), migrationlocal20261003071000, ya obtiene customercoherenteGuardian/saved_cards poractor confirmado/activo yrechaza clientes divergentes; guardian-runtime la reutiliza. Puede servir lookupservidor paracheckout sin nueva colección ni confiar en customer_idsupuesto porcliente. Se preservará no guardar nuevas tarjetas/no off_session adicional sinconsentimiento y dinero test-only.
+
+Baseline node --test --test-name-pattern checkout|saved.card payments.test.mjs pasa6/6 en2.844s96ee73, logexterno dopmi-loop428-payment-baseline.log. Son las pruebas quecoinciden conpatrón, no fullbackend ni pruebaStripe real. No implementación/deploy/schema/flag todavía. Supabase skill consultada; legacy-retirement y migration-history-audit leídos antes trabajo remoto, pero no conexión/migración hecha. Stripe docindex save-during-payment verificado; varianteMarkdown ySupabasechangelog no legibles porwebtool (errores), verificar mediante otra vía antes implementar convenciones.
+
+Siguiente concreto: resolvercustomer opcional sólo servidor, comprobar customerStripe test/owner, sesionesexistentes e idempotencia estable bajo cambio de vínculo; probar negativos y respuesta perdida. Verificar presentación de métodos guardados según versiónStripe/allow_redisplay, no prometer selección por sólo añadircustomer. Cliente/testreal/SDKconfig/native siguenpendientes; paridadglobal no completa. SinCodemagic/push.
+
+
+### Loop429 — cliente Stripe privado en checkout puntual, 3/10/2026
+
+Base70ce592. paymentService recibe lookupCustomer servidor opcional; runtime usa RPCprivada existente dopmi_saved_card_owner_server(actor confirmado), nunca customer de input. Antescrear sesión, valida cus_id y CustomerStripe mismoid/no eliminado/livemodefalse; agrega customer sólo si existe, no crea nuevo/no setup_future_usage/no consentimiento de guardado añadido. Reintento sesiónexistente conserva ruta anterior/idempotencia dopmi-checkout-donationID. No esquema nuevo, cambio sólo local, no deploy ni dinero real.
+
+Nueva checkout-customer.test.mjs integrada npmtest:7 casos owner/test/deleted/live/mismatch/invalid/inputforjado/customerless/reuso de sesión. Invocación primera desde raíz no encontró archivo; corregida workdir.7pasan y npmtest completo564/564 pasa29.944s59517/561ca9, log externo dopmi-loop429-backend.log. Deno check primeroTS2322 por aridad defaultlookup0: corregida default_actor1, final Deno payments check y7tests pasan95778f, aridad no altera runtime. Full564 antecede sólo esa corrección de firma; recheck dirigido final aprobado.
+
+Documentación primariaStripe save-during-payment y APIcheckout fetched porurllib tras webtool fallido; confirma customer y allow_redisplay/consentimiento de volver a mostrar. Supabase changelog fetch97503bytes sin mencionesbreaking-changeRPC/Edge/supabase-js; no cambioAPI cliente. Consulta existentepermite reuse pero sólo métodos elegibles redisplay; no declarar tarjetasSetup/off_session disponibles ni flujo final completo. Siguiente: probar respuesta perdida/cambio vínculo y resolver redisplay conconsentimiento guardado, luego preflightDEV/deploy/testStripe autenticado y cliente. Matriz visualglobal/SDK/device siguenpendientes. SinCodemagic/push.
+
+
+### Loop430 — recuperación de checkout puntual, 3/10/2026
+
+Base80fd89e; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado sin cambio. Fixture checkout ahora conserva created_at como SQL real y simula caché idempotente del proveedor con rechazo de parámetros distintos. Tres pruebas nuevas cubren respuesta Stripe perdida, checkpoint SQL fallido después de crear sesión, y cambio de vínculo customer tras fallo: misma clave/cuerpo en reintento compatible, una sesión lógica, reuso persistido; cambio de cuerpo rechazado sin generar otra clave, recuperación al restaurar vínculo.
+
+10/10 checkout-customer pasan149ms, handlecaa99c exit0. Es evidencia de contrato con proveedor simulado, no respuesta perdida realStripe ni despliegue. No producción modificada en este loop; full564/429 antecede estos tests. Continúa redisplay con consentimiento explícito, preflightDEV y recorrido auténtico; objetivo global pendiente, Codemagic sólo al completarlo.
+
+
+### Loop431 — redisplay consentido al guardar tarjeta, 3/10/2026
+
+Base68d79f9; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Documento primario Stripe https://docs.stripe.com/api/payment_methods/update confirma allow_redisplay always para mostrar método guardado en checkout. Consentimiento móvil existente autoriza guardar para futuros apoyos que el titular autorice; no implica cobro/Guardian/default. savedCardService exige consent_version y consent_at persistidos antes proveedor; después de sesión/SetupIntent/card verificados, actualiza sólo allow_redisplay con clave por job y relee identidad/customer/test/card/always antes receipt saved. No filtros globales limited/unspecified, cambios en tarjetas Guardian ni wallets nativas en este loop.
+
+Tests nuevos: respuesta perdida de update recupera estado proveedor sin repetir escritura; respuesta optimista no basta sin lectura fresca; owner cambia tras update rechaza receipt; consentimiento persistido ausente no toca proveedor y libera lease. Negativos existentes de session/setup/card prueban cero updates redisplay. Primera invocación filtrada payments.test falla29 con PGlite is closed: no gate aceptado. Suite completa observable pasa569; luego dos negativos añadidos y npmtest final571/571 pasa22.958s83406/3333a3, log externo Temp/dopmi-loop431-backend-final.log. Deno check payments yguardian-client exit0/00307a; sólo tests añadidos después de ese check. diffcheck limpio.
+
+Cambios locales, sin deploy/esquema/flags/dinero real/Codemagic/push. No se acredita selección realStripe ni métodos antes guardados ni wallets nativas; siguiente preflightDEV y prueba auténtica de redisplay/checkout con cuenta sintética y limpieza. Objetivo global visual/movimiento/SDK/dispositivo permanece abierto.
+
+
+### Loop432 — preflight remoto y acceso Stripe, 3/10/2026
+
+Basedb8d749; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. La clave STRIPE_SECRET_KEY_H4_TEST no existe en Process/User/Machine actuales; inventario sólo registra nombres, nunca valores. Stripe MCP list_available_accounts_or_orgs devuelve UNAUTHORIZED/requires reauthentication. Solicitud async concreta para reconectar Stripe test enviada; no solicitar secretos en chat. No API financiera escrita ni sesión de prueba creada; redisplay real continúa sin demostrar.
+
+Supabase DEV ohqxranynackjignryep conexión verificada: existen dopmi_saved_card_owner_server(uuid) y dopmi_saved_card_server(text,jsonb); owner RPC grant service_role=true/anon=false/authenticated=false. get_edge_function payments ACTIVE10, tres archivos payments/index.ts,_shared/runtime.ts,_shared/payments.mjs: bundle sin lookupCustomer ni dopmi_saved_card_owner_server. Confirma cambio429 sigue local y requiere overlay/despliegue y postflight; no schema replay/repair. Legacy-retirement y audit leídos, sin mutacionesremotas.
+
+Brecha Guardian cancelado confirmada en códigoactual, no con recorrido real: guardian_screen.changeIndependentMethod rechaza cualquier plan y sólo muestra acciones con active o plan==null; saved_card_method_server prepare/write_mutation rechazan cualquier registry Guardian, aunque cancelado. Servicio proveedor saved-card-method ya contempla subscriptions canceled/incomplete_expired pero no basta para liberar SQL/UI. Siguiente loop debe definir elegibilidad con cancelación comprobada, pendientes/leases/uso de método y pruebas de carrera antes ampliar disponibilidad; no borrar registro ni reinterpretar canceled por intención. Goalglobal activo, no CM/push.
+
+
+### Loop433 — autorización SQL para métodos tras cancelación, 3/10/2026
+
+Base73205b7; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Migración local20261003110000_canceled_guardian_saved_methods añade helperprivada y sustituye exactamente2guards del RPCexistente (prepare/write_mutation), bajo lockporowner ya establecido. Conserva registry/evidence canceled y requiere canceled_at; bloquea statusactive, leasevivo, customerincoherente, schedule nocancelado, requestpending ymethodpending/attention. Activaciones/setup/walletpendientes mantienen guardas existentes; serviceproveedor ya revalida subscription/invoices/intents anteswrite. No se infiere canceled por intencióncliente ni borra registro.
+
+Nueve pruebasSQL nuevas: default/remove con cancelaciónconserva registry; reactivación/lease/customer tras snapshot impiden write ymutation_requested_at sigue null; reconciliationattention inicial bloquea prepare; request/methodtardíos bloquean write; helper noaccesibleparaowner/ajeno/adminbrowser. npmtest completo primero577/57724.590s5895/cf5366; tresnegativos añadidos, final580/58024.388s13733/74aba1, logexterno Temp/dopmi-loop433-backend-final.log. diffcheck limpio.
+
+Local sólo: migración no aplicadaDEV, UI aún requiereplan==null y nohabilita canceled; no declarar brecha completa. Próximo conectar UI/RPCavailability y testsFlutter, preflightdefinitionremota antes aplicarlocal patch; StripeMCP pendiente reautenticación. Dinero test-only/goalglobalvisualSDKdevice abierto, sinCM/push.
+
+
+### Loop434 — acciones móviles de billetera tras Guardián cancelado, 3/10/2026
+
+Baseaba1230; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. GuardianScreen centraliza independentWallet: plan ausente o statuscanceled del state servidor; statuscancel_requested nohabilita acciones. Tarjetasconservan componentes visuales, predeterminar/eliminar de canceled usan saved_card_method sin revision/Guardianmutation; callback yretry permiten canceled, active continúa rutapropia. Identity/freshness/consent/busy/intentpersistido y prueba receipt+cards anteséxito preservadas. SQL433 permaneceautoridadfinal y bloquea pending/lease/incoherencia; UI no concede autorización.
+
+Dos recorridosWidget completos adicionales canceled(default/remove) ejercitan autorización, lostresponse, persistkey+target, mismo retry, receipt+cards frescas ycleanup sin cambiar estado canceled. Testcancel_requested comprueba ausencia de botones ywrites. Guardian suite58/58 pasa10s78164/e38cae en scratch sincronizado (dosarchivos propios); analyzer65845/c5a7a9 sinissues48.4s. Format/diffchecklimpios; logs externos Temp/dopmi-loop434-mobile.log y dopmi-loop434-analyze.log. No fullmóvilnuevo/captura/sourcepixel/device atribuidos.
+
+Código local; migración433/deploycheckout/redisplay y Stripe auténtico siguen pendientes. No changeschema remoto, no dinero real/CM/push. Siguiente preflightRPCremoto y overlayconpostflight, validar estadoscancelados en backendreal y métodos guardados conStripe test trasreautenticación. Scopeglobalvisual/motion/native sigueabierto.
+
+
+### Loop435 — cancelación y métodos desplegados en DEV, 3/10/2026
+
+Base14d8350; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Preflight MCP DEV ohqxranynackjignryep: latest20261003092721/native_saved_wallet, helperausente, definiciónsaved_card_method_server contiene2anchors exactos, servicegranttrue/browserfalse. Aplicada una vez migraciónlocal20261003110000 como remota20261003130559/canceled_guardian_saved_methods, success verificado. No replay/repair/rename/dbpush. Postflight2guardsnuevos, helperpresente, server service=true/anon=false/auth=false yhelperbrowser=false. Se conserva definiciónexistente incluyendo textosprevios, no otrosmódulos/esquema/flags.
+
+Prueba PostgreSQL remota enBEGIN/DO/ROLLBACK conUUIDsintético: Authfixtureconfirmado/wallet/customer/registrycanceled; helperpermite, RPCprepare+claim+snapshot funcionan. Cambioactivoanteswrite provoca null ymutation_requested_at sigue null, validado mediante excepcionessiincorrecto. Rollback completo; consultaindependiente confirma0usuarios/0wallets/0plans/0jobsloop435. No tokenAuthcliente/StripeAPI/recorridoinstalado acreditado.
+
+Revisión plan_view identifica payment_in_flight basado en collectionpay_requested_at/status no paid/skipped: siguiente loop debe comprobar si elegibilidadSQL debe incorporar también esa conciliación antespermitirmétodos trascancelación; no declarar todosestadoscerrados. Checkout429/redisplay431 siguenlocales, StripeMCP reautenticación pendiente. GoalglobalvisualgestosSDKdevice yCodemagicfinal pendientes; noCM/push/dinero real.
+
+
+### Loop436 — cobro en conciliación y activación histórica, 3/10/2026
+
+Basebf50857; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Migración local20261003131000_canceled_wallet_collection_guard extiende helper433 para collectionpay_requested_at/statusno paid/skipped; pending/attention siguen bloqueo incluso registrycanceled. Nueva helperprivada activation distingue pendiente/attention de settledhistórico: excepción sólo con schedulecanceled yregistrycanceled+fecha, mismoowner/cycle, settlement payment_intent+charge coincidentes con registro. Parche exacto2activationguards enRPCprepare/write, no se modifica status/evidencia del primerpago.
+
+Primer full585:582pasan/3fallan porque fixture completa mantiene activationsettled histórico, reveló bloqueo real que fixture433 sinprimeraactivación no cubría. No falsepass: corregida regla SQL con vínculo comprobado. Full585posterior pasa24.438s8291/64db77; dosnegativos añadidos, final587/58724.401s25135/2bc9c1, log externo Temp/dopmi-loop436-backend-final2.log. Siete pruebas nuevas: pending/attention rechazan prepare; paid/skipped permiten sin modificarcollectionrecord; pay_requested tardío bloquea write sinmutationtimestamp; activationpending/comprobanteajeno no se eximen ni creanjob. diffcheck limpio.
+
+Sólo local; migración no aplicadaDEV aún. Próximo compararhelper/activationanchors remotos y aplicarúnicavezconpostflight, más UI payment_in_flight. No afirmar flujo completo porSQL ni fullmobile; Stripe reauth/checkoutdeploy/redisplay/SDK/device yparidadglobal pendientes. SinCM/push/dinero real.
+
+
+### Loop437 — bloqueo visible de conciliación y despliegue SQL, 3/10/2026
+
+Base2f944e9; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. GuardianScreen independentWallet excluye canceled con payment_in_flighttrue; conserva tarjetas visibles y Notice explica apoyo pendiente. Test nuevo comprueba ausencia de predeterminar/eliminar mientraspendiente, Actualizarestado confalse restaura ambos yquitamensaje, cero submit. SuiteGuardian59/59 pasa13s60838/9675f6; analyzer6060/84e683 limpio34.5s en scratch condosfuentes sincronizadas. Format/diffchecklimpios; logs externos Temp/dopmi-loop437-mobile.log/analyze.log. Sin fullmobile/captura/device nuevos.
+
+Preflight DEVohqxranynackjignryep: latest20261003130559, helper433 md5exacto5a9e2efc5850b565baf355354c548716, activationhelperausente y2anchorsRPC. Aplicada una vez local20261003131000 porMCP como remota20261003131548/canceled_wallet_collection_guard. Postflight ambos prosrcmd5 coincidenlocal probado587: collection939ccd4012f6a0d977d788ce2bb79a2c; activationf59fc9925e6e5b045df51b29892626d6. DosguardasactivationRPCactualizadas; serviceexecute true/browserfalse, helpers anon/authfalse. SQL yprivilegios reales verificados, no prueba nuevaAuthREST/Stripe positive ni nueva fixtureSQL remota de ciclo completo atribuida. No replay/repair/rename/dbpush.
+
+UIservidor estadosdeconciliación implementados/SQLdesplegado, no cerraraceptación financiera/visualglobal con estaspruebas. Checkout429/redisplay431 overlayspendientes, StripeMCP pide reauth. Continúa objetivo completo/nativo/dispositivo yCM sólocandidatofinal, sinpush/dinero real.
+
+
+### Loop438 — checkout con customer privado desplegado, 3/10/2026
+
+Base0e22658; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. paymentsDEV ACTIVE10 tenía3archivos; comparacióncontra local: entrypointidéntico, runtime sólolookupCustomerRPC, payments sólo callback/validacióncus/test ycustomercheckout. Guardado backup externo Temp/dopmi-loop438-payments-before.json. RPC owner realexistente serviceexecute=true/browserfalse confirmado; no nuevoesquema. Deno payments check y10checkouttests pass101.689ms72451/2b1e83 sobrecódigo actual antesdeploy; gatebackend587/436 antecede sólomobile437, móduloscheckoutidénticos.
+
+Deploy MCP payments10→11 ACTIVE, bundlehash731b3beb46c005137e25633c388a48bc5e9cd2d535d06dfb7f636676d6e1b56b. Preserva3files yverify_jwtfalseprevio, AuthgetUser/token/emailconfirmado guardasentrypointintactas. GetEdgepostflight0mismatch/0extra normalizandoCRLF vs fuenteslocalesprobadas. HTTP real GET405 method_not_allowed yPOSTsinAuth401 sign_in_required (3ea42d). No Stripewrite/ownerfixturecheckout/redisplayselecciónreal niaceptacióndevice atribuidos. Dinero test-onlysinflagsnuevos.
+
+Checkout429 ya remoto; redisplay431 aún requiereoverlaysworker/webhook/client ypostflight. StripeMCP reauthsiguependiente. Laspruebasdeboundary no sustituyen checkoutautenticado ni selecciónreal/SDK; objectiveglobalvisual/motion/device continúa. SinCodemagic/push.
+
+
+### Loop439 — redisplay consentido desplegado en DEV, 3/10/2026
+
+Base0814808; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. GetEdgeworker27/19files,webhook27/18,client20/18: saved-card.mjs idéntico en los tres. Comparacióndeterminística localquitando sólo guardconsent_version/consent_at ybloqueredisplay devuelvebaselineexacto; no diferenciasnoautorizadas. Backupsexternos Temp/dopmi-loop439-{slug}-before.json. Deno check tresentrypoints exit0b88348; backend587/436 cubre módulosaved-cardlocal sin cambios después.
+
+Deployoverlay sólo _shared/saved-card.mjs, demásarchivosremotos yverify_jwtfalseprevio preservados: worker28 ACTIVEhash75b132db770f713fd06acec6a34f3db0f6d81c70385e0c89c16a6c53c5d77624; webhook28 ACTIVEhash31c9392915d7827078cd5083292a2b35a4b19d0e203b529c111498f0ee53d133; client21 ACTIVEhashcac9b4a1e31cdf60f412b87a89afeeeedd150b848defb3aba2d4705a1868437f. GetEdgeposterior0mismatch/0extra en19/18/18files por CRLFnormalizado. POSTsincredencial realworker401access_denied/webhook400invalid_signature/client401sign_in_required46b36d. Auth/secreto/firma/testkeys guardasintactas.
+
+No schema/flags/secrets/Stripewrite ni usuariosnuevos; redisplay431 ya remoto. Estaspruebas comprueban despliegue/boundaries, no SDK ni tarjeta realdeprueba/configuracióndeCheckoutselección. StripeMCP reauthpendiente ytarjetasprevias/nativewallets no se habilitan retrospectivamente por esteupdate. Sigue aceptaciónAuthStripe ymatrizglobalvisual/motion/device, noCM/push/dinero real.
+
+
+### Loop440 — capturas de billetera cancelada y conciliación, 3/10/2026
+
+Basef41f83e; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Capturer añade5estadosfixture de /settings/payment-methods: cancelednormal/200%, waitingnormal/200% ywaitingfooter200%. Fixturesconservan cardsVisa4242/Mastercard5556, method_change_availablefalse, statuscanceled ypayment_in_flight variable. Assertionsvalidan acciones sólo sincobropendiente, Notice sóloenwaiting y0submit. Footer scroll confirmaActualizar estadoaccesible; sin nuevo producción.
+
+Primera corrida4capturas pasa1/1sinlayoutException pero bloqueasserts quedóerróneamente dentro adoption-drag, no se ejecutaba; detectadopor lectura y corregido moviéndolo a rama finalgeneral. No atribuirasserts aprimera corrida. Corrida finalobservable65092/79ef4c pasa1/1en3s con5estados yasserts ahoraactivos. PNGnormalwaiting/200waiting/200canceled/footer200 inspeccionadas: textorefluye, segundo método bajo viewport inicial200 accesiblepor scroll; Actualizarestado sinrecortehorizontal. Artefactos docs/design-reviews/parity-loop440, fontsInter/Fraunces empaquetadas delcapturer, nofontemoji/device. Format/diffchecklimpios.
+
+LecturaSourceApp3623/card-row yCSS nav-row-text gap2/inline-linksmall12 muestra comparación de medidas actualpendiente; no igualdadpixel afirmada, ni5pantallasaceptadas ni fullmobileactual. No walletSDKconfig/Stripe real/remotechanges; Nativewalletbuttons noaparecenfixture porcapacidadtest no disponible, no paridadfinal atribuida. Siguiente mediciónrenderSource/cardtitle/action/muted ygestosfamilias, ademásacceptanceStripe/device; sinCM/push.
+
+
+### Loop441 — medidas renderizadas de tarjetas y tipografía, 3/10/2026
+
+Base4b39a07; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge441 runtime377x852 /settings/payment-methods, fonts.ready conInterloaded, DOMcardheight70/padding14/gap12, título16/20w700, small12/15w400 congap2; action12/30w600 ancho92.328125. SnapshotPNG ymetricsJSON guardados. Nativecard tenía título14/action500/lineheightinherited: cambiado16height1.25, secondary12height1.25/gap2, action600height1.25/letterSpacing0. Buttons shrinkWrap mínimo40 acordeCSSaltura40; requiere aceptaciónfísicadegesto, no afirmar44/48tapminimum.
+
+SuiteGuardian+feedback+capture63/63 pasa12s32896/c08cb3; analyzer1456/9052aa limpio46.7s antecede sólo ajuste finalletterSpacing0 yanchomedido. Nuevoassertcapturerheight70 inicial falla actual75 enfilaconacción porwrap3líneas; corregidospacing ywidth92.328125. Recheckcapturerfinal28771/de316c pasa1test/5estados4s incluyendo altura70ambasfilasnormal, acciones/Notice/scroll200 y0writes. Format/diffchecklimpios; JSONSource yPNGnormal/200/footerfinales inspeccionados. Sinfuenteigual/igualdadpixelglobal: SourceMastercard1881 vsfixture5556, badgeModo prueba excluido; walletsSource simuladas no se copiancomoSDKdisponible.
+
+Sourcefirstcardy121.39 vsFluttercapturayaprox125: encabezado/separaciónvertical continúa mediciónpendiente; no declarar pantallaidéntica porrowheight. Browsercerrado60e9d8; Vite97946CtrlCexit1esperado9329d4. Artefactos docs/design-reviews/parity-loop441. NoStripe/device/fullmobilerun/CM/push nuevos; próximoheadingy layoutglobal yaceptaciónfuncional/nativa.
+
+
+### Loop442 — posición vertical del título Métodos, 3/10/2026
+
+Base726eb6c; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. CSS h2line1.3/settingsheading18 ycontentpadding20/list-stackgap10 explicanposiciónfirstcard121.390625 medida441. Flutterheading heredaba1.55; fijado1.3. Assertgeométrico inicial observa121.0 (diferencia.390625 porredondeoText). ConstrainedBoxminHeight23.4 (=18×1.3) preserva fracción sinaltura máxima/recorte200. Primera compilaciónconconstConstrainedBox incorrecta falla; corregido constenconstraints/child, no se atribuyeverde a fallos.
+
+FinalGuardian+capturer60/60pasa11s99586/b40248: ambasfilas70px, top121.4/201.4 dentro.1px deSource121.390625/201.390625 a377×852; cinquefixturesincluyennormal/200/waiting/footer, assertionsmessage/actions/0writes. Analyzer74704/b6ca0c limpio32.8s código final; format/diffchecklimpios. PNGnormalfinal inspeccionado y5artefactosparity-loop442 guardados; SourcePNG/metricsvigentes441 sirvenreferencia deSHAidéntico.
+
+Posiciónvertical438/441 pendiente resueltaen esta geometría377; no pixeligualdadglobal/múltiplesanchos ni NativeSDK/wallets/fingerdevice aceptados. Sourcewalletsimulada/fixture55xx difieren intencionalmente de datoreal; no inventar disponibilidadnativa. Continúa matrizglobal/gestos/Stripeautenticado ydevice; noCM/push/schema/flags nuevos.
+
+
+### Loop443 — regresión móvil integrada vigente, 3/10/2026
+
+Basebcbb520aa883ee819332916e3c389c67e6ce29cf; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Comparación223Dartlib/test root/scratch0diferencias trasnormalizarnewline. Sin cambios de app durante ejecución. flutter test --no-pub completo562/562pasa3m13s7254/16999dexit0; logexterno Temp/dopmi-full-mobile-loop443.log. Supersede full558/423–424 parafuentesmóvilesactuales, no UIdevice/Stripe/Play/visualglobal atribuidos. No repetirgate sin nuevos cambios oincertidumbre concreta.
+
+ADB read-onlyinventory29b85e vacío: no teléfono accesible ni comandosUI/envíoinstalación. Continúa requisitoAndroid físico/gestos, no confundir USBhistóricoconconexiónactual. Stripe reauthpendiente ySDKPK/MerchantID aún verificaciónefectiva. Últimoanalyze442final limpio32.8s, backend587/436 vigenteparaSQL/Savedcarddeploysinchangesposteriores.
+
+RevisiónSourceSettings3458: cambioexperiencia actualizaestado+navigate inmediatamente, no añadir transiciónglobal/hover de testpanel. Clienteactual _SettingsHeading(profile_overview1570) height1.2; Source settings-heading18 hereda h2line1.3. Próxima comparaciónrenderizada Configuración donor/rescuer debe medircomposición/paleta ycorregir diferencia, antes declararparidad. Fullgate verde es evidenciafuncional local, matrizglobal/estados/nativo/gestos permaneceabierta. SinCM/push.
+
+
+### Loop444 — etiquetas y encabezados de Configuración, 3/10/2026
+
+Base4a3d07b; Source irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado al cierre. Edge377x852, Inter/fonts.ready, /settings en ambos modos: Métodos de pago y subtítulos medidos; h2 Ayuda/Cuenta18px line23.4/color15110d. Actualizadas etiquetas y subtítulos de pago/suscripción en ambos modos; encabezados donor1.3/color15110d. Rutas y funciones reales preservadas.
+
+Pruebas profile_experience/profile_guardian/capturer finales19/19 aprobadas7s, handle92373 exit0. Analyzer42120 limpio55.9s exit0. Capturas normal/200/footer guardadas; inspeccionada200 sin desborde horizontal, contenido inferior requiere scroll. No equivalencia global de composición ni rescuer render acreditada; rows/iconos/paleta y geometría continúan pendientes. Full562/443 antecede estos cambios; backend587/436 vigente. Sin Codemagic/push/deploy; usuario ratifica envío sólo al completar objetivo.
+
+
+### Loop445 — geometría y paleta de filas de Configuración, 3/10/2026
+
+Base905ca44; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; referencia renderizada444 vigente. Variante standardSettings del componente compartido conserva estilo previo por defecto y usa border e6e2dd, título15110d, muted554e48, título16/20 y secundario12/15. Aplicada al menú donor y su cambio de cuenta; ayuda rescuer usa variante común, sin alterar verificación. Dos primeras corridas19 verdes preceden implementación efectiva de variante: script inicialmente sólo cambió constructor y luego falló al buscar clase siguiente al último State; corregido ámbito antes corrida final, no atribuirles verificación final.
+
+Final19/19 aprobadas6s41795exit0; analyzer87746 limpio20.9s producciónfinal. Capturer adicional65148exit0 pasa1/1en3s con aserciones activas: a377x852 filas iniciales y88/170/264 y alturas70/82/82, tolerancia.1 frenteSource444. Cuatro capturas normal/200/footer guardadas; normal inspeccionada. Capturer modificado tras analyzer, sólo añade asserts. No pixeligualdadglobal: acceso a funciones reales debajo de cuenta y footer activo difierefixtureSource. Encabezados fraccionarios/paleta header/composición rescuer ygestos físicos siguen pendientes. SinCM/push/Stripe/schema/deploy.
+
+
+### Loop446 — ruta correcta de Configuración rescatista, 3/10/2026
+
+Base1a2b8c8; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. AuditoríaApp7572/7590 confirma dos rutas diferentes: /settings(Settings común) y /rescuer/settings(RescuerSettings verificación/redes/banco). Cliente /settings selecciona correctamente segunda por modo; capturas446 deben comparar /rescuer/settings, no Source444/general con accountMode cambiado. No sustituir menú real rescuer por donor. Rectificado standardSettings aplicado porerror445 a ayudarescuer; conserva tema151423/4f4e5c/e3e4ed confirmado DOM runtime. Donor variante445 permanece.
+
+Edge377x852 /rescuer/settings verificada fuente, fonts.ready; heading/menú/switch/ayuda/cerrar métricas yPNG guardados. Flutter16/16 profile_experience+capturer40859exit0 aprobadas7s, incluyendo siete estados rescuer normal/200/scroll/footer/foco y cambio experiencia conpersistencia real simulada sólofixture. Analyzer11017 limpio33.4s final. Imágenes normales inspeccionadas: datos y textos backend difieren por funciones reales (Stripe seguro en vezCLABE simulada, publicaciones sujetas revisión), no borrar guardas para acercarfixture.
+
+Diferencia pendiente concreta switch-card Sourceheight71; cliente InkWell48x48+padding16+border fuerza82. También disponibilidadfila bancaria/longitudtexto varía porbackend; no comparar posicionesabsolutas decontenido noequivalente. Siguiente corregir geometría switch manteniendo gesto accesible/semántica/180ms ytests persistencia. Browsercerrado2395e6, Vite67812CtrlCexit1esperado940148. SinCM/push/deploy/Stripe/device.
+
+
+### Loop447 — geometría del cambio de experiencia sin reducir área táctil, 3/10/2026
+
+Base3545f66; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, métricas runtime446 switchcard71/track32x19 vigentes. RescuerDonorModeCard settings separa espacio de track32x19 de overlaytáctil48x48 centrado; overlay queda dentro Stack/card, right9 produce trackright17 respecto borde. Título16/20 y secundario12/15+gap2 conpadding16/border1 dan71px normal. Sin altura máxima: texto ampliado puede crecer. Perfil fuera Settings conserva estructura/layout previo. Semántica toggled/enabled, focusoutline y AnimatedContainer180ms/reducedmotion preservados; cambio confirmado por repositorio antesnavigate.
+
+Final16/16 pruebas6s21054exit0. Capturerasserts nuevos comprueban card71, track32x19, margen17, área48x48 ycentrocoincidente. Pruebas profile_experience ahora tocan20px a derecha del centro (fuera track16 y dentro touch24): éxito/fallo ambosmodos sin alterar datos personales, fracaso conserva modo/ruta. Capturas sieteestados guardadas; foco normal y200 inspeccionadas. Analyzer86614 limpio34.9s producciónfinal, precede sóloaserts/nuevo punto de toque deltest. Primera16/16 antecede nuevosasserts; corrida final los ejecuta. Diffcheck limpio.
+
+No teléfono/Stripe/nueva aceptaciónvisualglobal. Las fuentes reales siguen generando contenido/alto distinto deSourcefixture; objetivo entero sigue abierto. Próximo obtener fixture social equivalente ycomparar campos/hints/gestosdiálogo, continuar resto matriz. SinCM/push/deploy; envío sóloobjetivo completo.
+
+
+### Loop448 — edición social modal con guardado real de borrador, 3/10/2026
+
+Basecbc8c54; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. SourceRescuerSettings6170 abre diálogo porcampo; cliente sóloabría editorcompleto. Nuevo RescuerSocialDialog ycallbackopcional SettingsDataRow conservan editorcompleto para perfil no creado/banco. Modal social centra/tapbarrier/cancelar/cerrar/input autofocus; usa repository.save con siete campos preservados yexpected_version, sin transiciónpublicada ni autoaprobación. Instagram @handle se normaliza ahttps; Facebook requiereenlacehttps válido porcontratoservidor, no guardar nombres simulados. Propiedadcapturada validada contra identidad yrepo antes/despuéswrite; ListenableBuilder ocultacampossi cambia sesión. Busy impideguardar/cerrar repetidamente; traswrite sehabilitapop yawaitendOfFrame antescierre. Refresh yToast borrador/revisión enéxito.
+
+Primera compilaciónfalló porimportNotice omitido; corregidocore/ui. Dos pruebas posterioresfallaron porfixtureidentityowner-one/profileidone: rectificadofakeuseridone sinrelajarguarda. Siguiente saveassertfalló0writes por tapantesrebuild delonChanged conbotónpreviamentedisabled; añadido pumpaltest, no atribuir falloaSQL. Captureinicial tapeditorbajoappbar porensureVisiblealignment0: cambiado.35, nocódigoUI alterado parafixture. Analyzer inicial advierteimportunused+curly: corregidos. Últimoanalyzer88483 clean28s producciónfinal; modificaciones posteriores sólotests/capture.
+
+Final24/24pasa9s93597exit0/log Temp/dopmi-loop448-security.log. Cobertura: cancelar0writes, éxito preservanombre/bio/otrared/version3→4/draft; owner privado no expuesto; dominioFacebook impostor disabled0attempts; falla1attempt/0save conserva modal, retry2attempts/1save; logout escondetextfield sinwriteextra. Editorcompleto yswitchregresión siguenpassing. Capturer añade3estados modalInstagram normal/200 yFacebook normal; normal/200inspeccionados yguardados. NoSource modalruntime medido448 aún, no igualdad visual atribuida: foco input aúnheredacolortema ydisabledgrey necesitancomparaciónSource; letras/buttons ykeyboardreal pendientes. La aceptación PostgreSQL/usuario real de nuevo acceso noejecutada en448 (RPCexistente sinchanges); noStripe/schema/deploy/CM/push. Continuar mediciónmodal/gestos yrestomatriz.
+
+
+### Loop449 — medidas renderizadas del diálogo social, 3/10/2026
+
+Base9f8fc4e; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge377x852 /rescuer/settings abreInstagram, fonts.ready ymediciónDOM: dialogy279.90625/h292.1875/w345; input44/border e3e4ed/outline3rgba7841f2.3 offset2; Guardar36/font14/Cancel48/font16. Cliente448 tenía foco dorado/buttons48 yCancelradius14: scopeinputFocuscontorno3+offset2, border1gris/radius14, guardar36padding8font14 ydisabledpúrpura, cancelar48pill/font16. Nohovernuevo.
+
+7/7 pruebas iniciales pasan6s54492; analyzer94668 limpio62.8s antes últimosajustes. Assertgeometry falla input42 vs44, no marcarigualdad porcardheight; mediciónFlutter title29/label18/hint19. Label17 conformeSource normal14 ypaddinginputvertical13 compensan decoraciónFlutter sinborderheight: inputfinal44. Final7/7pasa5s78979exit0 incluyendo aserciones activas: cardtopwithin.5/heightwithin1 deSource, input44/guardar36/cancel48 tolerancia.1. Cardcliente293 vsSource292.1875 diferencia.8125 porlineboxesTitle29 yHint19 redondeados; siguependiente, no paridadpixeldeclarada. Sourcefixture@Mariarescata enabled vsFlutteremptydisabled, no comparacióndatosidénticos atribuida. Nativefocus/normal y200 inspeccionadas,3PNGguardadas conSource/metrics. Analyzerfinal83851 limpio37.1s, diffcheck limpio.
+
+Funcionalcancel/save/retry/hostinvalido/sessionhide siguenpassing en rescuer_settings_details; no remoteRPC/keyboardphone nuevo. Pendiente lineboxfraccionario/paletaheredadalabel-input/barrier ycomposicióndisabled equivalente, comparacióndelFacebookreal ygestosrestomatriz. Browsercerrado904545; Vite15468CtrlCexit1esperadoe07dac. SinCM/push/deploy; sóloenvíocuandoobjetivocompleto.
+
+
+### Loop450 — paleta modal y cancelación con teclado, 3/10/2026
+
+Base93a76eb; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. ReferenciaDOM/PNG449 siguevigente; CSSmodalbarrier rgba15110d.48/disabledopacity.5 ylabel/input151423. Cliente explicita coloreslabel/input, barrierwarm exactalpha.48 yOpacidad.5 sobrebuttonenteropurple/fbfbff (antes doscoloresalpha distintos); semántica ydisabledonPressed se conservan. No nuevohover.
+
+Capturer añade validfixture @maria.rescata para mismo contenidoSource449, Guardarenabledassert, ademáskeyboard320 normal/200. Afirmacioneskeyboard compruebanCancel encimaheight−320 trasScroll.ensureVisible yScrollViewpresente; postcapturatoquepointer real delwidget enCancelar cierraModal yFake.saves0. Framekeyboard simulaInsets únicamente: no teclado Android real ni dispositivo aceptado.200inspection muestra contenido superior desplazado peroaccionesaccesibles. ValidPNG inspeccionado: card/botones/focusytexto comparables, underlay difiereporbackendURL/stripe/verification yscroll, no igualdadpixelglobal.
+
+Inicial7/7 pasa7s51391; final7/7pasa6s13512exit0 con6fixturesModal(normal/valid/200/Facebook/keyboard/keyboard200). Analyzer31361 limpio30.7s producciónfinal, luego sólotests/capture añadidos. Capturegeom449 sigueactiva44/36/48/cardtolerancia1; diferencia.8125lineboxes no resuelta450. No cambiosSDK/schema/backend/Stripe/CM/push. Próximo mostrarhandlederivadodeURLenSettings conservandoURLreal ycomparargeometríaredes, lineboxes/keyboardfísico/restomatriz.
+
+
+### Loop451 — usuario compacto de Instagram conservando enlace real, 3/10/2026
+
+Base9b1f8b5; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, SourceRescuerSettings muestra@usuario. Nuevo rescuerSocialDisplayValue extrae usuario sólo HTTPSinstagram.com/www.instagram.com sinuserInfo/puerto ysegmentoperfil permitido; Facebook/publicaciones/URLajena se mantienenliterales. Settingsfila yeditor usan presentacióncomún, persistencia sigueURLcompleta deRPCnormalizado. Sin datos deFacebookinventados ni nombrepúblico asumido.
+
+Final8/8pasa7s19898exit0 incluyendo widgetcancel/save/owner/retry/logout ycapturer8fixtures (modal6 yfila normal/200). Fixture@Maria rescata produceInstagramrow70px assertactivo377; normalfila inspeccionada. Saveassert conserva URL https://www.instagram.com/updated_profile yotroscampos/version/borrador. Unit testhostimpostor/userinfo/rutapublicación/Facebook noenmascarados. Capturasguardadasparity-loop451; Source446/449 vigentes. DatosbancariosStripe/reviewhint yFacebooksinagregar sonrealfixture, no igualdadglobaldecontenido.
+
+Analyzerinicial2info curlyenhelper; trascorregir detecta1info curlyencapturer: corregido. Final18345clean26.3s; cambiossóllaves desde8pass sin comportamientoalterado. Comparación224Dartlib/test root/scratch0diferencias bd978c. Full562/443 antecedemodal/menú444–451; siguiente fullregresiónmóvil para integración actual. Cardmodal.8125pxlinebox, keyboardfísico/Stripe/SDK/restomatriz siguenpendientes; sinCM/push/schema/deploy.
+
+
+### Loop452 — regresión móvil integrada en ejecución, 3/10/2026
+
+Fuenteexacta426f8743292ba673880c4c09a8ceb6f143917981;224Dartlib/test root/scratch0diferencias yconjuntosidénticos sinextras f2e96d. flutter test --no-pub full iniciado trascommit451, handle78989 confirmadoACTIVO985fee, logexterno Temp/dopmi-full-mobile-loop452.log; observado+48 a32s, noresultadofinal atribuido. No editarproducción ni reiniciarporobservacióntimeout; retomar mismohandle. Analyzer451clean26.3s ybackend587/436 vigentes; full562/443 sigue último completo hasta terminal452. SinCM/push/deploy.
+
+
+### Loop452 — fallo integrado de animación y corrección de continuidad, 3/10/2026
+
+Full78989 terminaexit1 fc06a2:563aprobadas/1fallo3m20s sobre426f8743292ba673880c4c09a8ceb6f143917981, log Temp/dopmi-full-mobile-loop452.log. Únicofallo rescuer_mode_control_test mode thumb180ms normal, esperaba0 alrebuild yrecibe13. Cambio447 retornabaContainer enprofile/Stackensettings y movía targetentreRow/Positioned: AnimatedContainer perdíaState y saltaba alfinal. No afirmarfullverde.
+
+Corregido ProfileModeCard conStack/Positionedestable enambosmodos; Rowreserva32x19Settings/48x48Perfil, right9/17 conserva posiciones yaltura71/82 yárea48. MismoAnimatedContainer continúaEstado entreboolsettings. Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado d313a2. Target20/20pasa12s39493exit0(incluye15fixturesSettings ygeometría); testmovimiento ampliado retorno13→0 conmid90msEase y180endpoint, reducedmotion instantáneo ambasdirecciones:4/4pasa85375exit0. Analyzer96931 limpio28.7s producciónfinal, precede sóloasserts inversos. SourceRoot/scratch224idénticos antes primerafull; producciónnuevo sólo2archivoscopiados.
+
+ADB d313a2 lista vacía, no UIAndroid/instalación. Card/modal/fracciones/SDK/Stripe/restomatriz permanecenabiertos. Siguiente repetirfullporfalloreal yfixproducción, no extrapolartarget20 a564integradas. NoCM/push/deploy.
+
+
+### Loop452 — regresión integrada final aprobada, 3/10/2026
+
+Recheck5996 terminalexit0 58648d:564/564 aprobadas3m47s, logexterno Temp/dopmi-full-mobile-loop452-recheck.log, códigoexactoaea2e21b7936ed5f2cc65728f223c4d4ec043409. Sin cambioslib/test durante corrida.224Dartroot/scratch idénticos después de terminar; fuentes yconjuntoscomparados previamente. Resuelve único fallo inicial deAnimatedContainer perdiendoState al cambiarContainer→Stack; mismaestructura ahora verifica180ms/reducedmotion ambossentidos en gatecompleto. Supersede full562/443 yprimerafull452563/1fallo; no aceptaciónvisualglobal/device/Stripe atribuida.
+
+Últimoanalyzer452clean28.7s producciónfinal; testinverso añadido trasanalyzer pasótarget4 yfull564. Backend587/436 vigente sinchangesbackend en444–452. ADB452 vacío, no teléfono accesible; noCM/push. Próxima familiaready: revisar diálogo sociallineboxes/otrosestados ygestosrestomatriz, conservando fullverde comobase técnica.
+
+
+### Loop453 — cajas de línea fraccionarias y cierre tipográfico, 3/10/2026
+
+Base3e1e150; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado fdc585. MétricasSource449 vigentes: card292.1875/y279.90625, título28.59375/hint18.59375. Flutterredondeaba29/19 dando293. Nuevo _SocialLineText scopedtítulo/hint mide número real de líneas conTextPainter/estiloresuelto/textScaler/ancho disponible, reserva alturaCSSfraccionaria (fontsize×height×líneas), OverflowBoxpermitepintar glyphsenteros sinclip ni altura fija de una solalínea. Campo/acciones intactos. Actualcard292.2/y279.9 dentro.1 deSource, diferencia.8125 resuelta encaja/layout; no afirmar igualdad de todos los píxeles/glyphantialias.
+
+Cierre reemplazaMaterialIcon porInter×22/w400/color4f4e5c/NoScaling; área48/IconButton/tooltipCerrar conservadas. right5.28125 derivaSource buttonwidth26.5625/right16 para mismo centro331.71875 y303.90625, asserts dentro.1. Primer8/8pasa9s53823; final8/8pasa9s34924exit0 conposiciónaltura exactas yclosecentro nuevosasserts. Capturer8fixtures conserva normal/valid/200/Facebook/keyboard320normal/200/fila normal200; keyboardCancelar pointer0writes ynoexceptions siguenpassing. PNGvalidfinal/200keyboard inspeccionadas;8artefactosguardados. Analyzer79944 clean45.5s final;format/diffchecklimpios.
+
+Full564/452 correspondeaea2e21 anteriora453, no fullactualatribuir; último cambio estrecho tiene8targetfinal. No teléfono/Stripe/NativeSDK/config/schema/CM/push nuevo. Nativecaret/underlayfuentesreales difierenSourcefixture, no igualdadglobal de pantalla ni aceptación física. Siguiente continuar familias/gestos abiertos de matriz; no repetirgatefullsin nuevas razones.
+
+
+### Loop454 — gestos de cierre y escritura pendiente del diálogo, 3/10/2026
+
+Baseb52f538; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado ca617f. SourcecardstopPropagation/backdropclose y× yaimplementados; agregadas pruebascomportamiento realwidget, sin cambiosproducción. Nuevafakegate controlaRPCpendiente paraprobarinterleavings yduplicados, no simulaaceptaciónremota.
+
+12/12pasa4s89758exit0: toque dentro mantieneModal; fuera/back deFlutterBinding/× cierra0attempt/0save. Pendiente: botónsave disabled, intentosrepetidos/barrier/back/close no cierran yproducen1attempt/0savehastarespuesta. Alcompletar1save cierra; logoutduranteawait ocultaTextField yrespuesta tardía no reapareceenotra sesión, elwriteoriginalpuedeterminar (no afirmar cancelaciónservidor). TestsURL/owner/retry/guardados previos siguenpassing. Analyzer5910clean22.6s ydiffchecklimpio. SinAndroidfísico/Sourcebrowser nuevo ni fullactual (564/452 previo453/454).
+
+Siguiente diferenciaNAV concreta identificada lecturaSource158: BottomNav activa sólo item.path prefix; /rescuer/settings y/settings no coincidenPerfil. ClienteCommunityNavfallback /profile mantienePerfilactivo, visibleSource446nonevsNative453purple. Medir/confirmarSource ycorregir estado seleccionado sóloenSettings sinperdernavegadores/gestos/datos reales. Objetivoglobal/SDK/Stripe/device siguenabiertos, noCM/push/deploy.
+
+
+### Loop455 — selección de pestañas en Configuración, 3/10/2026
+
+Base5da686e; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado553350. CódigoBottomNav158 seleccionaporprefix de tabpath: Settingsgeneral/rescuer no coincideperfil; SourcePNG444donor/446rescuer revisadas yvigentes sinSourcebrowsernuevo. CommunityNav fallback /profile dabaPerfilactivo enSettings. ProfileFrame ahora selectedPath /settings sólo rescuerSettings flag (ambosmodos); demásframes/fallbacks/rutas/tabState noalterados. Ningúntabselected enSettings, Perfilse activa alabrirrootreal.
+
+Testsnuevossemánticaambosmodos compruebanno selectedtrue dentroDopmiBottomBar, toquePerfil→/profile→sóloPerfilselected preservanombre/modo. Primera invocación18pasan/1fallocargatest/navigation_test inexistente: localizadoarchivo realdesign_navigation_test, nocambioapp parafallotool. Final27/27pasa12s89806exit0 (profile_experience/design_navigation/capture15rescuerstates). Analyzer11575clean24.4s final. Capture donor57594 1test/4statespasa3s; primerPNGnormalheadervacío detectadovisualmenteaunqueassertspasan, descartadoparaevidencia. Repeticiónsinchanges64280exit0 pasa4s yPNGnormalheadercompletoinspeccionado; no defectoApp atribuido ni renderingfísicoverificado. SóloPNGfinalesrevisadasguardadas8artefactos.
+
+Full564/452 antecede453–455, targetsgreennofullactualglobal. RestoSettingschild (/settings/payment-methods/Sourcebilling/basicinfo) yheaderdonorwarm deben revisar suFooter/estilosporroute, sin cambiar globalfallback antes comparar. Semántica/rutas testwidget noAndroidreal. SDK/Stripe/device/restomatriz permanecenabiertos;sinCM/push/deploy.
+
+### Loop456 — paleta del encabezado donor, 3/10/2026
+
+Base707a27e; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. ProfileFrame standardSettings sólo mainSettingsdonor: título15110d/divisore6e2dd segúnCSS fuente; rescuer permanece151423/e3e4ed. Back.svg ya15110d como AssetIconSource. DetallesBasicInfo/PaymentMethods/BillingSource sinBottomNav, cliente también sinbarra; no cambiofallbackglobal.
+
+18/18 pruebas perfil+capturador pasan8s92306exit0; analyzer4320exit0 limpio28.4s. CuatroPNG widgets normal/200%; normalygrande inspeccionadas, evidencia docs/design-reviews/parity-loop456. Diferencias datos/accesos reales/badge no copiadascomo simulación. Diffcheck limpio. Full564/452 antecede453–456. Objetivoglobal/StripeSDK/device pendientes;sinCodemagic/push.
+
+### Loop457 — tarjeta de soporte HelpCenter, 3/10/2026
+
+Base44562f9; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. /help usaHelpCenterScreen, noHelpScreenantiguo. SourceDOM377fontsready botón44/font16; tarjetaheading16/1.3/shadow0-8-22/.05. Clienteajustado botón44/font16/w600/padding11x18/ink0d0d0d +heading1.3+sombra aproximadaBlurRadius22. Repo/envíoreal/actions intactos.
+
+PrimerFlutterroot noPubspec fallóprevio carga; retry scratch11/11pasa20s72566exit0;analyzer8072 limpio50.7s. Capturador11fixturesno11pantallasaceptadas;4PNGguardadas normal/200/modal. SourcePNG/DOMyclientnormal/large inspeccionados docs/design-reviews/parity-loop457. Full564/452 previo453–457; backend587/436 sin cambios. FooterSource puntosseparadores/espaciado y métricaschips siguencomparaciónpendiente, nomarcaigualdadglobal. Browserclosed/ViteCtrlCexit1esperado;sinCM/push/device.
+
+### Loop458 — enlaces legales y footer HelpCenter, 3/10/2026
+
+Base4a0c7cc; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; Source457render/DOM+App6550 vigentes. AvisoprivacidadHelp erróneo abría/account-privacy, corregido/privacy-notice legalexistente; accióneliminarcuenta mantieneadministración. Puntos·ExcludeSemantics, runSpacing6/paddingtop4 ybackcenter36/target48 segúnSource;nohover.
+
+Primer test/analyzer importfaltante corregido; segunda5pass/2fail por tocar chipfuera viewport200% centro713>640. Tests ahora scroll/hittestprimertoque yscrollinverso alregresar. Rechecknuevo2/2pasa2s61220exit0; soporteycapturador5pasaron52421 pese2fallostestnuevo, producciónsinchangesposteriores. Analyzer10440clean36.5s previo sólo fixes tests. Tresenlacesabout/terms/privacy-notice ambosmodos a200%, vuelvencontemaseleccionado. Capturador13fixtures/4PNGconservados normal/grandefooter inspeccionados docs/design-reviews/parity-loop458. Full564/452previo453–458; noaceptacióninstalada/global niCM/push.
+
+### Loop459 — ruta/modal soporte sin fade y gestos busy, 3/10/2026
+
+Base2076fa0; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. App6567 conditional modalcenter sinCSStransition;3021warmbarrier48. Helper showHelpSupportDialog showGeneralDialog0ms/warm48 ybarrierlabel, HelpCenter yfixturesphoto/receipt compartenruta; guardasbusy/PopScope/repositorios intactos.
+
+Format rechazóFuture<void?>, corregidoFuture<void> previo pruebas. Final11/11pasa12s60914exit0; analyzer40089clean35.5s.4casosruta prueban animation1primerframe/durationzero/color, insidepermanece youtside/back/× idle0writes; pendingno3dismiss/duplicate,1RPC+recibo+cierreposterior.4dialogretry/photo+2nav+capturador8fixtures;4PNGconservadosnormal/grandeinspeccionados. FixtureRPCnoentregacorreo/phone. Sourcebrowsernone;codigoSHAactual. Full564/452previo453–459. Próximo medirvisual soporteSourcepadding/campos/×/botones; objetivoSDKStripe/device/matrizglobal abierto. SinCM/push.
+
+### Loop460 — soporte campos/close/color en ambosmodos, 3/10/2026
+
+Base3638567; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. SourceViteEdge377fontsready SourceDOMcard505.59375/y173.203125,select45/input44/textarea96/closecenter331.71875/relative24; paddingcoincide. Native45/44/96 corregidos paddingdropdown10.5/case13, adjuntarwhite/bordere6e2dd, ×Inter22/w400/noScaling/right5.28125/hit48. SoporteHelpcontact/send/receipt yellow/ink0d0d0d explícito ambosmodos segúnHelpplainSource.
+
+Capturador añade rescuer normal/200 ygeometría normalambosmodos campos±.1/card±.5(closeactual506vs505.594 títuloceil)/closecenter/color. Primera fallóassertyellow undefined, corregidoconColorfuente. Final11/11pasa9s18087exit0;analyzer57741clean42.4s.10fixtures,6PNGsourceJSONguardados docs/design-reviews/parity-loop460;normaldonor/rescuer/granderescuer inspeccionados. SourcePNGblur vsnativefoco explícito, noigualdadglobal. Próximo focusSourceoutline3offset2 vsnativepurpleborder2 + teclado/selectorreal. Browserclosed/ViteCtrlCexpectedexit1. Full564/452precede453–460; SDKStripe/device/matrizglobal abierto;sinCM/push.
+
+### Loop461 — outline inputs soporte y teclado, 3/10/2026
+
+Base57abd9d;Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. ReferenceFocusOutline optinshowForTouchFocus defaultfalse; sóloCaso/Mensaje soporte true, outline3/alpha.3/offset2/extrectinflate5/radio19;focusedBordergray1 reemplazapurple2. Sinlayout/hit/semanitic changes.
+
+Target5427:13pass/2fail por dragcentrocampo contralímitekeyboardstillvisible. Cambiogestotestmargin+downscroll, noregresiónproducción para forzarpass; finalruta6/6 pasa2s49757exit0.4dialog+4modecontrols+capturador12fixtures(support10prev+2keyboard),1test pasóoriginal.15casosúnicoscubiertosseparados no15suitetotalgreen. Analyzer10595clean36.5s antes sólofixgesturetest. Nuevosnormal/200 muestranoutlineexactRect,sendaboveinset300,dragdismissTestTextInput,retaintext+1RPC+receipt.5PNGconservadasnormal/large/keyboard/keyboardlarge/rescuer inspecciónnormal/keyboard200 docs/design-reviews/parity-loop461. viewInsets no teclado físico niSourcefocusruntime; CSSsourceevidenciaactual.
+
+Full564/452antes453–461; siguiente fullgateactual porcomponentcore optin;objetivomatrizglobal/StripeSDK/device abiertos. SinCM/push.
+
+### Loop462 — regresión móvil integrada actual, 3/10/2026
+
+Fuente exacta2bba0c25345e701d8b76e2933ae5969db989218d incluye453–461;226Dart lib/test root/scratch mismo conjunto+contenidoSHA256 normalizandoEOL,0differences antes/después. Sin cambiosproducción duranteejecución. flutter test --no-pub scratchfull579/579 pasa3m43s;handle11575terminalexit0/27c854, logTemp/dopmi-full-mobile-loop462.log. Supersede full564/452 anteriorAEA2E21 para códigoactual. Analyzer461 limpio36.5s fuenteactual, sólofixgestotestposterior; backend587/436 vigentesinbackendchanges.
+
+ADB devices-l otra vezlista vacía97785d; no instalación/gestosfísicos verificados. Fullgate noaceptación visual/completionglobal niStripeactual. LecturaConsent no nuevoerrorprivacy: enlace Privacidad y eliminación de cuenta intencionalmente/account-privacy, noAvisolegal;no alterar como si fuerafooterHelp. Objetivoactualpermaneceparidad todaspantallas/gestos reales; próximaSourcefocusruntime/selector/estados de ayuda yrestomatriz. SinCodemagic/push.
+
+### Loop463 — selector de temas soporte y preservación del borrador, 3/10/2026
+
+Base693fb9b, producción2bba0c25345e701d8b76e2933ae5969db989218d sinchanges. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; Appselector onChange sólotema yenvío IDs. Doschecks nuevos normal377x852/200320x640: menú outside/back cierranlista noHelpSupportDialog, conservanmensaje/caso0RPC; selecciónGuardián conservaambos ysubmitpayloadguardian/message/case_name correctos1RPC+recibo. Todos8ruta pasan2s33021exit0;analyzer40313clean23.2s. Repositoriofixture/rutanativaFlutter no selectorAndroidfísico ni aceptación visual SourceOS.
+
+Full579/462sobreproducciónactual siguevigente;doschecks nuevos posteriores noatribuir581full. ADBvacío previo462/StripeSDKglobalpendientes. Próxima diferencia interacciónSourceCSS: Helpbotones no:active/splash; nativeMaterialripple/overlaydefaults posible, capturarpressheldSource/native antes modificar scoped. Nohoverrecrear. SinCM/push.
+
+### Loop464 — held/cancel/tap en chips HelpCenter, 3/10/2026
+
+Base84dfaaf; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. CSSchip blanco sinactive/hover;isactiveposteriorselection. Capturador2fixturesheldnormal/200: startGesture150+frame,InkWellstatescontrollerpressed comprobado antesPNG, cancelblanco/rutaHelp, tapcompletofff8e0. Baseline59917exit0 yheld66505exit0;imagenprimerconsultaanteshandleterminalfaltaba,seesperómismohandle norestart. Comparación cropnormal20..210/195..223 con458:0changedpixels/4335whiteambos;hipótesisvisualripple noconfirmada,nocambiarproducción por suposición.
+
+Final75330exit0 capturador1test/2fixtures2s;analyzer37819clean28.1s. Normal/grandeinspeccionados docs/design-reviews/parity-loop464 conbefore/final. NoSourcepressruntime niAndroid/todointervaloanimación aprobado. Full579/462 vigente producción2bba0c2sinchanges;Fuentehelper/capturador posterior463/464nofull581. Matrizglobal/StripeSDK/device pendientes;sinCM/push.
+
+### Loop465 — auditoría coberturaactual y GuardianHistory directo, 3/10/2026
+
+Base5b35c52;Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. InventarioregexRoute/path/specs literalesmultilínea:55Source/51Flutter,349fixtures/34URLsinquery,relativeupdateIdconparent. Primeraextracción328ignorótuplasmultilínea; archivo finalcorregido, no328atribuidoinventariototal. Rutasacceso capturadorseparado; extensiónproducto sincapturadirectanoimplicadefecto. Auditoríaactual docs/parity-route-audit-2026-10-03.md yroute-inventory465 mantienenobjetivocompleto.
+
+GuardianHistory new4fixtures normal/200/datos/empty /guardian/history;HistoryCaptureGuardianpreservafinancerealcliente.11/11pasa5s5128exit0(10history+capture1), analyzer52112clean35.7s. Normalyempty200inspeccionadosPNG465:marcologoHeadingFraunces/eyebrowgenérico vscomposicióncompactafinancialdetalle. Es extensiónrecibosprivadosnocontrapartidaSourceURLexacta;próximoadaptarframe coherente/preservarreceipt/checkreturn/refresh/errors. Myadoptions/updatesmanagement/editorotrosreadycaptures. Producciónsinchanges/full579/462 fuente2bba0c2vigente, nonewfull. Matrizglobal/SDKStripe/device aúnabierto;sinCM/push.
+
+
+### Loop466 — marco compacto del historial de ciclos, 3/10/2026
+
+Producción c9bd74c; referencia a3c969cd9103fd46dc5cd886999912526ce75efb. ContributionFrame reemplaza marco genérico; conserva etiquetas de prueba, recibos, propiedad, paginación y devoluciones. Regreso al origen o /guardian. Capturador cuatro estados pasó; normal inspeccionado. flutter analyze limpio 33.4 s; 12/12 guardian_history_test.dart verdes en 3 s (dopmi-loop466-history-final2.log). Primera prueba esperaba asentamiento de consulta Guardian fuera de alcance; bombeo acotado corrigió sólo la prueba. Full579 anterior en 2bba0c2 no acredita cambio466. Sin aceptación instalada, push ni Codemagic; envío al completar objetivo según usuario.
+
+
+### Loop467 — publicaciones propias, nueve estados de captura, 3/10/2026
+
+Base b9495d3/producción c9bd74c; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Fixture mine sólo capturador con borrador/revisión/correcciones/publicada, vacío/error. Nueve estados normal200+contenido desplazado200 verifican acceso al contenido/reintento. Final14330 exit0,1test/9capturas5s. Analyzer65499 limpio35.3s antes adición scroll/assert; final compila. Primera aserción sobre lazy fuera de viewport corregida desplazando sólo estados content. Normal/vacío200/contenido datoserror200 revisados. Source integra adopciones en Mis Casos, no /my-adoptions literal. Encabezado slogan Fraunces domina viewport; siguiente alinearlo con composición Inter de listado sin reconstruir lifecycle. Sin cambios producción/aceptación instalada/Codemagic/push.
+
+
+### Loop468 — cabecera de publicaciones propias alineada al listado, 3/10/2026
+
+Base fcc561b; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. MyAdoptionsScreen pasa de logo/slogan Fraunces a cabecera Inter24/1.25/-.48 e introducción12/1.5, SVG regreso origen o perfil. Al200 cabecera a ancho completo, base20 escala40 para conservar palabras completas; resto escalador intacto. Acciones, estados, propiedad, comentarios, paginación y refresh conservados. Capturador añade regreso perfil normal/200.
+
+Primer const Semantics inválido corregido, captura título al200 partía palabra y se corrigió composición antes cierre. Final77171 exit0,40/40 en14s community/publicationframe/personality/capture9estados; analyzer79129 exit0 limpio34.7s. PNG before/final docs/design-reviews/parity-loop468, normal/grande/error inspeccionados. Ruta extensión sin SourceURL literal; Source Mis Casos/CSS h1 guían composición, no aceptación equivalente total. ADB inventario vacío; full579 anterior2bba0c2 no prueba nueva producción. Próximo administración/editor avances. SinCM/push; objetivo sigue activo.
+
+
+### Loop469 — captura administración/editor de avances, 3/10/2026
+
+Base8bdb7c4; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado.12fixtures reales de rutas administración/editor con listado draft/submitted/changes_requested/approved, vacío/error y editor nuevo/correcciones/error, normal200. Capturador87475 exit0,1test/12capturas6s; analyzer13933 exit0 limpio26.3s. Lista/editornormal yerror200 revisados docs/design-reviews/parity-loop469. Source no tiene editoravances independiente; EditCaseModal distinto. Marco genérico domina200; siguiente detallecompacto con funciones privadas preservadas. Inspección restore/save sugiere readerror permite saveupdate=null creando nuevo en vezrecuperación: probar/bloquear/reintentar siguiente, no inferir RPC aceptada. Sinproducción/Codemagic/push.
+
+
+### Loop470 — marco y recuperación de avances, 3/10/2026
+
+Base4f30e12/Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. ContributionFrame opt-in rescuer conserva defaults; administración/editor compactos18/divisor e3e4ed/SVG/padding16-20-16-32, cards margen sólobottom8, chevron sóloeditable. Editor bloquea campo/fotos/save/submit si restorefalla o submitted/approved, reintenta cargando mismo id/version, descarta late afterdispose; nuevo permitido. SQL/repo/ownership sinchanges. ListView onDrag dismiss keyboard.
+
+8/8 editor final18418 exit0/3s, log dopmi-loop470-editor-gesture-final2.log; normal200recuperaciónmisma versión7, readonly2estados, nuevo, late ydragconinsets400sinwrite.19otros (history12/publichistory6/capture1 con12PNG) pasaron conjunto42048 donde2nuevos tests fallaron scroll; no27suite única. Analyzer19717clean30.8s antes últimos cambios sólotests. Correcciones test importprovider, selectorScrollViewvsTextField, finderlastlazy ysimulaciónkeyboard/finderdespuésscroll. Producción noforzadaporfallostest. PNG470/before inspecciónnormal/editor/error200. Extensión sinSourceeditorliteral. Full579 anterior2bba0c2 no prueba producción nueva; próxima regresión completa acumulada. SinCM/push/aceptación física;objetivo activo.
+
+
+### Loop471 — regresión móvil integrada actual, 3/10/2026
+
+Fuente exacta0b40f0c3e094cc1dd4560ed613a2ae635e7cfdf9;227Dart lib/test root/scratch conjuntos+SHA256 normalizandoEOL idénticos antes/después,0differences. flutter test --no-pub full591/591 pasa3m12s,handle62464 terminalexit0/c5438c, Temp/dopmi-full-mobile-loop471.log. Supersede full579/462 e incluye466/468/470 y nuevas pruebas. Analyzer470 limpio30.8s antes últimos ajustes sólo de test/scroll; full compila/ejecuta finales. Producción no cambió durante gate.
+
+Source localHEAD a3c969cd9103fd46dc5cd886999912526ce75efb y App.tsx/styles.css unmodified. Refs remotas Dopmi ba9f897f3fa418e952b98e4c604cffe468a8aa95/design-foundation e4f4e8585612389e7193310c7fdfe137b61c7762; PR6 GitHubMCP open/draft/unmerged/mergeable mismohead/base. gh no disponiblePATH, sinlecturaCLI atribuida. Auditoría de rutas actualizada con467–470, mantienefamilias/global/StripeSDK/device pendientes; siguiente cuenta/consent/privacy/Connect/archivo privado. Noaceptación visual global por591widgettests;sinCM/push/basechange.
+
+
+### Loop472 — cuenta/consentimiento/privacidad, captura directa, 3/10/2026
+
+Base297a512/producción0b40f0c3e094cc1dd4560ed613a2ae635e7cfdf9/full591; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado.9fixtures normal200/contenido final200 tres rutas settings/account, consent, account-privacy. Primer consentimientofixtureyaaceptado volviócorrectamentehome; se corrigiófixtureterms/privacy null/adultfalse yseexigeURIexacta. Capturas finales realesreemplazan inicialesincorrectas. Final67159 exit0,1test/9capturas5s; analyzer89506clean45.3s antesfixture/URIassert, finalcompila.
+
+Opcionesnormal/grande/contenido yconsent/priva normal revisados docs/design-reviews/parity-loop472. TítuloCuenta yprivacidad se trunca200; próximoencabezadocompactoadaptable conservandofilas/nav. Consent/priva marcosgenéricos pendientesextensiones sinSourceURLliteral. Términos sí incluyeresumen/enlaceAvisoexternal, no enlace roto atribuibleporlabel. No eliminación/aceptación real ni cambiosproducción/Codemagic/push.
+
+
+### Loop473 — título completo cuenta/privacidad, 3/10/2026
+
+Base611569f; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. RescuerAccountOptions cambia a ContributionFrame rescuer con title18 adaptable200, padding16-20-16-32 y mismoCommunityNav4/filas. Frame añade bottomNavigationBar opcional null, defaults financieros intactos. Capturador normal/200abreprivacidad, vuelveopciones, regresaperfil ycompruebamodorescuer; FakeRescue sólocapturador, noServerWrites.
+
+42/42 directed75793 terminalexit0/10s (profileexperience/settingsdetails/guardianhistory/capture9), analyzer37081 limpio44.7s. Opcionesnormal/grande/contenido revisados PNG473+before; títuloelipsis200resuelto. ProfileRowpalabraslargas200todavíaparten; noaceptaciónglobal. SourceCSSBackbutton40/slot44/padding16 centro36 vsContributionleading60/padding16 centro38, candidato2px para contrastecomún siguiente, nomediciónbrowsernueva. Full591471fuente0b40f0c3e094cc1dd4560ed613a2ae635e7cfdf9 anterior, no fullnuevo. PróximoConsentPrivacy/encabezadocomún/Connectarchivo/matrizglobal. SinCM/push/deviceacceptance.
+
+
+### Loop474 — privacidad compacta y errata de navegación473, 3/10/2026
+
+Basef811904; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. AccountPrivacyScreen usa ContributionFrame title18/padding16-20-16-32/paletaexperiencia/regresoalorigenoperfil sinbarra, preserva medición/proveedores/eliminación/guardas/mensajes. NoSQL/repo/SDK/deletereal.
+
+Supersede atribución473 de navegación: bloque estaba dentro adoption-drag, accountcondition imposible;42tests/PNG válidos pero no probaban ese recorrido. Corregido README473 y código; movido al final común, contadores expected/actual exigen2/2 seleccionados. Primer intento ejecutado falló hitTestable por ensureVisible sin pump; corregido sólo capturador. Final46585 exit0,1test/9capturas7s dopmi-loop474-capture-final3.log: opciones→privacidad→opciones→perfil modorescuer normal200 realmenteejecutados.10otros identidad/social pasan44373 (bundle11/11 concapturadorprevio). Analyzer68820clean33.6s antes cambios sólo de instrumentacióncapturador, compilaciónfinalcompleta. Privacidadnormal/grande/contenido inspeccionadosPNG474/before. Full591 anterior0b40f0c3e094cc1dd4560ed613a2ae635e7cfdf9 no nuevofull. Consent/encabezadocomún/Connectarchivo/matriz pendientes;sinCM/push/deviceacceptance.
+
+
+### Loop475 — consentimiento y escala de enlaces, 3/10/2026
+
+Base6cc7d1b; Source a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. ConsentScreen reutiliza marco/encabezado/casilla de acceso, términos y aviso separados de gestión privada de cuenta. Lectura conserva casilla y no acepta; confirmar envía una aceptación. WidgetSpan ya escala al hijo: se elimina la segunda escala interna del enlace, conservando texto200. Heading optativo24 grande evita cortar palabras. Extensión sin SourceURL independiente, no aceptación literal atribuida.
+
+Final57841 exit0,27/27,15s (authsheet/consent/identity/capturador3), dopmi-loop475-mobile-final3.log; analyzer38149 limpio24.1s, dopmi-loop475-analyze-final4.log. Error previo de argumento context en withNoTextScaling corregido. PNG normal/grande/contenido final revisados, baseline472 conservado. Full591471 anterior a473–475; pendiente nuevo gate integrado. Sin aceptación/eliminación real, push ni Codemagic. Próximo encabezado común/Connect/archivo privado/matriz global y gestos/animaciones/Android; envío sólo al completar objetivo.
+
+
+### Loop476 — regreso compartido medido, 3/10/2026
+
+Baseaa46a62; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge377x852/settings fonts loaded: TopBar377x68, back40x40 x16/y13.5, icon20 centro36/33.5; título Inter70018/22.5 centro188.5/33.5. ContributionFrame padding16→12 conserva leading60 y aumenta hitarea44→48, centra SVGx36. Final45405 exit0,1capturador/2estados2s, normal200 revisados. Primer comando raíz sinpubspec no ejecutó tests; cwd corregido. Sin nuevo test redundante para ajuste2px; análisis pendiente siguientegate. Browser cerrado/Vite59600 detenido; no push/Codemagic. Próximo Connect/archivo privado y matriz de gestos global.
+
+
+### Loop477 — cuenta de cobro, captura directa, 3/10/2026
+
+Base52eebe5; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado.9fixtures /connect habilitada/pendiente/error normal200/contenido200, URI exacta y CTA alcanzable/hittest; fixture sólo autoriza lectura sintética connect_status. Final49761 exit0,1test/9estados dopmi-loop477-capture-final.log. Analyzer55578 clean42.7s antes tresfixtures/URI/hittest finales, cubre producción475/476. Capturas inspeccionadas, marco logo/Heading genérico pendientecompacto; no SourceURL literal independiente. Sin backend real/Stripe/onboarding/depósitos/push/Codemagic. Siguiente ConnectFrame y archivo privado/matriz global.
+
+
+### Loop478 — cuenta de cobro compacta, 3/10/2026
+
+Base77c8640; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. ConnectFrame compacto rescatista18/List16-20-16-32/introducción14, pop al origen o /settings/account; conserva estados/depósitos/refresh/onboarding y corrige monedaMXN duplicada.13/13 payments/capture93672 exit0/6s; final29501 exit0,1capturador/9estados6s con seis regresos normal200 y modo rescatista conservado, contadores6/6; moneda normal/contenido200. Checkgrande inicial buscaba depósito aún no construido por ListView: se desplazó antes del assert, no cambio producción. Analyzer6649 clean29.9s antes sólo ajusteassert. PNG finales/before477 inspeccionados. Sin SQL/Stripe remoto/push/Codemagic; no SourceURL literal independiente/fullnuevo. Siguiente gate integrado/archivo privado/matriz global/gestosAndroid.
+
+
+### Loop479 — regresión móvil integrada, 3/10/2026
+
+Fuentee11eb8dd1389b5d92d8d36d8d56ddc5ec33727a6; fullfluttertest17646 exit0,592/592,4m23s dopmi-full-mobile-loop479.log.227Dart lib/test raíz/scratch SHA256 normalizadoEOL idénticos antes/después y sin cambios durante run, evidencia mobile-consistency.json. Incluye producción473–478 y nueva regresión escala475; toolcapturadores aparte. Configpython16/16, analyze478clean29.9s misma producción. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb App/stylesclean; untrackedcapture-access.mjs conservado. Remotosbaseba9f897f3fa418e952b98e4c604cffe468a8aa95/heade4f4e8585612389e7193310c7fdfe137b61c7762 yPR6open/draft/unmerged/mergeable comprobadosGitHubMCP. ADB vacío. Auditoría rutas actualizada cuenta/consent/privacy/Connect; archivo privado yfamilias/gestos/Android siguenpendientes. Sin push/Codemagic/aceptaciónvisualglobal; no cerrar objetivo por592tests.
+
+
+### Loop480 — archivo privado y recarga, 3/10/2026
+
+Base41a87ab; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado.9fixtures abren Verarchivo1 desde solicitud sintética/path extra, URI privada exacta, recarga renueva acceso mismo path y regresan a solicitud sin saves, counters9/9. Capturador47609 pasó1/9; bug real setStatecallback retornabaFuture corregido con request sync/async observado/bloquevoid/keyFutureBuilder descartaimagenprevia durantevalidación.6tests finales81497 exit0/1s normal200 prueban pendiente/revocación/reintento/freshPDF antes launchMethodChannel simulado. Fallos previos scrollambiguo y montajegrande lazy corregidos sólo capturador/test; analyzer34810clean26.9s antesmontajefinal. PNG revisados marcosgenéricos pendientes481. Full592479 anterior a este fix; no nuevofull/device/nativePDF/SQL/push/Codemagic. Próximo marco visor privado yfamiliasglobales/gestos.
+
+
+### Loop481 — visor privado compacto, 3/10/2026
+
+Base9b160f1; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. VisorContributionFrame rescuer18/List16-20-16-32/intro14.45/backpopoperfil, conserva seguridad/recargaPDFimagen480.58648exit0,7/7,12s seis pruebas+capturador9, counters9regresos y tresrecargas; analyzer16729clean27.5s. PNG final/before480 revisados. Extensión sin SourceURLliteral; no launchPDFnativo/Storage/Android/fullactual atribuido. Full592479 anterior480/481. Sin SQL/push/Codemagic. Próximo familias Source/gestos/movimiento.
+
+
+### Loop482 — movimiento y galería real, 3/10/2026
+
+Base225f983; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; Edge377x852/case/rocky Foto2src cambia/activo1/ceroanimaciones; Foto3observerclickreal delta7.8ms, transition/animationDuration0s. CapturaSource inspeccionada. Fortalece rescue_test ruta real selección teclado y touch:377/0pixels primerpump e isScrollingfalse; final94784exit0,1/1,2s. Gate34673exit0,36/36,9s rutas/onboarding/discovery/nav/Guardian/gallerylifecycle actuales; analyze4410clean34.7s. No producción modificada/fullnuevo/gesto físico. Browsercerrado/Vite14151detenido. Switch180CSS sólo paneltestSource excluido. Auditoría rutas incluye480/481; full592479 anteriorvisor. Alcanceglobal/matriz/Android pendientes; sin push/Codemagic.
+
+
+### Loop483 — perfil público contra Source ejecutado, 3/10/2026
+
+Base94d9d8c; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge377x852/rescuer-profile/luna fontsloaded medidas yPNG actuales: avatar96y104/bio42/redes42/pestañas40/actividad39. Nativeperfil completo capturadonormal200: redes41→42, paddinghorizontal+1porbordeCSS, pestañas línea1.2/reservabordeContainer; finalfila40(tabwrapper72incl32margen)/actividad39y465, Sourcey464.578. IG139.9648vs140.5469; diferencia.5821 permanece y redondeo líneas de identidad <1px documentado, noigualdadabsolutaatribuida. No cambio conteos/enlaces/RPC/privacidad.33/33 community/capture71342exit0/12s antes últimosajustes; final66096exit0,1capturador/2estados3s conJSONmedidas; analyze91123clean31.1s antes sóloContainerfinal, compilación finalverde. PNG before/final/Source inspeccionados. Browsercerrado/Vite53256detenido. ADBvacío, reconexión solicitadaasync, sigue trabajoindependiente. Full592479 precede480/481/483; sinfullnuevo/push/Codemagic/aceptaciónglobal. Siguiente pestañas/estados públicos ymatrizglobal/gestosAndroid.
+
+
+### Loop484 — perfil público y cobertura actual, 3/10/2026
+
+Basece65628da765ec9cd48753ff2c6a0196a4526e89; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado.6capturas coldloading/error/no disponible normal200, sin identidad antes de datos; cuatro recuperaciones reales dewidget/provider normal200 mismas lecturas owner, contadores4/4. Final77247exit0,1test/6estados5s; analyzer2404clean25.7s antes sólocleanupduplicados/assertnombre, finalcompila. PNG inspeccionados, no Sourceequivalencialiteral de estados de servicio.
+
+Inventarioactual401fixtures únicas/55Source51native/44paths capturados/38patrones normalizados. Primerparse403 fallóunicidad: case-detail-amount/large duplicadasidénticas, segundopar retirado sin perderestado; capturador evitaoverwritePNG. JSONdistingueinitial_uri/captured_path privado ytemplates; no401aceptaciones/diferencia55−51pantallas. Producción no cambia484, full592479 anterior480/481/483. Auditoríaactualizada; Androidreconexiónpending, SourcePUBLICtabs/matriz/gestos siguenpendientes. Sin backend/SQL/push/Codemagic.
+
+### Loop485 — pestañas públicas y pasada global del capturador, 3/10/2026
+
+Baseb3bbd7b; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Capturador completo6323 exit0,1test/401specs únicas,3m13s antes del cambio; perfil28 anterior6925 exit0,15s. Edge377x852/rescuer-profile/luna pestañas reales: adopción345x336/foto343x258/acciones343x76/save44/historia259x44; caso345x378/acciones151.5x38; reporte345x426.65625/campo297x112. Nativehistoria antes ajustado al texto, corregido Container reserva borde1 y minimumSize ancho infinito en columna finita. Final38676exit0,3/3,11s dos regresiones favoritos y capturador2normal200; PNG finales inspeccionados, palabras completas200. Analyze9033exit0 clean128.5s. Evidencia comparison.md/adoptions-final*.png. No401aceptaciones visuales ni fullposterior atribuidos; full592479 histórico precede esta corrección. ADBvacío; browsercerrado/Vite49950detenido. Sin backend/SQL/push/Codemagic; instrucción vigente envío sólo al objetivo completo. Continúan familias visuales/gestos y aceptación instalada.
+
+### Loop486 — filas accesibles de cuenta, 3/10/2026
+
+Basea6555bf; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Captura actualaccount-access-options200 mostraba Verificació/n por leading/trailingListTile. ProfileRow desde escala1.5 coloca icono/contador/flecha arriba y título/subtítulo a ancho completo, sin reducir fuente; normal misma composición y destinos intactos. Gate90723exit0,18/18,9s (17perfil/experiencia+1capturador3estados), counters2regresos opciones→privacidad→opciones→perfil. PNG normal/inicial200/final200 inspeccionados: Verificación una línea, demás palabras completas. Analyze94589exit0 clean44.2s. Evidencia parity-loop486 before/final/README. Extensión productiva sin Sourceliteral, noaceptación global por accesibilidad; pasada401485/full592479 preceden486. Sin backend/SQL/push/Codemagic; sigue objetivo completo/familias/Android y NativeStripe test pendiente.
+
+### Loop487 — conversación y medidas de editor, 3/10/2026
+
+Base55b831d; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; Edge377x852/messages/luna fontsready. Header70/editor79/input297x46x16y790/send40x46x321y790; texto14/21.7/hora10normal12. Envío realSourcebotones limpia campo/desactiva enviar/nuevaburbuja sinanimación269.09375x76.375. Capturador registra métricasnormal200/rescatista, native normal/rescatista editor exacto Source;200adaptable104/66. Gate12902exit0,33/33,13s (32community+capturador3), teclado simulado/emptydisabled/paging/ambiguoussameid/logout existentes incluidos. Sin producción cambiada: datosmedidos descartan corrección de altura/línea hora. JSONyREADMEparity-loop487; browsercerrado/Vite55094detenido. Full592479/pasada401485 no posteriores atribuidos; listaSourceyregreso chat siguenpróximo cruce, Android/NativeStripe pendientes. Sin backend/SQL/push/Codemagic.
+
+### Loop488 — Mis match compacto, 3/10/2026
+
+Base6db5ff3; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge377x852/messages emptyoff/MeGustaRocky víaUI: header341x46y78/h1line30.8, favorites341x32.796875y136/photo148y168.796875/chatsy332.796875. Native headerpadding/height46/font28.1.1/gaps20-12 yfavtitulo16.1.3/margin12/buttonvisualsinpadding/foto148+bottom4/gapChats12 corregidos. Preserva búsqueda real48, diferenciafilaChats sigue documentada; no declararlista equivalente/regreso nuevo. Headeronly39646exit0,33/33,14s antesfav; final85021exit0,33/33,13s (32community+capturador14estados home/all/empty/photos/search/focus normal200). PNGfinalnormal/all200/emptyinspeccionados. Analyze54870exit0 clean;browsercerrado/Vite85920detenido. Evidenciaparity-loop488 README/capturas; sinSQL/backend/push/Codemagic/aceptaciónglobal. Próximo preservar búsquedasin desplazarmarcoChats y comprobar regreso/scroll, Android pendiente.
+
+### Loop489 — regreso de conversación con lista desplazada, 3/10/2026
+
+Base90731a6; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Nueva regresión DopmiApp/router real con20threads sintéticos: scroll→thread12 porfila→borrador→handlePopRoute; URI/messages/mismaScrollPosition/offsetexacto/fila12hitTestable/zeroenvíos. Gate4205exit0,1/1,2s. Sin producción cambiada, no dedo/Android/tecladonativo/aceptaciónglobal. READMEparity-loop489; búsqueda/filaChats488 y demásfamilias siguenpendientes. SinSQL/backend/push/Codemagic; full592479 no actualizado por1test.
+
+### Loop490 — fila Chats y búsqueda compacta, 3/10/2026
+
+Based91a6ee; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, DOM488 vigente sin nuevosruntimeSource. StackbloqueChats columna título16.1.3/margen12/searchPositioned48 eliminafila48+gap18, icono alineado sin reducirbutton. Query/foco/lista/paging/back preservados. Primer intento UTF8falló sineditar,63330verificóprevio no490; segundoanclajeifinteriorformatrejected, sóloarchivoownreconstruidoHEADycorregido. Gate20569exit0,34/34,16s (33community incluyeback489+capturador14) antesúnicoicontranslate; final60657exit0,1/14,8s. Analyzer96360exit0clean31.8s. PNGnormal/search200inspeccionados: etiqueta flotante200 truncada siguependiente, no globalacceptance. ADBvacío. SinSQL/backend/push/Codemagic. Full592479 precedeproducción; siguiente gateintegrado y familias sin reducir objetivo.
+
+### Loop491 — búsqueda ampliada y full actual, 3/10/2026
+
+Labelpropósito completo al200/headerexterno ycampoBuscar,normalunchanged;27410exit0,1/2capturas4s/PNGinspeccionada. Producción92473d8ed76412abef22b8f620ef69de304d015d. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado;remotoba9f897f3fa418e952b98e4c604cffe468a8aa95/heade4f4e8585612389e7193310c7fdfe137b61c7762/PR6open/draft/unmerged/mergeable comprobados. Configpython16/16. Primerhashdiff sólo communitytestformato489, copiadoown:228iguales. Full8389exit1,598/1,3m43s búsquedagranderesultadonobuilt. Testlocalizaresultadoscroll+limpiarvisible;26860fallócierredirecciónarriba,diagnóstico91589close/field0 offset151.7379. Direcciónabajo localizacontrol trasconsulta ydiagretirado,89055exit0,2/2,2s,sin quitarassertsquery/results/close. Analyzer77292exit0clean193.9s sobre92473d8 antes sólo test.
+
+Fullfinal74849exit0,599/599,3m29s exactoa8eb5a7fd375f020411a68c749f7edf69ff11423,228Dart lib/test raízy scratch hashEOLidénticosantes/después sinchanges duranteejecución. Evidenciamobile-consistency.json/README/searchPNG yactualiza parity-current-review. Supersede full592479; pasada401485 no actualposterior486–491. No nuevobackend/SQL/push/Codemagic/Androidnativeacceptance. Siguiente pasada401actual ycrucefamiliasSource/gestos, objetivo completo sigueactivo.
+
+### Loop492 — estados actuales y contraste por familias, 3/10/2026
+
+Base2f10ee1docs/produccióna8eb5a7fd375f020411a68c749f7edf69ff11423; Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Capturador71984exit0,1test/401fixtures únicas,2m58s; manifest401PNGexistentes/frescos/hash y228Dartroot-scratch idénticosal full599491 sin cambios. Supersede pasada401485, no401aceptaciones. Inspecciónactualnotificacionesnormal200 vsSource425datosdiferentes/426fixtureequivalente misma composición; historial vsSource427 preservaestadoreal/filas/evidence noVisa/resultadosfake. Aporte/Guardianhistoryactualesinspeccionadossinregresiónnuevadetectada;2%runtimeTEST sigue actualsegúndocsproductdecisions82/86 actualizacióneconómicaposterior3%/atribucióncostosindefinida no inventada. No nuevodiseñoproducción/SQL/backend/push/Codemagic/deviceacceptance. README/manifest/2PNG ycurrentreviewactualizados. PróximoAdoptar/Apoyar/navegación ymatrizgestos runtimeSource, nogatesrepetidos sin changes.
+
+### Loop493 — entrada de tarjetas contra Source, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge377x852/puntero demuestra salida280 y siguiente entrada250 cubic(.22,1,.36,1), opacidad1; probe filtrado source-next-card.json. Cliente antes entraba instantaneo; adopcion/apoyo comparten entrada ±420/±18, reduced inmediato y arrastre directo. Tests9/9 handle2337exit0; expectativa delta local corregida por rotacion sin ampliar tolerancia. Full6893exit0,601/601,3m37s; analyzer90804exit0clean183.8s; fuente c57974a77c25745a5af0436ac8ea950727c088c9,228Dartroot/scratch iguales y hashes sin cambios. PNG SourceAdoptar/Apoyar comparados; ubicacion real preservada/fotosfixture distintas. Supersede599491. No backend/SQL/push/Codemagic; gestos fisicos/StripeSDK/paridad global pendientes.
+
+### Loop494 — tarjeta de apoyo durante entrada, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Dos pruebas nuevas normal/reduced verifican llegada de oportunidad de apoyo, gesto durante entrada, delta local, cancelación, monto real y CTA. Gate10343exit0,44/44,11s. Fuente 22aa0da0375630f097b340abf3d20834b38491fa sólo tests; producciónc57974a/full601493 vigente, no603full. ADBvacío. README494/currentreviewactualizados; sin backend/SQL/push/Codemagic. Pendiente contraste global y teléfono/StripeSDK.
+
+### Loop495 — apertura y descarte de filtros, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge377x852 diálogo345x586/x16y133/radio24/sin animaciones; selección Hembra cerrada fuera/reabierta no persistida. Cliente ya coincide; nueva prueba primerpump/routeanimation1, Atrás y fuera descartan sin query. Gate53912exit0,5/5,5s, fuente b91ff21f1510f8bc47b0054d2056ff1dfa8bb0a5 sólo tests. Full601493 sobre producciónc57974a vigente; tres tests494/495 posteriores no604full. Sourceprobe/README495; navegador/Vite cerrados. Sin backend/SQL/push/Codemagic/aceptación física.
+
+### Loop496 — regreso por pestaña sin repetir entrada, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, sin runtime nuevo. Prueba avanza a segunda adopción/Favoritos/Adoptar y conserva misma instancia Motion con traslado0 primerpump y125ms. Valida continuidad móvil establecida, no atribuye índice React persistente. Primer82346exit1 sólo SemanticsHandle al terminar; dispose explícito corregido. Gate25863exit0,21/21,5s, fuente 6e45b396b414c858c588377a6ab589ec80ffd793 sólo tests. Full601493 producciónc57974a vigente, no605full. README496; sin backend/SQL/push/Codemagic, físico/StripeSDK/global pendientes.
+
+### Loop497 — indicador de Perfil renderizado al presionar, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. Edge377x852/rescuer/profile down real matriz0.98/timing120ease delay0; sombra hover excluida. Prueba existente fortalecida primerpump/ScaleTransition final120 normal200; cancelación/totales/destinos preservados. Gate88104exit0,4/4,1s, fuente a52bc936853546f737e0327caeefa74d23a20d0c sólo tests, sin fallo previo ni cambio producción. Full601493 vigente. JSON/README497, navegador/Vitecerrados. Sin backend/SQL/push/Codemagic; físico/StripeSDK/global pendientes.
+
+### Loop498 — curva exacta de introducción, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; CSSonb-in450/cubic(.22,1,.36,1)/opacity0→1/Y10→0 ykeys por slide inspeccionados, sin runtime nuevo. Prueba existente fortalece midpoint225 opacidad/desplazamiento exactos sin quitarinicio/final; gate97218exit0,18/18,5s con navegación/intenciones/texto200/reduced. Fuente 4e14d63b20b6806ebc4327f096d871101c420e3d sólo test. README498; full601493 producciónc57974a vigente. No aceptación global/física, backend/SQL/push/Codemagic.
+
+### Loop499 — Nuevo compacto Mis casos, 3/10/2026
+
+CSS Sourcecompact34/padding8x12/radio14 y referencia histórica inspeccionados, sin Source runtime actual. Nuevo pasa de visible48 a34 y conserva padded48 con desplazamiento adaptable200.14060exit0,32/32,11s con6capturas; Ahem visible corregido con Inter explícita,91480exit0,1/6capturas,4s normal200 inspeccionados. Analyzer5176exit0clean48.6s antes sólo fontFamily. Fuente 6746ccd7a1f0f7a656c3dcdb4d272e84128ca20a. Full601493 anterior a cambio499 no gate vigente completo. README/PNG499; próximo geometría runtime/hitarea y gate integrado. Sin backend/SQL/push/Codemagic/físico.
+
+### Loop500/501 — geometría actual y gate integrado, 3/10/2026
+
+Recupera entrada500 no escrita por OSError22OneDrive sin pérdida de ledger. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb; runtimeEdge377x852 Nuevo91.21875x34/x269.78125y20/radio14/Inter14w500. Test63919exit0,2/2,1s normal200 comprueba superficie y target≥48/toque inferior abrePublicar. Fuente8270386d3b531907d4618ebd4358ebd221a88146. Full16280exit0,607/607,3m54s; analyzer72747exit0sinincidencias; config14208exit0,16/16.229Dart raíz/scratch/hash iguales antes/después. Supersede601493. README/hash500/currentreview actualizados. Remotoba9f897/e4f4e858 reconsultado sin push. No backend/SQL/Codemagic/aceptación física o visual global; continúa contrastefamilias/StripeSDK.
+
+### Loop502 — cobertura y movimiento vigentes, 3/10/2026
+
+Auditorías route/motion tenían gates históricos592479/481341 como encabezado. Reconciliadas con fuente8270386/full607500,229Dart, config16/análisis y pruebas493–500; contratos/límites separados por interacción. No vuelve a ejecutar tests sin cambio ni atribuye401aceptaciones. RuntimeSource de apoyo494/onboarding498 no inventado; regreso496 es continuidad móvil no índiceReact. Próxima acciónlista CASE expansión/cierre realSource+Flutter primerframe/evidencia/foco. Sin producción/backend/SQL/push/Codemagic; objetivo/físico/StripeSDK/global abiertos.
+
+### Loop503 — expansión/cierre de gasto público primerframe, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; Edge377x852/case/rocky clickreal cierra/abre y MutationObserverdetailsfalse/true/chevron90/270/sinanimaciones. Ruta DopmiApp apoyo→caso prueba primerpump cierre/apertura, RotatedBox1/3 y evidencia pública ausente real sin copiarfakeSource. Gate63057exit0,26/26,6s, fuente 85c5ec7a526423246842d21d0bb4bc229e12d1db sólo test. JSON/README503; browser/Vitecerrados. Full607500 vigente para producción, sinbackend/SQL/push/Codemagic/físico/global.
+
+### Loop504 — carrusel Apoyar y regreso real, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado. CSSrail overflowauto/gap16/sinsnap inspeccionado, no nuevo runtimeSource. Nueva pruebaDopmiApp8casos fake drag280noabre/offset>0,tapCaso4URIcorrecto/backmismaposition/offset/hitTestable.62652exit0,1/1,2s; fuente b7474d2801a55ee3f0a46cc40ec74150d9540f48 testformato posterior sin lógica. README504, full607500 producción vigente anterioratest. Sin backend/SQL/push/Codemagic/físico/globalacceptance.
+
+### Loop505 — resumen rescatista gradiente/activo de marca, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado CSSwallet146 ySVGoriginal. CssLinearGradient146 reemplazadiagonalalignment, walletSVG20decorativo sustituyeMaterial y singular1casoactivo. Saldos/revisión reales preservados, no bolsillofake.80661exit0,27/27,7s antesprecargaSVG/iconoausente;16672exit1assetbundleobsoleto;archivo1556bytespresente,mtimepubspecscratch refrescado sincontenidocambiado.70874exit0,1/12fixtures,7s PNGicono visibleinspeccionado. Analyzer94451exit0clean36.1s antes sóloprecargacapturador. Fuente 7c656986ceb0381e1f25f4ba507675eca8e95469. Full607500 anteriorproducción505;integradoactualpendiente. Sinbackend/SQL/push/Codemagic/físico/global.
+
+### Loop506 — resumen Source ejecutado y full608 vigente, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; Edge377x852/rescuer/fontsready146/radio28/padding20/wallet20x20/x36y112.1875 comprobados, no saldosfake. Browserclose77803os10060 luego31728exit0cerrado;Vite36110interrumpido esperado. Full49826exit0,608/608,3m49s fuente c1e18561e4717c5dacd13eaf3437b07630bb8170;230Dart/SVGwallet raíz-scratchhashiguales antes/después. Incluye503/504/505; supersede607500. Analyzer505clean36.1s misma producción anterior sóloprecargaSVGcapturador, no nuevaejecución506. README/hash/probe/currentreview. Sinbackend/SQL/push/Codemagic, global/físico/StripeSDKpendientes.
+
+### Loop507 — pendientes mensaje icono/contador reales, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, código/CSSpendingActions inspeccionado sin nuevo runtime. icon-chat-yellow.svg copiado exacto, unreadbadge amarillo reemplazaflecha; Rowintrinsiccentraextremo/iconarriba. No conteo3 ni conversaciónsinrespuesta simulados. Gate53044exit0,27/27,8s con12capturas; analyzer20509exit0clean37.6s. PNGnormal200 inspeccionados, pendientes200 fuera viewport noaceptadosporimagen. Fuente 3df438102d102af9d1b3706b225fc13e95f58112. Full608506 anteriorproducción507,integradoactualpendiente. README/PNG507;sinbackend/SQL/push/Codemagic/físico/global.
+
+### Loop508 — pendientes200 y toque real de contador, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado sinruntime. PNGactions/evidencelarge507 ya desplazados a pendientes inspeccionados: título/CTA/counter completos, segundaevidenciafuera noaceptadacompleta. No nuevacaptura508. Pruebaexistentehome mantienefinanciero/pendientes/actividad y añade toque scopedbadge2→/messages.39516exit0,26/26,6s fuente 77633dd6b1cc18c46c0331c0c6ead054718b2755 sólo test/producción3df4381unchanged. README/PNG508, full608506 anterior507 integradoactualpendiente. Sinbackend/SQL/push/Codemagic/físico/global.
+
+### Loop509 — símbolos pendientes/actividad y gate en curso, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado, códigoAssetIconalertcircle20/donationin20 inspeccionado. Assets existentes bytesexactosSource; reemplaza Materialalertblack/flecha genérica, decorativos.77565exit0,27/27,8s con12capturas,PNGhomeactual inspeccionado. Fuente 9e76c84fb1cc66e1dcf1c0c7ae6d770dc054c63c. Full87957/analyzer46356 iniciados no resultados terminales todavía;logs509,230Dart/cuatroSVG root-scratchiguales. README/hash/PNG509. Full608506 anterior507/509 no gateactualcompleto. Sinbackend/SQL/push/Codemagic/físico/global.
+
+### Loop510 — gate actual608 y análisis terminal, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado;ADBvacío. Full87957exit0,608/608,3m54s; analyzer46356exit0clean205.7s exacto 9e76c84fb1cc66e1dcf1c0c7ae6d770dc054c63c.230Dart/cuatroSVG raíz-scratch/hashsinchanges antes/después. Supersede608506, incluye507/508/509. README/hash509/currentreviewactualizados. Próxima pasada401actual por cambios493/499/505/507/509 posteriores492; no401aceptaciones ni reabrirfinancieroH5yaaceptado. Sinbackend/SQL/push/Codemagic/físico/global.
+
+## 3/10/2026 — Paridad loop511, capturas completas actuales
+
+Capturador81489 exit0,2m57s:401fixtures únicas regeneradas,401PNG frescos/hashes registrados.230Dart y cuatroSVG idénticos raíz/scratch al gate509 sobre9e76c84fb1cc66e1dcf1c0c7ae6d770dc054c63c;full608/analyzer509 siguen vigentes. Inspección directa de owned-cases y rescuer-home-actions-large; no aceptación visual atribuida a401estados. Referenciaa3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. docs/design-reviews/parity-loop511. Objetivo activo, contraste global/Android físico/StripeSDK pendientes. Se conserva instrucción del titular: Codemagic sólo al completar, sin avances intermedios.
+
+### Loop512 — contraste real del selector de publicación, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado; Edge377x852 /rescuer/publish inspeccionado con captura511. Fondo computado blanco sin imagen, aunque regla histórica define degradado: se conserva blanco. Tarjetas x24/ancho329/y298.203125 y417.59375; composición/iconos/navegación concordantes. Evidencia PNG/README512; emoji advertencia diferente por renderizador, no aceptación de formularios posteriores ni físico. Sin cambio producción/gates nuevos;608509 vigente. Sinpush/Codemagic hasta objetivo completo.
+
+### Loop513 — paridad del contorno en acciones de fotos, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/runtimeEdge377x852 inspeccionado. Botones CSS122.515625/179.203125x36 incluyen borde fuera del padding12; Flutterpadding13 reserva2px horizontales. Fuente88d7ffb.13786exit0,7/7,7s seispruebas+capturador2fixtures. NormalPNGinspeccionado;large muestra controlesfuera viewport,no aceptación atribuida. Analyzer38969 iniciado todavía pendiente. Full608509 anterior cambio. Evidencia513. Sinbackend/SQL/push/Codemagic/físico/global.
+
+### Loop513 — resultado terminal del análisis
+
+Analyzer38969 exit0, sin incidencias sobre88d7ffb; duración exacta en log513-analyze. Supersede la anotación pendiente513 anterior. Sin cambio adicional ni full nuevo.
+
+### Loop514 — formulario en orden de referencia y fotos200%, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/runtimeInformaciónbásica inspeccionado. d340113 reordenaHistoria/Salud/Social antes de tamaño/personalidad/raza/ubicación, conservados todos. Testpickerescala1/2,320x640,scroll/hitTestable/cancelación/draftprivado.24960exit0,7/7antesorden;87605exit0,8/8,8sposteriorcon2capturas.56471analyzerexit0clean. Nativeinformaciónnormalinspeccionadahistoriadespuésedad; iconografía/espaciado/camposreales noaceptadosglobalmente. README/PNG514. Full608509anterior513/514. Sinbackend/SQL/push/Codemagic/físico;objetivoactivo.
+
+### Loop515 — símbolos de opciones y campos requeridos, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/Appinspeccionado/runtime514previo.6875515 añade required y leading en sexo/especie adoptante con Material16/SVGspecies20 ya presentes en casos, preservesenums/lock/datos. Unicodeinicialsincaracteres descartado;PNGfinalnormalinspeccionadocorrecto.1533exit0,8/8,5s con2fixtures.62670finalanalyzerencurso;59005previo noanalysisfinal. README/PNG515;full608509anterior513–515. Identidadpixel/emojiAndroid/global/StripeSDKpendientes. Sinpush/Codemagic.
+
+### Loop515 — análisis final terminal
+
+62670exit0 sin incidencias sobre6875515; log515-final-analyze. Supersede anotación en curso515. Sin cambios adicionales.
+
+### Loop516 — altura de campos contra runtime, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb runtimeEdge377x852 medido: nombre345x38/y190,textarea345x78,etiqueta17,h228. babb22a lineheights20/16,17/14,15/12/gaptítulo16/historia3 conservando4000;4e5240e paddingvertical9reservaoutlineinterior.83014exit0,18/18,11s final,2fixtures normalPNGinspeccionado.71787finalanalysisencurso,55264prepadding noanalysisfinal. Source-metrics/PNG/README516. Full608509anterior513–516;datosreales/counter/selección diferentes noaceptaciónpixelglobal. Sinbackend/SQL/push/Codemagic/físico.
+
+### Loop516 — análisis final terminal
+
+71787exit0 sin incidencias sobre4e5240e; log516-final-analyze. Supersede anotación pendiente516. Sin cambio adicional.
+
+### Loop517 — título de revisión y gate completo en curso, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/AppheaderTitleinspeccionado.4571644 títuloRevisatucasoenstep2;44173exit0,8/8,5s con2fixtures,normalPNGinspeccionado.230Dart/cuatroSVG raíz-scratch idénticos/hashantes. Full65835/analyzer45360 corriendo, sinresultadoatribuido todavía. Logs517/README/hash/PNG517. ADBvacío;noaceptaciónfísico/global/StripeSDK. Sinbackend/SQL/push/Codemagic. Full608509pre513–517hastaresultadonuevo.
+
+### Loop518 — regresión integrada609 y corte actualizado, 3/10/2026
+
+Full65835exit0,609/609,3m45s; analyzer45360exit0 limpio195.8s,fuente4571644.230Dart/cuatroSVG raíz/scratch/hashsinchanges antes/despuésverificados. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/App/styleslimpios. Supersede608509, incluye513–517/picker200. ManifestREADME517/currentreview/routeauditactualizados. Capturas401511 anteriores513másdirigidas, no401aceptaciones. ADB517vacío; resumenfinal/global/físico/StripeSDK pendientes. Sinbackend/SQL/push/Codemagic.
+
+### Loop519 — resumen contra runtime actual, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb runtimeEdge377x852reviewinspeccionado,tarjeta345x214/4filas/label15/value24/padding17borde/gap8.5c67401 quitaheadingextraantesFotos/label15/padding17;conserva6filasreales yPorconfirmar, noListaadopciónsimulada.35358exit0,8/8,6s con2fixtures,normalPNGcompactoinspeccionado.98456analyzerencurso;full609517anterior519. README/source-metrics/PNG519. HeaderEditar/Salud/Social/global/físico/StripeSDKpendientes. Sinbackend/SQL/push/Codemagic.
+
+### Loop519 — análisis terminal
+
+98456exit0 sin incidencias sobre5c67401; log519-analyze. Supersede pendiente519. Sin cambios adicionales.
+
+### Loop520 — encabezados de revisión compactos y target48, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/CSSinspeccionado/runtime519previo.4c31cac heading20/16normalStack/touch64x48/textEditar17/14;largeRowancho84a200. Testreviewlinks toca bottom-2≥48/abre edición/conservadata/submittedocultaacciones.33127exit0,8/8,6s final2fixtures,normal/largePNGinspeccionados Editarcompleto.9937analyzerexit0clean. README/PNG520. Full609517anterior519/520;Salud/Social/global/físico/StripeSDKpendientes. Sinbackend/SQL/push/Codemagic.
+
+### Loop521 — tarjetasSalud/Social con estados reales, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/AppCSSinspeccionado/runtime519previo. b42cd9f summaryTraitCard/Checkreadonly títuloinside/padding17/label17/helper15/indicadortri preserveunknown ycaretexto. Test320/200true/false/nullguardado→reviewreadonlysinmutación→back;91537exit1headerlazy,testscrolluntilvisiblefix;38849exit0,8/8,7s con2fixtures;2515analyzerexit0clean25s. NormalPNGSaludinspeccionado;Socialfuera viewportnoaceptado,alineacióncasillapendiente. README/PNG521;full609517anterior519–521. Sinbackend/SQL/push/Codemagic/físico/global.
+
+### Loop522 — Social capturado/alineación de casillas, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado/CSSgap8check16/runtime519previo. c92bc24 checkboxtranslate-4 conserva24leading/16marca/8gap y ciclos/readonly. CapturadorSocialnormal/largeañadidos, inventario522403unique/55Source/51native/38patterns/44paths, no403capturasfull.11462exit0,8/8,6s con4fixtures;96354analyzerexit0clean. NormalSocial3filascompletasinspeccionadas;largeprimerafila+segundaparcial,tercerafuera noaceptada. README/PNG/inventario522. Full609517anterior519–522,401capturer511anteriordosfixtures. Sinbackend/SQL/push/Codemagic/físico/global.
+
+### Loop523 — Socialchildren200% alcanzable y gate integrado en curso, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado sinruntime nuevo. bb3cd91 test/capturer,productionc92bc24unchanged:320/200ensureVisibletercerafila rectlabeldentroScrollable/readonly/touchesnoconservedata,backscroll.17353exit0,8/8,6s con2fixtures; PNGlargeúltimafilacompletainspeccionado,complementa522. Inventario403522unchanged.230Dart/cuatroSVG/capturerraízscratchigualesantes. Full56544/analyzer48063encurso,noresultadoterminalatribuido. README/hash/PNG523/currentreviewactualizados;full609517pre519–522. Sinbackend/SQL/push/Codemagic/físico/global/StripeSDK.
+
+### Loop524 — fallo de expectativa antigua corregido y repetición, 3/10/2026
+
+Full56544exit1,608aprobadas/1fallo,3m38s; analyzer48063exit0 limpio183.1s sobrebb3cd91. Único fallo community_testliteralRevisaantesdeenviar removido519 conformeSource.17e59ee cambia aRevisatucaso, preserva assertsguardadofallo/authoredMora/reintento/draft/noexception,productionc92bc24unchanged.1189exit0,1/1,2s dirigido.230Dart/cuatroSVG raíz/scratch iguales/hashantes;full90121/analyzer79611encurso logs524, noresultadoatribuido. README523terminal/524/currentreviewactualizados;Sourcea3reconsultado523. Sinbackend/SQL/push/Codemagic/físico/global/StripeSDK.
+
+### Loop525 — gate actual609 aprobado y capturas403 en curso, 3/10/2026
+
+Full90121exit0,609/609,3m46s; analyzer79611exit0 limpio222.6s fuente17e59ee.230Dart/cuatroSVG raíz/scratch/hashsinchanges antes/despuéscomprobados. Supersede523608/1fallo y609517, incluye519–523 +literal524. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultado sin cambio. ManifestREADME524/currentreviewactualizados. Capturadorcompleto403525 iniciado después delgate,noresultadoatribuido aún,log525-all-captures. Sinbackend/SQL/push/Codemagic/físico/global/StripeSDK.
+
+### Loop526 — capturas403 actuales y base de gastos, 3/10/2026
+
+Capturador58342exit0,1test/403fixtures únicas,3m05s;403PNG frescos/hashes/source230DartcuatroSVG unchanged respecto17e59ee/full609524. Manifest525/runREADME/currentreview actualizados,supersede401511,no403aceptaciones. Sourcea3 runtimeEdge377x852 EvidenceRockyVet dialog345x598.984375/radio28/drop295x148/icon28 inspeccionado conNativeexpense-evidencefresco525. OriginalUploadSVG/frame presentes; colores/lineheightEvidenceCard quedanparaajuste, no copiarcashback/Coins/video niDisponiblefundedsimulado. README/PNG/metrics526. Sin producción/backend/SQL/push/Codemagic/físico/global/StripeSDK.
+
+### Loop527 — colores/tipografía EvidenceCard contra computedStyle, 3/10/2026
+
+Sourcea3c969cd9103fd46dc5cd886999912526ce75efb reconsultada/runtimeEdge377x852:ink151423/muted4f4e5c (corrigeinfer616174526),helper12/16/label14alto17/hint12alto15/gap6/max240/drop148/radio24/icon28.41f53af EvidenceCard actualizaestilos/Columnmincentrada/nooverlay mantienecallbacks12files5MBprivado/public roles.91835exit0,13/13,6s con2fixtures;90487analyzerexit0clean67.8s. Normal3controlesPNGinspeccionado,largeparcialnoaceptacióntotal. Source-metrics/PNGREADME527 ycorreccióndoc526. Full609524/403525pre527. Sinbackend/SQL/push/Codemagic/físico/global/StripeSDK.
+
+## 2026-10-03 — Loop 528: paleta de campos y resumen de gastos
+
+Producción 37c5ecbb10c532494ad51c159ea1ac19a0974bb7. ExpenseField, ExpenseReview y ExpenseFrame usan ink151423/muted4f4e5c de rescuer-theme; evidencia Source527 y remote irlanda/apoyar-detalle-perfil a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Cambio exclusivamente de colores; importes, privacidad, controles y persistencia intactos. Test91880 terminal exit0:13/13,15s (12 pruebas de campos/archivos + capturador); 17 PNG expense-* generados. Analyzer31685 terminal exit0 sin problemas,50.8s. Captura information inspeccionada; capturas adicionales archivadas sin afirmar aceptación visual completa. Full609524 y capturador403525 preceden527–528. Objetivo global y dispositivo pendientes; sin push ni Codemagic, por instrucción final-only del usuario.
+
+## 2026-10-03 — Loop 529: interlineado de campos de gastos
+
+Producción 23515073c62ef71a8a91d273665a61bab89acf46. ExpenseField usa 14/17 para etiquetas y controles de una línea, frente al anterior14/19.6; multiline mantiene1.4 de unlock-textarea. CSS actual unlock-field/unlock-input y métricas normales de Source527; Source remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Sin cambio de contenido, privacidad, límites, importes ni persistencia. Test5981 terminal exit0:13/13,13s; 17 PNG expense-*; analyzer25325 terminal exit0 limpio30s. Captura information normal inspeccionada y archivada, no aceptación global ni de todos los estados grandes. Full609524/capturador403525 preceden527–529. Objetivo continúa; sin push ni Codemagic.
+
+## 2026-10-03 — Loop 530: controles del diálogo de gastos
+
+Producción 037754f1f81070aa021e9781329a7cb8540af93e. ExpenseFrame separa controles del padding24 del contenido, con inset4 y área48; desplazamiento visual vertical4 para back20 y2 para close16 corresponde a unlock-back/close top14+padding4, manteniendo targets móviles. El contenido conserva padding24 y header48. Source CSS7739–7786 actual y remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. No hover ni cambios a callbacks/privacidad/dinero. Test8171 terminal exit0:13/13,12s; capturador17 expense-*; analyzer72340 terminal exit0 limpio31.5s. Dialog normal y submitted normal inspeccionados; large archivado sin afirmar aceptación. Full609524/capturador403525 anteriores a527–530; objetivo global, gestos físicos y aceptación instalada pendientes. Sin push/Codemagic.
+
+## 2026-10-03 — Loop 531: regresión integrada actual
+
+Fuente 5799915dd2e8d1bb524d3076779080791ede69f5, producción037754f. Full54358 terminal exit0:609/609,3m48s; analyzer83628 terminal exit0 limpio217.7s.230Dart/cuatroSVG raíz-scratch iguales antes/después y sin cambios durante gate; manifest531. Incluye estilos de gastos527–530. Source remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. ADB531 vacío. Capturador completo403525 precede527–530, complementado por17capturas de gastos530; no pasada completa nueva ni aceptación visual global. Sigue contraste de familias/gestos físicos/StripeSDK. Sin push ni Codemagic.
+
+## 2026-10-03 — Loop 532: encabezado de verificación
+
+Producción 3b4557f5838af8f84a38e7430d4159fd8545283b. VerificationFormFrame: título18/22.5 y tracking-.36, de h1 global1.25/-.02em + topbar font18 Source styles38/107, antes18/27.9. Source App4117 usa TopBar en formulario; remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Conserva área de regreso, privacidad y moderación real; no reproduce verificación/redes/banco simulados. Test57834 terminal exit0:5/5,10s (cuatro recorridos + capturador ochofixturesverification-*); analyzer68698 terminal exit0 limpio46.3s. Captura320/200 inspeccionada: título completo en dos líneas y regreso visible, no aceptación física/global. Full609531 precede este estilo; capturas completas403525 preceden527–532. Sin push/Codemagic.
+
+## 2026-10-03 — Loop 533: texto de campos de verificación
+
+Producción 0eee37a6ceb9b75511a3fd29052f6bb88fdfaa3b. Source form-stack labels12/600, input fontinherit/padding12,14/min44; textarea min112, CSS2210–2220, SHA remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. verificationField cambia texto16/1.55 a12/600/15 y etiquetas15; dropdown mismoestilo. InputDecoration constraints min44/112 no garantiza altura del borde: PNG normal inspeccionado muestra controles y textarea todavía menores que superficieSource (parte del espacio pertenece al layout de TextField). **Siguiente ajuste listo: altura visible del borde, no sólo minconstraint.** No declarar formulario completo equivalente. Callback/controladores/límites/privacidad/moderación intactos. Test95351 terminal exit0:31/31,14s; capturador8fixturesverification-*; analyzer85225 terminal exit0 limpio30.2s. Normal/320200 inspeccionados; large muestra sólo parte inicial del formulario. Full609531 anterior532–533. Sin push/Codemagic ni aceptación física/global.
+
+## 2026-10-03 — Loop 534: altura visible de campos de verificación
+
+Producción 7e1a04376c76434f9da31aacc24130154aa0f1b6. Resuelve diferencia detectada533: InputDecoration minconstraints ampliaba layout exterior sin ampliar borde. Retiradas y padding calculado según texto escalado: una línea mínimo44 centrado; multiline top12 y bottom restante hasta112, creciendo cuando el texto escalado requiere más. Source input min44/textarea min112 CSS2214–2218, remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. PNG normal inspeccionado y píxeles borde e3e4ed en x188: nombrey273..316=44, teléfonoy355..398=44, experienciay486..597=112. No cambio de líneas máximas, datos, validación ni privacidad. Test33193 terminal exit0:31/31,9s; capturador8verification-*; analyzer26465 terminal exit0 limpio25s. Large archivado, no afirmar revisión de campos fuera viewport. Full609531 anterior532–534. Objetivo global/físico pendiente. Sin push ni Codemagic.
+
+## 2026-10-03 — Loop 535: edición y regreso de verificación320/200
+
+Fuente fd8387bdb7507584a910c7d186c32f5b32ea4f9f. Prueba existente fortalecida: teléfono/experiencia autorados, scroll al multiline, InputDecorator>=112, resume sin lectura que borre borrador, salir y Seguir editando, scroll real de regreso y ambos valores conservados. Primera84250exit1,2pass/1fail: revela overflow real104px del AlertDialog y lookup de teléfono no construido al bajar; analyzer3413exit0 limpio24.1s anterior arreglo. Producción agrega scrollable:true al diálogo confirmLeave de verificación; test regresa con scroll al teléfono antes de leerlo, no debilita aserciones. Repetición68781 terminal exit0,3/3,3s; analyzer27125 terminal exit0 limpio24.4s. No nuevofixture ni captura; prueba de widgets/router reales con repos fake, no dedo físico/aceptación visualglobal. Source remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Full609531 anterior532–535. Sin push ni Codemagic.
+
+## 2026-10-03 — Loop 536: estilos de documentos de verificación
+
+Producción f634c772830c4e004f72bc07dec8cdcff7af67f4. verificationDocument radio18, padding15(reserva borde1+CSSpadding14), strong16/19/700, helper12/15 y gap2 según card-row/styles4569 y nav-row-text6122 actual; remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Conserva privacidad, subida real, apertura/retirada y límite12. Test86611 terminal exit0:11/11,8s; cuatro verification recorridos,seisfilechecks ycapturador8verificationfixtures. Analyzer63845 terminal exit0 limpio18.7s. Capturas existentes formulario no enfocan Documentos: **no prueba visual nueva de esa sección**. Siguiente acción lista: capturas Documentos normal/200 y comparación de botón/disposiciónhorizontal Source frente a columna nativa. Full609531 anterior532–536. No aceptación global/física ni push/Codemagic.
+
+## 2026-10-03 — Loop 537: captura directa de documentos
+
+Fuente 27dd7dd5672c15c02485df066c6b8220d6dd3f4e, producciónf634c77. Capturador agrega verification-form-documents/large: abre flujo real, Continuar a verificación, scroll hastaDocumentos y ensureVisiblealignment0. 26134 terminal exit0,1test/2fixtures,3s; analyzer16973 terminal exit0 limpio25.9s. PNG normal y320/200 inspeccionados: radio/títulos/helpers536 visibles; botón nativo debajo/texto largo frente a Source card-row horizontal/Subir (App4153–4162), diferencia lista para siguiente implementación responsive con accesibilidad/rolesprivados intactos. Large muestra primera tarjeta incompleta; no aprobación de controles fuera viewport. Inventario405unique,55Source/51native/38capturedpatterns/44paths unchanged. Pasada completa403525 anterior; no405pasadafull/aceptaciones. Source remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Sin push/Codemagic.
+
+## 2026-10-03 — Loop 538: documentos con botón horizontal
+
+Producción f92bb5820b33354a23e831cc1fcf423217e7bc9c. documentHeader: summary +gap12+Subir compacto en fila normal; escala14>21 columna gap12. Botón borderline/radio tema999/min34/padding8x14/text14/17/600 como secondary-button.compact; Semantics rol completo y keyverification-upload-role. Callbacks busy/límite12/carga real preservados, archivos existentes/retirar debajo yreadonly sin botón. Primera50265exit0,11/11,5s/analyzer18632exit0 limpio28.2s; PNG revela fallbackAhem en selector ybotón. Estilos del bloque verificación fijan Inter explícito. Repetición38609 terminal exit0,11/11,4s y analyzer89374 terminal exit0 limpio24.9s. PNG normal inspeccionado: INE/Subir legibles ydos tarjetas horizontales; large primera tarjeta ySubir completos. Segunda tarjeta large fuera viewport,no aceptación total. Source CSS221/4569/6122 yApp4153–4162, remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Inventario405537, full609531 ycapturador403525 preceden últimas correcciones. Sin push/Codemagic/físico/global.
+
+## 2026-10-03 — Loop 539: targets de documentos y conflicto privado
+
+Fuente 886e58243bbb1f04b143d57e2f8e4d6c22ebf701, producciónf92bb58. Dos pruebas nuevas320x640 normal/200 recorren ambos keysverification-upload-identity/address, scroll real, hitTestable, onPressed habilitado y área>=48. Toque inicia save real delcontroller con reposfakeconflict; saveCalls+1 yreads1 prueban stop antesselector y sin recargar/borrar solicitud. Continúa formulario/sin excepción; noapertura de archivo niupload real físico acreditados. Test87273 terminal exit0,5/5,3s; analyzer94659 terminal exit0 limpio27.7s. Source remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Suiteesperada611 tras dosnuevas; full609531 anterior532–539, noatribuir611full. Inventario405537; capturas538 dosestados, full403525 anterior. Sin push/Codemagic ni aceptaciónglobal/física.
+
+## 2026-10-03 — Loop 540: progreso de verificación
+
+Producción 587f94b814ecdeee35d02a8b2d9477dda3a30ba3. VerificationProgress extraído: encabezado14/17 con estadoCompleto/Incompleto real captured==total, fila normal/columna escala>150%, padding17incluyeCSS16+borde, gap12, barra8purple/efede8/radio999 Source6378–6382. Conserva captured/total y nota aprobación equipo; Completo no cuenta aprobada. Primera51607exit1,4pass/3fail por semanticsValue de barra textual inválida introducida; analyzer78011exit0 limpio28.8s. Corregida: contadoren semanticsLabel y valorporcentual default. Repetición30103 terminal exit0,7/7,5s; analyzer97657 terminal exit0 limpio27.3s. PNG normal inspeccionado: títuloestado en fila, contadorreal1/11,barra ynota; large documentos no muestra progreso,noaceptación de eseestado. Source remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Full609531 anterior532–540; inventario405537,completo403525anterior. Sin push/Codemagic/físico/global.
+
+## 2026-10-03 — Loop 541: progreso enfocado normal/200
+
+Fuente 46fc3e34f5ce6f03776d86852b3a27958eac8ce0, producción587f94b. Dosfixtures nuevasverification-form-progress/large: ruta realcontinúa aformulario yscrollheadingProgreso; asserts Incompleto/contador1de11 hitTestable yLinearProgress.value1/11. Test95475 terminal exit0,1test/2fixtures,3s; analyzer1411 terminal exit0 limpio35.4s. PNG normal y320/200 inspeccionados: título/estado/cuenta/barra/nota legibles; large borde superior tarjeta queda porencima viewport alalinear heading,no afirmar cuadrocompleto. Sinerrorsemántico actual; noTalkBackfísico. Inventario407unique,55Source/51native/38capturedpatterns/44paths iguales. Source remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Full609531 anterior532–541; fullcapturador403525 anterior nuevasfixtures. Sinpush/Codemagic/aceptaciónglobal.
+
+## 2026-10-03 — Loop 542: paleta de estado aprobado
+
+Producción 67cb4a0b4319cab2fb8ed17c4d2ab4868eee1573. Source App4108 review usaStaticSimulatedplain-screen sinrescuer-theme (App961), mientrasapproved4109 sírescuer-theme; CSS6161–6164 hereda151423/4f4e5c. VerificationStateScreen ahora aplica paletafría únicamenteapproved, warmreviewpreservada. Heading24 mantiene1.25 con tracking-.48 deh1global-.02em. Datos/recarga/moderación/publicar reales intactos. Test82265 terminal exit0,6/6,5s con2approvedfixtures; analyzer75367 terminal exit0 limpio38.8s. PNGnormalapprovedinspeccionado: título/nota/botones/círculo; largearchivado sin nueva inspección. Source remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Full609531 anterior532–542; inventario407541/completo403525 anteriores. Objetivopendiente físico/contrasteglobal. Sinpush/Codemagic.
+
+## 2026-10-03 — Loop 543: composición de cuenta verificada contra runtimeSource
+
+Producción acee19221614a039dc16af8f1bb6e5c62becaba9. Edge377x852 Source/rescuer/verification aprobado: topbar68,center520/padding28/gap10; circle64y198.265625,heading24/30y286.265625/marginbottom16.08,p14/21.7y342.34375/marginbottom14,primary321x48y409.71875/font16. Runtime/source-metrics ySourcePNG archivados e inspeccionados; SHA remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Native mueve acciones realesConsultar/Recargar/Retirar fuera center520 para no desplazar grupo, conservaacciones ycallbacks; gapstítulo26.08 ylead24 incorporan marginsSource, primary16/19/600/fbfbff; check20oscuro151423 deAssetIcondefault20. PNGnormalfinalinspeccionado: círculo198/botón410..457, contenido alineado; copyreal yaccionesextra debajo preservados. Headerback aún difiere horizontalmente, noaceptaciónpantallacompleta. Primera26603exit0,6/6,4s/analyzer78337exit0 limpio36.8s anteriorcheck20; final57528terminalexit0,6/6,4s/analyzer21220exit0 limpio34.3s. Largearchivado sin nueva revisión. Browser543cerrado,Vite46954CtrlCexit1esperado. Full609531anterior532–543; inventario407541/fullcapturador403525. Sinpush/Codemagic/físico/global.
+
+## 2026-10-03 — Loop 544: regreso de verificación
+
+Producción 48820c3f33b708a0d0f387f6305db7af17048c06. VerificationFormFrame cambiaMaterial24 aSVGback20deSource ytranslate(-4,-.5) dentro48: centro36/33.5 comoTopBar medido476 ySource543. No altera callback/target48 nireserva título; keyverification-header-back yoverlaytransparente. Source remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Test54269 terminal exit0,7/7,5s con2approvedfixtures; analyzer40988 terminal exit0 limpio21.4s. PNGnormalinspeccionado: flecha alineaSource543; largearchivado,noinspección nueva. Full609531anterior532–544; inventario407541,capturadorcompleto403525anterior. Sinpush/Codemagic/físico/global.
+
+## 2026-10-03 — Loop 545: regresión y corrección de toque de guardado
+
+Fuente b049cf1:full14884terminalexit1,610pass/1fail,3m45s; analyzer8555terminalexit0limpio202.2s.230Dart/cuatroSVG igualesraíz-scratchantes;trasgate/reparaciónsólotest/rescue_test.dart difiere enambos,otras233sin cambios. Fallo único draft conflict:botón construido fueraviewport,tapmiss. c66230a corrige a scrollUntilVisible/ensureVisible/pumpAndSettle/hitTestable,conservando phoneauthored/saveCalls2/conflicto.89635terminalexit0,1/1,2s. No611full posterior aún. Primerregistromanifestf99ac99 conservóstatusrunning porerror deassertseparadoresWindows; este registrocorrige aterminalfailed ydocumenta reparación. ADB545vacío,Sourcea3c969cd9103fd46dc5cd886999912526ce75efbrevalidado. Inventario407541/fullcapturador403525anteriores. Sinpush/Codemagic.
+
+## 2026-10-03 — Loop 546: regresión completa611
+
+Fuente b7e988d82d7c9624a65a8778316e8f52d0be2dee,producción48820c3,testrepairc66230a. Full94132 terminalexit0,611/611,3m23s; analyzer98423terminalexit0limpio184.3s.230Dart/cuatroSVG igualesraíz-scratchantes/después,hashessin cambios. Manifest546supersede610pass/1fail545 yfull609531. Incluye532–544 ydospruebas539. Source remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Inventario407541;capturadorcompleto403525anterior,dirigidasposterioresno407pasadafullniaceptaciones. ADB545vacío,físico/StripeSDK/contrasteglobal pendientes. Sinpush/Codemagic.
+
+## 2026-10-03 — Loop 547: pasada completa407capturas
+
+Capturador76923 terminalexit0,1test/407unique fixtures,3m00s.407PNG existen/frescos/formatoPNG/hashbytes conformeinventario541; manifest547.230Dart/cuatroSVG+capturer raíces-scratchiguales yhashessin cambios frentegate546 fuenteb7e988d82d7c9624a65a8778316e8f52d0be2dee. FuenteSourcea3c969cd9103fd46dc5cd886999912526ce75efbreconsultada. Supersede403525; incluyegastos527–530/verificación532–544/documentos/progreso541. Full611546 yanalysislimpio vigentes mismo código. **407capturasno407aceptacionesvisuales**; no nuevo contraste global/dedo/StripeSDK. ADB545vacío. Sinpush/Codemagic.
+
+## 2026-10-03 — Loop 548: encuadre en revisión
+
+Producción 3115ffbe05578dc12f40883b91d950a8fe839aae. Source App4108 StaticSimulated títuloVerificaciónenrevisión/content-pad20,16,32/CSS81; centro compartido4531/h1margin16.08/p14 medidos543 paraapproved. Native revisióntítulo correspondiente,paddingnormal20/16/32,gapstítulo26.08/lead24,secondaryfont16/19/600,min48/warmborder. Mantiene moderaciónreal/expediente/recarga/retirar,noSimulatedBanner. Primera64883exit0,6/6,5s/analyzer68803exit0limpio47.2s; PNG200revela información partida porpaddinghorizontaldoble. Ajuste bodyhorizontal0 sóloescala24>32 restaura palabra completa sin reducirtexto. Final6478terminalexit0,6/6,4s; analyzer8401terminalexit0limpio31.4s. Normaly200finalinspeccionados;título/lead/botón principal legibles; prueba regresohome200 mantieneacción. No nuevo runtimeSource review548,contraste específico aúnpendiente. SourceSHA remotoa3c969cd9103fd46dc5cd886999912526ce75efbrevalidado. Full611546/completo407547preceden548. Sinpush/Codemagic/físico/global.
+
+## 2026-10-03 — Loop 549: runtimeSource revisión y encabezado
+
+Producción 9034b0d65fb478f182c961adeca61693de6cc855. SourceEdge377x852/rescuer/verification, ModoPrueba selecciónreviewobservada. Computedtopbar68ink15110d;bannerSimulado52.34375 (excluidodeproducto),content20/16/32,center345x520/x16y140.34375,padding28. h1x44/y310.453125/289x60/font24/30/margin16.08; pSource21.6875pxuna línea,botónx44/y442.21875/289x48/font16. Ajuste de comparación: quitarbanner52.34375 y reemplazarparagraphSourceuna línea porleadreal43.4; yheadingesperado247.27/button400.73,coincidenPNGnative~247/401. Runtime métricas ySourcePNGarchivados/inspeccionados. Frame añadeboolrescuerdefaulttrue; estado pasaapproved parareviewheader15110d/e6e2dd exacto,approved/formcoolpreservados. Datos/recarga/retirar/moderaciónintactos. Test61902terminalexit0,6/6,4s; analyzer21558terminalexit0limpio40.3s. Source+native normalesinspeccionados; largearchivado. Sourcea3c969cd9103fd46dc5cd886999912526ce75efbrevalidado. Browser549cerrado,Vite11872CtrlCexit1esperado; primerreadhandoffenSourcecwdfalló yse corrigiórootantescomparación. Full611546/capture407547preceden548–549. Sinpush/Codemagic/físico/global.
+
+## 2026-10-03 — Paridad loop 550: tarjetas de Mis casos
+
+Fuente mockup `a3c969cd9103fd46dc5cd886999912526ce75efb`. Ajustados separación, reserva del borde, interlineado de título/edad y altura/fondo de progreso. Se preservan estados, asignación real y acciones privadas. Pruebas seleccionadas 34/34 (9125, exit 0); flutter analyze sin incidencias (62328, exit 0). Seis capturas generadas; normal y texto ampliado inspeccionadas directamente. Evidencia: docs/design-reviews/parity-loop550. No equivale a aceptación global ni física; 611/407 de loops 546/547 preceden este cambio. Codemagic solamente al terminar el objetivo, sin envíos intermedios.
+
+## 2026-10-03 — Paridad loop 551: estados de Mis casos
+
+Source local/remoto `a3c969cd9103fd46dc5cd886999912526ce75efb` revalidado. Indicadores con colores, mayúsculas, tamaño/peso y SVG de revisión originales; alineación central. Nota de revisión conserva estado real sin promesa de plazo, Ver envío y demás acciones permanecen. Etiqueta semántica natural. Inicial74600 33/1 fallo literal; expectativa corregida preservando aviso/acción. Final86403 terminalexit0 34/34, 8s; analyzer5850 terminalexit0 limpio19.3s. Seis capturas regeneradas, cuatro inspeccionadas (normal/ampliada y correcciones). Evidencia docs/design-reviews/parity-loop551. ADB vacío, gestos físicos pendientes; sin runtime web nuevo ni aceptación global. Full611/407 de546/547 precede cambio. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-03 — Paridad loop 552: tocar tarjeta y desplazar
+
+Source `a3c969cd9103fd46dc5cd886999912526ce75efb` (remoto551). El área superior de tarjetas abre expediente privado/retoma edición real en estados distintos de revisión, y refresca al regresar. Conserva Ver envío y acciones reales; sin hover ni splash. Seis pruebas nuevas cubren borrador/correcciones/aprobado normal/200: desplazamiento no abre ni lee; toque carga ID exacto y no guarda. 11479 terminalexit0 40/40,9s; analyzer87146 terminalexit0 limpio20.9s. Seis capturas regeneradas idénticas bytes a551, comparación manifest552. No nueva aceptación visual directa ni Android físico. Full611/407 de546/547 precede552; no full617 aún. Evidencia docs/design-reviews/parity-loop552. Sin push/Codemagic.
+
+## 2026-10-03 — Paridad loop 553: resumen del caso propio
+
+Source local/remoto `a3c969cd9103fd46dc5cd886999912526ce75efb`. Runtime Edge377x852 /rescuer/cases/luna confirma summaryx16y276/ancho345/padding16+borde1/radio24/gap8; h1x33y293/font24/30/ink151423; p14/21.7; ubicación12/normal/alto27/padding5x9+borde1/muted4f4e5c/bordere3e4ed. Native corrige palette, reserva del borde, story1.55, gap12 de título y ubicación; gap a necesidades31.77 porgrid16+margen h2. Conservados datos/gastos/comprobantes/galería/regreso/cierre reales. Primera43100exit0 38/38,20s/analyzer25519exit0limpio53.6s; final87349exit0 38/38,14s/analyzer52234exit0limpio34.3s.14PNG regenerados; Source/normal/ampliado inicial y normal/bottom-large final inspeccionados, no14aceptaciones. Métricas y evidencia docs/design-reviews/parity-loop553. Browser43585 cerradoexit0,Vite12983CtrlCexit1esperado. Full611/407 de546/547 precede. Sin Android físico/push/Codemagic.
+
+## 2026-10-03 — Paridad loop 554: tarjetas de gastos propios
+
+Source local/remoto `a3c969cd9103fd46dc5cd886999912526ce75efb` revalidado. OwnedExpenseSummary adopta palette/borde/reserva17, símbolos emoji22 de categorías Source, interlineado y progreso8; acción soft radio14/font14/padding8x16/visual36 con objetivo48. Preserva estado/fundingserver/reversión/comprobantes/reintento, no umbral65/Comprar/Desbloquear simulado. Inicial89263exit0 41/41,12s/analyzer39314exit0limpio25.9s. PNGdetectótofu: fallback de plataforma y carga sólocapturadorWindows deSegoeUIEmojiinstalado, sin distribuirfuente. Final72634exit0 41/41,13s. Analyzer14148issueimportinnecesario corregido;67503exit0limpio23.9s. Eliminaciónimportúnicamentesinreruntest.14PNGregenerados,normalfinalsímbololegibleinspeccionado;sinaceptaciónvisualampliadadelgasto, pruebaacción320/200sípasa. Root/scratchpropiosiguales/evidencia docs/design-reviews/parity-loop554. Sinruntimewebnuevo/fullactual/físico/global/push/Codemagic.
+
+## 2026-10-03 — Paridad loop 555: historia y coordenadas del borde
+
+Source local/remoto `a3c969cd9103fd46dc5cd886999912526ce75efb`. Fechas visibles relativas derivadas del published_at real/calendario local (Hoy/HaceNdías); fecha exacta accesible, futuro absoluto e inválido vacío. Corrección: Container incluye decoration.padding; aumentos550/553/554 duplicaban1px. Restauradospadding14caso/16resumenygasto/14historia. Test nuevo contra runtime553 prueba texto x33/y293; supersede esasreservasmanualesprevias y requiereauditotrosContainers. Primera58753exit0 24/24,12s/analyzer10444exit0limpio19.7s.9095exit1 56/1 montaje sinProviderScope;14152exit1 56/1 sinGoRouterState; fixturecorregidosinrelajarcoordenadas/excepción. Final38152exit0 57/57,20s/analyzer54038exit0limpio20.8s.20PNGregenerados; storynormal/ampliado/detailnormalfinalesinspeccionados. Dospruebasnuevas; full619pendiente, full611546/407547anteriores. Evidencia docs/design-reviews/parity-loop555 y cortevigente actualizado. Sinpush/Codemagic/físico/global.
+
+## 2026-10-03 — Paridad loop 556: borde de progreso de verificación
+
+Source local/remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. ContainerProgress padding16+borde1 automático; supersede17manual540. Documents DecoratedBox+Padding15correcto, preservado. Auditoría dirigida de17/21/15 enperfil/rescate sinotroincrementosimilar. Dospruebasnormales/200 contrastanorigen33/37/estadoIncompleto/ratio1de11.37003exit0 15/15,11s/analyzer42081exit0limpio27s.SeisPNGregenerados,progressnormal/ampliadoinspeccionadossinaceptacióndebordesuperiorfueraViewport.232Dartinclcapturerraíz-scratchiguales. Evidencia docs/design-reviews/parity-loop556. Full621pendiente,611546/407547anteriores. Sinpush/Codemagic/físico/global.
+
+## 2026-10-03 — Loop 557: regresión completa621
+
+Fuente d435f33,232Dart inclcapturer raíz-scratch iguales antes de lanzamiento/durante/final y hashes sin cambios.72124terminalexit0 621/621,3m48s; analyzer42081 de556 limpio27s misma fuente. Supersede full611546, no aceptación global/visual por testcount. Source a3c969cd9103fd46dc5cd886999912526ce75efb revalidado556.407capturas547 precede548–556;20casos555/6verificación556dirigidas posteriores. ADB557vacío; emulator.exe y AVD Dopmi_API_35 comprobados (-list-avds), aúnsinarranqueinstalacióngestos. Evidencia docs/design-reviews/parity-loop557, cortes vigentes actualizados. Sinpush/Codemagic.
+
+## 2026-10-03 — Loop 558 en curso: Android nativo disponible
+
+AVD Dopmi_API_35 verificado, WHPX usable (-accel-checkexit0). Emulator iniciadooculto/headless/read-only/no-snapshot-save PID70556. ADB emulator-5554device,sys.boot_completed=1. pm list packages com.mycompany.dopmi vacío: sinappinstaladaactual, sinbuild/gestoverificado. Próximo paso candidato local actual, manteniendoidentidad/config/test-only. Evidencia docs/design-reviews/parity-loop558. NoAndroidfísico/push/Codemagic.
+
+## 2026-10-03 — Loop 558 en curso: DEV verificado y build nativo activo
+
+Supabase skill/changelog consultados sin feature/SQLnuevo. Config local existente DEVohqxranynackjignryep/clavepublishable/Guardiantesttrue; authsettingsHTTP200,catálogo públicoHTTP200/5casos, sin mostrarcredenciales. Pubspec/Androidversionadosraíz-scratchiguales. Builddebugandroid-x64configlocal sesión95153 sigueactiva, diagnósticoGradleRUNNABLE/R8; conservarproceso yrevalidarhandle antes decontinuar, sinrestartportimeout. APKviejoscratchnoinstalado. AVDemulator-5554API35/720x1520/density300,boot1; timezoneGMT→America/Mexico_CityQAread-only. NoAPKactualinstalado ni gestosverificados. Evidencia docs/design-reviews/parity-loop558/native-build.json. Full621557/analyzer556vigentescódigosincambios. Sinpush/Codemagic.
+
+## 2026-10-03 — Loop 558: resultado Android local
+
+Sustituye pendientes558: build debug android-x6495153 exit0/1112.1s, instalación75429 Success. Fuente d435f33,232Dart verificados iguales raíz/scratch y hashes557 tras QA. APK SHA2569A2E0FACC184F39B59BFAB70B78AAB3D785FD710A8403E706957BC76185DDF5E, com.mycompany.dopmi, versión local0.2.0+2. En emulador API35: selección Adoptar, scroll footer, entrada anónima, detalle Rocky Demo/foto cargada y Back4 preservando tarjeta/filtro; sin escrituras/pagos. Evidencia docs/design-reviews/parity-loop558. Arranque -W inicial timeout con UI visible; segunda salida no recuperable, PID2499/topResumedActivity verificados. Rendimiento/animaciones/gestos físicos/paridad global sin aceptar. Sin push/Codemagic, conforme indicación de enviar sólo al completar objetivo.
+
+## 2026-10-03 — Loop559: ubicación del detalle de rescate
+
+Source Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb local/remoto revalidado. Corregido padding9x5 de etiqueta en OwnedCaseDetail: Container ya suma borde1; coincide con métrica runtime553 altura27/y294.5. Fixture CDMX comprueba dimensiones y origen título33/293. Test46230 exit0,6/6; analyzer99777 exit0 limpio50.4s. Gate inicial concurrente con emulador agotó memoria: analyzer26686 errorOOM/test73619 interrumpido; emulador propio cerrado y gates repetidos secuencialmente. Evidencia docs/design-reviews/parity-loop559. APK558 anterior al cambio, sin nueva aceptación nativa. Objetivo global pendiente; sin push/Codemagic.
+
+## 2026-10-03 — Loop560: posición de barra de adopción
+
+Native558 hueco100dp contrastado con Source406 del mismo SHA Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb local/remoto revalidado. Source muestra mismo hueco: mayor especificidad CSS conserva shellpadding100. Hipótesis provisional de retirar separador descartada, producción sin cambios560. Dos nuevas pruebas ruta real/DopmiApp verifican bottom852-inset-14-100,altura52 y posición fija tras scroll para inset0/24. Final6919 exit0,7/7; capturador71266 exit0/dosPNG finales; analyzer69665 exit0 limpio22.8s. Evidencia docs/design-reviews/parity-loop560. No paridad global/animaciones/gestos físicos aceptados; sin push/Codemagic.
+
+## 2026-10-03 — Loop561: favorito seleccionado de adopción
+
+Source Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Sombra CSS0/4/12 rgba247/203/45/.35 y borde transparente del estado seleccionado faltaban en cliente; añadidos con círculo52, escala de icono existente preservada. Flujo real/callback/repositorio/error sin modificaciones. Nueva prueba guarda/quita favorito y verifica sombra; primer51822 40/1 falló por fixturefalse asumido saved, corregido a interacción real. Final50142 exit0,41/41 incluyendo reversión ante error. Capturador89049 exit0/dosPNG normal200 inspeccionados; analyzer71166 exit0 limpio22.8s. Evidencia docs/design-reviews/parity-loop561. No runtime Source seleccionado nuevo ni animaciones/gestos físicos/global aceptados. Sin push/Codemagic.
+
+## 2026-10-03 — Loop562: gesto horizontal de tarjetas
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Source usa clientX-startX; cliente bajo Transform convertía desplazamiento a coordenada rotada. GestureDetector fuera de DiscoveryCardMotion en adopción y apoyo:30px de dedo producen30px durante entrada izquierda/derecha, sin cambio a curvas/duración/umbrales ni persistencia. Primer21712 44/1 falló apoyo aún interno; corregido también. Final3755 exit0,45/45,analyzer7172 exit0 limpio14.5s. Evidencia/manifiesto raíz-scratch docs/design-reviews/parity-loop562. No nuevo contraste temporal runtime Source ni dedo/dispositivo físico/global aceptados. Sin push/Codemagic.
+
+## 2026-10-03 — Loop563: toque versus arrastre corto
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Source detalle sólo absdelta<8; recognizerFluttergeneral podía abrir con8/9. DiscoveryDragSurface/HorizontalDragGestureRecognizer específico acepta absdistanciaglobal>=8 en adopción/apoyo, sin cambiosglobales/hover. Seis nuevas pruebas±7/±8/±9 verifican apertura sólo7 y ninguna escritura/avance. Gate82952 exit0,51/51,12s. Analyzer86078 importinnecesario; retirado dart:ui ya reexportado, final59811 exit0 limpio26.9s. Manifiesto/evidencia563 y cortevigente actualizado; full557 anterior559–563 no gateactualcompleto. Sin aceptación física/temporalSource/global ni push/Codemagic.
+
+## 2026-10-03 — Loop564: regresión completa630
+
+Fuente135879c178d1cd89befb2cd38220b6c86b0a44a7,233Dart iguales raíz/scratch antes/durante/después y hashes sin cambios; manifiesto564. Full91070 terminalexit0,630/630,3m53s. Analyzer59811 de563 limpio26.9s mismo código; supersede full621557 y verifica integración559–563. Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. ADB vacío. Capturas407547 anteriores548–563, siguiente trabajo independiente regeneración/contraste por familias. Ninguna aceptación global/visual/animaciones/física derivada de pruebas. Sin push/Codemagic.
+
+## 2026-10-03 — Loop565:407capturas actuales
+
+Capturador6598 terminalexit0,1test/407unique,3m02s.407PNG nuevos/formato/hash verificados enmanifest565. Fuente135879c mismofull630564;233Dart iguales raíz/scratch antes temprano ydespués/sin cambios.96assetsauditados:95visuales byteidénticos durante; NOTO-EMOJI-LICENSE.txt temporal574bytes vsraíz11934 alineado sólo tras finalizar, todos96iguales al cierre. Pubspec/lockiguales. FuenteSourcea3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Supersede407547. Detallecaso/progresoverificación actuales inspeccionados, no407aceptaciones ni contrasteglobal/temporal/físico. Próximo contraste porfamilias, sin push/Codemagic.
+
+## 2026-10-03 — Loop566: cobertura bienvenida/acceso
+
+407fixtures565 no incluían AUTH/bienvenida. Existingcapture_design3508 exit0,27PNG nuevos/5s. Nuevo capture_access_test abre6rutas reales×normal/320texto200+3footers:15PNG nuevos/hash/firma y capturador raíz-scratch iguales. Final28526 exit0,1test/15fixtures2s, analyzer45478 exit0 limpio17.3s. Primer intento sombras56200 falló invariantecapturador; reset explícito antescierre corregido, no falloapp. Welcome/login normal ylogin/signupfooters200 inspeccionados: campos/CTA/consentimiento alcanzables. Sourcea3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado; sin runtimeSource nuevo/comparacióncompleta. Sólo tool/evidencia, full630564 vigenteproducción. Docs/design-reviews/parity-loop566, sin push/Codemagic ni aceptaciónglobal.
+
+## 2026-10-03 — Loop567: contrasteSource bienvenida/acceso
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb local/remoto, SourceVite83987/Edge377x852 fonts.ready: bienvenida inicial/seleccionada contrastadas con566; posicionesSourceprompt231.1875/h447.625/radios686.8125 coinciden contratos previos. LoginSourceApple/Google: fixture566socialoff no equivalía config. Añadido login-google normal200/footer200 usando flagrealGoogle/FakeIdentityRepository sin signinremoto. Gate48178 exit0,1test/18PNG3s, analyzer28700 limpio28.7s; tool raíz-scratchigual. CTA nativo8px másabajo por forgot48vsSource40; pendiente resolución visual/táctil, no loginidéntico. Evidencia docs/design-reviews/parity-loop567. Browsercerrado/ViteCtrlCexit1esperado. Sin cambiosprod/push/Codemagic ni paridadglobal.
+
+## 2026-10-03 — Loop568: CTA bienvenida sin hover
+
+RuntimeSource Edge377x852 a3c969cd9103fd46dc5cd886999912526ce75efb:trasclickAdoptar cursor radioinicial queda sobre CTA posterior. Computedhovertrue/bg000;mousemove0/0 conserva selección yhoverfalse/bg15110d. Pixel80/745 Source567hover000/Source568nohover15110d/appcaptura56615110d. No discrepancia cromática móvil ni cambioproductivo. EvidenciaPNG/color-check568 y aclaración567; sólo CTAcolorverificado,no bienvenida/animacionesglobal. Recovery48vsSource40/CTA8px sigue pendiente. Browsercerrado/ViteCtrlCexit1esperado. Sin push/Codemagic.
+
+## 2026-10-03 — Loop569: corregir espaciado de acceso
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Medición inicial29027 confirma inputscorrectos/CTA+8. Corrige recovery40padding0, socialgap12+bottom4 yheading1.15: inputsy445.85/529.85intactos,CTA617.85vSource617.96875,title325.85v325.78125. Targetrecovery40normal/134ancho explícito, crece texto200; testbordeabre/regrésoconservaemail. Final64566exit0,27/27,8s; capturadorlegacy46929exit0/27PNG6s; analyzer60999exit0limpio33.1s. Capturas/métricas/docs569/sourcecheck4inputsigualesraíz-scratch; AUTH18actuales. Full630564 y407capturas565 anteriores, no gateactualglobal ni animaciones/físicoaceptados. Sin signinreal/SQL/push/Codemagic.
+
+## 2026-10-03 — Loop570: presión del botón de acceso
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Sourceauth-gate-primary sólotienehover; AuthFrameFilledButtonTheme heredabaMaterialripple/overlaypresionado. NoSplash/resolverpressedtransparente específicosAuthFrame, fallbacknullconservafoco de otrosestados. PruebaPixelAuthFrame/ActionButton real:21/17/13/255antesydurantepresión200ms,callback0antesup/1alrelease. Gate33172exit0,27/27,9s;analyzer17194exit0limpio25.6s. Dosinputsraíz-scratchiguales manifiesto570. No nuevo touchruntimeSource/teléfono/aceptaciónglobal;full630564 anterior569/570. Sin push/Codemagic.
+
+## 2026-10-03 — Loop571: presión de entrada y estabilidad del logo
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb. Welcome y AccountStart eliminan ripple/overlay al mantener el botón, conservando navegación al soltar y fallback de foco. Dos pruebas de rutas reales comprueban RGBA21/17/13/255 antes/durante200ms, rect estable y navegación sólo al release. El gate inicial detectó desplazamiento real de36.1px en Welcome: Brand no reservaba altura antes de decodificar512x171. Se fija height108*171/512, sin cambiar dimensiones finales. Tras corregir, log571-final2 concluye20/20 All tests passed; salida terminal de sesión63922 no recuperable tras compactación, no se atribuye exitcode. Gates anteriores19317/56426 fallaron19/20; diagnóstico83283 pasó2/2 y localizó el desplazamiento. Capture27403 exit0,1test/27PNG7s; analyzer21051 exit0 limpio69.2s. Cuatro archivos raíz/scratch iguales; capturas bienvenida guardadas, seleccionada inspeccionada. Full630564 y407565 anteriores a569–571. No aceptación global/gestos físicos ni push/Codemagic.
+
+## 2026-10-03 — Loop572: regresión completa de acceso actualizado
+
+Fuente c4deabcd5536694ac9f014dd56bff620b873071d. Flutter test --no-pub, sesión54766 terminal exit0:633/633,3m53s. Los240 Dart de lib/test/tool coinciden raíz/scratch y conservan hashes al cierre; medición inicial tomada durante la ejecución, no antes de iniciarla. Analyzer571 limpio69.2s sobre la misma fuente. Incluye569–571, supersede full630564. Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto reconsultado sin cambios. Capturas407565 anteriores a estos cambios;27 dirigidas571 actuales. No paridad global, gestos físicos, signin real ni StripeSDK aceptados. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-03 — Loop573: presión de accesos rápidos de Perfil
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado al inicio/cierre. App.tsx usa profile-access-item; styles.css4409 cambia sólo el círculo a e7e3dc en active, sin transición. DonorAccessGroup heredaba ink Material y dejaba f0eeea fijo. Se extrae ítem privado con estado local: círculo e7e3dc mientras pressed, f0eeea al cancelar/soltar, NoSplash/overlay transparente. Preserva SVG22/círculo56/espaciado y rutas reales. Prueba rasterizada del componente productivo/router comprueba RGBA240/238/234/255 →231/227/220/255 →original al cancelar; cancelar no navega, soltar abre cuenta. Gate37404 terminal exit0,10/10,5s con navegación; analyzer25637 exit0 limpio31.7s. Dos archivos raíz/scratch iguales; no nuevo runtimeSource/teléfono ni aceptación global. Full633572 anterior573; no repetir full sin motivo, cambio cubierto de forma dirigida. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-03 — Loop574: selector de experiencia en rutas reales
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado inicio/cierre. Source App.tsx6024 Perfil usa switch off/ariafalse, settings6283 switch on/ariatrue; ambos navegan, no cambian thumb en el mismo DOM. CSS thumb16x16, pista32x19 y traslado13, transición180ms ease. Cliente ya conserva estas dimensiones y estados; no se altera producción ni añade espera artificial a navegación. Prueba existente de DopmiApp real ahora comprueba Transform0 en Perfil/13 en Configuración, además de éxito/fallo del repositorio, área48 y rutas/datos conservados. Gate33662 terminal exit0,21/21,5s, incluye control aislado normal/reduced a0/90/180ms en ambos sentidos. Comprobación Source estática, sin nuevo runtime temporal ni dispositivo; full633572 anterior573, analyzer573 limpio vigente para producción. Dos posiciones verificadas no aceptación global de Perfil. Sin push/Codemagic.
+
+## 2026-10-03 — Loop575: encabezado completo de Perfil adoptante
+
+RuntimeSource Edge377x852/fonts listas/cursor0,0, referencia a3c969cd9103fd46dc5cd886999912526ce75efb local/remota inicio/cierre. Discover-top y16/h42; match-top y86/h46 con padding2/2/4, h1 x20/y92.59375, intro y152/h84/paddingleft16. Cliente tenía fila40/título sin contenedor/introleft14; se corrige fila42, título min40+padding2/2/2/4 y separación posterior20, introleft16. Mantiene crecimiento intrínseco del título, texto200 y datos reales. Source y captura Flutter final normal inspeccionadas: inicio de tarjeta/secciones alineado, no igualdad global de píxeles/estados; nombre SourceAlberto/fixtureAna, círculo/notificaciones/demooverlay distintos. No copia identidades/Modo prueba ni hover. Gate inicial52841 y analyzer15625 exit1 por const no permitido en ConstrainedBox; corregido antes de verificar. Final57219 exit0,19/19,6s incluye17experiencia+presión+capturador3PNG; analyzer48386 exit0limpio30s. Captura inicial54254 exit0/3PNG4s anterior cambio. Fuente productiva y scratch iguales. Browser cerrado/Vite90934 CtrlC exit1 esperado. Full633572 anterior573/575; sin aceptación temporal/física/global. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-03 — Loop576: superficie de tarjeta destacada de Perfil
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. CSSprofile-feature-copy small usa rgba255/255/255/.72; cliente usaba c3c1c0. Sustituye por Color.from(alpha:.72,red1green1blue1), conserva variante clara. InkWell tenía NoSplash pero highlight heredado; highlightColor transparente elimina overlay sólo de presión conservando foco. Nueva prueba componente productivo rasterizado comprueba fondo21/17/13/255 antes y durante200ms, callback0durante/1alrelease y alpha exacta del texto. Gate76695 terminal exit0,19/19,6s, incluye experiencia/escala0.99/cancelación normal/reduced. Analyzer61572 exit0 limpio34.9s. Dos archivos raíz/scratch iguales. Inspección Source estática, sin nuevo runtime/físico/captura global; full633572 anterior573/575/576. Paridad global pendiente. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-03 — Loop577: tipografía de tarjeta personal
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. CSS profile-intro-copy gap2/strong16 line1.25/small13 line1.3; cliente heredaba alturas del tema y gap0. Establece altura1.25 del nombre,1.3 de ciudad y separación2 sólo cuando hay ciudad. Conserva datos/condición sin ciudad, radio y dimensiones de tarjeta; no copia identidad Source. Gate35854 terminal exit0,18/18,6s incluye17experiencia+capturador3PNG. Analyzer36602 exit0limpio18.2s. Capturas normal/200 inspeccionadas y guardadas; texto amplio crece, sin nueva aceptación de scroll/pantalla global ni comprobación runtimeSource de texto200. Archivo raíz/scratch igual. Full633572 anterior573/575–577; sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-03 — Loop578: fila de cierre de sesión en Perfil
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Source App.tsx3381 nav-row danger-row/onClick salida directa, sin confirmación. Cliente reutilizaba DonorSupportRow negro/círculo40/sombra. Nuevo DonorLogoutRow específico: bordeffd4d8/radio20/min58/padding16x14/íconos20/texto16peso500 rojod92d20, sin círculo/sombra/ripple; mantiene callback logout real y error existente. Especificidad danger-row icon-mask incluye Chevron, rojo correcto frente regla row-chevron muted. Gate20279 terminal exit0,23/23,12s incluyeidentity widgets/capturador1PNG; analyzer76222 exit0limpio36.3s. Imagen del pie inspeccionada y guardada, archivo raíz/scratch igual. No nuevo runtimeSource/físico/signoutremoto ni aceptación global. Full633572 anterior cambios recientes. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-03 — Loop579: bloque de ayuda y separación de salida
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Source profile-support contiene dos filas gap10 y siguiente botón logout es hermano en profile-page--soft gap20. Cliente tenía gap10 también antes de logout: corrige20. DonorSupportRow tenía ripple/highlight Material heredados sin contraparte activaSource; NoSplash/highlight transparente conserva rutas/otros estados. Gate87059 terminal exit0,3/3,3s: dos recorridos help_footer donor/rescuer +capturador1PNG, no prueba nueva de presión ni navegación desde Perfil atribuida. Analyzer8191 exit0limpio17.3s. Captura pie inspeccionada/guardada y archivo raíz/scratch igual. No runtimeSource nuevo/físico/aceptación global;full633572 anterior cambios recientes. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-03 — Loop580: introducción del diálogo de cambio de modo
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. CSSrescuer-mode-intro paddingright20 abarca título/párrafo/badge; cliente sólo título. Extiende margen derecho a párrafo ybadge manteniendo gap8. Text-link-button Source min40/font14weight600; Ahora no ajustado a mínimo40/padding0/Inter14peso600/NoSplash. Preserva resultado false/true y cambio de experiencia sólo después de confirmar/servidor. Gate12796 terminal exit0,4/4,2s, incluye3profileGuardian/cancelación200+capturador1PNG. Analyzer51507 exit0limpio21.3s. Imagen normal inspeccionada y guardada, archivo raíz/scratch igual. No nuevo runtimeSource/presión píxel ni cierre global de diálogo: CTAprimaria/cierre/otras geometrías requieren contraste completo. Full633572 anterior cambios recientes. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-03 — Loop581: tipografía y presión de confirmación de modo
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Source global buttonfontinherit Inter16/primarypeso600/texto0d0d0d/padding18x11/min48. FilledButton cliente heredaba14/peso500/textoink; ajuste explícito16/600/0d0d0d/padding18x11. Confirmar y Ahora no NoSplash/resolver overlay sólo pressed transparente/fallbacknull otros estados. Guarda foco por declaración, no nueva prueba teclado/rasterpresión. Gate inicial98166 exit0,21/21 con1PNG antes de corregir overlay transparente global a fallback específico; analyzer62520 limpio17.2s anteriorfallback. Final99434 exit0,20/20,6s; analyzer65320 exit0limpio22.6s. Captura normal inspeccionada conserva geometría48 ytexto16, PNG precede sólo fallbacksin efecto en estado normal. Archivo raíz/scratch igual. Preserva true/false y autorización/cambio sólo tras servidor. No aceptación global/temporal/física; full633572 anterior cambios recientes. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-03 — Loop582: cierre del diálogo desde Perfil real
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Producción confirmMode yaAnimationStyle.noAnimation/barrier48%; Source inserta overlay sin animación y cierra fuera/X/Ahora no. Cuatro nuevas pruebas DopmiApp/router/repo fake reales comprueban modal AnimationStatus.completed en primerpump y cierre outside/back/X/later conservando /profile, modo donor y nombreAna. No cambio productivo. Primera53319 exit1,17pass/4fail: tarjeta todavía no construida porListView, ensureVisible no encuentra; reparación scrollUntilVisible antes de tap. Final86775 terminal exit0,21/21,6s. Archivo raíz/scratch igual. Analyzer581 limpio vigente para producción, no gateanalyzer nuevo. No runtimeSource nuevo/físico/aceptación global/resultado servidor real. Full633572 anterior cambios recientes. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-03 — Loop583: SVG compartidos de Perfil
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Auditoría byte a byte de54SVG presentes tanto en apps/mobile/assets/profile como public/assets Source:54idénticos al Source y al scratch, hashes independientes en profile-assets.json. Incluye cuatro pasos del diálogo: onb-camera contiene documento y onb-adopt-heart contiene casa en ambos; conservar formas actuales, no reemplazar por nombres inferidos. Source Icon usa mask-size contain, cliente SvgPicture.fitcontain por defecto compatible en proporción. No producción modificada ni tests repetidos: igualdad de archivos no prueba rasterizado/tamaño/tinte/mapeo en cada pantalla. Cierre× textual Source vs MaterialIcons.close nativo aún requiere comparación renderizada; no inferir igualdad por54SVG. Análisis581 limpio/gate58221 vigente, full633572 anterior cambios recientes. Paridad global/gestos físicos pendientes; sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-03 — Loop584: símbolo de cierre del diálogo
+
+RuntimeSource Edge377x852/fonts listas/cursor0,0 Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb local/remoto. Source dialogx16/y95.640625/w345/h660.71875; closex318.4375/y107.640625/w26.5625/h24, Inter22/line22/padding1x6. Nativo MaterialIcons.close sustituido por Text× Inter22/line1/strut22, target48 con right5.28125/top0 alinea centrohorizontal Source331.71875; NoSplashcolor/highlighttransparent mantiene callbackfalse/tooltip. Source y captura Flutter final inspeccionadas: símbolo coincide; diálogo nativo visualy91..761 (~670h) aún9.3mayor. Posible wrapper48 deTextButton min40 añade8; comprobar próximo loop, no atribuir igualdadglobal. Gate98172 terminalexit0,25/25,6s incluye21experiencia/4cierres+3Guardian/cancel200+1PNG; analyzer16674 exit0limpio33.4s. Archivo raíz/scratch igual. PrimerclickSourcecubierto porbarra/evalnull no produjo diálogo; scroll420 yclick posterior exitosos, PNG sobrescrito con estado correcto. Browsercerrado/Vite57019CtrlCexit1esperado. Sin físico/aceptaciónglobal/push/Codemagic.
+
+## 2026-10-03 — Loop585: reserva real de Ahora no
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Métrica nueva capturador73564 exit0:bodyx16/y91/w345/h670,cancelh48 pese mínimo40; comprueba causa wrapper Material. TextButton tapTargetSize.shrinkWrap específico normal40 sin máximo fijo, preserva crecimiento texto200. Capturador registra JSON y assertcancel40; final10162 terminal exit0,25/25,6s incluyecierresreales/cancel200/1PNG. Bodyactualx16/y95/w345/h662,cancelx34/y699/w309/h40; Source584x16/y95.640625/w345/h660.71875: elimina8px, resto1.28125h pendiente, no paridadtotal. Analyzer9030 exit0limpio18.1s. Imagen inspeccionada y before/aftermetricsguardadas; dosarchivos raíz/scratchiguales. No nuevo runtimeSource/físico/gateglobal; sinpush/Codemagic hasta objetivo completo.
+
+## 2026-10-03 — Loop586: regresión completa de Perfil y diálogo
+
+Fuente ddf049a3cc781e164a5eb5c79876f16a3f3daee7, Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Flutter test --no-pub sesión67717 terminal exit0,639/639,4m13s.241Dart lib/test/tool raíz-scratch iguales y hashes sin cambios desde antes del gate hasta cierre.96assets byteidénticos y hashes estables, medidos durante/cierre; config python16/16exit0. Analyzer585 limpio18.1s vigente misma fuente. Supersede full633572 e integra573–585. ADB vacío: ningún dispositivo disponible, no nueva aceptación nativa/física.407capturasglobales565 anteriores a cambios; capturasdirigidas585 actuales diálogo662h vsSource660.71875 aún1.28125h. Tests no paridadglobal. Próximo contraste independiente Mi historial: texto inicial/espaciado/rutas y datos reales, sin copiar montos/status ficticios. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-03 — Loop587: introducción de Mi historial
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Source p14/line1.55/muted; cliente heredaBodyMedium1.5. Fija estilo local14/1.55/muted sin cambiar tema global. Mantiene separación26 correcta: gridgap12+p UA marginbottom14, no reducir a12. Conserva importes/métodos/status/proporcionados backend, ownership y ciclos privados; no copia filas ficticiasSource. Gate62959 terminal exit0,8/8,3s incluyehistoryscreen/row200/capturador3PNG; analyzer68273exit0limpio47.1s. Imagen normal inspeccionada, normal/large/emptyguardadas. Archivo raíz/scratch igual. No nuevo runtimeSource ni igualdad global de historial; colores de texto de pills aún requieren comparación, extensiones reales conservadas. Full639586 anterior pequeño cambio587. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-03 — Loop588: texto de estados del historial
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. CSSlog-pill Pagado/Enproceso/Cancelado foreground071a13/0d0d0d/5c5650; fondos ya2dc08e/f7cb2d/e8e4de. PaymentHistoryRow tenía textoink para todos. Selecciona tres colores por estado real confirmed/pending/canceled; fallbackink conserva refunded/unknown/extensiones. Sin cambiar etiquetas/statusLabel/finanzas/reintentos/métodos/importes ni copiar fallado simulado. Gate5324 terminal exit0,8/8,7s conhistoryscreen/row200/capturador3PNG; analyzer32452 exit0limpio21.3s. Imagen200 inspeccionada y tresPNG guardadas; archivo raíz/scratch igual. SourceinspecciónCSS,no nuevo runtime/rastercolorautotest/físico/aceptaciónglobal. Full639586 anterior587/588. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-03 — Loop589: presión en filas del historial
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Source profile-activity-row transitionbackground120 sólohover, sin active/ripple. PaymentHistoryRow InkWell heredaba splash/highlight. NoSplash/highlight transparente conserva foco y expansión inmediata de detalles financieros reales. SourcefilasconcaseId navegan a caso ysinId estáticas; extensión nativa de evidencia no se elimina para copiar simulación, acceso a caso requiere auditoría posterior de datos/ruta. Gate31464 terminal exit0,7/7,3s: expansión/cierre primerpump normal200, datosfaltantes, propiedad/filtro/ciclos/reintento preservados. Analyzer54849 exit0limpio20.3s. Archivo raíz/scratchigual. Sin capturas redundantes de estado normal ni nuevo pixelpressed/runtimeSource/físico/aceptaciónglobal. Full639586 anterior587–589. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-03 — Loop590: relación gasto/caso del historial
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. SourceHistory concaseId abre /case/:id. Clientehistorial selectdopmi_donations tiene expense_id/expense_title/destination, no case_id; detalles actuales no proporcionan enlace público a caso. No usar expenseId como caseId ni analizar título/destination. Auditoría local SQLactual publicrescueRPC20260927035600: case_id no nulo filtra id=argumento oparent_id=argumento, permite consultar gasto visible porid y obtenerparent_id; privatevisibility conservaaprobados. Selectdirecto rescuerrecord sóloowner, join del donante daría vacío yno autoriza ampliarRLS. Ruta nativa /rescue-cases/:id ya catálogo público. Próxima implementación: resolver expense mediante catalog(1,caseId:expenseId), verificarid/kindexpense/parent, confirmarcasepublicactual antesdeenlace y descartarrespuesta si cambiaidentidad. Preservar acceso a evidenciaprivada: interfaz del enlace/acciónprincipal aún requiere definir contra objetivo completo, no se acredita paridad funcional por este audit. Sin ediciónSQL/consulta remota/nueva conexión verificadas. SkillSupabase leída y legado/historialaudit consultados; no implementaciónSupabase antesde docs/changelog/gate real. Full639586/analyzer58920.3s anteriores, no tests redundantes. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-03 — Loop591: abrir caso público desde historial
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. PaymentHistoryRow añade acción principal al caso; importe/status expande evidencia real con etiqueta accesible, sin cambio de geometría ni ripple. Filas sin callback conservan expansión, incluidos ciclos Guardian. RescueRepository resuelve expense_id mediante RPC público y vuelve a comprobar caso padre + gasto en snapshot completo; no join privado, SQL ni RLS nuevos. Pantalla descarta resultado si cambia identidad o se desmonta, evita aperturas duplicadas y conserva evidencia cuando caso no disponible. Consulta DEV de lectura comprobó catálogo total5 y relación gasto/padre verdadera sin registrar IDs/datos. Gate85888 terminal exit0,12/12,3s; analyzer21906 terminal exit0 limpio28.2s. Primera pasada47721 8/8 y analyzer49144 limpio67.3s anteriores al ajuste semántico/prueba final. Pruebas específicas cubren objetivos de toque separados y resolución/retirada/kind erróneo/gasto ausente; falta prueba integrada ida/vuelta y descarte tardío de navegación tras cambio de identidad. No aceptación instalada, capturas nuevas ni paridad global. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-03 — Loop592: navegación integrada historial/caso
+
+Fuente producción7d0bd7b, Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Tres pruebas nuevas con DopmiApp/router reales y repositorios fixture: toque abre /rescue-cases/case-one y muestraChoco, pop conserva historial y evidencia expandida; dos toques durante consulta generanuna apertura, cambioidentidad descarta respuesta tardía; caso público ausente muestra aviso sin abandonarhistorial y mantiene acceso importe/evidencia. Sin cambios producción/backend. Gate36426 terminalexit0,15/15,5s; primera77213exit0,14/14 antes agregarcasoausente. Analyzer83506exit1 tresprefer_adjacent_string_concatenation corregidos sólo unificando literalesidénticos; finalcomando798f10 terminalexit0 limpio4.8s. No prueba física ni animación raster ni paridadglobal. Próxima diferenciaSource: título fila puntual combina nombre realcaso negrita700 y concepto regular400; nativo aún sóloexpense_title700; suscripciónSource600 vsnativo700. Requiere datos públicos reales sin rellenar nombres inventados ni ampliarRLS. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop593: nombre público y concepto en historial
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Source fila puntual nombre700 + concepto400, suscripción600. PaymentHistoryRow Text.rich combina caseName público700 con expense_title real400; mantiene fallbackconcepto cuando no hay nombre. GuardianHistoryEntry titleWeight600 sin cambiar estados/importes/evidencia. RescueRepository publicCaseRecordForExpense retorna registrocaso ya verificado porRPC público/snapshot completo; publicCaseForExpense conserva contratoid/delegación. loadHistory consulta una vez por expenseIDdistinto de la página, errorescatálogo conservan evidenciafinanciera, LiveSection conserva descarte poridentidad; no SQL/RLS nuevos ni datos simulados producción. ConsultaDEV readonly catalogtotal5/publicPetNamesAvailable5, noIDs/payloads registrados. Docs/changelogSupabase leídos591 siguen APIexistente.
+
+Gate90921 terminalexit0,30/30,8s incluyehistorial/ciclos/resolución/texto200/capturador3PNG; analyzer3327 terminalexit0 limpio18.7s. Primer91027 27/27; primer34216 30/30 capturóerror poroverrideRescue faltante: imageninspeccionada rechazó evidencia aunquetests verdes. Corrigeoverridecapturador y mueve lecturaProvider dentrocatch de enriquecimiento; primerosPNG sobrescritos por final. Analyzer82517exit1 curlybraces corregido. Normal/200 finalesinspeccionadas;200 captura viewport inicial con filas inferiorespor scroll, no todosconceptos visiblesenPNG. Fixture primera fila gasto usaexpense-one públicoChoco, expense_title previoMax·Comida; ilustración deliberada, no identidad ni igualdad contenidoSource. No Source runtime nuevo, aceptaciónfísica o paridadglobal. Próximo: comprobar disponibilidad/fallo de enriquecimiento y captura nombres coherentes sin copiar simulaciones, después continuar otrosestados/routes. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 UTC — Loop594: catálogo ausente y estado vacío del historial
+
+Fecha local México3oct23:52, UTC4oct05:52; entrada593 rotulada4oct corresponde UTC. Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Dos pruebasintegradas verifican catálogo devuelve null o lanzaerror: mantieneconceptoMedicamentos/importe75.25 y reciboexpandible sin inventarcaso. Capturador usa conceptoComida para primerexpense-one/Choco; assert título presente o vacío antesguardar,200 desplazadoal título visible en vezde sólofilas iniciales. Sourceempty p14/1.55/muted vsnativo estiloheredado: explicita estilo sólomensaje vacío. Sin cambiosfinanzas/backend/SQL. Gate51606 terminalexit0,20/20,4s, analyzer97057exit0limpio11.8s. Gatesantesestilo9668exit0,20/20,5s y21035clean17.1s. TresPNG finalesguardadas, normal/200previasmismofilas inspeccionadas y emptyfinalinspeccionada; no Source runtime nuevo ni igualdadglobal/aceptacióninstalada. Próximo gatecompleto integra591–594 (full639586anterior), luego seguir contraste rutas/estados pendientes; no repetir pruebadirigida sin cambios. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 UTC — Loop595: regresión completa del historial
+
+Fuente b2ee195e1961398cc67cb7f94fe8a67a0b0fc73a, Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Fluttertest --no-pub90480 terminalexit0,651/651,3m22s.242Dart lib/test/tool raíz-scratch iguales/hashessin cambios antes/cierre;96assets byteigualesmedidos durante/cierre yhashesestables. Configpython16/16 sesión12548exit0. Analyzer594clean11.8s mismafuente vigente. Supersede full639586 e integra587–594. ADBvacío consultado595, no Androidfísico disponible.407capturasglobales565 anteriores a cambios; dirigidas594historialactuales, no651aceptaciones ni paridadglobal. Próximo contraste independiente MétodosdePago: GuardianPaymentCardRow TextButtonHacerpredeterminada/IconButtonEliminar heredan splash/overlay; Source inline-link/icon-button sólohover, sin active/táctil. Verificar presión real conservando foco y accionesfinancieras autorizadas. Sin cambiosproducción eneste gate. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop596: presión real en controles de tarjeta
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Hipótesis595 de overlayvisible heredado queda descartada por raster: GuardianPaymentCardRow actual mantiene píxeles antes/durante200ms presión y rect estable, cancel noacción, release unaacción correcta independiente paraHacerpredeterminada/Eliminar. Nuevo payment_card_press_test ocho combinacionesnormal200/theme dopmiTheme platformAndroid/iOS. Configuración ThemeData.copyWithplatform en widgettester, no shader/SDK/gesto físico instalado verificados. Primer31478exit0,4/4 con temaMaterial genérico; final12366exit0,11/11,3s (8presión+3feedback existente), analyzer17156exit0clean36.3s. Sin producciónedit: no suprimir overlay que ya no cambia raster sólopor estiloheredado. Prueba usa datosfixturepm_fixture, no dinero/backend. SourceCSS595 botonestransparentes/sólohover, sin nuevoSource runtime596. Full651595 conserva producciónvigente, no integra8nuevostests hasta gateposterior. Próximo contraste listo: Agregartarjeta/billeteras, no volver a repetir controlesya comprobados. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop597: controles agregar tarjeta y billeteras
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Source dashed/wallet botones sin active/ripple; wallet hereda16/500, NativeWalletButtons tenía14. Ajusta16 y NoSplash/pressedoverlaytransparente en billeteras y Agregartarjeta, otrosestadosnull conservanfallbackfoco. Sin cambiosSDK/pagos/disponibilidad/idempotencia ni activacióndinero. Gate96326 terminalexit0,61/61,14s native_wallet_buttons normal200+guardian_test; analyzer10351terminalexit0clean33.7s. No rasterpressed/capturas/runtimeSource nuevo; configuraciónstyle no prueba física ni equivalencia visual global. Próximo verificar raster/layout billeteras con16 y captura actual métodosdepago; no afirmarprocesoStripeSDK real. Full651595 anterior a597. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop598: raster billeteras y Agregar tarjeta
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Nuevo wallet_press_test ocho combinacionesproviderApple/Google,normal200,ThemeDopmi.copyWithplatformAndroid/iOS: RGBA frame entero idéntico antes/durante200ms, rect estable, cancel sin callback, releaseúnico proveedorcorrecto. No hardware/SDKwallet real. Gate92062exit0,11/11,19s (8presión+2disponibilidad+capturador); analyzer39438exit0clean10.9s. Capturador añade auxiliares Agregartarjeta before/held en rutaactual /settings/payment-methods,200ms/cancelconservaruta, no llama flujoStripe; gate38621exit0,1/1,10s, analyzer25678exit0clean7.4s. ComparaciónRGBAbytes1284816 idénticos(377x852), no depender getbboxRGBA. Capturasnormal/200inspeccionadas: tarjeta/dashed layouts válidos;200 botónpor scroll inferior.19fixturePNGcards+2aux, sólo4guardadas aquí. Capturasruta sin billeteras porque SDK no configurado; rasterwallet eswidget real aislado con callbacksfixture, no captura de pantalla con SDK. Sin producciónedit/nuevoSource runtime/paridadglobal. Full651595 producciónanterior597; no repetir checksdirigidos sin cambio. Próximo refrescarcapturasglobales actuales y contrastar familias pendientes, no cerrarpor407imágenes. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop599: pasada global de capturas actuales
+
+Fuente179b9b70e01198f178cf80c8f7446828bfcf91d1, Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidadoinicio/cierre. Capturador48291terminalexit0,1/1,3m00s.407fixtures únicos de inventario565 conPNGválido/mtimeposteriorinicio/hash manifiesto599;2auxAgregartarjeta tambiénrefrescados no contadosfixtures.244Dart+96assets=340 archivos raíz-scratch iguales/hashesestables antes/cierre. Supersede407565; todasimágenesactuales no407aceptaciones. Analyzer598clean7.4s mismafuente. Full651595 anterior597/598, no nuevofullatribuido. Impactfeed normal/200inspeccionados; Source.secondary-button.compact gap6, OutlinedButton.icon nativo interpola8→4 conescala (Flutterarchivooutlined_button.dart430+), diferenciaactualshare lista para corregir explícitamente6 conservandotexto200. Altura/tapwrapperaún no medida contra runtimeSource, no ajustarporasunción. No Source runtime nuevo, dedo/hardwareStripeSDK o paridadglobal; capturasfixturesno usuariosreales. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop600: espacio icono/texto en Compartir de Impacto
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Source.secondary-button.compact gap6; FlutterOutlinedButton.icon interpola8→4 segúnescala. ImpactCaseCard usaOutlinedButton childRow mainAxisSize.min/spacing6/FlexibleText, conservaiconSVG14/estilo existente/callback shareContent/enlacepúblico real. Sin cambiosdatos/backend/nuevacopia. Gate24477exit0,10/10,4s impact_screen_test+capturador4PNGfeed/empty normal200; analyzer78632exit0clean29.3s. Imagenfeednormal finalinspeccionada,guardada; captura200 inicialno muestrafooterCompartir, no pruebas de altura/rasterpressed ni runtimeSource nuevo. Pruebaexisting share verificaenlacepúblico yretornoconasignación, no mocks monetariosruntime. Global407599 anterior aestaedición (sólobotónImpactocambia); full651595 anterior597/600. Próximo medirbotónCompartir altura real/Source yfootertexto200 antes seguir otrosestados; no asumir minHeight34 elimina tapwrapper48. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop601: dimensión renderizada Compartir de Impacto
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. BrowserEdge Source377x852/fontsready/cursor0, simulaciónGuardianactivada víaUI/localprototype yemptytoggleparaImpactReady, no dinero/backend. SourceSharewidth118.34375/height35/font14/gap6/line normal. SourceCSSpadding14x8+borde1 computa15x9: FlutterOutlinedButton borde no añadepadding. Cambia padding15x9/line17/14 conservamin34yáreatáctil48. Finalnativewidth118.3323059/surface35/tap48 (difwidth.01144);200surface52/tap52 sin truncar. Capturadordesplaza200afooterCompartir yregistraMaterial surface separado delwrapper. Primer31118exit0 1capturadorantesfix; final90398exit0,10/10,3s impactshareenlacepúblico/retorno/capture4PNG; analyzer73238exit0clean45.9s. Browser/Vite35582cerradosCtrlCexpectedexit1, nohelperslive. Browseropen/snapshot/contenidono vacío/overlayfalse/errorssin salida; SourcePNGinspeccionada modoPruebaoverlayexcluidodeapp. Source/publicfixture distintos contenidos, noigualdadglobal. Nativefooter200inspeccionado legible. Próxima diferenciacomprobada: Source.title-row globaljustifyspacebetween +impactgap10, nativoWrap deja pill juntoanombre; corregir extremo derecho normal confallback200. Global407599 anterior600/601; full651595anterior597+. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop602: etiqueta al extremo derecho de Impacto
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Sourceglobal.title-row justifyspace-between +impactgap10; nativeWrap dejabajada etiqueta juntoanombre. ImpactCaseCard extrae widgets mismosdatos/callbacks: normalRow Expandednombre/gap10/pill al extremo; textoampliadoWrap.spaceBetween preserva salto legible. No texto ni datosficticiosSource copiados. Gate58708terminalexit0,10/10,4s impact_screen_test/capturador4PNG; analyzer34565terminalexit0clean10.1s. Normalfinalinspeccionada etiquetaextremoderecho,guardada. Captura200 capturador actualmuestrafooterShare (por601), no nuevaimagenheading200 atribuida; tests existentes ampliadossin overflow, no aceptación física/global. Full651595anterior597+, global407599anterior600+. Próximo contraste: meta autor/fecha de tarjeta Impacto frenteSource; cliente muestra timestamp peroautor aprobado debe obtenerse de contrato público vigente antesañadirlo, sin nombres inventados ni exposiciónprivada/SQLinnecesario. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop603: firma pública y fila meta de Impacto
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidadoinicio. ContratoimpactRPC20261001110103 noautor; catálogoRPC público existente tiene rescuer_name de verificaciónaprobada. ImpactScreen enriquece cada caso actual con completeCaseCatalog yrecordid/kindcase exactos, public_author sólo nombrepúblico válido; falloscapturados mantienenhistorial/asignaciones/fecha. MetaWrap.spaceBetween gap12 firmaPor…/fechareal, textoHTMLsmall13.333/line16/muted frente12previo. No SQL/RLS/propiedad/historialfinanciero cambios. SkillSupabase/currentdocsRPC/changelog consultados, sin cambios relevantessobreAPIusada; DEV readonlycatálogo total5/nombrespúblicos5 verificados, sinIDs/usuarios/payloadsregistrados. Nuevo testautor actualRefugioLuna desdeFakeRescue, fixture sincasopúblico sólofecha. Primer4713exit1,9pass2fail poroverrideRescue duplicadointroducido enmontajepruebas, corregido; no backenderror. Final3133terminalexit0,11/11,6s; analyzer54179exit0clean9.7s. Normalfinalinspeccionada yguardada, firmaizquierda/fechaextremoderecho. Capturas200footerdesplazado no metarow200visible; no runtimeSource nuevo/físico/paridadglobal. Fechaabsolute aún difiereSource relativoHace…: próximo ajustar cálculo real detiempo conservandofechaexactaccesible yfechasfuturas/ausentes sin inventar. Tambiénfalta gate dirigidocatálogofalla ydescartelateenriquecimiento poridentidad. Full651595/globals407599anteriores. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop604: fecha relativa real de avances
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidadoinicio. impactElapsed calcula minutos/horas/días/semanas desdepublished_at actual, singular/plural español; timestampsconzona comparaninstantes. Null/invalidFecha no disponible; futurofechaexacta envezdeinventarHace. Tooltip longpress conserva fechaexactalocal ysemántica; no hoverrecreado. Unitdoscasos cubren9límites,offset−06,futuro/ausente; widgetnuevo prueba pulsaciónlarga revela30/9/2026 ysinerror. Primer28937exit0,13/13,4s inclcapturador4PNG antestestlongpress; analyzer97008clean12.3s. NuevotestprimerfinalfallócompilaciónnullableTooltip.message (testonly), corregido ?. yguardexact!: final84874exit0,13/13,3s sincapturador, analyzer25552exit0clean7.4s. Capturafinalproducciónmisma fuente28937 inspeccionada Hace3díasderealfixture,guardada; no mismosdíasficticiosSource ni igualdadglobal. Recalcula enbuild; no timer periódico añadidoni cambioRPC/finanzas. Próximo comprobar enriquecimientoautor opcional en fallo/retirada/respuestatardía/cambioidentidad de603; después gateintegrado de600+ yseguirrutas. Full651595/global407599anteriores. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop605: firma opcional y cambio de cuenta en Impacto
+
+Referencia Irlanda revalidada al inicio y al cierre: a3c969cd9103fd46dc5cd886999912526ce75efb. Tres pruebas integradas nuevas cubren catálogo público vacío, fallo del catálogo y respuesta tardía de la firma después de cambiar de cuenta. Los avances aprobados y $75.25 MXN permanecen cuando no hay firma disponible; la respuesta anterior no restaura firma, avance ni importe en la cuenta nueva. Sin cambios de producción, RPC, SQL o finanzas. Primer gate 73063 terminó exit 1 (15 aprobadas, 1 fallida): el montaje omitía cargar el perfil nuevo y regresar a /impact. Se corrigió la secuencia siguiendo la prueba de identidad existente, manteniendo las comprobaciones de privacidad. Gate final 12728 terminó exit 0, 16/16 en 3 s. Analyzer final terminó exit 0, sin incidencias en 6.8 s. Son pruebas de widgets; no aceptación física ni paridad global. Próximo: gate móvil integrado tras los cambios de 597–604 y continuar contraste visual y gestos de las demás rutas. No enviar a Codemagic hasta completar el objetivo.
+
+## 2026-10-04 — Loop606: regresión móvil integrada
+
+Fuente exacta d94b865838682f66e54b854c6684a3ce618f0da9; referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada al inicio y al cierre. Flutter test --no-pub, sesión 58496, terminó exit 0: 674/674 en 3m03s. Integra los cambios de billeteras, tarjetas, composición/firma/fechas de Impacto y descarte por cuenta de 596–605; supersede el gate completo 651/651 de 595. Manifiesto tomado antes del gate y comprobado al cierre: 245 Dart normalizados y 96 assets byteidénticos entre checkout y scratch, sin cambios durante la ejecución. Python scripts/test_mobile_config.py: 16/16, exit 0. Analyzer 605 final sin incidencias, 6.8s, mismo código actual. ADB consultado: ningún dispositivo conectado. No aceptación física ni paridad global por pasar tests; 407 capturas globales de 599 anteriores a 600–604. Sin cambios de producción en este loop. Próximo contraste: estado táctil de Compartir en Impacto frente CSS vigente y comportamiento del enlace público; continuar las demás familias, incluidos gestos físicos y el residual geométrico del diálogo. Codemagic únicamente al completar el objetivo.
+
+## 2026-10-04 — Loop607: presión de Compartir en Impacto
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada al inicio y al cierre. CSS secondary-button.compact vigente define superficie blanca/borde, sin estado active o transformación de presión. Nueva prueba rasteriza el ImpactCaseCard real con dopmiTheme y plataformas de tema Android/iOS, texto normal y 200%. Los cuatro casos mantienen exactamente todos los bytes RGBA y el rectángulo durante 200ms de presión; cancelar produce cero llamadas, soltar produce una llamada al canal SharePlus con el ID público del caso. Gate 71901 terminó exit 0, 4/4 en 1s; analyzer exit 0, sin incidencias en 6.4s. La hipótesis de una diferencia táctil heredada queda descartada para este componente: no cambio de producción. Canal nativo simulado y plataformas de tema, sin menú del sistema/dispositivo ni aceptación global. Full674 de606 sigue vigente para producción; este test nuevo no estaba incluido en él. Próximo contraste pendiente: composición del diálogo de cambio de modo (residual de altura 1.28125px de585), medir sus bloques antes de corregir y continuar las demás familias. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop608: medidas por bloque del diálogo de modo
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Capturador real ampliado para registrar rectángulos de cada Text del DonorModeDialog: título 56px, introducción 40px, títulos de pasos 18px y descripciones 34px. Body sigue 345x662, cancel40; el residual frente al Source584 660.71875 no queda corregido. Gate 71242 terminó exit 0, 1/1 en 2s; captura y JSON frescos. La lectura CSS (22x1.25,14x1.45,14x1.3,12x1.4) apunta a redondeo de líneas como hipótesis, sin medición runtime Source nueva ni atribuir causa confirmada. Sin cambios de producción. Próximo: medir cada bloque Source actual y contrastar contra este JSON antes de modificar alturas, manteniendo texto ampliado y acciones reales. Full674606 vigente para producción; capturador cambiado después. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop609: altura exacta del diálogo de modo
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb local/remoto revalidada al inicio y cierre. Edge Source real 377x852, fonts.ready y cursor fuera: diálogo 345x660.71875, top95.640625. Bloques medidos: título55 frente Flutter56; intro40.59375 frente40; cada paso79.78125 frente80. Diferencia total 1-0.59375+4x0.21875=1.28125, causa confirmada por medidas. DonorModeLineText reserva líneas fraccionarias en unidades CSS de1/64, calcula número de líneas con TextPainter/TextScaler y deja pintar los glifos completos mediante OverflowBox; título, introducción y textos de pasos usan este widget. Sin altura fija ni recorte de texto, datos/acciones preservados. Captura final cuerpo y top exactamente iguales al Source; assert geométrico agregado al capturador. Primera orden34962 exit1 por nombre de test inexistente (captura sí pasó), corregida ruta de suite. Gate final93483 terminal exit0,26/26 en8s incluye profile_experience_test, rescuer_mode_control_test y captura; analyzer34961 exit0 sin incidencias40.9s. Normal Source y Flutter inspeccionados y guardados; pruebas existentes incluyen cancelación/cierre/texto ampliado/cambio confirmado por servidor. Browser cerrado y Vite10222 detenido CtrlC exit1 esperado. No menú nativo/dispositivo/igualdad raster global ni todas las familias aceptadas. Full674606 anterior a esta modificación de producción. Próximo contraste: revisar color/posición de cierre y acciones del diálogo actual frente estilos computados, y continuar familias restantes. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop610: estilos computados de acciones del diálogo
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada al inicio/cierre. Edge runtime real 377x852, fonts.ready y cursor fuera: cerrar y Ahora no rgb(85,78,72), superficie transparente; confirmar fondo rgb(247,203,45), texto rgb(13,13,13), Inter600/16. Cancelar Inter600/14, alto40 y y698.359375; confirmar alto48 y y642.359375. Coinciden con colores/estilos del cliente actual y geometría609. CierreSource 26.5625x24 a x318.4375/y107.640625, cliente conserva centro de glifo y área táctil48 (no reduce acceso). La sospecha de color azul por apariencia del PNG no se confirma en estilos computados; no cambio de producción ni test que replique constantes. Browser cerrado/Vite57268 detenido CtrlCexit1 esperado. No nueva aceptación física/global; gates26/26 y analyzer40.9s609 siguen vigentes. Próximo: contraste del formulario de publicación y sus estados con datos reales, continuando la matriz completa. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop611: tipografía de opciones en Publicar
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Edge real377x852 recorrió selección Dar en adopción, foto simulada local y Continuar; fonts.ready/cursorfuera. OpcionesSexo/Especie Source46px alto, Inter500/14 y rango de texto17px. PublicationChoiceRow tenía height1.55 (≈22px), corregido a17/14 para texto de botón; conserva tarjetas, iconos, enums reales, bloqueo de revisión y datos privados. Primer intento de edición abortó assert por dos height1.55 en sección (también hint), sin modificar; gate10498/analyzer26420 sobre código anterior aprobados, no evidencia del fix. Edición posterior limitada al texto de botones. Final12252exit0,23/23 en8s publication_frame/publish_choice/case_publication; analyzer47357exit0clean10.5s. Capturador39976exit0,1/1 en3s,2PNG información normal377x852 y ampliado320x640 frescos, inspeccionados: opciones refluídas/scroll y footer legible. No igualdad global ni aceptación física; otros campos/formularios tienen diferencias pendientes (contratos reales de edad/historia/cuidados y límite de nombre requieren contraste específico, sin truncar datos del usuario). Sourcephoto sólo simulación del mockup, no escritura backend. Browser cerrado y Vite83870 detenido CtrlCexit1 esperado. Full674606 anterior609/611. Próximo revisar composición de campos/cuidado especial y límites con el contrato de borrador vigente antes de modificar comportamiento. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop612: campos reales de información básica
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Lectura del formulario Source: edad libre con ejemplo3meses y helper Puede ser aproximada; Historia de rescate; cuidados especiales booleanos. Cliente/repository SQL local conserva age_months entero0–360, special_care texto1000 y nombre80 (Source25). Son diferencias de contrato pendientes, sin afirmar revisión remota ni alterar esquema/descartar borradores. Cambio directo alineado: etiqueta Historia de rescate y helper Puede ser aproximada con estilo pequeño12/15 existente; mismo controlador/validador/guardado. Gate75788 terminó exit0,7/7 en6s: borrador privado, enums, bloqueo submitted, fotos, regreso y teclado320/200. Analyzer37977exit0 sin incidencias46.7s. Sin nuevos tests de constantes ni capturas: capturas611 anteriores a helper/label612. No paridad global ni aceptación física; full674606 anterior609/611/612. Próximo resolver presentación de edad en unidades comprensibles manteniendo meses reales y borradores existentes, y cuidados especiales con información preservada. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop613: edad expresada en meses o años
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Campo Edad ahora usa placeholder ej.3meses, teclado texto y entrada vacía nueva como Source; acepta meses/años enteros y combinación, mantiene números antiguos como meses. Parser publicationAgeMonths convierte al contrato0–360, vacío0 vigente, rechaza texto inválido/desbordamientos antes de guardar en vez de convertir error a recién nacido. Revisión muestra meses normalizados, sin duplicar unidades. Sin SQL/remote schema, no pérdida de controllers o borradores. Dos tests unitarios cubren conversiones/límites/error; prueba app real captura payload18 desde1año6meses y error posterior conserva valor guardado18 y texto inválido. Primer67870 falló por aceptar1año y; corregido. Edición siguiente usó encoding Windows por defecto, ocasionó fallo de carga/analyzer; restaurado UTF8 explícito. Handle42541 detenido explícitamente (exit1) tras compilación fallida; breve solapamiento con53963 registrado, no atribuir esa corrida a gate final aislado. Final30435 terminó exit0,10/10 en6s, incluye casos enormes sin overflow y suitepublication_frame normal/200/teclado/privacidad; analyzer87070exit0clean11.4s. No captura nueva ni aceptación física/global; full674606 anterior609/611–613. Próximo revisar representación de cuidados especiales sin perder texto y regenerar el formulario actual para contraste visual. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop614: casilla real de cuidados especiales
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Información básica reemplaza campo siempre visible por casilla Requiere cuidados especiales como Source. Carga estado desde texto del borrador; descripciones existentes abren editor, casos sin descripción ofrecen Describir cuidados para preservar capacidad real. Al marcar sin descripción se guarda la declaración elegida por usuario; desmarcar guarda texto vacío pero conserva el controller local para recuperar descripción al volver a marcar. Revisión usa estado de casilla y sólo muestra descripción si corresponde; submitted/busy bloquean edición. Sin esquema ni RPC nuevo. Test integrado alterna descripción Medicación por la mañana, confirma payload vacío al desmarcar y recuperación íntegra al remarcar. Primer79583exit1 por testtap mientras ensureVisible todavía desplazaba (8pass/1fail); corregido pumpAndSettle, no aserción debilitada. Final78096exit0,9/9 en6s; analyzer11399exit0sin incidencias8s. Tests actuales cubren borradores/fotos/teclado200; casilla nueva aún sin captura ni prueba nueva específica200/default/sólo declaración y reload. Siguiente completar esos estados y regenerar formulario de información/salud actual para comparar al Source. Full674606 anterior609/611–614, capturas611anteriores612+. Sin aceptación física/global/push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop615: declaración de cuidados y capturas actualizadas
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Dos pruebas app/router reales nuevas normal377x852 y200% verifican casilla inicialmente falsa, marcar guarda declaración Requiere cuidados especiales, recargar conserva casilla sin inventar detalles ni abrir editor, Describir cuidados permite guardar texto específico. Sin cambios de producción. Gate73958terminalexit0,14/14 en25s (2age+11publication_frame+capturador); analyzer49668exit0clean7.4s. Capturador prefixpublish generó14PNG válidos, normal información y salud inspeccionados; primera salud200 no mostraba casilla bajofooter. Capturador ajustado para desplazar salud200 a la casilla:94198exit0,1/1 en3s,2PNG salud actualizados; imagen ampliada final inspeccionada, texto refluye y casilla visible sin recorte horizontal. Manifiesto14hashes actualizado tras última captura, no14pantallasaceptadas. Analyzer previo al ajuste de scroll de capturador, producción idéntica. Sin nuevo runtimeSource ni dispositivo. Full674606 anterior609/611–614; capturas615 superseden familia Publicar611 tras cambios612–614. Próximo contraste: campos/tarjetas de revisión y gesto de selecciones reales, y continuar la matriz global. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop616: composición del resumen de adopción
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Source review-card contiene Nombre/Edad/Historia/Lista para adopción; cliente agregaba Sexo/Especie/Ubicación y extendía tarjeta. Resumen ahora sigue cuatro filas; mantiene enums/ciudad/región en controllers, formulario y payload, sin borrar información. La cuarta fila corresponde al destino de este flujo de adopción (Sí salvo caso cerrado), no modifica visibilidad pública, moderación, aprobación ni status. Propiedad/guardado/submit reales intactos. Gate69688terminalexit0,12/12 en7s:11publication_frame +capturador4PNG review/review-social normal200; analyzer35450exit0clean7s. Normal/200 de tarjeta inspeccionadas:normal ya cuatro filas,200 scroll evita recorte horizontal pero muestra sólo comienzo de tarjeta en primer viewport; no afirmar cuatro filas200 visibles simultáneamente. No runtimeSource nuevo ni aceptación física/global. Full674606 anterior609/611–616; capturas review616 superseden615 para esa composición. Próximo comprobar respuesta táctil de opciones de publicación (presión/cancelación/selección), después gate integrado de los cambios de Publicar y continuar familias. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop617: selección sin transición en Publicar
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. PublicationChoiceRow compartido por Sexo/Especie: CSS Source.publish-choice/selected sin transición. Ocho pruebas nuevas rasterizan controles reales con dopmiTheme(Android/iOS), normal/200 y opción elegida/no elegida; presión200ms y cancelación mantienen RGBA/rect, cero callbacks, release uno. Primera32166exit0 8/8 sólo presión. Segunda36098exit0 19/19 con estado seleccionado al primerpump pero sin comparación final; no probaba ausencia de transición. Intento insertar comparación abortó assert sin editar y corrida redundante8/8 no nueva evidencia. Prueba fortalecida primerframe RGBA frente settled detectó4fallos (cambios a opción no seleccionada), confirmando transición nativa heredada. Cliente ahora animationDuration Duration.zero sólo para estos controles. Final59903exit0,19/19 en14s incluye8presión/raster/instantáneo +11integradaspublicación; analyzer9634exit0sin incidencias8.2s. RGBAprimerframe ahora idéntico al estado final; valores reales/lock submitted/regreso/guardado preservados. Ocho casos directos usan Sexo sin iconos; mecanismo compartido Especie, sin aceptación nueva rasterizada de esos iconos ni dedo físico. No nuevo runtimeSource617, inferencia de CSS inspeccionado. Full674606 anterior609/611–617; capturas616 finalsin cambioestadoasentado617. Próximo gate completo integrado de Publicar y diálogo, luego continuar familias y aceptación nativa pendiente. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop618: regresión integrada de Publicar y diálogo
+
+Fuente c89e4616b9d32dbfd1b982518e7cfd400abe9e4e; Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Fluttertest --no-pub79285 terminalexit0,692/692 en3m04s; supersede674606 e integra607–617, incluida edad/checkbox/descripciones/review/selección inmediata y altura fraccionaria del diálogo. Manifiesto antes del gate249Dart normalizados y96assets byteidénticos raíz/scratch; verificador71083exit0 conserva hashes hasta cierre, sin ediciones durante. Configpython16/16exit0. Analyzer617clean8.2s mismafuentevigente. ADBvacío consultado; AVD Dopmi_API_35 disponible, no arrancado: memoria libre265448KB de7708932KB durante gate, insuficiente para arranque fiable; no cerrar apps del usuario. Ninguna aceptación nativa nueva. Capturas407globales599anteriores600+, familiaPublicar615/review616 actuales estadofinal617, no paridad global por692tests. Sin cambios de producción en618. Próximo contraste independiente: flujo de comprobante/evidencia de gastos contra UnlockExpense vigente, preservando privacidad/aprobación/propiedad y revisando la capacidad nativa después del gate. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop619: paleta de evidencia de gastos
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Sourceunlock-section/drop usa varink15110d y varmuted554e48; ExpenseEvidenceCard heredaba colores151423/4f4e5c de publicación. Cuatro referencias corregidas en títulos, acción y ayudas; tamaños, SVG, borde/gestos/formatos reales intactos. Backendreal admite archivos privadosPDF/WebP/5MB, SourceJPEGPNG/10MB; no copiar capacidad simulada ni cashback/Coins/purchaseID excluidos. Gate10925exit0,6/6 en4s: cierre preserva borrador, submit espera servidor, céntimos exactos y roles comprobanteprivado/fotopública conservados; analyzer1433exit0clean22.5s. Capturador48297exit0,1/1 en2s record2PNG inspeccionados pero readonlyno evidenciaeditablevisible, no atribuir validacióncolor a esosPNG. Capturador96693exit0,1/1 en2s evidencia2PNG editables; normal inspeccionada muestra tres zonas/títulos/ayudas corregidos, ampliada sólo muestra comienzo de zona por scroll, no botones200 nuevos visibles. Artefactos evidencia guardados. Sin runtimeSource nuevo ni dispositivo/aceptación global. Full692618 anterior619; no schema/money/API cambios. Próximo contraste: composición/progresión del diálogo de comprobante frente UnlockExpense (privado versus foto pública), conservando server lifecycle, y prueba de presión del área de adjuntar. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop620: presión de adjuntar y mapa de progresión
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Ocho tests ExpenseEvidenceCard real cubren privado/público, temaAndroid/iOS, normal200: RGBA y rect sin cambios bajo presión200ms, cancelar cero callbacks, release una acción. Gate36359exit0,14/14 en4s (8raster+6expense_fieldintegradas); analyzer88242exit0clean50.2s. Sin cambios de producción ni nuevo runtimeSource/físico. Plataformas de tema no SDK/device; callback no selector nativo verificado. Lectura authoritativeSource UnlockExpense: receipt→petEvidence→description (vetintercala detalles, foodpurchaseID excluido por Coins/cashback). Cliente actual expense0 agrupa receipt/proof/public,1datos públicos/privados,2review. Contrato SQL local exige privadospaid_on/vendor/amount_cents/receipt_reference y rolesreceipt/proof; publicoptional separado. El mock submitNeedEvidence sólo altera estado de demo, no recoge persistencia financiera real. Diferencia estructural comprobada, todavía pendiente: distribuir recibo inicial y evidencia posterior conservando roles/finanzas/revisiónreal, no fusionar foto pública con proofprivado. Next listo: separar receipt del resto de cargas en UI y verificar regreso/roles/guardado sin datos perdidos, después alinear descripción y validación por paso. Full692618 vigente producción619posterior; tests620 no incluidos. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop621: recibo separado de evidencia posterior
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. RescueScreenexpense0 ahora muestra sólo receipt; proofprivado y publicfoto se muestran enstep1 antes de datos. Extraído helper expenseEvidence mantiene mismosíndices/paths/callbacks/removal/attach/busy/ownership/serverroles; no schema ni borrado/recarga/financialcambio. Readonly/lifecycle existentes conservados. Primer14939exit0,6/6en5s y analyzer36975clean10.5s. Test integrado nuevo conreceipt/proof/public distintos avanza/retrocede/vuelve y confirma listasoriginales y controles separados. Gate28357exit1,7pass/1fail por testensureVisible sobre botón back fuera del tramo construido delListView; captura2PNG sí pasó. Corregido test desplazando controllera0 antes de localizarheader, sin modificar aserciones. Final25428exit0,7/7en4s; analyzerfinalexit0clean3.8s. Captura etapa0normal inspeccionada sóloreceipt yfooter; guardada, ampliada regenerada pero no nueva inspección aquí. Falta alinear textos/cabecera del paso, separar descripción/datos financieros y validar pasos frenteSource; no tresetapascompletamenteiguales aún. Nuevo test no dispositivo/selector real. Full692618anterior619/621, tests620fuera. Nextlisto: contraste de encabezado/estado/ayudas de pasoRecibo frenteSourceUnlockExpense y disponibilidad Siguiente con recibo real, conservando guardar borrador incompleto y datos privados. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop622: encabezado y ayuda del comprobante
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada al cierre. ExpenseFrame adopta ink15110d/muted554e48 y explica revisión para autorizar reembolso, sin prometer nuevas aportaciones o dinero simulado. Paso receipt elimina encabezado genérico duplicado Documentos y evidencia; mantiene Comprobante del gasto, privacidad y formatos reales JPG/PNG/WebP/PDF máximo5MB. Capturador actualizado al nuevo ancla. Primer28777exit1:7pass/1fail únicamente por ancla retirada; corregido capturador. Final5212exit0,8/8 en5s (7expense_field y captura2PNG); analyzer64404exit0sin incidencias26.3s anterior al ajuste del finder, producción idéntica. Normal y200 inspeccionadas:normal muestra diálogo completo;200 muestra comprobante/privacidad/adjuntar/formatos sin corte horizontal, footer requiere desplazamiento. No nuevo runtimeSource, selector nativo o aceptación física/global. Full692618 anterior619/621/622. Pendiente disponibilidad de Siguiente sin recibo y distribución posterior de datos/descripcion; este loop no modifica validación. Usuario reiteró no enviar avances a Codemagic: sólo al completar objetivo. Sin push/Codemagic.
+
+## 2026-10-04 — Loop623: recibo requerido antes de avanzar
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. SourceUnlockExpense canNext requiere receipt. Cliente ahora deshabilita Siguiente enstep0 sin role receipt con path no vacío; onSave permanece independiente para borrador incompleto. Pruebas integradas nuevas normal/200 con foto pública y receipt path vacío verifican botón deshabilitado, tap no guarda/no avanza y Guardar progreso conserva todos los archivos. Fixtures que necesitan acceder a datos privados ahora incluyen recibo; prueba de quitar receipt guarda desde Guardar progreso y confirma foto pública preservada. Gate30753terminalexit0,9/9 en4s; analyzer32382exit0sin incidencias11.2s. Capturador94929exit0,1/1en2s genera2PNG; normal inspeccionada contiene recibo fixture y Siguiente habilitado, no evidencia visual del estado deshabilitado. Cambio del default fixture afecta capturas dependientes de DraftExpenseRescue: revisar familias expense posteriores cuando regeneradas. Sin remoto schema/money cambios, sin selector nativo/aceptación física/global. Full692618 anterior619/621–623. Pendiente separar progresión de evidencia/descripcion y verificar paso posterior con proof requerido real. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop624: foto de evidencia primero
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. SourcepetEvidence presenta foto de impacto antes de descripción. Expense step1 ahora muestra public antes de proof; título Foto de evidencia, acción Toca para subir foto y ayuda para donantes condicionada a aprobación. Conserva roles originales, índices originales, callback de archivos, proof privado requerido por servidor y formatos reales; videos post-MVP no simulados. Prueba integrada comprueba posición vertical public antes de proof y mantiene los archivos al avanzar/regresar. Gate6553terminalexit0,17/17en5s (9expense_field+8presión normal200 temaAndroid/iOS); analyzerexit0sin incidencias6.1s. Pruebas de presión componente real, no selector/dispositivo. Sin nueva captura o runtimeSource; no aceptación visual global por gate. Full692618 anterior619/621–624. Progresión sigue agrupando evidencia/datos y review en3etapas; separar descripción y datos privados sigue pendiente. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop625: evidencia actual de progresión de gasto
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Sin edición producción. Capturador71687terminalexit0,1/1en10s regeneró familia expense tras619/621–624; manifiesto hashes guardado. Información normal inspeccionada confirma cuatro campos públicos seguidos de privados en mismo paso; private200 inspeccionada confirma importe exacto123.45, folio/urgencia refluye sin corte horizontal pero requiere scroll. Capturas actuales prueban que separación descripción/datos aún no implementada. Mapa concreto siguiente: receipt0; evidencia y privados1; públicos/descripcion2; review3. Requiere totalSteps configurable de ExpenseFrame, carga readonly hacia review3, botones submit sólo review3, callbacks de editar específicos y fixtures/capturador adaptados; no eliminar resumen ni privacidad para simular tres pasos. Sourceotras categorías3pasos y vet4 con datos propios; cliente mantiene datos financieros reales obligatorios. No aceptación visual global/SDK/dispositivo; no nuevo gate global (692618 anterior producción actual). Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop626: descripción pública en paso propio
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Expense ahora receipt0, evidencia+datosprivados1, campospúblicos/descripcion2, review3. ExpenseFrame totalSteps configurable con4eneditor; readonly carga review3. Acciones avanzan hasta3 y sólo entonces submit; guardar borrador se conserva. Review callbacks públicos→2/privados→1/files→0 independientes. Sin cambios servidor/schema, roles, céntimos, flags o publicación automática. Tests/capturador adaptados a tres avances; test200 comprueba título ausente en privados, importe ausente en descripción, guarda descripción real y8709céntimos en payload privado separado, review refleja87.09 y editar privado conserva valor. Primer22107exit0,11/11en5s. Final45939terminalexit0,12/12en12s (9expense_field+2pendingevidence+capturadorfamiliaexpense); analyzer62604exit0sin incidencias26.9s. Capturas información/review normales inspeccionadas: información ya sin privados; resumen separado conserva ambos conjuntos. Familia ampliada regenerada pero no todosPNG inspeccionados individualmente. Manifiesto17archivos existente actualizado, no17pantallasaceptadas. Source enotrascategorías3pasos/vet4; cliente conserva etapa de revisión y datos financieros reales adicionales, no paridad total declarada. Full692618 anterior producción vigente. Próximo contraste: etiqueta/altura/ayuda de descripción y validación sin texto; revisar animación de cambios de paso contra Source y aceptación nativa. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop627: presentación de descripción
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. ExpenseField usa ink15110d y descripción muestra Describe la evidencia, ayuda pública después de aprobación12/16muted554e48, ejemplo genérico sin nombre ficticio y nota de reembolso revisado/aprobado. Fuente conserva estilo14/1.4, cuatro líneas, borde14/padding10x12 y max4000 real. Mismos controllers/roles/payload/privacidad; no schema/money. Gate84277terminalexit0,10/10en5s (9expense_field+capturador2PNG información); analyzer70046exit0sin incidencias7.3s. Normal inspeccionada refleja ayuda/hint/nota y campo separado, footer requiere desplazamiento. Ampliada generada pero no nueva inspección individual aquí. Sin Source runtime nuevo/dispositivo. Validación descripción vacía para avanzar sigue pendiente: este loop sólo presentación. Full692618 anterior producción vigente. Siguiente: canNext de descripción trim no vacío manteniendo guardar borrador incompleto; después contraste de transición de etapas y regresión global. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop628: descripción requerida para avanzar
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Step2expense deshabilita Siguiente cuando description.trim vacío. Guardar progreso independiente; backend validación/aprobación intactos. Dos pruebas integradas normal200 navegan a descripción con espacios, tap no avanza, escribir habilita, borrar deshabilita, guardar persiste description vacía y conserva archivos. Fixture DraftExpenseRescue ahora permite initialDescription y defaulttexto de consulta para recorridos válidos; no datos simulados de producción. Gate63353terminalexit0,12/12en11s (11expense_field+capturadorfamiliaexpense); analyzer32584exit0sin incidencias25.3s. Familiaexpense regenerada, manifiesto17hashes guardado; normal información inspeccionada muestra descripción fixture real de prueba/ayuda, no captura de disabled. No Source runtime ni dispositivo/SDK nuevos. Full692618 anterior producciónvigente. Próximo: contraste de transición entrepasos contra Source, revisión visual ampliada de descripción y regresión global actual. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop629: regresión global actual
+
+Fuente d561fac4900858953c87ea62c841aff790349f94; Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Fluttertest completo86129terminalexit0,705/705en3m13s, supersede692618 y cubre619–628. Manifest250Dart raíz/scratch normalizados y assets idénticos; hashes de fuente conservados hasta cierre sin ediciones durante gate. Configpython16/16exit0. Analyzer628exit0clean25.3s mismafuente. ADBvacío actual; memoria libre646660KB de7708932KB durantegate, no emulador iniciado ni apps cerradas. Gate no demuestra paridad visual global/selector/SDK/aceptación física. Capturas global407599 siguen anteriores600+; familias recientes individuales documentadas. Sin producción nueva629. Próximo: contraste Source runtime de transición de pasos y captura200 centrada en descripción; después continuar revisión de familias pendientes y aceptación nativa. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop630: descripción y nota al200
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Sólo capturador: nuevas fixtures expense-description normal/large centradas en Describe la evidencia y footer-large desplazada a nota. Primer2074exit0,1/1en4s2PNG; analyzer25803exit0sin incidencias28.9s anterior a fixturefooter. Final79223terminalexit0,1/1en3s3PNG. Tres imágenes inspeccionadas: normal campo/nota/acciones;200título/ayuda/textorefluye sin cortehorizontal, nota inferior requiere scroll; footer200 nota completa y Guardarprogreso/Siguiente/regreso visibles. Sin cambio producción; full705629 sigue vigente. FuenteCSSunlock-dialog/section no declaracióntransition/animation específica, no runtimeSource/timing verificado aquí. Próximo comparar transición de etapa con Source activo y comprobar posición scroll al avanzar/retroceder. Selector nativo/SDK/dispositivo/paridadglobal pendientes. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop631: transición Source en runtime
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. SourceVite18607 y Edgeagent-browserdopmi-parity631 /rescuer/evidence/rocky/rocky-vet, viewport377x852, fontsready, PNGfixturelocal sin datos reales adjuntado. Erroresbrowser lista vacía. Forwardreceipt→vetDetails observado antes717.984375h/scroll0; primerrequestAnimationFrame ya Paso2de4/749.75h/scroll0; cuatroframes estables y getAnimations(subtree) vacío. Back desde step2scroll10/max10→receipt primerframe717.984375h/scroll0/max0, cuatroframes sin animaciones; JSONruntimeback guardado. Ajuste de scroll explicado por clamp al menor contenido, no demostrar scrollreset explícito. No hover/animacióninventada. Source promete dinero simulado no ejecutado en backend; cliente mantiene espera servidor. Browser cerrado y Vite18607 detenidoCtrlCterminalexit1 intencional; no proceso perdido. Sin producción nueva; full705629 vigente. Comparación Flutter de primera frame después de guardado y posición scroll aún pendiente, no paridad de transición declarada sólo por Source. Selector/SDK/físico/global pendientes. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop632: transición cliente tras respuesta real
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Sólo tests: DelayedExpenseRescue bloquea save con Completer. Dos pruebas app/router normal200 conservan step0 durante200ms y sin savedFiles con Siguiente deshabilitado; tras complete+pump step1 y payload exacto presentes. Rect real expense-form-body coincide primerframe/16ms/settled; gesto back real tras mostrarheader cambia a0primerpump y conservafiles. Gate61828terminalexit0,13/13en6s; analyzer17426exit0sin incidencias17.6s. No modificación producción, full705629 vigente pero no incluye estos2tests. Source631 transición inmediata comprobada, cliente tras servidor también inmediata en framework. Prueba geométrica no RGBA/SDK/gesto físico ni todas transiciones; back test usa scroll explícito a0 para hacerheader alcanzable, no demuestra conservación scroll anterior automáticamente. No captura/runtimeSource nuevo. Siguiente contraste: estado refluido de revisión/gastos y botones/gestos restantes, consolidar matriz de diferencias reales antes de aceptación nativa. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop633: resumen de gastos y corte vigente
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. ExpenseReview seis referencias de paleta antigua151423/4f4e5c corregidas a ink15110d/muted554e48; composición/callbacks/payload/status intactos. Gate74266terminalexit0,14/14en6s (13expense_field+capturador4PNG review/private normal200), analyzer34918exit0sin incidencias6.9s. Normalreview inspeccionada; ampliadas regeneradas no inspección individual aquí. Source review financiera es extensión funcional, sólo paleta referente compartida, no existencia de contraparte literal afirmada. Actualizados cortes de currentreview/routeaudit/motionaudit con evidencia609–633 y alcance global intacto, superseden pendientes históricos resueltos; no número de pantallas restantes inventado. Full705629 anterior633. Próximo presión de acciones/Editar enreview, después renovación matrizglobal. Sin SDK/físico/globalaceptación ni push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop634: presión de Editar en resumen
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Sourcepublish-edit-link e inline-link no declaración táctil activa; extensión ExpenseReview heredaba overlay/splash Material. TextButtonheading ahora NoSplash/overlaytransparente/duraciónzero, conserva foco/tooltip/callback/hitarea. Doce pruebas componente real3secciones ×normal200 ×temaAndroid/iOS verifican RGBA idéntico y rect estable bajo200ms presión, cancel0/release1callback. Gate6973terminalexit0,25/25en8s (12press+13expense_field); analyzer60861exit0sin incidencias26.1s. Plataforma tema noSDK/device; prueba callback no demuestra destino app por sí sola. Gateintegrado existente mantiene edición privada enstep1 y exactosdatos; falta nueva prueba de retorno específico público2/files0 desde review. Sin captura/runtimeSource nuevo. Full705629 anterior633/634. Próximo integrado review→públicos/archivos→regreso y payloadsin pérdidas, después renovar matrizglobal. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop635: destinos de edición desde review
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Sólo tests. Dos pruebas integradas app/router normal200 recorren receipt→evidencia/privados→públicos→review; EditarInformación abre2 (vendor ausente), modifica description real, regresa3; EditarComprobantes abre0; vuelve atravesando pasos a3. Payload mantiene descriptioncorregida, vendorClínica/12345céntimos privados y receipt/proof/public conpaths originales. Payloadpúblico sinvendor/importe. Gate59712terminalexit0,15/15en7s; analyzerexit0sin incidencias5.9s. Evidencia635supersede pendiente destinosapp634; no filepicker/actualbackend/gestosfísicos ni todosestadosaceptados. Sin producción nueva; full705629 anterior633/634 y no incluye nuevaspruebas632/634/635. Próximo renovar captura global actual trasfamilias600–635 y contrastar discrepancias pendientes por ruta, conservando ámbito completo. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop636: capturas globales actuales
+
+Fuente9f559a648d9e69fec1b1d0c89a23548b9daa2dca; Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Capturadorcompleto65072terminalexit0,1/1en3m00s.410fixturesúnicas/47rutas extraídas de lista real;410PNGexistentesmásnuevosqueinicio/decodificaciónPILválida/hashes/dimensiones guardados. Fuente251Dart+96assets raíz/scratch iguales antes;347hashesfuenteconservados al cierre sin ediciones durantegate. Esta colección supersede407599 para estado cliente actual, no410pantallasaceptadas ni comparaciónSourcecompleta. Full705629 anterior633/634, focused25/25634 y15/15635. Sin producciónnueva ni nuevoSDK/device. No inspección visual individual410 en este gate. PNG locales enTemp/.tools/design-review; manifiesto versionado, no410imágenescommitinnecesario. Próximo contraste por familias sobre capturas actuales y Source, empezando ruta de evidencia/revisión restante y estados de verificación. Sin push/Codemagic hasta completar objetivo.
+
+## 2026-10-04 — Loop637: introducción de verificación contrastada
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. PNGcliente verification-intro de636 inspeccionado. SourceVite1888/Edge637 /rescuer/verification377x852: primera carga verified heredado; ModoPrueba→Sinverificar→recargar abrióIntro verdadera. CSS sola sugería notice16, runtime confirma notice14porcascada y normal17px; fontsready/Ranges: Protegetítulo16doslíneas20/40h; h3reembolso16/20; ParaComida16/20; Medicina16/20; Revisiónmanual14/17. Coincide con estilos actualesclient16/1.25 ynotice14/17; no cambiar estilos por lectura parcial CSS. Errorbrowser consultado primera carga vacío, no segunda consulta final. SourcefoodsimulaIDcompra/video: cliente conserva capacidadreal de comprobante/fotos, cashback/Coins/videoexcluidos. Sin nueva producción/tests/capturascliente; full705629 anterior633/634, global410636 actualcliente. Evidencia específica tipografía no igualdad pixel/cuerpo completo/SDK/device. Browsercerrado/ViteCtrlCexit1intencional. Siguiente: introaccionespresión/close/Después y formulario de verificación, conservar privacidad. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop638: controles de introducción de verificación
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Sourceghost-button blanco/bordevarline/radio14/min36/ink14w500; clienteDespués eraTextButtonmuted sin borde. AhoraOutlinedButtonblanco/bordee6e2dd/radio14/36/ink14w500, hitareaaccesible. Continuar foregroundfbfbff segúnSourcepurple-button. Tres controlesContinuar/Después/Cerrar sin overlay/splash añadido porMaterial; callbackstocadossinmodificar.12testsRGBAreales3acciones×normal200×temaAndroid/iOS mantienenpixel/rectbajopresión200ms, cancel0/release1. Primer54148exit1,1pass12fail por pruebaMediaQuerysize0 hacía diálogoaltura0; corregido tamaño377852sinrelajaraserciones. Final56353terminalexit0,13/13en4s (12press+introapp/router200). Analyzer86185exit0sin incidencias20.4s trasformatfinalsinsemánticacambiada. No nuevo Source runtime/PNGcliente, se requiere captura footer normal200 para botónDespuésnuevo. Tema noSDK/device; integraciónexistente verifica regresarorigen/continuarprivado. Full705629 anterior633/634/638;global410636 anterior638. Próximo footerIntro y formularioverificación frenteSource vigente. Sin push/Codemagic hastaobjetivocompleto.
+
+## 2026-10-04 — Loop639: footer de verificación capturado
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Sólo capturador: añade intro-footer normal200. Primer4351terminalexit0,1/1en3s4PNG; analyzer99053exit0sin incidencias31.1s. Inspección inicial mostró borde Después parcialmente cortado por scrollensureVisible deltexto; no atribuir bugproducción. Corregido fixture a maxScrollExtent conserva paddinginferior. Final55890terminalexit0,1/1en2s2PNG; ambos inspeccionados muestran completoDespués yContinuar, reflujo200 sin cortehorizontal. Analyzer previo al último cambio capturador, producción idéntica638. Superficies normalContinuation44/Después36, hitareasMaterial48; separación visual parece mayor que gap16Source por paddingtáctil, requiere medición/presentación próxima. Sin SDK/físico/Source runtime nuevo, no paridad global. Global410636 anterior638 y no incluye2nuevasfixtures; ahora lista412. Next contraste geométrico entre botones delfooter preservandohitarea yformularioverificación. Sin push/Codemagic hastaobjetivocompleto.
+
+## 2026-10-04 — Loop640: separación visible del footer
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Sourceverify-intro gridgap16. Cliente mantenía SizedBox16 máspaddingtáctilMaterial: PNG639centrox188 filledúltimopixel701/bordeprimero726→24pxgap. Espacio lógico reducido8 sin cambiarhitareas/styles/callbacks. Capturafinal centrofilledúltimo709/borde726→16pxgapnormal, bordeDespués completo; medida píxelesPILlectura sin editarimagen. Gate60787terminalexit0,14/14en6s (12intropress+1introapp/router200+capturador2footerPNG); analyzer23036exit0sin incidencias29.6s. Normal final inspeccionada. Ampliada regenerada pero separación numérica200 no Source comparación aquí; pruebas200 presión/navegación sípasaron. Sin runtimeSource nuevo ni SDK/dispositivo. Full705629 anterior633/634/638/640;global410636 anterior638+. Próximo formularioverificación información/documentos/progreso frenteSource, conservarrolesyprivacidad. Sin push/Codemagic hastaobjetivocompleto.
+
+## 2026-10-04 — Loop641: corrección de cascada en evidencia
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Revisión del formulario detectó .rescuer-theme overrideink151423/muted4f4e5c, también padreunlock-screen. RuntimeEdge641 /rescuer/evidence/rocky/rocky-vet getComputedStyle confirmó h2/h3/drop rgb21,20,35 ystep/lead/p rgb79,78,92, variablesoverride. Supersede conclusión de color619/622/627/633: se había ignorado cascada y aplicado global15110d/554e48 indebidamente. Cuatro componentes ExpenseFrame/EvidenceCard/Field/Review ystatusExpense restauran paleta realmente calculada;21referencias. IntroVerification permaneceglobalcorrecta porqueIntrofuera derescuer-theme; formularioVerificationcorrectopaletaoverride sin tocar. Contrato/roles/controller/finanzas/guardas/gestos intactos. Gate21228terminalexit0,36/36en18s (15expense_field+8attachmentpress+12reviewpress+capturadorfamiliaexpense), analyzer91393exit0sin incidencias31.8s. Captura evidence normal inspeccionada, familiaregenerada; manifiestoPNGguardado. Sourcebrowsercerrado yVite65618CtrlCterminalexit1intencional. No fullglobal posterior a cambios, no SDK/físico/aceptaciónglobal. Próximo formulario verificación campos/placeholders/composición porScopeCSS calculada, no asumircolorvarbase. Sin push/Codemagic hastaobjetivocompleto.
+
+## 2026-10-04 — Loop642: ayudas de campos de verificación
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. VerificationField agrega hint Source alegal_name Tu nombre completo/phone+521234567890/experiencepreguntas de tiempo ymascotas. No controllers/limits/options/privacidad/payload/SQL/validacióncambiados. CSSform-stack12w600/inputinherit respetados; paleta rescuer-theme vigente. Gate11530terminalexit0,9/9en8s (verification_state,introapp/router,capturador6PNGform/documentos/progreso), analyzer50684exit0sin incidencias38.6s. Normal formulario inspeccionado muestra3hints y datos privados/públicos separados;200imageninicial muestraencabezado ycomienzoidentidad, nohints200visiblesenprimerpantallazo. Otrascapturasfamiliaregeneradas no inspecciónindividual aquí. Sin runtimeSource nuevo/SDK/dispositivo/globalaceptación. Full705629 anteriorproducciónvigente;global410636 anterior638+. Próximo contraste etiquetas/requisitos de nombres/teléfono/experiencia ycaptura dirigida200 de inputs, luego documentos/progreso. Sin push/Codemagic hastaobjetivocompleto.
+
+## 2026-10-04 — Loop643: etiquetas requeridas y campos200
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. ContratoSQLlocal202609130006rescue required_privatelegal_name/phone/experience/social_url/identity_type leído sin remoto/migración. Tres etiquetasvisuales+Semantics ahora Nombre completo */Teléfono */Cuéntanos sobre tu experiencia * comoSource, sin cambiarrescueFields/controller/key/payload/guardas. Capturadorañadeinputs-large yexperience-large apuntando a campos reales;8PNGfamilia regenerados. Gate49120terminalexit0,9/9en7s verification_state/introapp/router/capturador; analyzer8973exit0sin incidencias26.1s. Dos nuevasimágenes200inspeccionadas: nombre/teléfonoenprimerestado yexperienciaenotro;placeholderpreguntas completo refluye4líneas, camposprivadossocialseparadossinrecortehorizontal. No Source runtime nuevo/SDK/dispositivo/globalaceptación. Full705629 anteriorproducciónvigente;global410636 anterior638+. Próximo documentos/progreso/actions delformulario versus Source, conservando realesarchivos/revisión y Connect. Sin push/Codemagic hastaobjetivocompleto.
+
+## 2026-10-04 — Loop644: requisitos documentales de verificación
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada al cierre. Identificación oficial y comprobante de domicilio muestran asterisco de requisito; títulos Inter16w700 usan línea20 como Source. Controles reales de carga, roles, privacidad, límites y callbacks intactos. Gate25073 terminalexit0,9/9en10s (verification_state, verification_intro, capturador documentos); analyzer27246 terminalexit0 sin incidencias35.7s. Dos PNG normal/200 inspeccionados: tarjetas privadas y botón Subir visibles, título200 refluye y documento inferior requiere scroll. No se atribuye igualdad geométrica completa: altura de tarjetas con hitarea48 requiere contraste siguiente. Full705629 y global410636 anteriores a producción vigente; no SDK/físico/aceptación global. Próximo geometría documental, progreso y acciones contra Source. Usuario reiteró entregar a Codemagic sólo al objetivo completo; sin push/Codemagic.
+
+## 2026-10-04 — Loop645: composición del progreso de verificación
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Runtime Edge645/Vite96674, formulario real del mockup después de desactivar estado verificado y continuar intro, viewport377x852/fontsready: progress-card345x71, padding16/border1; encabezado17, separación12, barra8, inset17. Cliente elimina conteo y explicación visuales adicionales que inflaban tarjeta; mantiene fórmula captured/total y conteo en semanticsLabel de barra. Pruebas verifican separación12/barra8 y conteo accesible normal200, además de controles de documentos/estados y navegación de introducción. Gate47053 terminalexit0,9/9en5s; analyzer83495 terminalexit0sin incidencias31.2s. Dos PNG normal200 inspeccionados: normal tarjeta71px visual como Source;200 refluye encabezado/estado, barra y acciones visibles sin recorte horizontal. No igualdad de todo el formulario: documentos nativos conservan hitarea48 y altura78 frente67Source, resolver geometría con accesibilidad siguiente. Sourcebrowser cerrado; ViteCtrlC terminalexit1intencional. No SDK/físico/aceptación global;705629/410636 anteriores a producción vigente. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop646: geometría documental y área táctil
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Source645 runtime document-card345x67/inset15, título20/subtítulo15/gap2. Nuevo VerificationDocumentCard conserva títulos requeridos/privacidad y callbacks reales; mide texto con Inter/textScaler para descontar sólo el padding táctil extra de botón48. Normal377 ambas tarjetas67 e inset15; botón visible35 como CSSsecondarycompact, hitarea48. Título envuelto conserva inset15 sin reducción ciega; texto200 apila botón. Adjuntos mantienen roles/rutas/abrir/quitar/límites y guardado previo al picker; sin SQL/payload cambios. Primer gate56428terminalexit1,11pass2fail: componente Column se expandía820 en altura acotada de prueba; mainAxisSize.min corrige comportamiento del componente sin relajar medición. Final90417terminalexit0,13/13en8s incluye4nuevas pruebas con fuente real:2títulos×normal200, inset15/normal67, toque en primerpixel del target48/release1/cancel0; integraciones de estado/intro/documentos y capturador. Analyzer92447terminalexit0sin incidencias19.5s. Dos PNG inspeccionados normal200;200 muestra tarjeta completa identidad y botón, domicilio requiere scroll y se verifica accesible en integración320x640. Sin runtimeSource nuevo; usa medición645 guardada. Sin SDK/físico/aceptación global,705629/410636 anteriores a producción vigente. Próximo acciones guardar/enviar/recargar y estados de verificación contra Source. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop647: acciones reales de verificación
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada durante/cierre. Sourceform primaryfontinherit16w600/48/purple/foregroundfbfbff, ghost14w500/radio14/borde/36, gap16. VerificationFormActions sustituye submitAction14 y TextButtonGuardar borrador sin borde: submit16line20/48; Guardar y continuar después outlinedSource, callbacks reales y ocupado conserva indicador/disabled. Guardar espera save real y navega/rescuer sólo si termina; excepción conserva formulario/datos. Prueba integrada rescuer draft retorna inicio después de éxito, reabre expediente, escribe teléfono, conserva8188888888 trasconflicto, reintenta y vuelveinicio trasconfirmación. No confirmación implícita de servidor real: repositorio de prueba. Ocho pruebas2acciones×normal200×temaAndroid/iOS verifican RGBA/rect bajo presión200ms, cancel0/release1 y separación16 entre superficies. Espaciado calculado según altura realtexto ghost para no sumar paddingtáctil48 a gap; padding coincideCSSnaturalborder. Primer59480exit0,42/42en9s/analyzer84419clean16.6; ajuste posteriorresponsivegap ypadding final90939terminalexit0,42/42en14s, analyzer40976terminalexit0clean13.1s. Dos PNG finalnormal200 inspeccionados: botonesrefluyen completos200 y separación16 verificada geométricamente. Recargar estado mantiene capacidadreal extra, sin equivalente simuladoSource. No Source runtime nuevo, ni SDK/físico/globalaceptación;705629/410636 anteriores a clienteactual. Próximo prueba respuesta demorada/error de guardar y submit real antes de pantalla revisión, luego estados. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop648: espera real de verificación y estabilidad
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada enloop, sin runtimeSource nuevo. Seis pruebas nuevas2escalas×guardar/enviar/error, repositorio con Completer separado save/submit ypersistenciareal de fixtures. Espera200ms conserva ruta/formulario, saveCalls1 incluso segundo toque/ambos disabled; submit no empieza antes de guardar y pantalla revisión sólo después de respuesta submit; éxitoGuardar vuelve/rescuer; error conserva teléfono8188888888 y muestra mensaje, sin salir. Primer86785exit1,17pass4fail: el botón busy sustituía título200 porspinner22 y el indicador superior añadía elemento aListView, controles salían del tramo construido; error normal tenía scrollprueba direcciónincorrecta. Corrige prueba de retorno al campo con delta negativo sin relajar aserción. Producción mantiene título invisible dentroStack para reservar altura mientras spinner Procesando ocupa centro, excluyeSemantics ocultos; segundo15909exit1,18pass3fail aún inserciónbusy enlista. Indicador ahora overlay del encabezadoVerificationFormFrameprocessing, sin insertar child ni cambiar altura/header/índiceslista. Final14750terminalexit0,21/21en6s (6wait+7state+8pressRGBA), analyzer2416terminalexit0sin incidencias12.3s. Altura submit permanece igual durante espera normal200 ycontroles siguen construidos/deshabilitados; no mediciónfullRect/SDK/servidorremoto/físico. Idle/busy tests cubren app real con repositoriofixture, no nueva captura PNG. No autoaprobación/SQL/payload/finanzas cambios. Full705629/global410636 antiguos. Próximo estados revisión/aprobado/correcciones Source, luego regresión global vigente. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop649: pantalla aprobada y controles de estado
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. RuntimeEdge649/Vite33694 viewport377x852/fontsready aprobada: center-state377x520desdey68/padding28/gap10; icon64/y198.265625, título24/30/y286.265625, párrafo321x43.375/y342.34375, botón321x48/y409.71875/16w600; Rangecontenido botón20px, getAnimations0. Cliente párrafoaprobado ahora literal Source Ya puedes publicar y administrar casos con donaciones., antes texto más largo. BotonesPublicar/Volver usan16line20/padding18x12, NoSplash/overlaytransparente/duration0; callbacksrutas/estado remoto/privacidadsinmodificar. Ocho nuevaspresiónRGBA2acciones×normal200×temaAndroid/iOS, cancel0/release1/rectestable. Primer87895 canceladoCtrlCterminalexit1: harnesscopiado dejó etiquetasEnviar/Guardar en vezPublicar/Volver; corregido, no afirmaciónpruebas fallidascomoéxito. Analyzer83169terminalexit0clean26.2s producciónfinal antescorreccióntestliteral. Final15584terminalexit0,22/22en11s (8press+7state+6wait+capturadorfamilia). Familia17PNGregenerada; aprobada normal200 yrevisiónnormal inspeccionadas, sólo3copiadas. Centralaprobado reproduce texto de2líneas/icon/título/botón;200refluye completo, noSource200runtime ni fullpixelequality. Consultarexpediente/recargar/retirar siguen controlesrealesextra, no copiarSimulatedBanner/decisiónsimulada. Browsercerrado/ViteCtrlCterminalexit1intencional. SinSDK/físico/globalaceptación;705629/410636 antiguos. Próximo regresión global sobre cliente vigente y continuación contraste por familias. Sin push/Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop650: regresión global cliente vigente
+
+Fuente exacta bf810ef5e8e4c41d609d1404277516bf985e4d94. Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Manifiesto352archivos (256Dart+96assets) raíz/scratch byteidénticos antes/final, hashes sin cambios durante gate. Detectada al inicio diferencia sóloEOL enguardian_payment_card sin diffsemántico/rootgit limpio; copiada raíz→scratch antesgate, no cambio producción. Fluttertest --no-pub27189terminalexit0,759/759en3m29s, supersede705629 e integra632–649: revisión/editar, intro, cascada, formulario/documentos/progreso/acciones/espera/estado. Analyzer98960terminalexit0sin incidencias214.1s paralelo con fullsuite; configuraciónpython16/16exit0. ADB650vacío real. RAM durantegate1127976KB/7708932KB; al cierre3065072KB, permite reconsiderar AVD/localbuild siguiente sin cerrarappsusuario. No nuevoSDK/install/deviceacceptance. Globalcapturas410636 anteriores a638+, fixturesactuales414; familia17verification649 actual, no nueva pasada global ni Sourcecomparacióncompleta. Regresiónno equivale759pantallasaceptadas. Registroscurrentreview/routeaudit/motionaudit actualizados con corte actual y todaslasfamilias conservadas. Próximo renovar colección414 ycontraste independiente pendiente; buildAndroidlocalactual/gestos instalados al disponerrecursos. Sin push/Codemagic hastaobjetivocompleto; dinero live noautorizado.
+
+## 2026-10-04 — Loop651: colección visual global vigente
+
+Fuente exacta d92adc68ebe6a570fd0b280ec618e2a2896c168f (producción bf810ef sin cambios desde full650). Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Capturadorcompleto99542terminalexit0,1/1en3m02s. Lista realextraída de forspec:414fixtures únicas/47rutas.414PNG todosmásnuevosqueinicio2026-10-04T09:25:59.749739Z, PILverifycorrecto/dimensiones/hashesguardados. Manifiesto352fuente256Dart+96assets raíz/scratch conserva todoshashes650 antes/final, sin ediciones fuente durantecaptura. Esta colección supersede410636 para clienteactual e incluye intro/formulario/acciones/estados638–649. No414pantallasaceptadas/no Sourcecomparaciónindividual completa; no inspecciónindividual414eneste gate. PNGtemp no se versionan en masa, manifiesto permite validar cuáles fueron capturados. Full759650/analyzeclean/16config siguen mismosDart/recursos. Emulator-list-avds651 confirmaDopmi_API_35, configlocalprivadapresente con clavesesperadas; no conexiónremota nueva/arranque/install/SDK/deviceaceptación. Siguiente buildAndroidlocalactual yrecorridos instalados, conservarcontrastependiente de todaslasfamilias. No copiarhover/simulaciones/Coins/cashback/tienda/fondo; sin push/Codemagic hastaobjetivocompleto.
+
+## 2026-10-04 — Loop652: candidato Android local en compilación
+
+Fuente39b11e1c29f9801aa3e7beb97b5da6df23c1c373, misma producciónbf810ef validadafull759650/global414651. Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. ADB652vacío; memoria inicial2367484KB/7708932KB, duranteGradle1195284KB, no arrancarAVDjunto albuild ni cerrarappsusuario. Comparación android/pubspec detectó FirebaseJSONscratch distinto: raíz→scratchprivado para buildactual, paquetesconfigroot incluyencom.mycompany.dopmi; 26archivosbuildahora byteiguales y hashesguardados, no copiarconfigcredencialesalrepo. GeneratedPluginRegistrant raíz stale/ignorado carecíaShare/Stripe; dejar Fluttergenerar desdepubspecactual y confirmar ambospluginsenscratch. Primera compilaciónexit1NoSDK; segunda conANDROID_HOME/SDK_ROOTexit1NoJAVA. Entorno sólo proceso añadeSDKexistente yJAVA_HOMEjdk21.0.12.1+1, sin globalconfig. Buildapk--no-pub--debug--target-platformandroid-x64--dart-define-from-fileconfig.local.json sesión46605ACTIVA, última consulta30s devuelve misma sesiónsinterminal. Java19304CPUactivo observado, avisoscompatibilidadKotlin/SDKXML sin resultado final. LogTemp/dopmi-loop652-build-configured.log.352Dart/assets hashes651sin cambios despuésiniciar. APKpreexistentescratch esviejo; NO instalarlo antes de exit0/frescura/hash/paqueteactual. No compilación confirmada/nueva instalación/gestos/SDK/deviceaceptación. Próxima continuación consultar46605 y mismoestadoJava/log, nunca reiniciar por sólo timeout; al terminar comprobarAPKfresh yfuente, luegoAVDinstalación/rutas. Sin push/Codemagic hastaobjetivocompleto.
+
+## 2026-10-04 — Loop652: compilación Android concluida
+
+Supersede estadoactivo anterior: misma sesión46605 terminóexit0, assembleDebug178.2s. APK nuevo verificado másnuevoqueinicio del build,212447398bytes, SHA25647787295dcb7cbe8630e9b737cb78ceead12bdff086563d70dd587d75f14fa06. Aapt confirma com.mycompany.dopmi, versionCode2/versionName0.2.0, min24/target36/compile36.352fuentes/assets raíz/scratch conservan todoshashes651 al cierre. AdvertenciasKGPFirebase/SDKXML no impidieroncompile; no升级dependencias ni configglobal. Log terminal guardado. No instalación/arranque/SDKflow/gestos aceptados todavía. Próximo iniciarAVD conmemoriarevalidada e instalar exactamenteesteAPK, no560niPlayprevio. Sin push/Codemagic hastaobjetivocompleto.
+
+## 2026-10-04 — Loop653: candidato Android instalado y navegación pública
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. APK652source39b11e1/hash47787295dcb7cbe8630e9b737cb78ceead12bdff086563d70dd587d75f14fa06 comprobado antesinstall y sha256sum del base.apk instalado confirma mismo hash. No SourceDartnuevo. ADBinicialvacío/RAM821604KB; Gradledaemon propio19304usaba1336MB, gradlew--stop exit0detuvo1daemon y memoria2374800KB sin cerrarappsusuario. WHPXaccel0usable. AVDread-only/headless/noaudio/no-snapshot-save/memory1536/cores2, EmulatorPID24976, logsTemp/dopmi-loop653-emulator.*.log. emulator5554boot1; paqueteantes vacío; adbinstall-r exit0Success. dumpsyspackage0.2.0+2/min24target36/update2026-10-04 09:41:52, amstart-Wexit0Statusok/COLD/7079ms; debug/emulador noaceptación rendimiento. API35/720x1520/density300. PIDapp1933/topResumedMainActivity confirmados.
+
+Capturas sintéticas públicas: bienvenida; tapAdoptar muestra selección yscroll automático (capturaintermediagris/noatribuirfinal, settled negra guardada); swipevertical revelafooter; Explorarsincuenta abreRockyDemo/Perros con foto remota cargada; taphero detalle muestraRefugioDemoDopmi/foto/datosDEMO; Back4 devuelve misma tarjetaPerros. Swipe endetail enviado pero sin captura intermedia: noafirmar scroll de detalle verificado. Logcat flutter:E/AndroidRuntime:E consultado sinlíneas enrecorrido.6PNG finales inspeccionados/copias/hashPILválido. Sóloobservaciones de Androidemulado/touchesADB, no dedo físico/Sourcepixelcomparación/timingigualdad/SDKShareStripe/wallet/autenticación/banco/Guardians/cuentasnuevas/pagos/mensajes. AVDquedaactivo para próximo loop, revalidar24976/ADB/pkg antesreusar. Full759650/414651 siguen mismosDart. Próximo gestos instalados adicionales ycontraste Source alviewportreal, después autenticación/funciones privadas con acceso autorizado. Sin push/Codemagic hastaobjetivocompleto.
+
+## 2026-10-04 — Loop654: defecto de acumulación de gesto detectado en Android
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Reusoemulator5554device/PIDapp1933 conAPK652 (sin parche654 aún). VistaRockyDemo inicial guardada; ADBswipe380780→355780/500ms deja misma tarjeta (sin captura de desplazamiento intermedio, no demostrar animación retorno). Swipe600780→90780/500ms también dejaRockyDemo: defecto observado, no atribuir éxito a descarte. Código `_SwipeCard`/soporte hacía onDrag(dragX+delta) con dragXcapturado enwidget anterior; múltipleseventos antesframe sobrescribíanacumulación. Cuatro nuevas pruebas2direcciones×normal200 emiten4×40 sinpump: gate54123exit1,0pass4fail, esperaba±160/recibía±40. Cambio callback privado onDragDelta envía sólo delta y estado padre acumula+= síncronamente, ambasfamiliasadopción/apoyo; umbral110/recognizer8/duraciones250280/curvas/lógica favorite intactos. Final29858terminalexit0,33/33en8s incluye4burst, motion/filter/empty y soporte; analyzer73306terminalexit0clean72.3s. NativeAPK653aún viejo, parche sólo verificado cliente enpruebas; full759650/capturas414651 anteriores654. Próximo aplicarparche alruntimeAndroid instalado (attach/hot reload o nuevobuild verificable) y repetir descarte/retorno con evidencia; no afirmar swipe reparado eninstalación hasta verlo. AVD24976sigueactivo, revalidar. Sin cuentas reales/SQL/guardas/pagos/push/Codemagic.
+
+## 2026-10-04 — Loop655: descarte corregido observado en runtime Android
+
+Fuente 8e12afb; referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada por ls-remote. Flutter attach inicial con --no-pub rechazado (exit1); attach correcto con config local privada conectó. Hot reload informó 0 bibliotecas y el swipe completo aún conservó Rocky. Captura durante arrastre de 5s mostró reconocimiento/traslación pequeña; no atribuir éxito al reload. Hot restart R terminó en 5.704s. Reentrada pública mediante Adoptar/Explorar sin cuenta mostró Rocky; swipe600780→90780/500ms avanzó a Toby Demo. Swipe corto380780→355780/500ms conservó Toby, captura final inspeccionada; sin captura intermedia posterior al parche no afirmar temporización exacta del retorno. Evidencia sólo sintética pública en emulator-5554/API35. Attach ya terminal/no sesión10627; app PID1933 continúa. Logcat limitado flutter:E/AndroidRuntime:E sin líneas. APK instalado sigue652 (fuente39b11e1/hash47787295dcb7cbe8630e9b737cb78ceead12bdff086563d70dd587d75f14fa06); runtime parcheado por reinicio NO equivale a APK actualizado. Pendiente compilar/instalar binario con654 y repetir gestos, contraste Source/timing/recorridos restantes. Full759650 y colección414651 preceden654. Codemagic únicamente al objetivo completo según última instrucción; no push/publicación, dinero real ni aceptación global/física/SDK.
+
+## 2026-10-04 — Loop656: APK actualizado y gesto repetido desde binario
+
+Fuente exacta628955b (producción654/8e12afb), referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb vigente. Flutter build apk --no-pub --debug --target-platform android-x64 --dart-define-from-file=config.local.json sesión99614 terminalexit0, assembleDebug171.8s. Configuración privada/SDK/JDK existentes sólo entorno proceso. Comparación lib/test/tool/assets raíz-scratch sin diferencias. APK fresco respecto inicio del log,212447398bytes, SHA256a57b7c01bdc4421a1c562c11f62ddd2d2128d03e989d4576bcc251c7b4fa9b62. adb install-r51244exit0Success; hash base.apk instalado coincide exactamente. amstart31526exit0Statusok/COLD13187ms (debug/emulador, no aceptación rendimiento). PIDapp2489, emulator5554/API35. Bienvenida→Adoptar→footer→Explorar sin cuenta; captura inicial cargando, esperar datos antes gesto. RockyDemo cargado; mismo swipe600780→90780/500ms avanzó a TobyDemo (primera captura imagen cargando). Swipe corto380780→355780/500ms conserva Toby y foto cargada al final. Capturas finales inspeccionadas. Logcat limitado flutter:E/AndroidRuntime:E sin líneas. Supersede limitación binario anterior655 para este gesto, sin hot reload/attach en656. No temporización exacta Source, prueba física, soporte/guardar/autenticación/SDK financiero ni paridad global aceptados. Full759650 y colección414651 preceden654; gates dirigidos33/33/analyze654 vigentes. AVD propio continúa para siguiente contraste/gestos; no nuevas cuentas reales, dinero live, push o Codemagic. Última instrucción usuario: Codemagic únicamente al objetivo completo.
+
+## 2026-10-04 — Loop657: guardar sin sesión requiere autenticación
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. APK656 instalado: swipe derecho sobre Toby avanzó a oportunidad mishi y mostró «No pudimos guardar… Intenta de nuevo»; guest no puede resolver falta de sesión con retry. Evidencia screenshot sintético observado, no favorite remoto exitoso. Cliente ahora comprueba repository.userId antes de iniciar salida/guardado de mascota: invitado restablece arrastre y abre /login, conserva tarjeta al volver; sesión conserva persistencia real y retries por fallos. Mismo patrón existente en detalle. Nueva prueba guest verifica saves0, login y retorno Luna sin Milo. Primer gate48661exit1:22pass/1fail por selector incorrecto «Iniciar sesión» en test, UI real «Inicia sesión»; corregido test, gate72733terminalexit0,23/23en6s. Analyzer70605terminalexit0clean61.2s. Fuente raíz/scratch idéntica archivos editados/formateados. No SQL/flags/auth backend modificados. APK656 sigue anterior a657; pendiente verificar navegación guest en runtime actualizado y resto gestos/Source, no atribuir reparación nativa aún. Full759650/global414651 anteriores654/657. Sin dinero live, push ni Codemagic hasta objetivo completo.
+
+## 2026-10-04 — Loop658: guardar invitado comprobado en runtime Android
+
+Fuente7aadc1a; Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. emulator5554device/PID2489. Attach27095 conectado tras30.4s; hotrestartR reportó10.073ms (formatoCLI, no medición propia), registró reintentoVMService; no restart repetido, capturas reales prueban runtime vivo. Bienvenida/Adoptar/footer/Explorar sin cuenta abreRockyDemo. Swipe90,780→600,780/500ms abre formulario Inicia sesión sin avanzar a Toby ni aviso reintento. AndroidBack4 vuelveRockyDemo/Perros con foto cargada y tarjeta centrada. Capturaslogin/back inspeccionadas. Ddetachterminalexit0 Applicationfinished, PID2489siguevivo. Sólo runtime actualizado víahotrestart; APK656/hash a57b7c01bdc4421a1c562c11f62ddd2d2128d03e989d4576bcc251c7b4fa9b62 anterior657. No escritura favorita remota verificada (test657saves0), autenticación completa, SDKfinanciero, igualdad de tiemposSource ni aceptación física/global. Gate23/23 y analyzeclean657. Próximo gestos soporte/scroll y contraste resto familias, binario final/regresión vigentes antes entrega. Codemagic únicamente al objetivo completo, dinero real no autorizado.
+
+## 2026-10-04 — Loop659: gesto soporte y recuperación de foto
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Runtime658/API35/PID2489: dos descartes desdeRocky→Toby→apoyo. Swipevertical3601100→360650/500ms desplaza lista sin descartar; fotoapoyo mostró Cargarfoto (causa archivo/red no diagnosticada, no atribuir resolución). Descarte600700→90700/500ms avanzaLunaDemo; capturaLuna inspeccionada. No guardar nuevascapturasapoyo porque no se comprobó naturaleza sintética del registro, evidenciaLunaDemo únicamente.
+
+Inspección detectó2DecoratedBoxgradient porencimaAdoptionPhoto que interceptan retry. Test nuevo usa FailedPhotoCommunity y foto sintética; primeros gates fallaron por mapaimmutable, campo photo envezphotos y finder ambiguo (tarjeta siguiente tambiénfoto). Gate99271 inicialmenteexit0con warningtapmissed y mayorattempts por navegaciónadetail: no aceptar falsoverde. Se elevó hitTestWarningShouldBeFatal y gate63948exit1/23pass1fail confirmó tapbloqueado porRenderDecoratedBox. Cliente envuelve ambosgradientesenIgnorePointer, apariencia/curvas/roles intactos. Final79604terminalexit0,24/24en6s sin tapmiss; analyzer36709exit0clean11.5s. Archivosformateadosscratch→raíz. No autenticación/backend/pagos ni foto remota reparada. Runtime658/APK656 preceden659: repetir retryAndroid pendiente. Full759650/global414651 anteriores654/657/659. Continuar contrasteSource/gestos/restofamilias; Codemagic únicamente al objetivocompleto.
+
+## 2026-10-04 — Loop660: regresión global posterior a gestos/fotos
+
+Fuenteproducción b1de479; única edición660 testsoporte. Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb vigente. Nueva prueba sintéticaFailedPhotoCommunity soporte case-one/expense-one/Choco: pasar2mascotas, fotoerror, tapCargarfoto con hitTestWarningfatal recibe toque/aumentasolicitud, permaneceChoco yApoyaconnecesidades sinabrircaso. Gate32111exit0,1/1en1s. Suitecompleta68831terminalexit0,766/766en3m34s, supersede759650 e incluye4burst654/guest657/phototap659/support660. Analyzer78959exit0clean25.7s. Manifiesto352archivosDart/assets raíz/scratch byteidénticos y hashes conservados al cierre; nofuenteeditada durantegate. Tests noequivalen766pantallasaceptadas. Colección414651 anterior654/657/659; nativoAPK656 anterior657/659, runtime658 anterior659. Pendiente contrasteSource global/SDK/recorridosprivados yúltimoparchefotoAndroid. No nuevascapturas/instalación/SQL/realuserdata/pagosremotos. Codemagic sóloalobjetivocompleto, dinero live noautorizado.
+
+## 2026-10-04 — Loop661: contacto invitado coherente con detalle
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Auditoría gradientesotrasfotos: public_profile_adoption_card/public_profile_case_card yaIgnorePointer; galeríaAdoptionDetail sin degradado bloqueante. No cambioinnecesario. ContactarDiscovery iniciaba confirmación yRPC sin comprobar invitado, mientrasdetalle yaabrelogin. Ahora mismo repository.userIdnull abre/login antesconfirmación; conserva tarjeta alvolver. No cambio autorizaciones servidor/nuevascuentas/financialflags. Nueva pruebainvitado pulsaContactar, loginpresente/confirmaciónausente/BackLuna/noMilo. Gate16240terminalexit0,26/26en6s. Full766660 anterior4líneascontacto661, no nuevofullatribución. APK656/runtime658 anteriores659/661; pendienteverificaciónAndroidactual. Codemagic sóloalobjetivocompleto.
+
+## 2026-10-04 — Loop662: contacto invitado observado Android y apertura filtros
+
+Fuente fd65bbc/producción661; Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Attach45103/emulator5554 conectado28.9s; R reportó10.121ms formatoCLI, no duración propia/timingSource. Captura bienvenida confirma vivo pese avisoVMretry; no reinicio adicional. ReentradaAdoptar/footer/guest abreRockyDemo. TapContactar3601264 abreIniciasesión, captura inspeccionada sinconfirmación; AndroidBack4 devuelve mismaRocky/Perros/fotocargada. Tap641229 abreFiltros modal completo/acciones visibles; captura inspeccionada sólo apertura, aún sin comparaciónSource niaplicación filtro. Detach45103terminalexit0; appPID2489 permanece. Runtimeactual661incluye659 pero no retryfotoremota ejecutado aquí; APK656 en disco anterior657/659/661. No nuevaautenticación/favorite/contacto real/SDKfinanciero/SQL/aceptación global. Full766660 anterior4líneas661; gate26/26/analyzeclean661. Próximo contraste diálogo/selección/aplicación/cancelaciónSource yAndroid, resto familias pendiente. Codemagic sóloalobjetivocompleto; dinero real noautorizado.
+
+## 2026-10-04 — Loop663: presión de filtros sin efecto Material añadido
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. FuenteApp.tsx1250–1269: drafts alabrir/aplicar/limpiar,cierre; styles.css3056–3110 botonesgénero/tamaño/traits sintransición/:active, selecciónfija. Cliente aún overlay/splash defaults. DiscoveryFilters: FilterOption/Aplicar/Limpiar NoSplash/overlaytransparent/durationzero; tamañoInkWell NoSplash/overlaytransparent; cerrarIconoverlaytransparent. No hoverrecreado; semántica/selección/bordes/roles/query/diálogointacto. Gate34797terminalexit0,31/31en8s (5filtros+26motion), valida cancel/back/outside/drafts/queries/species/text200/respuestaobsoleta ygestos. No nueva comparaciónRGBA held, capturaSource runtime ni animacióntiming medida; pendiente presiónreal yAndroidactual. Full766660 anterior661/663. APK656/runtime662 anteriores663. Sin SQL/pagos/cuentasreales/push/Codemagic; entrega sóloobjetivocompleto.
+
+## 2026-10-04 — Loop664: presión de opciones filtros verificada por píxeles
+
+Producción935ae9d sin nuevo cambio, Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Nuevo discovery_filter_press_test4variantesgénero/personality×texto1/2, componenteFilterOption real dentroMaterial. RepaintBoundary capturaRGBA completaantes/held200ms/despuéscancel; igualdadexacta yrectconstante, callbacks0held/cancel y1taprelease. Pruebas no cargan Inter real ni simulan plataformaAndroid/iOS separada; verifican que no se agrega tinta/onda/cambio geometría, no tipografíacomparadaSource. Gate73002terminalexit0,9/9en3s (4pressure+5filtrosfuncionales). No cubrirApply/Clear/Close/SizeRGBAeneste gate, seguirpendientes; noAndroidactualnuevo. Full766660 anterior661/663/4tests664, no nueva cifra global atribuida. Colección414651/APK656 antiguos paraúltimosparches. Sin push/Codemagic hastacompletarobjetivo, dinero live noautorizado.
+
+## 2026-10-04 — Loop665: filtros funcionales observados Android
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. emulator5554/PID2489/runtime662 (fuente661), APK656; NO parche663 presente aquí, no atribuir presión663 nativa. Diálogoinicialsinselección. TapHembra→cerrarX→reabrir quedó sinselección (primer seleccionado no capturado, observacióncancel másdébil). Segundo tapHembra capturado negro/textoblanco. Aplicar3601105 cierra ylista real muestraLunaDemo/Hembra/Perros eiconofiltro negro. Reabrir641229 conservaHembraseleccionada. Limpiar3601205 cierra ylista vuelveRockyDemo/Macho/Perros/iconogris. Capturas inspeccionadas sóloDEMO; fotos todavía cargando en resultados, noafirmar rendimiento/cargafotofinal. Noquerypayloadcapturado/remotewrites/SDK/pagos niigualdadSourcepixel/timing. Evidencia funcional instalada amplia filtros/aplicar/persistirdraft/limpiar, noaceptación visualglobal. Tests9/9/analyzeclean664 previos. Siguiente contrasteSource renderizado yrestocontrolespress663/nativoactual, restofamilias. SinCodemagic hastaobjetivocompleto.
+
+## 2026-10-04 — Loop666: geometría filtros desde Source renderizado
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb local, SourceApp/SizeDogIcon comparado:paths/dimensiones/patas/colorescoinciden. Vite75557 listo yEdgeagent-browserdopmi-parity666 abierto/adoption, viewport377×852, filtroabierto porrefe13. document.fonts.ready ygetComputedStyle reales: dialogx16/y133/w345/h586/radio24/padding24/gap12; título22/line18/y157; headingsy187/293/413; géneroy223/h50; accionesy595/651/h44/pad11×18/radio14. Cascadeglobaldialog-card posterior sobrescriberadio16/padbottom22/gap16; título22 sobre18local. NO cambiar radio24correcto. Cliente discrepa bottom22→24, mínimoacciones42→44, gap título16→12, personalidad-acciones32→28. No cambia query/selección/tapguards. Primer gate29480exit0,9/9en3s/analyzer16352clean26.6s antesúltimos2gaps; final8245exit0,9/9 trasgaps. NoúltimaRGBA/rectFluttercaptura aún niacceptancianativa; previo663/664 válido presiónopciones. CapturaSource inspeccionada; Source muestra catálogoempty porconfigsimulación, sólodialogcomparado. Edgeclosedexit0;ViteCtrlCexit1deliberado. Sourcefoto/native runtime662/APK656 anteriores666. Pendiente medirrectFlutterexacta/capturar antesafirmar totalparidad. Full766660 anteriores661/663/666. Sinpush/Codemagic hastaobjetivocompleto.
+
+## 2026-10-04 — Loop667: geometría filtros confirmada y colección renovada
+
+Fuenteproducción9246324; nueva prueba discovery_filters_test cargaInterreal, viewport377×852. RectFlutterdialog(16,133)-(361,719)=345×586; título(40,157)-(325,175), headersy187/293/413; Apply(40,595)-(337,639),Clear(40,651)-(337,695),44alto. Coinciden métricasSource666exactamente. Gate79027exit0,1/1en1s; final80639exit0,10/10en5s (geometry+5functional+4pressure). Analyzer20835exit0clean34.4s finalfuente. Capturador99926exit0,1/1en3m08s; envCAPTURE_FILTER fueinefectivo porquecapturadorusa String.fromEnvironment, porerror inicial renovóentera colección, sin afirmar sólo2fixtures. Se ejecutófinaltestbrevemente enparaleloconcapturador, ambosterminalexit0; próximasgatessecuenciales. Listaextraída actual414/47; todosPNGmásnuevosqueinicioUTC2026-10-04T10:53:07.811248Z/PILverify/dimensiones/hashguardados. Supersede414651 (ahora incluye654/657/659/661/663/666). Únicamente2PNGfiltrosinspeccionados aquí, normal seleccionaHembra/Mediano vsSource666unselected; no comparación píxelglobal. Large muestra scroll concontenido visibleparcial, noafirmartodofooter visibleaun. Geometríaprincipalconcordante pero botónCerrar visualmente desplazado respectoSource; próximo medirrectyglifo Sourceantescorregir. NoAcceptanceSource414 ni nativeSDK/physical/global. APK656/runtime662 todavía antiguos para663/666. SinCodemagic/push hastaobjetivocompleto.
+
+## 2026-10-04 — Loop668: glifoCerrar yposiciónSource
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Vite63018/Edge668 viewport377×852/adoption/Filtros/document.fonts.ready. Sourceclosebutton rect318.4375,145,26.5625,24; Rangeglifo324.4375,144,14.5625,26; Inter22/line22,pad1×6,muted85/78/72,anim0. FlutterIcons.close22centrox337 diferenteSource331.71875. Ahora Text×Inter22/line1/w400,Positionedright16/top0,alignmentcenterRight/padright6, min/fixed48×48, tooltipCerrar/ExcludeSemanticsglifo;NoSplashoverlay0duration0, callbackigual. Testgeometría Interreal agrega gliforight339±.05/centery157 ytarget48×48; resto rect586/botones44igual. First4033exit0/10pass; final12215exit0/10passen3s. Analyzer9684clean34.3s. Capturador38311 correctamente --dart-define=CAPTURE_FILTER=adoption-filters exit0,1/1en2s;2PNGfresh/PILvalid, normal inspeccionado, large capturado noinspeccionadoaquí. Gatefuncional/text200 conservaClosecancel/aplicar/repuestasobsoletas. Sourcebrowserclosed/ViteCtrlCexit1deliberado. Colecciónglobal414667 anteriorclose668;2fixturesrenovadas nofull414nuevo. NoAndroidactualrecorrido668/SDK/globalacceptance. SinCodemagic/push hastaobjetivocompleto.
+
+## 2026-10-04 — Loop669: cierre compartido y accionesconfirmación
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. CSS4619dialog-close común tambiénAdoptStart(App7165+). IconoClosecontacto distinto yposiciónright4 diferente; extraído cierre668medido en core/DopmiDialogClose (Text×22Inter/right16/pad6/48target/Tooltip/ExcludeSemantics); DiscoveryFilters usaexactomismo componente ycallback, contacto callbackfalse. Sourceacciones primaria/secundaria sin:active; _buttonStylecontacto ahoraNoSplash/overlay0/duration0, estilo/tamaño48/copy/respuesta intactos. Gate87804exit0,39/39en9s (3contact+6filter+4press+26motion); filtrosgeometríaglifo668 se conservan, contactcancel/close starts0, falloconservacard/sólosuccesschat, texto200scroll confirmado en tests. Analyzer83686terminalclean. No nuevaSourcecapturacontacto/RGBAheld/contactoAndroid/SDK niigualdadglobal. Collection414667 con2filters668 vigente porfamilia, anterior669adoptpress; nofullregresión nueva. SinSQL/backend/rebuildfinanciero/cuentasreales/push/Codemagic, entrega sóloobjetivocompleto.
+
+## 2026-10-04 — Loop670: presión confirmación verificada
+
+Producción6ee63b3sin modificación670; Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Nuevoadopt_start_press_test usa confirmAdoptionContact real/showDialog sobreMaterialApp, Interreal,377×852texto1/320×640texto2. TresaccionesTodavíano/Sícontactar/Cerrar×2=6tests. FullRGBARepaintBoundary antes/held200ms/cancel exactos, rectestable, Future sinresolverheld/cancel, tapreleasecierra ybooltrue sóloconfirmar/falsecancel/cerrar. ensureVisiblefooter permite200 sinrecortarcontrol. Gate63130exit0,9/9en3s (6pressure+3integradosrepo), confirma cancelstarts0/fallomantienecard/successchat. Analyzer18138terminalexit0clean. NoSourcecapturaconfirmación/rectgeomtotal/nativo670 niSDKcompleto. Full766660 anteriorúltimoscambios; colección414667 anteriorclose668/press669,2filters668 actuales. Sin dinero live/push/Codemagic; objetivo global sigueabierto.
+
+## 2026-10-04 — Loop671: presión encabezado detalle mascota
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. SourceAdoptionDetail1703/1744+ imagen única/puntos3decorativosariahidden, no copiar galería simulada niinventarfotos: cliente conservaPageView/fotosaprobadas/dotsreales. CSS6521–6572 back40/blur8/white72%,rescuerpillwhite/no:active ni transición. ClienteIconButtonback eInkWellprofile agregabanoverlay/splashdefault. Backoverlaytransparent; rescuerNoSplash/overlaytransparent, estética/repositorio/navegaciónprivacidadintactos. Gate42907exit0,17/17en4s (8detail+3contact+6press), galleryswipeapproved/resetpost/fixedfootertexto200/shareguardcontactvigentes. Analyzer42713terminalexit0clean. NoRGBAheldheader reciénmedido/nativoactual niSourceimagencomparaciónglobal; pendingpressheader ydetallerectSource. Full766660 anteriorcambiosrecientes; collection414667 anterior671detallestyle. No SQL/live/push/Codemagic hastaobjetivocompleto.
+
+## 2026-10-04 — Loop672: sombra del acceso público rescatista
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. SourceCSSpet-detail-hero altura42vh/max340/min260/covercenter,back40/top16/left16/blur8white72%/dots28 coincidenreglascliente. CSSpet-detail-rescuer shadow0 4 14 rgba(21,17,13,.12) ausenteMaterialcliente. AñadidoDecoratedBoxradius99/BoxShadowoffset0,4/blur14/color0x1f15110d afueraMaterialwhite, preservaclipsize/callback/perfil. ColorFlutter cuantizado31/255≈.12157, noafirmar comparaciónpíxelexactaCSSblur. Gate5273exit0,8/8en2s:gallerypathsapproved/resetpost/carebadge/distancereal/footerfixed/text200. Capturador97029correctodefineadoption-detail exit0,1/1en2s,2PNGfresh/PILválidos inspeccionados normal200; pill/text/avatarvisible sinrecorteen2fixtures, content200scroll yfooter permanece. Analyzer97823exit0clean22.9s. No presiónRGBAhero/Sourceimagenmatching/deviceactual ni paridadglobal. Colección414667 anterior671–672, familia2detailactual; sinfullsuiteactualnuevo. SinSQL/realuserdata/pagos/live/push/Codemagic hastaobjetivocompleto.
+
+## 2026-10-04 — Loop673: presión encabezado detalle porRGBA/navegación
+
+Producción6289ea4sin edición673; Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. CuatrotestsheaderBack/Rescuer×normal200 conInterreal/RepaintBoundary app, fotoemptytest (no sensibilidadsobreimagenreal), FullRGBAheld200ms/cancel exactos/rectstable, routerpermanece/adoptions/post held/cancel. TapreleaseBack→/adoptions;Rescuer→/people/owner. Primer3212exit1:10pass2fail, perfilesfallaronporfixtureDetailRepository.publicProfile sóloverified, typeNullasString; nofallodeproducciónatribuido. Testrepoahora extiendesuperpublicProfile sintéticocompleto+verifiedconfigurable, noRPC/realdata. Final41355exit0,12/12en4s, incluye8previosgallery/privatepaths/distance/badge/footer. Analyzer80150finalterminalexit0clean. No compararRGBAperfilSourceimagen/nativoheaderactual niSDK/globalaceptación. Capture2detail672 vigentesmisma producción; testsnuevosnoactualizanfull766660. Objetivocompleto/conjuntofamiliasabierto; sinpush/Codemagic hastaobjetivocompleto.
+
+## 2026-10-04 — Loop674: compartir/reportar detalle
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. SourceCSS6649share42/border1.5 y6698reportgap6/backgroundtransparent/noactive. Lecturainicialtruncada interpretóbordecliente1 equivocadamente; alvercompletoya1.5, primerpatchassertfalló sinarchivomodificado, gate57655exit0/12previos noatribuirparche. Correcciónreal:shareoverlaytransparent;ReportarTextButton.icon→TextButtonRow congap6,NoSplash/overlaytransparent/duration0, callbacks/disabledbusyintactos. Primeraedición73124exit1/9pass3fail porRowoverflowen200; FlexibleTexto resuelvereflow. Final57950exit0,12/12en4s incluyegallery/fixedfooter/headerspressnormal200/care/distance. Analyzer83524exit0clean29.1s final. Copyformattedscratch inicialmente destinorelativocwdwrong rechazado, repetidocopydesdeworkspacecorrecto antescommit, fuenteactualraízscratchigualarchivo. NoRGBAshare/reporttapnuevo/SDKShare/android674/Sourcepixelcomparisonglobal;capturasdetalle672 anteriores674. Full766660 antiguo. SinSQL/live/push/Codemagic hastaobjetivocompleto.
+
+## 2026-10-04 — Loop675: presión compartir/reportar porRGBA
+
+Produccióna8d1301sin edición675; Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. CuatrotestsShare/Report×normal200,377×852/320×640,Interreal,AdoptionDetailLayout real/MateralApp/ProviderScopeFakeCommunity/fotosvacías. ensureVisiblecontrol, FullRGBAheld200ms/cancel exactos/rectestable, contadorcallback0held/cancel;tapreleasecorrectocallback1/otro0. NoShareSDK/remoteReport/nuevacuenta/realauthatribuidos: prueba límitecomponentecallback. Gate90973terminalexit0,16/16en5s incluyendo4headernavigation/4actions/8detailantes. Analyzer30910terminalexit0clean. NoAPK/runtimeactual/capturas674+niSourcefullimageigualdad; colección414667 ydetalle2PNG672 anteriores674. Full766660 anteriorvariosparches. Codemagic únicamente alobjetivocompleto; dinero live noautorizado.
+
+## 2026-10-04 — Loop676: regresión completa actual
+
+Commit probado a8d5fb6; referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Flutter test --no-pub en la copia local: sesión71136, salida terminal0,786/786 aprobadas en3m34s. Manifest357 archivos lib/test/tool/assets, todos idénticos entre proyecto y copia probada; no modificaciones durante la ejecución. Incluye los cambios y pruebas posteriores a la regresión766 del loop660. Evidencia en docs/design-reviews/parity-loop676. No acredita equivalencia visual global, Android instalado actualizado, selector nativo de compartir, publicación Play o aceptación física. Codemagic queda reservado para completar el objetivo, según la última instrucción del titular. Dinero real continúa sin autorización.
+
+## 2026-10-04 — Loop677: compartir nativo Android y cancelación
+
+Fuente cabb7e3, producción a8d1301, referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. emulator-5554 conectado/API35; attach1298 sincronizó fuentes y R reinició la app. APK base permanece loop656; esto prueba runtime actualizado, no nuevo binario distribuible. Recorrido invitado Adoptar → Rocky · Demo → detalle: foto y controles visibles. Tap compartir643,722 abre selector Android con texto Rocky · Demo y enlace io.dopmi.app://content/adoptions/4c20e307-5cf8-4338-9e95-94684f07b1f4. Back conserva detalle y foto; segundo tap abre otra vez selector, probando liberación del bloqueo de compartir tras cancelar. Segundo Back y d, sesión1298 terminal0. La conexión emitió reintentos VM; capturas corroboran recorrido vivo, sin atribuir esos reintentos a éxito de red remota. Cuatro capturas inspeccionadas y hashes guardados. No se envió mensaje, no se seleccionó destinatario; resolución del enlace en otro dispositivo, traducción del sistema, iOS y aceptación física permanecen sin comprobar. No equivalencia visual global por este recorrido. Codemagic solamente al objetivo completo; dinero live sigue sin autorización.
+
+## 2026-10-04 — Loop678: presión de barra inferior del detalle
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. CSS pet-detail-save y pet-detail-cta no especifica efecto active; hover excluido por instrucción del titular. Producción elimina overlay Material de Guardar y ripple/overlay/transición de estilo de Quiero adoptar. Se conservan callbacks, espera busy, estado saved, sombra/escala del corazón seleccionado y geometría52/gap12/radio16. Flutter test adoption_detail_layout_test:45986 terminal0,16/16 en5s; analyze54385 terminal0 limpio34.4s. La prueba de desplazamiento con texto200 mantiene acciones fijas. No prueba RGBA sostenida específica de estas dos acciones ni runtime actualizado678; runtime677 es previo a este parche. Regresión786676 es previa al parche. No se elimina la información real de cuidados/salud por ausencia de datos del mockup. Codemagic solamente al objetivo completo; dinero real no autorizado.
+
+## 2026-10-04 — Loop679: compartir y reportar en caso público
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. CaseDetailLayout aplica overlay transparente al botón compartir42; reporte pasa de TextButton.icon a Row mínimo con icono16/gap6/texto flexible y padding0, sin splash/overlay/transición, según pet-detail-report CSS6698. Conserva callbacks reales y bloqueo busy de reporte. Flutter rescue_test30900 terminal0,26/26 en6s; analyze97747 terminal0 limpio22.7s; git diff --check limpio. No prueba RGBA específica, captura nueva ni runtime679. Galería, necesidades y contribuciones requieren comparación adicional; no se afirma equivalencia total. Codemagic reservado al objetivo completo; dinero real no autorizado.
+
+## 2026-10-04 — Loop680: cabecera, galería y donar del caso público
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. CSS pet-detail-back/rescuer, donate-case-gallery-item y pet-detail-cta sin active; hover no requerido. Volver usa overlay transparente; perfil rescatista y miniaturas NoSplash/overlay transparente; Donar NoSplash/overlay transparente/duración estilo0. Se preservan navegación, PageView/selección real de foto, elegibilidad/gastos/busy y chooseContribution; StadiumBorder correcto por override donate-case-bar radius999. Archivo formateado y copia probada sincronizada. Gate69565 terminal0,26/26 en6s; analyze61088 terminal0 limpio22.8s. Falta sombra de cabecera según referencia, comparación visual/gestos instalada y RGBA específico de estas acciones; no atribuir equivalencia global. Runtime677 y regresión786676 son anteriores. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop681: sombra del perfil en caso público
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. DecoratedBox alrededor del Material de perfil añade shadow0,4/blur14/color0x1f15110d y radio999 según pet-detail-rescuer; sin cambiar navegación ni forma. Flutter rescue_test60592 terminal0,26/26 en6s; analyze85613 terminal0 limpio24.8s. Capture8049 terminal0,1/1 en9s, CAPTURE_FILTER=case-detail: 14 PNG frescos, válidos y con hashes. Inspeccionadas normal377×852 y grande320×640/texto200: perfil visible y Donar fijo; captura sintética, no Android real ni aceptación completa. Incluye estilos679/680; no comparación automática contra Source. Regresión786676 y runtime677 previos. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop682: acción de aportar por gasto
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Inspeccionadas capturas681 case-detail-gallery-large y case-detail-expenses-large: reporte/Guardar/Donar visibles, tarjetas refluídas; no comparación total con Source. CSS donate-need-action6953 no active. PublicExpenseCard añade overlay transparente al botón amarillo; preserva disabled55%, enabled, remaining y chooseContribution/caseId. Gate89643 terminal0,26/26 rescue_test en6s; analyze18406 terminal0 limpio29.5s. Capturas681 son anteriores a esta línea; no presión RGBA específica, runtime ni SDK Stripe nuevo comprobado. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop683: presión del selector de aportación
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. CSS donate-amount-presets/icon-btn/cta no active; hover excluido por titular. ContributionAmountDialog presets y Dona ahora usan NoSplash/overlay transparente/duración0; iconos Regresar/Cerrar overlay transparente. Sin cambios de lógica financiera, parsePesos, selección, límites o navegación. Archivo formateado/copia sincronizada. Gate68560 terminal0,2/2 en1s (monto real/teclado/texto grande); analyze27441 terminal0 limpio20.2s. No presión RGBA específica ni SDKpago/runtime nuevo ni paridad total. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop684: selección visual del monto
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. CSS donate-amount-presets selected usa borde1.5 #f4c917 y sombra exterior spread1 #f7cb2d; cliente tenía borde2.5 #f7cb2d. Corregido con DecoratedBox de radio14 y sombra sin blur/spread1, borde1.5 en amarillo fuerte; estado inactivo conserva1.5/línea. Lógica de selección/céntimos intacta. Test local terminal0,2/2 en1s; analyze8466 terminal0 limpio10.1s. Capture94621 terminal0,1/1 en3s;2PNG frescos válidos/hash e inspeccionados. Normal muestra100 seleccionado/CTA; grande muestra presets en columna y contenido desplazable, CTA fuera del encuadre inicial, accesibilidad por teclado/scroll probada en test. No igualdad completa de píxeles Source, SDKpago o runtime Android nuevo atribuidos. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop685: controles compartidos de pago
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Source primary/secondary CSS212–218 sin active; hover excluido. ContributionButton aplica NoSplash/overlay transparente/duración0, conservando mínimo48, texto, padding, secundarios, disabled/busy, contenido estable/spinner y callbacks. Uso compartido incluye resultado de pago y Guardián; no lógica financiera editada. Gate66739 terminal0,19/19 en3s: payments_test, guardian_enrollment_amount_test, payment_case_resolution_test, incluida respuesta perdida/clave idempotente. Analyze5852 terminal0 limpio27.9s. No presión RGBA específica, nuevo runtime/capturas, Stripe SDK real ni aceptación global. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop686: cierres de cambio/cancelación Guardián
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. SourceApp3763/3802 usa dialog-close común. GuardianAmountDialog y guardian_cancel_dialog sustituyen Positioned/IconButton por DopmiDialogClose común, conservando pop null/false y blanco de48. Botón rojo cancelar usa NoSplash/overlay transparente/duración0. Consentimiento, validación monto, respuestas/cancelación real intactos. Gate33734 terminal0,11/11 en2s (diálogos, foco, texto grande/teclado); analyze36637 terminal0 limpio23.1s. No nuevo runtime/captura ni presión RGBA de estos diálogos, aceptación física o activación de dinero real. Codemagic solo al objetivo completo.
+
+## 2026-10-04 — Loop687: selección y cancelación Guardián
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. CSS plan-option sin active y plan-radio selected borde #f4c917. GuardianAmountDialog elimina splash/overlay de tarjetas y corrige borde del círculo seleccionado; fondo amarillo/punto negro conservados. CSS destructive-button #e6362c: GuardianCancelDialog corrige anterior #d52f26. Montos, consentimiento, estado/servidor y textos reales intactos. Gate99907 terminal0,11/11 en2s; analyze85011 terminal0 limpio26.8s. No captura/runtime actual ni igualdad radial-gradient exacta demostrada; la geometría del indicador necesita comparación renderizada. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop688: capturas Guardián y etiqueta Actual
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada al inicio. Capture65192 terminal0,1/1 en17s,30 PNG guardian frescos/validación/hash; inspeccionados cancelnormal/amountnormal/amountlarge. Detectada etiqueta Actual sin cápsula Source .plan-current4942. Implementado fondo#efede8/radio999/padding3×8; conserva reflujo bajo monto y datos reales. Tests72553 terminal0,11/11 en3s; analyze63312 terminal0 limpio8.2s. Recaptura4572 prefixguardian-billing-amount terminal0,1/1 en2s:2PNG posteriores al parche; normal reinspeccionado. Manifest diferencia capturas anteriores/posteriores al parche; capturas de otros estados no prueban este parche. No comparación exacta Source global ni Android instalado actualizado/SDK/cancelación remota atribuida. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop689: pulsación enviar mensaje
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Source .chat-compose button3809/.adopter-chat7728 sin active; cliente IconButton aún overlay Material. Añadido overlay transparente al botón Enviar/Reintentar; conservados composer, bloqueo busy/vacío, send, indicador de espera y colores por experiencia. Gate33734 terminal0,40/40 en13s: community_test, thread_search_test, rescuer_threads_test; analyze33703 terminal0 limpio32.9s. No envío a persona real, presión RGBA específica, captura actual, runtime instalado o autorización de conversación remota nuevos comprobados. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop690: conversación actual y Volver
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada al inicio. Capture22857 terminal0,1/1 en4s;7 PNG chat frescos/validación/hash. Inspeccionados chat-bubbles normal y chat-keyboard-large: burbujas/colores y composer visible al reflujo; teclado es viewInsets fixture, no teclado físico. Source topbar/control regreso sin active; añadido overlay transparente al Volver AppBar conversación. Ver detalle ya NoSplash/overlay0; no cambio de navegación/composer/repositorio. Gate14324 terminal0,33/33community en10s; analyze62835 terminal0 limpio45.3s. Capturas previas a la línea Volver, posteriores689 enviar; no RGBA sostenida específica ni comparación Source completa/Android real. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop691: enlaces sociales del perfil público
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. CSS social-links button5467 sin active. PublicProfileLayout enlaces Instagram/Facebook usan NoSplash/overlay transparente/duración0; mantienen geometría y openPublicSocialUrl real/errores. Cabecera y pestañas ya tenían feedback plano. Gate97400 terminal0,8/8 en2s: public_profile_layout_test/public_profile_adoption_card_test/public_profile_case_card_test, incluido caso revocado; analyze43490 terminal0 limpio23.8s. No nueva captura, presión RGBA específica, navegador externo instalado ni aceptación completa. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop692: acciones de casos en perfil público
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. SourceApp7506 usa primary-button/acciones sin active. PublicProfileCaseCard Ver caso y Donar usan NoSplash/overlay transparente/duración0; mantiene context.push, chooseContribution, enabled/remaining, privacidad de caso revocado y geometría. Gate35739 terminal0,28/28 en6s: public_profile_case_card_test/rescue_test; analyze23084 terminal0 limpio23.9s. No nueva captura, RGBA sostenida, SDK o runtime actual comprobado. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop693: tarjetas adopción y perfil actualizado
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. SourceApp7475/7482 round-save/primary-button sin active. PublicProfileAdoptionCard Guardar overlay0; Conoce la historia NoSplash/overlay0/duración0; conserva favorite real, busy/saved y widget.open. Gate92148 terminal0,6/6 en1s public_profile_adoption_card_test/public_profile_layout_test; analyze11776 terminal0 limpio26.6s. Capture43715 terminal0,1/1 en15s: 28 PNG public-profile frescos/validación/hash. Inspeccionados reference normal y adoptionslarge (CTA refluída visible); otros estados capturados no individualmente aceptados. No igualdad total contra Source, runtimeAndroid actual, presión RGBA ni revisión física. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop694: geometría de indicadores de galería
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. CSS pet-detail-dots6573 bottom28/gap6/activo8/inactivo7; cliente bottom8 corresponde al blanco táctil48 con padding interno y sí sitúa el punto visible a28. No producción editada. Reforzada prueba existente de galería pública: compara rect visible real con PageView (8×8/7×7, borde inferior28, separación6, grupo centrado). Mantiene comprobación navegación de foto/selección/foco y otros gestos. Gate14547 terminal0,26/26 en6s; analyze47952 terminal0 limpio30.8s. Demuestra geometría en fixture normal, no nueva captura/runtime ni igualdad global/tamaño200 para estas nuevas aserciones. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop695: regresión completa después de cambios678–694
+
+Commit probado9346cf3; produccióne92a35c. Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Flutter test --no-pub sesión65513 terminal0,786/786 en3m53s. Manifest357 fuentes/recursos lib/test/tool/assets todos idénticos proyecto/copia probada; sin ediciones durante gate. Python scripts/test_mobile_config.py terminal0,16/16 (0.125s). Supersede regresión786676 para esta fuente, incluye estilos de detalle/caso/pago/Guardián/conversación/perfil y aserciones geometría694. No nuevo APK/runtimeAndroid, publicación Play, SDKpago/compartir nuevos, aceptación visual completa ni física atribuidos. Codemagic permanece reservado al objetivo completo según titular. Dinero live no autorizado.
+
+## 2026-10-04 — Loop696: APK actual instalado en emulador
+
+Fuente dd49b8a/producción e92a35c con test694, referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Flutter build apk --debug --no-pub --dart-define-from-file=config.local.json58134 terminal0,assemble91.9s. Config privada GuardianTesttrue, entorno SDK/JDK/PUB_CACHE existente, sin secretos impresos. APK fresco255661064bytes,SHA25692a412ea6ec554fb3d4ca2324492cd8b1faf0bcf397c85f3c79356eac04075ad; aaptcom.mycompany.dopmi/0.2.0+2/min24/target36/arm64-v8a,armeabi-v7a,x86_64. adb install-r terminal0Success; sha256 base.apk instalado coincide exactamente. amstart6246 terminal0 pero Status timeout/LaunchStateUNKNOWN/WaitTime14668: no arranque exitoso por ese comando atribuido. Captura posterior muestra bienvenida viva; Adoptar→Explorar invitado→RockyDemo con foto→detalle→swipe vertical desplaza historia/cuidados/reporte y mantiene barra Guardar/Quiero adoptar. Cuatro capturas inspeccionadas/hash. Sin attach/hot restart en696; binario supersede656. Full786695 vigente para fuente. No prueba física/performance ni aceptación global/SDKpago/Play/Codemagic. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop697: franja inferior contrastada con Source vivo
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Vite6395 y Edge dopmi-parity697 abrieron /adoption/luna; mockup presenta Rocky por su resolución de datos de prueba. Viewport377×852, document.fonts.ready antes medición: screen-scroll paddingBottom100/height852; pet-detail height752; barY671/height81/bottom752; CTAx84/y686/273×52/bottom738. Screenshot Source inspeccionado y hash registrado; modo prueba superpuesto en cabecera, no cliente de producción copiado. La regla .screen-shell:not(.rescuer-theme)> .screen-scroll tiene más especificidad y preserva100 aunque otra regla detalle indique0. Por eso no retirar SizedBox100 cliente. Test25522 terminal0,16/16 detalle en6s, incluida geometría exacta con inset0/24 y acción fija al desplazar. No producción editada ni igualdad imagen/datos total atribuida. Browser cerrado; Vite CtrlC terminal1 deliberado. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop698: cierre y acciones de reporte
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. SourceReportDialog7262 usa dialog-close y primary/secondary sin active. ContentReportSheet sustituye cierre particular right4/top0 por DopmiDialogClose común; este acepta VoidCallback nullable para preservar busy disabled. Enviar/Cancelar NoSplash/overlay0/duración0. Sin cambiar servidor, sesión, reason/details, receipt comprobado ni espera/error reales. Gate75511 terminal0,14/14 en3s: content_report_flow_test/discovery_filters_test/guardian_cancel_dialog_test; analyze52403 terminal0 limpio56.3s. No captura actual, RGBA específico ni nuevo binario/runtime698; APK696 y full786695 previos. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop699: reporte capturado y bloqueo durante espera
+
+Fuente producción8c55e18; referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Capture42701 terminal0,1/1 en6s,7 PNG report frescos/validación/hash; inspeccionados reference normal/large/sendingnormal. Cierre visible, contenido refluído en grande, estado busy con controles atenuados. Reforzadas3 pruebas de reporte real componente/adopción/caso/perfil: durante Completer pendiente Enviar/Cancelar/Cerrar onPressednull; conservan motivo al fallo y sólo acusan receipt tras servidor. Gate15499 terminal0,3/3 en3s; analyze5113 terminal0 limpio19.7s. Producción no editada699. No presión RGBA específica, Source comparación total ni SDK/Androidnuevo; APK696 y full786695 anteriores698. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop700: notificaciones actuales
+
+Fuente aa5a41c/producción8c55e18; referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. NotificationTile/Back ya tienen NoSplash/overlay/feedback plano; CSS notification-card6144 y chip6149 corresponden a radio24/icono40/gap12/borde no-leída/sombra. Sin edición producción ni tests700. Capture28126 terminal0,1/1 en4s,7 PNG notificaciones frescos/validación/hash; inspeccionados reference normal/kindslarge, iconos3 y reflujo200 visibles. No capturas de carga/error nuevas por este prefijo. Gate15882 terminal0,11/11 en2s notifications_test/notification_count_repository_test: conteo real más allá primera página, invitado sin lectura privada, paginación200, reintento de read failure antes destino. Analyzer699 previo vigente sin ediciones de fuentes. No igualdad global Source/presión RGBA nueva/Android físico ni backend nuevo atribuidos. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop701: controles de ayuda y soporte
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. CSS help-topic-chip y help-support-card primary sin active; Source dialog primario plano. HelpCenter temas/contacto NoSplash/overlay0/duración0; HelpSupportDialog Enviar mensaje mismo estilo y cierre IconButton overlay0. Geometría del cierre específico preservada; no sustituirlo por otro sin medir contexto. Adjuntos, tema, envío/errores/espera y correo sin cambios. Gate36663 terminal0,14/14 en4s help_navigation_test/help_support_dialog_test/help_support_route_test; analyze60844 terminal0 limpio29.9s. No nuevo envío externo, captura/presión RGBA, runtimeAndroid ni aceptación global. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop702: título del centro de ayuda
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Source /help 377×852 con Inter cargado: h1 hereda letter-spacing -.02em, computado -.48px. HelpCenter añade letterSpacing -.48 al título24; no cambios de lógica. Captura final43452 terminal0,1/1 en13s; help-center final y Source inspeccionados. Test57879 terminal0,14/14 en5s; analyze93417 terminal0 limpio41.7s. Diferencias pequeñas en métricas de chips/tarjeta todavía no cerradas; no atribuir igualdad global. Browser cerrado y Vite detenido. Sin Codemagic hasta objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop703: preguntas frecuentes y enlaces de ayuda
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. HelpCenter FAQ/enlaces legales/Eliminar mi cuenta NoSplash/overlay0/duración0; Volver overlay0. FAQ sustituye Material chevron18 por SVG Source idéntico hash,20px/muted independiente del título seleccionado. Navegación/toggle/contenido real preservados. Copia inicial scratch falló por cwd, primera prueba anterior SVG no atribuida; copia absoluta y gate34692 terminal0,14/14 en8s vigente. Analyze11685 terminal0 limpio39.7s. Capture40272 terminal0,1/1 en12s,19 PNG frescos válidos/hash; adoption-large inspeccionado muestra reflujo y chevron. Sin aceptación total/Android nuevo/presión RGBA específica. Codemagic solo cuando objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop704: movimiento de perfil y descubrimiento
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. CSS perfil editar120ms ease/.97, métricas120ms/.98 e interruptor180ms/13px coinciden con implementación; no producción alterada. Reforzada prueba de editar con ScaleTransition renderizada a60ms, normal/reduced; conserva cancel sin navegación y tap único. Gate61085 terminal0,48/48 en10s en seis suites discovery_motion/rescuer_mode_control/rescuer_profile_hero/metrics/activity/profile_access_press: retorno corto/interrupción, salida ángulo/traslación independientes, interruptor ida/vuelta y acciones. Analyze21754 terminal0 limpio30.1s. Evidencia de componentes, no igualdad global ni aceptación Android/iOS instalada. Codemagic solo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop705: información básica
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Etiqueta/campo gap8→7 CSS2210; guardar y editar foto NoSplash/overlay0/duración0; Volver overlay0. Persistencia/validación/privacidad y busy sin cambios. Gate59255 terminal0,23/23 en8s identity_widgets/account_photo_widgets: conservar edición al fallo, toast solo tras éxito, misma subida reintentable. Analyze53094 terminal0 limpio23.1s. Capture72285 observado vivo durante compilación, después terminal0,1/1 en4s;5 PNG frescos válidos/hash, basic-info inspeccionado. Hallazgo siguiente: radio de campos cliente16 global vs Source14; todavía pendiente corrección acotada y foco/error. Sin aceptación global/Android nueva; Codemagic al objetivo completo y dinero live no autorizado.
+
+## 2026-10-04 — Loop706: radio de campos de información básica
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Theme acotado a _BasicInfoField define radio14 en border/enabled/focused frente16 global, CSS2213; conserva color y ancho de foco existentes. Gate35712 terminal0,23/23 en8s identity_widgets/account_photo_widgets. Formato aplicado y copiado scratch; analyze7117 terminal0 limpio34.1s. Capture48241 terminal0,1/1 en4s;5 PNG frescos válidos/hash, normal y teclado-large inspeccionados. Teclado es viewInsetsfixture, no prueba física. Validación existente en gate, sin captura nueva de error. Sourcefocus-visible usa outline exterior morado mientras cliente mantiene borde interior amarillo: diferencia concreta siguiente, no igualdad enfocada atribuida. Codemagic sólo al objetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop707: contorno de foco de información básica
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Vite94865/Edge707 Source vivo/settings/basic-info377×852: clickNombre focus-visibletrue, radio14/bordegris1/outline morado3 alpha.3/offset2. Cliente focusedBordergris1 + ReferenceFocusOutline(radius14,showForTouchFocustrue); reutiliza geometría exterior sin alterar taps. Importfaltante inicial corregido antes gates. Test48466 terminal0,23/23 en8s; analyze79125 terminal0 limpio36.7s. Capture32069 terminal0,1/1 en5s;5 PNG frescos válidos/hash; Sourcefocus y keyboard-large inspeccionados. Tecladofixture, error-statecontour y métricas verticales acumuladas aún requieren comparación directa. Browser cerrado y ViteCtrlC terminal1 deliberado. Sin aceptación global/Codemagic; dinero live no autorizado.
+
+## 2026-10-04 — Loop708: geometría medida y foco con validación
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. SourceVite83966/Edge708 vivo/settings/basic-info377×852/font-ready: camposx16,w345,h44,y224/306/388/470/552. Clienteantesy223/304/385/466/547; labelheight1.25 corrige a posiciones idénticas, igualdad JSON afirmada Python. Nuevo fixture basic-info-validation evidencia error real; capturaantes foco rodeaba mensaje. ReferenceInputBorder pinta contorno CSS sobre rectinput, preserva error rojo e interpolación entre bordes; sustituye wrapper de campo en esta pantalla. Capturafinalerror inspeccionada, mensaje fuera del foco. Nuevo export geometría por fixture. Inicial scaleoverride return demasiado amplio corregido antes gates. Test96949 terminal0,23/23 en9s; analyze54074 terminal0 limpio39.6s; capture20069 terminal0,1/1 en5s,6 PNG frescosválidos/hash. Primera medición bloque quedó en ramaadoption-drag y movido antesgatefinal; primerlaunchcwd sinpubspec no atribuible. Browser98423 cerrado terminal0; ViteCtrlC terminal1 deliberado. No igualdad global/Android nueva/Codemagic; dinero live no autorizado.
+
+## 2026-10-04 — Loop709: regresión completa y colección actual
+
+Fuente1ee7abd, referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Manifest358 lib/test/tool/assets idénticos root/scratch; pubspec.yaml/lock/analysis_options también iguales. Sin cambios de fuentes durante gates ni al cierre. Full28752 terminal0,786/786 en3m25s; config16/16 terminal0. Capture48670 terminal0,1/1 en3m06s;415 fixtures/47rutas esperados, todos PNG frescos/PILválidos/dimensiones/hash, metadata archiva conjunto completo. Parserinicial393 omitió coma final multinea, corregido415 antesmanifest. Sólo basic-info normal inspeccionado aquí; no aceptación415. Supersede colección667 y full695 para fuente actual708. ADB sóloemulator5554; APK696 previo698+, no Android físico nuevo. Siguiente concreto: volver basic-info centro28 vsSourceTopbar36. Sin Codemagic hastaobjetivo completo; dinero live no autorizado.
+
+## 2026-10-04 — Loop710: cabecera de información básica medida
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Vite76180/Edge710 Source/settings/basic-info377×852/font-ready: Backx16/y13.5/40×40 centro36/33.5; h1x107.46875/y22.25/w162.0625/h22.5,letterSpacing-.36. Clienteleading60/left12 y títuloheight1.25/-.36. Telemetría actual confirma centros36/33.5 y188.5/33.5 exactos; ancho162.05835 delta.00415, linebox23 vs22.5 sin igualdadpíxeltotal atribuida. Gate24311 terminal0,23/23 en9s; analyze78454 finalterminal0 limpio30.8s trasextendertelemetría. Capture39347 terminal0,1/1 en4s;6PNG frescosválidos/hash, Source y normalfinalinspeccionados. Browsercerrado/ViteCtrlC terminal1 deliberado. Siguientecandidato anchoEditarfoto~2px: medir aporte de bordeCSS antescorregir. Full786709 pre710; no Android nuevo/Codemagic. Dinero live no autorizado.
+
+## 2026-10-04 — Loop711: anchos de botones medidos
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. SourceVite50882/Edge711 vivo/fonts-ready: editfoto86.671875×40 x257.328125/y117; temas ayuda nueveanchos registrados. Flutterantes84.66406/edit y202.34677/primerchip frente204.359375Source. Paddinghorizontal foto12→13 ychip14→15 compensa2px del bordeCSS. Finalfoto86.66406 delta.00781; nueveanchoshelp delta<.02 afirmadoPython. Yhelp191/235/279/357/401 frente191.6875/235.6875/279.6875/358.28125/402.28125 todavía pendiente. Sóloancho corregido, no elevar geometriatotal. Test50197 terminal0,37/37 en13s; analyze29817 terminal0 limpio43.8s. Capturafinalbasic57491 terminal0,1/1 en7s; help29653 terminal0,1/1 en12s;25PNG frescosválidos/hash,helpnormalinspeccionado. Telemetría anchos añadida. Browsercerrado/ViteCtrlCterminal1 deliberado. SinAndroidnuevo/aceptaciónglobal/Codemagic; dinero live no autorizado.
+
+## 2026-10-04 — Loop712: Mis match y estado vacío
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Favoritos card/contact/Volver/Ordenar/Ver más/Explorar feedbackplano; Volver SVGSource22 en vezMaterial24. Confirmación/chat/orden/listacompeta/search mantenidos. SourcevivoVite43610/Edge712 /messages vacío377×852/font-ready: título18,78/341×46,empty18,168.796875/341×236.78125,Explorar117.859375,353.578125/141.265625×48. Imágenes decorativas mismohashToby; diferencia encuadre porbordeCSS3 dentrode78×92. FlutterContainerborder3/innerClip11 reproduce72×86, degradadocentraltop.1→.08Source. Antes/finalempty y Sourceemptyinspeccionados; match-allfinalfallback sinfoto datosfixture, noSourcealligualdad. Gate4811 finalterminal0,38/38 en13s; analyze27612 finalterminal0 limpio44.7s; capture39053 finalterminal0,1/1 en8s,14PNGfrescosválidos/hash. Sourcebuttonsorting/backlayout siguependiente comparar con favoritosSourcevivo. Browsercerrado/ViteCtrlCterminal1deliberado. SinSDKpago/Androidnuevo/aceptaciónglobal/Codemagic; dinero live no autorizado.
+
+## 2026-10-04 — Loop713: favoritos completos medidos
+
+Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. SourceVite40319/Edge713: modoemptyoff medianteUI, Me gustaRocky→Favoritos→Ver más. Viewport377×852/font-ready: back18,70/40×40 yglifo27,79/22×22; sortlabel18,126/h20,gap8,valortop130; grid18,172/341×107,card107×107. Clienteajusta glifo(-4,-4) dentrotarget48, sortRowbaseline/gap8 ypaddingtop2/bottom26 conbutton48 superpuesto; largeWrap ysemánticaOrdenarMásrecientes/antiguos. Gridcardpadding4→0 sóloall, GridViewpadding0 elimina82automático inferior. Telemetría igualglifo/grid/card afirmadaPython; captiondeltas<.05. Testsreforzados target48, labelsaccesibles,paginacióncompleta/ordenpersistido. ErrorUTF8 intermedio reconstruido desdeHEADpropio limpio+diff yguardadoUTF8; medidainicialTooltip40 corregida IconButton48; SemanticsHandle teardown tardío corregido finally. Gate49717 finalterminal0,38/38 en12s; analyze12481 finalterminal0 limpio27.6s; capture3415 finalterminal0,1/1 en9s,14 PNGfrescosválidos/hash. Source/finalall inspeccionados, clientefixtureLuna sinfoto vsSourceRocky noigualdadpíxel/datos total. Browser94473 terminal0cerrado/ViteCtrlCterminal1deliberado. SinAndroidnuevo/aceptaciónglobal/Codemagic; dinero live no autorizado.
+
+### 2026-10-04 — Parity loop 714: Match footer and horizontal drag
+
+- Reference `irlanda/apoyar-detalle-perfil` revalidated at `a3c969cd9103fd46dc5cd886999912526ce75efb`.
+- Source DOM at 377×300 with fonts ready: scroll container padding-bottom 100, match page padding-bottom 88, scrollHeight 679, scrollTop 379, last chat content bottom 111.96875. Align donor Match list bottom padding from 110 to 188; preserve real search and navigation.
+- New gesture regression: dragging the horizontal favorites rail moves its scroll position, keeps `/messages`, and opens neither a pet route nor the contact confirmation.
+- Scratch synchronized for the two edited files. Targeted community/thread search/match row tests: 39/39, terminal session 93256 exit 0 (12s). Analyze: session 52689 exit 0, no issues (36.1s). Match capture: session 11542 exit 0, 1/1 (8s), 14 valid PNGs with hashes archived in `docs/design-reviews/parity-loop714/captures.json`; only final normal empty capture visually inspected in this loop.
+- This is component evidence, not full visual/device acceptance. Full gate remains loop709 and predates later edits. No physical Android device acceptance, Codemagic build, or Play publication claimed. User requests Codemagic only when the whole objective is complete.
+
+### 2026-10-04 — Parity loop 715: Help group line height
+
+- Reference branch revalidated at `a3c969cd9103fd46dc5cd886999912526ce75efb`. Fresh Source DOM at 377×852, fonts ready, confirms group labels line-height 18.6px, measured height 18.59375 and y 165.09375 / 331.6875.
+- Set help group label height to 1.55 at font size 12, matching Source inherited paragraph styling while allowing natural growth at enlarged text. No FAQ, financial rule or support behavior changed.
+- Chip rows move from y 191/235/279/357/401 to 192/236/280/359/403. Source rows 191.6875/235.6875/279.6875/358.28125/402.28125. Absolute differences improve from .6875 and 1.28125 to .3125 and .71875 respectively; fractional line-box rounding remains, so exact visual parity is not claimed.
+- Help navigation/dialog/route tests session 48637 exit 0: 14/14 (4s), including 2.0 text scale. Analyze session 98608 exit 0: clean (39.5s). Help captures session 65499 exit 0: 1/1 (13s), 19 valid PNGs hashed; large initial help screen visually inspected. Geometry archived in this review folder.
+- Previous loop714 made verified progress (commit `672e541`). Objective remains active; global visual, motion and device acceptance is incomplete. No Codemagic until objective completion.
+
+### 2026-10-04 — Parity loop 716: Current complete mobile regression
+
+- Prior loop715 made production progress (`dd5a338`). Current tested commit `dd5a338`; reference `irlanda/apoyar-detalle-perfil` revalidated at `a3c969cd9103fd46dc5cd886999912526ce75efb`.
+- All 361 files in lib/test/tool/assets plus pubspec.yaml/lock/analysis_options.yaml were byte-identical between repository and scratch before and after the gate. Manifest and complete Flutter test log archived in `docs/design-reviews/parity-loop716`.
+- `flutter test --no-pub`: terminal session 93735 exit 0, 787/787 passed in 3m41s. This supersedes loop709 full mobile regression for the current source. `python scripts/test_mobile_config.py`: exit 0, 16/16 passed. No production files edited during gate.
+- ADB currently lists only emulator-5554. No new installed APK, physical-phone acceptance, Codemagic or Play publication claimed. Existing collection has 415 fixtures, but neither this functional gate nor capture inventory proves global visual/motion parity.
+- Next visual work remains current-state comparisons across unaccepted route families and installed motion/gesture review. Keep goal active; send Codemagic only after complete objective, as requested.
+
+### 2026-10-04 — Parity loop 717: Help header typography
+
+- Prior loop716 completed authoritative full-regression evidence. Reference branch revalidated before and after at `a3c969cd9103fd46dc5cd886999912526ce75efb`.
+- Fresh Source DOM `/help`, 377×852, fonts ready: title Centro de ayuda x119.015625/y22.25/w138.953125/h22.5; CSS size18/line22.5/letterSpacing-.36. Set client title height1.25 and letterSpacing-.36, preserving accessible scaling and existing navigation.
+- Added capture telemetry. Final client title x119.03125763/y22/w138.93748474/h23: center188.5/33.5 matches Source center188.4921875/33.5 within .008px; width delta .01564px. Flutter line box is .5px taller, so pixel equality remains unproven.
+- Help navigation/dialog/route tests session96396 exit0:14/14 in5s, includes text2.0. Analyze19105 exit0 clean45.8s. Help captures74392 exit0:1/1 in13s,19 PNGs verified and hashed; final normal screen visually inspected. Header geometry archived.
+- Full mobile gate loop716 (787 tests) predates this scoped typography edit. No installed-device check or global acceptance claimed. Codemagic remains deferred until objective completion; goal active.
+
+### 2026-10-04 — Parity loop 718: Standard settings back alignment
+
+- Prior loop717 changed production typography and verified it. Reference branch revalidated at start/end `a3c969cd9103fd46dc5cd886999912526ce75efb`.
+- Source `/settings` 377×852 fonts-ready: back button x16/y13.5/40×40, image20, center36/33.5. Standard settings previously uses leading62/pad14, centering icon38. Scoped standardSettings leading60/pad12 centers icon36; rescuer-specific leading remains unchanged.
+- New capture telemetry verifies final visible icon center36/34 and target48×68. Horizontal alignment is exact; vertical half-pixel difference remains and is not claimed resolved. Source title already matches production typography. Real payment, privacy, legal and saved rows retained.
+- Tests38103 exit0:19/19 in4s (rescuer profile, settings details, verification). Analyze67515 exit0 clean33.5s. Capture8919 exit0:1/1 in5s after compilation; four PNGs verified/hashed and normal screen inspected. No edits while gate ran. Geometry archived here.
+- Goal remains active; full visual/motion/device acceptance incomplete. Full787 loop716 predates717/718. No Codemagic or Play publication.
+
+### 2026-10-04 — Parity loop 719: Settings back touch feedback
+
+- Previous loop718 made verified production alignment progress. Reference revalidated before/after at `a3c969cd9103fd46dc5cd886999912526ce75efb`.
+- Source icon-button CSS has transparent background and hover-only fill, no active rule. User excludes hover on phones. Scoped standard settings back IconButton overlay to transparent.
+- Added held-back capture: actual InkWell pressed state asserted at150ms, route remains/settings before and after gesture cancellation. Final resting/held PNGs have zero pixel difference (PIL ImageChops), held screen visually inspected. Five settings PNGs verified/hashed. Global fixture count increases415→416, not an acceptance count.
+- Capture80768 exit0,1/1 in5s; analyze48513 exit0 clean51s. Existing19 settings/profile tests passed on priorloop718; no new independent behavioral suite run for this low-impact feedback change. Full787 loop716 predates scoped later edits.
+- Goal active, full visual/motion/device acceptance incomplete. No Codemagic until objective completion, no live money activation.
+
+### 2026-10-04 — Parity loop 720: Saved header alignment
+
+- Prior loop719 changed and verified touch feedback. Reference branch revalidated at `a3c969cd9103fd46dc5cd886999912526ce75efb`.
+- Fresh Source `/saved` 377×852/fonts ready: Mis mascotas title rect129.75/22.25/117.484375/22.5, letterSpacing-.36; back image26/23.5/20/20 center36/33.5. Client title previously height1.2/spacing0, default leading56 centers back28. Set title height1.25/spacing-.36 and leading60/padding12, maintaining48px target. Transparent back overlay follows Source touch styling, excluding hover as requested.
+- Community test55438 exit0:34/34 in18s (saved pagination/removal/public rescuer access included). Analyze65610 exit0 clean46.1s. Capture21738 exit0:1/1 in6s; 10 saved PNGs verified/hashed; normal adoption view inspected. No final numeric client title telemetry added, so exact text geometry is unproven. Real kind menu retained.
+- Goal active, global visual/motion/device acceptance remains incomplete. No Codemagic, no live money.
+
+### 2026-10-04 — Parity loop 721: Saved adoption row touch feedback
+
+- Prior loop720 changed production headers and verified community/captures. Reference branch revalidated start/end `a3c969cd9103fd46dc5cd886999912526ce75efb`.
+- Inspected Source App.tsx saved-row markup and styles.css4527–4530:70px image/radius16, gap10, border bottom, transparent name button, icon-button with hover only. Source has no touch active/ripple rule for these controls.
+- Scoped adoption-row InkWell to NoSplash/transparent overlay and removal IconButton to transparent overlay. Preserve unavailable-content route guard, pending-removal disabling, backend mutation and failure handling. Geometry and rescuer/case presentation unchanged.
+- Community25603 exit0:34/34 in13s, including saved pagination, pending removal and rescuer access. Analyze67359 exit0 clean57.6s. No new screenshots or held-render proof captured in this loop; current normal layout evidence is loop720. Full row geometry/data-equivalent visual acceptance remains pending.
+- Goal active, no Codemagic before complete objective. Money test-only.
+
+### 2026-10-04 — Parity loop 722: Saved empty CTA feedback
+
+- Prior loop721 changed row feedback and completed34 tests/analyze. Reference `irlanda/apoyar-detalle-perfil` revalidated at `a3c969cd9103fd46dc5cd886999912526ce75efb`.
+- Source primary-button CSS has normal yellow and hover-only color, no active feedback. User excludes hover on phones. Scoped empty Saved CTA to NoSplash/transparent overlay/zero animation duration. Existing navigation callback preserved.
+- Capture65568 exit0:1/1 in7s; 10 saved PNGs verified/hashed. Normal and enlarged empty adoption images inspected. Enlarged initial view requires scrolling to reach CTA; initial screenshot does not prove access or navigation. No held-button rendering evidence collected here. Analyze99323 exit0 clean66s.
+- Full visual/gesture acceptance remains unproven. Next verify enlarged empty CTA scroll/access rather than infer it from captures. No Codemagic before completed objective. Money remains test-only.
+
+### 2026-10-04 — Parity loop 723: Enlarged saved empty action flow
+
+- Prior loop722 changed production CTA feedback and generated verified captures. Reference branch revalidated before/after at `a3c969cd9103fd46dc5cd886999912526ce75efb`.
+- Added meaningful regression for the previously unproven enlarged empty CTA:320×640/text2.0, saved repository empty, scroll to actual FilledButton, hitTestable, offset>0; hold150ms then cancel asserts exact `/saved` route and unchanged saved scroll offset. Subsequent tap opens actual router `/adoptions` with no widget exception.
+- Community1821 exit0:35/35 in11s. Analyze85221 exit0 clean32.2s. No production change required; existing scroll/navigation passes. Logs archived. This proves widget-level access/cancellation/navigation, not native phone gesture feel or full visual parity.
+- Goal active; full mobile test count now expected788 but no new full gate run claimed. No Codemagic before complete objective, no real-money activation.
+
+### 2026-10-04 — Parity loop 726: Saved remove glyph position
+
+- Prior loop725 verified held render/cancellation. Reference revalidated start/end a3c969cd9103fd46dc5cd886999912526ce75efb.
+- Source377×852/fonts ready, local mock empty toggle off and Rocky liked: saved row16/144.59375/345/95; name button96/171.59375/215/40; remove40px button321/171.59375;20px icon331/181.59375 center341/191.59375.
+- New client telemetry confirms before icon center337/191, name96/173. Translate only adoption remove SVG+4px horizontally; target and behavior remain intact. Final geometry center341/191, name96/173. Horizontal equality proven, vertical difference .59375px and text/button linebox differences still pending. Different photo/name fixture prevents full visual-equivalence claim.
+- Capturebefore17460 exit0,1/1 in6s; final33635 exit0,1/1 in6s, normal final inspected. Analyzer9224 exit0 clean38.7s. No new behavioral test run for glyph-only adjustment; existing community35 pass723 predates this change. Installed Android724 predates new adjustment. No native acceptance or Codemagic; goal active.
+
+### 2026-10-04 — Parity loop 727: Saved row text inset
+
+- Prior726 made measured glyph correction. Reference revalidated start/end a3c969cd9103fd46dc5cd886999912526ce75efb.
+- Source fresh377×852/font-ready/nonempty local mock: name strong16/w700/normal linebox20, x102/y172.59375; detail11/w400/normal linebox14 x102/y196.59375. Name button UA padding1px6px, gap4. Prior client name x96, so previous button-level x96 did not prove visible text alignment.
+- Apply adoption name padding horizontal6 and vertical5 (maintains48 normal target from20+4+14+10). Add2px spacer before48px removal target so name allocation matches Source215px while keeping larger removal target. Existing glyph shift+4 preserved. Final telemetry nameX102, iconCenterX341 exact; nameY173/iconCenterY191 retain vertical fractional differences .40625/.59375. Target48 is layout-derived here, not separately measured by tool. No font metrics changed.
+- Community58585 exit0:35/35 in10s. Analyze50918 exit0 clean33.9s. Saved capture12211 exit0:1/1 in6s, final geometry archived. No final image visually inspected this loop, no full acceptance inferred from telemetry. Installed724 predates726/727.
+- Goal active; no Codemagic until complete objective, money remains test-only.
+
+### 2026-10-04 — Historial: encabezado compartido
+
+Referencia inicio/cierre a3c969cd9103fd46dc5cd886999912526ce75efb. Source /history377×852/fonts ready Mi historial line22.5/spacing-.36. ContributionFrame compartido carecía de height/spacing explícitos; se establece1.25/-.36 a18px y overlay transparente en regreso, conservando callback nullable y colores rescatista.
+
+Test76457 exit0,30/30 en4s: payment_history_screen/row/payments/payment_methods_feedback. Analyzer4212 exit0 limpio31.9s. Capture89307 exit0,1/1 en3s: payment-history prefix. Estado vacío final inspeccionado. No telemetría numérica de título final ni aceptación del conjunto de todos los usos de ContributionFrame. Funciones/estados financieros reales preservados; no se iguala una simulación financiera.
+
+Anterior729 produjo fixture con textos equivalentes y evidencia de diferencias. Objetivo activo; aceptación visual/moción/nativa global pendiente. Sin Codemagic ni dinero real. Android instalado724 es anterior a este cambio.
+
+### 2026-10-04 — Movimiento renderizado del interruptor
+
+Referencia inicio a3c969cd9103fd46dc5cd886999912526ce75efb; componente productivo00d553c ya usa CSS180ms/ease/13px. Nueva prueba mide DecoratedBox de la perilla debajo del Transform, no el origen externo del AnimatedContainer.
+
+Final68219 exit0,11/11 en3s: dos pruebas normal/reduced y payment_history_screen. A90ms desplazamiento normal13*Curves.ease(.5)=10.425899px, tolerancia.02; final13 tolerancia.001; reduced13 inmediato. Gesto cancelado conserva posición y callback0; tap llama una vez. Target48×48 medido. Verifica render Flutter, no teléfono físico.
+
+Inicial23162 falló por medir contenedor exterior, ambos deltas0; corregido finder al hijo visible. Analyzer66171 limpio24.4s anterior a ese cambio de finder. No código productivo cambiado. Objetivo activo, aceptación global pendiente y sin Codemagic. Anterior732 avanzó implementación del interruptor.
+
+### 2026-10-04 — Perfil público actual
+
+Referencia inicio/cierre a3c969cd9103fd46dc5cd886999912526ce75efb. Source /rescuer-profile/reference377×852/fonts ready usa fallback Diego F.: title125.125/218/126.75/32.5, spacing-.52. PublicProfileHero26/1.25/-.52 coincide en estilos. No cambio productivo justificado por estos datos.
+
+Test30954 exit0,9/9 en3s:layout/case/adoption/avatar recovery. Capture24139 exit0,1/1 en2s: public-profile-reference normal/large. Normal inspeccionada, fixture María R. con datos/foto distintos a Source; no igualdad visual total atribuida ni nueva aceptación de movimiento.
+
+Anterior733 verificó desplazamiento renderizado del interruptor. Objetivo activo; próxima comparación del perfil requiere identidad/datos equivalentes. Dinero test-only, sin Codemagic. No analyzer repetido sin cambio de código.
+
+### 2026-10-04 — Regresión móvil completa actual
+
+Fuente fe5789c. Referencia al inicio a3c969cd9103fd46dc5cd886999912526ce75efb. 363 archivos lib/test/tool/assets y configuración pubspec/lock/analyzer comparados idénticos con scratch antes del gate; se revalida al registrar manifest.
+
+flutter test --no-pub sesión30647 terminal exit0:790/790 en3m24s. Configuración móvil python scripts/test_mobile_config.py sesión50302 exit0:16/16. Supersede full716/787 para fuente actual. No modificaciones de código durante gate. Log y manifiesto archivados.
+
+Esta regresión no acredita igualdad visual global, aceptación nativa ni publicación. Android instalado724 anterior a recientes cambios; objetivo activo, sin Codemagic hasta terminar. Dinero test-only. Anterior735 corrigió spacing de redes y verificó geometría con identidad equivalente.
+
+### 2026-10-04 — Evidencia: respuesta de controles
+
+Referencia inicial a3c969cd9103fd46dc5cd886999912526ce75efb. Inspección ExpenseFrame encontró IconButtons atrás/cierre con overlay Material por defecto. Overlay transparente siguiendo lenguaje táctil de icon-button de referencia; aplicación a formulario real es inferencia de estilo compartido, no comparación directa del mismo formulario Source. Callback nullable, iconos, posiciones y bloqueo preservados.
+
+Test57085 exit0,35/35 en8s: expense_attachment_press/review_press/field. Analyzer38922 exit0 limpio36.4s. No nueva captura de botones presionados ni prueba específica de cierre/bloqueo en este loop; no aceptación total de formulario. Gate736/790 predates este cambio puntual.
+
+Anterior736 completó regresión global actual. Objetivo activo, aceptación visual/movimiento/nativa incompleta; sin Codemagic y dinero test-only.
+
+### 2026-10-04 — Evidencia: cancelación y bloqueo verificados
+
+Referencia inicial a3c969cd9103fd46dc5cd886999912526ce75efb. Anterior737 ajustó respuesta visual de header ExpenseFrame; se añade prueba real de callbacks con320×640/text1 y2, enabled/locked.
+
+Gesto150ms/cancel en atrás y cierre conserva rect y callbacks0. Enabled tap invoca atrás1/cierre1; tap fuera invoca cierre2. Locked callbacks null: atrás/cierre/fondo no ejecutan acciones. No excepciones/overflow. El test mide comportamiento widget, no teléfono físico ni igualdad de píxeles durante presión.
+
+Test38705 exit0,19/19 en7s:expense_frame_controls cuatro variantes y expense_field. Analyzer85886 exit0 limpio20.5s. No código productivo cambiado, no nueva captura. Full736/790 predates estas cuatro pruebas y737. Objetivo activo, dinero test-only, sin Codemagic hasta terminar.
+
+### 2026-10-04 - Loop740: publicacion y lectura tactil
+
+Ver docs/design-reviews/parity-loop740/README.md y manifest.json. Referencia a3c969cd9103fd46dc5cd886999912526ce75efb; fuente e737732. Captura70518 exit0:14 PNG actuales, solo fotos normal y revision grande inspeccionadas. Suite50259 exit0:30/30, analyzer59385 limpio. Nueva prueba tactil permite leer inicio/final del aviso a320x640/texto200% con envio accesible. Sin cambio productivo ni aceptacion nativa/global. Loop739 e737732 corrigio tinta de Cancelar, seis pruebas aprobadas. Codemagic diferido hasta objetivo completo.
+
+### 2026-10-04 - Loop741: frames intermedios Source y Flutter
+
+Ver docs/design-reviews/parity-loop741/README.md. Source a3c969c revalidado; fuente4f49d80. Gate52055 exit0,55/55 de movimiento/gestos. Runtime Edge onboarding450ms: opacity0.961383/Y0.386175px a225ms. Test Flutter compara valores medidos independientes; final onboarding9/9 exit0. Sin cambio productivo ni aceptacion nativa/global. Codemagic espera cierre del objetivo.
+
+### 2026-10-04 - Loop742: historial alineado al borde
+
+Ver docs/design-reviews/parity-loop742/README.md. Source a3c969c medido en runtime: fila x17/ancho343, cuerpo x93. Padding1 dentro de Material corrige cuerpo previo92. Suite87275 exit0:27/27; final72716 exit0:9/9 verifica x93. Capture32940 exit0 y analyzer limpio19.5s. Solo normal final inspeccionado; sin aceptacion global/nativa ni Codemagic.
+
+### 2026-10-04 - Loop743: regresion y coleccion global actual
+
+Fuente432ecb2, Source a3c969cd9103fd46dc5cd886999912526ce75efb inicio/cierre. 364 fuentes iguales root/scratch y sin cambios antes/despues. Full6298 exit0:795/795 en4m13s; config12842 exit0:16/16. Capture81992 exit0:1/1 en3m06s; 418 PNG actuales/47 rutas verificados PIL/hash/fecha/dimensiones. Ver docs/design-reviews/parity-loop743. Solo contacto normal inspeccionado/contrastado con Source en este loop; no aceptacion visual de los otros417. Supersede gate736/790 y coleccion709/415. ADB solo emulator5554, APK724 anterior. PR6 open/draft remotoe4f4e858 sobreba9f897 verificado API/refs. Sin push/Codemagic ni dinero real; paridad global/nativa sigue abierta.
+
+### 2026-10-04 - Loop744: revision de24 pantallas normales
+
+Ver docs/design-reviews/parity-loop744/README.md para nombres y limites. Inspeccion de24 primeros viewports actuales detecta el mismo inset de borde ausente en GuardianHistoryPreview. Padding1 aplicado; test billing verifica texto x93 conforme Source compartido. Test25395 exit0:16/16; capture67824 exit0:1/1 y analyzer limpio19.5s. Normal final inspeccionado; full743/795 antecede este cambio. No aceptacion global/estados grandes/nativa ni Codemagic. Source a3c969c inicio/cierre, dinero test-only.
+
+### 2026-10-04 - Loop745: palabras completas en Configuracion ampliada
+
+Inspeccion12 capturas200% detecta Informacio/n en fila estrecha. RescuerNavigationRow standardSettings ahora separa iconos/copia a texto grande/ancho<300, sin reducir fuente ni tocar layout normal. Gate67840 exit0:10/10, prueba con Inter/word boxes/cancel/enabled. Capture22462 exit0:cincoPNG actuales; normal identico a743 por SHA256 y grande final inspeccionado; analyzer limpio6.1s. Ver docs/design-reviews/parity-loop745. Source a3c969c inicio/cierre. Adaptacion accesible, no comparacion directa Source200%. Full743 antecede744/745. Objetivo activo, sin Codemagic/dinero real.
+
+### 2026-10-04 - Loop746: pregunta completa en editor de avances
+
+Inspeccion12 estados200% detecta etiqueta truncada en editor nuevo. InputDecoration.label ahora TextmaxLines3, conserva estilo/flotacion/controlador. Gate56694 exit0:10/10, dos pruebas nuevas con Inter verifican etiqueta completa y texto conservado/sin escritura automatica. Capture73865 exit0:dosPNG, normal identico a743/hash, grande inspeccionado; analyzer limpio32.3s. Ver docs/design-reviews/parity-loop746. Source a3c969c inicio/cierre; editor real adicional sin contraparte directa localizada. Full743 antecede744-746. Objetivo activo, sin Codemagic/dinero real.
+
+### 2026-10-04 - Loop747: rutas normales restantes y separacion de etiqueta
+
+Inspeccion25 vistas normales adicionales; indice50 representativas/47 rutas de capturador (incluye24 de744 y pagos742). No todos418 estados ni auth/Source exacto/native. Recaptura de editor revela etiqueta multilinea sobre primera linea a200%: prueba86025 falla con overlap13px. Paddingtop36 solo grande corrige; suite36738 exit0:10/10, captura64047 exit0:6 PNG, normalesnew/draft/error iguales a743 por SHA256; draftlarge inspeccionado y analyzer limpio8.3s. Ver docs/design-reviews/parity-loop747. Source a3c969c inicio/cierre. Objetivo activo; sin Codemagic ni dinero real.
+
+### 2026-10-04 - Loop748: teclado, APK local y gate completo
+
+Inspeccionadas9 capturas con viewInsets sinteticos, sin defecto nuevo observado; no teclado nativo. Suite81595 exit0:82/82. APK debug16795 exit0 sobre5fc3822; instalado en emulador30258 exit0/Success, version0.2.0/build2 confirmada. Samsung SM-S938B reconectado: Play2.3.3/build286, certificado distinto de debug; app/datos del telefono intactos. Apertura manual solicitada por rechazo automatico previo de lanzamientoADB sin motivo especifico; no nativa aceptada. Full85630 exit0:801/801 en4m54s;365 archivos root/scratch iguales11270 exit0. Supersede full743/795, no su coleccion visual. Source a3c969c inicio/cierre, refs remotas e4f4e858/ba9f897. Ver docs/design-reviews/parity-loop748. Objetivo activo, sin Codemagic/push/dinero real.
+
+### 2026-10-04 - Loop749: tipografia de preguntas de ayuda
+
+Source/help runtime377x852 confirma FAQInter700/16px, lineas20px y apertura sintransicion/rotacion. Text de pregunta Flutter heredaba tamanoMaterial menor; fija16/1.25, sin cambiar respuestas ni reglas reales. Final9919 exit0:37/37, analyze33502 limpio65.9s; recaptura15258 exit0 normal/grande, ambas inspeccionadas. Primera9429 corrio fuente anterior por copia relativa fallida, no valida parche. Se anadefixture normaladoption:419 previstas, coleccion743/418 anterior; full748/801 y APK748 anteriores a este ajuste. Source a3c969c inicio/cierre. Emulador sin Dopmi en primerplano, apertura manual pendiente; sin Codemagic/nativa/global/dinero real. Ver docs/design-reviews/parity-loop749.
+
+### 2026-10-04 - Loop750: gestos de preguntas de ayuda
+
+Source/help ejecutado confirma una respuesta abierta, segunda sustituye, retocar cierra y tema seleccionado vuelve al hint. Dos tests nuevos normal/200% verifican mantener150ms/cancelar sin abrir, tap inmediato, sustitucion/cierre y topicreset en rutaFlutter real. Fallos iniciales de localizacion lazy corregidos con scroll direccionado y hint visible, sin quitarasserts. Final80623 exit0:4/4 en4s; produccion sin cambios. Full748/801 anterior749/750, no803 global atribuido. Source a3c969c inicio/cierre. Browser propio cerrado; APK/nativa/global pendientes. Sin Codemagic/dinero real. Ver docs/design-reviews/parity-loop750.
+
+### 2026-10-04 - Loop751: accion Entendido en soporte
+
+Source/help recibido ejecutado: Entendido amarillo/48px/transition0/transformnone. Cliente recibido neutraliza ripple/overlay/animacionMaterial como formulario, sin alterar servidor ni promesas de respuesta. Testpendiente existente ahora mantiene150ms/cancela sin cerrar, tapcierra y requestsigue1. Gate87185 exit0:12/12; capture80208 exit0:1/1 en3s/dosPNG normal200 inspeccionados/hash; analyze80208 limpio42.2s y diffchecksinerror. Source a3c969c inicio/cierre. Emulador sin Dopmi en primerplano, manualpending. Full748/801 y APK748 anteriores749/751; sinCodemagic/global/nativa/dineroreal. Ver docs/design-reviews/parity-loop751.
+
+### 2026-10-04 - Loop752: borde y altura del adjunto de soporte
+
+Source/help con fixturemilo local muestra preview305x140 incluyendo borde1/boxsizingborderbox/cover. Prueba43022 exit1 reproduce142cliente frente140; height140 pasa al contenedor exterior conservando imagen/borde/radio/cover. Final69263 exit0:12/12, reintento conserva uploadID/ruta. Capture8182 exit0:1/1 en5s/dosPNG inspeccionados normal200/hash; analyze8182 limpio42.5s/diffchecksinerror. Source a3c969c inicio/cierre. No tests nuevos, Source envio simulado no servicio verificado. Full748 yAPK anteriores749/751/752; nativa/global siguenabiertas. SinCodemagic/dineroreal. Ver docs/design-reviews/parity-loop752.
+
+### 2026-10-04 - Loop753: reporte conserva borrador al tocar fondo
+
+Source/publicMariaR ejecutado con mouse4,4 conserva reporte/borrador; Flutterbarriertrue lo cerraba. barrierDismissiblefalse alinea gesto, Cancelar/Cerrar/Back y guardaspendiente conservados. Testsnormal200 verifican borrador trasfondo y cancelacionexplicita. Gate53508 exit0:13/13 en3s/analyze limpio51.1s. Capture48959 exit0:7PNG previos a barrera/layoutinmutable;6normal200 inspeccionados. Acción error200 pegada al borde detectada, medicionpendiente; noaceptacionglobal. Source a3c969c inicio/cierre, browsercerrado. Full748/APK anteriores recientes; sinCodemagic/nativa/dineroreal. Ver docs/design-reviews/parity-loop753.
+
+### 2026-10-04 - Loop754: envio de reporte con margen ampliado
+
+Test74616 reproduce label200sinmargen (top335.6 vs minimo347.5), normalpasa. Paddingvertical12 yhorizontal18 +textocentrado enFilledButton corrigen sin reducirfuente, conserva spinner/guardas/borrador. Final92410 exit0:13/13; capture30312 exit0:1/1 en6s/sietePNG vigentes (orphan336excluido), error200finalinspeccionado; normalesempty/error/sending SHAidenticos743. Analyze30312 limpio6.6s. Source a3c969c inicio/cierre; CSS11padding+1borde, no Android200Source atribuido. Full748/APK anteriores recientes; objetivoactivo sinCodemagic/nativa/global/dineroreal. Ver docs/design-reviews/parity-loop754.
+
+### 2026-10-04 - Loop755: historia aprobada y fecha
+
+Source/rescuer/cases/rocky ejecutado confirma media160/bodypadding14/borde#e3e4ed/text14line21.7/#4f4e5c, yfecha badge22/line14. Cliente date11*1.2+8=21.2 cambiaheight14/11 para22, sin tocarfecha real/calendariolocal/semantica ni copiar tags/importes/agradecimientosSource. Conocehistoria perfil navegaadetalle, no nuevo viewer. Gatefinal73656 exit0:9/9 en2s ownedhistory/publicadoptioncard; capture1/1 en3s/dosPNG normal200 inspeccionados/hash; analyze limpio64s/diffchecksinerror. Source a3c969c inicio/cierre, browsercerrado. Full748/APK anteriores recientes; sinCodemagic/nativa/global/dineroreal. Ver docs/design-reviews/parity-loop755.
+
+### 2026-10-04 - Loop756: regresion completa actual
+
+Fuente0328de654d1033d670cae2a08000ef7e54bb00bf, full74392 exit0:803/803 en4m29s; supersede748/801, integra749-755.365 archivosroot/scratch iguales durante23392 yhashesinalteradoscierre, no medicionantesgate atribuida. Source a3c969c inicio/cierre. Runtime/onboarding/donor trackadopter recrea dots por bodykeyslide; medicion175conrefsdesconectadas invalida, querynuevo8/24/coloresfinales/ceroanimaciones. Clienteadopt/rescue dots enkeyentrada; rama donate generica afuera requiere comprobar alcance real, no todos tracks aceptados. Browsercerrado. Coleccion743/418 anterior (419fixtures previstas), APK748anterior; manualemuladorpending. SinCodemagic/nativa/global/dineroreal. Ver docs/design-reviews/parity-loop756.
+
+### 2026-10-04 - Loop757: indicadores primerframe de rutas reales
+
+Source rutasdonortrackadopter/rescuer recrean dots (runtime756), clienteadopt/rescue keyentrada los incluye. Dosasserts existentes route_motion miden16/32 RenderBox (visual8/24+margen8) primerpump, conservaentrada450/Back. Final19934 exit0:5/5 en2s, tambienlegalprivatedraft yreemplazoBackAndroid/iOS. Donate generico adicional sin terceraSource equivalente, no copy simulado ni paridadliteral atribuida. No produccion ni tests nuevos; full756/803 misma produccion, anteriorassertsfortalecidas. Source a3c969c verificado. SinCodemagic/nativa/global/dineroreal. Ver docs/design-reviews/parity-loop757.
+
+### 2026-10-04 - Loop758: coleccion completa actual419
+
+Fuente714853a/produccion0328de6, capture21331 exit0:1/1 en3m13s.419fixturesunicas/47rutas parseadas yPNGposterioreslog/PIL/dimensiones/SHAvalidos;365 fuentesroot/scratchigualesduranteyhashesestablescierre. Supersede743/418 (FAQAdoptarnormalextra749); no419aceptaciones. Seisnormalvacios adoption/match/support/ownedcases/savedadoptions/impact inspeccionados sinnuevo defecto, acciones visibles; sinSourcecomparacionnueva/callbacknativo. Full756/803 misma produccion, test757fortalecido sinnewcount. Source a3c969c inicio/cierre. Auth/welcome otroscapturadores no incluidos. SinCodemagic/nativa/global/dineroreal. Ver docs/design-reviews/parity-loop758.
+
+### 2026-10-04 - Loop759: vacios con destinosSource ejecutados
+
+Source/adoption vacioIrApoyar→Descubrecasos, /savedIrAdoptar→adoption observados. SavedSource/Flutter758 inspeccionados misma composicion normal; medidasSource titulo19line24.7/buttonx44y451.84375w289h48. AdoptionCTA Sourcey336.265625 vsFlutter335: residual1.265625 pendingboundsparrafo/fontsready/cascada anteseditar. Gate95416 exit0:7/7 discoveryempty/supportgesture y63010 exit0:1/1 savedCTA200scroll/holdcancel/tap. No produccion/testsnew; full756/803/coleccion758vigentes. Source a3c969c inicio/cierre/browsercerrado. SinCodemagic/nativa/global/dineroreal. Ver docs/design-reviews/parity-loop759.
+
+### 2026-10-04 - Loop760: cajas fraccionarias de vacioAdoptar
+
+Sourcefontready377x852 confirma CTA336.265625/card277.265625; titulo62.375/parrafo60.890625. Flutterredondea62/60 inclusoforceStrut(probe71340), reservadesiredCSSporlinea sin escalarglifos. Gate78661 exit0:6/6; capture82478 exit0:1/1 en2s/3PNGnormal200wide200, normal/200inspeccionados; CTA336.3/card277.3 diferencia.034375, assertions.1 sustituyenCTA2. Analyze82478 limpio65.2s/diffcheckclean. Comentario reubicado despues/scratchsincronizado; probe temporal retirado. Source a3c969c inicio/cierre/browsercerrado. Full756/803/coleccion758 anteriores parche; no pixelglyphidentity/global/nativa/Codemagic/dineroreal. Ver docs/design-reviews/parity-loop760.
+
+### 2026-10-04 - Loop761: botones de acceso con texto ampliado
+
+AuthFrame paddingvertical12/horizontal24; ActionButton alineacionopcional usadaenformularios para doslineascentradas. Tests8414 exit0:27/27 en14s conassertsfortalecidasmargenes/centrado; capture14032 exit0:1/1 en3s/18PNGvalidas, forgotfooter200inspeccionada; analyze limpio41.2s. TituloRecupera partiendo palabra200 pendiente, no aceptacionglobal. Samsung R5CY51260VK device reconectado; Playintacto sin nuevo launch/install. Source a3c969c reconsultado. Full756/803 anteriorparches760/761; Codemagic diferidoobjetivocompleto, dinero test-only. Ver docs/design-reviews/parity-loop761.
+
+### 2026-10-04 - Cierre de paridad por cinco lotes
+
+Metodo autorizado por el titular: tres frentes con archivos exclusivos, cola Flutter unica y cierre perceptual; diferencias imperceptibles/hover excluidos. Base53716dc; SourceIrlanda a3c969cd9103fd46dc5cd886999912526ce75efb reconsultado inicio/cierre. Inventario finito24 defectos confirmados, todos corregidos y revisados:25/25 familias en desarrollo, cero diferencias visuales conocidas de esta pasada. PM-D fue candidato no confirmado, no se suma. Tablero docs/parity-current-review.md y cinco fichas sustituyen cola historica; no nueva aceptacion instalada implicita.
+
+Gate71673 exit0:386/386 en1m41s. Gate65789 exit0:67/67 en22s, incluye cuatro nuevos recorridos de gasto con Inter/wordboxes/acciones, pagos y profilehero fortalecidos, y ambas pruebas sociales antes fallidas en Codemagic. Configuracion16/16. Captura421/1test exit0 en3m26s, acceso27/1test exit0 en12s; recaptura dirigida3gastos exit0/1test en33s. Manifiestos421+27+22Rescatista con hashes/dimensiones, PNG temporales; normales comparados conservan hashes salvo cambios intencionales. Analyzer final limpio75s tras ajustar sintaxis null-aware. Auth recuperacion restaurada corrige Consent prematuro y prueba cerolecturas de perfil privado. APIs, SQL, privacidad, firma, identidad y dinero test-only conservados.
+
+Regresion integral requerida sobre SHA candidato en CI milestone-1.yml; sin full local redundante. Docker local no activo: suites backend completas se ejecutaran en CI con stack local. APK actual/emulador, lanzamiento manual, SDK/permisos/teclado/interrupciones y Samsung siguen pendientes: ADB solo emulator-5554, telefono ausente; Play286 anterior. Rechazo automatico previo a am start sin motivo suministrado: no se evade. Codemagic final android-guardian-internal y publicacion Play pendientes, no builds por avance. H5 financiera aceptada en test y excepcion de disputa conservadas.
+
+### 2026-10-04 - Gate del candidato por lotes y APK actualizado
+
+Candidato visual789c898, formato completo c54444c; chequeo de formato263archivos/cero cambios. CI37228120713 sobrec54444c: identidad/adopcion/rescates/comunidad y web/admin/PostgreSQL/Guardian concurrente aprobados; Flutter se detuvo en analyzer por if multilínea sinllaves introducido alformatear publication_age, antes de ejecutar regresion completa. Llaves equivalentes añadidas; analyzer local limpio65.7s y edades2/2 aprobadas, sin cambio de validacion ni UI. Nuevo SHA de esta reparacion requiere gate CI final; no se declara full aprobada.
+
+APK debug de c54444c compilado94492 exit0 en154.6s,450archivos tracked coinciden aplicando normalizacionCRLF de Git. SHA256 C6DC3BC63512A18F0F1DFFFF4B21AA663D89D723498A36E27FE912CA128F0A1E. Install89255 exit0/Success en emulador; com.mycompany.dopmi version0.2.0/build2, update19:27:28UTC verificados. Codigo visual/acciones iguales al candidato posterior de solo llaves; no telefono modificado. Apertura manual y SamsungUSB solicitados por falta de lanzamiento autorizado tras rechazo automatico previo amstart sin motivo. API Codemagic read verificada; sin nuevo build o publicacion.
+
+### 4/10/2026 — actualización autorizada al corte Irlanda 889c096, integración
+
+Objetivo nuevo activo desde app8785f66/Play290, 19 grupos, tres subagentes y una
+cola Flutter. Backend local594/594, configuración16/16 y admin moderación12/12
+pasaron. Segunda pasada compartida móvil50/50 pasó; la primera pasada agrupada
+147pass/19fallos incluyó desbordes, ruta faltante y fixtures de wizard anterior.
+Se corrigen juntos; no se acredita cierre visual por escribir la implementación.
+La migración aditiva está desplegada en DEV, preflight y postflight de cuerpos y
+permisos en migration-history-audit.md. Docker local no disponible: prueba de
+concurrencia real PostgreSQL agregada al gate CI y todavía pendiente. Samsung y
+emulador detectados; sin nuevo APK/Codemagic/Play ni aceptación instalada todavía.
+
+
+## 5 de octubre de 2026 — actualización889, inspección por lotes
+
+Backend integral local595/595 y configuración16/16 aprobados. Analyze limpio en scratch. Capturador existente aprobó tandas afectadas de Adoptar, Apoyar, Perfil/Información básica, Rescatista, Publicación, seis fotos/Mis casos/caso; CAPTURE_FILTER en CI se pasa por dart-define (antes el entorno no alimentaba String.fromEnvironment). Se sustituyeron sólo expectativas de título y validación ya cambiadas, sin ajustar UI a métricas históricas. Source permanece pin889c096. Nueve conjuntos perceptibles concretos detectados: dos Adoptar (corregidos/21 pruebas aprobadas), uno inbox (corregido), seis Publicación (en corrección agrupada). Se centra el texto nuevo envuelto tras recaptura; no crea nuevo expediente. Dos cuentas QA REST y seis archivos sintéticos en emulador listos para nativo; todavía no APK nuevo ni aceptación instalada. PR6 abierto/draft, refs8785f66/ba9f897 verificadas. Sin Codemagic por avance. Gate SHA final/PostgreSQL concurrencia/Storage real, nativo y Play/Samsung pendientes.
+
+19→0 grupos pendientes de desarrollo tras cierre de las cuatro fichas. Publicación: header fijo también al200%, hero32vh, aviso alcanzable con Inter real y9/9 pruebas; capturas finales aprobadas. Regresión inicial824pass/21fallos por fixtures/textos previos; corrección dirigida113/113 y notificaciones9/9. Concurrencia CI exige observación pg_blocking_pids antes delCOMMIT, no una pausa temporizada; setup transaccional/cleanup exacto. DEVfixture marcada sintética: dosAuth reales, seisJPG privados físicamente leídos por owner; adoptante6/6 denegado enborrador y6/6 leído tras aprobación sintética de una fila. No aprobación humana/admin atribuida; primercontacto aún0, reservado a CTA nativo. Cleanup exacto en manifest privado tras pasada Samsung. SHA/gate final, APK/nativo/Codemagic/Play/Samsung pendientes.
+
+### 2026-10-05 — Actualización889 cerrada e instalada
+
+Corte fijo Source889c096:19/19 grupos cerrados, cero defectos perceptibles conocidos. Candidato51cc7c150abb20adc0fc70ecaafe5ebe202817c5, gate37278538360 con cuatro jobsSUCCESS y846 pruebas móviles. Codemagic6ac3570f3a34cf7c3070ed0f /android-guardian-internal compiló AAB firmado2.3.3(291); Publishing.log y consulta Play acreditan internal/completed/291 por separado.
+
+Tras actualizar/abrir el titular, Samsung comprobado por ADB2.3.3(291), Android16 y texto115%. Ocho recorridos modificados revisados: filtros, galería/swipe/puntos, contacto con saludo único al reabrir, navegación/FAB, inbox/conversaciones personales, teclado/Back, selector/publicación y recuperación de texto tras Home/reabrir. Publicación multifoto, caso con gasto privado y recuperación tras force-stop se verificaron previamente en emulador con dos actores reales; no se repitieron escrituras sobre datos personales. Texto temporal Samsung no persistió (consulta0). Se restauró modo Adoptante, sin debug/reset/logout del titular.
+
+Limpieza exacta DEV después del preflight actual:15 archivos retirados por Storage API; tres adopciones archivadas y caso retirado mediante RPC, gasto borrador eliminado por RPC; únicamente dos Auth QA y expediente sintético retirados en transacción acotada. La conservación de perfiles al borrar Auth es intencional desde H10: tras comprobar ausencia de referencias contables, se retiraron sólo dos perfiles y dos consentimientos sintéticos QA, sin cambiar esquema. Postflight:0 Auth/perfiles/publicaciones/expedientes/hilos/notificaciones/Storage QA; Auth y perfil del participante Samsung permanecen1/1. Credenciales QA privadas retiradas. No quedan comprobaciones pendientes del alcance889; commits posteriores y H12 fuera. Dinero exclusivamente test, identidad/firma/permisos/moderación preservados.
+
+## 2026-10-05 — Swipe: cierre instalado 2.3.3 (295)
+
+- Implementada pila natural para adopciones y apoyos intercalados: siguiente tarjeta completa y centrada; promoción del mismo árbol/proveedor; fondo sin gestos, foco ni semántica. Salida fuera del viewport sin retroceso y finalización única por fin de animación. Caché y presupuestos previos conservados.
+- Auditoría independiente sin hallazgos de producto. Dos correcciones acotadas de verificación cerradas: selectores de controles frontales en tests/capturas y concurrencia del gate. No hubo cambios de runtime tras fcc2ce7.
+- Codemagic 6ac462432a09979c7fc17bef: 877 pruebas completas y análisis aprobados; publicado android-guardian-internal el 5/10 a las 21:08 de México. Source 7cf8202d2a64c0fb9d4eb387dc987c512f2c62b7, versión 2.3.3 (295), Guardian test true, paquete com.mycompany.dopmi. Build info obtenido del artefacto. Intento anterior cancelado antes de publicación; sólo un candidato publicado.
+- Play comprobado por consulta separada: internal/completed/295. Samsung SM-S938B R5CY51260VK actualizado desde Play; ADB confirma 295. Diez avances efectivos, repitiendo catálogo disponible en 4+4+2; tres cruces adopción/adopción, adopción/apoyo y apoyo/adopción. Corto vuelve; largo/rápido avanzan una vez. Video anterior 293 frente a final 295 revisado por cuadros intermedios: siguiente completa y centrada, foto/texto unidos, salida continua sin regreso lateral. Reanudación conserva registro; Perros→Gatos→Perros recupera feed. Sesión preservada; sin favoritos, contactos, pagos ni fixtures remotos de QA.
+- Gate recompuesto: 37405575748 acredita web/admin/configuración/PG/permisos/concurrencia/backend y job iOS recuperado 112085464286 aprobado; 37406799890 sobre 41c5a37e0f84fc0b432747b992d4950552663a50 acredita análisis móvil, 121 pruebas afectadas, dos capturas y APK. El run inicial conserva el fallo histórico de selector; no se presenta como un full run verde. Runtime idéntico entre fcc2ce7, 7cf8202 y 41c5a37; cambios posteriores sólo de verificación.
+- Irlanda 889c096ade9479b348530db7ba169f023b472ab9 verificada nuevamente. Evidencia: docs/swipe-stack-delivery.md; videos/contactos privados en .tools/photo-loop, fuera de Git. Se conservan salida 280 ms y retorno 250 ms; desaparece entrada lateral adicional de 250 ms, sin afirmar benchmark de red/FPS. Loop cerrado, sin hallazgos pendientes.
+
+### 6/10/2026 — actualización bccd040, cierre de lotes en desarrollo
+
+Corte fijo bccd040d3a4b1c391bc6ab9eeccc479198868a7f, app base
+ed4b788bd4117eb8949bb633483e94d8d4b36010/Play295.22/22 grupos cerrados
+en desarrollo tras inspección única y como máximo dos correcciones agrupadas.
+Inicio11dirigidos/11estados, inbox13dirigidos/7estados, Mis casos13propios+16
+gestos/encabezado/desglose/reflow/16estados. Recaptura selectiva35471 validó
+Inter, textarea, título modal y aviso después del RPC; un pump inicial corrigió
+el instante del harness, sin cambiar temporizador ni simular confirmación.
+Las fixtures Source/Flutter son sintéticas; hover/diferencias imperceptibles
+excluidos. Caché de fotos y swipe295 conservados.
+
+Backend:10nuevos SQL dirigidos aprobados y Auth/REST7/7grupos reales DEV:
+21borradores20+1, dos personas únicas concurrentes/reintentadas con consentimiento,
+dosUUID participantes privados/lectura distinta de respuesta, cierre con PT409,
+reactivación mismoID/6fotos/campos privada hasta nueva revisión, archivo/bloqueo,
+cursor/ack idempotente y rechazo de cursor ajeno. No creó fondos. Tres migrations
+aplicadas una vez; remoto auditado en migration-history-audit, sin replay/repair.
+Inventario privado exacto4actores/22adopciones/3records/7Storage y siete tablas
+delta: preflight rollback aprobó ausencia financiera y coincidencia completa;
+START global se conservará. No se ejecutó limpieza antes de aceptación instalada.
+
+Pendiente auditoría independiente del delta, analyze final, gate SHA candidato,
+APK/nativo emulador, Codemagic android-guardian-internal/Play/Samsung y limpieza
+exacta. ADB sólo detectaemulator5554; conexiónSamsung ya solicitada sin bloquear
+trabajo independiente. No atribuir aceptación instalada a capturas ni gate.
+
+Auditoría readonly independiente: dos hallazgos demostrados (nombres de tablas
+realtime y estado de transferencia sólo semántico) corregidos. Dos nuevas
+pruebas dirigidas85129 aprobaron refresco antes del poll y cuatro estados
+visibles al200%, sin declarar depósito; recaptura sólo pagos aprobada. Source
+confirma que Back conserva selección de filtros, por lo que se retiró ese
+supuesto hallazgo. Analyze limpio75852 y13Mis casos actuales aprobados; gate
+final comprobará el delta restante. APK previo9021compiló en283.3s antes de
+estas dos correcciones y no se instaló; preparar nuevo APK actual para nativo.
+
+
+### 6/10/2026 — bccd, pasada nativa y conflicto puntual de cierre
+
+Candidato local inicial `0e76948`: 22/22 grupos cerrados en desarrollo. APK debug
+Android instalado por ADB con hash verificado; no equivale a build Play295.
+Emulador: carruseles horizontal/vertical independientes, dos chats de una mascota,
+selector paginado de22 publicaciones y filtros. Leer mantuvo una conversación sin
+responder; enviar una respuesta real la redujo a cero, con un único mensaje.
+Cierre de adopción v8→v9 y reactivación v10 conservaron mismo ID, seis fotos y
+campos. Cancelación del picker conservó fotos; borrador guardado v12 sobrevivió
+force-stop y reapertura; Back del paso2 volvió al1. Fixtures sintéticas controladas,
+sin moderación humana ni operaciones financieras; inventario actual4 actores,
+22 adopciones,5 registros de rescate y8 objetos privados. Limpieza aún pendiente.
+
+Auditoría específica confirmó que el nuevo cierre Apoyar llamaba la RPC heredada
+que emite40001 en versión vencida. Se agregó `dopmi_close_support_case` y se usó
+sólo en el nuevo diálogo: delega a todas las guardas existentes y traduce40001 a
+PT409. API295 intacta. PostgreSQL/PGlite dirigido pasó autorización, versión sin
+escrituras/auditoría, bloqueo por gasto en revisión y conservación de hijo/historial.
+DEV preflight contrastó función heredada e historial; aplicación única de
+local20261006142000→remota20261006142458/support_close_version_conflict.
+Postflight authenticatedtrue/anonfalse; REST real devolvióPT409 en1304ms y dejó
+el registro intacto. Sin replay/repair/PROD. Suite Cases14/14 pasó tras cambiar
+contrato; prueba adicional de fallo/cancelación y APK actualizado en ejecución.
+Aún faltan cierre Apoyar nativo, gate del SHA final, Codemagic/Play, Samsung y
+limpieza exacta; ninguna de esas puertas se acredita por capturas o compilación.
+
+
+### 6/10/2026 — bccd candidato y gate por bloques
+
+`f362eb41a18e295e71e7c75eae8ca5506c80965c` publicado en rama de continuación.
+Gate474/run37480248797: web/admin/config/backend/PostgreSQL/concurrencia e
+integración aprobados. Móvil analyze/format aprobados,909 pruebas pasaron y4
+fallaron por fixtures heredadas de Inicio (proveedor no reemplazado, texto y
+Scrollable retirados). Corrección limitada a tres tests;29/29 dirigidos pasan.
+Código productivo, SQL y configuración no cambian. Repetir sólo scope mobile
+sobre el siguiente SHA; se conserva evidencia de bloques intactos del gate474.
+
+APK final de código f362eb4 instalado y sha256 de base.apk coincide con
+02e33c895e1af2061ac38fcaf9d7fad2925a3e8b8bdcbc6f5d2dec9f7dfa8954. Cierre de
+apoyo cancelado dejó v5 intacta; confirmado produjo closed/v6 mediante nuevaRPC,
+sin cambiar los dos gastos draft privados. Home mostró0evidencias/0apoyoactivo,
+Sin responder0 tras respuesta única. Autor sin acción Editar en apoyo aprobado.
+Build QA debug no acredita Play296 ni instalación Samsung. Native fixtures
+continúan4actores/22adopciones/5rescues/8objetos. Adopción principal repuesta en
+revisión por RPC y publicada v15 para galería/aceptación instalada; una llamada
+con firma incorrecta dioPGRST202 y fue reconciliada como rechazo sin revisión
+antes de usar feedback real. No retry incierto ni fondos. Limpieza aún pendiente.
+
+
+### 6/10/2026 — bccd gate final aprobado y solicitud única de entrega
+
+Candidato f3808f1a7ecd3e0cfb773434c840fa56b3251dae. Gate móvil476/run37485195797 aprobó913 tests, analyze/format,127 capturas, APK y artefactos. Los tres bloques web/backend/PostgreSQL/concurrencia, integración e iOS del gate474/f362 se conservan: comparación exacta confirma sólo siete archivos de tests/capturador/workflow/documentación distintos; producto, SQL, admin y configuración iguales. No se afirma ejecución de esos tres jobs sobre f380.
+
+Capturador heredado de Mis casos ahora selecciona Apoyo antes de capturar sus fixtures; seis dirigidas y el filtro completo de CI pasan localmente. Scope mobile ejecuta toda la suite; photo conserva su subconjunto. Ningún ajuste de producto ni nueva auditoría global.21 checks nativos aprobados; cierre/reactivación, apoyo cerrado sin modificar gastos, inbox/lectura/respuesta, galería seis y swipe comprobados.
+
+Codemagic solicitado una vez:6ac512ac762af530b028e23f, android-guardian-internal, rama codex/design-foundation; GET confirmó SHA exacto f380 y queued. Compilación firmada, Play, Samsung y limpieza siguen pendientes; no confundir queued con publicación. Inventario fresco preparado4Auth/22adopciones/5rescues/8Storage y0financiero. No se ejecutó retiro ni borrado antes de aceptación instalada.
+
+### 6/10/2026 — bccd dependencia externa de entrega
+
+Tres turnos consecutivos comprobaron la misma solicitud6ac512ac762af530b028e23f en queued, sin startedAt ni acciones iniciadas; primera solicitud15:24:28UTC, último control15:55UTC. Cuenta153/500 minutos usados; cola general sin otros builds activos. Samsung ausente de ADB en las tres comprobaciones, sóloemulator5554. No falta trabajo independiente de implementación/pruebas:22grupos, gate476/913, bloques474 equivalentes y21checks nativos completos. Para terminar falta asignación y compilación Codemagic, Play, actualización/conexión Samsung y limpieza después de aceptación instalada.
+
+Mensaje a soporte preparado en ruta privada, autorización explícita pendiente; no enviado. Se conserva la solicitud existente y el candidato f380 congelado. Estado de objetivo bloqueado por dependencia externa/instalación requerida; no acredita entrega ni reduce el alcance. Reanudar al cambiar el estado externo o al autorizar la consulta de soporte; comprobar de nuevo el mismo buildId antes de actuar.
+
+
+
+### 6/10/2026 — bccd Samsung296 aprobado; cleanup administrativo pendiente
+
+Codemagic6ac512ac762af530b028e23f finished y AAB firmado2.3.3(296); Publishing y consulta posterior internal/completed296 verificados por separado. SamsungSM-S938B/Android16 instalado296, font1.15: Inicio/carrusel, casos/filtros/Archivo, inbox/Sinleer/Historial/refresh/chatBack/selección, teclado, FABtipo/cancelación y galería6/swipe/puntos aprobados. Swipe corto85px conservaRocky; largo740px avanzaToby. Modo Adoptante restaurado, sesión y borradores personales conservados; sin mensajes enviados.21checks controlados anteriores acreditan cierre/reactivación y recuperación de borrador; no se atribuyen esos estados ausentes a la cuenta física.22/22grupos y cero defectos perceptibles conocidos.
+
+Preflight exacto4Auth/22posts/5rescues/8Storage/0financiero y siete snapshots privados aprobado;22posts archivados por RPC,7objetos eliminados y reconciliados. Storage rechazó correctamente borrar la evidencia del único caso QA aprobado/cerrado; falta eliminación administrativa del único path exacto, sin modificar estados ni guardas, antes de transacción y postflight cero. Titular habilitará acceso administrativo; no solicitar claves en chat. Gate913/476 y bloques474 equivalentes preservados; no nuevo gate/build por documentación. Los cambios iOS ajenos3a03788/428896d y demás cambios del usuario se preservan.
+
+
+### 6/10/2026 — bccd entrega cerrada22/22
+
+Titular autorizó retiro administrativo. Sesión existente Supabase permitió borrar el único archivo QA cerrado mediante Storage; no se pidieron ni guardaron claves, ni se cambiaron estados/permisos. Se retiraron también los dos marcadores de carpeta vacía que creó el dashboard. Transacción exacta guardada ejecutada después de preflight:4Auth/4perfiles,22adopciones,5rescue y dependencias sólo del run sintético. Error de sintaxis22then corregido antes de ejecución efectiva; no hubo escrituras parciales. Postflight remoto19conteos de ámbito QA cero, fecha global measurement_start1/preservedtrue/changed0. Sin datos financieros afectados. Evidencia privadacleanup-final-proof.json y storage-cleaned.png.
+
+Corte fijo bccd040 cerrado22/22; cero defectos perceptibles conocidos, gate476/f380913móviles y bloques474/f362 equivalentes aprobados,21checks nativos controlados, Codemagic/Playinternal296 e instalación Samsung296/115% aprobados. Modos/sesión/borradores/mensajes propios preservados. Se conserva candidatoAndroidf380; sólo documentación posterior, sin otra build/gate ni cambios iOS ajenos. Supersede todos los pendientes/bloqueos anteriores de este corte.
+
+
+### 6/10/2026 — traspaso documental verificable de sincronización
+
+Encargo limitado a Git/documentación; no funcionalidades, suites, capturas, backend, teléfono ni builds nuevos. HEAD/remoto06696fa133a3dddbf1dc5693f1f2fc3135a029ac y baseba9f897 verificados por ls-remote; API confirmaPR6 abierto/borrador/no fusionado. RamaSourceirlanda/apoyar-detalle-perfil observada9ced07094635c076d35589647fff26371d8bc791, contenido de ese delta no inspeccionado. bccd040 cerrado22/22 y evidencia296/gates/cleanup preservada.
+
+Nuevo protocolo establemock-sync-workflow.md y checkpoint cortomock-sync-current.md, enlazados desdeAGENTS.md/codex-handoff.md; historial íntegro fuera del resumen de arranque. Dirty tree ajeno inventariado y conservado, incluidos ledgeriOS/tareaadmin/untracked. Se versionan únicamente documentos propios y adiciones específicas desdeHEAD, no el diff ajeno completo de backlog/progress. Commit documental[skip ci] y push autorizados por el alcance documental y autorización vigente de publicación; comprobar remoto posterior, sin atribuir SHA documental al APKf380/296. Evidencia privada sigue local/ignorada, no depende de chat ni se publican secretos/datos de personas.
+
+Auditoría de bloqueo 2026-10-09 UTC: tres turnos consecutivos sin la intervención requerida (login manual nueva QA y configuración/autorización SMS DEV). Sin respuesta humana nueva ni proceso pendiente que justifique polling. Independientes completos; candidato 302 instalado, aceptación final incompleta. Objetivo marcado blocked para detener continuaciones automáticas; reanudar desde la evidencia vigente al recibir intervención, sin repetir fixtures/builds consumidos.
+
+
+### 9/10/2026 — autorización de configuración Twilio
+Titular autorizó configurar Twilio y operaciones necesarias para SMS DEV, incluidos envíos de prueba con costo. Plugin discovery Twilio sin resultados; no variables Twilio/Supabase management token disponibles por nombre. Chrome acceso Supabase proyecto DEV ohqxranynackjignryep verificado (nombre DopMi; etiqueta main Production es rama por defecto, proyecto producción distinto ysaoeuidcvgtlmphmeyb no tocado). Phone Disabled; modal requiere Account SID/Auth Token/Message Service SID, confirmaciones activas, OTP60s/6dígitos, pruebas simuladas vacías. No cambios guardados. Twilio console redirige login sin sesión; se dejó tab1756660578 handoff y Supabase1756660581 handoff. Próxima intervención exacta: titular iniciar sesión Twilio/completar verificación en Chrome; luego integrador configura servicio/remitente y secretos directo en Supabase sin chat/log/Git. No cargos ni SMS realizados todavía. Login móvil sintético sigue pendiente, no sustituir otra cuenta.
+
+
+### 9/10/2026 — QA nativa 302 y corrección de historias
+
+Login manual del actor QA acreditado por correo exacto en UI. Verificados editor/preview privado, inbox activo e histórico, foto existente abierta, picker sintético, cancelación sin objeto huérfano, envío con teclado y persistencia real de mensaje/objeto/notificación, navegación y lectura de evento propio, footer/cambio de modo, historial vacío y necesidad expandida. Inventario actual: dos mensajes, cuatro objetos, dos notificaciones leídas. Sin dinero/Connect/Guardian/cohorte/consumo financiero; no repetir fixtures ni auditorías con conteos antiguos.
+
+Detectado en 302: gesto iniciado sobre texto de historia no llega al Listener de foto. Corrección independiente revisada, 13/13 pruebas dirigidas y flutter analyze sin issues; commit/push propio 5080090ae87e78e472d5904b67b50c2645a5c261 sólo dos archivos. FULL CI nuevo pendiente; todavía sin nuevo Codemagic/Play. Temporizador automático y zoom multitáctil nativo no acreditados.
+
+Twilio autenticado y onboarding completado como verificación con código. Trial limitado activado (100 SMS/30 días), pero Messaging Services exige upgrade. Formulario de razón social/persona física, domicilio fiscal y posterior saldo/pago abierto para entrada directa del titular; no inventar datos ni pedir tarjeta en chat. Autorización existente vigente. Phone Supabase DEV sigue deshabilitado; no SMS enviados ni configuración guardada. Objetivo activo/incompleto.
+
+QA adicional302: nombre editado sólo en memoria con teclado, preview privado mostró cambio; Back descartó sin guardar. SQL real comprobó display_name original, snapshot aprobado intacto y status published. Dos consultas iniciales con nombres de tabla/columnas incorrectos fallaron sin mutación; esquema leído antes de consulta correcta. Prueba temporizador: freshprocess+screencap sin dump con PhoneLink activo mantuvo historia; aislamiento breve del único servicio PhoneLink mostró mishi(t1.34)→chocotorro(t7.354)→Apoyar(t13.583). finally restauró lista exacta/enable1 y verificó igualdad, sin cambios de escalas. Evidencia timer-isolated-journal.json y tres PNG privados; no cambiar temporizador por esta pausa de accesibilidad. CI37946992790 backend y web/database success; Android/iOS en compilación.
+
+Twilio: cuenta Active/saldo50 verificada en consola. Búsqueda de plugin Twilio sin resultados; navegador operativo suficiente. Servicio Dopmi DEV Auth SMS creado con caso Verify users, SID MG3cf9f624309f065e7d7217526aadf3f5, cero remitentes. No secretos extraídos ni SMS enviados. Compra/alta de número exige Primary Compliance Profile; Trust Hub abierto en paso1 Get started para verificación personal del titular. No inventar identidad ni completar verificación automática. Phone Supabase DEV sigue off. Ayuda México consultada antes de elegir remitente; no comprar número estadounidense por default ni asumir alphanumeric sin registro. Continuar configuración tras perfil y verificar entrega real.
+
+CI completo5080090: run37946992790 cuatrojobs/todossteps success. Codemagic envío único15:09:10Z build6ac903950e26cbb7565d916f android-guardian-internal exactSHA, journal .tools/dde1/candidate-5080090/cm-submit.json. Dos lecturas del endpoint antiguo codemagic.io cortaron transporte; estrategia cambiada a API pública api.codemagic.io/builds/mismoID con urllib, respondió queued. No reenviar; sin nueva versión/Publishing/instalación acreditados aún. Titular aclaró Twilio: sólo activación completa, Primary Compliance Profile sigue pendiente; formulario conservado para entrada personal. Navegador suficiente y servicio creado, sin remitente/SMS/proveedorSupabase.
+
+### 9/10/2026 — SMS real verificado en el mismo actor QA
+
+Titular completó Primary Compliance Profile de Twilio; estado Approved comprobado en consola. Servicio Dopmi DEV Auth SMS con remitente internacional adquirido por US$1.15/mes más uso, bajo autorización vigente. Provider Phone habilitado exclusivamente en Supabase DEV, confirmaciones activas, pruebas OTP simuladas vacías; credencial transferida directamente entre interfaces, sin chat/log/Git. Titular recibió e ingresó el código directamente en Dopmi y confirmó número verificado. SQL Auth comprobó cinco booleanos true: mismo UUID QA, teléfono presente y confirmado, sin cambio pendiente, mismo correo. No registrar número personal ni OTP. SMS real resuelto; no simular ni repetir verificación.
+
+Codemagic build6ac903950e26cbb7565d916f sigue queued para SHA5080090, android-guardian-internal, sin artifacts ni inicio. FULL CI37946992790 success sigue válido. No reenviar build ni atribuir corrección a Play302. Continúa aceptación nativa restante; entrega final aún incompleta.
+
+Comprobación adicional de privacidad SQL: perfil mantiene version19 y hash del snapshot aprobado; teléfono privado verificado no coincide con public_phone del borrador ni del snapshot. No publicación automática de contacto al vincular Auth.
+
+### 9/10/2026 — Guardar borrador nativo y recarga acreditados (Play302)
+
+En el mismo actor QA, edición acotada de Sobre ti añadió marcador sintético QA-nativa-302-borrador. Guardar borrador mostró Guardamos tu borrador. SQL DEV comprobó version20/status draft/marcador persistido, snapshot aprobado con hash anterior intacto y sin marcador público. Volver mostró bio guardada en perfil privado; reabrir editor y leer EditText acreditó recarga persistida. Capturas privadas qa-profile-writer-{edited,saved,reopened-footer}, qa-profile-after-writer. Primer chequeo de recarga no vio el campo porque aún estaba fuera de pantalla; scroll adicional permitió verificarlo, sin repetir escritura. No Enviar a revisión ni aprobación/revocación repetida. Nuevo baseline perfil QA: version20/draft; snapshot aprobado sigue igual. SMS Auth real no se copió al teléfono público.
+
+Build5080090 sigue queued en API exacta; el turno aporta progreso nativo independiente, no bloqueo ni cierre de entrega.
+
+Revisión independiente qa_ui_ux examinó directamente cinco PNG del writer: Guardar completo, feedback inequívoco, bio reflejada al volver y marcador conservado al reabrir; sin defecto material UI/UX demostrado. Distingue evidencia visual de separación draft/snapshot acreditada por SQL. Diagnóstico cola: API exacta queued/mac_mini_m2, startedAt null, sin error ni posición informada. Página oficial status.codemagic.io operacional; eso no identifica causa concreta de esta cola. No reiniciar ni cambiar infraestructura sin diagnóstico.
+
+### 9/10/2026 — Inicio rescatista/período/panel y diagnóstico cola
+
+Play302 mismo QA: Inicio abre En adopción. Modal Período abrió con Este mes; seleccionar Ayer/Listo y reabrir conserva Ayer. Seleccionar Esta semana/cerrar X/reabrir conserva Esta semana: comportamiento inmediato acreditado, coincide con frozen dde1 RhPendingFilterDialog (App.tsx5820+: onChange→onPeriodChange; X/Listo únicamente onClose). Restaurado Este mes/Listo. No atribuir cancelación de selección a X. Resumen adopción expandido mostró activos3/revisión0/borrador1/corrección0; Casos en borrador abrió Mis casos filtrado exacto DEMO QA dde1 draft; editar abrió wizard del mismo borrador, Back regresó sin guardar/publicar. Tips abrió contenido y Back regresó. Capturas privadas qa-home-period-*, qa-home-adoption-*, qa-home-draft-*, qa-home-tips-*. Completar mi perfil de fixture no verificada aún pendiente: este QA ya está verificado y no se revoca identidad para fabricar ese estado.
+
+Codemagic UI del build exacto43/5080090 confirma queued sin error; lista All no muestra otro build activo, predecesor42 terminado con AAB302. Billing read-only Free macOS minutes personal use291/500; no agotamiento mostrado. Sin cambios de facturación/cancelación/reenvío. La causa concreta sigue sin acreditar, se conserva build6ac903950e26cbb7565d916f. Turno con progreso nativo y diagnóstico, no bloqueo.
+
+### 9/10/2026 — Accesibilidad200% física: perfil y editor (Play302)
+
+Escala real Android font_scale2.0 comprobada antes de capturas. Perfil privado recorre header refluido, bio/contactos y footer completo (Sobre Nosotros/Centro de ayuda/Cuenta y privacidad/Cerrar sesión) con navegación inferior legible. Editor se desplaza hasta consentimiento, preview, Guardar/Enviar/Cancelar completos. Campo bio enfocado con SwiftKey abierto; gesto de scroll posterior ocultó teclado y permitió llegar a Guardar, no acreditar teclado abierto en captura footer. Sin escribir caracteres/guardar/enviar ni cambiar consentimiento. Primer intento de enfocar bio desde footer no encontró campo fuera de pantalla; finally restauró configuración. Segundo desplazó hasta bio y completó enfoque/capturas. Los tres journals privados comprobaron restauración exacta font_scale1.15/density450physical+420override. Evidencia qa-profile-text200-0..3, qa-editor-text200-footer, qa-editor-text200-keyboard y qa-editor-text200-keyboard-footer. No generalizar a tabs públicos/notificaciones/pagos/historias todavía pendientes.
+
+Revisión independiente lote Inicio: diez PNG examinados directamente; rutas/selector/panel/Tips sin bloqueo material. Subtítulo Vistas truncado menor, cifra/acción conservadas; no atribuir cifras SQL a PNG ni Completar mi perfil probado en actor ya aprobado.
+
+### 9/10/2026 — Perfil público aprobado, filtros y tabs físicos (Play302)
+
+Desde Cuenta y privacidad → Ver mi perfil público se abrió el snapshot aprobado real del mismo QA. Bio original sin marcador de borrador; contactos correo/ubicación/web visibles, sin botón de teléfono privado. Resumen/Adopción/Apoyo navegables. En Adopción, filtro Macho persistió al reabrir y mostró vacío coherente: consulta SQL acotada al owner confirma published/female3, adopted/female1 y draft/female1. Limpiar filtros restauró tarjetas; abrir DEMO QA dde1 active y Back conservó tab público. Sin guardar/publicar/reportar/contactar ni operaciones financieras. Evidencia privada qa-public-approved-real, qa-public-adoption-*, qa-public-filter-selected, qa-public-filters-cleared, qa-public-support-real.
+
+Escala física2.0 leída y comprobada: header público refluye; activación real de Resumen/Adopción/Apoyo y toolbar Perros/Gatos/Filtros alcanzables. Cuatro capturas qa-public-text200-{header,summary,adoption,support}; journal public-text200-journal.json guarda target_font2.0 y restauración exacta font1.15/density420. No acreditar cuerpo completo, filtros a200%, notificaciones, pagos o acciones de historias por estas capturas. Revisión independiente de este lote aún pendiente. Codemagic6ac903950e26cbb7565d916f reconsultado: queued/started null/sin artefactos para5080090; no duplicar. SMS real ya resuelto, no pedir más datos al titular.
+
+### 9/10/2026 — Cuerpo público/filtros, notificaciones e historial vacío200% físico
+
+Play302, misma sesión QA. Escala Android2.0 leída antes de cada bloque; finalmente restaurada exactamente a1.15 y density420. Adopción pública: scroll muestra grid y footer, Filtros abre modal refluido, scroll llega a Aplicar/Limpiar completos y Back conserva grid. Sin seleccionar/aplicar/escribir a200%. Revisión independiente qa_ui_ux de17PNG+2journals confirmó ausencia de defecto material visible; no acredita cuerpos completos de Resumen/Apoyo ni acciones Aplicar/Limpiar200. Placeholders grises visibles no prueban fallo de descarga por sí solos.
+
+Mi historial QA vacío mostró texto completo a200 y Back funcionó. Notificaciones mostró las tres filas completas y reflujo sin truncamiento material; Back regresó, ninguna fila activada ni lectura persistente nueva. Evidencia privada qa-payments-empty-text200{,-back}, qa-notifications-text200{,-back}, qa-public-text200-{adoption-body,filters-top,filters-bottom,filters-back}; journals exact_restore true. Historial no vacío/detalle200 y acciones historias siguen pendientes; no generar pagos para poblar prueba. Revisión independiente de notificaciones/historial vacío solicitada. Codemagic build exacto6ac903950e26cbb7565d916f continúa queued/started null/sin artefactos para5080090; no reenviar ni atribuir nueva instalación. Este turno aporta evidencia instalada nueva, no es no-progreso.
+
+Revisión independiente adicional qa_ui_ux de cuatro PNG y dos journals: tres notificaciones completas ajustan líneas a200, historial vacío con título/explicación/regreso legibles, Back muestra Inicio/Cuenta y privacidad. Sin defecto material visible. Registros fuente2/restauración1.15/density420. No acredita abrir eventos/cambios lectura ni historial con movimientos/detalle200.
+
+### 9/10/2026 — Resumen/Apoyo200 completos y zoom multitáctil nativo (Play302)
+
+Perfil público mismo QA: escala Android2.0 leída, scroll recorre cuatro estadísticas de Resumen, texto de pertenencia y footer; Apoyo muestra cuatro placeholders y footer. Sin activar Reportar/Guardar/Enviar mensaje. Cinco PNG qa-public-summary-text200-body0..2 / qa-public-support-text200-body0..1 y journal con restauración exacta1.15/density420. Revisión independiente qa_ui_ux directa: sin defecto material visible, no validación SQL inferida ni acciones footer probadas.
+
+Pendiente zoom resuelto con imagen QA existente: input help del Android actual confirma comando básico de un solo punto. Fuente primaria Android InputShellCommand consultada; helper temporal Java/Dex limitado a pantalla del visor inyectó MotionEvent de dos punteros (DOWN/POINTER_DOWN/MOVE/POINTER_UP/UP, cancel finally si falla), sin root ni instalación de paquete, ajustes o cambio de app. Compilado localmente con SDK existente; sólo /data/local/tmp/dopmi-dde1-pinch.dex copiado y luego eliminado por ruta exacta. Radio100→300 amplió visiblemente rostro de gato; arrastre horizontal desplazó imagen ampliada;300→100 volvió al encuadre inicial. X retornó mismo hilo activo QA y dos mensajes existentes, comprobados árbol UI. No nueva foto, envío o flujo financiero. Capturas privadas qa-chat-zoom-{baseline,in,pan,out,closed}, journal chat-zoom-journal.json y fuente helper ignorada. Revisión independiente del zoom solicitada. Esta evidencia prueba gesto nativo en302, reutilizable porque508 cambia sólo historias, no atribuye versión corregida instalada.
+
+Revisión independiente zoom qa_ui_ux examinó cinco PNG/helper/journal: confirma ampliar, pan lateral, reducir al encuadre inicial y X al mismo hilo/dos mensajes, sin defecto material visible. Criterio zoom nativo302 cerrado; no magnificación exacta ni otros gestos inferidos. Board vigente actualizado para retirar pendientes obsoletos SMS/zoom/snapshot/writer; siguen requisitos restantes sin reducción de alcance.
+
+### 9/10/2026 — Solicitud adicional iOS para equipo
+
+Titular solicita explícitamente Codemagic→Apple/TestFlight del avance actual para que equipo iOS vea concepto. Preparar ios-testflight del mismo SHA5080090, FULLCI37946992790 verde, identidad/firma existentes y Guardian sólo test. No producción/AppStore release ni nuevos testers/invitaciones sin destinatarios autorizados. Android build existente permanece intacto. Workflow sube IPA elegible externa; submit_to_testflight false exige comprobar procesamiento/asignación de grupo por separado. Predecesor299 estuvo En pruebas en DopMi Inner Team; no inferir disponibilidad del nuevo candidato hasta verificar.
+
+Envío iOS realizado una sola vez16:13:42UTC: Codemagic6ac912b5a252e7188db7d6f6, ios-testflight, codex/design-foundation@5080090ae87e78e472d5904b67b50c2645a5c261. GET API confirmó mismo SHA/workflow queued, started null/sin artefactos. Journal aislado .tools/dde1/ios-5080090/submission.json; no alterar/repetir Android6ac903950e26cbb7565d916f ni reenviar por espera. No inferir versionCode por índice. App Store Connect intentado en Chrome: redirige /login?targetUrl=%2Fapps&authResult=FAILED y pantalla blanca también tras una recarga; no sesión/grupo nuevo verificado. Tab1756660871 conservada para continuidad. Carga IPA, procesamientoApple y asignación del candidato nuevo al grupo siguen pendientes, sin afirmación de disponibilidad para testers. User request de iOS se incorpora al alcance activo, no sustituye aceptación final Android.
+
+### 9/10/2026 — Modal historias200 y checkpoint consolidado
+
+Play302: cambiada temporalmente navegación QA a Adoptante, Apoyar→mishi→modal→Back a200% real leído. Nombre/Conoce Su Historia/importe envuelto/X/instrucción visibles; miniaturas nombre/importes con elipsis, semántica completa disponible. Revisión independiente qa_ui_ux directa3PNG+journal sin defecto material de distribución. No acredita swipes/timer/pagos/corrección508. Finally fuente1.15/density420 exactas; modo Rescatista restaurado mediante diálogo Sí cambiar a Rescatista y footer Publicar comprobado. Primer assert de modo encontró diálogo previo, se inspeccionó y confirmó, sin repetir taps ciegos. Capturas privadas qa-{support-entry,story-modal,story-modal-back}-text200 (nombres exactos qa-support-entry-text200/qa-story-modal-text200/qa-story-modal-text200-back); journal story-modal-text200-journal.json.
+
+Builds Android6ac903950e26cbb7565d916f e iOS6ac912b5a252e7188db7d6f6 consultados: ambos queued, started null/sin artefactos, mismo5080090. Campo message Android null, sin razón de cola expuesta; no duplicar/cancelar. Se consolidó checkpoint canónico retirando relatos obsoletos de bloqueo/SMS/zoom y enlazando ledger íntegro; autorización/alcance/gates/fixtures/preservación/pendientes conservados. Este turno aporta QA física nueva y revisión, no bloqueo. Próximo pendiente material depende de candidato nuevo o escenarios manuales acotados restantes; no declarar entrega final.
+
+### 9/10/2026 — Android salió de cola, candidato508 en compilación
+
+Mismo build6ac903950e26cbb7565d916f comenzó16:20:49UTC, API building/mismoSHA5080090. Preparación/fetch/cache/SDK/firma/configGuardian/configFirebase/dependencias success; Static analysis aún sin estado terminal. No nuevo build ni cambios de pipeline. iOS6ac912b5a252e7188db7d6f6 sigue queued/mismoSHA. Todavía sin artefactos/Publishing/versionCode nuevo; no actualizar desdeAPK ni inferir aceptación. Turno clasificado espera verificada de handles vivos, con cambio externo que habilita siguiente paso al terminar. Auditoría bloqueos0. Se pidió al titular únicamente si durante la verificación ya probó código incorrecto/Reenviar, para evitar repetir vínculo confirmado; sin pedir número/OTP y sin atribuir esos escenarios como probados.
+
+### 9/10/2026 — Sesión Apple recuperada y grupo TestFlight real
+
+Titular inició sesión personalmente. Chrome AppStoreConnect tab1756660874 muestra DopMi app6468691532/TestFlight. Última carga299 Finalizado; grupo existente DopMi Inner Team5testers/14compilaciones, cuatro filas con Instalada2.3.3(299), sin registrar nombres/correos personales. Ajustes de grupo: Distribución de compilaciones Automática para compilaciones de Xcode; no inferir autoasignación Codemagic. No modificar roles/accesos/invitaciones ni crear grupos. Nuevo508 aún no cargado: iOSbuild6ac912b5a252e7188db7d6f6 queued; comprobar/asignar al grupo sólo tras Publishing/procesamientoApple. UI viva conservada handoff, ruta groups/59843b06-1a32-44d7-848a-74ed06cf7f72/settings observada por navegación, no endpointAPI supuesto. Bloqueo de sesión Apple resuelto.
+
+Revisión puntual contratos_revision confirma: Completar mi perfil depende de identidad, no profileversion20draft; requiere login manual en viewer existente no aprobado→modoRescuer→InicioCompletar→editor→Back, sin revocarowner. SMS invalidOTP/resend reales requieren solicitud pendiente; no pueden inferirse de Vinculado ni validaciónlocal. No mover teléfono confirmado de owner a viewer ni repetir Cambiar número mismo teléfono como prueba. Espera respuesta factual del titular sobre prueba original; si faltó, hace falta otro número QA autorizado/disponible y confirmación real, manteniendo este criterio abierto sin fingirlo. Regresión original y alcance intactos.
+
+### 9/10/2026 — Viewer preparada y suite Codemagic993 aprobada
+
+SQLDEV acotado vieweraf411001-9579-4c73-89d8-ce5a50dc62da confirma0expedientes/0identidadaprobada. Archivo privado Temp phone-qa-viewer-login-private.txt preparado sólo correo/contraseña del actor existente, sin tokens; open_in_codex queued. Se pidió login manual temporal para ruta Completar; controlADB detenido hasta aviso. Owner/version20/teléfono confirmado intactos; no cambiarlo a viewer. No crear actores/revocaridentidad/guardarpublicaciones para este escenario.
+
+UI Codemagic buildexacto6ac903950e26cbb7565d916f muestra log08:18 +993 All tests passed! y siguiente Build signed Guardian Android App Bundle activo. Análisis previo success. No afirmar Publishing ni versión nueva todavía. Handle vivo, espera verificada; no reinicio por duración. API y journal de mismo candidato conservados.
+
+
+### 2026-10-09 — QA viewer: Completar mi perfil en Play302
+
+El usuario ingresó manualmente con el segundo actor QA. Se confirmó coincidencia exacta del correo con el actor viewer privado; se activó modo Rescatista mediante el diálogo existente. «Completar mi perfil» abrió Información básica, Estado: Borrador; Android Back regresó a Inicio con el mismo acceso. No hubo escritura de formulario, vinculación SMS ni publicación. Evidencia privada: qa-viewer-rescuer-current, qa-viewer-completar-editor, qa-viewer-completar-back y viewer-completar-journal. Android508 continúa building (analyze/tests success, AAB en curso); iOS508 permanece queued. No nueva entrega ni aceptación instalada de508.
+
+Revisión independiente UI/UX del viewer: las tres capturas confirman Inicio→Completar→Información básica/Borrador→Back→Inicio; sin defecto material. No acredita guardado/publicación/SMS/identidad. Android303 AAB generado; build/guardian-build-info.txt descargado con autenticación confirma commit5080090, versión2.3.3(303), Guardian test:true y Google Play internal. Publishing aún pendiente al observarlo.
+
+
+### 2026-10-09 — Publicación Android303 comprobada en registro
+
+Registro Publishing de Codemagic6ac903950e26cbb7565d916f examinado directamente: Uploaded App Bundle, Updated release for track internal y Successfully published App Bundle to Google Play track internal. Consulta posterior google-play tracks get devuelve internal, Status:completed, versión303, nombre2.3.3. AAB SHA256 a618a3bdd2169a4e38ff866992fb677012f12ac0ed80d5a5a7b9c86688efd94d. Codemagic continúa Cleaning up; no confundir ese estado global con la publicación Play ya confirmada. Teléfono todavía ofrece Abrir; falta propagación/actualización e inspección instalada303. iOS mismo handle queued.
+
+
+### 2026-10-09 — Restauración personal solicitada / propagación Play303
+
+Reabrir ficha Play y reiniciar sólo proceso Play Store mantiene Abrir; dumpsys confirma2.3.3(302), instaladorcom.android.vending. No borrar datos/caché ni instalar APK. Handle Android sigue globalpublishing/Cleaning, pasoPublishing success y track303completed; iOSqueued. Segunda cuentaQA ya no necesaria para Completar. Se abreDopmi y detieneADB para restauración manual de la cuenta personal, solicitada por herramienta; siguiente recorrido historial existente/detalle200 exclusivamente lectura, sin dinero/cambios.
+
+
+### 2026-10-09 — Play303 instalada por titular / gestos nativos corregidos
+
+Titular actualizó desdePlay; dumpsys confirma2.3.3(303), instaladorcom.android.vending. Actor viewer exacto conservado. En303: tap foto derecha→chocotorro, izquierda→mishi; swipe vertical desde texto abajo→Apoyar; desde texto arriba→detalleMi historia/Donar, Back→Apoyar; X y AndroidBack→Apoyar. Sin pagos/escrituras/configuración nueva. Evidencia privada story303-routes-journal y PNGqa303-story-*. Exploración horizontal inicial no cuenta como criterio; la captura text-up-detail-confirmed respalda el gesto correcto. Hold/soltar/lifecycle/fin siguen pendientes. Login personal solicitado aún no confirmado; no afirmar cambio de cuenta.
+
+
+### 2026-10-09 — Play303 pausa texto, lifecycle y fin automático
+
+Prueba nativa temporizada screenshot-only (sin consultassemantics) aisló temporalmente PhoneLink y restauró valores exactos en finally. Hold real8500ms sobretexto: mishi a7s; soltar→posteriorchocotorro→finApoyar. Segundo recorrido mishi→Home7s→resume2s todavía mishi→posteriorchocotorro→finApoyar. DiezPNGqa303-motion y story303-motion-journal, revisión independiente solicitada. Sin escritura/pagos/settingspersistentes. No atribuir todavía photohold. AndroidCodemagic terminó16:52:45Z/todosstepssuccess; iOS mismo buildqueued.
+
+Revisión independiente directa303: sieteestados de gestos/rutas sin defectosmateriales; diezPNGmotion-text/lifecycle y seisPNGphoto-hold/release examinados junto scripts/journals. Hold/release foto y texto, background/foreground y finApoyar acreditados; no se afirma duración exacta/progreso preciso. Settingsrestored exactos. En texto200 primerassert esperabaMi historia fuera deviewport: árbol confirmaVolver/Donar/detalle; no fuefallofuncional. Método ajustado para evidencia visible, configuraciónrestaurada antes de reintentar.
+
+Play303 texto200real completó swipeup desde nombre→detalle/Back→Apoyar, swipedowntexto→Apoyar, tapfoto→chocotorro yX→Apoyar. Script/journal story303-text200-actions y ochoPNGqa303-text200. Font2 confirmada; restauraciónexacta1.15/density420. Revisiónindependientependiente. Se detieneADB nuevamente para loginpersonal ya solicitado; no nuevaspreguntas/loginsecrets. iOS reconsulta trastransient10054 respondequeued mismoID, sin reinicio.
+
+Revisión independiente directa finalhistorias200303: ochoPNG/script/journal respaldan updetalle/Back, downclose, phototapnext yX. Modal legible/nombre/CTA/importewrapped/Xseparada; detalle reordenaestadísticas/Donarcompleto. Sin defectomaterial; no medidatáctilmínima/cuerpoinferior/pagosinferidos. Preparacióncierreselectivo: previews privados separan únicamente dosinserciones propiasdeprogress (cabecera+append) y merge3way limpio deparity; backlog/productdecisions/admin no tienen delta propio desdepostcandidatebaseline. Árbol/indexsinmutar, no commit/push mientrasiOSnofetchfuente.
+
+
+### 2026-10-09 — Espera externa efectiva, objetivo incompleto
+
+Tras completar trabajo independiente, tresauditorías consecutivas mantienen falta de loginpersonal/confirmaciónSMSinvalid-resend y mismo iOSbuildqueued revalidadoAPI. Agente bloqueado sin declarar terminado; Codemagic permanece vivo, no cancelado/reiniciado. Pollingdetenido. Documentospropiosrevisados encommitlocalf4faaff, árbol usuario preservado/indexvacío; push pendiente fetchiOS. Retomar con intervención/estadoexterno nuevo.
+
+
+### 2026-10-09 — Personal restaurada: SMSphone_exists reproducido e historial200 cerrado
+
+Titular vuelve cuenta personal y autoriza reproducir falloVincular en teléfono. Play303personal confirmadaUI; pulsarVincular muestra falsoerrorgenéricoconexión. LogsAuthDEV422/phone_exists en misma ventana. Comparación unidireccional de valorUI con teléfonoQAowner confirma mismonúmero previamenteverificado; no número/correo/OTPcopiadosaGit. No nuevoSMSni cambioAuthconfirmado. Se pide autorizaciónespecífica para retirar exclusivamente vínculoQAenDEV antes de verificarpersonal; pendiente, no ejecutado. No movervínculo bajo autorización genérica ni borrarusuarios.
+
+CorrecciónlocaldeerroresSMSporcódigo preparada enrepository/editor/test, revisiónindependientecódigo/seguridad sinhallazgos; mensajesfijos/norawproviderdata, actor/UUID/guardasconservados. Pruebasdirigidasen colaRoot, sin claimpassing aún. warm451filesSHA2203b2ed3710114d21a2eb9183c30420d6bfd892f760872e57092d300dfe5d0e. Historialpersonalapoyos303 muestra unmovimientoexistente Sinpagoconfirmado: físico200/listaexpand/detalle/scroll/AndroidBack→Perfil, revisiónindependientedirecta cuatroPNG sin defectomaterial; referenciaenvuelta/Vercasocompleto. No activarVerCaso/pagosni crearcohorte. Fuente2confirmada/restauraciónexacta1.15/density420. PerfilmodoAdoptante trasrecorrido; semánticarecibidoRescatista vacío esdistinta deapoyosAdoptante, no inventardatos.
+
+FixSMSlocal 84687bb873760b806be93b5645c7c930bb1af0a1: tresarchivospropioscommitselectivo; 19/19pruebasdirigidas teléfonorepository+navegacióneditor exit0, flutteranalyze Noissues/138.3s exit0 sobrewarmbyteequivalente451files. Revisiónindependientecódigo/seguridadsinhallazgos, mensajesfijos/norawprovider. NoinstaladoniFULLCI/nopush aún; remoto508 paraiOSqueued conservado. Faltaautorización específica quitarvínculoQAenDEV antes de enviarSMSapersonal.
+
+
+### 2026-10-09 — Desvinculación telefónica QA autorizada
+
+El usuario autorizó expresamente retirar exclusivamente el vínculo telefónico de la cuenta QA en DEV para verificar su cuenta personal. Operación atómica con precondiciones de actor QA, huella del teléfono y acceso por correo: retirada una identidad phone, limpiados teléfono/confirmación/cambio pendiente y metadatos telefónicos; conservada identidad email y contraseña. Consulta posterior confirmó teléfono nulo, cero identidades phone y una identidad email. Sin eliminación de cuentas, perfiles ni datos de negocio; producción intacta. La cuenta personal aún debe solicitar y confirmar su propio SMS; no se declara verificada. Evidencia de consultas y capturas permanece privada.
+
+
+### 2026-10-09 — Corrección SMS publicada en rama y CI iniciado
+
+Codemagic iOS6ac912b5a252e7188db7d6f6 arrancó17:32:57UTC; API confirma building/fuente5080090, Fetching app sources y análisis success, pruebas pendientes. Con fuente ya descargada se hizo push normal de commits propios f4faaff y84687bb a codex/design-foundation, preservando dirty tree. GitHub confirma FULLCI para84687bb873760b806be93b5645c7c930bb1af0a1:37967898152(push)/37967904270(PR), aún sin resultado terminal; concurrencia del workflow puede sustituir uno. No nuevo build Android hasta gate aprobado, no declaración de TestFlight publicado. gh no está en PATH; consulta de runs realizada mediante conector GitHub existente.
+
+
+### 2026-10-09 — Teléfono personal confirmado
+
+Titular informa ingreso personal y verificación completa. Consulta Auth DEV de sólo lectura por huella privada confirma exactamente una cuenta con ese teléfono, phone_confirmed_at presente, distinta del owner QA y ajena a correos de fixtures QA. No se registra teléfono/correo/código. Vínculo personal acreditado; no repetir ni quitar vínculo confirmado. Se consulta únicamente si el titular ejercitó rechazo de código incorrecto y reenvío durante el proceso, aún sin atribuir esa evidencia. CI37967904270 continúa en cuatro jobs activos; iOS mantiene mismo handle.
+
+
+### 2026-10-09 — Observación externa: Codemagic inaccesible temporalmente
+
+Tras dos timeouts de lectura API, estrategia cambiada a navegador Chrome existente: navegación enfocada al mismo build iOS6ac912b5a252e7188db7d6f6 devuelve ERR_CONNECTION_RESET. No hay evidencia terminal, no cancelar/reiniciar. Último estado verificado building con fuentes508 descargadas y análisis aprobado. CI37967904270 confirma backend, web/base de datos e iOS success; Flutter activo capturando pantallas reales. Delta documental propio revisado independientemente sin hallazgos materiales; commit posterior al fetch del próximo candidato Android para conservar SHA exacto del gate.
+
+
+### 2026-10-09 — FULLCI846 aprobado y candidato Android enviado
+
+Run37967904270 para84687bb873760b806be93b5645c7c930bb1af0a1 success: cuatro jobs y todos sus steps success comprobados mediante API GitHub. Envío único Codemagic6ac92cb06d3df14ff7705612/android-guardian-internal18:04:34UTC; API posterior queued/fuente846 confirmada, sin artifacts todavía. No atribuir publicación o instalación. iOS304 fuente508 recibida por Apple y Procesando en UI. No modificar HEAD/remoto hasta fetch del nuevo candidato Android, para preservar fuente exacta del gate.
+
+
+### 2026-10-09 — TestFlight304 disponible al equipo
+
+App Store Connect confirma carga2.3.3(304) Finalizado y grupo DopMi Inner Team asignado. Dentro del grupo existente:5 testers/15 compilaciones; dos filas ya muestran Instalada2.3.3(304) en9oct, prueba directa de disponibilidad al equipo. Sin invitar testers/cambiar roles/grupos ni publicación App Store. No atribuir aceptación funcional/visual iOS por instalación. Fuente5080090 según mismo build Codemagic. Android8466ac92cb06d3df14ff7705612 aún queued. Revisión independiente UI/UX del copy SMS846 adecuada para publicar, sin defecto material; presentación instalada aún pendiente.
+
+
+### 2026-10-09 — Espera externa Android846
+
+Tres turnos consecutivos revalidaron el mismo CM6ac92cb06d3df14ff7705612 queued/sin inicio ni artifacts. Trabajo independiente completado; entrega bloqueada hasta avance externo o respuesta factual SMSwrong/resend pendiente. No cancelar/reiniciar ni inferir fallo terminal; polling detenido. Commit documental propio8123bfd local, remoto846 conservado hasta fetch. TestFlight304 disponible al equipo y teléfono personal confirmado. Retomar mismo handle; publicar/verificar Play/instalar/revalidar delta y cierre Git aún pendientes. No ENTREGA_VERIFICADA_EN_DISPOSITIVO.
+
+
+### 2026-10-09 — Nuevo build Android solicitado
+
+Titular solicita nuevo build. API confirma anterior6ac92cb06d3df14ff7705612 canceled18:42:32UTC, sin inicio/artifacts; no job duplicado activo por ese handle. Nuevo envío del mismo producto84687bb con gate FULLCI37967904270 aprobado; remoto verificado846 y único delta HEADlocal8123bfd documental. android-guardian-internal/Play interno, sin producción ni cambios de firma. Registro privado separado conserva intento cancelado y nuevo outcome.
+
+### 2026-10-09 — Diagnóstico de cola Codemagic solicitado por el usuario
+- Consola autenticada: build Android #46 `6ac936950aa4713b7ce0013c`, fuente `84687bb873760b806be93b5645c7c930bb1af0a1`, permanece queued en Mac mini M2 sin iniciar pasos. El número 46 es el número de build, no una posición de cola.
+- Vista Builds de la cuenta, sin filtros: ningún otro build activo; iOS #17 está finished y Android #44/#45 canceled. Billing muestra cuenta personal gratuita, 343/500 minutos macOS, sin suscripción ni transacciones. No hay evidencia de cuota agotada ni de concurrencia ocupada.
+- Estado público de Codemagic operativo. FAQ oficial reconoce colas por disponibilidad/tráfico/hardware y recomienda soporte ante demoras prolongadas. Hipótesis principal: espera por capacidad del proveedor; causa interna no expuesta, no confirmada por soporte.
+- Se conserva el build existente. No se compró concurrencia ni se habilitó facturación ni se enviaron mensajes a soporte. Cancelar/recrear ya no aportó evidencia de solución; no repetir sin causa nueva.
+
+**Bloqueo externo vigente del reintento846:** tres turnos consecutivos tras diagnóstico verificaron por API el mismo handle6ac936950aa4713b7ce0013c queued, started/finished null, sin artifacts ni pasos iniciados. No hay otro trabajo independiente ejecutable que sustituya publicación/instalación/QA del candidato; SMSwrong/resend sigue pendiente de evidencia factual. Se detiene polling y no se cancela/duplica. Reanudar ante avance externo o intervención del titular. Entrega no completada; alcance frozen y gates conservados.
+
+### 2026-10-09 — Ticket Codemagic21219 enviado por autorización expresa
+Titular autorizó enviar soporte tras diagnóstico. Formulario autenticado confirmó Issue #21219 / Your request form has been received y copia al correo de cuenta. Incluye build6ac936950aa4713b7ce0013c, workflow/fuente/hora/M2 y diagnóstico de cuota/concurrencia; solicita causa y ayuda para arrancar, sin suscripción/concurrencia de pago. Sin credenciales ni adjuntos privados. Evidencia privada .tools/dde1/codemagic-ticket-21219.png. Esperar respuesta por correo; publicación/QA siguen pendientes, no cierre.
+
+### 2026-10-09 — Soporte confirma causa de cola, ticket21219
+Respuesta directa visible de David Trdic: pico de carga en el pool de máquinas para la versión Xcode utilizada; están agregando máquinas y esperan inicio pronto. Alternativa sugerida: otra versión Xcode en configuración. Esto confirma capacidad del proveedor, no defecto app/cuota. No se respondió ni cambió configuración en esta consulta de estado del titular. Evaluar workaround con compatibilidad/gates antes de nuevo candidato; no inferir inicio del existente por respuesta.
+
+Nuevo CM6ac945b4a02ae85db266e20e enviado19:51:17UTC; API confirma dynamicConfig.environment.softwareVersions.xcode=26.5, instanceType mac_mini_m2, fuente846, inicialmente queued. Anterior6ac936950aa4713b7ce0013c cancelado y confirmado terminal antes del reemplazo. Helpers .tools/dde1/candidate-84687bb-xcode265-20261009. Próxima consulta exclusivamente nuevo handle; no afirmar workaround resuelto hasta inicio/Publishing/Play.
+
+
+
+### 2026-10-09 — Android846 publicado308; conexión física/SMS negativos pendientes
+
+Continuación expresa del titular sobre dde1bb9 más QA9ced. Consulta del mismo
+CM6ac945b4a02ae85db266e20e: finished20:09:27Z9/10, todos pasos success,
+source84687bb873760b806be93b5645c7c930bb1af0a1. AAB2.3.3(308). Build-info
+descargado y comprobado: commit846,308,Guardian testtrue/GooglePlayinternal.
+Play Console consultado separado: Internal activo, release151 disponible para
+testers internos, bundle308. Workaround autorizado Xcode26.5 sí arrancó/finalizó;
+no más builds ni repetición FULLCI37967904270/evidencia303 equivalente.
+Titular confirma que NO probó código incorrecto ni reenviar: cobertura real
+pendiente, no atribuirla a verificación correcta anterior. Solicitado otro número
+controlado/no vinculado, ingreso directo en app; teléfono personal confirmado
+se conserva, sin repetir desvinculación QA ni cambiar Auth para facilitar prueba.
+Titular conectó Samsung: Windows ADB Interface OK; adb inicialmente vacío y
+tras un reinicio acotado del servidor muestra no serial/offline. Solicitado
+USB debugging/desbloqueo; versión308 aún NO instalada/probada por este hilo.
+Artefacto descarga sin auth dio401; request autenticado sólo a codemagic.io
+permitió recuperar ZIPbuild-info, sin exponer token ni reenviarlo a redirects.
+Evidencia privada .tools/dde1/candidate-84687bb-xcode265-20261009; no en GitHub.
+Siguiente: conexiónADBautorizada, actualizar308 desdePlay, confirmar fuente/origen/
+sesión y revalidar deltaSMS; SMSincorrecto/reenvío con acceso legítimo pendiente.
+Entrega integral abierta; sin aceptación humana/instalada nueva atribuida.
+
+
+## 2026-10-09 — Play308 en teléfono; SMS real pendiente
+
+Candidato84687bb873760b806be93b5645c7c930bb1af0a1, referencia dde1bb9 congelada
+con QA9ced. ADB recuperado tras autorización USB humana. Dumpsys Samsung SM-S938B
+confirma com.mycompany.dopmi 2.3.3/versionCode308, installer com.android.vending.
+Inicio, Perfil e Información básica abren correctamente; sesión personal y teléfono
+vinculado conservados. Sin guardar, desvincular ni enviar SMS; fuente1.15/density420
+sin cambios. Capturas play308-* en .tools/dde1/device-qa son privadas/ignoradas,
+no evidencia accesible en GitHub. No se acredita error Auth real con estas capturas.
+
+Revisión de eficiencia: reutilizados FULLCI37967904270,19 tests/analyze y revisión
+independiente UI/UX/código/seguridad846, más QA303/302 equivalente; ningún build,
+suite, fixture consumido ni revisión redundante. Sin corrección perceptible nueva.
+Implementado846, verificado técnicamente846, publicado308 y navegación instalada308
+quedan separados de QA integral instalada y aprobación del titular/diseñadora.
+Titular respondió que no probó SMS incorrecto/reenvío y no dispone de otro número.
+Estos casos obligatorios permanecen pendientes, sin excepción aprobada. No se atribuye
+aceptación humana integral. Próxima acción: disponer de número controlado no vinculado,
+ingresarlo directamente en308 y probar incorrecto→reenvío→confirmación real conservando
+cuenta personal. Retomar esta entrega; no iniciar otro delta. Documentación no cambia
+candidato. Preservados dirty ajenos/privados; sin cambios backend/configuración.
+
+
+## 2026-10-09 — Meta: fuente a941815, DEV desactivado
+
+Integración dedicada de verificación social implementada y publicada en la rama
+codex/design-foundation (remoto comprobado); no es un build Play. App Meta creada
+tras autorización expresa y reautenticación del titular. Pruebas dirigidas y
+postflight DEV válidos, sin reutilizar fixtures SMS consumidos. CI automático
+37991530876 en curso al registrar; push 37991525217 cancelado por concurrencia.
+Detalles, revisión, despliegue y acciones exactas:
+[meta-social-verification.md](meta-social-verification.md). No hay OAuth real,
+publicación Meta, nuevo teléfono verificado ni aprobación humana acreditados.
+
+
+## 2026-10-09 — Cierre documental de conversación; entrega pendiente
+
+Conciliación de Git y evidencia existente, sin nuevas pruebas, builds ni auditorías.
+Producto finalf71c444; candidato943dc1c; FULLCI38001865589 verde, CM6ac9772639c0d173f3b4330a
+publicó internal/completed2.3.3(311), Samsung/Vending311 comprobado. Instagram y Facebook
+completaron OAuth real, SQL/UI mismo actor/sesión; flagDEVfalse restaurado. Consentimientos
+personales acreditados, aprobación humana global UI/UX no acreditada. Paridad846/308 y
+sus gates se reutilizan; QA SMS incorrecto/reenvío no ejecutada. No repetir fixtures.
+
+Cortes por grupo y próxima acción exacta en [checkpoint](mock-sync-current.md);
+revisiones, fallos útiles, jobs, backend/configuración y gates sociales en
+[registro social](meta-social-verification.md). Tablero/backlog/handoff actualizados.
+Se preservó trabajo local ajeno y privado; sólo documentación propia en el commit de
+cierre. Commit documental no es candidato. La siguiente conversación debe RETOMAR
+ESTA ENTREGA; no iniciar un nuevo delta. Remoto se comprueba después del push.

@@ -1,0 +1,13 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_dialog_test.dart
+00:00 +0: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_dialog_test.dart: Changing amount revokes consent, preserves cents and disables unchanged or invalid amounts
+00:02 +1: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_focus_test.dart: Custom amount focus and preset return at scale 1.0
+00:02 +2: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_focus_test.dart: Custom amount focus and preset return at scale 1.0
+00:03 +3: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_focus_test.dart: Custom amount focus and preset return at scale 1.0
+00:03 +4: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_focus_test.dart: Custom amount focus and preset return at scale 1.0
+00:03 +5: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_focus_test.dart: Custom amount focus and preset return at scale 1.0
+00:03 +6: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_focus_test.dart: Custom amount focus and preset return at scale 1.0
+00:03 +7: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_cancel_dialog_test.dart: Cancellation dialog returns consent only for explicit confirmation: Cancelar suscripción
+00:03 +8: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_focus_test.dart: Custom amount focus and preset return at scale 2.0
+00:03 +9: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_amount_focus_test.dart: Custom amount focus and preset return at scale 2.0
+00:03 +10: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/guardian_cancel_dialog_test.dart: Large text retains full explanation and both actions through scroll
+00:03 +11: All tests passed!

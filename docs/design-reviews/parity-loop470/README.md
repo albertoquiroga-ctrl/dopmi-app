@@ -1,0 +1,11 @@
+# Loop470 — avances compactos y recuperación del editor
+
+Base4f30e12; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. Rutas de administración/editor de avances son extensiones reales sin contrapartida Source literal. Se usa el marco compacto de detalle con paleta rescatista, título18, divisor e3e4ed y SVG back. ContributionFrame añade opt-in rescuer=false por defecto; detalles financieros existentes conservan paleta. Listado/editor usan padding16/20/16/32; tarjetas sin margen lateral extra. Indicador de navegación sólo en estados editables; datos/revisión/propiedad permanecen.
+
+Editor distingue error de recuperación de borrador nuevo: campo/fotos/guardar/enviar bloqueados hasta cargar el avance original, con reintento. Avances submitted/approved leídos directamente quedan bloqueados. Restore descarta respuesta tardía tras dispose. En nuevo sigue permitido guardar. Sin cambios de SQL, autorizaciones, repositorios, flags o dinero.
+
+8/8 editor pasa3s, handle18418 exit0, dopmi-loop470-editor-gesture-final2.log: fallo/reintento normal/200 conserva cuerpo/id/version7, bloquea nuevas escrituras; read-only submitted/approved, nuevo, respuesta tardía y drag que cierra TestTextInput conservando borrador sin envío. Gestos usan insets400 simulados y desplazan hasta controles; no teclado físico. Otros19 (GuardianHistory12/OwnedHistory6/capturador1 con12PNG) pasaron en conjunto anterior42048, que falló sólo2nuevos tests de scroll. No atribuir27suite única. Analyzer19717 limpio30.8s antes últimos ajustes sólo de test/scroll.
+
+Fallos previos: import de provider faltante en test; scroll ambiguo por Scrollable interno del campo y finder.last fuera de árbol lazy; corregidos localizando ListView y desplazando antes de comprobar. Test de gesto inicial sin insets no representaba el viewport ocupado por teclado; grande requería recuperar campo lazy tras cerrar. No se modificó producción para forzar esos tests.
+
+12PNG final conservadas, lista/editor normal y editor error200 inspeccionados, contraste/control real. No aceptación física, Source editor inexistente no equivalencia literal total. Full579 sobre2bba0c2 anterior: corresponde verificar regresión acumulada actual después de este loop. Sin Codemagic/push; objetivo global abierto.

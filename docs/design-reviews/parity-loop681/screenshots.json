@@ -1,0 +1,114 @@
+[
+  {
+    "file": "case-detail-amount-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "4c9432930419587feff68d5594046bfdd5d5c8f3072392215a4bc28c63d736a8"
+  },
+  {
+    "file": "case-detail-amount.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "5858228ef106ec1dc2548a2fce0ca8452c00d78c23cf480a8160c2bc32084f83"
+  },
+  {
+    "file": "case-detail-expenses-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "8b84b27d6d3b778198f4aebdb292e8a05a4a2b3d1e90ebcd6fc567daf7a65f8c"
+  },
+  {
+    "file": "case-detail-expenses.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "3cac94f09b8a94daa9f39158358c58171be63de1146b97d9c0e4f57fb4d8ee35"
+  },
+  {
+    "file": "case-detail-gallery-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "a129a305f67089bc7f762083d1e92d74ce66a4d8a9b095d3ff36cb23e5b6601c"
+  },
+  {
+    "file": "case-detail-gallery.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "e1c49dfd88b41a86ef5084ac0696a629bde327d5478389e0a621c731fd068432"
+  },
+  {
+    "file": "case-detail-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "5ef23be772c3543fc09c453d4f063cd7b28fb13bbd761401360ae4956ab298e3"
+  },
+  {
+    "file": "case-detail-photo-focus-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "823914018fb79d012320bd78bea1d877455feaf1b575deebed297e683697a13e"
+  },
+  {
+    "file": "case-detail-photo-focus.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "4973f7c3d03de3dc43acf4b34c4e298388459fa08094fdb40aaadcd217a52d4a"
+  },
+  {
+    "file": "case-detail-planned-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "88d47c4e74b4ede6491076ce8b8d56effb282ca1568c8b8ebee68728805eadd3"
+  },
+  {
+    "file": "case-detail-planned.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "e802a074a1cae8aa72da0f8e2ee8d9d1592c3733cf65c93c59aa2ac6d490b343"
+  },
+  {
+    "file": "case-detail-story-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "7febd6e997c073c492745a4300294baede9fd36fbef8865f0c4c22d946eb8d4a"
+  },
+  {
+    "file": "case-detail-story.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "85638e49f5a16f851d4b984f255c92a7606d70db903903e6a4ea265af9ddd2fb"
+  },
+  {
+    "file": "case-detail.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "325ab80162a954a53aaef4e2cfb97c427cb58b4cdb334927e6a4354141839f55"
+  }
+]

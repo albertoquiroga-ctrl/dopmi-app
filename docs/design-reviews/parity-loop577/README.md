@@ -1,0 +1,3 @@
+## 2026-10-03 — Loop577: tipografía de tarjeta personal
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. CSS profile-intro-copy gap2/strong16 line1.25/small13 line1.3; cliente heredaba alturas del tema y gap0. Establece altura1.25 del nombre,1.3 de ciudad y separación2 sólo cuando hay ciudad. Conserva datos/condición sin ciudad, radio y dimensiones de tarjeta; no copia identidad Source. Gate35854 terminal exit0,18/18,6s incluye17experiencia+capturador3PNG. Analyzer36602 exit0limpio18.2s. Capturas normal/200 inspeccionadas y guardadas; texto amplio crece, sin nueva aceptación de scroll/pantalla global ni comprobación runtimeSource de texto200. Archivo raíz/scratch igual. Full633572 anterior573/575–577; sin push/Codemagic hasta objetivo completo.

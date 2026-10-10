@@ -191,14 +191,16 @@ void main() {
         await eventually(() async => controller!.identity?.verified == true);
         final profile = await repository.loadProfile();
         expect(profile.name, 'Prueba de aceptación');
-        expect(profile.termsVersion, developmentTermsVersion);
+        expect(profile.termsVersion, currentTermsVersion);
         expect(profile.intent, 'rescue');
         await repository.saveProfile(
           name: 'Perfil actualizado',
           phone: '5550000000',
           city: 'Ciudad de México',
-          mode: 'rescuer',
         );
+        await repository.setExperience('donor');
+        expect((await repository.loadProfile()).mode, 'donor');
+        await repository.setExperience('rescuer');
         expect(await repository.client.rpc('dopmi_is_admin'), isFalse);
         await expectLater(
           repository.client.rpc('admin_list_users'),

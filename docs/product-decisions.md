@@ -1,12 +1,44 @@
+## Decisión estable de cierre — 9/10/2026
+
+La autorización adicional Meta permite prueba de control social dentro de la sesión
+Dopmi existente, sin nuevo método de acceso: Instagram personal enlace/revisión manual;
+profesional OAuth, Facebook public_profile. Consentimiento OAuth no es aprobación
+humana global de UI/UX. DEV queda cerrado después de la QA real, sin habilitación general.
+No hay excepción aprobada para pendientes sociales/SMS o aceptación. Estado único:
+[checkpoint](mock-sync-current.md), contratos y gates en [registro social](meta-social-verification.md).
+Se conserva referencia dde1bb9; mock4369 no inventariado. Protocolo vigente suficiente;
+este cierre documental no crea candidato ni autoriza nuevas funciones/auditorías.
+
 # Dopmi — decisiones vigentes
 
+## Decisiones del titular — entrega dde1bb9, 8/10/2026
+
+- Incluye delta9ced→dde1bb9 y QA pendiente9ced; no pushes posteriores.
+- Contacto público completo (correo/teléfono/dirección/web): campos públicos
+  dedicados, consentimiento expreso inicialmente desactivado, moderación y
+  snapshot aprobado. No publicar automáticamente datos Auth/expediente privado.
+  Retirar consentimiento oculta inmediatamente contactos en proyección servidor.
+  Esta decisión supersede restricción histórica de sólo ciudad/chat para este corte.
+- SMS real Twilio+Supabase; confirmar teléfono con autoridad Auth y conservar UUID.
+  No PhoneVerified editable por cliente ni OTP simulado; acceso/costo pendiente.
+- Edición sensible reabre sólo versión pública, conserva identidad/Connect y
+  capacidades financieras; preview privado no guarda/publica automáticamente.
+- Excepción para QA final Samsung: titular inicia cuenta QA temporal y restaura
+  su cuenta original, sin clear data ni automatizar credenciales/login.
+- Tienda/videos/Meta/fondo/bonos/cashback/analítica avanzada siguen excluidos;
+  dinero sólo test, publicación sólo Play Internal y no merge.
+
+> Decisión vigente 27/9/2026: el titular admite las pantallas actuales para continuar; la fidelidad visual queda aplazada, sin aceptación atribuida a Irlanda. H9 autorizado: aceptación integrada y correcciones, con revisión final agrupada en Internal Testing. Ver [H9](h9-acceptance.md). Esta decisión supersede los bloqueos visuales históricos inferiores.
+
 ## Decisiones de lanzamiento — 25 de septiembre de 2026 (México)
+
+Actualización 26/9/2026: H8 incluye paridad completa y funcional de ambos modos, backend mínimo de favoritos/avances/perfil público/reportes y descubrimiento aproximado. H9 conserva aceptación integrada/excepciones. Historias persistentes, no temporales; ubicación aproximada opcional con alternativa manual; contacto público por ciudad y chat sin domicilio, teléfono ni correo personal. Ver `h8-execution.md`.
 
 El titular autorizó `release-roadmap.md`. MVP público en Android/iOS con Google/Apple, eliminación de cuenta, medición mínima y funciones actuales completas. Videos, Meta, push y analítica avanzada quedan post-MVP. No habrá tienda, fondo comunitario, bonos ni cashback. Seguir la última versión de Irlanda (`irlanda/apoyar-detalle-perfil`); las reglas económicas y de privacidad prevalecen sobre sus simulaciones. El sistema anterior al pivot era de pruebas; retirarlo tras respaldo, restauración y análisis de dependencias, preservando el sistema actual.
 
 ## Alcance
 
-App Flutter para Android/iPhone, panel React/TypeScript y Supabase. Al corte del 25 de septiembre de 2026, H1–H3 están completos en desarrollo y H4 en modo prueba; H5 está aceptado en modo prueba con la excepción documentada en [entrega H5](hito5-delivery.md). Continuidad en la base consolidada `codex/Dopmi` y rama H7 `codex/legacy-boundary`, según [la guía para Codex](codex-handoff.md). El titular compila en Codemagic y la aceptación H5 utiliza Google Play interno; TestFlight queda como alternativa.
+App Flutter para Android/iPhone, panel React/TypeScript y Supabase. Al corte del 25 de septiembre de 2026, H1–H3 están completos en desarrollo y H4 en modo prueba; H5 está aceptado en modo prueba con la excepción documentada en [entrega H5](hito5-delivery.md). Continuidad en la base consolidada `codex/Dopmi` y rama H8 `codex/design-foundation`, según [la guía para Codex](codex-handoff.md). El titular compila en Codemagic y la aceptación H5 utiliza Google Play interno; TestFlight queda como alternativa.
 
 Referencia visual: https://www.figma.com/design/96Dxvfc0V4Kn3lU6OTJ1g5/DopMi?node-id=133-624
 
@@ -34,6 +66,14 @@ El prototipo React y la fuente funcional del ZIP son referencias de producto. Su
 - Administradores se asignan mediante una operación de servidor. No existe registro público de administradores.
 - Los textos legales de desarrollo son provisionales y no habilitan un lanzamiento público.
 
+## Límite Supabase/Firebase — 29 de septiembre de 2026
+
+- Supabase es el único backend del producto: Auth, PostgreSQL/RLS, Storage, Realtime y Edge Functions. Las sesiones sociales de Google y Apple siempre terminan en Supabase.
+- Firebase se conserva exclusivamente para Analytics y Crashlytics. Ambos servicios son opcionales, tienen consentimientos independientes y permanecen apagados hasta que la persona los active.
+- La app no usará Firebase Authentication, Firestore, Realtime Database, Storage, Cloud Functions ni Dynamic Links. Incorporar cualquiera de esos servicios requiere una nueva decisión explícita y una revisión de privacidad y arquitectura.
+- Las configuraciones Firebase de pruebas y producción deben pertenecer a ambientes separados. La medición nunca decide estados financieros ni sustituye la evidencia del servidor.
+- Los recursos del backend anterior en Firebase se consideran legado de pruebas: no reciben datos nuevos ni se migran usuarios desde ellos. Se inventariarán y retirarán cuando su ausencia de dependencias esté comprobada.
+
 ## Hito 2 — adopción y comunicación
 
 - El usuario autorizó iniciar este hito después del cierre de identidad. Incluye publicaciones de adopción, revisión, catálogo, filtros, detalle, guardados, perfiles públicos, conversaciones y notificaciones dentro de la app.
@@ -56,3 +96,15 @@ El prototipo React y la fuente funcional del ZIP son referencias de producto. Su
 - Las correcciones conservan datos y archivos. En revisión se puede retirar a borrador; una aprobación bloquea la edición del autor. El administrador puede solicitar nuevas correcciones y retirar la aprobación, dejando historial. Cerrar un caso bloquea nuevos gastos; primero deben resolverse sus solicitudes en revisión.
 - El seguimiento público expone exclusivamente una copia aprobada de textos/fotos marcados para publicar. Identificación, domicilio, teléfono, comprobantes y observaciones internas nunca forman parte de esa copia. La suspensión de la cuenta o pérdida de verificación oculta sus casos.
 - Los documentos admiten JPG/PNG/WebP y PDF de hasta 5 MB. Las fotos públicas se normalizan y eliminan metadatos. Los archivos aprobados no pueden sobrescribirse. El panel registra consultas y decisiones; las notificaciones son internas.
+
+
+## 9/10/2026 — Verificación social autorizada
+
+El titular solicita expresamente Facebook e Instagram como prueba de control
+desde una cuenta Dopmi existente, sin convertirlos en acceso a Dopmi. Autoriza
+crear la app Meta; creación confirmada tras reautenticación personal. Instagram
+personal mantiene enlace/revisión manual; OAuth sólo Empresa/Creador. Esta decisión
+habilita este encargo separado pese a la exclusión histórica de Meta del MVP.
+No acredita identidad legal, propiedad de URLs no devueltas por el proveedor,
+aprobación de perfiles ni aceptación humana del nuevo flujo. Estado y gates:
+[meta-social-verification.md](meta-social-verification.md).

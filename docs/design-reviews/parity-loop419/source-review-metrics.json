@@ -1,0 +1,18 @@
+{
+  "source": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "viewport": [
+    377,
+    852
+  ],
+  "heading_height": 20,
+  "edit_height": 17,
+  "photo_height": 110,
+  "label_height": 15,
+  "first_photo_y": 153,
+  "information_heading_y": 287,
+  "known_differences": [
+    "Source fixture photo differs from real signed photo fixture",
+    "App retains approved-publication fields species/sex/city/state",
+    "Edit hit target48 vs Source17 changes row spacing"
+  ]
+}

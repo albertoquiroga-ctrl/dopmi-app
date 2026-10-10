@@ -1,0 +1,3 @@
+## 2026-10-03 — Loop 529: interlineado de campos de gastos
+
+Producción 23515073c62ef71a8a91d273665a61bab89acf46. ExpenseField usa 14/17 para etiquetas y controles de una línea, frente al anterior14/19.6; multiline mantiene1.4 de unlock-textarea. CSS actual unlock-field/unlock-input y métricas normales de Source527; Source remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. Sin cambio de contenido, privacidad, límites, importes ni persistencia. Test5981 terminal exit0:13/13,13s; 17 PNG expense-*; analyzer25325 terminal exit0 limpio30s. Captura information normal inspeccionada y archivada, no aceptación global ni de todos los estados grandes. Full609524/capturador403525 preceden527–529. Objetivo continúa; sin push ni Codemagic.

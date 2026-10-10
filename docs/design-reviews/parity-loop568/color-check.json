@@ -1,0 +1,27 @@
+{
+  "pixel": [
+    80,
+    745
+  ],
+  "samples": {
+    "source_hover": [
+      0,
+      0,
+      0
+    ],
+    "source_no_hover": [
+      21,
+      17,
+      13
+    ],
+    "native": [
+      21,
+      17,
+      13
+    ]
+  },
+  "reference_sha": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "native_capture": "capture_design566, same production135879c",
+  "source_hover_actual": true,
+  "source_no_hover_actual": false
+}

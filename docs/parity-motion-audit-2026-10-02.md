@@ -1,0 +1,102 @@
+> Loop660: regresión global **766/766**, analyze limpio;352archivos idénticos antes/final. [Evidencia](design-reviews/parity-loop660/README.md). Supersede759650; colección414651 yAPK656 anteriores últimosparches, no aceptación visual/nativa global. Codemagic únicamente al objetivo completo.
+
+> Colección global vigente loop651: **414 estados de 47 rutas**, capturados desde `d92adc68ebe6a570fd0b280ec618e2a2896c168f`, todos nuevos y PNG válidos, hashes fuente sin cambios. Supersede la colección410636 citada abajo. [Manifiesto y alcance](design-reviews/parity-loop651/README.md). Full759650 sigue misma producción; ninguna aceptación visual global o nativa implícita. Siguiente: candidato Android local actual y recorridos instalados, junto con el contraste pendiente por familias. Codemagic sólo al objetivo completo.
+
+> Corte vigente loop650 (4/10/2026): fuente `bf810ef5e8e4c41d609d1404277516bf985e4d94`, referencia Irlanda `a3c969cd9103fd46dc5cd886999912526ce75efb`. Flutter **759/759**, analyze limpio, configuración **16/16**; 352 archivos raíz/scratch idénticos antes y después. Supersede los resultados globales antiguos de abajo. Ver [evidencia650](design-reviews/parity-loop650/README.md).
+>
+> Gastos641 corrige cascada real `.rescuer-theme`; revisión/presión/rutas634–635 verificadas. Verificación638–649 incluye intro, campos, documentos67/hit48, progreso71, acciones reales, espera sin salto y estados; cuenta con gates y capturas dirigidos. La colección global410636 es anterior a638+, y la lista actual tiene414fixtures. ADB650 vacío; sin aceptación instalada nueva. Siguiente: renovar colección global y contraste pendiente, y reconsiderar build/emulador local con RAM libre3GB al cierre. Codemagic únicamente al objetivo completo.
+>
+> El alcance sigue incluyendo NAV/AUTH/DISC/FILTER/PET/MATCH/SAVED/CHAT/PROFILE/SETTINGS/SUPPORT/CASE/STORY/PUBLIC/IMPACT/RH/RC/PUBLISH/VERIFY/EVIDENCE/RP/PAYMENT/GUARD/REPORT/LEGAL, sus animaciones/gestos y funciones reales. Tests y capturas no cierran la paridad global ni la aceptación nativa.
+
+> Corrección vigente loop641: evidencia/gastos heredan `.rescuer-theme` (`#151423`/`#4f4e5c`), confirmado en runtime. Conclusiones de paleta global de619/622/627/633 quedan supersedidas. La introducción de verificación usa paleta global fuera de ese padre. Gate64136/36/analyze limpio; full705629 yglobal410636 anteriores641.
+
+# Corte vigente — loop633, 4/10/2026
+
+Referencia: `irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`. Este corte supersede los pendientes contradictorios de cortes anteriores; no cierra la paridad global.
+
+| Alcance | Evidencia vigente y pendiente |
+| --- | --- |
+| Regresión | Full705/705 loop629 sobre d561fac; 16configuración. Producción633 posterior: gate dirigido14/14 y analyze limpio6.9s. |
+| Perfil/Publicar/Impacto/Pagos | Geometría del diálogo609 corregida; Publicar615–617 e Impacto600–605 cuentan con evidencia dirigida. Falta cierre visual de todos los estados y aceptación instalada. |
+| Gastos/evidencia | Recibo requerido623; foto primero624; descripción separada626/presentación627/requerida628; capturas200630; transición Source631/cliente632; paleta review633. Guardado/roles/privacidad conservados. Falta contraste completo de estados, presión de editar/acciones y capacidades nativas. |
+| Cobertura visual global | 407capturas599 anteriores600+. Capturas de familias recientes no sustituyen nueva pasada global ni equivalen a pantallas aceptadas. Todas las familias NAV/AUTH/DISC/FILTER/PET/MATCH/SAVED/CHAT/PROFILE/SETTINGS/SUPPORT/CASE/STORY/PUBLIC/IMPACT/RH/RC/PUBLISH/VERIFY/EVIDENCE/RP/PAYMENT/GUARD/REPORT/LEGAL siguen dentro del alcance. |
+| Aceptación nativa | ADB vacío629. Selector/fotos/teclado/share/gestos físicos/suspensión/red y SDKs reales de prueba requieren evidencia instalada actual. No copiar simulaciones o hover. |
+| Entrega | Codemagic android-guardian-internal al completar objetivo; publicar Play se verifica por separado. Sin dinero live autorizado. |
+
+Siguiente tarea concreta: presión de acciones de revisión del gasto y enlaces Editar con callbacks reales; después renovar matriz visual global y contrastar discrepancias restantes.
+
+# Corte vigente — loop618, 4/10/2026
+
+## 2026-10-04 — Loop618: regresión integrada de Publicar y diálogo
+
+Fuente c89e4616b9d32dbfd1b982518e7cfd400abe9e4e; Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Fluttertest --no-pub79285 terminalexit0,692/692 en3m04s; supersede674606 e integra607–617, incluida edad/checkbox/descripciones/review/selección inmediata y altura fraccionaria del diálogo. Manifiesto antes del gate249Dart normalizados y96assets byteidénticos raíz/scratch; verificador71083exit0 conserva hashes hasta cierre, sin ediciones durante. Configpython16/16exit0. Analyzer617clean8.2s mismafuentevigente. ADBvacío consultado; AVD Dopmi_API_35 disponible, no arrancado: memoria libre265448KB de7708932KB durante gate, insuficiente para arranque fiable; no cerrar apps del usuario. Ninguna aceptación nativa nueva. Capturas407globales599anteriores600+, familiaPublicar615/review616 actuales estadofinal617, no paridad global por692tests. Sin cambios de producción en618. Próximo contraste independiente: flujo de comprobante/evidencia de gastos contra UnlockExpense vigente, preservando privacidad/aprobación/propiedad y revisando la capacidad nativa después del gate. Sin push/Codemagic hasta completar objetivo.
+
+# Corte vigente — loop606, 4/10/2026
+
+## 2026-10-04 — Loop606: regresión móvil integrada
+
+Fuente exacta d94b865838682f66e54b854c6684a3ce618f0da9; referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada al inicio y al cierre. Flutter test --no-pub, sesión 58496, terminó exit 0: 674/674 en 3m03s. Integra los cambios de billeteras, tarjetas, composición/firma/fechas de Impacto y descarte por cuenta de 596–605; supersede el gate completo 651/651 de 595. Manifiesto tomado antes del gate y comprobado al cierre: 245 Dart normalizados y 96 assets byteidénticos entre checkout y scratch, sin cambios durante la ejecución. Python scripts/test_mobile_config.py: 16/16, exit 0. Analyzer 605 final sin incidencias, 6.8s, mismo código actual. ADB consultado: ningún dispositivo conectado. No aceptación física ni paridad global por pasar tests; 407 capturas globales de 599 anteriores a 600–604. Sin cambios de producción en este loop. Próximo contraste: estado táctil de Compartir en Impacto frente CSS vigente y comportamiento del enlace público; continuar las demás familias, incluidos gestos físicos y el residual geométrico del diálogo. Codemagic únicamente al completar el objetivo.
+
+# Corte vigente — loop595, 4/10/2026 UTC
+
+## 2026-10-04 UTC — Loop595: regresión completa del historial
+
+Fuente b2ee195e1961398cc67cb7f94fe8a67a0b0fc73a, Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Fluttertest --no-pub90480 terminalexit0,651/651,3m22s.242Dart lib/test/tool raíz-scratch iguales/hashessin cambios antes/cierre;96assets byteigualesmedidos durante/cierre yhashesestables. Configpython16/16 sesión12548exit0. Analyzer594clean11.8s mismafuente vigente. Supersede full639586 e integra587–594. ADBvacío consultado595, no Androidfísico disponible.407capturasglobales565 anteriores a cambios; dirigidas594historialactuales, no651aceptaciones ni paridadglobal. Próximo contraste independiente MétodosdePago: GuardianPaymentCardRow TextButtonHacerpredeterminada/IconButtonEliminar heredan splash/overlay; Source inline-link/icon-button sólohover, sin active/táctil. Verificar presión real conservando foco y accionesfinancieras autorizadas. Sin cambiosproducción eneste gate. Sin push/Codemagic hasta objetivo completo.
+
+# Corte vigente — loop586, 3/10/2026
+
+## 2026-10-03 — Loop586: regresión completa de Perfil y diálogo
+
+Fuente ddf049a3cc781e164a5eb5c79876f16a3f3daee7, Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Flutter test --no-pub sesión67717 terminal exit0,639/639,4m13s.241Dart lib/test/tool raíz-scratch iguales y hashes sin cambios desde antes del gate hasta cierre.96assets byteidénticos y hashes estables, medidos durante/cierre; config python16/16exit0. Analyzer585 limpio18.1s vigente misma fuente. Supersede full633572 e integra573–585. ADB vacío: ningún dispositivo disponible, no nueva aceptación nativa/física.407capturasglobales565 anteriores a cambios; capturasdirigidas585 actuales diálogo662h vsSource660.71875 aún1.28125h. Tests no paridadglobal. Próximo contraste independiente Mi historial: texto inicial/espaciado/rutas y datos reales, sin copiar montos/status ficticios. Sin push/Codemagic hasta objetivo completo.
+
+# Corte vigente — loop572, 3/10/2026
+
+## 2026-10-03 — Loop572: regresión completa de acceso actualizado
+
+Fuente c4deabcd5536694ac9f014dd56bff620b873071d. Flutter test --no-pub, sesión54766 terminal exit0:633/633,3m53s. Los240 Dart de lib/test/tool coinciden raíz/scratch y conservan hashes al cierre; medición inicial tomada durante la ejecución, no antes de iniciarla. Analyzer571 limpio69.2s sobre la misma fuente. Incluye569–571, supersede full630564. Referencia Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto reconsultado sin cambios. Capturas407565 anteriores a estos cambios;27 dirigidas571 actuales. No paridad global, gestos físicos, signin real ni StripeSDK aceptados. Sin push/Codemagic hasta completar objetivo.
+
+# Corte vigente — loop564, 3/10/2026
+
+Fuente135879c178d1cd89befb2cd38220b6c86b0a44a7: full91070 terminalexit0,630/630,3m53s.233Dart iguales raíz/scratch/hashmanifest564 antes/durante/después. Analyzer59811 de563 limpio26.9s mismo código. Incluye559–563, supersede full621557.407fixtures547 anterior548–563; dirigida561 detalle. Native558 APKd435f33 anterior559–563; ADB564vacío. Contraste visual/temporal global, teléfono/dedos yStripeSDK pendientes. Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Próxima pasada independiente: capturas completas actuales y comparación por familias. Sinpush/Codemagic hasta objetivo completo.
+
+# Corte vigente — loop531, 3/10/2026
+
+## 2026-10-03 — Loop 531: regresión integrada actual
+
+Fuente 5799915dd2e8d1bb524d3076779080791ede69f5, producción037754f. Full54358 terminal exit0:609/609,3m48s; analyzer83628 terminal exit0 limpio217.7s.230Dart/cuatroSVG raíz-scratch iguales antes/después y sin cambios durante gate; manifest531. Incluye estilos de gastos527–530. Source remoto a3c969cd9103fd46dc5cd886999912526ce75efb revalidado. ADB531 vacío. Capturador completo403525 precede527–530, complementado por17capturas de gastos530; no pasada completa nueva ni aceptación visual global. Sigue contraste de familias/gestos físicos/StripeSDK. Sin push ni Codemagic.
+
+La expansión de gasto público quedó comprobada en Source y ruta real en503 (primer frame, sin animación); carrusel SUPPORT504 comprueba arrastre y conservación del offset al regresar. El siguiente trabajo listo indicado en502 queda supersedido. Estas pruebas no acreditan dedo físico.
+
+# Corte anterior de movimiento — loop502, 3/10/2026
+
+Cliente verificado `8270386d3b531907d4618ebd4358ebd221a88146`, full607/607 y análisis sin incidencias en loops500/501. Referencia `a3c969cd9103fd46dc5cd886999912526ce75efb`. Este corte supersede las cifras inferiores; no afirma paridad global ni aceptación instalada.
+
+| Interacción | Evidencia actual inspeccionada | Límite / siguiente comprobación |
+| --- | --- | --- |
+| Adoptar: retorno, salida y tarjeta siguiente | RuntimeSource493: retorno250, salida280 y nueva tarjeta entra desde±420/±18 durante250; opacity1. Cliente corregido493, prueba inicio/medio/final y gesto interrumpido. | Browser mouse y widgets; falta dedo físico. No usar sólo la salida280 como prueba de entrada. |
+| Oportunidad de apoyo dentro del mazo | Pruebas494 normal/reduced: entrada, captura de nuevo gesto, cancelación a cero y monto real conservados. | Comparte mecanismo, pero no hay nuevo runtimeSource de oportunidad de apoyo en494. |
+| Filtros | RuntimeSource495 inserción sin animación, radio24; cierre fuera descarta selección. Cliente primerpump y cierres Atrás/fuera sin nueva consulta. | No teclado físico ni aceptación visual global del modal. |
+| Regreso de Favoritos a Adoptar | Prueba496 conserva misma instancia/tarjeta y traslado0 al primerpump/125ms. | Continuidad móvil establecida; no atribuir persistencia del índice al prototipo React. |
+| Indicadores de Perfil | RuntimeSource497 down real: matriz0.98/timing120ease. Cliente primerpump y ScaleTransition final120 normal200. | Eventos de sombra por hover excluidos. Falta dedo físico. |
+| Entrada de introducciones | CSS actual y keys por paso inspeccionados498; opacidad/traslado exactos a225 y450, reduced/demoras anteriores cubiertos. |498 no ejecutó nuevo runtimeSource; conserva prueba de rutas341 en la suite completa. |
+| Nuevo en Mis casos | RuntimeSource500 superficie91.21875x34/top20/radio14. Cliente499 y test500 superficie compacta/target48; toque bajo superficie abrePublicar normal200. | Prueba geométrica y de hitarea; no equivalencia de todos los estados de Mis casos. |
+| Gasto público desplegable | Regla Source donate-need-chevron usa giro inmediato; código anterior identificado en341. | **Siguiente trabajo listo:** ejecutar expansión/cierre Source y ruta Flutter, comprobar primerframe, evidencia pública y foco/regreso. La regla antigua need-expand150ms no justifica animar el componente vigente. |
+
+Fuente y hashes del gate completo en [mobile-consistency.json](design-reviews/parity-loop500/mobile-consistency.json). Capturador401492 es anterior a los cambios493/499; no401aceptaciones. ADB494 vacío; StripeSDK TEST, funciones nativas y familias restantes siguen pendientes. Codemagic únicamente al completar el objetivo.
+
+# Corte anterior de movimiento — loop341, 2/10/2026
+
+Referencia irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb. Cliente inicial a02ecac. Esta revisión distingue movimiento aplicable de CSS antiguo o hover y acredita únicamente las comprobaciones descritas.
+
+| Recorrido | Contrato de referencia vigente | Evidencia de cliente |
+| --- | --- | --- |
+| Cambio de ruta | React Router sustituye contenido sin transición global. | DopmiPageTransitionsBuilder duration0/child directo. Pruebas de rutas Android/iOS y nueva ruta real signup→Aviso→Atrás: animationcompleted en primer pump, correo/intención/scroll/consentimiento intactos. |
+| Introducción adoptante/rescatista | onb-gate-body con key slide.id; entrada450ms cubic(.22,1,.36,1), opacity0→1, y10→0; paso siguiente remonta cuerpo. | Nueva prueba DopmiApp/router/controllers reales: siguiente remonta entrada,0 al inicio/intermedia225/completa450; Atrás del sistema vuelve al paso anterior sin salir de ruta ni crear cuenta y reinicia entrada. Repositorios fake. |
+| Selección de bienvenida | Colapso550ms y resumen/pie con demoras propias; CSS de selección separado de hover. | onboarding_motion_test comprueba retrasos, entrada y reducción de movimiento; navigation test conserva intención y regreso ampliado. |
+| Tarjeta de Adoptar | DragX y giro directo; salida280ms y retorno250ms, curvas definidas en discovery CSS2594/2598. | discovery_motion_test comprueba seguimiento inmediato, umbral/retorno/cancelación sin guardar, salida280ms, interpolación independiente de giro/traslación y avance sin espera bajo movimiento reducido. |
+| Pestañas | Acciones reales de navegación, estado privado por cuenta. | design_navigation_test comprueba ramas Adoptar/Favoritos, sesión rescatista, borrador descartado al cambiar identidad y navegación320px/200% accesible. |
+| Evidencia de necesidad | NeedCard usa donate-need-chevron (styles6941), giro instantáneo al alternar. | PublicExpenseCard RotatedBox instantáneo. CSS need-expand/styles7086 pertenece a selector anterior no usado por NeedCard actual; no añadir animación150ms sólo por encontrar regla CSS antigua. No nueva aceptación de expansión/servidor aquí. |
+
+Gate dirigido final:30/30,8s,flutter test --no-pub test/route_motion_test.dart test/onboarding_motion_test.dart test/discovery_motion_test.dart test/design_navigation_test.dart,handle20897 exit0. No producción modificada en este loop; tres pruebas integradas nuevas reemplazan evidencia indirecta por la app/router reales. Primera ejecución28/28 precede dos pruebas añadidas.
+
+No acredita rasterización/runtimeSource nuevo, dedo físico/Samsung, navegación instalada, share nativo ni publicación Play. No cierre de las demás familias. Último full481 sobre7defead precede337/339/340/341. Capturas305/36 sin nuevas341. Mantener matrizglobal265 y verificar familias restantes con sus flujos reales antes de candidato Codemagic único final.

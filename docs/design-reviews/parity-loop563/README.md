@@ -1,0 +1,5 @@
+# Loop563 — Límite toque/arrastre
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidado remotamente. Source onPointerUp abre detalle sólo abs(delta)<8; después retorna o pasa por abs(delta)>110. Flutter horizontal recognizer general esperaba hit slop mayor, por lo que movimientos8/9px podían resolverse como tap. DiscoveryDragSurface conserva coordenadas pantalla562 y usa HorizontalDragGestureRecognizer específico con aceptación abs(globalDistanceMoved)>=8. Limitado a adopción/apoyo. Tap accesible yaccioneshijas conservadas; no listener global ni hover.
+
+Seis nuevas pruebas ruta real/DopmiApp:±7 abre detalle,±8/±9 no abre/guarda/pasa. Gate82952 terminalexit0,51/51,12s; incluye cancelación/soporte/reduced motion/persistencia lenta/fallida. Analyzer86078 señaló importinnecesario; removido únicamente importdart:ui, reexportado por gestures. Final59811 exit0 limpio26.9s. No capturas estáticas nuevas ni prueba física del teléfono. Referencia movimiento obtenida del código vigente, no nuevo runtime temporal. Sin push/Codemagic.

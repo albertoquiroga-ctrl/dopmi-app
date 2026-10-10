@@ -1,0 +1,87 @@
+[
+  {
+    "selector": ".center-state",
+    "text": "Cuenta verificadaYa puedes publicar y administrar casos con donaciones.Publicar un caso",
+    "rect": {
+      "x": 0,
+      "y": 68,
+      "width": 377,
+      "height": 520
+    },
+    "font": "16px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "lineHeight": "normal",
+    "padding": "28px",
+    "gap": "10px",
+    "margin": "0px",
+    "color": "rgb(21, 20, 35)",
+    "background": "rgba(0, 0, 0, 0)"
+  },
+  {
+    "selector": ".success-icon",
+    "text": "",
+    "rect": {
+      "x": 156.5,
+      "y": 198.265625,
+      "width": 64,
+      "height": 64
+    },
+    "font": "16px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "lineHeight": "normal",
+    "padding": "0px",
+    "gap": "normal",
+    "margin": "0px 0px 14px",
+    "color": "rgb(21, 20, 35)",
+    "background": "rgb(42, 195, 155)"
+  },
+  {
+    "selector": ".center-state h1",
+    "text": "Cuenta verificada",
+    "rect": {
+      "x": 88.21875,
+      "y": 286.265625,
+      "width": 200.5625,
+      "height": 30
+    },
+    "font": "700 24px / 30px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "lineHeight": "30px",
+    "padding": "0px",
+    "gap": "normal",
+    "margin": "0px 0px 16.08px",
+    "color": "rgb(21, 20, 35)",
+    "background": "rgba(0, 0, 0, 0)"
+  },
+  {
+    "selector": ".center-state p",
+    "text": "Ya puedes publicar y administrar casos con donaciones.",
+    "rect": {
+      "x": 28,
+      "y": 342.34375,
+      "width": 321,
+      "height": 43.375
+    },
+    "font": "14px / 21.7px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "lineHeight": "21.7px",
+    "padding": "0px",
+    "gap": "normal",
+    "margin": "0px 0px 14px",
+    "color": "rgb(79, 78, 92)",
+    "background": "rgba(0, 0, 0, 0)"
+  },
+  {
+    "selector": ".center-state button",
+    "text": "Publicar un caso",
+    "rect": {
+      "x": 28,
+      "y": 409.71875,
+      "width": 321,
+      "height": 48
+    },
+    "font": "600 16px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "lineHeight": "normal",
+    "padding": "11px 18px",
+    "gap": "normal",
+    "margin": "0px",
+    "color": "rgb(251, 251, 255)",
+    "background": "rgb(120, 65, 242)"
+  }
+]

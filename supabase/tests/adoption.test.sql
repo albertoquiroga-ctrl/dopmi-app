@@ -6,10 +6,11 @@ insert into auth.users(id,email,raw_user_meta_data,email_confirmed_at)
 select ('20000000-0000-4000-8000-00000000000'||n)::uuid,'adoption-'||n||'@example.test',
   '{"display_name":"Nombre privado","terms_version":"development-2026-09-13","terms_accepted":true}',now() from generate_series(1,4) n;
 insert into private.admin_memberships(user_id) values('20000000-0000-4000-8000-000000000004');
-insert into public.dopmi_adoptions(id,owner_id,pet_name,city,region,story,publisher_name,photos)
+insert into public.dopmi_adoptions(id,owner_id,pet_name,city,region,story,publisher_name,photos,personality,approximate_latitude,approximate_longitude)
 values('30000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000001','Luna','Monterrey','Nuevo León',
  'Luna busca una familia que le dedique tiempo.','Refugio aprobado',
- array['20000000-0000-4000-8000-000000000001/30000000-0000-4000-8000-000000000001/40000000-0000-4000-8000-000000000001.jpg']);
+ array['20000000-0000-4000-8000-000000000001/30000000-0000-4000-8000-000000000001/40000000-0000-4000-8000-000000000001.jpg'],
+ array['affectionate','calm'],25.69,-100.32);
 
 set local role anon;
 select set_config('request.jwt.claim.sub','',true);
@@ -52,6 +53,13 @@ select set_config('request.jwt.claim.sub','',true);
 select is((dopmi_catalog('{"species":"dog","city":"monterrey","min_age":0}')->>'total')::int,1,'public filters find approved post');
 select is((dopmi_catalog('{"species":"cat"}')->>'total')::int,0,'nonmatching filter excludes');
 select is((dopmi_catalog('{}',2,1)->'items'), '[]'::jsonb,'catalog paginates');
+select is((dopmi_discovery('{"personality":["affectionate"]}')->>'total')::int,1,'discovery filters approved personality');
+select is((dopmi_discovery('{"personality":["playful"]}')->>'total')::int,0,'discovery excludes other personality');
+select is((dopmi_discovery('{"latitude":25.68,"longitude":-100.31,"radius_km":5}')->>'total')::int,1,'approximate radius includes nearby publication');
+select ok((dopmi_discovery('{"latitude":25.68,"longitude":-100.31,"radius_km":5}')->'items'->0->>'distance_km') is not null,'distance is calculated when both approximate locations exist');
+select is((dopmi_discovery('{"latitude":20,"longitude":-100,"radius_km":5}')->>'total')::int,0,'approximate radius excludes distant publication');
+select is((dopmi_discovery()->'items'->0) ?| array['approximate_latitude','approximate_longitude'],false,'discovery never exposes approximate coordinates');
+select throws_ok($$select dopmi_discovery('{"latitude":25.68}')$$,'22023',null,'partial location filter rejected');
 select is(dopmi_adoption_detail('30000000-0000-4000-8000-000000000001') ? 'review_feedback',false,'public detail excludes private moderation');
 select is(dopmi_public_profile('20000000-0000-4000-8000-000000000001')->>'name','Refugio aprobado','public name uses approved snapshot');
 select is(dopmi_public_profile('20000000-0000-4000-8000-000000000001') ?| array['email','phone','account_status'],false,'public profile excludes identity data');
@@ -63,15 +71,26 @@ select set_config('request.jwt.claim.sub','20000000-0000-4000-8000-000000000002'
 select lives_ok($$select dopmi_set_favorite('30000000-0000-4000-8000-000000000001',true)$$,'favorite saves');
 select lives_ok($$select dopmi_set_favorite('30000000-0000-4000-8000-000000000001',true)$$,'favorite retry idempotent');
 select is((dopmi_catalog('{"saved":true}')->>'total')::int,1,'saved catalog scoped to account');
+select is((dopmi_saved_adoptions()->>'total')::int,1,'saved detail list counts the account favorite');
+select is((dopmi_saved_adoptions()->'items'->0->>'available')::boolean,true,'saved detail list exposes approved content');
+select lives_ok($$select dopmi_set_rescuer_favorite('20000000-0000-4000-8000-000000000001',true)$$,'public rescuer profile may be saved');
+select is((dopmi_saved_rescuer_list()->>'total')::int,1,'saved rescuer is private to the account');
+select is((dopmi_public_profile('20000000-0000-4000-8000-000000000001')->>'saved')::boolean,true,'public profile reflects the current account favorite');
+select set_config('test.report',dopmi_report_content('adoption','30000000-0000-4000-8000-000000000001','unsafe','Necesita revisión')::text,true);
+select is(dopmi_report_content('adoption','30000000-0000-4000-8000-000000000001','unsafe','Necesita revisión')::text,current_setting('test.report'),'report retry returns the persisted report');
 select set_config('test.thread',dopmi_start_thread('30000000-0000-4000-8000-000000000001')::text,true);
 select is(dopmi_start_thread('30000000-0000-4000-8000-000000000001')::text,current_setting('test.thread'),'contact retry reuses thread');
 select is(dopmi_send_message(current_setting('test.thread')::uuid,'50000000-0000-4000-8000-000000000001','Hola, me interesa Luna')->>'body','Hola, me interesa Luna','participant sends');
 select lives_ok($$select dopmi_send_message(current_setting('test.thread')::uuid,'50000000-0000-4000-8000-000000000001','Hola, me interesa Luna')$$,'message retry succeeds');
 select is(jsonb_array_length(dopmi_thread_messages(current_setting('test.thread')::uuid)),1,'retry creates only one message');
+select is((dopmi_match_threads('Luna')->>'total')::int,1,'match search finds pet name');
+select is((dopmi_match_threads('sin coincidencia')->>'total')::int,0,'match search excludes unrelated conversations');
 select throws_ok($$select dopmi_send_message(current_setting('test.thread')::uuid,'50000000-0000-4000-8000-000000000001','Diferente')$$,'22023',null,'same id with different payload blocked');
 select is((dopmi_list_threads()->>'total')::int,1,'participant sees thread list');
 select set_config('request.jwt.claim.sub','20000000-0000-4000-8000-000000000003',true);
 select is((select count(*) from dopmi_favorites),0::bigint,'favorites private');
+select throws_ok($$select * from dopmi_saved_rescuers$$,'42501',null,'saved rescuers have no raw client access');
+select throws_ok($$select * from dopmi_content_reports$$,'42501',null,'reports have no raw client access');
 select is((select count(*) from dopmi_messages),0::bigint,'third party cannot read messages');
 select is((select count(*) from dopmi_threads),0::bigint,'third party cannot read threads');
 select is((select count(*) from dopmi_notifications),0::bigint,'third party cannot read notifications');
@@ -79,6 +98,7 @@ select throws_ok($$select dopmi_thread_messages(current_setting('test.thread')::
 select throws_ok($$select dopmi_send_message(current_setting('test.thread')::uuid,gen_random_uuid(),'Invadido')$$,'42501',null,'nonparticipant cannot send');
 select set_config('request.jwt.claim.sub','20000000-0000-4000-8000-000000000004',true);
 select is((select count(*) from dopmi_messages),0::bigint,'admin is not a private conversation participant');
+select is((dopmi_admin_reports()->>'total')::int,1,'admin sees the report queue through audited RPC');
 select set_config('request.jwt.claim.sub','20000000-0000-4000-8000-000000000001',true);
 select is((select count(*) from dopmi_notifications where kind='message'),1::bigint,'only one message notification');
 select lives_ok($$select dopmi_read_thread(current_setting('test.thread')::uuid)$$,'recipient reads thread');
@@ -88,6 +108,11 @@ select throws_ok($$select dopmi_send_message(current_setting('test.thread')::uui
 select lives_ok($$select dopmi_save_adoption((select to_jsonb(a) from dopmi_adoptions a where id='30000000-0000-4000-8000-000000000001')||'{"pet_name":"Nombre editado","status":"published"}', '30000000-0000-4000-8000-000000000001',5)$$,'published content can be edited with withdrawal');
 select is((dopmi_catalog()->>'total')::int,0,'edited publication disappears until reapproved');
 select is((select status from dopmi_adoptions where id='30000000-0000-4000-8000-000000000001'),'draft','payload cannot choose published status');
+select set_config('request.jwt.claim.sub','20000000-0000-4000-8000-000000000002',true);
+select is((dopmi_saved_adoptions()->'items'->0->>'available')::boolean,false,'withdrawn favorite becomes a private tombstone');
+select is(dopmi_saved_adoptions()->'items'->0 ?| array['pet_name','story','photos','owner_id'],false,'withdrawn favorite leaks no unpublished fields');
+select lives_ok($$select dopmi_set_favorite('30000000-0000-4000-8000-000000000001',false)$$,'withdrawn favorite can be removed');
+select is((dopmi_saved_adoptions()->>'total')::int,0,'removed tombstone leaves saved list');
 reset role;
 set local role anon;
 select set_config('request.jwt.claim.sub','',true);

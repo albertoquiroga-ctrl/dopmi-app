@@ -1,0 +1,12 @@
+[
+  {
+    "file": "lib/features/profile/profile_overview.dart",
+    "sha256_normalized": "4982d443c17f7ae8db5dd494aa0c37965d4de12be69d764718e9952309a55fb7",
+    "scratch_equal": true
+  },
+  {
+    "file": "test/profile_access_press_test.dart",
+    "sha256_normalized": "9639a20e8288b999a9474367db2e1f4c8053f6352b0e150ed193867f5d99b80e",
+    "scratch_equal": true
+  }
+]

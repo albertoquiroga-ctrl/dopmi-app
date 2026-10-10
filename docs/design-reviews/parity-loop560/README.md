@@ -1,0 +1,5 @@
+# Loop560 — Barra inferior del detalle de adopción
+
+Referencia local/remota Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. Native558 mostró hueco inferior100dp. Hipótesis inicial de separador sobrante contradicha por captura Source406 del mismo SHA,377x852: barra y hueco100 coinciden. CSS .screen-shell:not(.rescuer-theme)> .screen-scroll (styles149) tiene mayor especificidad que .adoption-detail-shell .screen-scroll (6486), conserva padding100. Se retiró la modificación provisional antes del resultado final; producción queda sin diff.
+
+Dos pruebas nuevas abren ruta real mediante DopmiApp/repos fake, inset0/24, CTA bottom852-inset-14-100/height52; scroll conserva rect. Final6919 exit0,7/7. Capturador final71266 exit0,1test/dosPNG regenerados, normal inspeccionada junto a Source406. Favorito guardado procede de fixture; diferencia legítima frente Source no guardado. Salud accesible añadida permanece en contenido desplazable, sin suplantar datos reales. Analyzer final69665 exit0, limpio22.8s. No acceptance de animaciones/gestos físicos/paridad global. No push/Codemagic.

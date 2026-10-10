@@ -1,0 +1,30 @@
+{
+  "viewport": [
+    377,
+    852
+  ],
+  "title": {
+    "font": 16,
+    "lines": [
+      20,
+      20
+    ],
+    "height": 40
+  },
+  "reimbursementHeading": {
+    "font": 16,
+    "height": 20
+  },
+  "food": {
+    "font": 16,
+    "height": 20
+  },
+  "medicine": {
+    "font": 16,
+    "height": 20
+  },
+  "notice": {
+    "font": 14,
+    "height": 17
+  }
+}

@@ -1,0 +1,4 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/tool/capture_profile_test.dart
+00:00 +0: capture actual profile/settings/publication screens
+Empty metrics: card=Rect.fromLTRB(28.5, 144.0, 348.5, 420.0) action=Rect.fromLTRB(53.5, 335.0, 323.5, 387.0) title=Rect.fromLTRB(66.4, 177.0, 310.6, 239.0)
+03:02 +1: All tests passed!

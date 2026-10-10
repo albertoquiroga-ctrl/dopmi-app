@@ -1,0 +1,386 @@
+[
+  {
+    "file": "assets/dopmi-mark.png",
+    "sha256": "8d436e0c9d5ffe9e8ad0c0d74f9d74524357529d7b5b93e5d2368b2a849d40f5"
+  },
+  {
+    "file": "assets/dopmi-wordmark.png",
+    "sha256": "c0381193f6c8a2ca071d202c093b40112042f60dab315bef470af7bd3260372b"
+  },
+  {
+    "file": "assets/fonts/Fraunces-OFL.txt",
+    "sha256": "6732d6cc72c5d09292ff754dc1f39d9ea14918f74e87a17afa3f00a5120c3d48"
+  },
+  {
+    "file": "assets/fonts/Fraunces.ttf",
+    "sha256": "177ff6c0f14e5550a3c624247cd1189611d4eb65d000b14944c63d967958abbb"
+  },
+  {
+    "file": "assets/fonts/Inter-OFL.txt",
+    "sha256": "5dd548d31a85f756e01d63e00d7faf1e324103ed3e9102fcbbabf2cc2db6dd39"
+  },
+  {
+    "file": "assets/fonts/Inter.ttf",
+    "sha256": "29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031"
+  },
+  {
+    "file": "assets/guardian/guardian-reports.jpg",
+    "sha256": "9ed13bc0987832188409e931ed4f94c6f643a84f1843b952728570ebd216a61b"
+  },
+  {
+    "file": "assets/guardian/guardian-urgent.jpg",
+    "sha256": "5bf7dc110f53f06e780174e930bf67a3e6a121bb0a925edd696187e56e2a0eba"
+  },
+  {
+    "file": "assets/navigation/choice-adopt.svg",
+    "sha256": "65e748ba6f68d0034fd4cafe2eea7e0e0af70e2c5e81ef311f918f913eb43bbd"
+  },
+  {
+    "file": "assets/navigation/choice-donate.svg",
+    "sha256": "228d45736cbe5a9dd8cf8b0961daf59b3aff47d87ae861fe00de87909edd17aa"
+  },
+  {
+    "file": "assets/navigation/choice-paw.svg",
+    "sha256": "42fb57e63b0a7da68ed772dd74e058dbff10821ca45e539bcfe63555141909f6"
+  },
+  {
+    "file": "assets/navigation/choice-rescue.svg",
+    "sha256": "d0b0efe2932b303a406f38f0808619f9a125095e46898f7330c7a02ae411c138"
+  },
+  {
+    "file": "assets/navigation/icon-heart.svg",
+    "sha256": "29c663ecbf7cb3c66c6e8baf978cb4d044eb31ec099f7ea45d1c1465e4b042d4"
+  },
+  {
+    "file": "assets/navigation/rtab-cases.svg",
+    "sha256": "ab4dc0e9e31a42662ab654751a3b938ff1e0fdd822e6ddaebb38f6ccdc6acc25"
+  },
+  {
+    "file": "assets/navigation/rtab-home.svg",
+    "sha256": "f3dd080369d558a8bbf5349c4be7a4d2848fb7dc072393d3eab8e2fe8113de04"
+  },
+  {
+    "file": "assets/navigation/rtab-messages.svg",
+    "sha256": "1f2359991b82484722c527d82ccf51fd9132f2bcf5351d43e4381091a6ded97c"
+  },
+  {
+    "file": "assets/navigation/rtab-profile.svg",
+    "sha256": "e86acf1ef5040e2692ea052eb854d30a1b1a8438b25b88826b30253e18a73f0d"
+  },
+  {
+    "file": "assets/navigation/rtab-publish.svg",
+    "sha256": "71ac05b508c6aed96efb6c113c11b2b4e8b90d7cc199cf629fd9de9293e9a7d3"
+  },
+  {
+    "file": "assets/navigation/tab-donate.svg",
+    "sha256": "ded2caa027150b3181e15a5ea3d3911d15cd602fe880f3a8f762cf032d1c43b0"
+  },
+  {
+    "file": "assets/navigation/tab-profile.svg",
+    "sha256": "3ad57b9e01c97fff4ea3886fe607c29cfac30614e1ca5baa271a8802ea1c7052"
+  },
+  {
+    "file": "assets/onboarding/account-paw.svg",
+    "sha256": "e5e581c116c71f110bc898967ea8e32a818e73eec0e4316b80ad94d69b721ddd"
+  },
+  {
+    "file": "assets/onboarding/account-rescue.jpg",
+    "sha256": "ce8821010ab03437aae09c75f5d038596656ec3911fc8cf11cb56be2a7dce925"
+  },
+  {
+    "file": "assets/onboarding/icon-apple.svg",
+    "sha256": "827fb67e996ecaa8a301666b8eadec8fc776d6164b2c89970643572b05129991"
+  },
+  {
+    "file": "assets/onboarding/icon-google.svg",
+    "sha256": "416f9b971ec0cc73c25ea1ad320b293f5de5563b8ba1e675358788bb18c8da14"
+  },
+  {
+    "file": "assets/onboarding/icon-plus-circle.svg",
+    "sha256": "7f1b8afe6dadcfb3bf938c238d927b3eae40730c92c52732e67f9adfc93b49e2"
+  },
+  {
+    "file": "assets/onboarding/luna-card.png",
+    "sha256": "2044915daf56d898050df2612163d4d5e1db1aecba55312403d237f1b987eb18"
+  },
+  {
+    "file": "assets/onboarding/luna-detail.png",
+    "sha256": "3a1dbe38fd39bc5f65895b642deea03fd6a96f6aad11c576f8d2598f5c5c01ba"
+  },
+  {
+    "file": "assets/onboarding/nina-card.png",
+    "sha256": "d94e77cd391fd4063b348d9198b60b47d6bd2be2e4a69fff27ba7d7de8037cab"
+  },
+  {
+    "file": "assets/onboarding/onb-syringe.svg",
+    "sha256": "7d3fc8df16857a6404fabd13b1da4b2167f19cff272e91808a9741b4ee8e81bf"
+  },
+  {
+    "file": "assets/onboarding/rocky.png",
+    "sha256": "83c9610c1b2429ee83fe6a4ffb7f07f1f30aef535a1c0cd33112c0f6ccbf4488"
+  },
+  {
+    "file": "assets/onboarding/send.svg",
+    "sha256": "359c3635d732907ca8ab7b4fd12afe5d045b658dffa4c937b2f10c51707dd3c1"
+  },
+  {
+    "file": "assets/onboarding/toby.png",
+    "sha256": "48dc45462ff8195fa691c241a4725db60c8f97ce83b7b824968e3759bf3aedc5"
+  },
+  {
+    "file": "assets/profile/back.svg",
+    "sha256": "38dced17a15756ebed0a4e25d01fde18a58e9fc3cacf87f5688ef2a5de71ce99"
+  },
+  {
+    "file": "assets/profile/check-circle.svg",
+    "sha256": "29f2e029928847df19c437a99d99f3ff7b98dbbbb9620235e75c3148349c3994"
+  },
+  {
+    "file": "assets/profile/check.svg",
+    "sha256": "1241626e05539817bd6706c25df492aac727c025c6b840b093d7aed9382ee959"
+  },
+  {
+    "file": "assets/profile/discovery-message.svg",
+    "sha256": "104c1fac6505332868b245e395f76d299d52ed96ff20a74fc80aa561ad564e24"
+  },
+  {
+    "file": "assets/profile/empty-impact-paw.svg",
+    "sha256": "da16d04a13f915fc820b1914afc9a5efb255b6818e3e49554d47632f345e595d"
+  },
+  {
+    "file": "assets/profile/empty-pending-heart.svg",
+    "sha256": "29c663ecbf7cb3c66c6e8baf978cb4d044eb31ec099f7ea45d1c1465e4b042d4"
+  },
+  {
+    "file": "assets/profile/empty-publish-plus.svg",
+    "sha256": "7f1b8afe6dadcfb3bf938c238d927b3eae40730c92c52732e67f9adfc93b49e2"
+  },
+  {
+    "file": "assets/profile/icon-alert-circle.svg",
+    "sha256": "03c22a3ec9471112d0c3f3458d80858ce758f9a57a8cc0cc28348326bb1afcbf"
+  },
+  {
+    "file": "assets/profile/icon-bell.svg",
+    "sha256": "6e939afa743e585725c9ed247c3e4d00e08d0b55e276297bfee72af52489c894"
+  },
+  {
+    "file": "assets/profile/icon-billing.svg",
+    "sha256": "ee5d5e0c7ad0a00b9bc0bb81620d2efee1befa1114a0ef80924d9ed679fdd437"
+  },
+  {
+    "file": "assets/profile/icon-bookmark.svg",
+    "sha256": "f83e85ad75ca8781d979bdb2e446a1e5a3aedf39ead07fa9c70bc4ff9c6d5829"
+  },
+  {
+    "file": "assets/profile/icon-camera-red.svg",
+    "sha256": "d89feb5acfba02719ca140de8c698bdb04d8a964d3bfc8fb4c6623669c2f3494"
+  },
+  {
+    "file": "assets/profile/icon-card.svg",
+    "sha256": "63d216a880b2f7108d744fa1cab1c322a1ae789899c47e8c7721dac35c6bfba5"
+  },
+  {
+    "file": "assets/profile/icon-chat-yellow.svg",
+    "sha256": "b236c6f34b54c5d59f0f9d5aecdae92ca081ac9dbd069308f2fb0fbeac919c4b"
+  },
+  {
+    "file": "assets/profile/icon-chevron-right.svg",
+    "sha256": "e022bbd42f2cbc271cff15e60a5490ddbca23af3d2fb212035b1ec62246e1679"
+  },
+  {
+    "file": "assets/profile/icon-clock.svg",
+    "sha256": "1eb99311b0ad71c599e59da32b9c0aa61c02452beff6557fab8b80ebfac09652"
+  },
+  {
+    "file": "assets/profile/icon-doc.svg",
+    "sha256": "18f4df7d608883a1afbd56968d189561fb65eb693bcb9841f34fe8220e411f19"
+  },
+  {
+    "file": "assets/profile/icon-donation-in.svg",
+    "sha256": "864f1e2028fd65b9d1ce5accfcefd4cd0f4e69ef96898e2d7b049b299371b199"
+  },
+  {
+    "file": "assets/profile/icon-edit.svg",
+    "sha256": "2214bf18264e163b862edb6c4f5f383b0e8197be2b2e7ca545c975ab7a776b13"
+  },
+  {
+    "file": "assets/profile/icon-facebook.svg",
+    "sha256": "a90884557ddcc1ba1f648286c6b53a7c92d2cca3097bbff466800fb2096e1606"
+  },
+  {
+    "file": "assets/profile/icon-heart.svg",
+    "sha256": "29c663ecbf7cb3c66c6e8baf978cb4d044eb31ec099f7ea45d1c1465e4b042d4"
+  },
+  {
+    "file": "assets/profile/icon-help.svg",
+    "sha256": "05230ff85c6d59e57a6867ca7731490fccb0b2bd8ce662329d93126349d39ea3"
+  },
+  {
+    "file": "assets/profile/icon-info-blue.svg",
+    "sha256": "4c939a4955e471ee57aca654e292f28de98e0b5d91f2a1959d404940fa380abe"
+  },
+  {
+    "file": "assets/profile/icon-instagram.svg",
+    "sha256": "8153cf079a620586ea95ed5a5749e95c6b17e38b0371aa5fa60544ad7743a07c"
+  },
+  {
+    "file": "assets/profile/icon-logout.svg",
+    "sha256": "dcde8495d5ff3f943f3f19956c0b0db80d34ff6977e07ff8f76eed71310913f4"
+  },
+  {
+    "file": "assets/profile/icon-mail.svg",
+    "sha256": "fc4cc51d22b2229eaa26301ad90ed967e2a32abd472ff0023ed243d2ed11dbc7"
+  },
+  {
+    "file": "assets/profile/icon-messages.svg",
+    "sha256": "f46cc7dfb91fcc03237b08766e0d0ea3d0d13fffba52a3c85b33f71acad542fd"
+  },
+  {
+    "file": "assets/profile/icon-phone.svg",
+    "sha256": "ecfb92909b1799e0a4a54400340ffe84dae8100e95935eefcb9939e80e38bdcc"
+  },
+  {
+    "file": "assets/profile/icon-plus.svg",
+    "sha256": "0917e9864960700609cdc5264943bb8891e1c4c83235fc180757b5a7cbe44c42"
+  },
+  {
+    "file": "assets/profile/icon-settings.svg",
+    "sha256": "2d0e377425196fc2ff448194ff597ac8ba93601ac1f60764ec73ff7e54f32022"
+  },
+  {
+    "file": "assets/profile/icon-share.svg",
+    "sha256": "4dae73d450d3c7249adc3b661603e29bf3369b90e3ab89c94fa97b678b77bbda"
+  },
+  {
+    "file": "assets/profile/icon-shield.svg",
+    "sha256": "722b0eb49317583f591f3dd10f5331164536b9ed5f1873094aeffe7ea3a2cc01"
+  },
+  {
+    "file": "assets/profile/icon-star.svg",
+    "sha256": "7d336e62656f1be69e31ec6abd22447a2cecbb9031cef109ec832f57d9048b0f"
+  },
+  {
+    "file": "assets/profile/icon-trash.svg",
+    "sha256": "6e0526854ddbef0c9a6f2404ed26c5c3fff221dbfa5560e1040932b121e9c1ca"
+  },
+  {
+    "file": "assets/profile/icon-user.svg",
+    "sha256": "d412947eff2c19eac8c183f2af279c45afe5205a70477338cdf575e5a292f212"
+  },
+  {
+    "file": "assets/profile/icon-verified.svg",
+    "sha256": "3a2a0e82e689e01ae0ff58b55753ec8b46933cb96eda7e1d81c651fa3a865853"
+  },
+  {
+    "file": "assets/profile/icon-wallet.svg",
+    "sha256": "77e46070c2ef2f5e786b18a69158097dc10ab0ac355be98c74b48543c8bc3e73"
+  },
+  {
+    "file": "assets/profile/icon-x-muted.svg",
+    "sha256": "c69aa2462c1d050e9f7373a181aadb6b0016b9803f0eeed6a169293fe075b35b"
+  },
+  {
+    "file": "assets/profile/intent-rescuer.svg",
+    "sha256": "2ee8858e5c6e57dd4d3af8a6b9cf463d7935c35e930a55450ecfd2e16c412daa"
+  },
+  {
+    "file": "assets/profile/location.svg",
+    "sha256": "de850c88a5c92df7d26b217078b49c2387b8c85c6cd799c56121a29bf374f957"
+  },
+  {
+    "file": "assets/profile/logo-paw.svg",
+    "sha256": "8a15ffd98d3528c13d8b030a711ee32ab417e7383f624c4451abc1bba679ad7b"
+  },
+  {
+    "file": "assets/profile/need-food.svg",
+    "sha256": "0f8207a75516055db51a64a27922709c92aca73832adc79ff05699897b50b827"
+  },
+  {
+    "file": "assets/profile/need-medicine.svg",
+    "sha256": "8071e2cb2faee4b3f3b5adf29641fe232c5d12e31122e2dcc99b2ad7b6916d7e"
+  },
+  {
+    "file": "assets/profile/need-veterinary.svg",
+    "sha256": "bb7aaa7fedf915ded4bac1c3c234352d987c9d8640bbbe9835ca680f6893000d"
+  },
+  {
+    "file": "assets/profile/notif-case.svg",
+    "sha256": "04d844294af514e657ef0efee618a25ac695f2aa27702494c20207e7845b05f7"
+  },
+  {
+    "file": "assets/profile/notif-message.svg",
+    "sha256": "dccb0f5355c19375535da2c307112e7bce8ef1a5240f3a431dae1a9981bd57fc"
+  },
+  {
+    "file": "assets/profile/notif-pet.svg",
+    "sha256": "c2ceb497107e892657be85a9859fe4bc9c7f55eb18403bf1a23d0a7607b725aa"
+  },
+  {
+    "file": "assets/profile/NOTO-EMOJI-LICENSE.txt",
+    "sha256": "b1cc389cffab6ebd6b46f0f93e151c14ffa0b1929287f0e0f22e8c8915bd5116"
+  },
+  {
+    "file": "assets/profile/onb-adopt-heart.svg",
+    "sha256": "28036aca8391b34032c072d0cb25fb0b52da0677ab4549590714306893de8ec6"
+  },
+  {
+    "file": "assets/profile/onb-camera.svg",
+    "sha256": "65a7efe0367ed7ec3c80223acb3f11d40727b3894af92583db34fe4303a58378"
+  },
+  {
+    "file": "assets/profile/payment-card-error.svg",
+    "sha256": "1ba521fe204f0e06161c81a71f7049dbbfc086d92134818d559157b813d2dc21"
+  },
+  {
+    "file": "assets/profile/publish-adopter.svg",
+    "sha256": "a798de5b9a87fa924e8799fc28c40c168b1c826f4b5dbe9fd51fc4ffec7777df"
+  },
+  {
+    "file": "assets/profile/publish-cam-lg.svg",
+    "sha256": "9677a9dacd1bb272ef03d239bbbbcdb34725ef429d28ce44027984c6ab0031ba"
+  },
+  {
+    "file": "assets/profile/publish-cam-sm.svg",
+    "sha256": "92a8adde9a276ac45743576feb4872576e411a1070b3f3bfd339c7952c613920"
+  },
+  {
+    "file": "assets/profile/publish-donor.svg",
+    "sha256": "0925ff21ed2a3daf0549658f3f374a235fb14c04e85d07b973e3ded573cd3a4a"
+  },
+  {
+    "file": "assets/profile/publish-upload.svg",
+    "sha256": "d4ed07621246372e7b1a221cc77f7a11717bba25b7287d82f448e2e5165c50aa"
+  },
+  {
+    "file": "assets/profile/rtab-cases.svg",
+    "sha256": "ab4dc0e9e31a42662ab654751a3b938ff1e0fdd822e6ddaebb38f6ccdc6acc25"
+  },
+  {
+    "file": "assets/profile/rtab-home.svg",
+    "sha256": "f3dd080369d558a8bbf5349c4be7a4d2848fb7dc072393d3eab8e2fe8113de04"
+  },
+  {
+    "file": "assets/profile/rtab-publish.svg",
+    "sha256": "71ac05b508c6aed96efb6c113c11b2b4e8b90d7cc199cf629fd9de9293e9a7d3"
+  },
+  {
+    "file": "assets/profile/species-cat.svg",
+    "sha256": "fbb19611e927d40ff0188f5d4da8457e8d83faeb18a3adc66d91cb5ef17f2f1c"
+  },
+  {
+    "file": "assets/profile/species-dog.svg",
+    "sha256": "776faabac41cc61b1749f2dcec3fa0179c43fe550059d3f4dadc81eb5022fdfa"
+  },
+  {
+    "file": "assets/profile/tab-adoption.svg",
+    "sha256": "15fa582cf6026a7eab63acada61cedbbe060e1232c5aab80e3259dddbad478e4"
+  },
+  {
+    "file": "assets/profile/tab-donate.svg",
+    "sha256": "ded2caa027150b3181e15a5ea3d3911d15cd602fe880f3a8f762cf032d1c43b0"
+  },
+  {
+    "file": "assets/welcome-pets.png",
+    "sha256": "79868a850010f544af94ad0fdcbce8e666f044530bd78799e0774d404c619c5a"
+  }
+]

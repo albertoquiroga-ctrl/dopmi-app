@@ -1,0 +1,22 @@
+[
+  {
+    "path": "lib/core/ui.dart",
+    "sha256_normalized": "5a84aa1177bb0bab79bc76c63c3278c5bf36c572967e66e0886806221a6d5fa6",
+    "scratch_equal": true
+  },
+  {
+    "path": "lib/features/identity/onboarding_flow.dart",
+    "sha256_normalized": "1fca41006985ef75d6342831c8907767d8a5660337596fa319b30d6d78f6db97",
+    "scratch_equal": true
+  },
+  {
+    "path": "lib/features/identity/onboarding_screen.dart",
+    "sha256_normalized": "8a62dee1a63b9f738389d273774c8cccdb6197fa7c21d020c213861076837840",
+    "scratch_equal": true
+  },
+  {
+    "path": "test/access_press_test.dart",
+    "sha256_normalized": "adaca3d0af0f61fa898b19b43f233d8d90fc3788dffa7d132f39089e09b49656",
+    "scratch_equal": true
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "file": "saved-adoptions-empty-large.png",
+    "sha256": "67fdefbfee429655c611124d35a3af8646165364bfe30bbca56e1f2537b2891a"
+  },
+  {
+    "file": "saved-adoptions-empty.png",
+    "sha256": "145cdf0e07ab1e1520b5d73cd6d85d97e49fa35afdf9653596d516e3e28ae530"
+  },
+  {
+    "file": "saved-adoptions-large.png",
+    "sha256": "5d7d7cd5b2111b30ff2e27cbeab63a4bb8db157afe8c8e64027416f20a21e3b5"
+  },
+  {
+    "file": "saved-adoptions.png",
+    "sha256": "aad1f6153b031ca2e4cdcc13ce1749dbe96bd9e21f3c88cb91552010b4bfe742"
+  },
+  {
+    "file": "saved-pagination-large.png",
+    "sha256": "f7d6acd2437ef2100d2a10f791cf183d62d60fa06fbb416703d004a23eec8ca6"
+  },
+  {
+    "file": "saved-pagination-second-large.png",
+    "sha256": "58c0a61a0bf83e45c083ca2a72cfe42edfaf937e287709818a4362b13f33a591"
+  },
+  {
+    "file": "saved-rescuers-empty-large.png",
+    "sha256": "f1fb2249cb5e04d51770efedacfdcba6231aa10621d8393e361ac9e466dc54fc"
+  },
+  {
+    "file": "saved-rescuers-empty.png",
+    "sha256": "438fdd9e91beea11cc52bf8aaf05daf7d4adbf172eb3624ef0b0d3e39a2de33f"
+  },
+  {
+    "file": "saved-rescuers-large.png",
+    "sha256": "219ec1607e5a3668298d33d86bf22f224102dad0732a76b4d41c7f17c8e63784"
+  },
+  {
+    "file": "saved-rescuers.png",
+    "sha256": "81caba5d6739eaaf061e44be2a57b5765a195e9633737b5f980e2890853aefb5"
+  }
+]

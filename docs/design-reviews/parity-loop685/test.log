@@ -1,0 +1,21 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart
+00:00 +0: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: enlarged checkout retains its target while pending and avoids a second attempt
+00:00 +1: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: enlarged checkout retains its target while pending and avoids a second attempt
+00:00 +2: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: enlarged checkout retains its target while pending and avoids a second attempt
+00:00 +3: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: enlarged checkout retains its target while pending and avoids a second attempt
+00:00 +4: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: enlarged checkout retains its target while pending and avoids a second attempt
+00:01 +5: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: enlarged checkout retains its target while pending and avoids a second attempt
+00:01 +6: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: enlarged checkout retains its target while pending and avoids a second attempt
+00:01 +7: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: enlarged checkout retains its target while pending and avoids a second attempt
+00:01 +8: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: payment errors distinguish account permissions from Stripe configuration
+00:01 +9: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: payment pages require a confirmed session and respect recovery
+00:01 +10: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: seed review only shows a public case matching the expense: case-one
+00:02 +11: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: seed review only shows a public case matching the expense: different-case
+00:02 +12: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: result follows server evidence and limits actions: confirmed
+00:02 +13: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: result follows server evidence and limits actions: pending
+00:02 +14: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: result follows server evidence and limits actions: canceled
+00:03 +15: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: result follows server evidence and limits actions: refunded
+00:03 +16: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: old stored attempt resolves outside first history page without another checkout
+00:03 +17: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: selected amount opens review without checkout and stored attempt takes precedence
+00:03 +18: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/payments_test.dart: lost response preserves amount and idempotency key for retry
+00:03 +19: All tests passed!

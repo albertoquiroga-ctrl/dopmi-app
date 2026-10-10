@@ -1,0 +1,10 @@
+00:00 +0: loading C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_layout_test.dart
+00:00 +0: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_layout_test.dart: public header pointer hover matches 40px reference circle
+00:01 +1: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_adoption_card_test.dart: obsolete favorite response cannot overwrite a replacement public card
+00:01 +2: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_adoption_card_test.dart: obsolete favorite response cannot overwrite a replacement public card
+00:01 +3: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_adoption_card_test.dart: obsolete favorite response cannot overwrite a replacement public card
+00:01 +4: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_adoption_card_test.dart: obsolete favorite response cannot overwrite a replacement public card
+00:01 +5: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_case_card_test.dart: public case shows approved expense and opens real amount selector
+00:02 +6: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_case_card_test.dart: public case shows approved expense and opens real amount selector
+00:02 +7: C:/Users/betoq/AppData/Local/Temp/dopmi-parity-20260930/mobile/test/public_profile_case_card_test.dart: revoked case exposes neither past identity nor contribution controls
+00:02 +8: All tests passed!

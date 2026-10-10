@@ -1,0 +1,30 @@
+[
+  {
+    "file": "notifications-reference-header-focus-large.png",
+    "sha256": "443d5ecefd2d4cba410b0223364ac3712589c19cb7338255a9f9178cd9e797c1"
+  },
+  {
+    "file": "notifications-reference-header-focus.png",
+    "sha256": "4a27df6fc2360433d5a503c284482d46053baa88702083e3af54c7fcbde4c5bd"
+  },
+  {
+    "file": "notifications-reference-kinds-large.png",
+    "sha256": "22c68d24f50c10f04740305d149da206dfc14a630e51750bc188672dc99bb70e"
+  },
+  {
+    "file": "notifications-reference-kinds.png",
+    "sha256": "509e746748a98359e913afa7a05e4f5e9e001620e49431243871e422ac1cc04b"
+  },
+  {
+    "file": "notifications-reference-large.png",
+    "sha256": "d1bbb09b16ea78eb8a38a07fabdaae52bbe349ba30bd6c10cdb7bfeb8fc0afce"
+  },
+  {
+    "file": "notifications-reference-read.png",
+    "sha256": "ccf411c3ccac22e7fd48c4ce7f0b80215376205ad30a4fc016b78ae8d2cb974f"
+  },
+  {
+    "file": "notifications-reference.png",
+    "sha256": "c9c3df61df0a716cdbe921e4bc546a3e3222b1d5dba76ee2cee8eb11c281f33d"
+  }
+]

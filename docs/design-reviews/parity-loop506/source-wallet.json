@@ -1,0 +1,17 @@
+{
+  "reference": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "route": "/rescuer",
+  "viewport": [377, 852],
+  "fonts_ready": true,
+  "background": "linear-gradient(146deg, rgb(124, 58, 237) 0%, rgb(109, 40, 217) 100%)",
+  "radius": "28px",
+  "padding": "20px",
+  "icon": {
+    "src": "/assets/icon-wallet.svg",
+    "x": 36,
+    "y": 112.1875,
+    "width": 20,
+    "height": 20
+  },
+  "financial_values": "Prototype simulations are not copied or accepted as real balances."
+}

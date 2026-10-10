@@ -1,0 +1,302 @@
+[
+  {
+    "fixture": "adoption-swipe",
+    "route": "/adoptions",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "adoption-detail",
+    "route": "/adoptions/post",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "match-all",
+    "route": "/messages",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "chat-bubbles",
+    "route": "/messages/thread-one",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "support-home",
+    "route": "/rescue-cases",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "case-detail",
+    "route": "/rescue-cases/case-one",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "profile-overview",
+    "route": "/profile",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "profile-settings",
+    "route": "/settings",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "rescuer-profile",
+    "route": "/profile",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "rescuer-settings",
+    "route": "/settings",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "rescuer-home",
+    "route": "/rescuer",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "owned-cases",
+    "route": "/my-cases",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "public-profile",
+    "route": "/people/owner",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "saved-adoptions",
+    "route": "/saved",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "payment-methods",
+    "route": "/settings/payment-methods",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "guardian-billing-active",
+    "route": "/guardian",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "contribution-review",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "guardian-history",
+    "route": "/guardian/history",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "publish-photos",
+    "route": "/my-adoptions/new",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "case-publication",
+    "route": "/rescue/new?kind=case",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "verification-form",
+    "route": "/rescue/new?kind=verification",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "expense-evidence",
+    "route": "/rescue/expense-one",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "managed-updates-editor-new",
+    "route": "/rescue-cases/case-one/updates/new",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "basic-info",
+    "route": "/basic-info",
+    "loop": 744,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "impact-entry",
+    "route": "/impact",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "impact-feed",
+    "route": "/impact?history=1",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "guardian-promotion",
+    "route": "/impact/guardian",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "help-center",
+    "route": "/help",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "notifications-source",
+    "route": "/notifications",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "public-profile-editor",
+    "route": "/rescuer/profile/edit",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "legal-terms",
+    "route": "/terms",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "legal-privacy",
+    "route": "/privacy-notice",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "about",
+    "route": "/about",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "transparency",
+    "route": "/transparency",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "account-access-options",
+    "route": "/settings/account",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "account-access-privacy",
+    "route": "/account-privacy",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "publish-choice",
+    "route": "/publish",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "managed-updates",
+    "route": "/rescue-cases/case-one/updates",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "managed-updates-editor-draft",
+    "route": "/rescue-cases/case-one/updates/update-changes_requested",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "managed-updates-editor-error",
+    "route": "/rescue-cases/case-one/updates/update-draft",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "owned-case-detail",
+    "route": "/rescue/case-one",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "my-adoptions",
+    "route": "/my-adoptions",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "private-file-pdf",
+    "route": "/rescue/verification-id",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "connect-account-ready",
+    "route": "/connect",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "account-access-consent",
+    "route": "/consent",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "expense-record",
+    "route": "/rescue/expense-one",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "publish-review",
+    "route": "/my-adoptions/post",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "saved-rescuers",
+    "route": "/saved?kind=rescuer",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "payment-history",
+    "route": "/payments",
+    "loop": 742,
+    "scope": "normal viewport inspection; not full route acceptance"
+  },
+  {
+    "fixture": "contribution-amount",
+    "route": "/contribute/Cirug\u00eda?case=case-one",
+    "loop": 747,
+    "scope": "normal viewport inspection; not full route acceptance"
+  }
+]

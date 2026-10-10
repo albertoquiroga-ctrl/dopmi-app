@@ -1,0 +1,92 @@
+{
+  "helpWidths": [
+    {
+      "label": "C\u00c3\u00b3mo funcionan los apoyos",
+      "sourceWidth": 204.359375,
+      "clientWidth": 204.34677124023438,
+      "delta": -0.012603759765625
+    },
+    {
+      "label": "Apoyar",
+      "sourceWidth": 75.421875,
+      "clientWidth": 75.41317749023438,
+      "delta": -0.008697509765625
+    },
+    {
+      "label": "Guardi\u00c3\u00a1n",
+      "sourceWidth": 86.984375,
+      "clientWidth": 86.97148132324219,
+      "delta": -0.0128936767578125
+    },
+    {
+      "label": "Adoptar",
+      "sourceWidth": 80.6875,
+      "clientWidth": 80.67765808105469,
+      "delta": -0.0098419189453125
+    },
+    {
+      "label": "Mi cuenta",
+      "sourceWidth": 91.96875,
+      "clientWidth": 91.95947265625,
+      "delta": -0.00927734375
+    },
+    {
+      "label": "Confianza y seguridad",
+      "sourceWidth": 171.671875,
+      "clientWidth": 171.6690216064453,
+      "delta": -0.0028533935546875
+    },
+    {
+      "label": "Verificaci\u00c3\u00b3n",
+      "sourceWidth": 105.59375,
+      "clientWidth": 105.57925415039062,
+      "delta": -0.014495849609375
+    },
+    {
+      "label": "Publicar casos",
+      "sourceWidth": 122.234375,
+      "clientWidth": 122.22509765625,
+      "delta": -0.00927734375
+    },
+    {
+      "label": "Fondos y evidencia",
+      "sourceWidth": 151.140625,
+      "clientWidth": 151.13182067871094,
+      "delta": -0.0088043212890625
+    }
+  ],
+  "photoEditSource": [
+    257.328125,
+    117,
+    86.671875,
+    40
+  ],
+  "photoEditClient": {
+    "backCenterX": 36.0,
+    "backCenterY": 33.5,
+    "backWidth": 20.0,
+    "backHeight": 20.0,
+    "titleCenterX": 188.5,
+    "titleCenterY": 33.5,
+    "titleWidth": 162.058349609375,
+    "titleHeight": 23.0,
+    "photoEditX": 257.3359375,
+    "photoEditY": 117.0,
+    "photoEditWidth": 86.6640625,
+    "photoEditHeight": 40.0
+  },
+  "helpVerticalSource": [
+    191.6875,
+    235.6875,
+    279.6875,
+    358.28125,
+    402.28125
+  ],
+  "helpVerticalClient": [
+    191,
+    235,
+    279,
+    357,
+    401
+  ]
+}

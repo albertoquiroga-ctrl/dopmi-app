@@ -1,0 +1,7 @@
+# Loop461 — foco táctil y teclado del formulario de soporte
+
+Base57abd9d; referencia a3c969cd9103fd46dc5cd886999912526ce75efb reconsultada. CSS32 focus-visible inputs outline3 rgba7841f2/.3 offset2; radio14+exterior5. ReferenceFocusOutline incorpora opt-in showForTouchFocus=false por defecto. Sólo inputsCaso/Mensaje soporte activan true; focusedBorder siguegray1 en vezpurple2. OverlayIgnorePointer/ExcludeSemantics no añade targets ni modifica tamaño.
+
+Nuevos2testsnormal/200: tocarMensaje→outline exacto fieldrect.inflate5, color4d7841f2/width3; viewInsets300 permite scroll/send por encima del teclado; dragdesde margen desplazable cierra TestTextInput, preservaMensaje ysubmit1/reciboconfirmado. Inicialmente drag encentrocampo haciaarriba/límite dio keyboardvisible ydosfallos (13pasaron); corregido gesto de prueba a margen+descenso real, sin cambiarproducción para forzarpass. Recheckruta6/6 pasa2s49757exit0. Otros4dialog+4modecontrol+1capturador aprobados inicial5427;15casos únicos cubiertos en ejecuciones separadas, no15enunasuitegreen. Analyzerclean36.5s10595 antes sólofixgestotest.
+
+Capturador12fixtures,5PNGconservados normal/grande/keyboard/grandekeyboard/rescuer. Normalykeyboard200 inspeccionados. Espacio300esviewInsets simulado, imagenno dibuja teclado real; no gesto/dispositivoAndroid aceptado. SourcefocusCSS, no captura navegador nueva. Full564/452 precede453–461; cambio opt-in core justifica siguiente gateintegrado actual. Codemagic sólofinal.

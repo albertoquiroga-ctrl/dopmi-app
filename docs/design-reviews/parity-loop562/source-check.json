@@ -1,0 +1,10 @@
+[
+  {
+    "file": "lib/features/adoption/discovery_screen.dart",
+    "sha256": "1f2d5b3fe4e2e3fedaf06c37288d2e97c43a4dd2f21fb5209307955cc635642f"
+  },
+  {
+    "file": "test/discovery_motion_test.dart",
+    "sha256": "736b63363e9c65ee4e466e4babc4e79886f786b1b818d8f0b38e44f06974dbb7"
+  }
+]

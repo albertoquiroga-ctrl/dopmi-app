@@ -1,0 +1,154 @@
+{
+  "blocks": [
+    {
+      "height": 24,
+      "lineHeight": "22px",
+      "text": "×",
+      "width": 26.5625,
+      "x": 318.4375,
+      "y": 107.640625
+    },
+    {
+      "height": 55,
+      "lineHeight": "27.5px",
+      "text": "¿Activamos tu modo Rescatista?",
+      "width": 289,
+      "x": 34,
+      "y": 123.640625
+    },
+    {
+      "height": 40.59375,
+      "lineHeight": "20.3px",
+      "text": "Publica casos de mascotas con necesidad de un hogar.",
+      "width": 289,
+      "x": 34,
+      "y": 186.640625
+    },
+    {
+      "height": 28,
+      "lineHeight": "15.6px",
+      "text": "Tu perfil de Adoptante se queda intacto.",
+      "width": 256.171875,
+      "x": 34,
+      "y": 235.234375
+    },
+    {
+      "height": 79.78125,
+      "lineHeight": "normal",
+      "text": "Cambias de navegaciónVes Inicio, Casos y Publicar pensados para quien rescata.",
+      "width": 309,
+      "x": 34,
+      "y": 279.234375
+    },
+    {
+      "height": 18.1875,
+      "lineHeight": "18.2px",
+      "text": "Cambias de navegación",
+      "width": 235,
+      "x": 95,
+      "y": 292.234375
+    },
+    {
+      "height": 33.59375,
+      "lineHeight": "16.8px",
+      "text": "Ves Inicio, Casos y Publicar pensados para quien rescata.",
+      "width": 235,
+      "x": 95,
+      "y": 312.421875
+    },
+    {
+      "height": 79.78125,
+      "lineHeight": "normal",
+      "text": "Armas el perfil del compañeritoNombre, fotos e historia para que alguien se enamore de verdad.",
+      "width": 309,
+      "x": 34,
+      "y": 367.015625
+    },
+    {
+      "height": 18.1875,
+      "lineHeight": "18.2px",
+      "text": "Armas el perfil del compañerito",
+      "width": 235,
+      "x": 95,
+      "y": 380.015625
+    },
+    {
+      "height": 33.59375,
+      "lineHeight": "16.8px",
+      "text": "Nombre, fotos e historia para que alguien se enamore de verdad.",
+      "width": 235,
+      "x": 95,
+      "y": 400.203125
+    },
+    {
+      "height": 79.78125,
+      "lineHeight": "normal",
+      "text": "Publicas cuando estés listoTe guiamos paso a paso y puedes pausar cuando quieras.",
+      "width": 309,
+      "x": 34,
+      "y": 454.796875
+    },
+    {
+      "height": 18.1875,
+      "lineHeight": "18.2px",
+      "text": "Publicas cuando estés listo",
+      "width": 235,
+      "x": 95,
+      "y": 467.796875
+    },
+    {
+      "height": 33.59375,
+      "lineHeight": "16.8px",
+      "text": "Te guiamos paso a paso y puedes pausar cuando quieras.",
+      "width": 235,
+      "x": 95,
+      "y": 487.984375
+    },
+    {
+      "height": 79.78125,
+      "lineHeight": "normal",
+      "text": "Vuelves a Adoptante en un toqueTu perfil de Adoptante no se borra: regresas cuando lo necesites.",
+      "width": 309,
+      "x": 34,
+      "y": 542.578125
+    },
+    {
+      "height": 18.1875,
+      "lineHeight": "18.2px",
+      "text": "Vuelves a Adoptante en un toque",
+      "width": 235,
+      "x": 95,
+      "y": 555.578125
+    },
+    {
+      "height": 33.59375,
+      "lineHeight": "16.8px",
+      "text": "Tu perfil de Adoptante no se borra: regresas cuando lo necesites.",
+      "width": 235,
+      "x": 95,
+      "y": 575.765625
+    },
+    {
+      "height": 48,
+      "lineHeight": "normal",
+      "text": "Sí, cambiar a Rescatista",
+      "width": 309,
+      "x": 34,
+      "y": 642.359375
+    },
+    {
+      "height": 40,
+      "lineHeight": "normal",
+      "text": "Ahora no",
+      "width": 309,
+      "x": 34,
+      "y": 698.359375
+    }
+  ],
+  "dialog": {
+    "height": 660.71875,
+    "width": 345,
+    "x": 16,
+    "y": 95.640625
+  }
+}

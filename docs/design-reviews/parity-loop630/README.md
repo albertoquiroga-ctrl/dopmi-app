@@ -1,0 +1,5 @@
+# Descripción ampliada
+
+## 2026-10-04 — Loop630: descripción y nota al200
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Sólo capturador: nuevas fixtures expense-description normal/large centradas en Describe la evidencia y footer-large desplazada a nota. Primer2074exit0,1/1en4s2PNG; analyzer25803exit0sin incidencias28.9s anterior a fixturefooter. Final79223terminalexit0,1/1en3s3PNG. Tres imágenes inspeccionadas: normal campo/nota/acciones;200título/ayuda/textorefluye sin cortehorizontal, nota inferior requiere scroll; footer200 nota completa y Guardarprogreso/Siguiente/regreso visibles. Sin cambio producción; full705629 sigue vigente. FuenteCSSunlock-dialog/section no declaracióntransition/animation específica, no runtimeSource/timing verificado aquí. Próximo comparar transición de etapa con Source activo y comprobar posición scroll al avanzar/retroceder. Selector nativo/SDK/dispositivo/paridadglobal pendientes. Sin push/Codemagic hasta completar objetivo.

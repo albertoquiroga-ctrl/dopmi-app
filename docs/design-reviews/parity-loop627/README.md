@@ -1,0 +1,5 @@
+# Descripción de evidencia
+
+## 2026-10-04 — Loop627: presentación de descripción
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. ExpenseField usa ink15110d y descripción muestra Describe la evidencia, ayuda pública después de aprobación12/16muted554e48, ejemplo genérico sin nombre ficticio y nota de reembolso revisado/aprobado. Fuente conserva estilo14/1.4, cuatro líneas, borde14/padding10x12 y max4000 real. Mismos controllers/roles/payload/privacidad; no schema/money. Gate84277terminalexit0,10/10en5s (9expense_field+capturador2PNG información); analyzer70046exit0sin incidencias7.3s. Normal inspeccionada refleja ayuda/hint/nota y campo separado, footer requiere desplazamiento. Ampliada generada pero no nueva inspección individual aquí. Sin Source runtime nuevo/dispositivo. Validación descripción vacía para avanzar sigue pendiente: este loop sólo presentación. Full692618 anterior producción vigente. Siguiente: canNext de descripción trim no vacío manteniendo guardar borrador incompleto; después contraste de transición de etapas y regresión global. Sin push/Codemagic hasta objetivo completo.

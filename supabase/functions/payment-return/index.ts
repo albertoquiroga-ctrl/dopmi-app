@@ -5,6 +5,7 @@ Deno.serve(() => new Response(`Continúa en Dopmi
 Vuelve a la app que ya tienes abierta. Si usabas Dopmi en la web, regresa a su pestaña.
 
 Guardián: abre Cuenta > Mi plan Guardián y actualiza tu plan o historial.
+Tarjeta guardada: abre Perfil > Métodos de pago y consulta el mismo intento. Guardar una tarjeta no genera un cobro ni activa Guardián.
 Aportación única: abre tu historial de aportaciones y actualízalo.
 Cuenta de cobro: vuelve a Tu cuenta de cobro y consulta su estado.
 

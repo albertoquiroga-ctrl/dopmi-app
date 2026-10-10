@@ -1,0 +1,58 @@
+[
+  {
+    "fixture": "public-profile-report-reference-error-large",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "5b82bb9dafeed13e08782c693279c94aab1723e9ad4f51e6fd19f16bfa2d49ec"
+  },
+  {
+    "fixture": "public-profile-report-reference-error",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "eac29a9ee93c954d276bea9f0d568392522ec2ef2d8dbee0a4490d439e3538bb"
+  },
+  {
+    "fixture": "public-profile-report-reference-keyboard-large",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "9c2bb0a82151329556a89956d23aabc5fb6010404df1dfbc729bd46c201b0b4f"
+  },
+  {
+    "fixture": "public-profile-report-reference-large",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "0545d92c354c101589ae3964bb364557917cebd9e354133f08053dc87b72e056"
+  },
+  {
+    "fixture": "public-profile-report-reference-sending-large",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "07e8fe5f063a5c73afd3afd16ca7d4e9ddb7fdac1bbb4d0c9e0cf856fa4d4c1f"
+  },
+  {
+    "fixture": "public-profile-report-reference-sending",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "5ebd76d656fd3f9041c90eb1cfe10346ae1538166308adbeada737cf598c5352"
+  },
+  {
+    "fixture": "public-profile-report-reference",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "7ac7222386fe83dea007a33d071c81b939a764d56f146461acaeb81191407b2f"
+  }
+]

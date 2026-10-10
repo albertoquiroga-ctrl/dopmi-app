@@ -3,8 +3,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../adoption/community_repository.dart';
 import 'payment_repository.dart';
+import 'guardian_payment_card.dart';
 
 const guardianConsent = 'guardian-2026-09-24';
+const savedCardConsent = 'saved-cards-2026-10-03';
+const savedCardMethodConsent = 'saved-card-methods-2026-10-03';
 final guardianEnabledProvider = Provider<bool>(
   (ref) => const bool.fromEnvironment('ENABLE_GUARDIAN_TEST'),
 );
@@ -15,6 +18,36 @@ final guardianRepositoryProvider = Provider<GuardianRepository>(
 class GuardianRepository {
   GuardianRepository(this.client);
   final SupabaseClient client;
+  Future<Json?> savedCardMethodState() async {
+    final result = await client.rpc('dopmi_saved_card_method_state');
+    return result == null ? null : savedCardMethodReceipt(result);
+  }
+
+  Future<Json?> savedCardState() async {
+    final result = await client.rpc('dopmi_saved_card_state');
+    return result == null ? null : savedCardReceipt(result);
+  }
+
+  Future<List<GuardianPaymentCard>> paymentMethods() async {
+    final response = await client.functions.invoke(
+      'guardian-client',
+      body: {'action': 'methods'},
+    );
+    final body = response.data;
+    if (response.status != 200 || body is! Map || body['items'] is! List) {
+      throw const FormatException('No se pudieron consultar las tarjetas');
+    }
+    final cards = (body['items'] as List).map((item) {
+      if (item is! Map) throw const FormatException('Tarjeta no confirmada');
+      return GuardianPaymentCard.fromJson(Map<String, dynamic>.from(item));
+    }).toList();
+    if (cards.map((card) => card.id).toSet().length != cards.length ||
+        cards.where((card) => card.isDefault).length > 1) {
+      throw const FormatException('Lista no confirmada');
+    }
+    return cards;
+  }
+
   Future<Json> state() async =>
       Json.from(await client.rpc('dopmi_guardian_state'));
   Future<Json> history({Json? cursor}) async => Json.from(
@@ -42,6 +75,56 @@ class GuardianRepository {
   }
 
   Future<Json> submit(Json intent) async {
+    if (intent['kind'] == 'saved_card_method') {
+      if (!['default', 'remove'].contains(intent['action']) ||
+          intent['consent_version'] != savedCardMethodConsent) {
+        throw const FormatException('Solicitud de tarjeta incompleta');
+      }
+      final result = await client.functions.invoke(
+        'guardian-client',
+        body: {
+          'action': intent['action'] == 'remove'
+              ? 'saved_card_remove'
+              : 'saved_card_default',
+          'key': intent['key'],
+          'payment_method_id': intent['selected_method_id'],
+          'consent': true,
+          'consent_version': savedCardMethodConsent,
+        },
+      );
+      if (result.status != 200) {
+        throw const FormatException('Cambio de tarjeta no confirmado');
+      }
+      final receipt = savedCardMethodReceipt(result.data);
+      if (receipt['key'] != intent['key'] ||
+          receipt['action'] != intent['action'] ||
+          receipt['card_id'] != intent['selected_method_id']) {
+        throw const FormatException('Cambio de tarjeta no confirmado');
+      }
+      return receipt;
+    }
+    if (intent['kind'] == 'add_card') {
+      final result = await client.functions.invoke(
+        'guardian-client',
+        body: {
+          'action': 'add_card',
+          'key': intent['key'],
+          'consent': true,
+          'consent_version': intent['consent_version'],
+        },
+      );
+      if (result.status != 200) {
+        throw const FormatException('Alta no confirmada');
+      }
+      final receipt = savedCardReceipt(result.data);
+      if (receipt['key'] != intent['key'] ||
+          (result.data['checkout_url'] != null &&
+              (result.data['checkout_url'] is! String ||
+                  receipt['status'] != 'pending'))) {
+        throw const FormatException('Alta no confirmada');
+      }
+      return {...receipt, 'checkout_url': result.data['checkout_url']};
+    }
     if (intent['kind'] == 'withdraw_amount') {
       return Json.from(
         await client.rpc(
@@ -65,7 +148,15 @@ class GuardianRepository {
       final result = await client.functions.invoke(
         'guardian-client',
         body: {
-          'action': intent['kind'],
+          'action':
+              intent['kind'] == 'method' && intent['selected_method_id'] != null
+              ? intent['remove_saved'] == true
+                    ? 'remove_method'
+                    : 'default_method'
+              : intent['kind'],
+          if (intent['kind'] == 'method' &&
+              intent['selected_method_id'] != null)
+            'payment_method_id': intent['selected_method_id'],
           'key': intent['key'],
           if (intent['kind'] == 'checkout') 'gross_cents': intent['cents'],
           if (intent['kind'] == 'method') 'revision': intent['revision'],
@@ -95,6 +186,54 @@ class GuardianRepository {
 
   Future<void> openCheckout(String url) =>
       PaymentRepository(client).openStripe(url);
+}
+
+Json savedCardMethodReceipt(Object? value) {
+  if (value is! Map) throw const FormatException('Solicitud no confirmada');
+  final key = value['key'], action = value['action'], status = value['status'];
+  final card = value['card_id'];
+  if (key is! String ||
+      !RegExp(
+        r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+        caseSensitive: false,
+      ).hasMatch(key) ||
+      !['default', 'remove'].contains(action) ||
+      ![
+        'pending',
+        'applied',
+        'removed',
+        'refused',
+        'expired',
+        'attention',
+      ].contains(status) ||
+      (status == 'applied' && action != 'default') ||
+      (status == 'removed' && action != 'remove') ||
+      card is! String ||
+      !RegExp(r'^pm_[A-Za-z0-9]+$').hasMatch(card)) {
+    throw const FormatException('Solicitud no confirmada');
+  }
+  return {'key': key, 'action': action, 'status': status, 'card_id': card};
+}
+
+Json savedCardReceipt(Object? value) {
+  if (value is! Map ||
+      value['key'] is! String ||
+      !RegExp(
+        r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+        caseSensitive: false,
+      ).hasMatch(value['key']) ||
+      !['pending', 'saved', 'expired', 'attention'].contains(value['status']) ||
+      (value['status'] == 'saved'
+          ? value['card_id'] is! String ||
+                !RegExp(r'^pm_[A-Za-z0-9]+$').hasMatch(value['card_id'])
+          : value['card_id'] != null)) {
+    throw const FormatException('Alta no confirmada');
+  }
+  return {
+    'key': value['key'],
+    'status': value['status'],
+    'card_id': value['card_id'],
+  };
 }
 
 String guardianError(Object error) {
@@ -135,7 +274,7 @@ bool guardianMethodRejected(Object error) =>
     ].contains((error.details as Map)['error']);
 
 const guardianMethodLabels = {
-  'pending': 'Actualización pendiente: continúa en Stripe para guardar y autenticar tu medio de pago.',
+  'pending': 'Actualización pendiente: retoma la misma solicitud para confirmar tu medio de pago.',
   'attention':
       'El cambio de medio de pago está en revisión. Conservamos tu solicitud.',
   'applied': 'Medio de pago actualizado para los próximos ciclos. No se realizó un cobro por este cambio.',
@@ -144,6 +283,24 @@ const guardianMethodLabels = {
   'superseded':
       'La actualización se detuvo porque cambió el estado de tu plan.',
 };
+
+String? guardianMethodNotice(Json? setup) {
+  if (setup == null) return null;
+  if (setup['action'] != 'remove') return guardianMethodLabels[setup['status']];
+  if (setup['reason'] == 'in_use') {
+    return 'No se eliminó la tarjeta porque está en uso. Puedes elegir otra tarjeta predeterminada antes de volver a intentar.';
+  }
+  return switch (setup['status']) {
+    'pending' => 'Eliminación pendiente: retoma la misma solicitud para confirmar el resultado.',
+    'attention' => 'La eliminación está en revisión. Conservamos tu solicitud.',
+    'applied' => 'Tarjeta eliminada.',
+    'expired' =>
+      'La eliminación venció sin aplicarse. Puedes autorizar una nueva.',
+    'superseded' =>
+      'La eliminación se detuvo porque cambió el estado de tu plan.',
+    _ => 'Eliminación en revisión.',
+  };
+}
 
 const guardianActivationLabels = {
   'pending': 'Alta pendiente de confirmación',

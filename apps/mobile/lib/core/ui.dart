@@ -1,69 +1,124 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-const ink = Color(0xff15110d);
-const cream = Color(0xfffaf8f2);
-const purple = Color(0xff6430ce);
-const yellow = Color(0xfff7cb2d);
-const muted = Color(0xff635d57);
+import 'design_tokens.dart';
 
-ThemeData dopmiTheme() {
+const ink = DopmiTokens.ink;
+const cream = DopmiTokens.surface;
+const purple = DopmiTokens.purple;
+const yellow = DopmiTokens.yellow;
+const muted = DopmiTokens.muted;
+
+ThemeData dopmiTheme({bool rescuer = false}) {
   final colors = ColorScheme.fromSeed(seedColor: purple).copyWith(
-    primary: purple,
-    onPrimary: Colors.white,
+    primary: rescuer ? purple : yellow,
+    onPrimary: rescuer ? Colors.white : ink,
     secondary: yellow,
     onSecondary: ink,
     surface: cream,
     onSurface: ink,
-    error: const Color(0xffa52929),
+    error: DopmiTokens.danger,
   );
   return ThemeData(
     useMaterial3: true,
+    pageTransitionsTheme: PageTransitionsTheme(
+      builders: {
+        for (final platform in TargetPlatform.values)
+          platform: const DopmiPageTransitionsBuilder(),
+      },
+    ),
+    fontFamily: DopmiTokens.bodyFont,
+    progressIndicatorTheme: const ProgressIndicatorThemeData(color: purple),
+    textSelectionTheme: const TextSelectionThemeData(cursorColor: ink),
+    cardTheme: CardThemeData(
+      elevation: 0,
+      color: Colors.white,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+        side: const BorderSide(color: DopmiTokens.line),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(foregroundColor: const Color(0xff59408f)),
+    ),
     colorScheme: colors,
     scaffoldBackgroundColor: cream,
     textTheme: const TextTheme(
       headlineLarge: TextStyle(
-        fontSize: 34,
-        fontWeight: FontWeight.w800,
+        fontFamily: DopmiTokens.displayFont,
+        fontSize: 32,
+        fontVariations: DopmiTokens.display32Variations,
+        fontWeight: FontWeight.w600,
         height: 1.15,
         color: ink,
       ),
       headlineMedium: TextStyle(
+        fontFamily: DopmiTokens.displayFont,
         fontSize: 28,
-        fontWeight: FontWeight.w800,
+        fontVariations: DopmiTokens.display28Variations,
+        fontWeight: FontWeight.w600,
         height: 1.2,
         color: ink,
       ),
       titleLarge: TextStyle(
-        fontSize: 21,
+        fontSize: 19,
         fontWeight: FontWeight.w700,
         color: ink,
+        letterSpacing: 0,
       ),
-      bodyLarge: TextStyle(fontSize: 16, height: 1.5, color: ink),
-      bodyMedium: TextStyle(fontSize: 14, height: 1.5, color: muted),
+      // Inter in the reference uses normal spacing. Explicit values prevent
+      // Material's tracking from leaking into custom production text styles.
+      titleMedium: TextStyle(letterSpacing: 0),
+      titleSmall: TextStyle(letterSpacing: 0),
+      bodyLarge: TextStyle(
+        fontSize: 16,
+        height: 1.5,
+        color: ink,
+        letterSpacing: 0,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 14,
+        height: 1.5,
+        color: muted,
+        letterSpacing: 0,
+      ),
+      bodySmall: TextStyle(letterSpacing: 0),
+      labelLarge: TextStyle(letterSpacing: 0),
+      labelMedium: TextStyle(letterSpacing: 0),
+      labelSmall: TextStyle(letterSpacing: 0),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: Colors.white,
-      contentPadding: const EdgeInsets.all(18),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Color(0xffc8c1b6)),
+        borderSide: const BorderSide(color: DopmiTokens.line),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: DopmiTokens.yellowInk, width: 2),
       ),
       errorMaxLines: 3,
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        minimumSize: const Size.fromHeight(54),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+        minimumSize: const Size.fromHeight(48),
+        shape: const StadiumBorder(),
+        textStyle: const TextStyle(
+          fontFamily: DopmiTokens.bodyFont,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        minimumSize: const Size.fromHeight(52),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        foregroundColor: rescuer ? purple : ink,
+        minimumSize: const Size.fromHeight(48),
+        shape: const StadiumBorder(),
       ),
     ),
     appBarTheme: const AppBarTheme(
@@ -80,6 +135,8 @@ class Brand extends StatelessWidget {
   Widget build(BuildContext context) => Image.asset(
     'assets/dopmi-wordmark.png',
     width: 108,
+    // Reserve the 512x171 asset ratio before decoding to avoid layout shifts.
+    height: 108 * 171 / 512,
     semanticLabel: 'Dopmi',
   );
 }
@@ -91,32 +148,36 @@ class PageFrame extends StatelessWidget {
     this.back = true,
     this.actions,
     this.bottomNavigationBar,
+    this.showAppBar = true,
   });
   final List<Widget> children;
   final bool back;
   final List<Widget>? actions;
   final Widget? bottomNavigationBar;
+  final bool showAppBar;
   @override
   Widget build(BuildContext context) => Scaffold(
     bottomNavigationBar: bottomNavigationBar,
-    appBar: AppBar(
-      title: const Brand(),
-      automaticallyImplyLeading: false,
-      leading: back
-          ? IconButton(
-              tooltip: 'Volver',
-              icon: const Icon(Icons.arrow_back_rounded),
-              onPressed: () {
-                if (context.canPop()) {
-                  context.pop();
-                } else {
-                  context.go('/welcome');
-                }
-              },
-            )
-          : null,
-      actions: actions,
-    ),
+    appBar: showAppBar
+        ? AppBar(
+            title: const Brand(),
+            automaticallyImplyLeading: false,
+            leading: back
+                ? IconButton(
+                    tooltip: 'Volver',
+                    icon: const Icon(Icons.arrow_back_rounded),
+                    onPressed: () {
+                      if (context.canPop()) {
+                        context.pop();
+                      } else {
+                        context.go('/welcome');
+                      }
+                    },
+                  )
+                : null,
+            actions: actions,
+          )
+        : null,
     body: SafeArea(
       top: false,
       child: Align(
@@ -124,7 +185,7 @@ class PageFrame extends StatelessWidget {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 520),
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
             children: children,
           ),
         ),
@@ -192,14 +253,22 @@ class ActionButton extends StatelessWidget {
     required this.onPressed,
     this.busy = false,
     this.sunny = false,
+    this.textAlign = TextAlign.center,
   });
   final String label;
   final VoidCallback? onPressed;
   final bool busy, sunny;
+  final TextAlign? textAlign;
   @override
   Widget build(BuildContext context) => FilledButton(
-    style: sunny
-        ? FilledButton.styleFrom(backgroundColor: yellow, foregroundColor: ink)
+    style: sunny || MediaQuery.textScalerOf(context).scale(14) > 18
+        ? FilledButton.styleFrom(
+            backgroundColor: sunny ? yellow : null,
+            foregroundColor: sunny ? ink : null,
+            padding: MediaQuery.textScalerOf(context).scale(14) > 18
+                ? const EdgeInsets.symmetric(horizontal: 18, vertical: 12)
+                : null,
+          )
         : null,
     onPressed: busy ? null : onPressed,
     child: busy
@@ -211,7 +280,7 @@ class ActionButton extends StatelessWidget {
               child: CircularProgressIndicator(strokeWidth: 2),
             ),
           )
-        : Text(label),
+        : Text(label, textAlign: textAlign),
   );
 }
 
@@ -236,11 +305,18 @@ class PasswordField extends StatefulWidget {
     this.label = 'Contraseña',
     this.validator,
     this.newPassword = false,
+    this.showVisibilityToggle = true,
+    this.labelAbove = false,
+    this.style,
+    this.labelStyle,
+    this.hintText,
   });
   final TextEditingController controller;
   final String label;
+  final TextStyle? style, labelStyle;
+  final String? hintText;
   final String? Function(String?)? validator;
-  final bool newPassword;
+  final bool newPassword, labelAbove, showVisibilityToggle;
   @override
   State<PasswordField> createState() => _PasswordFieldState();
 }
@@ -248,26 +324,94 @@ class PasswordField extends StatefulWidget {
 class _PasswordFieldState extends State<PasswordField> {
   bool hidden = true;
   @override
-  Widget build(BuildContext context) => TextFormField(
-    controller: widget.controller,
-    obscureText: hidden,
-    autocorrect: false,
-    enableSuggestions: false,
-    validator: widget.validator,
-    autofillHints: [
-      widget.newPassword ? AutofillHints.newPassword : AutofillHints.password,
-    ],
-    decoration: InputDecoration(
-      labelText: widget.label,
-      suffixIcon: IconButton(
-        tooltip: hidden
-            ? 'Mostrar ${widget.label.toLowerCase()}'
-            : 'Ocultar ${widget.label.toLowerCase()}',
-        icon: Icon(
-          hidden ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-        ),
-        onPressed: () => setState(() => hidden = !hidden),
+  Widget build(BuildContext context) {
+    final field = TextFormField(
+      controller: widget.controller,
+      style: widget.style,
+      obscureText: !widget.showVisibilityToggle || hidden,
+      autocorrect: false,
+      enableSuggestions: false,
+      validator: widget.validator,
+      autofillHints: [
+        widget.newPassword ? AutofillHints.newPassword : AutofillHints.password,
+      ],
+      decoration: InputDecoration(
+        labelText: widget.labelAbove ? null : widget.label,
+        hintText:
+            widget.hintText ??
+            (widget.labelAbove
+                ? (widget.newPassword
+                      ? 'Elige una contraseña segura'
+                      : 'Tu contraseña')
+                : null),
+        suffixIcon: widget.showVisibilityToggle
+            ? IconButton(
+                tooltip: hidden
+                    ? 'Mostrar ${widget.label.toLowerCase()}'
+                    : 'Ocultar ${widget.label.toLowerCase()}',
+                icon: Icon(
+                  hidden
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                ),
+                onPressed: () => setState(() => hidden = !hidden),
+              )
+            : null,
       ),
-    ),
+    );
+    return widget.labelAbove
+        ? LabeledField(
+            widget.label,
+            labelStyle: widget.labelStyle,
+            child: field,
+          )
+        : field;
+  }
+}
+
+class LabeledField extends StatelessWidget {
+  const LabeledField(
+    this.label, {
+    super.key,
+    required this.child,
+    this.labelStyle,
+  });
+  final String label;
+  final Widget child;
+  final TextStyle? labelStyle;
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      ExcludeSemantics(
+        child: Text(
+          label,
+          style:
+              labelStyle ??
+              const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: muted,
+              ),
+        ),
+      ),
+      const SizedBox(height: 7),
+      Semantics(label: label, child: child),
+    ],
   );
+}
+
+/// The reference replaces route content immediately; component motion is local.
+class DopmiPageTransitionsBuilder extends PageTransitionsBuilder {
+  const DopmiPageTransitionsBuilder();
+  @override
+  Duration get transitionDuration => Duration.zero;
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) => child;
 }

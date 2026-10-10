@@ -1,0 +1,5 @@
+# Loop644 — Documentos requeridos
+
+## 2026-10-04 — Loop644: requisitos documentales de verificación
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada al cierre. Identificación oficial y comprobante de domicilio muestran asterisco de requisito; títulos Inter16w700 usan línea20 como Source. Controles reales de carga, roles, privacidad, límites y callbacks intactos. Gate25073 terminalexit0,9/9en10s (verification_state, verification_intro, capturador documentos); analyzer27246 terminalexit0 sin incidencias35.7s. Dos PNG normal/200 inspeccionados: tarjetas privadas y botón Subir visibles, título200 refluye y documento inferior requiere scroll. No se atribuye igualdad geométrica completa: altura de tarjetas con hitarea48 requiere contraste siguiente. Full705629 y global410636 anteriores a producción vigente; no SDK/físico/aceptación global. Próximo geometría documental, progreso y acciones contra Source. Usuario reiteró entregar a Codemagic sólo al objetivo completo; sin push/Codemagic.

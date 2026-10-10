@@ -14,7 +14,9 @@ function checkSession(session, activation) {
     || !(session.expires_at === Math.floor(Date.parse(activation.checkout_expires_at) / 1000)
       || (session.status === 'expired' && Number.isSafeInteger(session.expires_at) && session.expires_at > 0
         && session.expires_at < Math.floor(Date.parse(activation.checkout_expires_at) / 1000)))
-    || session.customer_creation !== 'always' || session.subscription != null || session.invoice != null
+    || (activation.saved_customer_id
+      ? id(session.customer) !== activation.saved_customer_id || session.customer_creation === 'always'
+      : session.customer_creation !== 'always') || session.subscription != null || session.invoice != null
     || session.automatic_tax?.enabled !== false || session.total_details?.amount_tax !== 0
     || session.total_details?.amount_discount !== 0 || session.total_details?.amount_shipping !== 0)
     fail('guardian_checkout_mismatch');
@@ -64,7 +66,7 @@ export function guardianActivationService({ stripe, rpc, settle, returnUrl, logg
 
   function fields(a) {
     const suffix = a.cycle_id.replaceAll('-', '').slice(0, 8).replace(/[0-9]/g, n => 'ghijklmnop'[Number(n)]);
-    return { mode: 'payment', customer_creation: 'always', client_reference_id: a.cycle_id,
+    return { mode: 'payment', ...(a.saved_customer_id ? { customer: a.saved_customer_id } : { customer_creation: 'always' }), client_reference_id: a.cycle_id,
       integration_identifier: `dopmi_guardian_${suffix}`, expires_at: Math.floor(Date.parse(a.checkout_expires_at) / 1000),
       success_url: a.return_url, cancel_url: a.return_url, adaptive_pricing: { enabled: false },
       automatic_tax: { enabled: false },
@@ -78,6 +80,11 @@ export function guardianActivationService({ stripe, rpc, settle, returnUrl, logg
     const claimed = await rpc('claim_checkout', { cycle_id: a.cycle_id });
     if (!claimed) return rpc('get', { cycle_id: a.cycle_id });
     try {
+      if (claimed.saved_customer_id) {
+        const customer = await stripe.customers.retrieve(claimed.saved_customer_id);
+        if (customer?.id !== claimed.saved_customer_id || customer.deleted === true || customer.livemode !== false)
+          fail('guardian_checkout_customer_mismatch');
+      }
       const session = await stripe.checkout.sessions.create(fields(claimed),
         { idempotencyKey: `guardian-checkout:${claimed.cycle_id}` });
       checkSession(session, claimed);

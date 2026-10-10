@@ -1,0 +1,30 @@
+[
+  {
+    "file": "public-profile-report-reference-error-large.png",
+    "sha256": "c223d995190213154cb5254f6dbc8607684b475d8356c4e10825d6eaa7c66162"
+  },
+  {
+    "file": "public-profile-report-reference-error.png",
+    "sha256": "eac29a9ee93c954d276bea9f0d568392522ec2ef2d8dbee0a4490d439e3538bb"
+  },
+  {
+    "file": "public-profile-report-reference-keyboard-large.png",
+    "sha256": "44940551cee5ea684c0f12cc0b17da145929baaa2e68d1a43a59ebb5cebf39fe"
+  },
+  {
+    "file": "public-profile-report-reference-large.png",
+    "sha256": "fbe590dbfb7d1cc3a63792294f2a003f8832469632bc47ed2d2a0909204c0be4"
+  },
+  {
+    "file": "public-profile-report-reference-sending-large.png",
+    "sha256": "245a8139df51b1d797100a116029f819430754ab0e6e32c6642953d88017cf11"
+  },
+  {
+    "file": "public-profile-report-reference-sending.png",
+    "sha256": "5ebd76d656fd3f9041c90eb1cfe10346ae1538166308adbeada737cf598c5352"
+  },
+  {
+    "file": "public-profile-report-reference.png",
+    "sha256": "7ac7222386fe83dea007a33d071c81b939a764d56f146461acaeb81191407b2f"
+  }
+]

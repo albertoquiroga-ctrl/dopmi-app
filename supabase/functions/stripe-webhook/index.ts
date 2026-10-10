@@ -39,6 +39,10 @@ Deno.serve(async (req) => {
         }
       }
       if (Deno.env.get('DOPMI_GUARDIAN_CHANGES_ENABLED') === 'true') {
+        const savedCardEvent = await guardian.savedCard.handleWebhook(event.id);
+        if (savedCardEvent) return json(savedCardEvent);
+        const savedWalletEvent = await guardian.savedWallet.handleWebhook(event.id);
+        if (savedWalletEvent) return json(savedWalletEvent);
         const methodEvent = await guardian.method.handleWebhook(event.id);
         if (methodEvent) return json(methodEvent);
         const changeEvent = await guardian.changes.handleWebhook(event.id);

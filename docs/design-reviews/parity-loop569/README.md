@@ -1,0 +1,7 @@
+# Loop569 — Espaciado de acceso contra Source
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb remoto revalidado. Medición Flutter inicial29027: camposy445.85/529.85 ya coinciden Source567y445.96875/529.96875. Forgot48conpaddingbottom8 conserva textoy589.85 pero desplazaCTA625.85 contraSource617.96875. Fuente social usa margenbottom4 ygapseparación12; clienteomitía4bottom ygap8: faltaban8px que compensaban altura general.
+
+Corregidos conjuntamente recovery40/paddingzero (12+16+12), socialgap12/bottom4. Heading sheets usa1.15 comoCSSauth-gate-form-headh1, antes heredaba1.2. Inputsy445.85/529.85 conservados, CTA617.85, title325.85 contraSource325.78125. Native/source metrics difieren≤.12px en vertical comprobado. Capturador ahora verifica coordsSourcecon tolerancia.25; no supuesto8px aislado ni traslados que superpongan controles.
+
+Recovery targetnormal ahora40alto/134ancho frente48anterior; textoampliado crece segúncontenido, no límitealtofijo. Prueba de toque1pxantesbordebajo abre recuperación yregreso conservaemail. No se afirma target48normal. Login/signup200 con teclado/scroll/consentimiento pasan. Gate92410 inicial27/27 tras espaciado; final64566exit0,27/27,8s tras heading/asserts. Capturadorlegacy46929exit0,1test/27PNG6s. Capturasaccess18actuales, normalGoogle/footer200 inspeccionados; tresPNG/métricas aquí. Analyzer60999exit0limpio33.1s. Full630564/407capturas565 anteriores a cambio; noaceptaciónactualglobal. Sin signinreal/SQL/push/Codemagic.

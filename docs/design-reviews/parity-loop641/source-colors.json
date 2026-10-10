@@ -1,0 +1,7 @@
+{
+  "scope": ".plain-screen.rescuer-theme.unlock-screen",
+  "ink": "#151423",
+  "muted": "#4f4e5c",
+  "computedInk": "rgb(21, 20, 35)",
+  "computedMuted": "rgb(79, 78, 92)"
+}

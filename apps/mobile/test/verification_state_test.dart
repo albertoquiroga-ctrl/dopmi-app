@@ -1,0 +1,314 @@
+import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/features/rescue/verification_state.dart';
+import 'package:dopmi_mobile/features/rescue/verification_form.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+
+import 'community_test.dart' show FakeCommunity;
+import 'publication_frame_test.dart' show startPublication;
+import 'rescue_test.dart' show FakeRescue;
+
+class StateVerificationRescue extends FakeRescue {
+  String status = 'submitted';
+  int reads = 0;
+  bool fail = false;
+  @override
+  Future<Json> detail(String id) async {
+    reads++;
+    if (fail) throw const FormatException('Sin conexión de prueba');
+    final data = await super.detail(id);
+    return {
+      ...data,
+      'record': {...Json.from(data['record']), 'status': status},
+    };
+  }
+}
+
+void resumeVerification(WidgetTester tester) {
+  for (final state in [
+    AppLifecycleState.inactive,
+    AppLifecycleState.hidden,
+    AppLifecycleState.paused,
+    AppLifecycleState.hidden,
+    AppLifecycleState.inactive,
+    AppLifecycleState.resumed,
+  ]) {
+    tester.binding.handleAppLifecycleStateChanged(state);
+  }
+}
+
+void main() {
+  for (final scale in [1.0, 2.0]) {
+    testWidgets(
+      'verification progress content reserves border once; scale=$scale',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: MediaQuery(
+                data: MediaQueryData(textScaler: TextScaler.linear(scale)),
+                child: const Padding(
+                  padding: EdgeInsets.fromLTRB(16, 20, 16, 0),
+                  child: VerificationProgress(captured: 1, total: 11),
+                ),
+              ),
+            ),
+          ),
+        );
+        // Source progress-card: outer16/20 + border1 + CSS padding16.
+        final heading = tester.getRect(find.text('Progreso del formulario'));
+        expect(heading.left, 33);
+        expect(heading.top, 37);
+        expect(find.text('Incompleto'), findsOneWidget);
+        final bar = tester.widget<LinearProgressIndicator>(
+          find.byType(LinearProgressIndicator),
+        );
+        expect(
+          bar.semanticsLabel,
+          'Progreso del formulario: 1 de 11 requisitos capturados',
+        );
+        final track = tester.getRect(find.byType(LinearProgressIndicator));
+        expect(track.top - tester.getRect(find.text('Incompleto')).bottom, 12);
+        expect(track.height, 8);
+        expect(
+          tester
+              .widget<LinearProgressIndicator>(
+                find.byType(LinearProgressIndicator),
+              )
+              .value,
+          1 / 11,
+        );
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
+  testWidgets(
+    'review home action stays reachable at 200 percent and opens the real rescuer home',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 640);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final repo = StateVerificationRescue();
+      await startPublication(
+        tester,
+        FakeCommunity(),
+        '/rescue/verification-id',
+        rescue: repo,
+      );
+      final router = GoRouter.of(
+        tester.element(find.byType(VerificationStateScreen)),
+      );
+      final home = find.text('Volver al inicio');
+      await tester.scrollUntilVisible(
+        home,
+        200,
+        maxScrolls: 20,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('verification-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(home);
+      await tester.pumpAndSettle();
+      expect(router.routeInformationProvider.value.uri.path, '/rescuer');
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'verification resume reads the server and a failure removes stale approval',
+    (tester) async {
+      tester.view.physicalSize = const Size(377, 852);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final repo = StateVerificationRescue();
+      await startPublication(
+        tester,
+        FakeCommunity(),
+        '/rescue/verification-id',
+        rescue: repo,
+      );
+      expect(find.text('Estamos revisando tu información'), findsOneWidget);
+      expect(repo.reads, 1);
+      repo.status = 'approved';
+      resumeVerification(tester);
+      await tester.pumpAndSettle();
+      expect(repo.reads, 2);
+      expect(find.text('Cuenta verificada'), findsOneWidget);
+      expect(find.text('Retirar a borrador'), findsNothing);
+      await tester.tap(find.text('Consultar expediente'));
+      await tester.pumpAndSettle();
+      final phone = find.byKey(const ValueKey('verification-field-phone'));
+      await tester.scrollUntilVisible(
+        phone,
+        200,
+        maxScrolls: 20,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('verification-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      expect(tester.widget<TextField>(phone).enabled, isFalse);
+      await tester.tap(find.byTooltip('Volver'));
+      await tester.pumpAndSettle();
+      expect(find.byType(VerificationStateScreen), findsOneWidget);
+      repo.fail = true;
+      await tester.tap(find.text('Recargar estado'));
+      await tester.pumpAndSettle();
+      expect(find.text('Cuenta verificada'), findsNothing);
+      expect(find.text('Publicar un caso'), findsNothing);
+      expect(find.text('Volver a intentar'), findsOneWidget);
+      repo.fail = false;
+      await tester.tap(find.text('Volver a intentar'));
+      await tester.pumpAndSettle();
+      expect(find.text('Cuenta verificada'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
+    'resume never overwrites an authored editable verification draft',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 640);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final repo = StateVerificationRescue()..status = 'draft';
+      await startPublication(
+        tester,
+        FakeCommunity(),
+        '/rescue/verification-id',
+        rescue: repo,
+      );
+      final phone = find.byKey(const ValueKey('verification-field-phone'));
+      await tester.scrollUntilVisible(
+        phone,
+        200,
+        maxScrolls: 20,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('verification-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+      await tester.enterText(phone, '8188888888');
+      resumeVerification(tester);
+      await tester.pumpAndSettle();
+      expect(repo.reads, 1);
+      expect(tester.widget<TextField>(phone).controller!.text, '8188888888');
+      final experience = find.byKey(
+        const ValueKey('verification-field-experience'),
+      );
+      await tester.scrollUntilVisible(
+        experience,
+        200,
+        maxScrolls: 20,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('verification-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+      const authored =
+          'He acompañado rescates y recuperación de mascotas. '
+          'Conservo los comprobantes y coordino sus consultas veterinarias.';
+      await tester.enterText(experience, authored);
+      await tester.pumpAndSettle();
+      final decoration = find.descendant(
+        of: experience,
+        matching: find.byType(InputDecorator),
+      );
+      expect(tester.getSize(decoration).height, greaterThanOrEqualTo(112));
+      resumeVerification(tester);
+      await tester.pumpAndSettle();
+      expect(repo.reads, 1);
+      expect(tester.widget<TextField>(experience).controller!.text, authored);
+      await tester.tap(find.byTooltip('Volver'));
+      await tester.pumpAndSettle();
+      expect(find.text('Hay cambios sin guardar'), findsOneWidget);
+      await tester.tap(find.text('Seguir editando'));
+      await tester.pumpAndSettle();
+      expect(tester.widget<TextField>(experience).controller!.text, authored);
+      await tester.scrollUntilVisible(
+        phone,
+        -200,
+        maxScrolls: 20,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const ValueKey('verification-form-body')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+      expect(tester.widget<TextField>(phone).controller!.text, '8188888888');
+      expect(tester.takeException(), isNull);
+    },
+  );
+  for (final large in [false, true]) {
+    testWidgets(
+      'both private document upload controls remain reachable: $large',
+      (tester) async {
+        tester.view.physicalSize = const Size(320, 640);
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        final repo = StateVerificationRescue()..status = 'draft';
+        await startPublication(
+          tester,
+          FakeCommunity(),
+          '/rescue/verification-id',
+          rescue: repo,
+        );
+        for (final role in ['identity', 'address']) {
+          final button = find.byKey(ValueKey('verification-upload-$role'));
+          await tester.scrollUntilVisible(
+            button,
+            250,
+            maxScrolls: 30,
+            scrollable: find
+                .descendant(
+                  of: find.byKey(const ValueKey('verification-form-body')),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+          );
+          await tester.ensureVisible(button);
+          await tester.pumpAndSettle();
+          expect(button.hitTestable(), findsOneWidget);
+          expect(tester.widget<OutlinedButton>(button).onPressed, isNotNull);
+          expect(tester.getSize(button).height, greaterThanOrEqualTo(48));
+          final savesBefore = repo.saveCalls;
+          await tester.tap(button);
+          await tester.pumpAndSettle();
+          // A conflicting draft save must stop before opening the picker.
+          expect(repo.saveCalls, savesBefore + 1);
+          expect(repo.reads, 1);
+          expect(
+            find.byKey(const ValueKey('verification-form-body')),
+            findsOneWidget,
+          );
+          expect(tester.takeException(), isNull);
+        }
+      },
+    );
+  }
+}

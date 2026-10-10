@@ -1,0 +1,32 @@
+[
+  {
+    "borderColor": "rgb(21, 20, 35)",
+    "color": "rgb(21, 20, 35)",
+    "selector": ".intent-copy h1"
+  },
+  {
+    "borderColor": "rgb(79, 78, 92)",
+    "color": "rgb(79, 78, 92)",
+    "selector": ".intent-copy p"
+  },
+  {
+    "borderColor": "rgb(227, 228, 237)",
+    "color": "rgb(21, 20, 35)",
+    "selector": ".publish-type-card"
+  },
+  {
+    "borderColor": "rgb(21, 20, 35)",
+    "color": "rgb(21, 20, 35)",
+    "selector": ".publish-type-card strong"
+  },
+  {
+    "borderColor": "rgb(79, 78, 92)",
+    "color": "rgb(79, 78, 92)",
+    "selector": ".publish-type-card p"
+  },
+  {
+    "borderColor": "rgb(79, 78, 92)",
+    "color": "rgb(79, 78, 92)",
+    "selector": ".publish-cancel"
+  }
+]

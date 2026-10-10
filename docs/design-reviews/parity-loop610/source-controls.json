@@ -1,0 +1,41 @@
+[
+  {
+    "background": "rgba(0, 0, 0, 0)",
+    "border": "0px none rgb(85, 78, 72)",
+    "color": "rgb(85, 78, 72)",
+    "font": "22px / 22px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "rect": {
+      "height": 24,
+      "width": 26.5625,
+      "x": 318.4375,
+      "y": 107.640625
+    },
+    "text": "×"
+  },
+  {
+    "background": "rgb(247, 203, 45)",
+    "border": "1px solid rgba(0, 0, 0, 0)",
+    "color": "rgb(13, 13, 13)",
+    "font": "600 16px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "rect": {
+      "height": 48,
+      "width": 309,
+      "x": 34,
+      "y": 642.359375
+    },
+    "text": "Sí, cambiar a Rescatista"
+  },
+  {
+    "background": "rgba(0, 0, 0, 0)",
+    "border": "0px none rgb(85, 78, 72)",
+    "color": "rgb(85, 78, 72)",
+    "font": "600 14px Inter, -apple-system, BlinkMacSystemFont, \"SF Pro Display\", sans-serif",
+    "rect": {
+      "height": 40,
+      "width": 309,
+      "x": 34,
+      "y": 698.359375
+    },
+    "text": "Ahora no"
+  }
+]

@@ -1,0 +1,5 @@
+# Firma opcional y cambio de cuenta
+
+## 2026-10-04 — Loop605: firma opcional y cambio de cuenta en Impacto
+
+Referencia Irlanda revalidada al inicio y al cierre: a3c969cd9103fd46dc5cd886999912526ce75efb. Tres pruebas integradas nuevas cubren catálogo público vacío, fallo del catálogo y respuesta tardía de la firma después de cambiar de cuenta. Los avances aprobados y $75.25 MXN permanecen cuando no hay firma disponible; la respuesta anterior no restaura firma, avance ni importe en la cuenta nueva. Sin cambios de producción, RPC, SQL o finanzas. Primer gate 73063 terminó exit 1 (15 aprobadas, 1 fallida): el montaje omitía cargar el perfil nuevo y regresar a /impact. Se corrigió la secuencia siguiendo la prueba de identidad existente, manteniendo las comprobaciones de privacidad. Gate final 12728 terminó exit 0, 16/16 en 3 s. Analyzer final terminó exit 0, sin incidencias en 6.8 s. Son pruebas de widgets; no aceptación física ni paridad global. Próximo: gate móvil integrado tras los cambios de 597–604 y continuar contraste visual y gestos de las demás rutas. No enviar a Codemagic hasta completar el objetivo.

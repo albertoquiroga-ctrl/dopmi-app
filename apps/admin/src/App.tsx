@@ -3,6 +3,7 @@ import { errorMessage, type AdminApi, type AdminUser, type UserPage } from './ap
 import Adoptions from './Adoptions';
 import Rescues from './Rescues';
 import Contributions from './Contributions';
+import ModerationQueues from './ModerationQueues';
 
 function Brand() { return <a className="brand" href="/" aria-label="Dopmi, inicio"><img src="/dopmi-wordmark.png" alt="Dopmi" /><span>Administración</span></a>; }
 function Notice({ text }: { text: string }) { return <div className="notice" role="alert">{text}</div>; }
@@ -10,7 +11,7 @@ function Notice({ text }: { text: string }) { return <div className="notice" rol
 export default function App({ api }: { api: AdminApi | null }) {
   const [access, setAccess] = useState<'loading' | 'guest' | 'denied' | 'admin' | 'error'>('loading');
   const [error, setError] = useState('');
-  const [section, setSection] = useState<'users' | 'adoptions' | 'rescues' | 'contributions'>('users');
+  const [section, setSection] = useState<'users' | 'adoptions' | 'rescues' | 'contributions' | 'moderation'>('users');
   const generation = useRef(0);
   const refresh = useCallback(async () => {
     if (!api) return;
@@ -44,7 +45,7 @@ export default function App({ api }: { api: AdminApi | null }) {
     {access === 'error' && <button onClick={() => void refresh()}>Volver a intentar</button>}
     {access !== 'loading' && <button className="secondary" onClick={() => void logout()}>Cerrar sesión</button>}
   </section></main>;
-  return <div className="admin-shell"><aside className="sidebar"><Brand /><p className="nav-label">OPERACIÓN</p><nav className="admin-navigation"><button className="nav-item" aria-current={section === 'users' ? 'page' : undefined} onClick={() => setSection('users')}>Usuarios</button><button className="nav-item" aria-current={section === 'adoptions' ? 'page' : undefined} onClick={() => setSection('adoptions')}>Adopciones</button><button className="nav-item" aria-current={section === 'rescues' ? 'page' : undefined} onClick={() => setSection('rescues')}>Rescates y gastos</button><button className="nav-item" aria-current={section === 'contributions' ? 'page' : undefined} onClick={() => setSection('contributions')}>Aportes</button></nav><div className="sidebar-bottom"><span className="status-dot" /> Conexión activa<button className="text-button" onClick={() => void logout()}>Cerrar sesión</button></div></aside><main className="workspace">{error && <Notice text={error} />}{section === 'users' ? <Users api={api} /> : section === 'adoptions' ? <Adoptions api={api} /> : section === 'rescues' ? <Rescues api={api} /> : <Contributions api={api} />}</main></div>;
+  return <div className="admin-shell"><aside className="sidebar"><Brand /><p className="nav-label">OPERACIÓN</p><nav className="admin-navigation"><button className="nav-item" aria-current={section === 'users' ? 'page' : undefined} onClick={() => setSection('users')}>Usuarios</button><button className="nav-item" aria-current={section === 'adoptions' ? 'page' : undefined} onClick={() => setSection('adoptions')}>Adopciones</button><button className="nav-item" aria-current={section === 'rescues' ? 'page' : undefined} onClick={() => setSection('rescues')}>Rescates y gastos</button><button className="nav-item" aria-current={section === 'contributions' ? 'page' : undefined} onClick={() => setSection('contributions')}>Aportes</button><button className="nav-item" aria-current={section === 'moderation' ? 'page' : undefined} onClick={() => setSection('moderation')}>Moderación</button></nav><div className="sidebar-bottom"><span className="status-dot" /> Conexión activa<button className="text-button" onClick={() => void logout()}>Cerrar sesión</button></div></aside><main className="workspace">{error && <Notice text={error} />}{section === 'users' ? <Users api={api} /> : section === 'adoptions' ? <Adoptions api={api} /> : section === 'rescues' ? <Rescues api={api} /> : section === 'contributions' ? <Contributions api={api} /> : <ModerationQueues api={api}/>}</main></div>;
 }
 
 function Login({ api, onLogin }: { api: AdminApi; onLogin: () => Promise<void> }) {

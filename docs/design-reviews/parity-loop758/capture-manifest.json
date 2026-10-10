@@ -1,0 +1,3773 @@
+[
+  {
+    "fixture": "adoption-swipe",
+    "route": "/adoptions",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "9e30ca7a888f1149a7a58f07544d2dc8ae9c3dbb27a5932315793fe1e148069c"
+  },
+  {
+    "fixture": "adoption-large",
+    "route": "/adoptions",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "42a7179e55fcd85432957084c36754954430d6102bfe03cafa6deb81595222ae"
+  },
+  {
+    "fixture": "adoption-drag",
+    "route": "/adoptions",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "4c7a9d0c2a1ede18780fcafbe63d006ec4c3b86b2c586076a852bf682f31288b"
+  },
+  {
+    "fixture": "adoption-filters",
+    "route": "/adoptions",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "ae9b4f53287cf4cdb9ea611c0c55e39b8237c4130f675b8dad6997ca09bf6fa1"
+  },
+  {
+    "fixture": "adoption-filters-large",
+    "route": "/adoptions",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "a5f6f5b4fe4eb09244057525f1ed823df13188f79bc9b5c685d5d3e8cec82ff7"
+  },
+  {
+    "fixture": "adoption-contact",
+    "route": "/adoptions",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "2592ff8be74261baeab04c5c963e09b9948a100c092c4ea145e5e9dc5ef89f1a"
+  },
+  {
+    "fixture": "adoption-contact-large",
+    "route": "/adoptions",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "60902e6e3f5ab4e130e1dc1a469fa526c27aeb690c9a47bbe80e179bed8ea6bb"
+  },
+  {
+    "fixture": "adoption-detail",
+    "route": "/adoptions/post",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "789ee6909c8790cd62625aaafb2e5836abbb04fa8d4de700a5e12518673734f6"
+  },
+  {
+    "fixture": "adoption-detail-large",
+    "route": "/adoptions/post",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "91a70eba004ecbb15e25c29598d67af89d375b5197e18702776dfc39f430cfbd"
+  },
+  {
+    "fixture": "adoption-empty",
+    "route": "/adoptions",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "74d4fd1d47713a80753b8c352d9af336fabf18e5950139aef35d3b5cb0e43a8b"
+  },
+  {
+    "fixture": "adoption-empty-large",
+    "route": "/adoptions",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "db0510e869035203cf056d354838271f57c12f883d9b88a00c62675c438a1759"
+  },
+  {
+    "fixture": "adoption-empty-wide-large",
+    "route": "/adoptions",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "76c52905d13d4f9a6bf838257fdee24cbc518c96b4935efd8210f4e1034d5279"
+  },
+  {
+    "fixture": "adoption-end",
+    "route": "/adoptions",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "8f486ad4dd90a4dc0860bfe1ef10f02f6f4b51bfe32423cc4e7a9e0a846ae138"
+  },
+  {
+    "fixture": "match-threads",
+    "route": "/messages",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "70e14ad7b61a81a50dfc6d520865ce4d8affd1cd1b10d54a533550490fe73e3e"
+  },
+  {
+    "fixture": "match-threads-large",
+    "route": "/messages",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "60049e3d7055db1557d01190ba019a20d280b1727c67a1a5b27fdc0d4185784e"
+  },
+  {
+    "fixture": "match-all",
+    "route": "/messages",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "3e1466e2447d7f273f37e24a1f0df7466f35824badbb24d6d564c9a04befbbec"
+  },
+  {
+    "fixture": "match-all-large",
+    "route": "/messages",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "591ee5700a7e89de43bee77a473296c7ae0961168763b3660cb21e9167e0bfcb"
+  },
+  {
+    "fixture": "match-empty",
+    "route": "/messages",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "d50378fbd98335cdf2bdfb50bb58554214a2b52333668e27c82cffae77f1c15d"
+  },
+  {
+    "fixture": "match-empty-large",
+    "route": "/messages",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "c43cbff0ad98e4453686ca24302a30bfebd56f02deeeb49e3a04f69b0ea06efa"
+  },
+  {
+    "fixture": "chat-bubbles",
+    "route": "/messages/thread-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "63d38e82b20d34be97d49680535243ed14699e4460cd4b5bc98be0c3417ef319"
+  },
+  {
+    "fixture": "chat-bubbles-large",
+    "route": "/messages/thread-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "e78a27773fe26405749198a1b5e54ccebafcfaac2bca5488e5e80b0c13555e2b"
+  },
+  {
+    "fixture": "chat-bubbles-rescuer",
+    "route": "/messages/thread-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "54ee4b844706349d819c80ed518be6717990ff6ee0b17db94b606ca8c0c1e4a9"
+  },
+  {
+    "fixture": "chat-detail-focus",
+    "route": "/messages/thread-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "1e719e923632859b798c5dfa9102577f985b6ec4317a54d2f6349e8d85da5157"
+  },
+  {
+    "fixture": "chat-detail-focus-large",
+    "route": "/messages/thread-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "f833fab6c71799d0d5d98e1c6a72357242d2f127f1ee4b915042a0ef9cd018d4"
+  },
+  {
+    "fixture": "chat-keyboard",
+    "route": "/messages/thread-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "3635da48225d222e626a20c1b8e6cf7875c135819bae3fcdc544c972d4220209"
+  },
+  {
+    "fixture": "chat-keyboard-large",
+    "route": "/messages/thread-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "e0d6c5ff3608dda229bf41fce12686621e8e2862c34fbc820ca921681de8861e"
+  },
+  {
+    "fixture": "rescuer-home-unverified",
+    "route": "/rescuer",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "e35879aa1b7fe7cc4c4191f8799483e2a7123b5953eb07fb6942a7f83f587b5d"
+  },
+  {
+    "fixture": "rescuer-home-unverified-large",
+    "route": "/rescuer",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "e14a9b2fc110eb6c5297430560c6272ee92cfc90308f884545f2b8ff66708cca"
+  },
+  {
+    "fixture": "rescuer-home-review",
+    "route": "/rescuer",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "e0e13d558a8c256c34dece0bee8fa27dfb89f51668f1d8fe73deb1fbcd69c521"
+  },
+  {
+    "fixture": "rescuer-home-review-large",
+    "route": "/rescuer",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "4e2a70925d03da7e3692fddf3bec6d118c99dd7fdd7a1a7be97474aae53acef8"
+  },
+  {
+    "fixture": "rescuer-home-empty",
+    "route": "/rescuer",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "c553c47fb6d3cb454a347b53ff8592ef04bd98dc04f3cc0680248c4db8a2c194"
+  },
+  {
+    "fixture": "rescuer-home-empty-large",
+    "route": "/rescuer",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "8d09cb6e7c38375af7134355b61a41732fe69eecbec0484fcfea9142116b412b"
+  },
+  {
+    "fixture": "rescuer-home-actions",
+    "route": "/rescuer",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "6eed90900d3ce91cd3bb000e6b1977436b14fdcaa0f201a917375248a591dfad"
+  },
+  {
+    "fixture": "rescuer-home-actions-large",
+    "route": "/rescuer",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "b0e042f377c8483b6f7a7bcb0af082d5615f14f44dc243004cefc2a5ecdddaf4"
+  },
+  {
+    "fixture": "rescuer-home-evidence",
+    "route": "/rescuer",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "e5a1b8a8d6033405c67c0f13accabcbb13dc4d096f8a66e6ff127f8a2d1bf9aa"
+  },
+  {
+    "fixture": "rescuer-home-evidence-large",
+    "route": "/rescuer",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "47773422eeafd5ebe34455d91b5fca1ff446b6109cad39bf4fe55527789de86e"
+  },
+  {
+    "fixture": "owned-case-detail",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "72a973820290954be7e66e277da01d8e1425a5a8e842075337bab2ae27e1a3b9"
+  },
+  {
+    "fixture": "owned-case-detail-back-focus",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "6ec640ef84af12cf8304e50ec265a6865686f76ed869535e55ca9e792788453a"
+  },
+  {
+    "fixture": "owned-case-detail-dot-focus",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "fcef8201dfe9ac7c061cb7fc2d2f23aea55a656b12bc871b2d883c9c9937c953"
+  },
+  {
+    "fixture": "owned-case-detail-dot-focus-large",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "2ca044807b50d60faefee7d2e8401c4837938cb4225d32f192c3aca32ed2332a"
+  },
+  {
+    "fixture": "owned-case-detail-back-focus-large",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "4c28d5d136c6fd0fafca50b401d5478662196974cc8918fc3627d68b8b67ddc9"
+  },
+  {
+    "fixture": "owned-case-detail-large",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "4b3c5c86683034c1a9572421516a0ff4aadd21d66a48480afaa8b57d0cdae11f"
+  },
+  {
+    "fixture": "owned-case-detail-story",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "263bd240ef820fb81ad0f7c61053b4c688ea7b3c8c5a421959b16f888d4dae4b"
+  },
+  {
+    "fixture": "owned-case-detail-story-large",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "d6b211d95824148df662ebfd563ee067b193f59244c99ce77810b685052d0f25"
+  },
+  {
+    "fixture": "owned-case-detail-history-empty",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "72a973820290954be7e66e277da01d8e1425a5a8e842075337bab2ae27e1a3b9"
+  },
+  {
+    "fixture": "owned-case-detail-history-empty-large",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "4b3c5c86683034c1a9572421516a0ff4aadd21d66a48480afaa8b57d0cdae11f"
+  },
+  {
+    "fixture": "owned-case-detail-bottom",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "1dc01a52012007800fb114a5cf4b678bdb4ed3df2f1bbce26a0f7ab773204681"
+  },
+  {
+    "fixture": "owned-case-detail-bottom-large",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "08da1b5af82a26abcd4eaccece2738b56c7c95c25a6bae51c94ba6267af48f30"
+  },
+  {
+    "fixture": "owned-case-detail-closed",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "33c58a1ee565e05469572254b9a3006b6f62ef8be3fd871c86b808c212787153"
+  },
+  {
+    "fixture": "owned-case-detail-closed-large",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "4b3c5c86683034c1a9572421516a0ff4aadd21d66a48480afaa8b57d0cdae11f"
+  },
+  {
+    "fixture": "owned-cases",
+    "route": "/my-cases",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "9758b584853679bfcdec3c55c3cf9908bbf7e5f9c1e03fd59cc27ed536c7e4f9"
+  },
+  {
+    "fixture": "owned-cases-large",
+    "route": "/my-cases",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "13a5bf1e9d5b56195ceb0043ca7cd401a0f5390f879a861fb1bcc6eb8293bfca"
+  },
+  {
+    "fixture": "owned-cases-empty",
+    "route": "/my-cases",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "e065912adee8f62079d6d6c9757fc2b3b341d8252d1281162c23e91bc6ba6d2c"
+  },
+  {
+    "fixture": "owned-cases-empty-large",
+    "route": "/my-cases",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "748b27cffa4aeda4bd74efec60d1cd165ccfebff20d2c1e8bb13a4b81b9c67cb"
+  },
+  {
+    "fixture": "owned-cases-correction",
+    "route": "/my-cases",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "6972784327f2f21a9e55bee63cb729963ce6ae4ddf69b8af4a142a1e54786a05"
+  },
+  {
+    "fixture": "owned-cases-correction-large",
+    "route": "/my-cases",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "8d7a471acbb2a9337b556305e595bed1f3df7ad438ef555ca1e9a85733ea208d"
+  },
+  {
+    "fixture": "rescuer-home",
+    "route": "/rescuer",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "6eed90900d3ce91cd3bb000e6b1977436b14fdcaa0f201a917375248a591dfad"
+  },
+  {
+    "fixture": "rescuer-home-large",
+    "route": "/rescuer",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "4915ded6cefc9b863fadfc8efcb79ca668eb52af0a537d9456617ae2e8d310da"
+  },
+  {
+    "fixture": "support-home",
+    "route": "/rescue-cases",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "37f358971b5b3ba72b465448b5ccafa0e3267bbc1ebe1a9c1778a324a86991c6"
+  },
+  {
+    "fixture": "notifications-reference",
+    "route": "/notifications",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "c9c3df61df0a716cdbe921e4bc546a3e3222b1d5dba76ee2cee8eb11c281f33d"
+  },
+  {
+    "fixture": "notifications-source",
+    "route": "/notifications",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "4d2b8a948423e5bdb50c1c2de92f8e61310d93aa80fcdd4fb55e5b4fa74be91a"
+  },
+  {
+    "fixture": "notifications-reference-large",
+    "route": "/notifications",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "d1bbb09b16ea78eb8a38a07fabdaae52bbe349ba30bd6c10cdb7bfeb8fc0afce"
+  },
+  {
+    "fixture": "notifications-reference-read",
+    "route": "/notifications",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "ccf411c3ccac22e7fd48c4ce7f0b80215376205ad30a4fc016b78ae8d2cb974f"
+  },
+  {
+    "fixture": "notifications-reference-kinds",
+    "route": "/notifications",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "509e746748a98359e913afa7a05e4f5e9e001620e49431243871e422ac1cc04b"
+  },
+  {
+    "fixture": "notifications-reference-kinds-large",
+    "route": "/notifications",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "22c68d24f50c10f04740305d149da206dfc14a630e51750bc188672dc99bb70e"
+  },
+  {
+    "fixture": "notifications-reference-header-focus",
+    "route": "/notifications",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "4a27df6fc2360433d5a503c284482d46053baa88702083e3af54c7fcbde4c5bd"
+  },
+  {
+    "fixture": "notifications-reference-header-focus-large",
+    "route": "/notifications",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "443d5ecefd2d4cba410b0223364ac3712589c19cb7338255a9f9178cd9e797c1"
+  },
+  {
+    "fixture": "support-home-large",
+    "route": "/rescue-cases",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "a0c766ed8b8aef717ce3b672c378ffcd4e3936ef5d7e2432be0f8e7c9026d867"
+  },
+  {
+    "fixture": "support-home-empty",
+    "route": "/rescue-cases",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "9fbc796dece0a354beec2ab0652f70e0e3fee6fb0631d5408aafa06b9275f6b7"
+  },
+  {
+    "fixture": "support-home-empty-large",
+    "route": "/rescue-cases",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "5fa8de983365c79dd281aff17d4db7dcd01bf84a47c2e39b65439d4e7dcc4cb5"
+  },
+  {
+    "fixture": "support-home-error",
+    "route": "/rescue-cases",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "44a22aac813a302b67b48cd0288509f64c6e959d9b5e87826ad3b8a2f74dcd3d"
+  },
+  {
+    "fixture": "support-home-error-large",
+    "route": "/rescue-cases",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "91ae0febcecf45eda0c15182eb337cb059d7d055645762c3e1e7a7e32203abcc"
+  },
+  {
+    "fixture": "support-home-error-retry",
+    "route": "/rescue-cases",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "44a22aac813a302b67b48cd0288509f64c6e959d9b5e87826ad3b8a2f74dcd3d"
+  },
+  {
+    "fixture": "support-home-error-retry-large",
+    "route": "/rescue-cases",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "6107c9d5f2424b29185a2b24552ab5bfd16a3cc517ae60e0edfe10a63580aae3"
+  },
+  {
+    "fixture": "support-home-notification-focus",
+    "route": "/rescue-cases",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "d49d427d2827cc650985b10b1210d85737dc9a5f204b810983e415c8768a7c05"
+  },
+  {
+    "fixture": "support-home-notification-focus-large",
+    "route": "/rescue-cases",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "3f8e257ad315b10641eaaea53c699f5b39fdfacf7196d2a85cbeed7cb652f9e7"
+  },
+  {
+    "fixture": "support-home-notification-badge",
+    "route": "/rescue-cases",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "de5a7930b0386c12dd50bcad0c17bc1ee447c7fa5db9f8a635facb5d5ee670be"
+  },
+  {
+    "fixture": "support-home-notification-badge-large",
+    "route": "/rescue-cases",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "f31db91a22bce2ab0a6479d80e2bb069bc8da4c29923c3c32927a201b0fe4098"
+  },
+  {
+    "fixture": "support-home-case-focus",
+    "route": "/rescue-cases",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "ed6fcfe3ea057890655b904a91bbeccb6a87e63b370491345a29a770ce39f15c"
+  },
+  {
+    "fixture": "support-home-case-focus-large",
+    "route": "/rescue-cases",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "8e997b4c57f363ae4686a405f65d2c624c3ffec94699304f61beef5498f56397"
+  },
+  {
+    "fixture": "support-home-guardian-card-focus",
+    "route": "/rescue-cases",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "fcf3e4c89dda5ef82de582c025ed8634ac6d182f4f025606093d91ad8a10ff05"
+  },
+  {
+    "fixture": "support-home-guardian-card-focus-large",
+    "route": "/rescue-cases",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "ddc9a256cc902b49ed6af7fa3fecb6cf346730ed49f5a2f69499176ba1cdc7e5"
+  },
+  {
+    "fixture": "support-home-guardian-dock-focus",
+    "route": "/rescue-cases",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "5a7654f752ea6bfad4f6cb3c8d9a3f93653a263aa3fe13f9a2b6896c1c4770a1"
+  },
+  {
+    "fixture": "support-home-guardian-dock-focus-large",
+    "route": "/rescue-cases",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "620203e712dfc5715ae3643928352f36748f12baaa4e6a31f9d95a763ccd8b43"
+  },
+  {
+    "fixture": "case-detail",
+    "route": "/rescue-cases/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "325ab80162a954a53aaef4e2cfb97c427cb58b4cdb334927e6a4354141839f55"
+  },
+  {
+    "fixture": "case-detail-photo-focus",
+    "route": "/rescue-cases/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "4973f7c3d03de3dc43acf4b34c4e298388459fa08094fdb40aaadcd217a52d4a"
+  },
+  {
+    "fixture": "case-detail-photo-focus-large",
+    "route": "/rescue-cases/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "823914018fb79d012320bd78bea1d877455feaf1b575deebed297e683697a13e"
+  },
+  {
+    "fixture": "case-detail-story",
+    "route": "/rescue-cases/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "39632a56f09cdf2417534789074076e56ff06b7a5b1ede3dd9585e37b254677c"
+  },
+  {
+    "fixture": "case-detail-story-large",
+    "route": "/rescue-cases/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "d1c962838f334dd33fc4c84993e20614bc424e0dd8af37084b3be93470619dd9"
+  },
+  {
+    "fixture": "case-detail-gallery",
+    "route": "/rescue-cases/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "e1c49dfd88b41a86ef5084ac0696a629bde327d5478389e0a621c731fd068432"
+  },
+  {
+    "fixture": "case-detail-gallery-large",
+    "route": "/rescue-cases/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "a129a305f67089bc7f762083d1e92d74ce66a4d8a9b095d3ff36cb23e5b6601c"
+  },
+  {
+    "fixture": "case-detail-amount",
+    "route": "/rescue-cases/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "193328d4113d91f0609d9a4409bd6b11e4a9bbd089024d82b5e7f8518980fa1a"
+  },
+  {
+    "fixture": "case-detail-amount-large",
+    "route": "/rescue-cases/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "cc02490fabb3819654b9fe2cbaef4331cdf20216f48470dccbfa1b456e49bfab"
+  },
+  {
+    "fixture": "case-detail-planned",
+    "route": "/rescue-cases/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "e802a074a1cae8aa72da0f8e2ee8d9d1592c3733cf65c93c59aa2ac6d490b343"
+  },
+  {
+    "fixture": "case-detail-planned-large",
+    "route": "/rescue-cases/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "88d47c4e74b4ede6491076ce8b8d56effb282ca1568c8b8ebee68728805eadd3"
+  },
+  {
+    "fixture": "contribution-result-confirmed",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "94398970176568d5f2637e4763247b0c629c28ce794a31f63b49c2d528d9c4e9"
+  },
+  {
+    "fixture": "contribution-result-confirmed-large",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "c88858d140d32a89e22ce27b143fc8d6f6af77f44e6935850e91613a88828118"
+  },
+  {
+    "fixture": "contribution-result-pending",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "6eca8b53489045676e8c0d8e5e91a8d10f860ff8910b5657844ac234f7602d8c"
+  },
+  {
+    "fixture": "contribution-result-canceled",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "ea20be2656530d5960a16f29041f2265d507d9d9e60bc1acec1bf2c0215f7f74"
+  },
+  {
+    "fixture": "contribution-result-refunded",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "4442bdc78ddea9316b85a3f084d7dfd6b4882a3d92dc1aab4ac0db3b6bc9af9b"
+  },
+  {
+    "fixture": "contribution-review",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "c010e9f8a35594f68f79f3d7e1adb317dee9437fe057ffa571109bf732f07c41"
+  },
+  {
+    "fixture": "contribution-review-large",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "3e3ea9110ff2783bd526288c760aa8f1b817e3cd00cabd8c15b4785f32949583"
+  },
+  {
+    "fixture": "contribution-waiting",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "566b56ea77442a02c7710f1dd1342e288f78d5fc69911cc58d17fec90ff1dd2b"
+  },
+  {
+    "fixture": "contribution-waiting-large",
+    "route": "/contribute/Cirug\u00eda?case=case-one&amount_cents=10000",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "eaf2d8cd4c80718b8f6e049c34ae1d9be4f3823e6929168ceda9476566e0643e"
+  },
+  {
+    "fixture": "payment-methods",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "131b172d2edaae1ca04c7d1cc5b455b7b29848eeefa2fcfcb0f10ce1a407000b"
+  },
+  {
+    "fixture": "payment-methods-large",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "467761d3336975197e2c95df1cc7a1bbbdb93c0d649205ff4a0bc5cd2c09c19d"
+  },
+  {
+    "fixture": "payment-methods-inactive",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "131b172d2edaae1ca04c7d1cc5b455b7b29848eeefa2fcfcb0f10ce1a407000b"
+  },
+  {
+    "fixture": "payment-methods-cards",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "841202afa5631f1469e11216a45f2322372d19aa8d356850d30404b9ec55de5a"
+  },
+  {
+    "fixture": "payment-methods-cards-canceled",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "841202afa5631f1469e11216a45f2322372d19aa8d356850d30404b9ec55de5a"
+  },
+  {
+    "fixture": "payment-methods-cards-canceled-large",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "e22c6eb51c932f3f6435bb441a6b72ab825b861e51347fb1150101dbadf508b0"
+  },
+  {
+    "fixture": "payment-methods-cards-canceled-waiting",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "6e2c6b852b9c383528d75477193c4478b6daac3f7acdbbd81042a85b3f849a9f"
+  },
+  {
+    "fixture": "payment-methods-cards-canceled-waiting-large",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "8eec98f1b9f2da403fbb42025aa1065b6bcaaa2b6530c27afcfd9b75c51d82a9"
+  },
+  {
+    "fixture": "payment-methods-cards-canceled-waiting-footer-large",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "f99c9da1cb82c7c69566d5d4a7edb31ad02d63b64bfbf41e9d92dc19a30206a2"
+  },
+  {
+    "fixture": "payment-methods-cards-independent-default-confirm",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "2f261eb866a0e0b20f3d2f42e017b47b45f5a872a6f443f1f81160b5b5221418"
+  },
+  {
+    "fixture": "payment-methods-cards-independent-default-confirm-large",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "89830343e855b2ae834d4435ac1c4b500146f0ae4a323df69c56a49d58b0e26b"
+  },
+  {
+    "fixture": "payment-methods-cards-independent-remove-confirm",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "54f547c107138c11d34ed4db18b5aef3674d32d617a1a96bc427e59e432c6ef3"
+  },
+  {
+    "fixture": "payment-methods-cards-independent-remove-confirm-large",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "5b51c0e2cae5e750583288559b9b8e92117848ad0c46f4ec44f2a8d70cd8a0de"
+  },
+  {
+    "fixture": "payment-methods-cards-add-confirm",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "510470bbbbe3ee73b4d0579683d8a56178a75defe8f4b103bed0bb257deca9c7"
+  },
+  {
+    "fixture": "payment-methods-cards-add-confirm-large",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "adb30eae2025f85a2558ebc4c299a7b1ed11c320b3e1f76bb5a3ac16cff8a5ef"
+  },
+  {
+    "fixture": "payment-methods-cards-added-toast",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "8d9b3461d53bda6b6933dbbe1cea4e6bd6538b1d72783c6af51f29631077c1e5"
+  },
+  {
+    "fixture": "payment-methods-cards-added-toast-large",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "c6818502529f0a83d177d9f4cfec3b37b5a8be0b4ab29df4b6370ccb7f8a7744"
+  },
+  {
+    "fixture": "payment-methods-cards-large",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "e22c6eb51c932f3f6435bb441a6b72ab825b861e51347fb1150101dbadf508b0"
+  },
+  {
+    "fixture": "payment-methods-cards-default-toast",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "a3ce79a237a27e16fed7ac78441d54c57006dddbecf0bb681b2ba9bb2b9fc10a"
+  },
+  {
+    "fixture": "payment-methods-cards-default-toast-large",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "bb334e38b5873dfe5ba23f1dae25e0d862a983f196085b7b85320fbcf676db4b"
+  },
+  {
+    "fixture": "payment-methods-cards-remove-confirm",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "a15e89843c0c7d70f281e44ad51d7068ba77130b262dac5d07f21634ab86a198"
+  },
+  {
+    "fixture": "payment-methods-cards-remove-confirm-large",
+    "route": "/settings/payment-methods",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "ace5bf4c33a92417677d04a5ee24d4744b55e8ecc92377559b4c464af80a3a05"
+  },
+  {
+    "fixture": "guardian-billing-amount",
+    "route": "/guardian",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "adf83f499479d3bd085f3ba8e3e1dc4e84d4ce10d6bc0656b5d19e625cf1b49b"
+  },
+  {
+    "fixture": "guardian-billing-amount-large",
+    "route": "/guardian",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "698224bf023be3e60e0ecf7ff10dff31350fd17683a1eef27245ca65e6a69732"
+  },
+  {
+    "fixture": "guardian-billing-cancel",
+    "route": "/guardian",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "aa4612e7e914899b393a204ea4ad525d9f6d5a0b099e57dccc4fdd2367990b1f"
+  },
+  {
+    "fixture": "guardian-billing-cancel-large",
+    "route": "/guardian",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "ef439a4f1f6b1c7ea8a9b4ef69e738ce36c80237e946695fd9d2c188f02b2e04"
+  },
+  {
+    "fixture": "guardian-billing-history-large",
+    "route": "/guardian",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "2f29be3287dfb09e0b9d91b060853ea8a40fa680187af5cb4a8a4e7898ca781d"
+  },
+  {
+    "fixture": "guardian-billing-receipt",
+    "route": "/guardian",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "177563f16bbc494cc4fa20614e9e4897121f1bf696c5cd338feaeeb76e237f13"
+  },
+  {
+    "fixture": "guardian-billing-inactive",
+    "route": "/guardian",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "f9b2f0277d3bd523b5ba09839fbc7e406aa46d1f9112c448c65ee17264872c62"
+  },
+  {
+    "fixture": "guardian-billing-inactive-large",
+    "route": "/guardian",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "d91056b3966db46bc2f4030aac26c6c7f832673577de488ef931c7540583f3ee"
+  },
+  {
+    "fixture": "impact-feed",
+    "route": "/impact?history=1",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "37e82078ea0fe86705d86269cdfd719cf1c69954586a9f215199b3ea17ab98af"
+  },
+  {
+    "fixture": "impact-feed-large",
+    "route": "/impact?history=1",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "6b83a4814c1dafdd1e6691154d4c682695e9c545f68de14b4e85c045e36b6c39"
+  },
+  {
+    "fixture": "impact-feed-empty",
+    "route": "/impact?history=1",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "cfcf3089b60a8263c0ed5395b573258f6b9c6cd893e6385f78a38152a468d7c9"
+  },
+  {
+    "fixture": "impact-feed-empty-large",
+    "route": "/impact?history=1",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "2e8d4ad6fb5239d6865faf2466c085229d68f33f2c225c0273158cdb2f17e8d4"
+  },
+  {
+    "fixture": "impact-entry",
+    "route": "/impact",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "6dd89fe2aa2d66096a65f2d2e63edc5133f46419cdedc8dc66b6ec17127e67f3"
+  },
+  {
+    "fixture": "impact-entry-large",
+    "route": "/impact",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "4fc8a88c12278ada07ce2b483aed6b7eb198ae93d5558dc988c23e220eb7a985"
+  },
+  {
+    "fixture": "guardian-promotion",
+    "route": "/impact/guardian",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "6dd89fe2aa2d66096a65f2d2e63edc5133f46419cdedc8dc66b6ec17127e67f3"
+  },
+  {
+    "fixture": "guardian-promotion-large",
+    "route": "/impact/guardian",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "4fc8a88c12278ada07ce2b483aed6b7eb198ae93d5558dc988c23e220eb7a985"
+  },
+  {
+    "fixture": "guardian-promotion-controls-large",
+    "route": "/impact/guardian",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "caeee01d0fc4ae0b031fd67829755e34e0adc425b6166cf181e81eb2623f3e7c"
+  },
+  {
+    "fixture": "guardian-promotion-join-large",
+    "route": "/impact/guardian",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "d21a58240a4c37098829bdfc3a7f5ca8c3d92b546655431097f3d692e924e2bf"
+  },
+  {
+    "fixture": "guardian-promotion-second",
+    "route": "/impact/guardian",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "7b3b86c1f9c46748ecbf9387ed37c66881a7263d9640598b8dc4d5a61b6c1175"
+  },
+  {
+    "fixture": "guardian-promotion-reports",
+    "route": "/impact/guardian",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "3d60bb64a1500586d122844a0630f7d187918e971d5b6a9aa995d82319b2523d"
+  },
+  {
+    "fixture": "guardian-billing-enrollment",
+    "route": "/guardian",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "1a2f0f3093b35310e870f8f64b46fc9d6265a93c4b18b7c50d63d3f19c94b9ef"
+  },
+  {
+    "fixture": "guardian-billing-enrollment-large",
+    "route": "/guardian",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "0899aafbaaecc0f11e64413656b22dd8ce046c845d4a8e61c03d3c9bac55bd1e"
+  },
+  {
+    "fixture": "guardian-billing-enrollment-custom",
+    "route": "/guardian",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "ed91f323492d8e43e430cc6386b2d4804a218957934fa16d9e79661ef531ee20"
+  },
+  {
+    "fixture": "guardian-billing-enrollment-custom-large",
+    "route": "/guardian",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "dc240f86f4680b319b23c2d8f503960258813533f3dd82ee026b8402dd71eb06"
+  },
+  {
+    "fixture": "guardian-billing-enrollment-confirmation",
+    "route": "/guardian",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "8f731f9f31f44e69a301bc98f5efb026eff604ca99f15042c61c9d617d1d5796"
+  },
+  {
+    "fixture": "guardian-billing-enrollment-confirmation-large",
+    "route": "/guardian",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "cb9120fe4a7074706a0760da3095165596e4fc44c82cfacf39f321a60a2b45d7"
+  },
+  {
+    "fixture": "guardian-billing-active",
+    "route": "/guardian",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "88a27ba58fc43e2e9dbcafeb0336772cbea0e0c321acd14973237a1a360809bc"
+  },
+  {
+    "fixture": "guardian-billing-active-large",
+    "route": "/guardian",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "cb871c140a12ebc695ced95b2a708541381c70f7eefedd4f3b4d613f4f104903"
+  },
+  {
+    "fixture": "guardian-activation-success",
+    "route": "/guardian",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "2bc4d7276283249b236cfc881f423e61aa3dcc6a83ee7ceba4dcafec631c244b"
+  },
+  {
+    "fixture": "guardian-activation-success-large",
+    "route": "/guardian",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "d815e5f5705b63f44bde14f58752cb58a788eae890040783f5019466f5e54b93"
+  },
+  {
+    "fixture": "guardian-activation-failed",
+    "route": "/guardian",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "82b12c40fbac0e66f7582de8c6733a0774829d08eabe894469cf90cec58657b0"
+  },
+  {
+    "fixture": "guardian-activation-failed-large",
+    "route": "/guardian",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "adbefcca6b7490511d40475d5761d67947e8c3a81190face92188637a71f4f84"
+  },
+  {
+    "fixture": "saved-adoptions",
+    "route": "/saved",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "3be607974a33d2f93d3c24d7a73625b0325dbb67d0ce0a37daefcea179f37199"
+  },
+  {
+    "fixture": "saved-adoptions-held",
+    "route": "/saved",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "3be607974a33d2f93d3c24d7a73625b0325dbb67d0ce0a37daefcea179f37199"
+  },
+  {
+    "fixture": "saved-adoptions-large",
+    "route": "/saved",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "79d06380ece51098c88c01e4b373229cd87ea495b307dc39fdcf7561540b5207"
+  },
+  {
+    "fixture": "saved-adoptions-empty",
+    "route": "/saved",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "145cdf0e07ab1e1520b5d73cd6d85d97e49fa35afdf9653596d516e3e28ae530"
+  },
+  {
+    "fixture": "saved-adoptions-empty-large",
+    "route": "/saved",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "67fdefbfee429655c611124d35a3af8646165364bfe30bbca56e1f2537b2891a"
+  },
+  {
+    "fixture": "saved-rescuers-empty",
+    "route": "/saved?kind=rescuer",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "438fdd9e91beea11cc52bf8aaf05daf7d4adbf172eb3624ef0b0d3e39a2de33f"
+  },
+  {
+    "fixture": "saved-rescuers-empty-large",
+    "route": "/saved?kind=rescuer",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "f1fb2249cb5e04d51770efedacfdcba6231aa10621d8393e361ac9e466dc54fc"
+  },
+  {
+    "fixture": "saved-rescuers",
+    "route": "/saved?kind=rescuer",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "81caba5d6739eaaf061e44be2a57b5765a195e9633737b5f980e2890853aefb5"
+  },
+  {
+    "fixture": "saved-rescuers-large",
+    "route": "/saved?kind=rescuer",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "219ec1607e5a3668298d33d86bf22f224102dad0732a76b4d41c7f17c8e63784"
+  },
+  {
+    "fixture": "saved-pagination-large",
+    "route": "/saved",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "ff279f669d772f7cda300760fee853445a864b7d35304e35925115d794f39018"
+  },
+  {
+    "fixture": "saved-pagination-second-large",
+    "route": "/saved",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "9cbec4b66cfb5e4d3689801c44041b5a1c89cab0e1753eff47f4e028458804e9"
+  },
+  {
+    "fixture": "basic-info",
+    "route": "/basic-info",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "326e934e042bc342fcfcb6d26d552e1bb13db7298a88ea938d9c315118202561"
+  },
+  {
+    "fixture": "basic-info-validation",
+    "route": "/basic-info",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "aca2d33352c54f0e0609bc546d9dde9693dfed022f71ec623cc7e9c80c9afc76"
+  },
+  {
+    "fixture": "basic-info-large",
+    "route": "/basic-info",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "16bc5ef909aa0b6318675e9225a8118355c3263bca4e286d6646776aa70990fe"
+  },
+  {
+    "fixture": "basic-info-keyboard-large",
+    "route": "/basic-info",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "478bac93bc75fcdd1bbaed6476b8be112246224a8154f90342a588eb6e235ac0"
+  },
+  {
+    "fixture": "basic-info-saved",
+    "route": "/basic-info",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "9d04ea04b0995092103a70a3b0aca38bb9e0373dab7337b1d61918edcf8b592f"
+  },
+  {
+    "fixture": "basic-info-saved-large",
+    "route": "/basic-info",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "b395c0fd8c0a629af65b2f9c73114485a2e5048e5e37aecb13b1e471986db8c1"
+  },
+  {
+    "fixture": "legal-terms",
+    "route": "/terms",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "c65f4498aea1a459b7c5087eb6f8df857f8dc5cf0a50c8e743ce7ee689ac4f2e"
+  },
+  {
+    "fixture": "legal-terms-large",
+    "route": "/terms",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "44af8457284bbbfd6a5bff1af151e055175e1bef0ad39fe306278306dd668832"
+  },
+  {
+    "fixture": "legal-privacy",
+    "route": "/privacy-notice",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "fcb78859f93da2cb21a6dbc47a025cd79db8054b5d2303bb68d978aaf83b89aa"
+  },
+  {
+    "fixture": "legal-privacy-large",
+    "route": "/privacy-notice",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "a398a106e5a6b7432fe2f07fcb751744eca33fcf9f138b63b19f7dd07c311c5c"
+  },
+  {
+    "fixture": "help-center",
+    "route": "/help",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "a3c8857a9222cfab0729d5b3925cced540996922f200138b864d6691b9e20810"
+  },
+  {
+    "fixture": "help-center-large",
+    "route": "/help",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "3f5d72b35d6274d68df07a375bb4a7a139d6264538ee654c89cab4385a32d1c6"
+  },
+  {
+    "fixture": "help-center-topic-held",
+    "route": "/help",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "a3c8857a9222cfab0729d5b3925cced540996922f200138b864d6691b9e20810"
+  },
+  {
+    "fixture": "help-center-topic-held-large",
+    "route": "/help",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "208fb00e6a165568b829da24cbe8e5efe0c95cd450fc5b7f223c5ee2edbb33e2"
+  },
+  {
+    "fixture": "help-center-footer",
+    "route": "/help",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "a3c8857a9222cfab0729d5b3925cced540996922f200138b864d6691b9e20810"
+  },
+  {
+    "fixture": "help-center-footer-large",
+    "route": "/help",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "9294ba290e074b2a5b2419487d3807e4b7c6c95189399db60aad9f742618152d"
+  },
+  {
+    "fixture": "help-center-adoption",
+    "route": "/help",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "51b3b528a37aeeeeb95a6aa37787711c8fda315c271cf90dfabe5d31f3ae2252"
+  },
+  {
+    "fixture": "help-center-adoption-large",
+    "route": "/help",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "6dac73768196dd092a514ac522008e947e5afe0e7171ef291973c86de318937c"
+  },
+  {
+    "fixture": "help-center-support",
+    "route": "/help",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "eb80fee7c49c8acfb99b9d0ecee47e00876893e49698d78383455e3f77539238"
+  },
+  {
+    "fixture": "help-center-support-large",
+    "route": "/help",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "13ab70c70701af520379d6e6aab30e9663b35eb25c9a29cd6905e64ac4e00670"
+  },
+  {
+    "fixture": "help-center-support-keyboard",
+    "route": "/help",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "36f17006be30abdcd0986a2efd00bd790041326288c5a53f75f5c08cb7709c7c"
+  },
+  {
+    "fixture": "help-center-support-keyboard-large",
+    "route": "/help",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "95ab4e59a70113bb16901b326c0a1e603c565c5d24864a1eef8dc6402a61cd26"
+  },
+  {
+    "fixture": "help-center-support-rescuer",
+    "route": "/help",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "79f83b46640ebc664319ff7f8b06f17f14733063ccd90c7a128261c880a18af1"
+  },
+  {
+    "fixture": "help-center-support-rescuer-large",
+    "route": "/help",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "13ab70c70701af520379d6e6aab30e9663b35eb25c9a29cd6905e64ac4e00670"
+  },
+  {
+    "fixture": "help-center-support-photo",
+    "route": "/help",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "2e58a9d3551318bcdca8d0dee9141acbf16d062cd73d0d31b8d424300a74a219"
+  },
+  {
+    "fixture": "help-center-support-photo-large",
+    "route": "/help",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "2025ae622ea378183aa48916c9802288f560b0794287e3aac5bee7f340e980c7"
+  },
+  {
+    "fixture": "help-center-support-received",
+    "route": "/help",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "e9c7c5a824e01500c25c9f8a2b74d2d7a9c20dbe7fb07b4ee4da036c2eaf70bf"
+  },
+  {
+    "fixture": "help-center-support-received-large",
+    "route": "/help",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "508eecdb76970376afb06e5d112632c988b2b0768ed07d6bde799ea75a307ddc"
+  },
+  {
+    "fixture": "help-center-rules",
+    "route": "/help",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "48b4744c40a3f37841419e49b01dc1cee4f7ccb4556eefe4b796f7fe8938d57a"
+  },
+  {
+    "fixture": "help-center-rules-large",
+    "route": "/help",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "44aa489e4ad6151aebbc081722d761a409acefdad3dae37f89f3c3c56d5c5176"
+  },
+  {
+    "fixture": "public-profile-editor",
+    "route": "/rescuer/profile/edit",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "69bb51a8997dc2eb28ff4608f159011b1e822c170d1c73a475526237e4afb26e"
+  },
+  {
+    "fixture": "public-profile-editor-large",
+    "route": "/rescuer/profile/edit",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "b62e2a12ab1e320279e84cdf763147dba1fb0bf6ee3103d2978bcc516524dcd7"
+  },
+  {
+    "fixture": "public-profile-editor-keyboard-large",
+    "route": "/rescuer/profile/edit",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "b9174ddc7db30fd4b9802919b202825f4244cce8e12bb893aebd0a479599b143"
+  },
+  {
+    "fixture": "guardian-history",
+    "route": "/guardian/history",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "564206b67fd9649270d9758f6a374d80696ec17795a35f154abedf05d92344f3"
+  },
+  {
+    "fixture": "guardian-history-large",
+    "route": "/guardian/history",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "992263998bcbce30bcd78b6f55c0499fc255dec532931d8aca0423f02a0bd1dc"
+  },
+  {
+    "fixture": "guardian-history-empty",
+    "route": "/guardian/history",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "b1c415ddfb6f7526cf437bf57073db57a89b1630f68fa381674028181be9d3b5"
+  },
+  {
+    "fixture": "guardian-history-empty-large",
+    "route": "/guardian/history",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "992263998bcbce30bcd78b6f55c0499fc255dec532931d8aca0423f02a0bd1dc"
+  },
+  {
+    "fixture": "payment-history",
+    "route": "/payments",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "7b0c074985b274ade01dda3c4344b72619448dffb8af55809e63be4fe871d030"
+  },
+  {
+    "fixture": "payment-history-large",
+    "route": "/payments",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "2999be5c1512cbbc4437593052e2c2c6a85f3fd643049a54267ac863d0cc121d"
+  },
+  {
+    "fixture": "payment-history-empty",
+    "route": "/payments",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "9ac52bcc3fa9b44e35de3aff608d2748480cc8906dbe131e29c72e87da3012d9"
+  },
+  {
+    "fixture": "contribution-amount",
+    "route": "/contribute/Cirug\u00eda?case=case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "70f75c0568623508f5d23e87efa55d6d51b982ace02ca64d073062e5c4480855"
+  },
+  {
+    "fixture": "contribution-amount-large",
+    "route": "/contribute/Cirug\u00eda?case=case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "4add299cd7ebe4f2010cf54190aed395c35f37a887330a86539b68f5d99eba3c"
+  },
+  {
+    "fixture": "case-detail-large",
+    "route": "/rescue-cases/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "5ef23be772c3543fc09c453d4f063cd7b28fb13bbd761401360ae4956ab298e3"
+  },
+  {
+    "fixture": "case-detail-expenses",
+    "route": "/rescue-cases/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "3cac94f09b8a94daa9f39158358c58171be63de1146b97d9c0e4f57fb4d8ee35"
+  },
+  {
+    "fixture": "case-detail-expenses-large",
+    "route": "/rescue-cases/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "8b84b27d6d3b778198f4aebdb292e8a05a4a2b3d1e90ebcd6fc567daf7a65f8c"
+  },
+  {
+    "fixture": "rescuer-messages",
+    "route": "/messages",
+    "dimensions": [
+      384,
+      852
+    ],
+    "sha256": "930157506f336f09feb011e38740ec9b7048b4630513c883779ceb3aece751bf"
+  },
+  {
+    "fixture": "rescuer-messages-large",
+    "route": "/messages",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "d3ba1dfd2bc528909b3f3a2fd7b3aab0334fdcd66a33b1d509f237862ca0ae4a"
+  },
+  {
+    "fixture": "rescuer-messages-empty",
+    "route": "/messages",
+    "dimensions": [
+      384,
+      852
+    ],
+    "sha256": "d042b726440609e163c53c9e074f23634cf03d0bed01a71fddd82edbcd7b5b2c"
+  },
+  {
+    "fixture": "rescuer-messages-empty-large",
+    "route": "/messages",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "634694a1701ee76ec098f52e20a53090a0bf77cc085e74ef390b3e04b6eef2ad"
+  },
+  {
+    "fixture": "match-threads-photo-search",
+    "route": "/messages",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "f029ee2537635ecb30f59bb381aa1625066d60d6946d22ef88e17c2ddf3288ff"
+  },
+  {
+    "fixture": "match-threads-photo-search-large",
+    "route": "/messages",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "1531a6c7364f4863e6074cbbdef2696b3ff24041ced6e9a5fdd3c2164bdea383"
+  },
+  {
+    "fixture": "match-threads-photo-focus",
+    "route": "/messages",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "c8fe524fc2b8f3bab7c9c3766a80e2d98014ffaa46976f2e8e2ccccd84f489a6"
+  },
+  {
+    "fixture": "match-threads-photo-focus-large",
+    "route": "/messages",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "17b9d5a213910102000f07c2749b8d4de017640b6e9281cda3bc9542b20637ce"
+  },
+  {
+    "fixture": "match-threads-focus",
+    "route": "/messages",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "b9f3a27b00cfb7ced365c4039c7e086480f95f0bd28951e7c2bd8fac287085bf"
+  },
+  {
+    "fixture": "match-threads-focus-large",
+    "route": "/messages",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "3f99323872ad33ffb98d58be43e45dcf21216d7ab2cb4c19ddf745414fd29f10"
+  },
+  {
+    "fixture": "match-home",
+    "route": "/messages",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "64d30df96bd95abe3c3c7c02d93587ed9f5547ea9d0e3e73a67369d2a452b0aa"
+  },
+  {
+    "fixture": "match-home-large",
+    "route": "/messages",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "cc59cfb697297aa1ab2be2d99e780f3ed2c5c62908a6090d8d7a47f6375b33fe"
+  },
+  {
+    "fixture": "adoption-support",
+    "route": "/adoptions",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "d597af47f2d2fe6b4597647a349051d7397ec8f789a00caf318d2835e151adda"
+  },
+  {
+    "fixture": "adoption-support-large",
+    "route": "/adoptions",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "1c99f8ec9e1f051cd0b5cd13e36981d392a2ddfc5cf6657c9d34be992e185b7c"
+  },
+  {
+    "fixture": "rescuer-profile",
+    "route": "/profile",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "c969589917506f7cb53c0cff41744fde42a21d4e7faecd10a0e1b6bd7305dfda"
+  },
+  {
+    "fixture": "rescuer-profile-home-link-focus",
+    "route": "/profile",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "a64b47ddf1636e2eb763040d1660d4129026372b6626d5ede6aed6d93e1d6150"
+  },
+  {
+    "fixture": "rescuer-profile-row-focus",
+    "route": "/profile",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "fd0c7483e6866b0a4fce54da1f0aafb7cedcfda5c1ebe1994b53fa205c3364e7"
+  },
+  {
+    "fixture": "rescuer-profile-row-focus-large",
+    "route": "/profile",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "de29d0da55f33eba333271adf4a8a55044ea471e76b70924e9399fe541efc298"
+  },
+  {
+    "fixture": "rescuer-profile-reference",
+    "route": "/profile",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "a7791a72639f7d75cb05ba8cb75f3ad5a1fb59ba9e1156da77e9e318856c2ec6"
+  },
+  {
+    "fixture": "rescuer-profile-reference-wide",
+    "route": "/profile",
+    "dimensions": [
+      384,
+      852
+    ],
+    "sha256": "39fd9d2357d80416ed1469808aef341e34d27d3fd54d7aebf1483a9b8caf701f"
+  },
+  {
+    "fixture": "rescuer-profile-reference-focus",
+    "route": "/profile",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "9c1d9397168cefad66c2a71896a68b861e5db15fed2bc4b5baa19c984f7b02f2"
+  },
+  {
+    "fixture": "rescuer-profile-reference-activity-focus",
+    "route": "/profile",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "6f23dcfb06b35882590262c213fb78086a6f22a0c6d5bc99b77ae3e92af2c9c1"
+  },
+  {
+    "fixture": "rescuer-profile-reference-metric-focus",
+    "route": "/profile",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "b7998e6863be614dc3588c719e493bc0104a2c8420eeae8eb64d9f78955e8b35"
+  },
+  {
+    "fixture": "rescuer-profile-reference-transfer-focus",
+    "route": "/profile",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "0edf9f692f80bbba3983e8814aa9896f33facc3b2b9713916c5171d152ab840c"
+  },
+  {
+    "fixture": "rescuer-profile-reference-transfer-focus-large",
+    "route": "/profile",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "69efd18bb6e9e359189f0274de91f3ac08854b7d6425b479b467b28a3dff0f1a"
+  },
+  {
+    "fixture": "rescuer-profile-reference-large",
+    "route": "/profile",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "e40274e82d4753daa2bc58238b293f6ea6085879d6af8a3484e6ec9d0bf6f68c"
+  },
+  {
+    "fixture": "rescuer-settings",
+    "route": "/settings",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "f1d620f20bd765352d3df0a7f3115a71e5fa2f2bfe26014ecf71d1c3a0294b83"
+  },
+  {
+    "fixture": "rescuer-settings-scroll-blur",
+    "route": "/settings",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "420bb54038110ce098aebadaf727afc5b6379665b2a1efe989269c8ae0b409e6"
+  },
+  {
+    "fixture": "rescuer-settings-footer",
+    "route": "/settings",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "6336382359ba2c0207e5103eefbd31f3740df25cae8cb564e34c6a178e0f8fe9"
+  },
+  {
+    "fixture": "rescuer-settings-logout-focus",
+    "route": "/settings",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "31b5b09f1c49d924e11ff6c37e6a44557dcf33b0cf2f15ec6b5955b385e16a39"
+  },
+  {
+    "fixture": "rescuer-settings-mode-focus",
+    "route": "/settings",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "3df79a6d83acf12aa05bfc2cc9d0f04dd19590538beb607180bcf294d870f49c"
+  },
+  {
+    "fixture": "rescuer-settings-edit-focus",
+    "route": "/settings",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "5db549dc770d1ab4125bba487628ae9d243a090a09b0aad827a8c02909061d8f"
+  },
+  {
+    "fixture": "rescuer-settings-large",
+    "route": "/settings",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "8a3b3497ad5b6268796e682d4e673d97ca17938a26bffa13ea0e72d9e6dcafd4"
+  },
+  {
+    "fixture": "rescuer-settings-social-dialog",
+    "route": "/settings",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "d50bbf1171d1be08342a23b2aacf1ebc7a5283fa4af5d7972e7379b871e2cce3"
+  },
+  {
+    "fixture": "rescuer-settings-social-dialog-valid",
+    "route": "/settings",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "7af20b2e9771d18c39f654de81f12ad787ebe7f90899ae3251b26c9b0e8740a7"
+  },
+  {
+    "fixture": "rescuer-settings-social-values",
+    "route": "/settings",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "bac4821437f1e4ea8b02209f0513cc6e224ee39e7de3b9737588c88530a192b6"
+  },
+  {
+    "fixture": "rescuer-settings-social-values-large",
+    "route": "/settings",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "17386641f7daa32d8d8ead647e4e1ff93495682e0cebb5497ec52ca96eb4bc38"
+  },
+  {
+    "fixture": "rescuer-settings-social-dialog-large",
+    "route": "/settings",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "c8f8e82b32eb84c92679c36cfbf9574a14ecef18c843ae99b7bb41583cebfb90"
+  },
+  {
+    "fixture": "rescuer-settings-social-dialog-facebook",
+    "route": "/settings",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "5030ac5874991ea22266b705e282d2e0f76e4459a8de799db60561ccce67f808"
+  },
+  {
+    "fixture": "rescuer-settings-social-dialog-keyboard",
+    "route": "/settings",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "6aae67158fa84c3e5e17f8205dffcdb16446455589f38772103e2529830a5fb4"
+  },
+  {
+    "fixture": "rescuer-settings-social-dialog-keyboard-large",
+    "route": "/settings",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "19ad008213873a3c7cb525ab4359e366dbdaf0571c7c2aafa7022f69d3ef821c"
+  },
+  {
+    "fixture": "rescuer-profile-large",
+    "route": "/profile",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "359fa02569cfc634dab9b263752569ccd1b6fbe1c17fcb8c8594444c60aaaa77"
+  },
+  {
+    "fixture": "public-profile",
+    "route": "/people/owner",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "0ccaae6c483cd4e69653118547a0ba799354a517ae6a8c594689c936c2f5cda8"
+  },
+  {
+    "fixture": "public-profile-large",
+    "route": "/people/owner",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "d645591399eb63fe4f0d81c07db6449c544f4a87104d181f4995fa055695f39a"
+  },
+  {
+    "fixture": "public-profile-reference",
+    "route": "/people/owner",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "12ada1b179de86ea0864015be1d79762ea70b3c5a7f2058265ec54478f3c4aa5"
+  },
+  {
+    "fixture": "public-profile-reference-large",
+    "route": "/people/owner",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "be1169f91714214af4d25182a56a0ee08b2db83e09d88d6ee3f836fdc6988565"
+  },
+  {
+    "fixture": "public-profile-state-loading",
+    "route": "/people/owner",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "596b9303b0a0ea8170ebbb0d1b78abbefa8ec2dea4edbcca7ff1f32860995132"
+  },
+  {
+    "fixture": "public-profile-state-loading-large",
+    "route": "/people/owner",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "25a7a60b08f376df7f3e57494d4bc5aa2aefbfb72317112d8c4886598d2d396d"
+  },
+  {
+    "fixture": "public-profile-state-error",
+    "route": "/people/owner",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "f40c9d6054133408cf2d1900a1f17aaa3db21ddcac55159270957bd168ee80cd"
+  },
+  {
+    "fixture": "public-profile-state-error-large",
+    "route": "/people/owner",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "56d6be8c1adee2cdaad084c0c55782b5a010c4680693b76384b0783dde8db230"
+  },
+  {
+    "fixture": "public-profile-state-unavailable",
+    "route": "/people/owner",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "11153243aa3f61fbd9e49f11d6e87b929b1ab81583514f7b5f174148d089d95e"
+  },
+  {
+    "fixture": "public-profile-state-unavailable-large",
+    "route": "/people/owner",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "ac7a836ab5d0258fc23892ac79927dd1e391c4db7b0c5f33e7efffcedbf4826d"
+  },
+  {
+    "fixture": "public-profile-metrics",
+    "route": "/people/owner",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "7112e238632210d16be1d8d01890e3e26701af134d2dd4083f4d7aca39a2253e"
+  },
+  {
+    "fixture": "public-profile-metrics-large",
+    "route": "/people/owner",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "21125a3f1eb8957685ae37661465292f60510f563c065b5b95c1abb68a132675"
+  },
+  {
+    "fixture": "public-profile-metrics-stats",
+    "route": "/people/owner",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "566b7839465c3d78f464c83ea8e097478580455ad7bbd13da5aaa408c271d160"
+  },
+  {
+    "fixture": "public-profile-metrics-stats-large",
+    "route": "/people/owner",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "31430bbb4c84202eab3793a66ca4b6aca47f24462eba17c2ccf297599364681c"
+  },
+  {
+    "fixture": "public-profile-adoptions",
+    "route": "/people/owner",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "b2cc27fbc96a585c7c9a7c34a92b54b1c9a27ee9851a74a9bc4619cd40bc86c9"
+  },
+  {
+    "fixture": "public-profile-adoptions-large",
+    "route": "/people/owner",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "f71490cd05610e627fe36c929f9a0ceed07292a22327fc726b0907c4fb7c2e01"
+  },
+  {
+    "fixture": "public-profile-report-reference-error",
+    "route": "/people/owner",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "eac29a9ee93c954d276bea9f0d568392522ec2ef2d8dbee0a4490d439e3538bb"
+  },
+  {
+    "fixture": "public-profile-report-reference-error-large",
+    "route": "/people/owner",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "5b82bb9dafeed13e08782c693279c94aab1723e9ad4f51e6fd19f16bfa2d49ec"
+  },
+  {
+    "fixture": "public-profile-report-reference-sending",
+    "route": "/people/owner",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "5ebd76d656fd3f9041c90eb1cfe10346ae1538166308adbeada737cf598c5352"
+  },
+  {
+    "fixture": "public-profile-report-reference-sending-large",
+    "route": "/people/owner",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "07e8fe5f063a5c73afd3afd16ca7d4e9ddb7fdac1bbb4d0c9e0cf856fa4d4c1f"
+  },
+  {
+    "fixture": "public-profile-report-reference",
+    "route": "/people/owner",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "7ac7222386fe83dea007a33d071c81b939a764d56f146461acaeb81191407b2f"
+  },
+  {
+    "fixture": "public-profile-report-reference-large",
+    "route": "/people/owner",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "0545d92c354c101589ae3964bb364557917cebd9e354133f08053dc87b72e056"
+  },
+  {
+    "fixture": "public-profile-report-reference-keyboard-large",
+    "route": "/people/owner",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "9c2bb0a82151329556a89956d23aabc5fb6010404df1dfbc729bd46c201b0b4f"
+  },
+  {
+    "fixture": "public-profile-cases",
+    "route": "/people/owner",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "4296b61b629a7c129f9415206d43deee0198908094011ec0fdbfc4e51b103335"
+  },
+  {
+    "fixture": "public-profile-cases-large",
+    "route": "/people/owner",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "08a76865758635fcf0e78fcf558846b99993cfca5c5d79ef7ecb4d12c3d80716"
+  },
+  {
+    "fixture": "profile-overview",
+    "route": "/profile",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "a27267c04638d37626b28586e34be7854b61a8fbc6e0d28d0563e58dd1e8ea62"
+  },
+  {
+    "fixture": "profile-overview-active",
+    "route": "/profile",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "f22329c3e372a7669dd1931a64df48524f80bc08d4479b6710c46cb98c117b5c"
+  },
+  {
+    "fixture": "profile-overview-large",
+    "route": "/profile",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "02a8946614bb2f0eb7a40e9f05875f5454c2191b0dd16649c97baa5da920642e"
+  },
+  {
+    "fixture": "profile-mode-dialog",
+    "route": "/profile",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "dffb25c7178e41e36b267c43da8b60dbaf6d344a78874d865a0e398b2fed0bc3"
+  },
+  {
+    "fixture": "profile-settings",
+    "route": "/settings",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "a9bd24a037d4eda6ec11bf716fa1fd5ea72870baaa1544fbe4eb1716f6e5feed"
+  },
+  {
+    "fixture": "profile-settings-back-held",
+    "route": "/settings",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "a9bd24a037d4eda6ec11bf716fa1fd5ea72870baaa1544fbe4eb1716f6e5feed"
+  },
+  {
+    "fixture": "profile-settings-large",
+    "route": "/settings",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "bfd50ba9c014d7654fb71d1571fe4639883f0fd125c321827457e560daf14526"
+  },
+  {
+    "fixture": "profile-settings-footer",
+    "route": "/settings",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "ade47b463a72b2cc33b1748b74692108c36a733200b27095346f840570b35dd0"
+  },
+  {
+    "fixture": "profile-settings-footer-large",
+    "route": "/settings",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "959d3c36e8a5e000b117cde2aee4ad891e698baeaf1284aaf444b2d8880aab48"
+  },
+  {
+    "fixture": "profile-support",
+    "route": "/profile",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "eff8f6d70ef69e1b3e10deced3688551d30573baf4875b50bdfe370afbf1d48b"
+  },
+  {
+    "fixture": "about",
+    "route": "/about",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "dba3558a8a73115c9e92d0527186efc46ffa094a4f4ecc95346241424ed3a112"
+  },
+  {
+    "fixture": "about-large",
+    "route": "/about",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "23718f72c4e699a496a760fc314a9d0899f3b67e0eddfc14518ad2e350364001"
+  },
+  {
+    "fixture": "transparency",
+    "route": "/transparency",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "024b7842148b214c715d5dfef710ca4ad70d43a08963e612d9cff43eaae8fea6"
+  },
+  {
+    "fixture": "transparency-criteria",
+    "route": "/transparency",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "c267dcfc5527f80779b3bff9be269ccc706bdd2f04bb579b7e5264f8a13c097c"
+  },
+  {
+    "fixture": "publish-choice",
+    "route": "/publish",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "5b2ff6ee4edad436675d814b8f51ca948e276386748923a37e75a0142ae4987f"
+  },
+  {
+    "fixture": "publish-choice-large",
+    "route": "/publish",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "00c2985dd51510dc98a297be8400c4a9b12c84afb55782515464f2f60c1d26fe"
+  },
+  {
+    "fixture": "managed-updates",
+    "route": "/rescue-cases/case-one/updates",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "1c4cb65b8e24c4096efcfb6e49da8edb89ef25f3fa6ba5267c076e3b15cc72a5"
+  },
+  {
+    "fixture": "managed-updates-large",
+    "route": "/rescue-cases/case-one/updates",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "cbec565112bfc83eabcbc65c52f9c2d344b5fa3f632a232b20f3659ec8e922ae"
+  },
+  {
+    "fixture": "managed-updates-empty",
+    "route": "/rescue-cases/case-one/updates",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "558d6d51ab386b575d073ff61cc23a86da4cc4ce29e4d75c29f9730d23c75f0e"
+  },
+  {
+    "fixture": "managed-updates-empty-large",
+    "route": "/rescue-cases/case-one/updates",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "f59fc7bd2988789999d8b6cd2300a3f88bb18bfe44112a27f9e51825dd2458d0"
+  },
+  {
+    "fixture": "managed-updates-error",
+    "route": "/rescue-cases/case-one/updates",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "81c4a890ebf7a1ac58d6ee72a437f5c92bd3dbcb83dafff39bfd602dc4a9d50c"
+  },
+  {
+    "fixture": "managed-updates-error-large",
+    "route": "/rescue-cases/case-one/updates",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "9ba85d600c3ba2b91316996e307c884b5aa222d50f661aceb2170b6dfda10a60"
+  },
+  {
+    "fixture": "managed-updates-editor-new",
+    "route": "/rescue-cases/case-one/updates/new",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "d8115324a194154cca3d0c7b9e311ea7c0d59e3731324a48b6b8032cbd542e69"
+  },
+  {
+    "fixture": "managed-updates-editor-new-large",
+    "route": "/rescue-cases/case-one/updates/new",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "101ec94169f2713eeea9d9af7c56d0345d72e2c8297e66dd6bad2dd611658058"
+  },
+  {
+    "fixture": "managed-updates-editor-draft",
+    "route": "/rescue-cases/case-one/updates/update-changes_requested",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "0d6eb37b79cb03a677ac93cd4d1e8fbff69c0b1f3fcb857b32d194480ccc5733"
+  },
+  {
+    "fixture": "managed-updates-editor-draft-large",
+    "route": "/rescue-cases/case-one/updates/update-changes_requested",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "56f94a80d411198ca0572496e15f891b7869734ac74e634cbde419884a85d938"
+  },
+  {
+    "fixture": "managed-updates-editor-error",
+    "route": "/rescue-cases/case-one/updates/update-draft",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "0eda3f9eec36d6459a95008bc2c6bedac0b3b7fc45133a5c15229b955772dc09"
+  },
+  {
+    "fixture": "managed-updates-editor-error-large",
+    "route": "/rescue-cases/case-one/updates/update-draft",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "722ba4e8a6f7c6ff18717f745b55e6bd6eff7716c03c181ea8a78114784fe843"
+  },
+  {
+    "fixture": "account-access-options",
+    "route": "/settings/account",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "01b6a6950ddf3d9a652257c261e5232230b7dd33dfd009928fed9c457836d2c3"
+  },
+  {
+    "fixture": "private-file-image",
+    "route": "/rescue/verification-id",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "008566f95131fb3417c39dc40a4bfa0f931cfaa8e26a516a7fa2a3c5840faf34"
+  },
+  {
+    "fixture": "private-file-image-large",
+    "route": "/rescue/verification-id",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "298c177ea3319b102b248ac739cf693da14bdf91923940a08c4ef182fe542e57"
+  },
+  {
+    "fixture": "private-file-image-content-large",
+    "route": "/rescue/verification-id",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "298c177ea3319b102b248ac739cf693da14bdf91923940a08c4ef182fe542e57"
+  },
+  {
+    "fixture": "private-file-pdf",
+    "route": "/rescue/verification-id",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "e6aceb11892608edc517d6c9d0f647568dd031cd212bed84e2b19ea7d3a1ce16"
+  },
+  {
+    "fixture": "private-file-pdf-large",
+    "route": "/rescue/verification-id",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "4c621126e369c0a2ec21ca1d5097473cbc20026434e2365b3750828081e931f7"
+  },
+  {
+    "fixture": "private-file-pdf-content-large",
+    "route": "/rescue/verification-id",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "4c621126e369c0a2ec21ca1d5097473cbc20026434e2365b3750828081e931f7"
+  },
+  {
+    "fixture": "private-file-error",
+    "route": "/rescue/verification-id",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "edf6dbe0352bf8397b19770bdfa5179347dc07a6ee5548cdfb343d4ace34767a"
+  },
+  {
+    "fixture": "private-file-error-large",
+    "route": "/rescue/verification-id",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "730c95293f71b67838fcaaaaf49a11d2fec7d49fe9e0fb408aa9d1fd2527d4d9"
+  },
+  {
+    "fixture": "private-file-error-content-large",
+    "route": "/rescue/verification-id",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "730c95293f71b67838fcaaaaf49a11d2fec7d49fe9e0fb408aa9d1fd2527d4d9"
+  },
+  {
+    "fixture": "connect-account-ready",
+    "route": "/connect",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "08a4c8fceaf8aff4d0ea495f60fafc97e2776b6df060076975e3d73ad07bf3fe"
+  },
+  {
+    "fixture": "connect-account-ready-large",
+    "route": "/connect",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "c8f9ebd06996c18abfe83c1e84e4b812f5e31a37d01721cdf0afa449ab817f39"
+  },
+  {
+    "fixture": "connect-account-ready-content-large",
+    "route": "/connect",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "015c0a6d3b41ad698d56b290259ebb50b4921a184a66dc23bb853a2868d223db"
+  },
+  {
+    "fixture": "connect-account-pending",
+    "route": "/connect",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "6f331e4be19ab03cf573913dd5ab5986a74600650d7a09d4f36dc126ec3dd3c7"
+  },
+  {
+    "fixture": "connect-account-pending-large",
+    "route": "/connect",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "c8f9ebd06996c18abfe83c1e84e4b812f5e31a37d01721cdf0afa449ab817f39"
+  },
+  {
+    "fixture": "connect-account-pending-content-large",
+    "route": "/connect",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "1ff64d442c331675807b24e6973faa633baf21497cf285e51766ab0442703d8f"
+  },
+  {
+    "fixture": "connect-account-error",
+    "route": "/connect",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "09462494ea058ea03cca3ce6a2a65bf971595efae913cc7b2e79602ceae24834"
+  },
+  {
+    "fixture": "connect-account-error-large",
+    "route": "/connect",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "c8f9ebd06996c18abfe83c1e84e4b812f5e31a37d01721cdf0afa449ab817f39"
+  },
+  {
+    "fixture": "connect-account-error-content-large",
+    "route": "/connect",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "bd6b89b7eee9c94ccc307bb81a0fc4830ef6492cad6a57338a329df838c37722"
+  },
+  {
+    "fixture": "account-access-options-large",
+    "route": "/settings/account",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "0923291797e4622331f4bf44ee3b159f01ac4fb26ba823bd6ce4e9aca4e932da"
+  },
+  {
+    "fixture": "account-access-options-content-large",
+    "route": "/settings/account",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "d59ea5f7d82e1dda4fa2dcd25e905a9acf3d28f004a5c954d6736944c5e6c869"
+  },
+  {
+    "fixture": "account-access-consent",
+    "route": "/consent",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "27e9a522573f7ce18284226849d3edcb030aad750d4285721e0c53eaad4c5fe2"
+  },
+  {
+    "fixture": "account-access-consent-large",
+    "route": "/consent",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "a71fbf86dd8d8f25a64a058ea76df7c667e8a5b16e69ef3019aacd3d58297478"
+  },
+  {
+    "fixture": "account-access-consent-content-large",
+    "route": "/consent",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "b2304d8edd712c780cd4bbb7b346ee4c16fd2c240095b04be2e2c9a4987c16bb"
+  },
+  {
+    "fixture": "account-access-privacy",
+    "route": "/account-privacy",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "52de40ff24a03dc64d9a9765fd6c8f26e05ffc39ec52124e40dd77778324701d"
+  },
+  {
+    "fixture": "account-access-privacy-large",
+    "route": "/account-privacy",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "7af25663818c47d1b8edd97e05815da862f692e74ec5e698e37b32fa4ba1dfdc"
+  },
+  {
+    "fixture": "account-access-privacy-content-large",
+    "route": "/account-privacy",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "8ad9b400baf2d08d769e902acd4a8cac8d446d11a43d622e8723d417aaf4cce4"
+  },
+  {
+    "fixture": "my-adoptions",
+    "route": "/my-adoptions",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "d4fd715071683a02ba3806256c6e968e5ce4e176bc8344dc100cd6424258dde6"
+  },
+  {
+    "fixture": "my-adoptions-large",
+    "route": "/my-adoptions",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "21116d25f14b5a231d50f37dfa89330d763da8641b61b86611ea077d69ce4ef2"
+  },
+  {
+    "fixture": "my-adoptions-empty",
+    "route": "/my-adoptions",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "efd4a46dd51b8a43dd1da5ee97ce9734e1d49758c18c39a64d7428c3b7d73f43"
+  },
+  {
+    "fixture": "my-adoptions-empty-large",
+    "route": "/my-adoptions",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "6474a1d05ffa4ed8a2e580481b6061c71d25f63dee386c0638faf2fc480e2383"
+  },
+  {
+    "fixture": "my-adoptions-error",
+    "route": "/my-adoptions",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "92bebf83a8e6a0c665523314628766225dc93908c0de05656b2b054bb28c66de"
+  },
+  {
+    "fixture": "my-adoptions-error-large",
+    "route": "/my-adoptions",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "6e0695e147498857245b007866440e1e549177b228670c3e23339739e8c3d54e"
+  },
+  {
+    "fixture": "my-adoptions-content-large",
+    "route": "/my-adoptions",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "a65450e337bab71e3f66b7e0223b6930ea3e08437d3cfafbdc97efb7534c6d02"
+  },
+  {
+    "fixture": "my-adoptions-empty-content-large",
+    "route": "/my-adoptions",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "745ff3c27f8572d9dd240e0eab3a8aa640b2fb28e738f116d370114f1eade01c"
+  },
+  {
+    "fixture": "my-adoptions-error-content-large",
+    "route": "/my-adoptions",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "b0156bc447f83d329bbc55a9eb73b764f1378a752cc50ac25465ae25d1f5ac23"
+  },
+  {
+    "fixture": "publish-photos",
+    "route": "/my-adoptions/new",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "8fe6eec20566bdfa9455736220fe4c14aab7ae03569fe26c17e1c36cb7972012"
+  },
+  {
+    "fixture": "publish-photos-large",
+    "route": "/my-adoptions/new",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "34e615161c03489b22f1e0af2cf388f36cc6509212b0a888325c90c750e21bef"
+  },
+  {
+    "fixture": "publish-photo-grid",
+    "route": "/my-adoptions/post",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "b4b5a60e12a7ec6fc6ec869a9dd1c401b06be4ec88f51054a916b209e1867e2b"
+  },
+  {
+    "fixture": "publish-photo-grid-large",
+    "route": "/my-adoptions/post",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "9251d16f60f5f325df7446fe856c424e033ef68969e1627276902ee9cb4eb03c"
+  },
+  {
+    "fixture": "publish-information",
+    "route": "/my-adoptions/post",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "d1fcf40022ba2869f95bc8f95f14c409f243f06770d53e4b00fd2c2305e2d93b"
+  },
+  {
+    "fixture": "publish-information-large",
+    "route": "/my-adoptions/post",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "c999e309f4969e93edea688a36eda0260cac18cf76a65e982e0a2eabdfda981a"
+  },
+  {
+    "fixture": "publish-review",
+    "route": "/my-adoptions/post",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "a80191182fcda578f4dc4f428db6c423a1f5e37071ed6d0bcfd1f565cc9db6c5"
+  },
+  {
+    "fixture": "publish-review-large",
+    "route": "/my-adoptions/post",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "19c7dd9be200253eba27eb417b5cde1797a3fa93db69f6f7c8a637ac70027a60"
+  },
+  {
+    "fixture": "publish-review-social",
+    "route": "/my-adoptions/post",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "b5b0a255d1cb305c1a98a7bd140f3b907804b747db586a49c157168f46372af4"
+  },
+  {
+    "fixture": "publish-review-social-large",
+    "route": "/my-adoptions/post",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "d59139de1bf70af8f5ee7d7456415e530d4171d210d614409b83b011e7c56233"
+  },
+  {
+    "fixture": "publish-health",
+    "route": "/my-adoptions/post",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "d09302f56fb4adde6ad840a20fabd22a6570dee55ba6998febffd708d13797d9"
+  },
+  {
+    "fixture": "publish-health-large",
+    "route": "/my-adoptions/post",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "55d8f202f5b217a73226f34e112262cf91f5c6165d1ee1193a33578c14395521"
+  },
+  {
+    "fixture": "expense-submitted",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "d19dd45b6be1c5d8436d74c220f09dec2b81e75d907f03694eb0023b3f3db58e"
+  },
+  {
+    "fixture": "expense-submitted-large",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "4ed23b61df06fe17ef91e3969231e2aecfc0ccd6f682a815294bdb255e5f1e1b"
+  },
+  {
+    "fixture": "expense-submitted-footer-large",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "7e942da6c99310f151b051962862a06a7ad93b6d611c42ea5d773503deed99d0"
+  },
+  {
+    "fixture": "case-publication",
+    "route": "/rescue/new?kind=case",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "ef2e48e95cf19e6b0d7a9b684629fcebfa05b3a4a397663a2da652b3454213e4"
+  },
+  {
+    "fixture": "case-publication-header-focus",
+    "route": "/rescue/new?kind=case",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "a451ea2a448e28ce651c63c2736cd51831039d5fa51a37a6eb07f171e44d269b"
+  },
+  {
+    "fixture": "case-publication-header-focus-large",
+    "route": "/rescue/new?kind=case",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "c0f2213ce5cdba16d96e41f1cea305f92cff956c5fce1cff509059a74fc6af52"
+  },
+  {
+    "fixture": "case-publication-large",
+    "route": "/rescue/new?kind=case",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "eeb55cccfe494b668aae39e347b34783f8e469bac852f870e34b427e02e2db90"
+  },
+  {
+    "fixture": "case-publication-information-nameless",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "1bdc710e56aaad85503f52a7455b1e512347aba8bcc98c941c29553352513121"
+  },
+  {
+    "fixture": "case-publication-information-nameless-large",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "1f24163364eb0aab3c7ebf390e3a80957fbe3835c2cad538df31796818bb4c6b"
+  },
+  {
+    "fixture": "case-publication-review-nameless",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "de8a4822db3c43bcf0068f39643f3d2e81bfe83935441b546b3dcea95f79667c"
+  },
+  {
+    "fixture": "case-publication-review-nameless-large",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "e6d911aff8c3a6c236de18b6e5e3bafe75a62457d84e95f36c2e62634273cc0b"
+  },
+  {
+    "fixture": "case-publication-needs-list",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "bbf1e363e70891249e8ee6016fec798ea14aa0ced05a404f1672c628c95490a6"
+  },
+  {
+    "fixture": "case-publication-needs-list-large",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "f618461cf5a53c77d27bee6a6a286f743fe570787237d881ea288ef7d10fb850"
+  },
+  {
+    "fixture": "case-publication-review-list",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "2d056f365db24f7a756dfd1ee821e56e8b4966975a7951261433d5ac4a91cb5a"
+  },
+  {
+    "fixture": "case-publication-review-list-large",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "97eab8b70e29a47bdc6c676a19ae1c72e64e5d8137fbb69e70abce45c48a56cb"
+  },
+  {
+    "fixture": "case-publication-needs-medicine",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "03d7d537a3072fb64e545465fcae0cd803422ce51a6689b87dcab34e8e014b75"
+  },
+  {
+    "fixture": "case-publication-needs-medicine-large",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "ca9e9322efff6850d6ebcb2a3019e6dd2ba73095c8220519980b0da71fbdd99c"
+  },
+  {
+    "fixture": "case-publication-needs-food",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "3a8110da99773b43126d543372a1193f99fdf02396b5884fe43732ad9146e5ca"
+  },
+  {
+    "fixture": "case-publication-needs-food-large",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "8dd325d0badf5e9da35bd5e374d6a5e3412724732af83919971345ab2c7d4551"
+  },
+  {
+    "fixture": "case-publication-needs-veterinary",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "5ef482ce58b1dfbb20a0884a4ea124b77a776a145616ef12ded4c9ea20a5adb8"
+  },
+  {
+    "fixture": "case-publication-needs-veterinary-large",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "6039b9c5696c4c564e5a695e4bd108b43193c5f450e2095c7d367bfeea7c5c0d"
+  },
+  {
+    "fixture": "case-publication-needs",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "23597d34193c23805eb6ef4e860f197da105b9961a080743b298a35147ccfb21"
+  },
+  {
+    "fixture": "case-publication-needs-large",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "d8feee1287f2596c9c363f674b6e0f22915514c81c21008a61e068fc834daae5"
+  },
+  {
+    "fixture": "case-publication-review",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "2f95af3f1e0718c2783eabd0616f2c8e326ae5c7bf17ce63e7dee96d1f789bc4"
+  },
+  {
+    "fixture": "case-publication-review-large",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "e6d911aff8c3a6c236de18b6e5e3bafe75a62457d84e95f36c2e62634273cc0b"
+  },
+  {
+    "fixture": "case-publication-information",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "ea1ac1a21a1d7b864cc62230bd127fbfeb088bab0c673d7c45b0f61031d8b660"
+  },
+  {
+    "fixture": "case-publication-information-large",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "1f24163364eb0aab3c7ebf390e3a80957fbe3835c2cad538df31796818bb4c6b"
+  },
+  {
+    "fixture": "case-publication-grid",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "31a849eb0d3cd8690b2fcf672aa60e1781cfc0113d15af4021ec11876da9479c"
+  },
+  {
+    "fixture": "case-publication-grid-large",
+    "route": "/rescue/case-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "5b21738df9ee8fa3a7612ad318ab650e6d6a3826d9f5533d701f98f03a99a022"
+  },
+  {
+    "fixture": "expense-record",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "9cdd2f55fc97b9107178d6b1f55efd830a1e152328d790b8d61b7ff8a967de60"
+  },
+  {
+    "fixture": "expense-record-large",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "548fd0c2e20fcebe065a5c60c0f71d9414ebb2e7e627d2f4ed7702e000f3cab3"
+  },
+  {
+    "fixture": "expense-review",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "401a4b185a157cc355a3f8481cde629f75bb6b6fd67c116928268a6f0201e9ef"
+  },
+  {
+    "fixture": "expense-review-large",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "f8d01553290d3d598ebb534d2f4a4a9b0ca29872ef8199c375b3ca9bcabfb7d8"
+  },
+  {
+    "fixture": "expense-review-private",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "d3209de64a2c0b9792a39f3564a91513d6daa41ff369c10a06b3d0b2ea30c055"
+  },
+  {
+    "fixture": "expense-review-private-large",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "ac1486e3fff4c1fd19f8d509c6ccae8b5570fc5a0360d8ab2e1098029af1d817"
+  },
+  {
+    "fixture": "expense-dialog",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "759097c41087022a246897832c156890cb8da32ba0a01539288fc8e434585268"
+  },
+  {
+    "fixture": "expense-dialog-large",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "8eabf9f1a65151b94c8806856bacdc3491abefe57f0093275c100a3d01c28978"
+  },
+  {
+    "fixture": "expense-evidence",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "759097c41087022a246897832c156890cb8da32ba0a01539288fc8e434585268"
+  },
+  {
+    "fixture": "expense-evidence-large",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "1f64db4bd7a3ffec4763884cce2c053640bd2f60ca7edac29a2f1fc4c0ab6772"
+  },
+  {
+    "fixture": "expense-information",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "8f76c2d0597bd0b751402aad9790c635d6f692d9318e821a117d41edd2cb62fa"
+  },
+  {
+    "fixture": "expense-information-large",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "5231717781d179904b8986a7587c8977eef4215a7a9f0425561cb8b946e59577"
+  },
+  {
+    "fixture": "expense-description",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "d073eefde54e13507c63155ac6da2d91b629bac8ad084cef30e4171dc6c78a49"
+  },
+  {
+    "fixture": "expense-description-large",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "014a13ffa91debf8be8568aade220728a5bfd147779ec7c43a1e744af61a6059"
+  },
+  {
+    "fixture": "expense-description-footer-large",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "039196d5849be91d3cb9a2a0cf2aef3c65aae7e28d49a275ab111f654ea0ca61"
+  },
+  {
+    "fixture": "expense-private",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "781eb905a4a068a633d89482a5a0aabc1409c6e4eaf10570ff4fcc7309ce32ba"
+  },
+  {
+    "fixture": "expense-private-large",
+    "route": "/rescue/expense-one",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "764315e8aaa019c4bc1310b85d648ac7b531f28afcde151b749d6216e3a712f2"
+  },
+  {
+    "fixture": "verification-intro",
+    "route": "/rescue/new?kind=verification",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "326220ef3779896db870718d85cf59f1aacf9af9bd5172d35139e6a3babd488e"
+  },
+  {
+    "fixture": "verification-intro-large",
+    "route": "/rescue/new?kind=verification",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "bb9cece1673052769aeb328ece96c9a5b98f0f766b8739cae98f9ca64f0d9a37"
+  },
+  {
+    "fixture": "verification-intro-footer",
+    "route": "/rescue/new?kind=verification",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "527e0f9bdd0827edf3c648caf35e7eb7345e1066ce56d704c680043b28b9e734"
+  },
+  {
+    "fixture": "verification-intro-footer-large",
+    "route": "/rescue/new?kind=verification",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "7af626ea3d737250e9ef7526cb8f82648ddab49f86a4cb932bfeb898136e7d43"
+  },
+  {
+    "fixture": "verification-form",
+    "route": "/rescue/new?kind=verification",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "d382d5e8dd07ce45ba290fe217e9c86a112ef83e2f08a7bce64e8ccffe8d5848"
+  },
+  {
+    "fixture": "verification-form-large",
+    "route": "/rescue/new?kind=verification",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "1985edbbc8467886946511979e226d34247a42db517b2d2fbe0ef7db93e0938f"
+  },
+  {
+    "fixture": "verification-form-inputs-large",
+    "route": "/rescue/new?kind=verification",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "ce2351dbd318766ad4999acc62d71082d7393f49df74f8aa72cd5576977b7298"
+  },
+  {
+    "fixture": "verification-form-experience-large",
+    "route": "/rescue/new?kind=verification",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "9569ba5d5403b526d7d5f7a7fb98283f329f5ffc13920781f9a93717c1eb8ac7"
+  },
+  {
+    "fixture": "verification-form-documents",
+    "route": "/rescue/new?kind=verification",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "2a907ea1ba5e9e14a87306c9a0d984363ac4bf70c327dfdf79df777952d8bf6a"
+  },
+  {
+    "fixture": "verification-form-documents-large",
+    "route": "/rescue/new?kind=verification",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "b6f8c2fa2882449ab98b6e6dc5312df33e3fc6274162cf57eade6e9e9b6e6b67"
+  },
+  {
+    "fixture": "verification-form-progress",
+    "route": "/rescue/new?kind=verification",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "2a907ea1ba5e9e14a87306c9a0d984363ac4bf70c327dfdf79df777952d8bf6a"
+  },
+  {
+    "fixture": "verification-form-progress-large",
+    "route": "/rescue/new?kind=verification",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "2478d577a5f480041770e5aa3c449fd9c2948cc7a6edb25ef7a8831f47bfbb43"
+  },
+  {
+    "fixture": "verification-approved",
+    "route": "/rescue/verification-id",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "21548a0ca1828d0ef0ce07e7bb11f942819e5d59c6143fdd24cbed0942a4096e"
+  },
+  {
+    "fixture": "verification-approved-large",
+    "route": "/rescue/verification-id",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "2c8cea0865051da54a89011aa64ff3ecfb07fa635e0169f1c591a369379257f8"
+  },
+  {
+    "fixture": "verification-review",
+    "route": "/rescue/verification-id",
+    "dimensions": [
+      377,
+      852
+    ],
+    "sha256": "bf11d2899c1a2ae6f9ec2386cbc26c93379ad2dc85c4cfb32bb8fd1fbd2eb00e"
+  },
+  {
+    "fixture": "verification-review-large",
+    "route": "/rescue/verification-id",
+    "dimensions": [
+      320,
+      640
+    ],
+    "sha256": "f82bbfd3ca325a25d831994546880c84fd2eb8eb77272b51e329c31b389b4721"
+  }
+]

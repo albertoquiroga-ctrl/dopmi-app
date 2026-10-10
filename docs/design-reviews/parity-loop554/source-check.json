@@ -1,0 +1,12 @@
+[
+  {
+    "file": "lib/features/rescue/owned_expense_card.dart",
+    "normalized_sha256": "340e6ebfd5a03333bf36392535fe9e0c520480ea9a44e3995ad9649e80369899",
+    "root_scratch_equal": true
+  },
+  {
+    "file": "tool/capture_profile_test.dart",
+    "normalized_sha256": "5f610a945569617018ed460633f907a7e5b0bf92b40762cfbf4f3c3c4ce9d39c",
+    "root_scratch_equal": true
+  }
+]

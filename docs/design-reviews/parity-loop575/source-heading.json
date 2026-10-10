@@ -1,0 +1,58 @@
+[
+  {
+    "class": "profile-page profile-page--soft donor-chrome",
+    "font": "16px",
+    "line": "normal",
+    "margin": "0px",
+    "padding": "16px 18px 88px",
+    "rect": {
+      "height": 1184.0625,
+      "width": 377,
+      "x": 0,
+      "y": 0
+    },
+    "tag": "DIV"
+  },
+  {
+    "class": "",
+    "font": "28px",
+    "line": "30.8px",
+    "margin": "0px",
+    "padding": "0px",
+    "rect": {
+      "height": 30.796875,
+      "width": 113.140625,
+      "x": 20,
+      "y": 92.59375
+    },
+    "tag": "H1"
+  },
+  {
+    "class": "profile-access",
+    "font": "16px",
+    "line": "normal",
+    "margin": "0px",
+    "padding": "18px 16px 20px",
+    "rect": {
+      "height": 165.78125,
+      "width": 341,
+      "x": 18,
+      "y": 366.28125
+    },
+    "tag": "SECTION"
+  },
+  {
+    "class": "profile-access",
+    "font": "16px",
+    "line": "normal",
+    "margin": "0px",
+    "padding": "18px 16px 20px",
+    "rect": {
+      "height": 180.171875,
+      "width": 341,
+      "x": 18,
+      "y": 552.0625
+    },
+    "tag": "SECTION"
+  }
+]

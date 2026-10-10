@@ -1,0 +1,18 @@
+[
+  {
+    "name": "managed-updates-editor-new-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "47e462b721a7296e31e0c175cefb07fb1bdbdfd3bef8ba4112c25b1bc6d9807c"
+  },
+  {
+    "name": "managed-updates-editor-new.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "d8115324a194154cca3d0c7b9e311ea7c0d59e3731324a48b6b8032cbd542e69"
+  }
+]

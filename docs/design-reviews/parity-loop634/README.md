@@ -1,0 +1,5 @@
+# Presión de edición
+
+## 2026-10-04 — Loop634: presión de Editar en resumen
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Sourcepublish-edit-link e inline-link no declaración táctil activa; extensión ExpenseReview heredaba overlay/splash Material. TextButtonheading ahora NoSplash/overlaytransparente/duraciónzero, conserva foco/tooltip/callback/hitarea. Doce pruebas componente real3secciones ×normal200 ×temaAndroid/iOS verifican RGBA idéntico y rect estable bajo200ms presión, cancel0/release1callback. Gate6973terminalexit0,25/25en8s (12press+13expense_field); analyzer60861exit0sin incidencias26.1s. Plataforma tema noSDK/device; prueba callback no demuestra destino app por sí sola. Gateintegrado existente mantiene edición privada enstep1 y exactosdatos; falta nueva prueba de retorno específico público2/files0 desde review. Sin captura/runtimeSource nuevo. Full705629 anterior633/634. Próximo integrado review→públicos/archivos→regreso y payloadsin pérdidas, después renovar matrizglobal. Sin push/Codemagic hasta objetivo completo.

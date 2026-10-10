@@ -1,0 +1,1239 @@
+## Tablero vigente — cierre 9/10/2026
+
+**Entrega pendiente; RETOMAR ESTA ENTREGA.** Esta entrada supersede estados históricos inferiores.
+Fuente de verdad: [checkpoint](mock-sync-current.md); evidencia social y límites de
+revisión eficiencia/UI/UX/código/seguridad: [registro social](meta-social-verification.md).
+
+| Frente | Implementado | Técnico / publicado / dispositivo | Pendiente obligatorio |
+|---|---|---|---|
+| dde1bb9 + QA9ced | 84687bb | CI37967904270; Play308; QA302/303/308 reutilizable | SMS incorrecto/reenvío real, aprobación humana donde no acreditada |
+| Meta social | f71c444; backend a941815 | CI38001865589; candidato943dc1c/Play311; ambos OAuth en Samsung, misma sesión | Desconexión/revocación/denegación proveedor, compatibilidad eliminación legado, retención/purga, requisitos Meta para uso general, aceptación UI/UX |
+
+DEV flagfalse; no entrega general aprobada ni excepciones para esos pendientes.
+Documentación posterior no altera candidato. Mock4369 no inventariado.
+No reiniciar QA válida ni trabajar pendientes durante el cierre.
+
+## Corte vigente 9/10: Play308 instalada, entrega pendiente
+
+Producto84687bb, referencia dde1bb9 +QA9ced. Play308/Vending comprobada por ADB;
+Inicio→Perfil→editor revisados sin cambios personales. FULLCI/revisiones846 y QA303
+se reutilizan. QA real SMS incorrecto/reenvío NO ejecutada: titular no tiene otro
+número. No hay excepción ni aceptación humana integral. Retomar esta entrega al
+contar con número controlado no vinculado; detalle/evidencia en
+[mock-sync-current.md](mock-sync-current.md) y última entrada de [progress.md](progress.md).
+
+### 2026-10-09 — Android846 publicado308; conexión física/SMS negativos pendientes
+
+Continuación expresa del titular sobre dde1bb9 más QA9ced. Consulta del mismo
+CM6ac945b4a02ae85db266e20e: finished20:09:27Z9/10, todos pasos success,
+source84687bb873760b806be93b5645c7c930bb1af0a1. AAB2.3.3(308). Build-info
+descargado y comprobado: commit846,308,Guardian testtrue/GooglePlayinternal.
+Play Console consultado separado: Internal activo, release151 disponible para
+testers internos, bundle308. Workaround autorizado Xcode26.5 sí arrancó/finalizó;
+no más builds ni repetición FULLCI37967904270/evidencia303 equivalente.
+Titular confirma que NO probó código incorrecto ni reenviar: cobertura real
+pendiente, no atribuirla a verificación correcta anterior. Solicitado otro número
+controlado/no vinculado, ingreso directo en app; teléfono personal confirmado
+se conserva, sin repetir desvinculación QA ni cambiar Auth para facilitar prueba.
+Titular conectó Samsung: Windows ADB Interface OK; adb inicialmente vacío y
+tras un reinicio acotado del servidor muestra no serial/offline. Solicitado
+USB debugging/desbloqueo; versión308 aún NO instalada/probada por este hilo.
+Artefacto descarga sin auth dio401; request autenticado sólo a codemagic.io
+permitió recuperar ZIPbuild-info, sin exponer token ni reenviarlo a redirects.
+Evidencia privada .tools/dde1/candidate-84687bb-xcode265-20261009; no en GitHub.
+Siguiente: conexiónADBautorizada, actualizar308 desdePlay, confirmar fuente/origen/
+sesión y revalidar deltaSMS; SMSincorrecto/reenvío con acceso legítimo pendiente.
+Entrega integral abierta; sin aceptación humana/instalada nueva atribuida.
+
+
+**Corte vigente 9/10 — teléfono personal confirmado, corrección SMS en CI:** servidor DEV confirma un único vínculo telefónico confirmado fuera de QA tras desvinculación específica autorizada; cuentas/datos conservados. Historial personal no vacío/detalle200 y revisión independiente cerrados; historias303/200 revisadas. Corrección84687bb publicada en rama: 19 pruebas dirigidas y analyze aprobados/revisión independiente código-seguridad; FULLCI37967904270 activo, todavía sin nuevo Android instalado. iOS6ac912b5a252e7188db7d6f6 building/fuente508 descargada; TestFlight pendiente. Falta evidencia factual de código incorrecto/reenvío, gate/publicación/instalación de la corrección y cierre Git. Entrega integral abierta. Esta ficha supersede estados históricos inferiores.
+
+**Vigente9/10 — Play303 instalada:** titular actualizóPlay; dumpsys303/vending yviewerexactoconservado. Historiasfoto/texto, updetalle/downcierre/XBack, holdrelease ambas superficies, lifecycle/end acreditados y revisiónindependiente. Accionestexto200completadas/restauraciónexacta, revisiónencurso. AndroidCMfinished/allstepssuccess; iOSmismoIDqueued. Pendienteshistorialpersonal200, SMSinvalid/resend factual y TestFlight; entrega no cerrada.
+
+**Actualización vigente9/10 — Android303 y Completar:** AAB2.3.3(303) generado; build-info confirma5080090/Guardian true/internal. Paso Publishing success; Play del teléfono todavía Abrir, sin actualización ofrecida. iOS6ac912b5a252e7188db7d6f6 queued. Viewer exacto confirmado tras login manual; Inicio→Completar→Información básica/Borrador→Back→Inicio acreditado en302 y revisión independiente directa sin defecto material, sin escrituras/SMS. Esta entrada supersede esperas de login/Completar y estados queued Android inferiores. Aceptación instalada508 pendiente.
+
+# Cierre de paridad — tablero vigente
+
+
+**QA física200%302 parcial:** perfil privado/header/contactos/footer y editor/consentimiento/acciones alcanzables; bio con teclado. Scroll ocultó teclado antes de footer. Escala1.15/density420 restauradas exactamente, sin escritura. Tabs públicos/notificaciones/pagos/historias200% siguen pendientes.
+
+**QA Inicio302 adicional:** En adopción inicial, período Ayer/Listo/reabrir y semana/X/reabrir (cambio inmediato idéntico al frozen), Este mes restaurado; resumen→borrador QA→editor→Back sin escritura; tips abrir/Back. Codemagic cola exacta43, cuota291/500 y ningún otro build activo visible; no reenviar. Completar perfil no verificado sigue pendiente.
+
+**QA adicional302: Guardar borrador y reabrir editor acreditados.** Perfil sintético version20/draft; marcador de bio persistió en UI y SQL, snapshot aprobado intacto y sin marcador. No repetir submit/review/revoke. SMS real resuelto; nuevo build5080090 continúa en cola.
+
+**Actualización vigente 9/10: SMS real verificado en el mismo usuario QA**, confirmado por titular y SQL Auth (UUID/correo conservados, teléfono confirmado, sin cambio pendiente). Twilio Primary Profile Approved y Phone DEV habilitado; secretos, número personal y OTP fuera de Git. Codemagic `6ac903950e26cbb7565d916f` continúa queued para `5080090`; FULL CI verde. QA nativa restante y aceptación final siguen pendientes. Esta actualización supersede pendientes SMS/identidad anteriores.
+## 8/10/2026 — Ejecución aprobada dde1bb9 + QA pendiente9ced
+
+Estado **PLAY302_QA_NATIVA_CORRECCION5080090_EN_CODEMAGIC_SMS_VERIFICADO**. Esta ficha supersede el alcance cerrado9ced
+inferior: el titular aprobó el plan completo y eligió incluir también dde1bb9.
+Mock fijo `dde1bb9d01e5f4c427424bffed99bf1c3ed1beca`; app base producto
+`281fc378abd9de8b9118419b53e51813c7e411a1`; inicio rama/HEAD/remoto
+`codex/design-foundation@b4ac415732207b435da840318a953129afaffe9d`.
+PR6 abierto/borrador; candidato propio `7e1a94c2344463ed0f7a56a7e3c9b8bf6c9f957e` publicado. Play302 del candidato7e1a94c publicado e instalado desdePlay; QA completa aún pendiente.
+
+Actualización vigente 9/10: login manual QA resuelto. Corrección propia de gestos
+de historias `5080090ae87e78e472d5904b67b50c2645a5c261` publicada en rama;
+FULL CI37946992790 cuatrojobs/todossteps success. Codemagic nuevo
+`6ac903950e26cbb7565d916f`, android-guardian-internal, envío único15:09:10Z,
+última consulta API queued; no inferir versión/publicación/instalación nueva.
+302 acredita editor/preview privado/tabs; nombre editado sólo en memoria y Back
+sin guardar con SQL que confirma snapshot intacto; chat picker/cancelar/enviar
+con teclado/persistencia, inbox activo/histórico y evento propio/lectura; footer,
+cambio de modo, historial vacío y necesidad expandida. Inventario QA actual:
+dos mensajes/cuatroobjetos/dos read_at; sin cambios financieros/Connect/cohorte.
+Auto real de historias acreditado en302 aislando temporalmente PhoneLink:
+primera→segunda→Apoyar, settings exactos restaurados y revisión independiente.
+El modo accesible puede detener auto por diseño; no modificar temporizador.
+Gestos sobre texto corregidos aún requieren binario nuevo. SMS real resuelto:
+Primary Profile Approved, remitente activo, providerPhone DEV habilitado y
+phoneChange confirmado en mismo UUID/correo, sin contacto público automático.
+Zoom multitáctil nativo302 acreditado y revisado independientemente: ampliar,
+pan, reducir y X al mismo hilo, sin nuevos envíos. Texto200 físico perfil/editor,
+tres tabs públicos/cuerpos/filtros scroll, notificaciones e historial vacío
+acreditados; restauración exacta. Historial con movimientos/detalle200 sigue
+pendiente, al igual que acciones historias del binario corregido.
+
+### Aceptación restante de5080090 — revisión independiente9/10
+
+1. **Build-info y Publishing303 acreditados:** SHA5080090, internal completed por consulta del publisher. Pendiente versión303 instalada desdePlay, sesión/config conservadas.
+2. **Acreditado303 y revisión independiente:** tapsfoto siguiente/anterior; swipetexto arriba detalle/Back y abajo cierre, X/AndroidBack, holdrelease texto/foto, background/foreground y finApoyar. Pausaaccesible intencional; no afirmar duración exacta ni progreso preciso.
+3. **Acreditado302 y revisión independiente:** foto QA existente pinch ampliar/reducir, pan ampliado y X al mismo hilo. No repetir writer.
+4. Texto200% físico: editor/footer, tabs públicos, notificaciones/pagos/historias con acciones alcanzables; restauración exacta fontscale1.15/density420. No sustituir por capturas locales.
+5. **Acreditado302 y revisión independiente:** Inicio Enadopción, períodos/Listo/X, paneles/tips y viewer sin identidad aprobada→Completar→Información básica/Borrador→Back, sin guardar/publicar.
+6. **Acreditado302 y revisión independiente:** snapshot público real, tres tabs/cuerpos, filtros/tarjetas, contactos aprobados visibles sin Authphone, detalle/Back conserva contexto.
+7. **Acreditado302:** writer nativo Guardar/recargar, SQL version20/draft y snapshot intacto; revisión independiente. No repetir submit/review/revoke. Preview/Back descartado ya acreditado.
+8. SMS real: remitente y providerDEV, solicitar/recibir/verificar phoneChange mismoUUID; espera/reenvío y código inválido sin confirmación. Sin OTP/secretos en logs/chat ni confirmación simulada.
+9. Historial no vacío y detalle read-only autorizado: reutilizar302 donde equivalente porque5080090 sólo cambia historias; no crear pagos/cohorte para llenar UI.
+
+Reutilizar302 picker/cancelar/enviar+teclado/persistencia, inbox activo/histórico,
+evento propio/read_at, footer/modo/historial vacío/necesidad expandida/preview
+descartado; muestra de navegación compartida en nuevo build, sin repetir writes.
+Clip recortado idéntico al SVG frozen: imperfección heredada operable, no nuevo
+defecto de paridad ni cambio de asset autorizado por este cierre.
+
+| Grupo | Alcance | Implementación | Verificación/publicación/dispositivo |
+|---|---|---|---|
+| N01 | Chrome/Mis match/avatar/composición | Implementado en árbol (Chrome) | Avatar/nav dirigidos y capturas reales normal115/320200 revisadas; SMS real/instalado pendientes |
+| N02 | Inicio En adopción y Completar→editor | Implementado (Chrome) | Inicio/Back aprobados; antigua regresión ajustada al tab explícito |
+| N03 | Perfil privado y accesos | Implementado/revisado | UI normal115 y accesibilidad200 dirigidas; instalado pendiente |
+| N04 | Editor/contactos/OTP/feedback/revisión | SQL/editor/admin implementados | SQL+editor/admin y AuthDEV snapshot/consent/review/revoke aprobados; SMS real pendiente |
+| N05 | Perfil público/resumen/tabs/grid/filtros | Implementado/revisado | SQL/tests y capturas normal115/200 revisadas; AuthDEV snapshot/revoke/reenable acreditado, instalado pendiente |
+| N06 | Historial individual+Guardián enviado/recibido | Implementado y revisado independientemente | PGlite505/505, PostgreSQL real6/6 rollback, UI13/13 y reviewvisual normal115200; RPCDEV y ocho consultas AuthDEV de historial vacío acreditadas; historial no vacío/dispositivo pendientes |
+| N07 | Notificaciones reales/tonos/thumb/destinos | Implementado, cohorte privada vacía | 18 casos SQL y revisión independiente, AuthDEV37/37 + audit real de review/chat/read/ownership; eventos financieros nuevos no ejecutados |
+| N08 | Foto privada en chat | Implementado (Chrome/integrador) | SQL/concurrencia PG1/1, UI/Storage locales; visual normal115200 revisada, AuthDEV32/32 +audit1objeto/mensaje/notificación; zoom/picker/dispositivo pendientes |
+| N09 | Historias fotos y carrusel Guardián | Implementado y corregido (Apoyar) | Temporal13/13; capturas y revisión independiente normal115/320200 cerradas; gestos instalados pendientes |
+| N10 | Necesidades inicialmente colapsadas | Implementado (Apoyar) | Tests y captura colapsado/expandido revisados; instalado pendiente |
+| N11 | Publicar/inbox casos activos/privacidad | Implementado (Chrome) | Selector SQL/UI y AuthDEV ownership/activos/historia aprobados; aceptación instalada pendiente |
+
+Decisiones: contactos completos como mock en campos públicos dedicados,
+consentimiento expreso y moderación, sin autofill privado ni consentimiento
+heredado. Re-review sólo versión pública; identidad/Connect intactos. SMS real
+Twilio+Supabase DEV habilitado y SMS real verificado en mismo QA; configuración/costo autorizados. Trust Hub Approved y remitente activo. No repetir vinculación ya confirmada.
+Titular autoriza excepción cambio temporal cuenta QA; login/restauración manual,
+sin clear data ni escrituras personales. Tienda/video/Meta/fondo/bonos/cashback
+excluidos; dinero test y firma/identidad com.mycompany.dopmi conservados.
+
+### Evidencia vigente del corte UI y DEV (8/10)
+
+Actualización: CI FULL PR37881037435 del candidato7e1a94c: cuatrojobs y todossteps success (Flutter993, backend632, admin38, PostgreSQL295, Auth backend5, capturas y Android/iOS). Codemagic6ac868c2db0c8ad19691cef6 terminado, Publishing success y build-info7e1a94c/302. Play302 instalado/installerVending confirmado; sesión preservada e historial existente/detalle read-only observados, revisión independiente y loginmanualQA/SMS pendientes. AuthDEV resume29/29 y auditoría exacta root cerrados. Dos fotos Storage nuevas y dos reviews RPC reales preparadas con edición legítima a draft; rechazo previo AccessDenied preservado, objetos0 reconciliados antes del recovery. No aceptación instalada/humana/SMS. La evidencia nueva supersede los pendientes intermedios de abajo; checkpoint enlaza detalle.
+
+
+Backend consolidado632/632; admin39/39+build, config16/16, PostgreSQL295/295,
+SQLdelta18/18, pagoPG6/6 rollback y PGlite505/505. Fuente móvil450files
+`df6219067e655546e0e736214401a609f4624a70c132e2ecb704f3b4a537c282`:
+pagos13/13, capturas1/1 normal115/320200 y analyze0issues71.8s.
+Regresión anterior984pass/2fixturefail corregidos con pruebas dirigidas;
+CI final completo exactSHA aún obligatorio. Revisión directa independiente UI:
+Apoyar perfil, Contratoschat, Chromepagos/notificaciones/reflow200; defectos
+cerrados, límites gestos/zoom/picker/instalado explícitos en checkpoint.
+DEV cinco aditivos aplicados una vez, 22/22 cuerpos/ACL/RLS/postflight correctos,
+cohorte/consumo0 y bucketprivadoJPEG5MiB0objetos, contactosconsent0. Mappings
+exactos en [historial](migration-history-audit.md). Flujos AuthDEV no inferidos.
+
+### Lotes, revisión y evidencia
+
+Contratos perfil/SMS, historial, notificaciones y chat antes de consumidores.
+Perfil N02–05, historial/notificaciones N06–07 y chat/Apoyar N08–10 se agrupan por
+preparación; integración N01/N11, revisión cruzada, gate y entrega instalada final.
+Integrador dueño SQL/DTO/repositorios/router, fixtures, única cola Flutter y ADB.
+Agentes exclusivos Chrome, Apoyar y revisión contratos; no runner/remoto/builds.
+Eficiencia revisada durante plan: reutilizar código/harness/evidencia equivalente,
+una cohorte nueva, revisión independiente de cada cambio sustantivo y una ventana
+final del teléfono. No revisar entero PR6 histórico ni reabrir bccd040.
+
+Matriz obligatoria: criterio/riesgo → implementación → prueba/observación → dueño/
+revisor → SHA/configuración/datos → evidencia/vigencia/estado. Cuatro lentes UI,
+UX, código y seguridad sobre cada superficie; sin impacto exige razón concreta.
+13PNG y gates anteriores sólo donde equivalentes; full37574438050 tuvo captura
+fallida (no todoverde), mobile37720236365 aprobó móvil y CM281/301 es antecedente.
+QA9ced todavía abierta: revisión independiente, AuthDEV embudos y evidencia
+instalada/temporal faltante, integrada al nuevo candidato; no autoaceptación.
+
+Evidencia nueva local (árbol sin commit, no candidato): backend npm630/630,
+pgTAP real295/295 en stack aislado dopmi-dde1, concurrencia chat1/1 ambosórdenes,
+admin37/37 con threads1worker y npm build, configuración16/16. Delta SQL18/18
+incluye finish real de devolución y consumo de eventos suprimidos por cohorte.
+Revisión Contratos cerró ambos defectos N07 en lectura; runner integrador prueba
+las correcciones. No atribuir recepción HTTP/DEV ni dispositivo por estos tests.
+Flutter grupo inicial58pass/9fail: fotos Guardian faltantes copiadas del SHA,
+fixture identidad/router/scroll/semantics corregidos; bloque afectado posterior
+perfil/Home13pass y discovery/carousel pasan. Stories13/13 después fix5200 y
+espera vinculada a posición. Analyze verde/consolidado móvil aún pendientes.
+Evidencia privada .tools/dde1/*-tests.log, hashes warm en warm-sync.json; fuente
+puede cambiar, registrar vigencia al cerrar. Capturas aisladas/diagnóstico actual
+no son aprobación visual. Sin migraciones DEV/builds/Play nuevos todavía.
+
+No pruebas, nuevas migraciones, builds ni QA nueva acreditados al arrancar.
+Antes de remoto: preflight historial/cuerpos SQL, sin replay/repair; inventario QA
+nuevo y limpio por IDs/paths con guardas, preservando evidencia financiera y ambos
+singleton de medición. Logs/capturas privadas fuera de Git.
+Cierre sólo ENTREGA_VERIFICADA_EN_DISPOSITIVO con alcance obligatorio completo,
+cuatro lentes/pruebas aprobadas y versión final de Play recorrida sin bloqueantes.
+Aprobación humana separada y sólo si recibida. Próxima acción: estabilizar contratos,
+implementar grupos independientes y verificar diffs/pruebas dirigidas por lote.
+
+## Cierre canónico8/10/2026 — PUBLICADO_INTERNAL_PENDIENTE_QA_FINAL
+
+Esta ficha supersede estados CERRADO/integrales y pendientes intermedios de
+9ced inferiores. La implementación/cierre técnico MVP está satisfecho; la
+aceptación final permanece pendiente. Titular autorizó el alcance delta y
+aceptó la paridad anterior de otro hilo, **no aprobó humanamente301/Irlanda**.
+Leer [checkpoint](mock-sync-current.md) para arranque y
+[protocolo](mock-sync-workflow.md) para ENTREGA_CONTINUA_EFICIENTE_VERIFICADA,
+sin presupuestos/renovaciones. Este cierre sólo documenta evidencia existente.
+
+### Identidad de entrega y código
+
+Mock objetivo `9ced07094635c076d35589647fff26371d8bc791`, rama
+irlanda/apoyar-detalle-perfil; precedente bccd040 aceptado. Producto final
+`281fc378abd9de8b9118419b53e51813c7e411a1` incluye backend4f0275552647f322f3a2dfb9382e3d79c8929949.
+Último corte implementado/verificado visualmente9ced,8grupos; UX08 tienda excluido.
+HEAD pre-cierre73743f8c5d28ba6ef16eb1758ffcf3b5bc9d2492/remoto iguales; diff281→HEAD
+sólo docs/mock-sync-current,parity-current-review,progress. Este commit documental
+no será otro candidato ni contiene configuración/build nuevos.
+PR6 abierto/borrador/sin merge, baseba9f897f3fa418e952b98e4c604cffe468a8aa95.
+Posterior observado4369d22da2a86c02a0d263b8b2214401430fa826 no inventariado,
+no implementado: no consultado/absorbido en este cierre.
+
+### Matriz de corte y evidencia por grupo
+
+Todos los grupos incluidos se implementaron contra9ced y están en producto281.
+La columna dispositivo conserva la versión realmente recorrida, sin extrapolar.
+
+| Grupo | Última evidencia técnica/visual aplicable | Dispositivo y límites | Aprobación humana |
+|---|---|---|---|
+| UX01 chrome/CSS/Apoyar | Source9ced377×852, captura support-home-empty; capturadores CI9708. Ajustes comunes en281 | Apoyar/favoritos/encabezados en300; Inicio/Perfil parcial301. No recorrido301 de cada efecto CSS | No registrada para delta |
+| UX02 Inicio | Tarjetas92px/hint/ornamento48×32 en d05c057;14tests82786,3capturas62004 y CI9708 | Inicio301 con cuenta en revisión y métricas vacías; datos no vacíos cubiertos sintéticamente | No registrada |
+| UX03 embudos/período | Backend4f02755; radio nativo9708a75,99491 teclado; pintura281,5checks46914; capturas normal/200% | Filtro301, mes/Listo/cierre y estilo inspeccionados. Agregados/aislamiento en PostgreSQL CI, no Auth DEV E2E nuevo | No registrada |
+| UX04 paneles | Cinco estados85397 y capturadores CI9708; UUID/preview en suite exacta281 | Paneles300;301 mostró Mis pendientes, sin enviar mensajes/registrar pagos | No registrada |
+| UX05 tips | Título/cierre1074874, pintura281; capturas46914 normal/200%, scroll y Entendido aprobados |301 abre, cinco consejos y Entendido visibles/cierra; viewport1.15 no requirió scroll. No nueva prueba física200% | No registrada |
+| UX06 Perfil | margen/hero/actividad ba5afc1 y97400 normal/200%, gates | Perfil parcial301/cambio persistido Rescatista→Adoptante; demás accesos recorridos300 | No registrada |
+| UX07 redes/config | ba5afc1/97400 diálogo normal/200%, moderación/cancelación/error/versionado en suite | Cuenta Samsung sigue en revisión; redes de cuenta verificada sólo fixture sintético. Sin escritura/aprobación remota atribuida | No registrada |
+| UX08 Croquetas | Excluido por decisión tienda | No destino/producto | Exclusión decidida por titular |
+| UX09 finalAdoptar | texto/retirada tip4f02755, Source agotado y captura69534, CI9708 | Final/swipe/fotos en300;301 restaurado Adoptar/Rocky Demo, no catálogo agotado otra vez | No registrada |
+
+### Pruebas, backend, configuración y publicación
+
+- Gate full [37574438050](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37574438050),
+  fuente48bac1b: mobile931/admin/web/config/backend/PostgreSQL real/concurrencia/
+  Auth-Storage-Realtime/iOS aprobados; bloque de captura falló por ancla vieja,
+  corregido con capturas/gates móviles posteriores. No presentar runfull entero
+  como todo-verde; reutilizar sólo sus bloques aprobados intactos.
+- [37720236365](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37720236365),
+  fuente9708a7575ebbf19ec8ebe2a4262bbd18f3e44aff, job113125973662:
+  formato/analyze/suite/ambos capturadores/APK success. Backend/iOS skipped aquí,
+  reutilizados de full; no nuevo resultado suyo. Pintura281 posterior comprobada
+  local5checks46914/analyze60233 y pipeline exacto siguiente.
+- [Codemagic6ac70dd3fd5fe9df9e910455/index41](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ac70dd3fd5fe9df9e910455):
+  fuente281fc37, analyze y934tests success; AAB success03:46:34Z8/10 y
+  Publishing success03:47:44Z. AAB2.3.3(301),86,280,975bytes. Log final934
+  All tests passed leído directamente; snapshot API terminal conservado privado.
+  Workflow android-guardian-internal, com.mycompany.dopmi, firma dopmi_upload_2026.
+  Configuración canónica codemagic.yaml sin cambios en esta entrega de cierre;
+  último cambio3a037887b2ea4a3072613a8e62a3c37319445faf. Guardián/measurement test;
+  flags servidor independientes, dinero real no autorizado.
+- Play Console: Internal activo/release148/bundle301 Available to internal testers,
+  consultado separado de compilación. SamsungR5CY51260VK/SM-S938B/Android16:
+  dumpsys confirma2.3.3(301), installercom.android.vending; prueba final8/10.
+  Restaurados Adoptante/Adoptar/Rocky Demo/font1.15 y sesión. Sin pagos/mensajes
+  ni formularios guardados. No nueva aceptación iOS/TestFlight de este candidato.
+- DEVohqxranynackjignryep: local20261007033748_rescuer_funnel_9ced.sql/remoto
+  20261007034858 aplicado una vez. RLS, cliente sin SELECT, RPCanon=false/auth=true,
+  helperexecute=false y cuerpo/ACL comprobados. Cobertura03:48:58.342396Z7/10,
+  sin backfill. [Auditoría de migraciones](migration-history-audit.md) conserva
+  MD5 y pre/postflight; PostgreSQL del gate posterior supersede su pendiente
+  histórico. Esto **no acredita E2E remoto completo con Auth**. No flags/Edge nuevos.
+
+### Revisiones, hallazgos y excepciones
+
+- **Eficiencia:** una revisión delegada sólo lectura8/10 confirmó no repetir
+  suites/capturas/builds intactos; sólo faltaban diálogos301. Resueltos. Sin
+  subagentes/correcciones/auditorías adicionales durante este cierre.
+- **UI:** comparación perceptual Source9ced/Flutter hecha; corregidos pestañas
+  estrechas, tarjetas alargadas, margen de redes, Cancelar y títulos/backdrop/
+  altura de diálogos. Capturas normales/200% versionadas; no igualdad píxel.
+- **UX:** datos/acciones reales, radio nativo/teclado, cierres y acceso a consejos
+  comprobados. QA300 más recorrido focal301 según tabla; no redefinir como
+  aceptación exhaustiva de todos los estados/gestos sobre301.
+- **Código:** analyze/suites exactas281 y contratos/backend aprobados. No evidencia
+  de revisión independiente final de todo el delta; no llamarla auditada.
+- **Seguridad:** RLS/ACL/ownership/aislamiento/negativos cubiertos por SQL y gates;
+  consentimiento/deduplicación probados. No auditoría profunda/ciberseguridad final.
+- Excepciones establecidas: área táctil48px conserva modal período más alto;
+  nota obligatoria de neto/foto actual, HTTPS y moderación preservan negocio aunque
+  Source simule otros textos. Tienda/fondo/bonos/cashback excluidos. Diferencias
+  imperceptibles de renderizador (~3px) no generan trabajo. Son decisiones de
+  accesibilidad/negocio, no una firma humana de aceptación visual301.
+
+### Evidencia accesible, fallos y siguiente acción
+
+Capturas sintéticas disponibles en Git:
+[directorio](https://github.com/albertoquiroga-ctrl/dopmi-app/tree/281fc378abd9de8b9118419b53e51813c7e411a1/docs/design-reviews/parity-integral9ced)
+(13PNG). Runs/CM/PR requieren acceso a cuentas/repositorios. No afirmar vigencia
+actual de artifacts sin consulta; PNG versionados son recuperables sin esos artifacts.
+Capturas Samsung resumed-period/resumed-tips-open, XML, diariosCM y logs .tools
+son **privados locales ignorados**, no disponibles en GitHub ni trasladados.
+No se publican capturas con datos de la cuenta. Si otra máquina necesita evidencia
+instalada, coordinar acceso al teléfono/capturas originales sin inventar disponibilidad.
+
+Estrategias fallidas y causas: capturar RepaintBoundary de ruta omitía modal
+(solución harness externo); tips recibió tap antes de scroll asentado (ensureVisible,
+pumpAndSettle, assertionDialog); anclas viejas136.8/Acciones pendientes fallaron
+por delta46px/Mis pendientes (corregir fixture, no tolerancias); Tab auxiliar
+fallaba también en control nativo anterior (descartar diagnóstico y probar foco
+explícito+flecha); build raíz Windows bloqueado (scratch equivalente sin borrar
+builds); Python relativo/cp1252 dañaba escritura (rutas absolutas/write_bytesUTF8);
+protección física Samsung interrumpía taps (no loop, sensor libre; luego resuelto).
+
+Herramientas fiables: protocolo incluye Flutter/ADB/CI/Codemagic y comandos.
+Helpers .tools/update9ced son privados de esta máquina, no scripts públicos.
+CAPTURE_FILTER es dart-define/prefijo; scratch debe copiar candidato exacto.
+CI/CM anteriores terminales; no jobs propios pendientes ni servidor de referencia
+activo. No relanzar diariosCM; ni fixtures bccd consumidas, SQL replay o cleanup.
+
+Trabajo local ajeno/no publicado preservado: apps/admin/src/api.ts y api.test.ts;
+EOL community/content_actions.dart, profile/help_support_dialog.dart,
+profile/rescuer_settings_verification.dart, guardian_history_test.dart,
+payment_history_screen_test.dart; docs/backlog/design-parity/product-decisions y
+sectores históricos parity-current-review/progress. Untracked .codex-remote-attachments,
+build-locked, deno.lock, legal/operations/payment-ux, pycache/validate_operations,
+tmp-h11-device; no apropiarse ni limpiar. gitstatus es la autoridad en el siguiente chat.
+
+**RETOMAR ESTA ENTREGA**, no planear/implementar un nuevo delta en este cierre.
+Primero presentar301/capturas a titular/Irlanda y registrar aprobación o defectos
+perceptibles. Mantener QA final de código/seguridad/recorrido remoto pendiente,
+con alcance/fixture/acceso acordados; no alterar verificación real para habilitar
+redes. Sólo cerrar integralmente tras evidencia obligatoria/aceptación explícita.
+Si QA produce un defecto, invalidar y repetir sólo evidencia afectada.4369 necesita
+un encargo/inventario nuevo; este chat no lo inicia.
+
+## 8/10/2026 — Delta9ced cerrada; QA instalada301 completada
+
+SamsungR5CY51260VK volvió a conectar y respondió sin protección física.
+com.mycompany.dopmi2.3.3(301), installercom.android.vending comprobados.
+Modo Rescatista temporal: filtro abierto, mes seleccionado conservado y cierre
+con Listo correcto. Captura resumed-period.png examinada: título, selector,
+backdrop y botón corresponden al candidato comparado. Tips abierto: cinco
+consejos completos y Entendido visibles sin recortes a escala original1.15;
+captura resumed-tips-open.png examinada. Entendido cierra y vuelve a Inicio.
+No hizo falta desplazar el modal en este viewport; scroll200% conserva evidencia
+sintética46914 aprobada, sin repetirla. No afirmar nueva prueba física200%.
+Restaurados Adoptante, ruta Adoptar/Rocky Demo y escala1.15 (ADB comprobado).
+Sesión conservada; sin pagos, mensajes ni cambios de publicaciones/verificación.
+Capturas instaladas privadas en .tools/update9ced/device-qa; no datos de cuenta
+en Git. Sin cambios de código, suites ni builds adicionales.
+
+Auditoría de cierre del alcance vigente:
+- UX01 chrome/Apoyar y UX09 finalAdoptar: comparación Source9ced y capturas69534,
+  más CI de capturas37720236365; paridad anterior aceptada por el titular.
+- UX02/03 Inicio/tarjetas/filtro: geometría82786, capturas62004, teclado99491,
+  ajustevisual46914 y filtro instalado301 comprobado ahora.
+- UX04 paneles: cinco estados85397 y CI capturadores aprobado.
+- UX05 tips: capturas46914 normal/200% y apertura/contenido/cierre301 ahora.
+- UX06/07 Perfil/redes: cuatro capturas97400 normal/200%, suite934/934 exacta;
+  cuenta instalada en revisión: redes verificadas se comprobaron en fixture
+  sintético, sin atribuir aprobación ni escritura remota de esa cuenta.
+- UX08 tienda excluida. Excepciones de área táctil48px y notas de negocio
+  conservadas y documentadas; no exigir igualdad píxel ni microajustes.
+- Gate móvil37720236365 aprobado; CM exacto281fc37 analyze934tests/AAB/Publishing
+  aprobado, Play301 disponible e instalado. Backend/iOS intactos reutilizados.
+
+CERRADO delta bccd040→9ced autorizado. Mock4369 posterior fuera de alcance;
+requiere inventario separado. QA profunda/Irlanda/postMVP no se reabre en este
+encargo. Dinero test, permisos y cambios ajenos preservados; PR6 sin merge.
+
+## 7/10/2026 — Criterio de eficiencia confirmado; QA física acotada
+
+Titular exige sólo diferencias perceptibles, sin microajustes ni ingeniería
+innecesaria. Reutilizar evidencia aprobada; repetir únicamente lo invalidado
+por un cambio/falla nueva. Autoriza subagentes de eficiencia si aportan valor.
+Una revisión delegada sólo lectura confirmó: resta abrir/cerrar/desplazar los
+diálogos de301 instalada; no repetir Flutter/CI/CM/backend/iOS/capturas anteriores.
+Un intento instalado volvió a mostrar protección contra toques accidentales.
+Detenidas pulsaciones repetitivas; no nuevo defecto de producto demostrado.
+Cancelado modal de cambio de modo: Perfil Adoptante restaurado, font_scale1.15
+comprobada; sesión intacta, sin activar Rescatista ni pagos/mensajes.
+No cambios de código, suites ni builds en esta continuación. Source9ced
+congelado y push4369 fuera de alcance. Siguiente acción única: teléfono con
+pantalla arriba/sensor descubierto, QA focalizada restante y cierre documental.
+
+## 7/10/2026 — Samsung actualizado301; bloqueo físico durante QA
+
+ADB dumpsys confirmó com.mycompany.dopmi2.3.3(301), installercom.android.vending.
+Actualización desde Play conserva sesión: Adoptar abre Rocky Demo y Perfil
+con identidad existente. No pagos/mensajes/escrituras de contenido.
+Teléfono activa protección contra toques accidentales tras las pulsaciones;
+solicitado colocarlo pantalla arriba/sensor descubierto. QA delta final no
+atribuida mientras persista este bloqueo físico. Escala sigue1.15.
+Rama mock reconsultada exitosamente:4369d22da2a86c02a0d263b8b2214401430fa826.
+Push posterior separado: esta entrega conserva congelado9ced070, sin absorber
+nuevo código ni iniciar inventario posterior silenciosamente.
+
+## 7/10/2026 — Corrección301 publicada; actualización Samsung pendiente
+
+Codemagic6ac70dd3fd5fe9df9e910455 terminó03:47:44Z8/10 con success en AAB y
+Publishing. Source281fc378abd9de8b9118419b53e51813c7e411a1,934tests y analyze
+aprobados. AAB2.3.3(301),86,280,975bytes. Build2/2 consumido, sin relanzamiento.
+Play Console consultado directamente: release148, canal Internal activo,
+Available to internal testers y enlace de bundle para301. Producción intacta.
+Samsung mantiene300; fichaPlay consultada dos veces después de publicación
+sólo ofrece Abrir. No atribuir QA instalada301 ni reinstalar/borrar datos.
+Siguiente: propagación Play, actualizar conservando sesión y QA sólo delta.
+
+## 7/10/2026 — Gate exacto del candidato281fc37 aprobado en CM
+
+Build6ac70dd3fd5fe9df9e910455: Static analysis success03:31:39Z y Unit and
+widget tests success03:39:38Z8/10. Log consultado directamente:934 All tests
+passed. AAB firmado en curso desde03:39:38Z; no publicación atribuida todavía.
+Samsung conectado, escala original1.15, ficha Play preparada, aún300.
+Reconsulta de rama mock al cierre falló por conexión GitHub; conservar9ced
+congelado y no afirmar una consulta viva nueva exitosa. Última exitosa sin cambio.
+
+## 7/10/2026 — Corrección Codemagic2/2 enviada
+
+Candidato281fc378abd9de8b9118419b53e51813c7e411a1 publicado en rama
+codex/design-foundation. Build6ac70dd3fd5fe9df9e910455 enviado03:28:22Z8/10
+(7/10 México), workflow android-guardian-internal. API comprobó queued y
+commit exacto. https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6ac70dd3fd5fe9df9e910455
+Es el build corregido2/2; no relanzar ni modificar candidato durante ejecución.
+Pipeline ejecuta analyze y flutter test sobre SHA exacto antes de AAB/Publishing.
+Samsung siguePlay2.3.3(300). Publicación y QA delta aún pendientes.
+
+## 7/10/2026 — Delta visual cerrada; gate móvil aprobado
+
+Gate móvil37720236365/job113125973662 en9708a7575ebbf19ec8ebe2a4262bbd18f3e44aff
+comprobado completed/success: formato, analyze, suite, ambas capturas y APK.
+Backend/iOS reutilizados del gate full37574438050 por código intacto.
+Último ajuste sólo de pintura/altura: backdrop rgba(21,17,13,.48), elevación0
+máximo88% del viewport en filtro y tips, según CSS9ced congelado.
+Cinco checks focalizados46914 aprobados (teclado, dos capturas normales y dos
+200%); tips permite desplazar hasta Entendido y cerrar. Imágenes examinadas.
+Analyze60233 sin incidencias en16.4s. La CI9708 precede este ajuste visual;
+se reutilizan sus suites intactas con estas comprobaciones nuevas, y se exige
+compilación/publicación del SHA final en Codemagic. No atribuirle CI del nuevoSHA.
+CM permanece1/2; siguiente candidato corregido2/2, Play y QA sólo delta Samsung.
+La paridad anterior permanece aceptada por el titular; sin ampliar inventario.
+
+## 7/10/2026 — Gate91aa8cf aprobado; control nativo de período preservado
+
+CI37718107631/job113119217981 terminó success: formato, analyze, suite móvil,
+dos capturadores y APK aprobados. Artifact11525041878 de capturas no expirado.
+CM todavía1/2, ninguna corrección publicada. Antes del build final, preservado
+RadioGroup nativo bajo el selector cuadrado: semántica, flechas y foco visibles
+sin cambiar geometría, período ni callbacks. InkWell sigue con área48px.
+La primera prueba auxiliar de Tab falló también en control anterior y no prueba
+regresión: descartada como evidencia. Prueba corregida con foco explícito en el
+radio seleccionado99491 aprobada1/1 en2s: flechaArriba cambia mes→semana y
+consulta el agregado real. Guardada como rescuer_home_period_keyboard_test.dart.
+
+Capturas200%67577 y7testsdelta aprobados9/9 en11s; imágenes examinadas.
+Primer intento2902 de tips capturó fondo por tap antes del scroll asentado;
+corregido pumpAndSettle y assertion Dialog. Repetición71979 aprobada2/2 en3s.
+No atribuir fondo como diálogo validado. Evidencia normal previa y texto grande
+actual conservadas. Gate91 corresponde al producto previo; nuevo control
+nativo requiere actualizar sólo gate móvil, reutilizando backend/iOS intactos.
+
+## 7/10/2026 — Gate móvil consolidado del delta en curso
+
+Rama/remoto/PR6 verificados: codex/design-foundation91aa8cf34e82ce119ec47115e9426b0142b8dbf7;
+PR abierto/borrador, baseba9f897. Mock remoto9ced07094635c076d35589647fff26371d8bc791
+sin cambios. Gate obligatorio scope mobile despachado HTTP204 y comprobado
+in_progress: https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37718107631
+Job113119217981 aprobó setup/dependencias/formato; análisis/tests en curso.
+No atribuir resultado final ni APK. Reutilizar gates full backend/iOS anteriores
+por ausencia de cambios allí. CM sigue1/2: no lanzar corrección antes del gate.
+SamsungR5CY51260VK conectado; paquetecom.mycompany.dopmi2.3.3(300) comprobado.
+No instalada corrección. Servidor propio1254 detenido, viewport restaurado;
+ninguna cola Flutter local activa. Siguiente: resultadoCI, correcciónCM2/2,
+verificar publicaciónPlay por separado y actualización/QA sólo delta instalada.
+
+## 7/10/2026 — Delta9ced: herramienta y paneles focalizados
+
+Captura83459 falló al buscar Acciones pendientes, título retirado por la delta.
+Corregido ancla a Mis pendientes, sin relajar assertions ni tolerancias.
+Repetición85397 aprobada1/1 en9s con5estados exactos: resúmenes adopción/apoyo,
+pagos, acciones y actividad Perfil. Capturas inspeccionadas; panel gris,
+jerarquía y selección corresponden al mock, con datos reales/variables y nota
+obligatoria de neto/foto actual. Perfil sin movimiento conserva estado útil.
+Las capturas no verifican escrituras remotas nuevas ni aceptan dinero real.
+
+Correcciones producto1074874 yPerfilba5afc1; source9ced congelado. Conservar
+excepciones accesibles (área táctil48) y negocio (nota métrica, moderación).
+Comparación visual esencial del delta cerrada, gate móvil y build corregido2/2
+pendientes. No aceptación atribuida a Irlanda. Nota documental: normalizado
+sólo el bloque propio tras error de codificación Windows; histórico preservado.
+
+## 7/10/2026 — Delta9ced: período, tips y final de Adoptar
+
+Source9ced Chrome377×852 comparado con capturas Flutter aisladas. Período y tips
+usaban título16 y X en flujo, frente a22/700 y cierre superpuesto del mock.
+Corregidos ambos; tips además recupera gaps12/32/32 de la rejilla CSS. Captura
+final de tips coincide perceptualmente (~624 frente628px, renderizador).
+Período recupera ancho346px, título centrado, selector cuadrado16px y Listo
+visual36px/radio14. Selección única y callbacks reales preservados. Conservar
+áreas táctiles48px: el modal queda más alto que Source, excepción accesible
+establecida en design-foundation; no confundir esa altura con igualdad píxel.
+Suite78459 aprobada23/23 en15s: Home14, delta9ced7 y2capturas auxiliares.
+Analyzer37996 aprobado3archivos/sin incidencias7.5s. Capturador inicial tomó
+sólo la ruta; corregido RepaintBoundary externo exclusivamente en copiaTemp.
+
+Final de Adoptar: Source ejecutado hasta agotar catálogo, incluyendo tarjetas
+intercaladas; captura69534 aprobada1/1 con2estados exactos. Texto nuevo, retiro
+del tip y acciones coinciden; diferencia de posición~3px imperceptible.
+Encabezado Apoyar Ayudar se siente bien conserva tipografía/posición deSource;
+sin reauditar Guardian ni otras pantallas aceptadas. Falta revisión puntual de
+paneles/actividad y gate móvil consolidado antes del build corregido2/2.
+
+## 7/10/2026 — Delta9ced: Perfil y redes comparados
+
+Source9ced ejecutado Chrome377×852: Perfil conserva hero, estado, Sobre ti,
+redes y actividad sin las métricas retiradas. Comparación de captura Flutter
+normal detectó separación12px menor antes de Redes sociales; añadido el margen
+superior12px de settings-heading. Diálogo Instagram coincide en caja, título,
+campo y botones. Cancelar difería: Source color#7841f2/peso600/borde#c4b5fd;
+ajustados sólo estos estilos. Datos, moderación y escritura intactos.
+Capturador aislado con selección exacta de4 estados: Perfil normal/200% y
+Instagram válido/200%. Ejecución97400 aprobada1/1 en8s; imágenes inspeccionadas,
+texto ampliado legible y sin excepciones. Primer comando desde raíz no ejecutó
+Flutter por falta de pubspec; repetido correctamente en copiaTemp, sin tocar build.
+Evidencia sintética en design-reviews/parity-integral9ced. Play300 no contiene
+las correcciones. Pendientes período/tips/actividad, encabezados Apoyar y final
+Adoptar, gate móvil consolidado y candidato corregido. No reabrir paridad previa.
+
+## 7/10/2026 — Delta9ced: geometría de las tarjetas de Inicio
+
+Contraste Source9ced ejecutado Chrome377×852 /rescuer: tarjetas medidas92px,
+padding10/10/8, ornamento48×32 y copy a51.05px del borde superior. CSS confirma
+rejilla192px/2filas/gap8 y descripción en una línea con ellipsis. Flutter dejaba
+la descripción envolver, alargando las tarjetas normales. Corregida geometría:
+ornamento48×32, espacio9 antes del título y hint de una línea para escala normal;
+texto ampliado conserva crecimiento/lectura y semántica completa.
+No alterar datos netos, moderación ni eliminar la nota de alcance de métricas.
+
+Suite afectada82786 exit0,14/14 en6s, incluyendo92px/copy51px y320/200%.
+Recaptura final62004 exit0,3/3 en3s normal/115%/320200%; normal inspeccionada.
+Sombras reales activadas; capturador auxiliar restauró debugDisableShadows
+antes del invariant final tras un fallo exclusivo de herramienta63414.
+Imágenes actualizadas en design-reviews/parity-integral9ced. No publicación
+nueva: Play300 anterior a estas correcciones. Analyzer focal87633 exit0, sin incidencias en50.4s.
+Viewport restaurado y servidor propio10972 detenido; teléfono intacto.
+Siguiente: comparación visual de Perfil/redes, modal período/tips y encabezados/
+final del mismo delta; no reabrir familias anteriores.
+
+
+## 7/10/2026 — Corte de QA acotado por el titular: sólo delta9ced
+
+El titular aclara: «Solo tienes que asegurarte de que la delta se vea igual,
+lo anterior ya fue asegurado por otro hilo de conversacion contigo».
+Esta decisión supersede la auditoría integral de25 familias iniciada arriba.
+No reabrir paridad anterior ni exigir nuevos tests/fixtures de AUTH, PET,
+MATCH/SAVED/CHAT, Guardian u otras familias intactas. Referencia congelada:
+bccd040→9ced07094635c076d35589647fff26371d8bc791, ocho grupos UX01–07/09;
+UX08 excluido. La igualdad del delta es visual/interacciones afectadas, con
+negocio/moderación reales preservados. Capturas/QA previas de lo anterior se
+aceptan como base por instrucción directa del titular.
+
+Conservar corrección2a1c2a2 de pestañas de Inicio a320/200%, con13tests/analyze
+y recaptura aprobados. Falta comparar los estados visuales del delta con
+Source9ced (Inicio/métricas/modal/tips/actividad, Perfil/redes, encabezados y
+final de Adoptar), luego sólo gates afectados y candidato corregido consolidado.
+No fabricar verificación del titular ni pedir QA anterior como puerta.
+
+La suite de notificaciones/impacto que ya estaba ejecutada41601 dio35aprobadas
+y1fallo de imagen ausente en copiaTemp. Copiada la imagen estática requerida;
+fallo aislado8596 aprobado1/1. No código producto cambiado; estos resultados
+son evidencia incidental y no abren otro lote. Samsung volvió a Adoptar en
+misma sesión sin enviar mensajes ni modificar favoritos. Sin cola Flutter
+activa. Siguiente exacto: comparación visual focalizada del delta congelado.
+
+
+## Paridad integral — objetivo autorizado 7/10/2026
+
+El titular solicita completar pantallas, gestos, animaciones y todas las etapas
+de comprobación. Este objetivo amplía la QA posterior de la entrega MVP cerrada;
+no se considera logrado con publicación ni recorridos parciales. Base app
+bfe16a8e97ff121e5c2f4248158f770693c64a01, rama codex/design-foundation;
+referencia remota comprobada e inmovilizada en
+9ced07094635c076d35589647fff26371d8bc791. No absorber pushes posteriores.
+Cambios ajenos conservados. Sin nuevo presupuesto inferido del tramo MVP cerrado.
+
+Criterios de cierre: las 25 familias de design-parity (NAV, AUTH, DISC, FILTER,
+PET, MATCH, SAVED, CHAT, PROFILE, SETTINGS, SUPPORT, CASE, STORY, PUBLIC,
+IMPACT, RH, RC, PUBLISH, VERIFY, EVIDENCE, RP, PAYMENT, GUARD, REPORT, LEGAL)
+requieren evidencia vigente de composición/estados, interacción, movimiento y
+operación real aplicable. Reutilizar evidencia intacta documentada; inspeccionar
+su alcance antes de atribuir igualdad. Comparar contra referencia congelada en
+normal, Samsung115% y320/200%, incluyendo teclado, Back, modal, scroll,
+arrastres, entradas y movimiento reducido cuando aplique. Las diferencias de
+negocio aprobadas (no simulaciones/tienda/dinero live) prevalecen sobre el mock.
+
+Orden: auditar evidencia por familia en este tablero; resolver diferencias
+comprobadas por grupos; pruebas dirigidas y recaptura afectada; gates agrupados
+del candidato; publicación consolidada si hay cambios; QA instalada y cierre
+por requisito. Una cola Flutter. No reejecutar fixtures bccd consumidos ni
+suprimir guardas. Aceptación de Irlanda no se atribuye a comprobación del agente.
+Flujos con estado/datos no disponibles siguen pendientes mientras se prepara
+QA con fixtures nuevos autorizados; no convertir la cuenta del titular en fixture.
+
+Primer punto: el supuesto recorte de Recibiendo apoyo corresponde a una fila
+horizontalmente desplazable también en CSS9ced (rh-pending-tabs overflow-x:auto).
+Verificar gesto y acceso completo a200% antes de clasificarlo como defecto.
+
+
+### Diferencia RH estrecho/200% — corrección comprobada
+
+La prueba nueva falló antes de corregir: etiqueta izquierda−9.106 frente al
+viewport20 en320/200%. El Samsung de mayor ancho permite verla completa;
+no extrapolar ese resultado a320. Se acota cada pestaña al ancho disponible
+para permitir salto de línea cuando el texto ampliado no cabe, manteniendo
+scroll horizontal y dimensiones naturales a escala normal. Sin cambios de
+negocio/repositorio/RPC. Prueba nueva sesión97495 exit0,1/1, tras la corrección.
+Suite completa rescuer_home_screen90403 exit0,13/13 aprobadas. Analyzer3617 exit0, sin incidencias en123.8s. Capturas afectadas siguientes. La versión Play300 conserva el código anterior.
+No aceptación instalada de esta corrección ni cierre global de paridad.
+
+### Auditoría inicial y gesto de pestañas — 7/10/2026
+
+PR6 abierto/borrador confirmado, head bfe16a8/base ba9f897; remoto9ced sin
+cambios. Colección758 declara419 estados/47rutas sobre a3c969 y limita su
+alcance; movimiento741 cubre55 comprobaciones de ocho mecánicas y un frame
+Source de onboarding. Fichas889/bccd y candidato9ced deben enlazar esos
+contrastes para cada familia; ninguna cifra acredita por sí sola la paridad
+integral. AUTH761 ya advertía comparación pendiente de título ampliado.
+
+Samsung300 a200%: arrastre dentro de la fila de programas reveló por completo
+Recibiendo apoyo. CSS9ced rh-pending-tabs también exige overflow-x:auto;
+la observación previa de recorte se reclasifica como contenido desplazable,
+sin defecto demostrado. Imagen privada integral-tabs-large-drag inspeccionada.
+Restaurados escala1.15, Adoptante y ruta inicial. Nueva prueba de gesto a320/200%
+añadida; ejecución local inicial bloqueada por build/unit_test_assets del
+checkout. No borrar: segunda ejecución aislada en Temp con394 archivos
+lib/test/assets byteidénticos, sesión24052 en compilación; resultado pendiente.
+No cambios productivos, publicación ni fixtures remotos en este tramo.
+
+Siguiente: resolver resultado de la misma sesión24052; luego validar geometría
+y movimiento actual de AUTH/FILTER/PET contra Source9ced, y completar matriz
+por requisito/estado en este tablero. El objetivo integral permanece activo.
+
+## 7/10/2026 — QA integral: recaptura RH y movimiento AUTH/DISC/FILTER
+
+Fuente productiva2a1c2a2, documental5a9f667; remoto app y Source9ced comprobados
+sin cambio. Captura final y cinco suites dirigidas en sesión99637: exit0,
+55/55 en31s. Incluye tres capturas, onboarding_motion, route_motion,
+discovery_motion, discovery_filters y discovery_filter_press. Es evidencia
+local con repositorios sintéticos, no escritura remota ni aceptación nativa.
+
+Capturas inspeccionadas de Inicio Rescatista normal377×852,115% y320×640/200%:
+[normal](design-reviews/parity-integral9ced/home-normal.png),
+[115%](design-reviews/parity-integral9ced/home-samsung.png),
+[320/200%](design-reviews/parity-integral9ced/home-narrow-large.png).
+Etiqueta completa tras arrastre a200%, envuelta en dos líneas; tamaños normales
+conservan una línea. Capturas finales cargaron wordmark/MaterialIcons. Primer
+capturador auxiliar quedó esperando toImage fuera de runAsync: detenido y
+corregido sólo en Temp; no fallo del producto ni fixture antiguo reconsumido.
+
+Mock ejecutado desde checkout congelado9ced en servidor propio5174, no desde
+el servidor previo5173 de otro checkout. Chrome377×852: Adoptar→introducción,
+Continuar→paso2 y Atrás→paso1 comprobados. Estilo computado onb-gate-body:
+450ms cubic-bezier(.22,1,.36,1); CSS9ced confirma opacity0→1/translateY10→0.
+La definición no cambia desde a3c969 para este bloque. Flutter usa450ms/misma
+curva y10px; pruebas actuales verifican frames intermedios y reduced motion.
+No atribuir nuevo cronometraje físico a esta lectura de estilo.
+
+AUTH recuperación: mock muestra ESTADO SIMULADO, sin frame aprobado y envío
+simulado. Se preserva recuperación real; diferencia de negocio documentada,
+no copiar simulación ni exigir igualdad literal de esa pantalla provisional.
+No se ingresaron credenciales ni se enviaron formularios. Viewport restaurado
+y servidor propio detenido; teléfono intacto en esta continuación.
+
+Avance por requisitos: RH recaptura de la corrección aprobada; AUTH introducción
+movimiento/rutas comprobados; DISC swipe y FILTER selección/cancelación/error
+cubiertos por las suites dirigidas. No cierran familias completas: faltan
+contrastes actuales de otros estados, galerías PET/publicación y flujos de
+perfil verificado, backend nuevo consentido, gates agrupados y QA del candidato
+corregido instalado. Siguiente: galería PET/contacto cancelado y formularios
+PUBLISH en estados de borrador, con contraparteSource y límites privados.
+
+## 7/10/2026 — QA integral PET/PUBLISH: galería y contacto cancelado
+
+Fuente productiva2a1c2a2, documental a369282. Sesión85988 exit0,42/42 en42s:
+case_gallery_lifecycle, photo_preview, case_publication, publication_frame,
+publication_choice_press, publication_age y publication_personality. Sesión
+83821 exit0,18/18 en13s: adoption_detail_layout. Repositorios sintéticos locales;
+no acreditar envío/aprobación remoto ni picker del teléfono por estos tests.
+
+Cobertura inspeccionada: galería mantiene página al refrescar y reinicia ante
+otra entidad/fotos; swipe/puntos/semántica se sincronizan; sólo paths aprobados,
+una foto sin controles; preview sin acciones externas; barra fija/área segura
+y scroll200%. Publicación cubre respuesta real del repositorio antes del éxito,
+rechazo, Back conserva valores, cancelar picker, seis fotos, tres rasgos nuevos
+sin borrar históricos, edad/convivencia independientes y cuidado persistido.
+
+Samsung instalado300: Contactar abre Conectar con la mascota actual. Todavía no
+regresa a la misma tarjeta. Foto abre detalle; Quiero saber más abre el mismo
+diálogo; AndroidBack vuelve al detalle y luego al mismo mazo. Sin confirmar
+contacto ni enviar mensaje; favorito existente y sesión preservados. Capturas
+privadas pet-contact-dialog y XMLpet-* en .tools/update9ced/device-qa.
+La publicación observada tiene una foto: no prueba carrusel múltiple nativo.
+
+Source9ced AdoptStartDialog conserva título, dos acciones y cierre por fondo;
+Flutter mantiene noAnimation y aviso adicional del saludo transaccional.
+«La persona rescatista» evita inferir género desde nombre. Son diferencias de
+negocio aprobadas, no defecto visual que deba eliminarse. Sin defecto nuevo
+demostrado en este tramo. PET/PUBLISH no cerrados integralmente: falta contraste
+visual vigente de estados múltiples y ejecución nativa de escritura con fixture
+nuevo propio. Cuenta del titular en revisión y borradores fuera de fixtures.
+
+Consulta remota GitHub falló por conexión443; no indica cambio de ref ni pérdida
+del commit. Registrar lectura pendiente sin repetir gates por conectividad.
+Siguiente: revisar evidencias PUBLIC/RP/sociales y preparar los estados faltantes
+con fixtures nuevos separados; conservar pendiente publicación de la corrección
+2a1c2a2 y gates consolidados al terminar diferencias demostradas.
+
+## 7/10/2026 — QA integral PUBLIC/RP: perfil y redes moderadas
+
+Fuente productiva2a1c2a2; base documental8d99610. HEAD remoto app coincidente
+y referencia9ced070 sin cambios, conectividad restaurada. Sesión30611 exit0,
+35/35 en27s en ocho suites (rescuer_profile_9ced, account_social,
+public_profile_layout, rescuer_profile_refresh, rescuer_profile_edit_navigation,
+rescuer_profile_access, public_profile_repository, public_profile_photo_draft).
+Account_social cubre OAuth de acceso, no edición de redes del perfil; distinguir
+su alcance. Suite específica rescuer_settings_details14301 exit0,12/12 en8s.
+
+Cobertura de redes inspeccionada: URLhost inválido impide guardar; error de
+versión conserva diálogo y no muestra éxito; reintento y guardado moderado
+versionado; doble toque bloqueado mientras escribe; cerrar/fondo/Back sin
+escribir; logout/cambio de sesión retira edición. Guardar Instagram conserva
+campos y produce draft/version4, no publicación automática. Perfil9ced mueve
+redes a Perfil aprobado y conserva Connect en Configuración. Foto pública
+permanece local hasta guardar y reintento reutiliza upload. Repositorios de
+pruebas sintéticos; no atribuir revisión remota ni OAuth instalado a esta suite.
+
+Samsung300: mascota→responsable abrió perfil público. Actividad, En adopción
+y Casos mostraron sus respectivos vacíos; Back volvió al detalle y luego a la
+misma tarjeta. Sin guardar rescatista, reportar, compartir ni enviar mensaje.
+Evidencia XMLpublic-* y PNGpublic-native privada. Perfil observado es demo no
+verificado: no acredita portfolio aprobado/no vacío ni redes verificadas. RPC
+Flutter solicita primero perfil moderado y fallback básico; métricas verificadas
+revocadas invalidan resultado, cubierto por public_profile_repository.
+No modificar verificación del titular para fabricar un estado de QA.
+
+Resultado:47 pruebas locales aprobadas y navegación nativa pública comprobada;
+ningún defecto nuevo demostrado. PUBLIC/RP siguen pendientes de contraste
+visual vigente de todos sus estados y flujo remoto con fixtures nuevos propios.
+No cambios productivos ni nuevo build. Siguiente grupo: MATCH/SAVED/CHAT,
+notificaciones y actividad/impacto, conservando privacidad y sin enviar mensajes
+a usuarios; completar inventario de estados pendientes antes del gate consolidado.
+
+## Plan aprobado: 9ced070 / MVP_CONTINUO — 6/10/2026
+
+El titular autorizó entregar todo el delta esencial hasta obtener un candidato
+Android publicado en Google Play Internal Testing, pendiente de QA.
+Base de la app: `0484f8075c893497c10f6291553071eab7b4e5bf`, rama
+`codex/design-foundation`, PR #6. Base del mockup:
+`bccd040d3a4b1c391bc6ab9eeccc479198868a7f`; objetivo congelado:
+`9ced07094635c076d35589647fff26371d8bc791`. El delta contiene un commit y seis
+archivos. Los pushes posteriores corresponden a otra entrega. El corte bccd
+permanece cerrado, 22/22; no se reabre.
+
+La ejecución comenzó el 7/10 a las 03:33:46Z. Presupuesto global: 90 minutos;
+cierre desde las 04:53:46Z y parada a las 05:03:46Z.
+
+### Inventario único de la entrega
+
+Origen común: `src/App.tsx` y `src/styles.css` del mockup. Los destinos
+productivos están en `apps/mobile/lib`. La columna de estado conserva el
+inventario al aprobar el plan; el avance actual se registra al final.
+
+| ID | Origen → destino | Función, diseño e interacción esenciales; mínimo terminado | Dependencia / estado al aprobar |
+| --- | --- | --- | --- |
+| UX01 | Chrome y CSS → marcos compartidos, Apoyar, favoritos, perfiles, casos e inbox | Marca, notificaciones, títulos y espacios reconocibles, incluidos efectos indirectos de CSS; controles accesibles sin recortes | Tokens y componentes compartidos; pendiente |
+| UX02 | RescuerHome → rescue/rescuer_home_screen.dart | Saludo y estado reales; Completar mi perfil → Perfil; Apoyo inicial; vacío con Publicar; históricos visibles aunque no haya activos | Identidad y casos; pendiente |
+| UX03 | Embudos y filtro → Inicio, repositorio y RPC | Cuadrícula 2×2: vistas, favoritos, mensajes y adopciones; donantes, activos, completados y recaudado. Períodos reales; modal con X, fondo, Listo y Back; mes inicial, colores y jerarquía | SQL aditivo; pendiente |
+| UX04 | Paneles de actividad y mensajes → Inicio | Cuatro selecciones locales; mensajes recientes abren el UUID real; Ver todo → Perfil; preview sin marcar respuesta ni pagos; datos propios | RPC de threads existente; pendiente |
+| UX05 | PhotoTipsDialog → Inicio | Cinco consejos completos y desplazables; X, fondo, Entendido y Back; sin navegación ni escrituras | Modal existente; pendiente |
+| UX06 | Perfil → profile_overview, hero y accesos | Chrome, hero y estado; retirar métricas anteriores; edición, cambio persistido a Adoptante, Sobre Nosotros, Ayuda y logout; banco y configuración accesibles | UX01 y servicios; pendiente |
+| UX07 | Sociales y configuración → sección reutilizable | Redes en Perfil verificado; HTTPS, propiedad, versión y borrador moderado; cancelar o fallar no muestra éxito; conservar Connect, cuenta y privacidad | UX06 y repositorio; pendiente |
+| UX08 | CroquetasCard y SVG → ningún destino | Excluir tienda, descuento del 5% y enlace sin destino por decisión vigente | Excluido del producto |
+| UX09 | Final de AdoptionHome → adoption/discovery_empty.dart | Texto nuevo y retirada del tip sustituido; conservar acciones, swipe y fotos | Sin backend; pendiente |
+
+### Contratos y decisiones cerradas
+
+- RPC autenticada `dopmi_rescuer_funnel(period)`, con `yesterday`, `week` y
+  `month`; valor inicial `month`. Solo el propietario, resuelto mediante
+  `private.dopmi_require_actor()`, accede a ocho agregados y sus límites
+  temporales, `as_of` y comienzo de la cobertura diaria. Modelo Flutter tipado.
+- Zona `America/Mexico_City`: ayer es el día anterior; semana desde el lunes;
+  mes desde el día 1 hasta ahora.
+- Vistas: personas únicas por mascota dentro de la ventana y agregados propios.
+  Tabla diaria privada con unicidad `(post_id, actor_id, day)`; consentimiento,
+  tarjeta frontal efectivamente mostrada y exclusión de autor y precarga.
+  Ampliar el registro existente sin cambiar su firma ni medición histórica;
+  deduplicar en cliente por jornada. El inicio diario queda separado del
+  singleton histórico, sin backfill ni revisitas inventadas.
+- Favoritos: vigentes y creados en la ventana; indicar esa condición, sin
+  inventar historial de favoritos retirados.
+- Mensajes: adoptantes distintos por publicación que escribieron en la ventana.
+  Leer no equivale a responder.
+- Adopciones: estado adoptado y último cierre `adopted` en la ventana; excluir
+  cierres `other` y publicaciones reactivadas.
+- Donantes: personas distintas entre aportaciones individuales y Guardián,
+  confirmadas y con neto positivo.
+- Recaudado: neto asignado vigente de operaciones en la ventana, descontando
+  reversiones y devoluciones; no equivale a saldo ni depósito bancario.
+  Activos y completados son una foto del estado actual; completado requiere
+  una meta moderada positiva cubierta. Excluir borradores.
+- Curvas SVG decorativas, sin series ni tendencias simuladas. Mantener
+  `dashboardV2`, contratos legacy, negocio, finanzas y dinero solo test.
+  Los errores permiten reintentar; no se muestran cifras ficticias.
+
+### Lotes y agentes
+
+L0 guarda plan, protocolo y checkpoint antes del código. L1 prepara SQL,
+modelo, repositorios y componentes compartidos. L2 implementa los ocho grupos
+incluidos, en tres frentes exclusivos. L3 consolida gate, DEV y Codemagic.
+
+Subagentes: Inicio (UX02–05, Home y pruebas); Perfil (UX06–07, hero, redes,
+configuración y pruebas); Adoptante/Apoyar (ajustes exclusivos de UX01/09 y
+pruebas). El integrador controla router, DTO, repositorios, SQL, componentes
+compartidos, registro de vistas, documentación, commits, pushes y remotos.
+Asignar propietarios antes de editar. Los agentes no ejecutan Flutter,
+publican ni delegan recursivamente. Una sola cola Flutter.
+
+Los lotes no son autorizaciones ni paradas. Máximo dos pasadas de corrección
+por lote, dos intentos por causa, tres agentes simultáneos y seis invocaciones
+nuevas por tramo. Hasta dos builds Codemagic en total. Los contadores persisten.
+
+### Gate, DEV, publicación y QA
+
+Pruebas dirigidas: períodos, deduplicación, consentimiento y exclusión del autor;
+propiedad, acceso anónimo y cuenta suspendida; adopted, other y reactivación;
+donantes entre orígenes y neto tras reversión; filtros, vacíos, UUID, Back y
+diálogos; redes con cancelación, error, versión y snapshot; modo y logout.
+
+Gate consolidado: `milestone-1.yml`, scope `full`; configuración, web, admin,
+backend, PostgreSQL real, concurrencia, Flutter analyze, tests, capturas, APK,
+iOS e integración Auth/Storage/Realtime. No repetir suites por lote; repetir
+solo la evidencia invalidada por cambios.
+
+DEV `ohqxranynackjignryep`: una migración aditiva, con preflight del historial
+y cuerpos SQL, aplicación única y postflight de estructura, definiciones y ACL.
+No replay, repair, rename ni db push; tampoco workers financieros, flags,
+Edge Functions, dinero live, cambios destructivos ni alteraciones de datos
+existentes. SQL o CI no acreditan un flujo remoto completo con usuario Auth.
+
+Commits y pushes propios autorizados, sin force ni merge; cambios locales
+ajenos conservados. `android-guardian-internal` publica automáticamente en
+internal: la autorización cubre compilación y publicación. Conservar paquete
+`com.mycompany.dopmi`, firma, Guardián test y configuración de medición.
+Comprobar SHA, AAB, compilación, Publishing, track y versionCode por separado.
+
+QA posterior: auditoría del delta y ciberseguridad, comparación exhaustiva,
+regresión adicional, emulador, Play instalado y aceptación por ADB, además de
+optimizaciones. No se ejecutan ahora.
+
+### Parada y definición de entrega
+
+Comandos largos con PID propio y deadline real; esperas de hasta 60 segundos
+y terminación del árbol propio al vencer. Yield no equivale a timeout.
+No crear Goal, heartbeat ni loop nuevos. El objetivo activo del titular se
+pausa bajo su autorización al agotar el presupuesto o llegar a una parada
+segura; interrumpir agentes. Un build en cola conserva el mismo buildId y no
+se relanza. Registrar la consulta exacta de pipelines activos y terminar el
+seguimiento si no queda trabajo independiente. No renovar los 90 minutos.
+
+Entrega completa: ocho grupos, gate aprobado, DEV verificado y publicación
+internal identificada; aceptación de QA pendiente. Si falta una puerta,
+registrar avance parcial y no declarar la entrega completada. Estados finales:
+`IMPLEMENTACION_LISTA_PENDIENTE_BUILD`, `CANDIDATO_MVP_PENDIENTE_QA`,
+`PUBLICADO_INTERNAL_PENDIENTE_QA`, `BLOQUEADO` o `PRESUPUESTO_AGOTADO`, según
+la evidencia.
+
+### Avance actual de 9ced070
+
+L0 y L1 implementados; L2 integrado. Flutter analyze inicial aprobado: cero
+incidencias en 170.9 segundos. Primera pasada dirigida: 81/88 pruebas.
+Siete fallos: cinco fixtures de identidad, un reintento fuera del área visible
+y una pestaña fuera del área visible con texto al 200%. Fixtures y capturador
+corregidos; el test Home centra la pestaña y exige que reciba el toque.
+Segunda pasada aprobada: 37/37 en cinco archivos afectados (incluye nueva
+prueba de fecha México). Los cambios posteriores
+se validan en la evidencia correspondiente; no se acredita aún el gate
+consolidado, la publicación ni la aceptación. Configuración: 16/16 aprobadas.
+
+Backend: 6/6 comprobaciones focalizadas aprobadas en PGlite local. El primer
+intento falló por una comparación Date del fixture; se corrigió y el segundo
+aprobó. No repetir esa causa. Esto no sustituye pgTAP real en CI. Añadido contrato Dart/Auth/PostgREST al
+suite local de adopción del pipeline; aún pendiente de ejecución en CI.
+
+Preflight DEV verificado el 7/10 a las 03:48Z: último historial anterior
+`20261006142458`; cuerpo y permisos del registro existente coinciden con SQL
+canónico, sin tablas diarias ni RPC nuevos antes de aplicar.
+La migración local `20261007033748` se desplegó una vez como
+`20261007034858` en remoto. Postflight a las 03:49Z: tabla diaria en `private`
+con RLS; RPC pública con ejecución `anon=false` y `authenticated=true`;
+helper privado sin ejecución directa (`false`). El comienzo de la
+cobertura diaria es `2026-10-07T03:48:58Z`, sin modificar el inicio histórico.
+
+Codemagic: 0/2 builds. Tres agentes reutilizados, sin nuevas invocaciones ni
+recursión. Presupuesto consumido: aproximadamente 22 minutos. Siguiente:
+terminar las comprobaciones Flutter pendientes, consolidar el gate completo
+en CI y después solicitar el candidato único a Codemagic/Play.
+
+
+Producto consolidado y push: `4f0275552647f322f3a2dfb9382e3d79c8929949`.
+Gate full [37569196187](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37569196187)
+en curso; duplicado push 37569192608 cancelado por concurrencia del pipeline.
+No gates desactivados, cambios ajenos publicados ni CM iniciado.
+
+### QA posterior preparada (sin ejecutar en esta entrega MVP)
+
+- Instalar la versión publicada desde Play y verificar package/versionCode con
+  ADB en el Samsung real; luego recorrer Inicio, Perfil, redes, Apoyar y Adoptar.
+- Comparar el SHA congelado: grid, modal de período, cinco consejos, paneles y
+  navegación, escala normal/115%/320px al 200%, Back y cierre por fondo.
+- Comprobar períodos con actividad real DEV consentida nueva: no autor/precarga,
+  repetición diaria, cambio de jornada México, favoritos retirados y chat leído
+  frente a respuesta. No reutilizar cuentas ni fixtures bccd consumidos.
+- Revisar redes con cancelación, URL inválida, conflicto de versión y retiro
+  público; corroborar que sólo el borrador propio cambia y requiere moderación.
+- Auditoría posterior del delta: permisos del nuevo RPC/tablas, aislamiento de
+  agregados y revisión de retención/consentimiento diario. Dinero sólo test.
+- Optimización posterior: medir consultas por período y refrescos del Inicio
+  antes de proponer índices/caché; pulido de espaciado/ornamentos después de
+  aceptación funcional, sin alterar los gestos esenciales.
+
+
+Gate parcial comprobado en 4f02755: web/admin/config y backend 612/612;
+PostgreSQL pgTAP 294/294 (37 nuevos), concurrencia Guardian/contacto y
+Auth/Storage/Realtime 4/4 aprobados. Nuevo contrato tipado por PostgREST
+con vistas/favoritos/contactos reales e aislamiento aprobado en loopback.
+Flutter completo/capturas/Android e iOS aún en curso; no atribuir QA instalada.
+
+
+CI 37569196187: Flutter falló cinco casos heredados. Segunda pasada agrupada
+L2 (2/2): test logout debe entrar a Perfil, test evidencia debe usar acceso
+real vigente y quick Mensajes debe abrir panel local antes del inbox. No
+se eliminan controles ni aserciones. Producto/SQL/config iguales a 4f02755;
+cambian exclusivamente rutas y fixtures de pruebas. Comprobación pendiente.
+
+### Cierre del tramo — BLOQUEADO, 7/10 04:12Z
+
+Dos pasadas agrupadas de L2 consumidas. Segunda comprobación local de tres
+archivos: 29/32; tres fallos restantes. Logout busca DonorLogoutRow antes de
+desplazar ListView y construir su hijo lazy (dos casos). Evidencia al 200%
+no centra el control antes del toque (un caso). No producto roto demostrado,
+pero el gate obligatorio no se considera aprobado y no se inicia Codemagic.
+
+Propuesta concreta no aplicada, privada: .tools/update9ced/proposed-extra-pass.patch.
+Mueve el assert de logout después del scroll y centra selector/quick Apoyar
+con ensureVisible alignment .5 + hitTestable, preservando todos los asserts
+de identidad, URL, no guardado y cero transiciones automáticas. Requiere
+autorizar una pasada adicional: no efectuar una tercera por iniciativa propia.
+
+Producto en GitHub 4f02755; tres tests de corrección locales sin commit.
+DEV desplegado 20261007034858; backend/PG/integración/iOS aprobados en CI
+37569196187. Android/capturas quedaron sin ejecutar tras fallo Flutter.
+CM 0/2, sin build/versionCode nuevos ni publicación. QA instalada pendiente.
+Consumo ~38/90 min; presupuesto no agotado, contadores no se reinician.
+Objetivo pausado al cierre autorizado; agentes terminados y sin procesos propios.
+
+## Continuación autorizada — 7/10 05:01Z
+
+«Adelante» autoriza tercera pasada sin renovar 90 min globales. Propuesta
+aplicada directamente: fila lazy de logout tras scroll; controles de evidencia
+centrados + hitTestable. git apply falló por formato y no aplicó cambios;
+la ejecución anterior sin patch no acredita la corrección. Formato aprobado.
+Corrección limitada a tres archivos test, sin producto/SQL/config nuevos.
+Consolidar commit/push para gate remoto. Cierre al límite 05:03:46Z: verificación
+y CM/Play pendientes; PRESUPUESTO_AGOTADO. Requiere presupuesto renovado para
+seguir CI y publicación; conservar contadores CM0/2 y tercera pasada consumida.
+
+Corrección en GitHub `48bac1b3e8b3843a3b36114485469b0702f0aed0`;
+[CI 37574438050](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/37574438050)
+pending al corte 05:03Z. Consultar ese run al renovar presupuesto; no relanzar.
+
+## 7/10/2026 — reanudación autorizada del candidato 9ced070
+
+El titular indica «Continúa» después del cierre por presupuesto: nuevo tramo
+90 minutos desde 13:34:10Z, cierre 14:54:10Z y parada 15:04:10Z. Conserva
+contadores: CM 0/2, tercera pasada L2 autorizada ya aplicada; no reiniciar causas.
+CI 37574438050 en 48bac1b concluyó: analyze y 931 tests móviles aprobados,
+web/backend/permisos/concurrencia/integración e iOS aprobados. Capturas de acceso
+aprobadas; captura de Perfil/Apoyar falló por dos coordenadas anteriores al
+marco de título 46px del corte congelado. Diagnóstico específico: top 136.8→148,
+card 252.55→263.75; tolerancias y altura conservadas. Primera corrección de esta
+causa nueva, sólo capture_profile_test.dart. Captura dirigida support-home-empty normal/200% aprobada 1/1; gate móvil pendiente.
+Ref UX remota continúa 9ced070; app local/remoto 5e86880, PR6 abierto/borrador.
+No cambios productivos/SQL/config ni datos; dinero test. Gate y CM/Play pendientes.
+Cambios ajenos conservados; QA instalada/visual permanece posterior.
+
+
+### Gate consolidado aprobado — 13:52Z
+
+CI móvil37629942682 en3bd67b6 completed/success13:52:09Z: formato,
+analyze,931 tests,ambas suites de capturas,APK y artifacts aprobados.
+Artifacts11486735135 design y11486476793 APK comprobados, no expirados.
+Backend/admin/SQL/config/integración e iOS full37574438050/48bac1b se
+reutilizan tras diff vacío de producto/SQL/admin/config desde ese SHA.
+Corrección de captura1/2 concluida; CM0/2. Próxima operación autorizada:
+primer android-guardian-internal sobre HEAD documental publicado, producto
+idéntico a3bd67b6. Registrar buildId/SHA y comprobar AAB/Publishing/Play
+por separado. Play Console previo: internal activo296 disponible para testers.
+
+### Codemagic candidato1/2 enviado — 13:53Z
+
+Build6ac64ed33849eef3b33de2d7, android-guardian-internal, rama continuación,
+fuente1a904d57804be10c6e0c185f8929166c2ec109aa. HEAD/remoto verificados
+antes de POST; diario privado anti-duplicado. APIcommit.hash coincidente;
+queued al corte13:54Z. Fuente sólo agrega checkpoint al3bd67b6 aprobado.
+AAB/Publishing/Play/versionCode pendientes; no atribuir instalación/aceptación.
+
+### Parada segura por espera externa — 14:10Z
+
+Estado IMPLEMENTACION_LISTA_PENDIENTE_BUILD (firmado). Código y gate móvil
+completo aprobados; APK debug comprobado en CI, AAB firmado/publicación nuevos
+no verificados. Codemagic6ac64ed33849eef3b33de2d7 sigue queued, sin started_at,
+sobre1a904d57804be10c6e0c185f8929166c2ec109aa. CM1/2; no otro envío.
+Diagnóstico acotado: API y UI coinciden, cuota disponible229/500 consumidos,
+consulta de activos devuelve únicamente este candidato. Estado público del
+proveedor operativo, sin causa de cola informada. Play interno sigue296.
+Sin tareas independientes pendientes; pausa explícita autorizada por el plan,
+sin loop/heartbeat ni polling indefinido. Consumo nuevo tramo~36/90min;
+no PRESUPUESTO_AGOTADO. Límite del tramo sigue15:04:10Z, no renovar solo.
+Siguiente exacto: consultar el mismo buildId, confirmar source/AAB/versionCode,
+Publishing y disponibilidad de esa versión en Play Console internal. Si continúa
+en cola, preservar ID/contador; no repetir CI aprobado ni iniciar otro build.
+QA instalada/visual/auditoría/rendimiento preparada, aún no ejecutada. No hay
+procesos Flutter propios ni agentes activos. Configuración codemagic.yaml
+intacta, android-guardian-internal/com.mycompany.dopmi/firma existente/test.
+Fuente funcional4f02755; tests48bac1b; captura3bd67b6; build1a904d5.
+Evidencia propia en GitHub; logs/diario privados .tools/update9ced no publicados.
+
+## 7/10/2026 — Android300 instalado: QA focalizada en Samsung
+
+Codemagic6ac64ed33849eef3b33de2d7, fuente1a904d57804be10c6e0c185f8929166c2ec109aa,
+terminó success14:43:50Z: análisis/tests/build y Publishing aprobados. AAB
+2.3.3(300),86,283,474bytes. Play Console comprobado directamente: Internal
+Testing activo, release2.3.3, código300 disponible para testers. CM1/2;
+sin segundo build. Estado PUBLICADO_INTERNAL_PENDIENTE_QA.
+
+Por solicitud del titular se probó su Samsung SM-S938B/Android16 con300
+instalado por Play: Inicio, selección semanal persistida, paneles vacíos,
+Ver todo→Perfil, cinco tips, Perfil, cambio de modo, Ayuda/contacto cancelado,
+Sobre Nosotros, cuenta/privacidad, Apoyar/detalle y Adoptar con fotos/swipe,
+final nuevo, favoritos y reinicio del descubrimiento. Reanudación tras bloqueo
+de pantalla conservó sesión y ruta. Escala115%/200%: contenido esencial
+legible; hallazgo menor pendiente, selector «Recibiendo apoyo» recorta su
+texto visible a200%, con semántica completa y control operativo. Sin cierres
+observados ni patrones fatal/RenderFlex overflow en buffer reciente del proceso.
+
+Restaurados115%, Adoptante y pantalla inicial. Borradores conservados; sin
+mensajes enviados, checkout iniciado, logout ni cambios de formularios. Evidencia
+XML/PNG privada en .tools/update9ced/device-qa, excluida del repositorio.
+Cuenta en revisión: no se verificaron estado aprobado/sociales, métricas no
+vacías, escritura real ni transacciones. Auditoría exhaustiva, rendimiento y
+aceptación de Irlanda siguen pendientes; no atribuirles esta QA focalizada.
+No cambios productivos ni nuevos gates; se reutiliza CI37629942682/3bd67b6.
+
+## 7/10/2026 — QA Samsung300: filtros de Adoptar
+
+Continuación solicitada por el titular. En la sesión actual de Android300 se
+abrió Filtros, se aplicó Hembra y el catálogo mostró una publicación hembra.
+Reapertura visual confirmó Hembra seleccionada. Se eligió Macho sin aplicar:
+Back descartó el cambio y conservó el resultado anterior. Limpiar filtros
+cerró el modal y recuperó el catálogo inicial. Perros→Gatos cargó una publicación
+de gato y su foto; se restauró Perros y la pantalla inicial. Sin contacto,
+favoritos nuevos, mensajes, formularios guardados ni pagos. Evidencia privada
+adoption-filters-* y adoption-cats-* en .tools/update9ced/device-qa.
+
+Resultado: recorrido básico de sexo, aplicar/cancelar/limpiar y especie aprobado.
+No acredita combinaciones de tamaño/personalidad, persistencia tras reinicio
+ni todos los estados vacíos/error. Sin código productivo nuevo ni gates repetidos.
+
+## Actualización bccd040 — 5 de octubre de 2026 (vigente)
+
+Corte fijo `bccd040d3a4b1c391bc6ab9eeccc479198868a7f`; base app
+`ed4b788bd4117eb8949bb633483e94d8d4b36010`, Play2.3.3(295).
+Esta sección supersede los pendientes históricos de entregas anteriores.
+**0 grupos abiertos / 22 cerrados en desarrollo**. Auditoría del delta comprobó y cerró dos defectos puntuales: suscripciones de Mis casos y estado visible de transferencias (2/2dirigidos y recaptura afectada). Samsung2.3.3(296)/115% comprobado; entrega instalada aprobada. Limpieza exacta aprobada; entrega completa22/22. Fotos/cache/swipe295 se conservan.
+
+| Lote | Grupos | Estado / evidencia |
+| --- | ---: | --- |
+| Inicio Rescatista | 8 | Cerrado en desarrollo: primera pasada agrupada3defectos,11/11dirigidos y recaptura normal/115/200 aprobada; emulador aprobado; Samsung296 aprobado |
+| Mis casos | 8 | Cerrado en desarrollo:16 estados y recaptura selectiva de modal/fuente/aviso aprobados;13 propios y16 gestos/encabezado/desglose/reflow; emulador aprobado; Samsung296 aprobado |
+| Mensajes | 4 | Cerrado en desarrollo:7 capturas, dirigidos normales/200%, Auth/REST privado y dos UUID comprobados; emulador aprobado; Samsung296 aprobado |
+| Compartidos | 2 | Cerrados en desarrollo: orden estable/copy y desglose sin aportación comprobados; emulador aprobado; Play296/Samsung aprobados |
+
+Backend local598/598 y10 nuevas dirigidas aprobadas: conteos completos25, vistas
+consentidas, inbox/privacidad, cierres/reactivación/archivo, pagos/reversiones/ack
+exacto y progreso con campos/Storage real. DEV aplicado,12 cuerpos y permisos
+comprobados; detalles en migration-history-audit. Auth/REST7/7grupos y vistas concurrentes comprobados. Auditoría del delta y21 comprobaciones nativas de emulador completadas.
+Pendientes: gate móvil del SHA final, Codemagic/Play/Samsung y limpieza exacta.
+Máximo dos pasadas agrupadas de corrección por lote; defectos persistentes tendrán
+reproducción y prueba específica. Cada lote se cerrará con operaciones reales.
+
+
+6/10, comprobación dirigida: Inicio9/9, Mis casos13/13 y ambas pruebas inbox200% aprobadas después de revelar cada control antes del gesto. Visualizaciones, reflujo y pruebas existentes afectadas aprobadas en la ronda dirigida (68 aprobadas antes de corregir las dos de inbox). Auth/REST DEV: cuatro actores sintéticos,21borradores paginados20+1, dos personas únicas bajo concurrencia/reintentos/consentimiento, dos conversaciones privadas y lectura independiente de respuesta comprobados. Cierre/reactivación todavía pendientes por interrupción del runner después del checkpoint de chats; conservar fixture y diagnosticar sólo ese tramo. Capturas bccd afectadas en generación; no acredita cierre visual ni instalado.
+
+6/10, Auth/REST DEV completado:7 grupos de checks aprobados,21drafts/20+1,2personas únicas concurrentes/reintentadas,2UUID privados, lectura frente a respuesta, cierre y respuesta explícita, mismoID/6fotos/campos hasta nueva revisión, archivo/bloqueo de caso en revisión, cursor vacío y reconocimiento idempotente/rechazo de cursor ajeno. Dinero no creado. El timeout de40001 se corrigió en dos RPC nuevas aPT409 (remoto20261006044234), con diez SQL revalidados y postflight ACL. La conexión Node posteriormente falló en lecturas; puente HTTP de sistema comprobado y parsing JSON en Node permitió continuar sólo los3bloques pendientes, sin repetir4aprobados. Prueba privada rest-acceptance-proof.json; no acredita nativo ni gate final.
+
+
+6/10, puerta vigente:22/22 desarrollo y21 checks nativos aprobados, cero defectos de producto conocidos. Gate474/f362: backend606/606, PostgreSQL, concurrencia, integración e iOS aprobados; cuatro fallos de fixtures móviles corregidos con29/29 dirigidos. Gate475/057:122 checks de fotos/swipe aprobados, captura heredada de Mis casos buscaba el programa anterior. Se corrige navegación del capturador y scope mobile ejecutará toda la suite; seis capturas dirigidas pasan. Sólo repetir móvil; código productivo, SQL y configuración intactos. Samsung aún no conectado; no acredita entrega instalada.
+
+
+6/10, gate final aprobado: f3808f1 /run37485195797 pasó913 tests, analyze/format, capturas y APK. Backend606/606, PostgreSQL/concurrencia, integración e iOS aprobados en474/f362 se reutilizan con equivalencia exacta del producto. Codemagic6ac512ac762af530b028e23f solicitado una vez con android-guardian-internal y SHA f380 confirmado; estado queued, sin compilación ni Play acreditados. Puertas restantes: Codemagic/Play, Samsung y cleanup exacto;22 grupos y21 checks nativos completos.
+
+
+6/10, entrega instalada: Codemagic6ac512ac762af530b028e23f finished; AAB firmado2.3.3(296), publicación internal/completed y consulta independiente de track296 aprobados. Samsung SM-S938B/Android16 confirma296 y font1.15; Inicio/carrusel, casos/filtros/Archivo, inbox/selección/Sin leer/Historial/refresh/regreso, teclado y FAB/cancelación aprobados. Galería6fotos/swipe/punto6 decodificados; swipe corto conservaRocky y largo avanzaToby, sin Like/contacto. Modo Adoptante restaurado y borradores/mensajes propios sin escrituras. Cierre/reactivación real y estados financieros conservan la prueba controlada del emulador, no se atribuyen a casos ausentes en la cuenta Samsung.
+
+Puerta restante única: cleanup exacto.22adopciones retiradas,7/8objetos eliminados por Storage API. La evidencia del único caso QA aprobado/cerrado está protegida correctamente para su autor; falta eliminación administrativa del path exacto antes de la transacción de4Auth/22posts/5rescues y postflight cero. No modificar estados, permisos ni reglas para saltar esta protección.22/22 grupos; cero defectos perceptibles conocidos; ninguna nueva build necesaria.
+
+
+Cierre6/10: **22/22 grupos, cero defectos perceptibles conocidos y cero puertas pendientes del corte bccd040**. Storage administrativo retiró el último archivo QA y los marcadores vacíos creados por dashboard. Transacción exacta4Auth/22posts/5rescues completada; postflight19conteos QA cero, measurement_start1/preservedtrue/changed0. No se alteraron permisos, estados de casos para facilitar borrado ni dinero. PublicaciónAndroidf380/296, gate y Samsung permanecen aprobados. Este cierre supersede todas las notas históricas de pendientes de esta sección; actualizaciones posteriores del mockup siguen fuera.
+
+## Actualización autorizada 889c096 — 4 de octubre de 2026
+
+El titular autorizó implementar el plan por lotes, funciones completas y saludo
+al confirmar. Corte fijo `irlanda/apoyar-detalle-perfil@889c096ade9479b348530db7ba169f023b472ab9`,
+desde app `8785f6674c676ac6eb55fa716a75e0cb21d01388` / Play290.
+Los commits posteriores se registrarán sin ampliar esta entrega.
+**0 grupos abiertos / 19 cerrados y comprobados en Samsung291**; aceptación instalada completa. El conteo inicial era19/0; las25 familias/26 defectos
+del corte anterior permanecen cerrados y se reutiliza su evidencia vigente.
+Esta entrada supersede el aplazamiento REF-01–18 registrado abajo.
+
+| Frente / dueño | IDs exclusivos | Estado vigente |
+| --- | --- | --- |
+| Adoptar / subagente | REF-01–05,19 | Cerrado en desarrollo: contraste Source/Flutter y46/46 +21/21 aprobados; nativo emulador y Samsung291 aprobados |
+| Rescatista / subagente | REF-09,12,13 | Cerrado en desarrollo: contraste Source/Flutter,50/50 +9/9, DEV42/42; nativo emulador y Samsung291 aprobados |
+| Publicación / subagente | REF-11,14–18 | Cerrado en desarrollo: Source/Flutter normal/200,113/113 +9/9 y recaptura aprobados; nativo emulador y Samsung291 aprobados |
+| Compartidos / integrador | REF-06–08,10 y contratos comunes | Cerrado en desarrollo: visual/50/50, backend595/595, admin35/35/build; DEV42checks; nativo y gate final aprobados |
+
+5/10: inspección sobre PNG actuales completada en los tres frentes; nueve conjuntos concretos de ajustes perceptibles encontrados (dos Adoptar, uno inbox, seis Publicación). Adoptar corregido/21 dirigidos aprobados e inbox corregido; recaptura en curso. Publicación corrige los seis juntos. Backend integral local595/595, configuración16/16 y analyze limpio. Todos los frentes cerrados en desarrollo tras recapturas/pruebas:19→0; no confundir estos nueve defectos con19 grupos funcionales. La puerta nativa/instalada/final sigue pendiente.
+
+REF-19 agrega CTA «Quiero saber más», diálogo con nombre real y saludo
+transaccional al confirmar; no al renderizar/reabrir ni en historial existente.
+Una cola Flutter del integrador, sin builds por avance. Capturador existente
+con CAPTURE_FILTER, sólo estados afectados; cierre perceptual100%/115%/200%.
+Próximos cierres exigen UI/gestos/operaciones reales, no sólo código escrito.
+Pendientes nativos: galería multifoto, contacto con dos participantes, Back/teclado,
+FAB/inbox y publicación con conservación de borrador. Entrega: SHA final/gate,
+Codemagic android-guardian-internal, Play y Samsung comprobados por separado.
+No cambios de dinero, moderación o privilegios por modo; recibos privados.
+
+5/10, puerta de entrega: **19→0 grupos abiertos; 0 defectos perceptibles conocidos tras la corrección nativa del cambio de paso**. Candidato7401468/gate37274003442 aprobó los cuatro jobs (incluye PostgreSQL concurrente real); emulador con dos actores controlados verificó galería de seis, filtros, compartir/cancelar, contacto0→1 y reintentos1, inbox/teclado/respuesta, adopción submitted privada. Caso con gasto pagado privado/recibo/evidencia y recuperación tras interrupción comprobados; envío muestra caso en revisión y conserva gasto como borrador. El defecto nuevo de offset entre pasos fue corregido en candidato51cc7c150abb20adc0fc70ecaafe5ebe202817c5:10/10 pruebas dirigidas y repetición nativa de Continuar/Back aprobadas, APK corregido instalado sólo en emulador. Pendientes: gate integral37278538360 sobre51cc7c1, Codemagic/Play, versión instalada y recorridos Samsung, limpieza de fixtures sintéticas. No acredita aún cierre instalado.
+
+Gate final actualizado:37278538360 /51cc7c150abb20adc0fc70ecaafe5ebe202817c5 completado con cuatro jobsSUCCESS y846 pruebas móviles. La pasada nativa corregida aprobó Back/Continuar, conservación del borrador tras interrupción, revisión real y privacidad de caso/gasto. Codemagic6ac3570f3a34cf7c3070ed0f es la única solicitud de entrega; AAB firmado2.3.3(291), archivo de identificación51cc7c1/Guardian test:true y Playinternal/completed/291 comprobados por separado. Actualización/apertura Samsung solicitada al titular; todavía instalado290. Pendientes restantes: ocho recorridos esenciales Samsung con versión291 verificada y limpieza exacta de fixtures. No reabrir lotes ni repetir gates aprobados sin cambio o defecto demostrado.
+
+Cierre5/10: **19/19, cero defectos perceptibles conocidos y cero comprobaciones pendientes del corte889**. Samsung291/115% confirmado y ocho recorridos modificados aprobados; evidencia específica en ficha compartida. Cleanup exacto15 objetos/dos Auth QA completado después del preflight, postflight cero; cuenta y perfil Samsung conservados. Dinero test. El candidato publicado sigue51cc7c1; este registro sólo documenta entrega. Esta entrada supersede todos los pendientes anteriores del corte889.
+
+## Corte anterior entregado — evidencia reutilizable
+
+Actualizado: 4 de octubre de 2026. Base `53716dc`; referencia
+`irlanda/apoyar-detalle-perfil@a3c969cd9103fd46dc5cd886999912526ce75efb`.
+
+## Criterio acordado
+
+La app debe verse y sentirse igual al usarla. Se corrigen diferencias perceptibles,
+recortes, animaciones y gestos; el titular acepta diferencias imperceptibles de
+renderizado. Hover queda excluido. Se conservan operaciones reales, privacidad,
+accesibilidad y dinero exclusivamente en test.
+
+## Estado de la pasada de cierre
+
+Este contador acredita el cierre revisado de familias, no pantallas implementadas.
+Las 25 familias ya tienen implementación. La pasada encontró **24 defectos
+confirmados**: 24 corregidos y revisados en capturas actuales; cero defectos
+visuales conocidos restantes en esta pasada.
+El candidato PM-D no se confirmó como defecto y no se suma. **25/25 familias**
+tienen revisión de desarrollo cerrada. Ninguna cifra sustituye
+la aceptación Android ni la regresión integral del candidato final.
+
+| Lote | Familias | Estado | Ficha |
+| --- | --- | --- | --- |
+| Acceso/navegación | NAV, AUTH, LEGAL | 3/3 revisadas; nativo pendiente | [Acceso](design-reviews/parity-closeout/access-navigation.md) |
+| Adoptar/conversar | DISC, FILTER, PET, MATCH, SAVED, CHAT | 6/6 revisadas; nativo pendiente | [Adoptar](design-reviews/parity-closeout/adopt-converse.md) |
+| Donante/público | PROFILE, SETTINGS, SUPPORT, CASE, PUBLIC, IMPACT, REPORT | 7/7 revisadas; nativo pendiente | [Público](design-reviews/parity-closeout/donor-public.md) |
+| Rescatista | RH, RC, PUBLISH, VERIFY, EVIDENCE, RP, STORY | 7/7 revisadas; nativo pendiente | [Rescatista](design-reviews/parity-closeout/rescuer.md) |
+| Pagos en test | PAYMENT, GUARD | 2/2 revisadas; SDK/nativo pendiente | [Pagos](design-reviews/parity-closeout/payments.md) |
+
+## Cola única restante
+
+| ID | Tipo | Diferencia / comprobación | Cierre requerido |
+| --- | --- | --- | --- |
+| ANDROID-01 | Nativo | Candidato instalado anterior al código actual | APK nuevo con SHA y verificación de las ocho mecánicas |
+| ANDROID-02 | Nativo | Teclado/archivos/fotos/share/permisos/interrupción | Recorridos por cinco lotes desde candidato actualizado |
+| RELEASE-01 | Gate | 386/386+67/67 dirigidas; falta gate integral del lote | Regresión integral CI sobre SHA candidato final |
+| RELEASE-02 | Entrega | Play286 anterior al candidato | Codemagic final y publicación Play comprobados separadamente |
+
+AUTH01/04/05, AC01–05, DP01–05, VERIFY01/02, RC01/02,
+EVIDENCE01/02, RP01, PUBLISH01 y PM-A/B/C son los24 defectos corregidos.
+AUTH02 tiene27 capturas actuales; AUTH03 documenta la pista adicional Apoyar
+sin atribuir una tercera pista Source inexistente. No se considera defecto una
+prueba o captura pendiente.
+
+Colección actual:421PNG más27 de acceso, manifiestos en las fichas; capturador
+profile1/1 en3m26s y acceso1/1 en12s. Gate dirigido71673:386/386 en1m41s.
+DP04 cerró con recaptura de3estados y67/67 dirigidas en22s; analyzer limpio75s.
+Se confirmó la corrección de ambas pruebas sociales que fallaron en Codemagic.
+El detalle completo permanece en cada ficha, sin expedientes
+por cada margen. La recuperación restaurada se prueba sin cargar perfil privado.
+
+## Evidencia reutilizable
+
+- [Colección758](design-reviews/parity-loop758/README.md):419estados/47URLs;
+  no419aceptaciones. Capturas válidas de componentes sin cambios se conservan.
+- [Acceso761](design-reviews/parity-loop761/README.md):18capturas/6rutas.
+- [Gate756](design-reviews/parity-loop756/README.md):803/803, anterior760/761.
+- [Movimiento741](design-reviews/parity-loop741/README.md):55comprobaciones de
+  ocho mecánicas; [757](design-reviews/parity-loop757/README.md) fortalece indicadores.
+- Histórico del tablero: versión Git `53716dc:docs/parity-current-review.md`.
+  Sus pendientes se interpretan con entradas posteriores de progress; no son cola actual.
+
+## Regla de trabajo
+
+Una inspección completa por lote, una lista de diferencias, una corrección
+agrupada y pruebas dirigidas. Una cola Flutter central. Un estado verificado
+se reabre por cambios en su componente/dependencia/referencia o defecto
+comprobado. Datos, archivos privados y snapshots aprobados conservan sus reglas.
+Codemagic se ejecuta al finalizar el candidato, no por avance.
+
+## Adición de evidencia instalada — 9/10, perfil público302
+
+Snapshot público real sin marcador del borrador ni teléfono Auth; tabs Resumen/Adopción/Apoyo, filtro Macho vacío esperado según SQL owner, limpiar y tarjeta activa→Back acreditados. A200% real: header/tabs activadas/toolbar adopción; configuración restaurada exactamente. No cubre todo cuerpo/filtros200%. Evidencia y límites en última entrada de progress.md; revisión independiente pendiente. Codemagic5080090 sigue queued, no nueva instalación atribuida.
+
+## Adición física200% — 9/10
+
+Acreditados en302: cuerpo Adopción público/grid/footer; modal Filtros abrir/scroll/Back con Aplicar/Limpiar alcanzables; notificaciones tres filas y Back sin leer eventos nuevos; historial QA vacío y Back. Restauración exacta fuente1.15/density420 en los tres bloques. Revisión independiente público17PNG sin defecto material; notificaciones/historial en revisión. Permanecen cuerpos Resumen/Apoyo, historial no vacío/detalle200 y acciones historias corregidas en nuevo candidato. Ver ledger para alcance preciso; no generalizar aceptación total.
+
+## Adición 9/10 — cuerpos públicos200 y zoom nativo302
+
+Resumen/Apoyo200 recorridos hasta footer; revisión independiente sin defecto material visible y restauración exacta. Zoom chat físico resuelto: foto QA existente, pinch dos punteros amplía/reduce, pan desplaza, X devuelve al mismo hilo con dos mensajes, sin nuevo envío. Evidencia privada/journal y método en ledger; revisión independiente zoom pendiente. No repetir picker/envío consumidos. Historias corregidas aún esperan candidato508 desde Play.
+
+
+## Encargo Meta separado — 9/10/2026
+
+Corte implementado a941815; último corte en dispositivo 84687bb / Play308.
+No hay nueva referencia de mockup ni paridad visual aprobada para Meta.
+Revisión UI/UX/código/seguridad, evidencia y pendientes se mantienen una sola vez
+en [meta-social-verification.md](meta-social-verification.md). La QA SMS pendiente
+del corte congelado dde1bb9 no queda satisfecha por estas pruebas.

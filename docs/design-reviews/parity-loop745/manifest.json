@@ -1,0 +1,42 @@
+[
+  {
+    "name": "profile-settings-back-held.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "a9bd24a037d4eda6ec11bf716fa1fd5ea72870baaa1544fbe4eb1716f6e5feed"
+  },
+  {
+    "name": "profile-settings-footer-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "959d3c36e8a5e000b117cde2aee4ad891e698baeaf1284aaf444b2d8880aab48"
+  },
+  {
+    "name": "profile-settings-footer.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "ade47b463a72b2cc33b1748b74692108c36a733200b27095346f840570b35dd0"
+  },
+  {
+    "name": "profile-settings-large.png",
+    "size": [
+      320,
+      640
+    ],
+    "sha256": "bfd50ba9c014d7654fb71d1571fe4639883f0fd125c321827457e560daf14526"
+  },
+  {
+    "name": "profile-settings.png",
+    "size": [
+      377,
+      852
+    ],
+    "sha256": "a9bd24a037d4eda6ec11bf716fa1fd5ea72870baaa1544fbe4eb1716f6e5feed"
+  }
+]

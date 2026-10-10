@@ -1,0 +1,22 @@
+{
+  "reference": "a3c969cd9103fd46dc5cd886999912526ce75efb",
+  "route": "/rescuer/profile",
+  "viewport": [
+    377,
+    852
+  ],
+  "metricRect": {
+    "x": 16,
+    "y": 239,
+    "width": 108.328125,
+    "height": 84
+  },
+  "heldTransform": "matrix(0.98, 0, 0, 0.98, 0, 0)",
+  "transitionTiming": {
+    "duration": 120,
+    "easing": "ease",
+    "delay": 0
+  },
+  "input": "actual browser mouse down; physical Android not verified",
+  "note": "mouse move also triggers shadow hover; no hover implementation or acceptance added"
+}

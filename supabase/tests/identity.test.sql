@@ -1,7 +1,11 @@
 begin;
 set local search_path = public, extensions;
 create extension if not exists pgtap with schema extensions;
-select plan(11);
+select plan(14);
+
+select ok(not has_function_privilege('anon','public.dopmi_account_deletion_server(text,jsonb)','execute'),'anonymous cannot process account deletion');
+select ok(not has_function_privilege('authenticated','public.dopmi_account_deletion_server(text,jsonb)','execute'),'signed-in clients cannot choose an account to delete');
+select ok(has_function_privilege('service_role','public.dopmi_account_deletion_server(text,jsonb)','execute'),'service role can process verified account deletion');
 
 insert into auth.users(id, email, raw_user_meta_data, email_confirmed_at)
 values ('10000000-0000-4000-8000-000000000001', 'identity-a@example.test', '{"display_name":"Ana","role":"admin"}', now()),

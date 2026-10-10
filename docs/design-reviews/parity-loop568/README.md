@@ -1,0 +1,5 @@
+# Loop568 — Separar hover de referencia móvil
+
+Source a3c969cd9103fd46dc5cd886999912526ce75efb local/remoto revisado, Edge377x852 sesión568/Vite3617. Click real Adoptar desde bienvenida inicial ubica cursor en radioinitial y~745; al colapsar selección CTA aparece bajo cursor en esa misma posición. Computed background rgb0/0/0 ymatches(:hover)=true. Mousemove0/0 sin cambiar estado:selected:backgroundrgb21/17/13 yhoverfalse. Screenshotnohover almacenado e inspeccionado frente captura nativa566. Pixel80/745: Source567hover000,Source568nohover15110d,app15110d. color-check.json.
+
+Por tanto la supuesta diferencia cromática CTA era hover del navegador. No modificar producción ni copiar ese estado, conforme instrucción del usuario. Esto verifica sólo color normal del CTA y estado seleccionado, no toda bienvenida/animación. Diferencia recovery48vsSource40/CTA8px de567 sigue pendiente. No pruebas redundantes sobre código intacto; full630564 continúa vigente producción. Browsercerrado/ViteCtrlCexit1esperado. Sin push/Codemagic.

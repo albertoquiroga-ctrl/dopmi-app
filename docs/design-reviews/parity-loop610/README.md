@@ -1,0 +1,5 @@
+# Estilos computados del diálogo
+
+## 2026-10-04 — Loop610: estilos computados de acciones del diálogo
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada al inicio/cierre. Edge runtime real 377x852, fonts.ready y cursor fuera: cerrar y Ahora no rgb(85,78,72), superficie transparente; confirmar fondo rgb(247,203,45), texto rgb(13,13,13), Inter600/16. Cancelar Inter600/14, alto40 y y698.359375; confirmar alto48 y y642.359375. Coinciden con colores/estilos del cliente actual y geometría609. CierreSource 26.5625x24 a x318.4375/y107.640625, cliente conserva centro de glifo y área táctil48 (no reduce acceso). La sospecha de color azul por apariencia del PNG no se confirma en estilos computados; no cambio de producción ni test que replique constantes. Browser cerrado/Vite57268 detenido CtrlCexit1 esperado. No nueva aceptación física/global; gates26/26 y analyzer40.9s609 siguen vigentes. Próximo: contraste del formulario de publicación y sus estados con datos reales, continuando la matriz completa. Sin push/Codemagic hasta completar objetivo.

@@ -1,0 +1,5 @@
+# Footer de introducción
+
+## 2026-10-04 — Loop639: footer de verificación capturado
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada inicio/cierre. Sólo capturador: añade intro-footer normal200. Primer4351terminalexit0,1/1en3s4PNG; analyzer99053exit0sin incidencias31.1s. Inspección inicial mostró borde Después parcialmente cortado por scrollensureVisible deltexto; no atribuir bugproducción. Corregido fixture a maxScrollExtent conserva paddinginferior. Final55890terminalexit0,1/1en2s2PNG; ambos inspeccionados muestran completoDespués yContinuar, reflujo200 sin cortehorizontal. Analyzer previo al último cambio capturador, producción idéntica638. Superficies normalContinuation44/Después36, hitareasMaterial48; separación visual parece mayor que gap16Source por paddingtáctil, requiere medición/presentación próxima. Sin SDK/físico/Source runtime nuevo, no paridad global. Global410636 anterior638 y no incluye2nuevasfixtures; ahora lista412. Next contraste geométrico entre botones delfooter preservandohitarea yformularioverificación. Sin push/Codemagic hastaobjetivocompleto.

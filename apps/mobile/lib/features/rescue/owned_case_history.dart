@@ -1,0 +1,253 @@
+import 'package:flutter/material.dart';
+
+import '../../core/media/media_store.dart';
+import '../../core/media/photo_runtime.dart';
+import '../../core/media/remote_photo.dart';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import '../adoption/community_ui.dart';
+import 'case_update_repository.dart';
+
+String caseStoryDateLabel(String value, {DateTime? now}) {
+  final published = DateTime.tryParse(value)?.toLocal();
+  if (published == null) return '';
+  final today = (now ?? DateTime.now()).toLocal();
+  // Calendar days avoid a daylight-saving hour changing the visible day count.
+  final days = DateTime.utc(today.year, today.month, today.day)
+      .difference(DateTime.utc(published.year, published.month, published.day))
+      .inDays;
+  if (days < 0) return localDate(value);
+  if (days == 0) return 'Hoy';
+  return days == 1 ? 'Hace 1 día' : 'Hace $days días';
+}
+
+class OwnedCaseHistory extends ConsumerWidget {
+  const OwnedCaseHistory(this.caseId, {super.key});
+  final String caseId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      const SizedBox(height: 32),
+      const Text(
+        'La historia hasta ahora',
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 19,
+          height: 1.3,
+          letterSpacing: 0,
+          fontWeight: FontWeight.w700,
+          color: Color(0xff151423),
+        ),
+      ),
+      const SizedBox(height: 32),
+      LiveSection<List<CaseUpdate>>(
+        key: ValueKey('owned-case-history:$caseId'),
+        tables: const ['dopmi_case_updates'],
+        load: () => ref.read(caseUpdateRepositoryProvider).publicFor(caseId),
+        builder: (items, _) => Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (items.isEmpty)
+              const Text(
+                'Los avances aprobados del rescate aparecerán aquí.',
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1.5,
+                  color: Color(0xff4f4e5c),
+                ),
+              ),
+            for (final item in items)
+              OwnedCaseStory(item, key: ValueKey(item.id)),
+          ],
+        ),
+      ),
+    ],
+  );
+}
+
+class OwnedCaseStory extends StatelessWidget {
+  const OwnedCaseStory(this.update, {super.key});
+  final CaseUpdate update;
+
+  @override
+  Widget build(BuildContext context) {
+    final published = update.publishedAt ?? '';
+    final date = caseStoryDateLabel(published);
+    final absoluteDate = localDate(published);
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xffe3e4ed)),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (update.photos.length == 1)
+            Stack(
+              children: [
+                OwnedStoryPhoto(
+                  update.photos.first,
+                  key: ValueKey(update.photos.first),
+                ),
+                if (date.isNotEmpty)
+                  Positioned(
+                    top: 10,
+                    left: 10,
+                    right: 10,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: _StoryDate(date, absoluteDate: absoluteDate),
+                    ),
+                  ),
+              ],
+            )
+          else if (update.photos.length > 1)
+            SizedBox(
+              height: 160,
+              child: PageView(
+                key: ValueKey('story-gallery:${update.id}'),
+                children: [
+                  for (var index = 0; index < update.photos.length; index++)
+                    Semantics(
+                      label:
+                          'Foto ${index + 1} de ${update.photos.length} del avance',
+                      child: Stack(
+                        children: [
+                          OwnedStoryPhoto(
+                            update.photos[index],
+                            key: ValueKey(update.photos[index]),
+                          ),
+                          if (date.isNotEmpty)
+                            Positioned(
+                              top: 10,
+                              left: 10,
+                              right: 10,
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: _StoryDate(
+                                  date,
+                                  absoluteDate: absoluteDate,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (update.photos.isEmpty && date.isNotEmpty) ...[
+                  _StoryDate(date, absoluteDate: absoluteDate),
+                  const SizedBox(height: 10),
+                ],
+                Text(
+                  update.body,
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                    height: 1.55,
+                    letterSpacing: 0,
+                    color: Color(0xff4f4e5c),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StoryDate extends StatelessWidget {
+  const _StoryDate(this.date, {required this.absoluteDate});
+  final String date, absoluteDate;
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    decoration: BoxDecoration(
+      color: const Color(0xebffffff),
+      borderRadius: BorderRadius.circular(99),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ExcludeSemantics(
+          child: SvgPicture.asset(
+            'assets/profile/icon-clock.svg',
+            width: 12,
+            height: 12,
+            colorFilter: const ColorFilter.mode(
+              Color(0xff151423),
+              BlendMode.srcIn,
+            ),
+          ),
+        ),
+        const SizedBox(width: 4),
+        Flexible(
+          child: Text(
+            date,
+            semanticsLabel: '$date. Publicado el $absoluteDate',
+            style: const TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 11,
+              height: 14 / 11,
+              letterSpacing: 0,
+              fontWeight: FontWeight.w600,
+              color: Color(0xff151423),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class OwnedStoryPhoto extends ConsumerWidget {
+  const OwnedStoryPhoto(this.path, {super.key});
+  final String path;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => SizedBox(
+    height: 160,
+    width: double.infinity,
+    child: ColoredBox(
+      color: const Color(0xffeeeeee),
+      child: RemotePhoto(
+        source: PhotoRef(
+          path: path,
+          purpose: MediaPurpose.caseUpdatePhoto,
+          persistence: PhotoPersistence.ordinary,
+          sign: () => ref.read(caseUpdateRepositoryProvider).photoUrl(path),
+        ),
+        height: 160,
+        width: double.infinity,
+        semanticLabel: 'Foto aprobada del avance',
+        loading: const Center(
+          child: CircularProgressIndicator(
+            semanticsLabel: 'Cargando foto del avance',
+          ),
+        ),
+        unavailable: (retry) => Center(
+          child: TextButton.icon(
+            onPressed: retry,
+            icon: const Icon(Icons.refresh, size: 18),
+            label: const Text('Reintentar foto'),
+            style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+          ),
+        ),
+      ),
+    ),
+  );
+}

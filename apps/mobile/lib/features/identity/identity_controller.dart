@@ -18,7 +18,7 @@ final identityControllerProvider = Provider<IdentityController>((ref) {
 });
 
 class IdentityController extends ChangeNotifier {
-  IdentityController(this.repository);
+  IdentityController(this.repository) : identity = repository.current;
   final IdentityRepository repository;
   StreamSubscription<IdentityEvent>? _subscription;
   Identity? identity;
@@ -106,13 +106,26 @@ class IdentityController extends ChangeNotifier {
     }
     if (identity?.verified == true) {
       const accountRoutes = [
+        '/home',
         '/profile',
+        '/basic-info',
+        '/settings',
+        '/account-privacy',
+        '/consent',
+        '/help',
+        '/about',
+        '/transparency',
+        '/publish',
         '/terms',
+        '/privacy-notice',
         '/saved',
+        '/impact',
         '/my-adoptions',
         '/messages',
+        '/my-conversations',
         '/notifications',
         '/rescuer',
+        '/my-cases',
         '/rescue',
         '/rescue-file',
         '/rescue-cases',
@@ -129,18 +142,30 @@ class IdentityController extends ChangeNotifier {
           path.startsWith('/people/');
       return allowed ? null : '/adoptions';
     }
-    if (path == '/profile' ||
+    if (path == '/home' ||
+        path == '/profile' ||
+        path.startsWith('/profile/') ||
+        path == '/basic-info' ||
+        path == '/settings' ||
+        path.startsWith('/settings/') ||
+        path == '/account-privacy' ||
+        path == '/consent' ||
+        path == '/help' ||
+        path == '/publish' ||
         path == '/guardian' ||
         path == '/guardian/history' ||
         path == '/payments' ||
         path == '/connect' ||
         path.startsWith('/contribute/') ||
         path == '/rescuer' ||
+        path == '/my-cases' ||
         path == '/rescue-file' ||
         path.startsWith('/rescue/') ||
         path == '/saved' ||
+        path == '/impact' ||
         path.startsWith('/my-adoptions') ||
         path.startsWith('/messages') ||
+        path.startsWith('/my-conversations') ||
         path == '/notifications' ||
         path == '/reset-password' ||
         path == '/loading' ||

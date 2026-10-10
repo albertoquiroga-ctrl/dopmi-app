@@ -50,7 +50,7 @@ export async function verifySignature(body, header, secret, now = Date.now()) {
 function withinRetryWindow(created) {
   if (!Number.isFinite(Date.parse(created)) || Date.now() - Date.parse(created) > 23 * 3600000) throw new PaymentError('manual_reconciliation_required');
 }
-export function paymentService({ rpc, stripe, returnUrl, logger = console }) {
+export function paymentService({ rpc, stripe, returnUrl, logger = console, lookupCustomer = async (_actor) => null }) {
   async function refreshAccount(account) {
     const current = await stripe(`accounts/${account.account_id}`);
     await rpc('connect_save', { actor: account.owner_id, account_id: current.id,
@@ -93,7 +93,17 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console }) {
       return { donation_id: d.id, url: session.status === 'open' ? session.url : null, status: session.status };
     }
     withinRetryWindow(d.created_at);
+    const owner = await lookupCustomer(actor);
+    let customer;
+    if (owner != null) {
+      if (!/^cus_[A-Za-z0-9]+$/.test(owner.customer_id ?? '')) throw new PaymentError('saved_card_customer_mismatch');
+      const current = await stripe(`customers/${owner.customer_id}`);
+      if (current.id !== owner.customer_id || current.deleted === true || current.livemode !== false)
+        throw new PaymentError('saved_card_customer_mismatch');
+      customer = current.id;
+    }
     const session = await stripe('checkout/sessions', {
+      ...(customer ? { customer } : {}),
       mode: 'payment', 'payment_method_types[0]': 'card', client_reference_id: d.id,
       'metadata[dopmi_donation]': d.id, 'payment_intent_data[metadata][dopmi_donation]': d.id,
       'payment_intent_data[transfer_group]': `dopmi_${d.id}`,

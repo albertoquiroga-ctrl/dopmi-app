@@ -1,0 +1,5 @@
+# Loop665 — Filtros Android
+
+## 2026-10-04 — Loop665: filtros funcionales observados Android
+
+Irlanda a3c969cd9103fd46dc5cd886999912526ce75efb revalidada. emulator5554/PID2489/runtime662 (fuente661), APK656; NO parche663 presente aquí, no atribuir presión663 nativa. Diálogoinicialsinselección. TapHembra→cerrarX→reabrir quedó sinselección (primer seleccionado no capturado, observacióncancel másdébil). Segundo tapHembra capturado negro/textoblanco. Aplicar3601105 cierra ylista real muestraLunaDemo/Hembra/Perros eiconofiltro negro. Reabrir641229 conservaHembraseleccionada. Limpiar3601205 cierra ylista vuelveRockyDemo/Macho/Perros/iconogris. Capturas inspeccionadas sóloDEMO; fotos todavía cargando en resultados, noafirmar rendimiento/cargafotofinal. Noquerypayloadcapturado/remotewrites/SDK/pagos niigualdadSourcepixel/timing. Evidencia funcional instalada amplia filtros/aplicar/persistirdraft/limpiar, noaceptación visualglobal. Tests9/9/analyzeclean664 previos. Siguiente contrasteSource renderizado yrestocontrolespress663/nativoactual, restofamilias. SinCodemagic hastaobjetivocompleto.
