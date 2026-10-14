@@ -28,7 +28,7 @@ class FakePayments extends PaymentRepository {
         ),
       );
   final calls = <String>[];
-  bool fail = true;
+  bool fail = true, omitUrl = false;
   @override
   Future<Json> funding(String expense) async => {
     'title': 'Medicamentos para Luna',
@@ -41,7 +41,7 @@ class FakePayments extends PaymentRepository {
   Future<Json> checkout(String expense, int cents, String key) async {
     calls.add(key);
     if (fail) throw Exception('lost connection');
-    return {'url': 'https://checkout.stripe.com/test'};
+    return omitUrl ? {} : {'url': 'https://checkout.stripe.com/test'};
   }
 
   @override
@@ -460,6 +460,66 @@ void main() {
       await tester.pump();
     },
   );
+  testWidgets(
+    'missing checkout URL preserves same attempt until server outcome',
+    (tester) async {
+      tester.view.physicalSize = const Size(390, 2200);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      SharedPreferences.setMockInitialValues({});
+      final identity = FakeIdentityRepository()
+        ..user = const Identity('one', 'ana@example.test', verified: true);
+      final payments = FakePayments()
+        ..fail = false
+        ..omitUrl = true;
+      final community = FakeCommunity();
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(community),
+          paymentRepositoryProvider.overrideWithValue(payments),
+          routerInitialLocationProvider.overrideWithValue(
+            '/contribute/expense-one',
+          ),
+        ],
+      );
+      addTearDown(() async {
+        container.dispose();
+        await identity.changes.close();
+      });
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const DopmiApp(),
+        ),
+      );
+      await pumpUntil(tester, find.text('Medicamentos para Luna'));
+      expect(find.text('Medicamentos para Luna'), findsOneWidget);
+      expect(find.text('Neto asignado: \$0.00 MXN'), findsOneWidget);
+      expect(find.text('Transferido a Stripe: \$0.00 MXN'), findsOneWidget);
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Tu aportación en MXN'),
+        '100.25',
+      );
+      await tapButton(tester, 'Revisar aportación');
+      expect(find.text('Resumen'), findsOneWidget);
+      await tapButton(tester, 'Confirmar en Stripe');
+      await pumpUntil(tester, find.text('Pago en procesamiento'));
+      final prefs = await SharedPreferences.getInstance();
+      expect(payments.calls.length, 1);
+      expect(
+        prefs.getString('dopmi-payment:one:expense-one:key'),
+        payments.calls.single,
+      );
+      expect(prefs.getInt('dopmi-payment:one:expense-one:cents'), 10025);
+      expect(find.text('Pago confirmado'), findsNothing);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump();
+    },
+  );
+
   testWidgets('lost response preserves amount and idempotency key for retry', (
     tester,
   ) async {

@@ -1517,7 +1517,11 @@ void main() {
           .map((value) => value.trim())
           .where((value) => value.isNotEmpty);
       if (prefixes.isNotEmpty &&
-          !prefixes.any((value) => spec.$1.startsWith(value))) {
+          !prefixes.any(
+            (value) => value.startsWith('=')
+                ? spec.$1 == value.substring(1)
+                : spec.$1.startsWith(value),
+          )) {
         continue;
       }
       expect(
@@ -2666,35 +2670,43 @@ void main() {
         await tester.pumpAndSettle();
       }
       if (spec.$1 == 'support-home') {
-        // Source dock measured in IAB377x852, a3c969c.
+        // Q38-07 dock at 377x852: 92px bottom reserve and 52px CTA.
+        // Minimum20 supersedes the old $50 label; geometry is independent
+        // of the glyph widths and keeps the action above navigation.
         final cta = tester.getRect(
           find.byKey(const ValueKey('guardian-support-cta')),
         );
-        final price = tester.getRect(find.text('Desde \$50 / mes'));
-        expect(cta.top, closeTo(716, 1));
-        expect(cta.height, closeTo(44, 1));
-        expect(cta.width, closeTo(152.4, 1));
-        expect(cta.left, closeTo(189.2, 1));
-        expect(price.width, closeTo(114.475, 1));
-        expect(price.top, closeTo(729.6, 1));
+        final price = tester.getRect(find.text('Desde \$20 / mes'));
+        expect(cta.top, closeTo(708, 1));
+        expect(cta.height, closeTo(52, 1));
+        expect(cta.right, closeTo(341, 1));
+        expect(price.left, closeTo(36, 1));
+        expect(price.center.dy, closeTo(cta.center.dy, 1));
+        expect(price.right, lessThan(cta.left));
       }
       if (spec.$1 == 'support-home-empty') {
-        // Frozen 9ced070 chrome: 16 + 42 + 20 + 46 + 24 = 148.
-        // The 46px title frame replaces the former 30.8px text-only row.
+        // Same Q38-07 dock contract as the populated screen. With no
+        // eligible cases the rings disappear; registration stays reachable.
+        expect(find.byType(SupportCaseRing), findsNothing);
         expect(
-          tester.getTopLeft(find.text('Apoya a casos urgentes').first).dy,
-          closeTo(148, 1),
+          find.bySemanticsLabel(
+            'No hay casos para apoyar. Por ahora no hay gastos aprobados disponibles.',
+          ),
+          findsOneWidget,
         );
-        expect(
-          tester.getTopLeft(find.byType(GuardianSupportCard)).dy,
-          closeTo(263.75, 1),
+        final heading = tester.getRect(find.text('Ayudar se siente bien'));
+        final hero = tester.getRect(find.byType(GuardianSupportCard));
+        final cta = tester.getRect(
+          find.byKey(const ValueKey('guardian-support-cta')),
         );
-        expect(
-          tester
-              .widget<GuardianSupportCard>(find.byType(GuardianSupportCard))
-              .height,
-          closeTo(895.2, 1),
-        );
+        // 78px frame top + 2px padding + centered 31px text in 40px.
+        expect(heading.top, closeTo(84.5, 1));
+        expect(hero.top, closeTo(148, 1));
+        expect(hero.height, closeTo(548, 1));
+        expect(cta.top, closeTo(708, 1));
+        expect(cta.height, closeTo(52, 1));
+        expect(hero.bottom + 12, closeTo(cta.top, 1));
+        expect(cta.bottom, lessThanOrEqualTo(852 - 92));
       }
       if (spec.$1 == 'adoption-empty') {
         // Effective Source cascade measured in IAB at377x852, a3c969c.

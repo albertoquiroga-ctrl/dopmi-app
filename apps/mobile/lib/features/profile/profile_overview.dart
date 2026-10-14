@@ -21,6 +21,7 @@ import '../identity/experience_controller.dart';
 import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
 import '../payments/guardian_repository.dart';
+import '../payments/guardian_registration.dart';
 import '../payments/contribution_layout.dart';
 import '../payments/payment_repository.dart';
 
@@ -919,9 +920,11 @@ class DonorGuardianFeature extends ConsumerStatefulWidget {
 }
 
 class _DonorGuardianFeatureState extends ConsumerState<DonorGuardianFeature> {
-  late Future<Json> state = ref.read(guardianRepositoryProvider).state();
+  late Future<Json> state = ref
+      .read(guardianRepositoryProvider)
+      .membershipState();
   void reload() {
-    final next = ref.read(guardianRepositoryProvider).state();
+    final next = ref.read(guardianRepositoryProvider).membershipState();
     setState(() {
       state = next;
     });
@@ -956,6 +959,16 @@ class _DonorGuardianFeatureState extends ConsumerState<DonorGuardianFeature> {
           subtitle: 'No pudimos consultar tu estado. Toca para reintentar.',
           icon: Icons.shield_outlined,
           onPressed: reload,
+        );
+      }
+      final registration =
+          snapshot.data?['registration'] as GuardianRegistration?;
+      if (registration != null) {
+        return DonorFeature(
+          title: 'Tu registro Guardián',
+          subtitle: registration.summary,
+          icon: Icons.shield_outlined,
+          onPressed: () => open(),
         );
       }
       final active = snapshot.data?['plan']?['status'] == 'active';

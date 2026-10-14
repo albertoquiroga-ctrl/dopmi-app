@@ -1,3 +1,7 @@
+import 'package:dopmi_mobile/features/payments/guardian_registration.dart';
+
+import 'guardian_registration_test.dart' show fixture;
+
 import 'dart:async';
 
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
@@ -11,6 +15,14 @@ import 'package:go_router/go_router.dart';
 import 'guardian_test.dart' show FakeGuardian, activePlan;
 
 class ProfileGuardian extends FakeGuardian {
+  GuardianRegistration? registration;
+  bool failRegistration = false;
+  @override
+  Future<GuardianRegistration?> registrationState() async {
+    if (failRegistration) throw StateError('offline registration');
+    return registration;
+  }
+
   Completer<Json>? pending;
   bool failState = false;
   @override
@@ -23,6 +35,74 @@ class ProfileGuardian extends FakeGuardian {
 }
 
 void main() {
+  for (final payment in [
+    'requires_action',
+    'processing',
+    'skipped',
+    'refund_pending',
+    'processor_confirmed',
+  ]) {
+    testWidgets(
+      'registration $payment opens same record and refreshes after return',
+      (tester) async {
+        final repo = ProfileGuardian()
+          ..registration = GuardianRegistration.fromJson(fixture(payment));
+        final router = GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, _) => const Scaffold(body: DonorGuardianFeature()),
+            ),
+            GoRoute(
+              path: '/guardian',
+              builder: (context, _) => Scaffold(
+                body: TextButton(
+                  onPressed: () {
+                    repo.registration = GuardianRegistration.fromJson(
+                      fixture('skipped'),
+                    );
+                    context.pop();
+                  },
+                  child: const Text('Volver al perfil'),
+                ),
+              ),
+            ),
+          ],
+        );
+        addTearDown(router.dispose);
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [guardianRepositoryProvider.overrideWithValue(repo)],
+            child: MaterialApp.router(routerConfig: router),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text(repo.registration!.summary), findsOneWidget);
+        expect(find.text('¡Ya eres Guardián!'), findsNothing);
+        await tester.tap(find.text('Tu registro Guardián'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Volver al perfil'));
+        await tester.pumpAndSettle();
+        expect(find.textContaining('Sin deuda ni recobro'), findsOneWidget);
+        expect(repo.reads, 2);
+        expect(repo.calls, isEmpty);
+      },
+    );
+  }
+  testWidgets('registration lookup failure is unknown, never inactive', (
+    tester,
+  ) async {
+    final repo = ProfileGuardian()..failRegistration = true;
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [guardianRepositoryProvider.overrideWithValue(repo)],
+        child: const MaterialApp(home: Scaffold(body: DonorGuardianFeature())),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Sé un Guardián'), findsNothing);
+    expect(find.textContaining('No pudimos consultar'), findsOneWidget);
+  });
   testWidgets(
     'unknown Guardian state cannot claim an inactive membership; retry recovers',
     (tester) async {

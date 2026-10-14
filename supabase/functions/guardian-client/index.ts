@@ -5,6 +5,14 @@ import { guardianClientEnabled, guardianClientHandler, nativeWalletEnabled } fro
 Deno.serve(guardianClientHandler({
   enabled: () => guardianClientEnabled((name: string) => Deno.env.get(name)),
   walletEnabled: () => nativeWalletEnabled((name: string) => Deno.env.get(name)),
+  registrationAction: (actor: string, input: unknown) => guardianRuntime().registrationAction(actor, input),
+  registration: (actor: string, input: { action: string }) => {
+    const service = guardianRuntime().registration;
+    if (input.action === 'register') return service.register(actor, input);
+    if (input.action === 'registration_cancel') return service.cancel(actor, input);
+    if (input.action === 'registration_amount') return service.changeAmount(actor, input);
+    return service.status(actor, input);
+  },
   authenticate: async (token: string) => {
     const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
       { auth: { persistSession: false } });

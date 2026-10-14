@@ -14,7 +14,7 @@ const reply = (body, status = 200) => new Response(JSON.stringify(body), { statu
 // donor IDs, return URLs and status fields never reach checkout. A saved-method
 // selection accepts only its opaque ID; the service verifies its customer ownership.
 export function guardianClientHandler({ enabled, authenticate, checkout, method, methods, defaultMethod, removeMethod, addCard, savedCardMethod,
-  walletEnabled = () => false, addWallet }) {
+  walletEnabled = () => false, addWallet, registration, registrationAction }) {
   return async req => {
     if (req.method === 'OPTIONS') return new Response(null, { headers });
     if (req.method !== 'POST') return reply({ error: 'method_not_allowed' }, 405);
@@ -27,6 +27,29 @@ export function guardianClientHandler({ enabled, authenticate, checkout, method,
       const text = await req.text();
       if (text.length > 4096) return reply({ error: 'invalid_request' }, 400);
       let input; try { input = JSON.parse(text); } catch { return reply({ error: 'invalid_request' }, 400); }
+      if (input?.action === 'registration_action') {
+        const uuid = value => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value ?? '');
+        if (typeof registrationAction !== 'function' || !uuid(input.id) || !uuid(input.attempt_id) ||
+            Object.keys(input).some(key => !['action','id','attempt_id'].includes(key)))
+          return reply({ error: 'invalid_request' }, 400);
+        return reply(await registrationAction(actor.id, { id: input.id, attempt_id: input.attempt_id }));
+      }
+      if (['register', 'registration_status', 'registration_cancel', 'registration_amount'].includes(input?.action)) {
+        const uuid = value => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value ?? '');
+        const preparing = input.action === 'register';
+        const changing = input.action === 'registration_amount';
+        const allowed = preparing
+          ? ['action', 'key', 'gross_cents', 'consent', 'consent_version', 'method_consent', 'method_consent_version']
+          : changing ? ['action', 'id', 'revision', 'gross_cents', 'consent', 'consent_version'] : ['action', 'id'];
+        if (typeof registration !== 'function' || Object.keys(input).some(key => !allowed.includes(key)) ||
+            !uuid(preparing ? input.key : input.id) ||
+            ((preparing || changing) && (!Number.isSafeInteger(input.gross_cents) || input.gross_cents < 2000 ||
+              input.gross_cents > 1000000 || input.consent !== true || input.consent_version !== 'guardian-registration-2026-10-14')) ||
+            (preparing && (input.method_consent !== true || input.method_consent_version !== 'saved-cards-2026-10-03')) ||
+            (changing && (!Number.isSafeInteger(input.revision) || input.revision < 0)))
+          return reply({ error: 'invalid_request' }, 400);
+        return reply(await registration(actor.id, input));
+      }
       if (input?.action === 'add_wallet') {
         if (!walletEnabled()) return reply({ error: 'saved_wallet_disabled' }, 503);
         if (Object.keys(input).some(key => !['action','key','consent','consent_version','wallet_type'].includes(key)) ||

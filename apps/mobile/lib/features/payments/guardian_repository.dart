@@ -4,8 +4,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../adoption/community_repository.dart';
 import 'payment_repository.dart';
 import 'guardian_payment_card.dart';
+import 'guardian_registration.dart';
 
 const guardianConsent = 'guardian-2026-09-24';
+const guardianRegistrationConsent = 'guardian-registration-2026-10-14';
 const savedCardConsent = 'saved-cards-2026-10-03';
 const savedCardMethodConsent = 'saved-card-methods-2026-10-03';
 final guardianEnabledProvider = Provider<bool>(
@@ -18,6 +20,113 @@ final guardianRepositoryProvider = Provider<GuardianRepository>(
 class GuardianRepository {
   GuardianRepository(this.client);
   final SupabaseClient client;
+  Future<Json> submitRegistration(Json draft) async {
+    final result = await client.functions.invoke(
+      'guardian-client',
+      body: {
+        'action': 'register',
+        'key': draft['key'],
+        'gross_cents': draft['gross_cents'],
+        'consent': draft['consent'],
+        'consent_version': guardianRegistrationConsent,
+        'method_consent': draft['method_consent'],
+        'method_consent_version': savedCardConsent,
+      },
+    );
+    final data = result.data;
+    if (result.status != 200 ||
+        data is! Map ||
+        data['key'] != draft['key'] ||
+        data['gross_cents'] != draft['gross_cents'] ||
+        data['id'] is! String ||
+        ![
+          'method_pending',
+          'registered',
+          'canceled',
+        ].contains(data['status'])) {
+      throw const FormatException('Registro no confirmado');
+    }
+    final url = data['checkout_url'];
+    if (url != null &&
+        (url is! String ||
+            data['status'] != 'method_pending' ||
+            Uri.tryParse(url)?.scheme != 'https' ||
+            Uri.tryParse(url)?.host != 'checkout.stripe.com')) {
+      throw const FormatException('Método no confirmado');
+    }
+    return {
+      'id': data['id'],
+      'key': data['key'],
+      'status': data['status'],
+      'gross_cents': data['gross_cents'],
+      'checkout_url': url,
+    };
+  }
+
+  Future<void> cancelRegistration(String id) async {
+    final result = await client.functions.invoke(
+      'guardian-client',
+      body: {'action': 'registration_cancel', 'id': id},
+    );
+    if (result.status != 200) {
+      throw const FormatException('Cancelación no confirmada');
+    }
+  }
+
+  Future<void> changeRegistrationAmount(
+    GuardianRegistration registration,
+    int cents,
+  ) async {
+    final result = await client.functions.invoke(
+      'guardian-client',
+      body: {
+        'action': 'registration_amount',
+        'id': registration.id,
+        'revision': registration.revision,
+        'gross_cents': cents,
+        'consent': true,
+        'consent_version': guardianRegistrationConsent,
+      },
+    );
+    if (result.status != 200) {
+      throw const FormatException('Cambio no confirmado');
+    }
+  }
+
+  Future<Object?> registrationBankAction(
+    String registrationId,
+    String attemptId,
+  ) async {
+    final result = await client.functions.invoke(
+      'guardian-client',
+      body: {
+        'action': 'registration_action',
+        'id': registrationId,
+        'attempt_id': attemptId,
+      },
+    );
+    if (result.status != 200) {
+      throw const FormatException('La acción bancaria no está disponible.');
+    }
+    // Transient SDK response; do not place it in persisted payment intents.
+    return result.data;
+  }
+
+  Future<Json> membershipState() async {
+    final legacy = await state();
+    if (legacy['plan'] != null || legacy['activation'] != null) return legacy;
+    return {...legacy, 'registration': await registrationState()};
+  }
+
+  Future<GuardianRegistration?> registrationState() async {
+    final result = await client.rpc('dopmi_guardian_registration_state');
+    if (result == null) return null;
+    if (result is! Map) {
+      throw const FormatException('Registro no confirmado');
+    }
+    return GuardianRegistration.fromJson(Map<String, dynamic>.from(result));
+  }
+
   Future<Json?> savedCardMethodState() async {
     final result = await client.rpc('dopmi_saved_card_method_state');
     return result == null ? null : savedCardMethodReceipt(result);

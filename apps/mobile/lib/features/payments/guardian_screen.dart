@@ -30,6 +30,8 @@ import 'guardian_enrollment_amount.dart';
 import 'guardian_enrollment_confirmation.dart';
 import 'guardian_activation_success.dart';
 import 'guardian_activation_failure.dart';
+import 'guardian_registration.dart';
+import 'guardian_registration_screen.dart';
 
 class GuardianScreen extends ConsumerStatefulWidget {
   const GuardianScreen({
@@ -49,6 +51,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   final enrollmentInput = GlobalKey();
   bool enrolling = false;
   Json? data, intent;
+  GuardianRegistration? registration;
   List<GuardianPaymentCard>? cards;
   String? cardsError;
   Json? pendingMethodsFeedback;
@@ -236,6 +239,21 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       final result = await ref.read(guardianRepositoryProvider).state();
       if (!current) return;
       data = result;
+      if (!widget.paymentMethodsOnly &&
+          plan == null &&
+          activation == null &&
+          intent == null) {
+        try {
+          final state = await ref
+              .read(guardianRepositoryProvider)
+              .registrationState();
+          if (!current) return;
+          registration = state;
+        } catch (_) {
+          // The new screen performs its own fresh read and refuses submission
+          // on failure. Historical active plans keep their existing flow.
+        }
+      }
       if (intent?['kind'] == 'checkout' &&
           plan == null &&
           activation?['status'] == 'failed' &&
@@ -1088,6 +1106,16 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   @override
   Widget build(BuildContext context) {
     final enabled = ref.watch(guardianEnabledProvider);
+    if (!widget.paymentMethodsOnly &&
+        enabled &&
+        current &&
+        data != null &&
+        plan == null &&
+        activation == null &&
+        intent == null &&
+        (enrolling || registration != null)) {
+      return GuardianRegistrationScreen(owner: owner);
+    }
     if (!widget.paymentMethodsOnly &&
         enabled &&
         current &&

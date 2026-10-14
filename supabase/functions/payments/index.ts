@@ -9,10 +9,11 @@ Deno.serve(async (req) => {
     const { service, actor } = runtime();
     const id = await actor(req);
     const input = await req.json();
-    action = ['checkout','connect_status','connect_onboard'].includes(input.action) ? input.action : 'invalid_action';
+    action = ['checkout','connect_status','connect_onboard','connect_session'].includes(input.action) ? input.action : 'invalid_action';
     if (input.action === 'checkout') return json(await service.checkout(id, input));
     if (input.action === 'connect_status') return json(await service.connect(id, 'status'));
     if (input.action === 'connect_onboard') return json(await service.connect(id, 'onboard'));
+    if (input.action === 'connect_session') return json(await service.connect(id, 'session'));
     return json({ error: 'invalid_action' }, 400);
   } catch (error) {
     paymentLog(console, 'payments_request_failed', { request_id: requestId, action, code: error instanceof PaymentError ? error.code : 'payment_unavailable', ...(error instanceof PaymentError ? error.context : {}) });

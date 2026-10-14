@@ -10,6 +10,9 @@ import { guardianMethodListService } from './guardian-method-list.mjs';
 import { savedCardService } from './saved-card.mjs';
 import { savedCardMethodService } from './saved-card-method.mjs';
 import { nativeSavedWalletService } from './native-saved-wallet.mjs';
+import { guardianRegistrationService } from './guardian-registration.mjs';
+import { guardianRegistrationWorker } from './guardian-registration-worker.mjs';
+import { guardianRegistrationBankAction } from './guardian-registration-bank-action.mjs';
 import { guardianRefundService } from './guardian-refunds.mjs';
 import { PaymentError, requireTestKey } from './payments.mjs';
 
@@ -102,7 +105,28 @@ export function guardianRuntime() {
       return result.data;
     }, returnUrl: `${Deno.env.get('SUPABASE_URL')!}/functions/v1/payment-return`,
   });
-  return { ...service, initial, schedule, collection, changes, method, methods, refunds, savedCard, savedCardMethod, savedWallet,
+  const registration = guardianRegistrationService({ savedCard,
+    rpc: (operation: string, data: unknown) => call('dopmi_guardian_registration_server', operation, data),
+    attemptRpc: (operation: string, data: unknown) => call('dopmi_guardian_registration_attempt_server', operation, data),
+  });
+  async function registrationCommand(name: string, data: Record<string, unknown>) {
+    const result = await db.rpc(name, data);
+    if (result.error) throw new PaymentError('guardian_database_unavailable', 503);
+    return result.data;
+  }
+  const registrationPayments = guardianRegistrationWorker({ stripe,
+    paymentRpc: (operation: string, data: unknown) => call('dopmi_guardian_registration_payment_server', operation, data),
+    bind: (id: string, processor: string) => registrationCommand('dopmi_guardian_registration_bind_payment',
+      { target_attempt: id, processor_id: processor }),
+    authorize: (id: string) => registrationCommand('dopmi_guardian_registration_authorize_payment', { target_attempt: id }),
+    resolve: (id: string) => registrationCommand('dopmi_guardian_registration_resolve_payment', { target_attempt: id }),
+    settle: (evidence: unknown) => settlement('settle_registration', evidence),
+  });
+  const registrationAction = guardianRegistrationBankAction({ stripe,
+    authorizeAction: (owner: string, registrationId: string, attemptId: string) => registrationCommand(
+      'dopmi_guardian_registration_bank_action', { target_owner: owner, target_registration: registrationId, target_attempt: attemptId }),
+  });
+  return { ...service, initial, schedule, collection, changes, method, methods, refunds, savedCard, savedCardMethod, savedWallet, registration, registrationAction,
     async reconcile() {
       const activation = await initial.reconcile();
       const returns = Deno.env.get('DOPMI_GUARDIAN_REFUNDS_ENABLED') === 'true'
@@ -113,6 +137,8 @@ export function guardianRuntime() {
         ? await method.reconcile() : { applied: 0, failed: 0 };
       const savedCards = Deno.env.get('DOPMI_GUARDIAN_CHANGES_ENABLED') === 'true'
         ? await savedCard.reconcile() : { saved: 0, failed: 0 };
+      const registrations = Deno.env.get('DOPMI_GUARDIAN_CHANGES_ENABLED') === 'true'
+        ? await registration.reconcile() : { registered: 0, failed: 0 };
       const savedMethods = Deno.env.get('DOPMI_GUARDIAN_CHANGES_ENABLED') === 'true'
         ? await savedCardMethod.reconcile() : { applied: 0, failed: 0 };
       // Continue reconciliation of previously authorized jobs even when new
@@ -121,6 +147,13 @@ export function guardianRuntime() {
         ? await savedWallet.reconcile() : { saved: 0, failed: 0 };
       const monthly = Deno.env.get('DOPMI_GUARDIAN_COLLECTION_ENABLED') === 'true'
         ? await collection.reconcile() : { processed: 0, failed: 0 };
+      // Durable preparation only; it never invokes Stripe. A later payment
+      // consumer must freshly authorize the same attempt before confirmation.
+      const registrationAttempts = Deno.env.get('DOPMI_GUARDIAN_COLLECTION_ENABLED') === 'true'
+        ? await registration.prepareAttempts() : { prepared: 0, skipped: 0, failed: 0 };
+      const registrationCollections = await registrationPayments.reconcile({
+        allowNewPayments: Deno.env.get('DOPMI_GUARDIAN_COLLECTION_ENABLED') === 'true',
+      });
       const result = await service.reconcile();
       const calendar = Deno.env.get('DOPMI_GUARDIAN_SCHEDULE_ENABLED') === 'true'
         ? await schedule.reconcile() : { ready: 0, failed: 0 };
@@ -128,8 +161,13 @@ export function guardianRuntime() {
         changes_applied: management.applied, methods_applied: methods.applied, cards_saved: savedCards.saved,
         saved_methods_applied: savedMethods.applied,
         wallets_saved: savedWallets.saved,
+        registrations_completed: registrations.registered,
+        registration_attempts_prepared: registrationAttempts.prepared,
+        registration_evaluations_skipped: registrationAttempts.skipped,
+        registration_payments_observed: registrationCollections.observed,
+        registration_payments_finalized: registrationCollections.finalized,
         refunds_reconciled: returns.reconciled,
-        failed: result.failed + activation.failed + calendar.failed + monthly.failed + management.failed + methods.failed + savedCards.failed + savedMethods.failed + savedWallets.failed + returns.failed };
+        failed: result.failed + activation.failed + calendar.failed + monthly.failed + management.failed + methods.failed + savedCards.failed + registrations.failed + registrationAttempts.failed + registrationCollections.failed + savedMethods.failed + savedWallets.failed + returns.failed };
     },
   };
 }

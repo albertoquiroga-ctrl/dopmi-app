@@ -70,6 +70,35 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
       account = await rpc('connect_save', { actor, account_id: created.id, transfers_enabled: false, payouts_enabled: false, details_submitted: false });
     }
     const current = await refreshAccount(account);
+    if (action === 'session') {
+      // Server-selected account only. Never delegate payment/refund/payout UI.
+      const validateOwner = async () => {
+        const owned = await rpc('connect_get', { actor });
+        if (owned?.owner_id !== actor || owned.account_id !== account.account_id)
+          throw new PaymentError('access_denied', 403);
+      };
+      await validateOwner();
+      if (current.id !== account.account_id || current.livemode !== false ||
+          current.type !== 'express' || current.country !== 'MX')
+        throw new PaymentError('connect_account_mismatch');
+      const session = await stripe('account_sessions', {
+        account: account.account_id,
+        'components[account_onboarding][enabled]': true,
+        'components[account_onboarding][features][disable_stripe_user_authentication]': false,
+      });
+      await validateOwner();
+      if (session.object !== 'account_session' || session.account !== account.account_id ||
+          session.livemode !== false || typeof session.client_secret !== 'string' ||
+          session.client_secret.length < 16 || !Number.isSafeInteger(session.expires_at) ||
+          session.expires_at <= Math.floor(Date.now() / 1000) ||
+          session.components?.account_onboarding?.enabled !== true ||
+          session.components.account_onboarding.features?.disable_stripe_user_authentication !== false ||
+          Object.entries(session.components).some(([name, component]) =>
+            name !== 'account_onboarding' && component?.enabled !== false))
+        throw new PaymentError('connect_session_invalid', 502);
+      // Ephemeral response: no persistence, account identifiers or processor log.
+      return { client_secret: session.client_secret, expires_at: session.expires_at };
+    }
     if (action === 'onboard') {
       const link = await stripe('account_links', { account: account.account_id, type: 'account_onboarding',
         refresh_url: `${returnUrl}?flow=connect`, return_url: `${returnUrl}?flow=connect` });

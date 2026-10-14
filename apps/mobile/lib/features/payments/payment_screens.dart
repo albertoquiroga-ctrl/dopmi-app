@@ -12,6 +12,7 @@ import '../adoption/community_ui.dart';
 import '../identity/identity_controller.dart';
 import '../rescue/rescue_repository.dart';
 import 'payment_repository.dart';
+import 'connect_client.dart';
 import 'guardian_repository.dart';
 import 'contribution_layout.dart';
 import 'payment_result_page.dart';
@@ -184,9 +185,9 @@ class _ContributeState extends ConsumerState<ContributeScreen>
         await repo.openStripe(result['url'] as String);
         if (mounted) await checkOutcome();
       } else {
-        await prefs.remove('$storageKey:key');
-        await prefs.remove('$storageKey:cents');
-        if (mounted) context.go('/payments');
+        // A missing checkout URL is not terminal payment evidence. Keep the
+        // stable attempt until the owner's server projection confirms it.
+        if (mounted) await checkOutcome();
       }
     } catch (cause) {
       if (mounted) setState(() => error = paymentError(cause));
@@ -303,6 +304,10 @@ class _ContributeState extends ConsumerState<ContributeScreen>
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   ContributionCaseHeader(expenseTitle: title, record: record),
+                  if (locked && outcome == null)
+                    const Notice(
+                      'En proceso. Consulta el mismo intento; salir o perder la conexión no confirma un pago ni un fallo.',
+                    ),
                   const SizedBox(height: 18),
                   if (!reviewing && !locked && outcome == null) ...[
                     const Text(
@@ -799,22 +804,60 @@ class ConnectScreen extends ConsumerStatefulWidget {
   ConsumerState<ConnectScreen> createState() => _ConnectState();
 }
 
-class _ConnectState extends ConsumerState<ConnectScreen> {
+class _ConnectState extends ConsumerState<ConnectScreen>
+    with WidgetsBindingObserver {
+  int revision = 0;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && mounted) {
+      setState(() => revision++);
+    }
+  }
+
   bool busy = false;
   String? error;
   Future<void> onboard() async {
+    if (busy) return;
     setState(() {
       busy = true;
       error = null;
     });
     try {
       final repo = ref.read(paymentRepositoryProvider);
-      final result = await repo.action('connect_onboard');
-      if (mounted) await repo.openStripe(result['url'] as String);
+      final client = ref.read(connectClientProvider);
+      if (client.available) {
+        final owner = ref.read(identityControllerProvider).identity?.id;
+        await client.run(
+          () =>
+              mounted &&
+              owner != null &&
+              ref.read(identityControllerProvider).identity?.id == owner,
+        );
+      } else {
+        final result = await repo.action('connect_onboard');
+        if (mounted) await repo.openStripe(result['url'] as String);
+      }
     } catch (cause) {
       if (mounted) setState(() => error = paymentError(cause));
     } finally {
-      if (mounted) setState(() => busy = false);
+      if (mounted) {
+        setState(() {
+          busy = false;
+          revision++;
+        });
+      }
     }
   }
 
@@ -849,6 +892,7 @@ class _ConnectState extends ConsumerState<ConnectScreen> {
           'Primero necesitas la verificación de rescatista aprobada por Dopmi. Completar el formulario de Stripe no garantiza que tu cuenta ya pueda recibir transferencias.',
         ),
         LiveSection<Json>(
+          key: ValueKey(revision),
           errorMessage: paymentError,
           load: () =>
               ref.read(paymentRepositoryProvider).action('connect_status'),

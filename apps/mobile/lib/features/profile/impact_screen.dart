@@ -11,6 +11,7 @@ import '../adoption/community_ui.dart';
 import '../community/content_actions.dart';
 import '../payments/contribution_layout.dart';
 import '../payments/guardian_repository.dart';
+import '../payments/guardian_registration.dart';
 import '../payments/guardian_promotion_screen.dart';
 import '../rescue/rescue_public_photo.dart';
 import '../rescue/rescue_repository.dart';
@@ -46,7 +47,7 @@ class ImpactEntryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (!ref.watch(guardianEnabledProvider)) return const ImpactScreen();
     return LiveSection<Json>(
-      load: () => ref.read(guardianRepositoryProvider).state(),
+      load: () => ref.read(guardianRepositoryProvider).membershipState(),
       errorMessage: (_) =>
           'No pudimos consultar tu estado de Guardián. Vuelve a intentarlo.',
       statusFrame: (content) => Scaffold(
@@ -59,8 +60,12 @@ class ImpactEntryScreen extends ConsumerWidget {
           ),
         ),
       ),
-      builder: (state, _) =>
-          state['plan'] == null && state['activation'] == null
+      builder: (state, refresh) => state['registration'] is GuardianRegistration
+          ? ImpactScreen(
+              registration: state['registration'] as GuardianRegistration,
+              refreshRegistration: refresh,
+            )
+          : state['plan'] == null && state['activation'] == null
           ? const GuardianPromotionScreen(navigation: CommunityNav(3))
           : const ImpactScreen(),
     );
@@ -68,7 +73,9 @@ class ImpactEntryScreen extends ConsumerWidget {
 }
 
 class ImpactScreen extends ConsumerWidget {
-  const ImpactScreen({super.key});
+  const ImpactScreen({super.key, this.registration, this.refreshRegistration});
+  final GuardianRegistration? registration;
+  final VoidCallback? refreshRegistration;
   Future<List<Json>> loadImpact(WidgetRef ref) async {
     final items = await ref.read(communityRepositoryProvider).personalImpact();
     return Future.wait(
@@ -104,6 +111,16 @@ class ImpactScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (registration != null) ...[
+              Notice(registration!.summary),
+              TextButton(
+                onPressed: () async {
+                  await context.push('/guardian');
+                  if (context.mounted) refreshRegistration?.call();
+                },
+                child: const Text('Consultar registro Guardián'),
+              ),
+            ],
             Padding(
               padding: EdgeInsets.fromLTRB(12, 6, 12, 18),
               child: Column(

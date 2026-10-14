@@ -15,6 +15,7 @@ import { registerProfileContactsSqlCases } from './profile-contacts-dde1-sql-cas
 import { registerChatPhotoSqlCases } from './chat-photos-dde1-sql-cases.mjs';
 import { registerPaymentActivitySqlCases } from './payment-activity-dde1-sql-cases.mjs';
 import { registerNotificationEventsSqlCases } from './notification-events-dde1-sql-cases.mjs';
+import { registerGuardianRegistrationSqlCases } from './guardian-registration-sql-cases.mjs';
 
 let db;
 const donor = '70000000-0000-4000-8000-000000000001';
@@ -253,6 +254,7 @@ registerProfileContactsSqlCases(() => db, { rescuer, staff, other });
 registerChatPhotoSqlCases(() => db, { donor, rescuer, other, staff });
 registerPaymentActivitySqlCases(() => db, { donor, rescuer, other, staff, expense });
 registerNotificationEventsSqlCases(() => db, { donor, rescuer, other, staff, expense });
+registerGuardianRegistrationSqlCases(() => db, { donor, other, staff, key });
 const rpc = async (operation,data) => {
   if (operation === 'refund_begin' || operation === 'refund_finish') return (await db.query('select public.dopmi_refund_adjustment($1,$2::jsonb) as value',[operation === 'refund_begin' ? 'begin' : 'finish',JSON.stringify(data)])).rows[0].value;
   if (operation === 'finish_job') return (await db.query('select public.dopmi_payment_job_finish($1::jsonb) as value',[JSON.stringify(data)])).rows[0].value;

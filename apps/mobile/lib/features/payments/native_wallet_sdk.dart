@@ -23,7 +23,7 @@ class NativeWalletSdk {
     confirm,
   }) : platform = platform ?? defaultTargetPlatform,
        web = web ?? kIsWeb,
-       _initialize = initialize ?? _initializeStripe,
+       _initialize = initialize ?? initializeDopmiStripeTest,
        _supported = supported ?? _supportedStripe,
        _confirm = confirm ?? _confirmStripe;
 
@@ -102,7 +102,10 @@ class NativeWalletSdk {
   }
 }
 
-Future<void> _initializeStripe(String key, String merchant) async {
+Future<void> initializeDopmiStripeTest(String key, String merchant) async {
+  if (!RegExp(r'^pk_test_[A-Za-z0-9]+$').hasMatch(key)) {
+    throw const FormatException('Stripe de prueba no está disponible.');
+  }
   Stripe.publishableKey = key;
   Stripe.merchantIdentifier = merchant.isEmpty ? null : merchant;
   Stripe.urlScheme = 'io.dopmi.app';

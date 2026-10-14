@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:dopmi_mobile/features/payments/guardian_registration.dart';
+
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/payments/guardian_payment_card.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
@@ -26,6 +28,8 @@ class FakeGuardian extends GuardianRepository {
           authOptions: const AuthClientOptions(autoRefreshToken: false),
         ),
       );
+  @override
+  Future<GuardianRegistration?> registrationState() async => null;
   List<GuardianPaymentCard> cards = [];
   Json? savedCard;
   Json? independent;

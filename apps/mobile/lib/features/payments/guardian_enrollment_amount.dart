@@ -13,12 +13,14 @@ class GuardianEnrollmentAmount extends StatefulWidget {
     required this.locked,
     required this.onChanged,
     this.decorate = false,
+    this.registrationOnly = false,
   });
   final TextEditingController amount;
   final Key? headingKey;
   final bool locked;
   final VoidCallback onChanged;
   final bool decorate;
+  final bool registrationOnly;
   @override
   State<GuardianEnrollmentAmount> createState() =>
       _GuardianEnrollmentAmountState();
@@ -306,7 +308,9 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
                 rows: [
                   ('Apoyo mensual', amountLabel),
                   ('Frecuencia', 'Mensual'),
-                  ('Total al activar', amountLabel),
+                  widget.registrationOnly
+                      ? ('Primer intento', 'Sólo con capacidad completa')
+                      : ('Total al activar', amountLabel),
                 ],
               ),
             ],

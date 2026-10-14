@@ -1,3 +1,7 @@
+import 'package:dopmi_mobile/features/payments/guardian_registration.dart';
+
+import 'guardian_registration_test.dart' show fixture;
+
 import 'dart:async';
 
 import 'package:go_router/go_router.dart';
@@ -115,6 +119,24 @@ void main() {
     return identity;
   }
 
+  testWidgets('monthly bank problem remains separate from assigned impact', (
+    tester,
+  ) async {
+    final guardian = ProfileGuardian()
+      ..registration = GuardianRegistration.fromJson(
+        fixture('requires_action'),
+      );
+    await start(tester, ImpactCommunity(), guardian: guardian, scale: 2);
+    await tester.pumpAndSettle();
+    expect(find.text(guardian.registration!.summary), findsOneWidget);
+    expect(find.text('Consultar registro Guardián'), findsOneWidget);
+    expect(find.text('Asignados de tus aportaciones'), findsNothing);
+    await tester.tap(find.text('Consultar registro Guardián'));
+    await tester.pumpAndSettle();
+    expect(find.text('Tu banco necesita tu autorización'), findsOneWidget);
+    expect(guardian.calls, isEmpty);
+    expect(tester.takeException(), isNull);
+  });
   testWidgets('Impact attribution comes from the current public case owner', (
     tester,
   ) async {
