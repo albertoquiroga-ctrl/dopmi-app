@@ -1114,7 +1114,21 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         activation == null &&
         intent == null &&
         (enrolling || registration != null)) {
-      return GuardianRegistrationScreen(owner: owner);
+      return GuardianRegistrationScreen(
+        owner: owner,
+        onBack: () {
+          if (context.canPop()) {
+            context.pop();
+          } else if (widget.initialEnrollment || registration != null) {
+            context.go('/rescue-cases');
+          } else {
+            setState(() {
+              enrolling = false;
+              consent = false;
+            });
+          }
+        },
+      );
     }
     if (!widget.paymentMethodsOnly &&
         enabled &&

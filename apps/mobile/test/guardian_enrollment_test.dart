@@ -15,7 +15,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
-import 'guardian_test.dart' show FakeGuardian, activePlan;
+import 'guardian_test.dart'
+    show
+        FakeGuardian,
+        activePlan,
+        historicalGuardianCheckout,
+        historicalGuardianState;
 import 'rescue_test.dart' show FakeRescue;
 
 class PendingCapacityGuardian extends FakeGuardian {
@@ -275,7 +280,7 @@ void main() {
   testWidgets('System back keeps an in-flight capacity check recoverable', (
     tester,
   ) async {
-    final repo = PendingCapacityGuardian();
+    final repo = PendingCapacityGuardian()..value = historicalGuardianState();
     await start(tester, repo, location: '/guardian?enroll=1');
     await tester.ensureVisible(find.byType(Checkbox));
     await tester.tap(find.byType(Checkbox));
@@ -313,7 +318,7 @@ void main() {
   testWidgets(
     'Subscribe opens authorization without payment; only explicit Stripe confirmation starts checkout',
     (tester) async {
-      final repo = FakeGuardian();
+      final repo = historicalGuardianCheckout();
       await start(tester, repo);
       expect(find.text('Sin suscripción'), findsOneWidget);
       expect(find.byType(TextField), findsNothing);
@@ -361,9 +366,12 @@ void main() {
         ),
       );
       expect(find.text('Elige tu apoyo').hitTestable(), findsOneWidget);
-      await tester.ensureVisible(find.byType(Checkbox));
-      await tester.tap(find.byType(Checkbox));
-      await tester.pump();
+      for (final key in ['registration-consent', 'method-consent']) {
+        final tile = find.byKey(Key(key));
+        await tester.ensureVisible(tile);
+        await tester.tap(tile);
+        await tester.pump();
+      }
       await tester.tap(find.byTooltip('Regresar'));
       await tester.pumpAndSettle();
       expect(find.text('Sin suscripción'), findsOneWidget);
@@ -371,7 +379,12 @@ void main() {
       expect(repo.opened, 0);
       await tester.tap(find.text('Suscribirme'));
       await tester.pumpAndSettle();
-      expect(tester.widget<Checkbox>(find.byType(Checkbox)).value, false);
+      for (final key in ['registration-consent', 'method-consent']) {
+        expect(
+          tester.widget<CheckboxListTile>(find.byKey(Key(key))).value,
+          false,
+        );
+      }
       await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
       expect(find.text('Sin suscripción'), findsOneWidget);

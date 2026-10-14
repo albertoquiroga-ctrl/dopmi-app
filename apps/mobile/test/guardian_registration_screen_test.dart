@@ -248,6 +248,64 @@ void main() {
     });
   }
 
+  for (final status in ['registered', 'method_pending']) {
+    for (final system in [false, true]) {
+      testWidgets(
+        'Q38-28 root persisted $status exits system=$system without losing key',
+        (tester) async {
+          const key = '72000000-0000-4000-8000-000000000002';
+          final draft = jsonEncode({
+            'key': key,
+            'gross_cents': 5000,
+            'consent': true,
+            'consent_version': guardianRegistrationConsent,
+            'method_consent': true,
+            'method_consent_version': savedCardConsent,
+          });
+          const storage = 'dopmi-guardian-registration:one:intent';
+          SharedPreferences.setMockInitialValues({storage: draft});
+          final repo = RegistrationGuardian()
+            ..registrationValue = registration(key, status: status);
+          final original = repo.registrationValue;
+          await start(
+            tester,
+            repo,
+            const Size(377, 852),
+            1,
+            initialLocation: '/guardian',
+          );
+          final router = GoRouter.of(
+            tester.element(find.byType(Scaffold).first),
+          );
+          expect(router.canPop(), false);
+          final beforeBack = (await SharedPreferences.getInstance()).getString(
+            storage,
+          );
+          // Server-confirmed registration already reconciles the completed
+          // draft during load; a pending method must retain its exact request.
+          expect(beforeBack, status == 'method_pending' ? draft : null);
+          if (system) {
+            await tester.binding.handlePopRoute();
+          } else {
+            await tester.tap(find.byTooltip('Regresar'));
+          }
+          await tester.pumpAndSettle();
+          expect(
+            router.routeInformationProvider.value.uri.path,
+            '/rescue-cases',
+          );
+          expect(
+            (await SharedPreferences.getInstance()).getString(storage),
+            beforeBack,
+          );
+          expect(repo.registrationValue, same(original));
+          expect(repo.registrations, isEmpty);
+          expect(repo.calls, isEmpty);
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+  }
   testWidgets('direct registration route can return without prior history', (
     tester,
   ) async {
@@ -908,6 +966,17 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
       expect(find.text('En proceso…'), findsOneWidget);
       await capture(tester, 'normal-processing');
+      await tester.binding.handlePopRoute();
+      await tester.pump();
+      expect(find.text('Elige tu apoyo'), findsOneWidget);
+      expect(repo.registrations.length, 1);
+      expect(repo.calls, isEmpty);
+      final persisted = jsonDecode(
+        (await SharedPreferences.getInstance()).getString(
+          'dopmi-guardian-registration:one:intent',
+        )!,
+      );
+      expect(persisted['key'], repo.registrations.single['key']);
       gate.complete();
       await tester.pumpAndSettle();
       expect(repo.registrations.length, 1);

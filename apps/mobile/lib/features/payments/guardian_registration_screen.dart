@@ -17,8 +17,13 @@ import 'guardian_repository.dart';
 import 'payment_repository.dart';
 
 class GuardianRegistrationScreen extends ConsumerStatefulWidget {
-  const GuardianRegistrationScreen({super.key, required this.owner});
+  const GuardianRegistrationScreen({
+    super.key,
+    required this.owner,
+    this.onBack,
+  });
   final String owner;
+  final VoidCallback? onBack;
   @override
   ConsumerState<GuardianRegistrationScreen> createState() =>
       _RegistrationScreenState();
@@ -268,157 +273,171 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
             ? 'Prepara tu método de pago'
             : 'Registro Guardián',
     };
-    return ContributionFrame(
-      title: 'Guardián',
-      back: () {
-        if (context.canPop()) {
-          context.pop();
-        } else {
-          context.go('/rescue-cases');
-        }
+    void leave() {
+      if (busy) return;
+      if (widget.onBack != null) {
+        widget.onBack!();
+      } else if (context.canPop()) {
+        context.pop();
+      } else {
+        context.go('/rescue-cases');
+      }
+    }
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) leave();
       },
-      bottomNavigationBar: form
-          ? SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: ContributionButton(
-                  editing
-                      ? 'Guardar monto'
-                      : draft != null
-                      ? 'Continuar registro'
-                      : 'Registrar y preparar método',
-                  dark: true,
-                  busy: busy,
-                  onPressed: valid ? submit : null,
+      child: ContributionFrame(
+        title: 'Guardián',
+        back: leave,
+        bottomNavigationBar: form
+            ? SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: ContributionButton(
+                    editing
+                        ? 'Guardar monto'
+                        : draft != null
+                        ? 'Continuar registro'
+                        : 'Registrar y preparar método',
+                    dark: true,
+                    busy: busy,
+                    onPressed: valid ? submit : null,
+                  ),
                 ),
+              )
+            : null,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+          children: [
+            if (busy) const LinearProgressIndicator(),
+            if (busy)
+              Semantics(liveRegion: true, child: const Text('En proceso…')),
+            if (error != null) Notice(error!),
+            if (form) ...[
+              if (state?.status == 'method_pending')
+                const Notice(
+                  'Registro pendiente: falta confirmar tu método en Stripe. Prepararlo no genera un cargo.',
+                ),
+              GuardianEnrollmentAmount(
+                registrationOnly: true,
+                amount: amount,
+                locked:
+                    busy || draft != null || state?.status == 'method_pending',
+                decorate: true,
+                onChanged: () => setState(() {
+                  consent = false;
+                  methodConsent = false;
+                }),
               ),
-            )
-          : null,
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
-        children: [
-          if (busy) const LinearProgressIndicator(),
-          if (busy)
-            Semantics(liveRegion: true, child: const Text('En proceso…')),
-          if (error != null) Notice(error!),
-          if (form) ...[
-            if (state?.status == 'method_pending')
-              const Notice(
-                'Registro pendiente: falta confirmar tu método en Stripe. Prepararlo no genera un cargo.',
+              const SizedBox(height: 16),
+              const Text(
+                'Puedes registrarte aunque no haya gastos disponibles. Preparar tu método no genera un cargo.',
               ),
-            GuardianEnrollmentAmount(
-              registrationOnly: true,
-              amount: amount,
-              locked:
-                  busy || draft != null || state?.status == 'method_pending',
-              decorate: true,
-              onChanged: () => setState(() {
-                consent = false;
-                methodConsent = false;
-              }),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Puedes registrarte aunque no haya gastos disponibles. Preparar tu método no genera un cargo.',
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'Con capacidad suficiente se intenta la primera aportación hoy. Sin capacidad, no se cobra y se evalúa el siguiente mes, sin deuda ni recobro. Sólo se aporta cuando puede asignarse todo el neto.',
-            ),
-            CheckboxListTile(
-              key: const Key('registration-consent'),
-              contentPadding: EdgeInsets.zero,
-              value: consent,
-              onChanged: busy
-                  ? null
-                  : (value) => setState(() => consent = value ?? false),
-              title: Text(
-                editing
-                    ? 'Autorizo este monto desde el siguiente ciclo, sin cambiar ciclos ya preparados.'
-                    : 'Autorizo este monto mensual, su evaluación por aniversario y la cancelación de ciclos futuros.',
+              const SizedBox(height: 12),
+              const Text(
+                'Con capacidad suficiente se intenta la primera aportación hoy. Sin capacidad, no se cobra y se evalúa el siguiente mes, sin deuda ni recobro. Sólo se aporta cuando puede asignarse todo el neto.',
               ),
-            ),
-            if (!editing)
               CheckboxListTile(
-                key: const Key('method-consent'),
+                key: const Key('registration-consent'),
                 contentPadding: EdgeInsets.zero,
-                value: methodConsent,
+                value: consent,
                 onChanged: busy
                     ? null
-                    : (value) => setState(() => methodConsent = value ?? false),
-                title: const Text(
-                  'Autorizo guardar mi método de pago de forma segura en Stripe para estas aportaciones.',
+                    : (value) => setState(() => consent = value ?? false),
+                title: Text(
+                  editing
+                      ? 'Autorizo este monto desde el siguiente ciclo, sin cambiar ciclos ya preparados.'
+                      : 'Autorizo este monto mensual, su evaluación por aniversario y la cancelación de ciclos futuros.',
                 ),
               ),
-          ] else ...[
-            Text(
-              state.status == 'canceled' ? 'Registro cancelado' : status,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                color: ink,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text('Monto mensual: ${contributionMoney(state.grossCents)}'),
-            if (state.nextEvaluationAt != null)
+              if (!editing)
+                CheckboxListTile(
+                  key: const Key('method-consent'),
+                  contentPadding: EdgeInsets.zero,
+                  value: methodConsent,
+                  onChanged: busy
+                      ? null
+                      : (value) =>
+                            setState(() => methodConsent = value ?? false),
+                  title: const Text(
+                    'Autorizo guardar mi método de pago de forma segura en Stripe para estas aportaciones.',
+                  ),
+                ),
+            ] else ...[
               Text(
-                'Próxima evaluación: ${state.nextEvaluationAt!.toIso8601String().substring(0, 10)} (UTC).',
+                state.status == 'canceled' ? 'Registro cancelado' : status,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: ink,
+                ),
               ),
-            if (state.evaluationStatus == 'skipped')
-              const Notice(
-                'Este ciclo se omitió. No genera deuda ni se cobrará después.',
-              ),
-            if (state.hasConfirmedImpact)
-              Text('Neto asignado: ${contributionMoney(state.allocatedCents)}'),
-            if (state.status == 'canceled' &&
-                [
-                  GuardianRegistrationPaymentState.processing,
-                  GuardianRegistrationPaymentState.processorConfirmed,
-                ].contains(state.paymentState))
-              const Notice(
-                'Cancelaste los ciclos futuros. El intento anterior sigue en conciliación; espera su resultado.',
-              ),
-            if (state.paymentState ==
-                GuardianRegistrationPaymentState.requiresAction) ...[
-              const Notice(
-                'Continúa la autorización de tu banco. Sólo está disponible mientras la reserva siga vigente. Regresar o cerrar no confirma el resultado.',
-              ),
-              ContributionButton(
-                'Autorizar con mi banco',
-                busy: busy,
-                onPressed:
-                    !busy &&
-                        !bankAwaiting &&
-                        fresh &&
-                        state.status == 'registered' &&
-                        ref.watch(guardianBankSdkProvider).available
-                    ? bank
-                    : null,
-              ),
+              const SizedBox(height: 12),
+              Text('Monto mensual: ${contributionMoney(state.grossCents)}'),
+              if (state.nextEvaluationAt != null)
+                Text(
+                  'Próxima evaluación: ${state.nextEvaluationAt!.toIso8601String().substring(0, 10)} (UTC).',
+                ),
+              if (state.evaluationStatus == 'skipped')
+                const Notice(
+                  'Este ciclo se omitió. No genera deuda ni se cobrará después.',
+                ),
+              if (state.hasConfirmedImpact)
+                Text(
+                  'Neto asignado: ${contributionMoney(state.allocatedCents)}',
+                ),
+              if (state.status == 'canceled' &&
+                  [
+                    GuardianRegistrationPaymentState.processing,
+                    GuardianRegistrationPaymentState.processorConfirmed,
+                  ].contains(state.paymentState))
+                const Notice(
+                  'Cancelaste los ciclos futuros. El intento anterior sigue en conciliación; espera su resultado.',
+                ),
+              if (state.paymentState ==
+                  GuardianRegistrationPaymentState.requiresAction) ...[
+                const Notice(
+                  'Continúa la autorización de tu banco. Sólo está disponible mientras la reserva siga vigente. Regresar o cerrar no confirma el resultado.',
+                ),
+                ContributionButton(
+                  'Autorizar con mi banco',
+                  busy: busy,
+                  onPressed:
+                      !busy &&
+                          !bankAwaiting &&
+                          fresh &&
+                          state.status == 'registered' &&
+                          ref.watch(guardianBankSdkProvider).available
+                      ? bank
+                      : null,
+                ),
+              ],
+              if (state.status == 'registered') ...[
+                TextButton(
+                  onPressed: busy || !fresh
+                      ? null
+                      : () => setState(() {
+                          editing = true;
+                          consent = false;
+                        }),
+                  child: const Text('Cambiar monto'),
+                ),
+                TextButton(
+                  onPressed: busy || !fresh ? null : cancel,
+                  child: const Text('Cancelar ciclos futuros'),
+                ),
+              ],
             ],
-            if (state.status == 'registered') ...[
-              TextButton(
-                onPressed: busy || !fresh
-                    ? null
-                    : () => setState(() {
-                        editing = true;
-                        consent = false;
-                      }),
-                child: const Text('Cambiar monto'),
-              ),
-              TextButton(
-                onPressed: busy || !fresh ? null : cancel,
-                child: const Text('Cancelar ciclos futuros'),
-              ),
-            ],
+            const SizedBox(height: 12),
+            TextButton(
+              onPressed: busy && !bankAwaiting ? null : load,
+              child: const Text('Consultar estado'),
+            ),
           ],
-          const SizedBox(height: 12),
-          TextButton(
-            onPressed: busy && !bankAwaiting ? null : load,
-            child: const Text('Consultar estado'),
-          ),
-        ],
+        ),
       ),
     );
   }

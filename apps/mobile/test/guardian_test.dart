@@ -210,6 +210,21 @@ Json activePlan() => {
   'requests': <Json>[],
 };
 
+// These Checkout regressions exercise the retained activation contract, not a
+// first registration. New registrations have two independent consents and use
+// submitRegistration; guardian_registration_screen_test covers that route.
+FakeGuardian historicalGuardianCheckout() =>
+    FakeGuardian()..value = historicalGuardianState();
+Map<String, dynamic> historicalGuardianState() => {
+  'plan': null,
+  'activation': {
+    'status': 'no_capacity',
+    'key': 'historical-no-capacity',
+    'gross_cents': 5000,
+    'consent_version': guardianConsent,
+  },
+};
+
 void main() {
   Future<void> start(
     WidgetTester tester,
@@ -271,7 +286,7 @@ void main() {
   testWidgets('review blocks a retained Checkout but preserves its reference', (
     tester,
   ) async {
-    final repo = FakeGuardian();
+    final repo = historicalGuardianCheckout();
     await start(tester, repo);
     await consent(tester);
     await tapButton(tester, 'Activar en Stripe');
@@ -316,7 +331,7 @@ void main() {
   testWidgets('explicit consent and available capacity precede any Checkout', (
     tester,
   ) async {
-    final repo = FakeGuardian()..available = false;
+    final repo = historicalGuardianCheckout()..available = false;
     await start(tester, repo);
     expect(
       tester
@@ -339,7 +354,7 @@ void main() {
   testWidgets('changing an amount revokes the checkbox authorization', (
     tester,
   ) async {
-    await start(tester, FakeGuardian());
+    await start(tester, historicalGuardianCheckout());
     await consent(tester);
     await tester.enterText(
       find.byKey(const ValueKey('guardian-enrollment-custom-amount')),
@@ -362,7 +377,7 @@ void main() {
   testWidgets(
     'lost Checkout response survives reopening with the same key and amount',
     (tester) async {
-      final repo = FakeGuardian()..fail = true;
+      final repo = historicalGuardianCheckout()..fail = true;
       await start(tester, repo);
       await tester.enterText(
         find.byKey(const ValueKey('guardian-enrollment-custom-amount')),
