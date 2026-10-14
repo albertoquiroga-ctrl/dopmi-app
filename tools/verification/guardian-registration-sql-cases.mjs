@@ -393,6 +393,39 @@ export function registerGuardianRegistrationSqlCases(getDb, { donor, other, staf
     await db.exec('reset role');
     assert.equal((await db.query('select pay_requested_at from private.dopmi_guardian_registration_attempts where id=$1', [a.id])).rows[0].pay_requested_at, null);
   });
+  test('registration discovery: twenty expired uncertain owners cannot starve the twenty-first eligible owner', async () => {
+    const db = getDb(); const r = await ready(); const a = await attemptRpc('prepare', { id: r.id });
+    await bind(a.id, 'pi_registration1'); await authorize(a.id);
+    await db.query("update private.dopmi_guardian_registrations set registered_at='2025-01-01T00:00:00Z' where id=$1", [r.id]);
+    await db.query("update private.dopmi_guardian_registration_evaluations set next_evaluation_at=now()-interval '1 day' where id=$1", [a.evaluation_id]);
+    await db.query("update private.dopmi_guardian_registration_attempts set expires_at=now()-interval '1 day' where id=$1", [a.id]);
+    for (let n=1;n<=19;n++) {
+      const owner = '99000000-0000-4000-8000-' + String(n).padStart(12,'0');
+      await db.query(`insert into auth.users(id,email,email_confirmed_at,raw_user_meta_data) values($1,$2,now(),'{"display_name":"Prueba","terms_accepted":true,"terms_version":"development-2026-09-13"}')`,[owner,owner+'@example.test']);
+      const ids = (await db.query('select gen_random_uuid() reg,gen_random_uuid() ev,gen_random_uuid() cycle,gen_random_uuid() att')).rows[0];
+      const copy = async (table, sourceId, changes) => db.query(`insert into ${table} select (jsonb_populate_record(null::${table},to_jsonb(src)||$2::jsonb)).* from ${table} src where id=$1`,[sourceId,JSON.stringify(changes)]);
+      await copy('private.dopmi_guardian_registrations',r.id,{id:ids.reg,owner_id:owner,registered_at:'2025-01-01T00:00:00Z'});
+      await copy('private.dopmi_guardian_cycles',a.reservation_id,{id:ids.cycle,donor_id:owner,cycle_key:ids.ev});
+      await copy('private.dopmi_guardian_registration_evaluations',a.evaluation_id,{id:ids.ev,registration_id:ids.reg,reservation_id:ids.cycle});
+      await copy('private.dopmi_guardian_registration_attempts',a.id,{id:ids.att,owner_id:owner,registration_id:ids.reg,evaluation_id:ids.ev,reservation_id:ids.cycle,stripe_payment_intent_id:'pi_uncertain'+n});
+    }
+    const target = await prepare({owner_id:other});
+    const wallet = (await db.query("insert into private.dopmi_saved_card_customers(owner_id,stripe_customer_id) values($1,'cus_eligible21') returning id",[other])).rows[0].id;
+    const job = (await db.query("insert into private.dopmi_saved_card_jobs(owner_id,request_key,wallet_id,consent_version,customer_id,return_url) values($1,$2,$3,'saved-cards-2026-10-03','cus_eligible21','https://example.test/return') returning id",[other,target.id,wallet])).rows[0].id;
+    await db.query("update private.dopmi_saved_card_jobs set status='saved',session_id='cs_test_eligible21',setup_intent_id='seti_eligible21',payment_method_id='pm_eligible21' where id=$1",[job]);
+    await rpc('reconcile_method',{owner_id:other,id:target.id});
+    const before = (await db.query('select id,status,expires_at,pay_requested_at,resolved_at from private.dopmi_guardian_registration_attempts order by id')).rows;
+    const holds = (await db.query('select id,status,reserved_cents from private.dopmi_guardian_cycles order by id')).rows;
+    const candidates = await attemptRpc('candidates');
+    assert.deepEqual(candidates,[{id:target.id}]); assert.ok(candidates.length<=20);
+    assert.equal(new Set((await db.query('select owner_id from private.dopmi_guardian_registrations')).rows.map(v=>v.owner_id)).size,21);
+    assert.equal((await payment('candidates')).length,20);
+    assert.deepEqual((await db.query('select id,status,expires_at,pay_requested_at,resolved_at from private.dopmi_guardian_registration_attempts order by id')).rows,before);
+    assert.deepEqual((await db.query('select id,status,reserved_cents from private.dopmi_guardian_cycles order by id')).rows,holds);
+    const progressed = await attemptRpc('prepare',{id:target.id});
+    assert.equal(progressed.owner_id,other); assert.equal(progressed.status,'prepared');
+    assert.equal(progressed.pay_requested_at,null);
+  });
   test('registration attempt: durable identity, immutable amount and TTL, cancellation stops preparation', async () => {
     const db = getDb(); const r = await ready();
     assert.deepEqual(await attemptRpc('candidates'), [{ id: r.id }]);
