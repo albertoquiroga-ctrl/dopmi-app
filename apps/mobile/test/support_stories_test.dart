@@ -176,8 +176,9 @@ void main() {
       }
       await tester.pump();
       expect(storyPath(tester), 'timed/one');
+      expect(storyProgress(tester), closeTo(cancel ? elapsed : 0, .001));
       await tester.pump(const Duration(milliseconds: 1300));
-      expect(storyProgress(tester), closeTo(.5, .001));
+      expect(storyProgress(tester), closeTo(cancel ? .5 : .25, .001));
       await tester.pumpWidget(const SizedBox.shrink());
     });
   }

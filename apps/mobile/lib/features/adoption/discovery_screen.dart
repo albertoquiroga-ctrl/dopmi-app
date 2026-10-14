@@ -1150,19 +1150,6 @@ class _SwipeCard extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    post.text('story'),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                      height: 1.45,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.white,
-                                      letterSpacing: 0,
-                                    ),
-                                  ),
                                   const SizedBox(height: 8),
                                   Wrap(
                                     spacing: 6,
@@ -1177,6 +1164,22 @@ class _SwipeCard extends StatelessWidget {
                                                     'large': 'Grande',
                                                   }[post.text('size')] ??
                                                   '',
+                                              if ((post.data['personality']
+                                                          as List? ??
+                                                      const [])
+                                                  .isNotEmpty)
+                                                personalityLabels[(post
+                                                                .data['personality']
+                                                            as List)
+                                                        .first] ??
+                                                    legacyPersonalityLabels[(post
+                                                                .data['personality']
+                                                            as List)
+                                                        .first] ??
+                                                    (post.data['personality']
+                                                            as List)
+                                                        .first
+                                                        .toString(),
                                             ]
                                             .map(
                                               (label) => Container(

@@ -63,9 +63,19 @@ void main() {
       expect(tester.widget<Checkbox>(find.byType(Checkbox)).value, false);
       await tester.tap(find.byType(Checkbox));
       await tester.pump();
-      await tester.enterText(find.byType(TextField), '49.99');
+      await tester.enterText(find.byType(TextField), '19.99');
+      await tester.pump();
+      expect(tester.widget<Checkbox>(find.byType(Checkbox)).value, false);
+      await tester.tap(find.byType(Checkbox));
+      await tester.pump();
+      expect(tester.widget<Checkbox>(find.byType(Checkbox)).value, true);
+      expect(enabled(), false);
+      await tester.enterText(find.byType(TextField), '20.00');
       await tester.pump();
       expect(enabled(), false);
+      await tester.tap(find.byType(Checkbox));
+      await tester.pump();
+      expect(enabled(), true);
     },
   );
   testWidgets(

@@ -137,6 +137,7 @@ Future<CardFixture> openCards(
   repo.post = Adoption({
     ...repo.post.data,
     'photos': ['adoption/luna.jpg'],
+    'personality': ['affectionate'],
   });
   repo.discoveryItems = [
     repo.post,
@@ -144,6 +145,7 @@ Future<CardFixture> openCards(
       ...repo.post.data,
       'id': 'second',
       'pet_name': 'Milo',
+      'personality': ['playful'],
       'story': 'Historia verde de Milo.',
       'photos': ['adoption/milo.jpg'],
     }),
@@ -151,6 +153,7 @@ Future<CardFixture> openCards(
       ...repo.post.data,
       'id': 'third',
       'pet_name': 'Nube',
+      'personality': ['tranquilo'],
       'story': 'Historia amarilla de Nube.',
       'photos': ['adoption/nube.jpg'],
     }),
@@ -228,15 +231,15 @@ void main() {
       final downloads = fixture.runtime.metrics.downloads;
       final signatures = fixture.runtime.metrics.signatures;
       final sequence = [
-        ('post', 'Luna', 'adoption/luna.jpg', 'Una historia por conocer.'),
-        ('second', 'Milo', 'adoption/milo.jpg', 'Historia verde de Milo.'),
+        ('post', 'Luna', 'adoption/luna.jpg', 'Cariñoso'),
+        ('second', 'Milo', 'adoption/milo.jpg', 'Juguetón'),
         (
           'support-expense-one',
           'Choco',
           'rescue/choco.jpg',
           'Tratamiento azul de Choco.',
         ),
-        ('third', 'Nube', 'adoption/nube.jpg', 'Historia amarilla de Nube.'),
+        ('third', 'Nube', 'adoption/nube.jpg', 'Tranquilo'),
       ];
       for (var i = 0; i < sequence.length - 1; i++) {
         final current = sequence[i];

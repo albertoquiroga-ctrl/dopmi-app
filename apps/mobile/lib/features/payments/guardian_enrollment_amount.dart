@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/ui.dart';
 import '../rescue/rescue_repository.dart';
 import 'contribution_layout.dart';
+import 'guardian_support_bubbles.dart';
 
 class GuardianEnrollmentAmount extends StatefulWidget {
   const GuardianEnrollmentAmount({
@@ -11,11 +12,13 @@ class GuardianEnrollmentAmount extends StatefulWidget {
     this.headingKey,
     required this.locked,
     required this.onChanged,
+    this.decorate = false,
   });
   final TextEditingController amount;
   final Key? headingKey;
   final bool locked;
   final VoidCallback onChanged;
+  final bool decorate;
   @override
   State<GuardianEnrollmentAmount> createState() =>
       _GuardianEnrollmentAmountState();
@@ -23,6 +26,7 @@ class GuardianEnrollmentAmount extends StatefulWidget {
 
 class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
   bool custom = false;
+  int burst = 0;
   final amountFocus = FocusNode();
   @override
   void dispose() {
@@ -56,14 +60,16 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
       selected: !custom && cents == value,
       child: Material(
         color: !custom && cents == value
-            ? const Color(0xfffff8d7)
+            ? (widget.decorate ? yellow : const Color(0xfffff8d7))
             : Colors.white,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: !custom && cents == value ? yellow : const Color(0xffe6e2dd),
+            color: widget.decorate || (!custom && cents == value)
+                ? yellow
+                : const Color(0xffe6e2dd),
           ),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(widget.decorate ? 999 : 16),
         ),
         child: InkWell(
           splashFactory: NoSplash.splashFactory,
@@ -74,14 +80,19 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
                   amountFocus.unfocus();
                   setState(() {
                     custom = false;
+                    burst++;
                     widget.amount.text = (value / 100).toStringAsFixed(2);
                   });
                   widget.onChanged();
                 },
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 14),
-            child: Column(
+            child: Flex(
+              direction: widget.decorate && !large
+                  ? Axis.horizontal
+                  : Axis.vertical,
               mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   contributionMoney(value).replaceAll(' MXN', ''),
@@ -92,11 +103,14 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
                     color: ink,
                   ),
                 ),
-                const SizedBox(height: 2),
-                const Text(
+                SizedBox(
+                  height: widget.decorate ? 0 : 2,
+                  width: widget.decorate ? 8 : 0,
+                ),
+                Text(
                   'MXN / mes',
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: widget.decorate ? 14 : 11,
                     height: 1.2,
                     fontWeight: FontWeight.w500,
                     color: muted,
@@ -110,172 +124,193 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
     );
     final amountLabel =
         cents != null &&
-            cents >= (widget.locked ? 1000 : 5000) &&
+            cents >= (widget.locked ? 1000 : 2000) &&
             cents <= 1000000
         ? pesos(cents)
         : 'Importe por confirmar';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          'Elige tu apoyo',
-          key: widget.headingKey,
-          style: const TextStyle(
-            fontSize: 26,
-            height: 1.2,
-            fontWeight: FontWeight.w700,
-            color: ink,
-          ),
-        ),
-        const SizedBox(height: 6),
-        const Text(
-          'Selecciona cuánto quieres aportar cada mes.',
-          style: TextStyle(fontSize: 14, height: 1.55, color: muted),
-        ),
-        const SizedBox(height: 16),
-        if (large)
-          Column(
+        if (widget.decorate) GuardianSupportBubbles(burst: burst),
+        Padding(
+          padding: widget.decorate
+              ? const EdgeInsets.symmetric(horizontal: 24)
+              : EdgeInsets.zero,
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              for (final value in [5000, 20000, 50000]) ...[
-                preset(value),
-                const SizedBox(height: 10),
-              ],
-            ],
-          )
-        else
-          Row(
-            children: [
-              for (var i = 0; i < 3; i++) ...[
-                if (i > 0) const SizedBox(width: 10),
-                Expanded(child: preset([5000, 20000, 50000][i])),
-              ],
-            ],
-          ),
-        SizedBox(height: showCustom ? 16 : 8),
-        if (showCustom) ...[
-          Semantics(
-            label: 'Importe mensual en MXN',
-            child: TextField(
-              key: const ValueKey('guardian-enrollment-custom-amount'),
-              controller: widget.amount,
-              focusNode: amountFocus,
-              textInputAction: TextInputAction.done,
-              onSubmitted: (_) => amountFocus.unfocus(),
-              enabled: !widget.locked,
-              style: const TextStyle(
-                fontSize: 18,
-                height: 1.2,
-                fontWeight: FontWeight.w700,
-                color: ink,
-              ),
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              onChanged: (_) {
-                setState(() => custom = true);
-                widget.onChanged();
-              },
-              decoration: InputDecoration(
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 26.8,
+              Text(
+                'Elige tu apoyo',
+                key: widget.headingKey,
+                textAlign: widget.decorate ? TextAlign.center : TextAlign.start,
+                style: TextStyle(
+                  fontSize: widget.decorate ? 28 : 26,
+                  height: widget.decorate ? 1.15 : 1.2,
+                  fontWeight: widget.decorate
+                      ? FontWeight.w800
+                      : FontWeight.w700,
+                  color: ink,
                 ),
-                prefixIcon: const Padding(
-                  padding: EdgeInsets.only(left: 16, right: 8),
-                  child: ExcludeSemantics(
-                    child: Text(
-                      r'$',
-                      style: TextStyle(
-                        fontSize: 18,
-                        height: 1.2,
-                        fontWeight: FontWeight.w700,
-                        color: ink,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                widget.decorate
+                    ? 'Tu aporte mensual ayuda a casos publicados por rescatistas.'
+                    : 'Selecciona cuánto quieres aportar cada mes.',
+                textAlign: widget.decorate ? TextAlign.center : TextAlign.start,
+                style: TextStyle(
+                  fontSize: widget.decorate ? 15 : 14,
+                  height: widget.decorate ? 1.45 : 1.55,
+                  color: muted,
+                ),
+              ),
+              const SizedBox(height: 16),
+              if (large || widget.decorate)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    for (final value in [5000, 20000, 50000]) ...[
+                      preset(value),
+                      const SizedBox(height: 10),
+                    ],
+                  ],
+                )
+              else
+                Row(
+                  children: [
+                    for (var i = 0; i < 3; i++) ...[
+                      if (i > 0) const SizedBox(width: 10),
+                      Expanded(child: preset([5000, 20000, 50000][i])),
+                    ],
+                  ],
+                ),
+              SizedBox(height: showCustom ? 16 : 8),
+              if (showCustom) ...[
+                Semantics(
+                  label: 'Importe mensual en MXN',
+                  child: TextField(
+                    key: const ValueKey('guardian-enrollment-custom-amount'),
+                    controller: widget.amount,
+                    focusNode: amountFocus,
+                    textInputAction: TextInputAction.done,
+                    onSubmitted: (_) => amountFocus.unfocus(),
+                    enabled: !widget.locked,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      height: 1.2,
+                      fontWeight: FontWeight.w700,
+                      color: ink,
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    onChanged: (_) {
+                      setState(() => custom = true);
+                      widget.onChanged();
+                    },
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 26.8,
+                      ),
+                      prefixIcon: const Padding(
+                        padding: EdgeInsets.only(left: 16, right: 8),
+                        child: ExcludeSemantics(
+                          child: Text(
+                            r'$',
+                            style: TextStyle(
+                              fontSize: 18,
+                              height: 1.2,
+                              fontWeight: FontWeight.w700,
+                              color: ink,
+                            ),
+                          ),
+                        ),
+                      ),
+                      prefixIconConstraints: const BoxConstraints(
+                        minWidth: 0,
+                        minHeight: 0,
+                      ),
+                      suffixIcon: const Padding(
+                        padding: EdgeInsets.only(left: 8, right: 16),
+                        child: ExcludeSemantics(
+                          child: Text(
+                            'MXN',
+                            style: TextStyle(
+                              fontSize: 14,
+                              height: 1.2,
+                              fontWeight: FontWeight.w500,
+                              color: muted,
+                            ),
+                          ),
+                        ),
+                      ),
+                      suffixIconConstraints: const BoxConstraints(
+                        minWidth: 0,
+                        minHeight: 0,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: const BorderSide(color: Color(0xfff4c917)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: const BorderSide(color: Color(0xfff4c917)),
                       ),
                     ),
                   ),
                 ),
-                prefixIconConstraints: const BoxConstraints(
-                  minWidth: 0,
-                  minHeight: 0,
-                ),
-                suffixIcon: const Padding(
-                  padding: EdgeInsets.only(left: 8, right: 16),
-                  child: ExcludeSemantics(
-                    child: Text(
-                      'MXN',
-                      style: TextStyle(
-                        fontSize: 14,
-                        height: 1.2,
-                        fontWeight: FontWeight.w500,
-                        color: muted,
-                      ),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(16, 6, 16, 0),
+                  child: Text(
+                    'De \$20 a \$10,000; hasta dos decimales.',
+                    style: TextStyle(
+                      fontSize: 12,
+                      height: 1.55,
+                      letterSpacing: 0,
+                      color: muted,
                     ),
                   ),
                 ),
-                suffixIconConstraints: const BoxConstraints(
-                  minWidth: 0,
-                  minHeight: 0,
+                TextButton(
+                  onPressed: widget.locked
+                      ? null
+                      : () {
+                          amountFocus.unfocus();
+                          setState(() {
+                            custom = false;
+                            widget.amount.text = '50.00';
+                          });
+                          widget.onChanged();
+                        },
+                  child: const Text('Volver a cantidades sugeridas'),
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: const BorderSide(color: Color(0xfff4c917)),
+              ] else
+                TextButton(
+                  onPressed: widget.locked ? null : openCustom,
+                  child: const Text(
+                    'Otra cantidad',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      height: 1.2,
+                    ),
+                  ),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: const BorderSide(color: Color(0xfff4c917)),
-                ),
+              const SizedBox(height: 10),
+              ContributionSummary(
+                title: 'Resumen',
+                balancedColumns: true,
+                emphasizeLast: true,
+                rows: [
+                  ('Apoyo mensual', amountLabel),
+                  ('Frecuencia', 'Mensual'),
+                  ('Total al activar', amountLabel),
+                ],
               ),
-            ),
+            ],
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 6, 16, 0),
-            child: Text(
-              'De \$50 a \$10,000; hasta dos decimales.',
-              style: TextStyle(
-                fontSize: 12,
-                height: 1.55,
-                letterSpacing: 0,
-                color: muted,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: widget.locked
-                ? null
-                : () {
-                    amountFocus.unfocus();
-                    setState(() {
-                      custom = false;
-                      widget.amount.text = '50.00';
-                    });
-                    widget.onChanged();
-                  },
-            child: const Text('Volver a cantidades sugeridas'),
-          ),
-        ] else
-          TextButton(
-            onPressed: widget.locked ? null : openCustom,
-            child: const Text(
-              'Otra cantidad',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                height: 1.2,
-              ),
-            ),
-          ),
-        const SizedBox(height: 10),
-        ContributionSummary(
-          title: 'Resumen',
-          balancedColumns: true,
-          emphasizeLast: true,
-          rows: [
-            ('Apoyo mensual', amountLabel),
-            ('Frecuencia', 'Mensual'),
-            ('Total al activar', amountLabel),
-          ],
         ),
       ],
     );

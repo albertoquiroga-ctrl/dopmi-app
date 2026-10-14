@@ -997,6 +997,8 @@ void main() {
       ('bccd-messages-all-samsung', '/messages'),
       ('adoption-swipe', '/adoptions'),
       ('adoption-large', '/adoptions'),
+      ('adoption-q38-09-large', '/adoptions'),
+      ('adoption-q38-09-samsung', '/adoptions'),
       ('adoption-drag', '/adoptions'),
       ('adoption-filters', '/adoptions'),
       ('adoption-filters-large', '/adoptions'),
@@ -1079,6 +1081,10 @@ void main() {
       ('support-home-case-focus', '/rescue-cases'),
       ('support-home-case-focus-large', '/rescue-cases'),
       ('support-home-guardian-card-focus', '/rescue-cases'),
+      ('support-home-reference0962ebe', '/rescue-cases'),
+      ('support-home-reference0962ebe-samsung', '/rescue-cases'),
+      ('support-home-reference0962ebe-large', '/rescue-cases'),
+      ('support-home-guardian-card-motion', '/rescue-cases'),
       ('support-home-guardian-card-focus-large', '/rescue-cases'),
       ('support-home-guardian-dock-focus', '/rescue-cases'),
       ('support-home-guardian-dock-focus-large', '/rescue-cases'),
@@ -1178,6 +1184,9 @@ void main() {
         '/settings/payment-methods',
       ),
       ('guardian-billing-amount', '/guardian'),
+      ('guardian-billing-amount-minimum20', '/guardian'),
+      ('guardian-billing-amount-minimum20-samsung', '/guardian'),
+      ('guardian-billing-amount-minimum20-large', '/guardian'),
       ('guardian-billing-amount-large', '/guardian'),
       ('guardian-billing-amount-tile-large', '/guardian'),
       ('guardian-billing-cancel', '/guardian'),
@@ -1201,6 +1210,9 @@ void main() {
       ('guardian-billing-enrollment', '/guardian'),
       ('guardian-billing-enrollment-large', '/guardian'),
       ('guardian-billing-enrollment-custom', '/guardian'),
+      ('guardian-billing-enrollment-custom-minimum20', '/guardian'),
+      ('guardian-billing-enrollment-custom-minimum20-samsung', '/guardian'),
+      ('guardian-billing-enrollment-custom-minimum20-large', '/guardian'),
       ('guardian-billing-enrollment-custom-large', '/guardian'),
       ('guardian-billing-enrollment-confirmation', '/guardian'),
       ('guardian-billing-enrollment-confirmation-large', '/guardian'),
@@ -2742,10 +2754,10 @@ void main() {
           await tester.pumpAndSettle();
           await tester.enterText(
             find.byKey(const ValueKey('guardian-enrollment-custom-amount')),
-            '75.25',
+            spec.$1.contains('minimum20') ? '20.00' : '75.25',
           );
           await tester.pumpAndSettle();
-          if (!large) {
+          if (!large && !spec.$1.contains('minimum20')) {
             FocusManager.instance.primaryFocus?.unfocus();
             Scrollable.of(
               tester.element(
@@ -2808,6 +2820,11 @@ void main() {
         await tester.tap(find.text('Cambiar cantidad'));
         await tester.pumpAndSettle();
         expect(find.text('Guardar nueva cantidad'), findsOneWidget);
+        if (spec.$1.contains('minimum20')) {
+          await tester.ensureVisible(find.byType(TextField));
+          await tester.enterText(find.byType(TextField), '20.00');
+          await tester.pumpAndSettle();
+        }
         if (spec.$1.contains('-tile-')) {
           final tile = find.text('Aportación mensual').first;
           await Scrollable.ensureVisible(tester.element(tile), alignment: .1);
@@ -2817,6 +2834,36 @@ void main() {
       if (spec.$1.startsWith('guardian-billing-cancel')) {
         await tester.ensureVisible(find.text('Cancelar suscripción'));
         await tester.tap(find.text('Cancelar suscripción'));
+        await tester.pumpAndSettle();
+      }
+      if (spec.$1.contains('minimum20')) {
+        final field = find.byType(TextField);
+        expect(tester.widget<TextField>(field).controller!.text, '20.00');
+        FocusManager.instance.primaryFocus?.unfocus();
+        await Scrollable.ensureVisible(tester.element(field), alignment: .15);
+        await tester.pumpAndSettle();
+        await tester.runAsync(
+          () => saveCapture(key, '${out.path}/${spec.$1}-input.png'),
+        );
+        final consent = find.byType(CheckboxListTile);
+        await tester.ensureVisible(consent);
+        await tester.pumpAndSettle();
+        expect(consent.hitTestable(), findsOneWidget);
+        if (!tester.widget<CheckboxListTile>(consent).value!) {
+          await tester.tap(consent);
+          await tester.pumpAndSettle();
+        }
+        expect(tester.widget<CheckboxListTile>(consent).value, true);
+        await tester.runAsync(
+          () => saveCapture(key, '${out.path}/${spec.$1}-consent.png'),
+        );
+        await tester.ensureVisible(
+          find.text(
+            spec.$1.startsWith('guardian-billing-enrollment')
+                ? 'Activar en Stripe'
+                : 'Guardar nueva cantidad',
+          ),
+        );
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('contribution-result')) {
@@ -2983,6 +3030,72 @@ void main() {
           find.byKey(const ValueKey('reference-keyboard-outline')),
           findsOneWidget,
         );
+        if (spec.$1 == 'support-home-guardian-card-motion') {
+          final carousel = find.byKey(
+            const ValueKey('guardian-support-carousel'),
+          );
+          final scrollable = find.descendant(
+            of: carousel,
+            matching: find.byWidgetPredicate(
+              (widget) =>
+                  widget is Scrollable &&
+                  widget.axisDirection == AxisDirection.right,
+            ),
+          );
+          final position = tester.state<ScrollableState>(scrollable).position;
+          final frames = <Map<String, Object>>[];
+          final started = tester.binding.clock.now();
+          Future<void> frame(String name, int elapsed) async {
+            frames.add({
+              'frame': name,
+              'requested_pump_ms': elapsed,
+              'elapsed_ms': tester.binding.clock
+                  .now()
+                  .difference(started)
+                  .inMilliseconds,
+              'offset': position.pixels,
+              'viewport': position.viewportDimension,
+            });
+            await tester.runAsync(
+              () => saveCapture(key, '${out.path}/${spec.$1}-$name.png'),
+            );
+          }
+
+          await frame('before', 0);
+          final swipe = await tester.startGesture(tester.getCenter(carousel));
+          // First movement crosses the gesture slop; the next moves the page.
+          await swipe.moveBy(const Offset(-30, 0));
+          await tester.pump();
+          await swipe.moveBy(
+            Offset(-tester.getSize(carousel).width * .7 + 30, 0),
+          );
+          await tester.pump(const Duration(milliseconds: 16));
+          expect(position.pixels, greaterThan(0));
+          await frame('held', 16);
+          await swipe.up();
+          for (final elapsed in [50, 100, 150, 200]) {
+            await tester.pump(const Duration(milliseconds: 50));
+            await frame('snap-$elapsed', 16 + elapsed);
+          }
+          await tester.pumpAndSettle();
+          expect(
+            position.pixels,
+            closeTo(
+              position.viewportDimension *
+                  (tester
+                      .widget<PageView>(carousel)
+                      .controller!
+                      .viewportFraction),
+              1,
+            ),
+          );
+          await frame('settled', 216);
+          await tester.runAsync(
+            () =>
+                File('${out.path}/${spec.$1}-frames.json')
+                    .writeAsString(jsonEncode(frames)),
+          );
+        }
       }
       if (spec.$1 == 'support-home-large') {
         await tester.scrollUntilVisible(
@@ -3186,6 +3299,58 @@ void main() {
                       },
                     }),
                   ),
+        );
+      }
+      if (spec.$1 == 'support-home-reference0962ebe-large' ||
+          spec.$1 == 'support-home-reference0962ebe-samsung') {
+        await tester.runAsync(
+          () => saveCapture(key, '${out.path}/${spec.$1}-top.png'),
+        );
+        final outer = tester
+            .state<ScrollableState>(find.byType(Scrollable).first)
+            .position;
+        final hero = find.byKey(const ValueKey('guardian-support-carousel'));
+        await Scrollable.ensureVisible(tester.element(hero), alignment: 0);
+        await tester.pumpAndSettle();
+        await tester.runAsync(
+          () => saveCapture(key, '${out.path}/${spec.$1}-hero.png'),
+        );
+        outer.jumpTo(outer.maxScrollExtent);
+        await tester.pumpAndSettle();
+        expect(find.text('Suscríbete ahora').hitTestable(), findsOneWidget);
+      }
+      if (spec.$1.startsWith('support-home-reference0962ebe')) {
+        final cta = tester.getRect(
+          find.byKey(const ValueKey('guardian-support-cta')),
+        );
+        expect(
+          cta.bottom,
+          lessThanOrEqualTo(
+            tester.view.physicalSize.height / tester.view.devicePixelRatio - 92,
+          ),
+        );
+        expect(find.text('Suscríbete ahora').hitTestable(), findsOneWidget);
+      }
+      if (spec.$1.startsWith('adoption-q38-09')) {
+        await tester.runAsync(
+          () => saveCapture(key, '${out.path}/${spec.$1}-top.png'),
+        );
+        final outer = tester
+            .state<ScrollableState>(find.byType(Scrollable).first)
+            .position;
+        outer.jumpTo(outer.maxScrollExtent);
+        await tester.pumpAndSettle();
+        expect(find.text('Alegre').hitTestable(), findsOneWidget);
+        for (final label in ['Pasar', 'Contactar', 'Me gusta']) {
+          final control = find.byTooltip(label).hitTestable();
+          expect(control, findsOneWidget);
+          expect(
+            tester.getRect(control).bottom,
+            lessThanOrEqualTo(tester.view.physicalSize.height - 92),
+          );
+        }
+        await tester.runAsync(
+          () => saveCapture(key, '${out.path}/${spec.$1}-actions.png'),
         );
       }
       if (spec.$1 == 'adoption-drag') {

@@ -47,126 +47,132 @@ class SupportHomePage extends StatelessWidget {
         bottom: false,
         child: Stack(
           children: [
-            ListView(
-              padding: const EdgeInsets.fromLTRB(18, 16, 18, 0),
-              children: [
-                SizedBox(
-                  height: 42,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(18, 16, 18, 0),
+                  sliver: SliverList.list(
                     children: [
-                      SvgPicture.asset(
-                        'assets/profile/logo-paw.svg',
-                        width: 40,
-                        height: 40,
-                        semanticsLabel: 'Dopmi',
+                      SizedBox(
+                        height: 42,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SvgPicture.asset(
+                              'assets/profile/logo-paw.svg',
+                              width: 40,
+                              height: 40,
+                              semanticsLabel: 'Dopmi',
+                            ),
+                            const DonorNotificationButton(),
+                          ],
+                        ),
                       ),
-                      const DonorNotificationButton(),
+                      const SizedBox(height: 20),
+                      Container(
+                        constraints: const BoxConstraints(minHeight: 46),
+                        padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
+                        alignment: Alignment.centerLeft,
+                        child: Semantics(
+                          header: true,
+                          child: const Text(
+                            'Ayudar se siente bien',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 28,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0,
+                              height: 1.1,
+                              color: ink,
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (eligible.isNotEmpty || status != null)
+                        const SizedBox(height: 12),
+                      if (error != null) Notice(error!, isError: true),
+                      if (status != null)
+                        status!
+                      else if (eligible.isNotEmpty)
+                        SizedBox(
+                          height: 100 + scaler.scale(26.4) + (large ? 4 : 0),
+                          child: ListView.separated(
+                            padding: const EdgeInsets.fromLTRB(2, 4, 2, 8),
+                            scrollDirection: Axis.horizontal,
+                            itemCount: eligible.length,
+                            separatorBuilder: (_, _) =>
+                                const SizedBox(width: 16),
+                            itemBuilder: (_, index) => SupportCaseRing(
+                              eligible[index],
+                              queue: eligible.sublist(index),
+                            ),
+                          ),
+                        )
+                      else
+                        Semantics(
+                          liveRegion: true,
+                          label: 'No hay casos para apoyar. Por ahora no hay gastos aprobados disponibles.',
+                          child: const SizedBox.shrink(),
+                        ),
+                      if (data.total > 20)
+                        PageControls(
+                          page: page,
+                          total: data.total,
+                          size: 20,
+                          change: changePage,
+                        ),
+                      SizedBox(
+                        height: eligible.isEmpty && status == null ? 24 : 12,
+                      ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
-                Container(
-                  constraints: const BoxConstraints(minHeight: 46),
-                  padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
-                  alignment: Alignment.centerLeft,
-                  child: Semantics(
-                    header: true,
-                    child: const Text(
-                      'Ayudar se siente bien',
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0,
-                        height: 1.1,
-                        color: ink,
-                      ),
-                    ),
-                  ),
-                ),
-                if (eligible.isNotEmpty || status != null)
-                  const SizedBox(height: 12),
-                if (error != null) Notice(error!, isError: true),
-                if (status != null)
-                  status!
-                else if (eligible.isNotEmpty)
-                  SizedBox(
-                    height: 100 + scaler.scale(26.4) + (large ? 4 : 0),
-                    child: ListView.separated(
-                      padding: const EdgeInsets.fromLTRB(2, 4, 2, 8),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: eligible.length,
-                      separatorBuilder: (_, _) => const SizedBox(width: 16),
-                      itemBuilder: (_, index) => SupportCaseRing(
-                        eligible[index],
-                        queue: eligible.sublist(index),
-                      ),
-                    ),
-                  )
-                else
-                  Semantics(
-                    liveRegion: true,
-                    label: 'No hay casos para apoyar. Por ahora no hay gastos aprobados disponibles.',
-                    child: const SizedBox.shrink(),
-                  ),
-                if (data.total > 20)
-                  PageControls(
-                    page: page,
-                    total: data.total,
-                    size: 20,
-                    change: changePage,
-                  ),
-                SizedBox(height: eligible.isEmpty && status == null ? 24 : 12),
-                const Text(
-                  'Apoya a casos urgentes',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    height: 1.3,
-                    letterSpacing: -.48,
-                    color: ink,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: scaler.scale(295.24)),
-                    child: const Text(
-                      'Con cada aporte mensual ayudarás a cubrir necesidades reales de mascotas que buscan un hogar.',
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 13,
-                        height: 1.45,
-                        letterSpacing: 0,
-                        color: muted,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 18),
-                GuardianSupportCard(
-                  height: math.max(
-                    scaler.scale(300) + 180,
-                    eligible.isEmpty && status == null
-                        ? MediaQuery.sizeOf(context).height -
-                              MediaQuery.paddingOf(context).top -
-                              (106 + scaler.scale(28) * 1.1) +
-                              180
-                        : MediaQuery.sizeOf(context).height - 100,
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 18),
+                  sliver: SliverLayoutBuilder(
+                    builder: (context, constraints) {
+                      final dockHeight = _guardianDockHeight(
+                        context,
+                        constraints.crossAxisExtent - 36,
+                      );
+                      final bottom =
+                          92 + MediaQuery.viewPaddingOf(context).bottom;
+                      final height = math.max(
+                        _guardianDockStacks(
+                              context,
+                              constraints.crossAxisExtent - 36,
+                            )
+                            ? (constraints.crossAxisExtent - 52) * 1280 / 720
+                            : 260.0,
+                        constraints.viewportMainAxisExtent -
+                            constraints.precedingScrollExtent -
+                            dockHeight -
+                            bottom -
+                            12,
+                      );
+                      return SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            GuardianSupportCard(height: height),
+                            const SizedBox(height: 12),
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(minHeight: 52),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 18,
+                                ),
+                                child: const GuardianSupportDock(),
+                              ),
+                            ),
+                            SizedBox(height: bottom),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],
             ),
-            if (!large)
-              Positioned(
-                left: 36,
-                right: 36,
-                bottom: 92 + MediaQuery.viewPaddingOf(context).bottom,
-                child: const GuardianSupportDock(),
-              ),
           ],
         ),
       ),
@@ -350,178 +356,227 @@ class GuardianSupportCard extends StatefulWidget {
 
 class _GuardianSupportCardState extends State<GuardianSupportCard> {
   int page = 0;
+  PageController? carouselController;
+  double carouselWidth = 0;
   @override
-  Widget build(BuildContext context) => ReferenceFocusOutline(
-    radius: 28,
-    outlineBorderRadius: const BorderRadius.vertical(top: Radius.circular(33)),
-    child: DecoratedBox(
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x3815110d),
-            offset: Offset(0, 16),
-            blurRadius: 40,
+  void dispose() {
+    carouselController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, box) {
+      if (carouselWidth != box.maxWidth) {
+        carouselController?.dispose();
+        carouselWidth = box.maxWidth;
+        carouselController = PageController(
+          initialPage: page,
+          viewportFraction: (box.maxWidth - 38) / box.maxWidth,
+        );
+      }
+      return ReferenceFocusOutline(
+        radius: 28,
+        outlineBorderRadius: const BorderRadius.vertical(
+          top: Radius.circular(33),
+        ),
+        child: DecoratedBox(
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+            boxShadow: [
+              BoxShadow(
+                color: Color(0x3815110d),
+                offset: Offset(0, 16),
+                blurRadius: 40,
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Semantics(
-        key: const ValueKey('guardian-support-card-action'),
-        container: true,
-        button: true,
-        child: InkWell(
-          splashFactory: NoSplash.splashFactory,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          focusColor: Colors.transparent,
-          onTap: () => context.push('/guardian?enroll=1'),
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-          child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-            child: SizedBox(
-              height: widget.height,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  PageView(
-                    key: const ValueKey('guardian-support-carousel'),
-                    onPageChanged: (value) => setState(() => page = value),
+          child: Semantics(
+            key: const ValueKey('guardian-support-card-action'),
+            container: true,
+            button: true,
+            label: 'Sé un Guardián',
+            child: InkWell(
+              splashFactory: NoSplash.splashFactory,
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              onTap: () => context.push('/guardian?enroll=1'),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(28),
+              ),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(28),
+                ),
+                child: SizedBox(
+                  height: widget.height,
+                  child: Stack(
+                    fit: StackFit.expand,
                     children: [
-                      for (final asset in const [
-                        'guardian-urgent.jpg',
-                        'guardian-luna.jpg',
-                        'guardian-milo.jpg',
-                      ])
-                        Semantics(
-                          label:
-                              'Guardián, imagen ${const ['guardian-urgent.jpg', 'guardian-luna.jpg', 'guardian-milo.jpg'].indexOf(asset) + 1} de 3',
-                          child: Image.asset(
-                            'assets/guardian/$asset',
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                      PageView(
+                        key: const ValueKey('guardian-support-carousel'),
+                        controller: carouselController,
+                        padEnds: false,
+                        onPageChanged: (value) => setState(() => page = value),
+                        children: [
+                          for (final asset in const [
+                            'guardian-carousel-hero.jpg',
+                            'guardian-luna.jpg',
+                            'guardian-milo.jpg',
+                          ])
+                            Padding(
+                              padding: const EdgeInsets.only(right: 14),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(28),
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    Semantics(
+                                      label:
+                                          'Guardián, imagen ${const ['guardian-carousel-hero.jpg', 'guardian-luna.jpg', 'guardian-milo.jpg'].indexOf(asset) + 1} de 3',
+                                      child: Image.asset(
+                                        'assets/guardian/$asset',
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    if (asset != 'guardian-carousel-hero.jpg')
+                                      const IgnorePointer(
+                                        child: DecoratedBox(
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: [
+                                                Color(0x8c15110d),
+                                                Color(0x3815110d),
+                                                Color(0x7315110d),
+                                                Color(0xe015110d),
+                                              ],
+                                              stops: [0, .34, .58, 1],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    if (asset != 'guardian-carousel-hero.jpg')
+                                      SingleChildScrollView(
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                            18,
+                                            22,
+                                            18,
+                                            0,
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                'Sé un Guardián',
+                                                style: TextStyle(
+                                                  fontFamily: 'Inter',
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.w700,
+                                                  height: 1.2,
+                                                  letterSpacing: -.48,
+                                                  color: Colors.white,
+                                                  shadows: [
+                                                    Shadow(
+                                                      color: Color(0x59000000),
+                                                      offset: Offset(0, 1),
+                                                      blurRadius: 2,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              const SizedBox(height: 14),
+                                              _benefit(
+                                                'Rescatistas y casos verificados',
+                                                SvgPicture.asset(
+                                                  'assets/profile/icon-shield.svg',
+                                                  width: 14,
+                                                  height: 14,
+                                                  colorFilter:
+                                                      const ColorFilter.mode(
+                                                        yellow,
+                                                        BlendMode.srcIn,
+                                                      ),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 10),
+                                              _benefit(
+                                                'Sigue tu huella',
+                                                SvgPicture.string(
+                                                  _impact,
+                                                  width: 14,
+                                                  height: 14,
+                                                  colorFilter:
+                                                      const ColorFilter.mode(
+                                                        yellow,
+                                                        BlendMode.srcIn,
+                                                      ),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 10),
+                                              _benefit(
+                                                'Cancela cuando quieras',
+                                                SvgPicture.string(
+                                                  _check,
+                                                  width: 14,
+                                                  height: 14,
+                                                  colorFilter:
+                                                      const ColorFilter.mode(
+                                                        yellow,
+                                                        BlendMode.srcIn,
+                                                      ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    Positioned(
+                                      right: 18,
+                                      bottom: 18,
+                                      child: Semantics(
+                                        label: 'Imagen ${page + 1} de 3',
+                                        child: Row(
+                                          children: [
+                                            for (var i = 0; i < 3; i++)
+                                              Container(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 3,
+                                                    ),
+                                                width: 6,
+                                                height: 6,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: i == page
+                                                      ? yellow
+                                                      : Colors.white54,
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
                     ],
                   ),
-                  const IgnorePointer(
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Color(0x8c15110d),
-                            Color(0x3815110d),
-                            Color(0x7315110d),
-                            Color(0xe015110d),
-                          ],
-                          stops: [0, .34, .58, 1],
-                        ),
-                      ),
-                    ),
-                  ),
-                  IgnorePointer(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(18, 22, 18, 0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Sé un Guardián',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 24,
-                              fontWeight: FontWeight.w700,
-                              height: 1.2,
-                              letterSpacing: -.48,
-                              color: Colors.white,
-                              shadows: [
-                                Shadow(
-                                  color: Color(0x59000000),
-                                  offset: Offset(0, 1),
-                                  blurRadius: 2,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 14),
-                          _benefit(
-                            'Rescatistas y casos verificados',
-                            SvgPicture.asset(
-                              'assets/profile/icon-shield.svg',
-                              width: 14,
-                              height: 14,
-                              colorFilter: const ColorFilter.mode(
-                                yellow,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          _benefit(
-                            'Sigue tu huella',
-                            SvgPicture.string(
-                              _impact,
-                              width: 14,
-                              height: 14,
-                              colorFilter: const ColorFilter.mode(
-                                yellow,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          _benefit(
-                            'Cancela cuando quieras',
-                            SvgPicture.string(
-                              _check,
-                              width: 14,
-                              height: 14,
-                              colorFilter: const ColorFilter.mode(
-                                yellow,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    right: 18,
-                    bottom: 92,
-                    child: Semantics(
-                      label: 'Imagen ${page + 1} de 3',
-                      child: Row(
-                        children: [
-                          for (var i = 0; i < 3; i++)
-                            Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 3),
-                              width: 6,
-                              height: 6,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: i == page ? yellow : Colors.white54,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  if (MediaQuery.textScalerOf(context).scale(14) > 20)
-                    const Positioned(
-                      left: 18,
-                      right: 18,
-                      bottom: 110,
-                      child: GuardianSupportDock(),
-                    ),
-                ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-    ),
+      );
+    },
   );
   Widget _benefit(String label, Widget icon) => Row(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -552,6 +607,42 @@ class _GuardianSupportCardState extends State<GuardianSupportCard> {
   );
 }
 
+bool _guardianDockStacks(BuildContext context, double width) {
+  final scaler = MediaQuery.textScalerOf(context);
+  double measure(String text, FontWeight weight) {
+    final painter = TextPainter(
+      text: TextSpan(
+        text: text,
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 14,
+          fontWeight: weight,
+          letterSpacing: 0,
+        ),
+      ),
+      textScaler: scaler,
+      textDirection: Directionality.of(context),
+    )..layout();
+    final result = painter.width;
+    painter.dispose();
+    return result;
+  }
+
+  return scaler.scale(14) > 20 ||
+      measure('Desde \$20 / mes', FontWeight.w600) +
+              measure('Suscríbete ahora', FontWeight.w700) +
+              48 >
+          width;
+}
+
+double _guardianDockHeight(BuildContext context, double width) {
+  final lineHeight = MediaQuery.textScalerOf(context).scale(16.8);
+  final buttonHeight = math.max(52.0, lineHeight + 24);
+  return _guardianDockStacks(context, width)
+      ? lineHeight + 8 + buttonHeight
+      : buttonHeight;
+}
+
 class GuardianSupportDock extends StatelessWidget {
   const GuardianSupportDock({super.key});
   @override
@@ -559,7 +650,7 @@ class GuardianSupportDock extends StatelessWidget {
     radius: 0,
     child: Semantics(
       button: true,
-      label: 'Suscríbete a Guardián, desde 50 pesos al mes',
+      label: 'Suscríbete a Guardián, desde 20 pesos al mes',
       child: InkWell(
         splashFactory: NoSplash.splashFactory,
         splashColor: Colors.transparent,
@@ -571,27 +662,20 @@ class GuardianSupportDock extends StatelessWidget {
         child: LayoutBuilder(
           builder: (context, box) {
             const price = Text(
-              'Desde \$50 / mes',
+              'Desde \$20 / mes',
               style: TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 height: 1.2,
                 letterSpacing: 0,
-                color: Colors.white,
-                shadows: [
-                  Shadow(
-                    color: Color(0x59000000),
-                    offset: Offset(0, 1),
-                    blurRadius: 2,
-                  ),
-                ],
+                color: ink,
               ),
             );
             final button = Container(
               key: const ValueKey('guardian-support-cta'),
               alignment: Alignment.center,
-              constraints: const BoxConstraints(minHeight: 44),
+              constraints: const BoxConstraints(minHeight: 52),
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
               decoration: BoxDecoration(
                 color: yellow,
@@ -617,31 +701,7 @@ class GuardianSupportDock extends StatelessWidget {
                 ),
               ),
             );
-            final scaler = MediaQuery.textScalerOf(context);
-            double measure(String text, FontWeight weight) {
-              final painter = TextPainter(
-                text: TextSpan(
-                  text: text,
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    fontWeight: weight,
-                    letterSpacing: 0,
-                  ),
-                ),
-                textScaler: scaler,
-                textDirection: Directionality.of(context),
-              )..layout();
-              final width = painter.width;
-              painter.dispose();
-              return width;
-            }
-
-            if (scaler.scale(14) > 20 ||
-                measure('Desde \$50 / mes', FontWeight.w600) +
-                        measure('Suscríbete ahora', FontWeight.w700) +
-                        48 >
-                    box.maxWidth) {
+            if (_guardianDockStacks(context, box.maxWidth)) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -8,6 +8,7 @@ import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:dopmi_mobile/features/payments/guardian_support_bubbles.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -328,7 +329,7 @@ void main() {
       );
       expect(repo.calls, isEmpty);
       expect(repo.opened, 0);
-      await tester.enterText(find.byType(TextField), '75.25');
+      await tester.enterText(find.byType(TextField), '20.00');
       await tester.pump();
       await tester.ensureVisible(find.byType(Checkbox));
       await tester.tap(find.byType(Checkbox));
@@ -337,7 +338,7 @@ void main() {
       await tester.tap(find.text('Activar en Stripe'));
       await tester.pumpAndSettle();
       expect(repo.calls.single['kind'], 'checkout');
-      expect(repo.calls.single['cents'], 7525);
+      expect(repo.calls.single['cents'], 2000);
       expect(repo.opened, 1);
       expect(find.text('Suscripción activa'), findsNothing);
       expect(find.text('Suscribirme'), findsNothing);
@@ -352,7 +353,14 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Suscripción Dopmi'), findsNothing);
       expect(find.text('Historial de pagos'), findsNothing);
-      expect(tester.getTopLeft(find.text('Elige tu apoyo')).dy, closeTo(88, 2));
+      expect(
+        tester.getTopLeft(find.text('Elige tu apoyo')).dy,
+        closeTo(
+          tester.getBottomLeft(find.byType(GuardianSupportBubbles)).dy,
+          2,
+        ),
+      );
+      expect(find.text('Elige tu apoyo').hitTestable(), findsOneWidget);
       await tester.ensureVisible(find.byType(Checkbox));
       await tester.tap(find.byType(Checkbox));
       await tester.pump();

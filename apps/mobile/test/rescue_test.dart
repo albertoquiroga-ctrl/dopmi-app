@@ -867,10 +867,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Ayudar se siente bien'), findsOneWidget);
     // Source CSS h1 letter-spacing:0; paragraph inherits normal (0).
-    for (final copy in [
-      'Ayudar se siente bien',
-      'Con cada aporte mensual ayudarás a cubrir necesidades reales de mascotas que buscan un hogar.',
-    ]) {
+    for (final copy in ['Ayudar se siente bien']) {
       expect(
         tester
             .renderObject<RenderParagraph>(find.text(copy))
@@ -881,7 +878,22 @@ void main() {
       );
     }
 
-    expect(find.text('Sé un Guardián'), findsOneWidget);
+    final heroImage = find.image(
+      const AssetImage('assets/guardian/guardian-carousel-hero.jpg'),
+    );
+    final heroSlide = find
+        .ancestor(of: heroImage, matching: find.byType(Stack))
+        .first;
+    expect(
+      find.descendant(of: heroSlide, matching: find.text('Sé un Guardián')),
+      findsNothing,
+    );
+    expect(
+      find.image(
+        const AssetImage('assets/guardian/guardian-carousel-hero.jpg'),
+      ),
+      findsOneWidget,
+    );
     expect(find.text('Choco'), findsOneWidget);
     expect(find.text('\$25 / \$100'), findsOneWidget);
     await tester.tap(find.text('Choco'));
@@ -1087,18 +1099,18 @@ void main() {
           findsOneWidget,
         );
         final label = entry.startsWith('keyboard-') ? 'Sé un Guardián' : entry;
+        final target = label == 'Sé un Guardián'
+            ? find.byKey(const ValueKey('guardian-support-card-action'))
+            : find.text(label);
         await tester.scrollUntilVisible(
-          find.text(label),
+          target,
           200,
           scrollable: find.byType(Scrollable).first,
         );
         await tester.pumpAndSettle();
-        await Scrollable.ensureVisible(
-          tester.element(find.text(label)),
-          alignment: .5,
-        );
+        await Scrollable.ensureVisible(tester.element(target), alignment: .5);
         await tester.pumpAndSettle();
-        expect(tester.getBottomRight(find.text(label)).dy, lessThan(540));
+        expect(target.hitTestable(), findsOneWidget);
         expect(tester.takeException(), isNull);
         final semantics = tester.ensureSemantics();
         try {
@@ -1122,7 +1134,7 @@ void main() {
                   : LogicalKeyboardKey.enter,
             );
           } else {
-            await tester.tap(find.text(label));
+            await tester.tap(target);
           }
           await tester.pumpAndSettle();
         } finally {

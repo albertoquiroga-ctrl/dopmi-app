@@ -981,9 +981,9 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         !method &&
         !withdraw &&
         intent == null &&
-        (!consent || cents == null || cents < 5000 || cents > 1000000)) {
+        (!consent || cents == null || cents < 2000 || cents > 1000000)) {
       setState(
-        () => error = 'Elige un importe de \$50 a \$10,000 MXN, con hasta dos decimales, y confirma la autorización.',
+        () => error = 'Elige un importe de \$20 a \$10,000 MXN, con hasta dos decimales, y confirma la autorización.',
       );
       return;
     }
@@ -1456,8 +1456,23 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         !['method', 'withdraw_amount'].contains(intent?['kind']) &&
         !checkoutInReview &&
         ((canStart && enrolling) || intent != null);
+    final decorateEnrollment =
+        p == null &&
+        activation == null &&
+        intent == null &&
+        canStart &&
+        enrolling;
+    final enrollmentAction = ContributionButton(
+      intent == null
+          ? (p == null ? 'Activar en Stripe' : 'Solicitar cambio de monto')
+          : 'Reintentar mi solicitud',
+      busy: busy,
+      dark: decorateEnrollment,
+      onPressed: canSubmit ? () => submit() : null,
+    );
     final enrollmentWidgets = <Widget>[
       GuardianEnrollmentAmount(
+        decorate: decorateEnrollment,
         headingKey: enrollmentInput,
         amount: amount,
         locked: busy || intent != null,
@@ -1496,13 +1511,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         const Notice(
           'Conservamos tu solicitud. Reintentar usa la misma referencia y el mismo importe.',
         ),
-      ContributionButton(
-        intent == null
-            ? (p == null ? 'Activar en Stripe' : 'Solicitar cambio de monto')
-            : 'Reintentar mi solicitud',
-        busy: busy,
-        onPressed: canSubmit ? () => submit() : null,
-      ),
+      if (!decorateEnrollment) enrollmentAction,
     ];
     if (enabled &&
         p == null &&
@@ -1532,14 +1541,46 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         },
         child: ContributionFrame(
           title: '',
+          overlayBack: decorateEnrollment,
+          bottomNavigationBar: decorateEnrollment
+              ? DecoratedBox(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    border: Border(top: BorderSide(color: Color(0xffe6e2dd))),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0x0f15110d),
+                        offset: Offset(0, -4),
+                        blurRadius: 20,
+                      ),
+                    ],
+                  ),
+                  child: SafeArea(
+                    top: false,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 8, 24, 12),
+                      child: enrollmentAction,
+                    ),
+                  ),
+                )
+              : null,
           back: busy || confirming ? null : returnToBilling,
           child: SingleChildScrollView(
             key: const ValueKey('guardian-enrollment-scroll'),
-            padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+            padding: decorateEnrollment
+                ? const EdgeInsets.only(bottom: 32)
+                : const EdgeInsets.fromLTRB(16, 20, 16, 32),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                ...enrollmentWidgets,
+                for (final item in enrollmentWidgets)
+                  if (decorateEnrollment && item is! GuardianEnrollmentAmount)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: item,
+                    )
+                  else
+                    item,
                 const SizedBox(height: 16),
                 if (busy) const LinearProgressIndicator(),
                 if (error != null) Notice(error!, isError: true),

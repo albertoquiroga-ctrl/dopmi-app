@@ -24,34 +24,41 @@ class ContributionFrame extends StatelessWidget {
     required this.child,
     this.rescuer = false,
     this.bottomNavigationBar,
+    this.overlayBack = false,
   });
   final String title;
   final VoidCallback? back;
   final Widget child;
   final bool rescuer;
   final Widget? bottomNavigationBar;
+  final bool overlayBack;
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: cream,
+    backgroundColor: overlayBack ? Colors.white : cream,
+    extendBodyBehindAppBar: overlayBack,
     bottomNavigationBar: bottomNavigationBar,
     appBar: AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: overlayBack ? Colors.transparent : Colors.white,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       toolbarHeight:
           title.isNotEmpty && MediaQuery.textScalerOf(context).scale(18) > 25
           ? MediaQuery.textScalerOf(context).scale(18) * 2.6 + 16
-          : 67,
+          : (overlayBack ? 52 : 67),
       leadingWidth: 60,
       centerTitle: true,
-      bottom: PreferredSize(
-        preferredSize: Size.fromHeight(1),
-        child: Divider(
-          height: 1,
-          thickness: 1,
-          color: rescuer ? const Color(0xffe3e4ed) : const Color(0xffe6e2dd),
-        ),
-      ),
+      bottom: overlayBack
+          ? null
+          : PreferredSize(
+              preferredSize: Size.fromHeight(1),
+              child: Divider(
+                height: 1,
+                thickness: 1,
+                color: rescuer
+                    ? const Color(0xffe3e4ed)
+                    : const Color(0xffe6e2dd),
+              ),
+            ),
       leading: Padding(
         padding: const EdgeInsets.only(left: 12),
         child: IconButton(
@@ -280,17 +287,18 @@ class ContributionButton extends StatelessWidget {
     required this.onPressed,
     this.secondary = false,
     this.busy = false,
+    this.dark = false,
   });
   final String label;
   final VoidCallback? onPressed;
-  final bool secondary, busy;
+  final bool secondary, busy, dark;
   @override
   Widget build(BuildContext context) {
     final style = ButtonStyle(
       splashFactory: NoSplash.splashFactory,
       overlayColor: const WidgetStatePropertyAll(Colors.transparent),
       animationDuration: Duration.zero,
-      minimumSize: const WidgetStatePropertyAll(Size(0, 48)),
+      minimumSize: WidgetStatePropertyAll(Size(0, dark ? 52 : 48)),
       padding: const WidgetStatePropertyAll(
         EdgeInsets.symmetric(horizontal: 18, vertical: 11),
       ),
@@ -302,9 +310,13 @@ class ContributionButton extends StatelessWidget {
         ),
       ),
       shape: const WidgetStatePropertyAll(StadiumBorder()),
-      foregroundColor: const WidgetStatePropertyAll(ink),
+      foregroundColor: WidgetStatePropertyAll(dark ? Colors.white : ink),
       backgroundColor: WidgetStateProperty.resolveWith(
-        (states) => states.contains(WidgetState.disabled)
+        (states) => dark
+            ? (states.contains(WidgetState.disabled)
+                  ? const Color(0xff8a837c)
+                  : ink)
+            : states.contains(WidgetState.disabled)
             ? (secondary ? cream : yellow).withValues(alpha: .5)
             : secondary
             ? cream
@@ -327,10 +339,13 @@ class ContributionButton extends StatelessWidget {
           Semantics(
             label: 'En proceso',
             liveRegion: true,
-            child: const SizedBox(
+            child: SizedBox(
               width: 22,
               height: 22,
-              child: CircularProgressIndicator(strokeWidth: 2, color: ink),
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: dark ? Colors.white : ink,
+              ),
             ),
           ),
       ],

@@ -3549,13 +3549,20 @@ test('public planned needs use only approved snapshot and never inflate real exp
   assert.ok(!hidden.items.some(r=>r.id===caseId));
 });
 
-test('new Guardian activation and owner amount requests require fifty pesos without any charge',async()=>{
-  await rejected(()=>activationPrepare({key:crypto.randomUUID(),gross_cents:4999}),/mínimo Guardián/);
+test('new Guardian activation requires twenty pesos and retains its stable-key retry',async()=>{
+  await rejected(()=>activationPrepare({key:crypto.randomUUID(),gross_cents:1999}),/mínimo Guardián/);
   assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_activations')).rows[0].n,0);
+  const input={key:crypto.randomUUID(),gross_cents:2000};
+  const activation=await activationPrepare(input);
+  assert.equal(activation.gross_cents,2000);
+  assert.deepEqual(await activationPrepare(input),activation);
+});
+
+test('new Guardian owner amount request requires twenty pesos without changing current charge',async()=>{
   await collectionFixture(); await role(donor);
-  await rejected(()=>ownerRequest('amount',0,4999),/mínimo Guardián/);
-  const accepted=await ownerRequest('amount',0,5001);
-  assert.equal(accepted.request.new_gross_cents,5001);
+  await rejected(()=>ownerRequest('amount',0,1999),/mínimo Guardián/);
+  const accepted=await ownerRequest('amount',0,2000);
+  assert.equal(accepted.request.new_gross_cents,2000);
   assert.equal(accepted.plan.gross_cents,5000);
 });
 
@@ -3568,20 +3575,20 @@ async function legacyGuardianAuthorization(signature, guard, authorize) {
   try { return await authorize(); } finally { await db.exec('reset role'); await db.exec(definition); }
 }
 
-test('an already authorized Guardian activation below fifty retains its stable-key retry',async()=>{
+test('an already authorized Guardian activation below twenty retains its stable-key retry',async()=>{
   const input={key:crypto.randomUUID(),gross_cents:1000};
   const original=await legacyGuardianAuthorization('public.dopmi_guardian_activation_server(text,jsonb)',
-    " if gross<5000 then raise exception 'El mínimo Guardián es $50 MXN' using errcode='22023'; end if;",
+    " if gross<2000 then raise exception 'El mínimo Guardián es $20 MXN' using errcode='22023'; end if;",
     ()=>activationPrepare(input));
   assert.deepEqual(await activationPrepare(input),original);
   await rejected(()=>activationPrepare({...input,key:crypto.randomUUID()}),/mínimo Guardián/);
   assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_activations')).rows[0].n,1);
 });
 
-test('an already authorized Guardian amount below fifty retains its owner retry and revision',async()=>{
+test('an already authorized Guardian amount below twenty retains its owner retry and revision',async()=>{
   await collectionFixture(); const legacyKey=crypto.randomUUID();
   const original=await legacyGuardianAuthorization('public.dopmi_guardian_request(text,uuid,bigint,bigint,text)',
-    " if request_kind='amount' and new_gross_cents<5000 then raise exception 'El mínimo Guardián es $50 MXN' using errcode='22023'; end if;",
+    " if request_kind='amount' and new_gross_cents<2000 then raise exception 'El mínimo Guardián es $20 MXN' using errcode='22023'; end if;",
     async()=>{await role(donor);return ownerRequest('amount',0,1000,legacyKey);});
   await role(donor);
   assert.deepEqual(await ownerRequest('amount',0,1000,legacyKey),original);

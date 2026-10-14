@@ -240,6 +240,7 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
         body: const Center(child: Text('No hay fotos públicas disponibles.')),
       );
     }
+    final hero = photoIndex == 0;
     return Scaffold(
       backgroundColor: const Color(0xff0d0d0d),
       body: SafeArea(
@@ -249,13 +250,13 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
             children: [
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.all(14),
+                  padding: EdgeInsets.all(hero ? 14 : 0),
                   decoration: BoxDecoration(
-                    color: yellow,
+                    color: hero ? yellow : Colors.transparent,
                     borderRadius: BorderRadius.circular(28),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(22),
+                    borderRadius: BorderRadius.circular(hero ? 22 : 28),
                     child: Listener(
                       behavior: HitTestBehavior.opaque,
                       onPointerDown: (event) {
@@ -297,6 +298,12 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                             }
                             return;
                           }
+                        }
+                        // The frozen mock restarts a segment on hold release.
+                        // Cancellation, lifecycle and accessible pauses retain
+                        // their separate resume behavior.
+                        if (longHeld && !manual && !background) {
+                          progress.reset();
                         }
                         resume();
                       },
@@ -344,9 +351,9 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                             ),
                           ),
                           Positioned(
-                            top: 6,
-                            left: 6,
-                            right: 6,
+                            top: hero ? 6 : 12,
+                            left: hero ? 6 : 12,
+                            right: hero ? 6 : 12,
                             child: AnimatedBuilder(
                               animation: progress,
                               builder: (_, _) => Row(
@@ -375,7 +382,7 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                           ),
                           Positioned(
                             top: 14,
-                            right: 0,
+                            right: hero ? 0 : 14,
                             child: IconButton(
                               tooltip: 'Cerrar historias',
                               constraints: const BoxConstraints.tightFor(
@@ -579,16 +586,22 @@ class _StoryPhoto extends ConsumerWidget {
     loading: const Center(
       child: CircularProgressIndicator(semanticsLabel: 'Cargando foto'),
     ),
-    unavailable: (retry) => Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text(
-            'Foto no disponible',
-            style: TextStyle(color: Colors.white),
-          ),
-          TextButton(onPressed: retry, child: const Text('Reintentar foto')),
-        ],
+    unavailable: (retry) => Padding(
+      // Keep recovery above the bottom case metadata, including at 200% text.
+      // The top inset also leaves room for story segments and the close action.
+      padding: const EdgeInsets.fromLTRB(12, 56, 12, 0),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Foto no disponible',
+              style: TextStyle(color: Colors.white),
+            ),
+            TextButton(onPressed: retry, child: const Text('Reintentar foto')),
+          ],
+        ),
       ),
     ),
   );
