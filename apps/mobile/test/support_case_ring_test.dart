@@ -32,7 +32,14 @@ void main() {
                     child: SizedBox(
                       width: 280,
                       child: card
-                          ? GuardianSupportCard(height: large ? 780 : 300)
+                          ? Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                GuardianSupportCard(height: large ? 780 : 300),
+                                const SizedBox(height: 12),
+                                const GuardianSupportDock(),
+                              ],
+                            )
                           : const GuardianSupportDock(),
                     ),
                   ),

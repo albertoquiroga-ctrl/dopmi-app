@@ -539,26 +539,35 @@ class _GuardianSupportCardState extends State<GuardianSupportCard> {
                                     Positioned(
                                       right: 18,
                                       bottom: 18,
-                                      child: Semantics(
-                                        label: 'Imagen ${page + 1} de 3',
-                                        child: Row(
-                                          children: [
-                                            for (var i = 0; i < 3; i++)
-                                              Container(
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 3,
-                                                    ),
-                                                width: 6,
-                                                height: 6,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: i == page
-                                                      ? yellow
-                                                      : Colors.white54,
+                                      child: ExcludeSemantics(
+                                        excluding:
+                                            const [
+                                              'guardian-carousel-hero.jpg',
+                                              'guardian-luna.jpg',
+                                              'guardian-milo.jpg',
+                                            ].indexOf(asset) !=
+                                            page,
+                                        child: Semantics(
+                                          label: 'Imagen ${page + 1} de 3',
+                                          child: Row(
+                                            children: [
+                                              for (var i = 0; i < 3; i++)
+                                                Container(
+                                                  margin:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 3,
+                                                      ),
+                                                  width: 6,
+                                                  height: 6,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: i == page
+                                                        ? yellow
+                                                        : Colors.white54,
+                                                  ),
                                                 ),
-                                              ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
