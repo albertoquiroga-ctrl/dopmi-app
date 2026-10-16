@@ -4698,3 +4698,22 @@ Tres lecturas Stripe de metadatos Connect TEST existentes, sin PII/cambios/
 transferencias, resolvieron destino nominal de fixture local. Falta clave
 publicable TEST en Codemagic y login humano Stripe ya solicitado. CI nueva,
 decisión remota concreta y publicación siguen pendientes; no se contrató Pro.
+
+## 15/10/2026 México — primer CI directo y configuración TEST comprobada
+
+Commit379d8baf publicado en codex/finish-release-20261015; push/HEAD remoto
+coinciden. CI38833853805: web/base e identidad/adopción aprobaron; iOS aún activo.
+Flutter falló antes de tests por tres infos en últimos cambios: bloques de if
+y mounted explícito. Corregidos conservando reglas; análisis dirigido final
+sin incidencias. Requiere CI nueva del commit de corrección, sin rerun del mismo
+fallo ni interrumpir iOS para ahorrar espera.
+
+Login Stripe ya resuelto; clave publicable del sandboxTEST correcto recuperada,
+tenant cotejado con lectura propia y request Codemagic con override preparado.
+No build ni variable persistente nuevos. Dashboard Supabase DEV autenticado,
+flag puntual nuevo ausente y seis Guardian existentes habilitados. WebhookTEST
+activo con21eventos, faltan cuatro tipos requeridos por flujos nativos; se prepara
+unión exacta para la operación agrupada, sin cambiar secreto/URL/versión.
+Ejecutor de ensayo proveedor reforzado tras revisión: journal atómico, lock y
+STOP antes de cleanup ambiguo;16/16 sintéticas y revisión independiente favorables.
+Ningún pago, webhook/flag, migración remota o publicación ejecutados todavía.

@@ -84,8 +84,12 @@ modificados en este corte.
 
 ## Cierre pendiente
 
-1. Commit/push único y CI completa por SHA/evento/workflow. CI38656866591 verde
-   de la base es histórica, no acredita este delta.
+1. CI completa por SHA/evento/workflow. Commit379d8baf publicado; run38833853805
+   acredita web/base y backend identidad/adopción, mientras iOS sigue en curso.
+   Flutter detuvo antes de tests por tres infos de análisis de los últimos
+   ajustes: dos bloques y mounted explícito. Corregidos sin quitar reglas;
+   análisis dirigido final sin incidencias, nueva CI del siguiente SHA requerida.
+   CI38656866591 verde de la base es histórica, no acredita este delta.
 2. Una operación revisada:16 fuentes SQL agrupadas con guardas, postflight,
    cuatro bundles Edge, flags TEST nominados y ensayo finito. Sólo DEV
    ohqxranynackjignryep; PRODysaoeuidcvgtlmphmeyb excluido. Sin replay/repair/purga.
@@ -97,10 +101,16 @@ modificados en este corte.
    Los flags actuales no delimitan una cohorte; no prometer aislamiento por actor
    sin control efectivo. Cambios remotos/recorrido TEST necesitan la decisión
    concreta agrupada, no heredan los permisos de lectura anteriores.
-3. Clave publicable TEST real en Codemagic; falta autenticación humana en Stripe
-   ya solicitada en navegador integrado. No pedir secretos en chat ni inventar
-   la clave a partir de la privada. Acceso soportado para configurar el nuevo
-   flag puntual en Supabase también debe resolverse sin usar credenciales ajenas.
+3. Autenticación Stripe ya disponible: clave publicable TEST recuperada del
+   sandbox correcto y ligada al tenant obtenido con GET /v1/account. Petición
+   Codemagic preparada con override público por build; no necesita persistir
+   una variable nueva ni copiar claves privadas. Build aún no disparado.
+   Dashboard Supabase DEV autenticado permite configurar el flag puntual nuevo,
+   actualmente ausente, sin ampliar accesos. Los seis flags Guardián ya estaban
+   habilitados. Lectura real del webhook TEST detectó cuatro eventos faltantes:
+   setup_intent.succeeded/canceled/setup_failed y payment_intent.canceled.
+   Incluir unión exacta conservando los21 eventos anteriores, URL, versión y
+   secreto en la autorización agrupada; todavía no se modificó configuración.
 4. Integración TEST real y android-guardian-internal/com.mycompany.dopmi.
    Publicación Play se comprueba separada del build; teléfono/aceptación humanos
    siguen pendientes. El campo teléfono vacío fue observado EN APP por titular;

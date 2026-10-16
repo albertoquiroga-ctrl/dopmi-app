@@ -72,8 +72,9 @@ void main() {
                   'error': 'payments_not_configured',
                 if (mode == 'denied') 'error': 'access_denied',
               };
-              if (mode == 'session-changed')
+              if (mode == 'session-changed') {
                 await client.auth.signOut(scope: SignOutScope.local);
+              }
             } else {
               reads++;
               expect(request.url.queryParameters['donor_id'], 'eq.$actor');

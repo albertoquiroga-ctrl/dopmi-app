@@ -229,7 +229,7 @@ class _ContributeState extends ConsumerState<ContributeScreen>
         }
         // SDK close/success/failure is not processor evidence. Reconcile the
         // same durable attempt before choosing an outcome or continuation.
-        if (currentOwner()) {
+        if (mounted && currentOwner()) {
           setState(() => sheetAwaiting = false);
           if (!(ModalRoute.of(context)?.isCurrent ?? false)) return;
           await checkOutcome();

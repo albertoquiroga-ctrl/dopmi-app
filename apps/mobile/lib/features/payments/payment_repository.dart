@@ -97,8 +97,9 @@ class PaymentRepository {
       // receipt or turn a pending result into failure/success.
       if (cause.status == 503 &&
           details is Map &&
-          details['error'] == 'payments_not_configured')
+          details['error'] == 'payments_not_configured') {
         return before;
+      }
       rethrow;
     }
   }
