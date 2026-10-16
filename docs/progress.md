@@ -4717,3 +4717,28 @@ unión exacta para la operación agrupada, sin cambiar secreto/URL/versión.
 Ejecutor de ensayo proveedor reforzado tras revisión: journal atómico, lock y
 STOP antes de cleanup ambiguo;16/16 sintéticas y revisión independiente favorables.
 Ningún pago, webhook/flag, migración remota o publicación ejecutados todavía.
+
+## 15/10/2026 México — CI completa verde y webhook por intento
+
+5b3c15e1a2307e72f5307880db029f05f2c74a35, push38835112715/milestone-1.yml,
+cuatro jobs finales success. Flutter1113tests, analyze0, capturas y APK debug;
+iOS simulator y Auth/PostgreSQL/Storage/Reatime identidad/adopción aprobados.
+No build firmado/publicación/instalación atribuida. Push previo de corrección
+falló por conexión antes de enviar; efecto remoto conciliado antes de único
+reintento, referencia final5b3 comprobada. No CI rerun ni interrupción de jobs.
+
+Auditoría de ruta real encontró PI nuevo Guardián ignorado por fallthrough
+puntual. Webhook ahora revalida eventoTEST/PI fresco y binding marcado, liquida
+resuelve el mismo intento y drena sólo cycle_id de SQL; no discovery/pagos nuevos.
+Un42501 de permisos no se oculta como binding ausente. Revisión independiente
+favorable,46/46 dirigidas y4entrypoints Deno comprobados; requiere nuevaCI del
+commit backend. SQL16/hashes y PG59 no cambiaron, no repetir esas pruebas.
+
+Lecturas operativas saneadas: cron existente job4activo cada minuto; cinco
+ejecuciones cron succeeded, cinco HTTP recientes2xx agregados por separado.
+Donaciones/transfer/refundpending0, jobs elegibles/running0, registro remoto
+aún ausente. Capacidad de dos gastos aprobados suficiente; IDs privados en
+propuesta, sin afirmar que son sintéticos ni que el snapshot impone particiones.
+Recorrido financiero remoto único en preparación para reemplazar el local
+PENDING, con2AuthTEST porAdminAPI soportada tras decisión concreta; no cuentas
+creadas, secretos nuevos/grants, pagos o efectos remotos ejecutados.

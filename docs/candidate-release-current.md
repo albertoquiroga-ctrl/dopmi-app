@@ -39,6 +39,10 @@ existente y no autoriza dinero real.
   o salir no abre una hoja de pago del actor anterior. Recibos terminales e
   históricos se leen con filtro de propietario aunque la admisión nativa esté
   cerrada. Accesos de pagos refluyen al ampliar texto, sin partir palabras.
+- Webhook del PI Guardián concilia únicamente su intento marcado/vinculado y
+  ciclo de SQL; una entrega duplicada termina sólo jobs pendientes de ese ciclo.
+  Relee evidenciaTEST y no autoriza cobros ni busca candidatos globales. La
+  ausencia de binding se distingue de un fallo de permisos/RLS, que conserva503.
 
 ## Evidencia actual y límites
 
@@ -84,12 +88,15 @@ modificados en este corte.
 
 ## Cierre pendiente
 
-1. CI completa por SHA/evento/workflow. Commit379d8baf publicado; run38833853805
-   acredita web/base y backend identidad/adopción, mientras iOS sigue en curso.
-   Flutter detuvo antes de tests por tres infos de análisis de los últimos
-   ajustes: dos bloques y mounted explícito. Corregidos sin quitar reglas;
-   análisis dirigido final sin incidencias, nueva CI del siguiente SHA requerida.
-   CI38656866591 verde de la base es histórica, no acredita este delta.
+1. CI completa por SHA/evento/workflow.5b3c15e1/run38835112715 final4/4verde:
+   web/base, Flutter (analyze0,1113tests, capturas y APK debug), iOS simulator,
+   integración identidad/adopción. No es publicación firmada ni Play.
+   El primer379d8baf/run38833853805 tuvo3jobsverdes y Flutter detenido por tres
+   infos de análisis ya corregidas, sin quitar reglas. La auditoría remota después
+   encontró un webhookPI Guardián que caía al procesador puntual; corrección
+   acotada y revisión independiente favorables,46/46 dirigidas y4entrypoints
+   Deno comprobados (`codex-registration-scoped-webhook-final.log`). Ese delta
+   backend requiere su commit/CI nueva; no atribuirle la CI anterior por inferencia.
 2. Una operación revisada:16 fuentes SQL agrupadas con guardas, postflight,
    cuatro bundles Edge, flags TEST nominados y ensayo finito. Sólo DEV
    ohqxranynackjignryep; PRODysaoeuidcvgtlmphmeyb excluido. Sin replay/repair/purga.
@@ -111,6 +118,14 @@ modificados en este corte.
    setup_intent.succeeded/canceled/setup_failed y payment_intent.canceled.
    Incluir unión exacta conservando los21 eventos anteriores, URL, versión y
    secreto en la autorización agrupada; todavía no se modificó configuración.
+   Cron existente activo cada minuto, colas financieras agregadas sin elegibles
+   al corte01:27Z; no crear otro timer ni invocar reconcile global como probe.
+   Capacidad actual de dos gastos DEV aprobados suficiente para Guardián20;
+   lectura predictiva no es barrera de concurrencia ni prueba de caso sintético.
+   Preparar un único recorrido financiero remoto revisable que sustituya el
+   ensayo financiero local aún PENDING; no ejecutar ambos ni crear otras cuentas
+   por inferencia. AuthAdmin de dos identidades técnicas requiere alcance y
+   acceso específico en la misma decisión agrupada; sin INSERTauth/PII/grants.
 4. Integración TEST real y android-guardian-internal/com.mycompany.dopmi.
    Publicación Play se comprueba separada del build; teléfono/aceptación humanos
    siguen pendientes. El campo teléfono vacío fue observado EN APP por titular;

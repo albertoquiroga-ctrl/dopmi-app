@@ -13,6 +13,7 @@ import { nativeSavedWalletService } from './native-saved-wallet.mjs';
 import { nativeSavedCardService } from './native-saved-card.mjs';
 import { guardianRegistrationService } from './guardian-registration.mjs';
 import { guardianRegistrationWorker } from './guardian-registration-worker.mjs';
+import { registrationPaymentReply } from './guardian-registration-rpc.mjs';
 import { guardianRegistrationBankAction } from './guardian-registration-bank-action.mjs';
 import { guardianRefundService } from './guardian-refunds.mjs';
 import { PaymentError, requireTestKey } from './payments.mjs';
@@ -120,7 +121,12 @@ export function guardianRuntime() {
     return result.data;
   }
   const registrationPayments = guardianRegistrationWorker({ stripe,
-    paymentRpc: (operation: string, data: unknown) => call('dopmi_guardian_registration_payment_server', operation, data),
+    paymentRpc: async (operation: string, data: unknown) => {
+      const result = await db.rpc('dopmi_guardian_registration_payment_server', { operation, data });
+      // A valid UUID from untrusted processor metadata may have no binding.
+      // Preserve retryable DB faults while letting that lookup fall through.
+      return registrationPaymentReply(operation, result);
+    },
     bind: (id: string, processor: string) => registrationCommand('dopmi_guardian_registration_bind_payment',
       { target_attempt: id, processor_id: processor }),
     authorize: (id: string) => registrationCommand('dopmi_guardian_registration_authorize_payment', { target_attempt: id }),
@@ -131,7 +137,7 @@ export function guardianRuntime() {
     authorizeAction: (owner: string, registrationId: string, attemptId: string) => registrationCommand(
       'dopmi_guardian_registration_bank_action', { target_owner: owner, target_registration: registrationId, target_attempt: attemptId }),
   });
-  return { ...service, initial, schedule, collection, changes, method, methods, refunds, savedCard, savedNativeCard, savedCardMethod, savedWallet, registration, registrationAction,
+  return { ...service, initial, schedule, collection, changes, method, methods, refunds, savedCard, savedNativeCard, savedCardMethod, savedWallet, registration, registrationPayments, registrationAction,
     async reconcile() {
       const activation = await initial.reconcile();
       const returns = Deno.env.get('DOPMI_GUARDIAN_REFUNDS_ENABLED') === 'true'
