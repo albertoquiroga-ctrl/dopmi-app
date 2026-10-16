@@ -4742,3 +4742,47 @@ propuesta, sin afirmar que son sintéticos ni que el snapshot impone particiones
 Recorrido financiero remoto único en preparación para reemplazar el local
 PENDING, con2AuthTEST porAdminAPI soportada tras decisión concreta; no cuentas
 creadas, secretos nuevos/grants, pagos o efectos remotos ejecutados.
+
+## 16/10/2026 México — integración financiera TEST cerrada
+
+La operación completa fue autorizada expresamente para DEV y costo adicional0.
+Se aplicó una consolidación16SQL, con postflight idéntico de19funciones/6tablas,
+y los cierres Edge se comprobaron por contenido. Permisos Stripe y flag puntual
+TEST persistidos; seis Guardian existentes conservados. Dos identidades propias
+de ensayo, sin nuevas cuentas Connect, KYC, LIVE ni producción.
+
+Guardián20MXN y puntual10MXN TEST terminaron conciliados con PI/Charge/BT/TR y
+ledger: gross30, comisiónDopmi0.60, Stripe8.39, neto21.01MXN transferido, refund0.
+Se recuperó una respuesta perdida conservando el intento; tres reenvíos firmados
+de eventos reales devolvieron200 y dejaron idéntico el ledger. Registro propio
+cancelado mediante endpoint normal al cierre; Auth/ledger/evidencia retenidos.
+Decline/3DS opcionales no ejecutados. La muestra no acredita SDK en teléfono.
+
+El rechazo de capture_method automatic_async se reparó manteniendo la lectura
+del mismo PI, sus comprobaciones financieras y la espera retryable del BT.
+Roll-forward acotado revisado y readback exacto; sin recrear o confirmar cobros.
+CI38916819568 del d33cd1ec6237924fadca7a86cc5a492545311663 final4/4success:
+Flutter1113/analyze0, backend799, iOS simulator e identidad/adopción aprobados.
+Los recibos privados del paquete de integración conservan IDs y auditoría;
+no repetir la operación remota ni restaurar esquema/workers antiguos.
+
+## 16/10/2026 México — corrección del conjunto nativo de Stripe
+
+La única build firmada autorizada, Codemagic6ad23c575c06aedb540c5006/d33,
+pasó1113tests pero falló en :app:minifyReleaseWithR8 por clases Stripe ausentes.
+No produjo AAB ni nueva publicación; Play interno conserva2.3.3/versionCode311.
+El grafo real reprodujo la mezcla PaymentSheet23.17.1/Connect23.21.0. Alinear
+sólo23.21 se descartó antes de otra build: el bridge14.1 no cubría dos enums
+nuevos y habría dejado un when no exhaustivo.
+
+Se actualizó el conjunto oficial flutter_stripe/stripe_android/stripe_ios/
+stripe_platform_interface a14.2.0 y se alineó Android a23.22.0. La regla admite
+sólo requests23.21/23.22 observados y falla ante otra23.x, conservando Issuing1.x,
+R8/ProGuard, firma y controlesTEST. Resolución aislada real176módulos/137artefactos,
+los14Stripe a23.22; bridge17/17variantes y47/47clases Connect usadas idénticas.
+APIcentralDart intacta; iOS26.13 permitido por Connect0.5, mínimos sin cambio.
+Revisión independiente favorable, flutter analyze0 y90/90dirigidas de SDK,
+registro y Connect con el nuevo lock. Falta CI del commit de esta corrección,
+compilación release/R8 y publicación interna separada. Otra build requiere
+ampliar el límite específico consumido, con cuota gratis≥60 y costo adicional0;
+no reabre el permiso financiero ya ejecutado. Teléfono y aceptación pendientes.
