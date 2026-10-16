@@ -81,6 +81,62 @@ test('registration settlement evidence uses actual processor fee and original ow
   } } }, owned);
   assert.deepEqual(read, evidence);
 });
+test('registration automatic async settlement requires the same complete paid charge and actual balance fee', () => {
+  const paid = { ...paidFixture(), capture_method: 'automatic_async', transfer_group: null };
+  assert.deepEqual(registrationSettlementEvidence(attempt, paid),
+    registrationSettlementEvidence(attempt, { ...paid, capture_method: 'automatic' }));
+  for (const delta of [{ paid: false }, { captured: false }, { disputed: true },
+    { customer: 'cus_foreign' }, { payment_intent: 'pi_foreign' }, { amount_refunded: 1 }])
+    assert.throws(() => registrationSettlementEvidence(attempt, { ...paid,
+      latest_charge: { ...paid.latest_charge, ...delta } }), /charge_unconfirmed/);
+  for (const capture_method of ['manual', 'unknown', null])
+    assert.throws(() => registrationSettlementEvidence(attempt, { ...paid, capture_method }), /charge_unconfirmed/);
+});
+
+test('registration automatic async pending balance fails retryably then finalizes the same PI once without another charge', async () => {
+  const id = '82000000-0000-4000-8000-000000000001';
+  const cycleId = '82000000-0000-4000-8000-000000000002';
+  const eventId = 'evt_AsyncSettlementTest';
+  const row = { ...attempt, id, owner_id: 'synthetic-owner', reservation_id: cycleId,
+    processor_state: 'processor_succeeded', resolved_at: null, settlement: null };
+  const paid = { ...paidFixture(), capture_method: 'automatic_async', transfer_group: null,
+    metadata: { guardian_registration_attempt_id: id } };
+  let current = { ...paid, latest_charge: { ...paid.latest_charge, balance_transaction: null } };
+  const reads = [], settlements = [], resolutions = [];
+  const worker = guardianRegistrationWorker({ stripe: {
+    events: { retrieve: async value => { assert.equal(value, eventId); return {
+      id: eventId, livemode: false, type: 'payment_intent.succeeded',
+      data: { object: { id: paid.id, metadata: paid.metadata } },
+    }; } },
+    paymentIntents: {
+      retrieve: async value => { reads.push(value); assert.equal(value, paid.id); return structuredClone(current); },
+      create: () => assert.fail('async reconciliation cannot create another PI'),
+      confirm: () => assert.fail('async reconciliation cannot confirm another charge'),
+      cancel: () => assert.fail('async reconciliation cannot cancel the paid PI'),
+    },
+  }, paymentRpc: async (operation, data) => {
+    assert.equal(operation, 'get'); assert.equal(data.id, id); return structuredClone(row);
+  }, bind: () => assert.fail('bound paid PI cannot rebind'),
+  authorize: () => assert.fail('bound paid PI cannot gain another authorization'),
+  settle: async evidence => {
+    settlements.push(evidence); assert.equal(evidence.payment_intent_id, paid.id);
+    assert.equal(evidence.stripe_fee_cents, 100);
+    row.settlement = { cycle_id: cycleId, registration_attempt_id: id, payment_intent_id: paid.id };
+  }, resolve: async value => { resolutions.push(value); row.resolved_at = '2026-10-16T10:00:00Z'; } });
+  await assert.rejects(worker.handleWebhook(eventId), error =>
+    error.code === 'guardian_registration_charge_unconfirmed' && error.status === 409);
+  assert.equal(settlements.length, 0); assert.equal(resolutions.length, 0);
+  assert.equal(row.processor_state, 'processor_succeeded'); assert.equal(row.resolved_at, null);
+  current = paid;
+  assert.deepEqual(await worker.handleWebhook(eventId), {
+    received: true, guardian_registration: true, observed: 0, finalized: 1, cycleId,
+  });
+  assert.deepEqual(await worker.handleWebhook(eventId), {
+    received: true, guardian_registration: true, observed: 0, finalized: 0, cycleId,
+  });
+  assert.equal(settlements.length, 1); assert.deepEqual(resolutions, [id]);
+  assert.ok(reads.length >= 4 && reads.every(value => value === paid.id));
+});
 test('registration settlement evidence rejects disputed, refunded, foreign and destination charges', () => {
   const paid = paidFixture();
   for (const delta of [{ livemode: true }, { payment_intent: 'pi_other' }, { customer: 'cus_other' },

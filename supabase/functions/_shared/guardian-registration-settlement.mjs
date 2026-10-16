@@ -8,8 +8,10 @@ const id = value => typeof value === 'string' ? value : value?.id;
 export function registrationSettlementEvidence(attempt, intent) {
   const fail = () => { throw new PaymentError('guardian_registration_charge_unconfirmed', 409); };
   if (registrationPaymentEvidence(attempt, intent).state !== 'processor_succeeded') fail();
+  // Stripe defaults to asynchronous automatic capture. Success still cannot
+  // settle until the same paid/captured charge has its complete balance/fee.
   if (intent.application_fee_amount != null || intent.transfer_data != null ||
-      intent.capture_method !== 'automatic') fail();
+      !['automatic', 'automatic_async'].includes(intent.capture_method)) fail();
   const charge = intent.latest_charge;
   if (!charge || typeof charge === 'string' || !/^ch_[A-Za-z0-9]+$/.test(charge.id ?? '') ||
       charge.livemode !== false || id(charge.payment_intent) !== intent.id ||
