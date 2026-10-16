@@ -44,6 +44,27 @@ void main() {
         expect(parameters.allowsDelayedPaymentMethods, false);
         expect(parameters.merchantDisplayName, 'Dopmi');
         expect(parameters.returnURL, 'io.dopmi.app://payments/return');
+        // The same native palette must stay legible in Android night mode.
+        expect(
+          parameters.toJson()['appearance']['colors'],
+          containsPair('secondaryText', '#FF554E48'),
+        );
+        expect(
+          parameters.toJson()['appearance']['colors'],
+          containsPair('placeholderText', '#FF554E48'),
+        );
+        expect(
+          parameters.toJson()['appearance']['colors'],
+          containsPair('icon', '#FF15110D'),
+        );
+        expect(
+          parameters.toJson()['appearance']['colors'],
+          containsPair('background', '#FFFFFFFF'),
+        );
+        expect(
+          parameters.toJson()['appearance']['colors'],
+          containsPair('componentBackground', '#FFFFFFFF'),
+        );
       }
     },
   );

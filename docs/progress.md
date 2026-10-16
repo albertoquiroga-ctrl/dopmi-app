@@ -4786,3 +4786,63 @@ registro y Connect con el nuevo lock. Falta CI del commit de esta corrección,
 compilación release/R8 y publicación interna separada. Otra build requiere
 ampliar el límite específico consumido, con cuota gratis≥60 y costo adicional0;
 no reabre el permiso financiero ya ejecutado. Teléfono y aceptación pendientes.
+
+## 16/10/2026 México — candidato 2.3.3 (313) publicado en Play interno
+
+CI38928599920 de c0545b79f02e1a68180f04b56d072c7ff49a0a7c terminó4/4success:
+Flutter1113/analyze0, backend799/config17, APKdebug e iOSsimulator compilados;
+los gates de identidad/adopción también pasaron. La build adicional fue
+autorizada expresamente una vez con USD0, máximo60min y cuota gratis79min.
+Codemagic6ad25189e14601c6a83a2791, workflow android-guardian-internal,
+terminó finished en19min con1113tests, R8 y AAB release aprobados. Firma y
+configuración TEST existentes conservadas. No hay otra build autorizada.
+
+AAB real SHA2567b125396e61693fca20bd5bfc19ce9315aa4d8ea8cc429e6be150ca4e2cb2edb:
+JDK17 jarsigner -verify -strict exit0 y certificado upload esperado97cf…857f.
+El recibo conserva13entradas JarFile/JarInputStream retenidas por un filtro;
+el total afectado no está determinado. No se afirma ausencia de advertencias
+ni equivalencia entre ambos verificadores. Manifiesto real com.mycompany.dopmi,
+2.3.3/versionCode313, debuggable ausente (false), minSDK24/target36.
+
+El flujo existente publicó internal y después consultó tracks get: completed313.
+Play Console recargado confirmó Available to internal testers, release154,
+código313, publicado16oct10:51México. Enlace real de testers:
+https://play.google.com/apps/internaltest/4701490604660624893.
+Capturas, recibos, autorización y recorrido IRLANDA-CANDIDATE-TEST.md están en
+el paquete privado integration-test-package-23f64786. El helper de extracción
+añadió un BOM al companion; se conservó el FAIL previo y se verificaron los
+bytes originales, sin modificar AAB/helper. No se repitieron CI ni finanzas.
+
+Pendiente externo: acceso e instalación con la cuenta de Irlanda, PaymentSheet
+y Connect en su teléfono, revisión visual y aceptación explícita. Publicación
+no equivale a prueba de dispositivo ni a producto completo. El seguimiento
+operacional ya no existe en la app y no se recreó otro timer. Esta anotación
+es documentación posterior a c054; no modifica el código del candidato publicado.
+
+## 16/10/2026 México — PaymentSheet nativo ilegible en modo oscuro
+
+La prueba USB del candidato Play2.3.3(313) en Samsung/Android16 comprobó instalación
+desde Play, sesión propia existente, navegación, monto20 y apertura nativaTEST.
+El titular autorizó una prueba nueva en esa cuenta20+10MXNTEST, máximo30TEST,
+USD0 reales y cancelación del registro al terminar. El ensayo sintético previo
+permanece cerrado; no se repitieron sus pagos ni fixtures.
+
+La hoja nativa abrió con etiquetas, placeholders e icono de cerrar invisibles.
+El titular confirmó el defecto en la pantalla física. Con el mismo SetupIntent
+sin confirmar, cambiar temporalmente night mode deyes ano hizo visibles esos
+elementos; se restauróyes. Android ignora styleThemeMode.light (iOS-only):
+el bridge aplica la apariencia compartida sobre Builder.dark y retiene colores
+claros en los tres campos omitidos, mientras Dopmi fija superficies blancas.
+
+Ambos adaptadores nativos ahora envían secondaryText/placeholderText muted e
+icon ink. Regresión de JSON del bridge: antes10pass/2fail por valoresnull;
+después12/12PASS y analyze proporcional4archivos/0issues. No dependencias,
+guards, ownership, confirmaciones, firma, servidor ni montos modificados.
+
+No se ingresó tarjeta ni se confirmó método/cargo. Registro pendiente cancelado
+por la app; SQL de correlación temporal acotada registra mismoUUID/revision0→1,
+method_pending→canceled, cero PI/paymarkers/settlements y método ausente. Esa
+correlación no se presenta como prueba independiente del owner por nickname.
+Evidencia privada en device-acceptance-20261016. Play313 conserva el defecto;
+faltan CI del nuevo commit, autorización específica de otra build con cuota
+gratis suficiente, nueva publicación y validación en modo oscuro del teléfono.

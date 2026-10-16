@@ -110,6 +110,28 @@ void main() {
         expect(value.allowsDelayedPaymentMethods, false);
         expect(value.merchantDisplayName, 'Dopmi');
         expect(value.returnURL, 'io.dopmi.app://payments/return');
+        // Android uses this palette for both system themes, so light surfaces
+        // must not inherit white labels, placeholders or close icons at night.
+        expect(
+          value.toJson()['appearance']['colors'],
+          containsPair('secondaryText', '#FF554E48'),
+        );
+        expect(
+          value.toJson()['appearance']['colors'],
+          containsPair('placeholderText', '#FF554E48'),
+        );
+        expect(
+          value.toJson()['appearance']['colors'],
+          containsPair('icon', '#FF15110D'),
+        );
+        expect(
+          value.toJson()['appearance']['colors'],
+          containsPair('background', '#FFFFFFFF'),
+        );
+        expect(
+          value.toJson()['appearance']['colors'],
+          containsPair('componentBackground', '#FFFFFFFF'),
+        );
       }
     },
   );

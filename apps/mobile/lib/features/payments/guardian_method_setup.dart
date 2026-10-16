@@ -86,6 +86,7 @@ class GuardianMethodSetupSdk implements GuardianMethodSetup {
           primaryButtonLabel: 'Guardar método de pago',
           returnURL: 'io.dopmi.app://payments/return',
           style: ThemeMode.light,
+          // Android also applies these light surfaces in system dark mode.
           appearance: const PaymentSheetAppearance(
             colors: PaymentSheetAppearanceColors(
               primary: purple,
@@ -93,6 +94,9 @@ class GuardianMethodSetupSdk implements GuardianMethodSetup {
               componentBackground: Colors.white,
               componentText: ink,
               primaryText: ink,
+              secondaryText: muted,
+              placeholderText: muted,
+              icon: ink,
             ),
           ),
         ),

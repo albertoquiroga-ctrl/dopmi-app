@@ -81,6 +81,7 @@ class OneoffPaymentSheetSdk implements OneoffPaymentSheet {
           primaryButtonLabel: 'Confirmar aportación',
           returnURL: 'io.dopmi.app://payments/return',
           style: ThemeMode.light,
+          // Android also applies these light surfaces in system dark mode.
           appearance: const PaymentSheetAppearance(
             colors: PaymentSheetAppearanceColors(
               primary: purple,
@@ -88,6 +89,9 @@ class OneoffPaymentSheetSdk implements OneoffPaymentSheet {
               componentBackground: Colors.white,
               componentText: ink,
               primaryText: ink,
+              secondaryText: muted,
+              placeholderText: muted,
+              icon: ink,
             ),
           ),
         ),
