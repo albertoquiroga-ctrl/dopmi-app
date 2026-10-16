@@ -3,10 +3,102 @@ import 'dart:ui' as ui;
 import 'package:dopmi_mobile/features/profile/profile_overview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
+  setUpAll(() async {
+    await (FontLoader(
+      'Inter',
+    )..addFont(rootBundle.load('assets/fonts/Inter.ttf'))).load();
+  });
+  for (final scale in [1.0, 2.0]) {
+    testWidgets(
+      'payment access preserves words and all destinations at 320px and $scale text',
+      (tester) async {
+        tester.view.physicalSize = const Size(320, 640);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        const items = [
+          ('Métodos de pago', Icons.credit_card, '/settings/payment-methods'),
+          ('Suscripción y pagos', Icons.receipt_long_outlined, '/guardian'),
+          ('Mi historial', Icons.access_time, '/payments'),
+        ];
+        final router = GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (_, _) => const Scaffold(
+                body: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: DonorAccessGroup(
+                      title: 'Pagos y suscripciones',
+                      items: items,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            for (final item in items)
+              GoRoute(
+                path: item.$3,
+                builder: (_, _) => Scaffold(body: Text('Destino ${item.$3}')),
+              ),
+          ],
+        );
+        addTearDown(router.dispose);
+        await tester.pumpWidget(
+          MaterialApp.router(
+            theme: ThemeData(fontFamily: 'Inter'),
+            routerConfig: router,
+            builder: (context, child) => MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: TextScaler.linear(scale)),
+              child: child!,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final accesses = find.byType(InkWell);
+        final accessRects = [
+          for (var index = 0; index < accesses.evaluate().length; index++)
+            tester.getRect(accesses.at(index)),
+        ];
+        expect(accessRects, hasLength(3));
+        if (scale == 1) {
+          expect(accessRects[1].top, accessRects[0].top);
+          expect(accessRects[2].top, accessRects[0].top);
+        } else {
+          expect(accessRects[1].top, greaterThan(accessRects[0].bottom));
+          expect(accessRects[2].top, greaterThan(accessRects[1].bottom));
+        }
+        for (final item in items) {
+          final label = find.text(item.$1);
+          final paragraph = tester.renderObject<RenderParagraph>(label);
+          for (final word in RegExp(r'\S+').allMatches(item.$1)) {
+            expect(
+              paragraph.getBoxesForSelection(
+                TextSelection(baseOffset: word.start, extentOffset: word.end),
+              ),
+              hasLength(1),
+              reason: '${word.group(0)} must remain whole at $scale text',
+            );
+          }
+          await tester.ensureVisible(label);
+          await tester.tap(label);
+          await tester.pumpAndSettle();
+          expect(router.state.uri.path, item.$3);
+          expect(find.text('Destino ${item.$3}'), findsOneWidget);
+          router.pop();
+          await tester.pumpAndSettle();
+        }
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
   testWidgets(
     'profile access changes only its circle while held and opens on release',
     (tester) async {

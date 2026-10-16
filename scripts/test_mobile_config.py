@@ -13,7 +13,8 @@ class MobileConfigTests(unittest.TestCase):
     def setUp(self):
         example = Path(__file__).resolve().parents[1] / "apps/mobile/config.example.json"
         self.env = {"SUPABASE_URL": json.loads(example.read_text())["SUPABASE_URL"],
-                    "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_unit_test_placeholder"}
+                    "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_unit_test_placeholder",
+                    "STRIPE_PUBLISHABLE_KEY_TEST": "pk_test_fixture"}
 
     def test_guardian_requires_explicit_build_option(self):
         self.env["ENABLE_GUARDIAN_TEST"] = "true"
@@ -103,12 +104,26 @@ class MobileConfigTests(unittest.TestCase):
         self.assertEqual(enabled["STRIPE_PUBLISHABLE_KEY_TEST"], "pk_test_fixture")
         self.assertEqual(enabled["APPLE_PAY_MERCHANT_ID"], "")
 
-    def test_native_wallets_reject_secret_live_missing_keys_without_echo(self):
+    def test_guardian_native_card_does_not_enable_optional_wallets(self):
+        for wallet_flag in (None, "false", " false "):
+            with self.subTest(wallet_flag=wallet_flag):
+                env = {**self.env, "STRIPE_PUBLISHABLE_KEY_TEST": " pk_test_fixture ",
+                       "APPLE_PAY_MERCHANT_ID": "private-metadata-not-for-card-flow"}
+                if wallet_flag is not None:
+                    env["ENABLE_NATIVE_WALLETS_TEST"] = wallet_flag
+                result = config.build_config(env, True)
+                self.assertEqual(result["STRIPE_PUBLISHABLE_KEY_TEST"], "pk_test_fixture")
+                self.assertEqual(result["ENABLE_NATIVE_WALLETS_TEST"], "false")
+                self.assertEqual(result["APPLE_PAY_MERCHANT_ID"], "")
+
+    def test_guardian_cards_reject_secret_live_missing_keys_without_echo(self):
         for value in ("", "pk_live_fixture", "sk_test_fixture", "rk_test_fixture", "sb_secret_fixture"):
-            with self.subTest(value=value), self.assertRaises(ValueError) as caught:
-                config.build_config({**self.env, "ENABLE_NATIVE_WALLETS_TEST": "true", "STRIPE_PUBLISHABLE_KEY_TEST": value}, True)
-            if value:
-                self.assertNotIn(value, str(caught.exception))
+            for wallet_flag in ("false", "true"):
+                with self.subTest(value=value, wallet_flag=wallet_flag), self.assertRaises(ValueError) as caught:
+                    config.build_config({**self.env, "ENABLE_NATIVE_WALLETS_TEST": wallet_flag,
+                                         "STRIPE_PUBLISHABLE_KEY_TEST": value}, True)
+                if value:
+                    self.assertNotIn(value, str(caught.exception))
 
     def test_native_wallets_preserve_valid_merchant_and_reject_invalid_metadata(self):
         wallet = {**self.env, "ENABLE_NATIVE_WALLETS_TEST": " true ", "STRIPE_PUBLISHABLE_KEY_TEST": " pk_test_fixture ",
@@ -121,8 +136,8 @@ class MobileConfigTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             config.build_config({**wallet, "ENABLE_NATIVE_WALLETS_TEST": "yes"}, True)
 
-    def test_disabled_native_wallets_do_not_copy_unrelated_credentials(self):
-        result = config.build_config({**self.env, "STRIPE_PUBLISHABLE_KEY_TEST": "sk_test_fixture", "APPLE_PAY_MERCHANT_ID": "private"}, True)
+    def test_standard_workflow_does_not_copy_unrelated_credentials(self):
+        result = config.build_config({**self.env, "STRIPE_PUBLISHABLE_KEY_TEST": "sk_test_fixture", "APPLE_PAY_MERCHANT_ID": "private"})
         self.assertEqual(result["STRIPE_PUBLISHABLE_KEY_TEST"], "")
         self.assertEqual(result["APPLE_PAY_MERCHANT_ID"], "")
         self.assertEqual(result["ENABLE_NATIVE_WALLETS_TEST"], "false")

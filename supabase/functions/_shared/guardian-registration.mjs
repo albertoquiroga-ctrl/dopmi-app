@@ -5,7 +5,7 @@ export const guardianRegistrationConsentVersion = 'guardian-registration-2026-10
 
 // Registration and method setup are separate durable operations. A lost
 // response must resume the same saved-card job, never create a charge.
-export function guardianRegistrationService({ rpc, savedCard, attemptRpc }) {
+export function guardianRegistrationService({ rpc, savedCard, savedNativeCard, attemptRpc }) {
   function consent(input) {
     if (input.consent !== true || input.consent_version !== guardianRegistrationConsentVersion ||
         input.method_consent !== true || input.method_consent_version !== savedCardConsentVersion)
@@ -16,19 +16,26 @@ export function guardianRegistrationService({ rpc, savedCard, attemptRpc }) {
       gross_cents: registration.gross_cents, revision: registration.revision,
       registered_at: registration.registered_at, next_evaluation_at: registration.status === 'canceled'
         ? null : registration.next_evaluation_at,
-      method_status: method?.status ?? null,
+      method_status: method?.method_status ?? method?.status ?? null,
+      setup_client_secret: registration.status === 'method_pending' ? method?.setup_client_secret ?? null : null,
       checkout_url: registration.status === 'method_pending' ? method?.checkout_url ?? null : null };
   }
   async function status(actor, input) {
-    const registration = await rpc('reconcile_method', { owner_id: actor, id: input.id });
-    return receipt(registration);
+    let registration = await rpc('reconcile_method', { owner_id: actor, id: input.id });
+    if (registration.status !== 'method_pending' || !savedNativeCard) return receipt(registration);
+    // Reconcile only the existing owner-bound job; status never reserves a new
+    // setup and the SDK return never becomes server proof of a saved method.
+    const method = await savedNativeCard.status(actor, { key: registration.id });
+    registration = await rpc('reconcile_method', { owner_id: actor, id: registration.id });
+    return receipt(registration, method);
   }
   async function register(actor, input) {
     consent(input);
     let registration = await rpc('prepare', { owner_id: actor, key: input.key,
       gross_cents: input.gross_cents, consent: true, consent_version: guardianRegistrationConsentVersion });
     if (registration.status !== 'method_pending') return receipt(registration);
-    const method = await savedCard.checkout(actor, { key: registration.id, consent: true,
+    const setup = savedNativeCard?.submit ?? savedCard.checkout;
+    const method = await setup(actor, { key: registration.id, consent: true,
       consent_version: savedCardConsentVersion });
     // Re-read cancellation and saved-method evidence after external work.
     // Browser return, success URL, and the method callback do not prove success.

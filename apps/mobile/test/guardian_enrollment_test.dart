@@ -5,6 +5,7 @@ import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
+import 'package:dopmi_mobile/features/payments/guardian_method_setup.dart';
 import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,20 @@ class PendingCapacityGuardian extends FakeGuardian {
   Future<bool> capacity(int cents) => pendingCapacity.future;
 }
 
+class EnrollmentMethodSetup implements GuardianMethodSetup {
+  final secrets = <String>[];
+  @override
+  bool get available => true;
+  @override
+  Future<void> present(
+    String secret, {
+    required bool Function() current,
+  }) async {
+    if (!current()) return;
+    secrets.add(secret);
+  }
+}
+
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
   Future<void> start(
@@ -36,6 +51,7 @@ void main() {
     FakeGuardian repo, {
     bool enabled = true,
     String location = '/guardian',
+    GuardianMethodSetup? methodSetup,
   }) async {
     tester.view.physicalSize = const Size(377, 1800);
     tester.view.devicePixelRatio = 1;
@@ -48,6 +64,9 @@ void main() {
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         guardianRepositoryProvider.overrideWithValue(repo),
+        guardianMethodSetupProvider.overrideWithValue(
+          methodSetup ?? EnrollmentMethodSetup(),
+        ),
         rescueRepositoryProvider.overrideWithValue(FakeRescue()),
         guardianEnabledProvider.overrideWithValue(enabled),
         routerInitialLocationProvider.overrideWithValue(location),
@@ -353,7 +372,8 @@ void main() {
     'Enrollment starts at the reference heading and returning revokes consent without checkout',
     (tester) async {
       final repo = FakeGuardian();
-      await start(tester, repo);
+      final sdk = EnrollmentMethodSetup();
+      await start(tester, repo, methodSetup: sdk);
       await tester.tap(find.text('Suscribirme'));
       await tester.pumpAndSettle();
       expect(find.text('Suscripción Dopmi'), findsNothing);
@@ -377,18 +397,38 @@ void main() {
       expect(find.text('Sin suscripción'), findsOneWidget);
       expect(repo.calls, isEmpty);
       expect(repo.opened, 0);
+      expect(sdk.secrets, isEmpty);
+      expect(
+        (await SharedPreferences.getInstance()).getString(
+          'dopmi-guardian-registration:one:intent',
+        ),
+        isNull,
+      );
       await tester.tap(find.text('Suscribirme'));
       await tester.pumpAndSettle();
       for (final key in ['registration-consent', 'method-consent']) {
-        expect(
-          tester.widget<CheckboxListTile>(find.byKey(Key(key))).value,
-          false,
-        );
+        final tile = find.byKey(Key(key));
+        final scroll = find
+            .descendant(
+              of: find.byKey(const Key('guardian-registration-content')),
+              matching: find.byType(Scrollable),
+            )
+            .first;
+        await tester.scrollUntilVisible(tile, 250, scrollable: scroll);
+        expect(tester.widget<CheckboxListTile>(tile).value, false);
       }
       await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
       expect(find.text('Sin suscripción'), findsOneWidget);
       expect(repo.calls, isEmpty);
+      expect(repo.opened, 0);
+      expect(sdk.secrets, isEmpty);
+      expect(
+        (await SharedPreferences.getInstance()).getString(
+          'dopmi-guardian-registration:one:intent',
+        ),
+        isNull,
+      );
     },
   );
   testWidgets(

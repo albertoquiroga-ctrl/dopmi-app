@@ -5,6 +5,7 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/payments/payment_repository.dart';
+import 'package:dopmi_mobile/features/payments/oneoff_payment_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,6 +18,16 @@ import 'rescue_test.dart' show FakeRescue;
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 
 import 'fake_identity_repository.dart';
+
+class FakeOneoffSheet implements OneoffPaymentSheet {
+  @override
+  bool get available => true;
+  @override
+  Future<void> present(
+    String secret, {
+    required bool Function() current,
+  }) async {}
+}
 
 class FakePayments extends PaymentRepository {
   FakePayments()
@@ -157,6 +168,7 @@ void main() {
       final payments = WaitingCheckoutPayments();
       final container = ProviderContainer(
         overrides: [
+          oneoffPaymentSheetProvider.overrideWithValue(FakeOneoffSheet()),
           identityRepositoryProvider.overrideWithValue(identity),
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
           paymentRepositoryProvider.overrideWithValue(payments),
@@ -176,7 +188,7 @@ void main() {
         ),
       );
       await pumpUntil(tester, find.text('Resumen'));
-      final button = find.widgetWithText(FilledButton, 'Confirmar en Stripe');
+      final button = find.widgetWithText(FilledButton, 'Confirmar aportación');
       await tester.ensureVisible(button);
       await tester.pumpAndSettle();
       final bounds = tester.getRect(button);
@@ -184,7 +196,7 @@ void main() {
       await tester.tap(button);
       await tester.pump();
       expect(payments.calls, hasLength(1));
-      final pending = find.widgetWithText(FilledButton, 'Confirmar en Stripe');
+      final pending = find.widgetWithText(FilledButton, 'Confirmar aportación');
       expect(tester.getSize(pending), bounds.size);
       expect(tester.widget<FilledButton>(pending).onPressed, isNull);
       await tester.ensureVisible(pending);
@@ -256,6 +268,7 @@ void main() {
         final rescue = FakeRescue();
         final container = ProviderContainer(
           overrides: [
+            oneoffPaymentSheetProvider.overrideWithValue(FakeOneoffSheet()),
             identityRepositoryProvider.overrideWithValue(identity),
             communityRepositoryProvider.overrideWithValue(FakeCommunity()),
             paymentRepositoryProvider.overrideWithValue(payments),
@@ -280,7 +293,7 @@ void main() {
           find.text(rescue.caseRecord.title),
           caseId == 'case-one' ? findsNWidgets(2) : findsNothing,
         );
-        expect(find.text('En Stripe'), findsOneWidget);
+        expect(find.text('Pago seguro en Dopmi'), findsOneWidget);
         expect(find.text('\$100.25 MXN'), findsOneWidget);
         expect(payments.calls, isEmpty);
         await tester.ensureVisible(find.text('Cambiar monto'));
@@ -308,6 +321,7 @@ void main() {
       final payments = ResultPayments(status);
       final container = ProviderContainer(
         overrides: [
+          oneoffPaymentSheetProvider.overrideWithValue(FakeOneoffSheet()),
           identityRepositoryProvider.overrideWithValue(identity),
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
           paymentRepositoryProvider.overrideWithValue(payments),
@@ -328,7 +342,7 @@ void main() {
       );
       await pumpUntil(tester, find.text('Resumen'));
       expect(payments.calls, isEmpty);
-      await tapButton(tester, 'Confirmar en Stripe');
+      await tapButton(tester, 'Confirmar aportación');
       await tester.pumpAndSettle();
       expect(payments.calls.length, 1);
       expect(
@@ -356,7 +370,7 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.text('Resumen'), findsOneWidget);
         expect(payments.calls.length, 1);
-        await tapButton(tester, 'Confirmar en Stripe');
+        await tapButton(tester, 'Confirmar aportación');
         await tester.pumpAndSettle();
         expect(payments.calls.length, 2);
         expect(payments.calls[0], isNot(payments.calls[1]));
@@ -378,6 +392,7 @@ void main() {
       final payments = OldResultPayments();
       final container = ProviderContainer(
         overrides: [
+          oneoffPaymentSheetProvider.overrideWithValue(FakeOneoffSheet()),
           identityRepositoryProvider.overrideWithValue(identity),
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
           paymentRepositoryProvider.overrideWithValue(payments),
@@ -434,6 +449,7 @@ void main() {
       final payments = FakePayments();
       final container = ProviderContainer(
         overrides: [
+          oneoffPaymentSheetProvider.overrideWithValue(FakeOneoffSheet()),
           identityRepositoryProvider.overrideWithValue(identity),
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
           paymentRepositoryProvider.overrideWithValue(payments),
@@ -476,6 +492,7 @@ void main() {
       final community = FakeCommunity();
       final container = ProviderContainer(
         overrides: [
+          oneoffPaymentSheetProvider.overrideWithValue(FakeOneoffSheet()),
           identityRepositoryProvider.overrideWithValue(identity),
           communityRepositoryProvider.overrideWithValue(community),
           paymentRepositoryProvider.overrideWithValue(payments),
@@ -504,7 +521,7 @@ void main() {
       );
       await tapButton(tester, 'Revisar aportación');
       expect(find.text('Resumen'), findsOneWidget);
-      await tapButton(tester, 'Confirmar en Stripe');
+      await tapButton(tester, 'Confirmar aportación');
       await pumpUntil(tester, find.text('Pago en procesamiento'));
       final prefs = await SharedPreferences.getInstance();
       expect(payments.calls.length, 1);
@@ -534,6 +551,7 @@ void main() {
     final community = FakeCommunity();
     final container = ProviderContainer(
       overrides: [
+        oneoffPaymentSheetProvider.overrideWithValue(FakeOneoffSheet()),
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(community),
         paymentRepositoryProvider.overrideWithValue(payments),
@@ -559,7 +577,7 @@ void main() {
     );
     await tapButton(tester, 'Revisar aportación');
     expect(find.text('Resumen'), findsOneWidget);
-    await tapButton(tester, 'Confirmar en Stripe');
+    await tapButton(tester, 'Confirmar aportación');
     await pumpUntil(tester, find.text('Continuar mi aportación'));
     expect(payments.calls.length, 1);
     final prefs = await SharedPreferences.getInstance();

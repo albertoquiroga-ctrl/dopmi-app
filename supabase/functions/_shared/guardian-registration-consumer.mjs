@@ -31,7 +31,7 @@ export function guardianRegistrationConsumer({ stripe, load, bind, authorize, ob
       // the same immutable attempt identity and exact same creation parameters.
       intent = await stripe.paymentIntents.create({
         amount: attempt.gross_cents, currency: 'mxn', customer: attempt.customer_id,
-        payment_method: attempt.payment_method_id, payment_method_types: ['card'],
+        payment_method: attempt.payment_method_id, allowed_payment_method_types: ['card'],
         confirm: false, metadata: { guardian_registration_attempt_id: attempt.id },
       }, { idempotencyKey: `guardian-registration-create:${attempt.id}` });
       const candidate = { ...attempt, stripe_payment_intent_id: intent.id };
@@ -54,13 +54,34 @@ export function guardianRegistrationConsumer({ stripe, load, bind, authorize, ob
         { off_session: true }, { idempotencyKey: authorized.payment_key });
     } catch {
       // Timeout/SDK error is not payment failure. Keep the marker and identity;
-      // subsequent consumption retrieves this intent and never sends again.
+      // subsequent consumption never confirms again. A confirmed unpayable
+      // intent can be canceled, but a transport error alone cannot release it.
       return { state: 'unresolved' };
     }
     return record(authorized, intent);
   }
   async function reconcile(attempt) {
-    const intent = await stripe.paymentIntents.retrieve(attempt.stripe_payment_intent_id);
+    let intent = await stripe.paymentIntents.retrieve(attempt.stripe_payment_intent_id);
+    assertRegistrationPaymentIdentity(attempt, intent);
+    // The sender can crash after the durable marker and before confirm. A
+    // card can also be definitively declined. Leaving either state unresolved
+    // forever would block every later monthly evaluation for this owner.
+    // Cancel the SAME resource instead of issuing another payment send. A
+    // concurrent confirmation may win; only a fresh provider result is merged.
+    // A concurrent consumer may observe the marker while its winner is still
+    // sending (the runtime HTTP timeout is 20s). Give that sender two minutes;
+    // a known decline is already unpayable and needs no crash inference.
+    const markerAge = Date.now() - Date.parse(attempt.pay_requested_at);
+    if (intent.status === 'requires_payment_method' ||
+        (intent.status === 'requires_confirmation' && markerAge >= 120000)) {
+      try {
+        await stripe.paymentIntents.cancel(intent.id, {},
+          { idempotencyKey: `guardian-registration-abandon:${attempt.id}` });
+      } catch {
+        // A cancellation timeout or confirmation race is not terminal evidence.
+      }
+      intent = await stripe.paymentIntents.retrieve(attempt.stripe_payment_intent_id);
+    }
     return record(attempt, intent);
   }
   return { consume };

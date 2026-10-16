@@ -1165,17 +1165,54 @@ class DonorAccessGroup extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        SizedBox(
-          width: items.length == 2 ? 240 : double.infinity,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (final item in items) ...[
-                if (item != items.first) const SizedBox(width: 8),
-                Expanded(child: _DonorAccessItem(item: item)),
-              ],
-            ],
-          ),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            if (items.isEmpty) return const SizedBox.shrink();
+            final rowWidth = items.length == 2 && constraints.maxWidth > 240
+                ? 240.0
+                : constraints.maxWidth;
+            final itemWidth =
+                (rowWidth - 8 * (items.length - 1)) / items.length;
+            final labelStyle = DefaultTextStyle.of(context).style
+                .merge(_DonorAccessItem.labelStyle);
+            final fitsRow = items.every((item) {
+              if (itemWidth < 60) return false;
+              return item.$1.split(RegExp(r'\s+')).every((word) {
+                final painter = TextPainter(
+                  text: TextSpan(text: word, style: labelStyle),
+                  textDirection: Directionality.of(context),
+                  textScaler: MediaQuery.textScalerOf(context),
+                  locale: Localizations.maybeLocaleOf(context),
+                )..layout();
+                final fits = painter.width <= itemWidth - 4;
+                painter.dispose();
+                return fits;
+              });
+            });
+            if (!fitsRow) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (var index = 0; index < items.length; index++) ...[
+                    if (index != 0) const SizedBox(height: 12),
+                    _DonorAccessItem(item: items[index]),
+                  ],
+                ],
+              );
+            }
+            return SizedBox(
+              width: rowWidth,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (var index = 0; index < items.length; index++) ...[
+                    if (index != 0) const SizedBox(width: 8),
+                    Expanded(child: _DonorAccessItem(item: items[index])),
+                  ],
+                ],
+              ),
+            );
+          },
         ),
       ],
     ),
@@ -1184,6 +1221,12 @@ class DonorAccessGroup extends StatelessWidget {
 
 class _DonorAccessItem extends StatefulWidget {
   const _DonorAccessItem({required this.item});
+  static const labelStyle = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    color: Color(0xff5c5650),
+    height: 1.2,
+  );
   final (String, IconData, String) item;
   @override
   State<_DonorAccessItem> createState() => _DonorAccessItemState();
@@ -1233,12 +1276,7 @@ class _DonorAccessItemState extends State<_DonorAccessItem> {
             Text(
               widget.item.$1,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: Color(0xff5c5650),
-                height: 1.2,
-              ),
+              style: _DonorAccessItem.labelStyle,
             ),
           ],
         ),

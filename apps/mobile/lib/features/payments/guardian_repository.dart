@@ -47,6 +47,37 @@ class GuardianRepository {
       throw const FormatException('Registro no confirmado');
     }
     final url = data['checkout_url'];
+    final secret = data['setup_client_secret'];
+    final methodStatus = data['method_status'];
+    if (methodStatus != null &&
+        ![
+          'pending',
+          'saved',
+          'expired',
+          'attention',
+          'requires_payment_method',
+          'requires_confirmation',
+          'requires_action',
+          'processing',
+          'succeeded',
+          'canceled',
+        ].contains(methodStatus)) {
+      throw const FormatException('Método no confirmado');
+    }
+    if (secret != null &&
+        (secret is! String ||
+            RegExp(r'^seti_[A-Za-z0-9]+_secret_[A-Za-z0-9]+$')
+                    .stringMatch(secret) !=
+                secret ||
+            data['status'] != 'method_pending' ||
+            url != null ||
+            ![
+              'requires_payment_method',
+              'requires_confirmation',
+              'requires_action',
+            ].contains(methodStatus))) {
+      throw const FormatException('Método no confirmado');
+    }
     if (url != null &&
         (url is! String ||
             data['status'] != 'method_pending' ||
@@ -60,6 +91,8 @@ class GuardianRepository {
       'status': data['status'],
       'gross_cents': data['gross_cents'],
       'checkout_url': url,
+      'setup_client_secret': secret,
+      'method_status': methodStatus,
     };
   }
 
@@ -119,10 +152,39 @@ class GuardianRepository {
   }
 
   Future<GuardianRegistration?> registrationState() async {
-    final result = await client.rpc('dopmi_guardian_registration_state');
+    var result = await client.rpc('dopmi_guardian_registration_state');
     if (result == null) return null;
     if (result is! Map) {
       throw const FormatException('Registro no confirmado');
+    }
+    final registration = GuardianRegistration.fromJson(
+      Map<String, dynamic>.from(result),
+    );
+    if (registration.status == 'method_pending') {
+      final response = await client.functions.invoke(
+        'guardian-client',
+        body: {'action': 'registration_status', 'id': registration.id},
+      );
+      final data = response.data;
+      if (response.status != 200 ||
+          data is! Map ||
+          data['id'] != registration.id ||
+          ![
+            'method_pending',
+            'registered',
+            'canceled',
+          ].contains(data['status'])) {
+        throw const FormatException('Registro no confirmado');
+      }
+      // The SDK never confirms this state. Reconcile the owned SetupIntent on
+      // the server, then read the complete owner-filtered projection again.
+      final refreshed = await client.rpc<dynamic>(
+        'dopmi_guardian_registration_state',
+      );
+      if (refreshed is! Map || refreshed['id'] != registration.id) {
+        throw const FormatException('Registro no confirmado');
+      }
+      result = refreshed;
     }
     return GuardianRegistration.fromJson(Map<String, dynamic>.from(result));
   }

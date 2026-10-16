@@ -1,7 +1,8 @@
 import 'package:dopmi_mobile/features/payments/connect_client.dart';
 import 'package:dopmi_mobile/features/payments/payment_repository.dart';
+import 'package:dopmi_mobile/features/payments/oneoff_payment_sheet.dart';
 
-import 'payments_test.dart' show FakePayments;
+import 'payments_test.dart' show FakePayments, FakeOneoffSheet;
 
 import 'package:go_router/go_router.dart';
 
@@ -16,6 +17,7 @@ import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/payments/guardian_registration.dart';
 import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
 import 'package:dopmi_mobile/features/payments/guardian_bank_action.dart';
+import 'package:dopmi_mobile/features/payments/guardian_method_setup.dart';
 import 'package:dopmi_mobile/features/payments/contribution_layout.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:flutter/material.dart';
@@ -61,8 +63,13 @@ class RegistrationGuardian extends FakeGuardian {
   bool lose = false;
   Completer<void>? responseGate;
   int? changedAmount;
+  String? setupSecret;
+  String? checkoutUrl;
+  String canceledPayment = 'processing';
+  int registrationReads = 0;
   @override
   Future<GuardianRegistration?> registrationState() async {
+    registrationReads++;
     if (failRegistration) throw StateError('synthetic offline');
     return registrationValue;
   }
@@ -83,7 +90,8 @@ class RegistrationGuardian extends FakeGuardian {
       'key': draft['key'],
       'status': 'method_pending',
       'gross_cents': draft['gross_cents'],
-      'checkout_url': null,
+      'checkout_url': checkoutUrl,
+      'setup_client_secret': setupSecret,
     };
   }
 
@@ -93,7 +101,7 @@ class RegistrationGuardian extends FakeGuardian {
     registrationValue = registration(
       registrationValue!.key,
       status: 'canceled',
-      payment: 'processing',
+      payment: canceledPayment,
     );
   }
 
@@ -118,6 +126,36 @@ class RegistrationGuardian extends FakeGuardian {
       evaluationStatus: value.evaluationStatus,
       evaluationCycle: value.evaluationCycle,
     );
+  }
+}
+
+class RegistrationMethodSetup implements GuardianMethodSetup {
+  final secrets = <String>[];
+  Completer<void>? gate;
+  bool close = false;
+  bool ready = true;
+  void Function()? onPresent;
+  @override
+  bool get available => ready;
+  @override
+  Future<void> present(
+    String secret, {
+    required bool Function() current,
+  }) async {
+    if (!current()) return;
+    secrets.add(secret);
+    await gate?.future;
+    if (!current()) return;
+    onPresent?.call();
+    if (close) throw StateError('synthetic sheet closed');
+  }
+}
+
+class RegistrationHostedPayments extends FakePayments {
+  final opened = <String>[];
+  @override
+  Future<void> openStripe(String url) async {
+    opened.add(url);
   }
 }
 
@@ -160,6 +198,7 @@ void main() {
     Size size,
     double scale, {
     GuardianBankAction? action,
+    GuardianMethodSetup? methodSetup,
     String initialLocation = '/guardian?enroll=1',
     PaymentRepository? payments,
     ConnectClient? connectClient,
@@ -192,10 +231,15 @@ void main() {
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         guardianRepositoryProvider.overrideWithValue(repo),
+        guardianMethodSetupProvider.overrideWithValue(
+          methodSetup ?? RegistrationMethodSetup(),
+        ),
         if (connectClient != null)
           connectClientProvider.overrideWithValue(connectClient),
         if (payments != null)
           paymentRepositoryProvider.overrideWithValue(payments),
+        if (payments != null)
+          oneoffPaymentSheetProvider.overrideWithValue(FakeOneoffSheet()),
         rescueRepositoryProvider.overrideWithValue(FakeRescue()),
         guardianEnabledProvider.overrideWithValue(true),
         if (action != null)
@@ -247,6 +291,293 @@ void main() {
       await saveCapture(captureKey, '$path/$name.png');
     });
   }
+
+  Future<void> authorizeRegistration(WidgetTester tester) async {
+    final scroll = find
+        .descendant(
+          of: find.byKey(const Key('guardian-registration-content')),
+          matching: find.byType(Scrollable),
+        )
+        .first;
+    for (final key in ['registration-consent', 'method-consent']) {
+      final tile = find.byKey(Key(key));
+      await tester.scrollUntilVisible(tile, 250, scrollable: scroll);
+      await tester.tap(tile);
+      await tester.pumpAndSettle();
+    }
+    await tester.tap(find.text('Registrar y preparar método'));
+  }
+
+  for (final closed in [false, true]) {
+    testWidgets(
+      'native setup completion closed=$closed keeps pending key until server receipt',
+      (tester) async {
+        const secret = 'seti_synthetic_secret_synthetic';
+        final repo = RegistrationGuardian()..setupSecret = secret;
+        final sdk = RegistrationMethodSetup()..close = closed;
+        await start(tester, repo, const Size(377, 852), 1, methodSetup: sdk);
+        final initialReads = repo.registrationReads;
+        await authorizeRegistration(tester);
+        await tester.pumpAndSettle();
+        expect(sdk.secrets, [secret]);
+        expect(repo.registrationReads, greaterThan(initialReads));
+        expect(find.text('Aportación asignada'), findsNothing);
+        final persisted = (await SharedPreferences.getInstance()).getString(
+          'dopmi-guardian-registration:one:intent',
+        )!;
+        expect(persisted, isNot(contains(secret)));
+        final key = repo.registrations.single['key'];
+        expect(jsonDecode(persisted)['key'], key);
+        expect(find.textContaining('synthetic sheet closed'), findsNothing);
+        if (closed) {
+          expect(
+            find
+                .textContaining('La preparación del método quedó pendiente')
+                .hitTestable(),
+            findsOneWidget,
+          );
+          await tester.scrollUntilVisible(
+            find.text('Cancelar registro pendiente'),
+            250,
+            scrollable: find
+                .descendant(
+                  of: find.byKey(const Key('guardian-registration-content')),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+          );
+          expect(find.text('Cancelar registro pendiente'), findsOneWidget);
+        }
+        await tester.tap(find.text('Continuar registro'));
+        await tester.pumpAndSettle();
+        expect(repo.registrations, hasLength(2));
+        expect(repo.registrations.last['key'], key);
+        expect(sdk.secrets, [secret, secret]);
+        expect(repo.calls, isEmpty);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
+  testWidgets(
+    'native sheet suspension permits state refresh without another submit or sheet',
+    (tester) async {
+      const secret = 'seti_synthetic_secret_synthetic';
+      final repo = RegistrationGuardian()..setupSecret = secret;
+      final gate = Completer<void>();
+      final sdk = RegistrationMethodSetup()..gate = gate;
+      await start(tester, repo, const Size(377, 1800), 1, methodSetup: sdk);
+      await authorizeRegistration(tester);
+      await tester.pump();
+      expect(sdk.secrets, [secret]);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      final button = tester.widget<ContributionButton>(
+        find.byType(ContributionButton).first,
+      );
+      expect(button.onPressed, isNull);
+      await tester.tap(find.text('Consultar estado'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(sdk.secrets, hasLength(1));
+      expect(repo.registrations, hasLength(1));
+      gate.complete();
+      await tester.pumpAndSettle();
+      expect(repo.registrations, hasLength(1));
+      expect(find.text('Aportación asignada'), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'unavailable native setup cannot create a new request or durable draft',
+    (tester) async {
+      final repo = RegistrationGuardian();
+      final sdk = RegistrationMethodSetup()..ready = false;
+      await start(tester, repo, const Size(377, 1800), 1, methodSetup: sdk);
+      await authorizeRegistration(tester);
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('No iniciamos un registro nuevo.'),
+        findsOneWidget,
+      );
+      expect(repo.registrations, isEmpty);
+      expect(sdk.secrets, isEmpty);
+      expect(
+        (await SharedPreferences.getInstance()).getString(
+          'dopmi-guardian-registration:one:intent',
+        ),
+        isNull,
+      );
+      expect(
+        tester
+            .widget<ContributionButton>(find.byType(ContributionButton).first)
+            .onPressed,
+        isNull,
+      );
+    },
+  );
+
+  testWidgets(
+    'existing hosted request remains resumable without native SDK availability',
+    (tester) async {
+      const key = '72000000-0000-4000-8000-000000000002';
+      const url = 'https://checkout.stripe.com/synthetic';
+      final repo = RegistrationGuardian()
+        ..registrationValue = registration(key)
+        ..checkoutUrl = url;
+      final sdk = RegistrationMethodSetup()..ready = false;
+      final payments = RegistrationHostedPayments();
+      await start(
+        tester,
+        repo,
+        const Size(377, 1800),
+        1,
+        methodSetup: sdk,
+        payments: payments,
+      );
+      await authorizeRegistration(tester);
+      await tester.pumpAndSettle();
+      expect(payments.opened, [url]);
+      expect(repo.registrations.single['key'], key);
+      expect(sdk.secrets, isEmpty);
+      expect(
+        find.textContaining('no está disponible en este dispositivo'),
+        findsNothing,
+      );
+      expect(find.text('Cancelar registro pendiente'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'unavailable existing native request keeps its key with query and cancellation access',
+    (tester) async {
+      const key = '72000000-0000-4000-8000-000000000002';
+      final repo = RegistrationGuardian()
+        ..registrationValue = registration(key)
+        ..setupSecret = 'seti_synthetic_secret_synthetic';
+      final sdk = RegistrationMethodSetup()..ready = false;
+      await start(tester, repo, const Size(377, 1800), 1, methodSetup: sdk);
+      await authorizeRegistration(tester);
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('Conservamos la misma solicitud; puedes consultar'),
+        findsOneWidget,
+      );
+      expect(repo.registrations.single['key'], key);
+      expect(sdk.secrets, isEmpty);
+      final scroll = find
+          .descendant(
+            of: find.byKey(const Key('guardian-registration-content')),
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      final query = find.widgetWithText(TextButton, 'Consultar estado');
+      await tester.scrollUntilVisible(query, 250, scrollable: scroll);
+      await tester.pumpAndSettle();
+      expect(tester.widget<TextButton>(query).onPressed, isNotNull);
+      final reads = repo.registrationReads;
+      await tester.tap(query);
+      await tester.pumpAndSettle();
+      expect(repo.registrationReads, greaterThan(reads));
+      expect(repo.registrations, hasLength(1));
+      expect(repo.registrations.single['key'], key);
+      expect(sdk.secrets, isEmpty);
+      final persisted = (await SharedPreferences.getInstance()).getString(
+        'dopmi-guardian-registration:one:intent',
+      )!;
+      expect(jsonDecode(persisted)['key'], key);
+      expect(persisted, isNot(contains('seti_synthetic_secret_synthetic')));
+      await tester.scrollUntilVisible(
+        find.text('Cancelar registro pendiente'),
+        -250,
+        scrollable: scroll,
+      );
+      expect(find.text('Cancelar registro pendiente'), findsOneWidget);
+      expect(
+        tester
+            .widget<TextButton>(
+              find.widgetWithText(TextButton, 'Cancelar registro pendiente'),
+            )
+            .onPressed,
+        isNotNull,
+      );
+      expect(repo.calls, isEmpty);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'sheet interruption does not override later server-confirmed registration',
+    (tester) async {
+      final repo = RegistrationGuardian()
+        ..setupSecret = 'seti_synthetic_secret_synthetic';
+      final sdk = RegistrationMethodSetup()
+        ..close = true
+        ..onPresent = () {
+          repo.registrationValue = registration(
+            repo.registrationValue!.key,
+            status: 'registered',
+          );
+        };
+      await start(tester, repo, const Size(377, 1800), 1, methodSetup: sdk);
+      await authorizeRegistration(tester);
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('La preparación del método quedó pendiente'),
+        findsNothing,
+      );
+      expect(find.text('Cancelar ciclos futuros'), findsOneWidget);
+      expect(
+        (await SharedPreferences.getInstance()).getString(
+          'dopmi-guardian-registration:one:intent',
+        ),
+        isNull,
+      );
+      expect(find.text('Aportación asignada'), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'expired pending method can cancel registration before a new consented key',
+    (tester) async {
+      const oldKey = '72000000-0000-4000-8000-000000000002';
+      final repo = RegistrationGuardian()
+        ..registrationValue = registration(oldKey)
+        ..canceledPayment = 'not_evaluated';
+      await start(tester, repo, const Size(377, 1800), 1);
+      await tester.tap(find.text('Cancelar registro pendiente'));
+      await tester.pumpAndSettle();
+      expect(find.text('Registro cancelado'), findsOneWidget);
+      expect(repo.registrations, isEmpty);
+      await tester.tap(find.text('Volver a registrarme'));
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<CheckboxListTile>(
+              find.byKey(const Key('registration-consent')),
+            )
+            .value,
+        false,
+      );
+      expect(
+        tester
+            .widget<CheckboxListTile>(find.byKey(const Key('method-consent')))
+            .value,
+        false,
+      );
+      await authorizeRegistration(tester);
+      await tester.pumpAndSettle();
+      expect(repo.registrations, hasLength(1));
+      expect(repo.registrations.single['key'], isNot(oldKey));
+      expect(repo.calls, isEmpty);
+    },
+  );
 
   for (final status in ['registered', 'method_pending']) {
     for (final system in [false, true]) {
@@ -370,7 +701,7 @@ void main() {
       payments: payments,
     );
     final scroll = find.byType(Scrollable).first;
-    final confirm = find.text('Confirmar en Stripe');
+    final confirm = find.text('Confirmar aportación');
     await tester.scrollUntilVisible(confirm, 180, scrollable: scroll);
     await tester.pumpAndSettle();
     await tester.tap(confirm);
@@ -736,7 +1067,7 @@ void main() {
         initialLocation: '/contribute/expense-one?amount_cents=5000',
         payments: payments,
       );
-      final confirm = find.text('Confirmar en Stripe');
+      final confirm = find.text('Confirmar aportación');
       await tester.scrollUntilVisible(
         confirm,
         180,
@@ -780,7 +1111,12 @@ void main() {
     });
   }
   for (final scale in [1.0, 1.15, 2.0]) {
-    for (final state in ['requires_action', 'processing', 'skipped']) {
+    for (final state in [
+      'requires_action',
+      'processing',
+      'skipped',
+      'canceled',
+    ]) {
       testWidgets('profile impact evidence scale$scale state$state', (
         tester,
       ) async {
@@ -815,9 +1151,18 @@ void main() {
           await capture(tester, 'profile-$scale-$state-tail');
         }
         expect(find.text(repo.registrationValue!.summary), findsOneWidget);
+        if (state == 'canceled') {
+          expect(
+            find.textContaining('Este intento terminó sin cobro.'),
+            findsOneWidget,
+          );
+          expect(find.textContaining('Registro cancelado.'), findsNothing);
+          expect(find.textContaining('Registro preparado.'), findsNothing);
+        }
         final router = GoRouter.of(tester.element(find.byType(Scaffold).first));
         router.go('/impact');
         await tester.pumpAndSettle();
+        expect(find.text(repo.registrationValue!.summary), findsOneWidget);
         await capture(tester, 'impact-$scale-$state-top');
         await tester.scrollUntilVisible(
           find.text('Consultar registro Guardián'),

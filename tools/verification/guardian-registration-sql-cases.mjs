@@ -2,8 +2,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { guardianRegistrationEvaluation } from '../../supabase/functions/_shared/guardian-registration-calendar.mjs';
 import { guardianRegistrationWorker } from '../../supabase/functions/_shared/guardian-registration-worker.mjs';
+import { registerNativeSavedCardSqlCases } from './native-saved-card-sql-cases.mjs';
 
 export function registerGuardianRegistrationSqlCases(getDb, { donor, other, staff, key }) {
+  registerNativeSavedCardSqlCases(getDb, { donor, other, staff, key });
   const rpc = async (operation, data) => (await getDb().query(
     'select public.dopmi_guardian_registration_server($1,$2::jsonb) value',
     [operation, JSON.stringify({ owner_id: donor, ...data })])).rows[0].value;

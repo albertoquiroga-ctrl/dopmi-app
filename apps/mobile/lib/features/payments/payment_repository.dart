@@ -22,10 +22,14 @@ class PaymentRepository {
     return Json.from(result.data as Map);
   }
 
-  Future<Json> checkout(String expense, int cents, String key) => action(
-    'checkout',
-    {'expense_id': expense, 'gross_cents': cents, 'key': key},
-  );
+  Future<Json> checkout(String expense, int cents, String key) =>
+      action('native_checkout', {
+        'expense_id': expense,
+        'gross_cents': cents,
+        'key': key,
+        'consent': true,
+        'consent_version': 'oneoff-test-2026-10-15',
+      });
   Future<DataPage<Json>> history(int page, {bool received = false}) async {
     final result = await client
         .from('dopmi_donations')
@@ -45,14 +49,58 @@ class PaymentRepository {
         'Inicia sesión para consultar tu aportación.',
       );
     }
-    final row = await client
-        .from('dopmi_donations')
-        .select()
-        .eq('donor_id', actor)
-        .eq('expense_id', expense)
-        .eq('idempotency_key', key)
-        .maybeSingle();
-    return row == null ? null : Json.from(row);
+    Future<Json?> readOwned() async {
+      final row = await client
+          .from('dopmi_donations')
+          .select()
+          .eq('donor_id', actor)
+          .eq('expense_id', expense)
+          .eq('idempotency_key', key)
+          .maybeSingle();
+      if (client.auth.currentUser?.id != actor) {
+        throw const FormatException(
+          'La sesión cambió. Consulta desde tu cuenta.',
+        );
+      }
+      return row == null ? null : Json.from(row);
+    }
+
+    final before = await readOwned();
+    // Historical terminal receipts and absent/forbidden rows remain readable
+    // without the new native feature or a provider request.
+    if (before == null || before['payment_status'] != 'pending') return before;
+    try {
+      final state = await client.functions.invoke(
+        'payments',
+        body: {'action': 'native_status', 'key': key},
+      );
+      final receipt = state.data is Map ? Json.from(state.data as Map) : null;
+      final after = await readOwned();
+      if (after == null) return null;
+      if (receipt?['donation_id'] != null &&
+          receipt!['donation_id'] != after['id']) {
+        throw const FormatException('No se pudo confirmar el mismo intento.');
+      }
+      return {
+        ...after,
+        if (receipt?['payment_state'] is String)
+          'payment_state': receipt!['payment_state'],
+      };
+    } on FunctionException catch (cause) {
+      if (client.auth.currentUser?.id != actor) {
+        throw const FormatException(
+          'La sesión cambió. Consulta desde tu cuenta.',
+        );
+      }
+      final details = cause.details;
+      // A controlled shutdown of new native entries must not hide an existing
+      // receipt or turn a pending result into failure/success.
+      if (cause.status == 503 &&
+          details is Map &&
+          details['error'] == 'payments_not_configured')
+        return before;
+      rethrow;
+    }
   }
 
   Future<void> openStripe(String value) async {
@@ -90,6 +138,9 @@ String paymentError(Object cause) {
       'processor_busy' => 'La aportación sigue en proceso. Actualiza el historial en un momento; no vuelvas a pagar.',
       'manual_reconciliation_required' => 'Este intento necesita revisión del equipo. Consulta tu historial antes de volver a aportar.',
       'payment_unavailable' => 'El gasto o el intento de pago cambió. Actualiza el historial antes de continuar.',
+      'payment_consent_required' =>
+        'Revisa el importe y las condiciones antes de confirmar tu aportación.',
+      'payment_channel_mismatch' => 'Conservamos tu intento original. Consulta su resultado antes de continuar.',
       _ => 'No pudimos consultar Stripe. Conservamos tu intento; puedes volver a intentar.',
     };
   }

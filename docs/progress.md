@@ -4664,3 +4664,37 @@ revisiones, fallos útiles, jobs, backend/configuración y gates sociales en
 Se preservó trabajo local ajeno y privado; sólo documentación propia en el commit de
 cierre. Commit documental no es candidato. La siguiente conversación debe RETOMAR
 ESTA ENTREGA; no iniciar un nuevo delta. Remoto se comprueba después del push.
+
+## 15/10/2026 México — continuación directa del candidato
+
+El titular solicita terminar este release con Codex, sin Paperclip. Checkout
+candidate-git-20261014/base23f64786, rama codex/finish-release-20261015;
+agentes de producto pausados libres, originales/trabajo ajeno conservados.
+SetupIntent/PaymentSheet Guardian y PaymentIntent puntual implementados con
+consentimiento, owner, claves estables, conciliación y canal histórico conservado.
+PG17.6 real59/59 y backend782/782; configuración17/17. Análisis/Flutter final,
+CI nueva, integración TEST y publicación aún pendientes de comprobación.
+Detalle y siguiente acción: docs/candidate-release-current.md. Sin Pro contratado,
+SQL remoto aplicado, flags nuevos, cuentas/Stripe/KYC/producción modificados.
+No se afirma teléfono probado, aceptación humana ni release terminado.
+
+## 15/10/2026 México — revisión nativa y correcciones comprobadas
+
+Backend782/782 y PG real59/59 se conservan; último caso de gracia concurrente
+añadido pasa con consumer32/32. analyze sin incidencias antes de últimos ajustes.
+Suite móvil completa local1085/1093: ocho fallos diagnosticados y corregidos;
+revisión dirigida posterior118/121 dejó tres corregidos y comprobados en19/19.
+Último registro/perfil53/53, incluidos320px y texto200%; formato19 archivos limpio.
+Guardas SDK impiden abrir hoja del actor/ruta anterior; recibos históricos y
+terminales consultables sin depender de admisión nativa. Accesos de perfil
+refluyen, defecto visual cerrado por revisión independiente de captura actual.
+No se atribuye suite completa final, PaymentSheet real ni teléfono a estos tests.
+
+Operación16SQL ensayada sobre83 fuentes base y siete definiciones/ACL remotas:
+STOP ante drift real, COMMIT único, postflight19 funciones/6 tablas; DROP sólo
+base UUID temporal comprobado. Cuatro bundles nuevos y originales respaldados;
+ensayo proveedor finito preparado y autorización PENDING aún inválida.
+Tres lecturas Stripe de metadatos Connect TEST existentes, sin PII/cambios/
+transferencias, resolvieron destino nominal de fixture local. Falta clave
+publicable TEST en Codemagic y login humano Stripe ya solicitado. CI nueva,
+decisión remota concreta y publicación siguen pendientes; no se contrató Pro.

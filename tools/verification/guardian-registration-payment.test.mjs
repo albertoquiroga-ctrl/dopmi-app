@@ -157,7 +157,8 @@ test('registration worker isolates candidate errors and preserves later finaliza
 });
 
 function harness({ denied = false, lost = false, mismatch = false, marked = false,
-  lostCreate = false, lostBind = false, lostObserve = false } = {}) {
+  lostCreate = false, lostBind = false, lostObserve = false,
+  clearMethodOnCancel = false, cancelWinsConfirmation = false, lostCancel = false } = {}) {
   const calls = [];
   let row = { ...attempt, status: 'prepared', stripe_payment_intent_id: marked ? intent.id : null,
     pay_requested_at: marked ? attempt.pay_requested_at : null };
@@ -177,10 +178,22 @@ function harness({ denied = false, lost = false, mismatch = false, marked = fals
     stripe: { paymentIntents: {
       create: async (params, options) => { calls.push('create'); assert.equal(params.confirm, false);
         assert.equal(params.amount, 2000); assert.equal(params.payment_method, attempt.payment_method_id);
+        assert.deepEqual(params.allowed_payment_method_types, ['card']);
+        assert.equal(Object.hasOwn(params, 'payment_method_types'), false);
         assert.equal(options.idempotencyKey, `guardian-registration-create:${attempt.id}`);
         if (lostCreate) { lostCreate = false; throw new Error('synthetic create response lost'); }
         return { ...processor, livemode: mismatch }; },
       retrieve: async id => { calls.push('retrieve'); assert.equal(id, intent.id); return { ...processor }; },
+      cancel: async (id, params, options) => { calls.push('cancel'); assert.equal(id, intent.id);
+        assert.deepEqual(params, {});
+        assert.equal(options.idempotencyKey, `guardian-registration-abandon:${attempt.id}`);
+        if (cancelWinsConfirmation) { processor.status = 'succeeded';
+          processor.amount_received = row.gross_cents; processor.latest_charge = 'ch_synthetic_race';
+          throw new Error('synthetic confirmation won'); }
+        if (lostCancel) throw new Error('synthetic cancellation unavailable');
+        processor.status = 'canceled';
+        if (clearMethodOnCancel) processor.payment_method = null;
+        return { ...processor }; },
       confirm: async (id, params, options) => { calls.push('confirm'); assert.equal(id, row.stripe_payment_intent_id);
         assert.ok(row.pay_requested_at); assert.equal(params.off_session, true);
         assert.equal(options.idempotencyKey, `guardian-registration:${row.id}`);
@@ -221,6 +234,65 @@ test('registration consumer prior marker only retrieves even after cancellation'
   const h = harness({ marked: true }); h.row.status = 'canceled';
   assert.equal((await h.consumer.consume(attempt.id)).state, 'unresolved');
   assert.deepEqual(h.calls, ['retrieve']);
+});
+
+for (const status of ['requires_confirmation', 'requires_payment_method']) {
+  test(`registration marked ${status} is canceled on the same intent instead of blocking future cycles`, async () => {
+    const h = harness({ marked: true }); h.processor.status = status;
+    assert.equal((await h.consumer.consume(attempt.id)).state, 'processor_canceled');
+    assert.equal((await h.consumer.consume(attempt.id)).state, 'processor_canceled');
+    assert.deepEqual(h.calls, ['retrieve', 'cancel', 'retrieve', 'retrieve']);
+    assert.ok(!h.calls.includes('confirm'));
+    assert.ok(!h.calls.includes('create'));
+  });
+}
+
+test('registration reconciles a declined cleared method and a canceled cleared method without another charge', async () => {
+  for (const initiallyCleared of [true, false]) {
+    const h = harness({ marked: true, clearMethodOnCancel: true });
+    h.processor.status = 'requires_payment_method';
+    if (initiallyCleared) h.processor.payment_method = null;
+    h.processor.last_payment_error = { payment_method: { id: attempt.payment_method_id } };
+    assert.equal((await h.consumer.consume(attempt.id)).state, 'processor_canceled');
+    assert.equal((await h.consumer.consume(attempt.id)).state, 'processor_canceled');
+    assert.deepEqual(h.calls, ['retrieve', 'cancel', 'retrieve', 'retrieve']);
+  }
+});
+
+test('registration cancellation observes confirmation race as success without sending again', async () => {
+  const h = harness({ marked: true, cancelWinsConfirmation: true });
+  h.processor.status = 'requires_confirmation';
+  assert.equal((await h.consumer.consume(attempt.id)).state, 'processor_succeeded');
+  assert.deepEqual(h.calls, ['retrieve', 'cancel', 'retrieve']);
+});
+
+test('registration fresh marker leaves the in-flight sender time to confirm without cancellation', async () => {
+  const h = harness({ marked: true });
+  h.row.pay_requested_at = new Date().toISOString();
+  h.processor.status = 'requires_confirmation';
+  assert.equal((await h.consumer.consume(attempt.id)).state, 'unresolved');
+  assert.deepEqual(h.calls, ['retrieve']);
+});
+
+test('registration failed cancellation keeps reservation unresolved', async () => {
+  const h = harness({ marked: true, lostCancel: true });
+  h.processor.status = 'requires_payment_method'; h.processor.payment_method = null;
+  assert.equal((await h.consumer.consume(attempt.id)).state, 'unresolved');
+  assert.deepEqual(h.calls, ['retrieve', 'cancel', 'retrieve']);
+});
+
+test('registration cleared methods cannot prove payment, bank action, foreign method or unmarked preparation', () => {
+  for (const status of ['succeeded', 'requires_action', 'processing', 'requires_confirmation'])
+    assert.throws(() => registrationPaymentEvidence(attempt,
+      { ...intent, payment_method: null, status }), /payment_mismatch/);
+  for (const status of ['requires_payment_method', 'canceled']) {
+    assert.throws(() => registrationPaymentEvidence(attempt,
+      { ...intent, payment_method: null, status, last_payment_error: { payment_method: 'pm_foreign' } }), /payment_mismatch/);
+    assert.throws(() => registrationPaymentEvidence({ ...attempt, pay_requested_at: null },
+      { ...intent, payment_method: null, status }), /payment_mismatch/);
+    assert.throws(() => registrationPaymentEvidence(attempt,
+      { ...intent, payment_method: 'pm_foreign', status }), /payment_mismatch/);
+  }
 });
 test('registration consumer cannot create an intent for canceled preparation', async () => {
   const h = harness(); h.row.status = 'canceled';

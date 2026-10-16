@@ -114,6 +114,7 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
   async function checkout(actor, input) {
     if (!Number.isSafeInteger(input.gross_cents) || !/^[0-9a-f-]{36}$/i.test(input.key ?? '') || !/^[0-9a-f-]{36}$/i.test(input.expense_id ?? '')) throw new PaymentError('invalid_input', 400);
     const d = await rpc('prepare', { actor, expense_id: input.expense_id, gross_cents: input.gross_cents, key: input.key });
+    if (d.payment_flow === 'native') throw new PaymentError('payment_channel_mismatch');
     if (d.payment_status !== 'pending') return { donation_id: d.id, status: d.payment_status };
     if (d.session_id) {
       const session = await stripe(`checkout/sessions/${d.session_id}`);
@@ -133,6 +134,8 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
     }
     const session = await stripe('checkout/sessions', {
       ...(customer ? { customer } : {}),
+      // Historical acacia Checkout retries must preserve their original
+      // idempotent payload. New native payments use allowed_payment_method_types.
       mode: 'payment', 'payment_method_types[0]': 'card', client_reference_id: d.id,
       'metadata[dopmi_donation]': d.id, 'payment_intent_data[metadata][dopmi_donation]': d.id,
       'payment_intent_data[transfer_group]': `dopmi_${d.id}`,
@@ -167,6 +170,29 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
     return rpc('settle', { donation_id: d.id, currency: pi.currency, gross_cents: pi.amount_received,
       charge_id: charge.id, payment_intent_id: pi.id, stripe_fee_cents: balance.fee });
   }
+  async function reconcileIntent(id, expectedDonationId) {
+    let pi = await stripe(`payment_intents/${id}`);
+    if (pi.id !== id || pi.livemode !== false || pi.metadata?.dopmi_donation !== expectedDonationId)
+      throw new PaymentError('charge_mismatch');
+    const d = await rpc('get', { donation_id: expectedDonationId });
+    if (!d || d.stripe_payment_intent_id !== id || d.currency !== pi.currency || d.gross_cents !== pi.amount)
+      throw new PaymentError('charge_mismatch');
+    if (pi.metadata?.consent_version === 'oneoff-test-2026-10-15' &&
+        Date.now() - Date.parse(d.created_at) >= 3600000 &&
+        ['requires_payment_method', 'requires_confirmation', 'requires_action'].includes(pi.status)) {
+      try {
+        await stripe(`payment_intents/${id}/cancel`, {}, `dopmi-native-oneoff-expire-${d.id}`);
+      } catch { /* Read after a lost response or a racing confirmation. */ }
+      pi = await stripe(`payment_intents/${id}`);
+      if (pi.id !== id || pi.livemode !== false || pi.metadata?.dopmi_donation !== expectedDonationId ||
+          d.currency !== pi.currency || d.gross_cents !== pi.amount) throw new PaymentError('charge_mismatch');
+    }
+    if (pi.status === 'canceled') {
+      await rpc('cancel', { donation_id: expectedDonationId });
+      return null;
+    }
+    return settleIntent(id, expectedDonationId);
+  }
   async function reconcileSession(session, expectedDonationId) {
     if (expectedDonationId && session.metadata?.dopmi_donation !== expectedDonationId) throw new PaymentError('charge_mismatch');
     if (!session.metadata?.dopmi_donation) return null;
@@ -191,6 +217,8 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
     } else if (event.type === 'payment_intent.succeeded') {
       const donation = await settleIntent(object.id);
       return donation?.id ? [donation.id] : [];
+    } else if (event.type === 'payment_intent.canceled' && object.metadata?.dopmi_donation) {
+      await reconcileIntent(object.id, object.metadata.dopmi_donation);
     } else if (event.type === 'charge.dispute.created') {
       const charge = await stripe(`charges/${object.charge}`);
       if (charge.payment_intent) await rpc('hold', { payment_intent_id: charge.payment_intent });
@@ -351,7 +379,10 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
     const candidates = await rpc('reconcile_candidates', {});
     let failed = 0;
     for (const d of candidates) {
-      try { await reconcileSession(await stripe(`checkout/sessions/${d.session_id}`), d.id); } catch (error) {
+      try {
+        if (d.stripe_payment_intent_id) await reconcileIntent(d.stripe_payment_intent_id, d.id);
+        else await reconcileSession(await stripe(`checkout/sessions/${d.session_id}`), d.id);
+      } catch (error) {
         failed++;
         paymentLog(logger, 'payment_reconciliation_failed', { donation_id: d.id, code: error instanceof PaymentError ? error.code : 'processor_unavailable', ...error?.context });
       }

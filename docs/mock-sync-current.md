@@ -1,4 +1,12 @@
-# Checkpoint Dopmi — cierre de conversación, 9/10/2026
+# Checkpoint Dopmi — continuación directa, 15/10/2026
+
+El titular encargó a Codex terminar el release sin depender de Paperclip.
+Estado, fuente0962ebe, pruebas y operación pendiente en
+[candidato vigente](candidate-release-current.md). Este corte supersede la
+coordinación y siguiente acción del cierre9oct conservado debajo; mantiene sus
+resultados históricos y pendientes humanos independientes.
+
+## Cierre histórico, 9/10/2026
 
 **CHAT CERRADO; ENTREGA PENDIENTE. La siguiente conversación debe RETOMAR ESTA ENTREGA.**
 Perfil ENTREGA_CONTINUA_EFICIENTE_VERIFICADA. Este archivo es la fuente de estado;

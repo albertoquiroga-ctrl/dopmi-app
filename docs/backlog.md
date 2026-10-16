@@ -1,4 +1,10 @@
-## Cola vigente al cerrar — 9/10/2026
+## Cola vigente — 15/10/2026
+
+Terminar directamente el [candidato Guardián/pagos](candidate-release-current.md)
+por encargo humano: cerrar pruebas/CI, operación TEST revisada y publicación
+interna; después teléfono Irlanda/aceptación. Una cola Flutter y un seguimiento.
+
+## Cola histórica al cerrar — 9/10/2026
 
 RETOMAR ESTA ENTREGA según [checkpoint](mock-sync-current.md), no nuevo delta.
 1. Completar sólo los gates sociales pendientes del [registro social](meta-social-verification.md), conservando cuenta y activación DEV cerrada fuera de QA autorizada.

@@ -18,6 +18,7 @@ import 'contribution_layout.dart';
 import 'payment_result_page.dart';
 import 'payment_history_row.dart';
 import 'guardian_history_screen.dart';
+import 'oneoff_payment_sheet.dart';
 
 class ContributeScreen extends ConsumerStatefulWidget {
   const ContributeScreen(
@@ -38,7 +39,8 @@ class ContributeScreen extends ConsumerStatefulWidget {
 class _ContributeState extends ConsumerState<ContributeScreen>
     with WidgetsBindingObserver {
   final amount = TextEditingController(text: '50');
-  bool busy = true, locked = false, reviewing = false;
+  bool busy = true, locked = false, reviewing = false, canContinue = false;
+  bool sheetAwaiting = false, querying = false;
   String? error, attemptKey;
   String? checkoutLabel;
   Json? outcome;
@@ -104,10 +106,12 @@ class _ContributeState extends ConsumerState<ContributeScreen>
   }
 
   Future<void> checkOutcome() async {
-    if (attemptKey == null) return;
+    if (attemptKey == null || querying) return;
     setState(() {
       busy = true;
+      querying = true;
       error = null;
+      canContinue = false;
     });
     try {
       final result = await ref
@@ -120,6 +124,13 @@ class _ContributeState extends ConsumerState<ContributeScreen>
         return;
       }
       outcome = result;
+      canContinue =
+          result['payment_status'] == 'pending' &&
+          [
+            'requires_payment_method',
+            'requires_confirmation',
+            'requires_action',
+          ].contains(result['payment_state']);
       if (outcome!['payment_status'] == 'confirmed') {
         await trackOnce('contribution_confirmed');
       }
@@ -136,7 +147,12 @@ class _ContributeState extends ConsumerState<ContributeScreen>
     } catch (cause) {
       if (mounted) setState(() => error = paymentError(cause));
     } finally {
-      if (mounted) setState(() => busy = false);
+      if (mounted) {
+        setState(() {
+          querying = false;
+          busy = sheetAwaiting;
+        });
+      }
     }
   }
 
@@ -155,7 +171,18 @@ class _ContributeState extends ConsumerState<ContributeScreen>
   }
 
   Future<void> pay() async {
-    if (busy) return;
+    final owner = ref.read(identityControllerProvider).identity?.id;
+    bool currentOwner() =>
+        mounted &&
+        owner != null &&
+        ref.read(identityControllerProvider).identity?.id == owner;
+    if (!currentOwner() || busy || sheetAwaiting) return;
+    if (!locked && !ref.read(oneoffPaymentSheetProvider).available) {
+      setState(
+        () => error = 'El pago seguro de prueba no está disponible en este dispositivo. No se inició un cobro.',
+      );
+      return;
+    }
     final cents = parsePesos(amount.text);
     if (cents == null || cents < 1000 || cents > 1000000) {
       setState(
@@ -168,22 +195,50 @@ class _ContributeState extends ConsumerState<ContributeScreen>
       error = null;
       checkoutLabel = locked
           ? 'Continuar mi aportación'
-          : 'Confirmar en Stripe';
+          : 'Confirmar aportación';
     });
     try {
       attemptKey ??= const Uuid().v4();
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('$storageKey:key', attemptKey!);
       await prefs.setInt('$storageKey:cents', cents);
-      if (!mounted) return;
+      if (!currentOwner()) return;
       setState(() => locked = true);
       final repo = ref.read(paymentRepositoryProvider);
       final result = await repo.checkout(widget.expense, cents, attemptKey!);
+      if (!currentOwner()) return;
       await trackOnce('contribution_started');
-      if (!mounted) return;
+      if (!currentOwner()) return;
       if (result['url'] is String) {
         await repo.openStripe(result['url'] as String);
         if (mounted) await checkOutcome();
+      } else if (result['payment_client_secret'] is String) {
+        var sheetInterrupted = false;
+        setState(() => sheetAwaiting = true);
+        try {
+          await ref
+              .read(oneoffPaymentSheetProvider)
+              .present(
+                result['payment_client_secret'] as String,
+                current: () =>
+                    currentOwner() &&
+                    (ModalRoute.of(context)?.isCurrent ?? false),
+              );
+        } catch (_) {
+          sheetInterrupted = true;
+        }
+        // SDK close/success/failure is not processor evidence. Reconcile the
+        // same durable attempt before choosing an outcome or continuation.
+        if (currentOwner()) {
+          setState(() => sheetAwaiting = false);
+          if (!(ModalRoute.of(context)?.isCurrent ?? false)) return;
+          await checkOutcome();
+          if (currentOwner() && sheetInterrupted && canContinue) {
+            setState(
+              () => error = 'La captura no se completó; conservamos esta aportación. Puedes continuar el mismo intento.',
+            );
+          }
+        }
       } else {
         // A missing checkout URL is not terminal payment evidence. Keep the
         // stable attempt until the owner's server projection confirms it.
@@ -194,7 +249,7 @@ class _ContributeState extends ConsumerState<ContributeScreen>
     } finally {
       if (mounted) {
         setState(() {
-          busy = false;
+          busy = querying;
           checkoutLabel = null;
         });
       }
@@ -235,6 +290,7 @@ class _ContributeState extends ConsumerState<ContributeScreen>
   }
 
   void back() {
+    if (busy || sheetAwaiting) return;
     if (reviewing && !locked && outcome == null) {
       setState(() => reviewing = false);
     } else if (context.canPop()) {
@@ -247,7 +303,9 @@ class _ContributeState extends ConsumerState<ContributeScreen>
   }
 
   void retryCanceled() {
-    if (busy || outcome?['payment_status'] != 'canceled') return;
+    if (busy || sheetAwaiting || outcome?['payment_status'] != 'canceled') {
+      return;
+    }
     // A new route creates a fresh attempt only after explicit confirmation.
     // The terminal attempt was cleared by the authoritative history check.
     context.push(
@@ -266,19 +324,27 @@ class _ContributeState extends ConsumerState<ContributeScreen>
   Widget build(BuildContext context) {
     final result = outcome;
     if (result != null) {
-      return PaymentResultPage(
-        value: result,
-        refresh: checkOutcome,
-        back: back,
-        retry: result['payment_status'] == 'canceled' ? retryCanceled : null,
-        caseId: publicCaseId,
-        caseName: publicCaseName,
-        busy: busy,
-        error: error,
+      return PopScope(
+        canPop: !busy && !sheetAwaiting,
+        child: PaymentResultPage(
+          value: result,
+          refresh: checkOutcome,
+          back: back,
+          retry: result['payment_status'] == 'canceled' ? retryCanceled : null,
+          continueAttempt: canContinue ? pay : null,
+          caseId: publicCaseId,
+          caseName: publicCaseName,
+          busy: busy,
+          error: error,
+          checkWhileAuthorizing: sheetAwaiting && !querying
+              ? checkOutcome
+              : null,
+        ),
       );
     }
     return PopScope(
-      canPop: !reviewing || locked || outcome != null,
+      canPop:
+          !busy && !sheetAwaiting && (!reviewing || locked || outcome != null),
       onPopInvokedWithResult: (didPop, _) {
         if (!didPop && !busy) back();
       },
@@ -307,6 +373,11 @@ class _ContributeState extends ConsumerState<ContributeScreen>
                   if (locked && outcome == null)
                     const Notice(
                       'En proceso. Consulta el mismo intento; salir o perder la conexión no confirma un pago ni un fallo.',
+                    ),
+                  if (sheetAwaiting)
+                    TextButton(
+                      onPressed: querying ? null : checkOutcome,
+                      child: const Text('Consultar estado del mismo intento'),
                     ),
                   const SizedBox(height: 18),
                   if (!reviewing && !locked && outcome == null) ...[
@@ -405,7 +476,7 @@ class _ContributeState extends ConsumerState<ContributeScreen>
                           'Monto',
                           contributionMoney(parsePesos(amount.text) ?? 0),
                         ),
-                        ('Método', 'En Stripe'),
+                        ('Método', 'Pago seguro en Dopmi'),
                       ],
                     ),
                     const SizedBox(height: 18),
@@ -417,13 +488,18 @@ class _ContributeState extends ConsumerState<ContributeScreen>
                     const SizedBox(height: 18),
                   ],
                   if (error != null) Notice(error!, isError: true),
+                  if (!locked &&
+                      !ref.watch(oneoffPaymentSheetProvider).available)
+                    const Notice(
+                      'El pago seguro de prueba no está disponible en este dispositivo.',
+                    ),
                   if (outcome == null)
                     ContributionButton(
                       checkoutLabel ??
                           (reviewing || locked
                               ? (locked
                                     ? 'Continuar mi aportación'
-                                    : 'Confirmar en Stripe')
+                                    : 'Confirmar aportación')
                               : 'Revisar aportación'),
                       busy: busy,
                       onPressed: locked
@@ -444,7 +520,7 @@ class _ContributeState extends ConsumerState<ContributeScreen>
                   ],
                   const SizedBox(height: 18),
                   const Text(
-                    'Solo pagos de prueba. El método de pago se captura de forma segura en Stripe. Stripe mostrará el importe antes de confirmar.',
+                    'Solo pagos de prueba. Al confirmar autorizas esta aportación por el importe del resumen. Captura tu método de pago en el componente seguro de Stripe dentro de Dopmi; Dopmi no recibe los datos de tu tarjeta.',
                     style: TextStyle(fontSize: 13, height: 1.55, color: muted),
                   ),
                   const SizedBox(height: 12),

@@ -12,6 +12,7 @@ import '../rescue/rescue_repository.dart';
 import 'contribution_layout.dart';
 import 'guardian_bank_action.dart';
 import 'guardian_enrollment_amount.dart';
+import 'guardian_method_setup.dart';
 import 'guardian_registration.dart';
 import 'guardian_repository.dart';
 import 'payment_repository.dart';
@@ -32,9 +33,11 @@ class GuardianRegistrationScreen extends ConsumerStatefulWidget {
 class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
     with WidgetsBindingObserver {
   final amount = TextEditingController(text: '50');
+  final contentScroll = ScrollController();
   GuardianRegistration? registration;
   Map<String, dynamic>? draft;
   bool bankAwaiting = false;
+  bool methodAwaiting = false;
   bool busy = true,
       fresh = false,
       consent = false,
@@ -56,13 +59,14 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     amount.dispose();
+    contentScroll.dispose();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed &&
-        (!busy || bankAwaiting) &&
+        (!busy || bankAwaiting || methodAwaiting) &&
         current) {
       load();
     }
@@ -117,13 +121,19 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
           .read(guardianRepositoryProvider)
           .registrationState();
       if (!current) return;
-      registration = state;
-      if (state != null && state.status != 'method_pending') {
+      final previousCanceled =
+          state?.status == 'canceled' &&
+          draft != null &&
+          state!.key != draft!['key'];
+      registration = previousCanceled ? null : state;
+      if (state != null &&
+          state.status != 'method_pending' &&
+          (draft == null || state.key == draft!['key'])) {
         await (await SharedPreferences.getInstance()).remove(storageKey);
         if (!current) return;
         draft = null;
       }
-      if (state != null && !editing) {
+      if (state != null && !editing && !previousCanceled) {
         amount.text = (state.grossCents / 100).toStringAsFixed(2);
       }
       fresh = true;
@@ -135,9 +145,12 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
   }
 
   Future<void> submit() async {
+    final owner = widget.owner;
+    bool currentSubmission() => current && widget.owner == owner;
     final cents = parsePesos(amount.text);
     if (!current ||
         busy ||
+        methodAwaiting ||
         !fresh ||
         !consent ||
         cents == null ||
@@ -146,11 +159,21 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
       return;
     }
     if (!editing && !methodConsent) return;
+    if (!editing &&
+        registration == null &&
+        draft == null &&
+        !ref.read(guardianMethodSetupProvider).available) {
+      setState(() {
+        error = 'El método de pago no está disponible en este dispositivo. No iniciamos un registro nuevo.';
+      });
+      return;
+    }
     setState(() {
       busy = true;
       fresh = false;
       error = null;
     });
+    String? methodNotice;
     try {
       final repo = ref.read(guardianRepositoryProvider);
       if (editing && registration != null) {
@@ -176,13 +199,48 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
         if (!current) return;
         final receipt = await repo.submitRegistration(draft!);
         if (!current) return;
+        final secret = receipt['setup_client_secret'];
         final url = receipt['checkout_url'];
-        if (url is String) {
+        if (secret is String) {
+          final setup = ref.read(guardianMethodSetupProvider);
+          if (!setup.available) {
+            methodNotice = 'El método de pago no está disponible en este dispositivo. Conservamos la misma solicitud; puedes consultar su estado o cancelar el registro pendiente.';
+          } else {
+            setState(() => methodAwaiting = true);
+            try {
+              await setup.present(
+                secret,
+                current: () =>
+                    currentSubmission() &&
+                    (ModalRoute.of(context)?.isCurrent ?? false),
+              );
+            } catch (_) {
+              // Closing the sheet or losing its response is not a payment failure.
+              // No SDK result or secret is persisted; reconcile the same key.
+              methodNotice = 'La preparación del método quedó pendiente. Conservamos la misma solicitud; consulta su estado antes de continuar.';
+            } finally {
+              if (current) setState(() => methodAwaiting = false);
+            }
+          }
+        } else if (url is String) {
           await ref.read(paymentRepositoryProvider).openStripe(url);
         }
         if (!current) return;
       }
       await load();
+      if (current &&
+          fresh &&
+          methodNotice != null &&
+          (registration == null || registration?.status == 'method_pending')) {
+        setState(() => error = methodNotice);
+        if (contentScroll.hasClients) {
+          await contentScroll.animateTo(
+            contentScroll.position.minScrollExtent,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOut,
+          );
+        }
+      }
     } catch (_) {
       if (current) {
         setState(() {
@@ -194,7 +252,9 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
   }
 
   Future<void> cancel() async {
-    if (!current || busy || !fresh || registration == null) return;
+    if (!current || busy || methodAwaiting || !fresh || registration == null) {
+      return;
+    }
     setState(() {
       busy = true;
       fresh = false;
@@ -217,7 +277,12 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
   }
 
   Future<void> bank() async {
-    if (!current || busy || bankAwaiting || !fresh || registration == null) {
+    if (!current ||
+        busy ||
+        bankAwaiting ||
+        methodAwaiting ||
+        !fresh ||
+        registration == null) {
       return;
     }
     setState(() {
@@ -245,12 +310,15 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
   Widget build(BuildContext context) {
     final state = registration;
     final form = state == null || state.status == 'method_pending' || editing;
+    final methodReady = ref.watch(guardianMethodSetupProvider).available;
     final cents = parsePesos(amount.text);
     final valid =
         !busy &&
+        !methodAwaiting &&
         fresh &&
         consent &&
         (editing || methodConsent) &&
+        (editing || state != null || draft != null || methodReady) &&
         cents != null &&
         cents >= 2000 &&
         cents <= 1000000;
@@ -274,7 +342,7 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
             : 'Registro Guardián',
     };
     void leave() {
-      if (busy) return;
+      if (busy || methodAwaiting) return;
       if (widget.onBack != null) {
         widget.onBack!();
       } else if (context.canPop()) {
@@ -303,23 +371,33 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
                         ? 'Continuar registro'
                         : 'Registrar y preparar método',
                     dark: true,
-                    busy: busy,
+                    busy: busy || methodAwaiting,
                     onPressed: valid ? submit : null,
                   ),
                 ),
               )
             : null,
         child: ListView(
+          key: const Key('guardian-registration-content'),
+          controller: contentScroll,
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
           children: [
             if (busy) const LinearProgressIndicator(),
             if (busy)
               Semantics(liveRegion: true, child: const Text('En proceso…')),
             if (error != null) Notice(error!),
+            if (form &&
+                !editing &&
+                state == null &&
+                draft == null &&
+                !methodReady)
+              const Notice(
+                'El método de pago no está disponible en este dispositivo. No iniciamos un registro nuevo.',
+              ),
             if (form) ...[
               if (state?.status == 'method_pending')
                 const Notice(
-                  'Registro pendiente: falta confirmar tu método en Stripe. Prepararlo no genera un cargo.',
+                  'Registro pendiente: falta confirmar tu método de pago. Prepararlo no genera un cargo. Conservamos la misma solicitud.',
                 ),
               GuardianEnrollmentAmount(
                 registrationOnly: true,
@@ -365,6 +443,11 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
                   title: const Text(
                     'Autorizo guardar mi método de pago de forma segura en Stripe para estas aportaciones.',
                   ),
+                ),
+              if (state?.status == 'method_pending')
+                TextButton(
+                  onPressed: busy || methodAwaiting || !fresh ? null : cancel,
+                  child: const Text('Cancelar registro pendiente'),
                 ),
             ] else ...[
               Text(
@@ -430,10 +513,30 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
                   child: const Text('Cancelar ciclos futuros'),
                 ),
               ],
+              if (state.status == 'canceled' &&
+                  [
+                    GuardianRegistrationPaymentState.notEvaluated,
+                    GuardianRegistrationPaymentState.skipped,
+                    GuardianRegistrationPaymentState.expired,
+                    GuardianRegistrationPaymentState.canceled,
+                    GuardianRegistrationPaymentState.allocated,
+                    GuardianRegistrationPaymentState.refunded,
+                  ].contains(state.paymentState))
+                TextButton(
+                  onPressed: busy || methodAwaiting || !fresh
+                      ? null
+                      : () => setState(() {
+                          registration = null;
+                          consent = false;
+                          methodConsent = false;
+                          error = null;
+                        }),
+                  child: const Text('Volver a registrarme'),
+                ),
             ],
             const SizedBox(height: 12),
             TextButton(
-              onPressed: busy && !bankAwaiting ? null : load,
+              onPressed: busy && !bankAwaiting && !methodAwaiting ? null : load,
               child: const Text('Consultar estado'),
             ),
           ],

@@ -1,0 +1,122 @@
+# Candidato Guardián y pagos — 15/10/2026 México
+
+El titular encarga a Codex terminar directamente este release sin depender de
+Paperclip. CEO, Desarrollo, Calidad y Mejora IA quedaron pausados estando libres;
+se conserva su evidencia. Se reutiliza un solo seguimiento operacional.
+
+Base `23f64786d96586e04feb53652d209d33ebb5f1b7`, continuación
+`codex/finish-release-20261015`. El checkout original tiene cambios ajenos y no
+se limpia ni superpone. Referencia congelada
+`0962ebec70bacf9ff8707960bb0908e5b979acfe`, conservada privadamente en
+`development/dopa39/reference0962ebe/App.tsx`.
+
+## Alcance humano vigente
+
+Decisión14oct: registrar Guardián aun sin capacidad, sin cargo/deuda/recobro;
+evaluar el siguiente aniversario mensual. Conciliar el mismo intento; éxito y
+error confirmados, acción bancaria cuando sea necesaria y fallos mensuales en
+Perfil/Tu impacto. Implementar primero y auditar después diseño residual.
+No pedir otra vez variantes como bloqueo previo a la implementación.
+Mínimo Guardián20MXN, puntual10MXN; este lote conserva la fórmula financiera
+existente y no autoriza dinero real.
+
+## Delta implementado
+
+- Tarjeta Guardián mediante SetupIntent y PaymentSheet dentro de Dopmi:
+  consentimiento previo, propietario, lease, clave estable y confirmación servidor.
+  Apple/Google mantienen controles separados; Checkout histórico conserva canal.
+- Puntual mediante PaymentIntent ligado antes de abrir SDK, reserva completa y
+  settlement existente. Expiración1h conserva el límite Checkout anterior;
+  sólo cancelación confirmada libera, sin nuevo cargo ante incertidumbre.
+- Intento Guardián marcado/no enviado/rechazado se cancela y consulta sobre el
+  mismo recurso. Método nulo sólo en canceled/requires_payment_method ya ligado;
+  éxito/acción/método extranjero o identidad incompleta siguen rechazados.
+  requires_confirmation conserva120s de gracia para no cancelar un envío concurrente.
+- pk_test independiente de billeteras; disponibilidad y avisos seguros, clave
+  conservada, navegación bloqueada durante SDK y consulta sin segundo envío.
+  Perfil/Tu impacto muestran el intento terminado sin cobro.
+- El SDK comprueba propietario/ruta antes y después de inicializar: cerrar sesión
+  o salir no abre una hoja de pago del actor anterior. Recibos terminales e
+  históricos se leen con filtro de propietario aunque la admisión nativa esté
+  cerrada. Accesos de pagos refluyen al ampliar texto, sin partir palabras.
+
+## Evidencia actual y límites
+
+Paquete privado: `C:/Users/betoq/Paperclip-Dopmi/development/dopa39/integration-test-package-23f64786`.
+
+PostgreSQL17.6 real59/59, `codex-registration-postgres-v3.log`: fuentes actuales
+en base nueva temporal, carreras con dos conexiones para registro y puntual.
+Contenedor dedicado/tmpfs, puerto127.0.0.1:55432, sin datos de negocio ni
+AuthHTTP/Stripe. Red interna+bridge para Windows; no afirmar salida aislada.
+No se parcheó el stack antiguo ni se tocaron sus volúmenes.
+
+Backend completo782/782, `codex-full-backend-v2.log`, antes del último caso de
+gracia concurrente; consumer final32/32 y puntual38 dirigidas. Configuración
+móvil17/17. Primer fallo backend era proyección ampliada
+stripe_payment_intent_id:null; corrección y regresión561/561.
+
+Flutter analyze sin incidencias (`codex-mobile-analyze-v2.log`, antes del último
+ajuste de perfil/guardas SDK). La suite completa local obtuvo1085 aprobadas y8
+fallos, conservados en `codex-mobile-full.log`: fixtures de disponibilidad,
+desplazamiento y etiquetas anteriores, lectura de recibos y navegación pendiente.
+Se corrigieron agrupadamente; después118/121 dirigidas identificaron tres
+restantes. El corte final19/19 (`codex-mobile-async-final.log`) comprueba esas
+correcciones y sesión cambiada durante respuesta503;53/53
+(`codex-mobile-profile-final.log`) comprueba registro y accesos al100/200%.
+Formato de19 archivos Dart sin cambios. CI completa nueva aún debe acreditar
+todas las comprobaciones juntas en el commit final; no extrapolar del subconjunto.
+
+Revisión independiente de capturas actuales cerró el defecto de palabras
+partidas al200%. Capturas en `codex-native-captures-release`; demuestran widgets,
+no PaymentSheet bancario, lector de pantalla ni teléfono real. Diseño residual
+se audita después de esta implementación: registro sin cobro, conciliación y
+método pendiente/expirado no vuelven a bloquear código por un diseño previo.
+
+Siete definiciones/ACL remotas y cuatro bundles Edge actuales respaldados mediante
+conector propio. La operación agrupada16SQL pasó ensayo PostgreSQL real sobre83
+fuentes base y los siete originales remotos exactos: STOP por drift inducido,
+COMMIT único y postflight19 funciones/6 tablas/ACL/RLS; base UUID eliminada.
+Recibo `codex-operation/operation-local-rehearsal-receipt.json`.
+Tres GET de metadatos de cuentas Connect TEST existentes verificaron tipo/país/
+capacidad, sin propietarios/PII, cambios ni transferencias; destino nominal sólo
+para fixture local. No migraciones remotas, flags, pagos, KYC o producción
+modificados en este corte.
+
+## Cierre pendiente
+
+1. Commit/push único y CI completa por SHA/evento/workflow. CI38656866591 verde
+   de la base es histórica, no acredita este delta.
+2. Una operación revisada:16 fuentes SQL agrupadas con guardas, postflight,
+   cuatro bundles Edge, flags TEST nominados y ensayo finito. Sólo DEV
+   ohqxranynackjignryep; PRODysaoeuidcvgtlmphmeyb excluido. Sin replay/repair/purga.
+   Conservar expansión/reconciliadores después de jobs nativos; no restaurar
+   ciegamente tres RPC anteriores ni prometer reversión de efectos Stripe por SQL.
+   Ensayo proveedor preparado, NO ejecutado:1Customer/1SetupIntent/máximo4
+   PaymentIntents,30MXN TEST esperados y50MXN TEST intentados,96 peticiones máximo;
+   sin transferencias. No prueba webhooks reales ni entrega al rescatista por sí solo.
+   Los flags actuales no delimitan una cohorte; no prometer aislamiento por actor
+   sin control efectivo. Cambios remotos/recorrido TEST necesitan la decisión
+   concreta agrupada, no heredan los permisos de lectura anteriores.
+3. Clave publicable TEST real en Codemagic; falta autenticación humana en Stripe
+   ya solicitada en navegador integrado. No pedir secretos en chat ni inventar
+   la clave a partir de la privada. Acceso soportado para configurar el nuevo
+   flag puntual en Supabase también debe resolverse sin usar credenciales ajenas.
+4. Integración TEST real y android-guardian-internal/com.mycompany.dopmi.
+   Publicación Play se comprueba separada del build; teléfono/aceptación humanos
+   siguen pendientes. El campo teléfono vacío fue observado EN APP por titular;
+   no inferir estado Auth ni enviar SMS/cambiar cuentas.
+
+Ruta local/DEV existente sin Pro ni proyecto/rama nuevos: incremento de planUSD0.
+No se contrató plan; cuotas/saldo Codemagic se comprueban aparte. Una compra nueva
+requiere costo/alcance concreto, no se infiere del permiso condicional Supabase.
+
+## Traslado y retro
+
+Captura20261015T234131Z-014202 conserva9536 archivos comprobados, pero no es
+respaldo final completo: automatización y tareas cambiaron durante captura.
+Se conserva compañía/originales y trabajo comercial independiente; no borrar.
+
+La cadena anterior acumuló preparación/lecturas y esperas sin integración.
+Esta continuación usa checkout conservado, ejecución directa, revisión acotada y
+una cola Flutter. Juzgar resultados/gates/candidato, no roles/acuses, autonomía
+general o ahorro de tokens/costo inferido de una muestra pequeña.

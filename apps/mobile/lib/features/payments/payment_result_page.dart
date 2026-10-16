@@ -14,6 +14,8 @@ class PaymentResultPage extends StatelessWidget {
     required this.refresh,
     required this.back,
     this.retry,
+    this.continueAttempt,
+    this.checkWhileAuthorizing,
     this.caseId,
     this.caseName,
     this.busy = false,
@@ -21,7 +23,7 @@ class PaymentResultPage extends StatelessWidget {
   });
   final Json value;
   final VoidCallback refresh, back;
-  final VoidCallback? retry;
+  final VoidCallback? retry, continueAttempt, checkWhileAuthorizing;
   final String? caseId, caseName, error;
   final bool busy;
 
@@ -151,10 +153,19 @@ class PaymentResultPage extends StatelessWidget {
                   Notice(error!, isError: true),
                   const SizedBox(height: 12),
                 ],
+                if (checkWhileAuthorizing != null) ...[
+                  TextButton(
+                    onPressed: checkWhileAuthorizing,
+                    child: const Text('Consultar estado del mismo intento'),
+                  ),
+                  const SizedBox(height: 12),
+                ],
                 if (confirmed && caseId != null) ...[
                   ContributionButton(
                     'Ver caso actualizado',
-                    onPressed: () => context.go('/rescue-cases/$caseId'),
+                    onPressed: busy
+                        ? null
+                        : () => context.go('/rescue-cases/$caseId'),
                   ),
                   const SizedBox(height: 12),
                 ],
@@ -167,6 +178,14 @@ class PaymentResultPage extends StatelessWidget {
                   const SizedBox(height: 18),
                 ],
                 if (!confirmed && !canceled && !refunded) ...[
+                  if (continueAttempt != null) ...[
+                    ContributionButton(
+                      'Continuar la misma aportación',
+                      busy: busy,
+                      onPressed: continueAttempt,
+                    ),
+                    const SizedBox(height: 12),
+                  ],
                   ContributionButton(
                     'Consultar resultado',
                     busy: busy,
@@ -177,12 +196,12 @@ class PaymentResultPage extends StatelessWidget {
                 ContributionButton(
                   'Ir al historial',
                   secondary: !refunded,
-                  onPressed: () => context.go('/payments'),
+                  onPressed: busy ? null : () => context.go('/payments'),
                 ),
                 if (caseId != null && !confirmed) ...[
                   const SizedBox(height: 12),
                   TextButton(
-                    onPressed: back,
+                    onPressed: busy ? null : back,
                     child: const Text('Volver al caso'),
                   ),
                 ],

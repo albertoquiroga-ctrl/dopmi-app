@@ -19,6 +19,17 @@ Map<String, dynamic> fixture(String paymentState) => {
 };
 
 void main() {
+  test(
+    'confirmed canceled attempt remains visible on a continuing registration',
+    () {
+      final result = GuardianRegistration.fromJson(fixture('canceled'));
+      expect(result.status, 'registered');
+      expect(result.nextEvaluationAt, isNotNull);
+      expect(result.summary, contains('Este intento terminó sin cobro'));
+      expect(result.summary, isNot(contains('Registro preparado')));
+      expect(result.hasConfirmedImpact, false);
+    },
+  );
   test('only server allocation confirms impact, never method or processor', () {
     for (final state in [
       'not_evaluated',

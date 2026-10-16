@@ -67,14 +67,18 @@ def build_config(env, guardian_test=False, measurement_test=False):
     result["ENABLE_NATIVE_WALLETS_TEST"] = str(enabled).lower()
     result["STRIPE_PUBLISHABLE_KEY_TEST"] = ""
     result["APPLE_PAY_MERCHANT_ID"] = ""
-    if enabled:
+    # Guardian acceptance uses native card PaymentSheet even when the optional
+    # Apple Pay / Google Pay paths stay closed. Never couple its client key to
+    # the wallet flag or publish a Guardian build with an unusable card flow.
+    if guardian_test:
         stripe_key = env.get("STRIPE_PUBLISHABLE_KEY_TEST", "").strip()
-        merchant = env.get("APPLE_PAY_MERCHANT_ID", "").strip()
         if not re.fullmatch(r"pk_test_[A-Za-z0-9]+", stripe_key):
-            raise ValueError("Native wallets require a Stripe test publishable key.")
+            raise ValueError("Guardian native cards require a Stripe test publishable key.")
+        result["STRIPE_PUBLISHABLE_KEY_TEST"] = stripe_key
+    if enabled:
+        merchant = env.get("APPLE_PAY_MERCHANT_ID", "").strip()
         if merchant and not re.fullmatch(r"merchant\.[A-Za-z0-9.-]+", merchant):
             raise ValueError("APPLE_PAY_MERCHANT_ID must be an Apple merchant identifier.")
-        result["STRIPE_PUBLISHABLE_KEY_TEST"] = stripe_key
         result["APPLE_PAY_MERCHANT_ID"] = merchant
     return result
 

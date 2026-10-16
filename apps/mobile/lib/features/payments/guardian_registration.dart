@@ -89,6 +89,9 @@ class GuardianRegistration {
     if (hasConfirmedImpact) {
       return 'Aportación asignada. Consulta tu impacto y próximos ciclos.';
     }
+    if (paymentState == GuardianRegistrationPaymentState.canceled) {
+      return 'Este intento terminó sin cobro. Revisa tu método y consulta el próximo ciclo.';
+    }
     if (paymentState == GuardianRegistrationPaymentState.refunded) {
       return 'Devolución confirmada. Consulta el próximo ciclo.';
     }
