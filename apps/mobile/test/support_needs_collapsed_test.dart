@@ -37,7 +37,7 @@ void main() {
           tester
               .widget<IconButton>(
                 find.ancestor(
-                  of: find.byTooltip('Aportar a Consulta'),
+                  of: find.byTooltip('Apoyar al caso'),
                   matching: find.byType(IconButton),
                 ),
               )
@@ -53,7 +53,7 @@ void main() {
           tester
               .widget<IconButton>(
                 find.ancestor(
-                  of: find.byTooltip('Aportar a Consulta'),
+                  of: find.byTooltip('Apoyar al caso'),
                   matching: find.byType(IconButton),
                 ),
               )

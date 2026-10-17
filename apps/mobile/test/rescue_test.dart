@@ -936,7 +936,7 @@ void main() {
       matching: find.byType(RotatedBox),
     );
     expect(tester.widget<RotatedBox>(expenseChevron).quarterTurns, 1);
-    expect(find.byTooltip('Aportar a Cirugía'), findsOneWidget);
+    expect(find.byTooltip('Apoyar al caso').first, findsOneWidget);
     expect(find.text('No hay evidencia pública disponible.'), findsNothing);
     await tester.tap(
       find.byWidgetPredicate(
@@ -1333,9 +1333,9 @@ void main() {
       expect(find.text('Gasto 22'), findsOneWidget);
       await tester.ensureVisible(find.text('Gasto 22'));
       await tester.pumpAndSettle();
-      expect(find.byTooltip('Aportar a Gasto 22'), findsOneWidget);
-      await tester.ensureVisible(find.byTooltip('Aportar a Gasto 22'));
-      await tester.tap(find.byTooltip('Aportar a Gasto 22'));
+      expect(find.byTooltip('Apoyar al caso').last, findsOneWidget);
+      await tester.ensureVisible(find.byTooltip('Apoyar al caso').last);
+      await tester.tap(find.byTooltip('Apoyar al caso').last);
       await tester.pumpAndSettle();
       expect(find.text('Elige un monto a donar:'), findsOneWidget);
       expect(find.text('\$75'), findsNothing);

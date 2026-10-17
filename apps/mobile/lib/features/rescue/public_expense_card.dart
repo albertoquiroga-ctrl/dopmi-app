@@ -197,13 +197,14 @@ class _PublicExpenseCardState extends State<PublicExpenseCard> {
           ? 'Aportación no disponible'
           : remaining == 0
           ? 'Gasto cubierto'
-          : 'Aportar a ${record.title}',
-      onPressed: enabled
+          : 'Apoyar al caso',
+      onPressed: enabled && record.parent != null
           ? () => chooseContribution(
               context,
-              record.id,
+              record.parent!,
               remaining,
               caseId: record.parent,
+              caseContribution: true,
             )
           : null,
       style: IconButton.styleFrom(

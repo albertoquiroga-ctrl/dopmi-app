@@ -52,7 +52,7 @@ void main() {
                 ),
               ),
               GoRoute(
-                path: '/contribute/:expense',
+                path: '/contribute-case/:caseId',
                 builder: (_, state) {
                   checkout = state.uri;
                   return const Scaffold(body: Text('Revisar aportación'));
@@ -80,7 +80,7 @@ void main() {
             hasLength(1),
             reason: 'The complete word must fit with the bundled Inter font.',
           );
-          final action = find.byTooltip('Aportar a ${fixture.$2}');
+          final action = find.byTooltip('Apoyar al caso');
           final actionRect = tester.getRect(action);
           expect(actionRect.width, greaterThanOrEqualTo(48));
           expect(actionRect.height, greaterThanOrEqualTo(48));
@@ -111,15 +111,17 @@ void main() {
           await tester.pumpAndSettle();
           expect(find.byType(ContributionAmountDialog), findsOneWidget);
           expect(find.text('Total faltante'), findsNothing);
-          await tester.ensureVisible(find.text('\$50'));
-          await tester.tap(find.text('\$50'));
+          final chosenCents = fixture.$1 == 'medicine' ? 50000 : 5000;
+          final preset = find.text(chosenCents == 50000 ? '\$500' : '\$50');
+          await tester.ensureVisible(preset);
+          await tester.tap(preset);
           await tester.ensureVisible(find.text('Dona ahora'));
           await tester.pumpAndSettle();
           await tester.tap(find.text('Dona ahora'));
           await tester.pumpAndSettle();
-          expect(checkout?.path, '/contribute/${record.id}');
+          expect(checkout?.path, '/contribute-case/${record.parent}');
           expect(checkout?.queryParameters['case'], record.parent);
-          expect(checkout?.queryParameters['amount_cents'], '5000');
+          expect(checkout?.queryParameters['amount_cents'], '$chosenCents');
           expect(tester.takeException(), isNull);
         },
       );

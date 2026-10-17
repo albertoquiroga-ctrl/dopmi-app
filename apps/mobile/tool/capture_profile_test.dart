@@ -34,6 +34,8 @@ import '../test/rescuer_profile_test.dart' show FakeRescuerProfile;
 
 import 'dart:io';
 
+import 'package:go_router/go_router.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'fixture_photo_client.dart';
@@ -629,11 +631,44 @@ class ResultCapturePayments extends ContributionCapturePayments {
       ? const DataPage([], 0)
       : DataPage([
           {
+            'id': 'synthetic-case-contribution',
+            'case_id': 'case-one',
+            'contribution_scope': 'case',
+            'currency': 'mxn',
+            'donor_id': 'one',
+            'created_at': '2026-10-17T16:00:00Z',
+            if (status == 'confirmed') 'processed_at': '2026-10-17T16:01:00Z',
+            'platform_fee_cents': ['confirmed', 'refunded'].contains(status)
+                ? 200
+                : null,
+            'stripe_fee_cents': ['confirmed', 'refunded'].contains(status)
+                ? 600
+                : null,
+            'refund_status': status == 'refunded' ? 'refunded' : 'none',
+            'refund_cents': status == 'refunded' ? 10000 : 0,
+            'case_allocations': [
+              if (['confirmed', 'refunded'].contains(status)) ...[
+                {
+                  'title': 'Consulta aprobada',
+                  'allocated_cents': 5000,
+                  'reversed_cents': status == 'refunded' ? 5000 : 0,
+                },
+                {
+                  'title': 'Medicamentos aprobados',
+                  'allocated_cents': 4200,
+                  'reversed_cents': status == 'refunded' ? 4200 : 0,
+                },
+              ],
+            ],
             'idempotency_key': calls.last,
             'payment_status': status,
             'gross_cents': 10000,
-            'allocated_cents': status == 'confirmed' ? 9200 : 0,
-            'transfer_status': status == 'confirmed'
+            'allocated_cents': ['confirmed', 'refunded'].contains(status)
+                ? 9200
+                : 0,
+            'transfer_status': status == 'refunded'
+                ? 'reversed'
+                : status == 'confirmed'
                 ? 'pending'
                 : 'not_started',
           },
@@ -1101,40 +1136,34 @@ void main() {
       ('case-detail-planned-large', '/rescue-cases/case-one'),
       (
         'contribution-result-confirmed',
-        '/contribute/Cirugía?case=case-one&amount_cents=10000',
+        '/contribute-case/case-one?amount_cents=10000',
       ),
       (
         'contribution-result-confirmed-large',
-        '/contribute/Cirugía?case=case-one&amount_cents=10000',
+        '/contribute-case/case-one?amount_cents=10000',
       ),
       (
         'contribution-result-pending',
-        '/contribute/Cirugía?case=case-one&amount_cents=10000',
+        '/contribute-case/case-one?amount_cents=10000',
       ),
       (
         'contribution-result-canceled',
-        '/contribute/Cirugía?case=case-one&amount_cents=10000',
+        '/contribute-case/case-one?amount_cents=10000',
       ),
       (
         'contribution-result-refunded',
-        '/contribute/Cirugía?case=case-one&amount_cents=10000',
+        '/contribute-case/case-one?amount_cents=10000',
       ),
 
-      (
-        'contribution-review',
-        '/contribute/Cirugía?case=case-one&amount_cents=10000',
-      ),
+      ('contribution-review', '/contribute-case/case-one?amount_cents=10000'),
       (
         'contribution-review-large',
-        '/contribute/Cirugía?case=case-one&amount_cents=10000',
+        '/contribute-case/case-one?amount_cents=10000',
       ),
-      (
-        'contribution-waiting',
-        '/contribute/Cirugía?case=case-one&amount_cents=10000',
-      ),
+      ('contribution-waiting', '/contribute-case/case-one?amount_cents=10000'),
       (
         'contribution-waiting-large',
-        '/contribute/Cirugía?case=case-one&amount_cents=10000',
+        '/contribute-case/case-one?amount_cents=10000',
       ),
       ('payment-methods', '/settings/payment-methods'),
       ('payment-methods-large', '/settings/payment-methods'),
@@ -1273,8 +1302,8 @@ void main() {
       ('payment-history', '/payments'),
       ('payment-history-large', '/payments'),
       ('payment-history-empty', '/payments'),
-      ('contribution-amount', '/contribute/Cirugía?case=case-one'),
-      ('contribution-amount-large', '/contribute/Cirugía?case=case-one'),
+      ('contribution-amount', '/contribute-case/case-one'),
+      ('contribution-amount-large', '/contribute-case/case-one'),
       ('case-detail-large', '/rescue-cases/case-one'),
       ('case-detail-expenses', '/rescue-cases/case-one'),
       ('case-detail-expenses-large', '/rescue-cases/case-one'),
@@ -1957,7 +1986,8 @@ void main() {
       }
       final container = ProviderContainer(
         overrides: [
-          if (spec.$1.startsWith('payment-history'))
+          if (spec.$1.startsWith('payment-history') ||
+              spec.$1.startsWith('contribution'))
             rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           identityRepositoryProvider.overrideWithValue(repo),
           if (spec.$1.startsWith('bccd-'))
@@ -2882,6 +2912,14 @@ void main() {
         await tester.ensureVisible(find.text('Confirmar en Stripe'));
         await tester.tap(find.text('Confirmar en Stripe'));
         await tester.pumpAndSettle();
+        final heading = spec.$1.contains('confirmed')
+            ? 'Pago exitoso'
+            : spec.$1.contains('refunded')
+            ? 'Pago devuelto'
+            : spec.$1.contains('canceled')
+            ? 'Pago cancelado'
+            : 'Pago en procesamiento';
+        expect(find.text(heading), findsOneWidget);
       }
       if (spec.$1.startsWith('contribution-waiting')) {
         await tester.ensureVisible(find.text('Confirmar en Stripe'));
@@ -3043,18 +3081,17 @@ void main() {
           findsOneWidget,
         );
         if (spec.$1 == 'support-home-guardian-card-motion') {
-          final carousel = find.byKey(
-            const ValueKey('guardian-support-carousel'),
+          final deck = find.byKey(const ValueKey('guardian-support-carousel'));
+          final action = find.byKey(
+            const ValueKey('guardian-support-card-action'),
           );
-          final scrollable = find.descendant(
-            of: carousel,
-            matching: find.byWidgetPredicate(
-              (widget) =>
-                  widget is Scrollable &&
-                  widget.axisDirection == AxisDirection.right,
-            ),
-          );
-          final position = tester.state<ScrollableState>(scrollable).position;
+          Matrix4 matrix() => tester
+              .widget<Transform>(
+                find
+                    .descendant(of: deck, matching: find.byType(Transform))
+                    .first,
+              )
+              .transform;
           final frames = <Map<String, Object>>[];
           final started = tester.binding.clock.now();
           Future<void> frame(String name, int elapsed) async {
@@ -3065,43 +3102,48 @@ void main() {
                   .now()
                   .difference(started)
                   .inMilliseconds,
-              'offset': position.pixels,
-              'viewport': position.viewportDimension,
+              'translation_x': matrix().storage[12],
+              'matrix': matrix().storage.toList(),
+              'image_label':
+                  tester.widget<Semantics>(action).properties.label ?? '',
             });
             await tester.runAsync(
               () => saveCapture(key, '${out.path}/${spec.$1}-$name.png'),
             );
           }
 
+          expect(
+            tester.widget<Semantics>(action).properties.label,
+            'Sé un Guardián. Imagen 1 de 3',
+          );
           await frame('before', 0);
-          final swipe = await tester.startGesture(tester.getCenter(carousel));
-          // First movement crosses the gesture slop; the next moves the page.
+          final swipe = await tester.startGesture(
+            tester.getTopLeft(deck) + const Offset(150, 100),
+          );
           await swipe.moveBy(const Offset(-30, 0));
           await tester.pump();
-          await swipe.moveBy(
-            Offset(-tester.getSize(carousel).width * .7 + 30, 0),
-          );
+          await swipe.moveBy(const Offset(-180, 0));
           await tester.pump(const Duration(milliseconds: 16));
-          expect(position.pixels, greaterThan(0));
+          expect(matrix().storage[12], lessThan(-110));
           await frame('held', 16);
           await swipe.up();
-          for (final elapsed in [50, 100, 150, 200]) {
-            await tester.pump(const Duration(milliseconds: 50));
-            await frame('snap-$elapsed', 16 + elapsed);
+          var previous = 0;
+          for (final elapsed in [50, 100, 150, 200, 250, 280]) {
+            await tester.pump(Duration(milliseconds: elapsed - previous));
+            await frame('exit-$elapsed', 16 + elapsed);
+            previous = elapsed;
           }
           await tester.pumpAndSettle();
           expect(
-            position.pixels,
-            closeTo(
-              position.viewportDimension *
-                  (tester
-                      .widget<PageView>(carousel)
-                      .controller!
-                      .viewportFraction),
-              1,
-            ),
+            tester.widget<Semantics>(action).properties.label,
+            'Sé un Guardián. Imagen 2 de 3',
           );
-          await frame('settled', 216);
+          expect(matrix().storage[12], closeTo(0, .01));
+          expect(
+            GoRouter.of(tester.element(deck)).state.uri.path,
+            '/rescue-cases',
+          );
+          await frame('settled', 296);
           await tester.runAsync(
             () =>
                 File('${out.path}/${spec.$1}-frames.json')

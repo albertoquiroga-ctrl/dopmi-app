@@ -64,7 +64,7 @@ void main() {
           'refund_status': state == 'refund-pending'
               ? 'pending'
               : state == 'refunded'
-              ? 'confirmed'
+              ? 'refunded'
               : 'none',
           'refund_cents': state == 'refunded' ? 10000 : 0,
           'transfer_status': state == 'assigned'

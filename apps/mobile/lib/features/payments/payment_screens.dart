@@ -42,7 +42,11 @@ class _ContributeState extends ConsumerState<ContributeScreen>
     with WidgetsBindingObserver {
   final amount = TextEditingController(text: '50');
   bool busy = true, locked = false, reviewing = false, canContinue = false;
-  bool sheetAwaiting = false, querying = false;
+  bool sheetAwaiting = false,
+      querying = false,
+      restoring = true,
+      blockedLegacy = false,
+      recoveredAttempt = false;
   String? error, attemptKey;
   String? checkoutLabel;
   Json? outcome;
@@ -98,27 +102,122 @@ class _ContributeState extends ConsumerState<ContributeScreen>
   }
 
   Future<void> restore() async {
+    if (current) {
+      setState(() {
+        restoring = true;
+        busy = true;
+        blockedLegacy = false;
+        error = null;
+      });
+    }
     try {
       final prefs = await SharedPreferences.getInstance();
-      final key =
-          widget.attempt?['idempotency_key'] as String? ??
-          prefs.getString('$storageKey:key');
-      final cents =
-          widget.attempt?['gross_cents'] as int? ??
-          prefs.getInt('$storageKey:cents');
-      if (current && key != null && cents != null) {
+      String? key;
+      int? cents;
+      Json? ownedReceipt;
+      if (widget.attempt != null) {
+        final requestedKey = widget.attempt!['idempotency_key'];
+        final donationId = widget.attempt!['id'];
+        if (requestedKey is! String ||
+            requestedKey.isEmpty ||
+            donationId is! String ||
+            donationId.isEmpty) {
+          throw const FormatException(
+            'No pudimos comprobar esa referencia desde tu cuenta. Abre el historial de nuevo.',
+          );
+        }
+        final repo = ref.read(paymentRepositoryProvider);
+        ownedReceipt = widget.caseContribution
+            ? await repo.caseOutcome(widget.expense, requestedKey)
+            : await repo.outcome(widget.expense, requestedKey);
+        if (!current) return;
+        final gross = ownedReceipt?['gross_cents'];
+        final scope = widget.caseContribution ? 'case' : 'expense';
+        if (ownedReceipt == null ||
+            ownedReceipt['id'] != donationId ||
+            ownedReceipt['donor_id'] != owner ||
+            ownedReceipt['idempotency_key'] != requestedKey ||
+            ownedReceipt['contribution_scope'] != scope ||
+            ownedReceipt['currency'] != 'mxn' ||
+            ownedReceipt[widget.caseContribution ? 'case_id' : 'expense_id'] !=
+                widget.expense ||
+            gross is! int ||
+            gross < 1000 ||
+            gross > 1000000) {
+          throw const FormatException(
+            'No pudimos comprobar esa aportación desde tu cuenta. Abre el historial de nuevo.',
+          );
+        }
+        key = ownedReceipt['idempotency_key'] as String;
+        cents = gross;
+      } else {
+        key = prefs.getString('$storageKey:key');
+        cents = prefs.getInt('$storageKey:cents');
+      }
+      if (!current) return;
+      final restoredCents = cents;
+      if (key != null &&
+          key.isNotEmpty &&
+          restoredCents != null &&
+          restoredCents >= 1000 &&
+          restoredCents <= 1000000) {
         setState(() {
           attemptKey = key;
-          amount.text = (cents / 100).toStringAsFixed(2);
+          amount.text = (restoredCents / 100).toStringAsFixed(2);
           locked = true;
+          recoveredAttempt = true;
+          final receipt = ownedReceipt;
+          if (receipt != null) {
+            outcome = receipt;
+            canContinue =
+                receipt['payment_status'] == 'pending' &&
+                [
+                  'requires_payment_method',
+                  'requires_confirmation',
+                  'requires_action',
+                ].contains(receipt['payment_state']);
+          }
         });
+        // Recovery stays on the original financial contract, even if its public
+        // case has since been withdrawn. Never resolve a public parent first.
+        if (widget.caseContribution && ownedReceipt == null) {
+          await checkOutcome();
+        }
+      } else if (key != null || cents != null || widget.attempt != null) {
+        throw const FormatException(
+          'No pudimos recuperar la referencia completa. Consulta tu historial antes de continuar.',
+        );
+      } else if (!widget.caseContribution) {
+        final parent = await ref
+            .read(rescueRepositoryProvider)
+            .publicCaseRecordForExpense(widget.expense);
+        if (!current || !mounted) return;
+        if (parent == null) {
+          throw const FormatException(
+            'Este caso ya no está disponible para nuevas aportaciones. Consulta tu historial para recuperar pagos anteriores.',
+          );
+        }
+        final cents = parsePesos(amount.text);
+        context.replace(
+          Uri(
+            path: '/contribute-case/${parent.id}',
+            queryParameters: {if (cents != null) 'amount_cents': '$cents'},
+          ).toString(),
+        );
       }
     } catch (cause) {
-      if (current) setState(() => error = paymentError(cause));
+      if (current) {
+        setState(() {
+          error = paymentError(cause);
+          blockedLegacy = !locked;
+        });
+      }
     } finally {
       if (current) {
-        setState(() => busy = false);
-        if (widget.caseContribution && locked) await checkOutcome();
+        setState(() {
+          restoring = false;
+          busy = false;
+        });
       }
     }
   }
@@ -170,8 +269,11 @@ class _ContributeState extends ConsumerState<ContributeScreen>
       ].contains(presentation);
       if (terminal) {
         final prefs = await SharedPreferences.getInstance();
-        await prefs.remove('$storageKey:key');
-        await prefs.remove('$storageKey:cents');
+        if (!current) return;
+        if (prefs.getString('$storageKey:key') == attemptKey) {
+          await prefs.remove('$storageKey:key');
+          await prefs.remove('$storageKey:cents');
+        }
       }
     } catch (cause) {
       if (current) setState(() => error = paymentError(cause));
@@ -225,6 +327,13 @@ class _ContributeState extends ConsumerState<ContributeScreen>
     try {
       attemptKey ??= const Uuid().v4();
       final prefs = await SharedPreferences.getInstance();
+      if (!currentOwner()) return;
+      final priorKey = prefs.getString('$storageKey:key');
+      if (priorKey != null && priorKey != attemptKey) {
+        throw const FormatException(
+          'Hay otra referencia pendiente para este destino. Consulta tu historial sin reemplazarla.',
+        );
+      }
       final savedKey = await prefs.setString('$storageKey:key', attemptKey!);
       final savedAmount = await prefs.setInt('$storageKey:cents', cents);
       if (!savedKey || !savedAmount) {
@@ -452,6 +561,69 @@ class _ContributeState extends ConsumerState<ContributeScreen>
         back: () => context.canPop() ? context.pop() : context.go('/payments'),
         child: const Notice(
           'La sesión cambió. Consulta el intento desde tu cuenta.',
+        ),
+      );
+    }
+    if (restoring || blockedLegacy) {
+      return ContributionFrame(
+        title: 'Tu aportación',
+        back: restoring ? null : back,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              if (restoring)
+                const CircularProgressIndicator(
+                  semanticsLabel: 'Consultando el mismo intento',
+                ),
+              if (error != null) Notice(error!, isError: true),
+              if (!restoring) ...[
+                TextButton(
+                  onPressed: restore,
+                  child: const Text('Volver a consultar'),
+                ),
+                TextButton(
+                  onPressed: () => context.go('/payments'),
+                  child: const Text('Ir al historial'),
+                ),
+              ],
+            ],
+          ),
+        ),
+      );
+    }
+    if (locked && outcome == null && recoveredAttempt) {
+      return PopScope(
+        canPop: !busy && !sheetAwaiting,
+        child: ContributionFrame(
+          title: 'Tu aportación',
+          back: busy ? null : back,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text('Resumen'),
+                Text(contributionMoney(parsePesos(amount.text)!)),
+                const Notice(
+                  'Conservamos la misma referencia y el mismo importe. Consulta su estado antes de iniciar otra aportación.',
+                ),
+                if (error != null) Notice(error!, isError: true),
+                FilledButton(
+                  onPressed: busy ? null : pay,
+                  child: const Text('Continuar mi aportación'),
+                ),
+                TextButton(
+                  onPressed: busy ? null : checkOutcome,
+                  child: const Text('Consultar resultado'),
+                ),
+                TextButton(
+                  onPressed: busy ? null : () => context.go('/payments'),
+                  child: const Text('Ir al historial'),
+                ),
+              ],
+            ),
+          ),
         ),
       );
     }

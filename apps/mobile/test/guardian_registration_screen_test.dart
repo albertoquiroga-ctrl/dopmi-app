@@ -697,7 +697,7 @@ void main() {
       RegistrationGuardian(),
       const Size(320, 640),
       2,
-      initialLocation: '/contribute/expense-one?amount_cents=5000',
+      initialLocation: '/contribute-case/case-one?amount_cents=5000',
       payments: payments,
     );
     final scroll = find.byType(Scrollable).first;
@@ -709,7 +709,7 @@ void main() {
     expect(payments.calls, hasLength(1));
     final key = payments.calls.single;
     final economics = find.text(
-      'Dopmi descuenta el 2% del importe cobrado y los costos de Stripe. El neto destinado al rescatista cuenta para el reembolso. El importe que no pueda asignarse se devuelve.',
+      'Dopmi descuenta el 2% del importe cobrado y los costos reales de Stripe. Si todo el neto no puede asignarse a gastos aprobados de este caso, se devuelve el pago completo.',
     );
     await tester.scrollUntilVisible(economics, 200, scrollable: scroll);
     await Scrollable.ensureVisible(tester.element(economics), alignment: 0);
@@ -1064,7 +1064,7 @@ void main() {
         RegistrationGuardian(),
         scale == 2 ? const Size(320, 640) : const Size(377, 852),
         scale,
-        initialLocation: '/contribute/expense-one?amount_cents=5000',
+        initialLocation: '/contribute-case/case-one?amount_cents=5000',
         payments: payments,
       );
       final confirm = find.text('Confirmar aportación');

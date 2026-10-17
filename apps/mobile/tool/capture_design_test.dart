@@ -402,7 +402,7 @@ void main() {
     // ignore: invalid_use_of_visible_for_testing_member
     SharedPreferences.setMockInitialValues({});
     for (final route in [
-      ('contribution-amount', '/contribute/expense-one'),
+      ('contribution-amount', '/contribute-case/case-one'),
       ('guardian-intro', '/guardian'),
       ('guardian-active', '/guardian'),
     ]) {
@@ -421,6 +421,7 @@ void main() {
           identityRepositoryProvider.overrideWithValue(identity),
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
           paymentRepositoryProvider.overrideWithValue(FakePayments()),
+          rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           guardianRepositoryProvider.overrideWithValue(guardian),
           guardianEnabledProvider.overrideWithValue(true),
           routerInitialLocationProvider.overrideWithValue(route.$2),

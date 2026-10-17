@@ -14,6 +14,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
 import 'payments_test.dart' show FakePayments, tapButton, pumpUntil;
+import 'rescue_test.dart' show FakeRescue;
+
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 
 const secret = 'pi_synthetic_secret_synthetic';
 
@@ -90,11 +93,12 @@ void main() {
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         paymentRepositoryProvider.overrideWithValue(payments),
+        rescueRepositoryProvider.overrideWithValue(FakeRescue()),
         oneoffPaymentSheetProvider.overrideWithValue(sheet),
         routerInitialLocationProvider.overrideWithValue(
           navigationStack
               ? '/payments'
-              : '/contribute/expense-one?amount_cents=10025',
+              : '/contribute-case/case-one?amount_cents=10025',
         ),
       ],
     );
@@ -110,7 +114,7 @@ void main() {
       unawaited(
         container
             .read(routerProvider)
-            .push<void>('/contribute/expense-one?amount_cents=10025'),
+            .push<void>('/contribute-case/case-one?amount_cents=10025'),
       );
     }
     await pumpUntil(tester, find.text('Resumen'));
@@ -132,7 +136,7 @@ void main() {
       expect(find.text('Continuar la misma aportación'), findsNothing);
       final prefs = await SharedPreferences.getInstance();
       expect(
-        prefs.getString('dopmi-payment:one:expense-one:key'),
+        prefs.getString('dopmi-payment:one:case:case-one:key'),
         payments.calls.single,
       );
       expect(
@@ -160,7 +164,7 @@ void main() {
       expect(find.textContaining('synthetic sheet'), findsNothing);
       expect(
         (await SharedPreferences.getInstance()).getString(
-          'dopmi-payment:one:expense-one:key',
+          'dopmi-payment:one:case:case-one:key',
         ),
         isNull,
       );
@@ -207,7 +211,7 @@ void main() {
       expect(sheet.secrets, isEmpty);
       expect(
         (await SharedPreferences.getInstance()).getString(
-          'dopmi-payment:one:expense-one:key',
+          'dopmi-payment:one:case:case-one:key',
         ),
         isNull,
       );
@@ -268,7 +272,7 @@ void main() {
       );
       final router = container.read(routerProvider);
       expect(router.canPop(), true);
-      expect(router.state.uri.path, '/contribute/expense-one');
+      expect(router.state.uri.path, '/contribute-case/case-one');
       await tapButton(tester, 'Confirmar aportación');
       await tester.pump();
       expect(initialized, 1);
@@ -282,7 +286,7 @@ void main() {
       await tester.pump();
       // Imperative push does not update routeInformationProvider's base URL.
       // Inspect the active route state instead of that underlying history URL.
-      expect(router.state.uri.path, '/contribute/expense-one');
+      expect(router.state.uri.path, '/contribute-case/case-one');
       expect(find.text('Resumen'), findsOneWidget);
       final refresh = find.widgetWithText(
         TextButton,
@@ -304,7 +308,7 @@ void main() {
       );
       await tester.binding.handlePopRoute();
       await tester.pump();
-      expect(router.state.uri.path, '/contribute/expense-one');
+      expect(router.state.uri.path, '/contribute-case/case-one');
       initialization.complete();
       await tester.pumpAndSettle();
       expect(prepared, 1);

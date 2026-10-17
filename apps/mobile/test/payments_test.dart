@@ -5,6 +5,7 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/payments/payment_repository.dart';
+import 'package:dopmi_mobile/features/payments/contribution_layout.dart';
 import 'package:dopmi_mobile/features/payments/oneoff_payment_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,6 +40,19 @@ class FakePayments extends PaymentRepository {
         ),
       );
   final calls = <String>[];
+  final caseCalls = <(String, int, String)>[];
+  @override
+  Future<Json> caseCheckout(String caseId, int cents, String key) {
+    caseCalls.add((caseId, cents, key));
+    return checkout('case:$caseId', cents, key);
+  }
+
+  @override
+  Future<Json?> caseOutcome(String caseId, String key) async {
+    final value = await outcome('case:$caseId', key);
+    return value == null ? null : {...value, 'contribution_scope': 'case'};
+  }
+
   bool fail = true, omitUrl = false;
   @override
   Future<Json> funding(String expense) async => {
@@ -172,8 +186,9 @@ void main() {
           identityRepositoryProvider.overrideWithValue(identity),
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
           paymentRepositoryProvider.overrideWithValue(payments),
+          rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           routerInitialLocationProvider.overrideWithValue(
-            '/contribute/expense-one?amount_cents=10025',
+            '/contribute-case/case-one?amount_cents=10025',
           ),
         ],
       );
@@ -255,7 +270,7 @@ void main() {
   );
   for (final caseId in ['case-one', 'different-case']) {
     testWidgets(
-      'seed review only shows a public case matching the expense: $caseId',
+      'fresh expense alias resolves its real public case despite editable context: $caseId',
       (tester) async {
         SharedPreferences.setMockInitialValues({});
         final identity = FakeIdentityRepository()
@@ -289,10 +304,7 @@ void main() {
           ),
         );
         await pumpUntil(tester, find.text('Resumen'));
-        expect(
-          find.text(rescue.caseRecord.title),
-          caseId == 'case-one' ? findsNWidgets(2) : findsNothing,
-        );
+        expect(find.text(rescue.caseRecord.title), findsNWidgets(2));
         expect(find.text('Pago seguro en Dopmi'), findsOneWidget);
         expect(find.text('\$100.25 MXN'), findsOneWidget);
         expect(payments.calls, isEmpty);
@@ -325,8 +337,9 @@ void main() {
           identityRepositoryProvider.overrideWithValue(identity),
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
           paymentRepositoryProvider.overrideWithValue(payments),
+          rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           routerInitialLocationProvider.overrideWithValue(
-            '/contribute/expense-one?amount_cents=10025',
+            '/contribute-case/case-one?amount_cents=10025',
           ),
         ],
       );
@@ -354,7 +367,13 @@ void main() {
           find.text('Asignado: ${String.fromCharCode(36)}92 MXN'),
           findsOneWidget,
         );
-        expect(find.text('Transferencia en proceso'), findsOneWidget);
+        expect(
+          find.descendant(
+            of: find.byType(ContributionSummary),
+            matching: find.text('Transferencia en proceso'),
+          ),
+          findsOneWidget,
+        );
       }
       expect(
         find.text('Intentar de nuevo'),
@@ -396,6 +415,7 @@ void main() {
           identityRepositoryProvider.overrideWithValue(identity),
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
           paymentRepositoryProvider.overrideWithValue(payments),
+          rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           routerInitialLocationProvider.overrideWithValue(
             '/contribute/expense-one',
           ),
@@ -450,6 +470,7 @@ void main() {
           identityRepositoryProvider.overrideWithValue(identity),
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
           paymentRepositoryProvider.overrideWithValue(payments),
+          rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           routerInitialLocationProvider.overrideWithValue(
             '/contribute/expense-one?amount_cents=120025',
           ),
@@ -493,8 +514,9 @@ void main() {
           identityRepositoryProvider.overrideWithValue(identity),
           communityRepositoryProvider.overrideWithValue(community),
           paymentRepositoryProvider.overrideWithValue(payments),
+          rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           routerInitialLocationProvider.overrideWithValue(
-            '/contribute/expense-one',
+            '/contribute-case/case-one',
           ),
         ],
       );
@@ -508,8 +530,8 @@ void main() {
           child: const DopmiApp(),
         ),
       );
-      await pumpUntil(tester, find.text('Medicamentos para Luna'));
-      expect(find.text('Medicamentos para Luna'), findsOneWidget);
+      await pumpUntil(tester, find.text('Apoyar al caso'));
+      expect(find.text('Apoyar al caso'), findsOneWidget);
       expect(find.text('Neto asignado: \$0.00 MXN'), findsOneWidget);
       expect(find.text('Transferido a Stripe: \$0.00 MXN'), findsOneWidget);
       await tester.enterText(
@@ -523,10 +545,10 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
       expect(payments.calls.length, 1);
       expect(
-        prefs.getString('dopmi-payment:one:expense-one:key'),
+        prefs.getString('dopmi-payment:one:case:case-one:key'),
         payments.calls.single,
       );
-      expect(prefs.getInt('dopmi-payment:one:expense-one:cents'), 10025);
+      expect(prefs.getInt('dopmi-payment:one:case:case-one:cents'), 10025);
       expect(find.text('Pago confirmado'), findsNothing);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
@@ -552,8 +574,9 @@ void main() {
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(community),
         paymentRepositoryProvider.overrideWithValue(payments),
+        rescueRepositoryProvider.overrideWithValue(FakeRescue()),
         routerInitialLocationProvider.overrideWithValue(
-          '/contribute/expense-one',
+          '/contribute-case/case-one',
         ),
       ],
     );
@@ -564,8 +587,8 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(container: container, child: const DopmiApp()),
     );
-    await pumpUntil(tester, find.text('Medicamentos para Luna'));
-    expect(find.text('Medicamentos para Luna'), findsOneWidget);
+    await pumpUntil(tester, find.text('Apoyar al caso'));
+    expect(find.text('Apoyar al caso'), findsOneWidget);
     expect(find.text('Neto asignado: \$0.00 MXN'), findsOneWidget);
     expect(find.text('Transferido a Stripe: \$0.00 MXN'), findsOneWidget);
     await tester.enterText(
@@ -578,7 +601,7 @@ void main() {
     await pumpUntil(tester, find.text('Continuar mi aportación'));
     expect(payments.calls.length, 1);
     final prefs = await SharedPreferences.getInstance();
-    expect(prefs.getInt('dopmi-payment:one:expense-one:cents'), 10025);
+    expect(prefs.getInt('dopmi-payment:one:case:case-one:cents'), 10025);
     payments.fail = false;
     await tapButton(tester, 'Continuar mi aportación');
     await tester.pump(const Duration(milliseconds: 100));

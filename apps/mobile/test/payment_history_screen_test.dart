@@ -121,6 +121,26 @@ class UnavailableRouteCase extends FakeRescue {
   }
 }
 
+class HistoryOwnPayments extends FakePayments {
+  @override
+  Future<Json?> outcome(String expense, String key) async =>
+      expense == 'expense-one' && key == 'stable-checkout-key'
+      ? {
+          'id': 'donation-one',
+          'donor_id': 'one',
+          'expense_id': 'expense-one',
+          'case_id': 'case-one',
+          'contribution_scope': 'expense',
+          'currency': 'mxn',
+          'idempotency_key': key,
+          'gross_cents': 7525,
+          'payment_status': 'pending',
+          'payment_state': 'requires_action',
+          'allocated_cents': 0,
+        }
+      : null;
+}
+
 void main() {
   Future<(ProviderContainer, FakeIdentityRepository, FakePayments)> mount(
     WidgetTester tester,
@@ -136,7 +156,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     final identity = FakeIdentityRepository()
       ..user = const Identity('one', 'synthetic@example.test', verified: true);
-    final payment = FakePayments();
+    final payment = HistoryOwnPayments();
     final container = ProviderContainer(
       overrides: [
         identityRepositoryProvider.overrideWithValue(identity),
@@ -228,7 +248,7 @@ void main() {
       );
       expect(screen.attempt?['idempotency_key'], 'stable-checkout-key');
       expect(screen.attempt?['gross_cents'], 7525);
-      expect(find.text('Continuar mi aportación'), findsOneWidget);
+      expect(find.text('Continuar la misma aportación'), findsOneWidget);
       expect(result.$3.calls, isEmpty);
     },
   );
