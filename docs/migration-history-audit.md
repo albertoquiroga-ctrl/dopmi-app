@@ -1,5 +1,33 @@
 # Auditoría del historial de migraciones
 
+## Retención social soportada — DEV17/10/2026, primer run verificado
+
+Readback posterior: primera ejecución del job5 desde el envío, **run90561 succeeded**,17oct23:17:00.360091–00.433803UTC, después del COMMIT22:38:30UTC. Query vinculada: ocho controles catálogo y tres ejecución true; historia20261017223822/79, otros4jobs/digestec53927d0145b1e417e4b30b8c334c84 intactos. Vencidos actuales0/0/0, antes3/0/1: conteos no acreditan IDs concretos eliminados. Root mantuvo cola única hasta lectura; sin invocación manual ni reprogramación. Evidencia privada first-scheduled-run.private.json y raw en paqueteV5. Este resultado supersede los pendientes de primera ejecución conservados debajo.
+
+Proyecto `ohqxranynackjignryep`, autorización humana específica V5 SQL SHA256
+`26d8c9f196212f2a7df8eee5c1ff67277ea52baafc805f425ced0621e8a5f6e6`.
+Una llamada `apply_migration`, nombre `codex_social_operational_retention_v5_supported_api`,
+registro remoto **20261017223822**, historia78→79. No replay/rename/repair/dbpush.
+V3d81d…937c previamente rechazada42501 por LOCKcron.job y conciliada sin objetos;
+su autorización/reserva quedan consumidas e intactas. V5 usa API nombrada oficial,
+mutex cooperativo, detección de upsert mediante ID==currval y digest de otrosjobs;
+no eleva permisos ni garantiza exclusión frente a actores no coordinados.
+
+Fuente operacional DOPA17 privada `retention-review.sql` SHA256
+`21f5579976eb8411f28cde34d390a0670c4e6047c10c3934dd28c2ed813a85e5`:
+función+ACL+tres índices preservados byte por byte, sin integrar ni alterar
+el archivo ajeno original20261010003248_social_verification_retention.sql.
+Payload y manifiesto exactos en `.tools/b5-social-preparation-20261017/v5-supported-api/`.
+No renombrar fuentes para hacer coincidir timestamps.
+
+Preflight12true, historia exacta78, APIcron1.6.4/TEMP/observabilidad confirmadas.
+Postflight ocho checks true: historia79 y anterior conservada, función exacta
+postgres-only/search_path vacío, tres índices_expiry y job**5** exacto/activo.
+Otros cuatro jobs conservan digest**ec53927d0145b1e417e4b30b8c334c84**.
+Job horario `17 * * * *` GMT; primer run posterior al commit confirmado22:38:30UTC
+esperado23:17UTC=17:17CDMX. **Aún no ejecutado/verificado**; no purga manual.
+Root conserva la cola única hasta comprobar el mismo job y los otrosjobs.
+
 ## Entrega dde1 — aplicación DEV 8/10/2026 México
 
 Preflight: siete cuerpos existentes coinciden con últimas definiciones del repo

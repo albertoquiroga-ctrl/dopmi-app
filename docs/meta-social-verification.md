@@ -1,4 +1,42 @@
-# Verificación social — registro consolidado al cierre, 9/10/2026
+# Verificación social — registro consolidado
+
+## Corte17/10/2026 — retención aplicada y límites de acceso general
+
+Paridadd304535, producto33b12a77/Play2.3.3(317) instalado. QA social positiva311
+se conserva donde es equivalente; no nuevos OAuth, desconexión, revocación ni
+denegación real. SOCIAL_VERIFICATION_ENABLED no fue cambiado por esta operación.
+
+RetenciónDEV V5 soportada recibió autorización propia SQL26d8…5f6e6 y una sola
+aplicación: historia20261017223822/total79, función postgres-only, tres índices,
+job5 horario17GMT. Ocho checks y otros4jobs/digest intactos. **Primer run90561
+succeeded23:17:00UTC=17:17CDMX**, posterior al COMMIT: ocho catálogo y tres ejecución true, otros4jobs/digest intactos y conteos vencidos0/0/0. Lectura de cron.job_run_details ligada al primer run, sin purga manual; no prueba IDs concretos por conteos. Política conservada:
+intentos vencidos hace24h, recibos/tombstones vencidos; no cuentas Auth ni pruebas
+sociales vigentes. V3rechazada42501/rollback se conserva sin retry.
+Detalle y límites operativos en [auditoría](migration-history-audit.md).
+
+Consola Meta autenticada reconsultada17oct sólo lectura por integrador:
+**appInstagram2033254194048655** sigue Sin publicar. go_live muestra pendiente
+URL de privacidad, caso Instagram y botón Publicar deshabilitado. Su permiso
+instagram_business_basic figura Listo para prueba y ofrece Añadir a la revisión;
+no se seleccionó esa acción. Dashboard ofrece TechProvider para solicitar revisión
+y acceso a datos de usuarios/otras empresas con verificación de acceso; no hubo
+enrolamiento ni aceptación de términos. El nivel efectivo/aprobación para usuarios
+ajenos al rol y condiciones completas de esa revisión no quedan acreditados.
+La fila automática public_profile vista en ESTA appInstagram **no verifica** la
+appFacebook1156849688851390 distinta. No se guardó configuración ni publicó nada.
+Evidencia privada meta-go-live-20261017 y meta-permission-readiness-20261017
+en `.tools/b5-social-preparation-20261017/`; investigación primaria enlazada allí.
+
+Pendientes concretos conservados: revisión humana de contenido/canal de privacidad
+y eliminación compatible con legado; inventario por reclamante y paquete destructivo
+aislado antes de cualquier borrado legado; autorización de publicación de contenido,
+valores Meta/enrolamiento/revisión según requisitos reales. No reemplazar el callback
+legado por borrado exclusivamente social ni presentar el borrador como capacidad
+entregada. Titular/operador coordinan contenido y permisos; integrador prepara técnica.
+Negativos sociales reales requieren ventana/consentimientos propios; SMS espera otro
+número controlado no vinculado. Aceptación UI/UX se evaluará con Irlanda.
+
+## Historial conservado — cierre9/10/2026
 
 **PLAY311_OAUTH_INSTAGRAM_FACEBOOK_VERIFICADO_DEV_CERRADO; entrega pendiente.**
 Estado global y siguiente conversación: [checkpoint](mock-sync-current.md).
