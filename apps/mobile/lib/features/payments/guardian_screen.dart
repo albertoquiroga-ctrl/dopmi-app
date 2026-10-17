@@ -52,6 +52,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
   bool enrolling = false;
   Json? data, intent;
   GuardianRegistration? registration;
+  String? registrationError;
   List<GuardianPaymentCard>? cards;
   String? cardsError;
   Json? pendingMethodsFeedback;
@@ -239,10 +240,9 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       final result = await ref.read(guardianRepositoryProvider).state();
       if (!current) return;
       data = result;
-      if (!widget.paymentMethodsOnly &&
-          plan == null &&
-          activation == null &&
-          intent == null) {
+      if (plan == null && activation == null && intent == null) {
+        registration = null;
+        registrationError = null;
         try {
           final state = await ref
               .read(guardianRepositoryProvider)
@@ -250,8 +250,10 @@ class _GuardianState extends ConsumerState<GuardianScreen>
           if (!current) return;
           registration = state;
         } catch (_) {
-          // The new screen performs its own fresh read and refuses submission
-          // on failure. Historical active plans keep their existing flow.
+          if (current) {
+            registrationError = 'No se pudo consultar tu registro Guardián. Actualiza el estado para reintentar.';
+          }
+          // The enrollment screen performs its own fresh read before submission.
         }
       }
       if (intent?['kind'] == 'checkout' &&
@@ -1230,6 +1232,56 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                     ),
                   ),
                   const SizedBox(height: 10),
+                  if (enabled) ...[
+                    Text(
+                      !fresh
+                          ? 'Consultando el estado de tu método de pago…'
+                          : cardsError != null
+                          ? 'No se pudo confirmar tu método de pago.'
+                          : (cards ?? []).any((card) => card.isDefault)
+                          ? 'Método predeterminado confirmado por Stripe.'
+                          : 'Aún no tienes un método predeterminado confirmado.',
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Guardar o cambiar una tarjeta no realiza una aportación.',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: muted,
+                        height: 1.45,
+                      ),
+                    ),
+                    if (status == 'active') ...[
+                      const SizedBox(height: 12),
+                      OutlinedButton.icon(
+                        onPressed:
+                            busy ||
+                                confirming ||
+                                !fresh ||
+                                !verified ||
+                                data?['method_change_available'] != true ||
+                                intent != null ||
+                                savedCardIntent != null ||
+                                walletIntent != null ||
+                                independentIntent != null
+                            ? null
+                            : () => submit(method: true),
+                        icon: const Icon(Icons.credit_card),
+                        label: const Text('Cambiar tarjeta'),
+                      ),
+                    ],
+                    const SizedBox(height: 12),
+                  ],
+                  if (enabled && registrationError != null)
+                    Notice(registrationError!, isError: true),
+                  if (enabled && registration?.status == 'registered')
+                    const Notice(
+                      'Tu registro Guardián conserva la tarjeta que autorizaste al registrarte. Agregar una tarjeta o hacerla predeterminada aquí no cambia el método de los ciclos de ese registro.',
+                    ),
+                  if (enabled && registration?.status == 'method_pending')
+                    const Notice(
+                      'Tu registro Guardián tiene un método pendiente. Continúa la misma solicitud desde Suscripción y pagos.',
+                    ),
                   if (enabled && walletCollectionPending)
                     const Notice(
                       'Hay un apoyo pendiente de confirmación. Podrás cambiar o eliminar tarjetas cuando termine.',

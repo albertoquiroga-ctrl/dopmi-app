@@ -6,10 +6,14 @@ Deno.serve(async (req) => {
   let action = 'authenticate';
   const requestId = crypto.randomUUID();
   try {
-    const { service, native, actor } = runtime();
+    const { service, native, nativeCase, actor } = runtime();
     const id = await actor(req);
     const input = await req.json();
-    action = ['checkout','native_checkout','native_status','connect_status','connect_onboard','connect_session'].includes(input.action) ? input.action : 'invalid_action';
+    action = ['checkout','native_checkout','native_case_checkout','native_status','connect_status','connect_onboard','connect_session'].includes(input.action) ? input.action : 'invalid_action';
+    if (input.action === 'native_case_checkout') {
+      if (!nativeCase) throw new PaymentError('payments_not_configured', 503);
+      return json(await nativeCase.submit(id, input));
+    }
     if (['native_checkout', 'native_status'].includes(input.action)) {
       if (!native) throw new PaymentError('payments_not_configured', 503);
       return json(await (input.action === 'native_checkout' ? native.submit(id, input) : native.status(id, input)));

@@ -575,51 +575,58 @@ void main() {
     },
   );
 
-  testWidgets('account preserves access to the dedicated saved rescuers view', (
-    tester,
-  ) async {
-    final identity = FakeIdentityRepository()
-      ..user = const Identity('one', 'ana@example.test', verified: true);
-    final container = ProviderContainer(
-      overrides: [
-        identityRepositoryProvider.overrideWithValue(identity),
-        accountPhotoRepositoryProvider.overrideWithValue(
-          emptyAccountPhotoRepository(identity),
+  testWidgets(
+    'donor account exposes privacy without rescuer tools or saved rescuers',
+    (tester) async {
+      final identity = FakeIdentityRepository()
+        ..user = const Identity('one', 'ana@example.test', verified: true);
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          accountPhotoRepositoryProvider.overrideWithValue(
+            emptyAccountPhotoRepository(identity),
+          ),
+          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          routerInitialLocationProvider.overrideWithValue('/basic-info'),
+        ],
+      );
+      addTearDown(() async {
+        container.dispose();
+        await identity.changes.close();
+      });
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const DopmiApp(),
         ),
-        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
-        routerInitialLocationProvider.overrideWithValue('/basic-info'),
-      ],
-    );
-    addTearDown(() async {
-      container.dispose();
-      await identity.changes.close();
-    });
-    await tester.pumpWidget(
-      UncontrolledProviderScope(container: container, child: const DopmiApp()),
-    );
-    await tester.pumpAndSettle();
-    expect(find.text('Rescatistas guardados'), findsNothing);
-    await tester.tap(find.byTooltip('Volver'));
-    await tester.pumpAndSettle();
-    final link = find.text('Rescatistas guardados');
-    await tester.scrollUntilVisible(
-      link,
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await Scrollable.ensureVisible(tester.element(link), alignment: .25);
-    await tester.pumpAndSettle();
-    await tester.tap(link);
-    await tester.pumpAndSettle();
-    expect(
-      container.read(routerProvider).state.uri.toString(),
-      '/saved?kind=rescuer',
-    );
-    expect(find.text('Rescatistas guardados'), findsOneWidget);
-    expect(find.byTooltip('Tipos de guardados'), findsOneWidget);
-    expect(
-      find.text('Guarda perfiles desde el detalle de un caso.'),
-      findsOneWidget,
-    );
-  });
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Rescatistas guardados'), findsNothing);
+      await tester.tap(find.byTooltip('Volver'));
+      await tester.pumpAndSettle();
+      expect(find.text('Rescatistas guardados'), findsNothing);
+      final link = find.text('Cuenta y privacidad');
+      await tester.scrollUntilVisible(
+        link,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(link);
+      await tester.tap(link);
+      await tester.pumpAndSettle();
+      expect(find.byType(RescuerAccountOptionsScreen), findsOneWidget);
+      expect(find.text('Verificación'), findsNothing);
+      expect(find.text('Editar perfil público'), findsNothing);
+      expect(find.text('Configurar pagos con Stripe'), findsNothing);
+      final privacy = find.text('Privacidad y eliminación');
+      await tester.scrollUntilVisible(
+        privacy,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(privacy, findsOneWidget);
+      expect(find.text('Rescatistas guardados'), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

@@ -1,6 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.57.4';
 import Stripe from 'npm:stripe@22.6.0';
 import { paymentService, PaymentError, paymentLog, stripeApi } from './payments.mjs';
+import { oneoffCaseService } from './oneoff-case.mjs';
 import { oneoffNativeService } from './oneoff-native.mjs';
 
 export const cors = {
@@ -60,6 +61,17 @@ export function runtime() {
         return result.data;
       },
     }) : null;
+  const nativeCase = native ? oneoffCaseService({
+    stripe: new Stripe((Deno.env.get('STRIPE_SECRET_KEY_H4_TEST') ?? Deno.env.get('STRIPE_SECRET_KEY'))!,
+      { apiVersion: '2026-08-26.dahlia', maxNetworkRetries: 0, timeout: 20000 }),
+    hosted: service,
+    rpc: async (operation: string, data: unknown) => {
+      const result = await db.rpc('dopmi_oneoff_case_server', { operation, data });
+      if (result.error) throw new PaymentError(result.error.code === '42501' ? 'access_denied' :
+        'payment_unavailable', result.error.code === '42501' ? 403 : 409);
+      return result.data;
+    },
+  }) : null;
   async function actor(req: Request) {
     const token = req.headers.get('Authorization')?.match(/^Bearer (.+)$/i)?.[1];
     if (!token) throw new PaymentError('sign_in_required', 401);
@@ -67,7 +79,7 @@ export function runtime() {
     if (error || !data.user || !data.user.email_confirmed_at) throw new PaymentError('sign_in_required', 401);
     return data.user.id;
   }
-  return { rpc, service, native, actor };
+  return { rpc, service, native, nativeCase, actor };
 }
 export function failure(error: unknown) {
   return json({ error: error instanceof PaymentError ? error.code : 'payment_unavailable' }, error instanceof PaymentError ? Math.min(error.status, 503) : 503);

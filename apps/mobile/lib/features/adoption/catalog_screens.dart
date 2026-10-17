@@ -508,7 +508,6 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.id != widget.id) {
       lastAvatarPath = null;
-      savedOverride = null;
       busy = false;
       error = null;
     }
@@ -547,35 +546,7 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
   }
 
   bool busy = false;
-  bool? savedOverride;
   String? error;
-
-  Future<void> toggle(Json profile, VoidCallback refresh) async {
-    if (busy) return;
-    final repo = ref.read(communityRepositoryProvider);
-    final actor = repo.userId;
-    final id = widget.id;
-    bool current() => mounted && widget.id == id && repo.userId == actor;
-    final previous = savedOverride ?? profile['saved'] == true;
-    setState(() {
-      busy = true;
-      error = null;
-      savedOverride = !previous;
-    });
-    try {
-      await repo.favoriteRescuer(id, !previous);
-      if (current()) refresh();
-    } catch (cause) {
-      if (current()) {
-        setState(() {
-          savedOverride = previous;
-          error = communityError(cause);
-        });
-      }
-    } finally {
-      if (current()) setState(() => busy = false);
-    }
-  }
 
   Future<void> reportProfile() async {
     if (busy) return;
@@ -628,7 +599,6 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
         if (profile == null) {
           return const Notice('Este perfil público no está disponible.');
         }
-        final saved = savedOverride ?? profile['saved'] == true;
         final adoptions = (profile['adoptions'] as List? ?? [])
             .map((value) => Adoption(Json.from(value as Map)))
             .toList();
@@ -650,22 +620,6 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
                   : reportProfile,
             ),
             if (error != null) Notice(error!, isError: true),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed:
-                        busy ||
-                            ref.read(communityRepositoryProvider).userId ==
-                                widget.id
-                        ? null
-                        : () => toggle(profile, refresh),
-                    icon: Icon(saved ? Icons.favorite : Icons.favorite_border),
-                    label: Text(saved ? 'Guardado' : 'Guardar'),
-                  ),
-                ),
-              ],
-            ),
             if (adoptions.isNotEmpty)
               TextButton.icon(
                 onPressed: busy

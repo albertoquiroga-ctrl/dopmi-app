@@ -1,4 +1,4 @@
-# Checkpoint vigente — paridad d304535, 16/10/2026 México
+# Checkpoint vigente — paridad d304535, 17/10/2026 México
 
 Este corte supersede las instrucciones de continuación inferiores, conservando su evidencia.
 Referencia autorizada congelada: d304535c63c2d15686476b421e140de475ff6b6f.
@@ -6,10 +6,10 @@ Producto base: c53b6686e1ba77ba6d2164acac9aeacc9cef6066 / codex/finish-release-2
 CI38942117005 cuatro jobs aprobados; Play2.3.3(314), Codemagic6ad2688aec6dbbb3d338534a, instalada desde Play según recibo16oct. No candidato nuevo ni aceptación global atribuida.
 
 Plan B0–B6 aprobado; decisiones en product-decisions.md y única matriz en parity-current-review.md.
-**B0 bloqueado:** titular confirma teléfono no disponible. Chat operacional anterior notLoaded, último turno falló por capacidad del modelo. Integrador de este chat conserva continuidad; agentes sólo prepararon B1/B2, sin producto ni Flutter.
-Guardián20 contabilizado (Dopmi0.40, Stripe4.43, neto15.17) y ahora cotejado realmente con Stripe: PASS_SCOPED_GET_PROOF_PARTIAL,4GET, Setup/PI/cargo/comisión/transferencia concordantes,0escrituras. Recibo privado phone-stripe-proof-b0-d304.private.json en device-acceptance-20261016. Es prueba parcial: no acredita puntual ni cancelación. Diario anterior se conserva sin reescribir reservas. Puntual sin submit acreditado; cancelación normal requerida. No repetir alta/Setup/Guardián ni usar helpers del run sintético cerrado.
-Siguiente acción: terminar lecturas independientes, después teléfono disponible → C2 fresco, puntual10 sólo si no existe, cancelar registro por app y postflight sobre mismos objetos. Antes de cualquier acción dependiente exigir preparación/recibo válidos.
-Original dirty preservado; ejecución sólo desde checkout candidato, sin superposición. No tests/CI/build nuevos por documentación. Gate B0 anterior a edición de producto.
+**B0 cerrado y revisado independientemente.** Titular conectó y desbloqueó el Samsung; Play2.3.3(314)/Vending y sesión conservada comprobados. Sin repetir alta, Setup ni pago Guardián. C2 previo acreditó ausencia del puntual; se ejecutó una sola aportación de10 TEST y cancelación normal de ciclos futuros desde la app.
+Proveedor cotejado con6GET/0escrituras: Guardián20=0.40Dopmi+4.43Stripe+15.17transferidos; puntual10=0.20+3.96+5.84transferidos. Total30TEST, dos PI/dos transferencias, ningún ID inesperado, sin devolución. Reservas persistidas antes de submit, confirmación y cancelación; postflight SQL confirma ambos registros cancelados y método conservado; UI final «Registro cancelado». Recibos privados b0-17oct-closed.private.json, phone-stripe-proof-b0-17oct-pair.private.json y b0-17oct-postflight.private.json en device-acceptance-20261016. Diario anterior intacto; evidencia posterior lo supersede sin resetear contadores. Revisión independiente sin defectos materiales.
+Dueño integrador; B1 base implementada/revisada con17aliases/Back/guards y12capturas normal115%200%; cambio real de método nativo sigue en B4, aviso honesto no acredita esa función. B2 implementado y verificado local con PG18.1 13/13, focal34PASS/1skip y full830PASS/1skip anterior a ampliaciones sólo tests, DenoPASS; tres revisiones sin defectos materiales. Evidencia privada .tools/b2-evidence-20261017 y .tools/b1-visual-20261017. Siguiente: B3 backend_b2/mobile_implementation y contrato B4 backend_b4_method; root conserva router y única cola Flutter. Mock local verificado d304535 exacto; nuevos cambios quedan fuera.
+Original dirty preservado; ejecución sólo desde checkout candidato, sin superposición. B0 acredita ensayo financiero autorizado, no paridad ni aceptación global. Ningún nuevo build/CI/publicación todavía.
 
 ## Corte anterior conservado
 

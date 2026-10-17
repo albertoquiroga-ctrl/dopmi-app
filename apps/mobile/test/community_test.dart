@@ -438,18 +438,27 @@ class PendingSavedRemovalCommunity extends FakeCommunity {
 
 class SavedRescuerCommunity extends FakeCommunity {
   bool failPublic = false;
+  int savedRescuerReads = 0;
   final publicReads = <String>[];
   @override
-  Future<DataPage<SavedEntry>> savedRescuers(int page) async => DataPage([
-    SavedEntry({
-      'id': 'owner',
-      'name': 'Nombre anterior',
-      'city': 'Monterrey',
-      'region': 'NL',
-      'available': true,
-    }),
-    SavedEntry({'id': 'retired', 'name': 'Nombre privado', 'available': false}),
-  ], 2);
+  Future<DataPage<SavedEntry>> savedRescuers(int page) async {
+    savedRescuerReads++;
+    return DataPage([
+      SavedEntry({
+        'id': 'owner',
+        'name': 'Nombre anterior',
+        'city': 'Monterrey',
+        'region': 'NL',
+        'available': true,
+      }),
+      SavedEntry({
+        'id': 'retired',
+        'name': 'Nombre privado',
+        'available': false,
+      }),
+    ], 2);
+  }
+
   @override
   Future<Json?> publicProfile(String id) async {
     publicReads.add(id);
@@ -969,29 +978,21 @@ void main() {
     expect(find.text('Luna'), findsOneWidget);
   });
   testWidgets(
-    'saved rescuer uses approved public metrics and never enriches withdrawn content',
+    'legacy saved rescuer link shows pets without reading private saves',
     (tester) async {
       final repo = SavedRescuerCommunity();
       await start(tester, repo, '/saved?kind=rescuer');
-      expect(find.text('María R.'), findsOneWidget);
-      expect(find.text('8 casos publicados'), findsOneWidget);
-      expect(find.text('Contenido no disponible'), findsOneWidget);
-      expect(find.text('Nombre privado'), findsNothing);
-      expect(repo.publicReads, ['owner']);
+      expect(find.text('Mis mascotas'), findsOneWidget);
+      expect(find.text('Rescatistas guardados'), findsNothing);
+      expect(repo.publicReads, isEmpty);
+      expect(repo.savedRescuerReads, 0);
+      await tester.tap(find.byTooltip('Tipos de guardados'));
+      await tester.pumpAndSettle();
+      expect(find.text('Rescatistas'), findsNothing);
+      expect(find.text('Adopción'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
-  testWidgets('saved rescuer read failure never fabricates public metrics', (
-    tester,
-  ) async {
-    final repo = SavedRescuerCommunity()..failPublic = true;
-    await start(tester, repo, '/saved?kind=rescuer');
-    expect(find.text('Nombre anterior'), findsOneWidget);
-    expect(find.textContaining('casos publicados'), findsNothing);
-    expect(find.text('Nombre privado'), findsNothing);
-    expect(repo.publicReads, ['owner']);
-    expect(tester.takeException(), isNull);
-  });
   testWidgets(
     'saved removal is single flight and an old category failure cannot replace the new list',
     (tester) async {
@@ -1090,15 +1091,12 @@ void main() {
     expect(tester.takeException(), isNull);
   });
   testWidgets(
-    'public rescuer can be saved and reported with server acknowledgement',
+    'public rescuer hides saving while preserving reports and contextual contact',
     (tester) async {
       final repo = FakeCommunity();
       await start(tester, repo, '/people/owner');
-      await tester.ensureVisible(find.text('Guardar'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Guardar'));
-      await tester.pumpAndSettle();
-      expect(find.text('Guardado'), findsOneWidget);
+      expect(find.text('Guardar'), findsNothing);
+      expect(find.text('Guardado'), findsNothing);
       await tester.ensureVisible(find.text('Reportar perfil'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Reportar perfil'));

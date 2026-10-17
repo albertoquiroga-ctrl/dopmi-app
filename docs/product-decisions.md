@@ -15,7 +15,7 @@ Fuente: decisiones expresas en el chat «Sincroniza la app con el mock» y petic
 - No existe reconstrucción histórica de cobertura urgente acreditada. Medir desde su fecha real de instrumentación; primer mes parcial rotulado «Desde [fecha]», anteriores «Sin medición histórica», nunca cero inventado.
 - Conservar alta Guardián sin capacidad y sin cargo/deuda, reevaluación mensual, cambios de monto al siguiente ciclo, consentimiento y autoridad servidor. Actualizar ayuda contradictoria sin reabrir estas reglas.
 - Integrar feedback SMS aprobado y corregir estado restaurado mediante lectura Auth autoritativa aislada y notificación a UI; no inferir pérdida Auth ni enviar SMS para diagnosticar.
-- El titular confirmó que el teléfono no está disponible ahora. B0 sigue siendo gate anterior a cambios de producto: conciliar el proveedor del Guardián20 existente, puntual10 sólo si aún no existe y cancelación normal; preservar mismos IDs y autorización TEST anterior. No repetir alta/Setup/Guardián.
+- Continuidad B0: teléfono inicialmente no disponible; el17oct el titular confirmó conexión/desbloqueo y ordenó continuar conservando alta y pago Guardián existentes. Preservar mismos IDs y autorización TEST anterior; no repetir alta/Setup/Guardián. Cierre y recursos consumidos en checkpoint.
 - No producción, dinero real, merge, force-push, purga/Meta/migración remota por inferencia. Operaciones externas nuevas conservan autorización concreta tras paquete preparado y revisado.
 
 ## Decisión estable de cierre — 9/10/2026

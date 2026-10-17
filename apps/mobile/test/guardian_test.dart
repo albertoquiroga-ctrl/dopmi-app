@@ -28,8 +28,14 @@ class FakeGuardian extends GuardianRepository {
           authOptions: const AuthClientOptions(autoRefreshToken: false),
         ),
       );
+  GuardianRegistration? methodsRegistration;
+  int methodsRegistrationReads = 0;
   @override
-  Future<GuardianRegistration?> registrationState() async => null;
+  Future<GuardianRegistration?> registrationState() async {
+    methodsRegistrationReads++;
+    return methodsRegistration;
+  }
+
   List<GuardianPaymentCard> cards = [];
   Json? savedCard;
   Json? independent;
@@ -686,6 +692,87 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  testWidgets(
+    'changing the active card opens Stripe without charging or adding a card',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final repo = FakeGuardian()
+        ..value = {
+          'plan': activePlan(),
+          'activation': null,
+          'method_change_available': true,
+        }
+        ..cards = [
+          const GuardianPaymentCard(
+            id: 'pm_current',
+            brand: 'visa',
+            last4: '4242',
+            isDefault: true,
+          ),
+        ];
+      await start(tester, repo, methods: true);
+      expect(
+        find.text('Método predeterminado confirmado por Stripe.'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Guardar o cambiar una tarjeta no realiza una aportación.'),
+        findsOneWidget,
+      );
+      await tester.ensureVisible(find.text('Cambiar tarjeta'));
+      await tester.tap(find.text('Cambiar tarjeta'));
+      await tester.pumpAndSettle();
+      expect(repo.calls, isEmpty);
+      expect(repo.opened, 0);
+      await tester.tap(find.text('Autorizar y continuar'));
+      await tester.pumpAndSettle();
+      expect(repo.calls.single['kind'], 'method');
+      expect(repo.calls.single['selected_method_id'], isNull);
+      expect(repo.opened, 1);
+      expect(repo.savedCard, isNull);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'native registration methods do not pretend customer default changes its cycle card',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final repo = FakeGuardian()
+        ..methodsRegistration = GuardianRegistration.fromJson({
+          'id': '72000000-0000-4000-8000-000000000001',
+          'key': '72000000-0000-4000-8000-000000000002',
+          'status': 'registered',
+          'gross_cents': 2000,
+          'revision': 1,
+          'registered_at': '2026-10-14T10:00:00Z',
+          'next_evaluation_at': '2026-11-14T10:00:00Z',
+          'consent_version': guardianRegistrationConsent,
+          'payment': {
+            'state': 'allocated',
+            'attempt_id': '72000000-0000-4000-8000-000000000003',
+            'allocated_cents': 1517,
+            'refund_cents': 0,
+          },
+        });
+      await start(tester, repo, methods: true);
+      expect(repo.methodsRegistrationReads, 1);
+      final notice = find.textContaining(
+        'Tu registro Guardián conserva la tarjeta',
+      );
+      await tester.scrollUntilVisible(
+        notice,
+        160,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(notice, findsOneWidget);
+      expect(find.text('Cambiar tarjeta'), findsNothing);
+      expect(repo.calls, isEmpty);
+      expect(repo.opened, 0);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('inactive methods route cannot activate or invent stored cards', (
     tester,
   ) async {
@@ -1035,7 +1122,11 @@ void main() {
           addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
           await tester.pumpAndSettle();
         }
-        await tester.ensureVisible(find.text('Agregar tarjeta'));
+        await tester.scrollUntilVisible(
+          find.text('Agregar tarjeta'),
+          160,
+          scrollable: find.byType(Scrollable).first,
+        );
         await tester.pumpAndSettle();
         await tester.tap(find.text('Agregar tarjeta'));
         await tester.pumpAndSettle();
@@ -1046,7 +1137,11 @@ void main() {
         await tester.tap(find.text('Volver'));
         await tester.pumpAndSettle();
         expect(repo.calls, isEmpty);
-        await tester.ensureVisible(find.text('Agregar tarjeta'));
+        await tester.scrollUntilVisible(
+          find.text('Agregar tarjeta'),
+          160,
+          scrollable: find.byType(Scrollable).first,
+        );
         await tester.pumpAndSettle();
         await tester.tap(find.text('Agregar tarjeta'));
         await tester.pumpAndSettle();
@@ -1432,9 +1527,13 @@ void main() {
           addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
           await tester.pumpAndSettle();
         }
-        expect(find.byTooltip('Eliminar tarjeta'), findsOneWidget);
-        await tester.ensureVisible(find.byTooltip('Eliminar tarjeta'));
+        await tester.scrollUntilVisible(
+          find.byTooltip('Eliminar tarjeta'),
+          160,
+          scrollable: find.byType(Scrollable).first,
+        );
         await tester.pumpAndSettle();
+        expect(find.byTooltip('Eliminar tarjeta'), findsOneWidget);
         await tester.tap(find.byTooltip('Eliminar tarjeta'));
         await tester.pumpAndSettle();
         expect(find.text('¿Eliminar esta tarjeta?'), findsOneWidget);
@@ -1444,7 +1543,11 @@ void main() {
         await tester.tap(find.text('Volver'));
         await tester.pumpAndSettle();
         expect(repo.calls, isEmpty);
-        await tester.ensureVisible(find.byTooltip('Eliminar tarjeta'));
+        await tester.scrollUntilVisible(
+          find.byTooltip('Eliminar tarjeta'),
+          160,
+          scrollable: find.byType(Scrollable).first,
+        );
         await tester.pumpAndSettle();
         await tester.tap(find.byTooltip('Eliminar tarjeta'));
         await tester.pumpAndSettle();

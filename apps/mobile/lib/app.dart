@@ -41,6 +41,19 @@ import 'features/adoption/community_repository.dart' show Json;
 
 final routerInitialLocationProvider = Provider<String>((ref) => '/welcome');
 
+const accountRouteAliases = <String, String>{
+  '/saved-rescuers': '/profile',
+  '/profile/basic-info': '/basic-info',
+  '/settings/basic-info': '/basic-info',
+  '/profile/payment-methods': '/settings/payment-methods',
+  '/profile/payment-method/success': '/settings/payment-methods',
+  '/settings/payment-method/success': '/settings/payment-methods',
+  '/profile/billing': '/guardian',
+  '/settings/billing': '/guardian',
+  '/rescuer/account': '/settings/account',
+  '/rescuer/settings': '/settings/account',
+};
+
 final routerProvider = Provider<GoRouter>((ref) {
   final identity = ref.watch(identityControllerProvider);
   final experience = ref.read(experienceProvider);
@@ -60,9 +73,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (identity.loading && state.uri.path != '/loading') {
         restoringPath ??= state.uri.toString();
       }
-      final desired = identity.loading
+      final requested = identity.loading
           ? state.uri.path
           : Uri.parse(restoringPath ?? state.uri.toString()).path;
+      // Cancellation/receipt access has the same guards on old and current URLs.
+      final desired = accountRouteAliases[requested] ?? requested;
       var target = identity.redirect(desired);
       if (target == null &&
           identity.identity?.verified == true &&
@@ -94,6 +109,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       return target;
     },
     routes: [
+      // Published links from earlier profile layouts keep reaching the real
+      // account screens. Financial result aliases only reload server state.
+      for (final alias in accountRouteAliases.entries)
+        GoRoute(path: alias.key, redirect: (_, _) => alias.value),
       GoRoute(
         path: '/home',
         builder: (_, _) => const ExperienceLandingScreen(),
@@ -333,11 +352,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/saved',
+        redirect: (_, state) =>
+            state.uri.queryParameters['kind'] == 'rescuer' ? '/saved' : null,
         builder: (_, state) => SavedScreen(
           key: ValueKey('${identity.identity?.id}:${state.uri}'),
           initialKind: switch (state.uri.queryParameters['kind']) {
             'donation' => SavedKind.donation,
-            'rescuer' => SavedKind.rescuer,
             _ => SavedKind.adoption,
           },
         ),

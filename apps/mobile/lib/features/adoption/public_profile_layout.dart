@@ -168,9 +168,8 @@ class PublicProfileFrame extends StatelessWidget {
         child: _PublicHeaderButton(
           label: 'Regresar',
           asset: 'assets/profile/back.svg',
-          action: () => context.canPop()
-              ? context.pop()
-              : context.go('/saved?kind=rescuer'),
+          action: () =>
+              context.canPop() ? context.pop() : context.go('/rescue-cases'),
         ),
       ),
       actions: [

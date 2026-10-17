@@ -25,7 +25,10 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
   @override
   void initState() {
     super.initState();
-    kind = widget.initialKind;
+    // Historical links remain safe without reading or changing private rescuer saves.
+    kind = widget.initialKind == SavedKind.rescuer
+        ? SavedKind.adoption
+        : widget.initialKind;
   }
 
   Future<DataPage<SavedEntry>> load() async {
@@ -171,7 +174,6 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
           itemBuilder: (_) => const [
             PopupMenuItem(value: SavedKind.adoption, child: Text('Adopción')),
             PopupMenuItem(value: SavedKind.donation, child: Text('Donación')),
-            PopupMenuItem(value: SavedKind.rescuer, child: Text('Rescatistas')),
           ],
         ),
       ],
@@ -198,11 +200,7 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
             if (error != null) Notice(error!, isError: true),
             LiveSection<DataPage<SavedEntry>>(
               key: ValueKey('$kind:$page:$revision'),
-              tables: const [
-                'dopmi_favorites',
-                'dopmi_saved_cases',
-                'dopmi_saved_rescuers',
-              ],
+              tables: const ['dopmi_favorites', 'dopmi_saved_cases'],
               load: load,
               builder: (result, _) => Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,

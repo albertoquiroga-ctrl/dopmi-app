@@ -1,14 +1,14 @@
-## Matriz vigente d304535 — 16/10/2026
+## Matriz vigente d304535 — 17/10/2026
 
 Titular aprobó implementación del plan congelado d304535c63c2d15686476b421e140de475ff6b6f desde c53b6686. Decisiones completas en product-decisions.md. Evidencia histórica sólo se reutiliza con equivalencia comprobada; no atribuirla a código nuevo.
 
 | Batch | Objetivo/escenarios | Dueño | Dependencias | Estado / salida |
 |---|---|---|---|---|
-| B0 | Mismos objetos314; cotejo proveedor; puntual10 sólo si no existe; cancelación e historial | Integrador | Teléfono y lecturas acotadas | Proveedor Guardián verificado4GET/0escrituras; BLOQUEADO teléfono para C2/puntual/cancelación; cero cambios producto |
-| B1 | Perfil ambos modos; privacidad/métodos; retiro visible; aliases/Back; mascotas conservadas | Único implementador Flutter; router integrador | B0 | Preparación sólo lectura; revisión visual/funcional pendiente |
-| B2 | Aporte caso multigasto; capacidad concurrente; neto real; devolución total | Backend financiero; contratos integrador | B0 | Preparación sólo lectura; implementación/SQL/PG real pendientes |
-| B3 | Impacto mensual/comunidad real; urgencias prospectivas; mazo/gestos; Guardian sin descubrimiento | Backend impacto + Flutter secuencial | B2 y contratos de navegación | Pendiente; validar mes/reversión/privacidad, movimiento y vacíos |
-| B4 | Pagos/SDK/contexto; cambio monto siguiente ciclo; notificaciones sin mutación financiera; ayuda fiel | Flutter + integrador | B1/B2 | Pendiente; autoridad servidor/mismo intento y revisión independientes |
+| B0 | Mismos objetos314; cotejo proveedor; puntual10 sólo si no existe; cancelación e historial | Integrador + revisión independiente | Cerrada | CERRADO17oct:30TEST conciliados,6GET/0writes, dos transferencias21.01netos; cancelación normal SQL/UI; sin repetir Guardián. Evidencia en checkpoint |
+| B1 | Perfil ambos modos; privacidad/métodos; retiro visible; aliases/Back; mascotas conservadas | mobile_b1; router integrador | B0 cerrado | Base implementada, revisiones visual/código/seguridad; aliases17PASS con Back y guards; capturas12PASS normal115%200%. Cambio real de tarjeta del registro nativo queda en B4; no cierre integral atribuido |
+| B2 | Aporte caso multigasto; capacidad concurrente; neto real; devolución total | backend_b2; contratos integrador | B0 cerrado | Implementado/verificado local: PG18.1 13PASS, focal34PASS/1skip(PG cubre concurrencia), full830PASS/1skip anterior a ampliaciones sólo tests; DenoPASS. Tres revisiones sin defectos materiales. Sin despliegue ni Stripe HTTP |
+| B3 | Impacto mensual/comunidad real; urgencias prospectivas; mazo/gestos; Guardian sin descubrimiento | backend_b2 impacto + mobile_implementation secuencial | B2 y contratos de navegación | En implementación; contrato owner-only personal y comunidad sólo agregada, validar mes/reversión/privacidad, movimiento y vacíos |
+| B4 | Pagos/SDK/contexto; cambio monto siguiente ciclo; notificaciones sin mutación financiera; ayuda fiel | backend_b4_method + Flutter secuencial/integrador | B1/B2 | Contrato nuevo de cambio de método nativo en implementación; falta conectar UI/recuperación. Notificación caso debe resolver foto por case_id. Autoridad servidor/mismo intento y revisiones pendientes |
 | B5 | SMS restauración+feedback; negativos sociales; retención/legado/Meta | Flutter + backend; revisión seguridad | B0, contratos afectados y gates específicos | Pendiente; ninguna prueba instalada ni aplicación remota nueva atribuida |
 | B6 | Gates SHA integrado; normal115%200%; CI/Play/teléfono/aceptación/demo/retro | Integrador + revisores + titular/Irlanda | B1–B5 | Pendiente; publicación/instalación/QA/aceptación separadas |
 

@@ -1,8 +1,8 @@
-## Cola vigente — 16/10/2026, d304535
+## Cola vigente — 17/10/2026, d304535
 
 Plan aprobado por el titular: paridad funcional/visual contra d304535c63c2d15686476b421e140de475ff6b6f, preservando producto c53b6686 y QA equivalente. Decisiones en product-decisions.md; matriz única en parity-current-review.md; checkpoint en mock-sync-current.md.
 
-**B0 bloqueado por teléfono no disponible, confirmado por el titular.** Integrador conserva la operación. Cotejo GET del Guardián20 terminado con éxito parcial (4GET/0escrituras); siguiente: teléfono disponible, C2 fresco antes del puntual10, cancelación normal y postflight. No repetir alta/Setup/Guardián ni usar credenciales del ensayo sintético cerrado. B1/B2 preparados sólo por lectura; no editar producto hasta cerrar B0. B3–B6 conservan sus dependencias.
+**B0 cerrado17oct y revisado independientemente.** Teléfono disponible; puntual10 ejecutado una vez tras C2; Guardián20 existente conservado, ambos cotejados con proveedor y transferidos. Cancelación normal confirmada en SQL y UI; total30TEST. No repetir ensayo ni recursos consumidos. B1 base implementada/revisada, cambio de método nativo pendiente B4; B2 local verificado/revisado, sin aplicación remota. B3 impacto/Apoyar y B4 contrato método nativo en ejecución con propiedad exclusiva; root router y única cola Flutter. B5/B6 conservan sus dependencias. Evidencia/recibos en checkpoint.
 
 ## Cola vigente — 15/10/2026
 
