@@ -188,8 +188,9 @@ void main() {
           expect(container.read(routerProvider).state.uri.path, '/guardian');
           guardian.membership = {'registration': guardian.methodsRegistration};
           final readsBeforeReturn = guardian.membershipReads;
-          if (status == 'registered' && card)
+          if (status == 'registered' && card) {
             guardian.pendingMembership = Completer<Json>();
+          }
           await tester.binding.handlePopRoute();
           if (guardian.pendingMembership != null) {
             await tester.pump();

@@ -1,3 +1,9 @@
+## 17/10/2026 — Corrección del orden de validación del candidato
+
+Candidato3c230176bec6375ac240d4ef585de2dc45a6a590 publicado en rama, no Play. CI39056778521 detuvo Flutter antes de las pruebas por curly_braces_in_flow_control_structures en support_membership_test:192. Causa comprobada: el análisis local precedió al formateo completo final; éste dividió un if en varias líneas y activó el lint. No era un fallo del analizador ni un gate aprobado del candidato. Corrección exclusiva: llaves, misma condición/asignación/orden; revisor independiente confirma cero cambio de comportamiento.
+
+Secuencia correctiva final: formato364archivos/0cambios→flutter analyze0issues→membership10/10PASS, logs b6-format-postci/b6-analyze-postformat/b6-membership-postformat-20261017. Revisión de proceso independiente recomienda un único ajuste a C04 existente: analizar la fuente después de su último formateo e invalidar evidencia afectada tras cambios; aplicado a esta corrección y memoria validada, sin nueva suite/regla. Nueva CI del SHA corregido pendiente. Backend/SQL/EdgeV4 no cambiaron; ninguna nueva escritura remota, SMS o cargo.
+
 ## 17/10/2026 — Cierre local agrupado B5/B6, candidato listo para CI
 
 Regresión integral local:1185PASS/8fail,21:54, en cinco archivos. Revisión de fuentes confirmó expectativas superadas por B1/B3/B4: rescatistas guardados, aviso provisional del método nativo, retry ambiguo entre dos consultas y presets/total faltante del flujo anterior. Correcciones agrupadas conservan mascotas, cero lecturas privadas de rescatistas retirados, separación tarjeta Guardián/default, cero cargos al cancelar consentimiento, retry específico, contrato histórico por gasto y paginación de22gastos. No se restauran funciones retiradas ni se fuerza financiar todo el faltante.

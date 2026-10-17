@@ -9,6 +9,8 @@ Corte B5: restauración Auth aislada y feedback implementados; analyze0issues y3
 
 Cierre local agrupado B5/B6: OTP sólo se limpia al confirmar el mismo número/sesión; revisión independiente producto/código/seguridad sin hallazgos adicionales. Analyze0issues;138/138focal (incluye los8fallos anteriores y nueva transiciónOTP). Primer full local1185PASS/8fail por expectativas superadas en5archivos, corregidas sin perder privacidad/finanzas. Formato364archivos/0cambios tras4ajustes automáticos de formato. CI integral del nuevo SHA pendiente. V4 preflight fresco coincide7/7; autorización tardíaV3 no se ejecuta ni se extiende. Siguiente: congelarGit, push normal yCI, presentar permisoV4exacto; no publicar hasta gates/DEV necesarios.
 
+CI39056778521 del SHA3c230176 detuvo Flutter por lint tras formateo final de un if en test; corregido sólo con llaves, revisión independiente sin cambio semántico. Secuencia final formato364/0→analyze0→membership10/10PASS. Próximo SHA correctivo y CI integral pendientes; no atribuir el fullCI antiguo al candidato ni publicar aún. V4 permanece sin permiso nuevo, V3 autorizado tardíamente sigue retenido.
+
 CI38942117005 cuatro jobs aprobados; Play2.3.3(314), Codemagic6ad2688aec6dbbb3d338534a, instalada desde Play según recibo16oct. No candidato nuevo ni aceptación global atribuida.
 
 Plan B0–B6 aprobado; decisiones en product-decisions.md y única matriz en parity-current-review.md.
