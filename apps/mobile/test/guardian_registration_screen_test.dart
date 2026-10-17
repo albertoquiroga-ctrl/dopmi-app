@@ -16,6 +16,11 @@ import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/payments/guardian_registration.dart';
 import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
+import 'package:dopmi_mobile/features/profile/monthly_impact_repository.dart';
+import 'package:dopmi_mobile/features/profile/monthly_impact_panel.dart';
+
+import 'monthly_impact_test.dart' show FakeMonthlyImpact;
+
 import 'package:dopmi_mobile/features/payments/guardian_bank_action.dart';
 import 'package:dopmi_mobile/features/payments/guardian_method_setup.dart';
 import 'package:dopmi_mobile/features/payments/contribution_layout.dart';
@@ -129,6 +134,29 @@ class RegistrationGuardian extends FakeGuardian {
   }
 }
 
+class CanceledImpactGuardian extends RegistrationGuardian {
+  int financialMutations = 0;
+  Never rejectFinancialMutation() {
+    financialMutations++;
+    throw StateError('Impact history must not mutate a canceled registration');
+  }
+
+  @override
+  Future<Map<String, dynamic>> submitRegistration(
+    Map<String, dynamic> draft,
+  ) async => rejectFinancialMutation();
+  @override
+  Future<void> cancelRegistration(String id) async => rejectFinancialMutation();
+  @override
+  Future<void> changeRegistrationAmount(
+    GuardianRegistration value,
+    int cents,
+  ) async => rejectFinancialMutation();
+  @override
+  Future<Json> submitRegistrationMethod(Json draft) async =>
+      rejectFinancialMutation();
+}
+
 class RegistrationMethodSetup implements GuardianMethodSetup {
   final secrets = <String>[];
   Completer<void>? gate;
@@ -203,6 +231,7 @@ void main() {
     PaymentRepository? payments,
     ConnectClient? connectClient,
     FakeIdentityRepository? actorRepository,
+    MonthlyImpactRepository? monthlyImpact,
   }) async {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
@@ -231,6 +260,8 @@ void main() {
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         guardianRepositoryProvider.overrideWithValue(repo),
+        if (monthlyImpact != null)
+          monthlyImpactRepositoryProvider.overrideWithValue(monthlyImpact),
         guardianMethodSetupProvider.overrideWithValue(
           methodSetup ?? RegistrationMethodSetup(),
         ),
@@ -354,6 +385,78 @@ void main() {
         expect(repo.registrations.last['key'], key);
         expect(sdk.secrets, [secret, secret]);
         expect(repo.calls, isEmpty);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
+  for (final variant in [
+    (const Size(377, 852), 1.0),
+    (const Size(377, 852), 1.15),
+    (const Size(320, 640), 2.0),
+  ]) {
+    testWidgets(
+      'canceled registration opens monthly impact and returns without financial mutations scale${variant.$2}',
+      (tester) async {
+        final repo = CanceledImpactGuardian()
+          ..registrationValue = registration(
+            '72000000-0000-4000-8000-000000000002',
+            status: 'canceled',
+            payment: 'skipped',
+          );
+        final original = repo.registrationValue!;
+        final monthly = FakeMonthlyImpact();
+        final setup = RegistrationMethodSetup();
+        await start(
+          tester,
+          repo,
+          variant.$1,
+          variant.$2,
+          methodSetup: setup,
+          monthlyImpact: monthly,
+        );
+        expect(find.text('Registro cancelado'), findsOneWidget);
+        final impact = find.widgetWithText(TextButton, 'Ver mi impacto');
+        await tester.scrollUntilVisible(
+          impact,
+          150,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+        expect(impact.hitTestable(), findsOneWidget);
+        final router = GoRouter.of(tester.element(impact));
+        final entry = router.state.uri.toString();
+        await tester.tap(impact);
+        await tester.pumpAndSettle();
+        expect(router.state.uri.path, '/impact');
+        expect(router.state.uri.queryParameters['history'], '1');
+        expect(monthly.personalRequests, isNotEmpty);
+        expect(monthly.communityRequests, isNotEmpty);
+        expect(
+          find.descendant(
+            of: find.byType(MonthlyImpactPanel),
+            matching: find.text('Asignados de tus aportaciones'),
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.descendant(
+            of: find.byType(MonthlyImpactPanel),
+            matching: find.text('Casos apoyados por la comunidad'),
+          ),
+          findsOneWidget,
+        );
+        await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+        expect(router.state.uri.toString(), entry);
+        expect(find.text('Registro cancelado'), findsOneWidget);
+        expect(identical(repo.registrationValue, original), isTrue);
+        expect(repo.registrationValue!.id, registrationId);
+        expect(repo.registrationValue!.status, 'canceled');
+        expect(repo.financialMutations, 0);
+        expect(repo.registrations, isEmpty);
+        expect(repo.calls, isEmpty);
+        expect(setup.secrets, isEmpty);
         expect(tester.takeException(), isNull);
       },
     );

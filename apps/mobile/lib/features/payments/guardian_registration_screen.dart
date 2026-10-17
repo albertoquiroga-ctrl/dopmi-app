@@ -513,6 +513,13 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
                   child: const Text('Cancelar ciclos futuros'),
                 ),
               ],
+              if (state.status == 'canceled')
+                TextButton(
+                  onPressed: busy || !fresh
+                      ? null
+                      : () => context.push('/impact?history=1'),
+                  child: const Text('Ver mi impacto'),
+                ),
               if (state.status == 'canceled' &&
                   [
                     GuardianRegistrationPaymentState.notEvaluated,
