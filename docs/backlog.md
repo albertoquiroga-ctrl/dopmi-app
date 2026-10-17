@@ -1,3 +1,9 @@
+## Cola vigente — 16/10/2026, d304535
+
+Plan aprobado por el titular: paridad funcional/visual contra d304535c63c2d15686476b421e140de475ff6b6f, preservando producto c53b6686 y QA equivalente. Decisiones en product-decisions.md; matriz única en parity-current-review.md; checkpoint en mock-sync-current.md.
+
+**B0 bloqueado por teléfono no disponible, confirmado por el titular.** Integrador conserva la operación. Cotejo GET del Guardián20 terminado con éxito parcial (4GET/0escrituras); siguiente: teléfono disponible, C2 fresco antes del puntual10, cancelación normal y postflight. No repetir alta/Setup/Guardián ni usar credenciales del ensayo sintético cerrado. B1/B2 preparados sólo por lectura; no editar producto hasta cerrar B0. B3–B6 conservan sus dependencias.
+
 ## Cola vigente — 15/10/2026
 
 Terminar directamente el [candidato Guardián/pagos](candidate-release-current.md)

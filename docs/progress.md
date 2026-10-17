@@ -4846,3 +4846,19 @@ correlación no se presenta como prueba independiente del owner por nickname.
 Evidencia privada en device-acceptance-20261016. Play313 conserva el defecto;
 faltan CI del nuevo commit, autorización específica de otra build con cuota
 gratis suficiente, nueva publicación y validación en modo oscuro del teléfono.
+
+## 16/10/2026 — arranque autorizado d304535, cotejo Guardián y gate B0
+
+Titular aprobó PLEASE IMPLEMENT THIS PLAN y decisiones previas de este chat: nueva referencia congelada d304535c63c2d15686476b421e140de475ff6b6f, continuación codex/finish-release-20261015 desde c53b6686e1ba77ba6d2164acac9aeacc9cef6066. Decisiones registradas en product-decisions.md; batches finitos B0–B6 en parity-current-review.md. Original dirty preservado; checkout candidato tenía únicamente scripts/__pycache__ ajeno. No superposición ni edición de producto.
+
+Conciliación del chat operacional anterior mediante wait_threads: notLoaded, último turno failed por capacidad del modelo. Diario/lecturas y revisión independiente coinciden en una alta y un Setup consumidos; no submit puntual acreditado, cancelación normal pendiente. ADB consultado realmente: lista sin dispositivos. Titular confirma «El teléfono no está disponible ahora». B0 bloquea cambios de producto según plan aprobado; trabajadores prepararon por lectura B1/móvil y B2/backend, sin Flutter ni código cambiado.
+
+Trabajo independiente completado: consulta Supabase de sólo lectura acotada al ciclo conocido para verificar destino Connect, seguida de reader Stripe existente con clave TEST local y cuatro GET exactos (cuenta, Setup, PI expandido con cargo/comisión y transferencia). Resultado exit0 PASS_SCOPED_GET_PROOF_PARTIAL: Guardián20.00, Dopmi0.40, Stripe4.43, neto15.17 y transferencia concordantes;0escrituras proveedor, sin pagos/confirmaciones/duplicados. Prueba parcial: no acredita ausencia actual de puntual, cancelación ni aceptación humana.
+
+Evidencia privada en integration-test-package-23f64786/codex-operation/device-acceptance-20261016: phone-stripe-proof-b0-d304.private.json, bindings y preparación/procedencia. No publicar IDs, datos, claves o esos recibos. Reader conserva digest de ledger y reservas de salida CreateNew. El diario financiero anterior permanece intacto. Revisión independiente de seguridad inspeccionó fuente/recibos: tres mejoras locales agrupadas (referencia exacta del propietario, proyecto/consulta/hash y bruto/estado destino) verificadas antes del cotejo; luego preparación exit0 comprobada antes del GET dependiente.
+
+Retro acotada basada en evaluación independiente previa: fallo histórico documentado de parser y falta de bloqueo de acción dependiente; no atribuirlo a dos chats. Aplicadas dos mejoras: preparación estructurada y resultado válido antes de operación; único checkpoint que distingue recursos consumidos de pendientes. Esta ejecución de lectura acredita orden preparación→resultado→GET, no robustez general ni nuevas acciones financieras. No timer/hook nuevo.
+
+B1 preparación localizó diferencia agregar tarjeta/cambiar predeterminada y accesos sólo rescatista; B2 localizó inner join que ocultaría aportación por caso y lectores compartidos de capacidad. Son cambios por implementar tras B0, no producto entregado. CI38942117005 y Play314/c53 conservan evidencia anterior; no se repitieron tests/CI/build ni se publicó candidato nuevo por documentación. Diff check documental vigente.
+
+Siguiente dueño: integrador de este chat. Con teléfono disponible: observar app instalada/sesión y conciliar C2 fresco; puntual10 sólo si no existe, con la autorización TEST ya registrada; cancelar por UI únicamente el registro nuevo y verificar historial/postflight. No repetir alta, Setup ni Guardián20, no reiniciar contadores, no usar credenciales/run sintético cerrado ni resolver incertidumbre mediante otro intento. Luego habilitar B1/B2 con propiedad exclusiva y una cola Flutter.

@@ -1,3 +1,23 @@
+## 16/10/2026 — paridad d304535 aprobada por el titular
+
+Fuente: decisiones expresas en el chat «Sincroniza la app con el mock» y petición posterior PLEASE IMPLEMENT THIS PLAN. Alcance congelado: mock d304535c63c2d15686476b421e140de475ff6b6f; continuar desde c53b6686e1ba77ba6d2164acac9aeacc9cef6066 en codex/finish-release-20261015. Estas decisiones superseden sólo los acuerdos anteriores incompatibles de este alcance; no acreditan implementación ni aceptación instalada.
+
+- Retirar la función visible de rescatistas guardados (seguir/lista), conservando datos privados y contratos históricos. Favoritos de mascotas permanecen.
+- Perfil de ambos modos conserva un acceso «Cuenta y privacidad» con medición, accesos, eliminación y reautenticación. Preservar verificación, Connect y permisos.
+- Métodos de pago muestra resumen/estado y «Cambiar tarjeta» mediante el flujo Stripe que realmente cambia el método; agregar una tarjeta no implica volverla predeterminada.
+- Apoyar para Guardián vigente muestra impacto propio y comunidad, sin catálogo ni invitación a descubrir casos nuevos. Ocultar descubrimiento no introduce prohibición nueva sobre enlaces públicos o aportaciones puntuales existentes. Registro pendiente conserva recuperación, sin afirmar suscripción activa.
+- Aportación puntual dirigida al caso, desde $10 MXN: el servidor reparte el neto entre gastos aprobados elegibles del mismo caso, por urgencia aprobada, aprobación más antigua y desempate estable. «Caso completo» significa destino caso; no obliga a cubrir todo su faltante.
+- Conservar un pago/cargo/transferencia Connect por aportación al caso, comisión Dopmi2% y costo Stripe real. No cubrir comisión simulada ni prometer cubrir100 netos con100 brutos. Guardián mínimo20, presets50/200/500 y personalizado.
+- Si después del cargo todo el neto ya no puede asignarse a gastos elegibles del mismo caso, devolver el pago completo y conciliar la reversión si hubo transferencia. Sin asignación parcial ni traslado a otro caso. La semántica histórica de aportaciones por gasto se conserva.
+- Impacto personal mensual incluye puntual y Guardián realmente asignados. Comunidad expone conteos separados de casos apoyados y casos con todos sus gastos urgentes aprobados cubiertos; sin ranking/rescatista destacada, videos ni cifras/fotos simuladas.
+- Mes calendario America/Mexico_City, inicio inclusivo/fin exclusivo; una reversión posterior corrige el mes original, conservando trazabilidad. Cancelar/cambiar monto/modo no elimina impacto confirmado.
+- Cobertura urgente se acredita por transición financiera confirmada y conjunto aprobado de ese instante. Una necesidad nueva posterior no borra el logro; reversión que invalida su financiación sí lo corrige. Contar casos distintos por mes, no gastos ni animales recuperados.
+- No existe reconstrucción histórica de cobertura urgente acreditada. Medir desde su fecha real de instrumentación; primer mes parcial rotulado «Desde [fecha]», anteriores «Sin medición histórica», nunca cero inventado.
+- Conservar alta Guardián sin capacidad y sin cargo/deuda, reevaluación mensual, cambios de monto al siguiente ciclo, consentimiento y autoridad servidor. Actualizar ayuda contradictoria sin reabrir estas reglas.
+- Integrar feedback SMS aprobado y corregir estado restaurado mediante lectura Auth autoritativa aislada y notificación a UI; no inferir pérdida Auth ni enviar SMS para diagnosticar.
+- El titular confirmó que el teléfono no está disponible ahora. B0 sigue siendo gate anterior a cambios de producto: conciliar el proveedor del Guardián20 existente, puntual10 sólo si aún no existe y cancelación normal; preservar mismos IDs y autorización TEST anterior. No repetir alta/Setup/Guardián.
+- No producción, dinero real, merge, force-push, purga/Meta/migración remota por inferencia. Operaciones externas nuevas conservan autorización concreta tras paquete preparado y revisado.
+
 ## Decisión estable de cierre — 9/10/2026
 
 La autorización adicional Meta permite prueba de control social dentro de la sesión

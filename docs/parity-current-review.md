@@ -1,3 +1,19 @@
+## Matriz vigente d304535 — 16/10/2026
+
+Titular aprobó implementación del plan congelado d304535c63c2d15686476b421e140de475ff6b6f desde c53b6686. Decisiones completas en product-decisions.md. Evidencia histórica sólo se reutiliza con equivalencia comprobada; no atribuirla a código nuevo.
+
+| Batch | Objetivo/escenarios | Dueño | Dependencias | Estado / salida |
+|---|---|---|---|---|
+| B0 | Mismos objetos314; cotejo proveedor; puntual10 sólo si no existe; cancelación e historial | Integrador | Teléfono y lecturas acotadas | Proveedor Guardián verificado4GET/0escrituras; BLOQUEADO teléfono para C2/puntual/cancelación; cero cambios producto |
+| B1 | Perfil ambos modos; privacidad/métodos; retiro visible; aliases/Back; mascotas conservadas | Único implementador Flutter; router integrador | B0 | Preparación sólo lectura; revisión visual/funcional pendiente |
+| B2 | Aporte caso multigasto; capacidad concurrente; neto real; devolución total | Backend financiero; contratos integrador | B0 | Preparación sólo lectura; implementación/SQL/PG real pendientes |
+| B3 | Impacto mensual/comunidad real; urgencias prospectivas; mazo/gestos; Guardian sin descubrimiento | Backend impacto + Flutter secuencial | B2 y contratos de navegación | Pendiente; validar mes/reversión/privacidad, movimiento y vacíos |
+| B4 | Pagos/SDK/contexto; cambio monto siguiente ciclo; notificaciones sin mutación financiera; ayuda fiel | Flutter + integrador | B1/B2 | Pendiente; autoridad servidor/mismo intento y revisión independientes |
+| B5 | SMS restauración+feedback; negativos sociales; retención/legado/Meta | Flutter + backend; revisión seguridad | B0, contratos afectados y gates específicos | Pendiente; ninguna prueba instalada ni aplicación remota nueva atribuida |
+| B6 | Gates SHA integrado; normal115%200%; CI/Play/teléfono/aceptación/demo/retro | Integrador + revisores + titular/Irlanda | B1–B5 | Pendiente; publicación/instalación/QA/aceptación separadas |
+
+Revisiones independientes de planificación localizaron: pérdida de caché de teléfono reproducida con fake (no pérdida Auth acreditada), ayuda con primer cobro incondicional, historial que omitiría padre case sin expense_id, capacidad compartida que debe incorporar ledger nuevo, y diferencia entre agregar tarjeta y cambiar predeterminada. Son entradas concretas de implementación, no defectos nuevos declarados como desplegados.
+
 ## Tablero vigente — cierre 9/10/2026
 
 **Entrega pendiente; RETOMAR ESTA ENTREGA.** Esta entrada supersede estados históricos inferiores.
