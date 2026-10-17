@@ -194,7 +194,7 @@ class _MonthlyPhotoCollage extends ConsumerWidget {
       for (final item in items) {
         final data = item['public_data'] as Map;
         for (final path in (data['photos'] as List).whereType<String>()) {
-          if (path.isNotEmpty)
+          if (path.isNotEmpty) {
             photos.add(
               ImpactPhoto(
                 item['case_id'] as String,
@@ -202,6 +202,7 @@ class _MonthlyPhotoCollage extends ConsumerWidget {
                 path,
               ),
             );
+          }
         }
       }
       if (photos.isEmpty) return const SizedBox.shrink();

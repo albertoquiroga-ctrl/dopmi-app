@@ -161,8 +161,10 @@ class SupportHomePage extends StatelessWidget {
                       return SliverToBoxAdapter(
                         child: Column(
                           children: [
-                            GuardianSupportCard(height: height,
-                              onOpenEnrollment: () => openGuardian(context)),
+                            GuardianSupportCard(
+                              height: height,
+                              onOpenEnrollment: () => openGuardian(context),
+                            ),
                             const SizedBox(height: 12),
                             ConstrainedBox(
                               constraints: const BoxConstraints(minHeight: 52),
@@ -171,7 +173,8 @@ class SupportHomePage extends StatelessWidget {
                                   horizontal: 18,
                                 ),
                                 child: GuardianSupportDock(
-                                  onOpenEnrollment: () => openGuardian(context)),
+                                  onOpenEnrollment: () => openGuardian(context),
+                                ),
                               ),
                             ),
                             SizedBox(height: bottom),
@@ -358,7 +361,11 @@ class _CaseProgress extends CustomPainter {
 }
 
 class GuardianSupportCard extends StatefulWidget {
-  const GuardianSupportCard({super.key, required this.height, this.onOpenEnrollment});
+  const GuardianSupportCard({
+    super.key,
+    required this.height,
+    this.onOpenEnrollment,
+  });
   final double height;
   final VoidCallback? onOpenEnrollment;
   @override
@@ -491,11 +498,12 @@ class _GuardianSupportCardState extends State<GuardianSupportCard> {
               child: Listener(
                 onPointerCancel: (_) {
                   pointerCanceled = true;
-                  if (!exiting)
+                  if (!exiting) {
                     setState(() {
                       drag = 0;
                       dragging = false;
                     });
+                  }
                 },
                 child: GestureDetector(
                   dragStartBehavior: DragStartBehavior.down,
@@ -529,7 +537,8 @@ class _GuardianSupportCardState extends State<GuardianSupportCard> {
                         ),
                         onTap: exiting
                             ? null
-                            : widget.onOpenEnrollment ?? () => context.push('/guardian?enroll=1'),
+                            : widget.onOpenEnrollment ??
+                                  () => context.push('/guardian?enroll=1'),
                         borderRadius: BorderRadius.circular(28),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(28),

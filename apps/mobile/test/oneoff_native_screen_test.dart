@@ -128,7 +128,7 @@ void main() {
       expect(sheet.secrets, [secret]);
       expect(payments.hostedOpens, 0);
       expect(find.text('Pago en procesamiento'), findsOneWidget);
-      expect(find.text('¡Eres mi héroe, choca esas huellitas!'), findsNothing);
+      expect(find.text('Pago exitoso'), findsNothing);
       expect(find.text('Continuar la misma aportación'), findsNothing);
       final prefs = await SharedPreferences.getInstance();
       expect(
@@ -156,7 +156,7 @@ void main() {
       await tapButton(tester, 'Confirmar aportación');
       await tester.pumpAndSettle();
       expect(
-        find.text('¡Eres mi héroe, choca esas huellitas!'),
+        find.text('Pago exitoso'),
         findsOneWidget,
       );
       expect(find.textContaining('La captura no se completó'), findsNothing);
@@ -193,7 +193,7 @@ void main() {
       expect(sheet.secrets, [secret, secret]);
       expect(payments.hostedOpens, 0);
       expect(
-        find.text('¡Eres mi héroe, choca esas huellitas!'),
+        find.text('Pago exitoso'),
         findsOneWidget,
       );
       expect(tester.takeException(), isNull);

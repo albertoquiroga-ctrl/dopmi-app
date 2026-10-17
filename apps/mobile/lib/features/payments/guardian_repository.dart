@@ -106,6 +106,95 @@ class GuardianRepository {
     }
   }
 
+  Future<Json> submitRegistrationMethod(Json draft) =>
+      _registrationMethod('registration_method', draft);
+  Future<Json> registrationMethodStatus(Json draft) =>
+      _registrationMethod('registration_method_status', draft);
+  Future<Json> _registrationMethod(String action, Json draft) async {
+    final uuid = RegExp(
+      r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
+    );
+    if (draft['id'] is! String ||
+        !uuid.hasMatch(draft['id']) ||
+        draft['key'] is! String ||
+        !uuid.hasMatch(draft['key']) ||
+        draft['revision'] is! int ||
+        draft['revision'] < 0 ||
+        draft['consent'] != true ||
+        draft['consent_version'] != savedCardConsent) {
+      throw const FormatException(
+        'Revisa la autorización del cambio de tarjeta.',
+      );
+    }
+    final owner = client.auth.currentUser?.id;
+    final token = client.auth.currentSession?.accessToken;
+    if (owner == null) {
+      throw const FormatException(
+        'Inicia sesión para consultar el cambio de tarjeta.',
+      );
+    }
+    final result = await client.functions.invoke(
+      'guardian-client',
+      body: {
+        'action': action,
+        'id': draft['id'],
+        'key': draft['key'],
+        if (action == 'registration_method') ...{
+          'revision': draft['revision'],
+          'consent': true,
+          'consent_version': savedCardConsent,
+        },
+      },
+    );
+    if (client.auth.currentUser?.id != owner ||
+        client.auth.currentSession?.accessToken != token) {
+      throw const FormatException(
+        'La sesión cambió. Consulta desde tu cuenta.',
+      );
+    }
+    final data = result.data;
+    if (result.status != 200 ||
+        data is! Map ||
+        data['id'] != draft['id'] ||
+        data['key'] != draft['key'] ||
+        ![
+          'pending',
+          'applied',
+          'expired',
+          'canceled',
+        ].contains(data['status']) ||
+        data['registration_revision'] !=
+            (draft['revision'] as int) +
+                (data['status'] == 'applied' ? 1 : 0) ||
+        data['checkout_url'] != null) {
+      throw const FormatException(
+        'El cambio de tarjeta no está confirmado. Consulta la misma solicitud.',
+      );
+    }
+    final secret = data['setup_client_secret'];
+    if (secret != null &&
+        (data['status'] != 'pending' ||
+            secret is! String ||
+            !RegExp(r'^seti_[A-Za-z0-9]+_secret_[A-Za-z0-9]+$')
+                .hasMatch(secret) ||
+            ![
+              'requires_payment_method',
+              'requires_confirmation',
+              'requires_action',
+            ].contains(data['method_status']))) {
+      throw const FormatException('El cambio de tarjeta no está confirmado.');
+    }
+    return {
+      'id': data['id'],
+      'key': data['key'],
+      'status': data['status'],
+      'registration_revision': data['registration_revision'],
+      'method_status': data['method_status'],
+      'setup_client_secret': secret,
+      'checkout_url': null,
+    };
+  }
+
   Future<void> changeRegistrationAmount(
     GuardianRegistration registration,
     int cents,

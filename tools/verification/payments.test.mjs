@@ -4153,12 +4153,12 @@ test('general saved-card owner lookup is private, confirmed and coherent with Gu
   const lookup=async actor=>(await db.query('select dopmi_saved_card_owner_server($1) value',[actor])).rows[0].value;
   assert.equal(await lookup(donor),null);
   const f=savedCardFixture();await f.service().checkout(donor,savedCardInput);
-  assert.deepEqual(await lookup(donor),{customer_id:'cus_savedCard',subscription_id:null});
+  assert.deepEqual(await lookup(donor),{customer_id:'cus_savedCard',subscription_id:null,registration_method_id:null});
   assert.equal(await lookup(other),null);
   for(const actor of [donor,other,staff]){await role(actor);await rejected(()=>lookup(donor),/permission denied/);}
   await db.exec('reset role');
   await db.query("insert into private.dopmi_guardian_subscriptions(donor_id,stripe_customer_id,stripe_subscription_id,stripe_price_id,gross_cents,initial_payment_intent_id,initial_charge_id) values($1,'cus_savedCard','sub_savedCard','price_savedCard',5000,'pi_savedCard','ch_savedCard')",[donor]);
-  assert.deepEqual(await lookup(donor),{customer_id:'cus_savedCard',subscription_id:'sub_savedCard'});
+  assert.deepEqual(await lookup(donor),{customer_id:'cus_savedCard',subscription_id:'sub_savedCard',registration_method_id:null});
   await db.query("update private.dopmi_guardian_subscriptions set stripe_customer_id='cus_different'");
   await rejected(()=>lookup(donor),/Clientes de tarjeta en revisión/);
 });

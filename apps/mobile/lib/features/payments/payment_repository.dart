@@ -30,6 +30,51 @@ class PaymentRepository {
         'consent': true,
         'consent_version': 'oneoff-test-2026-10-15',
       });
+  Future<Json> caseCheckout(String caseId, int cents, String key) =>
+      action('native_case_checkout', {
+        'case_id': caseId,
+        'gross_cents': cents,
+        'key': key,
+        'consent': true,
+        'consent_version': 'oneoff-test-2026-10-15',
+      });
+
+  Future<List<Json>> caseAllocations(String donationId) async =>
+      (await client.rpc(
+        'dopmi_case_payment_allocations',
+        params: {'target_donation': donationId},
+      ) as List).map((value) => Json.from(value as Map)).toList();
+  Future<List<Json>> caseReceivedAllocations(String donationId) async =>
+      (await client.rpc(
+        'dopmi_case_received_allocations',
+        params: {'target_donation': donationId},
+      ) as List).map((value) => Json.from(value as Map)).toList();
+
+  Future<Json> ownCaseAttempt(String donationId, String key) async {
+    final owner = client.auth.currentUser?.id;
+    if (owner == null) {
+      throw const FormatException(
+        'Inicia sesión para consultar tu aportación.',
+      );
+    }
+    final row = await client
+        .from('dopmi_donations')
+        .select()
+        .eq('donor_id', owner)
+        .eq('id', donationId)
+        .eq('idempotency_key', key)
+        .eq('contribution_scope', 'case')
+        .maybeSingle();
+    if (client.auth.currentUser?.id != owner ||
+        row == null ||
+        row['case_id'] is! String) {
+      throw const FormatException(
+        'No pudimos consultar esa aportación desde tu cuenta.',
+      );
+    }
+    return Json.from(row);
+  }
+
   Future<DataPage<Json>> history(int page, {bool received = false}) async {
     final result = await client
         .from('dopmi_donations')
@@ -42,7 +87,16 @@ class PaymentRepository {
     return DataPage(result.data.map(Json.from).toList(), result.count);
   }
 
-  Future<Json?> outcome(String expense, String key) async {
+  Future<Json?> outcome(String expense, String key) =>
+      _outcome(expense: expense, key: key);
+  Future<Json?> caseOutcome(String caseId, String key) =>
+      _outcome(caseId: caseId, key: key);
+
+  Future<Json?> _outcome({
+    String? expense,
+    String? caseId,
+    required String key,
+  }) async {
     final actor = client.auth.currentUser?.id;
     if (actor == null) {
       throw const FormatException(
@@ -50,19 +104,34 @@ class PaymentRepository {
       );
     }
     Future<Json?> readOwned() async {
-      final row = await client
+      var query = client
           .from('dopmi_donations')
           .select()
           .eq('donor_id', actor)
-          .eq('expense_id', expense)
-          .eq('idempotency_key', key)
-          .maybeSingle();
+          .eq('idempotency_key', key);
+      query = caseId == null
+          ? query.eq('expense_id', expense!)
+          : query.eq('case_id', caseId).eq('contribution_scope', 'case');
+      final row = await query.maybeSingle();
       if (client.auth.currentUser?.id != actor) {
         throw const FormatException(
           'La sesión cambió. Consulta desde tu cuenta.',
         );
       }
-      return row == null ? null : Json.from(row);
+      if (row == null) return null;
+      final result = Json.from(row);
+      if (caseId != null &&
+          ['confirmed', 'refunded'].contains(result['payment_status'])) {
+        result['case_allocations'] = await caseAllocations(
+          result['id'] as String,
+        );
+        if (client.auth.currentUser?.id != actor) {
+          throw const FormatException(
+            'La sesión cambió. Consulta desde tu cuenta.',
+          );
+        }
+      }
+      return result;
     }
 
     final before = await readOwned();
@@ -161,3 +230,54 @@ const transferLabels = {
   'attention': 'Transferencia en revisión',
   'reversed': 'Transferencia revertida',
 };
+
+enum ContributionOutcome {
+  processing,
+  confirmed,
+  canceled,
+  refundPending,
+  refundReconciling,
+  refunded,
+  refundReview,
+}
+
+ContributionOutcome contributionOutcome(Json value) {
+  final status = value['payment_status'];
+  if (value['contribution_scope'] == 'case') {
+    final allocated = (value['allocated_cents'] as num? ?? 0).toInt();
+    final refund = value['refund_status'];
+    final refundRequested =
+        (value['refund_cents'] as num? ?? 0) > 0 ||
+        refund == 'pending' ||
+        refund == 'refunded' ||
+        refund == 'attention' ||
+        status == 'refunded' ||
+        value['external_refund_pending'] == true ||
+        value['transfer_status'] == 'reversed';
+    if (refundRequested) {
+      if (refund == 'attention' || value['transfer_status'] == 'attention') {
+        return ContributionOutcome.refundReview;
+      }
+      if (value['external_refund_pending'] == true) {
+        return ContributionOutcome.refundReconciling;
+      }
+      if (refund == 'refunded' || status == 'refunded') {
+        return allocated == 0 || value['transfer_status'] == 'reversed'
+            ? ContributionOutcome.refunded
+            : ContributionOutcome.refundReconciling;
+      }
+      return value['transfer_status'] == 'reversed'
+          ? ContributionOutcome.refundReconciling
+          : ContributionOutcome.refundPending;
+    }
+    if (status == 'confirmed' && allocated <= 0) {
+      return ContributionOutcome.processing;
+    }
+  }
+  return switch (status) {
+    'confirmed' => ContributionOutcome.confirmed,
+    'canceled' => ContributionOutcome.canceled,
+    'refunded' => ContributionOutcome.refunded,
+    _ => ContributionOutcome.processing,
+  };
+}

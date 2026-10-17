@@ -23,6 +23,7 @@ void main() {
     expect(controller.redirect('/profile'), '/welcome');
     expect(controller.redirect('/privacy-notice'), isNull);
     expect(controller.redirect('/settings/account'), '/welcome');
+    expect(controller.redirect('/contribute-case/case-one'), '/welcome');
     expect(controller.redirect('/reset-password'), '/welcome');
     repository.emit(
       const IdentityEvent(Identity('one', 'ana@example.test', verified: false)),
@@ -30,6 +31,7 @@ void main() {
     expect(controller.redirect('/profile'), '/welcome');
     expect(controller.redirect('/privacy-notice'), isNull);
     expect(controller.redirect('/settings/account'), '/welcome');
+    expect(controller.redirect('/contribute-case/case-one'), '/welcome');
     repository.emit(
       const IdentityEvent(Identity('one', 'ana@example.test', verified: true)),
     );
@@ -37,6 +39,7 @@ void main() {
     expect(controller.redirect('/about'), isNull);
     expect(controller.redirect('/privacy-notice'), isNull);
     expect(controller.redirect('/settings/account'), isNull);
+    expect(controller.redirect('/contribute-case/case-one'), isNull);
     expect(controller.redirect('/transparency'), isNull);
   });
   test(

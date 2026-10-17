@@ -27,7 +27,7 @@ function fixture() {
 test('only minimized owner card details leave the provider boundary', async () => {
   const f = fixture();
   assert.deepEqual(await f.read('authenticated-owner'), { items: [{ id: 'pm_one', brand: 'visa',
-    last4: '4242', exp_month: 12, exp_year: 2030, wallet: 'google_pay', default: true }] });
+    last4: '4242', exp_month: 12, exp_year: 2030, wallet: 'google_pay', default: true, guardian_current: false }] });
   assert.deepEqual(f.calls[0], ['lookup', 'authenticated-owner']);
   assert.deepEqual(f.calls.at(-1)[1], { customer: 'cus_owner', type: 'card', limit: 100 });
 });
@@ -135,4 +135,14 @@ test('independent add-card endpoint allows explicit saving consent only and deri
   assert.equal(calls.length,0);
   assert.equal((await handler(request(body))).status,200);
   assert.deepEqual(calls,[{actor:'owner',input:{key:body.key,consent:true,consent_version:body.consent_version}}]);
+});
+
+test('native registration method is distinct from the wallet default and exposes only minimized card fields',async()=>{
+ const f=fixture();f.state.link.subscription_id=null;f.state.link.registration_method_id='pm_one';
+ const result=await f.read('owner');assert.equal(result.items[0].guardian_current,true);assert.equal(result.items[0].default,false);
+ assert.equal(result.items[0].last4,'4242');assert.equal(result.items[0].brand,'visa');
+ for(const hidden of ['billing_details','metadata','fingerprint','registration_method_id','customer_id','setup_client_secret'])assert.equal(JSON.stringify(result).includes(hidden),false);
+});
+test('missing or malformed current native card fails closed',async()=>{
+ for(const method of ['pm_absent','invalid']){const f=fixture();f.state.link.registration_method_id=method;await assert.rejects(f.read('owner'),{code:'guardian_methods_unavailable'});}
 });

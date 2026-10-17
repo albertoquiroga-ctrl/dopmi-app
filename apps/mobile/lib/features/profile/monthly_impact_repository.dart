@@ -86,8 +86,9 @@ class MonthlyCommunityImpact {
 
 int _count(Json data, String key) {
   final value = data[key];
-  if (value is! int || value < 0)
+  if (value is! int || value < 0) {
     throw const FormatException('Impacto no confirmado');
+  }
   return value;
 }
 

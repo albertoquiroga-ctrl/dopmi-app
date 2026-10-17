@@ -420,7 +420,7 @@ class _TransparencyScreenState extends State<TransparencyScreen> {
         'Cuando eres Guardián',
         children: [
           const InformationParagraph(
-            'Autorizas un monto mensual. El primer cobro es al activar y los siguientes en el aniversario mensual, sólo cuando se puede asignar todo el neto a gastos aprobados. Si no hay capacidad, ese mes se omite sin deuda ni cargos posteriores por el mes omitido.',
+            'Autorizas un monto mensual. Al registrarte se evalúa si todo el neto puede asignarse a gastos aprobados; sólo entonces se cobra. Si no hay capacidad, conservas tu registro sin cargo. Se vuelve a evaluar en cada aniversario mensual, sin deuda ni cargos posteriores por los meses omitidos.',
           ),
           const InformationParagraph(
             'Urgencias primero. La asignación comienza por la urgencia aprobada y después por la aprobación más antigua.',

@@ -215,8 +215,9 @@ void main() {
           await tester.drag(scrollable, const Offset(0, -500));
           await tester.pumpAndSettle();
           if (tester.state<ScrollableState>(scrollable).position.extentAfter <
-              .5)
+              .5) {
             break;
+          }
         }
         final position = tester.state<ScrollableState>(scrollable).position;
         expect(position.extentAfter, lessThan(.5));

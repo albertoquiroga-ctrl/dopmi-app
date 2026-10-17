@@ -27,9 +27,11 @@ class ContributeScreen extends ConsumerStatefulWidget {
     this.attempt,
     this.initialCents,
     this.caseId,
+    this.caseContribution = false,
   });
   final String expense;
   final String? caseId;
+  final bool caseContribution;
   final int? initialCents;
   final Json? attempt;
   @override
@@ -44,10 +46,30 @@ class _ContributeState extends ConsumerState<ContributeScreen>
   String? error, attemptKey;
   String? checkoutLabel;
   Json? outcome;
-  String? publicCaseId, publicCaseName;
+  late final String? owner;
+  late final String? sessionToken;
+  bool get current =>
+      mounted &&
+      owner != null &&
+      ref.read(identityControllerProvider).identity?.id == owner &&
+      ref
+              .read(paymentRepositoryProvider)
+              .client
+              .auth
+              .currentSession
+              ?.accessToken ==
+          sessionToken;
+  String? publicCaseId, publicCaseName, publicCasePhoto;
   @override
   void initState() {
     super.initState();
+    owner = ref.read(identityControllerProvider).identity?.id;
+    sessionToken = ref
+        .read(paymentRepositoryProvider)
+        .client
+        .auth
+        .currentSession
+        ?.accessToken;
     WidgetsBinding.instance.addObserver(this);
     final seed = widget.initialCents;
     if (seed != null && seed >= 1000 && seed <= 1000000) {
@@ -65,9 +87,9 @@ class _ContributeState extends ConsumerState<ContributeScreen>
   }
 
   String get storageKey =>
-      'dopmi-payment:${ref.read(identityControllerProvider).identity?.id}:${widget.expense}';
+      'dopmi-payment:$owner:${widget.caseContribution ? 'case:' : ''}${widget.expense}';
   Future<void> trackOnce(String name) async {
-    if (attemptKey == null) return;
+    if (!current || attemptKey == null) return;
     final prefs = await SharedPreferences.getInstance();
     final key = '$storageKey:measurement:$name:$attemptKey';
     if (prefs.getBool(key) == true) return;
@@ -84,7 +106,7 @@ class _ContributeState extends ConsumerState<ContributeScreen>
       final cents =
           widget.attempt?['gross_cents'] as int? ??
           prefs.getInt('$storageKey:cents');
-      if (mounted && key != null && cents != null) {
+      if (current && key != null && cents != null) {
         setState(() {
           attemptKey = key;
           amount.text = (cents / 100).toStringAsFixed(2);
@@ -92,9 +114,12 @@ class _ContributeState extends ConsumerState<ContributeScreen>
         });
       }
     } catch (cause) {
-      if (mounted) setState(() => error = paymentError(cause));
+      if (current) setState(() => error = paymentError(cause));
     } finally {
-      if (mounted) setState(() => busy = false);
+      if (current) {
+        setState(() => busy = false);
+        if (widget.caseContribution && locked) await checkOutcome();
+      }
     }
   }
 
@@ -106,7 +131,7 @@ class _ContributeState extends ConsumerState<ContributeScreen>
   }
 
   Future<void> checkOutcome() async {
-    if (attemptKey == null || querying) return;
+    if (!current || attemptKey == null || querying) return;
     setState(() {
       busy = true;
       querying = true;
@@ -114,10 +139,11 @@ class _ContributeState extends ConsumerState<ContributeScreen>
       canContinue = false;
     });
     try {
-      final result = await ref
-          .read(paymentRepositoryProvider)
-          .outcome(widget.expense, attemptKey!);
-      if (!mounted) return;
+      final repo = ref.read(paymentRepositoryProvider);
+      final result = widget.caseContribution
+          ? await repo.caseOutcome(widget.expense, attemptKey!)
+          : await repo.outcome(widget.expense, attemptKey!);
+      if (!current) return;
       if (result == null) {
         outcome = null;
         error = 'Aún no encontramos evidencia de este intento. Vuelve a consultar; no inicies otra aportación.';
@@ -131,23 +157,26 @@ class _ContributeState extends ConsumerState<ContributeScreen>
             'requires_confirmation',
             'requires_action',
           ].contains(result['payment_state']);
-      if (outcome!['payment_status'] == 'confirmed') {
+      final presentation = contributionOutcome(outcome!);
+      if (presentation == ContributionOutcome.confirmed) {
+        await refreshPublicContext();
+        if (!current) return;
         await trackOnce('contribution_confirmed');
       }
       final terminal = [
-        'confirmed',
-        'canceled',
-        'refunded',
-      ].contains(outcome!['payment_status']);
+        ContributionOutcome.confirmed,
+        ContributionOutcome.canceled,
+        ContributionOutcome.refunded,
+      ].contains(presentation);
       if (terminal) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.remove('$storageKey:key');
         await prefs.remove('$storageKey:cents');
       }
     } catch (cause) {
-      if (mounted) setState(() => error = paymentError(cause));
+      if (current) setState(() => error = paymentError(cause));
     } finally {
-      if (mounted) {
+      if (current) {
         setState(() {
           querying = false;
           busy = sheetAwaiting;
@@ -171,11 +200,7 @@ class _ContributeState extends ConsumerState<ContributeScreen>
   }
 
   Future<void> pay() async {
-    final owner = ref.read(identityControllerProvider).identity?.id;
-    bool currentOwner() =>
-        mounted &&
-        owner != null &&
-        ref.read(identityControllerProvider).identity?.id == owner;
+    bool currentOwner() => current;
     if (!currentOwner() || busy || sheetAwaiting) return;
     if (!locked && !ref.read(oneoffPaymentSheetProvider).available) {
       setState(
@@ -200,18 +225,25 @@ class _ContributeState extends ConsumerState<ContributeScreen>
     try {
       attemptKey ??= const Uuid().v4();
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('$storageKey:key', attemptKey!);
-      await prefs.setInt('$storageKey:cents', cents);
+      final savedKey = await prefs.setString('$storageKey:key', attemptKey!);
+      final savedAmount = await prefs.setInt('$storageKey:cents', cents);
+      if (!savedKey || !savedAmount) {
+        throw const FormatException(
+          'No pudimos conservar el intento. No se abrió un pago.',
+        );
+      }
       if (!currentOwner()) return;
       setState(() => locked = true);
       final repo = ref.read(paymentRepositoryProvider);
-      final result = await repo.checkout(widget.expense, cents, attemptKey!);
+      final result = widget.caseContribution
+          ? await repo.caseCheckout(widget.expense, cents, attemptKey!)
+          : await repo.checkout(widget.expense, cents, attemptKey!);
       if (!currentOwner()) return;
       await trackOnce('contribution_started');
       if (!currentOwner()) return;
       if (result['url'] is String) {
         await repo.openStripe(result['url'] as String);
-        if (mounted) await checkOutcome();
+        if (current) await checkOutcome();
       } else if (result['payment_client_secret'] is String) {
         var sheetInterrupted = false;
         setState(() => sheetAwaiting = true);
@@ -242,12 +274,12 @@ class _ContributeState extends ConsumerState<ContributeScreen>
       } else {
         // A missing checkout URL is not terminal payment evidence. Keep the
         // stable attempt until the owner's server projection confirms it.
-        if (mounted) await checkOutcome();
+        if (current) await checkOutcome();
       }
     } catch (cause) {
-      if (mounted) setState(() => error = paymentError(cause));
+      if (current) setState(() => error = paymentError(cause));
     } finally {
-      if (mounted) {
+      if (current) {
         setState(() {
           busy = querying;
           checkoutLabel = null;
@@ -259,6 +291,58 @@ class _ContributeState extends ConsumerState<ContributeScreen>
   Future<Json> loadFunding() async {
     publicCaseId = null;
     publicCaseName = null;
+    publicCasePhoto = null;
+    if (widget.caseContribution) {
+      final catalog = await ref
+          .read(rescueRepositoryProvider)
+          .completeCaseCatalog(widget.expense);
+      if (!current) throw const FormatException('La sesión cambió.');
+      final cases = catalog.items.where(
+        (record) => record.id == widget.expense && record.kind == 'case',
+      );
+      if (cases.isEmpty) {
+        return {'unavailable': true};
+      }
+      final record = cases.first;
+      final expenses = catalog.items.where(
+        (item) => item.kind == 'expense' && item.parent == record.id,
+      );
+      final funding = await Future.wait(
+        expenses.map(
+          (expense) => ref.read(paymentRepositoryProvider).funding(expense.id),
+        ),
+      );
+      if (!current) throw const FormatException('La sesión cambió.');
+      final available = funding.fold<int>(
+        0,
+        (total, row) =>
+            total +
+            (row['payable'] == true
+                ? (row['available_cents'] as int? ?? 0)
+                : 0),
+      );
+      publicCaseId = record.id;
+      publicCaseName = record.title;
+      publicCasePhoto = approvedPhoto(record);
+      return {
+        'title': 'Apoyar al caso',
+        'public_case': record,
+        'payable': available > 0,
+        'available_cents': available,
+        'reimbursable_cents': funding.fold<int>(
+          0,
+          (sum, row) => sum + (row['reimbursable_cents'] as int),
+        ),
+        'funded_cents': funding.fold<int>(
+          0,
+          (sum, row) => sum + (row['funded_cents'] as int),
+        ),
+        'transferred_cents': funding.fold<int>(
+          0,
+          (sum, row) => sum + (row['transferred_cents'] as int? ?? 0),
+        ),
+      };
+    }
     final data = await ref
         .read(paymentRepositoryProvider)
         .funding(widget.expense);
@@ -280,6 +364,7 @@ class _ContributeState extends ConsumerState<ContributeScreen>
       if (matchingExpense && cases.isNotEmpty) {
         publicCaseId = cases.first.id;
         publicCaseName = cases.first.title;
+        publicCasePhoto = approvedPhoto(cases.first);
         return {...data, 'public_case': cases.first};
       }
     } catch (_) {
@@ -287,6 +372,44 @@ class _ContributeState extends ConsumerState<ContributeScreen>
       // replace it with a guessed case, method or amount.
     }
     return data;
+  }
+
+  String? approvedPhoto(RescueRecord record) {
+    final photos = (record.publicData['photos'] as List? ?? [])
+        .whereType<String>()
+        .where((path) => path.isNotEmpty);
+    return photos.isEmpty ? null : photos.first;
+  }
+
+  Future<void> refreshPublicContext() async {
+    publicCaseId = null;
+    publicCaseName = null;
+    publicCasePhoto = null;
+    final caseId = widget.caseContribution ? widget.expense : widget.caseId;
+    if (caseId == null) return;
+    try {
+      final catalog = await ref
+          .read(rescueRepositoryProvider)
+          .completeCaseCatalog(caseId);
+      if (!current) return;
+      final cases = catalog.items.where(
+        (record) => record.id == caseId && record.kind == 'case',
+      );
+      final belongs =
+          widget.caseContribution ||
+          catalog.items.any(
+            (record) =>
+                record.id == widget.expense &&
+                record.kind == 'expense' &&
+                record.parent == caseId,
+          );
+      if (!belongs || cases.isEmpty) return;
+      publicCaseId = caseId;
+      publicCaseName = cases.first.title;
+      publicCasePhoto = approvedPhoto(cases.first);
+    } catch (_) {
+      // Public context may disappear; it never hides the owner's financial receipt.
+    }
   }
 
   void back() {
@@ -310,7 +433,8 @@ class _ContributeState extends ConsumerState<ContributeScreen>
     // The terminal attempt was cleared by the authoritative history check.
     context.push(
       Uri(
-        path: '/contribute/${widget.expense}',
+        path:
+            '${widget.caseContribution ? '/contribute-case' : '/contribute'}/${widget.expense}',
         queryParameters: {
           'case': ?publicCaseId,
           if (parsePesos(amount.text) case final int cents)
@@ -322,6 +446,15 @@ class _ContributeState extends ConsumerState<ContributeScreen>
 
   @override
   Widget build(BuildContext context) {
+    if (!current) {
+      return ContributionFrame(
+        title: 'Tu aportación',
+        back: () => context.canPop() ? context.pop() : context.go('/payments'),
+        child: const Notice(
+          'La sesión cambió. Consulta el intento desde tu cuenta.',
+        ),
+      );
+    }
     final result = outcome;
     if (result != null) {
       return PopScope(
@@ -334,6 +467,7 @@ class _ContributeState extends ConsumerState<ContributeScreen>
           continueAttempt: canContinue ? pay : null,
           caseId: publicCaseId,
           caseName: publicCaseName,
+          casePhoto: publicCasePhoto,
           busy: busy,
           error: error,
           checkWhileAuthorizing: sheetAwaiting && !querying
@@ -361,6 +495,26 @@ class _ContributeState extends ConsumerState<ContributeScreen>
             errorMessage: paymentError,
             load: loadFunding,
             builder: (data, refresh) {
+              if (data['unavailable'] == true) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Notice(
+                      'Este caso no está disponible para una nueva aportación. Los recibos de tus aportaciones anteriores siguen en tu historial.',
+                    ),
+                    if (error != null) Notice(error!, isError: true),
+                    if (locked)
+                      TextButton(
+                        onPressed: busy ? null : checkOutcome,
+                        child: const Text('Consultar resultado'),
+                      ),
+                    TextButton(
+                      onPressed: busy ? null : () => context.go('/payments'),
+                      child: const Text('Ir al historial'),
+                    ),
+                  ],
+                );
+              }
               final record = data['public_case'] as RescueRecord?;
               final title = data['title'] as String;
               final payable =
@@ -398,9 +552,10 @@ class _ContributeState extends ConsumerState<ContributeScreen>
                         children: [
                           for (final cents in {
                             5000,
-                            15000,
-                            30000,
-                            if ((data['available_cents'] as int) > 0)
+                            20000,
+                            50000,
+                            if (!widget.caseContribution &&
+                                (data['available_cents'] as int) > 0)
                               data['available_cents'] as int,
                           })
                             SizedBox(
@@ -471,7 +626,10 @@ class _ContributeState extends ConsumerState<ContributeScreen>
                     ContributionSummary(
                       rows: [
                         if (record != null) ('Caso', record.title),
-                        ('Necesidad', title),
+                        (
+                          widget.caseContribution ? 'Destino' : 'Necesidad',
+                          title,
+                        ),
                         (
                           'Monto',
                           contributionMoney(parsePesos(amount.text) ?? 0),
@@ -484,6 +642,17 @@ class _ContributeState extends ConsumerState<ContributeScreen>
                   if (locked && outcome == null) ...[
                     const Notice(
                       'Conservamos tu intento de pago. Continuar abre la misma aportación.',
+                    ),
+                    const SizedBox(height: 18),
+                  ],
+                  if (widget.caseContribution) ...[
+                    const Text(
+                      'El servidor distribuye el neto entre gastos aprobados del mismo caso. Se descuentan el 2 % de Dopmi y los costos reales de Stripe. Si no puede asignarse todo el neto, se devuelve el pago completo.',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: muted,
+                        height: 1.45,
+                      ),
                     ),
                     const SizedBox(height: 18),
                   ],
@@ -524,9 +693,15 @@ class _ContributeState extends ConsumerState<ContributeScreen>
                     style: TextStyle(fontSize: 13, height: 1.55, color: muted),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    'Dopmi descuenta el 2% del importe cobrado y los costos de Stripe. El neto destinado al rescatista cuenta para el reembolso. El importe que no pueda asignarse se devuelve.',
-                    style: TextStyle(fontSize: 13, height: 1.55, color: muted),
+                  Text(
+                    widget.caseContribution
+                        ? 'Dopmi descuenta el 2% del importe cobrado y los costos reales de Stripe. Si todo el neto no puede asignarse a gastos aprobados de este caso, se devuelve el pago completo.'
+                        : 'Dopmi descuenta el 2% del importe cobrado y los costos de Stripe. El neto destinado al rescatista cuenta para el reembolso. El importe que no pueda asignarse se devuelve.',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      height: 1.55,
+                      color: muted,
+                    ),
                   ),
                   const SizedBox(height: 18),
                   Text(

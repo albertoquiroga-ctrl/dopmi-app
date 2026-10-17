@@ -204,10 +204,10 @@ void main() {
       await tester.tapAt(tester.getRect(pending).center);
       await tester.pump(const Duration(milliseconds: 300));
       expect(payments.calls, hasLength(1));
-      expect(find.text('¡Eres mi héroe, choca esas huellitas!'), findsNothing);
+      expect(find.text('Pago exitoso'), findsNothing);
       payments.response.completeError(Exception('lost connection'));
       await tester.pumpAndSettle();
-      expect(find.text('¡Eres mi héroe, choca esas huellitas!'), findsNothing);
+      expect(find.text('Pago exitoso'), findsNothing);
       expect(find.text('Continuar mi aportación'), findsOneWidget);
       expect(payments.calls, hasLength(1));
       expect(tester.takeException(), isNull);
@@ -346,7 +346,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(payments.calls.length, 1);
       expect(
-        find.text('¡Eres mi héroe, choca esas huellitas!'),
+        find.text('Pago exitoso'),
         status == 'confirmed' ? findsOneWidget : findsNothing,
       );
       if (status == 'confirmed') {
@@ -419,7 +419,7 @@ void main() {
       expect(payments.lookups, [('expense-one', 'historical-attempt')]);
       expect(payments.calls, isEmpty);
       expect(
-        find.text('¡Eres mi héroe, choca esas huellitas!'),
+        find.text('Pago exitoso'),
         findsOneWidget,
       );
       expect(

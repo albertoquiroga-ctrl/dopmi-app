@@ -8,6 +8,8 @@ import '../identity/identity_controller.dart';
 import '../rescue/rescue_public_photo.dart';
 import 'contribution_layout.dart';
 import 'payment_activity_repository.dart';
+import 'payment_repository.dart';
+import 'case_allocation_list.dart';
 
 const paymentActivityStatuses = {
   'processing': 'En conciliación',
@@ -204,6 +206,7 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
   int allocationGeneration = 0;
   String? error, cursor;
   final allocations = <Json>[];
+  bool get caseContribution => widget.item['contribution_scope'] == 'case';
   @override
   void didUpdateWidget(covariant PaymentActivityCard oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -217,7 +220,7 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
       busy = false;
       allocations.clear();
       cursor = null;
-      if (expanded && widget.item['kind'] == 'guardian') {
+      if (expanded && (widget.item['kind'] == 'guardian' || caseContribution)) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (current) loadAllocations();
         });
@@ -236,13 +239,24 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
       error = null;
     });
     try {
-      final data = await ref
-          .read(paymentActivityRepositoryProvider)
-          .allocations(
-            widget.item['id'] as String,
-            received: widget.received,
-            afterExpense: more ? cursor : null,
-          );
+      final data = caseContribution
+          ? <String, dynamic>{
+              'items': widget.received
+                  ? await ref
+                        .read(paymentRepositoryProvider)
+                        .caseReceivedAllocations(widget.item['id'] as String)
+                  : await ref
+                        .read(paymentRepositoryProvider)
+                        .caseAllocations(widget.item['id'] as String),
+              'next_cursor': null,
+            }
+          : await ref
+                .read(paymentActivityRepositoryProvider)
+                .allocations(
+                  widget.item['id'] as String,
+                  received: widget.received,
+                  afterExpense: more ? cursor : null,
+                );
       if (!current || request != allocationGeneration) return;
       setState(() {
         if (!more) allocations.clear();
@@ -263,6 +277,32 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
           error = 'No pudimos consultar las asignaciones.';
         });
       }
+    }
+  }
+
+  Future<void> openCaseAttempt() async {
+    if (!current || busy || widget.received || !caseContribution) return;
+    setState(() {
+      busy = true;
+      error = null;
+    });
+    try {
+      final row = await ref
+          .read(paymentRepositoryProvider)
+          .ownCaseAttempt(
+            widget.item['id'] as String,
+            widget.item['idempotency_key'] as String,
+          );
+      if (!mounted || !current) return;
+      await context.push('/contribute-case/${row['case_id']}', extra: row);
+    } catch (_) {
+      if (current) {
+        setState(
+          () => error = 'No pudimos consultar tu aportación. Conservamos la misma referencia.',
+        );
+      }
+    } finally {
+      if (current) setState(() => busy = false);
     }
   }
 
@@ -320,7 +360,9 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
                 child: InkWell(
                   onTap: () {
                     setState(() => expanded = !expanded);
-                    if (expanded && guardian && !loaded) loadAllocations();
+                    if (expanded && (guardian || caseContribution) && !loaded) {
+                      loadAllocations();
+                    }
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -495,6 +537,24 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
                           !widget.received &&
                           d['payment_status'] == 'pending' &&
                           d['idempotency_key'] is String &&
+                          caseContribution)
+                        TextButton(
+                          onPressed: busy ? null : openCaseAttempt,
+                          child: const Text('Continuar aportación'),
+                        ),
+                      if (caseContribution &&
+                          !widget.received &&
+                          d['payment_status'] != 'pending' &&
+                          d['idempotency_key'] is String)
+                        TextButton(
+                          onPressed: busy ? null : openCaseAttempt,
+                          child: const Text('Consultar aportación'),
+                        ),
+                      if (!guardian &&
+                          !widget.received &&
+                          d['payment_status'] == 'pending' &&
+                          d['idempotency_key'] is String &&
+                          !caseContribution &&
                           d['expense_id'] is String)
                         TextButton(
                           onPressed: () {
@@ -524,47 +584,50 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
                               context.push('/rescue-cases/${d['case_id']}'),
                           child: const Text('Ver caso'),
                         ),
-                      for (final a in allocations)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${a['title']} · ${contributionMoney((a['allocated_cents'] as num).toInt())}',
-                              ),
-                              Text(
-                                paymentActivityStatuses[a['status']] ??
-                                    'En revisión',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: muted,
-                                ),
-                              ),
-                              if (a['remaining_cents'] is num)
+                      if (caseContribution && allocations.isNotEmpty)
+                        CaseAllocationList(allocations: allocations),
+                      if (!caseContribution)
+                        for (final a in allocations)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
                                 Text(
-                                  'Neto vigente: ${contributionMoney((a['remaining_cents'] as num).toInt())}',
+                                  '${a['title']} · ${contributionMoney((a['allocated_cents'] as num).toInt())}',
                                 ),
-                              if ((a['transferred_cents'] as num? ?? 0) > 0)
                                 Text(
-                                  'Neto transferido: ${contributionMoney((a['transferred_cents'] as num).toInt())}',
-                                ),
-                              if ((a['reversed_cents'] as num? ?? 0) > 0)
-                                Text(
-                                  'Revertido: ${contributionMoney((a['reversed_cents'] as num).toInt())}',
-                                ),
-                              if (a['case_id'] is String)
-                                TextButton(
-                                  onPressed: () => context.push(
-                                    '/rescue-cases/${a['case_id']}',
-                                  ),
-                                  child: Text(
-                                    a['case_name'] as String? ?? 'Ver caso',
+                                  paymentActivityStatuses[a['status']] ??
+                                      'En revisión',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: muted,
                                   ),
                                 ),
-                            ],
+                                if (a['remaining_cents'] is num)
+                                  Text(
+                                    'Neto vigente: ${contributionMoney((a['remaining_cents'] as num).toInt())}',
+                                  ),
+                                if ((a['transferred_cents'] as num? ?? 0) > 0)
+                                  Text(
+                                    'Neto transferido: ${contributionMoney((a['transferred_cents'] as num).toInt())}',
+                                  ),
+                                if ((a['reversed_cents'] as num? ?? 0) > 0)
+                                  Text(
+                                    'Revertido: ${contributionMoney((a['reversed_cents'] as num).toInt())}',
+                                  ),
+                                if (a['case_id'] is String)
+                                  TextButton(
+                                    onPressed: () => context.push(
+                                      '/rescue-cases/${a['case_id']}',
+                                    ),
+                                    child: Text(
+                                      a['case_name'] as String? ?? 'Ver caso',
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
-                        ),
                       if (busy)
                         const Center(child: CircularProgressIndicator()),
                       if (error != null) ...[

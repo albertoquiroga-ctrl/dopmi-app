@@ -14,6 +14,7 @@ function fixture(action = 'default') {
     async rpc(op, data) {
       if (op === 'get') return { ...job };
       if (op === 'claim') return { ...job };
+      if (op === 'native_usage') return {in_use: f.nativeInUse ?? false};
       assert.equal(data.lease, 'lease');
       if (op === 'snapshot') job.default_method_id = data.default_method_id;
       if (op === 'write_mutation') {
@@ -127,3 +128,10 @@ test('independent method HTTP never writes for an unconfirmed account', async ()
     headers: { Authorization: 'Bearer fixture' }, body: '{}' }));
   assert.equal(response.status, 401);
 });
+
+test('native registration use refuses non-default card without any Stripe subscription, invoice or PaymentIntent',async()=>{
+ const f=fixture('remove');f.nativeInUse=true;
+ assert.equal((await f.service.run('job')).status,'refused');assert.equal(f.writes.length,0);
+});
+
+test('native method usage never blocks independent default action',async()=>{const f=fixture('default');f.nativeInUse=true;assert.equal((await f.service.run('job')).status,'applied');assert.equal(f.writes.length,1);});

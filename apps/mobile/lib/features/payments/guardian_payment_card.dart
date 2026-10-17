@@ -10,9 +10,16 @@ class GuardianPaymentCard {
     required this.last4,
     required this.isDefault,
     this.wallet,
+    this.guardianCurrent = false,
+    this.expMonth,
+    this.expYear,
   });
   final String id, brand, last4;
-  final bool isDefault;
+  final bool isDefault, guardianCurrent;
+  final int? expMonth, expYear;
+  String? get expiryLabel => expMonth != null && expYear != null
+      ? "${expMonth.toString().padLeft(2, '0')}/$expYear"
+      : null;
   final String? wallet;
 
   factory GuardianPaymentCard.fromJson(Map<String, dynamic> value) {
@@ -23,6 +30,16 @@ class GuardianPaymentCard {
         value['last4'] is! String ||
         !RegExp(r'^\d{4}$').hasMatch(value['last4']) ||
         value['default'] is! bool ||
+        (value['guardian_current'] != null &&
+            value['guardian_current'] is! bool) ||
+        (value['exp_month'] != null &&
+            (value['exp_month'] is! int ||
+                value['exp_month'] < 1 ||
+                value['exp_month'] > 12)) ||
+        (value['exp_year'] != null &&
+            (value['exp_year'] is! int ||
+                value['exp_year'] < 2000 ||
+                value['exp_year'] > 2200)) ||
         ![null, 'apple_pay', 'google_pay'].contains(value['wallet'])) {
       throw const FormatException('Tarjeta no confirmada');
     }
@@ -32,6 +49,9 @@ class GuardianPaymentCard {
       last4: value['last4'],
       isDefault: value['default'],
       wallet: value['wallet'],
+      guardianCurrent: value['guardian_current'] == true,
+      expMonth: value['exp_month'],
+      expYear: value['exp_year'],
     );
   }
   String get brandLabel => switch (brand) {
@@ -79,13 +99,16 @@ class GuardianPaymentCardRow extends StatelessWidget {
             child: const Text(
               'Hacer predeterminada',
               textAlign: TextAlign.right,
+              softWrap: false,
             ),
           )
         : null;
     final remove = !card.isDefault && showRemove
         ? IconButton(
-            tooltip: 'Eliminar tarjeta',
-            onPressed: onRemove,
+            tooltip: card.guardianCurrent
+                ? 'Tarjeta en uso por Guardián; cambia su tarjeta antes de eliminarla'
+                : 'Eliminar tarjeta',
+            onPressed: card.guardianCurrent ? null : onRemove,
             constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
             style: const ButtonStyle(
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -95,98 +118,163 @@ class GuardianPaymentCardRow extends StatelessWidget {
               'assets/profile/icon-trash.svg',
               width: 18,
               height: 18,
-              colorFilter: const ColorFilter.mode(
-                Color(0xffd92d20),
+              colorFilter: ColorFilter.mode(
+                card.guardianCurrent || onRemove == null
+                    ? const Color(0xffa8a29b)
+                    : const Color(0xffd92d20),
                 BlendMode.srcIn,
               ),
             ),
           )
         : null;
-    final large = MediaQuery.textScalerOf(context).scale(12) > 18;
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xffe6e2dd)),
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
+    final scaler = MediaQuery.textScalerOf(context);
+    double textWidth(String value, TextStyle style) {
+      final painter = TextPainter(
+        text: TextSpan(text: value, style: style),
+        textDirection: Directionality.of(context),
+        textScaler: scaler,
+      )..layout();
+      return painter.width;
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final actionWidth = action == null
+            ? 0.0
+            : textWidth(
+                'Hacer predeterminada',
+                const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0,
+                ),
+              );
+        final titleWidth = textWidth(
+          '${card.brandLabel} •••• ${card.last4}',
+          const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+        );
+        final inlineWidth =
+            28 +
+            52 +
+            titleWidth +
+            (action == null ? 0 : 8 + actionWidth) +
+            (remove == null ? 0 : 52);
+        final large =
+            constraints.maxWidth < inlineWidth || scaler.scale(12) > 18;
+        return Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: const Color(0xffe6e2dd)),
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: const BoxDecoration(
-                  color: Color(0xffefede8),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: SvgPicture.asset(
-                    'assets/profile/icon-card.svg',
-                    width: 18,
-                    height: 18,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${card.brandLabel} •••• ${card.last4}',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        height: 1.25,
-                        fontWeight: FontWeight.w700,
-                        color: ink,
+              Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: const BoxDecoration(
+                      color: Color(0xffefede8),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        'assets/profile/icon-card.svg',
+                        width: 18,
+                        height: 18,
                       ),
                     ),
-                    if (card.isDefault) const SizedBox(height: 2),
-                    if (card.isDefault)
-                      const Text(
-                        'Predeterminada',
-                        style: TextStyle(
-                          fontSize: 12,
-                          height: 1.25,
-                          color: Color(0xff554e48),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${card.brandLabel} •••• ${card.last4}',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            height: 1.25,
+                            fontWeight: FontWeight.w700,
+                            color: ink,
+                          ),
                         ),
-                      ),
-                    if (card.wallet != null) const SizedBox(height: 2),
-                    if (card.wallet != null)
-                      Text(
-                        card.wallet == 'apple_pay' ? 'Apple Pay' : 'Google Pay',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          height: 1.25,
-                          color: Color(0xff554e48),
-                        ),
-                      ),
+                        if (card.guardianCurrent) ...[
+                          const SizedBox(height: 2),
+                          const Text(
+                            'En uso por Guardián',
+                            style: TextStyle(
+                              fontSize: 12,
+                              height: 1.25,
+                              color: muted,
+                            ),
+                          ),
+                        ],
+                        if (card.expiryLabel != null) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            'Vence ${card.expiryLabel}',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              height: 1.25,
+                              color: muted,
+                            ),
+                          ),
+                        ],
+                        if (card.isDefault) const SizedBox(height: 2),
+                        if (card.isDefault)
+                          const Text(
+                            'Predeterminada',
+                            style: TextStyle(
+                              fontSize: 12,
+                              height: 1.25,
+                              color: Color(0xff554e48),
+                            ),
+                          ),
+                        if (card.wallet != null) const SizedBox(height: 2),
+                        if (card.wallet != null)
+                          Text(
+                            card.wallet == 'apple_pay'
+                                ? 'Apple Pay'
+                                : 'Google Pay',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              height: 1.25,
+                              color: Color(0xff554e48),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  if (action != null && !large) ...[
+                    const SizedBox(width: 8),
+                    action,
                   ],
-                ),
+                  if (remove != null && !large) ...[
+                    const SizedBox(width: 12),
+                    remove,
+                  ],
+                ],
               ),
-              if (action != null && !large) ...[
-                const SizedBox(width: 8),
-                SizedBox(width: 92.328125, child: action),
-              ],
-              if (remove != null && !large) ...[
-                const SizedBox(width: 12),
-                remove,
-              ],
+              if ((action != null || remove != null) && large)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Wrap(
+                    alignment: WrapAlignment.end,
+                    spacing: 12,
+                    runSpacing: 4,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [?action, ?remove],
+                  ),
+                ),
             ],
           ),
-          if ((action != null || remove != null) && large)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (action != null) Flexible(child: action),
-                if (remove != null) ...[const SizedBox(width: 12), remove],
-              ],
-            ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

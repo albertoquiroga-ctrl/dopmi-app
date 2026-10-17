@@ -10,7 +10,8 @@ export function guardianMethodListService({ stripe, lookup }) {
     const link = await lookup(actor);
     if (!link) return { items: [] };
     if (!/^cus_[A-Za-z0-9]+$/.test(link.customer_id ?? '') ||
-        (link.subscription_id != null && !/^sub_[A-Za-z0-9]+$/.test(link.subscription_id))) fail();
+        (link.subscription_id != null && !/^sub_[A-Za-z0-9]+$/.test(link.subscription_id)) ||
+        (link.registration_method_id != null && !/^pm_[A-Za-z0-9]+$/.test(link.registration_method_id))) fail();
     const customer = await stripe.customers.retrieve(link.customer_id);
     if (customer?.id !== link.customer_id || customer.deleted === true || customer.livemode !== false) fail();
     let defaultId = id(customer.invoice_settings?.default_payment_method);
@@ -37,9 +38,12 @@ export function guardianMethodListService({ stripe, lookup }) {
         items.push({ id: method.id, brand: card.brand, last4: card.last4,
           exp_month: card.exp_month, exp_year: card.exp_year,
           wallet: ['apple_pay', 'google_pay'].includes(card.wallet?.type) ? card.wallet.type : null,
-          default: method.id === defaultId });
+          default: method.id === defaultId, guardian_current: method.id === link.registration_method_id });
       }
-      if (!result.has_more) return { items };
+      if (!result.has_more) {
+        if (link.registration_method_id != null && !seen.has(link.registration_method_id)) fail();
+        return { items };
+      }
       if (!result.data.length) fail();
       cursor = result.data.at(-1).id;
     }

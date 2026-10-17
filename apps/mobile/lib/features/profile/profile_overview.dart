@@ -2004,7 +2004,7 @@ class HelpScreen extends StatelessWidget {
           Padding(
             padding: EdgeInsets.all(16),
             child: Text(
-              'El primer cobro ocurre al activar. Los siguientes son mensuales sólo cuando el neto puede asignarse completo. Un mes omitido no genera deuda.',
+              'Al registrarte se evalúa si todo el neto puede asignarse a gastos aprobados. Sólo entonces se cobra. Si no hay capacidad, tu registro se conserva sin cargo y se vuelve a evaluar en el siguiente aniversario mensual. Un mes omitido no genera deuda.',
             ),
           ),
         ],

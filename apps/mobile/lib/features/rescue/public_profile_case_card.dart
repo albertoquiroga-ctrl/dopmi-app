@@ -196,6 +196,7 @@ class PublicProfileCaseCard extends ConsumerWidget {
                                     expense.id,
                                     remaining,
                                     caseId: id,
+                                    caseContribution: true,
                                   )
                                 : null,
                             style: OutlinedButton.styleFrom(

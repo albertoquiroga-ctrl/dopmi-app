@@ -10,6 +10,7 @@ Future<void> chooseContribution(
   String expense,
   int remainingCents, {
   String? caseId,
+  bool caseContribution = false,
 }) async {
   final cents = await showGeneralDialog<int>(
     context: context,
@@ -23,7 +24,9 @@ Future<void> chooseContribution(
   if (cents != null && context.mounted) {
     context.push(
       Uri(
-        path: '/contribute/$expense',
+        path: caseContribution && caseId != null
+            ? '/contribute-case/$caseId'
+            : '/contribute/$expense',
         queryParameters: {'amount_cents': '$cents', 'case': ?caseId},
       ).toString(),
     );
@@ -41,7 +44,7 @@ class ContributionAmountDialog extends StatefulWidget {
 class _ContributionAmountDialogState extends State<ContributionAmountDialog> {
   final custom = TextEditingController();
   final focus = FocusNode();
-  int? selected = 10000;
+  int? selected = 5000;
   bool selectedRemaining = false;
   @override
   void dispose() {
@@ -185,9 +188,9 @@ class _ContributionAmountDialogState extends State<ContributionAmountDialog> {
                           children: [
                             preset(5000),
                             const SizedBox(height: 10),
-                            preset(10000),
+                            preset(20000),
                             const SizedBox(height: 10),
-                            preset(widget.remainingCents, remaining: true),
+                            preset(50000),
                           ],
                         )
                       else
@@ -196,14 +199,9 @@ class _ContributionAmountDialogState extends State<ContributionAmountDialog> {
                           children: [
                             Expanded(child: preset(5000)),
                             const SizedBox(width: 10),
-                            Expanded(child: preset(10000)),
+                            Expanded(child: preset(20000)),
                             const SizedBox(width: 10),
-                            Expanded(
-                              child: preset(
-                                widget.remainingCents,
-                                remaining: true,
-                              ),
-                            ),
+                            Expanded(child: preset(50000)),
                           ],
                         ),
                       const SizedBox(height: 18),

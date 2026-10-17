@@ -20,7 +20,7 @@ const _topics = <(String, String, List<(String, String)>)>[
       ),
       (
         'Cuando eres Guardián',
-        'El primer cobro ocurre al activar. Después se cobra mensualmente sólo cuando el neto puede asignarse completo. Un mes omitido no genera deuda.',
+        'Al registrarte autorizas evaluaciones mensuales. Sólo se cobra cuando el neto puede asignarse completo a gastos aprobados. Si no hay capacidad, el registro continúa sin cargo ni deuda para ese mes.',
       ),
     ],
   ),
@@ -44,7 +44,7 @@ const _topics = <(String, String, List<(String, String)>)>[
     [
       (
         '¿Cuándo cobra Guardián?',
-        'El primer cobro ocurre al activar. Los siguientes son mensuales sólo cuando el neto puede asignarse completo. Un mes omitido no genera deuda.',
+        'Sólo se cobra cuando la evaluación puede asignar todo el neto a gastos aprobados. Un registro sin capacidad no genera cargo, deuda ni recobro; se evalúa el siguiente ciclo.',
       ),
       (
         '¿Cómo cambio mi monto o cancelo?',

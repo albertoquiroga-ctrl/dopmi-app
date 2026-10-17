@@ -31,6 +31,7 @@ import 'guardian_enrollment_confirmation.dart';
 import 'guardian_activation_success.dart';
 import 'guardian_activation_failure.dart';
 import 'guardian_registration.dart';
+import 'guardian_registration_method_control.dart';
 import 'guardian_registration_screen.dart';
 
 class GuardianScreen extends ConsumerStatefulWidget {
@@ -1274,9 +1275,25 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   ],
                   if (enabled && registrationError != null)
                     Notice(registrationError!, isError: true),
-                  if (enabled && registration?.status == 'registered')
-                    const Notice(
-                      'Tu registro Guardián conserva la tarjeta que autorizaste al registrarte. Agregar una tarjeta o hacerla predeterminada aquí no cambia el método de los ciclos de ese registro.',
+                  if (enabled &&
+                      registration?.status == 'registered' &&
+                      registrationError == null)
+                    GuardianRegistrationMethodControl(
+                      key: ValueKey(
+                        'registration-method:$owner:${registration!.id}',
+                      ),
+                      owner: owner,
+                      registration: registration!,
+                      currentCard:
+                          fresh &&
+                              cardsError == null &&
+                              (cards ?? [])
+                                      .where((card) => card.guardianCurrent)
+                                      .length ==
+                                  1
+                          ? cards!.firstWhere((card) => card.guardianCurrent)
+                          : null,
+                      onUpdated: () => load(),
                     ),
                   if (enabled && registration?.status == 'method_pending')
                     const Notice(

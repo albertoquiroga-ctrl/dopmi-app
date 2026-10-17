@@ -29,6 +29,9 @@ export function savedCardMethodService({ stripe, rpc }) {
     return page.data;
   }
   async function usage(job, customer) {
+    const native = await rpc('native_usage', { id: job.id, lease: job.lease });
+    if (typeof native?.in_use !== 'boolean') fail('saved_card_usage_unconfirmed');
+    if (job.action === 'remove' && native.in_use) return true;
     let inUse = job.action === 'remove' && id(customer.invoice_settings?.default_payment_method) === job.selected_method_id;
     const subscriptions = completePage(await stripe.subscriptions.list({ customer: job.customer_id, status: 'all', limit: 100 }), job.customer_id, 'sub');
     for (const sub of subscriptions) {

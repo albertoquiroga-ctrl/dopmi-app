@@ -285,6 +285,19 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => ConnectScreen(key: ValueKey(identity.identity?.id)),
       ),
       GoRoute(
+        path: '/contribute-case/:id',
+        builder: (_, state) => ContributeScreen(
+          state.pathParameters['id']!,
+          caseContribution: true,
+          caseId: state.pathParameters['id']!,
+          initialCents: int.tryParse(
+            state.uri.queryParameters['amount_cents'] ?? '',
+          ),
+          attempt: state.extra is Json ? state.extra! as Json : null,
+          key: ValueKey('${identity.identity?.id}:${state.uri}'),
+        ),
+      ),
+      GoRoute(
         path: '/contribute/:id',
         builder: (_, state) => ContributeScreen(
           state.pathParameters['id']!,

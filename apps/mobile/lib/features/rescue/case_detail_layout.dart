@@ -724,6 +724,7 @@ class _CaseDetailLayoutState extends ConsumerState<CaseDetailLayout> {
                               eligible.first.targetCents -
                                   eligible.first.fundedCents,
                               caseId: widget.record.id,
+                              caseContribution: true,
                             ),
                       style: FilledButton.styleFrom(
                         splashFactory: NoSplash.splashFactory,

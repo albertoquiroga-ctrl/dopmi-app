@@ -6,6 +6,8 @@ import '../../core/ui.dart';
 import '../adoption/community_repository.dart';
 import 'contribution_layout.dart';
 import 'payment_repository.dart';
+import 'case_allocation_list.dart';
+import 'payment_success_details.dart';
 
 class PaymentResultPage extends StatelessWidget {
   const PaymentResultPage({
@@ -18,36 +20,53 @@ class PaymentResultPage extends StatelessWidget {
     this.checkWhileAuthorizing,
     this.caseId,
     this.caseName,
+    this.casePhoto,
     this.busy = false,
     this.error,
   });
   final Json value;
   final VoidCallback refresh, back;
   final VoidCallback? retry, continueAttempt, checkWhileAuthorizing;
-  final String? caseId, caseName, error;
+  final String? caseId, caseName, casePhoto, error;
   final bool busy;
 
   @override
   Widget build(BuildContext context) {
-    final status = value['payment_status'] as String?;
-    final confirmed = status == 'confirmed';
-    final canceled = status == 'canceled';
-    final refunded = status == 'refunded';
+    final presentation = contributionOutcome(value);
+    final confirmed = presentation == ContributionOutcome.confirmed;
+    final canceled = presentation == ContributionOutcome.canceled;
+    final refunded = presentation == ContributionOutcome.refunded;
+    final refundPending = [
+      ContributionOutcome.refundPending,
+      ContributionOutcome.refundReconciling,
+      ContributionOutcome.refundReview,
+    ].contains(presentation);
     final gross = value['gross_cents'] as int?;
     final allocated = value['allocated_cents'] as int?;
     final transfer = transferLabels[value['transfer_status']];
+    final caseContribution = value['contribution_scope'] == 'case';
+    final allocations = (value['case_allocations'] as List? ?? [])
+        .map((row) => Json.from(row as Map))
+        .toList();
     final heading = confirmed
-        ? '¡Eres mi héroe, choca esas huellitas!'
-        : switch (status) {
-            'canceled' => 'Pago cancelado',
-            'refunded' => 'Pago devuelto',
+        ? 'Pago exitoso'
+        : switch (presentation) {
+            ContributionOutcome.canceled => 'Pago cancelado',
+            ContributionOutcome.refunded => 'Pago devuelto',
+            ContributionOutcome.refundPending => 'Devolución total en proceso',
+            ContributionOutcome.refundReconciling =>
+              'Devolución y transferencias en conciliación',
+            ContributionOutcome.refundReview => 'Devolución en revisión',
             _ => 'Pago en procesamiento',
           };
     final copy = confirmed
-        ? 'Gracias por apoyar. ${gross == null ? 'Stripe confirmó tu donación.' : 'Tu donación de ${contributionMoney(gross)} fue confirmada por Stripe.'}'
-        : switch (status) {
-            'canceled' => 'Stripe no confirmó un cobro para este intento. Puedes elegir una nueva aportación.',
-            'refunded' => 'El servidor confirmó la devolución del pago. Consulta su seguimiento en tu historial.',
+        ? '¡Muchas gracias por apoyar a la manada!'
+        : switch (presentation) {
+            ContributionOutcome.canceled => 'Stripe no confirmó un cobro para este intento. Puedes elegir una nueva aportación.',
+            ContributionOutcome.refunded => 'El servidor confirmó la devolución del pago. Consulta su seguimiento en tu historial.',
+            ContributionOutcome.refundPending ||
+            ContributionOutcome.refundReconciling ||
+            ContributionOutcome.refundReview => 'Este pago no puede contar como apoyo asignado. Conservamos la misma aportación mientras se confirma la devolución total y, cuando corresponde, la reversión de la transferencia. No inicies otro pago.',
             _ => 'Aún esperamos evidencia del procesador. No inicies otra aportación.',
           };
     final rows = <(String, String)>[
@@ -55,53 +74,69 @@ class PaymentResultPage extends StatelessWidget {
       if (gross != null) ('Monto', contributionMoney(gross)),
       (
         'Estado',
-        switch (status) {
-          'confirmed' => 'Pago confirmado',
-          'canceled' => 'Cancelado sin cobro',
-          'refunded' => 'Devuelto',
+        switch (presentation) {
+          ContributionOutcome.confirmed => 'Pago confirmado',
+          ContributionOutcome.canceled => 'Cancelado sin cobro',
+          ContributionOutcome.refunded => 'Devuelto',
+          ContributionOutcome.refundPending => 'Devolución total en proceso',
+          ContributionOutcome.refundReconciling =>
+            'Devolución y transferencias en conciliación',
+          ContributionOutcome.refundReview => 'Devolución en revisión',
           _ => 'Pendiente de confirmación',
         },
       ),
       if (confirmed && allocated != null)
         ('Asignado', contributionMoney(allocated)),
       if (confirmed && transfer != null) ('Transferencia', transfer),
+      if (caseContribution && value['platform_fee_cents'] is int)
+        (
+          'Comisión Dopmi',
+          contributionMoney(value['platform_fee_cents'] as int),
+        ),
+      if (caseContribution && value['stripe_fee_cents'] is int)
+        (
+          'Costo real de Stripe',
+          contributionMoney(value['stripe_fee_cents'] as int),
+        ),
     ];
-    final icon = Container(
-      width: canceled ? 96 : 64,
-      height: canceled ? 96 : 64,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: confirmed
-            ? const Color(0xff2ac39b)
-            : canceled
-            ? const Color(0xfffff2f3)
-            : refunded
-            ? const Color(0xffeee8ff)
-            : const Color(0xfffff8d6),
-        border: canceled
-            ? Border.all(color: const Color(0xffffd4d8), width: 3)
-            : null,
-      ),
-      child: Center(
-        child: confirmed
-            ? SvgPicture.asset(
-                'assets/profile/check.svg',
-                width: 32,
-                height: 32,
-              )
-            : canceled
-            ? SvgPicture.asset(
-                'assets/profile/payment-card-error.svg',
-                width: 48,
-                height: 48,
-              )
-            : Icon(
-                refunded ? Icons.undo : Icons.hourglass_top,
-                size: 32,
-                color: ink,
-              ),
-      ),
-    );
+    final icon = confirmed
+        ? const PaymentSuccessBadge()
+        : Container(
+            width: canceled ? 96 : 64,
+            height: canceled ? 96 : 64,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: confirmed
+                  ? const Color(0xff2ac39b)
+                  : canceled
+                  ? const Color(0xfffff2f3)
+                  : refunded
+                  ? const Color(0xffeee8ff)
+                  : const Color(0xfffff8d6),
+              border: canceled
+                  ? Border.all(color: const Color(0xffffd4d8), width: 3)
+                  : null,
+            ),
+            child: Center(
+              child: confirmed
+                  ? SvgPicture.asset(
+                      'assets/profile/check.svg',
+                      width: 32,
+                      height: 32,
+                    )
+                  : canceled
+                  ? SvgPicture.asset(
+                      'assets/profile/payment-card-error.svg',
+                      width: 48,
+                      height: 48,
+                    )
+                  : Icon(
+                      refunded ? Icons.undo : Icons.hourglass_top,
+                      size: 32,
+                      color: ink,
+                    ),
+            ),
+          );
     final content = LayoutBuilder(
       builder: (context, constraints) => SingleChildScrollView(
         child: ConstrainedBox(
@@ -110,7 +145,7 @@ class PaymentResultPage extends StatelessWidget {
           ),
           child: Padding(
             padding: confirmed
-                ? const EdgeInsets.all(28)
+                ? const EdgeInsets.symmetric(horizontal: 18, vertical: 16)
                 : const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
             child: Column(
               mainAxisAlignment: confirmed
@@ -125,9 +160,9 @@ class PaymentResultPage extends StatelessWidget {
                   child: Text(
                     heading,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
+                    style: TextStyle(
+                      fontSize: confirmed ? 26 : 24,
+                      fontWeight: confirmed ? FontWeight.w800 : FontWeight.w700,
                       height: 1.25,
                       letterSpacing: -.48,
                       color: ink,
@@ -145,8 +180,22 @@ class PaymentResultPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 26),
-                if (!confirmed) ...[
+                if (confirmed) ...[
+                  PaymentSuccessDetails(
+                    value: value,
+                    caseName: caseName,
+                    casePhoto: casePhoto,
+                  ),
+                  const SizedBox(height: 24),
+                ],
+                if (!confirmed || caseContribution) ...[
                   ContributionSummary(rows: rows),
+                  const SizedBox(height: 18),
+                ],
+                if (caseContribution &&
+                    allocations.isNotEmpty &&
+                    (confirmed || refunded)) ...[
+                  CaseAllocationList(allocations: allocations),
                   const SizedBox(height: 18),
                 ],
                 if (error != null) ...[
@@ -178,7 +227,7 @@ class PaymentResultPage extends StatelessWidget {
                   const SizedBox(height: 18),
                 ],
                 if (!confirmed && !canceled && !refunded) ...[
-                  if (continueAttempt != null) ...[
+                  if (continueAttempt != null && !refundPending) ...[
                     ContributionButton(
                       'Continuar la misma aportación',
                       busy: busy,
@@ -244,6 +293,14 @@ class PaymentResultPage extends StatelessWidget {
         ? Scaffold(
             backgroundColor: Colors.white,
             body: SafeArea(child: content),
+            bottomNavigationBar: SafeArea(
+              top: false,
+              minimum: const EdgeInsets.fromLTRB(18, 12, 18, 18),
+              child: ContributionButton(
+                'Ir a inicio',
+                onPressed: busy ? null : () => context.go('/rescue-cases'),
+              ),
+            ),
           )
         : ContributionFrame(
             title: canceled

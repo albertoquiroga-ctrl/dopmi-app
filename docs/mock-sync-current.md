@@ -3,7 +3,8 @@
 Este corte supersede las instrucciones de continuación inferiores, conservando su evidencia.
 Referencia autorizada congelada: d304535c63c2d15686476b421e140de475ff6b6f.
 Producto base: c53b6686e1ba77ba6d2164acac9aeacc9cef6066 / codex/finish-release-20261015.
-Checkpoint Git local B1/B2: a37a43a8; remoto documental1699e464. Cambios B3/B4/B5 posteriores aún en revisión local, no publicar ni atribuirles CI38942117005.
+Checkpoint Git local:17b9fbf4 (B1/B2 en a37a43a8; B3/backendB4/B5 en00f73fda; recibidos case en17b9fbf4). Remoto documental1699e464. B4 UI aún en implementación y B5 teléfono pendiente; no publicar ni atribuirles CI38942117005.
+**Operación DEV V3 e3d0…9ba5 RETENIDA, no aplicar aunque llegue autorización de la pregunta anterior.** Revisión integrada detectó wallet que podía eliminar tarjeta vigente del registro nativo y listado sin identificarla; backend_b4_method corrige séptima migración y seams. Loader bloqueado con hold privado. Tras integración/revisión se preparará y presentará nuevo paquete exacto; no ampliar permiso antiguo. B4 móvil agrupa funding caso, reservas sin falsa distribución, éxito visual d304 y diálogo200%. Root conserva cola Flutter; ninguna nueva escritura remota.
 CI38942117005 cuatro jobs aprobados; Play2.3.3(314), Codemagic6ad2688aec6dbbb3d338534a, instalada desde Play según recibo16oct. No candidato nuevo ni aceptación global atribuida.
 
 Plan B0–B6 aprobado; decisiones en product-decisions.md y única matriz en parity-current-review.md.

@@ -43,6 +43,8 @@ class GuardianRegistration {
     required this.refundCents,
     required this.evaluationStatus,
     required this.evaluationCycle,
+    this.methodStatus,
+    this.methodChange,
   });
 
   final String id;
@@ -50,6 +52,8 @@ class GuardianRegistration {
   final String status;
   final int grossCents;
   final int revision;
+  final String? methodStatus;
+  final GuardianRegistrationMethodChange? methodChange;
   final DateTime registeredAt;
   final DateTime? nextEvaluationAt;
   final GuardianRegistrationPaymentState paymentState;
@@ -108,6 +112,16 @@ class GuardianRegistration {
     final status = data['status'];
     final gross = data['gross_cents'];
     final revision = data['revision'];
+    final methodStatus = data['method_status'];
+    if (methodStatus != null &&
+        !['saved', 'unavailable'].contains(methodStatus)) {
+      invalid();
+    }
+    final methodChange = data['method_change'] == null
+        ? null
+        : GuardianRegistrationMethodChange.fromJson(
+            Map<String, dynamic>.from(data['method_change'] as Map),
+          );
     final registered = DateTime.tryParse(
       data['registered_at']?.toString() ?? '',
     );
@@ -172,6 +186,37 @@ class GuardianRegistration {
       refundCents: refund,
       evaluationStatus: evaluation?['status'],
       evaluationCycle: evaluation?['cycle_number'],
+      methodStatus: methodStatus as String?,
+      methodChange: methodChange,
+    );
+  }
+}
+
+class GuardianRegistrationMethodChange {
+  const GuardianRegistrationMethodChange({
+    required this.key,
+    required this.status,
+    required this.revision,
+  });
+  final String key, status;
+  final int revision;
+  factory GuardianRegistrationMethodChange.fromJson(Map<String, dynamic> data) {
+    final key = data['key'],
+        status = data['status'],
+        revision = data['revision'];
+    if (key is! String ||
+        !RegExp(
+          r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
+        ).hasMatch(key) ||
+        !['pending', 'applied', 'expired', 'canceled'].contains(status) ||
+        revision is! int ||
+        revision < 0) {
+      throw const FormatException('Cambio de tarjeta no confirmado');
+    }
+    return GuardianRegistrationMethodChange(
+      key: key,
+      status: status as String,
+      revision: revision,
     );
   }
 }
