@@ -47,6 +47,14 @@ class SupportHomePage extends StatelessWidget {
         .toList();
     final scaler = MediaQuery.textScalerOf(context);
     final large = scaler.scale(14) > 20;
+    // The donor navigation surface is 48px icons plus 20px vertical padding.
+    // Its SafeArea uses at least 14px. The outer extended Scaffold also exposes
+    // the real occupied height through MediaQuery.padding; honor the larger one.
+    final navigationHeight = math.max(
+      MediaQuery.paddingOf(context).bottom,
+      68.0 + math.max(14.0, MediaQuery.viewPaddingOf(context).bottom),
+    );
+    final dockBottom = navigationHeight + 10.0;
     return Scaffold(
       extendBody: true,
       backgroundColor: Colors.white,
@@ -143,8 +151,7 @@ class SupportHomePage extends StatelessWidget {
                         context,
                         constraints.crossAxisExtent - 36,
                       );
-                      final bottom =
-                          92 + MediaQuery.viewPaddingOf(context).bottom;
+                      final bottom = dockBottom;
                       final height = math.max(
                         _guardianDockStacks(
                               context,
@@ -166,17 +173,17 @@ class SupportHomePage extends StatelessWidget {
                               onOpenEnrollment: () => openGuardian(context),
                             ),
                             const SizedBox(height: 12),
-                            ConstrainedBox(
-                              constraints: const BoxConstraints(minHeight: 52),
-                              child: Padding(
+                            if (large)
+                              Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 18,
                                 ),
                                 child: GuardianSupportDock(
                                   onOpenEnrollment: () => openGuardian(context),
                                 ),
-                              ),
-                            ),
+                              )
+                            else
+                              SizedBox(height: dockHeight),
                             SizedBox(height: bottom),
                           ],
                         ),
@@ -186,6 +193,15 @@ class SupportHomePage extends StatelessWidget {
                 ),
               ],
             ),
+            if (!large)
+              Positioned(
+                left: 36,
+                right: 36,
+                bottom: dockBottom,
+                child: GuardianSupportDock(
+                  onOpenEnrollment: () => openGuardian(context),
+                ),
+              ),
           ],
         ),
       ),
