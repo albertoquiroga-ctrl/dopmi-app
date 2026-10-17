@@ -1338,7 +1338,11 @@ void main() {
       await tester.tap(find.byTooltip('Aportar a Gasto 22'));
       await tester.pumpAndSettle();
       expect(find.text('Elige un monto a donar:'), findsOneWidget);
-      expect(find.text('\$75'), findsOneWidget);
+      expect(find.text('\$75'), findsNothing);
+      expect(find.text('\$50'), findsOneWidget);
+      expect(find.text('\$200'), findsOneWidget);
+      expect(find.text('\$500'), findsOneWidget);
+      expect(find.text('Total faltante'), findsNothing);
       await tester.tap(find.byTooltip('Cerrar'));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);

@@ -745,6 +745,7 @@ void main() {
           'status': 'registered',
           'gross_cents': 2000,
           'revision': 1,
+          'method_status': 'saved',
           'registered_at': '2026-10-14T10:00:00Z',
           'next_evaluation_at': '2026-11-14T10:00:00Z',
           'consent_version': guardianRegistrationConsent,
@@ -754,19 +755,48 @@ void main() {
             'allocated_cents': 1517,
             'refund_cents': 0,
           },
-        });
+        })
+        ..cards = const [
+          GuardianPaymentCard(
+            id: 'pm_default',
+            brand: 'visa',
+            last4: '4242',
+            isDefault: true,
+          ),
+          GuardianPaymentCard(
+            id: 'pm_guardian',
+            brand: 'visa',
+            last4: '1111',
+            isDefault: false,
+            guardianCurrent: true,
+          ),
+        ];
       await start(tester, repo, methods: true);
       expect(repo.methodsRegistrationReads, 1);
-      final notice = find.textContaining(
-        'Tu registro Guardián conserva la tarjeta',
-      );
+      final change = find.text('Cambiar tarjeta');
       await tester.scrollUntilVisible(
-        notice,
+        change,
         160,
         scrollable: find.byType(Scrollable).first,
       );
-      expect(notice, findsOneWidget);
-      expect(find.text('Cambiar tarjeta'), findsNothing);
+      expect(find.text('Visa •••• 1111'), findsWidgets);
+      expect(find.text('En uso por Guardián'), findsOneWidget);
+      expect(find.text('Predeterminada'), findsOneWidget);
+      await tester.tap(change);
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.text('Cambiar tarjeta'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('No cambia el monto ni cobra ahora'),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Volver'));
+      await tester.pumpAndSettle();
       expect(repo.calls, isEmpty);
       expect(repo.opened, 0);
       expect(tester.takeException(), isNull);

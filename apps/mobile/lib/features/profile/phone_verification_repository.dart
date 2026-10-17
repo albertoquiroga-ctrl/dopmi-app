@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -45,7 +46,32 @@ String phoneVerificationError(Object error) {
   return 'No pudimos verificar el teléfono. Vuelve a intentar.';
 }
 
+enum PhoneVerificationReadStatus { idle, loading, ready, failed }
+
 abstract class PhoneVerificationRepository {
+  final readStatus = ValueNotifier<PhoneVerificationReadStatus>(
+    PhoneVerificationReadStatus.idle,
+  );
+  final _readObservers = <VoidCallback>{};
+  bool get hasReadObservers => _readObservers.isNotEmpty;
+  void observeRead(VoidCallback listener) {
+    if (_readObservers.add(listener)) readStatus.addListener(listener);
+  }
+
+  void stopObservingRead(VoidCallback listener) {
+    if (_readObservers.remove(listener)) readStatus.removeListener(listener);
+  }
+
+  int get sessionEpoch => 0;
+  Future<void> refreshVerifiedPhone() async {
+    readStatus.value = PhoneVerificationReadStatus.ready;
+  }
+
+  void dispose() {
+    _readObservers.clear();
+    readStatus.dispose();
+  }
+
   String? get verifiedPhone;
   Future<void> requestPhoneCode(String e164);
   Future<void> verifyPhoneCode(String e164, String code);
@@ -117,29 +143,45 @@ class _PhoneAuthTransport {
 }
 
 /// Changes the phone on the signed-in identity; never creates a second user.
-class SupabasePhoneVerificationRepository
-    implements PhoneVerificationRepository {
+class SupabasePhoneVerificationRepository extends PhoneVerificationRepository {
   SupabasePhoneVerificationRepository(
     this.client, {
     this.httpClient,
     String? authUrl,
   }) : _authUrl = authUrl ?? '${AppConfig.environment().url}/auth/v1' {
     _sessionToken = client.auth.currentSession?.accessToken;
+    _sessionOwner = client.auth.currentUser?.id;
     _subscription = client.auth.onAuthStateChange.listen(
       (state) {
+        if (_disposed) return;
         final token = state.session?.accessToken;
+        final owner = state.session?.user.id;
         if (token != _sessionToken ||
-            state.event == AuthChangeEvent.signedOut) {
+            owner != _sessionOwner ||
+            state.event == AuthChangeEvent.signedOut ||
+            state.event == AuthChangeEvent.signedIn) {
           _epoch++;
+          _readGeneration++;
           _sessionToken = token;
+          _sessionOwner = owner;
           _pendingOwner = _pendingPhone = _confirmedOwner = _confirmedPhone =
               null;
+          readStatus.value = PhoneVerificationReadStatus.idle;
+          // Only an open observer needs an immediate read. Opening the editor also
+          // reads explicitly; repository construction never sends an SMS.
+          if (state.session != null && hasReadObservers) {
+            unawaited(refreshVerifiedPhone());
+          }
         }
       },
       onError: (Object _) {
+        if (_disposed) return;
         _epoch++;
+        _readGeneration++;
         _pendingOwner = _pendingPhone = _confirmedOwner = _confirmedPhone =
             null;
+        readStatus.value = PhoneVerificationReadStatus.idle;
+        readStatus.value = PhoneVerificationReadStatus.failed;
       },
     );
   }
@@ -148,17 +190,26 @@ class SupabasePhoneVerificationRepository
   final String _authUrl;
   late final StreamSubscription<AuthState> _subscription;
   int _epoch = 0, _requestGeneration = 0;
-  String? _sessionToken, _confirmedOwner, _confirmedPhone;
+  String? _sessionToken, _sessionOwner, _confirmedOwner, _confirmedPhone;
+  bool _disposed = false;
+  int _readGeneration = 0;
+  @override
+  int get sessionEpoch => _epoch;
 
+  @override
   void dispose() {
+    _disposed = true;
+    _epoch++;
+    _readGeneration++;
     _subscription.cancel();
+    super.dispose();
   }
 
   Future<T> _isolated<T>(
     Future<T> Function(_PhoneAuthTransport auth) action,
   ) async {
     final session = client.auth.currentSession;
-    if (session == null) {
+    if (_disposed || session == null) {
       throw StateError('Inicia sesión para verificar tu teléfono.');
     }
     final owner = session.user.id;
@@ -171,15 +222,11 @@ class SupabasePhoneVerificationRepository
     });
     try {
       final result = await action(auth);
-      if (client.auth.currentUser?.id != owner ||
+      if (_disposed ||
+          client.auth.currentUser?.id != owner ||
           client.auth.currentSession?.accessToken != token ||
           _epoch != epoch) {
-        if (_pendingOwner == owner) {
-          _pendingOwner = _pendingPhone = null;
-        }
-        if (_confirmedOwner == owner) {
-          _confirmedOwner = _confirmedPhone = null;
-        }
+        // Never let an old operation clear a new session's confirmation.
         throw StateError('La sesión cambió. Vuelve a solicitar el código.');
       }
       return result;
@@ -194,15 +241,54 @@ class SupabasePhoneVerificationRepository
 
   @override
   String? get verifiedPhone {
-    final user = client.auth.currentUser;
-    if (_confirmedOwner == user?.id &&
-        client.auth.currentSession?.accessToken == _sessionToken) {
-      return _confirmedPhone;
-    }
-    final phone = user?.phone;
-    return user?.phoneConfirmedAt != null && phone != null && phone.isNotEmpty
-        ? '+${phone.replaceFirst(RegExp(r'^\+'), '')}'
+    if (_disposed) return null;
+    return _confirmedOwner == client.auth.currentUser?.id &&
+            client.auth.currentSession?.accessToken == _sessionToken
+        ? _confirmedPhone
         : null;
+  }
+
+  @override
+  Future<void> refreshVerifiedPhone() async {
+    if (_disposed) return;
+    final session = client.auth.currentSession;
+    final owner = session?.user.id;
+    final token = session?.accessToken;
+    final epoch = _epoch;
+    final generation = ++_readGeneration;
+    bool current() =>
+        !_disposed &&
+        generation == _readGeneration &&
+        epoch == _epoch &&
+        client.auth.currentUser?.id == owner &&
+        client.auth.currentSession?.accessToken == token;
+    if (session == null) {
+      _confirmedOwner = _confirmedPhone = null;
+      readStatus.value = PhoneVerificationReadStatus.ready;
+      return;
+    }
+    readStatus.value = PhoneVerificationReadStatus.loading;
+    try {
+      final user = await _isolated((auth) async => (await auth.getUser()).user);
+      if (!current()) return;
+      if (user == null || user.id != owner) {
+        throw const FormatException('Identidad no confirmada');
+      }
+      final phone = user.phone;
+      _confirmedOwner = owner;
+      _confirmedPhone =
+          user.phoneConfirmedAt != null &&
+              phone != null &&
+              RegExp(r'^\+?[1-9][0-9]{7,14}$').hasMatch(phone)
+          ? '+${phone.replaceFirst(RegExp(r'^\+'), '')}'
+          : null;
+      readStatus.value = PhoneVerificationReadStatus.ready;
+    } catch (_) {
+      if (!current()) return;
+      // Keep only a confirmation obtained for this exact owner/session. A
+      // transport failure is not evidence that Auth removed the phone.
+      readStatus.value = PhoneVerificationReadStatus.failed;
+    }
   }
 
   String _actor() {
@@ -294,8 +380,10 @@ class SupabasePhoneVerificationRepository
       // Secure phone change can require a second confirmation; do not mark it done.
       throw StateError('La confirmación del teléfono todavía está pendiente.');
     }
+    _readGeneration++;
     _confirmedOwner = actor;
     _confirmedPhone = e164;
+    readStatus.value = PhoneVerificationReadStatus.ready;
     _pendingOwner = _pendingPhone = null;
   }
 }

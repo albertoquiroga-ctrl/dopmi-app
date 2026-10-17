@@ -155,10 +155,7 @@ void main() {
       await start(tester, payments, sheet);
       await tapButton(tester, 'Confirmar aportación');
       await tester.pumpAndSettle();
-      expect(
-        find.text('Pago exitoso'),
-        findsOneWidget,
-      );
+      expect(find.text('Pago exitoso'), findsOneWidget);
       expect(find.textContaining('La captura no se completó'), findsNothing);
       expect(find.textContaining('synthetic sheet'), findsNothing);
       expect(
@@ -192,10 +189,7 @@ void main() {
       expect(payments.calls, [key, key]);
       expect(sheet.secrets, [secret, secret]);
       expect(payments.hostedOpens, 0);
-      expect(
-        find.text('Pago exitoso'),
-        findsOneWidget,
-      );
+      expect(find.text('Pago exitoso'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );

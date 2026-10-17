@@ -110,18 +110,16 @@ void main() {
           await tester.tap(action);
           await tester.pumpAndSettle();
           expect(find.byType(ContributionAmountDialog), findsOneWidget);
-          await tester.ensureVisible(find.text('Total faltante'));
-          await tester.tap(find.text('Total faltante'));
+          expect(find.text('Total faltante'), findsNothing);
+          await tester.ensureVisible(find.text('\$50'));
+          await tester.tap(find.text('\$50'));
           await tester.ensureVisible(find.text('Dona ahora'));
           await tester.pumpAndSettle();
           await tester.tap(find.text('Dona ahora'));
           await tester.pumpAndSettle();
           expect(checkout?.path, '/contribute/${record.id}');
           expect(checkout?.queryParameters['case'], record.parent);
-          expect(
-            checkout?.queryParameters['amount_cents'],
-            '${record.targetCents - record.fundedCents}',
-          );
+          expect(checkout?.queryParameters['amount_cents'], '5000');
           expect(tester.takeException(), isNull);
         },
       );

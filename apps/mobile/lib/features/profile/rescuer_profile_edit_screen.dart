@@ -768,13 +768,50 @@ class _PhoneVerification extends ConsumerStatefulWidget {
   ConsumerState<_PhoneVerification> createState() => _PhoneVerificationState();
 }
 
-class _PhoneVerificationState extends ConsumerState<_PhoneVerification> {
+class _PhoneVerificationState extends ConsumerState<_PhoneVerification>
+    with WidgetsBindingObserver {
   final number = TextEditingController();
   final code = TextEditingController();
-  String? requestedNumber, confirmedNumber, error;
+  String? requestedNumber, error, requestFeedback;
+  late final PhoneVerificationRepository phoneRepository;
+  int observedEpoch = 0;
+  @override
+  void initState() {
+    super.initState();
+    phoneRepository = ref.read(phoneVerificationRepositoryProvider);
+    observedEpoch = phoneRepository.sessionEpoch;
+    phoneRepository.observeRead(readChanged);
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) phoneRepository.refreshVerifiedPhone();
+    });
+  }
+
+  void readChanged() {
+    if (!mounted) return;
+    setState(() {
+      if (observedEpoch != phoneRepository.sessionEpoch) {
+        observedEpoch = phoneRepository.sessionEpoch;
+        requestedNumber = error = requestFeedback = null;
+        number.clear();
+        code.clear();
+        busy = false;
+      }
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      phoneRepository.refreshVerifiedPhone();
+    }
+  }
+
   bool busy = false;
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    phoneRepository.stopObservingRead(readChanged);
     number.dispose();
     code.dispose();
     super.dispose();
@@ -791,9 +828,15 @@ class _PhoneVerificationState extends ConsumerState<_PhoneVerification> {
       return;
     }
     final owner = ref.read(rescuerProfileRepositoryProvider).userId;
+    final epoch = phoneRepository.sessionEpoch;
+    bool current() =>
+        mounted &&
+        epoch == phoneRepository.sessionEpoch &&
+        owner == ref.read(rescuerProfileRepositoryProvider).userId;
     setState(() {
       busy = true;
       error = null;
+      requestFeedback = null;
     });
     try {
       final repo = ref.read(phoneVerificationRepositoryProvider);
@@ -804,30 +847,36 @@ class _PhoneVerificationState extends ConsumerState<_PhoneVerification> {
       } else {
         await repo.requestPhoneCode(e164);
       }
-      if (!mounted ||
-          owner != ref.read(rescuerProfileRepositoryProvider).userId) {
-        return;
-      }
+      if (!current()) return;
       setState(() {
         if (action == 'verify') {
-          confirmedNumber = repo.verifiedPhone;
-          if (confirmedNumber == null) error = 'El número aún no está confirmado. Completa los códigos pendientes.';
+          if (repo.verifiedPhone != e164) {
+            error = 'El número aún no está confirmado. Completa los códigos pendientes.';
+          } else {
+            requestedNumber = requestFeedback = null;
+            code.clear();
+          }
         } else {
           requestedNumber = e164;
+          requestFeedback = action == 'resend'
+              ? 'Solicitud de reenvío enviada. El SMS puede tardar en llegar.'
+              : 'Solicitud enviada. El SMS puede tardar en llegar.';
         }
       });
     } catch (cause) {
-      if (mounted) setState(() => error = phoneVerificationError(cause));
+      if (current()) setState(() => error = phoneVerificationError(cause));
     } finally {
-      if (mounted) setState(() => busy = false);
+      if (current()) setState(() => busy = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final verified =
-        confirmedNumber ??
-        ref.read(phoneVerificationRepositoryProvider).verifiedPhone;
+    final verified = phoneRepository.verifiedPhone;
+    final reading =
+        phoneRepository.readStatus.value == PhoneVerificationReadStatus.loading;
+    final readFailed =
+        phoneRepository.readStatus.value == PhoneVerificationReadStatus.failed;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -836,6 +885,17 @@ class _PhoneVerificationState extends ConsumerState<_PhoneVerification> {
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         if (verified != null) Text('Vinculado: $verified'),
+        if (reading) const Text('Consultando el teléfono de tu cuenta…'),
+        if (readFailed) ...[
+          const Notice(
+            'No pudimos consultar el teléfono de tu cuenta. Reintenta para conocer su estado; no necesitas solicitar otro SMS.',
+            isError: true,
+          ),
+          TextButton(
+            onPressed: phoneRepository.refreshVerifiedPhone,
+            child: const Text('Reintentar consulta'),
+          ),
+        ],
         const Text(
           'Verifica tu número con un código por SMS. El contacto público se elige por separado.',
           style: TextStyle(fontSize: 12, color: muted),
@@ -852,11 +912,15 @@ class _PhoneVerificationState extends ConsumerState<_PhoneVerification> {
           ),
         ),
         TextButton(
-          onPressed: widget.enabled && !busy ? () => perform('request') : null,
+          onPressed: widget.enabled && !busy && !reading && !readFailed
+              ? () => perform('request')
+              : null,
           child: Text(verified == null ? 'Vincular' : 'Cambiar número'),
         ),
         if (requestedNumber != null) ...[
-          Text('Enviamos el código a $requestedNumber'),
+          Text(
+            'Código para el número terminado en ${requestedNumber!.substring(requestedNumber!.length - 4)}',
+          ),
           TextField(
             key: const ValueKey('profile-sms-code'),
             controller: code,
@@ -883,7 +947,9 @@ class _PhoneVerificationState extends ConsumerState<_PhoneVerification> {
             ],
           ),
         ],
-        if (busy) const LinearProgressIndicator(),
+        if (busy)
+          const LinearProgressIndicator(semanticsLabel: 'Procesando solicitud'),
+        if (requestFeedback != null) Notice(requestFeedback!),
         if (error != null) Notice(error!, isError: true),
       ],
     );

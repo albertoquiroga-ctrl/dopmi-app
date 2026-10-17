@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/features/adoption/community_ui.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
@@ -297,8 +298,16 @@ void main() {
         findsOneWidget,
       );
       repo.fail = false;
-      await tester.ensureVisible(find.text('Volver a intentar'));
-      await tester.tap(find.text('Volver a intentar'));
+      final advances = find.ancestor(
+        of: find.text('No pudimos consultar tus avances. Vuelve a intentarlo.'),
+        matching: find.byType(LiveSection<List<Json>>),
+      );
+      final retry = find.descendant(
+        of: advances,
+        matching: find.widgetWithText(TextButton, 'Volver a intentar'),
+      );
+      await tester.ensureVisible(retry);
+      await tester.tap(retry);
       await tester.pumpAndSettle();
       expect(
         find.text('Aquí verás las mascotas que hayas apoyado'),

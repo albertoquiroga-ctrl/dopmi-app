@@ -2461,7 +2461,10 @@ class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
             );
           }
           if (plan is Map && plan['status'] == 'active') {
-            return ImpactScreen(supportEntry: true, refreshRegistration: reloadMembership);
+            return ImpactScreen(
+              supportEntry: true,
+              refreshRegistration: reloadMembership,
+            );
           }
           if (activation is Map &&
               [

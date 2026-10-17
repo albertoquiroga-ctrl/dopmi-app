@@ -306,4 +306,127 @@ void main() {
       expect(client.auth.currentUser?.id, actor);
     },
   );
+  test('recreated repository restores authoritative phone while SDK remains stale; empty response revokes it', () async {
+    var hasPhone = true, fail = false, malformed = false;
+    final methods = <String>[];
+    final transport = MockClient((request) async {
+      methods.add(request.method);
+      if (fail) return http.Response('{}', 503);
+      if (malformed) return http.Response('{}', 200);
+      return http.Response(
+        jsonEncode(
+          user(
+            actor,
+            phone: hasPhone ? phone.substring(1) : '',
+            confirmed: hasPhone,
+          ),
+        ),
+        200,
+      );
+    });
+    final client = SupabaseClient(
+      'https://qa.example.test',
+      'qa-key',
+      authOptions: const AuthClientOptions(autoRefreshToken: false),
+      httpClient: transport,
+    );
+    addTearDown(client.dispose);
+    await restore(client, actor);
+    final first = SupabasePhoneVerificationRepository(
+      client,
+      authUrl: 'https://qa.example.test/auth/v1',
+      httpClient: transport,
+    );
+    await first.refreshVerifiedPhone();
+    expect(first.verifiedPhone, phone);
+    first.dispose();
+    final repo = SupabasePhoneVerificationRepository(
+      client,
+      authUrl: 'https://qa.example.test/auth/v1',
+      httpClient: transport,
+    );
+    addTearDown(repo.dispose);
+    expect(repo.verifiedPhone, isNull);
+    var notifications = 0;
+    repo.readStatus.addListener(() => notifications++);
+    await repo.refreshVerifiedPhone();
+    expect(repo.verifiedPhone, phone);
+    expect(client.auth.currentUser?.phone, isEmpty);
+    fail = true;
+    await repo.refreshVerifiedPhone();
+    expect(repo.readStatus.value, PhoneVerificationReadStatus.failed);
+    expect(repo.verifiedPhone, phone);
+    fail = false;
+    malformed = true;
+    await repo.refreshVerifiedPhone();
+    expect(repo.readStatus.value, PhoneVerificationReadStatus.failed);
+    expect(repo.verifiedPhone, phone);
+    malformed = false;
+    hasPhone = false;
+    await repo.refreshVerifiedPhone();
+    expect(repo.readStatus.value, PhoneVerificationReadStatus.ready);
+    expect(repo.verifiedPhone, isNull);
+    expect(notifications, greaterThanOrEqualTo(6));
+    expect(methods.every((method) => method == 'GET'), isTrue);
+  });
+
+  for (final change in ['owner', 'token', 'dispose']) {
+    test(
+      'late authoritative read is discarded after $change without notifying old data',
+      () async {
+        final response = Completer<http.Response>();
+        final started = Completer<void>();
+        final transport = MockClient((request) {
+          if (!started.isCompleted) started.complete();
+          return response.future;
+        });
+        final client = SupabaseClient(
+          'https://qa.example.test',
+          'qa-key',
+          authOptions: const AuthClientOptions(autoRefreshToken: false),
+          httpClient: transport,
+        );
+        addTearDown(client.dispose);
+        await restore(client, actor);
+        final repo = SupabasePhoneVerificationRepository(
+          client,
+          authUrl: 'https://qa.example.test/auth/v1',
+          httpClient: transport,
+        );
+        var notifications = 0;
+        void observe() {
+          notifications++;
+        }
+
+        repo.readStatus.addListener(observe);
+        final pending = repo.refreshVerifiedPhone();
+        await started.future;
+        // Removing the observer prevents an open-editor automatic refresh from
+        // adding an independent GET; this test isolates the original read.
+        repo.readStatus.removeListener(observe);
+        if (change == 'dispose') {
+          repo.dispose();
+        } else {
+          final session = client.auth.currentSession!.toJson();
+          session['access_token'] = 'replacement-token';
+          session['user'] = user(change == 'owner' ? other : actor);
+          await client.auth.recoverSession(jsonEncode(session));
+          await Future<void>.delayed(Duration.zero);
+          repo.readStatus.addListener(observe);
+        }
+        final before = notifications;
+        response.complete(
+          http.Response(
+            jsonEncode(user(actor, phone: phone.substring(1), confirmed: true)),
+            200,
+          ),
+        );
+        await pending;
+        expect(repo.verifiedPhone, isNull);
+        expect(notifications, before);
+        expect(client.auth.currentUser?.id, change == 'owner' ? other : actor);
+        if (change != 'dispose') repo.dispose();
+      },
+    );
+  }
 }

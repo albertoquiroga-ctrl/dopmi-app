@@ -125,15 +125,18 @@ void main() {
   ) async {
     await open(tester, PagedSavedCommunity(), '/saved');
     expectWholeWord(tester, 'Guardado 1', 'Guardado');
-    await open(tester, SavedRescuerCommunity(), '/saved?kind=rescuer');
+    final legacy = SavedRescuerCommunity();
+    await open(tester, legacy, '/saved?kind=rescuer');
+    expect(find.text('Mis mascotas'), findsOneWidget);
     expect(
       find.byKey(const ValueKey('saved-rescuer-title-icon')),
-      findsOneWidget,
+      findsNothing,
     );
-    expectWholeWord(tester, 'Contenido no disponible', 'Contenido');
-    expectWholeWord(tester, 'Contenido no disponible', 'disponible');
+    expect(find.text('Rescatistas guardados'), findsNothing);
     expect(find.text('Nombre privado'), findsNothing);
-    expect(find.text('8 casos publicados'), findsOneWidget);
+    expect(find.text('8 casos publicados'), findsNothing);
+    expect(legacy.savedRescuerReads, 0);
+    expect(legacy.publicReads, isEmpty);
     expect(tester.takeException(), isNull);
   });
 

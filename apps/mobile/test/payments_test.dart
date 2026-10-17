@@ -418,10 +418,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(payments.lookups, [('expense-one', 'historical-attempt')]);
       expect(payments.calls, isEmpty);
-      expect(
-        find.text('Pago exitoso'),
-        findsOneWidget,
-      );
+      expect(find.text('Pago exitoso'), findsOneWidget);
       expect(
         find.text('Asignado: ${String.fromCharCode(36)}70 MXN'),
         findsOneWidget,

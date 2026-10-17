@@ -28,6 +28,7 @@ class MembershipGuardian extends FakeGuardian {
     membershipReads++;
     return pendingMembership == null ? membership : pendingMembership!.future;
   }
+
   @override
   Future<Json> submitRegistration(Json draft) async {
     registrationSubmissions++;
@@ -166,62 +167,84 @@ void main() {
 
   for (final status in ['registered', 'method_pending']) {
     for (final card in [true, false]) {
-      testWidgets('enrollment return immediately refreshes None to $status; card=$card', (tester) async {
-        final guardian = MembershipGuardian()..methodsRegistration = registration(
-          '72000000-0000-4000-8000-000000000002', status: status);
-        final container = await start(tester, guardian, MembershipRescue());
-        final started = tester.binding.clock.now();
-        expect(find.text('Ayudar se siente bien'), findsOneWidget);
-        final target = card ? find.byKey(const ValueKey('guardian-support-card-action'))
-          : find.text('Suscríbete ahora');
-        await tester.ensureVisible(target);
-        await tester.pumpAndSettle();
-        await tester.tap(target);
-        await tester.pumpAndSettle();
-        expect(container.read(routerProvider).state.uri.path, '/guardian');
-        guardian.membership = {'registration': guardian.methodsRegistration};
-        final readsBeforeReturn = guardian.membershipReads;
-        if (status == 'registered' && card) guardian.pendingMembership = Completer<Json>();
-        await tester.binding.handlePopRoute();
-        if (guardian.pendingMembership != null) {
-          await tester.pump();
-          await tester.pump(const Duration(milliseconds: 500));
-          expect(find.text('Ayudar se siente bien'), findsNothing);
+      testWidgets(
+        'enrollment return immediately refreshes None to $status; card=$card',
+        (tester) async {
+          final guardian = MembershipGuardian()
+            ..methodsRegistration = registration(
+              '72000000-0000-4000-8000-000000000002',
+              status: status,
+            );
+          final container = await start(tester, guardian, MembershipRescue());
+          final started = tester.binding.clock.now();
+          expect(find.text('Ayudar se siente bien'), findsOneWidget);
+          final target = card
+              ? find.byKey(const ValueKey('guardian-support-card-action'))
+              : find.text('Suscríbete ahora');
+          await tester.ensureVisible(target);
+          await tester.pumpAndSettle();
+          await tester.tap(target);
+          await tester.pumpAndSettle();
+          expect(container.read(routerProvider).state.uri.path, '/guardian');
+          guardian.membership = {'registration': guardian.methodsRegistration};
+          final readsBeforeReturn = guardian.membershipReads;
+          if (status == 'registered' && card)
+            guardian.pendingMembership = Completer<Json>();
+          await tester.binding.handlePopRoute();
+          if (guardian.pendingMembership != null) {
+            await tester.pump();
+            await tester.pump(const Duration(milliseconds: 500));
+            expect(find.text('Ayudar se siente bien'), findsNothing);
+            expect(find.text('Suscríbete ahora'), findsNothing);
+            guardian.pendingMembership!.complete(guardian.membership);
+          }
+          await tester.pumpAndSettle();
+          expect(
+            tester.binding.clock.now().difference(started),
+            lessThan(const Duration(seconds: 30)),
+          );
+          expect(guardian.membershipReads, greaterThan(readsBeforeReturn));
+          expect(find.text('Tu impacto Guardián'), findsOneWidget);
+          expect(
+            find.text(guardian.methodsRegistration!.summary),
+            findsOneWidget,
+          );
           expect(find.text('Suscríbete ahora'), findsNothing);
-          guardian.pendingMembership!.complete(guardian.membership);
-        }
-        await tester.pumpAndSettle();
-        expect(tester.binding.clock.now().difference(started), lessThan(const Duration(seconds: 30)));
-        expect(guardian.membershipReads, greaterThan(readsBeforeReturn));
-        expect(find.text('Tu impacto Guardián'), findsOneWidget);
-        expect(find.text(guardian.methodsRegistration!.summary), findsOneWidget);
-        expect(find.text('Suscríbete ahora'), findsNothing);
-        expect(find.text('Ayudar se siente bien'), findsNothing);
-        expect(guardian.registrationSubmissions, 0);
-        expect(guardian.calls, isEmpty);
-        expect(tester.takeException(), isNull);
-      });
+          expect(find.text('Ayudar se siente bien'), findsNothing);
+          expect(guardian.registrationSubmissions, 0);
+          expect(guardian.calls, isEmpty);
+          expect(tester.takeException(), isNull);
+        },
+      );
     }
   }
 
-  testWidgets('returning from a pending registration management refreshes the same registration immediately', (tester) async {
-    final guardian = MembershipGuardian()..methodsRegistration = registration(
-      '72000000-0000-4000-8000-000000000002', status: 'method_pending');
-    guardian.membership = {'registration': guardian.methodsRegistration};
-    await start(tester, guardian, MembershipRescue());
-    await tester.tap(find.text('Consultar registro Guardián'));
-    await tester.pumpAndSettle();
-    guardian.methodsRegistration = registration(
-      '72000000-0000-4000-8000-000000000002', status: 'registered');
-    guardian.membership = {'registration': guardian.methodsRegistration};
-    final reads = guardian.membershipReads;
-    await tester.binding.handlePopRoute();
-    await tester.pumpAndSettle();
-    expect(guardian.membershipReads, greaterThan(reads));
-    expect(find.text(guardian.methodsRegistration!.summary), findsOneWidget);
-    expect(find.text('Suscríbete ahora'), findsNothing);
-    expect(guardian.registrationSubmissions, 0);
-    expect(guardian.calls, isEmpty);
-    expect(tester.takeException(), isNull);
-  });
+  testWidgets(
+    'returning from a pending registration management refreshes the same registration immediately',
+    (tester) async {
+      final guardian = MembershipGuardian()
+        ..methodsRegistration = registration(
+          '72000000-0000-4000-8000-000000000002',
+          status: 'method_pending',
+        );
+      guardian.membership = {'registration': guardian.methodsRegistration};
+      await start(tester, guardian, MembershipRescue());
+      await tester.tap(find.text('Consultar registro Guardián'));
+      await tester.pumpAndSettle();
+      guardian.methodsRegistration = registration(
+        '72000000-0000-4000-8000-000000000002',
+        status: 'registered',
+      );
+      guardian.membership = {'registration': guardian.methodsRegistration};
+      final reads = guardian.membershipReads;
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(guardian.membershipReads, greaterThan(reads));
+      expect(find.text(guardian.methodsRegistration!.summary), findsOneWidget);
+      expect(find.text('Suscríbete ahora'), findsNothing);
+      expect(guardian.registrationSubmissions, 0);
+      expect(guardian.calls, isEmpty);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }
