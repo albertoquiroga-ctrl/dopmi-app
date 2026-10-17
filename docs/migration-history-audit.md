@@ -516,3 +516,17 @@ reparar ni reaplicar. Postflight: cuatro tablas RLS, sin SELECT anon/authenticat
 cinco RPC sin EXECUTE anon/authenticated, cuerpos comparados con SQL local y cero
 filas. Tres funciones Edge ACTIVE v1, activación funcional cerrada. Producción
 intacta. Evidencia y límites: [meta-social-verification.md](meta-social-verification.md).
+
+## Paridad d304 — DEV17oct, V5
+
+Proyecto ohqxranynackjignryep; candidato c3b9eb0539645a6ec3858fffdd44d5dc7c66203c/CI39059678920. Entrada única **20261017203236**, nombre codex_d304_case_impact_native_wallet_privacy; SQLcompuesto81ef935a4f4e31bc96860b2fcb20b912ba524094037a533d679b7636e85b0143. Mapea las siete fuentes siguientes, sin renombrarlas/reparar/replay. Preflight77historia/22funciones, postflight78/43funciones+ACL+5RLS/12checks true. V4 fue rechazado/rollbackconciliado sinentrada y no se ejecutó de nuevo; V5 tiene autorización propia y COLLATE C explícito en guarda. Evidencia privada v5/operation-completed.private.json.
+
+| Fuente local | SHA256 al aplicar | Registro DEV común |
+|---|---|---|
+| 20261017160820_case_oneoff_allocations.sql | 775c6afbd72fb0562727ef947829914b80f9f8ba59b2bd6b80b9328eb1ecc7b9 | 20261017203236 |
+| 20261017161936_guardian_registration_method_change.sql | 6ed0520a3bb1b895e4d4fa3d0068b24af9effdb6c9bfc28b5191c0b4fd5fbbc2 | 20261017203236 |
+| 20261017162026_monthly_impact_coverage.sql | b5480b10f1474e5381df858566efe06e99772c2c76805a9533f030ae93fd920f | 20261017203236 |
+| 20261017162330_case_contribution_notification_photo.sql | 136fdc15faea869c3b39072ccd83a146f166b8c2018b5056f6fec546490bed53 | 20261017203236 |
+| 20261017163841_account_deletion_financial_links.sql | 9fda09a22c88853d6b10c4a578e506cc7a800b37abac13573365774e5c8c101d | 20261017203236 |
+| 20261017165709_case_received_allocations.sql | b108d28d43beef0cf7ad8800c3123bd252703a24163eeb6b596ed0ebdb199e25 | 20261017203236 |
+| 20261017171338_native_guardian_wallet_method_guard.sql | c080fa03dc4453a3b9fd33353a82e4cccb80f14cdd1286ec1dbc434dafae78b7 | 20261017203236 |
