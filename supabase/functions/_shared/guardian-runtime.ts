@@ -11,6 +11,7 @@ import { savedCardService } from './saved-card.mjs';
 import { savedCardMethodService } from './saved-card-method.mjs';
 import { nativeSavedWalletService } from './native-saved-wallet.mjs';
 import { nativeSavedCardService } from './native-saved-card.mjs';
+import { guardianRegistrationMethodChange } from './guardian-registration-method-change.mjs';
 import { guardianRegistrationService } from './guardian-registration.mjs';
 import { guardianRegistrationWorker } from './guardian-registration-worker.mjs';
 import { registrationPaymentReply } from './guardian-registration-rpc.mjs';
@@ -115,6 +116,17 @@ export function guardianRuntime() {
     rpc: (operation: string, data: unknown) => call('dopmi_guardian_registration_server', operation, data),
     attemptRpc: (operation: string, data: unknown) => call('dopmi_guardian_registration_attempt_server', operation, data),
   });
+  const registrationMethod = guardianRegistrationMethodChange({ savedNativeCard,
+    rpc: async (operation: string, data: unknown) => {
+      const result = await db.rpc('dopmi_guardian_registration_method_server', { operation, data });
+      if (result.error) {
+        const code = { '40001': 'guardian_registration_changed', '55000': 'guardian_method_busy',
+          '42501': 'guardian_method_unavailable', '22023': 'guardian_method_invalid' }[result.error.code];
+        throw new PaymentError(code ?? 'guardian_database_unavailable', code ? 409 : 503);
+      }
+      return result.data;
+    },
+  });
   async function registrationCommand(name: string, data: Record<string, unknown>) {
     const result = await db.rpc(name, data);
     if (result.error) throw new PaymentError('guardian_database_unavailable', 503);
@@ -137,7 +149,7 @@ export function guardianRuntime() {
     authorizeAction: (owner: string, registrationId: string, attemptId: string) => registrationCommand(
       'dopmi_guardian_registration_bank_action', { target_owner: owner, target_registration: registrationId, target_attempt: attemptId }),
   });
-  return { ...service, initial, schedule, collection, changes, method, methods, refunds, savedCard, savedNativeCard, savedCardMethod, savedWallet, registration, registrationPayments, registrationAction,
+  return { ...service, initial, schedule, collection, changes, method, methods, refunds, savedCard, savedNativeCard, savedCardMethod, savedWallet, registration, registrationMethod, registrationPayments, registrationAction,
     async reconcile() {
       const activation = await initial.reconcile();
       const returns = Deno.env.get('DOPMI_GUARDIAN_REFUNDS_ENABLED') === 'true'
@@ -150,6 +162,8 @@ export function guardianRuntime() {
         ? await savedCard.reconcile() : { saved: 0, failed: 0 };
       const savedNativeCards = Deno.env.get('DOPMI_GUARDIAN_CHANGES_ENABLED') === 'true'
         ? await savedNativeCard.reconcile() : { saved: 0, failed: 0 };
+      const registrationMethods = Deno.env.get('DOPMI_GUARDIAN_CHANGES_ENABLED') === 'true'
+        ? await registrationMethod.reconcile() : { applied: 0, failed: 0 };
       const registrations = Deno.env.get('DOPMI_GUARDIAN_CHANGES_ENABLED') === 'true'
         ? await registration.reconcile() : { registered: 0, failed: 0 };
       const savedMethods = Deno.env.get('DOPMI_GUARDIAN_CHANGES_ENABLED') === 'true'
@@ -176,12 +190,13 @@ export function guardianRuntime() {
         saved_methods_applied: savedMethods.applied,
         wallets_saved: savedWallets.saved,
         registrations_completed: registrations.registered,
+        registration_methods_applied: registrationMethods.applied,
         registration_attempts_prepared: registrationAttempts.prepared,
         registration_evaluations_skipped: registrationAttempts.skipped,
         registration_payments_observed: registrationCollections.observed,
         registration_payments_finalized: registrationCollections.finalized,
         refunds_reconciled: returns.reconciled,
-        failed: result.failed + activation.failed + calendar.failed + monthly.failed + management.failed + methods.failed + savedCards.failed + savedNativeCards.failed + registrations.failed + registrationAttempts.failed + registrationCollections.failed + savedMethods.failed + savedWallets.failed + returns.failed };
+        failed: result.failed + activation.failed + calendar.failed + monthly.failed + management.failed + methods.failed + savedCards.failed + savedNativeCards.failed + registrations.failed + registrationMethods.failed + registrationAttempts.failed + registrationCollections.failed + savedMethods.failed + savedWallets.failed + returns.failed };
     },
   };
 }

@@ -14,7 +14,7 @@ const reply = (body, status = 200) => new Response(JSON.stringify(body), { statu
 // donor IDs, return URLs and status fields never reach checkout. A saved-method
 // selection accepts only its opaque ID; the service verifies its customer ownership.
 export function guardianClientHandler({ enabled, authenticate, checkout, method, methods, defaultMethod, removeMethod, addCard, savedCardMethod,
-  walletEnabled = () => false, addWallet, registration, registrationAction }) {
+  walletEnabled = () => false, addWallet, registration, registrationAction, registrationMethod }) {
   return async req => {
     if (req.method === 'OPTIONS') return new Response(null, { headers });
     if (req.method !== 'POST') return reply({ error: 'method_not_allowed' }, 405);
@@ -27,6 +27,17 @@ export function guardianClientHandler({ enabled, authenticate, checkout, method,
       const text = await req.text();
       if (text.length > 4096) return reply({ error: 'invalid_request' }, 400);
       let input; try { input = JSON.parse(text); } catch { return reply({ error: 'invalid_request' }, 400); }
+      if (['registration_method', 'registration_method_status'].includes(input?.action)) {
+        const uuid = value => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value ?? '');
+        const preparing = input.action === 'registration_method';
+        const allowed = preparing ? ['action','id','key','revision','consent','consent_version'] : ['action','id','key'];
+        if (typeof registrationMethod !== 'function' || !uuid(input.id) || !uuid(input.key) ||
+            Object.keys(input).some(key => !allowed.includes(key)) ||
+            (preparing && (!Number.isSafeInteger(input.revision) || input.revision < 0 ||
+              input.consent !== true || input.consent_version !== 'saved-cards-2026-10-03')))
+          return reply({ error: 'invalid_request' }, 400);
+        return reply(await registrationMethod(actor.id, input));
+      }
       if (input?.action === 'registration_action') {
         const uuid = value => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value ?? '');
         if (typeof registrationAction !== 'function' || !uuid(input.id) || !uuid(input.attempt_id) ||

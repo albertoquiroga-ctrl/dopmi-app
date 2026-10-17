@@ -243,3 +243,39 @@ test('own paid receipt and private allocation titles survive withdrawal of publi
  const receipt=(await db.query('select public.dopmi_case_payment_allocations($1) value',[d.id])).rows[0].value;
  assert.equal(receipt.length,2);assert.equal(receipt[0].title,'Medicamentos');assert.equal(receipt[1].title,'Alimento');
 });
+
+test('case payment notifications use approved case photo and only open own financial history',async()=>{
+ await db.query('insert into private.dopmi_notification_candidate_cohort(user_id,enabled,enabled_at) values($1,true,now()),($2,true,now())',[donor,rescuer]);
+ await db.query(`update public.dopmi_rescue_records set approved_snapshot=approved_snapshot||'{"photos":["synthetic/case/photo.jpg"]}'::jsonb where id=$1`,[caseId]);
+ const d=await call('prepare',payload);await settle(d);
+ const notices=(await db.query("select user_id,photo_record_id,photo_path,photo_purpose,target_kind from public.dopmi_notifications where kind='contribution' order by user_id")).rows;
+ assert.equal(notices.length,2);
+ for(const notice of notices) {
+  assert.equal(notice.photo_record_id,caseId);
+  assert.equal(notice.photo_path,'synthetic/case/photo.jpg');
+  assert.equal(notice.photo_purpose,'rescue');
+  assert.equal(notice.target_kind,notice.user_id===donor?'history':'received_history');
+ }
+ await db.exec(`select set_config('request.jwt.claim.sub','${donor}',true)`);
+ const own=(await db.query('select public.dopmi_notification_activity() value')).rows[0].value;
+ const notice=own.items.find(item=>item.kind==='contribution');
+ const before=(await db.query('select row_to_json(d) value from public.dopmi_donations d where id=$1',[d.id])).rows[0].value;
+ const opened=(await db.query('select public.dopmi_notification_open($1) value',[notice.id])).rows[0].value;
+ assert.equal(opened.target_kind,'history');
+ assert.ok((await db.query('select read_at from public.dopmi_notifications where id=$1',[notice.id])).rows[0].read_at);
+ assert.deepEqual((await db.query('select row_to_json(d) value from public.dopmi_donations d where id=$1',[d.id])).rows[0].value,before);
+});
+
+test('expense payment notification still resolves its parent case and withdrawn case exposes no photo',async()=>{
+ await db.query('insert into private.dopmi_notification_candidate_cohort(user_id,enabled,enabled_at) values($1,true,now())',[donor]);
+ await db.query(`update public.dopmi_rescue_records set approved_snapshot=approved_snapshot||'{"photos":["synthetic/case/photo.jpg"]}'::jsonb where id=$1`,[caseId]);
+ const legacy=(await db.query("select public.dopmi_oneoff_native_server('prepare',$1::jsonb) value",[JSON.stringify({actor:donor,key,expense_id:expense,gross_cents:10000,consent:true,consent_version:payload.consent_version})])).rows[0].value;
+ await db.query("select public.dopmi_oneoff_native_server('bind',$1::jsonb)",[JSON.stringify({actor:donor,key,payment_intent_id:'pi_case'})]);
+ await db.query("select public.dopmi_payment_server('settle',$1::jsonb)",[JSON.stringify({donation_id:legacy.id,currency:'mxn',gross_cents:10000,charge_id:'ch_case',payment_intent_id:'pi_case',stripe_fee_cents:600})]);
+ const notice=(await db.query("select photo_record_id,photo_path from public.dopmi_notifications where user_id=$1 and kind='contribution'",[donor])).rows[0];
+ assert.equal(notice.photo_record_id,caseId);assert.equal(notice.photo_path,'synthetic/case/photo.jpg');
+ await db.query("update public.dopmi_rescue_records set status='rejected',approved_snapshot=null where id=$1",[caseId]);
+ await db.exec(`select set_config('request.jwt.claim.sub','${donor}',true)`);
+ const activity=(await db.query('select public.dopmi_notification_activity() value')).rows[0].value;
+ assert.equal(activity.items.find(item=>item.kind==='contribution').photo_path,null);
+});

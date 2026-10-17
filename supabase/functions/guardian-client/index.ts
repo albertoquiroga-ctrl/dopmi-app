@@ -5,6 +5,10 @@ import { guardianClientEnabled, guardianClientHandler, nativeWalletEnabled } fro
 Deno.serve(guardianClientHandler({
   enabled: () => guardianClientEnabled((name: string) => Deno.env.get(name)),
   walletEnabled: () => nativeWalletEnabled((name: string) => Deno.env.get(name)),
+  registrationMethod: (actor: string, input: { action: string }) => {
+    const service = guardianRuntime().registrationMethod;
+    return input.action === 'registration_method' ? service.submit(actor, input) : service.status(actor, input);
+  },
   registrationAction: (actor: string, input: unknown) => guardianRuntime().registrationAction(actor, input),
   registration: (actor: string, input: { action: string }) => {
     const service = guardianRuntime().registration;

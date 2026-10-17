@@ -15,6 +15,8 @@ import '../payments/guardian_registration.dart';
 import '../payments/guardian_promotion_screen.dart';
 import '../rescue/rescue_public_photo.dart';
 import '../rescue/rescue_repository.dart';
+import '../identity/identity_controller.dart';
+import 'monthly_impact_panel.dart';
 
 String impactElapsed(String? timestamp, {DateTime? now}) {
   final date = DateTime.tryParse(timestamp ?? '');
@@ -67,15 +69,22 @@ class ImpactEntryScreen extends ConsumerWidget {
             )
           : state['plan'] == null && state['activation'] == null
           ? const GuardianPromotionScreen(navigation: CommunityNav(3))
-          : const ImpactScreen(),
+          : ImpactScreen(refreshRegistration: refresh),
     );
   }
 }
 
 class ImpactScreen extends ConsumerWidget {
-  const ImpactScreen({super.key, this.registration, this.refreshRegistration});
+  const ImpactScreen({
+    super.key,
+    this.registration,
+    this.refreshRegistration,
+    this.supportEntry = false,
+    this.membershipPending = false,
+  });
   final GuardianRegistration? registration;
   final VoidCallback? refreshRegistration;
+  final bool supportEntry, membershipPending;
   Future<List<Json>> loadImpact(WidgetRef ref) async {
     final items = await ref.read(communityRepositoryProvider).personalImpact();
     return Future.wait(
@@ -104,13 +113,25 @@ class ImpactScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
     backgroundColor: Colors.white,
-    bottomNavigationBar: const CommunityNav(3),
+    bottomNavigationBar: CommunityNav(supportEntry ? 1 : 3),
     body: SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (membershipPending) ...[
+              const Notice(
+                'Tu solicitud Guardián sigue pendiente. Consulta el mismo intento para conocer su resultado.',
+              ),
+              TextButton(
+                onPressed: () async {
+                  await context.push('/guardian');
+                  if (context.mounted) refreshRegistration?.call();
+                },
+                child: const Text('Consultar solicitud Guardián'),
+              ),
+            ],
             if (registration != null) ...[
               Notice(registration!.summary),
               TextButton(
@@ -128,7 +149,9 @@ class ImpactScreen extends ConsumerWidget {
                   Semantics(
                     header: true,
                     child: Text(
-                      'Vidas que continúan gracias a ti.',
+                      supportEntry
+                          ? 'Tu impacto Guardián'
+                          : 'Vidas que continúan gracias a ti.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 20,
@@ -153,6 +176,10 @@ class ImpactScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 16),
+            MonthlyImpactPanel(
+              key: ValueKey(ref.watch(identityControllerProvider).identity?.id),
+            ),
+            const SizedBox(height: 24),
             LiveSection<List<Json>>(
               load: () => loadImpact(ref),
               errorMessage: (_) =>
@@ -171,14 +198,20 @@ class ImpactScreen extends ConsumerWidget {
             if (ref.watch(guardianEnabledProvider)) ...[
               const SizedBox(height: 16),
               ContributionButton(
-                'Administrar suscripción',
+                registration != null
+                    ? 'Administrar registro Guardián'
+                    : 'Administrar suscripción',
                 secondary: true,
-                onPressed: () => context.push('/guardian'),
+                onPressed: () async {
+                  await context.push('/guardian');
+                  if (context.mounted) refreshRegistration?.call();
+                },
               ),
-              TextButton(
-                onPressed: () => context.push('/impact/guardian'),
-                child: const Text('Conoce Guardián'),
-              ),
+              if (!supportEntry && registration == null)
+                TextButton(
+                  onPressed: () => context.push('/impact/guardian'),
+                  child: const Text('Conoce Guardián'),
+                ),
             ],
           ],
         ),

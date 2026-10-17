@@ -25,6 +25,9 @@ import '../community/content_actions.dart';
 import '../identity/identity_controller.dart';
 import '../payments/payment_repository.dart';
 import '../payments/contribution_layout.dart';
+import '../payments/guardian_repository.dart';
+import '../payments/guardian_registration.dart';
+import '../profile/impact_screen.dart';
 import 'rescue_fields.dart';
 import 'rescuer_home_screen.dart' show RescuerPendingEmpty;
 import 'expense_field.dart';
@@ -2359,9 +2362,14 @@ class RescueCatalogScreen extends ConsumerStatefulWidget {
 
 class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
   int page = 1;
+  int membershipRevision = 0;
   bool busy = false;
   bool? savedOverride;
   String? error;
+
+  void reloadMembership() {
+    if (mounted) setState(() => membershipRevision++);
+  }
 
   Future<void> toggleCase(RescueRecord record, VoidCallback refresh) async {
     final repo = ref.read(communityRepositoryProvider);
@@ -2423,6 +2431,59 @@ class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.caseId == null &&
+        ref.watch(guardianEnabledProvider) &&
+        ref.watch(identityControllerProvider).identity != null) {
+      return LiveSection<Json>(
+        key: ValueKey(
+          'support-membership:${ref.watch(identityControllerProvider).identity?.id}:$membershipRevision',
+        ),
+        load: () => ref.read(guardianRepositoryProvider).membershipState(),
+        errorMessage: (_) =>
+            'No pudimos consultar tu estado de Guardián. Vuelve a intentarlo.',
+        statusFrame: (child) => Scaffold(
+          backgroundColor: Colors.white,
+          bottomNavigationBar: const CommunityNav(1),
+          body: SafeArea(
+            child: Padding(padding: const EdgeInsets.all(24), child: child),
+          ),
+        ),
+        builder: (state, _) {
+          final registration = state['registration'];
+          final plan = state['plan'];
+          final activation = state['activation'];
+          if (registration is GuardianRegistration &&
+              registration.status != 'canceled') {
+            return ImpactScreen(
+              registration: registration,
+              refreshRegistration: reloadMembership,
+              supportEntry: true,
+            );
+          }
+          if (plan is Map && plan['status'] == 'active') {
+            return ImpactScreen(supportEntry: true, refreshRegistration: reloadMembership);
+          }
+          if (activation is Map &&
+              [
+                'pending',
+                'attention',
+                'funded_pending_schedule',
+              ].contains(activation['status']) &&
+              activation['cancellation_requested_at'] == null) {
+            return ImpactScreen(
+              supportEntry: true,
+              membershipPending: true,
+              refreshRegistration: reloadMembership,
+            );
+          }
+          return buildCatalog(context, refreshMembership: reloadMembership);
+        },
+      );
+    }
+    return buildCatalog(context);
+  }
+
+  Widget buildCatalog(BuildContext context, {VoidCallback? refreshMembership}) {
     final content = LiveSection<DataPage<RescueRecord>>(
       key: ValueKey('${widget.caseId}:$page'),
       statusFrame: widget.caseId == null
@@ -2432,6 +2493,7 @@ class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
               error: null,
               changePage: (value) => setState(() => page = value),
               status: child,
+              onGuardianReturn: refreshMembership,
             )
           : (child) => CaseStatusFrame(child),
       load: () {
@@ -2446,6 +2508,7 @@ class _RescueCatalogState extends ConsumerState<RescueCatalogScreen> {
               data: data,
               page: page,
               error: error,
+              onGuardianReturn: refreshMembership,
               changePage: (value) => setState(() => page = value),
             )
           : _PublicCaseDetail(

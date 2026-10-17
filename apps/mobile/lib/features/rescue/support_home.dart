@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -23,12 +24,19 @@ class SupportHomePage extends StatelessWidget {
     required this.error,
     required this.changePage,
     this.status,
+    this.onGuardianReturn,
   });
   final DataPage<RescueRecord> data;
   final int page;
   final String? error;
   final ValueChanged<int> changePage;
   final Widget? status;
+  final VoidCallback? onGuardianReturn;
+
+  Future<void> openGuardian(BuildContext context) async {
+    await context.push('/guardian?enroll=1');
+    if (context.mounted) onGuardianReturn?.call();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +161,8 @@ class SupportHomePage extends StatelessWidget {
                       return SliverToBoxAdapter(
                         child: Column(
                           children: [
-                            GuardianSupportCard(height: height),
+                            GuardianSupportCard(height: height,
+                              onOpenEnrollment: () => openGuardian(context)),
                             const SizedBox(height: 12),
                             ConstrainedBox(
                               constraints: const BoxConstraints(minHeight: 52),
@@ -161,7 +170,8 @@ class SupportHomePage extends StatelessWidget {
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 18,
                                 ),
-                                child: const GuardianSupportDock(),
+                                child: GuardianSupportDock(
+                                  onOpenEnrollment: () => openGuardian(context)),
                               ),
                             ),
                             SizedBox(height: bottom),
@@ -348,272 +358,282 @@ class _CaseProgress extends CustomPainter {
 }
 
 class GuardianSupportCard extends StatefulWidget {
-  const GuardianSupportCard({super.key, required this.height});
+  const GuardianSupportCard({super.key, required this.height, this.onOpenEnrollment});
   final double height;
+  final VoidCallback? onOpenEnrollment;
   @override
   State<GuardianSupportCard> createState() => _GuardianSupportCardState();
 }
 
 class _GuardianSupportCardState extends State<GuardianSupportCard> {
+  static const assets = [
+    'guardian-carousel-hero.jpg',
+    'guardian-luna.jpg',
+    'guardian-milo.jpg',
+  ];
   int page = 0;
-  PageController? carouselController;
-  double carouselWidth = 0;
-  @override
-  void dispose() {
-    carouselController?.dispose();
-    super.dispose();
+  double drag = 0;
+  bool dragging = false, exiting = false, pointerCanceled = false;
+  int transition = 0;
+
+  void advance([int direction = 1]) {
+    if (exiting) return;
+    if (MediaQuery.disableAnimationsOf(context)) {
+      setState(() {
+        page = (page + 1) % assets.length;
+        drag = 0;
+        dragging = false;
+      });
+      return;
+    }
+    setState(() {
+      exiting = true;
+      dragging = false;
+      drag = direction * 420;
+    });
+    final token = ++transition;
+    Future<void>.delayed(const Duration(milliseconds: 280), () {
+      if (!mounted || transition != token) return;
+      setState(() {
+        page = (page + 1) % assets.length;
+        drag = 0;
+        exiting = false;
+      });
+    });
   }
 
+  void release() {
+    if (!dragging || exiting) return;
+    if (pointerCanceled) {
+      setState(() {
+        drag = 0;
+        dragging = false;
+      });
+      return;
+    }
+    if (drag.abs() > 110) {
+      advance(drag < 0 ? -1 : 1);
+    } else {
+      setState(() {
+        drag = 0;
+        dragging = false;
+      });
+    }
+  }
+
+  Widget photo(int index) => ClipRRect(
+    borderRadius: BorderRadius.circular(28),
+    child: Image.asset(
+      'assets/guardian/${assets[index]}',
+      fit: BoxFit.cover,
+      width: double.infinity,
+      height: double.infinity,
+    ),
+  );
+
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-    builder: (context, box) {
-      if (carouselWidth != box.maxWidth) {
-        carouselController?.dispose();
-        carouselWidth = box.maxWidth;
-        carouselController = PageController(
-          initialPage: page,
-          viewportFraction: (box.maxWidth - 38) / box.maxWidth,
-        );
-      }
-      return ReferenceFocusOutline(
-        radius: 28,
-        outlineBorderRadius: const BorderRadius.vertical(
-          top: Radius.circular(33),
-        ),
-        child: DecoratedBox(
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-            boxShadow: [
-              BoxShadow(
-                color: Color(0x3815110d),
-                offset: Offset(0, 16),
-                blurRadius: 40,
+  Widget build(BuildContext context) {
+    final reduced = MediaQuery.disableAnimationsOf(context);
+    final duration = reduced || dragging
+        ? Duration.zero
+        : Duration(milliseconds: exiting ? 280 : 250);
+    return SizedBox(
+      height: widget.height,
+      child: Stack(
+        clipBehavior: Clip.none,
+        fit: StackFit.expand,
+        children: [
+          ExcludeSemantics(
+            child: IgnorePointer(
+              child: Transform(
+                alignment: Alignment.bottomCenter,
+                transform: Matrix4.identity()
+                  ..rotateZ(7 * math.pi / 180)
+                  ..translateByDouble(14, 22, 0, 1)
+                  ..scaleByDouble(.92, .92, 1, 1),
+                child: Opacity(opacity: .82, child: photo((page + 2) % 3)),
               ),
-            ],
+            ),
           ),
-          child: Semantics(
-            key: const ValueKey('guardian-support-card-action'),
-            container: true,
-            button: true,
-            label: 'Sé un Guardián',
-            child: InkWell(
-              splashFactory: NoSplash.splashFactory,
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              focusColor: Colors.transparent,
-              onTap: () => context.push('/guardian?enroll=1'),
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(28),
+          ExcludeSemantics(
+            child: IgnorePointer(
+              child: Transform(
+                alignment: Alignment.bottomCenter,
+                transform: Matrix4.identity()
+                  ..rotateZ(4 * math.pi / 180)
+                  ..translateByDouble(8, 10, 0, 1)
+                  ..scaleByDouble(.985, .985, 1, 1),
+                child: photo((page + 1) % 3),
               ),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(28),
+            ),
+          ),
+          AnimatedContainer(
+            key: const ValueKey('guardian-support-carousel'),
+            duration: duration,
+            curve: const Cubic(.22, 1, .36, 1),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(28),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x2915110d),
+                  offset: Offset(0, 18),
+                  blurRadius: 44,
                 ),
-                child: SizedBox(
-                  height: widget.height,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      PageView(
-                        key: const ValueKey('guardian-support-carousel'),
-                        controller: carouselController,
-                        padEnds: false,
-                        onPageChanged: (value) => setState(() => page = value),
-                        children: [
-                          for (final asset in const [
-                            'guardian-carousel-hero.jpg',
-                            'guardian-luna.jpg',
-                            'guardian-milo.jpg',
-                          ])
-                            Padding(
-                              padding: const EdgeInsets.only(right: 14),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(28),
-                                child: Stack(
-                                  fit: StackFit.expand,
-                                  children: [
-                                    Semantics(
-                                      label:
-                                          'Guardián, imagen ${const ['guardian-carousel-hero.jpg', 'guardian-luna.jpg', 'guardian-milo.jpg'].indexOf(asset) + 1} de 3',
-                                      child: Image.asset(
-                                        'assets/guardian/$asset',
-                                        fit: BoxFit.cover,
+              ],
+            ),
+            transformAlignment: Alignment.bottomCenter,
+            transform: Matrix4.identity()
+              ..translateByDouble(drag, 0, 0, 1)
+              ..rotateZ((exiting ? drag.sign * 18 : drag / 28) * math.pi / 180),
+            child: AnimatedOpacity(
+              duration: duration,
+              opacity: exiting ? .35 : 1,
+              child: Listener(
+                onPointerCancel: (_) {
+                  pointerCanceled = true;
+                  if (!exiting)
+                    setState(() {
+                      drag = 0;
+                      dragging = false;
+                    });
+                },
+                child: GestureDetector(
+                  dragStartBehavior: DragStartBehavior.down,
+                  onHorizontalDragStart: exiting
+                      ? null
+                      : (_) => setState(() {
+                          dragging = true;
+                          pointerCanceled = false;
+                        }),
+                  onHorizontalDragUpdate: exiting
+                      ? null
+                      : (event) => setState(() => drag += event.delta.dx),
+                  onHorizontalDragEnd: exiting ? null : (_) => release(),
+                  onHorizontalDragCancel: () => setState(() {
+                    drag = 0;
+                    dragging = false;
+                  }),
+                  child: ReferenceFocusOutline(
+                    radius: 28,
+                    child: Semantics(
+                      key: const ValueKey('guardian-support-card-action'),
+                      container: true,
+                      button: true,
+                      label: 'Sé un Guardián. Imagen ${page + 1} de 3',
+                      onIncrease: () => advance(1),
+                      onDecrease: () => advance(-1),
+                      child: InkWell(
+                        splashFactory: NoSplash.splashFactory,
+                        overlayColor: const WidgetStatePropertyAll(
+                          Colors.transparent,
+                        ),
+                        onTap: exiting
+                            ? null
+                            : widget.onOpenEnrollment ?? () => context.push('/guardian?enroll=1'),
+                        borderRadius: BorderRadius.circular(28),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(28),
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              photo(page),
+                              if (page != 0) ...[
+                                const IgnorePointer(
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Color(0x8015110d),
+                                          Color(0x2415110d),
+                                          Color(0x0f15110d),
+                                          Color(0x3315110d),
+                                        ],
+                                        stops: [0, .36, .62, 1],
                                       ),
                                     ),
-                                    if (asset != 'guardian-carousel-hero.jpg')
-                                      const IgnorePointer(
-                                        child: DecoratedBox(
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              begin: Alignment.topCenter,
-                                              end: Alignment.bottomCenter,
-                                              colors: [
-                                                Color(0x8c15110d),
-                                                Color(0x3815110d),
-                                                Color(0x7315110d),
-                                                Color(0xe015110d),
-                                              ],
-                                              stops: [0, .34, .58, 1],
+                                  ),
+                                ),
+                                SingleChildScrollView(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(18),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'Sé un Guardián',
+                                          style: TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.white,
+                                            height: 1.2,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 14),
+                                        for (final label in [
+                                          'Rescatistas y casos verificados',
+                                          'Sigue tu huella',
+                                          'Cancela cuando quieras',
+                                        ])
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              bottom: 10,
                                             ),
-                                          ),
-                                        ),
-                                      ),
-                                    if (asset != 'guardian-carousel-hero.jpg')
-                                      SingleChildScrollView(
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                            18,
-                                            22,
-                                            18,
-                                            0,
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const Text(
-                                                'Sé un Guardián',
-                                                style: TextStyle(
-                                                  fontFamily: 'Inter',
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.w700,
-                                                  height: 1.2,
-                                                  letterSpacing: -.48,
-                                                  color: Colors.white,
-                                                  shadows: [
-                                                    Shadow(
-                                                      color: Color(0x59000000),
-                                                      offset: Offset(0, 1),
-                                                      blurRadius: 2,
+                                            child: Row(
+                                              children: [
+                                                const Icon(
+                                                  Icons.pets_outlined,
+                                                  color: yellow,
+                                                  size: 14,
+                                                ),
+                                                const SizedBox(width: 10),
+                                                Expanded(
+                                                  child: Text(
+                                                    label,
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14,
+                                                      height: 1.3,
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                              const SizedBox(height: 14),
-                                              _benefit(
-                                                'Rescatistas y casos verificados',
-                                                SvgPicture.asset(
-                                                  'assets/profile/icon-shield.svg',
-                                                  width: 14,
-                                                  height: 14,
-                                                  colorFilter:
-                                                      const ColorFilter.mode(
-                                                        yellow,
-                                                        BlendMode.srcIn,
-                                                      ),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 10),
-                                              _benefit(
-                                                'Sigue tu huella',
-                                                SvgPicture.string(
-                                                  _impact,
-                                                  width: 14,
-                                                  height: 14,
-                                                  colorFilter:
-                                                      const ColorFilter.mode(
-                                                        yellow,
-                                                        BlendMode.srcIn,
-                                                      ),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 10),
-                                              _benefit(
-                                                'Cancela cuando quieras',
-                                                SvgPicture.string(
-                                                  _check,
-                                                  width: 14,
-                                                  height: 14,
-                                                  colorFilter:
-                                                      const ColorFilter.mode(
-                                                        yellow,
-                                                        BlendMode.srcIn,
-                                                      ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    Positioned(
-                                      right: 18,
-                                      bottom: 18,
-                                      child: ExcludeSemantics(
-                                        excluding:
-                                            const [
-                                              'guardian-carousel-hero.jpg',
-                                              'guardian-luna.jpg',
-                                              'guardian-milo.jpg',
-                                            ].indexOf(asset) !=
-                                            page,
-                                        child: Semantics(
-                                          label: 'Imagen ${page + 1} de 3',
-                                          child: Row(
-                                            children: [
-                                              for (var i = 0; i < 3; i++)
-                                                Container(
-                                                  margin:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 3,
-                                                      ),
-                                                  width: 6,
-                                                  height: 6,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: i == page
-                                                        ? yellow
-                                                        : Colors.white54,
                                                   ),
                                                 ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ),
-                        ],
+                              ],
+                            ],
+                          ),
+                        ),
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      );
-    },
-  );
-  Widget _benefit(String label, Widget icon) => Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      ExcludeSemantics(child: icon),
-      const SizedBox(width: 10),
-      Expanded(
-        child: Text(
-          label,
-          style: const TextStyle(
-            fontFamily: 'Inter',
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            letterSpacing: 0,
-            height: 1.3,
-            color: Color(0xebffffff),
-            shadows: [
-              Shadow(
-                color: Color(0x4d000000),
-                offset: Offset(0, 1),
-                blurRadius: 2,
+          Positioned(
+            right: 8,
+            bottom: 8,
+            child: IconButton(
+              tooltip: 'Siguiente imagen Guardián',
+              onPressed: exiting ? null : () => advance(-1),
+              style: IconButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: ink,
               ),
-            ],
+              icon: const Icon(Icons.chevron_right),
+            ),
           ),
-        ),
+        ],
       ),
-    ],
-  );
+    );
+  }
 }
 
 bool _guardianDockStacks(BuildContext context, double width) {
@@ -653,7 +673,8 @@ double _guardianDockHeight(BuildContext context, double width) {
 }
 
 class GuardianSupportDock extends StatelessWidget {
-  const GuardianSupportDock({super.key});
+  const GuardianSupportDock({super.key, this.onOpenEnrollment});
+  final VoidCallback? onOpenEnrollment;
   @override
   Widget build(BuildContext context) => ReferenceFocusOutline(
     radius: 0,
@@ -666,7 +687,7 @@ class GuardianSupportDock extends StatelessWidget {
         highlightColor: Colors.transparent,
         hoverColor: Colors.transparent,
         focusColor: Colors.transparent,
-        onTap: () => context.push('/guardian?enroll=1'),
+        onTap: onOpenEnrollment ?? () => context.push('/guardian?enroll=1'),
         borderRadius: BorderRadius.circular(24),
         child: LayoutBuilder(
           builder: (context, box) {
@@ -731,21 +752,3 @@ class GuardianSupportDock extends StatelessWidget {
 String _compactPesos(int cents) => cents % 100 == 0
     ? '\$${cents ~/ 100}'
     : '\$${(cents / 100).toStringAsFixed(2)}';
-
-const _impact = r'''<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="19.9986" height="19.9986" viewBox="0 0 19.9986 19.9986" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="Icon" clip-path="url(#clip0_0_7)">
-<path id="Vector" d="M8.27991 12.9154C8.20552 12.6271 8.05521 12.3639 7.84463 12.1533C7.63404 11.9427 7.37087 11.7924 7.0825 11.718L1.97036 10.3998C1.88314 10.375 1.80637 10.3225 1.75171 10.2502C1.69705 10.1778 1.66748 10.0896 1.66748 9.99897C1.66748 9.90831 1.69705 9.82012 1.75171 9.74779C1.80637 9.67545 1.88314 9.62292 1.97036 9.59817L7.0825 8.27909C7.37077 8.20477 7.63387 8.05459 7.84445 7.84416C8.05502 7.63373 8.20539 7.37073 8.27991 7.08251L9.59815 1.97037C9.62266 1.88281 9.67514 1.80566 9.74758 1.75071C9.82002 1.69576 9.90845 1.66602 9.99938 1.66602C10.0903 1.66602 10.1787 1.69576 10.2512 1.75071C10.3236 1.80566 10.3761 1.88281 10.4006 1.97037L11.718 7.08251C11.7924 7.37088 11.9427 7.63405 12.1533 7.84464C12.3639 8.05523 12.6271 8.20553 12.9154 8.27993L18.0276 9.59733C18.1155 9.62158 18.193 9.674 18.2482 9.74655C18.3035 9.81911 18.3334 9.90778 18.3334 9.99897C18.3334 10.0902 18.3035 10.1788 18.2482 10.2514C18.193 10.3239 18.1155 10.3764 18.0276 10.4006L12.9154 11.718C12.6271 11.7924 12.3639 11.9427 12.1533 12.1533C11.9427 12.3639 11.7924 12.6271 11.718 12.9154L10.3998 18.0276C10.3753 18.1151 10.3228 18.1923 10.2503 18.2472C10.1779 18.3022 10.0895 18.3319 9.99854 18.3319C9.90762 18.3319 9.81919 18.3022 9.74675 18.2472C9.6743 18.1923 9.62183 18.1151 9.59732 18.0276L8.27991 12.9154Z" stroke="#6A615B" stroke-width="1.66655" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Vector_2" d="M16.6655 2.49982V5.83292" stroke="#6A615B" stroke-width="1.66655" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Vector_3" d="M18.3321 4.16602H14.999" stroke="#6A615B" stroke-width="1.66655" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Vector_4" d="M3.33301 14.166V15.8326" stroke="#6A615B" stroke-width="1.66655" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Vector_5" d="M4.16643 14.998H2.49988" stroke="#6A615B" stroke-width="1.66655" stroke-linecap="round" stroke-linejoin="round"/>
-</g>
-<defs>
-<clipPath id="clip0_0_7">
-<rect width="19.9986" height="19.9986" fill="white"/>
-</clipPath>
-</defs>
-</svg>
-''';
-const _check = r'''<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#15110d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>
-''';
