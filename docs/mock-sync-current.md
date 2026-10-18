@@ -14,6 +14,8 @@ Referencia congelada **d304535c63c2d15686476b421e140de475ff6b6f**. Rama `codex/f
 
 Dueño integrador; una cola Flutter y un operador de dispositivo/escrituras. Siguiente: evaluación del candidato instalado con Irlanda y resolver únicamente los gates externos documentados; no otro build, pago, migración ni fixture sin autoridad específica. Fuentes: [ledger](progress.md), [matriz única](parity-current-review.md), [historia remota](migration-history-audit.md), [social](meta-social-verification.md). Evidencia nueva: `.tools/b6-release-20261017/impact-access-release/operation-completed.private.json` y `device-impact-access/`. Original dirty y memoria C04 preservados. Sin merge, force-push, dinero real en Dopmi ni producción.
 
+Confirmación humana posterior17oct: «Lo revisaremos juntos después» mantiene diferida la evaluación con Irlanda. Para TalkBack, tras ofrecer disponibilidad inicial, el titular indicó «Hagamos esta prueba despues»; no se ejecutó el recorrido ni se activó el servicio. Lectura ADB posterior: accessibility_enabled=0 y enabled_accessibility_services=null. Próxima acción depende de una nueva ventana de escucha con el titular; no repetir la pregunta de aceptación ni atribuir pronunciación verificada.
+
 ## Corte anterior conservado
 
 # Checkpoint Dopmi — continuación directa, 15/10/2026
