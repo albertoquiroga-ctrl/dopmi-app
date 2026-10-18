@@ -20,6 +20,8 @@ Reanudación humana posterior17oct: el titular activó TalkBack y autorizó cont
 
 Actualización posterior17oct: titular difiere QA TalkBack a post-MVP; supersede sólo los pendientes de lector descritos arriba y en cortes anteriores. Ya no esperar respuesta a la pregunta de lectura ni volver a solicitar esta prueba para cerrar MVP. Restantes gates conservan sus dueños y permisos.
 
+Cierre MVP, preparación posterior17oct: titular asume soporte@dopmi.org (product-decisions.md); funcionamiento del buzón reutilizado, sin otro correo. Contraste técnico social/OTP y borradores privados de cobertura completados, corrección menor de headers agrupada y revisión independiente de seguridad cerrada (apéndice SHA c3ef3cca476effb9ab0ad71adc214a46ef9f292e2ac0f3b3ddaa26250f6e84c2). No política publicada ni solución legado acreditada. Paquete D/R separado preparado sin apertura global: antes de ejecutar faltan actor/proveedor/baseline, consultas ligadas, correlación callback y consentimiento específico; no se encadenan dos retiradas sobre la misma prueba. UI318 actual de Irlanda muestra ambas redes no conectadas/no disponibles; no se inició conexión, ni retirada/flag/OAuth. Modo Adoptante restaurado tras inspección. Siguiente dependiente: disponibilidad del titular de una cuenta previamente conectada; pregunta presentada sin autorizar todavía desconexión. SMS/Meta/legado/Irlanda conservan gates; TalkBack post-MVP. No nueva build/pago ni repetición de QA cerrada.
+
 ## Corte anterior conservado
 
 # Checkpoint Dopmi — continuación directa, 15/10/2026

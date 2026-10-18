@@ -1,3 +1,7 @@
+## 17/10/2026 — Responsable del canal de privacidad y soporte
+
+El titular confirmó «Yo atenderé soporte@dopmi.org» al preparar el cierre MVP. Conserva ese canal ya existente y su responsabilidad de recepción/coordinación de solicitudes. No autoriza enviar correos, inventariar datos personales, borrar cuentas/legado ni publicar contenido/valores Meta. La entrega histórica del buzón se reutiliza; no implica SLA ni prueba de atención permanente. El procedimiento técnico mantiene verificación privada de titularidad, tratamiento por cuenta, revisión y autorización separada de cualquier operación destructiva.
+
 ## 17/10/2026 — QA TalkBack pasa a post-MVP por decisión del titular
 
 Fuente: respuesta humana «Pongamos lo de talkback como post mvp ya que no quiero dedicarle tiempo ahorita». La validación real restante con TalkBack deja de ser gate del MVP y se conserva como pendiente post-MVP, sin marcarla aprobada. Afecta sólo esta QA de lector; no retira soporte accesible, controles de texto/contraste/escala ni otros requisitos vigentes. Evidencia parcial en318: anuncio y apertura de «Ver mi impacto» confirmados por el titular; lectura personal/comunitaria y Back con TalkBack no completados. No supone aceptación global ni modifica SMS/social/legado/Meta. Root desactivó TalkBack al cerrar la prueba y verificó accessibility_enabled=0/sin servicios habilitados; Dopmi abierta.

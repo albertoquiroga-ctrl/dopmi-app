@@ -36,6 +36,18 @@ entregada. Titular/operador coordinan contenido y permisos; integrador prepara t
 Negativos sociales reales requieren ventana/consentimientos propios; SMS espera otro
 número controlado no vinculado. Aceptación UI/UX se evaluará con Irlanda.
 
+## Preparación de cierre MVP posterior17oct — sin repetir QA
+
+Responsable de soporte@dopmi.org confirmado: el titular ([decisión](product-decisions.md)); entrega de buzón ya acreditada en h10-store-privacy-declarations.md. No se envió otro correo. Falta validar procedimiento privado para reclamantes sin acceso/legado; nombrar responsable no autoriza inventario ni borrado.
+
+Contraste técnico de datos sociales/teléfono y borradores de cobertura preparados en el apéndice privado de meta-public-values-review.txt, con fuentes de código y límites de retención/logs/proveedor/legado. Insumo para revisión humana; no política publicada ni dictamen legal. Procedimiento operativo acotado añadido al paquete de gates legado existente; ninguna solicitud real procesada.
+
+Paquete negativo separado D/R en .tools/b5-social-preparation-20261017/negative-qa-no-global-flag/: list/disconnect y deauthorize no necesitan abrir el flag global según fuente revisada. D y R sobre la misma prueba no acreditan dos retiradas; cada etapa necesita actor/proveedor conectado y consentimiento propio. No se ejecutó ni está lista para ejecución genérica: faltan baseline/lecturas ligadas y evidencia correlacionada del callback real para R. No extraer signed_request, sujeto o JWT para demostrarlo. Denegación OAuth requiere otro paquete/ventana; no reusar cancelación local como prueba de denegación.
+
+Retención ya cerrada por V5 y primer run90561: el ítem3 «no implementada» del historial inferior está superado, no volver a aplicar ni probar. TalkBack post-MVP por decisión humana; no cambia los gates SMS/sociales/Meta ni la aceptación con Irlanda. Producto sigue7caea887/2.3.3(318)/Play interno; paquete técnico no crea candidato ni autoriza nueva build/pago/OAuth/publicación.
+
+Revisión independiente de seguridad de la preparación cerrada: hashes fuente del paquete coinciden; apéndice corregido c3ef3cca476effb9ab0ad71adc214a46ef9f292e2ac0f3b3ddaa26250f6e84c2 limita headers a ramas reales y recoge responsable humano. No hallazgo material restante en esta preparación, sin certificar remoto/privacidad jurídica/ejecución. UI real318 de la sesión actual Irlanda no tiene prueba Facebook ni Instagram y muestra Conectar no disponible; no inferir valor de secreto por UI. Modo Rescatista usado sólo para inspección y Adoptante restaurado; no nueva prueba positiva ni desconexión/revocación. Falta cuenta previamente conectada y consentimiento del dueño para baseline específico.
+
 ## Historial conservado — cierre9/10/2026
 
 **PLAY311_OAUTH_INSTAGRAM_FACEBOOK_VERIFICADO_DEV_CERRADO; entrega pendiente.**
