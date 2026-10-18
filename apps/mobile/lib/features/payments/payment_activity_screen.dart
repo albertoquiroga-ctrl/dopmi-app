@@ -29,8 +29,13 @@ const paymentActivityStatuses = {
 };
 
 class PaymentActivityScreen extends ConsumerWidget {
-  const PaymentActivityScreen({super.key, this.received = false});
+  const PaymentActivityScreen({
+    super.key,
+    this.received = false,
+    this.readOnly = false,
+  });
   final bool received;
+  final bool readOnly;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final identity = ref.watch(identityControllerProvider);
@@ -44,6 +49,7 @@ class PaymentActivityScreen extends ConsumerWidget {
                 key: ValueKey('$owner:$received'),
                 owner: owner,
                 received: received,
+                readOnly: readOnly,
               );
       },
     );
@@ -51,9 +57,15 @@ class PaymentActivityScreen extends ConsumerWidget {
 }
 
 class _ActivityList extends ConsumerStatefulWidget {
-  const _ActivityList({super.key, required this.owner, required this.received});
+  const _ActivityList({
+    super.key,
+    required this.owner,
+    required this.received,
+    required this.readOnly,
+  });
   final String owner;
   final bool received;
+  final bool readOnly;
   @override
   ConsumerState<_ActivityList> createState() => _ActivityListState();
 }
@@ -168,6 +180,7 @@ class _ActivityListState extends ConsumerState<_ActivityList> {
               item: item,
               received: widget.received,
               owner: widget.owner,
+              readOnly: widget.readOnly,
             ),
           if (error != null)
             TextButton(
@@ -191,9 +204,11 @@ class PaymentActivityCard extends ConsumerStatefulWidget {
     required this.item,
     required this.received,
     required this.owner,
+    this.readOnly = false,
   });
   final Json item;
   final bool received;
+  final bool readOnly;
   final String owner;
   @override
   ConsumerState<PaymentActivityCard> createState() =>
@@ -281,7 +296,13 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
   }
 
   Future<void> openCaseAttempt() async {
-    if (!current || busy || widget.received || !caseContribution) return;
+    if (!current ||
+        busy ||
+        widget.readOnly ||
+        widget.received ||
+        !caseContribution) {
+      return;
+    }
     setState(() {
       busy = true;
       error = null;
@@ -293,7 +314,13 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
             widget.item['id'] as String,
             widget.item['idempotency_key'] as String,
           );
-      if (!mounted || !current) return;
+      if (!mounted ||
+          !current ||
+          widget.readOnly ||
+          widget.received ||
+          !caseContribution) {
+        return;
+      }
       await context.push('/contribute-case/${row['case_id']}', extra: row);
     } catch (_) {
       if (current) {
@@ -533,7 +560,8 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
                         'Referencia: ${d['id']}',
                         style: const TextStyle(fontSize: 12, color: muted),
                       ),
-                      if (!guardian &&
+                      if (!widget.readOnly &&
+                          !guardian &&
                           !widget.received &&
                           d['payment_status'] == 'pending' &&
                           d['idempotency_key'] is String &&
@@ -542,7 +570,8 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
                           onPressed: busy ? null : openCaseAttempt,
                           child: const Text('Continuar aportación'),
                         ),
-                      if (caseContribution &&
+                      if (!widget.readOnly &&
+                          caseContribution &&
                           !widget.received &&
                           d['payment_status'] != 'pending' &&
                           d['idempotency_key'] is String)
@@ -550,7 +579,8 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
                           onPressed: busy ? null : openCaseAttempt,
                           child: const Text('Consultar aportación'),
                         ),
-                      if (!guardian &&
+                      if (!widget.readOnly &&
+                          !guardian &&
                           !widget.received &&
                           d['payment_status'] == 'pending' &&
                           d['idempotency_key'] is String &&
@@ -578,7 +608,7 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
                         amount('Devolución pendiente', 'refund_cents'),
                         amount('Devuelto', 'refunded_cents'),
                       ],
-                      if (d['case_id'] is String)
+                      if (!widget.readOnly && d['case_id'] is String)
                         TextButton(
                           onPressed: () =>
                               context.push('/rescue-cases/${d['case_id']}'),
@@ -616,7 +646,7 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
                                   Text(
                                     'Revertido: ${contributionMoney((a['reversed_cents'] as num).toInt())}',
                                   ),
-                                if (a['case_id'] is String)
+                                if (!widget.readOnly && a['case_id'] is String)
                                   TextButton(
                                     onPressed: () => context.push(
                                       '/rescue-cases/${a['case_id']}',

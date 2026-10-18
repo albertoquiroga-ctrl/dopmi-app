@@ -1,3 +1,5 @@
+Actualización vigente17oct: titular950d1 autoriza preparar versiones y aceptación; B5-L1/L2 implementados localmente, B5-L3 gates/revisión en curso en matriz existente. Los pendientes de decisión de versionado inferiores quedan resueltos por product-decisions.md. Sin publicación/despliegue/build adicional autorizados; instalado318sin cambios. Retención/respaldos y legado conservan límites.
+
 ## Cola vigente — 17/10/2026, d304535
 
 Actualización posterior: titular coordina verificación y elige solicitud pendiente/revisión por caso sin nuevo sistema de recuperación. Borradores de páginas existentes /delete-account, /privacy-policy y /terms preparados/revisados técnicamente y render local; no publicar. Pendiente decisión de versiones/aceptación coherente con móvil/SQL; retención/respaldos y compatibilidad integral del legado siguen gates. Evidencia, demo y retro en meta-social-verification.md; no nueva build, pago ni QA D/R. Demás dependencias externas y aceptación318 siguen abiertas.

@@ -240,6 +240,28 @@ class GuardianRepository {
     return {...legacy, 'registration': await registrationState()};
   }
 
+  // Read-only projection for legal-consent access. Unlike registrationState,
+  // this must not reconcile a pending SetupIntent or prepare any payment.
+  Future<GuardianRegistration?> registrationSnapshot() async {
+    final owner = client.auth.currentUser?.id;
+    final token = client.auth.currentSession?.accessToken;
+    if (owner == null || token == null) {
+      throw const FormatException('Inicia sesión para consultar Guardián.');
+    }
+    final result = await client.rpc(
+      'dopmi_guardian_registration_cancellation_state',
+    );
+    if (client.auth.currentUser?.id != owner ||
+        client.auth.currentSession?.accessToken != token) {
+      throw const FormatException(
+        'La sesión cambió. Consulta desde tu cuenta.',
+      );
+    }
+    if (result == null) return null;
+    if (result is! Map) throw const FormatException('Registro no confirmado');
+    return GuardianRegistration.fromJson(Map<String, dynamic>.from(result));
+  }
+
   Future<GuardianRegistration?> registrationState() async {
     var result = await client.rpc('dopmi_guardian_registration_state');
     if (result == null) return null;

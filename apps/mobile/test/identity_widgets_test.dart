@@ -506,7 +506,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.widget<AuthConsentRow>(row).value, true);
     expect(repo.consentCount, 0);
-    await tap(tester, 'Confirmar y continuar');
+    await tap(tester, 'Aceptar actualización y continuar');
     expect(repo.consentCount, 1);
     expect(find.text('Antes de continuar'), findsNothing);
   });

@@ -4,8 +4,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/config.dart';
 import 'native_identity.dart';
 
-const currentTermsVersion = 'terms-2026-09-28';
-const currentPrivacyVersion = 'privacy-2026-09-28';
+const currentTermsVersion = 'terms-2026-10-17';
+const currentPrivacyVersion = 'privacy-2026-10-17';
 // Kept for build-253 test fixtures and migration compatibility only.
 const developmentTermsVersion = 'development-2026-09-13';
 

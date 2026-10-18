@@ -31,6 +31,10 @@ class FakeGuardian extends GuardianRepository {
   GuardianRegistration? methodsRegistration;
   int methodsRegistrationReads = 0;
   @override
+  Future<GuardianRegistration?> registrationSnapshot() async =>
+      methodsRegistration;
+
+  @override
   Future<GuardianRegistration?> registrationState() async {
     methodsRegistrationReads++;
     return methodsRegistration;
@@ -245,7 +249,19 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     final identity = FakeIdentityRepository()
-      ..user = Identity(owner, '$owner@example.test', verified: verified);
+      ..user = Identity(owner, '$owner@example.test', verified: verified)
+      ..profile = Profile(
+        id: owner,
+        name: 'Ana',
+        phone: '',
+        city: '',
+        mode: 'donor',
+        intent: 'adopt',
+        status: 'active',
+        termsVersion: currentTermsVersion,
+        privacyVersion: currentPrivacyVersion,
+        adultConfirmed: true,
+      );
     final container = ProviderContainer(
       overrides: [
         identityRepositoryProvider.overrideWithValue(identity),

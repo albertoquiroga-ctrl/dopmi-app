@@ -1,3 +1,7 @@
+## 17/10/2026 — Preparar versiones nuevas y aceptación registrada
+
+Titular eligió «Preparar nueva versión y aceptación» (pregunta950d1) dentro de B5/B6. Preparar términos y privacidad identificables nuevos para cuentas actuales, con lectura y confirmación explícita registrada; conservar acceso a privacidad, cancelación y comprobantes propios antes de aceptar. Aceptar no crea Guardián ni cobra. Integrador fija identificadores terms-2026-10-17/privacy-2026-10-17 como detalle técnico y conserva registros históricos. Preparación local/CI autorizada, no despliegue, publicación web/Meta ni otra build pagada. Conservación/respaldos y compatibilidad integral del legado siguen pendientes; no dictamen jurídico ni aceptación instalada del nuevo candidato.
+
 ## 17/10/2026 — Solicitudes sin acceso: pendientes y revisión por caso
 
 Titular eligió «Solicitud pendiente y revisión por caso» para el MVP cuando no pueda recuperarse ningún acceso asociado a la cuenta. La solicitud permanece abierta y se escala al titular; antes de consultar o borrar datos se prepara una forma concreta, revisada y suficiente de acreditar titularidad. Un correo recibido, nombre o identificador escrito no bastan. No ampliar ahora el alcance con un sistema adicional de recuperación. No implica rechazar automáticamente la solicitud, identidad acreditada, consulta individual, borrado ni publicación autorizados. Conservación y compatibilidad integral del legado mantienen sus gates.

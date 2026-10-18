@@ -74,6 +74,29 @@ void main() {
     return client;
   }
 
+  test('legal snapshot reads only owner RPC even with pending setup', () async {
+    final requests = <http.Request>[];
+    final client = await clientFor((request) {
+      requests.add(request);
+      return projection('method_pending');
+    });
+    final snapshot = await GuardianRepository(client).registrationSnapshot();
+    expect(snapshot!.status, 'method_pending');
+    expect(requests, hasLength(1));
+    expect(
+      requests.single.url.path,
+      '/rest/v1/rpc/dopmi_guardian_registration_cancellation_state',
+    );
+    expect(requests.single.headers['authorization'], startsWith('Bearer '));
+    expect(
+      requests.any((request) => request.url.path.contains('/functions/')),
+      isFalse,
+    );
+    expect(requests.single.method, 'POST');
+    expect(requests.single.url.queryParameters, isEmpty);
+    expect(jsonDecode(requests.single.body), isNull);
+  });
+
   test('native registration returns only transient setup secret and owner-scoped request', () async {
     final requests = <http.Request>[];
     final client = await clientFor((request) {

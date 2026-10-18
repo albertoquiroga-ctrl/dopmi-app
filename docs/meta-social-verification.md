@@ -1,3 +1,13 @@
+Resultado local posterior17oct: agrupación corregida, analyze0 y Flutter completo1246PASS/0fallos, focal130PASS/race7PASS. Backend891PASS/6omitidas, PostgreSQL real8/8, admin38/buildPASS y configuración17PASS. Revisiones independientes de código/seguridad/producto y render local cerradas. CI integral pendiente; nada desplegado/publicado/instalado ni aceptado por esta preparación. Este resultado supersede únicamente los pendientes locales iniciales conservados debajo.
+
+## 17/10/2026 — B5-L, actualización legal autorizada en preparación
+
+Respuesta humana950d1: preparar nueva versión y aceptación; decisión canónica en product-decisions.md. Implementación local usa terms-2026-10-17/privacy-2026-10-17, aceptación explícita sin casilla premarcada y sin inscripción/cargo. Conserva lectura de privacidad/comprobantes y consulta/cancelación Guardián según permisos existentes. El router no monta fuera de escena rutas de pago bloqueadas; recibos quedan en lectura. SQL conserva historia, idempotencia y compatibilidad con el par completo de318, impide downgrade y expone una proyección propia de cancelación sin conciliación financiera.
+
+Verificación parcial ejecutada: backend npm test891PASS/6omitidas/0fallos; ensayo focal PostgreSQL real8/8 en base local desechable, PGlite6/2omitidas por concurrencia; admin38/38 y buildPASS; configuración móvil17/17. Análisis Flutter inicial detectó reglas de llaves/importación; corrección mecánica y validación final pendientes. Revisiones independientes agruparon correcciones: accesos realmente visibles, recuperación de cancelación ante conflicto/respuesta perdida, límite de cancelación moderna para suspended/unconfirmed y Firebase/elecciones separadas en aviso nativo. No extrapolar resultados al candidato final hasta cerrar gates y CI.
+
+Borradores web de17oct preparados en rutas existentes; no publicados. Retención/respaldos generales y compatibilidad integral del legado mantienen gates. No despliegue DEV, publicación web/Meta ni otra build pagada autorizados por esta decisión. Producto instalado7caea887/2.3.3(318) sigue intacto; no repetir pagos, D/R, SMS ni QA ya cerrada. Dueño integrador y una cola Flutter; siguiente: formatter, analyze/pruebas finales, revisión de correcciones, CI y paquete exacto para revisión humana.
+
 # Verificación social — registro consolidado
 
 ## 17/10/2026 — Borrador público contrastado, versión pendiente

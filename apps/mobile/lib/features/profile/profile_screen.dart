@@ -673,8 +673,16 @@ class ConsentScreen extends ConsumerStatefulWidget {
     this.onTerms,
     this.onPrivacy,
     this.onPrivacyNotice,
+    this.onPayments,
+    this.onGuardian,
+    this.onReceivedPayments,
   });
-  final VoidCallback? onTerms, onPrivacy, onPrivacyNotice;
+  final VoidCallback? onTerms,
+      onPrivacy,
+      onPrivacyNotice,
+      onPayments,
+      onGuardian,
+      onReceivedPayments;
 
   @override
   ConsumerState<ConsentScreen> createState() => _ConsentScreenState();
@@ -682,46 +690,109 @@ class ConsentScreen extends ConsumerStatefulWidget {
 
 class _ConsentScreenState extends ConsumerState<ConsentScreen> {
   bool loading = true, busy = false, consent = false;
-  String? error;
+  bool initialAcceptance = false;
+  String? error, owner;
+  int generation = 0;
+  late final IdentityController identity;
 
   @override
   void initState() {
     super.initState();
+    identity = ref.read(identityControllerProvider);
+    owner = identity.identity?.id;
+    identity.addListener(identityChanged);
     load();
   }
 
+  void identityChanged() {
+    final next = identity.identity?.id;
+    if (next == owner) return;
+    generation++;
+    setState(() {
+      owner = next;
+      consent = false;
+      initialAcceptance = false;
+      busy = false;
+      error = null;
+    });
+    load();
+  }
+
+  @override
+  void dispose() {
+    generation++;
+    identity.removeListener(identityChanged);
+    super.dispose();
+  }
+
   Future<void> load() async {
+    final target = owner;
+    final ticket = ++generation;
     if (mounted) {
       setState(() {
         loading = true;
         error = null;
       });
     }
+    if (target == null) return;
     try {
       final profile = await ref.read(identityRepositoryProvider).loadProfile();
-      if (!mounted) return;
+      if (!mounted || ticket != generation || identity.identity?.id != target) {
+        return;
+      }
+      if (profile.id != target) {
+        throw const FormatException('Perfil no confirmado');
+      }
+      initialAcceptance =
+          profile.termsVersion == null ||
+          profile.termsVersion == developmentTermsVersion;
       ref.read(experienceProvider).applyProfile(profile);
     } catch (cause) {
-      if (mounted) setState(() => error = identityError(cause));
+      if (mounted && ticket == generation) {
+        setState(() => error = identityError(cause));
+      }
     } finally {
-      if (mounted) setState(() => loading = false);
+      if (mounted && ticket == generation) setState(() => loading = false);
     }
   }
 
   Future<void> accept() async {
-    if (busy || !consent) return;
+    if (busy ||
+        loading ||
+        !consent ||
+        owner == null ||
+        identity.identity?.id != owner) {
+      return;
+    }
+    final target = owner;
+    final ticket = generation;
+    final firstAcceptance = initialAcceptance;
     setState(() {
       busy = true;
       error = null;
     });
     try {
       await ref.read(identityRepositoryProvider).acceptTerms();
-      await ref.read(measurementControllerProvider)?.event('sign_up_completed');
+      if (!mounted || ticket != generation || identity.identity?.id != target) {
+        return;
+      }
+      if (firstAcceptance) {
+        await ref
+            .read(measurementControllerProvider)
+            ?.event('sign_up_completed');
+      }
+      if (!mounted || ticket != generation || identity.identity?.id != target) {
+        return;
+      }
       await load();
     } catch (cause) {
-      if (mounted) setState(() => error = identityError(cause));
+      if (mounted && identity.identity?.id == target) {
+        setState(() => error = identityError(cause));
+      }
     } finally {
-      if (mounted) setState(() => busy = false);
+      if (mounted && identity.identity?.id == target) {
+        setState(() => busy = false);
+      }
     }
   }
 
@@ -742,7 +813,7 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
         if (loading) const Center(child: CircularProgressIndicator()),
         if (!loading) ...[
           const Notice(
-            'Revisa y acepta los términos y el aviso de privacidad vigentes para usar Dopmi.',
+            'Actualización del 17 de octubre de 2026. Lee los Términos y Condiciones y el Aviso de Privacidad de esta fecha antes de confirmar. Aceptar no te registra en Guardián, no guarda una tarjeta y no realiza ningún cobro. Puedes consultar privacidad, cancelar Guardián y revisar tus comprobantes sin aceptar.',
           ),
           const SizedBox(height: 12),
           AuthConsentRow(
@@ -755,9 +826,9 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
           const SizedBox(height: 16),
           if (error != null) Notice(error!, isError: true),
           ActionButton(
-            'Confirmar y continuar',
+            'Aceptar actualización y continuar',
             busy: busy,
-            onPressed: consent ? accept : null,
+            onPressed: consent && !busy ? accept : null,
           ),
           const SizedBox(height: 12),
           OutlinedButton(
@@ -770,6 +841,25 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
             onPressed:
                 widget.onPrivacy ?? () => context.push('/account-privacy'),
             child: const Text('Privacidad y eliminación de cuenta'),
+          ),
+          TextButton(
+            onPressed: busy
+                ? null
+                : widget.onPayments ?? () => context.push('/payments'),
+            child: const Text('Ver mis comprobantes'),
+          ),
+          TextButton(
+            onPressed: busy
+                ? null
+                : widget.onReceivedPayments ??
+                      () => context.push('/rescuer/received-payments'),
+            child: const Text('Aportaciones recibidas'),
+          ),
+          TextButton(
+            onPressed: busy
+                ? null
+                : widget.onGuardian ?? () => context.push('/guardian'),
+            child: const Text('Cancelar o consultar Guardián'),
           ),
         ],
         if (!loading && error != null)

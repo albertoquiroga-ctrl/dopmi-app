@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show AuthException;
 
 import '../../core/ui.dart';
@@ -542,49 +541,42 @@ class TermsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => LegalDocumentFrame(
     title: 'Términos y Condiciones',
-    lead: 'Revisa las condiciones de uso de Dopmi antes de crear tu cuenta.',
+    lead: 'terms-2026-10-17 · 17 de octubre de 2026',
     children: [
       const LegalDocumentSection(
-        'Términos de uso',
-        'Dopmi es un servicio para personas mayores de 18 años que facilita adopciones, comunicación con rescatistas y aportaciones de prueba sujetas a revisión y disponibilidad.',
+        'Quién puede usar Dopmi',
+        'Debes tener 18 años o más, proporcionar información veraz y cuidar la privacidad y seguridad de otras personas.',
       ),
       const LegalDocumentSection(
-        'Uso responsable',
-        'Debes proporcionar información veraz, respetar la privacidad de otras personas y usar los canales de reporte y moderación. Una publicación o aportación puede quedar en revisión, requerir correcciones o retirarse.',
+        'Adopciones, casos y moderación',
+        'Dopmi facilita el contacto y seguimiento. Una publicación puede requerir verificación, correcciones o retirarse. No garantizamos una adopción, atención veterinaria o resultado específico. Los borradores y correcciones son privados hasta su aprobación.',
       ),
       const LegalDocumentSection(
-        'Privacidad y pagos',
-        'Tratamos los datos necesarios para operar tu cuenta, publicaciones, mensajes, moderación y pagos. Los datos de tarjeta se capturan con Stripe. No mostramos públicamente tu domicilio exacto, teléfono, correo, documentos o conversaciones privadas.',
+        'Aportaciones al caso',
+        'Puedes elegir una aportación desde \$10 MXN al caso, sin cubrir todo su faltante. El servidor distribuye el neto entre gastos aprobados del mismo caso. La comisión Dopmi es del 2 % del importe bruto y también se descuentan los costos reales de Stripe. Si después del cargo no cabe todo el neto en gastos elegibles de ese caso, corresponde devolver el pago completo; no se asigna parcialmente ni a otro caso. Un pago pendiente no confirma éxito ni una devolución.',
+      ),
+      const LegalDocumentSection(
+        'Guardián',
+        'El registro permite elegir una aportación mensual desde \$20 MXN, con opciones de \$50, \$200 y \$500 o un monto personalizado. Sólo se cobra cuando todo el neto puede asignarse a gastos aprobados. Sin capacidad, el registro se conserva sin cargo; un mes omitido no genera deuda y se evalúa el siguiente ciclo. Los cambios de monto aplican al siguiente ciclo. Cancelar detiene ciclos futuros; un pago ya iniciado puede terminar de procesarse. El historial se conserva y no hay devolución automática de pagos anteriores.',
+      ),
+      const LegalDocumentSection(
+        'Autorizaciones separadas',
+        'Aceptar estos documentos no registra Guardián, no guarda una tarjeta y no cobra. Guardar tarjeta tampoco equivale a aportar. Las aportaciones de prueba usan exclusivamente Stripe TEST y no representan dinero real. Dopmi no ofrece fondo comunitario, bonos, cashback ni tienda.',
+      ),
+      const LegalDocumentSection(
+        'Conducta y contenido',
+        'No publiques información engañosa, ilegal, discriminatoria, violenta o que invada derechos de terceros. Conservas responsabilidad sobre tu contenido y autorizas a Dopmi a alojarlo y mostrarlo para operar el servicio. Podemos restringir cuentas por fraude, abuso, riesgo o incumplimiento y conservar la evidencia que corresponda.',
       ),
       LegalDocumentSection(
-        'Cuenta y soporte',
-        'Puedes solicitar la eliminación de tu cuenta desde Configuración. Conservaremos únicamente la evidencia necesaria para atender pagos, disputas y obligaciones legales. Para ayuda escribe a soporte@dopmi.org.',
+        'Cuenta, privacidad y soporte',
+        'Puedes consultar Cuenta y privacidad, cancelar Guardián y consultar comprobantes propios sin aceptar una actualización. Para solicitar eliminación usa Cuenta y privacidad o escribe a soporte@dopmi.org. Recibir una solicitud no acredita titularidad ni confirma un borrado. Si no puedes recuperar ningún acceso, la solicitud queda pendiente de revisión por caso antes de consultar o eliminar datos.',
         footer: TextButton(
-          onPressed: () async {
-            try {
-              if (!await launchUrl(
-                Uri.parse('https://dopmi.org/privacy-policy'),
-                mode: LaunchMode.externalApplication,
-              )) {
-                throw const FormatException();
-              }
-            } catch (_) {
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'No pudimos abrir el aviso. Intenta de nuevo.',
-                    ),
-                  ),
-                );
-              }
-            }
-          },
-          child: const Text('Abrir Aviso de privacidad'),
+          onPressed: () => context.push('/privacy-notice'),
+          child: const Text('Leer Aviso de privacidad'),
         ),
       ),
       const Text(
-        'Dopmi · Versión del 28 de septiembre de 2026',
+        'Versión terms-2026-10-17 · 17 de octubre de 2026',
         style: TextStyle(fontSize: 12, height: 1.5, color: muted),
       ),
     ],

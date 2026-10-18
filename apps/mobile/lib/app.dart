@@ -37,6 +37,7 @@ import 'features/rescue/case_update_screens.dart';
 import 'features/payments/payment_screens.dart';
 import 'features/payments/guardian_screen.dart';
 import 'features/payments/guardian_history_screen.dart';
+import 'features/payments/guardian_legal_access_screen.dart';
 import 'features/adoption/community_repository.dart' show Json;
 
 final routerInitialLocationProvider = Provider<String>((ref) => '/welcome');
@@ -53,6 +54,26 @@ const accountRouteAliases = <String, String>{
   '/rescuer/account': '/settings/account',
   '/rescuer/settings': '/settings/account',
 };
+
+bool _hasCurrentLegalConsent(Profile? profile, String? ownerId) =>
+    ownerId != null &&
+    profile?.id == ownerId &&
+    profile?.termsVersion == currentTermsVersion &&
+    profile?.privacyVersion == currentPrivacyVersion &&
+    profile?.adultConfirmed == true;
+
+bool _legalConsentExempt(String path, {required bool recovering}) =>
+    (recovering && path == '/reset-password') ||
+    const {
+      '/consent',
+      '/terms',
+      '/privacy-notice',
+      '/account-privacy',
+      '/guardian',
+      '/guardian/history',
+      '/payments',
+      '/rescuer/received-payments',
+    }.contains(path);
 
 final routerProvider = Provider<GoRouter>((ref) {
   final identity = ref.watch(identityControllerProvider);
@@ -80,21 +101,19 @@ final routerProvider = Provider<GoRouter>((ref) {
       final desired = accountRouteAliases[requested] ?? requested;
       var target = identity.redirect(desired);
       if (target == null &&
+          identity.error == null &&
+          !identity.recovering &&
           identity.identity?.verified == true &&
           experience.profile != null) {
         final profile = experience.profile;
-        final accepted =
-            profile?.termsVersion == currentTermsVersion &&
-            profile?.privacyVersion == currentPrivacyVersion &&
-            profile?.adultConfirmed == true;
-        final consentExempt =
-            (identity.recovering && desired == '/reset-password') ||
-            desired == '/consent' ||
-            desired == '/terms' ||
-            desired == '/privacy-notice' ||
-            desired == '/account-privacy' ||
-            desired == '/guardian' ||
-            desired == '/guardian/history';
+        final accepted = _hasCurrentLegalConsent(
+          profile,
+          identity.identity?.id,
+        );
+        final consentExempt = _legalConsentExempt(
+          desired,
+          recovering: identity.recovering,
+        );
         if (!accepted && !consentExempt) target = '/consent';
         if (accepted && desired == '/consent') target = '/home';
       }
@@ -109,406 +128,453 @@ final routerProvider = Provider<GoRouter>((ref) {
       return target;
     },
     routes: [
-      // Published links from earlier profile layouts keep reaching the real
-      // account screens. Financial result aliases only reload server state.
-      for (final alias in accountRouteAliases.entries)
-        GoRoute(path: alias.key, redirect: (_, _) => alias.value),
-      GoRoute(
-        path: '/home',
-        builder: (_, _) => const ExperienceLandingScreen(),
-      ),
-      GoRoute(
-        path: '/basic-info',
-        builder: (_, _) =>
-            BasicInfoScreen(key: ValueKey(identity.identity?.id)),
-      ),
-      StatefulShellRoute.indexedStack(
-        builder: (_, _, shell) =>
-            DopmiNavigationHost(shell: shell, child: shell),
-        branches: [
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/adoptions',
-                builder: (_, state) {
-                  final owner = state.uri.queryParameters['owner'];
-                  return owner == null
-                      ? DiscoveryScreen(
-                          key: ValueKey(
-                            '${identity.identity?.id}:${state.uri}',
-                          ),
-                        )
-                      : CatalogScreen(
-                          key: ValueKey(
-                            '${identity.identity?.id}:${state.uri}',
-                          ),
-                          owner: owner,
-                        );
-                },
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/rescue-cases',
-                builder: (_, state) => RescueCatalogScreen(
-                  key: ValueKey('${identity.identity?.id}:${state.uri}'),
-                ),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/profile',
-                builder: (_, _) =>
-                    ProfileScreen(key: ValueKey(identity.identity?.id)),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/rescuer',
-                builder: (_, state) => RescueHomeScreen(
-                  key: ValueKey('${identity.identity?.id}:${state.uri}'),
-                ),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/my-cases',
-                builder: (_, state) => MyRescueCasesScreen(
-                  key: ValueKey(identity.identity?.id),
-                  initialProgram:
-                      state.uri.queryParameters['program'] ?? 'adoption',
-                  initialStatus: state.uri.queryParameters['status'],
-                ),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/publish',
-                builder: (_, _) =>
-                    PublishChoiceScreen(key: ValueKey(identity.identity?.id)),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/messages',
-                builder: (_, _) =>
-                    ThreadsScreen(key: ValueKey(identity.identity?.id)),
-              ),
-            ],
-          ),
-        ],
-      ),
-      GoRoute(
-        path: '/settings',
-        builder: (_, _) => SettingsScreen(key: ValueKey(identity.identity?.id)),
-      ),
-      GoRoute(
-        path: '/settings/account',
-        builder: (_, _) =>
-            RescuerAccountOptionsScreen(key: ValueKey(identity.identity?.id)),
-      ),
-      GoRoute(
-        path: '/consent',
-        builder: (_, _) => ConsentScreen(key: ValueKey(identity.identity?.id)),
-      ),
-      GoRoute(
-        path: '/account-privacy',
-        builder: (_, _) =>
-            AccountPrivacyScreen(key: ValueKey(identity.identity?.id)),
-      ),
-      GoRoute(
-        path: '/rescuer/profile/edit',
-        builder: (_, _) => RescuerPublicProfileEditScreen(
-          key: ValueKey(identity.identity?.id),
-        ),
-      ),
-      GoRoute(
-        path: '/rescuer/received-payments',
-        builder: (_, _) => PaymentActivityScreen(
-          received: true,
-          key: ValueKey(identity.identity?.id),
-        ),
-      ),
-      GoRoute(
-        path: '/rescuer/photo-tips',
-        builder: (_, _) => const RescuerPhotoTipsScreen(),
-      ),
-      GoRoute(path: '/help', builder: (_, _) => const HelpCenterScreen()),
-      GoRoute(path: '/about', builder: (_, _) => const AboutScreen()),
-      GoRoute(
-        path: '/transparency',
-        builder: (_, _) => const TransparencyScreen(),
-      ),
-      GoRoute(
-        path: '/my-adoptions',
-        builder: (_, _) =>
-            MyAdoptionsScreen(key: ValueKey(identity.identity?.id)),
-      ),
-      GoRoute(
-        path: '/settings/payment-methods',
-        builder: (_, _) => GuardianScreen(
-          key: ValueKey(identity.identity?.id),
-          paymentMethodsOnly: true,
-        ),
-      ),
-      GoRoute(
-        path: '/guardian/history',
-        builder: (_, _) =>
-            GuardianHistoryScreen(key: ValueKey(identity.identity?.id)),
-      ),
-      GoRoute(
-        path: '/guardian',
-        builder: (_, state) => GuardianScreen(
-          key: ValueKey(identity.identity?.id),
-          initialEnrollment: state.uri.queryParameters['enroll'] == '1',
-        ),
-      ),
-      GoRoute(
-        path: '/payments',
-        builder: (_, _) =>
-            PaymentActivityScreen(key: ValueKey(identity.identity?.id)),
-      ),
-      GoRoute(
-        path: '/connect',
-        builder: (_, _) => ConnectScreen(key: ValueKey(identity.identity?.id)),
-      ),
-      GoRoute(
-        path: '/contribute-case/:id',
-        builder: (_, state) => ContributeScreen(
-          state.pathParameters['id']!,
-          caseContribution: true,
-          caseId: state.pathParameters['id']!,
-          initialCents: int.tryParse(
-            state.uri.queryParameters['amount_cents'] ?? '',
-          ),
-          attempt: state.extra is Json ? state.extra! as Json : null,
-          key: ValueKey('${identity.identity?.id}:${state.uri}'),
-        ),
-      ),
-      GoRoute(
-        path: '/contribute/:id',
-        builder: (_, state) => ContributeScreen(
-          state.pathParameters['id']!,
-          caseId: state.uri.queryParameters['case'],
-          initialCents: int.tryParse(
-            state.uri.queryParameters['amount_cents'] ?? '',
-          ),
-          attempt: state.extra is Json ? state.extra! as Json : null,
-          key: ValueKey('${identity.identity?.id}:${state.uri}'),
-        ),
-      ),
-      GoRoute(
-        path: '/rescue/:id',
-        builder: (_, state) => RescueEditorScreen(
-          state.pathParameters['id']!,
-          kind:
-              [
-                'verification',
-                'case',
-                'expense',
-              ].contains(state.uri.queryParameters['kind'])
-              ? state.uri.queryParameters['kind']!
-              : 'case',
-          parent: state.uri.queryParameters['case'],
-          showRecord: state.uri.queryParameters['record'] == '1',
-          key: ValueKey('${identity.identity?.id}:${state.uri}'),
-        ),
-      ),
-      GoRoute(
-        path: '/rescue-file',
-        builder: (_, state) => state.extra is String
-            ? RescueFileScreen(
-                state.extra! as String,
-                key: ValueKey('${identity.identity?.id}:${state.extra}'),
-              )
-            : const PageFrame(
-                children: [Notice('Abre el archivo desde su solicitud.')],
-              ),
-      ),
-      GoRoute(
-        path: '/rescue-cases/:id',
-        builder: (_, state) => RescueCatalogScreen(
-          caseId: state.pathParameters['id'],
-          key: ValueKey('${identity.identity?.id}:${state.uri}'),
-        ),
-      ),
-      GoRoute(
-        path: '/rescue-cases/:id/updates',
-        builder: (_, state) => CaseUpdatesManageScreen(
-          state.pathParameters['id']!,
-          key: ValueKey('${identity.identity?.id}:${state.uri}'),
-        ),
+      ShellRoute(
+        builder: (_, state, child) =>
+            _LegalAccessGate(path: state.uri.path, child: child),
         routes: [
+          // Published links from earlier profile layouts keep reaching the real
+          // account screens. Financial result aliases only reload server state.
+          for (final alias in accountRouteAliases.entries)
+            GoRoute(path: alias.key, redirect: (_, _) => alias.value),
           GoRoute(
-            path: ':updateId',
-            builder: (_, state) => CaseUpdateEditorScreen(
+            path: '/home',
+            builder: (_, _) => const ExperienceLandingScreen(),
+          ),
+          GoRoute(
+            path: '/basic-info',
+            builder: (_, _) =>
+                BasicInfoScreen(key: ValueKey(identity.identity?.id)),
+          ),
+          StatefulShellRoute.indexedStack(
+            builder: (_, _, shell) =>
+                DopmiNavigationHost(shell: shell, child: shell),
+            branches: [
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
+                    path: '/adoptions',
+                    builder: (_, state) {
+                      final owner = state.uri.queryParameters['owner'];
+                      return owner == null
+                          ? DiscoveryScreen(
+                              key: ValueKey(
+                                '${identity.identity?.id}:${state.uri}',
+                              ),
+                            )
+                          : CatalogScreen(
+                              key: ValueKey(
+                                '${identity.identity?.id}:${state.uri}',
+                              ),
+                              owner: owner,
+                            );
+                    },
+                  ),
+                ],
+              ),
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
+                    path: '/rescue-cases',
+                    builder: (_, state) => RescueCatalogScreen(
+                      key: ValueKey('${identity.identity?.id}:${state.uri}'),
+                    ),
+                  ),
+                ],
+              ),
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
+                    path: '/profile',
+                    builder: (_, _) =>
+                        ProfileScreen(key: ValueKey(identity.identity?.id)),
+                  ),
+                ],
+              ),
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
+                    path: '/rescuer',
+                    builder: (_, state) => RescueHomeScreen(
+                      key: ValueKey('${identity.identity?.id}:${state.uri}'),
+                    ),
+                  ),
+                ],
+              ),
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
+                    path: '/my-cases',
+                    builder: (_, state) => MyRescueCasesScreen(
+                      key: ValueKey(identity.identity?.id),
+                      initialProgram:
+                          state.uri.queryParameters['program'] ?? 'adoption',
+                      initialStatus: state.uri.queryParameters['status'],
+                    ),
+                  ),
+                ],
+              ),
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
+                    path: '/publish',
+                    builder: (_, _) => PublishChoiceScreen(
+                      key: ValueKey(identity.identity?.id),
+                    ),
+                  ),
+                ],
+              ),
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
+                    path: '/messages',
+                    builder: (_, _) =>
+                        ThreadsScreen(key: ValueKey(identity.identity?.id)),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          GoRoute(
+            path: '/settings',
+            builder: (_, _) =>
+                SettingsScreen(key: ValueKey(identity.identity?.id)),
+          ),
+          GoRoute(
+            path: '/settings/account',
+            builder: (_, _) => RescuerAccountOptionsScreen(
+              key: ValueKey(identity.identity?.id),
+            ),
+          ),
+          GoRoute(
+            path: '/consent',
+            builder: (_, _) =>
+                ConsentScreen(key: ValueKey(identity.identity?.id)),
+          ),
+          GoRoute(
+            path: '/account-privacy',
+            builder: (_, _) =>
+                AccountPrivacyScreen(key: ValueKey(identity.identity?.id)),
+          ),
+          GoRoute(
+            path: '/rescuer/profile/edit',
+            builder: (_, _) => RescuerPublicProfileEditScreen(
+              key: ValueKey(identity.identity?.id),
+            ),
+          ),
+          GoRoute(
+            path: '/rescuer/received-payments',
+            builder: (_, _) => ListenableBuilder(
+              listenable: Listenable.merge([identity, experience]),
+              builder: (_, _) => PaymentActivityScreen(
+                received: true,
+                readOnly: !_hasCurrentLegalConsent(
+                  experience.profile,
+                  identity.identity?.id,
+                ),
+                key: ValueKey(identity.identity?.id),
+              ),
+            ),
+          ),
+          GoRoute(
+            path: '/rescuer/photo-tips',
+            builder: (_, _) => const RescuerPhotoTipsScreen(),
+          ),
+          GoRoute(path: '/help', builder: (_, _) => const HelpCenterScreen()),
+          GoRoute(path: '/about', builder: (_, _) => const AboutScreen()),
+          GoRoute(
+            path: '/transparency',
+            builder: (_, _) => const TransparencyScreen(),
+          ),
+          GoRoute(
+            path: '/my-adoptions',
+            builder: (_, _) =>
+                MyAdoptionsScreen(key: ValueKey(identity.identity?.id)),
+          ),
+          GoRoute(
+            path: '/settings/payment-methods',
+            builder: (_, _) => GuardianScreen(
+              key: ValueKey(identity.identity?.id),
+              paymentMethodsOnly: true,
+            ),
+          ),
+          GoRoute(
+            path: '/guardian/history',
+            builder: (_, _) =>
+                GuardianHistoryScreen(key: ValueKey(identity.identity?.id)),
+          ),
+          GoRoute(
+            path: '/guardian',
+            builder: (_, state) => ListenableBuilder(
+              listenable: Listenable.merge([identity, experience]),
+              builder: (_, _) =>
+                  identity.identity != null &&
+                      (identity.identity?.verified != true ||
+                          _hasCurrentLegalConsent(
+                            experience.profile,
+                            identity.identity?.id,
+                          ))
+                  ? GuardianScreen(
+                      key: ValueKey(identity.identity?.id),
+                      initialEnrollment:
+                          state.uri.queryParameters['enroll'] == '1',
+                    )
+                  : GuardianLegalAccessScreen(
+                      key: ValueKey(identity.identity?.id),
+                    ),
+            ),
+          ),
+          GoRoute(
+            path: '/payments',
+            builder: (_, _) => ListenableBuilder(
+              listenable: Listenable.merge([identity, experience]),
+              builder: (_, _) => PaymentActivityScreen(
+                readOnly: !_hasCurrentLegalConsent(
+                  experience.profile,
+                  identity.identity?.id,
+                ),
+                key: ValueKey(identity.identity?.id),
+              ),
+            ),
+          ),
+          GoRoute(
+            path: '/connect',
+            builder: (_, _) =>
+                ConnectScreen(key: ValueKey(identity.identity?.id)),
+          ),
+          GoRoute(
+            path: '/contribute-case/:id',
+            builder: (_, state) => ContributeScreen(
               state.pathParameters['id']!,
-              updateId: state.pathParameters['updateId'] == 'new'
-                  ? null
-                  : state.pathParameters['updateId'],
+              caseContribution: true,
+              caseId: state.pathParameters['id']!,
+              initialCents: int.tryParse(
+                state.uri.queryParameters['amount_cents'] ?? '',
+              ),
+              attempt: state.extra is Json ? state.extra! as Json : null,
               key: ValueKey('${identity.identity?.id}:${state.uri}'),
             ),
           ),
-        ],
-      ),
-      GoRoute(
-        path: '/saved',
-        redirect: (_, state) =>
-            state.uri.queryParameters['kind'] == 'rescuer' ? '/saved' : null,
-        builder: (_, state) => SavedScreen(
-          key: ValueKey('${identity.identity?.id}:${state.uri}'),
-          initialKind: switch (state.uri.queryParameters['kind']) {
-            'donation' => SavedKind.donation,
-            _ => SavedKind.adoption,
-          },
-        ),
-      ),
-      GoRoute(
-        path: '/impact/guardian',
-        builder: (_, _) => GuardianPromotionScreen(
-          key: ValueKey(identity.identity?.id),
-          available: ref.read(guardianEnabledProvider),
-          navigation: const CommunityNav(3),
-        ),
-      ),
-      GoRoute(
-        path: '/impact',
-        builder: (_, state) => state.uri.queryParameters['history'] == '1'
-            ? ImpactScreen(key: ValueKey(identity.identity?.id))
-            : ImpactEntryScreen(key: ValueKey(identity.identity?.id)),
-      ),
-      GoRoute(
-        path: '/adoptions/:id',
-        builder: (_, state) => AdoptionDetailScreen(
-          state.pathParameters['id']!,
-          distanceKm: state.extra is num ? state.extra as num : null,
-          key: ValueKey('${identity.identity?.id}:${state.uri}'),
-        ),
-      ),
-      GoRoute(
-        path: '/people/:id',
-        builder: (_, state) => PublicProfileScreen(
-          state.pathParameters['id']!,
-          key: ValueKey('${identity.identity?.id}:${state.uri}'),
-        ),
-      ),
-      GoRoute(
-        path: '/my-adoptions/:id',
-        builder: (_, state) => PublicationScreen(
-          state.pathParameters['id']!,
-          rescueCaseId: state.uri.queryParameters['case'],
-          key: ValueKey('${identity.identity?.id}:${state.uri}'),
-        ),
-      ),
-      GoRoute(
-        path: '/messages/:id',
-        builder: (_, state) => ThreadScreen(
-          state.pathParameters['id']!,
-          key: ValueKey('${identity.identity?.id}:${state.uri}'),
-        ),
-      ),
-      GoRoute(
-        path: '/my-conversations',
-        builder: (_, _) =>
-            ThreadsScreen(personal: true, key: ValueKey(identity.identity?.id)),
-      ),
-      GoRoute(
-        path: '/notifications',
-        builder: (_, _) =>
-            NotificationActivityScreen(key: ValueKey(identity.identity?.id)),
-      ),
-      GoRoute(
-        path: '/loading',
-        builder: (_, _) => const PageFrame(
-          back: false,
-          children: [
-            Center(
-              child: CircularProgressIndicator(
-                semanticsLabel: 'Restaurando sesión',
+          GoRoute(
+            path: '/contribute/:id',
+            builder: (_, state) => ContributeScreen(
+              state.pathParameters['id']!,
+              caseId: state.uri.queryParameters['case'],
+              initialCents: int.tryParse(
+                state.uri.queryParameters['amount_cents'] ?? '',
               ),
+              attempt: state.extra is Json ? state.extra! as Json : null,
+              key: ValueKey('${identity.identity?.id}:${state.uri}'),
             ),
-          ],
-        ),
-      ),
-      GoRoute(path: '/welcome', builder: (_, _) => const WelcomeScreen()),
-      GoRoute(
-        path: '/onboarding',
-        builder: (_, state) => OnboardingScreen(
-          intent: safeIntent(state.uri.queryParameters['intent']),
-        ),
-      ),
-      GoRoute(
-        path: '/start',
-        builder: (_, state) => AccountStartScreen(
-          intent: safeIntent(state.uri.queryParameters['intent']),
-        ),
-      ),
-      GoRoute(
-        path: '/signup',
-        builder: (_, state) => AuthFormScreen(
-          mode: AuthFormMode.signup,
-          intent: safeIntent(state.uri.queryParameters['intent']),
-        ),
-      ),
-      GoRoute(
-        path: '/login',
-        builder: (_, state) => AuthFormScreen(
-          mode: AuthFormMode.login,
-          intent: safeIntent(state.uri.queryParameters['intent']),
-        ),
-      ),
-      GoRoute(
-        path: '/forgot',
-        builder: (_, state) => AuthFormScreen(
-          mode: AuthFormMode.forgot,
-          intent: safeIntent(state.uri.queryParameters['intent']),
-          initialEmail: state.extra is String ? state.extra! as String : null,
-        ),
-      ),
-      GoRoute(
-        path: '/reset-password',
-        builder: (_, _) => const AuthFormScreen(mode: AuthFormMode.reset),
-      ),
-      GoRoute(
-        path: '/confirm',
-        builder: (_, state) => ConfirmationScreen(
-          email: state.extra is String ? state.extra! as String : '',
-        ),
-      ),
-      GoRoute(
-        path: '/confirm-recovery',
-        builder: (_, state) => ConfirmationScreen(
-          email: state.extra is String ? state.extra! as String : '',
-          recovery: true,
-        ),
-      ),
-      GoRoute(
-        path: '/auth/callback',
-        builder: (_, _) => const PageFrame(
-          back: false,
-          children: [Notice('Procesando el enlace…')],
-        ),
-      ),
-      GoRoute(
-        path: '/auth-error',
-        builder: (_, _) => AuthErrorScreen(identity: identity),
-      ),
-      GoRoute(path: '/terms', builder: (_, _) => const TermsScreen()),
-      GoRoute(
-        path: '/privacy-notice',
-        builder: (_, _) => const PrivacyNoticeScreen(),
+          ),
+          GoRoute(
+            path: '/rescue/:id',
+            builder: (_, state) => RescueEditorScreen(
+              state.pathParameters['id']!,
+              kind:
+                  [
+                    'verification',
+                    'case',
+                    'expense',
+                  ].contains(state.uri.queryParameters['kind'])
+                  ? state.uri.queryParameters['kind']!
+                  : 'case',
+              parent: state.uri.queryParameters['case'],
+              showRecord: state.uri.queryParameters['record'] == '1',
+              key: ValueKey('${identity.identity?.id}:${state.uri}'),
+            ),
+          ),
+          GoRoute(
+            path: '/rescue-file',
+            builder: (_, state) => state.extra is String
+                ? RescueFileScreen(
+                    state.extra! as String,
+                    key: ValueKey('${identity.identity?.id}:${state.extra}'),
+                  )
+                : const PageFrame(
+                    children: [Notice('Abre el archivo desde su solicitud.')],
+                  ),
+          ),
+          GoRoute(
+            path: '/rescue-cases/:id',
+            builder: (_, state) => RescueCatalogScreen(
+              caseId: state.pathParameters['id'],
+              key: ValueKey('${identity.identity?.id}:${state.uri}'),
+            ),
+          ),
+          GoRoute(
+            path: '/rescue-cases/:id/updates',
+            builder: (_, state) => CaseUpdatesManageScreen(
+              state.pathParameters['id']!,
+              key: ValueKey('${identity.identity?.id}:${state.uri}'),
+            ),
+            routes: [
+              GoRoute(
+                path: ':updateId',
+                builder: (_, state) => CaseUpdateEditorScreen(
+                  state.pathParameters['id']!,
+                  updateId: state.pathParameters['updateId'] == 'new'
+                      ? null
+                      : state.pathParameters['updateId'],
+                  key: ValueKey('${identity.identity?.id}:${state.uri}'),
+                ),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: '/saved',
+            redirect: (_, state) =>
+                state.uri.queryParameters['kind'] == 'rescuer'
+                ? '/saved'
+                : null,
+            builder: (_, state) => SavedScreen(
+              key: ValueKey('${identity.identity?.id}:${state.uri}'),
+              initialKind: switch (state.uri.queryParameters['kind']) {
+                'donation' => SavedKind.donation,
+                _ => SavedKind.adoption,
+              },
+            ),
+          ),
+          GoRoute(
+            path: '/impact/guardian',
+            builder: (_, _) => GuardianPromotionScreen(
+              key: ValueKey(identity.identity?.id),
+              available: ref.read(guardianEnabledProvider),
+              navigation: const CommunityNav(3),
+            ),
+          ),
+          GoRoute(
+            path: '/impact',
+            builder: (_, state) => state.uri.queryParameters['history'] == '1'
+                ? ImpactScreen(key: ValueKey(identity.identity?.id))
+                : ImpactEntryScreen(key: ValueKey(identity.identity?.id)),
+          ),
+          GoRoute(
+            path: '/adoptions/:id',
+            builder: (_, state) => AdoptionDetailScreen(
+              state.pathParameters['id']!,
+              distanceKm: state.extra is num ? state.extra as num : null,
+              key: ValueKey('${identity.identity?.id}:${state.uri}'),
+            ),
+          ),
+          GoRoute(
+            path: '/people/:id',
+            builder: (_, state) => PublicProfileScreen(
+              state.pathParameters['id']!,
+              key: ValueKey('${identity.identity?.id}:${state.uri}'),
+            ),
+          ),
+          GoRoute(
+            path: '/my-adoptions/:id',
+            builder: (_, state) => PublicationScreen(
+              state.pathParameters['id']!,
+              rescueCaseId: state.uri.queryParameters['case'],
+              key: ValueKey('${identity.identity?.id}:${state.uri}'),
+            ),
+          ),
+          GoRoute(
+            path: '/messages/:id',
+            builder: (_, state) => ThreadScreen(
+              state.pathParameters['id']!,
+              key: ValueKey('${identity.identity?.id}:${state.uri}'),
+            ),
+          ),
+          GoRoute(
+            path: '/my-conversations',
+            builder: (_, _) => ThreadsScreen(
+              personal: true,
+              key: ValueKey(identity.identity?.id),
+            ),
+          ),
+          GoRoute(
+            path: '/notifications',
+            builder: (_, _) => NotificationActivityScreen(
+              key: ValueKey(identity.identity?.id),
+            ),
+          ),
+          GoRoute(
+            path: '/loading',
+            builder: (_, _) => const PageFrame(
+              back: false,
+              children: [
+                Center(
+                  child: CircularProgressIndicator(
+                    semanticsLabel: 'Restaurando sesión',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          GoRoute(path: '/welcome', builder: (_, _) => const WelcomeScreen()),
+          GoRoute(
+            path: '/onboarding',
+            builder: (_, state) => OnboardingScreen(
+              intent: safeIntent(state.uri.queryParameters['intent']),
+            ),
+          ),
+          GoRoute(
+            path: '/start',
+            builder: (_, state) => AccountStartScreen(
+              intent: safeIntent(state.uri.queryParameters['intent']),
+            ),
+          ),
+          GoRoute(
+            path: '/signup',
+            builder: (_, state) => AuthFormScreen(
+              mode: AuthFormMode.signup,
+              intent: safeIntent(state.uri.queryParameters['intent']),
+            ),
+          ),
+          GoRoute(
+            path: '/login',
+            builder: (_, state) => AuthFormScreen(
+              mode: AuthFormMode.login,
+              intent: safeIntent(state.uri.queryParameters['intent']),
+            ),
+          ),
+          GoRoute(
+            path: '/forgot',
+            builder: (_, state) => AuthFormScreen(
+              mode: AuthFormMode.forgot,
+              intent: safeIntent(state.uri.queryParameters['intent']),
+              initialEmail: state.extra is String
+                  ? state.extra! as String
+                  : null,
+            ),
+          ),
+          GoRoute(
+            path: '/reset-password',
+            builder: (_, _) => const AuthFormScreen(mode: AuthFormMode.reset),
+          ),
+          GoRoute(
+            path: '/confirm',
+            builder: (_, state) => ConfirmationScreen(
+              email: state.extra is String ? state.extra! as String : '',
+            ),
+          ),
+          GoRoute(
+            path: '/confirm-recovery',
+            builder: (_, state) => ConfirmationScreen(
+              email: state.extra is String ? state.extra! as String : '',
+              recovery: true,
+            ),
+          ),
+          GoRoute(
+            path: '/auth/callback',
+            builder: (_, _) => const PageFrame(
+              back: false,
+              children: [Notice('Procesando el enlace…')],
+            ),
+          ),
+          GoRoute(
+            path: '/auth-error',
+            builder: (_, _) => AuthErrorScreen(identity: identity),
+          ),
+          GoRoute(path: '/terms', builder: (_, _) => const TermsScreen()),
+          GoRoute(
+            path: '/privacy-notice',
+            builder: (_, _) => const PrivacyNoticeScreen(),
+          ),
+        ],
       ),
     ],
     errorBuilder: (context, _) => PageFrame(
@@ -561,68 +627,67 @@ class DopmiApp extends ConsumerWidget {
         supportedLocales: const [Locale('es', 'MX')],
         localizationsDelegates: GlobalMaterialLocalizations.delegates,
         routerConfig: router,
-        builder: (context, child) {
-          final currentIdentity = identityController.identity;
-          final path = router.routerDelegate.currentConfiguration.isEmpty
-              ? '/loading'
-              : router.state.uri.path;
-          final profile = experience.profile;
-          final accepted =
-              profile?.termsVersion == currentTermsVersion &&
-              profile?.privacyVersion == currentPrivacyVersion &&
-              profile?.adultConfirmed == true;
-          final exempt =
-              (identityController.recovering && path == '/reset-password') ||
-              path == '/consent' ||
-              path == '/terms' ||
-              path == '/privacy-notice' ||
-              path == '/account-privacy' ||
-              path == '/guardian' ||
-              path == '/guardian/history';
-          final checkingConsent =
-              currentIdentity?.verified == true &&
-              (identityController.loading ||
-                  (experience.loading && profile == null));
-          if (checkingConsent && !exempt) {
-            return Stack(
-              children: [
-                if (child != null) Offstage(offstage: true, child: child),
-                const Positioned.fill(
-                  child: PageFrame(
-                    back: false,
-                    children: [
-                      Center(
-                        child: CircularProgressIndicator(
-                          semanticsLabel: 'Restaurando sesión',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            );
-          }
-          // Fail closed in the widget tree as well as in GoRouter. This keeps
-          // an authenticated profile from entering the product if its profile
-          // request is delayed or fails before redirect reevaluation.
-          if (currentIdentity?.verified == true && !accepted && !exempt) {
-            return Stack(
-              children: [
-                if (child != null) Offstage(offstage: true, child: child),
-                Positioned.fill(
-                  child: ConsentScreen(
-                    key: ValueKey(currentIdentity!.id),
-                    onTerms: () => router.go('/terms'),
-                    onPrivacyNotice: () => router.go('/privacy-notice'),
-                    onPrivacy: () => router.go('/account-privacy'),
-                  ),
-                ),
-              ],
-            );
-          }
-          return child ?? const SizedBox.shrink();
-        },
       ),
+    );
+  }
+}
+
+// The Router stays mounted while its matched screen is withheld. This lets
+// permitted legal/account navigation resolve without initializing payment UIs.
+class _LegalAccessGate extends ConsumerWidget {
+  const _LegalAccessGate({required this.path, required this.child});
+  final String path;
+  final Widget child;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.read(routerProvider);
+    final experience = ref.watch(experienceProvider);
+    final identityController = ref.watch(identityControllerProvider);
+    return ListenableBuilder(
+      listenable: Listenable.merge([experience, identityController]),
+      builder: (context, _) {
+        final currentIdentity = identityController.identity;
+        if (path == '/auth-error' && identityController.error != null) {
+          return child;
+        }
+        final profile = experience.profile;
+        final accepted = _hasCurrentLegalConsent(profile, currentIdentity?.id);
+        final exempt = _legalConsentExempt(
+          path,
+          recovering: identityController.recovering,
+        );
+        final checkingConsent =
+            currentIdentity?.verified == true &&
+            (identityController.loading ||
+                (experience.loading && profile == null));
+        if (checkingConsent && !exempt) {
+          return const PageFrame(
+            back: false,
+            children: [
+              Center(
+                child: CircularProgressIndicator(
+                  semanticsLabel: 'Restaurando sesión',
+                ),
+              ),
+            ],
+          );
+        }
+        // Fail closed in the widget tree as well as in GoRouter. This keeps
+        // an authenticated profile from entering the product if its profile
+        // request is delayed or fails before redirect reevaluation.
+        if (currentIdentity?.verified == true && !accepted && !exempt) {
+          return ConsentScreen(
+            key: ValueKey(currentIdentity!.id),
+            onTerms: () => router.go('/terms'),
+            onPrivacyNotice: () => router.go('/privacy-notice'),
+            onPrivacy: () => router.go('/account-privacy'),
+            onPayments: () => router.go('/payments'),
+            onReceivedPayments: () => router.go('/rescuer/received-payments'),
+            onGuardian: () => router.go('/guardian'),
+          );
+        }
+        return child;
+      },
     );
   }
 }
