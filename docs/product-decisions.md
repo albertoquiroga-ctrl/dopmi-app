@@ -1,3 +1,7 @@
+## 17/10/2026 — QA TalkBack pasa a post-MVP por decisión del titular
+
+Fuente: respuesta humana «Pongamos lo de talkback como post mvp ya que no quiero dedicarle tiempo ahorita». La validación real restante con TalkBack deja de ser gate del MVP y se conserva como pendiente post-MVP, sin marcarla aprobada. Afecta sólo esta QA de lector; no retira soporte accesible, controles de texto/contraste/escala ni otros requisitos vigentes. Evidencia parcial en318: anuncio y apertura de «Ver mi impacto» confirmados por el titular; lectura personal/comunitaria y Back con TalkBack no completados. No supone aceptación global ni modifica SMS/social/legado/Meta. Root desactivó TalkBack al cerrar la prueba y verificó accessibility_enabled=0/sin servicios habilitados; Dopmi abierta.
+
 ## 16/10/2026 — paridad d304535 aprobada por el titular
 
 Fuente: decisiones expresas en el chat «Sincroniza la app con el mock» y petición posterior PLEASE IMPLEMENT THIS PLAN. Alcance congelado: mock d304535c63c2d15686476b421e140de475ff6b6f; continuar desde c53b6686e1ba77ba6d2164acac9aeacc9cef6066 en codex/finish-release-20261015. Estas decisiones superseden sólo los acuerdos anteriores incompatibles de este alcance; no acreditan implementación ni aceptación instalada.
