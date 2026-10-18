@@ -52,6 +52,18 @@ Preparación R específica posterior17oct: el titular preparó Facebook en Chrom
 
 Panel específico de renovación Facebook muestra vencimiento10dic2026; aviso básico de10oct no basta para inferir desactivación. Renovación no iniciada/enviada/certificada. UI permisosFacebook email/public_profile «Ya se puede publicar» observado sólo lectura; no equivale veredicto de acceso general/permisos deInstagram. Borradolegado/páginas/Meta conservan gates.
 
+## Cierre R, 17/10 — revocación Facebook en proveedor y backend
+
+Permiso específico recibido: «Autorizar sólo esta retirada de Facebook». Se autorizó un máximo de una confirmación; el operador no hizo ningún clic de retirada. El titular informó que no veía el diálogo o veía algo distinto. No se observó su secuencia final: no afirmar que confirmó una vez, que no había casillas ni una causa de interfaz. Facebook dejó de mostrar DopMi entre las autorizaciones activas y la incluyó en «Aplicaciones y sitios web suprimidos»; captura privada conservada.
+
+Único postflight: 17oct21:34:19.644117 CDMX, dentro del corte21:34:21.016781. Desaparecieron la prueba Facebook del dueño y la del sujeto objetivo; Instagram permanece en1 y los21 pares conteo/hash son iguales al baseline. Tombstone exacto nuevo:21:33:14.479517 CDMX, vencimiento21:43:14.479517. La correlación con el estado del proveedor y el callback autenticado desplegado respalda este resultado; no se capturó una petición HTTP de Meta ni se auditó la ausencia de administradores externos. No se hizo otra consulta, retirada, replay o reconexión.
+
+Revisores independientes inspeccionaron fuentes, SQL, JSON y píxeles; cerraron producto/UI y seguridad en ese alcance. La proyección Auth acredita existencia de cuenta y campos de teléfono conservados, no toda la fila Auth ni un inicio de sesión futuro. El inventario no es una auditoría financiera global ni una consulta a Stripe. Esto cierra sólo R: desconexión desde Dopmi, denegación OAuth y UI de esta cuenta en Dopmi siguen sin acreditar. SMS, legado, Meta y evaluación con Irlanda conservan sus gates.
+
+Retro independiente: quedaron1.372664s respecto al corte operativo del baseline, mientras el tombstone conservaba534.8354s de TTL. Son criterios distintos. Una mejora propuesta para el siguiente paquete, a cargo del integrador y revisor: justificar por separado la vigencia del consentimiento/lecturas previas y el TTL del evento antes de pedir autorización. Verificar ambos sin confundirlos; conservar el límite conservador si no hay justificación suficiente. No modificar el paquete consumido, el producto ni crear timers globales.
+
+Recibo terminal privado: facebook-provider-r/operation-completed.private.json. Producto7ca/318 sin cambios, sin build, pago, flag u OAuth nuevo. El integrador conserva la cola. Para D hace falta una sesión Dopmi autenticada de ese dueño con Instagram aún conectado y permiso propio, sin cerrar la sesión de Irlanda. No utilizar Facebook ya retirado para contar otra desconexión.
+
 ## Historial conservado — cierre9/10/2026
 
 **PLAY311_OAUTH_INSTAGRAM_FACEBOOK_VERIFICADO_DEV_CERRADO; entrega pendiente.**
