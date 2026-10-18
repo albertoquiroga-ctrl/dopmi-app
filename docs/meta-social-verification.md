@@ -1,5 +1,17 @@
 # Verificación social — registro consolidado
 
+## 17/10/2026 — Desconexión Instagram D y teléfono visible verificados
+
+D Instagram cerrada17oct22:06:37.5527CDMX en Play2.3.3(318)/7caea887: permiso específico, una confirmación en Dopmi y postflight único. Facebook0/Instagram0;20 grupos propios conservan exactamente conteos/huellas frente al baseline fresco. UI asentada muestra «Retiramos la conexión de Dopmi», sin cuenta conectada ni controles Desconectar; Conectar sigue deshabilitado. Revisiones independientes de producto y seguridad cerradas. No acredita retirada del permiso Instagram en Meta ni denegación OAuth. Modo Adoptante original restaurado después del cotejo. Sin SMS, cambios de teléfono, pagos, flags, OAuth, build ni reconexión.
+
+QA de teléfono no vacío en318 cerrada en este recorrido: la pantalla «Teléfono de tu cuenta» muestra «Vinculado» y una lectura READ ONLY ligada al dueño confirma coincidencia con Auth y phone_confirmed_at presente17oct22:07:49.688015CDMX. Fuentes y pruebas vigentes revisadas, sin repetir suites. No se reprodujo caché SDK obsoleta en dispositivo ni se capturó GET de red; SMS incorrecto/reenvío siguen pendientes por falta del otro número controlado ya informada. Captura con contactos sólo privada.
+
+Evidencia privada: `.tools/b5-social-preparation-20261017/negative-qa-no-global-flag/instagram-app-d/operation/operation-completed.private.json`; ligado fresco SQL5145476023e1438040e5344ebb7a070577164a800a920bf6be5e8849b81b67c2. Postflight preserva sólo el instante/alcance cotejado; el cambio de modo posterior puede modificar perfil. Revisión previa del ligado consta en orden del transcript, sin timestamp exacto inventado.
+
+Retro independiente de proceso: preparación y comprobación previa cumplen funciones distintas; no se repitieron suites/builds. D distingue frescura operativa y permiso sin inventar TTL; no se atribuye ahorro ni causalidad sobre el éxito. Único ajuste propuesto/aplicado: el recibo terminal identifica revisión previa y artefactos históricos supersedidos, dueño integrador; verificación en próximo relevo: distinguir estado terminal y siguiente acción sin repetir QA. Los originales se conservan; corregir sólo el resumen si contradice evidencia.
+
+Pendientes concretos: denegación OAuth real, SMS con otro número aún no disponible, mecanismo privado de reclamantes/compatibilidad legado y revisión/publicación de contenido y requisitos Meta, aceptación con Irlanda diferida. No habilitar conexiones ni iniciar otro flujo OAuth por esta autorización. TalkBack post-MVP. Dueños: integrador prepara operaciones; titular resuelve revisión/autoridad y disponibilidad; Irlanda evalúa el candidato. Siguiente dependiente: revisión humana del procedimiento de privacidad/eliminación preparado; ninguna publicación o eliminación autorizada.
+
 ## Corte17/10/2026 — retención aplicada y límites de acceso general
 
 Paridadd304535, producto33b12a77/Play2.3.3(317) instalado. QA social positiva311
