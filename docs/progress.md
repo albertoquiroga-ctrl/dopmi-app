@@ -1,3 +1,11 @@
+## 17/10/2026 — Contraste de recuperación y archivo, sin datos de reclamantes
+
+Explorador independiente y revisión de seguridad confirman recuperación/reautenticación actual por mismo UUID; procedencia histórica users.id=Auth NEW.id no acredita una cuenta concreta. Lectura remota sólo catálogo17oct22:13:11.430124CDMX confirmó legacy.users PK UUID sin FK Auth ni columna Firebase; cero filas personales consultadas. Firebase queda separado según decisión previa de no migrar sus cuentas de pruebas. Paquete operativo existente ampliado con ramas/límites, sin ejecutar plantilla individual ni enviar correo. Pregunta humana presentada sobre falta de todos los factores: mantener solicitud abierta/escalada con verificación concreta por caso, o ampliar recuperación ahora; pendiente respuesta. No nueva build, pago, flag, migración ni QA repetida. Detalle y evidencia en meta-social-verification.md.
+
+## 17/10/2026 — Responsable de verificación privada confirmado
+
+Titular: «Yo coordino también la verificación». Se registra en product-decisions.md y checkpoint; resuelve sólo responsable para solicitudes sin acceso/legado. Integrador continúa contraste de fuentes/mecanismos existentes sin datos de reclamantes; no inventario individual, envío de mensajes, borrado ni publicación autorizados. QA D/teléfono cerrada se conserva sin repetir.
+
 ## 17/10/2026 — Desconexión Instagram D y teléfono visible verificados
 
 D Instagram cerrada17oct22:06:37.5527CDMX en Play2.3.3(318)/7caea887: permiso específico, una confirmación en Dopmi y postflight único. Facebook0/Instagram0;20 grupos propios conservan exactamente conteos/huellas frente al baseline fresco. UI asentada muestra «Retiramos la conexión de Dopmi», sin cuenta conectada ni controles Desconectar; Conectar sigue deshabilitado. Revisiones independientes de producto y seguridad cerradas. No acredita retirada del permiso Instagram en Meta ni denegación OAuth. Modo Adoptante original restaurado después del cotejo. Sin SMS, cambios de teléfono, pagos, flags, OAuth, build ni reconexión.

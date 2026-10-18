@@ -1,5 +1,11 @@
 # Verificación social — registro consolidado
 
+## 17/10/2026 — Coordinador confirmado y límites del procedimiento privado
+
+Titular confirma «Yo coordino también la verificación»; decisión en product-decisions.md. Exploración independiente de fuentes y revisión de seguridad contrastan tres ramas: Supabase actual ya tiene recuperación oficial y reautenticación con mismo UUID; archivo Supabase requiere vínculo individual acreditado antes del inventario; Firebase anterior sigue separado, sin mapa de identidad implementado acreditado. El trigger histórico insertaba users.id=Auth NEW.id, pero no prueba correspondencia individual. Lectura remota **sólo de catálogo**17oct22:13:11.430124CDMX: dopmi_legacy.users existe con PK UUID y sin FK Auth ni columna Firebase. Cero registros personales/solicitudes leídos; no restauración, migración ni borrado.
+
+Preparación ampliada en legacy-deletion-release-gates.txt existente y lectura/evidencia privadas legacy-user-structure.readonly.sql / legacy-user-structure-result.private.json. No ejecutar plantilla por reclamante sin vínculo y alcance autorizados. Pendiente decisión humana si no se recupera ningún factor: solicitud abierta/escalada con prueba concreta revisada por caso (recomendación) o ampliar alcance para diseñar recuperación adicional. No inferir permiso por coordinar soporte; no recolectar documentos por defecto. Política de conservación, compatibilidad integral del legado, publicación/valores Meta y demás gates siguen pendientes. No dictamen jurídico ni aceptación MVP.
+
 ## 17/10/2026 — Desconexión Instagram D y teléfono visible verificados
 
 D Instagram cerrada17oct22:06:37.5527CDMX en Play2.3.3(318)/7caea887: permiso específico, una confirmación en Dopmi y postflight único. Facebook0/Instagram0;20 grupos propios conservan exactamente conteos/huellas frente al baseline fresco. UI asentada muestra «Retiramos la conexión de Dopmi», sin cuenta conectada ni controles Desconectar; Conectar sigue deshabilitado. Revisiones independientes de producto y seguridad cerradas. No acredita retirada del permiso Instagram en Meta ni denegación OAuth. Modo Adoptante original restaurado después del cotejo. Sin SMS, cambios de teléfono, pagos, flags, OAuth, build ni reconexión.

@@ -1,3 +1,7 @@
+## 17/10/2026 — Coordinación de verificación privada de titularidad
+
+El titular respondió «Yo coordino también la verificación» para solicitudes de cuentas antiguas o sin acceso, por canal privado desde soporte@dopmi.org. Asume coordinación de la comprobación manual; el integrador prepara revisión técnica individual. Recibir un correo abre una solicitud y no basta para acreditar titularidad. No autoriza consultar datos de reclamantes, borrar, publicar ni enviar mensajes. Cada operación destructiva conserva paquete concreto y autorización separada. El mecanismo aplicable y la política de conservación aún requieren contraste; este acuerdo define responsabilidad, no acredita un caso resuelto ni compatibilidad integral del legado.
+
 ## 17/10/2026 — Responsable del canal de privacidad y soporte
 
 El titular confirmó «Yo atenderé soporte@dopmi.org» al preparar el cierre MVP. Conserva ese canal ya existente y su responsabilidad de recepción/coordinación de solicitudes. No autoriza enviar correos, inventariar datos personales, borrar cuentas/legado ni publicar contenido/valores Meta. La entrega histórica del buzón se reutiliza; no implica SLA ni prueba de atención permanente. El procedimiento técnico mantiene verificación privada de titularidad, tratamiento por cuenta, revisión y autorización separada de cualquier operación destructiva.

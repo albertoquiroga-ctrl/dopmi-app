@@ -30,6 +30,10 @@ Cierre D posterior17oct: D Instagram cerrada17oct22:06:37.5527CDMX en Play2.3.3(
 
 Pregunta humana pendiente: confirmar quién coordina la verificación manual de titularidad por canal privado para cuentas sin acceso/legado. Titular ya atiende el buzón, pero no se infiere esta responsabilidad adicional. Recomendación presentada: titular coordina e integrador prepara técnica individual; no autoriza inventario, borrado ni publicación. Mecanismo concreto y política de conservación siguen sin resolver.
 
+Respuesta posterior17oct: titular confirma «Yo coordino también la verificación». Resuelve la responsabilidad adicional consultada; decisión canónica en product-decisions.md. Integrador contrasta mecanismos actuales/legado por fuentes, sin acceder a datos de reclamantes. No publicación, borrado ni autorización individual implícitos; mecanismo y conservación aún pendientes.
+
+Contraste posterior17oct: recuperación/reautenticación actual existente; archivo Supabase sólo por vínculo individual acreditado. Catálogo real leído sin registros personales confirma PK UUID de legacy.users sin FK Auth/columna Firebase; el trigger histórico no acredita personas concretas. Firebase separado, sin mapa implementado probado. Explorador y revisión de seguridad respaldan límites; detalle en meta-social-verification.md. Pregunta de alcance pendiente: sin ningún factor recuperable, mantener solicitud abierta y escalar con prueba revisada por caso (recomendado), o diseñar recuperación adicional ahora. No seleccionar por silencio ni autorizar inventario/borrado/publicación por el acuerdo de coordinación.
+
 ## Corte anterior conservado
 
 # Checkpoint Dopmi — continuación directa, 15/10/2026
