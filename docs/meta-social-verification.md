@@ -1,5 +1,15 @@
 # Verificación social — registro consolidado
 
+## 17/10/2026 — Borrador público contrastado, versión pendiente
+
+Titular eligió solicitudes sin acceso pendientes/revisión por caso; responsable también confirmado, decisiones en product-decisions.md. Se prepararon borradores de /delete-account, /privacy-policy y /terms desde la landing GitHub main bf8cd76a7abc69842b2e5a259e8ca370213f2766. Fuentes H10 y vercel.json resuelven existencia de términos/ruta: reutilizar páginas, no crear /pages/data-deletion. Eliminación explica estados pendientes/legado y titularidad; privacidad añade datos sociales/teléfono/Firebase y medición consentida actual; términos corrige cobro inicial condicionado y reglas Guardián/2% ya aprobadas. Corrección Firebase agrupada y revisiones independientes de producto/seguridad cerradas para el delta técnico.
+
+NO listo/autorizado para publicar: los borradores conservan versiones/fechas28sep, ligadas en Flutter/SQL; falta decidir nuevas versiones y aceptación o mantener borrador. Pregunta de alcance presentada con recomendación de nueva aceptación registrada, preservando privacidad/cancelación/comprobantes; no implementada ni autorizada por silencio. Retención/respaldos heredados y compatibilidad integral del legado siguen sin acreditarse. No dictamen jurídico, Meta, publicación, migración ni nueva build pagada autorizados.
+
+Paquete privado landing-content-review/REVIEW-FOR-OWNER.md y manifest.private.json: HTML eliminación002443…9fc5, privacidad16eb91…4e80, términos27fa049…c4cfd. Render local de tres rutas y enlace eliminación→privacidad; capturas parciales escritorio, sin QA móvil/teclado/envío de correo ni HTTP de despliegue nuevo. Preview localhost8878 sesión50769 sólo esas tres rutas; banner local «BORRADOR LOCAL», separado del payload. Producto sigue7caea887/318/Play interno.
+
+Retro independiente: retrabajo documental comprobado al resolver rutas y Firebase ya descritos en H10; causa de omisión y costo no demostrados. Una mejora propuesta, dueño integrador: partir del contenido congelado, H10 y contratos de versión antes del siguiente borrador. Verificar en su primera revisión que no propone rutas duplicadas y distingue existente/cambio/decisión; abandonar esa secuencia si duplica trabajo. Sin nuevo gate, QA ni atribución de ahorro.
+
 ## 17/10/2026 — Coordinador confirmado y límites del procedimiento privado
 
 Titular confirma «Yo coordino también la verificación»; decisión en product-decisions.md. Exploración independiente de fuentes y revisión de seguridad contrastan tres ramas: Supabase actual ya tiene recuperación oficial y reautenticación con mismo UUID; archivo Supabase requiere vínculo individual acreditado antes del inventario; Firebase anterior sigue separado, sin mapa de identidad implementado acreditado. El trigger histórico insertaba users.id=Auth NEW.id, pero no prueba correspondencia individual. Lectura remota **sólo de catálogo**17oct22:13:11.430124CDMX: dopmi_legacy.users existe con PK UUID y sin FK Auth ni columna Firebase. Cero registros personales/solicitudes leídos; no restauración, migración ni borrado.

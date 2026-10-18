@@ -1,3 +1,7 @@
+## 17/10/2026 — Solicitudes sin acceso: pendientes y revisión por caso
+
+Titular eligió «Solicitud pendiente y revisión por caso» para el MVP cuando no pueda recuperarse ningún acceso asociado a la cuenta. La solicitud permanece abierta y se escala al titular; antes de consultar o borrar datos se prepara una forma concreta, revisada y suficiente de acreditar titularidad. Un correo recibido, nombre o identificador escrito no bastan. No ampliar ahora el alcance con un sistema adicional de recuperación. No implica rechazar automáticamente la solicitud, identidad acreditada, consulta individual, borrado ni publicación autorizados. Conservación y compatibilidad integral del legado mantienen sus gates.
+
 ## 17/10/2026 — Coordinación de verificación privada de titularidad
 
 El titular respondió «Yo coordino también la verificación» para solicitudes de cuentas antiguas o sin acceso, por canal privado desde soporte@dopmi.org. Asume coordinación de la comprobación manual; el integrador prepara revisión técnica individual. Recibir un correo abre una solicitud y no basta para acreditar titularidad. No autoriza consultar datos de reclamantes, borrar, publicar ni enviar mensajes. Cada operación destructiva conserva paquete concreto y autorización separada. El mecanismo aplicable y la política de conservación aún requieren contraste; este acuerdo define responsabilidad, no acredita un caso resuelto ni compatibilidad integral del legado.
