@@ -1,4 +1,4 @@
-## Paridad INTEGRAL20d21 — tablero vigente, 18/10/2026
+## Paridad INTEGRAL20d21 — tablero vigente, 19/10/2026
 
 Fuente congelada20d21f484aa60726f0b236574d5493dcf5e05969; base952f281665890abf2260abbb1c65125cb589739f. Decisiones humanas en product-decisions.md, entrada integral18oct. Cobertura de código localizada NO acredita paridad ni ejecución verde. Estados finales separados: implementado, verificado, publicado, instalado, aceptado.
 
@@ -6,16 +6,16 @@ Fuente congelada20d21f484aa60726f0b236574d5493dcf5e05969; base952f281665890abf22
 |---|---|---|
 | B0 Inventario integral | Integrador/primero | Conciliar cola, preservar WIP y matriz de toda app; registrado |
 | B1 Acceso/estructura | Worker identidad UI; integrador router/controller/repositorio/colaFlutter; B0 | Recuperación/mode/OTP/errores/Back implementados,51 dirigidasPASS y captura recovery20d21PASS; Auth/correo/reinicio físico y candidato pendientes |
-| B2 Guardián/apoyo | Worker móvil especializado + integrador; B1 | Composición/estados/anillos→historias implementados;64 regresionesGuardian+urgenciaPASS, capturas normal115200 y gesto PASS; corrección importe en revisión final |
-| B3 Video infraestructura | Worker backendmedia; admin separado; B0, paralelo B1/B2 | Contratos/SQL/Edge/admin implementados,48 pruebas integradasPASS y deno2PASS; paquete Stream preparado, proveedor/aplicación reales bloqueados |
+| B2 Guardián/apoyo | Worker móvil especializado + integrador; B1 | Composición/estados/anillos→historias implementados; regresiones/capturas normal115200 y gesto PASS; corrección importe revisada independientemente. QA física del candidato pendiente |
+| B3 Video infraestructura | Worker backendmedia; admin separado; B0, paralelo B1/B2 | DEV remoto20261019062129 aplicado:82/81previas exactas,22cuerpos/RLS/roles/OFF; dosEdgev1 archivos exactos y5HTTP cerradosPASS. Previewadmin3c43 Ready/login+2RESTPASS, sin sesión admin positiva. Stream real bloqueado por acceso/términos/pago |
 | B4 Video en producto | Worker móvil + integrador; B3/B2 | Implementación móvil preparada; foto urgencia sólo complemento vs galería pendiente humano y Stream real sin acceso; gateOFF |
-| B5 Tienda | Worker backendcatálogo/admin; móvil separado; B0 | Catálogo/admin/móvil implementados; admin48PASS/build y SQL/API vigentes; composición/filtros corregidos tras revisión, nueva capturaPASS; gate públicoOFF |
-| B6 Otras superficies | Propietarios por grupo + integrador; contratos anteriores | Diferencias demostradas de adopción/rescate/chat/perfiles/notificaciones/ayuda, sin reconstruir lo vigente; pendiente |
-| B7 Candidato integrado | Integrador + revisores independientes; B1-B6 | CI39206829906/3c43f351 cuatroSUCCESS; demos/revisiones locales y retro registradas; Stream/decisión urgencia/release/dispositivo/aceptación pendientes |
+| B5 Tienda | Worker backendcatálogo/admin; móvil separado; B0 | Catálogo/admin/móvil implementados; admin48PASS/build; composición/filtros/limpiar capturados y revisados. DEV catálogoanonOFF/vacío200/adminanon401. Demo interna con fixtures; permisos comerciales/catálogo/aceptación pendientes; gate públicoOFF |
+| B6 Otras superficies | Propietarios por grupo + integrador; contratos anteriores | Auditoría independiente de equivalencia acotada y fullCI1318PASS; cobertura/evidencia heredada documentadas abajo, con límites de PNG históricos ausentes. Candidato físico integrado pendiente |
+| B7 Candidato integrado | Integrador + revisores independientes; B1-B6 | CI39206829906/3c43f351 cuatroSUCCESS; CM60 única6ad5b7cd5470ce6a0cb66863 finished/13acciones success, artefacto2.3.3(321)/SHAexacto; Playinterno161 disponible. Teléfono todavía320, actualización normal/QA/Stream/decisión urgencia/aceptación pendientes |
 
 ### Estado verificable del lote local
 
-B0 completado. B1 implementado/dirigidas51PASS, falta Auth real y candidato. B2 implementado y capturado normal/115/200 con gestos; revisión detectó importe partido y se corrigió con fila completa y cifra accesible, validación final en curso. B3/B4 preparados con urgencia foto O video; nueva validación y revisiones en curso, Stream sin configurar. B5 preparado y oculto, admin48PASS/build y backend vigente; capturas router+modalPASS y diferencias de composición/limpiar corregidas, revisión final pendiente. B6 incluye filtro modal de especie, elegibilidad servidor y ayuda con rutas reales; SQL6PASS previo, UI final pendiente. B7 abierto: fullFlutter corregido1318PASS/0FAIL; historial parcial fallido conservado. Correcciones focales/capturas finales23PASS y analyze0; CI39206829906/3c43f351 cuatroSUCCESS, sin release/dispositivo/aceptación nuevos.
+B0 completado. B1 implementado/51dirigidasPASS; Auth/correo con reinicio real pendientes. B2 corregido/capturado normal115200 y gestos/importe accesible revisados. B3 desplegado DEV apagado y verificado; B4 preparado, Stream sin configurar y pregunta foto de urgencia abierta. B5 preparado/oculto y revisado con fixtures; aceptación interna/comercial separadas. B6 equivalencia acotada auditada con límites explícitos. B7:1318FlutterPASS/analyze0 y23focales/capturas, CI39206829906/3c43f351 cuatroSUCCESS; CM60 finished/AAB321/Publishing, Play161 disponible por comprobación separada. Historial fallido/retrabajo conservado; teléfono320 pendiente actualización normal, QA y aceptación. No se reconsume QA financiera/social anterior.
 
 Evidencia privada vigente `.tools/integral20d21-20261018/`: backend-full.log952PASS/8skip; admin-serial-tests.log48PASS/admin-serial-build.log; config-final.log17PASS; video-lifecycle-verification36PASS+rollback real de migración/lifecycle SQL request→finalize. Las revisiones nuevas/capturas se registrarán al terminar, sin sustituir ejecuciones fallidas por fuentes localizadas.
 
