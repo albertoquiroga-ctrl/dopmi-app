@@ -1,3 +1,7 @@
+## 19/10/2026 — Privacidad: servidor retirado, falta refresco físico
+
+Retirada autorizada de dos originales COMPLETADA en servidor (versions7/21),6/6checksRESTanon y auditoríaPASS. Fuente48d65/Play323 intacta. Referencia: progress.md entrada Moderación de privacidad; incluye21/23hashesexactos y límite de atribución de2tablas de sondeo. No repetirRPCs ni decisión. Pendiente root: SamsungUSB actualmente ausente → refrescar collage/cache con evidencia sinPII. Corrección de fotos y republicación requieren nuevo envío del dueño y revisión. Stream/Authcorreo/fotourgencia/aceptación conservan dependencias.
+
 ## 19/10/2026 — Bloqueo reconfirmado tras tres turnos reanudados
 
 A13:42:52UTC/07:42CDMX, admin sigue login/error y Cloudflare sigue signin; no formulario reenviado. Tercer turno consecutivo de la misma dependencia tras reanudar. Turno previo clasificado sin progreso; revisión independiente de pendientes no encontró otra entrada autónoma lista. No hay proceso/build vivo al que esperar. Auditoría privada privacy-resumed-access-audit-3.private.json. Alcance integral incompleto, sin aceptación global: no sustituirlo por el cierre parcial323.

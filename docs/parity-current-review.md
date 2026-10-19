@@ -1,3 +1,7 @@
+## 19/10/2026 — Evidencia de retirada pública, sin cambio de candidato
+
+PrivacidadB2: originales autorizados retirados por adminreal, estado7/21correcciones y catálogo/acceso/nueva firma anónimos denegados6/6. Archivos/fixtures/historialprevio/donaciones/asignaciones conservan hashes;21/23conjuntosiguales y2huellas de sondeo cambiantes con atribución histórica limitada, detalle enprogress.md. AdminPNGseguro demuestra ambos casos en correcciones. Evicción de caché física no acreditada por USBsin dispositivo; no compartir capturas antiguas conPII. Fuente de producto48d65/Play323, video/TiendaOFF. No implica aceptación integral ni video real ni nueva build.
+
 ## Cierre técnico parcial — Play2.3.3(323) instalado; alcance integral bloqueado, 19/10/2026
 
 - Referencia congelada **20d21f484aa60726f0b236574d5493dcf5e05969**; candidato funcional **48d65c615e9ecdaf9b1a9e907091309037c994f8**, rama codex/finish-release-20261015/base952f2816. Commits documentales posteriores no cambian la fuente publicada. CI[39222503764](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/39222503764) cuatroSUCCESS: Flutter1329PASS/analyze0/capturas/Androiddebug; admin48/build/backend955PASS8skip/PG316+11OAuth+6carreras reales locales; identidad/adopción y iOSsimuladorPASS. Focal25PASS; revisiones independientes producto/código/seguridad sin hallazgos materiales del paquete.
