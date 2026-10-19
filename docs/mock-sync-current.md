@@ -1,3 +1,12 @@
+## Checkpoint 19/10/2026 — Continuación nocturna integral
+
+- Referencia congelada: `20d21f484aa60726f0b236574d5493dcf5e05969`; fuente funcional `3c43f3512b1d2396fd568c7682daea2555c07612`, rama `codex/finish-release-20261015` (HEAD documental `c21374ef`). Cola Flutter única: integrador de este chat.
+- Implementado/preparado B1–B6; CI `39206829906` cuatro jobs success. B7 sigue abierto: no confundir CI, despliegue, Play, teléfono y aceptación.
+- DEV aplicado: `20261019062129` ↔ local `20261019041400_integral_video_store_foundation.sql`;82migraciones/81previas exactas,22funciones/RLS/ACL/flags OFF comprobados. `video-media`/`video-cleanup` v1, bytes exactos,30Edge anteriores intactas frente al preflight inmediato. Smokes cerrados5PASS y catálogo anon OFF/vacío. Video/Tienda OFF; dinero TEST.
+- Dueño/siguiente acción: root envió una sola build `android-guardian-internal`, handle `6ad5b7cd5470ce6a0cb66863`, tag `codex/integral20d21-3c43f351`. Lectura inmediata: queued y SHA real exacto `3c43f351`; versión/build todavía sin verificar. Seguir ese mismo handle, no reenviar. Verificar compilación/publicación/actualización Play separadamente antes del QA del teléfono.
+- Bloqueos concretos restantes: Cloudflare sin sesión/credenciales, términos y tarjeta requieren titular; foto de urgencia sólo sección vs también galería sigue sin respuesta. No interpretar silencio como decisión. Proveedor real, Auth/correo con reinicio de app nueva, dispositivo y aceptación visual pendientes. Teléfono verificado mantiene Play2.3.3(320).
+- Evidencia privada: `.tools/integral20d21-20261018/overnight-dev/` y `overnight-release/`; mapeo/ledger en fuentes existentes. Autorización nocturna vigente cubre operaciones necesarias del plan; no activa dinero real ni comercio público.
+
 ## INTEGRAL20d21 — checkpoint operativo 19/10/2026
 
 Referencia congelada **20d21f484aa60726f0b236574d5493dcf5e05969**. Código comprobado/publicado **3c43f3512b1d2396fd568c7682daea2555c07612**, rama **codex/finish-release-20261015**, base952f2816; checkout candidate-git-20261014. Documentación posterior puede tener commit propio [skip ci], sin cambiar fuente. Alcance/decisiones: product-decisions.md; matriz/batches: parity-current-review.md.
