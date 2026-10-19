@@ -1,3 +1,7 @@
+## 19/10/2026 — Evidencia admin complementaria B3/B5
+
+Tienda admin real: renderOFF y validación negativa autenticada de merchant vacío, rechazo servidor/nocreatedrows0/0, gatesOFF. No evidencia de CRUDpositivo/catálogocomercial/aceptación. Videos admin: error explícito bajo servicioOFF y configuración pendiente; no providerQA. Fuentes48d65 sin cambio; detalles y límites en progress.md, capturas admin-store-empty-rejected y admin-video-authenticated-gated. TeléfonoUSB ausente. No ampliar el alcance ni reinterpretar estas comprobaciones como paridad global.
+
 ## 19/10/2026 — Evidencia de retirada pública, sin cambio de candidato
 
 PrivacidadB2: originales autorizados retirados por adminreal, estado7/21correcciones y catálogo/acceso/nueva firma anónimos denegados6/6. Archivos/fixtures/historialprevio/donaciones/asignaciones conservan hashes;21/23conjuntosiguales y2huellas de sondeo cambiantes con atribución histórica limitada, detalle enprogress.md. AdminPNGseguro demuestra ambos casos en correcciones. Evicción de caché física no acreditada por USBsin dispositivo; no compartir capturas antiguas conPII. Fuente de producto48d65/Play323, video/TiendaOFF. No implica aceptación integral ni video real ni nueva build.

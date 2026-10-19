@@ -1,3 +1,7 @@
+## 19/10/2026 — Readback admin Tienda; Videos continúa gated
+
+Sesiónadmin legítima permitió inspección real. Tienda muestra editor/comprobacionesfalse y avisoOFF; captura sola acredita render, no resolución de api.list (el editor se pinta antes). Chequeo adicional: único envío de merchant vacío → error servidor Escribe un nombre de hasta160caracteres, con dopmi_is_admin previo a validación; readbackDB0comercios/0productos y Store/videoOFF. No creación de fixture ni guardado exitoso ni activación. Evidencia admin-store-empty-rejected/negative-postflight y revisión enprogress.md. Videos muestra error de carga, coherente con servicioOFF/proveedor/CORSpendientes; no integraciónpositiva ni causaúnica acreditada. Samsung sigue ausente porUSB. Fuente48d65/Play323 intacta; privacidad retirada7/21 no se repite. Dueño root; pendientes reales: accesoStream, reconectar paracache/Authcorreo, decisiónfoto y aceptación.
+
 ## 19/10/2026 — Retirada de fotos ejecutada; revisión de caché pendiente
 
 - La decisión del titular ya se ejecutó con la sesión administradora legítima proporcionada: **chocotorro6→7 y mishi20→21, changes_requested**. Dos acciones UI únicas del RPC existente, sin grants/suplantación/borrado ni cambios de código. Ambos sin aprobación/snapshot, padre e hijos no públicos, auditoría y notificación únicas.11criterios y resultadoagregadoPASS por caso;6/6RESTanónimoPASS (catálogo vacío, accesofalse, nueva firma400not_found). Snapshotseguro privacy-withdrawal-admin-result.png.
