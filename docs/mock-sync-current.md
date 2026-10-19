@@ -1,3 +1,9 @@
+## 19/10/2026 — Acceso admin revalidado; cuenta prellenada sin rol vigente
+
+Continuación del objetivo: turno anterior clasificado como progreso (decisión y preflight registrados); esta revisión aporta diagnóstico nuevo. El panel tenía datos prellenados; un único inicio de sesión normal fue rechazado con mensaje genérico. Consulta readonly: identidad existente/correo confirmado/perfilactivo, pero sin membresíaadminactiva. No asumir que corregir contraseña basta. Existen5administradoresvigentes elegibles para cada caso y separados del propietario; usar una sesión legítima de esas cuentas, sin grants/suplantación/replay de fixtures. Se solicitó acceso, no nueva aprobación de retirada. Cloudflare fresco sigue/login. No moderación enviada; dineroTEST/TiendaOFF/videoOFF/Play323 intactos.
+
+Evidencia privada privacy-resumed-access-audit.private.json. Dueño root; siguiente: sesiónadminvigente → preflight fresco finanzas/versiones → changes_requested dosoriginales → denegaciónanon/firma nueva+hashes de hijos/finanzas/fixtures+demo sinPII. Objetivo incompleto, auditoría de bloqueo reanudada desde cero; no proceso vivo al que esperar ni build nueva necesaria.
+
 ## 19/10/2026 — Decisión de retirada recibida; falta sesión admin
 
 El titular autorizó retirar ambos casos TEST hasta corregir las fotos; acuerdo en product-decisions.md. Preflight confirma6/20approved,2objetos/5referencias públicas (3fixtures consumidas),2hijos; no mutación aún. Seguridad valida RPC existente/actorreal separado del dueño.600s es lease del cliente conocido, no máximo global garantizado de enlaces previos. Preview admin abierto sin sesión; se solicitó inicio de sesión existente, nunca contraseña en chat/grant/suplantación. Dueño root; siguiente: moderación changes_requested con versiones frescas y postflight de privacidad/finanzas/fixtures. Las demás preguntas pendientes siguen independientes. Fuente publicada48d65/Play323 sin cambios.
