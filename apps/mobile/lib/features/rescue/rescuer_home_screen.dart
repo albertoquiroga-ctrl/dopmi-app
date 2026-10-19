@@ -1,3 +1,5 @@
+import '../store/store_promotion.dart';
+
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -452,6 +454,7 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
           ),
         ],
         const SizedBox(height: 20),
+        const StorePromotion(),
         const _HomePhotoTips(),
       ],
     );

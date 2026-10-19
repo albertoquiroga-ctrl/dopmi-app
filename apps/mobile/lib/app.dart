@@ -1,4 +1,5 @@
 import 'features/rescue/publish_choice_screen.dart';
+import 'features/store/store_screen.dart';
 import 'features/adoption/community_ui.dart';
 import 'features/payments/guardian_repository.dart';
 import 'features/payments/guardian_promotion_screen.dart';
@@ -43,6 +44,8 @@ import 'features/adoption/community_repository.dart' show Json;
 final routerInitialLocationProvider = Provider<String>((ref) => '/welcome');
 
 const accountRouteAliases = <String, String>{
+  '/apoya-causa': '/store',
+  '/rescuer/apoya-causa': '/store',
   '/saved-rescuers': '/profile',
   '/profile/basic-info': '/basic-info',
   '/settings/basic-info': '/basic-info',
@@ -119,6 +122,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       }
       if (target == '/adoptions' && identity.identity?.verified == true) {
         target = '/home';
+      }
+      if (target == '/reset-password') {
+        target = '/reset-password?intent=${identity.recoveryIntent}';
       }
       if (!identity.loading && restoringPath != null) {
         final restored = restoringPath;
@@ -229,6 +235,17 @@ final routerProvider = Provider<GoRouter>((ref) {
                     path: '/messages',
                     builder: (_, _) =>
                         ThreadsScreen(key: ValueKey(identity.identity?.id)),
+                  ),
+                ],
+              ),
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
+                    path: '/store',
+                    builder: (_, _) => StoreScreen(
+                      key: ValueKey(identity.identity?.id),
+                      navigation: const CommunityNav(3, selectedPath: '/store'),
+                    ),
                   ),
                 ],
               ),
@@ -529,6 +546,14 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (_, state) => AuthFormScreen(
               mode: AuthFormMode.login,
               intent: safeIntent(state.uri.queryParameters['intent']),
+              initialEmail: state.extra is AuthNavigationData
+                  ? (state.extra! as AuthNavigationData).email
+                  : null,
+              initialMessage: state.extra is AuthNavigationData
+                  ? (state.extra! as AuthNavigationData).message
+                  : state.extra is String
+                  ? state.extra! as String
+                  : null,
             ),
           ),
           GoRoute(
@@ -538,24 +563,44 @@ final routerProvider = Provider<GoRouter>((ref) {
               intent: safeIntent(state.uri.queryParameters['intent']),
               initialEmail: state.extra is String
                   ? state.extra! as String
+                  : state.extra is AuthNavigationData
+                  ? (state.extra! as AuthNavigationData).email
                   : null,
             ),
           ),
           GoRoute(
             path: '/reset-password',
-            builder: (_, _) => const AuthFormScreen(mode: AuthFormMode.reset),
+            builder: (_, state) => AuthFormScreen(
+              mode: AuthFormMode.reset,
+              intent: safeRecoveryIntent(
+                state.uri.queryParameters['intent'] ?? identity.recoveryIntent,
+              ),
+              initialEmail: identity.recoveryEmail ?? identity.identity?.email,
+            ),
           ),
           GoRoute(
             path: '/confirm',
             builder: (_, state) => ConfirmationScreen(
-              email: state.extra is String ? state.extra! as String : '',
+              email: state.extra is String
+                  ? state.extra! as String
+                  : state.extra is AuthNavigationData
+                  ? (state.extra! as AuthNavigationData).email ?? ''
+                  : '',
+              intent: safeIntent(state.uri.queryParameters['intent']),
             ),
           ),
           GoRoute(
             path: '/confirm-recovery',
             builder: (_, state) => ConfirmationScreen(
-              email: state.extra is String ? state.extra! as String : '',
+              email: state.extra is String
+                  ? state.extra! as String
+                  : state.extra is AuthNavigationData
+                  ? (state.extra! as AuthNavigationData).email ?? ''
+                  : '',
               recovery: true,
+              intent: safeRecoveryIntent(
+                state.uri.queryParameters['intent'] ?? identity.recoveryIntent,
+              ),
             ),
           ),
           GoRoute(

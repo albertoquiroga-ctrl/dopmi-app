@@ -5241,3 +5241,57 @@ Producto/UI y seguridad independientes inspeccionaron píxeles, fuentes, SQL y J
 Recibo terminal privado: facebook-provider-r/operation-completed.private.json, con hashes, alcance y pendientes. Producto7caea887/Play2.3.3(318) sin cambios ni nueva build o prueba financiera. D desde Dopmi requiere una sesión autenticada del dueño cuya prueba Instagram permanece y un permiso propio; no usar Facebook ya ausente para otro éxito. Denegación OAuth, SMS, legado, Meta e Irlanda siguen abiertos; TalkBack post-MVP. Root mantiene una cola Flutter y la sesión de Irlanda intacta.
 
 Siguiente disponibilidad consultada: otro teléfono con la sesión Dopmi de ese dueño y prueba Instagram vigente, sin cerrar Irlanda. Sólo preparación de sesión; no autoriza desconectar ni repetir OAuth.
+
+
+## 18/10/2026 — Arranque de paridad INTEGRAL20d21, B0
+
+Titular aprobó e instruyó implementar el plan integral de este chat, con video real y Tienda preparada/oculta. Conciliación humana asigna la cola aquí; chat previo Alinear app con mock de GitHub interrumpido, WIP conservado. BaseHEAD952f281665890abf2260abbb1c65125cb589739f/codex/finish-release-20261015; referencia20d21f484aa60726f0b236574d5493dcf5e05969 comprobadas en exploración GitHub anterior. Sin Flutter vivo al inicio. Respaldo privado de cambios previos/hashes creado sin reset/limpieza. Decisiones/matriz/batches/checkpoint/backlog actualizados en fuentes existentes; cierre320 conservado.
+
+Propietarios exclusivos: worker identidad auth_screens+identity_widgets/auth_responsive/capture_access; integrador app/controller/repository y única cola Flutter. Worker video sólo contratos/backendSQLpreparado/tests; worker tienda catálogo/backend/adminpropios/SQLpreparado; ninguno migra, publica ni ejecuta Flutter. Baseline identity/recovery_repository en ejecución: resultado aún no acreditado. No nuevo build/CI/instalación/aceptación, cuentas/proveedor/secretos, remoto, pagos o SMS. Activación Cloudflare/Tienda y operaciones externas conservan paquetes/autorizaciones concretos.
+
+
+## 18/10/2026 — INTEGRAL20d21 preparación local y revisión agrupada
+
+Referencia20d21f484aa60726f0b236574d5493dcf5e05969; base952f281665890abf2260abbb1c65125cb589739f, rama codex/finish-release-20261015, WIP sin publicar. B1 recuperación: 51 pruebas dirigidas PASS (b1-tests-corrected.log), revisiones código/seguridad sin hallazgos materiales; Auth/correo/reinicio físico siguen pendientes. Capturas generadas pero ejecución falló por invariant debug del harness: corregido finally, reejecución pendiente, no se acredita comparación visual.
+
+B2 composición Guardián/anillos→historias implementada localmente; pruebas/capturas nuevas pendientes. B3 infraestructura video y B5 catálogo/admin preparados con gates OFF; B4 carga/reproducción en integración. Admin46 pruebas PASS y build PASS, configuración17 PASS. Análisis Flutter integrado falló41 avisos incluidos3 errores de nullabilidad: corrección agrupada en curso, no candidato verde. Revisores independientes detectaron fallos de reanudación, compensación/huérfanos, autorización tras mint, limpieza de cuenta, grandfather y reintento de alta catálogo; se corrigen antes de solicitar aplicación.
+
+Incidente UTF8: cinco archivos nuevos escritos por Python Windows sin encoding quedaron CP1252. Causa comprobada por bytes y probe; conversión estricta y readback58 fuentes PASS, admin repetido verde. Revisor independiente de proceso recomienda aplicar la regla C04 ya existente: readback UTF8 estricto antes de formatter/test, dueño cada implementador; efecto verificable siguientes consumidores sin fallo de codificación. No nueva ceremonia/gate. Evidencia privada .tools/integral20d21-20261018/.
+
+Sin contratación Stream, migración remota, despliegue, build ni publicación. Instalado sigue Play2.3.3(320)/952, TEST. Dueño integrador única cola Flutter; workers video/core y catálogo/rescate con archivos separados. Próximo: cerrar hallazgos, integrar políticas/arranque, gates locales y capturas comparativas, preparar paquetes concretos para autorización remota.
+
+
+## 18/10/2026 — Revisión integral, regresiones y recursos locales
+
+Backend completo960 escenarios:952PASS/8skip/0FAIL (backend-full.log). Admin intento paralelo no ejecutó tests:9 timeouts al iniciar forks; medición local428660KB libres de7708932KB. FullFlutter quedó parcial1144PASS/20FAIL y se detuvo sólo su árbol de procesos; NO se atribuyen sus errores a RAM. Diagnóstico: proyección accepts_support ausente en fixture, referencias de ayuda obsoletas, contextoProviderScope de fixture, keys hermanas duplicadas en mosaico, finders/tipos y listas lazy de Guardián, fixture processing que pretendía reanudar bytes. Correcciones agrupadas, revalidación pendiente. Prueba del ajuste operativo: admin serial --maxWorkers=1 terminó48PASS/build PASS; no demuestra causalidad exclusiva. Próximas pruebas Flutter con --concurrency=2, sin cambiar CI. Retro independiente de proceso recomienda sólo secuencia pesada local y C04/datos equivalentes/selector único ya exigidos; verificar cierre real de las ejecuciones pendientes, sin un gate nuevo.
+
+B2 inspección de PNG/mock detectó chrome, textos, proporción de collage, gestión y falta de fotos equivalentes. Fuentes corregidas y capturador con4fixtures/prewarm; captura posterior falló título ambiguo corregido y otra reveló overflow0.4px del anillo con fecha: reserva redondeada, sin declarar capturas finales verdes. Nombre destacado conserva tinta con contraste accesible en lugar del amarillo de bajo contraste del mock. Subtítulo de anillos usa el mes autoritativo seleccionado, no fechas ficticias por mascota. Nueva composición incluye sólo fotos públicas de asignaciones del mes; no inventa ranking/testimonios.
+
+Revisión específica encontró complemento urgencia incompleto: se prepara selector único foto O video en caso clínico urgente, pointer limitado a archivo público propio existente, exclusión bajo bloqueo de padre y sustitución explícita. Fotografías generales, evidencia privada y snapshots vigentes preservados. SQL nuevo en validación local; preparación previa36PASS/lifecycle real/rollback y contrasteDEV3funciones exactas están en video-lifecycle-verification. Stream adapter usa clave maxDurationSeconds conforme ejemplo oficial;17HTTP PASS. Revisión nueva de código y seguridad en curso.
+
+DEV leído sin mutaciones: proyectoDopMi ohqxranynackjignryep,81 migraciones/latest20261019013031; módulos video/store aún inexistentes. Definiciones de account_deletion_server, rescuer_public y metrics coinciden exactamente con base local; no reparar timestamps históricos. Cloudflare panel exige login: cuenta/plan/capacidad no verificados, pregunta al titular pendiente. Dinero exclusivamenteTEST; nada remoto aplicado ni release nueva.
+
+
+## 18/10/2026 — INTEGRAL20d21: evidencia local corregida, sin release nuevo
+
+Capturas B1 recovery20d21 PASS (b1-captures-verified.log). B2 integral-guardian PASS (b2-captures-final-rail.log): normal/115/320px200%, registro/pendiente/cancelado y soporte activo; JSON de gestos registra desplazamiento real, vuelo intermedio y final. Fotografías públicas sintéticas/autorizadas de fixture, no recorrido en teléfono. La cola local detectó fallos de harness (scroll lazy, centro fuera de viewport, fuente de iconos) y los conserva en logs anteriores; no sustituyen aceptación física. Regresión Guardian+urgencia64PASS (guardian-urgency-regression.log); el test de seis fotos usa selección existente y cancelación real sin añadir una séptima. Tienda captura router+navbar+modal PASS previo, revisión independiente encontró diferencias de composición y acción Limpiar, correcciones agrupadas en curso. FullFlutter/CI final aún pendientes.
+
+Revisión de código independiente detectó guarda Docker que aceptaba UNC remoto; integrador la restringió a pipe local explícito y conservó sockets Unix. node --check PASS; carrera PostgreSQL real pendiente de Docker/CI. No se ejecutó contra servidor remoto. SQL preparado sigue1140cb5b3d61a3f571833d51d159004f76f774cc4d0b4aa6587fce1bdf7fb242, sin aplicar.
+
+Decisiones pendientes consultadas: cuenta Cloudflare y si foto de urgencia queda sólo en complemento o también en galería. Implementación provisional no resuelve esa decisión; gate video OFF y tienda OFF. Play instalado permanece2.3.3(320)/952TEST. Dueño integrador; siguiente: cierre visual Tienda, gates integrados, paquetes concretos y decisiones humanas abiertas.
+
+
+### Retro independiente del retrabajo visual INTEGRAL20d21
+
+Revisor de proceso sin implementación inspeccionó logs/diffs: causa comprobada de varios fallos de capturas fue el recorrido del harness (elementos lazy no construidos, centros fuera de viewport, selectores ambiguos y scroll horizontal nuevo que volvía ambiguo el selector del rail). La falta de fuente MaterialIcons produjo cuadrados de captura, no defecto de producto. El importe partido sí era defecto real y se corrigió en el componente. No hay prueba causal RAM→fallosFlutter; distinguirlo de los timeouts admin ya resueltos con ejecución serial. Dos invocaciones Python con rutas relativas al cwd equivocado fallaron antes de editar; el integrador lo corrigió desde raíz explícita y detuvo sólo su full para cerrar primero el fixture semántico. Historial de fallos conserva evidencia, incluidos b2-captures-verified.log FALLIDO pese a su nombre y final-targeted63PASS/2FAIL, luego Guardian+urgencia64PASS.
+
+Dos mejoras, sin nueva ceremonia: (1) dueño capturador/revisorUI revisan recorrido completo al cambiar geometría: fuentes/fotos, scrollable acotado, construcción lazy, selector único y destino hitTestable; verificar en secuencias finales y retirar offsets que oculten fallos reales. (2) integrador/revisorcódigo aplican C04 desde raíz explícita y cleanup junto al recurso (Semantics try/finally), cierran fallos focales antes del full; verificar siguiente preparación y gate final, simplificar si duplica controles existentes. Efecto general/ahorro todavía no medido.
+
+
+Preparación Git normalizó únicamente CRLF→LF en la migración: comparación binaria raw.replace(CRLF,LF)==índicePASS; SQL y contratos sin delta. Hash canónico de bytes que se publicarán: e082efcf5644a6ea418af37a9508edf9a99027b8922c41c1c9dac2d9b62b2750;1140cb…fb242 identifica la copia CRLF validada anteriormente. Recibo migration-canonical-bytes.json. Ningún paquete remoto autorizado/aplicado.
+
+
+Gate local completo Flutter: flutter test --concurrency=2 --reporter expanded, exit0,1318PASS/0FAIL (flutter-full-serial-corrected.log,13m03s). Incluye correcciones de ayuda, fixture público, Guardian, cancelación/reanudación video, urgencia y Semantics con cleanuptry/finally. Ajuste menor posterior sólo retira indicación Desliza cuando el número cabe; dirigida/captura/análisis finales y CI del commit exacto pendientes. No convierte la UI con fixtures en proveedor/QA física/aceptación.
+
+
+Cierre local de correcciones: flutter analyze exit0 «No issues found» (analyze-final-corrected.log); tanda final23PASS/0FAIL (final-captures-and-regressions.log) con capturas B2/Store y regresiones mensual/tienda/urgencia. Incluye gesto de importe con aserción de inicio/final, hint sólo cuando cifra excede, fuente de iconos, filtrosStore a320x640/200% con Aplicar/Limpiar hitTestable y limpieza real seguida de producto visible. Análisis anterior3incidencias (dos llaves de estilo y visibleForTesting del capturador) corregidas, sin cambiar negocio. Full1318PASS anterior equivalente más estas correcciones focales; CI del SHA exacto sigue requerido.

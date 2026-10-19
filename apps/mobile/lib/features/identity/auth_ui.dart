@@ -329,7 +329,7 @@ class AuthHeading extends StatelessWidget {
                     )
                   : Theme.of(context).textTheme.headlineLarge!;
               final scaler = MediaQuery.textScalerOf(context);
-              if (!sheet && scaler.scale(style.fontSize!) > style.fontSize!) {
+              if (scaler.scale(style.fontSize!) > style.fontSize!) {
                 // Keep enlarged headings readable without breaking a word into
                 // isolated letters. Body text retains the system text scale.
                 var widestWord = 0.0;

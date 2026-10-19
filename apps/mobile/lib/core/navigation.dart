@@ -24,6 +24,13 @@ const rescuerDestinations = [
   DopmiDestination('Perfil', '/profile', 'rtab-profile.svg', 2),
 ];
 
+const storeDestination = DopmiDestination(
+  'Tienda',
+  '/store',
+  'icon-shop.svg',
+  7,
+);
+
 class DopmiNavigationHost extends InheritedWidget {
   const DopmiNavigationHost({
     super.key,
@@ -45,24 +52,34 @@ class DopmiBottomBar extends StatelessWidget {
     required this.rescuer,
     required this.selectedPath,
     required this.onSelected,
+    this.storeEnabled = false,
   });
   final bool rescuer;
   final String selectedPath;
   final ValueChanged<DopmiDestination> onSelected;
+  final bool storeEnabled;
 
   @override
   Widget build(BuildContext context) {
-    final destinations = rescuer ? rescuerDestinations : donorDestinations;
+    final destinations = rescuer
+        ? rescuerDestinations
+        : [
+            for (final destination in donorDestinations) ...[
+              if (destination.path == '/profile' && storeEnabled)
+                storeDestination,
+              destination,
+            ],
+          ];
     if (!rescuer) {
       return SafeArea(
         top: false,
         minimum: const EdgeInsets.only(bottom: 14),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14),
+          padding: EdgeInsets.symmetric(horizontal: storeEnabled ? 12 : 14),
           child: Center(
             heightFactor: 1,
             child: Container(
-              width: 240,
+              width: storeEnabled ? 296 : 240,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(
                 color: DopmiTokens.ink,

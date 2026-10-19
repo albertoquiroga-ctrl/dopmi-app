@@ -1,3 +1,19 @@
+## INTEGRAL20d21 — paquete operativo aún no autorizado
+
+Dueño integrador. Proveedor previsto Cloudflare Stream; cuenta pendiente de confirmar. No contratar ni configurar hasta paquete concreto de cuenta/destino aprobado. Permiso mínimo: token Stream Write limitado a una cuenta, sin DNS/Billing/Global API Key. Secretos sólo por almacén seguro/dashboard/archivo ignorado protegido, nunca chat. Variables servidor: CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_STREAM_API_TOKEN, CLOUDFLARE_STREAM_WEBHOOK_SECRET, DOPMI_VIDEO_WORKER_SECRET (independiente, >=32 caracteres), DOPMI_VIDEO_ALLOWED_ORIGINS (orígenes exactos admin). SUPABASE_* inyectadas, no recrearlas. Flags Edge DOPMI_VIDEO_ENABLED/DOPMI_VIDEO_CLEANUP_ENABLED=false, SQL video y tiendaOFF, sin job. Revisar webhook existente antes de configurar: uno por cuenta, no sustituir servicios ajenos.
+
+Tarifas oficiales consultadas: almacenamiento USD5 por bloque1000min/mes y entregaUSD1/1000min; buffering cuenta. Ejemplo estimado300clips1min+10000reproducciones completas=USD15/mes antes de impuestos/conversión/Supabase; no presupuesto aprobado ni factura real. Fuentes: https://developers.cloudflare.com/stream/pricing/ y https://developers.cloudflare.com/stream/manage-video-library/using-webhooks/ . /token recomendado para pruebas o menos1000tokens/día; escalar requiere evaluar claves de firma. Lease firmado120s tras retirada puede seguir utilizable hasta vencer.
+
+Paquete DEV preparado en fuentes, no aplicado: migración20261019041400 SHA256e082efcf5644a6ea418af37a9508edf9a99027b8922c41c1c9dac2d9b62b2750 (video+tienda+perfil, transacciónúnica), Edge video-media y video-cleanup. Antes de solicitar ejecución: SHA final/CI, hashes cuerpos, comprobar historia81/última20261019013031 y SQL real nuevamente, diff exacto, verificación cerrada con todos gatesOFF y rollback/impacto. No secretos/proveedor/job/build en esa autorización. Stream, activación/pruebas facturables y build android-guardian-internal tienen paquetes separados; CM59 consumido.
+
+Pruebas reales pendientes cuando exista provisión autorizada: TUS interrumpido/reanudado mismoUID+archivo, límites60s/200MiB/corrupto, procesamiento fallido/webhook real repetido, revisión exacta/acceso ajeno, reproducción/póster firmados/vencimiento/retirada y eliminación durante procesamiento con reintento; cámara/galería y pausa/sonido en dispositivo. Caducidad predeterminada TUS todavía sin comprobación real. No sustituirlas por mocks. Decisión foto urgencia sólo complemento vs galería pendiente del titular. Tienda permanece oculta hasta catálogo/derechos/enlaces/comercios válidos; aceptación interna distinta de activación.
+
+## Cola activa — paridad INTEGRAL20d21, 18/10/2026
+
+Ejecutar B0-B7 del tablero parity-current-review.md sobre base952f2816/ref20d21 congelada. Alcance: TODA app del mock, Guardián, videos reales y Tienda preparada/oculta; decisiones en product-decisions.md, entrada integral18oct. Integrador actual controla única cola Flutter; B1 en curso, contratos B3/B5 independientes en preparación. Reutilizar WIP y evidencia equivalente. Cierre320 y excepciones anteriores preservados; este nuevo alcance necesita su propia evidencia/aceptación. Proveedor, remoto y nueva build sólo tras paquetes/autorizaciones aplicables.
+
+### Historial de colas supersedidas por el corte integral
+
 Actualización vigente17oct: titular950d1 autoriza preparar versiones y aceptación; B5-L1/L2 implementados localmente, B5-L3 gates/revisión en curso en matriz existente. Los pendientes de decisión de versionado inferiores quedan resueltos por product-decisions.md. Sin publicación/despliegue/build adicional autorizados; instalado318sin cambios. Retención/respaldos y legado conservan límites.
 
 ## Cola vigente — 17/10/2026, d304535

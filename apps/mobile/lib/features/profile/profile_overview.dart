@@ -1,3 +1,5 @@
+import '../store/store_promotion.dart';
+
 import 'dart:ui' as ui;
 
 import '../../core/reference_focus_outline.dart';
@@ -708,6 +710,7 @@ class DonorProfileView extends ConsumerWidget {
           const SizedBox(height: 12),
           if (ref.watch(guardianEnabledProvider)) const DonorGuardianFeature(),
           const SizedBox(height: 12),
+          const StorePromotion(),
           DonorAccessGroup(
             title: 'Pagos y suscripciones',
             items: [

@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:dopmi_mobile/core/ui.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:dopmi_mobile/features/profile/impact_screen.dart';
 import 'package:flutter/services.dart';
@@ -32,20 +33,24 @@ void main() {
             );
             final key = GlobalKey();
             await tester.pumpWidget(
-              RepaintBoundary(
-                key: key,
-                child: MaterialApp(
-                  theme: dopmiTheme().copyWith(platform: platform),
-                  home: MediaQuery(
-                    data: MediaQueryData(textScaler: TextScaler.linear(scale)),
-                    child: Scaffold(
-                      body: SingleChildScrollView(
-                        child: ImpactCaseCard(const {
-                          'case_id': '41028a40-8b42-4c03-8417-8d33f91d6f52',
-                          'public_data': {'pet_name': 'Choco'},
-                          'allocated_cents': 7525,
-                          'updates': [],
-                        }),
+              ProviderScope(
+                child: RepaintBoundary(
+                  key: key,
+                  child: MaterialApp(
+                    theme: dopmiTheme().copyWith(platform: platform),
+                    home: MediaQuery(
+                      data: MediaQueryData(
+                        textScaler: TextScaler.linear(scale),
+                      ),
+                      child: Scaffold(
+                        body: SingleChildScrollView(
+                          child: ImpactCaseCard(const {
+                            'case_id': '41028a40-8b42-4c03-8417-8d33f91d6f52',
+                            'public_data': {'pet_name': 'Choco'},
+                            'allocated_cents': 7525,
+                            'updates': [],
+                          }),
+                        ),
                       ),
                     ),
                   ),

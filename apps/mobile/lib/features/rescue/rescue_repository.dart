@@ -335,6 +335,11 @@ String pesos(int cents) {
 
 String rescueError(Object error) {
   if (error is PostgrestException &&
+      error.code == '23514' &&
+      error.message.contains('Agradecimiento')) {
+    return 'Falta el video de agradecimiento de esta versión. Cárgalo, espera a que termine de procesarse y vuelve a enviar. Los casos anteriores conservan su publicación.';
+  }
+  if (error is PostgrestException &&
       ['22023', '40001', 'PT409'].contains(error.code)) {
     return error.message;
   }

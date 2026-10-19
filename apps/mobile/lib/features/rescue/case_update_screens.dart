@@ -12,6 +12,7 @@ import '../payments/contribution_layout.dart';
 import 'case_update_repository.dart';
 import 'owned_case_history.dart';
 import 'rescue_repository.dart';
+import 'rescue_videos.dart';
 
 class PublicCaseUpdates extends StatelessWidget {
   const PublicCaseUpdates(this.caseId, {super.key});
@@ -37,6 +38,7 @@ class CaseUpdatesManageScreen extends ConsumerWidget {
           style: TextStyle(fontSize: 14, height: 1.45, color: muted),
         ),
         const SizedBox(height: 20),
+        CaseVideoManager(caseId),
         ActionButton(
           'Crear avance',
           onPressed: () => context.push('/rescue-cases/$caseId/updates/new'),

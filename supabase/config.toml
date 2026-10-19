@@ -80,3 +80,11 @@ verify_jwt = false
 verify_jwt = false
 [functions.social-verification-meta]
 verify_jwt = false
+
+# User actions validate Auth; Stream webhook validates its signature in handler.
+[functions.video-media]
+verify_jwt = false
+
+# Separate server-only secret is checked by the cleanup handler.
+[functions.video-cleanup]
+verify_jwt = false

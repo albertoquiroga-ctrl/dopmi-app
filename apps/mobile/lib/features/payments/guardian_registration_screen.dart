@@ -15,6 +15,7 @@ import 'guardian_enrollment_amount.dart';
 import 'guardian_method_setup.dart';
 import 'guardian_registration.dart';
 import 'guardian_repository.dart';
+import 'guardian_history_screen.dart';
 import 'payment_repository.dart';
 
 class GuardianRegistrationScreen extends ConsumerStatefulWidget {
@@ -358,7 +359,7 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
         if (!didPop) leave();
       },
       child: ContributionFrame(
-        title: 'Guardián',
+        title: state == null ? 'Guardián' : 'Suscripción y pagos',
         back: leave,
         bottomNavigationBar: form
             ? SafeArea(
@@ -382,6 +383,18 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
           controller: contentScroll,
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
           children: [
+            if (state != null) ...[
+              const Text(
+                'Suscripción Guardián',
+                style: TextStyle(
+                  fontSize: 20,
+                  height: 1.25,
+                  fontWeight: FontWeight.w700,
+                  color: ink,
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
             if (busy) const LinearProgressIndicator(),
             if (busy)
               Semantics(liveRegion: true, child: const Text('En proceso…')),
@@ -450,20 +463,108 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
                   child: const Text('Cancelar registro pendiente'),
                 ),
             ] else ...[
-              Text(
-                state.status == 'canceled' ? 'Registro cancelado' : status,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                  color: ink,
+              Container(
+                key: const ValueKey('guardian-registration-membership-card'),
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: const Color(0xffe6e2dd)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xffefede8),
+                                borderRadius: BorderRadius.circular(999),
+                              ),
+                              child: Text(
+                                state.status == 'canceled'
+                                    ? 'Registro cancelado'
+                                    : status,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  height: 1.3,
+                                  fontWeight: FontWeight.w600,
+                                  color: muted,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        const CircleAvatar(
+                          backgroundColor: Color(0xfffff2b8),
+                          foregroundColor: ink,
+                          child: Icon(Icons.star_border),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Monto mensual',
+                      style: TextStyle(fontSize: 13, height: 1.3, color: muted),
+                    ),
+                    const SizedBox(height: 6),
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: contributionMoney(state.grossCents)
+                                .replaceFirst(' MXN', ''),
+                          ),
+                          const TextSpan(
+                            text: ' MXN / mes',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: muted,
+                            ),
+                          ),
+                        ],
+                      ),
+                      key: const ValueKey(
+                        'guardian-registration-monthly-amount',
+                      ),
+                      style: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 30,
+                        height: 1.25,
+                        fontWeight: FontWeight.w800,
+                        color: ink,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Divider(color: Color(0xffe6e2dd)),
+                    Text(
+                      state.summary,
+                      style: const TextStyle(
+                        color: muted,
+                        fontSize: 13,
+                        height: 1.45,
+                      ),
+                    ),
+                    if (state.nextEvaluationAt != null) ...[
+                      const SizedBox(height: 10),
+                      Text(
+                        'Próxima evaluación: ${state.nextEvaluationAt!.toIso8601String().substring(0, 10)} (UTC).',
+                        style: const TextStyle(fontSize: 13, height: 1.4),
+                      ),
+                    ],
+                  ],
                 ),
               ),
-              const SizedBox(height: 12),
-              Text('Monto mensual: ${contributionMoney(state.grossCents)}'),
-              if (state.nextEvaluationAt != null)
-                Text(
-                  'Próxima evaluación: ${state.nextEvaluationAt!.toIso8601String().substring(0, 10)} (UTC).',
-                ),
+              const SizedBox(height: 16),
               if (state.evaluationStatus == 'skipped')
                 const Notice(
                   'Este ciclo se omitió. No genera deuda ni se cobrará después.',
@@ -499,26 +600,30 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
                 ),
               ],
               if (state.status == 'registered') ...[
-                TextButton(
+                ContributionButton(
+                  'Cambiar cantidad',
+                  dark: true,
                   onPressed: busy || !fresh
                       ? null
                       : () => setState(() {
                           editing = true;
                           consent = false;
                         }),
-                  child: const Text('Cambiar monto'),
                 ),
-                TextButton(
+                const SizedBox(height: 12),
+                ContributionButton(
+                  'Cancelar ciclos futuros',
+                  secondary: true,
                   onPressed: busy || !fresh ? null : cancel,
-                  child: const Text('Cancelar ciclos futuros'),
                 ),
               ],
               if (state.status == 'canceled')
-                TextButton(
+                ContributionButton(
+                  'Ver mi impacto',
+                  secondary: true,
                   onPressed: busy || !fresh
                       ? null
                       : () => context.push('/impact?history=1'),
-                  child: const Text('Ver mi impacto'),
                 ),
               if (state.status == 'canceled' &&
                   [
@@ -529,17 +634,42 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
                     GuardianRegistrationPaymentState.allocated,
                     GuardianRegistrationPaymentState.refunded,
                   ].contains(state.paymentState))
-                TextButton(
-                  onPressed: busy || methodAwaiting || !fresh
-                      ? null
-                      : () => setState(() {
-                          registration = null;
-                          consent = false;
-                          methodConsent = false;
-                          error = null;
-                        }),
-                  child: const Text('Volver a registrarme'),
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: ContributionButton(
+                    'Volver a registrarme',
+                    dark: true,
+                    onPressed: busy || methodAwaiting || !fresh
+                        ? null
+                        : () => setState(() {
+                            registration = null;
+                            consent = false;
+                            methodConsent = false;
+                            error = null;
+                          }),
+                  ),
                 ),
+            ],
+            if (state != null && !editing) ...[
+              const SizedBox(height: 28),
+              const Text(
+                'Historial de pagos',
+                style: TextStyle(
+                  fontSize: 20,
+                  height: 1.25,
+                  fontWeight: FontWeight.w700,
+                  color: ink,
+                ),
+              ),
+              const SizedBox(height: 12),
+              GuardianHistoryPreview(owner: widget.owner),
+              TextButton.icon(
+                onPressed: busy
+                    ? null
+                    : () => context.push('/guardian/history'),
+                icon: const Icon(Icons.receipt_long_outlined),
+                label: const Text('Ver historial de pagos'),
+              ),
             ],
             const SizedBox(height: 12),
             TextButton(

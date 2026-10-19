@@ -23,9 +23,27 @@ class IdentityController extends ChangeNotifier {
   StreamSubscription<IdentityEvent>? _subscription;
   Identity? identity;
   bool loading = true, recovering = false;
+  String recoveryIntent = 'adopt';
+  String? recoveryEmail;
+  String? _recoveryActor;
   Object? error;
   bool _disposed = false;
   int _revision = 0;
+  int _recoveryPresentationRevision = 0;
+
+  Future<void> prepareRecoveryPresentation(String intent, String email) async {
+    _recoveryPresentationRevision++;
+    recoveryIntent = safeRecoveryIntent(intent);
+    recoveryEmail = email.trim();
+    await repository.rememberRecoveryIntent(recoveryIntent);
+  }
+
+  Future<void> clearRecoveryPresentation() async {
+    _recoveryPresentationRevision++;
+    recoveryIntent = 'adopt';
+    recoveryEmail = null;
+    await repository.rememberRecoveryIntent(null);
+  }
 
   void _notify() {
     if (!_disposed) notifyListeners();
@@ -37,14 +55,37 @@ class IdentityController extends ChangeNotifier {
     _notify();
     try {
       recovering = await repository.recoveryPending();
+      if (recovering) _recoveryActor = identity?.id;
       if (_disposed) return;
       _subscription ??= repository.events.listen(
         (event) {
           _revision++;
+          final previousActor = identity?.id ?? _recoveryActor;
+          final ownerChanged =
+              !event.recovery &&
+              event.identity != null &&
+              previousActor != null &&
+              event.identity!.id != previousActor;
           identity = event.identity;
-          if (event.recovery) recovering = true;
-          if (event.signedOut) recovering = false;
-          if (event.recovery || event.signedOut) {
+          if (event.recovery) {
+            recovering = true;
+            _recoveryActor = event.identity?.id;
+            final email = event.identity?.email;
+            if (email != null && email.isNotEmpty) recoveryEmail = email;
+          }
+          // A transient null identity can precede passwordRecovery. Clear only
+          // an explicit sign-out, not that intermediate restoration event.
+          if (event.signedOut || ownerChanged) {
+            recovering = false;
+            _recoveryActor = null;
+            unawaited(
+              clearRecoveryPresentation().catchError((Object failure) {
+                error = failure;
+                _notify();
+              }),
+            );
+          }
+          if (event.recovery || event.signedOut || ownerChanged) {
             unawaited(
               repository.rememberRecovery(recovering).catchError((
                 Object failure,
@@ -64,9 +105,15 @@ class IdentityController extends ChangeNotifier {
         },
       );
       final revision = _revision;
+      final presentationRevision = _recoveryPresentationRevision;
+      final storedIntent = await repository.recoveryIntent();
+      if (_recoveryPresentationRevision == presentationRevision) {
+        recoveryIntent = safeRecoveryIntent(storedIntent);
+      }
       final restored = await repository.restore();
       if (_revision == revision) identity = restored;
       if (identity == null) recovering = false;
+      if (recovering) _recoveryActor ??= identity?.id;
     } catch (failure) {
       error = failure;
     }
@@ -75,10 +122,19 @@ class IdentityController extends ChangeNotifier {
   }
 
   Future<void> completeRecovery(String password) async {
-    if (!recovering || identity == null) {
+    if (!recovering ||
+        identity == null ||
+        repository.current?.id != identity!.id ||
+        _recoveryActor != identity!.id) {
       throw StateError('recovery_session_required');
     }
+    final actor = identity!.id;
     await repository.updatePassword(password);
+    if (!recovering ||
+        identity?.id != actor ||
+        repository.current?.id != actor) {
+      throw StateError('recovery_session_required');
+    }
     // Keep recovery mode until sign-out succeeds. Never fall through to the profile.
     await logout();
   }
@@ -86,7 +142,9 @@ class IdentityController extends ChangeNotifier {
   Future<void> logout() async {
     await repository.logout();
     await repository.rememberRecovery(false);
+    await clearRecoveryPresentation();
     recovering = false;
+    _recoveryActor = null;
     identity = null;
     error = null;
     _notify();
@@ -119,6 +177,7 @@ class IdentityController extends ChangeNotifier {
         '/terms',
         '/privacy-notice',
         '/saved',
+        '/store',
         '/saved-rescuers',
         '/impact',
         '/my-adoptions',

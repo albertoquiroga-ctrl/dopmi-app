@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/ui.dart';
 import '../../core/content_links.dart';
 import '../../core/design_tokens.dart';
+import '../../core/donor_notification_button.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../community/content_actions.dart';
@@ -14,6 +15,7 @@ import '../payments/guardian_repository.dart';
 import '../payments/guardian_registration.dart';
 import '../payments/guardian_promotion_screen.dart';
 import '../rescue/rescue_public_photo.dart';
+import '../rescue/rescue_videos.dart';
 import '../rescue/rescue_repository.dart';
 import '../identity/identity_controller.dart';
 import 'monthly_impact_panel.dart';
@@ -113,6 +115,46 @@ class ImpactScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
     backgroundColor: Colors.white,
+    appBar: supportEntry
+        ? AppBar(
+            backgroundColor: Colors.white,
+            surfaceTintColor: Colors.transparent,
+            automaticallyImplyLeading: false,
+            centerTitle: false,
+            title: SvgPicture.asset(
+              'assets/profile/logo-paw.svg',
+              width: 40,
+              height: 40,
+              semanticsLabel: 'Dopmi',
+            ),
+            actions: const [DonorNotificationButton()],
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(
+                MediaQuery.textScalerOf(context).scale(28) *
+                        1.25 *
+                        (MediaQuery.textScalerOf(context).scale(14) > 21
+                            ? 3
+                            : 1) +
+                    28,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Tu impacto Guardián',
+                    style: const TextStyle(
+                      fontSize: 28,
+                      height: 1.1,
+                      fontWeight: FontWeight.w700,
+                      color: ink,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
+        : null,
     bottomNavigationBar: CommunityNav(supportEntry ? 1 : 3),
     body: SafeArea(
       child: SingleChildScrollView(
@@ -121,8 +163,9 @@ class ImpactScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (membershipPending) ...[
-              const Notice(
+              const Text(
                 'Tu solicitud Guardián sigue pendiente. Consulta el mismo intento para conocer su resultado.',
+                style: TextStyle(color: muted, fontSize: 13, height: 1.4),
               ),
               TextButton(
                 onPressed: () async {
@@ -133,7 +176,10 @@ class ImpactScreen extends ConsumerWidget {
               ),
             ],
             if (registration != null) ...[
-              Notice(registration!.summary),
+              Text(
+                registration!.summary,
+                style: const TextStyle(color: muted, fontSize: 13, height: 1.4),
+              ),
               TextButton(
                 onPressed: () async {
                   await context.push('/guardian');
@@ -142,39 +188,40 @@ class ImpactScreen extends ConsumerWidget {
                 child: const Text('Consultar registro Guardián'),
               ),
             ],
-            Padding(
-              padding: EdgeInsets.fromLTRB(12, 6, 12, 18),
-              child: Column(
-                children: [
-                  Semantics(
-                    header: true,
-                    child: Text(
-                      supportEntry
-                          ? 'Tu impacto Guardián'
-                          : 'Vidas que continúan gracias a ti.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 20,
-                        height: 1.25,
-                        letterSpacing: .07,
-                        fontWeight: FontWeight.w700,
-                        color: ink,
+            if (!supportEntry)
+              Padding(
+                padding: EdgeInsets.fromLTRB(12, 6, 12, 18),
+                child: Column(
+                  children: [
+                    Semantics(
+                      header: true,
+                      child: Text(
+                        supportEntry
+                            ? 'Tu impacto Guardián'
+                            : 'Vidas que continúan gracias a ti.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          height: 1.25,
+                          letterSpacing: .07,
+                          fontWeight: FontWeight.w700,
+                          color: ink,
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Avances públicos de los casos a los que tus aportaciones sí fueron asignadas.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14,
-                      height: 20 / 14,
-                      color: muted,
+                    SizedBox(height: 8),
+                    Text(
+                      'Avances públicos de los casos a los que tus aportaciones sí fueron asignadas.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        height: 20 / 14,
+                        color: muted,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
             const SizedBox(height: 16),
             MonthlyImpactPanel(
               key: ValueKey(ref.watch(identityControllerProvider).identity?.id),
@@ -476,6 +523,7 @@ class ImpactCaseCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                 ],
+                PublicRescueVideos(item['case_id'] as String),
                 const Divider(height: 1, color: Color(0xffe6e2dd)),
                 const SizedBox(height: 12),
                 if (MediaQuery.textScalerOf(context).scale(17) > 25)

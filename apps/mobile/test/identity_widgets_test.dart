@@ -91,6 +91,25 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  Future<ProviderContainer> recovery(
+    WidgetTester tester,
+    FakeIdentityRepository repo, {
+    String intent = 'rescue',
+  }) async {
+    final container = await start(
+      tester,
+      repo,
+      initialLocation: '/login?intent=$intent',
+    );
+    await tester.enterText(
+      find.byType(TextFormField).first,
+      'ana@example.test',
+    );
+    await tap(tester, 'Olvidé mi contraseña');
+    await tap(tester, 'Enviar enlace');
+    return container;
+  }
+
   for (final route in ['/login', '/signup']) {
     testWidgets('reference auth $route retains private password fields', (
       tester,
@@ -637,6 +656,363 @@ void main() {
     },
   );
   testWidgets(
+    'recovery request uses the login sheet and preserves rescuer context',
+    (tester) async {
+      final repo = FakeIdentityRepository();
+      await start(tester, repo, initialLocation: '/login?intent=rescue');
+      await tester.enterText(
+        find.byType(TextFormField).first,
+        'ana@example.test',
+      );
+      await tap(tester, 'Olvidé mi contraseña');
+      expect(find.text('¿Olvidaste tu contraseña?'), findsOneWidget);
+      final frame = tester.widget<AuthFrame>(find.byType(AuthFrame));
+      expect(frame.sheet, isTrue);
+      expect(frame.intent, 'rescue');
+      expect(
+        tester
+            .widget<TextFormField>(find.byType(TextFormField).first)
+            .controller!
+            .text,
+        'ana@example.test',
+      );
+      await tap(tester, 'Enviar enlace');
+      expect(find.text('Revisa tu correo'), findsOneWidget);
+      expect(tester.widget<AuthFrame>(find.byType(AuthFrame)).intent, 'rescue');
+      await tap(tester, 'Volver a iniciar sesión');
+      expect(repo.recoveryPresentationIntent, isNull);
+      expect(
+        tester.widget<AuthFormScreen>(find.byType(AuthFormScreen)).intent,
+        'rescue',
+      );
+      expect(
+        tester
+            .widget<TextFormField>(find.byType(TextFormField).first)
+            .controller!
+            .text,
+        'ana@example.test',
+      );
+      expect(repo.loads, 0);
+    },
+  );
+  testWidgets(
+    'recovery confirmation starts simple and expands the real code form',
+    (tester) async {
+      final repo = FakeIdentityRepository();
+      await start(
+        tester,
+        repo,
+        initialLocation: '/confirm-recovery?intent=rescue',
+      );
+      expect(find.text('Revisa tu correo'), findsOneWidget);
+      expect(find.byType(TextFormField), findsNothing);
+      expect(find.text('Reenviar correo'), findsOneWidget);
+      expect(find.text('Necesito confirmar mi correo'), findsOneWidget);
+      expect(repo.recoveryRequests, isEmpty);
+      await tap(tester, 'Usar código');
+      expect(find.byType(TextFormField), findsNWidgets(2));
+      expect(find.text('Verificar código'), findsOneWidget);
+      await tap(tester, 'Ocultar código');
+      expect(find.byType(TextFormField), findsNothing);
+      expect(repo.current, isNull);
+      expect(repo.loads, 0);
+    },
+  );
+  for (final intent in ['adopt', 'donate']) {
+    testWidgets(
+      'recovery return preserves $intent without exposing email in URL',
+      (tester) async {
+        final repo = FakeIdentityRepository();
+        final container = await recovery(tester, repo, intent: intent);
+        expect(repo.recoveryRequests, ['ana@example.test']);
+        expect(repo.current, isNull);
+        expect(find.text('Revisa tu correo'), findsOneWidget);
+        expect(
+          find.textContaining('Si hay una cuenta con ese correo'),
+          findsOneWidget,
+        );
+        expect(find.textContaining('ana@example.test'), findsNothing);
+        final uri = container
+            .read(routerProvider)
+            .routeInformationProvider
+            .value
+            .uri;
+        expect(uri.queryParameters, {'intent': intent});
+        expect(uri.toString(), isNot(contains('ana')));
+        await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+        expect(repo.recoveryPresentationIntent, isNull);
+        expect(
+          tester.widget<AuthFormScreen>(find.byType(AuthFormScreen)).intent,
+          intent,
+        );
+        expect(
+          tester
+              .widget<TextFormField>(find.byType(TextFormField).first)
+              .controller!
+              .text,
+          'ana@example.test',
+        );
+        expect(repo.loads, 0);
+      },
+    );
+  }
+  testWidgets(
+    'recovery code draft and secondary confirmation keep their context',
+    (tester) async {
+      final repo = FakeIdentityRepository();
+      await recovery(tester, repo);
+      await tap(tester, 'Usar código');
+      await tester.enterText(
+        find.byType(TextFormField).first,
+        'correction@example.test',
+      );
+      await tester.enterText(find.byType(TextFormField).last, '123456');
+      await tap(tester, 'Ocultar código');
+      await tap(tester, 'Usar código');
+      expect(
+        tester
+            .widget<TextFormField>(find.byType(TextFormField).first)
+            .controller!
+            .text,
+        'correction@example.test',
+      );
+      expect(
+        tester
+            .widget<TextFormField>(find.byType(TextFormField).last)
+            .controller!
+            .text,
+        '123456',
+      );
+      await tap(tester, 'Necesito confirmar mi correo');
+      final confirmation = tester.widget<ConfirmationScreen>(
+        find.byType(ConfirmationScreen).last,
+      );
+      expect(confirmation.recovery, isFalse);
+      expect(confirmation.intent, 'rescue');
+      expect(confirmation.email, 'correction@example.test');
+      await tester.tap(find.byTooltip('Volver').last);
+      await tester.pumpAndSettle();
+      expect(find.text('Ocultar código'), findsOneWidget);
+      expect(
+        tester
+            .widget<TextFormField>(find.byType(TextFormField).last)
+            .controller!
+            .text,
+        '123456',
+      );
+      expect(repo.recoveryRequests, ['ana@example.test']);
+      expect(repo.confirmationRequests, 0);
+      expect(repo.codeRequests, 0);
+    },
+  );
+  testWidgets(
+    'recovery resend starts cooldown only after a successful response',
+    (tester) async {
+      final repo = ControlledRecoveryRepository();
+      await recovery(tester, repo);
+      repo.failRecovery = true;
+      await tap(tester, 'Reenviar correo');
+      expect(find.text('Reenviar en 60s'), findsNothing);
+      expect(find.text('Reenviar correo'), findsOneWidget);
+      repo.failRecovery = false;
+      await tap(tester, 'Reenviar correo');
+      expect(find.text('Reenviar en 60s'), findsOneWidget);
+      expect(
+        tester
+            .widget<TextButton>(
+              find.widgetWithText(TextButton, 'Reenviar en 60s'),
+            )
+            .onPressed,
+        isNull,
+      );
+      expect(repo.recoveryRequests, hasLength(3));
+      await tester.pump(const Duration(seconds: 60));
+      await tester.pumpAndSettle();
+      expect(find.text('Reenviar correo'), findsOneWidget);
+      await tap(tester, 'Volver a iniciar sesión');
+    },
+  );
+  for (final length in [6, 10]) {
+    testWidgets(
+      'recovery accepts $length digit code and returns to its login',
+      (tester) async {
+        final repo = ControlledRecoveryRepository();
+        await recovery(tester, repo);
+        await tap(tester, 'Usar código');
+        for (final invalid in ['12345', '12345678901', 'abcdef']) {
+          await tester.enterText(find.byType(TextFormField).last, invalid);
+          await tap(tester, 'Verificar código');
+          expect(repo.codeRequests, 0);
+          expect(find.text('Escribe el código que recibiste.'), findsOneWidget);
+        }
+        final valid = length == 6 ? '123456' : '1234567890';
+        await tester.enterText(find.byType(TextFormField).last, valid);
+        repo.failCode = true;
+        await tap(tester, 'Verificar código');
+        expect(find.text('Ocultar código'), findsOneWidget);
+        expect(find.text('Una nueva\ncontraseña.'), findsNothing);
+        repo.failCode = false;
+        await tap(tester, 'Verificar código');
+        expect(repo.confirmedRecovery, isTrue);
+        expect(repo.confirmedEmail, 'ana@example.test');
+        expect(repo.confirmedCode, valid);
+        expect(
+          tester.widget<AuthFormScreen>(find.byType(AuthFormScreen)).intent,
+          'rescue',
+        );
+        await tester.enterText(
+          find.byType(TextFormField).first,
+          'NewPassword1234',
+        );
+        await tester.enterText(
+          find.byType(TextFormField).last,
+          'NewPassword1234',
+        );
+        await tap(tester, 'Actualizar contraseña');
+        expect(repo.passwordUpdates, 1);
+        expect(repo.current, isNull);
+        expect(repo.recoveryPresentationIntent, isNull);
+        expect(
+          tester.widget<AuthFormScreen>(find.byType(AuthFormScreen)).intent,
+          'rescue',
+        );
+        expect(
+          tester
+              .widget<TextFormField>(find.byType(TextFormField).first)
+              .controller!
+              .text,
+          'ana@example.test',
+        );
+        expect(
+          find.text('Tu contraseña se actualizó. Inicia sesión con la nueva.'),
+          findsOneWidget,
+        );
+        expect(repo.loads, 0);
+      },
+    );
+  }
+  for (final failure in [false, true]) {
+    testWidgets(
+      'pending recovery code blocks exits and duplicate verification; failure=$failure',
+      (tester) async {
+        final repo = ControlledRecoveryRepository()
+          ..codeResponse = Completer<void>()
+          ..failCode = failure;
+        await recovery(tester, repo);
+        await tap(tester, 'Usar código');
+        await tester.enterText(find.byType(TextFormField).last, '123456');
+        final verify = find.widgetWithText(FilledButton, 'Verificar código');
+        await tester.ensureVisible(verify);
+        await tester.tap(verify);
+        await tester.tap(verify);
+        await tester.pump();
+        expect(repo.startedCodeRequests, 1);
+        final pendingVerify = find.ancestor(
+          of: find.byType(CircularProgressIndicator),
+          matching: find.byType(FilledButton),
+        );
+        expect(pendingVerify, findsOneWidget);
+        expect(tester.widget<FilledButton>(pendingVerify).onPressed, isNull);
+        expect(
+          tester
+              .widget<TextButton>(
+                find.widgetWithText(TextButton, 'Ocultar código'),
+              )
+              .onPressed,
+          isNull,
+        );
+        expect(
+          tester
+              .widget<TextButton>(
+                find.widgetWithText(TextButton, 'Reenviar correo'),
+              )
+              .onPressed,
+          isNull,
+        );
+        expect(
+          tester
+              .widget<TextButton>(
+                find.widgetWithText(TextButton, 'Necesito confirmar mi correo'),
+              )
+              .onPressed,
+          isNull,
+        );
+        await tester.ensureVisible(find.byTooltip('Volver'));
+        await tester.tap(find.byTooltip('Volver'));
+        await tester.binding.handlePopRoute();
+        await tester.pump();
+        expect(find.byType(ConfirmationScreen), findsOneWidget);
+        expect(repo.recoveryPresentationIntent, 'rescue');
+        expect(repo.startedCodeRequests, 1);
+        repo.codeResponse!.complete();
+        await tester.pumpAndSettle();
+        if (failure) {
+          expect(find.byType(ConfirmationScreen), findsOneWidget);
+          expect(
+            tester
+                .widget<TextFormField>(find.byType(TextFormField).last)
+                .controller!
+                .text,
+            '123456',
+          );
+          expect(
+            tester
+                .widget<TextButton>(
+                  find.widgetWithText(TextButton, 'Ocultar código'),
+                )
+                .onPressed,
+            isNotNull,
+          );
+          await tap(tester, 'Volver a iniciar sesión');
+          expect(repo.recoveryPresentationIntent, isNull);
+        } else {
+          expect(find.text('Una nueva\ncontraseña.'), findsOneWidget);
+          expect(repo.current, isNotNull);
+          expect(repo.loads, 0);
+        }
+      },
+    );
+  }
+  testWidgets('recovery pending request cannot navigate after Back', (
+    tester,
+  ) async {
+    final repo = ControlledRecoveryRepository()
+      ..recoveryResponse = Completer<void>();
+    await start(tester, repo, initialLocation: '/forgot?intent=rescue');
+    await tester.enterText(
+      find.byType(TextFormField).first,
+      'ana@example.test',
+    );
+    await tester.tap(find.widgetWithText(FilledButton, 'Enviar enlace'));
+    await tester.pump();
+    await tester.pump();
+    expect(repo.recoveryRequests, ['ana@example.test']);
+    expect(find.text('Revisa tu correo'), findsNothing);
+    final pendingSend = find.ancestor(
+      of: find.byType(CircularProgressIndicator),
+      matching: find.byType(FilledButton),
+    );
+    expect(pendingSend, findsOneWidget);
+    expect(tester.widget<FilledButton>(pendingSend).onPressed, isNull);
+    await tester.tap(find.byTooltip('Volver'));
+    await tester.pumpAndSettle();
+    repo.recoveryResponse!.complete();
+    await tester.pumpAndSettle();
+    expect(find.byType(ConfirmationScreen), findsNothing);
+    expect(
+      tester.widget<AuthFormScreen>(find.byType(AuthFormScreen)).mode,
+      AuthFormMode.login,
+    );
+    expect(
+      tester.widget<AuthFormScreen>(find.byType(AuthFormScreen)).intent,
+      'rescue',
+    );
+    expect(repo.recoveryRequests, hasLength(1));
+    expect(repo.recoveryPresentationIntent, isNull);
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets(
     'forgot link opens real recovery and back retains entered email',
     (tester) async {
       final repo = FakeIdentityRepository();
@@ -675,7 +1051,7 @@ void main() {
         findsOneWidget,
       );
       expect(
-        find.widgetWithText(FilledButton, 'Enviar instrucciones'),
+        find.widgetWithText(FilledButton, 'Enviar enlace'),
         findsOneWidget,
       );
       await tester.tap(find.byTooltip('Volver'));
@@ -790,5 +1166,32 @@ class FailedFormLogin extends FakeIdentityRepository {
   @override
   Future<void> login(String email, String password) async {
     throw AuthException('Login rejected', code: code);
+  }
+}
+
+class ControlledRecoveryRepository extends FakeIdentityRepository {
+  Completer<void>? recoveryResponse, codeResponse;
+  int startedCodeRequests = 0;
+  bool failRecovery = false, failCode = false;
+
+  @override
+  Future<void> requestRecovery(String email) async {
+    await super.requestRecovery(email);
+    if (recoveryResponse != null) await recoveryResponse!.future;
+    if (failRecovery) throw StateError('network_unavailable');
+  }
+
+  @override
+  Future<void> confirmCode(
+    String email,
+    String code, {
+    required bool recovery,
+  }) async {
+    startedCodeRequests++;
+    if (codeResponse != null) await codeResponse!.future;
+    if (failCode) {
+      throw const AuthException('Invalid code', code: 'otp_expired');
+    }
+    await super.confirmCode(email, code, recovery: recovery);
   }
 }

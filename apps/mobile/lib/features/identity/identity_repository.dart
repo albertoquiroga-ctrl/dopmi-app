@@ -9,6 +9,10 @@ const currentPrivacyVersion = 'privacy-2026-10-17';
 // Kept for build-253 test fixtures and migration compatibility only.
 const developmentTermsVersion = 'development-2026-09-13';
 
+/// A local presentation hint. It never grants an account mode or permissions.
+String safeRecoveryIntent(String? value) =>
+    const ['adopt', 'donate', 'rescue'].contains(value) ? value! : 'adopt';
+
 class Identity {
   const Identity(this.id, this.email, {required this.verified});
   final String id, email;
@@ -76,6 +80,8 @@ abstract class IdentityRepository {
   Future<Identity?> restore();
   Future<bool> recoveryPending();
   Future<void> rememberRecovery(bool pending);
+  Future<String?> recoveryIntent();
+  Future<void> rememberRecoveryIntent(String? intent);
   Future<void> login(String email, String password);
   Future<void> signup({
     required String name,
@@ -128,6 +134,7 @@ class SupabaseIdentityRepository implements IdentityRepository {
   final AppConfig config;
   final SharedPreferences preferences;
   String get recoveryKey => 'dopmi.${Uri.parse(config.url).host}.recovery';
+  String get recoveryIntentKey => '$recoveryKey.intent';
   Identity? _identity(User? user) => user == null
       ? null
       : Identity(
@@ -163,6 +170,22 @@ class SupabaseIdentityRepository implements IdentityRepository {
   @override
   Future<void> rememberRecovery(bool pending) async {
     await preferences.setBool(recoveryKey, pending);
+  }
+
+  @override
+  Future<String?> recoveryIntent() async =>
+      preferences.getString(recoveryIntentKey);
+
+  @override
+  Future<void> rememberRecoveryIntent(String? intent) async {
+    if (intent == null) {
+      await preferences.remove(recoveryIntentKey);
+    } else {
+      await preferences.setString(
+        recoveryIntentKey,
+        safeRecoveryIntent(intent),
+      );
+    }
   }
 
   @override

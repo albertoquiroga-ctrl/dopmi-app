@@ -1,3 +1,15 @@
+## INTEGRAL20d21 — checkpoint operativo 18/10/2026
+
+Referencia congelada **20d21f484aa60726f0b236574d5493dcf5e05969**; rama **codex/finish-release-20261015**, HEAD/base **952f281665890abf2260abbb1c65125cb589739f + WIP**, checkout candidate-git-20261014. Alcance B0–B7 integral y decisiones en product-decisions.md; tablero único parity-current-review.md.
+
+B1 recuperación implementada,51 pruebas dirigidas PASS; Auth/correo/reinicio físico pendientes. B2 composición/gestión/anillos implementados; captura normal115200+gestos y revisión visual/código sin defecto material, salvo cierre de secuencias finales. B3/B4 video y complemento único foto O video preparados, integración Stream real pendiente. B5 catálogo/admin/móvil preparado, gate públicoOFF. B6 tres brechas de perfil/filtros/ayuda corregidas en fuente, SQL6PASS previo. Backend completo952PASS/8skip y admin serial48PASS/build PASS; config17PASS. Cambios posteriores de urgencia en validación. FullFlutter corregido1318PASS/0FAIL (flutter-full-serial-corrected.log); reemplaza el parcial fallido como gate móvil local, conserva sus logs. Ajuste menor posterior y capturas finales23PASS/0FAIL; analyze0. Tienda320x640/200% acredita Aplicar/Limpiar interactivos y producto visible. Sin CI del SHA nuevo ni candidato aceptado.
+
+Preguntas pendientes: disponibilidad de cuenta Cloudflare (sin sesión en el panel) y si la foto de urgencia aparece sólo en el complemento o también en galería. La implementación provisional conserva la foto en galería; no es una decisión aprobada ni habilitada públicamente. Bloqueos externos: acceso/provisión Stream, aplicación remota y nueva build sin autorización (CM59 consumido); paquetes se preparan antes de pedir ejecución. Dueño integrador/root, única cola Flutter; runtimes locales pesados serializados tras timeouts de workers y RAM baja. Próximo: fijar SHA preparado y CI integral, resolver dos preguntas humanas y completar paquetes concretos antes de cualquier operación remota.
+
+No contratación, migración, despliegue, build ni publicación nuevos. Instalado permanece **Play2.3.3(320)/952, TEST**; excepciones anteriores conservadas. Implementado, verificado, publicado, dispositivo y aceptación siguen separados.
+
+### Historial anterior conservado
+
 # Checkpoint vigente — paridad d304535, 17/10/2026 México
 
 ## Preparación legal vigente — respuesta950d1

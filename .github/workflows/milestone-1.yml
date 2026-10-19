@@ -47,6 +47,8 @@ jobs:
           DOPMI_SOCIAL_DENIAL_POSTGRES_PORT: '54322'
           PGPASSWORD: postgres
         run: node --test tools/verification/social-oauth-denial-only-sql.test.mjs
+      - name: Urgency photo and video compete for one slot against PostgreSQL
+        run: node tools/verification/video-urgency-concurrency.mjs
       - name: Guardian concurrent reservations against PostgreSQL
         run: node tools/verification/guardian-concurrency.mjs
       - name: Adoption contact concurrent devices and lost response
@@ -94,10 +96,22 @@ jobs:
           CAPTURE_FILTER: adoption-swipe,adoption-large,adoption-drag,adoption-filters,adoption-contact,adoption-detail,adoption-end,support-home,profile-overview,basic-info,publish-,case-publication,owned-cases,rescuer-messages,rescuer-notifications,rescuer-help,chat-bubbles-rescuer
         run: flutter test tool/capture_profile_test.dart --dart-define=CAPTURE_FILTER="$CAPTURE_FILTER"
         working-directory: apps/mobile
+      - name: Capture integral Guardian states and gestures
+        run: flutter test tool/capture_profile_test.dart --dart-define=CAPTURE_FILTER=integral-guardian
+        working-directory: apps/mobile
+      - name: Capture recovery modes and responsive states
+        run: flutter test tool/capture_access_test.dart --dart-define=CAPTURE_FILTER=recovery20d21
+        working-directory: apps/mobile
+      - name: Capture hidden Store with isolated editorial fixtures
+        run: flutter test tool/capture_store_test.dart
+        working-directory: apps/mobile
       - uses: actions/upload-artifact@v4
         with:
           name: dopmi-design-review
-          path: .tools/design-review/*.png
+          path: |
+            .tools/design-review/*.png
+            .tools/design-review/integral-guardian*-actions.json
+            .tools/integral20d21-20261018/store/*.png
           include-hidden-files: true
           if-no-files-found: error
       - name: Android development build (no production credentials)

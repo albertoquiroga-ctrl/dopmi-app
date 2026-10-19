@@ -339,6 +339,66 @@ void main() {
     await tester.tap(find.text('Registrar y preparar método'));
   }
 
+  for (final state in ['registered', 'canceled']) {
+    for (final scale in [1.0, 1.15, 2.0]) {
+      testWidgets(
+        'registration membership card preserves truthful $state state at scale $scale',
+        (tester) async {
+          final repo = RegistrationGuardian()
+            ..registrationValue = registration(
+              '72000000-0000-4000-8000-000000000002',
+              status: state,
+            );
+          await start(tester, repo, Size(scale == 2 ? 320 : 377, 852), scale);
+          expect(
+            find.byKey(const ValueKey('guardian-registration-membership-card')),
+            findsOneWidget,
+          );
+          expect(find.text('Suscripción y pagos'), findsOneWidget);
+          expect(find.text('Suscripción Guardián'), findsOneWidget);
+          expect(
+            find.byKey(const ValueKey('guardian-registration-monthly-amount')),
+            findsOneWidget,
+          );
+          expect(find.text('Monto mensual'), findsOneWidget);
+          expect(find.text('Suscripción activa'), findsNothing);
+          if (state == 'registered') {
+            final scroll = find
+                .descendant(
+                  of: find.byKey(const Key('guardian-registration-content')),
+                  matching: find.byType(Scrollable),
+                )
+                .first;
+            for (final action in [
+              find.widgetWithText(FilledButton, 'Cambiar cantidad'),
+              find.widgetWithText(OutlinedButton, 'Cancelar ciclos futuros'),
+            ]) {
+              await tester.scrollUntilVisible(action, 180, scrollable: scroll);
+              await tester.pumpAndSettle();
+              expect(action.hitTestable(), findsOneWidget);
+            }
+          }
+          if (state == 'canceled') {
+            expect(find.text('Registro cancelado'), findsOneWidget);
+          }
+          final history = find.text('Historial de pagos');
+          await tester.scrollUntilVisible(
+            history,
+            180,
+            scrollable: find
+                .descendant(
+                  of: find.byKey(const Key('guardian-registration-content')),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+          );
+          expect(history, findsOneWidget);
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+  }
+
   for (final closed in [false, true]) {
     testWidgets(
       'native setup completion closed=$closed keeps pending key until server receipt',
@@ -416,11 +476,16 @@ void main() {
           monthlyImpact: monthly,
         );
         expect(find.text('Registro cancelado'), findsOneWidget);
-        final impact = find.widgetWithText(TextButton, 'Ver mi impacto');
+        final impact = find.widgetWithText(OutlinedButton, 'Ver mi impacto');
         await tester.scrollUntilVisible(
           impact,
           150,
-          scrollable: find.byType(Scrollable).first,
+          scrollable: find
+              .descendant(
+                of: find.byKey(const Key('guardian-registration-content')),
+                matching: find.byType(Scrollable),
+              )
+              .first,
         );
         await tester.pumpAndSettle();
         expect(impact.hitTestable(), findsOneWidget);
@@ -449,7 +514,20 @@ void main() {
         await tester.binding.handlePopRoute();
         await tester.pumpAndSettle();
         expect(router.state.uri.toString(), entry);
-        expect(find.text('Registro cancelado'), findsOneWidget);
+        final canceledStatus = find.text('Registro cancelado');
+        await tester.scrollUntilVisible(
+          canceledStatus,
+          -180,
+          scrollable: find
+              .descendant(
+                of: find.byKey(const Key('guardian-registration-content')),
+                matching: find.byType(Scrollable),
+              )
+              .first,
+        );
+        await tester.ensureVisible(canceledStatus);
+        await tester.pumpAndSettle();
+        expect(canceledStatus.hitTestable(), findsOneWidget);
         expect(identical(repo.registrationValue, original), isTrue);
         expect(repo.registrationValue!.id, registrationId);
         expect(repo.registrationValue!.status, 'canceled');
@@ -485,9 +563,22 @@ void main() {
         find.byType(ContributionButton).first,
       );
       expect(button.onPressed, isNull);
-      await tester.tap(find.text('Consultar estado'));
+      final query = find.widgetWithText(TextButton, 'Consultar estado');
+      final scroll = find
+          .descendant(
+            of: find.byKey(const Key('guardian-registration-content')),
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      await tester.scrollUntilVisible(query, 200, scrollable: scroll);
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(query.hitTestable(), findsOneWidget);
+      expect(tester.widget<TextButton>(query).onPressed, isNotNull);
+      final reads = repo.registrationReads;
+      await tester.tap(query);
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
+      expect(repo.registrationReads, greaterThan(reads));
       expect(sdk.secrets, hasLength(1));
       expect(repo.registrations, hasLength(1));
       gate.complete();
@@ -890,11 +981,43 @@ void main() {
       await tester.drag(recovery, const Offset(0, -240));
       await tester.pumpAndSettle();
     }
-    expect(find.text('Autorizar con mi banco'), findsOneWidget);
-    expect(find.text('Cancelar ciclos futuros'), findsOneWidget);
-    expect(find.text('Consultar estado'), findsOneWidget);
-    await tester.tap(find.text('Consultar estado'));
+    final registrationScroll = find
+        .descendant(
+          of: find.byKey(const Key('guardian-registration-content')),
+          matching: find.byType(Scrollable),
+        )
+        .first;
+    final bankAction = find.text('Autorizar con mi banco');
+    await tester.scrollUntilVisible(
+      bankAction,
+      -180,
+      scrollable: registrationScroll,
+    );
     await tester.pumpAndSettle();
+    expect(bankAction.hitTestable(), findsOneWidget);
+    await capture(tester, 'recovery-200-bank-action-visible');
+    final cancelAction = find.widgetWithText(
+      OutlinedButton,
+      'Cancelar ciclos futuros',
+    );
+    await tester.scrollUntilVisible(
+      cancelAction,
+      180,
+      scrollable: registrationScroll,
+    );
+    await tester.pumpAndSettle();
+    expect(cancelAction.hitTestable(), findsOneWidget);
+    await capture(tester, 'recovery-200-cancel-action-visible');
+    final query = find.widgetWithText(TextButton, 'Consultar estado');
+    await tester.scrollUntilVisible(query, 180, scrollable: registrationScroll);
+    await tester.pumpAndSettle();
+    expect(query.hitTestable(), findsOneWidget);
+    expect(tester.widget<TextButton>(query).onPressed, isNotNull);
+    await capture(tester, 'recovery-200-query-action-visible');
+    final reads = repo.registrationReads;
+    await tester.tap(query);
+    await tester.pumpAndSettle();
+    expect(repo.registrationReads, greaterThan(reads));
     expect(repo.registrations, isEmpty);
     expect(repo.calls, isEmpty);
     expect(tester.takeException(), isNull);
@@ -1441,7 +1564,7 @@ void main() {
           status: 'registered',
         );
       await start(tester, repo, const Size(377, 1800), 1);
-      await tester.tap(find.text('Cambiar monto'));
+      await tester.tap(find.text('Cambiar cantidad'));
       await tester.pumpAndSettle();
       await tester.tap(find.text(r'$200'));
       await tester.pumpAndSettle();
@@ -1457,7 +1580,7 @@ void main() {
       expect(repo.changedAmount, 20000);
       expect(repo.registrations, isEmpty);
       expect(repo.calls, isEmpty);
-      expect(find.textContaining('Monto mensual: \$200'), findsOneWidget);
+      expect(find.text(r'$200 MXN / mes', findRichText: true), findsOneWidget);
     },
   );
   testWidgets(

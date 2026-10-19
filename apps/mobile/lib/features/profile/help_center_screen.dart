@@ -48,7 +48,7 @@ const _topics = <(String, String, List<(String, String)>)>[
       ),
       (
         '¿Cómo cambio mi monto o cancelo?',
-        'En Configuración abre Suscripción y pagos. Cancelar detiene ciclos futuros y conserva el historial del ciclo actual.',
+        'En Perfil abre Suscripción y pagos. Cancelar detiene ciclos futuros y conserva el historial del ciclo actual.',
       ),
     ],
   ),
@@ -62,7 +62,7 @@ const _topics = <(String, String, List<(String, String)>)>[
       ),
       (
         '¿Dónde encuentro mis mascotas favoritas?',
-        'En tu perfil abre Guardados para volver a los perfiles que guardaste en Adoptar.',
+        'Abre Mis match en la barra inferior y consulta Mis favoritos para volver a las mascotas que guardaste en Adoptar.',
       ),
     ],
   ),
@@ -76,7 +76,7 @@ const _topics = <(String, String, List<(String, String)>)>[
       ),
       (
         '¿Cómo corrijo mi información?',
-        'Abre el estado de verificación en Configuración, revisa las observaciones y envía tus correcciones para una nueva revisión.',
+        'En tu perfil de Rescatista abre Verificación, revisa las observaciones y envía tus correcciones para una nueva revisión.',
       ),
     ],
   ),
@@ -114,15 +114,15 @@ const _topics = <(String, String, List<(String, String)>)>[
     [
       (
         '¿Cómo cambio entre Donante y Rescatista?',
-        'En Configuración abre Cambiar tipo de cuenta. El cambio conserva tus datos y no concede permisos de verificación.',
+        'Desde Perfil usa la tarjeta para cambiar a modo Rescatista o Adoptante. El cambio conserva tus datos y no concede permisos de verificación.',
       ),
       (
         '¿Cómo edito mis datos?',
-        'En Configuración abre Información básica para editar tu nombre completo, teléfono y ciudad.',
+        'En Perfil toca editar junto a tu nombre para cambiar tu nombre completo, teléfono y ciudad.',
       ),
       (
         '¿Cómo elimino mi cuenta?',
-        'Abre Eliminar mi cuenta para revisar qué se borra, qué se conserva y las condiciones antes de confirmar.',
+        'En Perfil abre Cuenta y privacidad y después Eliminar mi cuenta para revisar qué se borra, qué se conserva y las condiciones antes de confirmar.',
       ),
     ],
   ),

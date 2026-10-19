@@ -41,6 +41,8 @@ import 'case_publication_need_editor.dart';
 import 'case_need_row.dart';
 import 'case_update_screens.dart';
 import 'rescue_repository.dart';
+import 'rescue_videos.dart';
+import 'urgency_complement.dart';
 import 'support_home.dart';
 import 'case_detail_layout.dart';
 import 'public_expense_card.dart';
@@ -520,6 +522,9 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   String? previewRescuerName;
   bool previewRescuerVerified = false;
   String? error, message;
+  String? urgencyPhotoPath;
+  bool get urgencyComplementEligible =>
+      hasUrgentCaseNeed(needItems, expenseDrafts);
   String get kind => record?.kind ?? widget.kind;
   bool get editable => record?.editable ?? true;
   RescueRepository get repository => ref.read(rescueRepositoryProvider);
@@ -541,6 +546,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
 
   void fields(RescueRecord? r) {
     if (kind == 'case') {
+      urgencyPhotoPath = r?.publicData['urgency_photo_path'] as String?;
       needItems = ((r?.publicData['need_items'] as List?) ?? [])
           .map((item) => Json.from(item as Map))
           .toList();
@@ -646,6 +652,14 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
         (needItems.isNotEmpty ||
             record?.publicData.containsKey('need_items') == true)) {
       pub['need_items'] = needItems;
+    }
+    if (kind == 'case') {
+      urgencyPhotoPath = urgencyComplementEligible
+          ? validUrgencyPhoto(urgencyPhotoPath, files)
+          : null;
+      if (urgencyPhotoPath != null) {
+        pub['urgency_photo_path'] = urgencyPhotoPath;
+      }
     }
     final saved = await repository.save(
       kind,
@@ -801,6 +815,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   Future<void> pickCasePhoto(
     ImageSource source, {
     bool replaceMain = false,
+    bool asUrgency = false,
   }) async {
     if (!replaceMain &&
         files.where((file) => file['role'] == 'public').length >= 6) {
@@ -850,6 +865,41 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
       } else {
         files.add({'role': 'public', 'path': path});
       }
+      if (asUrgency) urgencyPhotoPath = path;
+      dirty = true;
+    });
+    await save();
+  }
+
+  Future<void> chooseUrgencyPhoto() async {
+    final selected = await showModalBottomSheet<String>(
+      context: context,
+      useSafeArea: true,
+      isScrollControlled: true,
+      builder: (context) => UrgencyPhotoChoices(files: files),
+    );
+    if (selected == null || !mounted) return;
+    if (selected == '__camera' || selected == '__gallery') {
+      await pickCasePhoto(
+        selected == '__camera' ? ImageSource.camera : ImageSource.gallery,
+        asUrgency: true,
+      );
+    } else {
+      final path = validUrgencyPhoto(selected, files);
+      if (path == null) {
+        throw const FormatException('Esta foto ya no forma parte del caso.');
+      }
+      setState(() {
+        urgencyPhotoPath = path;
+        dirty = true;
+      });
+      await save();
+    }
+  }
+
+  Future<void> removeUrgencyPhoto() async {
+    setState(() {
+      urgencyPhotoPath = null;
       dirty = true;
     });
     await save();
@@ -915,6 +965,10 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                 onRemove: editable && !busy
                     ? () => setState(() {
                         files.removeAt(i);
+                        urgencyPhotoPath = validUrgencyPhoto(
+                          urgencyPhotoPath,
+                          files,
+                        );
                         dirty = true;
                       })
                     : null,
@@ -1714,6 +1768,13 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                   if (step == 1 && kind == 'expense') ...[
                     for (final role in ['public', 'proof'])
                       expenseEvidence(role),
+                    RescueVideoSection(
+                      record: record,
+                      purposes: const ['expense_evidence'],
+                      needsSave: dirty,
+                      onSave: () => run(save),
+                      enabled: editable && !busy,
+                    ),
                     const SizedBox(height: 20),
                   ],
                   for (final private in [false, true]) ...[
@@ -1901,6 +1962,23 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                           : null,
                     ),
                   if (step == 1 && kind == 'case' && editable) ...[
+                    UrgencyComplement(
+                      record: record,
+                      eligible: urgencyComplementEligible,
+                      photoPath: validUrgencyPhoto(urgencyPhotoPath, files),
+                      needsSave: dirty,
+                      onSave: () => run(save),
+                      onPhoto: () => run(chooseUrgencyPhoto),
+                      onRemovePhoto: () => run(removeUrgencyPhoto),
+                      enabled: !busy,
+                    ),
+                    RescueVideoSection(
+                      record: record,
+                      purposes: const ['thanks'],
+                      needsSave: dirty,
+                      onSave: () => run(save),
+                      enabled: !busy,
+                    ),
                     CaseDraftNeeds(
                       expenses: expenseDrafts,
                       enabled: !busy,
@@ -1970,6 +2048,14 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                           ? null
                           : () => setState(() => step = 0),
                       onEditNeeds: busy ? null : () => setState(() => step = 1),
+                    ),
+                  if (step == 2 && kind == 'case' && editable)
+                    RescueVideoSection(
+                      record: record,
+                      purposes: const ['thanks'],
+                      needsSave: dirty,
+                      onSave: () => run(save),
+                      enabled: !busy,
                     ),
                   if (step == 2 &&
                       kind != 'expense' &&
@@ -2577,6 +2663,7 @@ class _PublicCaseDetail extends StatelessWidget {
       needs: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          PublicRescueVideos(record.id),
           if (planned.isNotEmpty) ...[
             const Text(
               'Costos estimados',

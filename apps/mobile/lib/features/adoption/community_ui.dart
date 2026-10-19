@@ -10,6 +10,7 @@ import '../../core/media/media_store.dart';
 import '../../core/media/photo_runtime.dart';
 import '../../core/media/remote_photo.dart';
 import '../identity/experience_controller.dart';
+import '../store/store_repository.dart';
 import 'community_repository.dart';
 
 class CommunityNav extends ConsumerWidget {
@@ -27,9 +28,14 @@ class CommunityNav extends ConsumerWidget {
         final path = GoRouterState.of(context).uri.path;
         final selected =
             selectedPath ??
-            (destinations.any((item) => item.path == path) ? path : '/profile');
+            (path == '/store' || destinations.any((item) => item.path == path)
+                ? path
+                : '/profile');
         return DopmiBottomBar(
           rescuer: rescuer,
+          storeEnabled:
+              !rescuer &&
+              ref.watch(storeCatalogProvider).asData?.value.enabled == true,
           selectedPath: selected,
           onSelected: (destination) {
             final shell = DopmiNavigationHost.of(context);

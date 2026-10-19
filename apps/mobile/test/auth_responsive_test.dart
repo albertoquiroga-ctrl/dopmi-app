@@ -52,9 +52,10 @@ void main() {
     },
   );
   for (final title in [
-    'Recupera tu acceso.',
+    '¿Olvidaste tu contraseña?',
     'Una nueva\ncontraseña.',
     'Revisa tu correo.',
+    'Revisa tu correo',
   ]) {
     testWidgets('access heading keeps whole words at enlarged text: $title', (
       tester,
@@ -75,10 +76,16 @@ void main() {
             child: child!,
           ),
           home: AuthFrame(
+            sheet:
+                title == '¿Olvidaste tu contraseña?' ||
+                title == 'Revisa tu correo',
             onBack: () {},
             child: AuthHeading(
               title,
               'Las instrucciones permanecen accesibles.',
+              sheet:
+                  title == '¿Olvidaste tu contraseña?' ||
+                  title == 'Revisa tu correo',
             ),
           ),
         ),

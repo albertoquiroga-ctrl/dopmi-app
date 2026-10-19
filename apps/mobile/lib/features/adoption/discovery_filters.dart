@@ -15,13 +15,19 @@ const discoveryFilterSvg =
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M4 7h16" stroke="#15110d" stroke-width="1.8" stroke-linecap="round"/><circle cx="16.5" cy="7" r="2.25" fill="#15110d"/><path d="M4 17h16" stroke="#15110d" stroke-width="1.8" stroke-linecap="round"/><circle cx="7.5" cy="17" r="2.25" fill="#15110d"/></svg>';
 
 class DiscoveryFilters extends StatefulWidget {
-  const DiscoveryFilters(this.current, {super.key});
+  const DiscoveryFilters(
+    this.current, {
+    super.key,
+    this.includeSpecies = false,
+  });
+  final bool includeSpecies;
   final Json current;
   @override
   State<DiscoveryFilters> createState() => _DiscoveryFiltersState();
 }
 
 class _DiscoveryFiltersState extends State<DiscoveryFilters> {
+  late String? species = widget.current['species'] as String?;
   late String? sex = widget.current['sex'] as String?;
   late String? size = widget.current['size'] as String?;
   late Set<String> traits = (widget.current['personality'] as List? ?? const [])
@@ -75,6 +81,27 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                   ),
                 ),
                 const SizedBox(height: 12),
+                if (widget.includeSpecies) ...[
+                  heading('Especie'),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final item in const [
+                        (null, 'Todas'),
+                        ('dog', 'Perros'),
+                        ('cat', 'Gatos'),
+                      ])
+                        ChoiceChip(
+                          label: Text(item.$2),
+                          selected: species == item.$1,
+                          onSelected: (_) => setState(() => species = item.$1),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                ],
                 heading('Sexo'),
                 const SizedBox(height: 12),
                 Container(
@@ -296,6 +323,8 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                     ),
                   ),
                   onPressed: () => context.pop(<String, dynamic>{
+                    if (widget.includeSpecies && species != null)
+                      'species': species,
                     if (sex != null) 'sex': sex,
                     if (size != null) 'size': size,
                     if (traits.isNotEmpty) 'personality': traits.toList(),

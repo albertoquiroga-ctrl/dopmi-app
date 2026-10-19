@@ -33,6 +33,15 @@ void main() {
     await tester.runAsync(icons.load);
     final out = Directory('../../.tools/design-review');
     await tester.runAsync(() => out.create(recursive: true));
+    const filter = String.fromEnvironment('CAPTURE_FILTER');
+    if (filter.startsWith('recovery20d21')) {
+      try {
+        await captureRecoveryDelta(tester, out, filter);
+      } finally {
+        debugDisableShadows = true;
+      }
+      return;
+    }
     for (final large in [false, true]) {
       tester.view.physicalSize = large
           ? const Size(320, 640)
@@ -161,8 +170,9 @@ void main() {
             'login' || 'login-google' => 'Inicia sesión',
             'signup' => 'Crea una cuenta',
             'reset' => 'Actualizar contraseña',
-            'confirm' || 'confirm-recovery' => 'Verificar código',
-            _ => 'Enviar instrucciones',
+            'confirm' => 'Verificar código',
+            'confirm-recovery' => 'Volver a iniciar sesión',
+            _ => 'Enviar enlace',
           };
           final submit = find.widgetWithText(FilledButton, label);
           await tester.ensureVisible(submit);
@@ -183,4 +193,130 @@ void main() {
     }
     debugDisableShadows = true;
   });
+}
+
+Future<void> captureRecoveryDelta(
+  WidgetTester tester,
+  Directory out,
+  String filter,
+) async {
+  final frames = <Map<String, Object>>[];
+  var groups = 0;
+  for (final intent in ['adopt', 'rescue']) {
+    for (final variant in [
+      ('normal', 1.0, const Size(377, 852)),
+      ('115', 1.15, const Size(377, 852)),
+      ('200', 2.0, const Size(320, 640)),
+    ]) {
+      final prefix = 'recovery20d21-$intent-${variant.$1}';
+      if (!prefix.startsWith(filter) && !filter.startsWith(prefix)) continue;
+      groups++;
+      tester.view.physicalSize = variant.$3;
+      tester.platformDispatcher.textScaleFactorTestValue = variant.$2;
+      final identity = FakeIdentityRepository();
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          configProvider.overrideWithValue(
+            const AppConfig(url: '', key: '', redirect: ''),
+          ),
+          routerInitialLocationProvider.overrideWithValue(
+            '/forgot?intent=$intent',
+          ),
+        ],
+      );
+      final key = GlobalKey();
+      Future<void> capture(String state) async {
+        expect(tester.takeException(), isNull, reason: '$prefix $state');
+        final name = '$prefix-$state.png';
+        if (!name.startsWith(filter)) return;
+        await tester.runAsync(() => saveCapture(key, '${out.path}/$name'));
+        frames.add({
+          'file': name,
+          'intent': intent,
+          'scale': variant.$2,
+          'width': variant.$3.width,
+          'height': variant.$3.height,
+          'state': state,
+          'source': 'real Flutter widgets, synthetic repository',
+        });
+      }
+
+      Future<void> reach(Finder finder) async {
+        FocusManager.instance.primaryFocus?.unfocus();
+        await tester.ensureVisible(finder);
+        await tester.pumpAndSettle();
+        expect(
+          finder.hitTestable(),
+          findsOneWidget,
+          reason: '$prefix action must remain reachable',
+        );
+      }
+
+      Future<void> top() async {
+        await tester.drag(find.byType(Scrollable).first, const Offset(0, 2000));
+        await tester.pumpAndSettle();
+      }
+
+      try {
+        await tester.pumpWidget(
+          RepaintBoundary(
+            key: key,
+            child: UncontrolledProviderScope(
+              container: container,
+              child: const DopmiApp(),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await capture('request');
+        final send = find.widgetWithText(FilledButton, 'Enviar enlace');
+        await reach(send);
+        await capture('request-action');
+        await reach(find.byType(TextFormField).first);
+        await tester.enterText(
+          find.byType(TextFormField).first,
+          'qa@example.test',
+        );
+        FocusManager.instance.primaryFocus?.unfocus();
+        await tester.pumpAndSettle();
+        await reach(send);
+        await tester.tap(send);
+        await tester.pumpAndSettle();
+        expect(identity.recoveryRequests, ['qa@example.test']);
+        expect(find.byType(TextFormField), findsNothing);
+        await capture('sent');
+        final confirm = find.widgetWithText(
+          TextButton,
+          'Necesito confirmar mi correo',
+        );
+        await reach(confirm);
+        await capture('sent-actions');
+        final expand = find.widgetWithText(TextButton, 'Usar código');
+        await reach(expand);
+        await tester.tap(expand);
+        await tester.pumpAndSettle();
+        await top();
+        await capture('code');
+        final verify = find.widgetWithText(FilledButton, 'Verificar código');
+        await reach(verify);
+        await capture('code-verify');
+        await reach(confirm);
+        await capture('code-actions');
+        expect(identity.recoveryRequests, hasLength(1));
+        expect(identity.codeRequests, 0);
+        expect(identity.current, isNull);
+      } finally {
+        await tester.pumpWidget(const SizedBox());
+        container.dispose();
+        await identity.changes.close();
+      }
+    }
+  }
+  expect(groups, greaterThan(0), reason: 'No recovery capture matched $filter');
+  await tester.runAsync(
+    () =>
+        File('${out.path}/recovery20d21-manifest.json')
+            .writeAsString(jsonEncode({'filter': filter, 'frames': frames})),
+  );
 }

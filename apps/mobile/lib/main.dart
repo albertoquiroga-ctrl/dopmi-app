@@ -15,6 +15,8 @@ import 'core/measurement.dart';
 import 'core/ui.dart';
 import 'core/content_links.dart';
 import 'core/media/photo_runtime.dart';
+import 'core/media/video_repository.dart';
+import 'features/rescue/rescue_videos.dart';
 import 'core/media/photo_store_factory.dart';
 import 'features/identity/identity_controller.dart';
 import 'features/identity/identity_repository.dart';
@@ -101,6 +103,13 @@ class _BootstrapState extends State<Bootstrap> {
                 measurementControllerProvider.overrideWith(
                   (ref) => snapshot.data!.measurement,
                 ),
+                rescueVideosRepositoryProvider.overrideWith((ref) {
+                  final repository = VideoRepository.supabase(
+                    Supabase.instance.client,
+                  );
+                  ref.onDispose(repository.dispose);
+                  return repository;
+                }),
                 photoRuntimeProvider.overrideWith((ref) {
                   final identity = ref.watch(identityControllerProvider);
                   final runtime = PhotoRuntime(

@@ -25,6 +25,7 @@ void main() {
     double scale = 1,
     double width = 377,
     bool longNames = false,
+    ValueChanged<ImpactPhoto>? onOpenStory,
   }) async {
     tester.view.physicalSize = Size(width, 700);
     tester.view.devicePixelRatio = 1;
@@ -44,6 +45,7 @@ void main() {
                 children: [
                   const SizedBox(height: 160),
                   ImpactPhotoJourney(
+                    onOpenStory: onOpenStory,
                     photos: noPhotos
                         ? []
                         : [
@@ -88,6 +90,24 @@ void main() {
     );
     await tester.pumpAndSettle();
   }
+
+  testWidgets(
+    'impact ring opens its own public story rather than navigating to detail',
+    (tester) async {
+      final controller = ScrollController();
+      addTearDown(controller.dispose);
+      ImpactPhoto? opened;
+      await start(tester, controller, onOpenStory: (photo) => opened = photo);
+      await tester.ensureVisible(
+        find.byKey(const ValueKey('impact-ring-case-one')),
+      );
+      await tester.tap(find.byKey(const ValueKey('impact-ring-case-one')));
+      await tester.pump();
+      expect(opened?.caseId, 'case-one');
+      expect(opened?.path, 'public-one.jpg');
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets(
     'scroll interpolates the same confirmed photo into its own ring and reverses',

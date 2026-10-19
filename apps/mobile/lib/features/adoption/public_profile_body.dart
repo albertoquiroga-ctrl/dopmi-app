@@ -49,7 +49,7 @@ class _PublicProfileBodyState extends State<PublicProfileBody> {
         .toList();
     final cases = (profile['cases'] as List? ?? const [])
         .map((row) => Json.from(row as Map))
-        .where((row) => row['status'] == 'approved')
+        .where((row) => row['accepts_support'] == true)
         .toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -112,26 +112,25 @@ class _PublicProfileBodyState extends State<PublicProfileBody> {
             spacing: 8,
             runSpacing: 8,
             children: [
-              for (final entry in [('dog', 'Perros'), ('cat', 'Gatos')])
-                FilterChip(
-                  label: Text(entry.$2),
-                  selected: species == entry.$1,
-                  onSelected: (value) =>
-                      setState(() => species = value ? entry.$1 : null),
-                ),
               OutlinedButton.icon(
                 icon: const Icon(Icons.tune),
-                label: const Text('Filtros'),
+                label: const Text('Filtrar'),
                 onPressed: () async {
                   final id = widget.profile['id'];
                   final selected = await showDialog<Json>(
                     context: context,
-                    builder: (_) => DiscoveryFilters(filters),
+                    builder: (_) => DiscoveryFilters({
+                      ...filters,
+                      if (species != null) 'species': species,
+                    }, includeSpecies: true),
                   );
                   if (selected != null &&
                       mounted &&
                       widget.profile['id'] == id) {
-                    setState(() => filters = selected);
+                    setState(() {
+                      filters = selected;
+                      species = selected['species'] as String?;
+                    });
                   }
                 },
               ),

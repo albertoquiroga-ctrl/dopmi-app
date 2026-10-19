@@ -95,14 +95,14 @@ void main() {
           findsNothing,
         );
         expect(
-          find.textContaining('En tu perfil abre Guardados'),
+          find.textContaining('Abre Mis match en la barra inferior'),
           findsOneWidget,
         );
         await reveal(second);
         await tester.tap(second);
         await tester.pump();
         expect(
-          find.textContaining('En tu perfil abre Guardados'),
+          find.textContaining('Abre Mis match en la barra inferior'),
           findsNothing,
         );
         await reveal(topic, above: true);

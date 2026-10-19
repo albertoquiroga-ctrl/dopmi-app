@@ -15,6 +15,7 @@ dependencies:
   flutter_secure_storage: ^11.1.1
   shared_preferences: ^2.5.5
   image_picker: ^1.2.3
+  video_player: 2.14.1
   image: ^4.10.1
   uuid: ^4.6.0
   file_selector: ^1.1.0

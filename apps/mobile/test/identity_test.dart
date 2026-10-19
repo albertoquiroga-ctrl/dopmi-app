@@ -73,6 +73,126 @@ void main() {
       expect(controller.redirect('/welcome'), '/reset-password');
     },
   );
+  test(
+    'recovery presentation survives a transient null and clears on sign-out',
+    () async {
+      repository.recoveryPresentationIntent = 'rescue';
+      await controller.initialize();
+      expect(controller.recoveryIntent, 'rescue');
+      repository.emit(const IdentityEvent(null));
+      expect(controller.recoveryIntent, 'rescue');
+      expect(repository.recoveryPresentationIntent, 'rescue');
+      repository.emit(
+        const IdentityEvent(
+          Identity('one', 'ana@example.test', verified: true),
+          recovery: true,
+        ),
+      );
+      expect(controller.recoveryIntent, 'rescue');
+      expect(controller.recoveryEmail, 'ana@example.test');
+      expect(controller.redirect('/profile'), '/reset-password');
+      await controller.logout();
+      expect(controller.recoveryEmail, isNull);
+      expect(controller.recoveryIntent, 'adopt');
+      expect(repository.recoveryPresentationIntent, isNull);
+    },
+  );
+  test(
+    'invalid presentation hints cannot choose an account mode or recovery',
+    () async {
+      repository.recoveryPresentationIntent = 'admin';
+      await controller.initialize();
+      expect(controller.recoveryIntent, 'adopt');
+      expect(controller.recovering, isFalse);
+      expect(controller.redirect('/reset-password'), '/welcome');
+      expect(repository.loads, 0);
+    },
+  );
+  test(
+    'recovery cannot update a replacement SDK actor before its event arrives',
+    () async {
+      await controller.initialize();
+      await controller.prepareRecoveryPresentation(
+        'rescue',
+        'ana@example.test',
+      );
+      repository.emit(
+        const IdentityEvent(
+          Identity('one', 'ana@example.test', verified: true),
+          recovery: true,
+        ),
+      );
+      repository.user = const Identity(
+        'other',
+        'other@example.test',
+        verified: true,
+      );
+      await expectLater(
+        controller.completeRecovery('NewPassword123'),
+        throwsStateError,
+      );
+      expect(repository.passwordUpdates, 0);
+      expect(repository.current?.id, 'other');
+    },
+  );
+  test(
+    'replacement actor clears recovery authority and presentation',
+    () async {
+      await controller.initialize();
+      await controller.prepareRecoveryPresentation(
+        'rescue',
+        'ana@example.test',
+      );
+      repository.emit(
+        const IdentityEvent(
+          Identity('one', 'ana@example.test', verified: true),
+          recovery: true,
+        ),
+      );
+      repository.emit(const IdentityEvent(null));
+      repository.emit(
+        const IdentityEvent(
+          Identity('other', 'other@example.test', verified: true),
+        ),
+      );
+      expect(controller.recovering, isFalse);
+      expect(controller.recoveryEmail, isNull);
+      expect(controller.recoveryIntent, 'adopt');
+      expect(repository.recoveryPresentationIntent, isNull);
+      expect(repository.pending, isFalse);
+      await expectLater(
+        controller.completeRecovery('NewPassword123'),
+        throwsStateError,
+      );
+      expect(repository.passwordUpdates, 0);
+    },
+  );
+  test('late password update cannot sign out a replacement actor', () async {
+    final isolated = DelayedPasswordRepository();
+    final owner = IdentityController(isolated);
+    addTearDown(() async {
+      owner.dispose();
+      await isolated.changes.close();
+    });
+    await owner.initialize();
+    isolated.emit(
+      const IdentityEvent(
+        Identity('one', 'ana@example.test', verified: true),
+        recovery: true,
+      ),
+    );
+    final update = owner.completeRecovery('NewPassword123');
+    final rejected = expectLater(update, throwsStateError);
+    isolated.emit(
+      const IdentityEvent(
+        Identity('other', 'other@example.test', verified: true),
+      ),
+    );
+    isolated.response.complete();
+    await rejected;
+    expect(isolated.current?.id, 'other');
+    expect(owner.identity?.id, 'other');
+  });
   test('late restoration cannot overwrite a newer sign-out', () async {
     final restoration = Completer<Identity?>();
     repository.restoreResult = restoration.future;
@@ -123,4 +243,13 @@ void main() {
       );
     },
   );
+}
+
+class DelayedPasswordRepository extends FakeIdentityRepository {
+  final response = Completer<void>();
+  @override
+  Future<void> updatePassword(String password) async {
+    await response.future;
+    await super.updatePassword(password);
+  }
 }

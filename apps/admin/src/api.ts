@@ -1,5 +1,7 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { supportRequests, type SupportPage } from './supportApi';
+import { createStoreCatalogApi, type StoreCatalogApi } from './StoreCatalog';
+import { createVideoModerationApi, type VideoModerationApi } from './VideoModeration';
 
 export type AdminUser = {
   id: string; display_name: string; email: string | null; phone: string; city: string;
@@ -52,6 +54,8 @@ export function validateProfileFieldFeedback(feedback: ProfileFieldFeedback): vo
 export type RescuerPublicProfile = { owner_id:string; display_name:string; bio:string; city:string; region:string; instagram_url:string; facebook_url:string; avatar_path:string; status:string; version:number; review_feedback:string; submitted_at:string|null; updated_at:string; public_email?:string; public_phone?:string; public_address?:string; website_url?:string; contact_consent?:boolean; contact_publication_enabled?:boolean; field_feedback?:ProfileFieldFeedback; approved_snapshot?:Partial<RescuerPublicProfile> };
 export const adoptionStatus: Record<string, string> = { submitted: 'En revisión', published: 'Publicadas', changes_requested: 'Con correcciones', rejected: 'No aprobadas', adopted: 'Adopciones realizadas', archived: 'Retiradas', draft: 'Borradores' };
 export type AdminApi = {
+  storeCatalog?: StoreCatalogApi;
+  videoModeration?: VideoModerationApi;
   listSupportRequests?: (page: number) => Promise<SupportPage>;
   supportAttachmentUrl?: (path: string) => Promise<string>;
   session: () => Promise<boolean>;
@@ -81,6 +85,8 @@ export type AdminApi = {
 
 export function createAdminApi(client: SupabaseClient): AdminApi {
   return {
+    storeCatalog: createStoreCatalogApi(client),
+    videoModeration: createVideoModerationApi(client),
     listSupportRequests: supportRequests(client),
     async supportAttachmentUrl(path) { const {data,error}=await client.storage.from('dopmi-support-media').createSignedUrl(path,60); if(error) throw error; return data.signedUrl; },
     async listRescue(kind, status, page) { const {data,error}=await client.rpc('dopmi_admin_rescue',{kind_filter:kind,status_filter:status,page_number:page}); if(error) throw error; return data; },

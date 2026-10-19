@@ -8,6 +8,7 @@ class FakeIdentityRepository implements IdentityRepository {
   Future<Identity?>? restoreResult;
   Future<Profile>? profileResult;
   bool pending = false;
+  String? recoveryPresentationIntent;
   bool failSave = false;
   bool failLoad = false;
   bool failEmailChange = false;
@@ -24,6 +25,10 @@ class FakeIdentityRepository implements IdentityRepository {
   AccountNames? accountNames;
   int accountNameLoads = 0;
   int signupCount = 0, passwordUpdates = 0, loads = 0, consentCount = 0;
+  final recoveryRequests = <String>[];
+  int confirmationRequests = 0, codeRequests = 0;
+  String? confirmedEmail, confirmedCode;
+  bool? confirmedRecovery;
   String? signupIntent;
   Profile profile = const Profile(
     id: 'one',
@@ -59,6 +64,15 @@ class FakeIdentityRepository implements IdentityRepository {
   }
 
   @override
+  Future<String?> recoveryIntent() async => recoveryPresentationIntent;
+  @override
+  Future<void> rememberRecoveryIntent(String? intent) async {
+    recoveryPresentationIntent = intent == null
+        ? null
+        : safeRecoveryIntent(intent);
+  }
+
+  @override
   Future<void> login(String email, String password) async {
     emit(IdentityEvent(Identity('one', email, verified: true)));
   }
@@ -76,20 +90,30 @@ class FakeIdentityRepository implements IdentityRepository {
   }
 
   @override
-  Future<void> resendConfirmation(String email) async {}
+  Future<void> resendConfirmation(String email) async {
+    confirmationRequests++;
+  }
+
   @override
   Future<void> confirmCode(
     String email,
     String code, {
     required bool recovery,
   }) async {
+    codeRequests++;
+    confirmedEmail = email;
+    confirmedCode = code;
+    confirmedRecovery = recovery;
     emit(
       IdentityEvent(Identity('one', email, verified: true), recovery: recovery),
     );
   }
 
   @override
-  Future<void> requestRecovery(String email) async {}
+  Future<void> requestRecovery(String email) async {
+    recoveryRequests.add(email);
+  }
+
   @override
   Future<void> updatePassword(String password) async {
     passwordUpdates++;

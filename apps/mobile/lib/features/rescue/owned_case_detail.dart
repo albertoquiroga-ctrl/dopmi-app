@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/reference_focus_outline.dart';
 import '../adoption/community_ui.dart';
 import 'rescue_repository.dart';
+import 'rescue_videos.dart';
 import 'rescue_public_photo.dart';
 
 class OwnedCaseDetail extends StatelessWidget {
@@ -195,6 +196,14 @@ class OwnedCaseDetail extends StatelessWidget {
                         ),
                       ),
                     ],
+                    PublicRescueVideos(record.id),
+                    RescueVideoSection(
+                      record: record,
+                      purposes: record.status == 'closed'
+                          ? const ['farewell']
+                          : const ['public_update', 'farewell'],
+                      enabled: !busy,
+                    ),
                     updates,
                     const SizedBox(height: 16),
                     OutlinedButton.icon(

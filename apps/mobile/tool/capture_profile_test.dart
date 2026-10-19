@@ -1,3 +1,9 @@
+import 'package:dopmi_mobile/features/profile/monthly_impact_repository.dart';
+
+import '../test/monthly_impact_test.dart' show FakeMonthlyImpact;
+import '../test/guardian_registration_screen_test.dart'
+    show RegistrationGuardian, registration;
+
 import 'package:dopmi_mobile/features/adoption/community_ui.dart'
     show adoptionPhotoSource;
 import 'package:dopmi_mobile/features/rescue/rescue_public_photo.dart';
@@ -903,6 +909,16 @@ void main() {
       }
     }
     final out = Directory('../../.tools/design-review');
+    const integralFilter = String.fromEnvironment('CAPTURE_FILTER');
+    if (integralFilter.startsWith('integral-guardian')) {
+      try {
+        await captureIntegralGuardian(tester, out, integralFilter);
+      } finally {
+        debugDisableShadows = true;
+      }
+      return;
+    }
+
     for (final path in [
       for (final name in [
         'logo-paw',
@@ -5207,4 +5223,375 @@ void main() {
 class SettingsSocialCaptureProfile extends FakeRescuerProfile {
   @override
   String? get userId => 'one';
+}
+
+// Isolated integral20d21 fixtures. They contain no real person, account or payment.
+const _integralGuardianPets = [
+  ('case-one', 'Luna', 'integral-luna.jpg', 'guardian-luna.jpg'),
+  ('case-two', 'Milo', 'integral-milo.jpg', 'guardian-milo.jpg'),
+  ('case-three', 'Rocky', 'integral-rocky.jpg', 'guardian-urgent.jpg'),
+  ('case-four', 'Bella', 'integral-bella.jpg', 'guardian-reports.jpg'),
+];
+
+class _IntegralGuardianCommunity extends ImpactCaptureCommunity {
+  _IntegralGuardianCommunity() : super(false);
+  @override
+  Future<List<Json>> personalImpact() async => [
+    for (final pet in _integralGuardianPets)
+      {
+        'case_id': pet.$1,
+        'allocated_cents': 9200,
+        'public_data': {
+          'pet_name': pet.$2,
+          'photos': [pet.$3],
+        },
+        'updates': <Json>[],
+      },
+  ];
+}
+
+class _IntegralGuardianMonthly extends FakeMonthlyImpact {
+  @override
+  Future<MonthlyPersonalImpact> personal({String? month}) async =>
+      MonthlyPersonalImpact(
+        month: month ?? currentMonth,
+        currentMonth: currentMonth,
+        allocatedCents: 36800,
+        casesSupported: _integralGuardianPets.length,
+        caseIds: [for (final pet in _integralGuardianPets) pet.$1],
+      );
+}
+
+class _IntegralGuardianRescue extends FakeRescue {
+  List<RescueRecord> get publicCases => [
+    for (final pet in _integralGuardianPets)
+      RescueRecord({
+        'id': pet.$1,
+        'owner_id': 'synthetic-rescuer',
+        'kind': 'case',
+        'status': 'approved',
+        'rescuer_name': 'Refugio de prueba',
+        'public_data': {
+          'pet_name': pet.$2,
+          'story': 'Caso sintético con una aportación asignada confirmada.',
+          'photos': [pet.$3],
+        },
+      }),
+  ];
+  @override
+  Future<DataPage<RescueRecord>> completeCaseCatalog(String caseId) async {
+    final cases = publicCases.where((item) => item.id == caseId).toList();
+    return DataPage(cases, cases.length);
+  }
+
+  @override
+  Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async {
+    final cases = publicCases
+        .where((item) => caseId == null || item.id == caseId)
+        .toList();
+    return DataPage(page == 1 ? cases : [], cases.length);
+  }
+
+  @override
+  Future<String> fileUrl(String path) async => 'https://fixture.invalid/$path';
+}
+
+Future<void> captureIntegralGuardian(
+  WidgetTester tester,
+  Directory out,
+  String filter,
+) async {
+  await tester.runAsync(() => out.create(recursive: true));
+  final photos = <String, Uint8List>{};
+  for (final pet in _integralGuardianPets) {
+    photos[pet.$3] = (await rootBundle.load('assets/guardian/${pet.$4}')).buffer
+        .asUint8List();
+  }
+  var captured = 0;
+  for (final state in ['support-active', 'registered', 'pending', 'canceled']) {
+    for (final variant in [
+      ('normal', 1.0, 377.0),
+      ('115', 1.15, 377.0),
+      ('200', 2.0, 320.0),
+    ]) {
+      final name = 'integral-guardian-$state-${variant.$1}';
+      if (!name.startsWith(filter)) continue;
+      // This helper runs exclusively inside the capture testWidgets above.
+      // ignore: invalid_use_of_visible_for_testing_member
+      SharedPreferences.setMockInitialValues({});
+      tester.view.physicalSize = Size(variant.$3, 852);
+      tester.platformDispatcher.textScaleFactorTestValue = variant.$2;
+      final identity = FakeIdentityRepository()
+        ..user = const Identity(
+          'one',
+          'synthetic@example.test',
+          verified: true,
+        );
+      final guardian = RegistrationGuardian();
+      if (state == 'support-active') {
+        guardian.value = {'plan': activePlan(), 'activation': null};
+      } else {
+        guardian.registrationValue = registration(
+          '72000000-0000-4000-8000-000000000002',
+          status: state == 'pending' ? 'method_pending' : state,
+        );
+      }
+      final rescue = _IntegralGuardianRescue();
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          guardianRepositoryProvider.overrideWithValue(guardian),
+          guardianEnabledProvider.overrideWithValue(true),
+          communityRepositoryProvider.overrideWithValue(
+            _IntegralGuardianCommunity(),
+          ),
+          monthlyImpactRepositoryProvider.overrideWithValue(
+            _IntegralGuardianMonthly(),
+          ),
+          rescueRepositoryProvider.overrideWithValue(rescue),
+          caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
+          photoRuntimeProvider.overrideWith((ref) {
+            final runtime = PhotoRuntime(
+              store: MemoryPhotoStore(),
+              actor: 'one',
+              download: (url, _) async => photos[url.pathSegments.last]!,
+            );
+            ref.onDispose(runtime.dispose);
+            return runtime;
+          }),
+          routerInitialLocationProvider.overrideWithValue(
+            state == 'support-active' ? '/rescue-cases' : '/guardian',
+          ),
+        ],
+      );
+      final key = GlobalKey();
+      try {
+        // Complete download/decode in real async before RemotePhoto mounts.
+        // A post-mount prewarm cannot clear a widget's cached load failure.
+        if (state == 'support-active') {
+          await tester.runAsync(() async {
+            final runtime = container.read(photoRuntimeProvider);
+            for (final pet in _integralGuardianPets) {
+              await runtime.load(rescuePhotoSource(rescue, pet.$3), width: 384);
+            }
+          });
+        }
+        await tester.pumpWidget(
+          RepaintBoundary(
+            key: key,
+            child: UncontrolledProviderScope(
+              container: container,
+              child: const DopmiApp(),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull, reason: name);
+        if (state == 'support-active') {
+          expect(
+            find.byTooltip('Foto no disponible. Reintentar foto'),
+            findsNothing,
+            reason: '$name must show the warmed public fixture photos',
+          );
+          final horizontal = find.ancestor(
+            of: find.byKey(const ValueKey('impact-ring-case-one')),
+            matching: find.byWidgetPredicate(
+              (widget) =>
+                  widget is Scrollable &&
+                  widget.axisDirection == AxisDirection.right,
+            ),
+          );
+          expect(horizontal, findsOneWidget);
+          final lastRing = find.byKey(
+            ValueKey('impact-ring-${_integralGuardianPets.last.$1}'),
+          );
+          await tester.scrollUntilVisible(lastRing, 80, scrollable: horizontal);
+          expect(lastRing.hitTestable(), findsOneWidget);
+          await tester.runAsync(
+            () => saveCapture(key, '${out.path}/$name-rings-last.png'),
+          );
+          final firstRing = find.byKey(
+            ValueKey('impact-ring-${_integralGuardianPets.first.$1}'),
+          );
+          await tester.scrollUntilVisible(
+            firstRing,
+            -80,
+            scrollable: horizontal,
+          );
+          // ensureVisible aligns the inner ring inset, not the rail's true start.
+          // Return with a real gesture so the reversible flight can resume.
+          await tester.drag(horizontal, const Offset(400, 0));
+          await tester.pumpAndSettle();
+          expect(
+            tester.state<ScrollableState>(horizontal).position.pixels,
+            closeTo(0, .01),
+          );
+          expect(firstRing.hitTestable(), findsOneWidget);
+        }
+        await tester.runAsync(() => saveCapture(key, '${out.path}/$name.png'));
+        captured++;
+        if (state == 'support-active') {
+          final hero = find.byKey(const ValueKey('impact-hero-case-one'));
+          final heroOpacity = find.byKey(const ValueKey('impact-hero-opacity'));
+          final flight = find.byKey(const ValueKey('impact-photo-flight'));
+          final outer = find.ancestor(
+            of: hero,
+            matching: find.byType(Scrollable),
+          );
+          expect(outer, findsOneWidget);
+          final actions = <Map<String, Object>>[];
+          Future<void> saveMoment(String suffix, String action) async {
+            expect(tester.takeException(), isNull, reason: '$name $suffix');
+            final file = '$name-$suffix.png';
+            actions.add({
+              'file': file,
+              'action': action,
+              'scroll_pixels': tester
+                  .state<ScrollableState>(outer)
+                  .position
+                  .pixels,
+              'hero_opacity': tester.widget<Opacity>(heroOpacity).opacity,
+              'flight_visible': flight.evaluate().isNotEmpty,
+            });
+            await tester.runAsync(() => saveCapture(key, '${out.path}/$file'));
+          }
+
+          // Real vertical drags on the page drive the existing scroll listener.
+          // No controller jump or private animation state is injected.
+          for (
+            var attempt = 0;
+            attempt < 8 && flight.evaluate().isEmpty;
+            attempt++
+          ) {
+            await tester.drag(outer, const Offset(0, -60));
+            await tester.pump(const Duration(milliseconds: 100));
+            await tester.pump();
+          }
+          expect(
+            flight,
+            findsOneWidget,
+            reason: '$name must expose an intermediate flight',
+          );
+          expect(
+            tester.widget<Opacity>(heroOpacity).opacity,
+            allOf(greaterThan(0), lessThan(1)),
+          );
+          await saveMoment(
+            'midflight',
+            'Desplazamiento vertical en pasos de 60 px hasta el vuelo intermedio',
+          );
+
+          for (
+            var attempt = 0;
+            attempt < 16 && tester.widget<Opacity>(heroOpacity).opacity > 0;
+            attempt++
+          ) {
+            await tester.drag(outer, const Offset(0, -60));
+            await tester.pump(const Duration(milliseconds: 100));
+            await tester.pump();
+          }
+          expect(
+            flight,
+            findsNothing,
+            reason: '$name flight must finish at its own ring',
+          );
+          expect(tester.widget<Opacity>(heroOpacity).opacity, 0);
+          await saveMoment(
+            'endflight',
+            'Continuar el desplazamiento vertical hasta completar el vuelo',
+          );
+
+          if (variant.$1 == '200') {
+            final heading = find.text('Ayudar se siente bien');
+            expect(heading, findsOneWidget);
+            await Scrollable.ensureVisible(
+              tester.element(heading),
+              alignment: .2,
+            );
+            await tester.pump(const Duration(milliseconds: 100));
+            await tester.pump();
+            await saveMoment(
+              'hero-heading',
+              'Mostrar el encabezado completo con texto al 200 %',
+            );
+            final heroName = find.byKey(const ValueKey('impact-collage-name'));
+            expect(heroName, findsOneWidget);
+            await Scrollable.ensureVisible(
+              tester.element(heroName),
+              alignment: .3,
+            );
+            await tester.pump(const Duration(milliseconds: 100));
+            await tester.pump();
+            await saveMoment(
+              'hero-name',
+              'Mostrar el nombre de la mascota asignada con texto al 200 %',
+            );
+          }
+
+          final amount = find.byKey(
+            const ValueKey('impact-stat-Asignados de tus aportaciones'),
+          );
+          await Scrollable.ensureVisible(tester.element(amount), alignment: .4);
+          await tester.pumpAndSettle();
+          await saveMoment(
+            'personal-amount',
+            'Mostrar el importe íntegro; desplazable horizontalmente si excede el ancho con texto grande',
+          );
+
+          final amountScroll = find.byKey(
+            const ValueKey(
+              'impact-amount-scroll-Asignados de tus aportaciones',
+            ),
+          );
+          if (amountScroll.evaluate().isNotEmpty) {
+            await tester.drag(amountScroll, const Offset(-400, 0));
+            await tester.pumpAndSettle();
+            final amountPosition = tester
+                .state<ScrollableState>(
+                  find.descendant(
+                    of: amountScroll,
+                    matching: find.byType(Scrollable),
+                  ),
+                )
+                .position;
+            expect(
+              amountPosition.pixels,
+              closeTo(amountPosition.maxScrollExtent, .01),
+            );
+            await saveMoment(
+              'personal-amount-end',
+              'Deslizar el importe hasta su extremo final',
+            );
+            await tester.drag(amountScroll, const Offset(400, 0));
+            await tester.pumpAndSettle();
+            expect(amountPosition.pixels, closeTo(0, .01));
+            await saveMoment(
+              'personal-amount-start',
+              'Volver al inicio del importe sin partir ni elidir cifras',
+            );
+          }
+          final lower = find.text('Este mes logramos');
+          expect(lower, findsOneWidget);
+          await Scrollable.ensureVisible(tester.element(lower), alignment: .1);
+          await tester.pump(const Duration(milliseconds: 100));
+          await tester.pump();
+          await saveMoment('monthly', 'Mostrar el mosaico comunitario del mes');
+          await tester.runAsync(
+            () =>
+                File('${out.path}/$name-actions.json')
+                    .writeAsString(jsonEncode(actions)),
+          );
+        }
+      } finally {
+        await tester.pumpWidget(const SizedBox());
+        container.dispose();
+        await identity.changes.close();
+      }
+    }
+  }
+  expect(
+    captured,
+    greaterThan(0),
+    reason: 'No integral Guardian fixture matches $filter',
+  );
 }

@@ -230,6 +230,7 @@ void main() {
         await eventually(
           () async => !await SecureSessionStorage(namespace).hasAccessToken(),
         );
+        await controller!.prepareRecoveryPresentation('rescue', email);
         await repository.requestRecovery(email);
         final recovery = await emailMessage('Recupera tu acceso a Dopmi');
         await expectLater(
@@ -239,6 +240,7 @@ void main() {
         if (recoveryViaLink) {
           // The verifier must survive closing the app before opening the email.
           await restartClient();
+          expect(controller!.recoveryIntent, 'rescue');
           final href = RegExp(r'href="([^"]+)"')
               .firstMatch(recovery['HTML'] as String)!
               .group(1)!;
@@ -266,9 +268,12 @@ void main() {
         await restartClient();
         await eventually(() async => controller!.identity != null);
         expect(controller!.redirect('/welcome'), '/reset-password');
+        expect(controller!.recoveryIntent, 'rescue');
+        expect(controller!.recoveryEmail ?? controller!.identity?.email, email);
         await controller!.completeRecovery(newPassword);
         expect(repository.current, isNull);
         expect(await repository.recoveryPending(), isFalse);
+        expect(await repository.recoveryIntent(), isNull);
         await expectLater(
           repository.login(email, password),
           throwsA(

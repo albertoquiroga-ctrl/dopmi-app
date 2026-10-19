@@ -226,6 +226,7 @@ class FakeCommunity implements CommunityRepository {
       {
         'id': 'case-one',
         'status': 'approved',
+        'accepts_support': true,
         'public_data': {'pet_name': 'Choco'},
       },
     ],

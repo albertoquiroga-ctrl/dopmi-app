@@ -20,9 +20,13 @@ class ImpactPhotoJourney extends StatefulWidget {
     required this.photos,
     required this.hero,
     this.photoBuilder,
+    this.onOpenStory,
+    this.periodLabel,
   });
+  final String? periodLabel;
   final List<ImpactPhoto> photos;
   final ImpactPhoto? hero;
+  final ValueChanged<ImpactPhoto>? onOpenStory;
   @visibleForTesting
   final Widget Function(ImpactPhoto photo, double height)? photoBuilder;
 
@@ -120,14 +124,23 @@ class _ImpactPhotoJourneyState extends State<ImpactPhotoJourney> {
       widget.photoBuilder?.call(photo, height) ??
       RescuePublicPhoto(photo.path, height: height, radius: 0, compact: true);
 
-  Widget openPhoto(ImpactPhoto photo, Widget child) => Semantics(
-    button: true,
-    label: 'Ver caso ${photo.name}',
-    child: InkWell(
-      onTap: () => context.push('/rescue-cases/${photo.caseId}'),
-      child: child,
-    ),
-  );
+  Widget openPhoto(ImpactPhoto photo, Widget child, {bool story = false}) =>
+      Semantics(
+        button: true,
+        label: story
+            ? 'Ver historias de ${photo.name}'
+            : 'Ver caso ${photo.name}',
+        child: InkWell(
+          onTap: () {
+            if (story) {
+              widget.onOpenStory?.call(photo);
+            } else {
+              context.push('/rescue-cases/${photo.caseId}');
+            }
+          },
+          child: child,
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -152,11 +165,42 @@ class _ImpactPhotoJourneyState extends State<ImpactPhotoJourney> {
           painter.dispose();
         }
         // Ring, label gap, measured single-line label, and explicit bottom padding.
-        final railHeight = 76 + 8 + railLabelHeight + 8;
+        final railHeight =
+            (76 +
+                    8 +
+                    railLabelHeight +
+                    8 +
+                    (widget.periodLabel == null
+                        ? 0
+                        : scaler.scale(11) * 1.3 + 4))
+                .ceilToDouble();
         final collageWidth = math.min(width - 28, 272.0);
         const collageHeight = 248.0;
         final heroSize = (width * .36).clamp(118.0, 148.0);
-        final collageTop = railHeight + 22;
+        double headingHeight(String text, double size) {
+          final painter = TextPainter(
+            text: TextSpan(
+              text: text,
+              style: DefaultTextStyle.of(context).style.copyWith(
+                fontSize: size,
+                height: 1.3,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            textScaler: scaler,
+            textDirection: Directionality.of(context),
+          )..layout(maxWidth: width - 32);
+          final height = painter.height;
+          painter.dispose();
+          return height;
+        }
+
+        final surfaceTop = railHeight + 22;
+        final collageTop =
+            surfaceTop +
+            headingHeight('Ayudar se siente bien', 22) +
+            headingHeight('¡Gracias!', 26) +
+            36;
         final footerLabelStyle = DefaultTextStyle.of(context).style
             .copyWith(fontSize: 14, height: 1.3, color: muted);
         final labelPainter = TextPainter(
@@ -168,8 +212,8 @@ class _ImpactPhotoJourneyState extends State<ImpactPhotoJourney> {
           text: TextSpan(
             text: widget.hero?.name ?? '',
             style: DefaultTextStyle.of(context).style.copyWith(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
+              fontSize: 28,
+              fontWeight: FontWeight.w800,
               height: 1.3,
             ),
           ),
@@ -219,13 +263,44 @@ class _ImpactPhotoJourneyState extends State<ImpactPhotoJourney> {
               Positioned(
                 left: 0,
                 right: 0,
-                top: collageTop,
-                height: collageHeight + footerHeight - 6,
+                top: surfaceTop,
+                height:
+                    collageTop - surfaceTop + collageHeight + footerHeight - 6,
                 child: Container(
                   decoration: BoxDecoration(
                     color: const Color(0xfff0eeea),
                     borderRadius: BorderRadius.circular(28),
                   ),
+                ),
+              ),
+              Positioned(
+                left: 16,
+                right: 16,
+                top: surfaceTop + 18,
+                child: Column(
+                  children: [
+                    const Text(
+                      'Ayudar se siente bien',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: ink,
+                        height: 1.3,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    const Text(
+                      '¡Gracias!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 26,
+                        height: 1.3,
+                        fontWeight: FontWeight.w700,
+                        color: muted,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               for (var i = 0; i < collagePhotos.length; i++)
@@ -234,13 +309,40 @@ class _ImpactPhotoJourneyState extends State<ImpactPhotoJourney> {
                       (width - collageWidth) / 2 + collageWidth * scatter[i].$1,
                   top: collageTop + collageHeight * scatter[i].$2,
                   width: collageWidth * scatter[i].$3,
-                  height: collageHeight * .42,
+                  height: collageWidth * scatter[i].$3 * 4 / 3,
                   child: ExcludeSemantics(
                     child: Transform.rotate(
                       angle: scatter[i].$4 * math.pi / 180,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(18),
                         child: image(collagePhotos[i], collageHeight * .42),
+                      ),
+                    ),
+                  ),
+                ),
+              for (final (index, photo)
+                  in entries
+                      .where((photo) => photo.caseId != widget.hero?.caseId)
+                      .take(2)
+                      .indexed)
+                Positioned(
+                  left:
+                      (width - collageWidth) / 2 +
+                      collageWidth * (index == 0 ? .18 : .68),
+                  top: collageTop + collageHeight * (index == 0 ? .68 : .12),
+                  width: 44,
+                  height: 44,
+                  child: ExcludeSemantics(
+                    child: IgnorePointer(
+                      child: DecoratedBox(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: ClipOval(child: image(photo, 36)),
+                        ),
                       ),
                     ),
                   ),
@@ -287,9 +389,10 @@ class _ImpactPhotoJourneyState extends State<ImpactPhotoJourney> {
                       key: const ValueKey('impact-collage-name'),
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                        fontSize: 22,
+                        fontSize: 28,
+                        color: ink,
                         height: 1.3,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
                   ],
@@ -336,7 +439,14 @@ class _ImpactPhotoJourneyState extends State<ImpactPhotoJourney> {
                                     'impact-ring-opacity-${photo.caseId}',
                                   ),
                                   opacity: opacity,
-                                  child: ClipOval(child: image(photo, 64)),
+                                  child: ClipOval(
+                                    // The ring is one story target, including a missing-photo placeholder.
+                                    child: ExcludeSemantics(
+                                      child: IgnorePointer(
+                                        child: image(photo, 64),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -346,9 +456,20 @@ class _ImpactPhotoJourneyState extends State<ImpactPhotoJourney> {
                                 overflow: TextOverflow.ellipsis,
                                 style: railLabelStyle,
                               ),
+                              if (widget.periodLabel != null) ...[
+                                const SizedBox(height: 4),
+                                Text(
+                                  widget.periodLabel!,
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    height: 1.3,
+                                  ),
+                                ),
+                              ],
                               const SizedBox(height: 8),
                             ],
                           ),
+                          story: true,
                         ),
                       );
                     },

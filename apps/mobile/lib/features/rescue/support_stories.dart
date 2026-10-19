@@ -8,13 +8,15 @@ import '../../core/ui.dart';
 import '../../core/media/remote_photo.dart';
 import '../../core/media/media_store.dart';
 import '../../core/media/photo_runtime.dart';
+import '../../core/media/moderated_video.dart';
 import 'case_update_repository.dart';
 import 'rescue_repository.dart';
 import 'rescue_public_photo.dart';
+import 'rescue_videos.dart';
 
 /// Only approved public snapshot photos; never private evidence or receipts.
 List<String> supportStoryPhotos(RescueRecord record) =>
-    record.status == 'approved'
+    (record.status == 'approved' || record.status == 'closed')
     ? (record.publicData['photos'] as List? ?? const [])
           .whereType<String>()
           .where((p) => p.trim().isNotEmpty)
@@ -38,10 +40,10 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
       )..addListener(() {
         // Flutter completion status uses elapsed > duration. Reach the
         // endpoint on the frame at 5200 ms rather than waiting another frame.
-        if (progress.value >= 1 && !finished) next();
+        if (progress.value >= 1 && !finished && currentVideo == null) next();
       });
   late final queue = widget.records
-      .where((r) => supportStoryPhotos(r).isNotEmpty)
+      .where((r) => r.status == 'approved' || r.status == 'closed')
       .toList();
   int caseIndex = 0, photoIndex = 0;
   bool held = false, manual = false, background = false, displayed = false;
@@ -51,6 +53,11 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
   bool longHeld = false;
   bool finished = false;
   final Set<String> loadedUpdates = {};
+  final loadedVideos = <String>{};
+  final loadingVideos = <String>{};
+  final failedVideos = <String>{};
+  final publicVideos = <String, List<String>>{};
+  final videoPaused = ValueNotifier<bool>(false);
   final loadingUpdates = <String>{};
   final failedUpdates = <String>{};
   (String, int)? waitingForUpdates;
@@ -61,14 +68,68 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
   List<String> get photos => <String>{
     ...supportStoryPhotos(record),
     ...updates.expand((u) => u.photos),
+    ...(publicVideos[record.id] ?? const []).map((id) => 'video:$id'),
   }.toList();
+  String? get currentVideo {
+    if (queue.isEmpty || photoIndex >= photos.length) return null;
+    final path = photos[photoIndex];
+    return path.startsWith('video:') ? path.substring(6) : null;
+  }
+
   CaseUpdate? get currentUpdate {
+    if (currentVideo != null) return null;
     final path = photos[photoIndex];
     if (supportStoryPhotos(record).contains(path)) return null;
     for (final update in updates) {
       if (update.photos.contains(path)) return update;
     }
     return null;
+  }
+
+  Future<void> loadVideos() async {
+    if (queue.isEmpty ||
+        loadedVideos.contains(record.id) ||
+        !loadingVideos.add(record.id)) {
+      return;
+    }
+    final id = record.id;
+    final repository = ref.read(rescueVideosRepositoryProvider);
+    if (repository == null) {
+      loadingVideos.remove(id);
+      loadedVideos.add(id);
+      return;
+    }
+    failedVideos.remove(id);
+    try {
+      final items = await repository.publicVideos(id);
+      if (!mounted || finished) return;
+      setState(() {
+        loadingVideos.remove(id);
+        loadedVideos.add(id);
+        publicVideos[id] = publicRescueVideoIds(items, id);
+      });
+      if (waitingForUpdates == (id, photoIndex) &&
+          record.id == id &&
+          loadedUpdates.contains(id)) {
+        waitingForUpdates = null;
+        next();
+      }
+    } catch (_) {
+      if (!mounted || finished) return;
+      final wasWaiting = waitingForUpdates?.$1 == id;
+      setState(() {
+        loadingVideos.remove(id);
+        loadedVideos.add(id);
+        failedVideos.add(id);
+        if (waitingForUpdates?.$1 == id) waitingForUpdates = null;
+      });
+      if (wasWaiting && record.id == id && loadedUpdates.contains(id)) next();
+    }
+  }
+
+  void retryVideos() {
+    loadedVideos.remove(record.id);
+    loadVideos();
   }
 
   Future<void> loadUpdates() async {
@@ -137,6 +198,7 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     loadUpdates();
+    loadVideos();
     loadNeeds();
   }
 
@@ -150,6 +212,12 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
   }
 
   void resume() {
+    videoPaused.value =
+        held || background || !TickerMode.valuesOf(context).enabled;
+    if (currentVideo != null) {
+      progress.stop();
+      return;
+    }
     if (!finished &&
         queue.isNotEmpty &&
         displayed &&
@@ -179,7 +247,9 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
 
   void next() {
     if (finished) return;
-    if (photoIndex + 1 >= photos.length && !loadedUpdates.contains(record.id)) {
+    if (photoIndex + 1 >= photos.length &&
+        (!loadedUpdates.contains(record.id) ||
+            !loadedVideos.contains(record.id))) {
       waitingForUpdates = (record.id, photoIndex);
       progress.stop();
       setState(() {});
@@ -194,6 +264,7 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
         photoIndex = 0;
       });
       loadUpdates();
+      loadVideos();
       loadNeeds();
     } else {
       close();
@@ -216,7 +287,7 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
     } else if (caseIndex > 0) {
       setState(() {
         caseIndex--;
-        photoIndex = photos.length - 1;
+        photoIndex = photos.isEmpty ? 0 : photos.length - 1;
       });
     }
     displayed = false;
@@ -229,6 +300,7 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
     holdTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     progress.dispose();
+    videoPaused.dispose();
     super.dispose();
   }
 
@@ -238,6 +310,33 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
       return Scaffold(
         appBar: AppBar(title: const Text('Historias')),
         body: const Center(child: Text('No hay fotos públicas disponibles.')),
+      );
+    }
+    if (photos.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Historias')),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (loadingVideos.contains(record.id) ||
+                  loadingUpdates.contains(record.id))
+                const CircularProgressIndicator()
+              else
+                const Text('No hay fotos públicas disponibles.'),
+              if (failedVideos.contains(record.id))
+                TextButton(
+                  onPressed: retryVideos,
+                  child: const Text('Reintentar videos'),
+                ),
+              if (caseIndex + 1 < queue.length)
+                TextButton(
+                  onPressed: next,
+                  child: const Text('Siguiente caso'),
+                ),
+            ],
+          ),
+        ),
       );
     }
     final hero = photoIndex == 0;
@@ -302,7 +401,10 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                         // The frozen mock restarts a segment on hold release.
                         // Cancellation, lifecycle and accessible pauses retain
                         // their separate resume behavior.
-                        if (longHeld && !manual && !background) {
+                        if (longHeld &&
+                            !manual &&
+                            !background &&
+                            currentVideo == null) {
                           progress.reset();
                         }
                         resume();
@@ -311,28 +413,56 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                         fit: StackFit.expand,
                         children: [
                           LayoutBuilder(
-                            builder: (surfaceContext, bounds) =>
-                                GestureDetector(
-                                  behavior: HitTestBehavior.opaque,
-                                  onTapUp: (event) {
-                                    if (longHeld) return;
-                                    if (event.localPosition.dx <
-                                        bounds.maxWidth * .5) {
-                                      previous();
-                                    } else {
-                                      next();
-                                    }
-                                  },
-                                  child: _StoryPhoto(
-                                    photos[photoIndex],
-                                    isUpdate: currentUpdate != null,
-                                    key: ValueKey('${record.id}:$photoIndex'),
-                                    onDisplayed: () {
-                                      displayed = true;
-                                      resume();
-                                    },
-                                  ),
-                                ),
+                            builder: (surfaceContext, bounds) => GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTapUp: (event) {
+                                if (longHeld) return;
+                                if (event.localPosition.dx <
+                                    bounds.maxWidth * .5) {
+                                  previous();
+                                } else {
+                                  next();
+                                }
+                              },
+                              child: currentVideo != null
+                                  ? ValueListenableBuilder<bool>(
+                                      valueListenable: videoPaused,
+                                      builder: (context, paused, _) =>
+                                          ModeratedVideo(
+                                            key: ValueKey(
+                                              '${record.id}:$currentVideo',
+                                            ),
+                                            repository: ref.read(
+                                              rescueVideosRepositoryProvider,
+                                            )!,
+                                            assetId: currentVideo!,
+                                            autoplay: !manual,
+                                            paused: paused,
+                                            onComplete: next,
+                                            onPlaybackReady: () {
+                                              displayed = true;
+                                              resume();
+                                            },
+                                            onProgress: (value) {
+                                              if (mounted && !finished) {
+                                                progress.value = value.clamp(
+                                                  0.0,
+                                                  .999999,
+                                                );
+                                              }
+                                            },
+                                          ),
+                                    )
+                                  : _StoryPhoto(
+                                      photos[photoIndex],
+                                      isUpdate: currentUpdate != null,
+                                      key: ValueKey('${record.id}:$photoIndex'),
+                                      onDisplayed: () {
+                                        displayed = true;
+                                        resume();
+                                      },
+                                    ),
+                            ),
                           ),
                           const IgnorePointer(
                             child: DecoratedBox(
@@ -402,7 +532,7 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                             ),
                           ),
                           Positioned(
-                            bottom: 0,
+                            bottom: currentVideo == null ? 0 : 64,
                             left: 0,
                             right: 0,
                             child: Padding(
@@ -448,6 +578,11 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                                         loadUpdates();
                                       },
                                       child: const Text('Reintentar avances'),
+                                    ),
+                                  if (failedVideos.contains(record.id))
+                                    TextButton(
+                                      onPressed: retryVideos,
+                                      child: const Text('Reintentar videos'),
                                     ),
                                   TextButton(
                                     onPressed: () => close(record.id),
