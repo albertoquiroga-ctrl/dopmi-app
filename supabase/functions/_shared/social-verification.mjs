@@ -11,6 +11,9 @@ export function socialConfig(env, provider) {
   if (
     !providers.has(provider) || env("SOCIAL_VERIFICATION_ENABLED") !== "true"
   ) return null;
+  return providerConfig(env, provider);
+}
+function providerConfig(env, provider) {
   const prefix = provider === "facebook"
     ? "SOCIAL_FACEBOOK"
     : "SOCIAL_INSTAGRAM";
@@ -23,6 +26,29 @@ export function socialConfig(env, provider) {
       .test(redirect)
   ) return null;
   return { client, secret, redirect, provider };
+}
+async function requestConfig(runtime, actor, provider) {
+  const normal = socialConfig(runtime.env, provider);
+  if (normal) return normal;
+  // This exception is deliberately bound to the existing DEV project, the
+  // explicitly closed setting and Facebook. It is never a global flag override.
+  const dev = "https://ohqxranynackjignryep.supabase.co";
+  if (
+    provider !== "facebook" ||
+    runtime.env("SOCIAL_VERIFICATION_ENABLED") !== "false" ||
+    runtime.env("SUPABASE_URL") !== dev ||
+    runtime.env("SOCIAL_VERIFICATION_CALLBACK_URL") !==
+      dev + "/functions/v1/social-verification-callback"
+  ) return null;
+  const config = providerConfig(runtime.env, provider);
+  if (!config) return null;
+  try {
+    return await runtime.denialAvailable(actor.id, actor.session_id) === true
+      ? { ...config, denialOnly: true }
+      : null;
+  } catch {
+    return null;
+  }
 }
 export function authorizationUrl(config, state) {
   const ig = config.provider === "instagram";
@@ -119,11 +145,15 @@ export function socialHandler(runtime) {
     }
     try {
       if (input.operation === "list") {
+        const available = [];
+        for (const provider of providers) {
+          if (await requestConfig(runtime, actor, provider)) {
+            available.push(provider);
+          }
+        }
         return json({
           accounts: await runtime.list(actor.id),
-          available_providers: [...providers].filter((p) =>
-            socialConfig(runtime.env, p)
-          ),
+          available_providers: available,
         });
       }
       if (input.operation === "status") {
@@ -160,10 +190,11 @@ export function socialHandler(runtime) {
       if (input.operation !== "start" || !providers.has(input.provider)) {
         return json({ error: "invalid_request" }, 400);
       }
-      const config = socialConfig(runtime.env, input.provider);
+      const config = await requestConfig(runtime, actor, input.provider);
       if (!config) return json({ error: "provider_unavailable" }, 503);
       const state = crypto.randomUUID() + crypto.randomUUID();
-      const attempt = await runtime.start(
+      const start = config.denialOnly ? runtime.startDenial : runtime.start;
+      const attempt = await start(
         actor.id,
         actor.session_id,
         input.provider,
@@ -181,7 +212,7 @@ export function socialHandler(runtime) {
 export function socialCallback(runtime) {
   return async (request) => {
     const reply = () =>
-      new Response("Vuelve a Dopmi y pulsa «Ya autoricé, comprobar».", {
+      new Response("Vuelve a Dopmi y pulsa «Comprobar estado».", {
         headers: {
           "Content-Type": "text/plain; charset=utf-8",
           "Cache-Control": "no-store",
@@ -204,6 +235,11 @@ export function socialCallback(runtime) {
       if (url.searchParams.has("error")) {
         await runtime.fail(attempt.id, "denied");
         return reply();
+      }
+      // A denial rehearsal can never authorize a connection, even if Meta
+      // returns a positive code or the global setting changes while in flight.
+      if (attempt.purpose === "denial_only") {
+        throw new Error("denial_only_callback");
       }
       const config = socialConfig(runtime.env, attempt.provider),
         code = url.searchParams.get("code");

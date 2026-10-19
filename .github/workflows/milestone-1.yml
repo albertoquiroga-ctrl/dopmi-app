@@ -41,6 +41,12 @@ jobs:
         run: tools/verification/node_modules/.bin/supabase db start
       - name: Supabase permissions tests
         run: tools/verification/node_modules/.bin/supabase test db
+      - name: Scoped OAuth denial against PostgreSQL
+        env:
+          DOPMI_SOCIAL_DENIAL_POSTGRES_TEST: 'true'
+          DOPMI_SOCIAL_DENIAL_POSTGRES_PORT: '54322'
+          PGPASSWORD: postgres
+        run: node --test tools/verification/social-oauth-denial-only-sql.test.mjs
       - name: Guardian concurrent reservations against PostgreSQL
         run: node tools/verification/guardian-concurrency.mjs
       - name: Adoption contact concurrent devices and lost response

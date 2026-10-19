@@ -28,6 +28,28 @@ export function socialRuntime() {
         return null;
       }
     },
+    denialAvailable: async (owner: string, session: string) =>
+      checked(
+        await db.rpc("social_verification_denial_available", {
+          p_owner: owner,
+          p_session: session,
+        }),
+      ),
+    startDenial: async (
+      owner: string,
+      session: string,
+      provider: string,
+      hash: string,
+    ) => ({
+      id: checked(
+        await db.rpc("social_verification_denial_start", {
+          p_owner: owner,
+          p_session: session,
+          p_provider: provider,
+          p_hash: hash,
+        }),
+      ),
+    }),
     start: async (
       owner: string,
       session: string,

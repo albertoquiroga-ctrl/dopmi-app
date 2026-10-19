@@ -31,7 +31,7 @@ class _SocialVerificationScreenState
 
   bool get sameActor => actor != null && repository.owner == actor;
 
-  Future<void> _load() async {
+  Future<void> _load({bool retainMessage = false}) async {
     try {
       final data = await repository.call({'operation': 'list'});
       if (!mounted || !sameActor) return;
@@ -49,9 +49,14 @@ class _SocialVerificationScreenState
       });
     } catch (_) {
       if (mounted && sameActor) {
-        setState(
-          () => message = 'No pudimos consultar tus redes. Vuelve a intentar.',
-        );
+        setState(() {
+          available = {};
+          const notice =
+              'No pudimos consultar tus redes. Usa «Actualizar estado».';
+          message = retainMessage && message != null
+              ? '$message $notice'
+              : notice;
+        });
       }
     } finally {
       if (mounted) setState(() => busy = false);
@@ -89,7 +94,7 @@ class _SocialVerificationScreenState
       setState(() {
         attempt = id;
         provider = network;
-        message = 'Autoriza en la red social y regresa aquí para comprobar.';
+        message = 'Revisa la solicitud en la red social y regresa aquí para comprobar el resultado.';
       });
     } catch (_) {
       final pending = attempt;
@@ -103,9 +108,9 @@ class _SocialVerificationScreenState
       }
       if (mounted && sameActor) {
         setState(
-          () =>
-              message = 'No pudimos abrir la verificación. Vuelve a intentar.',
+          () => message = 'No pudimos completar la verificación. Actualiza el estado antes de iniciar otra conexión.',
         );
+        await _load(retainMessage: true);
       }
     } finally {
       if (mounted) setState(() => busy = false);
@@ -132,15 +137,16 @@ class _SocialVerificationScreenState
       setState(() {
         message = switch (status) {
           'verified' => 'Cuenta social conectada. Tu perfil público sigue sujeto a revisión.',
-          'pending' => 'La autorización sigue pendiente. Puedes comprobar de nuevo al terminar.',
+          'pending' => 'La solicitud sigue pendiente. Puedes comprobar de nuevo al terminar.',
           'denied' =>
             'No autorizaste la conexión. Tu cuenta Dopmi se conserva.',
-          'expired' => 'La solicitud venció. Inicia una nueva conexión.',
-          _ => 'No se completó la conexión. Puedes volver a intentar.',
+          'expired' =>
+            'La solicitud venció. Consulta la disponibilidad para continuar.',
+          _ => 'No se completó la conexión. Consulta la disponibilidad para continuar.',
         };
         if (status != 'pending') attempt = provider = null;
       });
-      if (status == 'verified') await _load();
+      if (status != 'pending') await _load(retainMessage: true);
     } catch (_) {
       if (mounted && sameActor) {
         setState(
@@ -164,6 +170,7 @@ class _SocialVerificationScreenState
           attempt = provider = null;
           message = 'Cancelaste este intento de conexión.';
         });
+        await _load(retainMessage: true);
       }
     } catch (_) {
       if (mounted && sameActor) {
@@ -185,7 +192,7 @@ class _SocialVerificationScreenState
         content: const Text(
           'Se retirará esta comprobación de Dopmi. '
           'Tu cuenta y tus publicaciones se conservan. '
-          'Puedes volver a conectar la red cuando quieras.',
+          'Una nueva conexión dependerá de que esté disponible.',
         ),
         actions: [
           TextButton(
@@ -287,7 +294,7 @@ class _SocialVerificationScreenState
                 if (attempt != null) ...[
                   FilledButton(
                     onPressed: busy ? null : _check,
-                    child: const Text('Ya autoricé, comprobar'),
+                    child: const Text('Comprobar estado'),
                   ),
                   TextButton(
                     onPressed: busy ? null : _cancel,
