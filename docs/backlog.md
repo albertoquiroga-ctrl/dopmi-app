@@ -1,3 +1,7 @@
+## 19/10/2026 — Decisión de retirada recibida; falta sesión admin
+
+El titular autorizó retirar ambos casos TEST hasta corregir las fotos; acuerdo en product-decisions.md. Preflight confirma6/20approved,2objetos/5referencias públicas (3fixtures consumidas),2hijos; no mutación aún. Seguridad valida RPC existente/actorreal separado del dueño.600s es lease del cliente conocido, no máximo global garantizado de enlaces previos. Preview admin abierto sin sesión; se solicitó inicio de sesión existente, nunca contraseña en chat/grant/suplantación. Dueño root; siguiente: moderación changes_requested con versiones frescas y postflight de privacidad/finanzas/fixtures. Las demás preguntas pendientes siguen independientes. Fuente publicada48d65/Play323 sin cambios.
+
 ## Cierre técnico parcial — Play2.3.3(323) instalado; alcance integral bloqueado, 19/10/2026
 
 - Referencia congelada **20d21f484aa60726f0b236574d5493dcf5e05969**; candidato funcional **48d65c615e9ecdaf9b1a9e907091309037c994f8**, rama codex/finish-release-20261015/base952f2816. Commits documentales posteriores no cambian la fuente publicada. CI[39222503764](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/39222503764) cuatroSUCCESS: Flutter1329PASS/analyze0/capturas/Androiddebug; admin48/build/backend955PASS8skip/PG316+11OAuth+6carreras reales locales; identidad/adopción y iOSsimuladorPASS. Focal25PASS; revisiones independientes producto/código/seguridad sin hallazgos materiales del paquete.
