@@ -131,6 +131,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text(guardian.registration!.summary), findsOneWidget);
     expect(find.text('Consultar registro Guardián'), findsOneWidget);
+    expect(find.text('Historial de tu impacto'), findsOneWidget);
+    expect(find.text('Casos apoyados en todos los meses'), findsOneWidget);
     expect(find.text('Asignados de tus aportaciones'), findsNothing);
     await tester.tap(find.text('Consultar registro Guardián'));
     await tester.pumpAndSettle();

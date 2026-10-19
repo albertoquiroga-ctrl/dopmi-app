@@ -227,6 +227,24 @@ class ImpactScreen extends ConsumerWidget {
               key: ValueKey(ref.watch(identityControllerProvider).identity?.id),
             ),
             const SizedBox(height: 24),
+            Semantics(
+              header: true,
+              child: const Text(
+                'Historial de tu impacto',
+                style: TextStyle(
+                  fontSize: 20,
+                  height: 1.25,
+                  fontWeight: FontWeight.w700,
+                  color: ink,
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Casos apoyados en todos los meses',
+              style: TextStyle(fontSize: 14, height: 20 / 14, color: muted),
+            ),
+            const SizedBox(height: 16),
             LiveSection<List<Json>>(
               load: () => loadImpact(ref),
               errorMessage: (_) =>
