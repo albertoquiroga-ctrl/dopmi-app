@@ -5,6 +5,21 @@ import {randomUUID} from 'node:crypto';
 // Ownership: video backend verification. CI invokes this only after local
 // Supabase db start/test db. No URL, token, provider, payment or remote DB input.
 // Docker must itself use a local socket; a remote Docker context is rejected.
+// Storage API is not started in this job. SQL-created metadata and its synthetic
+// owner remain until the GitHub-hosted runner (including its containers) is
+// destroyed. Do not run against persistent/self-hosted/local Docker installations.
+function assertDisposableRunner(env){
+ assert.equal(env.GITHUB_ACTIONS,'true','Requires an ephemeral GitHub Actions runner');
+ assert.equal(env.RUNNER_ENVIRONMENT,'github-hosted','Requires GitHub-hosted disposal of retained Storage fixtures');
+}
+if(process.argv.includes('--probe-cleanup-contract')){
+ assert.throws(()=>assertDisposableRunner({}),/ephemeral/);
+ assert.throws(()=>assertDisposableRunner({GITHUB_ACTIONS:'true',RUNNER_ENVIRONMENT:'self-hosted'}),/GitHub-hosted/);
+ assertDisposableRunner({GITHUB_ACTIONS:'true',RUNNER_ENVIRONMENT:'github-hosted'});
+ console.log('PASS: persistent and self-hosted runners rejected; GitHub-hosted disposal accepted; no Docker invoked');
+ process.exit(0);
+}
+assertDisposableRunner(process.env);
 const dockerHost=process.env.DOCKER_HOST??execFileSync('docker',['context','inspect','--format','{{.Endpoints.docker.Host}}'],{encoding:'utf8'}).trim();
 const localWindowsPipe=/^npipe:\/{4}\.\/pipe\/[^/]+$/i.test(dockerHost.replaceAll('\\','/'));
 assert.ok(dockerHost.startsWith('unix:///')||localWindowsPipe,'Only a local Docker socket is authorized');
@@ -89,7 +104,13 @@ try{
  if(seeded){
   const ids=cases.map(id=>literal(id)+'::uuid').join(',');
   query(`begin;${cases.length?`delete from private.dopmi_video_assets where parent_id in(${ids});delete from private.dopmi_urgent_coverage_state where case_id in(${ids});delete from private.dopmi_rescue_history where record_id in(${ids});delete from public.dopmi_rescue_records where id in(${ids});`:''}
-  ${photos.length?`delete from storage.objects where bucket_id='dopmi-rescue-evidence' and name in(${photos.map(literal).join(',')});`:''}
-  delete from private.dopmi_consents where owner_id='${owner}';delete from auth.users where id='${owner}';delete from public.profiles where id='${owner}';update private.dopmi_video_settings set enabled=${priorEnabled==='t'?'true':'false'} where singleton;commit;`);
+  update private.dopmi_video_settings set enabled=${priorEnabled==='t'?'true':'false'} where singleton;commit;`);
+  // Storage's deletion protection remains enabled. Retain the exact synthetic
+  // owner/consents as well, avoiding owner FK/cascade paths into storage.objects.
+  const retainedMetadata=photos.length?Number(query(`select count(*) from storage.objects where bucket_id='dopmi-rescue-evidence' and name in(${photos.map(literal).join(',')});`)):0;
+  assert.equal(retainedMetadata,photos.length,'All SQL-only Storage fixtures must be accounted for');
+  assert.equal(query('select enabled from private.dopmi_video_settings where singleton;'),priorEnabled,'Restore the original video flag');
+  if(cases.length)assert.equal(query(`select count(*) from public.dopmi_rescue_records where id in(${ids});`),'0','Remove this run synthetic domain records');
+  console.log(JSON.stringify({cleanup:'domain removed; original flag restored',retainedStorageMetadata:retainedMetadata,retainedSyntheticOwners:1,uploadedBlobs:0,disposition:'Retained metadata and synthetic owner require destruction of this ephemeral GitHub-hosted runner and its local containers; no Storage API deletion or total cleanup claimed'}));
  }
 }
