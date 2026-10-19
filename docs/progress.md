@@ -1,3 +1,8 @@
+## Checkpoint operativo — CI48d65 verde y candidato enviado una vez, 19/10/2026
+
+- CI39222503764 de48d65c615e9ecdaf9b1a9e907091309037c994f8: cuatrojobsSUCCESS, analyze0, capturas y Androiddebug/iOSsimulador. ReciboCI16d70faa…e1ad6f14; DEV08:30:45UTC82/81/22/RLS/roles/OFF/Edgeexactos, reciboc7757dcb…b8ec2462. Tag remoto codex/integral20d21-48d65c61 exacto. Wrapper checkPASS y únicoPOST autorizado; handle **6ad5d826cc39ef04a21aa7bf**, fuente48d65 confirmada, preparando08:44UTC. Reserva clarity-reservation.private.json consumida: nunca reenviar. Número/build pendientes de artefacto. Fuente instalada sigue322/c210.
+- Dueño root, siguiente status del mismohandle → artefacto/Play/instalación/encabezado físico. Capturas/gestos322 revisados independientemente y reutilizables por equivalencia; no atribuir encabezado nuevo a322. Bloqueos humanos y gatesTEST/OFF sin cambios.
+
 ## Checkpoint operativo — Play322 probado; aclaración48d65 en CI, 19/10/2026
 
 - Publicado e instalado desde Play interno: **2.3.3(322), c210a34671abf9a3982edb9f0766b3a0893f0d23**, CM61/6ad5ca08d8465d89e042118f, release162. Artefacto metadata y Play comprobados por separado. Sesión legítima conservada. Revisión independiente recalculó11 hashes XML: primer caso → segundo → detalle correcto → regreso; último cierra sin volver al primero. Texto histórico legible115% y320px/200%; ajustes restaurados y mesOctubre. No acredita timer/hold físico, recuperación real ni aceptación global.
